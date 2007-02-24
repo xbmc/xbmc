@@ -23,7 +23,7 @@
 #include "GUIDialogNumeric.h"
 #include "util.h"
 #include "GUILabelControl.h"
-#include "lib/libscrobbler/md5.h"
+#include "utils/md5.h"
 #include "xbox/xkgeneral.h"
 
 #define CONTROL_HEADING_LABEL 1
@@ -620,13 +620,12 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     return false;
   }
 
-  md5_state_t md5state;
-  unsigned char md5pword[16];
+  MD5_CTX md5state;
   char md5pword2[64];
-  md5_init(&md5state);
-  md5_append(&md5state, (unsigned const char *)strInput.c_str(), (int)strInput.size());
-  md5_close(&md5state, md5pword);
-  XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+  MD5Init(&md5state);
+  MD5Update(&md5state, (unsigned char *)strInput.c_str(), (int)strInput.size());
+  MD5Final(&md5state);
+  XKGeneral::BytesToHexStr(md5state.digest,16,md5pword2);
 
   if (!bVerifyInput)
   {

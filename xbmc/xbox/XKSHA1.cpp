@@ -1,21 +1,21 @@
-#include "../stdafx.h" 
+#include "../stdafx.h"
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:  **
+**      BROUGHT TO YOU BY:      **
 **********************************
 **********************************
-**        **
-**    [TEAM ASSEMBLY]  **
-**        **
-**  www.team-assembly.com **
-**        **
+**                              **
+**       [TEAM ASSEMBLY]        **
+**                              **
+**     www.team-assembly.com    **
+**                              **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or
 * (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,7 +25,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ******************************************************************************************************
- 
+
 ********************************************************************************************************
 **      XKSHA1.CPP - SHA1 and HMAC_SHA1 Class' Implementation
 ********************************************************************************************************
@@ -34,12 +34,12 @@
 **      defined in FIPS PUB 180-1 published April 17, 1995.
 **
 **
-**  Added Funcionality to NOT require the KEY when doing HMAC_SHA1 hashes 
-**  as per xbox-Linux groups "Fridaym 13th Middle Message Hack" 
+**  Added Funcionality to NOT require the KEY when doing HMAC_SHA1 hashes
+**  as per xbox-Linux groups "Fridaym 13th Middle Message Hack"
 **
 ********************************************************************************************************
- 
- 
+
+
 ********************************************************************************************************
 ** CREDITS:
 ********************************************************************************************************
@@ -49,12 +49,12 @@
 **
 ** XBOX-LINUX TEAM:
 **  ---------------
-**  In particular "Franz", Wow, you guys are awsome !!  I bow down to your greatness !!  
-**  The "Friday 13th" Middle Message Hack really saved our butts !! 
+**  In particular "Franz", Wow, you guys are awsome !!  I bow down to your greatness !!
+**  The "Friday 13th" Middle Message Hack really saved our butts !!
 **  REFERENCE URL:  http://xbox-linux.sourceforge.net
 **
 ********************************************************************************************************
- 
+
 UPDATE LOG:
 --------------------------------------------------------------------------------------------------------
 Date: 02/18/2003
@@ -65,7 +65,11 @@ Date: 01/06/2003
 By: UNDEAD [team-assembly]
 Reason: Prepared for Public Release
 --------------------------------------------------------------------------------------------------------
- 
+Date: 11/27/2004
+By: Yoshihiro
+Reason: Update for XBOX 1.6 Eeprom
+--------------------------------------------------------------------------------------------------------
+
 */
 
 
@@ -133,7 +137,7 @@ int XKSHA1::SHA1Result( SHA1Context* context, UCHAR Message_Digest[SHA1HashSize]
 
   for (i = 0; i < SHA1HashSize; ++i)
   {
-    Message_Digest[i] = context->Intermediate_Hash[i >> 2] >> 8 * ( 3 - ( i & 0x03 ) );
+    Message_Digest[i] = (UCHAR) ((context->Intermediate_Hash[i >> 2] >> 8 * (3 - (i & 0x03))) & 0xff);
   }
 
   return shaSuccess;
@@ -317,14 +321,14 @@ void XKSHA1::SHA1PadMessage(SHA1Context* context)
   /*
    *  Store the message length as the last 8 octets
    */
-  context->Message_Block[56] = context->Length_High >> 24;
-  context->Message_Block[57] = context->Length_High >> 16;
-  context->Message_Block[58] = context->Length_High >> 8;
-  context->Message_Block[59] = context->Length_High;
-  context->Message_Block[60] = context->Length_Low >> 24;
-  context->Message_Block[61] = context->Length_Low >> 16;
-  context->Message_Block[62] = context->Length_Low >> 8;
-  context->Message_Block[63] = context->Length_Low;
+  context->Message_Block[56] = (UCHAR) (context->Length_High >> 24);
+  context->Message_Block[57] = (UCHAR) (context->Length_High >> 16);
+  context->Message_Block[58] = (UCHAR) (context->Length_High >> 8);
+  context->Message_Block[59] = (UCHAR) (context->Length_High & 0xff);
+  context->Message_Block[60] = (UCHAR) (context->Length_Low >> 24);
+  context->Message_Block[61] = (UCHAR) (context->Length_Low >> 16);
+  context->Message_Block[62] = (UCHAR) (context->Length_Low >> 8);
+  context->Message_Block[63] = (UCHAR) (context->Length_Low & 0xff);
 
   SHA1ProcessMessageBlock(context);
 }
@@ -381,24 +385,39 @@ void XKSHA1::HMAC_SHA1(UCHAR* result, UCHAR* key, int key_length, UCHAR* text1, 
 }
 
 
-int XKSHA1::HMAC1Reset(int version, SHA1Context *context)
+int XKSHA1::HMAC1Reset(int version,SHA1Context *context)
 {
   SHA1Reset(context);
-  if (version == 10)
+  switch (version)
   {
-    context->Intermediate_Hash[0] = 0x72127625;
-    context->Intermediate_Hash[1] = 0x336472B9;
-    context->Intermediate_Hash[2] = 0xBE609BEA;
-    context->Intermediate_Hash[3] = 0xF55E226B;
-    context->Intermediate_Hash[4] = 0x99958DAC;
-  }
-  if (version == 11)
-  {
-    context->Intermediate_Hash[0] = 0x39B06E79;
-    context->Intermediate_Hash[1] = 0xC9BD25E8;
-    context->Intermediate_Hash[2] = 0xDBC6B498;
-    context->Intermediate_Hash[3] = 0x40B4389D;
-    context->Intermediate_Hash[4] = 0x86BBD7ED;
+    case 9:
+      context->Intermediate_Hash[0] = 0x85F9E51A;
+      context->Intermediate_Hash[1] = 0xE04613D2;
+      context->Intermediate_Hash[2] = 0x6D86A50C;
+      context->Intermediate_Hash[3] = 0x77C32E3C;
+      context->Intermediate_Hash[4] = 0x4BD717A4;
+        break;
+    case 10:
+      context->Intermediate_Hash[0] = 0x72127625;
+      context->Intermediate_Hash[1] = 0x336472B9;
+      context->Intermediate_Hash[2] = 0xBE609BEA;
+      context->Intermediate_Hash[3] = 0xF55E226B;
+      context->Intermediate_Hash[4] = 0x99958DAC;
+      break;
+    case 11:
+      context->Intermediate_Hash[0] = 0x39B06E79;
+      context->Intermediate_Hash[1] = 0xC9BD25E8;
+      context->Intermediate_Hash[2] = 0xDBC6B498;
+      context->Intermediate_Hash[3] = 0x40B4389D;
+      context->Intermediate_Hash[4] = 0x86BBD7ED;
+      break;
+    case 12:
+      context->Intermediate_Hash[0] = 0x8058763a;
+      context->Intermediate_Hash[1] = 0xf97d4e0e;
+      context->Intermediate_Hash[2] = 0x865a9762;
+      context->Intermediate_Hash[3] = 0x8a3d920d;
+      context->Intermediate_Hash[4] = 0x08995b2c;
+      break;
   }
 
   context->Length_Low = 512;
@@ -406,28 +425,42 @@ int XKSHA1::HMAC1Reset(int version, SHA1Context *context)
   return shaSuccess;
 }
 
-int XKSHA1::HMAC2Reset(int version, SHA1Context *context)
+int XKSHA1::HMAC2Reset(int version,SHA1Context *context)
 {
   SHA1Reset(context);
-  if (version == 10)
+  switch (version)
   {
-    context->Intermediate_Hash[0] = 0x76441D41;
-    context->Intermediate_Hash[1] = 0x4DE82659;
-    context->Intermediate_Hash[2] = 0x2E8EF85E;
-    context->Intermediate_Hash[3] = 0xB256FACA;
-    context->Intermediate_Hash[4] = 0xC4FE2DE8;
+    case 9:
+      context->Intermediate_Hash[0] = 0x5D7A9C6B;
+      context->Intermediate_Hash[1] = 0xE1922BEB;
+      context->Intermediate_Hash[2] = 0xB82CCDBC;
+      context->Intermediate_Hash[3] = 0x3137AB34;
+      context->Intermediate_Hash[4] = 0x486B52B3;
+      break;
+    case 10:
+      context->Intermediate_Hash[0] = 0x76441D41;
+      context->Intermediate_Hash[1] = 0x4DE82659;
+      context->Intermediate_Hash[2] = 0x2E8EF85E;
+      context->Intermediate_Hash[3] = 0xB256FACA;
+      context->Intermediate_Hash[4] = 0xC4FE2DE8;
+      break;
+    case 11:
+      context->Intermediate_Hash[0] = 0x9B49BED3;
+      context->Intermediate_Hash[1] = 0x84B430FC;
+      context->Intermediate_Hash[2] = 0x6B8749CD;
+      context->Intermediate_Hash[3] = 0xEBFE5FE5;
+      context->Intermediate_Hash[4] = 0xD96E7393;
+      break;
+    case 12:
+      context->Intermediate_Hash[0] = 0x01075307;
+      context->Intermediate_Hash[1] = 0xa2f1e037;
+      context->Intermediate_Hash[2] = 0x1186eeea;
+      context->Intermediate_Hash[3] = 0x88da9992;
+      context->Intermediate_Hash[4] = 0x168a5609;
+      break;
   }
-  if (version == 11)
-  {
-    context->Intermediate_Hash[0] = 0x9B49BED3;
-    context->Intermediate_Hash[1] = 0x84B430FC;
-    context->Intermediate_Hash[2] = 0x6B8749CD;
-    context->Intermediate_Hash[3] = 0xEBFE5FE5;
-    context->Intermediate_Hash[4] = 0xD96E7393;
-  }
-  context->Length_Low = 512;
+  context->Length_Low  = 512;
   return shaSuccess;
-
 }
 
 

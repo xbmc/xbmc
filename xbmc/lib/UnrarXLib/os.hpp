@@ -27,7 +27,10 @@
 
 //#define STRICT
 //#define WINVER 0x0400
+#if _WIN32_WINNT < 0x0300
+#undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0300
+#endif
 
 #define WIN32_LEAN_AND_MEAN
 

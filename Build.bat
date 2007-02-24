@@ -28,7 +28,6 @@ rem	CONFIG START
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
 	set XBE=release\default.xbe
-	rem set XBE=Debug\default.xbe
 	set XBE_PATCH=xbepatch.exe
 	set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
