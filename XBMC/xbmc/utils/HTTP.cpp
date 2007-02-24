@@ -904,8 +904,10 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     {
     case 302:
       // 302 Found - auto redirect if this is a GET
-      CanHandle = !stricmp(verb, "GET");
-      break;
+      //Post redirect has to work for scrapers
+      //CanHandle = !stricmp(verb, "GET");
+      CanHandle = true;
+      break; 
     case 303:
       // 303 See Other - perform GET on the new resource
       verb = "GET";
