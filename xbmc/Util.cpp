@@ -3228,7 +3228,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("runscript"))
   {
-    g_pythonParser.evalFile(parameter.c_str());
+    std::vector<CStdString> params;
+    StringUtils::SplitString(strParameterCaseIntact,",",params);
+    if (params.size() > 0)  // we need to construct arguments to pass to python
+    {
+      unsigned int argc = params.size();
+      char ** argv = new char*[argc];
+
+      std::vector<CStdString> path;
+      //split the path up to find the filename
+      StringUtils::SplitString(params[0],"\\",path); 
+      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
+
+      for(unsigned int i = 1; i < argc; i++)
+        argv[i] = (char*)params[i].c_str();
+
+      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+      delete argv;
+    }
+    else
+      g_pythonParser.evalFile(parameter.c_str());
   }
   else if (execute.Equals("resolution"))
   {
