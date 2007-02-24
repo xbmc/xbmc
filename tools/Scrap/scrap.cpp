@@ -31,7 +31,7 @@ void Tokenize(const string& str, vector<string>& tokens, const string& delimiter
     pos = str.find_first_of(delimiters, lastPos);
   }
 }
-void get_url(const CStdString& strFilename,const CScraperUrl& scrUrl)
+void get_url(const CStdString& strFilename,CScraperUrl& scrUrl)
 {
   CURL *curl;
   curl = curl_easy_init();
@@ -43,14 +43,15 @@ void get_url(const CStdString& strFilename,const CScraperUrl& scrUrl)
   
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, TRUE);
   curl_easy_setopt(curl, CURLOPT_MAXREDIRS, TRUE); 
+
   if(scrUrl.m_post)
   {
     vector<string> vecUrl;
     Tokenize(scrUrl.m_url, vecUrl,"?");
-
+    scrUrl.ParseString(vecUrl.at(0));
     struct curl_httppost *formpost=NULL;
     struct curl_httppost *lastptr=NULL;
-    
+
     vector<string> vecOptions;
     Tokenize(vecUrl.at(1), vecOptions,";&");
 
@@ -58,15 +59,13 @@ void get_url(const CStdString& strFilename,const CScraperUrl& scrUrl)
     {
       vector<string> vecOption;
       Tokenize(vecOptions.at(i), vecOption,"=");
-      curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, vecOption.at(0).c_str(), CURLFORM_COPYCONTENTS, vecOption.at(1).c_str(), CURLFORM_END);
+      string strName = vecOption.at(0);
+      string strValue = vecOption.at(1);
+      curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, strName.c_str(), CURLFORM_COPYCONTENTS, strValue.c_str(), CURLFORM_END);
     }
     curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-    curl_easy_setopt(curl, CURLOPT_URL, vecUrl.at(0).c_str());
-    
-    
   }
-  else
-    curl_easy_setopt(curl, CURLOPT_URL, scrUrl.m_url.c_str());
+  curl_easy_setopt(curl, CURLOPT_URL, scrUrl.m_url.c_str());
 	curl_easy_perform(curl);
   fclose(f);
 

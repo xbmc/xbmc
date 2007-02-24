@@ -1,4 +1,4 @@
-void get_url(const CStdString&,const CScraperUrl&);
+void get_url(const CStdString&,CScraperUrl&);
 
 class Scraper
 {
