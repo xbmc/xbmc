@@ -1,14 +1,14 @@
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:		**
+**      BROUGHT TO YOU BY:      **
 **********************************
 **********************************
-**								**
-**		  [TEAM ASSEMBLY]		**
-**								**
-**		www.team-assembly.com	**
-**								**
+**                              **
+**       [TEAM ASSEMBLY]        **
+**                              **
+**     www.team-assembly.com    **
+**                              **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -82,8 +82,15 @@ Reason: Prepared for Public Release
 
 */
 #pragma once
-#pragma message ("Compiling for XBOX: " __FILE__)
-#include <xtl.h>
+#if defined (_WINDOWS)
+	#pragma message ("Compiling for WINDOWS: " __FILE__)
+//	#include <afxwin.h>         // MFC core and standard components
+#elif defined (_XBOX)
+	#pragma message ("Compiling for XBOX: " __FILE__)
+	#include <xtl.h>
+#else
+	#error ERR: Have to Define _WINDOWS or _XBOX !!
+#endif
 
 //S.M.A.R.T IDENTIFIY OFFSETS
 //CUSTOM S.M.A.R.T READ Values Offsets
@@ -160,6 +167,9 @@ Reason: Prepared for Public Release
 #define HDD_SECURITY_STATUS_OFFSET		0x100	// 256
 #define HDD_RESERVED_5_OFFSET			0x140	// 320
 
+#define HDD_FIRMWARE_LENGTH 0x08
+#define HDD_SERIAL_LENGTH   0x14
+#define HDD_MODEL_LENGTH    0x28
 
 //IDE Port Addresses
 #define IDE_PRIMARY_PORT				0x01F0
@@ -310,26 +320,29 @@ public:
 //Right now we use Standard IOCTL stuff for Windows and direct 
 //port access for XBOX..  later version will include Windows Driver 
 //for direct port access in Windows so we can lock/unlock.  
+#if defined (_WINDOWS)
+	static BOOL	SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite);
+#elif defined (_XBOX)
 	static BOOL	SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite);
+#endif
 
-	static BOOL	SendATACommandOP(WORD IDEPort, LPOP_IDE_REG OP_IDE_REG, UCHAR ReadWrite);
-	static BOOL	SendATACommandIP(WORD IDEPort, LPIP_IDE_REG IP_IDE_REG, UCHAR ReadWrite);
+	static BYTE GetHddSmartTemp();
+	static BYTE GetHddSmartTemp(UCHAR* IDEData);
 
 	//Helper Functions to Parse Data from ATA IDENTIFY Command
-	static void	GetIDEModel(UCHAR* IDEData, LPSTR ModelString, LPDWORD StrLen);
-	static void	GetIDESerial(UCHAR* IDEData, LPSTR SerialString, LPDWORD StrLen);
-	static void	GetIDEFirmWare(UCHAR* IDEData, LPSTR SerialString, LPDWORD StrLen);
+	static void	GetIDEModel(UCHAR* IDEData, LPSTR ModelString);
+	static void	GetIDESerial(UCHAR* IDEData, LPSTR SerialString);
+	static void	GetIDEFirmWare(UCHAR* IDEData, LPSTR FirmwareString);
 	static WORD	GetIDESecurityStatus(UCHAR* IDEData);
 	
 	static WORD	GetIDENumOfCyls(UCHAR* IDEData);
 	static WORD	GetIDENumOfHeads(UCHAR* IDEData);
 	static WORD	GetIDESecPerTrack(UCHAR* IDEData);
-	static WORD GetATABefehle(UCHAR* IDEData, BYTE IDEOffset);
 
-	static int	CleanATAData(unsigned char *dst, unsigned char *src, int len);
+	static void	CleanATAData(unsigned char *dst, unsigned char *src, int len);
+	static void CleanATAData(unsigned char *dst, unsigned char *src, int len, BOOL bClean);
 
 	//Given a XBOX HDDKey and ATA Identify data structure, this function calucates
 	//Password the xbox will use when trying to unlock a drive..
 	static void	GenerateHDDPwd(UCHAR* HDDKey, UCHAR* IDEData, UCHAR* HDDPass);
-	static BYTE	GetHddSmartTemp(UCHAR* IDEData);
 };

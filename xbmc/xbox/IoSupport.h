@@ -94,46 +94,46 @@ public:
   CIoSupport();
   CIoSupport(CIoSupport& other);
   virtual ~CIoSupport();
-  VOID GetXbePath(char* szDest);
 
-  HRESULT Mount(const char* szDrive, char* szDevice);
-  HRESULT Unmount(const char* szDrive);
+  static VOID GetXbePath(char* szDest);
 
-  HRESULT Remount(const char* szDrive, char* szDevice);
-  HRESULT Remap(char* szMapping);
+  static HRESULT Mount(const char* szDrive, char* szDevice);
+  static HRESULT Unmount(const char* szDrive);
 
-  DWORD GetTrayState();
-  HRESULT EjectTray();
-  HRESULT CloseTray();
+  static HRESULT Remount(const char* szDrive, char* szDevice);
+  static HRESULT Remap(char* szMapping);
 
-  string GetDrive(const string& szPartition);
-  VOID GetPartition(LPCSTR strFilename, LPSTR strPartition);
-  VOID RemountDrive(LPCSTR szDrive);
+  static DWORD GetTrayState();
+  static HRESULT EjectTray();
+  static HRESULT CloseTray();
+
+  static string GetDrive(const string& szPartition);
+  static VOID GetPartition(LPCSTR strFilename, LPSTR strPartition);
+  static VOID RemountDrive(LPCSTR szDrive);
+
   VOID UpdateDvdrom();
   HANDLE OpenCDROM();
   INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   VOID CloseCDROM(HANDLE hDevice);
-  BOOL IsDebug();
-
+  
+  static BOOL IsDebug();
   static HRESULT Shutdown();
   static VOID SpindownHarddisk(bool bSpinDown=true);
-  bool IsDrivePresent( const char* cDrive );
+  static bool IsDrivePresent( const char* cDrive );
 
 protected:
   static VOID IdexWritePortUchar(USHORT port, UCHAR data);
   static UCHAR IdexReadPortUchar(USHORT port);
-  unsigned int read_active_partition_table(PARTITION_TABLE *p_table);
-  bool DriveExists(const char* szDrive);
-  bool PartitionExists(const char* szPartition);
+  static unsigned int read_active_partition_table(PARTITION_TABLE *p_table);
+  static bool DriveExists(const char* szDrive);
+  static bool PartitionExists(const char* szPartition);
+
 private:
   static PARTITION_TABLE* m_partitionTable;
   HGLOBAL m_gmXferBuffer;
   PVOID m_rawXferBuffer;
-  DWORD m_dwTrayState;
-  DWORD m_dwTrayCount;
-  DWORD m_dwLastTrayState;
 };
 
 #endif // !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
