@@ -6,6 +6,8 @@
 #include "../../utils/SystemInfo.h"
 #include "../../memutil.h"
 
+#include <conio.h>
+
 /*
 HD44780 or equivalent
 Character located  1   2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 
@@ -61,35 +63,6 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 
 char AnimIndex=0;
 CSysInfo g_Sysinfo;
-
-//*************************************************************************************************************
-static void outb(unsigned short port, unsigned char data)
-{
-  __asm
-  {
-    nop
-    mov dx, port
-    nop
-    mov al, data
-    nop
-    out dx,al
-    nop
-    nop
-  }
-}
-
-//*************************************************************************************************************
-static unsigned char inb(unsigned short port)
-{
-  unsigned char data;
-  __asm
-  {
-    mov dx, port
-    in al, dx
-    mov data,al
-  }
-  return data;
-}
 
 //*************************************************************************************************************
 CSmartXXLCD::CSmartXXLCD()
@@ -203,9 +176,9 @@ void CSmartXXLCD::DisplayOut(unsigned char data, unsigned char command)
 	odatlow |= (data << 4) & 0x50;	 // outD2 => PortD6 => DisplayD6  //outD0 => PortD4 => DisplayD4
 	
 	//outbut higher nibble
-	outb(DISP_O, (command & DISPCON_RS) | odathigh);					    // set the RS if needed
-	outb(DISP_O,((command & DISPCON_RS) | DISPCON_E | odathigh));	// set E
-	outb(DISP_O,((command & DISPCON_RS) | odathigh));			        // reset E
+	_outp(DISP_O, (command & DISPCON_RS) | odathigh);					    // set the RS if needed
+	_outp(DISP_O,((command & DISPCON_RS) | DISPCON_E | odathigh));	// set E
+	_outp(DISP_O,((command & DISPCON_RS) | odathigh));			        // reset E
 
 
 	if ((command & INI) == 0) 
@@ -213,9 +186,9 @@ void CSmartXXLCD::DisplayOut(unsigned char data, unsigned char command)
     // if it's not the init command, do second nibble
 		//wait_us(DISP_CTR_TIME * 21);
 		//outbut lower nibble
-		outb(DISP_O,((command & DISPCON_RS) | odatlow));		          // set E
-		outb(DISP_O,((command & DISPCON_RS) | DISPCON_E | odatlow));	// set Data
-		outb(DISP_O,((command & DISPCON_RS) | odatlow));		          // reset E
+		_outp(DISP_O,((command & DISPCON_RS) | odatlow));		          // set E
+		_outp(DISP_O,((command & DISPCON_RS) | DISPCON_E | odatlow));	// set Data
+		_outp(DISP_O,((command & DISPCON_RS) | odatlow));		          // reset E
 		if ((data & 0xFC) == 0) 
     {						                          
       // if command was a Clear Display
@@ -408,21 +381,21 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
   }
   else //if (g_guiSettings.GetInt("lcd.type")==LCD_TYPE_LCD_HD44780)
   {
-    if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX V3"))
+    if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3"))
     {
       float fBackLight=((float)level)/100.0f;
       fBackLight*=127.0f;
       int iNewLevel=(int)fBackLight;
       if (iNewLevel==63) iNewLevel=64;
-      outb(DISP_O_LIGHT, iNewLevel&127);
+      _outp(DISP_O_LIGHT, iNewLevel&127);
     }
-    else if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
+    else if (CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
     {
       float fBackLight=((float)level)/100.0f;
       fBackLight*=127.0f;
       int iNewLevel=(int)fBackLight;
       if (iNewLevel==63) iNewLevel=64;
-      outb(DISP_O_LIGHT, iNewLevel&127);
+      _outp(DISP_O_LIGHT, iNewLevel&127);
     }
     else
     {
@@ -430,7 +403,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
       fBackLight*=63.0f;
       int iNewLevel=(int)fBackLight;
       if (iNewLevel==31) iNewLevel=32;
-      outb(DISP_O_LIGHT, iNewLevel&63);
+      _outp(DISP_O_LIGHT, iNewLevel&63);
     }
   }
 }
@@ -445,7 +418,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 
   float fBackLight=((float)level)/100.0f;
   
-  if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
+  if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
   {   
     if (level<0 || level>99) level=99;
     level = (99-level);
@@ -454,9 +427,9 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
     int iNewLevel=(int)fBackLight;
     if (iNewLevel==42) iNewLevel=43;
 
-    outb(0xF701, iNewLevel&127|128);
+    _outp(0xF701, iNewLevel&127|128);
  	}
-  else if ( g_Sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
+  else if ( CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
   {
     if (level<0 || level>99) level=99;
     level = (99-level);
@@ -465,7 +438,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
     int iNewLevel=(int)fBackLight;
     if (iNewLevel==42) iNewLevel=43;
     
-    outb(DISP_O_CONTRAST, iNewLevel&127|128);
+    _outp(DISP_O_CONTRAST, iNewLevel&127|128);
   }
   else 
   {
@@ -473,7 +446,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
     int iNewLevel=(int)fBackLight;
     if (iNewLevel==31) iNewLevel=32;
     
-    outb(DISP_O_CONTRAST, iNewLevel&63);
+    _outp(DISP_O_CONTRAST, iNewLevel&63);
   }
   
 }
@@ -481,7 +454,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 //************************************************************************************************************************
 void CSmartXXLCD::DisplayInit()
 {
-	outb(DISP_O,0);
+	_outp(DISP_O,0);
 	DisplayOut(DISP_FUNCTION_SET | DISP_DL_FLAG, INI);	              // 8-Bit Datalenght if display is already initialized to 4 bit
 	Sleep(5);
   DisplayOut(DISP_FUNCTION_SET | DISP_DL_FLAG, INI);	              // 8-Bit Datalenght if display is already initialized to 4 bit

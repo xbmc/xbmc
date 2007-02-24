@@ -52,7 +52,6 @@ protected:
 	DWORD dwFrameTime;
 	int iSleepTime;
 
-  void outb(unsigned short port, unsigned char data);
 	void getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb);
   bool SetRGBStatus(const CStdString &strStatus);
   
@@ -69,7 +68,7 @@ public:
   bool SetRGBState(const CStdString &strRGB1, const CStdString &strRGB2, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTranTime);
   
   //can used outsite to pass the values directly to the RGB port! 
-  //Don't forget to check if there is a SmartXX V3/OPX! -> g_sysinfo.SmartXXModCHIP()
+  //Don't forget to check if there is a SmartXX V3/OPX! -> CSysInfo::SmartXXModCHIP()
   bool SetRGBLed(int red, int green, int blue, int white);
 
 };
