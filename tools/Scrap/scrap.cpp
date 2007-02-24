@@ -59,8 +59,9 @@ void get_url(const CStdString& strFilename,CScraperUrl& scrUrl)
     {
       vector<string> vecOption;
       Tokenize(vecOptions.at(i), vecOption,"=");
-      string strName = vecOption.at(0);
-      string strValue = vecOption.at(1);
+      CStdString strName = vecOption.at(0);
+      CStdString strValue = vecOption.at(1);
+      strValue.Replace("+"," ");
       curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, strName.c_str(), CURLFORM_COPYCONTENTS, strValue.c_str(), CURLFORM_END);
     }
     curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
