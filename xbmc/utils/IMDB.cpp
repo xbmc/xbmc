@@ -32,11 +32,12 @@ CIMDB::~CIMDB()
 bool CIMDB::Get(CScraperUrl& scrURL, string& strHTML)
 {
   CURL url(scrURL.m_url);
-  m_http.SetReferer(scrURL.m_url);
+  m_http.SetReferer(scrURL.m_spoof);
 
   if(scrURL.m_post)
   {
     CStdString strOptions = url.GetOptions();
+    strOptions = strOptions.substr(1);
     url.SetOptions("");
     CStdString strUrl;
     url.GetURL(strUrl);
@@ -45,9 +46,9 @@ bool CIMDB::Get(CScraperUrl& scrURL, string& strHTML)
     if (!m_http.Post(strUrl, strOptions, strHTML))
       return false;
   }
-
-  if (!m_http.Get(scrURL.m_url, strHTML))
-    return false;
+  else 
+    if (!m_http.Get(scrURL.m_url, strHTML))
+      return false;
   
   return true;
 }
