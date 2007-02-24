@@ -49,7 +49,7 @@ Reason: Prepared for Public Release
 #pragma once
 #if defined (_WINDOWS)
  #pragma message ("Compiling for WINDOWS: " __FILE__)
- #include <afxwin.h>         // MFC core and standard components
+// #include <afxwin.h>         // MFC core and standard components
 #elif defined (_XBOX)
  #pragma message ("Compiling for XBOX: " __FILE__)
  #include <xtl.h>

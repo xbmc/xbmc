@@ -447,15 +447,14 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_Eject)
       {
-        CIoSupport TrayIO;
-        if (TrayIO.GetTrayState() == TRAY_OPEN)
+        if (CIoSupport::GetTrayState() == TRAY_OPEN)
         {
-          TrayIO.CloseTray();
+          CIoSupport::CloseTray();
           return true;
         }
         else
         {
-          TrayIO.EjectTray();
+          CIoSupport::EjectTray();
           return true;
         }
       }

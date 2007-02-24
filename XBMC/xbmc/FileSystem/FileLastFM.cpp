@@ -2,7 +2,7 @@
 #include "FileLastFM.h"
 #include "../Util.h"
 #include "../utils/GUIInfoManager.h"
-#include "../lib/libscrobbler/md5.h"
+#include "../utils/md5.h"
 #include "../Application.h"
 
 namespace XFILE
@@ -95,17 +95,16 @@ bool CFileLastFM::HandShake()
     CLog::Log(LOGERROR, "Last.fm stream selected but no username or password set.");
     return false;
   }
-  md5_state_t md5state;
-  unsigned char md5pword[16];
-  md5_init(&md5state);
-  md5_append(&md5state, (unsigned const char *)strPassword.c_str(), (int)strPassword.size());
-  md5_close(&md5state, md5pword);
+  MD5_CTX md5state;
+  MD5Init(&md5state);
+  MD5Update(&md5state, (unsigned char *)strPassword.c_str(), (int)strPassword.size());
+  MD5Final(&md5state);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
   for (int j = 0;j < 16;j++) 
   {
     char a[3];
-    sprintf(a, "%02x", md5pword[j]);
+    sprintf(a, "%02x", md5state.digest[j]);
     tmp[2*j] = a[0];
     tmp[2*j+1] = a[1];
   }

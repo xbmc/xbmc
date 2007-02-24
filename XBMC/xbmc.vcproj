@@ -285,15 +285,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
-				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS;LTCG"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"/>
@@ -301,9 +301,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib dsound.lib dmusicltcg.lib xactengltcg.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xkbd.lib"
+				AdditionalDependencies="xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib dsound.lib xboxkrnl.lib xonline.lib xkbd.lib xvoice.lib xbdm.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libc"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -340,7 +341,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
@@ -358,7 +359,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib xkbdd.lib"
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib xkbdd.lib xvoiced.lib xbdm.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc"
@@ -801,9 +802,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIPassword.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\HddSmart.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\utils\HTMLTable.cpp">
 				</File>
 				<File
@@ -841,6 +839,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\log.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\md5.c">
 				</File>
 				<File
 					RelativePath=".\xbmc\MediaManager.cpp">
@@ -2458,9 +2459,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\HDDirectory.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\HddSmart.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\HTMLTable.h">
 			</File>
 			<File
@@ -2537,6 +2535,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\log.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\md5.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MediaManager.h">
@@ -4169,6 +4170,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 			</Filter>
 			<Filter
+				Name="libScrobbler"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.h">
+				</File>
+			</Filter>
+			<Filter
 				Name="sqlite"
 				Filter="">
 				<File
@@ -4191,22 +4202,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
-				</File>
-			</Filter>
-			<Filter
-				Name="libScrobbler"
-				Filter="">
-				<File
-					RelativePath=".\xbmc\lib\libscrobbler\md5.c">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\md5.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.h">
 				</File>
 			</Filter>
 		</Filter>

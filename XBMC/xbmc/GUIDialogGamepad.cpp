@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "guidialogGamepad.h"
 #include "util.h"
-#include "lib/libscrobbler/md5.h"
+#include "utils/md5.h"
 #include "xbox/xkgeneral.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
@@ -63,13 +63,12 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     m_bConfirmed = false;
     m_bCanceled = false;
 
-    md5_state_t md5state;
-    unsigned char md5pword[16];
+    MD5_CTX md5state;
     char md5pword2[64];
-    md5_init(&md5state);
-    md5_append(&md5state, (unsigned const char *)m_strUserInput.c_str(), (int)m_strUserInput.size());
-    md5_close(&md5state, md5pword);
-    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+    MD5Init(&md5state);
+    MD5Update(&md5state, (unsigned char *)m_strUserInput.c_str(), (int)m_strUserInput.size());
+    MD5Final(&md5state);
+    XKGeneral::BytesToHexStr(md5state.digest,16,md5pword2);
 
     if (m_strPassword != md5pword2)
     {
@@ -259,13 +258,12 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
 
   if (bGetUserInput && !pDialog->IsCanceled())
   {
-    md5_state_t md5state;
-    unsigned char md5pword[16];
+    MD5_CTX md5state;
     char md5pword2[64];
-    md5_init(&md5state);
-    md5_append(&md5state, (unsigned const char *)pDialog->m_strUserInput.c_str(), (int)pDialog->m_strUserInput.size());
-    md5_close(&md5state, md5pword);
-    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+    MD5Init(&md5state);
+    MD5Update(&md5state, (unsigned char *)pDialog->m_strUserInput.c_str(), (int)pDialog->m_strUserInput.size());
+    MD5Final(&md5state);
+    XKGeneral::BytesToHexStr(md5state.digest,16,md5pword2);
     strToVerify = md5pword2;
     pDialog->m_strUserInput = "";
   }
