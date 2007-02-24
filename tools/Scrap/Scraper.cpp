@@ -107,7 +107,8 @@ int Scraper::CustomFunctions(const CStdString& strFilename)
     {
       //wirte url
       strFilenameHtml.Format("%s.html",szFunction);
-      get_url(strFilenameHtml.c_str(),url->FirstChild()->Value());
+      CScraperUrl srcUrl(url);
+      get_url(strFilenameHtml.c_str(),srcUrl);
 
       //buffer 1 contents of results.html
       SetBuffer(1,readFile(strFilenameHtml.c_str()) );
@@ -126,23 +127,12 @@ bool Scraper::PrepareParsing(const CStdString& function)
     SetBuffer(1,PrepareSearchString(s_parser.m_param[0]));
   }
   else if(strcmp(function.c_str(),"GetSearchResults") == 0)
-  {
-    /*TiXmlDocument doc("url.xml");
-    doc.LoadFile();
-	  if (!doc.RootElement())
-    {
-      cout << "Error: Unable to parse url.xml" <<  endl;
-      return false;
-    }
-    TiXmlHandle docHandle( &doc );
-    TiXmlElement *link = docHandle.FirstChild("url").Element();
-    cout << "Downloading: " << link->FirstChild()->Value() <<  endl;
-    get_url("results.html", link->FirstChild()->Value() );*/
-    
-    cout << "Downloading: " << s_result.c_str()  <<  endl;
-    get_url("results.html", s_result.c_str() );
+  {  
+    CScraperUrl srcUrl(s_result);
+    cout << "Downloading: " << srcUrl.m_url.c_str()  <<  endl;
+    get_url("results.html", srcUrl );
     SetBuffer(1,readFile("results.html"));
-    SetBuffer(2,s_result.c_str());
+    SetBuffer(2,srcUrl.m_url.c_str());
   }
   else if(strcmp(function.c_str(),"GetDetails") == 0) 
   {
@@ -162,10 +152,10 @@ bool Scraper::PrepareParsing(const CStdString& function)
     do
       {
         i++;
-        
+        CScraperUrl srcUrl(link);
         strFilename.Format("details.%i.html",i);
-        cout << "Details URL " << i << ":"<< link->FirstChild()->Value() << endl;
-        get_url(strFilename.c_str(),link->FirstChild()->Value() );
+        cout << "Details URL " << i << ":"<< srcUrl.m_url << endl;
+        get_url(strFilename.c_str(),srcUrl );
         SetBuffer(i,readFile(strFilename.c_str()));
       }  
     while( link = link->NextSiblingElement("url") );
@@ -207,4 +197,5 @@ int Scraper::Parse(const CStdString& function)
     WriteResult(strFilename.c_str());
     CustomFunctions(strFilename.c_str());
   }
+  return 0;
 } 

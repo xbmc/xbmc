@@ -6,6 +6,8 @@
 #include <curl/curl.h>
 #include "ScraperParser.h"
 #include "Scraper.h"
+//#include "../../xbmc/utils/HTTP.h"
+
 
 using namespace std;
 
@@ -14,19 +16,49 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
   int written = fwrite(ptr, size, nmemb, (FILE *)stream);
   return written;
 }
-void get_url(CStdString strFilename, CStdString strUrl)
+void get_url(const CStdString& strFilename,const CScraperUrl& scrUrl)
 {
   CURL *curl;
   curl = curl_easy_init();
   
   FILE* f = fopen(strFilename.c_str(),"w");
-
+  curl_easy_setopt(curl, CURLOPT_REFERER, scrUrl.m_spoof.c_str());
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA ,f);
-  curl_easy_setopt(curl, CURLOPT_URL, strUrl.c_str());
+  
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, TRUE);
   curl_easy_setopt(curl, CURLOPT_MAXREDIRS, TRUE); 
-  
+  if(scrUrl.m_post)
+  {
+    int iOptions = scrUrl.m_url.find_first_of("?;#");
+    CStdString strUrl = scrUrl.m_url.Mid(0,iOptions);
+    CStdString strOptions = scrUrl.m_url.Mid(iOptions + 1);
+    
+    struct curl_httppost *formpost=NULL;
+    struct curl_httppost *lastptr=NULL;
+    
+    CStdString strOption;
+    while (iOptions = strOptions.find_first_of(";&"))
+    {
+      if(iOptions == -1)
+        strOption = strOptions;
+      else 
+        strOption = strOptions.Mid(0,iOptions);
+
+      int iOption = strOptions.find_first_of("=");
+      curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, strOption.Mid(0,iOption).c_str(), CURLFORM_COPYCONTENTS, strOption.Mid(iOption + 1).c_str(), CURLFORM_END);
+      strOptions =  strOptions.Mid(iOptions + 1);
+
+      if(iOptions == -1)
+        break;
+    }
+
+    curl_easy_setopt(curl, CURLOPT_URL, strUrl.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+    
+  }
+  else
+    curl_easy_setopt(curl, CURLOPT_URL, scrUrl.m_url.c_str());
 	curl_easy_perform(curl);
   fclose(f);
 
