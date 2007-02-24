@@ -6,6 +6,8 @@
 #include <curl/curl.h>
 #include "ScraperParser.h"
 #include "Scraper.h"
+
+#include <vector>
 //#include "../../xbmc/utils/HTTP.h"
 
 
@@ -15,6 +17,19 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
   int written = fwrite(ptr, size, nmemb, (FILE *)stream);
   return written;
+}
+
+void Tokenize(const string& str, vector<string>& tokens, const string& delimiters = " ")
+{
+  string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+  string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+  while (string::npos != pos || string::npos != lastPos)
+  {
+    tokens.push_back(str.substr(lastPos, pos - lastPos));
+    lastPos = str.find_first_not_of(delimiters, pos);
+    pos = str.find_first_of(delimiters, lastPos);
+  }
 }
 void get_url(const CStdString& strFilename,const CScraperUrl& scrUrl)
 {
@@ -30,31 +45,24 @@ void get_url(const CStdString& strFilename,const CScraperUrl& scrUrl)
   curl_easy_setopt(curl, CURLOPT_MAXREDIRS, TRUE); 
   if(scrUrl.m_post)
   {
-    int iOptions = scrUrl.m_url.find_first_of("?;#");
-    CStdString strUrl = scrUrl.m_url.Mid(0,iOptions);
-    CStdString strOptions = scrUrl.m_url.Mid(iOptions + 1);
-    
+    vector<string> vecUrl;
+    Tokenize(scrUrl.m_url, vecUrl,"?");
+
     struct curl_httppost *formpost=NULL;
     struct curl_httppost *lastptr=NULL;
     
-    CStdString strOption;
-    while (iOptions = strOptions.find_first_of(";&"))
+    vector<string> vecOptions;
+    Tokenize(vecUrl.at(1), vecOptions,";&");
+
+    for(int i=0;i < vecOptions.size(); i++)
     {
-      if(iOptions == -1)
-        strOption = strOptions;
-      else 
-        strOption = strOptions.Mid(0,iOptions);
-
-      int iOption = strOptions.find_first_of("=");
-      curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, strOption.Mid(0,iOption).c_str(), CURLFORM_COPYCONTENTS, strOption.Mid(iOption + 1).c_str(), CURLFORM_END);
-      strOptions =  strOptions.Mid(iOptions + 1);
-
-      if(iOptions == -1)
-        break;
+      vector<string> vecOption;
+      Tokenize(vecOptions.at(i), vecOption,"=");
+      curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, vecOption.at(0).c_str(), CURLFORM_COPYCONTENTS, vecOption.at(1).c_str(), CURLFORM_END);
     }
-
-    curl_easy_setopt(curl, CURLOPT_URL, strUrl.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+    curl_easy_setopt(curl, CURLOPT_URL, vecUrl.at(0).c_str());
+    
     
   }
   else
