@@ -2469,6 +2469,9 @@
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controllist.cpp">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlprogress.cpp">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlspin.cpp">
 					</File>
 					<File

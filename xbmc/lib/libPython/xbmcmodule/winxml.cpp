@@ -2,6 +2,7 @@
 #include "winxml.h"
 #include "..\python\python.h"
 #include "pyutil.h"
+#include "GUIPythonWindowXML.h"
 #include "..\..\..\application.h"
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
@@ -54,13 +55,95 @@ namespace PYXBMC
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }
+        return (PyObject*)self;
+      }
+  /*
+   * ControlList_AddItem
+   * (string label) / (ListItem)
+   * ListItem is added to vector
+   * For a string we create a new ListItem and add it to the vector
+   */
+  PyDoc_STRVAR(addItem__doc__,
+    "addItem(item[,refreshList]) -- Add a new item to this control list.\n"
+    "\n"
+    "item               : string, unicode or ListItem - item to add.\n"
+    "refreshList        : [optional] true - refreshes the gui/list after add\n"
+    "\n"
+    "example:\n"
+    "  - cList.addItem('Reboot XBMC',true)\n");
 
-    return (PyObject*)self;
+  PyObject* WindowXML_AddItem(WindowXML *self, PyObject *args)
+  {
+    PyObject *pObject;
+    string strText;
+    ListItem* pListItem = NULL;
+    bool bRefresh = true;
+    if (!PyArg_ParseTuple(args, "O|b", &pObject,&bRefresh))  return NULL;
+    if (ListItem_CheckExact(pObject))
+    {
+      // object is a listitem
+      pListItem = (ListItem*)pObject;
+      Py_INCREF(pListItem);
+    }
+    else
+    {
+      // object is probably a text item
+      if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
+      // object is a unicode string now, create a new ListItem
+      
+      pListItem = ListItem_FromString(strText);
+    }
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    // Tells the window to add the item to FileItem vector
+    pwx->AddItem((CFileItem *)pListItem->item,bRefresh);
+
+    // create message
+    //CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iWindowId, self->iWindowId);
+    //msg.SetLPVOID(pListItem->item);
+
+    // send message
+    PyGUILock();
+    //if (self->pWindow) self->pWindow->OnMessage(msg);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
   }
+  PyDoc_STRVAR(RefreshList__doc__,
+    "refreshList() -- Updates the Windows Lists (any new items will be shown once this command is ran.\n"
+    "\n"
+    "example:\n"
+    "  - self.refrestList()\n");
 
+  PyObject* WindowXML_RefreshList(WindowXML *self, PyObject *args)
+  {
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    // Tells the window to add the item to FileItem vector
+    pwx->RefreshList();
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  PyDoc_STRVAR(ClearList__doc__,
+    "clearList() -- Clear the Window List\n"
+    "\n"
+    "example:\n"
+    "  - self.clearList()\n");
+
+  PyObject* WindowXML_ClearList(WindowXML *self, PyObject *args)
+  {
+    bool bRefresh = true;
+    if (!PyArg_ParseTuple(args, "|b",&bRefresh))  return NULL;
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    pwx->ClearList(bRefresh);
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
   PyDoc_STRVAR(windowXML__doc__,
     "WindowXML class.\n");
   PyMethodDef WindowXML_methods[] = {
+    {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
+    {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
+    {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, ClearList__doc__},
     {NULL, NULL, 0, NULL}
   };
 // Restore code and data sections to normal.
