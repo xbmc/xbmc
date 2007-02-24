@@ -1,14 +1,14 @@
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:  **
+**      BROUGHT TO YOU BY:      **
 **********************************
 **********************************
-**        **
-**    [TEAM ASSEMBLY]  **
-**        **
-**  www.team-assembly.com **
-**        **
+**                              **
+**       [TEAM ASSEMBLY]        **
+**                              **
+**     www.team-assembly.com    **
+**                              **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ typedef struct _STRING
  USHORT MaximumLength;
  PSTR Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;//, ANSI_STRING, *PANSI_STRING;
- 
+
 //for use with IOCTL
 typedef struct _IO_STATUS_BLOCK {
     union
@@ -87,10 +87,10 @@ typedef struct _IO_STATUS_BLOCK {
         LONG Status;
         LPVOID Pointer;
     };
- 
+
     LPLONG Information;
 } IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
- 
+
 //for use with IOCTL
 typedef struct _OBJECT_ATTRIBUTES
 {
@@ -98,7 +98,7 @@ typedef struct _OBJECT_ATTRIBUTES
     PANSI_STRING ObjectName;
     ULONG   Attributes;
 } OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
-*/ 
+*/
 // APC routine
 //typedef VOID (NTAPI *PIO_APC_ROUTINE) (IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusBlock, IN ULONG Reserved);
 
@@ -217,10 +217,19 @@ extern "C" XBOXAPI LPVOID XepDashboardImagePath;
 extern "C" XBOXAPI LPVOID ObpIoDevicesDirectoryObject;
 extern "C" XBOXAPI LPVOID ExpCdRomBootROMStringBuffer; // IdexCdRomDeviceNameBuffer;
 //extern "C" XBOXAPI LPVOID LaunchDataPage;
-// extern "C" XBOXAPI LPVOID XboxBootFlags;
+//extern "C" XBOXAPI LPVOID XboxBootFlags;
 extern "C" XBOXAPI LPVOID XeImageFileName;
-extern "C" XBOXAPI LPVOID XboxKrnlVersion;
 extern "C" XBOXAPI LPVOID XboxEEPROMKey;
 extern "C" XBOXAPI LPVOID XboxHDKey;
+
+typedef struct _XBOX_KRNL_VERSION {
+	SHORT VersionMajor;
+	SHORT VersionMinor;
+	SHORT Build;
+	SHORT Qfe;
+} XBOX_KRNL_VERSION;
+
+extern "C" XBOX_KRNL_VERSION * XboxKrnlVersion;
+
 
 #endif

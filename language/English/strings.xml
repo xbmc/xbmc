@@ -890,6 +890,8 @@
   <string id="13170">Never</string>
   <string id="13171">Immediately</string>
   <string id="13172">After %i secs</string>
+  <string id="13173">HDD Install Date:</string>
+  <string id="13174">HDD Power Cycle Count:</string>
 
   <string id="13200">Profiles</string>
   <string id="13201">Delete profile '%s'?</string>
@@ -1466,9 +1468,9 @@
   <string id="20184">Rotate using EXIF information</string>
   <string id="20185">Detecting Hardware Values</string>
   <string id="20186">Please Wait</string>
-  <string id="20187">Reading Values from EEPROM</string>
-  <string id="20188">Reading from EEPROM Done</string>
-  <string id="20189">Detecting Done</string>
+  <string id="20187">Backing up EEPROM</string>
+  <string id="20188">Backing up BIOS</string>
+  <string id="20189"></string>
   <string id="20190">Detecting Harddisk Information</string>
   <string id="20191">Detecting HDD Values</string>
   <string id="20192">Detecting HDD Key</string>

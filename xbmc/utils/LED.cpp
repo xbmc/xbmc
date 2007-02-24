@@ -8,6 +8,8 @@ OFF/Green/Red/Orange/Cycle
 #include "SystemInfo.h"
 #include "../xbox/XKUtils.h"
 
+#include <conio.h>
+
 ILEDSmartxxRGB g_iledSmartxxrgb;
 
 void ILED::CLEDControl(int ixLED)
@@ -15,27 +17,27 @@ void ILED::CLEDControl(int ixLED)
   if (ixLED == LED_COLOUR_OFF)
   {
     XKUtils::SetXBOXLEDStatus(0);
-	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_OFF);
+	  //CSysInfo::SmartXXLEDControll(SMARTXX_LED_OFF);
   }
   else if (ixLED == LED_COLOUR_GREEN)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_GREEN | XKUtils::LED_REGISTER_CYCLE3_GREEN);
-	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_BLUE);
+	  //CSysInfo::SmartXXLEDControll(SMARTXX_LED_BLUE);
   }
   else if (ixLED == LED_COLOUR_RED)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_RED | XKUtils::LED_REGISTER_CYCLE2_RED | XKUtils::LED_REGISTER_CYCLE1_RED | XKUtils::LED_REGISTER_CYCLE3_RED);
-	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_RED);
+	  //CSysInfo::SmartXXLEDControll(SMARTXX_LED_RED);
   }
   else if (ixLED == LED_COLOUR_ORANGE)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_ORANGE | XKUtils::LED_REGISTER_CYCLE2_ORANGE | XKUtils::LED_REGISTER_CYCLE1_ORANGE | XKUtils::LED_REGISTER_CYCLE3_ORANGE);
-	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_BLUE_RED);
+	  //CSysInfo::SmartXXLEDControll(SMARTXX_LED_BLUE_RED);
   }
   else if (ixLED == LED_COLOUR_CYCLE)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_ORANGE | XKUtils::LED_REGISTER_CYCLE3_RED);
-	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_CYCLE);
+	  //CSysInfo::SmartXXLEDControll(SMARTXX_LED_CYCLE);
   }
   else if (ixLED == LED_COLOUR_NO_CHANGE) //Default Bios Settings
   {
@@ -66,7 +68,7 @@ ILEDSmartxxRGB::~ILEDSmartxxRGB()
 }
 void ILEDSmartxxRGB::OnStartup()
 {
-  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
+  if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3") || CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
   {
 	  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
 	  CLog::Log(LOGDEBUG,"Starting SmartXX RGB LED thread");
@@ -276,7 +278,7 @@ void ILEDSmartxxRGB::OnExit()
 
 bool ILEDSmartxxRGB::Start()
 {
-  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
+  if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3") || CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
   {
     Create();
     return true;
@@ -292,20 +294,7 @@ bool ILEDSmartxxRGB::IsRunning()
 {
   return (m_ThreadHandle != NULL);
 }
-void ILEDSmartxxRGB::outb(unsigned short port, unsigned char data)
-  {
-    __asm
-    {
-      nop
-      mov dx, port
-      nop
-      mov al, data
-      nop
-      out dx,al
-      nop
-      nop
-    }
-  }
+
 void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb)
 {
 	DWORD red=0,green=0,blue=0,white=0;
@@ -362,16 +351,16 @@ void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &s
 bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)
 {
   strLastStatus = strCurrentStatus;
-	strCurrentStatus = strStatus;
-	return true;
+  strCurrentStatus = strStatus;
+  return true;
 }
 
 bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue, int white)
 {
-	outb(SMARTXX_PWD_RED,red);
-	outb(SMARTXX_PWD_GREEN,green); 
-	outb(SMARTXX_PWD_BLUE,blue);
-  outb(SMARTXX_PWM_STATUS,white);
+  _outp(SMARTXX_PWD_RED,red);
+  _outp(SMARTXX_PWD_GREEN,green); 
+  _outp(SMARTXX_PWD_BLUE,blue);
+  _outp(SMARTXX_PWM_STATUS,white);
   return true;
 }
 
@@ -385,28 +374,28 @@ bool ILEDSmartxxRGB::SetRGBState(const CStdString &strRGB1, const CStdString &st
 {
   // we have a new request: start reset
   strCurrentStatus = "NULL";
-	strLastStatus = "NULL";
+  strLastStatus = "NULL";
   strLastTransition = "NULL";
   s_RGBs.strTransition = "NULL";
-	s_CurRGB.red = 0;
-	s_CurRGB.green = 0;
-	s_CurRGB.blue = 0;
+  s_CurRGB.red = 0;
+  s_CurRGB.green = 0;
+  s_CurRGB.blue = 0;
   s_CurRGB.white = 0;
-	iSleepTime = 0;
+  iSleepTime = 0;
   dwFrameTime = 0;
   dwLastTime = timeGetTime();
   // end reset
 
   getRGBValues(strRGB1,strRGB2,strWhiteA,strWhiteB,&s_RGBs);
-	if(!strTransition.Equals("none") || !strTransition.IsEmpty())
+  if(!strTransition.Equals("none") || !strTransition.IsEmpty())
     s_RGBs.strTransition = strTransition;
-	else
-		s_RGBs.strTransition = "none";
+  else
+    s_RGBs.strTransition = "none";
 
   if (iTranTime > 0)
     s_RGBs.iTime = iTranTime;
-	else
-		s_RGBs.iTime = 0;
+  else
+    s_RGBs.iTime = 0;
 
   return SetRGBStatus(strTransition);
 }

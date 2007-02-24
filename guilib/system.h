@@ -75,7 +75,9 @@
 #undef HAS_CDDA_RIPPER
 
 // additional includes and defines
+#if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
+#endif
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
