@@ -306,8 +306,9 @@ void XBPython::Process()
 
 }
 
+int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const char *src)
+int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
   // return if file doesn't exist
   if(access(src, 0) == -1) return -1;
@@ -323,6 +324,8 @@ int XBPython::evalFile(const char *src)
 
   nextid++;
   XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
+  if (argv != NULL)
+    pyThread->setArgv(argc, argv);
   pyThread->evalFile(src);
   PyElem inf;
   inf.id = nextid;
