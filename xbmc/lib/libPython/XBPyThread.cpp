@@ -41,11 +41,19 @@ XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
 
 	done = false;
 	stopping = false;
+	argv = NULL;
 }
 
 XBPyThread::~XBPyThread()
 {
 	if (source) delete []source;
+	if (argv)
+	{
+		for (unsigned int i = 0; i < argc; i++)
+			delete argv[i];
+		delete argv;
+	}
+
 }
 
 int XBPyThread::evalFile(const char *src)
@@ -63,6 +71,20 @@ int XBPyThread::evalString(const char *src)
 	source = new char[strlen(src)+1];
 	strcpy(source, src);
 	Create();
+	return 0;
+}
+
+int XBPyThread::setArgv(unsigned int src_argc, const char **src)
+{
+	if (src == NULL)
+		return 1;
+	argc = src_argc;
+	argv = new char*[argc];
+	for(unsigned int i = 0; i < argc; i++)
+	{
+		argv[i] = new char[strlen(src[i])+1];
+		strcpy(argv[i], src[i]);
+	}
 	return 0;
 }
 
@@ -88,6 +110,11 @@ void XBPyThread::Process()
 	// set current directory and python's path.
 	PySys_SetPath(path);
 	xbp_chdir(sourcedir); // XXX, there is a ';' at the end
+
+	if (argv != NULL)
+	{
+		PySys_SetArgv(argc, argv);
+	}
 
 	if (type == 'F')
 	{
