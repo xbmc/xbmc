@@ -1041,7 +1041,8 @@ void CHTTP::Close()
 void CHTTP::Cancel()
 {
 #ifdef _XBOX
-          WSACancelOverlappedIO(m_socket);
+  if(m_socket.isValid())
+    WSACancelOverlappedIO(m_socket);
 #endif
 }
 
