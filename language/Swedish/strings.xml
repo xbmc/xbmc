@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/19/2007-->
+<!--Date of translation: 02/25/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7860-->
+<!--Based on english strings version 7910-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -844,6 +844,8 @@
   <string id="13170">Aldrig</string>
   <string id="13171">Omedelbart</string>
   <string id="13172">Efter %i sek</string>
+  <string id="13173">HDD installationsdatum:</string>
+  <string id="13174">HDD Strömcykelräkning:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Radera profil '%s'?</string>
   <string id="13204">Senast laddade profil</string>
@@ -1405,9 +1407,8 @@ den här visualiseringen</string>
   <string id="20184">Vrid som angivet i EXIF information</string>
   <string id="20185">Identifierar hårdvaruvärden</string>
   <string id="20186">Var god vänta</string>
-  <string id="20187">Läser värden från EEPROM</string>
-  <string id="20188">Läsning från EEPROM klar</string>
-  <string id="20189">Upptäckning klar</string>
+  <string id="20187">Tar backup av EEPROM</string>
+  <string id="20188">Tar backup av BIOS</string>
   <string id="20190">Identifierar hårddiskinformation</string>
   <string id="20191">Identifierar HDD värden</string>
   <string id="20192">Identifierar HDD nyckel</string>
