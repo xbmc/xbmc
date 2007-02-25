@@ -93,7 +93,6 @@ CStdString CSysInfo::GetAVPackInfo()
 }
 CStdString CSysInfo::GetVideoEncoder()
 {
-  // XBOX Video Encoder Detection GeminiServer
   int iTemp;
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
   { CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  return "CONNEXANT"; }
@@ -292,7 +291,6 @@ CStdString CSysInfo::GetModCHIPDetected()
   {
     CLog::Log(LOGDEBUG, "- Detected TSOP/MOdCHIP: Detection does not match! (%s != %s)",strTemp1.c_str(),strTemp2.c_str());
     CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: Using -> %s",strTemp1.c_str());
-    //strTemp.Format("%s %s",strTemp1.c_str(),strTemp2.c_str());
     strTemp.Format("%s",strTemp1.c_str());
   }
   else strTemp = strTemp2;
@@ -304,33 +302,19 @@ CStdString CSysInfo::GetModCHIPDetected()
 
 CStdString CSysInfo::SmartXXModCHIP()
 {
-  // SmartXX ModChip Detection Routine! 13.04.2005 GeminiServer
+  // SmartXX ModChip Detection
   unsigned char uSmartXX_ID = ((_inp(0xf701)) & 0xf);
+
   if ( uSmartXX_ID == 1 )      // SmartXX V1+V2
-  {
-    //CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
     return "SmartXX V1/V2";
-  }
   else if ( uSmartXX_ID == 2 ) // SmartXX V1+V2
-  {
-    //CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
     return "SmartXX V1/V2";
-  }
   else if ( uSmartXX_ID == 5 ) // SmartXX OPX
-  {
-    //CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX OPX");
     return "SmartXX OPX";
-  }
   else if ( uSmartXX_ID == 8 ) // SmartXX V3
-  {
-    //CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V3");
     return "SmartXX V3";
-  }
-  else
-  {
-    //CLog::Log(LOGDEBUG, "Detected ModCHIP: No SmartXX Detected!");
+  else 
     return "None";
-  }
 }
 
 bool CSysInfo::BackupBios()
@@ -517,7 +501,6 @@ bool CSysInfo::GetXBOXVersionDetected(CStdString& strXboxVer)
     if (HalReadSMBusValue(0xD4,0x00,0,(LPBYTE)&iTemp)==0){  strXboxVer = "v1.4";  return true; }
     else {  strXboxVer = "v1.2/v1.3";   return true;}
   }
-  else if ( strcmp(Ver,("???")) == NULL){ strXboxVer = "v1.5";  return true;} //Todo: Need XBOX v1.5 to Detect the ver.!!
   else if ( strcmp(Ver,("P2L")) == NULL){ strXboxVer = "v1.6";  return true;}
   else  { strXboxVer.Format("UNKNOWN: Please report this --> %s",Ver); return true;
   }
@@ -654,125 +637,6 @@ bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStd
   }
   else return false;
 }
-bool CSysInfo::SmartXXLEDControll(int iSmartXXLED)
-{
-  //SmartXX LED0/LED1 Controll Routine! 21.04.2005 GeminiServer
-  //LED_R, LED_B, LED_RB, LED_RBCYCLE
-  //We need to check b4 we use the SmartXX LED controll!!
-  if (SmartXXModCHIP() == "SmartXX V3" || SmartXXModCHIP() == "SmartXX V1/V2")
-  {
-    if (iSmartXXLED == SMARTXX_LED_OFF)
-    {
-      if (SmartXXModCHIP() == "SmartXX V3")
-      {
-        _outp(0xf70c,0); // Red
-        _outp(0xf70d,0);  // Green
-        _outp(0xf70e,0); // Blue
-        _outp(0xf702, 0x0); // Status LED OFF
-      }
-      else
-      {
-        _outp(0xf702, 0xb);  //R:off  B:off
-        CLog::Log(LOGDEBUG, "Setting SmartXX LED: BOTH OFF");
-      }
-      return true;
-    }
-    else if (iSmartXXLED == SMARTXX_LED_RED)
-    {
-      if (SmartXXModCHIP() == "SmartXX V3")
-      {
-        _outp(0xf70c,80);// Red
-        _outp(0xf70d,0);  // Green
-        _outp(0xf70e,0); // Blue
-        _outp(0xf702, 0x0);  // Status LED OFF
-      }
-      else
-      {
-        //Only Red:
-        _outp(0xf702, 0xb);  //R:off  B:off
-        _outp(0xf702, 0x1);  //R:on B:off
-        CLog::Log(LOGDEBUG, "Setting SmartXX LED: RED");
-      }
-      return true;
-    }
-    else if (iSmartXXLED == SMARTXX_LED_BLUE)
-    { //Only Blue
-      if (SmartXXModCHIP() == "SmartXX V3")
-      {
-        _outp(0xf70c,0);// Red
-        _outp(0xf70d,0);  // Green
-        _outp(0xf70e,80); // Blue
-        _outp(0xf702, 0x0);  // Status LED OFF
-      }
-      else
-      {
-        _outp(0xf702, 0xb);  //R:off  B:off
-        _outp(0xf702, 0xa);  //R:off B:on
-        CLog::Log(LOGDEBUG, "Setting SmartXX LED: BLUE");
-      }
-      return true;
-    }
-    else if (iSmartXXLED == SMARTXX_LED_BLUE_RED)
-    { // RED and Blue
-      if (SmartXXModCHIP() == "SmartXX V3")
-      {
-        _outp(0xf70c,80);// Red
-        _outp(0xf70d,0);  // Green
-        _outp(0xf70e,80); // Blue
-        _outp(0xf702, 0xb);  // Status LED Blue ON
-      }
-      else
-      {
-        _outp(0xf702, 0xb);  //R:off  B:off
-        _outp(0xf702, 0x0);  //R:on B:on
-        CLog::Log(LOGDEBUG, "Setting SmartXX LED: RED and BLUE");
-      }
-      return true;
-    }
-    else if (iSmartXXLED == SMARTXX_LED_CYCLE)
-    {
-      if (SmartXXModCHIP() == "SmartXX V3")
-      {
-        _outp(0xf70c,80);  // Red
-        _outp(0xf70d,80);  // Green
-        _outp(0xf70e,80);  // Blue
-        _outp(0xf702, 0xb);  // Status LED Blue ON
-      }
-      else
-      {
-        // Blue and Red
-        _outp(0xf702, 0x0);  //R:on B:on
-        Sleep(100);
-        _outp(0xf702, 0x1);  //R:on B:off
-        Sleep(100);
-        _outp(0xf702, 0xa);  //R:off B:on
-        Sleep(100);
-        _outp(0xf702, 0xb);  //R:off  B:off
-        Sleep(100);
-       }
-      CLog::Log(LOGDEBUG, "Setting SmartXX LED: 1x CYCLE NO --> ALL ON!");
-      return true;
-    }
-    else
-    {
-      if (SmartXXModCHIP() == "SmartXX V3")
-      {
-        _outp(0xf70c,0);// Red
-        _outp(0xf70d,0);  // Green
-        _outp(0xf70e,80); // Blue
-        _outp(0xf702, 0xb);  // Status LED Blue ON
-      }
-      else
-      {
-        _outp(0xf702, 0xa);  //R:off B:on
-        CLog::Log(LOGDEBUG, "Setting SmartXX LED: DEFAULT STATE --> RED");
-      }
-      return true;
-    }
-  }
-  else return false;
-}
-
 double CSysInfo::GetCPUFrequency()
 {
   unsigned __int64 Fwin;
@@ -869,9 +733,6 @@ char* CSysInfo::CheckMD5 (struct Bios *Listone, char *Sign)
   while( strcmp(Listone[cntBioses].Name,"\0") != 0);
   return ("Unknown");
 }
-//GeminiServer: System Up Time in Minutes
-// Will return the time since the system was started!
-// Input Value int: Minutes  Return Values int: Minutes, Hours, Days
 bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
   iMinutes=0;iHours=0;iDays=0;
@@ -886,23 +747,5 @@ bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &
     iDays = iHours / 24;
     iHours = iHours - (iDays * 24);
   }
-  /*
-  if (iDays >= 7) // Weeks
-  {
-    iWeeks = iDays / 7;
-    iDays = iDays - (iDays * 7);
-  }
-  if (iWeeks >= 4) // Months
-  {
-    iMonth = iWeeks / 4;
-    iMonth = iMonth - (iMonth * 4);
-  }
-  if (iMonth >= 12) // Years
-  {
-    iMonth = iWeeks / 4;
-    iMonth = iMonth - (iMonth * 4);
-  }
-  */
-
   return true;
 }
