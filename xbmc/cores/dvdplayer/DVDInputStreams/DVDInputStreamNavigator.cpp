@@ -1097,19 +1097,27 @@ bool CDVDInputStreamNavigator::SetNavigatorState(std::string &xmlstate)
 
 int CDVDInputStreamNavigator::ConvertAudioStreamId_XBMCToExternal(int id)
 {
-  if (m_dvdnav)
+  if (!m_dvdnav)
+    return -1;
+
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if(!vm)
+    return -1;
+
+  if (vm->state.domain == VTS_DOMAIN)
   {
-    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-    if (vm && vm->state.pgc && vm->state.domain == VTS_DOMAIN)
+    if(!vm->state.pgc)
+      return -1;
+
+    int stream = -1;
+    for (int i = 0; i < 8; i++)
     {
-      int stream = -1;
-      for (int i = 0; i < 8; i++)
-      {
-        if (vm->state.pgc->audio_control[i] & (1<<15)) stream++;
-        if (stream == id) return i;
-      }
+      if (vm->state.pgc->audio_control[i] & (1<<15)) stream++;
+      if (stream == id) return i;
     }
   }
+  else if(id == 0)
+    return 0;
   
   return -1;
 }
@@ -1163,19 +1171,27 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
 {
-  if (m_dvdnav)
+  if (!m_dvdnav)
+    return -1;
+
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if(!vm)
+    return -1;
+
+  if (vm->state.domain == VTS_DOMAIN)
   {
-    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-    if (vm && vm->state.pgc && vm->state.domain == VTS_DOMAIN)
+    if(!vm->state.pgc)
+      return -1;
+
+    int stream = -1;
+    for (int i = 0; i < 32; i++)
     {
-      int stream = -1;
-      for (int i = 0; i < 32; i++)
-      {
-        if (vm->state.pgc->subp_control[i] & (1<<31)) stream++;
-        if (stream == id) return i;
-      }
+      if (vm->state.pgc->subp_control[i] & (1<<31)) stream++;
+      if (stream == id) return i;
     }
   }
+  else if(id == 0)
+    return 0;
   
   return -1;
 }
