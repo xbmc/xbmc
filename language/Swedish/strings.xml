@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmcscripts.com-->
 <!--Date of translation: 02/25/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7910-->
+<!--Based on english strings version 7919-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1492,5 +1492,6 @@ den här visualiseringen</string>
   <string id="21367">Film &amp; alternativ undertextmapp</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
   <string id="21371">Miniatyrbild</string>
+  <string id="21372">Tvingad DVD region</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
