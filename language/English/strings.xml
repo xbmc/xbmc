@@ -351,9 +351,9 @@
   <string id="429">Please insert the following CD/DVD</string>
   <string id="430">Sort by: DVD#</string>
   <string id="431">No Cache</string>
-  <string id="432">Delete movie from database</string>
-  <string id="433">Are you sure about removing</string>
-  <string id="434">the movie?</string>
+  <string id="432">Remove Movie from library</string>
+  <string id="433">Really remove '%s'?</string>
+  <string id="434"></string>
   <string id="435">Track</string>
   <string id="436">Year:</string>
   <string id="437">Duration:</string>
@@ -1534,10 +1534,16 @@
   <string id="20352">Episode Information</string>
   <string id="20353">Loading TV Show details</string>
   <string id="20354">Fetching Episode Guide</string>
-  <string id="20355">Locating Episodes In Directory</string>
+  <string id="20355">Loading Info For Episodes In Directory</string>
   <string id="20356">Select TV Show:</string>
   <string id="20357">Enter the TV Show Name</string>
   <string id="20358">Season %i</string>
+  <string id="20359">Episode</string>
+  <string id="20360">Episodes</string>
+  <string id="20361">Loading Episode details</string>
+  <string id="20362">Remove Episode from library</string>
+  <string id="20363">Remove TV Show from library</string>
+  <string id="20364">TV Show</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

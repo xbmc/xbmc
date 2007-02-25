@@ -139,7 +139,25 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       }
       break;
     case NODE_TYPE_SEASONS:
+      {
+        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "","%L",""));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavSeasons.m_viewMode);
+
+        SetSortOrder(g_stSettings.m_viewStateVideoNavSeasons.m_sortOrder);
+      }
+      break;
     case NODE_TYPE_TITLE_TVSHOWS:
+      {
+        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%E", "%L", "%E"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_TRACKNUM, 20360, LABEL_MASKS("%L", "%E", "%L", "%E"));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavTvShows.m_viewMode);
+
+        SetSortOrder(g_stSettings.m_viewStateVideoNavTvShows.m_sortOrder);
+      }
     case NODE_TYPE_GENRE:
       {
         AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
@@ -151,13 +169,27 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       }
       break;
     case NODE_TYPE_EPISODES:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T","%R"));  // Filename, Duration | Foldername, empty
+        else
+          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%N. %T", "%R"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_TRACKNUM,20359,LABEL_MASKS("%N. %T","%R"));
+        SetSortMethod(g_stSettings.m_viewStateVideoNavEpisodes.m_sortMethod);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavEpisodes.m_viewMode);
+
+        SetSortOrder(g_stSettings.m_viewStateVideoNavEpisodes.m_sortOrder);
+        break;
+      }
     case NODE_TYPE_TITLE_MOVIES:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
         else
-          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
         SetSortMethod(g_stSettings.m_viewStateVideoNavTitles.m_sortMethod);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);
@@ -195,6 +227,15 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
     break;
   case NODE_TYPE_TITLE_MOVIES:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTitles);
+    break;
+  case NODE_TYPE_EPISODES:
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavEpisodes);
+    break;
+  case NODE_TYPE_TITLE_TVSHOWS:
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTvShows);
+    break;
+  case NODE_TYPE_SEASONS:
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavSeasons);
     break;
   default:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV);

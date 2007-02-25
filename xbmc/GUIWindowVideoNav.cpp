@@ -241,53 +241,98 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
 {
   // get matching genres
   CFileItemList tempItems;
-  m_database.GetGenresByName(strSearch, tempItems);
 
+  m_database.GetMovieGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
     CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strGenre + "] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+  
+  tempItems.Clear();
+  m_database.GetTvShowGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strGenre = g_localizeStrings.Get(515); // Genre
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
 
   tempItems.Clear();
-  m_database.GetActorsByName(strSearch, tempItems);
-
+  m_database.GetMovieActorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
     CStdString strActor = g_localizeStrings.Get(20337); // Actor
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strActor + "] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
 
   tempItems.Clear();
-  m_database.GetDirectorsByName(strSearch, tempItems);
+  m_database.GetTvShowsActorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strActor = g_localizeStrings.Get(20337); // Actor
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
 
+  tempItems.Clear();
+  m_database.GetMovieDirectorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
     CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + "] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
 
   tempItems.Clear();
-  m_database.GetTitlesByName(strSearch, tempItems);
+  m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMoviesByName(strSearch, tempItems);
 
   if (tempItems.Size())
   {
-    CStdString strMovie = g_localizeStrings.Get(20338); // Movie
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + "] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20338) + "] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetEpisodesByName(strSearch, tempItems);
+
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20359) + "] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -346,8 +391,15 @@ void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
 {
   SScraperInfo info2(info);
   CStdString strPath,strFile;
-  CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
-  m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent);
+  if (m_vecItems[iItem]->IsVideoDb())
+  {
+    m_database.GetScraperForPath(m_vecItems[iItem]->m_musicInfoTag.GetAlbum(),info2.strPath,info2.strContent);
+  }
+  else
+  {
+    CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
+    m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent);
+  }
   CGUIWindowVideoBase::OnInfo(iItem,info2);
 }
 
@@ -356,22 +408,46 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
 
   CFileItem* pItem = m_vecItems[iItem];
-  if (pItem->m_bIsFolder) return;
+
+  int iType=0;
+  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+    iType = 1;
+  if (pItem->IsVideoDb()) // tvshow
+    iType = 2;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog) return;
-  pDialog->SetHeading(432);
-  pDialog->SetLine(0, 433);
-  pDialog->SetLine(1, 434);
+  if (iType == 0)
+    pDialog->SetHeading(432);
+  if (iType == 1)
+    pDialog->SetHeading(20362);
+  if (iType == 2)
+    pDialog->SetHeading(20363);
+  CStdString strLine;
+  strLine.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+  pDialog->SetLine(0, strLine);
+  pDialog->SetLine(1, "");
   pDialog->SetLine(2, "");;
   pDialog->DoModal();
   if (!pDialog->IsConfirmed()) return;
 
   CStdString path;
   //m_database.GetFilePath(atol(pItem->m_strPath), path);
-  m_database.GetFilePath(atol(pItem->m_musicInfoTag.GetURL()), path);
+  m_database.GetFilePath(atol(pItem->m_musicInfoTag.GetURL()), path, iType);
   if (path.IsEmpty()) return;
-  m_database.DeleteMovie(path);
+  if (iType == 0)
+  {
+    m_database.DeleteMovie(path);
+  }
+  if (iType == 1)
+  {
+    m_database.DeleteEpisode(path);
+  }
+  if (iType == 2)
+  {
+    CUtil::AddSlashAtEnd(path);
+    m_database.DeleteTvShow(path);
+  }
 
   // delete the cached thumb for this item (it will regenerate if it is a user thumb)
   CStdString thumb(pItem->GetCachedVideoThumb());
@@ -379,7 +455,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
-  DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0);
+  DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0);
   Update( m_vecItems.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
   return;
@@ -389,7 +465,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
   int iItem=0;
   CVideoDatabaseDirectory dir;
-  if (dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE_MOVIES && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
+  if ((dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
   {
     while (iItem < items.Size())
     {

@@ -95,7 +95,6 @@ public:
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
-  CStdString strEntryPoint; ///< entry point of shares, used with archives
 
   /*!
   \brief The type of the share.
@@ -285,6 +284,7 @@ public:
     CStdString m_strMusicLibraryAlbumFormatRight;
 
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
+
     //TuxBox
     bool m_bTuxBoxSubMenuSelection;
     int m_iTuxBoxDefaultSubMenu;
@@ -321,6 +321,9 @@ public:
     CViewState m_viewStateVideoNavYears;
     CViewState m_viewStateVideoNavGenres;
     CViewState m_viewStateVideoNavTitles;
+    CViewState m_viewStateVideoNavEpisodes;
+    CViewState m_viewStateVideoNavSeasons;
+    CViewState m_viewStateVideoNavTvShows;
 
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;

@@ -310,6 +310,15 @@ void CGUIWindowVideoInfo::Update()
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
   }
 
+  if (m_Movie.m_strEpisodeGuide.IsEmpty()) // disable the play button for tv show info
+  {
+    CONTROL_ENABLE(CONTROL_BTN_PLAY)
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_BTN_PLAY)
+  }
+
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
   if (pControl)
@@ -428,13 +437,34 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   m_database.GetMoviesByActor(strSearch, movies);
   for (int i = 0; i < (int)movies.size(); ++i)
   {
-    CStdString strItem = movies[i].m_strTitle;
-    CStdString strYear;
-    strYear.Format(" (%i)", movies[i].m_iYear);
-    strItem += strYear;
+    CStdString strItem;
+    strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
     pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
+    items.Add(pItem);
+  }
+  movies.clear();
+  m_database.GetTvShowsByActor(strSearch, movies);
+  for (int i = 0; i < (int)movies.size(); ++i)
+  {
+    CStdString strItem;
+    strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
+    CFileItem *pItem = new CFileItem(strItem);
+    pItem->m_strPath.Format("videodb://1/%u",m_database.GetTvShowInfo(movies[i].m_strFileNameAndPath));
+    pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
+    items.Add(pItem);
+  }
+  movies.clear();
+  m_database.GetEpisodesByActor(strSearch, movies);
+  for (int i = 0; i < (int)movies.size(); ++i)
+  {
+    CStdString strItem;
+    strItem.Format("[%s] %s", g_localizeStrings.Get(20359), movies[i].m_strTitle);  // Movie
+    CFileItem *pItem = new CFileItem(strItem);
+    pItem->m_strPath = movies[i].m_strFileNameAndPath;
+    pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
+    pItem->m_musicInfoTag.SetTrackNumber(movies[i].m_iEpisode);
     items.Add(pItem);
   }
 }
@@ -443,9 +473,21 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 /// \param pItem Search result item
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
+  int iType=0;
+  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+    iType = 1;
+  if (pItem->IsVideoDb()) // tvshow
+    iType = 2;
+  
   long lMovieId = atol(pItem->m_musicInfoTag.GetURL().c_str());
   CIMDBMovie movieDetails;
-  m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
+  if (iType == 0)
+    m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
+  if (iType == 1)
+    m_database.GetEpisodeInfo(pItem->m_strPath, movieDetails, lMovieId);
+  if (iType == 2)
+    m_database.GetTvShowInfo(pItem->m_strPath, movieDetails, lMovieId);
+
   SetMovie(movieDetails, pItem);
   Refresh();
 }

@@ -38,6 +38,7 @@ typedef std::map<std::pair<int,int>,CIMDBUrl> IMDB_EPISODELIST;
 class CIMDBMovie
 {
 public:
+  CIMDBMovie() { Reset(); };
   void Reset();
   bool Load(const TiXmlNode *node);
   bool Save(TiXmlNode *node);
