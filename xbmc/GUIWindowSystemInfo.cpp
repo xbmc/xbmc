@@ -531,7 +531,7 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
   if (!strIsSmartXX.Equals("None"))
   {
     strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX);
-    CLog::Log(LOGDEBUG, "- Detected ModChip: %s",strIsSmartXX);
+    CLog::Log(LOGDEBUG, "- Detected ModChip: %s",strIsSmartXX.c_str());
     return true;
   }
   else
