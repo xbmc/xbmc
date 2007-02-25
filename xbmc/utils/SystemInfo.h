@@ -36,7 +36,6 @@ class CSysInfo
     static bool CheckBios(CStdString& strDetBiosNa);
     static bool GetXBOXVersionDetected(CStdString& strXboxVer);
     static bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
-    static bool SmartXXLEDControll(int iSmartXXLED);
     static bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
     static struct Bios * LoadBiosSigns();
 
