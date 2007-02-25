@@ -26,6 +26,7 @@ public:
     
     PLAYER_SET_AUDIOSTREAM,         //
     PLAYER_SET_SUBTITLESTREAM,      //
+    PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
     PLAYER_SEEK,                    // 
     
@@ -176,6 +177,13 @@ private:
   DWORD m_sources;
   long m_objects;
   unsigned int m_timeout;
+};
+
+class CDVDMsgBool : public CDVDMsg
+{
+public:
+  CDVDMsgBool(Message type, bool value) : CDVDMsg(type) { m_value = value; }
+  bool m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
