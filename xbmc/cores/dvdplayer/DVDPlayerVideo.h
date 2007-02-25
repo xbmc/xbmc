@@ -38,6 +38,8 @@ public:
   void UpdateMenuPicture();
  
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
+  bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
+
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
   void SetAspectRatio(float aspect)                 { m_fForcedAspectRatio = aspect; }
 
