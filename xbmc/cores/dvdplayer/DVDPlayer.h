@@ -165,7 +165,6 @@ private:
   void SyncronizePlayers(DWORD sources);
   void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
 
-  bool m_bRenderSubtitle;
   bool m_bDontSkipNextFrame;
   bool m_bReadAgain; // tricky, if set to true, the main loop will start over again
   bool m_bAbortRequest;
