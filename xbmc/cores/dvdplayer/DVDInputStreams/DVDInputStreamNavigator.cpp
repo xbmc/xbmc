@@ -63,21 +63,22 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
   free(strDVDFile);
 
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if (vm && vm->vmgi && vm->vmgi->vmgi_mat)
-  {
-    // find out what region dvd reports itself to be from, and use that as mask if available
-    int mask = ~(vm->vmgi->vmgi_mat->vmg_category >> 16);
-    if( mask != 0 )
-      m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
-    else
-      m_dll.dvdnav_set_region_mask(m_dvdnav, 0xff);
-  }
+  int region = g_guiSettings.GetInt("videoplayer.dvdplayerregion");
+  int mask = 0;
+  if(region > 0)
+    mask = 1 << (region-1);
   else
   {
-    // set region flag (0xff = all regions ?)
-    m_dll.dvdnav_set_region_mask(m_dvdnav, 0xff);
+    // find out what region dvd reports itself to be from, and use that as mask if available
+    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+    if (vm && vm->vmgi && vm->vmgi->vmgi_mat)
+      mask = ((vm->vmgi->vmgi_mat->vmg_category >> 16) & 0xff) ^ 0xff;
   }
+  if(!mask) 
+    mask = 0xff;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Setting region mask %02x", mask);
+  m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
 
   // get default language settings
   char language_menu[3];
