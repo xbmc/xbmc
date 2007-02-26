@@ -2,6 +2,7 @@
 
 #include "md5.h"
 
+
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
 #define GB  (1024*MB)       // 1 GigaByte (1GB)   1024 MB (2^10 MB)
@@ -38,6 +39,13 @@ class CSysInfo
     static bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
     static bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
     static struct Bios * LoadBiosSigns();
+    static CStdString GetMPlayerVersion();
+    static CStdString GetKernelVersion();
+    static CStdString GetSystemTotalUpTime();
+    static CStdString GetSystemUpTime();
+    static CStdString GetCPUFreqInfo();
+    static CStdString GetXBVerInfo();
+    static CStdString GetUnits(int iFrontPort);
 
     static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
 
