@@ -29,6 +29,10 @@
 #define AUDIO_ANALOG      0
 #define AUDIO_DIGITAL      1
 
+#define VIDEO_NORMAL 0
+#define VIDEO_LETTERBOX 1
+#define VIDEO_WIDESCREEN 2
+
 // LCD settings
 #define LCD_TYPE_NONE        0
 #define LCD_TYPE_LCD_HD44780 1
