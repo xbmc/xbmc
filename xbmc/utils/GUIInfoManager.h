@@ -352,7 +352,9 @@ public:
   bool m_performingSeek;
 
   string GetSystemHeatInfo(const CStdString &strInfo);
-  string GetATAInfo(const CStdString &strInfo);
+  CStdString GetATAInfo(int info);
+  CStdString SystemInfoValues(int info);
+
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
 
@@ -414,6 +416,20 @@ protected:
   bool m_hddRequest;
   CStdString strDVDModel, strDVDFirmware;
   bool m_dvdRequest;
+  bool b_ata_request;
+
+  DWORD m_lastSysInfoTime;
+  CStdString m_mplayerversion;
+  CStdString m_kernelversion;
+  CStdString m_systemuptime;
+  CStdString m_systemtotaluptime;
+  CStdString m_cpufrequency;
+  CStdString m_xboxversion;
+  CStdString m_avcablepackinfo;
+  CStdString m_videoencoder;
+  bool b_sys_request;
+
+
 
 
 
