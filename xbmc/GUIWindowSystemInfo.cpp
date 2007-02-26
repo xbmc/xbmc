@@ -27,21 +27,13 @@
 #include "xbox/XKExports.h"
 #include "application.h"
 #ifdef HAS_SYSINFO
-#include "utils/SystemInfo.h"
-#include "cores/dllloader/dllloader.h"
-
-#define DEBUG_KEYBOARD
-#define DEBUG_MOUSE
-
-CStdString strMplayerVersion;
-extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
-#define     XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
-
+  #include "utils/SystemInfo.h"
 #endif
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
+  mplayerVersion="";
 #ifdef HAS_SYSINFO
   m_pXKEEPROM = new XKEEPROM;
   m_pXKEEPROM->ReadFromXBOX();
@@ -55,43 +47,6 @@ CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
   delete m_pXKEEPROM;
 #endif
 }
-
-#ifdef HAS_SYSINFO
-bool CGUIWindowSystemInfo::GetMPlayerVersion(CStdString& strVersion)
-{
-  DllLoader* mplayerDll;
-  const char* (__cdecl* pMplayerGetVersion)();
-  const char* (__cdecl* pMplayerGetCompileDate)();
-  const char* (__cdecl* pMplayerGetCompileTime)();
-
-  const char *version = NULL;
-  const char *date = NULL;
-  const char *btime = NULL;
-
-  mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
-
-  if( mplayerDll->Parse() )
-  {
-    if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
-      version = pMplayerGetVersion();
-    if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
-      date = pMplayerGetCompileDate();
-    if (mplayerDll->ResolveExport("mplayer_getcompiletime", (void**)&pMplayerGetCompileTime))
-      btime = pMplayerGetCompileTime();
-    if (version && date && btime)
-    {
-      strVersion.Format("%s (%s - %s)",version, date, btime);
-    }
-    else if (version)
-    {
-      strVersion.Format("%s",version);
-    }
-  }
-  delete mplayerDll;
-  mplayerDll=NULL;
-  return true;
-}
-#endif
 
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
@@ -110,39 +65,10 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
 #ifdef HAS_SYSINFO
-      m_wszMPlayerVersion[0] = 0;
       //Get SystemInformations on Init
       CGUIWindow::OnMessage(message);
-
-      //Open Progress Dialog
-      CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-      pDlgProgress.SetHeading(g_localizeStrings.Get(10007));
-      pDlgProgress.SetLine(0, g_localizeStrings.Get(20185));
-      pDlgProgress.SetLine(1, "");
-      pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
-      pDlgProgress.SetPercentage(0);
-      pDlgProgress.Progress();
-      pDlgProgress.StartModal();
-      pDlgProgress.ShowProgressBar(true);
-
-      CreateEEPROMBackup("System\\SystemInfo");
-      pDlgProgress.SetLine(1, g_localizeStrings.Get(20187));
-      pDlgProgress.SetPercentage(55);
-      pDlgProgress.Progress();
-
-      CSysInfo::BackupBios();
-      pDlgProgress.SetLine(1, g_localizeStrings.Get(20188));
-      pDlgProgress.SetPercentage(70);
-      pDlgProgress.Progress();
-
-      m_dwlastTime=0;
-      GetMPlayerVersion(strMplayerVersion);
-      pDlgProgress.SetLine(1, g_localizeStrings.Get(20177));
-      pDlgProgress.SetPercentage(100);
-      pDlgProgress.Progress();
-      pDlgProgress.Close();
-#else
-      CGUIWindow::OnMessage(message);
+      //CreateEEPROMBackup("System\\SystemInfo");
+      //CSysInfo::BackupBios();
 #endif
       SetLabelDummy();
       b_IsHome = TRUE;
@@ -161,8 +87,12 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
 #ifdef HAS_SYSINFO
         //Label 2-6; HDD Values
-        GetATAValues(2, 3, 4, 5, 6);
-
+        SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_HDD_MODEL));
+        SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_HDD_SERIAL));
+        SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_HDD_FIRMWARE));
+        SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_HDD_PASSWORD));
+        SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_HDD_LOCKSTATE));
+        
         //Label 7: HDD Lock/UnLock key
         CStdString strhddlockey;
         GetHDDKey(strhddlockey);
@@ -172,9 +102,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetRefurbInfo(8, 9);
 
         //Label 10: HDD Temperature
-        CStdString strItemhdd;
-        GetHDDTemp(strItemhdd);
-        SET_CONTROL_LABEL(10, strItemhdd);
+        SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_HDD_TEMPERATURE));
 
 #endif
       }
@@ -184,10 +112,10 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         //Todo: Get DVD-ROM Supported Discs
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
-
 #ifdef HAS_SYSINFO
         //Label 2-3: DVD-ROM Values
-        GetATAPIValues(2, 3);
+        SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_DVD_MODEL));
+        SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_FIRMWARE));
 #endif
       }
       else if(iControl == CONTROL_BT_STORAGE)
@@ -232,19 +160,11 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
 #ifdef HAS_SYSINFO
         // Label 2: Video Encoder
-        CStdString strVideoEnc;
-        GetVideoEncInfo(strVideoEnc);
-        SET_CONTROL_LABEL(2,strVideoEnc);
-
+        SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
         // Label 3: Resolution
-        CStdString strResol;
-        GetResolution(strResol);
-        SET_CONTROL_LABEL(3,strResol);
-
+        SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
         // Label 4: AV Pack Info
-        CStdString stravpack;
-        GetAVPackInfo(stravpack);
-        SET_CONTROL_LABEL(4,stravpack);
+        SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_CABLE_PACK_INFO));
 
         // Label 5: XBE Video Region
         CStdString strVideoXBERegion;
@@ -275,9 +195,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.ShowProgressBar(true);
 
         // Label 2: XBOX Version
-        CStdString strXBoxVer;
-        GetXBVerInfo(strXBoxVer);
-        SET_CONTROL_LABEL(2,strXBoxVer);
+        SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_XBOX_VERSION));
 
         // Label 3: XBOX Serial
         CStdString strXBSerial, strXBOXSerial;
@@ -287,9 +205,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(3,strXBOXSerial);
 
         // Label 4: CPU Speed!
-        CStdString strCPUFreq;
-        GetCPUFreqInfo(strCPUFreq);
-        SET_CONTROL_LABEL(4, strCPUFreq);
+        SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_CPUFREQUENCY));
 
         pDlgProgress.SetLine(1, g_localizeStrings.Get(20302));
         pDlgProgress.SetPercentage(30);
@@ -310,17 +226,21 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
           SET_CONTROL_LABEL(6,strBiosName);
 
         // Label 7: XBOX Live Key
-        CStdString strXBLiveKey;
-        GetXBLiveKey(strXBLiveKey);
-        SET_CONTROL_LABEL(7, strXBLiveKey);
+        //CStdString strXBLiveKey;
+        //GetXBLiveKey(strXBLiveKey);
+        //SET_CONTROL_LABEL(7, strXBLiveKey);
 
         // Label 8: XBOX ProducutionDate Info
         CStdString strXBProDate;
         GetXBProduceInfo(strXBProDate);
-        SET_CONTROL_LABEL(8, strXBProDate);
+        SET_CONTROL_LABEL(7, strXBProDate);
 
-        // Label 9,10,11: Attached Units!
-        GetUnits(9, 10, 11);
+        // Label 8,9,10,11: Attached Units!
+        SET_CONTROL_LABEL(8, CSysInfo::GetUnits(1));
+        SET_CONTROL_LABEL(9, CSysInfo::GetUnits(2));
+        SET_CONTROL_LABEL(10, CSysInfo::GetUnits(3));
+        SET_CONTROL_LABEL(11, CSysInfo::GetUnits(4));
+        //GetUnits(9, 10, 11);
         pDlgProgress.SetPercentage(100);
         pDlgProgress.Progress();
         pDlgProgress.Close();
@@ -341,46 +261,28 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo("cpu")); // CPU Temperature
     SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo("gpu")); // GPU Temperature
     SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo("fan")); // Fan Speed
-
+    
     // Label 5: Set FreeMemory Info
-    CStdString strFreeMem;
-    GetFreeMemory(strFreeMem);
-    SET_CONTROL_LABEL(5, strFreeMem);
-
+    SET_CONTROL_LABEL(5, g_localizeStrings.Get(158) +": "+ g_infoManager.GetLabel(SYSTEM_FREE_MEMORY));
+    
     //Label 6: XBMC IP Adress
-    if (g_infoManager.GetLabel(NETWORK_IP_ADDRESS)=="")
-    {
-      SET_CONTROL_LABEL(6,g_localizeStrings.Get(416));
-    }
-    else
-    {
-      SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
-    }
-
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    
     // Label 7: Set Resolution Info
-    CStdString strResol;
-    GetResolution(strResol);
-    SET_CONTROL_LABEL(7,strResol);
+    SET_CONTROL_LABEL(7,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
 
 #ifdef HAS_SYSINFO
     // Label 8: Get Kernel Info
-    CStdString strGetKernel;
-    GetKernelVersion(strGetKernel);
-    SET_CONTROL_LABEL(8,strGetKernel);
+    SET_CONTROL_LABEL(8,g_infoManager.GetLabel(SYSTEM_KERNEL_VERSION));
 
     // Label 9: Get System Uptime
-    CStdString strSystemUptime;
-    GetSystemUpTime(strSystemUptime);
-    SET_CONTROL_LABEL(9,strSystemUptime);
+    SET_CONTROL_LABEL(9,g_infoManager.GetLabel(SYSTEM_UPTIME));
 
     // Label 10: Get System Total Uptime
-    CStdString strSystemTotalUptime;
-    GetSystemTotalUpTime(strSystemTotalUptime);
-    SET_CONTROL_LABEL(10,strSystemTotalUptime);
+    SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTALUPTIME));
 #endif
 
   }
-
   // Label 50: Get Current Time
   SET_CONTROL_LABEL(50, g_infoManager.GetTime(true) + " | " + g_infoManager.GetDate());
   // Set XBMC Build Time
@@ -400,25 +302,22 @@ void CGUIWindowSystemInfo::SetLabelDummy()
 #endif
   }
 }
+bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
+{
+  CStdString version, buildDate;
+  version.Format("%s %s", g_localizeStrings.Get(144), g_infoManager.GetVersion());
+  buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild());
+#ifdef HAS_SYSINFO
+  if (mplayerVersion.IsEmpty())
+    mplayerVersion = g_infoManager.GetLabel(SYSTEM_MPLAYER_VERSION);
+#endif
+  SET_CONTROL_LABEL(label1, version);
+  SET_CONTROL_LABEL(label2, buildDate);
+  SET_CONTROL_LABEL(label3, mplayerVersion);
+  return true;
+}
 
 #ifdef HAS_SYSINFO
-bool CGUIWindowSystemInfo::GetKernelVersion(CStdString& strKernel)
-{
-  CStdString lblKernel=  g_localizeStrings.Get(13283);
-  strKernel.Format("%s %d.%d.%d.%d",lblKernel,XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
-  return true;
-}
-
-bool CGUIWindowSystemInfo::GetCPUFreqInfo(CStdString& strCPUFreq)
-{
-  double CPUFreq;
-  CStdString lblCPUSpeed  = g_localizeStrings.Get(13284);
-  CPUFreq                 = CSysInfo::GetCPUFrequency();
-
-  strCPUFreq.Format("%s %4.2f Mhz.", lblCPUSpeed, CPUFreq);
-  return true;
-}
-
 void CGUIWindowSystemInfo::GetMACAddress(CStdString& strMacAddress)
 {
   char macaddress[20] = "";
@@ -444,41 +343,6 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
     strBiosName.Format("%s %s", strlblBios,"File: BiosIDs.ini Not Found!");
     return true;
   }
-}
-
-bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
-{
-  CStdString lblVideoEnc  = g_localizeStrings.Get(13286);
-  CStdString VideoEncoder = CSysInfo::GetVideoEncoder();
-  strItemVideoENC.Format("%s %s", lblVideoEnc,VideoEncoder);
-  return true;
-}
-#endif
-
-bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
-{
-  CStdString lblResInf  = g_localizeStrings.Get(13287);
-  strResol.Format("%s %ix%i %s %02.2f Hz.",lblResInf,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
-    g_infoManager.GetFPS()
-    );
-  return true;
-}
-
-#ifdef HAS_SYSINFO
-bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
-{
-  CStdString strXBOXVersion;
-  CStdString lblXBver   =  g_localizeStrings.Get(13288);
-  if (CSysInfo::GetXBOXVersionDetected(strXBOXVersion))
-  {
-    strXBoxVer.Format("%s %s", lblXBver,strXBOXVersion);
-    CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
-    return true;
-  }
-  else return false;
 }
 
 void CGUIWindowSystemInfo::GetXBOXSerial(CStdString& strXBOXSerial)
@@ -547,15 +411,6 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
     return true;
   }
   return false;
-}
-
-void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
-{
-  //AV-[Cable]Pack Detection
-  CStdString DetectedAVpack = CSysInfo::GetAVPackInfo();
-  CStdString lblAVpack    = g_localizeStrings.Get(13292);
-  stravpack.Format("%s %s",lblAVpack, DetectedAVpack);
-  return;
 }
 
 void CGUIWindowSystemInfo::GetVideoXBERegion(CStdString& strVideoXBERegion)
@@ -652,96 +507,6 @@ void CGUIWindowSystemInfo::GetHDDKey(CStdString& strhddlockey)
   m_pXKEEPROM->GetHDDKeyString((LPSTR)&hdkey);
 
   strhddlockey.Format("%s %s",lbl5, hdkey);
-}
-
-bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
-{
-  // Get HDD Temp
-  CStdString lblhdd = g_localizeStrings.Get(13151);
-
-  BYTE bTemp= XKHDD::GetHddSmartTemp();
-  CTemperature temp= CTemperature::CreateFromCelsius((double)bTemp);
-  if (bTemp ==0 )
-    temp.SetState(CTemperature::invalid);
-
-  strItemhdd.Format("%s %s", lblhdd, temp.ToString());
-  return true;
-}
-#endif
-
-void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
-{
-#ifndef HAS_SYSINFO
-#define MB (1024*1024)
-#endif
-  // Set FreeMemory Info
-  MEMORYSTATUS stat;
-  GlobalMemoryStatus(&stat);
-  CStdString lblFreeMem = g_localizeStrings.Get(158);
-  strFreeMem.Format("%s %i/%iMB",lblFreeMem,stat.dwAvailPhys/MB, stat.dwTotalPhys/MB);
-}
-
-#ifdef HAS_SYSINFO
-bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
-{
-  CStdString strDVDModel, strDVDFirmware;
-  CStdString lblDVDModel    = g_localizeStrings.Get(13152);
-  CStdString lblDVDFirmware = g_localizeStrings.Get(13153);
-  if(CSysInfo::GetDVDInfo(strDVDModel, strDVDFirmware))
-  {
-    CStdString strDVDModelA;
-    strDVDModelA.Format("%s %s",lblDVDModel, strDVDModel);
-    SET_CONTROL_LABEL(i_lblp1, strDVDModelA);
-
-    CStdString lblDVDFirmwareA;
-    lblDVDFirmwareA.Format("%s %s",lblDVDFirmware, strDVDFirmware);
-    SET_CONTROL_LABEL(i_lblp2, lblDVDFirmwareA);
-    return true;
-  }
-  else return false;
-}
-
-bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5)
-{
-  CStdString strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState;
-  if (CSysInfo::GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState))
-  {
-    CStdString strHDDModelA, strHDDSerialA, strHDDFirmwareA, strHDDpwA, strHDDLockStateA;
-
-    CStdString lblhddm  = g_localizeStrings.Get(13154); //"HDD Model";
-    CStdString lblhdds  = g_localizeStrings.Get(13155); //"HDD Serial";
-    CStdString lblhddf  = g_localizeStrings.Get(13156); //"HDD Firmware";
-    CStdString lblhddpw = g_localizeStrings.Get(13157); //"HDD Password";
-    CStdString lblhddlk = g_localizeStrings.Get(13158); //"HDD Lock State";
-
-    //HDD Model
-    strHDDModelA.Format("%s %s",lblhddm,strHDDModel);
-    SET_CONTROL_LABEL(i_lblp1, strHDDModelA);
-    //CLog::Log(LOGDEBUG, "HDD Model: %s",strHDDModelA);
-
-    //HDD Serial
-    strHDDSerialA.Format("%s %s",lblhdds,strHDDSerial);
-    SET_CONTROL_LABEL(i_lblp2, strHDDSerialA);
-    //CLog::Log(LOGDEBUG, "HDD Serial: %s",strHDDSerialA);
-
-    //HDD Firmware
-    strHDDFirmwareA.Format("%s %s",lblhddf,strHDDFirmware);
-    SET_CONTROL_LABEL(i_lblp3, strHDDFirmwareA);
-    //CLog::Log(LOGDEBUG, "HDD Firmware: %s",strHDDFirmwareA);
-
-    //HDD Lock State
-    strHDDLockStateA.Format("%s %s",lblhddlk,strHDDLockState);
-    SET_CONTROL_LABEL(i_lblp4, strHDDLockStateA);
-    //CLog::Log(LOGDEBUG, "HDD LockState: %s",strHDDLockStateA);
-
-    //HDD Password
-    strHDDpwA.Format("%s %s",lblhddpw,strHDDpw);
-    SET_CONTROL_LABEL(i_lblp5, strHDDpwA);
-    //CLog::Log(LOGDEBUG, "HDD Password: %s",strHDDpwA);
-
-    return true;
-  }
-  return false;
 }
 
 bool CGUIWindowSystemInfo::GetRefurbInfo(int label1, int label2)
@@ -1008,286 +773,6 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
   }
   return ret == TRUE;
 }
-#endif
-bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
-{
-  CStdString version, buildDate, mplayerVersion;
-  version.Format("%s %s", g_localizeStrings.Get(144), g_infoManager.GetVersion());
-  buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild());
-#ifdef HAS_SYSINFO
-  mplayerVersion.Format("%s",strMplayerVersion);
-#endif
-  SET_CONTROL_LABEL(label1, version);
-  SET_CONTROL_LABEL(label2, buildDate);
-  SET_CONTROL_LABEL(label3, mplayerVersion);
-  return true;
-}
-#ifdef HAS_SYSINFO
-bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
-{
-  // Get the Connected Units on the Front USB Ports!
-  DWORD dwDeviceGamePad   = XGetDevices(XDEVICE_TYPE_GAMEPAD);      char* sclDeviceVle;
-  DWORD dwDeviceKeyboard    = XGetDevices(XDEVICE_TYPE_DEBUG_KEYBOARD);   char* sclDeviceKeyb;
-  DWORD dwDeviceMouse     = XGetDevices(XDEVICE_TYPE_DEBUG_MOUSE);    char* sclDeviceMouse;
-  DWORD dwDeviceHeadPhone   = XGetDevices(XDEVICE_TYPE_VOICE_HEADPHONE);  char* sclDeviceHeadPhone;
-  DWORD dwDeviceMicroPhone  = XGetDevices(XDEVICE_TYPE_VOICE_MICROPHONE); char* sclDeviceMicroPhone;
-  DWORD dwDeviceMemory    = XGetDevices(XDEVICE_TYPE_MEMORY_UNIT);    char* sclDeviceMemory;
-  DWORD dwDeviceIRRemote    = XGetDevices(XDEVICE_TYPE_IR_REMOTE);      char* sclDeviceIRRemote;
-
-  CStdString strlblGamePads = g_localizeStrings.Get(13163); //"GamePads On Port:";
-  CStdString strlblKeyboard = g_localizeStrings.Get(13164); //"Keyboard On Port:";
-  CStdString strlblMouse    = g_localizeStrings.Get(13165); //"Mouse On Port:";
-  CStdString strlblHeadMicro  = g_localizeStrings.Get(13166); //"Head/MicroPhone On Ports:";
-  CStdString strlblMemoryStk  = g_localizeStrings.Get(13167); //"MemoryStick On Port:";
-  CStdString strlblIRRemote = g_localizeStrings.Get(13168); //"IR-Remote On Port:";
-
-  if (dwDeviceGamePad > 0)
-  {
-    switch (dwDeviceGamePad)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceVle = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceVle = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceVle = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceVle = "4";
-      break;
-    case 3:   // Values 3 ->  on Port 1&2
-      sclDeviceVle = "1, 2";
-      break;
-    case 5:   // Values 5 ->  on Port 1&3
-      sclDeviceVle = "1, 3";
-      break;
-    case 6:   // Values 6 ->  on Port 2&3
-      sclDeviceVle = "2, 3";
-      break;
-    case 7:   // Values 7 ->  on Port 1&2&3
-      sclDeviceVle = "1, 2, 3";
-      break;
-    case 9:   // Values 9  -> on Port 1&4
-      sclDeviceVle = "1, 4";
-      break;
-    case 10:  // Values 10 -> on Port 2&4
-      sclDeviceVle = "2, 4";
-      break;
-    case 11:  // Values 11 -> on Port 1&2&4
-      sclDeviceVle = "1, 2, 4";
-      break;
-    case 12:  // Values 12 -> on Port 3&4
-      sclDeviceVle = "3, 4";
-      break;
-    case 13:  // Values 13 -> on Port 1&3&4
-      sclDeviceVle = "1, 3, 4";
-      break;
-    case 14:  // Values 14 -> on Port 2&3&4
-      sclDeviceVle = "2, 3, 4";
-      break;
-    case 15:  // Values 15 -> on Port 1&2&3&4
-      sclDeviceVle = "1, 2, 3, 4";
-      break;
-    default:
-      sclDeviceVle = "-";
-    }
-  }
-  else sclDeviceVle = "0";
-  if (dwDeviceKeyboard > 0)
-  {
-    switch (dwDeviceKeyboard)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceKeyb = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceKeyb = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceKeyb = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceKeyb = "4";
-      break;
-    default:
-      sclDeviceKeyb = "-";
-    }
-  }
-  else sclDeviceKeyb = "0";
-  if (dwDeviceMouse > 0)
-  {
-    switch (dwDeviceMouse)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceMouse = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceMouse = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceMouse = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceMouse = "4";
-      break;
-    default:
-      sclDeviceMouse = "-";
-    }
-  }
-  else sclDeviceMouse = "0";
-  if (dwDeviceHeadPhone > 0)
-  {
-    switch (dwDeviceHeadPhone)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceHeadPhone = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceHeadPhone = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceHeadPhone = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceHeadPhone = "4";
-      break;
-    default:
-      sclDeviceHeadPhone = "-";
-    }
-  }
-  else sclDeviceHeadPhone = "0";
-  if (dwDeviceMicroPhone > 0)
-  {
-    switch (dwDeviceMicroPhone)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceMicroPhone = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceMicroPhone = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceMicroPhone = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceMicroPhone = "4";
-      break;
-    default:
-      sclDeviceMicroPhone = "-";
-    }
-  }
-  else sclDeviceMicroPhone ="0";
-  if (dwDeviceMemory > 0)
-  {
-    switch (dwDeviceMemory)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceMemory = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceMemory = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceMemory = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceMemory = "4";
-      break;
-    case 3:   // Values 3 ->  on Port 1&2
-      sclDeviceMemory = "1, 2";
-      break;
-    case 5:   // Values 5 ->  on Port 1&3
-      sclDeviceMemory = "1, 3";
-      break;
-    case 6:   // Values 6 ->  on Port 2&3
-      sclDeviceMemory = "2, 3";
-      break;
-    case 7:   // Values 7 ->  on Port 1&2&3
-      sclDeviceMemory = "1, 2, 3";
-      break;
-    case 9:   // Values 9  -> on Port 1&4
-      sclDeviceMemory = "1, 4";
-      break;
-    case 10:  // Values 10 -> on Port 2&4
-      sclDeviceMemory = "2, 4";
-      break;
-    case 11:  // Values 11 -> on Port 1&2&4
-      sclDeviceMemory = "1, 2, 4";
-      break;
-    case 12:  // Values 12 -> on Port 3&4
-      sclDeviceMemory = "3, 4";
-      break;
-    case 13:  // Values 13 -> on Port 1&3&4
-      sclDeviceMemory = "1, 3, 4";
-      break;
-    case 14:  // Values 14 -> on Port 2&3&4
-      sclDeviceMemory = "2, 3, 4";
-      break;
-    case 15:  // Values 15 -> on Port 1&2&3&4
-      sclDeviceMemory = "1, 2, 3, 4";
-      break;
-    default:
-      sclDeviceMemory = "-";
-    }
-  }
-  else sclDeviceMemory = "0";
-  if(dwDeviceIRRemote > 0)
-  {
-    switch (dwDeviceIRRemote)
-    {
-    case 1:   // Values 1 ->  on Port 1
-      sclDeviceIRRemote = "1";
-      break;
-    case 2:   // Values 2 ->  on Port 2
-      sclDeviceIRRemote = "2";
-      break;
-    case 4:   // Values 4 ->  on Port 3
-      sclDeviceIRRemote = "3";
-      break;
-    case 8:   // Values 8 ->  on Port 4
-      sclDeviceIRRemote = "4";
-      break;
-    default:
-      sclDeviceIRRemote = "-";
-    }
-  }
-  else sclDeviceIRRemote = "0";
-
-  CStdString strItem1, strItem2, strItem3, strItem4;
-  CStdString strItem5, strItem6, strItem7, strItem8;
-
-  strItem1.Format("%s %s", strlblGamePads, sclDeviceVle);
-  strItem2.Format("%s %s", strlblKeyboard, sclDeviceKeyb);
-  strItem3.Format("%s %s", strlblMouse, sclDeviceMouse);
-  strItem4.Format("%s %s %s", dwDeviceGamePad == 0 ? "" : strItem1, 
-                              dwDeviceKeyboard == 0 ? "" : strItem2, 
-                              dwDeviceMouse == 0 ? "" : strItem3);
-
-  strItem5.Format("%s %s",  strlblIRRemote, sclDeviceIRRemote);
-  //strItem6.Format("%s %s-%s", strlblHeadMicro, sclDeviceHeadPhone, sclDeviceMicroPhone );
-  strItem6.Format("%s %s", strlblHeadMicro, sclDeviceHeadPhone, sclDeviceMicroPhone );  // Head and Micro are normly on the same port!
-  strItem7.Format("%s %s", dwDeviceIRRemote == 0 ? "" : strItem5,
-                           dwDeviceHeadPhone == 0 ? "" : strItem6);
-
-  // !? Show Memory stick, because it only shows with USB->MemoryStick adapter!
-  strItem8.Format("%s %s", strlblMemoryStk, sclDeviceMemory);
-  SET_CONTROL_LABEL(i_lblp3, dwDeviceMemory == 0 ? "" : strItem8); // MemoryStick
-
-  CLog::Log(LOGDEBUG,"- GamePads are Connected on Port:   %s (%d)", sclDeviceVle, dwDeviceGamePad );
-  CLog::Log(LOGDEBUG,"- Keyboard is Connected on Port:    %s (%d)", sclDeviceKeyb, dwDeviceKeyboard);
-  CLog::Log(LOGDEBUG,"- Mouse is Connected on Port:       %s (%d)", sclDeviceMouse, dwDeviceMouse);
-  CLog::Log(LOGDEBUG,"- IR-Remote is Connected on Port:   %s (%d)", sclDeviceIRRemote, dwDeviceIRRemote);
-  CLog::Log(LOGDEBUG,"- Head Phone is Connected on Port:  %s (%d)", sclDeviceHeadPhone, dwDeviceHeadPhone);
-  CLog::Log(LOGDEBUG,"- Micro Phone is Connected on Port: %s (%d)", sclDeviceMicroPhone, dwDeviceMicroPhone);
-  CLog::Log(LOGDEBUG,"- MemoryStick is Connected on Port: %d (%d)", dwDeviceMemory, dwDeviceMemory);
-
-  SET_CONTROL_LABEL(i_lblp1, strItem4); // GamePad, Keyboard, Mouse
-  SET_CONTROL_LABEL(i_lblp2, strItem7); // Remote, Headset & MicroPhone
-  return true;
-}
-
 void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
 {
   char backup_path[MAX_PATH];
@@ -1298,8 +783,6 @@ void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
   wsprintf(backup_path, "Q:\\%s\\EEPROMBackup.cfg", BackupFilePrefix);
   m_pXKEEPROM->WriteToCFGFile(backup_path);
 }
-
-#define SYSINFO_TMP_SIZE 256
 
 void CGUIWindowSystemInfo::WriteTXTInfoFile(LPCSTR strFilename)
 {
@@ -1425,42 +908,5 @@ void CGUIWindowSystemInfo::WriteTXTInfoFile(LPCSTR strFilename)
   }
   delete[] tmpFileStr;
   CloseHandle(hf);
-}
-
-
-bool CGUIWindowSystemInfo::GetSystemUpTime(CStdString& strSystemUptime)
-{
-  CStdString lbl1 = g_localizeStrings.Get(12390);
-  CStdString lblMin = g_localizeStrings.Get(12391);
-  CStdString lblHou = g_localizeStrings.Get(12392);
-  CStdString lblDay = g_localizeStrings.Get(12393);
-
-  int iInputMinutes, iMinutes,iHours,iDays;
-  iInputMinutes = (int)(timeGetTime() / 60000);
-  CSysInfo::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  // Will Display Autodetected Values!
-  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes, lblMin);
-
-  return true;
-}
-
-bool CGUIWindowSystemInfo::GetSystemTotalUpTime(CStdString& strSystemUptime)
-{
-  CStdString lbl1 = g_localizeStrings.Get(12394);
-  CStdString lblMin = g_localizeStrings.Get(12391);
-  CStdString lblHou = g_localizeStrings.Get(12392);
-  CStdString lblDay = g_localizeStrings.Get(12393);
-
-  int iInputMinutes, iMinutes,iHours,iDays;
-  iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
-  CSysInfo::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  // Will Display Autodetected Values!
-  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes, lblMin);
-
-  return true;
 }
 #endif
