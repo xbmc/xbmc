@@ -381,7 +381,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
   }
   else //if (g_guiSettings.GetInt("lcd.type")==LCD_TYPE_LCD_HD44780)
   {
-    if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3"))
+    if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3"))
     {
       float fBackLight=((float)level)/100.0f;
       fBackLight*=127.0f;
@@ -389,7 +389,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
       if (iNewLevel==63) iNewLevel=64;
       _outp(DISP_O_LIGHT, iNewLevel&127);
     }
-    else if (CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
+    else if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
     {
       float fBackLight=((float)level)/100.0f;
       fBackLight*=127.0f;
@@ -418,7 +418,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 
   float fBackLight=((float)level)/100.0f;
   
-  if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
+  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
   {   
     if (level<0 || level>99) level=99;
     level = (99-level);
@@ -429,7 +429,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 
     _outp(0xF701, iNewLevel&127|128);
  	}
-  else if ( CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
+  else if ( g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
     if (level<0 || level>99) level=99;
     level = (99-level);
