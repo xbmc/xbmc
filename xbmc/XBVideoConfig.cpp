@@ -384,6 +384,7 @@ void XBVideoConfig::Save()
 
   ExQueryNonVolatileSetting(XC_VIDEO_FLAGS, &type, (PULONG)&eepVideoFlags, 4, &size);
 
+  eepVideoFlags &= ~(0x5F << 16);
   eepVideoFlags |= ((m_dwVideoFlags & 0x5F) << 16);
 
   ExSaveNonVolatileSetting(XC_VIDEO_FLAGS, &type, (PULONG)&eepVideoFlags, 4);
