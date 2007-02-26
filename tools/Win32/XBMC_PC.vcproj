@@ -1466,12 +1466,6 @@
 					RelativePath="..\..\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMovies.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMovies.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.cpp">
 				</File>
 				<File
