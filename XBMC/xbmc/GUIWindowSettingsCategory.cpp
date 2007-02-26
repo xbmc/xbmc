@@ -269,6 +269,25 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_audioConfig.Save();
         }
       }
+      switch(g_guiSettings.GetInt("videooutput.aspect"))
+      {
+      case VIDEO_NORMAL:
+        g_videoConfig.SetNormal();
+        break;
+      case VIDEO_LETTERBOX:
+        g_videoConfig.SetLetterbox(true);
+        break;
+      case VIDEO_WIDESCREEN:
+        g_videoConfig.SetWidescreen(true);
+        break;
+      }
+      g_videoConfig.Set480p(g_guiSettings.GetBool("videooutput.hd480p"));
+      g_videoConfig.Set720p(g_guiSettings.GetBool("videooutput.hd720p"));
+      g_videoConfig.Set1080i(g_guiSettings.GetBool("videooutput.hd1080i"));
+
+      if (g_videoConfig.NeedsSave())
+        g_videoConfig.Save();
+
       CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
       FreeControls();
@@ -409,6 +428,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(338), AUDIO_ANALOG);
       if (g_audioConfig.HasDigitalOutput())
         pControl->AddLabel(g_localizeStrings.Get(339), AUDIO_DIGITAL);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("videooutput.aspect"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
+      pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
+      pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("cddaripper.encoder"))
@@ -758,6 +786,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+    }
+    else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      // disable if we do not have the HDTV pack
+      if (pControl) pControl->SetEnabled(XGetAVPack() == XC_AV_PACK_HDTV);
     }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
     {
