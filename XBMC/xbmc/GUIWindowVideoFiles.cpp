@@ -797,7 +797,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
     m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
     // get & save thumbnail
     CStdString strThumb = "";
-    CStdString strImage = movieDetails.m_strPictureURL;
+    CStdString strImage = movieDetails.m_strPictureURL.m_url;
     if (strImage.size() > 0)
     {
       // check for a cached thumb or user thumb
