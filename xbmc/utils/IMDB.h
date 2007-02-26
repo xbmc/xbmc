@@ -46,7 +46,7 @@ public:
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;
   CStdString m_strPlot;
-  CStdString m_strPictureURL;
+  CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
   vector< pair<CStdString, CStdString> > m_cast;
