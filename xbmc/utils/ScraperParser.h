@@ -11,8 +11,9 @@ public:
   CScraperUrl(const TiXmlElement*);
   CScraperUrl();
 	~CScraperUrl();
-  void ParseString(CStdString);
-  void ParseElement(const TiXmlElement*);
+  bool ParseString(CStdString);
+  bool ParseElement(const TiXmlElement*);
+  void Clear();
   CStdString m_spoof;
   CStdString m_url;
   bool m_post;

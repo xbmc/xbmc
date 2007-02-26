@@ -339,7 +339,7 @@ void CGUIWindowVideoInfo::Refresh()
   {
     OutputDebugString("Refresh\n");
 
-    CStdString strImage = m_Movie.m_strPictureURL;
+    CStdString strImage = m_Movie.m_strPictureURL.m_url;
 
     CStdString thumbImage = m_movieItem.GetThumbnailImage();
     if (!m_movieItem.HasThumbnail())
@@ -491,20 +491,21 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   // and then a thumb chooser should be presented, with the current thumb
   // and the downloaded thumbs available (possibly also with a generic
   // file browse option?)
-  if (m_Movie.m_strPictureURL.IsEmpty())
+  if (m_Movie.m_strPictureURL.m_url.IsEmpty())
     return false;
 
   CStdString strExtension;
-  CUtil::GetExtension(m_Movie.m_strPictureURL, strExtension);
+  CUtil::GetExtension(m_Movie.m_strPictureURL.m_url, strExtension);
   CStdString strTemp = "Z:\\temp";
   strTemp += strExtension;
   ::DeleteFile(strTemp.c_str());
   CHTTP http;
   // replace m.jpg with f.jpg for the full image
-  CStdString url = m_Movie.m_strPictureURL;
+  CStdString url = m_Movie.m_strPictureURL.m_url;
   url.Replace("m.jpg", "f.jpg");
+  http.SetReferer(m_Movie.m_strPictureURL.m_spoof);
   if (!http.Download(url, strTemp))
-    http.Download(m_Movie.m_strPictureURL, strTemp);
+    http.Download(m_Movie.m_strPictureURL.m_url, strTemp);
 
   try
   {
