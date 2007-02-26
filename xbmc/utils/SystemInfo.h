@@ -54,11 +54,10 @@ class CSysInfo
     static char* ReturnBiosName(char *buffer, char *str);
     static char* ReturnBiosSign(char *buffer, char *str);
     static char* CheckMD5 (struct Bios *Listone, char *Sign);
-    static char* MDPrint (MD5_CTX *mdContext);
     static char* MD5Buffer(char *filename,long PosizioneInizio,int KBytes);
     static CStdString MD5BufferNew(char *filename,long PosizioneInizio,int KBytes);
 
-    static char MD5_Sign[16];
+    static char MD5_Sign[32 + 1];
 
     // Folder where the Bios Detections Files Are!
     static const char *cTempBIOSFile;

@@ -35,39 +35,22 @@
 
 const char * CSysInfo::cTempBIOSFile = "Q:\\System\\SystemInfo\\BiosBackup.bin";
 const char * CSysInfo::cBIOSmd5IDs   = "Q:\\System\\SystemInfo\\BiosIDs.ini";
-char CSysInfo::MD5_Sign[16];
+char CSysInfo::MD5_Sign[32 + 1];
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #define XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
 
-char* CSysInfo::MDPrint (MD5_CTX *mdContext)
-{
-  ZeroMemory(MD5_Sign, 16);
-  int i;
-  char carat[10],tmpcarat;
-  for (i = 0; i < 16; i++)
-  {
-    ultoa(mdContext->digest[i],carat,16);
-    if (strlen(carat)==1 )
-    {
-      tmpcarat = carat[0];
-      carat[0] = '0';
-      carat[1] = tmpcarat;
-      carat[2] = '\0';
-    }
-    strcat(MD5_Sign,carat);
-  }
-  return (strupr(MD5_Sign));
-}
-
 char* CSysInfo::MD5Buffer(char *buffer, long PosizioneInizio,int KBytes)
 {
   MD5_CTX mdContext;
+  unsigned char md5sum[16];
+  char md5sumstring[33] = "";
   MD5Init (&mdContext);
   MD5Update(&mdContext, (unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
-  MD5Final (&mdContext);
-  strcpy(MD5_Sign, MDPrint(&mdContext));
+  MD5Final (md5sum, &mdContext);
+  XKGeneral::BytesToHexStr(md5sum, 16, md5sumstring);
+  strcpy(MD5_Sign, md5sumstring);
   return MD5_Sign;
 }
 
@@ -75,10 +58,13 @@ CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
 {
   CStdString strReturn;
   MD5_CTX mdContext;
+  unsigned char md5sum[16];
+  char md5sumstring[33] = "";
   MD5Init (&mdContext);
   MD5Update(&mdContext, (unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
-  MD5Final (&mdContext);
-  strReturn.Format("%s", MDPrint(&mdContext));
+  MD5Final (md5sum, &mdContext);
+  XKGeneral::BytesToHexStr(md5sum, 16, md5sumstring);
+  strReturn.Format("%s", md5sumstring);
   return strReturn;
 }
 CStdString CSysInfo::GetAVPackInfo()
