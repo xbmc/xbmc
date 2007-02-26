@@ -23,18 +23,23 @@
 
 #include "../xbox/XKUtils.h"
 #include "../xbox/xkhdd.h"
-#include "../xbox/xkeeprom.h"
 #include "../xbox/XKflash.h"
 #include "../xbox/XKRC4.h"
 #include "../settings.h"
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
+#include "../xbox/xkeeprom.h"
+#include "../cores/dllloader/dllloader.h"
 
 #include <conio.h>
 
 const char * CSysInfo::cTempBIOSFile = "Q:\\System\\SystemInfo\\BiosBackup.bin";
 const char * CSysInfo::cBIOSmd5IDs   = "Q:\\System\\SystemInfo\\BiosIDs.ini";
 char CSysInfo::MD5_Sign[16];
+extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
+#define XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
+#define DEBUG_KEYBOARD
+#define DEBUG_MOUSE
 
 char* CSysInfo::MDPrint (MD5_CTX *mdContext)
 {
@@ -748,4 +753,300 @@ bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &
     iHours = iHours - (iDays * 24);
   }
   return true;
+}
+
+CStdString CSysInfo::GetMPlayerVersion()
+{
+  CStdString strVersion="";
+  DllLoader* mplayerDll;
+  const char* (__cdecl* pMplayerGetVersion)();
+  const char* (__cdecl* pMplayerGetCompileDate)();
+  const char* (__cdecl* pMplayerGetCompileTime)();
+
+  const char *version = NULL;
+  const char *date = NULL;
+  const char *btime = NULL;
+
+  mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
+
+  if( mplayerDll->Parse() )
+  {
+    if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
+      version = pMplayerGetVersion();
+    if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
+      date = pMplayerGetCompileDate();
+    if (mplayerDll->ResolveExport("mplayer_getcompiletime", (void**)&pMplayerGetCompileTime))
+      btime = pMplayerGetCompileTime();
+    if (version && date && btime)
+    {
+      strVersion.Format("%s (%s - %s)",version, date, btime);
+    }
+    else if (version)
+    {
+      strVersion.Format("%s",version);
+    }
+  }
+  delete mplayerDll;
+  mplayerDll=NULL;
+  return strVersion;
+}
+CStdString CSysInfo::GetKernelVersion()
+{
+  CStdString strKernel;
+  strKernel.Format("%s %d.%d.%d.%d",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
+  return strKernel;
+}
+CStdString CSysInfo::GetSystemTotalUpTime()
+{
+  CStdString strSystemUptime;
+  CStdString lbl1 = g_localizeStrings.Get(12394);
+  CStdString lblMin = g_localizeStrings.Get(12391);
+  CStdString lblHou = g_localizeStrings.Get(12392);
+  CStdString lblDay = g_localizeStrings.Get(12393);
+
+  int iInputMinutes, iMinutes,iHours,iDays;
+  iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+  SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  // Will Display Autodetected Values!
+  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes, lblMin);
+  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes, lblMin);
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes, lblMin);
+
+  return strSystemUptime;
+}
+CStdString CSysInfo::GetSystemUpTime()
+{
+  CStdString strSystemUptime;
+  CStdString lbl1 = g_localizeStrings.Get(12390);
+  CStdString lblMin = g_localizeStrings.Get(12391);
+  CStdString lblHou = g_localizeStrings.Get(12392);
+  CStdString lblDay = g_localizeStrings.Get(12393);
+
+  int iInputMinutes, iMinutes,iHours,iDays;
+  iInputMinutes = (int)(timeGetTime() / 60000);
+  CSysInfo::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  // Will Display Autodetected Values!
+  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes, lblMin);
+  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes, lblMin);
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes, lblMin);
+
+  return strSystemUptime;
+}
+CStdString CSysInfo::GetCPUFreqInfo()
+{
+  CStdString strCPUFreq;
+  double CPUFreq;
+  CStdString lblCPUSpeed  = g_localizeStrings.Get(13284);
+  CPUFreq                 = GetCPUFrequency();
+  strCPUFreq.Format("%s %4.2f Mhz.", lblCPUSpeed, CPUFreq);
+  return strCPUFreq;
+}
+CStdString CSysInfo::GetXBVerInfo()
+{
+  CStdString strXBoxVer;
+  CStdString strXBOXVersion;
+  CStdString lblXBver   =  g_localizeStrings.Get(13288);
+  if (GetXBOXVersionDetected(strXBOXVersion))
+  {
+    strXBoxVer.Format("%s %s", lblXBver,strXBOXVersion);
+    CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
+  }
+  else 
+  {
+    strXBoxVer.Format("%s %s", lblXBver,g_localizeStrings.Get(13205)); // "Unknown"
+    CLog::Log(LOGDEBUG,"XBOX Version: %s",g_localizeStrings.Get(13205).c_str());
+  }
+  return strXBoxVer;
+}
+CStdString CSysInfo::GetUnits(int iFrontPort)
+{
+  // Get the Connected Units on the Front USB Ports!
+  DWORD dwDeviceGamePad = XGetDevices(XDEVICE_TYPE_GAMEPAD);
+  DWORD dwDeviceKeyboard = XGetDevices(XDEVICE_TYPE_DEBUG_KEYBOARD);
+  DWORD dwDeviceMouse = XGetDevices(XDEVICE_TYPE_DEBUG_MOUSE);
+  DWORD dwDeviceHeadPhone = XGetDevices(XDEVICE_TYPE_VOICE_HEADPHONE);
+  DWORD dwDeviceMicroPhone = XGetDevices(XDEVICE_TYPE_VOICE_MICROPHONE);
+  DWORD dwDeviceMemory = XGetDevices(XDEVICE_TYPE_MEMORY_UNIT);
+  DWORD dwDeviceIRRemote = XGetDevices(XDEVICE_TYPE_IR_REMOTE);
+
+  // Values 1 ->  on Port 1
+  // Values 2 ->  on Port 2
+  // Values 4 ->  on Port 3
+  // Values 8 ->  on Port 4
+  // Values 3 ->  on Port 1&2
+  // Values 5 ->  on Port 1&3
+  // Values 6 ->  on Port 2&3
+  // Values 7 ->  on Port 1&2&3
+  // Values 9  -> on Port 1&4
+  // Values 10 -> on Port 2&4
+  // Values 11 -> on Port 1&2&4
+  // Values 12 -> on Port 3&4
+  // Values 13 -> on Port 1&3&4
+  // Values 14 -> on Port 2&3&4
+  // Values 15 -> on Port 1&2&3&4
+
+  bool bPad=false, bMem=false, bKeyb=false, bMouse=false, bHeadSet=false, bMic=false, bIR=false;
+  if (iFrontPort == 1)
+  {
+    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 1 || dwDeviceGamePad == 3 || dwDeviceGamePad == 5 || dwDeviceGamePad == 7 || dwDeviceGamePad == 9 || dwDeviceGamePad == 11 || dwDeviceGamePad == 13 || dwDeviceGamePad == 15 )
+    {
+      //OK hier hängt ein GamePad
+      bPad=true;
+    }
+    if( dwDeviceMemory > 0 && dwDeviceMemory == 1 || dwDeviceMemory == 3 || dwDeviceMemory == 5 || dwDeviceMemory == 7 || dwDeviceMemory == 9 || dwDeviceMemory == 11 || dwDeviceMemory == 13 || dwDeviceMemory == 15 )
+    {
+      //OK hier hängt ein MemCard
+      bMem=true;
+    }
+    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 1 )
+    {
+      //OK hier hängt ein Keyboard
+      bKeyb=true;
+    }
+    if( dwDeviceMouse > 0 && dwDeviceMouse == 1 )
+    {
+      //OK hier hängt eine Maus
+      bMouse=true;
+    }
+    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 1 )
+    {
+      //OK hier hängt eine HeadSet
+      bHeadSet=true;
+    }
+    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 1 )
+    {
+      //OK hier hängt eine Micro
+      bMic=true;
+    }
+    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 1 )
+    {
+      //OK hier hängt eine Remote
+      bIR=true;
+    }
+  }
+  else if (iFrontPort == 2)
+  {
+    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 2 || dwDeviceGamePad == 3 || dwDeviceGamePad == 6 || dwDeviceGamePad == 7 || dwDeviceGamePad == 10 || dwDeviceGamePad == 11 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15 )
+    {
+      //OK hier hängt ein GamePad
+      bPad=true;
+    }
+    if( dwDeviceMemory > 0 && dwDeviceMemory == 2 || dwDeviceMemory == 3 || dwDeviceMemory == 6 || dwDeviceMemory == 7 || dwDeviceMemory == 10 || dwDeviceMemory == 11 || dwDeviceMemory == 14 || dwDeviceMemory == 15 )
+    {
+      //OK hier hängt ein MemCard
+      bMem=true;
+    }
+    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 2 )
+    {
+      //OK hier hängt ein Keyboard
+      bKeyb=true;
+    }
+    if( dwDeviceMouse > 0 && dwDeviceMouse == 2 )
+    {
+      //OK hier hängt eine Maus
+       bMouse=true;
+    }
+    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 2 )
+    {
+      //OK hier hängt eine HeadSet
+      bHeadSet=true;
+    }
+    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 2 )
+    {
+      //OK hier hängt eine Micro
+    }
+    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 2 )
+    {
+      //OK hier hängt eine Micro
+       bMic=true;
+    }
+  }
+  else if (iFrontPort == 3)
+  {
+    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 4 || dwDeviceGamePad == 5 || dwDeviceGamePad == 6 || dwDeviceGamePad == 7 || dwDeviceGamePad == 12 || dwDeviceGamePad == 13 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15 )
+    {
+      //OK hier hängt ein GamePad
+      bPad=true;
+    }
+    if( dwDeviceMemory > 0 && dwDeviceMemory == 4 || dwDeviceMemory == 5 || dwDeviceMemory == 6 || dwDeviceMemory == 7 || dwDeviceMemory == 12 || dwDeviceMemory == 13 || dwDeviceMemory == 14 || dwDeviceMemory == 15 )
+    {
+      //OK hier hängt ein MemCard
+      bMem=true;
+    }
+    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 4 )
+    {
+      //OK hier hängt ein Keyboard
+      bKeyb=true;
+    }
+    if( dwDeviceMouse > 0 && dwDeviceMouse == 4 )
+    {
+      //OK hier hängt eine Maus
+       bMouse=true;
+    }
+    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 4 )
+    {
+      //OK hier hängt eine HeadSet
+      bHeadSet=true;
+    }
+    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 4 )
+    {
+      //OK hier hängt eine Micro
+      bMic=true;
+    }
+    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 4 )
+    {
+      //OK hier hängt eine Micro
+       bIR=true;
+    }
+  }
+  else if (iFrontPort == 4)
+  {
+    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 8 || dwDeviceGamePad == 9 || dwDeviceGamePad == 10 || dwDeviceGamePad == 11 || dwDeviceGamePad == 12 || dwDeviceGamePad == 13 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15 )
+    {
+      //OK hier hängt ein GamePad
+      bPad=true;
+    }
+    if( dwDeviceMemory > 0 && dwDeviceMemory == 8 || dwDeviceMemory == 9 || dwDeviceMemory == 10 || dwDeviceMemory == 11 || dwDeviceMemory == 12 || dwDeviceMemory == 13 || dwDeviceMemory == 14 || dwDeviceMemory == 15 )
+    {
+      //OK hier hängt ein MemCard
+      bMem=true;
+    }
+    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 8 )
+    {
+      //OK hier hängt ein Keyboard
+      bKeyb=true;
+    }
+    if( dwDeviceMouse > 0 && dwDeviceMouse == 8 )
+    {
+      //OK hier hängt eine Maus
+      bMouse=true;
+    }
+    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 8 )
+    {
+      //OK hier hängt eine HeadSet
+      bHeadSet=true;
+    }
+    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 8 )
+    {
+      //OK hier hängt eine Micro
+      bMic=true;
+    }
+    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 8 )
+    {
+      //OK hier hängt eine Micro
+      bIR=true;
+    }
+  }
+  
+  CStdString strReturn;
+  strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort, 
+    bPad ? g_localizeStrings.Get(13163):"", bPad && bKeyb ? ",":"", 
+    bKeyb ? g_localizeStrings.Get(13164):"", bKeyb && bMouse ? ",":"",
+    bMouse ? g_localizeStrings.Get(13165):"", bMouse && (bHeadSet || bMic) ? ",":"",
+    bHeadSet || bMic ? g_localizeStrings.Get(13166):"", (bHeadSet || bMic) && bMem ? ",":"",
+    bMem ? g_localizeStrings.Get(13167):"", bMem && bIR ? ",":"",
+    bIR ? g_localizeStrings.Get(13168):""
+    );
+  
+  return strReturn;
 }
