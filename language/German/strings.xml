@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 02/19/2007-->
+<!--Date of translation: 02/23/2007-->
 <!--$Revision$-->
 <!--Based on english strings version 7860-->
 <strings>
@@ -131,8 +131,8 @@
   <string id="194">Durchsuche...</string>
   <string id="195">Es wurde kein IMDb-Eintrag gefunden!</string>
   <string id="196">Video auswählen:</string>
-  <string id="197">IMDb-Informationen werden abgefragt...</string>
-  <string id="198">Lade Video-Informationen...</string>
+  <string id="197">Film-Informationen werden abgefragt...</string>
+  <string id="198">Lade Film-Informationen...</string>
   <string id="199">Regisseur:</string>
   <string id="200">Verfasser:</string>
   <string id="201">Jahr:</string>
@@ -935,7 +935,7 @@
   <string id="13344">Zyklisch</string>
   <string id="13345">LED während der Wiedergabe ausschalten</string>
   <string id="13346">Film-Informationen</string>
-  <string id="13347">Zur Playlist hinzufügen</string>
+  <string id="13347">In Playlist einreihen</string>
   <string id="13348">Film in IMDb suchen...</string>
   <string id="13349">Datenbank aktualisieren</string>
   <string id="13350">Playlist anzeigen</string>
@@ -1160,11 +1160,11 @@
   <string id="15265">Größte Fans von %name%</string>
   <string id="15266">%name% Fan Last.fm Radio anhören</string>
   <string id="15267">Ähnliche Interpreten wie %name% im Last.fm Radio anhören</string>
-  <string id="15268">Lieblingsinterpreten des Benutzers %name%</string>
-  <string id="15269">Lieblingsalben des Benutzers %name%</string>
-  <string id="15270">Lieblingstitel des Benutzers %name%</string>
-  <string id="15271">Freunde des Benutzers %name%</string>
-  <string id="15272">Nachbarn des Benutzers %name%</string>
+  <string id="15268">Lieblingsinterpreten von %name%</string>
+  <string id="15269">Lieblingsalben von %name%</string>
+  <string id="15270">Lieblingstitel von %name%</string>
+  <string id="15271">Freunde von %name%</string>
+  <string id="15272">Nachbarn von %name%</string>
   <string id="15273">Wöchentliche Interpretencharts von %name%</string>
   <string id="15274">Wöchentliche Albumcharts von %name%</string>
   <string id="15275">Wöchentliche Titelcharts von %name%</string>
@@ -1176,7 +1176,7 @@
   <string id="15281">Bitte geben Sie einen zu suchenden Interpreten ein</string>
   <string id="15282">Bitte geben Sie einen zu suchenden Tagnamen ein</string>
   <string id="15283">Kürzlich gehörte Titel von %name%</string>
-  <string id="15284">%name%'s Last.fm Radio Empfehlung anhören</string>
+  <string id="15284">Last.fm Radio Empfehlungen für %name% anhören</string>
   <string id="15300">Der Pfad wurde nicht gefunden oder ist ungültig.</string>
   <string id="15301">Keine Verbindung zum Netzwerkserver.</string>
   <string id="15302">Es wurden keine Server gefunden.</string>
@@ -1246,7 +1246,7 @@
   <string id="20012">Video Playlisten</string>
   <string id="20013">Möchten Sie das Spiel jetzt starten?</string>
   <string id="20014">Nach Playlisten</string>
-  <string id="20015">IMDb Cover</string>
+  <string id="20015">Online-Cover</string>
   <string id="20016">Aktuelles Cover</string>
   <string id="20017">Lokales Cover</string>
   <string id="20018">Kein Cover</string>

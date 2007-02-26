@@ -27,7 +27,7 @@
 #include "GUIDialogNumeric.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
-#include "lib/libscrobbler/md5.h"
+#include "utils/md5.h"
 #include "xbox/xkgeneral.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
@@ -536,12 +536,12 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   // check the password
   if (checkInput == userInput)
   {
-    md5_state_t md5state;
+    MD5_CTX md5state;
     unsigned char md5pword[16];
     char md5pword2[64];
-    md5_init(&md5state);
-    md5_append(&md5state, (unsigned const char *)userInput.c_str(), (int)userInput.size());
-    md5_close(&md5state, md5pword);
+    MD5Init(&md5state);
+    MD5Update(&md5state, (unsigned char *)userInput.c_str(), (int)userInput.size());
+    MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
     newPassword = md5pword2;
     return true;
@@ -581,13 +581,13 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
     if (strPassword == strUserInput)
       return 0;
 
-    md5_state_t md5state;
+    MD5_CTX md5state;
     unsigned char md5pword[16];
     char md5pword2[64];
-    md5_init(&md5state);
-    md5_append(&md5state, (unsigned const char *)strUserInput.c_str(), (int)strUserInput.size());
-    md5_close(&md5state, md5pword);
-    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+    MD5Init(&md5state);
+    MD5Update(&md5state, (unsigned char *)strUserInput.c_str(), (int)strUserInput.size());
+    MD5Final(md5pword, &md5state);
+    XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
     if (strPassword == md5pword2)
       return 0;		// user entered correct password
     else return 1;	// user must have entered an incorrect password
@@ -596,13 +596,13 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   {
     if (!strUserInput.IsEmpty())
     {
-      md5_state_t md5state;
+      MD5_CTX md5state;
       unsigned char md5pword[16];
       char md5pword2[64];
-      md5_init(&md5state);
-      md5_append(&md5state, (unsigned const char *)strUserInput.c_str(), (int)strUserInput.size());
-      md5_close(&md5state, md5pword);
-      XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+      MD5Init(&md5state);
+      MD5Update(&md5state, (unsigned char *)strUserInput.c_str(), (int)strUserInput.size());
+      MD5Final(md5pword, &md5state);
+      XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
 
       strPassword = md5pword2;
       return 0; // user entered correct password

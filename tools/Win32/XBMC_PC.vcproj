@@ -1044,6 +1044,9 @@
 					RelativePath="..\..\xbmc\utils\log.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\md5.c">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\MediaManager.cpp">
 				</File>
 				<File

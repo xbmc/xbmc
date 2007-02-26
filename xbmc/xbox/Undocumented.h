@@ -583,8 +583,13 @@ extern "C"
     LIST_ENTRY TimerListEntry;
     struct _KDPC *Dpc;
     LONG Period;
-  }
-  KTIMER, *PKTIMER;
+  } KTIMER, *PKTIMER;
+
+  typedef struct _XBOX_REFURB_INFO {
+    ULONG Signature;
+    ULONG PowerCycleCount;
+    LARGE_INTEGER FirstBootTime;
+  } XBOX_REFURB_INFO;
 
   // XBE stuff
   // Not used in any exported kernel calls, but still useful.
@@ -1413,6 +1418,15 @@ extern "C"
     IN BOOLEAN DebugStack,
     IN PKSTART_ROUTINE StartRoutine
   );
+
+  NTSYSAPI
+  EXPORTNUM(25)
+  NTSTATUS
+  NTAPI
+  ExReadWriteRefurbInfo(
+    OUT XBOX_REFURB_INFO* RefurbInfo,
+    IN ULONG ValueLength,
+    IN BOOLEAN DoWrite);
 
   NTSYSAPI
   NTSTATUS

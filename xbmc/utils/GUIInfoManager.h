@@ -103,6 +103,26 @@
 
 // reserved for systeminfo stuff
 #define SYSTEM_HDD_SMART            150
+#define SYSTEM_HDD_TEMPERATURE      151
+#define SYSTEM_HDD_MODEL            152
+#define SYSTEM_HDD_SERIAL           153
+#define SYSTEM_HDD_FIRMWARE         154
+#define SYSTEM_HDD_PASSWORD         156
+#define SYSTEM_HDD_LOCKSTATE        157
+#define SYSTEM_HDD_LOCKKEY          158
+
+#define SYSTEM_DVD_MODEL            650
+#define SYSTEM_DVD_FIRMWARE         651
+#define SYSTEM_MPLAYER_VERSION      652
+#define SYSTEM_KERNEL_VERSION       653
+#define SYSTEM_UPTIME               654
+#define SYSTEM_TOTALUPTIME          655
+#define SYSTEM_CPUFREQUENCY         656
+#define SYSTEM_XBOX_VERSION         657
+#define SYSTEM_AV_CABLE_PACK_INFO   658
+#define SYSTEM_SCREEN_RESOLUTION    659
+#define SYSTEM_VIDEO_ENCODER_INFO   660
+
 #define SYSTEM_INTERNET_STATE       159
 //
 
@@ -316,7 +336,6 @@ public:
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
-  CStdString GetHDDSmart(int iSmartRequest);
   bool SystemHasInternet();
   CStdString SystemHasInternet_s();
   
@@ -332,6 +351,9 @@ public:
   bool m_performingSeek;
 
   string GetSystemHeatInfo(const CStdString &strInfo);
+  CStdString GetATAInfo(int info);
+  CStdString SystemInfoValues(int info);
+
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
 
@@ -385,6 +407,30 @@ protected:
   int m_fanSpeed;
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
+  
+  // hdd stuff
+  DWORD m_lastHddInfoTime;
+  BYTE b_HddTemp;
+  CStdString strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState;
+  bool m_hddRequest;
+  CStdString strDVDModel, strDVDFirmware;
+  bool m_dvdRequest;
+  bool b_ata_request;
+
+  DWORD m_lastSysInfoTime;
+  CStdString m_mplayerversion;
+  CStdString m_kernelversion;
+  CStdString m_systemuptime;
+  CStdString m_systemtotaluptime;
+  CStdString m_cpufrequency;
+  CStdString m_xboxversion;
+  CStdString m_avcablepackinfo;
+  CStdString m_videoencoder;
+  bool b_sys_request;
+
+
+
+
 
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;

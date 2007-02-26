@@ -50,6 +50,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_GENRE = 14,
   VIDEODB_ID_DIRECTOR = 15,
   VIDEODB_ID_ORIGINALTITLE = 16,
+  VIDEODB_ID_THUMBURL_SPOOF = 17,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -67,7 +68,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strWritingCredits) },
   { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iYear) },
-  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_url) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strIMDBNumber) },
   { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strRuntime) },
@@ -76,6 +77,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)},
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_spoof) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -269,6 +271,9 @@ public:
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
 
+  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+                         const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
+
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
@@ -276,11 +281,12 @@ public:
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
-  bool GetGenreById(long lIdGenre, CStdString& strGenre);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
   
   int GetMovieCount();
   int GetTvShowCount();
+
+  bool GetGenreById(long lIdGenre, CStdString& strGenre);
 
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);

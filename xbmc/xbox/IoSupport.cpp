@@ -27,6 +27,7 @@
 #ifdef HAS_UNDOCUMENTED
 #ifdef _XBOX
 #include "Undocumented.h"
+#include "../xbox/XKExports.h"
 #else
 #include "ntddcdrm.h"
 #endif
@@ -142,8 +143,6 @@ unsigned int CIoSupport::read_active_partition_table(PARTITION_TABLE *p_table)
 
 CIoSupport::CIoSupport()
 {
-  m_dwLastTrayState = 0;
-
   m_gmXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
   m_rawXferBuffer = NULL;
   if ( m_gmXferBuffer )
@@ -152,10 +151,6 @@ CIoSupport::CIoSupport()
 
 CIoSupport::CIoSupport(CIoSupport& other)
 {
-  m_dwTrayState = other.m_dwTrayState;
-  m_dwTrayCount = other.m_dwTrayCount;
-  m_dwLastTrayState = other.m_dwLastTrayState;
-
   m_gmXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
   m_rawXferBuffer = NULL;
   if ( m_gmXferBuffer )
@@ -334,16 +329,17 @@ HRESULT CIoSupport::CloseTray()
 DWORD CIoSupport::GetTrayState()
 {
 #ifdef _XBOX
+  DWORD dwTrayState, dwTrayCount;
   if (g_advancedSettings.m_usePCDVDROM)
   {
-    m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
+    dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
   }
   else
   {
-    HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
+    HalReadSMCTrayState(&dwTrayState, &dwTrayCount);
   }
 
-  return m_dwTrayState;
+  return dwTrayState;
 #endif
   return DRIVE_NOT_READY;
 }
@@ -351,15 +347,12 @@ DWORD CIoSupport::GetTrayState()
 HRESULT CIoSupport::Shutdown()
 {
 #ifdef _XBOX
-  // fails assertion on debug bios (symptom lockup unless running dr watson
+  // fails assertion on debug bios (symptom lockup unless running dr watson)
   // so you can continue past the failed assertion).
-  //if (IsDebug())
-#ifdef _DEBUG
-  return E_FAIL;
-#else
+  if (IsDebug())
+    return E_FAIL;
   KeRaiseIrqlToDpcLevel();
   HalInitiateShutdown();
-#endif
 #endif
   return S_OK;
 }
@@ -609,9 +602,11 @@ VOID CIoSupport::UpdateDvdrom()
 // returns true if this is a debug machine
 BOOL CIoSupport::IsDebug()
 {
-  // TODO: add the export to enable the following code to work!
-  // return (XboxKrnlVersion->Qfe & 0x8000);
+#ifdef _XBOX
+  return (XboxKrnlVersion->Qfe & 0x8000) || ((DWORD)XboxHardwareInfo & 0x10);
+#else
   return FALSE;
+#endif
 }
 
 VOID CIoSupport::IdexWritePortUchar(USHORT port, UCHAR data)
@@ -696,7 +691,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
   //E:\DevKit\xbplayer\xbplayer.xbe
 
   PANSI_STRING pImageFileName = (PANSI_STRING)XeImageFileName;
-  CIoSupport helper;
+
   char szDevicePath[1024 + 1];
   char szHomeDrive[3];
   char szPartition[50];
@@ -708,12 +703,12 @@ VOID CIoSupport::GetXbePath(char* szDest)
           pImageFileName->Length - 8 ); //get xbepath (without \Device\ prefix)
 
 
-  strcpy(szHomeDrive, helper.GetDrive(szDevicePath).c_str()); //get driveletter of xbepath
+  strcpy(szHomeDrive, GetDrive(szDevicePath).c_str()); //get driveletter of xbepath
   if (szHomeDrive[0])
   {
     //OutputDebugString("homedrive:");OutputDebugString(szHomeDrive);OutputDebugString("\n");
 
-    helper.GetPartition(szHomeDrive, szPartition);  //get patition (ie: Hardisk0\Partition1)
+    GetPartition(szHomeDrive, szPartition);  //get patition (ie: Hardisk0\Partition1)
     //  OutputDebugString("partition:");OutputDebugString(szPartition);OutputDebugString("\n");
     strcpy(szDest, szHomeDrive);      //copy drive letter
     strcat(szDest, ":");          //copy drive letter

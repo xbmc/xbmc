@@ -1,13 +1,13 @@
 /*********************************
 **********************************
-**      BROUGHT TO YOU BY:		**
+**      BROUGHT TO YOU BY:      **
 **********************************
 **********************************
-**								**
-**		  [TEAM ASSEMBLY]		**
-**								**
-**		www.team-assembly.com	**
-**								**
+**                              **
+**       [TEAM ASSEMBLY]        **
+**                              **
+**     www.team-assembly.com    **
+**                              **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -57,10 +57,6 @@ Reason: Prepared 0.2 for Public Release
 Date: 01/06/2003
 By: UNDEAD [team-assembly]
 Reason: Prepared for Public Release
---------------------------------------------------------------------------------------------------------
-Date: 01/12/2004
-By: GeminiServer
-Reason: more features for XBMC! [Code CleaUp and Removed No Need Features!]
 --------------------------------------------------------------------------------------------------------*/
 #include "../stdafx.h"
 #include "XKHDD.h"
@@ -73,22 +69,40 @@ XKHDD::XKHDD()
 {}
 XKHDD::~XKHDD(void)
 {}
+
+// Extra wrapper function make 
+#ifdef _XBOX
+BYTE XKHDD::GetHddSmartTemp()
+{
+  ATA_COMMAND_OBJ hddcommand;
+  ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
+  
+  hddcommand.DATA_BUFFSIZE = 0;
+  hddcommand.IPReg.bFeaturesReg     = 0xd0;    // SEND READ SMART VALUES
+  hddcommand.IPReg.bSectorCountReg  = 1;
+  hddcommand.IPReg.bSectorNumberReg = 1;
+  hddcommand.IPReg.bCylLowReg       = 0x4f;    // SET SMART CYL LOW
+  hddcommand.IPReg.bCylHighReg      = 0xc2;    // SET SMART CYL HI
+  hddcommand.IPReg.bDriveHeadReg    = 0xa0;    // SET Device Where HDD is
+  hddcommand.IPReg.bCommandReg      = 0xb0;    // SET ON IDE SEND SMART MODE;
+
+  SendATACommand(IDE_PRIMARY_PORT, &hddcommand, 0x00);
+  return GetHddSmartTemp((UCHAR *)&hddcommand.DATA_BUFFER);
+}
+#endif
 BYTE XKHDD::GetHddSmartTemp(UCHAR* IDEData)
 {	
 	// S.M.A.R.T Get HDD Temp ID: 194 OFFSET: 0x065 & 0x067
 	BYTE retVal = (BYTE) *(IDEData+SMART_RED_HDD_TEMP2);
 	return retVal;
 }
-WORD XKHDD::GetATABefehle(UCHAR* IDEData, BYTE IDEOffset)
-{
-	WORD retVal = (WORD) *(IDEData+IDEOffset);
-	return retVal;
-}
+
 WORD XKHDD::GetIDENumOfCyls(UCHAR* IDEData)
 {
 	WORD retVal = (WORD) *(IDEData+HDD_NUM_OF_CYLS_OFFSET);
 	return retVal;
 }
+
 WORD XKHDD::GetIDENumOfHeads(UCHAR* IDEData)
 {
 	WORD retVal = (WORD) *(IDEData+HDD_NUM_OF_HEADS_OFFSET);
@@ -101,24 +115,33 @@ WORD XKHDD::GetIDESecPerTrack(UCHAR* IDEData)
 	return retVal;
 }
 
-void XKHDD::GetIDEFirmWare(UCHAR* IDEData, LPSTR ModelString, LPDWORD StrLen)
+void XKHDD::GetIDEFirmWare(UCHAR* IDEData, LPSTR FirmwareString)
 {
-	UCHAR m_length = 0x8;		//IDE_FIRMWARE_OFFSET= 0x02e  //STart Adresse: Firmware: WORD:23-26 Hex:0x02e-0x035 DEZ:46-54
-	m_length = CleanATAData((UCHAR*)ModelString, IDEData+IDE_FIRMWARE_OFFSET, m_length);
-	*StrLen = m_length;
+	CleanATAData((UCHAR*)FirmwareString, IDEData+IDE_FIRMWARE_OFFSET, HDD_FIRMWARE_LENGTH);
 }
-void XKHDD::GetIDESerial(UCHAR* IDEData, LPSTR SerialString, LPDWORD StrLen)
+
+void XKHDD::GetIDESerial(UCHAR* IDEData, LPSTR SerialString)
 {
-	UCHAR s_length = 0x14;
-	s_length = CleanATAData((UCHAR*)SerialString, IDEData+HDD_SERIAL_OFFSET, s_length);
-	*StrLen = s_length;
+	CleanATAData((UCHAR*)SerialString, IDEData+HDD_SERIAL_OFFSET, HDD_SERIAL_LENGTH);
 }
+
+void XKHDD::GetIDEModel(UCHAR* IDEData, LPSTR ModelString)
+{
+	CleanATAData((UCHAR*)ModelString, IDEData+HDD_MODEL_OFFSET, HDD_MODEL_LENGTH);
+}
+
 WORD XKHDD::GetIDESecurityStatus(UCHAR* IDEData)
 {
 	WORD retVal = (WORD) *(IDEData+HDD_SECURITY_STATUS_OFFSET);
 	return retVal;
 }
-int XKHDD::CleanATAData(unsigned char *dst, unsigned char *src, int len)
+
+void XKHDD::CleanATAData(unsigned char *dst, unsigned char *src, int len)
+{
+	CleanATAData(dst, src, len, TRUE);
+}
+
+void XKHDD::CleanATAData(unsigned char *dst, unsigned char *src, int len, BOOL bClean)
 {
 	//Byte swap the Data that comes back from ATA command..  and clean out blanks etc.
 	unsigned char tmp;
@@ -131,75 +154,138 @@ int XKHDD::CleanATAData(unsigned char *dst, unsigned char *src, int len)
 		dst[i+1] = tmp;
 	}
 	
-	--dst;
-	for(i=len; i>0; --i) 
+	for(i=len-1; i>0; --i) 
 	{
 		if (dst[i] != ' ') break;
 	}
 
-	return i;
+	if (bClean)
+		dst[i + 1] = 0;
 }
 
 void XKHDD::GenerateHDDPwd(UCHAR* HDDKey, UCHAR* IDEData, UCHAR* HDDPass)
 {
 	XKSHA1 SHA1Obj;
 
-	UCHAR serial[0x14];
-	ZeroMemory(serial, 0x14);
+	UCHAR serial[HDD_SERIAL_LENGTH];
+	ZeroMemory(serial, HDD_SERIAL_LENGTH);
 
-	UCHAR model[0x28];
-	ZeroMemory(model, 0x28); 
-	
-	UCHAR s_length = 0x14;
-	UCHAR m_length = 0x28;
+	UCHAR model[HDD_MODEL_LENGTH];
+	ZeroMemory(model, HDD_MODEL_LENGTH); 
 
-	s_length = CleanATAData(serial, IDEData+HDD_SERIAL_OFFSET, s_length);
-	m_length = CleanATAData(model, IDEData+HDD_MODEL_OFFSET, m_length);
+	CleanATAData(serial, IDEData+HDD_SERIAL_OFFSET, HDD_SERIAL_LENGTH, FALSE);
+	CleanATAData(model, IDEData+HDD_MODEL_OFFSET, HDD_MODEL_LENGTH, FALSE);
 
-
-	SHA1Obj.HMAC_SHA1 (HDDPass, HDDKey, 0x10, model, m_length, serial, s_length);
+	SHA1Obj.HMAC_SHA1 (HDDPass, HDDKey, 0x10, model, HDD_MODEL_LENGTH, serial, HDD_SERIAL_LENGTH);
 }
 
-void XKHDD::GetIDEModel(UCHAR* IDEData, LPSTR ModelString, LPDWORD StrLen)
+#if defined (_WINDOWS)
+//Windows Version of sending ATA Commands..  This is normal IOCTL stuff...
+BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
 {
-	UCHAR m_length = 0x28;
-	m_length = CleanATAData((UCHAR*)ModelString, IDEData+HDD_MODEL_OFFSET, m_length);
-	*StrLen = m_length;
+	BOOL retVal = FALSE;
+
+	char tmp[128];
+    sprintf(tmp, "\\\\.\\PhysicalDrive%u", DeviceNum);
+	//Open HDD and get handle to Open Device...
+    HANDLE Device = CreateFile(tmp, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+
+	if (Device == INVALID_HANDLE_VALUE)
+		return FALSE;
+  
+	//Set up ATA Pass through structures..
+	unsigned int Size = sizeof(ATA_PASS_THROUGH) + ATACommandObj->DATA_BUFFSIZE;
+	LPATA_PASS_THROUGH pAPT = (LPATA_PASS_THROUGH) VirtualAlloc(NULL, Size, MEM_COMMIT, PAGE_READWRITE);
+	ZeroMemory (pAPT, Size);
+		
+	if (pAPT)
+	{
+		memset(pAPT, 0, Size);
+		pAPT->DataBufferSize = ATACommandObj->DATA_BUFFSIZE;
+		pAPT->IdeReg[0] = ATACommandObj->IPReg.bFeaturesReg;
+		pAPT->IdeReg[1] = ATACommandObj->IPReg.bSectorCountReg;
+		pAPT->IdeReg[2] = ATACommandObj->IPReg.bSectorNumberReg;
+		pAPT->IdeReg[3] = ATACommandObj->IPReg.bCylLowReg;
+		pAPT->IdeReg[4] = ATACommandObj->IPReg.bCylHighReg;
+		pAPT->IdeReg[5] = ATACommandObj->IPReg.bDriveHeadReg;
+		pAPT->IdeReg[6] = ATACommandObj->IPReg.bCommandReg;
+
+		if (ATACommandObj->IPReg.bCommandReg == 0xEC)  
+		{
+			// For some Reason Win2K/XP sometimes needs to rescan bus before we get IDENTIFY info..
+			DWORD BytesReturned = 0;
+			(void)DeviceIoControl(Device, IOCTL_SCSI_RESCAN_BUS, NULL, 0, NULL, 0, &BytesReturned, FALSE);
+			Sleep(500);    
+		}
+
+		//Copy the data IN buffer so we can send ATA Command..
+		memcpy(pAPT->DataBuffer, ATACommandObj->DATA_BUFFER, ATACommandObj->DATA_BUFFSIZE);
+
+		DWORD BytesReturned = 0;
+		//Send the ATA/IDE Pass through command..
+		BOOL Status = DeviceIoControl(Device, IOCTL_IDE_PASS_THROUGH, pAPT, Size, pAPT, Size, &BytesReturned, FALSE);
+		
+		//Get the Error and Status registers of IDE command return
+		ATACommandObj->OPReg.bErrorReg =  pAPT->IdeReg[0];
+		ATACommandObj->OPReg.bStatusReg = pAPT->IdeReg[6];
+
+		//If the command was successfull, copy the ATA structure's data into the ouptut object... 
+		if (Status)
+		{
+			if (ATACommandObj->DATA_BUFFER)
+			{
+				if (ATACommandObj->DATA_BUFFSIZE > 0) 
+					ZeroMemory(ATACommandObj->DATA_BUFFER, ATACommandObj->DATA_BUFFSIZE);
+				if (BytesReturned > sizeof(ATA_PASS_THROUGH))
+				{
+					unsigned int ReturnedSize = BytesReturned - sizeof(ATA_PASS_THROUGH);
+					ATACommandObj->DATA_BUFFSIZE = ReturnedSize;
+					memcpy(ATACommandObj->DATA_BUFFER, pAPT->DataBuffer, ReturnedSize);
+				}
+			}
+			
+			retVal = TRUE;
+		}
+	}
+	else
+		retVal = FALSE;
+		
+	VirtualFree(pAPT, Size, MEM_RELEASE);
+	CloseHandle(Device);
+	return retVal;
 }
+
+
+#else
+//XBOX Version of Sending ATA Commands..  
+//Since XBOX runs everything in Kernel Mode, we use direct port access :)
 BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
 {
-  // Wait Timers! No wait time.. let's see if this will also work!
-  const int waitSleepTime = 5; //default 5
-  const int writeSleepTime = 10; // default 10
-  const int readSleepTime = 300; // default 300
-
 	//XBOX Sending ATA Commands..  
 	BOOL retVal			= FALSE;
-	UCHAR waitcount		= 15;
-	WORD inVal			= 0;
-	WORD SuccessRet		= 0x58;
+	WORD waitcount = 10000;
 	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER ;
 
-  //Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
-	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);		Sleep(writeSleepTime);
-	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg); 	Sleep(writeSleepTime);
-	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);	Sleep(writeSleepTime);
-	_outp(IDEPort + 4, ATACommandObj->IPReg.bCylLowReg);		Sleep(writeSleepTime);
-	_outp(IDEPort + 5, ATACommandObj->IPReg.bCylHighReg);		Sleep(writeSleepTime);
-	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);		Sleep(writeSleepTime);
-	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);		Sleep(readSleepTime);
+	//Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
+	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);
+	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg);
+	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);
+	_outp(IDEPort + 4, ATACommandObj->IPReg.bCylLowReg);
+	_outp(IDEPort + 5, ATACommandObj->IPReg.bCylHighReg);
+	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);
+	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);
 
 	//Command Executed, Check Status.. If not success, wait a while..
-	inVal = _inp(IDEPort+7); 
-	while (((inVal & SuccessRet) != SuccessRet) && (waitcount > 0))
+	while ((_inp(IDEPort+7) & 0x80) && (waitcount > 0))
 	{
-		inVal = _inp(IDEPort+7); //Check Status..
-		Sleep(readSleepTime);
+		Sleep(10);
 		waitcount--;
 	}
+	if (waitcount == 0)
+		return FALSE;
 
-	//Is this a IDE command that Requests Data, if so, Read the from IDE port ...
-	if ((waitcount > 0) && (ReadWrite == IDE_COMMAND_READ))
+	//Is this a IDE command that Requests Data, if so, read the from IDE port ...
+	if (ReadWrite == IDE_COMMAND_READ)
 	{
 		//Read the command return output Registers
 		ATACommandObj->OPReg.bErrorReg =		_inp(IDEPort + 1);
@@ -211,21 +297,16 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 		ATACommandObj->OPReg.bStatusReg =		_inp(IDEPort + 7);
 
 		ATACommandObj->DATA_BUFFSIZE = 512;
-		Sleep(writeSleepTime);
 
 		//Now read a sector (512 Bytes) from the IDE Port
 		ZeroMemory(ATACommandObj->DATA_BUFFER, 512);
 		for (int i = 0; i < 128; i++)
-		{
 			PIDEDATA[i] = _inpd(IDEPort);
-			Sleep(waitSleepTime);
-		}
 
 		retVal = TRUE;
 	}
-
 	//Is this a IDE command that Sends Data, if so, write the Data to IDE Port..
-	if ((waitcount > 0) && (ATACommandObj->DATA_BUFFSIZE > 0) && (ReadWrite == IDE_COMMAND_WRITE))
+	else if ((ReadWrite == IDE_COMMAND_WRITE) && (ATACommandObj->DATA_BUFFSIZE > 0))
 	{
 		//Read the command return output Registers
 		ATACommandObj->OPReg.bErrorReg			= _inp(IDEPort + 1);
@@ -235,15 +316,12 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 		ATACommandObj->OPReg.bCylHighReg		= _inp(IDEPort + 5);
 		ATACommandObj->OPReg.bDriveHeadReg		= _inp(IDEPort + 6);
 		ATACommandObj->OPReg.bStatusReg			= _inp(IDEPort + 7);
-		Sleep(writeSleepTime);
 
 		//Now Write a sector (512 Bytes) To the IDE Port
 		for (int i = 0; i <  128; i++)
-		{
 			_outpd(IDEPort, PIDEDATA[i]);
-				Sleep(waitSleepTime);
-		}
 		retVal = TRUE;
 	}
 	return retVal;
 }
+#endif

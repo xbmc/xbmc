@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/19/2007-->
+<!--Date of translation: 02/26/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7860-->
+<!--Based on english strings version 7929-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -277,7 +277,7 @@
   <string id="356">Skärmsläckarläge</string>
   <string id="357">Tid innan avstängning vid vila</string>
   <string id="358">Alla album</string>
-  <string id="359">Senast spelade album</string>
+  <string id="359">Senast tillagda album</string>
   <string id="360">Skärmsläckare</string>
   <string id="361">Starta bildspel</string>
   <string id="362">Skärmsläckarnivå</string>
@@ -835,15 +835,18 @@
   <string id="13160">Gateway:</string>
   <string id="13161">Primär DNS:</string>
   <string id="13162">Initialisering misslyckades</string>
-  <string id="13163">Spelkontroller på port:</string>
-  <string id="13164">Tangentbord på port:</string>
-  <string id="13165">Mus på port:</string>
-  <string id="13166">Headset/Mic på port:</string>
-  <string id="13167">Minneskort på port:</string>
-  <string id="13168">Fjärrkontroll på port:</string>
+  <string id="13163">Spelkontroller</string>
+  <string id="13164">Tangentbord</string>
+  <string id="13165">Mus</string>
+  <string id="13166">Headset/Mikrofon</string>
+  <string id="13167">Minneskort</string>
+  <string id="13168">Fjärrkontroll</string>
+  <string id="13169">Kontrolluttag</string>
   <string id="13170">Aldrig</string>
   <string id="13171">Omedelbart</string>
   <string id="13172">Efter %i sek</string>
+  <string id="13173">HDD installationsdatum:</string>
+  <string id="13174">HDD Strömcykelräkning:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Radera profil '%s'?</string>
   <string id="13204">Senast laddade profil</string>
@@ -1405,9 +1408,8 @@ den här visualiseringen</string>
   <string id="20184">Vrid som angivet i EXIF information</string>
   <string id="20185">Identifierar hårdvaruvärden</string>
   <string id="20186">Var god vänta</string>
-  <string id="20187">Läser värden från EEPROM</string>
-  <string id="20188">Läsning från EEPROM klar</string>
-  <string id="20189">Upptäckning klar</string>
+  <string id="20187">Tar backup av EEPROM</string>
+  <string id="20188">Tar backup av BIOS</string>
   <string id="20190">Identifierar hårddiskinformation</string>
   <string id="20191">Identifierar HDD värden</string>
   <string id="20192">Identifierar HDD nyckel</string>
@@ -1491,5 +1493,14 @@ den här visualiseringen</string>
   <string id="21367">Film &amp; alternativ undertextmapp</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
   <string id="21371">Miniatyrbild</string>
+  <string id="21372">Tvingad DVD region</string>
+  <string id="21373">Grafikhårdvara</string>
+  <string id="21374">Bildläge</string>
+  <string id="21375">Normal</string>
+  <string id="21376">Letterbox</string>
+  <string id="21377">Widescreen</string>
+  <string id="21378">Aktivera 480p</string>
+  <string id="21379">Aktivera 720p</string>
+  <string id="21380">Aktivera 1080i</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>

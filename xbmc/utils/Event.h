@@ -15,7 +15,7 @@
 #include <windows.h>
 #endif
 
-class CEvent  
+class CEvent
 {
 public:
   void PulseEvent();

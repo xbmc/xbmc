@@ -22,7 +22,7 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "FanController.h"
 #include "SystemInfo.h"
-#include "HddSmart.h"
+#include "../xbox/xkhdd.h"
 #endif
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -191,6 +191,31 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
     else if (strTest.Equals("system.hasdrivef")) ret = SYSTEM_HAS_DRIVE_F;
     else if (strTest.Equals("system.hasdriveg")) ret = SYSTEM_HAS_DRIVE_G;
+    else if (strTest.Equals("system.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
+    else if (strTest.Equals("system.hddinfomodel")) ret = SYSTEM_HDD_MODEL;
+    else if (strTest.Equals("system.hddinfofirmware")) ret = SYSTEM_HDD_FIRMWARE;
+    else if (strTest.Equals("system.hddinfoserial")) ret = SYSTEM_HDD_SERIAL;
+    else if (strTest.Equals("system.hddinfopw")) ret = SYSTEM_HDD_PASSWORD;
+    else if (strTest.Equals("system.hddinfolockstate")) ret = SYSTEM_HDD_LOCKSTATE;
+    else if (strTest.Equals("system.dvdinfomodel")) ret = SYSTEM_DVD_MODEL;
+    else if (strTest.Equals("system.dvdinfofirmware")) ret = SYSTEM_DVD_FIRMWARE;
+    else if (strTest.Equals("system.mplayerversion")) ret = SYSTEM_MPLAYER_VERSION;
+    else if (strTest.Equals("system.kernelversion")) ret = SYSTEM_KERNEL_VERSION;
+    else if (strTest.Equals("system.uptime")) ret = SYSTEM_UPTIME;
+    else if (strTest.Equals("system.totaluptime")) ret = SYSTEM_TOTALUPTIME;
+    else if (strTest.Equals("system.cpufrequency")) ret = SYSTEM_CPUFREQUENCY;
+    else if (strTest.Equals("system.xboxversion")) ret = SYSTEM_XBOX_VERSION;
+    else if (strTest.Equals("system.avcablepackinfo")) ret = SYSTEM_AV_CABLE_PACK_INFO;
+    else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
+    else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
+    
+    
+    
+    
+    
+    
+    
+
     else if (strTest.Left(16).Equals("system.idletime("))
     {
       int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
@@ -549,6 +574,71 @@ string CGUIInfoManager::GetLabel(int info)
   case LCD_FAN_SPEED:
     return GetSystemHeatInfo("lcdfan");
     break;
+
+  case SYSTEM_HDD_TEMPERATURE:
+    return GetATAInfo(SYSTEM_HDD_TEMPERATURE);
+    break;
+  case SYSTEM_HDD_MODEL:
+    return GetATAInfo(SYSTEM_HDD_MODEL);
+    break;
+  case SYSTEM_HDD_SERIAL:
+    return GetATAInfo(SYSTEM_HDD_SERIAL);
+    break;
+  case SYSTEM_HDD_FIRMWARE:
+    return GetATAInfo(SYSTEM_HDD_FIRMWARE);
+    break;
+  case SYSTEM_HDD_PASSWORD:
+    return GetATAInfo(SYSTEM_HDD_PASSWORD);
+    break;
+  case SYSTEM_HDD_LOCKSTATE:
+    return GetATAInfo(SYSTEM_HDD_LOCKSTATE);
+    break;
+
+  case SYSTEM_DVD_MODEL:
+    return GetATAInfo(SYSTEM_DVD_MODEL);
+    break;
+  case SYSTEM_DVD_FIRMWARE:
+    return GetATAInfo(SYSTEM_DVD_FIRMWARE);
+    break;
+
+  case SYSTEM_MPLAYER_VERSION:
+    return SystemInfoValues(SYSTEM_MPLAYER_VERSION);
+    break;
+  case SYSTEM_KERNEL_VERSION:
+    return SystemInfoValues(SYSTEM_KERNEL_VERSION);
+    break;
+  case SYSTEM_UPTIME:
+    return SystemInfoValues(SYSTEM_UPTIME);
+    break;  
+  case SYSTEM_TOTALUPTIME:
+    return SystemInfoValues(SYSTEM_TOTALUPTIME);
+    break;
+
+  case SYSTEM_CPUFREQUENCY:
+    return SystemInfoValues(SYSTEM_CPUFREQUENCY);
+    break;
+
+  case SYSTEM_XBOX_VERSION:
+    return SystemInfoValues(SYSTEM_XBOX_VERSION);
+    break;
+
+  case SYSTEM_AV_CABLE_PACK_INFO:
+    return SystemInfoValues(SYSTEM_AV_CABLE_PACK_INFO);
+    break;
+
+  case SYSTEM_SCREEN_RESOLUTION:
+    strLabel.Format("%s %ix%i %s %02.2f Hz.",g_localizeStrings.Get(13287),
+    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
+    return strLabel;
+    break;
+
+  case SYSTEM_VIDEO_ENCODER_INFO:
+    return SystemInfoValues(SYSTEM_VIDEO_ENCODER_INFO);
+    break;
+
+  
   case CONTAINER_FOLDERPATH:
     {
       CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
@@ -715,16 +805,6 @@ string CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
-
-  case SYSTEM_HDD_SMART:
-    {
-      if (i_SmartRequest == 17)
-        strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDSmart(i_SmartRequest).c_str());
-      else
-        strLabel.Format("%s", GetHDDSmart(i_SmartRequest).c_str());
-    }
-    break;
-
   case SYSTEM_INTERNET_STATE:
     strLabel.Format("%s", SystemHasInternet_s().c_str());
     break;
@@ -812,8 +892,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     // we must: 1.  Check tray state.
     //          2.  Check that we actually have a disc in the drive (detection
     //              of disk type takes a while from a separate thread).
-    CIoSupport TrayIO;
-    int iTrayState = TrayIO.GetTrayState();
+
+    int iTrayState = CIoSupport::GetTrayState();
     if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
       bReturn = CDetectDVDMedia::IsDiscInDrive();
     else 
@@ -1696,35 +1776,35 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
     m_gpuTemp = CFanController::Instance()->GetGPUTemp();
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
   }
+
 #endif
   CStdString text;
 
-  if (strInfo == "cpu")
+  if (strInfo.Equals("cpu"))
   {
     text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.ToString());
   }
-  else if (strInfo == "lcdcpu")
+  else if (strInfo.Equals("lcdcpu"))
   {
     text=m_cpuTemp.ToString();
   }
-  else if (strInfo == "gpu")
+  else if (strInfo.Equals("gpu"))
   {
     text=m_gpuTemp.ToString();
     text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.ToString());
   }
-  else if (strInfo == "lcdgpu")
+  else if (strInfo.Equals("lcdgpu"))
   {
     text=m_gpuTemp.ToString();
   }
-  else if (strInfo == "fan")
+  else if (strInfo.Equals("fan"))
   {
     text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
   }
-  else if (strInfo == "lcdfan")
+  else if (strInfo.Equals("lcdfan"))
   {
     text.Format("%i%%", m_fanSpeed * 2);
   }
-
   return text;
 }
 
@@ -1758,6 +1838,151 @@ string CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
       space.Format("%s %c: %s", pszDrive, cDrive, pszUnavailable);
   }
   return space;
+}
+
+CStdString CGUIInfoManager::GetATAInfo(int info)
+{
+#ifdef HAS_XBOX_HARDWARE
+  if (timeGetTime() - m_lastHddInfoTime >= 5000)
+  { 
+    // update our variables
+    if (!b_ata_request)
+    {
+      // We should only request 1 time the HDD Informations
+      // If we request frequence is more then 1 time, we will have a <1sec. Freeze 
+      // of HDD releated functions like FTP, movie play ect.
+      b_ata_request = true;
+      m_hddRequest = g_sysinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState);
+      m_dvdRequest = g_sysinfo.GetDVDInfo(strDVDModel, strDVDFirmware);
+    }
+    b_HddTemp = XKHDD::GetHddSmartTemp();
+    m_lastHddInfoTime = timeGetTime();
+  }
+#endif
+
+  CStdString text;
+  switch(info)
+  {
+    case SYSTEM_HDD_TEMPERATURE:
+      {
+        CTemperature temp = CTemperature::CreateFromCelsius((double)b_HddTemp);
+        if (b_HddTemp == 0 )
+        {
+          temp.SetState(CTemperature::invalid);
+          text.Format("%s %s", g_localizeStrings.Get(13151).c_str(), temp.ToString() );
+        }
+        else
+        {
+          text.Format("%s %s", g_localizeStrings.Get(13151).c_str(), temp.ToString() );
+        }
+        return text;
+        break;
+      }
+    case SYSTEM_HDD_MODEL:
+      {
+        if(m_hddRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13154).c_str(), strHDDModel.c_str() );
+        return text;
+        break;
+      }
+    case SYSTEM_HDD_SERIAL:
+      {
+        if(m_hddRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13155).c_str(), strHDDSerial.c_str() );
+        return text;
+        break;
+      }
+    case SYSTEM_HDD_FIRMWARE:
+      {
+        if(m_hddRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13156).c_str(), strHDDFirmware.c_str() );
+        return text;
+        break;
+      }
+    case SYSTEM_HDD_PASSWORD:
+      {
+        if(m_hddRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13157).c_str(), strHDDpw.c_str() );
+        return text;
+        break;
+      }
+    case SYSTEM_HDD_LOCKSTATE:
+      {
+        if(m_hddRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13158).c_str(), strHDDLockState.c_str() );
+        return text;
+        break;
+      }
+    case SYSTEM_DVD_MODEL:
+      {
+        if (m_dvdRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13152).c_str(), strDVDModel.c_str() );
+        return text;
+        break;
+      }
+    case SYSTEM_DVD_FIRMWARE:
+      {
+        if (m_dvdRequest)
+          text.Format("%s %s", g_localizeStrings.Get(13153).c_str(), strDVDFirmware.c_str() );
+        return text;
+        break;
+      }
+    default:
+      text.Format("%s",g_localizeStrings.Get(13205) ); // "Unknown"
+      break;
+  }
+  return text;
+}
+
+CStdString CGUIInfoManager::SystemInfoValues(int info)
+{
+  if (timeGetTime() - m_lastSysInfoTime >= 5000)
+  { // update our variables, update interval 1 minute
+    m_lastSysInfoTime = timeGetTime();
+    m_systemuptime = g_sysinfo.GetSystemUpTime();
+    m_systemtotaluptime = g_sysinfo.GetSystemTotalUpTime();
+#ifdef HAS_XBOX_HARDWARE
+      // values are only need one time request
+      b_sys_request = true;
+      m_mplayerversion = g_sysinfo.GetMPlayerVersion();
+      m_kernelversion = g_sysinfo.GetKernelVersion();
+      m_cpufrequency = g_sysinfo.GetCPUFreqInfo();
+      m_xboxversion = g_sysinfo.GetXBVerInfo();
+      m_avcablepackinfo = g_sysinfo.GetAVPackInfo();
+      m_videoencoder = g_sysinfo.GetVideoEncoder();
+#endif
+  }
+  switch (info)
+  {
+  case SYSTEM_MPLAYER_VERSION:
+    return m_mplayerversion;
+    break;
+  case SYSTEM_KERNEL_VERSION:
+    return m_kernelversion;
+    break;
+  case SYSTEM_UPTIME:
+    return m_systemuptime;
+    break;
+  case SYSTEM_TOTALUPTIME:
+    return m_systemtotaluptime;
+    break;
+  case SYSTEM_CPUFREQUENCY:
+    return m_cpufrequency;
+    break;
+  case SYSTEM_XBOX_VERSION:
+    return m_xboxversion;
+    break;
+  case SYSTEM_AV_CABLE_PACK_INFO:
+    return m_avcablepackinfo;
+    break;
+  case SYSTEM_VIDEO_ENCODER_INFO:
+    return m_videoencoder;
+    break;
+
+  default:
+    return "";
+    break;
+  }
 }
 
 CStdString CGUIInfoManager::GetVersion()
@@ -2211,32 +2436,6 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 }
 
 
-CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
-{
-#ifdef HAS_XBOX_HARDWARE
-  CStdString strItemhdd;
-  if(!g_hddsmart.IsRunning())
-    g_hddsmart.Start();
-  g_hddsmart.SmartREQ = iSmartRequest;
-
-  if (iSmartRequest == 17 )
-  {
-    CTemperature HddTemp = CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
-    if (g_hddsmart.m_HddSmarValue<=0 || g_hddsmart.m_HddSmarValue>=100)
-      HddTemp.SetState(CTemperature::invalid);
-    strItemhdd.Format("%s", HddTemp.ToString().c_str());
-  }
-  else
-  {
-    char buffer[10];
-    itoa(g_hddsmart.m_HddSmarValue, buffer, 10);
-    strItemhdd.Format("%s", buffer);
-  }
-  return strItemhdd;
-#else
-  return "";
-#endif
-}
 bool CGUIInfoManager::SystemHasInternet()
 {
   CHTTP http;

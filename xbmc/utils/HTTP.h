@@ -12,6 +12,8 @@
 #include "../AutoPtrHandle.h"
 using namespace AUTOPTR;
 
+#include <map>
+
 class CHTTP
 {
 public:

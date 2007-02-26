@@ -7,7 +7,9 @@
 #ifdef HAS_XBOX_D3D
 #include "xgraphics.h"
 #else
+#ifndef D3DCLEAR_STENCIL
 #define D3DCLEAR_STENCIL 0x0l
+#endif
 //#define D3DPRESENTFLAG_LOCKABLE_BACKBUFFER 0x0l
 #endif
 #include "SkinInfo.h"

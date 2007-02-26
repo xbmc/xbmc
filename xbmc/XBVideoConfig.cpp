@@ -21,7 +21,9 @@
 
 #include "stdafx.h"
 #include "XBVideoConfig.h"
-
+#ifdef HAS_XBOX_HARDWARE
+#include "xbox/undocumented.h"
+#endif
 
 XBVideoConfig g_videoConfig;
 
@@ -72,6 +74,15 @@ bool XBVideoConfig::HasWidescreen() const
 {
 #ifdef HAS_XBOX_D3D
   return (m_dwVideoFlags & XC_VIDEO_FLAGS_WIDESCREEN) != 0;
+#else
+  return true;
+#endif
+}
+
+bool XBVideoConfig::HasLetterbox() const
+{
+#ifdef HAS_XBOX_D3D
+  return (m_dwVideoFlags & XC_VIDEO_FLAGS_LETTERBOX) != 0;
 #else
   return true;
 #endif
@@ -279,5 +290,109 @@ void XBVideoConfig::PrintInfo() const
   if (Has1080i()) strAVFlags += "1080i,";
   if (strAVFlags.size() > 1) strAVFlags = strAVFlags.Left(strAVFlags.size() - 1);
   CLog::Log(LOGINFO, "AV Flags: %s", strAVFlags.c_str());
+#endif
+}
+
+bool XBVideoConfig::NeedsSave()
+{
+#ifdef HAS_XBOX_D3D
+  return m_dwVideoFlags != XGetVideoFlags();
+#else
+  return false;
+#endif
+}
+
+void XBVideoConfig::Set480p(bool bEnable)
+{
+#ifdef HAS_XBOX_D3D
+  if (bEnable)
+    m_dwVideoFlags |= XC_VIDEO_FLAGS_HDTV_480p;
+  else
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_HDTV_480p;
+#endif
+}
+
+void XBVideoConfig::Set720p(bool bEnable)
+{
+#ifdef HAS_XBOX_D3D
+  if (bEnable)
+    m_dwVideoFlags |= XC_VIDEO_FLAGS_HDTV_720p;
+  else
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_HDTV_720p;
+#endif
+}
+
+void XBVideoConfig::Set1080i(bool bEnable)
+{
+#ifdef HAS_XBOX_D3D
+  if (bEnable)
+    m_dwVideoFlags |= XC_VIDEO_FLAGS_HDTV_1080i;
+  else
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_HDTV_1080i;
+#endif
+}
+
+void XBVideoConfig::SetNormal()
+{
+#ifdef HAS_XBOX_D3D
+  m_dwVideoFlags &= ~XC_VIDEO_FLAGS_LETTERBOX;
+  m_dwVideoFlags &= ~XC_VIDEO_FLAGS_WIDESCREEN;
+#endif
+}
+
+void XBVideoConfig::SetLetterbox(bool bEnable)
+{
+#ifdef HAS_XBOX_D3D
+  if (bEnable)
+  {
+    m_dwVideoFlags |= XC_VIDEO_FLAGS_LETTERBOX;
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_WIDESCREEN;
+  }
+  else
+  {
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_LETTERBOX;
+  }
+#endif
+}
+
+void XBVideoConfig::SetWidescreen(bool bEnable)
+{
+#ifdef HAS_XBOX_D3D
+  if (bEnable)
+  {
+    m_dwVideoFlags |= XC_VIDEO_FLAGS_WIDESCREEN;
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_LETTERBOX;
+  }
+  else
+  {
+    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_WIDESCREEN;
+  }
+#endif
+}
+
+void XBVideoConfig::Save()
+{
+  if (!NeedsSave()) return;
+#ifdef HAS_XBOX_D3D
+  // update the EEPROM settings
+  DWORD type = REG_DWORD;
+  DWORD eepVideoFlags, size;
+
+  // Video flags do not exactly match the flags variable in the EEPROM
+  // To account for this, we get the actual value straight from the EEPROM (or shadow),
+  // and shift the flags to their proper location in the EEPROM variable.
+
+  ExQueryNonVolatileSetting(XC_VIDEO_FLAGS, &type, (PULONG)&eepVideoFlags, 4, &size);
+
+  eepVideoFlags &= ~(0x5F << 16);
+  eepVideoFlags |= ((m_dwVideoFlags & 0x5F) << 16);
+
+  ExSaveNonVolatileSetting(XC_VIDEO_FLAGS, &type, (PULONG)&eepVideoFlags, 4);
+
+  // check that we updated correctly
+  if (m_dwVideoFlags != XGetVideoFlags())
+  {
+    CLog::Log(LOGNOTICE, "Failed to save video config!");
+  }
 #endif
 }

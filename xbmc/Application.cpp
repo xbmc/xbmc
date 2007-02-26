@@ -435,15 +435,14 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 #ifdef HAS_XBOX_HARDWARE
   if (MapDrives)
   {
-    CIoSupport helper;
     // map in default drives
-    helper.Remap("C:,Harddisk0\\Partition2");
-    helper.Remount("D:", "Cdrom0");
-    helper.Remap("E:,Harddisk0\\Partition1");
+    CIoSupport::Remap("C:,Harddisk0\\Partition2");
+    CIoSupport::Remount("D:", "Cdrom0");
+    CIoSupport::Remap("E:,Harddisk0\\Partition1");
     //Add. also Drive F/G
     /*
-    if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive) helper.Remap("F:,Harddisk0\\Partition6");
-    if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+    if ((g_advancedSettings.m_autoDetectFG && CIoSupport::.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive) CIoSupport::Remap("F:,Harddisk0\\Partition6");
+    if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive) CIoSupport::Remap("G:,Harddisk0\\Partition7");
     */
 
   }
@@ -618,11 +617,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       //Add. also Drive F/G
       /*
-      CIoSupport helper;
-      if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive){
+      if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive){
         pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
-      if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive){
+      if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive){
         pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
       */
@@ -718,18 +716,17 @@ HRESULT CApplication::Create(HWND hWnd)
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
 
-  CIoSupport helper;
   CStdString strExecutablePath;
   char szDevicePath[1024];
 
   // map Q to home drive of xbe to load the config file
   CUtil::GetHomePath(strExecutablePath);
-  helper.GetPartition(strExecutablePath, szDevicePath);
+  CIoSupport::GetPartition(strExecutablePath, szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
 
-  helper.Mount("Q:", "Harddisk0\\Partition2");
-  helper.Unmount("Q:");
-  helper.Mount("Q:", szDevicePath);
+  CIoSupport::Mount("Q:", "Harddisk0\\Partition2");
+  CIoSupport::Unmount("Q:");
+  CIoSupport::Mount("Q:", szDevicePath);
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
@@ -777,7 +774,7 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   else
   {
-    helper.Unmount("T:");
+    CIoSupport::Unmount("T:");
     CStdString strMnt = g_settings.GetUserDataFolder();
     if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
     {
@@ -785,9 +782,9 @@ HRESULT CApplication::Create(HWND hWnd)
       strMnt += g_settings.GetUserDataFolder().substr(2);
     }
 
-    helper.GetPartition(strMnt, szDevicePath);
+    CIoSupport::GetPartition(strMnt, szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
-    helper.Mount("T:",szDevicePath);
+    CIoSupport::Mount("T:",szDevicePath);
   }
 
   CLog::Log(LOGNOTICE, "Setup DirectX");
@@ -888,12 +885,49 @@ HRESULT CApplication::Create(HWND hWnd)
 
       char szXBEFileName[1024];
       CIoSupport helper;
-      helper.GetXbePath(szXBEFileName);
+      CIoSupport::GetXbePath(szXBEFileName);
       CUtil::RunXBE(szXBEFileName);
     }
     m_pd3dDevice->Release();
   }
 #endif
+
+  CLog::Log(LOGINFO, "map drives...");
+  CLog::Log(LOGINFO, "  map drive C:");
+  CIoSupport::Remap("C:,Harddisk0\\Partition2");
+
+  CLog::Log(LOGINFO, "  map drive E:");
+  CIoSupport::Remap("E:,Harddisk0\\Partition1");
+
+  CLog::Log(LOGINFO, "  map drive D:");
+  CIoSupport::Remount("D:", "Cdrom0");
+
+  if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive)
+  {
+    CLog::Log(LOGINFO, "  map drive F:");
+    CIoSupport::Remap("F:,Harddisk0\\Partition6");
+    g_advancedSettings.m_useFDrive = true;
+  }
+
+  // used for the LBA-48 hack allowing >120 gig
+  if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive)
+  {
+    CLog::Log(LOGINFO, "  map drive G:");
+    CIoSupport::Remap("G:,Harddisk0\\Partition7");
+    g_advancedSettings.m_useGDrive = true;
+  }
+
+  CIoSupport::Remap("X:,Harddisk0\\Partition3");
+  CIoSupport::Remap("Y:,Harddisk0\\Partition4");
+#ifdef HAS_XBOX_HARDWARE
+  CIoSupport::Remap("Z:,Harddisk0\\Partition5");
+#else
+  CIoSupport::Unmount("Z:");
+  CIoSupport::Mount("Z:","Q:\\cache");
+#endif
+
+  CLog::Log(LOGINFO, "Drives are mapped");
+
   CLog::Log(LOGNOTICE, "load settings...");
   g_LoadErrorStr = "Unable to load settings";
   g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
@@ -919,11 +953,11 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_XBOX_HARDWARE
   bool bNeedReboot = false;
   char temp[1024];
-  helper.GetXbePath(temp);
+  CIoSupport::GetXbePath(temp);
   char temp2[1024];
   char temp3[2];
   temp3[0] = temp[0]; temp3[1] = '\0';
-  helper.GetPartition((LPCSTR)temp3,temp2);
+  CIoSupport::GetPartition((LPCSTR)temp3,temp2);
   CStdString strTemp(temp+2);
   int iLastSlash = strTemp.rfind('\\');
   strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
@@ -942,15 +976,15 @@ HRESULT CApplication::Create(HWND hWnd)
     EEPROMDATA EEPROM;
     ZeroMemory(&EEPROM, sizeof(EEPROMDATA));
 
-    if( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&(EEPROM),0,255) )
+    if( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&EEPROM))
     {
       DWORD DWVideo = *(LPDWORD)(&EEPROM.VideoStandard[0]);
       char temp[1024];
-      helper.GetXbePath(temp);
+      CIoSupport::GetXbePath(temp);
       char temp2[1024];
       char temp3[2];
       temp3[0] = temp[0]; temp3[1] = '\0';
-      helper.GetPartition((LPCSTR)temp3,temp2);
+      CIoSupport::GetPartition((LPCSTR)temp3,temp2);
       CStdString strTemp(temp+2);
       int iLastSlash = strTemp.rfind('\\');
       strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
@@ -1000,42 +1034,6 @@ HRESULT CApplication::Create(HWND hWnd)
     CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
   }
 #endif
-
-  CLog::Log(LOGINFO, "map drives...");
-  CLog::Log(LOGINFO, "  map drive C:");
-  helper.Remap("C:,Harddisk0\\Partition2");
-
-  CLog::Log(LOGINFO, "  map drive E:");
-  helper.Remap("E:,Harddisk0\\Partition1");
-
-  CLog::Log(LOGINFO, "  map drive D:");
-  helper.Remount("D:", "Cdrom0");
-
-  if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive)
-  {
-    CLog::Log(LOGINFO, "  map drive F:");
-    helper.Remap("F:,Harddisk0\\Partition6");
-    g_advancedSettings.m_useFDrive = true;
-  }
-
-  // used for the LBA-48 hack allowing >120 gig
-  if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive)
-  {
-    CLog::Log(LOGINFO, "  map drive G:");
-    helper.Remap("G:,Harddisk0\\Partition7");
-    g_advancedSettings.m_useGDrive = true;
-  }
-
-  helper.Remap("X:,Harddisk0\\Partition3");
-  helper.Remap("Y:,Harddisk0\\Partition4");
-#ifdef HAS_XBOX_HARDWARE
-  helper.Remap("Z:,Harddisk0\\Partition5");
-#else
-  helper.Unmount("Z:");
-  helper.Mount("Z:","Q:\\cache");
-#endif
-
-  CLog::Log(LOGINFO, "Drives are mapped");
 
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());

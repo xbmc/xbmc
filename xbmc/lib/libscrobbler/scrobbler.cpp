@@ -20,7 +20,7 @@
 #include "../../stdafx.h"
 #include "scrobbler.h"
 #include "errors.h"
-#include "md5.h"
+#include "../../utils/md5.h"
 #include "../../utils/CharsetConverter.h"
 #include "../../utils/log.h"
 #include "../../utils/http.h"
@@ -130,11 +130,11 @@ void CScrobbler::SetPassword(const CStdString& strPass)
 {
   if (strPass.IsEmpty())
     return;
-  md5_state_t md5state;
+  MD5_CTX md5state;
   unsigned char md5pword[16];
-  md5_init(&md5state);
-  md5_append(&md5state, (unsigned const char *)strPass.c_str(), (int)strPass.size());
-  md5_close(&md5state, md5pword);
+  MD5Init(&md5state);
+  MD5Update(&md5state, (unsigned char *)strPass.c_str(), (int)strPass.size());
+  MD5Final(md5pword, &md5state);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
   for (int j = 0;j < 16;j++) 
@@ -411,11 +411,11 @@ void CScrobbler::SetInterval(int in)
 void CScrobbler::GenSessionKey() 
 {
   CStdString clear = m_strPassword + m_strChallenge;
-  md5_state_t md5state;
+  MD5_CTX md5state;
   unsigned char md5pword[16];
-  md5_init(&md5state);
-  md5_append(&md5state, (unsigned const char *)clear.c_str(), (int)clear.length());
-  md5_close(&md5state, md5pword);
+  MD5Init(&md5state);
+  MD5Update(&md5state, (unsigned char *)clear.c_str(), (int)clear.length());
+  MD5Final(md5pword, &md5state);
   char key[33];
   strncpy(key, "\0", sizeof(key));
   for (int j = 0;j < 16;j++) 

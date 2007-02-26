@@ -801,9 +801,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIPassword.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\HddSmart.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\utils\HTMLTable.cpp">
 				</File>
 				<File
@@ -2486,9 +2483,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\HDDirectory.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\HddSmart.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\HTMLTable.h">

@@ -21,7 +21,7 @@
 #include "Thread.h"
 #include <process.h>
 #include "win32exception.h"
-#include "log.h"
+#include "Log.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

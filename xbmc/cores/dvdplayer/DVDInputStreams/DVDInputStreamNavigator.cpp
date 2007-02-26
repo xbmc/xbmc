@@ -63,21 +63,22 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
   free(strDVDFile);
 
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if (vm && vm->vmgi && vm->vmgi->vmgi_mat)
-  {
-    // find out what region dvd reports itself to be from, and use that as mask if available
-    int mask = ~(vm->vmgi->vmgi_mat->vmg_category >> 16);
-    if( mask != 0 )
-      m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
-    else
-      m_dll.dvdnav_set_region_mask(m_dvdnav, 0xff);
-  }
+  int region = g_guiSettings.GetInt("videoplayer.dvdplayerregion");
+  int mask = 0;
+  if(region > 0)
+    mask = 1 << (region-1);
   else
   {
-    // set region flag (0xff = all regions ?)
-    m_dll.dvdnav_set_region_mask(m_dvdnav, 0xff);
+    // find out what region dvd reports itself to be from, and use that as mask if available
+    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+    if (vm && vm->vmgi && vm->vmgi->vmgi_mat)
+      mask = ((vm->vmgi->vmgi_mat->vmg_category >> 16) & 0xff) ^ 0xff;
   }
+  if(!mask) 
+    mask = 0xff;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Setting region mask %02x", mask);
+  m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
 
   // get default language settings
   char language_menu[3];
@@ -1096,19 +1097,27 @@ bool CDVDInputStreamNavigator::SetNavigatorState(std::string &xmlstate)
 
 int CDVDInputStreamNavigator::ConvertAudioStreamId_XBMCToExternal(int id)
 {
-  if (m_dvdnav)
+  if (!m_dvdnav)
+    return -1;
+
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if(!vm)
+    return -1;
+
+  if (vm->state.domain == VTS_DOMAIN)
   {
-    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-    if (vm && vm->state.pgc && vm->state.domain == VTS_DOMAIN)
+    if(!vm->state.pgc)
+      return -1;
+
+    int stream = -1;
+    for (int i = 0; i < 8; i++)
     {
-      int stream = -1;
-      for (int i = 0; i < 8; i++)
-      {
-        if (vm->state.pgc->audio_control[i] & (1<<15)) stream++;
-        if (stream == id) return i;
-      }
+      if (vm->state.pgc->audio_control[i] & (1<<15)) stream++;
+      if (stream == id) return i;
     }
   }
+  else if(id == 0)
+    return 0;
   
   return -1;
 }
@@ -1162,19 +1171,27 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
 {
-  if (m_dvdnav)
+  if (!m_dvdnav)
+    return -1;
+
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if(!vm)
+    return -1;
+
+  if (vm->state.domain == VTS_DOMAIN)
   {
-    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-    if (vm && vm->state.pgc && vm->state.domain == VTS_DOMAIN)
+    if(!vm->state.pgc)
+      return -1;
+
+    int stream = -1;
+    for (int i = 0; i < 32; i++)
     {
-      int stream = -1;
-      for (int i = 0; i < 32; i++)
-      {
-        if (vm->state.pgc->subp_control[i] & (1<<31)) stream++;
-        if (stream == id) return i;
-      }
+      if (vm->state.pgc->subp_control[i] & (1<<31)) stream++;
+      if (stream == id) return i;
     }
   }
+  else if(id == 0)
+    return 0;
   
   return -1;
 }

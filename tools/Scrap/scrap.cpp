@@ -1,38 +1,15 @@
 // scrap.cpp : Defines the entry point for the console application.
-//
-
 #include <tchar.h>
 #include <iostream>
-#include <curl/curl.h>
 #include "ScraperParser.h"
 #include "Scraper.h"
 
+//#include "../../xbmc/utils/HTTP.h"
+
+
 using namespace std;
 
-size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
-{
-  int written = fwrite(ptr, size, nmemb, (FILE *)stream);
-  return written;
-}
-void get_url(CStdString strFilename, CStdString strUrl)
-{
-  CURL *curl;
-  curl = curl_easy_init();
-  
-  FILE* f = fopen(strFilename.c_str(),"w");
 
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA ,f);
-  curl_easy_setopt(curl, CURLOPT_URL, strUrl.c_str());
-  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, TRUE);
-  curl_easy_setopt(curl, CURLOPT_MAXREDIRS, TRUE); 
-  
-	curl_easy_perform(curl);
-  fclose(f);
-
-  curl_easy_cleanup(curl);
-
-}
 
 int _tmain(int argc, _TCHAR* argv[])
 {

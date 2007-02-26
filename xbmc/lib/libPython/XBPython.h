@@ -39,6 +39,7 @@ public:
 	int		ScriptsSize();
 	int		GetPythonScriptId(int scriptPosition); 
 	int   evalFile(const char *);
+	int   evalFile(const char *, const unsigned int, const char **);
 
 	bool	isRunning(int scriptId);
 	bool  isStopping(int scriptId);

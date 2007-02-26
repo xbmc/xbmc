@@ -1,8 +1,7 @@
-#include <tchar.h>
 #include <iostream>
-#include <curl/curl.h>
 #include "ScraperParser.h"
 #include "Scraper.h"
+#include "utils.h"
 #include "RegExp.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -20,7 +19,7 @@ Scraper::~Scraper()
 }
 bool Scraper::Load()
 {
-  if(!s_load && !s_parser.Load(s_xml)) 
+  if(!s_load && !m_parser.Load(s_xml)) 
   {
       cout << "Error: Could not load scraper " << s_xml << endl;
 		  s_load = false;
@@ -36,17 +35,17 @@ bool Scraper::SetBuffer(int i, string strValue)
     cout << "Error: Could not set buffer " << i << ". There is a maximum of 9 buffers" << endl;
     return false;
   }
-  s_parser.m_param[i - 1] = strValue;
+  m_parser.m_param[i - 1] = strValue;
   return true;
 }
 void Scraper::PrintBuffer(int i)
 {
-  cout << "Buffer " << i << ": " <<  s_parser.m_param[i - 1] << endl;
+  cout << "Buffer " << i << ": " <<  m_parser.m_param[i - 1] << endl;
 }
 bool Scraper::WriteResult(const CStdString& strFilename)
 {
   FILE* f = fopen(strFilename.c_str(),"w");
-  if(fwrite(s_result.c_str(),s_result.size(),1,f))
+  if(fwrite(m_result.c_str(),m_result.size(),1,f))
   {
     fclose(f);
     return true;
@@ -107,7 +106,8 @@ int Scraper::CustomFunctions(const CStdString& strFilename)
     {
       //wirte url
       strFilenameHtml.Format("%s.html",szFunction);
-      get_url(strFilenameHtml.c_str(),url->FirstChild()->Value());
+      CScraperUrl srcUrl(url);
+      get_url(strFilenameHtml.c_str(),srcUrl);
 
       //buffer 1 contents of results.html
       SetBuffer(1,readFile(strFilenameHtml.c_str()) );
@@ -122,27 +122,16 @@ bool Scraper::PrepareParsing(const CStdString& function)
   if(strcmp(function.c_str(),"CreateSearchUrl") == 0)
   {
     //modify content of buffer 1 
-    cout << "Searching for: " << PrepareSearchString(s_parser.m_param[0]) << endl;
-    SetBuffer(1,PrepareSearchString(s_parser.m_param[0]));
+    cout << "Searching for: " << PrepareSearchString(m_parser.m_param[0]) << endl;
+    SetBuffer(1,PrepareSearchString(m_parser.m_param[0]));
   }
   else if(strcmp(function.c_str(),"GetSearchResults") == 0)
-  {
-    /*TiXmlDocument doc("url.xml");
-    doc.LoadFile();
-	  if (!doc.RootElement())
-    {
-      cout << "Error: Unable to parse url.xml" <<  endl;
-      return false;
-    }
-    TiXmlHandle docHandle( &doc );
-    TiXmlElement *link = docHandle.FirstChild("url").Element();
-    cout << "Downloading: " << link->FirstChild()->Value() <<  endl;
-    get_url("results.html", link->FirstChild()->Value() );*/
-    
-    cout << "Downloading: " << s_result.c_str()  <<  endl;
-    get_url("results.html", s_result.c_str() );
+  {  
+    CScraperUrl srcUrl(m_result);
+    cout << "Downloading: " << srcUrl.m_url.c_str()  <<  endl;
+    get_url("results.html", srcUrl );
     SetBuffer(1,readFile("results.html"));
-    SetBuffer(2,s_result.c_str());
+    SetBuffer(2,srcUrl.m_url.c_str());
   }
   else if(strcmp(function.c_str(),"GetDetails") == 0) 
   {
@@ -162,19 +151,53 @@ bool Scraper::PrepareParsing(const CStdString& function)
     do
       {
         i++;
-        
+        CScraperUrl srcUrl(link);
         strFilename.Format("details.%i.html",i);
-        cout << "Details URL " << i << ":"<< link->FirstChild()->Value() << endl;
-        get_url(strFilename.c_str(),link->FirstChild()->Value() );
+        cout << "Details URL " << i << ":"<< srcUrl.m_url << endl;
+        get_url(strFilename.c_str(),srcUrl );
         SetBuffer(i,readFile(strFilename.c_str()));
       }  
     while( link = link->NextSiblingElement("url") );
     if(link = docHandle.FirstChild( "results" ).FirstChild( "entity" ).FirstChild( "id" ).Element() )
     {    
       SetBuffer(i+1,link->FirstChild()->Value()) ;
-      cout << "ID: " << i << s_parser.m_param[i] << endl;
+      cout << "ID: " << i << m_parser.m_param[i] << endl;
     }
   } 
+  else if(strcmp(function.c_str(),"GetEpisodeList") == 0) 
+  {
+    TiXmlDocument doc("details.xml");
+    doc.LoadFile();
+	  if (!doc.RootElement())
+    {
+      cout << "Error: Unable to parse details.xml" <<  endl;
+      return false;
+    }
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *link = docHandle.FirstChild( "details" ).FirstChild( "episodeguide" ).Element();
+    CScraperUrl srcUrl(link);
+    CStdString strFilename = "episodelist.html";
+    cout << "Episodelist URL:"<< srcUrl.m_url << endl;
+    get_url(strFilename.c_str(),srcUrl );
+    SetBuffer(1,readFile(strFilename.c_str()));
+  }
+  else if(strcmp(function.c_str(),"GetEpisodeDetails") == 0) 
+  {
+    TiXmlDocument doc("episodelist.xml");
+    doc.LoadFile();
+	  if (!doc.RootElement())
+    {
+      cout << "Error: Unable to parse episodelist.xml" <<  endl;
+      return false;
+    }
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).FirstChild("url").Element();
+    CScraperUrl srcUrl(link);
+    CStdString strFilename = "episodedetails.html";
+    cout << "Episode details URL:"<< srcUrl.m_url << endl;
+    get_url(strFilename.c_str(),srcUrl );
+    SetBuffer(1,readFile(strFilename.c_str()));
+  }
   return true;
 }
 int Scraper::Parse(const CStdString& function)
@@ -182,9 +205,9 @@ int Scraper::Parse(const CStdString& function)
   CStdString strFilename;
   if(!(Load() && PrepareParsing(function))) return -1;
 
-  s_result = s_parser.Parse(function.c_str());
+  m_result = m_parser.Parse(function.c_str());
 
-  cout << function.c_str()  << " returned : " << s_result.c_str() << endl;
+  cout << function.c_str()  << " returned : " << m_result.c_str() << endl;
   //what's the next step?
   if(strcmp(function.c_str(),"CreateSearchUrl") == 0)
   {
@@ -199,7 +222,20 @@ int Scraper::Parse(const CStdString& function)
   else if(strcmp(function.c_str(),"GetDetails") == 0) 
   {
     WriteResult("details.xml");
-    CustomFunctions("details.xml");
+    if(strcmp(m_parser.GetContent().c_str(),"tvshows") == 0)
+      Scraper::Parse("GetEpisodeList");
+    else if(strcmp(m_parser.GetContent().c_str(),"movies") == 0) 
+      CustomFunctions("details.xml");
+  }
+  else if(strcmp(function.c_str(),"GetEpisodeList") == 0) 
+  {
+    WriteResult("episodelist.xml");
+    Parse("GetEpisodeDetails");
+  }
+  else if(strcmp(function.c_str(),"GetEpisodeDetails") == 0) 
+  {
+    WriteResult("episodedetails.xml");
+    CustomFunctions("episodedetails.xml");
   }
   else 
   {
@@ -207,4 +243,5 @@ int Scraper::Parse(const CStdString& function)
     WriteResult(strFilename.c_str());
     CustomFunctions(strFilename.c_str());
   }
+  return 0;
 } 

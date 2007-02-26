@@ -26,17 +26,26 @@ CScraperUrl::~CScraperUrl()
 {
 
 }
-void CScraperUrl::ParseElement(const TiXmlElement* element)
+void CScraperUrl::Clear()
 {
+  m_url.clear();
+  m_spoof.clear();
+  m_post = false;
+}
+bool CScraperUrl::ParseElement(const TiXmlElement* element)
+{
+  if (!element || element == NULL) return false;
+
   m_url = element->FirstChild()->Value();
   m_spoof = element->Attribute("spoof");
   if(element->Attribute("post")) 
     m_post = true;
+  return true;
 }
-void CScraperUrl::ParseString(CStdString strUrl)
+bool CScraperUrl::ParseString(CStdString strUrl)
 {
   if (strUrl.IsEmpty())
-    return ;
+    return false;
   
   // ok, now parse the xml file
   if (strUrl.Find("encoding=\"utf-8\"") < 0)
@@ -54,6 +63,7 @@ void CScraperUrl::ParseString(CStdString strUrl)
   } 
   else
     m_url = strUrl;
+  return true;
 }
 CScraperParser::CScraperParser()
 {

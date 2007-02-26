@@ -362,6 +362,12 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
 
+  AddCategory(4, "videooutput", 21373);
+  AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
+  AddBool(2,  "videooutput.hd480p", 21378, true);
+  AddBool(3,  "videooutput.hd720p", 21379, true);
+  AddBool(4,  "videooutput.hd1080i", 21380, true);
+
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
@@ -402,6 +408,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(11, "videoplayer.sep3");
   AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
   AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
+  AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
@@ -426,7 +433,6 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "postprocessing.autobrightnesscontrastlevels", 310, false);
   AddBool(9, "postprocessing.dering", 311, false);
 
-
   // network settings
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
@@ -442,7 +448,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "network.sep2");
   AddBool(11, "network.enableinternet", 14054, true);
 
-  //GeminiServer
   AddCategory(6, "servers", 14036);
   AddBool(1,  "servers.ftpserver",        167, true);
   AddString(2,"servers.ftpserveruser",    1245, "xbox", SPIN_CONTROL_TEXT);
@@ -847,6 +852,17 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
+
+  if (g_videoConfig.HasLetterbox())
+    SetInt("videooutput.aspect", VIDEO_LETTERBOX);
+  else if (g_videoConfig.HasWidescreen())
+    SetInt("videooutput.aspect", VIDEO_WIDESCREEN);
+  else
+    SetInt("videooutput.aspect", VIDEO_NORMAL);
+  SetBool("videooutput.hd480p", g_videoConfig.Has480p());
+  SetBool("videooutput.hd720p", g_videoConfig.Has720p());
+  SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
+
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
   g_videoConfig.PrintInfo();
