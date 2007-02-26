@@ -1994,7 +1994,7 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needs
   return details;
 }
 
-CIMDBMovie CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CIMDBMovie CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast /* = false */, const CStdString &baseDir)
 {
   CIMDBMovie details;
   details.Reset();
@@ -2022,7 +2022,10 @@ CIMDBMovie CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool need
   }
   details.m_strSearchString.Format("%i", lTvShowId);
   details.m_strPath = m_pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
-  details.m_strFileNameAndPath = details.m_strPath;
+  if (baseDir.IsEmpty())
+    details.m_strFileNameAndPath = details.m_strPath;
+  else
+    details.m_strFileNameAndPath.Format("%s%i/", baseDir.c_str(), lTvShowId);
 
   movieTime += timeGetTime() - time; time = timeGetTime();
 
@@ -2950,7 +2953,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
 
     // run query
-    CLog::Log(LOGDEBUG, "CVideoDatabase::GetYearsNav() query: %s", strSQL.c_str());
+    CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -3218,17 +3221,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
               return true; // failed on first iteration, so there's probably no songs in the db
             else
             {
-              CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
-              for (int i=0;i<items.Size();++i) // finally update the paths
-              {
-                CStdString strDir;
-                strDir.Format("%s/", movies[i].m_strSearchString);
-                items[i]->SetVideoThumb();
-                items[i]->m_musicInfoTag.SetTrackNumber(movies[i].m_iEpisode);
-                items[i]->m_strPath=strBaseDir + strDir;
-                items[i]->m_bIsFolder=true;
-                items[i]->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
-              }
+              CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
               return true; // there no more songs left to process (aborts the unbounded for loop)
             }
           }
@@ -3237,7 +3230,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
-            CIMDBMovie movie = GetDetailsForTvShow(m_pDS);
+            CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false, strBaseDir);
             CUtil::RemoveSlashAtEnd(movie.m_strPath);
             movies.push_back(movie);
             iSONGS++;
@@ -3252,18 +3245,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
 
           if (iSONGS > 0)
           {
-            CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
-            for (int i=0;i<items.Size();++i) // finally update the paths
-            {
-              CStdString strDir;
-              strDir.Format("%s/", movies[i].m_strSearchString);
-              items[i]->SetVideoThumb();
-              items[i]->m_strPath=strBaseDir + strDir;
-              items[i]->m_bIsFolder=true;
-              items[i]->m_musicInfoTag.SetTrackNumber(movies[i].m_iEpisode);
-              items[i]->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
-            }
-
+            CGUIWindowVideoBase::SetDatabaseDirectory(movies,items, true);
             return true; // keep whatever songs we may have gotten before the failure
           }
           else
@@ -3273,7 +3255,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
         iITERATIONS++;
         m_pDS->close();
       }
-      CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
+      CGUIWindowVideoBase::SetDatabaseDirectory(movies,items, true);
       for (int i=0;i<items.Size();++i) // finally update the paths
       {
         CStdString strDir;
@@ -3305,7 +3287,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
 
     while (!m_pDS->eof())
     {
-      CIMDBMovie movie = GetDetailsForTvShow(m_pDS);
+      CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false, strBaseDir);
       movies.push_back(movie);
 
       m_pDS->next();

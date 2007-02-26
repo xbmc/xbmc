@@ -1509,7 +1509,7 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
   return nfoFile;
 }
 
-void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items)
+void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool isTVShow /* = false */)
 {
   DWORD time = timeGetTime();
   for (int i = 0; i < (int)movies.size(); ++i)
@@ -1547,6 +1547,13 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_musicInfoTag.SetLoaded(movie.m_bWatched);
       pItem->m_musicInfoTag.SetAlbum(movie.m_strFileNameAndPath);
       // End hack for extra info
+
+      if (isTVShow)
+      {
+        pItem->SetVideoThumb();
+        pItem->m_bIsFolder=true;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
+      }
 
       items.Add(pItem);
     }

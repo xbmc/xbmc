@@ -15,7 +15,7 @@ public:
   void PlayMovie(const CFileItem *item);
   int  GetResumeItemOffset(const CFileItem *item);
 
-  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
+  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool isTVShow = false);
   void AddToDatabase(int iItem);
 
 private:
