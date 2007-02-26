@@ -247,7 +247,7 @@ void CIMDBMovie::Reset()
   m_strTagLine = "";
   m_strPlotOutline = "";
   m_strPlot = "";
-  m_strPictureURL = "";
+  m_strPictureURL.Clear();
   m_strTitle = "";
   m_strOriginalTitle = "";
   m_strVotes = "";
@@ -284,7 +284,7 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetString(movie, "runtime", m_strRuntime);
-  XMLUtils::SetString(movie, "thumb", m_strPictureURL);
+  XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_url);
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
   XMLUtils::SetString(movie, "searchstring", m_strSearchString);
@@ -327,7 +327,6 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "plot", m_strPlot);
   XMLUtils::GetString(movie, "tagline", m_strTagLine);
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
-  XMLUtils::GetString(movie, "thumb", m_strPictureURL);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::GetBoolean(movie, "watched", m_bWatched);
   XMLUtils::GetString(movie, "searchstring", m_strSearchString);
@@ -335,6 +334,8 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
+
+  m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
 
   CStdString strTemp;
   const TiXmlNode *node = movie->FirstChild("genre");
