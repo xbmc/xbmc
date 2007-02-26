@@ -123,7 +123,7 @@ void MD5Update (MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen)
   }
 }
 
-void MD5Final (MD5_CTX *mdContext)
+void MD5Final (unsigned char digest[16], MD5_CTX *mdContext)
 {
   UINT4 in[16];
   int mdi;
@@ -151,12 +151,12 @@ void MD5Final (MD5_CTX *mdContext)
 
   /* store buffer in digest */
   for (i = 0, ii = 0; i < 4; i++, ii += 4) {
-    mdContext->digest[ii] = (unsigned char)(mdContext->buf[i] & 0xFF);
-    mdContext->digest[ii+1] =
+    digest[ii] = (unsigned char)(mdContext->buf[i] & 0xFF);
+    digest[ii+1] =
       (unsigned char)((mdContext->buf[i] >> 8) & 0xFF);
-    mdContext->digest[ii+2] =
+    digest[ii+2] =
       (unsigned char)((mdContext->buf[i] >> 16) & 0xFF);
-    mdContext->digest[ii+3] =
+    digest[ii+3] =
       (unsigned char)((mdContext->buf[i] >> 24) & 0xFF);
   }
 }
