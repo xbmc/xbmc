@@ -20,7 +20,7 @@
  */
 #include "../stdafx.h"
 #include "SystemInfo.h"
-
+#include <conio.h>
 #include "../xbox/XKUtils.h"
 #include "../xbox/xkhdd.h"
 #include "../xbox/XKflash.h"
@@ -28,19 +28,56 @@
 #include "../settings.h"
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
-#include "../xbox/xkeeprom.h"
 #include "../cores/dllloader/dllloader.h"
 
-#include <conio.h>
-
-const char * CSysInfo::cTempBIOSFile = "Q:\\System\\SystemInfo\\BiosBackup.bin";
-const char * CSysInfo::cBIOSmd5IDs   = "Q:\\System\\SystemInfo\\BiosIDs.ini";
-char CSysInfo::MD5_Sign[32 + 1];
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
-#define XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
-#define DEBUG_KEYBOARD
-#define DEBUG_MOUSE
 
+CSysInfo g_sysinfo;
+
+CSysInfo::CSysInfo()
+{
+  m_XKEEPROM = new XKEEPROM;
+  m_XKEEPROM->ReadFromXBOX();
+  m_XBOXVersion = m_XKEEPROM->GetXBOXVersion();
+}
+CSysInfo::~CSysInfo()
+{
+   delete m_XKEEPROM;
+}
+struct Bios * CSysInfo::LoadBiosSigns()
+{
+  FILE *infile;
+
+  if ((infile = fopen(XBOX_BIOS_ID_INI_FILE,"r")) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "ERROR LOADING BIOSES.INI!!");
+    return NULL;
+  }
+  else
+  {
+    struct Bios * Listone = (struct Bios *)calloc(1000, sizeof(struct Bios));
+    int cntBioses=0;
+    char buffer[255];
+    char stringone[255];
+    do
+    {
+      fgets(stringone,255,infile);
+      if  (stringone[0] != '#')
+      {
+        if (strstr(stringone,"=")!= NULL)
+        {
+          strcpy(Listone[cntBioses].Name,ReturnBiosName(buffer, stringone));
+          strcpy(Listone[cntBioses].Signature,ReturnBiosSign(buffer, stringone));
+          cntBioses++;
+        }
+      }
+    } while( !feof( infile ) && cntBioses < 999 );
+    fclose(infile);
+    strcpy(Listone[cntBioses++].Name,"\0");
+    strcpy(Listone[cntBioses++].Signature,"\0");
+    return Listone;
+  }
+}
 char* CSysInfo::MD5Buffer(char *buffer, long PosizioneInizio,int KBytes)
 {
   MD5_CTX mdContext;
@@ -54,6 +91,558 @@ char* CSysInfo::MD5Buffer(char *buffer, long PosizioneInizio,int KBytes)
   return MD5_Sign;
 }
 
+char* CSysInfo::ReturnBiosName(char *buffer, char *str)
+{
+  int cnt1,cnt2,i;
+  cnt1=cnt2=0;
+
+  for (i=0;i<255;i++) buffer[i]='\0';
+  if ( (strstr(str,"(1MB)")==0) || (strstr(str,"(512)")==0) || (strstr(str,"(256)")==0) )
+    cnt2=5;
+
+  while (str[cnt2] != '=')
+  {
+    buffer[cnt1]=str[cnt2];
+    cnt1++;
+    cnt2++;
+  }
+  buffer[cnt1++]='\0';
+  return buffer;
+}
+char* CSysInfo::ReturnBiosSign(char *buffer, char *str)
+{
+  int cnt1,cnt2,i;
+  cnt1=cnt2=0;
+  for (i=0;i<255;i++) buffer[i]='\0';
+  while (str[cnt2] != '=') cnt2++;
+  cnt2++;
+  while (str[cnt2] != NULL)
+  {
+    if ( str[cnt2] != ' ' )
+    {
+      buffer[cnt1]=toupper(str[cnt2]);
+      cnt1++;
+      cnt2++;
+    }
+    else cnt2++;
+  }
+  buffer[cnt1++]='\0';
+  return buffer;
+}
+char* CSysInfo::CheckMD5 (struct Bios *Listone, char *Sign)
+{
+  int cntBioses;
+  cntBioses=0;
+  do
+  {
+    if  (strstr(Listone[cntBioses].Signature, Sign) != NULL)
+    { return (Listone[cntBioses].Name);   }
+    cntBioses++;
+  }
+  while( strcmp(Listone[cntBioses].Name,"\0") != 0);
+  return ("Unknown");
+}
+
+void CSysInfo::WriteTXTInfoFile(LPCSTR strFilename)
+{
+  BOOL retVal = FALSE;
+  DWORD dwBytesWrote = 0;
+  CHAR tmpData[SYSINFO_TMP_SIZE];
+  CStdString tmpstring;
+  LPSTR tmpFileStr = new CHAR[2048];
+  ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+  ZeroMemory(tmpFileStr, 2048);
+
+  HANDLE hf = CreateFile(strFilename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (hf !=  INVALID_HANDLE_VALUE)
+  {
+    //Write File Header..
+    strcat(tmpFileStr, "*******  XBOXMEDIACENTER [XBMC] INFORMATION FILE  *******\r\n");
+    if (m_XBOXVersion== m_XKEEPROM->V1_0)
+      strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.0");
+    else if (m_XBOXVersion == m_XKEEPROM->V1_1)
+      strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.1");
+    else if (m_XBOXVersion == m_XKEEPROM->V1_6)
+      strcat(tmpFileStr,  "\r\nXBOX Version = \t\tV1.6");
+    //Get Kernel Version
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    sprintf(tmpData, "\r\nKernel Version: \t%d.%d.%d.%d", XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
+    strcat(tmpFileStr, tmpData);
+
+    //Get Memory Status
+    strcat(tmpFileStr, "\r\nXBOX RAM = \t\t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    MEMORYSTATUS stat;
+    GlobalMemoryStatus( &stat );
+    ltoa(stat.dwTotalPhys/1024/1024, tmpData, 10);
+    strcat(tmpFileStr, tmpData);
+    strcat(tmpFileStr, " MBytes");
+
+    //Write Serial Number..
+    strcat(tmpFileStr, "\r\n\r\nXBOX Serial Number = \t");
+    CHAR serial[SERIALNUMBER_SIZE + 1] = "";
+    m_XKEEPROM->GetSerialNumberString(serial);
+    strcat(tmpFileStr, serial);
+
+    //Write MAC Address..
+    strcat(tmpFileStr, "\r\nXBOX MAC Address = \t");
+    m_XKEEPROM->GetMACAddressString((LPSTR)&tmpstring, ':');
+    strcat(tmpFileStr, tmpstring.c_str());
+
+    //Write Online Key ..
+    strcat(tmpFileStr, "\r\nXBOX Online Key = \t");
+    char livekey[ONLINEKEY_SIZE * 2 + 1] = "";
+    m_XKEEPROM->GetOnlineKeyString(livekey);
+    strcat(tmpFileStr, livekey);
+
+    //Write VideoMode ..
+    strcat(tmpFileStr, "\r\nXBOX Video Mode = \t");
+    VIDEO_STANDARD vdo = m_XKEEPROM->GetVideoStandardVal();
+    if (vdo == XKEEPROM::VIDEO_STANDARD::PAL_I)
+      strcat(tmpFileStr, "PAL");
+    else
+      strcat(tmpFileStr, "NTSC");
+
+    //Write XBE Region..
+    strcat(tmpFileStr, "\r\nXBOX XBE Region = \t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    m_XKEEPROM->GetXBERegionString(tmpData);
+    strcat(tmpFileStr, tmpData);
+
+    //Write HDDKey..
+    strcat(tmpFileStr, "\r\nXBOX HDD Key = \t\t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    m_XKEEPROM->GetHDDKeyString(tmpData);
+    strcat(tmpFileStr, tmpData);
+
+    //Write Confounder..
+    strcat(tmpFileStr, "\r\nXBOX Confounder = \t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    m_XKEEPROM->GetConfounderString(tmpData);
+    strcat(tmpFileStr, tmpData);
+
+    //GET HDD Info...
+    //Query ATA IDENTIFY
+    XKHDD::ATA_COMMAND_OBJ cmdObj;
+    ZeroMemory(&cmdObj, sizeof(XKHDD::ATA_COMMAND_OBJ));
+    cmdObj.IPReg.bCommandReg = IDE_ATA_IDENTIFY;
+    cmdObj.IPReg.bDriveHeadReg = IDE_DEVICE_MASTER;
+    XKHDD::SendATACommand(IDE_PRIMARY_PORT, &cmdObj, IDE_COMMAND_READ);
+
+    //Write HDD Model
+    strcat(tmpFileStr, "\r\n\r\nXBOX HDD Model = \t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    XKHDD::GetIDEModel(cmdObj.DATA_BUFFER, (LPSTR)tmpData);
+    strcat(tmpFileStr, tmpData);
+
+    //Write HDD Serial..
+    strcat(tmpFileStr, "\r\nXBOX HDD Serial = \t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    XKHDD::GetIDESerial(cmdObj.DATA_BUFFER, (LPSTR)tmpData);
+    strcat(tmpFileStr, tmpData);
+
+    //Write HDD Password..
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    strcat(tmpFileStr, "\r\n\r\nXBOX HDD Password = \t");
+
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    BYTE HDDpwd[20];
+    ZeroMemory(HDDpwd, 20);
+    XKHDD::GenerateHDDPwd((UCHAR *)XboxHDKey, cmdObj.DATA_BUFFER, (UCHAR*)&HDDpwd);
+    XKGeneral::BytesToHexStr(HDDpwd, 20, tmpData);
+    strcat(tmpFileStr, tmpData);
+
+    //Query ATAPI IDENTIFY
+    ZeroMemory(&cmdObj, sizeof(XKHDD::ATA_COMMAND_OBJ));
+    cmdObj.IPReg.bCommandReg = IDE_ATAPI_IDENTIFY;
+    cmdObj.IPReg.bDriveHeadReg = IDE_DEVICE_SLAVE;
+    XKHDD::SendATACommand(IDE_PRIMARY_PORT, &cmdObj, IDE_COMMAND_READ);
+
+    //Write DVD Model
+    strcat(tmpFileStr, "\r\n\r\nXBOX DVD Model = \t");
+    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
+    XKHDD::GetIDEModel(cmdObj.DATA_BUFFER, (LPSTR)tmpData);
+    strcat(tmpFileStr, tmpData);
+    strupr(tmpFileStr);
+
+    WriteFile(hf, tmpFileStr, (DWORD)strlen(tmpFileStr), &dwBytesWrote, NULL);
+  }
+  delete[] tmpFileStr;
+  CloseHandle(hf);
+}
+bool CSysInfo::CreateBiosBackup()
+{
+  FILE *fp;
+  DWORD addr        = FLASH_BASE_ADDRESS;
+  DWORD addr_kernel = KERNEL_BASE_ADDRESS;
+  char * flash_copy, data;
+  CXBoxFlash mbFlash;
+
+  flash_copy = (char *) malloc(0x100000);
+
+  if((fp = fopen(XBOX_BIOS_BACKUP_FILE, "wb")) != NULL)
+  {
+    for(int loop=0;loop<0x100000;loop++)
+    {
+        data = mbFlash.Read(addr++);
+        flash_copy[loop] = data;
+    }
+    fwrite(flash_copy, 0x100000, 1, fp);
+    fclose(fp);
+    free(flash_copy);
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "BIOS FILE CREATION ERROR!");
+    return false;
+  }
+}
+
+bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
+{
+  BYTE data;
+  char *BIOS_Name;
+  int BiosTrovato,i;
+  DWORD addr        = FLASH_BASE_ADDRESS;
+  DWORD addr_kernel = KERNEL_BASE_ADDRESS;
+  CXBoxFlash mbFlash;
+  char * flash_copy;
+
+  flash_copy = (char *) malloc(0x100000);
+
+  BiosTrovato     = 0;
+  BIOS_Name     = (char*) malloc(100);
+
+  struct Bios *Listone = LoadBiosSigns();
+
+  if( !Listone )
+  {
+    free(BIOS_Name);
+    return false;
+  }
+
+  for(int loop=0;loop<0x100000;loop++)
+  {
+    data = mbFlash.Read(addr++);
+    flash_copy[loop] = data;
+  }
+
+  // Detect a 1024 KB Bios MD5
+  MD5Buffer (flash_copy,0,1024);
+  strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
+  if ( strcmp(BIOS_Name, "Unknown") == 0)
+  {
+    // Detect a 512 KB Bios MD5
+    MD5Buffer (flash_copy,0,512);
+    strcpy(BIOS_Name, CheckMD5(Listone, MD5_Sign));
+    if ( strcmp(BIOS_Name,"Unknown") == 0)
+    {
+      // Detect a 256 KB Bios MD5
+      MD5Buffer (flash_copy,0,256);
+      strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
+      if ( strcmp(BIOS_Name,"Unknown") != 0)
+      {
+        CLog::Log(LOGDEBUG, "- Detected BIOS [256 KB]: %hs",BIOS_Name);
+        CLog::Log(LOGDEBUG, "- BIOS MD5 Hash: %hs",MD5_Sign);
+        strDetBiosNa = BIOS_Name;
+        free(flash_copy);
+        free(Listone);
+        free(BIOS_Name);
+        return true;
+      }
+      else
+      {
+        CLog::Log(LOGINFO, "------------------- BIOS Detection Log ------------------");
+        // 256k Bios MD5
+        if ( (MD5BufferNew(flash_copy,0,256) == MD5BufferNew(flash_copy,262144,256)) && (MD5BufferNew(flash_copy,524288,256)== MD5BufferNew(flash_copy,786432,256)) )
+        {
+            for (i=0;i<16; i++) MD5_Sign[i]='\0';
+            MD5Buffer(flash_copy,0,256);
+            CLog::Log(LOGINFO, "256k BIOSES: Checksums are (256)");
+            CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone, MD5_Sign));
+            CLog::Log(LOGINFO, "  Add this to BiosIDs.ini: (256)BiosNameHere = %hs",MD5_Sign);
+            CLog::Log(LOGINFO, "---------------------------------------------------------");
+            strDetBiosNa = g_localizeStrings.Get(20306);
+            free(flash_copy);
+            free(Listone);
+            free(BIOS_Name);
+            return true;
+        }
+        else
+        { 
+          CLog::Log(LOGINFO, "- BIOS: This is not a 256KB Bios!");
+          // 512k Bios MD5
+          if ((MD5BufferNew(flash_copy,0,512)) == (MD5BufferNew(flash_copy,524288,512)))
+          {
+            for (i=0;i<16; i++) MD5_Sign[i]='\0';
+            MD5Buffer(flash_copy,0,512);
+            CLog::Log(LOGINFO, "512k BIOSES: Checksums are (512)");
+            CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone,MD5_Sign));
+            CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (512)BiosNameHere = %hs",MD5_Sign);
+            CLog::Log(LOGINFO, "---------------------------------------------------------");
+            strDetBiosNa = g_localizeStrings.Get(20306);
+            free(flash_copy);
+            free(Listone);
+            free(BIOS_Name);
+            return true;
+          }
+          else
+          {
+            CLog::Log(LOGINFO, "- BIOS: This is not a 512KB Bios!");
+            // 1024k Bios MD5
+            for (i=0;i<16; i++) MD5_Sign[i]='\0';
+            MD5Buffer(flash_copy,0,1024);
+            CLog::Log(LOGINFO, "1024k BIOS: Checksums are (1MB)");
+            CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone, MD5_Sign));
+            CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (1MB)BiosNameHere = %hs",MD5_Sign);
+            CLog::Log(LOGINFO, "---------------------------------------------------------");
+            strDetBiosNa = g_localizeStrings.Get(20306);
+            free(flash_copy);
+            free(Listone);
+            free(BIOS_Name);
+            return true;
+          }
+        }
+      }
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "- Detected BIOS [512 KB]: %hs",BIOS_Name);
+      CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
+      strDetBiosNa = BIOS_Name;
+      free(flash_copy);
+      free(Listone);
+      free(BIOS_Name);
+      return true;
+
+    }
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "- Detected BIOS [1024 KB]: %hs",BIOS_Name);
+    CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
+    strDetBiosNa = BIOS_Name;
+    free(flash_copy);
+    free(Listone);
+    free(BIOS_Name);
+    return true;
+  }
+  free(flash_copy);
+  free(Listone);
+  free(BIOS_Name);
+  return false;
+}
+bool CSysInfo::GetXBOXVersionDetected(CStdString& strXboxVer)
+{
+  unsigned int iTemp;
+  char Ver[6];
+
+  HalReadSMBusValue(0x20,0x01,0,(LPBYTE)&Ver[0]);
+  HalReadSMBusValue(0x20,0x01,0,(LPBYTE)&Ver[1]);
+  HalReadSMBusValue(0x20,0x01,0,(LPBYTE)&Ver[2]);
+  Ver[3] = 0; Ver[4] = 0; Ver[5] = 0;
+
+  if ( strcmp(Ver,("01D")) == NULL || strcmp(Ver,("D01")) == NULL || strcmp(Ver,("1D0")) == NULL || strcmp(Ver,("0D1")) == NULL)
+  { strXboxVer = "DEVKIT";  return true;}
+  else if ( strcmp(Ver,("DBG")) == NULL){ strXboxVer = "DEBUGKIT Green";  return true;}
+  else if ( strcmp(Ver,("B11")) == NULL){ strXboxVer = "DEBUGKIT Green";  return true;}
+  else if ( strcmp(Ver,("P01")) == NULL){ strXboxVer = "v1.0";  return true;}
+  else if ( strcmp(Ver,("P05")) == NULL){ strXboxVer = "v1.1";  return true;}
+  else if ( strcmp(Ver,("P11")) == NULL ||  strcmp(Ver,("1P1")) == NULL || strcmp(Ver,("11P")) == NULL )
+  {
+    if (HalReadSMBusValue(0xD4,0x00,0,(LPBYTE)&iTemp)==0){  strXboxVer = "v1.4";  return true; }
+    else {  strXboxVer = "v1.2/v1.3";   return true;}
+  }
+  else if ( strcmp(Ver,("P2L")) == NULL){ strXboxVer = "v1.6";  return true;}
+  else  { strXboxVer.Format("UNKNOWN: Please report this --> %s",Ver); return true;
+  }
+}
+
+bool CSysInfo::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
+{
+  XKHDD::ATA_COMMAND_OBJ hddcommand;
+  DWORD slen = 0;
+  ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
+  hddcommand.DATA_BUFFSIZE = 0;
+
+  //Detect DVD Model...
+  hddcommand.IPReg.bDriveHeadReg = IDE_DEVICE_SLAVE;
+  hddcommand.IPReg.bCommandReg = IDE_ATAPI_IDENTIFY;
+  if (XKHDD::SendATACommand(IDE_PRIMARY_PORT, &hddcommand, IDE_COMMAND_READ))
+  {
+    //Get DVD Model
+    CHAR lpsDVDModel[100];
+    ZeroMemory(&lpsDVDModel,100);
+    XKHDD::GetIDEModel(hddcommand.DATA_BUFFER, lpsDVDModel);
+    CLog::Log(LOGDEBUG, "DVD Model: %s",lpsDVDModel);
+    strDVDModel.Format("%s",lpsDVDModel);
+
+    //Get DVD FirmWare...
+    CHAR lpsDVDFirmware[100];
+    ZeroMemory(&lpsDVDFirmware,100);
+    XKHDD::GetIDEFirmWare(hddcommand.DATA_BUFFER, lpsDVDFirmware);
+    CLog::Log(LOGDEBUG, "DVD Firmware: %s",lpsDVDFirmware);
+    strDVDFirmware.Format("%s",lpsDVDFirmware);
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "DVD Model Detection FAILED!");
+    return false;
+  }
+}
+bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState)
+{
+  XKHDD::ATA_COMMAND_OBJ hddcommand;
+
+  ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
+  hddcommand.IPReg.bDriveHeadReg = IDE_DEVICE_MASTER;
+  hddcommand.IPReg.bCommandReg = IDE_ATA_IDENTIFY;
+
+  if (XKHDD::SendATACommand(IDE_PRIMARY_PORT, &hddcommand, IDE_COMMAND_READ))
+  {
+    //Get Model Name
+    CHAR lpsHDDModel[100] = "";
+    XKHDD::GetIDEModel(hddcommand.DATA_BUFFER, lpsHDDModel);
+    strHDDModel.Format("%s",lpsHDDModel);
+
+    //Get Serial...
+    CHAR lpsHDDSerial[100] = "";
+    XKHDD::GetIDESerial(hddcommand.DATA_BUFFER, lpsHDDSerial);
+    strHDDSerial.Format("%s", lpsHDDSerial);
+
+    //Get HDD FirmWare...
+    CHAR lpsHDDFirmware[100] = "";
+    XKHDD::GetIDEFirmWare(hddcommand.DATA_BUFFER, lpsHDDFirmware);
+    strHDDFirmware.Format("%s", lpsHDDFirmware);
+
+    //Print HDD Password...
+    BYTE pbHDDPassword[32] = "";
+    CHAR lpsHDDPassword[65] = "";
+    XKHDD::GenerateHDDPwd((UCHAR *)XboxHDKey, hddcommand.DATA_BUFFER, pbHDDPassword);
+    XKGeneral::BytesToHexStr(pbHDDPassword, 20, lpsHDDPassword);
+    strHDDpw.Format("%s", lpsHDDPassword);
+
+    //Get ATA Locked State
+    DWORD SecStatus = XKHDD::GetIDESecurityStatus(hddcommand.DATA_BUFFER);
+    if (!(SecStatus & IDE_SECURITY_SUPPORTED))
+    {
+      strHDDLockState = g_localizeStrings.Get(20164);
+      return true;
+    }
+    if ((SecStatus & IDE_SECURITY_SUPPORTED) && !(SecStatus & IDE_SECURITY_ENABLED))
+    {
+      strHDDLockState = g_localizeStrings.Get(20165);
+      return true;
+    }
+    if ((SecStatus & IDE_SECURITY_SUPPORTED) && (SecStatus & IDE_SECURITY_ENABLED))
+    {
+      strHDDLockState = g_localizeStrings.Get(20166);
+      return true;
+    }
+
+    if (SecStatus & IDE_SECURITY_FROZEN)
+    {
+      strHDDLockState = g_localizeStrings.Get(20167);
+      return true;
+    }
+
+    if (SecStatus & IDE_SECURITY_COUNT_EXPIRED)
+    {
+      strHDDLockState = g_localizeStrings.Get(20168);
+      return true;
+    }
+  return true;
+  }
+  else return false;
+}
+bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
+{
+  iMinutes=0;iHours=0;iDays=0;
+  iMinutes = iInputMinutes;
+  if (iMinutes >= 60) // Hour's
+  {
+    iHours = iMinutes / 60;
+    iMinutes = iMinutes - (iHours *60);
+  }
+  if (iHours >= 24) // Days
+  {
+    iDays = iHours / 24;
+    iHours = iHours - (iDays * 24);
+  }
+  return true;
+}
+
+bool CSysInfo::CreateEEPROMBackup()
+{
+  m_XKEEPROM->WriteToBINFile(XBOX_EEPROM_BIN_BACKUP_FILE);
+  m_XKEEPROM->WriteToCFGFile(XBOX_EEPROM_CFG_BACKUP_FILE);
+  return true;
+}
+bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount)
+{
+  XBOX_REFURB_INFO xri;
+  SYSTEMTIME sys_time;
+  if (ExReadWriteRefurbInfo(&xri, sizeof(XBOX_REFURB_INFO), FALSE) < 0)
+    return false;
+
+  FileTimeToSystemTime((FILETIME*)&xri.FirstBootTime, &sys_time);
+  rfi_FirstBootTime.Format("%s %d-%d-%d %d:%02d", g_localizeStrings.Get(13173), 
+    sys_time.wMonth, 
+    sys_time.wDay, 
+    sys_time.wYear,
+    sys_time.wHour,
+    sys_time.wMinute);
+
+  rfi_PowerCycleCount.Format("%s %d", g_localizeStrings.Get(13174), xri.PowerCycleCount);
+  return true;
+}
+
+double CSysInfo::GetCPUFrequency()
+{
+  unsigned __int64 Fwin;
+  unsigned __int64 Twin_fsb, Twin_result;
+  double Tcpu_fsb, Tcpu_result, Fcpu, CPUSpeed;
+
+
+  if (!QueryPerformanceFrequency((LARGE_INTEGER*)&Fwin))
+    return 0;
+  Tcpu_fsb = RDTSC();
+
+  if (!QueryPerformanceCounter((LARGE_INTEGER*)&Twin_fsb))
+    return 0;
+  Sleep(300);
+  Tcpu_result = RDTSC();
+
+  if (!QueryPerformanceCounter((LARGE_INTEGER*)&Twin_result))
+    return 0;
+
+  Fcpu  = (Tcpu_result-Tcpu_fsb);
+  Fcpu *= Fwin;
+  Fcpu /= (Twin_result-Twin_fsb);
+
+  CPUSpeed = Fcpu/1000000;
+
+  CLog::Log(LOGDEBUG, "- CPU Speed: %4.6f Mhz",CPUSpeed);
+  return CPUSpeed;
+}
+
+double CSysInfo::RDTSC(void)
+{
+  unsigned long a, b;
+  double x;
+  __asm
+  {
+    RDTSC
+    mov [a],eax
+    mov [b],edx
+  }
+  x=b;
+  x*=0x100000000;
+  x+=a;
+  return x;
+}
 CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
 {
   CStdString strReturn;
@@ -72,26 +661,39 @@ CStdString CSysInfo::GetAVPackInfo()
   int cAVPack;
   HalReadSMBusValue(0x20,XKUtils::PIC16L_CMD_AV_PACK,0,(LPBYTE)&cAVPack);
 
-     if (cAVPack == XKUtils::AV_PACK_SCART)   return "SCART";
-  else if (cAVPack == XKUtils::AV_PACK_HDTV)    return "HDTV";
-  else if (cAVPack == XKUtils::AV_PACK_VGA)   return "VGA";
-  else if (cAVPack == XKUtils::AV_PACK_RFU)   return "RFU";
-  else if (cAVPack == XKUtils::AV_PACK_SVideo)  return "S-Video";
-  else if (cAVPack == XKUtils::AV_PACK_Undefined) return "Undefined";
-  else if (cAVPack == XKUtils::AV_PACK_Standard)  return "Standard RGB";
-  else if (cAVPack == XKUtils::AV_PACK_Missing) return "Missing or Unknown";
-  else return "Unknown";
+     if (cAVPack == XKUtils::AV_PACK_SCART) return g_localizeStrings.Get(13292)+" "+"SCART";
+  else if (cAVPack == XKUtils::AV_PACK_HDTV) return g_localizeStrings.Get(13292)+" "+"HDTV";
+  else if (cAVPack == XKUtils::AV_PACK_VGA) return g_localizeStrings.Get(13292)+" "+"VGA";
+  else if (cAVPack == XKUtils::AV_PACK_RFU) return g_localizeStrings.Get(13292)+" "+"RFU";
+  else if (cAVPack == XKUtils::AV_PACK_SVideo) return g_localizeStrings.Get(13292)+" "+"S-Video";
+  else if (cAVPack == XKUtils::AV_PACK_Undefined) return g_localizeStrings.Get(13292)+" "+"Undefined";
+  else if (cAVPack == XKUtils::AV_PACK_Standard) return g_localizeStrings.Get(13292)+" "+"Standard RGB";
+  else if (cAVPack == XKUtils::AV_PACK_Missing) return g_localizeStrings.Get(13292)+" "+"Missing or Unknown";
+  else return g_localizeStrings.Get(13292)+" "+"Unknown";
 }
 CStdString CSysInfo::GetVideoEncoder()
 {
   int iTemp;
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  return "CONNEXANT"; }
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
+    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
+  }
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");    return "FOCUS";   }
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
+    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
+  }
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   return "XCALIBUR";  }
-  else {  CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  return "UNKNOWN"; }
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
+    return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
+  }
+  else 
+  {  
+    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
+    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
+  }
 }
 
 CStdString CSysInfo::GetModCHIPDetected()
@@ -306,439 +908,6 @@ CStdString CSysInfo::SmartXXModCHIP()
     return "SmartXX V3";
   else 
     return "None";
-}
-
-bool CSysInfo::BackupBios()
-{
-  FILE *fp;
-  DWORD addr        = FLASH_BASE_ADDRESS;
-  DWORD addr_kernel = KERNEL_BASE_ADDRESS;
-  char * flash_copy, data;
-  CXBoxFlash mbFlash;
-
-  flash_copy = (char *) malloc(0x100000);
-
-  if((fp = fopen(cTempBIOSFile, "wb")) != NULL)
-  {
-    for(int loop=0;loop<0x100000;loop++)
-    {
-        data = mbFlash.Read(addr++);
-        flash_copy[loop] = data;
-    }
-    fwrite(flash_copy, 0x100000, 1, fp);
-    fclose(fp);
-    free(flash_copy);
-    return true;
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "BIOS FILE CREATION ERROR!");
-    return false;
-  }
-}
-
-bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
-{
-  BYTE data;
-  char *BIOS_Name;
-  int BiosTrovato,i;
-  DWORD addr        = FLASH_BASE_ADDRESS;
-  DWORD addr_kernel = KERNEL_BASE_ADDRESS;
-  CXBoxFlash mbFlash;
-  char * flash_copy;
-
-  flash_copy = (char *) malloc(0x100000);
-
-  BiosTrovato     = 0;
-  BIOS_Name     = (char*) malloc(100);
-
-  struct Bios *Listone = LoadBiosSigns();
-
-  if( !Listone )
-  {
-    free(BIOS_Name);
-    return false;
-  }
-
-  for(int loop=0;loop<0x100000;loop++)
-  {
-    data = mbFlash.Read(addr++);
-    flash_copy[loop] = data;
-  }
-
-  // Detect a 1024 KB Bios MD5
-  MD5Buffer (flash_copy,0,1024);
-  strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
-  if ( strcmp(BIOS_Name, "Unknown") == 0)
-  {
-    // Detect a 512 KB Bios MD5
-    MD5Buffer (flash_copy,0,512);
-    strcpy(BIOS_Name, CheckMD5(Listone, MD5_Sign));
-    if ( strcmp(BIOS_Name,"Unknown") == 0)
-    {
-      // Detect a 256 KB Bios MD5
-      MD5Buffer (flash_copy,0,256);
-      strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
-      if ( strcmp(BIOS_Name,"Unknown") != 0)
-      {
-        CLog::Log(LOGDEBUG, "- Detected BIOS [256 KB]: %hs",BIOS_Name);
-        CLog::Log(LOGDEBUG, "- BIOS MD5 Hash: %hs",MD5_Sign);
-        strDetBiosNa = BIOS_Name;
-        free(flash_copy);
-        free(Listone);
-        free(BIOS_Name);
-        return true;
-      }
-      else
-      {
-        CLog::Log(LOGINFO, "------------------- BIOS Detection Log ------------------");
-        // 256k Bios MD5
-        if ( (MD5BufferNew(flash_copy,0,256) == MD5BufferNew(flash_copy,262144,256)) && (MD5BufferNew(flash_copy,524288,256)== MD5BufferNew(flash_copy,786432,256)) )
-        {
-            for (i=0;i<16; i++) MD5_Sign[i]='\0';
-            MD5Buffer(flash_copy,0,256);
-            CLog::Log(LOGINFO, "256k BIOSES: Checksums are (256)");
-            CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone, MD5_Sign));
-            CLog::Log(LOGINFO, "  Add this to BiosIDs.ini: (256)BiosNameHere = %hs",MD5_Sign);
-            CLog::Log(LOGINFO, "---------------------------------------------------------");
-            strDetBiosNa = g_localizeStrings.Get(20306);
-            free(flash_copy);
-            free(Listone);
-            free(BIOS_Name);
-            return true;
-        }
-        else
-        { 
-          CLog::Log(LOGINFO, "- BIOS: This is not a 256KB Bios!");
-          // 512k Bios MD5
-          if ((MD5BufferNew(flash_copy,0,512)) == (MD5BufferNew(flash_copy,524288,512)))
-          {
-            for (i=0;i<16; i++) MD5_Sign[i]='\0';
-            MD5Buffer(flash_copy,0,512);
-            CLog::Log(LOGINFO, "512k BIOSES: Checksums are (512)");
-            CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone,MD5_Sign));
-            CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (512)BiosNameHere = %hs",MD5_Sign);
-            CLog::Log(LOGINFO, "---------------------------------------------------------");
-            strDetBiosNa = g_localizeStrings.Get(20306);
-            free(flash_copy);
-            free(Listone);
-            free(BIOS_Name);
-            return true;
-          }
-          else
-          {
-            CLog::Log(LOGINFO, "- BIOS: This is not a 512KB Bios!");
-            // 1024k Bios MD5
-            for (i=0;i<16; i++) MD5_Sign[i]='\0';
-            MD5Buffer(flash_copy,0,1024);
-            CLog::Log(LOGINFO, "1024k BIOS: Checksums are (1MB)");
-            CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone, MD5_Sign));
-            CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (1MB)BiosNameHere = %hs",MD5_Sign);
-            CLog::Log(LOGINFO, "---------------------------------------------------------");
-            strDetBiosNa = g_localizeStrings.Get(20306);
-            free(flash_copy);
-            free(Listone);
-            free(BIOS_Name);
-            return true;
-          }
-        }
-      }
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "- Detected BIOS [512 KB]: %hs",BIOS_Name);
-      CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
-      strDetBiosNa = BIOS_Name;
-      free(flash_copy);
-      free(Listone);
-      free(BIOS_Name);
-      return true;
-
-    }
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "- Detected BIOS [1024 KB]: %hs",BIOS_Name);
-    CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
-    strDetBiosNa = BIOS_Name;
-    free(flash_copy);
-    free(Listone);
-    free(BIOS_Name);
-    return true;
-  }
-  free(flash_copy);
-  free(Listone);
-  free(BIOS_Name);
-  return false;
-}
-bool CSysInfo::GetXBOXVersionDetected(CStdString& strXboxVer)
-{
-  unsigned int iTemp;
-  char Ver[6];
-
-  HalReadSMBusValue(0x20,0x01,0,(LPBYTE)&Ver[0]);
-  HalReadSMBusValue(0x20,0x01,0,(LPBYTE)&Ver[1]);
-  HalReadSMBusValue(0x20,0x01,0,(LPBYTE)&Ver[2]);
-  Ver[3] = 0; Ver[4] = 0; Ver[5] = 0;
-
-  if ( strcmp(Ver,("01D")) == NULL || strcmp(Ver,("D01")) == NULL || strcmp(Ver,("1D0")) == NULL || strcmp(Ver,("0D1")) == NULL)
-  { strXboxVer = "DEVKIT";  return true;}
-  else if ( strcmp(Ver,("DBG")) == NULL){ strXboxVer = "DEBUGKIT Green";  return true;}
-  else if ( strcmp(Ver,("B11")) == NULL){ strXboxVer = "DEBUGKIT Green";  return true;}
-  else if ( strcmp(Ver,("P01")) == NULL){ strXboxVer = "v1.0";  return true;}
-  else if ( strcmp(Ver,("P05")) == NULL){ strXboxVer = "v1.1";  return true;}
-  else if ( strcmp(Ver,("P11")) == NULL ||  strcmp(Ver,("1P1")) == NULL || strcmp(Ver,("11P")) == NULL )
-  {
-    if (HalReadSMBusValue(0xD4,0x00,0,(LPBYTE)&iTemp)==0){  strXboxVer = "v1.4";  return true; }
-    else {  strXboxVer = "v1.2/v1.3";   return true;}
-  }
-  else if ( strcmp(Ver,("P2L")) == NULL){ strXboxVer = "v1.6";  return true;}
-  else  { strXboxVer.Format("UNKNOWN: Please report this --> %s",Ver); return true;
-  }
-}
-struct Bios * CSysInfo::LoadBiosSigns()
-{
-  FILE *infile;
-
-  if ((infile = fopen(cBIOSmd5IDs,"r")) == NULL)
-  {
-    CLog::Log(LOGDEBUG, "ERROR LOADING BIOSES.INI!!");
-    return NULL;
-  }
-  else
-  {
-    struct Bios * Listone = (struct Bios *)calloc(1000, sizeof(struct Bios));
-    int cntBioses=0;
-    char buffer[255];
-    char stringone[255];
-    do
-    {
-      fgets(stringone,255,infile);
-      if  (stringone[0] != '#')
-      {
-        if (strstr(stringone,"=")!= NULL)
-        {
-          strcpy(Listone[cntBioses].Name,ReturnBiosName(buffer, stringone));
-          strcpy(Listone[cntBioses].Signature,ReturnBiosSign(buffer, stringone));
-          cntBioses++;
-        }
-      }
-    } while( !feof( infile ) && cntBioses < 999 );
-    fclose(infile);
-    strcpy(Listone[cntBioses++].Name,"\0");
-    strcpy(Listone[cntBioses++].Signature,"\0");
-    return Listone;
-  }
-}
-bool CSysInfo::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
-{
-  XKHDD::ATA_COMMAND_OBJ hddcommand;
-  DWORD slen = 0;
-  ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
-  hddcommand.DATA_BUFFSIZE = 0;
-
-  //Detect DVD Model...
-  hddcommand.IPReg.bDriveHeadReg = IDE_DEVICE_SLAVE;
-  hddcommand.IPReg.bCommandReg = IDE_ATAPI_IDENTIFY;
-  if (XKHDD::SendATACommand(IDE_PRIMARY_PORT, &hddcommand, IDE_COMMAND_READ))
-  {
-    //Get DVD Model
-    CHAR lpsDVDModel[100];
-    ZeroMemory(&lpsDVDModel,100);
-    XKHDD::GetIDEModel(hddcommand.DATA_BUFFER, lpsDVDModel);
-    CLog::Log(LOGDEBUG, "DVD Model: %s",lpsDVDModel);
-    strDVDModel.Format("%s",lpsDVDModel);
-
-    //Get DVD FirmWare...
-    CHAR lpsDVDFirmware[100];
-    ZeroMemory(&lpsDVDFirmware,100);
-    XKHDD::GetIDEFirmWare(hddcommand.DATA_BUFFER, lpsDVDFirmware);
-    CLog::Log(LOGDEBUG, "DVD Firmware: %s",lpsDVDFirmware);
-    strDVDFirmware.Format("%s",lpsDVDFirmware);
-    return true;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "DVD Model Detection FAILED!");
-    return false;
-  }
-}
-bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState)
-{
-  XKHDD::ATA_COMMAND_OBJ hddcommand;
-
-  ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
-  hddcommand.IPReg.bDriveHeadReg = IDE_DEVICE_MASTER;
-  hddcommand.IPReg.bCommandReg = IDE_ATA_IDENTIFY;
-
-  if (XKHDD::SendATACommand(IDE_PRIMARY_PORT, &hddcommand, IDE_COMMAND_READ))
-  {
-    //Get Model Name
-    CHAR lpsHDDModel[100] = "";
-    XKHDD::GetIDEModel(hddcommand.DATA_BUFFER, lpsHDDModel);
-    strHDDModel.Format("%s",lpsHDDModel);
-
-    //Get Serial...
-    CHAR lpsHDDSerial[100] = "";
-    XKHDD::GetIDESerial(hddcommand.DATA_BUFFER, lpsHDDSerial);
-    strHDDSerial.Format("%s", lpsHDDSerial);
-
-    //Get HDD FirmWare...
-    CHAR lpsHDDFirmware[100] = "";
-    XKHDD::GetIDEFirmWare(hddcommand.DATA_BUFFER, lpsHDDFirmware);
-    strHDDFirmware.Format("%s", lpsHDDFirmware);
-
-    //Print HDD Password...
-    BYTE pbHDDPassword[32] = "";
-    CHAR lpsHDDPassword[65] = "";
-    XKHDD::GenerateHDDPwd((UCHAR *)XboxHDKey, hddcommand.DATA_BUFFER, pbHDDPassword);
-    XKGeneral::BytesToHexStr(pbHDDPassword, 20, lpsHDDPassword);
-    strHDDpw.Format("%s", lpsHDDPassword);
-
-    //Get ATA Locked State
-    DWORD SecStatus = XKHDD::GetIDESecurityStatus(hddcommand.DATA_BUFFER);
-    if (!(SecStatus & IDE_SECURITY_SUPPORTED))
-    {
-      strHDDLockState = g_localizeStrings.Get(20164);
-      return true;
-    }
-    if ((SecStatus & IDE_SECURITY_SUPPORTED) && !(SecStatus & IDE_SECURITY_ENABLED))
-    {
-      strHDDLockState = g_localizeStrings.Get(20165);
-      return true;
-    }
-    if ((SecStatus & IDE_SECURITY_SUPPORTED) && (SecStatus & IDE_SECURITY_ENABLED))
-    {
-      strHDDLockState = g_localizeStrings.Get(20166);
-      return true;
-    }
-
-    if (SecStatus & IDE_SECURITY_FROZEN)
-    {
-      strHDDLockState = g_localizeStrings.Get(20167);
-      return true;
-    }
-
-    if (SecStatus & IDE_SECURITY_COUNT_EXPIRED)
-    {
-      strHDDLockState = g_localizeStrings.Get(20168);
-      return true;
-    }
-  return true;
-  }
-  else return false;
-}
-double CSysInfo::GetCPUFrequency()
-{
-  unsigned __int64 Fwin;
-  unsigned __int64 Twin_fsb, Twin_result;
-  double Tcpu_fsb, Tcpu_result, Fcpu, CPUSpeed;
-
-
-  if (!QueryPerformanceFrequency((LARGE_INTEGER*)&Fwin))
-    return 0;
-  Tcpu_fsb = RDTSC();
-
-  if (!QueryPerformanceCounter((LARGE_INTEGER*)&Twin_fsb))
-    return 0;
-  Sleep(300);
-  Tcpu_result = RDTSC();
-
-  if (!QueryPerformanceCounter((LARGE_INTEGER*)&Twin_result))
-    return 0;
-
-  Fcpu  = (Tcpu_result-Tcpu_fsb);
-  Fcpu *= Fwin;
-  Fcpu /= (Twin_result-Twin_fsb);
-
-  CPUSpeed = Fcpu/1000000;
-
-  CLog::Log(LOGDEBUG, "- CPU Speed: %4.6f Mhz",CPUSpeed);
-  return CPUSpeed;
-}
-
-double CSysInfo::RDTSC(void)
-{
-  unsigned long a, b;
-  double x;
-  __asm
-  {
-    RDTSC
-    mov [a],eax
-    mov [b],edx
-  }
-  x=b;
-  x*=0x100000000;
-  x+=a;
-  return x;
-}
-
-char* CSysInfo::ReturnBiosName(char *buffer, char *str)
-{
-  int cnt1,cnt2,i;
-  cnt1=cnt2=0;
-
-  for (i=0;i<255;i++) buffer[i]='\0';
-  if ( (strstr(str,"(1MB)")==0) || (strstr(str,"(512)")==0) || (strstr(str,"(256)")==0) )
-    cnt2=5;
-
-  while (str[cnt2] != '=')
-  {
-    buffer[cnt1]=str[cnt2];
-    cnt1++;
-    cnt2++;
-  }
-  buffer[cnt1++]='\0';
-  return buffer;
-}
-char* CSysInfo::ReturnBiosSign(char *buffer, char *str)
-{
-  int cnt1,cnt2,i;
-  cnt1=cnt2=0;
-  for (i=0;i<255;i++) buffer[i]='\0';
-  while (str[cnt2] != '=') cnt2++;
-  cnt2++;
-  while (str[cnt2] != NULL)
-  {
-    if ( str[cnt2] != ' ' )
-    {
-      buffer[cnt1]=toupper(str[cnt2]);
-      cnt1++;
-      cnt2++;
-    }
-    else cnt2++;
-  }
-  buffer[cnt1++]='\0';
-  return buffer;
-}
-char* CSysInfo::CheckMD5 (struct Bios *Listone, char *Sign)
-{
-  int cntBioses;
-  cntBioses=0;
-  do
-  {
-    if  (strstr(Listone[cntBioses].Signature, Sign) != NULL)
-    { return (Listone[cntBioses].Name);   }
-    cntBioses++;
-  }
-  while( strcmp(Listone[cntBioses].Name,"\0") != 0);
-  return ("Unknown");
-}
-bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
-{
-  iMinutes=0;iHours=0;iDays=0;
-  iMinutes = iInputMinutes;
-  if (iMinutes >= 60) // Hour's
-  {
-    iHours = iMinutes / 60;
-    iMinutes = iMinutes - (iHours *60);
-  }
-  if (iHours >= 24) // Days
-  {
-    iDays = iHours / 24;
-    iHours = iHours - (iDays * 24);
-  }
-  return true;
 }
 
 CStdString CSysInfo::GetMPlayerVersion()
@@ -1035,4 +1204,134 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
     );
   
   return strReturn;
+}
+
+
+CStdString CSysInfo::GetMACAddress()
+{
+  char macaddress[20] = "";
+
+  m_XKEEPROM->GetMACAddressString((LPSTR)&macaddress, ':');
+
+  CStdString strMacAddress;
+  strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
+  return strMacAddress;
+}
+CStdString CSysInfo::GetXBOXSerial()
+{
+  CHAR serial[SERIALNUMBER_SIZE + 1] = "";
+  m_XKEEPROM->GetSerialNumberString(serial);
+
+  CStdString strXBOXSerial;
+  strXBOXSerial.Format("%s", serial);
+  return strXBOXSerial;
+}
+CStdString CSysInfo::GetXBProduceInfo()
+{
+  // Print XBOX Production Place and Date
+  char *info = (char *) GetXBOXSerial().c_str();
+  char *country;
+  switch (atoi(&info[11]))
+  {
+  case 2:
+    country = "Mexico";
+    break;
+  case 3:
+    country = "Hungary";
+    break;
+  case 5:
+    country = "China";
+    break;
+  case 6:
+    country = "Taiwan";
+    break;
+  default:
+    country = "Unknown";
+    break;
+  }
+  
+  CLog::Log(LOGDEBUG, "- XBOX production info: Country: %s, LineNumber: %c, Week %c%c, Year 200%c", country, info[0x00], info[0x08], info[0x09],info[0x07]);
+  CStdString strXBProDate;
+  strXBProDate.Format("%s %s, %s 200%c, %s: %c%c %s: %c",
+    g_localizeStrings.Get(13290), 
+    country, 
+    g_localizeStrings.Get(201),
+    info[0x07],
+    g_localizeStrings.Get(20169),
+    info[0x08],
+    info[0x09],
+    g_localizeStrings.Get(20170),
+    info[0x00]);
+  return strXBProDate;
+}
+CStdString CSysInfo::GetVideoXBERegion()
+{
+  //Print Video Standard & XBE Region...
+  CStdString XBEString, VideoStdString;
+  switch (m_XKEEPROM->GetVideoStandardVal())
+  {
+  case XKEEPROM::NTSC_J:
+    VideoStdString = "NTSC J";
+    break;
+  case XKEEPROM::NTSC_M:
+    VideoStdString = "NTSC M";
+    break;
+  case XKEEPROM::PAL_I:
+    VideoStdString = "PAL I";
+    break;
+  case XKEEPROM::PAL_M:
+    VideoStdString = "PAL M";
+    break;
+  default:
+    VideoStdString = g_localizeStrings.Get(13205); // "Unknown"
+  }
+
+  switch(m_XKEEPROM->GetXBERegionVal())
+  {
+  case XKEEPROM::NORTH_AMERICA:
+    XBEString = "North America";
+    break;
+  case XKEEPROM::JAPAN:
+    XBEString = "Japan";
+    break;
+  case XKEEPROM::EURO_AUSTRALIA:
+    XBEString = "Europe / Australia";
+    break;
+  default:
+    XBEString = g_localizeStrings.Get(13205); // "Unknown"
+  }
+
+  CStdString strVideoXBERegion;
+  strVideoXBERegion.Format("%s %s, %s", g_localizeStrings.Get(13293), VideoStdString, XBEString);
+  return strVideoXBERegion;
+}
+CStdString CSysInfo::GetDVDZone()
+{
+  //Print DVD [Region] Zone ..
+  DVD_ZONE dvdVal;
+  dvdVal = m_XKEEPROM->GetDVDRegionVal();
+  CStdString strdvdzone;
+  strdvdzone.Format("%s %d",g_localizeStrings.Get(13294), dvdVal);
+  return strdvdzone;
+}
+
+CStdString CSysInfo::GetXBLiveKey()
+{
+  //Print XBLIVE Online Key..
+  char livekey[ONLINEKEY_SIZE * 2 + 1] = "";
+  m_XKEEPROM->GetOnlineKeyString(livekey);
+
+  CStdString strXBLiveKey;
+  strXBLiveKey.Format("%s %s",g_localizeStrings.Get(13298), livekey);
+  return strXBLiveKey;
+}
+CStdString CSysInfo::GetHDDKey()
+{
+  //Print HDD Key...
+  char hdkey[HDDKEY_SIZE * 2 + 1];
+  m_XKEEPROM->GetHDDKeyString((LPSTR)&hdkey);
+
+  CStdString strhddlockey;
+  strhddlockey.Format("%s %s",g_localizeStrings.Get(13150), hdkey);
+  return strhddlockey;
 }
