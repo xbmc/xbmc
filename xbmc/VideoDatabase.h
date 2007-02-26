@@ -33,6 +33,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_GENRE = 14,
   VIDEODB_ID_DIRECTOR = 15,
   VIDEODB_ID_ORIGINALTITLE = 16,
+  VIDEODB_ID_THUMBURL_SPOOF = 17,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -61,7 +62,7 @@ const struct SDbMovieOffsets
   { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strWritingCredits) },
   { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iYear) },
-  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_url) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strIMDBNumber) },
   { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strRuntime) },
@@ -69,7 +70,8 @@ const struct SDbMovieOffsets
   { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iTop250) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
-  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)}
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)},
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_spoof) }
 };
 
 class CBookmark
