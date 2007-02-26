@@ -1,5 +1,3 @@
-void get_url(const CStdString&,CScraperUrl&);
-
 class Scraper
 {
   protected:
@@ -11,8 +9,8 @@ class Scraper
     int CustomFunctions(const CStdString&);
     string readFile(const CStdString&);
 
-    CStdString s_result;
-    CScraperParser s_parser;
+    CStdString m_result;
+    CScraperParser m_parser;
   public:
     Scraper(const string);
     string s_xml;
