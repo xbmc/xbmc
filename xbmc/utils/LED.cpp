@@ -63,7 +63,7 @@ ILEDSmartxxRGB::~ILEDSmartxxRGB()
 }
 void ILEDSmartxxRGB::OnStartup()
 {
-  if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3") || CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
+  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
 	  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
 	  CLog::Log(LOGDEBUG,"Starting SmartXX RGB LED thread");
@@ -273,7 +273,7 @@ void ILEDSmartxxRGB::OnExit()
 
 bool ILEDSmartxxRGB::Start()
 {
-  if (CSysInfo::SmartXXModCHIP().Equals("SmartXX V3") || CSysInfo::SmartXXModCHIP().Equals("SmartXX OPX"))
+  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
     Create();
     return true;
