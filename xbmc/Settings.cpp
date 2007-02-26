@@ -1513,6 +1513,14 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   SetBoolean(pNode, "ac3passthrough", g_guiSettings.GetBool("audiooutput.ac3passthrough"));
   SetBoolean(pNode, "dtspassthrough", g_guiSettings.GetBool("audiooutput.dtspassthrough"));
 
+  TiXmlElement videooutputNode("videooutput");
+  pNode = io_pRoot->InsertEndChild(videooutputNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "aspect", g_guiSettings.GetInt("videooutput.aspect"));
+  SetBoolean(pNode, "hd480p", g_guiSettings.GetBool("videooutput.hd480p"));
+  SetBoolean(pNode, "hd720p", g_guiSettings.GetBool("videooutput.hd720p"));
+  SetBoolean(pNode, "hd1080i", g_guiSettings.GetBool("videooutput.hd1080i"));
+
   TiXmlElement videoscreenNode("videoscreen");
   pNode = io_pRoot->InsertEndChild(videoscreenNode);
   if (!pNode) return false;
