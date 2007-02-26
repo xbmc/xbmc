@@ -1939,17 +1939,17 @@ CStdString CGUIInfoManager::SystemInfoValues(int info)
   if (timeGetTime() - m_lastSysInfoTime >= 5000)
   { // update our variables, update interval 1 minute
     m_lastSysInfoTime = timeGetTime();
+#ifdef HAS_XBOX_HARDWARE
     m_systemuptime = g_sysinfo.GetSystemUpTime();
     m_systemtotaluptime = g_sysinfo.GetSystemTotalUpTime();
-#ifdef HAS_XBOX_HARDWARE
-      // values are only need one time request
-      b_sys_request = true;
-      m_mplayerversion = g_sysinfo.GetMPlayerVersion();
-      m_kernelversion = g_sysinfo.GetKernelVersion();
-      m_cpufrequency = g_sysinfo.GetCPUFreqInfo();
-      m_xboxversion = g_sysinfo.GetXBVerInfo();
-      m_avcablepackinfo = g_sysinfo.GetAVPackInfo();
-      m_videoencoder = g_sysinfo.GetVideoEncoder();
+    // values are only need one time request
+    b_sys_request = true;
+    m_mplayerversion = g_sysinfo.GetMPlayerVersion();
+    m_kernelversion = g_sysinfo.GetKernelVersion();
+    m_cpufrequency = g_sysinfo.GetCPUFreqInfo();
+    m_xboxversion = g_sysinfo.GetXBVerInfo();
+    m_avcablepackinfo = g_sysinfo.GetAVPackInfo();
+    m_videoencoder = g_sysinfo.GetVideoEncoder();
 #endif
   }
   switch (info)
