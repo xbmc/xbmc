@@ -881,12 +881,16 @@
   <string id="13160">Gateway:</string>
   <string id="13161">Primary DNS</string>
   <string id="13162">Initialize failed</string>
-  <string id="13163">GamePads On Port:</string>
-  <string id="13164">Keyboard On Port:</string>
-  <string id="13165">Mouse On Port:</string>
-  <string id="13166">Head/MicroPhone On Port:</string>
-  <string id="13167">MemoryStick On Port:</string>
-  <string id="13168">IR-Remote On Port:</string>
+  
+  <string id="13163">GamePad</string>
+  <string id="13164">Keyboard</string>
+  <string id="13165">Mouse</string>
+  <string id="13166">Head/MicroPhone</string>
+  <string id="13167">MemoryStick</string>
+  <string id="13168">IR-Remote</string>
+  <string id="13169">Controller Port</string>
+  
+  
   <string id="13170">Never</string>
   <string id="13171">Immediately</string>
   <string id="13172">After %i secs</string>
