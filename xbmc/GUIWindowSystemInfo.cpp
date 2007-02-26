@@ -33,19 +33,10 @@
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
-  mplayerVersion="";
-#ifdef HAS_SYSINFO
-  m_pXKEEPROM = new XKEEPROM;
-  m_pXKEEPROM->ReadFromXBOX();
-  m_XBOX_Version = m_pXKEEPROM->GetXBOXVersion();
-#endif
 }
 
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
-#ifdef HAS_SYSINFO
-  delete m_pXKEEPROM;
-#endif
 }
 
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
@@ -64,12 +55,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-#ifdef HAS_SYSINFO
-      //Get SystemInformations on Init
       CGUIWindow::OnMessage(message);
-      //CreateEEPROMBackup("System\\SystemInfo");
-      //CSysInfo::BackupBios();
-#endif
       SetLabelDummy();
       b_IsHome = TRUE;
       return true;
@@ -85,7 +71,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         b_IsHome = FALSE;
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
-#ifdef HAS_SYSINFO
+        #ifdef HAS_SYSINFO
         //Label 2-6; HDD Values
         SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_HDD_MODEL));
         SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_HDD_SERIAL));
@@ -94,17 +80,17 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_HDD_LOCKSTATE));
         
         //Label 7: HDD Lock/UnLock key
-        CStdString strhddlockey;
-        GetHDDKey(strhddlockey);
-        SET_CONTROL_LABEL(7, strhddlockey);
+        SET_CONTROL_LABEL(7, g_sysinfo.GetHDDKey());
 
         //Label 8 + 9: Refurb Info
-        GetRefurbInfo(8, 9);
+        CStdString rfi_FirstBootTime, rfi_PowerCycleCount;
+        g_sysinfo.GetRefurbInfo(rfi_FirstBootTime, rfi_PowerCycleCount);
+        SET_CONTROL_LABEL(8, rfi_FirstBootTime);
+        SET_CONTROL_LABEL(9, rfi_PowerCycleCount);
 
         //Label 10: HDD Temperature
         SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_HDD_TEMPERATURE));
-
-#endif
+        #endif
       }
       else if(iControl == CONTROL_BT_DVD)
       {
@@ -143,9 +129,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetNetwork(2,5,3,6,7,8,9);  // Label 2-7
 
         // Label 8: Mac Address
-        CStdString strMacAddress;
-        GetMACAddress(strMacAddress);
-        SET_CONTROL_LABEL(4, strMacAddress);
+        SET_CONTROL_LABEL(4, g_sysinfo.GetMACAddress());
 
         // Label 9: Online State
         CStdString strInetCon;
@@ -167,14 +151,10 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_CABLE_PACK_INFO));
 
         // Label 5: XBE Video Region
-        CStdString strVideoXBERegion;
-        GetVideoXBERegion(strVideoXBERegion);
-        SET_CONTROL_LABEL(5,strVideoXBERegion);
+        SET_CONTROL_LABEL(5,g_sysinfo.GetVideoXBERegion());
 
         // Label 6: DVD Zone
-        CStdString strdvdzone;
-        GetDVDZone(strdvdzone);
-        SET_CONTROL_LABEL(6, strdvdzone);
+        SET_CONTROL_LABEL(6, g_sysinfo.GetDVDZone());
 #endif
       }
       else if(iControl == CONTROL_BT_HARDWARE)
@@ -198,10 +178,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_XBOX_VERSION));
 
         // Label 3: XBOX Serial
-        CStdString strXBSerial, strXBOXSerial;
-        CStdString strlblXBSerial = g_localizeStrings.Get(13289);
-        GetXBOXSerial(strXBSerial);
-        strXBOXSerial.Format("%s %s",strlblXBSerial,strXBSerial);
+        CStdString strXBOXSerial;
+        strXBOXSerial.Format("%s %s",g_localizeStrings.Get(13289) ,g_sysinfo.GetXBOXSerial());
         SET_CONTROL_LABEL(3,strXBOXSerial);
 
         // Label 4: CPU Speed!
@@ -225,22 +203,19 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         if (GetBIOSInfo(strBiosName))
           SET_CONTROL_LABEL(6,strBiosName);
 
-        // Label 7: XBOX Live Key
-        //CStdString strXBLiveKey;
-        //GetXBLiveKey(strXBLiveKey);
-        //SET_CONTROL_LABEL(7, strXBLiveKey);
-
         // Label 8: XBOX ProducutionDate Info
-        CStdString strXBProDate;
-        GetXBProduceInfo(strXBProDate);
-        SET_CONTROL_LABEL(7, strXBProDate);
+        SET_CONTROL_LABEL(7, g_sysinfo.GetXBProduceInfo());
 
         // Label 8,9,10,11: Attached Units!
-        SET_CONTROL_LABEL(8, CSysInfo::GetUnits(1));
-        SET_CONTROL_LABEL(9, CSysInfo::GetUnits(2));
-        SET_CONTROL_LABEL(10, CSysInfo::GetUnits(3));
-        SET_CONTROL_LABEL(11, CSysInfo::GetUnits(4));
-        //GetUnits(9, 10, 11);
+        SET_CONTROL_LABEL(8, g_sysinfo.GetUnits(1));
+        SET_CONTROL_LABEL(9, g_sysinfo.GetUnits(2));
+        SET_CONTROL_LABEL(10, g_sysinfo.GetUnits(3));
+        SET_CONTROL_LABEL(11, g_sysinfo.GetUnits(4));
+        // Creating BackUP
+        g_sysinfo.CreateEEPROMBackup();
+        g_sysinfo.CreateBiosBackup();
+        g_sysinfo.WriteTXTInfoFile("Q:\\System\\SystemInfo\\SYSTEM_INFO.TXT");
+        //
         pDlgProgress.SetPercentage(100);
         pDlgProgress.Progress();
         pDlgProgress.Close();
@@ -307,33 +282,18 @@ bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
   CStdString version, buildDate;
   version.Format("%s %s", g_localizeStrings.Get(144), g_infoManager.GetVersion());
   buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild());
-#ifdef HAS_SYSINFO
-  if (mplayerVersion.IsEmpty())
-    mplayerVersion = g_infoManager.GetLabel(SYSTEM_MPLAYER_VERSION);
-#endif
   SET_CONTROL_LABEL(label1, version);
   SET_CONTROL_LABEL(label2, buildDate);
-  SET_CONTROL_LABEL(label3, mplayerVersion);
+  SET_CONTROL_LABEL(label3, g_infoManager.GetLabel(SYSTEM_MPLAYER_VERSION));
   return true;
 }
 
 #ifdef HAS_SYSINFO
-void CGUIWindowSystemInfo::GetMACAddress(CStdString& strMacAddress)
-{
-  char macaddress[20] = "";
-
-  m_pXKEEPROM->GetMACAddressString((LPSTR)&macaddress, ':');
-
-  CStdString lbl1 = g_localizeStrings.Get(149);
-
-  strMacAddress.Format("%s: %s", lbl1, macaddress);
-}
-
 bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
 {
   CStdString cBIOSName;
   CStdString strlblBios = g_localizeStrings.Get(13285);
-  if(CSysInfo::CheckBios(cBIOSName))
+  if(g_sysinfo.CheckBios(cBIOSName))
   {
     strBiosName.Format("%s %s", strlblBios,cBIOSName);
     return true;
@@ -344,54 +304,13 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
     return true;
   }
 }
-
-void CGUIWindowSystemInfo::GetXBOXSerial(CStdString& strXBOXSerial)
-{
-  CHAR serial[SERIALNUMBER_SIZE + 1] = "";
-
-  m_pXKEEPROM->GetSerialNumberString(serial);
-
-  strXBOXSerial.Format("%s", serial);
-}
-
-void CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
-{
-  // Print XBOX Production Place and Date
-  CStdString lbl = g_localizeStrings.Get(13290);
-  CStdString lblYear = g_localizeStrings.Get(201);
-  CStdString serialnumber;
-  GetXBOXSerial(serialnumber);
-  char *info = (char *) serialnumber.c_str();
-  char *country;
-  switch (atoi(&info[11]))
-  {
-  case 2:
-    country = "Mexico";
-    break;
-  case 3:
-    country = "Hungary";
-    break;
-  case 5:
-    country = "China";
-    break;
-  case 6:
-    country = "Taiwan";
-    break;
-  default:
-    country = "Unknown";
-    break;
-  }
-  CLog::Log(LOGDEBUG, "- XBOX production info: Country: %s, LineNumber: %c, Week %c%c, Year 200%c", country, info[0x00], info[0x08], info[0x09],info[0x07]);
-  strXBProDate.Format("%s %s, %s 200%c, "+g_localizeStrings.Get(20169)+": %c%c "+g_localizeStrings.Get(20170)+": %c",lbl, country, lblYear,info[0x07], info[0x08],info[0x09], info[0x00]);
-}
-
 bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 {
   // XBOX Modchip Type Detection
-  CStdString ModChip    = CSysInfo::GetModCHIPDetected();
+  CStdString ModChip    = g_sysinfo.GetModCHIPDetected();
   CStdString lblModChip = g_localizeStrings.Get(13291);
    // Check if it is a SmartXX
-  CStdString strIsSmartXX = CSysInfo::SmartXXModCHIP();
+  CStdString strIsSmartXX = g_sysinfo.SmartXXModCHIP();
   if (!strIsSmartXX.Equals("None"))
   {
     strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX);
@@ -412,59 +331,6 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
   }
   return false;
 }
-
-void CGUIWindowSystemInfo::GetVideoXBERegion(CStdString& strVideoXBERegion)
-{
-  //Print Video Standard & XBE Region...
-  CStdString lblVXBE = g_localizeStrings.Get(13293);
-  CStdString XBEString, VideoStdString;
-
-  switch (m_pXKEEPROM->GetVideoStandardVal())
-  {
-  case XKEEPROM::NTSC_J:
-    VideoStdString = "NTSC J";
-    break;
-  case XKEEPROM::NTSC_M:
-    VideoStdString = "NTSC M";
-    break;
-  case XKEEPROM::PAL_I:
-    VideoStdString = "PAL I";
-    break;
-  case XKEEPROM::PAL_M:
-    VideoStdString = "PAL M";
-    break;
-  default:
-    VideoStdString = g_localizeStrings.Get(13205); // "Unknown"
-  }
-
-  switch(m_pXKEEPROM->GetXBERegionVal())
-  {
-  case XKEEPROM::NORTH_AMERICA:
-    XBEString = "North America";
-    break;
-  case XKEEPROM::JAPAN:
-    XBEString = "Japan";
-    break;
-  case XKEEPROM::EURO_AUSTRALIA:
-    XBEString = "Europe / Australia";
-    break;
-  default:
-    XBEString = g_localizeStrings.Get(13205); // "Unknown"
-  }
-
-  strVideoXBERegion.Format("%s %s, %s", lblVXBE, VideoStdString, XBEString);
-}
-
-void CGUIWindowSystemInfo::GetDVDZone(CStdString& strdvdzone)
-{
-  //Print DVD [Region] Zone ..
-  CStdString lblDVDZone =  g_localizeStrings.Get(13294);
-  DVD_ZONE dvdVal;
-
-  dvdVal = m_pXKEEPROM->GetDVDRegionVal();
-  strdvdzone.Format("%s %d",lblDVDZone, dvdVal);
-}
-
 bool CGUIWindowSystemInfo::GetINetState(CStdString& strInetCon)
 {
   CHTTP http;
@@ -487,54 +353,6 @@ bool CGUIWindowSystemInfo::GetINetState(CStdString& strInetCon)
   return true;
 }
 
-void CGUIWindowSystemInfo::GetXBLiveKey(CStdString& strXBLiveKey)
-{
-  //Print XBLIVE Online Key..
-  CStdString lbl3 = g_localizeStrings.Get(13298);
-  char livekey[ONLINEKEY_SIZE * 2 + 1] = "";
-
-  m_pXKEEPROM->GetOnlineKeyString(livekey);
-
-  strXBLiveKey.Format("%s %s",lbl3, livekey);
-}
-
-void CGUIWindowSystemInfo::GetHDDKey(CStdString& strhddlockey)
-{
-  //Print HDD Key...
-  CStdString lbl5 = g_localizeStrings.Get(13150);
-  char hdkey[HDDKEY_SIZE * 2 + 1];
-
-  m_pXKEEPROM->GetHDDKeyString((LPSTR)&hdkey);
-
-  strhddlockey.Format("%s %s",lbl5, hdkey);
-}
-
-bool CGUIWindowSystemInfo::GetRefurbInfo(int label1, int label2)
-{
-  XBOX_REFURB_INFO xri;
-  CStdString refurb_info;
-  SYSTEMTIME sys_time;
-
-  if (ExReadWriteRefurbInfo(&xri, sizeof(XBOX_REFURB_INFO), FALSE) < 0)
-    return false;
-
-  FileTimeToSystemTime((FILETIME*)&xri.FirstBootTime, &sys_time);
-
-  refurb_info.Format("%s %d-%d-%d %d:%02d", g_localizeStrings.Get(13173), 
-    sys_time.wMonth, 
-    sys_time.wDay, 
-    sys_time.wYear,
-    sys_time.wHour,
-    sys_time.wMinute);
-
-  SET_CONTROL_LABEL(label1, refurb_info);
-
-  refurb_info.Format("%s %d", g_localizeStrings.Get(13174), xri.PowerCycleCount);
-
-  SET_CONTROL_LABEL(label2, refurb_info);
-
-  return true;
-}
 
 bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7)
 {
@@ -772,141 +590,5 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
     totalFree.QuadPart = 0;
   }
   return ret == TRUE;
-}
-void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
-{
-  char backup_path[MAX_PATH];
-
-  wsprintf(backup_path, "Q:\\%s\\EEPROMBackup.bin", BackupFilePrefix);
-  m_pXKEEPROM->WriteToBINFile(backup_path);
-
-  wsprintf(backup_path, "Q:\\%s\\EEPROMBackup.cfg", BackupFilePrefix);
-  m_pXKEEPROM->WriteToCFGFile(backup_path);
-}
-
-void CGUIWindowSystemInfo::WriteTXTInfoFile(LPCSTR strFilename)
-{
-  BOOL retVal = FALSE;
-  DWORD dwBytesWrote = 0;
-  CHAR tmpData[SYSINFO_TMP_SIZE];
-  CStdString tmpstring;
-  LPSTR tmpFileStr = new CHAR[2048];
-  ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-  ZeroMemory(tmpFileStr, 2048);
-
-  HANDLE hf = CreateFile(strFilename, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-  if (hf !=  INVALID_HANDLE_VALUE)
-  {
-    //Write File Header..
-    strcat(tmpFileStr, "*******  XBOXMEDIACENTER [XBMC] INFORMATION FILE  *******\r\n");
-    if (m_XBOX_Version== m_pXKEEPROM->V1_0)
-      strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.0");
-    else if (m_XBOX_Version == m_pXKEEPROM->V1_1)
-      strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.1");
-    else if (m_XBOX_Version == m_pXKEEPROM->V1_6)
-      strcat(tmpFileStr,  "\r\nXBOX Version = \t\tV1.6");
-    //Get Kernel Version
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    sprintf(tmpData, "\r\nKernel Version: \t%d.%d.%d.%d", XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
-    strcat(tmpFileStr, tmpData);
-
-    //Get Memory Status
-    strcat(tmpFileStr, "\r\nXBOX RAM = \t\t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus( &stat );
-    ltoa(stat.dwTotalPhys/1024/1024, tmpData, 10);
-    strcat(tmpFileStr, tmpData);
-    strcat(tmpFileStr, " MBytes");
-
-    //Write Serial Number..
-    strcat(tmpFileStr, "\r\n\r\nXBOX Serial Number = \t");
-    GetXBOXSerial(tmpstring);
-    strcat(tmpFileStr, tmpstring.c_str());
-
-    //Write MAC Address..
-    strcat(tmpFileStr, "\r\nXBOX MAC Address = \t");
-    GetMACAddress(tmpstring);
-    strcat(tmpFileStr, tmpstring.c_str());
-
-    //Write Online Key ..
-    strcat(tmpFileStr, "\r\nXBOX Online Key = \t");
-    GetXBLiveKey(tmpstring);
-    strcat(tmpFileStr, tmpstring.c_str());
-
-    //Write VideoMode ..
-    strcat(tmpFileStr, "\r\nXBOX Video Mode = \t");
-    VIDEO_STANDARD vdo = m_pXKEEPROM->GetVideoStandardVal();
-    if (vdo == XKEEPROM::VIDEO_STANDARD::PAL_I)
-      strcat(tmpFileStr, "PAL");
-    else
-      strcat(tmpFileStr, "NTSC");
-
-    //Write XBE Region..
-    strcat(tmpFileStr, "\r\nXBOX XBE Region = \t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    m_pXKEEPROM->GetXBERegionString(tmpData);
-    strcat(tmpFileStr, tmpData);
-
-    //Write HDDKey..
-    strcat(tmpFileStr, "\r\nXBOX HDD Key = \t\t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    m_pXKEEPROM->GetHDDKeyString(tmpData);
-    strcat(tmpFileStr, tmpData);
-
-    //Write Confounder..
-    strcat(tmpFileStr, "\r\nXBOX Confounder = \t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    m_pXKEEPROM->GetConfounderString(tmpData);
-    strcat(tmpFileStr, tmpData);
-
-    //GET HDD Info...
-    //Query ATA IDENTIFY
-    XKHDD::ATA_COMMAND_OBJ cmdObj;
-    ZeroMemory(&cmdObj, sizeof(XKHDD::ATA_COMMAND_OBJ));
-    cmdObj.IPReg.bCommandReg = IDE_ATA_IDENTIFY;
-    cmdObj.IPReg.bDriveHeadReg = IDE_DEVICE_MASTER;
-    XKHDD::SendATACommand(IDE_PRIMARY_PORT, &cmdObj, IDE_COMMAND_READ);
-
-    //Write HDD Model
-    strcat(tmpFileStr, "\r\n\r\nXBOX HDD Model = \t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    XKHDD::GetIDEModel(cmdObj.DATA_BUFFER, (LPSTR)tmpData);
-    strcat(tmpFileStr, tmpData);
-
-    //Write HDD Serial..
-    strcat(tmpFileStr, "\r\nXBOX HDD Serial = \t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    XKHDD::GetIDESerial(cmdObj.DATA_BUFFER, (LPSTR)tmpData);
-    strcat(tmpFileStr, tmpData);
-
-    //Write HDD Password..
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    strcat(tmpFileStr, "\r\n\r\nXBOX HDD Password = \t");
-
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    BYTE HDDpwd[20];
-    ZeroMemory(HDDpwd, 20);
-    XKHDD::GenerateHDDPwd((UCHAR *)XboxHDKey, cmdObj.DATA_BUFFER, (UCHAR*)&HDDpwd);
-    XKGeneral::BytesToHexStr(HDDpwd, 20, tmpData);
-    strcat(tmpFileStr, tmpData);
-
-    //Query ATAPI IDENTIFY
-    ZeroMemory(&cmdObj, sizeof(XKHDD::ATA_COMMAND_OBJ));
-    cmdObj.IPReg.bCommandReg = IDE_ATAPI_IDENTIFY;
-    cmdObj.IPReg.bDriveHeadReg = IDE_DEVICE_SLAVE;
-    XKHDD::SendATACommand(IDE_PRIMARY_PORT, &cmdObj, IDE_COMMAND_READ);
-
-    //Write DVD Model
-    strcat(tmpFileStr, "\r\n\r\nXBOX DVD Model = \t");
-    ZeroMemory(tmpData, SYSINFO_TMP_SIZE);
-    XKHDD::GetIDEModel(cmdObj.DATA_BUFFER, (LPSTR)tmpData);
-    strcat(tmpFileStr, tmpData);
-    strupr(tmpFileStr);
-
-    WriteFile(hf, tmpFileStr, (DWORD)strlen(tmpFileStr), &dwBytesWrote, NULL);
-  }
-  delete[] tmpFileStr;
-  CloseHandle(hf);
 }
 #endif
