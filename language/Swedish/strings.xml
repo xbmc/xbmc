@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmcscripts.com-->
 <!--Date of translation: 02/26/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7924-->
+<!--Based on english strings version 7929-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1494,5 +1494,13 @@ den här visualiseringen</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
   <string id="21371">Miniatyrbild</string>
   <string id="21372">Tvingad DVD region</string>
+  <string id="21373">Grafikhårdvara</string>
+  <string id="21374">Bildläge</string>
+  <string id="21375">Normal</string>
+  <string id="21376">Letterbox</string>
+  <string id="21377">Widescreen</string>
+  <string id="21378">Aktivera 480p</string>
+  <string id="21379">Aktivera 720p</string>
+  <string id="21380">Aktivera 1080i</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
