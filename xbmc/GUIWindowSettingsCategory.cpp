@@ -791,7 +791,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       // disable if we do not have the HDTV pack
+#ifdef HAS_XBOX_HARDWARE
       if (pControl) pControl->SetEnabled(XGetAVPack() == XC_AV_PACK_HDTV);
+#endif
     }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
     {
