@@ -96,15 +96,16 @@ bool CFileLastFM::HandShake()
     return false;
   }
   MD5_CTX md5state;
+  unsigned char md5pword[16];
   MD5Init(&md5state);
   MD5Update(&md5state, (unsigned char *)strPassword.c_str(), (int)strPassword.size());
-  MD5Final(&md5state);
+  MD5Final(md5pword, &md5state);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
   for (int j = 0;j < 16;j++) 
   {
     char a[3];
-    sprintf(a, "%02x", md5state.digest[j]);
+    sprintf(a, "%02x", md5pword[j]);
     tmp[2*j] = a[0];
     tmp[2*j+1] = a[1];
   }
