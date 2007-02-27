@@ -1653,6 +1653,21 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
   return SetResponse(list) ;
 }
 
+int CXbmcHttp::xbmcGetPlayListLength(int numParas, CStdString paras[])
+{
+  int playList;
+
+  if (numParas<1) 
+    playList=g_playlistPlayer.GetCurrentPlaylist();
+  else
+    playList=atoi(paras[0]);
+  CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
+
+  CStdString tmp;
+  tmp.Format("%i", thePlayList.size());
+  return SetResponse(openTag + tmp );
+}
+
 int CXbmcHttp::xbmcGetSlideshowContents()
 {
   CStdString list="";
@@ -2651,6 +2666,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getcurrentplaylist")       retVal = xbmcGetCurrentPlayList();
       else if (command == "setcurrentplaylist")       retVal = xbmcSetCurrentPlayList(numParas, paras);
       else if (command == "getplaylistcontents")      retVal = xbmcGetPlayListContents(numParas, paras);
+	  else if (command == "getplaylistlength")        retVal = xbmcGetPlayListLength(numParas, paras);
       else if (command == "removefromplaylist")       retVal = xbmcRemoveFromPlayList(numParas, paras);
       else if (command == "setplaylistsong")          retVal = xbmcSetPlayListSong(numParas, paras);
       else if (command == "getplaylistsong")          retVal = xbmcGetPlayListSong(numParas, paras);

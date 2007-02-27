@@ -56,6 +56,7 @@ public:
   int xbmcGetCurrentPlayList();
   int xbmcSetCurrentPlayList(int numParas, CStdString paras[]);
   int xbmcGetPlayListContents(int numParas, CStdString paras[]);
+  int xbmcGetPlayListLength(int numParas, CStdString paras[]);
   int xbmcRemoveFromPlayList(int numParas, CStdString paras[]);
   int xbmcSetPlayListSong(int numParas, CStdString paras[]);
   int xbmcGetPlayListSong(int numParas, CStdString paras[]);
