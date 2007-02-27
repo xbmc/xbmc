@@ -174,16 +174,38 @@ bool Scraper::PrepareParsing(const CStdString& function)
       return false;
     }
     TiXmlHandle docHandle( &doc );
-    TiXmlElement *link = docHandle.FirstChild( "details" ).FirstChild( "episodeguide" ).Element();
-    CScraperUrl srcUrl(link);
-    CStdString strFilename = "episodelist.html";
-    cout << "Episodelist URL:"<< srcUrl.m_url << endl;
-    get_url(strFilename.c_str(),srcUrl );
+    TiXmlElement *link = docHandle.FirstChild( "details" ).FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
+	  int i = 0;
+    CStdString strFilename;
+    do
+    {
+      i++;
+      CScraperUrl srcUrl(link);
+      strFilename.Format("episodelist.%i.html",i);
+      cout << "Episodelist URL " << i << ":"<< srcUrl.m_url << endl;
+      get_url(strFilename.c_str(),srcUrl );
+      if(i > 1) 
+      {
+        //abuse strFilename
+        strFilename.Format("GetEpisodeListInternal %i",i);
+        Parse(strFilename);
+      }
+    }  
+    while( link = link->NextSiblingElement("url") );
+    SetBuffer(1,readFile("episodelist.1.html"));
+  }
+  else if(strstr(function.c_str(),"GetEpisodeListInternal") != NULL) 
+  {
+    CStdString strFilename;
+    int i;
+    sscanf (function,"%*s %d",&i);
+    //files get downloaded in GetEpisodeList so we only rad them
+    strFilename.Format("episodelist.%i.html",i);
     SetBuffer(1,readFile(strFilename.c_str()));
   }
   else if(strcmp(function.c_str(),"GetEpisodeDetails") == 0) 
   {
-    TiXmlDocument doc("episodelist.xml");
+    TiXmlDocument doc("episodelist.1.xml");
     doc.LoadFile();
 	  if (!doc.RootElement())
     {
@@ -205,7 +227,9 @@ int Scraper::Parse(const CStdString& function)
   CStdString strFilename;
   if(!(Load() && PrepareParsing(function))) return -1;
 
-  m_result = m_parser.Parse(function.c_str());
+  if(strstr(function.c_str(),"GetEpisodeListInternal") != NULL) 
+    m_result = m_parser.Parse("GetEpisodeList");
+  else m_result = m_parser.Parse(function.c_str());
 
   cout << function.c_str()  << " returned : " << m_result.c_str() << endl;
   //what's the next step?
@@ -229,13 +253,20 @@ int Scraper::Parse(const CStdString& function)
   }
   else if(strcmp(function.c_str(),"GetEpisodeList") == 0) 
   {
-    WriteResult("episodelist.xml");
+    WriteResult("episodelist.1.xml");
     Parse("GetEpisodeDetails");
   }
   else if(strcmp(function.c_str(),"GetEpisodeDetails") == 0) 
   {
     WriteResult("episodedetails.xml");
     CustomFunctions("episodedetails.xml");
+  }   
+  else if(strstr(function.c_str(),"GetEpisodeListInternal") != NULL) 
+  {
+    int i;
+    sscanf (function,"%*s %d",&i);
+    strFilename.Format("episodelist.%i.xml",i);
+    WriteResult(strFilename.c_str());
   }
   else 
   {
