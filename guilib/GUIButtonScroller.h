@@ -51,7 +51,7 @@ public:
   int GetActiveButtonID() const;
   virtual CStdString GetDescription() const;
   virtual void SaveStates(vector<CControlState> &states);
-  void LoadButtons(const TiXmlNode *node);
+  void LoadButtons(TiXmlNode *node);
 
 protected:
   int GetNext(int iCurrent) const;
