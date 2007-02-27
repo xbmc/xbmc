@@ -420,7 +420,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
   CIMDB IMDB;
   IMDB.SetScraperInfo(info);
 
-  if (bDirNames)
+  if (bDirNames && info.strContent.Equals("movies"))
   {
     strMovieName = items.m_strPath;
     CUtil::RemoveSlashAtEnd(strMovieName);
@@ -477,13 +477,21 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
       }
       else
       {
-        strMovieName = pItem->m_strPath;
-        CUtil::RemoveSlashAtEnd(strMovieName);
-        strMovieName = CUtil::GetFileName(strMovieName);
-        *pItem = items;
+        SScraperInfo info2;
+        int iFound;
+        m_database.GetScraperForPath(items.m_strPath,info2.strPath,info2.strContent,iFound);
+        if (iFound != 1) // we need this when we scan a non-root tvshow folder
+        {
+          strMovieName = pItem->m_strPath;
+          CUtil::RemoveSlashAtEnd(strMovieName);
+          strMovieName = CUtil::GetFileName(strMovieName);
+          *pItem = items;
+        }
+        else
+          strMovieName = CUtil::GetFileName(pItem->m_strPath);
+    
       }
     }
-
     // This code tests if we have a DVD folder
     if (pItem->m_bIsFolder)
     { // test to see whether we have a DVD folder
