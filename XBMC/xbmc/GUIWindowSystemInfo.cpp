@@ -233,9 +233,9 @@ void CGUIWindowSystemInfo::Render()
   {
     // Default Values
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
-    SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo("cpu")); // CPU Temperature
-    SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo("gpu")); // GPU Temperature
-    SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo("fan")); // Fan Speed
+    SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo(SYSTEM_CPU_TEMPERATURE)); // CPU Temperature
+    SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo(SYSTEM_GPU_TEMPERATURE)); // GPU Temperature
+    SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo(SYSTEM_FAN_SPEED)); // Fan Speed
     
     // Label 5: Set FreeMemory Info
     SET_CONTROL_LABEL(5, g_localizeStrings.Get(158) +": "+ g_infoManager.GetLabel(SYSTEM_FREE_MEMORY));
