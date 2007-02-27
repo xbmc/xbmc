@@ -6,6 +6,7 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "SkinInfo.h"
 
 #define SCROLL_SPEED 6.0f
 #define ANALOG_SCROLL_START 0.8f
@@ -129,7 +130,7 @@ void CGUIButtonScroller::ClearButtons()
   m_vecButtons.erase(m_vecButtons.begin(), m_vecButtons.end());
 }
 
-void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
+void CGUIButtonScroller::LoadButtons(TiXmlNode *node)
 {
   // run through and find all <button> tags
   // Format is:
@@ -141,11 +142,17 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
   // </button>
 
   // TODO: UTF-8 - what if the XML encoding is in UTF-8?
-  const TiXmlNode *buttons = node->FirstChild("buttons");
+  TiXmlElement *buttons = node->FirstChildElement("buttons");
   if (!buttons) return;
-  const TiXmlElement *buttonNode = buttons->FirstChildElement("button");
+
+  // resolve includes
+  g_SkinInfo.ResolveIncludes(buttons);
+
+  TiXmlElement *buttonNode = buttons->FirstChildElement("button");
   while (buttonNode)
   {
+    // resolve includes
+    g_SkinInfo.ResolveIncludes(buttonNode);
     CButton *button = new CButton;
     buttonNode->Attribute("id", &button->id);
     const TiXmlNode *childNode = buttonNode->FirstChild("label");
