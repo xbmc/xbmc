@@ -47,6 +47,7 @@ class CProfile;
 #define STACK_NONE          0
 #define STACK_SIMPLE        1
 #define STACK_FUZZY         2
+#define STACK_UNAVAILABLE   4
 
 #define VIDEO_SHOW_ALL 0
 #define VIDEO_SHOW_UNWATCHED 1

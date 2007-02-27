@@ -213,14 +213,22 @@ void CGUIWindowVideoFiles::UpdateButtons()
   const CGUIControl *stack = GetControl(CONTROL_STACK);
   if (stack)
   {
-    if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
+    if ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE)
     {
-      SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_stSettings.m_iMyVideoStack == STACK_SIMPLE);
-      SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
+      CONTROL_ENABLE(CONTROL_STACK)
+      if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
+      {
+        SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_stSettings.m_iMyVideoStack == STACK_SIMPLE);
+        SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
+      }
+      else
+      {
+        SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
+      }
     }
     else
     {
-      SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
+      CONTROL_DISABLE(CONTROL_STACK)
     }
   }
 }
@@ -229,6 +237,16 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 {
   if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
     return false;
+
+  SScraperInfo info2;
+
+  g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
+  if (m_database.GetScraperForPath(strDirectory,info2.strPath,info2.strContent)) // dont stack in tv dirs
+    if (info2.strContent.Equals("tvshows"))
+    {
+      g_stSettings.m_iMyVideoStack |= STACK_UNAVAILABLE;
+      return true;
+    }
 
   if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
@@ -239,7 +257,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_stSettings.m_bMyVideoCleanTitles)
+  if (g_stSettings.m_bMyVideoCleanTitles && ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE))
     items.CleanFileNames();
 }
 
