@@ -48,8 +48,11 @@
 	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->	
 	<GetEpisodeList dest="3">
 		<RegExp input="$$5" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\2&lt;/title&gt;&lt;id&gt;\1&lt;/id&gt;&lt;url&gt;http://www.tv.com/episode/\1/summary.html&lt;/url&gt;&lt;/episode&gt;" dest="5">
-				<expression repeat="yes">/episode/([0-9]*)/summary\.html\?tag=ep_list[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			<RegExp input="$$1" output="\1" dest="6">
+			<expression>&lt;span class=&quot;f-18 f-bold&quot;&gt;Season ([0-9]+)&lt;/span&gt;</expression>
+			</RegExp>	
+			<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\3&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url spoof=&quot;http://www.tv.com&quot; &gt;http://www.tv.com/episode/\2/summary.html&lt;/url&gt;&lt;epnum&gt;\1&lt;/epnum&gt;&lt;season&gt;$$6&lt;/season&gt;&lt;/episode&gt;" dest="5">
+				<expression repeat="yes">nowrap=&quot;nowrap&quot;&gt;[^0-9]*([0-9]+)[^&lt;]*&lt;/td&gt;[^&lt;]*&lt;td class=&quot;f-bold&quot;&gt;[^&lt;]*&lt;a[^&gt;]*/episode/([0-9]*)/summary\.html\?tag=ep_list[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>				
 			<expression noclean="1"></expression>
 		</RegExp>			
@@ -57,15 +60,32 @@
 <!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->	
 	<GetEpisodeDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5">
-				<expression>&lt;div id=&quot;main-col&quot;&gt;[^&lt;]*&lt;div&gt;(.*)&lt;div class=&quot;ta-r mt-10 f-bold&quot;&gt;</expression>
+		
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression>&lt;div id=&quot;main-col&quot;&gt;(.*)&lt;div class=&quot;ta-r mt-10 f-bold&quot;&gt;</expression>
 			</RegExp>	
-<!--			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>a</expression>
+			<RegExp input="$$6" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5">
+				<expression>Watch Video&lt;/a&gt;[^&lt;]*&lt;/div&gt;(.*)</expression>
 			</RegExp>	
-			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>a</expression>
-			</RegExp>						-->			
+			
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
+				<expression>&lt;span class=&quot;f-28 f-bold mt-10 mb-10 f-FF9 db lh-18&quot;&gt;([0-9.]+)&lt;/span&gt;</expression>
+			</RegExp>	
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
+				<expression>&lt;span class=&quot;f-11&quot;&gt;([0-9]+) votes&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;aired&gt;\1&lt;/aired&gt;" dest="5+">
+				<expression>First Aired: ([^&amp;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&quot;&gt;([^&lt;]*)&lt;/a&gt; \(([^&lt;]*)\),</expression>
+			</RegExp>					
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression>Director:[^&lt;]*&lt;/td&gt;[^&lt;]*&lt;td&gt;[^&lt;]*&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>					
+			<RegExp input="$$1" output="&lt;writer&gt;\1&lt;/writer&gt;" dest="5+">
+				<expression>Writer:[^&lt;]*&lt;/td&gt;[^&lt;]*&lt;td&gt;[^&lt;]*&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>										
 			<expression noclean="1"></expression>
 		</RegExp>		
 	</GetEpisodeDetails>	
