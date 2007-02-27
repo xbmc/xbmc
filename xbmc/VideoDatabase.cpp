@@ -2376,9 +2376,10 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
   bool bEpisode=false;
   if (movieID < 0)
   {
+    bEpisode = true;
     movieID = GetEpisodeInfo(item.m_strPath);
     if (movieID < 0)
-      return;
+      return;    
   }
   // and mark as watched
   MarkAsWatched(movieID,bEpisode);
