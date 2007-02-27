@@ -693,11 +693,8 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     if (iClockSleep > DVD_MSEC_TO_TIME(500) ) 
       iClockSleep = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
 
-
     // sleep calculated by duration of frame
     iFrameSleep = m_iFlipTimeStamp - iCurrentClock;
-    // negative frame sleep possible after a stillframe, don't allow
-    if( iFrameSleep < 0 ) iFrameSleep = 0;
 
     if (m_speed < 0)
     {
@@ -749,22 +746,18 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       // for decoding. so we know if we need to drop frames
       // in decoder
       if( !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      {
-
-        iSleepTime*= -1;
-        if( iSleepTime > 4*pPicture->iDuration )
+      {        
+        if( (-iSleepTime) > 4*pPicture->iDuration )
         { // two frames late, signal that we are late. this will drop frames in decoder, untill we have an ok frame
           pPicture->iFlags |= DVP_FLAG_DROPPED;
           return EOS_DROPPED_VERYLATE;
         }
-        else if( iSleepTime > 2*pPicture->iDuration )
+        else if( (-iSleepTime) > 2*pPicture->iDuration )
         { // one frame late, drop in renderer     
           pPicture->iFlags |= DVP_FLAG_DROPPED;
           return EOS_DROPPED;
         }
-
       }
-      iSleepTime = 0;
     }
 
     if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) return EOS_DROPPED;
@@ -780,8 +773,11 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     }
 
     // present this image after the given delay
-    const __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
-    g_renderManager.FlipPage( (DWORD)(delay / (DVD_TIME_BASE / 1000)), -1, mDisplayField);
+    __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
+    if(delay<0)
+      g_renderManager.FlipPage( 0, -1, mDisplayField);
+    else
+      g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
   }
   return EOS_OK;
 }
