@@ -323,6 +323,7 @@ public:
 
   // Current movie stuff
   void SetCurrentMovie(CFileItem &item);
+  void SetCurrentMovieTag(const CIMDBMovie &movie) { m_currentMovie = movie; }
   const CIMDBMovie &GetCurrentMovie() const { return m_currentMovie; };
 
   CStdString GetMusicLabel(int item);
@@ -351,7 +352,7 @@ public:
 
   bool m_performingSeek;
 
-  string GetSystemHeatInfo(const CStdString &strInfo);
+  string GetSystemHeatInfo(int info);
   CStdString GetATAInfo(int info);
   CStdString SystemInfoValues(int info);
 
@@ -374,6 +375,9 @@ public:
   CStdString GetItemImage(const CFileItem *item, int info);
   bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
 
+  // Called from tuxbox service thread to update current status
+  void UpdateFromTuxBox();
+
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
@@ -392,7 +396,6 @@ protected:
   // Array of multiple information mapped to a single integer lookup
   vector<GUIInfo> m_multiInfo;
 
-  bool GetTuxBoxEvents();
   CStdString m_currentMovieDuration;
   
   // Current playing stuff
