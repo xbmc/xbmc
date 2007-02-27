@@ -80,7 +80,9 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
     return false;
   }
-  g_charsetConverter.stringCharsetToUtf8(strXML);
+
+  if (strXML.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strXML);
 
   // ok, now parse the xml file
   TiXmlDocument doc;
