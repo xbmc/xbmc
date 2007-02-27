@@ -41,6 +41,7 @@ public:
   SORT_ORDER GetDisplaySortOrder() const;
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
+  virtual bool DisableAddSourceButtons();
   virtual int GetPlaylist();
   const CStdString& GetPlaylistDirectory();
   void SetPlaylistDirectory(const CStdString& strDirectory);
