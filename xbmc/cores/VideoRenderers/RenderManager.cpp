@@ -220,16 +220,9 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     lock2.Leave();
 
     m_pRenderer->FlipPage(source);
-    if( timestamp )
-    {
-      if( CThread::ThreadHandle() == NULL ) CThread::Create();
-      m_eventFrame.Set();
-    }
-    else
-    {
-      Present();
-      m_eventPresented.Set();
-    }
+
+    if( CThread::ThreadHandle() == NULL ) CThread::Create();
+    m_eventFrame.Set();
   }
   else
   {
@@ -310,10 +303,20 @@ void CXBoxRenderManager::PresentBob()
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOUNLOCK, 255);
 
-  /* wait for timestamp */
-  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
-
-  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+  if( m_presenttime )
+  {
+    /* wait for timestamp */
+    while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+    D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+  }
+  else
+  {
+    /* if no present time, assume we are in a hurry */
+    /* try to present first field directly          */
+    D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_IMMEDIATE);
+    D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+    D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_ONE);
+  }
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
