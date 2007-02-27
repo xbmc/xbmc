@@ -1545,7 +1545,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_musicInfoTag.SetURL(movie.m_strSearchString);
       pItem->m_musicInfoTag.SetTrackNumber(movie.m_iEpisode);
       pItem->m_musicInfoTag.SetLoaded(movie.m_bWatched);
-      pItem->m_musicInfoTag.SetAlbum(movie.m_strFileNameAndPath);
+      pItem->m_musicInfoTag.SetAlbum(movie.m_strFileNameAndPath); // real path
       // End hack for extra info
 
       if (isTVShow)
@@ -1553,6 +1553,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
         pItem->SetVideoThumb();
         pItem->m_bIsFolder=true;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
+        pItem->m_musicInfoTag.SetAlbum(movie.m_strPath);          // real path
       }
 
       items.Add(pItem);
