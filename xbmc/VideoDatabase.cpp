@@ -3223,6 +3223,16 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             else
             {
               CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+              for (int i=0;i<items.Size();++i) // finally update the paths
+              {
+                CStdString strDir;
+                strDir.Format("%s/", movies[i].m_strSearchString);
+                items[i]->SetVideoThumb();
+                items[i]->m_strPath=strBaseDir + strDir;
+                items[i]->m_bIsFolder=true;
+                items[i]->m_musicInfoTag.SetTrackNumber(movies[i].m_iEpisode);
+                items[i]->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
+              }
               return true; // there no more songs left to process (aborts the unbounded for loop)
             }
           }
@@ -3231,7 +3241,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
-            CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false, strBaseDir);
+            CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false);
             CUtil::RemoveSlashAtEnd(movie.m_strPath);
             movies.push_back(movie);
             iSONGS++;
@@ -3247,6 +3257,16 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
           if (iSONGS > 0)
           {
             CGUIWindowVideoBase::SetDatabaseDirectory(movies,items, true);
+            for (int i=0;i<items.Size();++i) // finally update the paths
+            {
+              CStdString strDir;
+              strDir.Format("%s/", movies[i].m_strSearchString);
+              items[i]->SetVideoThumb();
+              items[i]->m_strPath=strBaseDir + strDir;
+              items[i]->m_bIsFolder=true;
+              items[i]->m_musicInfoTag.SetTrackNumber(movies[i].m_iEpisode);
+              items[i]->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
+            }
             return true; // keep whatever songs we may have gotten before the failure
           }
           else
@@ -3288,7 +3308,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
 
     while (!m_pDS->eof())
     {
-      CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false, strBaseDir);
+      CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false);
       movies.push_back(movie);
 
       m_pDS->next();
