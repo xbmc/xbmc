@@ -519,6 +519,7 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "filelists.fulldirectoryhistory", 15106, true);
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
+  AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
