@@ -1734,7 +1734,7 @@ void CGUIWindowMusicBase::AddToPlaylist(int iItem)
   if (strPlaylist.IsEmpty())
   {
     CStdString strFile;
-    if (!CGUIDialogKeyboard::ShowAndGetInput(strFile, "Enter Name of New Playlist", false))
+    if (!CGUIDialogKeyboard::ShowAndGetInput(strFile, g_localizeStrings.Get(21381), false))
       return; // user backed out
     bNew = true;
     CUtil::AddFileToFolder(CUtil::TranslateSpecialPath("special://musicplaylists/"), strFile, strPlaylist);
