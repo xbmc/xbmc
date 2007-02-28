@@ -38,6 +38,7 @@ protected:
   void OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames);
   virtual void LoadPlayList(const CStdString& strFileName);
   void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info);
+  void AddMovieAndGetThumb(CFileItem *pItem, const CIMDBMovie &movieDetails);
   void PlayFolder(const CFileItem* pItem);
 
   bool m_bIsScanning;

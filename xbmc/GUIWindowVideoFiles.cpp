@@ -489,16 +489,27 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
             CNfoFile nfoReader(info.strContent);
             if ( nfoReader.Create(strNfoFile) == S_OK)
             {
-              CIMDBUrl url;
-              CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
-	            url.m_scrURL.push_back(scrUrl);
-              CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
-              CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
-              url.m_strID  = nfoReader.m_strImDbNr;
-              SScraperInfo info2(info);
-              info2.strPath = nfoReader.m_strScraper;
-              GetIMDBDetails(pItem, url, info2);
-              continue;
+              if (nfoReader.m_strScraper == "NFO")
+              {
+                CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+                CIMDBMovie movieDetails;
+                nfoReader.GetDetails(movieDetails);
+                AddMovieAndGetThumb(pItem, movieDetails);
+                continue;
+              }
+              else
+              {
+                CIMDBUrl url;
+                CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+	              url.m_scrURL.push_back(scrUrl);
+                CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
+                CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+                url.m_strID  = nfoReader.m_strImDbNr;
+                SScraperInfo info2(info);
+                info2.strPath = nfoReader.m_strScraper;
+                GetIMDBDetails(pItem, url, info2);
+                continue;
+              }
             }
             else
               CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
@@ -792,45 +803,48 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
 
   movieDetails.m_strSearchString = pItem->m_strPath;
   if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
+    AddMovieAndGetThumb(pItem, movieDetails);
+}
+
+void CGUIWindowVideoFiles::AddMovieAndGetThumb(CFileItem *pItem, const CIMDBMovie &movieDetails)
+{
+  // add to all movies in the stacked set
+  m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
+  // get & save thumbnail
+  CStdString strThumb = "";
+  CStdString strImage = movieDetails.m_strPictureURL.m_url;
+  if (strImage.size() > 0)
   {
-    // add to all movies in the stacked set
-    m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
-    // get & save thumbnail
-    CStdString strThumb = "";
-    CStdString strImage = movieDetails.m_strPictureURL.m_url;
-    if (strImage.size() > 0)
+    // check for a cached thumb or user thumb
+    pItem->SetVideoThumb();
+    if (pItem->HasThumbnail())
+      return;
+    strThumb = pItem->GetCachedVideoThumb();
+
+    CStdString strExtension;
+    CUtil::GetExtension(strImage, strExtension);
+    CStdString strTemp = "Z:\\temp";
+    strTemp += strExtension;
+    ::DeleteFile(strTemp.c_str());
+    if (m_dlgProgress)
     {
-      // check for a cached thumb or user thumb
-      pItem->SetVideoThumb();
-      if (pItem->HasThumbnail())
-        return;
-      strThumb = pItem->GetCachedVideoThumb();
-
-      CStdString strExtension;
-      CUtil::GetExtension(strImage, strExtension);
-      CStdString strTemp = "Z:\\temp";
-      strTemp += strExtension;
-      ::DeleteFile(strTemp.c_str());
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(2, 415);
-        m_dlgProgress->Progress();
-      }
-      CHTTP http;
-      http.Download(strImage, strTemp);
-
-      try
-      {
-        CPicture picture;
-        picture.DoCreateThumbnail(strTemp, strThumb);
-      }
-      catch (...)
-      {
-        CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
-        ::DeleteFile(strThumb.c_str());
-      }
-      ::DeleteFile(strTemp.c_str());
+      m_dlgProgress->SetLine(2, 415);
+      m_dlgProgress->Progress();
     }
+    CHTTP http;
+    http.Download(strImage, strTemp);
+
+    try
+    {
+      CPicture picture;
+      picture.DoCreateThumbnail(strTemp, strThumb);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
+      ::DeleteFile(strThumb.c_str());
+    }
+    ::DeleteFile(strTemp.c_str());
   }
 }
 

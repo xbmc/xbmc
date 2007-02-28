@@ -117,7 +117,7 @@ public:
   void GetFilePath(long lMovieId, CStdString &filePath);
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
   long GetMovieInfo(const CStdString& strFilenameAndPath);
-  void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
+  void SetMovieInfo(const CStdString& strFilenameAndPath, const CIMDBMovie& details);
 
   void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
   void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
