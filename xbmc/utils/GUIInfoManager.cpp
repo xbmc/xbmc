@@ -619,6 +619,7 @@ string CGUIInfoManager::GetLabel(int info)
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
     return strLabel;
     break;
+#ifdef HAS_XBOX_HARDWARE
   case SYSTEM_CONTROLLER_PORT_1:
     return g_sysinfo.GetUnits(1);
     break;
@@ -631,7 +632,7 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_CONTROLLER_PORT_4:
     return g_sysinfo.GetUnits(4);
     break;
-  
+#endif  
   case CONTAINER_FOLDERPATH:
     {
       CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
@@ -781,6 +782,7 @@ string CGUIInfoManager::GetLabel(int info)
      return dhcp;
     }
     break;
+#ifdef HAS_XBOX_HARDWARE
   case NETWORK_LINK_STATE:
     {
       DWORD dwnetstatus = XNetGetEthernetLinkStatus();
@@ -802,7 +804,7 @@ string CGUIInfoManager::GetLabel(int info)
       return linkStatus;
     }
     break;
-
+#endif
   case AUDIOSCROBBLER_CONN_STATE:
   case AUDIOSCROBBLER_SUBMIT_INT:
   case AUDIOSCROBBLER_FILES_CACHED:
