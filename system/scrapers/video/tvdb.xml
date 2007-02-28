@@ -66,7 +66,7 @@
 	<!--    input: $2=series url !-->
 	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->
 	<GetEpisodeList dest="3">
- 	  <RegExp input="$$4" output="&lt;episodeguide&gt;&lt;url&gt;\1&lt;/url&gt;&lt;/episodeguide&gt;" dest="3">
+ 	  <RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
  		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://tvdb.zsori.com/interfaces/EpisodeUpdates.php?idlist=\1&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
  			<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeasonNumber&gt;([0-9]*)&lt;/SeasonNumber&gt;[^&lt;]*&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;[^&lt;]*&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
  		</RegExp>

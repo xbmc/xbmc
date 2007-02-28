@@ -32,8 +32,12 @@ bool CIMDBUrl::Parse(CStdString strUrls)
   {
     TiXmlHandle docHandle( &doc );
     TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
-    for ( link; link; link = link->NextSiblingElement("url") )
-      m_scrURL.push_back(CScraperUrl(link));      
+    if(link)
+      for ( link; link; link = link->NextSiblingElement("url") )
+        m_scrURL.push_back(CScraperUrl(link));      
+    else if( link = docHandle.FirstChild( "episodeguide" ).Element() )
+      m_scrURL.push_back(CScraperUrl(link));
+
   } 
   else
     return false;
@@ -207,7 +211,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
     for ( movie; movie; movie = movie->NextSiblingElement() )
     {
       TiXmlNode *title = movie->FirstChild("title");
-      TiXmlNode *link = movie->FirstChild("url");
+      TiXmlElement *link = movie->FirstChildElement("url");
       TiXmlNode *epnum = movie->FirstChild("epnum");
       TiXmlNode *season = movie->FirstChild("season");
       TiXmlNode* id = movie->FirstChild("id");
@@ -215,10 +219,11 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
       {
         CIMDBUrl url2;
         g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.m_strTitle);
-        url2.m_scrURL.push_back(CScraperUrl(link->FirstChild()->Value()));
-        while ((link = link->NextSibling("url")))
+        url2.m_scrURL.push_back(CScraperUrl(link) );
+
+        while ((link = link->NextSiblingElement("url")))
         {
-          url2.m_scrURL.push_back(CScraperUrl(link->FirstChild()->Value()));
+          url2.m_scrURL.push_back(CScraperUrl(link));
         }
         if (id && id->FirstChild())
           url2.m_strID = id->FirstChild()->Value();
@@ -493,7 +498,7 @@ bool CIMDBMovie::Load(const TiXmlElement *movie)
   }
 
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
-  if (epguide && epguide->FirstChildElement())
+  if (epguide)
   {
     TiXmlString s;  
     TiXmlOutStream os_stream;  
