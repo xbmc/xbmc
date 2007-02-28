@@ -228,6 +228,11 @@ void CGUIWindowVideoFiles::UpdateButtons()
     }
     else
     {
+      if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
+      {
+        SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
+      }
+
       CONTROL_DISABLE(CONTROL_STACK)
     }
   }
