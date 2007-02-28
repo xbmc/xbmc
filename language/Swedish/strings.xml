@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmcscripts.com-->
 <!--Date of translation: 02/28/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7953-->
+<!--Based on english strings version 7958-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -831,8 +831,8 @@
   <string id="13156">HDD firmware:</string>
   <string id="13157">HDD lösenord:</string>
   <string id="13158">HDD låsstatus:</string>
-  <string id="13159">Nätmask:</string>
-  <string id="13160">Gateway:</string>
+  <string id="13159">Nätmask</string>
+  <string id="13160">Gateway</string>
   <string id="13161">Primär DNS:</string>
   <string id="13162">Initialisering misslyckades</string>
   <string id="13163">Spelkontroller</string>
