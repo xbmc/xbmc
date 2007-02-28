@@ -50,7 +50,8 @@ public:
   CStdString m_strTitle;
   CStdString m_strVotes;
   vector< pair<CStdString, CStdString> > m_cast;
-  typedef vector< pair<CStdString, CStdString> >::iterator iCast;
+  typedef vector< pair<CStdString, CStdString> >::const_iterator iCast;
+
   CStdString m_strSearchString;
   CStdString m_strRuntime;
   CStdString m_strFile;
