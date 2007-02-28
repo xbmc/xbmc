@@ -869,7 +869,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
     if (m_vecItems[iItem]->IsVideoDb())
+    {
       m_database.GetScraperForPath(m_vecItems[iItem]->m_musicInfoTag.GetAlbum(),info.strPath,info.strContent,iFound);
+    }
     else
       m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,iFound);
     
@@ -1550,7 +1552,10 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
 
       if (isTVShow)
       {
-        pItem->SetVideoThumb();
+        CFileItem item2;
+        item2.m_strPath = movie.m_strPath;
+        item2.SetVideoThumb();
+        pItem->SetThumbnailImage(item2.GetThumbnailImage());
         pItem->m_bIsFolder=true;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
         pItem->m_musicInfoTag.SetAlbum(movie.m_strPath);          // real path
