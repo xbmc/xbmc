@@ -70,19 +70,20 @@
 		<control type="list" id="4">
 			<posx>150</posx>
 			<posy>45</posy>
-			<width>390</width>
-			<height>120</height>
+			<width>235</width>
+			<height>128</height>
 			<onup>3</onup>
 			<ondown>30</ondown>
 			<onleft>3</onleft>
-			<onright>30</onright>
+			<onright>60</onright>
 			<scrolltime>200</scrolltime>
+			<pagecontrol>60</pagecontrol>
 			<include>homemisc</include>
-			<itemlayout height="35">
+			<itemlayout height="32">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>250</width>
+					<width>235</width>
 					<height>29</height>
 					<texture border="3">input-nofocus.png</texture>
 				</control>
@@ -96,7 +97,7 @@
 				<control type="label">
 					<posx>32</posx>
 					<posy>5</posy>
-					<width>210</width>
+					<width>200</width>
 					<height>23</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -104,11 +105,11 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="35">
+			<focusedlayout height="32">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>250</width>
+					<width>235</width>
 					<height>29</height>
 					<visible>Control.HasFocus(4)</visible>
 					<texture border="3">input-focus.png</texture>
@@ -116,7 +117,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>250</width>
+					<width>235</width>
 					<height>29</height>
 					<visible>!Control.HasFocus(4)</visible>
 					<texture border="3">input-nofocus.png</texture>
@@ -131,7 +132,7 @@
 				<control type="label">
 					<posx>32</posx>
 					<posy>5</posy>
-					<width>210</width>
+					<width>200</width>
 					<height>23</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -151,6 +152,24 @@
 			<ondown>28</ondown>
 			<onleft>5</onleft>
 			<onright>5</onright>
+			<include>homemisc</include>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>390</posx>
+			<posy>45</posy>
+			<width>17</width>
+			<height>125</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>scrollbar_nib.png</textureslidernib>
+			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<onleft>4</onleft>
+			<onright>30</onright>
+			<onup>60</onup>
+			<ondown>60</ondown>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
 			<include>homemisc</include>
 		</control>
 		<control type="button" id="7">
