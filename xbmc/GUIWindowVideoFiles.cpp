@@ -476,8 +476,8 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           m_database.GetTvShowInfo(pItem->m_strPath,details,lTvShowId);
           CIMDBUrl url;
           CScraperUrl Url;
-          Url.m_url = details.m_strEpisodeGuide;
-          url.m_scrURL.push_back(Url);
+          //convert m_strEpisodeGuide in url.m_scrURL
+          url.Parse(details.m_strEpisodeGuide);
           IMDB.GetEpisodeList(url,episodes);
           m_dlgProgress->SetLine(1, details.m_strTitle);
         }
@@ -623,9 +623,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
               CIMDBMovie details;
               m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
               CIMDBUrl url;
-              CScraperUrl Url;
-              Url.m_url = details.m_strEpisodeGuide;
-              url.m_scrURL.push_back(Url);
+              url.Parse(details.m_strEpisodeGuide);
               IMDB_EPISODELIST episodes;
               if (IMDB.GetEpisodeList(url,episodes))
                 OnProcessSeriesFolder(episodes,pItem,lResult,IMDB,m_dlgProgress);

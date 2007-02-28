@@ -525,7 +525,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
             lShowId = m_database.SetDetailsForTvShow(path,movieDetails);
           }
           
-          url.m_scrURL.push_back(CScraperUrl(movieDetails.m_strEpisodeGuide));
+          url.Parse(movieDetails.m_strEpisodeGuide);
           if (IMDB.GetEpisodeList(url,episodes))
           {
             OnProcessSeriesFolder(episodes,item,lShowId,IMDB,pDlgProgress);

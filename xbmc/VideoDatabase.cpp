@@ -4195,23 +4195,23 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     }
 
     BeginTransaction();
-    TiXmlNode *movie = root->FirstChild("movie");
+    TiXmlElement *movie = root->FirstChildElement("movie");
     int current = 0;
     int total = 0;
     // first count the number of items...
     while (movie)
     {
       total++;
-      movie = movie->NextSibling("movie");
+      movie = movie->NextSiblingElement("movie");
     }
-    movie = root->FirstChild("movie");
+    movie = root->FirstChildElement("movie");
     while (movie)
     {
       CIMDBMovie info;
       info.Load(movie);
       DeleteDetailsForMovie(info.m_strFileNameAndPath);
       SetDetailsForMovie(info.m_strFileNameAndPath, info);
-      movie = movie->NextSibling("movie");
+      movie = movie->NextSiblingElement("movie");
       if (progress)
       {
         progress->SetPercentage(current * 100 / total);

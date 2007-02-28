@@ -31,6 +31,7 @@ public:
   std::vector<CScraperUrl> m_scrURL;
   CStdString m_strID;  
   CStdString m_strTitle;
+  bool Parse(CStdString);
 };
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
 typedef std::map<std::pair<int,int>,CIMDBUrl> IMDB_EPISODELIST;
@@ -40,7 +41,7 @@ class CIMDBMovie
 public:
   CIMDBMovie() { Reset(); };
   void Reset();
-  bool Load(const TiXmlNode *node);
+  bool Load(const TiXmlElement *node);
   bool Save(TiXmlNode *node);
 
   CStdString m_strDirector;

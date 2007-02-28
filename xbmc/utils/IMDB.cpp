@@ -17,6 +17,30 @@ using namespace HTML;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+bool CIMDBUrl::Parse(CStdString strUrls)
+{
+  if (strUrls.IsEmpty())
+    return false;
+  
+  // ok, now parse the xml file
+  if (strUrls.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strUrls);
+  
+  TiXmlDocument doc;
+  doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
+  if (doc.RootElement())
+  {
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
+    for ( link; link; link = link->NextSiblingElement("url") )
+      m_scrURL.push_back(CScraperUrl(link));      
+  } 
+  else
+    return false;
+  return true;
+}
+
+
 CIMDB::CIMDB()
 {
 }
@@ -150,57 +174,59 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
 
-  CStdString strHTML;
-  CStdString strURL = url.m_scrURL[0].m_url;
-
-  if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
+  for(int i=0; i < url.m_scrURL.size(); i++)
   {
+    CStdString strHTML;
+    CScraperUrl scrUrl;
+    scrUrl = url.m_scrURL[i];
+    if (!Get(scrUrl,strHTML) || strHTML.size() == 0)
+    {
     CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
     return false;
-  }
-  
-  m_parser.m_param[0] = strHTML;
-  m_parser.m_param[1] = strURL;
-  CStdString strXML = m_parser.Parse("GetEpisodeList");
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
-    return false;
-  }
+    }
+    m_parser.m_param[0] = strHTML;
+    m_parser.m_param[1] = scrUrl.m_url;
 
-  // ok, now parse the xml file
-  TiXmlDocument doc;
-  doc.Parse(strXML.c_str());
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
-    return false;
-  }
-  TiXmlHandle docHandle( &doc );
-  TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
-
-  for ( movie; movie; movie = movie->NextSiblingElement() )
-  {
-    TiXmlNode *title = movie->FirstChild("title");
-    TiXmlNode *link = movie->FirstChild("url");
-    TiXmlNode *epnum = movie->FirstChild("epnum");
-    TiXmlNode *season = movie->FirstChild("season");
-    TiXmlNode* id = movie->FirstChild("id");
-    if (title && title->FirstChild() && link && link->FirstChild() && epnum && epnum->FirstChild() && season && season->FirstChild())
+    CStdString strXML = m_parser.Parse("GetEpisodeList");
+    if (strXML.IsEmpty())
     {
-      CIMDBUrl url2;
-      g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.m_strTitle);
-      url2.m_scrURL.push_back(CScraperUrl(link->FirstChild()->Value()));
-      while ((link = link->NextSibling("url")))
-      {
-        url2.m_scrURL.push_back(CScraperUrl(link->FirstChild()->Value()));
-      }
-      if (id && id->FirstChild())
-        url2.m_strID = id->FirstChild()->Value();
-      // if source contained a distinct year, only allow those
+      CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
+      return false;
+    }
+    // ok, now parse the xml file
+    TiXmlDocument doc;
+    doc.Parse(strXML.c_str());
+    if (!doc.RootElement())
+    {
+      CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
+      return false;
+    }
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
 
-      std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
-      details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
+    for ( movie; movie; movie = movie->NextSiblingElement() )
+    {
+      TiXmlNode *title = movie->FirstChild("title");
+      TiXmlNode *link = movie->FirstChild("url");
+      TiXmlNode *epnum = movie->FirstChild("epnum");
+      TiXmlNode *season = movie->FirstChild("season");
+      TiXmlNode* id = movie->FirstChild("id");
+      if (title && title->FirstChild() && link && link->FirstChild() && epnum && epnum->FirstChild() && season && season->FirstChild())
+      {
+        CIMDBUrl url2;
+        g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.m_strTitle);
+        url2.m_scrURL.push_back(CScraperUrl(link->FirstChild()->Value()));
+        while ((link = link->NextSibling("url")))
+        {
+          url2.m_scrURL.push_back(CScraperUrl(link->FirstChild()->Value()));
+        }
+        if (id && id->FirstChild())
+          url2.m_strID = id->FirstChild()->Value();
+        // if source contained a distinct year, only allow those
+
+        std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
+        details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
+      }
     }
   }
   return true;
@@ -274,7 +300,8 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, co
 
 bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
 {
-  TiXmlNode *details = doc.FirstChild( "details" );
+  TiXmlHandle docHandle( &doc );
+  TiXmlElement *details = docHandle.FirstChild( "details" ).Element();
 
   if (!details)
   {
@@ -380,7 +407,7 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   return true;
 }
 
-bool CIMDBMovie::Load(const TiXmlNode *movie)
+bool CIMDBMovie::Load(const TiXmlElement *movie)
 {
   if (!movie) return false;
   XMLUtils::GetString(movie, "title", m_strTitle);
@@ -465,9 +492,16 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
     node = node->NextSibling("actor");
   }
 
-  const TiXmlNode *epguide = movie->FirstChild("episodeguide");
-  if (epguide && epguide->FirstChild())
-    m_strEpisodeGuide = epguide->FirstChild()->Value();
+  const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
+  if (epguide && epguide->FirstChildElement())
+  {
+    TiXmlString s;  
+    TiXmlOutStream os_stream;  
+     
+    os_stream << * epguide;  
+    s = os_stream;  
+    m_strEpisodeGuide = s.c_str();
+  }
 
   return true;
 }
