@@ -39,6 +39,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           m_info = m_scrapers[m_info.strContent][message.GetParam1()];
       }
     }
+    break;
 
   case GUI_MSG_CLICKED:
     int iControl = message.GetSenderId();
