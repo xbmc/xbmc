@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/26/2007-->
+<!--Date of translation: 02/28/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7929-->
+<!--Based on english strings version 7953-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1502,5 +1502,7 @@ den här visualiseringen</string>
   <string id="21378">Aktivera 480p</string>
   <string id="21379">Aktivera 720p</string>
   <string id="21380">Aktivera 1080i</string>
+  <string id="21381">Ange namn på den nya spellistan</string>
+  <string id="21382">Inaktivera Lägg till källa knappar i fillistan</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
