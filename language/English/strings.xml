@@ -877,8 +877,8 @@
   <string id="13156">HDD Firmware:</string>
   <string id="13157">HDD Password:</string>
   <string id="13158">HDD Lock State:</string>
-  <string id="13159">Subnet mask:</string>
-  <string id="13160">Gateway:</string>
+  <string id="13159">Subnet mask</string>
+  <string id="13160">Gateway</string>
   <string id="13161">Primary DNS</string>
   <string id="13162">Initialize failed</string>
   
