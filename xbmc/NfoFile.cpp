@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "NfoFile.h"
 #include "utils/ScraperParser.h"
+#include "utils/IMDb.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "util.h"
@@ -25,10 +26,28 @@ CNfoFile::~CNfoFile()
 {
 }
 
+bool CNfoFile::GetDetails(CIMDBMovie &details)
+{
+  TiXmlDocument doc;
+  if (doc.Parse(m_doc))
+  {
+    return details.Load(doc.RootElement());
+  }
+  return false;
+}
+
 HRESULT CNfoFile::Create(const CStdString& strPath)
 {
   if (FAILED(Load(strPath)))
     return E_FAIL;
+
+  // first check if it's an XML file with the info we need
+  CIMDBMovie details;
+  if (GetDetails(details))
+  {
+    m_strScraper = "NFO";
+    return S_OK;
+  }
 
   CDirectory dir;
   CFileItemList items;

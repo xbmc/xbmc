@@ -688,7 +688,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details)
+void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, const CIMDBMovie& details)
 {
   try
   {

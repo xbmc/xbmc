@@ -9,6 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+class CIMDBMovie;
+
 class CNfoFile
 {
 public:
@@ -16,6 +18,8 @@ public:
   virtual ~CNfoFile();
 
   HRESULT Create(const CStdString&);
+  bool GetDetails(CIMDBMovie &details);
+
   CStdString m_strScraper;
   CStdString m_strImDbUrl;
   CStdString m_strImDbNr;
