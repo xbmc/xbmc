@@ -317,7 +317,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("tuxbox"))
     url2.SetProtocol("http");    
 
   if( url2.GetProtocol().Equals("ftp") )
