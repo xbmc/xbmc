@@ -233,21 +233,23 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
       }
     }
   }
-  std::map<int,int> min; 
 
-  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++i ) 
+  // find minimum in each season
+  std::map<int,int> min; 
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
   { 
     if (min.find(iter->first.first -1) == min.end()) 
       min.insert(iter->first);
-    else if(iter->first.second < min[iter->first.first])
+    else if (iter->first.second < min[iter->first.first])
       min[iter->first.first] = iter->first.second;
   }
-
+  // correct episode numbers
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
   {
     std::pair<int,int> key(iter->first.first,(iter->first.second - min[iter->first.first] + 1));
     details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,iter->second));
   }
+
   return true;
 }
 
