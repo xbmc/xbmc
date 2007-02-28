@@ -29,6 +29,7 @@
 #include "GUIControlGroupList.h"
 #include "GUIScrollBarControl.h"
 #include "GUIListContainer.h"
+#include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
 #include "../xbmc/utils/GUIInfoManager.h"
@@ -1147,6 +1148,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "wraplist")
   {
     CGUIWrappingListContainer* pControl = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
+    pControl->LoadLayout(pControlNode);
+    pControl->SetType(viewType, viewLabel);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetColorDiffuse(colorDiffuse);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetPulseOnSelect(bPulse);
+    pControl->SetPageControl(pageControl);
+    return pControl;
+  }
+  else if (strType == "fixedlist")
+  {
+    CGUIFixedListContainer* pControl = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     pControl->LoadLayout(pControlNode);
     pControl->SetType(viewType, viewLabel);
     pControl->SetNavigation(up, down, left, right);
