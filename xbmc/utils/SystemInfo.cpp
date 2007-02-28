@@ -21,18 +21,21 @@
 #include "../stdafx.h"
 #include "SystemInfo.h"
 #include <conio.h>
-#include "../xbox/XKUtils.h"
-#include "../xbox/xkhdd.h"
-#include "../xbox/XKflash.h"
-#include "../xbox/XKRC4.h"
 #include "../settings.h"
 #include "../utils/log.h"
-#include "../xbox/Undocumented.h"
 #include "../cores/dllloader/dllloader.h"
+#include "../xbox/undocumented.h"
+#include "../xbox/xkutils.h"
+#include "../xbox/xkhdd.h"
+#include "../xbox/xkflash.h"
+#include "../xbox/xkrc4.h"
+#include "../utils/http.h"
+
 
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 
 CSysInfo g_sysinfo;
+CSysInfo* CSysInfo::m_pInstance=NULL;
 
 CSysInfo::CSysInfo()
 {
@@ -43,6 +46,21 @@ CSysInfo::CSysInfo()
 CSysInfo::~CSysInfo()
 {
    delete m_XKEEPROM;
+}
+CSysInfo* CSysInfo::GetInstance()
+{
+  if (!m_pInstance)
+    m_pInstance=new CSysInfo;
+
+  return m_pInstance;
+}
+void CSysInfo::RemoveInstance()
+{
+  if (m_pInstance)
+  {
+    delete m_pInstance;
+    m_pInstance=NULL;
+  }
 }
 struct Bios * CSysInfo::LoadBiosSigns()
 {
@@ -299,6 +317,12 @@ bool CSysInfo::CreateBiosBackup()
   }
 }
 
+bool CSysInfo::CreateEEPROMBackup()
+{
+  m_XKEEPROM->WriteToBINFile(XBOX_EEPROM_BIN_BACKUP_FILE);
+  m_XKEEPROM->WriteToCFGFile(XBOX_EEPROM_CFG_BACKUP_FILE);
+  return true;
+}
 bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 {
   BYTE data;
@@ -574,12 +598,6 @@ bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &
   return true;
 }
 
-bool CSysInfo::CreateEEPROMBackup()
-{
-  m_XKEEPROM->WriteToBINFile(XBOX_EEPROM_BIN_BACKUP_FILE);
-  m_XKEEPROM->WriteToCFGFile(XBOX_EEPROM_CFG_BACKUP_FILE);
-  return true;
-}
 bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount)
 {
   XBOX_REFURB_INFO xri;
@@ -643,59 +661,6 @@ double CSysInfo::RDTSC(void)
   x+=a;
   return x;
 }
-CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
-{
-  CStdString strReturn;
-  MD5_CTX mdContext;
-  unsigned char md5sum[16];
-  char md5sumstring[33] = "";
-  MD5Init (&mdContext);
-  MD5Update(&mdContext, (unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
-  MD5Final (md5sum, &mdContext);
-  XKGeneral::BytesToHexStr(md5sum, 16, md5sumstring);
-  strReturn.Format("%s", md5sumstring);
-  return strReturn;
-}
-CStdString CSysInfo::GetAVPackInfo()
-{  //AV-Pack Detection PICReg(0x04)
-  int cAVPack;
-  HalReadSMBusValue(0x20,XKUtils::PIC16L_CMD_AV_PACK,0,(LPBYTE)&cAVPack);
-
-     if (cAVPack == XKUtils::AV_PACK_SCART) return g_localizeStrings.Get(13292)+" "+"SCART";
-  else if (cAVPack == XKUtils::AV_PACK_HDTV) return g_localizeStrings.Get(13292)+" "+"HDTV";
-  else if (cAVPack == XKUtils::AV_PACK_VGA) return g_localizeStrings.Get(13292)+" "+"VGA";
-  else if (cAVPack == XKUtils::AV_PACK_RFU) return g_localizeStrings.Get(13292)+" "+"RFU";
-  else if (cAVPack == XKUtils::AV_PACK_SVideo) return g_localizeStrings.Get(13292)+" "+"S-Video";
-  else if (cAVPack == XKUtils::AV_PACK_Undefined) return g_localizeStrings.Get(13292)+" "+"Undefined";
-  else if (cAVPack == XKUtils::AV_PACK_Standard) return g_localizeStrings.Get(13292)+" "+"Standard RGB";
-  else if (cAVPack == XKUtils::AV_PACK_Missing) return g_localizeStrings.Get(13292)+" "+"Missing or Unknown";
-  else return g_localizeStrings.Get(13292)+" "+"Unknown";
-}
-CStdString CSysInfo::GetVideoEncoder()
-{
-  int iTemp;
-  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
-    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
-  }
-  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
-    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
-  }
-  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
-    return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
-  }
-  else 
-  {  
-    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
-    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
-  }
-}
-
 CStdString CSysInfo::GetModCHIPDetected()
 {
   CXBoxFlash *mbFlash=new CXBoxFlash(); //Max description Leng= 40
@@ -893,6 +858,59 @@ CStdString CSysInfo::GetModCHIPDetected()
   return strTemp;
 }
 
+CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
+{
+  CStdString strReturn;
+  MD5_CTX mdContext;
+  unsigned char md5sum[16];
+  char md5sumstring[33] = "";
+  MD5Init (&mdContext);
+  MD5Update(&mdContext, (unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
+  MD5Final (md5sum, &mdContext);
+  XKGeneral::BytesToHexStr(md5sum, 16, md5sumstring);
+  strReturn.Format("%s", md5sumstring);
+  return strReturn;
+}
+CStdString CSysInfo::GetAVPackInfo()
+{  
+  //AV-Pack Detection PICReg(0x04)
+  int cAVPack;
+  HalReadSMBusValue(0x20,XKUtils::PIC16L_CMD_AV_PACK,0,(LPBYTE)&cAVPack);
+
+  if (cAVPack == XKUtils::AV_PACK_SCART) return g_localizeStrings.Get(13292)+" "+"SCART";
+  else if (cAVPack == XKUtils::AV_PACK_HDTV) return g_localizeStrings.Get(13292)+" "+"HDTV";
+  else if (cAVPack == XKUtils::AV_PACK_VGA) return g_localizeStrings.Get(13292)+" "+"VGA";
+  else if (cAVPack == XKUtils::AV_PACK_RFU) return g_localizeStrings.Get(13292)+" "+"RFU";
+  else if (cAVPack == XKUtils::AV_PACK_SVideo) return g_localizeStrings.Get(13292)+" "+"S-Video";
+  else if (cAVPack == XKUtils::AV_PACK_Undefined) return g_localizeStrings.Get(13292)+" "+"Undefined";
+  else if (cAVPack == XKUtils::AV_PACK_Standard) return g_localizeStrings.Get(13292)+" "+"Standard RGB";
+  else if (cAVPack == XKUtils::AV_PACK_Missing) return g_localizeStrings.Get(13292)+" "+"Missing or Unknown";
+  else return g_localizeStrings.Get(13292)+" "+"Unknown";
+}
+CStdString CSysInfo::GetVideoEncoder()
+{
+  int iTemp;
+  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
+    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
+  }
+  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
+    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
+  }
+  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
+    return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
+  }
+  else 
+  {  
+    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
+    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
+  }
+}
 CStdString CSysInfo::SmartXXModCHIP()
 {
   // SmartXX ModChip Detection
@@ -951,66 +969,64 @@ CStdString CSysInfo::GetKernelVersion()
   strKernel.Format("%s %d.%d.%d.%d",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
   return strKernel;
 }
-CStdString CSysInfo::GetSystemTotalUpTime()
+CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
 {
   CStdString strSystemUptime;
-  CStdString lbl1 = g_localizeStrings.Get(12394);
-  CStdString lblMin = g_localizeStrings.Get(12391);
-  CStdString lblHou = g_localizeStrings.Get(12392);
-  CStdString lblDay = g_localizeStrings.Get(12393);
-
+  CStdString strLabel;
   int iInputMinutes, iMinutes,iHours,iDays;
-  iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+  
+  if(bTotalUptime)
+  {
+    //Total Uptime
+    strLabel = g_localizeStrings.Get(12394);
+    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+  }
+  else
+  {
+    //Current UpTime
+    strLabel = g_localizeStrings.Get(12390);
+    iInputMinutes = (int)(timeGetTime() / 60000);
+  }
+
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  // Will Display Autodetected Values!
-  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes, lblMin);
-
-  return strSystemUptime;
-}
-CStdString CSysInfo::GetSystemUpTime()
-{
-  CStdString strSystemUptime;
-  CStdString lbl1 = g_localizeStrings.Get(12390);
-  CStdString lblMin = g_localizeStrings.Get(12391);
-  CStdString lblHou = g_localizeStrings.Get(12392);
-  CStdString lblDay = g_localizeStrings.Get(12393);
-
-  int iInputMinutes, iMinutes,iHours,iDays;
-  iInputMinutes = (int)(timeGetTime() / 60000);
-  CSysInfo::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  // Will Display Autodetected Values!
-  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes, lblMin);
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes, lblMin);
-
+  if (iDays > 0) 
+  {
+    strSystemUptime.Format("%s: %i %s, %i %s, %i %s",
+      strLabel,
+      iDays,g_localizeStrings.Get(12393),
+      iHours,g_localizeStrings.Get(12392),
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  else if (iDays == 0 && iHours >= 1 )
+  {
+    strSystemUptime.Format("%s: %i %s, %i %s",
+      strLabel, 
+      iHours,g_localizeStrings.Get(12392),
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
+  {
+    strSystemUptime.Format("%s: %i %s",
+      strLabel, 
+      iMinutes, g_localizeStrings.Get(12391));
+  }
   return strSystemUptime;
 }
 CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
-  double CPUFreq;
-  CStdString lblCPUSpeed  = g_localizeStrings.Get(13284);
-  CPUFreq                 = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2f Mhz.", lblCPUSpeed, CPUFreq);
+  double CPUFreq = GetCPUFrequency();
+  strCPUFreq.Format("%s %4.2f Mhz.", g_localizeStrings.Get(13284), CPUFreq);
   return strCPUFreq;
 }
 CStdString CSysInfo::GetXBVerInfo()
 {
   CStdString strXBoxVer;
   CStdString strXBOXVersion;
-  CStdString lblXBver   =  g_localizeStrings.Get(13288);
   if (GetXBOXVersionDetected(strXBOXVersion))
-  {
-    strXBoxVer.Format("%s %s", lblXBver,strXBOXVersion);
-    CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
-  }
+    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), strXBOXVersion);
   else 
-  {
-    strXBoxVer.Format("%s %s", lblXBver,g_localizeStrings.Get(13205)); // "Unknown"
-    CLog::Log(LOGDEBUG,"XBOX Version: %s",g_localizeStrings.Get(13205).c_str());
-  }
+    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
   return strXBoxVer;
 }
 CStdString CSysInfo::GetUnits(int iFrontPort)
@@ -1043,157 +1059,35 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
   bool bPad=false, bMem=false, bKeyb=false, bMouse=false, bHeadSet=false, bMic=false, bIR=false;
   if (iFrontPort == 1)
   {
-    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 1 || dwDeviceGamePad == 3 || dwDeviceGamePad == 5 || dwDeviceGamePad == 7 || dwDeviceGamePad == 9 || dwDeviceGamePad == 11 || dwDeviceGamePad == 13 || dwDeviceGamePad == 15 )
-    {
-      //OK hier hängt ein GamePad
-      bPad=true;
-    }
-    if( dwDeviceMemory > 0 && dwDeviceMemory == 1 || dwDeviceMemory == 3 || dwDeviceMemory == 5 || dwDeviceMemory == 7 || dwDeviceMemory == 9 || dwDeviceMemory == 11 || dwDeviceMemory == 13 || dwDeviceMemory == 15 )
-    {
-      //OK hier hängt ein MemCard
-      bMem=true;
-    }
-    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 1 )
-    {
-      //OK hier hängt ein Keyboard
-      bKeyb=true;
-    }
-    if( dwDeviceMouse > 0 && dwDeviceMouse == 1 )
-    {
-      //OK hier hängt eine Maus
-      bMouse=true;
-    }
-    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 1 )
-    {
-      //OK hier hängt eine HeadSet
-      bHeadSet=true;
-    }
-    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 1 )
-    {
-      //OK hier hängt eine Micro
-      bMic=true;
-    }
-    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 1 )
-    {
-      //OK hier hängt eine Remote
-      bIR=true;
-    }
+    bPad = dwDeviceGamePad > 0 && dwDeviceGamePad == 1 || dwDeviceGamePad == 3 || dwDeviceGamePad == 5 || dwDeviceGamePad == 7 || dwDeviceGamePad == 9 || dwDeviceGamePad == 11 || dwDeviceGamePad == 13 || dwDeviceGamePad == 15;
+    bMem = dwDeviceMemory > 0 && dwDeviceMemory == 1 || dwDeviceMemory == 3 || dwDeviceMemory == 5 || dwDeviceMemory == 7 || dwDeviceMemory == 9 || dwDeviceMemory == 11 || dwDeviceMemory == 13 || dwDeviceMemory == 15;
   }
   else if (iFrontPort == 2)
   {
-    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 2 || dwDeviceGamePad == 3 || dwDeviceGamePad == 6 || dwDeviceGamePad == 7 || dwDeviceGamePad == 10 || dwDeviceGamePad == 11 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15 )
-    {
-      //OK hier hängt ein GamePad
-      bPad=true;
-    }
-    if( dwDeviceMemory > 0 && dwDeviceMemory == 2 || dwDeviceMemory == 3 || dwDeviceMemory == 6 || dwDeviceMemory == 7 || dwDeviceMemory == 10 || dwDeviceMemory == 11 || dwDeviceMemory == 14 || dwDeviceMemory == 15 )
-    {
-      //OK hier hängt ein MemCard
-      bMem=true;
-    }
-    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 2 )
-    {
-      //OK hier hängt ein Keyboard
-      bKeyb=true;
-    }
-    if( dwDeviceMouse > 0 && dwDeviceMouse == 2 )
-    {
-      //OK hier hängt eine Maus
-       bMouse=true;
-    }
-    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 2 )
-    {
-      //OK hier hängt eine HeadSet
-      bHeadSet=true;
-    }
-    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 2 )
-    {
-      //OK hier hängt eine Micro
-    }
-    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 2 )
-    {
-      //OK hier hängt eine Micro
-       bMic=true;
-    }
+    bPad = dwDeviceGamePad > 0 && dwDeviceGamePad == 2 || dwDeviceGamePad == 3 || dwDeviceGamePad == 6 || dwDeviceGamePad == 7 || dwDeviceGamePad == 10 || dwDeviceGamePad == 11 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15;
+    bMem = dwDeviceMemory > 0 && dwDeviceMemory == 2 || dwDeviceMemory == 3 || dwDeviceMemory == 6 || dwDeviceMemory == 7 || dwDeviceMemory == 10 || dwDeviceMemory == 11 || dwDeviceMemory == 14 || dwDeviceMemory == 15;
   }
   else if (iFrontPort == 3)
   {
-    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 4 || dwDeviceGamePad == 5 || dwDeviceGamePad == 6 || dwDeviceGamePad == 7 || dwDeviceGamePad == 12 || dwDeviceGamePad == 13 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15 )
-    {
-      //OK hier hängt ein GamePad
-      bPad=true;
-    }
-    if( dwDeviceMemory > 0 && dwDeviceMemory == 4 || dwDeviceMemory == 5 || dwDeviceMemory == 6 || dwDeviceMemory == 7 || dwDeviceMemory == 12 || dwDeviceMemory == 13 || dwDeviceMemory == 14 || dwDeviceMemory == 15 )
-    {
-      //OK hier hängt ein MemCard
-      bMem=true;
-    }
-    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 4 )
-    {
-      //OK hier hängt ein Keyboard
-      bKeyb=true;
-    }
-    if( dwDeviceMouse > 0 && dwDeviceMouse == 4 )
-    {
-      //OK hier hängt eine Maus
-       bMouse=true;
-    }
-    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 4 )
-    {
-      //OK hier hängt eine HeadSet
-      bHeadSet=true;
-    }
-    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 4 )
-    {
-      //OK hier hängt eine Micro
-      bMic=true;
-    }
-    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 4 )
-    {
-      //OK hier hängt eine Micro
-       bIR=true;
-    }
+    bPad = dwDeviceGamePad > 0 && dwDeviceGamePad == 4 || dwDeviceGamePad == 5 || dwDeviceGamePad == 6 || dwDeviceGamePad == 7 || dwDeviceGamePad == 12 || dwDeviceGamePad == 13 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15;
+    bMem = dwDeviceMemory > 0 && dwDeviceMemory == 4 || dwDeviceMemory == 5 || dwDeviceMemory == 6 || dwDeviceMemory == 7 || dwDeviceMemory == 12 || dwDeviceMemory == 13 || dwDeviceMemory == 14 || dwDeviceMemory == 15;
+    iFrontPort = 4;
   }
   else if (iFrontPort == 4)
   {
-    if( dwDeviceGamePad > 0 && dwDeviceGamePad == 8 || dwDeviceGamePad == 9 || dwDeviceGamePad == 10 || dwDeviceGamePad == 11 || dwDeviceGamePad == 12 || dwDeviceGamePad == 13 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15 )
-    {
-      //OK hier hängt ein GamePad
-      bPad=true;
-    }
-    if( dwDeviceMemory > 0 && dwDeviceMemory == 8 || dwDeviceMemory == 9 || dwDeviceMemory == 10 || dwDeviceMemory == 11 || dwDeviceMemory == 12 || dwDeviceMemory == 13 || dwDeviceMemory == 14 || dwDeviceMemory == 15 )
-    {
-      //OK hier hängt ein MemCard
-      bMem=true;
-    }
-    if( dwDeviceKeyboard > 0 && dwDeviceKeyboard == 8 )
-    {
-      //OK hier hängt ein Keyboard
-      bKeyb=true;
-    }
-    if( dwDeviceMouse > 0 && dwDeviceMouse == 8 )
-    {
-      //OK hier hängt eine Maus
-      bMouse=true;
-    }
-    if( dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == 8 )
-    {
-      //OK hier hängt eine HeadSet
-      bHeadSet=true;
-    }
-    if( dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == 8 )
-    {
-      //OK hier hängt eine Micro
-      bMic=true;
-    }
-    if( dwDeviceIRRemote > 0 && dwDeviceIRRemote == 8 )
-    {
-      //OK hier hängt eine Micro
-      bIR=true;
-    }
+    bPad = dwDeviceGamePad > 0 && dwDeviceGamePad == 8 || dwDeviceGamePad == 9 || dwDeviceGamePad == 10 || dwDeviceGamePad == 11 || dwDeviceGamePad == 12 || dwDeviceGamePad == 13 || dwDeviceGamePad == 14 || dwDeviceGamePad == 15;
+    bMem = dwDeviceMemory > 0 && dwDeviceMemory == 8 || dwDeviceMemory == 9 || dwDeviceMemory == 10 || dwDeviceMemory == 11 || dwDeviceMemory == 12 || dwDeviceMemory == 13 || dwDeviceMemory == 14 || dwDeviceMemory == 15;
+    iFrontPort = 8;
   }
+  bKeyb = dwDeviceKeyboard > 0 && dwDeviceKeyboard == iFrontPort;
+  bMouse = dwDeviceMouse > 0 && dwDeviceMouse == iFrontPort;
+  bHeadSet = dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == iFrontPort;
+  bMic = dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == iFrontPort;
+  bIR = dwDeviceIRRemote > 0 && dwDeviceIRRemote == iFrontPort;
   
   CStdString strReturn;
+  if (iFrontPort==4) iFrontPort = 3;
+  if (iFrontPort==8) iFrontPort = 4;
   strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort, 
     bPad ? g_localizeStrings.Get(13163):"", bPad && bKeyb ? ",":"", 
     bKeyb ? g_localizeStrings.Get(13164):"", bKeyb && bMouse ? ",":"",
@@ -1217,19 +1111,23 @@ CStdString CSysInfo::GetMACAddress()
   strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
   return strMacAddress;
 }
-CStdString CSysInfo::GetXBOXSerial()
+CStdString CSysInfo::GetXBOXSerial(bool bLabel)
 {
   CHAR serial[SERIALNUMBER_SIZE + 1] = "";
   m_XKEEPROM->GetSerialNumberString(serial);
 
   CStdString strXBOXSerial;
-  strXBOXSerial.Format("%s", serial);
+  if (!bLabel)
+    strXBOXSerial.Format("%s", serial);
+  else 
+    strXBOXSerial.Format("%s %s",g_localizeStrings.Get(13289), serial);
   return strXBOXSerial;
 }
 CStdString CSysInfo::GetXBProduceInfo()
 {
+  CStdString serial = GetXBOXSerial(false);
   // Print XBOX Production Place and Date
-  char *info = (char *) GetXBOXSerial().c_str();
+  char *info = (char *) serial.c_str();
   char *country;
   switch (atoi(&info[11]))
   {
@@ -1334,4 +1232,59 @@ CStdString CSysInfo::GetHDDKey()
   CStdString strhddlockey;
   strhddlockey.Format("%s %s",g_localizeStrings.Get(13150), hdkey);
   return strhddlockey;
+}
+
+CStdString CSysInfo::GetModChipInfo()
+{
+  CStdString strModChipInfo;
+  // XBOX Modchip Type Detection
+  CStdString ModChip = GetModCHIPDetected();
+  CStdString SmartXX = SmartXXModCHIP();
+  
+  // Check if it is a SmartXX
+  if (!SmartXX.Equals("None"))
+  {
+    strModChipInfo.Format("%s %s", g_localizeStrings.Get(13291), SmartXX);
+    CLog::Log(LOGDEBUG, "- Detected ModChip: %s",SmartXX.c_str());
+  }
+  else
+  {
+    if ( !ModChip.Equals("Unknown/Onboard TSOP (protected)"))
+    {
+      strModChipInfo.Format("%s %s", g_localizeStrings.Get(13291), ModChip);
+    }
+    else
+    {
+      strModChipInfo.Format("%s %s", g_localizeStrings.Get(13291), g_localizeStrings.Get(20311));
+    }
+  }
+  return strModChipInfo;
+}
+
+CStdString CSysInfo::GetBIOSInfo()
+{
+  //Format bios informations
+  CStdString strBiosName;
+  CStdString cBIOSName;
+  if(CheckBios(cBIOSName))
+    strBiosName.Format("%s %s", g_localizeStrings.Get(13285),cBIOSName);
+  else
+    strBiosName.Format("%s %s", g_localizeStrings.Get(13285),"File: BiosIDs.ini Not Found!");
+
+  return strBiosName;
+}
+
+CStdString CSysInfo::GetINetState()
+{
+  CStdString strInetCon;
+  CHTTP http;
+
+  // Connected to the Internet!
+  if (http.IsInternet())
+    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13296));
+  else if (http.IsInternet(false))
+    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13274));
+  else // NOT Connected to the Internet!
+    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13297));
+  return strInetCon;
 }

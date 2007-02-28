@@ -197,6 +197,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.hddinfoserial")) ret = SYSTEM_HDD_SERIAL;
     else if (strTest.Equals("system.hddinfopw")) ret = SYSTEM_HDD_PASSWORD;
     else if (strTest.Equals("system.hddinfolockstate")) ret = SYSTEM_HDD_LOCKSTATE;
+    else if (strTest.Equals("system.hddlockkey")) ret = SYSTEM_HDD_LOCKKEY;
+    else if (strTest.Equals("system.hddbootdate")) ret = SYSTEM_HDD_BOOTDATE;
+    else if (strTest.Equals("system.hddcyclecount")) ret = SYSTEM_HDD_CYCLECOUNT;
     else if (strTest.Equals("system.dvdinfomodel")) ret = SYSTEM_DVD_MODEL;
     else if (strTest.Equals("system.dvdinfofirmware")) ret = SYSTEM_DVD_FIRMWARE;
     else if (strTest.Equals("system.mplayerversion")) ret = SYSTEM_MPLAYER_VERSION;
@@ -208,14 +211,19 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.avcablepackinfo")) ret = SYSTEM_AV_CABLE_PACK_INFO;
     else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
     else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
-    
-    
-    
-    
-    
-    
-    
+    else if (strTest.Equals("system.xboxserial")) ret = SYSTEM_XBOX_SERIAL;
+    else if (strTest.Equals("system.videoxberegion")) ret = SYSTEM_VIDEO_XBE_REGION;
+    else if (strTest.Equals("system.videodvdzone")) ret = SYSTEM_VIDEO_DVD_ZONE;
 
+    else if (strTest.Left(22).Equals("system.controllerport("))
+    {
+      int i_ControllerPort = atoi((strTest.Mid(22, strTest.GetLength() - 23).c_str()));
+      if (i_ControllerPort == 1) ret = SYSTEM_CONTROLLER_PORT_1;
+      else if (i_ControllerPort == 2) ret = SYSTEM_CONTROLLER_PORT_2;
+      else if (i_ControllerPort == 3) ret = SYSTEM_CONTROLLER_PORT_3;
+      else if (i_ControllerPort == 4)ret = SYSTEM_CONTROLLER_PORT_4;
+      else ret = SYSTEM_CONTROLLER_PORT_1;
+    }
     else if (strTest.Left(16).Equals("system.idletime("))
     {
       int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
@@ -260,6 +268,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("network"))
   {
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
+    if (strTest.Equals("network.macadress")) ret = NETWORK_MAC_ADDRESS;
+    if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
+    if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
+    if (strTest.Equals("network.subetadress")) ret = NETWORK_SUBNET_ADDRESS;
+    if (strTest.Equals("network.gatewayadress")) ret = NETWORK_GATEWAY_ADDRESS;
+    if (strTest.Equals("network.dns1adress")) ret = NETWORK_DNS1_ADDRESS;
+    if (strTest.Equals("network.dns2adress")) ret = NETWORK_DNS2_ADDRESS;
+    if (strTest.Equals("network.dhcpadress")) ret = NETWORK_DHCP_ADDRESS;
   }
   else if (strCategory.Equals("musicplayer"))
   {
@@ -577,6 +593,9 @@ string CGUIInfoManager::GetLabel(int info)
     return GetATAInfo(info);
     break;
 
+  case SYSTEM_HDD_LOCKKEY:
+  case SYSTEM_HDD_CYCLECOUNT:
+  case SYSTEM_HDD_BOOTDATE:  
   case SYSTEM_MPLAYER_VERSION:
   case SYSTEM_KERNEL_VERSION:
   case SYSTEM_UPTIME:
@@ -585,6 +604,11 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_XBOX_VERSION:
   case SYSTEM_AV_CABLE_PACK_INFO:
   case SYSTEM_VIDEO_ENCODER_INFO:
+  case NETWORK_MAC_ADDRESS:
+  case SYSTEM_XBOX_SERIAL:
+  case SYSTEM_VIDEO_XBE_REGION:
+  case SYSTEM_VIDEO_DVD_ZONE:
+  case SYSTEM_XBOX_PRODUCE_INFO:
     return SystemInfoValues(info);
     break;
 
@@ -594,6 +618,18 @@ string CGUIInfoManager::GetLabel(int info)
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
     return strLabel;
+    break;
+  case SYSTEM_CONTROLLER_PORT_1:
+    return g_sysinfo.GetUnits(1);
+    break;
+  case SYSTEM_CONTROLLER_PORT_2:
+    return g_sysinfo.GetUnits(2);
+    break;
+  case SYSTEM_CONTROLLER_PORT_3:
+    return g_sysinfo.GetUnits(3);
+    break;
+  case SYSTEM_CONTROLLER_PORT_4:
+    return g_sysinfo.GetUnits(4);
     break;
   
   case CONTAINER_FOLDERPATH:
@@ -700,6 +736,73 @@ string CGUIInfoManager::GetLabel(int info)
       return ip;
     }
     break;
+  case NETWORK_SUBNET_ADDRESS:
+    {
+      CStdString subnet;
+      subnet.Format("%s: %s", g_localizeStrings.Get(13159), g_network.m_networkinfo.subnet);
+      return subnet;
+    }
+    break;
+  case NETWORK_GATEWAY_ADDRESS:
+    {
+      CStdString gateway;
+      gateway.Format("%s: %s", g_localizeStrings.Get(13160), g_network.m_networkinfo.gateway);
+      return gateway;
+    }
+    break;
+  case NETWORK_DNS1_ADDRESS:
+    {
+      CStdString dns;
+      dns.Format("%s: %s", g_localizeStrings.Get(13161), g_network.m_networkinfo.DNS1);
+      return dns;
+    }
+    break;
+  case NETWORK_DNS2_ADDRESS:
+    {
+      CStdString dns;
+      dns.Format("%s: %s", g_localizeStrings.Get(20307), g_network.m_networkinfo.DNS2);
+      return dns;
+    }
+    break;
+  case NETWORK_DHCP_ADDRESS:
+    {
+      CStdString dhcpserver;
+      dhcpserver.Format("%s: %s", g_localizeStrings.Get(20308), g_network.m_networkinfo.dhcpserver);
+      return dhcpserver;
+    }
+    break;
+  case NETWORK_IS_DHCP:
+    {
+      CStdString dhcp;
+      if(g_network.m_networkinfo.DHCP)
+        dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(148)); // is dhcp ip
+      else
+        dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(147)); // is fixed ip
+     return dhcp;
+    }
+    break;
+  case NETWORK_LINK_STATE:
+    {
+      DWORD dwnetstatus = XNetGetEthernetLinkStatus();
+      CStdString linkStatus = g_localizeStrings.Get(151);
+      linkStatus += " ";
+      if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
+      {
+        if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
+          linkStatus += "100mbps ";
+        if (dwnetstatus & XNET_ETHERNET_LINK_10MBPS)
+          linkStatus += "10mbps ";
+        if (dwnetstatus & XNET_ETHERNET_LINK_FULL_DUPLEX)
+          linkStatus += g_localizeStrings.Get(153);
+        if (dwnetstatus & XNET_ETHERNET_LINK_HALF_DUPLEX)
+          linkStatus += g_localizeStrings.Get(152);
+      }
+      else
+        linkStatus += g_localizeStrings.Get(159);
+      return linkStatus;
+    }
+    break;
+
   case AUDIOSCROBBLER_CONN_STATE:
   case AUDIOSCROBBLER_SUBMIT_INT:
   case AUDIOSCROBBLER_FILES_CACHED:
@@ -1799,9 +1902,10 @@ CStdString CGUIInfoManager::GetATAInfo(int info)
     // update our variables
     if (!b_ata_request)
     {
-      // We should only request 1 time the HDD Informations
-      // If we request frequence is more then 1 time, we will have a <1sec. Freeze 
+      // We MUST request the HDD Informations: 1 time
+      // Else, if we request in frequence mode, then we will have a <1sec. Freeze 
       // of HDD releated functions like FTP, movie play ect.
+      // We need to detect "is device busy", then we can request our informations from the device!
       b_ata_request = true;
       m_hddRequest = g_sysinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState);
       m_dvdRequest = g_sysinfo.GetDVDInfo(strDVDModel, strDVDFirmware);
@@ -1887,20 +1991,32 @@ CStdString CGUIInfoManager::GetATAInfo(int info)
 
 CStdString CGUIInfoManager::SystemInfoValues(int info)
 {
-  if (timeGetTime() - m_lastSysInfoTime >= 5000)
-  { // update our variables, update interval 1 minute
+  // update our variables, update interval 1 minute
+  if (timeGetTime() - m_lastSysInfoTime >= 60000)
+  { 
     m_lastSysInfoTime = timeGetTime();
 #ifdef HAS_XBOX_HARDWARE
-    m_systemuptime = g_sysinfo.GetSystemUpTime();
-    m_systemtotaluptime = g_sysinfo.GetSystemTotalUpTime();
-    // values are only need one time request
-    b_sys_request = true;
-    m_mplayerversion = g_sysinfo.GetMPlayerVersion();
-    m_kernelversion = g_sysinfo.GetKernelVersion();
-    m_cpufrequency = g_sysinfo.GetCPUFreqInfo();
-    m_xboxversion = g_sysinfo.GetXBVerInfo();
-    m_avcablepackinfo = g_sysinfo.GetAVPackInfo();
-    m_videoencoder = g_sysinfo.GetVideoEncoder();
+    m_systemuptime = g_sysinfo.GetSystemUpTime(false);
+    m_systemtotaluptime = g_sysinfo.GetSystemUpTime(true);
+    
+    // values need one time request
+    if(!b_sys_request)
+    {
+      b_sys_request = true;
+      m_mplayerversion = g_sysinfo.GetMPlayerVersion();
+      m_kernelversion = g_sysinfo.GetKernelVersion();
+      m_cpufrequency = g_sysinfo.GetCPUFreqInfo();
+      m_xboxversion = g_sysinfo.GetXBVerInfo();
+      m_avcablepackinfo = g_sysinfo.GetAVPackInfo();
+      m_videoencoder = g_sysinfo.GetVideoEncoder();
+      m_xboxserial = g_sysinfo.GetXBOXSerial(true);
+      m_hddlockkey = g_sysinfo.GetHDDKey();
+      m_macadress = g_sysinfo.GetMACAddress();
+      m_videoxberegion = g_sysinfo.GetVideoXBERegion();
+      m_videodvdzone = g_sysinfo.GetDVDZone();
+      m_produceinfo = g_sysinfo.GetXBProduceInfo();
+      g_sysinfo.GetRefurbInfo(m_hddbootdate, m_hddcyclecount);
+    }
 #endif
   }
   switch (info)
@@ -1928,6 +2044,30 @@ CStdString CGUIInfoManager::SystemInfoValues(int info)
     break;
   case SYSTEM_VIDEO_ENCODER_INFO:
     return m_videoencoder;
+    break;
+  case SYSTEM_XBOX_SERIAL:
+    return m_xboxserial;
+    break;
+  case SYSTEM_HDD_LOCKKEY:
+    return m_hddlockkey;
+    break;
+  case SYSTEM_HDD_BOOTDATE:
+    return m_hddbootdate;
+    break;
+  case SYSTEM_HDD_CYCLECOUNT:
+    return m_hddcyclecount;
+    break;
+  case NETWORK_MAC_ADDRESS:
+    return m_macadress;
+    break;
+  case SYSTEM_VIDEO_XBE_REGION:
+    return m_videoxberegion;
+    break;
+  case SYSTEM_VIDEO_DVD_ZONE:
+    return m_videodvdzone;
+    break;
+  case SYSTEM_XBOX_PRODUCE_INFO:
+    return m_produceinfo;
     break;
 
   default:
