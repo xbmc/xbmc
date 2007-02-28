@@ -96,7 +96,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_2 ON genrelinkmovie ( idMovie, idGenre)\n");
 
     CLog::Log(LOGINFO, "create movie table");
-    CStdString columns = "CREATE TABLE movie ( idMovie integer";
+    CStdString columns = "CREATE TABLE movie ( idMovie integer primary key";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       CStdString column;
@@ -105,7 +105,6 @@ bool CVideoDatabase::CreateTables()
     }
     columns += ")";
     m_pDS->exec(columns.c_str());
-    m_pDS->exec("CREATE UNIQUE INDEX ix_movie ON movie ( idMovie )\n");
 
     CLog::Log(LOGINFO, "create actorlinkmovie table");
     m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer, strRole text)\n");
@@ -397,11 +396,9 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
       lFileId = AddFile(strFilenameAndPath);
     if (lMovieId < 0)
     {
-      CStdString strSQL=FormatSQL("insert into movie (idMovie) values (0)");
+      CStdString strSQL=FormatSQL("insert into movie (idMovie) values (NULL)");
       m_pDS->exec(strSQL.c_str());
       lMovieId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      strSQL=FormatSQL("update movie set idMovie=%i where idMovie=0",lMovieId);
-      m_pDS->exec(strSQL.c_str());
       
       // update file info to reflect it points to this movie
       CStdString strPath, strFileName;
@@ -2370,10 +2367,6 @@ void CVideoDatabase::CleanDatabase()
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
     sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
-    m_pDS->exec(sql.c_str());
-
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
-    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
