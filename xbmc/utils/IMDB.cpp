@@ -177,7 +177,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   // load our scraper xml
   if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
-
+  IMDB_EPISODELIST temp;
   for(int i=0; i < url.m_scrURL.size(); i++)
   {
     CStdString strHTML;
@@ -228,11 +228,25 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
         if (id && id->FirstChild())
           url2.m_strID = id->FirstChild()->Value();
         // if source contained a distinct year, only allow those
-
         std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
-        details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
+        temp.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
       }
     }
+  }
+  std::map<int,int> min; 
+
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++i ) 
+  { 
+    if (min.find(iter->first.first -1) == min.end()) 
+      min.insert(iter->first);
+    else if(iter->first.second < min[iter->first.first])
+      min[iter->first.first] = iter->first.second;
+  }
+
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
+  {
+    std::pair<int,int> key(iter->first.first,(iter->first.second - min[iter->first.first] + 1));
+    details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,iter->second));
   }
   return true;
 }

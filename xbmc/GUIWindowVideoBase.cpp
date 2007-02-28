@@ -1903,6 +1903,8 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, cons
 
       if (!IMDB.GetEpisodeDetails(iter2->second,episodeDetails,pDlgProgress))
         break;
+      episodeDetails.m_iSeason = iter2->first.first;
+      episodeDetails.m_iEpisode = iter2->first.second;
       if (pDlgProgress && pDlgProgress->IsCanceled())
       {
         pDlgProgress->Close();

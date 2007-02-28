@@ -1519,8 +1519,6 @@ void CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     if (lEpisodeId < 0)
       return;
 
-    BeginTransaction();
-
     vector<long> vecDirectors;
     vector<long> vecGenres;
     AddGenreAndDirectors(details,vecDirectors,vecGenres);
@@ -1572,7 +1570,6 @@ void CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     }
     CStdString strSQL = sqlColumns + strValues + ")";
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
   }
   catch (...)
   {
