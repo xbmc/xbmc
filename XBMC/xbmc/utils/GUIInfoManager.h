@@ -114,8 +114,9 @@
 
 #define SYSTEM_DVD_MODEL            650
 #define SYSTEM_DVD_FIRMWARE         651
-#define SYSTEM_MPLAYER_VERSION      652
-#define SYSTEM_KERNEL_VERSION       653
+#define SYSTEM_HDD_BOOTDATE         652
+#define SYSTEM_HDD_CYCLECOUNT       653
+
 #define SYSTEM_UPTIME               654
 #define SYSTEM_TOTALUPTIME          655
 #define SYSTEM_CPUFREQUENCY         656
@@ -123,7 +124,16 @@
 #define SYSTEM_AV_CABLE_PACK_INFO   658
 #define SYSTEM_SCREEN_RESOLUTION    659
 #define SYSTEM_VIDEO_ENCODER_INFO   660
-
+#define SYSTEM_XBOX_SERIAL          661
+#define SYSTEM_CONTROLLER_PORT_1    662
+#define SYSTEM_CONTROLLER_PORT_2    663
+#define SYSTEM_CONTROLLER_PORT_3    664
+#define SYSTEM_CONTROLLER_PORT_4    665
+#define SYSTEM_MPLAYER_VERSION      666
+#define SYSTEM_KERNEL_VERSION       667
+#define SYSTEM_VIDEO_XBE_REGION     668
+#define SYSTEM_VIDEO_DVD_ZONE       669
+#define SYSTEM_XBOX_PRODUCE_INFO    670
 #define SYSTEM_INTERNET_STATE       159
 //
 
@@ -142,6 +152,14 @@
 #define LCD_FREE_SPACE_G            171
 
 #define NETWORK_IP_ADDRESS          190
+#define NETWORK_MAC_ADDRESS         191
+#define NETWORK_IS_DHCP             192
+#define NETWORK_LINK_STATE          193
+#define NETWORK_SUBNET_ADDRESS      194
+#define NETWORK_GATEWAY_ADDRESS     195
+#define NETWORK_DNS1_ADDRESS        196
+#define NETWORK_DNS2_ADDRESS        197
+#define NETWORK_DHCP_ADDRESS        198
 
 #define MUSICPLAYER_TITLE           200
 #define MUSICPLAYER_ALBUM           201
@@ -405,7 +423,7 @@ protected:
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
   int i_SmartRequest;
-
+ 
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
   int m_fanSpeed;
@@ -421,6 +439,7 @@ protected:
   bool m_dvdRequest;
   bool b_ata_request;
 
+  // system stuff
   DWORD m_lastSysInfoTime;
   CStdString m_mplayerversion;
   CStdString m_kernelversion;
@@ -430,11 +449,15 @@ protected:
   CStdString m_xboxversion;
   CStdString m_avcablepackinfo;
   CStdString m_videoencoder;
+  CStdString m_xboxserial;
+  CStdString m_hddlockkey;
+  CStdString m_hddbootdate;
+  CStdString m_hddcyclecount;
+  CStdString m_macadress;
+  CStdString m_videoxberegion;
+  CStdString m_videodvdzone;
+  CStdString m_produceinfo;
   bool b_sys_request;
-
-
-
-
 
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;

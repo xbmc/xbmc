@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
 <!--Date of translation: 02/23/2007-->
-<!--$Revision:$-->
+<!--$Revision$-->
 <!--Based on english strings version 7860-->
 <strings>
   <string id="0">Programme</string>
@@ -833,19 +833,22 @@
   <string id="13156">Firmware:</string>
   <string id="13157">Passwort:</string>
   <string id="13158">Festplattensperre:</string>
-  <string id="13159">Subnetzmaske:</string>
-  <string id="13160">Gateway:</string>
+  <string id="13159">Subnetzmaske</string>
+  <string id="13160">Gateway</string>
   <string id="13161">Primärer DNS-Server</string>
   <string id="13162">Initialisierung fehlgeschlagen.</string>
-  <string id="13163">Gamepad(s) an Port:</string>
-  <string id="13164">Tastatur an Port:</string>
-  <string id="13165">Maus an Port:</string>
-  <string id="13166">Headset/Mikrofon an Port:</string>
-  <string id="13167">MemoryStick an Port:</string>
-  <string id="13168">Fernbedienung an Port:</string>
+  <string id="13163">Gamepad</string>
+  <string id="13164">Tastatur</string>
+  <string id="13165">Maus</string>
+  <string id="13166">Kopfhörer/Mikrofon</string>
+  <string id="13167">MemoryStick</string>
+  <string id="13168">Fernbedienung</string>
+  <string id="13169">Controller Port</string>
   <string id="13170">Nie</string>
   <string id="13171">Sofort</string>
   <string id="13172">Nach %i Sek</string>
+  <string id="13173">Erstellungs Datum:</string>
+  <string id="13174">Einschaltanzahl:</string>
   <string id="13200">Profile</string>
   <string id="13201">Soll das Profil '%s' wirklich gelöscht werden?</string>
   <string id="13204">Zuletzt geladenes Profil:</string>
