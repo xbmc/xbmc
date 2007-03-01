@@ -22,6 +22,7 @@ public:
 	virtual void Render();
 private:
 	bool b_IsHome;
+  unsigned int iControl;
   void	SetLabelDummy();
 #ifdef HAS_SYSINFO
 	bool	GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10);
