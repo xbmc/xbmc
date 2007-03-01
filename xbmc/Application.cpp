@@ -2090,7 +2090,6 @@ void CApplication::RenderNoPresent()
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
 
   // dont show GUI when playing full screen video
-#ifdef HAS_VIDEO_PLAYBACK
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
     Sleep(50);
@@ -2098,7 +2097,6 @@ void CApplication::RenderNoPresent()
     g_infoManager.ResetCache();
     return;
   }
-#endif
 
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
