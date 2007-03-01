@@ -65,6 +65,10 @@ public:
   CStdString m_strFileNameAndPath;
   CStdString m_strOriginalTitle;
   CStdString m_strEpisodeGuide;
+  CStdString m_strPremiered;
+  CStdString m_strStatus;
+  CStdString m_strProductionCode;
+  CStdString m_strFirstAired;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;

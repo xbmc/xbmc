@@ -367,11 +367,18 @@ void CIMDBMovie::Reset()
   m_strPath = "";
   m_strIMDBNumber = "";
   m_strMPAARating = "";
+  m_strPremiered= "";
+  m_strStatus= "";
+  m_strProductionCode= "";
+  m_strFirstAired= "";
+//m_strEpisodeGuide = "";
   m_iTop250 = 0;
   m_iYear = 0;
   m_iSeason = 0;
   m_iEpisode = 0;
   m_fRating = 0.0f;
+
+
   m_bWatched = false;
 }
 
@@ -409,6 +416,10 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   XMLUtils::SetString(movie, "genre", m_strGenre);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);
   XMLUtils::SetString(movie, "director", m_strDirector);
+  XMLUtils::SetString(movie, "premiered", m_strPremiered);
+  XMLUtils::SetString(movie, "status", m_strStatus);
+  XMLUtils::SetString(movie, "code", m_strProductionCode);
+  XMLUtils::SetString(movie, "aired", m_strFirstAired);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -450,6 +461,10 @@ bool CIMDBMovie::Load(const TiXmlElement *movie)
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
+  XMLUtils::GetString(movie, "premiered", m_strPremiered);
+  XMLUtils::GetString(movie, "status", m_strStatus);
+  XMLUtils::GetString(movie, "code", m_strProductionCode);
+  XMLUtils::GetString(movie, "aired", m_strFirstAired);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
 

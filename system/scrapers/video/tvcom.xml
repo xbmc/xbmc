@@ -16,19 +16,17 @@
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="7">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
 				<expression>&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;[^&lt;]*&lt;div id=&quot;content-tabs&quot;&gt;</expression>
-			</RegExp>		
+			</RegExp>	
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">;genre&quot;&gt;([^&gt;]*)&lt;/a&gt;</expression>
+			</RegExp>				
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>'Close Full Summary \[-\]', '([^']*)</expression>
+				<expression>'Close Full Summary \[-\]', '([^+]*)', '</expression>
 			</RegExp>
+<!-- Runtime is not being used here
 			<RegExp input="$$1" output="&lt;runtime&gt;\1 min&lt;/runtime&gt;" dest="5+">
 				<expression>\(([0-9]*) min.\)</expression>
-			</RegExp>		
-			<RegExp input="$$1" output="\1" dest="6">
-				<expression>Show Categories:(.*)&lt;div class=&quot;mt-10&quot;&gt;</expression>
-			</RegExp>			
-			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
-				<expression repeat="yes">&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
-			</RegExp>
+			</RegExp>	-->	
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>Score:&lt;/span&gt;[^&lt;]*&lt;span[^&gt;]*&gt;([0-9\.]*)&lt;/span&gt;</expression>
 			</RegExp>			
@@ -41,6 +39,12 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
 				<expression>(http://image\.com\.com/tv/images/content_headers/program/[0-9]*\.jpg)</expression>
 			</RegExp>	
+			<RegExp input="$$1" output="&lt;status&gt;\1&lt;/status&gt;" dest="5+">
+				<expression trim="1">Status[^&lt;]*&lt;span class=&quot;f-333&quot;&gt;[^a-zA-Z]*([^&lt;]*)&lt;/span&gt;</expression>
+			</RegExp>		
+			<RegExp input="$$1" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="5+">
+				<expression trim="1">Premiered:[^&lt;]*&lt;span class=&quot;f-333&quot;&gt;([^&lt;]*)&lt;/span&gt;</expression>
+			</RegExp>							
 			<RegExp input="$$8" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="5+">     
 				<RegExp input="$$3" output="&lt;url&gt;http://www.tv.com/show/$$4/episode_listings.html?season=1&lt;/url&gt;" dest="8">
 					<expression>\|[^&lt;]*Next Season</expression>
@@ -73,13 +77,13 @@
 				<expression>Episode: &lt;span class=&quot;f-FF9&quot;&gt;([^&lt;]*)&lt;/span&gt;&lt;br /&gt;</expression>
 			</RegExp>						
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>div&gt;([^&quot;]*)&lt;div class=&quot;ta-r mt-10 f-bold&quot;&gt;</expression>
+				<expression>div&gt;([^=]*)&lt;div class=&quot;ta-r mt-10 f-bold&quot;&gt;</expression>
 			</RegExp>	
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>&lt;span class=&quot;f-28 f-bold mt-10 mb-10 f-FF9 db lh-18&quot;&gt;([0-9.]+)&lt;/span&gt;</expression>
 			</RegExp>	
 			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
-				<expression>&lt;span class=&quot;f-11&quot;&gt;([0-9]+) votes&lt;/span&gt;</expression>
+				<expression>&lt;span class=&quot;f-11&quot;&gt;([0-9,]+) votes&lt;/span&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;aired&gt;\1&lt;/aired&gt;" dest="5+">
 				<expression>First Aired: ([^&amp;]*)</expression>
@@ -90,12 +94,15 @@
 			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
 				<expression>Director:[^&lt;]*&lt;/td&gt;[^&lt;]*&lt;td&gt;[^&lt;]*&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>					
-			<RegExp input="$$1" output="&lt;writer&gt;\1&lt;/writer&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
 				<expression>Writer:[^&lt;]*&lt;/td&gt;[^&lt;]*&lt;td&gt;[^&lt;]*&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>										
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
 				<expression>&quot;video-thumb mb-5&quot;[^&gt;]*image:url\(([^)]*)\);&quot;</expression>
 			</RegExp>				
+			<RegExp input="$$1" output="&lt;code&gt;\1&lt;/code&gt;" dest="5+">
+				<expression>Prod Code: ([^&lt;]*)&lt;/span&gt;</expression>
+			</RegExp>					
 			<expression noclean="1"></expression>
 		</RegExp>		
 	</GetEpisodeDetails>	
