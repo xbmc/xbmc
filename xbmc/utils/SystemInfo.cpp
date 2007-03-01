@@ -31,36 +31,196 @@
 #include "../xbox/xkrc4.h"
 #include "../utils/http.h"
 
-
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 
 CSysInfo g_sysinfo;
-CSysInfo* CSysInfo::m_pInstance=NULL;
 
-CSysInfo::CSysInfo()
+void CBackgroundSystemInfoLoader::GetInformation()
 {
+  CSysInfo *callback = (CSysInfo *)m_callback;
+  
+  //Request only one time!
+  if(!callback->m_bRequestDone)
+  {
+    callback->m_XboxBios = callback->GetModChipInfo();
+    callback->m_XboxModChip =callback->GetBIOSInfo();
+    callback->m_mplayerversion = callback->GetMPlayerVersion();
+    callback->m_kernelversion = callback->GetKernelVersion();
+    callback->m_cpufrequency = callback->GetCPUFreqInfo();
+    callback->m_xboxversion = callback->GetXBVerInfo();
+    callback->m_avcablepackinfo = callback->GetAVPackInfo();
+    callback->m_videoencoder = callback->GetVideoEncoder();
+    callback->m_xboxserial = callback->GetXBOXSerial(true);
+    callback->m_hddlockkey = callback->GetHDDKey();
+    callback->m_macadress = callback->GetMACAddress();
+    callback->m_videoxberegion = callback->GetVideoXBERegion();
+    callback->m_videodvdzone = callback->GetDVDZone();
+    callback->m_produceinfo = callback->GetXBProduceInfo();
+    callback->m_systemuptime = callback->GetSystemUpTime(false);
+    callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
+    callback->m_InternetState = callback->GetInternetState();
+    g_sysinfo.GetRefurbInfo(callback->m_hddbootdate, callback->m_hddcyclecount);
+
+    callback->m_bRequestDone = true;
+  }
+  //Check if the Requested information are ok!
+  if(!callback->m_hddRequest)
+    callback->GetHDDInfo(callback->m_HDDModel, callback->m_HDDSerial,callback->m_HDDFirmware,callback->m_HDDpw,callback->m_HDDLockState);
+  if(!callback->m_dvdRequest)
+    callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
+
+  //Request always
+  callback->GetInternetState();
+  callback->by_HddTemp = XKHDD::GetHddSmartTemp();
+}
+
+const char *CSysInfo::BusyInfo(DWORD dwInfo)
+{
+  return CInfoLoader::BusyInfo(dwInfo);
+}
+
+const char *CSysInfo::TranslateInfo(DWORD dwInfo)
+{
+  switch(dwInfo)
+  {
+  case SYSTEM_UPTIME:
+    return m_systemuptime;
+    break;
+  case SYSTEM_TOTALUPTIME:
+    return m_systemtotaluptime;
+    break;
+  case SYSTEM_MPLAYER_VERSION:
+    return m_mplayerversion;
+    break;
+  case SYSTEM_KERNEL_VERSION:
+    return m_kernelversion;
+    break;
+  case SYSTEM_CPUFREQUENCY:
+    return m_cpufrequency;
+    break;
+  case SYSTEM_XBOX_VERSION:
+    return m_xboxversion;
+    break;
+  case SYSTEM_AV_CABLE_PACK_INFO:
+    return m_avcablepackinfo;
+    break;
+  case SYSTEM_VIDEO_ENCODER_INFO:
+    return m_videoencoder;
+    break;
+  case SYSTEM_XBOX_SERIAL:
+    return m_xboxserial;
+    break;
+  case SYSTEM_HDD_LOCKKEY:
+    return m_hddlockkey;
+    break;
+  case SYSTEM_HDD_BOOTDATE:
+    return m_hddbootdate;
+    break;
+  case SYSTEM_HDD_CYCLECOUNT:
+    return m_hddcyclecount;
+    break;
+  case NETWORK_MAC_ADDRESS:
+    return m_macadress;
+    break;
+  case SYSTEM_VIDEO_XBE_REGION:
+    return m_videoxberegion;
+    break;
+  case SYSTEM_VIDEO_DVD_ZONE:
+    return m_videodvdzone;
+    break;
+  case SYSTEM_XBOX_PRODUCE_INFO:
+    return m_produceinfo;
+    break;
+  case SYSTEM_XBOX_BIOS:
+    return m_XboxBios;
+    break;
+  case SYSTEM_XBOX_MODCHIP:
+    return m_XboxModChip;
+    break;
+  case SYSTEM_INTERNET_STATE:
+    return m_InternetState;
+    break;
+  case SYSTEM_HDD_MODEL:
+    m_temp.Format("%s %s",g_localizeStrings.Get(13154), m_HDDModel);
+    return m_temp;
+    break;
+  case SYSTEM_HDD_SERIAL:
+    m_temp.Format("%s %s", g_localizeStrings.Get(13155), m_HDDSerial);
+    return m_temp;
+    break;
+  case SYSTEM_HDD_FIRMWARE:
+    m_temp.Format("%s %s", g_localizeStrings.Get(13156), m_HDDFirmware);
+    return m_temp;
+    break;
+  case SYSTEM_HDD_PASSWORD:
+    m_temp.Format("%s %s", g_localizeStrings.Get(13157), m_HDDpw);
+    return m_temp;
+    break;
+  case SYSTEM_HDD_LOCKSTATE:
+    m_temp.Format("%s %s", g_localizeStrings.Get(13158), m_HDDLockState);
+    return m_temp;
+    break;
+  case SYSTEM_DVD_MODEL:
+    m_temp.Format("%s %s", g_localizeStrings.Get(13152), m_DVDModel);
+    return m_temp;
+    break;
+  case SYSTEM_DVD_FIRMWARE:
+    m_temp.Format("%s %s", g_localizeStrings.Get(13153), m_DVDFirmware);
+    return m_temp;
+    break;
+  case SYSTEM_HDD_TEMPERATURE:
+    {
+    CTemperature temp = CTemperature::CreateFromCelsius((double)by_HddTemp);
+    if (by_HddTemp == 0 )
+    {
+      temp.SetState(CTemperature::invalid);
+      m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
+    }
+    else
+      m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
+    return m_temp;
+    }
+    break;
+
+  default:
+    return g_localizeStrings.Get(503); //Busy text
+    break;
+  }
+}
+DWORD CSysInfo::TimeToNextRefreshInMs()
+{ 
+  // request every 15 seconds
+  return 15000;
+}
+void CSysInfo::Reset()
+{
+  m_XboxBios ="";
+  m_XboxModChip ="";
+  m_InternetState = "";
+  m_bInternetState = false;
+  m_dvdRequest = false;
+  m_hddRequest = false;
+
+  m_HDDModel ="";
+  m_HDDSerial="";
+  m_HDDFirmware="";
+  m_HDDpw ="";
+  m_HDDLockState = "";
+  m_DVDModel=""; 
+  m_DVDFirmware="";
+}
+
+CSysInfo::CSysInfo(void) : CInfoLoader("sysinfo")
+{
+  m_bRequestDone = false;
   m_XKEEPROM = new XKEEPROM;
   m_XKEEPROM->ReadFromXBOX();
   m_XBOXVersion = m_XKEEPROM->GetXBOXVersion();
 }
+
 CSysInfo::~CSysInfo()
 {
    delete m_XKEEPROM;
-}
-CSysInfo* CSysInfo::GetInstance()
-{
-  if (!m_pInstance)
-    m_pInstance=new CSysInfo;
-
-  return m_pInstance;
-}
-void CSysInfo::RemoveInstance()
-{
-  if (m_pInstance)
-  {
-    delete m_pInstance;
-    m_pInstance=NULL;
-  }
 }
 struct Bios * CSysInfo::LoadBiosSigns()
 {
@@ -508,13 +668,13 @@ bool CSysInfo::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
     XKHDD::GetIDEFirmWare(hddcommand.DATA_BUFFER, lpsDVDFirmware);
     CLog::Log(LOGDEBUG, "DVD Firmware: %s",lpsDVDFirmware);
     strDVDFirmware.Format("%s",lpsDVDFirmware);
-    return true;
+    m_dvdRequest= true;
   }
-  else
-  {
-    CLog::Log(LOGERROR, "DVD Model Detection FAILED!");
-    return false;
-  }
+  //check if the requested values are empty to reset the request..
+  if(m_dvdRequest && strDVDModel.IsEmpty() && strDVDFirmware.IsEmpty())
+    m_dvdRequest=false;
+
+  return m_dvdRequest;
 }
 bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState)
 {
@@ -551,35 +711,24 @@ bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStd
     //Get ATA Locked State
     DWORD SecStatus = XKHDD::GetIDESecurityStatus(hddcommand.DATA_BUFFER);
     if (!(SecStatus & IDE_SECURITY_SUPPORTED))
-    {
       strHDDLockState = g_localizeStrings.Get(20164);
-      return true;
-    }
-    if ((SecStatus & IDE_SECURITY_SUPPORTED) && !(SecStatus & IDE_SECURITY_ENABLED))
-    {
+    else if ((SecStatus & IDE_SECURITY_SUPPORTED) && !(SecStatus & IDE_SECURITY_ENABLED))
       strHDDLockState = g_localizeStrings.Get(20165);
-      return true;
-    }
-    if ((SecStatus & IDE_SECURITY_SUPPORTED) && (SecStatus & IDE_SECURITY_ENABLED))
-    {
+    else if ((SecStatus & IDE_SECURITY_SUPPORTED) && (SecStatus & IDE_SECURITY_ENABLED))
       strHDDLockState = g_localizeStrings.Get(20166);
-      return true;
-    }
-
-    if (SecStatus & IDE_SECURITY_FROZEN)
-    {
+    else if (SecStatus & IDE_SECURITY_FROZEN)
       strHDDLockState = g_localizeStrings.Get(20167);
-      return true;
-    }
-
-    if (SecStatus & IDE_SECURITY_COUNT_EXPIRED)
-    {
+    else if (SecStatus & IDE_SECURITY_COUNT_EXPIRED)
       strHDDLockState = g_localizeStrings.Get(20168);
-      return true;
-    }
-  return true;
+
+    //Command was succesful
+    m_hddRequest = true;
   }
-  else return false;
+  //check if the requested values are empty to reset the request..
+  if(m_hddRequest && strHDDModel.IsEmpty() && strHDDSerial.IsEmpty())
+    m_hddRequest = false;
+
+  return m_hddRequest;
 }
 bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
@@ -642,7 +791,7 @@ double CSysInfo::GetCPUFrequency()
 
   CPUSpeed = Fcpu/1000000;
 
-  CLog::Log(LOGDEBUG, "- CPU Speed: %4.6f Mhz",CPUSpeed);
+  CLog::Log(LOGDEBUG, "- CPU Speed: %4.6fMHz",CPUSpeed);
   return CPUSpeed;
 }
 
@@ -1016,7 +1165,7 @@ CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
   double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2f Mhz.", g_localizeStrings.Get(13284), CPUFreq);
+  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
   return strCPUFreq;
 }
 CStdString CSysInfo::GetXBVerInfo()
@@ -1088,15 +1237,15 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
   CStdString strReturn;
   if (iFrontPort==4) iFrontPort = 3;
   if (iFrontPort==8) iFrontPort = 4;
-  strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort, 
-    bPad ? g_localizeStrings.Get(13163):"", bPad && bKeyb ? ",":"", 
-    bKeyb ? g_localizeStrings.Get(13164):"", bKeyb && bMouse ? ",":"",
-    bMouse ? g_localizeStrings.Get(13165):"", bMouse && (bHeadSet || bMic) ? ",":"",
-    bHeadSet || bMic ? g_localizeStrings.Get(13166):"", (bHeadSet || bMic) && bMem ? ",":"",
-    bMem ? g_localizeStrings.Get(13167):"", bMem && bIR ? ",":"",
+  strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort, 
+    bPad ? g_localizeStrings.Get(13163):"", bPad && bKeyb ? ", ":"", bPad && bMem ? ", ":"", bPad && (bHeadSet || bMic) ? ", ":"",
+    bKeyb ? g_localizeStrings.Get(13164):"", bKeyb && bMouse ? ", ":"",
+    bMouse ? g_localizeStrings.Get(13165):"",bMouse && (bHeadSet || bMic) ? ", ":"",
+    bHeadSet || bMic ? g_localizeStrings.Get(13166):"", (bHeadSet || bMic) && bMem ? ", ":"",
+    bMem ? g_localizeStrings.Get(13167):"", bMem && bIR ? ", ":"",
     bIR ? g_localizeStrings.Get(13168):""
     );
-  
+
   return strReturn;
 }
 
@@ -1274,13 +1423,13 @@ CStdString CSysInfo::GetBIOSInfo()
   return strBiosName;
 }
 
-CStdString CSysInfo::GetINetState()
+CStdString CSysInfo::GetInternetState()
 {
-  CStdString strInetCon;
+  // Internet connection state!
   CHTTP http;
-
-  // Connected to the Internet!
-  if (http.IsInternet())
+  CStdString strInetCon;
+  m_bInternetState = http.IsInternet();
+  if (m_bInternetState)
     strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13296));
   else if (http.IsInternet(false))
     strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13274));
