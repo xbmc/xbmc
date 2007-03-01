@@ -538,12 +538,13 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   {
     MD5_CTX md5state;
     unsigned char md5pword[16];
-    char md5pword2[64];
+    char md5pword2[33];
     MD5Init(&md5state);
     MD5Update(&md5state, (unsigned char *)userInput.c_str(), (int)userInput.size());
     MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
     newPassword = md5pword2;
+    newPassword.ToLower();
     return true;
   }
   CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
@@ -583,12 +584,12 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
 
     MD5_CTX md5state;
     unsigned char md5pword[16];
-    char md5pword2[64];
+    char md5pword2[33];
     MD5Init(&md5state);
     MD5Update(&md5state, (unsigned char *)strUserInput.c_str(), (int)strUserInput.size());
     MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
-    if (strPassword == md5pword2)
+    if (strPassword.Equals(md5pword2))
       return 0;		// user entered correct password
     else return 1;	// user must have entered an incorrect password
   }
@@ -598,13 +599,14 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
     {
       MD5_CTX md5state;
       unsigned char md5pword[16];
-      char md5pword2[64];
+      char md5pword2[33];
       MD5Init(&md5state);
       MD5Update(&md5state, (unsigned char *)strUserInput.c_str(), (int)strUserInput.size());
       MD5Final(md5pword, &md5state);
       XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
 
       strPassword = md5pword2;
+      strPassword.ToLower();
       return 0; // user entered correct password
     }
     else return 1;
