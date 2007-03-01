@@ -63,6 +63,7 @@ Reason: Prepared for Public Release
 #include "XKRC4.h"
 #include "XKSHA1.h"
 #include <conio.h>
+#include "undocumented.h"
 
 
 XKHDD::XKHDD()
@@ -265,6 +266,10 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 	BOOL retVal			= FALSE;
 	WORD waitcount;
 	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER;
+  BYTE old_irql;
+
+  // Raise IRQL to DPC level to prevent interrupts during ATA operation
+  old_irql = KeRaiseIrqlToDpcLevel();
 
   // Wait for device to be ready
 	for (waitcount = 10000; waitcount > 0; waitcount--)
@@ -274,7 +279,10 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 		Sleep(1);
 	}
 	if (waitcount == 0)
+  {
+    KfLowerIrql(old_irql);
 		return FALSE;
+  }
 
 	//Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
 	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);
@@ -293,7 +301,10 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 		Sleep(1);
 	}
 	if (waitcount == 0)
+  {
+    KfLowerIrql(old_irql);
 		return FALSE;
+  }
 
 	//Is this a IDE command that Requests Data, if so, read the from IDE port ...
 	if (ReadWrite == IDE_COMMAND_READ)
@@ -333,6 +344,9 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 			_outpd(IDEPort, PIDEDATA[i]);
 		retVal = TRUE;
 	}
+
+  KfLowerIrql(old_irql);
+
 	return retVal;
 }
 #endif
