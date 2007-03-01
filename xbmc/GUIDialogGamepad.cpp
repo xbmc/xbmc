@@ -65,13 +65,13 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
 
     MD5_CTX md5state;
     unsigned char md5pword[16];
-    char md5pword2[64];
+    char md5pword2[33];
     MD5Init(&md5state);
     MD5Update(&md5state, (unsigned char *)m_strUserInput.c_str(), (int)m_strUserInput.size());
     MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
 
-    if (m_strPassword != md5pword2)
+    if (!m_strPassword.Equals(md5pword2))
     {
       // incorrect password entered
       m_iRetries--;
@@ -261,12 +261,13 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   {
     MD5_CTX md5state;
     unsigned char md5pword[16];
-    char md5pword2[64];
+    char md5pword2[33];
     MD5Init(&md5state);
     MD5Update(&md5state, (unsigned char *)pDialog->m_strUserInput.c_str(), (int)pDialog->m_strUserInput.size());
     MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
     strToVerify = md5pword2;
+    strToVerify.ToLower();
     pDialog->m_strUserInput = "";
   }
 
