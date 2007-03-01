@@ -263,8 +263,18 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 {
 	//XBOX Sending ATA Commands..  
 	BOOL retVal			= FALSE;
-	WORD waitcount = 10000;
-	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER ;
+	WORD waitcount;
+	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER;
+
+  // Wait for device to be ready
+	for (waitcount = 10000; waitcount > 0; waitcount--)
+	{
+		if ((_inp(IDEPort + 7) & IDE_STATUS_DRIVE_BUSY) == 0)
+			break;
+		Sleep(1);
+	}
+	if (waitcount == 0)
+		return FALSE;
 
 	//Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
 	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);
@@ -275,11 +285,12 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);
 	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);
 
-	//Command Executed, Check Status.. If not success, wait a while..
-	while ((_inp(IDEPort+7) & 0x80) && (waitcount > 0))
+	//Command Executed, Check Status.. If not success, wait a while.
+	for (waitcount = 10000; waitcount > 0; waitcount--)
 	{
-		Sleep(10);
-		waitcount--;
+		if ((_inp(IDEPort + 7) & IDE_STATUS_READY) == IDE_STATUS_READY)
+			break;
+		Sleep(1);
 	}
 	if (waitcount == 0)
 		return FALSE;

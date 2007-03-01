@@ -258,6 +258,8 @@ Reason: Prepared for Public Release
 #define IDE_STATUS_DRIVE_INDEX			0x02
 #define IDE_STATUS_DRIVE_ERROR			0x01
 
+#define IDE_STATUS_READY (IDE_STATUS_DRIVE_READY | IDE_STATUS_DRIVE_SEEK_COMPLETE | IDE_STATUS_DRIVE_DATA_REQUEST)
+
 // Return codes from various IDE_* functions
 #define	IDE_ERROR_NO_ERROR				0
 #define	IDE_ERROR_BAD_DRIVE				-1
