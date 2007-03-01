@@ -622,7 +622,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
 
   MD5_CTX md5state;
   unsigned char md5pword[16];
-  char md5pword2[64];
+  char md5pword2[33];
   MD5Init(&md5state);
   MD5Update(&md5state, (unsigned char *)strInput.c_str(), (int)strInput.size());
   MD5Final(md5pword, &md5state);
@@ -631,10 +631,11 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   if (!bVerifyInput)
   {
     strToVerify = md5pword2;
+    strToVerify.ToLower();
     return true;
   }
 
-  if (strToVerify == md5pword2)
+  if (strToVerify.Equals(md5pword2))
     return true;  // entered correct password
 
   // incorrect password
