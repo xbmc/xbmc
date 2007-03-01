@@ -69,24 +69,3 @@ private:
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)
-
-//------------------------------------------------------------------------------------------------------------------
-//Thread Detection if we are online or not! Very Simple and Dirty!
-#include "HTTP.h"
-#include "thread.h"
-
-class CHTTPD : public CThread
-  {
-  public:
-      CHTTPD();
-      ~CHTTPD();
-      bool bIsConnected;
-      
-      virtual bool Start();
-      virtual void Stop();
-      virtual bool IsRunning();
-      virtual void OnExit();
-      virtual void OnStartup();
-      virtual void Process();
-  };
-extern CHTTPD g_httpd;
