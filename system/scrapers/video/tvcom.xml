@@ -1,4 +1,4 @@
-<scraper name="TV.com" content="tvshows" thumb="tvcom.jpg">
+<scraper name="TV.com" content="tvshows" thumb="tvcom.png">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.tv.com/search.php?stype=program&amp;amp;qs=\1&amp;amp;tag=tv_shows&lt;/url&gt;" dest="3">
 			<expression></expression>	
@@ -12,7 +12,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>	
 	</GetSearchResults>	
-<!-- 	returns: results in xml format <details><plot>*</plot><director>*</director><year>*</year><episodeguide>*</episodeguide></details> -->	
 	<GetDetails dest="7">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="7">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
@@ -54,7 +53,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>		
 	</GetDetails>	
-	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->	
 	<GetEpisodeList dest="3">
 		<RegExp input="$$5" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="6">
@@ -66,7 +64,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>			
 	</GetEpisodeList>
-<!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->	
 	<GetEpisodeDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="6">
@@ -75,8 +72,8 @@
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
 				<expression>Episode: &lt;span class=&quot;f-FF9&quot;&gt;([^&lt;]*)&lt;/span&gt;&lt;br /&gt;</expression>
 			</RegExp>						
-			<RegExp input="$$6" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>Watch Video&lt;/a&gt;[^&lt;]*&lt;/div&gt;(.*)</expression>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>div&gt;([^&quot;]*)&lt;div class=&quot;ta-r mt-10 f-bold&quot;&gt;</expression>
 			</RegExp>	
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>&lt;span class=&quot;f-28 f-bold mt-10 mb-10 f-FF9 db lh-18&quot;&gt;([0-9.]+)&lt;/span&gt;</expression>
@@ -96,6 +93,9 @@
 			<RegExp input="$$1" output="&lt;writer&gt;\1&lt;/writer&gt;" dest="5+">
 				<expression>Writer:[^&lt;]*&lt;/td&gt;[^&lt;]*&lt;td&gt;[^&lt;]*&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>										
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression>&quot;video-thumb mb-5&quot;[^&gt;]*image:url\(([^)]*)\);&quot;</expression>
+			</RegExp>				
 			<expression noclean="1"></expression>
 		</RegExp>		
 	</GetEpisodeDetails>	

@@ -238,7 +238,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   std::map<int,int> min; 
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
   { 
-    if (min.find(iter->first.first -1) == min.end()) 
+    if (min.size() == (iter->first.first -1))
       min.insert(iter->first);
     else if (iter->first.second < min[iter->first.first])
       min[iter->first.first] = iter->first.second;
