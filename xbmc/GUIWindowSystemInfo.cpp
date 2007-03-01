@@ -21,7 +21,6 @@
 #include "stdafx.h"
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
-#include "xbox/network.h"
 #ifdef HAS_SYSINFO
   #include "utils/SystemInfo.h"
 #endif
@@ -29,12 +28,11 @@
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
+  iControl = CONTROL_BT_DEFAULT;
 }
-
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
 }
-
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
@@ -44,7 +42,6 @@ bool CGUIWindowSystemInfo::OnAction(const CAction &action)
   }
   return CGUIWindow::OnAction(action);
 }
-
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -57,116 +54,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-
   case GUI_MSG_CLICKED:
     {
-      unsigned int iControl=message.GetSenderId();
-      bool b_playing= false;
-      if(iControl == CONTROL_BT_DEFAULT)
-      {
-        SetLabelDummy();
-        b_IsHome = TRUE;
-      }
-      else if(iControl == CONTROL_BT_HDD)
-      {
-        b_IsHome = FALSE;
-        SetLabelDummy();
-        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
-        #ifdef HAS_SYSINFO
-        SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_HDD_MODEL));
-        SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_HDD_SERIAL));
-        SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_HDD_FIRMWARE));
-        SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_HDD_PASSWORD));
-        SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_HDD_LOCKSTATE));
-        SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_HDD_LOCKKEY));
-        SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_HDD_BOOTDATE));
-        SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_HDD_CYCLECOUNT));
-        SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_HDD_TEMPERATURE));
-        #endif
-      }
-      else if(iControl == CONTROL_BT_DVD)
-      {
-        b_IsHome = FALSE;
-        SetLabelDummy();
-        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
-#ifdef HAS_SYSINFO
-        SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_DVD_MODEL));
-        SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_FIRMWARE));
-#endif
-      }
-      else if(iControl == CONTROL_BT_STORAGE)
-      {
-        b_IsHome = FALSE;
-        SetLabelDummy();
-        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
-
-#ifdef HAS_SYSINFO
-        // Label 2-10: Storage Values
-        GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-#endif
-      }
-      else if(iControl == CONTROL_BT_NETWORK)
-      {
-        b_IsHome = FALSE;
-        SetLabelDummy();
-        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-#ifdef HAS_SYSINFO
-        // Network Informations
-        SET_CONTROL_LABEL(2, g_infoManager.GetLabel(NETWORK_IS_DHCP));
-        SET_CONTROL_LABEL(3, g_infoManager.GetLabel(NETWORK_LINK_STATE));
-        SET_CONTROL_LABEL(4, g_infoManager.GetLabel(NETWORK_MAC_ADDRESS));
-        SET_CONTROL_LABEL(5, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
-        SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_SUBNET_ADDRESS));
-        SET_CONTROL_LABEL(7, g_infoManager.GetLabel(NETWORK_GATEWAY_ADDRESS));
-        SET_CONTROL_LABEL(8, g_infoManager.GetLabel(NETWORK_DNS1_ADDRESS));
-        SET_CONTROL_LABEL(9, g_infoManager.GetLabel(NETWORK_DNS2_ADDRESS));
-        SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_INTERNET_STATE));
-        SET_CONTROL_LABEL(11, g_infoManager.GetLabel(NETWORK_DHCP_ADDRESS));
-#endif
-      }
-      else if(iControl == CONTROL_BT_VIDEO)
-      {
-        b_IsHome = FALSE;
-        SetLabelDummy();
-        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-#ifdef HAS_SYSINFO
-        SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
-        SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
-        SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_CABLE_PACK_INFO));
-        SET_CONTROL_LABEL(5,g_infoManager.GetLabel(SYSTEM_VIDEO_XBE_REGION));
-        SET_CONTROL_LABEL(6,g_infoManager.GetLabel(SYSTEM_VIDEO_DVD_ZONE));
-#endif
-      }
-      else if(iControl == CONTROL_BT_HARDWARE)
-      {
-        b_IsHome = FALSE;
-
-        SetLabelDummy();
-        // Label 1: Hardware Informations
-        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
-#ifdef HAS_SYSINFO
-        SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_XBOX_VERSION));
-        SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_XBOX_SERIAL));
-        SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_CPUFREQUENCY));
-
-        // Label 5: ModChip ID!
-        SET_CONTROL_LABEL(5, g_sysinfo.GetModChipInfo());
-        // Label 6: Detected BiosName
-        SET_CONTROL_LABEL(6, g_sysinfo.GetBIOSInfo());
-        
-        SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_XBOX_PRODUCE_INFO));
-        SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_1));
-        SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_2));
-        SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_3));
-        SET_CONTROL_LABEL(11, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_4));
-
-        // Creating BackUP takes to long will moved to buildin execute
-        //g_sysinfo.CreateEEPROMBackup();
-        //g_sysinfo.CreateBiosBackup();
-        //g_sysinfo.WriteTXTInfoFile("Q:\\System\\SystemInfo\\SYSTEM_INFO.TXT");
-        //
-#endif
-      }
+      iControl=message.GetSenderId();
     }
     break;
   }
@@ -175,8 +65,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSystemInfo::Render()
 {
-  if (b_IsHome)
+  if(iControl == CONTROL_BT_DEFAULT)
   {
+    SetLabelDummy();
     // Default Values
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
     SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo(SYSTEM_CPU_TEMPERATURE)); // CPU Temperature
@@ -189,6 +80,94 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(8,g_infoManager.GetLabel(SYSTEM_KERNEL_VERSION));
     SET_CONTROL_LABEL(9,g_infoManager.GetLabel(SYSTEM_UPTIME));
     SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTALUPTIME));
+#endif
+  }
+  else if(iControl == CONTROL_BT_HDD)
+  {
+    SetLabelDummy();
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
+    #ifdef HAS_SYSINFO
+    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_HDD_MODEL));
+    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_HDD_SERIAL));
+    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_HDD_FIRMWARE));
+    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_HDD_PASSWORD));
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_HDD_LOCKSTATE));
+    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_HDD_LOCKKEY));
+    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_HDD_BOOTDATE));
+    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_HDD_CYCLECOUNT));
+    SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_HDD_TEMPERATURE));
+    #endif
+  }
+  else if(iControl == CONTROL_BT_DVD)
+  {
+    SetLabelDummy();
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
+#ifdef HAS_SYSINFO
+    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_DVD_MODEL));
+    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_FIRMWARE));
+#endif
+  }
+  else if(iControl == CONTROL_BT_STORAGE)
+  {
+    SetLabelDummy();
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
+
+#ifdef HAS_SYSINFO
+    // Label 2-10: Storage Values
+    GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+#endif
+  }
+  else if(iControl == CONTROL_BT_NETWORK)
+  {
+    SetLabelDummy();
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
+#ifdef HAS_SYSINFO
+    // Network Informations
+    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(NETWORK_IS_DHCP));
+    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(NETWORK_LINK_STATE));
+    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(NETWORK_MAC_ADDRESS));
+    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_SUBNET_ADDRESS));
+    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(NETWORK_GATEWAY_ADDRESS));
+    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(NETWORK_DNS1_ADDRESS));
+    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(NETWORK_DNS2_ADDRESS));
+    SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_INTERNET_STATE));
+#endif
+  }
+  else if(iControl == CONTROL_BT_VIDEO)
+  {
+    SetLabelDummy();
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
+#ifdef HAS_SYSINFO
+    SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
+    SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
+    SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_CABLE_PACK_INFO));
+    SET_CONTROL_LABEL(5,g_infoManager.GetLabel(SYSTEM_VIDEO_XBE_REGION));
+    SET_CONTROL_LABEL(6,g_infoManager.GetLabel(SYSTEM_VIDEO_DVD_ZONE));
+#endif
+  }
+  else if(iControl == CONTROL_BT_HARDWARE)
+  {
+    SetLabelDummy();
+    // Label 1: Hardware Informations
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
+#ifdef HAS_SYSINFO
+    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_XBOX_VERSION));
+    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_XBOX_SERIAL));
+    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_CPUFREQUENCY));
+    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_XBOX_BIOS));
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_XBOX_MODCHIP));
+    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_XBOX_PRODUCE_INFO));
+    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_1));
+    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_2));
+    SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_3));
+    SET_CONTROL_LABEL(11, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_4));
+
+    // Creating BackUP takes to long will moved to buildin execute
+    //g_sysinfo.CreateEEPROMBackup();
+    //g_sysinfo.CreateBiosBackup();
+    //g_sysinfo.WriteTXTInfoFile("Q:\\System\\SystemInfo\\SYSTEM_INFO.TXT");
+    //
 #endif
   }
   SET_CONTROL_LABEL(50, g_infoManager.GetTime(true) + " | " + g_infoManager.GetDate());
@@ -299,19 +278,21 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   t2.Format("%u",lTotalDiscUsed.QuadPart/MB);
   t3.Format("%u",lTotalDiscFree.QuadPart/MB);
   hdTotalSize.Format(g_localizeStrings.Get(20161), t1, t2, t3);  //Total Free To make it MB
-  //hdTotalSize.Format("Total: %u MB, Used: %u MB, Free: %u MB ", lTotalDiscSpace.QuadPart/MB, lTotalDiscUsed.QuadPart/MB, lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
 
   int percentUsed = (int)(100.0f * lTotalDiscUsed.QuadPart/lTotalDiscSpace.QuadPart + 0.5f);
   hdTotalUsedPercent.Format(g_localizeStrings.Get(20162), percentUsed, 100 - percentUsed); //Total Free %
 
-  CLog::Log(LOGDEBUG, "------------- HDD Space Info: -------------------");
-  CLog::Log(LOGDEBUG, "HDD Total Size: %u MB", lTotalDiscSpace.QuadPart/MB);
-  CLog::Log(LOGDEBUG, "HDD Used Size: %u MB", lTotalDiscUsed.QuadPart/MB);
-  CLog::Log(LOGDEBUG, "HDD Free Size: %u MB", lTotalDiscFree.QuadPart/MB);
-  CLog::Log(LOGDEBUG, "--------------HDD Percent Info: -----------------");
-  CLog::Log(LOGDEBUG, "HDD Used Percent: %u%%", lTotalDiscUsed.QuadPart/lTotalDiscPercent.QuadPart );
-  CLog::Log(LOGDEBUG, "HDD Free Percent: %u%%", lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart );
-  CLog::Log(LOGDEBUG, "-------------------------------------------------");
+
+  // To much log in Render() Mode
+  //CLog::Log(LOGDEBUG, "------------- HDD Space Info: -------------------");
+  //CLog::Log(LOGDEBUG, "HDD Total Size: %u MB", lTotalDiscSpace.QuadPart/MB);
+  //CLog::Log(LOGDEBUG, "HDD Used Size: %u MB", lTotalDiscUsed.QuadPart/MB);
+  //CLog::Log(LOGDEBUG, "HDD Free Size: %u MB", lTotalDiscFree.QuadPart/MB);
+  //CLog::Log(LOGDEBUG, "--------------HDD Percent Info: -----------------");
+  //CLog::Log(LOGDEBUG, "HDD Used Percent: %u%%", lTotalDiscUsed.QuadPart/lTotalDiscPercent.QuadPart );
+  //CLog::Log(LOGDEBUG, "HDD Free Percent: %u%%", lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart );
+  //CLog::Log(LOGDEBUG, "-------------------------------------------------");
+
 
   // Detect which to show!!
   if(bUseDriveF)  // Show if Drive F is availible
@@ -345,6 +326,8 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
     SET_CONTROL_LABEL(i_lblp8,hdTotalUsedPercent);
   }
 
+// To much log in Render() Mode
+/*
 #ifdef _DEBUG
   //Only DebugOutput!
   MEMORYSTATUS stat;
@@ -362,6 +345,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   AddStr( "%4d  percent of memory is in use.\n", stat.dwMemoryLoad );
   OutputDebugString( strOut );
 #endif
+*/
   return true;
 }
 

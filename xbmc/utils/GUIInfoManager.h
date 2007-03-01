@@ -101,7 +101,6 @@
 #define SYSTEM_HAS_LOGINSCREEN      148
 #define SYSTEM_HAS_DRIVE_G          149
 
-
 // reserved for systeminfo stuff
 #define SYSTEM_HDD_SMART            150
 #define SYSTEM_HDD_TEMPERATURE      151
@@ -111,12 +110,12 @@
 #define SYSTEM_HDD_PASSWORD         156
 #define SYSTEM_HDD_LOCKSTATE        157
 #define SYSTEM_HDD_LOCKKEY          158
+#define SYSTEM_INTERNET_STATE       159
 
 #define SYSTEM_DVD_MODEL            650
 #define SYSTEM_DVD_FIRMWARE         651
 #define SYSTEM_HDD_BOOTDATE         652
 #define SYSTEM_HDD_CYCLECOUNT       653
-
 #define SYSTEM_UPTIME               654
 #define SYSTEM_TOTALUPTIME          655
 #define SYSTEM_CPUFREQUENCY         656
@@ -134,8 +133,9 @@
 #define SYSTEM_VIDEO_XBE_REGION     668
 #define SYSTEM_VIDEO_DVD_ZONE       669
 #define SYSTEM_XBOX_PRODUCE_INFO    670
-#define SYSTEM_INTERNET_STATE       159
-//
+#define SYSTEM_XBOX_BIOS            671
+#define SYSTEM_XBOX_MODCHIP         672
+
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
@@ -356,8 +356,6 @@ public:
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
-  bool SystemHasInternet();
-  CStdString SystemHasInternet_s();
   
   bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
@@ -367,12 +365,9 @@ public:
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
-
   bool m_performingSeek;
 
   string GetSystemHeatInfo(int info);
-  CStdString GetATAInfo(int info);
-  CStdString SystemInfoValues(int info);
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
@@ -430,35 +425,6 @@ protected:
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
   
-  // hdd stuff
-  DWORD m_lastHddInfoTime;
-  BYTE b_HddTemp;
-  CStdString strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState;
-  bool m_hddRequest;
-  CStdString strDVDModel, strDVDFirmware;
-  bool m_dvdRequest;
-  bool b_ata_request;
-
-  // system stuff
-  DWORD m_lastSysInfoTime;
-  CStdString m_mplayerversion;
-  CStdString m_kernelversion;
-  CStdString m_systemuptime;
-  CStdString m_systemtotaluptime;
-  CStdString m_cpufrequency;
-  CStdString m_xboxversion;
-  CStdString m_avcablepackinfo;
-  CStdString m_videoencoder;
-  CStdString m_xboxserial;
-  CStdString m_hddlockkey;
-  CStdString m_hddbootdate;
-  CStdString m_hddcyclecount;
-  CStdString m_macadress;
-  CStdString m_videoxberegion;
-  CStdString m_videodvdzone;
-  CStdString m_produceinfo;
-  bool b_sys_request;
-
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;
   bool m_playerSeeking;
