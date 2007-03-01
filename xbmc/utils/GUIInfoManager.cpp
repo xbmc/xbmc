@@ -214,6 +214,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.xboxserial")) ret = SYSTEM_XBOX_SERIAL;
     else if (strTest.Equals("system.videoxberegion")) ret = SYSTEM_VIDEO_XBE_REGION;
     else if (strTest.Equals("system.videodvdzone")) ret = SYSTEM_VIDEO_DVD_ZONE;
+    else if (strTest.Equals("system.bios")) ret = SYSTEM_XBOX_BIOS;
+    else if (strTest.Equals("system.modchip")) ret = SYSTEM_XBOX_MODCHIP;
 
     else if (strTest.Left(22).Equals("system.controllerport("))
     {
@@ -231,12 +233,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         time = SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START;
       if (time > 0)
         ret = SYSTEM_IDLE_TIME_START + time;
-    }
-    else if (strTest.Left(16).Equals("system.hddsmart("))
-    {
-      i_SmartRequest = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
-      if (i_SmartRequest <= 0) i_SmartRequest=17; //falling back to HDD temp
-      ret = SYSTEM_HDD_SMART;
     }
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
@@ -582,7 +578,6 @@ string CGUIInfoManager::GetLabel(int info)
     return GetSystemHeatInfo(info);
     break;
 
-  case SYSTEM_HDD_TEMPERATURE:
   case SYSTEM_HDD_MODEL:
   case SYSTEM_HDD_SERIAL:
   case SYSTEM_HDD_FIRMWARE:
@@ -590,16 +585,9 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_HDD_LOCKSTATE:
   case SYSTEM_DVD_MODEL:
   case SYSTEM_DVD_FIRMWARE:
-    return GetATAInfo(info);
-    break;
-
-  case SYSTEM_HDD_LOCKKEY:
-  case SYSTEM_HDD_CYCLECOUNT:
-  case SYSTEM_HDD_BOOTDATE:  
-  case SYSTEM_MPLAYER_VERSION:
-  case SYSTEM_KERNEL_VERSION:
-  case SYSTEM_UPTIME:
-  case SYSTEM_TOTALUPTIME:
+  case SYSTEM_INTERNET_STATE:
+  case SYSTEM_HDD_TEMPERATURE:
+  case SYSTEM_XBOX_MODCHIP:
   case SYSTEM_CPUFREQUENCY:
   case SYSTEM_XBOX_VERSION:
   case SYSTEM_AV_CABLE_PACK_INFO:
@@ -609,7 +597,15 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_VIDEO_XBE_REGION:
   case SYSTEM_VIDEO_DVD_ZONE:
   case SYSTEM_XBOX_PRODUCE_INFO:
-    return SystemInfoValues(info);
+  case SYSTEM_XBOX_BIOS:
+  case SYSTEM_HDD_LOCKKEY:
+  case SYSTEM_HDD_CYCLECOUNT:
+  case SYSTEM_HDD_BOOTDATE:  
+  case SYSTEM_MPLAYER_VERSION:
+  case SYSTEM_KERNEL_VERSION:
+  case SYSTEM_UPTIME:
+  case SYSTEM_TOTALUPTIME:
+    return g_sysinfo.GetInfo(info);
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
@@ -867,9 +863,6 @@ string CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
-  case SYSTEM_INTERNET_STATE:
-    strLabel.Format("%s", SystemHasInternet_s().c_str());
-    break;
   }
 
   return strLabel;
@@ -1000,7 +993,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == SYSTEM_INTERNET_STATE)
-    bReturn = SystemHasInternet();
+    bReturn = g_sysinfo.m_bInternetState;
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
@@ -1895,189 +1888,6 @@ string CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
   }
   return space;
 }
-
-CStdString CGUIInfoManager::GetATAInfo(int info)
-{
-#ifdef HAS_XBOX_HARDWARE
-  if (timeGetTime() - m_lastHddInfoTime >= 5000)
-  { 
-    // update our variables
-    if (!b_ata_request)
-    {
-      // We MUST request the HDD Informations: 1 time
-      // Else, if we request in frequence mode, then we will have a <1sec. Freeze 
-      // of HDD releated functions like FTP, movie play ect.
-      // We need to detect "is device busy", then we can request our informations from the device!
-      b_ata_request = true;
-      m_hddRequest = g_sysinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState);
-      m_dvdRequest = g_sysinfo.GetDVDInfo(strDVDModel, strDVDFirmware);
-    }
-    b_HddTemp = XKHDD::GetHddSmartTemp();
-    m_lastHddInfoTime = timeGetTime();
-  }
-#endif
-
-  CStdString text;
-  switch(info)
-  {
-    case SYSTEM_HDD_TEMPERATURE:
-      {
-        CTemperature temp = CTemperature::CreateFromCelsius((double)b_HddTemp);
-        if (b_HddTemp == 0 )
-        {
-          temp.SetState(CTemperature::invalid);
-          text.Format("%s %s", g_localizeStrings.Get(13151).c_str(), temp.ToString() );
-        }
-        else
-        {
-          text.Format("%s %s", g_localizeStrings.Get(13151).c_str(), temp.ToString() );
-        }
-        return text;
-        break;
-      }
-    case SYSTEM_HDD_MODEL:
-      {
-        if(m_hddRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13154).c_str(), strHDDModel.c_str() );
-        return text;
-        break;
-      }
-    case SYSTEM_HDD_SERIAL:
-      {
-        if(m_hddRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13155).c_str(), strHDDSerial.c_str() );
-        return text;
-        break;
-      }
-    case SYSTEM_HDD_FIRMWARE:
-      {
-        if(m_hddRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13156).c_str(), strHDDFirmware.c_str() );
-        return text;
-        break;
-      }
-    case SYSTEM_HDD_PASSWORD:
-      {
-        if(m_hddRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13157).c_str(), strHDDpw.c_str() );
-        return text;
-        break;
-      }
-    case SYSTEM_HDD_LOCKSTATE:
-      {
-        if(m_hddRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13158).c_str(), strHDDLockState.c_str() );
-        return text;
-        break;
-      }
-    case SYSTEM_DVD_MODEL:
-      {
-        if (m_dvdRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13152).c_str(), strDVDModel.c_str() );
-        return text;
-        break;
-      }
-    case SYSTEM_DVD_FIRMWARE:
-      {
-        if (m_dvdRequest)
-          text.Format("%s %s", g_localizeStrings.Get(13153).c_str(), strDVDFirmware.c_str() );
-        return text;
-        break;
-      }
-    default:
-      text.Format("%s",g_localizeStrings.Get(13205) ); // "Unknown"
-      break;
-  }
-  return text;
-}
-
-CStdString CGUIInfoManager::SystemInfoValues(int info)
-{
-  // update our variables, update interval 1 minute
-  if (timeGetTime() - m_lastSysInfoTime >= 60000)
-  { 
-    m_lastSysInfoTime = timeGetTime();
-#ifdef HAS_XBOX_HARDWARE
-    m_systemuptime = g_sysinfo.GetSystemUpTime(false);
-    m_systemtotaluptime = g_sysinfo.GetSystemUpTime(true);
-    
-    // values need one time request
-    if(!b_sys_request)
-    {
-      b_sys_request = true;
-      m_mplayerversion = g_sysinfo.GetMPlayerVersion();
-      m_kernelversion = g_sysinfo.GetKernelVersion();
-      m_cpufrequency = g_sysinfo.GetCPUFreqInfo();
-      m_xboxversion = g_sysinfo.GetXBVerInfo();
-      m_avcablepackinfo = g_sysinfo.GetAVPackInfo();
-      m_videoencoder = g_sysinfo.GetVideoEncoder();
-      m_xboxserial = g_sysinfo.GetXBOXSerial(true);
-      m_hddlockkey = g_sysinfo.GetHDDKey();
-      m_macadress = g_sysinfo.GetMACAddress();
-      m_videoxberegion = g_sysinfo.GetVideoXBERegion();
-      m_videodvdzone = g_sysinfo.GetDVDZone();
-      m_produceinfo = g_sysinfo.GetXBProduceInfo();
-      g_sysinfo.GetRefurbInfo(m_hddbootdate, m_hddcyclecount);
-    }
-#endif
-  }
-  switch (info)
-  {
-  case SYSTEM_MPLAYER_VERSION:
-    return m_mplayerversion;
-    break;
-  case SYSTEM_KERNEL_VERSION:
-    return m_kernelversion;
-    break;
-  case SYSTEM_UPTIME:
-    return m_systemuptime;
-    break;
-  case SYSTEM_TOTALUPTIME:
-    return m_systemtotaluptime;
-    break;
-  case SYSTEM_CPUFREQUENCY:
-    return m_cpufrequency;
-    break;
-  case SYSTEM_XBOX_VERSION:
-    return m_xboxversion;
-    break;
-  case SYSTEM_AV_CABLE_PACK_INFO:
-    return m_avcablepackinfo;
-    break;
-  case SYSTEM_VIDEO_ENCODER_INFO:
-    return m_videoencoder;
-    break;
-  case SYSTEM_XBOX_SERIAL:
-    return m_xboxserial;
-    break;
-  case SYSTEM_HDD_LOCKKEY:
-    return m_hddlockkey;
-    break;
-  case SYSTEM_HDD_BOOTDATE:
-    return m_hddbootdate;
-    break;
-  case SYSTEM_HDD_CYCLECOUNT:
-    return m_hddcyclecount;
-    break;
-  case NETWORK_MAC_ADDRESS:
-    return m_macadress;
-    break;
-  case SYSTEM_VIDEO_XBE_REGION:
-    return m_videoxberegion;
-    break;
-  case SYSTEM_VIDEO_DVD_ZONE:
-    return m_videodvdzone;
-    break;
-  case SYSTEM_XBOX_PRODUCE_INFO:
-    return m_produceinfo;
-    break;
-
-  default:
-    return "";
-    break;
-  }
-}
-
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
@@ -2528,30 +2338,6 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   return false;
 }
 
-
-bool CGUIInfoManager::SystemHasInternet()
-{
-  CHTTP http;
-  if (http.IsInternet()) 
-    return true;
-  else if (http.IsInternet(false))
-    return true;
-  return false;
-}
-CStdString CGUIInfoManager::SystemHasInternet_s()
-{
-  CStdString StrTemp;
-  CStdString lbl2 = g_localizeStrings.Get(13295);
-  CStdString lbl3 = g_localizeStrings.Get(13296);
-  CStdString lbl4 = g_localizeStrings.Get(13297);
-
-  if (SystemHasInternet())
-    StrTemp.Format("%s %s",lbl2.c_str(), lbl3.c_str());
-  else
-    StrTemp.Format("%s %s",lbl2.c_str(), lbl4.c_str());
-  
-  return StrTemp;
-}
 
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {

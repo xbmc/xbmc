@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "InfoLoader.h"
 #include "Weather.h"
+#include "SystemInfo.h"
 
 CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback)
 {
@@ -40,9 +41,11 @@ void CInfoLoader::Refresh()
   {
     if (m_type == "weather")
       m_backgroundLoader = new CBackgroundWeatherLoader(this);
+    else if (m_type == "sysinfo")
+      m_backgroundLoader = new CBackgroundSystemInfoLoader(this);
     if (!m_backgroundLoader)
     {
-      CLog::Log(LOGERROR, "Unable to start the background %s loader", "weather");
+      CLog::Log(LOGERROR, "Unable to start the background %s loader", m_type);
       return;
     }
   }
@@ -57,6 +60,9 @@ void CInfoLoader::LoaderFinished()
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
     m_gWindowManager.SendThreadMessage(msg);
+  }
+  if (m_type == "sysinfo" && m_busy)
+  {
   }
   m_busy = false;
 }
