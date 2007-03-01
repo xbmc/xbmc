@@ -228,6 +228,11 @@ bool CGUIViewState::HideParentDirItems()
   return g_guiSettings.GetBool("filelists.hideparentdiritems");
 }
 
+bool CGUIViewState::DisableAddSourceButtons()
+{
+  return g_guiSettings.GetBool("filelists.disableaddsourcebuttons");
+}
+
 int CGUIViewState::GetPlaylist()
 {
   return PLAYLIST_NONE;

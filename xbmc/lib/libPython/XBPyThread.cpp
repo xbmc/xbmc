@@ -108,13 +108,12 @@ void XBPyThread::Process()
 	strcat(path, dll_getenv("PYTHONPATH"));
 
 	// set current directory and python's path.
-	PySys_SetPath(path);
-	xbp_chdir(sourcedir); // XXX, there is a ';' at the end
-
 	if (argv != NULL)
 	{
 		PySys_SetArgv(argc, argv);
 	}
+	PySys_SetPath(path);
+	xbp_chdir(sourcedir); // XXX, there is a ';' at the end
 
 	if (type == 'F')
 	{

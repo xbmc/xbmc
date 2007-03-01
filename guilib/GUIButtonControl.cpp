@@ -285,7 +285,8 @@ void CGUIButtonControl::OnClick()
   DWORD dwParentID = GetParentID();
 
   // button selected, send a message
-  SEND_CLICK_MESSAGE(dwControlID, dwParentID, 0);
+  CGUIMessage msg(GUI_MSG_CLICKED, dwControlID, dwParentID, 0);
+  SendWindowMessage(msg);
 
   if (clickActions.size())
   {

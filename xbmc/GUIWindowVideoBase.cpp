@@ -366,6 +366,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     return;
 
   CIMDBUrl url;
+  bool hasDetails(false);
 
   // 2. Look for a nfo File to get the search URL
   CStdString nfoFile = GetnfoFile(item);
@@ -375,14 +376,23 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     CNfoFile nfoReader(info.strContent);
     if ( nfoReader.Create(nfoFile) == S_OK)
     {
-      CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
-	    url.m_scrURL.push_back(scrUrl);
-      url.m_strID = nfoReader.m_strImDbNr;
-      SScraperInfo info2(info);
-      info2.strPath = nfoReader.m_strScraper;
-      IMDB.SetScraperInfo(info2);
-      CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
-      CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+      if (nfoReader.m_strScraper == "NFO")
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+        nfoReader.GetDetails(movieDetails);
+        hasDetails = true;
+      }
+      else
+      {
+        CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+	      url.m_scrURL.push_back(scrUrl);
+        url.m_strID = nfoReader.m_strImDbNr;
+        SScraperInfo info2(info);
+        info2.strPath = nfoReader.m_strScraper;
+        IMDB.SetScraperInfo(info2);
+        CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+      }
     }
     else
       CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
@@ -391,12 +401,11 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CStdString movieName = item->GetLabel();
   // 3. Run a loop so that if we Refresh we re-run this block
   bool needsRefresh(false);
-  bool bSkipDetails=false;    
   do
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
-    if (url.m_scrURL.size() == 0 || needsRefresh)
+    if (!hasDetails && (url.m_scrURL.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
@@ -411,9 +420,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       // 4b. do the websearch
       IMDB_MOVIELIST movielist;
       if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
-        bSkipDetails = true;
+        hasDetails = true;
 
-      if (!bSkipDetails && IMDB.FindMovie(movieName, movielist, pDlgProgress))
+      if (!hasDetails && IMDB.FindMovie(movieName, movielist, pDlgProgress))
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -450,7 +459,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     }
     // 4c. Check if url is still empty - occurs if user has selected to do a manual
     //     lookup, or if the IMDb lookup failed or was cancelled.
-    if (url.m_scrURL.size() == 0 && !bSkipDetails)
+    if (url.m_scrURL.size() == 0 && !hasDetails)
     {
       // Check for cancel of the progress dialog
       pDlgProgress->Close();
@@ -491,7 +500,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       pDlgProgress->Progress();
 
       // get the movie info
-      if (bSkipDetails || IMDB.GetDetails(url, movieDetails, pDlgProgress))
+      if (hasDetails || IMDB.GetDetails(url, movieDetails, pDlgProgress))
       {
         if (info.strContent.Equals("tvshows"))
         {

@@ -11,18 +11,15 @@
 #include "../GUIDialogContextMenu.h"
 #include "../application.h"
 #include "../applicationmessenger.h"
+#include "GUIInfoManager.h"
 
 using namespace XFILE;
 
 CTuxBoxUtil g_tuxbox;
-CTuxBoxService t_tuxbox;
+CTuxBoxService g_tuxboxService;
 
 CTuxBoxService::CTuxBoxService()
 {
-  iPort = 0;
-  strCurrentServiceName = "NULL";
-  strURL = "NULL";
-  bStop = false;
 }
 CTuxBoxService::~CTuxBoxService()
 {
@@ -37,7 +34,6 @@ bool CTuxBoxService::Start()
 {
   if(g_advancedSettings.m_iTuxBoxEpgRequestTime != 0)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__"Starting CTuxBoxService thread");
     StopThread();
     Create(false);
     return true;
@@ -48,66 +44,57 @@ bool CTuxBoxService::Start()
 void CTuxBoxService::Stop()
 {
   CLog::Log(LOGDEBUG, __FUNCTION__" - Stopping CTuxBoxService thread");
-  bStop = true;
   StopThread();
-  return;
-}
-bool CTuxBoxService::IsRunning()
-{
-  //return (m_ThreadHandle != NULL);
-  return !bStop;
-}
-void CTuxBoxService::OnExit()
-{
-  return;
 }
 void CTuxBoxService::OnStartup()
 {
   CLog::Log(LOGDEBUG, __FUNCTION__" - Starting CTuxBoxService thread");
   SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
-  bStop = false;
-  return;
+}
+void CTuxBoxService::OnExit()
+{
+  CThread::m_bStop = true;
+}
+bool CTuxBoxService::IsRunning()
+{
+  return !CThread::m_bStop;
 }
 void CTuxBoxService::Process()
 {
-  while(!m_bStop && !bStop)
-  {
-    if (strURL.Find(":31339") > 0)
-    {
-      int iRequestTimer = g_advancedSettings.m_iTuxBoxEpgRequestTime *1000; //seconds
-      Sleep(iRequestTimer);
-      CURL url(strURL);
-      if(iPort >0 && iPort!=31339 ) 
-        url.SetPort(iPort); // returned HTTP Port -> m_iDriveType
-      else 
-        url.SetPort(80); // we asume that the port 80 will used!
+  CStdString strCurrentServiceName = g_tuxbox.sCurSrvData.service_name;
+  CStdString strURL;
 
-      if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
+  while(!CThread::m_bStop && g_application.IsPlaying())
+  {
+    strURL = g_application.CurrentFileItem().m_strPath;
+    if(!CUtil::IsTuxBox(strURL))
+      break;
+
+    int iRequestTimer = g_advancedSettings.m_iTuxBoxEpgRequestTime *1000; //seconds
+    Sleep(iRequestTimer);
+
+    CURL url(strURL);
+    if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - receive current service data was successful");
+      if(!strCurrentServiceName.IsEmpty()&& !strCurrentServiceName.Equals("NULL")&& !g_tuxbox.sCurSrvData.service_name.IsEmpty()&& !g_tuxbox.sCurSrvData.service_name.Equals("-"))
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" - receive current service data was successful");
-        if(!strCurrentServiceName.IsEmpty()&& !strCurrentServiceName.Equals("NULL")&& !g_tuxbox.sCurSrvData.service_name.IsEmpty()&& !g_tuxbox.sCurSrvData.service_name.Equals("-"))
+        //Detect Channel Change
+        //We need to detect the channel on the TuxBox Device! 
+        //On changing the channel on the device we will loose the stream and mplayer seems not able to detect it to stop
+        if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying())
         {
-          //Detect Channel Change
-          //We need to detect the channel on the TuxBox Device! 
-          //On changing the channel on the device we will loose the stream and mplayer seems not able to detect it to stop
-          if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying())
-          {
-            CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
-            g_applicationMessenger.MediaStop();
-            bStop = true;
-          }
+          CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
+          g_applicationMessenger.MediaStop();
+          break;
         }
       }
-      else
-      {
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Could not receive current service data");
-      }
-      bStop = !g_application.IsPlaying();
+      //Update infomanager from tuxbox client
+      g_infoManager.UpdateFromTuxBox();
     }
     else
     {
-      // Stop Thread: the URL is not valid
-      bStop = true;
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Could not receive current service data");
     }
   }
   return;
@@ -119,12 +106,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   item_new.m_strPath = item.m_strPath;
   item_new.SetThumbnailImage(item.GetThumbnailImage());
   if(g_tuxbox.GetZapUrl(item.m_strPath, item_new))
-  {
-    if(t_tuxbox.IsRunning())
-      t_tuxbox.bStop = true; // We need to stop the service to reset also the thread
-
     return true;
-  }
   else
   {
     if(!sBoxStatus.recording.Equals("1")) //Don't Show this Dialog, if the Box is in Recording mode! A previos YN Dialog was send to user!
@@ -442,7 +424,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(sCurSrvData.audio_channel_2_pid.Left(2).Equals("0x"))
           sCurSrvData.audio_channel_2_pid.Replace("0x","");
 
-        if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER)
+        if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER || g_advancedSettings.m_bTuxBoxSendAllAPids)
           strVideoStream.Format("0,%s,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
         else 
           strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
@@ -471,9 +453,6 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.m_bIsFolder = false;
       items.SetContentType("video/x-ms-asf");
       
-      //Set Channel Change Detection ServiceName
-      t_tuxbox.strCurrentServiceName = sCurSrvData.service_name;
-
       return true;
     }
   }

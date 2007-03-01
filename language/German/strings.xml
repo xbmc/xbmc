@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
-<!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 02/23/2007-->
+<!--Email: scape@xboxmediacenter.com-->
+<!--Date of translation: 02/28/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7860-->
+<!--Based on english strings version 7958-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -92,7 +92,7 @@
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
   <string id="157">Bildschirm:</string>
-  <string id="158">Freier Hauptspeicher:</string>
+  <string id="158">Freier Hauptspeicher</string>
   <string id="159">Keine Verbindung</string>
   <string id="160">frei</string>
   <string id="161">Nicht verfügbar</string>
@@ -792,7 +792,7 @@
   <string id="12357">Sperre</string>
   <string id="12358">Kein Passwort eingegeben. Bitte noch einmal versuchen.</string>
   <string id="12360">Master-Sperre</string>
-  <string id="12362">Ausschalten wenn Anzahl Fehlversuche erreicht wird</string>
+  <string id="12362">XBOX ausschalten wenn Anzahl Fehlversuche erreicht wird</string>
   <string id="12367">Das Master-Passwort ist ungültig!</string>
   <string id="12368">Bitte geben Sie das gültige Master-Passwort ein!</string>
   <string id="12373">Einstellungen/Dateien</string>
@@ -833,19 +833,22 @@
   <string id="13156">Firmware:</string>
   <string id="13157">Passwort:</string>
   <string id="13158">Festplattensperre:</string>
-  <string id="13159">Subnetzmaske:</string>
-  <string id="13160">Gateway:</string>
+  <string id="13159">Subnetzmaske</string>
+  <string id="13160">Gateway</string>
   <string id="13161">Primärer DNS-Server</string>
   <string id="13162">Initialisierung fehlgeschlagen.</string>
-  <string id="13163">Gamepad(s) an Port:</string>
-  <string id="13164">Tastatur an Port:</string>
-  <string id="13165">Maus an Port:</string>
-  <string id="13166">Headset/Mikrofon an Port:</string>
-  <string id="13167">MemoryStick an Port:</string>
-  <string id="13168">Fernbedienung an Port:</string>
+  <string id="13163">Gamepad</string>
+  <string id="13164">Tastatur</string>
+  <string id="13165">Maus</string>
+  <string id="13166">Kopfhörer/Mikrofon</string>
+  <string id="13167">MemoryStick</string>
+  <string id="13168">Fernbedienung</string>
+  <string id="13169">Controller Port</string>
   <string id="13170">Nie</string>
   <string id="13171">Sofort</string>
   <string id="13172">Nach %i Sek</string>
+  <string id="13173">Herstellungsdatum:</string>
+  <string id="13174">Einschaltanzahl:</string>
   <string id="13200">Profile</string>
   <string id="13201">Soll das Profil '%s' wirklich gelöscht werden?</string>
   <string id="13204">Zuletzt geladenes Profil:</string>
@@ -895,7 +898,7 @@
   <string id="13303">Schriftart</string>
   <string id="13304">Links-/Rechtsläufige Zeichenfolgen ermöglichen</string>
   <string id="13305">RSS-Newsfeeds aktivieren</string>
-  <string id="13306">Eintrag zum übergeordneten Ordner ausblenden</string>
+  <string id="13306">Symbol zum übergeordneten Ordner ausblenden</string>
   <string id="13307">Formatvorlage für Musiktitel-Dateinamen</string>
   <string id="13308">Möchten Sie die XBOX neu starten?</string>
   <string id="13309">Wählen Sie 'Nein' um XBMC neu zu starten.</string>
@@ -1427,7 +1430,7 @@
   <string id="20305">Angeschlossene Geräte werden geprüft</string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
-  <string id="20308">DHCP-Server:</string>
+  <string id="20308">DHCP-Server</string>
   <string id="20309">Neuer Ordner</string>
   <string id="20310">LCD während der Wiedergabe ausschalten</string>
   <string id="20311">Unbekannt oder OnBoard (geschützt)</string>
@@ -1494,5 +1497,16 @@
   <string id="21367">Video &amp; Alternatives Untertitel-Verzeichnis</string>
   <string id="21370">Navigations-Sounds während Medien-Wiedergabe aktivieren</string>
   <string id="21371">Thumbnail</string>
+  <string id="21372">Festgelegte DVD-Player Region</string>
+  <string id="21373">Video-Hardware</string>
+  <string id="21374">Video-Bildseitenverhältnis</string>
+  <string id="21375">Normal</string>
+  <string id="21376">4:3 Letterbox</string>
+  <string id="21377">16:9 Widescreen</string>
+  <string id="21378">480p Auflösung aktivieren</string>
+  <string id="21379">720p Auflösung aktivieren</string>
+  <string id="21380">1080i Auflösung aktivieren</string>
+  <string id="21381">Bitte geben Sie einen Namen für die Playlist ein</string>
+  <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
   <string id="29999">Automatische Videofilter Korrektur</string>
 </strings>

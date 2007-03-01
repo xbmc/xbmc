@@ -2090,7 +2090,6 @@ void CApplication::RenderNoPresent()
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
 
   // dont show GUI when playing full screen video
-#ifdef HAS_VIDEO_PLAYBACK
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
     Sleep(50);
@@ -2098,7 +2097,6 @@ void CApplication::RenderNoPresent()
     g_infoManager.ResetCache();
     return;
   }
-#endif
 
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
@@ -3383,17 +3381,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 }
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
-{
-  //Is TuxBox
-  if(item.IsTuxBox())
-  {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
-    CFileItem item_new;
-    if(g_tuxbox.CreateNewItem(item, item_new))
-      return PlayFile(item_new,false); //for tuxbox restart must be false, else i loose m_currentFile informations
-    else return false;
-  }
-  
+{  
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
@@ -3415,6 +3403,31 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsStack())
     return PlayStack(item, bRestart);
 
+  //Is TuxBox, this should probably be moved to CFileTuxBox
+  if(item.IsTuxBox())
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
+    CFileItem item_new;
+    if(g_tuxbox.CreateNewItem(item, item_new))
+    {
+      if(g_tuxboxService.IsRunning())
+        g_tuxboxService.Stop();
+      
+      // Make sure it doesn't have a player
+      // so we actually select one normally
+      m_eCurrentPlayer = EPC_NONE;
+
+      // keep the tuxbox:// url as playing url
+      // and give the new url to the player
+      if(PlayFile(item_new, true))
+      {
+        g_tuxboxService.Start();
+        return true;
+      }        
+    }
+    return false;
+  }
+ 
   CPlayerOptions options;
   EPLAYERCORES eNewCore = EPC_NONE;
   if( bRestart )

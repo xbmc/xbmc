@@ -34,7 +34,7 @@ void CScraperUrl::Clear()
 }
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
-  if (!element || element == NULL) return false;
+  if (!element || !element->FirstChild()) return false;
 
   m_url = element->FirstChild()->Value();
   m_spoof = element->Attribute("spoof");

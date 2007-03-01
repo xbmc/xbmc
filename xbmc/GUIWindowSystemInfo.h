@@ -20,23 +20,12 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 	virtual bool OnAction(const CAction &action);
 	virtual void Render();
-
-	void	SetLabelDummy();
-	bool	GetBuildTime(int i_lblp1, int i_lblp2, int i_lblp3);
-#ifdef HAS_SYSINFO
-	bool	GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7);
-	bool	GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10);
-	
-  static bool	GetBIOSInfo(CStdString& strBiosName);
-	static bool GetModChipInfo(CStdString& strModChip);
-	static bool GetINetState(CStdString& strInetCon);
-	
-
-#endif
 private:
 	bool b_IsHome;
+  void	SetLabelDummy();
 #ifdef HAS_SYSINFO
-	bool GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string);
+	bool	GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10);
+  bool GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string);
 #endif
 };
 

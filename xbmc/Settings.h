@@ -294,6 +294,7 @@ public:
     bool m_bTuxBoxPictureIcon;
     int m_iTuxBoxEpgRequestTime;
     int m_iTuxBoxZapWaitTime;
+    bool m_bTuxBoxSendAllAPids;
   };
   struct stSettings
   {

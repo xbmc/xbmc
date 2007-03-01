@@ -226,9 +226,9 @@ public:
   long GetTvShowInfo(const CStdString& strFilenameAndPath);
   long GetEpisodeInfo(const CStdString& strFilenameAndPath);
 
-  void SetDetailsForMovie(const CStdString& strFilenameAndPath, CIMDBMovie& details);
-  long SetDetailsForTvShow(const CStdString& strPath, CIMDBMovie& details);
-  void SetDetailsForEpisode(const CStdString& strFilenameAndPath, CIMDBMovie& details, long idShow);
+  void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CIMDBMovie& details);
+  long SetDetailsForTvShow(const CStdString& strPath, const CIMDBMovie& details);
+  void SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CIMDBMovie& details, long idShow);
 
   void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
 

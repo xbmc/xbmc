@@ -160,6 +160,9 @@
 				RelativePath=".\GUIFadeLabelControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIFixedListContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIFont.cpp">
 			</File>
 			<File
@@ -367,6 +370,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIFadeLabelControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIFixedListContainer.h">
 			</File>
 			<File
 				RelativePath=".\GUIFont.h">

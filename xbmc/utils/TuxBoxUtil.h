@@ -136,20 +136,15 @@ extern CTuxBoxUtil g_tuxbox;
 class CTuxBoxService : public CThread
 {
 public:
-  int iPort;
-  CStdString strURL;
-  CStdString strCurrentServiceName;
-  bool bStop;
-    
-  
   CTuxBoxService();
   ~CTuxBoxService();
     
-  virtual bool Start();
-  virtual void Stop();
-  virtual bool IsRunning();
+  bool Start();
+  void Stop();
+  bool IsRunning();
+
   virtual void OnExit();
   virtual void OnStartup();
   virtual void Process();
 };
-extern CTuxBoxService t_tuxbox;
+extern CTuxBoxService g_tuxboxService;
