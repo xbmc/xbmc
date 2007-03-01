@@ -1,4 +1,4 @@
-﻿<window id="2004">
+<window id="2004">
 	<defaultcontrol>2</defaultcontrol>
 	<animation effect="fade" time="1000">WindowOpen</animation>
 	<animation effect="fade" time="1000">WindowClose</animation>
@@ -19,6 +19,7 @@
 			<width>100</width>
 			<height>109</height>
 			<texture>defaultAlbumCover.png</texture>
+			<aspectratio align="left">keep</aspectratio>
 			<info>MusicPlayer.Cover</info>
 			<include>mediaoverlay</include>
 		</control>
