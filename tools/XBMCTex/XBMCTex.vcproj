@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3D8.lib&quot; &quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3DX8.lib&quot;"
+				AdditionalDependencies="D3D8.lib D3DX8.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib,libc"
@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3D8.lib&quot; &quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3DX8.lib&quot;"
+				AdditionalDependencies="D3D8.lib D3DX8.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib"
@@ -162,6 +162,9 @@
 			</File>
 			<File
 				RelativePath=".\Bundler.h">
+			</File>
+			<File
+				RelativePath=".\cmdlineargs.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\lib\liblzo\Lzo1x.h">
