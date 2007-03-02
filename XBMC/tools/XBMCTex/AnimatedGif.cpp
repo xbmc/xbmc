@@ -217,7 +217,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 		unsigned short iIterations ;    //17..18  number of iterations (lo-hi)															
 	} gifnetscape;
 
-  int GraphicExtensionFound = 0;
+	int GraphicExtensionFound = 0;
 
 	// OPEN FILE
 	FILE *fd=fopen(szFileName,"rb");
@@ -375,7 +375,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 			fread((char*)&gifid, 1,sizeof(gifid),fd);
 
-			int LocalColorMap = (gifid.PackedFields & 0x08)? 1 : 0;
+			int LocalColorMap = (gifid.PackedFields & 0x80)? 1 : 0;
 
 			NextImage->Init (gifid.Width, gifid.Height,LocalColorMap ? (gifid.PackedFields&7)+1 : GlobalBPP);
 
@@ -395,7 +395,13 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 				memset(NextImage->Raster, giflsd.Background, NextImage->BytesPerRow * NextImage->Height);
 		
 			if (LocalColorMap)		// Read Color Map (if descriptor says so)
-				fread((char*)NextImage->Palette,1,sizeof(COLOR)*(1<<NextImage->BPP),fd);
+			{
+				//local table made of 3 bytes blocks (not 4)
+				int nb=(1<<NextImage->BPP);
+				
+				for (n=0;n<nb;n++)
+				fread((char*)&NextImage->Palette[n],1, 3, fd);
+			}
 
 			else					// Otherwise copy Global
 				memcpy (NextImage->Palette, GlobalColorMap,sizeof(COLOR)*(1<<NextImage->BPP));
