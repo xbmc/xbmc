@@ -56,8 +56,6 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->m_videoxberegion = callback->GetVideoXBERegion();
     callback->m_videodvdzone = callback->GetDVDZone();
     callback->m_produceinfo = callback->GetXBProduceInfo();
-    callback->m_systemuptime = callback->GetSystemUpTime(false);
-    callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
     g_sysinfo.GetRefurbInfo(callback->m_hddbootdate, callback->m_hddcyclecount);
     callback->m_bRequestDone = true;
   }
@@ -69,6 +67,8 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
 
   //Request always
+  callback->m_systemuptime = callback->GetSystemUpTime(false);
+  callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
   callback->by_HddTemp = XKHDD::GetHddSmartTemp();
 }
@@ -80,14 +80,6 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
 {
   switch(dwInfo)
   {
-  case SYSTEM_UPTIME:
-    if (m_bRequestDone) return m_systemuptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case SYSTEM_TOTALUPTIME:
-     if (m_bRequestDone) return m_systemtotaluptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_MPLAYER_VERSION:
     if (m_bRequestDone) return m_mplayerversion;
     else return CInfoLoader::BusyInfo(dwInfo);
@@ -194,6 +186,14 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     break;
   
   // All Time request
+  case SYSTEM_UPTIME:
+    if (!m_systemuptime.IsEmpty()) return m_systemuptime;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  case SYSTEM_TOTALUPTIME:
+     if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
   case SYSTEM_INTERNET_STATE:
     if (!m_InternetState.IsEmpty())return m_InternetState;
     else return g_localizeStrings.Get(503); //Busy text
