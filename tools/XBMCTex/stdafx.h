@@ -18,8 +18,8 @@
 #include <list>
 
 // Thses must be the DX SDK (8.1+) versions, not the XDK versions
-#include "/Program Files/Microsoft DirectX 9.0 SDK (Summer 2004)/Include/D3D8.h"
-#include "/Program Files/Microsoft DirectX 9.0 SDK (Summer 2004)/Include/D3DX8.h"
+#include "D3D8.h"
+#include "D3DX8.h"
 
 #ifdef USE_XDK
 #include <XGraphics.h>
