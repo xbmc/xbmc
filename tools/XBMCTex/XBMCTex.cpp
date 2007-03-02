@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "AnimatedGif.h"
 #include "Bundler.h"
+#include <stdio.h>
+#include <algorithm>
+#include "cmdlineargs.h"
 
 extern "C" void SHA1(const BYTE* buf, DWORD len, BYTE hash[20]);
 
@@ -953,7 +956,10 @@ int main(int argc, char* argv[])
   int NoProtect = 0;
   AllowLinear = true;
   double MaxMSE = 4.0;
-	if (argc == 1)
+
+	CmdLineArgs args;
+
+	if (args.size() == 1)
 	{
 		Usage();
 		return 1;
@@ -962,60 +968,60 @@ int main(int argc, char* argv[])
 	const char* InputDir = NULL;
 	const char* OutputFilename = "Textures.xpr";
 
-	for (int i = 1; i < argc; ++i)
+	for (unsigned int i = 1; i < args.size(); ++i)
 	{
-		if (!stricmp(argv[i], "-help") || !stricmp(argv[i], "-h") || !stricmp(argv[i], "-?"))
+		if (!stricmp(args[i], "-help") || !stricmp(args[i], "-h") || !stricmp(args[i], "-?"))
 		{
 			Usage();
 			return 1;
 		}
-		else if (!stricmp(argv[i], "-input") || !stricmp(argv[i], "-i"))
+		else if (!stricmp(args[i], "-input") || !stricmp(args[i], "-i"))
 		{
-			InputDir = argv[++i];
+			InputDir = args[++i];
 		}
-		else if (!stricmp(argv[i], "-output") || !stricmp(argv[i], "-o"))
+		else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
 		{
-			OutputFilename = argv[++i];
+			OutputFilename = args[++i];
 		}
-    else if (!stricmp(argv[i], "-noprotect") || !stricmp(argv[i], "-p"))
+    else if (!stricmp(args[i], "-noprotect") || !stricmp(args[i], "-p"))
     {
       NoProtect = 1;
     }
-    else if (!stricmp(argv[i], "-onlyswizzled") || !stricmp(argv[i], "-s"))
+    else if (!stricmp(args[i], "-onlyswizzled") || !stricmp(args[i], "-s"))
     {
       AllowLinear = false;
     }
-    else if (!stricmp(argv[i], "-quality") || !stricmp(argv[i], "-q"))
+    else if (!stricmp(args[i], "-quality") || !stricmp(args[i], "-q"))
 		{
 			++i;
-			if (!stricmp(argv[i], "min"))
+			if (!stricmp(args[i], "min"))
 			{
 				MaxMSE = DBL_MAX;
 			}
-			else if (!stricmp(argv[i], "low"))
+			else if (!stricmp(args[i], "low"))
 			{
 				MaxMSE = 20.0;
 			}
-			else if (!stricmp(argv[i], "normal"))
+			else if (!stricmp(args[i], "normal"))
 			{
 				MaxMSE = 4.0;
 			}
-			else if (!stricmp(argv[i], "high"))
+			else if (!stricmp(args[i], "high"))
 			{
 				MaxMSE = 1.5;
 			}
-			else if (!stricmp(argv[i], "max"))
+			else if (!stricmp(args[i], "max"))
 			{
 				MaxMSE = 0.0;
 			}
 			else
 			{
-				printf("Unrecognised quality setting: %s\n", argv[i]);
+				printf("Unrecognised quality setting: %s\n", args[i]);
 			}
 		}
 		else
 		{
-			printf("Unrecognised command line flag: %s\n", argv[i]);
+			printf("Unrecognised command line flag: %s\n", args[i]);
 		}
 	}
 
