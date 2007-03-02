@@ -58,127 +58,170 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->m_produceinfo = callback->GetXBProduceInfo();
     callback->m_systemuptime = callback->GetSystemUpTime(false);
     callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
-    callback->m_InternetState = callback->GetInternetState();
     g_sysinfo.GetRefurbInfo(callback->m_hddbootdate, callback->m_hddcyclecount);
-
     callback->m_bRequestDone = true;
   }
-  //Check if the Requested information are ok!
+  // Check if the Requested information are ok!
+  // Here we can receive garbage data from the HDD device, but requesting to much will couse a Freeze!
   if(!callback->m_hddRequest)
     callback->GetHDDInfo(callback->m_HDDModel, callback->m_HDDSerial,callback->m_HDDFirmware,callback->m_HDDpw,callback->m_HDDLockState);
   if(!callback->m_dvdRequest)
     callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
 
   //Request always
-  callback->GetInternetState();
+  callback->m_InternetState = callback->GetInternetState();
   callback->by_HddTemp = XKHDD::GetHddSmartTemp();
 }
-
 const char *CSysInfo::BusyInfo(DWORD dwInfo)
 {
   return CInfoLoader::BusyInfo(dwInfo);
 }
-
 const char *CSysInfo::TranslateInfo(DWORD dwInfo)
 {
   switch(dwInfo)
   {
   case SYSTEM_UPTIME:
-    return m_systemuptime;
+    if (m_bRequestDone) return m_systemuptime;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_TOTALUPTIME:
-    return m_systemtotaluptime;
+     if (m_bRequestDone) return m_systemtotaluptime;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_MPLAYER_VERSION:
-    return m_mplayerversion;
+    if (m_bRequestDone) return m_mplayerversion;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_KERNEL_VERSION:
-    return m_kernelversion;
+    if (m_bRequestDone) return m_kernelversion;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_CPUFREQUENCY:
-    return m_cpufrequency;
+    if (m_bRequestDone) return m_cpufrequency;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_VERSION:
-    return m_xboxversion;
+    if (m_bRequestDone) return m_xboxversion;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_AV_CABLE_PACK_INFO:
-    return m_avcablepackinfo;
+    if (m_bRequestDone) return m_avcablepackinfo;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_VIDEO_ENCODER_INFO:
-    return m_videoencoder;
+    if (m_bRequestDone) return m_videoencoder;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_SERIAL:
-    return m_xboxserial;
+    if (m_bRequestDone) return m_xboxserial;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_LOCKKEY:
-    return m_hddlockkey;
+    if (m_bRequestDone) return m_hddlockkey;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_BOOTDATE:
-    return m_hddbootdate;
+    if (m_bRequestDone) return m_hddbootdate;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_CYCLECOUNT:
-    return m_hddcyclecount;
+    if (m_bRequestDone) return m_hddcyclecount;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case NETWORK_MAC_ADDRESS:
-    return m_macadress;
+    if (m_bRequestDone) return m_macadress;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_VIDEO_XBE_REGION:
-    return m_videoxberegion;
+    if (m_bRequestDone) return m_videoxberegion;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_VIDEO_DVD_ZONE:
-    return m_videodvdzone;
+    if (m_bRequestDone) return m_videodvdzone;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_PRODUCE_INFO:
-    return m_produceinfo;
+    if (m_bRequestDone) return m_produceinfo;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_BIOS:
-    return m_XboxBios;
+    if (m_bRequestDone) return m_XboxBios;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_MODCHIP:
-    return m_XboxModChip;
+    if (m_bRequestDone) return m_XboxModChip;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
-  case SYSTEM_INTERNET_STATE:
-    return m_InternetState;
-    break;
+
+
+  // HDD request
   case SYSTEM_HDD_MODEL:
     m_temp.Format("%s %s",g_localizeStrings.Get(13154), m_HDDModel);
-    return m_temp;
+    if (m_hddRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_SERIAL:
     m_temp.Format("%s %s", g_localizeStrings.Get(13155), m_HDDSerial);
-    return m_temp;
+    if (m_hddRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_FIRMWARE:
     m_temp.Format("%s %s", g_localizeStrings.Get(13156), m_HDDFirmware);
-    return m_temp;
+    if (m_hddRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_PASSWORD:
     m_temp.Format("%s %s", g_localizeStrings.Get(13157), m_HDDpw);
-    return m_temp;
+    if (m_hddRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_HDD_LOCKSTATE:
     m_temp.Format("%s %s", g_localizeStrings.Get(13158), m_HDDLockState);
-    return m_temp;
+    if (m_hddRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
+
+  // DVD request
   case SYSTEM_DVD_MODEL:
     m_temp.Format("%s %s", g_localizeStrings.Get(13152), m_DVDModel);
-    return m_temp;
+    if (m_dvdRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_DVD_FIRMWARE:
     m_temp.Format("%s %s", g_localizeStrings.Get(13153), m_DVDFirmware);
-    return m_temp;
+    if (m_dvdRequest) return m_temp;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  
+  // All Time request
+  case SYSTEM_INTERNET_STATE:
+    if (!m_InternetState.IsEmpty())return m_InternetState;
+    else return g_localizeStrings.Get(503); //Busy text
     break;
   case SYSTEM_HDD_TEMPERATURE:
     {
-    CTemperature temp = CTemperature::CreateFromCelsius((double)by_HddTemp);
-    if (by_HddTemp == 0 )
-    {
-      temp.SetState(CTemperature::invalid);
-      m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
-    }
-    else
-      m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
-    return m_temp;
+      CTemperature temp = CTemperature::CreateFromCelsius((double)by_HddTemp);
+      if (by_HddTemp == 0 || by_HddTemp > 100 )
+      {
+        //Prevent value is jumping up/down with garbage Data
+        if (!m_HDDTemp.IsEmpty())
+        {
+          //Fall back to the old known value!
+          m_temp = m_HDDTemp; 
+        }
+        else
+        {
+          // First request had a bad value! Display Invalid!
+          temp.SetState(CTemperature::invalid);
+          m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
+        }
+      }
+      else
+      {
+        m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
+      }
+      m_HDDTemp = m_temp;
+      return m_HDDTemp;
     }
     break;
 
@@ -321,8 +364,9 @@ char* CSysInfo::CheckMD5 (struct Bios *Listone, char *Sign)
   return ("Unknown");
 }
 
-void CSysInfo::WriteTXTInfoFile(LPCSTR strFilename)
+void CSysInfo::WriteTXTInfoFile()
 {
+  LPCSTR strFilename = XBOX_XBMC_TXT_INFOFILE;
   BOOL retVal = FALSE;
   DWORD dwBytesWrote = 0;
   CHAR tmpData[SYSINFO_TMP_SIZE];
@@ -1248,8 +1292,6 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
 
   return strReturn;
 }
-
-
 CStdString CSysInfo::GetMACAddress()
 {
   char macaddress[20] = "";
