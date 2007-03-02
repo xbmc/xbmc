@@ -64,9 +64,6 @@ void CInfoLoader::LoaderFinished()
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
     m_gWindowManager.SendThreadMessage(msg);
   }
-  if (m_type == "sysinfo" && m_busy)
-  {
-  }
   m_busy = false;
 }
 
@@ -77,7 +74,7 @@ const char *CInfoLoader::GetInfo(DWORD dwInfo)
   {
     Refresh();
   }
-  if (m_busy)
+  if (m_busy && (m_type != "sysinfo") )
   {
     return BusyInfo(dwInfo);
   }

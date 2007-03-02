@@ -66,6 +66,7 @@
 #include "utils/FilterFlickerPatch.h"
 #include "utils/LED.h"
 #include "utils/fancontroller.h"
+#include "utils/systeminfo.h"
 #endif
 #include "MediaManager.h"
 #ifdef _XBOX
@@ -3042,7 +3043,8 @@ const BUILT_IN commands[] = {
   "System.LogOff","Log off current user",
   "System.PWMControl","Control PWM RGB LEDs",
   "Resolution", "Change XBMC's Resolution",
-  "SetFocus", "Change current focus to a different control id"
+  "SetFocus", "Change current focus to a different control id", 
+  "BackupSystemInfo", "Backup System Informations to local hdd"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3811,6 +3813,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strTran = "none";
     }
     CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
+  }
+  else if (execute.Equals("backupsysteminfo"))
+  {
+#ifdef HAS_XBOX_HARDWARE
+    g_sysinfo.WriteTXTInfoFile();
+    g_sysinfo.CreateBiosBackup();
+    g_sysinfo.CreateEEPROMBackup();
+#endif
   }
   else
     return -1;
