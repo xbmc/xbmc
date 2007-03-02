@@ -22,6 +22,7 @@
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
 #ifdef HAS_SYSINFO
+  #include "util.h"
   #include "utils/SystemInfo.h"
 #endif
 
