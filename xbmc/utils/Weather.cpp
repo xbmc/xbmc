@@ -407,9 +407,9 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         {
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
           if (strcmp(iTmpStr, "N/A") == 0)
-            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\na.png", WEATHER_BASE_PATH);
+            sprintf(m_dfForcast[i].m_szIcon, "%s128x128\\na.png", WEATHER_BASE_PATH);
           else
-            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\%s.png", WEATHER_BASE_PATH, iTmpStr);
+            sprintf(m_dfForcast[i].m_szIcon, "%s128x128\\%s.png", WEATHER_BASE_PATH, iTmpStr);
 
           GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
           LocalizeOverview(m_dfForcast[i].m_szOverview);
