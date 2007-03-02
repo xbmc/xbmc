@@ -44,7 +44,7 @@ class CSysInfo : public CInfoLoader
     
     bool CreateBiosBackup();
     bool CreateEEPROMBackup();
-    void WriteTXTInfoFile(LPCSTR strFilename);
+    void WriteTXTInfoFile();
 
     CStdString SmartXXModCHIP();
     CStdString GetAVPackInfo();
@@ -88,6 +88,7 @@ class CSysInfo : public CInfoLoader
 
     CStdString m_HDDModel, m_HDDSerial,m_HDDFirmware,m_HDDpw,m_HDDLockState;
     CStdString m_DVDModel, m_DVDFirmware;
+    CStdString m_HDDTemp;
     
     bool m_bInternetState;
     bool m_bRequestDone;
@@ -101,6 +102,7 @@ class CSysInfo : public CInfoLoader
     #define XBOX_BIOS_BACKUP_FILE "Q:\\System\\SystemInfo\\BIOSBackup.bin"
     #define XBOX_EEPROM_BIN_BACKUP_FILE "Q:\\System\\SystemInfo\\EEPROMBackup.bin"
     #define XBOX_EEPROM_CFG_BACKUP_FILE "Q:\\System\\SystemInfo\\EEPROMBackup.cfg"
+    #define XBOX_XBMC_TXT_INFOFILE "Q:\\System\\SystemInfo\\XBMCSystemInfo.txt"
     #define SYSINFO_TMP_SIZE 256
     #define XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
     #define DEBUG_KEYBOARD
