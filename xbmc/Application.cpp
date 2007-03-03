@@ -1415,6 +1415,16 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
 #endif
 }
 
+void CApplication::StartIdleThread()
+{
+  m_idleThread.Create();
+}
+
+void CApplication::StopIdleThread()
+{
+  m_idleThread.StopThread();
+}
+
 void CApplication::StartWebServer()
 {
   if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable() )
@@ -1669,6 +1679,8 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+  StartIdleThread();
+
   CheckDate();
   StartLEDControl(false);
 
@@ -1747,6 +1759,8 @@ void CApplication::StopServices()
   CFanController::Instance()->Stop();
   CFanController::RemoveInstance();
 #endif
+
+  StopIdleThread();
 }
 
 void CApplication::DelayLoadSkin()
@@ -3380,7 +3394,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 }
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
-{  
+{
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
@@ -3411,7 +3425,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     {
       if(g_tuxboxService.IsRunning())
         g_tuxboxService.Stop();
-      
+
       // Make sure it doesn't have a player
       // so we actually select one normally
       m_eCurrentPlayer = EPC_NONE;
@@ -3422,11 +3436,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         g_tuxboxService.Start();
         return true;
-      }        
+      }
     }
     return false;
   }
- 
+
   CPlayerOptions options;
   EPLAYERCORES eNewCore = EPC_NONE;
   if( bRestart )
