@@ -67,7 +67,6 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo();
   virtual bool HasAudio();
-  virtual void ToggleOSD() { }; // empty
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
@@ -88,8 +87,6 @@ public:
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect)      { m_dvdPlayerVideo.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_dvdPlayerVideo.GetAspectRatio(); }
   virtual void SwitchToNextAudioLanguage();
-  virtual void UpdateSubtitlePosition();
-  virtual void RenderSubtitles();
   virtual bool CanRecord() { return false; }
   virtual bool IsRecording() { return false; }
   virtual bool Record(bool bOnOff) { return false; }
@@ -115,7 +112,6 @@ public:
   virtual __int64 GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
-  virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();

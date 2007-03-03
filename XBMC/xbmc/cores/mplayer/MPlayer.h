@@ -114,7 +114,6 @@ public:
   virtual void Unload();
   virtual bool HasVideo();
   virtual bool HasAudio();
-  virtual void ToggleOSD();
   virtual void SwitchToNextLanguage();
 
   virtual void ToggleSubtitles();
@@ -164,14 +163,14 @@ public:
   virtual int GetTotalTime();
   virtual __int64 GetTime();
   virtual void ToFFRW(int iSpeed = 0);
-  virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork();
 
   virtual bool IsCaching() const {return m_bCaching;};
   virtual int GetCacheLevel() const {return m_CacheLevel;};
 
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
-  
+  virtual bool OnAction(const CAction &action);
+
   CStdString _SubtitleExtension;
 protected:
   int GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, bool bFileOnInternet, bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);

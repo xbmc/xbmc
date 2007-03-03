@@ -1494,12 +1494,6 @@ bool CMPlayer::HasAudio()
   return (mplayer_HasAudio() == TRUE);
 }
 
-void CMPlayer::ToggleOSD()
-{
-  OutputDebugString("toggle mplayer OSD\n");
-  mplayer_put_key('o');
-}
-
 void CMPlayer::SwitchToNextLanguage()
 {
   mplayer_put_key('l');
@@ -1519,6 +1513,13 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   // Use relative time seeking if we dont know the length of the video
   // or its explicitly enabled, and the length is alteast twice the size of the largest forward seek value
+
+  if(m_bPaused && bPlus && !bLargeStep)
+  {
+    mplayer_SlaveCommand("frame_step");
+    mplayer_process();
+    return;
+  }
 
   __int64 iTime = GetTotalTime();
 
@@ -1816,7 +1817,7 @@ void CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 
 void CMPlayer::SetSubtitle(int iStream)
 {
-  mplayer_setSubtitle(iStream);  
+  mplayer_setSubtitle(iStream);
   options.SetSubtitleStream(iStream);
   g_stSettings.m_currentVideoSettings.m_SubtitleStream = iStream;
 
@@ -2019,11 +2020,6 @@ CStdString CMPlayer::GetDVDArgument(const CStdString& strFile)
     return strBuf;
   }
 }
-void CMPlayer::ShowOSD(bool bOnoff)
-{
-  if (bOnoff) mplayer_showosd(1);
-  else mplayer_showosd(0);
-}
 
 void CMPlayer::DoAudioWork()
 {
@@ -2082,6 +2078,24 @@ bool CMPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   
 }
 
+bool CMPlayer::OnAction(const CAction &action)
+{
+  switch(action.wID)
+  {
+    case ACTION_SHOW_MPLAYER_OSD:
+    {
+      OutputDebugString("toggle mplayer OSD\n");
+      mplayer_put_key('o');
+      //if (bOnoff) mplayer_showosd(1);
+      //else mplayer_showosd(0);
+      return true;
+    }
+    break;
+  }
+
+  return false;
+}
+
 void CMPlayer::WaitOnCommand()
 {
   //We are in the normal mplayer thread, return as otherwise we would
@@ -2091,8 +2105,13 @@ void CMPlayer::WaitOnCommand()
   //If we hold graphiccontext, this may stall mplayer process
   if( OwningCriticalSection(g_graphicsContext) ) return;
 
-  //Wait till process has finished twice, 
-  //otherwise we can't be sure the seek has finished
-  m_evProcessDone.WaitMSec(1000);
-  m_evProcessDone.WaitMSec(1000);
+  if( m_bPaused )
+    mplayer_process();
+  else
+  {
+    //Wait till process has finished twice, 
+    //otherwise we can't be sure the seek has finished
+    m_evProcessDone.WaitMSec(1000);
+    m_evProcessDone.WaitMSec(1000);
+  }
 }

@@ -25,8 +25,6 @@ protected:
   virtual void OnDeinitWindow(int nextWindow) {}; // no out window animation for fullscreen video
 
 private:
-  void ShowOSD();
-  void HideOSD();
   void RenderTTFSubtitles();
   void Seek(bool bPlus, bool bLargeStep);
   void PreloadDialog(unsigned int windowID);

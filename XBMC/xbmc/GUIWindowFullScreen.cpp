@@ -204,11 +204,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     return true;
     break;
 
-  case ACTION_SHOW_MPLAYER_OSD:
-    g_application.m_pPlayer->ToggleOSD();
-    return true;
-    break;
-
   case ACTION_SHOW_OSD_TIME:
     m_bShowCurrentTime = !m_bShowCurrentTime;
     if(!m_bShowCurrentTime)
@@ -780,23 +775,8 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 
 void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 {
-  // Unpause mplayer if necessary
-  bool bNeedsPause(false);
-  if (g_application.m_pPlayer->IsPaused())
-  {
-    g_application.m_pPlayer->Pause();
-    bNeedsPause = true;
-  }
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 
   //Make sure gui items are visible
   g_infoManager.SetDisplayAfterSeek();
-
-  // And repause it
-  if (bNeedsPause)
-  {
-    Sleep(g_advancedSettings.m_videoSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
-    g_application.m_pPlayer->Pause();
-  }
-
 }

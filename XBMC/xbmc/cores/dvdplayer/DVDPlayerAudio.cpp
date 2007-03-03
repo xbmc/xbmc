@@ -379,14 +379,9 @@ void CDVDPlayerAudio::Process()
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
   int result;
-
-  // silence data
-  BYTE silence[1024];
-  memset(silence, 0, 1024);
  
   DVDAudioFrame audioframe;
 
-  __int64 iClockDiff=0;
   while (!m_bStop)
   {
     //make sure player doesn't keep processing data while paused
@@ -447,8 +442,6 @@ void CDVDPlayerAudio::Process()
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Resync - clock:%I64d, delay:%I64d", audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
     }
     
-#if 1
-
     // don't try to fix a desynced clock, until we played out the full audio buffer
     if( abs(m_pClock->DistanceToDisc()) < m_dvdAudio.GetDelay() )
       continue;
@@ -464,21 +457,6 @@ void CDVDPlayerAudio::Process()
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);      
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%I64d, should be:%I64d, error:%I64d", clock, clock+error, error);
     }
-#else
-    // calculate the error in our global clock at the end of the packet we just added
-    __int64 clock = m_pClock->GetClock() + m_dvdAudio.GetDelay() - audioframe.duration;
-    __int64 error = audioframe.pts - clock;
-
-    // check for discontinuity in the stream, or forced resync
-    if( ABS(error) > DVD_MSEC_TO_TIME(5) )
-    {
-      //Wait untill only the new audio frame wich triggered the discontinuity is left
-      while (!m_bStop && (unsigned int)m_dvdAudio.GetBytesInBuffer() > audioframe.size ) Sleep(1);
-
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, m_dvdAudio.GetDelay() - audioframe.duration);      
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%I64d, should be:%I64d, error:%I64d", clock, clock+error, error);
-    }
-#endif
   }
 }
 

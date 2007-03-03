@@ -43,7 +43,6 @@ public:
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() = 0;
   virtual bool HasAudio() = 0;
-  virtual void ToggleOSD() = 0;
   virtual void SwitchToNextLanguage() = 0;
   virtual void ToggleSubtitles() = 0;
   virtual void ToggleFrameDrop() = 0;
@@ -64,8 +63,6 @@ public:
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect) = 0;
   virtual void GetVideoAspectRatio(float& fAR) = 0;
   virtual void SwitchToNextAudioLanguage(){};
-  virtual void UpdateSubtitlePosition(){};
-  virtual void RenderSubtitles(){};
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
@@ -99,7 +96,6 @@ public:
   virtual int GetSampleRate(){ return 0;};
   virtual CStdString GetCodecName(){ return "";};
   virtual void ToFFRW(int iSpeed = 0){};
-  virtual void ShowOSD(bool bOnoff){};
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
