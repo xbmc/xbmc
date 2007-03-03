@@ -1116,6 +1116,12 @@
 					RelativePath="..\..\xbmc\StringUtils.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\SystemInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\SystemInfo.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Temperature.cpp">
 				</File>
 				<File
