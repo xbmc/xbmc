@@ -87,7 +87,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				ExceptionHandling="FALSE"
@@ -812,6 +812,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\HttpHeader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Idle.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\IMDB.cpp">
@@ -2475,6 +2478,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\IDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Idle.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\IFile.h">
