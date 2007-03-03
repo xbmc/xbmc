@@ -79,9 +79,9 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(7,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(8,g_infoManager.GetLabel(SYSTEM_KERNEL_VERSION));
+#endif
     SET_CONTROL_LABEL(9,g_infoManager.GetLabel(SYSTEM_UPTIME));
     SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTALUPTIME));
-#endif
   }
   else if(iControl == CONTROL_BT_HDD)
   {
@@ -122,18 +122,18 @@ void CGUIWindowSystemInfo::Render()
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-#ifdef HAS_SYSINFO
     // Network Informations
     SET_CONTROL_LABEL(2, g_infoManager.GetLabel(NETWORK_IS_DHCP));
+#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(3, g_infoManager.GetLabel(NETWORK_LINK_STATE));
     SET_CONTROL_LABEL(4, g_infoManager.GetLabel(NETWORK_MAC_ADDRESS));
+#endif
     SET_CONTROL_LABEL(5, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
     SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_SUBNET_ADDRESS));
     SET_CONTROL_LABEL(7, g_infoManager.GetLabel(NETWORK_GATEWAY_ADDRESS));
     SET_CONTROL_LABEL(8, g_infoManager.GetLabel(NETWORK_DNS1_ADDRESS));
     SET_CONTROL_LABEL(9, g_infoManager.GetLabel(NETWORK_DNS2_ADDRESS));
     SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_INTERNET_STATE));
-#endif
   }
   else if(iControl == CONTROL_BT_VIDEO)
   {
