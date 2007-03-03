@@ -995,7 +995,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == SYSTEM_INTERNET_STATE)
+  {
+    g_sysinfo.GetInfo(condition);
     bReturn = g_sysinfo.m_bInternetState;
+  }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
