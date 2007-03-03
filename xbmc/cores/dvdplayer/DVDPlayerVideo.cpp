@@ -169,7 +169,7 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
+    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
 
     int iQueueTimeOut = (m_DetectedStill ? iFrameTime / 4 : iFrameTime * 4) / 1000;
     
@@ -532,6 +532,14 @@ bool CDVDPlayerVideo::InitializedOutputDevice()
 void CDVDPlayerVideo::SetSpeed(int speed)
 {
   m_speed = speed;
+  if(m_speed == DVD_PLAYSPEED_PAUSE)
+    m_iNrOfPicturesNotToSkip = 0;
+}
+
+void CDVDPlayerVideo::StepFrame()
+{
+  if(m_speed == DVD_PLAYSPEED_PAUSE)
+    m_iNrOfPicturesNotToSkip++;
 }
 
 void CDVDPlayerVideo::Flush()
