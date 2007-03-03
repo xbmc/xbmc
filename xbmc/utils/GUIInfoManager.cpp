@@ -21,9 +21,9 @@
 #include "../GUIPassword.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "FanController.h"
-#include "SystemInfo.h"
 #include "../xbox/xkhdd.h"
 #endif
+#include "SystemInfo.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
 #include <stack>
@@ -586,7 +586,6 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_HDD_LOCKSTATE:
   case SYSTEM_DVD_MODEL:
   case SYSTEM_DVD_FIRMWARE:
-  case SYSTEM_INTERNET_STATE:
   case SYSTEM_HDD_TEMPERATURE:
   case SYSTEM_XBOX_MODCHIP:
   case SYSTEM_CPUFREQUENCY:
@@ -604,11 +603,12 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_HDD_BOOTDATE:  
   case SYSTEM_MPLAYER_VERSION:
   case SYSTEM_KERNEL_VERSION:
+#endif
+  case SYSTEM_INTERNET_STATE:
   case SYSTEM_UPTIME:
   case SYSTEM_TOTALUPTIME:
     return g_sysinfo.GetInfo(info);
     break;
-#endif
 
   case SYSTEM_SCREEN_RESOLUTION:
     strLabel.Format("%s %ix%i %s %02.2f Hz.",g_localizeStrings.Get(13287),
@@ -994,10 +994,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
-#ifdef HAS_XBOX_HARDWARE
   else if (condition == SYSTEM_INTERNET_STATE)
     bReturn = g_sysinfo.m_bInternetState;
-#endif
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
