@@ -41,10 +41,8 @@ void CInfoLoader::Refresh()
   {
     if (m_type == "weather")
       m_backgroundLoader = new CBackgroundWeatherLoader(this);
-#ifdef HAS_XBOX_HARDWARE
     else if (m_type == "sysinfo")
       m_backgroundLoader = new CBackgroundSystemInfoLoader(this);
-#endif
 
     if (!m_backgroundLoader)
     {
