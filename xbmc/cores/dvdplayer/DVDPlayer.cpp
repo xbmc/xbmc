@@ -264,6 +264,7 @@ void CDVDPlayer::Process()
     // if the queues are full, no need to read more
     while (!m_bAbortRequest && (!m_dvdPlayerAudio.AcceptsData() || !m_dvdPlayerVideo.AcceptsData()))
     {
+      HandleMessages();
       Sleep(10);
     }
 
@@ -510,7 +511,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   //If this is the first packet after a discontinuity, send it as a resync
   if (!(m_dvd.iFlagSentStart & DVDPLAYER_AUDIO))
   {
-    m_dvd.iFlagSentStart |= DVDPLAYER_AUDIO;    
+    m_dvd.iFlagSentStart |= DVDPLAYER_AUDIO;
     m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
   }
 
@@ -554,7 +555,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   {
     m_dvd.iFlagSentStart |= DVDPLAYER_VIDEO;
     
-    if (m_CurrentAudio.id < 0)
+    if (m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL )
       m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
     else
       m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, pPacket->dts));
@@ -775,7 +776,7 @@ void CDVDPlayer::HandleMessages()
             if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
             {
               CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
-              //FlushBuffers(); buffers will be flushed by a hop from dvdnavigator
+              FlushBuffers();
             }
             else CLog::Log(LOGWARNING, "error while seeking");
           }
@@ -791,6 +792,8 @@ void CDVDPlayer::HandleMessages()
           }
           else CLog::Log(LOGWARNING, "error while seeking");
         }
+        // make sure video player displays next frame
+        m_dvdPlayerVideo.StepFrame();
 
         // set flag to indicate we have finished a seeking request
         g_infoManager.m_performingSeek = false;
@@ -941,6 +944,16 @@ bool CDVDPlayer::CanSeek()
 
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
+#if 0
+  // sadly this doesn't work for now, audio player must
+  // drop packets at the same rate as we play frames
+  if( m_playSpeed == DVD_PLAYSPEED_PAUSE && bPlus && !bLargeStep)
+  {
+    m_dvdPlayerVideo.StepFrame();
+    return;
+  }
+#endif
+
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     int seek = 0;
@@ -1304,21 +1317,9 @@ void CDVDPlayer::ToFFRW(int iSpeed)
   SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
 }
 
-void CDVDPlayer::ShowOSD(bool bOnoff)
-{
-}
-
 bool CDVDPlayer::GetSubtitleExtension(CStdString &strSubtitleExtension)
 {
   return false;
-}
-
-void CDVDPlayer::UpdateSubtitlePosition()
-{
-}
-
-void CDVDPlayer::RenderSubtitles()
-{
 }
 
 bool CDVDPlayer::OpenAudioStream(int iStream)
