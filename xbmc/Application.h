@@ -12,6 +12,7 @@
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
 
+#include "utils/idle.h"
 #include "utils/delaycontroller.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory.h"
@@ -44,6 +45,8 @@ public:
   virtual HRESULT Create(HWND hWnd);
   void StartServices();
   void StopServices();
+  void StartIdleThread();
+  void StopIdleThread();
   void StartKai();
   void StopKai();
   void StartWebServer();
@@ -133,6 +136,7 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
+  CIdleThread m_idleThread;
   CAutorun m_Autorun;
   CDetectDVDMedia m_DetectDVDType;
   CDelayController m_ctrDpad;
@@ -155,7 +159,7 @@ public:
 
   EPLAYERCORES m_eForcedNextPlayer;
   CStdString m_strPlayListFile;
-  
+
   int GlobalIdleTime();
   bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
 
@@ -185,7 +189,7 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_playCountUpdated;
-  
+
   int m_iPlaySpeed;
   int m_currentStackPosition;
   int m_nextPlaylistItem;
@@ -196,8 +200,7 @@ protected:
   void UpdateLCD();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
   void InitBasicD3D();
-  
-  
+
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
   bool ProcessMouse();
@@ -206,9 +209,9 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   void CheckForDebugButtonCombo();
-  
+
   float NavigationIdleTime();
- 
+
 };
 
 extern CApplication g_application;
