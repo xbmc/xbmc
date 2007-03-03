@@ -171,9 +171,6 @@ bool ModPlayer::HasAudio()
   return true;
 }
 
-void ModPlayer::ToggleOSD()
-{}
-
 void ModPlayer::SwitchToNextLanguage()
 {}
 
