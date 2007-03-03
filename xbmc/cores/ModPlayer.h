@@ -19,7 +19,6 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo();
   virtual bool HasAudio();
-  virtual void ToggleOSD();
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();

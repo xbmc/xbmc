@@ -338,11 +338,4 @@ void CGUIWindowSettingsScreenCalibration::Render()
       control->Render();
   }
 
-  // render the subtitles
-  if (g_application.m_pPlayer)
-  {
-    g_application.m_pPlayer->UpdateSubtitlePosition();
-    g_application.m_pPlayer->RenderSubtitles();
-  }
-
 }
