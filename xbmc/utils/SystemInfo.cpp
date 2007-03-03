@@ -24,21 +24,22 @@
 #include "../settings.h"
 #include "../utils/log.h"
 #include "../cores/dllloader/dllloader.h"
+#include "../utils/http.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "../xbox/undocumented.h"
 #include "../xbox/xkutils.h"
 #include "../xbox/xkhdd.h"
 #include "../xbox/xkflash.h"
 #include "../xbox/xkrc4.h"
-#include "../utils/http.h"
 
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
-
+#endif
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()
 {
   CSysInfo *callback = (CSysInfo *)m_callback;
-  
+#ifdef HAS_XBOX_HARDWARE
   //Request only one time!
   if(!callback->m_bRequestDone)
   {
@@ -65,12 +66,15 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->GetHDDInfo(callback->m_HDDModel, callback->m_HDDSerial,callback->m_HDDFirmware,callback->m_HDDpw,callback->m_HDDLockState);
   if(!callback->m_dvdRequest)
     callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
-
+#endif  
   //Request always
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
+#ifdef HAS_XBOX_HARDWARE
   callback->by_HddTemp = XKHDD::GetHddSmartTemp();
+#endif
+
 }
 const char *CSysInfo::BusyInfo(DWORD dwInfo)
 {
@@ -80,6 +84,7 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
 {
   switch(dwInfo)
   {
+#ifdef HAS_XBOX_HARDWARE
   case SYSTEM_MPLAYER_VERSION:
     if (m_bRequestDone) return m_mplayerversion;
     else return CInfoLoader::BusyInfo(dwInfo);
@@ -184,20 +189,8 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     if (m_dvdRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
-  
+
   // All Time request
-  case SYSTEM_UPTIME:
-    if (!m_systemuptime.IsEmpty()) return m_systemuptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case SYSTEM_TOTALUPTIME:
-     if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case SYSTEM_INTERNET_STATE:
-    if (!m_InternetState.IsEmpty())return m_InternetState;
-    else return g_localizeStrings.Get(503); //Busy text
-    break;
   case SYSTEM_HDD_TEMPERATURE:
     {
       CTemperature temp = CTemperature::CreateFromCelsius((double)by_HddTemp);
@@ -224,6 +217,19 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
       return m_HDDTemp;
     }
     break;
+#endif
+  case SYSTEM_UPTIME:
+    if (!m_systemuptime.IsEmpty()) return m_systemuptime;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  case SYSTEM_TOTALUPTIME:
+     if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  case SYSTEM_INTERNET_STATE:
+    if (!m_InternetState.IsEmpty())return m_InternetState;
+    else return g_localizeStrings.Get(503); //Busy text
+    break;
 
   default:
     return g_localizeStrings.Get(503); //Busy text
@@ -237,10 +243,9 @@ DWORD CSysInfo::TimeToNextRefreshInMs()
 }
 void CSysInfo::Reset()
 {
+#ifdef HAS_XBOX_HARDWARE
   m_XboxBios ="";
   m_XboxModChip ="";
-  m_InternetState = "";
-  m_bInternetState = false;
   m_dvdRequest = false;
   m_hddRequest = false;
 
@@ -251,20 +256,28 @@ void CSysInfo::Reset()
   m_HDDLockState = "";
   m_DVDModel=""; 
   m_DVDFirmware="";
+#endif
+  m_bInternetState = false;
+  m_InternetState = "";
 }
 
 CSysInfo::CSysInfo(void) : CInfoLoader("sysinfo")
 {
+#ifdef HAS_XBOX_HARDWARE
   m_bRequestDone = false;
   m_XKEEPROM = new XKEEPROM;
   m_XKEEPROM->ReadFromXBOX();
   m_XBOXVersion = m_XKEEPROM->GetXBOXVersion();
+#endif
 }
 
 CSysInfo::~CSysInfo()
 {
+#ifdef HAS_XBOX_HARDWARE
    delete m_XKEEPROM;
+#endif
 }
+#ifdef HAS_XBOX_HARDWARE
 struct Bios * CSysInfo::LoadBiosSigns()
 {
   FILE *infile;
@@ -774,23 +787,6 @@ bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStd
 
   return m_hddRequest;
 }
-bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
-{
-  iMinutes=0;iHours=0;iDays=0;
-  iMinutes = iInputMinutes;
-  if (iMinutes >= 60) // Hour's
-  {
-    iHours = iMinutes / 60;
-    iMinutes = iMinutes - (iHours *60);
-  }
-  if (iHours >= 24) // Days
-  {
-    iDays = iHours / 24;
-    iHours = iHours - (iDays * 24);
-  }
-  return true;
-}
-
 bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount)
 {
   XBOX_REFURB_INFO xri;
@@ -1162,49 +1158,6 @@ CStdString CSysInfo::GetKernelVersion()
   strKernel.Format("%s %d.%d.%d.%d",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
   return strKernel;
 }
-CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
-{
-  CStdString strSystemUptime;
-  CStdString strLabel;
-  int iInputMinutes, iMinutes,iHours,iDays;
-  
-  if(bTotalUptime)
-  {
-    //Total Uptime
-    strLabel = g_localizeStrings.Get(12394);
-    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
-  }
-  else
-  {
-    //Current UpTime
-    strLabel = g_localizeStrings.Get(12390);
-    iInputMinutes = (int)(timeGetTime() / 60000);
-  }
-
-  SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  if (iDays > 0) 
-  {
-    strSystemUptime.Format("%s: %i %s, %i %s, %i %s",
-      strLabel,
-      iDays,g_localizeStrings.Get(12393),
-      iHours,g_localizeStrings.Get(12392),
-      iMinutes, g_localizeStrings.Get(12391));
-  }
-  else if (iDays == 0 && iHours >= 1 )
-  {
-    strSystemUptime.Format("%s: %i %s, %i %s",
-      strLabel, 
-      iHours,g_localizeStrings.Get(12392),
-      iMinutes, g_localizeStrings.Get(12391));
-  }
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
-  {
-    strSystemUptime.Format("%s: %i %s",
-      strLabel, 
-      iMinutes, g_localizeStrings.Get(12391));
-  }
-  return strSystemUptime;
-}
 CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
@@ -1464,7 +1417,67 @@ CStdString CSysInfo::GetBIOSInfo()
 
   return strBiosName;
 }
+#endif
+bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
+{
+  iMinutes=0;iHours=0;iDays=0;
+  iMinutes = iInputMinutes;
+  if (iMinutes >= 60) // Hour's
+  {
+    iHours = iMinutes / 60;
+    iMinutes = iMinutes - (iHours *60);
+  }
+  if (iHours >= 24) // Days
+  {
+    iDays = iHours / 24;
+    iHours = iHours - (iDays * 24);
+  }
+  return true;
+}
 
+CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
+{
+  CStdString strSystemUptime;
+  CStdString strLabel;
+  int iInputMinutes, iMinutes,iHours,iDays;
+  
+  if(bTotalUptime)
+  {
+    //Total Uptime
+    strLabel = g_localizeStrings.Get(12394);
+    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+  }
+  else
+  {
+    //Current UpTime
+    strLabel = g_localizeStrings.Get(12390);
+    iInputMinutes = (int)(timeGetTime() / 60000);
+  }
+
+  SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  if (iDays > 0) 
+  {
+    strSystemUptime.Format("%s: %i %s, %i %s, %i %s",
+      strLabel,
+      iDays,g_localizeStrings.Get(12393),
+      iHours,g_localizeStrings.Get(12392),
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  else if (iDays == 0 && iHours >= 1 )
+  {
+    strSystemUptime.Format("%s: %i %s, %i %s",
+      strLabel, 
+      iHours,g_localizeStrings.Get(12392),
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
+  {
+    strSystemUptime.Format("%s: %i %s",
+      strLabel, 
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  return strSystemUptime;
+}
 CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!
