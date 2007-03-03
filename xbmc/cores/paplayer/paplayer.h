@@ -36,7 +36,6 @@ public:
   virtual bool IsPaused() const { return m_bPaused; }
   virtual bool HasVideo() { return false; }
   virtual bool HasAudio() { return true; }
-  virtual void ToggleOSD() {}
   virtual void SwitchToNextLanguage() {}
   virtual void ToggleSubtitles() {}
   virtual void ToggleFrameDrop() {}

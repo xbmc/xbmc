@@ -24,8 +24,7 @@ public:
   bool OpenStream(CDVDStreamInfo &hint);
   void CloseStream(bool bWaitForBuffers);
 
-  void Pause();
-  void Resume();
+  void StepFrame();
   void Flush();
 
   // waits untill all available data has been rendered
