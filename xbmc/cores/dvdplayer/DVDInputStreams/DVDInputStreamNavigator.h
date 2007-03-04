@@ -65,7 +65,7 @@ public:
   int GetTotalButtons();
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
-  bool IsInMenu();
+  bool IsInMenu() { return m_bInMenu; }
   bool IsHeld();
 
   int GetActiveSubtitleStream();
@@ -98,12 +98,11 @@ public:
   
   __int64 GetTimeStampCorrection() { return (m_iVobUnitCorrection * 1000) / 90; }
 protected:
-  void Lock()   { EnterCriticalSection(&m_critSection); }
-  void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   int ProcessBlock(BYTE* buffer, int* read);
   
   void CheckButtons();
+  void CheckMenu();
   
   /**
    * XBMC     : the audio stream id we use in xbmc
@@ -130,6 +129,7 @@ protected:
   int m_iTime;
   __int64 m_iCellStart; // start time of current cell in pts units (90khz clock)
 
+  bool m_bInMenu;
 
   __int64 m_iVobUnitStart;
   __int64 m_iVobUnitStop;
@@ -141,5 +141,4 @@ protected:
   
   BYTE m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int  m_lastevent;
-  CRITICAL_SECTION m_critSection;
 };

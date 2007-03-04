@@ -15,20 +15,18 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
 {
   m_dvdnav = 0;
   m_pDVDPlayer = player;
-  InitializeCriticalSection(&m_critSection);
   m_bCheckButtons = false;
   m_iCellStart = 0;
   m_iVobUnitStart = 0LL;
   m_iVobUnitStop = 0LL;
   m_iVobUnitCorrection = 0LL;
-
+  m_bInMenu = false;
   m_holdmode = HOLDMODE_NONE;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 {
   Close();
-  DeleteCriticalSection(&m_critSection);
 }
 
 bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content)
@@ -377,6 +375,8 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
           break;
         }
+        
+        CheckMenu();
 
         int tt = 0, ptt = 0;
         uint32_t pos, len;
@@ -389,17 +389,6 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_icurrentGroupId = (ptt * 1000) + tt;
         //Get total segment time        
         
-        
-        // this was not correct.. the values stored in hour/minute/second is stored quite weird
-        // (hour >> 4) * 10 + hour & 0x0f would have been correct for them all.
-        //vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);        
-        //if (vm)
-        //{
-        //  m_iTotalTime = vm->state.pgc->playback_time.hour * 3600;
-        //  m_iTotalTime += vm->state.pgc->playback_time.minute * 60;
-        //  m_iTotalTime += vm->state.pgc->playback_time.second;
-        //  m_iTotalTime *= 1000;
-        //}
 
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
@@ -689,23 +678,21 @@ bool CDVDInputStreamNavigator::IsHeld()
   return m_holdmode == HOLDMODE_HELD;
 }
 
-bool CDVDInputStreamNavigator::IsInMenu()
+void CDVDInputStreamNavigator::CheckMenu()
 {
-  if (!m_dvdnav) return false;
-
   //unsigned int iButton = (m_dll.dvdnav_get_vm(m_dvdnav)->state.HL_BTNN_REG >> 10);
   pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-  if (pci->hli.hl_gi.hli_ss > 0) return true;
+  if (pci->hli.hl_gi.hli_ss > 0) 
+  {
+    m_bInMenu = true;
+    return;
+  }
 
   int iTitle, iPart;
-
-  //if (DVDNAV_STATUS_OK != m_dll.dvdnav_current_title_info(m_dvdnav, &iTitle, &iPart))
-  //return (iTitle == 0);
   m_dll.dvdnav_current_title_info(m_dvdnav, &iTitle, &iPart);
 
   // if we are not in a vts domain, we are probably in a menu
-  return (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav) || iTitle == 0);
-  return false;
+  m_bInMenu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav) || iTitle == 0);
 }
 
 int CDVDInputStreamNavigator::GetActiveSubtitleStream()

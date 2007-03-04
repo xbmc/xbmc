@@ -695,19 +695,18 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
   //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
-      CUtil::IsUsingTTFSubtitles() &&
-      g_application.m_pPlayer->GetSubtitleVisible() &&
-      m_subtitleFont)
+      CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
   {
     CSingleLock lock (m_fontLock);
 
-    g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    if(!m_subtitleFont)
+      return;    
 
     CStdString subtitleText = "";
-    if (g_application.m_pPlayer && g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
-    {
-
-      int res = g_graphicsContext.GetVideoResolution();
+    if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
+    {      
+      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+      g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
       float w;
       float h;
