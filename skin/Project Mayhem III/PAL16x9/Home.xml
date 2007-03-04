@@ -483,14 +483,14 @@
 					<posx>77</posx>
 					<posy>429</posy>
 					<width>15</width>
-					<height>17</height>
+					<height>19</height>
 					<texture>homebutton-small.png</texture>
 				</control>
 				<control type="image" id="0">
 					<posx>191</posx>
 					<posy>429</posy>
 					<width>15</width>
-					<height>17</height>
+					<height>19</height>
 					<texture>homebutton-small.png</texture>
 				</control>
 				<control type="button" id="9">
@@ -498,7 +498,7 @@
 					<posx>80</posx>
 					<posy>432</posy>
 					<width>9</width>
-					<height>8</height>
+					<height>11</height>
 					<label>5</label>
 					<font>font10</font>
 					<onclick>ActivateWindow(4)</onclick>
@@ -515,7 +515,7 @@
 					<posx>194</posx>
 					<posy>432</posy>
 					<width>9</width>
-					<height>8</height>
+					<height>11</height>
 					<label>7</label>
 					<onclick>ActivateWindow(MyFiles)</onclick>
 					<font>font10</font>
@@ -537,12 +537,52 @@
 				<texture>home_buttons.png</texture>
 				<include>homebuttonanimation</include>
 			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>225</posy>
+				<width>22</width>
+				<height>29</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>264</posy>
+				<width>22</width>
+				<height>29</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>303</posy>
+				<width>22</width>
+				<height>29</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>342</posy>
+				<width>22</width>
+				<height>29</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>381</posy>
+				<width>22</width>
+				<height>29</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
 			<control type="button" id="2">
 				<description>My Programs normal push button</description>
 				<posx>91</posx>
-				<posy>231</posy>
+				<posy>229</posy>
 				<width>14</width>
-				<height>12</height>
+				<height>17</height>
 				<label>0</label>
 				<font>special13</font>
 				<onclick>ActivateWindow(MyPrograms)</onclick>
@@ -558,9 +598,9 @@
 			<control type="button" id="4">
 				<description>My Pictures normal push button</description>
 				<posx>91</posx>
-				<posy>270</posy>
+				<posy>268</posy>
 				<width>14</width>
-				<height>12</height>
+				<height>17</height>
 				<label>1</label>
 				<onclick>ActivateWindow(MyPictures)</onclick>
 				<font>special13</font>
@@ -576,9 +616,9 @@
 			<control type="button" id="5">
 				<description>My Videos normal push button</description>
 				<posx>91</posx>
-				<posy>309</posy>
+				<posy>307</posy>
 				<width>14</width>
-				<height>12</height>
+				<height>17</height>
 				<label>3</label>
 				<font>special13</font>
 				<onclick>ActivateWindow(MyVideos)</onclick>
@@ -594,9 +634,9 @@
 			<control type="button" id="3">
 				<description>My Music normal push button</description>
 				<posx>91</posx>
-				<posy>348</posy>
+				<posy>346</posy>
 				<width>14</width>
-				<height>12</height>
+				<height>17</height>
 				<label>2</label>
 				<onclick>ActivateWindow(MyMusic)</onclick>
 				<font>special13</font>
@@ -612,9 +652,9 @@
 			<control type="button" id="7">
 				<description>My Weather normal push button</description>
 				<posx>91</posx>
-				<posy>387</posy>
+				<posy>385</posy>
 				<width>14</width>
-				<height>12</height>
+				<height>17</height>
 				<label>8</label>
 				<font>special13</font>
 				<onclick>ActivateWindow(Weather)</onclick>
