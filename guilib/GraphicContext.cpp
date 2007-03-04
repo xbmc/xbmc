@@ -148,8 +148,20 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport.Y = newTop;
   newviewport.Width = newRight - newLeft;
   newviewport.Height = newBottom - newTop;
-  Get3DDevice()->SetViewport(&newviewport);
+  m_pd3dDevice->SetViewport(&newviewport);
   m_viewStack.push(oldviewport);
+
+  // set d3d transforms to follow same viewport
+  // this is cause after a viewport is set, the viewports left cordinate gets
+  // remapped to 0 and it's right cordinate is backbuffer width. we however 
+  // normally render using global cordinates, and only use viewport for clipping
+  D3DXMATRIX matrix;
+  D3DXMatrixOrthoOffCenterRH(&matrix, 
+    (float)newLeft, (float)newRight, 
+    (float)newBottom, (float)newTop, 
+    0.0f, 1.0f);
+  m_pd3dDevice->SetTransform( D3DTS_PROJECTION, &matrix );
+
   return true;
 }
 
@@ -159,6 +171,15 @@ void CGraphicContext::RestoreViewPort()
   D3DVIEWPORT8 *oldviewport = (D3DVIEWPORT8*)m_viewStack.top();
   m_viewStack.pop();
   Get3DDevice()->SetViewport(oldviewport);
+
+  // set d3d transforms to follow same viewport
+  D3DXMATRIX matrix;
+  D3DXMatrixOrthoOffCenterRH(&matrix, 
+    (float)oldviewport->X, (float)(oldviewport->X + oldviewport->Width), 
+    (float)(oldviewport->Y + oldviewport->Height), (float)oldviewport->Y, 
+    0.0f, 1.0f);
+  m_pd3dDevice->SetTransform( D3DTS_PROJECTION, &matrix );
+
   if (oldviewport) delete oldviewport;
 }
 
