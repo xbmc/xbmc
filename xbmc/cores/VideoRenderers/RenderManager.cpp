@@ -313,9 +313,11 @@ void CXBoxRenderManager::PresentBob()
   {
     /* if no present time, assume we are in a hurry */
     /* try to present first field directly          */
+    DWORD interval;
+    D3D__pDevice->GetRenderState(D3DRS_PRESENTATIONINTERVAL, &interval);
     D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_IMMEDIATE);
     D3D__pDevice->Present( NULL, NULL, NULL, NULL );
-    D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_ONE);
+    D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
 
   /* render second field */
