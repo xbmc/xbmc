@@ -65,7 +65,7 @@ protected:
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(WCHAR letter);
   bool CacheCharacter(WCHAR letter, Character *ch);
-  inline void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
+  inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor);
   void CreateShader();
   void ClearCharacterCache();
 
@@ -80,6 +80,7 @@ protected:
   int m_posY;
 
   Character *m_char;                 // our characters
+  Character *m_charquick[255];       // ascii chars here
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
 
