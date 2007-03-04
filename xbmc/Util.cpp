@@ -1169,8 +1169,14 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
   CLog::Log(LOGDEBUG, __FUNCTION__" - Filter Flicker Patching done. Starting %s.",szNewPath.c_str());
   return true;
 }
+
 void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
+  // check if locked
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return;
+
   /// \brief Runs an executable file
   /// \param szPath1 Path of executeable to run
   /// \param szParameters Any parameters to pass to the executeable being run
