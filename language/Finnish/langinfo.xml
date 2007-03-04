@@ -12,13 +12,18 @@
   </dvd>
 
   <regions>
-      <region name="Finland">
+     <region name="Finland">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>D. MMMM'ta 'YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-    </region>
+     </region>
   </regions>
+
+  <sorttokens>
+    <token>The</token>
+  </sorttokens>
+
 </language>
 
