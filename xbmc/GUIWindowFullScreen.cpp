@@ -312,13 +312,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
   case ACTION_SMALL_STEP_BACK:
     {
-      // unpause the player so that it seeks nicely
-      bool bNeedPause(false);
-      if (g_application.m_pPlayer->IsPaused())
-      {
-        g_application.m_pPlayer->Pause();
-        bNeedPause = true;
-      }
       int orgpos = (int)g_application.GetTime();
       int triesleft = g_advancedSettings.m_videoSmallStepBackTries;
       int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
@@ -332,8 +325,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         newpos = (int)g_application.GetTime();
       }
       while ( (newpos > orgpos - jumpsize) && (setpos > 0) && (--triesleft > 0));
-      // repause player if needed
-      if (bNeedPause) g_application.m_pPlayer->Pause();
 
       //Make sure gui items are visible
       g_infoManager.SetDisplayAfterSeek();
@@ -753,19 +744,10 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
       im *= 60;
       ih *= 3600;
       itotal = ih + im + is;
-      bool bNeedsPause(false);
-      if (g_application.m_pPlayer->IsPaused())
-      {
-        bNeedsPause = true;
-        g_application.m_pPlayer->Pause();
-      }
+
       if (itotal < g_application.GetTotalTime())
         g_application.SeekTime((double)itotal);
-      if (bNeedsPause)
-      {
-        Sleep(g_advancedSettings.m_videoSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
-        g_application.m_pPlayer->Pause();
-      }
+
       m_timeCodePosition = 0;
       m_timeCodeShow = false;
     }
