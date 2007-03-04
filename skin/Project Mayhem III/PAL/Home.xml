@@ -542,6 +542,46 @@
 				<texture>home_buttons.png</texture>
 				<include>homebuttonanimation</include>
 			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>221</posy>
+				<width>22</width>
+				<height>22</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>260</posy>
+				<width>22</width>
+				<height>22</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>299</posy>
+				<width>22</width>
+				<height>22</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>338</posy>
+				<width>22</width>
+				<height>22</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
+			<control type="image">
+				<posx>87</posx>
+				<posy>377</posy>
+				<width>22</width>
+				<height>22</height>
+				<texture>homebutton-small.png</texture>
+				<include>homebuttonanimation</include>
+			</control>
 			<control type="button" id="2">
 				<description>My Programs normal push button</description>
 				<posx>91</posx>
@@ -563,7 +603,7 @@
 			<control type="button" id="4">
 				<description>My Pictures normal push button</description>
 				<posx>91</posx>
-				<posy>264</posy>
+				<posy>263</posy>
 				<width>14</width>
 				<height>12</height>
 				<label>1</label>
