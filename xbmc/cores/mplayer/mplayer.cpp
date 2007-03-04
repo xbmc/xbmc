@@ -2106,7 +2106,10 @@ void CMPlayer::WaitOnCommand()
   if( OwningCriticalSection(g_graphicsContext) ) return;
 
   if( m_bPaused )
+  {
     mplayer_process();
+    mplayer_process();
+  }
   else
   {
     //Wait till process has finished twice, 
