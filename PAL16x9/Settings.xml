@@ -88,7 +88,7 @@
 			<description>My Videos</description>
 			<posx>210</posx>
 			<posy>150</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-videos-focus.png</texturefocus>
 			<texturenofocus>settings-videos-nofocus.png</texturenofocus>
@@ -103,14 +103,14 @@
 			<ondown>10</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="210,150,100,120" end="200,140,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="210,150,100,120" start="200,140,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="210,150,90,120" end="200,140,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="210,150,90,120" start="200,140,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="7">
 			<description>My Music</description>
 			<posx>330</posx>
 			<posy>150</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-music-focus.png</texturefocus>
 			<texturenofocus>settings-music-nofocus.png</texturenofocus>
@@ -125,14 +125,14 @@
 			<ondown>2</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="330,150,100,120" end="320,140,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="330,150,100,120" start="320,140,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="330,150,90,120" end="320,140,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="330,150,90,120" start="320,140,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="9">
 			<description>My Pictures</description>
 			<posx>450</posx>
 			<posy>150</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-pictures-focus.png</texturefocus>
 			<texturenofocus>settings-pictures-nofocus.png</texturenofocus>
@@ -147,14 +147,14 @@
 			<ondown>4</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="450,150,100,120" end="440,140,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="450,150,100,120" start="440,140,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="450,150,90,120" end="440,140,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="450,150,90,120" start="440,140,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="8">
 			<description>My Programs</description>
 			<posx>570</posx>
 			<posy>150</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-programs-focus.png</texturefocus>
 			<texturenofocus>settings-programs-nofocus.png</texturenofocus>
@@ -169,14 +169,14 @@
 			<ondown>3</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="570,150,100,120" end="560,140,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="570,150,100,120" start="560,140,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="570,150,90,120" end="560,140,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="570,150,90,120" start="560,140,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="10">
 			<description>My Weather</description>
 			<posx>210</posx>
 			<posy>325</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-weather-focus.png</texturefocus>
 			<texturenofocus>settings-weather-nofocus.png</texturenofocus>
@@ -191,14 +191,14 @@
 			<ondown>6</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="210,325,100,120" end="200,315,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="210,325,100,120" start="200,315,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="210,325,90,120" end="200,315,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="210,325,90,120" start="200,315,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="2">
 			<description>Network</description>
 			<posx>330</posx>
 			<posy>325</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-network-focus.png</texturefocus>
 			<texturenofocus>settings-network-nofocus.png</texturenofocus>
@@ -213,14 +213,14 @@
 			<ondown>7</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="330,325,100,120" end="320,315,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="330,325,100,120" start="320,315,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="330,325,90,120" end="320,315,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="330,325,90,120" start="320,315,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="4">
 			<description>System</description>
 			<posx>450</posx>
 			<posy>325</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-system-focus.png</texturefocus>
 			<texturenofocus>settings-system-nofocus.png</texturenofocus>
@@ -235,14 +235,14 @@
 			<ondown>9</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="450,325,100,120" end="440,315,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="450,325,100,120" start="440,315,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="450,325,90,120" end="440,315,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="450,325,90,120" start="440,315,110,140" time="100">unfocus</animation>
 		</control>
 		<control type="button" id="3">
 			<description>Appearance</description>
 			<posx>570</posx>
 			<posy>325</posy>
-			<width>100</width>
+			<width>90</width>
 			<height>120</height>
 			<texturefocus>settings-appearance-focus.png</texturefocus>
 			<texturenofocus>settings-appearance-nofocus.png</texturenofocus>
@@ -257,8 +257,8 @@
 			<ondown>8</ondown>
 			<pulseonselect>no</pulseonselect>
 			<include>contentpanelslide</include>
-			<animation effect="zoom" start="570,325,100,120" end="560,315,120,140" time="100">focus</animation>
-			<animation effect="zoom" end="570,325,100,120" start="560,315,120,140" time="100">unfocus</animation>
+			<animation effect="zoom" start="570,325,90,120" end="560,315,110,140" time="100">focus</animation>
+			<animation effect="zoom" end="570,325,90,120" start="560,315,110,140" time="100">unfocus</animation>
 		</control>
 		<include>windowswitchtransition</include>
 	</controls>
