@@ -157,8 +157,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   // normally render using global cordinates, and only use viewport for clipping
   D3DXMATRIX matrix;
   D3DXMatrixOrthoOffCenterRH(&matrix, 
-    (float)newLeft, (float)newRight, 
-    (float)newBottom, (float)newTop, 
+    (float)newLeft+0.5f, (float)newRight+0.5f, 
+    (float)newBottom+0.5f, (float)newTop+0.5f, 
     0.0f, 1.0f);
   m_pd3dDevice->SetTransform( D3DTS_PROJECTION, &matrix );
 
@@ -175,8 +175,8 @@ void CGraphicContext::RestoreViewPort()
   // set d3d transforms to follow same viewport
   D3DXMATRIX matrix;
   D3DXMatrixOrthoOffCenterRH(&matrix, 
-    (float)oldviewport->X, (float)(oldviewport->X + oldviewport->Width), 
-    (float)(oldviewport->Y + oldviewport->Height), (float)oldviewport->Y, 
+    (float)oldviewport->X+0.5f, (float)(oldviewport->X + oldviewport->Width)+0.5f, 
+    (float)(oldviewport->Y + oldviewport->Height)+0.5f, (float)oldviewport->Y+0.5f, 
     0.0f, 1.0f);
   m_pd3dDevice->SetTransform( D3DTS_PROJECTION, &matrix );
 
