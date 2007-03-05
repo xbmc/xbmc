@@ -62,7 +62,6 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 #define DISP_DDRAM_SET		  0x80 // cmd: set DDRAM address in address counter
 
 char AnimIndex=0;
-CSysInfo g_Sysinfo;
 
 //*************************************************************************************************************
 CSmartXXLCD::CSmartXXLCD()
