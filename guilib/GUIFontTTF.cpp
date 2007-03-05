@@ -64,12 +64,7 @@ private:
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
-
-#ifdef HAS_XBOX_D3D
-#define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
-#else
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
-#endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
@@ -588,10 +583,6 @@ void CGUIFontTTF::Begin()
 
     m_pD3DDevice->SetVertexShader(m_vertexShader);
     m_pD3DDevice->SetPixelShader(m_pixelShader);
-
-#ifdef HAS_XBOX_D3D
-    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
-#endif
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
@@ -608,9 +599,6 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-#ifdef HAS_XBOX_D3D
-    m_pD3DDevice->SetScreenSpaceOffset(0, 0);
-#endif
 }
 
 void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor)
