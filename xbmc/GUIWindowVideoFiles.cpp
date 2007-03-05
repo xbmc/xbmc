@@ -4,6 +4,7 @@
 #include "Picture.h"
 #include "Utils/IMDB.h"
 #include "Utils/HTTP.h"
+#include "Utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
@@ -246,13 +247,16 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   SScraperInfo info2;
 
   g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
+  g_infoManager.m_content = "files";
+
   if (m_database.GetScraperForPath(strDirectory,info2.strPath,info2.strContent)) // dont stack in tv dirs
+  {
     if (info2.strContent.Equals("tvshows"))
     {
       g_stSettings.m_iMyVideoStack |= STACK_UNAVAILABLE;
       return true;
     }
-
+  }
   if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
 

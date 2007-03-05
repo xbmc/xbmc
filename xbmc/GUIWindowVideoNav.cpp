@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
+#include "utils/GUIInfoManager.h"
 #include "util.h"
 #include "PlayListM3U.h"
 #include "application.h"
@@ -180,6 +181,19 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       items.SetCachedVideoThumbs();
       m_thumbLoader.Load(m_vecItems);
+    }
+    else
+    {
+      DIRECTORY::CVideoDatabaseDirectory dir;
+      DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+      if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES)
+        g_infoManager.m_content = "episodes";
+      else if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MOVIES)
+        g_infoManager.m_content = "movies";
+      else if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS)
+        g_infoManager.m_content = "tvshows";
+      else
+        g_infoManager.m_content = "";
     }
   }
 

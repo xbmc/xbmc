@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
 #include "util.h"
+#include "Utils/GUIInfoManager.h"
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
@@ -218,6 +219,17 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_thumbLoader.Load(m_vecItems);
     }
   }
+
+  DIRECTORY::CMusicDatabaseDirectory dir;
+  DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+  if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
+    g_infoManager.m_content = "albums";
+  else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST)
+    g_infoManager.m_content = "artists";
+  else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_SONG)
+    g_infoManager.m_content = "songs";
+  else
+    g_infoManager.m_content = "";
 
   return bResult;
 }
