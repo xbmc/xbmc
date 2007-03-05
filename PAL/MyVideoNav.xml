@@ -141,6 +141,7 @@
 		<include>VideoViewCommons_BigList</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>VideoDVDThumbLarge</include>
 		<include>VideoDVDWrapView</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
