@@ -6,7 +6,7 @@ md BUILD
 
 ECHO ------------------------------
 ECHO Creating XPR Files...
-CALL media\XBMCTex -quality max -output media -noprotect
+media\XBMCTex.exe -input media -quality max -output media -noprotect
 
 ECHO ------------------------------
 ECHO Copying XPR Files...
