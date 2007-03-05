@@ -1,0 +1,98 @@
+﻿<window id="102">
+	<defaultcontrol>30</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<description>Dialog Background</description>
+			<posx>165</posx>
+			<posy>177</posy>
+			<width>390</width>
+			<height>273</height>
+			<texture>dialog-panel.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>Send Invitation Heading</description>
+			<posx>190</posx>
+			<posy>191</posy>
+			<label>15054</label>
+			<font>special13</font>
+		</control>
+		<control type="label" id="1">
+			<description>Choose Game</description>
+			<posx>190</posx>
+			<posy>230</posy>
+			<label>15055</label>
+			<font>font12</font>
+		</control>
+		<control type="spincontrol" id="30">
+			<description>Games Spin Control</description>
+			<font>font12</font>
+			<posx>215</posx>
+			<posy>260</posy>
+			<align>left</align>
+			<onleft>30</onleft>
+			<onright>30</onright>
+			<onup>10</onup>
+			<ondown>20</ondown>
+		</control>
+		<control type="label" id="4">
+			<description>Enter Message</description>
+			<posx>190</posx>
+			<posy>300</posy>
+			<label>15056</label>
+			<font>font12</font>
+		</control>
+		<control type="button" id="20">
+			<description>Message Field</description>
+			<posx>190</posx>
+			<posy>325</posy>
+			<width>350</width>
+			<label>15060</label>
+			<font>font12</font>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<onleft>20</onleft>
+			<onright>20</onright>
+			<onup>30</onup>
+			<ondown>10</ondown>
+		</control>
+		<control type="button" id="10">
+			<description>Send button</description>
+			<posx>383</posx>
+			<posy>380</posy>
+			<width>77</width>
+			<height>32</height>
+			<label>15057</label>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>10</onleft>
+			<onright>11</onright>
+			<onup>20</onup>
+			<ondown>30</ondown>
+		</control>
+		<control type="button" id="11">
+			<description>Cancel button</description>
+			<posx>463</posx>
+			<posy>380</posy>
+			<width>77</width>
+			<height>32</height>
+			<label>222</label>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>10</onleft>
+			<onright>11</onright>
+			<onup>20</onup>
+			<ondown>30</ondown>
+		</control>
+	</controls>
+</window>

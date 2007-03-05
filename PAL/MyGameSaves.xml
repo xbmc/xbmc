@@ -1,0 +1,87 @@
+<window id="35">
+	<defaultcontrol>50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-apps.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>20315</label>
+			<font>special13</font>
+		</control>
+		<include>contentpanel</include>
+		<control type="label" id="12">
+			<description>number of files text label</description>
+			<posx>545</posx>
+			<posy>540</posy>
+			<align>right</align>
+			<label>-</label>
+			<font>font10</font>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>-20</posy>
+			<include>buttonpanelslide</include>
+			<control type="button" id="2">
+				<description>View As Icons button</description>
+				<posx>0</posx>
+				<posy>120</posy>
+				<label>100</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+			</control>
+			<control type="button" id="3">
+				<description>Sort by button</description>
+				<posx>0</posx>
+				<posy>157</posy>
+				<label>103</label>
+				<onleft>50</onleft>
+				<onright>4</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+			<control type="togglebutton" id="4">
+				<description>Sort asc</description>
+				<label>-</label>
+				<onleft>3</onleft>
+				<onright>50</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+		</control>
+		<include>OldListViewCommons</include>
+		<include>ProgramsViewCommons</include>
+		<include>AllViewCommonThumbSmall</include>
+		<include>AllViewCommonThumbLarge</include>
+		<include>AllViewCommonPageControls</include>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>
