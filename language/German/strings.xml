@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 02/28/2007-->
+<!--Date of translation: 03/05/2007-->
 <!--$Revision:$-->
 <!--Based on english strings version 7958-->
 <strings>
@@ -1450,8 +1450,8 @@
   <string id="20325">Kalibrierung zurücksetzen</string>
   <string id="20326">Dies setzt den Kalibrierwert für %s</string>
   <string id="20327">auf den Standardwert zurück</string>
-  <string id="20328">Ziel für 'Spielstand kopieren'</string>
-  <string id="20329">Ziel für 'Spielstand verschieben'</string>
+  <string id="20328">Speicherort um den Spielstand zu kopieren</string>
+  <string id="20329">Speicherort um den Spielstand zu verschieben</string>
   <string id="20330">Ordnernamen für Anfragen verwenden</string>
   <string id="20331">Dateinamen</string>
   <string id="20332">Möchten Sie Datei- oder Ordnernamen für Anfragen verwenden?</string>
