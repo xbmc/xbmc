@@ -12,7 +12,7 @@
 		<!-- codec & viz infos -->
 		<control type="group" id="0">
 			<visible>Player.ShowCodec</visible>
-			<animation effect="fade" time="300">VisibleChange</animation>
+			<animation effect="fade" time="500">VisibleChange</animation>
 			<control type="image" id="0">
 				<description>preset background image</description>
 				<posx>-10</posx>
@@ -65,7 +65,7 @@
 			<posx>-10</posx>
 			<posy>410</posy>
 			<visible>Player.ShowInfo</visible>
-			<animation effect="fade" time="1000">VisibleChange</animation>
+			<animation effect="fade" time="500">VisibleChange</animation>
 			<control type="image" id="1">
 				<description>media info background image</description>
 				<posx>0</posx>

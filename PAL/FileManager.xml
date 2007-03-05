@@ -48,7 +48,6 @@
 				<posy>495</posy>
 				<label>-</label>
 				<font>font12</font>
-				<include>contentpanelslide</include>
 			</control>
 			<control type="label" id="13">
 				<description>number of files in right list text label</description>
@@ -107,8 +106,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="slide" time="300" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-			<animation effect="slide" time="200" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<include>contentpanelslide</include>
 			<visible>System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
@@ -152,8 +150,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="slide" time="300" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-			<animation effect="slide" time="200" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<include>contentpanelslide</include>
 			<visible>System.HasDriveF + !System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
@@ -188,8 +185,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="slide" time="300" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-			<animation effect="slide" time="200" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<include>contentpanelslide</include>
 			<visible>!System.HasDriveF + !System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
