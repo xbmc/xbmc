@@ -299,9 +299,14 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   if (CFile::Exists(strCache))
     CFile::Delete(strCache);
 
-  // find and cache disc thumbnail
+  // find and cache disc thumbnail, and update label to xbe label if applicable
   if (IsDiscInDrive() && !bCDDA)
   {
+    // update disk label to xbe label if we have that info
+    if (CFile::Exists("D:\\default.xbe"))
+      CUtil::GetXBEDescription("D:\\default.xbe", m_diskLabel);
+
+    // and get the thumb
     CStdString strThumb;
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
