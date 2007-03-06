@@ -238,7 +238,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
-    sy -= m_cellHeight * 0.5f;
+    sy -= (m_cellHeight-2)*0.5f;
 
   // Check if we will really need to truncate the CStdString
   if ( dwFlags & XBFONT_TRUNCATED && fMaxPixelWidth <= 0.0f )
