@@ -39,6 +39,7 @@ public:
 #define PyLong_Type (*((PyTypeObject*)pointer_PyLong_Type))
 #define PyInt_Type (*((PyTypeObject*)pointer_PyInt_Type))
 #define PyUnicode_Type (*((PyTypeObject*)pointer_PyUnicode_Type))
+#define PyTuple_Type (*((PyTypeObject*)pointer_PyTuple_Type))
 
 #define DLL_ORD_FUNCTION(ord, function) "hapdbg.dll", ord, (void**)&p_##function
 
@@ -235,7 +236,8 @@ extern "C"
   DATA_OBJECT(PyLong_Type);
   DATA_OBJECT(PyInt_Type);
   DATA_OBJECT(PyUnicode_Type);
-  
+  DATA_OBJECT(PyTuple_Type);
+
   bool python_load_dll(DllLoader& dll)
   {
     bool bResult;
@@ -310,7 +312,8 @@ extern "C"
                 dll.ResolveExport(DLL_OBJECT_DATA(PyList_Type)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyLong_Type)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyInt_Type)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)));
+                dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
+                dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)));
 
     return bResult;
   }
