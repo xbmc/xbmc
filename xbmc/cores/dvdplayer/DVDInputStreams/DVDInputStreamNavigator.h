@@ -102,7 +102,6 @@ protected:
   int ProcessBlock(BYTE* buffer, int* read);
   
   void CheckButtons();
-  void CheckMenu();
   
   /**
    * XBMC     : the audio stream id we use in xbmc
