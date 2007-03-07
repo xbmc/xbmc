@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/28/2007-->
+<!--Date of translation: 03/07/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7958-->
+<!--Based on english strings version 8036-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1504,5 +1504,6 @@ den här visualiseringen</string>
   <string id="21380">Aktivera 1080i</string>
   <string id="21381">Ange namn på den nya spellistan</string>
   <string id="21382">Inaktivera Lägg till källa knappar i fillistan</string>
-  <string id="29999">Auto fladderfilter lagning</string>
+  <string id="21383">Aktivera skrollhandtag</string>
+  <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
