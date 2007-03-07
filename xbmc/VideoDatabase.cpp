@@ -642,7 +642,7 @@ long CVideoDatabase::AddTvShow(const CStdString& strPath)
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
-    strSQL=FormatSQL("insert into tvshowlinkpath values (%i,%i)",lTvShow,lPathId);
+    strSQL=FormatSQL("insert into tvshowlinkpath values (%u,%u)",lTvShow,lPathId);
     m_pDS->exec(strSQL.c_str());
 
     CommitTransaction();
@@ -1862,11 +1862,13 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
     }
 
     BeginTransaction();
-    CStdString strSQL=FormatSQL("select idepisode from tvshowlinkepisode where tvshowlinkepisode.idshow=%u",lTvShowId);
+    CStdString strSQL=FormatSQL("select tvshowlinkepisode.idepisode,path.strPath,files.strFileName from tvshowlinkepisode,path,files where tvshowlinkepisode.idshow=%u and tvshowlinkepisode.idepisode=files.idEpisode and files.idPath=path.idPath",lTvShowId);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      DeleteEpisode("",m_pDS2->fv(0).get_asLong());
+      CStdString strPath;
+      CUtil::AddFileToFolder(m_pDS2->fv("path.strPath").get_asString(),m_pDS2->fv("files.strFilename").get_asString(),strPath);
+      DeleteEpisode(strPath,m_pDS2->fv(0).get_asLong());
       m_pDS2->next();
     }
 
@@ -1877,6 +1879,9 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from directorlinktvshow where idshow=%i", lTvShowId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL=FormatSQL("delete from tvshowlinkpath where idshow=%u", lTvShowId);
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from tvshow where idshow=%i", lTvShowId);
@@ -1923,7 +1928,8 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     strSQL=FormatSQL("select tvshowlinkepisode.idshow from tvshowlinkepisode where idepisode=%u",lEpisodeId);
     m_pDS->query(strSQL.c_str());
 
-    strSQL=FormatSQL("update tvshow set c%02d=c%02d-1 where idshow=%u",VIDEODB_ID_TV_EPISODES,VIDEODB_ID_TV_EPISODES,m_pDS->fv(0).get_asString());
+    long idShow = m_pDS->fv(0).get_asLong();
+    strSQL=FormatSQL("update tvshow set c%02d=c%02d-1 where idshow=%u",VIDEODB_ID_TV_EPISODES,VIDEODB_ID_TV_EPISODES,idShow);
     m_pDS->exec(strSQL);
 
     strSQL=FormatSQL("delete from tvshowlinkepisode where idepisode=%i", lEpisodeId);
@@ -2363,10 +2369,13 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // find the movie in the db
   long movieID = -1;
-  if (item.m_musicInfoTag.GetURL().IsEmpty())
-    movieID = GetMovieInfo(item.m_strPath);
-  else
-    movieID = atol(item.m_musicInfoTag.GetURL().c_str());
+  if (item.m_musicInfoTag.GetTrackNumber() == 0) // movie
+  {
+    if (item.m_musicInfoTag.GetURL().IsEmpty())
+      movieID = GetMovieInfo(item.m_strPath);
+    else
+      movieID = atol(item.m_musicInfoTag.GetURL().c_str());
+  }
   bool bEpisode=false;
   if (movieID < 0)
   {
@@ -3978,6 +3987,7 @@ void CVideoDatabase::CleanDatabase()
 
     CStdString filesToDelete = "(";
     CStdString moviesToDelete = "(";
+    CStdString episodesToDelete = "(";
     int total = m_pDS->num_rows();
     int current = 0;
     while (!m_pDS->eof())
@@ -4005,6 +4015,7 @@ void CVideoDatabase::CleanDatabase()
       { // mark for deletion
         filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
         moviesToDelete += m_pDS->fv("files.idMovie").get_asString() + ",";
+        episodesToDelete += m_pDS->fv("files.idEpisode").get_asString() + ",";
       }
       if ((current % 50) == 0 && progress)
       {
@@ -4025,6 +4036,8 @@ void CVideoDatabase::CleanDatabase()
     filesToDelete += ")";
     moviesToDelete.TrimRight(",");
     moviesToDelete += ")";
+    episodesToDelete.TrimRight(",");
+    episodesToDelete += ")";
 
     if (progress)
     {
@@ -4048,10 +4061,6 @@ void CVideoDatabase::CleanDatabase()
     sql = "delete from stacktimes where idFile in " + filesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
-    sql = "delete from path where idPath not in (select distinct idPath from files)";
-    m_pDS->exec(sql.c_str());
-
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning movie table");
     sql = "delete from movie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
@@ -4060,20 +4069,64 @@ void CVideoDatabase::CleanDatabase()
     sql = "delete from actorlinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning directorlinkmovie table");
     sql = "delete from directorlinkmovie where idMovie in " + moviesToDelete;
-    m_pDS->exec(sql.c_str());
-
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
     sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning episode table");
+    sql = "delete from episode where idEpisode in " + episodesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinkepisode table");
+    sql = "delete from actorlinkepisode where idEpisode in " + episodesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning directorlinkepisode table");
+    sql = "delete from directorlinkepisode where idEpisode in " + episodesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning tvshowlinkepisode table");
+    sql = "delete from tvshowlinkepisode where idEpisode in " + episodesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkepisode table");
+    sql = "delete from genrelinkepisode where idEpisode in " + episodesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning tvshow table");
+    sql = "delete from tvshow where idshow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinktvshow table");
+    sql = "delete from actorlinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning directorlinktvshow table");
+    sql = "delete from directorlinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning tvshowlinkpath table");
+    sql = "delete from tvshowlinkpath where idshow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinktvshow table");
+    sql = "delete from genrelinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
+    sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath)";
+    m_pDS->exec(sql.c_str());
+    
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
-    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie)";
+    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode)";
     m_pDS->exec(sql.c_str());
  
     CommitTransaction();
