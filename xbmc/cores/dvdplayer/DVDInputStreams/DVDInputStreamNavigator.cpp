@@ -376,8 +376,6 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           break;
         }
         
-        CheckMenu();
-
         int tt = 0, ptt = 0;
         uint32_t pos, len;
         char input = '\0';
@@ -417,6 +415,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
 
         pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
+        dsi_t* dsi = m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
 
         if(!pci)
         {
@@ -424,12 +423,25 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           break;
         }
         
+        /* if we have any buttons or are not in vts domain we assume we are in meny */
+        m_bInMenu = (pci->hli.hl_gi.btn_ns > 0) || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+
         /* check for any gap in the stream, this is likely a discontinuity */
         /* however libdvdnav seem to have a bug where it sometimes */
         /* misses a nav pack at times ( seems to be in multi angle dvd's ) */
-        __int64 gap = (__int64)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
-        __int64 length = m_iVobUnitStop - m_iVobUnitStart;
-        if(gap != 0 && gap != length)
+        __int64 gap = (__int64)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;        
+        
+        if(gap)
+        {
+          /* on multi angle dvd's allow a missed nav packet */
+          __int64 length = m_iVobUnitStop - m_iVobUnitStart;
+          int angle, anglecount;
+          if( DVDNAV_STATUS_OK == m_dll.dvdnav_get_angle_info(m_dvdnav, &angle, &anglecount) )
+            if(anglecount > 0 && gap > 0 && gap < length*2)
+              gap = 0;
+        }
+
+        if(gap)
         {
           /* make sure demuxer is flushed before we change any correction */
           if(m_holdmode == HOLDMODE_NONE)
@@ -676,23 +688,6 @@ void CDVDInputStreamNavigator::SkipHold()
 bool CDVDInputStreamNavigator::IsHeld()
 {
   return m_holdmode == HOLDMODE_HELD;
-}
-
-void CDVDInputStreamNavigator::CheckMenu()
-{
-  //unsigned int iButton = (m_dll.dvdnav_get_vm(m_dvdnav)->state.HL_BTNN_REG >> 10);
-  pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-  if (pci->hli.hl_gi.hli_ss > 0) 
-  {
-    m_bInMenu = true;
-    return;
-  }
-
-  int iTitle, iPart;
-  m_dll.dvdnav_current_title_info(m_dvdnav, &iTitle, &iPart);
-
-  // if we are not in a vts domain, we are probably in a menu
-  m_bInMenu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav) || iTitle == 0);
 }
 
 int CDVDInputStreamNavigator::GetActiveSubtitleStream()
