@@ -482,10 +482,6 @@ the incompatibility will be fixed in FreeBSD 6.
 #	define HAVE_DECLSPEC_DLL
 #endif
 
-#ifdef _XBOX
-#undef Py_ENABLE_SHARED
-#endif
-
 /* only get special linkage if built as shared or platform is Cygwin */
 #if defined(Py_ENABLE_SHARED) || defined(__CYGWIN__)
 #	if defined(HAVE_DECLSPEC_DLL)
