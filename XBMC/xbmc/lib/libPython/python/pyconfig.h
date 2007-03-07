@@ -44,6 +44,7 @@ MS_CORE_DLL.
 #define EXEC_PREFIX ""
 
 #define PYTHONPATH "Q:\\system\\python" // XBOX
+#define Py_NO_ENABLE_SHARED
 
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
