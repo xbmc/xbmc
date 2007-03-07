@@ -766,21 +766,17 @@ void CDVDPlayer::HandleMessages()
         
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
-          // We can't seek in a menu
-          if (!IsInMenu())
+          // need to get the seek based on file positition working in CDVDInputStreamNavigator
+          // so that demuxers can control the stream (seeking in this case)
+          // for now use time based seeking
+          CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
+          if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
           {
-            // need to get the seek based on file positition working in CDVDInputStreamNavigator
-            // so that demuxers can control the stream (seeking in this case)
-            // for now use time based seeking
-            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
-            if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
-            {
-              CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
-              FlushBuffers();
-            }
-            else CLog::Log(LOGWARNING, "error while seeking");
+            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            FlushBuffers();
           }
-          else CLog::Log(LOGWARNING, "can't seek in a menu");
+          else 
+            CLog::Log(LOGWARNING, "error while seeking");
         }
         else
         {

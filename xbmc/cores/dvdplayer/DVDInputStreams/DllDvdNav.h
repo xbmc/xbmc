@@ -72,6 +72,7 @@ public:
   virtual int64_t dvdnav_convert_time(dvd_time_t *time)=0;
   virtual dvdnav_status_t dvdnav_get_state(dvdnav_t *self, dvd_state_t *save_state)=0;
   virtual dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state)=0;
+  virtual dvdnav_status_t dvdnav_get_angle_info(dvdnav_t *self, int32_t *current_angle,int32_t *number_of_angles)=0;
 
 };
 
@@ -135,6 +136,7 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DEFINE_METHOD1(int64_t, dvdnav_convert_time, (dvd_time_t *p1))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_state, (dvdnav_t *p1, dvd_state_t *p2))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_set_state, (dvdnav_t *p1, dvd_state_t *p2))
+  DEFINE_METHOD3(dvdnav_status_t, dvdnav_get_angle_info, (dvdnav_t *p1, int32_t *p2,int32_t *p3))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(dvdnav_open)
     RESOLVE_METHOD(dvdnav_close)
@@ -193,5 +195,6 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
     RESOLVE_METHOD(dvdnav_convert_time)
     RESOLVE_METHOD(dvdnav_get_state)
     RESOLVE_METHOD(dvdnav_set_state)
+    RESOLVE_METHOD(dvdnav_get_angle_info)
 END_METHOD_RESOLVE()
 };
