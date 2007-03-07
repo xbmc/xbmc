@@ -12,6 +12,7 @@
 #define PyLong_Type (*((PyTypeObject*)pointer_PyLong_Type))
 #define PyInt_Type (*((PyTypeObject*)pointer_PyInt_Type))
 #define PyUnicode_Type (*((PyTypeObject*)pointer_PyUnicode_Type))
+#define PyTuple_Type (*((PyTypeObject*)pointer_PyTuple_Type))
 
 #define PyExc_SystemError ((PyObject*)(*(long*)pointer_PyExc_SystemError))
 #define PyExc_ValueError ((PyObject*)(*(long*)pointer_PyExc_ValueError))
@@ -38,7 +39,8 @@ extern "C"
   extern DATA_OBJECT(PyLong_Type);
   extern DATA_OBJECT(PyInt_Type);
   extern DATA_OBJECT(PyUnicode_Type);
-  
+  extern DATA_OBJECT(PyTuple_Type);
+
   extern DATA_OBJECT(PyExc_SystemError);
   extern DATA_OBJECT(PyExc_ValueError);
   extern DATA_OBJECT(PyExc_Exception);
