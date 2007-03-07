@@ -85,7 +85,7 @@
 				<posx>211</posx>
 				<posy>157</posy>
 				<width>445</width>
-				<label>Enable Scrollbars</label>
+				<label>21383</label>
 				<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
 				<selected>!Skin.HasSetting(UseScrollbars)</selected>
 				<onleft>9001</onleft>
