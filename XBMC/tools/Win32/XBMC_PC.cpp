@@ -36,6 +36,7 @@ CXBMC_PC::CXBMC_PC()
   m_dwCreationHeight = 576;
   m_strWindowTitle = "XBoxMediaCenter PC Skin Preview";
   m_active = false;
+  m_focused = false;
   m_closing = false;
   m_mouseEnabled = true;
   m_inDialog = false;
@@ -84,18 +85,27 @@ LRESULT CXBMC_PC::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
         m_active = TRUE;
       }
       break;
+    case WM_MOUSEACTIVATE:
+      {
+        return MA_ACTIVATEANDEAT;
+      }
+      break;
     case WM_ACTIVATE:
       {
+        m_focused = !(WA_INACTIVE==wParam);
         // we have focus - grab the keyboard and mouse
         g_Keyboard.Acquire();
       }
       break;
     case WM_SETCURSOR:
       {
-        POINT point;
-        g_Mouse.Acquire();
-        if (GetCursorPos(point))
-          return TRUE;
+        if(m_focused && m_mouseEnabled)
+        {
+          POINT point;
+          g_Mouse.Acquire();
+          if (GetCursorPos(point))
+            return TRUE;
+        }
       }
       break;
     case WM_COMMAND:

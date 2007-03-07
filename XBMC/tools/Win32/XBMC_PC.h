@@ -25,6 +25,7 @@ protected:
   void SaveSettings();
   bool m_mouseEnabled;
   bool m_active;
+  bool m_focused;
   bool m_closing;
   bool m_inDialog;
   bool m_fullscreen;
