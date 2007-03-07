@@ -2,6 +2,7 @@
 #include "control.h"
 #include "pyutil.h"
 #include "..\..\..\utils\GUIInfoManager.h"
+#include "..\guilib\GuiControlFactory.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -157,7 +158,7 @@ namespace PYXBMC
 
   PyObject* Control_SetVisibleCondition(Control* self, PyObject* args)
   {
-    char *cVisible;
+    char *cVisible = NULL;
     bool bHidden = false;
 
     if (!PyArg_ParseTuple(args, "s|b", &cVisible, &bHidden)) return NULL;
@@ -167,6 +168,86 @@ namespace PYXBMC
     PyGUILock();
     if (self->pGUIControl)   
       self->pGUIControl->SetVisibleCondition(ret, bHidden);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // setAnimations() Method
+  PyDoc_STRVAR(setAnimations__doc__,
+    "setAnimations([(event, attr,)*]) -- Set's the control's animations.\n"
+    "\n"
+    "[(event,attr,)*] : list - A list of tuples consisting of event and attributes pairs.\n"
+    "  - event        : string - The event to animate.\n"
+    "  - attr         : string - The whole attribute string separated by spaces.\n"
+    "\n"
+    "Animating your skin - http://www.xboxmediacenter.com/wiki/index.php?title=Animating_Your_Skin \n"
+    "\n"
+    "example:\n"
+    "  - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0')])\n");
+
+  PyObject* Control_SetAnimations(Control* self, PyObject* args)
+  {
+    PyObject *pList = NULL;
+    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type)) 
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+     
+    TiXmlDocument xmlDoc;
+    TiXmlElement xmlRootElement("control");
+    TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+    if (!pRoot)
+      {
+        PyErr_SetString(PyExc_TypeError, "TiXmlNode creation error");
+        return NULL;
+      }
+    vector<CAnimation> animations;
+    CGUIControlFactory factory;
+    for (int anim = 0; anim < PyList_Size(pList); anim++)
+    {
+      PyObject *pTuple = NULL;
+      char *cEvent = NULL;
+      char *cAttr = NULL;
+      pTuple = PyList_GetItem(pList, anim);
+      if (pTuple == NULL || !PyObject_TypeCheck(pTuple, &PyTuple_Type))
+      {
+        PyErr_SetString(PyExc_TypeError, "List must only contain tuples");
+        return NULL;
+      }
+      if (!PyArg_ParseTuple(pTuple, "ss", &cEvent, &cAttr))
+      {
+        PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
+        return NULL;
+      }
+      
+      if (NULL != cAttr && NULL != cEvent)
+      {
+        TiXmlElement pNode("animation");      
+        CStdStringArray attrs;
+        StringUtils::SplitString(cAttr, " ", attrs);
+        for (unsigned int i = 0; i < attrs.size(); i++)
+        {
+          CStdStringArray attrs2;
+          StringUtils::SplitString(attrs[i], "=", attrs2);
+          if (attrs2.size() == 2)
+            pNode.SetAttribute(attrs2[0], attrs2[1]);
+        }
+        TiXmlText value(cEvent);
+        pNode.InsertEndChild(value);
+        pRoot->InsertEndChild(pNode);
+      }
+    }
+    
+    //bool ret = xmlDoc.SaveFile("q:\\userdata\\test.txt");
+    
+    const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
+    PyGUILock();
+    if (self->pGUIControl)   
+      factory.GetAnimations(pRoot, animRect, animations);
+      self->pGUIControl->SetAnimations(animations);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -461,6 +542,7 @@ namespace PYXBMC
     {"setEnabled", (PyCFunction)Control_SetEnabled, METH_VARARGS, setEnabled__doc__},
     {"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
     {"setVisibleCondition", (PyCFunction)Control_SetVisibleCondition, METH_VARARGS, setVisibleCondition__doc__},
+    {"setAnimations", (PyCFunction)Control_SetAnimations, METH_VARARGS, setAnimations__doc__},
     {"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, setPosition__doc__},
     {"setWidth", (PyCFunction)Control_SetWidth, METH_VARARGS, setWidth__doc__},
     {"setHeight", (PyCFunction)Control_SetHeight, METH_VARARGS, setHeight__doc__},
