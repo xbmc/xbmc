@@ -47,6 +47,7 @@ class CProfile;
 #define STACK_NONE          0
 #define STACK_SIMPLE        1
 #define STACK_FUZZY         2
+#define STACK_UNAVAILABLE   4
 
 #define VIDEO_SHOW_ALL 0
 #define VIDEO_SHOW_UNWATCHED 1
@@ -95,7 +96,6 @@ public:
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
-  CStdString strEntryPoint; ///< entry point of shares, used with archives
 
   /*!
   \brief The type of the share.
@@ -322,6 +322,9 @@ public:
     CViewState m_viewStateVideoNavYears;
     CViewState m_viewStateVideoNavGenres;
     CViewState m_viewStateVideoNavTitles;
+    CViewState m_viewStateVideoNavEpisodes;
+    CViewState m_viewStateVideoNavSeasons;
+    CViewState m_viewStateVideoNavTvShows;
 
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;

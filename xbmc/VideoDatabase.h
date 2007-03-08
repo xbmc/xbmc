@@ -1,6 +1,6 @@
 #pragma once
 #include "Database.h"
-#include "utils\IMDB.h"
+#include "utils/IMDB.h"
 #include "settings/VideoSettings.h"
 
 typedef vector<CStdString> VECMOVIEYEARS;
@@ -12,6 +12,23 @@ typedef vector<CStdString> VECMOVIESFILES;
 #define VIDEO_SHOW_ALL 0
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
+
+// these defines are based on how many columns we have and which column certain data is going to be in
+// when we do GetDetailsForMovie()
+#define VIDEODB_MAX_COLUMNS 21
+#define VIDEODB_DETAILS_FILE VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_PATH VIDEODB_MAX_COLUMNS + 2
+
+#define VIDEODB_TYPE_STRING 1
+#define VIDEODB_TYPE_INT 2
+#define VIDEODB_TYPE_FLOAT 3
+#define VIDEODB_TYPE_BOOL 4
+
+typedef enum 
+{
+  VIDEODB_CONTENT_MOVIES = 1,
+  VIDEODB_CONTENT_TVSHOWS = 2
+} VIDEODB_CONTENT_IDS;
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
@@ -37,18 +54,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
-// these defines are based on how many columns we have and which column certain data is going to be in
-// when we do GetDetailsForMovie()
-#define VIDEODB_MAX_COLUMNS 21
-#define VIDEODB_DETAILS_FILE VIDEODB_MAX_COLUMNS + 1
-#define VIDEODB_DETAILS_PATH VIDEODB_MAX_COLUMNS + 2
-
-#define VIDEODB_TYPE_STRING 1
-#define VIDEODB_TYPE_INT 2
-#define VIDEODB_TYPE_FLOAT 3
-#define VIDEODB_TYPE_BOOL 4
-
-const struct SDbMovieOffsets
+const struct SDbTableOffsets
 {
   int type;
   size_t offset;
@@ -72,6 +78,80 @@ const struct SDbMovieOffsets
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_spoof) }
+};
+
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
+  VIDEODB_ID_TV_MIN = -1,
+  VIDEODB_ID_TV_TITLE = 0,
+  VIDEODB_ID_TV_PLOT = 1,
+  VIDEODB_ID_TV_STATUS = 2,
+  VIDEODB_ID_TV_VOTES = 3,
+  VIDEODB_ID_TV_RATING = 4,
+  VIDEODB_ID_TV_PREMIERED = 5,
+  VIDEODB_ID_TV_THUMBURL = 6,
+  VIDEODB_ID_TV_THUMBURL_SPOOF = 7,
+  VIDEODB_ID_TV_GENRE = 8,
+  VIDEODB_ID_TV_ORIGINALTITLE = 9,
+  VIDEODB_ID_TV_EPISODEGUIDE = 10,
+  VIDEODB_ID_TV_EPISODES = 11,
+  VIDEODB_ID_TV_MAX
+} VIDEODB_TV_IDS;
+
+const struct SDbTableOffsets DbTvShowOffsets[] = 
+{
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTitle) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlot) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strStatus) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPremiered) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)},
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strEpisodeGuide)},
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iEpisode) },
+};
+
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
+  VIDEODB_ID_EPISODE_MIN = -1,
+  VIDEODB_ID_EPISODE_TITLE = 0,
+  VIDEODB_ID_EPISODE_PLOT = 1,
+  VIDEODB_ID_EPISODE_VOTES = 2,
+  VIDEODB_ID_EPISODE_RATING = 3,
+  VIDEODB_ID_EPISODE_CREDITS = 4,
+  VIDEODB_ID_EPISODE_AIRED = 5,
+  VIDEODB_ID_EPISODE_THUMBURL = 6,
+  VIDEODB_ID_EPISODE_THUMBURL_SPOOF = 7,
+  VIDEODB_ID_EPISODE_WATCHED = 8,
+  VIDEODB_ID_EPISODE_RUNTIME = 9,
+  VIDEODB_ID_EPISODE_DIRECTOR = 10,
+  VIDEODB_ID_EPISODE_IDENT = 11,
+  VIDEODB_ID_EPISODE_SEASON = 12,
+  VIDEODB_ID_EPISODE_EPISODE = 13,
+  VIDEODB_ID_EPISODE_ORIGINALTITLE = 14,
+  VIDEODB_ID_EPISODE_MAX
+} VIDEODB_EPISODE_IDS;
+
+const struct SDbTableOffsets DbEpisodeOffsets[] = 
+{
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTitle) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlot) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strWritingCredits) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strFirstAired) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strProductionCode) },
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iSeason) },
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iEpisode) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)},
 };
 
 class CBookmark
@@ -103,29 +183,57 @@ public:
   virtual ~CVideoDatabase(void);
 
   long AddMovie(const CStdString& strFilenameAndPath);
+  long AddTvShow(const CStdString& strPath);
+  long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
 
   void MarkAsWatched(const CFileItem &item);
-  void MarkAsWatched(long lMovieId);
+  void MarkAsWatched(long lMovieId, bool bEpisode=false);
 
-  void MarkAsUnWatched(long lMovieId);
-  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle);
+  void MarkAsUnWatched(long lMovieId, bool bEpisode=false);
+  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
-  bool HasSubtitle(const CStdString& strFilenameAndPath);
-  void DeleteMovieInfo(const CStdString& strFileNameAndPath);
+  bool HasTvShowInfo(const CStdString& strFilenameAndPath);
+  bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
+  
+  void DeleteDetailsForMovie(const CStdString& strFileNameAndPath);
+  void DeleteDetailsForTvShow(const CStdString& strPath);
+  void DeleteDetailsForEpisode(const CStdString& strPath);
 
-  void GetFilePath(long lMovieId, CStdString &filePath);
+  void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
+  
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
+  void GetTvShowInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lTvShowId = -1);
+  bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lEpisodeId = -1);
+  
   long GetMovieInfo(const CStdString& strFilenameAndPath);
-  void SetMovieInfo(const CStdString& strFilenameAndPath, const CIMDBMovie& details);
+  long GetTvShowInfo(const CStdString& strFilenameAndPath);
+  long GetEpisodeInfo(const CStdString& strFilenameAndPath);
+
+  void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CIMDBMovie& details);
+  long SetDetailsForTvShow(const CStdString& strPath, const CIMDBMovie& details);
+  long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CIMDBMovie& details, long idShow);
 
   void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
-  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
 
-  void GetGenresByName(const CStdString& strSearch, CFileItemList& items);
-  void GetActorsByName(const CStdString& strSearch, CFileItemList& items);
-  void GetDirectorsByName(const CStdString& strSearch, CFileItemList& items);
-  void GetTitlesByName(const CStdString& strSearch, CFileItemList& items);
+  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
+  void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
+  void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
+
+  void GetMovieGenresByName(const CStdString& strSearch, CFileItemList& items);
+  void GetTvShowGenresByName(const CStdString& strSearch, CFileItemList& items);
+
+  void GetMovieActorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetTvShowsActorsByName(const CStdString& strSearch, CFileItemList& items);
+
+  void GetMovieDirectorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetTvShowsDirectorsByName(const CStdString& strSearch, CFileItemList& items);
+
+  void GetMoviesByName(const CStdString& strSearch, CFileItemList& items);
+  void GetTvShowsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetEpisodesByName(const CStdString& strSearch, CFileItemList& items);
+
+  void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
   void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
   void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
@@ -134,7 +242,11 @@ public:
   void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
 
   void RemoveContentForPath(const CStdString& strPath);
+
   void DeleteMovie(const CStdString& strFilenameAndPath);
+  void DeleteTvShow(const CStdString& strPath);
+  void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
+
   int GetRecentMovies(long* pMovieIdArray, int nSize);
 
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -146,15 +258,22 @@ public:
   void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
-	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
+                         const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
 
-  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
-  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetGenreById(long lIdGenre, CStdString& strGenre);
+  bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
+  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
+  bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
+  
   int GetMovieCount();
+  int GetTvShowCount();
+
+  bool GetGenreById(long lIdGenre, CStdString& strGenre);
+
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);
 
@@ -169,19 +288,32 @@ protected:
   long GetFile(const CStdString& strFilenameAndPath, long& lMovieId, long& lEpisodeId, bool bExact = false);
 
   long GetMovie(const CStdString& strFilenameAndPath);
+  long GetTvShow(const CStdString& strPath);
+  long GetEpisode(const CStdString& strFilenameAndPath);
 
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor);
 
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
+  void AddActorToTvShow(long lTvShowId, long lActorId, const CStdString& strRole);
+  void AddActorToEpisode(long lEpisode, long lActorId, const CStdString& strRole);
+
   void AddDirectorToMovie(long lMovieId, long lDirectorId);
+  void AddDirectorToTvShow(long lTvShowId, long lDirectorId);
+  void AddDirectorToEpisode(long lEpisodeId, long lDirectorId);
+
   void AddGenreToMovie(long lMovieId, long lGenreId);
+  void AddGenreToTvShow(long lTvShowId, long lGenreId);
+  void AddGenreToEpisode(long lEpisodeId, long lGenreId);
+
+  void AddGenreAndDirectors(const CIMDBMovie& details, vector<long>& vecDirectors, vector<long>& vecGenres);
 
   CIMDBMovie GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast = false);
+  CIMDBMovie GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast = false, const CStdString &baseDir = "");
+  CIMDBMovie GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast = false);
 
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-
 };

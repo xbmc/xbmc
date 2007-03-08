@@ -345,6 +345,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("container.folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (strTest.Equals("container.folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (strTest.Left(18).Equals("container.content("))
+    {
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
+    }
   }
   else if (strCategory.Equals("listitem"))
   {
@@ -1218,6 +1222,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case SYSTEM_HAS_ALARM:
       bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
+      break;
+    case CONTAINER_CONTENT:
+      bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;

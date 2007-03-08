@@ -5,13 +5,13 @@ namespace DIRECTORY
 {
   namespace VIDEODATABASEDIRECTORY
   {
-    class CDirectoryNodeYear : public CDirectoryNode
+    class CDirectoryNodeTitleTvShows : public CDirectoryNode
     {
     public:
-      CDirectoryNodeYear(const CStdString& strEntryName, CDirectoryNode* pParent);
+      CDirectoryNodeTitleTvShows(const CStdString& strName, CDirectoryNode* pParent);
     protected:
-      virtual bool GetContent(CFileItemList& items);
       virtual NODE_TYPE GetChildType();
+      virtual bool GetContent(CFileItemList& items);
     };
   };
 };

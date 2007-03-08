@@ -17,6 +17,34 @@ using namespace HTML;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+bool CIMDBUrl::Parse(CStdString strUrls)
+{
+  if (strUrls.IsEmpty())
+    return false;
+  
+  // ok, now parse the xml file
+  if (strUrls.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strUrls);
+  
+  TiXmlDocument doc;
+  doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
+  if (doc.RootElement())
+  {
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
+    if(link)
+      for ( link; link; link = link->NextSiblingElement("url") )
+        m_scrURL.push_back(CScraperUrl(link));      
+    else if( link = docHandle.FirstChild( "episodeguide" ).Element() )
+      m_scrURL.push_back(CScraperUrl(link));
+
+  } 
+  else
+    return false;
+  return true;
+}
+
+
 CIMDB::CIMDB()
 {
 }
@@ -144,6 +172,87 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   return true;
 }
 
+bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& details)
+{
+  // load our scraper xml
+  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
+    return false;
+  IMDB_EPISODELIST temp;
+  for(int i=0; i < url.m_scrURL.size(); i++)
+  {
+    CStdString strHTML;
+    CScraperUrl scrUrl;
+    scrUrl = url.m_scrURL[i];
+    if (!Get(scrUrl,strHTML) || strHTML.size() == 0)
+    {
+    CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
+    return false;
+    }
+    m_parser.m_param[0] = strHTML;
+    m_parser.m_param[1] = scrUrl.m_url;
+
+    CStdString strXML = m_parser.Parse("GetEpisodeList");
+    if (strXML.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
+      return false;
+    }
+    // ok, now parse the xml file
+    TiXmlDocument doc;
+    doc.Parse(strXML.c_str());
+    if (!doc.RootElement())
+    {
+      CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
+      return false;
+    }
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
+
+    for ( movie; movie; movie = movie->NextSiblingElement() )
+    {
+      TiXmlNode *title = movie->FirstChild("title");
+      TiXmlElement *link = movie->FirstChildElement("url");
+      TiXmlNode *epnum = movie->FirstChild("epnum");
+      TiXmlNode *season = movie->FirstChild("season");
+      TiXmlNode* id = movie->FirstChild("id");
+      if (title && title->FirstChild() && link && link->FirstChild() && epnum && epnum->FirstChild() && season && season->FirstChild())
+      {
+        CIMDBUrl url2;
+        g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.m_strTitle);
+        url2.m_scrURL.push_back(CScraperUrl(link) );
+
+        while ((link = link->NextSiblingElement("url")))
+        {
+          url2.m_scrURL.push_back(CScraperUrl(link));
+        }
+        if (id && id->FirstChild())
+          url2.m_strID = id->FirstChild()->Value();
+        // if source contained a distinct year, only allow those
+        std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
+        temp.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
+      }
+    }
+  }
+
+  // find minimum in each season
+  std::map<int,int> min; 
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
+  { 
+    if (min.size() == (iter->first.first -1))
+      min.insert(iter->first);
+    else if (iter->first.second < min[iter->first.first])
+      min[iter->first.first] = iter->first.second;
+  }
+  // correct episode numbers
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
+  {
+    std::pair<int,int> key(iter->first.first,(iter->first.second - min[iter->first.first] + 1));
+    details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,iter->second));
+  }
+
+  return true;
+}
+
 bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, const CStdString& strFunction)
 {
   // load our scraper xml
@@ -212,7 +321,8 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, co
 
 bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
 {
-  TiXmlNode *details = doc.FirstChild( "details" );
+  TiXmlHandle docHandle( &doc );
+  TiXmlElement *details = docHandle.FirstChild( "details" ).Element();
 
   if (!details)
   {
@@ -257,9 +367,18 @@ void CIMDBMovie::Reset()
   m_strPath = "";
   m_strIMDBNumber = "";
   m_strMPAARating = "";
+  m_strPremiered= "";
+  m_strStatus= "";
+  m_strProductionCode= "";
+  m_strFirstAired= "";
+//m_strEpisodeGuide = "";
   m_iTop250 = 0;
   m_iYear = 0;
+  m_iSeason = 0;
+  m_iEpisode = 0;
   m_fRating = 0.0f;
+
+
   m_bWatched = false;
 }
 
@@ -279,6 +398,8 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
+  XMLUtils::SetInt(movie, "season", m_iSeason);
+  XMLUtils::SetInt(movie, "episode", m_iEpisode);
   XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
@@ -295,6 +416,10 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   XMLUtils::SetString(movie, "genre", m_strGenre);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);
   XMLUtils::SetString(movie, "director", m_strDirector);
+  XMLUtils::SetString(movie, "premiered", m_strPremiered);
+  XMLUtils::SetString(movie, "status", m_strStatus);
+  XMLUtils::SetString(movie, "code", m_strProductionCode);
+  XMLUtils::SetString(movie, "aired", m_strFirstAired);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -314,7 +439,7 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   return true;
 }
 
-bool CIMDBMovie::Load(const TiXmlNode *movie)
+bool CIMDBMovie::Load(const TiXmlElement *movie)
 {
   if (!movie) return false;
   XMLUtils::GetString(movie, "title", m_strTitle);
@@ -322,6 +447,8 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetFloat(movie, "rating", m_fRating);
   XMLUtils::GetInt(movie, "year", m_iYear);
   XMLUtils::GetInt(movie, "top250", m_iTop250);
+  XMLUtils::GetInt(movie, "season", m_iSeason);
+  XMLUtils::GetInt(movie, "episode", m_iEpisode);
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);
@@ -334,6 +461,10 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
+  XMLUtils::GetString(movie, "premiered", m_strPremiered);
+  XMLUtils::GetString(movie, "status", m_strStatus);
+  XMLUtils::GetString(movie, "code", m_strProductionCode);
+  XMLUtils::GetString(movie, "aired", m_strFirstAired);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
 
@@ -395,6 +526,17 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
       m_cast.push_back(make_pair(name, role));
     }
     node = node->NextSibling("actor");
+  }
+
+  const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
+  if (epguide)
+  {
+    TiXmlString s;  
+    TiXmlOutStream os_stream;  
+     
+    os_stream << * epguide;  
+    s = os_stream;  
+    m_strEpisodeGuide = s.c_str();
   }
 
   return true;
@@ -474,8 +616,6 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
   strYear = szYear;
 }
 
-
-
 // threaded functions
 void CIMDB::Process()
 {
@@ -489,6 +629,16 @@ void CIMDB::Process()
   {
     if (!GetDetails(m_url, m_movieDetails))
       CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url.c_str());
+  }
+  else if (m_state == GET_EPISODE_DETAILS)
+  {
+    if (!InternalGetDetails(m_url, m_movieDetails, "GetEpisodeDetails"))
+      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url.c_str());
+  }
+  else if (m_state == GET_EPISODE_LIST)
+  {
+    if (!GetEpisodeList(m_url, m_episode))
+      CLog::Log(LOGERROR, "IMDb::Error getting episode details from %s", m_url.m_scrURL[0].m_url.c_str());
   }
   m_found = true;
 }
@@ -557,6 +707,72 @@ bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialog
   }
   else  // unthreaded
     return InternalGetDetails(url, movieDetails);
+}
+
+bool CIMDB::GetEpisodeDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
+{
+  //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
+  m_url = url;
+  m_movieDetails = movieDetails;
+
+  // fill in the defaults
+  movieDetails.Reset();
+  if (pProgress)
+  { // threaded version
+    m_state = GET_EPISODE_DETAILS;
+    m_found = false;
+    if (ThreadHandle())
+      StopThread();
+    Create();
+    while (!m_found)
+    {
+      pProgress->Progress();
+      if (pProgress->IsCanceled())
+      {
+        CloseThread();
+        return false;
+      }
+      Sleep(1);
+    }
+    movieDetails = m_movieDetails;
+    CloseThread();
+    return true;
+  }
+  else  // unthreaded
+    return InternalGetDetails(url, movieDetails, "GetEpisodeDetails");
+}
+
+bool CIMDB::GetEpisodeList(const CIMDBUrl &url, IMDB_EPISODELIST& movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
+{
+  //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
+  m_url = url;
+  m_episode = movieDetails;
+
+  // fill in the defaults
+  movieDetails.clear();
+  if (pProgress)
+  { // threaded version
+    m_state = GET_EPISODE_LIST;
+    m_found = false;
+    if (ThreadHandle())
+      StopThread();
+    Create();
+    while (!m_found)
+    {
+      pProgress->Progress();
+      if (pProgress->IsCanceled())
+      {
+        CloseThread();
+        return false;
+      }
+      Sleep(1);
+    }
+    movieDetails = m_episode;
+    CloseThread();
+    return true;
+  }
+  else  // unthreaded
+    return InternalGetEpisodeList(url, movieDetails);  
 }
 
 void CIMDB::CloseThread()

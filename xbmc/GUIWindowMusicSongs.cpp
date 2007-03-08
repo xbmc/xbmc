@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
 #include "Util.h"
+#include "Utils/GUIInfoManager.h"
 #include "Application.h"
 #include "CUEDocument.h"
 #include "GUIPassword.h"
@@ -492,6 +493,7 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
+  g_infoManager.m_content = "files";
   m_thumbLoader.Load(m_vecItems);
   return true;
 }

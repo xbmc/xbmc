@@ -352,7 +352,7 @@ public:
   static bool XboxAutoDetection();
   static bool XboxAutoDetectionGetShare(CShare& share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
-  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
+  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void WipeDir(const CStdString& strPath);
   static void ForceForwardSlashes(CStdString& strPath);
