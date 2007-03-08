@@ -119,14 +119,15 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   {
     switch (pNode->GetChildType())
     {
+    case NODE_TYPE_TITLE_MOVIES:
+    case NODE_TYPE_TITLE_TVSHOWS:
+      strLabel = g_localizeStrings.Get(132);
+      break;
     case NODE_TYPE_GENRE:
       strLabel = g_localizeStrings.Get(135); // Genres
       break;
     case NODE_TYPE_YEAR:
       strLabel = g_localizeStrings.Get(133); // Year
-      break;
-    case NODE_TYPE_TITLE:
-      strLabel = g_localizeStrings.Get(132); // Albums
       break;
     }
   }
@@ -137,7 +138,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 bool CVideoDatabaseDirectory::ContainsMovies(const CStdString &path)
 {
   VIDEODATABASEDIRECTORY::NODE_TYPE type = GetDirectoryChildType(path);
-  if (type == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE) return true;
+  if (type == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MOVIES || type == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) return true;
   return false;
 }
 
