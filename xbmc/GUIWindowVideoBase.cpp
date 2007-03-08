@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "Utils/IMDB.h"
 #include "Utils/HTTP.h"
+#include "Utils/RegExp.h"
 #include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
@@ -258,10 +259,11 @@ void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strFile = CUtil::GetFileName(pItem->m_strPath);
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
+  if (item.IsVideoDb())
+    item.m_strPath = item.m_musicInfoTag.GetAlbum();
   ShowIMDB(&item, info);
   Update(m_vecItems.m_strPath);
 }
@@ -314,10 +316,42 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
-  if (m_database.HasMovieInfo(item->m_strPath))
+  bool bHasInfo=false;
+
+  CIMDBMovie movieDetails;
+  movieDetails.Reset();
+  if (info.strContent.Equals("movies"))
   {
-    CIMDBMovie movieDetails;
-    m_database.GetMovieInfo(item->m_strPath, movieDetails);
+    if (m_database.HasMovieInfo(item->m_strPath))
+    {
+      bHasInfo = true;
+      m_database.GetMovieInfo(item->m_strPath, movieDetails);
+    }
+  }
+  if (info.strContent.Equals("tvshows"))
+  {
+    CStdString strPath(item->m_strPath);
+    if (item->m_bIsFolder)
+    {
+      CUtil::AddSlashAtEnd(strPath);
+    
+      if (m_database.HasTvShowInfo(strPath))
+      {
+        bHasInfo = true;
+        m_database.GetTvShowInfo(strPath, movieDetails);
+      }
+    }
+    else
+    {
+      if (m_database.HasEpisodeInfo(strPath))
+      {
+        bHasInfo = true;
+        m_database.GetEpisodeInfo(strPath, movieDetails);
+      }
+    }
+  }
+  if (bHasInfo)
+  {
     if (info.strContent.IsEmpty()) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     pDlgInfo->SetMovie(movieDetails, item);
@@ -325,14 +359,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     item->SetThumbnailImage(pDlgInfo->GetThumbnail());
     if ( !pDlgInfo->NeedRefresh() ) return ;
   }
-
+  
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("network.enableinternet")) return ;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return;
 
   CIMDBUrl url;
-  CIMDBMovie movieDetails;
   bool hasDetails(false);
 
   // 2. Look for a nfo File to get the search URL
@@ -386,19 +419,25 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
       // 4b. do the websearch
       IMDB_MOVIELIST movielist;
-      if (IMDB.FindMovie(movieName, movielist, pDlgProgress))
+      if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
+        hasDetails = true;
+
+      if (!hasDetails && IMDB.FindMovie(movieName, movielist, pDlgProgress))
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
         {
           // 4c. found movies - allow selection of the movie we found if several
-          if (movielist.size() == 1)
+//          if (movielist.size() == 1)
+//          {
+//            url = movielist[0];
+//          }
+//          else
           {
-            url = movielist[0];
-          }
-          else
-          {
-            pDlgSelect->SetHeading(196);
+            int iString = 196;
+            if (info.strContent.Equals("tvshows"))
+              iString = 20356;
+            pDlgSelect->SetHeading(iString);
             pDlgSelect->Reset();
             for (unsigned int i = 0; i < movielist.size(); ++i)
               pDlgSelect->Add(movielist[i].m_strTitle);
@@ -430,7 +469,10 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       }
 
       // Prompt the user to input the movieName
-      if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(16009), false))
+      int iString = 16009;
+      if (info.strContent.Equals("tvshows"))
+        iString = 20357;
+      if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
         return; // user backed out
       }
@@ -441,7 +483,16 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     {
       // 5. Download the movie information
       // show dialog that we're downloading the movie info
-      pDlgProgress->SetHeading(198);
+      int iString=198;
+      if (info.strContent.Equals("tvshows"))
+      {
+        if (item->m_bIsFolder)
+          iString = 20353;
+        else
+          iString = 20361;
+      }
+
+      pDlgProgress->SetHeading(iString);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, url.m_strTitle);
       pDlgProgress->SetLine(2, "");
@@ -451,6 +502,49 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       // get the movie info
       if (hasDetails || IMDB.GetDetails(url, movieDetails, pDlgProgress))
       {
+        if (info.strContent.Equals("tvshows"))
+        {
+          pDlgProgress->SetLine(2, 20354);
+          pDlgProgress->Progress();
+          IMDB_EPISODELIST episodes;
+          CIMDBUrl url;
+          long lShowId=-1;
+          if (!item->m_bIsFolder) // fetch tvshow info from database
+          {
+            CStdString path;
+            CUtil::GetDirectory(item->m_strPath,path);
+            CUtil::AddSlashAtEnd(path);
+            lShowId = m_database.GetTvShowInfo(path);
+            m_database.GetTvShowInfo(path,movieDetails,lShowId);
+            pDlgProgress->SetLine(1, movieDetails.m_strTitle);            
+            pDlgProgress->Progress();
+          }
+          else
+          {
+            CStdString path(item->m_strPath);
+            CUtil::AddSlashAtEnd(path);
+            lShowId = m_database.GetTvShowInfo(path);
+            if (lShowId > -1)
+            {
+              CIMDBMovie movieDetails2;
+              m_database.GetTvShowInfo(path,movieDetails2,lShowId);
+              movieDetails.m_iEpisode = movieDetails2.m_iEpisode; // keep # of episodes
+              m_database.DeleteDetailsForTvShow(path);
+            }
+            lShowId = m_database.SetDetailsForTvShow(path,movieDetails);
+          }
+          
+          url.Parse(movieDetails.m_strEpisodeGuide);
+          if (IMDB.GetEpisodeList(url,episodes))
+          {
+            OnProcessSeriesFolder(episodes,item,lShowId,IMDB,pDlgProgress);
+            if (!item->m_bIsFolder)
+            {
+              if (!m_database.GetEpisodeInfo(item->m_strPath,movieDetails))
+                return;
+            }
+          }
+        }
         // got all movie details :-)
         OutputDebugString("got details\n");
         pDlgProgress->Close();
@@ -459,21 +553,14 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         OutputDebugString("show info\n");
 
         // Add to the database if applicable
-        if (item->m_strPath && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+        if (info.strContent.Equals("movies") && item->m_strPath && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
         {
-          m_database.DeleteMovieInfo(item->m_strPath);
-          m_database.SetMovieInfo(item->m_strPath, movieDetails);
-          // remove directory caches
-          CFileItemList items;
-          CDirectory::GetDirectory("z:\\",items,".fi",false);
-          for (int i=0;i<items.Size();++i)
-          {
-            if (!items[i]->m_bIsFolder)
-            {
-              CFile::Delete(items[i]->m_strPath);
-            }
-          }
+          m_database.DeleteDetailsForMovie(item->m_strPath);
+          m_database.SetDetailsForMovie(item->m_strPath, movieDetails);
         }
+
+        // remove directory caches
+        CUtil::DeleteVideoDatabaseDirectoryCache();
 
         pDlgInfo->SetMovie(movieDetails, item);
         pDlgInfo->DoModal();
@@ -637,7 +724,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
         if (strPath.size() > 6)
         {
           CStdString strSub = strPath.substr(strPath.size()-6);
-          if (strPath.substr(strPath.size()-6) == "sample") // skip sample folders
+          if (strPath.Mid(strPath.size()-6).Equals("sample")) // skip sample folders
             continue;
         }
       }
@@ -790,6 +877,22 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     // get players
     CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
+    if (m_vecItems[iItem]->IsVideoDb())
+    {
+      m_database.GetScraperForPath(m_vecItems[iItem]->m_musicInfoTag.GetAlbum(),info.strPath,info.strContent,iFound);
+    }
+    else
+      m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,iFound);
+    
+    int iString = 13346;
+    if (info.strContent.Equals("tvshows"))
+    {
+      if (m_vecItems[iItem]->m_bIsFolder)
+        iString = 20351;
+      else 
+        iString = 20352;
+    }
+
     bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
     if (!bIsGotoParent)
     {
@@ -827,7 +930,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
       if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
-        m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,iFound);
         CScraperParser parser;
         if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
           info.strTitle = parser.GetName();
@@ -838,44 +940,46 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           {
             CStdString strPath(m_vecItems[iItem]->m_strPath);
             CUtil::AddSlashAtEnd(strPath);
-            if (m_database.HasMovieInfo(strPath))
-              btn_Show_Info = pMenu->AddButton(13346);
+            if ((info.strContent.Equals("movies") && m_database.HasMovieInfo(strPath)) || (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
+              btn_Show_Info = pMenu->AddButton(iString);
 
             btn_Assign = pMenu->AddButton(20333);
           }
           else
           {
-            btn_Show_Info = pMenu->AddButton(13346);
+            btn_Show_Info = pMenu->AddButton(iString);
             btn_Update = pMenu->AddButton(13349);
             btn_Assign = pMenu->AddButton(20333);
           }
         }
         else
         {
-          if (iFound > 0 || m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath))
-            btn_Show_Info = pMenu->AddButton(13346);
+          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath))) || m_database.HasEpisodeInfo(m_vecItems[iItem]->m_strPath))
+            btn_Show_Info = pMenu->AddButton(iString);
           m_database.Open();
           if (!bIsGotoParent)
           {
-            if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0)
+            if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0 && m_database.GetEpisodeInfo(m_vecItems[iItem]->m_strPath)<0)
               btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
           }
           m_database.Close();
         }
       }
     }
-    if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_bIsFolder)
-      btn_Show_Info = pMenu->AddButton(13346);
+    if ((GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_bIsFolder) || (GetID() == WINDOW_VIDEO_NAV && info.strContent.Equals("tvshows")))
+      btn_Show_Info = pMenu->AddButton(iString);
 
     // is the item a database movie?
     if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       // uses Loaded to hold Watched/UnWatched status
-      if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
-        btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
-      else
-        btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
-
+      if (!m_vecItems[iItem]->IsVideoDb()) // only episodes
+      {
+        if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
+          btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
+        else
+          btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
+      }
       if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         btn_Update_Title = pMenu->AddButton(16105); //Edit Title
     }
@@ -895,7 +999,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       {
         CVideoDatabaseDirectory dir;
         NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-        if (node == NODE_TYPE_TITLE)
+        if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
           btn_Delete = pMenu->AddButton(646);
       }
     }
@@ -1200,7 +1304,10 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  int iType=0;
+  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+    iType = 1;
+  m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()),iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
@@ -1211,7 +1318,10 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  int iType=0;
+  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+    iType = 1;
+  m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()),iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
@@ -1222,16 +1332,35 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-
-  //Get Current Name
+  
   CIMDBMovie detail;
-  m_database.GetMovieInfo("", detail, atol(pItem->m_musicInfoTag.GetURL()));
+  int iType=0;
+  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+    iType = 1;
+  if (pItem->IsVideoDb()) // tvshow
+    iType = 2;
+  if (iType == 0)
+  {
+    //Get Current Name
+    m_database.GetMovieInfo("", detail, atol(pItem->m_musicInfoTag.GetURL().c_str()));
+  }
+  if (iType == 1) //  episodes
+  {
+    m_database.GetEpisodeInfo(pItem->m_strPath,detail,atol(pItem->m_musicInfoTag.GetURL().c_str()));
+    iType = 1;
+  }
+  if (iType == 2) // tvshows
+  {
+    m_database.GetTvShowInfo(pItem->m_musicInfoTag.GetAlbum(),detail,atol(pItem->m_musicInfoTag.GetURL().c_str()));
+    iType = 2;
+  }
+
   CStdString strInput;
   strInput = detail.m_strTitle;
 
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
-  m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
+  m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput, iType);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
@@ -1391,7 +1520,7 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
   return nfoFile;
 }
 
-void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items)
+void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool isTVShow /* = false */)
 {
   DWORD time = timeGetTime();
   for (int i = 0; i < (int)movies.size(); ++i)
@@ -1416,7 +1545,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
 
       pItem->m_fRating = movie.m_fRating;
       SYSTEMTIME time;
-      time.wYear = movie.m_iYear;
+      time.wYear = 0;//movie.m_iYear;
       pItem->m_musicInfoTag.SetReleaseDate(time);
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
 
@@ -1425,8 +1554,21 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_musicInfoTag.SetArtist(movie.m_strDirector);
       pItem->m_musicInfoTag.SetGenre(movie.m_strGenre);
       pItem->m_musicInfoTag.SetURL(movie.m_strSearchString);
+      pItem->m_musicInfoTag.SetTrackNumber(movie.m_iEpisode);
       pItem->m_musicInfoTag.SetLoaded(movie.m_bWatched);
+      pItem->m_musicInfoTag.SetAlbum(movie.m_strFileNameAndPath); // real path
       // End hack for extra info
+
+      if (isTVShow)
+      {
+        CFileItem item2;
+        item2.m_strPath = movie.m_strPath;
+        item2.SetVideoThumb();
+        pItem->SetThumbnailImage(item2.GetThumbnailImage());
+        pItem->m_bIsFolder=true;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
+        pItem->m_musicInfoTag.SetAlbum(movie.m_strPath);          // real path
+      }
 
       items.Add(pItem);
     }
@@ -1574,7 +1716,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Open();
   long lMovieId = m_database.AddMovie(pItem->m_strPath);
   movie.m_strIMDBNumber.Format("xx%08i", lMovieId);
-  m_database.SetMovieInfo(pItem->m_strPath, movie);
+  m_database.SetDetailsForMovie(pItem->m_strPath, movie);
   m_database.Close();
 
   // done...
@@ -1697,4 +1839,103 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
     }
   }
   m_viewControl.SetFocused();
+}
+
+void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList)
+{
+  CFileItemList items;
+  if (item->m_bIsFolder)
+    CUtil::GetRecursiveListing(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+  else
+    items.Add(new CFileItem(*item));
+
+  // enumerate
+  std::vector<CStdString> expression;
+  expression.push_back("[^\\.\\-_ ]*[\\.\\-_\\[ ][Ss]([0-9]*)[^0-9]*[Ee]([0-9]*)[\\.\\-_\\[ ]"); // foo.s01.e01
+  expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9])([0-9]*)[\\.\\-_ ]"); // foo.103*
+  expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9]*)x([0-9]*)"); // foo.1x09*
+
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    CStdString strPath;
+    CUtil::GetDirectory(items[i]->m_strPath,strPath);
+    if (strPath.Mid(strPath.size()-6).Equals("sample")) // skip sample folders
+      continue;
+    for (unsigned int j=0;j<expression.size();++j)
+    {
+      CRegExp reg;
+      if (!reg.RegComp(expression[j]))
+        break;
+      CStdString strLabel = CUtil::GetFileName(items[i]->m_strPath);
+      if (reg.RegFind(strLabel.c_str()) > -1)
+      {
+        char* season = reg.GetReplaceString("\\1");
+        char* episode = reg.GetReplaceString("\\2");
+        if (season && episode)
+        {
+          int iSeason = atoi(season);
+          int iEpisode = atoi(episode);
+          std::pair<int,int> key(iSeason,iEpisode);
+          CIMDBUrl url;
+          url.m_scrURL.push_back(CScraperUrl(items[i]->m_strPath));
+          episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
+          break;
+        }
+      }
+    }
+  }
+}
+
+void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress /* = NULL */)
+{
+  if (pDlgProgress)
+  {
+    if (item->m_bIsFolder)
+      pDlgProgress->SetLine(2, 20355);
+    else
+      pDlgProgress->SetLine(2, 20361);
+    pDlgProgress->SetPercentage(0);
+    pDlgProgress->ShowProgressBar(true);
+    pDlgProgress->Progress();
+  }
+  IMDB_EPISODELIST files;
+  EnumerateSeriesFolder(item,files);
+
+  int iMax = files.size();
+  int iCurr = 0;
+  m_database.BeginTransaction();
+  for (IMDB_EPISODELIST::iterator iter = files.begin();iter != files.end();++iter)
+  {
+    IMDB_EPISODELIST::iterator iter2 = episodes.find(iter->first);
+    if (iter2 != episodes.end())
+    {
+      CIMDBMovie episodeDetails;
+      if (m_database.GetEpisodeInfo(iter->second.m_scrURL[0].m_url) > -1)
+        continue;
+
+      if (!IMDB.GetEpisodeDetails(iter2->second,episodeDetails,pDlgProgress))
+        break;
+      episodeDetails.m_iSeason = iter2->first.first;
+      episodeDetails.m_iEpisode = iter2->first.second;
+      if (pDlgProgress && pDlgProgress->IsCanceled())
+      {
+        pDlgProgress->Close();
+        m_database.RollbackTransaction();
+        return;
+      }
+      m_database.DeleteDetailsForEpisode(iter->second.m_scrURL[0].m_url);
+      CFileItem item;
+      item.m_strPath = iter->second.m_scrURL[0].m_url;
+      AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
+      if (pDlgProgress)
+      {
+        pDlgProgress->SetLine(2, 20361);
+        pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
+        pDlgProgress->Progress();
+      }
+    }
+  }
+  m_database.CommitTransaction();
 }

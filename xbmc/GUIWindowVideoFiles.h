@@ -37,8 +37,8 @@ protected:
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
   void OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames);
   virtual void LoadPlayList(const CStdString& strFileName);
-  void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info);
-  void AddMovieAndGetThumb(CFileItem *pItem, const CIMDBMovie &movieDetails);
+  long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info);
+  long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails, long idShow=-1);
   void PlayFolder(const CFileItem* pItem);
 
   bool m_bIsScanning;
