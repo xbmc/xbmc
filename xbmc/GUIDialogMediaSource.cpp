@@ -428,11 +428,11 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
   else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
   else if (type == "upnpmusic")
-    typeStringID = 20356;
+    typeStringID = 21356;
   else if (type == "upnpvideo")
-    typeStringID = 20357;
+    typeStringID = 21357;
   else if (type == "upnppictures")
-    typeStringID = 20358;
+    typeStringID = 21358;
   else // if (type == "files");
     typeStringID = 744;  // "Files"
   CStdString format;
