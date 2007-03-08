@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/05/2007-->
+<!--Date of translation: 03/08/2007-->
 <!--$Revision:$-->
-<!--Based on english strings version 7958-->
+<!--Based on english strings version 8041-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1508,5 +1508,6 @@
   <string id="21380">1080i Auflösung aktivieren</string>
   <string id="21381">Bitte geben Sie einen Namen für die Playlist ein</string>
   <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
-  <string id="29999">Automatische Videofilter Korrektur</string>
+  <string id="21383">Scrollbalken aktivieren</string>
+  <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
