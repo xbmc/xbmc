@@ -13,12 +13,12 @@ CDirectoryNodeGenre::CDirectoryNodeGenre(const CStdString& strName, CDirectoryNo
 
 NODE_TYPE CDirectoryNodeGenre::GetChildType()
 {
-  /* all items should still go to the next filter level
-  if (GetName()=="-1")
-    return NODE_TYPE_SONG;
-    */
+  CQueryParams params;
+  CollectQueryParams(params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+    return NODE_TYPE_TITLE_MOVIES;
 
-  return NODE_TYPE_TITLE;
+  return NODE_TYPE_TITLE_TVSHOWS;
 }
 
 bool CDirectoryNodeGenre::GetContent(CFileItemList& items)
@@ -30,7 +30,7 @@ bool CDirectoryNodeGenre::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetGenresNav(BuildPath(), items);
+  bool bSuccess=videodatabase.GetGenresNav(BuildPath(), items, params.GetContentType());
 
   videodatabase.Close();
 

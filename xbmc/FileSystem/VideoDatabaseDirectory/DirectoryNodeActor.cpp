@@ -13,12 +13,12 @@ CDirectoryNodeActor::CDirectoryNodeActor(const CStdString& strName, CDirectoryNo
 
 NODE_TYPE CDirectoryNodeActor::GetChildType()
 {
-  /* all items should still go to the next filter level
-  if (GetName()=="-1")
-    return NODE_TYPE_SONG;
-    */
+  CQueryParams params;
+  CollectQueryParams(params);
+  if (params.GetContentType() == NODE_TYPE_TITLE_MOVIES)
+    return NODE_TYPE_TITLE_MOVIES;
 
-  return NODE_TYPE_TITLE;
+  return NODE_TYPE_TITLE_TVSHOWS;
 }
 
 bool CDirectoryNodeActor::GetContent(CFileItemList& items)
@@ -30,7 +30,7 @@ bool CDirectoryNodeActor::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetActorsNav(BuildPath(), items);
+  bool bSuccess=videodatabase.GetActorsNav(BuildPath(), items, params.GetContentType());
 
   videodatabase.Close();
 
