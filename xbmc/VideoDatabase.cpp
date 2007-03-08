@@ -4118,7 +4118,7 @@ void CVideoDatabase::CleanDatabase()
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
-    sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath)";
+    sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath) and strContent=''";
     m_pDS->exec(sql.c_str());
     
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
