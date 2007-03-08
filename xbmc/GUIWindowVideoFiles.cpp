@@ -922,7 +922,7 @@ long CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
   return -1;
 }
 
-long CGUIWindowVideoFiles::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails)
+long CGUIWindowVideoFiles::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails, long idShow)
 {
   long lResult=-1;
   // add to all movies in the stacked set
@@ -930,9 +930,14 @@ long CGUIWindowVideoFiles::AddMovieAndGetThumb(CFileItem *pItem, const CStdStrin
     m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
   else if (content.Equals("tvshows"))
   {
-    CStdString strPath(pItem->m_strPath);
-    CUtil::AddSlashAtEnd(strPath);
-    lResult=m_database.SetDetailsForTvShow(strPath, movieDetails);
+    if (pItem->m_bIsFolder)
+    {
+      CStdString strPath(pItem->m_strPath);
+      CUtil::AddSlashAtEnd(strPath);
+      lResult=m_database.SetDetailsForTvShow(strPath, movieDetails);
+    }
+    else
+      lResult=m_database.SetDetailsForEpisode(pItem->m_strPath,movieDetails,idShow);
   }
   // get & save thumbnail
   CStdString strThumb = "";

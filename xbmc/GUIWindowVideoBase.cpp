@@ -1926,9 +1926,12 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, cons
         return;
       }
       m_database.DeleteDetailsForEpisode(iter->second.m_scrURL[0].m_url);
-      m_database.SetDetailsForEpisode(iter->second.m_scrURL[0].m_url,episodeDetails,lShowId);
+      CFileItem item;
+      item.m_strPath = iter->second.m_scrURL[0].m_url;
+      AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
       if (pDlgProgress)
       {
+        pDlgProgress->SetLine(2, 20361);
         pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
         pDlgProgress->Progress();
       }

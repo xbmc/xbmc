@@ -350,6 +350,18 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     }
     items.Append(tempItems);
   }
+
+  tempItems.Clear();
+  m_database.GetEpisodesByPlot(strSearch, tempItems);
+
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20365) + "] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
 }
 
 void CGUIWindowVideoNav::PlayItem(int iItem)

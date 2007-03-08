@@ -212,7 +212,7 @@ public:
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CIMDBMovie& details);
   long SetDetailsForTvShow(const CStdString& strPath, const CIMDBMovie& details);
-  void SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CIMDBMovie& details, long idShow);
+  long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CIMDBMovie& details, long idShow);
 
   void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
 
@@ -232,6 +232,8 @@ public:
   void GetMoviesByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowsByName(const CStdString& strSearch, CFileItemList& items);
   void GetEpisodesByName(const CStdString& strSearch, CFileItemList& items);
+
+  void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
   void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
   void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
