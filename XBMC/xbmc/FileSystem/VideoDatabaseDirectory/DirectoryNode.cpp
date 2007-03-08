@@ -5,10 +5,15 @@
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
 #include "DirectoryNodeGenre.h"
-#include "DirectoryNodeTitle.h"
+#include "DirectoryNodeTitleMovies.h"
+#include "DirectoryNodeTitleTvShows.h"
 #include "DirectoryNodeYear.h"
 #include "DirectoryNodeActor.h"
 #include "DirectoryNodeDirector.h"
+#include "DirectoryNodeMoviesOverview.h"
+#include "DirectoryNodeTvShowsOverview.H"
+#include "DirectoryNodeSeasons.h"
+#include "DirectoryNodeEpisodes.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -82,8 +87,18 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeActor(strName, pParent);
   case NODE_TYPE_DIRECTOR:
     return new CDirectoryNodeDirector(strName, pParent);
-  case NODE_TYPE_TITLE:
-    return new CDirectoryNodeTitle(strName, pParent);
+  case NODE_TYPE_TITLE_MOVIES:
+    return new CDirectoryNodeTitleMovies(strName, pParent);
+  case NODE_TYPE_TITLE_TVSHOWS:
+    return new CDirectoryNodeTitleTvShows(strName, pParent);
+  case NODE_TYPE_MOVIES_OVERVIEW:
+    return new CDirectoryNodeMoviesOverview(strName, pParent);
+  case NODE_TYPE_TVSHOWS_OVERVIEW:
+    return new CDirectoryNodeTvShowsOverview(strName, pParent);
+  case NODE_TYPE_SEASONS:
+    return new CDirectoryNodeSeasons(strName, pParent);
+  case NODE_TYPE_EPISODES:
+    return new CDirectoryNodeEpisodes(strName, pParent);
   }
 
   return NULL;
@@ -224,7 +239,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 
   case NODE_TYPE_GENRE:
   case NODE_TYPE_YEAR:
-  case NODE_TYPE_TITLE:
+  case NODE_TYPE_TITLE_MOVIES:
   case NODE_TYPE_ACTOR:
   case NODE_TYPE_DIRECTOR:
 /*    pItem = new CFileItem(g_localizeStrings.Get(15103));  // "All Artists"
@@ -280,5 +295,5 @@ bool CDirectoryNode::CanCache()
   NODE_TYPE node=GetType();
 
   // something should probably be cached
-  return (childnode==NODE_TYPE_TITLE);
+  return (childnode==NODE_TYPE_TITLE_MOVIES || childnode==NODE_TYPE_EPISODES);
 }

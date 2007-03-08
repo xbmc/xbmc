@@ -237,6 +237,7 @@
 
 #define CONTAINER_FOLDERTHUMB       360
 #define CONTAINER_FOLDERPATH        361
+#define CONTAINER_CONTENT           362
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -390,7 +391,7 @@ public:
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
-
+  CStdString m_content;
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;

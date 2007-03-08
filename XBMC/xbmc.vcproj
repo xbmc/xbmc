@@ -1781,6 +1781,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeEpisodes.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeEpisodes.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.cpp">
 						<FileConfiguration
 							Name="Debug|Xbox">
@@ -1821,6 +1827,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeOverview.cpp">
@@ -1907,10 +1919,28 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRoot.h">
 					</File>
 					<File
-						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitle.cpp">
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSeasons.cpp">
 					</File>
 					<File
-						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitle.h">
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSeasons.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitleMovies.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitleMovies.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitleTvShows.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitleTvShows.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTvShowsOverview.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTvShowsOverview.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeYear.cpp">
