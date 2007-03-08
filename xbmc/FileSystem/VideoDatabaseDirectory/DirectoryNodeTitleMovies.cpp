@@ -1,17 +1,17 @@
 #include "../../stdafx.h"
-#include "DirectoryNodeTitle.h"
+#include "DirectoryNodeTitleMovies.h"
 #include "QueryParams.h"
 #include "../../VideoDatabase.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitle::CDirectoryNodeTitle(const CStdString& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TITLE, strName, pParent)
+CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_TITLE_MOVIES, strName, pParent)
 {
 
 }
 
-bool CDirectoryNodeTitle::GetContent(CFileItemList& items)
+bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

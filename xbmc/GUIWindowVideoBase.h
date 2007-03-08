@@ -15,7 +15,7 @@ public:
   void PlayMovie(const CFileItem *item);
   int  GetResumeItemOffset(const CFileItem *item);
 
-  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
+  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool isTVShow = false);
   void AddToDatabase(int iItem);
 
 private:
@@ -33,6 +33,7 @@ protected:
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
+  virtual long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails, long idShow=-1) { return -1; }
 
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
 
@@ -58,6 +59,8 @@ protected:
   void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
+  void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
+  void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pProgress = NULL);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

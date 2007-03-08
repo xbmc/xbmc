@@ -798,6 +798,8 @@ bool CFileItem::IsParentFolder() const
 // %C - Programs count
 // %K - Movie/Game title
 // %L - existing Label
+// %E - number of episodes
+
 void CFileItem::FormatLabel(const CStdString& strMask)
 {
   if (!strMask.IsEmpty())
@@ -848,6 +850,10 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     if (strMask[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
     { // track number
       str.Format("%02.2i", tag.GetTrackNumber());
+    }
+    else if (strMask[iPos2 + 1] == 'E' && tag.GetTrackNumber() > 0)
+    { // track number
+      str.Format("%02.2i %s", tag.GetTrackNumber(),g_localizeStrings.Get(20360));
     }
     else if (strMask[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
     { // disc number
