@@ -77,43 +77,37 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   }
 
   char szLine[4096];
-  if ( !file.ReadString(szLine, sizeof(szLine) ) )
-  {
-    file.Close();
-    return false;
-  }
-  CStdString strLine = szLine;
-  StringUtils::RemoveCRLF(strLine);
-  strLine.TrimLeft(" \t");
+  CStdString strLine;
 
   // run through looking for the [playlist] marker.
   // if we find another http stream, then load it.
-  while (strLine != START_PLAYLIST_MARKER)
-  {
-    CFileItem item(strLine, false);
-    CURL url(strLine);
-    CStdString strProtocol = url.GetProtocol();
-    if (item.IsInternetStream())
-    {
-      if (bShoutCast && !item.IsAudio())
-      {
-        strLine.Replace("http:", "shout:");
-      }
-
-      CPlayListItem newItem(strLine, strLine, 0);
-      Add(newItem);
-
-      file.Close();
-      return true;
-    }
+  while (1)
+  {    
     if ( !file.ReadString(szLine, sizeof(szLine) ) )
     {
       file.Close();
-      return false;
+      return size() > 0;
     }
     strLine = szLine;
-    StringUtils::RemoveCRLF(strLine);
     strLine.TrimLeft(" \t");
+    strLine.TrimRight(" \n\r");
+    if(strLine.Equals(START_PLAYLIST_MARKER))
+      break;
+
+    // try to parse as an url
+    CURL url(strLine);
+     
+    // if it isn't an url, we are not interested
+    if (url.GetProtocol().IsEmpty())
+      continue;
+
+    // if it's shoutcast, replace the http with shout
+    if (bShoutCast && url.GetProtocol().Equals("http") )
+      strLine.Replace("http:", "shout:");
+    
+    // add this to playlist
+    CPlayListItem newItem(strLine, strLine, 0);
+    Add(newItem);
   }
 
   int iMaxSize = 0;
