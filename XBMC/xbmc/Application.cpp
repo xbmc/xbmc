@@ -26,6 +26,7 @@
 #include "utils/lcd.h"
 #include "xbox/iosupport.h"
 #include "xbox/XKHDD.h"
+#include "utils/SystemInfo.h"
 #endif
 #include "xbox/xbeheader.h"
 #include "util.h"
@@ -1349,6 +1350,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.GetString("network.dns").c_str());
 
   g_pythonParser.bStartup = true;
+  g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
