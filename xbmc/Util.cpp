@@ -1241,9 +1241,8 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
 
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport helper;
-  helper.Unmount("D:");
-  helper.Mount("D:", const_cast<char*>(szPath));
+  CIoSupport::Unmount("D:");
+  CIoSupport::Mount("D:", const_cast<char*>(szPath));
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
@@ -1269,7 +1268,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     pData->magic = CUSTOM_LAUNCH_MAGIC;
     const char* xbe = szXbe+3;
     CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
-    helper.Unmount("D:");
+    CIoSupport::Unmount("D:");
     XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwRegion, pData);
   }
   else
@@ -1292,8 +1291,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
 void CUtil::GetHomePath(CStdString& strPath)
 {
   char szXBEFileName[1024];
-  CIoSupport helper;
-  helper.GetXbePath(szXBEFileName);
+  CIoSupport::GetXbePath(szXBEFileName);
   char *szFileName = strrchr(szXBEFileName, '\\');
   *szFileName = 0;
   strPath = szXBEFileName;
@@ -2558,8 +2556,7 @@ void CUtil::PlayDVD()
   }
   else
   {
-    CIoSupport helper;
-    helper.Remount("D:", "Cdrom0");
+    CIoSupport::Remount("D:", "Cdrom0");
     CFileItem item("dvd://1", false);
     item.SetLabel(CDetectDVDMedia::GetDVDLabel());
     g_application.PlayFile(item);
@@ -3538,11 +3535,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("ejecttray"))
   {
-    CIoSupport io;
-    if (io.GetTrayState() == TRAY_OPEN)
-      io.CloseTray();
+    if (CIoSupport::GetTrayState() == TRAY_OPEN)
+      CIoSupport::CloseTray();
     else
-      io.EjectTray();
+      CIoSupport::EjectTray();
   }
   else if( execute.Equals("alarmclock") )
   {

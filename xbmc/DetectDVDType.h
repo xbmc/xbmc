@@ -43,8 +43,6 @@ protected:
   void SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
 
 private:
-  CIoSupport m_helper;
-
   static CCriticalSection m_muReadingMedia;
 
   static int m_DriveState;

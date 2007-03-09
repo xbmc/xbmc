@@ -321,8 +321,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetDVDState(PyObject *self, PyObject *args)
   {
-    CIoSupport io;
-    return PyInt_FromLong(io.GetTrayState());
+    return PyInt_FromLong(CIoSupport::GetTrayState());
   }
 
   // getFreeMem() method
