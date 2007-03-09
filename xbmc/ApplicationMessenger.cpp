@@ -24,6 +24,7 @@
 #include "application.h"
 #ifdef _XBOX
 #include "xbox/xkutils.h"
+#include "xbox/XKHDD.h"
 #endif
 
 #include "texturemanager.h"
