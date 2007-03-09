@@ -2736,13 +2736,9 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         if (g_stSettings.m_iMyVideoWatchMode == 2)
           strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
       }
-      if (idContent == VIDEODB_CONTENT_TVSHOWS)
+      else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath from actorlinkepisode,actors,episode,files,path where actors.idActor=actorlinkepisode.idActor and actorlinkepisode.idepisode=episode.idepisode and files.idEpisode = episode.idEpisode and files.idPath = path.idPath");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and episode.c%02d='false'", VIDEODB_ID_WATCHED);
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and episode.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath from actorlinktvshow,actors,tvshow,tvshowlinkpath,path where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow and tvshowlinkpath.idshow=tvshow.idshow and tvshowlinkpath.idpath=path.idpath");
       }
     }
     else
@@ -2942,19 +2938,33 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    CStdString addParam;
   
-    strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+    {
+      strSQL = FormatSQL("select episode.c%02d,path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
 
-    if (idActor != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
+      if (idActor != -1)
+        strSQL = FormatSQL("select episode.c%02d,path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
 
-    if (idDirector != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
+      if (idDirector != -1)
+        strSQL = FormatSQL("select episode.c%02d, path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
 
-    if (idGenre != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
+      if (idGenre != -1)
+        strSQL = FormatSQL("select episode.c%02d, path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
+    }
+    else
+    {
+      strSQL = FormatSQL("select distinct episode.c%02d%s from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode%s where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
 
+      if (idActor != -1)
+        strSQL = FormatSQL("select distinct episode.c%02d%s from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
+
+      if (idDirector != -1)
+        strSQL = FormatSQL("select distinct episode.c%02d%s from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
+
+      if (idGenre != -1)
+        strSQL = FormatSQL("select distinct episode.c%02d%s from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
+    }
     // run query
     CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -2974,15 +2984,17 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       {
         long lYear = m_pDS->fv(0).get_asLong();
         it = mapYears.find(lYear);
+        // check path
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        {
+          m_pDS->next();
+          continue;
+        }
         if (it == mapYears.end())
         {
-          // check path
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-          {
-            CStdString year;
-            year.Format("%d", lYear);
-            mapYears.insert(pair<long, CStdString>(lYear, year));
-          }
+          CStdString year;
+          year.Format("%d", lYear);
+          mapYears.insert(pair<long, CStdString>(lYear, year));
         }
         m_pDS->next();
       }
@@ -2990,9 +3002,9 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     
       for (it=mapYears.begin();it != mapYears.end();++it)
       {
-        long lSeason = m_pDS->fv(0).get_asLong();
+        long lSeason = it->first;
         CStdString strLabel;
-        strLabel.Format(g_localizeStrings.Get(20358),it->second);
+        strLabel.Format(g_localizeStrings.Get(20358),lSeason);
         CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
@@ -3531,7 +3543,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
 
     CStdString strPath1(strPath);
     CUtil::RemoveSlashAtEnd(strPath1);
-    CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",strPath1.c_str());
+    CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath='%s'",strPath1.c_str());
     m_pDS->query( strSQL.c_str() );
 
     iFound = 0;
