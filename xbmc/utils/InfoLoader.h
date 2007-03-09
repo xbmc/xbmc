@@ -9,6 +9,8 @@ public:
   CBackgroundLoader(CInfoLoader *callback);
   ~CBackgroundLoader();
 
+  void Start();
+
 protected:
   void Process();
   virtual void GetInformation() {};
