@@ -424,7 +424,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         }
         
         /* if we have any buttons or are not in vts domain we assume we are in meny */
-        m_bInMenu = (pci->hli.hl_gi.btn_ns > 0) || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+        m_bInMenu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
 
         /* check for any gap in the stream, this is likely a discontinuity */
         /* however libdvdnav seem to have a bug where it sometimes */
