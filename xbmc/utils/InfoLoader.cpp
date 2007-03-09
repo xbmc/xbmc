@@ -3,14 +3,18 @@
 #include "Weather.h"
 #include "SystemInfo.h"
 
-CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback)
+CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback) : CThread()
 {
   m_callback = callback;
-  CThread::Create(true);
 }
 
 CBackgroundLoader::~CBackgroundLoader()
 {
+}
+
+void CBackgroundLoader::Start()
+{
+  CThread::Create(true);
 }
 
 void CBackgroundLoader::Process()
@@ -46,9 +50,11 @@ void CInfoLoader::Refresh()
 
     if (!m_backgroundLoader)
     {
-      CLog::Log(LOGERROR, "Unable to start the background %s loader", m_type);
+      CLog::Log(LOGERROR, "Unable to start the background %s loader", m_type.c_str());
       return;
     }
+
+    m_backgroundLoader->Start();
   }
   m_busy = true;
 }
