@@ -111,12 +111,12 @@ public:
   static VOID GetPartition(LPCSTR strFilename, LPSTR strPartition);
   static VOID RemountDrive(LPCSTR szDrive);
 
-  VOID UpdateDvdrom();
-  HANDLE OpenCDROM();
-  INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-  VOID CloseCDROM(HANDLE hDevice);
+  static VOID UpdateDvdrom();
+  static HANDLE OpenCDROM();
+  static INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+  static INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+  static INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+  static VOID CloseCDROM(HANDLE hDevice);
   
   static BOOL IsDebug();
   static HRESULT Shutdown();
@@ -129,8 +129,6 @@ protected:
 
 private:
   static PARTITION_TABLE* m_partitionTable;
-  HGLOBAL m_gmXferBuffer;
-  PVOID m_rawXferBuffer;
 };
 
 #endif // !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
