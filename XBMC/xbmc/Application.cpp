@@ -24,7 +24,8 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/XKEEPROM.h"
 #include "utils/lcd.h"
-#include "xbox\iosupport.h"
+#include "xbox/iosupport.h"
+#include "xbox/XKHDD.h"
 #endif
 #include "xbox/xbeheader.h"
 #include "util.h"
@@ -1339,7 +1340,7 @@ HRESULT CApplication::Initialize()
         m_gWindowManager.ActivateWindow(startWindow);
     }
   }
-  /* setup netowork based on our settings */
+  /* setup network based on our settings */
   /* network will start it's init procedure */
   g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
     g_guiSettings.GetString("network.ipaddress").c_str(),
@@ -4145,7 +4146,9 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
     if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("system.remoteplayhdspindowndelay")*1000UL)) )
     {
       // time has elapsed, spin it down
-      CIoSupport::SpindownHarddisk();
+#ifdef HAS_XBOX_HARDWARE
+      XKHDD::SpindownHarddisk();
+#endif
       //stop checking until a key is pressed.
       m_dwSpinDownTime = 0;
       m_bNetworkSpinDown = true;
@@ -4160,7 +4163,9 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
         iMinSpinUp = (int)(g_guiSettings.GetInt("system.remoteplayhdspindowndelay")*0.5f);
       if (g_infoManager.GetPlayTimeRemaining() == iMinSpinUp)
       { // spin back up
-        CIoSupport::SpindownHarddisk(false);
+#ifdef HAS_XBOX_HARDWARE
+        XKHDD::SpindownHarddisk(false);
+#endif
       }
     }
   }
@@ -4195,7 +4200,9 @@ void CApplication::CheckHDSpindown()
     if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("system.hdspindowntime")*60UL*1000UL)) )
     {
       // time has elapsed, spin it down
-      CIoSupport::SpindownHarddisk();
+#ifdef HAS_XBOX_HARDWARE
+      XKHDD::SpindownHarddisk();
+#endif
       //stop checking until a key is pressed.
       m_dwSpinDownTime = 0;
       m_bSpinDown = true;
