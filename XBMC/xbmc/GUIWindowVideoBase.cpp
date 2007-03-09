@@ -1534,9 +1534,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       {
         // check path
-        CStdString strPath;
-        CUtil::GetDirectory(movie.m_strFileNameAndPath,strPath);
-        if (!g_passwordManager.IsDatabasePathUnlocked(strPath,g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
           continue;
       }
 
