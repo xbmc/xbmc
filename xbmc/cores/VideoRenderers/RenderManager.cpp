@@ -125,9 +125,7 @@ unsigned int CXBoxRenderManager::PreInit()
   {
     //Only do this on first run
     g_eventVBlank = CreateEvent(NULL,FALSE,FALSE,NULL);
-#ifdef HAS_XBOX_HARDWARE
-    D3D__pDevice->SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
-#endif
+    D3DDevice::SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
   }
 
   /* no pedning present */
@@ -289,7 +287,10 @@ void CXBoxRenderManager::PresentSingle()
 
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
-  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+#ifndef PROFILE
+  D3DDevice::BlockUntilVerticalBlank();
+#endif
+  D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
 /* new simpler method of handling interlaced material, *
@@ -307,17 +308,20 @@ void CXBoxRenderManager::PresentBob()
   {
     /* wait for timestamp */
     while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
-    D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+#ifndef PROFILE
+    D3DDevice::BlockUntilVerticalBlank();
+#endif
+    D3DDevice::Present( NULL, NULL, NULL, NULL );
   }
   else
   {
     /* if no present time, assume we are in a hurry */
     /* try to present first field directly          */
     DWORD interval;
-    D3D__pDevice->GetRenderState(D3DRS_PRESENTATIONINTERVAL, &interval);
-    D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_IMMEDIATE);
-    D3D__pDevice->Present( NULL, NULL, NULL, NULL );
-    D3D__pDevice->SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
+    D3DDevice::GetRenderState(D3DRS_PRESENTATIONINTERVAL, &interval);
+    D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_IMMEDIATE);
+    D3DDevice::Present( NULL, NULL, NULL, NULL );
+    D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
 
   /* render second field */
@@ -326,7 +330,10 @@ void CXBoxRenderManager::PresentBob()
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
 
-  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+#ifndef PROFILE
+  D3DDevice::BlockUntilVerticalBlank();
+#endif
+  D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
 void CXBoxRenderManager::PresentBlend()
@@ -348,7 +355,10 @@ void CXBoxRenderManager::PresentBlend()
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
-  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+#ifndef PROFILE
+  D3DDevice::BlockUntilVerticalBlank();
+#endif
+  D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
 /* renders the two fields as one, but doing fieldbased *
@@ -364,7 +374,7 @@ void CXBoxRenderManager::PresentWeave()
 
   //If we have interlaced video, we have to sync to only render on even fields
   D3DFIELD_STATUS mStatus;
-  D3D__pDevice->GetDisplayFieldStatus(&mStatus);
+  D3DDevice::GetDisplayFieldStatus(&mStatus);
 
 #ifdef PROFILE
   m_presentfield = FS_NONE;
@@ -377,8 +387,10 @@ void CXBoxRenderManager::PresentWeave()
     if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
       CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
   }
-
-  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+#ifndef PROFILE
+  D3DDevice::BlockUntilVerticalBlank();
+#endif
+  D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
 void CXBoxRenderManager::Process()

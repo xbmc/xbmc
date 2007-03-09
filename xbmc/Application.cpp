@@ -2127,11 +2127,12 @@ void CApplication::RenderNoPresent()
   // update our FPS
   g_infoManager.UpdateFPS();
 
+  if(!m_pd3dDevice)
+    return;
+
   g_graphicsContext.Lock();
 
-#ifndef HAS_XBOX_D3D
-  if (m_pd3dDevice) m_pd3dDevice->BeginScene();
-#endif
+  m_pd3dDevice->BeginScene();
 
   m_gWindowManager.UpdateModelessVisibility();
 
@@ -2139,7 +2140,7 @@ void CApplication::RenderNoPresent()
   g_graphicsContext.Clear();
   //SWATHWIDTH of 4 improves fillrates (performance investigator)
 #ifdef HAS_XBOX_D3D
-  if (m_pd3dDevice) m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
+  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
 #endif
   m_gWindowManager.Render();
 
@@ -2220,11 +2221,12 @@ void CApplication::RenderNoPresent()
     RenderMemoryStatus();
   }
 
-#ifndef HAS_XBOX_D3D
-  if (m_pd3dDevice) m_pd3dDevice->EndScene();
-#else
-  // Present the backbuffer contents to the display
-  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+  m_pd3dDevice->EndScene();
+#ifdef HAS_XBOX_D3D
+# ifndef PROFILE
+  m_pd3dDevice->BlockUntilVerticalBlank();
+# endif
+  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
 
