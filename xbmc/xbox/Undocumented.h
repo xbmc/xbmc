@@ -1,4 +1,5 @@
 // Thanks and credit to everlame, Team Evox, and Woodoo.
+// Added functions and corrections by Kreet.
 //
 // This file contains declarations for accessing the internal NT API.
 // Some calls have changed from NT, so be careful!
@@ -1022,15 +1023,16 @@ extern "C"
   // KeRaiseIrql:
   // Raises IRQL to some value.
   //
-  // Differences from NT: None.
-#define KeRaiseIrql KfRaiseIrql
+  // Differences from NT: KfRaiseIrql takes 1 parameter, returns IRQL
+
+#define KeRaiseIrql(a,b) *(b) = KfRaiseIrql(a)
+
   NTSYSAPI
   EXPORTNUM(190)
-  VOID
+  KIRQL
   __fastcall
   KfRaiseIrql(
-    IN KIRQL NewIrql,
-    OUT PKIRQL OldIrql
+    IN KIRQL NewIrql
   );
 
   // KeRaiseIrqlToDpcLevel:
