@@ -26,7 +26,6 @@
 #include "utils/lcd.h"
 #include "xbox/iosupport.h"
 #include "xbox/XKHDD.h"
-#include "utils/SystemInfo.h"
 #endif
 #include "xbox/xbeheader.h"
 #include "util.h"
@@ -69,6 +68,7 @@
 #include "filesystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
 #include "utils/TuxBoxUtil.h"
+#include "utils/SystemInfo.h"
 
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
