@@ -120,12 +120,9 @@ public:
   
   static BOOL IsDebug();
   static HRESULT Shutdown();
-  static VOID SpindownHarddisk(bool bSpinDown=true);
   static bool IsDrivePresent( const char* cDrive );
 
 protected:
-  static VOID IdexWritePortUchar(USHORT port, UCHAR data);
-  static UCHAR IdexReadPortUchar(USHORT port);
   static unsigned int read_active_partition_table(PARTITION_TABLE *p_table);
   static bool DriveExists(const char* szDrive);
   static bool PartitionExists(const char* szPartition);

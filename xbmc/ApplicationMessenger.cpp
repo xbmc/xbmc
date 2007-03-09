@@ -136,7 +136,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         Sleep(200);
 #ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        CIoSupport::SpindownHarddisk(); // Spindown the Harddisk
+        XKHDD::SpindownHarddisk(); // Spindown the Harddisk
         XKUtils::XBOXPowerOff();
 #endif
 #else

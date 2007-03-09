@@ -36,6 +36,7 @@
 #include "..\..\FileSystem\FactoryDirectory.h"
 #include "..\..\FileSystem\VirtualDirectory.h"
 #include "..\..\utils\UdpClient.h"
+#include "..\..\xbox\XKHDD.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -2375,7 +2376,9 @@ int CXbmcHttp::xbmcSpinDownHardDisk()
 	return SetResponse(openTag+"Error:Can't spin down now");
   if (g_application.MustBlockHDSpinDown())
 	return SetResponse(openTag+"Error:Can't spin down now");
-  CIoSupport::SpindownHarddisk();
+#ifdef HAS_XBOX_HARDWARE
+  XKHDD::SpindownHarddisk();
+#endif
   return SetResponse(openTag+"OK");
 }
 
