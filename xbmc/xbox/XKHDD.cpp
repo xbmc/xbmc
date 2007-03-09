@@ -47,17 +47,8 @@
 **		c't Magazine 11/91 "Platten-Auslese - Konfiguration von AT-Bus-Platten lesen"
 **		Thanks!, We ported this Pascall and ASM stuff to CPP to access the IDE Ports directly 
 **
-********************************************************************************************************
-UPDATE LOG:
---------------------------------------------------------------------------------------------------------
-Date: 02/18/2003
-By: UNDEAD [team-assembly]
-Reason: Prepared 0.2 for Public Release
---------------------------------------------------------------------------------------------------------
-Date: 01/06/2003
-By: UNDEAD [team-assembly]
-Reason: Prepared for Public Release
---------------------------------------------------------------------------------------------------------*/
+******************************************************************************************************
+*/
 #include "../stdafx.h"
 #include "XKHDD.h"
 #include "XKRC4.h"
@@ -71,31 +62,92 @@ XKHDD::XKHDD()
 XKHDD::~XKHDD(void)
 {}
 
-// Extra wrapper function make 
-#ifdef _XBOX
-BYTE XKHDD::GetHddSmartTemp()
+BOOL XKHDD::EnableSMART()
 {
-  ATA_COMMAND_OBJ hddcommand;
-  ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
-  
-  hddcommand.DATA_BUFFSIZE = 0;
-  hddcommand.IPReg.bFeaturesReg     = 0xd0;    // SEND READ SMART VALUES
-  hddcommand.IPReg.bSectorCountReg  = 1;
-  hddcommand.IPReg.bSectorNumberReg = 1;
-  hddcommand.IPReg.bCylLowReg       = 0x4f;    // SET SMART CYL LOW
-  hddcommand.IPReg.bCylHighReg      = 0xc2;    // SET SMART CYL HI
-  hddcommand.IPReg.bDriveHeadReg    = 0xa0;    // SET Device Where HDD is
-  hddcommand.IPReg.bCommandReg      = 0xb0;    // SET ON IDE SEND SMART MODE;
+	ATA_COMMAND_OBJ hddcommand;
+	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
 
-  SendATACommand(IDE_PRIMARY_PORT, &hddcommand, 0x00);
-  return GetHddSmartTemp((UCHAR *)&hddcommand.DATA_BUFFER);
+	hddcommand.DATA_BUFFSIZE          = 0x200;
+	hddcommand.IPReg.bFeaturesReg     = ATA_SMART_ENABLE;
+	hddcommand.IPReg.bCylLowReg       = SMART_CYL_LOW;
+	hddcommand.IPReg.bCylHighReg      = SMART_CYL_HI;
+	hddcommand.IPReg.bCommandReg      = ATA_SMART;
+
+	return SendATACommand(XBOX_DEVICE_HDD, &hddcommand, IDE_COMMAND_NONDATA);
 }
+
+signed char XKHDD::GetHddSmartTemp()
+{
+	ATA_COMMAND_OBJ hddcommand;
+	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
+
+	hddcommand.DATA_BUFFSIZE          = 0x200;
+	hddcommand.IPReg.bFeaturesReg     = ATA_SMART_READ_VALUES;
+	hddcommand.IPReg.bCylLowReg       = SMART_CYL_LOW; 
+	hddcommand.IPReg.bCylHighReg      = SMART_CYL_HI;
+	hddcommand.IPReg.bCommandReg      = ATA_SMART;
+
+	if (SendATACommand(XBOX_DEVICE_HDD, &hddcommand, IDE_COMMAND_READ))
+		return GetHddSmartTemp((UCHAR *)&hddcommand.DATA_BUFFER);
+	else
+		return 0;
+}
+
+VOID XKHDD::SpindownHarddisk(bool bSpinDown)
+{
+#ifdef _XBOX
+  int status;
+  int iPowerCode = ATA_POWERSTATE_ACTIVE; //assume active mode
+
+  KIRQL oldIrql = XKHDD::RaiseIRQLToIDEChannelIRQL();
+  _outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
+  //Ask drive for powerstate
+  _outp(ATA_COMMAND_REGISTER, ATA_COMMAND_POWERMODE1);
+  //Get status of the command
+  status = _inp(ATA_STATUS_REGISTER);
+  int i = 0;
+  while ( (i < 2000) && ((status & ATA_STATUS_DRIVE_BUSY) == ATA_STATUS_DRIVE_BUSY) )
+  {
+    //wait for drive to process the command
+    status = _inp(ATA_STATUS_REGISTER);
+    i++;
+  };
+  //if it's busy or not responding as we expected don't tell it to standby
+  if ( (i < 2000) && (!(status & ATA_STATUS_DRIVE_ERROR)) )
+  {
+    iPowerCode = _inp(ATA_SECTOR_COUNT_REGISTER);
+    if (bSpinDown && iPowerCode != ATA_POWERSTATE_STANDBY)
+    {
+      _outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
+      _outp(ATA_COMMAND_REGISTER, ATA_COMMAND_STANDBY);
+    }
+    else if (!bSpinDown && iPowerCode == ATA_POWERSTATE_STANDBY)
+    {
+      _outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
+      _outp(ATA_COMMAND_REGISTER, ATA_COMMAND_ACTIVE);
+    }
+  }
+  KeLowerIrql(oldIrql);
 #endif
-BYTE XKHDD::GetHddSmartTemp(UCHAR* IDEData)
-{	
-	// S.M.A.R.T Get HDD Temp ID: 194 OFFSET: 0x065 & 0x067
-	BYTE retVal = (BYTE) *(IDEData+SMART_RED_HDD_TEMP2);
-	return retVal;
+}
+
+signed char XKHDD::GetHddSmartTemp(UCHAR* IDEData)
+{
+	int i;
+	signed char retval = 0;
+	// Scan the SMART attributes returned by the HDD for the HDDTemp attribute.
+	for (i=2; i < (2+(12*29)); i+=12)
+	{
+		// SMART ATTR structure: AA FF FF CC TT RR RR RR RR ... (raw values 8 bytes long)
+		// AA = attribute, FF = flags, CC = "current value", TT = threshould, RR = raw
+		// current value and threshold are invalid for temperature, raw provides a valid value.
+		if (IDEData[i] == SMART_ATTR_HDATEMP)
+		{
+			retval = (signed char) IDEData[i+5];
+			break;
+		}
+	}
+	return retval;
 }
 
 WORD XKHDD::GetIDENumOfCyls(UCHAR* IDEData)
@@ -129,6 +181,16 @@ void XKHDD::GetIDESerial(UCHAR* IDEData, LPSTR SerialString)
 void XKHDD::GetIDEModel(UCHAR* IDEData, LPSTR ModelString)
 {
 	CleanATAData((UCHAR*)ModelString, IDEData+HDD_MODEL_OFFSET, HDD_MODEL_LENGTH);
+}
+
+BOOL XKHDD::IsSmartSupported(UCHAR * IDEData)
+{
+  return ((WORD)*(IDEData + HDD_CMD_SUPPORT_OFFSET)) & 1;
+}
+
+BOOL XKHDD::IsSmartEnabled(UCHAR * IDEData)
+{
+  return ((WORD)*(IDEData + HDD_CMD_ENABLED_OFFSET)) & 1;
 }
 
 WORD XKHDD::GetIDESecurityStatus(UCHAR* IDEData)
@@ -180,37 +242,70 @@ void XKHDD::GenerateHDDPwd(UCHAR* HDDKey, UCHAR* IDEData, UCHAR* HDDPass)
 	SHA1Obj.HMAC_SHA1 (HDDPass, HDDKey, 0x10, model, HDD_MODEL_LENGTH, serial, HDD_SERIAL_LENGTH);
 }
 
-#if defined (_WINDOWS)
-//Windows Version of sending ATA Commands..  This is normal IOCTL stuff...
+KIRQL XKHDD::RaiseIRQLToIDEChannelIRQL()
+{
+	return KfRaiseIrql(XBOX_IDE_CHANNEL_IRQL);
+}
+
 BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
 {
 	BOOL retVal = FALSE;
 
+#if defined (_WINDOWS)
 	char tmp[128];
-    sprintf(tmp, "\\\\.\\PhysicalDrive%u", DeviceNum);
+	sprintf(tmp, "\\\\.\\PhysicalDrive%u", DeviceNum);
+#else
+	ANSI_STRING tmp;
+	if (DeviceNum == XBOX_DEVICE_HDD)
+		RtlInitAnsiString(&tmp, "\\Device\\Harddisk0\\Partition0");
+	else if (DeviceNum == XBOX_DEVICE_DVDROM)
+		RtlInitAnsiString(&tmp, "\\Device\\Cdrom0");
+	else
+		return FALSE;
+#endif
 	//Open HDD and get handle to Open Device...
-    HANDLE Device = CreateFile(tmp, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
-
+#if defined (_WINDOWS)
+	HANDLE Device = CreateFile(tmp, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 	if (Device == INVALID_HANDLE_VALUE)
 		return FALSE;
-  
+#else
+	HANDLE Device;
+	IO_STATUS_BLOCK iosb;
+	OBJECT_ATTRIBUTES oa;
+	NTSTATUS status;
+
+	ZeroMemory (&oa, sizeof(OBJECT_ATTRIBUTES));
+	oa.ObjectName = &tmp;
+	oa.Attributes = 0x40; // case insensitive
+
+	status = NtOpenFile(&Device, SYNCHRONIZE | GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
+
+	if (status < 0) // check for success
+		return FALSE;
+#endif
+
 	//Set up ATA Pass through structures..
+#if defined (_WINDOWS)
 	unsigned int Size = sizeof(ATA_PASS_THROUGH) + ATACommandObj->DATA_BUFFSIZE;
+#else
+  unsigned int Size = sizeof(ATA_PASS_THROUGH);
+#endif
 	LPATA_PASS_THROUGH pAPT = (LPATA_PASS_THROUGH) VirtualAlloc(NULL, Size, MEM_COMMIT, PAGE_READWRITE);
 	ZeroMemory (pAPT, Size);
-		
+
 	if (pAPT)
 	{
 		memset(pAPT, 0, Size);
-		pAPT->DataBufferSize = ATACommandObj->DATA_BUFFSIZE;
-		pAPT->IdeReg[0] = ATACommandObj->IPReg.bFeaturesReg;
-		pAPT->IdeReg[1] = ATACommandObj->IPReg.bSectorCountReg;
-		pAPT->IdeReg[2] = ATACommandObj->IPReg.bSectorNumberReg;
-		pAPT->IdeReg[3] = ATACommandObj->IPReg.bCylLowReg;
-		pAPT->IdeReg[4] = ATACommandObj->IPReg.bCylHighReg;
-		pAPT->IdeReg[5] = ATACommandObj->IPReg.bDriveHeadReg;
-		pAPT->IdeReg[6] = ATACommandObj->IPReg.bCommandReg;
+		pAPT->DataBufferSize          = ATACommandObj->DATA_BUFFSIZE;
+		pAPT->IdeReg.bFeaturesReg     = ATACommandObj->IPReg.bFeaturesReg;
+		pAPT->IdeReg.bSectorCountReg  = ATACommandObj->IPReg.bSectorCountReg;
+		pAPT->IdeReg.bSectorNumberReg = ATACommandObj->IPReg.bSectorNumberReg;
+		pAPT->IdeReg.bCylLowReg       = ATACommandObj->IPReg.bCylLowReg;
+		pAPT->IdeReg.bCylHighReg      = ATACommandObj->IPReg.bCylHighReg;
+		pAPT->IdeReg.bDriveHeadReg    = ATACommandObj->IPReg.bDriveHeadReg;
+		pAPT->IdeReg.bCommandReg      = ATACommandObj->IPReg.bCommandReg;
 
+#if defined (_WINDOWS)
 		if (ATACommandObj->IPReg.bCommandReg == 0xEC)  
 		{
 			// For some Reason Win2K/XP sometimes needs to rescan bus before we get IDENTIFY info..
@@ -221,18 +316,23 @@ BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCH
 
 		//Copy the data IN buffer so we can send ATA Command..
 		memcpy(pAPT->DataBuffer, ATACommandObj->DATA_BUFFER, ATACommandObj->DATA_BUFFSIZE);
+#else
+		pAPT->DataBuffer = (BYTE *) &ATACommandObj->DATA_BUFFER;
+		pAPT->IdeReg.bHostSendsData = ReadWrite == IDE_COMMAND_WRITE ? TRUE : FALSE;
+#endif
 
 		DWORD BytesReturned = 0;
 		//Send the ATA/IDE Pass through command..
 		BOOL Status = DeviceIoControl(Device, IOCTL_IDE_PASS_THROUGH, pAPT, Size, pAPT, Size, &BytesReturned, FALSE);
 		
 		//Get the Error and Status registers of IDE command return
-		ATACommandObj->OPReg.bErrorReg =  pAPT->IdeReg[0];
-		ATACommandObj->OPReg.bStatusReg = pAPT->IdeReg[6];
+		ATACommandObj->OPReg.bErrorReg =  pAPT->IdeReg.bFeaturesReg;
+		ATACommandObj->OPReg.bStatusReg = pAPT->IdeReg.bCommandReg;
 
-		//If the command was successfull, copy the ATA structure's data into the ouptut object... 
+		//If the command was successful, copy the ATA structure's data into the ouptut object... 
 		if (Status)
 		{
+#if defined (_WINDOWS)
 			if (ATACommandObj->DATA_BUFFER)
 			{
 				if (ATACommandObj->DATA_BUFFSIZE > 0) 
@@ -244,7 +344,7 @@ BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCH
 					memcpy(ATACommandObj->DATA_BUFFER, pAPT->DataBuffer, ReturnedSize);
 				}
 			}
-			
+#endif
 			retVal = TRUE;
 		}
 	}
@@ -255,98 +355,3 @@ BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCH
 	CloseHandle(Device);
 	return retVal;
 }
-
-
-#else
-//XBOX Version of Sending ATA Commands..  
-//Since XBOX runs everything in Kernel Mode, we use direct port access :)
-BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
-{
-	//XBOX Sending ATA Commands..  
-	BOOL retVal			= FALSE;
-	WORD waitcount;
-	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER;
-  BYTE old_irql;
-
-  // Raise IRQL to DPC level to prevent interrupts during ATA operation
-  old_irql = KeRaiseIrqlToDpcLevel();
-
-  // Wait for device to be ready
-	for (waitcount = 10000; waitcount > 0; waitcount--)
-	{
-		if ((_inp(IDEPort + 7) & IDE_STATUS_DRIVE_BUSY) == 0)
-			break;
-		Sleep(1);
-	}
-	if (waitcount == 0)
-  {
-    KfLowerIrql(old_irql);
-		return FALSE;
-  }
-
-	//Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
-	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);
-	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg);
-	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);
-	_outp(IDEPort + 4, ATACommandObj->IPReg.bCylLowReg);
-	_outp(IDEPort + 5, ATACommandObj->IPReg.bCylHighReg);
-	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);
-	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);
-
-	//Command Executed, Check Status.. If not success, wait a while.
-	for (waitcount = 10000; waitcount > 0; waitcount--)
-	{
-		if ((_inp(IDEPort + 7) & IDE_STATUS_READY) == IDE_STATUS_READY)
-			break;
-		Sleep(1);
-	}
-	if (waitcount == 0)
-  {
-    KfLowerIrql(old_irql);
-		return FALSE;
-  }
-
-	//Is this a IDE command that Requests Data, if so, read the from IDE port ...
-	if (ReadWrite == IDE_COMMAND_READ)
-	{
-		//Read the command return output Registers
-		ATACommandObj->OPReg.bErrorReg =		_inp(IDEPort + 1);
-		ATACommandObj->OPReg.bSectorCountReg =	_inp(IDEPort + 2);
-		ATACommandObj->OPReg.bSectorNumberReg =	_inp(IDEPort + 3);
-		ATACommandObj->OPReg.bCylLowReg =		_inp(IDEPort + 4);
-		ATACommandObj->OPReg.bCylHighReg =		_inp(IDEPort + 5);
-		ATACommandObj->OPReg.bDriveHeadReg =	_inp(IDEPort + 6);
-		ATACommandObj->OPReg.bStatusReg =		_inp(IDEPort + 7);
-
-		ATACommandObj->DATA_BUFFSIZE = 512;
-
-		//Now read a sector (512 Bytes) from the IDE Port
-		ZeroMemory(ATACommandObj->DATA_BUFFER, 512);
-		for (int i = 0; i < 128; i++)
-			PIDEDATA[i] = _inpd(IDEPort);
-
-		retVal = TRUE;
-	}
-	//Is this a IDE command that Sends Data, if so, write the Data to IDE Port..
-	else if ((ReadWrite == IDE_COMMAND_WRITE) && (ATACommandObj->DATA_BUFFSIZE > 0))
-	{
-		//Read the command return output Registers
-		ATACommandObj->OPReg.bErrorReg			= _inp(IDEPort + 1);
-		ATACommandObj->OPReg.bSectorCountReg	= _inp(IDEPort + 2);
-		ATACommandObj->OPReg.bSectorNumberReg	= _inp(IDEPort + 3);
-		ATACommandObj->OPReg.bCylLowReg			= _inp(IDEPort + 4);
-		ATACommandObj->OPReg.bCylHighReg		= _inp(IDEPort + 5);
-		ATACommandObj->OPReg.bDriveHeadReg		= _inp(IDEPort + 6);
-		ATACommandObj->OPReg.bStatusReg			= _inp(IDEPort + 7);
-
-		//Now Write a sector (512 Bytes) To the IDE Port
-		for (int i = 0; i <  128; i++)
-			_outpd(IDEPort, PIDEDATA[i]);
-		retVal = TRUE;
-	}
-
-  KfLowerIrql(old_irql);
-
-	return retVal;
-}
-#endif

@@ -58,28 +58,37 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->m_videodvdzone = callback->GetDVDZone();
     callback->m_produceinfo = callback->GetXBProduceInfo();
     g_sysinfo.GetRefurbInfo(callback->m_hddbootdate, callback->m_hddcyclecount);
+
+    callback->GetHDDInfo(callback->m_HDDModel, 
+                         callback->m_HDDSerial,
+                         callback->m_HDDFirmware,
+                         callback->m_HDDpw, 
+                         callback->m_HDDLockState);
+
+    if (callback->m_bSmartSupported && !callback->m_bSmartEnabled)
+    {
+      CLog::Log(LOGNOTICE, "Enabling SMART...");
+      XKHDD::EnableSMART();
+    }
+
+    callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
+
     callback->m_bRequestDone = true;
   }
-  // Check if the Requested information are ok!
-  // Here we can receive garbage data from the HDD device, but requesting to much will couse a Freeze!
-  if(!callback->m_hddRequest)
-    callback->GetHDDInfo(callback->m_HDDModel, callback->m_HDDSerial,callback->m_HDDFirmware,callback->m_HDDpw,callback->m_HDDLockState);
-  if(!callback->m_dvdRequest)
-    callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
-#endif  
+ 
+#endif
   //Request always
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
 #ifdef HAS_XBOX_HARDWARE
-  callback->by_HddTemp = XKHDD::GetHddSmartTemp();
+  if (callback->m_bSmartEnabled)
+    callback->byHddTemp = XKHDD::GetHddSmartTemp();
+  else
+    callback->byHddTemp = 0;
 #endif
+}
 
-}
-const char *CSysInfo::BusyInfo(DWORD dwInfo)
-{
-  return CInfoLoader::BusyInfo(dwInfo);
-}
 const char *CSysInfo::TranslateInfo(DWORD dwInfo)
 {
   switch(dwInfo)
@@ -156,84 +165,59 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     m_temp.Format("%s %s",g_localizeStrings.Get(13154), m_HDDModel);
     if (m_hddRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_HDD_SERIAL:
     m_temp.Format("%s %s", g_localizeStrings.Get(13155), m_HDDSerial);
     if (m_hddRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_HDD_FIRMWARE:
     m_temp.Format("%s %s", g_localizeStrings.Get(13156), m_HDDFirmware);
     if (m_hddRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_HDD_PASSWORD:
     m_temp.Format("%s %s", g_localizeStrings.Get(13157), m_HDDpw);
     if (m_hddRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_HDD_LOCKSTATE:
     m_temp.Format("%s %s", g_localizeStrings.Get(13158), m_HDDLockState);
     if (m_hddRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-
   // DVD request
   case SYSTEM_DVD_MODEL:
     m_temp.Format("%s %s", g_localizeStrings.Get(13152), m_DVDModel);
     if (m_dvdRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_DVD_FIRMWARE:
     m_temp.Format("%s %s", g_localizeStrings.Get(13153), m_DVDFirmware);
     if (m_dvdRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-
   // All Time request
   case SYSTEM_HDD_TEMPERATURE:
-    {
-      CTemperature temp = CTemperature::CreateFromCelsius((double)by_HddTemp);
-      if (by_HddTemp == 0 || by_HddTemp > 100 )
-      {
-        //Prevent value is jumping up/down with garbage Data
-        if (!m_HDDTemp.IsEmpty())
-        {
-          //Fall back to the old known value!
-          m_temp = m_HDDTemp; 
-        }
-        else
-        {
-          // First request had a bad value! Display Invalid!
-          temp.SetState(CTemperature::invalid);
-          m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
-        }
-      }
-      else
-      {
-        m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
-      }
-      m_HDDTemp = m_temp;
-      return m_HDDTemp;
-    }
-    break;
+  {
+    CTemperature temp;
+
+    temp.SetState(CTemperature::invalid);
+
+    if(m_bSmartEnabled && byHddTemp != 0)
+      temp = CTemperature::CreateFromCelsius((double)byHddTemp);
+
+    m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
+
+    m_HDDTemp = m_temp;
+    return m_HDDTemp;
+  }
 #endif
   case SYSTEM_UPTIME:
     if (!m_systemuptime.IsEmpty()) return m_systemuptime;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_TOTALUPTIME:
      if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
     else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_INTERNET_STATE:
     if (!m_InternetState.IsEmpty())return m_InternetState;
     else return g_localizeStrings.Get(503); //Busy text
-    break;
 
   default:
     return g_localizeStrings.Get(503); //Busy text
-    break;
   }
 }
 DWORD CSysInfo::TimeToNextRefreshInMs()
@@ -267,6 +251,9 @@ CSysInfo::CSysInfo(void) : CInfoLoader("sysinfo")
   m_bRequestDone = false;
   m_XKEEPROM = new XKEEPROM;
   m_XKEEPROM->ReadFromXBOX();
+  // XKEEPROM functions will automatically decrypt if encrypted already, but we should
+  // automatically decrypt before fetching version information to set the XBOXVersion first.
+  m_XKEEPROM->Decrypt();
   m_XBOXVersion = m_XKEEPROM->GetXBOXVersion();
 #endif
 }
@@ -396,7 +383,7 @@ void CSysInfo::WriteTXTInfoFile()
     if (m_XBOXVersion== m_XKEEPROM->V1_0)
       strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.0");
     else if (m_XBOXVersion == m_XKEEPROM->V1_1)
-      strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.1");
+      strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.1-V1.5");
     else if (m_XBOXVersion == m_XKEEPROM->V1_6)
       strcat(tmpFileStr,  "\r\nXBOX Version = \t\tV1.6");
     //Get Kernel Version
@@ -460,9 +447,9 @@ void CSysInfo::WriteTXTInfoFile()
     //Query ATA IDENTIFY
     XKHDD::ATA_COMMAND_OBJ cmdObj;
     ZeroMemory(&cmdObj, sizeof(XKHDD::ATA_COMMAND_OBJ));
-    cmdObj.IPReg.bCommandReg = IDE_ATA_IDENTIFY;
-    cmdObj.IPReg.bDriveHeadReg = IDE_DEVICE_MASTER;
-    XKHDD::SendATACommand(IDE_PRIMARY_PORT, &cmdObj, IDE_COMMAND_READ);
+    cmdObj.DATA_BUFFSIZE = 0x200;
+    cmdObj.IPReg.bCommandReg = ATA_IDENTIFY_DEVICE;
+    XKHDD::SendATACommand(XBOX_DEVICE_HDD, &cmdObj, IDE_COMMAND_READ);
 
     //Write HDD Model
     strcat(tmpFileStr, "\r\n\r\nXBOX HDD Model = \t");
@@ -489,9 +476,9 @@ void CSysInfo::WriteTXTInfoFile()
 
     //Query ATAPI IDENTIFY
     ZeroMemory(&cmdObj, sizeof(XKHDD::ATA_COMMAND_OBJ));
-    cmdObj.IPReg.bCommandReg = IDE_ATAPI_IDENTIFY;
-    cmdObj.IPReg.bDriveHeadReg = IDE_DEVICE_SLAVE;
-    XKHDD::SendATACommand(IDE_PRIMARY_PORT, &cmdObj, IDE_COMMAND_READ);
+    cmdObj.DATA_BUFFSIZE = 0x200;
+    cmdObj.IPReg.bCommandReg = ATA_IDENTIFY_PACKET_DEVICE;
+    XKHDD::SendATACommand(XBOX_DEVICE_DVDROM, &cmdObj, IDE_COMMAND_READ);
 
     //Write DVD Model
     strcat(tmpFileStr, "\r\n\r\nXBOX DVD Model = \t");
@@ -704,13 +691,14 @@ bool CSysInfo::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
 {
   XKHDD::ATA_COMMAND_OBJ hddcommand;
   DWORD slen = 0;
+
   ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
-  hddcommand.DATA_BUFFSIZE = 0;
 
   //Detect DVD Model...
-  hddcommand.IPReg.bDriveHeadReg = IDE_DEVICE_SLAVE;
-  hddcommand.IPReg.bCommandReg = IDE_ATAPI_IDENTIFY;
-  if (XKHDD::SendATACommand(IDE_PRIMARY_PORT, &hddcommand, IDE_COMMAND_READ))
+  hddcommand.DATA_BUFFSIZE = 0x200;
+  hddcommand.IPReg.bCommandReg = ATA_IDENTIFY_PACKET_DEVICE;
+
+  if (XKHDD::SendATACommand(XBOX_DEVICE_DVDROM, &hddcommand, IDE_COMMAND_READ))
   {
     //Get DVD Model
     CHAR lpsDVDModel[100];
@@ -738,10 +726,11 @@ bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStd
   XKHDD::ATA_COMMAND_OBJ hddcommand;
 
   ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
-  hddcommand.IPReg.bDriveHeadReg = IDE_DEVICE_MASTER;
-  hddcommand.IPReg.bCommandReg = IDE_ATA_IDENTIFY;
 
-  if (XKHDD::SendATACommand(IDE_PRIMARY_PORT, &hddcommand, IDE_COMMAND_READ))
+  hddcommand.DATA_BUFFSIZE = 0x200;
+  hddcommand.IPReg.bCommandReg = ATA_IDENTIFY_DEVICE;
+
+  if (XKHDD::SendATACommand(XBOX_DEVICE_HDD, &hddcommand, IDE_COMMAND_READ))
   {
     //Get Model Name
     CHAR lpsHDDModel[100] = "";
@@ -767,16 +756,27 @@ bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStd
 
     //Get ATA Locked State
     DWORD SecStatus = XKHDD::GetIDESecurityStatus(hddcommand.DATA_BUFFER);
-    if (!(SecStatus & IDE_SECURITY_SUPPORTED))
+    if (!(SecStatus & ATA_SECURITY_SUPPORTED))
       strHDDLockState = g_localizeStrings.Get(20164);
-    else if ((SecStatus & IDE_SECURITY_SUPPORTED) && !(SecStatus & IDE_SECURITY_ENABLED))
+    else if ((SecStatus & ATA_SECURITY_SUPPORTED) && !(SecStatus & ATA_SECURITY_ENABLED))
       strHDDLockState = g_localizeStrings.Get(20165);
-    else if ((SecStatus & IDE_SECURITY_SUPPORTED) && (SecStatus & IDE_SECURITY_ENABLED))
+    else if ((SecStatus & ATA_SECURITY_SUPPORTED) && (SecStatus & ATA_SECURITY_ENABLED))
       strHDDLockState = g_localizeStrings.Get(20166);
-    else if (SecStatus & IDE_SECURITY_FROZEN)
+    else if (SecStatus & ATA_SECURITY_FROZEN)
       strHDDLockState = g_localizeStrings.Get(20167);
-    else if (SecStatus & IDE_SECURITY_COUNT_EXPIRED)
+    else if (SecStatus & ATA_SECURITY_COUNT_EXPIRED)
       strHDDLockState = g_localizeStrings.Get(20168);
+
+    if (XKHDD::IsSmartSupported(hddcommand.DATA_BUFFER))
+    {
+      m_bSmartSupported = true;
+      CLog::Log(LOGNOTICE, "HDD: SMART is supported.");
+      if (XKHDD::IsSmartEnabled(hddcommand.DATA_BUFFER))
+      {
+        m_bSmartEnabled = true;
+        CLog::Log(LOGNOTICE, "HDD: SMART is enabled.");
+      }
+    }
 
     //Command was succesful
     m_hddRequest = true;

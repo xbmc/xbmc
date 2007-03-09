@@ -568,7 +568,6 @@ VOID CIoSupport::UpdateDvdrom()
         OutputDebugString("Dvdrom ended (failed to retract tray).\n");
         return ;
       }
-
       break;
     case DRIVE_NOT_READY:
       // drive is not ready (closing, opening)
@@ -606,80 +605,6 @@ BOOL CIoSupport::IsDebug()
   return (XboxKrnlVersion->Qfe & 0x8000) || ((DWORD)XboxHardwareInfo & 0x10);
 #else
   return FALSE;
-#endif
-}
-
-VOID CIoSupport::IdexWritePortUchar(USHORT port, UCHAR data)
-{
-  _asm
-  {
-    mov dx, port
-    mov al, data
-    out dx, al
-  }
-}
-
-UCHAR CIoSupport::IdexReadPortUchar(USHORT port)
-{
-  UCHAR rval;
-  _asm
-  {
-    mov dx, port
-    in al, dx
-    mov rval, al
-  }
-  return rval;
-}
-
-VOID CIoSupport::SpindownHarddisk(bool bSpinDown)
-{
-#ifdef _XBOX
- #define IDE_ERROR_REGISTER          0x01F1
- #define IDE_SECTOR_COUNT_REGISTER   0x01F2
- #define IDE_DEVICE_SELECT_REGISTER  0x01F6
- #define IDE_COMMAND_REGISTER        0x01F7
- #define IDE_STATUS_REGISTER         IDE_COMMAND_REGISTER
- #define IDE_COMMAND_POWERMODE1      0xE5
- #define IDE_STATUS_DRIVE_BUSY       0x80
- #define IDE_STATUS_DRIVE_READY      0x40
- #define IDE_STATUS_DRIVE_ERROR      0x01
- #define IDE_COMMAND_STANDBY         0xE0
- #define IDE_COMMAND_ACTIVE          0xE1
- #define IDE_POWERSTATE_ACTIVE       0xFF
- #define IDE_POWERSTATE_STANDBY      0x00 // 0x80=idle
-
-  int status;
-  int iPowerCode = IDE_POWERSTATE_ACTIVE; //assume active mode
-  //Sleep(2000);
-  KIRQL oldIrql = KeRaiseIrqlToDpcLevel();
-  IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
-  //Ask drive for powerstate
-  IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_POWERMODE1);
-  //Get status of the command
-  status = IdexReadPortUchar(IDE_STATUS_REGISTER);
-  int i = 0;
-  while ( (i < 2000) && ((status & IDE_STATUS_DRIVE_BUSY) == IDE_STATUS_DRIVE_BUSY) )
-  {
-    //wait for drive to process the command
-    status = IdexReadPortUchar(IDE_STATUS_REGISTER);
-    i++;
-  };
-  //if it's busy or not responding as we expected don't tell it to standby
-  if ( (i < 2000) && (!(status & IDE_STATUS_DRIVE_ERROR)) )
-  {
-    iPowerCode = IdexReadPortUchar(IDE_SECTOR_COUNT_REGISTER);
-    if (bSpinDown && iPowerCode != IDE_POWERSTATE_STANDBY)
-    {
-      IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
-      IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_STANDBY);
-    }
-    else if (!bSpinDown && iPowerCode == IDE_POWERSTATE_STANDBY)
-    {
-      IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
-      IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_ACTIVE);
-    }
-  }
-  KeLowerIrql(oldIrql);
 #endif
 }
 
