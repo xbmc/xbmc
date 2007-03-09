@@ -12,8 +12,7 @@ extern char* tracker_getdllname(unsigned long caller);
 
 extern "C" HANDLE xboxopendvdrom()
 {
-  CIoSupport support;
-  return support.OpenCDROM();
+  return CIoSupport::OpenCDROM();
 }
 
 extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize)

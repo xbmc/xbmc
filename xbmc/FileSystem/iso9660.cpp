@@ -414,7 +414,7 @@ void iso9660::Scan()
   if (m_hCDROM != NULL)
     return ;
 
-  m_hCDROM = m_IoSupport.OpenCDROM();
+  m_hCDROM = CIoSupport::OpenCDROM();
 
   m_paths = 0;
   m_lastpath = 0;
@@ -433,7 +433,7 @@ void iso9660::Scan()
 
   if (strncmp(m_info.iso.szSignature, "CD001", 5))
   {
-    m_IoSupport.CloseCDROM( m_info.ISO_HANDLE);
+    CIoSupport::CloseCDROM( m_info.ISO_HANDLE);
     m_info.ISO_HANDLE = NULL;
     m_hCDROM = NULL;
     m_info.iso9660 = 0;
@@ -540,7 +540,7 @@ void iso9660::Reset()
 
   if (m_hCDROM)
   {
-    m_IoSupport.CloseCDROM(m_hCDROM);
+    CIoSupport::CloseCDROM(m_hCDROM);
   }
   m_hCDROM = NULL;
 }
@@ -719,10 +719,10 @@ HANDLE iso9660::OpenFile(const char *filename)
   bool bError;
 
   EnterCriticalSection(&m_critSection);
-  bError = (m_IoSupport.ReadSector(m_info.ISO_HANDLE, pContext->m_dwStartBlock, (char*) & (pContext->m_pBuffer[0])) < 0);
+  bError = (CIoSupport::ReadSector(m_info.ISO_HANDLE, pContext->m_dwStartBlock, (char*) & (pContext->m_pBuffer[0])) < 0);
   if ( bError )
   {
-    bError = (m_IoSupport.ReadSectorMode2(m_info.ISO_HANDLE, pContext->m_dwStartBlock, (char*) & (pContext->m_pBuffer[0])) < 0);
+    bError = (CIoSupport::ReadSectorMode2(m_info.ISO_HANDLE, pContext->m_dwStartBlock, (char*) & (pContext->m_pBuffer[0])) < 0);
     if ( !bError )
       pContext->m_bUseMode2 = true;
   }
@@ -806,11 +806,11 @@ bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte
     EnterCriticalSection(&m_critSection);
     if ( pContext->m_bUseMode2 )
     {
-      bError = (m_IoSupport.ReadSectorMode2(m_info.ISO_HANDLE, sector, (char*) & (pContext->m_pBuffer[pContext->m_dwCircBuffEnd])) < 0);
+      bError = (CIoSupport::ReadSectorMode2(m_info.ISO_HANDLE, sector, (char*) & (pContext->m_pBuffer[pContext->m_dwCircBuffEnd])) < 0);
     }
     else
     {
-      bError = (m_IoSupport.ReadSector(m_info.ISO_HANDLE, sector, (char*) & (pContext->m_pBuffer[pContext->m_dwCircBuffEnd])) < 0);
+      bError = (CIoSupport::ReadSector(m_info.ISO_HANDLE, sector, (char*) & (pContext->m_pBuffer[pContext->m_dwCircBuffEnd])) < 0);
     }
     LeaveCriticalSection(&m_critSection);
     if ( bError )
