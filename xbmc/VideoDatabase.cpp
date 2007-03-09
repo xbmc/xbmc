@@ -3861,9 +3861,9 @@ void CVideoDatabase::GetEpisodesByName(const CStdString& strSearch, CFileItemLis
     if (NULL == m_pDS.get()) return;
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode,c%02d,path.strPath,tvshowlinkepisode.idshow from episode,file,path,tvshowlinkepisode where file.idepisode=episode.idepisode and tvshowlinkepisode.idepisode=episode.idepisode and file.idPath=path.idPath and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_EPISODE_TITLE,strSearch.c_str());
+      strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode,c%02d,tvshowlinkepisode.idshow,tvshow.c%02d,path.strPath from episode,file,path,tvshowlinkepisode,tvshow where file.idepisode=episode.idepisode and tvshowlinkepisode.idepisode=episode.idepisode and tvshowlinkepisode.idshow=tvshow.idshow and file.idPath=path.idPath and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_TV_TITLE,VIDEODB_ID_EPISODE_TITLE,strSearch.c_str());
     else
-      strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode.c%02d,tvshowlinkepisode.idshow from episode,tvshowlinkepisode where tvshowlinkepisode.idepisode=episode.idepisode and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_EPISODE_TITLE,strSearch.c_str());
+      strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode.c%02d,tvshowlinkepisode.idshow,tvshow.c%02d from episode,tvshowlinkepisode,tvshow where tvshowlinkepisode.idepisode=episode.idepisode and tvshow.idshow=tvshowlinkepisode.idshow and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_TV_TITLE,VIDEODB_ID_EPISODE_TITLE,strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -3875,7 +3875,7 @@ void CVideoDatabase::GetEpisodesByName(const CStdString& strSearch, CFileItemLis
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
+      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString()+" ("+m_pDS->fv(4).get_asString()+")");
       pItem->m_strPath.Format("videodb://2/2/%ld/%ld/%ld",m_pDS->fv("tvshowlinkepisode.idshow").get_asLong(),m_pDS->fv(2).get_asLong(),m_pDS->fv(0).get_asLong());
       pItem->m_bIsFolder=false;
       items.Add(pItem);
@@ -3899,7 +3899,7 @@ void CVideoDatabase::GetEpisodesByPlot(const CStdString& strSearch, CFileItemLis
     if (NULL == m_pDS.get()) return;
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode,c%02d,path.strPath,tvshowlinkepisode.idshow,tvshow.c%02d from episode,file,path,tvshowlinkepisode,tvshow where file.idepisode=episode.idepisode and tvshowlinkepisode.idepisode=episode.idepisode and file.idPath=path.idPath and tvshow.idshow=tvshowlinkepisode.idshow and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_TV_TITLE,VIDEODB_ID_EPISODE_PLOT,strSearch.c_str());
+      strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode,c%02d,tvshowlinkepisode.idshow,tvshow.c%02d,path.strPath from episode,file,path,tvshowlinkepisode,tvshow where file.idepisode=episode.idepisode and tvshowlinkepisode.idepisode=episode.idepisode and file.idPath=path.idPath and tvshow.idshow=tvshowlinkepisode.idshow and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_TV_TITLE,VIDEODB_ID_EPISODE_PLOT,strSearch.c_str());
     else
       strSQL = FormatSQL("select episode.idepisode,episode.c%02d,episode.c%02d,tvshowlinkepisode.idshow,tvshow.c%02d from episode,tvshowlinkepisode,tvshow where tvshowlinkepisode.idepisode=episode.idepisode and tvshow.idshow=tvshowlinkepisode.idshow and episode.c%02d like '%%%s%%'",VIDEODB_ID_EPISODE_TITLE,VIDEODB_ID_EPISODE_SEASON,VIDEODB_ID_TV_TITLE,VIDEODB_ID_EPISODE_PLOT,strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
