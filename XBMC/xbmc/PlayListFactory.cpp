@@ -63,10 +63,10 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
   CStdString extension = CUtil::GetExtension(item.m_strPath);
   extension.MakeLower();
 
-  if (extension == ".m3u")
+  if (extension == ".m3u" || extension == ".strm")
     return new CPlayListM3U();
 
-  if (extension == ".pls" || extension == ".strm")
+  if (extension == ".pls")
     return new CPlayListPLS();
 
   if (extension == ".b4s")
