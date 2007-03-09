@@ -302,17 +302,16 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
   char szDevicePath[1024];
-  CIoSupport helper;
   CStdString strMnt = GetProfileUserDataFolder();
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);
     strMnt += GetProfileUserDataFolder().substr(2);
   }
-  helper.GetPartition(strMnt, szDevicePath);
+  CIoSupport::GetPartition(strMnt, szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
-  helper.Unmount("P:");
-  helper.Mount("P:",szDevicePath);
+  CIoSupport::Unmount("P:");
+  CIoSupport::Mount("P:",szDevicePath);
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -418,7 +417,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   LoadUserFolderLayout();
 
 #ifdef HAS_XBOX_HARDWARE
-  helper.Unmount("S:");
+  CIoSupport::Unmount("S:");
 #endif
   return true;
 }
@@ -1835,7 +1834,6 @@ bool CSettings::SaveSettingsToProfile(int index)
 bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 {
   TiXmlDocument profilesDoc;
-  CIoSupport helper;
   if (!CFile::Exists(strSettingsFile))
   { // set defaults, or assume no rss feeds??
     return false;
@@ -1990,7 +1988,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
 bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
 {
   TiXmlDocument UPnPDoc;
-  CIoSupport helper;
+
   if (!CFile::Exists(strSettingsFile))
   { // set defaults, or assume no rss feeds??
     return false;

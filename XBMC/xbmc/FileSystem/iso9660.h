@@ -197,7 +197,6 @@ protected:
   bool IsRockRidge(struct iso9660_Directory& isodir);
   struct iso_dirtree* m_dirtree;
   struct iso9660info m_info;
-  CIoSupport m_IoSupport;
   string m_strReturn;
 
   struct iso9660_Directory m_openfileinfo;
