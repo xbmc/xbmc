@@ -92,10 +92,13 @@ class CSysInfo : public CInfoLoader
     
     bool m_bInternetState;
     bool m_bRequestDone;
+    bool m_bSmartSupported;
+    bool m_bSmartEnabled;
+
     bool m_hddRequest;
     bool m_dvdRequest;
     
-    BYTE by_HddTemp;
+    signed char byHddTemp;
     
   private:
     #define XBOX_BIOS_ID_INI_FILE "Q:\\System\\SystemInfo\\BiosIDs.ini"
@@ -130,9 +133,7 @@ class CSysInfo : public CInfoLoader
 
 protected:
     virtual const char *TranslateInfo(DWORD dwInfo);
-    virtual const char *BusyInfo(DWORD dwInfo);
     virtual DWORD TimeToNextRefreshInMs();
-    char m_szLastUpdateTime[256];
 };
 
 extern CSysInfo g_sysinfo;
