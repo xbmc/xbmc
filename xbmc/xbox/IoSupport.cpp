@@ -143,27 +143,14 @@ unsigned int CIoSupport::read_active_partition_table(PARTITION_TABLE *p_table)
 
 CIoSupport::CIoSupport()
 {
-  m_gmXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
-  m_rawXferBuffer = NULL;
-  if ( m_gmXferBuffer )
-    m_rawXferBuffer = GlobalLock(m_gmXferBuffer);
 }
 
 CIoSupport::CIoSupport(CIoSupport& other)
 {
-  m_gmXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
-  m_rawXferBuffer = NULL;
-  if ( m_gmXferBuffer )
-    m_rawXferBuffer = GlobalLock(m_gmXferBuffer);
 }
 
 CIoSupport::~CIoSupport()
 {
-  if ( m_gmXferBuffer )
-  {
-    GlobalUnlock(m_gmXferBuffer);
-    GlobalFree(m_gmXferBuffer);
-  }
 }
 
 // szDrive e.g. "D:"
@@ -411,9 +398,6 @@ HANDLE CIoSupport::OpenCDROM()
 
   Remount("D:", "Cdrom0");
 
-  if ( !m_rawXferBuffer )
-    return NULL;
-
 #ifdef _XBOX
   NTSTATUS error;
   IO_STATUS_BLOCK status;
@@ -456,11 +440,8 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   {
     SetFilePointer(hDevice, Displacement.LowPart, &Displacement.HighPart, FILE_BEGIN);
 
-    if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
-    {
-      memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
+    if (ReadFile(hDevice, lpczBuffer, dwSectorSize, &dwRead, NULL))
       return dwRead;
-    }
   }
 
   OutputDebugString("CD Read error\n");
@@ -485,14 +466,11 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
                           IOCTL_CDROM_RAW_READ,
                           &rawRead,
                           sizeof(RAW_READ_INFO),
-                          m_rawXferBuffer,
+                          lpczBuffer,
                           RAW_SECTOR_SIZE,
                           &dwBytesReturned,
                           NULL ) != 0 )
-    {
-      memcpy(lpczBuffer, (byte*)m_rawXferBuffer + MODE2_DATA_START, MODE2_DATA_SIZE);
       return MODE2_DATA_SIZE;
-    }
     else
     {
       int iErr = GetLastError();
@@ -520,14 +498,11 @@ INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
                           IOCTL_CDROM_RAW_READ,
                           &rawRead,
                           sizeof(RAW_READ_INFO),
-                          m_rawXferBuffer,
+                          lpczBuffer,
                           sizeof(RAW_SECTOR_SIZE),
                           &dwBytesReturned,
                           NULL ) != 0 )
-    {
-      memcpy(lpczBuffer, m_rawXferBuffer, RAW_SECTOR_SIZE);
       return RAW_SECTOR_SIZE;
-    }
   }
 #endif
   return -1;
@@ -698,7 +673,6 @@ bool CIoSupport::IsDrivePresent( const char* cDrive )
   bool bReturn = false;
   ULARGE_INTEGER uFree1, uTotal1, uTotal2;
 
-  CIoSupport io;
   WIN32_FIND_DATA wfd;
   HANDLE hFind;
   char path[5];
