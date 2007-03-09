@@ -65,7 +65,7 @@ protected:
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(WCHAR letter);
   bool CacheCharacter(WCHAR letter, Character *ch);
-  inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor);
+  inline void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
   void CreateShader();
   void ClearCharacterCache();
 

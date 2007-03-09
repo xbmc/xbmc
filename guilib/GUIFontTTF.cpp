@@ -64,7 +64,12 @@ private:
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
+
+#ifdef HAS_XBOX_D3D
+#define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
+#else
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
+#endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
@@ -244,28 +249,20 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
   if ( dwFlags & XBFONT_TRUNCATED && fMaxPixelWidth <= 0.0f )
       dwFlags &= ~XBFONT_TRUNCATED;
 
-  D3DXMATRIX world;
-  D3DXMatrixTranslation(&world, ROUND_TO_PIXEL(sx), ROUND_TO_PIXEL(sy), 0.0f);
-  D3DXMATRIX rot( angle.cosine, angle.sine  , 0.0f, 0.0f, 
-                 -angle.sine  , angle.cosine, 0.0f, 0.0f, 
-                 0.0f         , 0.0f        , 1.0f, 0.0f, 
-                 0.0f         , 0.0f        , 0.0f, 1.0f)  ;
-
-  world = rot * world;
-  m_pD3DDevice->SetTransform(D3DTS_WORLD, &world);
-
   float lineX;
   float lineY;
+  float cursorX;
   int numLines = 0;
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
+
   while ( cchText-- )
   {
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      lineX = 0.0f;
-      lineY = (float)(m_lineHeight * numLines);
+      lineX = sx - angle.sine * m_lineHeight * numLines;
+      lineY = sy + angle.cosine * m_lineHeight * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -277,13 +274,15 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
           
         if ( dwFlags & XBFONT_CENTER_X)
           w *= 0.5f;
-
-        lineX -= w;
+        // Offset this line's starting position
+        lineX -= angle.cosine * w;
+        lineY -= angle.sine * w;
       }
       bStartingNewLine = FALSE;
       // align to an integer so that aliasing doesn't occur
       lineX = ROUND_TO_PIXEL(lineX);
       lineY = ROUND_TO_PIXEL(lineY);
+      cursorX = 0; // current position along the line
     }
 
     // Get the current letter in the CStdString
@@ -310,7 +309,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     if ( dwFlags & XBFONT_TRUNCATED )
     {
       // Check if we will be exceeded the max allowed width
-      if ( lineX + ch->advance + 3 * m_ellipsesWidth > fMaxPixelWidth )
+      if ( cursorX + ch->advance + 3 * m_ellipsesWidth > fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
         // Perhaps we should really bail to the next line in this case??
@@ -320,14 +319,18 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(lineX, lineY, period, dwColor);
-          lineX += period->advance;
+          float posX = lineX + cursorX*angle.cosine;
+          float posY = lineY + cursorX*angle.sine;
+          RenderCharacter(posX, posY, angle, period, dwColor);
+          cursorX += period->advance;
         }
         break;
       }
     }
-    RenderCharacter(lineX, lineY, ch, dwColor);
-    lineX += ch->advance;
+    float posX = lineX + cursorX*angle.cosine;
+    float posY = lineY + cursorX*angle.sine;
+    RenderCharacter(posX, posY, angle, ch, dwColor);
+    cursorX += ch->advance;
   }
 
   End();
@@ -413,6 +416,10 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
     memmove(m_char + low + 1, m_char + low, (m_numChars - low) * sizeof(Character));
   }
   // render the character to our texture
+  // must End() as we can't render text to our texture during a Begin(), End() block
+  DWORD dwNestedBeginCount = m_dwNestedBeginCount;
+  m_dwNestedBeginCount = 1;
+  if (dwNestedBeginCount) End();
   if (!CacheCharacter(letter, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
     CLog::Log(LOGDEBUG, "GUIFontTTF::GetCharacter: Unable to cache character.  Clearing character cache of %i characters", m_numChars);
@@ -424,6 +431,8 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
       return NULL;
     }
   }
+  if (dwNestedBeginCount) Begin();
+  m_dwNestedBeginCount = dwNestedBeginCount;
 
   for(int i=0;i<m_numChars;i++)
   {
@@ -583,6 +592,12 @@ void CGUIFontTTF::Begin()
 
     m_pD3DDevice->SetVertexShader(m_vertexShader);
     m_pD3DDevice->SetPixelShader(m_pixelShader);
+
+#ifdef HAS_XBOX_D3D
+    // Render the image
+    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
+    m_pD3DDevice->Begin(D3DPT_QUADLIST);
+#endif
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
@@ -596,12 +611,16 @@ void CGUIFontTTF::End()
   if (--m_dwNestedBeginCount > 0)
     return;
 
+#ifdef HAS_XBOX_D3D
+  m_pD3DDevice->End();
+  m_pD3DDevice->SetScreenSpaceOffset(0, 0);
+#endif
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 }
 
-void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -610,36 +629,39 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 
   /* top left of our texture isn't the topleft of the textcell */
   /* celltop could be higher than m_iHeight over baseline */
-  posX += ch->offsetX;
-  posY += ch->offsetY;
+  posX += ch->offsetX * angle.cosine - ch->offsetY * angle.sine;
+  posY += ch->offsetX * angle.sine + ch->offsetY * angle.cosine;
 
+#ifdef HAS_XBOX_D3D
+  m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
+
+  m_pD3DDevice->SetVertexData4f( 0, posX, posY, ch->left, ch->top );
+  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width, posY + angle.sine * width, ch->right, ch->top );
+  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, ch->right, ch->bottom );
+  m_pD3DDevice->SetVertexData4f( 0, posX - angle.sine * height, posY + angle.cosine * height, ch->left, ch->bottom );
+#else
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
+      FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
   };
 
   // tex coords converted to 0..1 range
-#ifdef HAS_XBOX_D3D
-  float tl = ch->left;
-  float tr = ch->right;
-  float tt = ch->top;
-  float tb = ch->bottom;
-#else
   float tl = ch->left / m_textureWidth;
   float tr = ch->right / m_textureWidth;
   float tt = ch->top / m_textureHeight;
   float tb = ch->bottom / m_textureHeight;
-#endif
 
   CUSTOMVERTEX verts[4] =  {
-    { posX         , posY          , 0.0f, dwColor, tl, tt},
-    { posX + width , posY          , 0.0f, dwColor, tr, tt},
-    { posX + width , posY + height , 0.0f, dwColor, tr, tb},
-    { posX         , posY + height , 0.0f, dwColor, tl, tb} 
+    { posX                                         , posY                                         , 0.0f, 1.0f, dwColor, tl, tt},
+    { posX + angle.cosine*width                    , posY + angle.sine*width                      , 0.0f, 1.0f, dwColor, tr, tt},
+    { posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0.0f, 1.0f, dwColor, tr, tb},
+    { posX - angle.sine*height                     , posY + angle.cosine*height                   , 0.0f, 1.0f, dwColor, tl, tb} 
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+#endif
 }
 
 void CGUIFontTTF::CreateShader()
@@ -669,5 +691,37 @@ void CGUIFontTTF::CreateShader()
     }
   }
 
-  m_vertexShader = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+#ifdef HAS_XBOX_D3D
+  // since this vertex declaration is different from
+  // the standard, it can't be used when drawprimitive
+  // is to be used.
+
+  // Create the vertex shader
+  if (m_pixelShader && !m_vertexShader)
+  {
+    // our vertex declaration
+    DWORD vertexDecl[] =
+      {
+        D3DVSD_STREAM(0),
+        D3DVSD_REG( 0, D3DVSDT_FLOAT4 ),         // xy vertex, zw texture coord
+        D3DVSD_REG( 3, D3DVSDT_D3DCOLOR ),       // diffuse color
+        D3DVSD_END()
+      };
+
+        // shader for the vertex format we use
+    static DWORD vertexShader[] =
+      {
+        0x00032078,
+        0x00000000, 0x00200015, 0x0836106c, 0x2070c800,  // mov oPos.xy, v0.xy
+        0x00000000, 0x002000bf, 0x0836106c, 0x2070c848,  // mov oT0.xy, v0.zw
+        0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
+      };
+
+    if (D3D_OK != m_pD3DDevice->CreateVertexShader(vertexDecl,vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE))
+      CLog::Log(LOGERROR, __FUNCTION__" - Failed to create vertex shader");
+  }
+#endif
+
+  if(!m_vertexShader)
+    m_vertexShader = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 }
