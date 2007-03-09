@@ -509,14 +509,13 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
         m_database.GetScraperForPath(items.m_strPath,info2.strPath,info2.strContent,iFound);
         if (iFound != 1) // we need this when we scan a non-root tvshow folder
         {
-          strMovieName = pItem->m_strPath;
+          CUtil::GetParentPath(pItem->m_strPath,strMovieName);
           CUtil::RemoveSlashAtEnd(strMovieName);
           strMovieName = CUtil::GetFileName(strMovieName);
           *pItem = items;
         }
         else
           strMovieName = CUtil::GetFileName(pItem->m_strPath);
-
       }
     }
     // This code tests if we have a DVD folder
@@ -709,9 +708,12 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
   }
 
   CFileItemList items;
-  m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
+
   if (info.strContent.Equals("movies"))
+  {
     GetStackedDirectory(strPath, items);
+    m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
+  }
   else
     m_rootDir.GetDirectory(strPath,items);
 
@@ -920,63 +922,6 @@ long CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
   if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
     return AddMovieAndGetThumb(pItem, info.strContent, movieDetails);
   return -1;
-}
-
-long CGUIWindowVideoFiles::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails, long idShow)
-{
-  long lResult=-1;
-  // add to all movies in the stacked set
-  if (content.Equals("movies"))
-    m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
-  else if (content.Equals("tvshows"))
-  {
-    if (pItem->m_bIsFolder)
-    {
-      CStdString strPath(pItem->m_strPath);
-      CUtil::AddSlashAtEnd(strPath);
-      lResult=m_database.SetDetailsForTvShow(strPath, movieDetails);
-    }
-    else
-      lResult=m_database.SetDetailsForEpisode(pItem->m_strPath,movieDetails,idShow);
-  }
-  // get & save thumbnail
-  CStdString strThumb = "";
-  CStdString strImage = movieDetails.m_strPictureURL.m_url;
-  if (strImage.size() > 0)
-  {
-    // check for a cached thumb or user thumb
-    pItem->SetVideoThumb();
-    if (pItem->HasThumbnail())
-      return lResult;
-    strThumb = pItem->GetCachedVideoThumb();
-
-    CStdString strExtension;
-    CUtil::GetExtension(strImage, strExtension);
-    CStdString strTemp = "Z:\\temp";
-    strTemp += strExtension;
-    ::DeleteFile(strTemp.c_str());
-    if (m_dlgProgress)
-    {
-      m_dlgProgress->SetLine(2, 415);
-      m_dlgProgress->Progress();
-    }
-    CHTTP http;
-    http.Download(strImage, strTemp);
-
-    try
-    {
-      CPicture picture;
-      picture.DoCreateThumbnail(strTemp, strThumb);
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
-      ::DeleteFile(strThumb.c_str());
-    }
-    ::DeleteFile(strTemp.c_str());
-  }
-  
-  return lResult;
 }
 
 void CGUIWindowVideoFiles::OnQueueItem(int iItem)
