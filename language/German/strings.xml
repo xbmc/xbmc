@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/08/2007-->
-<!--$Revision:$-->
-<!--Based on english strings version 8041-->
+<!--Date of translation: 03/09/2007-->
+<!--$Revision$-->
+<!--Based on english strings version 8044-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -130,8 +130,8 @@
   <string id="193">Durchsuchen</string>
   <string id="194">Durchsuche...</string>
   <string id="195">Es wurde kein IMDb-Eintrag gefunden!</string>
-  <string id="196">Video auswählen:</string>
-  <string id="197">Film-Informationen werden abgefragt...</string>
+  <string id="196">Film-Auswahl:</string>
+  <string id="197">Online-Datenbank wird abgefragt...</string>
   <string id="198">Lade Film-Informationen...</string>
   <string id="199">Regisseur:</string>
   <string id="200">Verfasser:</string>
@@ -347,8 +347,8 @@
   <string id="430">Nach DVD#</string>
   <string id="431">Keinen Cache verwenden</string>
   <string id="432">Film aus der Datenbank entfernen</string>
-  <string id="433">Möchten Sie den Film wirklich aus der Datenbank</string>
-  <string id="434">entfernen?</string>
+  <string id="433">Möchten Sie den Eintrag '%s'&#10;wirklich aus der Datenbank entfernen?</string>
+  <string id="434"></string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
   <string id="437">Dauer:</string>
@@ -769,7 +769,7 @@
   <string id="12327">Bitte geben Sie das Master-Passwort ein</string>
   <string id="12328">Bitte geben Sie das Passwort zum Entsperren ein</string>
   <string id="12329">oder mit C abbrechen</string>
-  <string id="12330">Geben Sie bitte die Gamepad-Tastenkombination ein</string>
+  <string id="12330">Bitte geben Sie die Gamepad-Tastenkombination ein</string>
   <string id="12331">und bestätigen Sie diese mit der 'Start'-Taste.&#10;Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12332">Sperren</string>
   <string id="12333">Entsperren</string>
@@ -1343,7 +1343,7 @@
   <string id="20117">Das eingegebene Passwort ist ungültig!</string>
   <string id="20118">Hierfür ist die Master-Sperre erforderlich.</string>
   <string id="20119">Möchten Sie diese nun einstellen?</string>
-  <string id="20120">Programm-Informationen werden geladen</string>
+  <string id="20120">Programm-Informationen werden geladen...</string>
   <string id="20121">Party-Modus ist aktiviert!</string>
   <string id="20122">Richtig</string>
   <string id="20123">Titel werden gefiltert...</string>
@@ -1473,6 +1473,21 @@
   <string id="20348">Regisseure</string>
   <string id="20349">Es wurden keine Videos in diesem Pfad gefunden!</string>
   <string id="20350">Stimmen</string>
+  <string id="20351">TV-Serien Informationen</string>
+  <string id="20352">Episoden-Information</string>
+  <string id="20353">TV-Serien Details werden geladen...</string>
+  <string id="20354">Episoden-Guide wird geladen...</string>
+  <string id="20355">Episoden-Informationen werden geladen...</string>
+  <string id="20356">TV-Serien Auswahl:</string>
+  <string id="20357">Bitte geben Sie den Namen der TV-Serie ein</string>
+  <string id="20358">Staffel %i</string>
+  <string id="20359">Episode</string>
+  <string id="20360">Episoden</string>
+  <string id="20361">Episoden-Information wird geladen...</string>
+  <string id="20362">Episode aus der Datenbank entfernen</string>
+  <string id="20363">TV-Serie aus der Datenbank entfernen</string>
+  <string id="20364">TV-Serie</string>
+  <string id="20365">Handlung</string>
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
@@ -1499,7 +1514,7 @@
   <string id="21371">Thumbnail</string>
   <string id="21372">Festgelegte DVD-Player Region</string>
   <string id="21373">Video-Hardware</string>
-  <string id="21374">Video-Bildseitenverhältnis</string>
+  <string id="21374">Bildseitenverhältnis</string>
   <string id="21375">Normal</string>
   <string id="21376">4:3 Letterbox</string>
   <string id="21377">16:9 Widescreen</string>
