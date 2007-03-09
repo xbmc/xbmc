@@ -1,4 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: El Piraña-->
+<!--Email: piranna@gmail.com-->
+<!--Date of translation: 03/08/2007-->
+<!--$Revision$-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imágenes</string>
@@ -42,8 +47,10 @@
   <string id="110">Crear miniaturas</string>
   <string id="111">Accesos dir.</string>
   <string id="112">PAUSA</string>
-  <string id="113"></string>
-  <string id="114"></string>
+  <string id="113">
+  </string>
+  <string id="114">
+  </string>
   <string id="115">Copiar</string>
   <string id="116">Mover</string>
   <string id="117">Eliminar</string>
@@ -331,10 +338,14 @@
   <string id="415">Descargando miniatura...</string>
   <string id="416">No disponible</string>
   <string id="417">Ver: I. Grandes</string>
-  <string id="418"></string>
-  <string id="419"></string>
-  <string id="420"></string>
-  <string id="421"></string>
+  <string id="418">
+  </string>
+  <string id="419">
+  </string>
+  <string id="420">
+  </string>
+  <string id="421">
+  </string>
   <string id="422">Eliminar información del álbum</string>
   <string id="423">Eliminar información CDDB</string>
   <string id="424">Selecc.</string>
@@ -662,7 +673,8 @@
   <string id="1250">Autodetección</string>
   <string id="1251">Autodetección de otras XBOX</string>
   <string id="1252">Nick</string>
-  <string id="1253"></string>
+  <string id="1253">
+  </string>
   <string id="1254">Preguntar antes de Conectar</string>
   <string id="1255">Enviar Usuario y Contraseña FTP</string>
   <string id="1256">Intervalo de Ping</string>
@@ -708,10 +720,14 @@
   <string id="10018">Configuración-&gt;Red</string>
   <string id="10019">Configuración-&gt;Apariencia</string>
   <string id="10020">Secuencias de comandos</string>
-  <string id="10021"></string>
-  <string id="10022"></string>
-  <string id="10023"></string>
-  <string id="10025"></string>
+  <string id="10021">
+  </string>
+  <string id="10022">
+  </string>
+  <string id="10023">
+  </string>
+  <string id="10025">
+  </string>
   <string id="10028">Vídeos/Lista de reproducción</string>
   <string id="10034">Configuración-&gt;Perfiles</string>
   <string id="10100">Cuadro de diálogo Sí/No</string>
@@ -719,7 +735,8 @@
   <string id="10500">Música/Lista rep.</string>
   <string id="10501">Música/Ficheros</string>
   <string id="10502">Música/Librería</string>
-  <string id="10503"></string>
+  <string id="10503">
+  </string>
   <string id="10504">Top 100 Canciones</string>
   <string id="10505">Top 100 Albumes</string>
   <string id="10506">Programas</string>
@@ -728,16 +745,24 @@
   <string id="10509">Juego en Red</string>
   <string id="10510">Extensiones</string>
   <string id="10511">Info Sistema</string>
-  <string id="10512"></string>
-  <string id="10513"></string>
-  <string id="10514"></string>
-  <string id="10515"></string>
+  <string id="10512">
+  </string>
+  <string id="10513">
+  </string>
+  <string id="10514">
+  </string>
+  <string id="10515">
+  </string>
   <string id="10516">Música - Biblioteca</string>
   <string id="10517">Música - Reproduciendo</string>
-  <string id="10518"></string>
-  <string id="10519"></string>
-  <string id="10520"></string>
-  <string id="10521"></string>
+  <string id="10518">
+  </string>
+  <string id="10519">
+  </string>
+  <string id="10520">
+  </string>
+  <string id="10521">
+  </string>
   <string id="10522">Vídeo - Reproduciendo</string>
   <string id="10523">Info Album</string>
   <string id="10524">Info Película</string>
@@ -748,7 +773,8 @@
   <string id="12004">Secuencias de Comandos/Info</string>
   <string id="12005">Vídeo a pantalla completa</string>
   <string id="12006">Visualización de Audio</string>
-  <string id="12007"></string>
+  <string id="12007">
+  </string>
   <string id="12008">Diálogo de Agrupar archivos</string>
   <string id="12009">Reconstruir índice...</string>
   <string id="12010">Volver a Ventana Música</string>
@@ -857,9 +883,12 @@
   <string id="13166">Auricular/Micrófono en puerto:</string>
   <string id="13167">MemoryStick en puerto:</string>
   <string id="13168">Mando a distancia en puerto:</string>
+  <string id="13169">Puerto del controlador</string>
   <string id="13170">Nunca</string>
   <string id="13171">Inmediatamente</string>
   <string id="13172">Después de %i segs.</string>
+  <string id="13173">Fecha de instalación del Disco Duro:</string>
+  <string id="13174">Contador de ciclos de alimentación del Disco Duro</string>
   <string id="13200">Perfiles</string>
   <string id="13201">¿Eliminar el perfil '%s'?</string>
   <string id="13204">Último perfil cargado:</string>
@@ -1269,7 +1298,8 @@
   <string id="20019">Elija Miniatura</string>
   <string id="20020">No se puede usar KAI y trainer a la vez</string>
   <string id="20021">Elija cuál desea usar</string>
-  <string id="20022"></string>
+  <string id="20022">
+  </string>
   <string id="20023">Conflicto</string>
   <string id="20024">Escanear nuevos</string>
   <string id="20025">Escanear todo</string>
@@ -1485,6 +1515,22 @@
   <string id="20347">como</string>
   <string id="20348">Directores</string>
   <string id="20349">No se han encontrado vídeos en esta ruta!</string>
+  <string id="20350">votos</string>
+  <string id="20351">Información del programa de Televisión</string>
+  <string id="20352">Información del Episodio</string>
+  <string id="20353">Cargando detalles del Programa de Televisión</string>
+  <string id="20354">Obteniendo guía del Episodio</string>
+  <string id="20355">Cargando información de los episodiós en el directorio</string>
+  <string id="20356">Seleccionar programa de Televisión:</string>
+  <string id="20357">Introduzca el nombre del programa de Televisión</string>
+  <string id="20358">Temporada %i</string>
+  <string id="20359">Episodio</string>
+  <string id="20360">Episodios</string>
+  <string id="20361">Cargando detalles del episodio</string>
+  <string id="20362">Borrando episodio de la libreria</string>
+  <string id="20363">Borrando programa de televisión de la libreria</string>
+  <string id="20364">Programa de Televisión</string>
+  <string id="20365">Argumento del Episodio</string>
   <string id="21330">Mostrar ficheros y directorios ocultos</string>
   <string id="21331">Cliente TuxBox</string>
   <string id="21332">AVISO: El dispositivo TuxBox está en Modo-Grabación!</string>
@@ -1507,5 +1553,18 @@
   <string id="21367">Directorio de Subtítulos de Películas y Otros</string>
   <string id="21370">Reproducir Sonidos de Navegación Durante la Reproducción</string>
   <string id="21371">Miniatura</string>
+  <string id="21372">Región forzada del reproductor de DVDs</string>
+  <string id="21373">Hardware de Video</string>
+  <string id="21374">Aspecto de Video</string>
+  <string id="21375">Normal</string>
+  <string id="21376">Subtitulos</string>
+  <string id="21377">Panoramico</string>
+  <string id="21378">Activar 480p</string>
+  <string id="21379">Activar 720p</string>
+  <string id="21380">Activar 1080i</string>
+  <string id="21381">Introduzca el nombre de la nueva Lista de Reproducción</string>
+  <string id="21382">Desactivar botones de Añadir Fuente en las listas de archivos</string>
+  <string id="21383">Activar barras de desplazamiento</string>
   <string id="29999">Parche Filtro Parpadeo Auto.</string>
 </strings>
+ 	  	 
