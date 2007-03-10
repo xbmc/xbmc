@@ -1155,7 +1155,7 @@ CStdString CSysInfo::GetMPlayerVersion()
 CStdString CSysInfo::GetKernelVersion()
 {
   CStdString strKernel;
-  strKernel.Format("%s %d.%d.%d.%d",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
+  strKernel.Format("%s %u.%u.%u.%u",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
   return strKernel;
 }
 CStdString CSysInfo::GetCPUFreqInfo()
