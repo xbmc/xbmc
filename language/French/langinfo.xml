@@ -36,19 +36,24 @@
       <speedunit>kmh</speedunit>
     </region>
 
-    <region name="Québec, Canada">
+    <region name="Québec, CAN">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM, YYYY</datelong>
+      <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
-
   </regions>
 
   <sorttokens>
-    <token>Le</token>
     <token>The</token>
+    <token>Le</token>
+    <token>La</token>
+    <token>Les</token>
+    <token>Un</token>
+    <token>Une</token>
+    <token>Des</token>
+    <token>L'</token>
   </sorttokens>
 </language>
 
