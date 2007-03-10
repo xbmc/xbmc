@@ -223,10 +223,10 @@ extern "C" XBOXAPI LPVOID XboxEEPROMKey;
 extern "C" XBOXAPI LPVOID XboxHDKey;
 
 typedef struct _XBOX_KRNL_VERSION {
-	SHORT VersionMajor;
-	SHORT VersionMinor;
-	SHORT Build;
-	SHORT Qfe;
+	WORD VersionMajor;
+	WORD VersionMinor;
+	WORD Build;
+	WORD Qfe;
 } XBOX_KRNL_VERSION;
 
 extern "C" XBOX_KRNL_VERSION * XboxKrnlVersion;
