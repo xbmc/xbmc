@@ -21,15 +21,16 @@ public:
 	void            UpdateFileList();
   void            AddItem(CFileItem * fileItem, bool bRefreshList);
   void            RefreshList();
-  void            ClearList(bool bRefreshList);
+  void            ClearList();
 protected:
 	virtual void    UpdateButtons();
 	virtual void    OnSort();
+  virtual void    Update();
 	virtual void    OnWindowLoaded();
 	virtual void    OnInitWindow();
 	virtual void    FormatItemLabels();
 	virtual void    SortItems(CFileItemList &items);
-	void Update();
+	//void Update();
 	PyObject*		pCallbackWindow;
 	HANDLE			m_actionEvent;
 	DWORD						m_dwParentWindowID;

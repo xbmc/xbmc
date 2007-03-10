@@ -34,7 +34,9 @@ CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
   	CloseHandle(m_actionEvent);
 }
-
+void CGUIPythonWindowXML::Update()
+{
+}
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
   // do the base class window first, and the call to python after this
@@ -85,8 +87,27 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 			return true;
     }
 		break;
+  case GUI_MSG_ITEM_SELECT:
+    {
+      bool hs = m_viewControl.HasControl(message.GetControlId());
+      int GCC = m_viewControl.GetCurrentControl();
+      int gsi = message.GetSenderId();
+      int gci = message.GetControlId();
+
+    }
+    break;
   case GUI_MSG_SETFOCUS:
     {
+
+      // This fixes the SetFocus(50-59) it will automaticall set focus to the selected type not indivual control
+      bool hs = m_viewControl.HasControl(message.GetControlId());
+      int GCC = m_viewControl.GetCurrentControl();
+      int gci = message.GetControlId();
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
+      }
       if (CGUIWindow::OnMessage(message))
       {
         // check if our focused control is one of our category buttons
@@ -185,8 +206,10 @@ void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, bool bRefreshList)
 {
   m_vecItems.Add(fileItem);
   if (bRefreshList)
+  {
     m_viewControl.SetItems(m_vecItems);
     UpdateButtons();
+  }
 }
 
 void CGUIPythonWindowXML::RefreshList()
@@ -195,13 +218,13 @@ void CGUIPythonWindowXML::RefreshList()
   UpdateButtons();
 }
 
-void CGUIPythonWindowXML::ClearList(bool bRefreshList)
+void CGUIPythonWindowXML::ClearList()
 {
   CLog::Log(LOGINFO,"WindowXML: clearList not Implemented");
-  /*m_vecItems.Clear();
-  if (bRefreshList)
-    m_viewControl.SetItems(m_vecItems);
-    UpdateButtons();**/
+  m_viewControl.Clear();
+  m_vecItems.Clear();
+  m_viewControl.SetItems(m_vecItems);
+  UpdateButtons();
 }
 
 void CGUIPythonWindowXML::WaitForActionEvent(DWORD timeout)
@@ -368,6 +391,12 @@ void CGUIPythonWindowXML::UpdateButtons()
   items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
+
+/*void CGUIPythonWindowXML::ClearFileItems()
+{
+  m_viewControl.Clear();
+  m_vecItems.Clear(); // will clean up everything
+}*/
 
 void CGUIPythonWindowXML::OnInitWindow()
 {

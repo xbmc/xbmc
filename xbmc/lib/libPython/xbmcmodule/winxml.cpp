@@ -131,10 +131,10 @@ namespace PYXBMC
 
   PyObject* WindowXML_ClearList(WindowXML *self, PyObject *args)
   {
-    bool bRefresh = true;
-    if (!PyArg_ParseTuple(args, "|b",&bRefresh))  return NULL;
+    //bool bRefresh = true;
+    //if (!PyArg_ParseTuple(args, "|b",&bRefresh))  return NULL;
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-    pwx->ClearList(bRefresh);
+    pwx->ClearList();
     Py_INCREF(Py_None);
     return Py_None;
   }
