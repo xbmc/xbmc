@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 03/07/2007-->
+<!--Date of translation: 03/10/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8036-->
+<!--Based on english strings version 8044-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -345,9 +345,8 @@
   <string id="429">Var god sätt i följande CD/DVD</string>
   <string id="430">Sort: DVD#</string>
   <string id="431">Ingen cache</string>
-  <string id="432">Radera filmen från databasen</string>
-  <string id="433">Är du säker på att ta bort</string>
-  <string id="434">filmen?</string>
+  <string id="432">Radera filmen från biblioteket</string>
+  <string id="433">Är du säker på att ta bort '%s'?</string>
   <string id="435">Låt</string>
   <string id="436">År:</string>
   <string id="437">Längd:</string>
@@ -1249,7 +1248,7 @@ den här visualiseringen</string>
   <string id="20012">Filmspellistor</string>
   <string id="20013">Vill du starta spelet?</string>
   <string id="20014">Sort: Spellistor</string>
-  <string id="20015">IMDb miniatyr</string>
+  <string id="20015">Fjärrminiatyr</string>
   <string id="20016">Nuvarande miniatyr</string>
   <string id="20017">Lokal miniatyr</string>
   <string id="20018">Ingen miniatyr</string>
@@ -1471,6 +1470,21 @@ den här visualiseringen</string>
   <string id="20348">Regissörer</string>
   <string id="20349">Inga filmfiler hittades i denna sökväg!</string>
   <string id="20350">röster</string>
+  <string id="20351">TV-serie information</string>
+  <string id="20352">Avsnittsinformation</string>
+  <string id="20353">Laddar TV-seriesdetaljer</string>
+  <string id="20354">Hämtar avsnittsguide</string>
+  <string id="20355">Laddar info för avsnitt i katalogen</string>
+  <string id="20356">Välj TV-serie</string>
+  <string id="20357">Ange TV-seriens namn</string>
+  <string id="20358">Säsong %i</string>
+  <string id="20359">Avsnitt</string>
+  <string id="20360">Avsnitt</string>
+  <string id="20361">Laddar avsnittsdetaljer</string>
+  <string id="20362">Ta bort avsnitt från bibliotek</string>
+  <string id="20363">Ta bort TV-serie från bibliotek</string>
+  <string id="20364">TV-serie</string>
+  <string id="20365">Handling i avsnitt</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
