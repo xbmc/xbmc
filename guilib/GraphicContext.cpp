@@ -330,6 +330,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_pd3dParams->Flags = g_settings.m_ResInfo[res].dwFlags;
     m_pd3dParams->Flags |= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
+    if (res == HDTV_1080i || res == HDTV_720p)
+      m_pd3dParams->BackBufferCount = 1;
+    else
+      m_pd3dParams->BackBufferCount = 2;
+
     if (res == PAL60_4x3 || res == PAL60_16x9)
     {
       if (m_pd3dParams->BackBufferWidth <= 720 && m_pd3dParams->BackBufferHeight <= 480)

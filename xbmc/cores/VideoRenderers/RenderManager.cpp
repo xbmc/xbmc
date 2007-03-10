@@ -287,9 +287,6 @@ void CXBoxRenderManager::PresentSingle()
 
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
-#ifndef PROFILE
-  D3DDevice::BlockUntilVerticalBlank();
-#endif
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
@@ -308,9 +305,6 @@ void CXBoxRenderManager::PresentBob()
   {
     /* wait for timestamp */
     while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
-#ifndef PROFILE
-    D3DDevice::BlockUntilVerticalBlank();
-#endif
     D3DDevice::Present( NULL, NULL, NULL, NULL );
   }
   else
@@ -330,9 +324,6 @@ void CXBoxRenderManager::PresentBob()
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
 
-#ifndef PROFILE
-  D3DDevice::BlockUntilVerticalBlank();
-#endif
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
@@ -355,9 +346,6 @@ void CXBoxRenderManager::PresentBlend()
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
-#ifndef PROFILE
-  D3DDevice::BlockUntilVerticalBlank();
-#endif
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
@@ -387,9 +375,6 @@ void CXBoxRenderManager::PresentWeave()
     if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
       CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
   }
-#ifndef PROFILE
-  D3DDevice::BlockUntilVerticalBlank();
-#endif
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 }
 
