@@ -220,7 +220,6 @@ void CGUIPythonWindowXML::RefreshList()
 
 void CGUIPythonWindowXML::ClearList()
 {
-  CLog::Log(LOGINFO,"WindowXML: clearList not Implemented");
   m_viewControl.Clear();
   m_vecItems.Clear();
   m_viewControl.SetItems(m_vecItems);
