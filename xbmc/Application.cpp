@@ -245,6 +245,18 @@ extern "C"
 };
 #endif
 
+#ifdef HAS_XBOX_D3D
+static void WaitCallback(DWORD flags)
+{
+#ifndef PROFILE
+  /* if cpu is far ahead of gpu, sleep instead of yield */
+  if(flags & D3DWAIT_PRESENT)
+    while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 0)
+      Sleep(1);
+#endif
+}
+#endif
+
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
     : m_ctrDpad(220, 220)
@@ -373,9 +385,6 @@ void CApplication::InitBasicD3D()
     m_splash->Stop();
   }
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-#ifdef HAS_XBOX_D3D
-  m_pd3dDevice->BlockUntilVerticalBlank();
-#endif
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
@@ -400,9 +409,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     m_splash->Stop();
   }
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-#ifdef HAS_XBOX_D3D
-  m_pd3dDevice->BlockUntilVerticalBlank();
-#endif
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
   // D3D is up, load default font
@@ -1156,6 +1162,10 @@ HRESULT CApplication::Create(HWND hWnd)
   // show recovery console on fatal error instead of freezing
   CLog::Log(LOGINFO, "install unhandled exception filter");
   SetUnhandledExceptionFilter(UnhandledExceptionFilter);
+
+#ifdef HAS_XBOX_D3D
+  D3DDevice::SetWaitCallback(WaitCallback);
+#endif
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -2223,9 +2233,6 @@ void CApplication::RenderNoPresent()
 
   m_pd3dDevice->EndScene();
 #ifdef HAS_XBOX_D3D
-# ifndef PROFILE
-  m_pd3dDevice->BlockUntilVerticalBlank();
-# endif
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
