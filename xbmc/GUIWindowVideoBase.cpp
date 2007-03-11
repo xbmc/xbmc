@@ -1157,7 +1157,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       AddToDatabase(iItem);
     }
   }
-  if (iItem < m_vecItems.Size())
+  if (iItem < m_vecItems.Size() && iItem > -1)
     m_vecItems[iItem]->Select(bSelected);
 }
 

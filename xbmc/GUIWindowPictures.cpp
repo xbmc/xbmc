@@ -587,7 +587,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem, bool bContextDriven /* = true */
         return;
       }
     }
-    if (iItem < m_vecItems.Size())
+    if (iItem < m_vecItems.Size() && iItem > -1)
       m_vecItems[iItem]->Select(false);
   }
 }

@@ -1437,7 +1437,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   }
 
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < m_vecItems.Size())
+  if (iItem < m_vecItems.Size() && iItem > -1)
     m_vecItems[iItem]->Select(bSelected);
 }
 
