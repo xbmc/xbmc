@@ -350,7 +350,21 @@ BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCH
 	}
 	else
 		retVal = FALSE;
-		
+
+#if !defined(_WINDOWS)
+		// On the Xbox, if this is the DVD-ROM device, make sure we poll the DVD-ROM device for readiness
+		// after the command is sent.
+		if (DeviceNum == XBOX_DEVICE_DVDROM)
+		{
+			for (int errors = 0; errors < 5; errors++)
+			{
+				if (DeviceIoControl(Device, IOCTL_CDROM_CHECK_VERIFY, 0, 0, 0, 0, 0, 0))
+					break;
+				Sleep(200);
+			}
+		}
+#endif
+
 	VirtualFree(pAPT, Size, MEM_RELEASE);
 	CloseHandle(Device);
 	return retVal;
