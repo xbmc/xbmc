@@ -56,6 +56,7 @@
 #include "xbox/network.h"
 #include "lib/libGoAhead/webserver.h"
 #include "GUIControlGroupList.h"
+#include "XBTimeZone.h"
 
 using namespace DIRECTORY;
 
@@ -287,6 +288,12 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
+
+      if (g_timezone.GetTimeZoneIndex() != g_guiSettings.GetInt("locale.timezone"))
+        g_timezone.SetTimeZoneIndex(g_guiSettings.GetInt("locale.timezone"));
+
+      if (g_timezone.GetDST() != g_guiSettings.GetBool("locale.usedst"))
+        g_timezone.SetDST(g_guiSettings.GetBool("locale.usedst"));
 
       CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
@@ -573,6 +580,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("locale.language"))
     {
       FillInLanguages(pSetting);
+    }
+    else if (strSetting.Equals("locale.timezone"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      for (int i=0; i < g_timezone.GetNumberOfTimeZones(); i++)
+        pControl->AddLabel(g_timezone.GetTimeZoneString(i), i);
+      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videoscreen.resolution"))
     {
@@ -1486,7 +1501,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 #endif
   }
   else if (strSetting.Equals("locale.language"))
-  { // new language choosen...
+  { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strLanguage = pControl->GetCurrentLabel();
