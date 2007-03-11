@@ -88,7 +88,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   // the non-contextual menu can be called at any time
   if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list].Size() == 0)
   {
-    OnPopupMenu(-1, list, false);
+    OnPopupMenu(list,-1, false);
     return true;
   }
   if (action.wID == ACTION_DELETE_ITEM)
@@ -1351,8 +1351,9 @@ bool CGUIWindowFileManager::SelectItem(int list, int &item)
 {
   // get the currently selected item in the list
   item = GetSelectedItem(list);
+
   // select the item if we need to
-  if (!NumSelected(list) && !m_vecItems[list][item]->IsParentFolder())
+  if (item > -1 && !NumSelected(list) && !m_vecItems[list][item]->IsParentFolder())
   {
     m_vecItems[list][item]->Select(true);
     return true;
