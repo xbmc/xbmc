@@ -421,7 +421,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   else
     return false;
 
-  if (iItem < m_vecItems.Size())
+  if (iItem < m_vecItems.Size() && iItem > -1)
     m_vecItems[iItem]->Select(false);
   return true;
 }
