@@ -931,6 +931,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
     }
+    else if (strSetting.Equals("locale.timezone"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetValue(g_guiSettings.GetInt("locale.timezone"));
+    }
     else if (strSetting.Equals("screensaver.dimlevel"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -1642,6 +1647,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
+    if (!g_langInfo.GetTimeZone().IsEmpty())
+    {
+      int i=0;
+      while (!g_langInfo.GetTimeZone().Equals(g_timezone.GetTimeZoneString(i)) && i < g_timezone.GetNumberOfTimeZones())
+        i++;
+
+      if (i < g_timezone.GetNumberOfTimeZones())
+      {
+        g_guiSettings.SetInt("locale.timezone",i);
+        UpdateSettings();
+      }
+    }
+
     g_guiSettings.SetString("locale.country", strRegion);
   }
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeaddress"))
