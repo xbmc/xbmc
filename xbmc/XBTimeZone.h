@@ -11,10 +11,10 @@
 //    - standard char arrays are used
 
 typedef struct _DST_DATE {
-    BYTE Month;
-    BYTE Dat;
-    BYTE DayOfWeek;
-    BYTE Hour;
+    BYTE Month;     // 1-12
+    BYTE Week;      // 1-5
+    BYTE DayOfWeek; // 0-6
+    BYTE Hour;      // 0-24?
 } DST_DATE;
 
 typedef struct _MINI_TZI {
