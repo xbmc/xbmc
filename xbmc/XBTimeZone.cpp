@@ -799,6 +799,7 @@ int XBTimeZone::GetNumberOfTimeZones()
 // Reversed from xboxdash.xbe
 int XBTimeZone::GetTimeZoneIndex()
 {
+#ifdef HAS_XBOX_HARDWARE
   TIME_ZONE_INFORMATION tzi;
   char tzi_std_name[32];
 
@@ -827,6 +828,7 @@ int XBTimeZone::GetTimeZoneIndex()
     if (*(DWORD *)g_TimeZoneInfo[i].StandardName == *(DWORD *)tzi_std_name)
       return i;
   }
+#endif
   return -1;
 }
 
@@ -844,6 +846,7 @@ void XBTimeZone::SetTimeZoneIndex(int index)
 
 bool XBTimeZone::SetTimeZoneInfo(const MINI_TZI * tzi)
 {
+#ifdef HAS_XBOX_HARDWARE
   BYTE eepromdata[256];
   EEPROM_USER_SETTINGS * usersettings = (EEPROM_USER_SETTINGS *) &eepromdata;
   DWORD type, size;
@@ -866,21 +869,29 @@ bool XBTimeZone::SetTimeZoneInfo(const MINI_TZI * tzi)
   usersettings->TimeZoneDltDate = tzi->DaylightDate;
 
   return ExSaveNonVolatileSetting(XC_USER_SETTINGS, (PULONG) REG_BINARY, &eepromdata, size) >= 0;
+#else
+  return false;
+#endif
 }
 
 bool XBTimeZone::GetDST()
 {
+#ifdef HAS_XBOX_HARDWARE
   DWORD type, flags, size;
   if(ExQueryNonVolatileSetting(XC_DST_SETTING, &type, &flags, sizeof(flags), &size) < 0)
   {
     CLog::Log(LOGNOTICE, "Failed to get DST setting!");
     return false;
   }
-  return flags & XC_DST_FLAG;
+  return (flags & XC_DST_FLAG )== XC_DST_FLAG ? true : false;
+#else
+  return false;
+#endif
 }
 
 void XBTimeZone::SetDST(BOOL bEnable)
 {
+#ifdef HAS_XBOX_HARDWARE
   DWORD type, flags, size;
 
   if (ExQueryNonVolatileSetting(XC_DST_SETTING, &type, &flags, sizeof(flags), &size) < 0)
@@ -895,4 +906,5 @@ void XBTimeZone::SetDST(BOOL bEnable)
     flags |= XC_DST_FLAG; // DST Flag used by xboxdash
 
   ExSaveNonVolatileSetting(XC_DST_SETTING, (PULONG) REG_DWORD, &flags, sizeof(flags));
+#endif
 }
