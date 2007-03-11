@@ -58,7 +58,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-09YDT",
+      "GMT-09 YDT",
       540,
       "YST",
       { 10, 5, 0, 2 },
@@ -68,7 +68,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-09PDT",
+      "GMT-09 PDT",
       480,
       "PST",
       { 10, 5, 0, 2 },
@@ -78,7 +78,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-07MST",
+      "GMT-07 MST",
       420,
       "MST",
       {  0, 0, 0, 0 },
@@ -88,7 +88,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-07MDT",
+      "GMT-07 MDT",
       420,
       "MST",
       { 10, 5, 0, 2 },
@@ -98,7 +98,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-06CAST",
+      "GMT-06 CAST",
       360,
       "CAST",
       {  0, 0, 0, 0 },
@@ -108,7 +108,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-06CDT",
+      "GMT-06 CDT",
       360,
       "CST",
       { 10, 5, 0, 2 },
@@ -118,7 +118,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-06MDT",
+      "GMT-06 MDT",
       360,
       "MST",
       { 10, 5, 0, 2 },
@@ -128,7 +128,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-06CCST",
+      "GMT-06 CCST",
       360,
       "CCST",
       {  0, 0, 0, 0 },
@@ -138,7 +138,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-05EDT",
+      "GMT-05 EDT",
       300,
       "EST",
       { 10, 5, 0, 2 },
@@ -148,7 +148,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-05EST",
+      "GMT-05 EST",
       300,
       "EST",
       {  0, 0, 0, 0 },
@@ -158,7 +158,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-05SPST",
+      "GMT-05 SPST",
       300,
       "SPST",
       {  0, 0, 0, 0 },
@@ -168,7 +168,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-04ADT",
+      "GMT-04 ADT",
       240,
       "AST",
       { 10, 5, 0, 2 },
@@ -178,7 +178,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-04SWST",
+      "GMT-04 SWST",
       240,
       "SWST",
       {  0, 0, 0, 0 },
@@ -188,7 +188,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-04PSDT",
+      "GMT-04 PSDT",
       240,
       "PSST",
       {  3, 2, 6, 0 },
@@ -208,7 +208,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-03ESDT",
+      "GMT-03 ESDT",
       180,
       "ESST",
       {  2, 2, 0, 2 },
@@ -218,7 +218,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-03SEST",
+      "GMT-03 SEST",
       180,
       "SEST",
       {  0, 0, 0, 0 },
@@ -228,7 +228,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT-03GDT",
+      "GMT-03 GDT",
       180,
       "GST",
       { 10, 5, 0, 2 },
@@ -248,7 +248,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-01ADT",
+      "GMT-01 ADT",
       60,
       "AST",
       { 10, 5, 0, 3 },
@@ -258,7 +258,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT-01WAT",
+      "GMT-01 WAT",
       60,
       "WAT",
       {  0, 0, 0, 0 },
@@ -268,7 +268,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+00GST",
+      "GMT+00 GST",
       0,
       "GST",
       {  0, 0, 0, 0 },
@@ -278,7 +278,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+00BST",
+      "GMT+00 BST",
       0,
       "GMT",
       { 10, 5, 0, 2 },
@@ -288,7 +288,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+01WEDT",
+      "GMT+01 WEDT",
       -60,
       "WEST",
       { 10, 5, 0, 3 },
@@ -298,7 +298,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+01CEDT",
+      "GMT+01 CEDT",
       -60,
       "CEST",
       { 10, 5, 0, 3 },
@@ -308,7 +308,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+01RDT",
+      "GMT+01 RDT",
       -60,
       "RST",
       { 10, 5, 0, 3 },
@@ -318,7 +318,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+01SCDT",
+      "GMT+01 SCDT",
       -60,
       "SCST",
       { 10, 5, 0, 3 },
@@ -328,7 +328,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+01WDST",
+      "GMT+01 WDST",
       -60,
       "WAST",
       {  0, 0, 0, 0 },
@@ -338,7 +338,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+02GTDT",
+      "GMT+02 GTDT",
       -120,
       "GTST",
       { 10, 5, 0, 3 },
@@ -348,7 +348,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+02EEDT",
+      "GMT+02 EEDT",
       -120,
       "EEST",
       {  9, 5, 0, 1 },
@@ -358,7 +358,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+02EDT",
+      "GMT+02 EDT",
       -120,
       "EST",
       {  9, 5, 3, 2 },
@@ -368,7 +368,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+02SAST",
+      "GMT+02S AST",
       -120,
       "SAST",
       {  0, 0, 0, 0 },
@@ -378,7 +378,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+02FLDT",
+      "GMT+02 FLDT",
       -120,
       "FLST",
       { 10, 5, 0, 4 },
@@ -388,7 +388,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+02JST",
+      "GMT+02 JST",
       -120,
       "JST",
       {  0, 0, 0, 0 },
@@ -398,7 +398,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+03ADT",
+      "GMT+03 ADT",
       -180,
       "AST",
       { 10, 1, 0, 4 },
@@ -408,7 +408,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+03AST",
+      "GMT+03 AST",
       -180,
       "AST",
       {  0, 0, 0, 0 },
@@ -418,7 +418,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+03RDT",
+      "GMT+03 RDT",
       -180,
       "RST",
       { 10, 5, 0, 3 },
@@ -428,7 +428,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+03EAST",
+      "GMT+03 EAST",
       -180,
       "EAST",
       {  0, 0, 0, 0 },
@@ -448,7 +448,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+04AST",
+      "GMT+04 AST",
       -240,
       "AST",
       {  0, 0, 0, 0 },
@@ -458,7 +458,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+04CDT",
+      "GMT+04 CDT",
       -240,
       "CST",
       { 10, 5, 0, 3 },
@@ -478,7 +478,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+05EDT",
+      "GMT+05 EDT",
       -300,
       "EST",
       { 10, 5, 0, 3 },
@@ -488,7 +488,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+05WAST",
+      "GMT+05 WAST",
       -300,
       "WAST",
       {  0, 0, 0, 0 },
@@ -518,7 +518,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+06NCDT",
+      "GMT+06 NCDT",
       -360,
       "NCST",
       { 10, 5, 0, 3 },
@@ -528,7 +528,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+06CAST",
+      "GMT+06 CAST",
       -360,
       "CAST",
       {  0, 0, 0, 0 },
@@ -538,7 +538,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+06SRST",
+      "GMT+06 SRST",
       -360,
       "SRST",
       {  0, 0, 0, 0 },
@@ -558,7 +558,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+07SAST",
+      "GMT+07 SAST",
       -420,
       "SAST",
       {  0, 0, 0, 0 },
@@ -568,7 +568,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+07NADT",
+      "GMT+07 NADT",
       -420,
       "NAST",
       { 10, 5, 0, 3 },
@@ -578,7 +578,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+08CST",
+      "GMT+08 CST",
       -480,
       "CST",
       {  0, 0, 0, 0 },
@@ -588,7 +588,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+08NEDT",
+      "GMT+08 NEDT",
       -480,
       "NEST",
       { 10, 5, 0, 3 },
@@ -598,7 +598,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+08MPST",
+      "GMT+08 MPST",
       -480,
       "MPST",
       {  0, 0, 0, 0 },
@@ -608,7 +608,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+08AWST",
+      "GMT+08 AWST",
       -480,
       "AWST",
       {  0, 0, 0, 0 },
@@ -618,7 +618,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+08TST",
+      "GMT+08 TST",
       -480,
       "TST",
       {  0, 0, 0, 0 },
@@ -628,7 +628,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+09TST",
+      "GMT+09 TST",
       -540,
       "TST",
       {  0, 0, 0, 0 },
@@ -638,7 +638,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+09KST",
+      "GMT+09 KST",
       -540,
       "KST",
       {  0, 0, 0, 0 },
@@ -648,7 +648,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+09YDT",
+      "GMT+09 YDT",
       -540,
       "YST",
       { 10, 5, 0, 3 },
@@ -658,7 +658,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+09:30ACDT",
+      "GMT+09:30 ACDT",
       -570,
       "ACST",
       {  3, 5, 0, 2 },
@@ -668,7 +668,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+09:30ACST",
+      "GMT+09:30 ACST",
       -570,
       "ACST",
       {  0, 0, 0, 0 },
@@ -678,7 +678,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+10AEST",
+      "GMT+10 AEST",
       -600,
       "AEST",
       {  0, 0, 0, 0 },
@@ -688,7 +688,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+10AEDT",
+      "GMT+10 AEDT",
       -600,
       "AEST",
       {  3, 5, 0, 2 },
@@ -698,7 +698,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+10WPST",
+      "GMT+10 WPST",
       -600,
       "WPST",
       {  0, 0, 0, 0 },
@@ -708,7 +708,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+10TDT",
+      "GMT+10 TDT",
       -600,
       "TST",
       {  3, 5, 0, 2 },
@@ -718,7 +718,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+10VDT",
+      "GMT+10 VDT",
       -600,
       "VST",
       { 10, 5, 0, 3 },
@@ -738,7 +738,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
-      "GMT+12NZDT",
+      "GMT+12 NZDT",
       -720,
       "NZST",
       {  3, 3, 0, 2 },
@@ -748,7 +748,7 @@ static const MINI_TZI g_TimeZoneInfo[] = {
       -60,
     },
     {
-      "GMT+12FST",
+      "GMT+12 FST",
       -720,
       "FST",
       {  0, 0, 0, 0 },
@@ -862,10 +862,16 @@ bool XBTimeZone::SetTimeZoneInfo(const MINI_TZI * tzi)
   usersettings->TimeZoneStdBias = tzi->StandardBias;
   usersettings->TimeZoneDltBias = tzi->DaylightBias;
 
-  usersettings->TimeZoneStdName = *(DWORD*)(tzi->StandardName);
+  if (tzi->StandardName)
+    usersettings->TimeZoneStdName = *(DWORD*)(tzi->StandardName);
+  else
+    usersettings->TimeZoneStdName = 0;
   usersettings->TimeZoneStdDate = tzi->StandardDate;
 
-  usersettings->TimeZoneDltName = *(DWORD*)(tzi->DaylightName);
+  if (tzi->DaylightName)
+    usersettings->TimeZoneDltName = *(DWORD*)(tzi->DaylightName);
+  else 
+    usersettings->TimeZoneDltName = 0;
   usersettings->TimeZoneDltDate = tzi->DaylightDate;
 
   return ExSaveNonVolatileSetting(XC_USER_SETTINGS, (PULONG) REG_BINARY, &eepromdata, size) >= 0;
@@ -883,7 +889,7 @@ bool XBTimeZone::GetDST()
     CLog::Log(LOGNOTICE, "Failed to get DST setting!");
     return false;
   }
-  return (flags & XC_DST_FLAG )== XC_DST_FLAG ? true : false;
+  return (flags & XC_DISABLE_DST_FLAG ) == XC_DISABLE_DST_FLAG ? false : true;
 #else
   return false;
 #endif
@@ -900,10 +906,10 @@ void XBTimeZone::SetDST(BOOL bEnable)
     return;
   }
 
-  if (!bEnable)
-    flags &= ~XC_DST_FLAG; // DST Flag used by xboxdash
+  if (bEnable)
+    flags &= ~XC_DISABLE_DST_FLAG; // DST Flag used by xboxdash
   else
-    flags |= XC_DST_FLAG; // DST Flag used by xboxdash
+    flags |= XC_DISABLE_DST_FLAG; // DST Flag used by xboxdash
 
   ExSaveNonVolatileSetting(XC_DST_SETTING, (PULONG) REG_DWORD, &flags, sizeof(flags));
 #endif
