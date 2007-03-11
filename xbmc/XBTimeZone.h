@@ -1,8 +1,8 @@
 #pragma once
 
-#define XC_DST_FLAG      0x02
-#define XC_DST_SETTING   0x11
-#define XC_USER_SETTINGS 0xFF
+#define XC_DISABLE_DST_FLAG  0x02
+#define XC_DST_SETTING       0x11
+#define XC_USER_SETTINGS     0xFF
 
 // slightly different mini timezone structure from the structure used in xboxdash.xbe:
 //  differences:
