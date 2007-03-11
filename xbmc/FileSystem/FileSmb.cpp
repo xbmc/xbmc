@@ -258,7 +258,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   if (m_fd == -1)
   {
     // write error to logfile
-    int nt_error = map_nt_error_from_unix(errno);
+    int nt_error = smb.ConvertUnixToNT(errno);
     CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
               strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
     return false;
@@ -324,7 +324,7 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
   }
 
   // file open failed, try to open the directory to force authentication
-  if (fd < 0 && map_nt_error_from_unix(errno) == NT_STATUS_ACCESS_DENIED)
+  if (fd < 0 && smb.ConvertUnixToNT(errno) == NT_STATUS_ACCESS_DENIED)
   {
     CURL urlshare(url);
     
@@ -406,7 +406,7 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 
   if ( bytesRead < 0 )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - smbc_read returned error %i", errno);
+    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
     return 0;
   }
 
@@ -420,7 +420,11 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
-  if ( pos < 0 ) return -1;
+  if ( pos < 0 )
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    return -1;
+  }
 
   return (__int64)pos;
 }
