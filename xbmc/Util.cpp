@@ -1097,8 +1097,8 @@ void CUtil::RunShortcut(const char* szShortcutPath)
     {
       memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
       strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
-      CIoSupport support;
-      support.GetPartition("C:",data.szRemap_D_As);
+
+      CIoSupport::GetPartition("C:",data.szRemap_D_As);
       strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_guiSettings.GetString("myprograms.dashboard")).c_str());
       data.executionType = 0;
       data.magic = GetXbeID(szPath);
@@ -1218,8 +1218,8 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
 
       char szDevicePath[1024];
       char szXbePath[1024];
-      CIoSupport helper;
-      helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
+
+      CIoSupport::GetPartition( (LPCSTR) szDrive, szDevicePath);
 
       strcat(szDevicePath, szDirectory);
       wsprintf(szXbePath, "d:\\%s", szXbe);

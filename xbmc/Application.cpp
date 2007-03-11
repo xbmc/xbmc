@@ -892,7 +892,7 @@ HRESULT CApplication::Create(HWND hWnd)
       g_settings.SaveProfiles("q:\\system\\profiles.xml");
 
       char szXBEFileName[1024];
-      CIoSupport helper;
+
       CIoSupport::GetXbePath(szXBEFileName);
       CUtil::RunXBE(szXBEFileName);
     }
