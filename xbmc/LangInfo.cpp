@@ -46,6 +46,7 @@ CLangInfo::CRegion::CRegion(const CRegion& region)
   m_strTimeFormat=region.m_strTimeFormat;
   m_tempUnit=region.m_tempUnit;
   m_speedUnit=region.m_speedUnit;
+  m_strTimeZone = region.m_strTimeZone;
 }
 
 CLangInfo::CRegion::CRegion()
@@ -73,6 +74,7 @@ void CLangInfo::CRegion::SetDefaults()
   m_strTimeFormat="HH:mm:ss";
   m_tempUnit=TEMP_UNIT_CELSIUS;
   m_speedUnit=SPEED_UNIT_KMH;
+  m_strTimeZone.clear();
 }
 
 void CLangInfo::CRegion::SetTempUnit(const CStdString& strUnit)
@@ -121,6 +123,11 @@ void CLangInfo::CRegion::SetSpeedUnit(const CStdString& strUnit)
     m_speedUnit=SPEED_UNIT_YARDPS;
   else if (strUnit.Equals("fpf"))
     m_speedUnit=SPEED_UNIT_FPF;
+}
+
+void CLangInfo::CRegion::SetTimeZone(const CStdString& strTimeZone)
+{
+  m_strTimeZone = strTimeZone;
 }
 
 CLangInfo::CLangInfo()
@@ -221,6 +228,10 @@ bool CLangInfo::Load(const CStdString& strFileName)
       if (pSpeedUnit && !pSpeedUnit->NoChildren())
         region.SetSpeedUnit(pSpeedUnit->FirstChild()->Value());
 
+      const TiXmlNode *pTimeZone=pRegion->FirstChild("timezone");
+      if (pTimeZone && !pTimeZone->NoChildren())
+        region.SetTimeZone(pTimeZone->FirstChild()->Value());
+
       m_regions.insert(PAIR_REGIONS(region.m_strName, region));
 
       pRegion=pRegion->NextSiblingElement("region");
@@ -305,6 +316,11 @@ const CStdString& CLangInfo::GetDateFormat(bool bLongDate/*=false*/) const
 const CStdString& CLangInfo::GetTimeFormat() const
 {
   return m_currentRegion->m_strTimeFormat;
+}
+
+const CStdString& CLangInfo::GetTimeZone() const
+{
+  return m_currentRegion->m_strTimeZone;
 }
 
 // Returns the AM/PM symbol of the current language

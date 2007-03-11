@@ -14,6 +14,7 @@ public:
   const CStdString& GetDVDMenuLanguage() const;
   const CStdString& GetDVDAudioLanguage() const;
   const CStdString& GetDVDSubtitleLanguage() const;
+  const CStdString& GetTimeZone() const;
 
   bool ForceUnicodeFont() { return m_currentRegion->m_forceUnicodeFont; }
 
@@ -82,6 +83,7 @@ protected:
     void SetDefaults();
     void SetTempUnit(const CStdString& strUnit);
     void SetSpeedUnit(const CStdString& strUnit);
+    void SetTimeZone(const CStdString& strTimeZone);
     CStdString m_strGuiCharSet;
     CStdString m_strSubtitleCharSet;
     CStdString m_strDVDMenuLanguage;
@@ -93,6 +95,8 @@ protected:
     CStdString m_strDateFormatShort;
     CStdString m_strTimeFormat;
     CStdString m_strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
+    CStdString m_strTimeZone;
+
     TEMP_UNIT m_tempUnit;
     SPEED_UNIT m_speedUnit;
   };
