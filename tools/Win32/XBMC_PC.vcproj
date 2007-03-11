@@ -1161,6 +1161,9 @@
 					RelativePath="..\..\xbmc\XBAudioConfig.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\XBTimeZone.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
 				</File>
 			</Filter>
@@ -2448,6 +2451,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBAudioConfig.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\XBTimeZone.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBVideoConfig.h">
