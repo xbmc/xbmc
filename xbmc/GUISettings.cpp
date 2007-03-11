@@ -29,6 +29,7 @@
 #endif
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
+#include "XBTimeZone.h"
 #ifdef HAS_XFONT
 #include <xfont.h>
 #endif
@@ -501,9 +502,11 @@ CGUISettings::CGUISettings(void)
   AddSeparator(4, "locale.sep1");
   AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
   AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
-  AddSeparator(7, "locale.sep2");
-  AddBool(8,   "locale.timeserver"       , 168  , false);
-  AddString(9, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+  AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
+  AddBool(8, "locale.usedst", 14075, false);
+  AddSeparator(9, "locale.sep2");
+  AddBool(10,   "locale.timeserver"       , 168  , false);
+  AddString(11, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
@@ -863,6 +866,9 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   SetBool("videooutput.hd480p", g_videoConfig.Has480p());
   SetBool("videooutput.hd720p", g_videoConfig.Has720p());
   SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
+
+  SetInt("locale.timezone", g_timezone.GetTimeZoneIndex());
+  SetBool("locale.usedst", g_timezone.GetDST());
 
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);

@@ -1107,6 +1107,8 @@
   <string id="14071">Allow File Renaming and Deletion</string>
   <string id="14072">Enable XLink Kai</string>
   <string id="14073">XLink Kai is not enabled.</string>
+  <string id="14074">Set Timezone</string>
+  <string id="14075">Use Daylight Savings Time</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">The service is not connected.</string>
