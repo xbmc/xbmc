@@ -382,12 +382,12 @@ void CIMDBMovie::Reset()
   m_bWatched = false;
 }
 
-bool CIMDBMovie::Save(TiXmlNode *node)
+bool CIMDBMovie::Save(TiXmlNode *node, const CStdString &tag)
 {
   if (!node) return false;
 
-  // we start with a <movie> tag
-  TiXmlElement movieElement("movie");
+  // we start with a <tag> tag
+  TiXmlElement movieElement(tag.c_str());
   TiXmlNode *movie = node->InsertEndChild(movieElement);
 
   if (!movie) return false;
