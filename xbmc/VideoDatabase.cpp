@@ -683,7 +683,7 @@ long CVideoDatabase::AddEpisode(long idShow, const CStdString& strFilenameAndPat
       strSQL=FormatSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,lEpisodeId);
       m_pDS->exec(strSQL.c_str());
       // and update the show
-      strSQL=FormatSQL("update tvshow set c%02d=c%02d+1 where idshow=%u",VIDEODB_ID_TV_EPISODES,VIDEODB_ID_TV_EPISODES,idShow);
+      strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow,idShow);
       m_pDS->exec(strSQL.c_str());
       CommitTransaction();
     }
@@ -1929,7 +1929,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->query(strSQL.c_str());
 
     long idShow = m_pDS->fv(0).get_asLong();
-    strSQL=FormatSQL("update tvshow set c%02d=c%02d-1 where idshow=%u",VIDEODB_ID_TV_EPISODES,VIDEODB_ID_TV_EPISODES,idShow);
+    strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idShow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow, idShow);
     m_pDS->exec(strSQL);
 
     strSQL=FormatSQL("delete from tvshowlinkepisode where idepisode=%i", lEpisodeId);
@@ -4283,7 +4283,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
       while (!pDS->eof())
       {
         CIMDBMovie episode = GetDetailsForEpisode(pDS, true);
-        episode.Save(pMain->LastChild(), "episode");
+        episode.Save(pMain->LastChild(), "episodedetails");
         pDS->next();
       }
       pDS->close();
@@ -4405,18 +4405,19 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         // load the TV show in.  NOTE: This deletes all episodes under the TV Show, which may not be
         // what we desire.  It may make better sense to only delete (or even better, update) the show information
         info.Load(movie);
+        CUtil::AddSlashAtEnd(info.m_strFileNameAndPath);
         DeleteTvShow(info.m_strFileNameAndPath);
         long showID = SetDetailsForTvShow(info.m_strFileNameAndPath, info);
         current++;
         // now load the episodes
-        TiXmlElement *episode = movie->FirstChildElement("episode");
+        TiXmlElement *episode = movie->FirstChildElement("episodedetails");
         while (episode)
         {
           // no need to delete the episode info, due to the above deletion
           CIMDBMovie info;
           info.Load(episode);
           SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID);
-          episode = episode->NextSiblingElement("episode");
+          episode = episode->NextSiblingElement("episodedetails");
         }
       }
       movie = movie->NextSiblingElement();
