@@ -143,6 +143,8 @@
 		<include>AllViewCommonThumbLarge</include>
 		<include>VideoDVDThumbLarge</include>
 		<include>VideoDVDWrapView</include>
+		<include>WideIcon_Small</include>
+		<include>WideIcon_Big</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>
