@@ -133,7 +133,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_files ON files ( idPath, strFilename )\n");
 
     CLog::Log(LOGINFO, "create tvshow table");
-    columns = "CREATE TABLE tvshow ( idShow integer";
+    columns = "CREATE TABLE tvshow ( idShow integer primary key";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       CStdString column;
@@ -154,7 +154,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinktvshow_2 ON actorlinktvshow ( idShow, idActor )\n");
   
     CLog::Log(LOGINFO, "create episode table");
-    columns = "CREATE TABLE episode ( idEpisode integer";
+    columns = "CREATE TABLE episode ( idEpisode integer primary key";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       CStdString column;
@@ -633,11 +633,9 @@ long CVideoDatabase::AddTvShow(const CStdString& strPath)
     if (m_pDS->num_rows() != 0)
       return m_pDS->fv("tvshowlinkpath.idShow").get_asLong();
 
-    strSQL=FormatSQL("insert into tvshow (idShow) values (0)");
+    strSQL=FormatSQL("insert into tvshow (idShow) values (NULL)");
     m_pDS->exec(strSQL.c_str());
     long lTvShow = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    strSQL=FormatSQL("update tvshow set idShow=%i where idShow=0",lTvShow);
-    m_pDS->exec(strSQL.c_str());
     
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
@@ -670,11 +668,9 @@ long CVideoDatabase::AddEpisode(long idShow, const CStdString& strFilenameAndPat
       lFileId = AddFile(strFilenameAndPath);
     if (lEpisodeId < 0)
     {
-      CStdString strSQL=FormatSQL("insert into episode (idEpisode) values (0)");
+      CStdString strSQL=FormatSQL("insert into episode (idEpisode) values (NULL)");
       m_pDS->exec(strSQL.c_str());
       lEpisodeId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      strSQL=FormatSQL("update episode set idEpisode=%i where idEpisode=0",lEpisodeId);
-      m_pDS->exec(strSQL.c_str());
       
       // update file info to reflect it points to this episode
       CStdString strPath, strFileName;
@@ -1979,8 +1975,8 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needs
   }
   details.m_strSearchString.Format("%i", lMovieId);
 
-  details.m_strPath = m_pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
-  CUtil::AddFileToFolder(details.m_strPath, m_pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
+  details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
+  CUtil::AddFileToFolder(details.m_strPath, pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
   if (needsCast)
@@ -2025,7 +2021,8 @@ CIMDBMovie CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool need
     }
   }
   details.m_strSearchString.Format("%i", lTvShowId);
-  details.m_strPath = m_pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
+  // note use of -1 here as opposed to path, as there is no file.strFileName in the query, so one less entry
+  details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH - 1).get_asString();
   if (baseDir.IsEmpty())
     details.m_strFileNameAndPath = details.m_strPath;
   else
@@ -2076,8 +2073,8 @@ CIMDBMovie CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool nee
   }
   details.m_strSearchString.Format("%i", lEpisodeId);
 
-  details.m_strPath = m_pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
-  CUtil::AddFileToFolder(details.m_strPath, m_pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
+  details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
+  CUtil::AddFileToFolder(details.m_strPath, pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
   if (needsCast)
@@ -4204,12 +4201,17 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
+    if (NULL == m_pDS2.get()) return;
+
+    // create a 3rd dataset as well as GetEpisodeDetails() etc. uses m_pDS2, and we need to do 3 nested queries on tv shows
+    auto_ptr<Dataset> pDS;
+    pDS.reset(m_pDB->CreateDataset());
+    if (NULL == pDS.get()) return;
 
     // find all movies
     CStdString sql = "select movie.*,files.strFileName,path.strPath from movie join files on files.idMovie=movie.idMovie join path on files.idPath=path.idPath";
  
     m_pDS->query(sql.c_str());
-    if (m_pDS->num_rows() == 0) return;
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
@@ -4232,8 +4234,95 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
     TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
     while (!m_pDS->eof())
     {
-      CIMDBMovie movie = GetDetailsForMovie(m_pDS);
-      movie.Save(pMain);
+      CIMDBMovie movie = GetDetailsForMovie(m_pDS, true);
+      movie.Save(pMain, "movie");
+      if ((current % 50) == 0 && progress)
+      {
+        progress->SetLine(1, movie.m_strTitle);
+        progress->SetPercentage(current * 100 / total);
+        progress->Progress();
+        if (progress->IsCanceled())
+        {
+          progress->Close();
+          m_pDS->close();
+          return;
+        }
+      }
+      m_pDS->next();
+      current++;
+    }
+    m_pDS->close();
+
+    // repeat for all tvshows
+    sql = "select tvshow.*,path.strPath from tvshow join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow join path on tvshowlinkpath.idPath=path.idPath";
+
+    m_pDS->query(sql.c_str());
+
+    if (progress)
+    {
+      progress->SetHeading(647);
+      progress->SetLine(0, 650);
+      progress->SetLine(1, "");
+      progress->SetLine(2, "");
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+
+    total = m_pDS->num_rows();
+    current = 0;
+
+    while (!m_pDS->eof())
+    {
+      CIMDBMovie tvshow = GetDetailsForTvShow(m_pDS, true);
+      tvshow.Save(pMain, "tvshow");
+      // now save the episodes from this show
+      CStdString sql = FormatSQL("select episode.*,files.strFileName,path.strPath from episode join files on files.idEpisode=tvshowlinkepisode.idepisode join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%s",tvshow.m_strSearchString.c_str());
+      pDS->query(sql.c_str());
+
+      while (!pDS->eof())
+      {
+        CIMDBMovie episode = GetDetailsForEpisode(pDS, true);
+        episode.Save(pMain->LastChild(), "episode");
+        pDS->next();
+      }
+      pDS->close();
+
+      if ((current % 50) == 0 && progress)
+      {
+        progress->SetLine(1, tvshow.m_strTitle);
+        progress->SetPercentage(current * 100 / total);
+        progress->Progress();
+        if (progress->IsCanceled())
+        {
+          progress->Close();
+          m_pDS->close();
+          return;
+        }
+      }
+      m_pDS->next();
+      current++;
+    }
+    m_pDS->close();
+
+    if (progress)
+    {
+      progress->SetHeading(647);
+      progress->SetLine(0, 650);
+      progress->SetLine(1, "");
+      progress->SetLine(2, "");
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+
+    total = m_pDS->num_rows();
+    current = 0;
+
+    while (!m_pDS->eof())
+    {
+      CIMDBMovie movie = GetDetailsForEpisode(m_pDS, true);
+      movie.Save(pMain, "episode");
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, movie.m_strTitle);
@@ -4289,23 +4378,48 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     }
 
     BeginTransaction();
-    TiXmlElement *movie = root->FirstChildElement("movie");
+    TiXmlElement *movie = root->FirstChildElement();
     int current = 0;
     int total = 0;
     // first count the number of items...
     while (movie)
     {
-      total++;
-      movie = movie->NextSiblingElement("movie");
+      if (strnicmp(movie->Value(), "movie", 5)==0 ||
+          strnicmp(movie->Value(), "tvshow", 6)==0)
+        total++;
+      movie = movie->NextSiblingElement();
     }
-    movie = root->FirstChildElement("movie");
+    movie = root->FirstChildElement();
     while (movie)
     {
       CIMDBMovie info;
-      info.Load(movie);
-      DeleteDetailsForMovie(info.m_strFileNameAndPath);
-      SetDetailsForMovie(info.m_strFileNameAndPath, info);
-      movie = movie->NextSiblingElement("movie");
+      if (strnicmp(movie->Value(), "movie", 5) == 0)
+      { 
+        info.Load(movie);
+        DeleteDetailsForMovie(info.m_strFileNameAndPath);
+        SetDetailsForMovie(info.m_strFileNameAndPath, info);
+        current++;
+      }
+      if (strnicmp(movie->Value(), "tvshow", 6) == 0)
+      {
+        // load the TV show in.  NOTE: This deletes all episodes under the TV Show, which may not be
+        // what we desire.  It may make better sense to only delete (or even better, update) the show information
+        info.Load(movie);
+        DeleteTvShow(info.m_strFileNameAndPath);
+        long showID = SetDetailsForTvShow(info.m_strFileNameAndPath, info);
+        current++;
+        // now load the episodes
+        TiXmlElement *episode = movie->FirstChildElement("episode");
+        while (episode)
+        {
+          // no need to delete the episode info, due to the above deletion
+          CIMDBMovie info;
+          info.Load(episode);
+          SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID);
+          episode = episode->NextSiblingElement("episode");
+        }
+      }
+      movie = movie->NextSiblingElement();
       if (progress)
       {
         progress->SetPercentage(current * 100 / total);
@@ -4318,7 +4432,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           return;
         }
       }
-      current++;
     }
     CommitTransaction();
 
