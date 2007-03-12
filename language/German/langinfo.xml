@@ -19,14 +19,15 @@
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
+      <timezone>GMT+01GST</timezone>
     </region>
   </regions>
 
   <sorttokens>
+    <token>The</token>
     <token>Der</token>
     <token>Die</token>
     <token>Das</token>
-    <token>The</token>
   </sorttokens>
 
 </language>
