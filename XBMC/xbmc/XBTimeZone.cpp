@@ -791,6 +791,14 @@ const char * XBTimeZone::GetTimeZoneString(int index)
     return NULL;
 }
 
+const char * XBTimeZone::GetTimeZoneName(int index)
+{
+  if (index >= 0 && index < XBNumberOfTimeZones)
+    return g_TimeZoneInfo[index].StandardName;
+  else
+    return NULL;
+}
+
 int XBTimeZone::GetNumberOfTimeZones()
 {
   return XBNumberOfTimeZones;

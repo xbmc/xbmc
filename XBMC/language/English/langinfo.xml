@@ -73,7 +73,7 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+00 GST</timezone>
+      <timezone>GMT</timezone>
     </region>
 
     <region name="Canada">
