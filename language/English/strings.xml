@@ -1554,6 +1554,7 @@
   <string id="20364">TV Show</string>
   <string id="20365">Episode Plot</string>
   <string id="20366">* All Seasons</string>
+  <string id="20367">Hide Watched</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
