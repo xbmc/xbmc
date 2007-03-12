@@ -149,7 +149,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   }
   LARGE_INTEGER lend;
   QueryPerformanceCounter(&lend);
-  m_coordsRes = resToUse;
+  if (!bContainsPath)
+    m_coordsRes = resToUse;
   bool ret = Load(pRootElement);
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);

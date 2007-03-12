@@ -28,6 +28,8 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML)
 	m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  m_coordsRes  = PAL_4x3;
+  //m_needsScaling = false;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)

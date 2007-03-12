@@ -42,10 +42,13 @@ namespace PYXBMC
     {
       strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath);
       if (!XFILE::CFile::Exists(strSkinPath))
+      {
         strSkinPath = strFallbackPath + "\\pal\\" + strXMLname;
-      strXMLname = strSkinPath;
-    }
+        res = PAL_4x3;
+      }
 
+      strXMLname = strSkinPath; // We would do this if we didn't copy the xml to the skin
+    }
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
     // create new GUIWindow
@@ -55,22 +58,23 @@ namespace PYXBMC
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }
-        return (PyObject*)self;
-      }
+    ((CGUIWindow*)(self->pWindow))->SetCoordsRes(res);
+    return (PyObject*)self;
+  }
   /*
-   * ControlList_AddItem
+   * WindowXML_AddItem
    * (string label) / (ListItem)
    * ListItem is added to vector
    * For a string we create a new ListItem and add it to the vector
    */
   PyDoc_STRVAR(addItem__doc__,
-    "addItem(item[,refreshList]) -- Add a new item to this control list.\n"
+    "addItem(item[,refreshList]) -- Add a new item to this window list.\n"
     "\n"
     "item               : string, unicode or ListItem - item to add.\n"
     "refreshList        : [optional] true - refreshes the gui/list after add\n"
     "\n"
     "example:\n"
-    "  - cList.addItem('Reboot XBMC',true)\n");
+    "  - self.addItem('Reboot XBMC',true)\n");
 
   PyObject* WindowXML_AddItem(WindowXML *self, PyObject *args)
   {
