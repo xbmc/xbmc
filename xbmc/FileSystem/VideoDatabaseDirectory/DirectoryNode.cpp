@@ -216,8 +216,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   CFileItem* pItem=NULL;
 
   // always hide "all" items
-  //if (g_guiSettings.GetBool("musicfiles.hideallitems"))
-  //  return;
+  if (g_advancedSettings.m_bVideoLibraryHideAllItems)
+    return;
 
   // no need for "all" item when only one item
   if (items.Size() == 1)
@@ -225,48 +225,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 
   switch (GetChildType())
   {
-    //  Have no queuing folder
-  case NODE_TYPE_ROOT:
-  case NODE_TYPE_OVERVIEW:
-    break;
-
-  /* no need for all genres
-  case NODE_TYPE_GENRE:
-    pItem = new CFileItem(g_localizeStrings.Get(15105));  // "All Genres"
-    pItem->m_strPath = BuildPath() + "-1/";
-    break;
-  */
-
-  case NODE_TYPE_GENRE:
-  case NODE_TYPE_YEAR:
-  case NODE_TYPE_TITLE_MOVIES:
-  case NODE_TYPE_ACTOR:
-  case NODE_TYPE_DIRECTOR:
-/*    pItem = new CFileItem(g_localizeStrings.Get(15103));  // "All Artists"
-    pItem->m_strPath = BuildPath() + "-1/";*/
-    break;
-
-/*    //  All album related nodes
-  case NODE_TYPE_ALBUM:
-    if (GetType() == NODE_TYPE_OVERVIEW) return;
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-  case NODE_TYPE_ALBUM_COMPILATIONS:
-  case NODE_TYPE_ALBUM_TOP100:
-    pItem = new CFileItem(g_localizeStrings.Get(15102));  // "All Albums"
-    pItem->m_strPath = BuildPath() + "-1/";
-    break;
-*/
-    //  All song related nodes
-/*  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
-  case NODE_TYPE_ALBUM_TOP100_SONGS:
-  case NODE_TYPE_SONG_TOP100:
-  case NODE_TYPE_SONG:
-    pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
-    pItem->m_strPath = BuildPath() + "-1/";
-    break;*/
+    case NODE_TYPE_SEASONS:
+      pItem = new CFileItem(g_localizeStrings.Get(20366));  // "All Seasons"
+      pItem->m_strPath = BuildPath() + "-1/";
+      break;
   }
 
   if (pItem)
@@ -275,10 +237,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     CStdString strFake;
     //  HACK: This item will stay on top of a list
     strFake.Format("%c", 0x01);
-    if (g_guiSettings.GetBool("musicfiles.allitemsonbottom"))
+    if (g_advancedSettings.m_bVideoLibraryAllItemsOnBottom)
       //  HACK: This item will stay on bottom of a list
       strFake.Format("%c", 0xff);
-    pItem->m_musicInfoTag.SetAlbum(strFake);
+     pItem->m_musicInfoTag.SetAlbum(strFake);
     pItem->m_musicInfoTag.SetArtist(strFake);
     pItem->m_musicInfoTag.SetTitle(strFake);
     pItem->m_musicInfoTag.SetGenre(strFake);
