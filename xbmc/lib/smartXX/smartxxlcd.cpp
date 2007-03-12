@@ -415,39 +415,33 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
   if (g_guiSettings.GetInt("lcd.type")==LCD_TYPE_VFD) 
     return;
 
-  float fBackLight=((float)level)/100.0f;
+  float fBackLight;
+  if (level<0) level=0;
+  if (level>99) level=99;
   
-  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
+  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3"))
   {   
-    if (level<0 || level>99) level=99;
     level = (99-level);
-    
     fBackLight=((float)level/100)*42.0f;
     int iNewLevel=(int)fBackLight;
-    if (iNewLevel==42) iNewLevel=43;
-
-    _outp(0xF701, iNewLevel&127|128);
+    if (iNewLevel>=41) iNewLevel=42;
+    _outp(DISP_O_LIGHT, iNewLevel&127|128); //V3 use DISP_O_LIGHT Port for Contrast
  	}
   else if ( g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
-    if (level<0 || level>99) level=99;
     level = (99-level);
-    
     fBackLight=((float)level/100)*42.0f;
     int iNewLevel=(int)fBackLight;
-    if (iNewLevel==42) iNewLevel=43;
-    
+    if (iNewLevel>=41) iNewLevel=42;
     _outp(DISP_O_CONTRAST, iNewLevel&127|128);
   }
   else 
   {
-    fBackLight*=63.0f;
+    fBackLight=(((float)level)/100.0f)*63.0f;
     int iNewLevel=(int)fBackLight;
-    if (iNewLevel==31) iNewLevel=32;
-    
+    if (iNewLevel>=31) iNewLevel=32;
     _outp(DISP_O_CONTRAST, iNewLevel&63);
   }
-  
 }
 
 //************************************************************************************************************************
