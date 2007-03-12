@@ -131,6 +131,8 @@
 		<include>VideoViewCommons_BigList</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>WideIcon_Small</include>
+		<include>WideIcon_Big</include>
 		<include>AllViewCommonPageControls</include>
 		<control type="image" id="0">
 			<description>bg preview</description>
