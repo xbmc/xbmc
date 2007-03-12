@@ -94,30 +94,65 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         {
           m_vecItems.m_strPath = "";
         }
-        else if (strDestination.Equals("Genres"))
+        else if (strDestination.Equals("MovieGenres"))
+        {
+          m_vecItems.m_strPath = "videodb://1/1/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("MovieTitles"))
+        {
+          m_vecItems.m_strPath = "videodb://1/2/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("MovieYears"))
+        {
+          m_vecItems.m_strPath = "videodb://1/3/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("MovieActors"))
+        {
+          m_vecItems.m_strPath = "videodb://1/4/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("MovieDirectors"))
+        {
+          m_vecItems.m_strPath = "videodb://1/5/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("Movies"))
         {
           m_vecItems.m_strPath = "videodb://1/";
+          SetHistoryForPath(m_vecItems.m_strPath);          
+        }
+        else if (strDestination.Equals("TvShowGenres"))
+        {
+          m_vecItems.m_strPath = "videodb://2/1/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
-        else if (strDestination.Equals("Titles"))
+        else if (strDestination.Equals("TvShowTitles"))
+        {
+          m_vecItems.m_strPath = "videodb://2/2/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("TvShowYears"))
+        {
+          m_vecItems.m_strPath = "videodb://2/3/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("TvShowActors"))
+        {
+          m_vecItems.m_strPath = "videodb://2/4/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("TvShowDirectors"))
+        {
+          m_vecItems.m_strPath = "videodb://2/5/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("TvShows"))
         {
           m_vecItems.m_strPath = "videodb://2/";
-          SetHistoryForPath(m_vecItems.m_strPath);
-        }
-        else if (strDestination.Equals("Years"))
-        {
-          m_vecItems.m_strPath = "videodb://3/";
-          SetHistoryForPath(m_vecItems.m_strPath);
-        }
-        else if (strDestination.Equals("Actors"))
-        {
-          m_vecItems.m_strPath = "videodb://4/";
-          SetHistoryForPath(m_vecItems.m_strPath);
-        }
-        else if (strDestination.Equals("Directors"))
-        {
-          m_vecItems.m_strPath = "videodb://5/";
-          SetHistoryForPath(m_vecItems.m_strPath);
+          SetHistoryForPath(m_vecItems.m_strPath);          
         }
         else if (strDestination.Equals("Playlists"))
         {
