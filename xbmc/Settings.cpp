@@ -258,6 +258,9 @@ CSettings::CSettings(void)
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
 
+  g_advancedSettings.m_bVideoLibraryHideAllItems = false;
+  g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
+
   g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
   g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
   g_advancedSettings.m_bTuxBoxPictureIcon= true;
@@ -1102,6 +1105,13 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
     GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
     GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
+  }
+
+  pElement = pRootElement->FirstChildElement("videolibrary");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");

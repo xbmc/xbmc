@@ -3385,6 +3385,9 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             long lEpisodeId = m_pDS->fv("episode.idepisode").get_asLong();
             
             CIMDBMovie movie = GetDetailsForEpisode(m_pDS);
+            if (idSeason == -1) // to get proper sorting and stuff
+              movie.m_iEpisode += 100*movie.m_iSeason;
+
             movies.push_back(movie);
             iSONGS++;
             m_pDS->next();
@@ -3430,8 +3433,10 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
     while (!m_pDS->eof())
     {
       CIMDBMovie movie = GetDetailsForEpisode(m_pDS);
-      movies.push_back(movie);
+      if (idSeason == -1) // to get proper sorting and stuff
+        movie.m_iEpisode += 100*movie.m_iSeason;
 
+      movies.push_back(movie);
       m_pDS->next();
     }
 

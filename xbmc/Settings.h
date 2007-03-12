@@ -284,6 +284,9 @@ public:
     CStdString m_strMusicLibraryAlbumFormat;
     CStdString m_strMusicLibraryAlbumFormatRight;
 
+    bool m_bVideoLibraryHideAllItems;
+    bool m_bVideoLibraryAllItemsOnBottom;
+
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     bool m_bTuxBoxSubMenuSelection;
