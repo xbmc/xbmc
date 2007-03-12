@@ -4235,6 +4235,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
 
     // create our xml document
     TiXmlDocument xmlDoc;
+    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+    xmlDoc.InsertEndChild(decl);
     TiXmlElement xmlMainElement("videodb");
     TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
     while (!m_pDS->eof())
