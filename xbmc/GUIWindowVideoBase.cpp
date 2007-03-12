@@ -1860,10 +1860,17 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
 
   // enumerate
   std::vector<CStdString> expression;
-  expression.push_back("[^\\.\\-_ ]*[\\.\\-_\\[ ][Ss]([0-9]*)[^0-9]*[Ee]([0-9]*)[\\.\\-_\\[ ]"); // foo.s01.e01
-  expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9]*)([0-9]{2})[\\.\\-_ ]"); // foo.103*
-  expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9]*)x([0-9]*)"); // foo.1x09*
 
+  // for two parters
+  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee][0-9][0-9]\\-([0-9]*)\\]"); // foo_[s01]_[e01-02] - personal fan service for spiff ;)
+  expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee][0-9][0-9]\\-([0-9]*)"); // foo.s01.e01-02
+  unsigned int iTwoParters=2; // remember to update me!
+
+  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee]([0-9]*)"); // foo_[s01]_[e01] - personal fan service for spiff
+  expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee]([0-9]*)"); // foo.s01.e01
+  expression.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-]"); // foo.103*
+  expression.push_back("[\\._ \\-]([0-9]*)x([0-9]*)"); // foo.1x09*
+  
   for (int i=0;i<items.Size();++i)
   {
     if (items[i]->m_bIsFolder)
@@ -1888,9 +1895,16 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
           int iEpisode = atoi(episode);
           std::pair<int,int> key(iSeason,iEpisode);
           CIMDBUrl url;
-          url.m_scrURL.push_back(CScraperUrl(items[i]->m_strPath));
+          if (j < iTwoParters) // we have a two parter - do the nasty. this gives us a separate file id...
+          {
+            CStdString strNasty = "stack://"+items[i]->m_strPath;
+            url.m_scrURL.push_back(CScraperUrl(strNasty));
+          }
+          else
+            url.m_scrURL.push_back(CScraperUrl(items[i]->m_strPath));
           episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
-          break;
+          if (j >= iTwoParters)
+            break;
         }
       }
     }
