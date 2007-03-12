@@ -1553,6 +1553,7 @@
   <string id="20363">Remove TV Show from library</string>
   <string id="20364">TV Show</string>
   <string id="20365">Episode Plot</string>
+  <string id="20366">* All Seasons</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
