@@ -16,7 +16,8 @@ CGUIControl::CGUIControl()
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
   m_visibleCondition = 0;
-  m_bDisabled = false;
+  m_enableCondition = 0;
+  m_enabled = true;
   m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
@@ -44,7 +45,8 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_diffuseColor = 0xffffffff;
   m_forceHidden = false;
   m_visibleCondition = 0;
-  m_bDisabled = false;
+  m_enableCondition = 0;
+  m_enabled = true;
   m_dwControlLeft = 0;
   m_dwControlRight = 0;
   m_dwControlUp = 0;
@@ -257,17 +259,15 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         if (visibleAnim) visibleAnim->ResetAnimation();
       }
       return true;
-      break;
 
+      // Note that the skin <enable> tag will override these messages
     case GUI_MSG_ENABLED:
-      m_bDisabled = false;
+      SetEnabled(true);
       return true;
-      break;
 
     case GUI_MSG_DISABLED:
-      m_bDisabled = true;
+      SetEnabled(false);
       return true;
-      break;
     }
   }
   return false;
@@ -288,12 +288,17 @@ bool CGUIControl::IsVisible() const
 
 bool CGUIControl::IsDisabled() const
 {
-  return m_bDisabled;
+  return !m_enabled;
 }
 
 void CGUIControl::SetEnabled(bool bEnable)
 {
-  m_bDisabled = !bEnable;
+  m_enabled = bEnable;
+}
+
+void CGUIControl::SetEnableCondition(int condition)
+{
+  m_enableCondition = condition;
 }
 
 void CGUIControl::SetPosition(float posX, float posY)
@@ -431,6 +436,10 @@ void CGUIControl::UpdateVisibility()
       anim.lastCondition = condition;
     }
   }
+  // and check for conditional enabling - note this overrides SetEnabled() from the code currently
+  // this may need to be reviewed at a later date
+  if (m_enableCondition)
+    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID);
 }
 
 void CGUIControl::SetInitialVisibility()
