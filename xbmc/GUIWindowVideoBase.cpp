@@ -1851,6 +1851,8 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 }
 
 void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList)
+
+
 {
   CFileItemList items;
   if (item->m_bIsFolder)
@@ -1864,12 +1866,14 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
   // for two parters
   expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee][0-9][0-9]\\-([0-9]*)\\]"); // foo_[s01]_[e01-02] - personal fan service for spiff ;)
   expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee][0-9][0-9]\\-([0-9]*)"); // foo.s01.e01-02
-  unsigned int iTwoParters=2; // remember to update me!
+  expression.push_back("[\\._ \\-][0-9]*x[0-9]*[\\._ \\-]*([0-9]*)x([0-9]*)"); // foo.1x09 1x10
+
+  unsigned int iTwoParters=expression.size();
 
   expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee]([0-9]*)"); // foo_[s01]_[e01] - personal fan service for spiff
-  expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee]([0-9]*)"); // foo.s01.e01
-  expression.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-]"); // foo.103*
   expression.push_back("[\\._ \\-]([0-9]*)x([0-9]*)"); // foo.1x09*
+  expression.push_back("[\\._ \\-][Ss]([0-9]*)[\\.\\-]?[Ee]([0-9]*)"); // foo.s01.e01, foo.s01_e01
+  expression.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-]"); // foo.103*
   
   for (int i=0;i<items.Size();++i)
   {
@@ -1931,6 +1935,12 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, cons
   m_database.BeginTransaction();
   for (IMDB_EPISODELIST::iterator iter = files.begin();iter != files.end();++iter)
   {
+    if (pDlgProgress)
+    {
+      pDlgProgress->SetLine(2, 20361);
+      pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
+      pDlgProgress->Progress();
+    }
     IMDB_EPISODELIST::iterator iter2 = episodes.find(iter->first);
     if (iter2 != episodes.end())
     {
@@ -1952,12 +1962,6 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, cons
       CFileItem item;
       item.m_strPath = iter->second.m_scrURL[0].m_url;
       AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
-      if (pDlgProgress)
-      {
-        pDlgProgress->SetLine(2, 20361);
-        pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
-        pDlgProgress->Progress();
-      }
     }
   }
   m_database.CommitTransaction();
