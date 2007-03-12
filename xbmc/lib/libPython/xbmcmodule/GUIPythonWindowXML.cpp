@@ -21,7 +21,7 @@
 
 using namespace PYXBMC;
 
-CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML)
+CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
 : CGUIWindow(dwId,strXML)
 {
 	pCallbackWindow = NULL;
@@ -29,6 +29,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML)
   m_loadOnDemand = false;
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   m_coordsRes  = PAL_4x3;
+  m_fallbackPath = strFallBackPath;
   //m_needsScaling = false;
 }
 
@@ -238,7 +239,13 @@ void CGUIPythonWindowXML::PulseActionEvent()
 {
 	SetEvent(m_actionEvent);
 }
-
+void CGUIPythonWindowXML::Render()
+{
+    string backupMediaDir = g_graphicsContext.GetMediaDir();
+    g_graphicsContext.SetMediaDir(m_fallbackPath);
+    CGUIWindow::Render();
+    g_graphicsContext.SetMediaDir(backupMediaDir);
+}
 void CGUIPythonWindowXML::Activate(DWORD dwParentId)
 {
   // Currently not used
@@ -407,4 +414,11 @@ void CGUIPythonWindowXML::OnInitWindow()
   m_viewControl.SetFocused();
   SET_CONTROL_VISIBLE(CONTROL_LIST);
   CGUIWindow::OnInitWindow();
+}
+
+CGUIControl *CGUIPythonWindowXML::GetFirstFocusableControl(int id)
+{
+  if (m_viewControl.HasControl(id))
+    id = m_viewControl.GetCurrentControl();
+  return CGUIWindow::GetFirstFocusableControl(id);
 }

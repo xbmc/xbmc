@@ -49,6 +49,7 @@ namespace PYXBMC
 
       strXMLname = strSkinPath; // We would do this if we didn't copy the xml to the skin
     }
+    self->sFallBackPath  = strFallbackPath;
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
     // create new GUIWindow

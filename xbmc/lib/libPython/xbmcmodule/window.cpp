@@ -60,7 +60,7 @@ namespace PYXBMC
 			pWindow->bIsPythonWindow = true;
 
 			if (!bAsDialog && !pWindow->bUsingXML) pWindow->pWindow = new CGUIPythonWindow(id);
-			else if (pWindow->bUsingXML) pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName);
+			else if (pWindow->bUsingXML) pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
 			else pWindow->pWindow = new CGUIPythonWindowDialog(id);
 
 			if (pWindow->bIsPythonWindow)

@@ -11,10 +11,11 @@ class CGUIPythonWindowXML : public CGUIWindow
 {
 public:
   
-  CGUIPythonWindowXML(DWORD dwId, CStdString strXML);
+  CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
   virtual ~CGUIPythonWindowXML(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);
+  virtual void    Render();
   void            Activate(DWORD dwParentId);
 	void						WaitForActionEvent(DWORD timeout);
 	void						PulseActionEvent();
@@ -23,6 +24,7 @@ public:
   void            RefreshList();
   void            ClearList();
 protected:
+  CGUIControl     *GetFirstFocusableControl(int id);
 	virtual void    UpdateButtons();
 	virtual void    OnSort();
   virtual void    Update();
@@ -36,6 +38,7 @@ protected:
 	DWORD						m_dwParentWindowID;
 	CGUIWindow* 		m_pParentWindow;
 	bool						m_bRunning;
+  string          m_fallbackPath;
 	CGUIViewControl m_viewControl;
 	auto_ptr<CGUIViewState> m_guiState;
   CFileItemList   m_vecItems;

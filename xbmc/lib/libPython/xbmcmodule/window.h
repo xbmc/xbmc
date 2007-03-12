@@ -21,6 +21,7 @@
 		bool bModal; \
 		bool bUsingXML; \
 		string sXMLFileName; \
+    string sFallBackPath; \
 		CGUIWindow* pWindow; \
 		std::vector<Control*> vecControls;
 

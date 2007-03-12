@@ -416,7 +416,6 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
-
   DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
