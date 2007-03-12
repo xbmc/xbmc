@@ -222,6 +222,7 @@
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
+				<visible>!Skin.HasSetting(homepageDriveinfo2)</visible>
 			</control>
 			<control type="radiobutton" id="0">
 				<description>enable homepage drive stats C: E: F: DISABLED</description>
