@@ -1176,7 +1176,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, thumbPanelHideLabels, pSpin, pPanel);
 
     pControl->SetType(VIEW_TYPE_ICON, g_localizeStrings.Get(536)); // Icons
-    ((CGUIPanelContainer *)control)->SetPageControl(pageControl ? pageControl : id + 5000);
+    pControl->SetPageControl(pageControl ? pageControl : id + 5000);
     pControl->SetNavigation(up, down, left, pageControl ? pageControl : id + 5000);
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
