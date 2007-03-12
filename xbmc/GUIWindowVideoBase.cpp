@@ -544,8 +544,16 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
             if (!item->m_bIsFolder)
             {
               if (!m_database.GetEpisodeInfo(item->m_strPath,movieDetails))
+              {        
+                pDlgProgress->Close();
                 return;
+              }
             }
+          }
+          else
+          {
+            pDlgProgress->Close();
+            return;
           }
         }
         // got all movie details :-)
