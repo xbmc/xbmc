@@ -1853,7 +1853,7 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
   // enumerate
   std::vector<CStdString> expression;
   expression.push_back("[^\\.\\-_ ]*[\\.\\-_\\[ ][Ss]([0-9]*)[^0-9]*[Ee]([0-9]*)[\\.\\-_\\[ ]"); // foo.s01.e01
-  expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9])([0-9]*)[\\.\\-_ ]"); // foo.103*
+  expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9]*)([0-9]{2})[\\.\\-_ ]"); // foo.103*
   expression.push_back("[^\\.\\-_ ]*[\\.\\-_ ]([0-9]*)x([0-9]*)"); // foo.1x09*
 
   for (int i=0;i<items.Size();++i)
