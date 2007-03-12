@@ -42,7 +42,7 @@ public:
   CIMDBMovie() { Reset(); };
   void Reset();
   bool Load(const TiXmlElement *node);
-  bool Save(TiXmlNode *node);
+  bool Save(TiXmlNode *node, const CStdString &tag);
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
