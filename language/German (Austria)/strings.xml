@@ -370,9 +370,9 @@
   <string id="429">Bitte folgenden Datenträger einlegen:</string>
   <string id="430">n. DVD# ord.</string>
   <string id="431">Keinen Cache verwenden</string>
-  <string id="432">Lösche Film aus der Datenbank..</string>
-  <string id="433">Löschen! Sind Sie sicher?</string>
-  <string id="434">Film löschen?</string>
+  <string id="432">Film aus der Bibliothek entfernen..</string>
+  <string id="433">Möchten Sie den Eintrag wirklich entfernen?</string>
+  <string id="434"></string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
   <string id="437">Dauer:</string>
@@ -1184,6 +1184,8 @@
   <string id="14071">Löschen und Umbenennen von Dateien ermöglichen</string>
   <string id="14072">XLink-Kai aktivieren</string> 
   <string id="14073">XLink Kai ist deaktiviert.</string> 
+  <string id="14074">Zeitzone</string> 
+  <string id="14075">Sommer/winterzeit verwenden</string> 
 
   <string id="15000">XLink-Kai</string>
   <string id="15001">Es besteht keine Verbindung,</string> 
@@ -1392,7 +1394,7 @@
   <string id="20012">Video Wiedergabelisten</string>
   <string id="20013">Möchten Sie das Spiel starten?</string>
   <string id="20014">n. Wiedergabeliste ord.</string>
-  <string id="20015">IMDb Miniaturansicht</string>
+  <string id="20015">Online Miniaturansicht</string>
   <string id="20016">Aktuell</string>
   <string id="20017">Lokal</string>
   <string id="20018">Nicht vorhanden</string>
@@ -1642,6 +1644,21 @@
   <string id="20348">Regie</string>
   <string id="20349">Es wurden keine Video-Dateien im Verzeicnis gefunden.</string>
   <string id="20350">votum</string>
+  <string id="20351">Fernsehserien Informationen</string> 
+  <string id="20352">Episoden Informationen</string> 
+  <string id="20353">Serien-Inhalt wird geladen..</string> 
+  <string id="20354">Episoden-Inhalt wird geladen..</string> 
+  <string id="20355">Episoden-Info für Ordner laden</string> 
+  <string id="20356">Serie auswählen:</string> 
+  <string id="20357">Serien-Bezeichnung angeben..</string> 
+  <string id="20358">Staffel %i</string> 
+  <string id="20359">Episode</string> 
+  <string id="20360">Episoden</string> 
+  <string id="20361">Episoden-Inhalt wird geladen..</string> 
+  <string id="20362">Episode aus Bibliothek entfernen</string> 
+  <string id="20363">Serie aus Bibliothek entfernen</string> 
+  <string id="20364">Serie</string> 
+  <string id="20365">Episoden-Handlung</string> 
 
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Dateien und Ordner anzeigen</string>
@@ -1680,6 +1697,8 @@
   <string id="21379">720p</string> 
   <string id="21380">1080i</string>
   <string id="21381">Bezeichnung für Wiedergabeliste eingeben</string>
+  <string id="21382">"Quelle hinzufügen" Verknüpfung deaktivieren</string> 
+  <string id="21383">Bildlaufleiste aktivieren</string> 
 
   <!-- Web browser strings -->
   <string id="20400">Internet</string>
@@ -1706,4 +1725,6 @@
   <!-- End of Web browser strings -->
 
   <string id="29999">Automatische Flicker Filter Korrektur</string>
+
 </strings>
+ 	  	 
