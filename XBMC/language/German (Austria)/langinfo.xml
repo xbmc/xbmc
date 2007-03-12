@@ -18,7 +18,7 @@
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+01GST</timezone>
+      <timezone>GMT+01 CEDT</timezone>
     </region>
   </regions>
 
