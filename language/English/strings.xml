@@ -1595,6 +1595,7 @@
   <string id="21381">Enter Name of New Playlist</string>
   <string id="21382">Disable Add Source buttons in file lists</string>
   <string id="21383">Enable Scrollbars</string>
+  <string id="21384">Make watched filtering a toggle in video library</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>
