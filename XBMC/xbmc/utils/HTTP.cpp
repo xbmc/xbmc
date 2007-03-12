@@ -93,6 +93,8 @@ CHTTP::CHTTP()
   {
     m_strProxyServer = g_guiSettings.GetString("network.httpproxyserver").c_str();
     m_iProxyPort = atoi(g_guiSettings.GetString("network.httpproxyport").c_str());
+    m_strProxyUsername = g_guiSettings.GetString("network.httpproxyusername").c_str();
+    m_strProxyPassword = g_guiSettings.GetString("network.httpproxypassword").c_str();
   }
   m_strCookie = "";
   hEvent = WSA_INVALID_EVENT;
@@ -751,28 +753,11 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     strcat(szHTTPHEADER, pData);
   }
 
+  if (m_strProxyServer.size() && m_strProxyUsername.size())
+    strcat(szHTTPHEADER, ConstructAuthorization("Proxy-Authorization", m_strProxyUsername, m_strProxyPassword).c_str());
+
   if( m_strUsername.size())
-  {
-    //Basic authentication
-    char *szBuff, *szEncode;
-    szBuff = (char*)_alloca(m_strUsername.size() + m_strPassword.size() + 2);
-    sprintf(szBuff, "%s:%s", m_strUsername.c_str(), m_strPassword.c_str());
-   
-    int len = strlen(szBuff);
-    szEncode = (char*)_alloca(len*2); 
-    
-    len = base64_encode(szBuff, len, szEncode, len*2);
-    if( len < 0 )
-    {
-      CLog::Log(LOGERROR, "Base64 Encode Overflow");
-      Close();
-      return 0;
-    }
-    szEncode[len] = '\0';
-    strcat(szHTTPHEADER, "Authorization: Basic ");
-    strcat(szHTTPHEADER, szEncode);
-    strcat(szHTTPHEADER, "\r\n");
-  }
+    strcat(szHTTPHEADER, ConstructAuthorization("Authorization", m_strUsername, m_strPassword).c_str());
 
   char* szGet;
   if (m_strProxyServer.size())
@@ -1040,3 +1025,20 @@ void CHTTP::Cancel()
 #endif
 }
 
+CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdString &username, const CStdString &password)
+{
+  //Basic authentication
+  CStdString buff = username + ":" + password;
+  char *szEncode = (char*)_alloca(buff.GetLength()*2); 
+  
+  int len = base64_encode(buff.c_str(), buff.GetLength(), szEncode, buff.GetLength()*2);
+  if( len < 0 )
+  {
+    CLog::Log(LOGERROR, "Base64 Encode Overflow");
+    return "";
+  }
+  szEncode[len] = '\0';
+  CStdString ret;
+  ret.Format("%s: Basic %s\r\n", auth.c_str(), szEncode);
+  return ret;
+}

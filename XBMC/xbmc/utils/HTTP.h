@@ -46,11 +46,14 @@ protected:
 
 private:
   void ParseHeader(string::size_type start, string::size_type colon, string::size_type end);
+  CStdString ConstructAuthorization(const CStdString &auth, const CStdString &username, const CStdString &password);
 
   CAutoPtrSocket m_socket;
   WSAEVENT hEvent;
 
   string m_strProxyServer;
+  string m_strProxyUsername;
+  string m_strProxyPassword;
   string m_strHostName;
   string m_strCookie;
   string m_strReferer;
