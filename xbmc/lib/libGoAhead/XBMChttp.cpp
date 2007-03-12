@@ -2366,6 +2366,14 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
         strTemp = "Error:No information retrieved for " + paras[i];
       strInfo += openTag + strTemp;
     }
+    if(strInfo.Find("°") && strInfo.Find("Â"))
+    {
+      // The Charset Converter ToUtf8() will add. only in this case= "°" a char "Â°" during converting, 
+      // which is the right value for the GUI!
+      // A length depending fix in CCharsetConverter::stringCharsetToUtf8() will couse a wrong char in GUI. 
+      // So just for http, we remove the "Â", to fix BUG ID:[1586251]
+      strInfo.Replace("Â","");
+    }
     return SetResponse(strInfo);
   }
 }
