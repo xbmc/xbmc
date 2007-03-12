@@ -579,7 +579,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   {
     CFileItem *item = new CFileItem("thumb://IMDb", false);
     item->SetThumbnailImage(thumbFromWeb);
-    item->SetLabel(g_localizeStrings.Get(20015)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20015));
     items.Add(item);
   }
 
@@ -587,7 +587,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   {
     CFileItem *item = new CFileItem("thumb://Current", false);
     item->SetThumbnailImage(m_movieItem.GetThumbnailImage());
-    item->SetLabel(g_localizeStrings.Get(20016)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
 
@@ -600,26 +600,20 @@ void CGUIWindowVideoInfo::OnGetThumb()
     pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
     CFileItem *item = new CFileItem("thumb://Local", false);
     item->SetThumbnailImage(cachedLocalThumb);
-    item->SetLabel(g_localizeStrings.Get(20017)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20017));
     items.Add(item);
   }
   else
   { // no local thumb exists, so we are just using the IMDb thumb or cached thumb
     // which is probably the IMDb thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
-/*    if (0 == items.Size())
-    { // no cached thumb or no imdb thumb available
-      // TODO: tell user and return
-      return;
-    }*/
     CFileItem *item = new CFileItem("thumb://None", false);
     item->SetThumbnailImage("defaultVideoBig.png");
-    item->SetLabel(g_localizeStrings.Get(20018)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
 
   CStdString result;
-  // TODO: localize 2.0
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 

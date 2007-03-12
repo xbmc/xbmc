@@ -238,7 +238,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   {
     CFileItem *item = new CFileItem("thumb://allmusic.com", false);
     item->SetThumbnailImage(thumbFromWeb);
-    item->SetLabel(g_localizeStrings.Get(20055)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20055));
     items.Add(item);
   }
 
@@ -247,7 +247,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   {
     CFileItem *item = new CFileItem("thumb://Current", false);
     item->SetThumbnailImage(m_albumItem.GetThumbnailImage());
-    item->SetLabel(g_localizeStrings.Get(20016)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
 
@@ -262,7 +262,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     {
       CFileItem *item = new CFileItem("thumb://Local", false);
       item->SetThumbnailImage(cachedLocalThumb);
-      item->SetLabel(g_localizeStrings.Get(20017)); // TODO: localize 2.0
+      item->SetLabel(g_localizeStrings.Get(20017));
       items.Add(item);
     }
   }
@@ -270,19 +270,13 @@ void CGUIWindowMusicInfo::OnGetThumb()
   { // no local thumb exists, so we are just using the allmusic.com thumb or cached thumb
     // which is probably the allmusic.com thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
-    if (0 == items.Size())
-    { // no cached thumb or no allmusic.com thumb available
-      // TODO: tell user and return
-      return;
-    }
     CFileItem *item = new CFileItem("thumb://None", false);
     item->SetThumbnailImage("defaultAlbumCover.png");
-    item->SetLabel(g_localizeStrings.Get(20018)); // TODO: localize 2.0
+    item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
 
   CStdString result;
-  // TODO: localize 2.0
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
