@@ -1650,7 +1650,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (!g_langInfo.GetTimeZone().IsEmpty())
     {
       int i=0;
-      while (!g_langInfo.GetTimeZone().Equals(g_timezone.GetTimeZoneString(i)) && i < g_timezone.GetNumberOfTimeZones())
+      while (i < g_timezone.GetNumberOfTimeZones() && !g_langInfo.GetTimeZone().Equals(g_timezone.GetTimeZoneString(i)))
         i++;
 
       if (i < g_timezone.GetNumberOfTimeZones())
