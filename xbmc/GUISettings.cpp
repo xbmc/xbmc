@@ -448,6 +448,9 @@ CGUISettings::CGUISettings(void)
   AddString(9, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(10, "network.sep2");
   AddBool(11, "network.enableinternet", 14054, true);
+  // hidden proxy authentication details
+  AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
+  AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
 
   AddCategory(6, "servers", 14036);
   AddBool(1,  "servers.ftpserver",        167, true);
