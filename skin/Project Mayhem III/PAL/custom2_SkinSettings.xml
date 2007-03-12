@@ -74,7 +74,7 @@
 				<selected>!Skin.HasSetting(animated)</selected>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
-				<onup>22</onup>
+				<onup>23</onup>
 				<ondown>21</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
@@ -107,6 +107,22 @@
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>21</onup>
+				<ondown>23</ondown>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="radiobutton" id="23">
+				<description>make watched filtering a toggle in video library Button</description>
+				<posx>211</posx>
+				<posy>231</posy>
+				<width>445</width>
+				<label>21384</label>
+				<onclick>Skin.ToggleSetting(watched_filtering_toggle)</onclick>
+				<selected>Skin.HasSetting(watched_filtering_toggle)</selected>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>22</onup>
 				<ondown>20</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>

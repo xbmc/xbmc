@@ -88,7 +88,19 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>99</onup>
+				<ondown>14</ondown>
+				<visible>!Skin.HasSetting(watched_filtering_toggle)</visible>
+			</control>
+			<control type="radiobutton" id="14">
+				<description>Watched Toggle Button</description>
+				<posx>50</posx>
+				<posy>231</posy>
+				<label>20367</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>10</onup>
 				<ondown>8</ondown>
+				<visible>Skin.HasSetting(watched_filtering_toggle)</visible>
 			</control>
 			<control type="button" id="8">
 				<description>Search</description>
@@ -97,7 +109,7 @@
 				<label>137</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup>10</onup>
+				<onup>14</onup>
 				<ondown>9</ondown>
 			</control>
 
