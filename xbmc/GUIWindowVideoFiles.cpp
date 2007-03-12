@@ -469,7 +469,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
     CFileItem* pItem = items[i];
     if (info.strContent.Equals("tvshows"))
     {
-      if (!pItem->m_bIsFolder) 
+      if (!pItem->m_bIsFolder) // we only want folders - files are handled in onprocessseriesfolder
         continue;
 
       CStdString strPath(pItem->m_strPath);
@@ -487,7 +487,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           CScraperUrl Url;
           //convert m_strEpisodeGuide in url.m_scrURL
           url.Parse(details.m_strEpisodeGuide);
-          IMDB.GetEpisodeList(url,episodes);
+          if (!IMDB.GetEpisodeList(url,episodes))
+            return;
+
           m_dlgProgress->SetLine(1, details.m_strTitle);
         }
         if (m_dlgProgress)
@@ -714,8 +716,21 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
     GetStackedDirectory(strPath, items);
     m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
   }
-  else
-    m_rootDir.GetDirectory(strPath,items);
+  else if (info.strContent.Equals("tvshows"))
+  {
+    int iFound;
+    SScraperInfo info2;
+    m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent,iFound);
+    if (iFound == 1)
+      m_rootDir.GetDirectory(strPath,items);
+    else
+    {
+      CFileItem item(CUtil::GetFileName(strPath));
+      item.m_strPath = strPath;
+      item.m_bIsFolder = true;
+      items.Add(new CFileItem(item));
+    }
+  }
 
   DoScan(items, info, settings);
   CUtil::DeleteVideoDatabaseDirectoryCache();
