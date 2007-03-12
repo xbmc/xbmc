@@ -185,8 +185,11 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
     scrUrl = url.m_scrURL[i];
     if (!Get(scrUrl,strHTML) || strHTML.size() == 0)
     {
-    CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
-    return false;
+      CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
+      if (temp.size() > 0 || (i == 0 && url.m_scrURL.size() > 1)) // use what was fetched
+        continue;
+
+      return false;
     }
     m_parser.m_param[0] = strHTML;
     m_parser.m_param[1] = scrUrl.m_url;
@@ -195,6 +198,9 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
     if (strXML.IsEmpty())
     {
       CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
+      if (temp.size() > 0 || (i == 0 && url.m_scrURL.size() > 1)) // use what was fetched
+        continue;
+
       return false;
     }
     // ok, now parse the xml file
