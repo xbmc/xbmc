@@ -261,6 +261,17 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
   return (condition != 0);
 }
 
+bool CGUIControlFactory::GetCondition(const TiXmlNode *control, const char *tag, int &condition)
+{
+  CStdString condString;
+  if (XMLUtils::GetString(control, tag, condString))
+  {
+    condition = g_infoManager.TranslateString(condString);
+    return true;
+  }
+  return false;
+}
+
 bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int &condition)
 {
   bool allowHiddenFocus;
@@ -411,6 +422,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   int iVisibleCondition = 0;
   bool allowHiddenFocus = false;
+  int enableCondition = 0;
 
   vector<CAnimation> animations;
 
@@ -520,6 +532,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetHex(pControlNode, "colordiffuse", colorDiffuse);
 
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
+  GetCondition(pControlNode, "enable", enableCondition);
+
   // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
   FRECT animRect = { posX, posY, width, height };
   GetAnimations(pControlNode, animRect, animations);
@@ -847,342 +861,214 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // Instantiate a new control using the properties gathered above
   //
 
+  CGUIControl *control = NULL;
   if (strType == "group")
   {
-    CGUIControlGroup* pControl = new CGUIControlGroup(
+    control = new CGUIControlGroup(
       dwParentId, id, posX, posY, width, height);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (g_SkinInfo.GetVersion() < 2.1)
-      pControl->SetNavigation(id, id, id, id);
-    else
-#endif
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetDefaultControl(defaultControl);
-    return pControl;
+    ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
   }
   else if (strType == "grouplist")
   {
-    CGUIControlGroupList* pControl = new CGUIControlGroupList(
+    control = new CGUIControlGroupList(
       dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetNavigation(up, down, left, right);
-    return pControl;
   }
   else if (strType == "label")
   {
-    CGUILabelControl* pControl = new CGUILabelControl(
+    control = new CGUILabelControl(
       dwParentId, id, posX, posY, width, height,
       strLabel, labelInfo, bHasPath);
-
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    pControl->SetWidthControl(bScrollLabel);
-    pControl->SetWrapMultiLine(wrapMultiLine);
-    return pControl;
+    ((CGUILabelControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel);
+    ((CGUILabelControl *)control)->SetWrapMultiLine(wrapMultiLine);
   }
   else if (strType == "edit")
   {
-    CGUIEditControl* pControl = new CGUIEditControl(
+    control = new CGUIEditControl(
       dwParentId, id, posX, posY, width, height,
       labelInfo, strLabel);
-
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
   }
   else if (strType == "videowindow")
   {
-    CGUIVideoControl* pControl = new CGUIVideoControl(
+    control = new CGUIVideoControl(
       dwParentId, id, posX, posY, width, height);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
   }
   else if (strType == "fadelabel")
   {
-    CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
+    control = new CGUIFadeLabelControl(
       dwParentId, id, posX, posY, width, height,
       labelInfo);
 
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetLabel(vecLabel);
-    pControl->SetInfo(vecInfo);
-    return pControl;
+    ((CGUIFadeLabelControl *)control)->SetLabel(vecLabel);
+    ((CGUIFadeLabelControl *)control)->SetInfo(vecInfo);
   }
   else if (strType == "rss")
   {
-    CGUIRSSControl* pControl = new CGUIRSSControl(
+    control = new CGUIRSSControl(
       dwParentId, id, posX, posY, width, height,
       labelInfo, dwTextColor3, labelInfo2.textColor, strRSSTags);
 
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
-      pControl->SetUrls(iter->second.second);
-      pControl->SetIntervals(iter->second.first);
+      ((CGUIRSSControl *)control)->SetUrls(iter->second.second);
+      ((CGUIRSSControl *)control)->SetIntervals(iter->second.first);
     }
     else
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
-    return pControl;
   }
   else if (strType == "console")
   {
-    CGUIConsoleControl* pControl = new CGUIConsoleControl(
+    control = new CGUIConsoleControl(
       dwParentId, id, posX, posY, width, height,
       labelInfo, labelInfo.textColor, labelInfo2.textColor, dwTextColor3, labelInfo.selectedColor);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetNavigation(up, down, left, right);
-    return pControl;
   }
   else if (strType == "button")
   {
-    CGUIButtonControl* pControl = new CGUIButtonControl(
+    control = new CGUIButtonControl(
       dwParentId, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       labelInfo);
 
-    pControl->SetLabel(strLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetClickActions(clickActions);
-    pControl->SetFocusActions(focusActions);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUIButtonControl *)control)->SetLabel(strLabel);
+    ((CGUIButtonControl *)control)->SetClickActions(clickActions);
+    ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
+    ((CGUIButtonControl *)control)->SetPulseOnSelect(bPulse);
   }
   else if (strType == "togglebutton")
   {
-    CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
+    control = new CGUIToggleButtonControl(
       dwParentId, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       textureAltFocus, textureAltNoFocus, labelInfo);
 
-    pControl->SetLabel(strLabel);
-    pControl->SetAltLabel(altLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetClickActions(clickActions);
-    pControl->SetAltClickActions(altclickActions);
-    pControl->SetFocusActions(focusActions);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetToggleSelect(iToggleSelect);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUIToggleButtonControl *)control)->SetLabel(strLabel);
+    ((CGUIToggleButtonControl *)control)->SetAltLabel(altLabel);
+    ((CGUIToggleButtonControl *)control)->SetClickActions(clickActions);
+    ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
+    ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
   }
   else if (strType == "checkmark")
   {
-    CGUICheckMarkControl* pControl = new CGUICheckMarkControl(
+    control = new CGUICheckMarkControl(
       dwParentId, id, posX, posY, width, height,
       textureCheckMark, textureCheckMarkNF,
       checkWidth, checkHeight, labelInfo);
 
-    pControl->SetLabel(strLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUICheckMarkControl *)control)->SetLabel(strLabel);
   }
   else if (strType == "radiobutton")
   {
-    CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
+    control = new CGUIRadioButtonControl(
       dwParentId, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       labelInfo,
       textureRadioFocus, textureRadioNoFocus);
 
-    pControl->SetLabel(strLabel);
-    pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
-    pControl->SetToggleSelect(iToggleSelect);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetClickActions(clickActions);
-    pControl->SetFocusActions(focusActions);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUIRadioButtonControl *)control)->SetLabel(strLabel);
+    ((CGUIRadioButtonControl *)control)->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
+    ((CGUIRadioButtonControl *)control)->SetToggleSelect(iToggleSelect);
+    ((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
+    ((CGUIRadioButtonControl *)control)->SetFocusActions(focusActions);
   }
   else if (strType == "spincontrol")
   {
-    CGUISpinControl* pControl = new CGUISpinControl(
+    control = new CGUISpinControl(
       dwParentId, id, posX, posY, width, height,
       textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetReverse(bReverse);
-    pControl->SetPulseOnSelect(bPulse);
+    ((CGUISpinControl *)control)->SetReverse(bReverse);
 
     if (iType == SPIN_CONTROL_TYPE_INT)
     {
-      pControl->SetRange(iMin, iMax);
+      ((CGUISpinControl *)control)->SetRange(iMin, iMax);
     }
     else if (iType == SPIN_CONTROL_TYPE_PAGE)
     {
-      pControl->SetRange(iMin, iMax);
-      pControl->SetShowRange(true);
-      pControl->SetReverse(false);
-      pControl->SetShowOnePage(showOnePage);
+      ((CGUISpinControl *)control)->SetRange(iMin, iMax);
+      ((CGUISpinControl *)control)->SetShowRange(true);
+      ((CGUISpinControl *)control)->SetReverse(false);
+      ((CGUISpinControl *)control)->SetShowOnePage(showOnePage);
     }
     else if (iType == SPIN_CONTROL_TYPE_FLOAT)
     {
-      pControl->SetFloatRange(fMin, fMax);
-      pControl->SetFloatInterval(fInterval);
+      ((CGUISpinControl *)control)->SetFloatRange(fMin, fMax);
+      ((CGUISpinControl *)control)->SetFloatInterval(fInterval);
     }
-
-    return pControl;
   }
   else if (strType == "slider")
   {
-    CGUISliderControl* pControl = new CGUISliderControl(
+    control = new CGUISliderControl(
       dwParentId, id, posX, posY, width, height,
       textureBar, textureNib, textureNibFocus, SPIN_CONTROL_TYPE_TEXT);
 
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetControlOffsetX(controlOffsetX);
-    pControl->SetControlOffsetY(controlOffsetY);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUISliderControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUISliderControl *)control)->SetControlOffsetX(controlOffsetX);
+    ((CGUISliderControl *)control)->SetControlOffsetY(controlOffsetY);
   }
   else if (strType == "sliderex")
   {
     labelInfo.align |= XBFONT_CENTER_Y;    // always center text vertically
-    CGUISettingsSliderControl* pControl = new CGUISettingsSliderControl(
+    control = new CGUISettingsSliderControl(
       dwParentId, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
       textureBar, textureNib, textureNibFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
 
-    pControl->SetText(strLabel);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    pControl->SetNavigation(up, down, left, right);
-    return pControl;
+    ((CGUISettingsSliderControl *)control)->SetText(strLabel);
+    ((CGUISettingsSliderControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
   }
   else if (strType == "scrollbar")
   {
-    CGUIScrollBar* pControl = new CGUIScrollBar(
+    control = new CGUIScrollBar(
       dwParentId, id, posX, posY, width, height,
       textureBackground, textureBar, textureBarFocus, textureNib, textureNibFocus, orientation, showOnePage);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
   }
   else if (strType == "progress")
   {
-    CGUIProgressControl* pControl = new CGUIProgressControl(
+    control = new CGUIProgressControl(
       dwParentId, id, posX, posY, width, height,
       textureBackground, textureLeft, textureMid, textureRight, textureOverlay);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    return pControl;
+    ((CGUIProgressControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
   }
   else if (strType == "image")
   {
-    CGUIImage* pControl = new CGUIImage(
+    control = new CGUIImage(
       dwParentId, id, posX, posY, width, height, texture, dwColorKey);
-
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetAspectRatio(aspectRatio, aspectAlign);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    return pControl;
+    ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
   }
   else if (strType == "multiimage")
   {
-    CGUIMultiImage* pControl = new CGUIMultiImage(
+    control = new CGUIMultiImage(
       dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetAspectRatio(aspectRatio);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    return pControl;
+    ((CGUIMultiImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
   }
   else if (strType == "list")
   {
-    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
-    pControl->LoadLayout(pControlNode);
-    pControl->SetType(viewType, viewLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetPageControl(pageControl);
-    return pControl;
+    control = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
+    ((CGUIListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
+    ((CGUIListContainer *)control)->SetPageControl(pageControl);
   }
   else if (strType == "wraplist")
   {
-    CGUIWrappingListContainer* pControl = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
-    pControl->LoadLayout(pControlNode);
-    pControl->SetType(viewType, viewLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetPageControl(pageControl);
-    return pControl;
+    control = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
+    ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
+    ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
   }
   else if (strType == "fixedlist")
   {
-    CGUIFixedListContainer* pControl = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
-    pControl->LoadLayout(pControlNode);
-    pControl->SetType(viewType, viewLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetPageControl(pageControl);
-    return pControl;
+    control = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
+    ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
+    ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
   }
   else if (strType == "panel")
   {
-    CGUIPanelContainer* pControl = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
-    pControl->LoadLayout(pControlNode);
-    pControl->SetType(viewType, viewLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetPageControl(pageControl);
-    return pControl;
+    control = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
+    ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
+    ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
   }
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "listcontrol")
@@ -1219,7 +1105,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #endif
   else if (strType == "listcontrolex")
   {
-    CGUIListControlEx* pControl = new CGUIListControlEx(
+    control = new CGUIListControlEx(
       dwParentId, id, posX, posY, width, height,
       spinWidth, spinHeight,
       textureUp, textureDown,
@@ -1228,20 +1114,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, labelInfo2,
       textureNoFocus, textureFocus);
 
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetScrollySuffix(strSuffix);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetImageDimensions(itemWidth, itemHeight);
-    pControl->SetItemHeight(textureHeight);
-    pControl->SetSpaceBetweenItems(spaceBetweenItems);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUIListControlEx*)control)->SetScrollySuffix(strSuffix);
+    ((CGUIListControlEx*)control)->SetImageDimensions(itemWidth, itemHeight);
+    ((CGUIListControlEx*)control)->SetItemHeight(textureHeight);
+    ((CGUIListControlEx*)control)->SetSpaceBetweenItems(spaceBetweenItems);
   }
   else if (strType == "textbox")
   {
-    CGUITextBox* pControl = new CGUITextBox(
+    control = new CGUITextBox(
       dwParentId, id, posX, posY, width, height,
       spinWidth, spinHeight,
       textureUp, textureDown,
@@ -1249,13 +1129,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       spinInfo, spinPosX, spinPosY,
       labelInfo);
 
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetPageControl(pageControl);
-    return pControl;
+    ((CGUITextBox *)control)->SetPageControl(pageControl);
   }
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "thumbnailpanel")
@@ -1302,7 +1176,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, thumbPanelHideLabels, pSpin, pPanel);
 
     pControl->SetType(VIEW_TYPE_ICON, g_localizeStrings.Get(536)); // Icons
-    pControl->SetPageControl(pageControl ? pageControl : id + 5000);
+    ((CGUIPanelContainer *)control)->SetPageControl(pageControl ? pageControl : id + 5000);
     pControl->SetNavigation(up, down, left, pageControl ? pageControl : id + 5000);
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
@@ -1312,74 +1186,60 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #endif
   else if (strType == "selectbutton")
   {
-    CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
+    control = new CGUISelectButtonControl(
       dwParentId, id, posX, posY,
       width, height, textureFocus, textureNoFocus,
       labelInfo,
       textureBackground, textureLeft, textureLeftFocus, textureRight, textureRightFocus);
 
-    pControl->SetLabel(strLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUISelectButtonControl *)control)->SetLabel(strLabel);
   }
   else if (strType == "mover")
   {
-    CGUIMoverControl* pControl = new CGUIMoverControl(
+    control = new CGUIMoverControl(
       dwParentId, id, posX, posY, width, height,
       textureFocus, textureNoFocus);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
   }
   else if (strType == "resize")
   {
-    CGUIResizeControl* pControl = new CGUIResizeControl(
+    control = new CGUIResizeControl(
       dwParentId, id, posX, posY, width, height,
       textureFocus, textureNoFocus);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
   }
   else if (strType == "buttonscroller")
   {
-    CGUIButtonScroller* pControl = new CGUIButtonScroller(
+    control = new CGUIButtonScroller(
       dwParentId, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
       iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
       textureFocus, textureNoFocus, labelInfo);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->LoadButtons(pControlNode);
-    return pControl;
+    ((CGUIButtonScroller *)control)->LoadButtons(pControlNode);
   }
   else if (strType == "spincontrolex")
   {
-    CGUISpinControlEx* pControl = new CGUISpinControlEx(
+    control = new CGUISpinControlEx(
       dwParentId, id, posX, posY, width, height, spinWidth, spinHeight,
       labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
-    pControl->SetText(strLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetReverse(bReverse);
-    pControl->SetText(strLabel);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
+    ((CGUISpinControlEx *)control)->SetText(strLabel);
+    ((CGUISpinControlEx *)control)->SetReverse(bReverse);
   }
   else if (strType == "visualisation")
   {
-    CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
+    control = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
   }
-  return NULL;
+
+  // things that apply to all controls
+  if (control)
+  {
+    control->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    control->SetEnableCondition(enableCondition);
+    control->SetAnimations(animations);
+    control->SetColorDiffuse(colorDiffuse);
+    control->SetNavigation(up, down, left, right);
+    control->SetPulseOnSelect(bPulse);
+  }
+  return control;
 }
 
 void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes)
