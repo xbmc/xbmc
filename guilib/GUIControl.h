@@ -135,6 +135,7 @@ public:
   virtual void SetVisible(bool bVisible);
   void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
+  void SetEnableCondition(int condition);
   void UpdateVisibility();
   virtual void SetInitialVisibility();
   virtual void UpdateEffectState(DWORD currentTime);
@@ -214,7 +215,6 @@ protected:
   DWORD m_dwControlID;
   DWORD m_dwParentID;
   bool m_bHasFocus;
-  bool m_bDisabled;
   bool m_bInvalidated;
   bool m_bAllocated;
   bool m_pulseOnSelect;
@@ -229,6 +229,9 @@ protected:
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   bool m_allowHiddenFocus;
   bool m_hasRendered;
+  // enable/disable state
+  int m_enableCondition;
+  bool m_enabled;
 
   // animation effects
   vector<CAnimation> m_animations;
