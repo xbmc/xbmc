@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/09/2007-->
+<!--Date of translation: 03/12/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8044-->
+<!--Based on english strings version 8087-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1055,6 +1055,8 @@
   <string id="14071">Löschen und Umbenennen von Dateien erlauben</string>
   <string id="14072">XLink-Kai aktivieren</string>
   <string id="14073">XLink-Kai ist nicht aktiv.</string>
+  <string id="14074">Zeitzone</string>
+  <string id="14075">Sommerzeit verwenden</string>
   <string id="15000">XLink-Kai</string>
   <string id="15001">Es besteht keine Verbindung zu XLink-Kai. Möchten</string>
   <string id="15002">Sie jetzt versuchen eine Verbindung aufzubauen?</string>
