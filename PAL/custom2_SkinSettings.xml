@@ -231,6 +231,7 @@
 				<label>20086</label>
 				<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
 				<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
+				<onclick>Skin.ResetSetting(homepageDriveinfo2)</onclick>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>34</onup>
@@ -238,25 +239,7 @@
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
-				<visible>!Skin.HasSetting(homepageDriveinfo2)</visible>
-			</control>
-			<control type="radiobutton" id="0">
-				<description>enable homepage drive stats C: E: F: DISABLED</description>
-				<posx>190</posx>
-				<posy>285</posy>
-				<width>485</width>
-				<label>20086</label>
-				<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
-				<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>30</onup>
-				<ondown>32</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<visible>Skin.HasSetting(homepageDriveinfo2)</visible>
-				<include>textcolorgrey</include>
+				<enable>!Skin.HasSetting(homepageDriveinfo2)</enable>
 			</control>
 			<control type="radiobutton" id="36">
 				<description>enable homepage drive stats E: F: G:</description>
@@ -266,6 +249,7 @@
 				<label>20087</label>
 				<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
 				<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
+				<onclick>Skin.ResetSetting(homepageDriveinfo1)</onclick>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>35</onup>
@@ -273,25 +257,7 @@
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
-				<visible>Skin.HasSetting(homepageDriveinfo1)</visible>
-			</control>
-			<control type="radiobutton" id="0">
-				<description>enable homepage drive stats E: F: G: DISABLED</description>
-				<posx>190</posx>
-				<posy>322</posy>
-				<width>485</width>
-				<label>20087</label>
-				<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
-				<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>31</onup>
-				<ondown>30</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<visible>!Skin.HasSetting(homepageDriveinfo1)</visible>
-				<include>textcolorgrey</include>
+				<enable>Skin.HasSetting(homepageDriveinfo1)</enable>
 			</control>
 		</control>
 		<!-- Bookmark button Options -->
