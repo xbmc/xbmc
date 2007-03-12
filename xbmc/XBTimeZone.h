@@ -67,6 +67,7 @@ class XBTimeZone
 {
 public:
   static const char * GetTimeZoneString(int index);
+  static const char * GetTimeZoneName(int index);
 
   static int GetNumberOfTimeZones();
   static int GetTimeZoneIndex();
