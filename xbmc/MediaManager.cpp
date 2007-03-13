@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "MediaManager.h"
+#include "xbox/IoSupport.h"
 
 const char MEDIA_SOURCES_XML[] = { "Q:\\system\\mediasources.xml" };
 
@@ -103,19 +104,16 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   share.strPath = "E:\\";
   share.strName = "E Drive";
   localDrives.push_back(share);
-  if (g_advancedSettings.m_useFDrive)
+  for (int i=EXTEND_PARTITION_BEGIN; i<=EXTEND_PARTITION_END; i++)
   {
-    CShare share;
-    share.strPath = "F:\\";
-    share.strName = "F Drive";
-    localDrives.push_back(share);
-  }
-  if (g_advancedSettings.m_useGDrive)
-  {
-    CShare share;
-    share.strPath = "G:\\";
-    share.strName = "G Drive";
-    localDrives.push_back(share);
+    if (CIoSupport::PartitionExists(i))
+    {
+      CShare share;
+      char cDriveLetter = 'A' + i - 1;
+      share.strPath.Format("%c:\\", cDriveLetter);
+      share.strName.Format("%c Drive", cDriveLetter);
+      localDrives.push_back(share);
+    }
   }
   if (includeQ)
   {

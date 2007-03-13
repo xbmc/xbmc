@@ -223,9 +223,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_songInfoDuration = 2;
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
-  g_advancedSettings.m_autoDetectFG = true;
-  g_advancedSettings.m_useFDrive = true;
-  g_advancedSettings.m_useGDrive = false;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
   
@@ -311,10 +308,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     CUtil::GetHomePath(strMnt);
     strMnt += GetProfileUserDataFolder().substr(2);
   }
-  CIoSupport::GetPartition(strMnt, szDevicePath);
+  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::Unmount("P:");
-  CIoSupport::Mount("P:",szDevicePath);
+  CIoSupport::RemapDriveLetter('P',szDevicePath);
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -420,7 +416,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   LoadUserFolderLayout();
 
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport::Unmount("S:");
+  CIoSupport::UnmapDriveLetter('S');
 #endif
   return true;
 }
@@ -1150,9 +1146,6 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
 
-  XMLUtils::GetBoolean(pRootElement, "autodetectfg", g_advancedSettings.m_autoDetectFG);
-  XMLUtils::GetBoolean(pRootElement, "usefdrive", g_advancedSettings.m_useFDrive);
-  XMLUtils::GetBoolean(pRootElement, "usegdrive", g_advancedSettings.m_useGDrive);
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
