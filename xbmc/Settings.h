@@ -256,9 +256,6 @@ public:
     int m_songInfoDuration;
     int m_logLevel;
     CStdString m_cddbAddress;
-    bool m_autoDetectFG;
-    bool m_useFDrive;
-    bool m_useGDrive;
     bool m_usePCDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
