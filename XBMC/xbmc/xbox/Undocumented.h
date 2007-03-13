@@ -1203,6 +1203,15 @@ extern "C"
     IN PANSI_STRING SymbolicLinkName
   );
 
+  // IoDismountVolumeByName
+  //  (new to Xbox)
+  NTSYSAPI
+  EXPORTNUM(91)
+  NTSTATUS
+  NTAPI
+  IoDismountVolumeByName(
+    IN PANSI_STRING DeviceName
+  );
 
   // ObReferenceObjectByHandle:
   // Turns a handle into a kernel object pointer.  The ObjectType parameter
