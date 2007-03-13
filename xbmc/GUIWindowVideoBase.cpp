@@ -345,23 +345,20 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   }
   if (info.strContent.Equals("tvshows"))
   {
-    CStdString strPath(item->m_strPath);
     if (item->m_bIsFolder)
     {
-      CUtil::AddSlashAtEnd(strPath);
-    
-      if (m_database.HasTvShowInfo(strPath))
+      if (m_database.HasTvShowInfo(item->m_strPath))
       {
         bHasInfo = true;
-        m_database.GetTvShowInfo(strPath, movieDetails);
+        m_database.GetTvShowInfo(item->m_strPath, movieDetails);
       }
     }
     else
     {
-      if (m_database.HasEpisodeInfo(strPath))
+      if (m_database.HasEpisodeInfo(item->m_strPath))
       {
         bHasInfo = true;
-        m_database.GetEpisodeInfo(strPath, movieDetails);
+        m_database.GetEpisodeInfo(item->m_strPath, movieDetails);
       }
     }
   }
@@ -528,25 +525,22 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           {
             CStdString path;
             CUtil::GetDirectory(item->m_strPath,path);
-            CUtil::AddSlashAtEnd(path);
-            lShowId = m_database.GetTvShowInfo(path);
+            lShowId = m_database.GetTvShowInfo(item->m_strPath);
             m_database.GetTvShowInfo(path,movieDetails,lShowId);
             pDlgProgress->SetLine(1, movieDetails.m_strTitle);            
             pDlgProgress->Progress();
           }
           else
           {
-            CStdString path(item->m_strPath);
-            CUtil::AddSlashAtEnd(path);
-            lShowId = m_database.GetTvShowInfo(path);
+            lShowId = m_database.GetTvShowInfo(item->m_strPath);
             if (lShowId > -1)
             {
               CIMDBMovie movieDetails2;
-              m_database.GetTvShowInfo(path,movieDetails2,lShowId);
+              m_database.GetTvShowInfo(item->m_strPath,movieDetails2,lShowId);
               movieDetails.m_iEpisode = movieDetails2.m_iEpisode; // keep # of episodes
-              m_database.DeleteDetailsForTvShow(path);
+              m_database.DeleteDetailsForTvShow(item->m_strPath);
             }
-            lShowId = m_database.SetDetailsForTvShow(path,movieDetails);
+            lShowId = m_database.SetDetailsForTvShow(item->m_strPath,movieDetails);
           }
           
           url.Parse(movieDetails.m_strEpisodeGuide);
