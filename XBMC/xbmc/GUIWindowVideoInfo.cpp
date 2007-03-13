@@ -451,7 +451,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     CStdString strItem;
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
-    pItem->m_strPath.Format("videodb://1/%u",m_database.GetTvShowInfo(movies[i].m_strFileNameAndPath));
+    pItem->m_strPath.Format("videodb://1/%u",m_database.GetTvShowInfo(movies[i].m_strPath));
     pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
     items.Add(pItem);
   }
