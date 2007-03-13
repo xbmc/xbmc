@@ -126,9 +126,10 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
-		<include>MusicViewCommons_BigList</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>MusicCoverThumbView</include>
+		<include>MusicViewCommons_BigList</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>

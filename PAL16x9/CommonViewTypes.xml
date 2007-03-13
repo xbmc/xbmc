@@ -201,7 +201,7 @@
 		</control>
 	</include>
 	<include name="MusicViewCommons_BigList">
-		<control type="list" id="54">
+		<control type="list" id="59">
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -284,7 +284,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangle.png</texture>
-					<visible>Control.HasFocus(54)</visible>
+					<visible>Control.HasFocus(59)</visible>
 				</control>
 				<control type="image">
 					<width>485</width>
@@ -292,7 +292,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangleNF.png</texture>
-					<visible>!Control.HasFocus(54)</visible>
+					<visible>!Control.HasFocus(59)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -871,6 +871,117 @@
 					<info>ListItem.Label</info>
 				</control>
 			</focusedlayout>
+		</control>
+	</include>
+	<include name="MusicCoverThumbView">
+		<control type="panel" id="54">
+			<posx>188</posx>
+			<posy>100</posy>
+			<width>490</width>
+			<height>425</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>52</onup>
+			<ondown>52</ondown>
+			<scrolltime>200</scrolltime>
+			<viewtype label="$LOCALIZE[483] $LOCALIZE[536]">icon</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<include>contentpanelslide</include>
+			<itemlayout height="120" width="96">
+				<control type="image">
+					<posx>8</posx>
+					<posy>10</posy>
+					<width>88</width>
+					<height>110</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>65</posx>
+					<posy>75</posy>
+					<width>26</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="120" width="96">
+				<control type="image">
+					<width>96</width>
+					<height>120</height>
+					<posx>4</posx>
+					<posy>5</posy>
+					<texture>folder-focus.png</texture>
+					<animation effect="zoom" end="0,0,104,130" time="100">focus</animation>
+				</control>
+				<control type="image">
+					<posx>8</posx>
+					<posy>10</posy>
+					<width>88</width>
+					<height>110</height>
+					<info>ListItem.Icon</info>
+					<animation effect="zoom" end="4,5,96,120" time="100">focus</animation>
+				</control>
+				<control type="image">
+					<posx>65</posx>
+					<posy>75</posy>
+					<width>26</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+					<animation effect="slide" end="4,5" time="100">focus</animation>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="image">
+			<description>background overlay image lower</description>
+			<posx>255</posx>
+			<posy>445</posy>
+			<width>355</width>
+			<height>106</height>
+			<texture>dvdview_bottom.png</texture>
+			<visible>Control.IsVisible(54)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="image">
+			<posx>310</posx>
+			<posy>476</posy>
+			<width>32</width>
+			<height>40</height>
+			<aspectratio>keep</aspectratio>
+			<info>ListItem.icon</info>
+			<visible>Control.IsVisible(54)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>350</posx>
+			<posy>472</posy>
+			<width>210</width>
+			<height>16</height>
+			<font>special13</font>
+			<scroll>true</scroll>
+			<info>ListItem.Label</info>
+			<visible>Control.IsVisible(54)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>350</posx>
+			<posy>498</posy>
+			<width>210</width>
+			<height>16</height>
+			<font>font13</font>
+			<scroll>true</scroll>
+			<info>ListItem.Album</info>
+			<visible>Control.IsVisible(54) + !Window.IsActive(mymusiclibrary)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>350</posx>
+			<posy>498</posy>
+			<width>210</width>
+			<height>16</height>
+			<font>font13</font>
+			<scroll>true</scroll>
+			<info>ListItem.Label2</info>
+			<visible>Control.IsVisible(54) + Window.IsActive(mymusiclibrary)</visible>
+			<include>contentpanelslide</include>
 		</control>
 	</include>
 	<include name="VideoDVDThumbLarge">
