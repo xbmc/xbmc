@@ -203,11 +203,11 @@ public:
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
   
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
-  void GetTvShowInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lTvShowId = -1);
+  void GetTvShowInfo(const CStdString& strPath, CIMDBMovie& details, long lTvShowId = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lEpisodeId = -1);
   
   long GetMovieInfo(const CStdString& strFilenameAndPath);
-  long GetTvShowInfo(const CStdString& strFilenameAndPath);
+  long GetTvShowInfo(const CStdString& strPath);
   long GetEpisodeInfo(const CStdString& strFilenameAndPath);
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CIMDBMovie& details);
