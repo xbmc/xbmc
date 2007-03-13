@@ -1098,7 +1098,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
       memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
       strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
 
-      CIoSupport::GetPartition("C:",data.szRemap_D_As);
+      CIoSupport::GetPartition('C', data.szRemap_D_As);
       strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_guiSettings.GetString("myprograms.dashboard")).c_str());
       data.executionType = 0;
       data.magic = GetXbeID(szPath);
@@ -1219,7 +1219,7 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
       char szDevicePath[1024];
       char szXbePath[1024];
 
-      CIoSupport::GetPartition( (LPCSTR) szDrive, szDevicePath);
+      CIoSupport::GetPartition(szDrive[0], szDevicePath);
 
       strcat(szDevicePath, szDirectory);
       wsprintf(szXbePath, "d:\\%s", szXbe);
@@ -1241,8 +1241,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
 
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport::Unmount("D:");
-  CIoSupport::Mount("D:", const_cast<char*>(szPath));
+  CIoSupport::RemapDriveLetter('D', const_cast<char*>(szPath));
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
@@ -1268,7 +1267,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     pData->magic = CUSTOM_LAUNCH_MAGIC;
     const char* xbe = szXbe+3;
     CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
-    CIoSupport::Unmount("D:");
+    CIoSupport::UnmapDriveLetter('D');
     XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwRegion, pData);
   }
   else
@@ -2556,7 +2555,8 @@ void CUtil::PlayDVD()
   }
   else
   {
-    CIoSupport::Remount("D:", "Cdrom0");
+    CIoSupport::Dismount("Cdrom0");
+    CIoSupport::RemapDriveLetter('D', "Cdrom0");
     CFileItem item("dvd://1", false);
     item.SetLabel(CDetectDVDMedia::GetDVDLabel());
     g_application.PlayFile(item);
