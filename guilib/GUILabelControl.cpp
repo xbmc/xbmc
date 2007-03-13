@@ -16,10 +16,12 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float po
   m_ScrollInsteadOfTruncate = false;
   m_wrapMultiLine = false;
   m_singleInfo = 0;
+  m_startHighlight = m_endHighlight = 0;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
-{}
+{
+}
 
 void CGUILabelControl::ShowCursor(bool bShow)
 {
@@ -109,6 +111,17 @@ void CGUILabelControl::Render()
             color[1] = 0; // transparent black
           m_label.font->DrawColourTextWidth(fPosX, fPosY, m_label.angle, color, 2, m_label.shadowColor, strLabelUnicode.c_str(), palette, m_width);
           delete[] palette;
+        }
+        else if (m_startHighlight || m_endHighlight)
+        {
+          DWORD palette[2] = { m_label.disabledColor, m_label.textColor };
+          BYTE *colors = new BYTE[strLabelUnicode.size()];
+          for (unsigned int i = 0; i < strLabelUnicode.size(); i++)
+            colors[i] = 0;
+          for (unsigned int i = m_startHighlight; i < m_endHighlight && i < strLabelUnicode.size(); i++)
+            colors[i] = 1;
+          m_label.font->DrawColourTextWidth(fPosX, fPosY, m_label.angle, palette, 2, m_label.shadowColor, strLabelUnicode.c_str(), colors, m_width);
+          delete[] colors;
         }
         else
           m_label.font->DrawText(fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align | XBFONT_TRUNCATED, m_width);
@@ -306,4 +319,10 @@ void CGUILabelControl::SetTruncate(bool bTruncate)
     m_label.align |= XBFONT_TRUNCATED;
   else
     m_label.align &= ~XBFONT_TRUNCATED;
+}
+
+void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
+{
+  m_startHighlight = start;
+  m_endHighlight = end;
 }
