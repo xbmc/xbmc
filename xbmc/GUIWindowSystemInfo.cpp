@@ -21,8 +21,6 @@
 #include "stdafx.h"
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
-#include "util.h"
-#include "utils/SystemInfo.h"
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -49,7 +47,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       SetLabelDummy();
-      b_IsHome = TRUE;
       return true;
     }
     break;
@@ -110,20 +107,19 @@ void CGUIWindowSystemInfo::Render()
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
-
     // for backward compatibility just show Free space info else would be to long...
-    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_C)+")");
+    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(3, g_sysinfo.GetTrayState());
+    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_TRAY_STATE));
 #endif
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_E)+")");
-    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_F)+")");
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_G)+")");
-    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_X));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE_X)+")");
-    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Y));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE_Y)+")");
-    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Z));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE_Z)+")");
-    SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE)+" "+g_infoManager.GetLabel(SYSTEM_FREE_SPACE)+")");
-    SET_CONTROL_LABEL(11,g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));//+" ("+g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT)+")");
+    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));
+    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));
+    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_X));
+    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Y));
+    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Z));
+    SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));
+    SET_CONTROL_LABEL(11,g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));
     SET_CONTROL_LABEL(12,g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT));
   }
   else if(iControl == CONTROL_BT_NETWORK)
