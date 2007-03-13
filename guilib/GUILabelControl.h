@@ -52,6 +52,7 @@ public:
   void SetTruncate(bool bTruncate);
   void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
   void SetAlignment(DWORD align);
+  void SetHighlight(unsigned int start, unsigned int end);
 
   static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
   static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth);
@@ -75,5 +76,8 @@ protected:
   // multi-info stuff
   int                   m_singleInfo;
   vector<CInfoPortion>  m_multiInfo;
+
+  unsigned int m_startHighlight;
+  unsigned int m_endHighlight;
 };
 #endif
