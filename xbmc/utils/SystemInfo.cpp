@@ -806,6 +806,66 @@ bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_Powe
   return true;
 }
 
+bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
+{
+  CStdString driveName = drive + ":\\";
+  ULARGE_INTEGER total, totalFree, totalUsed;
+
+  if (drive.IsEmpty() || drive.Equals("*")) //All Drives
+  {
+    ULARGE_INTEGER totalC, totalFreeC;
+    ULARGE_INTEGER totalE, totalFreeE;
+    ULARGE_INTEGER totalF, totalFreeF;
+    ULARGE_INTEGER totalG, totalFreeG;
+    ULARGE_INTEGER totalX, totalFreeX;
+    ULARGE_INTEGER totalY, totalFreeY;
+    ULARGE_INTEGER totalZ, totalFreeZ;
+    
+    BOOL bC = GetDiskFreeSpaceEx("C:\\", NULL, &totalC, &totalFreeC);
+    BOOL bE = GetDiskFreeSpaceEx("E:\\", NULL, &totalE, &totalFreeE);
+    BOOL bF = GetDiskFreeSpaceEx("F:\\", NULL, &totalF, &totalFreeF);
+    BOOL bG = GetDiskFreeSpaceEx("G:\\", NULL, &totalG, &totalFreeG);
+    BOOL bX = GetDiskFreeSpaceEx("X:\\", NULL, &totalX, &totalFreeX);
+    BOOL bY = GetDiskFreeSpaceEx("Y:\\", NULL, &totalY, &totalFreeY);
+    BOOL bZ = GetDiskFreeSpaceEx("Z:\\", NULL, &totalZ, &totalFreeZ);
+    
+    total.QuadPart = (bC?totalC.QuadPart:0)+
+      (bE?totalE.QuadPart:0)+
+      (bF?totalF.QuadPart:0)+
+      (bG?totalG.QuadPart:0)+
+      (bX?totalX.QuadPart:0)+
+      (bY?totalY.QuadPart:0)+
+      (bZ?totalZ.QuadPart:0);
+    totalFree.QuadPart = (bC?totalFreeC.QuadPart:0)+
+      (bE?totalFreeE.QuadPart:0)+
+      (bF?totalFreeF.QuadPart:0)+
+      (bG?totalFreeG.QuadPart:0)+
+      (bX?totalFreeX.QuadPart:0)+
+      (bY?totalFreeY.QuadPart:0)+
+      (bZ?totalFreeZ.QuadPart:0);
+    
+    iTotal = (int)(total.QuadPart/MB);
+    iTotalFree = (int)(totalFree.QuadPart/MB);
+    iTotalUsed = (int)((total.QuadPart - totalFree.QuadPart)/MB);
+
+    totalUsed.QuadPart = total.QuadPart - totalFree.QuadPart;
+    iPercentUsed = (int)(100.0f * totalUsed.QuadPart/total.QuadPart + 0.5f);
+    iPercentFree = 100 - iPercentUsed;
+    return true;
+  }
+  else if ( GetDiskFreeSpaceEx(driveName.c_str(), NULL, &total, &totalFree))
+  {
+    iTotal = (int)(total.QuadPart/MB);
+    iTotalFree = (int)(totalFree.QuadPart/MB);
+    iTotalUsed = (int)((total.QuadPart - totalFree.QuadPart)/MB);
+
+    totalUsed.QuadPart = total.QuadPart - totalFree.QuadPart;
+    iPercentUsed = (int)(100.0f * totalUsed.QuadPart/total.QuadPart + 0.5f);
+    iPercentFree = 100 - iPercentUsed;
+    return true;
+  }
+  return false;
+}
 double CSysInfo::GetCPUFrequency()
 {
   unsigned __int64 Fwin;
@@ -1416,6 +1476,170 @@ CStdString CSysInfo::GetBIOSInfo()
     strBiosName.Format("%s %s", g_localizeStrings.Get(13285),"File: BiosIDs.ini Not Found!");
 
   return strBiosName;
+}
+CStdString CSysInfo::GetTrayState()
+{
+  // Set DVD Drive State! [TrayOpen, NotReady....]
+  CStdString trayState = "D: ";
+  switch (CIoSupport::GetTrayState())
+  {
+  case TRAY_OPEN:
+    trayState+=g_localizeStrings.Get(162);
+    break;
+  case DRIVE_NOT_READY:
+    trayState+=g_localizeStrings.Get(163);
+    break;
+  case TRAY_CLOSED_NO_MEDIA:
+    trayState+=g_localizeStrings.Get(164);
+    break;
+  case TRAY_CLOSED_MEDIA_PRESENT:
+    trayState+=g_localizeStrings.Get(165);
+    break;
+  default:
+    trayState+=g_localizeStrings.Get(503); //Busy
+    break;
+  }
+  return trayState;
+}
+CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
+{
+  int total, totalFree, totalUsed, percentFree, percentused;
+  CStdString strDrive; 
+  bool bRet=false;
+  CStdString strRet;
+  switch (drive)
+  {
+    case SYSTEM_FREE_SPACE:
+    case SYSTEM_USED_SPACE:
+    case SYSTEM_TOTAL_SPACE:
+    case SYSTEM_FREE_SPACE_PERCENT:
+    case SYSTEM_USED_SPACE_PERCENT:
+      strDrive = g_localizeStrings.Get(20161);
+      bRet = g_sysinfo.GetDiskSpace("",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case LCD_FREE_SPACE_C:
+    case SYSTEM_FREE_SPACE_C:
+    case SYSTEM_USED_SPACE_C:
+    case SYSTEM_TOTAL_SPACE_C:
+    case SYSTEM_FREE_SPACE_PERCENT_C:
+    case SYSTEM_USED_SPACE_PERCENT_C:
+      strDrive = "C";
+      bRet = g_sysinfo.GetDiskSpace("C",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case LCD_FREE_SPACE_E:
+    case SYSTEM_FREE_SPACE_E:
+    case SYSTEM_USED_SPACE_E:
+    case SYSTEM_TOTAL_SPACE_E:
+    case SYSTEM_FREE_SPACE_PERCENT_E:
+    case SYSTEM_USED_SPACE_PERCENT_E:
+      strDrive = "E";
+      bRet = g_sysinfo.GetDiskSpace("E",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case LCD_FREE_SPACE_F:
+    case SYSTEM_FREE_SPACE_F:
+    case SYSTEM_USED_SPACE_F:
+    case SYSTEM_TOTAL_SPACE_F:
+    case SYSTEM_FREE_SPACE_PERCENT_F:
+    case SYSTEM_USED_SPACE_PERCENT_F:
+      strDrive = "F";
+      bRet = g_sysinfo.GetDiskSpace("F",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case LCD_FREE_SPACE_G:
+    case SYSTEM_FREE_SPACE_G:
+    case SYSTEM_USED_SPACE_G:
+    case SYSTEM_TOTAL_SPACE_G:
+    case SYSTEM_FREE_SPACE_PERCENT_G:
+    case SYSTEM_USED_SPACE_PERCENT_G:
+      strDrive = "G";
+      bRet = g_sysinfo.GetDiskSpace("G",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case SYSTEM_USED_SPACE_X:
+    case SYSTEM_FREE_SPACE_X:
+      strDrive = "X";
+      bRet = g_sysinfo.GetDiskSpace("X",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case SYSTEM_USED_SPACE_Y:
+    case SYSTEM_FREE_SPACE_Y:
+      strDrive = "Y";
+      bRet = g_sysinfo.GetDiskSpace("Y",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+    case SYSTEM_USED_SPACE_Z:
+    case SYSTEM_FREE_SPACE_Z:
+      strDrive = "Z";
+      bRet = g_sysinfo.GetDiskSpace("Z",total, totalFree, totalUsed, percentFree, percentused);
+      break;
+  }
+  if (bRet)
+  {
+    if (shortText)
+    {
+      switch(drive)
+      {
+        case LCD_FREE_SPACE_C:
+        case LCD_FREE_SPACE_E:
+        case LCD_FREE_SPACE_F:
+        case LCD_FREE_SPACE_G:
+          strRet.Format("%iMB", totalFree);
+          break;
+      }
+
+    }
+    else
+    {
+      switch(drive)
+      {
+      case SYSTEM_FREE_SPACE:
+      case SYSTEM_FREE_SPACE_C:
+      case SYSTEM_FREE_SPACE_E:
+      case SYSTEM_FREE_SPACE_F:
+      case SYSTEM_FREE_SPACE_G:
+      case SYSTEM_FREE_SPACE_X:
+      case SYSTEM_FREE_SPACE_Y:
+      case SYSTEM_FREE_SPACE_Z:
+        strRet.Format("%s: %i MB %s", strDrive, totalFree, g_localizeStrings.Get(160));
+        break;
+      case SYSTEM_USED_SPACE:
+      case SYSTEM_USED_SPACE_C:
+      case SYSTEM_USED_SPACE_E:
+      case SYSTEM_USED_SPACE_F:
+      case SYSTEM_USED_SPACE_G:
+      case SYSTEM_USED_SPACE_X:
+      case SYSTEM_USED_SPACE_Y:
+      case SYSTEM_USED_SPACE_Z:
+        strRet.Format("%s: %i MB %s", strDrive, totalUsed, g_localizeStrings.Get(20162));
+        break;
+      case SYSTEM_TOTAL_SPACE:
+      case SYSTEM_TOTAL_SPACE_C:
+      case SYSTEM_TOTAL_SPACE_E:
+      case SYSTEM_TOTAL_SPACE_F:
+      case SYSTEM_TOTAL_SPACE_G:
+        strRet.Format("%s: %i MB %s", strDrive, total, g_localizeStrings.Get(20161));
+        break;
+      case SYSTEM_FREE_SPACE_PERCENT:
+      case SYSTEM_FREE_SPACE_PERCENT_C:
+      case SYSTEM_FREE_SPACE_PERCENT_E:
+      case SYSTEM_FREE_SPACE_PERCENT_F:
+      case SYSTEM_FREE_SPACE_PERCENT_G:
+        strRet.Format("%s: %i%% %s", strDrive, percentFree, g_localizeStrings.Get(160));
+        break;
+      case SYSTEM_USED_SPACE_PERCENT:
+      case SYSTEM_USED_SPACE_PERCENT_C:
+      case SYSTEM_USED_SPACE_PERCENT_E:
+      case SYSTEM_USED_SPACE_PERCENT_F:
+      case SYSTEM_USED_SPACE_PERCENT_G:
+        strRet.Format("%s: %i%% %s", strDrive, percentused, g_localizeStrings.Get(20162));
+        break;
+      }
+    }
+  }
+  else
+  {
+    if (shortText)
+      strRet = "N/A";
+    else
+      strRet.Format("%s: %s", strDrive, g_localizeStrings.Get(161));
+  }
+  return strRet;
 }
 #endif
 bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
