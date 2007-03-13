@@ -223,7 +223,8 @@ void CGUIDialogNumeric::OnNext()
 void CGUIDialogNumeric::Render()
 {
   CStdString strLabel;
-  BYTE *colors = NULL;
+  unsigned int start = 0;
+  unsigned int end = 0;
   if (m_mode == INPUT_PASSWORD)
   {
     for (unsigned int i=0; i < m_password.size(); i++)
@@ -236,48 +237,30 @@ void CGUIDialogNumeric::Render()
   else if (m_mode == INPUT_TIME)
   { // format up the time
     strLabel.Format("%2d:%02d", m_datetime.wHour, m_datetime.wMinute);
-    colors = new BYTE[strLabel.GetLength()];
-    for (unsigned int i=0; i < strLabel.size(); i++)
-      colors[i] = 0;
-    colors[m_block * 3] = colors[m_block * 3 + 1] = 1;
+    start = m_block * 3;
+    end = m_block * 3 + 2;
   }
   else if (m_mode == INPUT_DATE)
   { // format up the date
     strLabel.Format("%2d/%2d/%4d", m_datetime.wDay, m_datetime.wMonth, m_datetime.wYear);
-    colors = new BYTE[strLabel.GetLength()];
-    for (unsigned int i=0; i < strLabel.size(); i++)
-      colors[i] = 0;
-    colors[m_block * 3] = colors[m_block * 3 + 1] = 1;
+    start = m_block * 3;
+    end = m_block * 3 + 2;
     if (m_block == 2)
-      colors[8] = colors[9] = 1;
+      end = m_block * 3 + 4;
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   { // format up the date
     strLabel.Format("%3d.%3d.%3d.%3d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
-    colors = new BYTE[strLabel.GetLength()];
-    for (unsigned int i=0; i < strLabel.size(); i++)
-      colors[i] = 0;
-    colors[m_block * 4] = colors[m_block * 4 + 1] = colors[m_block * 4 + 2] = 1;
+    start = m_block * 4;
+    end = m_block * 4 + 3;
   }
-  CGUIDialog::Render();
-  // render the label in multi-colour so that people can see what they're editting!
   CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_INPUT_LABEL);
   if (pLabel)
   {
-    // our label is pure ascii - no need to convert to/from UTF-8
-    CStdStringW strUnicodeLabel = strLabel;
-    CGUIFont *pFont = pLabel->GetLabelInfo().font;
-    DWORD palette[2];
-    palette[0] = pLabel->GetLabelInfo().disabledColor;
-    palette[1] = pLabel->GetLabelInfo().textColor;
-    float fPosX = (float)pLabel->GetXPosition();
-    if (pLabel->GetLabelInfo().align & XBFONT_CENTER_X)
-      fPosX += (pLabel->GetWidth() - pFont->GetTextWidth(strUnicodeLabel.c_str())) * 0.5f;
-    else if (pLabel->GetLabelInfo().align & XBFONT_RIGHT)
-      fPosX -= pFont->GetTextWidth(strUnicodeLabel.c_str());
-    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, 2, pLabel->GetLabelInfo().shadowColor, strUnicodeLabel.c_str(), colors, 0);
-    delete[] colors;
+    pLabel->SetLabel(strLabel);
+    pLabel->SetHighlight(start, end);
   }
+  CGUIDialog::Render();
 }
 
 void CGUIDialogNumeric::OnNumber(unsigned int num)
