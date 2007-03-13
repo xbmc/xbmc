@@ -517,7 +517,10 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           *pItem = items;
         }
         else
+        {
+          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
           strMovieName = CUtil::GetFileName(pItem->m_strPath);
+        }
       }
     }
     // This code tests if we have a DVD folder
@@ -729,6 +732,7 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
       item.m_strPath = strPath;
       item.m_bIsFolder = true;
       items.Add(new CFileItem(item));
+      CUtil::GetParentPath(item.m_strPath,items.m_strPath);
     }
   }
 
