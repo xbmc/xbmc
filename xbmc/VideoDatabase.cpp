@@ -339,9 +339,9 @@ long CVideoDatabase::GetMovie(const CStdString& strFilenameAndPath)
   return lMovieId;
 }
 
-long CVideoDatabase::GetTvShow(const CStdString& strFilenameAndPath)
+long CVideoDatabase::GetTvShow(const CStdString& strPath)
 {
-  return GetTvShowInfo(strFilenameAndPath);
+  return GetTvShowInfo(strPath);
 }
 
 long CVideoDatabase::GetEpisode(const CStdString& strFilenameAndPath)
@@ -420,7 +420,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
   return -1;
 }
 
-long CVideoDatabase::GetTvShowInfo(const CStdString& strFilenameAndPath)
+long CVideoDatabase::GetTvShowInfo(const CStdString& strPath)
 {
   try
   {
@@ -428,51 +428,38 @@ long CVideoDatabase::GetTvShowInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return -1;
     long lTvShowId = -1;
 
-    // needed for query parameters
-    CStdString strPath, strFile;
-    CUtil::Split(strFilenameAndPath, strPath, strFile);
-
     // have to join movieinfo table for correct results
     long lPathId = GetPath(strPath);
-    if (lPathId < 0 && strPath != strFilenameAndPath)
+    if (lPathId < 0)
       return -1;
 
     CStdString strSQL;
-    if (strPath == strFilenameAndPath) // i.e. we where handed a path, we may have rarred items in it
-    {
-      CStdString strPath1=strPath;
-      CStdString strParent;
-      int iFound=0;
+    CStdString strPath1=strPath;
+    CStdString strParent;
+    int iFound=0;
 
-      if (lPathId != -1)
+    strSQL=FormatSQL("select tvshow.idshow from tvshow,tvshowlinkpath where tvshowlinkpath.idPath=%u and tvshow.idshow=tvshowlinkpath.idshow",lPathId);
+    m_pDS->query(strSQL);
+    if (!m_pDS->eof())
+      iFound = 1;
+
+    while (iFound == 0 && CUtil::GetParentPath(strPath1, strParent))
+    {
+      CUtil::RemoveSlashAtEnd(strParent);
+      strSQL=FormatSQL("select tvshowlinkpath.idShow from path,tvshowlinkpath where tvshowlinkpath.idpath = path.idpath and strPath like '%s'",strParent.c_str());
+      m_pDS->query(strSQL.c_str());
+      if (!m_pDS->eof())
       {
-        strSQL=FormatSQL("select tvshow.idshow from tvshow,tvshowlinkpath where tvshowlinkpath.idPath=%u and tvshow.idshow=tvshowlinkpath.idshow",lPathId);
-        m_pDS->query(strSQL);
-        if (!m_pDS->eof())
-          iFound = 2;
-      }
-      while (iFound == 0 && CUtil::GetParentPath(strPath1, strParent))
-      {
-        CUtil::RemoveSlashAtEnd(strParent);
-        strSQL=FormatSQL("select tvshowlinkpath.idShow from path,tvshowlinkpath where tvshowlinkpath.idpath = path.idpath and strPath like '%s'",strParent.c_str());
-        m_pDS->query(strSQL.c_str());
-        if (!m_pDS->eof())
+        long idShow = m_pDS->fv("tvshowlinkpath.idshow").get_asLong();
+        if (idShow != -1)
         {
-          long idShow = m_pDS->fv("tvshowlinkpath.idshow").get_asLong();
-          if (idShow != -1)
-          {
-            strSQL=FormatSQL("select tvshow.idshow from tvshow where idShow=%i",idShow);
-            iFound = 2;
-          }
+          strSQL=FormatSQL("select tvshow.idshow from tvshow where idShow=%i",idShow);
+          iFound = 2;
         }
-        strPath1 = strParent;
       }
+      strPath1 = strParent;
     }
-    else
-      strSQL=FormatSQL("select tvshow.idshow from files,tvshow,tvshowlinkepisode where files.idepisode = tvshowlinkepisode.idepisode and tvshowlinkepisode.idshow = tvshow.idshow and files.strFileName like '%s' and files.idPath=%i", strFile.c_str(),lPathId);
-    
-    CLog::Log(LOGDEBUG,"CVideoDatabase::GetTvShowInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
-    m_pDS->query(strSQL.c_str());
+
     if (m_pDS->num_rows() > 0)
       lTvShowId = m_pDS->fv("tvshow.idShow").get_asLong();  
     m_pDS->close();
@@ -481,7 +468,7 @@ long CVideoDatabase::GetTvShowInfo(const CStdString& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::GetTvShowInfo(%s) failed", strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetTvShowInfo(%s) failed", strPath.c_str());
   }
   return -1;
 }
@@ -1004,19 +991,19 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
   return false;
 }
 
-bool CVideoDatabase::HasTvShowInfo(const CStdString& strFilenameAndPath)
+bool CVideoDatabase::HasTvShowInfo(const CStdString& strPath)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    long lTvShowId = GetTvShowInfo(strFilenameAndPath);
+    long lTvShowId = GetTvShowInfo(strPath);
     if ( lTvShowId < 0) return false;
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::HasTvShowInfo(%s) failed", strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::HasTvShowInfo(%s) failed", strPath.c_str());
   }
 
   return false;
@@ -1266,16 +1253,14 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetTvShowInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lTvShowId /* = -1 */)
+void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CIMDBMovie& details, long lTvShowId /* = -1 */)
 {
   try
   {
-    // TODO: Optimize this - no need for all the queries!
     if (lTvShowId < 0)
-      lTvShowId = GetTvShowInfo(strFilenameAndPath);
+      lTvShowId = GetTvShowInfo(strPath);
     if (lTvShowId < 0) return ;
 
-//    CStdString sql = FormatSQL("select tvshow.*,files.strFileName,path.strPath from tvshow join files on files.idEpisode=tvshowlinkepisode.idEpisode join path on files.idPath=path.idPath where tvshow.idshow=%i", lTvShowId);
     CStdString sql = FormatSQL("select tvshow.*,tvshowlinkpath.idpath,tvshowlinkpath.idpath from tvshow,tvshowlinkpath where tvshow.idshow=%i and tvshowlinkpath.idshow=tvshow.idshow", lTvShowId);
     if (!m_pDS->query(sql.c_str()))
       return;
@@ -1283,7 +1268,7 @@ void CVideoDatabase::GetTvShowInfo(const CStdString& strFilenameAndPath, CIMDBMo
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::GetTvShowInfo(%s) failed", strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetTvShowInfo(%s) failed", strPath.c_str());
   }
 }
 
