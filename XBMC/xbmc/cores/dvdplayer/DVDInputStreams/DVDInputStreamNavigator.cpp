@@ -427,20 +427,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_bInMenu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
 
         /* check for any gap in the stream, this is likely a discontinuity */
-        /* however libdvdnav seem to have a bug where it sometimes */
-        /* misses a nav pack at times ( seems to be in multi angle dvd's ) */
         __int64 gap = (__int64)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;        
-        
-        if(gap)
-        {
-          /* on multi angle dvd's allow a missed nav packet */
-          __int64 length = m_iVobUnitStop - m_iVobUnitStart;
-          int angle, anglecount;
-          if( DVDNAV_STATUS_OK == m_dll.dvdnav_get_angle_info(m_dvdnav, &angle, &anglecount) )
-            if(anglecount > 0 && gap > 0 && gap < length*2)
-              gap = 0;
-        }
-
         if(gap)
         {
           /* make sure demuxer is flushed before we change any correction */
