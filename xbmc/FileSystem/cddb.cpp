@@ -696,13 +696,13 @@ void Xcddb::addTitle(const char *buffer)
   // You never know if you really get UTF-8 strings from cddb
   if (!g_charsetConverter.isValidUtf8(strArtist)) 
     g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strArtist);
-  m_mapArtists[trk_nr] = strArtist;
+  m_mapArtists[trk_nr] += strArtist;
 
   CStdString strTitle=title;
   // You never know if you really get UTF-8 strings from cddb
   if (!g_charsetConverter.isValidUtf8(strTitle)) 
     g_charsetConverter.stringCharsetToUtf8(CStdString(title), strTitle);
-  m_mapTitles[trk_nr] = strTitle;
+  m_mapTitles[trk_nr] += strTitle;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
