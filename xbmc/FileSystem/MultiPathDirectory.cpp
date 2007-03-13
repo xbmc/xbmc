@@ -116,6 +116,18 @@ bool CMultiPathDirectory::Exists(const CStdString& strPath)
   return true;
 }
 
+CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
+{
+  int pos = strPath.Find(" , ", 12);
+  if (pos >= 0)
+  {
+    CStdString firstPath = strPath.Mid(12, pos - 12);
+    firstPath.Replace(",,",",");
+    return firstPath;
+  }
+  return "";
+}
+
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
   vecPaths.empty();
