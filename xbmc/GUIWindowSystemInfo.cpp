@@ -21,10 +21,8 @@
 #include "stdafx.h"
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
-#ifdef HAS_SYSINFO
-  #include "util.h"
-  #include "utils/SystemInfo.h"
-#endif
+#include "util.h"
+#include "utils/SystemInfo.h"
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
