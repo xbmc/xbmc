@@ -472,9 +472,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
       if (!pItem->m_bIsFolder) // we only want folders - files are handled in onprocessseriesfolder
         continue;
 
-      CStdString strPath(pItem->m_strPath);
-      CUtil::AddSlashAtEnd(strPath);
-      long lTvShowId2 = m_database.GetTvShowInfo(strPath);
+      long lTvShowId2 = m_database.GetTvShowInfo(pItem->m_strPath);
       if (lTvShowId2 > -1)
       {
         if (lTvShowId2 != lTvShowId)
