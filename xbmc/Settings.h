@@ -219,6 +219,8 @@ public:
   struct AdvancedSettings
   {
 public:
+    // multipath testing
+    bool m_useMultipaths;
 
     int m_audioHeadRoom;
     float m_karaokeSyncDelay;
