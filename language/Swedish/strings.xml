@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 03/12/2007-->
+<!--Date of translation: 03/13/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8087-->
+<!--Based on english strings version 8124-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1383,9 +1383,9 @@ den här visualiseringen</string>
   <string id="20158">Nätverksinformation</string>
   <string id="20159">Grafikinformation</string>
   <string id="20160">Hårdvaruinformation</string>
-  <string id="20161">Totalt: %s MB, Använt: %s MB, Ledigt: %s MB</string>
-  <string id="20162">Totalt HDD använt: %u%%  Ledigt: %u%%</string>
-  <string id="20163">%s: %s MB av %s MB ledigt</string>
+  <string id="20161">Totalt</string>
+  <string id="20162">använt</string>
+  <string id="20163">av</string>
   <string id="20164">Låsning stödjes inte</string>
   <string id="20165">Inte låst</string>
   <string id="20166">Låst</string>
@@ -1487,6 +1487,8 @@ den här visualiseringen</string>
   <string id="20363">Ta bort TV-serie från bibliotek</string>
   <string id="20364">TV-serie</string>
   <string id="20365">Handling i avsnitt</string>
+  <string id="20366">* Alla säsonger</string>
+  <string id="20367">Dölj sedda</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1521,5 +1523,6 @@ den här visualiseringen</string>
   <string id="21381">Ange namn på den nya spellistan</string>
   <string id="21382">Inaktivera Lägg till källa knappar i fillistan</string>
   <string id="21383">Aktivera skrollhandtag</string>
+  <string id="21384">Gör seddfilter ett val i filmbibliotek</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
