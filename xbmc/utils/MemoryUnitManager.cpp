@@ -110,20 +110,6 @@ void CMemoryUnitManager::MountUnits(unsigned long device, bool notify)
   }
 }
 
-bool CMemoryUnitManager::IsDriveValid(char Drive)
-{
-  for (unsigned int i = 0; i < m_memUnits.size(); i++)
-  {
-    IDevice *device = m_memUnits[i];
-    if (strcmpi(device->GetFileSystem(), "fatx") == 0)
-    {
-      if (((CFatXDevice *)device)->GetDrive() == Drive)
-        return true;
-    }
-  }
-  return false;
-}
-
 bool CMemoryUnitManager::HasDevice(unsigned long port, unsigned long slot)
 {
   for (unsigned int i = 0; i < m_memUnits.size(); i++)

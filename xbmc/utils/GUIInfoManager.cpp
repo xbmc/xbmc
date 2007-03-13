@@ -961,9 +961,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = false;
   }
   else if (condition == SYSTEM_HAS_DRIVE_F)
-    bReturn = g_advancedSettings.m_useFDrive;
+    bReturn = CIoSupport::DriveExists('F');
   else if (condition == SYSTEM_HAS_DRIVE_G)
-    bReturn = g_advancedSettings.m_useGDrive;
+    bReturn = CIoSupport::DriveExists('G');
   else if (condition == SYSTEM_DVDREADY)
 	  bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)

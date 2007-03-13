@@ -370,14 +370,20 @@ void CApplication::InitBasicD3D()
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // Create the device
+#ifdef HAS_XBOX_D3D
+  // Xbox MUST use HAL / Hardware Vertex Processing!
+  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+  {
+    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
+    Sleep(INFINITE); // die
+  }
+  m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
+#else
   if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
     Sleep(INFINITE); // die
   }
-
-#ifdef HAS_XBOX_D3D
-  m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
 #endif
 
   if (m_splash)
@@ -397,13 +403,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
   bool HaveGamepad = true; // should always have the gamepad when we get here
   if (InitD3D)
-  {
     InitBasicD3D();
-    //  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
-    // Create the gamepad devices
-    //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);*/
-  }
   if (m_splash)
   {
     m_splash->Stop();
@@ -444,15 +445,15 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   if (MapDrives)
   {
     // map in default drives
-    CIoSupport::Remap("C:,Harddisk0\\Partition2");
-    CIoSupport::Remount("D:", "Cdrom0");
-    CIoSupport::Remap("E:,Harddisk0\\Partition1");
-    //Add. also Drive F/G
-    /*
-    if ((g_advancedSettings.m_autoDetectFG && CIoSupport::.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive) CIoSupport::Remap("F:,Harddisk0\\Partition6");
-    if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive) CIoSupport::Remap("G:,Harddisk0\\Partition7");
-    */
+    CIoSupport::RemapDriveLetter('C',"Harddisk0\\Partition2");
+    CIoSupport::RemapDriveLetter('D',"Cdrom0");
+    CIoSupport::RemapDriveLetter('E',"Harddisk0\\Partition1");
 
+    //Add. also Drive F/G
+    if (CIoSupport::PartitionExists(6)) 
+      CIoSupport::RemapDriveLetter('F',"Harddisk0\\Partition6");
+    if (CIoSupport::PartitionExists(7))
+      CIoSupport::RemapDriveLetter('G',"Harddisk0\\Partition7");
   }
 #endif
   bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
@@ -624,14 +625,12 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       //Add. also Drive F/G
-      /*
-      if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive){
+      if (CIoSupport::DriveExists('F')){
         pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
-      if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive){
+      if (CIoSupport::DriveExists('G')){
         pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
-      */
       pUser->CommitChanges();
     }
 
@@ -725,16 +724,14 @@ HRESULT CApplication::Create(HWND hWnd)
   win32_exception::install_handler();
 
   CStdString strExecutablePath;
-  char szDevicePath[1024];
+  char szDevicePath[MAX_PATH];
 
   // map Q to home drive of xbe to load the config file
   CUtil::GetHomePath(strExecutablePath);
-  CIoSupport::GetPartition(strExecutablePath, szDevicePath);
+  CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
 
-  CIoSupport::Mount("Q:", "Harddisk0\\Partition2");
-  CIoSupport::Unmount("Q:");
-  CIoSupport::Mount("Q:", szDevicePath);
+  CIoSupport::MapDriveLetter('Q', szDevicePath);
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
@@ -782,7 +779,7 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   else
   {
-    CIoSupport::Unmount("T:");
+    CIoSupport::UnmapDriveLetter('T');
     CStdString strMnt = g_settings.GetUserDataFolder();
     if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
     {
@@ -790,9 +787,9 @@ HRESULT CApplication::Create(HWND hWnd)
       strMnt += g_settings.GetUserDataFolder().substr(2);
     }
 
-    CIoSupport::GetPartition(strMnt, szDevicePath);
+    CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
-    CIoSupport::Mount("T:",szDevicePath);
+    CIoSupport::MapDriveLetter('T',szDevicePath);
   }
 
   CLog::Log(LOGNOTICE, "Setup DirectX");
@@ -902,36 +899,32 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CLog::Log(LOGINFO, "map drives...");
   CLog::Log(LOGINFO, "  map drive C:");
-  CIoSupport::Remap("C:,Harddisk0\\Partition2");
+  CIoSupport::MapDriveLetter('C', "Harddisk0\\Partition2");
 
   CLog::Log(LOGINFO, "  map drive E:");
-  CIoSupport::Remap("E:,Harddisk0\\Partition1");
+  CIoSupport::MapDriveLetter('E', "Harddisk0\\Partition1");
 
-  CLog::Log(LOGINFO, "  map drive D:");
-  CIoSupport::Remount("D:", "Cdrom0");
+  CLog::Log(LOGINFO, "  remap drive D:");
+  CIoSupport::RemapDriveLetter('D', "Cdrom0");
 
-  if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive)
+  // Mount up to Partition15 (drive O:) if they are available.
+  for (int i=EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
   {
-    CLog::Log(LOGINFO, "  map drive F:");
-    CIoSupport::Remap("F:,Harddisk0\\Partition6");
-    g_advancedSettings.m_useFDrive = true;
+    char szDevice[32];
+    if (CIoSupport::PartitionExists(i))
+    {
+      char cDriveLetter = 'A' + i - 1;
+      sprintf(szDevice, "Harddisk0\\Partition%u", i);
+
+      CLog::Log(LOGINFO, "  map drive %c:", cDriveLetter);
+      CIoSupport::MapDriveLetter(cDriveLetter, szDevice);
+    }
   }
 
-  // used for the LBA-48 hack allowing >120 gig
-  if ((g_advancedSettings.m_autoDetectFG && CIoSupport::IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive)
-  {
-    CLog::Log(LOGINFO, "  map drive G:");
-    CIoSupport::Remap("G:,Harddisk0\\Partition7");
-    g_advancedSettings.m_useGDrive = true;
-  }
-
-  CIoSupport::Remap("X:,Harddisk0\\Partition3");
-  CIoSupport::Remap("Y:,Harddisk0\\Partition4");
+  CIoSupport::MapDriveLetter('X',"Harddisk0\\Partition3");
+  CIoSupport::MapDriveLetter('Y',"Harddisk0\\Partition4");
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport::Remap("Z:,Harddisk0\\Partition5");
-#else
-  CIoSupport::Unmount("Z:");
-  CIoSupport::Mount("Z:","Q:\\cache");
+  CIoSupport::MapDriveLetter('Z',"Harddisk0\\Partition5");
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");
@@ -963,9 +956,9 @@ HRESULT CApplication::Create(HWND hWnd)
   char temp[1024];
   CIoSupport::GetXbePath(temp);
   char temp2[1024];
-  char temp3[2];
-  temp3[0] = temp[0]; temp3[1] = '\0';
-  CIoSupport::GetPartition((LPCSTR)temp3,temp2);
+  char temp3;
+  temp3 = temp[0];
+  CIoSupport::GetPartition(temp3,temp2);
   CStdString strTemp(temp+2);
   int iLastSlash = strTemp.rfind('\\');
   strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
@@ -990,9 +983,9 @@ HRESULT CApplication::Create(HWND hWnd)
       char temp[1024];
       CIoSupport::GetXbePath(temp);
       char temp2[1024];
-      char temp3[2];
-      temp3[0] = temp[0]; temp3[1] = '\0';
-      CIoSupport::GetPartition((LPCSTR)temp3,temp2);
+      char temp3;
+      temp3 = temp[0];
+      CIoSupport::GetPartition(temp3,temp2);
       CStdString strTemp(temp+2);
       int iLastSlash = strTemp.rfind('\\');
       strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
