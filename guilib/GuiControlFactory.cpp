@@ -933,7 +933,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIButtonControl *)control)->SetLabel(strLabel);
     ((CGUIButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
-    ((CGUIButtonControl *)control)->SetPulseOnSelect(bPulse);
   }
   else if (strType == "togglebutton")
   {
@@ -947,6 +946,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIToggleButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
     ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
+    ((CGUIToggleButtonControl *)control)->SetToggleSelect(iToggleSelect);
   }
   else if (strType == "checkmark")
   {
@@ -1035,12 +1035,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control = new CGUIImage(
       dwParentId, id, posX, posY, width, height, texture, dwColorKey);
     ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
       dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop);
     ((CGUIMultiImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUIMultiImage *)control)->SetAspectRatio(aspectRatio);
   }
   else if (strType == "list")
   {
