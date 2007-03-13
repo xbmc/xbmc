@@ -5,9 +5,10 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
 #ifdef HAS_XBOX_D3D
-#include "xgraphics.h"
+ #include "xgraphics.h"
+ #define D3D_CLEAR_STENCIL D3DCLEAR_STENCIL
 #else
-#define D3DCLEAR_STENCIL 0x0l
+ #define D3D_CLEAR_STENCIL 0x0l
 #endif
 #include "SkinInfo.h"
 
@@ -363,7 +364,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     /* need to clear and preset, otherwise flicker filters won't take effect */
     if (NeedReset || forceClear)
     {
-      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3D_CLEAR_STENCIL, 0x00010001, 1.0f, 0L );
       m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
     }
 
@@ -531,7 +532,7 @@ void CGraphicContext::Clear()
   if (!m_pd3dDevice) return;
   //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
   if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
-    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3D_CLEAR_STENCIL, 0x00010001, 1.0f, 0L );
   else
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
 }
