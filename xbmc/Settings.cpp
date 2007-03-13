@@ -51,9 +51,6 @@ class CSettings g_settings;
 
 extern CStdString g_LoadErrorStr;
 
-//uncomment to use new multipath:// protocol while still in development
-//#define	MULTIPATH 1
-
 bool CShare::isWritable()
 {
   if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
@@ -85,14 +82,16 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
   }
   else
   { // multiple valid paths?
-#ifdef MULTIPATH
-    // use new multipath:// protocol
-    CMultiPathDirectory dir;
-    strPath = dir.ConstructMultiPath(vecPaths);
-#else
-    // use older virtualpath:// protocol
-    strPath.Format("virtualpath://%s/%s", category.c_str(), name.c_str());
-#endif
+    if (g_advancedSettings.m_useMultipaths)
+    { // use new multipath:// protocol
+      CMultiPathDirectory dir;
+      strPath = dir.ConstructMultiPath(vecPaths);
+    }
+    else
+    {
+      // use older virtualpath:// protocol
+      strPath.Format("virtualpath://%s/%s", category.c_str(), name.c_str());
+    }
   }
 
   strName = name;
@@ -187,6 +186,8 @@ CSettings::CSettings(void)
   g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
   // Advanced settings
+  g_advancedSettings.m_useMultipaths = false;
+
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
 
@@ -1147,6 +1148,7 @@ void CSettings::LoadAdvancedSettings()
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
 
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
+  XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
 
