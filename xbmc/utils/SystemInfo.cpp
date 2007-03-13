@@ -805,7 +805,7 @@ bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_Powe
   rfi_PowerCycleCount.Format("%s %d", g_localizeStrings.Get(13174), xri.PowerCycleCount);
   return true;
 }
-
+#endif
 bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   CStdString driveName = drive + ":\\";
@@ -866,6 +866,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   }
   return false;
 }
+#ifdef HAS_XBOX_HARDWARE
 double CSysInfo::GetCPUFrequency()
 {
   unsigned __int64 Fwin;
@@ -1501,6 +1502,7 @@ CStdString CSysInfo::GetTrayState()
   }
   return trayState;
 }
+#endif
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 {
   int total, totalFree, totalUsed, percentFree, percentused;
@@ -1641,7 +1643,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
   }
   return strRet;
 }
-#endif
+
 bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
   iMinutes=0;iHours=0;iDays=0;
