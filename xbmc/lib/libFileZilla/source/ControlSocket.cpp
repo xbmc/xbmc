@@ -33,7 +33,7 @@
 #include "../../../Util.h"
 #include "../../utils/Log.h"
 #include "../../Settings.h"
-#include "../../utils/MemoryUnitManager.h"
+#include "../../xbox/IoSupport.h"
 #include "../../Util.h"
 #include "../../Utils/log.h"
 #include "../../GUISettings.h"
@@ -1075,27 +1075,22 @@ void CControlSocket::ParseCommand()
 							if (drive >= 'f' && drive < 'q')
 							{
 								// extended partitions and memory units - check if the drive is available
-								if (drive > 'g' ||
-									(drive == 'f' && !g_advancedSettings.m_useFDrive) ||
-									(drive == 'g' && !g_advancedSettings.m_useGDrive))
-								{
-									if (!g_memoryUnitManager.IsDriveValid(drive))
-										continue;
-								}
+								if (!CIoSupport::DriveExists(drive))
+									continue;
 							}
-              // don't show x, y, z in the listing as users shouldn't really be
-              // stuffing around with these drives (power users can always go
-              // to these folders by specifying the path directly)
-              if (drive >= 'x')
-                continue;
+							// don't show x, y, z in the listing as users shouldn't really be
+							// stuffing around with these drives (power users can always go
+							// to these folders by specifying the path directly)
+							if (drive >= 'x')
+								continue;
 
-              if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
-              {
-                // modified to be consistent with other xbox ftp behavior: drive 
-                // name is a single character without the ':' at the end
-                dirToList = drive;
-                dirToList.MakeUpper();
-              }
+							if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
+							{
+								// modified to be consistent with other xbox ftp behavior: drive 
+								// name is a single character without the ':' at the end
+								dirToList = drive;
+								dirToList.MakeUpper();
+							}
 						}
 
 						dirToList.TrimRight("\\");
