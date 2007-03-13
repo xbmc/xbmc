@@ -64,9 +64,7 @@
 #define SYSTEM_GPU_TEMPERATURE      113
 #define SYSTEM_FAN_SPEED            114
 #define SYSTEM_FREE_SPACE_C         115
-/* 
-#define SYSTEM_FREE_SPACE_D         116 //116 is reserved for space on D
-*/
+// #define SYSTEM_FREE_SPACE_D         116 //116 is reserved for space on D
 #define SYSTEM_FREE_SPACE_E         117
 #define SYSTEM_FREE_SPACE_F         118
 #define SYSTEM_FREE_SPACE_G         119
@@ -100,8 +98,6 @@
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
 #define SYSTEM_HAS_DRIVE_G          149
-
-// reserved for systeminfo stuff
 #define SYSTEM_HDD_SMART            150
 #define SYSTEM_HDD_TEMPERATURE      151
 #define SYSTEM_HDD_MODEL            152
@@ -111,7 +107,6 @@
 #define SYSTEM_HDD_LOCKSTATE        157
 #define SYSTEM_HDD_LOCKKEY          158
 #define SYSTEM_INTERNET_STATE       159
-
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
 #define LCD_CPU_TEMPERATURE         162
@@ -119,9 +114,7 @@
 #define LCD_FAN_SPEED               164
 #define LCD_DATE                    166
 #define LCD_FREE_SPACE_C            167
-/*
-#define LCD_FREE_SPACE_D            168 // 168 is reserved for space on D
-*/
+// #define LCD_FREE_SPACE_D            168 // 168 is reserved for space on D
 #define LCD_FREE_SPACE_E            169
 #define LCD_FREE_SPACE_F            170
 #define LCD_FREE_SPACE_G            171
@@ -285,6 +278,7 @@
 #define SYSTEM_TOTAL_SPACE_G        697
 #define SYSTEM_USED_SPACE_PERCENT_G 698
 #define SYSTEM_FREE_SPACE_PERCENT_G 699
+#define SYSTEM_DVD_TRAY_STATE       700
 
 #define XLINK_KAI_USERNAME          701
 #define SKIN_THEME                  702
