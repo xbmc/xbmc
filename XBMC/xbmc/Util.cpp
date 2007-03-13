@@ -477,6 +477,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CStackDirectory dir;
     return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
   }
+  else if (url.GetProtocol() == "multipath")
+  {
+    // get the parent path of the first item
+    CMultiPathDirectory dir;
+    return GetParentPath(dir.GetFirstPath(strPath), strParent);
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetHostName().size() > 0)
