@@ -400,6 +400,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.programcount")) ret = LISTITEM_PROGRAM_COUNT;
     else if (strTest.Equals("listitem.duration")) ret = LISTITEM_DURATION;
     else if (strTest.Equals("listitem.isselected")) ret = LISTITEM_ISSELECTED;
+    else if (strTest.Equals("listitem.isplaying")) ret = LISTITEM_ISPLAYING;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -474,6 +475,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
     if (controlID)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_VISIBLE : CONTROL_IS_VISIBLE, controlID, 0));
+  }
+  else if (strTest.Left(18).Equals("control.isenabled("))
+  {
+    int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
+    if (controlID)
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_ENABLED : CONTROL_IS_ENABLED, controlID, 0));
   }
   else if (strTest.Left(13).Equals("controlgroup("))
   {
@@ -1072,7 +1079,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
   }
-  else if (condition == LISTITEM_ISSELECTED)
+  else if (condition == LISTITEM_ISSELECTED || condition == LISTITEM_ISPLAYING)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow && pWindow->IsMediaWindow())
@@ -1244,6 +1251,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           const CGUIControl *control = pWindow->GetControl(info.m_data1);
           if (control)
             bReturn = control->IsVisible();
+        }
+      }
+      break;
+    case CONTROL_IS_ENABLED:
+      {
+        CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+        if (!pWindow) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (pWindow)
+        {
+          // Note: This'll only work for unique id's
+          const CGUIControl *control = pWindow->GetControl(info.m_data1);
+          if (control)
+            bReturn = !control->IsDisabled();
         }
       }
       break;
