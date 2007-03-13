@@ -69,11 +69,10 @@ void CGUIWindowSystemInfo::Render()
   if(iControl == CONTROL_BT_DEFAULT)
   {
     SetLabelDummy();
-    // Default Values
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
-    SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo(SYSTEM_CPU_TEMPERATURE)); // CPU Temperature
-    SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo(SYSTEM_GPU_TEMPERATURE)); // GPU Temperature
-    SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo(SYSTEM_FAN_SPEED)); // Fan Speed
+    SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo(SYSTEM_CPU_TEMPERATURE));
+    SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo(SYSTEM_GPU_TEMPERATURE));
+    SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo(SYSTEM_FAN_SPEED));
     SET_CONTROL_LABEL(5, g_localizeStrings.Get(158) +": "+ g_infoManager.GetLabel(SYSTEM_FREE_MEMORY));
     SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
     SET_CONTROL_LABEL(7,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
@@ -115,15 +114,24 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
 
 #ifdef HAS_SYSINFO
-    // Label 2-10: Storage Values
-    GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+    // for backward compatibility just show Free space info else would be to long...
+    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_C)+")");
+    SET_CONTROL_LABEL(3, g_sysinfo.GetTrayState());
+    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_E)+")");
+    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_F)+")");
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_G)+")");
+    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_X));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE_X)+")");
+    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Y));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE_Y)+")");
+    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Z));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE_Z)+")");
+    SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE)+" "+g_infoManager.GetLabel(SYSTEM_FREE_SPACE)+")");
+    SET_CONTROL_LABEL(11,g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));//+" ("+g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT)+")");
+    SET_CONTROL_LABEL(12,g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT));
 #endif
   }
   else if(iControl == CONTROL_BT_NETWORK)
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-    // Network Informations
     SET_CONTROL_LABEL(2, g_infoManager.GetLabel(NETWORK_IS_DHCP));
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(3, g_infoManager.GetLabel(NETWORK_LINK_STATE));
@@ -150,7 +158,6 @@ void CGUIWindowSystemInfo::Render()
   else if(iControl == CONTROL_BT_HARDWARE)
   {
     SetLabelDummy();
-    // Label 1: Hardware Informations
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_XBOX_VERSION));
@@ -163,12 +170,6 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_2));
     SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_3));
     SET_CONTROL_LABEL(11, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_4));
-
-    // Creating BackUP takes to long will moved to buildin execute
-    //g_sysinfo.CreateEEPROMBackup();
-    //g_sysinfo.CreateBiosBackup();
-    //g_sysinfo.WriteTXTInfoFile("Q:\\System\\SystemInfo\\SYSTEM_INFO.TXT");
-    //
 #endif
   }
   SET_CONTROL_LABEL(50, g_infoManager.GetTime(true) + " | " + g_infoManager.GetDate());
@@ -189,184 +190,3 @@ void CGUIWindowSystemInfo::SetLabelDummy()
 #endif
   }
 }
-#ifdef HAS_SYSINFO
-bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10)
-{
-  // Set HDD Space Informations
-  ULARGE_INTEGER lTotalFreeBytesC;  ULARGE_INTEGER lTotalNumberOfBytesC;
-  ULARGE_INTEGER lTotalFreeBytesE;  ULARGE_INTEGER lTotalNumberOfBytesE;
-  ULARGE_INTEGER lTotalFreeBytesF;  ULARGE_INTEGER lTotalNumberOfBytesF;
-  ULARGE_INTEGER lTotalFreeBytesG;  ULARGE_INTEGER lTotalNumberOfBytesG;
-  ULARGE_INTEGER lTotalFreeBytesX;  ULARGE_INTEGER lTotalNumberOfBytesX;
-  ULARGE_INTEGER lTotalFreeBytesY;  ULARGE_INTEGER lTotalNumberOfBytesY;
-  ULARGE_INTEGER lTotalFreeBytesZ;  ULARGE_INTEGER lTotalNumberOfBytesZ;
-
-  // Set DVD Drive State! [TrayOpen, NotReady....]
-  CStdString trayState = "D: ";
-  const char* pszStatus1;
-
-  switch (CIoSupport::GetTrayState())
-  {
-  case TRAY_OPEN:
-    pszStatus1=g_localizeStrings.Get(162);
-    break;
-  case DRIVE_NOT_READY:
-    pszStatus1=g_localizeStrings.Get(163);
-    break;
-  case TRAY_CLOSED_NO_MEDIA:
-    pszStatus1=g_localizeStrings.Get(164);
-    break;
-  case TRAY_CLOSED_MEDIA_PRESENT:
-    pszStatus1=g_localizeStrings.Get(165);
-    break;
-  }
-  trayState += pszStatus1;
-  SET_CONTROL_LABEL(i_lblp2, trayState);
-
-  //For C and E
-  CStdString hdC, hdE;
-  GetDiskSpace("C", lTotalNumberOfBytesC, lTotalFreeBytesC, hdC);
-  GetDiskSpace("E", lTotalNumberOfBytesE, lTotalFreeBytesE, hdE);
-  SET_CONTROL_LABEL(i_lblp1,hdC);
-  SET_CONTROL_LABEL(i_lblp3,hdE);
-
-  //For X, Y, Z
-  CStdString hdX, hdY, hdZ;
-  GetDiskSpace("X", lTotalNumberOfBytesX, lTotalFreeBytesX, hdX);
-  GetDiskSpace("Y", lTotalNumberOfBytesY, lTotalFreeBytesY, hdY);
-  GetDiskSpace("Z", lTotalNumberOfBytesZ, lTotalFreeBytesZ, hdZ);
-
-  // Total Free Size: Generate from Drives#
-  ULARGE_INTEGER lTotalDiscSpace;
-  lTotalDiscSpace.QuadPart = (
-    lTotalNumberOfBytesC.QuadPart +
-    lTotalNumberOfBytesE.QuadPart +
-    lTotalNumberOfBytesX.QuadPart +
-    lTotalNumberOfBytesY.QuadPart +
-    lTotalNumberOfBytesZ.QuadPart );
-
-  // Total Free Size: Generate from Drives#
-  ULARGE_INTEGER lTotalDiscFree;
-  lTotalDiscFree.QuadPart = (
-    lTotalFreeBytesC.QuadPart +
-    lTotalFreeBytesE.QuadPart +
-    lTotalFreeBytesX.QuadPart +
-    lTotalFreeBytesY.QuadPart +
-    lTotalFreeBytesZ.QuadPart );
-
-  //For F and G
-  CStdString hdF,hdG;
-  bool bUseDriveF = GetDiskSpace("F", lTotalNumberOfBytesF, lTotalFreeBytesF, hdF);
-  bool bUseDriveG = GetDiskSpace("G", lTotalNumberOfBytesG, lTotalFreeBytesG, hdG);
-
-  if (bUseDriveF) {
-    lTotalDiscSpace.QuadPart = lTotalDiscSpace.QuadPart + lTotalNumberOfBytesF.QuadPart;
-    lTotalDiscFree.QuadPart = lTotalDiscFree.QuadPart + lTotalFreeBytesF.QuadPart;
-  }
-  if (bUseDriveG) {
-    lTotalDiscSpace.QuadPart = lTotalDiscSpace.QuadPart + lTotalNumberOfBytesG.QuadPart;
-    lTotalDiscFree.QuadPart = lTotalDiscFree.QuadPart + lTotalFreeBytesG.QuadPart;
-  }
-  // Total USED Size: Generate from Drives#
-  ULARGE_INTEGER lTotalDiscUsed;
-  ULARGE_INTEGER lTotalDiscPercent;
-
-  lTotalDiscUsed.QuadPart   = lTotalDiscSpace.QuadPart - lTotalDiscFree.QuadPart;
-  lTotalDiscPercent.QuadPart  = lTotalDiscSpace.QuadPart/100;  // => 1%
-
-  CStdString hdTotalSize, hdTotalUsedPercent, t1,t2,t3;
-  t1.Format("%u",lTotalDiscSpace.QuadPart/MB);
-  t2.Format("%u",lTotalDiscUsed.QuadPart/MB);
-  t3.Format("%u",lTotalDiscFree.QuadPart/MB);
-  hdTotalSize.Format(g_localizeStrings.Get(20161), t1, t2, t3);  //Total Free To make it MB
-
-  int percentUsed = (int)(100.0f * lTotalDiscUsed.QuadPart/lTotalDiscSpace.QuadPart + 0.5f);
-  hdTotalUsedPercent.Format(g_localizeStrings.Get(20162), percentUsed, 100 - percentUsed); //Total Free %
-
-
-  // To much log in Render() Mode
-  //CLog::Log(LOGDEBUG, "------------- HDD Space Info: -------------------");
-  //CLog::Log(LOGDEBUG, "HDD Total Size: %u MB", lTotalDiscSpace.QuadPart/MB);
-  //CLog::Log(LOGDEBUG, "HDD Used Size: %u MB", lTotalDiscUsed.QuadPart/MB);
-  //CLog::Log(LOGDEBUG, "HDD Free Size: %u MB", lTotalDiscFree.QuadPart/MB);
-  //CLog::Log(LOGDEBUG, "--------------HDD Percent Info: -----------------");
-  //CLog::Log(LOGDEBUG, "HDD Used Percent: %u%%", lTotalDiscUsed.QuadPart/lTotalDiscPercent.QuadPart );
-  //CLog::Log(LOGDEBUG, "HDD Free Percent: %u%%", lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart );
-  //CLog::Log(LOGDEBUG, "-------------------------------------------------");
-
-
-  // Detect which to show!!
-  if(bUseDriveF)  // Show if Drive F is availible
-  {
-    SET_CONTROL_LABEL(i_lblp4,hdF);
-    if(bUseDriveG)
-    {
-      SET_CONTROL_LABEL(i_lblp5,hdG);
-      SET_CONTROL_LABEL(i_lblp6,hdX);
-      SET_CONTROL_LABEL(i_lblp7,hdY);
-      SET_CONTROL_LABEL(i_lblp8,hdZ);
-      SET_CONTROL_LABEL(i_lblp9,hdTotalSize);
-      SET_CONTROL_LABEL(i_lblp10,hdTotalUsedPercent);
-    }
-    else
-    {
-      SET_CONTROL_LABEL(i_lblp5,hdX);
-      SET_CONTROL_LABEL(i_lblp6,hdY);
-      SET_CONTROL_LABEL(i_lblp7,hdZ);
-      SET_CONTROL_LABEL(i_lblp8,hdTotalSize);
-      SET_CONTROL_LABEL(i_lblp9,hdTotalUsedPercent);
-    }
-
-  }
-  else  // F and G not available
-  {
-    SET_CONTROL_LABEL(i_lblp4,hdX);
-    SET_CONTROL_LABEL(i_lblp5,hdY);
-    SET_CONTROL_LABEL(i_lblp6,hdZ);
-    SET_CONTROL_LABEL(i_lblp7,hdTotalSize);
-    SET_CONTROL_LABEL(i_lblp8,hdTotalUsedPercent);
-  }
-
-// To much log in Render() Mode
-/*
-#ifdef _DEBUG
-  //Only DebugOutput!
-  MEMORYSTATUS stat;
-  CHAR strOut[1024], *pstrOut;
-  // Get the memory status.
-  GlobalMemoryStatus( &stat );
-  // Setup the output string.
-  pstrOut = strOut;
-  AddStr( "%4d total MB of virtual memory.\n", stat.dwTotalVirtual / MB );
-  AddStr( "%4d  free MB of virtual memory.\n", stat.dwAvailVirtual / MB );
-  AddStr( "%4d total MB of physical memory.\n", stat.dwTotalPhys / MB );
-  AddStr( "%4d  free MB of physical memory.\n", stat.dwAvailPhys / MB );
-  AddStr( "%4d total MB of paging file.\n", stat.dwTotalPageFile / MB );
-  AddStr( "%4d  free MB of paging file.\n", stat.dwAvailPageFile / MB );
-  AddStr( "%4d  percent of memory is in use.\n", stat.dwMemoryLoad );
-  OutputDebugString( strOut );
-#endif
-*/
-  return true;
-}
-
-bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string)
-{
-  CStdString driveName = drive + ":\\";
-  CStdString t1,t2;
-  BOOL ret;
-  if ((ret = GetDiskFreeSpaceEx(driveName.c_str(), NULL, &total, &totalFree)))
-  {
-    t1.Format("%u",totalFree.QuadPart/MB);
-    t2.Format("%u",total.QuadPart/MB);
-    string.Format(g_localizeStrings.Get(20163), drive, t1, t2);
-  }
-  else
-  {
-    string.Format("%s %s: %s", g_localizeStrings.Get(155), drive, g_localizeStrings.Get(161));
-    total.QuadPart = 0;
-    totalFree.QuadPart = 0;
-  }
-  return ret == TRUE;
-}
-#endif

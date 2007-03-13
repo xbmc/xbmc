@@ -1538,9 +1538,9 @@
   <string id="20158">Netzwerk</string>
   <string id="20159">Video</string>
   <string id="20160">System</string>
-  <string id="20161">Gesamt: %s MB, Belegt: %s MB, Verfügbar: %s MB</string>
-  <string id="20162">Gesamt: %u%%  Verfügbar: %u%%</string>
-  <string id="20163">%s: %s MB von %s MB verfügbar</string>
+  <string id="20161">Gesamt</string>
+  <string id="20162">Verfügbar</string>
+  <string id="20163">von</string>
   <string id="20164">Zugriffschutz wird nicht unterstützt.</string>
   <string id="20165">Offen</string>
   <string id="20166">Gesperrt</string>
