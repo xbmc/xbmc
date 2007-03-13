@@ -1448,9 +1448,9 @@
   <string id="20158">Network Information</string>
   <string id="20159">Video Information</string>
   <string id="20160">Hardware Information</string>
-  <string id="20161">Total: %s MB, Used: %s MB, Free: %s MB</string>
-  <string id="20162">Total HDD Used: %u%%  Free: %u%%</string>
-  <string id="20163">%s: %s MB of %s MB Free</string>
+  <string id="20161">Total</string>
+  <string id="20162">Used</string>
+  <string id="20163">of</string>
   <string id="20164">Locking Not Supported</string>
   <string id="20165">Not Locked</string>
   <string id="20166">Locked</string>

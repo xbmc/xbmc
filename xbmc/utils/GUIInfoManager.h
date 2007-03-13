@@ -112,31 +112,6 @@
 #define SYSTEM_HDD_LOCKKEY          158
 #define SYSTEM_INTERNET_STATE       159
 
-#define SYSTEM_DVD_MODEL            650
-#define SYSTEM_DVD_FIRMWARE         651
-#define SYSTEM_HDD_BOOTDATE         652
-#define SYSTEM_HDD_CYCLECOUNT       653
-#define SYSTEM_UPTIME               654
-#define SYSTEM_TOTALUPTIME          655
-#define SYSTEM_CPUFREQUENCY         656
-#define SYSTEM_XBOX_VERSION         657
-#define SYSTEM_AV_CABLE_PACK_INFO   658
-#define SYSTEM_SCREEN_RESOLUTION    659
-#define SYSTEM_VIDEO_ENCODER_INFO   660
-#define SYSTEM_XBOX_SERIAL          661
-#define SYSTEM_CONTROLLER_PORT_1    662
-#define SYSTEM_CONTROLLER_PORT_2    663
-#define SYSTEM_CONTROLLER_PORT_3    664
-#define SYSTEM_CONTROLLER_PORT_4    665
-#define SYSTEM_MPLAYER_VERSION      666
-#define SYSTEM_KERNEL_VERSION       667
-#define SYSTEM_VIDEO_XBE_REGION     668
-#define SYSTEM_VIDEO_DVD_ZONE       669
-#define SYSTEM_XBOX_PRODUCE_INFO    670
-#define SYSTEM_XBOX_BIOS            671
-#define SYSTEM_XBOX_MODCHIP         672
-
-
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
 #define LCD_CPU_TEMPERATURE         162
@@ -260,6 +235,57 @@
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
 
+#define SYSTEM_DVD_MODEL            650
+#define SYSTEM_DVD_FIRMWARE         651
+#define SYSTEM_HDD_BOOTDATE         652
+#define SYSTEM_HDD_CYCLECOUNT       653
+#define SYSTEM_UPTIME               654
+#define SYSTEM_TOTALUPTIME          655
+#define SYSTEM_CPUFREQUENCY         656
+#define SYSTEM_XBOX_VERSION         657
+#define SYSTEM_AV_CABLE_PACK_INFO   658
+#define SYSTEM_SCREEN_RESOLUTION    659
+#define SYSTEM_VIDEO_ENCODER_INFO   660
+#define SYSTEM_XBOX_SERIAL          661
+#define SYSTEM_CONTROLLER_PORT_1    662
+#define SYSTEM_CONTROLLER_PORT_2    663
+#define SYSTEM_CONTROLLER_PORT_3    664
+#define SYSTEM_CONTROLLER_PORT_4    665
+#define SYSTEM_MPLAYER_VERSION      666
+#define SYSTEM_KERNEL_VERSION       667
+#define SYSTEM_VIDEO_XBE_REGION     668
+#define SYSTEM_VIDEO_DVD_ZONE       669
+#define SYSTEM_XBOX_PRODUCE_INFO    670
+#define SYSTEM_XBOX_BIOS            671
+#define SYSTEM_XBOX_MODCHIP         672
+#define SYSTEM_USED_SPACE_X         673
+#define SYSTEM_FREE_SPACE_X         674
+#define SYSTEM_USED_SPACE_Y         675
+#define SYSTEM_FREE_SPACE_Y         676
+#define SYSTEM_USED_SPACE_Z         677
+#define SYSTEM_FREE_SPACE_Z         678
+#define SYSTEM_FREE_SPACE           679
+#define SYSTEM_USED_SPACE           680
+#define SYSTEM_TOTAL_SPACE          681
+#define SYSTEM_USED_SPACE_PERCENT   682
+#define SYSTEM_FREE_SPACE_PERCENT   683
+#define SYSTEM_USED_SPACE_C         684
+#define SYSTEM_TOTAL_SPACE_C        685
+#define SYSTEM_USED_SPACE_PERCENT_C 686
+#define SYSTEM_FREE_SPACE_PERCENT_C 687
+#define SYSTEM_USED_SPACE_E         688
+#define SYSTEM_TOTAL_SPACE_E        689
+#define SYSTEM_USED_SPACE_PERCENT_E 690
+#define SYSTEM_FREE_SPACE_PERCENT_E 691
+#define SYSTEM_USED_SPACE_F         692
+#define SYSTEM_TOTAL_SPACE_F        693
+#define SYSTEM_USED_SPACE_PERCENT_F 694
+#define SYSTEM_FREE_SPACE_PERCENT_F 695
+#define SYSTEM_USED_SPACE_G         696
+#define SYSTEM_TOTAL_SPACE_G        697
+#define SYSTEM_USED_SPACE_PERCENT_G 698
+#define SYSTEM_FREE_SPACE_PERCENT_G 699
+
 #define XLINK_KAI_USERNAME          701
 #define SKIN_THEME                  702
 
@@ -349,7 +375,7 @@ public:
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item);
   CStdString GetMusicPartyModeLabel(int item);
-  string GetFreeSpace(int drive, bool shortText = false);
+  
   __int64 GetPlayTime();  // in ms
   CStdString GetCurrentPlayTime();
   int GetPlayTimeRemaining();

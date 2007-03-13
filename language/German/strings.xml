@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿?<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
@@ -1385,9 +1385,9 @@
   <string id="20158">Netzwerk-Informationen</string>
   <string id="20159">Grafik-Informationen</string>
   <string id="20160">Hardware-Informationen</string>
-  <string id="20161">Gesamt: %s MB, Belegt: %s MB, Frei: %s MB</string>
-  <string id="20162">Belegt: %u%%  Frei: %u%%</string>
-  <string id="20163">%s: %s MB von %s MB frei</string>
+  <string id="20161">Gesamt</string>
+  <string id="20162">Belegt</string>
+  <string id="20163">von</string>
   <string id="20164">Sperren nicht unterstützt</string>
   <string id="20165">Nicht gesperrt</string>
   <string id="20166">Gesperrt</string>

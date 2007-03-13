@@ -162,10 +162,39 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
     else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
     else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
+
+    else if (strTest.Equals("system.freespace")) ret = SYSTEM_FREE_SPACE;
+    else if (strTest.Equals("system.usedspace")) ret = SYSTEM_USED_SPACE;
+    else if (strTest.Equals("system.totalspace")) ret = SYSTEM_TOTAL_SPACE;
+    else if (strTest.Equals("system.usedspacepercent")) ret = SYSTEM_USED_SPACE_PERCENT;
+    else if (strTest.Equals("system.freespacepercent")) ret = SYSTEM_FREE_SPACE_PERCENT;
     else if (strTest.Equals("system.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
+    else if (strTest.Equals("system.usedspace(c)")) ret = SYSTEM_USED_SPACE_C;
+    else if (strTest.Equals("system.totalspace(c)")) ret = SYSTEM_TOTAL_SPACE_C;
+    else if (strTest.Equals("system.usedspacepercent(c)")) ret = SYSTEM_USED_SPACE_PERCENT_C;
+    else if (strTest.Equals("system.freespacepercent(c)")) ret = SYSTEM_FREE_SPACE_PERCENT_C;
     else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
+    else if (strTest.Equals("system.usedspace(e)")) ret = SYSTEM_USED_SPACE_E;
+    else if (strTest.Equals("system.totalspace(e)")) ret = SYSTEM_TOTAL_SPACE_E;
+    else if (strTest.Equals("system.usedspacepercent(e)")) ret = SYSTEM_USED_SPACE_PERCENT_E;
+    else if (strTest.Equals("system.freespacepercent(e)")) ret = SYSTEM_FREE_SPACE_PERCENT_E;
     else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
+    else if (strTest.Equals("system.usedspace(f)")) ret = SYSTEM_USED_SPACE_F;
+    else if (strTest.Equals("system.totalspace(f)")) ret = SYSTEM_TOTAL_SPACE_F;
+    else if (strTest.Equals("system.usedspacepercent(f)")) ret = SYSTEM_USED_SPACE_PERCENT_F;
+    else if (strTest.Equals("system.freespacepercent(f)")) ret = SYSTEM_FREE_SPACE_PERCENT_F;
     else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
+    else if (strTest.Equals("system.usedspace(g)")) ret = SYSTEM_USED_SPACE_G;
+    else if (strTest.Equals("system.totalspace(g)")) ret = SYSTEM_TOTAL_SPACE_G;
+    else if (strTest.Equals("system.usedspacepercent(g)")) ret = SYSTEM_USED_SPACE_PERCENT_G;
+    else if (strTest.Equals("system.freespacepercent(g)")) ret = SYSTEM_FREE_SPACE_PERCENT_G;
+    else if (strTest.Equals("system.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
+    else if (strTest.Equals("system.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
+    else if (strTest.Equals("system.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
+    else if (strTest.Equals("system.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
+    else if (strTest.Equals("system.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
+    else if (strTest.Equals("system.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
+
     else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
@@ -560,17 +589,47 @@ string CGUIInfoManager::GetLabel(int info)
   case MUSICPM_RANDOMSONGSPICKED:
     strLabel = GetMusicPartyModeLabel(info);
   break;
+  
+  case SYSTEM_FREE_SPACE:
   case SYSTEM_FREE_SPACE_C:
   case SYSTEM_FREE_SPACE_E:
   case SYSTEM_FREE_SPACE_F:
   case SYSTEM_FREE_SPACE_G:
-    return GetFreeSpace(info);
+  case SYSTEM_USED_SPACE:
+  case SYSTEM_USED_SPACE_C:
+  case SYSTEM_USED_SPACE_E:
+  case SYSTEM_USED_SPACE_F:
+  case SYSTEM_USED_SPACE_G:
+  case SYSTEM_TOTAL_SPACE:
+  case SYSTEM_TOTAL_SPACE_C:
+  case SYSTEM_TOTAL_SPACE_E:
+  case SYSTEM_TOTAL_SPACE_F:
+  case SYSTEM_TOTAL_SPACE_G:
+  case SYSTEM_FREE_SPACE_PERCENT:
+  case SYSTEM_FREE_SPACE_PERCENT_C:
+  case SYSTEM_FREE_SPACE_PERCENT_E:
+  case SYSTEM_FREE_SPACE_PERCENT_F:
+  case SYSTEM_FREE_SPACE_PERCENT_G:
+  case SYSTEM_USED_SPACE_PERCENT:
+  case SYSTEM_USED_SPACE_PERCENT_C:
+  case SYSTEM_USED_SPACE_PERCENT_E:
+  case SYSTEM_USED_SPACE_PERCENT_F:
+  case SYSTEM_USED_SPACE_PERCENT_G:
+  case SYSTEM_USED_SPACE_X:
+  case SYSTEM_FREE_SPACE_X:
+  case SYSTEM_USED_SPACE_Y:
+  case SYSTEM_FREE_SPACE_Y:
+  case SYSTEM_USED_SPACE_Z:
+  case SYSTEM_FREE_SPACE_Z:
+    return g_sysinfo.GetHddSpaceInfo(info);
   break;
+
+  
   case LCD_FREE_SPACE_C:
   case LCD_FREE_SPACE_E:
   case LCD_FREE_SPACE_F:
   case LCD_FREE_SPACE_G:
-    return GetFreeSpace(info, true);
+    return g_sysinfo.GetHddSpaceInfo(info, true);
     break;
 
   case SYSTEM_CPU_TEMPERATURE:
@@ -1869,37 +1928,6 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   return text;
 }
 
-string CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
-{
-  ULARGE_INTEGER lTotalFreeBytes;
-
-  char cDrive;
-  if (shortText)
-    cDrive = drive - LCD_FREE_SPACE_C + 'C';
-  else
-    cDrive = drive - SYSTEM_FREE_SPACE_C + 'C';
-  CStdString strDriveFind;
-  strDriveFind.Format("%c:\\", cDrive);
-  const char *pszDrive = g_localizeStrings.Get(155).c_str();
-  const char *pszFree = g_localizeStrings.Get(160).c_str();
-  const char *pszUnavailable = g_localizeStrings.Get(161).c_str();
-  CStdString space;
-  if (GetDiskFreeSpaceEx( strDriveFind.c_str(), NULL, NULL, &lTotalFreeBytes))
-  {
-    if (shortText)
-      space.Format("%uMB", (unsigned int)(lTotalFreeBytes.QuadPart / 1024 / 1024)); //To make it MB
-  	else
-      space.Format("%s %c: %u MB", pszDrive, cDrive, (unsigned int)(lTotalFreeBytes.QuadPart / 1048576)); //To make it MB
-  }
-  else
-  {
-    if (shortText)
-      space = "N/A";
-    else
-      space.Format("%s %c: %s", pszDrive, cDrive, pszUnavailable);
-  }
-  return space;
-}
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
