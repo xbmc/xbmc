@@ -24,9 +24,11 @@ CGUIPythonWindow::~CGUIPythonWindow(void)
 bool CGUIPythonWindow::OnAction(const CAction &action)
 {
   // do the base class window first, and the call to python after this
-	bool ret = CGUIWindow::OnAction(action);
-	if(pCallbackWindow)
+	bool ret = false;
+	if (pCallbackWindow)
 	{
+		ret = ((Window*)pCallbackWindow)->bConsumeEvents;
+
 		PyXBMCAction* inf = new PyXBMCAction;
 		inf->pObject = Action_FromAction(action);
 		inf->pCallbackWindow = pCallbackWindow;
@@ -35,7 +37,9 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
 		Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
 		PulseActionEvent();
 	}
-  return ret;
+	if ( !ret )
+		ret = CGUIWindow::OnAction(action);
+	return ret;
 }
 
 bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
