@@ -162,7 +162,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
     else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
     else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
-
     else if (strTest.Equals("system.freespace")) ret = SYSTEM_FREE_SPACE;
     else if (strTest.Equals("system.usedspace")) ret = SYSTEM_USED_SPACE;
     else if (strTest.Equals("system.totalspace")) ret = SYSTEM_TOTAL_SPACE;
@@ -194,7 +193,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
     else if (strTest.Equals("system.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
     else if (strTest.Equals("system.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
-
     else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
@@ -204,6 +202,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
+    else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
     else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
     else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
@@ -245,7 +244,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.videodvdzone")) ret = SYSTEM_VIDEO_DVD_ZONE;
     else if (strTest.Equals("system.bios")) ret = SYSTEM_XBOX_BIOS;
     else if (strTest.Equals("system.modchip")) ret = SYSTEM_XBOX_MODCHIP;
-
     else if (strTest.Left(22).Equals("system.controllerport("))
     {
       int i_ControllerPort = atoi((strTest.Mid(22, strTest.GetLength() - 23).c_str()));
@@ -631,13 +629,18 @@ string CGUIInfoManager::GetLabel(int info)
     return g_sysinfo.GetHddSpaceInfo(info);
   break;
 
-  
   case LCD_FREE_SPACE_C:
   case LCD_FREE_SPACE_E:
   case LCD_FREE_SPACE_F:
   case LCD_FREE_SPACE_G:
     return g_sysinfo.GetHddSpaceInfo(info, true);
     break;
+
+#ifdef HAS_XBOX_HARDWARE
+  case SYSTEM_DVD_TRAY_STATE:
+    return g_sysinfo.GetTrayState();
+    break;
+#endif
 
   case SYSTEM_CPU_TEMPERATURE:
   case SYSTEM_GPU_TEMPERATURE:
