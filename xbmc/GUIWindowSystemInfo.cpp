@@ -113,10 +113,11 @@ void CGUIWindowSystemInfo::Render()
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
 
-#ifdef HAS_SYSINFO
     // for backward compatibility just show Free space info else would be to long...
     SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_C)+")");
+#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(3, g_sysinfo.GetTrayState());
+#endif
     SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_E)+")");
     SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_F)+")");
     SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));//+" ("+g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE_G)+")");
@@ -126,7 +127,6 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));//+" ("+g_infoManager.GetLabel(SYSTEM_USED_SPACE)+" "+g_infoManager.GetLabel(SYSTEM_FREE_SPACE)+")");
     SET_CONTROL_LABEL(11,g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));//+" ("+g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT)+")");
     SET_CONTROL_LABEL(12,g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT));
-#endif
   }
   else if(iControl == CONTROL_BT_NETWORK)
   {
