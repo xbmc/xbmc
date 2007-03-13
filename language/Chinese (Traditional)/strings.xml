@@ -1108,6 +1108,8 @@
   <string id="14071">允許重新命名和刪除檔案</string>
   <string id="14072">啟用 XLink Kai</string>
   <string id="14073">XLink Kai 沒有被啟用！</string>
+  <string id="14074">設定時區</string>
+  <string id="14075">使用日光節約時間</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">沒有連線到伺服器</string>
@@ -1447,9 +1449,9 @@
   <string id="20158">網路資訊</string>
   <string id="20159">影片資訊</string>
   <string id="20160">影片資訊</string>
-  <string id="20161">總計：%s MB，使用 %s MB，可用 %s MB</string>
-  <string id="20162">硬碟使用百分比：使用 %u%%，可用 %u%%</string>
-  <string id="20163">%s：%s MB 可用，總計 %s MB</string>
+  <string id="20161">總計</string>
+  <string id="20162">使用</string>
+  <string id="20163">中</string>
   <string id="20164">不支援鎖定</string>
   <string id="20165">未鎖定</string>
   <string id="20166">鎖定</string>
@@ -1552,6 +1554,8 @@
   <string id="20363">從資料夾移除電視節目</string>
   <string id="20364">電視節目</string>
   <string id="20365">劇情</string>
+  <string id="20366">* 整季</string>
+  <string id="20367">隱藏觀看</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1592,6 +1596,7 @@
   <string id="21381">輸入新播放列表的名稱</string>
   <string id="21382">停用檔案列表的新增來源按鈕</string>
   <string id="21383">啟用 頁面捲軸</string>
+  <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
