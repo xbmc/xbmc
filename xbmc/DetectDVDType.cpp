@@ -301,7 +301,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     CFile::Delete(strCache);
 
   // find and cache disc thumbnail, and update label to xbe label if applicable
-  if (IsDiscInDrive() && !bCDDA)
+  if ((g_advancedSettings.m_usePCDVDROM || IsDiscInDrive()) && !bCDDA)
   {
     // update disk label to xbe label if we have that info
     if (CFile::Exists("D:\\default.xbe"))
@@ -423,7 +423,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
         m_isoReader.Reset();
 
         CIoSupport::Dismount("Cdrom0");
-        if (CIoSupport::RemapDriveLetter('D', "Cdrom0") == S_OK)
+        if (CIoSupport::MapDriveLetter('D', "Cdrom0") == S_OK)
         {
           if (m_pInstance)
           {
