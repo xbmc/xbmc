@@ -82,6 +82,7 @@
 
     <keyboard>
       <p>Play</p>
+      <q>Queue</q>
       <f>FastForward</f>
       <r>Rewind</r>
       <left>Left</left>
