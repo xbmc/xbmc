@@ -1026,6 +1026,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
+    else if (strSetting.Equals("myprograms.dashboard"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.usedashpath"));
+    }
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());

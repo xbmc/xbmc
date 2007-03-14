@@ -210,7 +210,8 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5,"myprograms.sep2");
   AddString(6, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
   AddSeparator(7,"myprograms.sep3");
-  AddString(8, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
+  AddBool(8, "myprograms.usedashpath", 13007, true);
+  AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
 
   AddCategory(1,"programfiles",744);
   AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
