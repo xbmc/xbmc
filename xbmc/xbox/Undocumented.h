@@ -1556,6 +1556,12 @@ typedef struct XNetConfigStatus
 }
 TXNetConfigStatus, *PTXNetConfigStatus;
 
+typedef struct _XBOX_KRNL_VERSION {
+	WORD VersionMajor;
+	WORD VersionMinor;
+	WORD Build;
+	WORD Qfe;
+} XBOX_KRNL_VERSION;
 
 extern "C"
 {
@@ -1577,8 +1583,9 @@ extern "C"
 	extern INT WINAPI XWriteTitleInfoAndRebootA(LPVOID,LPVOID,DWORD,DWORD,LPVOID);
 
   extern DWORD* LaunchDataPage;
+
+  extern PANSI_STRING XeImageFileName;
+  extern XBOX_KRNL_VERSION * XboxKrnlVersion;
 }
-#ifdef _XBOX
-extern "C" XBOXAPI LPVOID XeImageFileName;
-#endif
+
 #endif // __XBOX_INTERNAL_H__

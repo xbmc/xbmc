@@ -356,16 +356,15 @@ VOID CIoSupport::GetXbePath(char* szDest)
   //Function to get the XBE Path like:
   //E:\DevKit\xbplayer\xbplayer.xbe
 
-  PANSI_STRING pImageFileName = (PANSI_STRING)XeImageFileName;
   char szTemp[MAX_PATH];
   char cDriveLetter = 0;
 
-  strncpy(szTemp, pImageFileName->Buffer + 8, pImageFileName->Length - 8);
+  strncpy(szTemp, XeImageFileName->Buffer + 8, XeImageFileName->Length - 8);
   szTemp[20] = 0;
   GetDrive(szTemp, &cDriveLetter);
 
-  strncpy(szTemp, pImageFileName->Buffer + 29, pImageFileName->Length - 29);
-  szTemp[pImageFileName->Length - 29] = 0;
+  strncpy(szTemp, XeImageFileName->Buffer + 29, XeImageFileName->Length - 29);
+  szTemp[XeImageFileName->Length - 29] = 0;
 
   sprintf(szDest, "%c:\\%s", cDriveLetter, szTemp);
 
