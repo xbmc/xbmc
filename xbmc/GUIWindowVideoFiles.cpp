@@ -260,6 +260,9 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
 
+  m_vecItems.SetThumbnailImage("");
+  m_vecItems.SetVideoThumb();
+
   return true;
 }
 
