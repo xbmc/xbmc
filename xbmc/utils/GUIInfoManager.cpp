@@ -373,9 +373,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Equals("container.folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (strTest.Equals("container.folderpath")) ret = CONTAINER_FOLDERPATH;
     else if (strTest.Left(18).Equals("container.content("))
-    {
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
-    }
+    else if (strTest.Equals("container.hasthumb")) ret = CONTAINER_HAS_THUMB;
   }
   else if (strCategory.Equals("listitem"))
   {
@@ -1082,11 +1081,16 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
   }
-  else if (condition == LISTITEM_ISSELECTED || condition == LISTITEM_ISPLAYING)
+  else if (condition == LISTITEM_ISSELECTED || condition == LISTITEM_ISPLAYING || condition == CONTAINER_HAS_THUMB)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow && pWindow->IsMediaWindow())
-      bReturn = GetItemBool(pWindow->GetCurrentListItem(), condition, dwContextWindow);
+    {
+      if (condition == CONTAINER_HAS_THUMB)
+        bReturn = !((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetThumbnailImage().IsEmpty();
+      else
+        bReturn = GetItemBool(pWindow->GetCurrentListItem(), condition, dwContextWindow);
+    }
   }
   else if (g_application.IsPlaying())
   {
