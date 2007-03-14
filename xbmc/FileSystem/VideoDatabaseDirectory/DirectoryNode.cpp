@@ -237,7 +237,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     CStdString strFake;
     //  HACK: This item will stay on top of a list
     strFake.Format("%c", 0x01);
-    if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)
+    if (g_advancedSettings.m_bVideoLibraryAllItemsOnBottom)
       //  HACK: This item will stay on bottom of a list
       strFake.Format("%c", 0xff);
     pItem->GetVideoInfoTag()->m_strTitle = strFake;
