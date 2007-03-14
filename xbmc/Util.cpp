@@ -316,8 +316,6 @@ void CUtil::RemoveExtension(CStdString& strFileName)
 
 void CUtil::CleanFileName(CStdString& strFileName)
 {
-  bool result = false;
-
   if (g_guiSettings.GetBool("filelists.hideextensions"))
   {
     RemoveExtension(strFileName);
@@ -1012,8 +1010,6 @@ bool CUtil::RemoveTrainer()
 	bool Found = false;
 #ifdef HAS_XBOX_HARDWARE
   unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
-	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
-  void *ourmemaddr = NULL; // pointer used to allocated trainer mem
 	unsigned int i = 0;
 
   unsigned char xbe_entry_point[] = {0xff,0x15,0x80,0x00,0x00,0x0c}; // xbe entry point bytes in kernel
@@ -3121,7 +3117,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("dashboard"))
   {
-    RunXBE(g_guiSettings.GetString("myprograms.dashboard").c_str());
+    if (g_guiSettings.GetBool("myprograms.usedashpath"))
+      RunXBE(g_guiSettings.GetString("myprograms.dashboard").c_str());
+    else
+      BootToDash();
   }
   else if (execute.Equals("restartapp"))
   {
@@ -4911,4 +4910,14 @@ void CUtil::ClearFileItemCache()
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
+}
+
+void CUtil::BootToDash()
+{
+  LD_LAUNCH_DASHBOARD ld;
+
+  ZeroMemory(&ld, sizeof(LD_LAUNCH_DASHBOARD));
+
+  ld.dwReason = XLD_LAUNCH_DASHBOARD_MAIN_MENU;
+  XLaunchNewImage(0, (PLAUNCH_DATA)&ld);
 }
