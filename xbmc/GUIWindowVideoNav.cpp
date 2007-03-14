@@ -223,7 +223,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       CQueryParams params;
       dir.GetQueryParams(strDirectory,params);
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-
+      
+      items.SetThumbnailImage("");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
       {
         if (node == NODE_TYPE_EPISODES)
