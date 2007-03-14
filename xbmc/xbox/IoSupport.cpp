@@ -391,12 +391,12 @@ bool CIoSupport::DriveExists(char cDriveLetter)
   status = NtOpenFile(&hTemp, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
 
   if (NT_SUCCESS(status))
-    retval = true;
-  else
-    retval = false;
+  {
+    CloseHandle(hTemp);
+    return true;
+  }
 
-  CloseHandle(hTemp);
-  return retval;
+  return false;
 #else
   return false;
 #endif
@@ -423,12 +423,12 @@ bool CIoSupport::PartitionExists(int nPartition)
   status = NtOpenFile(&hTemp, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
 
   if (NT_SUCCESS(status))
-    retval = true;
-  else
-    retval = false;
-
-  CloseHandle(hTemp);
-  return retval;
+  {
+    CloseHandle(hTemp);
+    return true;
+  }
+ 
+  return false;
 #else
   return false;
 #endif
