@@ -48,7 +48,8 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
     strContentType.MakeLower();
 
     if (strContentType == "video/x-ms-asf"
-    || strContentType == "video/x-ms-asx")
+    || strContentType == "video/x-ms-asx"
+    || strContentType == "video/x-ms-wmv")
       return new CPlayListASX();
 
     if (strContentType == "audio/x-pn-realaudio")
