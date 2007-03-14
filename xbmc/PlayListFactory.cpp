@@ -49,7 +49,11 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
     if (strContentType == "video/x-ms-asf"
     || strContentType == "video/x-ms-asx"
-    || strContentType == "video/x-ms-wmv")
+    || strContentType == "video/x-ms-wmv"
+    || strContentType == "video/x-ms-wma"
+    || strContentType == "video/x-ms-wfs"
+    || strContentType == "video/x-ms-wvx"
+    || strContentType == "video/x-ms-wax")
       return new CPlayListASX();
 
     if (strContentType == "audio/x-pn-realaudio")
