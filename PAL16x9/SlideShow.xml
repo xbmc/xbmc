@@ -70,7 +70,7 @@
 				<description>cover image</description>
 				<posx>50</posx>
 				<posy>0</posy>
-				<width>120</width>
+				<width>100</width>
 				<height>120</height>
 				<info>MusicPlayer.Cover</info>
 				<aspectratio>keep</aspectratio>
@@ -87,8 +87,8 @@
 			</control>
 			<control type="label" id="1">
 				<description>Artist label</description>
-				<width>400</width>
-				<posx>180</posx>
+				<width>420</width>
+				<posx>160</posx>
 				<posy>5</posy>
 				<info>MusicPlayer.Artist</info>
 				<align>left</align>
@@ -96,8 +96,8 @@
 			</control>
 			<control type="label" id="1">
 				<description>Title label</description>
-				<width>500</width>
-				<posx>180</posx>
+				<width>520</width>
+				<posx>160</posx>
 				<posy>30</posy>
 				<info>MusicPlayer.Title</info>
 				<align>left</align>
@@ -105,8 +105,8 @@
 			</control>
 			<control type="label" id="1">
 				<description>Album label</description>
-				<width>500</width>
-				<posx>180</posx>
+				<width>520</width>
+				<posx>160</posx>
 				<posy>60</posy>
 				<info>MusicPlayer.Album</info>
 				<align>left</align>
@@ -114,8 +114,8 @@
 			</control>
 			<control type="label" id="1">
 				<description>time label</description>
-				<width>430</width>
-				<posx>180</posx>
+				<width>520</width>
+				<posx>160</posx>
 				<posy>80</posy>
 				<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
 				<align>left</align>
@@ -143,9 +143,9 @@
 			</control>
 			<control type="progress" id="1">
 				<description>Progressbar</description>
-				<posx>180</posx>
+				<posx>160</posx>
 				<posy>105</posy>
-				<width>500</width>
+				<width>520</width>
 				<height>5</height>
 				<info>Player.Progress</info>
 				<texturebg>progress_back.png</texturebg>
