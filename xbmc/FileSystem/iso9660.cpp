@@ -415,6 +415,7 @@ void iso9660::Scan()
     return ;
 
   m_hCDROM = CIoSupport::OpenCDROM();
+  CIoSupport::AllocReadBuffer();
 
   m_paths = 0;
   m_lastpath = 0;
@@ -434,6 +435,7 @@ void iso9660::Scan()
   if (strncmp(m_info.iso.szSignature, "CD001", 5))
   {
     CIoSupport::CloseCDROM( m_info.ISO_HANDLE);
+    CIoSupport::FreeReadBuffer();
     m_info.ISO_HANDLE = NULL;
     m_hCDROM = NULL;
     m_info.iso9660 = 0;
@@ -541,6 +543,7 @@ void iso9660::Reset()
   if (m_hCDROM)
   {
     CIoSupport::CloseCDROM(m_hCDROM);
+    CIoSupport::FreeReadBuffer();
   }
   m_hCDROM = NULL;
 }

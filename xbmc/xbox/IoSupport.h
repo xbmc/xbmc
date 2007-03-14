@@ -50,11 +50,6 @@
 class CIoSupport
 {
 public:
-
-  CIoSupport();
-  CIoSupport(CIoSupport& other);
-  virtual ~CIoSupport();
-
   static VOID GetXbePath(char* szDest);
 
   static HRESULT MapDriveLetter  (char cDriveLetter, char* szDevice);
@@ -73,6 +68,9 @@ public:
   static HRESULT EjectTray();
   static HRESULT CloseTray();
 
+  static void AllocReadBuffer();
+  static void FreeReadBuffer();
+
   static HANDLE OpenCDROM();
   static INT ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   static INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
@@ -81,6 +79,8 @@ public:
   
   static BOOL IsDebug();
   static HRESULT Shutdown();
+private:
+  static PVOID m_rawXferBuffer;
 };
 
 #endif // !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
