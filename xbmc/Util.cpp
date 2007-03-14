@@ -1097,12 +1097,28 @@ void CUtil::RunShortcut(const char* szShortcutPath)
     CUSTOM_LAUNCH_DATA data;
     if (!shortcut.m_strCustomGame.IsEmpty())
     {
+      char remap_path[MAX_PATH] = "";
+      char remap_xbe[MAX_PATH] = "";
+
       memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
+
       strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
 
-      CIoSupport::GetPartition('C', data.szRemap_D_As);
-      strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_guiSettings.GetString("myprograms.dashboard")).c_str());
+      strncpy(remap_path, XeImageFileName->Buffer, XeImageFileName->Length);
+      for (int i = strlen(remap_path) - 1; i >=0; i--)
+        if (remap_path[i] == '\\' || remap_path[i] == '/')
+        {
+          break;
+        }
+      strcpy(remap_xbe, &remap_path[i+1]);
+      remap_path[i+1] = 0;
+
+      strcpy(data.szRemap_D_As, remap_path);
+      strcpy(data.szLaunchXBEOnExit, remap_xbe);
+
       data.executionType = 0;
+
+      // not the actual "magic" value - used to pass XbeId for some reason?
       data.magic = GetXbeID(szPath);
     }
 
@@ -1265,12 +1281,12 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   }
   if (pData)
   {
-    DWORD dwRegion = pData->magic;
+    DWORD dwTitleID = pData->magic;
     pData->magic = CUSTOM_LAUNCH_MAGIC;
     const char* xbe = szXbe+3;
     CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
     CIoSupport::UnmapDriveLetter('D');
-    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwRegion, pData);
+    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwTitleID, pData);
   }
   else
   {
