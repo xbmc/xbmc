@@ -115,6 +115,8 @@ CFileItem::CFileItem(const CGenre& genre)
 
 CFileItem::CFileItem(const CFileItem& item)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   *this = item;
 }
 
@@ -204,7 +206,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_dwSize = item.m_dwSize;
   if (item.HasMusicInfoTag())
   {
-    m_musicInfoTag = new CMusicInfoTag;
+    m_musicInfoTag = GetMusicInfoTag();
     if (m_musicInfoTag)
       *m_musicInfoTag = *item.m_musicInfoTag;
   }
@@ -213,7 +215,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
   if (item.HasVideoInfoTag())
   {
-    m_videoInfoTag = new CIMDBMovie;
+    m_videoInfoTag = GetVideoInfoTag();
     if (m_videoInfoTag)
       *m_videoInfoTag = *item.m_videoInfoTag;
   }
