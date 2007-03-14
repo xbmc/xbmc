@@ -100,7 +100,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     CFileItem* pItem = new CFileItem;
     pItem->m_bIsFolder = false;
     
-    /* we highjack the music tag for this stuff, they will be used by *7
+    /* we highjack the music tag for this stuff, they will be used by */
     /* viewstates to sort and display proper information */
     pItem->GetMusicInfoTag()->SetArtist(listeners);
     pItem->GetMusicInfoTag()->SetAlbum(bitrate);
