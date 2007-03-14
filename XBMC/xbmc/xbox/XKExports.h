@@ -218,18 +218,8 @@ extern "C" XBOXAPI LPVOID ObpIoDevicesDirectoryObject;
 extern "C" XBOXAPI LPVOID ExpCdRomBootROMStringBuffer; // IdexCdRomDeviceNameBuffer;
 //extern "C" XBOXAPI LPVOID LaunchDataPage;
 //extern "C" XBOXAPI LPVOID XboxBootFlags;
-extern "C" XBOXAPI LPVOID XeImageFileName;
+//extern "C" XBOXAPI LPVOID XeImageFileName;
 extern "C" XBOXAPI LPVOID XboxEEPROMKey;
 extern "C" XBOXAPI LPVOID XboxHDKey;
-
-typedef struct _XBOX_KRNL_VERSION {
-	WORD VersionMajor;
-	WORD VersionMinor;
-	WORD Build;
-	WORD Qfe;
-} XBOX_KRNL_VERSION;
-
-extern "C" XBOX_KRNL_VERSION * XboxKrnlVersion;
-
 
 #endif
