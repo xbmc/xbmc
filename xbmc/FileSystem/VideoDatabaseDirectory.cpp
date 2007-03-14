@@ -61,6 +61,17 @@ NODE_TYPE CVideoDatabaseDirectory::GetDirectoryParentType(const CStdString& strP
   return pParentNode->GetChildType();
 }
 
+bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryParams& params)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+
+  if (!pNode.get())
+    false;
+  
+  CDirectoryNode::GetDatabaseInfo(strPath,params);
+  return true;
+}
+
 void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
   CFileItem directory(strDirectory, true);
