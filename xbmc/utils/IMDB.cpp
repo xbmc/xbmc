@@ -548,6 +548,93 @@ bool CIMDBMovie::Load(const TiXmlElement *movie)
   return true;
 }
 
+void CIMDBMovie::Serialize(CArchive& ar)
+{
+  if (ar.IsStoring())
+  {
+    ar << m_strDirector;
+    ar << m_strWritingCredits;
+    ar << m_strGenre;
+    ar << m_strTagLine;
+    ar << m_strPlotOutline;
+    ar << m_strPlot;
+    ar << m_strPictureURL.m_post;
+    ar << m_strPictureURL.m_spoof;
+    ar << m_strPictureURL.m_url;
+    ar << m_strTitle;
+    ar << m_strVotes;
+    ar << (int)m_cast.size();
+    for (unsigned int i=0;i<m_cast.size();++i)
+    {
+      ar << m_cast[i].first;
+      ar << m_cast[i].second;
+    }
+    ar << m_strSearchString;
+    ar << m_strRuntime;
+    ar << m_strFile;
+    ar << m_strPath;
+    ar << m_strIMDBNumber;
+    ar << m_strMPAARating;
+    ar << m_strFileNameAndPath;
+    ar << m_strOriginalTitle;
+    ar << m_strEpisodeGuide;
+    ar << m_strPremiered;
+    ar << m_strStatus;
+    ar << m_strProductionCode;
+    ar << m_strFirstAired;
+    ar << m_strShowTitle;
+    ar << m_bWatched;
+    ar << m_iTop250;
+    ar << m_iYear;
+    ar << m_iSeason;
+    ar << m_iEpisode;
+    ar << m_fRating;
+  }
+  else
+  {
+    ar >> m_strDirector;
+    ar >> m_strWritingCredits;
+    ar >> m_strGenre;
+    ar >> m_strTagLine;
+    ar >> m_strPlotOutline;
+    ar >> m_strPlot;
+    ar >> m_strPictureURL.m_post;
+    ar >> m_strPictureURL.m_spoof;
+    ar >> m_strPictureURL.m_url;
+    ar >> m_strTitle;
+    ar >> m_strVotes;
+    int iCastSize;
+    ar >> iCastSize;
+    for (unsigned int i=0;i<iCastSize;++i)
+    {
+      CStdString strFirst, strSecond;
+      ar >> strFirst;
+      ar >> strSecond;
+      m_cast.push_back(make_pair<CStdString,CStdString>(strFirst,strSecond));
+    }
+    ar >> m_strSearchString;
+    ar >> m_strRuntime;
+    ar >> m_strFile;
+    ar >> m_strPath;
+    ar >> m_strIMDBNumber;
+    ar >> m_strMPAARating;
+    ar >> m_strFileNameAndPath;
+    ar >> m_strOriginalTitle;
+    ar >> m_strEpisodeGuide;
+    ar >> m_strPremiered;
+    ar >> m_strStatus;
+    ar >> m_strProductionCode;
+    ar >> m_strFirstAired;
+    ar >> m_strShowTitle;
+    ar >> m_bWatched;
+    ar >> m_iTop250;
+    ar >> m_iYear;
+    ar >> m_iSeason;
+    ar >> m_iEpisode;
+    ar >> m_fRating;
+  }
+}
+
 bool CIMDB::LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload /* = true */)
 {
   TiXmlBase::SetCondenseWhiteSpace(false);

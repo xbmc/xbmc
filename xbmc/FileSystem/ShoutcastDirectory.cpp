@@ -45,7 +45,7 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
     CFileItem* pItem = new CFileItem;
     pItem->m_bIsFolder = true;
     pItem->SetLabel(genre);
-    pItem->m_musicInfoTag.SetGenre(genre);
+    pItem->GetMusicInfoTag()->SetGenre(genre);
     pItem->m_strPath = path;  
     
     items.Add(pItem);
@@ -102,9 +102,9 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     
     /* we highjack the music tag for this stuff, they will be used by *7
     /* viewstates to sort and display proper information */
-    pItem->m_musicInfoTag.SetArtist(listeners);
-    pItem->m_musicInfoTag.SetAlbum(bitrate);
-    pItem->m_musicInfoTag.SetGenre(genre);
+    pItem->GetMusicInfoTag()->SetArtist(listeners);
+    pItem->GetMusicInfoTag()->SetAlbum(bitrate);
+    pItem->GetMusicInfoTag()->SetGenre(genre);
 
     /* this is what will be sorted upon */
     pItem->m_fRating = (float)atoi(listeners.c_str());

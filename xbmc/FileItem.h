@@ -7,6 +7,7 @@
 #include "song.h"
 #include "utils/archive.h"
 #include "DateTime.h"
+#include "utils/imdb.h"
 
 using namespace MUSIC_INFO;
 
@@ -31,6 +32,8 @@ typedef enum {
   SORT_METHOD_VIDEO_RATING,
   SORT_METHOD_PROGRAM_COUNT,
   SORT_METHOD_PLAYLIST_ORDER,
+  SORT_METHOD_EPISODE,
+  SORT_METHOD_VIDEO_TITLE,
   SORT_METHOD_MAX
 } SORT_METHOD;
 
@@ -62,6 +65,7 @@ public:
   CFileItem(const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
+  CFileItem(const CIMDBMovie& movie);
   CFileItem(const CShare& share);
   virtual ~CFileItem(void);
 
@@ -113,7 +117,6 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
 
-
   void RemoveExtension();
   void CleanFileName();
   void FillInDefaultIcon();
@@ -125,6 +128,42 @@ public:
   void FormatLabel2(const CStdString& strMask);
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
+
+  bool HasMusicInfoTag() const
+  {
+    return m_musicInfoTag != NULL;
+  }
+
+  inline CMusicInfoTag* GetMusicInfoTag()
+  {
+    if (!m_musicInfoTag)
+      m_musicInfoTag = new CMusicInfoTag;
+
+    return m_musicInfoTag;
+  }
+
+  inline const CMusicInfoTag* GetMusicInfoTag() const
+  {
+    return m_musicInfoTag;
+  }
+
+  bool HasVideoInfoTag() const
+  {
+    return m_videoInfoTag != NULL;
+  }
+  
+  inline CIMDBMovie* GetVideoInfoTag()
+  {
+    if (!m_videoInfoTag)
+      m_videoInfoTag = new CIMDBMovie;
+
+    return m_videoInfoTag;
+  }
+  
+  inline const CIMDBMovie* GetVideoInfoTag() const
+  {
+    return m_videoInfoTag;
+  }
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();
@@ -180,7 +219,6 @@ public:
   float m_fRating;
   CStdString m_strDVDLabel;
   CStdString m_strTitle;
-  CMusicInfoTag m_musicInfoTag;
   int m_iprogramCount;
   int m_idepth;
   long m_lStartOffset;
@@ -194,6 +232,8 @@ private:
   bool m_bCanQueue;
   bool m_bLabelPreformated;
   CStdString m_contenttype;
+  CMusicInfoTag* m_musicInfoTag;
+  CIMDBMovie* m_videoInfoTag;
 };
 
 /*!

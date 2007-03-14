@@ -36,13 +36,14 @@ public:
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
 typedef std::map<std::pair<int,int>,CIMDBUrl> IMDB_EPISODELIST;
 
-class CIMDBMovie
+class CIMDBMovie : public ISerializable
 {
 public:
   CIMDBMovie() { Reset(); };
   void Reset();
   bool Load(const TiXmlElement *node);
   bool Save(TiXmlNode *node, const CStdString &tag);
+  virtual void Serialize(CArchive& ar);
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
@@ -69,6 +70,7 @@ public:
   CStdString m_strStatus;
   CStdString m_strProductionCode;
   CStdString m_strFirstAired;
+  CStdString m_strShowTitle;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;
