@@ -4930,10 +4930,12 @@ void CUtil::ClearFileItemCache()
 
 void CUtil::BootToDash()
 {
+#ifdef HAS_XBOX_HARDWARE
   LD_LAUNCH_DASHBOARD ld;
 
   ZeroMemory(&ld, sizeof(LD_LAUNCH_DASHBOARD));
 
   ld.dwReason = XLD_LAUNCH_DASHBOARD_MAIN_MENU;
   XLaunchNewImage(0, (PLAUNCH_DATA)&ld);
+#endif
 }
