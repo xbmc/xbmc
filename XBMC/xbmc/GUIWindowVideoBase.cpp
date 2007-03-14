@@ -525,7 +525,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           {
             CStdString path;
             CUtil::GetDirectory(item->m_strPath,path);
-            lShowId = m_database.GetTvShowInfo(item->m_strPath);
+            lShowId = m_database.GetTvShowInfo(path);
             m_database.GetTvShowInfo(path,movieDetails,lShowId);
             pDlgProgress->SetLine(1, movieDetails.m_strTitle);            
             pDlgProgress->Progress();
@@ -1871,16 +1871,16 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
   std::vector<CStdString> expression;
 
   // for two parters
-  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee][0-9][0-9]\\-([0-9]*)\\]"); // foo_[s01]_[e01-02] - personal fan service for spiff ;)
-  expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee][0-9][0-9]\\-([0-9]*)"); // foo.s01.e01-02
-  expression.push_back("[\\._ \\-][0-9]*x[0-9]*[\\._ \\-]*([0-9]*)x([0-9]*)"); // foo.1x09 1x10
+  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee][0-9][0-9]\\-([0-9]*)\\][^\\\\/]*"); // foo_[s01]_[e01-02] - personal fan service for spiff ;)
+  expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee][0-9][0-9]\\-([0-9]*)[^\\\\/]*"); // foo.s01.e01-02
+  expression.push_back("[\\._ \\-][0-9]*x[0-9]*[\\._ \\-]*([0-9]*)x([0-9]*)[^\\\\/]*"); // foo.1x09 1x10
 
   unsigned int iTwoParters=expression.size();
 
-  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee]([0-9]*)"); // foo_[s01]_[e01] - personal fan service for spiff
-  expression.push_back("[\\._ \\-]([0-9]*)x([0-9]*)"); // foo.1x09*
-  expression.push_back("[\\._ \\-][Ss]([0-9]*)[\\.\\-]?[Ee]([0-9]*)"); // foo.s01.e01, foo.s01_e01
-  expression.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-]"); // foo.103*
+  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee]([0-9]*)[^\\\\/]*"); // foo_[s01]_[e01] - personal fan service for spiff
+  expression.push_back("[\\._ \\-]([0-9]*)x([0-9]*)[^\\\\/]*"); // foo.1x09*
+  expression.push_back("[\\._ \\-][Ss]([0-9]*)[\\.\\-]?[Ee]([0-9]*)[^\\\\/]*"); // foo.s01.e01, foo.s01_e01
+  expression.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-][^\\\\/]*"); // foo.103*
   
   for (int i=0;i<items.Size();++i)
   {
@@ -1895,8 +1895,7 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
       CRegExp reg;
       if (!reg.RegComp(expression[j]))
         break;
-      CStdString strLabel = CUtil::GetFileName(items[i]->m_strPath);
-      if (reg.RegFind(strLabel.c_str()) > -1)
+      if (reg.RegFind(items[i]->m_strPath.c_str()) > -1)
       {
         char* season = reg.GetReplaceString("\\1");
         char* episode = reg.GetReplaceString("\\2");
