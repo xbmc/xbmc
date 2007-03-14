@@ -3003,10 +3003,16 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 {
   playlistitem.SetDescription(pItem->GetLabel());
   playlistitem.SetFileName(pItem->m_strPath);
-  playlistitem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+  if (pItem->HasMusicInfoTag())
+    playlistitem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
+  if (playlistitem.HasVideoInfoTag())
+    playlistitem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
   playlistitem.SetStartOffset(pItem->m_lStartOffset);
   playlistitem.SetEndOffset(pItem->m_lEndOffset);
-  playlistitem.SetMusicTag(pItem->m_musicInfoTag);
+  if (pItem->HasMusicInfoTag())
+    playlistitem.SetMusicTag(*pItem->GetMusicInfoTag());
+  if (pItem->HasVideoInfoTag())
+    playlistitem.SetVideoTag(*pItem->GetVideoInfoTag());
   playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
 }
 

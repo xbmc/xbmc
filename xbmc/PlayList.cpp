@@ -101,22 +101,32 @@ long CPlayList::CPlayListItem::GetEndOffset() const
 
 void CPlayList::CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
 {
-  m_musicInfoTag = tag;
+  *GetMusicInfoTag() = tag;
+}
+
+void CPlayList::CPlayListItem::SetVideoTag(const CIMDBMovie &tag)
+{
+  *GetVideoInfoTag() = tag;
 }
 
 bool CPlayList::CPlayListItem::LoadMusicTag()
 {
   if (CFileItem::LoadMusicTag())
   {
-    SetDuration(m_musicInfoTag.GetDuration());
+    SetDuration(GetMusicInfoTag()->GetDuration());
     return true;
   }
   return false;
 }
 
-CMusicInfoTag CPlayList::CPlayListItem::GetMusicTag() const
+const CMusicInfoTag* CPlayList::CPlayListItem::GetMusicTag() const
 {
-  return m_musicInfoTag;
+  return GetMusicInfoTag();
+}
+
+const CIMDBMovie* CPlayList::CPlayListItem::GetVideoTag() const
+{
+  return GetVideoInfoTag();
 }
 
 CPlayList::CPlayList(void)

@@ -441,9 +441,9 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       strTitle.Format("%s",sCurSrvData.current_event_details);
       int iDuration = atoi(sCurSrvData.current_event_duration.c_str());
       
-      items.m_musicInfoTag.SetGenre(strGenre);  // VIDEOPLAYER_GENRE: current_event_description (Film Name)
-      items.m_musicInfoTag.SetArtist(strTitle); // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
-      items.m_musicInfoTag.SetDuration(iDuration); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
+      items.GetVideoInfoTag()->m_strGenre = strGenre;  // VIDEOPLAYER_GENRE: current_event_description (Film Name)
+      items.GetVideoInfoTag()->m_strTitle = strTitle; // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
+      StringUtils::SecondsToTimeString(iDuration,items.GetVideoInfoTag()->m_strRuntime); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
       
       //
       items.m_strPath = strStreamURL;

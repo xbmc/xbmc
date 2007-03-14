@@ -339,6 +339,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
     else if (strTest.Equals("videoplayer.playlistlength")) ret = VIDEOPLAYER_PLAYLISTLEN;
     else if (strTest.Equals("videoplayer.playlistposition")) ret = VIDEOPLAYER_PLAYLISTPOS;
+    else if (strTest.Equals("videoplayer.plot")) ret = VIDEOPLAYER_PLOT;
+    else if (strTest.Equals("videoplayer.plotoutline")) ret = VIDEOPLAYER_PLOT_OUTLINE;
+    else if (strTest.Equals("videoplayer.episode")) ret = VIDEOPLAYER_EPISODE;
+    else if (strTest.Equals("videoplayer.season")) ret = VIDEOPLAYER_SEASON;
+    else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
+    else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -398,6 +404,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.duration")) ret = LISTITEM_DURATION;
     else if (strTest.Equals("listitem.isselected")) ret = LISTITEM_ISSELECTED;
     else if (strTest.Equals("listitem.isplaying")) ret = LISTITEM_ISPLAYING;
+    else if (strTest.Equals("listitem.plot")) ret = LISTITEM_PLOT;
+    else if (strTest.Equals("listitem.plotoutline")) ret = LISTITEM_PLOT_OUTLINE;
+    else if (strTest.Equals("listitem.episode")) ret = LISTITEM_EPISODE;
+    else if (strTest.Equals("listitem.season")) ret = LISTITEM_SEASON;
+    else if (strTest.Equals("listitem.tvshowtitle")) ret = LISTITEM_TVSHOW;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -577,6 +588,12 @@ string CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_DURATION:
   case VIDEOPLAYER_PLAYLISTLEN:
   case VIDEOPLAYER_PLAYLISTPOS:
+  case VIDEOPLAYER_PLOT:
+  case VIDEOPLAYER_PLOT_OUTLINE:
+  case VIDEOPLAYER_EPISODE:
+  case VIDEOPLAYER_SEASON:
+  case VIDEOPLAYER_RATING:
+  case VIDEOPLAYER_TVSHOW:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -1482,8 +1499,8 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
 
 CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
-  if (!g_application.IsPlayingAudio()) return "";
-  CMusicInfoTag& tag = m_currentFile.m_musicInfoTag;
+  if (!g_application.IsPlayingAudio() || !m_currentFile.HasMusicInfoTag()) return "";
+  CMusicInfoTag& tag = *m_currentFile.GetMusicInfoTag();
   switch (item)
   {
   case MUSICPLAYER_TITLE:
@@ -1620,7 +1637,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
-  if (!g_application.IsPlayingVideo()) 
+  if (!g_application.IsPlayingVideo() || !m_currentFile.HasVideoInfoTag()) 
     return "";
   
   switch (item)
@@ -1630,25 +1647,53 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return GetVideoLabel(PLAYER_DURATION);
     return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
-    return m_currentMovie.m_strTitle;
+    return m_currentFile.GetVideoInfoTag()->m_strTitle;
     break;
   case VIDEOPLAYER_ORIGINALTITLE:
-    return m_currentMovie.m_strOriginalTitle;
+    return m_currentFile.GetVideoInfoTag()->m_strOriginalTitle;
     break;
   case VIDEOPLAYER_GENRE:
-    return m_currentMovie.m_strGenre;
+    return m_currentFile.GetVideoInfoTag()->m_strGenre;
     break;
   case VIDEOPLAYER_DIRECTOR:
-    return m_currentMovie.m_strDirector;
+    return m_currentFile.GetVideoInfoTag()->m_strDirector;
     break;
+  case VIDEOPLAYER_RATING:
+    {
+    CStdString strYear;
+    strYear.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
+    return strYear;
+    }
   case VIDEOPLAYER_YEAR:
-    if (m_currentMovie.m_iYear > 0)
+    if (m_currentFile.GetVideoInfoTag()->m_iYear > 0)
     {
       CStdString strYear;
-      strYear.Format("%i", m_currentMovie.m_iYear);
+      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iYear);
       return strYear;
     }
     break;
+  case VIDEOPLAYER_PLOT:
+    return m_currentFile.GetVideoInfoTag()->m_strPlot;
+  case VIDEOPLAYER_PLOT_OUTLINE:
+    return m_currentFile.GetVideoInfoTag()->m_strPlotOutline;
+  case VIDEOPLAYER_EPISODE:
+    if (m_currentFile.GetVideoInfoTag()->m_iEpisode > 0)
+    {
+      CStdString strYear;
+      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+      return strYear;
+    }
+    break;
+  case VIDEOPLAYER_SEASON:
+    if (m_currentFile.GetVideoInfoTag()->m_iSeason > 0)
+    {
+      CStdString strYear;
+      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
+      return strYear;
+    }
+    break;
+  case VIDEOPLAYER_TVSHOW:
+    return m_currentFile.GetVideoInfoTag()->m_strShowTitle;
   case VIDEOPLAYER_TIME:
     return GetCurrentPlayTime();
   case VIDEOPLAYER_TIME_REMAINING:
@@ -1738,8 +1783,6 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 void CGUIInfoManager::ResetCurrentItem()
 { 
   m_currentFile.Reset();
-  m_currentMovie.Reset();
-  m_currentMovie.m_strFileNameAndPath = "";
   m_currentMovieThumb = "";
   m_currentMovieDuration = "";
   
@@ -1773,7 +1816,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   m_currentFile = item;
 
   // Get a reference to the item's tag
-  CMusicInfoTag& tag = m_currentFile.m_musicInfoTag;
+  CMusicInfoTag& tag = *m_currentFile.GetMusicInfoTag();
   // check if we don't have the tag already loaded
   if (!tag.Loaded())
   {
@@ -1785,7 +1828,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     {
       CSong song;
       bFound = musicdatabase.GetSongByFileName(m_currentFile.m_strPath, song);
-      m_currentFile.m_musicInfoTag.SetSong(song);
+      m_currentFile.GetMusicInfoTag()->SetSong(song);
       musicdatabase.Close();
     }
 
@@ -1863,32 +1906,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   m_currentFile = item;
-
-  CVideoDatabase dbs;
-  dbs.Open();
-  if (dbs.HasMovieInfo(item.m_strPath))
-  {
-    dbs.GetMovieInfo(item.m_strPath, m_currentMovie);
-    CLog::Log(LOGDEBUG,"CGUIInfoManager:SetCurrentMovie(), got movie info!");
-    CLog::Log(LOGDEBUG,"  Title = %s", m_currentMovie.m_strTitle.c_str());
-    CLog::Log(LOGDEBUG,"  IMDB# = %s", m_currentMovie.m_strIMDBNumber.c_str());
-  }
-  dbs.Close();
-
-  if (m_currentMovie.m_strTitle.IsEmpty())
-  { // at least fill in the filename
-    if (!item.GetLabel().IsEmpty())
-      m_currentMovie.m_strTitle = item.GetLabel();
-    else
-      m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
-  }
   
-  //Don't check for a Empty NameAndPath Set it! Or is there a reason?
-  if (m_currentMovie.m_strFileNameAndPath.IsEmpty())
-  {
-    m_currentMovie.m_strFileNameAndPath = item.m_strPath;
-  }
-
   // Find a thumb for this file.
   item.SetVideoThumb();
 
@@ -2137,7 +2155,6 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 void CGUIInfoManager::Clear()
 {
   m_currentFile.Reset();
-  m_currentMovie.Reset();
   m_CombinedValues.clear();
 }
 
@@ -2221,30 +2238,57 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetTitle());
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetTitle());
+    if (item->HasVideoInfoTag())
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strTitle);
+    break;
   case LISTITEM_TRACKNUMBER:
     {
       CStdString track;
-      track.Format("%i", item->m_musicInfoTag.GetTrackNumber());
+      if (item->HasMusicInfoTag())
+        track.Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
+
       return track;
     }
   case LISTITEM_ARTIST:
-  case LISTITEM_DIRECTOR:// HACK - director info is injected as the artist tag
-    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetArtist());
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
+    break;
+  case LISTITEM_DIRECTOR:
+    if (item->HasVideoInfoTag())
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strDirector);
   case LISTITEM_ALBUM:
-    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetAlbum());
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbum());
+    break;
   case LISTITEM_YEAR:
-    return item->m_musicInfoTag.GetYear();
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetYear();
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      if (item->GetVideoInfoTag()->m_iYear > 0)
+        strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
+      return strResult;
+    }
+    break;
   case LISTITEM_GENRE:
-    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetGenre());
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetGenre());
+    if (item->HasVideoInfoTag())
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
+    break;
   case LISTITEM_FILENAME:
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
+    break;
   case LISTITEM_SIZE:
     if (!item->m_bIsFolder || item->m_dwSize)
       return StringUtils::SizeToString(item->m_dwSize);
+    break;
   case LISTITEM_RATING:
     {
       CStdString rating;
@@ -2260,10 +2304,46 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_DURATION:
     {
       CStdString duration;
-      if (item->m_musicInfoTag.GetDuration() > 0)
-        StringUtils::SecondsToTimeString(item->m_musicInfoTag.GetDuration(), duration);
+      if (item->HasMusicInfoTag())
+      {
+        if (item->GetMusicInfoTag()->GetDuration() > 0)
+          StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration(), duration);
+      }
+      if (item->HasVideoInfoTag())
+      {
+        duration = item->GetVideoInfoTag()->m_strRuntime;
+      }
+
       return duration;
     }
+  case LISTITEM_PLOT:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strPlot;
+  case LISTITEM_PLOT_OUTLINE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strPlotOutline;
+  case LISTITEM_EPISODE:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      strResult.Format("%02d",item->GetVideoInfoTag()->m_iEpisode);
+      return strResult;
+    }
+    break;
+  case LISTITEM_SEASON:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      strResult.Format("%02d",item->GetVideoInfoTag()->m_iSeason);
+        return strResult;
+    }
+    break;
+  case LISTITEM_TVSHOW:
+    if (item->HasVideoInfoTag())
+    {
+      return item->GetVideoInfoTag()->m_strShowTitle;
+    }
+    break;
   }
   return "";
 }
@@ -2439,14 +2519,14 @@ void CGUIInfoManager::UpdateFromTuxBox()
   if (!g_tuxbox.sCurSrvData.current_event_description.IsEmpty() && !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&
     !g_tuxbox.sCurSrvData.current_event_description.Equals("-") && !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
-    m_currentMovie.m_strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description,
+    m_currentFile.GetVideoInfoTag()->m_strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description,
       g_localizeStrings.Get(209),g_tuxbox.sCurSrvData.next_event_description);
   }
 
   //Set m_currentMovie.m_strDirector
   if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") && !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
   {
-    m_currentMovie.m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
+    m_currentFile.GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
   }  
   return;
 }

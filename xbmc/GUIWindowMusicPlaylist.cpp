@@ -296,15 +296,15 @@ void CGUIWindowMusicPlayList::SavePlayList()
       CPlayList::CPlayListItem newItem;
       newItem.SetFileName(pItem->m_strPath);
       newItem.SetDescription(pItem->GetLabel());
-      if (pItem->m_musicInfoTag.GetDuration())
-        newItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->GetDuration())
+        newItem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
       else
         newItem.SetDuration(0);
 
       //  Musicdatabase items should contain the real path instead of a musicdb url
       //  otherwise the user can't save and reuse the playlist when the musicdb gets deleted
       if (pItem->IsMusicDb())
-        newItem.m_strPath=pItem->m_musicInfoTag.GetURL();
+        newItem.m_strPath=pItem->GetMusicInfoTag()->GetURL();
 
       playlist.Add(newItem);
       m_vecItems.Remove(i--);
@@ -461,7 +461,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
-  if (pItem->m_musicInfoTag.Loaded())
+  if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
     CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.nowplayingtrackformat");
@@ -476,9 +476,9 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   else
   {
     // Our tag may have a duration even if its not loaded
-    if (pItem->m_musicInfoTag.GetDuration())
+    if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->GetDuration())
     {
-      int nDuration = pItem->m_musicInfoTag.GetDuration();
+      int nDuration = pItem->GetMusicInfoTag()->GetDuration();
       if (nDuration > 0)
       {
         CStdString str;
