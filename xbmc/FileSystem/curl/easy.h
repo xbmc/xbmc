@@ -26,10 +26,10 @@
 extern "C" {
 #endif
 
-CURL_EXTERN CURL_HANDLE *curl_easy_init(void);
-CURL_EXTERN CURLcode curl_easy_setopt(CURL_HANDLE *curl, CURLoption option, ...);
-CURL_EXTERN CURLcode curl_easy_perform(CURL_HANDLE *curl);
-CURL_EXTERN void curl_easy_cleanup(CURL_HANDLE *curl);
+CURL_EXTERN CURL *curl_easy_init(void);
+CURL_EXTERN CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...);
+CURL_EXTERN CURLcode curl_easy_perform(CURL *curl);
+CURL_EXTERN void curl_easy_cleanup(CURL *curl);
 
 /*
  * NAME curl_easy_getinfo()
@@ -44,7 +44,7 @@ CURL_EXTERN void curl_easy_cleanup(CURL_HANDLE *curl);
  * performed transfer, all results from this function are undefined until the
  * transfer is completed.
  */
-CURL_EXTERN CURLcode curl_easy_getinfo(CURL_HANDLE *curl, CURLINFO info, ...);
+CURL_EXTERN CURLcode curl_easy_getinfo(CURL *curl, CURLINFO info, ...);
 
 
 /*
@@ -59,7 +59,7 @@ CURL_EXTERN CURLcode curl_easy_getinfo(CURL_HANDLE *curl, CURLINFO info, ...);
  * curl_easy_duphandle() for each new thread to avoid a series of identical
  * curl_easy_setopt() invokes in every thread.
  */
-CURL_EXTERN CURL_HANDLE* curl_easy_duphandle(CURL_HANDLE *curl);
+CURL_EXTERN CURL* curl_easy_duphandle(CURL *curl);
 
 /*
  * NAME curl_easy_reset()
@@ -72,7 +72,7 @@ CURL_EXTERN CURL_HANDLE* curl_easy_duphandle(CURL_HANDLE *curl);
  * It does keep: live connections, the Session ID cache, the DNS cache and the
  * cookies.
  */
-CURL_EXTERN void curl_easy_reset(CURL_HANDLE *curl);
+CURL_EXTERN void curl_easy_reset(CURL *curl);
 
 #ifdef  __cplusplus
 }
