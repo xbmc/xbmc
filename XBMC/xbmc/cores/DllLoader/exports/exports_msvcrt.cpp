@@ -236,6 +236,7 @@ extern "C" void* _tempnam();
 extern "C" void* _aligned_malloc();
 extern "C" void* _aligned_free();
 extern "C" void* _aligned_realloc();
+extern "C" void* _callnewh();
 
 // tracker functions
 extern "C" void* track_close();
@@ -645,6 +646,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_aligned_malloc", (unsigned long)_aligned_malloc);
   g_dlls.msvcr71.AddExport("_aligned_free", (unsigned long)_aligned_free);
   g_dlls.msvcr71.AddExport("_aligned_realloc", (unsigned long)_aligned_realloc);
+  g_dlls.msvcr71.AddExport("_callnewh", (unsigned long)_callnewh);
 }
 
 void export_pncrt()
