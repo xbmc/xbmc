@@ -112,6 +112,8 @@ bool CTextureBundle::OpenBundle()
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
       strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+    else
+      return false;
   }
   else
     strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
