@@ -206,6 +206,7 @@
 #define CONTAINER_FOLDERTHUMB       360
 #define CONTAINER_FOLDERPATH        361
 #define CONTAINER_CONTENT           362
+#define CONTAINER_HAS_THUMB         363
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
