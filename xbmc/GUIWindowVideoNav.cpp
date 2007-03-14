@@ -220,12 +220,25 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else
     {
       DIRECTORY::CVideoDatabaseDirectory dir;
-      DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-      if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES)
-        g_infoManager.m_content = "episodes";
-      else if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MOVIES)
+      CQueryParams params;
+      dir.GetQueryParams(strDirectory,params);
+      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+
+      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
+      {
+        if (node == NODE_TYPE_EPISODES)
+          g_infoManager.m_content = "episodes";
+        else
+          g_infoManager.m_content = "seasons";
+
+        CFileItem item;
+        m_database.GetFilePath(params.GetTvShowId(),item.m_strPath,2);
+        item.SetVideoThumb();
+        items.SetThumbnailImage(item.GetThumbnailImage());
+      }
+      else if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
         g_infoManager.m_content = "movies";
-      else if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS)
+      else if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
         g_infoManager.m_content = "tvshows";
       else
         g_infoManager.m_content = "";
