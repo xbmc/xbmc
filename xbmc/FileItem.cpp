@@ -43,10 +43,12 @@ using namespace PLAYLIST;
 
 CFileItem::CFileItem(const CSong& song)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   m_strLabel = song.strTitle;
   m_strPath = song.strFileName;
-  m_musicInfoTag.SetSong(song);
+  GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = song.strThumb;
@@ -54,31 +56,61 @@ CFileItem::CFileItem(const CSong& song)
 
 CFileItem::CFileItem(const CAlbum& album)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   m_strLabel = album.strAlbum;
   m_strPath = album.strPath;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
-  m_musicInfoTag.SetAlbum(album);
+  GetMusicInfoTag()->SetAlbum(album);
   m_strThumbnailImage = album.strThumb;
+}
+
+CFileItem::CFileItem(const CIMDBMovie& movie)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  Reset();
+  m_strLabel = movie.m_strTitle;
+  if (movie.m_strFileNameAndPath.IsEmpty())
+  {
+    m_strPath = movie.m_strPath;
+    m_bIsFolder = true;
+  }
+  else
+  {
+    m_strPath = movie.m_strFileNameAndPath;
+    m_bIsFolder = false;
+  }
+  m_fRating = movie.m_fRating;
+  *GetVideoInfoTag() = movie;
+  SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+  FillInDefaultIcon();
+  SetVideoThumb();
+  SetInvalid();
 }
 
 CFileItem::CFileItem(const CArtist& artist)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   m_strLabel = artist.strArtist;
   m_strPath = artist.strArtist;
   m_bIsFolder = true;
-  m_musicInfoTag.SetArtist(artist.strArtist);
+  GetMusicInfoTag()->SetArtist(artist.strArtist);
 }
 
 CFileItem::CFileItem(const CGenre& genre)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   m_strLabel = genre.strGenre;
   m_strPath = genre.strGenre;
   m_bIsFolder = true;
-  m_musicInfoTag.SetGenre(genre.strGenre);
+  GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
 
 CFileItem::CFileItem(const CFileItem& item)
@@ -88,6 +120,8 @@ CFileItem::CFileItem(const CFileItem& item)
 
 CFileItem::CFileItem(const CGUIListItem& item)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
   // parameters in the CGUIListItem base class.
@@ -96,18 +130,24 @@ CFileItem::CFileItem(const CGUIListItem& item)
 
 CFileItem::CFileItem(void)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
 }
 
 CFileItem::CFileItem(const CStdString& strLabel)
     : CGUIListItem()
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
@@ -115,6 +155,8 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 
 CFileItem::CFileItem(const CShare& share)
 {
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
@@ -133,6 +175,13 @@ CFileItem::CFileItem(const CShare& share)
 
 CFileItem::~CFileItem(void)
 {
+  if (m_musicInfoTag)
+    delete m_musicInfoTag;
+  if (m_videoInfoTag)
+    delete m_videoInfoTag;
+
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -153,7 +202,24 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
   m_dateTime = item.m_dateTime;
   m_dwSize = item.m_dwSize;
-  m_musicInfoTag = item.m_musicInfoTag;
+  if (item.HasMusicInfoTag())
+  {
+    m_musicInfoTag = new CMusicInfoTag;
+    if (m_musicInfoTag)
+      *m_musicInfoTag = *item.m_musicInfoTag;
+  }
+  else
+    m_musicInfoTag = NULL;
+
+  if (item.HasVideoInfoTag())
+  {
+    m_videoInfoTag = new CIMDBMovie;
+    if (m_videoInfoTag)
+      *m_videoInfoTag = *item.m_videoInfoTag;
+  }
+  else
+    m_videoInfoTag = NULL;
+
   m_lStartOffset = item.m_lStartOffset;
   m_lEndOffset = item.m_lEndOffset;
   m_fRating = item.m_fRating;
@@ -177,7 +243,6 @@ void CFileItem::Reset()
   m_bLabelPreformated=false;
   FreeIcons();
   m_overlayIcon = ICON_OVERLAY_NONE;
-  m_musicInfoTag.Clear();
   m_bSelected = false;
   m_fRating = 0.0f;
   m_strDVDLabel.Empty();
@@ -199,6 +264,12 @@ void CFileItem::Reset()
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
   m_bCanQueue=true;
+  if (m_musicInfoTag)
+    delete m_musicInfoTag;
+  m_musicInfoTag=NULL;
+  if (m_videoInfoTag)
+    delete m_videoInfoTag;
+  m_videoInfoTag=NULL;
   SetInvalid();
 }
 
@@ -234,7 +305,20 @@ void CFileItem::Serialize(CArchive& ar)
 
     ar << m_bCanQueue;
 
-    ar << m_musicInfoTag;
+    if (m_musicInfoTag)
+    {
+      ar << 1;
+      ar << *m_musicInfoTag;
+    }
+    else
+      ar << 0;
+    if (m_videoInfoTag)
+    {
+      ar << 1;
+      ar << *m_videoInfoTag;
+    }
+    else 
+      ar << 0;
   }
   else
   {
@@ -266,7 +350,13 @@ void CFileItem::Serialize(CArchive& ar)
 
     ar >> m_bCanQueue;
 
-    ar >> m_musicInfoTag;
+    int iType;
+    ar >> iType;
+    if (iType == 1)
+      ar >> *GetMusicInfoTag();
+    ar >> iType;
+    if (iType == 1)
+      ar >> *GetVideoInfoTag();
     SetInvalid();
   }
 }
@@ -798,7 +888,8 @@ bool CFileItem::IsParentFolder() const
 // %C - Programs count
 // %K - Movie/Game title
 // %L - existing Label
-// %E - number of episodes
+// %M - number of episodes
+// %E - episode number
 
 void CFileItem::FormatLabel(const CStdString& strMask)
 {
@@ -832,7 +923,8 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     return "";
 
   CStdString strLabel = "";
-  CMusicInfoTag& tag = m_musicInfoTag;
+  CMusicInfoTag* tag = m_musicInfoTag;
+  CIMDBMovie* movie = m_videoInfoTag;
   int iPos1 = 0;
   int iPos2 = strMask.Find('%', iPos1);
   if (iPos2 > iPos1)
@@ -847,37 +939,50 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
   while (iPos2 >= 0)
   { 
     CStdString str;
-    if (strMask[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
+    if (strMask[iPos2 + 1] == 'N' && tag && tag->GetTrackNumber() > 0)
     { // track number
-      str.Format("%02.2i", tag.GetTrackNumber());
+      str.Format("%02.2i", tag->GetTrackNumber());
     }
-    else if (strMask[iPos2 + 1] == 'E' && tag.GetTrackNumber() > 0)
-    { // track number
-      str.Format("%02.2i %s", tag.GetTrackNumber(),g_localizeStrings.Get(20360));
+    else if (strMask[iPos2 + 1] == 'M' && m_videoInfoTag && movie->m_iEpisode > 0)
+    { // number of episodes 
+      str.Format("%02.2i %s", movie->m_iEpisode,g_localizeStrings.Get(20360));
     }
-    else if (strMask[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
+    else if (strMask[iPos2 + 1] == 'E' && m_videoInfoTag && movie->m_iEpisode > 0)
+    { // episode number
+      str.Format("%02.2i", movie->m_iEpisode);
+    }
+    else if (strMask[iPos2 + 1] == 'S' && tag && tag->GetDiscNumber() > 0)
     { // disc number
-      str.Format("%02.2i", tag.GetDiscNumber());
+      str.Format("%02.2i", tag->GetDiscNumber());
     }
-    else if (strMask[iPos2 + 1] == 'A' && tag.GetArtist().size())
+    else if (strMask[iPos2 + 1] == 'A' && tag && tag->GetArtist().size())
     { // artist
-      str = tag.GetArtist();
+      str = tag->GetArtist();
     }
-    else if (strMask[iPos2 + 1] == 'T' && tag.GetTitle().size())
+    else if (strMask[iPos2 + 1] == 'T')
     { // title
-      str = tag.GetTitle();
+      if (tag && tag->GetTitle().size())
+        str = tag->GetTitle();
+      if (movie && movie->m_strTitle.size())
+        str = movie->m_strTitle;
     }
-    else if (strMask[iPos2 + 1] == 'B' && tag.GetAlbum().size())
+    else if (strMask[iPos2 + 1] == 'B' && tag && tag->GetAlbum().size())
     { // album
-      str = tag.GetAlbum();
+      str = tag->GetAlbum();
     }
-    else if (strMask[iPos2 + 1] == 'G' && tag.GetGenre().size())
+    else if (strMask[iPos2 + 1] == 'G')
     { // genre
-      str = tag.GetGenre();
+      if (tag && tag->GetGenre().size())
+        str = tag->GetGenre();
+      if (movie && movie->m_strGenre.size())
+        str = movie->m_strGenre;
     }
     else if (strMask[iPos2 + 1] == 'Y')
     { // year
-      str = tag.GetYear();
+      if (tag)
+        str = tag->GetYear();
+      if (movie)
+        str.Format("%i",movie->m_iYear);
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
@@ -894,7 +999,11 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'D')
     { // duration
-      int nDuration = tag.GetDuration();
+      int nDuration;
+      if (tag)
+        nDuration = tag->GetDuration();
+      if (movie)
+        nDuration = StringUtils::TimeStringToSeconds(movie->m_strRuntime);
       if (nDuration > 0)
         StringUtils::SecondsToTimeString(nDuration, str);
       else if (m_dwSize > 0)
@@ -914,10 +1023,6 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     else if (strMask[iPos2 + 1] == 'R')
     { // movie rating
       str.Format("%2.2f", m_fRating);
-    }
-    else if (strMask[iPos2 + 1] == 'Q')
-    { // movie Year
-      str=m_musicInfoTag.GetYear();
     }
     else if (strMask[iPos2 + 1] == 'C')
     { // programs count
@@ -991,15 +1096,27 @@ bool CFileItem::IsSamePath(const CFileItem *item)
     return false;
 
   if (item->m_strPath == m_strPath && item->m_lStartOffset == m_lStartOffset) return true;
-  if (IsMusicDb() || IsVideoDb())
+  if (IsMusicDb() && HasMusicInfoTag())
   {
-    CFileItem dbItem(m_musicInfoTag.GetURL(), false);
+    CFileItem dbItem(m_musicInfoTag->GetURL(), false);
     dbItem.m_lStartOffset = m_lStartOffset;
     return dbItem.IsSamePath(item);
   }
-  if (item->IsMusicDb() || item->IsVideoDb())
+  if (IsVideoDb() && HasVideoInfoTag())
   {
-    CFileItem dbItem(item->m_musicInfoTag.GetURL(), false);
+    CFileItem dbItem(m_videoInfoTag->m_strFileNameAndPath, false);
+    dbItem.m_lStartOffset = m_lStartOffset;
+    return dbItem.IsSamePath(item);
+  }
+  if (item->IsMusicDb() && item->HasMusicInfoTag())
+  {
+    CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
+    dbItem.m_lStartOffset = item->m_lStartOffset;
+    return IsSamePath(&dbItem);
+  }
+  if (item->IsVideoDb() && item->HasVideoInfoTag())
+  {
+    CFileItem dbItem(item->m_videoInfoTag->m_strFileNameAndPath, false);
     dbItem.m_lStartOffset = item->m_lStartOffset;
     return IsSamePath(&dbItem);
   }
@@ -1284,6 +1401,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_TRACKNUM:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongTrackNumAscending : SSortFileItem::SongTrackNumDescending);
     break;
+  case SORT_METHOD_EPISODE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::EpisodeNumAscending : SSortFileItem::EpisodeNumDescending);
+    break;
   case SORT_METHOD_DURATION:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongDurationAscending : SSortFileItem::SongDurationDescending);
     break;
@@ -1313,6 +1433,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_VIDEO_RATING:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieRatingAscending : SSortFileItem::MovieRatingDescending);
+    break;
+  case SORT_METHOD_VIDEO_TITLE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieTitleAscending : SSortFileItem::MovieTitleDescending);
     break;
   case SORT_METHOD_VIDEO_YEAR:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending);
@@ -1933,8 +2056,8 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   // could be any file with tags loaded or
   // a directory in album window
   CStdString strAlbum;
-  if (m_musicInfoTag.Loaded())
-    strAlbum = m_musicInfoTag.GetAlbum();
+  if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
+    strAlbum = m_musicInfoTag->GetAlbum();
 
   if (!strAlbum.IsEmpty())
   {
@@ -2319,14 +2442,14 @@ bool CFileItem::LoadMusicTag()
   if (!IsAudio())
     return false;
   // already loaded?
-  if (m_musicInfoTag.Loaded())
+  if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
     return true;
   // check db
   CMusicDatabase musicDatabase;
   CSong song;
   if (musicDatabase.GetSongByFileName(m_strPath, song))
   {
-    m_musicInfoTag.SetSong(song);
+    GetMusicInfoTag()->SetSong(song);
     return true;
   }
   // load tag from file
@@ -2338,7 +2461,7 @@ bool CFileItem::LoadMusicTag()
     auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
     if (NULL != pLoader.get())
     {
-      if (pLoader->Load(m_strPath, m_musicInfoTag))
+      if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
         return true;
     }
   }

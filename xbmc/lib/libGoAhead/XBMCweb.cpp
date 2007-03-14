@@ -976,7 +976,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
     return;
 
   //	Get a reference to the item's tag
-  CMusicInfoTag& tag=newItem.m_musicInfoTag;
+  CMusicInfoTag* tag = newItem.GetMusicInfoTag();
 
   //	we have a audio file.
   //	Look if we have this file in database...
@@ -986,7 +986,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   {
     CSong song;
     bFound=musicdatabase.GetSongByFileName(newItem.m_strPath, song);
-    tag.SetSong(song);
+    tag->SetSong(song);
     musicdatabase.Close();
   }
 
@@ -996,13 +996,13 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
     auto_ptr<IMusicInfoTagLoader> pLoader(CMusicInfoTagLoaderFactory::CreateLoader(newItem.m_strPath));
     //	Do we have a tag loader for this file type?
     if (pLoader.get() != NULL)
-      pLoader->Load(newItem.m_strPath,tag);
+      pLoader->Load(newItem.m_strPath,*tag);
   }
 
   //	If we have tag information, ...
-  if (tag.Loaded())
+  if (tag->Loaded())
   {
-    g_infoManager.SetCurrentSongTag(tag);
+    g_infoManager.SetCurrentSongTag(*tag);
   }
   /*
   //	display only, if we have a title

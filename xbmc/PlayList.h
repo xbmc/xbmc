@@ -33,7 +33,9 @@ class CPlayListItem : public CFileItem
     virtual bool LoadMusicTag();
 
     void SetMusicTag(const CMusicInfoTag &tag);
-    CMusicInfoTag GetMusicTag() const;
+    void SetVideoTag(const CIMDBMovie &tag);
+    const CMusicInfoTag* GetMusicTag() const;
+    const CIMDBMovie* GetVideoTag() const;
 
     bool IsUnPlayable() const;
     void SetUnPlayable() { m_bUnPlayable = true; };

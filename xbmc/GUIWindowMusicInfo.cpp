@@ -104,8 +104,8 @@ void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 {
   m_album = album;
   m_albumItem = CFileItem(album.GetAlbumPath(), true);
-  m_albumItem.m_musicInfoTag.SetAlbum(album.GetTitle());
-  m_albumItem.m_musicInfoTag.SetLoaded(true);
+  m_albumItem.GetMusicInfoTag()->SetAlbum(album.GetTitle());
+  m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
 }

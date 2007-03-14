@@ -258,7 +258,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       // is tag for this file already loaded?
       CLog::Log(LOGDEBUG, __FUNCTION__" - Reading tag for: %s", pItem->m_strPath.c_str());
       bool bNewFile = false;
-      CMusicInfoTag& tag = pItem->m_musicInfoTag;
+      CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if (!tag.Loaded() )
       {
         // no, then we gonna load it.

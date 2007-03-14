@@ -206,18 +206,18 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     if ((*entry)->m_Resources[0].m_Size > 0) {
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
-                    pItem->m_musicInfoTag.SetDuration((*entry)->m_Resources[0].m_Duration);
-                    pItem->m_musicInfoTag.SetGenre((const char*) (*entry)->m_Affiliation.genre);
-                    pItem->m_musicInfoTag.SetAlbum((const char*) (*entry)->m_Affiliation.album);
+                    pItem->GetMusicInfoTag()->SetDuration((*entry)->m_Resources[0].m_Duration);
+                    pItem->GetMusicInfoTag()->SetGenre((const char*) (*entry)->m_Affiliation.genre);
+                    pItem->GetMusicInfoTag()->SetAlbum((const char*) (*entry)->m_Affiliation.album);
                     
                     // some servers (like WMC) use upnp:artist instead of dc:creator
                     if ((*entry)->m_Creator.GetLength() == 0) {
-                        pItem->m_musicInfoTag.SetArtist((const char*) (*entry)->m_People.artist);
+                        pItem->GetMusicInfoTag()->SetArtist((const char*) (*entry)->m_People.artist);
                     } else {
-                        pItem->m_musicInfoTag.SetArtist((const char*) (*entry)->m_Creator);
+                        pItem->GetMusicInfoTag()->SetArtist((const char*) (*entry)->m_Creator);
                     }
-                    pItem->m_musicInfoTag.SetTitle((const char*) (*entry)->m_Title);                    
-                    pItem->m_musicInfoTag.SetLoaded();
+                    pItem->GetMusicInfoTag()->SetTitle((const char*) (*entry)->m_Title);                    
+                    pItem->GetMusicInfoTag()->SetLoaded();
 
                     // look for content type in protocol info
                     if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {

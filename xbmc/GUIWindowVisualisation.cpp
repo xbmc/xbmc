@@ -181,7 +181,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       g_infoManager.SetShowCodec(m_bShowPreset);
       g_infoManager.SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
-      m_tag = g_infoManager.GetCurrentSongTag();
+      if (g_infoManager.GetCurrentSongTag())
+        m_tag = *g_infoManager.GetCurrentSongTag();
 #ifdef HAS_KARAOKE
       if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
         g_application.m_pCdgParser->AllocGraphics();
@@ -224,10 +225,10 @@ void CGUIWindowVisualisation::Render()
 {
   g_application.ResetScreenSaver();
   // check for a tag change
-  const CMusicInfoTag &tag = g_infoManager.GetCurrentSongTag();
-  if (tag != m_tag)
+  const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+  if (tag && *tag != m_tag)
   { // need to fade in then out again
-    m_tag = tag;
+    m_tag = *tag;
     // fade in
     m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
     g_infoManager.SetShowInfo(true);

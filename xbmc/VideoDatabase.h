@@ -310,7 +310,7 @@ protected:
   void AddGenreAndDirectors(const CIMDBMovie& details, vector<long>& vecDirectors, vector<long>& vecGenres);
 
   CIMDBMovie GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast = false);
-  CIMDBMovie GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast = false, const CStdString &baseDir = "");
+  CIMDBMovie GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast = false);
   CIMDBMovie GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast = false);
 
 private:
