@@ -10,6 +10,8 @@
 #define MAX_SOCKETS 50
 #define SO_ERROR    0x1007
 
+#define MSG_PEEK 0x2
+
 static bool m_bSocketsInit = false;
 static int m_sockets[MAX_SOCKETS + 1];
 
@@ -249,6 +251,27 @@ extern "C"
   {
     int socket = GetSocketForIndex(s);
 
+    if(flags & MSG_PEEK)
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__" - called with MSG_PEEK set, attempting workaround");
+      // work around for peek, it will give garbage as data
+      // and will always block, till data or error
+      unsigned long size=0;
+      while(1)
+      {
+        if(ioctlsocket(socket, FIONREAD, &size))
+          return -1;
+        if(size)
+          break;
+        Sleep(1);
+      }
+      return min((int)size, len);
+    }
+
+    if(flags)
+      CLog::Log(LOGWARNING, __FUNCTION__" - called with flags %d that will be ignored", flags);
+
+    flags = 0;
     return recv(socket, buf, len, flags);
   }
 

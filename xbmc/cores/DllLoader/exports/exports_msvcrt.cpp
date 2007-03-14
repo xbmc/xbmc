@@ -233,6 +233,9 @@ extern "C" void* dll_clearerr();
 extern "C" void* dll__commit();
 extern "C" void* dll___p__environ();
 extern "C" void* _tempnam();
+extern "C" void* _aligned_malloc();
+extern "C" void* _aligned_free();
+extern "C" void* _aligned_realloc();
 
 // tracker functions
 extern "C" void* track_close();
@@ -639,6 +642,9 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("__p__environ", (unsigned long)dll___p__environ);
   g_dlls.msvcr71.AddExport("vfprintf", (unsigned long)dll_vfprintf);
   g_dlls.msvcr71.AddExport("_tempnam", (unsigned long)_tempnam);
+  g_dlls.msvcr71.AddExport("_aligned_malloc", (unsigned long)_aligned_malloc);
+  g_dlls.msvcr71.AddExport("_aligned_free", (unsigned long)_aligned_free);
+  g_dlls.msvcr71.AddExport("_aligned_realloc", (unsigned long)_aligned_realloc);
 }
 
 void export_pncrt()
