@@ -440,8 +440,8 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     CStdString strItem;
     strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
+    *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
-    pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
     items.Add(pItem);
   }
   movies.clear();
@@ -451,8 +451,8 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     CStdString strItem;
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
+    *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath.Format("videodb://1/%u",m_database.GetTvShowInfo(movies[i].m_strPath));
-    pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
     items.Add(pItem);
   }
   movies.clear();
@@ -462,9 +462,8 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     CStdString strItem;
     strItem.Format("[%s] %s", g_localizeStrings.Get(20359), movies[i].m_strTitle);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
+    *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
-    pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
-    pItem->m_musicInfoTag.SetTrackNumber(movies[i].m_iEpisode);
     items.Add(pItem);
   }
 }
@@ -474,12 +473,12 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
   int iType=0;
-  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
     iType = 1;
   if (pItem->IsVideoDb()) // tvshow
     iType = 2;
   
-  long lMovieId = atol(pItem->m_musicInfoTag.GetURL().c_str());
+  long lMovieId = atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str());
   CIMDBMovie movieDetails;
   if (iType == 0)
     m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);

@@ -288,10 +288,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)
       //  HACK: This item will stay on bottom of a list
       strFake.Format("%c", 0xff);
-    pItem->m_musicInfoTag.SetAlbum(strFake);
-    pItem->m_musicInfoTag.SetArtist(strFake);
-    pItem->m_musicInfoTag.SetTitle(strFake);
-    pItem->m_musicInfoTag.SetGenre(strFake);
+    pItem->GetMusicInfoTag()->SetAlbum(strFake);
+    pItem->GetMusicInfoTag()->SetArtist(strFake);
+    pItem->GetMusicInfoTag()->SetTitle(strFake);
+    pItem->GetMusicInfoTag()->SetGenre(strFake);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
     items.Add(pItem);

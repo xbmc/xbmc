@@ -335,8 +335,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
   CAlbum album;
   if (pItem->IsMusicDb())
   {
-    strAlbumName=pItem->m_musicInfoTag.GetAlbum();
-    strArtistName=pItem->m_musicInfoTag.GetArtist();
+    strAlbumName=pItem->GetMusicInfoTag()->GetAlbum();
+    strArtistName=pItem->GetMusicInfoTag()->GetArtist();
 
     if (pItem->m_bIsFolder)
     { // Extract album id from musicdb path
@@ -369,10 +369,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
       bSaveDb=true;
   }
-  else if (pItem->m_musicInfoTag.Loaded())
+  else if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   {
-    strAlbumName = pItem->m_musicInfoTag.GetAlbum();
-    strArtistName = pItem->m_musicInfoTag.GetArtist();
+    strAlbumName = pItem->GetMusicInfoTag()->GetAlbum();
+    strArtistName = pItem->GetMusicInfoTag()->GetArtist();
     if (strAlbumName.IsEmpty())
       strAlbumName = strLabel;
 
@@ -393,9 +393,9 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       for (int i = 0; i < m_vecItems.Size(); i++)
       {
         CFileItem* pItem = m_vecItems[i];
-        if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
+        if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() && !pItem->GetMusicInfoTag()->GetAlbum().IsEmpty())
         {
-          CStdString strAlbum = pItem->m_musicInfoTag.GetAlbum();
+          CStdString strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
           albums.insert(strAlbum);
         }
       }
@@ -475,11 +475,11 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItem* pItem = items[i];
-      if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
+      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() && !pItem->GetMusicInfoTag()->GetAlbum().IsEmpty())
       {
         CAlbum album;
-        album.strAlbum = pItem->m_musicInfoTag.GetAlbum();
-        album.strArtist = pItem->m_musicInfoTag.GetArtist();
+        album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
+        album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
         setAlbums.insert(album);
       }
     }
@@ -553,7 +553,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     if (NULL != pLoader.get())
     {
       // get id3tag
-      CMusicInfoTag& tag = pItem->m_musicInfoTag;
+      CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if ( pLoader->Load(pItem->m_strPath, tag))
       {
         // get album and artist
@@ -1626,12 +1626,14 @@ void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb
   if (g_application.IsPlayingAudio())
   {
     CStdString strSongFolder;
-    const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
-    CUtil::GetDirectory(tag.GetURL(), strSongFolder);
-
-    // ...if it's matching
-    if (strSongFolder.Equals(album.GetAlbumPath()) && tag.GetAlbum().Equals(album.GetTitle()))
-      g_infoManager.SetCurrentAlbumThumb(strThumb);
+    const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
+    if (tag)
+    {
+      CUtil::GetDirectory(tag->GetURL(), strSongFolder);
+      // ...if it's matching
+      if (strSongFolder.Equals(album.GetAlbumPath()) && tag->GetAlbum().Equals(album.GetTitle()))
+        g_infoManager.SetCurrentAlbumThumb(strThumb);
+    }
   }
   // Save directory thumb
   if (bSaveDirThumb)
@@ -1758,7 +1760,7 @@ void CGUIWindowMusicBase::AddToPlaylist(int iItem)
   {
     // correct music db paths
     if (queuedItems[i]->IsMusicDb())
-      queuedItems[i]->m_strPath = queuedItems[i]->m_musicInfoTag.GetURL();
+      queuedItems[i]->m_strPath = queuedItems[i]->GetMusicInfoTag()->GetURL();
     pPlaylist->Add(queuedItems[i]);
   }
 

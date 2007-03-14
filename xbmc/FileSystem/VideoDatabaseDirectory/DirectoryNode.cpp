@@ -237,13 +237,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     CStdString strFake;
     //  HACK: This item will stay on top of a list
     strFake.Format("%c", 0x01);
-    if (g_advancedSettings.m_bVideoLibraryAllItemsOnBottom)
+    if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)
       //  HACK: This item will stay on bottom of a list
       strFake.Format("%c", 0xff);
-     pItem->m_musicInfoTag.SetAlbum(strFake);
-    pItem->m_musicInfoTag.SetArtist(strFake);
-    pItem->m_musicInfoTag.SetTitle(strFake);
-    pItem->m_musicInfoTag.SetGenre(strFake);
+    pItem->GetVideoInfoTag()->m_strTitle = strFake;
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
     items.Add(pItem);

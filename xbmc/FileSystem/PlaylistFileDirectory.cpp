@@ -31,7 +31,7 @@ namespace DIRECTORY
       {
         CFileItem *item = new CFileItem(playlist[i]);
         item->m_iprogramCount = i;  // hack for playlist order
-        item->m_musicInfoTag.SetDuration(playlist[i].GetDuration());
+        item->GetMusicInfoTag()->SetDuration(playlist[i].GetDuration());
         items.Add(item);
       }
     }
