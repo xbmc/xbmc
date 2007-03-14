@@ -958,7 +958,19 @@
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
-			<visible>Control.IsVisible(54)</visible>
+			<visible>Control.IsVisible(54) + !ListItem.IsPlaying</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>320</posx>
+			<posy>473</posy>
+			<width>260</width>
+			<height>16</height>
+			<font>special13</font>
+			<scroll>true</scroll>
+			<info>ListItem.Label</info>
+			<textcolor>FFe2ff43</textcolor>
+			<visible>Control.IsVisible(54) + ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="label">

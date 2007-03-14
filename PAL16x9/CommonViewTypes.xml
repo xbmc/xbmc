@@ -905,10 +905,10 @@
 			</itemlayout>
 			<focusedlayout height="120" width="96">
 				<control type="image">
-					<width>96</width>
-					<height>120</height>
 					<posx>4</posx>
 					<posy>5</posy>
+					<width>96</width>
+					<height>120</height>
 					<texture>folder-focus.png</texture>
 					<animation effect="zoom" end="0,0,104,130" time="100">focus</animation>
 				</control>
@@ -958,7 +958,19 @@
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
-			<visible>Control.IsVisible(54)</visible>
+			<textcolor>FFe2ff43</textcolor>
+			<visible>Control.IsVisible(54) + ListItem.IsPlaying</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>350</posx>
+			<posy>472</posy>
+			<width>210</width>
+			<height>16</height>
+			<font>special13</font>
+			<scroll>true</scroll>
+			<info>ListItem.Label</info>
+			<visible>Control.IsVisible(54) + !ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="label">
@@ -1313,6 +1325,17 @@
 					<animation effect="slide" end="30,20" time="150">focus</animation>
 				</control>
 			</focusedlayout>
+		</control>
+		<control type="label">
+			<posx>260</posx>
+			<posy>415</posy>
+			<width>410</width>
+			<height>16</height>
+			<font>special13</font>
+			<scroll>true</scroll>
+			<info>ListItem.Label</info>
+			<visible>Control.IsVisible(56)</visible>
+			<include>contentpanelslide</include>
 		</control>
 		<control type="label">
 			<posx>260</posx>
