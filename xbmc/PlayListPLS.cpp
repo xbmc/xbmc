@@ -94,6 +94,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     if(strLine.Equals(START_PLAYLIST_MARKER))
       break;
 
+#if 0
     // try to parse as an url
     CURL url(strLine);
      
@@ -108,6 +109,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     // add this to playlist
     CPlayListItem newItem(strLine, strLine, 0);
     Add(newItem);
+#endif
   }
 
   int iMaxSize = 0;
