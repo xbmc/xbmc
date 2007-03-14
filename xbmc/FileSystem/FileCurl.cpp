@@ -261,6 +261,9 @@ void CFileCurl::SetCommonOptions()
   m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK"); 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP200ALIASES, m_curlAliasList); 
 
+  // never verify peer, we don't have any certificates to do this
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+
   // always allow gzip compression
   if( m_contentencoding.length() > 0 )
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, m_contentencoding.c_str());
