@@ -434,13 +434,12 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   if (dwNestedBeginCount) Begin();
   m_dwNestedBeginCount = dwNestedBeginCount;
 
+  // fixup quick access
+  memset(m_charquick, 0, sizeof(m_charquick));
   for(int i=0;i<m_numChars;i++)
-  {    
+  {
     if(m_char[i].letter<255)
-    {
-      m_charquick[m_char[i].letter] = NULL;
       m_charquick[m_char[i].letter] = m_char+i;
-    }
   }
 
   return m_char + low;
