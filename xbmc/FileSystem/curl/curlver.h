@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2005, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2006, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -28,7 +28,13 @@
 
 /* This is the version number of the libcurl package from which this header
    file origins: */
-#define LIBCURL_VERSION "7.14.0"
+#define LIBCURL_VERSION "7.16.1"
+
+/* The numeric version number is also available "in parts" by using these
+   defines: */
+#define LIBCURL_VERSION_MAJOR 7
+#define LIBCURL_VERSION_MINOR 16
+#define LIBCURL_VERSION_PATCH 1
 
 /* This is the numeric version of the libcurl version number, meant for easier
    parsing and comparions by programs. The LIBCURL_VERSION_NUM define will
@@ -37,19 +43,14 @@
          0xXXYYZZ
 
    Where XX, YY and ZZ are the main version, release and patch numbers in
-   hexadecimal. All three numbers are always represented using two digits.  1.2
-   would appear as "0x010200" while version 9.11.7 appears as "0x090b07".
+   hexadecimal (using 8 bits each). All three numbers are always represented
+   using two digits.  1.2 would appear as "0x010200" while version 9.11.7
+   appears as "0x090b07".
 
-   This 6-digit hexadecimal number does not show pre-release number, and it is
-   always a greater number in a more recent release. It makes comparisons with
-   greater than and less than work.
+   This 6-digit (24 bits) hexadecimal number does not show pre-release number,
+   and it is always a greater number in a more recent release. It makes
+   comparisons with greater than and less than work.
 */
-#define LIBCURL_VERSION_NUM 0x070e00
-
-/* The numeric version number is also available "in parts" by using these
-   defines: */
-#define LIBCURL_VERSION_MAJOR 7
-#define LIBCURL_VERSION_MINOR 14
-#define LIBCURL_VERSION_PATCH 0
+#define LIBCURL_VERSION_NUM 0x071001
 
 #endif /* __CURL_CURLVER_H */
