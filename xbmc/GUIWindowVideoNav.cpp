@@ -468,7 +468,7 @@ void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
   CStdString strPath,strFile;
   if (m_vecItems[iItem]->IsVideoDb())
   {
-    m_database.GetScraperForPath(m_vecItems[iItem]->m_musicInfoTag.GetAlbum(),info2.strPath,info2.strContent);
+    m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info2.strPath,info2.strContent);
   }
   else
   {
@@ -485,7 +485,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
 
   int iType=0;
-  if (pItem->m_musicInfoTag.GetTrackNumber() > 0 ) // episode
+  if (pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
     iType = 1;
   if (pItem->IsVideoDb()) // tvshow
     iType = 2;
@@ -507,8 +507,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   if (!pDialog->IsConfirmed()) return;
 
   CStdString path;
-  //m_database.GetFilePath(atol(pItem->m_strPath), path);
-  m_database.GetFilePath(atol(pItem->m_musicInfoTag.GetURL()), path, iType);
+  m_database.GetFilePath(atol(pItem->GetVideoInfoTag()->m_strSearchString), path, iType);
   if (path.IsEmpty()) return;
   if (iType == 0)
   {
@@ -544,7 +543,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   {
     while (iItem < items.Size())
     {
-      if (items[iItem]->m_musicInfoTag.Loaded() != (g_stSettings.m_iMyVideoWatchMode==2))
+      if (items[iItem]->GetVideoInfoTag()->m_bWatched != (g_stSettings.m_iMyVideoWatchMode==2))
         items.Remove(iItem);
       else
         iItem++;

@@ -41,9 +41,9 @@ bool CNSFFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &
     pItem->m_strPath.Format("%s%s-%i.nsfstream", strPath.c_str(),strFileName.c_str(),i+1);
     
     if (tag.Loaded())
-      pItem->m_musicInfoTag = tag;
+      *pItem->GetMusicInfoTag() = tag;
 
-    pItem->m_musicInfoTag.SetTrackNumber(i+1);
+    pItem->GetMusicInfoTag()->SetTrackNumber(i+1);
     items.Add(pItem);
     vecCacheItems.Add(new CFileItem(*pItem));
   }

@@ -285,7 +285,12 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return (PyObject*)InfoTagVideo_FromCIMDBMovie(g_infoManager.GetCurrentMovie());
+    const CIMDBMovie* movie = g_infoManager.GetCurrentMovieTag();
+    if (movie)
+      return (PyObject*)InfoTagVideo_FromCIMDBMovie(*movie);
+
+    CIMDBMovie movie2;
+    return (PyObject*)InfoTagVideo_FromCIMDBMovie(movie2);
 	}
 
 	// Player_GetMusicInfoTag
@@ -303,7 +308,12 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(g_infoManager.GetCurrentSongTag());
+    const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+    if (tag)
+      return (PyObject*)InfoTagMusic_FromCMusicInfoTag(*tag);
+
+    CMusicInfoTag tag2;
+    return (PyObject*)InfoTagMusic_FromCMusicInfoTag(tag2);
 	}
 
 	// Player_GetTotalTime

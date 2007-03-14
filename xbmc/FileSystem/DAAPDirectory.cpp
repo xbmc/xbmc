@@ -210,19 +210,17 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               pItem->m_bIsFolder = false;
               pItem->m_dwSize = m_currentSongItems[idx].songsize;
 
-              pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
-
-              
-              pItem->m_musicInfoTag.SetTitle(m_currentSongItems[idx].itemname);
-              pItem->m_musicInfoTag.SetArtist(m_currentSongItems[idx].songartist);
-              pItem->m_musicInfoTag.SetAlbum(m_currentSongItems[idx].songalbum);
+              pItem->GetMusicInfoTag()->SetURL(pItem->m_strPath);
+              pItem->GetMusicInfoTag()->SetTitle(m_currentSongItems[idx].itemname);
+              pItem->GetMusicInfoTag()->SetArtist(m_currentSongItems[idx].songartist);
+              pItem->GetMusicInfoTag()->SetAlbum(m_currentSongItems[idx].songalbum);
 
               //pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[idx].songtracknumber);
-              pItem->m_musicInfoTag.SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
+              pItem->GetMusicInfoTag()->SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
               //pItem->m_musicInfoTag.SetTrackNumber(j+1);
               //pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[idx].songdiscnumber);
-              pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[idx].songtime / 1000));
-              pItem->m_musicInfoTag.SetLoaded(true);
+              pItem->GetMusicInfoTag()->SetDuration((int) (m_currentSongItems[idx].songtime / 1000));
+              pItem->GetMusicInfoTag()->SetLoaded(true);
 
               items.Add(new CFileItem(*pItem));
               vecCacheItems.Add(pItem);
@@ -300,16 +298,16 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             pItem->m_bIsFolder = false;
             pItem->m_dwSize = m_currentSongItems[c].songsize;
 
-            pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
+            pItem->GetMusicInfoTag()->SetURL(pItem->m_strPath);
 
-            pItem->m_musicInfoTag.SetTitle(m_currentSongItems[c].itemname);
-            pItem->m_musicInfoTag.SetArtist(m_selectedArtist);
-            pItem->m_musicInfoTag.SetAlbum(m_selectedAlbum);
+            pItem->GetMusicInfoTag()->SetTitle(m_currentSongItems[c].itemname);
+            pItem->GetMusicInfoTag()->SetArtist(m_selectedArtist);
+            pItem->GetMusicInfoTag()->SetAlbum(m_selectedAlbum);
 
-            pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[c].songtracknumber);
-            pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[c].songdiscnumber);
-            pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[c].songtime / 1000));
-            pItem->m_musicInfoTag.SetLoaded(true);
+            pItem->GetMusicInfoTag()->SetTrackNumber(m_currentSongItems[c].songtracknumber);
+            pItem->GetMusicInfoTag()->SetPartOfSet(m_currentSongItems[c].songdiscnumber);
+            pItem->GetMusicInfoTag()->SetDuration((int) (m_currentSongItems[c].songtime / 1000));
+            pItem->GetMusicInfoTag()->SetLoaded(true);
 
             items.Add(new CFileItem(*pItem));
             vecCacheItems.Add(pItem);

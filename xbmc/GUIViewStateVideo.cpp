@@ -140,8 +140,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     case NODE_TYPE_SEASONS:
       {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "","%L",""));  // Filename, Duration | Foldername, empty
-        SetSortMethod(SORT_METHOD_LABEL);
+        AddSortMethod(SORT_METHOD_VIDEO_TITLE, 551, LABEL_MASKS("%L", "","%L",""));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_VIDEO_TITLE);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavSeasons.m_viewMode);
 
@@ -150,8 +150,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     case NODE_TYPE_TITLE_TVSHOWS:
       {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%E", "%L", "%E"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_TRACKNUM, 20360, LABEL_MASKS("%L", "%E", "%L", "%E"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_TRACKNUM, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
         SetSortMethod(SORT_METHOD_LABEL);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavTvShows.m_viewMode);
@@ -174,8 +174,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T","%R"));  // Filename, Duration | Foldername, empty
         else
           AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%N. %T", "%R"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_TRACKNUM,20359,LABEL_MASKS("%N. %T","%R"));
+        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%E. %T", "%R"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%E. %T","%R"));
         SetSortMethod(g_stSettings.m_viewStateVideoNavEpisodes.m_sortMethod);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavEpisodes.m_viewMode);

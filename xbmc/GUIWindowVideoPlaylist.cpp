@@ -365,8 +365,8 @@ void CGUIWindowVideoPlaylist::SavePlayList()
       CPlayList::CPlayListItem newItem;
       newItem.SetFileName(pItem->m_strPath);
       newItem.SetDescription(pItem->GetLabel());
-      if (pItem->m_musicInfoTag.Loaded())
-        newItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+      if (pItem->HasVideoInfoTag())
+        newItem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
       else
         newItem.SetDuration(0);
       playlist.Add(newItem);

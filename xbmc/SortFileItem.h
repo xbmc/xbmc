@@ -33,6 +33,10 @@ struct SSortFileItem
   static bool SongTitleAscendingNoThe(CFileItem *left, CFileItem *right);
   static bool SongTitleDescendingNoThe(CFileItem *left, CFileItem *right);
 
+  // Sort by Movie Title
+  static bool MovieTitleAscending(CFileItem *left, CFileItem *right);
+  static bool MovieTitleDescending(CFileItem *left, CFileItem *right);
+
   // Sort by album (then artist, then tracknumber)
   static bool SongAlbumAscending(CFileItem *left, CFileItem *right);
   static bool SongAlbumDescending(CFileItem *left, CFileItem *right);
@@ -52,6 +56,10 @@ struct SSortFileItem
   // Sort by track number
   static bool SongTrackNumAscending(CFileItem *left, CFileItem *right);
   static bool SongTrackNumDescending(CFileItem *left, CFileItem *right);
+
+  // Sort by episode number
+  static bool EpisodeNumAscending(CFileItem *left, CFileItem *right);
+  static bool EpisodeNumDescending(CFileItem *left, CFileItem *right);
 
   // Sort by song duration
   static bool SongDurationAscending(CFileItem *left, CFileItem *right);

@@ -317,7 +317,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
           item->m_bIsFolder = false;
           item->m_strPath = savemetaXBX;
         }
-        item->m_musicInfoTag.SetTitle(item->GetLabel());  // Note we set ID as the TITLE to save code makign a SORT ID and a ID varible to the FileItem
+        item->GetMusicInfoTag()->SetTitle(item->GetLabel());  // Note we set ID as the TITLE to save code makign a SORT ID and a ID varible to the FileItem
         item->SetLabel(strDescription);
         item->SetIconImage("defaultProgram.png");
         CGUIViewState::LABEL_MASKS labelMasks;
