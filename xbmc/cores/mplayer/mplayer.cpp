@@ -457,6 +457,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   {
     CLog::Log(LOGINFO, "Flipping bi-directional subtitles disabled");
     m_vecOptions.push_back("-noflip-hebrew");
+    m_vecOptions.push_back("-noflip-hebrew-commas");
   }
 
   
