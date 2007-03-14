@@ -369,6 +369,8 @@ public:
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &path);
   static void ClearFileItemCache();
+
+  static void BootToDash();
 private:
   static HANDLE m_hCurrentCpuUsage;
 };
