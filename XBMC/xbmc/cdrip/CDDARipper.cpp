@@ -210,9 +210,9 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   }
 
   // if album name is set, then we use this as the directory to place the new file in.
-  if (pItem->m_musicInfoTag.GetAlbum().size() > 0)
+  if (pItem->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strDirectory += CUtil::MakeLegalFileName(pItem->m_musicInfoTag.GetAlbum().c_str(), false, bIsFATX);
+    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), false, bIsFATX);
     CUtil::AddDirectorySeperator(strDirectory);
   }
 
@@ -222,7 +222,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   CStdString strFile;
   CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem, bIsFATX), strFile);
 
-  return Rip(pItem->m_strPath, strFile.c_str(), pItem->m_musicInfoTag);
+  return Rip(pItem->m_strPath, strFile.c_str(), *pItem->GetMusicInfoTag());
 }
 
 bool CCDDARipper::RipCD()
@@ -266,8 +266,8 @@ bool CCDDARipper::RipCD()
     auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
     if (NULL != pLoader.get())
     {
-      pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag); // get tag from file
-      if (!pItem->m_musicInfoTag.Loaded())
+      pLoader->Load(pItem->m_strPath, *pItem->GetMusicInfoTag()); // get tag from file
+      if (!pItem->GetMusicInfoTag()->Loaded())
         break;  //  No CDDB info available
     }
   }
@@ -275,12 +275,12 @@ bool CCDDARipper::RipCD()
   // if album name from first item is set,
   // then we use this as the directory to place the new file in.
   CStdString strAlbumDir;
-  if (vecItems[0]->m_musicInfoTag.GetAlbum().size() > 0)
+  if (vecItems[0]->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
     if (bIsFATX)
-      strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->m_musicInfoTag.GetAlbum().c_str(), false, bIsFATX);
+      strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), false, bIsFATX);
     else
-      strAlbumDir=vecItems[0]->m_musicInfoTag.GetAlbum();
+      strAlbumDir=vecItems[0]->GetMusicInfoTag()->GetAlbum();
   }
 
     // No legal fatx directory name or no album in tag
@@ -331,7 +331,7 @@ bool CCDDARipper::RipCD()
       continue;
 
     // return false if Rip returned false (this means an error or the user cancelled
-    if (!Rip(vecItems[i]->m_strPath, strFile.c_str(), vecItems[i]->m_musicInfoTag)) return false;
+    if (!Rip(vecItems[i]->m_strPath, strFile.c_str(), *vecItems[i]->GetMusicInfoTag())) return false;
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp;

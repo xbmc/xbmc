@@ -71,14 +71,14 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
     return false;
 
-  if (pItem->m_musicInfoTag.Loaded())
+  if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
     return true;
 
   CFileItem* mapItem=NULL;
   // first check the cached item
-  if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->m_musicInfoTag.Loaded())
+  if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
   { // Query map if we previously cached the file on HD
-    pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
+    *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
     return true;
   }
@@ -97,7 +97,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   if ((song=m_songsMap.Find(pItem->m_strPath))!=NULL)
   {  // Have we loaded this item from database before
-    pItem->m_musicInfoTag.SetSong(*song);
+    pItem->GetMusicInfoTag()->SetSong(*song);
     pItem->SetThumbnailImage(song->strThumb);
   }
   else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())
@@ -107,7 +107,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
     if (NULL != pLoader.get())
       // get tag
-      pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag);
+      pLoader->Load(pItem->m_strPath, *pItem->GetMusicInfoTag());
     m_tagReads++;
   }
 

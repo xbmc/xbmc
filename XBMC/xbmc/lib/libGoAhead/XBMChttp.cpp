@@ -433,8 +433,6 @@ void SetCurrentMediaItem(CFileItem& newItem)
   if (!newItem.IsAudio() )
     return;
 
-  //  Get a reference to the item's tag
-  CMusicInfoTag& tag=newItem.m_musicInfoTag;
   //  we have a audio file.
   //  Look if we have this file in database...
   bool bFound=false;
@@ -443,7 +441,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
   {
     CSong song;
     bFound=musicdatabase.GetSongByFileName(newItem.m_strPath, song);
-    tag.SetSong(song);
+    newItem.GetMusicInfoTag()->SetSong(song);
     musicdatabase.Close();
   }
   if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
@@ -452,13 +450,13 @@ void SetCurrentMediaItem(CFileItem& newItem)
     auto_ptr<IMusicInfoTagLoader> pLoader(CMusicInfoTagLoaderFactory::CreateLoader(newItem.m_strPath));
     //  Do we have a tag loader for this file type?
     if (pLoader.get() != NULL)
-      pLoader->Load(newItem.m_strPath,tag);
+      pLoader->Load(newItem.m_strPath,*newItem.GetMusicInfoTag());
   }
 
   //  If we have tag information, ...
-  if (tag.Loaded())
+  if (newItem.HasMusicInfoTag() && newItem.GetMusicInfoTag()->Loaded())
   {
-    g_infoManager.SetCurrentSongTag(tag);
+    g_infoManager.SetCurrentSongTag(*newItem.GetMusicInfoTag());
   }
 }
 
@@ -1041,7 +1039,8 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     delete pItem;
     return SetResponse(openTag+"Error:Not Audio");
   }
-  CMusicInfoTag& tag=pItem->m_musicInfoTag;
+
+  CMusicInfoTag* tag=pItem->GetMusicInfoTag();
   bool bFound=false;
   CSong song;
   CMusicDatabase musicdatabase;
@@ -1054,14 +1053,14 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
   {
     SYSTEMTIME systime;
     systime.wYear=song.iYear;
-    tag.SetReleaseDate(systime);
-    tag.SetTrackNumber(song.iTrack);
-    tag.SetAlbum(song.strAlbum);
-    tag.SetArtist(song.strArtist);
-    tag.SetGenre(song.strGenre);
-    tag.SetTitle(song.strTitle);
-    tag.SetDuration(song.iDuration);
-    tag.SetLoaded(true);
+    tag->SetReleaseDate(systime);
+    tag->SetTrackNumber(song.iTrack);
+    tag->SetAlbum(song.strAlbum);
+    tag->SetArtist(song.strArtist);
+    tag->SetGenre(song.strGenre);
+    tag->SetTitle(song.strTitle);
+    tag->SetDuration(song.iDuration);
+    tag->SetLoaded(true);
   }
   else
     if (g_guiSettings.GetBool("musicfiles.usetags"))
@@ -1071,8 +1070,8 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
       if (NULL != pLoader.get())
       {            
         // get id3tag
-        if ( !pLoader->Load(pItem->m_strPath,tag))
-          tag.SetLoaded(false);
+        if ( !pLoader->Load(pItem->m_strPath,*tag))
+          tag->SetLoaded(false);
       }
       else
       {
@@ -1084,20 +1083,20 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error:System not set to use tags");
       
     }
-  if (tag.Loaded())
+  if (tag->Loaded())
   {
     CStdString output, tmp;
 
-    output = openTag+"Artist:" + tag.GetArtist();
-    output += closeTag+openTag+"Album:" + tag.GetAlbum();
-    output += closeTag+openTag+"Title:" + tag.GetTitle();
-    tmp.Format("%i", tag.GetTrackNumber());
+    output = openTag+"Artist:" + tag->GetArtist();
+    output += closeTag+openTag+"Album:" + tag->GetAlbum();
+    output += closeTag+openTag+"Title:" + tag->GetTitle();
+    tmp.Format("%i", tag->GetTrackNumber());
     output += closeTag+openTag+"Track number:" + tmp;
-    tmp.Format("%i", tag.GetDuration());
+    tmp.Format("%i", tag->GetDuration());
     output += closeTag+openTag+"Duration:" + tmp;
-    output += closeTag+openTag+"Genre:" + tag.GetGenre();
+    output += closeTag+openTag+"Genre:" + tag->GetGenre();
     SYSTEMTIME stTime;
-    tag.GetReleaseDate(stTime);
+    tag->GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
     output += closeTag+openTag+"Release year:" + tmp;
     pItem->SetMusicThumb();
@@ -1238,27 +1237,27 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     if (g_application.IsPlayingVideo())
     { // Video information
       output+=closeTag+openTag+"Type"+tag+":Video" ;
-      const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
-      if (!tagVal.m_strTitle.IsEmpty())
-        output+=closeTag+openTag+"Title"+tag+":"+tagVal.m_strTitle ;
-      if (!tagVal.m_strGenre.IsEmpty())
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.m_strGenre;
-	  output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+      const CIMDBMovie* tagVal=g_infoManager.GetCurrentMovieTag();
+      if (tagVal && !tagVal->m_strTitle.IsEmpty())
+        output+=closeTag+openTag+"Title"+tag+":"+tagVal->m_strTitle ;
+      if (tagVal && !tagVal->m_strGenre.IsEmpty())
+        output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
+	    output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
     }
     else if (g_application.IsPlayingAudio())
     { // Audio information
       output+=closeTag+openTag+"Type"+tag+":Audio";
-      const CMusicInfoTag& tagVal=g_infoManager.GetCurrentSongTag();
-      if (!tagVal.GetTitle().IsEmpty())
-        output+=closeTag+openTag+"Title"+tag+":"+tagVal.GetTitle();
-      if (!tagVal.GetArtist().IsEmpty())
-        output+=closeTag+openTag+"Artist"+tag+":"+tagVal.GetArtist();
-      if (!tagVal.GetAlbum().IsEmpty())
-        output+=closeTag+openTag+"Album"+tag+":"+tagVal.GetAlbum();
-      if (!tagVal.GetGenre().IsEmpty())
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.GetGenre();
-      if (!tagVal.GetYear().IsEmpty())
-        output+=closeTag+openTag+"Year"+tag+":"+tagVal.GetYear();
+      const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
+      if (tagVal && !tagVal->GetTitle().IsEmpty())
+        output+=closeTag+openTag+"Title"+tag+":"+tagVal->GetTitle();
+      if (tagVal && !tagVal->GetArtist().IsEmpty())
+        output+=closeTag+openTag+"Artist"+tag+":"+tagVal->GetArtist();
+      if (tagVal && !tagVal->GetAlbum().IsEmpty())
+        output+=closeTag+openTag+"Album"+tag+":"+tagVal->GetAlbum();
+      if (tagVal && !tagVal->GetGenre().IsEmpty())
+        output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
+      if (tagVal && !tagVal->GetYear().IsEmpty())
+        output+=closeTag+openTag+"Year"+tag+":"+tagVal->GetYear();
       // TODO: Should this be a tagitem member?? (wouldn't have vbr updates though)
       CStdString bitRate(g_infoManager.GetMusicLabel(MUSICPLAYER_BITRATE)); 
       // TODO: This should be a static tag item

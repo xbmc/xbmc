@@ -4102,7 +4102,8 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
     if (IsPlayingAudio())
     {
       //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
-      iDuration = m_itemCurrentFile.m_musicInfoTag.GetDuration();
+      if (m_itemCurrentFile.HasMusicInfoTag())
+        iDuration = m_itemCurrentFile.GetMusicInfoTag()->GetDuration();
     }
     if (IsPlaying() && iDuration <= 0)
     {
@@ -4263,13 +4264,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
             m_pCdgParser->Stop();
           if (m_itemCurrentFile.IsMusicDb())
           {
-            if (!m_itemCurrentFile.m_musicInfoTag.Loaded())
+            if (!m_itemCurrentFile.HasMusicInfoTag() || !m_itemCurrentFile.GetMusicInfoTag()->Loaded())
             {
               IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile.m_strPath);
-              tagloader->Load(m_itemCurrentFile.m_strPath,m_itemCurrentFile.m_musicInfoTag);
+              tagloader->Load(m_itemCurrentFile.m_strPath,*m_itemCurrentFile.GetMusicInfoTag());
               delete tagloader;
             }
-            m_pCdgParser->Start(m_itemCurrentFile.m_musicInfoTag.GetURL());
+            m_pCdgParser->Start(m_itemCurrentFile.GetMusicInfoTag()->GetURL());
           }
           else
             m_pCdgParser->Start(m_itemCurrentFile.m_strPath);
@@ -4992,22 +4993,24 @@ void CApplication::CheckAudioScrobblerStatus()
 
   //  Submit the song if 50% or 240 seconds are played
   double dTime=(double)g_infoManager.GetPlayTime()/1000.0;
-  const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
-  double dLength=(tag.GetDuration()>0) ? (tag.GetDuration()/2.0f) : (GetTotalTime()/2.0f);
-  if (!tag.Loaded() || dLength==0.0f)
+  const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
+  double dLength=0.f;
+  if (tag)
+    dLength=(tag->GetDuration()>0) ? (tag->GetDuration()/2.0f) : (GetTotalTime()/2.0f);
+
+  if (!tag || !tag->Loaded() || dLength==0.0f)
   {
     CScrobbler::GetInstance()->SetSubmitSong(false);
     return;
   }
   if ((dLength)>240.0f)
     dLength=240.0f;
-
   int iTimeTillSubmit=(int)(dLength-dTime);
   CScrobbler::GetInstance()->SetSecsTillSubmit(iTimeTillSubmit);
 
   if (dTime>dLength)
   {
-    CScrobbler::GetInstance()->AddSong(tag);
+    CScrobbler::GetInstance()->AddSong(*tag);
     CScrobbler::GetInstance()->SetSubmitSong(false);
   }
 }

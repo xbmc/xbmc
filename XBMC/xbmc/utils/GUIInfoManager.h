@@ -165,6 +165,12 @@
 #define VIDEOPLAYER_PLAYLISTPOS     263
 #define VIDEOPLAYER_EVENT           264
 #define VIDEOPLAYER_ORIGINALTITLE   265
+#define VIDEOPLAYER_PLOT            266
+#define VIDEOPLAYER_PLOT_OUTLINE    267
+#define VIDEOPLAYER_EPISODE         268
+#define VIDEOPLAYER_SEASON          269
+#define VIDEOPLAYER_RATING          270
+#define VIDEOPLAYER_TVSHOW          271
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -193,7 +199,12 @@
 #define LISTITEM_DURATION           327
 #define LISTITEM_ISPLAYING          328
 #define LISTITEM_ISSELECTED         329
-#define LISTITEM_END                329
+#define LISTITEM_PLOT               330
+#define LISTITEM_PLOT_OUTLINE       331
+#define LISTITEM_EPISODE            332
+#define LISTITEM_SEASON             333
+#define LISTITEM_TVSHOW             334
+#define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -359,13 +370,32 @@ public:
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
-  void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentFile.m_musicInfoTag = tag; m_currentFile.m_lStartOffset = 0;};
-  const CMusicInfoTag &GetCurrentSongTag() const { return m_currentFile.m_musicInfoTag; };
-
-  // Current movie stuff
   void SetCurrentMovie(CFileItem &item);
-  void SetCurrentMovieTag(const CIMDBMovie &movie) { m_currentMovie = movie; }
-  const CIMDBMovie &GetCurrentMovie() const { return m_currentMovie; };
+  void SetCurrentSongTag(const CMusicInfoTag &tag) 
+  {     
+    *m_currentFile.GetMusicInfoTag() = tag; 
+    m_currentFile.m_lStartOffset = 0;
+  };
+  void SetCurrentVideoTag(const CIMDBMovie &tag) 
+  {     
+    *m_currentFile.GetVideoInfoTag() = tag; 
+    m_currentFile.m_lStartOffset = 0;
+  };
+
+  const CMusicInfoTag *GetCurrentSongTag() const 
+  { 
+    if (m_currentFile.HasMusicInfoTag())
+      return m_currentFile.GetMusicInfoTag(); 
+
+    return NULL;
+  };
+  const CIMDBMovie* GetCurrentMovieTag() const 
+  { 
+    if (m_currentFile.HasVideoInfoTag())
+      return m_currentFile.GetVideoInfoTag(); 
+    
+    return NULL;
+  };
 
   CStdString GetMusicLabel(int item);
   CStdString GetVideoLabel(int item);
@@ -436,7 +466,6 @@ protected:
   
   // Current playing stuff
   CFileItem m_currentFile;
-  CIMDBMovie m_currentMovie;
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
