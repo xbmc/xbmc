@@ -379,7 +379,6 @@ bool CIoSupport::DriveExists(char cDriveLetter)
   HANDLE hTemp;
   OBJECT_ATTRIBUTES oa;
   IO_STATUS_BLOCK iosb;
-  bool retval;
 
   sprintf(szDrive, "\\??\\%c:", cDriveLetter);
   RtlInitAnsiString(&drive_string, szDrive);
@@ -411,7 +410,6 @@ bool CIoSupport::PartitionExists(int nPartition)
   HANDLE hTemp;
   OBJECT_ATTRIBUTES oa;
   IO_STATUS_BLOCK iosb;
-  bool retval;
 
   sprintf(szPartition, "\\Device\\Harddisk0\\Partition%u", nPartition);
   RtlInitAnsiString(&part_string, szPartition);
