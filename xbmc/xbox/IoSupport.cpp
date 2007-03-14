@@ -69,18 +69,8 @@ stDriveMapping driveMapping[] =
 #include "../../Tools/Win32/XBMC_PC.h"
 #endif
 #define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
+PVOID CIoSupport::m_rawXferBuffer;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CIoSupport::CIoSupport()
-{
-}
-
-CIoSupport::~CIoSupport()
-{
-}
 
 // cDriveLetter e.g. 'D'
 // szDevice e.g. "Cdrom0" or "Harddisk0\Partition6"
@@ -220,21 +210,17 @@ HANDLE CIoSupport::OpenCDROM()
   HANDLE hDevice;
 
 #ifdef _XBOX
-  NTSTATUS error;
   IO_STATUS_BLOCK status;
   ANSI_STRING filename;
   OBJECT_ATTRIBUTES attributes;
   RtlInitAnsiString(&filename, "\\Device\\Cdrom0");
   InitializeObjectAttributes(&attributes, &filename, OBJ_CASE_INSENSITIVE, NULL);
-  if (!NT_SUCCESS(error = NtCreateFile(&hDevice,
-                                       GENERIC_READ | SYNCHRONIZE | FILE_READ_ATTRIBUTES,
-                                       &attributes,
-                                       &status,
-                                       NULL,
-                                       0,
-                                       FILE_SHARE_READ,
-                                       FILE_OPEN,
-                                       FILE_NON_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT)))
+  if (!NT_SUCCESS(NtOpenFile(&hDevice,
+                             GENERIC_READ | SYNCHRONIZE | FILE_READ_ATTRIBUTES,
+                             &attributes,
+                             &status,
+                             FILE_SHARE_READ,
+                             FILE_NON_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT)))
   {
     return NULL;
   }
@@ -246,6 +232,16 @@ HANDLE CIoSupport::OpenCDROM()
 
 #endif
   return hDevice;
+}
+
+void CIoSupport::AllocReadBuffer()
+{
+  m_rawXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
+}
+
+void CIoSupport::FreeReadBuffer()
+{
+  GlobalFree(m_rawXferBuffer);
 }
 
 INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
@@ -261,8 +257,11 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   {
     SetFilePointer(hDevice, Displacement.LowPart, &Displacement.HighPart, FILE_BEGIN);
 
-    if (ReadFile(hDevice, lpczBuffer, dwSectorSize, &dwRead, NULL))
+    if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
+    {
+      memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
       return dwRead;
+    }
   }
 
   OutputDebugString("CD Read error\n");
@@ -287,11 +286,14 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
                           IOCTL_CDROM_RAW_READ,
                           &rawRead,
                           sizeof(RAW_READ_INFO),
-                          lpczBuffer,
+                          m_rawXferBuffer,
                           RAW_SECTOR_SIZE,
                           &dwBytesReturned,
                           NULL ) != 0 )
+    {
+      memcpy(lpczBuffer, m_rawXferBuffer, MODE2_DATA_SIZE);
       return MODE2_DATA_SIZE;
+    }
     else
     {
       int iErr = GetLastError();
@@ -319,11 +321,14 @@ INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
                           IOCTL_CDROM_RAW_READ,
                           &rawRead,
                           sizeof(RAW_READ_INFO),
-                          lpczBuffer,
+                          m_rawXferBuffer,
                           sizeof(RAW_SECTOR_SIZE),
                           &dwBytesReturned,
                           NULL ) != 0 )
+    {
+      memcpy(lpczBuffer, m_rawXferBuffer, RAW_SECTOR_SIZE);
       return RAW_SECTOR_SIZE;
+    }
   }
 #endif
   return -1;
