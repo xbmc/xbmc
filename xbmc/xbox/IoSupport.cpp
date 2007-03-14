@@ -397,7 +397,20 @@ bool CIoSupport::DriveExists(char cDriveLetter)
 
   return false;
 #else
-  return false;
+  cDriveLetter = toupper(cDriveLetter);
+
+  if (cDriveLetter < 'A' || cDriveLetter > 'Z')
+    return false;
+
+  DWORD drivelist;
+  DWORD bitposition = cDriveLetter - 'A';
+
+  drivelist = GetLogicalDrives();
+
+  if (!drivelist)
+    return false;
+
+  return (drivelist >> bitposition) & 1;
 #endif
 }
 
