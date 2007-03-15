@@ -24,7 +24,7 @@ protected:
   void SetupShares();
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
-  virtual void FormatItemLabels();
+  virtual void FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
