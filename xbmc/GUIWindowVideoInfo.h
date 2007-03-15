@@ -14,7 +14,7 @@ public:
   virtual ~CGUIWindowVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetMovie(CIMDBMovie& movie, const CFileItem *item);
+  void SetMovie(CVideoInfoTag& movie, const CFileItem *item);
   bool NeedRefresh() const;
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
 
@@ -32,7 +32,7 @@ protected:
   void Play(bool resume = false);
   bool DownloadThumbnail(const CStdString &thumb);
   void OnGetThumb();
-  CIMDBMovie m_Movie;
+  CVideoInfoTag m_Movie;
   CFileItem m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;

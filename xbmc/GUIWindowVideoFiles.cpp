@@ -482,7 +482,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
         {
           lTvShowId = lTvShowId2;
           // fetch episode guide
-          CIMDBMovie details;
+          CVideoInfoTag details;
           m_database.GetTvShowInfo(pItem->m_strPath,details,lTvShowId);
           CIMDBUrl url;
           CScraperUrl Url;
@@ -585,7 +585,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
                 if (nfoReader.m_strScraper == "NFO")
                 {
                   CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
-                  CIMDBMovie movieDetails;
+                  CVideoInfoTag movieDetails;
                   nfoReader.GetDetails(movieDetails);
                   AddMovieAndGetThumb(pItem, "movies", movieDetails, -1);
                   continue;
@@ -645,7 +645,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
             if (info.strContent.Equals("tvshows"))
             {
               // fetch episode guide
-              CIMDBMovie details;
+              CVideoInfoTag details;
               m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
               CIMDBUrl url;
               url.Parse(details.m_strEpisodeGuide);
@@ -935,7 +935,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem, bool bContextDriven /* = true 
 long CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info)
 {
   CIMDB IMDB;
-  CIMDBMovie movieDetails;
+  CVideoInfoTag movieDetails;
   IMDB.SetScraperInfo(info);
 
   movieDetails.m_strSearchString = pItem->m_strPath;
