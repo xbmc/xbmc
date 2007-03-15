@@ -225,7 +225,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album, const CFileItem *item)
+void CGUIWindowVideoInfo::SetMovie(CVideoInfoTag& album, const CFileItem *item)
 {
   m_Movie = album;
   m_movieItem = *item;
@@ -273,7 +273,7 @@ void CGUIWindowVideoInfo::Update()
 
   // setup cast list
   m_vecStrCast.clear();
-  for (CIMDBMovie::iCast it = m_Movie.m_cast.begin(); it != m_Movie.m_cast.end(); ++it)
+  for (CVideoInfoTag::iCast it = m_Movie.m_cast.begin(); it != m_Movie.m_cast.end(); ++it)
   {
     CStdString character;
     if (it->second.IsEmpty())
@@ -479,7 +479,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
     iType = 2;
   
   long lMovieId = atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str());
-  CIMDBMovie movieDetails;
+  CVideoInfoTag movieDetails;
   if (iType == 0)
     m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
   if (iType == 1)

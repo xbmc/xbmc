@@ -7,7 +7,7 @@
 #include "song.h"
 #include "utils/archive.h"
 #include "DateTime.h"
-#include "utils/imdb.h"
+#include "VideoInfoTag.h"
 
 using namespace MUSIC_INFO;
 
@@ -65,7 +65,7 @@ public:
   CFileItem(const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
-  CFileItem(const CIMDBMovie& movie);
+  CFileItem(const CVideoInfoTag& movie);
   CFileItem(const CShare& share);
   virtual ~CFileItem(void);
 
@@ -152,15 +152,15 @@ public:
     return m_videoInfoTag != NULL;
   }
   
-  inline CIMDBMovie* GetVideoInfoTag()
+  inline CVideoInfoTag* GetVideoInfoTag()
   {
     if (!m_videoInfoTag)
-      m_videoInfoTag = new CIMDBMovie;
+      m_videoInfoTag = new CVideoInfoTag;
 
     return m_videoInfoTag;
   }
   
-  inline const CIMDBMovie* GetVideoInfoTag() const
+  inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
   }
@@ -233,7 +233,7 @@ private:
   bool m_bLabelPreformated;
   CStdString m_contenttype;
   CMusicInfoTag* m_musicInfoTag;
-  CIMDBMovie* m_videoInfoTag;
+  CVideoInfoTag* m_videoInfoTag;
 };
 
 /*!
@@ -326,6 +326,7 @@ public:
   void SetProgramThumbs();
   void SetGameSavesThumbs();
 
+  void Swap(unsigned int item1, unsigned int item2);
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   VECFILEITEMS m_items;

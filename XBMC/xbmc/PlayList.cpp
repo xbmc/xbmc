@@ -104,7 +104,7 @@ void CPlayList::CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
   *GetMusicInfoTag() = tag;
 }
 
-void CPlayList::CPlayListItem::SetVideoTag(const CIMDBMovie &tag)
+void CPlayList::CPlayListItem::SetVideoTag(const CVideoInfoTag &tag)
 {
   *GetVideoInfoTag() = tag;
 }
@@ -124,7 +124,7 @@ const CMusicInfoTag* CPlayList::CPlayListItem::GetMusicTag() const
   return GetMusicInfoTag();
 }
 
-const CIMDBMovie* CPlayList::CPlayListItem::GetVideoTag() const
+const CVideoInfoTag* CPlayList::CPlayListItem::GetVideoTag() const
 {
   return GetVideoInfoTag();
 }
