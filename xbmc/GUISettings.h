@@ -51,44 +51,6 @@
 #define LED_COLOUR_CYCLE   4
 #define LED_COLOUR_OFF    5
 
-#define SYS_DAY_SUNDAY		0
-#define SYS_DAY_MONDAY		1
-#define SYS_DAY_TUESDAY		2
-#define SYS_DAY_WEDNESDAY	3
-#define SYS_DAY_THURSDAY	4
-#define SYS_DAY_FRIDAY		5
-#define SYS_DAY_SATURDAY	6
-
-#define SYS_MONTH_JANUARY	1
-#define SYS_MONTH_FEBRUARY	2
-#define SYS_MONTH_MARCH		3
-#define SYS_MONTH_APRIL		4
-#define SYS_MONTH_MAY		5
-#define SYS_MONTH_JUNE		6
-#define SYS_MONTH_JULY		7
-#define SYS_MONTH_AUGUST	8
-#define SYS_MONTH_SEPTEMBER	9
-#define SYS_MONTH_OCTOBER	10
-#define SYS_MONTH_NOVEMBER	11
-#define SYS_MONTH_DECEMBER	12
-
-// Add SMB Shares to [1+2+4+8=15]
-#define SMB_SHARE_MUSIC         0 // Musik
-#define SMB_SHARE_VIDEO         1 // Video
-#define SMB_SHARE_PICTURES      2 // Pictures
-#define SMB_SHARE_FILES         3 // Files
-#define SMB_SHARE_MU_VI         4 // Musik & Video
-#define SMB_SHARE_MU_PIC        5 // Musik & Picture
-#define SMB_SHARE_MU_FIL        6 // Musik & Files
-#define SMB_SHARE_VI_PIC        7 // Video & Pcitures
-#define SMB_SHARE_VI_FIL        8 // Video & Files
-#define SMB_SHARE_PIC_FIL       9 // Picture & Files
-#define SMB_SHARE_MU_VI_PIC     10 // Musik & Video & Pictures
-#define SMB_SHARE_FIL_VI_MU     11 // Files & Video & Musik
-#define SMB_SHARE_FIL_PIC_MU    12 // Files & Pictures & Musik
-#define SMB_SHARE_FIL_PIC_VI    13 // Musik & Picture & Video
-#define SMB_SHARE_MU_VI_PIC_FIL 14 // Musik & Video & Pictures & Files
-
 #define FRAME_RATE_LEAVE_AS_IS  0
 #define FRAME_RATE_CONVERT      1
 #define FRAME_RATE_USE_PAL60    2
