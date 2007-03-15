@@ -473,11 +473,11 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
-    iType = 1;
-  if (pItem->IsVideoDb()) // tvshow
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
-  
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+    iType = 1;
+
   long lMovieId = atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str());
   CVideoInfoTag movieDetails;
   if (iType == 0)
