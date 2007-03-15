@@ -72,7 +72,7 @@
 #define SYS_MONTH_NOVEMBER	11
 #define SYS_MONTH_DECEMBER	12
 
-// GeminiServer: Add SMB Shares to [1+2+4+8=15]
+// Add SMB Shares to [1+2+4+8=15]
 #define SMB_SHARE_MUSIC         0 // Musik
 #define SMB_SHARE_VIDEO         1 // Video
 #define SMB_SHARE_PICTURES      2 // Pictures

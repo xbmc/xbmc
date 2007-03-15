@@ -219,7 +219,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // load our menu
     pMenu->Initialize();
 
-    // GeminiServer: DVD Drive Context menu stuff
+    // DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
     int btn_Rip=0;

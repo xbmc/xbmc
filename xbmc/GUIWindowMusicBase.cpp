@@ -1301,7 +1301,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     // enable Rip CD Audio or Track button if we have an audio disc
     if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
     {
-      // GeminiServer those cd's can also include Audio Tracks: CDExtra and MixedMode!
+      // those cds can also include Audio Tracks: CDExtra and MixedMode!
       CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
       if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
       {
