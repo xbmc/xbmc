@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmcscripts.com-->
 <!--Date of translation: 03/15/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8161-->
+<!--Based on english strings version 8187-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -430,7 +430,7 @@
   <string id="522">Ta bort källa</string>
   <string id="523">Byt media</string>
   <string id="524">Välj spellista</string>
-  <string id="525">Ny spellista</string>
+  <string id="525">Ny spellista...</string>
   <string id="526">Lägg till i spellista</string>
   <string id="527">Lägg till i databas</string>
   <string id="528">Lägg in Titel</string>
@@ -468,6 +468,7 @@
   <string id="583">Kom ihåg visningslägen för olika mappar</string>
   <string id="584">Stigande</string>
   <string id="585">Fallande</string>
+  <string id="586">Redigera spellista</string>
   <string id="588">Avbryt Festläge</string>
   <string id="589">Festläge</string>
   <string id="590">Slumpmässig</string>
@@ -712,6 +713,7 @@
   <string id="10500">Musik/Spellista</string>
   <string id="10501">Musik/Filer</string>
   <string id="10502">Musik/Album</string>
+  <string id="10503">Spellistsredigerare</string>
   <string id="10504">Topp 100 låtar</string>
   <string id="10505">Topp 100 album</string>
   <string id="10506">Program</string>
