@@ -743,7 +743,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     // Normal directory items
     strHistoryString = pItem->m_strPath;
 
-    if (CUtil::HasSlashAtEnd(strHistoryString))
+    while (CUtil::HasSlashAtEnd(strHistoryString)) // to match CDirectoryHistory::GetSelectedItem
       strHistoryString.Delete(strHistoryString.size() - 1);
   }
   strHistoryString.ToLower();
