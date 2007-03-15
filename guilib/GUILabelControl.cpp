@@ -75,7 +75,11 @@ void CGUILabelControl::Render()
         if (m_label.align & XBFONT_RIGHT)
           fPosX -= m_width;
 
-        m_label.font->DrawScrollingText(fPosX, m_posY, m_label.angle, &m_label.textColor, 1, m_label.shadowColor, strLabelUnicode, m_width, m_ScrollInfo);
+        float fPosY = m_posY;
+        if (m_label.align & XBFONT_CENTER_Y)
+          fPosY += (m_height - height) * 0.5f;  // adjust for height of text as well, as DrawScrollingText doesn't do it for us
+
+        m_label.font->DrawScrollingText(fPosX, fPosY, m_label.angle, &m_label.textColor, 1, m_label.shadowColor, strLabelUnicode, m_width, m_ScrollInfo);
       }
     }
     if (bNormalDraw)
