@@ -1726,7 +1726,7 @@ void CApplication::StartServices()
 }
 void CApplication::CheckDate()
 {
-  CLog::Log(LOGNOTICE, "Checking the Date!"); //GeminiServer Date Check
+  CLog::Log(LOGNOTICE, "Checking the Date!");
   // Check the Date: Year, if it is  above 2099 set to 2004!
   SYSTEMTIME CurTime;
   SYSTEMTIME NewTime;
@@ -3091,7 +3091,7 @@ void CApplication::Stop()
 {
   try
   {
-    CLog::Log(LOGNOTICE, "Storing total System Uptime");  //GeminiServer: Total System Up-Running Time
+    CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
     // Update the settings information (volume, uptime etc. need saving)
@@ -4561,7 +4561,7 @@ void CApplication::ProcessSlow()
   //  check if we can unload any unreferenced dlls or sections
   CSectionLoader::UnloadDelayed();
 
-  // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
+  // Xbox Autodetection - Send in X sec PingTime Interval
   if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
     CUtil::XboxAutoDetection();
 
@@ -4579,7 +4579,7 @@ void CApplication::ProcessSlow()
   }
 }
 
-// GeminiServer: Global Idle Time in Seconds
+// Global Idle Time in Seconds
 // idle time will be resetet if on any OnKey()
 // int return: system Idle time in seconds! 0 is no idle!
 int CApplication::GlobalIdleTime()
@@ -5048,32 +5048,6 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return true;
   }
   return false;
-}
-
-bool CApplication::SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed, int iDuration)
-{
-#ifdef HAS_GAMEPAD
-  // GeminiServer: Controll(Rumble): Controller Motors.
-  for( DWORD i=0; i<4; i++ )
-  {
-    if( m_Gamepad[i].hDevice )
-    {
-      if( m_Gamepad[i].Feedback.Header.dwStatus != ERROR_IO_PENDING )
-      {
-        m_Gamepad[i].Feedback.Rumble.wLeftMotorSpeed  = WORD( m_fLeftMotorSpeed  * 65535.0f );
-        m_Gamepad[i].Feedback.Rumble.wRightMotorSpeed = WORD( m_fRightMotorSpeed * 65535.0f );
-        XInputSetState( m_Gamepad[i].hDevice, &m_Gamepad[i].Feedback );
-      }
-      else
-      {
-        Sleep(iDuration);
-        SetControllerRumble(m_fLeftMotorSpeed, m_fRightMotorSpeed,iDuration);
-        return false;
-      }
-    }
-  }
-#endif
-  return true;
 }
 
 void CApplication::CheckForDebugButtonCombo()
