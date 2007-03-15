@@ -158,11 +158,11 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
       (
         file.IsCDDA() ||
         (
-          !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
-          (m_currentFile.m_musicInfoTag.GetAlbum() != "") &&
-          (m_currentFile.m_musicInfoTag.GetAlbum() == file.m_musicInfoTag.GetAlbum()) &&
-          (m_currentFile.m_musicInfoTag.GetDiscNumber() == file.m_musicInfoTag.GetDiscNumber()) &&
-          (m_currentFile.m_musicInfoTag.GetTrackNumber() == file.m_musicInfoTag.GetTrackNumber() - 1)
+          file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
+          (m_currentFile.GetMusicInfoTag()->GetAlbum() != "") &&
+          (m_currentFile.GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
+          (m_currentFile.GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
+          (m_currentFile.GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
         )
       )
     )
