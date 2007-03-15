@@ -946,6 +946,11 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_RATING:
   case LISTITEM_PROGRAM_COUNT:
   case LISTITEM_DURATION:
+  case LISTITEM_PLOT:
+  case LISTITEM_PLOT_OUTLINE:
+  case LISTITEM_EPISODE:
+  case LISTITEM_SEASON:
+  case LISTITEM_TVSHOW:
     {
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->IsMediaWindow())
