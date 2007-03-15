@@ -595,7 +595,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
-      // GeminiServer Skin Theme
       FillInSkinThemes(pSetting);
     }
     else if (strSetting.Equals("screensaver.mode"))
@@ -662,16 +661,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("servers.ftpserveruser"))
     {
-      //GeminiServer
       FillInFTPServerUser(pSetting);
     }
     else if (strSetting.Equals("autodetect.nickname"))
     {
-      //GeminiServer
-      //CStdString strXboxNickNameIn = g_guiSettings.GetString("autodetect.nickname");
-      CStdString strXboxNickNameOut;
-      //if (CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameOut))
 #ifdef HAS_XBOX_HARDWARE
+      CStdString strXboxNickNameOut;
       if (CUtil::GetXBOXNickName(strXboxNickNameOut))
         g_guiSettings.SetString("autodetect.nickname", strXboxNickNameOut.c_str());
 #endif
@@ -842,7 +837,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword") || strSetting.Equals("servers.ftpautofatx"))
     {
-      //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
     }
@@ -1011,7 +1005,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if ( strSetting.Equals("autodetect.popupinfo"))
     {
-      //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("autodetect.onoff"));
     }
@@ -2596,7 +2589,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       iCurrentScr = 1;
     else if (strDefaultScr == "Black")
       iCurrentScr = 2;
-    else if (strDefaultScr == "SlideShow") // GeminiServer: PictureSlideShow
+    else if (strDefaultScr == "SlideShow") // PictureSlideShow
       iCurrentScr = 3;
     else
     {
@@ -2609,7 +2602,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
 {
-  //GeminiServer
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);

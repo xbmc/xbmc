@@ -339,8 +339,6 @@ public:
   static CStdString VideoPlaylistsLocation();
   static CStdString SubstitutePath(const CStdString& strFileName);
 
-  //GeminiServer
-  static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
   static bool IsFTP(const CStdString& strFile);

@@ -176,7 +176,7 @@ extern "C"
   int __stdcall dllsend(SOCKET s, const char *buf, int len, int flags)
   {
     int socket = GetSocketForIndex(s);
-    //flags Unsupported; must be zero. [GeminiServer]
+    //flags Unsupported; must be zero.
     //int iResult = send(socket, buf, len, flags);
     int iResult = send(socket, buf, len, 0);
 

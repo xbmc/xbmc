@@ -3,7 +3,6 @@
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "../xbmc/settings.h"
-//GeminiServer 
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
@@ -298,7 +297,6 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   // debug
   CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);
 
-  // GeminiServer HomeMenuLock with MasterCode!
   if(!g_passwordManager.CheckMenuLock(iWindowID))
   {
     CLog::Log(LOGERROR, "MasterCode is Wrong: Window with id %d will not be loaded! Enter a correct MasterCode!", iWindowID);
