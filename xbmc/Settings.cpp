@@ -233,6 +233,24 @@ CSettings::CSettings(void)
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\....)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()[\\^ _\\.-]+([0-9]+)(\\....)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\....)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\....)$");
+
+  // foo_[s01]_[e01-02]
+  g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee][0-9][0-9]\\-([0-9]*)\\][^\\\\/]*"); 
+  // foo.s01.e01-02
+  g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee][0-9][0-9]\\-([0-9]*)[^\\\\/]*");
+  // foo.1x09 1x10
+  g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back("[\\._ \\-][0-9]*x[0-9]*[\\._ \\-]*([0-9]*)x([0-9]*)[^\\\\/]*"); 
+  
+  // foo_[s01]_[e01]
+  g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee]([0-9]*)[^\\\\/]*"); 
+  // foo.1x09*
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ \\-]([0-9]*)x([0-9]*)[^\\\\/]*"); 
+  // foo.s01.e01, foo.s01_e01
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ \\-][Ss]([0-9]*)[\\.\\-]?[Ee]([0-9]*)[^\\\\/]*"); 
+  // foo.103*
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-][^\\\\/]*"); 
+
 
   g_advancedSettings.m_remoteRepeat = 480;
   g_advancedSettings.m_controllerDeadzone = 0.2f;
@@ -1252,10 +1270,13 @@ void CSettings::LoadAdvancedSettings()
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
   // stacking regexps
-  TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("videostacking");
+  TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
   {
-    g_advancedSettings.m_videoStackRegExps.clear();
+    const char* szAppend = pVideoStacking->Attribute("append");
+    if (szAppend)
+      if (stricmp(szAppend,"yes") != 0)
+        g_advancedSettings.m_videoStackRegExps.clear();
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
     while (pStackRegExp)
     {
@@ -1268,7 +1289,43 @@ void CSettings::LoadAdvancedSettings()
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
   }
+  //tv stacking regexps
+  TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
+  if (pTVStacking)
+  {
+    const char* szAppend = pTVStacking->Attribute("append");
+    if (szAppend)
+      if (stricmp(szAppend,"yes") != 0)
+        g_advancedSettings.m_tvshowStackRegExps.clear();
+    TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
+    while (pStackRegExp)
+    {
+      if (pStackRegExp->FirstChild())
+      {
+        CStdString regExp = pStackRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
+      }
+      pStackRegExp = pStackRegExp->NextSibling("regexp");
+    }
+    TiXmlElement* pTVStackingTwoPart = pTVStacking->FirstChildElement("twopart");
+    szAppend = pTVStackingTwoPart->Attribute("append");
+    if (szAppend)
+      if (stricmp(szAppend,"yes") != 0)
+        g_advancedSettings.m_tvshowTwoPartStackRegExps.clear();
 
+    pStackRegExp = pTVStackingTwoPart->FirstChild("regexp");
+    while (pStackRegExp)
+    {
+      if (pStackRegExp->FirstChild())
+      {
+        CStdString regExp = pStackRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back(regExp);
+      }
+      pStackRegExp = pStackRegExp->NextSibling("regexp");
+    }
+  }
   // path substitutions
   TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
   if (pPathSubstitution)
