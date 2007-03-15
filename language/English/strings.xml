@@ -437,7 +437,7 @@
   <string id="522">Remove Source</string>
   <string id="523">Switch Media</string>
   <string id="524">Select Playlist</string>
-  <string id="525">New Playlist</string>
+  <string id="525">New Playlist...</string>
   <string id="526">Add To Playlist</string>
   <string id="527">Manually Add To Database</string>
   <string id="528">Enter Title</string>
@@ -477,6 +477,7 @@
   <string id="583">Remember views for different folders</string>
   <string id="584">Ascending</string>
   <string id="585">Descending</string>
+  <string id="586">Edit Playlist</string>
 
   <string id="588">Cancel Party Mode</string>
   <string id="589">Party Mode</string>
@@ -742,7 +743,7 @@
   <string id="10500">Music/Playlist</string>
   <string id="10501">Music/Files</string>
   <string id="10502">Music/Library</string>
-  <string id="10503"></string>
+  <string id="10503">Playlist Editor</string>
   <string id="10504">Top 100 Songs</string>
   <string id="10505">Top 100 Albums</string>
   <string id="10506">Programs</string>

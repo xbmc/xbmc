@@ -317,17 +317,11 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 }
 
 // \brief Formats item labels based on the formatting provided by guiViewState
-void CGUIMediaWindow::FormatItemLabels()
+void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks)
 {
-  if (!m_guiState.get())
-    return;
-
-  CGUIViewState::LABEL_MASKS labelMasks;
-  m_guiState->GetSortMethodLabelMasks(labelMasks);
-
-  for (int i=0; i<m_vecItems.Size(); ++i)
+  for (int i=0; i<items.Size(); ++i)
   {
-    CFileItem* pItem=m_vecItems[i];
+    CFileItem* pItem=items[i];
 
     if (pItem->IsLabelPreformated())
       continue;
@@ -340,7 +334,12 @@ void CGUIMediaWindow::FormatItemLabels()
 // \brief Prepares and adds the fileitems list/thumb panel
 void CGUIMediaWindow::OnSort()
 {
-  FormatItemLabels();
+  if (m_guiState.get())
+  {
+    CGUIViewState::LABEL_MASKS labelMasks;
+    m_guiState->GetSortMethodLabelMasks(labelMasks);
+    FormatItemLabels(m_vecItems, labelMasks);
+  }
   SortItems(m_vecItems);
 }
 
@@ -538,6 +537,12 @@ bool CGUIMediaWindow::OnClick(int iItem)
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
 
+    if (pItem->m_strPath == "newplaylist://")
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
+      return true;
+    }
+
     // this is particular to music as only music allows "auto play next item"
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
     {
@@ -550,6 +555,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
         }
         return false;
       }
+
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();
       if (iPlaylist!=PLAYLIST_NONE)

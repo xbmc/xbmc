@@ -275,7 +275,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
 {
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
   CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
-  // TODO: localize 2.0
+
   AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
   AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))

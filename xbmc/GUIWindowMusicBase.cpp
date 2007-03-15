@@ -1239,6 +1239,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   // contextual buttons
   int btn_Queue = 0;		      // Queue Item
   int btn_PlayWith = 0;	      // Play using alternate player
+  int btn_EditPlaylist = 0;   // Edit a playlist
   int btn_AddToPlaylist = 0;  // Add to playlist
   int btn_Info = 0;           // Music Information
   int btn_InfoAll = 0;        // Query Information for all albums
@@ -1277,6 +1278,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
       if (!m_vecItems[iItem]->IsPlayList())
         btn_Info = pMenu->AddButton(13351); // Info
+
+      if ((m_vecItems[iItem]->IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()) ||
+          (m_vecItems.IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()))
+        btn_EditPlaylist = pMenu->AddButton(586);
 
       if (!bPlaylists)
         btn_AddToPlaylist = pMenu->AddButton(526);  // Add to playlist
@@ -1354,6 +1359,12 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     else if (btnid == btn_Info)
     {
       OnInfo(iItem);
+    }
+    else if (btnid == btn_EditPlaylist)
+    {
+      CStdString playlist = m_vecItems[iItem]->IsPlayList() ? m_vecItems[iItem]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
+      return;
     }
     else if (btnid == btn_AddToPlaylist)
     {
@@ -1677,7 +1688,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
       if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog
-        CURL url(m_vecItems.m_strPath);
+        CURL url(items.m_strPath);
         CStdString strStrippedPath;
         url.GetURLWithoutUserDetails(strStrippedPath);
         m_dlgProgress->SetHeading(189);
@@ -1774,6 +1785,15 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
   if (bResult)
     items.SetMusicThumb();
+
+  // add in the "New Playlist" item if we're in the playlists folder
+  if (items.m_strPath == "special://musicplaylists/")
+  {
+    CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(525));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+  }
 
   return bResult;
 }

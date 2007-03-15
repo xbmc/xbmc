@@ -719,6 +719,12 @@
 					RelativePath="..\..\xbmc\GUIWindowMusicPlaylist.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowMusicPlaylistEditor.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowMusicPlaylistEditor.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowMusicSongs.cpp">
 				</File>
 				<File
