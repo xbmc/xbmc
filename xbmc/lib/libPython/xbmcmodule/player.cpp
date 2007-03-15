@@ -285,12 +285,12 @@ namespace PYXBMC
 			return NULL;
 		}
 
-    const CIMDBMovie* movie = g_infoManager.GetCurrentMovieTag();
+    const CVideoInfoTag* movie = g_infoManager.GetCurrentMovieTag();
     if (movie)
-      return (PyObject*)InfoTagVideo_FromCIMDBMovie(*movie);
+      return (PyObject*)InfoTagVideo_FromCVideoInfoTag(*movie);
 
-    CIMDBMovie movie2;
-    return (PyObject*)InfoTagVideo_FromCIMDBMovie(movie2);
+    CVideoInfoTag movie2;
+    return (PyObject*)InfoTagVideo_FromCVideoInfoTag(movie2);
 	}
 
 	// Player_GetMusicInfoTag

@@ -1218,7 +1218,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& m
     long lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      CIMDBMovie movie=GetDetailsForEpisode(m_pDS);
+      CVideoInfoTag movie=GetDetailsForEpisode(m_pDS);
       movie.m_strTitle += " ("+m_pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString()+")";
       movies.push_back(movie);
       m_pDS->next();
@@ -1232,7 +1232,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& m
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId /* = -1 */)
+void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId /* = -1 */)
 {
   try
   {
@@ -1253,7 +1253,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CIMDBMovie& details, long lTvShowId /* = -1 */)
+void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId /* = -1 */)
 {
   try
   {
@@ -1272,7 +1272,7 @@ void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CIMDBMovie& detail
   }
 }
 
-bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lEpisodeId /* = -1 */)
+bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lEpisodeId /* = -1 */)
 {
   try
   {
@@ -1294,7 +1294,7 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CIMDBM
   return false;
 }
 
-void CVideoDatabase::AddGenreAndDirectors(const CIMDBMovie& details, vector<long>& vecDirectors, vector<long>& vecGenres)
+void CVideoDatabase::AddGenreAndDirectors(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres)
 {
   // add all directors
   char szDirector[1024];
@@ -1344,7 +1344,7 @@ void CVideoDatabase::AddGenreAndDirectors(const CIMDBMovie& details, vector<long
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CIMDBMovie& details)
+void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
 {
   try
   {
@@ -1359,7 +1359,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     AddGenreAndDirectors(details,vecDirectors,vecGenres);
     
     // add cast...
-    for (CIMDBMovie::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
+    for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
       long lActor = AddActor(it->first);
       AddActorToMovie(lMovieId, lActor, it->second);
@@ -1413,7 +1413,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
   }
 }
 
-long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CIMDBMovie& details)
+long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details)
 {
   try
   {
@@ -1428,7 +1428,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CIMDBM
     AddGenreAndDirectors(details,vecDirectors,vecGenres);
   
     // add cast...
-    for (CIMDBMovie::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
+    for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
       long lActor = AddActor(it->first);
       AddActorToTvShow(lTvShowId, lActor, it->second);
@@ -1489,7 +1489,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CIMDBM
   return -1;
 }
 
-long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CIMDBMovie& details, long idShow)
+long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow)
 {
   try
   {
@@ -1504,7 +1504,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     AddGenreAndDirectors(details,vecDirectors,vecGenres);
     
     // add cast...
-    for (CIMDBMovie::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
+    for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
       long lActor = AddActor(it->first);
       AddActorToEpisode(lEpisodeId, lActor, it->second);
@@ -1593,7 +1593,7 @@ void CVideoDatabase::GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movi
       m_pDS->query( strSQL.c_str() );
       while (!m_pDS->eof())
       {
-        CIMDBMovie details;
+        CVideoInfoTag details;
         long lMovieId = m_pDS->fv("files.idMovie").get_asLong();
         details.m_strSearchString.Format("%i", lMovieId);
         details.m_strIMDBNumber = m_pDS->fv("movieinfo.IMDBID").get_asString();
@@ -1932,9 +1932,9 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
 DWORD movieTime = 0;
 DWORD castTime = 0;
 
-CIMDBMovie CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
-  CIMDBMovie details;
+  CVideoInfoTag details;
   details.Reset();
 
   DWORD time = timeGetTime();
@@ -1979,9 +1979,9 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needs
   return details;
 }
 
-CIMDBMovie CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
-  CIMDBMovie details;
+  CVideoInfoTag details;
   details.Reset();
 
   DWORD time = timeGetTime();
@@ -2027,9 +2027,9 @@ CIMDBMovie CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool need
   return details;
 }
 
-CIMDBMovie CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
-  CIMDBMovie details;
+  CVideoInfoTag details;
   details.Reset();
 
   DWORD time = timeGetTime();
@@ -3086,7 +3086,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
           while (!m_pDS->eof())
           {
             long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();            
-            CIMDBMovie movie = GetDetailsForMovie(m_pDS);
+            CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
             if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
             {
               // check path
@@ -3143,7 +3143,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     while (!m_pDS->eof())
     {
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
-      CIMDBMovie movie = GetDetailsForMovie(m_pDS);
+      CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       {
         // check path
@@ -3243,7 +3243,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
           while (!m_pDS->eof())
           {
             long lShowId = m_pDS->fv("tvshow.idShow").get_asLong();
-            CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false);
+            CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
             CFileItem* pItem=new CFileItem(movie);
             CStdString strDir;
             strDir.Format("%ld/", lShowId);
@@ -3293,7 +3293,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
     {
       long lShowId = m_pDS->fv("tvshow.idShow").get_asLong();
   
-      CIMDBMovie movie = GetDetailsForTvShow(m_pDS, false);
+      CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
       CFileItem* pItem=new CFileItem(movie);
       CStdString strDir;
       strDir.Format("%ld/", lShowId);
@@ -3388,7 +3388,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
           while (!m_pDS->eof())
           {
             long lEpisodeId = m_pDS->fv("episode.idepisode").get_asLong();
-            CIMDBMovie movie = GetDetailsForEpisode(m_pDS);
+            CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
             if (idSeason == -1) // to get proper sorting and stuff
               movie.m_iEpisode += 100*movie.m_iSeason;
 
@@ -3442,7 +3442,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
     {
       long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
 
-      CIMDBMovie movie = GetDetailsForEpisode(m_pDS);
+      CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
       if (idSeason == -1) // to get proper sorting and stuff
         movie.m_iEpisode += 100*movie.m_iSeason;
 
@@ -4256,7 +4256,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
     TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
     while (!m_pDS->eof())
     {
-      CIMDBMovie movie = GetDetailsForMovie(m_pDS, true);
+      CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
       movie.Save(pMain, "movie");
       if ((current % 50) == 0 && progress)
       {
@@ -4296,7 +4296,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
 
     while (!m_pDS->eof())
     {
-      CIMDBMovie tvshow = GetDetailsForTvShow(m_pDS, true);
+      CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, true);
       tvshow.Save(pMain, "tvshow");
       // now save the episodes from this show
       CStdString sql = FormatSQL("select episode.*,files.strFileName,path.strPath from episode join files on files.idEpisode=tvshowlinkepisode.idepisode join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%s",tvshow.m_strSearchString.c_str());
@@ -4304,7 +4304,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
 
       while (!pDS->eof())
       {
-        CIMDBMovie episode = GetDetailsForEpisode(pDS, true);
+        CVideoInfoTag episode = GetDetailsForEpisode(pDS, true);
         episode.Save(pMain->LastChild(), "episodedetails");
         pDS->next();
       }
@@ -4343,7 +4343,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
 
     while (!m_pDS->eof())
     {
-      CIMDBMovie movie = GetDetailsForEpisode(m_pDS, true);
+      CVideoInfoTag movie = GetDetailsForEpisode(m_pDS, true);
       movie.Save(pMain, "episode");
       if ((current % 50) == 0 && progress)
       {
@@ -4414,7 +4414,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     movie = root->FirstChildElement();
     while (movie)
     {
-      CIMDBMovie info;
+      CVideoInfoTag info;
       if (strnicmp(movie->Value(), "movie", 5) == 0)
       { 
         info.Load(movie);
@@ -4436,7 +4436,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         while (episode)
         {
           // no need to delete the episode info, due to the above deletion
-          CIMDBMovie info;
+          CVideoInfoTag info;
           info.Load(episode);
           SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID);
           episode = episode->NextSiblingElement("episodedetails");

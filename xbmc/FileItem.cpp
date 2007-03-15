@@ -67,7 +67,7 @@ CFileItem::CFileItem(const CAlbum& album)
   m_strThumbnailImage = album.strThumb;
 }
 
-CFileItem::CFileItem(const CIMDBMovie& movie)
+CFileItem::CFileItem(const CVideoInfoTag& movie)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -935,7 +935,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
 
   CStdString strLabel = "";
   CMusicInfoTag* tag = m_musicInfoTag;
-  CIMDBMovie* movie = m_videoInfoTag;
+  CVideoInfoTag* movie = m_videoInfoTag;
   int iPos1 = 0;
   int iPos2 = strMask.Find('%', iPos1);
   if (iPos2 > iPos1)
@@ -954,11 +954,11 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     { // track number
       str.Format("%02.2i", tag->GetTrackNumber());
     }
-    else if (strMask[iPos2 + 1] == 'M' && m_videoInfoTag && movie->m_iEpisode > 0)
+    else if (strMask[iPos2 + 1] == 'M' && movie && movie->m_iEpisode > 0)
     { // number of episodes 
       str.Format("%02.2i %s", movie->m_iEpisode,g_localizeStrings.Get(20360));
     }
-    else if (strMask[iPos2 + 1] == 'E' && m_videoInfoTag && movie->m_iEpisode > 0)
+    else if (strMask[iPos2 + 1] == 'E' && movie && movie->m_iEpisode > 0)
     { // episode number
       str.Format("%02.2i", movie->m_iEpisode);
     }
@@ -2433,6 +2433,33 @@ void CFileItem::SetUserProgramThumb()
   }
 }
 
+/*void CFileItem::SetThumb()
+{
+  // we need to know the type of file at this point
+  // as differing views have differing inheritance rules for thumbs:
+
+  // Videos:
+  // Folders only use <foldername>/folder.jpg or <foldername>.tbn
+  // Files use <filename>.tbn
+  //  * Thumbs are cached from here using file or folder path
+
+  // Music:
+  // Folders only use <foldername>/folder.jpg or <foldername>.tbn
+  // Files use <filename>.tbn or the album/path cached thumb or inherit from the folder
+  //  * Thumbs are cached from here using file or folder path
+
+  // Programs:
+  // Folders only use <foldername>/folder.jpg or <foldername>.tbn
+  // Files use <filename>.tbn or the embedded xbe.  Shortcuts have the additional step of the <thumbnail> tag to check
+  //  * Thumbs are cached from here using file or folder path
+
+  // Pictures:
+  // Folders use <foldername>/folder.jpg or <foldername>.tbn, or auto-generated from 4 images in the folder
+  // Files use <filename>.tbn or a resized version of the picture
+  //  * Thumbs are cached from here using file or folder path
+
+}*/
+
 void CFileItemList::SetProgramThumbs()
 {
   // TODO: Is there a speed up if we cache the program thumbs first?
@@ -2508,4 +2535,10 @@ void CFileItemList::SetGameSavesThumbs()
       continue;
     pItem->SetCachedGameSavesThumb();  // was  pItem->SetCachedProgramThumb(); oringally
   }
+}
+
+void CFileItemList::Swap(unsigned int item1, unsigned int item2)
+{
+  if (item1 != item2 && item1 < m_items.size() && item2 < m_items.size())
+    swap(m_items[item1], m_items[item2]);
 }

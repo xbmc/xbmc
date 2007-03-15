@@ -1142,7 +1142,7 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
     item->m_strPath = paras[0].c_str() ;
     if (item->IsVideo()) {
       CVideoDatabase m_database;
-      CIMDBMovie aMovieRec;
+      CVideoInfoTag aMovieRec;
       m_database.Open();
       if (m_database.HasMovieInfo(paras[0].c_str()))
       {
@@ -1159,7 +1159,7 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         if (strRating=="") strRating="0.0";
         output += closeTag+openTag+"Rating:" + strRating;
         CStdString cast;
-        for (CIMDBMovie::iCast it = aMovieRec.m_cast.begin(); it != aMovieRec.m_cast.end(); ++it)
+        for (CVideoInfoTag::iCast it = aMovieRec.m_cast.begin(); it != aMovieRec.m_cast.end(); ++it)
         {
           CStdString character;
           character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
@@ -1237,7 +1237,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     if (g_application.IsPlayingVideo())
     { // Video information
       output+=closeTag+openTag+"Type"+tag+":Video" ;
-      const CIMDBMovie* tagVal=g_infoManager.GetCurrentMovieTag();
+      const CVideoInfoTag* tagVal=g_infoManager.GetCurrentMovieTag();
       if (tagVal && !tagVal->m_strTitle.IsEmpty())
         output+=closeTag+openTag+"Title"+tag+":"+tagVal->m_strTitle ;
       if (tagVal && !tagVal->m_strGenre.IsEmpty())

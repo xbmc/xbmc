@@ -44,7 +44,7 @@ protected:
 
   void ShowIMDB(CFileItem *item, const SScraperInfo& info);
   void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
-  long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails, long idShow=-1);
+  long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow=-1);
 
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);

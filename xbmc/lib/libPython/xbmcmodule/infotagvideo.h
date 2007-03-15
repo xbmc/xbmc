@@ -11,11 +11,11 @@ namespace PYXBMC
 {
 	typedef struct {
     PyObject_HEAD
-		CIMDBMovie infoTag;
+		CVideoInfoTag infoTag;
 	} InfoTagVideo;
 
 	extern PyTypeObject InfoTagVideo_Type;
-	extern InfoTagVideo* InfoTagVideo_FromCIMDBMovie(const CIMDBMovie& infoTag);
+	extern InfoTagVideo* InfoTagVideo_FromCVideoInfoTag(const CVideoInfoTag& infoTag);
 	void initInfoTagVideo_Type();
 }
 

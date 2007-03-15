@@ -338,7 +338,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   //     Return if no Refresh is needed.
   bool bHasInfo=false;
 
-  CIMDBMovie movieDetails;
+  CVideoInfoTag movieDetails;
   movieDetails.Reset();
   if (info.strContent.Equals("movies"))
   {
@@ -540,7 +540,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
             lShowId = m_database.GetTvShowInfo(item->m_strPath);
             if (lShowId > -1)
             {
-              CIMDBMovie movieDetails2;
+              CVideoInfoTag movieDetails2;
               m_database.GetTvShowInfo(item->m_strPath,movieDetails2,lShowId);
               movieDetails.m_iEpisode = movieDetails2.m_iEpisode; // keep # of episodes
               m_database.DeleteDetailsForTvShow(item->m_strPath);
@@ -668,7 +668,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
 {
   if (!m_database.HasMovieInfo(strFileName) ) return true;
 
-  CIMDBMovie movieDetails;
+  CVideoInfoTag movieDetails;
   m_database.GetMovieInfo(strFileName, movieDetails);
   CFileItem movieFile(movieDetails.m_strFileNameAndPath, false);
   if ( !movieFile.IsOnDVD()) return true;
@@ -1362,7 +1362,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   
-  CIMDBMovie detail;
+  CVideoInfoTag detail;
   int iType=0;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
     iType = 1;
@@ -1587,7 +1587,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (pItem->m_bIsFolder) return;
 
   bool bGotXml = false;
-  CIMDBMovie movie;
+  CVideoInfoTag movie;
   movie.Reset();
 
   // look for matching xml file first
@@ -1896,7 +1896,7 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, cons
     IMDB_EPISODELIST::iterator iter2 = episodes.find(iter->first);
     if (iter2 != episodes.end())
     {
-      CIMDBMovie episodeDetails;
+      CVideoInfoTag episodeDetails;
       if (m_database.GetEpisodeInfo(iter->second.m_scrURL[0].m_url) > -1)
         continue;
 
@@ -1919,7 +1919,7 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, cons
   m_database.CommitTransaction();
 }
 
-long CGUIWindowVideoBase::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CIMDBMovie &movieDetails, long idShow)
+long CGUIWindowVideoBase::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow)
 {
   long lResult=-1;
   // add to all movies in the stacked set

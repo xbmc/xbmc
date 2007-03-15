@@ -376,7 +376,7 @@ public:
     *m_currentFile.GetMusicInfoTag() = tag; 
     m_currentFile.m_lStartOffset = 0;
   };
-  void SetCurrentVideoTag(const CIMDBMovie &tag) 
+  void SetCurrentVideoTag(const CVideoInfoTag &tag) 
   {     
     *m_currentFile.GetVideoInfoTag() = tag; 
     m_currentFile.m_lStartOffset = 0;
@@ -389,7 +389,7 @@ public:
 
     return NULL;
   };
-  const CIMDBMovie* GetCurrentMovieTag() const 
+  const CVideoInfoTag* GetCurrentMovieTag() const 
   { 
     if (m_currentFile.HasVideoInfoTag())
       return m_currentFile.GetVideoInfoTag(); 
