@@ -163,7 +163,7 @@ bool CGUIPassword::GetSMBShareUserPassword()
   return true;
 }
 
-bool CGUIPassword::CheckStartUpLock()   // GeminiServer
+bool CGUIPassword::CheckStartUpLock()
 {
   // prompt user for mastercode if the mastercode was set b4 or by xml
   int iVerifyPasswordResult = -1;

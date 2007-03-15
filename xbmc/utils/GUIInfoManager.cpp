@@ -1003,7 +1003,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   int condition = abs(condition1);
   bool bReturn = false;
 
-  // GeminiServer: Ethernet Link state checking
+  // Ethernet Link state checking
   // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
   // This can used for the skinner to switch off Network or Inter required functions
   if ( condition == SYSTEM_ALWAYS_TRUE)
