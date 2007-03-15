@@ -371,7 +371,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
       break;
   }
 
-  *pHeight = (float)(numLines - 1) * m_lineHeight + m_cellHeight;
+  *pHeight = (float)(numLines - 1) * m_lineHeight + (m_cellHeight - 2); // -2 as we increment this for space in our texture
   return ;
 }
 
