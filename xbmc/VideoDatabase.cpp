@@ -3098,6 +3098,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             CStdString strDir;
             strDir.Format("%ld/", lMovieId);
             pItem->m_strPath=strBaseDir + strDir;
+            pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
             
             items.Add(pItem);
             iSONGS++;
@@ -3154,6 +3155,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       CStdString strDir;
       strDir.Format("%ld", lMovieId);
       pItem->m_strPath=strBaseDir + strDir;
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
 
       items.Add(pItem);
       m_pDS->next();
@@ -3394,6 +3396,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             CStdString strDir;
             strDir.Format("%ld", lEpisodeId);
             pItem->m_strPath=strBaseDir + strDir;
+            pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
             items.Add(pItem);
 
             iSONGS++;
@@ -3447,6 +3450,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       CStdString strDir;
       strDir.Format("%ld", lEpisodeId);
       pItem->m_strPath=strBaseDir + strDir;
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
       items.Add(pItem);
 
       m_pDS->next();

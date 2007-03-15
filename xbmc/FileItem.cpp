@@ -85,7 +85,6 @@ CFileItem::CFileItem(const CIMDBMovie& movie)
   }
   m_fRating = movie.m_fRating;
   *GetVideoInfoTag() = movie;
-  SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
   FillInDefaultIcon();
   SetVideoThumb();
   SetInvalid();
@@ -211,7 +210,12 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
       *m_musicInfoTag = *item.m_musicInfoTag;
   }
   else
+  {
+    if (m_musicInfoTag)
+      delete m_musicInfoTag;
+
     m_musicInfoTag = NULL;
+  }
 
   if (item.HasVideoInfoTag())
   {
@@ -220,7 +224,12 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
       *m_videoInfoTag = *item.m_videoInfoTag;
   }
   else
+  {
+    if (m_videoInfoTag)
+      delete m_videoInfoTag;
+
     m_videoInfoTag = NULL;
+  }
 
   m_lStartOffset = item.m_lStartOffset;
   m_lEndOffset = item.m_lEndOffset;
