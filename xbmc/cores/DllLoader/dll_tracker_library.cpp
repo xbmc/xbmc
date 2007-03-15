@@ -72,9 +72,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
  
 extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   char* path = NULL;
@@ -88,9 +86,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
 
 extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   char* path = NULL;
@@ -104,9 +100,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
 
 extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   tracker_library_free(loc, hLibModule);
 

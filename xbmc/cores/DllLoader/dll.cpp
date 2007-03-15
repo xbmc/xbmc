@@ -132,9 +132,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
 extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4];
-  __asm mov loc, eax;
+  unsigned loc = (unsigned)_ReturnAddress();
   
   void* address = NULL;
   DllLoader* dll = g_dlls.GetModule(hModule);

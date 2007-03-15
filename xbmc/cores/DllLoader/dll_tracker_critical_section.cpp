@@ -49,9 +49,7 @@ extern "C" void tracker_critical_section_free_all(DllTrackInfo* pInfo)
 
 extern "C" void __stdcall track_InitializeCriticalSection(LPCRITICAL_SECTION cs)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
   
   dllInitializeCriticalSection(cs);
   
@@ -60,9 +58,7 @@ extern "C" void __stdcall track_InitializeCriticalSection(LPCRITICAL_SECTION cs)
 
 extern "C" void __stdcall track_DeleteCriticalSection(LPCRITICAL_SECTION cs)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   tracker_critical_section_free(loc, cs);
 
