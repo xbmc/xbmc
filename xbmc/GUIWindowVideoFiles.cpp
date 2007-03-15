@@ -249,19 +249,15 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
   g_infoManager.m_content = "files";
 
-  if (m_database.GetScraperForPath(strDirectory,info2.strPath,info2.strContent)) // dont stack in tv dirs
-  {
-    if (info2.strContent.Equals("tvshows"))
-    {
-      g_stSettings.m_iMyVideoStack |= STACK_UNAVAILABLE;
-      return true;
-    }
+  if (m_database.GetScraperForPath(strDirectory,info2.strPath,info2.strContent) && info2.strContent.Equals("tvshows"))
+  { // dont stack in tv dirs
+    g_stSettings.m_iMyVideoStack |= STACK_UNAVAILABLE;
   }
-  if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
+  else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
 
-  m_vecItems.SetThumbnailImage("");
-  m_vecItems.SetVideoThumb();
+  items.SetThumbnailImage("");
+  items.SetVideoThumb();
 
   return true;
 }
