@@ -1637,7 +1637,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
-  if (!g_application.IsPlayingVideo() || !m_currentFile.HasVideoInfoTag()) 
+  if (!g_application.IsPlayingVideo()) 
     return "";
   
   switch (item)
@@ -1907,6 +1907,32 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   m_currentFile = item;
   
+  if (!m_currentFile.HasVideoInfoTag())
+  { // attempt to get some information
+    CVideoDatabase dbs;
+    dbs.Open();
+    if (dbs.HasMovieInfo(item.m_strPath))
+    {
+      dbs.GetMovieInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
+      CLog::Log(LOGDEBUG,__FUNCTION__", got movie info!");
+      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
+    }
+    else if (dbs.HasEpisodeInfo(item.m_strPath))
+    {
+      dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
+      CLog::Log(LOGDEBUG,__FUNCTION__", got episode info!");
+      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
+    }
+    dbs.Close();
+
+    if (m_currentFile.GetVideoInfoTag()->m_strTitle.IsEmpty())
+    { // at least fill in the filename
+      if (!item.GetLabel().IsEmpty())
+        m_currentFile.GetVideoInfoTag()->m_strTitle = item.GetLabel();
+      else
+        m_currentFile.GetVideoInfoTag()->m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
+    }
+  }
   // Find a thumb for this file.
   item.SetVideoThumb();
 
