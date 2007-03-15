@@ -681,7 +681,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingString *pSettingString = (CSettingString *)pSetting;
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pSettingString->GetData().IsEmpty())
-        pControl->SetLabel2(g_localizeStrings.Get(20009));  // TODO: localize 2.0
+        pControl->SetLabel2(g_localizeStrings.Get(20009));
     }
     else if (strSetting.Equals("locale.country"))
     {
