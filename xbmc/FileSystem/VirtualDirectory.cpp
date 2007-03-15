@@ -123,7 +123,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   VECSHARES shares;
   GetShares(shares);
-  if (!strPath.IsEmpty())
+  if (!strPath.IsEmpty() && strPath != "files://")
   {
     bool bIsBookmarkName = false;
     int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsBookmarkName);
@@ -135,7 +135,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       || strPath.Left(7).Equals("http://") 
       || strPath.Left(7).Equals("daap://")
       || strPath.Left(9).Equals("tuxbox://")
-      || strPath.Left(7).Equals("upnp://"))
+      || strPath.Left(7).Equals("upnp://")
+      || strPath.Left(10).Equals("musicdb://"))
     {
       // Only cache directory we are getting now
       if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
@@ -150,8 +151,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     return false;
   }
 
-  // if strPath is blank, return the root bookmark listing
-  items.Clear();
+  // if strPath is blank, clear the list (to avoid parent items showing up)
+  if (strPath.IsEmpty())
+    items.Clear();
+
+  // return the root bookmark listing
   items.m_strPath=strPath;
 
   // grab our shares

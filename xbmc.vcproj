@@ -504,6 +504,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowMusicPlaylist.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowMusicPlaylistEditor.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicPlaylistEditor.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowMusicSongs.cpp">
 				</File>
 				<File

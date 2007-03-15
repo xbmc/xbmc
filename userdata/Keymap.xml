@@ -191,7 +191,13 @@
     </keyboard>
   </MyMusicPlaylist>
 
-
+  <MyMusicPlaylistEditor>
+    <keyboard>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+      <delete>Delete</delete>
+    </keyboard>
+  </MyMusicPlaylistEditor>
   <MyMusicFiles>
     <gamepad>
       <Y>Queue</Y>

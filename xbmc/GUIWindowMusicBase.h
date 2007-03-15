@@ -54,7 +54,7 @@ protected:
   void RetrieveMusicInfo();
   void OnInfo(int iItem, bool bShowInfo = true);
   void OnInfoAll(int iItem);
-  void OnQueueItem(int iItem);
+  virtual void OnQueueItem(int iItem);
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, bool bShowInfo = true);
 
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
