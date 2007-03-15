@@ -994,9 +994,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       btn_Show_Info = pMenu->AddButton(iString);
 
     // is the item a database movie?
-    if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+    if (GetID() == WINDOW_VIDEO_NAV && m_vecItems[iItem]->HasVideoInfoTag() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     {
-      if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason > 0) // only episodes
+      if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason > 0 || m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // only episodes and movies
       {
         if (m_vecItems[iItem]->GetVideoInfoTag()->m_bWatched)
           btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
