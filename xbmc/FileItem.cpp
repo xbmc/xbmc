@@ -1010,7 +1010,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'D')
     { // duration
-      int nDuration;
+      int nDuration=0;
       if (tag)
         nDuration = tag->GetDuration();
       if (movie)
