@@ -414,7 +414,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   // add the needed buttons
   int btn_Queue       = 0;  // Queue Item
   int btn_PlayWith    = 0;  // Play using alternate player
-  int btn_AddToPlaylist = 0;
+  int btn_EditPlaylist = 0; // Edit a playlist
   int btn_Info        = 0;  // Music Information
   int btn_InfoAll     = 0;  // Query Information for all albums
   int btn_GoToRoot    = 0;
@@ -442,8 +442,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     else if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
 
-    if (!bPlaylists)
-      btn_AddToPlaylist = pMenu->AddButton(526);  // Add to playlist
+    if ((m_vecItems[iItem]->IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()) ||
+        (m_vecItems.IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()))
+      btn_EditPlaylist = pMenu->AddButton(586);
 
     // enable music info button only in album view
     if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
@@ -500,13 +501,15 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
           OnClick(iItem);
       }
     }
-    else if (btn == btn_Queue)  // Queue Item
+    else if (btn == btn_EditPlaylist)
+    {
+      CStdString playlist = m_vecItems[iItem]->IsPlayList() ? m_vecItems[iItem]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
+      return;
+    }
+     else if (btn == btn_Queue)  // Queue Item
     {
       OnQueueItem(iItem);
-    }
-    else if (btn == btn_AddToPlaylist)
-    {
-      AddToPlaylist(iItem);
     }
     else if (btn == btn_NowPlaying)  // Now Playing...
     {
