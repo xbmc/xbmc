@@ -1824,20 +1824,10 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
     items.Add(new CFileItem(*item));
 
   // enumerate
-  std::vector<CStdString> expression;
-
-  // for two parters
-  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee][0-9][0-9]\\-([0-9]*)\\][^\\\\/]*"); // foo_[s01]_[e01-02] - personal fan service for spiff ;)
-  expression.push_back("[\\._ \\-][Ss]([0-9]*)[^0-9]*[Ee][0-9][0-9]\\-([0-9]*)[^\\\\/]*"); // foo.s01.e01-02
-  expression.push_back("[\\._ \\-][0-9]*x[0-9]*[\\._ \\-]*([0-9]*)x([0-9]*)[^\\\\/]*"); // foo.1x09 1x10
-
-  unsigned int iTwoParters=expression.size();
-
-  expression.push_back("\\[[Ss]([0-9]*)\\]_\\[[Ee]([0-9]*)[^\\\\/]*"); // foo_[s01]_[e01] - personal fan service for spiff
-  expression.push_back("[\\._ \\-]([0-9]*)x([0-9]*)[^\\\\/]*"); // foo.1x09*
-  expression.push_back("[\\._ \\-][Ss]([0-9]*)[\\.\\-]?[Ee]([0-9]*)[^\\\\/]*"); // foo.s01.e01, foo.s01_e01
-  expression.push_back("[\\._ \\-]([0-9]*)([0-9][0-9])[\\._ \\-][^\\\\/]*"); // foo.103*
   
+  CStdStringArray expression = g_advancedSettings.m_tvshowTwoPartStackRegExps;
+  unsigned int iTwoParters=expression.size();
+  expression.insert(expression.end(),g_advancedSettings.m_tvshowStackRegExps.begin(),g_advancedSettings.m_tvshowStackRegExps.end());
   for (int i=0;i<items.Size();++i)
   {
     if (items[i]->m_bIsFolder)
