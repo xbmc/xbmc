@@ -107,4 +107,7 @@ void tracker_dll_data_track(DllLoader* pDll, unsigned long addr);
 }
 #endif
 
+extern "C" void * _ReturnAddress(void);
+#pragma intrinsic(_ReturnAddress)
+
 #endif // _DLL_TRACKER_H_
