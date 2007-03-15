@@ -485,10 +485,10 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
 
   int iType=0;
-  if (pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
-    iType = 1;
-  if (pItem->IsVideoDb()) // tvshow
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+    iType = 1;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog) return;
@@ -519,7 +519,6 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   }
   if (iType == 2)
   {
-    CUtil::AddSlashAtEnd(path);
     m_database.DeleteTvShow(path);
   }
 
