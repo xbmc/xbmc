@@ -1561,7 +1561,6 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 {
   if (!m_pKaiClient->IsNetworkReachable())
   {
-    // TODO: localize 2.0
     if (!CGUIDialogYesNo::ShowAndGetInput(15000, 15037, 15038, 20013))
       return;
   }

@@ -229,20 +229,20 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   { // add the music playlist location
     CShare share1;
     share1.strPath = "special://musicplaylists/";
-    share1.strName = g_localizeStrings.Get(20011);   // TODO: localize 2.0
+    share1.strName = g_localizeStrings.Get(20011);
     extraShares.push_back(share1);
     if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
     {
       CShare share2;
       share2.strPath = "special://recordings/";
-      share2.strName = g_localizeStrings.Get(20007); // TODO: localize 2.0
+      share2.strName = g_localizeStrings.Get(20007);
       extraShares.push_back(share2);
     }
     if (g_guiSettings.GetString("cddaripper.path",false) != "")
     {
       CShare share2;
       share2.strPath = "special://cdrips/";
-      share2.strName = g_localizeStrings.Get(20007); // TODO: localize 2.0
+      share2.strName = g_localizeStrings.Get(20007);
       extraShares.push_back(share2);
     }
     share1.strPath = "soundtrack://";
@@ -268,7 +268,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   { // add the music playlist location
     CShare share1;
     share1.strPath = "special://videoplaylists/";
-    share1.strName = g_localizeStrings.Get(20012);       // TODO: localize 2.0
+    share1.strName = g_localizeStrings.Get(20012);
     extraShares.push_back(share1);
 
     CShare share2;
@@ -280,7 +280,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     CShare share1;
     share1.strPath = "special://screenshots/";
-    share1.strName = g_localizeStrings.Get(20008); // TODO: localize 2.0
+    share1.strName = g_localizeStrings.Get(20008);
     extraShares.push_back(share1);
   }
   if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
