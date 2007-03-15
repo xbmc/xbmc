@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/12/2007-->
+<!--Date of translation: 03/15/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8087-->
+<!--Based on english strings version 8187-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -432,7 +432,7 @@
   <string id="522">Quelle entfernen</string>
   <string id="523">Medium wechseln</string>
   <string id="524">Playlist wählen</string>
-  <string id="525">Neue Playlist</string>
+  <string id="525">Neue Playlist...</string>
   <string id="526">Zur Playlist hinzufügen</string>
   <string id="527">Zur Datenbank hinzufügen</string>
   <string id="528">Titel eingeben</string>
@@ -470,6 +470,7 @@
   <string id="583">Ansicht für einzelne Ordner speichern</string>
   <string id="584">Aufsteigend</string>
   <string id="585">Absteigend</string>
+  <string id="586">Playlist editieren</string>
   <string id="588">Party-Modus verlassen</string>
   <string id="589">Party-Modus</string>
   <string id="590">Zufall</string>
@@ -715,6 +716,7 @@
   <string id="10500">Musik/Playlisten</string>
   <string id="10501">Musik/Dateien</string>
   <string id="10502">Musik/Datenbank</string>
+  <string id="10503">Playlist-Editor</string>
   <string id="10504">Top 100 Titel</string>
   <string id="10505">Top 100 Alben</string>
   <string id="10506">Programme</string>
@@ -823,6 +825,7 @@
   <string id="13004">- minimale Dauer der Datei</string>
   <string id="13005">Ausschalten</string>
   <string id="13006">Dashboard</string>
+  <string id="13007">Individuellen Dashboard-Pfad verwenden</string>
   <string id="13100">Videofilter</string>
   <string id="13150">Schlüssel:</string>
   <string id="13151">Temperatur:</string>
@@ -1490,6 +1493,8 @@
   <string id="20363">TV-Serie aus der Datenbank entfernen</string>
   <string id="20364">TV-Serie</string>
   <string id="20365">Handlung</string>
+  <string id="20366">* Alle Staffeln</string>
+  <string id="20367">'Gesehene' Filme verstecken</string>
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
@@ -1526,5 +1531,6 @@
   <string id="21381">Bitte geben Sie einen Namen für die Playlist ein</string>
   <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
   <string id="21383">Scrollbalken aktivieren</string>
+  <string id="21384">Filter für 'Gesehen' als Einstellung in Datenbank aktivieren</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
