@@ -43,9 +43,7 @@ extern "C"
 {
   int __stdcall track_socket(int af, int type, int protocol)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     SOCKET socket = dllsocket(af, type, protocol);
     if (socket) tracker_socket_track(loc, socket);
@@ -54,9 +52,7 @@ extern "C"
 
   int __stdcall track_closesocket(int socket)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     tracker_socket_free(loc, socket);
     return dllclosesocket(socket);
@@ -64,9 +60,7 @@ extern "C"
   
   int __stdcall track_accept(SOCKET s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     SOCKET socket = dllaccept(s, addr, addrlen);
     if (socket) tracker_socket_track(loc, socket);
