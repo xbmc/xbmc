@@ -994,9 +994,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       btn_Show_Info = pMenu->AddButton(iString);
 
     // is the item a database movie?
-    if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+    if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     {
-      if (!m_vecItems[iItem]->IsVideoDb()) // only episodes
+      if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason > 0) // only episodes
       {
         if (m_vecItems[iItem]->GetVideoInfoTag()->m_bWatched)
           btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
@@ -1334,7 +1334,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
     iType = 1;
   m_database.MarkAsUnWatched(atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()),iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1348,7 +1348,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
     iType = 1;
   m_database.MarkAsWatched(atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()),iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1364,25 +1364,17 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   
   CVideoInfoTag detail;
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iEpisode > 0) // episode
-    iType = 1;
-  if (pItem->IsVideoDb()) // tvshow
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
-  if (iType == 0)
-  {
-    //Get Current Name
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+    iType = 1;
+
+  if (iType == 0) // movies
     m_database.GetMovieInfo("", detail, atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()));
-  }
   if (iType == 1) //  episodes
-  {
     m_database.GetEpisodeInfo(pItem->m_strPath,detail,atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()));
-    iType = 1;
-  }
   if (iType == 2) // tvshows
-  {
     m_database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()));
-    iType = 2;
-  }
 
   CStdString strInput;
   strInput = detail.m_strTitle;
