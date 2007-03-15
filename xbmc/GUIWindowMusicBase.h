@@ -49,7 +49,6 @@ protected:
   // new methods
   virtual void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
-  virtual void AddToPlaylist(int iItem);
 
   void RetrieveMusicInfo();
   void OnInfo(int iItem, bool bShowInfo = true);

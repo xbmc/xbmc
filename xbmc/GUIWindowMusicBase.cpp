@@ -1240,7 +1240,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Queue = 0;		      // Queue Item
   int btn_PlayWith = 0;	      // Play using alternate player
   int btn_EditPlaylist = 0;   // Edit a playlist
-  int btn_AddToPlaylist = 0;  // Add to playlist
   int btn_Info = 0;           // Music Information
   int btn_InfoAll = 0;        // Query Information for all albums
   int btn_Scan = 0;           // Scan to library
@@ -1282,9 +1281,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       if ((m_vecItems[iItem]->IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()) ||
           (m_vecItems.IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()))
         btn_EditPlaylist = pMenu->AddButton(586);
-
-      if (!bPlaylists)
-        btn_AddToPlaylist = pMenu->AddButton(526);  // Add to playlist
     }
 
     // Scan buttons are only visible when in files view
@@ -1365,10 +1361,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       CStdString playlist = m_vecItems[iItem]->IsPlayList() ? m_vecItems[iItem]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
       return;
-    }
-    else if (btnid == btn_AddToPlaylist)
-    {
-      AddToPlaylist(iItem);
     }
     // Music Information Query All
     else if (btnid == btn_InfoAll)
@@ -1710,73 +1702,6 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
   if (bProgressVisible && m_dlgProgress)
     m_dlgProgress->Close();
-}
-
-void CGUIWindowMusicBase::AddToPlaylist(int iItem)
-{
-  if (iItem < 0 || iItem >= m_vecItems.Size()) return;
-  CFileItem* pItem;
-  pItem = m_vecItems[iItem];
-  if (pItem->IsParentFolder()) return;
-  CFileItemList queuedItems;
-  AddItemToPlayList(pItem, queuedItems);
-
-  // choose a playlist
-  CGUIDialogSelect* pSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  if (!pSelect)
-    return;
-  pSelect->SetHeading(524); // Select Playlist
-  pSelect->Reset();
-  CFileItemList items;
-  if (!CDirectory::GetDirectory("special://musicplaylists/", items, ".m3u"))
-    return;
-  for (int i = 0; i < items.Size(); ++i)
-    pSelect->Add(CUtil::GetFileName(items[i]->m_strPath));
-  pSelect->EnableButton(true);
-  pSelect->SetButtonLabel(525); // New Playlist
-  pSelect->DoModal();
-  CStdString strPlaylist;
-  int iSelected = pSelect->GetSelectedLabel();
-  if (iSelected >= 0)
-    strPlaylist = items[iSelected]->m_strPath;
-  else if (!pSelect->IsButtonPressed())
-    return;
-
-  // enter new playlist
-  bool bNew = false;
-  if (strPlaylist.IsEmpty())
-  {
-    CStdString strFile;
-    if (!CGUIDialogKeyboard::ShowAndGetInput(strFile, g_localizeStrings.Get(21381), false))
-      return; // user backed out
-    bNew = true;
-    CUtil::AddFileToFolder(CUtil::TranslateSpecialPath("special://musicplaylists/"), strFile, strPlaylist);
-    if (!strPlaylist.Right(4).Equals(".m3u"))
-      strPlaylist += ".m3u";
-  }
-
-  auto_ptr<CPlayList> pPlaylist (CPlayListFactory::Create(strPlaylist));
-  // load existing playlist
-  if (!bNew)
-  {
-    if (NULL != pPlaylist.get())
-    {
-      if (!pPlaylist->Load(strPlaylist))
-        return;
-    }
-  }
-
-  // add the items to the playlist
-  for (int i = 0; i < queuedItems.Size(); ++i)
-  {
-    // correct music db paths
-    if (queuedItems[i]->IsMusicDb())
-      queuedItems[i]->m_strPath = queuedItems[i]->GetMusicInfoTag()->GetURL();
-    pPlaylist->Add(queuedItems[i]);
-  }
-
-  // save
-  pPlaylist->Save(strPlaylist);
 }
 
 bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
