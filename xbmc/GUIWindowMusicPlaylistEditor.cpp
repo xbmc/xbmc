@@ -80,6 +80,7 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
       CGUIWindowMusicBase::OnMessage(message);
 
       LoadPlaylist(message.GetStringParam());
+      m_strLoadedPlaylist = message.GetStringParam();
 
       return true;
     }
@@ -397,13 +398,16 @@ void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
   {
     ClearPlaylist();
     AppendToPlaylist(items);
+    m_strLoadedPlaylist = playlist;
   }
 }
 
 void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 {
   // saves playlist to the playlist folder
-  CStdString name;
+  CStdString name = CUtil::GetFileName(m_strLoadedPlaylist);
+  CStdString strExt = CUtil::GetExtension(name);
+  name = name.Mid(0,name.size()-strExt.size());
   if (CGUIDialogKeyboard::ShowAndGetInput(name, g_localizeStrings.Get(16012), false))
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;
