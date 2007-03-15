@@ -346,8 +346,8 @@ bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetTitle().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetTitle().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetTitle());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetTitle());
     
     return StringUtils::AlphaNumericCompare(l, r) <= 0;
   }
@@ -364,8 +364,8 @@ bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetTitle().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetTitle().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetTitle());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetTitle());
     
     return StringUtils::AlphaNumericCompare(l, r) >= 0;
   }
@@ -446,8 +446,8 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetArtist());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetArtist());
 
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
@@ -462,8 +462,8 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
     // artists agree, test the album
     l = (char *)left->GetMusicInfoTag()->GetAlbum().c_str();
     r = (char *)right->GetMusicInfoTag()->GetAlbum().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetAlbum());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetAlbum());
 
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
@@ -484,8 +484,8 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetArtist());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetArtist());
 
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
@@ -500,8 +500,8 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
     // artists agree, test the album
     l = (char *)left->GetMusicInfoTag()->GetAlbum().c_str();
     r = (char *)right->GetMusicInfoTag()->GetAlbum().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetAlbum());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetAlbum());
 
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
@@ -572,8 +572,8 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetAlbum().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetAlbum().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetAlbum());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetAlbum());
 
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
@@ -581,8 +581,8 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
     // album names match, try the artist
     l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetArtist());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetArtist());
 
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
@@ -603,8 +603,8 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetAlbum().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetAlbum().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetAlbum());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetAlbum());
 
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
@@ -612,8 +612,8 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
     // album names match, try the artist
     l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
-    l += StartsWithToken(left->GetLabel());
-    r += StartsWithToken(right->GetLabel());
+    l += StartsWithToken(left->GetMusicInfoTag()->GetArtist());
+    r += StartsWithToken(right->GetMusicInfoTag()->GetArtist());
 
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
