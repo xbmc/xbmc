@@ -64,7 +64,7 @@ public:
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
-  void CheckDate();		//GeminiServer CheckDate
+  void CheckDate();
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();
   void RestartApp();
@@ -161,7 +161,6 @@ public:
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
-  bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
 
 protected:
   friend CApplicationMessenger;

@@ -443,7 +443,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength, int iTimeOut)
 
   unsigned int want = (unsigned int)iLineLength;
 
-  if(!FillBuffer(want,iTimeOut)) //GeminiServer
+  if(!FillBuffer(want,iTimeOut))
     return false;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
@@ -648,7 +648,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize, int iTimeOut)
   else
     want = (unsigned int)uiBufSize;
 
-  if(!FillBuffer(want,iTimeOut)) //GeminiServer
+  if(!FillBuffer(want,iTimeOut))
     return -1;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
