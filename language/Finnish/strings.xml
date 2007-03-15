@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 9/03/2007-->
+<!--Date of translation: 12/03/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 8044 -->
+<!--Based on english strings version 8124 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -855,7 +855,7 @@
   <string id="12391">minuuttia</string>
   <string id="12392">tuntia</string>
   <string id="12393">päivää</string>
-  <string id="12394">Käytetty kokonaisaika</string>
+  <string id="12394">Kokonais käyttöaika</string>
   
   <string id="12600">Säätila</string>
   
@@ -909,7 +909,7 @@
   <string id="13208">Herätyskello</string>
   <string id="13209">Hälytysväli (minuuttia)</string>
   <string id="13210">Käynnistetty, hälytys %im kuluttua</string>
-  <string id="13211">Herätys!</string>
+  <string id="13211">Hälytys!</string>
   <string id="13212">Peruutettu, %im%is jäljellä</string>
   
   <string id="13249">Etsi tekstitykset Rar-paketeista</string>
@@ -1106,11 +1106,13 @@
   <string id="14066">Anna aika 24-tunnin muodossa tunnit:minuutit</string>
   <string id="14067">Anna päivämäärä muodossa päivä/kuukausi/vuosi</string>
   <string id="14068">Anna IP-osoite</string>
-  <string id="14069">Otetaanko asetukset käyttöön heti?</string>
-  <string id="14070">Ota asetukset heti käyttöön</string>
+  <string id="14069">Otetaanko asetukset heti käyttöön?</string>
+  <string id="14070">Muutokset otetaan käyttöön</string>
   <string id="14071">Salli tiedostojen poistaminen ja nimeäminen</string>
   <string id="14072">Xlink KAI käytössä</string>
   <string id="14073">Xlink KAI ei ole käytössä.</string>
+  <string id="14074">Aseta aikavyöhyke</string>
+  <string id="14075">Kesäaika käytössä</string>
   
   <string id="15000">XLink KAI</string>
   <string id="15001">Ei saatu yhteyttä palveluun, haluatko</string>
@@ -1240,8 +1242,8 @@
   <string id="15283">%name%n aiemmin kuuntelemat kappaleet</string>
   <string id="15284">Kuuntele %name%n suositukset Last.FM radiosta</string>
   
-  <string id="15300">Määritettyä polkua ei löydy</string>
-  <string id="15301">Ei saatu yhteyttä palvelimeen</string>
+  <string id="15300">Määriteltyä polkua ei löydy</string>
+  <string id="15301">Palvelimeen ei saada yhteyttä</string>
   <string id="15302">Palvelimia ei löytynyt</string>
   <string id="15303">Työryhmää ei löytynyt</string>
   
@@ -1346,7 +1348,7 @@
   <string id="20053">Poistuit pääkäyttäjän tilasta</string>
   <string id="20054">Siirryit pääkäyttäjän tilaan</string>
   <string id="20055">Allmusic.com pienoiskuvake</string>
-  <string id="20056">sijainnin pienoiskuvake</string>
+  <string id="20056">Sijainnin pienoiskuvake</string>
   <string id="20057">Poista pienoiskuvake</string>
   <string id="20058">Lisää profiili...</string>
   <string id="20059">Hae kaikkien albumien tiedot</string>
@@ -1439,7 +1441,7 @@
   <string id="20147">Sammuta 30 minuutin kuluttua</string>
   <string id="20148">Sammuta 60 minuutin kuluttua</string>
   <string id="20149">Sammuta 120 minuutin kuluttua</string>
-  <string id="20150">Määritä sammutusaika</string>
+  <string id="20150">Määritä aika sammutukseen</string>
   <string id="20151">Keskeytä sammutusajastus</string>
   <string id="20152">Lukitse %s asetukset</string>
   <string id="20153">Selaa...</string>
@@ -1555,6 +1557,8 @@
   <string id="20363">Poista TV-ohjelma kirjastosta</string>
   <string id="20364">TV-ohjelma</string>
   <string id="20365">Jakson juoni</string>
+  <string id="20366">* Kaikki tuotantokaudet</string>
+  <string id="20367">Piilota katsotut</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1595,6 +1599,6 @@
   <string id="21381">Anna soittolistalle nimi</string>
   <string id="21382">'Lisää sijainti'-painike ei käytössä</string>
   <string id="21383">Vierityspalkit käytössä</string>
-  
+  <string id="21384">Videokirjastossa piilota katsotut</string> 
   <string id="29999">Näytön välkynnän poisto</string>
   </strings>
