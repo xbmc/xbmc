@@ -925,11 +925,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
     }
-    else if (strSetting.Equals("locale.timezone"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetValue(g_guiSettings.GetInt("locale.timezone"));
-    }
     else if (strSetting.Equals("screensaver.dimlevel"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
