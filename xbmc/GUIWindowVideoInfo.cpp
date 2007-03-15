@@ -574,6 +574,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   // Grab the thumbnail from the web
   CStdString thumbFromWeb;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "imdbthumb.jpg", thumbFromWeb);
+  CFile::Delete(thumbFromWeb);
   if (DownloadThumbnail(thumbFromWeb))
   {
     CFileItem *item = new CFileItem("thumb://IMDb", false);
@@ -621,21 +622,30 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  CStdString cachedThumb(m_movieItem.GetCachedVideoThumb());
+  CFileItem item(*m_movieItem.GetVideoInfoTag());
+  CStdString cachedThumb(item.GetCachedVideoThumb());
 
-  if (result == "thumb://None")
-  { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
+  if (result == "thumb://IMDb")
+  {
+    if (CFile::Exists(thumbFromWeb))
+      CFile::Cache(thumbFromWeb, cachedThumb);
+    else
+      result = "thumb://None";
   }
-  else if (result == "thumb://IMDb")
-    CFile::Cache(thumbFromWeb, cachedThumb);
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
   {
     CPicture pic;
     pic.DoCreateThumbnail(result, cachedThumb);
+  }
+  else 
+    result = "thumb://None";
+
+  if (result == "thumb://None")
+  { // cache the default thumb
+    CPicture pic;
+    pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
   }
 
   m_movieItem.SetThumbnailImage(cachedThumb);
