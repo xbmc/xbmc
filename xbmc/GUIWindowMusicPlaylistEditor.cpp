@@ -343,7 +343,7 @@ void CGUIWindowMusicPlaylistEditor::OnPopupMenu(int item, bool bContextDriven /*
     btn_Save = pMenu->AddButton(190);
     btn_Clear = pMenu->AddButton(386);
   }
-  btn_Load = pMenu->AddButton(502);
+  btn_Load = pMenu->AddButton(21385);
 
   // position it correctly
   float posX = 200;
