@@ -484,6 +484,13 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           CScraperUrl Url;
           //convert m_strEpisodeGuide in url.m_scrURL
           url.Parse(details.m_strEpisodeGuide);
+          if (m_dlgProgress)
+          {
+            m_dlgProgress->SetHeading(189);
+            m_dlgProgress->SetLine(0, pItem->GetLabel());
+            m_dlgProgress->SetLine(1,20354);
+            m_dlgProgress->Progress();
+          }
           if (!IMDB.GetEpisodeList(url,episodes))
             return;
 
