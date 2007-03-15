@@ -434,6 +434,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("networksetup")) wWindowID = WINDOW_DIALOG_NETWORK_SETUP;
   else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
+  else if (strWindow.Equals("mymusicplaylisteditor")) wWindowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
   else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("mymusiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
   //else if (strWindow.Equals("mymusictop100")) wWindowID = WINDOW_MUSIC_TOP100;
