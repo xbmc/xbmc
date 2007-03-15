@@ -221,7 +221,6 @@ public:
   static void XBOXPowerOff();
   static void XBOXPowerCycle();
 
-  //GeminiServer
   static void SetXBOXLEDStatus(UCHAR LEDStatus);
 
   static void GetMODCHIPVersion();

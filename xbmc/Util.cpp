@@ -3211,7 +3211,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     if (strPath.Equals("autodetection"))
     {
-      //GeminiServer: Open the AutoDetect XBOX FTP in filemanager
+      //Open the AutoDetect XBOX FTP in filemanager
       if (g_guiSettings.GetBool("autodetect.onoff"))
       {
         //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
@@ -4118,60 +4118,6 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   while (FindNextFile(hFind, &wfd));
 }
 
-bool CUtil::IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay)  // GeminiServer
-{
-  // Rückgabewert: FALSE, wenn kein Schaltjahr,   TRUE, wenn Schaltjahr
-  bool ret_value;
-  int iIsLeapYear;
-  if(iLYear%4 == 0 && (iLYear%100 != 0 || iLYear %400 == 0))
-  {
-    ret_value=TRUE;
-    iIsLeapYear = 1;
-  }
-  else
-  {
-    ret_value=FALSE;
-    iIsLeapYear = 0;
-  }
-  switch(iLMonth)
-    {
-      case 1:	iMonMax = 31 ;
-        break;
-      case 2:	iMonMax = 28+iIsLeapYear;
-        break;
-      case 3:	iMonMax = 31;
-        break;
-      case 4:	iMonMax = 30;
-        break;
-      case 5:	iMonMax = 31;
-        break;
-      case 6:	iMonMax = 30;
-        break;
-      case 7:	iMonMax = 31;
-        break;
-      case 8:	iMonMax = 31;
-        break;
-      case 9:	iMonMax = 30;
-        break;
-      case 10: iMonMax = 31;
-        break;
-      case 11: iMonMax = 30;
-        break;
-      case 12: iMonMax = 31;
-        break;
-      default: iMonMax = 31;
-    }
-  // monat: von 1... 12, tag von 1... 31.
-  if(iLMonth <= 2)
-  {
-    iLMonth += 10;
-    --iLYear;
-  }
-  else iLMonth -= 2;
-  iWeekDay = (iLTag+(13*iLMonth-1)/5+iLYear+iLYear/4-iLYear/100+iLYear/400)%7;
-  return(ret_value);
-}
-
 bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
 {
   TIME_ZONE_INFORMATION tziNew;
@@ -4289,7 +4235,6 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 {
   bool bState= false;
 #ifdef HAS_XBOX_HARDWARE
-  //GeminiServer
   CStdString strWorkTemp;
   CStdString strSendMessage = "ping\0";
   CStdString strReceiveMessage = "ping";
@@ -4383,7 +4328,8 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 #endif
   return bState;
 }
-bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
+
+bool CUtil::XboxAutoDetection()
 {
 #ifdef HAS_XBOX_HARDWARE
   if (g_guiSettings.GetBool("autodetect.onoff"))
@@ -4556,7 +4502,7 @@ bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNic
           bfound = true;
           break;
         }
-        else if (strXboxNickNameIn.IsEmpty()) strXboxNickNameOut.Format("GeminiServer");
+        else if (strXboxNickNameIn.IsEmpty()) strXboxNickNameOut.Format("XbMediaCenter");
       }while(XFindNextNickname(hNickName,pszNickName,uiSize) != false);
     XFindClose(hNickName);
   }

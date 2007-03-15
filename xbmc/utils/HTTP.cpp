@@ -272,7 +272,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
   return true;
 }
 
-//GeminiServer Detect if we online or not! Very Simple and Dirty!
+// Detect if we online or not! Very Simple and Dirty!
 bool CHTTP::IsInternet(bool checkDNS /* = true */)
 {
   CStdString strURL = "http://www.google.com";

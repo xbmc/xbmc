@@ -536,7 +536,7 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
+  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774);
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
   AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
