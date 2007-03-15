@@ -107,9 +107,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 
 extern "C" void* __cdecl track_malloc(size_t s)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   void* p = malloc(s);
   if (!p) 
@@ -125,9 +123,7 @@ extern "C" void* __cdecl track_malloc(size_t s)
 
 extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   void* p = calloc(n, s);
   if (!p) 
@@ -143,9 +139,7 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 
 extern "C" void* __cdecl track_realloc(void* p, size_t s)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
 
@@ -171,9 +165,7 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
 
 extern "C" void __cdecl track_free(void* p)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   //Only call free if this is actually something that has been allocated
   if( tracker_memory_free(tracker_get_dlltrackinfo(loc), p) )
@@ -198,9 +190,7 @@ extern "C" void __cdecl track_free(void* p)
 
 extern "C" char* __cdecl track_strdup(const char* str)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   char* pdup = strdup(str);
 
@@ -238,9 +228,7 @@ track_HeapCreate(
     IN SIZE_T dwMaximumSize
     )
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   HANDLE hHeap = HeapCreate(flOptions, dwInitialSize, dwMaximumSize);
@@ -259,9 +247,7 @@ track_HeapDestroy(
     IN OUT HANDLE hHeap
     )
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
@@ -283,9 +269,7 @@ track_HeapDestroy(
 
 BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   if(dwFreeType == MEM_RELEASE)
   {    
@@ -299,9 +283,7 @@ BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize
 
 LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   LPVOID address = VirtualAllocEx(hProcess, lpAddress, dwSize, flAllocationType, flProtect);
   
@@ -318,13 +300,12 @@ LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwS
       pInfo->virtualList[(unsigned)address] = temp;
     }
   }
+  return address;
 }
 
 LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   LPVOID address = VirtualAlloc(lpAddress, dwSize, flAllocationType, flProtect);
   
@@ -346,9 +327,7 @@ LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAlloc
 
 BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
 
   if(dwFreeType == MEM_RELEASE)
   {    

@@ -3,10 +3,9 @@
 #include "emu_dummy.h"
 #include "..\..\..\xbox\iosupport.h"
 #include <process.h>
+#include "../dll_tracker.h"
 
 vector<string> m_vecAtoms;
-
-extern char* tracker_getdllname(unsigned long caller);
 
 //#define API_DEBUG
 
@@ -134,9 +133,7 @@ extern "C" HANDLE WINAPI dllCreateThread(
   LPDWORD lpThreadId                        // thread identifier
 )
 {
-  unsigned loc;
-  __asm mov eax, [ebp + 4]
-  __asm mov loc, eax
+  unsigned loc = (unsigned)_ReturnAddress();
   
   SThreadWrapper *param = new SThreadWrapper;
   param->lpStartAddress = lpStartAddress;
