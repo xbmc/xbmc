@@ -143,6 +143,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory,
     db->SetLabel(g_localizeStrings.Get(14022));
     db->SetLabelPreformated(true);
     files->m_bIsShareOrDrive = true;
+    items.m_strPath = "";
     items.Add(db);
     return true;
   }
