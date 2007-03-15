@@ -67,9 +67,7 @@ extern "C"
 {
   int track_open(const char* sFileName, int iMode)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     int fd = dll_open(sFileName, iMode);
     if (fd >= 0) tracker_file_track(loc, fd, FILE_XBMC_OPEN, sFileName);
@@ -78,9 +76,7 @@ extern "C"
 
   int track_close(int fd)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     tracker_file_free(loc, fd, FILE_XBMC_OPEN);
     return dll_close(fd);
@@ -88,9 +84,7 @@ extern "C"
 
   FILE* track_fopen(const char* sFileName, const char* mode)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     FILE* fd = dll_fopen(sFileName, mode);
     if (fd) tracker_file_track(loc, (unsigned)fd, FILE_XBMC_FOPEN, sFileName);
@@ -99,9 +93,7 @@ extern "C"
   
   int track_fclose(FILE* stream)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     tracker_file_free(loc, (unsigned)stream, FILE_XBMC_FOPEN);
     return dll_fclose(stream);
@@ -109,9 +101,7 @@ extern "C"
   
   FILE* track_freopen(const char *path, const char *mode, FILE *stream)
   {
-    unsigned loc;
-    __asm mov eax, [ebp + 4]
-    __asm mov loc, eax
+    unsigned loc = (unsigned)_ReturnAddress();
     
     tracker_file_free(loc, (unsigned)stream, FILE_XBMC_FOPEN);
     stream = dll_freopen(path, mode, stream);
