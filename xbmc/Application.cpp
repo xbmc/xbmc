@@ -108,6 +108,7 @@
 #include "GUIWindowMusicPlaylist.h"
 #include "GUIWindowMusicSongs.h"
 #include "GUIWindowMusicNav.h"
+#include "GUIWindowMusicPlaylistEditor.h"
 #include "GUIWindowVideoPlaylist.h"
 #include "GUIWindowMusicInfo.h"
 #include "GUIWindowVideoInfo.h"
@@ -1291,6 +1292,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
+  m_gWindowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
 
   m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
   m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
