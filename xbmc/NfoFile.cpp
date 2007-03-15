@@ -26,7 +26,7 @@ CNfoFile::~CNfoFile()
 {
 }
 
-bool CNfoFile::GetDetails(CIMDBMovie &details)
+bool CNfoFile::GetDetails(CVideoInfoTag &details)
 {
   TiXmlDocument doc;
   if (doc.Parse(m_doc))
@@ -42,7 +42,7 @@ HRESULT CNfoFile::Create(const CStdString& strPath)
     return E_FAIL;
 
   // first check if it's an XML file with the info we need
-  CIMDBMovie details;
+  CVideoInfoTag details;
   if (GetDetails(details))
   {
     m_strScraper = "NFO";

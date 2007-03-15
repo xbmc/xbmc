@@ -17,7 +17,7 @@ namespace PYXBMC
 	 * allocate a new InfoTagVideo. Used for c++ and not the python user
 	 * returns a new reference
 	 */
-	InfoTagVideo* InfoTagVideo_FromCIMDBMovie(const CIMDBMovie& infoTag)
+	InfoTagVideo* InfoTagVideo_FromCVideoInfoTag(const CVideoInfoTag& infoTag)
 	{
 		InfoTagVideo* self = (InfoTagVideo*)InfoTagVideo_Type.tp_alloc(&InfoTagVideo_Type, 0);
 		if (!self) return NULL;
@@ -120,7 +120,7 @@ namespace PYXBMC
 	PyObject* InfoTagVideo_GetCast(InfoTagVideo *self, PyObject *args)
 	{
     CStdString cast;
-    for (CIMDBMovie::iCast it = self->infoTag.m_cast.begin(); it != self->infoTag.m_cast.end(); ++it)
+    for (CVideoInfoTag::iCast it = self->infoTag.m_cast.begin(); it != self->infoTag.m_cast.end(); ++it)
     {
       CStdString character;
       character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
