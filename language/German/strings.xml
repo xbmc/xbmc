@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/15/2007-->
-<!--$Revision$-->
-<!--Based on english strings version 8187-->
+<!--Date of translation: 03/16/2007-->
+<!--$Revision:$-->
+<!--Based on english strings version 8202-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -891,8 +891,8 @@
   <string id="13293">Video- &amp; XBE-Region:</string>
   <string id="13294">DVD-Region:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">XBOX ist verbunden.</string>
-  <string id="13297">XBOX ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen.</string>
+  <string id="13296">XBOX ist mit dem Internet verbunden.</string>
+  <string id="13297">XBOX ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen!</string>
   <string id="13298">XBOX-LIVE Schlüssel:</string>
   <string id="13299">Angestrebte CPU-Temperatur</string>
   <string id="13300">Lüftergeschwindigkeit</string>
@@ -1532,5 +1532,6 @@
   <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
   <string id="21383">Scrollbalken aktivieren</string>
   <string id="21384">Filter für 'Gesehen' als Einstellung in Datenbank aktivieren</string>
+  <string id="21385">Öffnen</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
