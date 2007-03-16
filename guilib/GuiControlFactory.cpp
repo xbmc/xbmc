@@ -1132,6 +1132,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);
+    ((CGUITextBox *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUITextBox *)control)->SetLabel(strLabel);
   }
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "thumbnailpanel")
