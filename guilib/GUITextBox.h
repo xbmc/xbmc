@@ -65,7 +65,7 @@ protected:
   CLabelInfo m_label;       // label configuration (size, font, etc.)
   CStdString m_renderLabel; // label to render
   vector<CStdStringW> m_lines;  // line items formatted up for rendering
-  vector<CStdString>  m_lines2; // second item that we need for the braindead use of a textbox in place of a list (music info song listing) 
+  vector<CStdStringW>  m_lines2; // second item that we need for the braindead use of a textbox in place of a list (music info song listing) 
   CGUISpinControl m_upDown;
 
   DWORD m_pageControl;

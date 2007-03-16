@@ -83,15 +83,13 @@ void CGUITextBox::Render()
       {
         // render item
         float maxWidth = m_width + 16;
-        if (m_lines2.size())
+        if (i + m_offset < m_lines2.size())
         {
-          CStdStringW strText2Unicode;
-          g_charsetConverter.utf8ToUTF16(m_lines2[i + m_offset], strText2Unicode);
           float fTextWidth, fTextHeight;
-          m_label.font->GetTextExtent( strText2Unicode.c_str(), &fTextWidth, &fTextHeight);
+          m_label.font->GetTextExtent( m_lines2[i + m_offset].c_str(), &fTextWidth, &fTextHeight);
           maxWidth -= fTextWidth;
 
-          m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, strText2Unicode.c_str(), fTextWidth);
+          m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[i + m_offset].c_str(), fTextWidth);
         }
         m_label.font->DrawTextWidth(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[i + m_offset].c_str(), maxWidth);
         posY += m_itemHeight;
