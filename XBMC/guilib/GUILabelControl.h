@@ -56,6 +56,7 @@ public:
 
   static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
   static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth);
+  static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth, vector<CStdStringW> &multiLine);
 
 protected:
   CStdString ShortenPath(const CStdString &path);
