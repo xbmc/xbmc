@@ -216,6 +216,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       items.SetCachedVideoThumbs();
       m_thumbLoader.Load(m_vecItems);
+      g_infoManager.m_content = "";
     }
     else
     {
@@ -237,9 +238,9 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         item.SetVideoThumb();
         items.SetThumbnailImage(item.GetThumbnailImage());
       }
-      else if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+      else if (node == NODE_TYPE_TITLE_MOVIES)
         g_infoManager.m_content = "movies";
-      else if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
+      else if (node == NODE_TYPE_TITLE_TVSHOWS)
         g_infoManager.m_content = "tvshows";
       else
         g_infoManager.m_content = "";
