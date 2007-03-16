@@ -236,7 +236,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.totaluptime")) ret = SYSTEM_TOTALUPTIME;
     else if (strTest.Equals("system.cpufrequency")) ret = SYSTEM_CPUFREQUENCY;
     else if (strTest.Equals("system.xboxversion")) ret = SYSTEM_XBOX_VERSION;
-    else if (strTest.Equals("system.avcablepackinfo")) ret = SYSTEM_AV_CABLE_PACK_INFO;
+    else if (strTest.Equals("system.avpackinfo")) ret = SYSTEM_AV_PACK_INFO;
     else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
     else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
 	else if (strTest.Equals("system.xboxproduceinfo")) ret = SYSTEM_XBOX_PRODUCE_INFO;
@@ -680,7 +680,7 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_XBOX_MODCHIP:
   case SYSTEM_CPUFREQUENCY:
   case SYSTEM_XBOX_VERSION:
-  case SYSTEM_AV_CABLE_PACK_INFO:
+  case SYSTEM_AV_PACK_INFO:
   case SYSTEM_VIDEO_ENCODER_INFO:
   case NETWORK_MAC_ADDRESS:
   case SYSTEM_XBOX_SERIAL:
