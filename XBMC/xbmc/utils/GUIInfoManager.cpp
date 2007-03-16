@@ -239,6 +239,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.avcablepackinfo")) ret = SYSTEM_AV_CABLE_PACK_INFO;
     else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
     else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
+	else if (strTest.Equals("system.xboxproduceinfo")) ret = SYSTEM_XBOX_PRODUCE_INFO;
     else if (strTest.Equals("system.xboxserial")) ret = SYSTEM_XBOX_SERIAL;
     else if (strTest.Equals("system.xberegion")) ret = SYSTEM_XBE_REGION;
     else if (strTest.Equals("system.dvdzone")) ret = SYSTEM_DVD_ZONE;
