@@ -294,6 +294,9 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     else            // single colour version
       dwColor = *pdw256ColorPalette;
 
+    // Skip '\r'
+    if ( letter == L'\r' )
+      continue;
     // Handle the newline character
     if ( letter == L'\n' )
     {
