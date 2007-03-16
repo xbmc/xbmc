@@ -18,6 +18,16 @@
 			<height>488</height>
 			<texture>background-bottom.png</texture>
 		</control>
+		<control type="image">
+			<description>folder image</description>
+			<posx>20</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>86</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture diffuse="Wide_Icon_Diffuse.png" />
+			<info>container.folderthumb</info>
+		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
@@ -25,14 +35,25 @@
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
+			<visible>!container.hasthumb</visible>
 		</control>
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
 			<posy>43</posy>
 			<align>left</align>
-			<label>20314</label>
+			<label>$LOCALIZE[651] - $LOCALIZE[20343]</label>
 			<font>special13</font>
+			<visible>!container.hasthumb + container.content(tvshows)</visible>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>$LOCALIZE[651] - $LOCALIZE[342]</label>
+			<font>special13</font>
+			<visible>!container.hasthumb + container.content(movies)</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">
@@ -149,13 +170,13 @@
 			</control>
 		</control>
 		<include>OldListViewCommons</include>
-		<include>VideoViewCommons</include>
+		<include>VideoLibraryList2View</include>
 		<include>VideoViewCommons_BigList</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
 		<include>VideoDVDThumbLarge</include>
 		<include>VideoDVDWrapView</include>
-		<include>WideIcon_Small</include>
+		<include>VideoLibraryWideIcon_Small</include>
 		<include>WideIcon_Big</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>

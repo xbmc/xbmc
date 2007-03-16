@@ -11,6 +11,16 @@
 			<texture>background-videos.png</texture>
 		</control>
 		<control type="image">
+			<description>folder image</description>
+			<posx>20</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>86</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture diffuse="Wide_Icon_Diffuse.png" />
+			<info>container.folderthumb</info>
+		</control>
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>88</posy>
@@ -25,6 +35,7 @@
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
+			<visible>!container.hasthumb</visible>
 		</control>
 		<control type="label" id="1">
 			<description>description label</description>
@@ -33,6 +44,7 @@
 			<align>left</align>
 			<label>3</label>
 			<font>special13</font>
+			<visible>!container.hasthumb</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">
