@@ -415,6 +415,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
     CStdString path;
     CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), name + ".m3u", path);
     playlist.Save(path);
+    m_strLoadedPlaylist = name;
   }
 }
 
