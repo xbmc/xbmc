@@ -75,7 +75,7 @@ class CSysInfo : public CInfoLoader
     CStdString m_kernelversion;
     CStdString m_cpufrequency;
     CStdString m_xboxversion;
-    CStdString m_avcablepackinfo;
+    CStdString m_avpackinfo;
     CStdString m_videoencoder;
     CStdString m_xboxserial;
     CStdString m_hddlockkey;

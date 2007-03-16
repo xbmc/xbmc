@@ -100,7 +100,7 @@ void CGUIWindowSystemInfo::Render()
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_DVD_MODEL));
     SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_FIRMWARE));
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_VIDEO_DVD_ZONE));
+    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_DVD_ZONE));
 #endif
   }
   else if(iControl == CONTROL_BT_STORAGE)
@@ -145,8 +145,8 @@ void CGUIWindowSystemInfo::Render()
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
-    SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_CABLE_PACK_INFO));
-    SET_CONTROL_LABEL(5,g_infoManager.GetLabel(SYSTEM_VIDEO_XBE_REGION));
+    SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_PACK_INFO));
+    SET_CONTROL_LABEL(5,g_infoManager.GetLabel(SYSTEM_XBE_REGION));
 #endif
   }
   else if(iControl == CONTROL_BT_HARDWARE)
