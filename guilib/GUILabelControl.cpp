@@ -195,6 +195,16 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
 
 void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth)
 {
+  vector<CStdStringW> multiLine;
+  WrapText(utf16Text, font, maxWidth, multiLine);
+  utf16Text.Empty();
+  for (unsigned int i = 0; i < multiLine.size(); i++)
+    utf16Text += multiLine[i] + L'\n';
+  utf16Text.Trim();
+}
+
+void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth, vector<CStdStringW> &multiLine)
+{
   // run through and force line breaks at spaces as and when necessary
   if (!font)
     return;
@@ -202,7 +212,8 @@ void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float ma
   utf16Text += L"\n";
   int iLastSpaceInLine = -1;
   int iLastSpace = -1;
-  CStdStringW multiLine, line;
+  CStdStringW line;
+  multiLine.clear();
   while (pos < utf16Text.size())
   {
     // Get the current letter in the string
@@ -214,13 +225,13 @@ void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float ma
       float width = font->GetTextWidth(line.c_str());
       if (width > maxWidth && iLastSpaceInLine > 0)
       {
-        multiLine += line.Left(iLastSpaceInLine) + L'\n';
+        multiLine.push_back(line.Left(iLastSpaceInLine));
         line = line.Mid(iLastSpaceInLine + 1);
         if (!line.IsEmpty())
-          multiLine += line + L"\n";
+          multiLine.push_back(line);
       }
       else
-        multiLine += line + L"\n";
+        multiLine.push_back(line);
       iLastSpaceInLine = -1;
       iLastSpace = -1;
       line.Empty();
@@ -234,7 +245,7 @@ void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float ma
         {
           if (iLastSpace > 0 && iLastSpaceInLine > 0)
           {
-            multiLine += line.Left(iLastSpaceInLine) + L'\n';
+            multiLine.push_back(line.Left(iLastSpaceInLine));
             pos = iLastSpace + 1;
             line.Empty();
             iLastSpaceInLine = -1;
@@ -255,7 +266,6 @@ void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float ma
     }
     pos++;
   }
-  utf16Text = multiLine.Trim();
 }
 
 CStdString CGUILabelControl::ShortenPath(const CStdString &path)

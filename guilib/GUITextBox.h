@@ -42,12 +42,13 @@ public:
   virtual void SetPulseOnSelect(bool pulse);
   virtual void SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right);
   void SetPageControl(DWORD pageControl);
-  void SetText(const string &strText);
+  void SetLabel(const string &strText);
   virtual bool HitTest(float posX, float posY) const;
   virtual bool CanFocus() const;
   virtual bool OnMouseOver();
   virtual bool OnMouseClick(DWORD dwButton);
   virtual bool OnMouseWheel();
+  void SetInfo(int singleInfo);
 
 protected:
   void OnPageUp();
@@ -56,18 +57,21 @@ protected:
 
   float m_spinPosX;
   float m_spinPosY;
-  int m_iOffset;
-  int m_iItemsPerPage;
+  unsigned int m_offset;
+  unsigned int m_itemsPerPage;
   float m_itemHeight;
   int m_iMaxPages;
 
-  CStdString m_strText;
-  CLabelInfo m_label;
+  CLabelInfo m_label;       // label configuration (size, font, etc.)
+  CStdString m_renderLabel; // label to render
+  vector<CStdStringW> m_lines;  // line items formatted up for rendering
+  vector<CStdString>  m_lines2; // second item that we need for the braindead use of a textbox in place of a list (music info song listing) 
   CGUISpinControl m_upDown;
-  vector<CGUIListItem> m_vecItems;
-  typedef vector<CGUIListItem> ::iterator ivecItems;
 
-  bool m_wrapText;  // whether we need to wordwrap or not
   DWORD m_pageControl;
+
+  // multi-info stuff
+  int                   m_singleInfo;
+  vector<CInfoPortion>  m_multiInfo;
 };
 #endif
