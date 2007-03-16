@@ -438,7 +438,7 @@
   <string id="522">移除來源</string>
   <string id="523">切換媒體</string>
   <string id="524">選擇播放列表</string>
-  <string id="525">新播放列表</string>
+  <string id="525">新播放列表…</string>
   <string id="526">加入播放列表</string>
   <string id="527">手動加入資料庫</string>
   <string id="528">輸入標題</string>
@@ -478,6 +478,7 @@
   <string id="583">記憶不同資料夾的顯示模式</string>
   <string id="584">升幂</string>
   <string id="585">降幂</string>
+  <string id="586">編輯播放列表</string>
 
   <string id="588">取消派對模式</string>
   <string id="589">派對模式</string>
@@ -628,7 +629,7 @@
   <string id="1017">輸入伺服器遠端路徑</string>
   <string id="1018">輸入埠號</string>
   <string id="1019">輸入帳號</string>
-  <string id="1020">新增 %s目錄</string>
+  <string id="1020">新增%s目錄</string>
   <string id="1021">輸入或選擇目錄。</string>
   <string id="1022">為該目錄命名。</string>
   <string id="1023">瀏覽目錄</string>
@@ -636,7 +637,7 @@
   <string id="1025">無法獲得目錄資訊。</string>
   <string id="1026">新增目錄</string>
   <string id="1027">編輯目錄</string>
-  <string id="1028">編輯 %s目錄</string>
+  <string id="1028">編輯%s目錄</string>
   <string id="1029">輸入新標籤</string>
   <string id="1030">圖示</string>
   <string id="1031">圖示資料夾</string>
@@ -743,7 +744,7 @@
   <string id="10500">音樂/播放列表</string>
   <string id="10501">音樂/檔案</string>
   <string id="10502">音樂/音樂庫</string>
-  <string id="10503"></string>
+  <string id="10503">播放列表編輯</string>
   <string id="10504">排行前100歌曲</string>
   <string id="10505">排行前100專輯</string>
   <string id="10506">程式</string>
@@ -866,6 +867,7 @@
   <string id="13004">- 最小媒體檔案長度</string>
   <string id="13005">關機</string>
   <string id="13006">原廠系統</string>
+  <string id="13007">使用自訂原廠系統路徑</string>
 
   <string id="13100">閃爍過濾</string>
 
@@ -975,7 +977,7 @@
   <string id="13328">%s找不到。</string>
   <string id="13329">打開%s發生錯誤</string>
   <string id="13330">無法載入%s</string>
-  <string id="13331">錯誤：記憶體不足。</string>
+  <string id="13331">錯誤：記憶體不足</string>
   <string id="13332">上移</string>
   <string id="13333">下移</string>
   <string id="13334">編輯標籤</string>
@@ -1260,7 +1262,7 @@
   <string id="16012">輸入播放列表名稱</string>
   <string id="16013">輸入新檔案名稱</string>
   <string id="16014">輸入資料夾名稱</string>
-  <string id="16015">輸入目錄名稱</string>
+  <string id="16015">輸入目錄</string>
   <string id="16016">可用選項：%A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
   <string id="16017">輸入搜尋字串</string>
   <string id="16018">關閉</string>
@@ -1336,7 +1338,7 @@
   <string id="20044">重新設定</string>
   <string id="20045">進入管理員模式</string>
   <string id="20046">離開管理員模式</string>
-  <string id="20047">建立預設檔'%s'?</string>
+  <string id="20047">建立預設檔'%s'？</string>
   <string id="20048">重回原先設定</string>
   <string id="20049">最適合模式</string>
   <string id="20050">自動切換 16x9 與 4x3 模式</string>
@@ -1363,7 +1365,7 @@
   <string id="20071">以新媒體來源啟動</string>
   <string id="20072">確定選擇的資料夾是可寫入的</string>
   <string id="20073">且是有效的資料夾名稱</string>
-  <string id="20074">MPAA分級：</string>
+  <string id="20074">MPAA 分級：</string>
   <string id="20075">輸入管理員密碼</string>
   <string id="20076">開機時詢問管理員密碼</string>
   <string id="20077">桌面設定</string>
@@ -1448,7 +1450,7 @@
   <string id="20157">光碟機資訊</string>
   <string id="20158">網路資訊</string>
   <string id="20159">影片資訊</string>
-  <string id="20160">影片資訊</string>
+  <string id="20160">硬體資訊</string>
   <string id="20161">總計</string>
   <string id="20162">使用</string>
   <string id="20163">中</string>
@@ -1597,6 +1599,7 @@
   <string id="21382">停用檔案列表的新增來源按鈕</string>
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
+  <string id="21385">打開播放列表</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
