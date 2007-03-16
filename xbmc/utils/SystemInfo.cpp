@@ -49,7 +49,7 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->m_kernelversion   = callback->GetKernelVersion();
     callback->m_cpufrequency    = callback->GetCPUFreqInfo();
     callback->m_xboxversion     = callback->GetXBVerInfo();
-    callback->m_avcablepackinfo = callback->GetAVPackInfo();
+    callback->m_avpackinfo      = callback->GetAVPackInfo();
     callback->m_videoencoder    = callback->GetVideoEncoder();
     callback->m_xboxserial      = callback->GetXBOXSerial(true);
     callback->m_hddlockkey      = callback->GetHDDKey();
@@ -110,8 +110,8 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     if (m_bRequestDone) return m_xboxversion;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
-  case SYSTEM_AV_CABLE_PACK_INFO:
-    if (m_bRequestDone) return m_avcablepackinfo;
+  case SYSTEM_AV_PACK_INFO:
+    if (m_bRequestDone) return m_avpackinfo;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_VIDEO_ENCODER_INFO:
