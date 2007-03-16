@@ -240,8 +240,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
     else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
     else if (strTest.Equals("system.xboxserial")) ret = SYSTEM_XBOX_SERIAL;
-    else if (strTest.Equals("system.videoxberegion")) ret = SYSTEM_VIDEO_XBE_REGION;
-    else if (strTest.Equals("system.videodvdzone")) ret = SYSTEM_VIDEO_DVD_ZONE;
+    else if (strTest.Equals("system.xberegion")) ret = SYSTEM_XBE_REGION;
+    else if (strTest.Equals("system.dvdzone")) ret = SYSTEM_DVD_ZONE;
     else if (strTest.Equals("system.bios")) ret = SYSTEM_XBOX_BIOS;
     else if (strTest.Equals("system.modchip")) ret = SYSTEM_XBOX_MODCHIP;
     else if (strTest.Left(22).Equals("system.controllerport("))
@@ -683,8 +683,8 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_VIDEO_ENCODER_INFO:
   case NETWORK_MAC_ADDRESS:
   case SYSTEM_XBOX_SERIAL:
-  case SYSTEM_VIDEO_XBE_REGION:
-  case SYSTEM_VIDEO_DVD_ZONE:
+  case SYSTEM_XBE_REGION:
+  case SYSTEM_DVD_ZONE:
   case SYSTEM_XBOX_PRODUCE_INFO:
   case SYSTEM_XBOX_BIOS:
   case SYSTEM_HDD_LOCKKEY:
