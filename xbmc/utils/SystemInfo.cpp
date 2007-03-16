@@ -43,20 +43,20 @@ void CBackgroundSystemInfoLoader::GetInformation()
   //Request only one time!
   if(!callback->m_bRequestDone)
   {
-    callback->m_XboxBios = callback->GetModChipInfo();
-    callback->m_XboxModChip =callback->GetBIOSInfo();
-    callback->m_mplayerversion = callback->GetMPlayerVersion();
-    callback->m_kernelversion = callback->GetKernelVersion();
-    callback->m_cpufrequency = callback->GetCPUFreqInfo();
-    callback->m_xboxversion = callback->GetXBVerInfo();
+    callback->m_XboxBios        = callback->GetModChipInfo();
+    callback->m_XboxModChip     = callback->GetBIOSInfo();
+    callback->m_mplayerversion  = callback->GetMPlayerVersion();
+    callback->m_kernelversion   = callback->GetKernelVersion();
+    callback->m_cpufrequency    = callback->GetCPUFreqInfo();
+    callback->m_xboxversion     = callback->GetXBVerInfo();
     callback->m_avcablepackinfo = callback->GetAVPackInfo();
-    callback->m_videoencoder = callback->GetVideoEncoder();
-    callback->m_xboxserial = callback->GetXBOXSerial(true);
-    callback->m_hddlockkey = callback->GetHDDKey();
-    callback->m_macadress = callback->GetMACAddress();
-    callback->m_videoxberegion = callback->GetVideoXBERegion();
-    callback->m_videodvdzone = callback->GetDVDZone();
-    callback->m_produceinfo = callback->GetXBProduceInfo();
+    callback->m_videoencoder    = callback->GetVideoEncoder();
+    callback->m_xboxserial      = callback->GetXBOXSerial(true);
+    callback->m_hddlockkey      = callback->GetHDDKey();
+    callback->m_macadress       = callback->GetMACAddress();
+    callback->m_videoxberegion  = callback->GetVideoXBERegion();
+    callback->m_videodvdzone    = callback->GetDVDZone();
+    callback->m_produceinfo     = callback->GetXBProduceInfo();
     g_sysinfo.GetRefurbInfo(callback->m_hddbootdate, callback->m_hddcyclecount);
 
     callback->GetHDDInfo(callback->m_HDDModel, 
@@ -138,11 +138,11 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     if (m_bRequestDone) return m_macadress;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
-  case SYSTEM_VIDEO_XBE_REGION:
+  case SYSTEM_XBE_REGION:
     if (m_bRequestDone) return m_videoxberegion;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
-  case SYSTEM_VIDEO_DVD_ZONE:
+  case SYSTEM_DVD_ZONE:
     if (m_bRequestDone) return m_videodvdzone;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
