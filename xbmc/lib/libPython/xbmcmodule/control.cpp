@@ -174,6 +174,35 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // setEnableCondition() Method
+  PyDoc_STRVAR(setEnableCondition__doc__,
+    "setEnableCondition(enable) -- Set's the control's enabled condition.\n"
+    "    Allows XBMC to control the enabled status of the control.\n"
+    "\n"
+    "enable           : string - Enable condition.\n"
+    "\n"
+    "List of Conditions - http://www.xboxmediacenter.com/wiki/index.php?title=List_of_Boolean_Conditions \n"
+    "\n"
+    "example:\n"
+    "  - self.button.setEnableCondition('System.InternetState')\n");
+
+  PyObject* Control_SetEnableCondition(Control* self, PyObject* args)
+  {
+    char *cEnable = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &cEnable)) return NULL;
+    
+    int ret = g_infoManager.TranslateString(cEnable);
+
+    PyGUILock();
+    if (self->pGUIControl)   
+      self->pGUIControl->SetEnableCondition(ret);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // setAnimations() Method
   PyDoc_STRVAR(setAnimations__doc__,
     "setAnimations([(event, attr,)*]) -- Set's the control's animations.\n"
@@ -540,6 +569,7 @@ namespace PYXBMC
     {"getHeight", (PyCFunction)Control_GetHeight, METH_VARARGS, getHeight__doc__},
     {"getWidth", (PyCFunction)Control_GetWidth, METH_VARARGS, getWidth__doc__},
     {"setEnabled", (PyCFunction)Control_SetEnabled, METH_VARARGS, setEnabled__doc__},
+    {"setEnableCondition", (PyCFunction)Control_SetEnableCondition, METH_VARARGS, setEnableCondition__doc__},
     {"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
     {"setVisibleCondition", (PyCFunction)Control_SetVisibleCondition, METH_VARARGS, setVisibleCondition__doc__},
     {"setAnimations", (PyCFunction)Control_SetAnimations, METH_VARARGS, setAnimations__doc__},
