@@ -177,6 +177,9 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
   case SEEK_END:
     bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_END);
     break;
+
+  default:
+    return -1;
   }
   if (bSuccess)
   {
