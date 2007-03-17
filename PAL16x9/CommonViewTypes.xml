@@ -1586,17 +1586,8 @@
 					<info>ListItem.Icon</info>
 					<visible>container.content(tvshows)</visible>
 				</control>
-				<control type="image">
-					<posx>7</posx>
-					<posy>5</posy>
-					<width>228</width>
-					<height>70</height>
-					<aspectratio>keep</aspectratio>
-					<info>ListItem.Icon</info>
-					<visible>container.content(tvshows)</visible>
-				</control>
 				<control type="label">
-					<posx>5</posx>
+					<posx>235</posx>
 					<posy>77</posy>
 					<width>228</width>
 					<height>16</height>
@@ -1604,14 +1595,7 @@
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
-					<visible>container.content(tvshows)</visible>
-				</control>
-				<control type="image">
-					<posx>205</posx>
-					<posy>65</posy>
-					<width>32</width>
-					<height>32</height>
-					<info>ListItem.Overlay</info>
+					<align>right</align>
 					<visible>container.content(tvshows)</visible>
 				</control>
 				<control type="image">
@@ -1625,25 +1609,36 @@
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>5</posy>
+					<posy>7</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
-					<info>ListItem.Label</info>
+					<info>ListItem.Title</info>
 					<visible>!container.content(tvshows)</visible>
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>50</posy>
+					<posy>30</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
-					<visible>!container.content(tvshows)</visible>
+					<visible>container.content(movies)</visible>
+				</control>
+				<control type="label">
+					<posx>80</posx>
+					<posy>30</posy>
+					<width>155</width>
+					<height>16</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+					<visible>container.content(episodes)</visible>
 				</control>
 				<control type="label">
 					<posx>235</posx>
@@ -1655,18 +1650,7 @@
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
-					<visible>!container.content(tvshows)</visible>
-				</control>
-				<control type="label">
-					<posx>80</posx>
-					<posy>50</posy>
-					<width>155</width>
-					<height>16</height>
-					<font>font13</font>
-					<include>listselectedcolor</include>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.Season ,Season ]</label>
-					<visible>container.content(episodes)</visible>
+					<visible>container.content(movies) | container.content(episodes)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout height="106" width="242">
@@ -1696,7 +1680,7 @@
 					<visible>container.content(tvshows)</visible>
 				</control>
 				<control type="label">
-					<posx>5</posx>
+					<posx>235</posx>
 					<posy>77</posy>
 					<width>228</width>
 					<height>16</height>
@@ -1704,14 +1688,7 @@
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
-					<visible>container.content(tvshows)</visible>
-				</control>
-				<control type="image">
-					<posx>205</posx>
-					<posy>65</posy>
-					<width>32</width>
-					<height>32</height>
-					<info>ListItem.Overlay</info>
+					<align>right</align>
 					<visible>container.content(tvshows)</visible>
 				</control>
 				<control type="image">
@@ -1725,25 +1702,36 @@
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>5</posy>
+					<posy>7</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
-					<info>ListItem.Label</info>
+					<info>ListItem.Title</info>
 					<visible>!container.content(tvshows)</visible>
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>50</posy>
+					<posy>30</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
-					<visible>!container.content(tvshows)</visible>
+					<visible>container.content(movies)</visible>
+				</control>
+				<control type="label">
+					<posx>80</posx>
+					<posy>30</posy>
+					<width>155</width>
+					<height>16</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+					<visible>container.content(episodes)</visible>
 				</control>
 				<control type="label">
 					<posx>235</posx>
@@ -1755,44 +1743,43 @@
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
-					<visible>!container.content(tvshows)</visible>
-				</control>
-				<control type="label">
-					<posx>80</posx>
-					<posy>50</posy>
-					<width>155</width>
-					<height>16</height>
-					<font>font13</font>
-					<include>listselectedcolor</include>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.Season ,Season ]</label>
-					<visible>container.content(episodes)</visible>
+					<visible>container.content(movies) | container.content(episodes)</visible>
 				</control>
 			</focusedlayout>
 		</control>
 		<control type="label">
 			<posx>190</posx>
-			<posy>110</posy>
+			<posy>105</posy>
 			<width>235</width>
 			<height>424</height>
 			<font>special13</font>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57)</visible>
 		</control>
 		<control type="label">
 			<posx>190</posx>
-			<posy>140</posy>
+			<posy>135</posy>
 			<width>235</width>
 			<height>424</height>
 			<font>special12</font>
-			<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+			<label>$INFO[ListItem.Season ,Season ] $INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(57) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(57) + container.content(episodes)</visible>
 		</control>
 		<control type="label">
 			<posx>190</posx>
-			<posy>140</posy>
+			<posy>135</posy>
+			<width>235</width>
+			<height>424</height>
+			<font>special12</font>
+			<label>$INFO[ListItem.episode,$LOCALIZE[20360] ]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(57) + container.content(tvshows)</visible>
+		</control>
+		<control type="label">
+			<posx>190</posx>
+			<posy>135</posy>
 			<width>235</width>
 			<height>424</height>
 			<font>special12</font>
