@@ -243,7 +243,7 @@
   <string id="316">清除歌曲…</string>
   <string id="317">成功清除数据库！</string>
   <string id="318">清除歌曲…</string>
-  <string id="319">清除歌曲错误</string>
+  <string id="319">清除歌曲错误！</string>
   <string id="320">清除艺人…</string>
   <string id="321">清除艺人错误！</string>
   <string id="322">清除流派…</string>
@@ -460,7 +460,7 @@
   <string id="552">日期</string>
   <string id="553">大小</string>
   <string id="554">音轨</string>
-  <string id="555">时间</string>
+  <string id="555">时长</string>
   <string id="556">标题</string>
   <string id="557">艺人</string>
   <string id="558">专辑</string>
@@ -476,8 +476,8 @@
   <string id="581">排序方法</string>
   <string id="582">显示模式</string>
   <string id="583">记忆不同资料夹的显示模式</string>
-  <string id="584">升幂</string>
-  <string id="585">降幂</string>
+  <string id="584">增序</string>
+  <string id="585">减序</string>
   <string id="586">编辑播放列表</string>
 
   <string id="588">取消舞会模式</string>
@@ -995,7 +995,7 @@
   <string id="13347">加入到当前播放列表</string>
   <string id="13348">查询 IMDb 信息…</string>
   <string id="13349">查询所有文件信息</string>
-  <string id="13350">察看正在播放列表</string>
+  <string id="13350">查看正在播放列表</string>
   <string id="13351">专辑信息</string>
   <string id="13352">扫瞄文件夹信息</string>
   <string id="13353">停止搜寻</string>
