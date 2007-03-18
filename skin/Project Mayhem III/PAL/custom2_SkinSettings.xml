@@ -2,18 +2,26 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-settings.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -21,17 +29,19 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>10507</label>
 			<font>special13</font>
 		</control>
 		<include>contentpanel</include>
 		<control type="group" id="9001">
+			<posx>20</posx>
+			<posy>-20</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="11">
 				<description>General Settings</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>120</posy>
 				<label>128</label>
 				<onleft>9002</onleft>
@@ -41,7 +51,7 @@
 			</control>
 			<control type="button" id="12">
 				<description>Home Settings</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>157</posy>
 				<label>513</label>
 				<onleft>9003</onleft>
@@ -51,7 +61,7 @@
 			</control>
 			<control type="button" id="13">
 				<description>Bookmarks</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>194</posy>
 				<label>13398</label>
 				<onleft>9004</onleft>
@@ -66,9 +76,9 @@
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="20">
 				<description>enable animations</description>
-				<posx>211</posx>
-				<posy>120</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>100</posy>
+				<width>485</width>
 				<label>20079</label>
 				<onclick>Skin.ToggleSetting(animated)</onclick>
 				<selected>!Skin.HasSetting(animated)</selected>
@@ -82,9 +92,9 @@
 			</control>
 			<control type="radiobutton" id="21">
 				<description>enable scrollbars</description>
-				<posx>211</posx>
-				<posy>157</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>137</posy>
+				<width>485</width>
 				<label>21383</label>
 				<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
 				<selected>!Skin.HasSetting(UseScrollbars)</selected>
@@ -98,9 +108,9 @@
 			</control>
 			<control type="radiobutton" id="22">
 				<description>QWERTY Keyboard Button</description>
-				<posx>211</posx>
-				<posy>194</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>174</posy>
+				<width>485</width>
 				<label>QWERTY $LOCALIZE[15028]</label>
 				<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
 				<selected>Skin.HasSetting(QWERTYKeys)</selected>
@@ -114,9 +124,9 @@
 			</control>
 			<control type="radiobutton" id="23">
 				<description>make watched filtering a toggle in video library Button</description>
-				<posx>211</posx>
-				<posy>231</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>211</posy>
+				<width>485</width>
 				<label>21384</label>
 				<onclick>Skin.ToggleSetting(watched_filtering_toggle)</onclick>
 				<selected>Skin.HasSetting(watched_filtering_toggle)</selected>
@@ -135,9 +145,9 @@
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="30">
 				<description>enable RSS</description>
-				<posx>211</posx>
-				<posy>120</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>100</posy>
+				<width>485</width>
 				<label>20080</label>
 				<onclick>Skin.ToggleSetting(NoAudioRSS)</onclick>
 				<selected>!Skin.HasSetting(NoAudioRSS)</selected>
@@ -151,9 +161,9 @@
 			</control>
 			<control type="radiobutton" id="31">
 				<description>enable video info</description>
-				<posx>211</posx>
-				<posy>157</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>137</posy>
+				<width>485</width>
 				<label>20176</label>
 				<onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
 				<selected>!Skin.HasSetting(homepageVideoinfo)</selected>
@@ -167,9 +177,9 @@
 			</control>
 			<control type="radiobutton" id="32">
 				<description>enable music info</description>
-				<posx>211</posx>
-				<posy>194</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>174</posy>
+				<width>485</width>
 				<label>20083</label>
 				<onclick>Skin.ToggleSetting(homepageMusicinfo)</onclick>
 				<selected>!Skin.HasSetting(homepageMusicinfo)</selected>
@@ -183,9 +193,9 @@
 			</control>
 			<control type="radiobutton" id="33">
 				<description>enable weather info</description>
-				<posx>211</posx>
-				<posy>231</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>211</posy>
+				<width>485</width>
 				<label>20084</label>
 				<onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
 				<selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
@@ -199,9 +209,9 @@
 			</control>
 			<control type="radiobutton" id="34">
 				<description>enable System info</description>
-				<posx>211</posx>
-				<posy>268</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>248</posy>
+				<width>485</width>
 				<label>20085</label>
 				<onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
 				<selected>!Skin.HasSetting(homepageSysteminfo)</selected>
@@ -215,12 +225,13 @@
 			</control>
 			<control type="radiobutton" id="35">
 				<description>enable homepage drive stats C: E: F:</description>
-				<posx>211</posx>
-				<posy>305</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>285</posy>
+				<width>485</width>
 				<label>20086</label>
 				<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
 				<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
+				<onclick>Skin.ResetSetting(homepageDriveinfo2)</onclick>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>34</onup>
@@ -228,34 +239,17 @@
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
-				<visible>!Skin.HasSetting(homepageDriveinfo2)</visible>
-			</control>
-			<control type="radiobutton" id="0">
-				<description>enable homepage drive stats C: E: F: DISABLED</description>
-				<posx>211</posx>
-				<posy>305</posy>
-				<width>445</width>
-				<label>20086</label>
-				<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
-				<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>30</onup>
-				<ondown>32</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<visible>Skin.HasSetting(homepageDriveinfo2)</visible>
-				<include>textcolorgrey</include>
+				<enable>!Skin.HasSetting(homepageDriveinfo2)</enable>
 			</control>
 			<control type="radiobutton" id="36">
 				<description>enable homepage drive stats E: F: G:</description>
-				<posx>211</posx>
-				<posy>342</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>322</posy>
+				<width>485</width>
 				<label>20087</label>
 				<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
 				<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
+				<onclick>Skin.ResetSetting(homepageDriveinfo1)</onclick>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>35</onup>
@@ -263,25 +257,7 @@
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
-				<visible>Skin.HasSetting(homepageDriveinfo1)</visible>
-			</control>
-			<control type="radiobutton" id="0">
-				<description>enable homepage drive stats E: F: G: DISABLED</description>
-				<posx>211</posx>
-				<posy>342</posy>
-				<width>445</width>
-				<label>20087</label>
-				<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
-				<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>31</onup>
-				<ondown>30</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<visible>!Skin.HasSetting(homepageDriveinfo1)</visible>
-				<include>textcolorgrey</include>
+				<enable>Skin.HasSetting(homepageDriveinfo1)</enable>
 			</control>
 		</control>
 		<!-- Bookmark button Options -->
@@ -290,9 +266,9 @@
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="40">
 				<description>enable bookmarks button</description>
-				<posx>211</posx>
-				<posy>120</posy>
-				<width>445</width>
+				<posx>190</posx>
+				<posy>100</posy>
+				<width>485</width>
 				<label>20081</label>
 				<onclick>Skin.ToggleSetting(bookmarkbuttons)</onclick>
 				<selected>Skin.HasSetting(bookmarkbuttons)</selected>
@@ -836,13 +812,6 @@
 				</control>
 			</control>
 		</control>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>

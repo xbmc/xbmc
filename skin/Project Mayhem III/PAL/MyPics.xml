@@ -2,18 +2,26 @@
 	<defaultcontrol>50</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-pics.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -21,7 +29,7 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>1</label>
 			<font>special13</font>
@@ -30,17 +38,19 @@
 		<control type="label" id="12">
 			<description>number of files text label</description>
 			<posx>545</posx>
-			<posy>526</posy>
+			<posy>540</posy>
 			<align>right</align>
 			<label>-</label>
 			<font>font10</font>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>-20</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="2">
 				<description>View As Icons button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>120</posy>
 				<label>100</label>
 				<font>font13</font>
@@ -51,7 +61,7 @@
 			</control>
 			<control type="button" id="3">
 				<description>Sort by button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>157</posy>
 				<label>103</label>
 				<font>font13</font>
@@ -70,7 +80,7 @@
 			</control>
 			<control type="button" id="6">
 				<description>SlideShow button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>194</posy>
 				<label>108</label>
 				<font>font13</font>
@@ -81,7 +91,7 @@
 			</control>
 			<control type="button" id="7">
 				<description>recursive slideshow</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>231</posy>
 				<label>361</label>
 				<font>font13</font>
@@ -92,7 +102,7 @@
 			</control>
 			<control type="radiobutton" id="9">
 				<description>Randomize button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>268</posy>
 				<label>13319</label>
 				<font>font13</font>
@@ -105,7 +115,7 @@
 			<visible>Skin.HasSetting(bookmarkbuttons)</visible>
 				<control type="button" id="31">
 					<description>Bookmark button 1</description>
-					<posx>50</posx>
+					<posx>0</posx>
 					<posy>305</posy>
 					<label>$INFO[Skin.String(Picturesbookmark1)]</label>
 					<onclick>ActivateWindow(MyPictures,$INFO[Skin.String(Picturesbookmark1)])</onclick>
@@ -117,7 +127,7 @@
 				</control>
 				<control type="label">
 					<description>Pictures Bookmark 1 String NOT SET label</description>
-					<posx>67</posx>
+					<posx>17</posx>
 					<posy>320</posy>
 					<width>150</width>
 					<aligny>center</aligny>
@@ -127,7 +137,7 @@
 				</control>
 				<control type="button" id="32">
 					<description>Bookmark button 2</description>
-					<posx>50</posx>
+					<posx>0</posx>
 					<posy>342</posy>
 					<label>$INFO[Skin.String(Picturesbookmark2)]</label>
 					<onclick>ActivateWindow(MyPictures,$INFO[Skin.String(Picturesbookmark2)])</onclick>
@@ -139,7 +149,7 @@
 				</control>
 				<control type="label">
 					<description>Pictures Bookmark 2 String NOT SET label</description>
-					<posx>67</posx>
+					<posx>17</posx>
 					<posy>357</posy>
 					<width>150</width>
 					<aligny>center</aligny>
@@ -154,13 +164,6 @@
 		<include>AllViewCommonPageControls</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>

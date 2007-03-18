@@ -4,7 +4,7 @@
   <version>2.1</version>
   
   <!-- amount to zoom skin to remove overscan compensation -->
-  <zoom>1.1</zoom>
+  <zoom>1</zoom>
   
   <credits>
     <skinname>Project Mayhem III</skinname>
