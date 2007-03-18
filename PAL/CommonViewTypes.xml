@@ -478,7 +478,7 @@
 			<onright>61</onright>
 			<onup>51</onup>
 			<ondown>51</ondown>
-			<viewtype label="12003">list</viewtype>
+			<viewtype label="20060">list</viewtype>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
@@ -1351,7 +1351,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>415</posy>
+			<posy>405</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>special13</font>
@@ -1362,7 +1362,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>442</posy>
+			<posy>433</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1374,7 +1374,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>467</posy>
+			<posy>457</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1386,7 +1386,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>440</posy>
+			<posy>430</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1398,7 +1398,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>460</posy>
+			<posy>450</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1411,7 +1411,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>480</posy>
+			<posy>470</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1423,7 +1423,7 @@
 		</control>
 		<control type="label">
 			<posx>670</posx>
-			<posy>480</posy>
+			<posy>470</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1431,6 +1431,18 @@
 			<scroll>true</scroll>
 			<align>right</align>
 			<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
+			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>260</posx>
+			<posy>490</posy>
+			<width>410</width>
+			<height>16</height>
+			<font>font13</font>
+			<include>textcolorlightgrey</include>
+			<scroll>true</scroll>
+			<label>$INFO[ListItem.PlotOutline ,$LOCALIZE[203] ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1565,7 +1577,7 @@
 			<onright>60</onright>
 			<onup>57</onup>
 			<ondown>57</ondown>
-			<viewtype label="539">wide</viewtype>
+			<viewtype label="$LOCALIZE[20060] 2">wide</viewtype>
 			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
@@ -2092,6 +2104,18 @@
 		<control type="label">
 			<posx>260</posx>
 			<posy>445</posy>
+			<width>410</width>
+			<height>16</height>
+			<font>font13</font>
+			<include>textcolorlightgrey</include>
+			<scroll>true</scroll>
+			<info>ListItem.Date</info>
+			<visible>Control.IsVisible(56)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="label">
+			<posx>260</posx>
+			<posy>465</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
