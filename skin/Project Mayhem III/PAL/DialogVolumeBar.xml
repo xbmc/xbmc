@@ -1,23 +1,23 @@
-﻿<window id="104">
+<window id="104">
 	<defaultcontrol>1</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
-		<posx>535</posx>
-		<posy>40</posy>
+		<posx>550</posx>
+		<posy>20</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="0">
 			<description>Popup Volume Dialog Background</description>
-			<posx>1</posx>
-			<posy>2</posy>
-			<width>120</width>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>110</width>
 			<height>75</height>
-			<texture>voulume-panel-bg.png</texture>
+			<texture border="16,13,10,19">voulume-panel-bg.png</texture>
 		</control>
 		<control type="slider" id="1">
 			<description>Volume Slider</description>
-			<posx>33</posx>
+			<posx>25</posx>
 			<posy>42</posy>
 			<texturesliderbar>osd_slider_volume_bg.png</texturesliderbar>
 			<textureslidernib>slider_nibFO.png</textureslidernib>

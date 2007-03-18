@@ -1,20 +1,27 @@
-﻿<window id="7">
+<window id="7">
 	<defaultcontrol>95</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-settings.png</texture>
-			<colorkey>0</colorkey>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -23,7 +30,7 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>10007</label>
 			<font>special13</font>
@@ -31,17 +38,12 @@
 		</control>
 		<include>contentpanel</include>
 		<control type="group" id="9000">
-			<control type="label" id="40">
-				<description>Section Label</description>
-				<posx>220</posx>
-				<posy>120</posy>
-				<font>font13</font>
-				<label>139</label>
-				<include>contentpanelslide</include>
-			</control>
+			<posx>20</posx>
+			<posy>-20</posy>
+			<include>buttonpanelslide</include>
 			<control type="button" id="95">
 				<description>Button Default Values</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>120</posy>
 				<label>13278</label>
 				<font>font13</font>
@@ -50,11 +52,10 @@
 				<onup>98</onup>
 				<ondown>94</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 			<control type="button" id="94">
 				<description>Button Storage</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>157</posy>
 				<label>13277</label>
 				<font>font13</font>
@@ -63,11 +64,10 @@
 				<onup>95</onup>
 				<ondown>92</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 			<control type="button" id="92">
 				<description>Button HDD</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>194</posy>
 				<label>13275</label>
 				<font>font13</font>
@@ -76,11 +76,10 @@
 				<onup>94</onup>
 				<ondown>93</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 			<control type="button" id="93">
 				<description>Button DVD</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>231</posy>
 				<label>13276</label>
 				<font>font13</font>
@@ -89,11 +88,10 @@
 				<onup>92</onup>
 				<ondown>96</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 			<control type="button" id="96">
 				<description>Button Network</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>268</posy>
 				<label>13279</label>
 				<font>font13</font>
@@ -102,11 +100,10 @@
 				<onup>93</onup>
 				<ondown>97</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 			<control type="button" id="97">
 				<description>Button VIDEO</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>305</posy>
 				<label>13280</label>
 				<font>font13</font>
@@ -115,11 +112,10 @@
 				<onup>96</onup>
 				<ondown>98</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 			<control type="button" id="98">
 				<description>Button XBOX Hardware</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>342</posy>
 				<label>13281</label>
 				<font>font13</font>
@@ -128,160 +124,121 @@
 				<onup>97</onup>
 				<ondown>95</ondown>
 				<align>Left</align>
-				<include>buttonpanelslide</include>
 			</control>
 		</control>
-		<control type="label" id="2">
-			<description>Label 2</description>
-			<posx>220</posx>
-			<posy>150</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
+		<control type="group">
 			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="3">
-			<description>Label 3</description>
-			<posx>220</posx>
-			<posy>178</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="4">
-			<description>Label 4</description>
-			<posx>220</posx>
-			<posy>206</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="5">
-			<description>Label 5</description>
-			<posx>220</posx>
-			<posy>234</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="6">
-			<description>Label 6</description>
-			<posx>220</posx>
-			<posy>262</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="7">
-			<description>Label 7</description>
-			<posx>220</posx>
-			<posy>290</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="8">
-			<description>Label 8</description>
-			<posx>220</posx>
-			<posy>318</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="9">
-			<description>Label 9</description>
-			<posx>220</posx>
-			<posy>346</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="10">
-			<description>Label 10</description>
-			<posx>220</posx>
-			<posy>374</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="11">
-			<description>Label 11</description>
-			<posx>220</posx>
-			<posy>402</posy>
-			<label>13282</label>
-			<font>font13</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<!-- control>
-   <description>Label 12</description>
-   <type>label</type>
-   <id>12</id>
-   <posx>220</posx>
-   <posy>425</posy>
-   <label>13282</label>
-   <font>font13</font>
-   <include>textcolorgrey</include>
-   <include>contentpanelslide</include>
-  </control -->
-		<!-- Add fav values here! -->
-		<!-- control>
-   <description>TEST Label</description>
-   <type>label</type>
-   <id>1</id>
-   <posx>220</posx>
-   <posy>426</posy>
-   <label>-</label>
-   <info>Network.IPAddress</info>
-   <align>left</align>
-   <font>font12</font>
-   <include>contentpanelslide</include>
-  </control -->
-		<control type="label" id="50">
-			<description>Current Time</description>
-			<posx>220</posx>
-			<posy>445</posy>
-			<label>143</label>
-			<font>font12</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<!-- control>
-   <description>XBMC Version</description>
-   <type>label</type>
-   <id>51</id>
-   <posx>220</posx>
-   <posy>422</posy>
-   <label>144</label>
-   <font>font12</font>
-   <include>textcolorgrey</include>
-   <include>contentpanelslide</include>
-  </control -->
-		<control type="label" id="52">
-			<description>XBMC XBE BUILD Version</description>
-			<posx>220</posx>
-			<posy>465</posy>
-			<label>144</label>
-			<font>font12</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
-		</control>
-		<control type="label" id="53">
-			<description>Mplayer DLL Version</description>
-			<posx>220</posx>
-			<posy>485</posy>
-			<label>144</label>
-			<font>font12</font>
-			<include>textcolorgrey</include>
-			<include>contentpanelslide</include>
+			<control type="label" id="40">
+				<description>Section Label</description>
+				<posx>190</posx>
+				<posy>100</posy>
+				<font>font13</font>
+				<label>139</label>
+			</control>
+			<control type="label" id="2">
+				<description>Label 2</description>
+				<posx>190</posx>
+				<posy>130</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="3">
+				<description>Label 3</description>
+				<posx>190</posx>
+				<posy>158</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="4">
+				<description>Label 4</description>
+				<posx>190</posx>
+				<posy>186</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="5">
+				<description>Label 5</description>
+				<posx>190</posx>
+				<posy>214</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="6">
+				<description>Label 6</description>
+				<posx>190</posx>
+				<posy>242</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="7">
+				<description>Label 7</description>
+				<posx>190</posx>
+				<posy>270</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="8">
+				<description>Label 8</description>
+				<posx>190</posx>
+				<posy>298</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="9">
+				<description>Label 9</description>
+				<posx>190</posx>
+				<posy>326</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="10">
+				<description>Label 10</description>
+				<posx>190</posx>
+				<posy>354</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="11">
+				<description>Label 11</description>
+				<posx>190</posx>
+				<posy>382</posy>
+				<label>13282</label>
+				<font>font13</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="50">
+				<description>Current Time</description>
+				<posx>190</posx>
+				<posy>445</posy>
+				<label>143</label>
+				<font>font12</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="52">
+				<description>XBMC XBE BUILD Version</description>
+				<posx>190</posx>
+				<posy>465</posy>
+				<label>144</label>
+				<font>font12</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="53">
+				<description>Mplayer DLL Version</description>
+				<posx>190</posx>
+				<posy>485</posy>
+				<label>144</label>
+				<font>font12</font>
+				<include>textcolorgrey</include>
+			</control>
 		</control>
 	</controls>
 </window>
