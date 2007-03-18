@@ -81,6 +81,7 @@
 		<include>ProgramsViewCommons</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>ScriptThumbWrapView</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>
