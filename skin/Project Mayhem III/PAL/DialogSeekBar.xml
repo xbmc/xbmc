@@ -1,7 +1,7 @@
 <window id="115">
 	<defaultcontrol>1</defaultcontrol>
 	<include>dialogeffect</include>
-	<visible>[Player.ShowInfo + Window.IsActive(FullScreenVideo)] | Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
 	<controls>
 		<!-- playstate images -->
 		<control type="image" id="0">
@@ -128,11 +128,11 @@
 		<!-- progressbar dialog -->
 		<control type="image" id="23">
 			<description>Popup Seek Dialog Background</description>
-			<posx>474</posx>
+			<posx>475</posx>
 			<posy>42</posy>
-			<width>184</width>
+			<width>185</width>
 			<height>75</height>
-			<texture>voulume-panel-bg.png</texture>
+			<texture border="16,13,10,19">voulume-panel-bg.png</texture>
 		</control>
 		<control type="label" id="22">
 			<description>Elapsed Time Label</description>
@@ -168,9 +168,9 @@
 		</control>
 		<control type="progress" id="23">
 			<description>Progressbar</description>
-			<posx>506</posx>
+			<posx>501</posx>
 			<posy>83</posy>
-			<width>128</width>
+			<width>138</width>
 			<height>5</height>
 			<info>Player.Progress</info>
 			<texturebg>progress_back.png</texturebg>
@@ -182,9 +182,9 @@
 		</control>
 		<control type="slider" id="401">
 			<description>Seek Slider</description>
-			<posx>506</posx>
+			<posx>501</posx>
 			<posy>82</posy>
-			<width>128</width>
+			<width>138</width>
 			<height>6</height>
 			<texturesliderbar>seekslider.png</texturesliderbar>
 			<textureslidernib>slider_nibFO.png</textureslidernib>

@@ -1,4 +1,4 @@
-﻿<window id="107">
+<window id="107">
 	<animation effect="slide" time="400" start="300,0">WindowOpen</animation>
 	<animation effect="slide" time="400" end="300,0">WindowClose</animation>
 	<coordinates>
@@ -13,11 +13,11 @@
 			<posy>0</posy>
 			<width>245</width>
 			<height>75</height>
-			<texture>voulume-panel-bg.png</texture>
+			<texture border="16,13,10,19">voulume-panel-bg.png</texture>
 		</control>
 		<control type="image" id="400">
 			<description>avatar</description>
-			<posx>29</posx>
+			<posx>20</posx>
 			<posy>15</posy>
 			<width>30</width>
 			<height>40</height>
@@ -25,19 +25,19 @@
 		</control>
 		<control type="label" id="401">
 			<description>Caption Label</description>
-			<posx>66</posx>
+			<posx>55</posx>
 			<posy>17</posy>
 			<font>font12</font>
 			<align>center</align>
 			<label>-</label>
-			<width>160</width>
+			<width>170</width>
 			<scroll>true</scroll>
 		</control>
 		<control type="label" id="402">
 			<description>Description Label</description>
-			<posx>66</posx>
+			<posx>55</posx>
 			<posy>33</posy>
-			<width>160</width>
+			<width>170</width>
 			<label>-</label>
 			<font>font10</font>
 			<align>center</align>

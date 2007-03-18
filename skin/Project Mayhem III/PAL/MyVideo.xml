@@ -2,45 +2,67 @@
 	<defaultcontrol>50</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-videos.png</texture>
+		</control>
+		<control type="image">
+			<description>folder image</description>
+			<posx>20</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>86</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture diffuse="Wide_Icon_Diffuse.png" />
+			<info>container.folderthumb</info>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
+			<visible>!container.hasthumb</visible>
 		</control>
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>3</label>
 			<font>special13</font>
+			<visible>!container.hasthumb</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">
 			<description>number of files text label</description>
 			<posx>545</posx>
-			<posy>526</posy>
+			<posy>540</posy>
 			<align>right</align>
 			<label>-</label>
 			<font>font10</font>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>-20</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="2">
 				<description>View As Icons button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>120</posy>
 				<label>100</label>
 				<onleft>50</onleft>
@@ -50,7 +72,7 @@
 			</control>
 			<control type="button" id="3">
 				<description>Sort by button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>157</posy>
 				<label>103</label>
 				<onleft>50</onleft>
@@ -68,7 +90,7 @@
 			</control>
 			<control type="radiobutton" id="99">
 				<description>Library button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>194</posy>
 				<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
 				<font>font13</font>
@@ -82,7 +104,7 @@
 			</control>
 			<control type="radiobutton" id="7">
 				<description>Stacking</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>231</posy>
 				<label>346</label>
 				<onleft>50</onleft>
@@ -94,7 +116,7 @@
 				<visible>Skin.HasSetting(bookmarkbuttons)</visible>
 				<control type="button" id="31">
 					<description>Bookmark button 1</description>
-					<posx>50</posx>
+					<posx>0</posx>
 					<posy>268</posy>
 					<label>$INFO[Skin.String(videobookmark1)]</label>
 					<onclick>ActivateWindow(MyVideos,$INFO[Skin.String(videobookmark1)])</onclick>
@@ -106,7 +128,7 @@
 				</control>
 				<control type="label">
 					<description>Video Bookmark 1 String NOT SET label</description>
-					<posx>67</posx>
+					<posx>17</posx>
 					<posy>285</posy>
 					<width>150</width>
 					<aligny>center</aligny>
@@ -116,7 +138,7 @@
 				</control>
 				<control type="button" id="32">
 					<description>Bookmark button 2</description>
-					<posx>50</posx>
+					<posx>0</posx>
 					<posy>305</posy>
 					<label>$INFO[Skin.String(videobookmark2)]</label>
 					<onclick>ActivateWindow(MyVideos,$INFO[Skin.String(videobookmark2)])</onclick>
@@ -128,7 +150,7 @@
 				</control>
 				<control type="label">
 					<description>Video Bookmark 2 String NOT SET label</description>
-					<posx>67</posx>
+					<posx>17</posx>
 					<posy>320</posy>
 					<width>150</width>
 					<aligny>center</aligny>
@@ -138,7 +160,7 @@
 				</control>
 				<control type="button" id="33">
 					<description>Bookmark button 3</description>
-					<posx>50</posx>
+					<posx>0</posx>
 					<posy>342</posy>
 					<label>$INFO[Skin.String(videobookmark3)]</label>
 					<onclick>ActivateWindow(MyVideos,$INFO[Skin.String(videobookmark3)])</onclick>
@@ -150,7 +172,7 @@
 				</control>
 				<control type="label">
 					<description>Video Bookmark 3 String NOT SET label</description>
-					<posx>67</posx>
+					<posx>17</posx>
 					<posy>357</posy>
 					<width>150</width>
 					<aligny>center</aligny>
@@ -164,16 +186,11 @@
 		<include>VideoViewCommons</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>VideoDVDThumbLarge</include>
+		<include>VideoDVDWrapView</include>
 		<include>WideIcon_Small</include>
 		<include>WideIcon_Big</include>
 		<include>AllViewCommonPageControls</include>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>
