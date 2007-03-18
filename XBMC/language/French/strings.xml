@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 03/09/2007-->
+<!--Date of translation: 03/18/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8044-->
+<!--Based on english strings version 8202-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -101,7 +101,7 @@
   <string id="165">Disque Présent</string>
   <string id="166">Thème</string>
   <string id="167">Activer le serveur FTP</string>
-  <string id="168">Activer le temps Internet</string>
+  <string id="168">Synchroniser le temps avec Internet</string>
   <string id="169">Résolution</string>
   <string id="170">Album:</string>
   <string id="171">Artiste:</string>
@@ -430,7 +430,7 @@
   <string id="522">Supprimer l'entrée</string>
   <string id="523">Changer de médias</string>
   <string id="524">Choisir une playliste</string>
-  <string id="525">Nouvelle pls</string>
+  <string id="525">Nouvelle playliste...</string>
   <string id="526">Ajouter dans une playliste</string>
   <string id="527">Ajout manuel à la BDD</string>
   <string id="528">Entrer le titre</string>
@@ -468,6 +468,7 @@
   <string id="583">Se rappeler la vue des différents dossiers</string>
   <string id="584">Croissant</string>
   <string id="585">Décroissant</string>
+  <string id="586">Éditer Playliste</string>
   <string id="588">Annuler le Mix de soirée</string>
   <string id="589">Mix de soirée</string>
   <string id="590">Aléatoire</string>
@@ -713,6 +714,7 @@
   <string id="10500">Musique/playliste</string>
   <string id="10501">Musique/Fichiers</string>
   <string id="10502">Musique/Bibliothèques</string>
+  <string id="10503">Playliste Éditeur</string>
   <string id="10504">Chansons Top 100</string>
   <string id="10505">Albums Top 100</string>
   <string id="10506">Programmes</string>
@@ -821,6 +823,7 @@
   <string id="13004">- Durée minimale du fichier</string>
   <string id="13005">Éteindre</string>
   <string id="13006">Dashboard</string>
+  <string id="13007">Utiliser Dashboard Personnalisé</string>
   <string id="13100">Filtre de scintillement</string>
   <string id="13150">Clé:</string>
   <string id="13151">Température:</string>
@@ -846,7 +849,7 @@
   <string id="13171">Immédiatement</string>
   <string id="13172">Après %i secs</string>
   <string id="13173">Installer le:</string>
-  <string id="13174">Compte power cyclique:</string>
+  <string id="13174">Nombre de cycles marche/arrêt complets:</string>
   <string id="13200">Profils</string>
   <string id="13201">Supprimer le profil '%s'?</string>
   <string id="13204">Dernier profil chargé</string>
@@ -884,7 +887,7 @@
   <string id="13291">Puce:</string>
   <string id="13292">Câble A/V:</string>
   <string id="13293">Région Vidéo &amp; XBE:</string>
-  <string id="13294">Région du DVD:</string>
+  <string id="13294">Région:</string>
   <string id="13295">Internet:</string>
   <string id="13296">La XBox est connectée !</string>
   <string id="13297">La XBox n'est pas connectée! Vérifiez vos paramètres réseau.</string>
@@ -1053,6 +1056,8 @@
   <string id="14071">Activer les options Supprimer et Renommer</string>
   <string id="14072">Activer XLink Kai</string>
   <string id="14073">XLink Kai n'est pas activé.</string>
+  <string id="14074">Fuseau horaire</string>
+  <string id="14075">Ajuster l'horloge pour l'observation auto. de l'heure d'été</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Le service n'est pas connecté, voulez-vous essayer</string>
   <string id="15002">de vous y connecter avec XBox Media Center ?</string>
@@ -1178,7 +1183,7 @@
   <string id="15282">Saisissez un nom de tag pour en trouver des semblables</string>
   <string id="15283">Pistes écoutées récemment par %name%</string>
   <string id="15284">Écouter les recommandations de la radio Last.FM de %name%</string>
-  <string id="15300">Chemin Non Valide</string>
+  <string id="15300">Chemin non trouvé ou invalide</string>
   <string id="15301">Impossible de se connecter au serveur</string>
   <string id="15302">Serveur Non Trouvé</string>
   <string id="15303">Workgroup Non Trouvé</string>
@@ -1255,7 +1260,7 @@
   <string id="20020">Impossible d'utiliser KAI et Trainer ensemble</string>
   <string id="20021">Choisissez celui que vous voulez utiliser</string>
   <string id="20023">Conflit</string>
-  <string id="20024">Scanner Nouveau</string>
+  <string id="20024">Rescanner</string>
   <string id="20025">Scanner tout</string>
   <string id="20026">Région</string>
   <string id="20038">Sécuriser l'écran Musique</string>
@@ -1380,9 +1385,9 @@
   <string id="20158">Infos Réseau</string>
   <string id="20159">Infos Vidéo</string>
   <string id="20160">Infos Matériel</string>
-  <string id="20161">Total: %s MB, Utilisé: %s MB, Libre: %s MB</string>
-  <string id="20162">Total DD Utilisé: %u%% Libre: %u%%</string>
-  <string id="20163">%s: %s MB de libre sur %s MB</string>
+  <string id="20161">Total</string>
+  <string id="20162">Utilisé</string>
+  <string id="20163">de</string>
   <string id="20164">Verrouillage non soutenue</string>
   <string id="20165">Non verrouillé</string>
   <string id="20166">Verrouillé</string>
@@ -1484,6 +1489,8 @@
   <string id="20363">Retirer l'émission télé...</string>
   <string id="20364">Émission Télé</string>
   <string id="20365">Résumé de l'épisode</string>
+  <string id="20366">* Toutes les saisons</string>
+  <string id="20367">Masquer vue(s)</string>
   <string id="21330">Montrer les dossiers et les fichiers cachés</string>
   <string id="21331">Client TuxBox</string>
   <string id="21332">AVERTISSEMENT: Le dispositif TuxBox est en mode d'enregistrement!</string>
@@ -1518,5 +1525,7 @@
   <string id="21381">Entrer le nom de la nouvelle Playliste</string>
   <string id="21382">Masquer le bouton "Ajouter une entrée" des listes</string>
   <string id="21383">Activer barres de défilement</string>
+  <string id="21384">Activer le filtre Masquer vue(s) en mode bibliothèque</string>
+  <string id="21385">Ouvrir Playliste</string>
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 </strings>
