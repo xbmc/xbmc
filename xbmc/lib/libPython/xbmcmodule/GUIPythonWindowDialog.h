@@ -14,7 +14,5 @@ public:
   virtual bool    IsModalDialog() const { return true; };
 
 protected:
-	DWORD						m_dwParentWindowID;
-	CGUIWindow* 		m_pParentWindow;
 	bool						m_bRunning;
 };
