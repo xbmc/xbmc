@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "window.h"
 #include "dialog.h"
+#include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
 
@@ -58,10 +59,16 @@ namespace PYXBMC
 			pWindow->bModal = false;
 			pWindow->bIsPythonWindow = true;
 
-			if (!bAsDialog) pWindow->pWindow = new CGUIPythonWindow(id);
-			else pWindow->pWindow = new CGUIPythonWindowDialog(id);
-
-			if (pWindow->bIsPythonWindow)
+      if (!bAsDialog && !pWindow->bUsingXML) {
+        pWindow->pWindow = new CGUIPythonWindow(id);
+      } else if (pWindow->bUsingXML && !bAsDialog) {
+          pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
+      } else if (pWindow->bUsingXML && bAsDialog) {
+          pWindow->pWindow = new CGUIPythonWindowXMLDialog(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
+      } else {
+        pWindow->pWindow = new CGUIPythonWindowDialog(id);
+      }
+		if (pWindow->bIsPythonWindow)
 				((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
 
 			PyGUILock();
@@ -142,6 +149,9 @@ namespace PYXBMC
 			break;
 		case CGUIControl::GUICONTROL_PROGRESS:
 			pControl = (Control*)ControlProgress_Type.tp_alloc(&ControlProgress_Type, 0);
+			break;
+		case CGUIControl::GUICONTAINER_LIST:
+			pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
 			break;
 		}
 
@@ -256,6 +266,7 @@ namespace PYXBMC
 		PyGUILock();
 		// if it's a idalog, we have to activate it a bit different
 		if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
+		else if (WindowXMLDialog_Check(self))	((CGUIPythonWindowXMLDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
 		// activate the window
 		else m_gWindowManager.ActivateWindow(self->iWindowId);
 		PyGUIUnlock();
@@ -280,6 +291,7 @@ namespace PYXBMC
 
 		// if it's a dialog, we have to close it a bit different
 		if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Close();
+		else if (WindowXMLDialog_Check(self)) ((CGUIPythonWindowXMLDialog*)self->pWindow)->Close();
 		// close the window by activating the parent one
 		else m_gWindowManager.ActivateWindow(self->iOldWindowId);
 		self->iOldWindowId = 0;

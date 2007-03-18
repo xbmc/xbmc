@@ -149,7 +149,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   }
   LARGE_INTEGER lend;
   QueryPerformanceCounter(&lend);
-  m_coordsRes = resToUse;
+  if (!bContainsPath)
+    m_coordsRes = resToUse;
   bool ret = Load(pRootElement);
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
@@ -415,7 +416,6 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
-
   DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
@@ -772,7 +772,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   QueryPerformanceCounter(&start);
 
   // load skin xml file
-  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded)) Load(m_xmlFile);
+  bool bHasPath=false; 
+  if (m_xmlFile.Find("\\") > -1 || m_xmlFile.Find("/") > -1 ) 
+    bHasPath = true; 
+  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
+    Load(m_xmlFile,bHasPath);
+
   LARGE_INTEGER slend;
   QueryPerformanceCounter(&slend);
 

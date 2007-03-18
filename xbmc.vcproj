@@ -3902,6 +3902,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowDialog.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXML.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXML.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXMLDialog.cpp">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\infotagmusic.cpp">
 					</File>
 					<File
@@ -3954,6 +3963,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\winxml.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\winxml.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\winxmldialog.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcguimodule.cpp">
