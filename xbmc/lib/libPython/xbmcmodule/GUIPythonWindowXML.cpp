@@ -30,7 +30,6 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   m_coordsRes  = PAL_4x3;
   m_fallbackPath = strFallBackPath;
-  //m_needsScaling = false;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
@@ -90,22 +89,8 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 			return true;
     }
 		break;
-  case GUI_MSG_ITEM_SELECT:
+    case GUI_MSG_SETFOCUS:
     {
-      bool hs = m_viewControl.HasControl(message.GetControlId());
-      int GCC = m_viewControl.GetCurrentControl();
-      int gsi = message.GetSenderId();
-      int gci = message.GetControlId();
-
-    }
-    break;
-  case GUI_MSG_SETFOCUS:
-    {
-
-      // This fixes the SetFocus(50-59) it will automaticall set focus to the selected type not indivual control
-      bool hs = m_viewControl.HasControl(message.GetControlId());
-      int GCC = m_viewControl.GetCurrentControl();
-      int gci = message.GetControlId();
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
@@ -131,7 +116,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 		case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
-      // Handle Sort/View internally. Scripters shouldn't use ID 2, 3 or 4
+      // Handle Sort/View internally. Scripters shouldn't use ID 2, 3 or 4, or 12
 
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
@@ -170,18 +155,6 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       }
         // Currently we assume that your not using addContorl etc so the vector list of controls has nothing so nothing to check for anyway
         /*
-				// find python control object with same iControl
-				std::vector<Control*>::iterator it = ((Window*)pCallbackWindow)->vecControls.begin();
-				while (it != ((Window*)pCallbackWindow)->vecControls.end())
-				{
-					Control* pControl = *it;
-					if (pControl->iControlId == iControl)
-					{
-						inf->pObject = (PyObject*)pControl;
-						break;
-					}
-					++it;
-				}
 				// did we find our control?
 				if (inf->pObject)
 				{
@@ -245,24 +218,6 @@ void CGUIPythonWindowXML::Render()
     g_graphicsContext.SetMediaDir(m_fallbackPath);
     CGUIWindow::Render();
     g_graphicsContext.SetMediaDir(backupMediaDir);
-}
-void CGUIPythonWindowXML::Activate(DWORD dwParentId)
-{
-  // Currently not used
-	m_dwParentWindowID = dwParentId;
-	m_pParentWindow = m_gWindowManager.GetWindow(m_dwParentWindowID);
-	if (!m_pParentWindow)
-	{
-		m_dwParentWindowID=0;
-		return;
-	}
-
-	m_gWindowManager.RouteToWindow(this);
-
-  // active this dialog...
-  CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
-  OnMessage(msg);
-  m_bRunning = true;
 }
 
 int Py_XBMC_Event_OnClick(void* arg)

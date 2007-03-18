@@ -53,7 +53,7 @@ namespace PYXBMC
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
     // create new GUIWindow
-    if (!Window_CreateNewWindow((Window*)self, true))
+    if (!Window_CreateNewWindow((Window*)self, false))
     {
       // error is already set by Window_CreateNewWindow, just release the memory
       self->ob_type->tp_free((PyObject*)self);

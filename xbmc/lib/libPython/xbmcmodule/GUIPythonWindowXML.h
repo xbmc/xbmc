@@ -2,7 +2,6 @@
 #include "GUIPythonWindow.h"
 #include "../../../GUIViewControl.h"
 
-int Py_XBMC_Event_OnAction(void* arg);
 int Py_XBMC_Event_OnClick(void* arg);
 int Py_XBMC_Event_OnFocus(void* arg);
 int Py_XBMC_Event_OnInit(void* arg);
@@ -16,7 +15,6 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);
   virtual void    Render();
-  void            Activate(DWORD dwParentId);
 	void						WaitForActionEvent(DWORD timeout);
 	void						PulseActionEvent();
 	void            UpdateFileList();
@@ -32,11 +30,8 @@ protected:
 	virtual void    OnInitWindow();
 	virtual void    FormatItemLabels();
 	virtual void    SortItems(CFileItemList &items);
-	//void Update();
 	PyObject*		pCallbackWindow;
 	HANDLE			m_actionEvent;
-	DWORD						m_dwParentWindowID;
-	CGUIWindow* 		m_pParentWindow;
 	bool						m_bRunning;
   string          m_fallbackPath;
 	CGUIViewControl m_viewControl;
