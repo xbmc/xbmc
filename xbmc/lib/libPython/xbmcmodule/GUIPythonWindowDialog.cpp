@@ -4,8 +4,6 @@
 CGUIPythonWindowDialog::CGUIPythonWindowDialog(DWORD dwId)
 :CGUIPythonWindow(dwId)
 {
-	m_dwParentWindowID = 0;
-	m_pParentWindow = NULL;
 	m_bRunning = false;
   m_loadOnDemand = false;
 }
@@ -16,14 +14,6 @@ CGUIPythonWindowDialog::~CGUIPythonWindowDialog(void)
 
 void CGUIPythonWindowDialog::Activate(DWORD dwParentId)
 {
-	m_dwParentWindowID = dwParentId;
-	m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
-	if (!m_pParentWindow)
-	{
-		m_dwParentWindowID=0;
-		return;
-	}
-
 	m_gWindowManager.RouteToWindow(this);
 
   // active this dialog...
@@ -60,6 +50,5 @@ void CGUIPythonWindowDialog::Close()
   OnMessage(msg);
 
   m_gWindowManager.RemoveDialog(GetID());
-	m_pParentWindow = NULL;
 	m_bRunning = false;
 }

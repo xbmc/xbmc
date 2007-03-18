@@ -162,19 +162,22 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   return false;
 }
 
-CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
+CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */)
 {
+  CStdString strPathToUse=m_strBaseDir;
+  if (!strBaseDir.IsEmpty())
+    strPathToUse = strBaseDir;
   // first try and load from the current resolution's directory
   *res = g_graphicsContext.GetVideoResolution();
   CStdString strPath;
-  strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+  strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
   if (CFile::Exists(strPath))
     return strPath;
   // if we're in 1080i mode, try 720p next
   if (*res == HDTV_1080i)
   {
     *res = HDTV_720p;
-    strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+    strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
     if (CFile::Exists(strPath))
       return strPath;
   }
@@ -182,13 +185,13 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
   if (*res == PAL_16x9 || *res == NTSC_16x9 || *res == HDTV_480p_16x9 || *res == HDTV_720p)
   {
     *res = m_DefaultResolutionWide;
-    strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+    strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
     if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default resolution
   *res = m_DefaultResolution;
-  strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+  strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
   // check if we don't have any subdirectories
   if (*res == INVALID) *res = PAL_4x3;
   return strPath;
