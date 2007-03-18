@@ -36,7 +36,6 @@ namespace PYXBMC
 			pWindow->bModal = false;
 			pWindow->iCurrentControlId = 3000;
 			pWindow->bIsPythonWindow = false;
-			pWindow->bConsumeEvents = false;
 		}
 		else
 		{
@@ -58,7 +57,6 @@ namespace PYXBMC
 			pWindow->iOldWindowId = 0;
 			pWindow->bModal = false;
 			pWindow->bIsPythonWindow = true;
-			pWindow->bConsumeEvents = false;
 
 			if (!bAsDialog) pWindow->pWindow = new CGUIPythonWindow(id);
 			else pWindow->pWindow = new CGUIPythonWindowDialog(id);
@@ -665,22 +663,6 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-  	PyDoc_STRVAR(setConsumeActions__doc__,
-		"setConsumeActions(self, boolean consume) -- Sets whether actions\n"
-		"will trigger global events (such as bringing up the volume bar)\n"
-		"after onAction(action) is called\n");
-
-	PyObject* Window_SetConsumeActions(Window *self, PyObject *args)
-	{
-		bool consume;
-		if (!PyArg_ParseTuple(args, "b", &consume)) return NULL;
-		
-		self->bConsumeEvents = consume;
-
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
   PyMethodDef Window_methods[] = {
 		//{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
 		{"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
@@ -696,7 +678,6 @@ namespace PYXBMC
 		{"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
 		{"getResolution", (PyCFunction)Window_GetResolution, METH_VARARGS, getResolution__doc__},
 		{"setCoordinateResolution", (PyCFunction)Window_SetCoordinateResolution, METH_VARARGS, setCoordinateResolution__doc__},
-		{"setConsumeActions", (PyCFunction)Window_SetConsumeActions, METH_VARARGS, setConsumeActions__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
