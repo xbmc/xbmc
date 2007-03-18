@@ -18,7 +18,6 @@
 		int iCurrentControlId; \
 		bool bIsPythonWindow; \
 		bool bModal; \
-		bool bConsumeEvents; \
 		CGUIWindow* pWindow; \
 		std::vector<Control*> vecControls;
 
