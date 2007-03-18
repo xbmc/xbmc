@@ -2,18 +2,26 @@
 	<defaultcontrol>2</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-settings.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -21,7 +29,7 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>10507</label>
 			<font>special13</font>
@@ -29,9 +37,9 @@
 		<include>contentpanel</include>
 		<control type="grouplist" id="3">
 			<description>button area</description>
-			<posx>50</posx>
-			<posy>120</posy>
-			<width>150</width>
+			<posx>20</posx>
+			<posy>100</posy>
+			<width>160</width>
 			<height>300</height>
 			<include>buttonpanelslide</include>
 			<onleft>5</onleft>
@@ -51,10 +59,10 @@
 		</control>
 		<control type="grouplist" id="5">
 			<description>control area</description>
-			<posx>211</posx>
-			<posy>121</posy>
-			<width>445</width>
-			<height>380</height>
+			<posx>190</posx>
+			<posy>100</posy>
+			<width>500</width>
+			<height>425</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>90</pagecontrol>
 			<include>contentpanelslide</include>
@@ -120,13 +128,6 @@
 			<include>contentpanelslide</include>
 			<showonepage>false</showonepage>
 		</control>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>

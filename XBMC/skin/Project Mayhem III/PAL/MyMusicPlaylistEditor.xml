@@ -7,13 +7,21 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-music.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -21,33 +29,33 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
-			<label>10503</label>
+			<label>$LOCALIZE[559] Editor</label>
 			<font>special13</font>
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice</description>
-			<posx>110</posx>
-			<posy>108</posy>
+			<posx>80</posx>
+			<posy>88</posy>
 			<width>64</width>
-			<height>468</height>
+			<height>510</height>
 			<texture>contentpanel_left.png</texture>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice</description>
-			<posx>174</posx>
-			<posy>108</posy>
-			<width>612</width>
-			<height>468</height>
+			<posx>144</posx>
+			<posy>88</posy>
+			<width>576</width>
+			<height>510</height>
 			<texture>contentpanel.png</texture>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="label" id="12">
 			<description>number of files text label</description>
-			<posx>170</posx>
-			<posy>526</posy>
+			<posx>140</posx>
+			<posy>540</posy>
 			<align>left</align>
 			<label>-</label>
 			<font>font10</font>
@@ -56,14 +64,15 @@
 		<control type="label" id="101">
 			<description>number of songs in playlist text label</description>
 			<posx>430</posx>
-			<posy>526</posy>
+			<posy>540</posy>
 			<align>left</align>
 			<label>-</label>
 			<font>font10</font>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="group" id="9000">
-			<posx>50</posx>
+			<posx>20</posx>
+			<posy>-20</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="6">
 				<description>Open Button</description>
@@ -106,37 +115,37 @@
 			<include>contentpanelslide</include>
 			<control type="label" id="1">
 				<description>description label</description>
-				<posx>172</posx>
-				<posy>108</posy>
+				<posx>140</posx>
+				<posy>89</posy>
 				<align>left</align>
 				<label>1211</label>
 				<font>special13</font>
 			</control>
 			<control type="image">
 				<description>filemanager List Sel Left</description>
-				<posx>162</posx>
-				<posy>135</posy>
-				<width>250</width>
-				<height>375</height>
+				<posx>130</posx>
+				<posy>115</posy>
+				<width>280</width>
+				<height>404</height>
 				<texture>filemanager_Panel_Sel.png</texture>
 				<visible>Control.HasFocus(50)</visible>
 			</control>
 			<control type="image">
-				<description>filemanager List border Left</description>
-				<posx>162</posx>
-				<posy>135</posy>
-				<width>250</width>
-				<height>375</height>
+				<description>filemanager List Sel Left</description>
+				<posx>130</posx>
+				<posy>115</posy>
+				<width>280</width>
+				<height>404</height>
 				<colordiffuse>55000000</colordiffuse>
 				<texture>filemanager_Panel_Sel.png</texture>
 				<visible>!Control.HasFocus(50)</visible>
 			</control>
 			<control type="list" id="50">
 				<description>left File list</description>
-				<posx>167</posx>
-				<posy>140</posy>
-				<width>240</width>
-				<height>365</height>
+				<posx>135</posx>
+				<posy>120</posy>
+				<width>270</width>
+				<height>394</height>
 				<onleft>9000</onleft>
 				<onright>100</onright>
 				<onup>50</onup>
@@ -152,7 +161,7 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>4</posy>
-						<width>200</width>
+						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
 						<include>listselectedcolor</include>
@@ -160,7 +169,7 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>235</posx>
+						<posx>265</posx>
 						<posy>4</posy>
 						<width>120</width>
 						<height>22</height>
@@ -173,7 +182,7 @@
 				</itemlayout>
 				<focusedlayout height="29">
 					<control type="image">
-						<width>240</width>
+						<width>270</width>
 						<height>29</height>
 						<posx>0</posx>
 						<posy>0</posy>
@@ -190,7 +199,7 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>4</posy>
-						<width>200</width>
+						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
 						<include>listselectedcolor</include>
@@ -198,7 +207,7 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>235</posx>
+						<posx>265</posx>
 						<posy>4</posy>
 						<width>120</width>
 						<height>22</height>	
@@ -213,7 +222,7 @@
 			<control type="label" id="1">
 				<description>description label</description>
 				<posx>430</posx>
-				<posy>108</posy>
+				<posy>89</posy>
 				<align>left</align>
 				<label>559</label>
 				<font>special13</font>
@@ -221,18 +230,18 @@
 			<control type="image">
 				<description>filemanager List Sel Right</description>
 				<posx>420</posx>
-				<posy>135</posy>
-				<width>250</width>
-				<height>375</height>
+				<posy>115</posy>
+				<width>280</width>
+				<height>404</height>
 				<texture>filemanager_Panel_Sel.png</texture>
 				<visible>Control.HasFocus(100)</visible>
 			</control>
 			<control type="image">
 				<description>filemanager List Sel Right</description>
 				<posx>420</posx>
-				<posy>135</posy>
-				<width>250</width>
-				<height>375</height>
+				<posy>115</posy>
+				<width>280</width>
+				<height>404</height>
 				<colordiffuse>55000000</colordiffuse>
 				<texture>filemanager_Panel_Sel.png</texture>
 				<visible>!Control.HasFocus(100)</visible>
@@ -240,9 +249,9 @@
 			<control type="list" id="100">
 				<description>Playlist</description>
 				<posx>425</posx>
-				<posy>140</posy>
-				<width>240</width>
-				<height>365</height>
+				<posy>120</posy>
+				<width>270</width>
+				<height>394</height>
 				<onleft>50</onleft>
 				<onright>9000</onright>
 				<onup>100</onup>
@@ -258,7 +267,7 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>4</posy>
-						<width>200</width>
+						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
 						<include>listselectedcolor</include>
@@ -266,7 +275,7 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>235</posx>
+						<posx>265</posx>
 						<posy>4</posy>
 						<width>120</width>
 						<height>22</height>
@@ -279,7 +288,7 @@
 				</itemlayout>
 				<focusedlayout height="29">
 					<control type="image">
-						<width>240</width>
+						<width>270</width>
 						<height>29</height>
 						<posx>0</posx>
 						<posy>0</posy>
@@ -296,7 +305,7 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>4</posy>
-						<width>200</width>
+						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
 						<include>listselectedcolor</include>
@@ -304,7 +313,7 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="label">
-						<posx>235</posx>
+						<posx>265</posx>
 						<posy>4</posy>
 						<width>120</width>
 						<height>22</height>	
@@ -317,13 +326,6 @@
 				</focusedlayout>
 			</control>
 		</control>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>

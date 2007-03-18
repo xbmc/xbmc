@@ -1,20 +1,27 @@
-﻿<window id="34">
+<window id="34">
 	<defaultcontrol>2</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-settings.png</texture>
-			<colorkey>0</colorkey>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -22,7 +29,7 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>10507</label>
 			<font>special13</font>
@@ -30,8 +37,8 @@
 		<include>contentpanel</include>
 		<control type="radiobutton" id="4">
 			<description>enable login screen</description>
-			<posx>50</posx>
-			<posy>120</posy>
+			<posx>20</posx>
+			<posy>100</posy>
 			<onright>2</onright>
 			<onleft>2</onleft>
 			<label>20096</label>
@@ -39,9 +46,9 @@
 		</control>
 		<control type="fadelabel" id="3">
 			<description>Last loaded</description>
-			<posx>300</posx>
-			<posy>526</posy>
-			<width>250</width>
+			<posx>230</posx>
+			<posy>540</posy>
+			<width>350</width>
 			<align>right</align>
 			<label>$LOCALIZE[13204] $INFO[system.profilename]</label>
 			<font>font10</font>
@@ -55,13 +62,6 @@
 			<ondown>2</ondown>
 			<include>contentpanelslide</include>
 		</control>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>
