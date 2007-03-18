@@ -1,4 +1,4 @@
-﻿<window type="buttonMenu" id="105">
+<window type="buttonMenu" id="105">
 	<include>dialogeffect</include>
 	<!--  Change the defaultcontrol ID to have another button focussed when  !-->
 	<!--  you bring the panel up.                                            !-->
@@ -7,7 +7,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>500</posx>
-		<posy>70</posy>
+		<posy>90</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="0">

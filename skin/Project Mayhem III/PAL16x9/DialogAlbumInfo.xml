@@ -4,34 +4,42 @@
 	<animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 	<animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-music.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice</description>
-			<posx>160</posx>
-			<posy>108</posy>
+			<posx>140</posx>
+			<posy>88</posy>
 			<width>64</width>
-			<height>468</height>
+			<height>510</height>
 			<texture>contentpanel_left.png</texture>
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice</description>
-			<posx>224</posx>
-			<posy>108</posy>
-			<width>500</width>
-			<height>468</height>
+			<posx>204</posx>
+			<posy>88</posy>
+			<width>516</width>
+			<height>510</height>
 			<texture>contentpanel.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -39,171 +47,183 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>23</posy>
 			<align>left</align>
 			<label>10523</label>
 			<font>special13</font>
 		</control>
 		<control type="fadelabel" id="21">
 			<description>Artist value</description>
-			<posx>370</posx>
-			<posy>120</posy>
-			<width>285</width>
+			<posx>350</posx>
+			<posy>100</posy>
+			<width>300</width>
 			<label>-</label>
 			<font>special12</font>
 		</control>
 		<control type="fadelabel" id="20">
 			<description>Album value</description>
-			<posx>370</posx>
-			<posy>145</posy>
-			<width>285</width>
+			<posx>350</posx>
+			<posy>125</posy>
+			<width>300</width>
+			<width>90</width>
 			<label>-</label>
 			<font>special13</font>
 		</control>
 		<control type="label" id="1">
 			<description>Year</description>
-			<posx>370</posx>
-			<posy>180</posy>
+			<posx>350</posx>
+			<posy>160</posy>
 			<label>201</label>
+			<width>90</width>
 			<font>font12</font>
 		</control>
 		<control type="label" id="1">
 			<description>Rating</description>
-			<posx>370</posx>
-			<posy>205</posy>
+			<posx>350</posx>
+			<posy>185</posy>
 			<label>173</label>
+			<width>90</width>
 			<font>font12</font>
 		</control>
 		<control type="label" id="1">
 			<description>Genre</description>
-			<posx>370</posx>
-			<posy>230</posy>
+			<posx>350</posx>
+			<posy>210</posy>
+			<width>90</width>
 			<label>174</label>
 			<font>font12</font>
 		</control>
 		<control type="label" id="1">
 			<description>Tones</description>
-			<posx>370</posx>
-			<posy>255</posy>
+			<posx>350</posx>
+			<posy>235</posy>
+			<width>90</width>
 			<label>175</label>
 			<font>font12</font>
 		</control>
 		<control type="label" id="1">
 			<description>Styles</description>
-			<posx>370</posx>
-			<posy>280</posy>
+			<posx>350</posx>
+			<posy>260</posy>
+			<width>90</width>
 			<label>176</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel" id="22">
 			<description>year value</description>
-			<width>195</width>
-			<posx>460</posx>
-			<posy>180</posy>
+			<width>245</width>
+			<posx>440</posx>
+			<posy>160</posy>
 			<label>-</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel" id="23">
 			<description>Rating value</description>
-			<width>195</width>
-			<posx>460</posx>
-			<posy>205</posy>
+			<width>245</width>
+			<posx>440</posx>
+			<posy>185</posy>
 			<label>-</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel" id="24">
 			<description>Genre value</description>
-			<width>195</width>
-			<posx>460</posx>
-			<posy>230</posy>
+			<width>245</width>
+			<posx>440</posx>
+			<posy>210</posy>
 			<label>-</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel" id="25">
 			<description>Tones value</description>
-			<posx>460</posx>
-			<posy>255</posy>
-			<width>195</width>
+			<posx>440</posx>
+			<posy>235</posy>
+			<width>245</width>
 			<label>-</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel" id="26">
 			<description>Styles value</description>
-			<width>195</width>
-			<posx>460</posx>
-			<posy>280</posy>
+			<width>245</width>
+			<posx>440</posx>
+			<posy>260</posy>
 			<label>-</label>
 			<font>font12</font>
 		</control>
 		<control type="image" id="3">
-			<description>Cover image</description>
-			<posx>220</posx>
-			<posy>120</posy>
+			<description>Album Cover image</description>
+			<posx>190</posx>
+			<posy>100</posy>
 			<width>145</width>
-			<height>188</height>
-			<texture>-</texture>
+			<height>180</height>
 			<aspectratio>keep</aspectratio>
+			<texture>-</texture>
 		</control>
 		<control type="textbox" id="4">
 			<description>textarea</description>
-			<posx>220</posx>
-			<posy>315</posy>
+			<posx>200</posx>
+			<posy>300</posy>
+			<width>480</width>
+			<height>240</height>
 			<onleft>5</onleft>
 			<onright>5</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
-			<spinposx>410</spinposx>
-			<spinposy>210</spinposy>
+			<spinposx>430</spinposx>
+			<spinposy>245</spinposy>
 		</control>
-		<control type="button" id="5">
-			<description>Tracks/Review</description>
-			<posx>50</posx>
-			<posy>120</posy>
-			<label>182</label>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>10</onup>
-			<ondown>6</ondown>
-			<font>font13</font>
-		</control>
-		<control type="button" id="6">
-			<description>Refresh</description>
-			<posx>50</posx>
-			<posy>157</posy>
-			<label>184</label>
-			<font>font13</font>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>5</onup>
-			<ondown>10</ondown>
-		</control>
-		<control type="button" id="10">
-			<description>Get Thumb</description>
-			<posx>50</posx>
-			<posy>194</posy>
-			<label>13405</label>
-			<font>font13</font>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>6</onup>
-			<ondown>5</ondown>
+		<control type="group">
+			<posx>20</posx>
+			<posy>-20</posy>
+			<control type="button" id="5">
+				<description>Tracks/Review</description>
+				<posx>0</posx>
+				<posy>120</posy>
+				<label>182</label>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>10</onup>
+				<ondown>6</ondown>
+				<font>font13</font>
+			</control>
+			<control type="button" id="6">
+				<description>Refresh</description>
+				<posx>0</posx>
+				<posy>157</posy>
+				<label>184</label>
+				<font>font13</font>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>5</onup>
+				<ondown>10</ondown>
+			</control>
+			<control type="button" id="10">
+				<description>Get Thumb</description>
+				<posx>0</posx>
+				<posy>194</posy>
+				<label>13405</label>
+				<font>font13</font>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>6</onup>
+				<ondown>5</ondown>
+			</control>
 		</control>
 		<control type="group">
 		<visible>Player.HasAudio</visible>
 			<control type="image" id="0">
 				<description>music rectangle</description>
-				<posx>60</posx>
+				<posx>30</posx>
 				<posy>381</posy>
-				<width>90</width>
+				<width>110</width>
 				<height>120</height>
 				<texture>blue_rectangle_music.png</texture>
 				<include>mediaoverlay</include>
 			</control>
 			<control type="image" id="0">
 				<description>music logo</description>
-				<posx>65</posx>
+				<posx>35</posx>
 				<posy>387</posy>
-				<width>80</width>
+				<width>100</width>
 				<height>109</height>
 				<texture>defaultAlbumCover.png</texture>
 				<info>MusicPlayer.Cover</info>
@@ -211,7 +231,7 @@
 			</control>
 			<control type="label" id="0">
 				<description>play time label</description>
-				<posx>65</posx>
+				<posx>35</posx>
 				<posy>500</posy>
 				<label>-</label>
 				<info>MusicPlayer.Time</info>
@@ -222,11 +242,10 @@
 			<control type="fadelabel" id="0">
 				<description>album/artist/genre etc info label</description>
 				<width>130</width>
-				<posx>65</posx>
+				<posx>35</posx>
 				<posy>525</posy>
 				<font>font10</font>
 				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Year, | ]</label>
-				<include>textcolorwhite</include>
 				<include>mediaoverlay</include>
 			</control>
 		</control>
@@ -234,17 +253,16 @@
 		<visible>Player.HasVideo</visible>
 			<control type="image" id="0">
 				<description>video rectangle</description>
-				<posx>60</posx>
+				<posx>30</posx>
 				<posy>380</posy>
 				<width>140</width>
 				<height>118</height>
 				<texture>blue_rectangle_video.png</texture>
-				<colorkey>0</colorkey>
 				<include>mediaoverlay</include>
 			</control>
 			<control type="videowindow" id="1">
 				<description>video preview window</description>
-				<posx>65</posx>
+				<posx>35</posx>
 				<posy>385</posy>
 				<width>130</width>
 				<height>107</height>
@@ -254,7 +272,7 @@
 			</control>
 			<control type="label" id="0">
 				<description>play time label</description>
-				<posx>65</posx>
+				<posx>35</posx>
 				<posy>500</posy>
 				<label>-</label>
 				<info>VideoPlayer.Time</info>
@@ -265,7 +283,7 @@
 			<control type="fadelabel" id="0">
 				<description>album/artist/genre etc info label</description>
 				<width>130</width>
-				<posx>65</posx>
+				<posx>35</posx>
 				<posy>525</posy>
 				<font>font10</font>
 				<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>

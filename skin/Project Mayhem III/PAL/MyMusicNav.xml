@@ -2,18 +2,26 @@
 	<defaultcontrol>50</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
-			<height>576</height>
+			<height>88</height>
 			<texture>background-music.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
@@ -21,36 +29,28 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>63</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>10516</label>
 			<font>special13</font>
 		</control>
-<!--		<control>
-			<description>Database text label</description>
-			<type>label</type>
-			<id>15</id>
-			<align>left</align>
-			<posx>207</posx>
-			<posy>83</posy>
-			<label>132</label>
-			<font>font10</font>
-		</control> 
--->		<include>contentpanel</include>
+		<include>contentpanel</include>
 		<control type="label" id="12">
 			<description>number of files text label</description>
 			<posx>545</posx>
-			<posy>526</posy>
+			<posy>540</posy>
 			<align>right</align>
 			<label>-</label>
 			<font>font10</font>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>-20</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="2">
 				<description>View As Icons button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>120</posy>
 				<label>100</label>
 				<font>font13</font>
@@ -61,7 +61,7 @@
 			</control>
 			<control type="button" id="3">
 				<description>Sort by button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>157</posy>
 				<label>103</label>
 				<font>font13</font>
@@ -80,7 +80,7 @@
 			</control>
 			<control type="radiobutton" id="99">
 				<description>Library button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>194</posy>
 				<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
 				<font>font13</font>
@@ -94,7 +94,7 @@
 			</control>
 			<control type="button" id="8">
 				<description>Search button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>231</posy>
 				<label>137</label>
 				<font>font13</font>
@@ -105,7 +105,7 @@
 			</control>
 			<control type="button" id="17">
 				<description>Allmusic</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>268</posy>
 				<label>Allmusic</label>
 				<onleft>50</onleft>
@@ -115,7 +115,7 @@
 			</control>
 			<control type="radiobutton" id="16">
 				<description>Party Mode button</description>
-				<posx>50</posx>
+				<posx>0</posx>
 				<posy>305</posy>
 				<label>589</label>
 				<onleft>50</onleft>
@@ -126,17 +126,12 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
-		<include>MusicViewCommons_BigList</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>MusicCoverThumbView</include>
+		<include>MusicCoverWrapView</include>
+		<include>MusicViewCommons_BigList</include>
 		<include>AllViewCommonPageControls</include>
-		<control type="image" id="0">
-			<description>bg preview</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<include>windowswitchtransition</include>
-		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>

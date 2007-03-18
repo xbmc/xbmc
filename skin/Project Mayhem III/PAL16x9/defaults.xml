@@ -16,7 +16,7 @@
 	<default type="button">
 		<posx>300</posx>
 		<posy>200</posy>
-		<width>150</width>
+		<width>160</width>
 		<height>33</height>
 		<texturefocus>button-focus.png</texturefocus>
 		<texturenofocus>button-nofocus.png</texturenofocus>
@@ -27,7 +27,7 @@
 		<aligny>center</aligny>
 	</default>
 	<default type="togglebutton">
-		<posx>185</posx>
+		<posx>140</posx>
 		<posy>167</posy>
 		<width>10</width>
 		<height>12</height>
@@ -223,7 +223,7 @@
 	<default type="radiobutton">
 		<posx>50</posx>
 		<posy>268</posy>
-		<width>150</width>
+		<width>160</width>
 		<height>32</height>
 		<textureradiofocus>radiobutton-focus.png</textureradiofocus>
 		<textureradionofocus>radiobutton-nofocus.png</textureradionofocus>
@@ -239,7 +239,7 @@
 	<default type="selectbutton">
 		<posx>60</posx>
 		<posy>192</posy>
-		<width>150</width>
+		<width>160</width>
 		<height>33</height>
 		<label>132</label>
 		<font>font13</font>

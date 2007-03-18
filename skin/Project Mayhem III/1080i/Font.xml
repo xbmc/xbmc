@@ -1,4 +1,4 @@
-﻿<fonts>
+<fonts>
 	<fontset id="Default" unicode="false">
 		<font>
 			<name>font101</name>
@@ -30,7 +30,6 @@
 			<name>font101</name>
 			<filename>Arial.ttf</filename>
 			<size>21</size>
-			<style>bold</style>
 		</font>
 		<font>
 			<name>font10</name>
