@@ -35,13 +35,13 @@ class CSysInfo : public CInfoLoader
   public:
     CSysInfo(void);
     virtual ~CSysInfo();
-    
+
     char MD5_Sign[32 + 1];
 
     bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
     bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
     bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
-    
+
     bool CreateBiosBackup();
     bool CreateEEPROMBackup();
     void WriteTXTInfoFile();
@@ -91,8 +91,7 @@ class CSysInfo : public CInfoLoader
 
     CStdString m_HDDModel, m_HDDSerial,m_HDDFirmware,m_HDDpw,m_HDDLockState;
     CStdString m_DVDModel, m_DVDFirmware;
-    CStdString m_HDDTemp;
-    
+
     bool m_bInternetState;
     bool m_bRequestDone;
     bool m_bSmartSupported;
@@ -100,9 +99,9 @@ class CSysInfo : public CInfoLoader
 
     bool m_hddRequest;
     bool m_dvdRequest;
-    
+
     signed char byHddTemp;
-    
+
   private:
     #define XBOX_BIOS_ID_INI_FILE "Q:\\System\\SystemInfo\\BiosIDs.ini"
     #define XBOX_BIOS_BACKUP_FILE "Q:\\System\\SystemInfo\\BIOSBackup.bin"
@@ -117,7 +116,7 @@ class CSysInfo : public CInfoLoader
     CStdString m_temp;
     XKEEPROM* m_XKEEPROM;
     XBOX_VERSION  m_XBOXVersion;
-    
+
     double GetCPUFrequency();
     double RDTSC(void);
     bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
@@ -131,7 +130,7 @@ class CSysInfo : public CInfoLoader
     char* CheckMD5 (struct Bios *Listone, char *Sign);
     char* MD5Buffer(char *filename,long PosizioneInizio,int KBytes);
     CStdString MD5BufferNew(char *filename,long PosizioneInizio,int KBytes);
-    
+
     void Reset();
 
 protected:
