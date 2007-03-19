@@ -282,6 +282,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
     else if (strTest.Equals("lcd.cputemperature")) ret = LCD_CPU_TEMPERATURE;
     else if (strTest.Equals("lcd.gputemperature")) ret = LCD_GPU_TEMPERATURE;
+    else if (strTest.Equals("lcd.hddtemperature")) ret = LCD_HDD_TEMPERATURE;
     else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
     else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
     else if (strTest.Equals("lcd.freespace(c)")) ret = LCD_FREE_SPACE_C;
@@ -669,6 +670,7 @@ string CGUIInfoManager::GetLabel(int info)
     break;
 
 #ifdef HAS_XBOX_HARDWARE
+  case LCD_HDD_TEMPERATURE:
   case SYSTEM_HDD_MODEL:
   case SYSTEM_HDD_SERIAL:
   case SYSTEM_HDD_FIRMWARE:

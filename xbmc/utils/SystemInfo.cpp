@@ -59,29 +59,29 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->m_produceinfo     = callback->GetXBProduceInfo();
     g_sysinfo.GetRefurbInfo(callback->m_hddbootdate, callback->m_hddcyclecount);
 
-    callback->GetHDDInfo(callback->m_HDDModel, 
-                         callback->m_HDDSerial,
-                         callback->m_HDDFirmware,
-                         callback->m_HDDpw, 
-                         callback->m_HDDLockState);
-
     if (callback->m_bSmartSupported && !callback->m_bSmartEnabled)
     {
       CLog::Log(LOGNOTICE, "Enabling SMART...");
       XKHDD::EnableSMART();
     }
 
-    callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
-
     callback->m_bRequestDone = true;
   }
- 
 #endif
   //Request always
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
 #ifdef HAS_XBOX_HARDWARE
+  if (!callback->m_hddRequest)
+    callback->GetHDDInfo(callback->m_HDDModel, 
+                          callback->m_HDDSerial,
+                          callback->m_HDDFirmware,
+                          callback->m_HDDpw, 
+                          callback->m_HDDLockState);
+  if (!callback->m_dvdRequest)
+    callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
+
   if (callback->m_bSmartEnabled)
     callback->byHddTemp = XKHDD::GetHddSmartTemp();
   else
@@ -191,6 +191,7 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     if (m_dvdRequest) return m_temp;
     else return CInfoLoader::BusyInfo(dwInfo);
   // All Time request
+  case LCD_HDD_TEMPERATURE:
   case SYSTEM_HDD_TEMPERATURE:
   {
     CTemperature temp;
@@ -200,10 +201,12 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     if(m_bSmartEnabled && byHddTemp != 0)
       temp = CTemperature::CreateFromCelsius((double)byHddTemp);
 
-    m_temp.Format("%s %s",g_localizeStrings.Get(13151), temp.ToString());
+    if (dwInfo == LCD_HDD_TEMPERATURE)
+      m_temp.Format("%s",temp.ToString());
+    else
+      m_temp.Format("%s %s", g_localizeStrings.Get(13151), temp.ToString());
 
-    m_HDDTemp = m_temp;
-    return m_HDDTemp;
+    return m_temp;
   }
 #endif
   case SYSTEM_UPTIME:
