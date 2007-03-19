@@ -40,24 +40,64 @@
 		<font>
 			<name>font12</name>
 			<filename>Arial.ttf</filename>
-			<size>14</size>
+			<size>13</size>
 			<style>bold</style>
 		</font>
 		<font>
 			<name>font13</name>
 			<filename>Arial.ttf</filename>
-			<size>15</size>
+			<size>14</size>
 		</font>
 		<font>
 			<name>special12</name>
 			<filename>Arial.ttf</filename>
-			<size>16</size>
+			<size>15</size>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>Arial.ttf</filename>
+			<size>15</size>
+			<style>bold</style>
+		</font>
+	</fontset>
+	<fontset id="Arial TTF New" unicode="true">
+		<font>
+			<name>font101</name>
+			<filename>Arial.ttf</filename>
+			<size>13</size>
+		</font>
+		<font>
+			<name>font10</name>
+			<filename>Arial.ttf</filename>
+			<size>13</size>
+			<style>bold</style>
+			<aspect>0.85</aspect>
+		</font>
+		<font>
+			<name>font12</name>
+			<filename>Arial.ttf</filename>
 			<size>16</size>
 			<style>bold</style>
+			<aspect>0.8</aspect>
+		</font>
+		<font>
+			<name>font13</name>
+			<filename>Arial.ttf</filename>
+			<size>17</size>
+			<aspect>0.85</aspect>
+		</font>
+		<font>
+			<name>special12</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<aspect>0.85</aspect>
+		</font>
+		<font>
+			<name>special13</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bold</style>
+			<aspect>0.8</aspect>
 		</font>
 	</fontset>
 </fonts>
