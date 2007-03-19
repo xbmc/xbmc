@@ -1,6 +1,6 @@
 <window id="503">
 	<defaultcontrol>50</defaultcontrol>
-	<allowoverlay>yes</allowoverlay>
+	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="image">
 			<description>background image</description>
