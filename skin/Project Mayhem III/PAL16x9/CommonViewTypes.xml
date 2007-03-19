@@ -23,20 +23,22 @@
 				</control>
 				<control type="label">
 					<posx>30</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>430</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -61,20 +63,22 @@
 				</control>
 				<control type="label">
 					<posx>30</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>430</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -111,6 +115,7 @@
 					<width>440</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
@@ -121,6 +126,7 @@
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -160,40 +166,44 @@
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>2</posy>
+					<posy>4</posy>
 					<width>415</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>28</posy>
+					<posy>30</posy>
 					<width>415</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<info>ListItem.Album</info>
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>53</posy>
+					<posy>55</posy>
 					<width>365</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Year,, - ]$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>53</posy>
+					<posy>55</posy>
 					<width>350</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -238,41 +248,45 @@
 				</control>
 				<control type="label">
 					<posx>120</posx>
-					<posy>7</posy>
+					<posy>9</posy>
 					<width>355</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>120</posx>
-					<posy>35</posy>
+					<posy>37</posy>
 					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
 				<control type="label">
 					<posx>120</posx>
-					<posy>60</posy>
+					<posy>62</posy>
 					<width>335</width>
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>110</posy>
+					<posy>112</posy>
 					<width>350</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -310,41 +324,45 @@
 				</control>
 				<control type="label">
 					<posx>120</posx>
-					<posy>7</posy>
+					<posy>9</posy>
 					<width>355</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>120</posx>
-					<posy>35</posy>
+					<posy>37</posy>
 					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
 				<control type="label">
 					<posx>120</posx>
-					<posy>60</posy>
+					<posy>62</posy>
 					<width>335</width>
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>110</posy>
+					<posy>112</posy>
 					<width>350</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -379,6 +397,7 @@
 					<width>440</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
@@ -389,6 +408,7 @@
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -428,10 +448,11 @@
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>2</posy>
+					<posy>7</posy>
 					<width>415</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
@@ -442,26 +463,29 @@
 					<width>415</width>
 					<height>16</height>
 					<font>font12</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>53</posy>
+					<posy>58</posy>
 					<width>365</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>53</posy>
+					<posy>58</posy>
 					<width>350</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -492,20 +516,22 @@
 				</control>
 				<control type="label">
 					<posx>30</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>430</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -530,20 +556,22 @@
 				</control>
 				<control type="label">
 					<posx>30</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>430</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>4</posy>
+					<posy>3</posy>
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -691,6 +719,7 @@
 					<width>370</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
@@ -701,6 +730,7 @@
 					<width>370</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
@@ -712,6 +742,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
@@ -722,6 +753,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<label>$LOCALIZE[173] $INFO[ListItem.Rating]</label>
 				</control>
@@ -763,6 +795,7 @@
 					<width>370</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
@@ -773,6 +806,7 @@
 					<width>370</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
@@ -784,6 +818,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
+					<aligny>center</aligny>
 					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
@@ -794,6 +829,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<label>$LOCALIZE[173] $INFO[ListItem.Rating]</label>
 				</control>
@@ -828,16 +864,18 @@
 					<width>440</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>2</posy>
+					<posy>3</posy>
 					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<textcolor>60ffffff</textcolor>
 					<align>right</align>
@@ -877,21 +915,23 @@
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>10</posy>
+					<posy>7</posy>
 					<width>415</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>53</posy>
+					<posy>56</posy>
 					<width>350</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -1133,24 +1173,26 @@
 		</control>
 		<control type="label">
 			<posx>350</posx>
-			<posy>472</posy>
+			<posy>475</posy>
 			<width>210</width>
 			<height>16</height>
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
 			<textcolor>FFe2ff43</textcolor>
+			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="label">
 			<posx>350</posx>
-			<posy>472</posy>
+			<posy>475</posy>
 			<width>210</width>
 			<height>16</height>
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
+			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + !ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1162,6 +1204,7 @@
 			<font>font13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Album</info>
+			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + !Window.IsActive(mymusiclibrary)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1173,6 +1216,7 @@
 			<font>font13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label2</info>
+			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + Window.IsActive(mymusiclibrary)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1256,12 +1300,13 @@
 		</control>
 		<control type="label">
 			<posx>340</posx>
-			<posy>472</posy>
+			<posy>475</posy>
 			<width>220</width>
 			<height>16</height>
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
+			<aligny>center</aligny>
 			<visible>Control.IsVisible(54)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1273,6 +1318,7 @@
 			<font>font13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label2</info>
+			<aligny>center</aligny>
 			<visible>Control.IsVisible(54)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1351,7 +1397,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>405</posy>
+			<posy>390</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>special13</font>
@@ -1362,7 +1408,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>433</posy>
+			<posy>420</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1374,7 +1420,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>457</posy>
+			<posy>445</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1386,7 +1432,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>430</posy>
+			<posy>420</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1398,7 +1444,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>450</posy>
+			<posy>445</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1436,7 +1482,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>490</posy>
+			<posy>495</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1532,7 +1578,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>440</posy>
+			<posy>445</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1544,7 +1590,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>460</posy>
+			<posy>470</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1556,7 +1602,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>480</posy>
+			<posy>495</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
@@ -1600,13 +1646,14 @@
 				</control>
 				<control type="label">
 					<posx>235</posx>
-					<posy>77</posy>
+					<posy>80</posy>
 					<width>228</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
+					<aligny>center</aligny>
 					<align>right</align>
 					<visible>container.content(tvshows)</visible>
 				</control>
@@ -1621,40 +1668,43 @@
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>7</posy>
+					<posy>11</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Title</info>
+					<aligny>center</aligny>
 					<visible>!container.content(tvshows)</visible>
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>30</posy>
+					<posy>34</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<aligny>center</aligny>
 					<visible>container.content(movies)</visible>
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>30</posy>
+					<posy>34</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+					<aligny>center</aligny>
 					<visible>container.content(episodes)</visible>
 				</control>
 				<control type="label">
 					<posx>235</posx>
-					<posy>77</posy>
+					<posy>80</posy>
 					<width>160</width>
 					<height>16</height>
 					<font>font13</font>
@@ -1662,6 +1712,7 @@
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
+					<aligny>center</aligny>
 					<visible>container.content(movies) | container.content(episodes)</visible>
 				</control>
 			</itemlayout>
@@ -1693,13 +1744,14 @@
 				</control>
 				<control type="label">
 					<posx>235</posx>
-					<posy>77</posy>
+					<posy>80</posy>
 					<width>228</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
+					<aligny>center</aligny>
 					<align>right</align>
 					<visible>container.content(tvshows)</visible>
 				</control>
@@ -1714,40 +1766,43 @@
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>7</posy>
+					<posy>11</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Title</info>
+					<aligny>center</aligny>
 					<visible>!container.content(tvshows)</visible>
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>30</posy>
+					<posy>34</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<aligny>center</aligny>
 					<visible>container.content(movies)</visible>
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>30</posy>
+					<posy>34</posy>
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+					<aligny>center</aligny>
 					<visible>container.content(episodes)</visible>
 				</control>
 				<control type="label">
 					<posx>235</posx>
-					<posy>77</posy>
+					<posy>80</posy>
 					<width>160</width>
 					<height>16</height>
 					<font>font13</font>
@@ -1755,6 +1810,7 @@
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
+					<aligny>center</aligny>
 					<visible>container.content(movies) | container.content(episodes)</visible>
 				</control>
 			</focusedlayout>
@@ -1844,10 +1900,11 @@
 				</control>
 				<control type="label">
 					<posx>5</posx>
-					<posy>77</posy>
+					<posy>80</posy>
 					<width>228</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
@@ -1887,10 +1944,11 @@
 				</control>
 				<control type="label">
 					<posx>5</posx>
-					<posy>77</posy>
+					<posy>80</posy>
 					<width>228</width>
 					<height>16</height>
 					<font>font13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
@@ -1944,21 +2002,23 @@
 				</control>
 				<control type="label">
 					<posx>10</posx>
-					<posy>110</posy>
+					<posy>115</posy>
 					<width>295</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>110</posy>
+					<posy>115</posy>
 					<width>450</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -1997,21 +2057,23 @@
 				</control>
 				<control type="label">
 					<posx>10</posx>
-					<posy>110</posy>
+					<posy>115</posy>
 					<width>295</width>
 					<height>16</height>
 					<font>special13</font>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>475</posx>
-					<posy>110</posy>
+					<posy>115</posy>
 					<width>450</width>
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
+					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
 				</control>
@@ -2115,7 +2177,7 @@
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>465</posy>
+			<posy>470</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
