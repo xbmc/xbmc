@@ -111,7 +111,8 @@
 #define LCD_PROGRESS_BAR            161
 #define LCD_CPU_TEMPERATURE         162
 #define LCD_GPU_TEMPERATURE         163
-#define LCD_FAN_SPEED               164
+#define LCD_HDD_TEMPERATURE         164
+#define LCD_FAN_SPEED               165
 #define LCD_DATE                    166
 #define LCD_FREE_SPACE_C            167
 // #define LCD_FREE_SPACE_D            168 // 168 is reserved for space on D
