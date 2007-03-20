@@ -143,11 +143,50 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
+  PyDoc_STRVAR(getCurrentListPosition__doc__,
+    "getCurrentListPosition() -- Gets the current position in the Window List\n"
+    "\n"
+    "example:\n"
+    "  - self.getCurrentListPosition()\n");
+  
+ PyObject* WindowXML_GetCurrentListPosition(WindowXML *self, PyObject *args)
+  {
+    int listPos = -1;
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    listPos = pwx->GetCurrentListPosition();
+    Py_INCREF(Py_None);
+    return Py_BuildValue("l", listPos);
+  }
+  PyDoc_STRVAR(getSelectedListItem__doc__,
+    "getSelectedListItem() -- Returns the selected ListItem in the WindowList\n"
+    "\n"
+    "example:\n"
+    "  - self.getSelectedListItem()\n");
+  
+ PyObject* WindowXML_GetSelectedListItem(WindowXML *self, PyObject *args)
+  {
+    PyGUILock();
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    CFileItem * fi = pwx->GetSelectedListItem();
+    
+    ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
+    sListItem->item = new CGUIListItem();
+    sListItem->item->SetLabel(fi->GetLabel());
+    sListItem->item->SetLabel2(fi->GetLabel2());
+    sListItem->item->SetIconImage(fi->GetIconImage());
+    sListItem->item->SetThumbnailImage(fi->GetThumbnailImage());
+    PyGUIUnlock();
+    Py_INCREF(sListItem);
+    return (PyObject *)sListItem;
+  }
+  
   PyDoc_STRVAR(windowXML__doc__,
     "WindowXML class.\n");
   PyMethodDef WindowXML_methods[] = {
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
     {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
+    {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS,getCurrentListPosition__doc__},
+    {"getSelectedListItem", (PyCFunction)WindowXML_GetSelectedListItem, METH_VARARGS,getSelectedListItem__doc__},
     {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, ClearList__doc__},
     {NULL, NULL, 0, NULL}
   };
