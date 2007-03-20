@@ -63,6 +63,7 @@ protected:
 
 protected:
   CLabelInfo m_label;
+  CStdString m_renderLabel;
 
   string m_strLabel;
   bool m_bHasPath;
