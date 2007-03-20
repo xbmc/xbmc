@@ -140,18 +140,20 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(numeric__doc__,
-    "numeric(type, heading) -- Show a 'Numeric' dialog.\n"
+    "numeric(type, heading[, default]) -- Show a 'Numeric' dialog.\n"
     "\n"
     "type           : integer - the type of numeric dialog.\n"
     "heading        : string or unicode - dialog heading.\n"
+    "default        : [opt] string - default value.\n"
     "\n"
     "Types:\n"
-    "  0 : ShowAndGetNumber\n"
-    "  1 : ShowAndGetDate\n"
-    "  2 : ShowAndGetTime\n"
-    "  3 : ShowAndGetIPAddress\n"
+    "  0 : ShowAndGetNumber (default format: #)\n"
+    "  1 : ShowAndGetDate (default format: DD/MM/YYYY)\n"
+    "  2 : ShowAndGetTime (default format: HH:MM)\n"
+    "  3 : ShowAndGetIPAddress (default format: #.#.#.#)\n"
     "\n"
     "*Note, Returns the entered data as a string.\n"
+    "       Returns the default value if dialog was cancelled.\n"
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
@@ -162,26 +164,52 @@ namespace PYXBMC
     int inputtype = 0;
     CStdString value;
     PyObject *heading = NULL;
+    char *cDefault = NULL;
     SYSTEMTIME timedate;  
     GetLocalTime(&timedate);
-    if (!PyArg_ParseTuple(args, "iO", &inputtype,&heading))  return NULL;
+    if (!PyArg_ParseTuple(args, "iO|s", &inputtype, &heading, &cDefault))  return NULL;
 
     CStdString utf8Heading;
     if (heading && PyGetUnicodeString(utf8Heading, heading, 1))
+    {
       if (inputtype == 1)
       {
-        CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading);
-        value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+        if (cDefault && strlen(cDefault) == 10)
+        {
+          CStdString sDefault = cDefault;
+          timedate.wDay = atoi(sDefault.Left(2));
+          timedate.wMonth = atoi(sDefault.Mid(3,4));
+          timedate.wYear = atoi(sDefault.Right(4));
+        }
+        if (CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading))
+          value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+        else
+          value = cDefault;
       }
       else if (inputtype == 2)
       {
-        CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading);
-        value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+        if (cDefault && strlen(cDefault) == 5)
+        {
+          CStdString sDefault = cDefault;
+          timedate.wHour = atoi(sDefault.Left(2));
+          timedate.wMinute = atoi(sDefault.Right(2));
+        }
+        if (CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading))
+          value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+        else
+          value = cDefault;
       }
       else if (inputtype == 3)
+      {
+        value = cDefault;
         CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading);
+      }
       else
+      {
+        value = cDefault;
         CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
+      }
+    }
     return Py_BuildValue("s", value.c_str());
   }
 
