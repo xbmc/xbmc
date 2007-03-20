@@ -211,8 +211,9 @@ void CGUIControlGroupList::AddControl(CGUIControl *control)
       }
       control->SetNavigation(GetControlIdUp(), GetControlIdDown(), leftID, rightID);
     }
-    // old versions of the controllist (type="grouplist") used to set the positions of all controls
-    // directly.  The new version (type="controllist") allows offsets to be set via the posx, posy coordinates.
+    // old versions of the grouplist used to set the positions of all controls
+    // directly.  The new version (with <usecontrolcoords>true</usecontrolcoords>)
+    // allows offsets to be set via the posx, posy coordinates.
     if (!m_useControlPositions)
       control->SetPosition(0,0);
     CGUIControlGroup::AddControl(control);
