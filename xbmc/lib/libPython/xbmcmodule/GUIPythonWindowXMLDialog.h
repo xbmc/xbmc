@@ -7,18 +7,18 @@ int Py_XBMC_Event_OnInit(void* arg);
 
 class CGUIPythonWindowXMLDialog : public CGUIPythonWindowXML
 {
-public:
-  CGUIPythonWindowXMLDialog(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
-  virtual ~CGUIPythonWindowXMLDialog(void);
-	virtual bool    OnMessage(CGUIMessage& message);
-	void            Activate(DWORD dwParentId);
-	virtual void		Close();
-	virtual bool		IsRunning() const { return m_bRunning; }
-  virtual bool    IsDialog() const { return true;};
-  virtual bool    IsModalDialog() const { return true; };
-protected:
-  virtual void    UpdateButtons() {};
-  virtual void    OnWindowLoaded() {};
-	bool						m_bRunning;
+  public:
+    CGUIPythonWindowXMLDialog(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
+    virtual ~CGUIPythonWindowXMLDialog(void);
+    virtual bool    OnMessage(CGUIMessage& message);
+    void             Activate(DWORD dwParentId);
+    virtual void    Close();
+    virtual bool    IsRunning() const { return m_bRunning; }
+    virtual bool    IsDialog() const { return true;};
+    virtual bool    IsModalDialog() const { return true; };
+  protected:
+    virtual void    UpdateButtons() {};
+    virtual void    OnWindowLoaded() {};
+    bool             m_bRunning;
 };
 

@@ -18,16 +18,16 @@
 
 #define PyObject_HEAD_XBMC_WINDOW		\
     PyObject_HEAD \
-		int iWindowId; \
-		int iOldWindowId; \
-		int iCurrentControlId; \
-		bool bIsPythonWindow; \
-		bool bModal; \
-		bool bUsingXML; \
-		string sXMLFileName; \
+    int iWindowId; \
+    int iOldWindowId; \
+    int iCurrentControlId; \
+    bool bIsPythonWindow; \
+    bool bModal; \
+    bool bUsingXML; \
+    string sXMLFileName; \
     string sFallBackPath; \
-		CGUIWindow* pWindow; \
-		std::vector<Control*> vecControls;
+    CGUIWindow* pWindow; \
+    std::vector<Control*> vecControls;
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,17 +35,17 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
-		PyObject_HEAD_XBMC_WINDOW
-	} Window;
+  typedef struct {
+    PyObject_HEAD_XBMC_WINDOW
+  } Window;
 
-	extern PyMethodDef Window_methods[];
-	extern PyTypeObject Window_Type;
+  extern PyMethodDef Window_methods[];
+  extern PyTypeObject Window_Type;
 
   void initWindow_Type();
-  
-	bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog);
-	void Window_Dealloc(Window* self);
+
+  bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog);
+  void Window_Dealloc(Window* self);
 }
 
 #ifdef __cplusplus

@@ -28,7 +28,7 @@ namespace PYXBMC
     self->iControlId = 0;
     self->iParentId = 0;
     self->pGUIControl = NULL;
-    
+
     return (PyObject*)self;
   }
 
@@ -47,7 +47,7 @@ namespace PYXBMC
     if(((Control*)obj1)->iControlId > ((Control*)obj2)->iControlId) return 1;
     return 0;
   }
-  
+
   // getId() Method
   PyDoc_STRVAR(getId__doc__,
     "getId() -- Returns the control's current id as an integer.\n"
@@ -94,7 +94,7 @@ namespace PYXBMC
   PyObject* Control_GetWidth(Control* self, PyObject* args)
   {
     return Py_BuildValue("l", self->dwWidth);
-  }  
+  }
 
   // setEnabled() Method
   PyDoc_STRVAR(setEnabled__doc__,
@@ -133,7 +133,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "b", &visible)) return NULL;
 
     PyGUILock();
-    if (self->pGUIControl)   
+    if (self->pGUIControl)
     {
       self->pGUIControl->SetVisible(visible);
     }
@@ -162,11 +162,11 @@ namespace PYXBMC
     bool bHidden = false;
 
     if (!PyArg_ParseTuple(args, "s|b", &cVisible, &bHidden)) return NULL;
-    
+
     int ret = g_infoManager.TranslateString(cVisible);
 
     PyGUILock();
-    if (self->pGUIControl)   
+    if (self->pGUIControl)
       self->pGUIControl->SetVisibleCondition(ret, bHidden);
     PyGUIUnlock();
 
@@ -191,11 +191,11 @@ namespace PYXBMC
     char *cEnable = NULL;
 
     if (!PyArg_ParseTuple(args, "s", &cEnable)) return NULL;
-    
+
     int ret = g_infoManager.TranslateString(cEnable);
 
     PyGUILock();
-    if (self->pGUIControl)   
+    if (self->pGUIControl)
       self->pGUIControl->SetEnableCondition(ret);
     PyGUIUnlock();
 
@@ -219,20 +219,20 @@ namespace PYXBMC
   PyObject* Control_SetAnimations(Control* self, PyObject* args)
   {
     PyObject *pList = NULL;
-    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type)) 
+    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
     {
       PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
     }
-     
+
     TiXmlDocument xmlDoc;
     TiXmlElement xmlRootElement("control");
     TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
     if (!pRoot)
-      {
-        PyErr_SetString(PyExc_TypeError, "TiXmlNode creation error");
-        return NULL;
-      }
+    {
+      PyErr_SetString(PyExc_TypeError, "TiXmlNode creation error");
+      return NULL;
+    }
     vector<CAnimation> animations;
     CGUIControlFactory factory;
     for (int anim = 0; anim < PyList_Size(pList); anim++)
@@ -251,10 +251,10 @@ namespace PYXBMC
         PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
         return NULL;
       }
-      
+
       if (NULL != cAttr && NULL != cEvent)
       {
-        TiXmlElement pNode("animation");      
+        TiXmlElement pNode("animation");
         CStdStringArray attrs;
         StringUtils::SplitString(cAttr, " ", attrs);
         for (unsigned int i = 0; i < attrs.size(); i++)
@@ -269,12 +269,12 @@ namespace PYXBMC
         pRoot->InsertEndChild(pNode);
       }
     }
-    
+
     //bool ret = xmlDoc.SaveFile("q:\\userdata\\test.txt");
-    
+
     const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
     PyGUILock();
-    if (self->pGUIControl)   
+    if (self->pGUIControl)
       factory.GetAnimations(pRoot, animRect, animations);
       self->pGUIControl->SetAnimations(animations);
     PyGUIUnlock();
@@ -476,7 +476,7 @@ namespace PYXBMC
     self->iControlDown = pControl->iControlId;
     PyGUILock();
     if (self->pGUIControl) self->pGUIControl->SetNavigation(
-        self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
+      self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -515,8 +515,11 @@ namespace PYXBMC
 
     self->iControlLeft = pControl->iControlId;
     PyGUILock();
-    if (self->pGUIControl) self->pGUIControl->SetNavigation(
-        self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
+    if (self->pGUIControl)
+    {
+      self->pGUIControl->SetNavigation(self->iControlUp, self->iControlDown,
+        self->iControlLeft,self->iControlRight);
+    }
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -555,8 +558,8 @@ namespace PYXBMC
 
     self->iControlRight = pControl->iControlId;
     PyGUILock();
-    if (self->pGUIControl) self->pGUIControl->SetNavigation(
-        self->iControlUp,self->iControlDown,self->iControlLeft,self->iControlRight);
+    if (self->pGUIControl) self->pGUIControl->SetNavigation(self->iControlUp,
+      self->iControlDown,self->iControlLeft,self->iControlRight);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -596,11 +599,11 @@ namespace PYXBMC
 #pragma const_seg()
 
   PyTypeObject Control_Type;
-  
+
   void initControl_Type()
   {
     PyInitializeTypeObject(&Control_Type);
-    
+
     Control_Type.tp_name = "xbmcgui.Control";
     Control_Type.tp_basicsize = sizeof(Control);
     Control_Type.tp_dealloc = 0;

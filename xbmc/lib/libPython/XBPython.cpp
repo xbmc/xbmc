@@ -5,7 +5,7 @@
 
 // python.h should always be included first before any other includes
 #include "../../stdafx.h"
-#include "python\python.h" 
+#include "python\python.h"
 #include "..\..\cores\dllloader\dllloadercontainer.h"
 #include "../../GUIPassword.h"
 
@@ -390,7 +390,7 @@ int XBPython::ScriptsSize()
   iSize = vecPyList.size();
 
   LeaveCriticalSection(&m_critSection);
-  return iSize;	
+  return iSize;
 }
 
 const char* XBPython::getFileName(int scriptId)
