@@ -60,6 +60,7 @@ void CGUIControlGroup::Render()
 {
   if (IsVisible())
   {
+    g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY));
     for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     {
       CGUIControl *control = *it;
@@ -67,6 +68,7 @@ void CGUIControlGroup::Render()
       control->Render();
     }
     CGUIControl::Render();
+    g_graphicsContext.RemoveGroupTransform();
   }
   g_graphicsContext.RemoveGroupTransform();
 }

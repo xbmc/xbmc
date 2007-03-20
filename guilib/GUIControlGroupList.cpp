@@ -3,7 +3,7 @@
 
 #define TIME_TO_SCROLL 200;
 
-CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation)
+CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_itemGap = itemGap;
@@ -13,6 +13,7 @@ CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, 
   m_orientation = orientation;
   m_scrollOffset = 0;
   m_scrollSpeed = 0;
+  m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
 }
 
@@ -64,10 +65,11 @@ void CGUIControlGroupList::Render()
         if (pos + Size(control) > m_offset && pos < m_offset + Size())
         { // we can render
           if (m_orientation == VERTICAL)
-            control->SetPosition(m_posX, m_posY + pos - m_offset);
+            g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY + pos - m_offset));
           else
-            control->SetPosition(m_posX + pos - m_offset, m_posY);
+            g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX + pos - m_offset, m_posY));
           control->Render();
+          g_graphicsContext.RemoveGroupTransform();
         }
         pos += Size(control) + m_itemGap;
       }
@@ -174,7 +176,7 @@ void CGUIControlGroupList::ValidateOffset()
 void CGUIControlGroupList::AddControl(CGUIControl *control)
 {
   if (control)
-  { // navigation is quite simple
+  { // set the navigation of items so that they form a list
     if (m_orientation == VERTICAL)
     {
       DWORD upID = GetControlIdUp();
@@ -209,6 +211,10 @@ void CGUIControlGroupList::AddControl(CGUIControl *control)
       }
       control->SetNavigation(GetControlIdUp(), GetControlIdDown(), leftID, rightID);
     }
+    // old versions of the controllist (type="grouplist") used to set the positions of all controls
+    // directly.  The new version (type="controllist") allows offsets to be set via the posx, posy coordinates.
+    if (!m_useControlPositions)
+      control->SetPosition(0,0);
     CGUIControlGroup::AddControl(control);
   }
 }
@@ -221,7 +227,7 @@ void CGUIControlGroupList::ClearAll()
 
 inline float CGUIControlGroupList::Size(const CGUIControl *control) const
 {
-  return (m_orientation == VERTICAL) ? control->GetHeight() : control->GetWidth();
+  return (m_orientation == VERTICAL) ? control->GetYPosition() + control->GetHeight() : control->GetXPosition() + control->GetWidth();
 }
 
 inline float CGUIControlGroupList::Size() const
