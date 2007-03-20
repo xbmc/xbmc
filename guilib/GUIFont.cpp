@@ -131,9 +131,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   float unneeded, h;
   float sw = 0;
   GetTextExtent(L" ", &sw, &unneeded);
-  unsigned int maxChars = min(text.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
+  unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
-  if (!g_graphicsContext.SetViewPort(x, y, w, h, true))
+  if (text.IsEmpty() || !g_graphicsContext.SetViewPort(x, y, w, h, true))
     return; // nothing to render
   g_graphicsContext.ScaleFinalCoords(x,y);
   w = ROUND(w * g_graphicsContext.ScaleFinalX());
@@ -151,8 +151,10 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
     WCHAR sz[3];
     if (scrollInfo.characterPos < text.size())
       sz[0] = text[scrollInfo.characterPos];
+    else if (scrollInfo.characterPos < text.size() + scrollInfo.suffix.size())
+      sz[0] = scrollInfo.suffix[scrollInfo.characterPos - text.size()];
     else
-      sz[0] = L' ';
+      sz[0] = text[0];
     sz[1] = 0;
     float charWidth;
     m_font->GetTextExtentInternal(sz, &charWidth, &unneeded);
@@ -162,48 +164,42 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
     {
       scrollInfo.pixelPos -= (charWidth - scrollInfo.pixelSpeed);
       scrollInfo.characterPos++;
-      if (scrollInfo.characterPos > text.size())
+      if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
         scrollInfo.Reset();
     }
   }
   else
     scrollInfo.waitTime--;
   // Now rotate our string as needed, only take a slightly larger then visible part of the text.
-  WCHAR *pOutput = new WCHAR[maxChars+2];
+  WCHAR *pOutput = new WCHAR[maxChars+1];
   WCHAR *pChar = pOutput;
   BYTE *pOutPalette = NULL;
   if (pPalette)
-    pOutPalette = new BYTE[maxChars+2];
+    pOutPalette = new BYTE[maxChars+1];
   BYTE *pPal = pOutPalette;
   unsigned int pos = scrollInfo.characterPos;
-  for (unsigned int i = 0; i <= maxChars; i++)
+  for (unsigned int i = 0; i < maxChars; i++)
   {
-    if (pos < text.size())
-    {
-      *pChar++ = text[pos];
-      pos++;
-    }
-    else
-    {
-      *pChar++ = L' ';
+    if (pos >= text.size() + scrollInfo.suffix.size())
       pos = 0;
-    }
+    if (pos < text.size())
+      *pChar++ = text[pos];
+    else
+      *pChar++ = scrollInfo.suffix[pos - text.size()];
+    pos++;
   }
   if (pPalette)
   {
     pos = scrollInfo.characterPos;
-    for (unsigned int i = 0; i <= maxChars; i++)
+    for (unsigned int i = 0; i < maxChars; i++)
     {
-      if (pos < text.size())
-      {
-        *pPal++ = pPalette[pos];
-        pos++;
-      }
-      else
-      {
-        *pPal++ =0;
+      if (pos >= text.size() + scrollInfo.suffix.size())
         pos = 0;
-      }
+      if (pos < text.size())
+        *pPal++ = pPalette[pos];
+      else
+        *pPal++ = 0;  // suffix uses color 0
+      pos++;
     }
   }
   *pChar = L'\0';
