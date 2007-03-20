@@ -18,13 +18,9 @@ namespace PYXBMC
 {
   extern PyObject* ControlSpin_New(void);
 
-
-  PyObject* ControlList_New(
-    PyTypeObject *type,
-    PyObject *args,
-    PyObject *kwds)
+  PyObject* ControlList_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {  
+    static char *keywords[] = {
       "x", "y", "width", "height", "font",
       "textColor", "buttonTexture", "buttonFocusTexture",
       // maintain order of above items for backward compatibility
@@ -41,7 +37,7 @@ namespace PYXBMC
     //char* cShadowColor = NULL;
     self = (ControlList*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    
+
     // create a python spin control
     self->pControlSpin = (ControlSpin*)ControlSpin_New();
     if (!self->pControlSpin)
@@ -84,7 +80,7 @@ namespace PYXBMC
       &self->dwItemHeight,
       &self->dwSpace,
       &self->dwAlignmentY//,
-      ))//&cShadowColor)) 
+      ))//&cShadowColor))
     {
       Py_DECREF( self );
       return NULL;
@@ -103,9 +99,9 @@ namespace PYXBMC
     //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 
     self->strTextureButton = cTextureButton ? cTextureButton :
-      PyGetDefaultImage("listcontrol", "texturenofocus", "list-nofocus.png");    
+      PyGetDefaultImage("listcontrol", "texturenofocus", "list-nofocus.png");
     self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus :
-      PyGetDefaultImage("listcontrol", "texturefocus", "list-focus.png");  
+      PyGetDefaultImage("listcontrol", "texturefocus", "list-focus.png");
 
     // default values for spin control
     self->pControlSpin->dwPosX = self->dwWidth - 35;
@@ -183,7 +179,7 @@ PyDoc_STRVAR(addItem__doc__,
   {
     PyObject *pObject;
     string strText;
-    
+
     ListItem* pListItem = NULL;
 
     if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
@@ -408,7 +404,7 @@ PyDoc_STRVAR(addItem__doc__,
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
   // getSelectedPosition() method
   PyDoc_STRVAR(getSelectedPosition__doc__,
     "getSelectedPosition() -- Returns the position of the selected item as an integer.\n"
@@ -467,7 +463,7 @@ PyDoc_STRVAR(addItem__doc__,
     Py_INCREF(pListItem);
     return pListItem;
   }
-  
+
   // size() method
   PyDoc_STRVAR(size__doc__,
     "size() -- Returns the total number of items in this list control as an integer.\n"
@@ -503,7 +499,7 @@ PyDoc_STRVAR(addItem__doc__,
 	{
 		return Py_BuildValue("l", self->dwSpace);
 	}
-  
+
   PyMethodDef ControlList_methods[] = {
     {"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
     {"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
@@ -565,7 +561,7 @@ PyDoc_STRVAR(addItem__doc__,
   void initControlList_Type()
   {
     PyInitializeTypeObject(&ControlList_Type);
-    
+
     ControlList_Type.tp_name = "xbmcgui.ControlList";
     ControlList_Type.tp_basicsize = sizeof(ControlList);
     ControlList_Type.tp_dealloc = (destructor)ControlList_Dealloc;

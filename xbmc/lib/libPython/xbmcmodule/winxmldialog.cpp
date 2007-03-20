@@ -28,7 +28,7 @@ namespace PYXBMC
     if (!self) return NULL;
     self->iWindowId = -1;
     PyObject* pyOXMLname, * pyOname;
-    //bool
+
     string strXMLname, strFallbackPath;
 
     if (!PyArg_ParseTuple(args, "OO", &pyOXMLname, &pyOname)) return NULL;
@@ -47,11 +47,12 @@ namespace PYXBMC
         res = PAL_4x3;
       }
 
-      strXMLname = strSkinPath; // We would do this if we didn't copy the xml to the skin
+      strXMLname = strSkinPath;
     }
     self->sFallBackPath  = strFallbackPath;
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
+
     // create new GUIWindow
     if (!Window_CreateNewWindow((Window*)self, true))
     {
@@ -65,6 +66,7 @@ namespace PYXBMC
   }
   PyDoc_STRVAR(windowXMLDialog__doc__,
     "WindowXMLDialog class.\n");
+
   PyMethodDef windowXMLDialog_methods[] = {
     {NULL, NULL, 0, NULL}
   };
@@ -75,11 +77,11 @@ namespace PYXBMC
 #pragma const_seg()
 
   PyTypeObject WindowXMLDialog_Type;
-  
+
   void initWindowXMLDialog_Type()
   {
     PyInitializeTypeObject(&WindowXMLDialog_Type);
-    
+
     WindowXMLDialog_Type.tp_name = "xbmcgui.WindowXMLDialog";
     WindowXMLDialog_Type.tp_basicsize = sizeof(WindowXMLDialog);
     WindowXMLDialog_Type.tp_dealloc = (destructor)Window_Dealloc;
