@@ -301,6 +301,7 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
     m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_BUDDIES, "714"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_SCRIPTS, "247"));
     m_onlyAnimateToHome = true;
   }
   else
