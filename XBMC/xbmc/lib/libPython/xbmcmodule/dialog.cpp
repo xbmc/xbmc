@@ -127,11 +127,11 @@ namespace PYXBMC
     VECSHARES *shares = g_settings.GetSharesFromType(utf8Line[1]);
     if (!shares) return NULL;
 
-    if (useFileDirectories == true && !utf8Line[2].size() == 0) 
+    if (useFileDirectories == true && !utf8Line[2].size() == 0)
       utf8Line[2] += "|.rar|.zip";
 
     if (browsetype == 1)
-      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, useThumbs, useFileDirectories);      
+      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, useThumbs, useFileDirectories);
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else
@@ -165,7 +165,7 @@ namespace PYXBMC
     CStdString value;
     PyObject *heading = NULL;
     char *cDefault = NULL;
-    SYSTEMTIME timedate;  
+    SYSTEMTIME timedate;
     GetLocalTime(&timedate);
     if (!PyArg_ParseTuple(args, "iO|s", &inputtype, &heading, &cDefault))  return NULL;
 
@@ -256,7 +256,7 @@ namespace PYXBMC
       pDialog->SetChoice(1,utf8Line[5]);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};    
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
     g_applicationMessenger.SendMessage(tMsg, true);
 
     return Py_BuildValue("b", pDialog->IsConfirmed());
@@ -279,7 +279,7 @@ namespace PYXBMC
     const DWORD dWindow = WINDOW_DIALOG_SELECT;
     PyObject *heading = NULL;
     PyObject *list = NULL;
-      
+
     if (!PyArg_ParseTuple(args, "OO", &heading, &list))  return NULL;
     if (!PyList_Check(list)) return NULL;
 
@@ -382,7 +382,7 @@ namespace PYXBMC
       if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+2))
         return NULL;
     }
-  
+
     CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
@@ -485,11 +485,11 @@ namespace PYXBMC
 #pragma const_seg()
 
   PyTypeObject WindowDialog_Type;
-  
+
   void initWindowDialog_Type()
   {
     PyInitializeTypeObject(&WindowDialog_Type);
-    
+
     WindowDialog_Type.tp_name = "xbmcgui.WindowDialog";
     WindowDialog_Type.tp_basicsize = sizeof(WindowDialog);
     WindowDialog_Type.tp_dealloc = (destructor)Window_Dealloc;
@@ -501,11 +501,11 @@ namespace PYXBMC
   }
 
   PyTypeObject DialogProgress_Type;
-  
+
   void initDialogProgress_Type()
   {
     PyInitializeTypeObject(&DialogProgress_Type);
-    
+
     DialogProgress_Type.tp_name = "xbmcgui.DialogProgress";
     DialogProgress_Type.tp_basicsize = sizeof(DialogProgress);
     DialogProgress_Type.tp_dealloc = 0;
@@ -518,11 +518,11 @@ namespace PYXBMC
 
 
   PyTypeObject Dialog_Type;
-  
+
   void initDialog_Type()
   {
     PyInitializeTypeObject(&Dialog_Type);
-    
+
     Dialog_Type.tp_name = "xbmcgui.Dialog";
     Dialog_Type.tp_basicsize = sizeof(Dialog);
     Dialog_Type.tp_dealloc = 0;

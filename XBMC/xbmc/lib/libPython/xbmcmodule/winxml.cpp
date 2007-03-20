@@ -95,7 +95,7 @@ namespace PYXBMC
       // object is probably a text item
       if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
-      
+
       pListItem = ListItem_FromString(strText);
     }
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
@@ -158,11 +158,11 @@ namespace PYXBMC
 #pragma const_seg()
 
   PyTypeObject WindowXML_Type;
-  
+
   void initWindowXML_Type()
   {
     PyInitializeTypeObject(&WindowXML_Type);
-    
+
     WindowXML_Type.tp_name = "xbmcgui.WindowXML";
     WindowXML_Type.tp_basicsize = sizeof(WindowXML);
     WindowXML_Type.tp_dealloc = (destructor)Window_Dealloc;

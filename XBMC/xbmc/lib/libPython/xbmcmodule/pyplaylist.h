@@ -14,19 +14,19 @@ extern "C" {
 namespace PYXBMC
 {
 
-	extern PyTypeObject PlayList_Type;
-	extern PyTypeObject PlayListItem_Type;
+  extern PyTypeObject PlayList_Type;
+  extern PyTypeObject PlayListItem_Type;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		PLAYLIST::CPlayList *pPlayList;
-		int iPlayList;
-	} PlayList;
+    PLAYLIST::CPlayList *pPlayList;
+    int iPlayList;
+  } PlayList;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		PLAYLIST::CPlayList::CPlayListItem* item;
-	} PlayListItem;
+    PLAYLIST::CPlayList::CPlayListItem* item;
+  } PlayListItem;
 
   void initPlayList_Type();
   void initPlayListItem_Type();

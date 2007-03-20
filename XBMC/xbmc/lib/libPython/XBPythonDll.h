@@ -21,7 +21,7 @@
 #define PyExc_KeyboardInterrupt ((PyObject*)(*(long*)pointer_PyExc_KeyboardInterrupt))
 #define PyExc_RuntimeError ((PyObject*)(*(long*)pointer_PyExc_RuntimeError))
 #define PyExc_ReferenceError ((PyObject*)(*(long*)pointer_PyExc_ReferenceError))
-  
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -50,7 +50,7 @@ extern "C"
   extern DATA_OBJECT(PyExc_ReferenceError);
 
   bool python_load_dll(DllLoader& dll);
-  
+
 #ifdef __cplusplus
 }
 #endif
