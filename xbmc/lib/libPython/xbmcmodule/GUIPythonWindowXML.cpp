@@ -182,9 +182,9 @@ int CGUIPythonWindowXML::GetCurrentListPosition()
   return m_viewControl.GetSelectedItem();
 }
 
-CFileItem * CGUIPythonWindowXML::GetSelectedListItem()
+CFileItem * CGUIPythonWindowXML::GetListItem(int position)
 { 
-  CFileItem * selectedItem = m_vecItems[m_viewControl.GetSelectedItem()];
+  CFileItem * selectedItem = m_vecItems[position];
   return selectedItem;
 }
 
