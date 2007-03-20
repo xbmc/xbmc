@@ -14,21 +14,21 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
-		PyObject_HEAD
+  typedef struct {
+    PyObject_HEAD
     long id;
     float fAmount1;
     float fAmount2;
     float fRepeat;
     unsigned long buttonCode;
     string strAction;
-	} Action;
+  } Action;
 
-	extern PyTypeObject Action_Type;
+  extern PyTypeObject Action_Type;
 
   PyObject* Action_FromAction(const CAction& action);
 
-	void initAction_Type();
+  void initAction_Type();
 
 }
 

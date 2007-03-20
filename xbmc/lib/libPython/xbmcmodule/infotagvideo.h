@@ -9,14 +9,14 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		CVideoInfoTag infoTag;
-	} InfoTagVideo;
+    CVideoInfoTag infoTag;
+  } InfoTagVideo;
 
-	extern PyTypeObject InfoTagVideo_Type;
-	extern InfoTagVideo* InfoTagVideo_FromCVideoInfoTag(const CVideoInfoTag& infoTag);
-	void initInfoTagVideo_Type();
+  extern PyTypeObject InfoTagVideo_Type;
+  extern InfoTagVideo* InfoTagVideo_FromCVideoInfoTag(const CVideoInfoTag& infoTag);
+  void initInfoTagVideo_Type();
 }
 
 #ifdef __cplusplus

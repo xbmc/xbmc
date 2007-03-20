@@ -21,9 +21,9 @@ namespace PYXBMC
     PyObject *args,
     PyObject *kwds )
   {
-    static char *keywords[] = {  
+    static char *keywords[] = {
       "x", "y", "width", "height", "label",
-      "focusTexture", "noFocusTexture", 
+      "focusTexture", "noFocusTexture",
       "textXOffset", "textYOffset", "alignment",
       "font", "textColor", "disabledColor", "angle", "shadowColor", "focusedColor", NULL };
     ControlButton *self;
@@ -36,15 +36,15 @@ namespace PYXBMC
     char* cFocusedColor = NULL;
 
     PyObject* pObjectText;
-    
+
     self = (ControlButton*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    
+
     // set up default values in case they are not supplied
     self->dwTextXOffset = CONTROL_TEXT_OFFSET_X;
     self->dwTextYOffset = CONTROL_TEXT_OFFSET_Y;
     self->dwAlign = (XBFONT_LEFT | XBFONT_CENTER_Y);
-    self->strFont = "font13";    
+    self->strFont = "font13";
     self->dwTextColor = 0xffffffff;
     self->dwDisabledColor = 0x60ffffff;
     self->iAngle = 0;
@@ -68,7 +68,7 @@ namespace PYXBMC
       &self->dwAlign,
       &cFont,
       &cTextColor,
-      &cDisabledColor, 
+      &cDisabledColor,
       &self->iAngle,
       &cShadowColor,
       &cFocusedColor))
@@ -76,8 +76,8 @@ namespace PYXBMC
       Py_DECREF( self );
       return NULL;
     }
-    
-    
+
+
     if (!PyGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );
@@ -87,7 +87,7 @@ namespace PYXBMC
     // if texture is supplied use it, else get default ones
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
-      PyGetDefaultImage("button", "texturefocus", "button-focus.png");    
+      PyGetDefaultImage("button", "texturefocus", "button-focus.png");
     self->strTextureNoFocus = cTextureNoFocus ?
       cTextureNoFocus :
       PyGetDefaultImage("button", "texturenofocus", "button-nofocus.jpg");
@@ -152,11 +152,11 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "s", &cDisabledColor))  return NULL;
 
     // ControlButton *pControl = (ControlButton*)self;
-    
+
     if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
 
     PyGUILock();
-    if (self->pGUIControl) 
+    if (self->pGUIControl)
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
     }
@@ -270,11 +270,11 @@ namespace PYXBMC
 #pragma const_seg()
 
   PyTypeObject ControlButton_Type;
-  
+
   void initControlButton_Type()
   {
     PyInitializeTypeObject(&ControlButton_Type);
-    
+
     ControlButton_Type.tp_name = "xbmcgui.ControlButton";
     ControlButton_Type.tp_basicsize = sizeof(ControlButton);
     ControlButton_Type.tp_dealloc = (destructor)ControlButton_Dealloc;
