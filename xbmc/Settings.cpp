@@ -1309,21 +1309,24 @@ void CSettings::LoadAdvancedSettings()
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
     TiXmlElement* pTVStackingTwoPart = pTVStacking->FirstChildElement("twopart");
-    szAppend = pTVStackingTwoPart->Attribute("append");
-    if (szAppend)
-      if (stricmp(szAppend,"yes") != 0)
-        g_advancedSettings.m_tvshowTwoPartStackRegExps.clear();
-
-    pStackRegExp = pTVStackingTwoPart->FirstChild("regexp");
-    while (pStackRegExp)
+    if (pTVStackingTwoPart)
     {
-      if (pStackRegExp->FirstChild())
+      szAppend = pTVStackingTwoPart->Attribute("append");
+      if (szAppend)
+        if (stricmp(szAppend,"yes") != 0)
+          g_advancedSettings.m_tvshowTwoPartStackRegExps.clear();
+
+      pStackRegExp = pTVStackingTwoPart->FirstChild("regexp");
+      while (pStackRegExp)
       {
-        CStdString regExp = pStackRegExp->FirstChild()->Value();
-        regExp.MakeLower();
-        g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back(regExp);
+        if (pStackRegExp->FirstChild())
+        {
+          CStdString regExp = pStackRegExp->FirstChild()->Value();
+          regExp.MakeLower();
+          g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back(regExp);
+        }
+        pStackRegExp = pStackRegExp->NextSibling("regexp");
       }
-      pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
   }
   // path substitutions
