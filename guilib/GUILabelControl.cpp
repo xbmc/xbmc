@@ -44,20 +44,23 @@ void CGUILabelControl::Render()
 {
   if (!IsVisible()) return;
 
-  CStdString renderLabel;
+  CStdString lastLabel(m_renderLabel);
 	if (m_singleInfo)
 	{ 
-		renderLabel = g_infoManager.GetLabel(m_singleInfo);
+		m_renderLabel = g_infoManager.GetLabel(m_singleInfo);
 	}
 	else
 	{
-    renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
+    m_renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
 	}
+  // reset scrolling if we have a new label
+  if (m_renderLabel != lastLabel)
+    m_ScrollInfo.Reset();
 
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(renderLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(m_renderLabel, strLabelUnicode);
 
     if (m_wrapMultiLine && m_width > 0)
       WrapText(strLabelUnicode, m_label.font, m_width);
