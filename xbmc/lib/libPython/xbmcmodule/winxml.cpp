@@ -157,17 +157,20 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_BuildValue("l", listPos);
   }
-  PyDoc_STRVAR(getSelectedListItem__doc__,
-    "getSelectedListItem() -- Returns the selected ListItem in the WindowList\n"
+  PyDoc_STRVAR(getListItem__doc__,
+    "getListItem(int) -- Returns a given ListItem in the WindowList\n"
     "\n"
     "example:\n"
-    "  - self.getSelectedListItem()\n");
+    "  - self.getListItem(6)\n");
   
- PyObject* WindowXML_GetSelectedListItem(WindowXML *self, PyObject *args)
+ PyObject* WindowXML_GetListItem(WindowXML *self, PyObject *args)
   {
+    int listPos = -1;
+    if (!PyArg_ParseTuple(args, "i",&listPos))  return NULL;
+    
     PyGUILock();
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-    CFileItem * fi = pwx->GetSelectedListItem();
+    CFileItem * fi = pwx->GetListItem(listPos);
     
     ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
     sListItem->item = new CGUIListItem();
@@ -186,7 +189,7 @@ namespace PYXBMC
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
     {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
     {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS,getCurrentListPosition__doc__},
-    {"getSelectedListItem", (PyCFunction)WindowXML_GetSelectedListItem, METH_VARARGS,getSelectedListItem__doc__},
+    {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS,getListItem__doc__},
     {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, ClearList__doc__},
     {NULL, NULL, 0, NULL}
   };
