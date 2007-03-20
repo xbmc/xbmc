@@ -14,7 +14,7 @@
 class CGUIControlGroupList : public CGUIControlGroup
 {
 public:
-  CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation);
+  CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions);
   virtual ~CGUIControlGroupList(void);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
@@ -38,6 +38,7 @@ protected:
   float m_scrollOffset;
   DWORD m_scrollTime;
 
+  bool m_useControlPositions;
   ORIENTATION m_orientation;
 };
 
