@@ -2929,16 +2929,16 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     }
     else
     {
-      strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
+      strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode where tvshowlinkepisode.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
 
       if (idActor != -1)
-        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
+        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
 
       if (idDirector != -1)
-        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
+        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join directorlinktvshow on directorlinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
 
       if (idGenre != -1)
-        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
+        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
     }
     // run query
     CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
