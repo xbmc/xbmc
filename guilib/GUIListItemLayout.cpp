@@ -117,12 +117,12 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
     // now we have to check our overlapping label pairs
     for (unsigned int i = 0; i < m_controls.size(); i++)
     {
-      if (m_controls[i]->m_type == CListBase::LIST_LABEL)
+      if (m_controls[i]->m_type == CListBase::LIST_LABEL && m_controls[i]->m_visible)
       {
         CListLabel *label1 = (CListLabel *)m_controls[i];
         for (unsigned int j = i + 1; j < m_controls.size(); j++)
         {
-          if (m_controls[j]->m_type == CListBase::LIST_LABEL)
+          if (m_controls[j]->m_type == CListBase::LIST_LABEL && m_controls[j]->m_visible)
           { // ok, now check if they overlap
             CListLabel *label2 = (CListLabel *)m_controls[j];
             if ((label1->m_renderY <= label2->m_renderY + label2->m_renderH*0.5f && label2->m_renderY + label2->m_renderH*0.5f <= label1->m_renderY + label1->m_renderH) ||
@@ -193,10 +193,15 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFil
   else if (control->m_type == CListBase::LIST_LABEL)
   {
     CListLabel *label = (CListLabel *)control;
+    CStdStringW oldText = label->m_text;
     if (label->m_info)
       g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel(item, label->m_info), label->m_text);
     else
       g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo), label->m_text);
+    if (oldText != label->m_text)
+    { // changed label - reset scrolling
+      label->m_scrollInfo.Reset();
+    }
     if (label->m_label.font)
     {
       label->m_label.font->GetTextExtent(label->m_text, &label->m_textW, &label->m_renderH);
