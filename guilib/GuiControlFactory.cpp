@@ -455,7 +455,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   int focusPosition = 0;
   int scrollTime = 200;
-
+  bool useControlCoords = false;
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
   //
@@ -483,14 +483,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CStdString pos;
   XMLUtils::GetString(pControlNode, "posx", pos);
   if (pos.Right(1) == "r")
-    posX = rect.right - posX;
-  else
-    posX += rect.left;
+    posX = (rect.right - rect.left) - posX;
   XMLUtils::GetString(pControlNode, "posy", pos);
   if (pos.Right(1) == "r")
-    posY = rect.bottom - posY;
-  else
-    posY += rect.top;
+    posY = (rect.bottom - rect.top) - posY;
 
   XMLUtils::GetFloat(pControlNode, "width", width);
   XMLUtils::GetFloat(pControlNode, "height", height);
@@ -535,7 +531,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetCondition(pControlNode, "enable", enableCondition);
 
   // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
-  FRECT animRect = { posX, posY, width, height };
+  FRECT animRect = { posX + rect.left, posY + rect.top, width, height };
   GetAnimations(pControlNode, animRect, animations);
 
   XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
@@ -802,6 +798,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
 
+  XMLUtils::GetBoolean(pControlNode, "usecontrolcoords", useControlCoords);
+
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
   CStdString viewLabel;
@@ -871,7 +869,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
-      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation);
+      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords);
   }
   else if (strType == "label")
   {
