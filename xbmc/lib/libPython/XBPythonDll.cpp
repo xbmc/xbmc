@@ -4,19 +4,19 @@
 
 template<byte count>
 struct SVaPassNext{
-    SVaPassNext<count-1> big;
-    DWORD dw;
+  SVaPassNext<count-1> big;
+  DWORD dw;
 };
 template<> struct SVaPassNext<0>{};
 //SVaPassNext - is generator of structure of any size at compile time.
 
 class CVaPassNext{
-public:
+  public:
     SVaPassNext<50> svapassnext;
     CVaPassNext(va_list & args){
-		try{//to avoid access violation
-			memcpy(&svapassnext, args, sizeof(svapassnext));
-		} catch (...) {}
+      try{//to avoid access violation
+        memcpy(&svapassnext, args, sizeof(svapassnext));
+      } catch (...) {}
     }
 };
 #define va_pass(valist) CVaPassNext(valist).svapassnext
@@ -63,8 +63,8 @@ public:
 
 #define VA_FUNC_END \
       va_end(va); \
-      return ret; 
-      
+      return ret;
+
 #define VA_FUNCTION8(function) \
     void* (__cdecl* p_va_##function)(void* a, ...); \
     void* ##function(void* a, ...) { VA_FUNC_START(a) p_va_##function(a, va_pass(va)); VA_FUNC_END }
@@ -80,7 +80,7 @@ public:
 #define VA_FUNCTION20(function) \
     void* (__cdecl* p_va_##function)(void* a, void* b, void* c, void* d, ...); \
     void* ##function(void* a, void* b, void* c, void* d, ...) { VA_FUNC_START(d) p_va_##function(a, b, c, d, va_pass(va)); VA_FUNC_END }
-    
+
 #define FUNCTION12(function) \
     void* (__cdecl* p_##function)(void* a, void* b, void* c); \
     void* ##function(void* a, void* b, void* c) { return p_##function(a, b, c); }
@@ -98,7 +98,7 @@ extern "C"
   /*****************************************
    * python24.dll
    */
-   
+
   FUNCTION(PyEval_ReleaseLock)
   FUNCTION(PyEval_AcquireLock)
   FUNCTION(PyThreadState_Get)
@@ -115,7 +115,7 @@ extern "C"
   FUNCTION4(PySys_SetPath)
   FUNCTION4(PyThreadState_Delete)
   FUNCTION4(PyThreadState_Clear)
-  
+
   VA_FUNCTION8(Py_BuildValue)
   /*void* Py_BuildValue(void* a, ...)
   {
@@ -126,7 +126,7 @@ extern "C"
     va_end(va);
     return ret;
   }*/
-  
+
   VA_FUNCTION12(PyArg_Parse)
   VA_FUNCTION12(PyArg_ParseTuple)
   /*void* PyArg_ParseTuple(void* a, void* b, ...)
@@ -138,7 +138,7 @@ extern "C"
     va_end(va);
     return ret;
   }*/
-  
+
   FUNCTION8(PyType_IsSubtype)
   VA_FUNCTION20(PyArg_ParseTupleAndKeywords)
   /*void* PyArg_ParseTupleAndKeywords(void* a, void* b, void* c, void* d, ...)
@@ -150,14 +150,14 @@ extern "C"
     va_end(va);
     return ret;
   }*/
-  
+
   FUNCTION4(PyString_AsString)
   FUNCTION8(Py_AddPendingCall)
   FUNCTION8(PyList_GetItem)
   FUNCTION4(PyList_Size)
   FUNCTION4(_PyObject_New)
   FUNCTION4(PyLong_AsLong)
-  
+
   VA_FUNCTION12(PyErr_Format)
   /*void* PyErr_Format(void* a, void* b, ...)
   {
@@ -179,7 +179,7 @@ extern "C"
   FUNCTION4(PyInt_AsLong)
   FUNCTION4(PyString_FromString)
   FUNCTION12(PyModule_AddIntConstant)
-  
+
   //void* (__cdecl* p_va_PyObject_CallFunction)(void* a, void* b, ...);
   VA_FUNCTION12(PyObject_CallFunction) // va arg
   /*
@@ -192,8 +192,8 @@ extern "C"
     va_end(va);
     return ret;
   }*/
-  
-  //void* (__cdecl* p_va_PyObject_CallMethod)(void* a, void* b, void* c, ...); 
+
+  //void* (__cdecl* p_va_PyObject_CallMethod)(void* a, void* b, void* c, ...);
   VA_FUNCTION16(PyObject_CallMethod)
   /*void* PyObject_CallMethod(void* a, void* b, void* c, ...)
   {
@@ -214,7 +214,7 @@ extern "C"
   FUNCTION12(PyType_GenericNew);
   FUNCTION8(PySys_SetArgv);
   FUNCTION12(PyObject_RichCompare);
-   
+
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
   void* PyFloat_FromDouble(double a) { return p_PyFloat_FromDouble(a); }
@@ -241,79 +241,79 @@ extern "C"
   bool python_load_dll(DllLoader& dll)
   {
     bool bResult;
-    
+
     bResult = (
-                dll.ResolveExport(DLL_FUNCTION(PyEval_ReleaseLock)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyEval_AcquireLock)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyThreadState_Get)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleString)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
-                dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
-                dll.ResolveExport(DLL_FUNCTION(Py_Finalize)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyThreadState_Swap)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyErr_SetString)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyThreadState_New)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyErr_Print)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyErr_Occurred)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFile)) &&
-                dll.ResolveExport(DLL_FUNCTION(PySys_SetPath)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyThreadState_Delete)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyThreadState_Clear)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(Py_BuildValue)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyType_IsSubtype)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTupleAndKeywords)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyString_AsString)) &&
-                dll.ResolveExport(DLL_FUNCTION(Py_AddPendingCall)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallMethod)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyList_GetItem)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyList_Size)) &&
-                dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
-                dll.ResolveExport(DLL_FUNCTION(Py_MakePendingCalls)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyEval_SaveThread)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyEval_RestoreThread)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyLong_FromLong)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyModule_AddStringConstant)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyModule_AddObject)) &&
-                dll.ResolveExport(DLL_FUNCTION(Py_InitModule4)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyInt_AsLong)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyString_FromString)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyModule_AddIntConstant)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallFunction)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyDict_SetItemString)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyDict_New)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyModule_GetDict)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyImport_Import)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyFloat_FromDouble)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyInt_FromLong)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyDict_GetItemString)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
-                dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTuple)) &&
-                dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&
-                dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_ReleaseLock)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_AcquireLock)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyThreadState_Get)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_Finalize)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyThreadState_Swap)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_SetString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyThreadState_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Print)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Occurred)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFile)) &&
+      dll.ResolveExport(DLL_FUNCTION(PySys_SetPath)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyThreadState_Delete)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyThreadState_Clear)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(Py_BuildValue)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyType_IsSubtype)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTupleAndKeywords)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyString_AsString)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_AddPendingCall)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallMethod)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_GetItem)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_Size)) &&
+      dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_MakePendingCalls)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_SaveThread)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_RestoreThread)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyLong_FromLong)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyModule_AddStringConstant)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyModule_AddObject)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_InitModule4)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyInt_AsLong)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyString_FromString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyModule_AddIntConstant)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallFunction)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyDict_SetItemString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyDict_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyModule_GetDict)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyImport_Import)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyFloat_FromDouble)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyInt_FromLong)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyDict_GetItemString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
+      dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTuple)) &&
+      dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
 
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_TypeError)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_KeyboardInterrupt)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_RuntimeError)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ReferenceError)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_TypeError)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_KeyboardInterrupt)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_RuntimeError)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ReferenceError)) &&
 
-                dll.ResolveExport(DLL_OBJECT_DATA(_Py_NoneStruct)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(_Py_NotImplementedStruct)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(_Py_TrueStruct)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(_Py_ZeroStruct)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyString_Type)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyList_Type)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyLong_Type)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyInt_Type)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
-                dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)));
+      dll.ResolveExport(DLL_OBJECT_DATA(_Py_NoneStruct)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(_Py_NotImplementedStruct)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(_Py_TrueStruct)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(_Py_ZeroStruct)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyString_Type)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyList_Type)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyLong_Type)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyInt_Type)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)));
 
     return bResult;
   }

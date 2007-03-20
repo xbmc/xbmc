@@ -8,15 +8,15 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		std::string strDefault;
+    std::string strDefault;
     std::string strHeading;
     bool bHidden;
-	} Keyboard;
+  } Keyboard;
 
-	extern PyTypeObject Keyboard_Type;
-	void initKeyboard_Type();
+  extern PyTypeObject Keyboard_Type;
+  void initKeyboard_Type();
 }
 
 #ifdef __cplusplus

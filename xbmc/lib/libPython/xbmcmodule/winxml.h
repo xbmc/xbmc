@@ -9,19 +9,19 @@ extern "C" {
 namespace PYXBMC
 {
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_WINDOW
-	} WindowXML;
+  } WindowXML;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_WINDOW
-	} WindowXMLDialog;
+  } WindowXMLDialog;
 
-	extern PyTypeObject WindowXML_Type;
- 	extern PyTypeObject WindowXMLDialog_Type;
-	
-	void initWindowXML_Type();
-  	void initWindowXMLDialog_Type();
+  extern PyTypeObject WindowXML_Type;
+  extern PyTypeObject WindowXMLDialog_Type;
+
+  void initWindowXML_Type();
+  void initWindowXMLDialog_Type();
 }
 
 #ifdef __cplusplus

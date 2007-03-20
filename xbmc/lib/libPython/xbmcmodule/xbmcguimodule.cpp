@@ -93,13 +93,13 @@ namespace PYXBMC
     //  "XBMC GUI Module"
     //  "\n"
       "");
-  
+
   PyMODINIT_FUNC
-  initxbmcgui(void) 
+  initxbmcgui(void)
   {
     // init xbmc gui modules
     PyObject* pXbmcGuiModule;
-    
+
     initWindow_Type();
     initWindowDialog_Type();
     initWindowXML_Type();
@@ -118,10 +118,10 @@ namespace PYXBMC
     initDialog_Type();
     initDialogProgress_Type();
     initAction_Type();
-    
+
     DialogProgress_Type.tp_new = PyType_GenericNew;
     Dialog_Type.tp_new = PyType_GenericNew;
-    
+
     if (PyType_Ready(&Window_Type) < 0 ||
         PyType_Ready(&WindowDialog_Type) < 0 ||
         PyType_Ready(&WindowXML_Type) < 0 ||

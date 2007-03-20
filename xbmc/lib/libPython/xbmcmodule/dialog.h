@@ -8,25 +8,25 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-	} Dialog;
+  } Dialog;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_WINDOW
-	} WindowDialog;
+  } WindowDialog;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-	} DialogProgress;
+  } DialogProgress;
 
-	extern PyTypeObject WindowDialog_Type;
-	extern PyTypeObject DialogProgress_Type;
-	extern PyTypeObject Dialog_Type;
-	
-	void initWindowDialog_Type();
-	void initDialogProgress_Type();
-	void initDialog_Type();
+  extern PyTypeObject WindowDialog_Type;
+  extern PyTypeObject DialogProgress_Type;
+  extern PyTypeObject Dialog_Type;
+
+  void initWindowDialog_Type();
+  void initDialogProgress_Type();
+  void initDialog_Type();
 }
 
 #ifdef __cplusplus

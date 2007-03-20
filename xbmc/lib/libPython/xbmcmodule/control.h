@@ -44,17 +44,17 @@
 
 #define PyObject_HEAD_XBMC_CONTROL		\
     PyObject_HEAD				\
-		int iControlId;			\
-		int iParentId;			\
-		int dwPosX;					\
-		int dwPosY;					\
-		int dwWidth;				\
-		int dwHeight;				\
-		DWORD iControlUp;			\
-		DWORD iControlDown;		\
-		DWORD iControlLeft;		\
-		DWORD iControlRight;	\
-		CGUIControl* pGUIControl;
+    int iControlId;			\
+    int iParentId;			\
+    int dwPosX;					\
+    int dwPosY;					\
+    int dwWidth;				\
+    int dwHeight;				\
+    DWORD iControlUp;			\
+    DWORD iControlDown;		\
+    DWORD iControlLeft;		\
+    DWORD iControlRight;	\
+    CGUIControl* pGUIControl;
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,141 +62,141 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
-		PyObject_HEAD_XBMC_CONTROL
-	} Control;
-
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		DWORD dwColor;
+  } Control;
+
+  typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
+    DWORD dwColor;
     string strTextureUp;
-		string strTextureDown;
-		string strTextureUpFocus;
-		string strTextureDownFocus;
-	} ControlSpin;
+    string strTextureDown;
+    string strTextureUpFocus;
+    string strTextureDownFocus;
+  } ControlSpin;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		string strFont;
-		string strText;
-		DWORD dwTextColor;
-		DWORD dwDisabledColor;
-		DWORD dwAlign;
-        bool bHasPath;
-        int iAngle;
-	} ControlLabel;
+    string strFont;
+    string strText;
+    DWORD dwTextColor;
+    DWORD dwDisabledColor;
+    DWORD dwAlign;
+    bool bHasPath;
+    int iAngle;
+  } ControlLabel;
 
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		string strFont;
-		DWORD dwTextColor;
-		std::vector<string> vecLabels;
-        DWORD dwAlign;
-	} ControlFadeLabel;
+    string strFont;
+    DWORD dwTextColor;
+    std::vector<string> vecLabels;
+    DWORD dwAlign;
+  } ControlFadeLabel;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		string strFont;
-		DWORD dwTextColor;
-		ControlSpin* pControlSpin;	
-	} ControlTextBox;
+    string strFont;
+    DWORD dwTextColor;
+    ControlSpin* pControlSpin;
+  } ControlTextBox;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		string strFileName;
-		DWORD strColorKey;
+    string strFileName;
+    DWORD strColorKey;
     DWORD aspectRatio;
-		DWORD strColorDiffuse;
-	} ControlImage;
+    DWORD strColorDiffuse;
+  } ControlImage;
 
-	typedef struct {
-	PyObject_HEAD_XBMC_CONTROL
-		string strTextureLeft;
-		string strTextureMid;
-		string strTextureRight;
-		string strTextureBg;
-		string strTextureOverlay;
-		DWORD strColorKey;
-    	DWORD aspectRatio;
-		DWORD strColorDiffuse;
-	} ControlProgress;
+  typedef struct {
+  PyObject_HEAD_XBMC_CONTROL
+    string strTextureLeft;
+    string strTextureMid;
+    string strTextureRight;
+    string strTextureBg;
+    string strTextureOverlay;
+    DWORD strColorKey;
+    DWORD aspectRatio;
+    DWORD strColorDiffuse;
+  } ControlProgress;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		string strFont;
-		string strText;
-		string strTextureFocus;
-		string strTextureNoFocus;
-		DWORD dwTextColor;
-		DWORD dwDisabledColor;
+    string strFont;
+    string strText;
+    string strTextureFocus;
+    string strTextureNoFocus;
+    DWORD dwTextColor;
+    DWORD dwDisabledColor;
     DWORD dwTextXOffset;
     DWORD dwTextYOffset;
     DWORD dwAlign;
     int iAngle;
-		DWORD dwShadowColor;
-		DWORD dwFocusedColor;
+    DWORD dwShadowColor;
+    DWORD dwFocusedColor;
   } ControlButton;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		string strFont;
-		string strText;
-		string strTextureFocus;
-		string strTextureNoFocus;
-		DWORD dwTextColor;
-		DWORD dwDisabledColor;
-        DWORD dwCheckWidth;
-        DWORD dwCheckHeight;
-        DWORD dwAlign;
-	} ControlCheckMark;
+    string strFont;
+    string strText;
+    string strTextureFocus;
+    string strTextureNoFocus;
+    DWORD dwTextColor;
+    DWORD dwDisabledColor;
+    DWORD dwCheckWidth;
+    DWORD dwCheckHeight;
+    DWORD dwAlign;
+  } ControlCheckMark;
 
-	typedef struct {
+  typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-		std::vector<PYXBMC::ListItem*> vecItems;
-		string strFont;
-		ControlSpin* pControlSpin;
+    std::vector<PYXBMC::ListItem*> vecItems;
+    string strFont;
+    ControlSpin* pControlSpin;
 
-		DWORD dwTextColor;
-		DWORD dwSelectedColor;
-		string strTextureButton;
-		string strTextureButtonFocus;
+    DWORD dwTextColor;
+    DWORD dwSelectedColor;
+    string strTextureButton;
+    string strTextureButtonFocus;
 
-		DWORD dwImageHeight;
-		DWORD dwImageWidth;
-		DWORD dwItemHeight;
-		DWORD dwSpace;
+    DWORD dwImageHeight;
+    DWORD dwImageWidth;
+    DWORD dwItemHeight;
+    DWORD dwSpace;
 
-        int dwItemTextXOffset;
-        int dwItemTextYOffset;
-        DWORD dwAlignmentY;
-	} ControlList;
+    int dwItemTextXOffset;
+    int dwItemTextYOffset;
+    DWORD dwAlignmentY;
+  } ControlList;
 
-	extern void Control_Dealloc(Control* self);
+  extern void Control_Dealloc(Control* self);
 
-	extern PyMethodDef Control_methods[];
+  extern PyMethodDef Control_methods[];
 
-	extern PyTypeObject Control_Type;
-	extern PyTypeObject ControlSpin_Type;
-	extern PyTypeObject ControlLabel_Type;
-	extern PyTypeObject ControlFadeLabel_Type;
-	extern PyTypeObject ControlTextBox_Type;
-	extern PyTypeObject ControlImage_Type;
-	extern PyTypeObject ControlButton_Type;
-	extern PyTypeObject ControlCheckMark_Type;
-	extern PyTypeObject ControlList_Type;
+  extern PyTypeObject Control_Type;
+  extern PyTypeObject ControlSpin_Type;
+  extern PyTypeObject ControlLabel_Type;
+  extern PyTypeObject ControlFadeLabel_Type;
+  extern PyTypeObject ControlTextBox_Type;
+  extern PyTypeObject ControlImage_Type;
+  extern PyTypeObject ControlButton_Type;
+  extern PyTypeObject ControlCheckMark_Type;
+  extern PyTypeObject ControlList_Type;
   extern PyTypeObject ControlProgress_Type;
 
-	CGUIControl* ControlLabel_Create(ControlLabel* pControl);
-	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
-	CGUIControl* ControlTextBox_Create(ControlTextBox* pControl);
-	CGUIControl* ControlButton_Create(ControlButton* pControl);
-	CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl);
-	CGUIControl* ControlImage_Create(ControlImage* pControl);
-	CGUIControl* ControlList_Create(ControlList* pControl);
+  CGUIControl* ControlLabel_Create(ControlLabel* pControl);
+  CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
+  CGUIControl* ControlTextBox_Create(ControlTextBox* pControl);
+  CGUIControl* ControlButton_Create(ControlButton* pControl);
+  CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl);
+  CGUIControl* ControlImage_Create(ControlImage* pControl);
+  CGUIControl* ControlList_Create(ControlList* pControl);
   CGUIControl* ControlProgress_Create(ControlProgress* pControl);
-	
-	void initControl_Type();
+
+  void initControl_Type();
   void initControlSpin_Type();
   void initControlLabel_Type();
   void initControlFadeLabel_Type();
