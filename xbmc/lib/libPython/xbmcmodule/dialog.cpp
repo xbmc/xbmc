@@ -87,7 +87,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(browse__doc__,
-    "browse(type, heading, shares[, mask, useThumbs, treatAsFolder]) -- Show a 'Browse' dialog.\n"
+    "browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) -- Show a 'Browse' dialog.\n"
     "\n"
     "type           : integer - the type of browse dialog.\n"
     "heading        : string or unicode - dialog heading.\n"
@@ -95,6 +95,7 @@ namespace PYXBMC
     "mask           : [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')\n"
     "useThumbs      : [opt] boolean - if True autoswitch to Thumb view if files exist.\n"
     "treatAsFolder  : [opt] boolean - if True playlists and archives act as folders.\n"
+    "default        : [opt] string - default path or file.\n"
     "\n"
     "Types:\n"
     "  0 : ShowAndGetDirectory\n"
@@ -104,21 +105,22 @@ namespace PYXBMC
     "\n"
     "*Note, Returns filename and/or path as a string to the location of the highlighted item,\n"
     "       if user pressed 'Ok' or a masked item was selected.\n"
-    "\n"
+    "       Returns the default value if dialog was canceled.\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - fn = dialog.browse(1, 'Xbox Media Center', 'pictures', '.jpg|.png')\n");
+    "  - fn = dialog.browse(3, 'Xbox Media Center', 'files', '', False, False, 'T:\\script_data\\XBMC Lyrics')\n");
 
   PyObject* Dialog_Browse(PyObject *self, PyObject *args)
   {
     int browsetype = 0;
-    bool useThumbs = 0;
-    bool useFileDirectories = 0;
+    bool useThumbs = false;
+    bool useFileDirectories = false;
     CStdString value;
     PyObject* unicodeLine[3];
     string utf8Line[3];
+    char *cDefault = NULL;
     for (int i = 0; i < 3; i++) unicodeLine[i] = NULL;
-    if (!PyArg_ParseTuple(args, "iOO|Obb", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &useThumbs, &useFileDirectories))  return NULL;
+    if (!PyArg_ParseTuple(args, "iOO|Obbs", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &useThumbs, &useFileDirectories, &cDefault))  return NULL;
     for (int i = 0; i < 3; i++)
     {
       if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
@@ -127,9 +129,10 @@ namespace PYXBMC
     VECSHARES *shares = g_settings.GetSharesFromType(utf8Line[1]);
     if (!shares) return NULL;
 
-    if (useFileDirectories == true && !utf8Line[2].size() == 0)
+    if (useFileDirectories && !utf8Line[2].size() == 0) 
       utf8Line[2] += "|.rar|.zip";
-
+    
+    value = cDefault;
     if (browsetype == 1)
       CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, useThumbs, useFileDirectories);
     else if (browsetype == 2)
@@ -147,13 +150,13 @@ namespace PYXBMC
     "default        : [opt] string - default value.\n"
     "\n"
     "Types:\n"
-    "  0 : ShowAndGetNumber (default format: #)\n"
-    "  1 : ShowAndGetDate (default format: DD/MM/YYYY)\n"
-    "  2 : ShowAndGetTime (default format: HH:MM)\n"
+    "  0 : ShowAndGetNumber    (default format: #)\n"
+    "  1 : ShowAndGetDate      (default format: DD/MM/YYYY)\n"
+    "  2 : ShowAndGetTime      (default format: HH:MM)\n"
     "  3 : ShowAndGetIPAddress (default format: #.#.#.#)\n"
     "\n"
     "*Note, Returns the entered data as a string.\n"
-    "       Returns the default value if dialog was cancelled.\n"
+    "       Returns the default value if dialog was canceled.\n"
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
