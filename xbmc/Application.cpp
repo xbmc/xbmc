@@ -2261,13 +2261,13 @@ void CApplication::RenderMemoryStatus()
     CStdStringW wszText;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
-    wszText.Format(L"FreeMem %d/%d Kb\nFPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
+    wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
 
     CGUIFont* pFont = g_fontManager.GetFont("font13");
     if (pFont)
     {
-      float x = 0.08f * g_graphicsContext.GetWidth();
-      float y = 0.08f * g_graphicsContext.GetHeight();
+      float x = 0.05f * g_graphicsContext.GetWidth();
+      float y = 0.05f * g_graphicsContext.GetHeight();
       pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
     }
   }
