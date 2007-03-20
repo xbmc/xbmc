@@ -177,6 +177,17 @@ void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, bool bRefreshList)
   }
 }
 
+int CGUIPythonWindowXML::GetCurrentListPosition()
+{
+  return m_viewControl.GetSelectedItem();
+}
+
+CFileItem * CGUIPythonWindowXML::GetSelectedListItem()
+{ 
+  CFileItem * selectedItem = m_vecItems[m_viewControl.GetSelectedItem()];
+  return selectedItem;
+}
+
 void CGUIPythonWindowXML::RefreshList()
 {
   m_viewControl.SetItems(m_vecItems);
