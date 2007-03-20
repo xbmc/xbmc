@@ -819,7 +819,11 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   else if (!item->IsNFO() && !item->IsPlayList())
   {
     CBookmark bookmark;
-    if(m_database.GetResumeBookMark(item->m_strPath, bookmark))
+    CStdString strPath = item->m_strPath;
+    if (item->IsVideoDb() && item->HasVideoInfoTag())
+      strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+
+    if (m_database.GetResumeBookMark(strPath, bookmark))
       startoffset = (long)(bookmark.timeInSeconds*75);
   }
   m_database.Close();
@@ -1224,6 +1228,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   if (pItem->IsVideoDb())
   {
     item = CFileItem(*pItem->GetVideoInfoTag());
+    item.m_lStartOffset = pItem->m_lStartOffset;
   }
 
   PlayMovie(&item);
@@ -1364,7 +1369,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   
   CVideoInfoTag detail;
   int iType=0;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
+  if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() || pItem->GetVideoInfoTag()->m_iEpisode > 0)) // tvshow
     iType = 2;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
     iType = 1;
@@ -1806,8 +1811,6 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 }
 
 void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList)
-
-
 {
   CFileItemList items;
   if (item->m_bIsFolder)
