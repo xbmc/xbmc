@@ -20,6 +20,8 @@ public:
   void            AddItem(CFileItem * fileItem, bool bRefreshList);
   void            RefreshList();
   void            ClearList();
+  CFileItem*      GetSelectedListItem();
+  int             GetCurrentListPosition();
 protected:
   CGUIControl     *GetFirstFocusableControl(int id);
   virtual void    UpdateButtons();
