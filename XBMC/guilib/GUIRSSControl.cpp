@@ -8,19 +8,12 @@
 
 CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
-  m_scrollInfo(-1)
+  m_scrollInfo(-1,1.0f,"")
 {
   m_label = labelInfo;
   m_dwChannelColor = dwChannelColor;
   m_dwHeadlineColor = dwHeadlineColor;
 
-  WCHAR wTmp[2];
-  wTmp[0] = L' ';
-  wTmp[1] = 0;
-  float fWidth = 15, fHeight;
-  if (m_label.font)
-    m_label.font->GetTextExtent(wTmp, &fWidth, &fHeight);
-  m_iLeadingSpaces = (int) (width / fWidth);
   m_strRSSTags = strRSSTags;
 
   m_pReader = NULL;
@@ -76,7 +69,13 @@ void CGUIRSSControl::Render()
         for (i = 0;i < (int)vecSplitTags.size();i++)
           m_pReader->AddTag(vecSplitTags[i]);
       }
-      m_pReader->Create(this, m_vecUrls, m_vecIntervals, m_iLeadingSpaces);
+      WCHAR wTmp[2];
+      wTmp[0] = L' ';
+      wTmp[1] = 0;
+      float fWidth = 15, fHeight;
+      if (m_label.font)
+        m_label.font->GetTextExtent(wTmp, &fWidth, &fHeight);
+      m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int) (GetWidth() / fWidth) + 1);
     }
 
     if (m_label.font && m_pwzText)

@@ -12,7 +12,7 @@
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float speed = 1.0f) { initialWait = wait; pixelSpeed = speed; Reset(); };
+  CScrollInfo(unsigned int wait = 50, float speed = 1.0f, const CStdStringW &scrollSuffix = " | ") { initialWait = wait; pixelSpeed = speed; suffix = scrollSuffix; Reset(); };
   void Reset()
   {
     waitTime = initialWait;
@@ -24,6 +24,7 @@ public:
   unsigned int waitTime;
   unsigned int characterPos;
   unsigned int initialWait;
+  CStdStringW suffix;
 };
 
 /*!
