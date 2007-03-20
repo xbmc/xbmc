@@ -209,6 +209,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
+          if (iItem < 0 || iItem >= (int)m_vecStrCast.size())
+            break;
           CStdString strItem = m_vecStrCast[iItem];
           CStdString strFind; 
           strFind.Format(" %s ",g_localizeStrings.Get(20347));
