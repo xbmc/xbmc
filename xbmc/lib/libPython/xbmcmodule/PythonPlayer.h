@@ -12,12 +12,12 @@ class CPythonPlayer : public IPlayerCallback
 public:
   CPythonPlayer();
   virtual ~CPythonPlayer(void);
-	void		SetCallback(PyObject *object);
-	void		OnPlayBackStarted();
-	void		OnPlayBackEnded();
- 	void		OnPlayBackStopped();
-  void		OnQueueNextItem() {}; // unimplemented
+  void    SetCallback(PyObject *object);
+  void    OnPlayBackStarted();
+  void    OnPlayBackEnded();
+  void    OnPlayBackStopped();
+  void    OnQueueNextItem() {}; // unimplemented
 
 protected:
-	PyObject*		pCallback;
+  PyObject*   pCallback;
 };

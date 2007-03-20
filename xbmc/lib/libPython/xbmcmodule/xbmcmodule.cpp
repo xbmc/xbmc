@@ -32,7 +32,7 @@ namespace PYXBMC
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
-  
+
   // output() method
   PyDoc_STRVAR(output__doc__,
     "output(text) -- Write a string to XBMC's log file and the debug window.\n"
@@ -160,7 +160,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')\n");
-  
+
   PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
   {
     char *cLine;
@@ -259,7 +259,7 @@ namespace PYXBMC
     g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
     return Py_BuildValue("u", unicodeLabel.c_str());
   }
-  
+
   // getSkinDir() method
   PyDoc_STRVAR(getSkinDir__doc__,
     "getSkinDir() -- Returns the active skin directory as a string.\n"
@@ -357,16 +357,16 @@ namespace PYXBMC
     _outp(0xc002, (0) ? 0x0b : 0x0a);
     while ((_inp(0xc000) & 8));
     cputemp = _inpw(0xc006);
-  
+
     _outp(0xc004, (0x4c<<1)|0x01);
     _outp(0xc008, 0x10);
     _outpw(0xc000, _inpw(0xc000));
     _outp(0xc002, (0) ? 0x0b : 0x0a);
     while ((_inp(0xc000) & 8));
     cpudec = _inpw(0xc006);
-  
+
     if (cpudec<10) cpudec = cpudec * 100;
-    if (cpudec<100)  cpudec = cpudec *10; 
+    if (cpudec<100)  cpudec = cpudec *10;
 
     return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
   }*/
@@ -424,9 +424,9 @@ namespace PYXBMC
   PyObject* XBMC_PlaySFX(PyObject *self, PyObject *args)
   {
     const char *cFile = NULL;
- 
+
     if (!PyArg_ParseTuple(args, "s", &cFile))  return NULL;
- 
+
     if (CFile::Exists(cFile))
     {
       g_audioManager.PlayPythonSound(cFile);
@@ -435,7 +435,7 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
   // enableNavSounds() method
   PyDoc_STRVAR(enableNavSounds__doc__,
     "enableNavSounds(yesNo) -- Enables/Disables nav sounds\n"
@@ -448,15 +448,15 @@ namespace PYXBMC
   PyObject* XBMC_EnableNavSounds(PyObject *self, PyObject *args)
   {
     int yesNo = 1;
- 
+
     if (!PyArg_ParseTuple(args, "i", &yesNo))  return NULL;
- 
+
     g_audioManager.Enable(yesNo==1);
 
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
   // getCondVisibility() method
   PyDoc_STRVAR(getCondVisibility__doc__,
     "getCondVisibility(condition) -- Returns True (1) or False (0) as a bool.\n"
@@ -473,13 +473,13 @@ namespace PYXBMC
 
   PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
   {
-	char *cLine;
-	if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
-	
-	PyGUILock();
-	DWORD dwId = m_gWindowManager.GetTopMostDialogID();
-	if (dwId == WINDOW_INVALID) DWORD dwId = m_gWindowManager.GetActiveWindow();
-	PyGUIUnlock();
+    char *cLine;
+    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+
+    PyGUILock();
+    DWORD dwId = m_gWindowManager.GetTopMostDialogID();
+    if (dwId == WINDOW_INVALID) DWORD dwId = m_gWindowManager.GetActiveWindow();
+    PyGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);
     return Py_BuildValue("b", g_infoManager.GetBool(ret,dwId));
@@ -514,7 +514,7 @@ namespace PYXBMC
     {"getLanguage", (PyCFunction)XBMC_GetLanguage, METH_VARARGS, getLanguage__doc__},
     {"getIPAddress", (PyCFunction)XBMC_GetIPAddress, METH_VARARGS, getIPAddress__doc__},
     {"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
-    {"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},    
+    {"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
     //{"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
 
     {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
@@ -535,7 +535,7 @@ namespace PYXBMC
  *****************************************************************/
 
   PyMODINIT_FUNC
-  initxbmc(void) 
+  initxbmc(void)
   {
     // init general xbmc modules
     PyObject* pXbmcModule;
@@ -546,14 +546,14 @@ namespace PYXBMC
     initPlayListItem_Type();
     initInfoTagMusic_Type();
     initInfoTagVideo_Type();
-    
+
     if (PyType_Ready(&Keyboard_Type) < 0 ||
         PyType_Ready(&Player_Type) < 0 ||
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
         PyType_Ready(&InfoTagVideo_Type) < 0) return;
-    
+
     Py_INCREF(&Keyboard_Type);
     Py_INCREF(&Player_Type);
     Py_INCREF(&PlayList_Type);
@@ -590,7 +590,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MPLAYER", EPC_MPLAYER);
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MODPLAYER", EPC_MODPLAYER);
-    
+
     // dvd state constants
     PyModule_AddIntConstant(pXbmcModule, "TRAY_OPEN", TRAY_OPEN);
     PyModule_AddIntConstant(pXbmcModule, "DRIVE_NOT_READY", DRIVE_NOT_READY);
