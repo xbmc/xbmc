@@ -390,3 +390,13 @@ void CGUISelectButtonControl::SetPosition(float posX, float posY)
   m_imgRightFocus.SetPosition(posX + rightOffX, posY + rightOffY);
   m_imgBackground.SetPosition(posX + backOffX, posY + backOffY);
 }
+
+void CGUISelectButtonControl::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIButtonControl::SetColorDiffuse(color);
+  m_imgLeft.SetColorDiffuse(color);
+  m_imgLeftFocus.SetColorDiffuse(color);
+  m_imgRight.SetColorDiffuse(color);
+  m_imgRightFocus.SetColorDiffuse(color);
+  m_imgBackground.SetColorDiffuse(color);
+}

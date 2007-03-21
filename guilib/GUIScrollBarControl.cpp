@@ -277,3 +277,13 @@ bool CGUIScrollBar::IsVisible() const
   if (m_numItems <= m_pageSize && !m_showOnePage) return false;
   return CGUIControl::IsVisible();
 }
+
+void CGUIScrollBar::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIControl::SetColorDiffuse(color);
+  m_guiBackground.SetColorDiffuse(color);
+  m_guiBarNoFocus.SetColorDiffuse(color);
+  m_guiBarFocus.SetColorDiffuse(color);
+  m_guiNibNoFocus.SetColorDiffuse(color);
+  m_guiNibFocus.SetColorDiffuse(color);
+}
