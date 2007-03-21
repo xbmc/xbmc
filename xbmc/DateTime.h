@@ -53,6 +53,8 @@ public:
   CDateTime(const tm& time);
   CDateTime(int year, int month, int day, int hour, int minute, int second);
 
+  void SetFromDateString(const CStdString &date);
+
   static CDateTime GetCurrentDateTime();
 
   const CDateTime& operator =(const SYSTEMTIME& right);
