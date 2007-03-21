@@ -167,14 +167,11 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, bool bRefreshList)
+void CGUIPythonWindowXML::AddItem(CFileItem * fileItem)
 {
   m_vecItems.Add(fileItem);
-  if (bRefreshList)
-  {
-    m_viewControl.SetItems(m_vecItems);
-    UpdateButtons();
-  }
+  m_viewControl.SetItems(m_vecItems);
+  UpdateButtons();
 }
 
 int CGUIPythonWindowXML::GetCurrentListPosition()
@@ -184,7 +181,11 @@ int CGUIPythonWindowXML::GetCurrentListPosition()
 
 CFileItem * CGUIPythonWindowXML::GetListItem(int position)
 { 
-  CFileItem * selectedItem = m_vecItems[position];
+  CFileItem * selectedItem = new CFileItem("Item Index doesn't exist");
+  if (position < m_vecItems.Size())
+  {
+    selectedItem = m_vecItems[position];
+  } 
   return selectedItem;
 }
 

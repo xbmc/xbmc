@@ -28,25 +28,47 @@ namespace PYXBMC
     if (!self) return NULL;
     self->iWindowId = -1;
     PyObject* pyOXMLname, * pyOname;
-
+    PyObject * pyDName = NULL;
+    bool bForceDefaultSkin = false;
     string strXMLname, strFallbackPath;
+    string strDefault = "Default";
 
-    if (!PyArg_ParseTuple(args, "OO", &pyOXMLname, &pyOname)) return NULL;
+    if (!PyArg_ParseTuple(args, "OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
     PyGetUnicodeString(strXMLname, pyOXMLname);
     PyGetUnicodeString(strFallbackPath, pyOname);
-
+    if (pyDName)  PyGetUnicodeString(strDefault, pyDName);
     // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
     RESOLUTION res;
+
     CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res);
     if (!XFILE::CFile::Exists(strSkinPath))
     {
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath);
+      // Check for the matching folder for the skin in the fallback skins folder
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        strSkinPath = strFallbackPath + "\\pal\\" + strXMLname;
-        res = PAL_4x3;
+        // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
+        bForceDefaultSkin = true;
       }
-
+      strXMLname = strSkinPath;
+    }
+    
+    if (bForceDefaultSkin)
+    {
+      bForceDefaultSkin = true;
+      PyGetUnicodeString(strXMLname, pyOXMLname);
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + strDefault);
+      
+      if (!XFILE::CFile::Exists(strSkinPath))
+      {
+        strSkinPath = strFallbackPath + "\\skins\\"+ strDefault + "\\pal\\" + strXMLname;
+        res = PAL_4x3;
+        if (!XFILE::CFile::Exists(strSkinPath))
+        {
+          PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
+          return NULL;
+        }
+      }
       strXMLname = strSkinPath;
     }
     self->sFallBackPath  = strFallbackPath;
@@ -65,7 +87,15 @@ namespace PYXBMC
     return (PyObject*)self;
   }
   PyDoc_STRVAR(windowXMLDialog__doc__,
-    "WindowXMLDialog class.\n");
+    "WindowXMLDialog class.\n"
+    "\n"
+    "WindowXMLDialog(self, XMLname, fallbackPath[, defaultskinname, forceFallback) -- Create a new WindowXMLDialog to rendered a xml onto it.\n"
+    "\n"
+    "XMLname        : string - the name of the xml file to look for.\n"
+    "fallbackPath   : string - the directory to fallback to if the xml doesn't exist in the current skin.\n"
+    "defaultskinname: [opt] string - name of the folder in the fallback path to look in for the xml. 'Default' is used if this is not set.\n"
+    "forceFallback  : [opt] boolean - if true then it will look only in the defaultskinname folder.\n"
+    );
 
   PyMethodDef windowXMLDialog_methods[] = {
     {NULL, NULL, 0, NULL}
