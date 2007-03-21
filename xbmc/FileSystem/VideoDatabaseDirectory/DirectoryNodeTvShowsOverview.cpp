@@ -19,8 +19,6 @@ NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType()
     return NODE_TYPE_YEAR;
   else if (GetName()=="4")
     return NODE_TYPE_ACTOR;
-  else if (GetName()=="5")
-    return NODE_TYPE_DIRECTOR;
 
   return NODE_TYPE_NONE;
 }
@@ -32,7 +30,6 @@ bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(369));  // Title
   vecRoot.push_back(g_localizeStrings.Get(345));  // Year
   vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
-  vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
 
   for (int i = 0; i < (int)vecRoot.size(); ++i)
   {
