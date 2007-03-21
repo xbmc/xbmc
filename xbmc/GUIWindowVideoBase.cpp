@@ -780,6 +780,11 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(new CFileItem(*pItem));
     }
+    else if (pItem->IsVideoDb())
+    { // this case is needed unless we allow IsVideo() to return true for videodb items,
+      // but then we have issues with playlists of videodb items
+      queuedItems.Add(new CFileItem(*pItem->GetVideoInfoTag()));
+    }
     else if (!pItem->IsNFO() && pItem->IsVideo())
     {
       queuedItems.Add(new CFileItem(*pItem));
