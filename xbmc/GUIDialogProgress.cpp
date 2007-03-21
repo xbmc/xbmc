@@ -179,3 +179,13 @@ void CGUIDialogProgress::SetHeading(int iString)
   m_strHeading = g_localizeStrings.Get(iString);
   CGUIDialogBoxBase::SetHeading(m_strHeading);
 }
+
+void CGUIProgressControl::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIControl::SetColorDiffuse(color);
+  m_guiBackground.SetColorDiffuse(color);
+  m_guiLeft.SetColorDiffuse(color);
+  m_guiRight.SetColorDiffuse(color);
+  m_guiMid.SetColorDiffuse(color);
+  m_guiOverlay.SetColorDiffuse(color);
+}
