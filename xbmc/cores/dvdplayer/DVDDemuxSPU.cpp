@@ -4,6 +4,8 @@
 #include "..\..\util.h"
 #include "DVDClock.h"
 
+#define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
+
 // #define SPU_DEBUG
 
 void DebugLog(const char *format, ...)
@@ -29,7 +31,7 @@ CDVDDemuxSPU::CDVDDemuxSPU()
 
 CDVDDemuxSPU::~CDVDDemuxSPU()
 {
-  if (m_spuData.data) delete[] m_spuData.data;
+  if (m_spuData.data) free(m_spuData.data);
 }
 
 void CDVDDemuxSPU::Reset()
@@ -41,7 +43,7 @@ void CDVDDemuxSPU::Reset()
 
 void CDVDDemuxSPU::FlushCurrentPacket()
 {
-  if (m_spuData.data) delete[] m_spuData.data;
+  if (m_spuData.data) free(m_spuData.data);
   memset(&m_spuData, 0, sizeof(m_spuData));
 }
 
@@ -84,22 +86,11 @@ CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
 
   // allocate data if not already done ( done in blocks off 16384 bytes )
   // or allocate some more if 16384 bytes is not enough
-  if (pSPUData->data == NULL)
-  {
-    pSPUData->data = new BYTE[0x4000];
-    pSPUData->iAllocatedSize = 0x4000;
-  }
-  else if ((pSPUData->iSize + iSize) > pSPUData->iAllocatedSize)
-  {
-    // allocate 16384 bytes more
-    pSPUData->iAllocatedSize += 0x4000;
+  if((pSPUData->iSize + iSize) > pSPUData->iAllocatedSize)
+    pSPUData->data = (BYTE*)realloc(pSPUData->data, ALIGN(pSPUData->iSize + iSize, 0x4000));
 
-    BYTE* newdata = new BYTE[pSPUData->iAllocatedSize];
-    // copy over data
-    memcpy(newdata, pSPUData->data, pSPUData->iSize);
-    delete[] pSPUData->data;
-    pSPUData->data = newdata;
-  }
+  if(!pSPUData->data)
+    return NULL; // crap realloc failed, this will have leaked some memory due to odd realloc
 
   // add new data
   memcpy(pSPUData->data + pSPUData->iSize, data, iSize);
