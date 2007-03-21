@@ -135,3 +135,10 @@ CStdString CGUIRadioButtonControl::GetDescription() const
     strLabel += " ( )";
   return strLabel;
 }
+
+void CGUIRadioButtonControl::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIButtonControl::SetColorDiffuse(color);
+  m_imgRadioFocus.SetColorDiffuse(color);
+  m_imgRadioNoFocus.SetColorDiffuse(color);
+}
