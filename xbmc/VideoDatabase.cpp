@@ -2837,9 +2837,9 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     else if (idContent == VIDEODB_CONTENT_TVSHOWS)
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        strSQL = FormatSQL("select tvshow.c%02d,path.strPath from tvshow,files,path,tvshowlinkepisode where tvshow.idShow = tvshowlinkepisode.idShow and files.idEpisode = tvshowlinkepisode.idEpisode and files.idPath = path.idPath", VIDEODB_ID_YEAR);
+        strSQL = FormatSQL("select tvshow.c%02d,path.strPath from tvshow,files,path,tvshowlinkepisode where tvshow.idShow = tvshowlinkepisode.idShow and files.idEpisode = tvshowlinkepisode.idEpisode and files.idPath = path.idPath", VIDEODB_ID_TV_PREMIERED);
       else
-        strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_YEAR);
+        strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_TV_PREMIERED);
     }     
 
     strSQL += addParam;
@@ -2891,13 +2891,31 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     {
       while (!m_pDS->eof())
       {
-        long lYear = m_pDS->fv(0).get_asLong();
-        CFileItem* pItem=new CFileItem(m_pDS->fv(0).get_asString());
+        long lYear;
+        CStdString strLabel;
+        if (idContent == VIDEODB_CONTENT_TVSHOWS)
+        {
+          CDateTime time;
+          time.SetFromDateString(m_pDS->fv(0).get_asString());
+          lYear = time.GetYear();
+          strLabel.Format("%u",lYear);
+        }
+        else
+        {
+          lYear = m_pDS->fv(0).get_asLong();
+          strLabel = m_pDS->fv(0).get_asString();
+        }
+        CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
         strDir.Format("%ld/", lYear);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        items.Add(pItem);
+        if (!items.Contains(pItem->m_strPath))
+        {
+          items.Add(pItem);
+        }
+        else
+          delete pItem;
         m_pDS->next();
       }
       m_pDS->close();
@@ -3206,7 +3224,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
 
     if (idYear != -1)
     {
-      strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow,path,tvshowlinkpath where tvshow.c%02d=%i and path.idPath=tvshowlinkpath.idpath and tvshowlinkpath.idshow=tvshow.idshow",VIDEODB_ID_TV_PREMIERED,idYear);
+      strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow,path,tvshowlinkpath where tvshow.c%02d like '%%%u' and path.idPath=tvshowlinkpath.idpath and tvshowlinkpath.idshow=tvshow.idshow",VIDEODB_ID_TV_PREMIERED,idYear);
     }
 
     if (idActor != -1)
@@ -3255,6 +3273,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             CStdString strDir;
             strDir.Format("%ld/", lShowId);
             pItem->m_strPath=strBaseDir + strDir;
+            pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
+            pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
 
             items.Add(pItem);
             iSONGS++;
@@ -3305,6 +3325,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
       CStdString strDir;
       strDir.Format("%ld/", lShowId);
       pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
+      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
       items.Add(pItem);
 
       m_pDS->next();
@@ -3348,7 +3370,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
     if (idYear !=-1)
     {
-      strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idEpisode=tvshowlinkepisode.idepisode join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath join tvshow on tvshowlinkepisode.idshow=tvshow.idshow where tvshowlinkepisode.idShow=%u and tvshow.c%02d=%u",VIDEODB_ID_TV_TITLE,idShow,VIDEODB_ID_TV_PREMIERED,idYear);
+      strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idEpisode=tvshowlinkepisode.idepisode join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath join tvshow on tvshowlinkepisode.idshow=tvshow.idshow where tvshowlinkepisode.idShow=%u and tvshow.c%02d like '%%%u'",VIDEODB_ID_TV_TITLE,idShow,VIDEODB_ID_TV_PREMIERED,idYear);
     }
 
     if (idActor != -1)
@@ -3404,6 +3426,9 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             strDir.Format("%ld", lEpisodeId);
             pItem->m_strPath=strBaseDir + strDir;
             pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+            pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
+            pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+
             items.Add(pItem);
 
             iSONGS++;
@@ -3458,6 +3483,8 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       strDir.Format("%ld", lEpisodeId);
       pItem->m_strPath=strBaseDir + strDir;
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+      pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
+      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
       items.Add(pItem);
 
       m_pDS->next();
