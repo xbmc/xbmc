@@ -423,7 +423,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
         m_isoReader.Reset();
 
         CIoSupport::Dismount("Cdrom0");
-        if (CIoSupport::MapDriveLetter('D', "Cdrom0") == S_OK)
+        if (CIoSupport::RemapDriveLetter('D', "Cdrom0") == S_OK)
         {
           if (m_pInstance)
           {
