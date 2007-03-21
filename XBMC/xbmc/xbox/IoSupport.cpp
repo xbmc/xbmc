@@ -114,8 +114,7 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
 
 HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, char * szDevice)
 {
-  if (DriveExists(cDriveLetter))
-    UnmapDriveLetter(cDriveLetter);
+  UnmapDriveLetter(cDriveLetter);
 
   return MapDriveLetter(cDriveLetter, szDevice);
 }
