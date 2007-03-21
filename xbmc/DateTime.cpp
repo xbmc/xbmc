@@ -217,7 +217,6 @@ void CDateTimeSpan::SetFromPeriod(const CStdString &period)
   SetDateTimeSpan(days, 0, 0, 0);
 }
 
-
 /////////////////////////////////////////////////
 //
 // CDateTime
@@ -647,6 +646,31 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 {
   m_time.dwHighDateTime=time.HighPart;
   m_time.dwLowDateTime=time.LowPart;
+}
+
+void CDateTime::SetFromDateString(const CStdString &date)
+{
+  const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
+  int j=0;
+  int iDayPos = date.Find("day");
+  int iPos = date.Find(" ");
+  if (iDayPos < iPos && iDayPos > -1)
+  {
+    iDayPos = iPos+1;
+    iPos = date.Find(" ",iPos+1);
+  }
+  else
+    iDayPos = 0;
+  CStdString strMonth = date.Mid(iDayPos,iPos-iDayPos);
+  int iPos2 = date.Find(",");
+  CStdString strDay = date.Mid(iPos,iPos2-iPos);
+  CStdString strYear = date.Mid(date.Find(" ",iPos2)+1);
+  while (months[j] && stricmp(strMonth.c_str(),months[j]) != 0)
+    j++;
+  if (!months[j])
+    return;
+
+  SetDateTime(atol(strYear.c_str()),j+1,atol(strDay.c_str()),0,0,0);
 }
 
 int CDateTime::GetDay() const
