@@ -28,27 +28,51 @@ namespace PYXBMC
     if (!self) return NULL;
     self->iWindowId = -1;
     PyObject* pyOXMLname, * pyOname;
-    //bool
-    string strXMLname, strFallbackPath;
+    PyObject * pyDName = NULL;
+    bool bForceDefaultSkin = false;
 
-    if (!PyArg_ParseTuple(args, "OO", &pyOXMLname, &pyOname)) return NULL;
+    string strXMLname, strFallbackPath;
+    string strDefault = "Default";
+
+    if (!PyArg_ParseTuple(args, "OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
     PyGetUnicodeString(strXMLname, pyOXMLname);
     PyGetUnicodeString(strFallbackPath, pyOname);
-
+    if (pyDName)  PyGetUnicodeString(strDefault, pyDName);
     // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
     RESOLUTION res;
+    
     CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res);
     if (!XFILE::CFile::Exists(strSkinPath))
     {
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath);
+      // Check for the matching folder for the skin in the fallback skins folder
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        strSkinPath = strFallbackPath + "\\pal\\" + strXMLname;
-        res = PAL_4x3;
+        // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
+        bForceDefaultSkin = true;
       }
-
-      strXMLname = strSkinPath; // We would do this if we didn't copy the xml to the skin
+      strXMLname = strSkinPath;
     }
+    
+    if (bForceDefaultSkin)
+    {
+      bForceDefaultSkin = true;
+      PyGetUnicodeString(strXMLname, pyOXMLname);
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + strDefault);
+      
+      if (!XFILE::CFile::Exists(strSkinPath))
+      {
+        strSkinPath = strFallbackPath + "\\skins\\"+ strDefault + "\\pal\\" + strXMLname;
+        res = PAL_4x3;
+        if (!XFILE::CFile::Exists(strSkinPath))
+        {
+          PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
+          return NULL;
+        }
+      }
+      strXMLname = strSkinPath;
+    }
+    
     self->sFallBackPath  = strFallbackPath;
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
@@ -69,13 +93,12 @@ namespace PYXBMC
    * For a string we create a new ListItem and add it to the vector
    */
   PyDoc_STRVAR(addItem__doc__,
-    "addItem(item[,refreshList]) -- Add a new item to this window list.\n"
+    "addItem(item) -- Add a new item to this window list.\n"
     "\n"
     "item               : string, unicode or ListItem - item to add.\n"
-    "refreshList        : [optional] true - refreshes the gui/list after add\n"
     "\n"
     "example:\n"
-    "  - self.addItem('Reboot XBMC',true)\n");
+    "  - self.addItem('Reboot XBMC')\n");
 
   PyObject* WindowXML_AddItem(WindowXML *self, PyObject *args)
   {
@@ -83,7 +106,7 @@ namespace PYXBMC
     string strText;
     ListItem* pListItem = NULL;
     bool bRefresh = true;
-    if (!PyArg_ParseTuple(args, "O|b", &pObject,&bRefresh))  return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
     if (ListItem_CheckExact(pObject))
     {
       // object is a listitem
@@ -100,7 +123,7 @@ namespace PYXBMC
     }
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
     // Tells the window to add the item to FileItem vector
-    pwx->AddItem((CFileItem *)pListItem->item,bRefresh);
+    pwx->AddItem((CFileItem *)pListItem->item);
 
     // create message
     //CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iWindowId, self->iWindowId);
@@ -136,8 +159,6 @@ namespace PYXBMC
 
   PyObject* WindowXML_ClearList(WindowXML *self, PyObject *args)
   {
-    //bool bRefresh = true;
-    //if (!PyArg_ParseTuple(args, "|b",&bRefresh))  return NULL;
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
     pwx->ClearList();
     Py_INCREF(Py_None);
@@ -184,7 +205,15 @@ namespace PYXBMC
   }
   
   PyDoc_STRVAR(windowXML__doc__,
-    "WindowXML class.\n");
+    "WindowXML class.\n"
+    "\n"
+    "WindowXML(self, XMLname, fallbackPath[, defaultskinname, forceFallback) -- Create a new WindowXML to rendered a xml onto it.\n"
+    "\n"
+    "XMLname        : string - the name of the xml file to look for.\n"
+    "fallbackPath   : string - the directory to fallback to if the xml doesn't exist in the current skin.\n"
+    "defaultskinname: [opt] string - name of the folder in the fallback path to look in for the xml. 'Default' is used if this is not set.\n"
+    "forceFallback  : [opt] boolean - if true then it will look only in the defaultskinname folder.\n"
+    );
   PyMethodDef WindowXML_methods[] = {
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
     {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
