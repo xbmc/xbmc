@@ -177,16 +177,19 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           SScraperInfo info;
           CStdString strDir;
-          CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
+          if (m_vecItems[iItem]->IsVideoDb() && m_vecItems[iItem]->HasVideoInfoTag() && !m_vecItems[iItem]->GetVideoInfoTag()->m_strPath.IsEmpty())
+          {
+            strDir = m_vecItems[iItem]->GetVideoInfoTag()->m_strPath;
+          }
+          else
+            CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
+
           m_database.GetScraperForPath(strDir,info.strPath,info.strContent);
           CScraperParser parser;
           if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
             info.strTitle = parser.GetName();
 
-          strDir = m_vecItems[iItem]->m_strPath;
-          if (m_vecItems[iItem]->m_bIsFolder)
-            CUtil::AddSlashAtEnd(strDir);
-          if (!info.strContent.IsEmpty() || m_database.HasMovieInfo(strDir))
+          if (!info.strContent.IsEmpty() || (m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath) || m_database.HasTvShowInfo(strDir) || m_database.HasEpisodeInfo(m_vecItems[iItem]->m_strPath)))
             OnInfo(iItem,info);
           
           return true;
@@ -277,7 +280,7 @@ void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
-  if (item.IsVideoDb())
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
   {
     if (item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
       item.m_strPath = item.GetVideoInfoTag()->m_strPath;
