@@ -50,6 +50,7 @@ public:
   virtual bool OnMouseWheel();
   virtual CStdString GetDescription() const;
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
+  virtual void SetColorDiffuse(D3DCOLOR color);
 protected:
   virtual void Update() ;
   virtual void Move(int iNumSteps);
