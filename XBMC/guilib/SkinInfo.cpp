@@ -229,6 +229,10 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   return strRes;
 }
 
+CStdString CSkinInfo::GetBaseDir() {
+  return m_strBaseDir;
+}
+
 wchar_t* CSkinInfo::GetCreditsLine(int i)
 {
   if (i < m_iNumCreditLines)
