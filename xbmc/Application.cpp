@@ -2266,7 +2266,7 @@ void CApplication::RenderMemoryStatus()
     CGUIFont* pFont = g_fontManager.GetFont("font13");
     if (pFont)
     {
-      float x = 0.05f * g_graphicsContext.GetWidth();
+      float x = 0.08f * g_graphicsContext.GetWidth();
       float y = 0.05f * g_graphicsContext.GetHeight();
       pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
     }
