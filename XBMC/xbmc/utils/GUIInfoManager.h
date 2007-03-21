@@ -172,6 +172,7 @@
 #define VIDEOPLAYER_SEASON          269
 #define VIDEOPLAYER_RATING          270
 #define VIDEOPLAYER_TVSHOW          271
+#define VIDEOPLAYER_PREMIERED       272
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -205,6 +206,7 @@
 #define LISTITEM_EPISODE            332
 #define LISTITEM_SEASON             333
 #define LISTITEM_TVSHOW             334
+#define LISTITEM_PREMIERED          335
 #define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350

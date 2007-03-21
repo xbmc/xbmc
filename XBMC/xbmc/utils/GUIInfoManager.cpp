@@ -347,6 +347,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.season")) ret = VIDEOPLAYER_SEASON;
     else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
+    else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -411,6 +412,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.episode")) ret = LISTITEM_EPISODE;
     else if (strTest.Equals("listitem.season")) ret = LISTITEM_SEASON;
     else if (strTest.Equals("listitem.tvshowtitle")) ret = LISTITEM_TVSHOW;
+    else if (strTest.Equals("listitem.premiered")) ret = LISTITEM_PREMIERED;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -596,6 +598,7 @@ string CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_SEASON:
   case VIDEOPLAYER_RATING:
   case VIDEOPLAYER_TVSHOW:
+  case VIDEOPLAYER_PREMIERED:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -941,6 +944,7 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_ARTIST:
   case LISTITEM_ALBUM:
   case LISTITEM_YEAR:
+  case LISTITEM_PREMIERED:
   case LISTITEM_GENRE:
   case LISTITEM_DIRECTOR:
   case LISTITEM_FILENAME:
@@ -1668,15 +1672,25 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     break;
   case VIDEOPLAYER_RATING:
     {
-    CStdString strYear;
-    strYear.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
-    return strYear;
+      CStdString strYear;
+      strYear.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
+      return strYear;
     }
   case VIDEOPLAYER_YEAR:
-    if (m_currentFile.GetVideoInfoTag()->m_iYear > 0)
     {
       CStdString strYear;
-      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iYear);
+      if (m_currentFile.GetVideoInfoTag()->m_iYear > 0)
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iYear);
+      return strYear;
+    }
+    break;
+  case VIDEOPLAYER_PREMIERED:
+    {
+      CStdString strYear;
+      if (!m_currentFile.GetVideoInfoTag()->m_strPremiered.IsEmpty())
+        strYear = m_currentFile.GetVideoInfoTag()->m_strPremiered;
+      else if (!m_currentFile.GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+        strYear = m_currentFile.GetVideoInfoTag()->m_strFirstAired;
       return strYear;
     }
     break;
@@ -2304,6 +2318,17 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iYear > 0)
         strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
+      return strResult;
+    }
+    break;
+  case LISTITEM_PREMIERED:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      if (!item->GetVideoInfoTag()->m_strPremiered.IsEmpty())
+        strResult = item->GetVideoInfoTag()->m_strPremiered;
+      else if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+        strResult = item->GetVideoInfoTag()->m_strFirstAired;
       return strResult;
     }
     break;
