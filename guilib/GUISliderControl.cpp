@@ -386,3 +386,11 @@ CStdString CGUISliderControl::GetDescription() const
   }
   return description;
 }
+
+void CGUISliderControl::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIControl::SetColorDiffuse(color);
+  m_guiBackground.SetColorDiffuse(color);
+  m_guiMid.SetColorDiffuse(color);
+  m_guiMidFocus.SetColorDiffuse(color);
+}
