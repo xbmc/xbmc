@@ -17,7 +17,7 @@ public:
   void            WaitForActionEvent(DWORD timeout);
   void            PulseActionEvent();
   void            UpdateFileList();
-  void            AddItem(CFileItem * fileItem, bool bRefreshList);
+  void            AddItem(CFileItem * fileItem);
   void            RefreshList();
   void            ClearList();
   CFileItem*      GetListItem(int position);
