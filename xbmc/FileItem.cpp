@@ -901,6 +901,7 @@ bool CFileItem::IsParentFolder() const
 // %L - existing Label
 // %M - number of episodes
 // %E - episode number
+// %P - production code
 
 void CFileItem::FormatLabel(const CStdString& strMask)
 {
@@ -962,6 +963,10 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     { // episode number
       str.Format("%02.2i", movie->m_iEpisode);
     }
+    else if (strMask[iPos2 + 1] == 'P' && movie)
+    { // tvshow production code
+      str = movie->m_strProductionCode;
+    }
     else if (strMask[iPos2 + 1] == 'S' && tag && tag->GetDiscNumber() > 0)
     { // disc number
       str.Format("%02.2i", tag->GetDiscNumber());
@@ -993,7 +998,14 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       if (tag)
         str = tag->GetYear();
       if (movie)
-        str.Format("%i",movie->m_iYear);
+      {
+        if (movie->m_iYear > 0)
+          str.Format("%i",movie->m_iYear);
+        if (!movie->m_strPremiered.IsEmpty())
+          str = movie->m_strPremiered;
+        if (!movie->m_strFirstAired.IsEmpty())
+          str = movie->m_strFirstAired;
+      }
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
@@ -1450,6 +1462,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_VIDEO_YEAR:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending);
+    break;
+  case SORT_METHOD_PRODUCTIONCODE:
+    Sort(sortOrder==SORT_ORDER_ASC? SSortFileItem::ProductionCodeAscending : SSortFileItem::ProductionCodeDescending);
     break;
   case SORT_METHOD_PROGRAM_COUNT:
   case SORT_METHOD_PLAYLIST_ORDER:
