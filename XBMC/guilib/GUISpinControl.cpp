@@ -934,3 +934,12 @@ bool CGUISpinControl::IsVisible() const
   if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage) return false;
   return CGUIControl::IsVisible();
 }
+
+void CGUISpinControl::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIControl::SetColorDiffuse(color);
+  m_imgspinDownFocus.SetColorDiffuse(color);
+  m_imgspinDown.SetColorDiffuse(color);
+  m_imgspinUp.SetColorDiffuse(color);
+  m_imgspinUpFocus.SetColorDiffuse(color);
+}

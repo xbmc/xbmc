@@ -65,6 +65,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
+  virtual void SetColorDiffuse(D3DCOLOR color);
   virtual float GetWidth() const;
   virtual bool IsVisible() const;
   void SetRange(int iStart, int iEnd);
