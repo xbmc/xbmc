@@ -32,7 +32,7 @@
 using namespace XFILE;
 using namespace DIRECTORY;
 
-#define VIDEO_DATABASE_VERSION 3
+#define VIDEO_DATABASE_VERSION 4
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -166,6 +166,8 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create tvshowlinkepisode table");
     m_pDS->exec("CREATE TABLE tvshowlinkepisode ( idShow integer, idEpisode integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_1 ON tvshowlinkepisode ( idShow, idEpisode )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_2 ON tvshowlinkepisode ( idEpisode, idShow )\n");
 
     CLog::Log(LOGINFO, "create tvshowlinkpath table");
     m_pDS->exec("CREATE TABLE tvshowlinkpath (idShow integer, idPath integer)\n");
@@ -2347,6 +2349,11 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdStr
 
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
+  if (iVersion < 4)
+  {
+    m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_1 ON tvshowlinkepisode ( idShow, idEpisode )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_2 ON tvshowlinkepisode ( idEpisode, idShow )\n");
+  }
   return true;
 }
 
