@@ -1,4 +1,4 @@
-﻿<window type="buttonMenu" id="111">
+<window type="buttonMenu" id="111">
 	<defaultcontrol always="true">3112</defaultcontrol>
 	<coordinates>
 		<system>1</system>
@@ -1076,6 +1076,7 @@
 			<height>20</height>
 			<label>$LOCALIZE[20125] $INFO[system.profilename]</label>
 			<align>center</align>
+			<aligny>center</aligny>
 			<font>font12</font>
 			<include>shutdownmenu</include>
 			<visible>system.hasloginscreen + System.Loggedon</visible>
@@ -1091,12 +1092,13 @@
 		<control type="label" id="3100">
 			<description>Label control</description>
 			<posx>19</posx>
-			<posy>113</posy>
+			<posy>114</posy>
 			<width>322</width>
 			<height>20</height>
 			<label>-</label>
 			<align>center</align>
-			<font>fontBL</font>
+			<aligny>center</aligny>
+			<font>font12</font>
 			<include>shutdownmenu</include>
 		</control>
 	</controls>
