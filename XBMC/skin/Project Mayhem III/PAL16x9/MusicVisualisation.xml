@@ -1,5 +1,5 @@
 <window id="2006">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>-</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="visualisation" id="2">

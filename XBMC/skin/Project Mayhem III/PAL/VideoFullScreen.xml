@@ -1,5 +1,5 @@
 <window id="2005">
- <defaultcontrol>13</defaultcontrol>
+ <defaultcontrol>-</defaultcontrol>
 	<controls>
 		<!-- codec infos -->
 		<control type="image" id="0">
