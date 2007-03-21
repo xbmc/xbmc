@@ -76,4 +76,8 @@ struct SSortFileItem
   // Sort by Movie Rating, and if equal, sort by label
   static bool MovieRatingAscending(CFileItem *left, CFileItem *right);
   static bool MovieRatingDescending(CFileItem *left, CFileItem *right);
+
+  // Sort by Production Code
+  static bool ProductionCodeAscending(CFileItem *left, CFileItem *right);
+  static bool ProductionCodeDescending(CFileItem *left, CFileItem *right);
 };

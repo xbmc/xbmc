@@ -673,10 +673,17 @@ bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
-    if (result < 0) return true;
-    if (result > 0) return false;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+    if (left->GetVideoInfoTag()->m_iYear > 0)
+    {
+      int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
+      if (result < 0) return true;
+      if (result > 0) return false;
+      return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+    }
+    if (!left->GetVideoInfoTag()->m_strPremiered.IsEmpty())
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strPremiered.c_str(), right->GetVideoInfoTag()->m_strPremiered.c_str()) <= 0;
+    if (!left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strFirstAired.c_str(), right->GetVideoInfoTag()->m_strFirstAired.c_str()) <= 0;
   }
   return left->m_bIsFolder;
 }
@@ -688,10 +695,41 @@ bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
-    if (result < 0) return false;
-    if (result > 0) return true;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+    if (left->GetVideoInfoTag()->m_iYear > 0)
+    {
+     int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
+     if (result < 0) return false;
+     if (result > 0) return true;
+     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+    }
+    if (!left->GetVideoInfoTag()->m_strPremiered.IsEmpty())
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strPremiered.c_str(), right->GetVideoInfoTag()->m_strPremiered.c_str()) >= 0;
+    if (!left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strFirstAired.c_str(), right->GetVideoInfoTag()->m_strFirstAired.c_str()) >= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::ProductionCodeAscending(CFileItem *left, CFileItem *right)
+{
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strProductionCode.c_str(),right->GetVideoInfoTag()->m_strProductionCode.c_str()) <= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::ProductionCodeDescending(CFileItem *left, CFileItem *right)
+{
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strProductionCode.c_str(),right->GetVideoInfoTag()->m_strProductionCode.c_str()) >= 0;
   }
   return left->m_bIsFolder;
 }
