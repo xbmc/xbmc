@@ -732,7 +732,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
 
-  CIoSupport::MapDriveLetter('Q', szDevicePath);
+  CIoSupport::RemapDriveLetter('Q', szDevicePath);
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
@@ -780,7 +780,6 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   else
   {
-    CIoSupport::UnmapDriveLetter('T');
     CStdString strMnt = g_settings.GetUserDataFolder();
     if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
     {
@@ -790,7 +789,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
     CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
-    CIoSupport::MapDriveLetter('T',szDevicePath);
+    CIoSupport::RemapDriveLetter('T',szDevicePath);
   }
 
   CLog::Log(LOGNOTICE, "Setup DirectX");
@@ -900,12 +899,13 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CLog::Log(LOGINFO, "map drives...");
   CLog::Log(LOGINFO, "  map drive C:");
-  CIoSupport::MapDriveLetter('C', "Harddisk0\\Partition2");
+  CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
 
   CLog::Log(LOGINFO, "  map drive E:");
-  CIoSupport::MapDriveLetter('E', "Harddisk0\\Partition1");
+  CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
 
   CLog::Log(LOGINFO, "  remap drive D:");
+  CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
 
   // Mount up to Partition15 (drive O:) if they are available.
@@ -918,14 +918,14 @@ HRESULT CApplication::Create(HWND hWnd)
       sprintf(szDevice, "Harddisk0\\Partition%u", i);
 
       CLog::Log(LOGINFO, "  map drive %c:", cDriveLetter);
-      CIoSupport::MapDriveLetter(cDriveLetter, szDevice);
+      CIoSupport::RemapDriveLetter(cDriveLetter, szDevice);
     }
   }
 
-  CIoSupport::MapDriveLetter('X',"Harddisk0\\Partition3");
-  CIoSupport::MapDriveLetter('Y',"Harddisk0\\Partition4");
+  CIoSupport::RemapDriveLetter('X',"Harddisk0\\Partition3");
+  CIoSupport::RemapDriveLetter('Y',"Harddisk0\\Partition4");
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport::MapDriveLetter('Z',"Harddisk0\\Partition5");
+  CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");

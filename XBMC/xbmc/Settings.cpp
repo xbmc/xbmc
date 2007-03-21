@@ -434,9 +434,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   LoadRSSFeeds();
   LoadUserFolderLayout();
 
-#ifdef HAS_XBOX_HARDWARE
-  CIoSupport::UnmapDriveLetter('S');
-#endif
   return true;
 }
 
