@@ -41,7 +41,7 @@
 			<posy>88</posy>
 			<width>445</width>
 			<height>92</height>
-			<texture>kia-top.png</texture>
+			<texture>kai-top.png</texture>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="image">
@@ -50,7 +50,7 @@
 			<posy>438</posy>
 			<width>445</width>
 			<height>105</height>
-			<texture>kia-bottom.png</texture>
+			<texture>kai-bottom.png</texture>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="group">
@@ -257,7 +257,7 @@
 				<posy>330</posy>
 				<width>141</width>
 				<height>160</height>
-				<texture>kia-icon-4x3.png</texture>
+				<texture>kai-icon-4x3.png</texture>
 			</control>
 			<control type="image" id="3064">
 				<description>My avatar icon</description>
