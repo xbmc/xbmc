@@ -95,7 +95,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->GetID() == message.GetControlId())
+        if (control->HasID(message.GetControlId()))
         {
           if (offset < m_offset)
             ScrollTo(offset);
@@ -119,7 +119,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->GetID() == m_focusedControl)
+        if (control->HasID(m_focusedControl))
         {
           if (offset >= m_offset && offset + Size(control) <= m_offset + Size())
             return CGUIControlGroup::OnMessage(message);
