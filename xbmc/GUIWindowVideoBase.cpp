@@ -177,6 +177,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           SScraperInfo info;
           CStdString strDir;
+          if (iItem < 0 || iItem >= m_vecItems.Size())
+            return false;
+
           if (m_vecItems[iItem]->IsVideoDb() && m_vecItems[iItem]->HasVideoInfoTag() && !m_vecItems[iItem]->GetVideoInfoTag()->m_strPath.IsEmpty())
           {
             strDir = m_vecItems[iItem]->GetVideoInfoTag()->m_strPath;
