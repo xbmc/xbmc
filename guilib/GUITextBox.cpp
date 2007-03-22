@@ -45,8 +45,9 @@ void CGUITextBox::Render()
 
   // need to check the last one
   if (m_renderLabel != renderLabel)
-  {
+  { // different, so reset to the top of the textbox and invalidate.  The page control will update itself below
     m_renderLabel = renderLabel;
+    m_offset = 0;
     m_bInvalidated = true;
   }
 
