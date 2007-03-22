@@ -22,7 +22,7 @@ public:
     pData = result;
   }
   
-  BYTE result[65536 + 20];
+  BYTE result[2*65536 + 20];
 };
 
 // upto 32 streams can exist

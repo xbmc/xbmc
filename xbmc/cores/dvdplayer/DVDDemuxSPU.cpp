@@ -378,7 +378,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
               else
               {
                 /* We have a boo boo ! */
-                DebugLog("ParseRLE: unknown RLE code 0x%.4x", i_code);
+                CLog::Log(LOGERROR, "ParseRLE: unknown RLE code 0x%.4x", i_code);
                 return false;
               }
             }
@@ -388,7 +388,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
 
       if ( ( (i_code >> 2) + i_x + i_y * i_width ) > i_height * i_width )
       {
-        DebugLog("ParseRLE: out of bounds, %i at (%i,%i) is out of %ix%i",
+        CLog::Log(LOGERROR, "ParseRLE: out of bounds, %i at (%i,%i) is out of %ix%i",
                  i_code >> 2, i_x, i_y, i_width, i_height );
         return false;
       }
@@ -407,9 +407,9 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
       /* Check we aren't overwriting our data range
          This occurs on "The Triplets of BelleVille" region 4 disk (NTSC)"
          where we use around 96k rather than 64k + 20bytes */
-      if ((BYTE *)p_dest >= pSPU->result + 65536 + 20)
+      if ((BYTE *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
-        DebugLog("ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
+        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
         return false;
       }
       *p_dest++ = i_code;
@@ -418,7 +418,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
     /* Check that we didn't go too far */
     if ( i_x > i_width )
     {
-      DebugLog("ParseRLE: i_x overflowed, %i > %i", i_x, i_width );
+      CLog::Log(LOGERROR, "ParseRLE: i_x overflowed, %i > %i", i_x, i_width );
       return false;
     }
 
@@ -444,9 +444,9 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
       /* Check we aren't overwriting our data range
          This occurs on "The Triplets of BelleVille" region 4 disk (NTSC)"
          where we use around 96k rather than 64k + 20bytes */
-      if ((BYTE *)p_dest >= pSPU->result + 65536 + 20)
+      if ((BYTE *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
-        DebugLog("ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
+        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
         return false;
       }
       *p_dest++ = i_width << 2;
