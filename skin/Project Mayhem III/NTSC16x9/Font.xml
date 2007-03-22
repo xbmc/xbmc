@@ -30,34 +30,40 @@
 			<name>font101</name>
 			<filename>Arial.ttf</filename>
 			<size>13</size>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>font10</name>
 			<filename>Arial.ttf</filename>
 			<size>13</size>
 			<style>bold</style>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>font12</name>
 			<filename>Arial.ttf</filename>
 			<size>13</size>
 			<style>bold</style>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>font13</name>
 			<filename>Arial.ttf</filename>
 			<size>14</size>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>special12</name>
 			<filename>Arial.ttf</filename>
 			<size>15</size>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>Arial.ttf</filename>
 			<size>15</size>
 			<style>bold</style>
+			<aspect>1.2</aspect>
 		</font>
 	</fontset>
 	<fontset id="Arial TTF New" unicode="true">
@@ -71,33 +77,33 @@
 			<filename>Arial.ttf</filename>
 			<size>13</size>
 			<style>bold</style>
-			<aspect>0.85</aspect>
+			<aspect>1.05</aspect>
 		</font>
 		<font>
 			<name>font12</name>
 			<filename>Arial.ttf</filename>
 			<size>16</size>
 			<style>bold</style>
-			<aspect>0.8</aspect>
+			<aspect>1</aspect>
 		</font>
 		<font>
 			<name>font13</name>
 			<filename>Arial.ttf</filename>
 			<size>17</size>
-			<aspect>0.85</aspect>
+			<aspect>1.05</aspect>
 		</font>
 		<font>
 			<name>special12</name>
 			<filename>Arial.ttf</filename>
 			<size>18</size>
-			<aspect>0.85</aspect>
+			<aspect>1.05</aspect>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>Arial.ttf</filename>
 			<size>18</size>
 			<style>bold</style>
-			<aspect>0.8</aspect>
+			<aspect>1</aspect>
 		</font>
 	</fontset>
 </fonts>
