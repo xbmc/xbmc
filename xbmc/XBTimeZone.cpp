@@ -809,12 +809,9 @@ int XBTimeZone::GetTimeZoneIndex()
 {
 #ifdef HAS_XBOX_HARDWARE
   TIME_ZONE_INFORMATION tzi;
-  char tzi_std_name[32];
-  DWORD returnval;
+  char tzi_std_name[32], tzi_day_name[32];
 
-  returnval = GetTimeZoneInformation(&tzi);
-
-  if (returnval == TIME_ZONE_ID_INVALID || returnval == TIME_ZONE_ID_UNKNOWN || !tzi.StandardName[0])
+  if (GetTimeZoneInformation(&tzi) == TIME_ZONE_ID_INVALID || !tzi.StandardName[0])
   {
     // if we fail to get the timezone or it is not set, use the default for the region in langinfo
     g_langInfo.GetTimeZone();
@@ -845,12 +842,25 @@ int XBTimeZone::GetTimeZoneIndex()
   // convert tzi.standardname from wide to ascii for easier comparison in a cheezy way
   for (int i=0; i < sizeof(tzi.StandardName) / sizeof(WCHAR); i++)
     tzi_std_name[i] = (char) (tzi.StandardName[i] & 0xFF);
+  for (int i=0; i < sizeof(tzi.DaylightName) / sizeof(WCHAR); i++)
+    tzi_day_name[i] = (char) (tzi.DaylightName[i] & 0xFF);
 
   // find the returned TZI in our TZI array.
   for (int i=0; i < XBNumberOfTimeZones; i++)
   {
     if (*(DWORD *)g_TimeZoneInfo[i].StandardName == *(DWORD *)tzi_std_name)
-      return i;
+    {
+      if ((DWORD)g_TimeZoneInfo[i].DaylightName == 0)
+      {
+        if (*(DWORD*)tzi_day_name == 0)
+          return i;
+      }
+      else
+      {
+        if (*(DWORD *)g_TimeZoneInfo[i].DaylightName == *(DWORD *)tzi_day_name)
+          return i;
+      }
+    }
   }
 #endif
   return -1;
