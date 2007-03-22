@@ -4,6 +4,8 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "GuiButtonControl.h"
+#include "GUICheckMarkControl.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -121,13 +123,31 @@ namespace PYXBMC
     }
 
     // allocate a new control with a new reference
+    CLabelInfo li;
     switch(pGUIControl->GetControlType())
     {
     case CGUIControl::GUICONTROL_BUTTON:
       pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
+
+      li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
+
+      ((ControlButton*)pControl)->dwDisabledColor = li.disabledColor;
+      ((ControlButton*)pControl)->dwFocusedColor  = li.focusedColor;
+      ((ControlButton*)pControl)->dwTextColor  = li.textColor;
+      ((ControlButton*)pControl)->dwShadowColor   = li.shadowColor;
+      ((ControlButton*)pControl)->strFont = li.font->GetFontName();
+      ((ControlButton*)pControl)->dwAlign = li.align;
       break;
     case CGUIControl::GUICONTROL_CHECKMARK:
       pControl = (Control*)ControlCheckMark_Type.tp_alloc(&ControlCheckMark_Type, 0);
+
+      li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
+
+      ((ControlCheckMark*)pControl)->dwDisabledColor = li.disabledColor;
+      //((ControlCheckMark*)pControl)->dwShadowColor = li.shadowColor;
+      ((ControlCheckMark*)pControl)->dwTextColor  = li.textColor;
+      ((ControlCheckMark*)pControl)->strFont = li.font->GetFontName();
+      ((ControlCheckMark*)pControl)->dwAlign = li.align;
       break;
     case CGUIControl::GUICONTROL_LABEL:
       pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
