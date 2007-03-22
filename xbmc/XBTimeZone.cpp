@@ -810,19 +810,35 @@ int XBTimeZone::GetTimeZoneIndex()
 #ifdef HAS_XBOX_HARDWARE
   TIME_ZONE_INFORMATION tzi;
   char tzi_std_name[32];
+  DWORD returnval;
 
-  if (GetTimeZoneInformation(&tzi) == TIME_ZONE_ID_INVALID || !tzi.StandardName[0])
+  returnval = GetTimeZoneInformation(&tzi);
+
+  if (returnval == TIME_ZONE_ID_INVALID || returnval == TIME_ZONE_ID_UNKNOWN || !tzi.StandardName[0])
   {
-    // if we fail to get the timezone info or it is not set, return the default
-    // timezone for the region xboxdash style
-    switch(XGetGameRegion())
+    // if we fail to get the timezone or it is not set, use the default for the region in langinfo
+    g_langInfo.GetTimeZone();
+    if (!g_langInfo.GetTimeZone().IsEmpty())
     {
-    case XC_GAME_REGION_NA:
-      return 11;
-    case XC_GAME_REGION_JAPAN:
-      return 60;
-    default:
-      return 25;
+      int i=0;
+      while (i < g_timezone.GetNumberOfTimeZones() && !g_langInfo.GetTimeZone().Equals(g_timezone.GetTimeZoneName(i)))
+        i++;
+
+      if (i < g_timezone.GetNumberOfTimeZones())
+        return i;
+    }
+    else
+    {
+      // timezone for the region xboxdash style
+      switch(XGetGameRegion())
+      {
+      case XC_GAME_REGION_NA:
+        return 11;
+      case XC_GAME_REGION_JAPAN:
+        return 60;
+      default:
+        return 25;
+      }
     }
   }
 
@@ -894,7 +910,7 @@ bool XBTimeZone::GetDST()
   DWORD type, flags, size;
   if(ExQueryNonVolatileSetting(XC_DST_SETTING, &type, &flags, sizeof(flags), &size) < 0)
   {
-    CLog::Log(LOGNOTICE, "Failed to get DST setting!");
+    CLog::Log(LOGERROR, "Failed to get DST setting!");
     return false;
   }
   return (flags & XC_DISABLE_DST_FLAG ) == XC_DISABLE_DST_FLAG ? false : true;
@@ -910,7 +926,7 @@ void XBTimeZone::SetDST(BOOL bEnable)
 
   if (ExQueryNonVolatileSetting(XC_DST_SETTING, &type, &flags, sizeof(flags), &size) < 0)
   {
-    CLog::Log(LOGNOTICE, "Failed to get DST setting!");
+    CLog::Log(LOGERROR, "Failed to get DST setting!");
     return;
   }
 
