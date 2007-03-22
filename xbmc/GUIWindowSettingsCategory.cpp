@@ -1640,19 +1640,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
-    if (!g_langInfo.GetTimeZone().IsEmpty())
-    {
-      int i=0;
-      while (i < g_timezone.GetNumberOfTimeZones() && !g_langInfo.GetTimeZone().Equals(g_timezone.GetTimeZoneName(i)))
-        i++;
-
-      if (i < g_timezone.GetNumberOfTimeZones())
-      {
-        g_guiSettings.SetInt("locale.timezone",i);
-        UpdateSettings();
-      }
-    }
-
     g_guiSettings.SetString("locale.country", strRegion);
   }
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeaddress"))
