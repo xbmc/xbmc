@@ -47,11 +47,9 @@ stDriveMapping driveMapping[] =
     { 'C', "Harddisk0\\Partition2", 2},
     { 'D', "Cdrom0", -1},
     { 'E', "Harddisk0\\Partition1", 1},
-    { 'F', "Harddisk0\\Partition6", 6},
     { 'X', "Harddisk0\\Partition3", 3},
     { 'Y', "Harddisk0\\Partition4", 4},
     { 'Z', "Harddisk0\\Partition5", 5},
-    { 'G', "Harddisk0\\Partition7", 7},
   };
 #else
 stDriveMapping driveMapping[] =
@@ -59,11 +57,9 @@ stDriveMapping driveMapping[] =
     { 'C', "C:", 2},
     { 'D', "D:", -1},
     { 'E', "E:", 1},
-    { 'F', "F:", 6},
     { 'X', "X:", 3},
     { 'Y', "Y:", 4},
     { 'Z', "Z:", 5},
-    { 'G', "G:", 7},
   };
 
 #include "../../Tools/Win32/XBMC_PC.h"
@@ -137,8 +133,14 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 
 void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
 {
+  char upperLetter = toupper(cDriveLetter);
+  if (upperLetter >= 'F' && upperLetter <= 'O')
+  {
+    sprintf(szPartition, "Harddisk0\\Partition%u", upperLetter - 'A' + 1);
+    return;
+  }
   for (int i=0; i < NUM_OF_DRIVES; i++)
-    if (driveMapping[i].cDriveLetter == toupper(cDriveLetter))
+    if (driveMapping[i].cDriveLetter == upperLetter)
     {
       strcpy(szPartition, driveMapping[i].szDevice);
       return;
@@ -148,6 +150,22 @@ void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
 
 void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
 {
+  int part_str_len = strlen(szPartition);
+  int part_num;
+
+  if (part_str_len < 19)
+  {
+    *cDriveLetter = 0;
+    return;
+  }
+  
+  part_num = atoi(szPartition + 19);
+
+  if (part_num >= 6)
+  {
+    *cDriveLetter = part_num + 'A' - 1;
+    return;
+  }
   for (int i=0; i < NUM_OF_DRIVES; i++)
     if (strnicmp(driveMapping[i].szDevice, szPartition, strlen(driveMapping[i].szDevice)) == 0)
     {
