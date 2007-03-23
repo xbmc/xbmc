@@ -34,9 +34,8 @@ void CDlgCache::Close(bool bForceClose)
 
 CDlgCache::~CDlgCache()
 {
-  CThread::m_bAutoDelete = false;
-  CThread::m_bStop = true;
-  CThread::m_eventStop.WaitMSec(1000);
+  if(m_pDlg && m_pDlg->IsRunning())
+    m_pDlg->Close();
 }
 
 void CDlgCache::OpenDialog()
