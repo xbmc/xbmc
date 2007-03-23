@@ -27,9 +27,12 @@ public:
   CThread();
   CThread(IRunnable* pRunnable);
   virtual ~CThread();
-  void Create(bool bAutoDelete = false);
-  unsigned long ThreadId() const;
-  bool WaitForThreadExit(DWORD dwTimeOutSec);
+  void Create(bool bAutoDelete = false, unsigned stacksize = 0);
+  DWORD ThreadId() const;
+  bool WaitForThreadExit(DWORD dwMilliseconds);
+  DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
+  DWORD WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds);
+  void Sleep(DWORD dwMilliseconds);
   bool SetPriority(const int iPriority);
   void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();
@@ -44,12 +47,14 @@ public:
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
-  virtual void Process();
-  CEvent m_eventStop;
-  bool m_bAutoDelete;
+  virtual void Process(); 
   bool m_bStop;
   HANDLE m_ThreadHandle;
-  DWORD m_dwThreadId;
+
+private:
+  bool m_bAutoDelete;
+  HANDLE m_StopEvent;
+  unsigned m_ThreadId;
   IRunnable* m_pRunnable;
 
   unsigned __int64 m_iLastUsage;
