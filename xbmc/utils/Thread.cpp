@@ -45,26 +45,19 @@ CThread::CThread()
   m_bStop = false;
 
   m_bAutoDelete = false;
-  m_dwThreadId = 0;
   m_ThreadHandle = NULL;
+  m_ThreadId = 0;
   m_iLastTime = 0;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
+  m_StopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
   m_pRunnable=NULL;
 }
 
 CThread::CThread(IRunnable* pRunnable)
 {
-  m_bStop = false;
-
-  m_bAutoDelete = false;
-  m_dwThreadId = 0;
-  m_ThreadHandle = NULL;
-  m_iLastTime = 0;
-  m_iLastUsage = 0;
-  m_fLastUsage = 0.0f;
-
+  CThread();
   m_pRunnable=pRunnable;
 }
 
@@ -83,8 +76,6 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   //DBG"thread start");
 
   CThread* pThread = (CThread*)(data);
-  bool bDelete( pThread->IsAutoDelete() );
-  
   /* install win32 exception translator */
   win32_exception::install_handler();
 
@@ -92,20 +83,10 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->OnStartup();
   }
-  catch (const access_violation &e) 
-  {
-    e.writelog(__FUNCTION__);
-    if( bDelete )
-    {
-      delete pThread;
-      _endthreadex(123);
-      return 0;
-    }
-  }
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
-    if( bDelete )
+    if( pThread->IsAutoDelete() )
     {
       delete pThread;
       _endthreadex(123);
@@ -115,7 +96,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch(...)
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread startup, aborting");
-    if( bDelete )
+    if( pThread->IsAutoDelete() )
     {
       delete pThread;
       _endthreadex(123);
@@ -157,8 +138,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread exit"); 
   }
 
-  pThread->m_eventStop.Set();
-  if ( bDelete )
+  if ( pThread->IsAutoDelete() )
   {
     delete pThread;
     pThread = NULL;
@@ -167,19 +147,19 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   return 0;
 }
 
-void CThread::Create(bool bAutoDelete)
+void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
   if (m_ThreadHandle != NULL)
   {
     throw 1; //ERROR should not b possible!!!
   }
-  m_iLastTime = GetTickCount();
-  m_iLastTime *= 10000;
+  m_iLastTime = GetTickCount() * 10000;
+  m_iLastUsage = 0;
+  m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
-  m_eventStop.Reset();
   m_bStop = false;
-  m_ThreadHandle = (HANDLE)_beginthreadex(NULL, 0, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, (unsigned*) & m_dwThreadId);
-  //m_ThreadHandle = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)staticThread,(LPVOID)this,0,&m_dwThreadId);
+  ::ResetEvent(m_StopEvent);
+  m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
 }
 
 
@@ -191,17 +171,18 @@ bool CThread::IsAutoDelete() const
 void CThread::StopThread()
 {
   m_bStop = true;
+  SetEvent(m_StopEvent);
   if (m_ThreadHandle)
   {
-    WaitForSingleObject(m_ThreadHandle, INFINITE);
+    WaitForThreadExit(INFINITE);
     CloseHandle(m_ThreadHandle);
     m_ThreadHandle = NULL;
   }
 }
 
-unsigned long CThread::ThreadId() const
+DWORD CThread::ThreadId() const
 {
-  return m_dwThreadId;
+  return (DWORD)m_ThreadId;
 }
 
 
@@ -234,7 +215,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   THREADNAME_INFO info; 
   info.dwType = 0x1000; 
   info.szName = szThreadName; 
-  info.dwThreadID = m_dwThreadId; 
+  info.dwThreadID = m_ThreadId;
   info.dwFlags = 0; 
   try 
   { 
@@ -245,22 +226,25 @@ void CThread::SetName( LPCTSTR szThreadName )
   }  
 }
 
-bool CThread::WaitForThreadExit(DWORD dwmsTimeOut)
+bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
 // Waits for thread to exit, timeout in given number of msec.
 // Returns true when thread ended
 {
-
   if (!m_ThreadHandle) return true;
-  DWORD dwExitCode;
-  WaitForSingleObject(m_ThreadHandle, dwmsTimeOut);
 
-  GetExitCodeThread(m_ThreadHandle, &dwExitCode);
-  if (dwExitCode != STILL_ACTIVE)
-  {
-    CloseHandle(m_ThreadHandle);
-    m_ThreadHandle = NULL;
+  // boost priority of thread we are waiting on to same as caller
+  int callee = GetThreadPriority(m_ThreadHandle);
+  int caller = GetThreadPriority(GetCurrentThread());
+  if(caller > callee)
+    SetThreadPriority(m_ThreadHandle, caller);
+
+  if (::WaitForSingleObject(m_ThreadHandle, dwMilliseconds) != WAIT_TIMEOUT)
     return true;
-  }
+
+  // restore thread priority if thread hasn't exited
+  if(caller > callee)
+    SetThreadPriority(m_ThreadHandle, callee);
+
   return false;
 }
 
@@ -292,11 +276,43 @@ float CThread::GetRelativeUsage()
     iUsage += (((unsigned __int64)KernelTime.dwHighDateTime) << 32) + ((unsigned __int64)KernelTime.dwLowDateTime);
 
     m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
-    
     m_iLastUsage = iUsage;
     m_iLastTime = iTime;
 
     return m_fLastUsage;
   }    
   return 0.0f; 
+}
+
+DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
+{
+  if(dwMilliseconds > 10 && dwMilliseconds != INFINITE)
+  {
+    HANDLE handles[2] = {hHandle, m_StopEvent};
+    DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
+
+    if(result == WAIT_TIMEOUT 
+    || result == WAIT_OBJECT_0)
+      return result;
+
+    // we return a timeout in other cases
+    // could have been an abandoned
+    return WAIT_TIMEOUT;
+  }
+  else
+    return ::WaitForSingleObject(hHandle, dwMilliseconds);
+}
+
+DWORD CThread::WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
+{
+  // for now not implemented
+  return ::WaitForMultipleObjects(nCount, lpHandles, bWaitAll, dwMilliseconds);
+}
+
+void CThread::Sleep(DWORD dwMilliseconds)
+{
+  if(dwMilliseconds > 10)
+    ::WaitForSingleObject(m_StopEvent, dwMilliseconds);
+  else
+    ::Sleep(dwMilliseconds);
 }
