@@ -1081,7 +1081,7 @@ void CControlSocket::ParseCommand()
 							// don't show x, y, z in the listing as users shouldn't really be
 							// stuffing around with these drives (power users can always go
 							// to these folders by specifying the path directly)
-							if (drive >= 'x')
+							if (drive >= 'x' && !g_advancedSettings.m_FTPShowCache)
 								continue;
 
 							if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)

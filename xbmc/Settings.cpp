@@ -226,6 +226,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
+  g_advancedSettings.m_FTPShowCache = false;
   
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -329,7 +330,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
   CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::RemapDriveLetter('P',szDevicePath);
+  CIoSupport::RemapDriveLetter('P', szDevicePath);
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -1264,6 +1265,8 @@ void CSettings::LoadAdvancedSettings()
   GetString(pRootElement, "cachepath", g_advancedSettings.m_cachePath,"Z:\\");
   g_advancedSettings.m_cachePath = CUtil::TranslateSpecialSource(g_advancedSettings.m_cachePath);
   CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
+
+  XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
   // stacking regexps
