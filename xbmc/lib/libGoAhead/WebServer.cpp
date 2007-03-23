@@ -111,7 +111,7 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, 
   strcpy(m_szRootWeb, web);
   m_port = port;
 
-  Create(false);
+  Create(false, THREAD_MINSTACKSIZE);
   if (m_ThreadHandle == NULL) return false;  
 
   CThread::SetName("Webserver");
