@@ -42,7 +42,7 @@ CThread::~CThread()
 
 BOOL CThread::Create(int nPriority /*=THREAD_PRIORITY_NORMAL*/, DWORD dwCreateFlags /*=0*/)
 {  
-	m_hThread=CreateThread(0, 0, ThreadProc, this, dwCreateFlags, &m_dwThreadId);
+	m_hThread=CreateThread(0, 0x10000, ThreadProc, this, dwCreateFlags, &m_dwThreadId);
 	if (!m_hThread)
 	{
 		delete this;
