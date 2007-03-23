@@ -419,22 +419,8 @@ void CGUIControl::UpdateVisibility()
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    if (anim.type == ANIM_TYPE_CONDITIONAL)
-    {
-      bool condition = g_infoManager.GetBool(anim.condition);
-      if (condition && !anim.lastCondition)
-        anim.queuedProcess = ANIM_PROCESS_NORMAL;
-      else if (!condition && anim.lastCondition)
-      {
-        if (anim.IsReversible())
-          anim.queuedProcess = ANIM_PROCESS_REVERSE;
-        else
-          anim.ResetAnimation();
-      }
-//      if (condition != anim.lastCondition)
-//        CLog::DebugLog("Queuing conditional anim for control %i, new state %s", GetID(), condition ? "true" : "false");
-      anim.lastCondition = condition;
-    }
+    if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
+      anim.UpdateCondition();
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
@@ -457,14 +443,8 @@ void CGUIControl::SetInitialVisibility()
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    if (anim.type == ANIM_TYPE_CONDITIONAL)
-    {
-      anim.lastCondition = g_infoManager.GetBool(anim.condition);
-      if (anim.lastCondition)
-        anim.ApplyAnimation();
-      else
-        anim.ResetAnimation();
-    }
+    if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
+      anim.SetInitialCondition();
   }
 }
 
@@ -504,14 +484,14 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
   // then we check for the normal animation, and queue it
-  if (reverseAnim && reverseAnim->IsReversible() && (reverseAnim->currentState == ANIM_STATE_IN_PROCESS || reverseAnim->currentState == ANIM_STATE_DELAYED))
+  if (reverseAnim && reverseAnim->IsReversible() && (reverseAnim->GetState() == ANIM_STATE_IN_PROCESS || reverseAnim->GetState() == ANIM_STATE_DELAYED))
   {
-    reverseAnim->queuedProcess = ANIM_PROCESS_REVERSE;
+    reverseAnim->QueueAnimation(ANIM_PROCESS_REVERSE);
     if (forwardAnim) forwardAnim->ResetAnimation();
   }
   else if (forwardAnim)
   {
-    forwardAnim->queuedProcess = ANIM_PROCESS_NORMAL;
+    forwardAnim->QueueAnimation(ANIM_PROCESS_NORMAL);
     if (reverseAnim) reverseAnim->ResetAnimation();
   }
   else
@@ -526,9 +506,9 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 {
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
-    if (m_animations[i].type == type)
+    if (m_animations[i].GetType() == type)
     {
-      if (!checkConditions || !m_animations[i].condition || g_infoManager.GetBool(m_animations[i].condition))
+      if (!checkConditions || !m_animations[i].GetCondition() || g_infoManager.GetBool(m_animations[i].GetCondition()))
         return &m_animations[i];
     }
   }
@@ -601,7 +581,7 @@ void CGUIControl::Animate(DWORD currentTime)
     CAnimation &anim = m_animations[i];
     anim.Animate(currentTime, HasRendered() || visible == DELAYED);
     // Update the control states (such as visibility)
-    UpdateStates(anim.type, anim.currentProcess, anim.currentState);
+    UpdateStates(anim.GetType(), anim.GetCurrentProcess(), anim.GetState());
     // and render the animation effect
     anim.RenderAnimation(transform);
 
@@ -628,18 +608,18 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    if (anim.type == animType)
+    if (anim.GetType() == animType)
     {
-      if (anim.queuedProcess == ANIM_PROCESS_NORMAL)
+      if (anim.GetQueuedProcess() == ANIM_PROCESS_NORMAL)
         return true;
-      if (anim.currentProcess == ANIM_PROCESS_NORMAL)
+      if (anim.GetCurrentProcess() == ANIM_PROCESS_NORMAL)
         return true;
     }
-    else if (anim.type == -animType)
+    else if (anim.GetType() == -animType)
     {
-      if (anim.queuedProcess == ANIM_PROCESS_REVERSE)
+      if (anim.GetQueuedProcess() == ANIM_PROCESS_REVERSE)
         return true;
-      if (anim.currentProcess == ANIM_PROCESS_REVERSE)
+      if (anim.GetCurrentProcess() == ANIM_PROCESS_REVERSE)
         return true;
     }
   }

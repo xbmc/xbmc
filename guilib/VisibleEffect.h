@@ -34,39 +34,49 @@ public:
   void ResetAnimation();
   void ApplyAnimation();
   void RenderAnimation(TransformMatrix &matrix);
+  void QueueAnimation(ANIMATION_PROCESS process);
 
-  ANIMATION_TYPE type;
-  EFFECT_TYPE effect;
+  inline bool IsReversible() const { return m_reversible; };
+  inline int  GetCondition() const { return m_condition; };
+  inline ANIMATION_TYPE GetType() const { return m_type; };
+  inline ANIMATION_STATE GetState() const { return m_currentState; };
+  inline ANIMATION_PROCESS GetCurrentProcess() const { return m_currentProcess; };
+  inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
 
-  ANIMATION_PROCESS queuedProcess;
-  ANIMATION_STATE currentState;
-  ANIMATION_PROCESS currentProcess;
+  float m_amount;
 
-  int condition;      // conditions that must be satisfied in order for this
-                      // animation to be performed
-  bool lastCondition; // last state of our conditional
+  void UpdateCondition();
+  void SetInitialCondition();
 
-  inline bool IsReversible() const { return reversible; };
-
-  float amount;
 private:
+  ANIMATION_TYPE m_type;
+  EFFECT_TYPE m_effect;
+
+  ANIMATION_STATE m_currentState;
+  ANIMATION_PROCESS m_currentProcess;
+  ANIMATION_PROCESS m_queuedProcess;
+
   // animation variables
-  float acceleration;
-  float startX;
-  float startY;
-  float endX;
-  float endY;
-  float centerX;
-  float centerY;
-  int startAlpha;
-  int endAlpha;
+  float m_acceleration;
+  float m_startX;
+  float m_startY;
+  float m_endX;
+  float m_endY;
+  float m_centerX;
+  float m_centerY;
+  int m_startAlpha;
+  int m_endAlpha;
 
   // timing variables
-  unsigned int start;
-  unsigned int length;
-  unsigned int delay;
+  unsigned int m_start;
+  unsigned int m_length;
+  unsigned int m_delay;
+  bool m_pulse;
+  bool m_reversible;    // whether the animation is reversible or not
 
-  bool reversible;    // whether the animation is reversible or not
+  int m_condition;      // conditions that must be satisfied in order for this
+                      // animation to be performed
+  bool m_lastCondition; // last state of our conditional
 
   void Calculate();
   TransformMatrix m_matrix;
