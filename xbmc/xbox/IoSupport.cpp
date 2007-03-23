@@ -75,6 +75,7 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
   char szDestinationDrive[16];
+  NTSTATUS status;
 
   CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, szDevice);
 
@@ -86,7 +87,12 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
   RtlInitAnsiString(&DeviceName, szSourceDevice);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
 
-  return IoCreateSymbolicLink(&LinkName, &DeviceName);
+  status = IoCreateSymbolicLink(&LinkName, &DeviceName);
+
+  if (!NT_SUCCESS(status))
+    CLog::Log(LOGERROR, "Failed to create symbolic link!  (status=0x%08x)", status);
+
+  return status;
 #else
   if ((strnicmp(szDevice, "Harddisk0", 9) == 0) ||
       (strnicmp(szDevice, "Cdrom", 5) == 0))
@@ -100,13 +106,19 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
 #ifdef _XBOX
   char szDestinationDrive[16];
   ANSI_STRING LinkName;
+  NTSTATUS status;
 
   CLog::Log(LOGNOTICE, "Unmapping drive %c", cDriveLetter);
 
   sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
 
-  return IoDeleteSymbolicLink(&LinkName);
+  status =  IoDeleteSymbolicLink(&LinkName);
+
+  if (!NT_SUCCESS(status))
+    CLog::Log(LOGERROR, "Failed to delete symbolic link!  (status=0x%08x)", status);
+
+  return status;
 #else 
   return S_OK;
 #endif
@@ -124,6 +136,7 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
   ANSI_STRING DeviceName;
+  NTSTATUS status;
 
   CLog::Log(LOGNOTICE, "Dismounting %s", szDevice);
 
@@ -131,7 +144,12 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 
   RtlInitAnsiString(&DeviceName, szSourceDevice);
 
-  return IoDismountVolumeByName(&DeviceName);
+  status = IoDismountVolumeByName(&DeviceName);
+
+  if (!NT_SUCCESS(status))
+    CLog::Log(LOGERROR, "Failed to dismount volume!  (status=0x%08x)", status);
+
+  return status;
 #else
   return S_OK;
 #endif
