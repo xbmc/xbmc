@@ -187,7 +187,7 @@ void CMusicInfoScraper::LoadAlbuminfo()
 
 bool CMusicInfoScraper::Completed()
 {
-  return m_eventStop.WaitMSec(10);
+  return WaitForThreadExit(10);
 }
 
 bool CMusicInfoScraper::Successfull()
