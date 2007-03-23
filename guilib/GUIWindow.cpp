@@ -955,7 +955,7 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
 {
   if (animType == ANIM_TYPE_WINDOW_OPEN)
   {
-    if (m_closeAnimation.GetCurrentProcess() == ANIM_PROCESS_NORMAL && m_closeAnimation.IsReversible())
+    if (m_closeAnimation.GetProcess() == ANIM_PROCESS_NORMAL && m_closeAnimation.IsReversible())
     {
       m_closeAnimation.QueueAnimation(ANIM_PROCESS_REVERSE);
       m_showAnimation.ResetAnimation();
@@ -971,7 +971,7 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
   {
     if (!m_WindowAllocated || !m_hasRendered) // can't render an animation if we aren't allocated or haven't rendered
       return;
-    if (m_showAnimation.GetCurrentProcess() == ANIM_PROCESS_NORMAL && m_showAnimation.IsReversible())
+    if (m_showAnimation.GetProcess() == ANIM_PROCESS_NORMAL && m_showAnimation.IsReversible())
     {
       m_showAnimation.QueueAnimation(ANIM_PROCESS_REVERSE);
       m_closeAnimation.ResetAnimation();
@@ -995,16 +995,16 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   if (animType == ANIM_TYPE_WINDOW_OPEN)
   {
     if (m_showAnimation.GetQueuedProcess() == ANIM_PROCESS_NORMAL) return true;
-    if (m_showAnimation.GetCurrentProcess() == ANIM_PROCESS_NORMAL) return true;
+    if (m_showAnimation.GetProcess() == ANIM_PROCESS_NORMAL) return true;
     if (m_closeAnimation.GetQueuedProcess() == ANIM_PROCESS_REVERSE) return true;
-    if (m_closeAnimation.GetCurrentProcess() == ANIM_PROCESS_REVERSE) return true;
+    if (m_closeAnimation.GetProcess() == ANIM_PROCESS_REVERSE) return true;
   }
   else if (animType == ANIM_TYPE_WINDOW_CLOSE)
   {
     if (m_closeAnimation.GetQueuedProcess() == ANIM_PROCESS_NORMAL) return true;
-    if (m_closeAnimation.GetCurrentProcess() == ANIM_PROCESS_NORMAL) return true;
+    if (m_closeAnimation.GetProcess() == ANIM_PROCESS_NORMAL) return true;
     if (m_showAnimation.GetQueuedProcess() == ANIM_PROCESS_REVERSE) return true;
-    if (m_showAnimation.GetCurrentProcess() == ANIM_PROCESS_REVERSE) return true;
+    if (m_showAnimation.GetProcess() == ANIM_PROCESS_REVERSE) return true;
   }
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
@@ -1019,11 +1019,11 @@ bool CGUIWindow::RenderAnimation(DWORD time)
   TransformMatrix transform;
   // show animation
   m_showAnimation.Animate(time, true);
-  UpdateStates(m_showAnimation.GetType(), m_showAnimation.GetCurrentProcess(), m_showAnimation.GetState());
+  UpdateStates(m_showAnimation.GetType(), m_showAnimation.GetProcess(), m_showAnimation.GetState());
   m_showAnimation.RenderAnimation(transform);
   // close animation
   m_closeAnimation.Animate(time, true);
-  UpdateStates(m_closeAnimation.GetType(), m_closeAnimation.GetCurrentProcess(), m_closeAnimation.GetState());
+  UpdateStates(m_closeAnimation.GetType(), m_closeAnimation.GetProcess(), m_closeAnimation.GetState());
   m_closeAnimation.RenderAnimation(transform);
   g_graphicsContext.SetWindowTransform(transform);
   return true;
