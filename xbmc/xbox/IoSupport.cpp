@@ -76,6 +76,8 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
   char szSourceDevice[MAX_PATH+32];
   char szDestinationDrive[16];
 
+  CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, szDevice);
+
   sprintf(szSourceDevice, "\\Device\\%s", szDevice);
   sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
 
@@ -84,13 +86,12 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
   RtlInitAnsiString(&DeviceName, szSourceDevice);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
 
-  IoCreateSymbolicLink(&LinkName, &DeviceName);
+  return IoCreateSymbolicLink(&LinkName, &DeviceName);
 #else
   if ((strnicmp(szDevice, "Harddisk0", 9) == 0) ||
       (strnicmp(szDevice, "Cdrom", 5) == 0))
     return S_OK;
 #endif
-  return S_OK;
 }
 
 // cDriveLetter e.g. 'D'
@@ -100,12 +101,15 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
   char szDestinationDrive[16];
   ANSI_STRING LinkName;
 
+  CLog::Log(LOGNOTICE, "Unmapping drive %c", cDriveLetter);
+
   sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
 
-  IoDeleteSymbolicLink(&LinkName);
-#endif
+  return IoDeleteSymbolicLink(&LinkName);
+#else 
   return S_OK;
+#endif
 }
 
 HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, char * szDevice)
@@ -120,6 +124,8 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
   ANSI_STRING DeviceName;
+
+  CLog::Log(LOGNOTICE, "Dismounting %s", szDevice);
 
   sprintf(szSourceDevice, "\\Device\\%s", szDevice);
 
