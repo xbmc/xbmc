@@ -56,8 +56,17 @@ CThread::CThread()
 }
 
 CThread::CThread(IRunnable* pRunnable)
-{
-  CThread();
+{  
+  m_bStop = false;
+
+  m_bAutoDelete = false;
+  m_ThreadHandle = NULL;
+  m_ThreadId = 0;
+  m_iLastTime = 0;
+  m_iLastUsage = 0;
+  m_fLastUsage = 0.0f;
+  m_StopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+
   m_pRunnable=pRunnable;
 }
 
