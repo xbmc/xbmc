@@ -581,7 +581,7 @@ void CGUIControl::Animate(DWORD currentTime)
     CAnimation &anim = m_animations[i];
     anim.Animate(currentTime, HasRendered() || visible == DELAYED);
     // Update the control states (such as visibility)
-    UpdateStates(anim.GetType(), anim.GetCurrentProcess(), anim.GetState());
+    UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
     anim.RenderAnimation(transform);
 
@@ -612,14 +612,14 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
     {
       if (anim.GetQueuedProcess() == ANIM_PROCESS_NORMAL)
         return true;
-      if (anim.GetCurrentProcess() == ANIM_PROCESS_NORMAL)
+      if (anim.GetProcess() == ANIM_PROCESS_NORMAL)
         return true;
     }
     else if (anim.GetType() == -animType)
     {
       if (anim.GetQueuedProcess() == ANIM_PROCESS_REVERSE)
         return true;
-      if (anim.GetCurrentProcess() == ANIM_PROCESS_REVERSE)
+      if (anim.GetProcess() == ANIM_PROCESS_REVERSE)
         return true;
     }
   }
