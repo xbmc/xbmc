@@ -145,17 +145,16 @@
 				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="1"
 				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
-				StringPooling="FALSE"
-				MinimalRebuild="FALSE"
+				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
@@ -188,8 +187,9 @@
 				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="TRUE"
-				FavorSizeOrSpeed="1"
+				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
@@ -197,7 +197,6 @@
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
@@ -210,6 +209,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalOptions="/LTCG"
 				OutputFile="$(OutDir)/$(ProjectName).lib"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>

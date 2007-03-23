@@ -56,8 +56,8 @@ Global
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release.ActiveCfg = Release|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release.Build.0 = Release|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release Xbox  Debugging.ActiveCfg = Release|Xbox
-		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release_LTCG.ActiveCfg = Release|Xbox
-		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release_LTCG.Build.0 = Release|Xbox
+		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release_LTCG.Build.0 = Release_LTCG|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Debug.ActiveCfg = Debug|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Debug.Build.0 = Debug|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Debug No Memory Tracking Xbox.ActiveCfg = Debug|Xbox
