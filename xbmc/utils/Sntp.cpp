@@ -37,6 +37,7 @@ to maintain a single distribution point for the source code.
 #endif
 #include "sntp.h"
 #include "../DNSNameCache.h"
+#include "../xbox/Network.h"
 
 
 #pragma code_seg("SNTP_TEXT")
@@ -579,7 +580,6 @@ BOOL CNtpSocket::IsReadible(BOOL& bReadible, DWORD dwTimeout)
 
 CSNTPClient::CSNTPClient()
 {
-  m_dwTimeout = 5000; //Default timeout of 5 seconds
 }
 
 BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response, int nPort)
@@ -636,7 +636,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
 
     //Need to use select to determine readibilty of socket
     BOOL bReadable;
-    if (!pSocket->IsReadible(bReadable, m_dwTimeout) || !bReadable)
+    if (!pSocket->IsReadible(bReadable, 5000) || !bReadable)
     {
       CLog::Log(LOGERROR, "Unable to wait for NTP reply from the SNTP server, GetLastError returns %d\n", WSAETIMEDOUT);
 
@@ -700,20 +700,39 @@ BOOL CSNTPClient::SetClientTime(const CNtpTime& NewTime)
 }
 
 
+void CSNTPClient::Update()
+{
+  // update once every 5 minutes
+  m_dwTimeout = GetTickCount() + 5*60*1000;
+
+  if(!g_network.IsAvailable())
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - No network available");
+    return;
+  }
+  
+  if(!CThread::WaitForThreadExit(0))
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - Thread already running");
+    return;
+  }
+  CThread::StopThread();
+  CThread::Create(false, THREAD_MINSTACKSIZE);
+}
+
+bool CSNTPClient::UpdateNeeded()
+{
+  return m_dwTimeout < GetTickCount();
+}
+
+
 CSNTPClient::~CSNTPClient()
-{}
-
-void CSNTPClient::OnStartup()
-{}
-
-void CSNTPClient::OnExit()
 {}
 
 void CSNTPClient::Process()
 {
-  if (!g_guiSettings.GetBool("locale.timeserver")) return ;
   int nTries = 0;
-  while (!m_bStop && g_guiSettings.GetBool("locale.timeserver"))
+  while (nTries < 3 && !CThread::m_bStop)
   {
     NtpServerResponse response;
     if (GetServerTime( g_guiSettings.GetString("locale.timeaddress"), response))
@@ -728,17 +747,6 @@ void CSNTPClient::Process()
 
       // only set time once
       return ;
-    }
-
-    // only try 3 times
-    if (++nTries >= 3)
-      return ;
-
-    // couldn't set time, wait 5 mins and have another go
-    for (int i = 0; i < 600; i++)
-    {
-      Sleep(500);
-      if (m_bStop || false == g_guiSettings.GetBool("locale.timeserver")) break;
     }
   }
 }

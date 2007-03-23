@@ -91,20 +91,19 @@ struct NtpServerResponse
 
 
 //The actual SNTP class
-class CSNTPClient : public CThread
+class CSNTPClient : private CThread
 {
 public:
   //Constructors / Destructors
   CSNTPClient();
   virtual ~CSNTPClient();
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
+  void Update();
+  bool UpdateNeeded();
 protected:
+  virtual void Process();
 
   //General functions
   BOOL GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response, int nPort = 123);
-  DWORD GetTimeout() const { return m_dwTimeout; };
   void SetTimeout(DWORD dwTimeout) { m_dwTimeout = dwTimeout; };
   BOOL SetClientTime(const CNtpTime& NewTime);
 
@@ -115,6 +114,7 @@ protected:
   void RevertSetTimePriviledge();
 #endif
 
+  // next point in time we wish to update
   DWORD m_dwTimeout;
 
   //AR 22-07-2000
