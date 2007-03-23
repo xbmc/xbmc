@@ -40,7 +40,7 @@ public:
   inline int  GetCondition() const { return m_condition; };
   inline ANIMATION_TYPE GetType() const { return m_type; };
   inline ANIMATION_STATE GetState() const { return m_currentState; };
-  inline ANIMATION_PROCESS GetCurrentProcess() const { return m_currentProcess; };
+  inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; };
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
 
   float m_amount;
