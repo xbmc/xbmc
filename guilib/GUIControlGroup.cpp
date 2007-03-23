@@ -272,7 +272,7 @@ void CGUIControlGroup::Animate(DWORD currentTime)
     CAnimation &anim = m_animations[i];
     anim.Animate(currentTime, HasRendered() || visible == DELAYED);
     // Update the control states (such as visibility)
-    UpdateStates(anim.type, anim.currentProcess, anim.currentState);
+    UpdateStates(anim.GetType(), anim.GetCurrentProcess(), anim.GetState());
     // and render the animation effect
     anim.RenderAnimation(transform);
   }
