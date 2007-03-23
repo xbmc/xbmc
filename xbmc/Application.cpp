@@ -1517,7 +1517,7 @@ void CApplication::StartTimeServer()
       CLog::Log(LOGNOTICE, "start timeserver client");
 
       m_psntpClient = new CSNTPClient();
-      m_psntpClient->Create(false, 0x10000);
+      m_psntpClient->Create(false, THREAD_MINSTACKSIZE);
     }
   }
 #endif
