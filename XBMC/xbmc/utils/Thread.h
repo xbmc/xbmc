@@ -21,6 +21,9 @@ public:
 #undef CTHREAD
 #endif
 
+// minimum as mandated by XTL
+#define THREAD_MINSTACKSIZE 0x10000
+
 class CThread
 {
 public:

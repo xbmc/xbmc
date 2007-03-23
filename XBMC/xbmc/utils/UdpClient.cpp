@@ -43,7 +43,7 @@ bool CUdpClient::Create(void)
   ioctlsocket(client_socket, FIONBIO, &nonblocking);
 
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Spawning listener thread...");
-  CThread::Create(false);
+  CThread::Create(false, THREAD_MINSTACKSIZE);
 
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Ready.");
 

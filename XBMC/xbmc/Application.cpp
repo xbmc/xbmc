@@ -1425,7 +1425,7 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
 
 void CApplication::StartIdleThread()
 {
-  m_idleThread.Create();
+  m_idleThread.Create(false, 0x100);
 }
 
 void CApplication::StopIdleThread()
@@ -1517,7 +1517,7 @@ void CApplication::StartTimeServer()
       CLog::Log(LOGNOTICE, "start timeserver client");
 
       m_psntpClient = new CSNTPClient();
-      m_psntpClient->Create();
+      m_psntpClient->Create(false, 0x10000);
     }
   }
 #endif
@@ -1694,7 +1694,7 @@ void CApplication::StartServices()
 
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
-  m_DetectDVDType.Create( false);
+  m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
 
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);

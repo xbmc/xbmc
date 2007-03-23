@@ -43,7 +43,7 @@ bool CCDDAReader::Init(const char* strFileName)
   m_sRipBuffer[0].pbtStream = new BYTE[CDIO_CD_FRAMESIZE_RAW * SECTOR_COUNT];
   m_sRipBuffer[1].pbtStream = new BYTE[CDIO_CD_FRAMESIZE_RAW * SECTOR_COUNT];
 
-  Create();
+  Create(false, THREAD_MINSTACKSIZE);
 
   return true;
 }
