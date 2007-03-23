@@ -1517,7 +1517,7 @@ void CApplication::StartTimeServer()
       CLog::Log(LOGNOTICE, "start timeserver client");
 
       m_psntpClient = new CSNTPClient();
-      m_psntpClient->Create(false, THREAD_MINSTACKSIZE);
+      m_psntpClient->Update();
     }
   }
 #endif
@@ -1529,7 +1529,6 @@ void CApplication::StopTimeServer()
   if( m_psntpClient )
   {
     CLog::Log(LOGNOTICE, "stop time server client");
-    m_psntpClient->StopThread();
     SAFE_DELETE(m_psntpClient);
     CSectionLoader::Unload("SNTP");
   }
@@ -2256,7 +2255,8 @@ void CApplication::RenderMemoryStatus()
 #endif
   {
     // reset the window scaling and fade status
-    g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
     CStdStringW wszText;
     MEMORYSTATUS stat;
@@ -2266,8 +2266,8 @@ void CApplication::RenderMemoryStatus()
     CGUIFont* pFont = g_fontManager.GetFont("font13");
     if (pFont)
     {
-      float x = 0.08f * g_graphicsContext.GetWidth();
-      float y = 0.05f * g_graphicsContext.GetHeight();
+      float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+      float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
       pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
     }
   }
@@ -4569,6 +4569,10 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
+
+  // check for any needed sntp update
+  if(m_psntpClient && m_psntpClient->UpdateNeeded())
+    m_psntpClient->Update();
 
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
