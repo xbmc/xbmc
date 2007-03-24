@@ -167,6 +167,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     CStdStringArray vecGenres;
     int iNumGenres = StringUtils::SplitString(song.strGenre, " / ", vecGenres);
     // add the primary artist/genre
+    // SplitString returns >= 1 so no worries referencing the first item here
     long lArtistId = AddArtist(vecArtists[0]);
     long lGenreId = AddGenre(vecGenres[0]);
     // and also the primary album artist (if applicable)
