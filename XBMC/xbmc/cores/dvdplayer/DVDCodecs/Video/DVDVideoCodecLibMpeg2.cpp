@@ -271,6 +271,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
 
             if(m_pInfo->display_picture->flags & PIC_FLAG_SKIP)
               pBuffer->iFlags |= DVP_FLAG_DROPPED;
+            else
+              pBuffer->iFlags &= ~DVP_FLAG_DROPPED;
 
             pBuffer->iDuration = m_pInfo->sequence->frame_period;
 
