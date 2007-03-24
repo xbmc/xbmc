@@ -96,7 +96,7 @@
 				<visible>Skin.HasSetting(bookmarkbuttons)</visible>
 				<control type="button" id="31">
 					<description>Bookmark button 1</description>
-					<posx>50</posx>
+					<posx>0</posx>
 					<posy>231</posy>
 					<label>$INFO[Skin.String(Musicbookmark1)]</label>
 					<onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark1)])</onclick>
