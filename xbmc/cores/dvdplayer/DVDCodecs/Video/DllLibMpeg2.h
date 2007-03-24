@@ -34,6 +34,7 @@ public:
   virtual void mpeg2_set_buf (mpeg2dec_t * mpeg2dec, uint8_t * buf[3], void * id)=0;
   virtual void mpeg2_custom_fbuf (mpeg2dec_t * mpeg2dec, int custom_fbuf)=0;
   virtual int mpeg2_convert (mpeg2dec_t * mpeg2dec, mpeg2_convert_t convert, void * arg)=0;
+  virtual void mpeg2_skip(mpeg2dec_t * mpeg2dec, int skip)=0;
 };
 
 class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
@@ -50,6 +51,7 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
   DEFINE_METHOD3(void, mpeg2_set_buf, (mpeg2dec_t * p1, uint8_t * p2[3], void * p3))
   DEFINE_METHOD2(void, mpeg2_custom_fbuf, (mpeg2dec_t * p1, int p2))
   DEFINE_METHOD3(int, mpeg2_convert, (mpeg2dec_t * p1, mpeg2_convert_t p2, void * p3))
+  DEFINE_METHOD2(void,mpeg2_skip, (mpeg2dec_t * p1, int p2)) 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(mpeg2_accel)
     RESOLVE_METHOD(mpeg2_init)
@@ -62,5 +64,6 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
     RESOLVE_METHOD(mpeg2_set_buf)
     RESOLVE_METHOD(mpeg2_custom_fbuf)
     RESOLVE_METHOD(mpeg2_convert)
+    RESOLVE_METHOD(mpeg2_skip)
   END_METHOD_RESOLVE()
 };
