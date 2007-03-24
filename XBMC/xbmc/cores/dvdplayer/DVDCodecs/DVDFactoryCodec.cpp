@@ -67,7 +67,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
-  bool halfres
 
   // try to decide if we want to try halfres decoding
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
