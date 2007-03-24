@@ -252,7 +252,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
   {
     if (m_currentProcess == ANIM_PROCESS_REVERSE)
       m_start = time - (int)(m_length * m_amount);  // reverse direction of animation
-    else if (m_currentProcess == ANIM_PROCESS_NONE)
+    else
       m_start = time;
     m_currentProcess = ANIM_PROCESS_NORMAL;
   }
