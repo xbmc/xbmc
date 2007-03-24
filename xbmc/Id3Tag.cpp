@@ -107,6 +107,8 @@ bool CID3Tag::Parse()
 
   tag.SetAlbum(GetAlbum());
 
+  tag.SetAlbumArtist(GetAlbumArtist());
+
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().IsEmpty() || !tag.GetAlbum().IsEmpty())
     tag.SetLoaded();
 
@@ -209,6 +211,7 @@ bool CID3Tag::Write(const CStdString& strFile)
   SetTitle(m_musicInfoTag.GetTitle());
   SetArtist(m_musicInfoTag.GetArtist());
   SetAlbum(m_musicInfoTag.GetAlbum());
+  SetAlbumArtist(m_musicInfoTag.GetAlbumArtist());
   SetTrack(m_musicInfoTag.GetTrackNumber());
   SetGenre(m_musicInfoTag.GetGenre());
   SetYear(m_musicInfoTag.GetYear());
@@ -237,6 +240,13 @@ CStdString CID3Tag::GetAlbum() const
 {
   id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
   const id3_ucs4_t* ucs4=m_dll.id3_metadata_getalbum(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
+}
+
+CStdString CID3Tag::GetAlbumArtist() const
+{
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getalbumartist(m_tag, &encoding);
   return ToStringCharset(ucs4, encoding);
 }
 
@@ -331,6 +341,13 @@ void CID3Tag::SetAlbum(const CStdString& strValue)
 {
   id3_ucs4_t* ucs4=StringCharsetToUcs4(strValue);
   m_dll.id3_metadata_setalbum(m_tag, ucs4);
+  m_dll.id3_ucs4_free(ucs4);
+}
+
+void CID3Tag::SetAlbumArtist(const CStdString& strValue)
+{
+  id3_ucs4_t* ucs4=StringCharsetToUcs4(strValue);
+  m_dll.id3_metadata_setalbumartist(m_tag, ucs4);
   m_dll.id3_ucs4_free(ucs4);
 }
 

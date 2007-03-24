@@ -59,6 +59,18 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
     tag.SetLoaded();
   }
 
+  if ( strTagType == "ALBUMARTIST" || strTagType == "ALBUM ARTIST" || strTagType == "ENSEMBLE")
+  {
+    if (tag.GetAlbumArtist().GetLength())
+    {
+      CStdString strArtist=tag.GetAlbumArtist() + " / " + strTagValue;
+      tag.SetAlbumArtist(strArtist);
+    }
+    else
+      tag.SetAlbumArtist(strTagValue);
+    tag.SetLoaded();
+  }
+
   if ( strTagType == "TITLE" )
   {
     tag.SetTitle(strTagValue);
