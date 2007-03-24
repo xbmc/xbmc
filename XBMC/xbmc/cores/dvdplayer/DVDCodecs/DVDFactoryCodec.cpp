@@ -66,18 +66,22 @@ CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamIn
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
+  CDVDCodecOptions options;
+  bool halfres
 
-  if( hint.width > 1400 )
+  // try to decide if we want to try halfres decoding
+  float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
+  if( pixelrate > 1400.0f*720.0f*30.0f )
   {
-    CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);
-    CDVDCodecOptions options;
-    options.push_back(CDVDCodecOption("lowres","1"));
-    if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options) ) return pCodec;
+    CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);    
+    options.push_back(CDVDCodecOption("lowres","1"));    
   }
-
-  if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
-  {
-    if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, CDVDCodecOptions()) ) return pCodec;
+  else 
+  { // non halfres mode, we can use other decoders
+    if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
+    {
+      if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, CDVDCodecOptions()) ) return pCodec;
+    }
   }
   
   if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, CDVDCodecOptions()) ) return pCodec;
