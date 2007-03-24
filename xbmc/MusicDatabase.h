@@ -131,7 +131,6 @@ public:
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre);
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
-  bool GetAlbumArtists(const CStdString& strBaseDir, CFileItemList& items);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
   bool GetSongsByWhere(const CStdString &whereClause, CFileItemList& items);
   bool GetRandomSong(CFileItem* item);
@@ -174,7 +173,8 @@ protected:
   long AddArtist(const CStdString& strArtist);
   long AddPath(const CStdString& strPath);
   long AddThumb(const CStdString& strThumb1);
-  void AddExtraArtists(const CStdStringArray& vecArtists, long lSongId, long lAlbumId, bool bCheck = true);
+  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
+  void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);

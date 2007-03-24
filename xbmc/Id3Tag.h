@@ -22,6 +22,7 @@ protected:
 
   CStdString GetArtist() const;
   CStdString GetAlbum() const;
+  CStdString GetAlbumArtist() const;
   CStdString GetTitle() const;
   int GetTrack() const;
   int GetPartOfSet() const;
@@ -39,6 +40,7 @@ protected:
 
   void SetArtist(const CStdString& strValue);
   void SetAlbum(const CStdString& strValue);
+  void SetAlbumArtist(const CStdString& strValue);
   void SetTitle(const CStdString& strValue);
   void SetTrack(int n);
   void SetPartOfSet(int n);
