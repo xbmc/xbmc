@@ -70,15 +70,11 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  enum EOUTPUTSTATUS
-  {
-    EOS_OK=0,
-    EOS_ABORT=1,
-    EOS_DROPPED_VERYLATE=2,
-    EOS_DROPPED=3,
-  };
+#define EOS_ABORT 1
+#define EOS_DROPPED 2
+#define EOS_VERYLATE 4
 
-  EOUTPUTSTATUS OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
+  int OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts);
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, __int64 pts);
   
