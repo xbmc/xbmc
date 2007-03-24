@@ -266,21 +266,7 @@ void CDVDPlayerVideo::Process()
       LeaveCriticalSection(&m_critCodecSection);
       m_iCurrentPts = DVD_NOPTS_VALUE;
     }
-    
-    if (m_DetectedStill)
-    {
-      CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
-      m_DetectedStill = false;
-
-      //don't allow the first frames after a still to be dropped
-      //sometimes we get multiple stills (long duration frames) after each other
-      //in normal mpegs
-      m_iNrOfPicturesNotToSkip = 5; 
-    }
-
-    EnterCriticalSection(&m_critCodecSection);
-
-    if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
+    else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
       // libmpeg2 is also returning incomplete frames after a dvd cell change
       // so the first few pictures are not the correct ones to display in some cases
@@ -289,37 +275,46 @@ void CDVDPlayerVideo::Process()
       m_iNrOfPicturesNotToSkip = 5;
     }
     
-    if( iDropped > 30 )
-    { // if we dropped too many pictures in a row, insert a forced picure
-      m_iNrOfPicturesNotToSkip++;
-      iDropped = 0;
-    }
-
-    if (m_speed < 0)
-    { // playing backward, don't drop any pictures
-      m_iNrOfPicturesNotToSkip = 5;
-    }
-
-    // if we have pictures that can't be skipped, never request drop
-    if( m_iNrOfPicturesNotToSkip > 0 ) bRequestDrop = false;
-
-    // tell codec if next frame should be dropped
-    // problem here, if one packet contains more than one frame
-    // both frames will be dropped in that case instead of just the first
-    // decoder still needs to provide an empty image structure, with correct flags
-    m_pVideoCodec->SetDropState(bRequestDrop);
-    
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
       CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
-      
-      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
 
-      /* decoders might leave in an invalid mmx state, make sure this is reset before continuing */
-      __asm { 
-        emms
+      if (m_DetectedStill)
+      {
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
+        m_DetectedStill = false;
+
+        //don't allow the first frames after a still to be dropped
+        //sometimes we get multiple stills (long duration frames) after each other
+        //in normal mpegs
+        m_iNrOfPicturesNotToSkip = 5;
       }
+      else if( iDropped*iFrameTime > DVD_MSEC_TO_TIME(100) )
+      { // if we dropped too many pictures in a row, insert a forced picture
+        m_iNrOfPicturesNotToSkip++;
+      }
+      else if (m_speed < 0)
+      { // playing backward, don't drop any pictures
+        m_iNrOfPicturesNotToSkip = 5;
+      }
+
+      // if we have pictures that can't be skipped, never request drop
+      if( m_iNrOfPicturesNotToSkip > 0 ) 
+        bRequestDrop = false;
+
+#ifdef PROFILE
+      bRequestDrop = false;
+#endif
+      
+      EnterCriticalSection(&m_critCodecSection);
+      // tell codec if next frame should be dropped
+      // problem here, if one packet contains more than one frame
+      // both frames will be dropped in that case instead of just the first
+      // decoder still needs to provide an empty image structure, with correct flags
+      m_pVideoCodec->SetDropState(bRequestDrop);
+
+      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
 
       // loop while no error
       while (!(iDecoderState & VC_ERROR))
@@ -372,7 +367,7 @@ void CDVDPlayerVideo::Process()
               picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
             }
 
-            EOUTPUTSTATUS iResult;
+            int iResult;
             do 
             {
               try 
@@ -391,9 +386,8 @@ void CDVDPlayerVideo::Process()
               pts += picture.iDuration;
             }
             while (picture.iRepeatPicture-- > 0);
-
-            bRequestDrop = false;
-            if( iResult == EOS_ABORT )
+            
+            if( iResult & EOS_ABORT )
             {
               //if we break here and we directly try to decode again wihout 
               //flushing the video codec things break for some reason
@@ -402,17 +396,16 @@ void CDVDPlayerVideo::Process()
               iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
               break;
             }
-            else if( iResult == EOS_DROPPED )
+            
+            if( iResult & EOS_DROPPED )
             {
               m_iDroppedFrames++;
               iDropped++;
             }
-            else if( iResult == EOS_DROPPED_VERYLATE )
-            {
-              m_iDroppedFrames++;
-              iDropped++;
-              bRequestDrop = true;
-            }
+            else
+              iDropped = 0;
+
+            bRequestDrop = (iResult & EOS_VERYLATE) == EOS_VERYLATE;
           }
           else
           {
@@ -451,9 +444,9 @@ void CDVDPlayerVideo::Process()
 
       // if decoder had an error, tell it to reset to avoid more problems
       if( iDecoderState & VC_ERROR ) m_pVideoCodec->Reset();
-    }
-    
-    LeaveCriticalSection(&m_critCodecSection);
+
+      LeaveCriticalSection(&m_critCodecSection);
+    }    
     
     // all data is used by the decoder, we can safely free it now
     pMsg->Release();
@@ -603,7 +596,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   }
 }
 
-CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
+int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 {
   if (m_messageQueue.RecievedAbortRequest()) return EOS_ABORT;
 
@@ -664,6 +657,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     m_output.color_range = pPicture->color_range;
   }
 
+  int result = 0;
   if (m_bInitializedOutputDevice)
   {
     // make sure we do not drop pictures that should not be skipped
@@ -704,6 +698,10 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     // sleep calculated by duration of frame
     iFrameSleep = m_iFlipTimeStamp - iCurrentClock;
 
+    // ask decoder to drop frames next round, as we are very late
+    if( (-iClockSleep) > DVD_MSEC_TO_TIME(100) )
+      result |= EOS_VERYLATE;
+
     if (m_speed < 0)
     {
       // don't sleep when going backwords, just push frames out
@@ -716,16 +714,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     else
     {
       /* try to decide on how to sync framerate */
-      /* during a discontinuity, we have have to rely on frame duration completly*/
-      /* otherwise we adjust against the playback clock to some extent */
-
-      /* decouple clock and video as we approach a discontinuity */
-      /* decouple clock and video a while after a discontinuity */
-      const __int64 distance = m_pClock->DistanceToDisc();
-
-      if( abs(distance) < pPicture->iDuration*3 )
-        iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) * 0;
-      else if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
+      if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
         iSleepTime = iClockSleep;
       else
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
@@ -748,27 +737,8 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     m_iFlipTimeStamp += iSleepTime > 0 ? iSleepTime : 0;
     m_iFlipTimeStamp += pPicture->iDuration;
 
-    if( iSleepTime < 0 )
-    { // we are late, try to figure out how late
-      // this could be improved if we had some average time
-      // for decoding. so we know if we need to drop frames
-      // in decoder
-      if( !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      {        
-        if( (-iSleepTime) > 4*pPicture->iDuration )
-        { // two frames late, signal that we are late. this will drop frames in decoder, untill we have an ok frame
-          pPicture->iFlags |= DVP_FLAG_DROPPED;
-          return EOS_DROPPED_VERYLATE;
-        }
-        else if( (-iSleepTime) > 2*pPicture->iDuration )
-        { // one frame late, drop in renderer     
-          pPicture->iFlags |= DVP_FLAG_DROPPED;
-          return EOS_DROPPED;
-        }
-      }
-    }
-
-    if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) return EOS_DROPPED;
+    if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
+      return result | EOS_DROPPED;
 
     // set fieldsync if picture is interlaced
     EFIELDSYNC mDisplayField = FS_NONE;
@@ -787,7 +757,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     else
       g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
   }
-  return EOS_OK;
+  return result;
 }
 
 void CDVDPlayerVideo::UpdateMenuPicture()
