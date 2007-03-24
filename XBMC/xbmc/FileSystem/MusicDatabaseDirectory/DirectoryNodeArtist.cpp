@@ -30,13 +30,7 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess = false;
-
-  // hide compilation artists only gets the primary album artists, including "Various Artists"
-  if (params.GetGenreId() < 0 && g_advancedSettings.m_bMusicLibraryHideCompilationArtists)
-    bSuccess=musicdatabase.GetAlbumArtists(BuildPath(), items); 
-  else
-    bSuccess=musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId());
+  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId());
 
   musicdatabase.Close();
 

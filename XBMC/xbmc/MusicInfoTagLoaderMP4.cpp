@@ -40,6 +40,7 @@ static const unsigned int	g_MdhdAtomName			=	MAKE_ATOM_NAME(  'm', 'd', 'h', 'd'
 
 static const unsigned int	g_TitleAtomName			=	MAKE_ATOM_NAME( 0xa9, 'n', 'a', 'm' ); 	// '©nam'
 static const unsigned int	g_ArtistAtomName		=	MAKE_ATOM_NAME( 0xa9, 'A', 'R', 'T' );	// '©ART'
+static const unsigned int	g_AlbumArtistAtomName		=	MAKE_ATOM_NAME( 'a', 'A', 'R', 'T' );	// 'aART'
 static const unsigned int	g_AlbumAtomName			=	MAKE_ATOM_NAME( 0xa9, 'a', 'l', 'b' );	// '©alb'
 static const unsigned int	g_DayAtomName			=	MAKE_ATOM_NAME( 0xa9, 'd', 'a', 'y' );	// '©day'
 static const unsigned int	g_CustomGenreAtomName	=	MAKE_ATOM_NAME( 0xa9, 'g', 'e', 'n' );	// '©gnr'
@@ -131,6 +132,17 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       break;
     }
 
+  case	g_AlbumArtistAtomName:
+    {
+      // We need to zero-terminate the string, which needs workspace..
+      auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
+      memcpy( dataWorkspace.get(), pMetaData, metaSize );
+      dataWorkspace[ metaSize ] = '\0';
+
+      tag.SetAlbumArtist( dataWorkspace.get() );
+
+      break;
+    }
   case	g_DayAtomName:
     {
       // We need to zero-terminate the string, which needs workspace..

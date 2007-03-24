@@ -50,6 +50,7 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetTitle(myTag.GetTitle());
       tag.SetAlbum(myTag.GetAlbum());
       tag.SetArtist(myTag.GetArtist());
+      tag.SetAlbumArtist(myTag.GetAlbumArtist());
       tag.SetGenre(myTag.GetGenre());
       tag.SetTrackNumber(myTag.GetTrackNum());
       tag.SetPartOfSet(myTag.GetDiscNum());
