@@ -168,10 +168,9 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
   int n=48000*2*16/8, len;
 
-  //Store amount left at this point, and what last pts was
-  unsigned __int64 first_pkt_pts = 0;
-  int first_pkt_size = 0; 
-  int first_pkt_used = 0;
+  unsigned int     bytesconsumed = 0;
+  unsigned __int64 startdts = DVD_NOPTS_VALUE;
+
   int result = 0;
 
   // initial data timeout, will be set to frame duration later*/
@@ -180,12 +179,9 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
   // make sure the sent frame is clean
   memset(&audioframe, 0, sizeof(DVDAudioFrame));
 
-  if (pPacket)
-  {
-    first_pkt_pts = pPacket->pts;
-    first_pkt_size = pPacket->iSize;
-    first_pkt_used = first_pkt_size - audio_pkt_size;
-  }
+  // if we have any leftovers from last packet, use the timestamp from it if possible
+  if (pPacket && pPacket->dts != DVD_NOPTS_VALUE && audio_pkt_size && m_bps_i)
+    startdts = pPacket->dts + (unsigned __int64)DVD_SEC_TO_TIME( (double)(pPacket->iSize - audio_pkt_size) / m_bps_i );
 
   for (;;)
   {
@@ -222,8 +218,13 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       audio_pkt_data += len;
       audio_pkt_size -= len;
+      bytesconsumed += len;
 
       if (audioframe.size <= 0) continue;
+
+      // if we got a timestamp from packets, use it
+      if(startdts != DVD_NOPTS_VALUE)
+        m_audioClock = startdts;
 
       audioframe.pts = m_audioClock;
 
@@ -237,6 +238,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         // increase audioclock to after the packet
         m_audioClock += audioframe.duration;
         datatimeout = audioframe.duration*2;
+
+        // calculate an bitrate
+        m_bps_i = (double)bytesconsumed / audioframe.duration * DVD_TIME_BASE;
+        m_bps_o = 1.0f / n;
       }
 
       //If we are asked to drop this packet, return a size of zero. then it won't be played
@@ -283,6 +288,16 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       audio_pkt_data = pPacket->pData;
       audio_pkt_size = pPacket->iSize;
       m_Stalled = false;
+
+      // calucate starting pts if we are missing it
+      if (pPacket->dts != DVD_NOPTS_VALUE && startdts == DVD_NOPTS_VALUE)
+      {
+        startdts = pPacket->dts;
+        if(bytesconsumed && m_bps_i)
+          startdts -= (unsigned __int64)DVD_SEC_TO_TIME( (double)bytesconsumed / m_bps_i );        
+      }
+      pMsg->Release();
+      continue;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
@@ -330,33 +345,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       pMsg->Release();
       continue;
     }
-
-        
-    if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
-    {
-      if (pPacket->pts != DVD_NOPTS_VALUE) // CDVDMsg::DEMUXER_PACKET, pPacket is already set above
-      {
-        if (first_pkt_size == 0) 
-        { //first package
-          m_audioClock = pPacket->pts;        
-        }
-        else if (first_pkt_pts > pPacket->pts)
-        { //okey first packet in this continous stream, make sure we use the time here        
-          m_audioClock = pPacket->pts;        
-        }
-        else if((unsigned __int64)m_audioClock < pPacket->pts || (unsigned __int64)m_audioClock > pPacket->pts)
-        {
-          //crap, moved outsided correct pts
-          //Use pts from current packet, untill we find a better value for it.
-          //Should be ok after a couple of frames, as soon as it starts clean on a packet
-          m_audioClock = pPacket->pts;
-        }
-        else if(first_pkt_size == first_pkt_used)
-        { //Nice starting up freshly on the start of a packet, use pts from it
-          m_audioClock = pPacket->pts;
-        }
-      }
-    }
     pMsg->Release();
   }
 }
@@ -370,6 +358,8 @@ void CDVDPlayerAudio::OnStartup()
   audio_pkt_size = 0;
 
   m_Stalled = true;
+  m_bps_i = 0.0f;
+  m_bps_o = 0.0f;
 
   g_dvdPerformanceCounter.EnableAudioDecodePerformance(ThreadHandle());
 }
@@ -401,7 +391,7 @@ void CDVDPlayerAudio::Process()
     }
 
 #ifdef PROFILE /* during profiling we just drop all packets, after having decoded */
-  m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock, 0);
+  m_pClock->Discontinuity(CLOCK_DISC_NORMAL, audioframe.pts, 0);
   continue;
 #endif
 
