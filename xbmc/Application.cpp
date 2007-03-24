@@ -4570,9 +4570,11 @@ void CApplication::ProcessSlow()
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
 
+#ifdef HAS_TIME_SERVER
   // check for any needed sntp update
   if(m_psntpClient && m_psntpClient->UpdateNeeded())
     m_psntpClient->Update();
+#endif
 
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
