@@ -64,6 +64,7 @@ public:
     virtual void id3_utf8_free(id3_utf8_t *)=0;
     virtual const id3_ucs4_t* id3_metadata_getartist(const struct id3_tag*, enum id3_field_textencoding*)=0;
     virtual const id3_ucs4_t* id3_metadata_getalbum(const struct id3_tag*, enum id3_field_textencoding*)=0;
+    virtual const id3_ucs4_t* id3_metadata_getalbumartist(const struct id3_tag*, enum id3_field_textencoding*)=0;
     virtual const id3_ucs4_t* id3_metadata_gettitle(const struct id3_tag*, enum id3_field_textencoding*)=0;
     virtual const id3_ucs4_t* id3_metadata_gettrack(const struct id3_tag*, enum id3_field_textencoding*)=0;
     virtual const id3_ucs4_t* id3_metadata_getpartofset(const struct id3_tag* tag, enum id3_field_textencoding*)=0;
@@ -79,6 +80,7 @@ public:
     virtual int id3_metadata_getfirstnonstandardpictype(const struct id3_tag*, enum id3_picture_type*)=0;
     virtual int id3_metadata_setartist(struct id3_tag* tag, id3_ucs4_t* value)=0;
     virtual int id3_metadata_setalbum(struct id3_tag* tag, id3_ucs4_t* value)=0;
+    virtual int id3_metadata_setalbumartist(struct id3_tag* tag, id3_ucs4_t* value)=0;
     virtual int id3_metadata_settitle(struct id3_tag* tag, id3_ucs4_t* value)=0;
     virtual int id3_metadata_settrack(struct id3_tag* tag, id3_ucs4_t* value)=0;
     virtual int id3_metadata_setpartofset(struct id3_tag* tag, id3_ucs4_t* value)=0;
@@ -149,6 +151,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
   DEFINE_METHOD1(void, id3_utf8_free, (id3_utf8_t* p1))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getartist, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getalbum, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
+  DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getalbumartist, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_gettitle, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_gettrack, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getpartofset, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
@@ -164,6 +167,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
   DEFINE_METHOD2(int, id3_metadata_getfirstnonstandardpictype, (const struct id3_tag* p1, enum id3_picture_type* p2))
   DEFINE_METHOD2(int, id3_metadata_setartist, (struct id3_tag* p1, id3_ucs4_t* p2))
   DEFINE_METHOD2(int, id3_metadata_setalbum, (struct id3_tag* p1, id3_ucs4_t* p2))
+  DEFINE_METHOD2(int, id3_metadata_setalbumartist, (struct id3_tag* p1, id3_ucs4_t* p2))
   DEFINE_METHOD2(int, id3_metadata_settitle, (struct id3_tag* p1, id3_ucs4_t* p2))
   DEFINE_METHOD2(int, id3_metadata_settrack, (struct id3_tag* p1, id3_ucs4_t* p2))
   DEFINE_METHOD2(int, id3_metadata_setpartofset, (struct id3_tag* p1, id3_ucs4_t* p2))
@@ -231,6 +235,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
     RESOLVE_METHOD(id3_utf8_free)
     RESOLVE_METHOD(id3_metadata_getartist)
     RESOLVE_METHOD(id3_metadata_getalbum)
+    RESOLVE_METHOD(id3_metadata_getalbumartist)
     RESOLVE_METHOD(id3_metadata_gettitle)
     RESOLVE_METHOD(id3_metadata_gettrack)
     RESOLVE_METHOD(id3_metadata_getpartofset)
@@ -246,6 +251,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
     RESOLVE_METHOD(id3_metadata_getfirstnonstandardpictype)
     RESOLVE_METHOD(id3_metadata_setartist)
     RESOLVE_METHOD(id3_metadata_setalbum)
+    RESOLVE_METHOD(id3_metadata_setalbumartist)
     RESOLVE_METHOD(id3_metadata_settitle)
     RESOLVE_METHOD(id3_metadata_settrack)
     RESOLVE_METHOD(id3_metadata_setpartofset)

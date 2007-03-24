@@ -112,6 +112,11 @@ const CStdString& CMusicInfoTag::GetAlbum() const
   return m_strAlbum;
 }
 
+const CStdString& CMusicInfoTag::GetAlbumArtist() const
+{
+  return m_strAlbumArtist;
+}
+
 const CStdString& CMusicInfoTag::GetGenre() const
 {
   return m_strGenre;
@@ -159,6 +164,15 @@ void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
   m_strAlbum.TrimRight(" ");
   m_strAlbum.TrimRight("\n");
   m_strAlbum.TrimRight("\r");
+}
+
+void CMusicInfoTag::SetAlbumArtist(const CStdString& strAlbumArtist)
+{
+  m_strAlbumArtist = strAlbumArtist;
+  m_strAlbumArtist.TrimLeft(" ");
+  m_strAlbumArtist.TrimRight(" ");
+  m_strAlbumArtist.TrimRight("\n");
+  m_strAlbumArtist.TrimRight("\r");
 }
 
 void CMusicInfoTag::SetGenre(const CStdString& strGenre)
@@ -259,6 +273,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   SetArtist(album.strArtist);
   SetAlbum(album.strAlbum);
+  SetAlbumArtist(album.strAlbum);
   SetGenre(album.strGenre);
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
@@ -273,6 +288,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetGenre(song.strGenre);
   SetArtist(song.strArtist);
   SetAlbum(song.strAlbum);
+  SetAlbumArtist(song.strAlbumArtist);
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetMusicBrainzArtistID(song.strMusicBrainzArtistID);
   SetMusicBrainzAlbumID(song.strMusicBrainzAlbumID);
@@ -295,6 +311,7 @@ void CMusicInfoTag::Serialize(CArchive& ar)
     ar << m_strTitle;
     ar << m_strArtist;
     ar << m_strAlbum;
+    ar << m_strAlbumArtist;
     ar << m_strGenre;
     ar << m_iDuration;
     ar << m_iTrack;
@@ -312,6 +329,7 @@ void CMusicInfoTag::Serialize(CArchive& ar)
     ar >> m_strTitle;
     ar >> m_strArtist;
     ar >> m_strAlbum;
+    ar >> m_strAlbumArtist;
     ar >> m_strGenre;
     ar >> m_iDuration;
     ar >> m_iTrack;
@@ -327,16 +345,17 @@ void CMusicInfoTag::Serialize(CArchive& ar)
 
 void CMusicInfoTag::Clear()
 {
-  m_strURL = "";
-  m_strArtist = "";
-  m_strAlbum = "";
-  m_strGenre = "";
-  m_strTitle = "";
-  m_strMusicBrainzTrackID = "";
-  m_strMusicBrainzArtistID = "";
-  m_strMusicBrainzAlbumID = "";
-  m_strMusicBrainzAlbumArtistID = "";
-  m_strMusicBrainzTRMID = "";
+  m_strURL.Empty();
+  m_strArtist.Empty();
+  m_strAlbum.Empty();
+  m_strAlbumArtist.Empty();
+  m_strGenre.Empty();
+  m_strTitle.Empty();
+  m_strMusicBrainzTrackID.Empty();
+  m_strMusicBrainzArtistID.Empty();
+  m_strMusicBrainzAlbumID.Empty();
+  m_strMusicBrainzAlbumArtistID.Empty();
+  m_strMusicBrainzTRMID.Empty();
   m_iDuration = 0;
   m_iTrack = 0;
   m_bLoaded = false;
