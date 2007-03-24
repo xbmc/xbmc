@@ -1391,7 +1391,8 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
   m_CurrentAudio.hint = hint;
   m_CurrentAudio.stream = (void*)pStream;
 
-  m_dvdPlayerAudio.SetPriority(THREAD_PRIORITY_HIGHEST);
+  /* audio normally won't consume full cpu, so let it have prio */
+  m_dvdPlayerAudio.SetPriority(GetThreadPriority(*this)+1);
 
   /* set aspect ratio as requested by navigator for dvd's */
   if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
@@ -1454,8 +1455,9 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
   m_CurrentVideo.hint = hint;
   m_CurrentVideo.stream = (void*)pStream;
 
-  m_dvdPlayerVideo.SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
-
+  /* use same priority for video thread as demuxing thread, as */
+  /* otherwise demuxer will starve if video consumes the full cpu */
+  m_dvdPlayerVideo.SetPriority(GetThreadPriority(*this));
   return true;
 
 }
