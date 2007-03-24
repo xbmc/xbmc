@@ -94,6 +94,9 @@ protected:
   BYTE* audio_pkt_data; // current audio packet
   int audio_pkt_size; // and current audio packet size
   
+  double m_bps_i;  // input bytes per second
+  double m_bps_o;  // output bytes per second
+
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
