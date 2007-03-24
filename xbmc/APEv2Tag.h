@@ -19,6 +19,7 @@ public:
   CStdString GetArtist() { return m_strArtist; }
   CStdString GetYear() { return m_strYear; }
   CStdString GetAlbum() { return m_strAlbum; }
+  CStdString GetAlbumArtist() { return m_strAlbumArtist; };
   CStdString GetGenre() { return m_strGenre; }
   int GetTrackNum() { return m_nTrackNum; }
   int GetDiscNum() { return m_nDiscNum; }
@@ -34,6 +35,7 @@ protected:
   CStdString m_strArtist;
   CStdString m_strYear;
   CStdString m_strAlbum;
+  CStdString m_strAlbumArtist;
   CStdString m_strGenre;
   int m_nTrackNum;
   int m_nDiscNum;
