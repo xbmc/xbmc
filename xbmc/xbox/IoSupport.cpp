@@ -97,6 +97,7 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
   if ((strnicmp(szDevice, "Harddisk0", 9) == 0) ||
       (strnicmp(szDevice, "Cdrom", 5) == 0))
     return S_OK;
+  return E_FAIL;
 #endif
 }
 
