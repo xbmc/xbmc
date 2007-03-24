@@ -21,6 +21,7 @@ public:
   const CStdString& GetURL() const;
   const CStdString& GetArtist() const;
   const CStdString& GetAlbum() const;
+  const CStdString& GetAlbumArtist() const;
   const CStdString& GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
@@ -38,6 +39,7 @@ public:
   void SetTitle(const CStdString& strTitle) ;
   void SetArtist(const CStdString& strArtist) ;
   void SetAlbum(const CStdString& strAlbum) ;
+  void SetAlbumArtist(const CStdString& strAlbumArtist);
   void SetGenre(const CStdString& strGenre) ;
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
@@ -61,6 +63,7 @@ protected:
   CStdString m_strTitle;
   CStdString m_strArtist;
   CStdString m_strAlbum;
+  CStdString m_strAlbumArtist;
   CStdString m_strGenre;
   CStdString m_strMusicBrainzTrackID;
   CStdString m_strMusicBrainzArtistID;

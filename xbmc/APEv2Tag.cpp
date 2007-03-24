@@ -54,6 +54,12 @@ bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
   if (tag->GetFieldString(L"Album", buffer, &chars, TRUE) != -1)
     m_strAlbum = buffer;
   chars = 256;
+  if (tag->GetFieldString(L"AlbumArtist", buffer, &chars, TRUE) != -1)
+    m_strAlbumArtist = buffer;
+  chars = 256;  // could also have a space in it
+  if (tag->GetFieldString(L"Album Artist", buffer, &chars, TRUE) != -1)
+    m_strAlbumArtist = buffer;
+  chars = 256;
   if (tag->GetFieldString(L"Artist", buffer, &chars, TRUE) != -1)
     m_strArtist = buffer;
   chars = 256;

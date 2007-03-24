@@ -76,6 +76,7 @@ public:
   CStdString strTitle;
   CStdString strArtist;
   CStdString strAlbum;
+  CStdString strAlbumArtist;
   CStdString strGenre;
   CStdString strThumb;
   CStdString strMusicBrainzTrackID;
