@@ -157,7 +157,7 @@ void CDVDVideoCodecLibMpeg2::Dispose()
 
 void CDVDVideoCodecLibMpeg2::SetDropState(bool bDrop)
 {
-  //noop
+  m_hurry = bDrop ? 1 : 0;
 }
 
 int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
@@ -218,7 +218,13 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
         break;
       }
     case STATE_PICTURE:
-      {        
+      {
+        m_dll.mpeg2_skip(m_pHandle, 0);
+        if(m_hurry)
+        {
+          if(m_hurry>1 || (m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
+            m_dll.mpeg2_skip(m_pHandle, 1);
+        }
         //Not too interesting really
         //we can do everything when we get a full picture instead. simplifies things. 
         
@@ -262,6 +268,9 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
               case PIC_FLAG_CODING_TYPE_D: pBuffer->iFrameType = FRAME_TYPE_D; break;
               default: pBuffer->iFrameType = FRAME_TYPE_UNDEF; break;
             }
+
+            if(m_pInfo->display_picture->flags & PIC_FLAG_SKIP)
+              pBuffer->iFlags |= DVP_FLAG_DROPPED;
 
             pBuffer->iDuration = m_pInfo->sequence->frame_period;
 
