@@ -13,6 +13,11 @@ static inline __int64 abs(__int64 x)
 
 #include "..\..\util.h"
 
+CPTSQueue::CPTSQueue()
+{
+  Flush();
+}
+
 void CPTSQueue::Add(__int64 pts, __int64 delay)
 {
   TPTSItem item;
@@ -168,8 +173,9 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
   int n=48000*2*16/8, len;
 
-  unsigned int     bytesconsumed = 0;
-  unsigned __int64 startdts = DVD_NOPTS_VALUE;
+  unsigned int bytesconsumed = 0;
+  if(m_pAudioCodec)
+    bytesconsumed = m_pAudioCodec->GetBufferSize();
 
   int result = 0;
 
@@ -178,10 +184,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
   // make sure the sent frame is clean
   memset(&audioframe, 0, sizeof(DVDAudioFrame));
-
-  // if we have any leftovers from last packet, use the timestamp from it if possible
-  if (pPacket && pPacket->dts != DVD_NOPTS_VALUE && audio_pkt_size && m_bps_i)
-    startdts = pPacket->dts + (unsigned __int64)DVD_SEC_TO_TIME( (double)(pPacket->iSize - audio_pkt_size) / m_bps_i );
 
   for (;;)
   {
@@ -192,6 +194,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       {
         audio_pkt_size=0;
         return DECODE_FLAG_ERROR;
+      }
+
+      if(!bytesconsumed == 0 
+      && pPacket->iSize == audio_pkt_size      
+      && pPacket->dts != DVD_NOPTS_VALUE)
+      {
+        //starting up clean on packet, use timestamp from this packet
+        m_audioClock = pPacket->dts;
       }
 
       len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
@@ -222,10 +232,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       if (audioframe.size <= 0) continue;
 
-      // if we got a timestamp from packets, use it
-      if(startdts != DVD_NOPTS_VALUE)
-        m_audioClock = startdts;
-
       audioframe.pts = m_audioClock;
 
       // compute duration.
@@ -242,6 +248,13 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         // calculate an bitrate
         m_bps_i = (double)bytesconsumed / audioframe.duration * DVD_TIME_BASE;
         m_bps_o = 1.0f / n;
+      }
+
+      // calucate starting pts of next audio frame
+      if (pPacket->dts != DVD_NOPTS_VALUE && m_bps_i)
+      {
+        int bytes = (pPacket->iSize - audio_pkt_size) - m_pAudioCodec->GetBufferSize();
+        m_audioClock = pPacket->dts + DVD_SEC_TO_TIME( (double)bytes / m_bps_i );
       }
 
       //If we are asked to drop this packet, return a size of zero. then it won't be played
@@ -288,14 +301,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       audio_pkt_data = pPacket->pData;
       audio_pkt_size = pPacket->iSize;
       m_Stalled = false;
-
-      // calucate starting pts if we are missing it
-      if (pPacket->dts != DVD_NOPTS_VALUE && startdts == DVD_NOPTS_VALUE)
-      {
-        startdts = pPacket->dts;
-        if(bytesconsumed && m_bps_i)
-          startdts -= (unsigned __int64)DVD_SEC_TO_TIME( (double)bytesconsumed / m_bps_i );        
-      }
       pMsg->Release();
       continue;
     }
