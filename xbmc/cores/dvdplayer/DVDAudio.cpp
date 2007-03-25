@@ -5,6 +5,7 @@
 #include "..\mplayer\ac97directsound.h"
 #include "..\..\util.h"
 #include "DVDClock.h"
+#include "DVDCodecs/DVDCodecs.h"
 
 
 CDVDAudio::CDVDAudio()
@@ -39,7 +40,7 @@ void CDVDAudio::UnRegisterAudioCallback()
   if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
 }
 
-bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough)
+bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough, CodecID codec)
 {
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
@@ -52,8 +53,17 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
   }
   else
   {
+    char* codecstring="";
+    if(codec == CODEC_ID_AAC)
+      codecstring = "AAC";
+    else if(codec == CODEC_ID_AC3 || codec == CODEC_ID_DTS)
+      codecstring = ""; // TODO, fix ac3 and dts decoder to output standard windows mapping
+    else
+      codecstring = "PCM";
+
     m_iPackets = 32; //64;// better sync with smaller buffers?
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets); // true = resample, 128 buffers
+    
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets, codecstring);
   }
 
   if (!m_pAudioDecoder) return false;
