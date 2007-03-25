@@ -35,6 +35,7 @@ private:
   std::queue<TPTSItem> m_quePTSQueue;
 
 public:
+  CPTSQueue();
   void Add(__int64 pts, __int64 delay);
   void Flush();
   __int64 Current();
