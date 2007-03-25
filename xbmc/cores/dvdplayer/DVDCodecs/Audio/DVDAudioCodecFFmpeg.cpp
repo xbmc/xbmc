@@ -19,12 +19,8 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load()) return false;
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
   
-  // register all codecs, demux and protocols
-  m_dllAvCodec.av_log_set_callback(dvdplayer_log);
-  m_dllAvFormat.av_register_all();
-
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   m_dllAvCodec.avcodec_get_context_defaults(m_pCodecContext);
 
@@ -49,7 +45,7 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   if( ExtraData && ExtraSize > 0 )
   {
     m_pCodecContext->extradata_size = ExtraSize;
-    m_pCodecContext->extradata = m_dllAvCodec.av_mallocz(ExtraSize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(ExtraSize + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(m_pCodecContext->extradata, ExtraData, ExtraSize);
   }
   
@@ -73,12 +69,12 @@ void CDVDAudioCodecFFmpeg::Dispose()
   {
     if (m_bOpenedCodec) m_dllAvCodec.avcodec_close(m_pCodecContext);
     m_bOpenedCodec = false;
-    m_dllAvCodec.av_free(m_pCodecContext);
+    m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
 
   m_dllAvCodec.Unload();
-  m_dllAvFormat.Unload();
+  m_dllAvUtil.Unload();
   
   m_iBufferSize = 0;
 }
