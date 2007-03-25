@@ -5,6 +5,8 @@
 #include "..\mplayer\IAudioCallback.h"
 #include "..\..\utils\CriticalSection.h"
 
+enum CodecID;
+
 class CDVDAudio
 {
 public:
@@ -18,7 +20,7 @@ public:
   void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();
-  bool Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough);
+  bool Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough, CodecID codec);
   void Destroy();
   DWORD AddPackets(unsigned char* data, DWORD len);
   void DoWork();
