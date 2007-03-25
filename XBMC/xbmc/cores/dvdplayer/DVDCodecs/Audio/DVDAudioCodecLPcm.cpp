@@ -13,8 +13,9 @@ bool CDVDAudioCodecLPcm::Open(CodecID codecID, int iChannels, int iSampleRate, i
   m_codecID = codecID;
 
   CodecID pcm_id = CODEC_ID_NONE;
+#if 0
   if (codecID = CODEC_ID_LPCM_S24BE) pcm_id = CODEC_ID_PCM_S24BE;
-  
+#endif
   if (pcm_id != CODEC_ID_NONE)
   {
     return CDVDAudioCodecPcm::Open(pcm_id, iChannels, iSampleRate, iBits, ExtraData, ExtraSize);
@@ -33,7 +34,9 @@ int CDVDAudioCodecLPcm::Decode(BYTE* pData, int iSize)
   
   if (iSize >= 12)
   {
+#if 0
     if (m_codecID == CODEC_ID_LPCM_S24BE)
+#endif
     {
       for (iDecoded = 0; iDecoded <= (iSize - 12); iDecoded += 12)
       {

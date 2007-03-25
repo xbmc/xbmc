@@ -65,19 +65,18 @@ protected:
   void Lock()   { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
-  bool ContextInit(const char* strFile, BYTE* buffer, int iBufferSize, bool seekable);
-  void ContextDeInit();
+  bool ContextInit(const char* strFile, int chunksize, bool seekable);
+  unsigned __int64 ConvertTimestamp(__int64 pts, int den, int num);
 
   CRITICAL_SECTION m_critSection;
   // #define MAX_STREAMS 20 // from avformat.h
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
-  BYTE m_ffmpegBuffer[FFMPEG_FILE_BUFFER_SIZE];
   ByteIOContext m_ioContext;
-  URLContext* m_pUrlContext;
   
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
+  DllAvUtil   m_dllAvUtil;
   
   unsigned __int64 m_iCurrentPts; // used for stream length estimation
 };
