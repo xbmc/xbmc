@@ -105,7 +105,9 @@ namespace PYXBMC
     if (!pGUIControl)
     {
       // control does not exist.
-      PyErr_SetString(PyExc_Exception, "Control does not exist");
+      CStdString error;
+      error.Format("Non-Existent Control %d",iControlId);
+      PyErr_SetString(PyExc_TypeError, error.c_str());
       return NULL;
     }
 
