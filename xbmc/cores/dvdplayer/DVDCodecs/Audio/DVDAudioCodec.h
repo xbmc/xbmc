@@ -62,4 +62,9 @@ public:
    * should return codecs name
    */
   virtual const char* GetName() = 0;
+
+  /*
+   * should return amount of data decoded has buffered in preparation for next audio frame
+   */
+  virtual int GetBufferSize() { return 0; }
 };
