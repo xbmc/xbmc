@@ -63,7 +63,7 @@ namespace PYXBMC
 
   void ControlTextBox_Dealloc(ControlTextBox* self)
   {
-    Py_DECREF(self->pControlSpin);
+    //Py_DECREF(self->pControlSpin);
     self->ob_type->tp_free((PyObject*)self);
   }
 
