@@ -164,11 +164,22 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
           }
         }
         
+        // avoid comsuming data after complete frames
+        // so player knows where next frame starts
+        if(iBytesToCopy>m_iInputBufferSize)
+        {
+          iBytesToCopy -= m_iInputBufferSize;
+          m_iInputBufferSize=0;
+        }
+        else
+        {
+          m_iInputBufferSize -= iBytesToCopy;
+          iBytesToCopy=0;
+        }
+
         // move remaining data to start of buffer
         if (m_iInputBufferSize > 0)
-        {
           memmove(m_inputBuffer, pInputData, m_iInputBufferSize);
-        }
             
         return iBytesToCopy;
       }
