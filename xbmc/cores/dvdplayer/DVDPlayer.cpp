@@ -506,7 +506,8 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   }
   
   CheckContinuity(pPacket, DVDPLAYER_AUDIO);
-  m_CurrentAudio.dts = pPacket->dts;
+  if(pPacket->dts != DVD_NOPTS_VALUE)
+    m_CurrentAudio.dts = pPacket->dts;
 
   //If this is the first packet after a discontinuity, send it as a resync
   if (!(m_dvd.iFlagSentStart & DVDPLAYER_AUDIO))
@@ -547,7 +548,8 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
     CheckContinuity( pPacket, DVDPLAYER_VIDEO );
-    m_CurrentVideo.dts = pPacket->dts;
+    if(pPacket->dts != DVD_NOPTS_VALUE)
+      m_CurrentVideo.dts = pPacket->dts;
   }
 
   //If this is the first packet after a discontinuity, send it as a resync
