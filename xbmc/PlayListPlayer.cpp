@@ -406,9 +406,9 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
   if (bYesNo != IsShuffled(iPlaylist))
   {
     // save the order value of the current song so we can use it find its new location later
-    int iOrder = m_iCurrentSong;
-    if (iOrder >= 0)
-      GetPlaylist(iPlaylist)[m_iCurrentSong].m_iprogramCount;
+    int iOrder = -1;
+    if (m_iCurrentSong >= 0)
+      iOrder = GetPlaylist(iPlaylist)[m_iCurrentSong].m_iprogramCount;
 
     // shuffle or unshuffle as necessary
     if (bYesNo)
