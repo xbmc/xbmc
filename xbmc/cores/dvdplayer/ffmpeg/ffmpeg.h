@@ -2,9 +2,13 @@
 #ifndef _FFMPEG_H_
 #define _FFMPEG_H_
 
-#define EMULATE_INTTYPES
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #define HAVE_MMX
+
+extern "C" {
 #include "avformat.h"
+}
  
 static bool ffmpeg_printed_newline = false;
 static void dvdplayer_log(void* ptr, int level, const char* format, va_list va)

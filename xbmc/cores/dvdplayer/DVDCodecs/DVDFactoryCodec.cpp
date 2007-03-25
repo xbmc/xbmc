@@ -82,7 +82,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
       if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, CDVDCodecOptions()) ) return pCodec;
     }
   }
-  
+
   if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, CDVDCodecOptions()) ) return pCodec;
 
   return NULL;
@@ -145,6 +145,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
       if( pCodec ) return pCodec;
       break;
     }
+#if 0
   //case CODEC_ID_LPCM_S16BE:
   //case CODEC_ID_LPCM_S20BE:
   case CODEC_ID_LPCM_S24BE:
@@ -153,6 +154,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
       if( pCodec ) return pCodec;
       break;
     }
+#endif
   default:
     {
       pCodec = NULL;

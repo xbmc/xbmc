@@ -33,5 +33,5 @@ protected:
   int m_iScreenHeight;
   
   DllAvCodec m_dllAvCodec;
-  DllAvFormat m_dllAvFormat;
+  DllAvUtil m_dllAvUtil;
 };
