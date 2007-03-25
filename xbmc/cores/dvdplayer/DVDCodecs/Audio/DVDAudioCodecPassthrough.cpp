@@ -1,11 +1,8 @@
 
 #include "../../../../stdafx.h"
-#include ".\dvdaudiocodecpassthrough.h"
+#include "DVDAudioCodecPassthrough.h"
+#include "../DVDCodecs.h"
 #include "../../../../XBAudioConfig.h"
-
-#define EMULATE_INTTYPES
-#include "..\..\ffmpeg\avcodec.h"
-
 
 #undef  MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))

@@ -3,8 +3,6 @@
 #include "DVDVideoCodecFFmpeg.h"
 #include "..\..\DVDDemuxers\DVDDemux.h"
 #include "..\..\DVDStreamInfo.h"
-
-#include "..\..\ffmpeg\ffmpeg.h"
 #include "..\DVDCodecs.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -31,12 +29,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec;
 
-  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load()) return false;
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
   
-  // register all codecs, demux and protocols
-  m_dllAvCodec.av_log_set_callback(dvdplayer_log);
-  m_dllAvFormat.av_register_all();
-
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 
@@ -70,7 +64,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if( hints.extradata && hints.extrasize > 0 )
   {
     m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = m_dllAvCodec.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
@@ -97,25 +91,25 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
-  if (m_pFrame) m_dllAvCodec.av_free(m_pFrame);
+  if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
   m_pFrame = NULL;
 
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];
-    m_dllAvCodec.av_free(m_pConvertFrame);
+    m_dllAvUtil.av_free(m_pConvertFrame);
   }
   m_pConvertFrame = NULL;
 
   if (m_pCodecContext)
   {
     if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
-    m_dllAvCodec.av_free(m_pCodecContext);
+    m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
   
   m_dllAvCodec.Unload();
-  m_dllAvFormat.Unload();
+  m_dllAvUtil.Unload();
 }
 
 void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
@@ -176,7 +170,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
       if (m_pConvertFrame)
       {
         delete[] m_pConvertFrame->data[0];
-         m_dllAvCodec.av_free(m_pConvertFrame);
+         m_dllAvUtil.av_free(m_pConvertFrame);
         m_pConvertFrame = NULL;
       }
     }
@@ -193,7 +187,7 @@ void CDVDVideoCodecFFmpeg::Reset()
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];
-    m_dllAvCodec.av_free(m_pConvertFrame);
+    m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
 }
@@ -214,7 +208,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
     pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
     pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
-    pDvdVideoPicture->iFlags |= m_pCodecContext->hurry_up ? DVP_FLAG_DROPPED : 0;
     return true;
   }
   else if (m_pFrame && m_pFrame->data[0])
@@ -226,7 +219,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
     pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
     pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
-    pDvdVideoPicture->iFlags |= m_pCodecContext->hurry_up ? DVP_FLAG_DROPPED : 0;
     return true;
   }
 
