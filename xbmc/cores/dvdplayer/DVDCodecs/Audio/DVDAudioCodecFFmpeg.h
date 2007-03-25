@@ -28,5 +28,5 @@ protected:
   bool m_bOpenedCodec;
   
   DllAvCodec m_dllAvCodec;
-  DllAvFormat m_dllAvFormat;
+  DllAvUtil m_dllAvUtil;
 };
