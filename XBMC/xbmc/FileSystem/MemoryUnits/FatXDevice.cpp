@@ -8,34 +8,6 @@ typedef PSTRING POBJECT_STRING;
 #define IRP_MJ_READ                     0x02
 #define IRP_MJ_WRITE                    0x03
 
-extern "C"
-{
-	XBOXAPI
-NTSTATUS WINAPI
-IoSynchronousFsdRequest(
-    IN ULONG MajorFunction,
-    IN PDEVICE_OBJECT DeviceObject,
-    IN OUT PVOID Buffer OPTIONAL,
-    IN ULONG Length OPTIONAL,
-    IN PLARGE_INTEGER StartingOffset OPTIONAL
-    );
-
-  XBOXAPI 
-NTSTATUS WINAPI
-NtFsControlFile(
-    IN HANDLE FileHandle,
-    IN HANDLE Event OPTIONAL,
-    IN PIO_APC_ROUTINE ApcRoutine OPTIONAL,
-    IN PVOID ApcContext OPTIONAL,
-    OUT PIO_STATUS_BLOCK IoStatusBlock,
-    IN ULONG FsControlCode,
-    IN PVOID InputBuffer OPTIONAL,
-    IN ULONG InputBufferLength,
-    OUT PVOID OutputBuffer OPTIONAL,
-    IN ULONG OutputBufferLength
-    );
-};
-
 struct FAT_VOLUME_HEADER {
     ULONG Signature;
     ULONG SerialNumber;

@@ -65,7 +65,11 @@ stDriveMapping driveMapping[] =
 #include "../../Tools/Win32/XBMC_PC.h"
 #endif
 #define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
+
+
 PVOID CIoSupport::m_rawXferBuffer;
+PARTITION_TABLE CIoSupport::m_partitionTable;
+bool CIoSupport::m_fPartitionTableIsValid;
 
 
 // cDriveLetter e.g. 'D'
@@ -418,33 +422,53 @@ VOID CIoSupport::GetXbePath(char* szDest)
 
 bool CIoSupport::DriveExists(char cDriveLetter)
 {
-#ifdef _XBOX
-  char szDrive[32];
-  ANSI_STRING drive_string;
-  NTSTATUS status;
-  HANDLE hTemp;
-  OBJECT_ATTRIBUTES oa;
-  IO_STATUS_BLOCK iosb;
-
-  sprintf(szDrive, "\\??\\%c:", cDriveLetter);
-  RtlInitAnsiString(&drive_string, szDrive);
-
-  oa.Attributes = OBJ_CASE_INSENSITIVE;
-  oa.ObjectName = &drive_string;
-  oa.RootDirectory = 0;
-
-  status = NtOpenFile(&hTemp, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
-
-  if (NT_SUCCESS(status))
-  {
-    CloseHandle(hTemp);
-    return true;
-  }
-
-  return false;
-#else
   cDriveLetter = toupper(cDriveLetter);
+#ifdef _XBOX
+  // new kernel detection method
+  if (m_fPartitionTableIsValid)
+  {
+    char szDrive[32];
+    ANSI_STRING drive_string;
+    NTSTATUS status;
+    HANDLE hTemp;
+    OBJECT_ATTRIBUTES oa;
+    IO_STATUS_BLOCK iosb;
 
+    sprintf(szDrive, "\\??\\%c:", cDriveLetter);
+    RtlInitAnsiString(&drive_string, szDrive);
+
+    oa.Attributes = OBJ_CASE_INSENSITIVE;
+    oa.ObjectName = &drive_string;
+    oa.RootDirectory = 0;
+
+    status = NtOpenFile(&hTemp, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
+
+    if (NT_SUCCESS(status))
+    {
+      CloseHandle(hTemp);
+      return true;
+    }
+
+    return false;
+  }
+  else
+  {
+    // old kernel detection method
+    if (cDriveLetter == 'F')
+    {
+      LARGE_INTEGER drive_size = GetDriveSize();
+      // if the drive is bigger than the old 8gb drive (plus a bit of room for error),
+      // the F drive can exist
+      if (drive_size.QuadPart >= 9000000000)
+        return true;
+    }
+    // if the kernel is set to use partitions 6 and 7 by default, the g drive can exist
+    if (cDriveLetter == 'G' && ((XboxKrnlVersion->Qfe & 67) == 67))
+      return true;
+
+    return false;
+  }
+#else
   if (cDriveLetter < 'A' || cDriveLetter > 'Z')
     return false;
 
@@ -488,5 +512,151 @@ bool CIoSupport::PartitionExists(int nPartition)
   return false;
 #else
   return false;
+#endif
+}
+
+LARGE_INTEGER CIoSupport::GetDriveSize()
+{
+  HANDLE hDevice;
+  char szHardDrive[32] = "\\Device\\Harddisk0\\Partition0";
+  ANSI_STRING hd_string;
+  OBJECT_ATTRIBUTES oa;
+  IO_STATUS_BLOCK iosb;
+  DISK_GEOMETRY disk_geometry;
+  LARGE_INTEGER drive_size;
+  NTSTATUS status;
+
+  RtlInitAnsiString(&hd_string, szHardDrive);
+  drive_size.QuadPart = 0;
+
+  oa.Attributes = OBJ_CASE_INSENSITIVE;
+  oa.ObjectName = &hd_string;
+  oa.RootDirectory = 0;
+
+  status = NtOpenFile(&hDevice, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
+  if (!NT_SUCCESS(status))
+    return drive_size;
+
+  status = NtDeviceIoControlFile(hDevice, NULL, NULL, NULL, &iosb,
+        IOCTL_DISK_GET_DRIVE_GEOMETRY, NULL, 0, &disk_geometry, sizeof(disk_geometry));
+
+  CloseHandle(hDevice);
+
+  if (!NT_SUCCESS(status))
+    return drive_size;
+
+  drive_size.QuadPart = disk_geometry.BytesPerSector * 
+                        disk_geometry.SectorsPerTrack * 
+                        disk_geometry.TracksPerCylinder * 
+                        disk_geometry.Cylinders.QuadPart;
+
+  return drive_size;
+}
+
+bool CIoSupport::ReadPartitionTable()
+{
+#ifdef _XBOX
+  unsigned int retval;
+
+  retval = ReadPartitionTable(&m_partitionTable);
+  if (retval == STATUS_SUCCESS)
+  {
+    m_fPartitionTableIsValid = true;
+    return true;
+  }
+  else
+  {
+    m_fPartitionTableIsValid = false;
+    return false;
+  }
+#else
+  return false;
+#endif
+}
+
+bool CIoSupport::HasPartitionTable()
+{
+  return m_fPartitionTableIsValid;
+}
+
+void CIoSupport::MapExtendedPartitions()
+{
+#ifdef _XBOX
+  if (!m_fPartitionTableIsValid)
+    return;
+  char szDevice[32] = "\\Harddisk0\\Partition0";
+  char driveletter;
+  // we start at 5 - the first 5 partitions are the mandatory standard Xbox partitions
+  // we don't deal with those here.
+  for (int i = 5; i < MAX_PARTITIONS; i++)
+  {
+    if (m_partitionTable.pt_entries[i].pe_flags & PE_PARTFLAGS_IN_USE)
+    {
+      driveletter = 'A' + i;
+      CLog::Log(LOGINFO, "  map drive %c:", driveletter);
+      szDevice[20] = '1' + i;
+      MapDriveLetter(driveletter, szDevice);
+    }
+  }
+#endif
+}
+
+unsigned int CIoSupport::ReadPartitionTable(PARTITION_TABLE *p_table)
+{
+#ifdef _XBOX
+  ANSI_STRING a_file;
+  OBJECT_ATTRIBUTES obj_attr;
+  IO_STATUS_BLOCK io_stat_block;
+  HANDLE handle;
+  unsigned int stat;
+  unsigned int ioctl_cmd_in_buf[100];
+  unsigned int ioctl_cmd_out_buf[100];
+  unsigned int partition_table_addr;
+
+  memset(p_table, 0, sizeof(PARTITION_TABLE));
+
+  RtlInitAnsiString(&a_file, "\\Device\\Harddisk0\\partition0");
+  obj_attr.RootDirectory = 0;
+  obj_attr.ObjectName = &a_file;
+  obj_attr.Attributes = OBJ_CASE_INSENSITIVE;
+
+  stat = NtOpenFile(&handle, (GENERIC_READ | 0x00100000), &obj_attr, &io_stat_block, (FILE_SHARE_READ | FILE_SHARE_WRITE), 0x10);
+
+  if (stat != STATUS_SUCCESS)
+  {
+    return stat;
+  }
+
+  memset(ioctl_cmd_out_buf, 0, sizeof(ioctl_cmd_out_buf));
+  memset(ioctl_cmd_in_buf, 0, sizeof(ioctl_cmd_in_buf));
+  ioctl_cmd_in_buf[0] = IOCTL_SUBCMD_GET_INFO;
+
+
+  stat = NtDeviceIoControlFile(handle, 0, 0, 0, &io_stat_block,
+                               IOCTL_CMD_LBA48_ACCESS,
+                               ioctl_cmd_in_buf, sizeof(ioctl_cmd_in_buf),
+                               ioctl_cmd_out_buf, sizeof(ioctl_cmd_out_buf));
+
+  NtClose(handle);
+  if (stat != STATUS_SUCCESS)
+  {
+    return stat;
+  }
+
+  if ((ioctl_cmd_out_buf[LBA48_GET_INFO_MAGIC1_IDX] != LBA48_GET_INFO_MAGIC1_VAL) ||
+      (ioctl_cmd_out_buf[LBA48_GET_INFO_MAGIC2_IDX] != LBA48_GET_INFO_MAGIC2_VAL))
+  {
+
+    return STATUS_UNSUCCESSFUL;
+  }
+
+  partition_table_addr = ioctl_cmd_out_buf[LBA48_GET_INFO_LOWCODE_BASE_IDX];
+  partition_table_addr += ioctl_cmd_out_buf[LBA48_GET_INFO_PART_TABLE_OFS_IDX];
+
+  memcpy(p_table, (void *)partition_table_addr, sizeof(PARTITION_TABLE));
+
+  return STATUS_SUCCESS;
+#else
+  return -1;
 #endif
 }

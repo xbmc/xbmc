@@ -11,42 +11,6 @@ static int cacheMiss = 0;
 #define FAT_VOLUME_NAME_LENGTH          32
 #define FAT_ONLINE_DATA_LENGTH          2048
 
-extern "C"
-{
-	XBOXAPI
-NTSTATUS WINAPI
-IoSynchronousFsdRequest(
-    IN ULONG MajorFunction,
-    IN PDEVICE_OBJECT DeviceObject,
-    IN OUT PVOID Buffer OPTIONAL,
-    IN ULONG Length OPTIONAL,
-    IN PLARGE_INTEGER StartingOffset OPTIONAL
-    );
-};
-
-typedef struct _PARTITION_INFORMATION {
-    LARGE_INTEGER StartingOffset;
-    LARGE_INTEGER PartitionLength;
-    ULONG HiddenSectors;
-    ULONG PartitionNumber;
-    UCHAR PartitionType;
-    BOOLEAN BootIndicator;
-    BOOLEAN RecognizedPartition;
-    BOOLEAN RewritePartition;
-} PARTITION_INFORMATION, *PPARTITION_INFORMATION;
-
-typedef struct _DISK_GEOMETRY {
-    LARGE_INTEGER Cylinders;
-    DWORD MediaType;
-    DWORD TracksPerCylinder;
-    DWORD SectorsPerTrack;
-    DWORD BytesPerSector;
-} DISK_GEOMETRY, *PDISK_GEOMETRY;
-
-#define IOCTL_DISK_BASE                 FILE_DEVICE_DISK
-#define IOCTL_DISK_GET_DRIVE_GEOMETRY   CTL_CODE(IOCTL_DISK_BASE, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_DISK_GET_PARTITION_INFO   CTL_CODE(IOCTL_DISK_BASE, 0x0001, METHOD_BUFFERED, FILE_READ_ACCESS)
-
 CFat32Device::CFat32Device(unsigned long port, unsigned long slot, void *device)
 : IDevice(port, slot, device)
 {
