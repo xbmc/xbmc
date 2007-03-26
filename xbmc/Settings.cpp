@@ -1294,8 +1294,7 @@ void CSettings::LoadAdvancedSettings()
   if (pTVStacking)
   {
     const char* szAppend = pTVStacking->Attribute("append");
-    if (szAppend)
-      if (stricmp(szAppend,"yes") != 0)
+    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
         g_advancedSettings.m_tvshowStackRegExps.clear();
     TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
     while (pStackRegExp)
@@ -1312,9 +1311,8 @@ void CSettings::LoadAdvancedSettings()
     if (pTVStackingTwoPart)
     {
       szAppend = pTVStackingTwoPart->Attribute("append");
-      if (szAppend)
-        if (stricmp(szAppend,"yes") != 0)
-          g_advancedSettings.m_tvshowTwoPartStackRegExps.clear();
+      if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
+        g_advancedSettings.m_tvshowTwoPartStackRegExps.clear();
 
       pStackRegExp = pTVStackingTwoPart->FirstChild("regexp");
       while (pStackRegExp)
@@ -1327,7 +1325,7 @@ void CSettings::LoadAdvancedSettings()
         }
         pStackRegExp = pStackRegExp->NextSibling("regexp");
       }
-    }
+    } 
   }
   // path substitutions
   TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
