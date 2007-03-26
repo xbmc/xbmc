@@ -34,7 +34,7 @@ xcopy "PAL" "BUILD\Project Mayhem III\PAL" /E /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "PAL16x9" "BUILD\Project Mayhem III\PAL16x9" /E /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "sounds\*.*" "BUILD\Project Mayhem III\sounds\" /Q /I /Y /EXCLUDE:exclude.txt
 
+del exclude.txt
+
 copy *.xml "BUILD\Project Mayhem III\"
 copy *.txt "BUILD\Project Mayhem III\"
-
-del exclude.txt
