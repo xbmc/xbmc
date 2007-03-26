@@ -14,6 +14,9 @@ public:
   // update the memory units (plug, unplug)
   bool Update();
 
+  bool IsDriveValid(char Drive);    // for backward compatibility
+                                    // with fatx drives in filezilla
+
   IDevice *GetDevice(unsigned char unit);
   IFileSystem *GetFileSystem(unsigned char unit);
 

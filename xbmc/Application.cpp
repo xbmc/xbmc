@@ -897,29 +897,37 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
-  CLog::Log(LOGINFO, "map drives...");
-  CLog::Log(LOGINFO, "  map drive C:");
   CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
 
-  CLog::Log(LOGINFO, "  map drive E:");
   CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
 
-  CLog::Log(LOGINFO, "  remap drive D:");
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
 
-  // Mount up to Partition15 (drive O:) if they are available.
-  for (int i=EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
-  {
-    char szDevice[32];
-    if (CIoSupport::PartitionExists(i))
-    {
-      char cDriveLetter = 'A' + i - 1;
-      sprintf(szDevice, "Harddisk0\\Partition%u", i);
+  // Attempt to read the LBA48 v3 patch partition table, if kernel supports the command and it exists.
+  CIoSupport::ReadPartitionTable();
 
-      CLog::Log(LOGINFO, "  map drive %c:", cDriveLetter);
-      CIoSupport::RemapDriveLetter(cDriveLetter, szDevice);
+  if (CIoSupport::HasPartitionTable())
+  {
+    // Mount up to Partition15 (drive O:) if they are available.
+    for (int i=EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
+    {
+      char szDevice[32];
+      if (CIoSupport::PartitionExists(i))
+      {
+        char cDriveLetter = 'A' + i - 1;
+        sprintf(szDevice, "Harddisk0\\Partition%u", i);
+
+        CIoSupport::RemapDriveLetter(cDriveLetter, szDevice);
+      }
     }
+  }
+  else
+  {
+    if (CIoSupport::DriveExists('F'))
+      CIoSupport::RemapDriveLetter('F', "Harddisk0\\Partition6");
+    if (CIoSupport::DriveExists('G'))
+      CIoSupport::RemapDriveLetter('G', "Harddisk0\\Partition7");
   }
 
   CIoSupport::RemapDriveLetter('X',"Harddisk0\\Partition3");
