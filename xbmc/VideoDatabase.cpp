@@ -3081,7 +3081,6 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     if (idGenre == -1 && idYear == -1 && idActor == -1 && idDirector == -1)
     {
       int iLIMIT = 5000;    // chunk size
-      int iSONGS = 0;       // number of movies added to items
       int iITERATIONS = 0;  // number of iterations
       
       for (int i=0;;i+=iLIMIT)
@@ -3112,21 +3111,17 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
           {
             long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();            
             CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
-            if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+            if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
+                g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
             {
-              // check path
-              if (!g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
-                continue;
+              CFileItem* pItem=new CFileItem(movie);
+              CStdString strDir;
+              strDir.Format("%ld/", lMovieId);
+              pItem->m_strPath=strBaseDir + strDir;
+              pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+              
+              items.Add(pItem);
             }
-
-            CFileItem* pItem=new CFileItem(movie);
-            CStdString strDir;
-            strDir.Format("%ld/", lMovieId);
-            pItem->m_strPath=strBaseDir + strDir;
-            pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-            
-            items.Add(pItem);
-            iSONGS++;
             m_pDS->next();
           }
           CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
@@ -3134,14 +3129,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CVideoDatabase::GetTitlesNav() failed at iteration %i, num songs %i", iITERATIONS, iSONGS);
-
-          if (iSONGS > 0)
-          {
-            return true; // keep whatever songs we may have gotten before the failure
-          }
-          else
-            return true; // no songs, return false
+          CLog::Log(LOGERROR, "CVideoDatabase::GetTitlesNav() failed at iteration %i", iITERATIONS);
         }
         // next iteration
         iITERATIONS++;
@@ -3169,20 +3157,18 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     {
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
-      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
       {
-        // check path
-        if (!g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
-          continue;
+        CFileItem* pItem=new CFileItem(movie);
+        CStdString strDir;
+        strDir.Format("%ld", lMovieId);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+
+        items.Add(pItem);
       }
 
-      CFileItem* pItem=new CFileItem(movie);
-      CStdString strDir;
-      strDir.Format("%ld", lMovieId);
-      pItem->m_strPath=strBaseDir + strDir;
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-
-      items.Add(pItem);
       m_pDS->next();
     }
 
