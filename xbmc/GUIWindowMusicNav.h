@@ -12,6 +12,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
+  virtual void ClearFileItems();
+  virtual void OnFinalizeFileItems(CFileItemList &items);
+
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods
@@ -21,6 +24,8 @@ protected:
   virtual void PlayItem(int iItem);
   virtual void OnWindowLoaded();
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void OnFilterItems();
+  void FilterItems(CFileItemList &items);
 
   void SetArtistImage(int iItem);
   bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
@@ -31,4 +36,8 @@ protected:
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 
   CMusicThumbLoader m_thumbLoader;      ///< used for the loading of thumbs in the special://musicplaylist folder
+
+  // filtered item views
+  CFileItemList m_unfilteredItems;
+  CStdString m_filter;
 };

@@ -24,6 +24,7 @@ public:
   static bool ShowAndVerifyNewPassword(CStdString& strNewPassword);
   static bool ShowAndVerifyNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
+  static bool ShowAndGetFilter(CStdString& aTextString);
 
   virtual void Close(bool forceClose = false);
 
@@ -58,6 +59,7 @@ private:
   int m_iMode;
   bool m_bShift;
   bool m_hiddenInput;
+  bool m_filtering;
 
   DWORD m_lastRemoteClickTime;
   WORD m_lastRemoteKeyClicked;

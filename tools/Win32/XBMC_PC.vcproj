@@ -2153,6 +2153,9 @@
 				RelativePath="..\..\xbmc\GUISettings.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\GUIUserMessages.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\GUIWindowBuddies.h">
 			</File>
 			<File
