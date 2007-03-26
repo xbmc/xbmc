@@ -1474,28 +1474,9 @@
   <string id="20182">Space</string>
   <string id="20183">Reload Skin</string>
   <string id="20184">Rotate using EXIF information</string>
-  <string id="20185">Detecting Hardware Values</string>
   <string id="20186">Please Wait</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
-
-  <string id="20189"></string>
-  <string id="20190">Detecting Harddisk Information</string>
-  <string id="20191">Detecting HDD Values</string>
-  <string id="20192">Detecting HDD Key</string>
-  <string id="20193">Detecting HDD Temperature</string>
-  <string id="20194">Detecting DVD-ROM Information</string>
-  <string id="20195">Detecting Model/Firmware</string>
-  <string id="20196">Detecting Network Settings</string>
-  <string id="20197">Detecting MAC Address</string>
-  <string id="20198">Detecting Online State</string>
-  <string id="20199">Detecting Xbox Version, Serial and CPU</string>
-  <string id="20300">Detecting Xbox Hardware</string>
-  <string id="20301">Detecting ModChip</string>
-  <string id="20302">Detecting BIOS</string>
-  <string id="20303">Detecting CPU Speed</string>
-  <string id="20304">Detecting Production Date</string>
-  <string id="20305">Detecting Attached Units</string>
 
   <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
   <string id="20307">Secondary DNS</string>
