@@ -917,8 +917,8 @@
   <string id="13253">Cancel Move</string>
 
   <string id="13270">Hardware:</string>
-  <string id="13271">CPU Speed:</string>
-
+  <string id="13271">CPU Usage:</string>
+  
   <string id="13274">Xbox is Connected, but no DNS is available.</string>
   <string id="13275">Hard Disk</string>
   <string id="13276">DVD-ROM</string>
@@ -1478,6 +1478,7 @@
   <string id="20186">Please Wait</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
+
   <string id="20189"></string>
   <string id="20190">Detecting Harddisk Information</string>
   <string id="20191">Detecting HDD Values</string>
@@ -1495,6 +1496,7 @@
   <string id="20303">Detecting CPU Speed</string>
   <string id="20304">Detecting Production Date</string>
   <string id="20305">Detecting Attached Units</string>
+
   <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
   <string id="20307">Secondary DNS</string>
   <string id="20308">DHCP Server:</string>
