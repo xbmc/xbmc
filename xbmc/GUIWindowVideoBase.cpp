@@ -1824,7 +1824,7 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
         break;
       CStdString strLabel=items[i]->m_strPath;
       strLabel.MakeLower();
-      if (reg.RegFind(strLower.c_str()) > -1)
+      if (reg.RegFind(strLabel.c_str()) > -1)
       {
         char* season = reg.GetReplaceString("\\1");
         char* episode = reg.GetReplaceString("\\2");
