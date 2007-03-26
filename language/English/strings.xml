@@ -56,7 +56,7 @@
   <string id="119">New Folder</string>
   <string id="120">Confirm file copy</string>
   <string id="121">Confirm file move</string>
-  <string id="122">Confirm file delete</string>
+  <string id="122">Confirm file </string>
   <string id="123">Copy these files?</string>
   <string id="124">Move these files?</string>
   <string id="125">Delete these files?</string>
@@ -1474,9 +1474,28 @@
   <string id="20182">Space</string>
   <string id="20183">Reload Skin</string>
   <string id="20184">Rotate using EXIF information</string>
+  <string id="20185"></string>
   <string id="20186">Please Wait</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
+  
+  <string id="20189"></string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
 
   <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
   <string id="20307">Secondary DNS</string>
