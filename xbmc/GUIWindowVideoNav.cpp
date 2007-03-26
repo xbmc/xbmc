@@ -49,7 +49,7 @@ using namespace VIDEODATABASEDIRECTORY;
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTN_FILTER        9
+#define CONTROL_BTN_FILTER        19
 #define CONTROL_BTNSHOWMODE       10
 #define CONTROL_BTNSHOWALL        14
 #define CONTROL_UNLOCK            11
