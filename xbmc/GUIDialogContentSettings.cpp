@@ -207,10 +207,10 @@ void CGUIDialogContentSettings::CreateSettings()
   m_settings.clear();
 
   AddBool(1,20345,&m_bRunScan);  
-  AddBool(2,20346,&m_bScanRecursive,m_bRunScan);
 
   if (m_info.strContent.Equals("movies"))
   {
+    AddBool(2,20346,&m_bScanRecursive,m_bRunScan);
     AddBool(3,20330,&m_bUseDirNames,m_bRunScan);
   }
 }
@@ -225,7 +225,9 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
   {
     if (m_info.strContent.IsEmpty())
     {
-      m_settings[0].enabled = m_settings[1].enabled = false;
+      m_settings[0].enabled = false;
+      if (m_settings.size() > 1)
+        m_settings[1].enabled = false;
       if (m_settings.size() > 2)
         m_settings[2].enabled = false;
       
@@ -240,11 +242,6 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
       m_settings[2].enabled = *((bool*)setting.data);
       UpdateSetting(2);
       UpdateSetting(3);
-    }
-    if (m_info.strContent.Equals("tvshows"))
-    {
-      m_settings[1].enabled = *((bool*)setting.data);
-      UpdateSetting(2);
     }
   }
 
