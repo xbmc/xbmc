@@ -54,7 +54,7 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_FILTER            15
 #define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
-#define CONTROL_BTN_FILTER        17
+#define CONTROL_BTN_FILTER        19
 #define CONTROL_LABELEMPTY        18
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
@@ -189,12 +189,16 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         }
         UpdateButtons();
       }
-      else if (iControl == CONTROL_BTN_FILTER)  // CONTROL_BTNMANUALINFO
+      else if (iControl == CONTROL_BTNMANUALINFO)
+      {
+        OnManualAlbumInfo();
+        return true;
+      }
+      else if (iControl == CONTROL_BTN_FILTER)
       {
         // do filtering here for fun for now...
         CGUIDialogKeyboard::ShowAndGetFilter(m_filter);
         return true;
-//        OnManualAlbumInfo();
       }
     }
     break;
