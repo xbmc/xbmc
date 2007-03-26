@@ -292,6 +292,26 @@ extern "C"
 #define METHOD_OUT_DIRECT               2
 #define METHOD_NEITHER                  3
 
+  
+typedef struct _PARTITION_INFORMATION {
+    LARGE_INTEGER StartingOffset;
+    LARGE_INTEGER PartitionLength;
+    ULONG HiddenSectors;
+    ULONG PartitionNumber;
+    UCHAR PartitionType;
+    BOOLEAN BootIndicator;
+    BOOLEAN RecognizedPartition;
+    BOOLEAN RewritePartition;
+} PARTITION_INFORMATION, *PPARTITION_INFORMATION;
+
+typedef struct _DISK_GEOMETRY {
+    LARGE_INTEGER Cylinders;
+    DWORD MediaType;
+    DWORD TracksPerCylinder;
+    DWORD SectorsPerTrack;
+    DWORD BytesPerSector;
+} DISK_GEOMETRY, *PDISK_GEOMETRY;
+
   // The all-important CTL_CODE
 #define CTL_CODE( DeviceType, Function, Method, Access ) (                 \
     ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method) \
@@ -315,6 +335,11 @@ extern "C"
 
 #define IOCTL_CDROM_RAW_READ            CTL_CODE(IOCTL_CDROM_BASE, 0x000F, METHOD_OUT_DIRECT, FILE_READ_ACCESS)
 #define IOCTL_CDROM_CHECK_VERIFY        CTL_CODE(IOCTL_CDROM_BASE, 0x0200, METHOD_BUFFERED, FILE_READ_ACCESS)
+
+#define IOCTL_DISK_BASE                 FILE_DEVICE_DISK
+#define IOCTL_DISK_GET_DRIVE_GEOMETRY   CTL_CODE(IOCTL_DISK_BASE, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_DISK_GET_PARTITION_INFO   CTL_CODE(IOCTL_DISK_BASE, 0x0001, METHOD_BUFFERED, FILE_READ_ACCESS)
+
   // Special XBOX code?
 #define IOCTL_CDROM_AUTHENTICATE_DISK   CTL_CODE(IOCTL_CDROM_BASE, 0x0020, METHOD_BUFFERED, FILE_READ_ACCESS)
 
@@ -950,6 +975,22 @@ extern "C"
     IN ULONG FreeType
   );
 
+  NTSYSAPI 
+  EXPORTNUM(200)
+  NTSTATUS
+  NTAPI
+  NtFsControlFile(
+    IN HANDLE FileHandle,
+    IN HANDLE Event OPTIONAL,
+    IN PIO_APC_ROUTINE ApcRoutine OPTIONAL,
+    IN PVOID ApcContext OPTIONAL,
+    OUT PIO_STATUS_BLOCK IoStatusBlock,
+    IN ULONG FsControlCode,
+    IN PVOID InputBuffer OPTIONAL,
+    IN ULONG InputBufferLength,
+    OUT PVOID OutputBuffer OPTIONAL,
+    IN ULONG OutputBufferLength
+    );
 
   // Kernel-level routines
 
@@ -1294,6 +1335,18 @@ extern "C"
   );
 
   NTSYSAPI
+  EXPORTNUM(85)
+  NTSTATUS
+  NTAPI
+  IoSynchronousFsdRequest(
+    IN ULONG MajorFunction,
+    IN PDEVICE_OBJECT DeviceObject,
+    IN OUT PVOID Buffer OPTIONAL,
+    IN ULONG Length OPTIONAL,
+    IN PLARGE_INTEGER StartingOffset OPTIONAL
+    );
+
+  NTSYSAPI
   EXPORTNUM(84)
   NTSTATUS
   NTAPI
@@ -1537,14 +1590,14 @@ typedef struct XNetConfigStatus
   IN_ADDR ip;       // 0x04
   IN_ADDR subnet;   // 0x08
   IN_ADDR gateway;  // 0x0c
-  
+
   DWORD data_10;    /* probably additional gateway */
   DWORD data_14;
   DWORD data_18;
-  
+
   IN_ADDR dns1;     // 0x1c
   IN_ADDR dns2;     // 0x20
-  
+
   DWORD data_24;
   DWORD data_28;
   DWORD data_2c;
@@ -1557,10 +1610,10 @@ typedef struct XNetConfigStatus
 TXNetConfigStatus, *PTXNetConfigStatus;
 
 typedef struct _XBOX_KRNL_VERSION {
-	WORD VersionMajor;
-	WORD VersionMinor;
-	WORD Build;
-	WORD Qfe;
+  WORD VersionMajor;
+  WORD VersionMinor;
+  WORD Build;
+  WORD Qfe;
 } XBOX_KRNL_VERSION;
 
 extern "C"
@@ -1580,7 +1633,7 @@ extern "C"
   extern INT WINAPI XNetGetConfigStatus(PTXNetConfigStatus status);
 
   extern INT WINAPI XWriteTitleInfoNoReboot(LPVOID, LPVOID, DWORD, DWORD, LPVOID);
-	extern INT WINAPI XWriteTitleInfoAndRebootA(LPVOID,LPVOID,DWORD,DWORD,LPVOID);
+  extern INT WINAPI XWriteTitleInfoAndRebootA(LPVOID,LPVOID,DWORD,DWORD,LPVOID);
 
   extern DWORD* LaunchDataPage;
 
