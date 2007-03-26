@@ -1912,9 +1912,7 @@ long CGUIWindowVideoBase::AddMovieAndGetThumb(CFileItem *pItem, const CStdString
   {
     if (pItem->m_bIsFolder)
     {
-      CStdString strPath(pItem->m_strPath);
-      CUtil::AddSlashAtEnd(strPath);
-      lResult=m_database.SetDetailsForTvShow(strPath, movieDetails);
+      lResult=m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
     }
     else
     {
