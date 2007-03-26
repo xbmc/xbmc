@@ -681,7 +681,9 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem, bool bContextDriven /* = tr
       g_partyModeManager.Disable();
     }
   }
-  MarkPlaying();
+  // turn off the selection
+  if (iItem >= 0 && iItem < m_vecItems.Size())
+    m_vecItems[iItem]->Select(false);
 }
 
 void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
