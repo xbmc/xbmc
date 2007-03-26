@@ -103,11 +103,11 @@
 				<onup>99</onup>
 				<ondown>17</ondown>
 			</control>
-			<control type="button" id="17">
-				<description>Allmusic</description>
+			<control type="radiobutton" id="17">
+				<description>Filter button</description>
 				<posx>0</posx>
 				<posy>268</posy>
-				<label>Allmusic</label>
+				<label>587</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>8</onup>

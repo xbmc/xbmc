@@ -191,15 +191,18 @@ void CGUIViewControl::SetSelectedItem(int item)
 
 void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
 {
-  if (!m_fileItems || itemPath == "")
+  if (!m_fileItems || itemPath.IsEmpty())
     return;
+
+  CStdString comparePath(itemPath);
+  CUtil::RemoveSlashAtEnd(comparePath);
 
   int item = -1;
   for (int i = 0; i < m_fileItems->Size(); ++i)
   {
     CStdString strPath =(*m_fileItems)[i]->m_strPath;
     CUtil::RemoveSlashAtEnd(strPath);
-    if (strPath.CompareNoCase(itemPath) == 0)
+    if (strPath.CompareNoCase(comparePath) == 0)
     {
       item = i;
       break;
