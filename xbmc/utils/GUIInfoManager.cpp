@@ -155,11 +155,32 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
   }
+  else if (strCategory.Equals("bar"))
+  {
+    if (strTest.Equals("bar.gputemperature")) ret = BAR_GPU_TEMPERATURE;
+    else if (strTest.Equals("bar.cputemperature")) ret = BAR_CPU_TEMPERATURE;
+    else if (strTest.Equals("bar.cpuusage")) ret = BAR_CPU_USAGE;
+    else if (strTest.Equals("bar.freememory")) ret = BAR_FREE_MEMORY;
+    else if (strTest.Equals("bar.usedmemory")) ret = BAR_USED_MEMORY;
+    else if (strTest.Equals("bar.fanspeed")) ret = BAR_FAN_SPEED;
+    else if (strTest.Equals("bar.usedspace")) ret = BAR_USED_SPACE;
+    else if (strTest.Equals("bar.freespace")) ret = BAR_FREE_SPACE;
+    else if (strTest.Equals("bar.usedspace(c)")) ret = BAR_USED_SPACE_C;
+    else if (strTest.Equals("bar.freespace(c)")) ret = BAR_FREE_SPACE_C;
+    else if (strTest.Equals("bar.usedspace(e)")) ret = BAR_USED_SPACE_E;   
+    else if (strTest.Equals("bar.freespace(e)")) ret = BAR_FREE_SPACE_E; 
+    else if (strTest.Equals("bar.usedspace(f)")) ret = BAR_USED_SPACE_F;
+    else if (strTest.Equals("bar.freespace(f)")) ret = BAR_FREE_SPACE_F;
+    else if (strTest.Equals("bar.usedspace(g)")) ret = BAR_USED_SPACE_G;
+    else if (strTest.Equals("bar.freespace(g)")) ret = BAR_FREE_SPACE_G;
+    else if (strTest.Equals("bar.hddtemperature")) ret = BAR_HDD_TEMPERATURE;
+  }
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
     else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
     else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
+    else if (strTest.Equals("system.cpuusage")) ret = SYSTEM_CPU_USAGE;
     else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
     else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
     else if (strTest.Equals("system.freespace")) ret = SYSTEM_FREE_SPACE;
@@ -204,7 +225,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
     else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
-    else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
+    
+    else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
+    else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
+    else if (strTest.Equals("system.memory(used)")) ret = SYSTEM_USED_MEMORY;
+    else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
+
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
@@ -239,7 +265,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.avpackinfo")) ret = SYSTEM_AV_PACK_INFO;
     else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
     else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
-	else if (strTest.Equals("system.xboxproduceinfo")) ret = SYSTEM_XBOX_PRODUCE_INFO;
+    else if (strTest.Equals("system.xboxproduceinfo")) ret = SYSTEM_XBOX_PRODUCE_INFO;
     else if (strTest.Equals("system.xboxserial")) ret = SYSTEM_XBOX_SERIAL;
     else if (strTest.Equals("system.xberegion")) ret = SYSTEM_XBE_REGION;
     else if (strTest.Equals("system.dvdzone")) ret = SYSTEM_DVD_ZONE;
@@ -743,10 +769,23 @@ string CGUIInfoManager::GetLabel(int info)
     strLabel = GetBuild();
     break;
   case SYSTEM_FREE_MEMORY:
+  case SYSTEM_FREE_MEMORY_PERCENT:
+  case SYSTEM_USED_MEMORY:
+  case SYSTEM_USED_MEMORY_PERCENT:
     {
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
-      strLabel.Format("%iMB", stat.dwAvailPhys / (1024 * 1024));
+      int iMemPercentFree = 100 - ((int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
+      int iMemPercentUsed = 100 - iMemPercentFree;
+
+      if (info == SYSTEM_FREE_MEMORY)
+        strLabel.Format("%iMB", stat.dwAvailPhys /MB);      
+      else if (info == SYSTEM_FREE_MEMORY_PERCENT)
+        strLabel.Format("%i%%", iMemPercentFree);
+      else if (info == SYSTEM_USED_MEMORY)
+        strLabel.Format("%iMB", (stat.dwTotalPhys - stat.dwAvailPhys)/MB);
+      else if (info == SYSTEM_USED_MEMORY_PERCENT)
+        strLabel.Format("%i%%", iMemPercentUsed);
     }
     break;
   case SYSTEM_SCREEN_MODE:
@@ -974,24 +1013,98 @@ string CGUIInfoManager::GetLabel(int info)
 // tries to get a integer value for use in progressbars/sliders and such
 int CGUIInfoManager::GetInt(int info) const
 {
-  if (info == PLAYER_VOLUME)
-    return g_application.GetVolume();
-  else if( g_application.IsPlaying() && g_application.m_pPlayer)
+  int iret = 0;
+  switch( info )
   {
-    switch( info )
-    {
-    case PLAYER_PROGRESS:
-      return (int)(g_application.GetPercentage());
-    case PLAYER_SEEKBAR:
+    case PLAYER_VOLUME:
       {
-        CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-        return seekBar ? (int)seekBar->GetPercentage() : 0;
+        iret = g_application.GetVolume();
       }
+      break;
+    case PLAYER_PROGRESS:
+    case PLAYER_SEEKBAR:
     case PLAYER_CACHING:
-      return (int)(g_application.m_pPlayer->GetCacheLevel());
-    }
+      {
+        if( g_application.IsPlaying() && g_application.m_pPlayer)
+        {
+          switch( info )
+          {
+          case PLAYER_PROGRESS:
+            {
+              iret = (int)(g_application.GetPercentage());
+            }
+            break;
+          case PLAYER_SEEKBAR:
+            {
+              CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+              iret = seekBar ? (int)seekBar->GetPercentage() : 0;
+            }
+            break;
+          case PLAYER_CACHING:
+            {
+              iret = (int)(g_application.m_pPlayer->GetCacheLevel());
+            }
+            break;
+          }
+        }
+      }
+      break;
+    case BAR_FREE_MEMORY:
+    case BAR_USED_MEMORY:
+      {
+        MEMORYSTATUS stat;
+        GlobalMemoryStatus(&stat);
+        int iMemPercentFree = 100 - ((int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
+        int iMemPercentUsed = 100 - iMemPercentFree;
+        if (info == BAR_FREE_MEMORY)
+          iret = iMemPercentFree;
+        else
+          iret = iMemPercentUsed;
+      }
+      break;
+#ifdef HAS_XBOX_HARDWARE
+    case BAR_HDD_TEMPERATURE:
+      {
+        iret = atoi(g_sysinfo.GetInfo(info));
+      }
+      break;
+    case BAR_CPU_TEMPERATURE:
+      {
+        iret = atoi(CFanController::Instance()->GetCPUTemp().ToString());
+      }
+      break;
+    case BAR_GPU_TEMPERATURE:
+      {
+        iret = atoi(CFanController::Instance()->GetGPUTemp().ToString());
+      }
+      break;
+    case BAR_FAN_SPEED:
+      {
+        iret = CFanController::Instance()->GetFanSpeed() * 2;
+      }
+      break;
+#endif
+    case BAR_FREE_SPACE:
+    case BAR_FREE_SPACE_C:
+    case BAR_FREE_SPACE_E:
+    case BAR_FREE_SPACE_F:
+    case BAR_FREE_SPACE_G:
+    case BAR_USED_SPACE:
+    case BAR_USED_SPACE_C:
+    case BAR_USED_SPACE_E:
+    case BAR_USED_SPACE_F:
+    case BAR_USED_SPACE_G:
+      {
+       iret = atoi(g_sysinfo.GetHddSpaceInfo(info));
+      }
+      break;
+    case BAR_CPU_USAGE:
+      {
+       iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
+      }
+      break;
   }
-  return 0;
+  return iret;
 }
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
@@ -2017,6 +2130,10 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
     case LCD_FAN_SPEED:
       text.Format("%i%%", m_fanSpeed * 2);
       break;
+    case SYSTEM_CPU_USAGE:
+      {
+        text.Format("%s %2.0f%%", g_localizeStrings.Get(13271).c_str(), (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
+      }
   }
   return text;
 }
