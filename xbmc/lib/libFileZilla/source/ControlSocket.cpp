@@ -38,6 +38,7 @@
 #include "../../Utils/log.h"
 #include "../../GUISettings.h"
 #include "../../ApplicationMessenger.h"
+#include "../../utils/MemoryUnitManager.h"
 #endif
 
 #ifdef _DEBUG
@@ -1075,7 +1076,7 @@ void CControlSocket::ParseCommand()
 							if (drive >= 'f' && drive < 'q')
 							{
 								// extended partitions and memory units - check if the drive is available
-								if (!CIoSupport::DriveExists(drive))
+								if (!CIoSupport::DriveExists(drive) && !g_memoryUnitManager.IsDriveValid(drive))
 									continue;
 							}
 							// don't show x, y, z in the listing as users shouldn't really be
