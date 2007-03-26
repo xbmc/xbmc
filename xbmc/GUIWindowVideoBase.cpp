@@ -65,8 +65,6 @@ using namespace VIDEODATABASEDIRECTORY;
 #define CONTROL_STACK             7
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
-#define CONTROL_BTNSHOWMODE       10
-#define CONTROL_BTNSHOWALL        14
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
@@ -140,25 +138,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           g_graphicsContext.SendMessage(msg2);
         }
 
-        return true;
-      }
-      else if (iControl == CONTROL_BTNSHOWMODE)
-      {
-        g_stSettings.m_iMyVideoWatchMode++;
-        if (g_stSettings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
-        g_settings.Save();
-        Update(m_vecItems.m_strPath);
-        return true;
-      }
-      else if (iControl == CONTROL_BTNSHOWALL)
-      {
-        if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_UNWATCHED;
-        else
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
-        g_settings.Save();
-        Update(m_vecItems.m_strPath);
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -268,10 +247,6 @@ void CGUIWindowVideoBase::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNSCAN);
     CONTROL_DISABLE(CONTROL_IMDB);
   }
-
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_stSettings.m_iMyVideoWatchMode));
-
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
 
   CGUIMediaWindow::UpdateButtons();
 }

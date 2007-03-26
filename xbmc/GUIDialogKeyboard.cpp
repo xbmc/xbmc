@@ -56,6 +56,7 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void)
   m_bIsConfirmed = false;
   m_bShift = false;
   m_hiddenInput = false;
+  m_filtering = false;
   m_keyType = LOWER;
   m_strHeading = "";
   m_lastRemoteClickTime = 0;
@@ -253,7 +254,11 @@ void CGUIDialogKeyboard::Render()
 {
   // reset the hide state of the label when the remote
   // sms style input times out
-  UpdateLabel();
+  if (m_lastRemoteClickTime && m_lastRemoteClickTime + 1000 < timeGetTime())
+  {
+    // finished inputting a sms style character - turn off our shift and symbol states
+    ResetShiftAndSymbols();
+  }
   CGUIDialog::Render();
 }
 
@@ -263,11 +268,6 @@ void CGUIDialogKeyboard::UpdateLabel()
   if (pEdit)
   {
     CStdStringW edit = m_strEdit;
-    if (m_lastRemoteClickTime && m_lastRemoteClickTime + 1000 < timeGetTime())
-    {
-      // finished inputting a sms style character - turn off our shift and symbol states
-      ResetShiftAndSymbols();
-    }
     if (m_hiddenInput)
     { // convert to *'s
       edit.Empty();
@@ -283,6 +283,12 @@ void CGUIDialogKeyboard::UpdateLabel()
     CStdString utf8Edit;
     g_charsetConverter.utf16toUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
+    if (m_filtering)
+    { // send our filter message
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
+      message.SetStringParam(utf8Edit);
+      g_graphicsContext.SendMessage(message);
+    }
   }
 }
 
@@ -705,4 +711,17 @@ void CGUIDialogKeyboard::OnOK()
 {
   m_bIsConfirmed = true;
   Close();
+}
+
+bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter)
+{
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+
+  if (!pKeyboard)
+    return false;
+
+  pKeyboard->m_filtering = true;
+  bool ret = ShowAndGetInput(filter, true);
+  pKeyboard->m_filtering = false;
+  return ret;
 }

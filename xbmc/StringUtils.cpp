@@ -247,3 +247,35 @@ CStdString StringUtils::SizeToString(__int64 size)
 
   return strLabel;
 }
+
+bool StringUtils::FindWords(const char *str, const char *wordLowerCase)
+{
+  // NOTE: This assumes word is lowercase!
+  unsigned char *s = (unsigned char *)str;
+  do
+  {
+    // start with a compare
+    unsigned char *c = s;
+    unsigned char *w = (unsigned char *)wordLowerCase;
+    bool same = true;
+    while (same && *c && *w)
+    {
+      unsigned char lc = *c++;
+      if (lc >= 'A' && lc <= 'Z')
+        lc += 'a'-'A';
+
+      if (lc != *w++) // different
+        same = false;
+    }
+    if (same && *w == 0)  // only the same if word has been exhausted
+      return true;
+
+    // otherwise, find a space and skip to the end of the whitespace
+    while (*s && *s != ' ') s++;
+    while (*s && *s == ' ') s++;
+
+    // and repeat until we're done
+  } while (*s);
+
+  return false;
+}

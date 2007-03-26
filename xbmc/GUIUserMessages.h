@@ -86,3 +86,6 @@
 
 // Message is sent to media windows to force a refresh
 #define GUI_MSG_UPDATE                GUI_MSG_USER + 26
+
+// Message sent by filtering dialog to request a new filter be applied
+#define GUI_MSG_FILTER_ITEMS          GUI_MSG_USER + 27

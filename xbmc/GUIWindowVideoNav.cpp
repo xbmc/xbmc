@@ -49,10 +49,12 @@ using namespace VIDEODATABASEDIRECTORY;
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
+#define CONTROL_BTN_FILTER        9
+#define CONTROL_BTNSHOWMODE       10
+#define CONTROL_BTNSHOWALL        14
 #define CONTROL_UNLOCK            11
 
 #define CONTROL_FILTER            15
-#define CONTROL_BTNMANUALINFO     17
 #define CONTROL_LABELEMPTY        18
 
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
@@ -187,6 +189,46 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         OnSearch();
       }
+      else if (iControl == CONTROL_BTN_FILTER)
+      {
+        CGUIDialogKeyboard::ShowAndGetFilter(m_filter);
+        return true;
+      }
+      else if (iControl == CONTROL_BTNSHOWMODE)
+      {
+        g_stSettings.m_iMyVideoWatchMode++;
+        if (g_stSettings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
+          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+        g_settings.Save();
+        // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
+        //       but for those perhaps we can just display them all, and only filter when we get a list
+        //       of actual videos?
+        Update(m_vecItems.m_strPath);
+        return true;
+      }
+      else if (iControl == CONTROL_BTNSHOWALL)
+      {
+        if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
+          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_UNWATCHED;
+        else
+          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+        g_settings.Save();
+        // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
+        //       but for those perhaps we can just display them all, and only filter when we get a list
+        //       of actual videos?
+        Update(m_vecItems.m_strPath);
+        return true;
+      }
+    }
+    break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
+      {
+        m_filter = message.GetStringParam();
+        m_filter.TrimLeft().ToLower();
+        OnFilterItems();
+      }
     }
     break;
   }
@@ -291,6 +333,12 @@ void CGUIWindowVideoNav::UpdateButtons()
   }
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
+
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_stSettings.m_iMyVideoWatchMode));
+
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
+
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
 }
 
 /// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
@@ -533,15 +581,71 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
   int iItem=0;
+  m_unfilteredItems.AppendPointer(items);
+  // now filter as necessary
   CVideoDatabaseDirectory dir;
-  if ((dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
+  bool filterWatched = (dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL;
+  if (filterWatched || !m_filter.IsEmpty())
+    FilterItems(items);
+}
+
+void CGUIWindowVideoNav::ClearFileItems()
+{
+  m_viewControl.Clear();
+  m_vecItems.ClearKeepPointer();
+  m_unfilteredItems.Clear();
+}
+
+void CGUIWindowVideoNav::OnFilterItems()
+{
+  CStdString currentItem;
+  int item = m_viewControl.GetSelectedItem();
+  if (item >= 0)
+    currentItem = m_vecItems[item]->m_strPath;
+
+  m_viewControl.Clear();
+
+  FilterItems(m_vecItems);
+
+  // and update our view control + buttons
+  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetSelectedItem(currentItem);
+  UpdateButtons();
+}
+
+void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
+{
+  DIRECTORY::CVideoDatabaseDirectory dir;
+  VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
+
+  if (m_vecItems.IsVirtualDirectoryRoot() || node == NODE_TYPE_MOVIES_OVERVIEW || node == NODE_TYPE_TVSHOWS_OVERVIEW)
+    return;
+
+  bool filterWatched = (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES) && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL;
+  items.ClearKeepPointer();
+  for (int i = 0; i < m_unfilteredItems.Size(); i++)
   {
-    while (iItem < items.Size())
+    CFileItem *item = m_unfilteredItems[i];
+    if ( item->IsParentFolder() ||
+        (m_filter.IsEmpty() && (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
-      if (items[iItem]->GetVideoInfoTag()->m_bWatched != (g_stSettings.m_iMyVideoWatchMode==2))
-        items.Remove(iItem);
-      else
-        iItem++;
+      items.Add(item);
+      continue;
     }
+    // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
+    // though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
+    // where we are in the library tree.
+    // Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
+    // but it's re-enabled on the way back out.
+    CStdString match;
+/*    if (item->GetFocusedLayout())
+      match = item->GetFocusedLayout()->GetAllText();
+    else if (item->GetLayout())
+      match = item->GetLayout()->GetAllText();
+    else*/
+      match = item->GetLabel() + " " + item->GetLabel2();
+    if (StringUtils::FindWords(match.c_str(), m_filter.c_str()) && 
+        (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2)))
+      items.Add(item);
   }
 }
