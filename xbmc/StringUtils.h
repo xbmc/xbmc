@@ -32,6 +32,7 @@ public:
   static bool IsNaturalNumber(const CStdString& str);
   static CStdString StringUtils::SizeToString(__int64 size);
   static const CStdString EmptyString;
+  static bool FindWords(const char *str, const char *wordLowerCase);
 };
 
 #endif
