@@ -28,7 +28,7 @@ rem	CONFIG START
 	set OPTS=xbmc.sln /build debug
 	set CLEAN=xbmc.sln /clean debug
 	set XBE=debug\default.xbe
-	set XBE_PATCH=xbepatch.exe
+	set XBE_PATCH=tools\xbepatch\xbepatch.exe
 	set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
 rem	CONFIG END
@@ -66,12 +66,9 @@ goto COMPILE
 
 :MAKE_BUILD
   ECHO Copying files...
-  IF EXIST %XBE_PATCH% (
-  ECHO - %XBE_PATCH% Found! Patching %XBE% 
+  ECHO - XBE Patching %XBE% 
   %XBE_PATCH% %XBE%
-  ) ELSE (
-  ECHO %XBE_PATCH% not Found! Skipping Patch %XBE%!
-  )
+  ECHO - Patching Done!
   
   rmdir BUILD /S /Q
   md BUILD
