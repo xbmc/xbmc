@@ -150,10 +150,10 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>14</onup>
-				<ondown>9</ondown>
+				<ondown>19</ondown>
 			</control>
 
-			<control type="radiobutton" id="9">
+			<control type="radiobutton" id="19">
 				<description>Filter</description>
 				<posx>0</posx>
 				<posy>305</posy>
@@ -174,7 +174,7 @@
 				<onclick>xbmc.mastermode</onclick>
 				<selected>system.ismaster</selected>
 				<visible>system.haslocks</visible>
-				<onup>9</onup>
+				<onup>19</onup>
 				<ondown>2</ondown>
 			</control>
 		</control>
