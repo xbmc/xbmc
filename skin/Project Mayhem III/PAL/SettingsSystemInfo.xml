@@ -239,6 +239,34 @@
 				<font>font12</font>
 				<include>textcolorgrey</include>
 			</control>
+			<control type="progress" id="1">
+				<description>bar diagram CPU Usage</description>
+				<info>bar.cpuusage</info>
+				<visible>true</visible>
+				<posx>190</posx>
+				<posy>510</posy>
+				<width>200</width>
+				<height>9</height>
+				<texturebg>progress_back.png</texturebg>
+				<lefttexture>progress_left.png</lefttexture>
+				<midtexture>progress_mid.png</midtexture>
+				<righttexture>progress_right.png</righttexture>
+				<overlaytexture>-</overlaytexture>
+			</control>
+			<control type="progress" id="2">
+				<description>bar diagram free memory</description>
+				<info>bar.freememory</info>
+				<visible>true</visible>
+				<posx>400</posx>
+				<posy>510</posy>
+				<width>200</width>
+				<height>9</height>
+				<texturebg>progress_back.png</texturebg>
+				<lefttexture>progress_left.png</lefttexture>
+				<midtexture>progress_mid.png</midtexture>
+				<righttexture>progress_right.png</righttexture>
+				<overlaytexture>-</overlaytexture>
+			</control>
 		</control>
 	</controls>
 </window>
