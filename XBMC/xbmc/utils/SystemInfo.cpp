@@ -193,19 +193,22 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
   // All Time request
   case LCD_HDD_TEMPERATURE:
   case SYSTEM_HDD_TEMPERATURE:
+  case BAR_HDD_TEMPERATURE:
   {
     CTemperature temp;
-
     temp.SetState(CTemperature::invalid);
-
     if(m_bSmartEnabled && byHddTemp != 0)
       temp = CTemperature::CreateFromCelsius((double)byHddTemp);
-
-    if (dwInfo == LCD_HDD_TEMPERATURE)
-      m_temp.Format("%s",temp.ToString());
-    else
-      m_temp.Format("%s %s", g_localizeStrings.Get(13151), temp.ToString());
-
+    switch(dwInfo)
+    {
+      case SYSTEM_HDD_TEMPERATURE:
+        m_temp.Format("%s %s", g_localizeStrings.Get(13151), temp.ToString());
+        break;
+      case LCD_HDD_TEMPERATURE:
+      case BAR_HDD_TEMPERATURE:
+        m_temp.Format("%s",temp.ToString());
+        break;
+    }
     return m_temp;
   }
 #endif
@@ -1627,12 +1630,26 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
       case SYSTEM_FREE_SPACE_PERCENT_G:
         strRet.Format("%s: %i%% %s", strDrive, percentFree, g_localizeStrings.Get(160));
         break;
+      case BAR_FREE_SPACE:
+      case BAR_FREE_SPACE_C:
+      case BAR_FREE_SPACE_E:
+      case BAR_FREE_SPACE_F:
+      case BAR_FREE_SPACE_G:
+        strRet.Format("%i", percentFree);
+        break;
       case SYSTEM_USED_SPACE_PERCENT:
       case SYSTEM_USED_SPACE_PERCENT_C:
       case SYSTEM_USED_SPACE_PERCENT_E:
       case SYSTEM_USED_SPACE_PERCENT_F:
       case SYSTEM_USED_SPACE_PERCENT_G:
         strRet.Format("%s: %i%% %s", strDrive, percentused, g_localizeStrings.Get(20162));
+        break;
+      case BAR_USED_SPACE:
+      case BAR_USED_SPACE_C:
+      case BAR_USED_SPACE_E:
+      case BAR_USED_SPACE_F:
+      case BAR_USED_SPACE_G:
+        strRet.Format("%i", percentused);
         break;
       }
     }
