@@ -252,17 +252,21 @@ void CGUIViewStateMusicDatabase::SaveViewState()
       break;
     case NODE_TYPE_ALBUM_COMPILATIONS:
     case NODE_TYPE_ALBUM:
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavAlbums);
+      break;
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_TOP100:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavAlbums);
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
+      break;
+    case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
+    case NODE_TYPE_SONG:
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-    case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
-    case NODE_TYPE_SONG:
     case NODE_TYPE_SONG_TOP100:
-      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
       break;
     default:
       SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
