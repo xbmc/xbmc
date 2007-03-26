@@ -153,11 +153,11 @@
 				<ondown>9</ondown>
 			</control>
 
-			<control type="button" id="9">
-				<description>IMDB</description>
+			<control type="radiobutton" id="9">
+				<description>Filter</description>
 				<posx>0</posx>
 				<posy>305</posy>
-				<label>368</label>
+				<label>587</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>8</onup>
