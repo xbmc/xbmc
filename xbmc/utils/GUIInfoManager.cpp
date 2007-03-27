@@ -695,6 +695,7 @@ string CGUIInfoManager::GetLabel(int info)
   case LCD_CPU_TEMPERATURE:
   case LCD_GPU_TEMPERATURE:
   case LCD_FAN_SPEED:
+  case SYSTEM_CPU_USAGE:
     return GetSystemHeatInfo(info);
     break;
 
@@ -2131,9 +2132,8 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-      {
-        text.Format("%s %2.0f%%", g_localizeStrings.Get(13271).c_str(), (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
-      }
+      text.Format("%s %2.0f%%", g_localizeStrings.Get(13271).c_str(), (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
+      break;
   }
   return text;
 }
