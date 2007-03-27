@@ -230,6 +230,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
     else if (strTest.Equals("system.memory(used)")) ret = SYSTEM_USED_MEMORY;
     else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
+    else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
 
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
@@ -773,6 +774,7 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_FREE_MEMORY_PERCENT:
   case SYSTEM_USED_MEMORY:
   case SYSTEM_USED_MEMORY_PERCENT:
+  case SYSTEM_TOTAL_MEMORY:
     {
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
@@ -787,6 +789,8 @@ string CGUIInfoManager::GetLabel(int info)
         strLabel.Format("%iMB", (stat.dwTotalPhys - stat.dwAvailPhys)/MB);
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentUsed);
+      else if (info == SYSTEM_TOTAL_MEMORY)
+        strLabel.Format("%iMB", stat.dwTotalPhys/MB);
     }
     break;
   case SYSTEM_SCREEN_MODE:
