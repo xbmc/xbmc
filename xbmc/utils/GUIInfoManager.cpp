@@ -1099,14 +1099,10 @@ int CGUIInfoManager::GetInt(int info) const
     case BAR_USED_SPACE_E:
     case BAR_USED_SPACE_F:
     case BAR_USED_SPACE_G:
-      {
-       iret = atoi(g_sysinfo.GetHddSpaceInfo(info));
-      }
+      iret = atoi(g_sysinfo.GetHddSpaceInfo(info).c_str());
       break;
     case BAR_CPU_USAGE:
-      {
-       iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
-      }
+      iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
       break;
   }
   return iret;
@@ -1120,7 +1116,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   if (IsCached(condition1, dwContextWindow, result))
     return result;
 
-  if(  condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
+  if(condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
     bool result;
