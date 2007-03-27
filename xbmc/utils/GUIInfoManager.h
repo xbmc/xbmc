@@ -261,6 +261,7 @@
 #define BAR_FREE_SPACE_F            639
 #define BAR_FREE_SPACE_G            640
 
+#define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
 #define SYSTEM_USED_MEMORY_PERCENT  646
 #define SYSTEM_USED_MEMORY          647
