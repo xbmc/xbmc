@@ -46,6 +46,8 @@
 // Xbox extended partition numbers, 6-15
 #define EXTEND_PARTITION_BEGIN  6
 #define EXTEND_PARTITION_END   15
+#define EXTEND_DRIVE_BEGIN     'F'
+#define EXTEND_DRIVE_END       'O'
 
 // This flag (part of PARTITION_ENTRY.pe_flags) tells you whether/not a
 // partition is being used (whether/not drive G is active, for example)
