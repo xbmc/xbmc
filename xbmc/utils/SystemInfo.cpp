@@ -79,7 +79,9 @@ void CBackgroundSystemInfoLoader::GetInformation()
                           callback->m_HDDFirmware,
                           callback->m_HDDpw, 
                           callback->m_HDDLockState);
-  if (!callback->m_dvdRequest)
+  // don't check the DVD-ROM if we have already successfully retrieved its info, or it is specified
+  // as not present in advancedsettings
+  if (!callback->m_dvdRequest && !g_advancedSettings.m_noDVDROM)
     callback->GetDVDInfo(callback->m_DVDModel, callback->m_DVDFirmware);
 
   if (callback->m_bSmartEnabled)
