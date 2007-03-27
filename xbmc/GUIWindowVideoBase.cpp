@@ -986,6 +986,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     // is the item a database movie?
     if (GetID() == WINDOW_VIDEO_NAV && m_vecItems[iItem]->HasVideoInfoTag() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     {
+      if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason == 0 && !m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
+        btn_Update = pMenu->AddButton(13349);
+
       if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason > 0 || m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // only episodes and movies
       {
         if (m_vecItems[iItem]->GetVideoInfoTag()->m_bWatched)
@@ -1106,7 +1109,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     }
     else if (btnid  == btn_Update) // update content 
     {
-      OnScan(m_vecItems[iItem]->m_strPath,info);
+      if (m_vecItems[iItem]->IsVideoDb())
+        OnScan(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info);
+      else
+        OnScan(m_vecItems[iItem]->m_strPath,info);
     }
     // video info
     else if (btnid == btn_Show_Info)

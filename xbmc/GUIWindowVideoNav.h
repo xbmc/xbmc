@@ -14,6 +14,7 @@ public:
 
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info);
 
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
