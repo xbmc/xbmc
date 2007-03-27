@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 12/03/2007-->
+<!--Date of translation: 20/03/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 8124 -->
+<!--Based on english strings version 8202 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -481,8 +481,9 @@
   <string id="583">Muista eri kansioiden näyttötapa</string>
   <string id="584">Nouseva</string>
   <string id="585">Laskeva</string>
+  <string id="586">Muokkaa soittolistaa</string>
   
-  <string id="588">Peruuta jukeboksi</string>
+  <string id="588">Keskeytä jukeboksi</string>
   <string id="589">Jukeboksi </string>
   <string id="590">Satunnainen</string>
   <string id="591">Ei käytössä</string>
@@ -578,8 +579,8 @@
   <string id="742">Valkoinen</string>
   <string id="743">Keltainen</string>
   <string id="744">Tiedostot</string>
-  <string id="745">Tälle näkymälle ei ole luettu median tietoja</string>
-  <string id="746">Vaihda Tiedostot-näkymään</string>
+  <string id="745">Tälle näkymälle ei ole luettu median tietoja,</string>
+  <string id="746">vaihda Tiedostot-näkymään</string>
   <string id="747">Kuvan lataus ei onnistu</string>
   <string id="748">Muokkaa tallennuspolku</string>
   <string id="749">Lisää sijainti</string>
@@ -746,7 +747,7 @@
   <string id="10500">Musiikki/Soittolista</string>
   <string id="10501">Musiikki/Tiedostot</string>
   <string id="10502">Musiikki/Kirjasto</string>
-  <string id="10503">Musiikki/100 parasta</string>
+  <string id="10503">Soittolistojen hallinta</string>
   <string id="10504">100 parasta kappaletta</string>
   <string id="10505">100 parasta albumia</string>
   <string id="10506">Ohjelmat</string>
@@ -855,7 +856,7 @@
   <string id="12391">minuuttia</string>
   <string id="12392">tuntia</string>
   <string id="12393">päivää</string>
-  <string id="12394">Kokonais käyttöaika</string>
+  <string id="12394">Kokonaiskäyntiaika</string>
   
   <string id="12600">Säätila</string>
   
@@ -869,7 +870,7 @@
   <string id="13004">Tiedoston vähimmäiskesto</string>
   <string id="13005">Sammuta Xbox</string>
   <string id="13006">Käynnistä Xbox dashboard</string>
-
+  <string id="13007">Vaihtoehtoinen dashboardin käynnistyspolku</string>
   <string id="13100">Näytön välkynnän poisto</string>
  
   <string id="13150">Lukituskoodi:</string>
@@ -1288,7 +1289,7 @@
   <string id="16102">Katsotut</string>
   <string id="16103">Merkitse katsotuksi</string>
   <string id="16104">Merkitse katsomattomaksi</string>
-  <string id="16105">Muokkaa otsikkoa</string>
+  <string id="16105">Muokkaa nimeä</string>
   <string id="16106">Käytä NTSC-M ja NTSC-J</string>
   <string id="16107">Käytä vain NTSC-M</string>
   <string id="16108">Käytä vain NTSC-J</string>
@@ -1452,16 +1453,16 @@
   <string id="20158">Verkon tiedot</string>
   <string id="20159">Näytön tiedot</string>
   <string id="20160">Laitteiston tiedot</string>
-  <string id="20161">Yht. %s MB, käytössä %s MB, käyttämättä %s MB</string>
-  <string id="20162">Kiintolevystä käytössä %u%%, käyttämättä %u%%</string>
-  <string id="20163">%s: Käyttämättä %s MB, yht. %s MB</string>
+  <string id="20161">Yhteensä</string>
+  <string id="20162">Käytössä</string>
+  <string id="20163">/</string>
   <string id="20164">Lukitusta ei voida käyttää</string>
   <string id="20165">Ei lukittuna</string>
   <string id="20166">Lukittu</string>
   <string id="20167">Jumissa</string>
   <string id="20168">Täytyy resetoida</string>
   <string id="20169">vko</string>
-  <string id="20170">,linja</string>
+  <string id="20170">,tuotantolinja</string>
   <string id="20171">Windows verkko(SMB)</string>
   <string id="20172">XBMSP-Palvelin</string>
   <string id="20173">FTP-Palvelin</string>
@@ -1600,5 +1601,6 @@
   <string id="21382">'Lisää sijainti'-painike ei käytössä</string>
   <string id="21383">Vierityspalkit käytössä</string>
   <string id="21384">Videokirjastossa piilota katsotut</string> 
+  <string id="21385">Avaa soittolista</string>
   <string id="29999">Näytön välkynnän poisto</string>
   </strings>
