@@ -104,14 +104,13 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   share.strPath = "E:\\";
   share.strName = "E Drive";
   localDrives.push_back(share);
-  for (int i=EXTEND_PARTITION_BEGIN; i<=EXTEND_PARTITION_END; i++)
+  for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
   {
-    if (CIoSupport::PartitionExists(i))
+    if (CIoSupport::DriveExists(driveletter))
     {
       CShare share;
-      char cDriveLetter = 'A' + i - 1;
-      share.strPath.Format("%c:\\", cDriveLetter);
-      share.strName.Format("%c Drive", cDriveLetter);
+      share.strPath.Format("%c:\\", driveletter);
+      share.strName.Format("%c Drive", driveletter);
       localDrives.push_back(share);
     }
   }
