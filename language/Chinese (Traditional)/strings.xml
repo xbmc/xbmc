@@ -479,7 +479,7 @@
   <string id="584">升幂</string>
   <string id="585">降幂</string>
   <string id="586">編輯播放列表</string>
-
+  <string id="587">濾鏡</string>
   <string id="588">取消派對模式</string>
   <string id="589">派對模式</string>
   <string id="590">隨機</string>
@@ -918,7 +918,7 @@
   <string id="13253">取消移動</string>
 
   <string id="13270">硬體：</string>
-  <string id="13271">中央處理器速度：</string>
+  <string id="13271">中央處理器使用：</string>
 
   <string id="13274">XBOX 已連線，但是沒有設定 DNS！</string>
   <string id="13275">硬碟</string>
@@ -1475,27 +1475,29 @@
   <string id="20182">空格</string>
   <string id="20183">重新載入桌面</string>
   <string id="20184">轉動使用 EXIF 資訊</string>
-  <string id="20185">檢測硬體數據</string>
+  <string id="20185"></string>
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
   <string id="20188">備份 BIOS</string>
+
   <string id="20189"></string>
-  <string id="20190">檢測硬碟資訊</string>
-  <string id="20191">檢測硬碟數據</string>
-  <string id="20192">檢測硬碟金鑰</string>
-  <string id="20193">檢測硬碟溫度</string>
-  <string id="20194">檢測光碟機資訊</string>
-  <string id="20195">檢測型號和軔體</string>
-  <string id="20196">檢測網路設定</string>
-  <string id="20197">檢測網卡位址</string>
-  <string id="20198">檢測連線狀態</string>
-  <string id="20199">檢測 Xbox 版本，序號和中央處理器</string>
-  <string id="20300">檢測 Xbox 硬體</string>
-  <string id="20301">檢測改機晶片</string>
-  <string id="20302">檢測 BIOS 型號</string>
-  <string id="20303">檢測中央處理器速度</string>
-  <string id="20304">檢測製造日期</string>
-  <string id="20305">檢測附加裝置</string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
+
   <string id="20306">未知，請把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">次要的 DNS 位址</string>
   <string id="20308">DHCP 伺服器：</string>
@@ -1558,6 +1560,7 @@
   <string id="20365">劇情</string>
   <string id="20366">* 整季</string>
   <string id="20367">隱藏觀看</string>
+  <string id="20368">產品編號</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
