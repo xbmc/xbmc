@@ -1511,9 +1511,15 @@ CStdString CSysInfo::GetTrayState()
 #endif
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 {
+ int percent;
+ return GetHddSpaceInfo( percent, drive, shortText);
+}
+CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
+{
   int total, totalFree, totalUsed, percentFree, percentused;
   CStdString strDrive; 
   bool bRet=false;
+  percent = 0;
   CStdString strRet;
   switch (drive)
   {
@@ -1522,6 +1528,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE:
     case SYSTEM_FREE_SPACE_PERCENT:
     case SYSTEM_USED_SPACE_PERCENT:
+    case BAR_FREE_SPACE:
+    case BAR_USED_SPACE:
       strDrive = g_localizeStrings.Get(20161);
       bRet = g_sysinfo.GetDiskSpace("",total, totalFree, totalUsed, percentFree, percentused);
       break;
@@ -1531,6 +1539,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE_C:
     case SYSTEM_FREE_SPACE_PERCENT_C:
     case SYSTEM_USED_SPACE_PERCENT_C:
+    case BAR_FREE_SPACE_C:
+    case BAR_USED_SPACE_C:
       strDrive = "C";
       bRet = g_sysinfo.GetDiskSpace("C",total, totalFree, totalUsed, percentFree, percentused);
       break;
@@ -1540,6 +1550,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE_E:
     case SYSTEM_FREE_SPACE_PERCENT_E:
     case SYSTEM_USED_SPACE_PERCENT_E:
+    case BAR_FREE_SPACE_E:
+    case BAR_USED_SPACE_E:
       strDrive = "E";
       bRet = g_sysinfo.GetDiskSpace("E",total, totalFree, totalUsed, percentFree, percentused);
       break;
@@ -1549,6 +1561,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE_F:
     case SYSTEM_FREE_SPACE_PERCENT_F:
     case SYSTEM_USED_SPACE_PERCENT_F:
+    case BAR_FREE_SPACE_F:
+    case BAR_USED_SPACE_F:
       strDrive = "F";
       bRet = g_sysinfo.GetDiskSpace("F",total, totalFree, totalUsed, percentFree, percentused);
       break;
@@ -1558,6 +1572,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE_G:
     case SYSTEM_FREE_SPACE_PERCENT_G:
     case SYSTEM_USED_SPACE_PERCENT_G:
+    case BAR_FREE_SPACE_G:
+    case BAR_USED_SPACE_G:
       strDrive = "G";
       bRet = g_sysinfo.GetDiskSpace("G",total, totalFree, totalUsed, percentFree, percentused);
       break;
@@ -1589,8 +1605,21 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
         case LCD_FREE_SPACE_G:
           strRet.Format("%iMB", totalFree);
           break;
+        case BAR_FREE_SPACE:
+        case BAR_FREE_SPACE_C:
+        case BAR_FREE_SPACE_E:
+        case BAR_FREE_SPACE_F:
+        case BAR_FREE_SPACE_G:
+          percent = percentFree;
+          break;
+        case BAR_USED_SPACE:
+        case BAR_USED_SPACE_C:
+        case BAR_USED_SPACE_E:
+        case BAR_USED_SPACE_F:
+        case BAR_USED_SPACE_G:
+          percent = percentused;
+          break;
       }
-
     }
     else
     {
@@ -1630,26 +1659,12 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
       case SYSTEM_FREE_SPACE_PERCENT_G:
         strRet.Format("%s: %i%% %s", strDrive, percentFree, g_localizeStrings.Get(160));
         break;
-      case BAR_FREE_SPACE:
-      case BAR_FREE_SPACE_C:
-      case BAR_FREE_SPACE_E:
-      case BAR_FREE_SPACE_F:
-      case BAR_FREE_SPACE_G:
-        strRet.Format("%i", percentFree);
-        break;
       case SYSTEM_USED_SPACE_PERCENT:
       case SYSTEM_USED_SPACE_PERCENT_C:
       case SYSTEM_USED_SPACE_PERCENT_E:
       case SYSTEM_USED_SPACE_PERCENT_F:
       case SYSTEM_USED_SPACE_PERCENT_G:
         strRet.Format("%s: %i%% %s", strDrive, percentused, g_localizeStrings.Get(20162));
-        break;
-      case BAR_USED_SPACE:
-      case BAR_USED_SPACE_C:
-      case BAR_USED_SPACE_E:
-      case BAR_USED_SPACE_F:
-      case BAR_USED_SPACE_G:
-        strRet.Format("%i", percentused);
         break;
       }
     }
