@@ -241,16 +241,19 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     }
 
     CStdString strDefault = GetDefaultShareNameByType(strType);
+    SScraperInfo info;
 
     // add the needed buttons
     int btn_AddShare=0;
     int btn_EditPath=0;
     int btn_Default=0;
     int btn_Delete=0;
-    int btn_setThumb=0;
+    int btn_SetThumb=0;
     int btn_RemoveThumb=0;
     int btn_ClearDefault=0;
     int btn_SetContent=0;
+    int btn_Scan=0;
+
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
     {
       if (share)
@@ -259,7 +262,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         btn_Default = pMenu->AddButton(13335); // Set as Default
         btn_Delete = pMenu->AddButton(522); // Remove Source
 
-        btn_setThumb = pMenu->AddButton(20019);
+        btn_SetThumb = pMenu->AddButton(20019);
         if (share->m_strThumbnailImage != "")
           btn_RemoveThumb = pMenu->AddButton(20057);
       }
@@ -267,7 +270,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
       if (strType == "video" && share && !CUtil::IsDVD(share->strPath))
+      {
         btn_SetContent = pMenu->AddButton(20333);
+        CVideoDatabase database;
+        database.Open();
+        if (database.GetScraperForPath(share->strPath,info.strPath,info.strContent))
+        {
+          if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
+            btn_Scan = pMenu->AddButton(13349);
+        }
+      }
 
       btn_AddShare = pMenu->AddButton(1026); // Add Source
     }
@@ -385,7 +397,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         ClearDefault(strType);
         return true;
       }
-      else if (btn == btn_setThumb)
+      else if (btn == btn_SetThumb)
       {
         if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
         {
@@ -440,6 +452,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           }
         }
       }
+      else if (btn == btn_Scan)
+      {
+        CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+        pWindow->OnScan(share->strPath,info,-1,-1);
+      }
       else if (btn == btn_PlayDisc)
       {
         // Ok Play now the Media CD/DVD!
@@ -472,50 +489,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
 
-        CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
-        if (pDialog)
-          bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword);
-        else // OLD DEPRECATED
-        {
+        bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword);
 
-          // popup the context menu
-          CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-          if (pMenu)
-          {
-            // load our menu
-            pMenu->Initialize();
-            // add the needed buttons
-            pMenu->AddButton(12337); // 1: Numeric Password
-            pMenu->AddButton(12338); // 2: XBOX gamepad button combo
-            pMenu->AddButton(12339); // 3: Full-text Password
-
-            // set the correct position
-            pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-            pMenu->DoModal();
-
-            iButton = pMenu->GetButton();
-            switch (pMenu->GetButton())
-            {
-            case 1:  // 1: Numeric Password
-              if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPassword))
-                return false;
-              break;
-            case 2:  // 2: Gamepad Password
-              if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPassword))
-                return false;
-              break;
-            case 3:  // 3: Fulltext Password
-              if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPassword))
-                return false;
-              break;
-            default:  // Not supported, abort
-              return false;
-              break;
-            }
-          }
-          share->m_iLockMode = iButton;
-          bResult = true;
-        }
         if (!bResult)
           return false;
         // password entry and re-entry succeeded, write out the lock data
@@ -580,38 +555,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         CStdString strNewPW;
 	      CStdString strNewLockMode;
         bool bResult=false;
-        CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
-        if (pDialog)
-        {
-          bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW);
-          if (bResult)
-            strNewLockMode.Format("%i",share->m_iLockMode);
-        }
-        else // OLD DEPRECATED
-        {
-          switch (item->m_iLockMode)
-          {
-          case 1:  // 1: Numeric Password
-            if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
-              return false;
-            else strNewLockMode = "1";
-            break;
-          case 2:  // 2: Gamepad Password
-            if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPW))
-              return false;
-            else strNewLockMode = "2";
-            break;
-          case 3:  // 3: Fulltext Password
-            if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPW))
-              return false;
-            else strNewLockMode = "3";
-            break;
-          default:  // Not supported, abort
-            return false;
-            break;
-          }
-          bResult = true;
-        }
+        bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW);
+        if (bResult)
+          strNewLockMode.Format("%i",share->m_iLockMode);
+
         if (!bResult)
           return false;
         // password ReSet and re-entry succeeded, write out the lock data
