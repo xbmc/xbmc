@@ -243,7 +243,7 @@
   <string id="316">清除歌曲…</string>
   <string id="317">成功清除数据库！</string>
   <string id="318">清除歌曲…</string>
-  <string id="319">清除歌曲错误！</string>
+  <string id="319">清除歌曲错误</string>
   <string id="320">清除艺人…</string>
   <string id="321">清除艺人错误！</string>
   <string id="322">清除流派…</string>
@@ -460,7 +460,7 @@
   <string id="552">日期</string>
   <string id="553">大小</string>
   <string id="554">音轨</string>
-  <string id="555">时长</string>
+  <string id="555">时间</string>
   <string id="556">标题</string>
   <string id="557">艺人</string>
   <string id="558">专辑</string>
@@ -476,8 +476,8 @@
   <string id="581">排序方法</string>
   <string id="582">显示模式</string>
   <string id="583">记忆不同资料夹的显示模式</string>
-  <string id="584">增序</string>
-  <string id="585">减序</string>
+  <string id="584">升幂</string>
+  <string id="585">降幂</string>
   <string id="586">编辑播放列表</string>
 
   <string id="588">取消舞会模式</string>
@@ -918,7 +918,7 @@
   <string id="13253">取消移动</string>
 
   <string id="13270">硬件：</string>
-  <string id="13271">CPU 中央处理器速度：</string>
+  <string id="13271">CPU 中央处理器使用：</string>
 
   <string id="13274">XBOX 已经连接到互联网，但是没有设置 DNS！</string>
   <string id="13275">硬盘</string>
@@ -995,7 +995,7 @@
   <string id="13347">加入到当前播放列表</string>
   <string id="13348">查询 IMDb 信息…</string>
   <string id="13349">查询所有文件信息</string>
-  <string id="13350">查看正在播放列表</string>
+  <string id="13350">察看正在播放列表</string>
   <string id="13351">专辑信息</string>
   <string id="13352">扫瞄文件夹信息</string>
   <string id="13353">停止搜寻</string>
@@ -1475,27 +1475,29 @@
   <string id="20182">空格</string>
   <string id="20183">重载桌面皮肤</string>
   <string id="20184">根据图像 EXIF 信息自动旋转图片</string>
-  <string id="20185">侦测硬件参数</string>
+  <string id="20185"></string>
   <string id="20186">请稍候…</string>
   <string id="20187">备份 EEPROM</string>
   <string id="20188">备份 BIOS</string>
+
   <string id="20189"></string>
-  <string id="20190">侦测硬盘硬件参数</string>
-  <string id="20191">侦测硬盘参数</string>
-  <string id="20192">侦测硬盘密钥</string>
-  <string id="20193">侦测硬盘温度</string>
-  <string id="20194">侦测光驱 DVD-ROM 硬件参数</string>
-  <string id="20195">侦测光驱型号和固件</string>
-  <string id="20196">侦测网络设定</string>
-  <string id="20197">侦测网卡物理地址(MAC)</string>
-  <string id="20198">侦测 Internet 连线状态</string>
-  <string id="20199">侦测 XBOX 版本，序号，CPU 信息</string>
-  <string id="20300">侦测 XBOX 硬件信息</string>
-  <string id="20301">侦测改机芯片信息</string>
-  <string id="20302">侦测 BIOS</string>
-  <string id="20303">侦测 CPU 速度</string>
-  <string id="20304">侦测生产日期</string>
-  <string id="20305">侦测附件信息</string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
+
   <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加入到 BiosIDs.ini</string>
   <string id="20307">备用 DNS 服务器地址</string>
   <string id="20308">DHCP 服务器:</string>
@@ -1603,4 +1605,3 @@
 
   <string id="29999">游戏应用闪烁过滤</string>
 </strings>
- 	  	 
