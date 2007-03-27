@@ -259,6 +259,7 @@ public:
     int m_logLevel;
     CStdString m_cddbAddress;
     bool m_usePCDVDROM;
+    bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
     CStdStringArray m_videoStackRegExps;
