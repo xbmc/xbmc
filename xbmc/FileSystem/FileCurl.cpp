@@ -355,6 +355,15 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
 
     url2.SetFileName(filename);
   }
+  else if( url2.GetProtocol().Equals("http") )
+  {
+    if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
+    {
+      m_proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver");
+      m_proxy += ":" + g_guiSettings.GetString("network.httpproxyport");
+      CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
+    }
+  }
 
   url2.GetURL(m_url);
 
