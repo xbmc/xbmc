@@ -63,7 +63,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "searchstring", m_strSearchString);
   XMLUtils::SetString(movie, "file", m_strFile);
   XMLUtils::SetString(movie, "path", m_strPath);
-  XMLUtils::SetString(movie, "imdbnumber", m_strIMDBNumber);
+  XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
   XMLUtils::SetString(movie, "genre", m_strGenre);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);
@@ -111,7 +111,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie)
   XMLUtils::GetString(movie, "searchstring", m_strSearchString);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
-  XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
+  XMLUtils::GetString(movie, "id", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
   XMLUtils::GetString(movie, "premiered", m_strPremiered);
   XMLUtils::GetString(movie, "status", m_strStatus);
