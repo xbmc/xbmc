@@ -1099,7 +1099,7 @@ int CGUIInfoManager::GetInt(int info) const
     case BAR_USED_SPACE_E:
     case BAR_USED_SPACE_F:
     case BAR_USED_SPACE_G:
-      iret = atoi(g_sysinfo.GetHddSpaceInfo(info).c_str());
+      g_sysinfo.GetHddSpaceInfo(iret, info, true);
       break;
     case BAR_CPU_USAGE:
       iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
