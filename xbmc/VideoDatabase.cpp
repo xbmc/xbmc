@@ -2061,7 +2061,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   CUtil::AddFileToFolder(details.m_strPath, pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
-  details.m_strShowTitle = m_pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString();
+  details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString();
 
   if (needsCast)
   {
@@ -2074,6 +2074,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
       m_pDS2->next();
     }
     castTime += timeGetTime() - time; time = timeGetTime();
+    m_pDS2->close();
   }
   return details;
 }
@@ -4319,7 +4320,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
       CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, true);
       tvshow.Save(pMain, "tvshow");
       // now save the episodes from this show
-      CStdString sql = FormatSQL("select episode.*,files.strFileName,path.strPath from episode join files on files.idEpisode=tvshowlinkepisode.idepisode join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%s",tvshow.m_strSearchString.c_str());
+      sql = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idEpisode=tvshowlinkepisode.idepisode join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%s",VIDEODB_ID_TV_TITLE,tvshow.m_strSearchString.c_str());
       pDS->query(sql.c_str());
 
       while (!pDS->eof())
