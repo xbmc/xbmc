@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
+#include "GUIWIndowVideoFiles.h"
 #include "utils/GUIInfoManager.h"
 #include "util.h"
 #include "PlayListM3U.h"
@@ -649,3 +650,16 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
       items.Add(item);
   }
 }
+
+void CGUIWindowVideoNav::OnScan(const CStdString& strPath, const SScraperInfo& info) 
+{ 
+  CGUIWindowVideoFiles*  pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+  if (pWindow)
+  {
+    CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
+    pWindow->OnMessage(msg);
+    pWindow->OnScan(strPath,info);
+    CGUIMessage msg2(GUI_MSG_WINDOW_DEINIT,0,0);
+    pWindow->OnMessage(msg2);
+  }
+}  
