@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/16/2007-->
-<!--$Revision:$-->
-<!--Based on english strings version 8202-->
+<!--Date of translation: 03/27/2007-->
+<!--$Revision$-->
+<!--Based on english strings version 8338-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -471,6 +471,7 @@
   <string id="584">Aufsteigend</string>
   <string id="585">Absteigend</string>
   <string id="586">Playlist editieren</string>
+  <string id="587">Filter</string>
   <string id="588">Party-Modus verlassen</string>
   <string id="589">Party-Modus</string>
   <string id="590">Zufall</string>
@@ -868,7 +869,7 @@
   <string id="13252">Hierhin verschieben</string>
   <string id="13253">Verschieben abbrechen</string>
   <string id="13270">Hardware:</string>
-  <string id="13271">CPU-Geschwindigkeit:</string>
+  <string id="13271">CPU-Auslastung:</string>
   <string id="13274">XBOX ist verbunden, aber es ist kein DNS verfügbar!</string>
   <string id="13275">Festplatte</string>
   <string id="13276">DVD-Laufwerk</string>
@@ -1412,27 +1413,27 @@
   <string id="20182">Leertaste</string>
   <string id="20183">Skin aktualisieren</string>
   <string id="20184">Bilder anhand der EXIF-Informationen drehen</string>
-  <string id="20185">Hardware-Informationen werden geprüft</string>
+  <string id="20185"></string>
   <string id="20186">Bitte warten...</string>
-  <string id="20187">EEPROM-Werte werden geprüft</string>
-  <string id="20188">EEPROM-Werte wurden eingelesen</string>
-  <string id="20189">Hardware-Erkennung abgeschlossen</string>
-  <string id="20190">Festplatten-Informationen werden geprüft</string>
-  <string id="20191">Festplatten-Werte werden geprüft</string>
-  <string id="20192">Festplatten-Schlüssel wird geprüft</string>
-  <string id="20193">Festplatten-Temperatur wird geprüft</string>
-  <string id="20194">DVD-Laufwerks-Informationen werden geprüft</string>
-  <string id="20195">Modell/Firmware wird geprüft</string>
-  <string id="20196">Netzwerk-Einstellungen werden geprüft</string>
-  <string id="20197">MAC-Adresse wird geprüft</string>
-  <string id="20198">Internet-Status wird geprüft</string>
-  <string id="20199">XBOX-Version, Seriennummer und CPU werden geprüft</string>
-  <string id="20300">XBOX-Hardware wird geprüft</string>
-  <string id="20301">ModChip wird geprüft</string>
-  <string id="20302">BIOS wird geprüft</string>
-  <string id="20303">CPU-Geschwindigkeit wird geprüft</string>
-  <string id="20304">Produktionsdatum wird geprüft</string>
-  <string id="20305">Angeschlossene Geräte werden geprüft</string>
+  <string id="20187">EEPROM wird gesichert</string>
+  <string id="20188">BIOS wird gesichert</string>
+  <string id="20189"></string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server</string>
@@ -1495,6 +1496,7 @@
   <string id="20365">Handlung</string>
   <string id="20366">* Alle Staffeln</string>
   <string id="20367">'Gesehene' Filme verstecken</string>
+  <string id="20368">Produktions-Code</string>
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
