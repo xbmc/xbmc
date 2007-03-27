@@ -168,7 +168,7 @@
 			</control>
 			<control type="progress">
 				<description>bar diagram free memory</description>
-				<info>bar.usedmemory</info>
+				<info>bar.freememory</info>
 				<visible>true</visible>
 				<posx>190</posx>
 				<posy>257</posy>
@@ -259,7 +259,7 @@
 			</control>
 			<control type="progress">
 				<description>bar Free Space c:</description>
-				<info>bar.usedspace(c)</info>
+				<info>bar.freespace(c)</info>
 				<visible>true</visible>
 				<posx>190</posx>
 				<posy>184</posy>
@@ -290,7 +290,7 @@
 			</control>
 			<control type="progress">
 				<description>bar Free Space e:</description>
-				<info>bar.usedspace(e)</info>
+				<info>bar.freespace(e)</info>
 				<visible>true</visible>
 				<posx>190</posx>
 				<posy>222</posy>
@@ -323,7 +323,7 @@
 				</control>
 				<control type="progress">
 					<description>bar Free Space f:</description>
-					<info>bar.usedspace(f)</info>
+					<info>bar.freespace(f)</info>
 					<visible>true</visible>
 					<posx>190</posx>
 					<posy>260</posy>
@@ -357,7 +357,7 @@
 				</control>
 				<control type="progress">
 					<description>bar Free Space g:</description>
-					<info>bar.usedspace(g)</info>
+					<info>bar.freespace(g)</info>
 					<visible>true</visible>
 					<posx>190</posx>
 					<posy>298</posy>
@@ -416,7 +416,7 @@
 				</control>
 				<control type="progress">
 					<description>bar Free Space Total</description>
-					<info>bar.usedspace</info>
+					<info>bar.freespace</info>
 					<visible>true</visible>
 					<posx>190</posx>
 					<posy>420</posy>
