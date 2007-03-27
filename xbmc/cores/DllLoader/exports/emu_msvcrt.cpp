@@ -1388,7 +1388,7 @@ extern "C"
           if (dll__environ[i] != NULL)
           {
             // we only support overwriting the old values
-            if (strncmp(dll__environ[i], var, strlen(var)) == 0)
+            if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
             {
               // free it first
               free(dll__environ[i]);
@@ -1432,22 +1432,34 @@ extern "C"
 
   char* dll_getenv(const char* szKey)
   {
-    char copy_key[64];
-    strcpy(copy_key, szKey);
-    strupr(copy_key);
-    
+    static char* envstring = NULL;
     char* value = NULL;
-    
+	  if (stricmp(szKey, "HTTP_PROXY") == 0) // needed by libmpdemux
+	  {
+      // Use a proxy, if the GUI was configured as such
+      if (g_guiSettings.GetBool("network.usehttpproxy"))
+      {
+        CStdString proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver")
+                               + ":" + g_guiSettings.GetString("network.httpproxyport");
+
+        envstring = (char*)realloc(envstring, proxy.length() + 1);
+        if(!envstring)
+          return NULL;
+
+        return strcpy(envstring, proxy.c_str());
+      }
+	  }
+
     EnterCriticalSection(&dll_cs_environ);
     
     for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
     {
-      if (dll__environ[i] != NULL)
+      if (dll__environ[i])
       {
-        if (strncmp(dll__environ[i], copy_key, strlen(copy_key)) == 0)
+        if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
         {
           // found it
-          value = dll__environ[i] + strlen(copy_key) + 1;
+          value = dll__environ[i] + strlen(szKey) + 1;
         }
       }
     }
@@ -1459,21 +1471,6 @@ extern "C"
       return value;
     }
     
-	  if (strcmp(szKey, "http_proxy") == 0) // needed by libdemux
-	  {
-        // Use a proxy, if the GUI was configured as such
-        bool bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
-        if (bProxyEnabled)
-        {
-          const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
-          const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
-          // Should we check for valid strings here?
-  static char opt_proxyurl[256];
-          _snprintf( opt_proxyurl, 256, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
-		  return opt_proxyurl;
-        }
-	  }
-
     return NULL;
   }
   
