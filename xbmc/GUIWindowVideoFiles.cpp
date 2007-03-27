@@ -611,6 +611,8 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
                 CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
             }
           }
+          else
+            continue;
         }
         // do IMDB lookup...
         if (m_dlgProgress)
