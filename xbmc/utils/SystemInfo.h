@@ -67,6 +67,7 @@ class CSysInfo : public CInfoLoader
     CStdString GetInternetState();
     CStdString GetTrayState();
     bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+    CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
     CStdString GetHddSpaceInfo(int drive, bool shortText=false);
 
     CStdString m_XboxBios;
