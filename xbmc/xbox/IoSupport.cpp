@@ -517,13 +517,14 @@ bool CIoSupport::PartitionExists(int nPartition)
 
 LARGE_INTEGER CIoSupport::GetDriveSize()
 {
+  LARGE_INTEGER drive_size;
+#ifdef _XBOX
   HANDLE hDevice;
   char szHardDrive[32] = "\\Device\\Harddisk0\\Partition0";
   ANSI_STRING hd_string;
   OBJECT_ATTRIBUTES oa;
   IO_STATUS_BLOCK iosb;
   DISK_GEOMETRY disk_geometry;
-  LARGE_INTEGER drive_size;
   NTSTATUS status;
 
   RtlInitAnsiString(&hd_string, szHardDrive);
@@ -550,6 +551,9 @@ LARGE_INTEGER CIoSupport::GetDriveSize()
                         disk_geometry.TracksPerCylinder * 
                         disk_geometry.Cylinders.QuadPart;
 
+  return drive_size;
+#endif
+  drive_size.QuadPart = 0;
   return drive_size;
 }
 
