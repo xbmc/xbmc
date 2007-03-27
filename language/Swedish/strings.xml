@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 03/16/2007-->
+<!--Date of translation: 03/27/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8202-->
+<!--Based on english strings version 8338-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -469,6 +469,7 @@
   <string id="584">Stigande</string>
   <string id="585">Fallande</string>
   <string id="586">Redigera spellista</string>
+  <string id="587">Filter</string>
   <string id="588">Avbryt Festläge</string>
   <string id="589">Festläge</string>
   <string id="590">Slumpmässig</string>
@@ -865,7 +866,7 @@
   <string id="13252">Flytta objekt hit</string>
   <string id="13253">Avbryt flyttning</string>
   <string id="13270">Hårdvara:</string>
-  <string id="13271">CPU Hastighet:</string>
+  <string id="13271">CPU användning:</string>
   <string id="13274">XBOXen är ansluten, men ingen DNS är tillgänglig.</string>
   <string id="13275">Hårddisk</string>
   <string id="13276">DVDRom</string>
@@ -1410,26 +1411,9 @@ den här visualiseringen</string>
   <string id="20182">Mellanslag</string>
   <string id="20183">Ladda om skal</string>
   <string id="20184">Vrid som angivet i EXIF information</string>
-  <string id="20185">Identifierar hårdvaruvärden</string>
   <string id="20186">Var god vänta</string>
   <string id="20187">Tar backup av EEPROM</string>
   <string id="20188">Tar backup av BIOS</string>
-  <string id="20190">Identifierar hårddiskinformation</string>
-  <string id="20191">Identifierar HDD värden</string>
-  <string id="20192">Identifierar HDD nyckel</string>
-  <string id="20193">Identifierar HDD temperatur</string>
-  <string id="20194">Identifierar DVD-ROM information</string>
-  <string id="20195">Identifierar modell/firmware</string>
-  <string id="20196">Identifierar nätverksinställningar</string>
-  <string id="20197">Identifierar MACadress</string>
-  <string id="20198">Identifierar online status</string>
-  <string id="20199">Identifierar XBOX version, serienummer och CPU</string>
-  <string id="20300">Identifierar XBOX hårdvara</string>
-  <string id="20301">Identifierar moddchipp</string>
-  <string id="20302">Identifierar BIOS</string>
-  <string id="20303">Identifierar CPU hastighet</string>
-  <string id="20304">Identifierar produktionsdatum</string>
-  <string id="20305">Identifierar anslutna enheter</string>
   <string id="20306">Okänd. Lägg till MD5 från XBMC.log till BiosIDs.ini</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1492,6 +1476,7 @@ den här visualiseringen</string>
   <string id="20365">Handling i avsnitt</string>
   <string id="20366">* Alla säsonger</string>
   <string id="20367">Dölj sedda</string>
+  <string id="20368">Prod. kod</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
