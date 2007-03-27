@@ -225,6 +225,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
   g_advancedSettings.m_usePCDVDROM = false;
+  g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_FTPShowCache = false;
   
@@ -1164,6 +1165,7 @@ void CSettings::LoadAdvancedSettings()
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
 
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
+  XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
