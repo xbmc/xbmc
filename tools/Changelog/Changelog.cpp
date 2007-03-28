@@ -42,16 +42,19 @@ int _tmain(int argc, _TCHAR* argv[])
 {
   std::string input = "svn_log.xml";
   std::string output = "Changelog.txt";
+  int limit = 0;
+
   if (argc < 2)
   {
     // output help information
     printf("usage:\n");
     printf("\n");
-    printf("  Changelog input <output>\n");
+    printf("  Changelog input <output> <limit>\n");
     printf("\n");
     printf("  input    : input .xml file generated from SVN (using svn log --xml)\n");
     printf("             DOWNLOAD to download direct from XBMC SVN\n");
     printf("  <output> : output .txt file for the changelog (defaults to Changelog.txt)\n");
+    printf("  <limit>  : the number of log entries for svn to fetch. (defaults to no limit)");
     printf("\n");
     return 0;
   }
@@ -64,9 +67,19 @@ int _tmain(int argc, _TCHAR* argv[])
   fprintf(file, header);
   if (input.compare("download") == 0)
   {
+    if(argc > 3)
+      limit = atoi(argv[3]);
     // download our input file
-    printf("Downloading changelog from CVS - this will take some time (around 1MB to download)\n");
-    system("svn log --xml https://svn.sourceforge.net/svnroot/xbmc/trunk/XBMC > svn_log.xml");
+    std::string command = "svn log ";
+    if (limit > 0)
+    {
+      command += "--limit ";
+      command += argv[3]; // the limit as a string
+      command += " ";
+    }
+    command += "--xml https://svn.sourceforge.net/svnroot/xbmc/trunk/XBMC > svn_log.xml";
+    printf("Downloading changelog from SVN - this will take some time (around 1MB to download with no limit)\n");
+    system(command.c_str());
     input = "svn_log.xml";
     printf("Downloading done - processing\n");
   }
@@ -102,5 +115,5 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   fclose(file);
   printf("Changelog saved as: %s\n", output.c_str());
-	return 0;
+  return 0;
 }
