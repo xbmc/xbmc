@@ -1558,6 +1558,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   else
   {
     // just a single item, play it
+    // TODO: Add music-specific code for single playback of an item here (See OnClick in MediaWindow, and OnPlayMedia below)
     OnClick(iItem);
   }
 }
@@ -1615,6 +1616,15 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     CUtil::ConvertFileItemToPlayListItem(m_vecItems[iItem], playlistItem);
     playlistTemp.Add(playlistItem);
     g_partyModeManager.AddUserSongs(playlistTemp, true);
+    return true;
+  }
+  else if (!pItem->IsPlayList() && !pItem->IsInternetStream())
+  { // single music file - if we get here then we have autoplaynextitem turned off, but we
+    // still want to use the playlist player in order to handle more queued items following etc.
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Play();
     return true;
   }
   return CGUIMediaWindow::OnPlayMedia(iItem);
