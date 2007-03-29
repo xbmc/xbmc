@@ -389,8 +389,8 @@ void CGUIWindow::CenterWindow()
 {
   if (m_bRelativeCoords)
   {
-    m_posX = (g_graphicsContext.GetWidth() - m_width) / 2;
-    m_posY = (g_graphicsContext.GetHeight() - m_height) / 2;
+    m_posX = (g_settings.m_ResInfo[m_coordsRes].iWidth - m_width) / 2;
+    m_posY = (g_settings.m_ResInfo[m_coordsRes].iHeight - m_height) / 2;
   }
 }
 
