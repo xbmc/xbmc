@@ -148,7 +148,7 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
       menu->AddButton(12337);
       menu->AddButton(12338);
       menu->AddButton(12339);
-      menu->SetPosition((g_graphicsContext.GetWidth() - menu->GetWidth()) / 2, (g_graphicsContext.GetHeight() - menu->GetHeight()) / 2);
+      menu->CenterWindow();
       menu->DoModal();
 
       CStdString newPassword;
