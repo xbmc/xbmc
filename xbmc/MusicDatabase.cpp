@@ -3338,9 +3338,10 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
                               ")"
                             "or idSong IN "
                               "("
-                              "select distinct song.idSong from song " // All songs where the extra album artist fit
-                              "join exartistalbum on song.idAlbum=exartistalbum.idAlbum "
-                              "where exartistalbum.idArtist=%ld"
+                              "select distinct song.idSong from song " // All songs where the extra album artist fit, excluding
+                              "join exartistalbum on song.idAlbum=exartistalbum.idAlbum " // various artist albums
+                              "join album on song.idAlbum=album.idAlbum "
+                              "where exartistalbum.idArtist=%ld and album.iNumArtists > 1"
                               ")"
                             ") "
                             , idArtist, idArtist, idArtist, idArtist);
