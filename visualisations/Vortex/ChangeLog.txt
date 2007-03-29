@@ -1,3 +1,6 @@
+Build 018 - 29-03-07
+added - AlbumArtWaveSpectrum preset
+
 Build 017 - 27-09-06
 fixed - more aspect ratio fixes.
 added - MentalHangover preset
