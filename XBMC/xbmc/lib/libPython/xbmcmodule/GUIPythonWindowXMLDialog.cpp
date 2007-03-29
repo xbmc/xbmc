@@ -34,21 +34,18 @@ bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage& message)
     break;
     case GUI_MSG_SETFOCUS:
     {
-      if (CGUIWindow::OnMessage(message))
+      // check if our focused control is one of our category buttons
+      int iControl=message.GetControlId();
+      if(pCallbackWindow)
       {
-        // check if our focused control is one of our category buttons
-        int iControl=message.GetControlId();
-        if(pCallbackWindow)
-        {
-          PyXBMCAction* inf = new PyXBMCAction;
-          inf->pObject = NULL;
-          // create a new call and set it in the python queue
-          inf->pCallbackWindow = pCallbackWindow;
-          inf->controlId = iControl;
-          // aquire lock?
-          Py_AddPendingCall(Py_XBMC_Event_OnFocus, inf);
-          PulseActionEvent();
-        }
+        PyXBMCAction* inf = new PyXBMCAction;
+        inf->pObject = NULL;
+        // create a new call and set it in the python queue
+        inf->pCallbackWindow = pCallbackWindow;
+        inf->controlId = iControl;
+        // aquire lock?
+        Py_AddPendingCall(Py_XBMC_Event_OnFocus, inf);
+        PulseActionEvent();
       }
     }
     break;
