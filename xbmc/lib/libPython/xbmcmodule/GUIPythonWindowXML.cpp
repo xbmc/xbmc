@@ -99,8 +99,6 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         m_viewControl.SetFocused();
         return true;
       }
-      if (CGUIWindow::OnMessage(message))
-      {
         // check if our focused control is one of our category buttons
         int iControl=message.GetControlId();
         if(pCallbackWindow)
@@ -114,7 +112,6 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           Py_AddPendingCall(Py_XBMC_Event_OnFocus, inf);
           PulseActionEvent();
         }
-      }
     }
     break;
 
@@ -216,7 +213,7 @@ void CGUIPythonWindowXML::PulseActionEvent()
 void CGUIPythonWindowXML::Render()
 {
   string backupMediaDir = g_graphicsContext.GetMediaDir();
-  g_graphicsContext.SetMediaDir(m_fallbackPath);
+  g_graphicsContext.SetMediaDir(m_fallbackPath+"\\skins");
   CGUIWindow::Render();
   g_graphicsContext.SetMediaDir(backupMediaDir);
 }
