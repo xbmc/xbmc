@@ -1830,12 +1830,14 @@ void CGUIWindowVideoBase::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPIS
         break;
       CStdString strLabel=items[i]->m_strPath;
       strLabel.MakeLower();
+      CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
       if (reg.RegFind(strLabel.c_str()) > -1)
       {
         char* season = reg.GetReplaceString("\\1");
         char* episode = reg.GetReplaceString("\\2");
         if (season && episode)
         {
+          CLog::Log(LOGDEBUG,"found match %s %s %s",strLabel.c_str(),season,episode);
           int iSeason = atoi(season);
           int iEpisode = atoi(episode);
           std::pair<int,int> key(iSeason,iEpisode);
