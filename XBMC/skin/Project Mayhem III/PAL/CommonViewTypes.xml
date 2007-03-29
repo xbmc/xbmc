@@ -496,7 +496,7 @@
 		<control type="list" id="51">
 			<posx>190</posx>
 			<posy>100</posy>
-			<width>485</width>
+			<width>330</width>
 			<height>232</height>
 			<onleft>9000</onleft>
 			<onright>61</onright>
@@ -517,7 +517,7 @@
 				<control type="label">
 					<posx>30</posx>
 					<posy>3</posy>
-					<width>430</width>
+					<width>290</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -526,9 +526,9 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
-					<posx>475</posx>
+					<posx>325</posx>
 					<posy>3</posy>
-					<width>300</width>
+					<width>200</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -540,7 +540,7 @@
 			</itemlayout>
 			<focusedlayout height="29">
 				<control type="image">
-					<width>485</width>
+					<width>330</width>
 					<height>29</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -557,7 +557,7 @@
 				<control type="label">
 					<posx>30</posx>
 					<posy>3</posy>
-					<width>430</width>
+					<width>290</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -566,9 +566,9 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
-					<posx>475</posx>
+					<posx>325</posx>
 					<posy>3</posy>
-					<width>300</width>
+					<width>200</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -583,76 +583,110 @@
 			<posx>190</posx>
 			<posy>337</posy>
 			<width>510</width>
-			<height>5</height>
+			<height>10</height>
 			<texture>separator.png</texture>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51)</visible>
 		</control>
 		<control type="image">
-			<posx>190</posx>
-			<posy>345</posy>
-			<width>80</width>
-			<height>80</height>
+			<posx>545</posx>
+			<posy>100</posy>
+			<width>140</width>
+			<height>232</height>
 			<aspectratio>keep</aspectratio>
 			<info>ListItem.Icon</info>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51)</visible>
+			<visible>Control.IsVisible(51) + container.content(movies)</visible>
+		</control>
+		<control type="image">
+			<posx>545</posx>
+			<posy>110</posy>
+			<width>140</width>
+			<height>140</height>
+			<aspectratio aligny="bottom">keep</aspectratio>
+			<info>ListItem.Icon</info>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+		</control>
+		<control type="image">
+			<posx>545</posx>
+			<posy>250</posy>
+			<width>140</width>
+			<height>140</height>
+			<aspectratio aligny="top">keep</aspectratio>
+			<info>ListItem.Icon</info>
+			<texture flipy="true" diffuse="diffuse_mirror.png" /> 
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
 		</control>
 		<control type="label">
-			<posx>280</posx>
+			<posx>200</posx>
 			<posy>345</posy>
 			<width>420</width>
 			<height>22</height>
-			<font>font13</font>
+			<font>special13</font>
 			<info>ListItem.Title</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51)</visible>
 		</control>
 		<control type="label">
-			<posx>280</posx>
-			<posy>370</posy>
+			<posx>680</posx>
+			<posy>345</posy>
 			<width>420</width>
 			<height>22</height>
-			<font>font13</font>
-			<info>ListItem.Director</info>
+			<font>special13</font>
+			<align>right</align>
+			<info>ListItem.Year</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(movies)</visible>
 		</control>
 		<control type="label">
-			<posx>280</posx>
-			<posy>395</posy>
+			<posx>200</posx>
+			<posy>500</posy>
 			<width>420</width>
 			<height>22</height>
-			<font>font13</font>
+			<font>special13</font>
 			<info>ListItem.Genre</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(movies)</visible>
 		</control>
 		<control type="label">
-			<posx>280</posx>
-			<posy>370</posy>
+			<posx>680</posx>
+			<posy>500</posy>
 			<width>420</width>
 			<height>22</height>
-			<font>font13</font>
+			<font>special13</font>
+			<align>right</align>
+			<info>ListItem.Rating</info>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + container.content(movies)</visible>
+		</control>
+		<control type="label">
+			<posx>680</posx>
+			<posy>500</posy>
+			<width>420</width>
+			<height>22</height>
+			<font>special13</font>
+			<align>right</align>
 			<label>Season - $INFO[ListItem.Season]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
 		</control>
 		<control type="label">
-			<posx>280</posx>
-			<posy>395</posy>
+			<posx>200</posx>
+			<posy>500</posy>
 			<width>420</width>
 			<height>22</height>
-			<font>font13</font>
+			<font>special13</font>
 			<label>$LOCALIZE[20359] - $INFO[ListItem.Episode]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
 		</control>
 		<control type="textbox">
 			<posx>200</posx>
-			<posy>430</posy>
-			<width>500</width>
-			<height>90</height>
+			<posy>373</posy>
+			<width>480</width>
+			<height>130</height>
 			<font>font13</font>
 			<pagecontrol>999999999</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
@@ -660,7 +694,7 @@
 			<visible>Control.IsVisible(51)</visible>
 		</control>
 		<control type="scrollbar" id="61">
-			<posx>680</posx>
+			<posx>525</posx>
 			<posy>100</posy>
 			<width>17</width>
 			<height>232</height>
