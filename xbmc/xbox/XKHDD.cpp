@@ -67,7 +67,6 @@ BOOL XKHDD::EnableSMART()
 	ATA_COMMAND_OBJ hddcommand;
 	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
 
-	hddcommand.DATA_BUFFSIZE          = 0x200;
 	hddcommand.IPReg.bFeaturesReg     = ATA_SMART_ENABLE;
 	hddcommand.IPReg.bCylLowReg       = SMART_CYL_LOW;
 	hddcommand.IPReg.bCylHighReg      = SMART_CYL_HI;
@@ -92,42 +91,66 @@ signed char XKHDD::GetHddSmartTemp()
 	else
 		return 0;
 }
+// Automatic Acoustic Management: 0xFE = fast, 0x80 = quiet
+BOOL XKHDD::SetAAMLevel(BYTE bLevel)
+{
+	ATA_COMMAND_OBJ hddcommand;
+	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
+
+	hddcommand.IPReg.bFeaturesReg     = ATA_FEATURE_ENABLE_AAM;
+	hddcommand.IPReg.bSectorCountReg  = bLevel;
+	hddcommand.IPReg.bCommandReg      = ATA_COMMAND_SET_FEATURES;
+
+	return SendATACommand(XBOX_DEVICE_HDD, &hddcommand, IDE_COMMAND_NONDATA);
+}
+// Automatic Power Management: 0xFE = fast, 0x80 = quiet
+BOOL XKHDD::SetAPMLevel(BYTE bLevel)
+{
+	ATA_COMMAND_OBJ hddcommand;
+	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
+
+	hddcommand.IPReg.bFeaturesReg     = ATA_FEATURE_ENABLE_APM;
+	hddcommand.IPReg.bSectorCountReg  = bLevel;
+	hddcommand.IPReg.bCommandReg      = ATA_COMMAND_SET_FEATURES;
+
+	return SendATACommand(XBOX_DEVICE_HDD, &hddcommand, IDE_COMMAND_NONDATA);
+}
 
 VOID XKHDD::SpindownHarddisk(bool bSpinDown)
 {
 #ifdef _XBOX
-  int status;
-  int iPowerCode = ATA_POWERSTATE_ACTIVE; //assume active mode
+	int status;
+	int iPowerCode = ATA_POWERSTATE_ACTIVE; //assume active mode
 
-  KIRQL oldIrql = XKHDD::RaiseIRQLToIDEChannelIRQL();
-  _outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
-  //Ask drive for powerstate
-  _outp(ATA_COMMAND_REGISTER, ATA_COMMAND_POWERMODE1);
-  //Get status of the command
-  status = _inp(ATA_STATUS_REGISTER);
-  int i = 0;
-  while ( (i < 2000) && ((status & ATA_STATUS_DRIVE_BUSY) == ATA_STATUS_DRIVE_BUSY) )
-  {
-    //wait for drive to process the command
-    status = _inp(ATA_STATUS_REGISTER);
-    i++;
-  };
-  //if it's busy or not responding as we expected don't tell it to standby
-  if ( (i < 2000) && (!(status & ATA_STATUS_DRIVE_ERROR)) )
-  {
-    iPowerCode = _inp(ATA_SECTOR_COUNT_REGISTER);
-    if (bSpinDown && iPowerCode != ATA_POWERSTATE_STANDBY)
-    {
-      _outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
-      _outp(ATA_COMMAND_REGISTER, ATA_COMMAND_STANDBY);
-    }
-    else if (!bSpinDown && iPowerCode == ATA_POWERSTATE_STANDBY)
-    {
-      _outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
-      _outp(ATA_COMMAND_REGISTER, ATA_COMMAND_ACTIVE);
-    }
-  }
-  KeLowerIrql(oldIrql);
+	KIRQL oldIrql = XKHDD::RaiseIRQLToIDEChannelIRQL();
+	_outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
+	//Ask drive for powerstate
+	_outp(ATA_COMMAND_REGISTER, ATA_COMMAND_POWERMODE1);
+	//Get status of the command
+	status = _inp(ATA_STATUS_REGISTER);
+	int i = 0;
+	while ( (i < 2000) && ((status & ATA_STATUS_DRIVE_BUSY) == ATA_STATUS_DRIVE_BUSY) )
+	{
+		//wait for drive to process the command
+		status = _inp(ATA_STATUS_REGISTER);
+		i++;
+	};
+	//if it's busy or not responding as we expected don't tell it to standby
+	if ( (i < 2000) && (!(status & ATA_STATUS_DRIVE_ERROR)) )
+	{
+		iPowerCode = _inp(ATA_SECTOR_COUNT_REGISTER);
+		if (bSpinDown && iPowerCode != ATA_POWERSTATE_STANDBY)
+		{
+			_outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
+			_outp(ATA_COMMAND_REGISTER, ATA_COMMAND_STANDBY);
+		}
+		else if (!bSpinDown && iPowerCode == ATA_POWERSTATE_STANDBY)
+		{
+			_outp(ATA_DRIVE_HEAD_REGISTER, 0xA0 );
+			_outp(ATA_COMMAND_REGISTER, ATA_COMMAND_ACTIVE);
+		}
+	}
+	KeLowerIrql(oldIrql);
 #endif
 }
 
@@ -150,24 +173,6 @@ signed char XKHDD::GetHddSmartTemp(UCHAR* IDEData)
 	return retval;
 }
 
-WORD XKHDD::GetIDENumOfCyls(UCHAR* IDEData)
-{
-	WORD retVal = (WORD) *(IDEData+HDD_NUM_OF_CYLS_OFFSET);
-	return retVal;
-}
-
-WORD XKHDD::GetIDENumOfHeads(UCHAR* IDEData)
-{
-	WORD retVal = (WORD) *(IDEData+HDD_NUM_OF_HEADS_OFFSET);
-	return retVal;
-}
-
-WORD XKHDD::GetIDESecPerTrack(UCHAR* IDEData)
-{
-	WORD retVal = (WORD) *(IDEData+HDD_SECTOR_PERTRACK_OFFSET);
-	return retVal;
-}
-
 void XKHDD::GetIDEFirmWare(UCHAR* IDEData, LPSTR FirmwareString)
 {
 	CleanATAData((UCHAR*)FirmwareString, IDEData+IDE_FIRMWARE_OFFSET, HDD_FIRMWARE_LENGTH);
@@ -185,12 +190,12 @@ void XKHDD::GetIDEModel(UCHAR* IDEData, LPSTR ModelString)
 
 BOOL XKHDD::IsSmartSupported(UCHAR * IDEData)
 {
-  return ((WORD)*(IDEData + HDD_CMD_SUPPORT_OFFSET)) & 1;
+	return ((WORD)*(IDEData + HDD_CMD_SUPPORT_OFFSET)) & 1;
 }
 
 BOOL XKHDD::IsSmartEnabled(UCHAR * IDEData)
 {
-  return ((WORD)*(IDEData + HDD_CMD_ENABLED_OFFSET)) & 1;
+	return ((WORD)*(IDEData + HDD_CMD_ENABLED_OFFSET)) & 1;
 }
 
 WORD XKHDD::GetIDESecurityStatus(UCHAR* IDEData)
@@ -288,7 +293,7 @@ BOOL XKHDD::SendATACommand(UCHAR DeviceNum, LPATA_COMMAND_OBJ ATACommandObj, UCH
 #if defined (_WINDOWS)
 	unsigned int Size = sizeof(ATA_PASS_THROUGH) + ATACommandObj->DATA_BUFFSIZE;
 #else
-  unsigned int Size = sizeof(ATA_PASS_THROUGH);
+	unsigned int Size = sizeof(ATA_PASS_THROUGH);
 #endif
 	LPATA_PASS_THROUGH pAPT = (LPATA_PASS_THROUGH) VirtualAlloc(NULL, Size, MEM_COMMIT, PAGE_READWRITE);
 	ZeroMemory (pAPT, Size);

@@ -305,25 +305,21 @@ CGUISettings::CGUISettings(void)
   // System settings
   AddGroup(4, 13000);
   AddCategory(4, "system", 13281);
-  AddInt(1, "system.hdspindowntime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes
-  AddInt(2, "system.remoteplayhdspindown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT); // off, music, video, both
   // advanced only configuration
-  AddInt(0, "system.remoteplayhdspindownminduration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
-  AddInt(0, "system.remoteplayhdspindowndelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
   AddSeparator(3, "system.sep1");
-  AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddSeparator(5, "system.sep2");
-  AddInt(6, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
-  AddInt(7, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(8, "system.ledenableonpaused", 20313, true);
-  AddSeparator(9, "system.sep3");
-  AddBool(10, "system.fanspeedcontrol", 13302, false);
+  AddInt(7, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
+  AddInt(8, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(9, "system.ledenableonpaused", 20313, true);
+  AddSeparator(10, "system.sep3");
+  AddBool(11, "system.fanspeedcontrol", 13302, false);
 #ifdef HAS_XBOX_HARDWARE
-  AddInt(11, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(12, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddSeparator(12, "system.sep4");
-  AddBool(13, "system.autotemperature", 13301, false);
-  AddInt(14, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  AddSeparator(13, "system.sep4");
+  AddBool(14, "system.autotemperature", 13301, false);
+  AddInt(15, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "lcd", 448);
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
@@ -342,6 +338,14 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "autorun.video", 244, true);
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
+
+  AddCategory(4, "harddisk", 440);
+  AddInt(1, "harddisk.spindowntime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes
+  AddInt(2, "harddisk.remoteplayspindown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT); // off, music, video, both
+  AddInt(0, "harddisk.remoteplayspindownminduration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
+  AddInt(0, "harddisk.remoteplayspindowndelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
+  AddInt(3, "harddisk.aamlevel", 21386, AAM_FAST, AAM_FAST, 1, AAM_QUIET, SPIN_CONTROL_TEXT);
+  AddInt(4, "harddisk.apmlevel", 21390, APM_HIPOWER, APM_HIPOWER, 1, APM_LOPOWER_STANDBY, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "cache", 439);
   AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
