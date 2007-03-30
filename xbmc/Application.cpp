@@ -4233,7 +4233,7 @@ void CApplication::CheckHDSpindown()
   {
     // yes, then check the elapsed time
     DWORD dwTimeSpan = timeGetTime() - m_dwSpinDownTime;
-    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("system.hdspindowntime")*60UL*1000UL)) )
+    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("harddisk.spindowntime")*60UL*1000UL)) )
     {
       // time has elapsed, spin it down
 #ifdef HAS_XBOX_HARDWARE
