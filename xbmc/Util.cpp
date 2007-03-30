@@ -478,8 +478,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   else if (url.GetProtocol() == "multipath")
   {
     // get the parent path of the first item
-    CMultiPathDirectory dir;
-    return GetParentPath(dir.GetFirstPath(strPath), strParent);
+    return GetParentPath(CMultiPathDirectory::GetFirstPath(strPath), strParent);
   }
   else if (strFile.size() == 0)
   {
