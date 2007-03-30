@@ -29,6 +29,7 @@
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/filecurl.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "cuedocument.h"
 #include "Utils/fstrcmp.h"
@@ -2128,12 +2129,11 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   // if a folder, check for folder.jpg
   if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
-    CStdString folderThumb;
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      CUtil::AddFileToFolder(m_strPath, thumbs[i], folderThumb);
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
       if (CFile::Exists(folderThumb))
       {
         return folderThumb;
@@ -2261,13 +2261,22 @@ CStdString CFileItem::GetUserVideoThumb()
   // 2. if a folder, check for folder.jpg
   if (m_bIsFolder)
   {
-    CStdString folderThumb;
-    CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
+    CStdString folderThumb(GetFolderThumb());
     if (CFile::Exists(folderThumb))
       return folderThumb;
   }
   // No thumb found
   return "";
+}
+
+CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jpg" */) const
+{
+  CStdString folderThumb;
+  if (IsMultiPath())
+    CUtil::AddFileToFolder(CMultiPathDirectory::GetFirstPath(m_strPath), folderJPG, folderThumb);
+  else
+    CUtil::AddFileToFolder(m_strPath, folderJPG, folderThumb);
+  return folderThumb;
 }
 
 void CFileItem::SetVideoThumb()
@@ -2437,8 +2446,7 @@ void CFileItem::SetUserProgramThumb()
   else if (m_bIsFolder)
   {
     // 3. cache the folder image
-    CStdString folderThumb;
-    CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
+    CStdString folderThumb(GetFolderThumb());
     if (CFile::Exists(folderThumb))
     {
       CPicture pic;
