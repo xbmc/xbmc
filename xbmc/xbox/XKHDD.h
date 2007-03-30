@@ -165,9 +165,15 @@
 #define ATA_COMMAND_POWERMODE1        0xE5
 #define ATA_COMMAND_STANDBY           0xE0
 #define ATA_COMMAND_ACTIVE            0xE1
+#define ATA_COMMAND_SET_FEATURES      0xEF
 
- #define ATA_POWERSTATE_ACTIVE       0xFF
- #define ATA_POWERSTATE_STANDBY      0x00 // 0x80=idle
+#define ATA_FEATURE_ENABLE_APM        0x05
+#define ATA_FEATURE_DISABLE_APM       0x85
+#define ATA_FEATURE_ENABLE_AAM        0x42
+#define ATA_FEATURE_DISABLE_AAM       0xC2
+
+#define ATA_POWERSTATE_ACTIVE         0xFF
+#define ATA_POWERSTATE_STANDBY        0x00 // 0x80=idle
 
 #define	ATA_SECURITY_SET_PASSWORD     0xF1
 #define ATA_SECURITY_UNLOCK           0xF2
@@ -326,6 +332,11 @@ public:
 	static signed char GetHddSmartTemp();
 	static signed char GetHddSmartTemp(UCHAR* IDEData);
 
+	// automatic acoustic management
+	static BOOL SetAAMLevel(BYTE bLevel);
+	// automatic power management
+	static BOOL SetAPMLevel(BYTE bLevel);
+
 	static KIRQL RaiseIRQLToIDEChannelIRQL();
 	static VOID SpindownHarddisk(bool bSpinDown=true);
 
@@ -335,12 +346,8 @@ public:
 	static void	GetIDEFirmWare(UCHAR* IDEData, LPSTR FirmwareString);
 	static WORD	GetIDESecurityStatus(UCHAR* IDEData);
 
-  static BOOL IsSmartSupported(UCHAR * IDEData);
-  static BOOL IsSmartEnabled  (UCHAR * IDEData);
-	
-	static WORD	GetIDENumOfCyls(UCHAR* IDEData);
-	static WORD	GetIDENumOfHeads(UCHAR* IDEData);
-	static WORD	GetIDESecPerTrack(UCHAR* IDEData);
+	static BOOL IsSmartSupported(UCHAR * IDEData);
+	static BOOL IsSmartEnabled  (UCHAR * IDEData);
 
 	static void	CleanATAData(unsigned char *dst, unsigned char *src, int len);
 	static void CleanATAData(unsigned char *dst, unsigned char *src, int len, BOOL bClean);

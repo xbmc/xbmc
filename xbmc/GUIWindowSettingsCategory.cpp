@@ -35,6 +35,7 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "Utils/LED.h"
 #include "Utils/FanController.h"
+#include "xbox/xkhdd.h"
 #endif
 #ifdef HAS_LCD
 #include "Utils/LCDFactory.h"
@@ -484,6 +485,24 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("harddisk.aamlevel"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(21388), AAM_QUIET);
+      pControl->AddLabel(g_localizeStrings.Get(21387), AAM_FAST);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("harddisk.apmlevel"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(21391), APM_HIPOWER);
+      pControl->AddLabel(g_localizeStrings.Get(21392), APM_LOPOWER);
+      pControl->AddLabel(g_localizeStrings.Get(21393), APM_HIPOWER_STANDBY);
+      pControl->AddLabel(g_localizeStrings.Get(21394), APM_LOPOWER_STANDBY);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("system.targettemperature"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -508,7 +527,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(int(pSettingInt->GetData()));
     }
-    else if (strSetting.Equals("system.remoteplayhdspindown"))
+    else if (strSetting.Equals("harddisk.remoteplayspindown"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -825,15 +844,15 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
     }
-    else if (strSetting.Equals("system.remoteplayhdspindowndelay"))
+    else if (strSetting.Equals("harddisk.remoteplayspindowndelay"))
     { // only visible if we have spin down enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.remoteplayhdspindown") != SPIN_DOWN_NONE);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
     }
-    else if (strSetting.Equals("system.remoteplayhdspindownminduration"))
+    else if (strSetting.Equals("harddisk.remoteplayspindownminduration"))
     { // only visible if we have spin down enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.remoteplayhdspindown") != SPIN_DOWN_NONE);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
     }
     else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword") || strSetting.Equals("servers.ftpautofatx"))
     {
@@ -1293,6 +1312,37 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
     else
       CFanController::Instance()->RestoreStartupSpeed();
+  }
+  else if (strSetting.Equals("harddisk.aamlevel"))
+  {
+    CSettingInt * pSetting = (CSettingInt*)pSettingControl->GetSetting();
+    int setting_level = pSetting->GetData();
+
+    if (setting_level == AAM_QUIET)
+      XKHDD::SetAAMLevel(0x80);
+    else if (setting_level == AAM_FAST)
+      XKHDD::SetAAMLevel(0xFE);
+  }
+  else if (strSetting.Equals("harddisk.apmlevel"))
+  {
+    CSettingInt * pSetting = (CSettingInt*)pSettingControl->GetSetting();
+    int setting_level = pSetting->GetData();
+
+    switch(setting_level)
+    {
+    case APM_LOPOWER:
+      XKHDD::SetAPMLevel(0x80);
+      break;
+    case APM_HIPOWER:
+      XKHDD::SetAPMLevel(0xFE);
+      break;
+    case APM_LOPOWER_STANDBY:
+      XKHDD::SetAPMLevel(0x01);
+      break;
+    case APM_HIPOWER_STANDBY:
+      XKHDD::SetAPMLevel(0x7F);
+      break;
+    }
   }
   else if (strSetting.Equals("autodetect.nickname") )
   {

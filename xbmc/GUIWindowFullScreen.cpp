@@ -389,7 +389,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       //  from HDD all the time.
       if (
         !g_application.CurrentFileItem().IsHD() &&
-        (g_guiSettings.GetInt("system.remoteplayhdspindown") || g_guiSettings.GetInt("system.hdspindowntime"))
+        (g_guiSettings.GetInt("harddisk.remoteplayspindown") || g_guiSettings.GetInt("harddisk.spindowntime"))
       )
       {
         if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))

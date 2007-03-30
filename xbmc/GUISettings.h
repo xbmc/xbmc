@@ -65,6 +65,14 @@
 #define SPIN_DOWN_VIDEO  2
 #define SPIN_DOWN_BOTH  3
 
+#define AAM_QUIET 1
+#define AAM_FAST  0
+
+#define APM_HIPOWER 0
+#define APM_LOPOWER 1
+#define APM_HIPOWER_STANDBY 2
+#define APM_LOPOWER_STANDBY 3
+
 #define NETWORK_DASH   0
 #define NETWORK_DHCP   1
 #define NETWORK_STATIC  2

@@ -1731,6 +1731,27 @@ void CApplication::StartServices()
     CLog::Log(LOGNOTICE, "setting fanspeed");
     CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
   }
+  int setting_level = g_guiSettings.GetInt("harddisk.aamlevel");
+  if (setting_level == AAM_QUIET)
+    XKHDD::SetAAMLevel(0x80);
+  else if (setting_level == AAM_FAST)
+    XKHDD::SetAAMLevel(0xFE);
+  setting_level = g_guiSettings.GetInt("harddisk.apmlevel");
+  switch(setting_level)
+  {
+  case APM_LOPOWER:
+    XKHDD::SetAPMLevel(0x80);
+    break;
+  case APM_HIPOWER:
+    XKHDD::SetAPMLevel(0xFE);
+    break;
+  case APM_LOPOWER_STANDBY:
+    XKHDD::SetAPMLevel(0x01);
+    break;
+  case APM_HIPOWER_STANDBY:
+    XKHDD::SetAPMLevel(0x7F);
+    break;
+  }
 #endif
 }
 void CApplication::CheckDate()
@@ -4098,7 +4119,7 @@ bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
 
 void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 {
-  int iSpinDown = g_guiSettings.GetInt("system.remoteplayhdspindown");
+  int iSpinDown = g_guiSettings.GetInt("harddisk.remoteplayspindown");
   if (iSpinDown == SPIN_DOWN_NONE)
     return ;
   if (m_gWindowManager.HasModalDialog())
@@ -4188,7 +4209,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 
 void CApplication::CheckHDSpindown()
 {
-  if (!g_guiSettings.GetInt("system.hdspindowntime"))
+  if (!g_guiSettings.GetInt("harddisk.spindowntime"))
     return ;
   if (m_gWindowManager.HasModalDialog())
     return ;
