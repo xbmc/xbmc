@@ -1602,6 +1602,16 @@
   <string id="21383">Enable Scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Open Playlist</string>
+  
+  <string id="21386">Acoustic Management Level</string>
+  <string id="21387">Fast</string>
+  <string id="21388">Quiet</string>
+  
+  <string id="21390">Power Management Level</string>
+  <string id="21391">High Power</string>
+  <string id="21392">Low Power</string>
+  <string id="21393">High Standby</string>
+  <string id="21394">Low Standby</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>
