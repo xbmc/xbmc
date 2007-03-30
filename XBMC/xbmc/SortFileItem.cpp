@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "SortFileItem.h"
+#include "Util.h"
 
 inline int StartsWithToken(const CStdString& strLabel)
 {
@@ -43,15 +44,12 @@ bool SSortFileItem::FileAscending(CFileItem *left, CFileItem *right)
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  // only if they're both folders or both files do we do the full comparison
-  if (left->m_bIsFolder == right->m_bIsFolder)
-  {
-    int result = StringUtils::AlphaNumericCompare(left->m_strPath.c_str(), right->m_strPath.c_str());
-    if (result < 0) return true;
-    if (result > 0) return false;
-    return left->m_lStartOffset <= right->m_lStartOffset;
-  }
-  return left->m_bIsFolder;
+  CStdString l(left->m_strPath);  CUtil::RemoveSlashAtEnd(l);
+  CStdString r(right->m_strPath); CUtil::RemoveSlashAtEnd(r);
+  int result = StringUtils::AlphaNumericCompare(CUtil::GetFileName(l).c_str(), CUtil::GetFileName(r).c_str());
+  if (result < 0) return true;
+  if (result > 0) return false;
+  return left->m_lStartOffset <= right->m_lStartOffset; // useful for .cue's in my music
 }
 
 bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
@@ -59,15 +57,12 @@ bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  // only if they're both folders or both files do we do the full comparison
-  if (left->m_bIsFolder == right->m_bIsFolder)
-  {
-    int result = StringUtils::AlphaNumericCompare(left->m_strPath.c_str(), right->m_strPath.c_str());
-    if (result < 0) return false;
-    if (result > 0) return true;
-    return left->m_lStartOffset >= right->m_lStartOffset;
-  }
-  return left->m_bIsFolder;
+  CStdString l(left->m_strPath);  CUtil::RemoveSlashAtEnd(l);
+  CStdString r(right->m_strPath); CUtil::RemoveSlashAtEnd(r);
+  int result = StringUtils::AlphaNumericCompare(CUtil::GetFileName(l).c_str(), CUtil::GetFileName(r).c_str());
+  if (result < 0) return false;
+  if (result > 0) return true;
+  return left->m_lStartOffset >= right->m_lStartOffset;
 }
 
 bool SSortFileItem::SizeAscending(CFileItem *left, CFileItem *right)
