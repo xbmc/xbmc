@@ -34,45 +34,6 @@ void CVirtualDirectory::SetShares(VECSHARES& vecShares)
   m_vecShares = &vecShares;
 }
 
-void CVirtualDirectory::AddShare(const CShare& share)
-{
-  if (!m_vecShares)
-    return;
-  unsigned int i;
-  for (i=0;i<m_vecShares->size();++i ) 
-    if( (*m_vecShares)[i].strPath == share.strPath) // not added before i presume
-      break;
-  if (i==m_vecShares->size()) // we're safe, then add
-    m_vecShares->push_back(share);
-}
-
-bool CVirtualDirectory::RemoveShare(const CStdString& strPath)
-{
-  if (!m_vecShares)
-    return true;
-  for (vector<CShare>::iterator it=m_vecShares->begin(); it != m_vecShares->end(); ++it)
-    if (it->strPath == strPath) 
-    {
-      m_vecShares->erase(it,it+1);
-      return true;
-    }
-
-  return false;
-}
-
-bool CVirtualDirectory::RemoveShareName(const CStdString& strName)
-{
-  if (!m_vecShares)
-    return true;
-  for (vector<CShare>::iterator it=m_vecShares->begin(); it != m_vecShares->end(); ++it)
-    if (it->strName == strName) 
-    {
-      m_vecShares->erase(it,it+1);
-      return true;
-    }
-  return false;
-}
-
 /*!
  \brief Retrieve the shares or the content of a directory.
  \param strPath Specifies the path of the directory to retrieve or pass an empty string to get the shares.

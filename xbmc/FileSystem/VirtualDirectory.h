@@ -22,9 +22,6 @@ namespace DIRECTORY
       else
         return 0;
       }
-    void AddShare(const CShare& share);
-    bool RemoveShare(const CStdString& strPath);
-    bool RemoveShareName(const CStdString& strName);
     bool IsShare(const CStdString& strPath) const;
     bool IsInShare(const CStdString& strPath) const;
 
