@@ -12,7 +12,7 @@ public:
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual bool Exists(const CStdString& strPath);
 
-  CStdString GetFirstPath(const CStdString &strPath);
+  static CStdString GetFirstPath(const CStdString &strPath);
   bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
   void MergeItems(CFileItemList &items);
   CStdString ConstructMultiPath(const CFileItemList& items, const vector<int> &stack);
