@@ -688,7 +688,6 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           {
             CShare shareZip;
             CUtil::CreateZipPath(shareZip.strPath,itm->m_strPath,"",1);
-            directory->AddShare(shareZip);
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
@@ -700,7 +699,6 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             CUtil::CreateRarPath(strRarPath,itm->m_strPath,"",1);
             shareRar.strPath = strRarPath;
 
-            directory->AddShare(shareRar);
             itm->m_strPath = shareRar.strPath;
             itm->m_bIsFolder = true;
           }
@@ -715,14 +713,8 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
                 strncpy(temp,currentDir,6);
               temp[6] = '\0';
 
-              if (stricmp(temp,"rar://") == 0) // unmount archive
-                directory->RemoveShare(currentDir);
-
               if (stricmp(temp,"zip://") == 0) // unmount archive
-              {
                 g_ZipManager.release(currentDir);
-                directory->RemoveShare(currentDir);
-              }
             }
             CStdString strDirectory = itm->m_strPath;
             CStdString strParentPath;
