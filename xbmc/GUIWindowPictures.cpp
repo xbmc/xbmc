@@ -28,6 +28,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "PlayListFactory.h"
+#include "FileSystem/MultiPathDirectory.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -618,6 +619,8 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       CUtil::CreateRarPath(strPath,pItem->m_strPath,"");
     if (pItem->IsCBZ())
       CUtil::CreateZipPath(strPath,pItem->m_strPath,"");
+    if (pItem->IsMultiPath())
+      strPath = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
     CUtil::AddFileToFolder(strPath, "folder.jpg", thumb);
     if (CFile::Exists(thumb))
     {
