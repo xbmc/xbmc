@@ -204,15 +204,19 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppT
     DWORD *color = (DWORD *)texData;
     texDataStart += offset;
     DWORD destPitch = lr.Pitch;
-    if (fmt == XB_D3DFMT_DXT1)
+    if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
-      //realHeight /= 4;  // is this right??
       pitch /= 2;
-      destPitch /= 4; // ???
+      destPitch /= 4;
     }
     else if (fmt == XB_D3DFMT_DXT2)
     {
-      destPitch /= 4; // ???
+      destPitch /= 4;
+    }
+    else if (fmt == XB_D3DFMT_DXT4)
+    {
+      pitch /= 4;
+      destPitch /= 4;
     }
     if (IsSwizzledFormat(fmt))
     { // first we unswizzle
