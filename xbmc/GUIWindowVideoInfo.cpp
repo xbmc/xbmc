@@ -269,7 +269,12 @@ void CGUIWindowVideoInfo::Update()
   SetLabel(CONTROL_RUNTIME, strTmp);
 
   // setup plot text area
-  strTmp = m_movieItem.GetVideoInfoTag()->m_strPlot; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strPlot;
+  if (!(!m_movieItem.GetVideoInfoTag()->m_strShowTitle.IsEmpty() && m_movieItem.GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
+    if (!m_movieItem.GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("myvideos.hideplots"))
+      strTmp = g_localizeStrings.Get(20370);
+
+  strTmp.Trim();
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
   // setup cast list

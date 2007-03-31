@@ -2502,7 +2502,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     }
   case LISTITEM_PLOT:
     if (item->HasVideoInfoTag())
+    {
+      if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
+        if (!item->GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("myvideos.hideplots"))
+          return g_localizeStrings.Get(20370);
+
       return item->GetVideoInfoTag()->m_strPlot;
+    }
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
