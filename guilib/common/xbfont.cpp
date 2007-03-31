@@ -415,6 +415,10 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWid
   {
     WCHAR letter = *strText++;
 
+    // Skip '\r'
+    if ( letter == L'\r')
+      continue;
+
     // Handle newline character
     if ( letter == L'\n' )
     {
@@ -635,6 +639,10 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
 
     // Get the current letter in the CStdString
     WCHAR letter = *strText++;
+
+    // Skip '\r'
+    if ( letter == L'\r')
+      continue;
 
     // Handle the newline character
     if ( letter == L'\n' )
