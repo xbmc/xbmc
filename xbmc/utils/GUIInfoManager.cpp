@@ -2476,7 +2476,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_RATING:
     {
       CStdString rating;
-      rating.Format("%2.2f", item->m_fRating);
+      if (item->m_fRating > 0.f)
+        rating.Format("%2.2f", item->m_fRating);
       return rating;
     }
   case LISTITEM_PROGRAM_COUNT:
