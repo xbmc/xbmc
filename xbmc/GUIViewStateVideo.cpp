@@ -149,7 +149,11 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     case NODE_TYPE_TITLE_TVSHOWS:
       {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
+        else
+          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
+
         AddSortMethod(SORT_METHOD_TRACKNUM, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
         AddSortMethod(SORT_METHOD_VIDEO_YEAR,345,LABEL_MASKS("%L","%Y","%L","%Y"));
         SetSortMethod(SORT_METHOD_LABEL);
