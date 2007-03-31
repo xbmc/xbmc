@@ -44,7 +44,7 @@ protected:
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
-  virtual void OnScan() {};
+  virtual void OnScan(int iItem) {};
 
   // new methods
   virtual void PlayItem(int iItem);

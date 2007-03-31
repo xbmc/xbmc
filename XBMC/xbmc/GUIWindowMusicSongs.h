@@ -18,7 +18,7 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
-  virtual void OnScan();
+  virtual void OnScan(int iItem);
 
   // new method
   virtual void PlayItem(int iItem);
