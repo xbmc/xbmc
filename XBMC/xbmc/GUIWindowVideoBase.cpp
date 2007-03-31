@@ -167,14 +167,27 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           else
             CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
 
-          m_database.GetScraperForPath(strDir,info.strPath,info.strContent);
+          int iFound;
+          m_database.GetScraperForPath(strDir,info.strPath,info.strContent,iFound);
           CScraperParser parser;
           if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
             info.strTitle = parser.GetName();
 
-          if (!info.strContent.IsEmpty() || (m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath) || m_database.HasTvShowInfo(strDir) || m_database.HasEpisodeInfo(m_vecItems[iItem]->m_strPath)))
-            OnInfo(iItem,info);
-          
+          if (info.strContent.IsEmpty() && !(m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath) || m_database.HasTvShowInfo(strDir) || m_database.HasEpisodeInfo(m_vecItems[iItem]->m_strPath)))
+          {
+            // hack
+            CStdString strOldPath = m_vecItems[iItem]->m_strPath;
+            m_vecItems[iItem]->m_strPath = strDir;
+            OnAssignContent(iItem,1,info);
+            m_vecItems[iItem]->m_strPath = strOldPath;
+            return true;
+          }
+
+          if (info.strContent.Equals("tvshows") && iFound == 1) // dont lookup on root tvshow folder
+            return true;
+
+          OnInfo(iItem,info);
+
           return true;
         }
         else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
