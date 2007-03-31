@@ -396,9 +396,10 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(7, "myvideos.savefolderviews", 583, true);
   AddSeparator(8, "myvideos.sep2");
-  AddString(9, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(11, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
+  AddBool(9,"myvideos.hideplots",20369,false);
+  AddString(10, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
