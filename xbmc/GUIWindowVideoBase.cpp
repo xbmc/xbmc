@@ -27,6 +27,7 @@
 #include "Utils/RegExp.h"
 #include "Utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
+#include "GUIDialogFileBrowser.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NFOFile.h"
@@ -900,6 +901,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
   int btn_Mark_Watched = 0;		// Set Watched Status (DB)
   int btn_Update_Title = 0;		// Change Title (DB)
+  int btn_SetThumb = 0;       // Set Season Thumb (DB)
   int btn_Delete = 0;					// Delete
   int btn_Rename = 0;					// Rename
 
@@ -1025,6 +1027,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       }
       if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         btn_Update_Title = pMenu->AddButton(16105); //Edit Title
+    }
+    if (GetID() == WINDOW_VIDEO_NAV)
+    {
+      CVideoDatabaseDirectory dir;
+      if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS)
+        btn_SetThumb = pMenu->AddButton(20371);
     }
     if (!bIsGotoParent)
     {
@@ -1160,6 +1168,26 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     else if (btnid == btn_Update_Title)
     {
       UpdateVideoTitle(iItem);
+    }
+    else if (btnid == btn_SetThumb)
+    {
+      CVideoInfoTag tag;
+      CVideoDatabaseDirectory dir;
+      CQueryParams params;
+      dir.GetQueryParams(m_vecItems[iItem]->m_strPath,params);
+      m_database.GetTvShowInfo("",tag,params.GetTvShowId());
+      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20372), tag.m_strPath))
+      {
+        CStdString thumb(m_vecItems[iItem]->GetCachedSeasonThumb());
+        CPicture picture;
+        if (picture.DoCreateThumbnail(tag.m_strPath, thumb))
+        {
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          Update(m_vecItems.m_strPath);
+        }
+        else
+          CLog::Log(LOGERROR,"  Could not cache season thumb: %s",tag.m_strPath.c_str());
+      }
     }
     // delete
     else if (btnid == btn_Delete)
