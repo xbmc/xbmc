@@ -15,9 +15,9 @@ typedef vector<CStdString> VECMOVIESFILES;
 
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
-#define VIDEODB_MAX_COLUMNS 21
-#define VIDEODB_DETAILS_FILE VIDEODB_MAX_COLUMNS + 1
-#define VIDEODB_DETAILS_PATH VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_MAX_COLUMNS 21 // leave room for the fileid
+#define VIDEODB_DETAILS_FILE VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_PATH VIDEODB_MAX_COLUMNS + 3
 
 #define VIDEODB_TYPE_STRING 1
 #define VIDEODB_TYPE_INT 2
@@ -196,9 +196,7 @@ public:
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   
-  void DeleteDetailsForMovie(const CStdString& strFileNameAndPath);
   void DeleteDetailsForTvShow(const CStdString& strPath);
-  void DeleteDetailsForEpisode(const CStdString& strPath);
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
   
@@ -208,13 +206,11 @@ public:
   
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   long GetTvShowInfo(const CStdString& strPath);
-  long GetEpisodeInfo(const CStdString& strFilenameAndPath);
+  long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1); // lEpisodeId is used for hinting due to two parters...
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
-  long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow);
-
-  void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
+  long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
 
   void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
@@ -285,11 +281,7 @@ public:
 
 protected:
   long GetPath(const CStdString& strPath);
-  long GetFile(const CStdString& strFilenameAndPath, long& lMovieId, long& lEpisodeId, bool bExact = false);
-
-  long GetMovie(const CStdString& strFilenameAndPath);
-  long GetTvShow(const CStdString& strPath);
-  long GetEpisode(const CStdString& strFilenameAndPath);
+  long GetFile(const CStdString& strFilenameAndPath);
 
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
