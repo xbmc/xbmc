@@ -565,6 +565,11 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
                 return;
               }
             }
+            else
+            {
+              // update tvshow info to get updated episode numbers
+              m_database.GetTvShowInfo(item->m_strPath,movieDetails,lShowId); 
+            }
           }
           else
           {
