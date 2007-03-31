@@ -186,7 +186,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSCAN)
       {
-        OnScan();
+        OnScan(-1);
       }
       else if (iControl == CONTROL_BTNREC)
       {
@@ -211,7 +211,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicSongs::OnScan()
+void CGUIWindowMusicSongs::OnScan(int iItem)
 {
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
@@ -220,10 +220,15 @@ void CGUIWindowMusicSongs::OnScan()
     return ;
   }
 
+  CStdString strPath;
+  if (iItem < 0 || iItem >= m_vecItems.Size())
+    strPath = m_vecItems.m_strPath;
+  else
+    strPath = m_vecItems[iItem]->m_strPath;
   // check whether we have scanned here before
   bool bUpdateAll = false;
   CStdString strPaths;
-  m_musicdatabase.GetSubpathsFromPath(m_vecItems.m_strPath, strPaths);
+  m_musicdatabase.GetSubpathsFromPath(strPath, strPaths);
   if (strPaths.length() > 2)
   { // yes, we have, we should prompt the user to ask if they want
     // to do a full scan, or just add new items...
@@ -236,7 +241,7 @@ void CGUIWindowMusicSongs::OnScan()
 
   // Start background loader
   int iControl=GetFocusedControlID();
-  if (musicScan) musicScan->StartScanning(m_vecItems.m_strPath, bUpdateAll);
+  if (musicScan) musicScan->StartScanning(strPath, bUpdateAll);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
   return ;
