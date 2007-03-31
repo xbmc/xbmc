@@ -1560,6 +1560,8 @@
   <string id="20366">* All Seasons</string>
   <string id="20367">Hide Watched</string>
   <string id="20368">Prod Code</string>
+  <string id="20369">Hide plot for unwatched items</string>
+  <string id="20370">* Hidden to prevent spoilers *</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
