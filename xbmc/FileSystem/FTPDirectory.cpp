@@ -57,6 +57,8 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       CFileItem* pItem = new CFileItem(name);
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
+      if (pItem->m_bIsFolder)
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
       pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
 

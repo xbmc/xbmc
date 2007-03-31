@@ -141,7 +141,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       Refresh();
 
       // dont allow refreshing of manual info
-      if (m_Movie.m_strIMDBNumber.Left(2).Equals("xx"))
+      if (m_movieItem.GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"))
         CONTROL_DISABLE(CONTROL_BTN_REFRESH);
 
       return true;
@@ -227,55 +227,54 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowVideoInfo::SetMovie(CVideoInfoTag& album, const CFileItem *item)
+void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
-  m_Movie = album;
   m_movieItem = *item;
 }
 
 void CGUIWindowVideoInfo::Update()
 {
   CStdString strTmp;
-  strTmp = m_Movie.m_strTitle; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strTitle; strTmp.Trim();
   SetLabel(CONTROL_TITLE, strTmp);
 
-  strTmp = m_Movie.m_strDirector; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strDirector; strTmp.Trim();
   SetLabel(CONTROL_DIRECTOR, strTmp);
 
-  strTmp = m_Movie.m_strWritingCredits; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strWritingCredits; strTmp.Trim();
   SetLabel(CONTROL_CREDITS, strTmp);
 
-  strTmp = m_Movie.m_strGenre; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strGenre; strTmp.Trim();
   SetLabel(CONTROL_GENRE, strTmp);
 
-  strTmp = m_Movie.m_strTagLine; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strTagLine; strTmp.Trim();
   SetLabel(CONTROL_TAGLINE, strTmp);
 
-  strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strPlotOutline; strTmp.Trim();
   SetLabel(CONTROL_PLOTOUTLINE, strTmp);
 
-  strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strMPAARating; strTmp.Trim();
   SetLabel(CONTROL_MPAARATING, strTmp);
 
   CStdString strYear;
-  strYear.Format("%i", m_Movie.m_iYear);
+  strYear.Format("%i", m_movieItem.GetVideoInfoTag()->m_iYear);
   SetLabel(CONTROL_YEAR, strYear);
 
   CStdString strRating_And_Votes;
-  if (m_Movie.m_fRating != 0.0f)  // only non-zero ratings are of interest
-    strRating_And_Votes.Format("%03.1f (%s %s)", m_Movie.m_fRating, m_Movie.m_strVotes, g_localizeStrings.Get(20350));
+  if (m_movieItem.GetVideoInfoTag()->m_fRating != 0.0f)  // only non-zero ratings are of interest
+    strRating_And_Votes.Format("%03.1f (%s %s)", m_movieItem.GetVideoInfoTag()->m_fRating, m_movieItem.GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
   SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
 
-  strTmp = m_Movie.m_strRuntime; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strRuntime; strTmp.Trim();
   SetLabel(CONTROL_RUNTIME, strTmp);
 
   // setup plot text area
-  strTmp = m_Movie.m_strPlot; strTmp.Trim();
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strPlot; strTmp.Trim();
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
   // setup cast list
   m_vecStrCast.clear();
-  for (CVideoInfoTag::iCast it = m_Movie.m_cast.begin(); it != m_Movie.m_cast.end(); ++it)
+  for (CVideoInfoTag::iCast it = m_movieItem.GetVideoInfoTag()->m_cast.begin(); it != m_movieItem.GetVideoInfoTag()->m_cast.end(); ++it)
   {
     CStdString character;
     if (it->second.IsEmpty())
@@ -312,7 +311,7 @@ void CGUIWindowVideoInfo::Update()
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
   }
 
-  if (m_Movie.m_strEpisodeGuide.IsEmpty()) // disable the play button for tv show info
+  if (m_movieItem.GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty()) // disable the play button for tv show info
   {
     CONTROL_ENABLE(CONTROL_BTN_PLAY)
   }
@@ -350,7 +349,7 @@ void CGUIWindowVideoInfo::Refresh()
   {
     OutputDebugString("Refresh\n");
 
-    CStdString strImage = m_Movie.m_strPictureURL.m_url;
+    CStdString strImage = m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url;
 
     CStdString thumbImage = m_movieItem.GetThumbnailImage();
     if (!m_movieItem.HasThumbnail())
@@ -358,6 +357,7 @@ void CGUIWindowVideoInfo::Refresh()
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
       DownloadThumbnail(thumbImage);
+      CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
     }
 
     if (!CFile::Exists(thumbImage) )
@@ -489,7 +489,9 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (iType == 2)
     m_database.GetTvShowInfo(pItem->m_strPath, movieDetails, lMovieId);
 
-  SetMovie(movieDetails, pItem);
+  CFileItem item(*pItem);
+  *item.GetVideoInfoTag() = movieDetails;
+  SetMovie(&item);
   Refresh();
 }
 
@@ -508,7 +510,7 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
 
 void CGUIWindowVideoInfo::Play(bool resume)
 {
-  CFileItem movie(m_Movie.m_strFileNameAndPath, false);
+  CFileItem movie(m_movieItem.GetVideoInfoTag()->m_strFileNameAndPath, false);
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
@@ -534,20 +536,20 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   // and then a thumb chooser should be presented, with the current thumb
   // and the downloaded thumbs available (possibly also with a generic
   // file browse option?)
-  if (m_Movie.m_strPictureURL.m_url.IsEmpty())
+  if (m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.IsEmpty())
     return false;
 
   CStdString strExtension;
-  CUtil::GetExtension(m_Movie.m_strPictureURL.m_url, strExtension);
+  CUtil::GetExtension(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, strExtension);
   CStdString strTemp = "Z:\\temp";
   strTemp += strExtension;
   ::DeleteFile(strTemp.c_str());
   CHTTP http;
   // replace m.jpg with f.jpg for the full image
-  CStdString url = m_Movie.m_strPictureURL.m_url;
-  http.SetReferer(m_Movie.m_strPictureURL.m_spoof);
+  CStdString url = m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url;
+  http.SetReferer(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_spoof);
   if (!http.Download(url, strTemp))
-    http.Download(m_Movie.m_strPictureURL.m_url, strTemp);
+    http.Download(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, strTemp);
 
   try
   {
@@ -650,6 +652,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
   }
 
+  CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
   m_movieItem.SetThumbnailImage(cachedThumb);
 
   // tell our GUI to completely reload all controls (as some of them

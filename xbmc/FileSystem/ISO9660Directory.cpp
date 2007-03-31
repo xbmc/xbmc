@@ -63,6 +63,7 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = true;
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
           FILETIME localTime;
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
