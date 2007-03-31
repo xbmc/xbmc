@@ -2318,17 +2318,17 @@ void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMov
     if (iType == 2)
     {
       CLog::Log(LOGINFO, "Changing TvShow:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
-      strSQL.Format("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), lMovieId );
+      strSQL = FormatSQL("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     else if (iType == 1)
     {
       CLog::Log(LOGINFO, "Changing Episode:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
-      strSQL.Format("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), lMovieId );
+      strSQL = FormatSQL("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     else
     {
       CLog::Log(LOGINFO, "Changing Movie:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
-      strSQL.Format("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), lMovieId );
+      strSQL = FormatSQL("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     m_pDS->exec(strSQL.c_str());
   }
