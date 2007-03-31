@@ -3453,6 +3453,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
     if (NULL == m_pDS.get()) return false;
 
     CStdString strPath1(strPath);
+    CUtil::AddSlashAtEnd(strPath1);
     CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath='%s'",strPath1.c_str());
     m_pDS->query( strSQL.c_str() );
 
