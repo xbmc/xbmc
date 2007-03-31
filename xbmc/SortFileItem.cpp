@@ -234,7 +234,7 @@ bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetVideoInfoTag()->m_iEpisode <= right->GetVideoInfoTag()->m_iEpisode;
+    return left->GetVideoInfoTag()->m_iSeason*100+left->GetVideoInfoTag()->m_iEpisode <= right->GetVideoInfoTag()->m_iSeason*100+right->GetVideoInfoTag()->m_iEpisode;
   return left->m_bIsFolder;
 }
 
@@ -245,7 +245,7 @@ bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetVideoInfoTag()->m_iEpisode >= right->GetVideoInfoTag()->m_iEpisode;
+    return left->GetVideoInfoTag()->m_iSeason*100+left->GetVideoInfoTag()->m_iEpisode >= right->GetVideoInfoTag()->m_iSeason*100+right->GetVideoInfoTag()->m_iEpisode;
   return left->m_bIsFolder;
 }
 
