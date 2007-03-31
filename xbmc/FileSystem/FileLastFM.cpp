@@ -454,10 +454,10 @@ bool CFileLastFM::RetreiveMetaData()
   CStdString coverUrl = value;
 
   const CMusicInfoTag* currenttag = g_infoManager.GetCurrentSongTag();
-  if (currenttag &&
-    (currenttag->GetAlbum() != tag.GetAlbum()) ||
+  if (!currenttag ||
+    ((currenttag->GetAlbum() != tag.GetAlbum()) ||
     (currenttag->GetArtist() != tag.GetArtist()) ||
-    (currenttag->GetTitle() != tag.GetTitle())
+    (currenttag->GetTitle() != tag.GetTitle()))
     )
   {
     CStdString cachedFile = "";
