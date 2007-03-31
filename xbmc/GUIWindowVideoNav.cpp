@@ -266,14 +266,21 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.SetThumbnailImage("");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
       {
+        CFileItem item;
         if (node == NODE_TYPE_EPISODES)
+        {
           g_infoManager.m_content = "episodes";
+          item.m_strPath = strDirectory;
+          item.SetCachedSeasonThumb();
+        }
         else
           g_infoManager.m_content = "seasons";
 
-        CFileItem item;
-        m_database.GetFilePath(params.GetTvShowId(),item.m_strPath,2);
-        item.SetVideoThumb();
+        if (!item.HasThumbnail())
+        {
+          m_database.GetFilePath(params.GetTvShowId(),item.m_strPath,2);
+          item.SetVideoThumb();
+        }
         items.SetThumbnailImage(item.GetThumbnailImage());
       }
       else if (node == NODE_TYPE_TITLE_MOVIES)
