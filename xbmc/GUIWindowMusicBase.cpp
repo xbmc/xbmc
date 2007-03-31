@@ -1386,7 +1386,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     // Scan
     else if (btnid == btn_Scan)
     {
-      OnScan();
+      OnScan(iItem);
     }
     // Search
     else if (btnid == btn_Search)
