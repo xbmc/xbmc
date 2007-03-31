@@ -14,9 +14,10 @@ public:
   virtual ~CGUIWindowVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetMovie(CVideoInfoTag& movie, const CFileItem *item);
+  void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
+  virtual CFileItem* GetCurrentListItem() { return &m_movieItem; }
 
 protected:
   virtual void OnInitWindow();
@@ -32,7 +33,6 @@ protected:
   void Play(bool resume = false);
   bool DownloadThumbnail(const CStdString &thumb);
   void OnGetThumb();
-  CVideoInfoTag m_Movie;
   CFileItem m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;

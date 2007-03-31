@@ -70,6 +70,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             pItem->m_strPath += wfd.cFileName;
             g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
             pItem->m_bIsFolder = true;
+            CUtil::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 

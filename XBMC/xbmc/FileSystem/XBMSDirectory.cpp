@@ -203,6 +203,8 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
     pItem->m_strPath += filename;
     g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
     pItem->m_bIsFolder = bIsDirectory;
+    if (pItem->m_bIsFolder)
+      CUtil::AddSlashAtEnd(pItem->m_strPath);
 
     if ( bIsDirectory || IsAllowed( filename) )
     {
