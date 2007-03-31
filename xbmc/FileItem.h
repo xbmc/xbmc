@@ -173,6 +173,7 @@ public:
   CStdString GetCachedProgramThumb();
   CStdString GetCachedGameSaveThumb();
   CStdString GetCachedProfileThumb();
+  CStdString GetCachedSeasonThumb();
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
@@ -184,6 +185,7 @@ public:
   void SetCachedProgramThumb();
   void SetCachedGameSavesThumb();
   void SetCachedMusicThumb();
+  void SetCachedSeasonThumb();
 
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb();
