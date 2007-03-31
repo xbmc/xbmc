@@ -822,6 +822,15 @@ CStdString CFileItem::GetCachedProfileThumb()
   return cachedThumb;
 }
 
+CStdString CFileItem::GetCachedSeasonThumb()
+{
+  Crc32 crc;
+  crc.ComputeFromLowerCase("season" + m_strPath);
+  CStdString cachedThumb;
+  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
+  return cachedThumb;
+}
+
 void CFileItem::SetCachedArtistThumb()
 {
   CStdString thumb(GetCachedArtistThumb());
@@ -840,6 +849,16 @@ void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
+}
+
+void CFileItem::SetCachedSeasonThumb()
+{
+  CStdString thumb(GetCachedSeasonThumb());
+  if (CFile::Exists(thumb))
+  {
+    // found it, we are finished.
+    SetThumbnailImage(thumb);
+  }
 }
 
 void CFileItem::RemoveExtension()
