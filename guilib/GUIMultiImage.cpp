@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/util.h"
 
 using namespace DIRECTORY;
 
@@ -11,6 +12,8 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_currentPath = m_texturePath = strTexturePath;
+  CUtil::AddSlashAtEnd(m_currentPath);
+  CUtil::AddSlashAtEnd(m_texturePath);
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_fadeTime = fadeTime;

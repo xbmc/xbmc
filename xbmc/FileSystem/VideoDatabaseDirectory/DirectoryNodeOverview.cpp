@@ -1,4 +1,5 @@
 #include "../../stdafx.h"
+#include "../../Videodatabase.h"
 #include "DirectoryNodeOverview.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
@@ -22,12 +23,18 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 {
   CStdStringArray vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(342));   // Movies
-  vecRoot.push_back(g_localizeStrings.Get(20343)); // TV Shows
+  CVideoDatabase database;
+  database.Open();
+  int iMovies = database.GetMovieCount();
+  int iTvShows = database.GetTvShowCount();
+  if (iMovies > 0)
+    vecRoot.push_back(g_localizeStrings.Get(342));   // Movies
+  if (iTvShows > 0)
+    vecRoot.push_back(g_localizeStrings.Get(20343)); // TV Shows
 
-  for (int i = 0; i < (int)vecRoot.size(); ++i)
+  for (int i = (iMovies==0); i-(iMovies==0) < (int)vecRoot.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(vecRoot[i]);
+    CFileItem* pItem = new CFileItem(vecRoot[i-(iMovies==0)]);
     CStdString strDir;
     strDir.Format("%i/", i+1);
     pItem->m_strPath = BuildPath() + strDir;

@@ -90,7 +90,7 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
     else
     {
       // use older virtualpath:// protocol
-      strPath.Format("virtualpath://%s/%s", category.c_str(), name.c_str());
+      strPath.Format("virtualpath://%s/%s/", category.c_str(), name.c_str());
     }
   }
 
@@ -121,6 +121,7 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
     m_iDriveType = SHARE_TYPE_UNKNOWN;
   // check - convert to url and back again to make sure strPath is accurate
   // in terms of what we expect
+  CUtil::AddSlashAtEnd(strPath);
   CURL url(strPath);
   url.GetURL(strPath);
 }
@@ -471,13 +472,10 @@ void CSettings::ConvertHomeVar(CStdString& strText)
       {
         CStdString strParent;
         CUtil::GetParentPath(strText,strParent);
-        strText = strParent+"\\";
+        strText = strParent;
       }
       else
         strText += token[i]+"\\";
-    // remove trailing slash
-    if (CUtil::HasSlashAtEnd(strText))
-      strText.Delete(strText.size() - 1);
   }
 }
 
