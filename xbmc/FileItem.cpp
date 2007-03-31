@@ -919,6 +919,7 @@ bool CFileItem::IsParentFolder() const
 // %M - number of episodes
 // %E - episode number
 // %P - production code
+// %H - season*100+episode
 
 void CFileItem::FormatLabel(const CStdString& strMask)
 {
@@ -979,6 +980,10 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     else if (strMask[iPos2 + 1] == 'E' && movie && movie->m_iEpisode > 0)
     { // episode number
       str.Format("%02.2i", movie->m_iEpisode);
+    }
+    else if (strMask[iPos2 + 1] == 'H' && movie && movie->m_iEpisode > 0)
+    { // season*100+episode number
+      str.Format("%02.2i", movie->m_iSeason*100+movie->m_iEpisode);
     }
     else if (strMask[iPos2 + 1] == 'P' && movie)
     { // tvshow production code
