@@ -103,7 +103,10 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 {
   m_album = album;
-  m_albumItem = CFileItem(album.GetAlbumPath(), true);
+  CStdString strPath = album.GetAlbumPath();
+  CUtil::AddSlashAtEnd(strPath);
+  m_album.SetAlbumPath(strPath);
+  m_albumItem = CFileItem(strPath, true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(album.GetTitle());
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.SetMusicThumb();

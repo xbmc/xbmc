@@ -1003,8 +1003,16 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_SEASON:
   case LISTITEM_TVSHOW:
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-      if (pWindow && pWindow->IsMediaWindow())
+      CGUIWindow *pWindow;
+      int iDialog = m_gWindowManager.GetTopMostDialogID();
+      if (iDialog == WINDOW_VIDEO_INFO)
+        pWindow = m_gWindowManager.GetWindow(iDialog);
+      else
+      {
+        pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        iDialog = -1;
+      }
+      if ((iDialog == WINDOW_VIDEO_INFO && pWindow) || (pWindow && pWindow->IsMediaWindow()))
       {
         strLabel = GetItemLabel(pWindow->GetCurrentListItem(), info);
       }

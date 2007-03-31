@@ -111,6 +111,8 @@ namespace DIRECTORY
         pFileItem->m_dwSize = ze->usize;
       pFileItem->m_strPath = strBuffer;
       pFileItem->m_bIsFolder = bIsFolder;
+      if (bIsFolder)
+        CUtil::AddSlashAtEnd(pFileItem->m_strPath);
       items.Add(pFileItem);
     }
     items.SetFastLookup(bWasFast);

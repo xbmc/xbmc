@@ -515,6 +515,18 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
     AddSlashAtEnd(strFile);
 
+  // needed - hasslashatend will arse in e.g. root smb shares
+  if (url.GetProtocol().Equals(""))
+  {
+    if (!CUtil::HasSlashAtEnd(strFile))
+      strFile += '\\';
+  }
+  else
+  {
+    if (!CUtil::HasSlashAtEnd(strFile))
+      strFile += '/';
+  }
+  
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
@@ -2388,7 +2400,7 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
-    if (strFolder.Find("//") >= 0)
+    if (strFolder.Find("/") >= 0)
       strFolder += "/";
     else
       strFolder += "\\";

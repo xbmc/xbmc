@@ -64,6 +64,7 @@ CFileItem::CFileItem(const CAlbum& album)
   m_strPath = album.strPath;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
+  CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
   m_strThumbnailImage = album.strThumb;
 }
@@ -77,6 +78,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   if (movie.m_strFileNameAndPath.IsEmpty())
   {
     m_strPath = movie.m_strPath;
+    CUtil::AddSlashAtEnd(m_strPath);
     m_bIsFolder = true;
   }
   else
@@ -99,6 +101,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_strLabel = artist.strArtist;
   m_strPath = artist.strArtist;
   m_bIsFolder = true;
+  CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
 }
 
@@ -110,6 +113,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_strLabel = genre.strGenre;
   m_strPath = genre.strGenre;
   m_bIsFolder = true;
+  CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
 
@@ -153,6 +157,13 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
+#ifdef DEBUG
+  if (m_bIsFolder && !m_strPath.IsEmpty())
+    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
+#endif
+
+  if (m_bIsFolder)
+    CUtil::AddSlashAtEnd(m_strPath);
 }
 
 CFileItem::CFileItem(const CShare& share)
@@ -163,6 +174,7 @@ CFileItem::CFileItem(const CShare& share)
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
   m_strPath = share.strPath;
+  CUtil::AddSlashAtEnd(m_strPath);
   m_strLabel = share.strName;
   if (share.strStatus.size())
     m_strLabel.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
@@ -199,6 +211,10 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_overlayIcon = item.m_overlayIcon;
   m_strPath = item.m_strPath;
   m_bIsFolder = item.m_bIsFolder;
+#ifdef DEBUG
+  if (m_bIsFolder)
+    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
+#endif
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
