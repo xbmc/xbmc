@@ -1562,6 +1562,8 @@
   <string id="20368">Prod Code</string>
   <string id="20369">Hide plot for unwatched items</string>
   <string id="20370">* Hidden to prevent spoilers *</string>
+  <string id="20371">Set Season Thumb</string>
+  <string id="20372">Season Image</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
