@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 03/18/2007-->
+<!--Date of translation: 03/31/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8202-->
+<!--Based on english strings version 8389-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -443,8 +443,8 @@
   <string id="535">Liste</string>
   <string id="536">Icônes</string>
   <string id="537">Grande liste</string>
-  <string id="538">Grande icône</string>
-  <string id="539">Pano.</string>
+  <string id="538">Grande ICO</string>
+  <string id="539">Pano. Double</string>
   <string id="540">Panoramique</string>
   <string id="550">Lister par %s</string>
   <string id="551">Nom</string>
@@ -469,6 +469,7 @@
   <string id="584">Croissant</string>
   <string id="585">Décroissant</string>
   <string id="586">Éditer Playliste</string>
+  <string id="587">Filtre</string>
   <string id="588">Annuler le Mix de soirée</string>
   <string id="589">Mix de soirée</string>
   <string id="590">Aléatoire</string>
@@ -866,7 +867,7 @@
   <string id="13252">Déplacer ici</string>
   <string id="13253">Annuler le déplacement</string>
   <string id="13270">Matériel:</string>
-  <string id="13271">Vitesse CPU:</string>
+  <string id="13271">Utilisation CPU:</string>
   <string id="13274">La XBox est connecté, mais aucun DNS n'est disponible.</string>
   <string id="13275">Disque Dur</string>
   <string id="13276">DVD-ROM</string>
@@ -1220,8 +1221,8 @@
   <string id="16033">Impossible d'ouvrir la base de données.</string>
   <string id="16034">Impossible de récupérer les chansons depuis la BDD.</string>
   <string id="16100">Toutes les Vidéos</string>
-  <string id="16101">Vidéos non vues</string>
-  <string id="16102">Vidéos vues</string>
+  <string id="16101">Médias non vues</string>
+  <string id="16102">Médias vues</string>
   <string id="16103">Marquer comme vu</string>
   <string id="16104">Marquer comme non vu</string>
   <string id="16105">Éditer le Titre</string>
@@ -1285,7 +1286,7 @@
   <string id="20057">Supprimer la vignette</string>
   <string id="20058">Ajouter un profil...</string>
   <string id="20059">Infos pour tous les albums</string>
-  <string id="20060">Infos sur le Média</string>
+  <string id="20060">Infos Média</string>
   <string id="20061">Séparer</string>
   <string id="20062">Partages par défaut</string>
   <string id="20063">Partages par déf. (lect. seule)</string>
@@ -1409,26 +1410,9 @@
   <string id="20182">Espace</string>
   <string id="20183">Recharger Thème</string>
   <string id="20184">Pivoter en utilisant l'info EXIF</string>
-  <string id="20185">Détection des valeurs matérielles</string>
   <string id="20186">Merci de patienter</string>
   <string id="20187">Récupération de l'EEPROM</string>
   <string id="20188">Récupération du BIOS</string>
-  <string id="20190">Détection des infos Disque dur</string>
-  <string id="20191">Détection des valeurs DD</string>
-  <string id="20192">Détection de la clé DD</string>
-  <string id="20193">Détection de la température DD</string>
-  <string id="20194">Détection des infos DVD-ROM</string>
-  <string id="20195">Détection du modèle/firmware</string>
-  <string id="20196">Détection des paramètres réseau</string>
-  <string id="20197">Détection de l'adresse MAC</string>
-  <string id="20198">Détection du statut en ligne</string>
-  <string id="20199">Détection de la version, du numéro de série et du processeur de la XBox</string>
-  <string id="20300">Détection du matériel de la XBox</string>
-  <string id="20301">Détection du ModChip</string>
-  <string id="20302">Détection du BIOS</string>
-  <string id="20303">Détection de la vitesse du processeur</string>
-  <string id="20304">Détection de la date de production</string>
-  <string id="20305">Détection des unités attachées</string>
   <string id="20306">Inconnu. Merci d'ajouter le MD5 depuis xbmc.log à BiosIDs.ini.</string>
   <string id="20307">DNS secondaire</string>
   <string id="20308">Serveur DHCP</string>
@@ -1491,6 +1475,11 @@
   <string id="20365">Résumé de l'épisode</string>
   <string id="20366">* Toutes les saisons</string>
   <string id="20367">Masquer vue(s)</string>
+  <string id="20368">Code Produit</string>
+  <string id="20369">Masquer le résumé pour les médias non visionnés</string>
+  <string id="20370">* Caché pour empêcher les spoilers *</string>
+  <string id="20371">Définir Image Saison</string>
+  <string id="20372">Image Saison</string>
   <string id="21330">Montrer les dossiers et les fichiers cachés</string>
   <string id="21331">Client TuxBox</string>
   <string id="21332">AVERTISSEMENT: Le dispositif TuxBox est en mode d'enregistrement!</string>
@@ -1527,5 +1516,16 @@
   <string id="21383">Activer barres de défilement</string>
   <string id="21384">Activer le filtre Masquer vue(s) en mode bibliothèque</string>
   <string id="21385">Ouvrir Playliste</string>
+
+  <string id="21386">Gestion du niveau acoustique</string>
+  <string id="21387">Rapide</string>
+  <string id="21388">Silencieux</string>
+
+  <string id="21390">Gestion du niveau de la puissance</string>
+  <string id="21391">Puissance élevée</string>
+  <string id="21392">Puissance basse</string>
+  <string id="21393">Ressource élevée</string>
+  <string id="21394">Ressource basse</string>
+
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 </strings>
