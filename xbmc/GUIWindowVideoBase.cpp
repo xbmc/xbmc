@@ -1009,30 +1009,38 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         }
       }
     }
-    if ((GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_bIsFolder) || (GetID() == WINDOW_VIDEO_NAV && info.strContent.Equals("tvshows")))
-      btn_Show_Info = pMenu->AddButton(iString);
+
+    if (GetID() == WINDOW_VIDEO_NAV)
+    {
+      if (!m_vecItems[iItem]->m_bIsFolder || info.strContent.Equals("tvshows"))
+        btn_Show_Info = pMenu->AddButton(iString);
+    }
 
     // is the item a database movie?
-    if (GetID() == WINDOW_VIDEO_NAV && m_vecItems[iItem]->HasVideoInfoTag() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+    if (!bIsGotoParent && GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     {
-      if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason == 0 && !m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
-        btn_Update = pMenu->AddButton(13349);
+      CVideoDatabaseDirectory dir;
+      NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
 
-      if (m_vecItems[iItem]->GetVideoInfoTag()->m_iSeason > 0 || m_vecItems[iItem]->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // only episodes and movies
+      if (node == NODE_TYPE_TITLE_TVSHOWS) // tvshow
+      {
+        btn_Update = pMenu->AddButton(13349);
+        btn_Update_Title = pMenu->AddButton(16105); //Edit Title
+      }
+
+      if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES)
       {
         if (m_vecItems[iItem]->GetVideoInfoTag()->m_bWatched)
           btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
         else
           btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
-      }
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         btn_Update_Title = pMenu->AddButton(16105); //Edit Title
-    }
-    if (GetID() == WINDOW_VIDEO_NAV)
-    {
-      CVideoDatabaseDirectory dir;
-      if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS)
+      }
+      if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
         btn_SetThumb = pMenu->AddButton(20371);
+      
+      if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
+        btn_Delete = pMenu->AddButton(646);
     }
     if (!bIsGotoParent)
     {
@@ -1044,14 +1052,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           btn_Delete = pMenu->AddButton(117);
           btn_Rename = pMenu->AddButton(118);
         }
-      }
-      // delete titles from database
-      if (GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        CVideoDatabaseDirectory dir;
-        NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-        if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
-          btn_Delete = pMenu->AddButton(646);
       }
     }
   } // if (bContextDriven)
