@@ -2366,12 +2366,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,path,files where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
-
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath,movie.c%02d from genre,genrelinkmovie,movie,path,files where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -2382,12 +2377,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
-
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre,movie.c%02d from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -2407,8 +2397,8 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<long, CStdString> mapGenres;
-      map<long, CStdString>::iterator it;
+      map<long, pair<CStdString,bool> > mapGenres;
+      map<long, pair<CStdString,bool> >::iterator it;
       while (!m_pDS->eof())
       {
         long lGenreId = m_pDS->fv("genre.idgenre").get_asLong();
@@ -2420,7 +2410,10 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
           // check path
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-            mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
+            if (idContent == VIDEODB_CONTENT_MOVIES)
+              mapGenres.insert(pair<long, pair<CStdString,bool> >(lGenreId, pair<CStdString,bool>(strGenre,m_pDS->fv(3).get_asBool())));
+            else
+              mapGenres.insert(pair<long, pair<CStdString,bool> >(lGenreId, pair<CStdString,bool>(strGenre,false)));
         }
         m_pDS->next();
       }
@@ -2428,11 +2421,14 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
 
       for (it=mapGenres.begin();it != mapGenres.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second);
+        CFileItem* pItem=new CFileItem(it->second.first);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
+        if (!items.HasFileNoCase(pItem->m_strPath))
         pItem->SetLabelPreformated(true);
         items.Add(pItem);
       }
@@ -2447,6 +2443,8 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = m_pDS->fv(2).get_asBool();
         items.Add(pItem);
         m_pDS->next();
       }
@@ -2476,11 +2474,7 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath from actors,directorlinkmovie,movie,path,files where actor.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile path.idPath = files.idPath");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and movie.c%02d='true')", VIDEODB_ID_WATCHED);
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,movie.c%02d from actors,directorlinkmovie,movie,path,files where actor.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile path.idPath = files.idPath",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -2491,11 +2485,7 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor from directorlinkmovie,actors,movie where actors.idActor=directorlinkmovie.idDirector and directorlinkmovie.idmovie=movie.idmovie");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,movie.c%02d from directorlinkmovie,actors,movie where actors.idActor=directorlinkmovie.idDirector and directorlinkmovie.idmovie=movie.idmovie",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -2515,8 +2505,8 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<long, CStdString> mapDirector;
-      map<long, CStdString>::iterator it;
+      map<long, std::pair<CStdString,bool> > mapDirector;
+      map<long, std::pair<CStdString,bool> >::iterator it;
       while (!m_pDS->eof())
       {
         long lDirectorId = m_pDS->fv("actors.idactor").get_asLong();
@@ -2528,7 +2518,10 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
           // check path
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-            mapDirector.insert(pair<long, CStdString>(lDirectorId, strDirector));
+            if (idContent == VIDEODB_CONTENT_MOVIES)
+              mapDirector.insert(pair<long, pair<CStdString,bool> >(lDirectorId, pair<CStdString,bool>(strDirector,m_pDS->fv(3).get_asBool())));
+            else
+              mapDirector.insert(pair<long, pair<CStdString,bool> >(lDirectorId, pair<CStdString,bool>(strDirector,false)));
         }
         m_pDS->next();
       }
@@ -2536,11 +2529,13 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
 
       for (it=mapDirector.begin();it != mapDirector.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second);
+        CFileItem* pItem=new CFileItem(it->second.first);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
         pItem->SetLabelPreformated(true);
         items.Add(pItem);
       }
@@ -2555,6 +2550,8 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = m_pDS->fv(2).get_asBool();
         items.Add(pItem);
         m_pDS->next();
       }
@@ -2584,11 +2581,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idFile = movie.idFile and files.idPath = path.idPath");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,movie.c%02d from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idFile = movie.idFile and files.idPath = path.idPath",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -2599,11 +2592,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie");
-        if (g_stSettings.m_iMyVideoWatchMode == 1)
-          strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
-        if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,movie.c%02d from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -2621,8 +2610,8 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<long, CStdString> mapActors;
-      map<long, CStdString>::iterator it;
+      map<long, pair<CStdString,bool> > mapActors;
+      map<long, pair<CStdString,bool> >::iterator it;
       long lLastPathId = -1;
 
       while (!m_pDS->eof())
@@ -2635,7 +2624,10 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         {
           // check path
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-            mapActors.insert(pair<long, CStdString>(lActorId, strActor));
+            if (idContent == VIDEODB_CONTENT_MOVIES)
+              mapActors.insert(pair<long, pair<CStdString,bool> >(lActorId, pair<CStdString,bool>(strActor,m_pDS->fv(3).get_asBool())));
+            else
+              mapActors.insert(pair<long, pair<CStdString,bool> >(lActorId, pair<CStdString,bool>(strActor,false)));
         }
         m_pDS->next();
       }
@@ -2643,11 +2635,14 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
       for (it=mapActors.begin();it != mapActors.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second);
+        CFileItem* pItem=new CFileItem(it->second.first);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
+
         items.Add(pItem);
       }
     }
@@ -2660,6 +2655,8 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         strDir.Format("%ld/", m_pDS->fv("actors.idactor").get_asLong());
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = m_pDS->fv(2).get_asBool();
         items.Add(pItem);
         m_pDS->next();
       }
@@ -2684,26 +2681,15 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    CStdString addParam;
     if (idContent == VIDEODB_CONTENT_MOVIES)
     {
-      if (g_stSettings.m_iMyVideoWatchMode == 1)
-        addParam = FormatSQL("movie.c%02d='false'", VIDEODB_ID_WATCHED);
-
-      if (g_stSettings.m_iMyVideoWatchMode == 2)
-        addParam = FormatSQL("movie.c%02d='true'", VIDEODB_ID_WATCHED);
-
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       {
-        if (!addParam.IsEmpty())
-          addParam = " and "+addParam;
-        strSQL = FormatSQL("select movie.c%02d,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath = path.idPath", VIDEODB_ID_YEAR);
+        strSQL = FormatSQL("select movie.c%02d,path.strPath,movie.c%02d from movie join files on files.idFile=movie.idFile join path on files.idPath = path.idPath", VIDEODB_ID_YEAR,VIDEODB_ID_WATCHED);
       }
       else
       {
-        if (!addParam.IsEmpty())
-          addParam = " where "+addParam;
-        strSQL = FormatSQL("select distinct movie.c%02d from movie", VIDEODB_ID_YEAR);
+        strSQL = FormatSQL("select distinct movie.c%02d,movie.c%02d from movie", VIDEODB_ID_YEAR,VIDEODB_ID_WATCHED);
       }
     }
     else if (idContent == VIDEODB_CONTENT_TVSHOWS)
@@ -2713,8 +2699,6 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       else
         strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_TV_PREMIERED);
     }     
-
-    strSQL += addParam;
 
     // run query
     CLog::Log(LOGDEBUG, "CVideoDatabase::GetYearsNav() query: %s", strSQL.c_str());
@@ -2728,8 +2712,8 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<long, CStdString> mapYears;
-      map<long, CStdString>::iterator it;
+      map<long, pair<CStdString,bool> > mapYears;
+      map<long, pair<CStdString,bool> >::iterator it;
       long lLastPathId = -1;
       while (!m_pDS->eof())
       {
@@ -2742,7 +2726,10 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           {
             CStdString year;
             year.Format("%d", lYear);
-            mapYears.insert(pair<long, CStdString>(lYear, year));
+            if (idContent == VIDEODB_CONTENT_MOVIES)
+              mapYears.insert(pair<long, pair<CStdString,bool> >(lYear, pair<CStdString,bool>(year,m_pDS->fv(2).get_asBool())));
+            else
+              mapYears.insert(pair<long, pair<CStdString,bool> >(lYear, pair<CStdString,bool>(year,false)));
           }
         }
         m_pDS->next();
@@ -2751,11 +2738,13 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     
       for (it=mapYears.begin();it != mapYears.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second);
+        CFileItem* pItem=new CFileItem(it->second.first);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
         items.Add(pItem);
       }
     }
@@ -2781,9 +2770,11 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         CStdString strDir;
         strDir.Format("%ld/", lYear);
         pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
+        pItem->m_bIsFolder=true;        
         if (!items.Contains(pItem->m_strPath))
         {
+          if (idContent == VIDEODB_CONTENT_MOVIES)
+            pItem->GetVideoInfoTag()->m_bWatched = m_pDS->fv(1).get_asBool();
           items.Add(pItem);
         }
         else
