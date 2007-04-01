@@ -354,28 +354,28 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
     {
       if (lPathId == -1)
       {
-        strSQL=FormatSQL("select idMovie from movie join files on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
+        strSQL=FormatSQL("select movie.idMovie from movie join files on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
         m_pDS->query(strSQL.c_str());
         if (m_pDS->eof())
         {
           CUtil::URLEncode(strPath);
-          strSQL=FormatSQL("select idMovie from movie join files on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
+          strSQL=FormatSQL("select movie.idMovie from movie join files on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
         }
       }
       else
       {
-        strSQL=FormatSQL("select idMovie from movie join files on files.idFile=movie.idFile where files.idpath = %u",lPathId);
+        strSQL=FormatSQL("select movie.idMovie from movie join files on files.idFile=movie.idFile where files.idpath = %u",lPathId);
         m_pDS->query(strSQL.c_str());
         if (m_pDS->num_rows() > 0)
           lMovieId = m_pDS->fv("movie.idMovie").get_asLong();  
         if (m_pDS->eof() || lMovieId == -1)
         {
-          strSQL=FormatSQL("select idMovie from movie join files on files.idFile=movie.idfile join path on files.idPath = path.idPath where path.strPath like '%%%s%%'",strPath.c_str());
+          strSQL=FormatSQL("select movie.idMovie from movie join files on files.idFile=movie.idfile join path on files.idPath = path.idPath where path.strPath like '%%%s%%'",strPath.c_str());
           m_pDS->query(strSQL.c_str());
           if (m_pDS->eof())
           {
             CUtil::URLEncode(strPath);
-            strSQL=FormatSQL("select idMovie from movie join files on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
+            strSQL=FormatSQL("select movie.idMovie from movie join files on files.idPath = path.idPath join path on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
           }
         }
       }
