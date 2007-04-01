@@ -1002,7 +1002,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'H' && movie && movie->m_iEpisode > 0)
     { // season*100+episode number
-      str.Format("%02.2i", movie->m_iSeason*100+movie->m_iEpisode);
+      str.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
     }
     else if (strMask[iPos2 + 1] == 'P' && movie)
     { // tvshow production code
