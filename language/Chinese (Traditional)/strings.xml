@@ -377,7 +377,7 @@
   <string id="454">第 4 列位址</string>
   <string id="455">行</string>
   <string id="456">模式</string>
-  <string id="457">切換顯示</string>
+  <string id="457">選擇顯示</string>
   <string id="459">字幕</string>
   <string id="460">聲道</string>
   <string id="461">[啟用]</string>
@@ -576,9 +576,9 @@
   <string id="742">白色</string>
   <string id="743">黃色</string>
   <string id="744">檔案設定</string>
-  <string id="745">目前圖示無已搜尋資訊</string>
-  <string id="746">切換到檔案圖示</string>
-  <string id="747">圖示載入錯誤</string>
+  <string id="745">目前顯示無已搜尋資訊</string>
+  <string id="746">選擇到檔案顯示</string>
+  <string id="747">圖像載入錯誤</string>
   <string id="748">編輯路徑</string>
   <string id="749">新增共享</string>
   <string id="750">確定？</string>
@@ -639,8 +639,8 @@
   <string id="1027">編輯目錄</string>
   <string id="1028">編輯%s目錄</string>
   <string id="1029">輸入新標籤</string>
-  <string id="1030">圖示</string>
-  <string id="1031">圖示資料夾</string>
+  <string id="1030">圖像</string>
+  <string id="1031">圖像資料夾</string>
   <string id="1032">新增網路位置…</string>
 
   <string id="1200">SMB 共享設定</string>
@@ -839,7 +839,7 @@
   <string id="12373">系統設定和檔案總管</string>
   <string id="12376">設定為影片的預設值</string>
   <string id="12377">將重設之前的設定</string>
-  <string id="12378">顯示各個圖片</string>
+  <string id="12378">顯示各個圖像</string>
   <string id="12379">使用移動和縮放特效</string>
   <string id="12380">在 PAL 模式播放 NTSC 影片</string>
   <string id="12381">在 NTSC 模式播放 PAL 影片</string>
@@ -918,7 +918,7 @@
   <string id="13253">取消移動</string>
 
   <string id="13270">硬體：</string>
-  <string id="13271">中央處理器使用：</string>
+  <string id="13271">中央處理器速度：</string>
 
   <string id="13274">XBOX 已連線，但是沒有設定 DNS！</string>
   <string id="13275">硬碟</string>
@@ -1312,7 +1312,7 @@
   <string id="20007">錄音</string>
   <string id="20008">螢幕擷圖</string>
   <string id="20009">使用 XBMC</string>
-  <string id="20010">藝人圖示</string>
+  <string id="20010">藝人圖像</string>
   <string id="20011">音樂播放列表</string>
   <string id="20012">影片播放列表</string>
   <string id="20013">你要執行該遊戲？</string>
@@ -1475,7 +1475,7 @@
   <string id="20182">空格</string>
   <string id="20183">重新載入桌面</string>
   <string id="20184">轉動使用 EXIF 資訊</string>
-  <string id="20185"></string>
+  <string id="20185">檢測硬體數據</string>
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
   <string id="20188">備份 BIOS</string>
@@ -1498,7 +1498,7 @@
   <string id="20304"></string>
   <string id="20305"></string>
 
-  <string id="20306">未知，請把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
+  <string id="20306">未知 BIOS，請把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">次要的 DNS 位址</string>
   <string id="20308">DHCP 伺服器：</string>
   <string id="20309">新建資料夾</string>
@@ -1558,9 +1558,13 @@
   <string id="20363">從資料夾移除電視節目</string>
   <string id="20364">電視節目</string>
   <string id="20365">劇情</string>
-  <string id="20366">* 整季</string>
+  <string id="20366">*整季</string>
   <string id="20367">隱藏觀看</string>
   <string id="20368">產品編號</string>
+  <string id="20369">非觀看項目隱藏圖示</string>
+  <string id="20370">*「隱藏」防止被破壞*</string>
+  <string id="20371">設定影集縮略圖</string>
+  <string id="20372">影集圖像</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1603,7 +1607,16 @@
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
   <string id="21385">打開播放列表</string>
+  
+  <string id="21386">噪音管理模式</string>
+  <string id="21387">快速</string>
+  <string id="21388">安靜</string>
+  
+  <string id="21390">電源管理模式</string>
+  <string id="21391">高功率</string>
+  <string id="21392">低功率</string>
+  <string id="21393">高待機</string>
+  <string id="21394">低待機</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
- 	  	 
