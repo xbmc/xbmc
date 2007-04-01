@@ -592,7 +592,16 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   m_unfilteredItems.AppendPointer(items);
   // now filter as necessary
   CVideoDatabaseDirectory dir;
-  bool filterWatched = (dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL;
+  CQueryParams params;
+  dir.GetQueryParams(items.m_strPath,params);
+  bool filterWatched=false;
+  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES)
+    filterWatched = true;
+  if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
+    filterWatched = false;
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES) // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
+    filterWatched = true;
+
   if (filterWatched || !m_filter.IsEmpty())
     FilterItems(items);
 }
@@ -623,21 +632,30 @@ void CGUIWindowVideoNav::OnFilterItems()
 
 void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
 {
-  DIRECTORY::CVideoDatabaseDirectory dir;
-  VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-
+  CVideoDatabaseDirectory dir;
+  CQueryParams params;
+  dir.GetQueryParams(items.m_strPath,params);
+  bool filterWatched=false;
+  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES)
+    filterWatched = true;
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+    filterWatched = true;
+  if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
+    filterWatched = false;
+  
+  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
   if (m_vecItems.IsVirtualDirectoryRoot() || node == NODE_TYPE_MOVIES_OVERVIEW || node == NODE_TYPE_TVSHOWS_OVERVIEW)
     return;
 
-  bool filterWatched = (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES) && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL;
   items.ClearKeepPointer();
   for (int i = 0; i < m_unfilteredItems.Size(); i++)
   {
     CFileItem *item = m_unfilteredItems[i];
-    if ( item->IsParentFolder() ||
+    if (item->IsParentFolder() ||
         (m_filter.IsEmpty() && (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
-      items.Add(item);
+      if (params.GetContentType() != VIDEODB_CONTENT_MOVIES || !items.HasFileNoCase(item->m_strPath))
+        items.Add(item);
       continue;
     }
     // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
@@ -654,7 +672,10 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
       match = item->GetLabel() + " " + item->GetLabel2();
     if (StringUtils::FindWords(match.c_str(), m_filter.c_str()) && 
         (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2)))
-      items.Add(item);
+    {
+      if (params.GetContentType() != VIDEODB_CONTENT_MOVIES || !items.HasFileNoCase(item->m_strPath))
+        items.Add(item);
+    }
   }
 }
 
