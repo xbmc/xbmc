@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 03/27/2007-->
+<!--Date of translation: 04/02/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8338-->
+<!--Based on english strings version 8389-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1497,7 +1497,10 @@
   <string id="20366">* Alle Staffeln</string>
   <string id="20367">'Gesehene' Filme verstecken</string>
   <string id="20368">Produktions-Code</string>
-  <!-- up to 21329 is reserved for the video db !! !-->
+  <string id="20369">Handlung bei ungesehenen Filmen verstecken</string>
+  <string id="20370">* Die Handlung wird nicht angezeigt. *</string>
+  <string id="20371">Staffel-Cover setzen</string>
+  <string id="20372">Staffel-Cover</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1506,7 +1509,6 @@
   <string id="21335">Möchten Sie nun den Stream starten?</string>
   <string id="21336">Verbinden zu: %s</string>
   <string id="21337">TuxBox-Laufwerk</string>
-  <!-- up to 21355 is reserved for the TuxBox Client !! !-->
   <string id="21356">UPnP Musik</string>
   <string id="21357">UPnP Videos</string>
   <string id="21358">UPnP Bilder</string>
@@ -1535,5 +1537,13 @@
   <string id="21383">Scrollbalken aktivieren</string>
   <string id="21384">Filter für 'Gesehen' als Einstellung in Datenbank aktivieren</string>
   <string id="21385">Öffnen</string>
+  <string id="21386">Acoustic Management Stufe</string>
+  <string id="21387">Schnell</string>
+  <string id="21388">Leise</string>
+  <string id="21390">Power Management Stufe</string>
+  <string id="21391">Hoher Stromverbrauch</string>
+  <string id="21392">Niedriger Stromverbrauch</string>
+  <string id="21393">Hohes Standby</string>
+  <string id="21394">Niedriges Standby</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
