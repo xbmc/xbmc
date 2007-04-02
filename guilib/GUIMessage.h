@@ -182,7 +182,7 @@ do { \
 #define SEND_CLICK_MESSAGE(dwID, dwParentID, dwAction) \
 do { \
  CGUIMessage msg(GUI_MSG_CLICKED, dwID, dwParentID, dwAction); \
- g_graphicsContext.SendMessage(msg); \
+ SendWindowMessage(msg); \
 } while(0);
 
 /*!

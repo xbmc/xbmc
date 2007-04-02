@@ -63,7 +63,7 @@ bool CGUIMoverControl::OnAction(const CAction &action)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
-    g_graphicsContext.SendMessage(message);
+    SendWindowMessage(message);
     return true;
   }
   if (action.wID == ACTION_ANALOG_MOVE)
