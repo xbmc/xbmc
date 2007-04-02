@@ -84,7 +84,7 @@ bool CGUICheckMarkControl::OnAction(const CAction &action)
   {
     m_bSelected = !m_bSelected;
     CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-    g_graphicsContext.SendMessage(msg);
+    SendWindowMessage(msg);
     return true;
   }
   return CGUIControl::OnAction(action);

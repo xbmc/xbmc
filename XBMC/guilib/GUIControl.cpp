@@ -171,13 +171,12 @@ void CGUIControl::OnRight()
   }
 }
 
-void CGUIControl::SendWindowMessage(CGUIMessage &message)
+bool CGUIControl::SendWindowMessage(CGUIMessage &message)
 {
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(GetParentID());
   if (pWindow)
-    pWindow->OnMessage(message);
-  else
-    g_graphicsContext.SendMessage(message);
+    return pWindow->OnMessage(message);
+  return g_graphicsContext.SendMessage(message);
 }
 
 DWORD CGUIControl::GetID(void) const
