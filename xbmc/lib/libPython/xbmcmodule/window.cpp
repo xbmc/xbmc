@@ -541,6 +541,35 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
+  
+  PyDoc_STRVAR(setFocusId__doc__,
+    "setFocusId(self, int) -- Gives the control with the supplied focus.\n"
+    "Throws: \n"
+    "        SystemError, on Internal error\n"
+    "        RuntimeError, if control is not added to a window\n"
+    "\n");
+
+  PyObject* Window_SetFocusId(Window *self, PyObject *args)
+  {
+    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    if (PyWindowIsNull(pWindow)) return NULL;
+
+    int iControlId;
+    if (!PyArg_ParseTuple(args, "i", &iControlId)) return NULL;
+
+    if(!pWindow->GetControl(iControlId))
+    {
+      PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
+      return NULL;
+    }
+
+    PyGUILock();
+    pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId));
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
   PyDoc_STRVAR(getFocus__doc__,
     "getFocus(self, Control) -- returns the control which is focused.\n"
@@ -568,6 +597,31 @@ namespace PYXBMC
     return (PyObject*)Window_GetControlById(self, iControlId);
   }
 
+  PyDoc_STRVAR(getFocusId__doc__,
+    "getFocusId(self, int) -- returns the id of the control which is focused.\n"
+    "Throws: SystemError, on Internal error\n"
+    "        RuntimeError, if no control has focus\n"
+    "\n");
+
+  PyObject* Window_GetFocusId(Window *self, PyObject *args)
+  {
+    int iControlId = -1;
+    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    if (PyWindowIsNull(pWindow)) return NULL;
+
+    PyGUILock();
+    iControlId = pWindow->GetFocusedControlID();
+    PyGUIUnlock();
+
+    if(iControlId == -1)
+    {
+      PyErr_SetString(PyExc_RuntimeError, "No control in this window has focus");
+      return NULL;
+    }
+
+    return PyLong_FromLong((long)iControlId);
+  }
+  
   PyDoc_STRVAR(removeControl__doc__,
     "removeControl(self, Control) -- Removes the control from this window.\n"
     "\n"
@@ -707,7 +761,9 @@ namespace PYXBMC
     {"getControl", (PyCFunction)Window_GetControl, METH_VARARGS, getControl__doc__},
     {"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, removeControl__doc__},
     {"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, setFocus__doc__},
+    {"setFocusId", (PyCFunction)Window_SetFocusId, METH_VARARGS, setFocusId__doc__},
     {"getFocus", (PyCFunction)Window_GetFocus, METH_VARARGS, getFocus__doc__},
+    {"getFocusId", (PyCFunction)Window_GetFocusId, METH_VARARGS, getFocusId__doc__},
     {"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
     {"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
     {"getResolution", (PyCFunction)Window_GetResolution, METH_VARARGS, getResolution__doc__},
