@@ -172,7 +172,7 @@ bool CGUIListControlEx::OnAction(const CAction &action)
       if (m_iSelect == CONTROL_LIST)
       { // Don't know what to do, so send to our parent window.
         CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-        return g_graphicsContext.SendMessage(msg);
+        return SendWindowMessage(msg);
       }
       else
       { // send action to the page control
@@ -198,7 +198,7 @@ bool CGUIListControlEx::OnAction(const CAction &action)
       {
         // generate control selection changed event
         CGUIMessage msg(GUI_MSG_SELCHANGED, GetID(), GetParentID(), iOldItem, iNewItem);
-        g_graphicsContext.SendMessage(msg);
+        return SendWindowMessage(msg);
       }
       break;
     }
