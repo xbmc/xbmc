@@ -110,7 +110,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
           }
           m_iValue = iValue;
           CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-          g_graphicsContext.SendMessage(msg);
+          SendWindowMessage(msg);
         }
         break;
 
@@ -132,7 +132,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
           }
           m_iValue = iValue;
           CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-          g_graphicsContext.SendMessage(msg);
+          SendWindowMessage(msg);
         }
         break;
 
@@ -621,7 +621,7 @@ void CGUISpinControl::PageUp()
       else
         m_iValue = m_iStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -641,7 +641,7 @@ void CGUISpinControl::PageUp()
       else
         m_iValue = 0;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -660,7 +660,7 @@ void CGUISpinControl::PageDown()
       else
         m_iValue = m_iEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -678,7 +678,7 @@ void CGUISpinControl::PageDown()
       if (m_iValue + 10 < (int)m_vecLabels.size() )
         m_iValue += 10;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
     }
     break;
   }
@@ -700,7 +700,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
       else if (m_iValue == m_iStart)
         m_iValue = m_iEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -723,7 +723,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
       else if (m_fValue - m_fInterval < m_fStart)
         m_fValue = m_fEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -735,7 +735,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
       else if (m_iValue == 0)
         m_iValue = (int)m_vecLabels.size() - 1;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -758,7 +758,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
       else if (m_iValue == m_iEnd)
         m_iValue = m_iStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -780,7 +780,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
       else if (m_fValue + m_fInterval > m_fEnd)
         m_fValue = m_fStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
@@ -792,7 +792,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
       else if (m_iValue == (int)m_vecLabels.size() - 1)
         m_iValue = 0;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-      g_graphicsContext.SendMessage(msg);
+      SendWindowMessage(msg);
       return ;
     }
     break;
