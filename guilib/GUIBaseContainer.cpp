@@ -84,7 +84,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     if (action.wID)
     { // Don't know what to do, so send to our parent window.
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-      return g_graphicsContext.SendMessage(msg);
+      return SendWindowMessage(msg);
     }
   }
   return false;

@@ -191,7 +191,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
 
       // ...and send a message.
       CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID() );
-      g_graphicsContext.SendMessage(message);
+      SendWindowMessage(message);
       return true;
     }
     if (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN )

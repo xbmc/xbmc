@@ -202,7 +202,7 @@ public:
 protected:
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
-  void SendWindowMessage(CGUIMessage &message);
+  bool SendWindowMessage(CGUIMessage &message);
   DWORD m_dwControlLeft;
   DWORD m_dwControlRight;
   DWORD m_dwControlUp;
