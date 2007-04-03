@@ -619,6 +619,15 @@
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
 		</control>
+		<control type="image">
+			<posx>660</posx>
+			<posy>295</posy>
+			<width>32</width>
+			<height>32</height>
+			<aspectratio aligny="bottom">keep</aspectratio>
+			<include>contentpanelslide</include>
+			<info>ListItem.Overlay</info>
+		</control>
 		<control type="label">
 			<posx>200</posx>
 			<posy>345</posy>
@@ -789,7 +798,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<label>$LOCALIZE[173] $INFO[ListItem.Rating]</label>
+					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="141">
@@ -865,7 +874,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<label>$LOCALIZE[173] $INFO[ListItem.Rating]</label>
+					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1749,6 +1758,13 @@
 					<aligny>center</aligny>
 					<visible>container.content(movies) | container.content(episodes)</visible>
 				</control>
+				<control type="image">
+					<posx>70</posx>
+					<posy>65</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
 			</itemlayout>
 			<focusedlayout height="106" width="242">
 				<control type="image">
@@ -1846,6 +1862,13 @@
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
 					<aligny>center</aligny>
 					<visible>container.content(movies) | container.content(episodes)</visible>
+				</control>
+				<control type="image">
+					<posx>70</posx>
+					<posy>65</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
 				</control>
 			</focusedlayout>
 		</control>
