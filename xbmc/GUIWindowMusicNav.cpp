@@ -82,16 +82,24 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      if (m_vecItems.m_strPath=="?")
-        m_vecItems.m_strPath = "";
-
       // check for valid quickpath parameter
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+      }
 
+      // is this the first time the window is opened?
+      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+      {
+        strDestination = g_stSettings.m_szDefaultMusicLibView;
+        m_vecItems.m_strPath = strDestination;
+        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+      }
+
+      if (!strDestination.IsEmpty())
+      {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
         {
           m_vecItems.m_strPath = "";
@@ -116,9 +124,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "musicdb://4/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Top100"))
+        {
+          m_vecItems.m_strPath = "musicdb://5/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else if (strDestination.Equals("Top100Songs"))
         {
-          m_vecItems.m_strPath = "musicdb://5/2";
+          m_vecItems.m_strPath = "musicdb://5/2/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
         else if (strDestination.Equals("Top100Albums"))
@@ -214,6 +227,38 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   }
   return CGUIWindowMusicBase::OnMessage(message);
 }
+
+CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
+{
+  if (strPath.Equals("musicdb://1/"))
+    return "Genres";
+  else if (strPath.Equals("musicdb://2/"))
+    return "Artists";
+  else if (strPath.Equals("musicdb://3/"))
+    return "Albums";
+  else if (strPath.Equals("musicdb://4/"))
+    return "Songs";
+  else if (strPath.Equals("musicdb://5/"))
+    return "Top100";
+  else if (strPath.Equals("musicdb://5/2/"))
+    return "Top100Songs";
+  else if (strPath.Equals("musicdb://5/1/"))
+    return "Top100Albums";
+  else if (strPath.Equals("musicdb://6/"))
+    return "RecentlyAddedAlbums";
+  else if (strPath.Equals("musicdb://7/"))
+    return "RecentlyPlayedAlbums";
+  else if (strPath.Equals("musicdb://8/"))
+    return "Compilations";
+  else if (strPath.Equals("special://musicplaylists/"))
+    return "Playlists";
+  else
+  {
+    CLog::Log(LOGERROR, "  CGUIWindowMusicNav::GetQuickpathName: Unknown parameter (%s)", strPath.c_str());
+    return strPath;
+  }
+}
+
 
 bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
@@ -478,6 +523,22 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
     btn_Thumb = pMenu->AddButton(13359);
 
+  //Set default or clear default
+  int btn_Default = 0;
+  int btn_ClearDefault=0;
+  NODE_TYPE nodetype = dir.GetDirectoryType(m_vecItems[iItem]->m_strPath);
+  if (
+    !bIsGotoParent && 
+    !bPlaylists && 
+    (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TOP100) 
+  )
+  {
+    if (!m_vecItems[iItem]->m_strPath.Equals(g_stSettings.m_szDefaultMusicLibView))
+      btn_Default = pMenu->AddButton(13335); // set default
+    if (strcmp(g_stSettings.m_szDefaultMusicLibView, ""))
+      btn_ClearDefault = pMenu->AddButton(13403); // clear default
+  }
+
   // noncontextual buttons
   int btn_Settings = pMenu->AddButton(5);     // Settings...
 
@@ -541,6 +602,16 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     {
       Update("");
       return;
+    }
+    else if (btn == btn_Default) // Set default
+    {
+      strcpy(g_stSettings.m_szDefaultMusicLibView, GetQuickpathName(m_vecItems[iItem]->m_strPath).c_str());
+      g_settings.Save();
+    }
+    else if (btn == btn_ClearDefault) // Clear default
+    {
+      strcpy(g_stSettings.m_szDefaultMusicLibView, "");
+      g_settings.Save();
     }
     else if (btn == btn_Settings)  // Settings
     {

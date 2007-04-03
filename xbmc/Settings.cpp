@@ -154,6 +154,8 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szDefaultPictures, "");
   strcpy( g_stSettings.m_szDefaultFiles, "");
   strcpy( g_stSettings.m_szDefaultVideos, "");
+  strcpy( g_stSettings.m_szDefaultMusicLibView, "");
+  strcpy( g_stSettings.m_szDefaultVideoLibView, "");
 
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
@@ -946,6 +948,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
+    GetString(pElement, "defaultlibview", g_stSettings.m_szDefaultMusicLibView, g_stSettings.m_szDefaultMusicLibView);
   }
   // myvideos settings
   pElement = pRootElement->FirstChildElement("myvideos");
@@ -964,6 +967,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
       g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
+    GetString(pElement, "defaultlibview", g_stSettings.m_szDefaultVideoLibView, g_stSettings.m_szDefaultVideoLibView);
     GetInteger(pElement, "watchmode", g_stSettings.m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
@@ -1633,6 +1637,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
   SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
   SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
+  SetString(pNode, "defaultlibview", g_stSettings.m_szDefaultMusicLibView);
 
   // myvideos settings
   TiXmlElement videosNode("myvideos");
@@ -1645,6 +1650,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
+  SetString(pNode, "defaultlibview", g_stSettings.m_szDefaultVideoLibView);
 
   SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
 

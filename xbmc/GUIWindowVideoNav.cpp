@@ -83,16 +83,24 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      if (m_vecItems.m_strPath=="?")
-        m_vecItems.m_strPath = "";
-
       // check for valid quickpath parameter
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+      }
 
+      // is this the first time the window is opened?
+      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+      {
+        strDestination = g_stSettings.m_szDefaultVideoLibView;
+        m_vecItems.m_strPath = strDestination;
+        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+      }
+
+      if (!strDestination.IsEmpty())
+      {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
         {
           m_vecItems.m_strPath = "";
@@ -234,6 +242,39 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   }
   return CGUIWindowVideoBase::OnMessage(message);
+}
+
+CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
+{
+  if (strPath.Equals("videodb://1/1/"))
+    return "MovieGenres";
+  else if (strPath.Equals("videodb://1/2/"))
+    return "MovieTitles";
+  else if (strPath.Equals("videodb://1/3/"))
+    return "MovieYears";
+  else if (strPath.Equals("videodb://1/4/"))
+    return "MovieActors";
+  else if (strPath.Equals("videodb://1/5/"))
+    return "MovieDirectors";
+  else if (strPath.Equals("videodb://1/"))
+    return "Movies";
+  else if (strPath.Equals("videodb://2/1/"))
+    return "TvShowGenres";
+  else if (strPath.Equals("videodb://2/2/"))
+    return "TvShowTitles";
+  else if (strPath.Equals("videodb://2/3/"))
+    return "TvShowYears";
+  else if (strPath.Equals("videodb://2/4/"))
+    return "TvShowActors";
+  else if (strPath.Equals("videodb://2/"))
+    return "TvShows";
+  else if (strPath.Equals("special://videoplaylists/"))
+    return "Playlists";
+  else
+  {
+    CLog::Log(LOGERROR, "  CGUIWindowVideoNav::GetQuickpathName: Unknown parameter (%s)", strPath.c_str());
+    return strPath;
+  }
 }
 
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
