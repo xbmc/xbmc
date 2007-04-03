@@ -781,6 +781,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
           CStdString strHistory;
           GetDirectoryHistoryString(pItem, strHistory);
           m_history.SetSelectedItem(strHistory, "");
+          CUtil::AddSlashAtEnd(strPath);
           m_history.AddPathFront(strPath);
           m_history.AddPathFront("");
 
@@ -789,6 +790,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
         }
       }
 
+      CUtil::AddSlashAtEnd(strPath);
       m_history.AddPathFront(strPath);
       m_history.SetSelectedItem(strPath, strParentPath);
       strPath = strParentPath;

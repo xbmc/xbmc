@@ -27,6 +27,7 @@ protected:
   virtual void OnDeleteItem(int iItem);
   virtual void OnWindowLoaded();
   virtual void OnFilterItems();
+  virtual CStdString GetQuickpathName(const CStdString& strPath) const;
   void FilterItems(CFileItemList &items);
 
   void DisplayEmptyDatabaseMessage(bool bDisplay);
