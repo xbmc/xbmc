@@ -33,6 +33,14 @@ struct STREAMINFO
   CStdString lock;
   CStdString sync;
 };
+struct VIDEOSUBCHANNEL
+{
+  std::vector<CStdString> reference;
+  std::vector<CStdString> name;
+  std::vector<CStdString> selected;
+  CStdString current_name;
+  bool mode;
+};
 struct CURRENTSERVICEDATA
 {
   CStdString service_name;
@@ -47,9 +55,6 @@ struct CURRENTSERVICEDATA
   CStdString audio_channel_2_selected;
   CStdString audio_channel_2_name;
   CStdString audio_track;
-  CStdString video_channel_0_reference;
-  CStdString video_channel_0_name;
-  CStdString video_channel_0_selected;
   CStdString current_event_date;
   CStdString current_event_time;
   CStdString current_event_start;
@@ -109,6 +114,7 @@ class CTuxBoxUtil
     BOXSTATUS sBoxStatus;
     BOXSINFO sBoxInfo;
     SERVICE_EPG sServiceEPG;
+    VIDEOSUBCHANNEL vVideoSubChannel;
 
     CTuxBoxUtil(void);
     virtual ~CTuxBoxUtil(void);
@@ -124,6 +130,7 @@ class CTuxBoxUtil
     bool ServiceEPG(TiXmlElement *pRootElement);
     bool GetHttpXML(CURL url,CStdString strRequestType);
     bool GetAudioChannels(CStdString& strAudioChannelName, CStdString& strAudioChannelPid);
+    bool GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid);
     bool GetVideoChannels(TiXmlElement *pRootElement);
     bool CreateNewItem(const CFileItem& item, CFileItem& item_new);
 
