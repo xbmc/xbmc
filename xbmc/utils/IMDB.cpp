@@ -336,7 +336,8 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
     return false;
   }
 
-  movieDetails.Load(details);
+  // set chaining to true here as this is called by our scrapers
+  movieDetails.Load(details, true);
   
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
 
@@ -432,6 +433,8 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
 // threaded functions
 void CIMDB::Process()
 {
+  // note here that we're calling our external functions but we're calling them with
+  // no progress bar set, so they're effectively calling our internal functions directly.
   m_found = false;
   if (m_state == FIND_MOVIE)
   {
@@ -445,7 +448,7 @@ void CIMDB::Process()
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
-    if (!InternalGetDetails(m_url, m_movieDetails, "GetEpisodeDetails"))
+    if (!GetEpisodeDetails(m_url, m_movieDetails))
       CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_LIST)
