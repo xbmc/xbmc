@@ -30,6 +30,7 @@ protected:
   void SetArtistImage(int iItem);
   bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
+  CStdString GetQuickpathName(const CStdString& strPath) const;
 
   VECSHARES m_shares;
 
