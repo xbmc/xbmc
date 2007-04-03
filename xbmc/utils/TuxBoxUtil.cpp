@@ -1292,8 +1292,6 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
     g_applicationMessenger.MediaStop();
 
   // popup the context menu
-  float posX = (float)g_graphicsContext.GetHeight()/2;
-  float posY = (float)g_graphicsContext.GetWidth()/2;
   CGUIDialogContextMenu *pMenu;
   pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
@@ -1303,8 +1301,8 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
     std::vector<int> btn;
     for (unsigned int i=0; vVideoSubChannel.name.size() > i; ++i)
       btn.push_back(pMenu->AddButton(vVideoSubChannel.name[i]));
-
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    
+    pMenu->CenterWindow();
     pMenu->DoModal();
     // get selected Video Sub Channel name and reference zap
     int btnid = pMenu->GetButton();
