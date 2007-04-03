@@ -18,7 +18,7 @@ class CVideoInfoTag : public ISerializable
 public:
   CVideoInfoTag() { Reset(); };
   void Reset();
-  bool Load(const TiXmlElement *node);
+  bool Load(const TiXmlElement *movie, bool chained = false);
   bool Save(TiXmlNode *node, const CStdString &tag);
   virtual void Serialize(CArchive& ar);
 
