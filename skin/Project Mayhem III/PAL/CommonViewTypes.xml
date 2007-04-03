@@ -627,6 +627,7 @@
 			<aspectratio aligny="bottom">keep</aspectratio>
 			<include>contentpanelslide</include>
 			<info>ListItem.Overlay</info>
+			<visible>Control.IsVisible(51)</visible>
 		</control>
 		<control type="label">
 			<posx>200</posx>
