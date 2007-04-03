@@ -33,6 +33,7 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
+  virtual CStdString GetQuickpathName(const CStdString& strPath) const {return strPath;};
 
   bool OnClick(int iItem);
   void OnRestartItem(int iItem);

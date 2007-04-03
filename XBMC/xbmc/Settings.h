@@ -315,6 +315,8 @@ public:
     char m_szDefaultPictures[128];
     char m_szDefaultFiles[128];
     char m_szDefaultVideos[128];
+    char m_szDefaultMusicLibView[128];
+    char m_szDefaultVideoLibView[128];
 
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
