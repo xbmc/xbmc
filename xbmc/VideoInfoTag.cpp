@@ -91,11 +91,13 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   return true;
 }
 
-bool CVideoInfoTag::Load(const TiXmlElement *movie)
+bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
 {
   if (!movie) return false;
-  // reset our details so that genre/director etc. are not appended to.
-  Reset();
+
+  // reset our details if we aren't chained.
+  if (!chained) Reset();
+
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
