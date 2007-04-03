@@ -904,6 +904,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_SetThumb = 0;       // Set Season Thumb (DB)
   int btn_Delete = 0;					// Delete
   int btn_Rename = 0;					// Rename
+  int btn_Default = 0;        // Set default
+  int btn_ClearDefault=0;     // Clear default
 
   bool bSelected = false;
   VECPLAYERCORES vecCores;
@@ -1052,6 +1054,22 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           btn_Delete = pMenu->AddButton(117);
           btn_Rename = pMenu->AddButton(118);
         }
+      }
+      
+      //Set default and/or clear default
+      CVideoDatabaseDirectory dir;
+      NODE_TYPE nodetype = dir.GetDirectoryType(m_vecItems[iItem]->m_strPath);
+      if (
+        GetID() == WINDOW_VIDEO_NAV &&
+        !bIsGotoParent && 
+        !m_vecItems.m_strPath.Equals("special://videoplaylists/") && 
+        (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TVSHOWS_OVERVIEW || nodetype == NODE_TYPE_MOVIES_OVERVIEW) 
+      )
+      {
+        if (!m_vecItems[iItem]->m_strPath.Equals(g_stSettings.m_szDefaultVideoLibView))
+          btn_Default = pMenu->AddButton(13335); // set default
+        if (strcmp(g_stSettings.m_szDefaultVideoLibView, ""))
+          btn_ClearDefault = pMenu->AddButton(13403); // clear default
       }
     }
   } // if (bContextDriven)
@@ -1226,6 +1244,16 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     else if (btnid == btn_AddToDatabase)
     {
       AddToDatabase(iItem);
+    }
+    else if (btnid == btn_Default) // Set default
+    {
+      strcpy(g_stSettings.m_szDefaultVideoLibView, GetQuickpathName(m_vecItems[iItem]->m_strPath).c_str());
+      g_settings.Save();
+    }
+    else if (btnid == btn_ClearDefault) // Clear default
+    {
+      strcpy(g_stSettings.m_szDefaultVideoLibView, "");
+      g_settings.Save();
     }
   }
   if (iItem < m_vecItems.Size() && iItem > -1)
