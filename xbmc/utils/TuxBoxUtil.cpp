@@ -77,7 +77,11 @@ void CTuxBoxService::Process()
     if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - receive current service data was successful");
-      if(!strCurrentServiceName.IsEmpty()&& !strCurrentServiceName.Equals("NULL")&& !g_tuxbox.sCurSrvData.service_name.IsEmpty()&& !g_tuxbox.sCurSrvData.service_name.Equals("-"))
+      if(!strCurrentServiceName.IsEmpty()&& 
+        !strCurrentServiceName.Equals("NULL") &&
+        !g_tuxbox.sCurSrvData.service_name.IsEmpty() &&
+        !g_tuxbox.sCurSrvData.service_name.Equals("-") &&
+        !g_tuxbox.vVideoSubChannel.mode)
       {
         //Detect Channel Change
         //We need to detect the channel on the TuxBox Device! 
@@ -105,8 +109,13 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   item_new.SetLabel(item.GetLabel());
   item_new.m_strPath = item.m_strPath;
   item_new.SetThumbnailImage(item.GetThumbnailImage());
+  
   if(g_tuxbox.GetZapUrl(item.m_strPath, item_new))
+  {
+    if(vVideoSubChannel.mode)
+      vVideoSubChannel.current_name = item_new.GetLabel()+" ("+vVideoSubChannel.current_name+")";
     return true;
+  }
   else
   {
     if(!sBoxStatus.recording.Equals("1")) //Don't Show this Dialog, if the Box is in Recording mode! A previos YN Dialog was send to user!
@@ -404,6 +413,26 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
   {
     if(ZapToUrl(url, strOptions, ipoint))
     {
+      //Check VideoSubChannels
+      if(GetHttpXML(url,"currentservicedata")) //Update Currentservicedata
+      {
+        //Detect VideoSubChannels
+        CStdString strVideoSubChannelName, strVideoSubChannelPID;
+        if(GetVideoSubChannels(strVideoSubChannelName,strVideoSubChannelPID ))
+        {
+          // new videosubchannel selected! settings options to new video zap id
+          strOptions = "?path="+strVideoSubChannelPID+".ts";
+          // zap again now to new videosubchannel
+          if(ZapToUrl(url, strOptions, ipoint))
+          {
+            vVideoSubChannel.mode = true;
+            vVideoSubChannel.current_name = strVideoSubChannelName;
+          }
+        }
+        else 
+          vVideoSubChannel.mode= false;
+      }
+
       CStdString strStreamURL, strVideoStream;
       CStdString strLabel, strLabel2;
       CStdString strAudioChannelName, strAudioChannelPid;
@@ -829,35 +858,44 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
     if (pNode)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Video Channels");
-      int i = 0;
       pIt = pNode->FirstChild("service");
-      while(pIt)
+      if (pIt)
       {
-        //Todo find max. video channels and add them to the struct!
-        pVal = pIt->FirstChild("reference");
-        if(pVal)
+        vVideoSubChannel.name.clear();
+        vVideoSubChannel.reference.clear();
+        vVideoSubChannel.selected.clear();
+        int i = 0;
+        while(pIt)
         {
-          sCurSrvData.video_channel_0_reference = pVal->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Video Channels: Channel %i -> Reference:%s", i, pVal->FirstChild()->Value() );
+          pVal = pIt->FirstChild("name");
+          if(pVal)
+          {
+            vVideoSubChannel.name.push_back(pVal->FirstChild()->Value());
+            CLog::Log(LOGDEBUG, __FUNCTION__" - Video Sub Channel %i:      Name: %s", i,pVal->FirstChild()->Value());
+          }
+          pVal = pIt->FirstChild("reference");
+          if(pVal)
+          {
+            vVideoSubChannel.reference.push_back(pVal->FirstChild()->Value());
+            CLog::Log(LOGDEBUG, __FUNCTION__" - Video Sub Channel %i: Reference: %s", i,pVal->FirstChild()->Value());
+          }
+          pVal = pIt->FirstChild("selected");
+          if(pVal)
+          {
+            vVideoSubChannel.selected.push_back(pVal->FirstChild()->Value());
+            CLog::Log(LOGDEBUG, __FUNCTION__" - Video Sub Channel %i: Selected: %s", i,pVal->FirstChild()->Value());
+          }
+          pIt = pIt->NextSibling("service");
+          i++;
         }
-        pVal = pIt->FirstChild("name");
-        if(pVal)
-        {
-          sCurSrvData.video_channel_0_name = pVal->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Video Channels: Channel %i -> Name:%s", i, pVal->FirstChild()->Value() );
-        }
-        pVal = pIt->FirstChild("selected");
-        if(pVal)
-        {
-          sCurSrvData.video_channel_0_selected = pVal->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Video Channels: Channel %i -> Selected:%s", i, pVal->FirstChild()->Value() );
-        }
-        
-        i=i+1;
-        pIt = pIt->NextSibling("service");
+      }
+      else
+      {
+        vVideoSubChannel.name.clear();
+        vVideoSubChannel.reference.clear();
+        vVideoSubChannel.selected.clear();
       }
     }
-
     pNode = pRootElement->FirstChild("current_event");
     if (pNode)
     {
@@ -1239,6 +1277,49 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
       strAudioChannelName = sCurSrvData.audio_channel_2_name;
       strAudioChannelPid = sCurSrvData.audio_channel_2_pid;
       return true;
+    }
+  }
+  return false;
+}
+bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid)
+{
+  // no video sub channel return false!
+  if(vVideoSubChannel.name.size() <= 0 || vVideoSubChannel.reference.size() <= 0)
+    return false;
+
+  // IsPlaying, Stop it..
+  if(g_application.IsPlaying())
+    g_applicationMessenger.MediaStop();
+
+  // popup the context menu
+  float posX = (float)g_graphicsContext.GetHeight()/2;
+  float posY = (float)g_graphicsContext.GetWidth()/2;
+  CGUIDialogContextMenu *pMenu;
+  pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (pMenu)
+  {
+    pMenu->Initialize();
+    // load Video Sub Channels to context menu
+    std::vector<int> btn;
+    for (unsigned int i=0; vVideoSubChannel.name.size() > i; ++i)
+      btn.push_back(pMenu->AddButton(vVideoSubChannel.name[i]));
+
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->DoModal();
+    // get selected Video Sub Channel name and reference zap
+    int btnid = pMenu->GetButton();
+    for(i=0; btn[i] >0; i++)
+    {
+      if(btnid == btn[i])
+      {
+        strVideoSubChannelName = vVideoSubChannel.name[i];
+        strVideoSubChannelPid = vVideoSubChannel.reference[i];
+        btn.clear();
+        vVideoSubChannel.name.clear();
+        vVideoSubChannel.reference.clear();
+        vVideoSubChannel.selected.clear();
+        return true;
+      }
     }
   }
   return false;
