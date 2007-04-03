@@ -1622,6 +1622,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
   { // single music file - if we get here then we have autoplaynextitem turned off, but we
     // still want to use the playlist player in order to handle more queued items following etc.
     g_playlistPlayer.Reset();
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play();
