@@ -242,7 +242,12 @@
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
 
-
+#define BAR_FREE_SPACE_X            618
+#define BAR_USED_SPACE_X            619
+#define BAR_FREE_SPACE_Y            620
+#define BAR_USED_SPACE_Y            621
+#define BAR_FREE_SPACE_Z            622
+#define BAR_USED_SPACE_Z            623
 #define BAR_CPU_USAGE               624
 #define BAR_USED_MEMORY             625
 #define BAR_FREE_MEMORY             626
@@ -318,9 +323,13 @@
 #define SYSTEM_USED_SPACE_PERCENT_G 698
 #define SYSTEM_FREE_SPACE_PERCENT_G 699
 #define SYSTEM_DVD_TRAY_STATE       700
+#define SYSTEM_TOTAL_SPACE_X        701
+#define SYSTEM_TOTAL_SPACE_Y        702
+#define SYSTEM_TOTAL_SPACE_Z        703
 
-#define XLINK_KAI_USERNAME          701
-#define SKIN_THEME                  702
+
+#define XLINK_KAI_USERNAME          750
+#define SKIN_THEME                  800
 
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995

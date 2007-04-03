@@ -173,6 +173,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("bar.freespace(f)")) ret = BAR_FREE_SPACE_F;
     else if (strTest.Equals("bar.usedspace(g)")) ret = BAR_USED_SPACE_G;
     else if (strTest.Equals("bar.freespace(g)")) ret = BAR_FREE_SPACE_G;
+    else if (strTest.Equals("bar.usedspace(x)")) ret = BAR_USED_SPACE_X;
+    else if (strTest.Equals("bar.freespace(x)")) ret = BAR_FREE_SPACE_X;
+    else if (strTest.Equals("bar.usedspace(y)")) ret = BAR_USED_SPACE_Y;
+    else if (strTest.Equals("bar.freespace(y)")) ret = BAR_FREE_SPACE_Y;
+    else if (strTest.Equals("bar.usedspace(z)")) ret = BAR_USED_SPACE_Z;
+    else if (strTest.Equals("bar.freespace(z)")) ret = BAR_FREE_SPACE_Z;
     else if (strTest.Equals("bar.hddtemperature")) ret = BAR_HDD_TEMPERATURE;
   }
   else if (strCategory.Equals("system"))
@@ -210,10 +216,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.freespacepercent(g)")) ret = SYSTEM_FREE_SPACE_PERCENT_G;
     else if (strTest.Equals("system.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
     else if (strTest.Equals("system.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
+    else if (strTest.Equals("system.totalspace(x)")) ret = SYSTEM_TOTAL_SPACE_X;
     else if (strTest.Equals("system.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
     else if (strTest.Equals("system.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
+    else if (strTest.Equals("system.totalspace(y)")) ret = SYSTEM_TOTAL_SPACE_Y;
     else if (strTest.Equals("system.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
     else if (strTest.Equals("system.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
+    else if (strTest.Equals("system.totalspace(z)")) ret = SYSTEM_TOTAL_SPACE_Z;
     else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
@@ -670,10 +679,13 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_USED_SPACE_PERCENT_G:
   case SYSTEM_USED_SPACE_X:
   case SYSTEM_FREE_SPACE_X:
+  case SYSTEM_TOTAL_SPACE_X:
   case SYSTEM_USED_SPACE_Y:
   case SYSTEM_FREE_SPACE_Y:
+  case SYSTEM_TOTAL_SPACE_Y:
   case SYSTEM_USED_SPACE_Z:
   case SYSTEM_FREE_SPACE_Z:
+  case SYSTEM_TOTAL_SPACE_Z:
     return g_sysinfo.GetHddSpaceInfo(info);
   break;
 
@@ -1107,6 +1119,12 @@ int CGUIInfoManager::GetInt(int info) const
     case BAR_USED_SPACE_E:
     case BAR_USED_SPACE_F:
     case BAR_USED_SPACE_G:
+    case BAR_FREE_SPACE_X:
+    case BAR_USED_SPACE_X:
+    case BAR_FREE_SPACE_Y:
+    case BAR_USED_SPACE_Y:
+    case BAR_FREE_SPACE_Z:
+    case BAR_USED_SPACE_Z:
       g_sysinfo.GetHddSpaceInfo(iret, info, true);
       break;
     case BAR_CPU_USAGE:
@@ -2693,29 +2711,43 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 
 // Called from tuxbox service thread to update current status
 void CGUIInfoManager::UpdateFromTuxBox()
-{  
+{ 
+  if(g_tuxbox.vVideoSubChannel.mode)
+    m_currentFile.GetVideoInfoTag()->m_strTitle = g_tuxbox.vVideoSubChannel.current_name;
+
   // Set m_currentMovieDuration
-  if(!g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() && !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&      
-    !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") && !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+  if(!g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() && 
+    !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&      
+    !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") && 
+    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
-    // Should this really be done here? shouldn't that be done during parse
     g_tuxbox.sCurSrvData.current_event_duration.Replace("(","");
     g_tuxbox.sCurSrvData.current_event_duration.Replace(")","");
   
-    m_currentMovieDuration.Format("%s: %s %s (%s - %s)",g_localizeStrings.Get(180),g_tuxbox.sCurSrvData.current_event_duration,
-      g_localizeStrings.Get(12391),g_tuxbox.sCurSrvData.current_event_time, g_tuxbox.sCurSrvData.next_event_time);
+    m_currentMovieDuration.Format("%s: %s %s (%s - %s)",
+      g_localizeStrings.Get(180),
+      g_tuxbox.sCurSrvData.current_event_duration,
+      g_localizeStrings.Get(12391),
+      g_tuxbox.sCurSrvData.current_event_time, 
+      g_tuxbox.sCurSrvData.next_event_time);
   }
 
   //Set strVideoGenre
-  if (!g_tuxbox.sCurSrvData.current_event_description.IsEmpty() && !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&
-    !g_tuxbox.sCurSrvData.current_event_description.Equals("-") && !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+  if (!g_tuxbox.sCurSrvData.current_event_description.IsEmpty() && 
+    !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() && 
+    !g_tuxbox.sCurSrvData.current_event_description.Equals("-") && 
+    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
-    m_currentFile.GetVideoInfoTag()->m_strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description,
-      g_localizeStrings.Get(209),g_tuxbox.sCurSrvData.next_event_description);
+    m_currentFile.GetVideoInfoTag()->m_strGenre.Format("%s %s  -  (%s: %s)",
+      g_localizeStrings.Get(143),
+      g_tuxbox.sCurSrvData.current_event_description,
+      g_localizeStrings.Get(209),
+      g_tuxbox.sCurSrvData.next_event_description);
   }
 
   //Set m_currentMovie.m_strDirector
-  if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") && !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
+  if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
+    !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
   {
     m_currentFile.GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
   }  
