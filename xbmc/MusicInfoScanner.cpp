@@ -194,6 +194,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   // filter items in the sub dir (for .cue sheet support)
   items.FilterCueItems();
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  // get the folder's thumb (this will cache the album thumb)
+  items.SetMusicThumb(true); // true forces it to get a remote thumb
 
   if (RetrieveMusicInfo(items, strDirectory) > 0)
   {
@@ -213,8 +215,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     // if we have a directory item (non-playlist) we then recurse into that folder
     if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
     {
-      // get the item's thumb (this will cache the album thumb)
-      pItem->SetMusicThumb(true); // true forces it to get a remote thumb
       CStdString strPath=pItem->m_strPath;
       if (!DoScan(strPath))
       {
