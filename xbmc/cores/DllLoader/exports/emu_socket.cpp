@@ -7,32 +7,32 @@
 #include "emu_socket.h"
 
 
-#define MAX_SOCKETS 50
+#define MAX_SOCKETS 100
 #define SO_ERROR    0x1007
 
 #define MSG_PEEK 0x2
 
 static bool m_bSocketsInit = false;
-static int m_sockets[MAX_SOCKETS + 1];
+static SOCKET m_sockets[MAX_SOCKETS + 1];
 
 void InitSockets()
 {
   m_bSocketsInit = true;
-  memset(m_sockets , 0 , sizeof(m_sockets));
+  for(int i = 0; i < MAX_SOCKETS; i++)
+    m_sockets[i] = INVALID_SOCKET;
 }
 
-int GetSocketForIndex(int iIndex)
+SOCKET GetSocketForIndex(int iIndex)
 {
   if (iIndex < 3 || iIndex >= MAX_SOCKETS)
   {
     CLog::Log(LOGERROR, "GetSocketForIndex() invalid index:%i", iIndex);
-    return -1;
+    return INVALID_SOCKET;
   }
-  if (m_sockets[iIndex] == 0)
-  {
+
+  if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[iIndex], (PVOID)INVALID_SOCKET, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
     CLog::Log(LOGERROR, "GetSocketForIndex() invalid socket for index:%i", iIndex);
-    return -1;
-  }
+
   return m_sockets[iIndex];
 }
 
@@ -40,26 +40,26 @@ int GetIndexForSocket(SOCKET iSocket)
 {
   for (int i = 0; i < MAX_SOCKETS; i++)
   {
-    if (m_sockets[i] == iSocket) return i;
+    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)iSocket) == (PVOID)iSocket)
+      return i;
   }
-  return 0;
+  return -1;
 }
 
-int AddSocket(int iSocket)
+int AddSocket(SOCKET iSocket)
 {
-  if (!m_bSocketsInit)
-  {
+  if(!m_bSocketsInit)
     InitSockets();
-  }
+
+  if(iSocket == INVALID_SOCKET)
+    return -1;
+
   for (int i = 3; i < MAX_SOCKETS; i++)
   {
-    if (m_sockets[i] == 0)
-    {
-      m_sockets[i] = iSocket;
+    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
       return i;
-    }
   }
-  return 0;
+  return -1;
 }
 
 void ReleaseSocket(int iIndex)
@@ -69,18 +69,16 @@ void ReleaseSocket(int iIndex)
     CLog::Log(LOGERROR, "ReleaseSocket() invalid index:%i", iIndex);
     return ;
   }
-  if (m_sockets[iIndex] == 0)
+
+  if (InterlockedExchangePointer((PVOID*)&m_sockets[iIndex], (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
   {
     CLog::Log(LOGERROR, "ReleaseSocket() invalid socket for index:%i", iIndex);
     return ;
-  }
-  m_sockets[iIndex] = 0;
+  }  
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
 
 #ifdef _XBOX
   int __stdcall dllgethostname(char* name, int namelen)
@@ -153,9 +151,9 @@ extern "C"
   }
 #endif
 
-  int __stdcall dllconnect( SOCKET s, const struct sockaddr FAR *name, int namelen)
+  int __stdcall dllconnect(int s, const struct sockaddr FAR *name, int namelen)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
     struct sockaddr_in* pTmp = (struct sockaddr_in*)name;
     char szBuf[128];
     sprintf(szBuf, "connect: family:%i port:%i ip:%i.%i.%i.%i\n",
@@ -169,29 +167,36 @@ extern "C"
     OutputDebugString(szBuf);
 
     int iResult = connect( socket, name, namelen);
-    sprintf(szBuf, "connect returned:%i %i\n", iResult, WSAGetLastError());
+    if(iResult == SOCKET_ERROR)
+    {
+      errno = WSAGetLastError();
+      sprintf(szBuf, "connect returned:%i %i\n", iResult, WSAGetLastError());
+      OutputDebugString(szBuf);
+    }
+
     return iResult;
   }
   
-  int __stdcall dllsend(SOCKET s, const char *buf, int len, int flags)
+  int __stdcall dllsend(int s, const char *buf, int len, int flags)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
     //flags Unsupported; must be zero.
     //int iResult = send(socket, buf, len, flags);
     int iResult = send(socket, buf, len, 0);
-
-    int iErr = WSAGetLastError();
+    if(iResult == SOCKET_ERROR)
+      errno = WSAGetLastError();
     return iResult;
   }
 
   int __stdcall dllsocket(int af, int type, int protocol)
   {
-    int iSocket = socket(af, type, protocol);
-    if (iSocket != INVALID_SOCKET)
+    SOCKET sock = socket(af, type, protocol);
+    if(sock == INVALID_SOCKET)
     {
-      return AddSocket(iSocket);
+      errno = WSAGetLastError();
+      return -1;
     }
-    return INVALID_SOCKET;
+    return AddSocket(sock);
   }
 
   int __stdcall dllbind(int s, const struct sockaddr FAR * name, int namelen)
@@ -208,26 +213,33 @@ extern "C"
            );
     OutputDebugString(szBuf);
 
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
     int iResult = bind(socket, name, namelen);
-    sprintf(szBuf, "bind returned:%i %i\n", iResult, WSAGetLastError());
-    OutputDebugString(szBuf);
+    if(iResult == SOCKET_ERROR)
+    {
+      errno = WSAGetLastError();
+      sprintf(szBuf, "bind returned:%i %i\n", iResult, WSAGetLastError());
+      OutputDebugString(szBuf);
+    }
     return iResult;
   }
 
   int __stdcall dllclosesocket(int s)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
-    int iret = closesocket(socket);
+    int iResult = closesocket(socket);
+    if(iResult == SOCKET_ERROR)
+      errno = WSAGetLastError();
+
     ReleaseSocket(s);
-    return iret;
+    return iResult;
   }
 
   int __stdcall dllgetsockopt(int s, int level, int optname, char FAR * optval, int FAR * optlen)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
     if(optname == SO_ERROR)
     {
@@ -242,14 +254,14 @@ extern "C"
 
   int __stdcall dllioctlsocket(int s, long cmd, DWORD FAR * argp)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
     return ioctlsocket(socket, cmd, argp);
   }
 
   int __stdcall dllrecv(int s, char FAR * buf, int len, int flags)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
     if(flags & MSG_PEEK)
     {
@@ -332,37 +344,35 @@ extern "C"
 
   int __stdcall dllsendto(int s, const char FAR * buf, int len, int flags, const struct sockaddr FAR * to, int tolen)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
     return sendto(socket, buf, len, flags, to, tolen);
   }
   
   int __stdcall dllsetsockopt(int s, int level, int optname, const char FAR * optval, int optlen)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
     return setsockopt(socket, level, optname, optval, optlen);
   }
 
-  int __stdcall dllaccept(SOCKET s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
+  int __stdcall dllaccept(int s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
-    int socket = GetSocketForIndex(s);
+    SOCKET socket = GetSocketForIndex(s);
 
-    int newsocket = accept(socket, addr, addrlen);
+    SOCKET newsocket = accept(socket, addr, addrlen);
     return AddSocket(newsocket);
   }
 
   int __stdcall dllgetsockname(SOCKET s, struct sockaddr* name, int* namelen)
   {
-    int socket = GetSocketForIndex(s);
-
+    SOCKET socket = GetSocketForIndex(s);
     return getsockname(socket, name, namelen);
   }
 
   int __stdcall dlllisten(SOCKET s, int backlog)
   {
-    int socket = GetSocketForIndex(s);
-
+    SOCKET socket = GetSocketForIndex(s);
     return listen(socket, backlog);
   }
 
@@ -371,10 +381,9 @@ extern "C"
     return ntohs(netshort);
   }
 
-  int __stdcall dllrecvfrom(SOCKET s, char* buf, int len, int flags, struct sockaddr* from, int* fromlen)
+  int __stdcall dllrecvfrom(int s, char* buf, int len, int flags, struct sockaddr* from, int* fromlen)
   {
-    int socket = GetSocketForIndex(s);
-
+    SOCKET socket = GetSocketForIndex(s);
     return recvfrom(socket, buf, len, flags, from, fromlen);
   }
 
@@ -393,10 +402,9 @@ extern "C"
     return __WSAFDIsSet(real_socket, &real_set);
   }
 
-  int __stdcall dllshutdown(SOCKET s, int how)
+  int __stdcall dllshutdown(int s, int how)
   {
-    int socket = GetSocketForIndex(s);
-
+    SOCKET socket = GetSocketForIndex(s);
     return shutdown(socket, how);
   }
 
@@ -491,8 +499,5 @@ extern "C"
 	void __stdcall dllfreeaddrinfo(struct addrinfo *ai)
 	{
 	  return freeaddrinfo(ai);
-	}
-	
-#ifdef __cplusplus
+	}	
 }
-#endif
