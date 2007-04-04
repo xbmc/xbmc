@@ -502,7 +502,7 @@
 			<onright>61</onright>
 			<onup>51</onup>
 			<ondown>51</ondown>
-			<viewtype label="20060">list</viewtype>
+			<viewtype label="544">list</viewtype>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
@@ -678,7 +678,7 @@
 			<height>22</height>
 			<font>special13</font>
 			<align>right</align>
-			<label>Season - $INFO[ListItem.Season]</label>
+			<label>$LOCALIZE[20373] - $INFO[ListItem.Season]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
 		</control>
@@ -1149,7 +1149,7 @@
 			<onup>52</onup>
 			<ondown>52</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="$LOCALIZE[483] $LOCALIZE[536]">icon</viewtype>
+			<viewtype label="541">icon</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="120" width="96">
@@ -1276,7 +1276,7 @@
 			<onup>53</onup>
 			<ondown>53</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="DVD $LOCALIZE[536]">bigicon</viewtype>
+			<viewtype label="542">bigicon</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="185" width="97">
@@ -1378,7 +1378,7 @@
 			<onup>9000</onup>
 			<ondown>9000</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="DVD">wraplist</viewtype>
+			<viewtype label="543">wraplist</viewtype>
 			<pagecontrol>-</pagecontrol>
 			<orientation>horizontal</orientation>
 			<focusposition>3</focusposition>
@@ -1667,7 +1667,7 @@
 			<onright>60</onright>
 			<onup>57</onup>
 			<ondown>57</ondown>
-			<viewtype label="$LOCALIZE[20060] 2">wide</viewtype>
+			<viewtype label="$LOCALIZE[544] 2">wide</viewtype>
 			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
@@ -1889,7 +1889,7 @@
 			<width>235</width>
 			<height>424</height>
 			<font>special12</font>
-			<label>$INFO[ListItem.Season ,Season ] $INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+			<label>$INFO[ListItem.Season ,$LOCALIZE[20373] ] $INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57) + container.content(episodes)</visible>
 		</control>
