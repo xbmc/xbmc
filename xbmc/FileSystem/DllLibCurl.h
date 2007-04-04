@@ -25,6 +25,7 @@ namespace XCURL
     virtual CURLMcode multi_perform(CURLM *multi_handle, int *running_handles)=0;
     virtual CURLMcode multi_remove_handle(CURLM *multi_handle, CURL_HANDLE *easy_handle)=0;
     virtual CURLMcode multi_fdset(CURLM *multi_handle, fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd)=0;
+    virtual CURLMcode multi_timeout(CURLM *multi_handle, long *timeout)=0;
     virtual void multi_cleanup(CURL_HANDLE * handle )=0;
     virtual struct curl_slist* slist_append(struct curl_slist *, const char *)=0;
     virtual void  slist_free_all(struct curl_slist *)=0;
@@ -47,6 +48,7 @@ namespace XCURL
     DEFINE_METHOD2(CURLMcode, multi_perform, (CURLM *p1, int *p2))
     DEFINE_METHOD2(CURLMcode, multi_remove_handle, (CURLM *p1, CURL_HANDLE *p2))
     DEFINE_METHOD5(CURLMcode, multi_fdset, (CURLM *p1, fd_set *p2, fd_set *p3, fd_set *p4, int *p5))
+    DEFINE_METHOD2(CURLMcode, multi_timeout, (CURLM *p1, long *p2))
     DEFINE_METHOD1(void, multi_cleanup, (CURLM *p1))
     DEFINE_METHOD2(struct curl_slist*, slist_append, (struct curl_slist * p1, const char * p2))
     DEFINE_METHOD1(void, slist_free_all, (struct curl_slist * p1))
@@ -65,6 +67,7 @@ namespace XCURL
       RESOLVE_METHOD_RENAME(curl_multi_perform, multi_perform)
       RESOLVE_METHOD_RENAME(curl_multi_remove_handle, multi_remove_handle)
       RESOLVE_METHOD_RENAME(curl_multi_fdset, multi_fdset)
+      RESOLVE_METHOD_RENAME(curl_multi_timeout, multi_timeout)
       RESOLVE_METHOD_RENAME(curl_multi_cleanup, multi_cleanup)
       RESOLVE_METHOD_RENAME(curl_slist_append, slist_append)
       RESOLVE_METHOD_RENAME(curl_slist_free_all, slist_free_all)
