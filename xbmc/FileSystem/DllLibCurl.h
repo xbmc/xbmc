@@ -79,8 +79,8 @@ namespace XCURL
   {
   public:
     /* extend interface with buffered functions */
-    CURL_HANDLE* easy_aquire(const char *protocol, const char *hostname);
-    void easy_release(CURL_HANDLE* easy_handle);
+    void easy_aquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle);
+    void easy_release(CURL_HANDLE* easy_handle, CURLM* multi_handle);
     CURL_HANDLE* easy_duphandle(CURL_HANDLE* easy_handle);
     void CheckIdle();
 
@@ -95,7 +95,8 @@ namespace XCURL
       CStdString    m_protocol;
       CStdString    m_hostname;
       bool          m_busy;
-      CURL_HANDLE*  m_session;
+      CURL_HANDLE*  m_easy;
+      CURLM*        m_multi;
     } SSession;
 
     typedef std::vector<SSession> VEC_CURLSESSIONS;
