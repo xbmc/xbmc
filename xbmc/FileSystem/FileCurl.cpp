@@ -143,14 +143,6 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
 CFileCurl::~CFileCurl()
 { 
   Close();
-
-  /* release this session so it can be reused */
-  if( m_easyHandle )
-  {
-    g_curlInterface.easy_release(m_easyHandle);
-    m_easyHandle = NULL;
-  }
-
   g_curlInterface.Unload();
 }
 
@@ -187,20 +179,14 @@ void CFileCurl::Close()
 	m_fileSize = 0;
   m_opened = false;
 
+
+  ASSERT(!(!m_easyHandle ^ !m_multiHandle));
   if( m_easyHandle )
   {
-    if( m_multiHandle )
-    {
-      /* make sure the easy handle is not in the multi handle anymore */
-      g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
-      g_curlInterface.multi_cleanup(m_multiHandle);
-      m_multiHandle = NULL;
-    }
-
-    /* set time out to 1 second to make sure we kill the stream quickly
-    * on ftp transfers (filezilla doesn't like just a QUIT) */
-    if (CUtil::IsFTP(m_url))
-      g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 1);
+    g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+    g_curlInterface.easy_release(m_easyHandle, m_multiHandle);
+    m_multiHandle = NULL;
+    m_easyHandle = NULL;
   }
 
   m_url.Empty();
@@ -225,7 +211,7 @@ void CFileCurl::Close()
 void CFileCurl::SetCommonOptions()
 {
   g_curlInterface.easy_reset(m_easyHandle);
-  
+
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_DEBUGFUNCTION, debug_callback);
 
   if( g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG )
@@ -372,9 +358,10 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   url2.GetURL(m_url);
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
-  
+
+  ASSERT(!(!m_easyHandle ^ !m_multiHandle));
   if( m_easyHandle == NULL )
-    m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
+    g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_easyHandle, &m_multiHandle );
 
 
   // setup common curl options
@@ -382,8 +369,6 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
   if (!bBinary) g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TRANSFERTEXT, TRUE);  
-
-  m_multiHandle = g_curlInterface.multi_init();
 
   g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
@@ -558,7 +543,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 		buffer->st_mode = _S_IFREG;
     return 0;
   }
-  
+
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
@@ -571,8 +556,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   url2.GetURL(m_url);
 
-  if( m_easyHandle == NULL )
-    m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
+  ASSERT(m_easyHandle == NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_easyHandle, NULL);
 
   SetCommonOptions(); 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 5);
@@ -603,19 +588,25 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     result = g_curlInterface.easy_perform(m_easyHandle);
   }
 
-  if( result == CURLE_WRITE_ERROR || result == CURLE_OK )
+  if( result != CURLE_WRITE_ERROR && result != CURLE_OK )
   {
+    g_curlInterface.easy_release(m_easyHandle, NULL);
+    m_easyHandle = NULL;
+    errno = ENOENT;
+    return -1;
+  }
 
-    /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
-    if( m_httpheader.GetContentType().IsEmpty() )
-    {
-      if( !m_httpheader.GetValue("icy-notice1").IsEmpty()
-      || !m_httpheader.GetValue("icy-name").IsEmpty()
-      || !m_httpheader.GetValue("icy-br").IsEmpty() )
-      m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
-    }
+  /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
+  if( m_httpheader.GetContentType().IsEmpty() )
+  {
+    if( !m_httpheader.GetValue("icy-notice1").IsEmpty()
+    || !m_httpheader.GetValue("icy-name").IsEmpty()
+    || !m_httpheader.GetValue("icy-br").IsEmpty() )
+    m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
+  }
 
-    if( !buffer ) return 0;
+  if(buffer)
+  {
 
     double length;
     char content[255];
@@ -626,14 +617,12 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
       if(strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
       else
-        buffer->st_mode = _S_IFREG;
-
-      return 0;
-    }    
+        buffer->st_mode = _S_IFREG;      
+    }
   }
-
-  errno = ENOENT;
-	return -1;
+  g_curlInterface.easy_release(m_easyHandle, NULL);
+  m_easyHandle = NULL;
+	return 0;
 }
 
 unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
