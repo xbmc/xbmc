@@ -59,6 +59,7 @@ int AddSocket(SOCKET iSocket)
     if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
       return i;
   }
+  CLog::Log(LOGERROR, __FUNCTION__" - Unable to add socket to internal list, no space left");
   return -1;
 }
 
