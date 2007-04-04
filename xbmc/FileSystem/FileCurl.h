@@ -37,10 +37,6 @@ namespace XFILE
       virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
       virtual CStdString GetContent()                            { return m_httpheader.GetContentType(); }
       
-      bool Open(const CURL& url, bool bBinary, int iTimeOut);
-      bool ReadString(char *szLine, int iLineLength, int iTimeOut);
-      unsigned int Read(void* lpBuf, __int64 uiBufSize, int iTimeOut);
-
       size_t WriteCallback(char *buffer, size_t size, size_t nitems);
       size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);
       
@@ -50,6 +46,7 @@ namespace XFILE
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
+      void SetTimeout(int timeout)                               { m_timeout = timeout; }
 
       void SetRequestHeader(CStdString header, CStdString value);
       void SetRequestHeader(CStdString header, long value);      
@@ -66,7 +63,7 @@ namespace XFILE
       void SetCommonOptions();
       void SetRequestHeaders();
 
-      bool FillBuffer(unsigned int want, int waittime);
+      bool FillBuffer(unsigned int want);
 
     private:
       
@@ -77,6 +74,7 @@ namespace XFILE
       CStdString      m_proxy;
       CStdString      m_customrequest;
       CStdString      m_contentencoding;
+      int             m_timeout;
 
 	    __int64					m_fileSize;
 	    __int64					m_filePos;
@@ -90,7 +88,6 @@ namespace XFILE
       unsigned int    m_bufferSize;
 
       int             m_stillRunning; /* Is background url fetch still in progress */
-      DWORD           m_threadid;
 
       struct XCURL::curl_slist* m_curlAliasList;
       struct XCURL::curl_slist* m_curlHeaderList;
