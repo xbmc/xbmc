@@ -12,6 +12,70 @@
 
 #define MSG_PEEK 0x2
 
+static bool m_bSocketsInit = false;
+static SOCKET m_sockets[MAX_SOCKETS + 1];
+
+void InitSockets()
+{
+  m_bSocketsInit = true;
+  for(int i = 0; i < MAX_SOCKETS; i++)
+    m_sockets[i] = INVALID_SOCKET;
+}
+
+SOCKET GetSocketForIndex(int iIndex)
+{
+  if (iIndex < 3 || iIndex >= MAX_SOCKETS)
+  {
+    CLog::Log(LOGERROR, "GetSocketForIndex() invalid index:%i", iIndex);
+    return INVALID_SOCKET;
+  }
+
+  if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[iIndex], (PVOID)INVALID_SOCKET, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
+    CLog::Log(LOGERROR, "GetSocketForIndex() invalid socket for index:%i", iIndex);
+
+  return m_sockets[iIndex];
+}
+
+int GetIndexForSocket(SOCKET iSocket)
+{
+  for (int i = 0; i < MAX_SOCKETS; i++)
+  {
+    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)iSocket) == (PVOID)iSocket)
+      return i;
+  }
+  return -1;
+}
+
+int AddSocket(SOCKET iSocket)
+{
+  if(!m_bSocketsInit)
+    InitSockets();
+
+  if(iSocket == INVALID_SOCKET)
+    return -1;
+
+  for (int i = 3; i < MAX_SOCKETS; i++)
+  {
+    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
+      return i;
+  }
+  return -1;
+}
+
+void ReleaseSocket(int iIndex)
+{
+  if (iIndex < 3 || iIndex >= MAX_SOCKETS)
+  {
+    CLog::Log(LOGERROR, "ReleaseSocket() invalid index:%i", iIndex);
+    return ;
+  }
+
+  if (InterlockedExchangePointer((PVOID*)&m_sockets[iIndex], (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
+  {
+    CLog::Log(LOGERROR, "ReleaseSocket() invalid socket for index:%i", iIndex);
+    return ;
+  }  
+}
 
 extern "C"
 {
@@ -87,8 +151,9 @@ extern "C"
   }
 #endif
 
-  int __stdcall dllconnect(SOCKET s, const struct sockaddr FAR *name, int namelen)
+  int __stdcall dllconnect(int s, const struct sockaddr FAR *name, int namelen)
   {
+    SOCKET socket = GetSocketForIndex(s);
     struct sockaddr_in* pTmp = (struct sockaddr_in*)name;
     char szBuf[128];
     sprintf(szBuf, "connect: family:%i port:%i ip:%i.%i.%i.%i\n",
@@ -101,7 +166,7 @@ extern "C"
            );
     OutputDebugString(szBuf);
 
-    int iResult = connect( s, name, namelen);
+    int iResult = connect( socket, name, namelen);
     if(iResult == SOCKET_ERROR)
     {
       errno = WSAGetLastError();
@@ -112,24 +177,25 @@ extern "C"
     return iResult;
   }
   
-  int __stdcall dllsend(SOCKET s, const char *buf, int len, int flags)
+  int __stdcall dllsend(int s, const char *buf, int len, int flags)
   {
+    SOCKET socket = GetSocketForIndex(s);
     //flags Unsupported; must be zero.
-    int res = send(s, buf, len, 0);
+    int res = send(socket, buf, len, 0);
     if(res == SOCKET_ERROR)
       errno = WSAGetLastError();
     return res;
   }
 
-  SOCKET __stdcall dllsocket(int af, int type, int protocol)
+  int __stdcall dllsocket(int af, int type, int protocol)
   {
-    SOCKET s = socket(af, type, protocol);
-    if(s == INVALID_SOCKET)
+    SOCKET sock = socket(af, type, protocol);
+    if(sock == INVALID_SOCKET)
       errno = WSAGetLastError();
-    return s;
+    return AddSocket(sock);;
   }
 
-  int __stdcall dllbind(SOCKET s, const struct sockaddr FAR * name, int namelen)
+  int __stdcall dllbind(int s, const struct sockaddr FAR * name, int namelen)
   {
     struct sockaddr_in* pTmp = (struct sockaddr_in*)name;
     char szBuf[128];
@@ -143,7 +209,9 @@ extern "C"
            );
     OutputDebugString(szBuf);
 
-    int iResult = bind(s, name, namelen);
+    SOCKET socket = GetSocketForIndex(s);
+
+    int iResult = bind(socket, name, namelen);
     if(iResult == SOCKET_ERROR)
     {
       errno = WSAGetLastError();
@@ -153,17 +221,22 @@ extern "C"
     return iResult;
   }
 
-  int __stdcall dllclosesocket(SOCKET s)
+  int __stdcall dllclosesocket(int s)
   {
-    int iResult = closesocket(s);
+    SOCKET socket = GetSocketForIndex(s);
+
+    int iResult = closesocket(socket);
     if(iResult == SOCKET_ERROR)
       errno = WSAGetLastError();
 
+    ReleaseSocket(s);
     return iResult;
   }
 
-  int __stdcall dllgetsockopt(SOCKET s, int level, int optname, char FAR * optval, int FAR * optlen)
+  int __stdcall dllgetsockopt(int s, int level, int optname, char FAR * optval, int FAR * optlen)
   {
+    SOCKET socket = GetSocketForIndex(s);
+
     if(optname == SO_ERROR)
     {
       /* unsupported option */
@@ -172,16 +245,20 @@ extern "C"
       return 0;
     }
     else
-      return getsockopt(s, level, optname, optval, optlen);
+      return getsockopt(socket, level, optname, optval, optlen);
   }
 
-  int __stdcall dllioctlsocket(SOCKET s, long cmd, DWORD FAR * argp)
+  int __stdcall dllioctlsocket(int s, long cmd, DWORD FAR * argp)
   {
-    return ioctlsocket(s, cmd, argp);
+    SOCKET socket = GetSocketForIndex(s);
+
+    return ioctlsocket(socket, cmd, argp);
   }
 
-  int __stdcall dllrecv(SOCKET s, char FAR * buf, int len, int flags)
+  int __stdcall dllrecv(int s, char FAR * buf, int len, int flags)
   {
+    SOCKET socket = GetSocketForIndex(s);
+
     if(flags & MSG_PEEK)
     {
       CLog::Log(LOGWARNING, __FUNCTION__" - called with MSG_PEEK set, attempting workaround");
@@ -190,7 +267,7 @@ extern "C"
       unsigned long size=0;
       while(1)
       {
-        if(ioctlsocket(s, FIONREAD, &size))
+        if(ioctlsocket(socket, FIONREAD, &size))
           return -1;
         if(size)
           break;
@@ -203,72 +280,104 @@ extern "C"
       CLog::Log(LOGWARNING, __FUNCTION__" - called with flags %d that will be ignored", flags);
 
     flags = 0;
-    return recv(s, buf, len, flags);
+    return recv(socket, buf, len, flags);
   }
-
-#define FD_CLR_INVALID(set) \
-  do { \
-    int v, l = sizeof(int); \
-    unsigned int i; \
-    for(i = 0;i<set->fd_count;i++) { \
-      if( getsockopt(set->fd_array[i], SOL_SOCKET, SO_TYPE, (char*)&v, &l) == SOCKET_ERROR ) { \
-          FD_CLR(set->fd_array[i], set); \
-          i--; \
-      } \
-    } \
-  } while(0)
 
   int __stdcall dllselect(int nfds, fd_set FAR * readfds, fd_set FAR * writefds, fd_set FAR *exceptfds, const struct timeval FAR * timeout)
   {
+    fd_set readset, writeset, exceptset;
+    unsigned int i;
 
-    // hack for some dll that do selects on multiple sockets, where it has 
-    // closed atleast one of the sockets before, but still tries to check for data
+    fd_set* preadset = &readset;
+    fd_set* pwriteset = &writeset;
+    fd_set* pexceptset = &exceptset;
+    
+    if (!readfds) preadset = NULL;
+    if (!writefds) pwriteset = NULL;
+    if (!exceptfds) pexceptset = NULL;
+    
+    FD_ZERO(&readset);
+    FD_ZERO(&writeset);
+    FD_ZERO(&exceptset);
+
     if(readfds)
-      FD_CLR_INVALID(readfds);
+    {
+      for (i = 0; i < readfds->fd_count; ++i)
+       FD_SET(GetSocketForIndex(readfds->fd_array[i]), &readset);
+    }
     if(writefds)
-      FD_CLR_INVALID(writefds);
+    {
+      for (i = 0; i < writefds->fd_count; ++i)
+       FD_SET(GetSocketForIndex(writefds->fd_array[i]), &writeset);
+    }
     if(exceptfds)
-      FD_CLR_INVALID(exceptfds);
+    {
+      for (i = 0; i < exceptfds->fd_count; ++i)
+       FD_SET(GetSocketForIndex(exceptfds->fd_array[i]), &exceptset);
+    }
+    
+    int ifd = select(nfds, preadset, pwriteset, pexceptset, timeout);
 
-    int res = select(nfds, readfds, writefds, exceptfds, timeout);
-    if(res == SOCKET_ERROR)
-      errno = WSAGetLastError();
+    // convert real socket identifiers back to our custom ones and clean results
+    if (readfds)
+    {
+      FD_ZERO(readfds);
+      for (i = 0; i < readset.fd_count; i++) FD_SET(GetIndexForSocket(readset.fd_array[i]), readfds);
+    }
+    if (writefds)
+    {
+      FD_ZERO(writefds);
+      for (i = 0; i < writeset.fd_count; i++) FD_SET(GetIndexForSocket(writeset.fd_array[i]), writefds);
+    }
+    if (exceptfds)
+    {
+      FD_ZERO(exceptfds);
+      for (i = 0; i < exceptset.fd_count; i++) FD_SET(GetIndexForSocket(exceptset.fd_array[i]), exceptfds);
+    }
 
-    return res;
+    return ifd;
   }
 
-  int __stdcall dllsendto(SOCKET s, const char FAR * buf, int len, int flags, const struct sockaddr FAR * to, int tolen)
+  int __stdcall dllsendto(int s, const char FAR * buf, int len, int flags, const struct sockaddr FAR * to, int tolen)
   {
-    int res = sendto(s, buf, len, flags, to, tolen);
+    SOCKET socket = GetSocketForIndex(s);
+    int res = sendto(socket, buf, len, flags, to, tolen);
     if(res == SOCKET_ERROR)
       errno = WSAGetLastError();
     return res;
   }
   
-  int __stdcall dllsetsockopt(SOCKET s, int level, int optname, const char FAR * optval, int optlen)
+  int __stdcall dllsetsockopt(int s, int level, int optname, const char FAR * optval, int optlen)
   {
-    return setsockopt(s, level, optname, optval, optlen);
-  }
-
-  SOCKET __stdcall dllaccept(SOCKET s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
-  {
-    int res = accept(s, addr, addrlen);
+    SOCKET socket = GetSocketForIndex(s);
+    int res = setsockopt(socket, level, optname, optval, optlen);
     if(res == SOCKET_ERROR)
       errno = WSAGetLastError();
     return res;
   }
 
-  int __stdcall dllgetsockname(SOCKET s, struct sockaddr* name, int* namelen)
+  int __stdcall dllaccept(int s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
-    int res = getsockname(s, name, namelen);
+    SOCKET socket = GetSocketForIndex(s);
+    int res = accept(socket, addr, addrlen);
     if(res == SOCKET_ERROR)
       errno = WSAGetLastError();
     return res;
   }
 
-  int __stdcall dlllisten(SOCKET s, int backlog)
+  int __stdcall dllgetsockname(int s, struct sockaddr* name, int* namelen)
   {
-    int res = listen(s, backlog);
+    SOCKET socket = GetSocketForIndex(s);
+    int res = getsockname(socket, name, namelen);
+    if(res == SOCKET_ERROR)
+      errno = WSAGetLastError();
+    return res;
+  }
+
+  int __stdcall dlllisten(int s, int backlog)
+  {
+    SOCKET socket = GetSocketForIndex(s);
+    int res = listen(socket, backlog);
     if(res == SOCKET_ERROR)
       errno = WSAGetLastError();
     return res;
@@ -279,19 +388,34 @@ extern "C"
     return ntohs(netshort);
   }
 
-  int __stdcall dllrecvfrom(SOCKET s, char* buf, int len, int flags, struct sockaddr* from, int* fromlen)
+  int __stdcall dllrecvfrom(int s, char* buf, int len, int flags, struct sockaddr* from, int* fromlen)
   {
-    return recvfrom(s, buf, len, flags, from, fromlen);
+    SOCKET socket = GetSocketForIndex(s);
+    int res = recvfrom(socket, buf, len, flags, from, fromlen);
+    if(res == SOCKET_ERROR)
+      errno = WSAGetLastError();    
+    return res;
   }
 
-  int __stdcall dll__WSAFDIsSet(SOCKET s, fd_set* set)
+  int __stdcall dll__WSAFDIsSet(int s, fd_set* set)
   {
-    return __WSAFDIsSet(s, set);
+    fd_set real_set; // the set with real socket id's
+    int real_socket = GetSocketForIndex(s);
+    
+    FD_ZERO(&real_set);
+    if (set)
+    {
+      for (unsigned int i = 0; i < set->fd_count; ++i)
+        FD_SET(GetSocketForIndex(set->fd_array[i]), &real_set);
+    }      
+
+    return __WSAFDIsSet(real_socket, &real_set);
   }
 
-  int __stdcall dllshutdown(SOCKET s, int how)
+  int __stdcall dllshutdown(int s, int how)
   {
-    return shutdown(s, how);
+    SOCKET socket = GetSocketForIndex(s);
+    return shutdown(socket, how);
   }
 
   char* __stdcall dllinet_ntoa (struct in_addr in)
@@ -362,9 +486,10 @@ extern "C"
     return NULL;
   }
   
-  int __stdcall dllgetpeername(SOCKET s, struct sockaddr FAR *name, int FAR *namelen)
+  int __stdcall dllgetpeername(int s, struct sockaddr FAR *name, int FAR *namelen)
   {
-    return getpeername(s, name, namelen);
+    int socket = GetSocketForIndex(s);
+    return getpeername(socket, name, namelen);
   }
 
   int getaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res);
