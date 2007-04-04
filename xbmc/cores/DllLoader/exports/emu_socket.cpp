@@ -220,7 +220,7 @@ extern "C"
 
   int __stdcall dllselect(int nfds, fd_set FAR * readfds, fd_set FAR * writefds, fd_set FAR *exceptfds, const struct timeval FAR * timeout)
   {
-#if 0
+
     // hack for some dll that do selects on multiple sockets, where it has 
     // closed atleast one of the sockets before, but still tries to check for data
     if(readfds)
@@ -229,7 +229,7 @@ extern "C"
       FD_CLR_INVALID(writefds);
     if(exceptfds)
       FD_CLR_INVALID(exceptfds);
-#endif
+
     int res = select(nfds, readfds, writefds, exceptfds, timeout);
     if(res == SOCKET_ERROR)
       errno = WSAGetLastError();
