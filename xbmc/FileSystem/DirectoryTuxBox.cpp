@@ -99,8 +99,8 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
     strLine2.Format("Opening %s",url.GetHostName().c_str()); //Connecting to host
     UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
     
-
-    if(http.Open(url, false, iWaitTimer)) 
+    http.SetTimeout(iWaitTimer);
+    if(http.Open(url, false)) 
     {
       //We are connected!
       iTryConnect = 4;

@@ -300,6 +300,8 @@ public:
     int m_iTuxBoxEpgRequestTime;
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
+
+    int m_curlclienttimeout;
   };
   struct stSettings
   {

@@ -289,6 +289,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
+
+  g_advancedSettings.m_curlclienttimeout = 10;
 }
 
 CSettings::~CSettings(void)
@@ -1151,6 +1153,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 30, 1, 240);
+    GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlclienttimeout, 10, 1, 1000);
   }
 
   GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 90.0f, 1.0f, 100.0f);

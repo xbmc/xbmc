@@ -171,7 +171,7 @@ CFileCurl::CFileCurl()
   m_overflowSize = 0;
   m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
-  m_threadid = 0;
+  m_timeout = 0;
 }
 
 //Has to be called before Open()
@@ -281,6 +281,15 @@ void CFileCurl::SetCommonOptions()
 
   if (m_customrequest.length() > 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
+
+  if(m_timeout == 0)
+    m_timeout = g_advancedSettings.m_curlclienttimeout;
+
+  // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_CONNECTTIMEOUT, m_timeout);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_LIMIT, 1);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, m_timeout);
+  
   
   SetRequestHeaders();
 }
@@ -305,14 +314,9 @@ void CFileCurl::SetRequestHeaders()
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList); 
 
 }
+
 bool CFileCurl::Open(const CURL& url, bool bBinary)
 {
-  return Open(url, bBinary , 10);
-}
-bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
-{
-  if (iTimeOut <=0)
-    iTimeOut = 10; //default!
   m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
   m_overflowBuffer = 0;
   m_overflowSize = 0;
@@ -373,9 +377,6 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
     m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
 
 
-  if( m_contentencoding.length() == 0 && bBinary)
-    m_contentencoding = "gzip";
-
   // setup common curl options
   SetCommonOptions();
 
@@ -384,7 +385,6 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
 
   m_multiHandle = g_curlInterface.multi_init();
 
-  m_threadid = GetCurrentThreadId();
   g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
   m_stillRunning = 1;
@@ -392,7 +392,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
-  if (!FillBuffer(m_bufferSize, iTimeOut))
+  if (!FillBuffer(1))
   {
     CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");    
     Close();
@@ -441,28 +441,23 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
 
   return true;
 }
+
 bool CFileCurl::ReadString(char *szLine, int iLineLength)
 {
-  return ReadString(szLine, iLineLength, 10);
-}
-bool CFileCurl::ReadString(char *szLine, int iLineLength, int iTimeOut)
-{
-  if (iTimeOut <=0)
-    iTimeOut = 10; //default!
-
   unsigned int want = (unsigned int)iLineLength;
 
-  if(!FillBuffer(want,iTimeOut))
+  if(!FillBuffer(want))
     return false;
-
-  if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
-  {
-    // means we've finished our transfer
-    return false;
-  }
 
   // ensure only available data is considered 
   want = min(m_buffer.GetMaxReadSize(), want);
+
+  /* check if we finished prematurely */
+  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
+    return false;
+  }
 
   char* pLine = szLine;
   do
@@ -641,64 +636,39 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 	return -1;
 }
 
-unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
 {
-  return Read(lpBuf, uiBufSize, 10);
-}
-unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize, int iTimeOut)
-{
-  if (iTimeOut <=0)
-    iTimeOut = 10; //default!
-
-  /* only allow caller to read buffersize at a time */
-  unsigned int want;
-  if(uiBufSize > m_bufferSize)
-    want = m_bufferSize;
-  else
-    want = (unsigned int)uiBufSize;
-
-  if(!FillBuffer(want,iTimeOut))
+  /* only request 1 byte, for truncated reads */
+  if(!FillBuffer(1))
     return -1;
 
-  if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
-  {
-    // means we've finished our transfer
-    return 0;
-  }
-
   /* ensure only available data is considered */
-  want = min(m_buffer.GetMaxReadSize(), want);
+  unsigned int want = (unsigned int)min(m_buffer.GetMaxReadSize(), uiBufSize);
 
   /* xfer data to caller */
   if (m_buffer.ReadBinary((char *)lpBuf, want))
   {
     m_filePos += want;
-//    CLog::Log(LOGDEBUG, "FileCurl::Read(%p) return %d bytes %d left", this, want,m_buffer.GetMaxReadSize());
     return want;
+  }  
+
+  /* check if we finished prematurely */
+  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
+    return -1;
   }
-  CLog::Log(LOGDEBUG, "FileCurl::Read(%p) failed %d bytes %d left", this, want,m_buffer.GetMaxReadSize());
+
   return 0;
 }
 
 /* use to attempt to fill the read buffer up to requested number of bytes */
-bool CFileCurl::FillBuffer(unsigned int want, int waittime)
+bool CFileCurl::FillBuffer(unsigned int want)
 {  
   int maxfd;  
   fd_set fdread;
   fd_set fdwrite;
   fd_set fdexcep;
-
-  FD_ZERO(&fdread);
-  FD_ZERO(&fdwrite);
-  FD_ZERO(&fdexcep);
-
-  // waittime timeout
-  struct timeval timeout;
-  timeout.tv_sec = 0;
-  timeout.tv_usec = 20000; //timeout between calls to perform, doesn't timeout FillBuffer
-  
-  // fill timeout
-  DWORD timestamp = GetTickCount() + waittime * 1000;
 
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
@@ -718,12 +688,6 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
       continue;
     }
 
-    if( GetTickCount() > timestamp )
-    {
-      CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for data");
-      return false;
-    }
-
     CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
     if( !m_stillRunning ) 
       return (CURLM_OK == result);
@@ -736,21 +700,31 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
         // happens especially on ftp during initial connection
         SwitchToThread();
 
+        FD_ZERO(&fdread);
+        FD_ZERO(&fdwrite);
+        FD_ZERO(&fdexcep);
+
         // get file descriptors from the transfers
         if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) )
           return false;
+
+        long timeout = 0;
+        if(CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
+          timeout = 200;
         
         if( maxfd < 0 ) // hack for broken curl
           maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
 
         if( maxfd >= 0  )
         {
+          struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };          
+          
           // wait until data is avialable or a timeout occours
-          if( SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout) )
+          if( SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t) )
             return false;
         }
         else
-          Sleep(timeout.tv_sec * 1000 + timeout.tv_usec / 1000);
+          SleepEx(timeout, true);
 
       }
       break;
