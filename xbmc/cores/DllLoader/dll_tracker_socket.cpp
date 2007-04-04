@@ -41,17 +41,17 @@ extern "C" void tracker_socket_free_all(DllTrackInfo* pInfo)
 
 extern "C"
 {
-  int __stdcall track_socket(int af, int type, int protocol)
+  SOCKET __stdcall track_socket(int af, int type, int protocol)
   {
     unsigned loc = (unsigned)_ReturnAddress();
     
-    int socket = dllsocket(af, type, protocol);
+    SOCKET socket = dllsocket(af, type, protocol);
     if(socket>=0)
       tracker_socket_track(loc, socket);
     return socket;
   }
 
-  int __stdcall track_closesocket(int socket)
+  int __stdcall track_closesocket(SOCKET socket)
   {
     unsigned loc = (unsigned)_ReturnAddress();
     
@@ -59,11 +59,11 @@ extern "C"
     return dllclosesocket(socket);
   }
   
-  int __stdcall track_accept(int s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
+  SOCKET __stdcall track_accept(SOCKET s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
     unsigned loc = (unsigned)_ReturnAddress();
     
-    int socket = dllaccept(s, addr, addrlen);
+    SOCKET socket = dllaccept(s, addr, addrlen);
     if (socket>=0) 
       tracker_socket_track(loc, socket);
     return socket;
