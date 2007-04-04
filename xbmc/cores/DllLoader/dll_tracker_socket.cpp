@@ -45,8 +45,9 @@ extern "C"
   {
     unsigned loc = (unsigned)_ReturnAddress();
     
-    SOCKET socket = dllsocket(af, type, protocol);
-    if (socket) tracker_socket_track(loc, socket);
+    int socket = dllsocket(af, type, protocol);
+    if(socket>=0)
+      tracker_socket_track(loc, socket);
     return socket;
   }
 
@@ -58,12 +59,13 @@ extern "C"
     return dllclosesocket(socket);
   }
   
-  int __stdcall track_accept(SOCKET s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
+  int __stdcall track_accept(int s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
     unsigned loc = (unsigned)_ReturnAddress();
     
-    SOCKET socket = dllaccept(s, addr, addrlen);
-    if (socket) tracker_socket_track(loc, socket);
+    int socket = dllaccept(s, addr, addrlen);
+    if (socket>=0) 
+      tracker_socket_track(loc, socket);
     return socket;
   }
 }
