@@ -453,6 +453,10 @@
   <string id="538">Big Icons</string>
   <string id="539">Wide</string>
   <string id="540">Big Wide</string>
+  <string id="541">Album Icons</string>
+  <string id="542">DVD Icons</string>
+  <string id="543">DVD</string>
+  <string id="544">Media Info</string>
 
   <string id="550">Sort by: %s</string>
   <string id="551">Name</string>
@@ -1564,6 +1568,7 @@
   <string id="20370">* Hidden to prevent spoilers *</string>
   <string id="20371">Set Season Thumb</string>
   <string id="20372">Season Image</string>
+  <string id="20373">Season</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1605,7 +1610,7 @@
   <string id="21382">Disable Add Source buttons in file lists</string>
   <string id="21383">Enable Scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
-  <string id="21385">Open Playlist</string>
+  <string id="21385">Open</string>
   
   <string id="21386">Acoustic Management Level</string>
   <string id="21387">Fast</string>
