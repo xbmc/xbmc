@@ -21,7 +21,7 @@ public:
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName()  { return "libfaad"; }
-  virtual int GetBufferSize()    { return m_iInputBufferSize; }
+  virtual int GetBufferSize()    { return m_InputBufferSize; }
 
 private:
 
@@ -35,15 +35,16 @@ private:
   int m_iSourceBitrate;
   
   bool m_bInitializedDecoder;
+  bool m_bRawAACStream;
   
   faacDecHandle m_pHandle;
   faacDecFrameInfo m_frameInfo;
-  //
-  BYTE m_decodedData[LIBFAAD_DECODED_SIZE];
-  int  m_iDecodedDataSize;
+
+  BYTE* m_DecodedData;
+  int   m_DecodedDataSize;
   
-  BYTE m_inputBuffer[LIBFAAD_INPUT_SIZE];
-  int m_iInputBufferSize;
+  BYTE m_InputBuffer[LIBFAAD_INPUT_SIZE];
+  int  m_InputBufferSize;
 
   DllLibFaad m_dll;
 };
