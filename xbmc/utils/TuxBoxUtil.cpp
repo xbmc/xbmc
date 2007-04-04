@@ -530,6 +530,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   
   //Open 
   CFileCurl http;
+  http.SetTimeout(20);
   if(http.Open(url, false)) 
   {
     CStdString strTmp;
@@ -542,7 +543,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       // read response from server into string buffer
       strTmp.reserve(size_total);
       char buffer[16384];
-      while( (size_read = http.Read( buffer, sizeof(buffer)-1, 20) ) > 0 )
+      while( (size_read = http.Read( buffer, sizeof(buffer)-1) ) > 0 )
       {
         buffer[size_read] = 0;
         strTmp += buffer;
