@@ -744,11 +744,12 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
-  CLog::Log(LOGNOTICE, "Q is mapped to: %s",szDevicePath );
+  CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
+  char szXBEFileName[1024];
+  CIoSupport::GetXbePath(szXBEFileName);
+  CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-
-
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles("q:\\system\\profiles.xml");
