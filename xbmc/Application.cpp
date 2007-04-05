@@ -4152,7 +4152,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       ) &&
       (
         (iDuration <= 0) ||
-        (iDuration > g_guiSettings.GetInt("system.remoteplayhdspindownminduration")*60)
+        (iDuration > g_guiSettings.GetInt("harddisk.remoteplayhdspindownminduration")*60)
       )
     )
     {
