@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/02/2007-->
+<!--Date of translation: 04/05/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8389-->
+<!--Based on english strings version 8420-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -448,6 +448,10 @@
   <string id="538">Symbole 2</string>
   <string id="539">Wide</string>
   <string id="540">Wide 2</string>
+  <string id="541">Album 2</string>
+  <string id="542">DVD 2</string>
+  <string id="543">DVD</string>
+  <string id="544">Infos</string>
   <string id="550">Nach: %s</string>
   <string id="551">Name</string>
   <string id="552">Datum</string>
@@ -1501,6 +1505,7 @@
   <string id="20370">* Die Handlung wird nicht angezeigt. *</string>
   <string id="20371">Staffel-Cover setzen</string>
   <string id="20372">Staffel-Cover</string>
+  <string id="20373">Staffel</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
