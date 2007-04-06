@@ -558,7 +558,10 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
             strMovieName = pItem->GetLabel();
           else
           {
-            strMovieName = CUtil::GetFileName(pItem->m_strPath);
+            if (pItem->IsStack())
+              strMovieName = pItem->GetLabel();
+            else
+              strMovieName = CUtil::GetFileName(pItem->m_strPath);
             CUtil::RemoveExtension(strMovieName);
           }
         }
