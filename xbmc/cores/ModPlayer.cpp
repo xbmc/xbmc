@@ -171,28 +171,10 @@ bool ModPlayer::HasAudio()
   return true;
 }
 
-void ModPlayer::SwitchToNextLanguage()
-{}
-
-void ModPlayer::ToggleSubtitles()
-{}
-
 void ModPlayer::Seek(bool bPlus, bool bLargeStep)
 {}
 
 void ModPlayer::ToggleFrameDrop()
-{}
-
-
-
-void ModPlayer::SetContrast(bool bPlus)
-{}
-
-void ModPlayer::SetBrightness(bool bPlus)
-{}
-void ModPlayer::SetHue(bool bPlus)
-{}
-void ModPlayer::SetSaturation(bool bPlus)
 {}
 
 void ModPlayer::SetVolume(long nVolume)

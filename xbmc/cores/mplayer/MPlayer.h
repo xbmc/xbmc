@@ -114,24 +114,17 @@ public:
   virtual void Unload();
   virtual bool HasVideo();
   virtual bool HasAudio();
-  virtual void SwitchToNextLanguage();
 
-  virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SetVolume(long nVolume);
   virtual void SetDynamicRangeCompression(long drc);
-  virtual void SetContrast(bool bPlus = true);
-  virtual void SetBrightness(bool bPlus = true);
-  virtual void SetHue(bool bPlus = true);
-  virtual void SetSaturation(bool bPlus = true);
   virtual void GetAudioInfo( CStdString& strAudioInfo);
   virtual void GetVideoInfo( CStdString& strVideoInfo);
   virtual void GetGeneralInfo( CStdString& strVideoInfo);
   virtual void Update(bool bPauseDrawing = false);
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect);
   virtual void GetVideoAspectRatio(float& fAR);
-  virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() ;
   virtual bool IsRecording();
   virtual bool Record(bool bOnOff) ;
