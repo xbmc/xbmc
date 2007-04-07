@@ -19,15 +19,9 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo();
   virtual bool HasAudio();
-  virtual void SwitchToNextLanguage();
-  virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SetVolume(long nVolume);
-  virtual void SetContrast(bool bPlus = true);
-  virtual void SetBrightness(bool bPlus = true);
-  virtual void SetHue(bool bPlus = true);
-  virtual void SetSaturation(bool bPlus = true);
   virtual void GetAudioInfo( CStdString& strAudioInfo);
   virtual void GetVideoInfo( CStdString& strVideoInfo);
   virtual void GetGeneralInfo( CStdString& strVideoInfo);

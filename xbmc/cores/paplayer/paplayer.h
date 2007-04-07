@@ -36,8 +36,6 @@ public:
   virtual bool IsPaused() const { return m_bPaused; }
   virtual bool HasVideo() { return false; }
   virtual bool HasAudio() { return true; }
-  virtual void SwitchToNextLanguage() {}
-  virtual void ToggleSubtitles() {}
   virtual void ToggleFrameDrop() {}
   virtual bool CanSeek();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) {}
@@ -45,10 +43,6 @@ public:
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume);
   virtual void SetDynamicRangeCompression(long drc);
-  virtual void SetContrast(bool bPlus = true) {}
-  virtual void SetBrightness(bool bPlus = true) {}
-  virtual void SetHue(bool bPlus = true) {}
-  virtual void SetSaturation(bool bPlus = true) {}
   virtual void GetAudioInfo( CStdString& strAudioInfo) {}
   virtual void GetVideoInfo( CStdString& strVideoInfo) {}
   virtual void GetGeneralInfo( CStdString& strVideoInfo) {}
