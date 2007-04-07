@@ -2485,7 +2485,7 @@ bool CApplication::OnAction(const CAction &action)
       SeekTime(0);
     else
     {
-      if (IsPlayingVideo())
+      if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
       {
         // save video settings
         CVideoDatabase dbs;
@@ -2504,7 +2504,7 @@ bool CApplication::OnAction(const CAction &action)
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
 
-    if (IsPlayingVideo())
+    if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {
       // save video settings
       CVideoDatabase dbs;
@@ -4362,7 +4362,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         CVideoDatabase dbs;
         dbs.Open();
-        dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+        if(g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+          dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+
         if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
         {
           dbs.MarkAsWatched(m_itemCurrentFile);
