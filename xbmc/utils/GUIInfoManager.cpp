@@ -147,6 +147,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
+    else if (strTest.Equals("player.chapter")) ret = PLAYER_CHAPTER;
+    else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -596,6 +598,14 @@ string CGUIInfoManager::GetLabel(int info)
       strLabel = GetMusicLabel(info);
     else
       strLabel = GetVideoLabel(info);
+    break;
+  case PLAYER_CHAPTER:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel.Format("%02d", g_application.m_pPlayer->GetChapter());
+    break;
+  case PLAYER_CHAPTERCOUNT:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel.Format("%02d", g_application.m_pPlayer->GetChapterCount());
     break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
@@ -1049,6 +1059,8 @@ int CGUIInfoManager::GetInt(int info) const
     case PLAYER_PROGRESS:
     case PLAYER_SEEKBAR:
     case PLAYER_CACHING:
+    case PLAYER_CHAPTER:
+    case PLAYER_CHAPTERCOUNT:
       {
         if( g_application.IsPlaying() && g_application.m_pPlayer)
         {
@@ -1069,6 +1081,12 @@ int CGUIInfoManager::GetInt(int info) const
             {
               iret = (int)(g_application.m_pPlayer->GetCacheLevel());
             }
+            break;
+          case PLAYER_CHAPTER:
+            iret = g_application.m_pPlayer->GetChapter();
+            break;
+          case PLAYER_CHAPTERCOUNT:
+            iret = g_application.m_pPlayer->GetChapterCount();
             break;
           }
         }
@@ -1381,6 +1399,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     case VISUALISATION_ENABLED:
       bReturn = g_guiSettings.GetString("mymusic.visualisation") != "None";
     break;
+    default: // default, use integer value different from 0 as true
+      bReturn = GetInt(condition) != 0;
     }
   }
   // cache return value
