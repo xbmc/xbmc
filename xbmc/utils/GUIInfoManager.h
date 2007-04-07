@@ -52,6 +52,8 @@
 #define PLAYER_VOLUME                32
 #define PLAYER_MUTED                 33
 #define PLAYER_HASDURATION           34
+#define PLAYER_CHAPTER               35
+#define PLAYER_CHAPTERCOUNT          36
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
