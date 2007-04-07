@@ -22,6 +22,8 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_iVobUnitCorrection = 0LL;
   m_bInMenu = false;
   m_holdmode = HOLDMODE_NONE;
+  m_iTitle = m_iTitleCount = 0;
+  m_iPart = m_iPartCount = 0;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -133,7 +135,16 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
 
   m_bEOF = false;
-  
+  m_bCheckButtons = false;
+  m_iCellStart = 0;
+  m_iVobUnitStart = 0LL;
+  m_iVobUnitStop = 0LL;
+  m_iVobUnitCorrection = 0LL;
+  m_bInMenu = false;
+  m_holdmode = HOLDMODE_NONE;
+  m_iTitle = m_iTitleCount = 0;
+  m_iPart = m_iPartCount = 0;
+
   return true;
 }
 
@@ -376,15 +387,15 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           break;
         }
         
-        int tt = 0, ptt = 0;
         uint32_t pos, len;
-        char input = '\0';
 
-        m_dll.dvdnav_current_title_info(m_dvdnav, &tt, &ptt);
+        m_dll.dvdnav_current_title_info(m_dvdnav, &m_iTitle, &m_iPart);
+        m_dll.dvdnav_get_number_of_titles(m_dvdnav, &m_iTitleCount);
+        m_dll.dvdnav_get_number_of_parts(m_dvdnav, m_iTitle, &m_iPartCount);        
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
-        CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
-        CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
-        m_icurrentGroupId = (ptt * 1000) + tt;
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Cell change: Title %d, Chapter %d\n", m_iTitle, m_iPart);
+        CLog::Log(LOGDEBUG, __FUNCTION__" - At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
+        m_icurrentGroupId = (m_iTitle * 1000) + m_iPart;
         //Get total segment time        
         
 
@@ -949,50 +960,6 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
     default: //Unknown, use libmpeg2
       return 0.0f;
   }    
-}
-
-int CDVDInputStreamNavigator::GetNrOfTitles()
-{
-  int iTitles = 0;
-  
-  if (m_dvdnav)
-  {
-    m_dll.dvdnav_get_number_of_titles(m_dvdnav, &iTitles);
-  }
-  
-  return iTitles;
-}
-
-int CDVDInputStreamNavigator::GetNrOfParts(int iTitle)
-{
-  int iParts = 0;
-  
-  if (m_dvdnav)
-  {
-    m_dll.dvdnav_get_number_of_parts(m_dvdnav, iTitle, &iParts);
-  }
-  
-  return iParts;
-}
-
-bool CDVDInputStreamNavigator::PlayTitle(int iTitle)
-{
-  if (m_dvdnav)
-  {
-    return (DVDNAV_STATUS_OK == m_dll.dvdnav_title_play(m_dvdnav, iTitle));
-  }
-  
-  return false;
-}
-
-bool CDVDInputStreamNavigator::PlayPart(int iTitle, int iPart)
-{
-  if (m_dvdnav)
-  {
-    return (DVDNAV_STATUS_OK == m_dll.dvdnav_part_play(m_dvdnav, iTitle, iPart));
-  }
-  
-  return false;
 }
 
 void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)

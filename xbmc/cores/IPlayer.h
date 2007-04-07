@@ -1,8 +1,6 @@
 #pragma once
 #include "IAudioCallback.h"
 
-//class IChapterProvider;
-
 class IPlayerCallback
 {
 public:
@@ -43,8 +41,6 @@ public:
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() = 0;
   virtual bool HasAudio() = 0;
-  virtual void SwitchToNextLanguage() = 0;
-  virtual void ToggleSubtitles() = 0;
   virtual void ToggleFrameDrop() = 0;
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) = 0;
@@ -52,27 +48,23 @@ public:
   virtual float GetPercentage(){ return 0;};
   virtual void SetVolume(long nVolume){};
   virtual void SetDynamicRangeCompression(long drc){};
-  virtual void SetContrast(bool bPlus = true) = 0;
-  virtual void SetBrightness(bool bPlus = true) = 0;
-  virtual void SetHue(bool bPlus = true) = 0;
-  virtual void SetSaturation(bool bPlus = true) = 0;
   virtual void GetAudioInfo( CStdString& strAudioInfo) = 0;
   virtual void GetVideoInfo( CStdString& strVideoInfo) = 0;
   virtual void GetGeneralInfo( CStdString& strVideoInfo) = 0;
   virtual void Update(bool bPauseDrawing = false) = 0;
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect) = 0;
   virtual void GetVideoAspectRatio(float& fAR) = 0;
-  virtual void SwitchToNextAudioLanguage(){};
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
-  virtual void SetAVDelay(float fValue = 0.0f){};
-  virtual float GetAVDelay(){ return 0.0f;};
+
+  virtual void  SetAVDelay(float fValue = 0.0f) { return; }
+  virtual float GetAVDelay()                    { return 0.0f;};
 
   virtual void SetSubTitleDelay(float fValue = 0.0f){};
-  virtual float GetSubTitleDelay(){ return 0.0f;};
-  virtual int GetSubtitleCount(){ return 1;};
-  virtual int GetSubtitle(){ return 0;};
+  virtual float GetSubTitleDelay()    { return 0.0f; }
+  virtual int  GetSubtitleCount()     { return 0; }
+  virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName){};
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
@@ -80,10 +72,14 @@ public:
   virtual bool GetSubtitleExtension(CStdString &strSubtitleExtension){ return false;};
   virtual bool AddSubtitle(const CStdString& strSubPath) {return false;};
 
-  virtual int GetAudioStreamCount(){ return 1;};
-  virtual int GetAudioStream(){ return 0;};
+  virtual int  GetAudioStreamCount()  { return 0; }
+  virtual int  GetAudioStream()       { return -1; }
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName){};
   virtual void SetAudioStream(int iStream){};
+
+  virtual int  GetChapterCount()                               { return 0; }
+  virtual int  GetChapter()                                    { return -1; } 
+//  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
   virtual float GetActualFPS() { return 0.0f; };
   virtual void SeekTime(__int64 iTime = 0){};
@@ -114,8 +110,7 @@ public:
   //returns a state that is needed for resuming from a specific time
   virtual CStdString GetPlayerState() { return ""; };
   virtual bool SetPlayerState(CStdString state) { return false;};
-
-  //virtual IChapterProvider* GetChapterProvider() { return NULL; }
+  
 protected:
   IPlayerCallback& m_callback;
 };
