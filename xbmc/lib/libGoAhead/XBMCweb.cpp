@@ -885,7 +885,7 @@ int CXbmcWeb::xbmcPlayerPrevious(int eid, webs_t wp, char_t *parameter)
 /* Turn on subtitles */
 int CXbmcWeb::xbmcSubtitles( int eid, webs_t wp, char_t *parameter)
 {
-  if (g_application.m_pPlayer) g_application.m_pPlayer->ToggleSubtitles();
+  if (g_application.m_pPlayer) g_application.m_pPlayer->SetSubtitleVisible(!g_application.m_pPlayer->GetSubtitleVisible());
   return 0;
 }
 
