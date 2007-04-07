@@ -159,29 +159,29 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("bar"))
   {
-    if (strTest.Equals("bar.gputemperature")) ret = BAR_GPU_TEMPERATURE;
-    else if (strTest.Equals("bar.cputemperature")) ret = BAR_CPU_TEMPERATURE;
-    else if (strTest.Equals("bar.cpuusage")) ret = BAR_CPU_USAGE;
-    else if (strTest.Equals("bar.freememory")) ret = BAR_FREE_MEMORY;
-    else if (strTest.Equals("bar.usedmemory")) ret = BAR_USED_MEMORY;
-    else if (strTest.Equals("bar.fanspeed")) ret = BAR_FAN_SPEED;
-    else if (strTest.Equals("bar.usedspace")) ret = BAR_USED_SPACE;
-    else if (strTest.Equals("bar.freespace")) ret = BAR_FREE_SPACE;
-    else if (strTest.Equals("bar.usedspace(c)")) ret = BAR_USED_SPACE_C;
-    else if (strTest.Equals("bar.freespace(c)")) ret = BAR_FREE_SPACE_C;
-    else if (strTest.Equals("bar.usedspace(e)")) ret = BAR_USED_SPACE_E;   
-    else if (strTest.Equals("bar.freespace(e)")) ret = BAR_FREE_SPACE_E; 
-    else if (strTest.Equals("bar.usedspace(f)")) ret = BAR_USED_SPACE_F;
-    else if (strTest.Equals("bar.freespace(f)")) ret = BAR_FREE_SPACE_F;
-    else if (strTest.Equals("bar.usedspace(g)")) ret = BAR_USED_SPACE_G;
-    else if (strTest.Equals("bar.freespace(g)")) ret = BAR_FREE_SPACE_G;
-    else if (strTest.Equals("bar.usedspace(x)")) ret = BAR_USED_SPACE_X;
-    else if (strTest.Equals("bar.freespace(x)")) ret = BAR_FREE_SPACE_X;
-    else if (strTest.Equals("bar.usedspace(y)")) ret = BAR_USED_SPACE_Y;
-    else if (strTest.Equals("bar.freespace(y)")) ret = BAR_FREE_SPACE_Y;
-    else if (strTest.Equals("bar.usedspace(z)")) ret = BAR_USED_SPACE_Z;
-    else if (strTest.Equals("bar.freespace(z)")) ret = BAR_FREE_SPACE_Z;
-    else if (strTest.Equals("bar.hddtemperature")) ret = BAR_HDD_TEMPERATURE;
+    if (strTest.Equals("bar.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
+    else if (strTest.Equals("bar.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
+    else if (strTest.Equals("bar.cpuusage")) ret = SYSTEM_CPU_USAGE;
+    else if (strTest.Equals("bar.freememory")) ret = SYSTEM_FREE_MEMORY;
+    else if (strTest.Equals("bar.usedmemory")) ret = SYSTEM_USED_MEMORY;
+    else if (strTest.Equals("bar.fanspeed")) ret = SYSTEM_FAN_SPEED;
+    else if (strTest.Equals("bar.usedspace")) ret = SYSTEM_USED_SPACE;
+    else if (strTest.Equals("bar.freespace")) ret = SYSTEM_FREE_SPACE;
+    else if (strTest.Equals("bar.usedspace(c)")) ret = SYSTEM_USED_SPACE_C;
+    else if (strTest.Equals("bar.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
+    else if (strTest.Equals("bar.usedspace(e)")) ret = SYSTEM_USED_SPACE_E;   
+    else if (strTest.Equals("bar.freespace(e)")) ret = SYSTEM_FREE_SPACE_E; 
+    else if (strTest.Equals("bar.usedspace(f)")) ret = SYSTEM_USED_SPACE_F;
+    else if (strTest.Equals("bar.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
+    else if (strTest.Equals("bar.usedspace(g)")) ret = SYSTEM_USED_SPACE_G;
+    else if (strTest.Equals("bar.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
+    else if (strTest.Equals("bar.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
+    else if (strTest.Equals("bar.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
+    else if (strTest.Equals("bar.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
+    else if (strTest.Equals("bar.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
+    else if (strTest.Equals("bar.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
+    else if (strTest.Equals("bar.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
+    else if (strTest.Equals("bar.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
   }
   else if (strCategory.Equals("system"))
   {
@@ -1092,60 +1092,61 @@ int CGUIInfoManager::GetInt(int info) const
         }
       }
       break;
-    case BAR_FREE_MEMORY:
-    case BAR_USED_MEMORY:
+    case SYSTEM_FREE_MEMORY:
+    case SYSTEM_USED_MEMORY:
       {
         MEMORYSTATUS stat;
         GlobalMemoryStatus(&stat);
         int iMemPercentFree = 100 - ((int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
         int iMemPercentUsed = 100 - iMemPercentFree;
-        if (info == BAR_FREE_MEMORY)
+        if (info == SYSTEM_FREE_MEMORY)
           iret = iMemPercentFree;
         else
           iret = iMemPercentUsed;
       }
       break;
 #ifdef HAS_XBOX_HARDWARE
-    case BAR_HDD_TEMPERATURE:
+    case SYSTEM_HDD_TEMPERATURE:
       {
-        iret = atoi(g_sysinfo.GetInfo(info));
+        // hack to make info rutine give us a value that can be converted
+        iret = atoi(g_sysinfo.GetInfo(LCD_HDD_TEMPERATURE));
       }
       break;
-    case BAR_CPU_TEMPERATURE:
+    case SYSTEM_CPU_TEMPERATURE:
       {
         iret = atoi(CFanController::Instance()->GetCPUTemp().ToString());
       }
       break;
-    case BAR_GPU_TEMPERATURE:
+    case SYSTEM_GPU_TEMPERATURE:
       {
         iret = atoi(CFanController::Instance()->GetGPUTemp().ToString());
       }
       break;
-    case BAR_FAN_SPEED:
+    case SYSTEM_FAN_SPEED:
       {
         iret = CFanController::Instance()->GetFanSpeed() * 2;
       }
       break;
 #endif
-    case BAR_FREE_SPACE:
-    case BAR_FREE_SPACE_C:
-    case BAR_FREE_SPACE_E:
-    case BAR_FREE_SPACE_F:
-    case BAR_FREE_SPACE_G:
-    case BAR_USED_SPACE:
-    case BAR_USED_SPACE_C:
-    case BAR_USED_SPACE_E:
-    case BAR_USED_SPACE_F:
-    case BAR_USED_SPACE_G:
-    case BAR_FREE_SPACE_X:
-    case BAR_USED_SPACE_X:
-    case BAR_FREE_SPACE_Y:
-    case BAR_USED_SPACE_Y:
-    case BAR_FREE_SPACE_Z:
-    case BAR_USED_SPACE_Z:
+    case SYSTEM_FREE_SPACE:
+    case SYSTEM_FREE_SPACE_C:
+    case SYSTEM_FREE_SPACE_E:
+    case SYSTEM_FREE_SPACE_F:
+    case SYSTEM_FREE_SPACE_G:
+    case SYSTEM_USED_SPACE:
+    case SYSTEM_USED_SPACE_C:
+    case SYSTEM_USED_SPACE_E:
+    case SYSTEM_USED_SPACE_F:
+    case SYSTEM_USED_SPACE_G:
+    case SYSTEM_FREE_SPACE_X:
+    case SYSTEM_USED_SPACE_X:
+    case SYSTEM_FREE_SPACE_Y:
+    case SYSTEM_USED_SPACE_Y:
+    case SYSTEM_FREE_SPACE_Z:
+    case SYSTEM_USED_SPACE_Z:
       g_sysinfo.GetHddSpaceInfo(iret, info, true);
       break;
-    case BAR_CPU_USAGE:
+    case SYSTEM_CPU_USAGE:
       iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
       break;
   }
