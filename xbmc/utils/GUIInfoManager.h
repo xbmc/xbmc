@@ -244,30 +244,6 @@
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
 
-#define BAR_FREE_SPACE_X            618
-#define BAR_USED_SPACE_X            619
-#define BAR_FREE_SPACE_Y            620
-#define BAR_USED_SPACE_Y            621
-#define BAR_FREE_SPACE_Z            622
-#define BAR_USED_SPACE_Z            623
-#define BAR_CPU_USAGE               624
-#define BAR_USED_MEMORY             625
-#define BAR_FREE_MEMORY             626
-#define BAR_HDD_TEMPERATURE         627
-#define BAR_CPU_TEMPERATURE         628
-#define BAR_GPU_TEMPERATURE         629
-#define BAR_FAN_SPEED               630
-#define BAR_USED_SPACE              631
-#define BAR_USED_SPACE_C            632
-#define BAR_USED_SPACE_E            633
-#define BAR_USED_SPACE_F            634
-#define BAR_USED_SPACE_G            635
-#define BAR_FREE_SPACE              636
-#define BAR_FREE_SPACE_C            637
-#define BAR_FREE_SPACE_E            638
-#define BAR_FREE_SPACE_F            639
-#define BAR_FREE_SPACE_G            640
-
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
 #define SYSTEM_USED_MEMORY_PERCENT  646
