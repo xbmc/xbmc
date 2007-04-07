@@ -926,15 +926,6 @@ bool CDVDPlayer::HasAudio()
   return (m_CurrentAudio.id >= 0);
 }
 
-void CDVDPlayer::SwitchToNextLanguage()
-{
-}
-
-void CDVDPlayer::ToggleSubtitles()
-{
-  SetSubtitleVisible(!GetSubtitleVisible());
-}
-
 bool CDVDPlayer::CanSeek()
 {
   return GetTotalTime() > 0;
@@ -1041,10 +1032,6 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
   }
-}
-
-void CDVDPlayer::SwitchToNextAudioLanguage()
-{
 }
 
 void CDVDPlayer::SeekPercentage(float iPercent)
@@ -1914,17 +1901,6 @@ bool CDVDPlayer::HasMenu()
     return false;
 }
 
-//IChapterProvider* CDVDPlayer::GetChapterProvider()
-//{
-//  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
-//  {
-//    m_chapterReader.SetFile(m_filename);
-//    m_chapterReader.SetCurrentTitle(1);
-//    return (&m_chapterReader);
-//  }
-//  return NULL;
-//}
-
 bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
   __int64 pts = m_clock.GetClock();
@@ -1952,3 +1928,23 @@ bool CDVDPlayer::SetPlayerState(CStdString state)
   m_messenger.Put(new CDVDMsgPlayerSetState(state));
   return true;
 }
+
+int CDVDPlayer::GetChapterCount()
+{   
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+    return pStream->GetChapterCount();
+  }
+  return 0;
+}
+
+int CDVDPlayer::GetChapter()
+{   
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+    return pStream->GetChapter();
+  }
+  return -1;
+} 

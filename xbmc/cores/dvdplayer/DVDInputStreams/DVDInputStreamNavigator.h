@@ -83,10 +83,8 @@ public:
   bool GetNavigatorState(std::string &xmlstate);
   bool SetNavigatorState(std::string &xmlstate);
   
-  int GetNrOfTitles();
-  int GetNrOfParts(int iTitle);
-  bool PlayTitle(int iTitle);
-  bool PlayPart(int iTitle, int iPart);
+  int GetChapter()      { return m_iPart; }      // the current part in the current title
+  int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
 
   int GetTotalTime(); // the total time in milli seconds
   int GetTime(); // the current position in milli seconds
@@ -134,8 +132,14 @@ protected:
   __int64 m_iVobUnitStop;
   __int64 m_iVobUnitCorrection;
 
+  int m_iTitleCount;
+  int m_iTitle;
+
+  int m_iPartCount;
+  int m_iPart;  
+
   struct dvdnav_s* m_dvdnav;
-  
+
   IDVDPlayer* m_pDVDPlayer;
   
   BYTE m_lastblock[DVD_VIDEO_BLOCKSIZE];

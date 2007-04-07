@@ -67,8 +67,6 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo();
   virtual bool HasAudio();
-  virtual void SwitchToNextLanguage();
-  virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
@@ -76,17 +74,12 @@ public:
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
-  virtual void SetContrast(bool bPlus) {}
-  virtual void SetBrightness(bool bPlus) {}
-  virtual void SetHue(bool bPlus) {}
-  virtual void SetSaturation(bool bPlus) {}
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo( CStdString& strVideoInfo);
   virtual void Update(bool bPauseDrawing)                       { m_dvdPlayerVideo.Update(bPauseDrawing); }
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect)      { m_dvdPlayerVideo.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_dvdPlayerVideo.GetAspectRatio(); }
-  virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() { return false; }
   virtual bool IsRecording() { return false; }
   virtual bool Record(bool bOnOff) { return false; }
@@ -108,6 +101,9 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void SetAudioStream(int iStream);
 
+  virtual int  GetChapterCount();
+  virtual int  GetChapter();
+
   virtual void SeekTime(__int64 iTime);
   virtual __int64 GetTime();
   virtual int GetTotalTime();
@@ -121,7 +117,6 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  // virtual IChapterProvider* GetChapterProvider();
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
   
@@ -186,7 +181,6 @@ private:
   CDVDClock m_clock;                // master clock
   CDVDDemuxSPU m_dvdspus;           // dvd subtitle demuxer
   CDVDOverlayContainer m_overlayContainer;
-  // CDVDChapterReader m_chapterReader;// dvd chapter provider
   
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
