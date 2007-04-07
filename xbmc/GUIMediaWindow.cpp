@@ -233,7 +233,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     { // send a notify all to all controls on this window
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_LIST);
-      return OnMessage(msg);
+      OnMessage(msg);
     }
   }
 
