@@ -1495,21 +1495,6 @@ bool CMPlayer::HasAudio()
   return (mplayer_HasAudio() == TRUE);
 }
 
-void CMPlayer::SwitchToNextLanguage()
-{
-  mplayer_put_key('l');
-}
-
-void CMPlayer::ToggleSubtitles()
-{
-  if (CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded())
-    m_bSubsVisibleTTF = !m_bSubsVisibleTTF;
-  else
-    mplayer_put_key('s');
-    
-  g_stSettings.m_currentVideoSettings.m_SubtitleOn = !g_stSettings.m_currentVideoSettings.m_SubtitleOn;
-}
-
 void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   // Use relative time seeking if we dont know the length of the video
@@ -1593,38 +1578,6 @@ void CMPlayer::SetDynamicRangeCompression(long drc)
 {
   mplayer_setDRC(drc);
 }
-
-void CMPlayer::SetContrast(bool bPlus)
-{
-  if (bPlus)
-    mplayer_put_key('2');
-  else
-    mplayer_put_key('1');
-}
-
-void CMPlayer::SetBrightness(bool bPlus)
-{
-  if (bPlus)
-    mplayer_put_key('4');
-  else
-    mplayer_put_key('3');
-}
-void CMPlayer::SetHue(bool bPlus)
-{
-  if (bPlus)
-    mplayer_put_key('6');
-  else
-    mplayer_put_key('5');
-}
-void CMPlayer::SetSaturation(bool bPlus)
-{
-  if (bPlus)
-    mplayer_put_key('8');
-  else
-    mplayer_put_key('7');
-}
-
-
 
 void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
 {
@@ -1713,9 +1666,6 @@ void CMPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 void CMPlayer::UnRegisterAudioCallback()
 {
   xbox_audio_unregistercallback();
-}
-void CMPlayer::SwitchToNextAudioLanguage()
-{
 }
 
 bool CMPlayer::CanRecord()
