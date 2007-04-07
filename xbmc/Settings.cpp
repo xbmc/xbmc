@@ -1022,6 +1022,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
     GetInteger(pElement, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast, 50, 0, 100);
     GetInteger(pElement, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma, 20, 0, 100);
+    GetFloat(pElement, "audiodelay", g_stSettings.m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
+    GetFloat(pElement, "subtitledelay", g_stSettings.m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
+
     g_stSettings.m_defaultVideoSettings.m_SubtitleCached = false;
   }
   // audio settings
@@ -1709,6 +1712,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetInteger(pNode, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness);
   SetInteger(pNode, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast);
   SetInteger(pNode, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma);
+  SetFloat(pNode, "audiodelay", g_stSettings.m_defaultVideoSettings.m_AudioDelay);
+  SetFloat(pNode, "subtitledelay", g_stSettings.m_defaultVideoSettings.m_SubtitleDelay);
+
 
   // audio settings
   TiXmlElement volumeNode("audio");
