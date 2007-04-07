@@ -183,6 +183,17 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
     }
     break;
   }
+  bool handled(false);
+  //not intented for any specific control, send to all childs and our base handler.
+  if (message.GetControlId() == 0)
+  {
+    for (iControls it = m_children.begin();it != m_children.end(); ++it)
+    {
+      CGUIControl* control = *it;
+      handled |= control->OnMessage(message);
+    }
+    return CGUIControl::OnMessage(message) || handled;
+  }
   // if it's intended for us, then so be it
   if (message.GetControlId() == GetID())
     return CGUIControl::OnMessage(message);
@@ -198,7 +209,6 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
     }
   }
   // Unhandled - send to all matching invisible controls as well
-  bool handled(false);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl* control = *it;
