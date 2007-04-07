@@ -439,7 +439,7 @@
   <string id="524">Select Playlist</string>
   <string id="525">New Playlist...</string>
   <string id="526">Add To Playlist</string>
-  <string id="527">Manually Add To Database</string>
+  <string id="527">Manually Add To Library</string>
   <string id="528">Enter Title</string>
   <string id="529">Error: Duplicate title</string>
   <string id="530">Select Genre</string>
@@ -851,7 +851,7 @@
   <string id="12384">24 hour clock</string>
   <string id="12385">Day/Month</string>
   <string id="12386">Month/Day</string>
-  <string id="12387">Rescan database</string>
+  <string id="12387"></string>
   <string id="12390">System Uptime</string>
   <string id="12391">Minutes</string>
   <string id="12392">Hours</string>
@@ -1000,7 +1000,7 @@
   <string id="13349">Scan For New Content</string>
   <string id="13350">Now Playing...</string>
   <string id="13351">Album Information</string>
-  <string id="13352">Scan All to Database</string>
+  <string id="13352">Scan Item to Library</string>
   <string id="13353">Stop Scanning</string>
   <string id="13354">Render Method</string>
   <string id="13355">Low Quality Pixel Shader</string>
@@ -1280,7 +1280,7 @@
   <string id="16027">Too many consecutive failed items</string>
 
   <string id="16030">Party Mode mode aborted.</string>
-  <string id="16031">No matching songs in the database.</string>
+  <string id="16031">No matching songs in the Library.</string>
   <string id="16032">Could not initialise database.</string>
   <string id="16033">Could not open database.</string>
   <string id="16034">Could not get songs from database.</string>
@@ -1536,7 +1536,7 @@
   <string id="20338">Movie</string>
   <string id="20339">Director</string>
   <string id="20340">Do you want to remove all items within</string>
-  <string id="20341">this path from the database?</string>
+  <string id="20341">this path from the library?</string>
   <string id="20342">Movies</string>
   <string id="20343">TV Shows</string>
   <string id="20344">This directory contains</string>
