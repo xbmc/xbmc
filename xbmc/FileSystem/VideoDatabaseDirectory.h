@@ -17,7 +17,7 @@ namespace DIRECTORY
     VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
     bool GetQueryParams(const CStdString& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
     void ClearDirectoryCache(const CStdString& strDirectory);
-    bool IsAllItem(const CStdString& strDirectory);
+    static bool IsAllItem(const CStdString& strDirectory);
     bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
     bool ContainsMovies(const CStdString &path);
   };
