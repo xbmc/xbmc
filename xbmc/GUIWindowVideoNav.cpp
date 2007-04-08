@@ -200,7 +200,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_FILTER)
       {
-        CGUIDialogKeyboard::ShowAndGetFilter(m_filter);
+        CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
         return true;
       }
       else if (iControl == CONTROL_BTNSHOWMODE)

@@ -1089,35 +1089,39 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum, const CStdStrin
   return false;
 }
 
-bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist, VECARTISTS& artists)
+bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &artists)
 {
   try
   {
-    artists.erase(artists.begin(), artists.end());
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
     // Exclude "Various Artists"
-    CStdString strVariousArtists = g_localizeStrings.Get(340);
-    long lVariousArtistId = AddArtist(strVariousArtists);
+    long lVariousArtistId = AddArtist(g_localizeStrings.Get(340));
 
     CStdString strSQL=FormatSQL("select * from artist "
-                                "where strArtist LIKE '%%%s%%' and idArtist <> %i "
-                                , strArtist.c_str(), lVariousArtistId );
+                                "where strArtist LIKE '%s%%' and idArtist <> %i "
+                                , search.c_str(), lVariousArtistId );
+
     if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
+    if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       return false;
     }
+    
+    CStdString artistLabel(g_localizeStrings.Get(484)); // Artist
     while (!m_pDS->eof())
     {
-      CArtist artist;
-      artist.idArtist = m_pDS->fv("idArtist").get_asLong();
-      artist.strArtist = m_pDS->fv("strArtist").get_asString();
-      artists.push_back(artist);
+      CStdString path;
+      path.Format("musicdb://2/%ld/", m_pDS->fv(0).get_asLong());
+      CFileItem* pItem = new CFileItem(path, true);
+      CStdString label;
+      label.Format("[%s] %s", artistLabel.c_str(), m_pDS->fv(1).get_asString());
+      pItem->SetLabel(label);
+      label.Format("A %s", m_pDS->fv(1).get_asString()); // sort label is stored in the title tag
+      pItem->GetMusicInfoTag()->SetTitle(label);
+      artists.Add(pItem);
       m_pDS->next();
     }
 
@@ -1126,7 +1130,7 @@ bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist, VECARTISTS& a
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GetArtistsByName() failed");
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
   }
 
   return false;
@@ -1142,7 +1146,7 @@ bool CMusicDatabase::GetGenresByName(const CStdString& strGenre, VECGENRES& genr
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=FormatSQL("select * from genre "
-                                "where strGenre LIKE '%%%s%%' ", strGenre.c_str());
+                                "where strGenre LIKE '%s%%' ", strGenre.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1867,22 +1871,40 @@ bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albu
   return false;
 }
 
-bool CMusicDatabase::FindSongsByName(const CStdString& strSearch, VECSONGS& songs, bool bWithMusicDbPath /*=false*/)
+bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
+{
+  DWORD time = timeGetTime();
+  // first grab all the artists that match
+  SearchArtists(search, items);
+  CLog::Log(LOGDEBUG, __FUNCTION__" Artist search in %d ms", timeGetTime() - time); time = timeGetTime();
+
+  // then albums that match
+  SearchAlbums(search, items);
+  CLog::Log(LOGDEBUG, __FUNCTION__" Album search in %d ms", timeGetTime() - time); time = timeGetTime();
+
+  // and finally songs
+  SearchSongs(search, items);
+  CLog::Log(LOGDEBUG, __FUNCTION__" Songs search in %d ms", timeGetTime() - time); time = timeGetTime();
+  return true;
+}
+
+bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
 {
   try
   {
-    songs.erase(songs.begin(), songs.end());
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from songview where strTitle LIKE '%%%s%%'", strSearch.c_str());
+    CStdString strSQL=FormatSQL("select * from songview where strTitle LIKE '%s%%'", search.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0) return false;
+    if (m_pDS->num_rows() == 0) return false;
+
+    CStdString songLabel = g_localizeStrings.Get(179); // Song
     while (!m_pDS->eof())
     {
-      songs.push_back(GetSongFromDataset(bWithMusicDbPath));
+      CFileItem* item = new CFileItem;
+      GetFileItemFromDataset(item, "musicdb://4/");
+      items.Add(item);
       m_pDS->next();
     }
 
@@ -1891,7 +1913,7 @@ bool CMusicDatabase::FindSongsByName(const CStdString& strSearch, VECSONGS& song
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByName() failed");
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
   }
 
   return false;
@@ -1949,21 +1971,28 @@ bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch, VECSO
   return false;
 }
 
-bool CMusicDatabase::GetAlbumsByName(const CStdString& strSearch, VECALBUMS& albums)
+bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &albums)
 {
   try
   {
-    albums.erase(albums.begin(), albums.end());
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from albumview where strAlbum like '%%%s%%'", strSearch.c_str());
+    CStdString strSQL=FormatSQL("select * from albumview where strAlbum like '%s%%'", search.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
+    CStdString albumLabel(g_localizeStrings.Get(483)); // Album
     while (!m_pDS->eof())
     {
-      albums.push_back(GetAlbumFromDataset());
+      CAlbum album = GetAlbumFromDataset();
+      CFileItem* pItem = new CFileItem(album);
+      pItem->m_strPath.Format("musicdb://3/%ld/", album.idAlbum);
+      CStdString label;
+      label.Format("[%s] %s", albumLabel.c_str(), album.strAlbum);
+      pItem->SetLabel(label);
+      label.Format("B %s", album.strAlbum); // sort label is stored in the title tag
+      pItem->GetMusicInfoTag()->SetTitle(label);
+      albums.Add(pItem);
       m_pDS->next();
     }
     m_pDS->close(); // cleanup recordset data
@@ -1971,9 +2000,8 @@ bool CMusicDatabase::GetAlbumsByName(const CStdString& strSearch, VECALBUMS& alb
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumsByName() failed");
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
   }
-
   return false;
 }
 
