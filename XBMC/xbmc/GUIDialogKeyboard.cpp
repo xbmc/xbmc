@@ -56,7 +56,7 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void)
   m_bIsConfirmed = false;
   m_bShift = false;
   m_hiddenInput = false;
-  m_filtering = false;
+  m_filtering = FILTERING_NONE;
   m_keyType = LOWER;
   m_strHeading = "";
   m_lastRemoteClickTime = 0;
@@ -283,9 +283,15 @@ void CGUIDialogKeyboard::UpdateLabel()
     CStdString utf8Edit;
     g_charsetConverter.utf16toUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
-    if (m_filtering)
+    if (m_filtering == FILTERING_CURRENT)
     { // send our filter message
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
+      message.SetStringParam(utf8Edit);
+      g_graphicsContext.SendMessage(message);
+    }
+    if (m_filtering == FILTERING_SEARCH)
+    { // send our search message
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
       message.SetStringParam(utf8Edit);
       g_graphicsContext.SendMessage(message);
     }
@@ -713,15 +719,15 @@ void CGUIDialogKeyboard::OnOK()
   Close();
 }
 
-bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter)
+bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
 {
   CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
   if (!pKeyboard)
     return false;
 
-  pKeyboard->m_filtering = true;
+  pKeyboard->m_filtering = searching ? FILTERING_SEARCH : FILTERING_CURRENT;
   bool ret = ShowAndGetInput(filter, true);
-  pKeyboard->m_filtering = false;
+  pKeyboard->m_filtering = FILTERING_NONE;
   return ret;
 }

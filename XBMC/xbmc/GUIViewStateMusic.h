@@ -14,6 +14,15 @@ protected:
   virtual CStdString GetExtensions();
 };
 
+class CGUIViewStateMusicSearch : public CGUIViewStateWindowMusic
+{
+public:
+  CGUIViewStateMusicSearch(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+};
+
 class CGUIViewStateMusicDatabase : public CGUIViewStateWindowMusic
 {
 public:
