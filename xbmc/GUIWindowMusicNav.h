@@ -25,6 +25,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnFilterItems();
+  virtual bool OnClick(int iItem);
   void FilterItems(CFileItemList &items);
 
   void SetArtistImage(int iItem);
@@ -41,4 +42,6 @@ protected:
   // filtered item views
   CFileItemList m_unfilteredItems;
   CStdString m_filter;
+
+  CStdString m_search;  // current search
 };

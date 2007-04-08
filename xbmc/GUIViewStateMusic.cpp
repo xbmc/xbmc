@@ -56,6 +56,41 @@ CStdString CGUIViewStateWindowMusic::GetExtensions()
   return g_stSettings.m_musicExtensions;
 }
 
+CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
+{
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.librarytrackformat");
+  if (strTrackLeft.IsEmpty())
+    strTrackLeft = g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.librarytrackformatright");
+  if (strTrackRight.IsEmpty())
+    strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
+
+  CStdString strAlbumLeft = g_advancedSettings.m_strMusicLibraryAlbumFormat;
+  if (strAlbumLeft.IsEmpty())
+    strAlbumLeft = "%B"; // album
+  CStdString strAlbumRight = g_advancedSettings.m_strMusicLibraryAlbumFormatRight;
+  if (strAlbumRight.IsEmpty())
+    strAlbumRight = "%A"; // artist
+
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T - %A", "%D", "%L", "%A"));  // Title, Artist, Duration| empty, empty
+  else
+    AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T - %A", "%D", "%L", "%A"));  // Title, Artist, Duration| empty, empty
+
+  SetSortMethod(SORT_METHOD_TITLE);
+
+  SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
+
+  SetSortOrder(g_stSettings.m_viewStateMusicNavSongs.m_sortOrder);
+
+  LoadViewState(items.m_strPath, WINDOW_MUSIC_NAV);
+}
+
+void CGUIViewStateMusicSearch::SaveViewState()
+{
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
+}
+
 CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   CMusicDatabaseDirectory dir;
@@ -392,6 +427,13 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   CShare share;
   share.strName=g_localizeStrings.Get(136); // Playlists
   share.strPath = "special://musicplaylists/";
+  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+
+  // Search share
+  share.strName=g_localizeStrings.Get(137); // Search
+  share.strPath = "musicsearch://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);

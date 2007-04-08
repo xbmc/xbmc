@@ -106,11 +106,10 @@ public:
   bool GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
-  bool FindSongsByName(const CStdString& strSearch, VECSONGS& songs, bool bWithMusicDbPath=false);
   bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
-  bool GetArtistsByName(const CStdString& strArtist, VECARTISTS& artists);
+  bool Search(const CStdString& search, CFileItemList &items);
+
   bool GetGenresByName(const CStdString& strGenre1, VECGENRES& genres);
-  bool GetAlbumsByName(const CStdString& strSearch1, VECALBUMS& albums);
 
   bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
@@ -197,6 +196,9 @@ private:
   bool CleanupGenres();
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
   virtual bool UpdateOldVersion(int version);
+  bool SearchArtists(const CStdString& search, CFileItemList &artists);
+  bool SearchAlbums(const CStdString& search, CFileItemList &albums);
+  bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
 
   // Fields should be ordered as they 
   // appear in the songview
