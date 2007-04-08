@@ -92,7 +92,10 @@ void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString,
     DstString[i*Inc + 1] = nybble;
   }
 
-  DstString[i*Inc] = 0;
+  if (Inc == 3)
+    DstString[i*Inc - 1] = 0;
+  else
+    DstString[i*Inc] = 0;
 
   if (Seperator != 0x00)
   {
