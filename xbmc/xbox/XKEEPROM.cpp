@@ -132,7 +132,7 @@ BOOL XKEEPROM::WriteToBINFile(LPCSTR FileName)
     CloseHandle(hf);
   }
   else
-    retval = FALSE;
+    retVal = FALSE;
   return retVal;
 }
 
