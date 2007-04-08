@@ -209,8 +209,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_FILTER)
       {
-        // do filtering here for fun for now...
-        CGUIDialogKeyboard::ShowAndGetFilter(m_filter);
+        CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
         return true;
       }
     }
@@ -222,6 +221,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_filter = message.GetStringParam();
         m_filter.TrimLeft().ToLower();
         OnFilterItems();
+      }
+      if (message.GetParam1() == GUI_MSG_SEARCH_UPDATE && IsActive())
+      {
+        m_search = message.GetStringParam();
+        CUtil::URLEncode(m_search);
+        if (!m_search.IsEmpty())
+        {
+          CStdString path = "musicsearch://" + m_search + "/";
+          m_history.ClearPathHistory();
+          Update(path);
+        }
       }
     }
   }
@@ -259,6 +269,21 @@ CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
   }
 }
 
+bool CGUIWindowMusicNav::OnClick(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems.Size()) return false;
+
+  CFileItem *item = m_vecItems[iItem];
+  if (item->m_strPath.Left(14) == "musicsearch://")
+  {
+    // popup the search window - it'll take care of the view updating
+    CStdString search(m_search);
+    CUtil::UrlDecode(search);
+    CGUIDialogKeyboard::ShowAndGetFilter(search, true);
+    return true;
+  }
+  return CGUIWindowMusicBase::OnClick(iItem);
+}
 
 bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
@@ -353,72 +378,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 /// \param items Items Found
 void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
-  // get matching genres
-  VECGENRES genres;
-  m_musicdatabase.GetGenresByName(strSearch, genres);
-
-  if (genres.size())
-  {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
-    for (int i = 0; i < (int)genres.size(); i++)
-    {
-      CGenre& genre = genres[i];
-      CFileItem* pItem = new CFileItem(genre);
-      pItem->SetLabel("[" + strGenre + "] " + genre.strGenre);
-      pItem->m_strPath.Format("musicdb://1/%ld/", genre.idGenre);
-      items.Add(pItem);
-    }
-  }
-
-  // get matching artists
-  VECARTISTS artists;
-  m_musicdatabase.GetArtistsByName(strSearch, artists);
-
-  if (artists.size())
-  {
-    CStdString strArtist = g_localizeStrings.Get(484); // Artist
-    for (int i = 0; i < (int)artists.size(); i++)
-    {
-      CArtist& artist = artists[i];
-      CFileItem* pItem = new CFileItem(artist);
-      pItem->SetLabel("[" + strArtist + "] " + artist.strArtist);
-      pItem->m_strPath.Format("musicdb://2/%ld/", artist.idArtist);
-      items.Add(pItem);
-    }
-  }
-
-  // get matching albums
-  VECALBUMS albums;
-  m_musicdatabase.GetAlbumsByName(strSearch, albums);
-
-  if (albums.size())
-  {
-    CStdString strAlbum = g_localizeStrings.Get(483); // Album
-    for (int i = 0; i < (int)albums.size(); i++)
-    {
-      CAlbum& album = albums[i];
-      CFileItem* pItem = new CFileItem(album);
-      pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
-      pItem->m_strPath.Format("musicdb://3/%ld/", album.idAlbum);
-      items.Add(pItem);
-    }
-  }
-
-  // get matching songs
-  VECSONGS songs;
-  m_musicdatabase.FindSongsByName(strSearch, songs, true);
-
-  if (songs.size())
-  {
-    CStdString strSong = g_localizeStrings.Get(179); // Song
-    for (int i = 0; i < (int)songs.size(); i++)
-    {
-      CSong& song = songs[i];
-      CFileItem* pItem = new CFileItem(song);
-      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " (" + song.strAlbum + " - " + song.strArtist + ")");
-      items.Add(pItem);
-    }
-  }
+  m_musicdatabase.Search(strSearch, items);
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
