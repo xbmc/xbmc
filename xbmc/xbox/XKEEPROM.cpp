@@ -119,17 +119,20 @@ BOOL XKEEPROM::WriteToBINFile(LPCSTR FileName)
   BOOL retVal = FALSE;
   DWORD dwBytesWrote = 0;
 
-  //Only write bin file if encrypted..
-  if (m_EncryptedState)
+  // if not encrypted, encrypt before we write the image.
+  if (!m_EncryptedState)
+    if (!EncryptAndCalculateCRC())
+      return FALSE;
+
+  HANDLE hf = CreateFile(FileName, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (hf !=  INVALID_HANDLE_VALUE)
   {
-    HANDLE hf = CreateFile(FileName, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hf !=  INVALID_HANDLE_VALUE)
-    {
-      //Write EEPROM File
-      retVal = WriteFile(hf , &m_EEPROMData, EEPROM_SIZE, &dwBytesWrote, NULL);
-    }
+    //Write EEPROM File
+    retVal = WriteFile(hf , &m_EEPROMData, EEPROM_SIZE, &dwBytesWrote, NULL);
     CloseHandle(hf);
   }
+  else
+    retval = FALSE;
   return retVal;
 }
 
