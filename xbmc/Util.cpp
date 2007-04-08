@@ -1303,14 +1303,16 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   {
     if (szParameters == NULL)
     {
-      XLaunchNewImage(szXbe, NULL );
+      DWORD error = XLaunchNewImage(szXbe, NULL );
+      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
     }
     else
     {
       LAUNCH_DATA LaunchData;
       strcpy((char*)LaunchData.Data, szParameters);
 
-      XLaunchNewImage(szXbe, &LaunchData );
+      DWORD error = XLaunchNewImage(szXbe, &LaunchData );
+      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
     }
   }
 #endif
