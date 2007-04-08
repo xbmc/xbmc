@@ -97,7 +97,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       || strPath.Left(7).Equals("daap://")
       || strPath.Left(9).Equals("tuxbox://")
       || strPath.Left(7).Equals("upnp://")
-      || strPath.Left(10).Equals("musicdb://"))
+      || strPath.Left(10).Equals("musicdb://")
+      || strPath.Left(14).Equals("musicsearch://"))
     {
       // Only cache directory we are getting now
       if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
