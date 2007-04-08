@@ -692,7 +692,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   for (int i = 0; i < m_unfilteredItems.Size(); i++)
   {
     CFileItem *item = m_unfilteredItems[i];
-    if (item->IsParentFolder() ||
+    if (item->IsParentFolder() || CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
         (m_filter.IsEmpty() && (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
       if (params.GetContentType() != VIDEODB_CONTENT_MOVIES || !items.HasFileNoCase(item->m_strPath))
