@@ -8,6 +8,7 @@
 #include "factoryfiledirectory.h"
 #include "PlaylistDirectory.h"
 #include "MusicDatabaseDirectory.h"
+#include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
 #include "shoutcastdirectory.h"
 #include "lastfmdirectory.h"
@@ -62,6 +63,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
+  if (strProtocol == "musicsearch") return new CMusicSearchDirectory();
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
   if (strProtocol == "filereader") 
     return CFactoryDirectory::Create(url.GetFileName());
