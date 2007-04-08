@@ -4,12 +4,10 @@
  *
  ****************************************************************************/
 #ifndef AVIFMT
- 
 #define AVIFMT
 
 #ifndef NOAVIFMT
  
-
 #ifndef  __WINE_WINDEF_H
 #include "wine/windef.h"
 #endif

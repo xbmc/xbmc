@@ -2,6 +2,11 @@
  * Basic types definitions
  *
  * Copyright 1996 Alexandre Julliard
+ *
+ * Modified for use with MPlayer, detailed changelog at
+ * http://svn.mplayerhq.hu/mplayer/trunk/
+ * $Id$
+ *
  */
 
 #ifndef __WINE_WINDEF_H
