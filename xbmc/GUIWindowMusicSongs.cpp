@@ -213,6 +213,17 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicSongs::OnScan(int iItem)
 {
+  CStdString strPath;
+  if (iItem < 0 || iItem >= m_vecItems.Size())
+    strPath = m_vecItems.m_strPath;
+  else
+    strPath = m_vecItems[iItem]->m_strPath;
+
+  DoScan(strPath);
+}
+
+void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
+{
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
   {
@@ -220,11 +231,6 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
     return ;
   }
 
-  CStdString strPath;
-  if (iItem < 0 || iItem >= m_vecItems.Size())
-    strPath = m_vecItems.m_strPath;
-  else
-    strPath = m_vecItems[iItem]->m_strPath;
   // check whether we have scanned here before
   bool bUpdateAll = false;
   CStdString strPaths;

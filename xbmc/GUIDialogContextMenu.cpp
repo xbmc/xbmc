@@ -34,6 +34,8 @@
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
 #include "GUIWindowMusicBase.h"
+#include "GUIWindowMusicSongs.h"
+#include "GUIDialogMusicScan.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
@@ -280,7 +282,14 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
             btn_Scan = pMenu->AddButton(13349);
         }
       }
-
+      else if (strType == "music" && share && !CUtil::IsDVD(share->strPath))
+      {
+        CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+        if (pScanDlg && pScanDlg->IsScanning())
+          btn_Scan = pMenu->AddButton(13353);	// Stop Scanning
+        else
+          btn_Scan = pMenu->AddButton(13352);	// Scan Folder to Database
+      }
       btn_AddShare = pMenu->AddButton(1026); // Add Source
     }
 
@@ -454,8 +463,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_Scan)
       {
-        CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-        pWindow->OnScan(share->strPath,info,-1,-1);
+        if (strType == "video")
+        {
+          CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+          if (pWindow) pWindow->OnScan(share->strPath,info,-1,-1);
+        }
+        else if (strType == "music")
+        {
+          CGUIWindowMusicSongs* pWindow = (CGUIWindowMusicSongs*)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES);
+          if (pWindow) pWindow->DoScan(share->strPath);
+        }
       }
       else if (btn == btn_PlayDisc)
       {
