@@ -22,6 +22,7 @@ public:
   void            ClearList();
   CFileItem*      GetListItem(int position);
   int             GetCurrentListPosition();
+  void            SetCurrentListPosition(int item);
 protected:
   CGUIControl     *GetFirstFocusableControl(int id);
   virtual void    UpdateButtons();
