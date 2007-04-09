@@ -176,6 +176,11 @@ int CGUIPythonWindowXML::GetCurrentListPosition()
   return m_viewControl.GetSelectedItem();
 }
 
+void CGUIPythonWindowXML::SetCurrentListPosition(int item)
+{
+  return m_viewControl.SetSelectedItem(item);
+}
+
 CFileItem * CGUIPythonWindowXML::GetListItem(int position)
 { 
   CFileItem * selectedItem = new CFileItem("Item Index doesn't exist");
