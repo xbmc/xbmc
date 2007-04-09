@@ -27,6 +27,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/FactoryFileDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListContainer.h"
@@ -680,7 +681,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
       else
       {
-        if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
+        if (!CFile::Cache(strFile, strDestFile, this, NULL))
           return false;
       }
     }
@@ -702,13 +703,13 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       if (strFile[1] == ':' && strFile[0] == strDestFile[0])
       {
         // quick move on same drive
-        CFile::Rename(strFile.c_str(), strDestFile.c_str());
+        CFile::Rename(strFile, strDestFile);
       }
       else
       {
-        if (CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL ) )
+        if (CFile::Cache(strFile, strDestFile, this, NULL ) )
         {
-          CFile::Delete(strFile.c_str());
+          CFile::Delete(strFile);
         }
         else
           return false;
@@ -720,7 +721,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     {
       CLog::Log(LOGDEBUG,"FileManager: delete %s\n", strFile.c_str());
 
-      CFile::Delete(strFile.c_str());
+      CFile::Delete(strFile);
       if (m_dlgProgress)
       {
         m_dlgProgress->SetLine(0, 117);
@@ -944,9 +945,24 @@ bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
   if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
     strPath += strFileName;
-
     CLog::Log(LOGINFO,"FileManager: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
-    return CFile::Rename(strFileAndPath.c_str(), strPath.c_str());
+    if (CUtil::IsMultiPath(strFileAndPath))
+    { // special case for multipath renames - rename all the paths.
+      vector<CStdString> paths;
+      CMultiPathDirectory::GetPaths(strFileAndPath, paths);
+      bool success = false;
+      for (unsigned int i = 0; i < paths.size(); ++i)
+      {
+        CStdString filePath(paths[i]);
+        CUtil::RemoveSlashAtEnd(filePath);
+        CUtil::GetDirectory(filePath, filePath);
+        CUtil::AddFileToFolder(filePath, strFileName, filePath);
+        if (CFile::Rename(paths[i], filePath))
+          success = true;
+      }
+      return success;
+    }
+    return CFile::Rename(strFileAndPath, strPath);
   }
   return false;
 }
