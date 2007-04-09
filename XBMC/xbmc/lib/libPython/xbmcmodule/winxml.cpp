@@ -164,6 +164,22 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
+  PyDoc_STRVAR(setCurrentListPosition__doc__,
+    "setCurrentListPosition() -- Set the current position of the Window List\n"
+    "\n"
+    "example:\n"
+    "  - self.setCurrentListPosition(5)\n");
+
+  PyObject* WindowXML_SetCurrentListPosition(WindowXML *self, PyObject *args)
+  {
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    int listPos = -1;
+    if (!PyArg_ParseTuple(args, "i",&listPos))  return NULL;
+    pwx->SetCurrentListPosition(listPos);
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyDoc_STRVAR(getCurrentListPosition__doc__,
     "getCurrentListPosition() -- Gets the current position in the Window List\n"
     "\n"
@@ -218,6 +234,7 @@ namespace PYXBMC
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
     {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
     {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS,getCurrentListPosition__doc__},
+    {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS,setCurrentListPosition__doc__},
     {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS,getListItem__doc__},
     {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, ClearList__doc__},
     {NULL, NULL, 0, NULL}
