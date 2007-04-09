@@ -3865,12 +3865,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     return 1;
 
   if (checkURL.GetProtocol() == "multipath")
-  {
-    vector<CStdString> vecTest;
-    CMultiPathDirectory dir;
-    dir.GetPaths(strPath, vecTest);
-    strPath = vecTest[0]; // just test the first path
-  }
+    strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
   //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
   bIsBookmarkName = false;
@@ -4715,6 +4710,8 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     CStackDirectory dir;
     return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
   }
+  if (IsMultiPath(strPath))
+    return CMultiPathDirectory::SupportsFileOperations(strPath);
 #ifdef HAS_XBOX_HARDWARE
   if (IsMemCard(strPath) && g_memoryUnitManager.IsDriveWriteable(strPath))
     return true;
