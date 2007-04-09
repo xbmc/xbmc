@@ -13,8 +13,6 @@ using namespace DIRECTORY;
 // unlike the older virtualpath:// protocol, sub-folders are combined together into a new
 // multipath:// style url.
 //
-// TODO: fix thumb support for this protocol
-//
 
 CMultiPathDirectory::CMultiPathDirectory()
 {}
@@ -34,7 +32,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   CGUIDialogProgress* dlgProgress = NULL;
   
   int iFailures = 0;
-  for (int i = 0; i < (int)vecPaths.size(); ++i)
+  for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
     if (timeGetTime() > progressTime && !dlgProgress)
@@ -99,21 +97,28 @@ bool CMultiPathDirectory::Exists(const CStdString& strPath)
   if (!GetPaths(strPath, vecPaths))
     return false;
 
-  int iFailures = 0;
-  for (int i = 0; i < (int)vecPaths.size(); ++i)
+  for (unsigned int i = 0; i < (int)vecPaths.size(); ++i)
   {
     CLog::Log(LOGDEBUG,"Testing Existance (%s)", vecPaths[i].c_str());
-    if (!CDirectory::Exists(vecPaths[i]))
-    {
-      CLog::Log(LOGERROR,"Error Testing Existance (%s)", vecPaths[i].c_str());
-      iFailures++;
-    }
+    if (CDirectory::Exists(vecPaths[i]))
+      return true;
   }
+  return false;
+}
 
-  if (iFailures == vecPaths.size())
+bool CMultiPathDirectory::Remove(const char* strPath)
+{
+  vector<CStdString> vecPaths;
+  if (!GetPaths(strPath, vecPaths))
     return false;
 
-  return true;
+  bool success = false;
+  for (unsigned int i = 0; i < vecPaths.size(); ++i)
+  {
+    if (CDirectory::Remove(vecPaths[i]))
+      success = true;
+  }
+  return success;
 }
 
 CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
@@ -143,15 +148,13 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
     return false;
 
   // check each item
-  for (int i = 0; i < (int)vecTemp.size(); i++)
+  for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
     CStdString tempPath = vecTemp[i];
     // replace double comma's with single ones.
     tempPath.Replace(",,", ",");
     vecPaths.push_back(tempPath);
   }
-  if (vecPaths.size() == 0)
-    return false;
   return true;
 }
 
@@ -264,5 +267,15 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     i++;
   }
 
-  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", (int)items.Size(), GetTickCount()-dwTime);
+  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", items.Size(), GetTickCount()-dwTime);
+}
+
+bool CMultiPathDirectory::SupportsFileOperations(const CStdString &strPath)
+{
+  vector<CStdString> paths;
+  GetPaths(strPath, paths);
+  for (unsigned int i = 0; i < paths.size(); ++i)
+    if (CUtil::SupportsFileOperations(paths[i]))
+      return true;
+  return false;
 }
