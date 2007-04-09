@@ -82,16 +82,10 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
   }
   else
   { // multiple valid paths?
-    if (g_advancedSettings.m_useMultipaths)
-    { // use new multipath:// protocol
-      CMultiPathDirectory dir;
-      strPath = dir.ConstructMultiPath(vecPaths);
-    }
-    else
-    {
-      // use older virtualpath:// protocol
+    if (g_advancedSettings.m_useMultipaths) // use new multipath:// protocol
+      strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths);
+    else // use older virtualpath:// protocol
       strPath.Format("virtualpath://%s/%s/", category.c_str(), name.c_str());
-    }
   }
 
   strName = name;

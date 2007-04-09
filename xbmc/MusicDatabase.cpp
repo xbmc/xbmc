@@ -2170,10 +2170,7 @@ bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath1, CStdString&
 		}
 		// expand multipath:// locations
 		else if (CUtil::IsMultiPath(strPath1))
-		{
-			CMultiPathDirectory dir;
-			dir.GetPaths(strPath1, vecPaths);
-		}
+      CMultiPathDirectory::GetPaths(strPath1, vecPaths);
 		else
 			vecPaths.push_back(strPath1);
 
