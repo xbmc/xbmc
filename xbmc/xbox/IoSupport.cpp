@@ -453,18 +453,27 @@ bool CIoSupport::DriveExists(char cDriveLetter)
   }
   else
   {
+    LARGE_INTEGER drive_size = GetDriveSize();
     // old kernel detection method
     if (cDriveLetter == 'F')
     {
-      LARGE_INTEGER drive_size = GetDriveSize();
       // if the drive is bigger than the old 8gb drive (plus a bit of room for error),
       // the F drive can exist
       if (drive_size.QuadPart >= 9000000000)
         return true;
     }
-    // if the kernel is set to use partitions 6 and 7 by default, the g drive can exist
-    if (cDriveLetter == 'G' && ((XboxKrnlVersion->Qfe & 67) == 67))
-      return true;
+    
+    if (cDriveLetter == 'G')
+    {
+      // if the kernel is set to use partitions 6 and 7 by default
+      // the g drive can exist
+      if(((XboxKrnlVersion->Qfe & 67) == 67)) 
+        return true;
+      // not all kernel versions return 67, if the drive is bigger than 
+      // 137 gb drive (plus a bit of room for error), the G drive can exist
+      else if ( drive_size.QuadPart >= 150000000000 )
+        return true;
+    }
 
     return false;
   }
