@@ -1230,13 +1230,8 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
   }
   // We have only one Audio Channel return false to use default values!
   if(sCurSrvData.audio_channel_1_name.IsEmpty() && sCurSrvData.audio_channel_2_name.IsEmpty())
-  {
     return false;
-  }
-  
-  float posX = (float)g_graphicsContext.GetHeight()/2;
-  float posY = (float)g_graphicsContext.GetWidth()/2;
-  
+
   // popup the context menu
   CGUIDialogContextMenu *pMenu;
   pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -1257,8 +1252,7 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
     if(!sCurSrvData.audio_channel_2_name.IsEmpty())
       btn_AudioChannel_2 = pMenu->AddButton(sCurSrvData.audio_channel_2_name); // A2
 
-    // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->CenterWindow();
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if (btnid == btn_AudioChannel_0)
@@ -1410,10 +1404,6 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
     return strSubMode;
   }
   
-  //
-  float posX = (float)g_graphicsContext.GetHeight()/2;
-  float posY = (float)g_graphicsContext.GetWidth()/2;
-  
   // popup the context menu
   CGUIDialogContextMenu *pMenu;
   pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -1427,8 +1417,7 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
     int iSubmode_3 = pMenu->AddButton("Providers");
     int iSubmode_4 = pMenu->AddButton("Bouquets");
     
-    // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->CenterWindow();
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if(btnid == iSubmode_1)
