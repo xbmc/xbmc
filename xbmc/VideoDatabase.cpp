@@ -613,12 +613,10 @@ long CVideoDatabase::AddEpisode(long idShow, const CStdString& strFilenameAndPat
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
 
-    CStdString strSQL=FormatSQL("insert into episode (idEpisode) values (NULL)");
+    CStdString strSQL=FormatSQL("insert into episode (idEpisode, idFile) values (NULL, %u)", lFileId);
     m_pDS->exec(strSQL.c_str());
     lEpisodeId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    strSQL=FormatSQL("update episode set idFile=%u where idEpisode=%u",lFileId,lEpisodeId);
-    m_pDS->exec(strSQL.c_str());
-      
+
     strSQL=FormatSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,lEpisodeId);
     m_pDS->exec(strSQL.c_str());
     // and update the show
@@ -1300,13 +1298,8 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       AddDirectorToTvShow(lTvShowId, vecDirectors[i]);
     }
 
-    // delete the current row for this movie
-    CStdString sql = FormatSQL("delete from tvshow where tvshow.idShow=%i", lTvShowId);
-    m_pDS->exec(sql.c_str());
-
     // and insert the new row
-    CStdString sqlColumns = "insert into tvshow (idShow";
-    CStdString strValues = FormatSQL(") values (%i", lTvShowId);
+    CStdString sql = "update tvshow set ";
     for (int iType=VIDEODB_ID_MIN+1;iType<VIDEODB_ID_MAX;++iType)
     {
       CStdString strValue;
@@ -1325,11 +1318,11 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
         strValue.Format("%f",*(float*)(((char*)&details)+DbTvShowOffsets[iType].offset));
         break;
       }
-      sqlColumns += FormatSQL(",c%02d", iType);
-      strValues += FormatSQL(",'%s'", strValue.c_str());
+      sql += FormatSQL("c%0d='%s',", iType, strValue.c_str());
     }
-    CStdString strSQL = sqlColumns + strValues + ")";
-    m_pDS->exec(strSQL.c_str());
+    sql.TrimRight(',');
+    sql += FormatSQL("where idShow=%u", lTvShowId);
+    m_pDS->exec(sql.c_str());
     // update tvshowlinkpath info to reflect it points to this tvshow
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
@@ -1382,13 +1375,8 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
       AddDirectorToEpisode(lEpisodeId, vecDirectors[i]);
     }
 
-    // delete the current row for this movie
-    CStdString sql = FormatSQL("delete from episode where episode.idEpisode=%i", lEpisodeId);
-    m_pDS->exec(sql.c_str());
-
     // and insert the new row
-    CStdString sqlColumns = "insert into episode (idEpisode,idFile";
-    CStdString strValues = FormatSQL(") values (%u,%u", lEpisodeId,lFileId);
+    CStdString sql = "update episode set ";
     for (int iType=VIDEODB_ID_EPISODE_MIN+1;iType<VIDEODB_ID_EPISODE_MAX;++iType)
     {
       CStdString strValue;
@@ -1407,11 +1395,11 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
         strValue.Format("%f",*(float*)(((char*)&details)+DbEpisodeOffsets[iType].offset));
         break;
       }
-      sqlColumns += FormatSQL(",c%02d", iType);
-      strValues += FormatSQL(",'%s'", strValue.c_str());
+      sql += FormatSQL("c%02d='%s',", iType, strValue.c_str());
     }
-    CStdString strSQL = sqlColumns + strValues + ")";
-    m_pDS->exec(strSQL.c_str());
+    sql.TrimRight(',');
+    sql += FormatSQL("where idEpisode=%u", lEpisodeId);
+    m_pDS->exec(sql.c_str());
     return lEpisodeId;
   }
   catch (...)
