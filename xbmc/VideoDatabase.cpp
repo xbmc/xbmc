@@ -552,11 +552,9 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
       lMovieId = GetMovieInfo(strFilenameAndPath);
     if (lMovieId < 0)
     {
-      CStdString strSQL=FormatSQL("insert into movie (idMovie) values (NULL)");
+      CStdString strSQL=FormatSQL("insert into movie (idMovie, idFile) values (NULL, %u)", lFileId);
       m_pDS->exec(strSQL.c_str());
       lMovieId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      strSQL=FormatSQL("update movie set idFile=%u where idMovie=%u",lFileId,lMovieId);
-      m_pDS->exec(strSQL.c_str());
       CommitTransaction();
     }
     
@@ -1237,13 +1235,9 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       AddDirectorToMovie(lMovieId, vecDirectors[i]);
     }
 
-    // delete the current row for this movie
-    CStdString sql = FormatSQL("delete from movie where movie.idMovie=%i", lMovieId);
-    m_pDS->exec(sql.c_str());
-
+    // update our movie table (we know it was added already above)
     // and insert the new row
-    CStdString sqlColumns = "insert into movie (idMovie,idFile";
-    CStdString strValues = FormatSQL(") values (%i,%u", lMovieId,lFileId);
+    CStdString sql = "update movie set ";
     for (int iType=VIDEODB_ID_MIN+1;iType<VIDEODB_ID_MAX;++iType)
     {
       CStdString strValue;
@@ -1262,11 +1256,11 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
         strValue.Format("%f",*(float*)(((char*)&details)+DbMovieOffsets[iType].offset));
         break;
       }
-      sqlColumns += FormatSQL(",c%02d", iType);
-      strValues += FormatSQL(",'%s'", strValue.c_str());
+      sql += FormatSQL("c%02d='%s',", iType, strValue.c_str());
     }
-    CStdString strSQL = sqlColumns + strValues + ")";
-    m_pDS->exec(strSQL.c_str());
+    sql.TrimRight(',');
+    sql += FormatSQL(" where idMovie=%u", lMovieId);
+    m_pDS->exec(sql.c_str());
     CommitTransaction();
   }
   catch (...)
