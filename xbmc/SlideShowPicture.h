@@ -94,4 +94,6 @@ private:
   bool m_bNoEffect;
   bool m_bFullSize;
   bool m_bTransistionImmediately;
+
+  CCriticalSection m_textureAccess;
 };
