@@ -149,6 +149,7 @@
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogContentSettings.h"
+#include "GUIDialogVideoScan.h"
 
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -899,7 +900,6 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
-
   CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
 
   CIoSupport::Dismount("Cdrom0");
@@ -907,7 +907,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   // Attempt to read the LBA48 v3 patch partition table, if kernel supports the command and it exists.
   CIoSupport::ReadPartitionTable();
-
   if (CIoSupport::HasPartitionTable())
   {
     // Mount up to Partition15 (drive O:) if they are available.
@@ -1051,7 +1050,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CStdString keymapPath;
 
   keymapPath = g_settings.GetUserDataItem("keymap.xml");
-  //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
 #ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
@@ -1285,6 +1283,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
+  m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -1711,7 +1710,6 @@ void CApplication::StartServices()
   g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
   CLog::Log(LOGNOTICE, "DONE initializing playlistplayer");
 
-
 #ifdef HAS_LCD
   CLCDFactory factory;
   g_lcd = factory.Create();
@@ -1755,6 +1753,7 @@ void CApplication::StartServices()
   }
 #endif
 }
+
 void CApplication::CheckDate()
 {
   CLog::Log(LOGNOTICE, "Checking the Date!");
@@ -1784,6 +1783,7 @@ void CApplication::CheckDate()
   }
   return ;
 }
+
 void CApplication::StopServices()
 {
   g_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
@@ -3151,10 +3151,13 @@ void CApplication::Stop()
       m_pPlayer = NULL;
     }
 
-
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsDialogRunning())
       musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsDialogRunning())
+      videoScan->StopScanning();
 
     CLog::Log(LOGNOTICE, "stop daap clients");
 #ifdef HAS_FILESSYTEM
@@ -3209,6 +3212,8 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
+    m_gWindowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3545,7 +3550,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   else
     options.fullscreen = true;
 
-
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
 
@@ -3732,7 +3736,6 @@ bool CApplication::IsPlayingVideo() const
   return false;
 }
 
-
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
@@ -3779,7 +3782,6 @@ void CApplication::StopPlaying()
   OnPlayBackStopped();
 }
 
-
 bool CApplication::NeedRenderFullScreen()
 {
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -3796,6 +3798,7 @@ bool CApplication::NeedRenderFullScreen()
   }
   return false;
 }
+
 void CApplication::RenderFullScreen()
 {
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -4022,6 +4025,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 void CApplication::CheckShutdown()
 {
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   CGUIWindowVideoFiles *pVideoFiles = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
 #ifdef HAS_XBOX_HARDWARE
   // Note: if the the screensaver is switched on, the shutdown timeout is
@@ -4046,7 +4050,7 @@ void CApplication::CheckShutdown()
     {
       m_bInactive = false;
     }
-    else if (pVideoFiles && pVideoFiles->IsScanning()) // video scanning?
+    else if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
     {
       m_bInactive = false;
     }
@@ -4759,7 +4763,6 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
     if (m_guiDialogMuteBug.IsDialogRunning())
       m_guiDialogMuteBug.Close();
   }
-
 
   // and tell our player to update the volume
   if (m_pPlayer)
