@@ -9,7 +9,7 @@ CDlgCache::CDlgCache(DWORD dwDelay)
   m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   /* if progress dialog is already running, take it over */
-  if( m_pDlg->IsRunning() )
+  if( m_pDlg->IsDialogRunning() )
     dwDelay = 0;
 
   m_pDlg = NULL;
@@ -34,7 +34,7 @@ void CDlgCache::Close(bool bForceClose)
 
 CDlgCache::~CDlgCache()
 {
-  if(m_pDlg && m_pDlg->IsRunning())
+  if(m_pDlg && m_pDlg->IsDialogRunning())
     m_pDlg->Close();
 }
 
