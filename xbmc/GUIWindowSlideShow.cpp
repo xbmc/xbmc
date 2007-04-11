@@ -337,7 +337,7 @@ void CGUIWindowSlideShow::Render()
   {
     if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // reload the image if we need to
-      CLog::Log(LOGDEBUG, "Reloading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
+      CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_vecSlides[m_iCurrentSlide].c_str(), m_iZoomFactor);
       // first, our 1:1 pixel mapping size:
       int maxWidth = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1]);
       int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1]);

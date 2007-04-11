@@ -202,7 +202,7 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
     dlgProgress->SetLine(0, 259);
     dlgProgress->SetLine(1, strUrl);
     dlgProgress->SetLine(2, "");
-    if (!dlgProgress->IsRunning())
+    if (!dlgProgress->IsDialogRunning())
       dlgProgress->StartModal();
   }
   
