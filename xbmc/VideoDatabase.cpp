@@ -348,13 +348,16 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
       if (lPathId < 0 && strPath != strFilenameAndPath)
         return -1;
     }
+
+    if (lFileId == -1 && strPath != strFilenameAndPath)
+      return -1;
     
     CStdString strSQL;
     if (lFileId == -1 || strPath == strFilenameAndPath) // i.e. we where handed a path, we may have rarred items in it
     {
       if (lPathId == -1)
       {
-        strSQL=FormatSQL("select movie.idMovie from movie join files on files.idPath = path.idPath where movie.idFile=files.idFile and path.strPath like '%%%s%%'",strPath.c_str());
+        strSQL=FormatSQL("select movie.idMovie from movie join path on files.idPath = path.idPath join files on movie.idFile=files.idFile where path.strPath like '%%%s%%'",strPath.c_str());
         m_pDS->query(strSQL.c_str());
         if (m_pDS->eof())
         {
@@ -555,7 +558,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
       CStdString strSQL=FormatSQL("insert into movie (idMovie, idFile) values (NULL, %u)", lFileId);
       m_pDS->exec(strSQL.c_str());
       lMovieId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      CommitTransaction();
+//      CommitTransaction();
     }
     
     return lMovieId;
@@ -589,7 +592,7 @@ long CVideoDatabase::AddTvShow(const CStdString& strPath)
     strSQL=FormatSQL("insert into tvshowlinkpath values (%u,%u)",lTvShow,lPathId);
     m_pDS->exec(strSQL.c_str());
 
-    CommitTransaction();
+//    CommitTransaction();
     
     return lTvShow;
   }
@@ -622,7 +625,7 @@ long CVideoDatabase::AddEpisode(long idShow, const CStdString& strFilenameAndPat
     // and update the show
     strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow,idShow);
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
+//    CommitTransaction();
 
     return lEpisodeId;
   }
@@ -1201,6 +1204,8 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
   try
   {
     long lFileId = GetFile(strFilenameAndPath);
+    if (lFileId < 0)
+      lFileId = AddFile(strFilenameAndPath);
     long lMovieId = GetMovieInfo(strFilenameAndPath);
     if (lMovieId > -1)
     {
@@ -1210,7 +1215,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     if (lMovieId < 0)
       return;
 
-    BeginTransaction();
+//    BeginTransaction();
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
@@ -1259,7 +1264,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     sql.TrimRight(',');
     sql += FormatSQL(" where idMovie=%u", lMovieId);
     m_pDS->exec(sql.c_str());
-    CommitTransaction();
+//    CommitTransaction();
   }
   catch (...)
   {
@@ -1275,7 +1280,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
 
-    BeginTransaction();
+//    BeginTransaction();
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
@@ -1327,7 +1332,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
-    CommitTransaction();
+//    CommitTransaction();
     return lTvShowId;
   }
   catch (...)
@@ -2914,7 +2919,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
 
     if (idYear !=-1)
     {
-      strSQL=FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath where c%02d='%i'",VIDEODB_ID_YEAR,idYear);
+      strSQL=FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath where movie.c%02d='%i'",VIDEODB_ID_YEAR,idYear);
     }
 
     if (idActor != -1)

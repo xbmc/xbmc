@@ -26,6 +26,7 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"
+#include "GUIDialogVideoScan.h"
 #include "GUIWindowVideoFiles.h"
 #include "application.h"
 #include "GUIPassword.h"
@@ -273,13 +274,18 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
       if (strType == "video" && share && !CUtil::IsDVD(share->strPath))
       {
-        btn_SetContent = pMenu->AddButton(20333);
+        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+          btn_SetContent = pMenu->AddButton(20333);
         CVideoDatabase database;
         database.Open();
         if (database.GetScraperForPath(share->strPath,info.strPath,info.strContent))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-            btn_Scan = pMenu->AddButton(13349);
+            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+              btn_Scan = pMenu->AddButton(13349);
+            else
+              btn_Scan = pMenu->AddButton(13353);	// Stop Scanning
         }
       }
       else if (strType == "music" && share && !CUtil::IsDVD(share->strPath))
@@ -352,7 +358,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         }
         else if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
-// prompt user if they want to really delete the bookmark
+        // prompt user if they want to really delete the bookmark
         if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? 758 : 751, 0, 750, 0))
         {
           // check default before we delete, as deletion will kill the share object
@@ -465,8 +471,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       {
         if (strType == "video")
         {
-          CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-          if (pWindow) pWindow->OnScan(share->strPath,info,-1,-1);
+          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+          if (pScanDlg && pScanDlg->IsScanning())
+          {
+            pScanDlg->StopScanning();
+          }
+          else
+          {
+            CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+            pWindow->OnScan(share->strPath,info,-1,-1);
+          }
         }
         else if (strType == "music")
         {
