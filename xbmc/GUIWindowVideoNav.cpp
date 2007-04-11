@@ -230,6 +230,14 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
     }
     break;
+    // update the display
+    case GUI_MSG_SCAN_FINISHED:
+    case GUI_MSG_REFRESH_THUMBS:
+    {
+      Update(m_vecItems.m_strPath);
+    }
+    break;
+
   case GUI_MSG_NOTIFY_ALL:
     {
       if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
