@@ -57,6 +57,8 @@ static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 
 CBackgroundPicLoader::CBackgroundPicLoader()
 {
   m_pCallback = NULL;
+  m_loadPic = CreateEvent(NULL,false,false,NULL);
+  m_isLoading = false;
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
@@ -65,7 +67,7 @@ CBackgroundPicLoader::~CBackgroundPicLoader()
 void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 {
   m_pCallback = pCallback;
-  m_bLoadPic = false;
+  m_isLoading = false;
   CThread::Create(false);
 }
 
@@ -75,14 +77,11 @@ void CBackgroundPicLoader::Process()
   DWORD count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
-    while (!m_bLoadPic && !m_bStop)
+    if (WaitForSingleObject(m_loadPic, 10) == WAIT_OBJECT_0)
     {
-      Sleep(10);
-    }
-    if (m_bLoadPic)
-    { // m_bLoadPic = true, indicating LoadPic() has been called
       if (m_pCallback)
       {
+        m_isLoading = true;
         CPicture pic;
         DWORD start = timeGetTime();
         IDirect3DTexture8 *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
@@ -101,9 +100,9 @@ void CBackgroundPicLoader::Process()
             bFullSize = true;
         }
         m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), pic.GetOriginalWidth(), pic.GetOriginalHeight(), pic.GetExifInfo()->Orientation, bFullSize);
+        m_isLoading = false;
       }
     }
-    m_bLoadPic = false;
   }
   CLog::Log(LOGDEBUG, "Time for loading %i images: %i ms, average %i ms", count, totalTime, totalTime / count);
 }
@@ -115,7 +114,7 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString 
   m_strFileName = strFileName;
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
-  m_bLoadPic = true;
+  SetEvent(m_loadPic);
 }
 
 CGUIWindowSlideShow::CGUIWindowSlideShow(void)
@@ -356,7 +355,7 @@ void CGUIWindowSlideShow::Render()
       // can't have images larger than MAX_PICTURE_WIDTH (hardware constraint)
       if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
       if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
-      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], maxWidth, maxHeight);
+      m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], maxWidth, maxHeight);
     }
   }
   else

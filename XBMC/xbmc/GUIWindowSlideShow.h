@@ -15,7 +15,7 @@ public:
 
   void Create(CGUIWindowSlideShow *pCallback);
   void LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight);
-  bool IsLoading() { return m_bLoadPic;};
+  bool IsLoading() { return m_isLoading;};
 
 private:
   void Process();
@@ -24,7 +24,10 @@ private:
   CStdString m_strFileName;
   int m_maxWidth;
   int m_maxHeight;
-  bool m_bLoadPic;
+
+  HANDLE m_loadPic;
+  bool m_isLoading;
+
   CGUIWindowSlideShow *m_pCallback;
 };
 
