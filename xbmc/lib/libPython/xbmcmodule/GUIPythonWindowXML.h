@@ -18,6 +18,7 @@ public:
   void            PulseActionEvent();
   void            UpdateFileList();
   void            AddItem(CFileItem * fileItem);
+  void            RemoveItem(int itemPosition);
   void            RefreshList();
   void            ClearList();
   CFileItem*      GetListItem(int position);
