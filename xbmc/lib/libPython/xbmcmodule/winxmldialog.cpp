@@ -118,7 +118,7 @@ namespace PYXBMC
     WindowXMLDialog_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     WindowXMLDialog_Type.tp_doc = windowXMLDialog__doc__;
     WindowXMLDialog_Type.tp_methods = windowXMLDialog_methods;
-    WindowXMLDialog_Type.tp_base = &Window_Type;
+    WindowXMLDialog_Type.tp_base = &WindowXML_Type;
     WindowXMLDialog_Type.tp_new = WindowXMLDialog_New;
   }
 }
