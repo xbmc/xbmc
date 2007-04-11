@@ -33,16 +33,19 @@ void CGUIScrollBar::Render()
 
   if (!IsVisible()) return;
 
-  m_guiBackground.Render();
-  if (m_bHasFocus)
+  if (m_showOnePage || m_numItems > m_pageSize)
   {
-    m_guiBarFocus.Render();
-    m_guiNibFocus.Render();
-  }
-  else
-  {
-    m_guiBarNoFocus.Render();
-    m_guiNibNoFocus.Render();
+    m_guiBackground.Render();
+    if (m_bHasFocus)
+    {
+      m_guiBarFocus.Render();
+      m_guiNibFocus.Render();
+    }
+    else
+    {
+      m_guiBarNoFocus.Render();
+      m_guiNibNoFocus.Render();
+    }
   }
   CGUIControl::Render();
 }
@@ -270,12 +273,6 @@ CStdString CGUIScrollBar::GetDescription() const
   CStdString description;
   description.Format("%i/%i", m_offset, m_numItems);
   return description;
-}
-
-bool CGUIScrollBar::IsVisible() const
-{
-  if (m_numItems <= m_pageSize && !m_showOnePage) return false;
-  return CGUIControl::IsVisible();
 }
 
 void CGUIScrollBar::SetColorDiffuse(D3DCOLOR color)
