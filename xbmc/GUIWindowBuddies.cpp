@@ -1634,7 +1634,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
     }
 
     // process the dialog
-    if (!dialog.IsRunning())
+    if (!dialog.IsDialogRunning())
       dialog.StartModal();
     dialog.Progress();
     if (dialog.IsCanceled())

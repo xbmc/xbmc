@@ -2694,7 +2694,7 @@ void CApplication::FrameMove()
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
   {
-    if (!m_guiDialogKaiToast.IsRunning())
+    if (!m_guiDialogKaiToast.IsDialogRunning())
     {
       m_guiDialogKaiToast.Show();
     }
@@ -3153,7 +3153,7 @@ void CApplication::Stop()
 
 
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsRunning())
+    if (musicScan && musicScan->IsDialogRunning())
       musicScan->StopScanning();
 
     CLog::Log(LOGNOTICE, "stop daap clients");
@@ -4166,7 +4166,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
           // check if OSD is visible, if so don't do immediate spindown
           CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
           if (pOSD)
-            m_bNetworkSpinDown = !pOSD->IsRunning();
+            m_bNetworkSpinDown = !pOSD->IsDialogRunning();
         }
       }
       if (m_bNetworkSpinDown)
@@ -4750,13 +4750,13 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   if(!g_stSettings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
   {
     g_stSettings.m_bMute = true;
-    if (!m_guiDialogMuteBug.IsRunning())
+    if (!m_guiDialogMuteBug.IsDialogRunning())
       m_guiDialogMuteBug.Show();
   }
   else if(g_stSettings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
   {
     g_stSettings.m_bMute = false;
-    if (m_guiDialogMuteBug.IsRunning())
+    if (m_guiDialogMuteBug.IsDialogRunning())
       m_guiDialogMuteBug.Close();
   }
 
@@ -4992,7 +4992,7 @@ void CApplication::CheckPlayingProgress()
     {
       // Can't write to the musicdatabase while scanning for music info
       CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsRunning())
+      if (dialog && !dialog->IsDialogRunning())
       {
         CMusicDatabase musicdatabase;
         if (musicdatabase.Open())

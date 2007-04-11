@@ -1350,7 +1350,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     case PLAYER_SEEKBAR:
       {
         CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-        bReturn = seekBar ? seekBar->IsRunning() : false;
+        bReturn = seekBar ? seekBar->IsDialogRunning() : false;
       }
     break;
     case PLAYER_SEEKING:

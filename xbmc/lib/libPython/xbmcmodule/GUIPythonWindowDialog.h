@@ -9,7 +9,7 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   void             Activate(DWORD dwParentId);
   virtual void    Close();
-  virtual bool    IsRunning() const { return m_bRunning; }
+  virtual bool    IsDialogRunning() const { return m_bRunning; }
   virtual bool    IsDialog() const { return true;};
   virtual bool    IsModalDialog() const { return true; };
 
