@@ -312,7 +312,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   }
   else if (pNewWindow->IsDialog())
   { // if we have a dialog, we do a DoModal() rather than activate the window
-    if (!((CGUIDialog *)pNewWindow)->IsRunning())
+    if (!pNewWindow->IsDialogRunning())
       ((CGUIDialog *)pNewWindow)->DoModal(iWindowID);
     return;
   }
@@ -399,9 +399,8 @@ void CGUIWindowManager::RenderDialogs()
   // iterate through and render if they're running
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
-    CGUIDialog *dialog = (CGUIDialog *)*it;
-    if (dialog->IsRunning())
-      dialog->Render();
+    if ((*it)->IsDialogRunning())
+      (*it)->Render();
   }
 }
 
