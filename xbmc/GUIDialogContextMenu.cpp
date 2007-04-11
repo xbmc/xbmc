@@ -457,6 +457,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       else if (btn == btn_SetContent)
       {
         bool bRunScan=false, bScanRecursively=true, bUseDirNames=false;
+        CVideoDatabase database;
+        database.Open();
+        SScraperInfo info2;
+        database.GetScraperForPath(share->strPath,info2.strPath,info2.strContent);
         SScraperInfo info;
         if (CGUIDialogContentSettings::ShowForDirectory(share->strPath,info,bRunScan,bScanRecursively,bUseDirNames))
         {
@@ -464,6 +468,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           {
             CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
             pWindow->OnScan(share->strPath,info,bUseDirNames?1:0,bScanRecursively?1:0);
+          }
+          if (info.strContent.IsEmpty() && !info2.strContent.IsEmpty())
+          {
+            if (CGUIDialogYesNo::ShowAndGetInput(20375,20340,20341,20022))
+            {
+              CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+              database.RemoveContentForPath(share->strPath,pDialog);
+              CUtil::DeleteVideoDatabaseDirectoryCache();
+            }
           }
         }
       }
