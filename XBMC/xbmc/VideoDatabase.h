@@ -237,7 +237,7 @@ public:
   void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
   void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
 
-  void RemoveContentForPath(const CStdString& strPath);
+  void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
 
   void DeleteMovie(const CStdString& strFilenameAndPath);
   void DeleteTvShow(const CStdString& strPath);
