@@ -86,12 +86,32 @@ namespace PYXBMC
     ((CGUIWindow*)(self->pWindow))->SetCoordsRes(res);
     return (PyObject*)self;
   }
-  /*
-   * WindowXML_AddItem
-   * (string label) / (ListItem)
-   * ListItem is added to vector
-   * For a string we create a new ListItem and add it to the vector
-   */
+
+  PyDoc_STRVAR(removeItem__doc__,
+    "removeItem(itemPosition) -- Removes a specified item based on position in the list from the window list.\n"
+    "\n"
+    "itemPosition		: interger - position of the item to remove from the window list\n"
+    "\n"
+    "example:\n"
+    "  - self.removeitem(5)\n");
+
+  PyObject* WindowXML_RemoveItem(WindowXML *self, PyObject *args)
+  {
+    int itemPosition;
+    if (!PyArg_ParseTuple(args, "i", &itemPosition))  return NULL;
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    // Tells the window to remove the item at the specified position from the FileItem vector
+    pwx->RemoveItem(itemPosition);
+
+    // send message
+    PyGUILock();
+
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  
   PyDoc_STRVAR(addItem__doc__,
     "addItem(item) -- Add a new item to this window list.\n"
     "\n"
@@ -232,6 +252,7 @@ namespace PYXBMC
     );
   PyMethodDef WindowXML_methods[] = {
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
+	{"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
     {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
     {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS,getCurrentListPosition__doc__},
     {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS,setCurrentListPosition__doc__},
