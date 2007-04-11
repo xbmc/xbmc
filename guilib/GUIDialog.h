@@ -26,7 +26,7 @@ public:
 
   virtual void Close(bool forceClose = false);
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
-  virtual bool IsRunning() const { return m_bRunning; }
+  virtual bool IsDialogRunning() const { return m_bRunning; };
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
 

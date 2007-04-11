@@ -110,7 +110,8 @@ public:
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   static void FlushReferenceCache();
 //#endif
-  virtual bool IsDialog() const { return false;};
+  virtual bool IsDialog() const { return false; };
+  virtual bool IsDialogRunning() const { return false; };
   virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
   virtual CFileItem *GetCurrentListItem() { return NULL; };
