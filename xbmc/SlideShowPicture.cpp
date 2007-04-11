@@ -51,6 +51,7 @@ CSlideShowPic::~CSlideShowPic()
 
 void CSlideShowPic::Close()
 {
+  CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
     m_pImage->Release();
@@ -64,6 +65,7 @@ void CSlideShowPic::Close()
 
 void CSlideShowPic::SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
+  CSingleLock lock(m_textureAccess);
   Close();
   m_bPause = false;
   m_bNoEffect = false;
@@ -156,6 +158,7 @@ int CSlideShowPic::GetOriginalHeight()
 
 void CSlideShowPic::UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight)
 {
+  CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
 #ifdef HAS_XBOX_D3D
@@ -385,6 +388,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
 
 void CSlideShowPic::Render()
 {
+  CSingleLock lock(m_textureAccess);
   if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
   // update the image
   Process();
