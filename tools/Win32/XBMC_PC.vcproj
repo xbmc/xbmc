@@ -738,6 +738,12 @@
 				Name="GUI Video"
 				Filter="">
 				<File
+					RelativePath="..\..\xbmc\GUIDialogVideoScan.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogVideoScan.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIViewStateVideo.cpp">
 				</File>
 				<File
@@ -763,6 +769,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowVideoPlaylist.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoInfoScanner.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoInfoScanner.h">
 				</File>
 			</Filter>
 			<Filter

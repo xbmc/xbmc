@@ -45,22 +45,18 @@ protected:
 
   void ShowIMDB(CFileItem *item, const SScraperInfo& info);
   void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
-  long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow=-1);
 
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
-  CStdString GetnfoFile(CFileItem *item);
 
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
   void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
-  void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
-  void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pProgress = NULL);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
