@@ -171,6 +171,14 @@ void CGUIPythonWindowXML::AddItem(CFileItem * fileItem)
   UpdateButtons();
 }
 
+void CGUIPythonWindowXML::RemoveItem(int itemPosition)
+{
+  m_vecItems.Remove(itemPosition);
+  m_viewControl.SetItems(m_vecItems);
+  UpdateButtons();
+}
+
+
 int CGUIPythonWindowXML::GetCurrentListPosition()
 {
   return m_viewControl.GetSelectedItem();
