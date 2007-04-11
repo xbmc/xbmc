@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 03/31/2007-->
+<!--Date of translation: 04/07/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8389-->
+<!--Based on english strings version 8427-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -309,9 +308,9 @@
   <string id="388">Tôt</string>
   <string id="389">Averses</string>
   <string id="390">Rafales</string>
-  <string id="391">Faible</string>
+  <string id="391">Min.</string>
   <string id="392">Moyen</string>
-  <string id="393">Important</string>
+  <string id="393">Max.</string>
   <string id="394">Brouillard</string>
   <string id="395">Brume</string>
   <string id="396">Choisir un lieu</string>
@@ -432,7 +431,7 @@
   <string id="524">Choisir une playliste</string>
   <string id="525">Nouvelle playliste...</string>
   <string id="526">Ajouter dans une playliste</string>
-  <string id="527">Ajout manuel à la BDD</string>
+  <string id="527">Ajout manuel à la Biblio.</string>
   <string id="528">Entrer le titre</string>
   <string id="529">Erreur: Titre double</string>
   <string id="530">Choisir le genre</string>
@@ -443,9 +442,13 @@
   <string id="535">Liste</string>
   <string id="536">Icônes</string>
   <string id="537">Grande liste</string>
-  <string id="538">Grande ICO</string>
+  <string id="538">Grande icônes</string>
   <string id="539">Pano. Double</string>
   <string id="540">Panoramique</string>
+  <string id="541">Icônes album</string>
+  <string id="542">Icônes DVD</string>
+  <string id="543">DVD</string>
+  <string id="544">Infos Média</string>
   <string id="550">Lister par %s</string>
   <string id="551">Nom</string>
   <string id="552">Date</string>
@@ -808,7 +811,6 @@
   <string id="12384">Horloge 24 Heures</string>
   <string id="12385">Jour/Mois</string>
   <string id="12386">Mois/Jour</string>
-  <string id="12387">MAJ de la base de donnée</string>
   <string id="12390">Système démarré depuis</string>
   <string id="12391">Minutes</string>
   <string id="12392">Heures</string>
@@ -945,7 +947,7 @@
   <string id="13349">Scanner nouveau contenu</string>
   <string id="13350">Lecture en cours...</string>
   <string id="13351">Information sur l'Album</string>
-  <string id="13352">Scanner le dossier</string>
+  <string id="13352">Scanne article à la Biblio.</string>
   <string id="13353">Arrêter le scanne</string>
   <string id="13354">Méthode rendu:</string>
   <string id="13355">ombrage pixels basse qualité</string>
@@ -1216,17 +1218,17 @@
   <string id="16026">La liste de lecture a été annulée</string>
   <string id="16027">Trop d'erreurs consécutives</string>
   <string id="16030">Mix de soirée annulé.</string>
-  <string id="16031">Aucunes chansons assorties dans la base de données.</string>
+  <string id="16031">Aucunes chansons assorties dans la bibliothèque.</string>
   <string id="16032">Impossible d'initialiser la base de données.</string>
   <string id="16033">Impossible d'ouvrir la base de données.</string>
   <string id="16034">Impossible de récupérer les chansons depuis la BDD.</string>
-  <string id="16100">Toutes les Vidéos</string>
+  <string id="16100">Tous les médias</string>
   <string id="16101">Médias non vues</string>
   <string id="16102">Médias vues</string>
   <string id="16103">Marquer comme vu</string>
   <string id="16104">Marquer comme non vu</string>
   <string id="16105">Éditer le Titre</string>
-  <string id="16106">Utiliser NTSC-M et NTSC-J</string>
+  <string id="16106">Utiliser NTSC-M &amp; NTSC-J</string>
   <string id="16107">Utiliser NTSC-M</string>
   <string id="16108">Utiliser NTSC-J</string>
   <string id="16109">Utiliser PAL-60</string>
@@ -1286,7 +1288,7 @@
   <string id="20057">Supprimer la vignette</string>
   <string id="20058">Ajouter un profil...</string>
   <string id="20059">Infos pour tous les albums</string>
-  <string id="20060">Infos Média</string>
+  <string id="20060">Infos sur le Média</string>
   <string id="20061">Séparer</string>
   <string id="20062">Partages par défaut</string>
   <string id="20063">Partages par déf. (lect. seule)</string>
@@ -1448,9 +1450,9 @@
   <string id="20338">Film</string>
   <string id="20339">Directeur</string>
   <string id="20340">Voulez-vous enlever tous les articles de</string>
-  <string id="20341">ce chemin de la base de données ?</string>
+  <string id="20341">ce chemin de la bibliothèque ?</string>
   <string id="20342">Films</string>
-  <string id="20343">Shows TV</string>
+  <string id="20343">Séries TV</string>
   <string id="20344">Ce répertoire contient</string>
   <string id="20345">Excécution auto. du scanne</string>
   <string id="20346">Scanner récursivement</string>
@@ -1480,6 +1482,7 @@
   <string id="20370">* Caché pour empêcher les spoilers *</string>
   <string id="20371">Définir Image Saison</string>
   <string id="20372">Image Saison</string>
+  <string id="20373">Saison</string>
   <string id="21330">Montrer les dossiers et les fichiers cachés</string>
   <string id="21331">Client TuxBox</string>
   <string id="21332">AVERTISSEMENT: Le dispositif TuxBox est en mode d'enregistrement!</string>
@@ -1515,7 +1518,7 @@
   <string id="21382">Masquer le bouton "Ajouter une entrée" des listes</string>
   <string id="21383">Activer barres de défilement</string>
   <string id="21384">Activer le filtre Masquer vue(s) en mode bibliothèque</string>
-  <string id="21385">Ouvrir Playliste</string>
+  <string id="21385">Ouvrir</string>
 
   <string id="21386">Gestion du niveau acoustique</string>
   <string id="21387">Rapide</string>
