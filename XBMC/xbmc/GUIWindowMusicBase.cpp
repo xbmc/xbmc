@@ -75,7 +75,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && !musicScan->IsRunning())
+    if (musicScan && !musicScan->IsDialogRunning())
     {
       CUtil::ThumbCacheClear();
       CUtil::RemoveTempFiles();
@@ -642,7 +642,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
   CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsRunning())
+  if (dlgMusicScan->IsDialogRunning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
@@ -1068,7 +1068,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
     while (!scraper.Completed())
     {
-      if (m_dlgProgress && m_dlgProgress->IsRunning())
+      if (m_dlgProgress && m_dlgProgress->IsDialogRunning())
       {
         if (m_dlgProgress->IsCanceled())
           scraper.Cancel();
@@ -1205,7 +1205,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   }
   catch (...)
   {
-    if (m_dlgProgress && m_dlgProgress->IsRunning())
+    if (m_dlgProgress && m_dlgProgress->IsDialogRunning())
       m_dlgProgress->Close();
 
     CLog::Log(LOGERROR, "Exception while downloading album info");

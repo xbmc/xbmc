@@ -157,9 +157,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     {
       // check and close any OSD windows
       CGUIDialogMusicOSD *pOSD = (CGUIDialogMusicOSD *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
-      if (pOSD && pOSD->IsRunning()) pOSD->Close(true);
+      if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
       CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
-      if (pList && pList->IsRunning()) pList->Close(true);
+      if (pList && pList->IsDialogRunning()) pList->Close(true);
 
 #ifdef HAS_KARAOKE
       if(g_application.m_pCdgParser)
