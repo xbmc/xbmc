@@ -2055,7 +2055,7 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
   }
 }
 
-void CVideoDatabase::RemoveContentForPath(const CStdString& strPath)
+void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogProgress *progress /* = NULL */)
 {
   try
   {
@@ -2064,12 +2064,29 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath)
 
     std::auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
     CStdString strPath1(strPath);
-
     CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     pDS->query(strSQL.c_str());
     bool bEncodedChecked=false;
+    if (progress)
+    {
+      progress->SetHeading(700);
+      progress->SetLine(0, "");
+      progress->SetLine(1, 313);
+      progress->SetLine(2, 330);
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+    int iCurr=0;
+    int iMax = pDS->num_rows();
     while (!pDS->eof())
     {
+      if (progress)
+      {
+        progress->SetPercentage((int)((float)(iCurr++)/iMax*100.f));
+        progress->Progress();
+      }
       long lPathId = pDS->fv("path.idPath").get_asLong();
       CStdString strCurrPath = pDS->fv("path.strPath").get_asString();
       if (HasTvShowInfo(strCurrPath))
@@ -2108,6 +2125,8 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::RemoveContentFromPath(%s) failed", strPath.c_str());
   }
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent)
