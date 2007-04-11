@@ -335,6 +335,13 @@ void CGUISpinControl::Render()
 {
   if (!IsVisible()) return;
 
+  // page controls can be optionally disabled if the number of pages is 1
+  if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage)
+  {
+    CGUIControl::Render();
+    return;
+  }
+
   if (!HasFocus())
   {
     m_iTypedPos = 0;
@@ -927,12 +934,6 @@ void CGUISpinControl::SendPageChange()
 {
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, (m_iValue - 1) * m_itemsPerPage);
   SendWindowMessage(message);
-}
-
-bool CGUISpinControl::IsVisible() const
-{
-  if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage) return false;
-  return CGUIControl::IsVisible();
 }
 
 void CGUISpinControl::SetColorDiffuse(D3DCOLOR color)
