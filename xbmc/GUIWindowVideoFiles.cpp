@@ -490,9 +490,9 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
 void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 {
   bool bCanceled;
-  if (CGUIDialogYesNo::ShowAndGetInput(20338,20340,20341,20022,bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(20375,20340,20341,20022,bCanceled))
   {
-    m_database.RemoveContentForPath(m_vecItems[iItem]->m_strPath);
+    m_database.RemoveContentForPath(m_vecItems[iItem]->m_strPath,m_dlgProgress);
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
   else
