@@ -504,14 +504,19 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       // show dialog that we're downloading the movie info
       CVideoInfoScanner scanner;
       CFileItemList list;
+      CStdString strPath=item->m_strPath;
       if (item->IsVideoDb())
+      {
         list.Add(new CFileItem(*item->GetVideoInfoTag()));
+        strPath = item->GetVideoInfoTag()->m_strPath;
+      }
       else
         list.Add(new CFileItem(*item));
+
       if (item->m_bIsFolder)
-        CUtil::GetParentPath(item->GetVideoInfoTag()->m_strPath,list.m_strPath);
+        CUtil::GetParentPath(strPath,list.m_strPath);
       else
-        CUtil::GetDirectory(item->m_strPath,list.m_strPath);
+        CUtil::GetDirectory(strPath,list.m_strPath);
 
       int iString=198;
       if (info.strContent.Equals("tvshows"))

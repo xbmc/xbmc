@@ -1323,7 +1323,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
         strValue.Format("%f",*(float*)(((char*)&details)+DbTvShowOffsets[iType].offset));
         break;
       }
-      sql += FormatSQL("c%0d='%s',", iType, strValue.c_str());
+      sql += FormatSQL("c%02d='%s',", iType, strValue.c_str());
     }
     sql.TrimRight(',');
     sql += FormatSQL("where idShow=%u", lTvShowId);
