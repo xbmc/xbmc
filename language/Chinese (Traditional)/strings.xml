@@ -454,6 +454,10 @@
   <string id="538">大圖示</string>
   <string id="539">寬圖示</string>
   <string id="540">大寬圖示</string>
+  <string id="541">專輯圖示</string>
+  <string id="542">DVD 圖示</string>
+  <string id="543">DVD</string>
+  <string id="544">媒體資訊</string>
 
   <string id="550">排序：%s</string>
   <string id="551">名稱</string>
@@ -848,7 +852,7 @@
   <string id="12384">24小時制</string>
   <string id="12385">日/月</string>
   <string id="12386">月/日</string>
-  <string id="12387">重新搜尋資料庫</string>
+  <string id="12387"></string>
   <string id="12390">系統已運作時間</string>
   <string id="12391">分鐘</string>
   <string id="12392">小時</string>
@@ -918,7 +922,7 @@
   <string id="13253">取消移動</string>
 
   <string id="13270">硬體：</string>
-  <string id="13271">中央處理器速度：</string>
+  <string id="13271">中央處理器用量：</string>
 
   <string id="13274">XBOX 已連線，但是沒有設定 DNS！</string>
   <string id="13275">硬碟</string>
@@ -997,8 +1001,8 @@
   <string id="13349">掃描新內容</string>
   <string id="13350">現正播放…</string>
   <string id="13351">專輯資訊</string>
-  <string id="13352">搜尋資料到資料庫</string>
-  <string id="13353">停止搜尋</string>
+  <string id="13352">掃描項目到資料庫</string>
+  <string id="13353">停止掃描</string>
   <string id="13354">補償方式</string>
   <string id="13355">低品質像素著色器</string>
   <string id="13356">硬體重疊</string>
@@ -1558,13 +1562,14 @@
   <string id="20363">從資料夾移除電視節目</string>
   <string id="20364">電視節目</string>
   <string id="20365">劇情</string>
-  <string id="20366">*整季</string>
+  <string id="20366">* 整季</string>
   <string id="20367">隱藏觀看</string>
   <string id="20368">產品編號</string>
   <string id="20369">非觀看項目隱藏圖示</string>
-  <string id="20370">*「隱藏」防止被破壞*</string>
-  <string id="20371">設定影集縮略圖</string>
+  <string id="20370">* 「隱藏」防止被破壞 *</string>
+  <string id="20371">設定影集縮圖</string>
   <string id="20372">影集圖像</string>
+  <string id="20373">季</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1606,13 +1611,13 @@
   <string id="21382">停用檔案列表的新增來源按鈕</string>
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
-  <string id="21385">打開播放列表</string>
+  <string id="21385">打開</string>
   
-  <string id="21386">噪音管理模式</string>
+  <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安靜</string>
   
-  <string id="21390">電源管理模式</string>
+  <string id="21390">電源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
   <string id="21393">高待機</string>
