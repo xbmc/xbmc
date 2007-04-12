@@ -151,16 +151,19 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         
         // The old python way used to check list AND SELECITEM method or  if its a button, checkmark.
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
-        if (controlClicked->GetControlType() == CGUIControl::GUICONTAINER_LIST &&  message.GetParam1() == ACTION_SELECT_ITEM  || controlClicked->GetControlType() != CGUIControl::GUICONTAINER_LIST)
+        if (controlClicked)	// Will get problems if we the id is not on the window and we try to do GetControlType on it. So check to make sure it exists
         {
-          PyXBMCAction* inf = new PyXBMCAction;
-          inf->pObject = NULL;
-          // create a new call and set it in the python queue
-          inf->pCallbackWindow = pCallbackWindow;
-          inf->controlId = iControl;
-          // aquire lock?
-          Py_AddPendingCall(Py_XBMC_Event_OnClick, inf);
-          PulseActionEvent();
+          if (controlClicked->GetControlType() == CGUIControl::GUICONTAINER_LIST &&  message.GetParam1() == ACTION_SELECT_ITEM  || controlClicked->GetControlType() != CGUIControl::GUICONTAINER_LIST)
+          {
+            PyXBMCAction* inf = new PyXBMCAction;
+            inf->pObject = NULL;
+            // create a new call and set it in the python queue
+            inf->pCallbackWindow = pCallbackWindow;
+            inf->controlId = iControl;
+            // aquire lock?
+            Py_AddPendingCall(Py_XBMC_Event_OnClick, inf);
+            PulseActionEvent();
+          }
         }
       }
     }
