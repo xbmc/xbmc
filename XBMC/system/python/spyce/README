@@ -1,0 +1,15 @@
+SPYCE - Python Server Pages
+Copyright 2002-03. Rimon Barr <rimon AT acm DOT org>
+---------------------------------------------------------------------
+
+Description: Python-based dynamic HTML scripting engine.
+
+Name:        SPYCE - Python Server Pages
+Author:      Rimon Barr <rimon AT acm DOT org>
+
+Please refer to the LICENCE file
+
+For system documentation:
+  Run "make docs"
+  Browse the "docs/index.html" file
+

@@ -1,0 +1,62 @@
+<scraper name="Jaded Video" content="movies" thumb="jaded.jpg">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="http://jadedvideo.com/yz_result.asp?PRODUCT_ID=\1"  dest="3">
+			<expression noclean="1">jadedvideo\.com/yz_result.asp\?PRODUCT_ID=([0-9]*)</expression>
+		</RegExp>	
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="http://jadedvideo.com/Search_result.asp?DESCRIPTION=\1" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;url&gt;http://jadedvideo.com/yz_resultJAVA.asp?PRODUCT_ID=\2&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;font color=&quot;#000FF&quot;&gt;(.[^&quot;]*)&lt;/big&gt;.[^&quot;]*SKU: ([0-9]+)&lt;br&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+		
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression>&lt;big&gt;&lt;strong&gt;&lt;font color=&quot;#000FF&quot;&gt;(.[^/]*)&lt;/big&gt;</expression>
+			</RegExp>
+			
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression trim="1">&lt;BR&gt;&lt;/font&gt;&lt;font color=#00000&gt;(.[^&lt;]*)&lt;br&gt;</expression>
+				</RegExp>
+				<expression repeat="yes">([a-zA-Z][^,]*)</expression>
+			</RegExp>
+							
+			<RegExp input="$$1" output="&lt;genre&gt;Adult / \1&lt;/genre&gt;" dest="5+">
+				<expression>CAT: &lt;a href=search_result\.asp\?.[^&gt;]*&gt;(.[^/]*)&lt;/a&gt;&lt;BR&gt;</expression>
+			</RegExp>
+			
+			<RegExp input="$$6" output="&lt;director&gt;\1 \2&lt;/director&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression>&gt;(.[^&gt;]*)&lt;/a&gt;&lt;BR&gt;&lt;/font&gt;</expression>
+				</RegExp>	
+				<expression trim="1" noclean="1,2">(.*)-(.*)</expression>			
+			</RegExp>	
+			
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>[0-9]+/[0-9]+/([0-9]+)</expression>
+			</RegExp>				
+			<RegExp input="$$1" output="&lt;medium&gt;\1&lt;/medium&gt;" dest="5+">
+				<expression>MED: (.[^&lt;]*)&lt;br&gt;&lt;BR&gt;</expression>
+			</RegExp>		
+			<RegExp input="$$1" output="&lt;thumb&gt;http://jadedvideo.com/imagesjaded/\1&lt;/thumb&gt;" dest="5+">
+				<expression>imagesjaded/([0-9]+/front/[0-9]+\.jpg)</expression>
+			</RegExp>						
+			<RegExp input="$$1" output="&lt;thumb&gt;http://jadedvideo.com/imagesjaded/\1&lt;/thumb&gt;" dest="5+">
+				<expression>imagesjaded/([0-9]+/back/[0-9]+\.jpg)</expression>
+			</RegExp>								
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>

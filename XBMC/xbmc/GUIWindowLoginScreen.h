@@ -1,0 +1,29 @@
+#pragma once
+#include "GUIDialog.h"
+#include "GUIViewControl.h"
+#include "utils/stopwatch.h"
+
+class CGUIWindowLoginScreen : public CGUIWindow
+{
+public:
+  CGUIWindowLoginScreen(void);
+  virtual ~CGUIWindowLoginScreen(void);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
+  virtual void Render();
+  virtual bool IsMediaWindow() const { return true; };
+  virtual CFileItem* GetCurrentListItem();
+
+protected:
+  virtual void OnInitWindow();
+  virtual void OnWindowLoaded();
+  void Update();
+  void SetLabel(int iControl, const CStdString& strLabel);
+
+  bool OnPopupMenu(int iItem);
+  CGUIViewControl m_viewControl;
+  CFileItemList m_vecItems;
+
+  int m_iSelectedItem;
+  CStopWatch watch;  
+};

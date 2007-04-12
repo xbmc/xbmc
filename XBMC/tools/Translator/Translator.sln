@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "Translator\Translator.csproj", "{75A56598-4600-401D-9F4B-B9F36C4AC86F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{53CD3187-5874-4E09-8063-AE63DFEA4293}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{75A56598-4600-401D-9F4B-B9F36C4AC86F}.Debug.ActiveCfg = Debug|.NET
+		{75A56598-4600-401D-9F4B-B9F36C4AC86F}.Debug.Build.0 = Debug|.NET
+		{75A56598-4600-401D-9F4B-B9F36C4AC86F}.Release.ActiveCfg = Release|.NET
+		{75A56598-4600-401D-9F4B-B9F36C4AC86F}.Release.Build.0 = Release|.NET
+		{53CD3187-5874-4E09-8063-AE63DFEA4293}.Debug.ActiveCfg = Debug
+		{53CD3187-5874-4E09-8063-AE63DFEA4293}.Release.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

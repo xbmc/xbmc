@@ -1,0 +1,214 @@
+<window id="3">
+	<defaultcontrol>20</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-plain.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
+			<control type="image">
+				<description>filemanager background image</description>
+				<width>720</width>
+				<height>576</height>
+				<texture>filemanager.png</texture>
+			</control>
+			<control type="fadelabel" id="101">
+				<description>current Directory text label left</description>
+				<align>left</align>
+				<posx>78</posx>
+				<posy>45</posy>
+				<width>270</width>
+				<font>font12</font>
+			</control>
+			<control type="fadelabel" id="102">
+				<description>current Directory text label right</description>
+				<align>left</align>
+				<posx>367</posx>
+				<posy>45</posy>
+				<width>270</width>
+				<font>font12</font>
+			</control>
+			<control type="label" id="12">
+				<description>number of files in left list text label</description>
+				<posx>78</posx>
+				<posy>495</posy>
+				<label>-</label>
+				<font>font12</font>
+			</control>
+			<control type="label" id="13">
+				<description>number of files in right list text label</description>
+				<posx>367</posx>
+				<posy>495</posy>
+				<label>-</label>
+				<font>font12</font>
+			</control>
+			<control type="image">
+				<description>filemanager List Sel Left</description>
+				<posx>70</posx>
+				<posy>76</posy>
+				<width>290</width>
+				<height>404</height>
+				<texture>filemanager_Panel_Sel.png</texture>
+				<visible>Control.HasFocus(20)</visible>
+			</control>
+			<control type="listcontrol" id="20">
+				<description>Left File list</description>
+				<include>listselectedcolor</include>
+				<posx>76</posx>
+				<posy>82</posy>
+				<width>280</width>
+				<height>433</height>
+				<texturefocus>input-focus.png</texturefocus>
+				<texturenofocus>input-nofocus.png</texturenofocus>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<font>font12</font>
+			</control>
+			<control type="image">
+				<description>filemanager List Sel Right</description>
+				<posx>361</posx>
+				<posy>76</posy>
+				<width>290</width>
+				<height>404</height>
+				<texture>filemanager_Panel_Sel.png</texture>
+				<visible>Control.HasFocus(21)</visible>
+			</control>
+			<control type="listcontrol" id="21">
+				<description>Right File list</description>
+				<include>listselectedcolor</include>
+				<posx>365</posx>
+				<posy>82</posy>
+				<width>280</width>
+				<height>433</height>
+				<texturefocus>input-focus.png</texturefocus>
+				<texturenofocus>input-nofocus.png</texturenofocus>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<onup>21</onup>
+				<ondown>21</ondown>
+				<font>font12</font>
+			</control>
+		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
+			<visible>System.HasDriveG</visible>
+			<control type="label">
+				<description>free space label</description>
+				<posx>74</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(C)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>207</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(E)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>353</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(F)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>506</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(G)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
+			<visible>System.HasDriveF + !System.HasDriveG</visible>
+			<control type="label">
+				<description>free space label</description>
+				<posx>74</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(C)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>360</posx>
+				<posy>525</posy>
+				<align>center</align>
+				<label>$INFO[System.Freespace(E)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>640</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<align>right</align>
+				<label>$INFO[System.Freespace(F)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
+			<visible>!System.HasDriveF + !System.HasDriveG</visible>
+			<control type="label">
+				<description>free space label</description>
+				<posx>140</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(C)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>570</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<align>right</align>
+				<label>$INFO[System.Freespace(E)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>center</align>
+			</control>
+		</control>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>

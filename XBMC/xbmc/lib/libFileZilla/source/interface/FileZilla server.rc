@@ -1,0 +1,1339 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_USERS DIALOGEX 0, 0, 400, 250
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Users"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    LTEXT           "Page:",IDC_STATIC,7,7,20,8
+    CONTROL         "Tree1",IDC_PAGE_TREE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
+                    TVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,7,17,73,148
+    CONTROL         "",IDC_DLG_FRAME,"Static",SS_GRAYFRAME | NOT WS_VISIBLE,
+                    87,7,306,236,WS_EX_TRANSPARENT
+    GROUPBOX        "&Users",IDC_STATIC,307,7,86,150,0,WS_EX_TRANSPARENT
+    LISTBOX         IDC_USERLIST,314,19,72,96,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "&Add",IDC_USERADD,314,119,34,14,0,WS_EX_TRANSPARENT
+    PUSHBUTTON      "&Remove",IDC_USERREMOVE,352,119,34,14,0,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "Re&name",IDC_USERRENAME,314,137,34,14,0,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "Cop&y",IDC_USERCOPY,352,137,34,14,0,WS_EX_TRANSPARENT
+    DEFPUSHBUTTON   "OK",IDOK,7,210,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,229,50,14
+END
+
+IDD_USERS_GENERAL DIALOG DISCARDABLE  0, 0, 306, 235
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Access R&ights",-1,0,0,214,150
+    CONTROL         "List3",IDC_DIRS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | 
+                    LVS_EDITLABELS | WS_BORDER | WS_TABSTOP,7,12,137,113
+    GROUPBOX        "Files",-1,150,8,57,57
+    CONTROL         "R&ead",IDC_FILES_READ,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,18,33,10
+    CONTROL         "&Write",IDC_FILES_WRITE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,29,33,10
+    CONTROL         "Dele&te",IDC_FILES_DELETE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,40,37,10
+    CONTROL         "Append",IDC_FILES_APPEND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,51,41,10
+    GROUPBOX        "Directories",-1,150,68,57,57
+    CONTROL         "&Create",IDC_DIRS_CREATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,79,37,10
+    CONTROL         "Delete",IDC_DIRS_DELETE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,90,37,10
+    CONTROL         "List",IDC_DIRS_LIST,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,101,27,10
+    CONTROL         "+ S&ubdirs",IDC_DIRS_SUBDIRS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,112,45,10
+    PUSHBUTTON      "A&dd",IDC_DIRADD,7,130,43,14
+    PUSHBUTTON      "Remo&ve",IDC_DIRREMOVE,54,130,45,14
+    PUSHBUTTON      "Rena&me",IDC_DIRRENAME,104,130,44,14
+    PUSHBUTTON      "Set as &home dir",IDC_DIRSETASHOME,153,130,54,14
+    GROUPBOX        "Account settings",-1,0,152,188,82
+    CONTROL         "&Password:",IDC_NEEDPASS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,165,49,10
+    EDITTEXT        IDC_PASS,76,162,105,14,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "&Group membership:",-1,8,183,62,8
+    COMBOBOX        IDC_GROUP,76,180,105,89,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Resolve windows shortcuts (*.ln&k files)",IDC_LNK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,197,136,10
+    CONTROL         "Sh&ow relative paths",IDC_RELATIVE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,209,78,10
+    GROUPBOX        "Connection settings",-1,194,152,111,82
+    CONTROL         "&Bypass userlimit of server",IDC_MAXUSERBYPASS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,200,163,95,10
+    LTEXT           "Ma&ximum connection count:",-1,200,176,90,8
+    EDITTEXT        IDC_MAXCONNCOUNT,200,187,50,15,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "Connection &limit per IP:",-1,200,205,73,8
+    EDITTEXT        IDC_IPLIMIT,201,215,49,14,ES_AUTOHSCROLL | ES_NUMBER
+END
+
+IDD_USERS_SPEEDLIMIT DIALOG DISCARDABLE  0, 0, 306, 235
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Download Speed Limit",IDC_STATIC,0,0,214,114
+    CONTROL         "Defaul&t",IDC_SPEEDLIMIT_DOWNLOAD1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,7,11,39,10
+    CONTROL         "No L&imit",IDC_SPEEDLIMIT_DOWNLOAD2,"Button",
+                    BS_AUTORADIOBUTTON,7,21,41,10
+    CONTROL         "&Constant Speed Limit of",IDC_SPEEDLIMIT_DOWNLOAD3,
+                    "Button",BS_AUTORADIOBUTTON,7,31,91,10
+    CONTROL         "U&se Speed Limit Rules:",IDC_SPEEDLIMIT_DOWNLOAD4,
+                    "Button",BS_AUTORADIOBUTTON,7,41,89,10
+    EDITTEXT        IDC_SPEEDLIMIT_DOWNLOAD_VALUE,100,30,55,14,
+                    ES_AUTOHSCROLL | ES_NUMBER | WS_DISABLED
+    LTEXT           "kB/s",IDC_STATIC,158,33,16,8
+    CONTROL         "&Bypass server download speed limit",
+                    IDC_USERS_SPEEDLIMIT_SERVERBYPASS_DOWNLOAD,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,83,14,127,10
+    LISTBOX         IDC_SPEEDLIMIT_DOWNLOAD_RULES_LIST,19,54,146,53,
+                    LBS_NOINTEGRALHEIGHT | WS_DISABLED | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "&Add",IDC_SPEEDLIMIT_DOWNLOAD_ADD,171,54,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "&Remove",IDC_SPEEDLIMIT_DOWNLOAD_REMOVE,171,68,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "&Up",IDC_SPEEDLIMIT_DOWNLOAD_UP,171,82,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "D&own",IDC_SPEEDLIMIT_DOWNLOAD_DOWN,171,96,35,11,
+                    WS_DISABLED
+    GROUPBOX        "Upload Speed Limit",IDC_STATIC,0,121,214,114
+    CONTROL         "De&fault",IDC_SPEEDLIMIT_UPLOAD1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,7,132,39,10
+    CONTROL         "No &Limit",IDC_SPEEDLIMIT_UPLOAD2,"Button",
+                    BS_AUTORADIOBUTTON,7,142,41,10
+    CONTROL         "Co&nstant Speed Limit of",IDC_SPEEDLIMIT_UPLOAD3,"Button",
+                    BS_AUTORADIOBUTTON,7,152,91,10
+    CONTROL         "Us&e Speed Limit Rules:",IDC_SPEEDLIMIT_UPLOAD4,"Button",
+                    BS_AUTORADIOBUTTON,7,162,89,10
+    EDITTEXT        IDC_SPEEDLIMIT_UPLOAD_VALUE,100,150,55,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER | WS_DISABLED
+    LTEXT           "kB/s",IDC_STATIC,158,153,16,8
+    CONTROL         "B&ypass server upload speed limit",
+                    IDC_USERS_SPEEDLIMIT_SERVERBYPASS_UPLOAD,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,83,135,118,10
+    LISTBOX         IDC_SPEEDLIMIT_UPLOAD_RULES_LIST,19,175,146,53,
+                    LBS_NOINTEGRALHEIGHT | WS_DISABLED | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "A&dd",IDC_SPEEDLIMIT_UPLOAD_ADD,171,175,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "Re&move",IDC_SPEEDLIMIT_UPLOAD_REMOVE,171,189,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "U&p",IDC_SPEEDLIMIT_UPLOAD_UP,171,203,35,11,WS_DISABLED
+    PUSHBUTTON      "Do&wn",IDC_SPEEDLIMIT_UPLOAD_DOWN,171,217,35,11,
+                    WS_DISABLED
+END
+
+IDD_SPEEDLIMIT_RULE_DIALOG DIALOG DISCARDABLE  0, 0, 227, 140
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Speed Limit Rule"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Criteria",IDC_STATIC,7,3,213,87
+    CONTROL         "&Date:",IDC_DATE_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,18,33,10
+    CONTROL         "DateTimePicker1",IDC_DATE_VALUE,"SysDateTimePick32",
+                    DTS_RIGHTALIGN | DTS_APPCANPARSE | DTS_LONGDATEFORMAT | 
+                    WS_TABSTOP,50,16,125,15
+    CONTROL         "&From:",IDC_FROM_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,39,33,10
+    CONTROL         "DateTimePicker2",IDC_FROM_TIME,"SysDateTimePick32",
+                    DTS_RIGHTALIGN | DTS_UPDOWN | DTS_APPCANPARSE | 
+                    WS_TABSTOP | 0x8,50,37,55,15
+    CONTROL         "T&o:",IDC_TO_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,117,39,27,10
+    CONTROL         "DateTimePicker2",IDC_TO_TIME,"SysDateTimePick32",
+                    DTS_RIGHTALIGN | DTS_UPDOWN | DTS_APPCANPARSE | 
+                    WS_TABSTOP | 0x8,145,37,55,15
+    CONTROL         "&Monday",IDC_CHECK_DAY1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,57,41,10
+    CONTROL         "&Tuesday",IDC_CHECK_DAY2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,61,57,43,10
+    CONTROL         "&Wednesday",IDC_CHECK_DAY3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,107,57,54,10
+    CONTROL         "T&hursday",IDC_CHECK_DAY4,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,165,57,45,10
+    CONTROL         "F&riday",IDC_CHECK_DAY5,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,73,35,10
+    CONTROL         "&Saturday",IDC_CHECK_DAY6,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,61,73,44,10
+    CONTROL         "S&unday",IDC_CHECK_DAY7,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,107,73,40,10
+    LTEXT           "S&peed:",IDC_STATIC,7,99,24,8
+    EDITTEXT        IDC_SPEED,34,96,50,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "kB/s",IDC_STATIC,88,99,16,8
+    DEFPUSHBUTTON   "OK",IDOK,110,119,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,170,119,50,14
+END
+
+IDD_OPTIONS_SPEEDLIMIT DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Download Speed Limit",IDC_STATIC,7,7,272,95
+    CONTROL         "No L&imit",IDC_SPEEDLIMIT_DOWNLOAD1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,15,17,41,10
+    CONTROL         "&Constant Speed Limit of",IDC_SPEEDLIMIT_DOWNLOAD2,
+                    "Button",BS_AUTORADIOBUTTON,93,17,91,10
+    CONTROL         "U&se Speed Limit Rules:",IDC_SPEEDLIMIT_DOWNLOAD3,
+                    "Button",BS_AUTORADIOBUTTON,15,29,89,10
+    EDITTEXT        IDC_SPEEDLIMIT_DOWNLOAD_VALUE,185,16,55,14,
+                    ES_AUTOHSCROLL | ES_NUMBER | WS_DISABLED
+    LTEXT           "kB/s",IDC_STATIC,243,18,16,8
+    LISTBOX         IDC_SPEEDLIMIT_DOWNLOAD_RULES_LIST,27,42,200,53,
+                    LBS_NOINTEGRALHEIGHT | WS_DISABLED | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "&Add",IDC_SPEEDLIMIT_DOWNLOAD_ADD,234,41,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "&Remove",IDC_SPEEDLIMIT_DOWNLOAD_REMOVE,234,55,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "&Up",IDC_SPEEDLIMIT_DOWNLOAD_UP,234,70,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "D&own",IDC_SPEEDLIMIT_DOWNLOAD_DOWN,234,84,35,11,
+                    WS_DISABLED
+    GROUPBOX        "Upload Speed Limit",IDC_STATIC,7,107,272,94
+    CONTROL         "No &Limit",IDC_SPEEDLIMIT_UPLOAD1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,15,118,41,10
+    CONTROL         "Co&nstant Speed Limit of",IDC_SPEEDLIMIT_UPLOAD2,"Button",
+                    BS_AUTORADIOBUTTON,93,118,91,10
+    CONTROL         "Us&e Speed Limit Rules:",IDC_SPEEDLIMIT_UPLOAD3,"Button",
+                    BS_AUTORADIOBUTTON,15,129,89,10
+    EDITTEXT        IDC_SPEEDLIMIT_UPLOAD_VALUE,185,116,55,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER | WS_DISABLED
+    LTEXT           "kB/s",IDC_STATIC,243,119,16,8
+    LISTBOX         IDC_SPEEDLIMIT_UPLOAD_RULES_LIST,27,142,200,53,
+                    LBS_NOINTEGRALHEIGHT | WS_DISABLED | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "A&dd",IDC_SPEEDLIMIT_UPLOAD_ADD,234,142,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "Re&move",IDC_SPEEDLIMIT_UPLOAD_REMOVE,234,156,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "U&p",IDC_SPEEDLIMIT_UPLOAD_UP,234,170,35,11,WS_DISABLED
+    PUSHBUTTON      "Do&wn",IDC_SPEEDLIMIT_UPLOAD_DOWN,234,183,35,11,
+                    WS_DISABLED
+END
+
+IDD_GROUPS_SPEEDLIMIT DIALOG DISCARDABLE  0, 0, 306, 235
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Download Speed Limit",IDC_STATIC,0,0,214,114
+    CONTROL         "No L&imit",IDC_SPEEDLIMIT_DOWNLOAD1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,7,12,41,10
+    CONTROL         "&Constant Speed Limit of",IDC_SPEEDLIMIT_DOWNLOAD2,
+                    "Button",BS_AUTORADIOBUTTON,7,25,91,10
+    CONTROL         "U&se Speed Limit Rules:",IDC_SPEEDLIMIT_DOWNLOAD3,
+                    "Button",BS_AUTORADIOBUTTON,7,38,89,10
+    EDITTEXT        IDC_SPEEDLIMIT_DOWNLOAD_VALUE,100,24,55,14,
+                    ES_AUTOHSCROLL | ES_NUMBER | WS_DISABLED
+    LTEXT           "kB/s",IDC_STATIC,158,27,16,8
+    CONTROL         "&Bypass server download speed limit",
+                    IDC_GROUPS_SPEEDLIMIT_SERVERBYPASS_DOWNLOAD,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,83,12,127,10
+    LISTBOX         IDC_SPEEDLIMIT_DOWNLOAD_RULES_LIST,19,52,146,53,
+                    LBS_NOINTEGRALHEIGHT | WS_DISABLED | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "&Add",IDC_SPEEDLIMIT_DOWNLOAD_ADD,171,52,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "&Remove",IDC_SPEEDLIMIT_DOWNLOAD_REMOVE,171,66,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "&Up",IDC_SPEEDLIMIT_DOWNLOAD_UP,171,80,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "D&own",IDC_SPEEDLIMIT_DOWNLOAD_DOWN,171,94,35,11,
+                    WS_DISABLED
+    GROUPBOX        "Upload Speed Limit",IDC_STATIC,0,118,214,114
+    CONTROL         "No &Limit",IDC_SPEEDLIMIT_UPLOAD1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,7,130,41,10
+    CONTROL         "Co&nstant Speed Limit of",IDC_SPEEDLIMIT_UPLOAD2,"Button",
+                    BS_AUTORADIOBUTTON,7,143,91,10
+    CONTROL         "Us&e Speed Limit Rules:",IDC_SPEEDLIMIT_UPLOAD3,"Button",
+                    BS_AUTORADIOBUTTON,7,156,89,10
+    EDITTEXT        IDC_SPEEDLIMIT_UPLOAD_VALUE,100,141,55,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER | WS_DISABLED
+    LTEXT           "kB/s",IDC_STATIC,158,144,16,8
+    CONTROL         "B&ypass server upload speed limit",
+                    IDC_GROUPS_SPEEDLIMIT_SERVERBYPASS_UPLOAD,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,83,130,118,10
+    LISTBOX         IDC_SPEEDLIMIT_UPLOAD_RULES_LIST,19,170,146,53,
+                    LBS_NOINTEGRALHEIGHT | WS_DISABLED | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "A&dd",IDC_SPEEDLIMIT_UPLOAD_ADD,171,170,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "Re&move",IDC_SPEEDLIMIT_UPLOAD_REMOVE,171,184,35,11,
+                    WS_DISABLED
+    PUSHBUTTON      "U&p",IDC_SPEEDLIMIT_UPLOAD_UP,171,198,35,11,WS_DISABLED
+    PUSHBUTTON      "Do&wn",IDC_SPEEDLIMIT_UPLOAD_DOWN,171,212,35,11,
+                    WS_DISABLED
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_USERS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 393
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 243
+    END
+
+    IDD_USERS_SPEEDLIMIT, DIALOG
+    BEGIN
+        VERTGUIDE, 83
+    END
+
+    IDD_SPEEDLIMIT_RULE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 133
+    END
+
+    IDD_OPTIONS_SPEEDLIMIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        VERTGUIDE, 93
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_GROUPS_SPEEDLIMIT, DIALOG
+    BEGIN
+        VERTGUIDE, 83
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_GROUPS2 DLGINIT
+BEGIN
+    IDC_GROUP, 0x403, 7, 0
+0x4e3c, 0x6e6f, 0x3e65, "\000" 
+    0
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Deutsch (Deutschland) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 219, 84
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About FileZilla Server"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,12,17,20,20
+    LTEXT           "<version>",IDC_VERSION,39,7,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2001-2003",IDC_STATIC,39,21,77,8
+    LTEXT           "Written by:",IDC_STATIC,39,35,35,8
+    LTEXT           "Tim Kosse",IDC_MAIL,83,35,34,8
+    LTEXT           "Homepage:",IDC_STATIC,39,49,38,8
+    LTEXT           "http://sourceforge.net/projects/filezilla/",
+                    IDC_HOMEPAGE,83,49,122,8
+    CONTROL         156,IDC_DONATE,"Static",SS_BITMAP,161,17,41,19
+    DEFPUSHBUTTON   "OK",IDOK,85,63,50,14,WS_GROUP
+END
+
+IDD_GROUPS DIALOGEX 0, 0, 400, 250
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Groups"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,210,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,229,50,14
+    GROUPBOX        "&Groups",IDC_STATIC,307,7,86,150,0,WS_EX_TRANSPARENT
+    LISTBOX         IDC_GROUPS_GROUPLIST,314,19,72,96,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "&Add",IDC_GROUPS_ADDGROUP,314,119,34,14,0,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "&Remove",IDC_GROUPS_REMOVEGROUP,352,119,34,14,0,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "Re&name",IDC_GROUPS_RENAMEGROUP,314,137,34,14,0,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "Cop&y",IDC_GROUPS_COPYGROUP,352,137,34,14,0,
+                    WS_EX_TRANSPARENT
+    LTEXT           "Page:",IDC_STATIC,7,7,20,8
+    CONTROL         "Tree1",IDC_PAGE_TREE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
+                    TVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,7,17,73,148
+    CONTROL         "",IDC_DLG_FRAME,"Static",SS_GRAYFRAME | NOT WS_VISIBLE,
+                    87,7,306,236,WS_EX_TRANSPARENT
+END
+
+IDD_ENTERSOMETHING DIALOG DISCARDABLE  0, 0, 186, 69
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Title"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDIT1,7,30,172,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&OK",IDOK,36,48,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,99,48,50,14
+    LTEXT           "Static",IDC_TEXT,7,7,172,21
+END
+
+IDD_OPTIONS_GENERAL DIALOGEX 0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Connection settings",IDC_STATIC,7,7,272,48
+    LTEXT           "&Listen on Port:",IDC_STATIC,13,20,46,8
+    EDITTEXT        IDC_PORT,88,17,39,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "(1-65535)",IDC_STATIC,132,20,31,8
+    LTEXT           "&Max. number of users:",IDC_STATIC,13,38,70,8
+    EDITTEXT        IDC_MAXUSERS,88,35,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "(0 for unlimited users)",IDC_STATIC,132,38,67,8
+    GROUPBOX        "Performance settings",IDC_STATIC,7,60,272,57
+    LTEXT           "&Number of Threads:",IDC_STATIC,14,75,64,8
+    EDITTEXT        IDC_THREADNUM,88,73,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "This value should be a multiple of the number of processors installed on your system. Increase this value if your server is under heavy load.",
+                    IDC_STATIC,135,71,137,33
+    GROUPBOX        "Timeout settings",IDC_STATIC,7,123,272,78,0,
+                    WS_EX_TRANSPARENT
+    LTEXT           "&Connections timeout:",IDC_STATIC,13,136,67,8
+    EDITTEXT        IDC_TIMEOUT,87,133,41,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "in seconds (1-9999, 0 for no timeout)",IDC_STATIC,137,
+                    136,135,8
+    LTEXT           "No &Transfer timeout:",IDC_STATIC,13,155,65,8
+    EDITTEXT        IDC_TRANSFERTIMEOUT,87,152,41,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "in seconds (1-9999, 0 for no timeout). This value specifies the time a user has to initiate a file transfer.",
+                    IDC_STATIC,137,148,135,26
+    LTEXT           "L&ogin timeout:",IDC_STATIC,13,184,45,8
+    EDITTEXT        IDC_LOGINTIMEOUT,87,180,41,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "in seconds (1-9999, 0 for no timeout). This value specifies the time in which a new user has to login.",
+                    IDC_STATIC,137,175,136,26
+END
+
+IDD_OFFLINEASK DIALOG DISCARDABLE  0, 0, 147, 89
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Confirmation requested"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "There are currently users connected to the server. Do you really want to take the server offline and kick all users?",
+                    IDC_STATIC,7,7,133,26
+    CONTROL         "No&w",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | 
+                    WS_TABSTOP,11,33,31,10
+    CONTROL         "Wait until all users have logged out",IDC_RADIO2,"Button",
+                    BS_AUTORADIOBUTTON,11,44,126,10
+    CONTROL         "Wait until all transfers are finished",IDC_RADIO3,
+                    "Button",BS_AUTORADIOBUTTON,11,55,121,10
+    DEFPUSHBUTTON   "&Yes",IDOK,20,68,50,14
+    PUSHBUTTON      "&No",IDCANCEL,78,68,50,14
+END
+
+IDD_OPTIONS_SECURITY DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Bounce attacks / FXP transfers",IDC_STATIC,7,7,272,194
+    CONTROL         "&Block incoming server-to-server transfers",IDC_INFXP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,18,143,10
+    CONTROL         "&Strict IP filter",IDC_INFXPSTRICT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,28,30,55,10
+    CONTROL         "B&lock outgoing server-to-server transfers",IDC_OUTFXP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,43,143,10
+    CONTROL         "S&trict IP filter",IDC_OUTFXPSTRICT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,28,55,55,10
+    LTEXT           "If enabled, the IP filter checks the IPs of the remote side when a transfer is established. If the IP doesn't match the remote IP of the control channel, the transfer will be aborted.",
+                    IDC_STATIC,13,68,259,25
+    LTEXT           "If strict IP filter is set, the whole IP is checked against the remote IP of the control channel. But this option may for example cause problems with proxy servers which use several IPs.",
+                    IDC_STATIC,13,127,259,24
+    LTEXT           "FXP is often used for illegal Warez transfers. Bounce attacks can also be used for a DoS attack on the server because a malicious user could initiate a lot of server-to-server transfers which have a large impact on the server's bandwich and accessability.",
+                    IDC_STATIC,13,94,259,33
+    LTEXT           "To prevent this problem, you may disable the strict IP filter. In this case only the the first three parts of the IP address are checked. But this decreases security against FXP / bounce attacks.",
+                    IDC_STATIC,13,152,259,24
+    LTEXT           "You have to choose between security and compatibility. For optimal results you should block all FXP transfers and enable the strict filter only for incoming transfers.",
+                    IDC_STATIC,13,178,259,16
+END
+
+IDD_OPTIONS_MISC DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "&Don't show passwords in message log",
+                    IDC_OPTIONS_MISC_DONTSHOWPASS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,7,135,10
+    CONTROL         "&Start minimized",IDC_OPTIONS_MISC_STARTMINIMIZED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,26,63,10
+    LTEXT           "Transfer &buffer size:",IDC_STATIC,7,51,63,8
+    EDITTEXT        IDC_OPTIONS_TRANSFERBUFFERSIZE,73,49,40,14,
+                    ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "(default: 4096)",IDC_STATIC,118,51,46,8
+    LTEXT           "Adjust this value,  if you get very slow transferrates",
+                    IDC_STATIC,7,65,159,8
+END
+
+IDD_OPTIONS_GENERAL_WELCOMEMESSAGE DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "On this page you can modify the welcome message that will be sent to each connected client.",
+                    IDC_STATIC,7,7,272,17
+    LTEXT           "If you enter no custom message, the default message will be used.",
+                    IDC_STATIC,7,25,209,8
+    LTEXT           "Please enter only 70 characters per line, additional characters will be removed.\r\nEmpty lines at the top or bottom of the message will be removed.",
+                    IDC_STATIC,7,48,247,18
+    LTEXT           "Rules for welcome messages:",IDC_STATIC,7,39,94,8
+    EDITTEXT        IDC_OPTIONS_GENERAL_WELCOMEMESSAGE_WELCOMEMESSAGE,7,80,
+                    272,88,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | 
+                    ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
+    LTEXT           "&Custom welcome message:",IDC_STATIC,7,70,86,8
+    LTEXT           "Format specifiers:",IDC_STATIC,7,175,56,8
+    LTEXT           "%v - Displays version of FileZilla Server",IDC_STATIC,7,
+                    184,123,8
+    LTEXT           "%% - the % character",IDC_STATIC,7,193,67,8
+END
+
+IDD_CONNECT_DIALOG DIALOG DISCARDABLE  0, 0, 165, 114
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Connect to Server"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "&Server Address:",IDC_STATIC,7,7,51,8
+    EDITTEXT        IDC_CONNECTDIALOG_ADDRESS,7,18,101,14,ES_AUTOHSCROLL
+    LTEXT           "&Port:",IDC_STATIC,119,7,16,8
+    EDITTEXT        IDC_CONNECTDIALOG_PORT,118,18,40,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "If the server address is not 127.0.0.1, you have to specify the server pass&word:",
+                    IDC_STATIC,7,42,151,18
+    EDITTEXT        IDC_CONNECTDIALOG_PASSWORD,7,60,71,14,ES_PASSWORD | 
+                    ES_AUTOHSCROLL
+    CONTROL         "&Always connect to this server",
+                    IDC_CONNECTDIALOG_ALWAYS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,80,108,10
+    DEFPUSHBUTTON   "OK",IDOK,29,93,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,87,93,50,14
+END
+
+IDD_OPTIONS_ADMININTERFACE DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Important:",IDC_STATIC,7,7,32,8
+    LTEXT           "Due to security considerations, the admin interface settings can only be changed from local connections. If you aren't connected locally (using 127.0.0.1 as server IP), all changes on this page will be ignored by the server.",
+                    IDC_STATIC,7,18,272,25
+    LTEXT           "&Port on which the admin interface should listen:",
+                    IDC_STATIC,7,50,149,8
+    EDITTEXT        IDC_OPTIONS_ADMININTERFACE_PORT,159,47,40,14,
+                    ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "&Bind the admin inteface to the following IP addresses:",
+                    IDC_STATIC,7,67,129,16
+    EDITTEXT        IDC_OPTIONS_ADMININTERFACE_IPBINDINGS,7,85,129,28,
+                    ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | 
+                    ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "Use * to bind to all addresses.\n127.0.0.1 is the default binding, it always exists and cannot be removed.",
+                    IDC_STATIC,7,117,129,32
+    LTEXT           "&IP Addresses which are allowed to connect to the admin interface:",
+                    IDC_STATIC,150,67,129,16
+    EDITTEXT        IDC_OPTIONS_ADMININTERFACE_IPADDRESSES,150,85,129,28,
+                    ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | 
+                    ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "You may use wildcards in the IP Addresses. (example: 123.234.12?.*)\n127.0.0.1 is always allowed to connect to the admin interface.",
+                    IDC_STATIC,150,117,129,32
+    CONTROL         "&Change admin password:",
+                    IDC_OPTIONS_ADMININTERFACE_CHANGEPASS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,154,95,10
+    LTEXT           "&New Password:",IDC_STATIC,20,169,50,8
+    EDITTEXT        IDC_OPTIONS_ADMININTERFACE_NEWPASS,76,166,40,14,
+                    ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "&Retype new Password:",IDC_STATIC,131,169,74,8
+    EDITTEXT        IDC_OPTIONS_ADMININTERFACE_NEWPASS2,211,166,40,14,
+                    ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "The admin password is only used for remote administration.\nLocal administration does not need a password.",
+                    IDC_STATIC,7,185,272,16
+END
+
+IDD_OPTIONS_LOGGING DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "&Enable logging to file",IDC_OPTIONS_LOGGING_ENABLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,81,10
+    CONTROL         "&Limit log file size to",IDC_OPTIONS_LOGGING_LIMIT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,24,74,10
+    EDITTEXT        IDC_OPTIONS_LOGGING_LIMITSIZE,82,22,40,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "KB",IDC_STATIC,125,25,10,8
+    LTEXT           "Logfile type:",IDC_STATIC,7,41,39,8
+    CONTROL         "Log &all to 'FileZilla Server.log'",
+                    IDC_OPTIONS_LOGGING_LOGTYPE,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,7,52,107,10
+    CONTROL         "&Use a different logfile each day (example: fzs-2003-02-10.log)",
+                    IDC_OPTIONS_LOGGING_LOGTYPE2,"Button",BS_AUTORADIOBUTTON,
+                    7,64,207,10
+    CONTROL         "&Delete old logfiles after",IDC_OPTIONS_LOGGING_DELETE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,77,87,10
+    EDITTEXT        IDC_OPTIONS_LOGGING_DELETETIME,107,75,40,14,
+                    ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "days",IDC_STATIC,150,77,16,8
+    LTEXT           "All log files will be saved in the Logs\\ subfolder in the FileZilla Server folder.",
+                    IDC_STATIC,7,91,239,8
+END
+
+IDD_NEWUSER DIALOG DISCARDABLE  0, 0, 186, 102
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add user account"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Please enter the &name of the user account that should be added:",
+                    IDC_STATIC,7,7,172,21
+    EDITTEXT        IDC_NEWUSER_NAME,7,28,172,14,ES_AUTOHSCROLL
+    LTEXT           "User should be member of the following &group:",
+                    IDC_STATIC,7,50,146,8
+    COMBOBOX        IDC_NEWUSER_GROUP,7,61,172,89,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&OK",IDOK,36,81,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,99,81,50,14
+END
+
+IDD_GROUPS_GENERAL DIALOG DISCARDABLE  0, 0, 306, 250
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Access R&ights",-1,0,0,214,166
+    CONTROL         "List3",IDC_DIRS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | 
+                    LVS_EDITLABELS | WS_BORDER | WS_TABSTOP,7,12,137,126
+    GROUPBOX        "Files",-1,150,8,57,57
+    CONTROL         "R&ead",IDC_FILES_READ,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,18,33,10
+    CONTROL         "&Write",IDC_FILES_WRITE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,29,33,10
+    CONTROL         "Dele&te",IDC_FILES_DELETE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,40,37,10
+    CONTROL         "A&ppend",IDC_FILES_APPEND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,51,41,10
+    GROUPBOX        "Directories",-1,150,68,57,57
+    CONTROL         "&Create",IDC_DIRS_CREATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,79,37,10
+    CONTROL         "Delete",IDC_DIRS_DELETE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,90,37,10
+    CONTROL         "List",IDC_DIRS_LIST,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,101,27,10
+    CONTROL         "+ S&ubdirs",IDC_DIRS_SUBDIRS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,156,112,45,10
+    CONTROL         "Autocreate",IDC_GROUPS_AUTOCREATE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,156,130,51,10
+    PUSHBUTTON      "A&dd",IDC_DIRADD,7,145,43,14
+    PUSHBUTTON      "Remo&ve",IDC_DIRREMOVE,54,145,45,14
+    PUSHBUTTON      "Rena&me",IDC_DIRRENAME,104,145,44,14
+    PUSHBUTTON      "Set as &home dir",IDC_DIRSETASHOME,153,145,54,14
+    LTEXT           "You can use :u in foldernames as a placeholder for the username. :u can also be used in shortcuts.",
+                    -1,1,171,141,23
+    GROUPBOX        "Group settings",-1,0,198,147,38
+    CONTROL         "Resolve windows shortcuts (*.ln&k files)",IDC_LNK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,208,136,10
+    CONTROL         "Sh&ow relative paths",IDC_RELATIVE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,220,78,10
+    GROUPBOX        "Connection settings",-1,152,172,153,64
+    CONTROL         "&Bypass userlimit of server",IDC_GROUPS_MAXUSERBYPASS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,160,184,95,10
+    LTEXT           "Ma&ximum connection count:",-1,159,201,90,8
+    EDITTEXT        IDC_GROUPS_MAXCONNCOUNT,262,198,36,15,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "Connection &limit per IP:",-1,159,219,73,8
+    EDITTEXT        IDC_GROUPS_IPLIMIT,262,216,36,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+END
+
+IDD_OPTIONS_PASV DIALOGEX 0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "External Server &IP Address for passive mode transfers:",
+                    IDC_STATIC,7,7,123,19
+    CONTROL         "&Default",IDC_OPTIONS_PASV_IPTYPE1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,7,26,39,10
+    CONTROL         "&Use the following IP:",IDC_OPTIONS_PASV_IPTYPE2,"Button",
+                    BS_AUTORADIOBUTTON,7,38,81,10
+    CONTROL         "&Retrieve external IP address from:",
+                    IDC_OPTIONS_PASV_IPTYPE3,"Button",BS_AUTORADIOBUTTON,8,
+                    77,122,10
+    EDITTEXT        IDC_OPTIONS_PASV_IP,19,48,115,14,ES_AUTOHSCROLL | 
+                    WS_GROUP
+    LTEXT           "You can also enter hostnames",IDC_STATIC,20,65,96,8
+    EDITTEXT        IDC_OPTIONS_PASV_URL,20,89,115,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_OPTIONS_PASV_TEXT,152,25,119,79,ES_MULTILINE | 
+                    ES_READONLY | NOT WS_BORDER | WS_VSCROLL,
+                    WS_EX_STATICEDGE
+    LTEXT           "Information for users with dynamic IPs: If your external IP changes, it might take up to 5 minutes after the next failed transfer until FileZilla Server recognizes the changed IP.\nIn most cases, the IP is updated within 30s after a failed transfer.",
+                    IDC_STATIC,7,107,272,27
+    CONTROL         "D&on't use external IP for local connections",
+                    IDC_OPTIONS_PASV_NOLOCAL,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_TABSTOP,7,137,255,10
+    CONTROL         "Use custom &port range:",IDD_OPTIONS_PASV_USEPORTRANGE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,149,89,10
+    EDITTEXT        IDC_OPTIONS_PASV_PORTMIN,15,162,27,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CTEXT           "-",IDC_STATIC,43,165,8,8
+    EDITTEXT        IDC_OPTIONS_PASV_PORTMAX,54,162,27,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "(1-65535)",IDC_STATIC,86,165,31,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 212
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 77
+    END
+
+    IDD_GROUPS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 393
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 243
+    END
+
+    IDD_ENTERSOMETHING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 62
+    END
+
+    IDD_OPTIONS_GENERAL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_OFFLINEASK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 140
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 82
+    END
+
+    IDD_OPTIONS_SECURITY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_OPTIONS_MISC, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_OPTIONS_GENERAL_WELCOMEMESSAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_CONNECT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 158
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_OPTIONS_ADMININTERFACE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_OPTIONS_LOGGING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_NEWUSER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
+    END
+
+    IDD_OPTIONS_PASV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        VERTGUIDE, 14
+        VERTGUIDE, 152
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 7, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\FileZilla server.rc2""  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen\r\n"
+    "#include ""l.deu\\afxres.rc""          // Standardkomponenten\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\FileZilla server.ico"
+IDI_EMPTY               ICON    DISCARDABLE     "res\\empty.ico"
+IDI_HOME                ICON    DISCARDABLE     "res\\icon1.ico"
+IDI_GREEN               ICON    DISCARDABLE     "res\\green.ico"
+IDI_RED                 ICON    DISCARDABLE     "res\\red.ico"
+IDI_YELLOW              ICON    DISCARDABLE     "res\\yellow.ico"
+IDI_UNKNOWN             ICON    DISCARDABLE     "res\\unknown.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDB_LEDS                BITMAP  DISCARDABLE     "res\\leds.bmp"
+IDB_DONATE              BITMAP  DISCARDABLE     "res\\donate.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 16
+BEGIN
+    BUTTON      ID_ACTIVE
+    BUTTON      ID_LOCK
+    SEPARATOR
+    BUTTON      ID_EDIT_SETTINGS
+    BUTTON      ID_USERS
+    BUTTON      ID_GROUPS
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Connect to server...",       ID_FILE_CONNECT
+        MENUITEM "&Disconnect",                 ID_FILE_DISCONNECT
+        MENUITEM "&Quit",                       ID_APP_EXIT
+    END
+    POPUP "&Server"
+    BEGIN
+        MENUITEM "&Active",                     ID_ACTIVE
+        MENUITEM "&Lock",                       ID_LOCK
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Settings",                   ID_EDIT_SETTINGS
+        MENUITEM "&Users",                      ID_MENU_EDIT_USERS
+        MENUITEM "&Groups",                     ID_MENU_EDIT_GROUPS
+    END
+    POPUP "&?"
+    BEGIN
+        MENUITEM "&About FileZilla Server",     ID_APP_ABOUT
+    END
+END
+
+IDR_USERCONTEXT MENU DISCARDABLE 
+BEGIN
+    POPUP "Menu"
+    BEGIN
+        MENUITEM "&Add",                        ID_USERMENU_ADD
+        MENUITEM "&Copy",                       ID_USERMENU_COPY
+        MENUITEM "&Remove",                     ID_USERMENU_REMOVE
+        MENUITEM "Re&name",                     ID_USERMENU_RENAME
+    END
+END
+
+IDR_DIRCONTEXT MENU DISCARDABLE 
+BEGIN
+    POPUP "Menu"
+    BEGIN
+        MENUITEM "&Add",                        ID_DIRMENU_ADD
+        MENUITEM "&Remove",                     ID_DIRMENU_REMOVE
+        MENUITEM "Re&name",                     ID_DIRMENU_RENAME
+        MENUITEM "Set as home dir",             ID_DIRMENU_SETASHOMEDIR
+    END
+END
+
+IDR_OUTPUTCONTEXT MENU DISCARDABLE 
+BEGIN
+    POPUP "OutputContext"
+    BEGIN
+        MENUITEM "C&opy to Clipboard",          ID_OUTPUTCONTEXT_COPYTOCLIPBOARD
+
+        MENUITEM "&Clear All",                  ID_OUTPUTCONTEXT_CLEARALL
+    END
+END
+
+IDR_USERVIEWCONTEXT MENU DISCARDABLE 
+BEGIN
+    POPUP "ContextMenu"
+    BEGIN
+        MENUITEM "&Kick",                       ID_USERVIEWCONTEXT_KICK
+    END
+END
+
+IDR_GROUPCONTEXT MENU DISCARDABLE 
+BEGIN
+    POPUP "Menu"
+    BEGIN
+        MENUITEM "&Add",                        ID_GROUPMENU_ADD
+        MENUITEM "&Copy",                       ID_GROUPMENU_COPY
+        MENUITEM "&Remove",                     ID_GROUPMENU_REMOVE
+        MENUITEM "Re&name",                     ID_GROUPMENU_RENAME
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 8,8,0,0
+ PRODUCTVERSION 8,8,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040704b0"
+        BEGIN
+            VALUE "Comments", "Open Source FTP server for Windows\0"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "FileZilla Server\0"
+            VALUE "FileVersion", "8, 8, 0, 0\0"
+            VALUE "InternalName", "FileZilla Server\0"
+            VALUE "LegalCopyright", "Copyright (C) 2001-2003\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "FileZilla server.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "FileZilla Server\0"
+            VALUE "ProductVersion", "8, 8, 0, 0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x407, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "FileZilla server"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDP_SOCKETS_INIT_FAILED "Initializing Windows Sockets failed."
+    IDS_ADDGROUPDIALOG      "Add user group|Please enter the name of the user group that should be added."
+    IDS_BROWSEFORFOLDER     "Please select a folder that should be added to the folders list of the selected user account."
+    IDS_COPYGROUPDIALOG     "Copy user group|Please enter the name of the copied user group."
+    IDS_COPYUSERDIALOG      "Copy user account|Please enter the name of the copied user account."
+    IDS_ERRORMSG_ENTERSTRING "You have to enter a string!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERRORMSG_GROUPALREADYEXISTS 
+                            "You can't enter a groupname which already exists"
+    IDS_ERRORMSG_USERALREADYEXISTS 
+                            "You can't enter a username which already exists"
+    IDS_INPUTDIALOGTEXT_RENAME 
+                            "Rename account|Please enter the new name of the user account that should be renamed."
+    IDS_OPTIONSPAGE_ADMININTERFACE "Admin Interface settings"
+    IDS_OPTIONSPAGE_GENERAL "General settings"
+    IDS_OPTIONSPAGE_GENERAL_WELCOMEMESSAGE "Welcome message"
+    IDS_OPTIONSPAGE_GSS     "GSS Settings"
+    IDS_OPTIONSPAGE_LOGGING "Logging"
+    IDS_OPTIONSPAGE_MISC    "Miscellaneous"
+    IDS_OPTIONSPAGE_SECURITY "Security settings"
+    IDS_OPTIONSPAGE_SPEEDLIMIT "Speed Limits"
+    IDS_OPTIONSPAGE_PASV    "Passive mode settings"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "FileZilla server"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "ER"
+    ID_INDICATOR_CAPS       "UF"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "RF"
+    ID_INDICATOR_OVR        "ÜB"
+    ID_INDICATOR_REC        "MA"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Displays the about dialog with useful information about FileZilla Server"
+    ID_APP_EXIT             "Quits FileZilla Server after confirmation"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Wechselt zum nächsten Fensterausschnitt.\nNächster Ausschnitt"
+    ID_PREV_PANE            "Springt zum vorherigen Fensterausschnitt zurück.\nVorheriger Ausschnitt"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Teilt das aktive Fenster in Ausschnitte.\nTeilen"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Löscht die Markierung.\nLöschen"
+    ID_EDIT_CLEAR_ALL       "Löscht alles.\nAlles löschen"
+    ID_EDIT_COPY            "Kopiert die Markierung und überträgt sie in die Zwischenablage.\nKopieren"
+    ID_EDIT_CUT             "Entfernt die Markierung und überträgt sie in die Zwischenablage.\nAusschneiden"
+    ID_EDIT_FIND            "Sucht den angegebenen Text.\nSuchen"
+    ID_EDIT_PASTE           "Fügt den Inhalt der Zwischenablage ein.\nEinfügen"
+    ID_EDIT_REPEAT          "Wiederholt die letzte Aktion.\nWiederholen"
+    ID_EDIT_REPLACE         "Ersetzt einen bestimmten Text durch einen anderen.\nErsetzen"
+    ID_EDIT_SELECT_ALL      "Markiert das gesamte Dokument.\nAlles markieren"
+    ID_EDIT_UNDO            "Macht die letzte Aktion rückgängig.\nRückgängig"
+    ID_EDIT_REDO            "Wiederholt die vorher rückgängig gemachte Aktion.\nWiederherstellen"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Blendet die Symbolleiste ein oder aus.\nSymbolleiste ein-/ausschalten"
+    ID_VIEW_STATUS_BAR      "Blendet die Statusleiste ein oder aus.\nStatusleiste ein-/ausschalten"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Ändert die Fenstergröße."
+    AFX_IDS_SCMOVE          "Ändert die Position des Fensters."
+    AFX_IDS_SCMINIMIZE      "Verkleinert das Fenster zu einem Symbol."
+    AFX_IDS_SCMAXIMIZE      "Vergrößert das Fenster zu voller Größe."
+    AFX_IDS_SCNEXTWINDOW    "Wechselt zum nächsten Dokumentfenster."
+    AFX_IDS_SCPREVWINDOW    "Wechselt zum vorherigen Dokumentfenster."
+    AFX_IDS_SCCLOSE         "Schließt das aktive Fenster und fordert zur Dokumentspeicherung auf."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Stellt das Fenster in seiner normalen Größe wieder her."
+    AFX_IDS_SCTASKLIST      "Aktiviert die Task-Liste."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_ACTIVE               "Switch between on- and offline mode"
+    ID_EDIT_SETTINGS        "Displays the options dialog"
+    ID_FILE_CONNECT         "Connects to the interface of FileZilla Server"
+    ID_FILE_DISCONNECT      "Disconnects from server"
+    ID_GROUPS               "Displays the user groups dialog"
+    ID_INDICATOR_RECVCOUNT  "               "
+    ID_INDICATOR_RECVLED    "               "
+    ID_INDICATOR_RECVRATE   "               "
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_SENDCOUNT  "               "
+    ID_INDICATOR_SENDLED    "               "
+    ID_INDICATOR_SENDRATE   "               "
+    ID_LOCK                 "Lock server, no new connections will be accepted"
+    ID_MENU_EDIT_GROUPS     "Opens the groups dialog"
+    ID_MENU_EDIT_USERS      "Opens the users dialog"
+    ID_USERS                "Displays the user accounts dialog"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDC_OPTIONS_PASV_TEXT   "Use custom PASV settings if you are operating the server from behind a NAT router or a firewall. In that case, the IP address of the server is not accessible from outside of the router, so you should fill in the correct address here. Use the port range to limit the number of ports that will need to be forwarded through the router."
+END
+
+#endif    // Deutsch (Deutschland) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Englisch (USA) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SAPREFS DIALOG DISCARDABLE  0, 0, 394, 234
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "FileZilla Server Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,11,174,73,14
+    PUSHBUTTON      "Cancel",IDCANCEL,11,200,74,14
+    CONTROL         "",IDC_DLG_FRAME,"Static",SS_GRAYFRAME,100,18,292,209
+    LTEXT           "",IDC_CAPTION_BAR,100,5,291,12,SS_CENTERIMAGE
+    CONTROL         "Tree1",IDC_PAGE_TREE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
+                    TVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,4,5,91,148
+    PUSHBUTTON      "Help",IDC_PHELP,11,209,73,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME,4,161,91,66
+END
+
+IDD_OPTIONS_GSS DIALOG DISCARDABLE  0, 0, 286, 208
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Enable Kerberos GSS support",IDC_USEGSS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,14,110,10
+    CONTROL         "Prompt for password if necessary",IDC_PROMPTPASSWORD,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,31,119,10
+    LTEXT           "It's recommended to use Kerberos for Windows 2.2 beta 2 or later.",
+                    IDC_STATIC,7,48,208,8
+    LTEXT           "If used with Kerberos for Windows 2.1, it is very likely that FileZilla Server will crash if a user authenticates.",
+                    IDC_STATIC,7,63,272,19
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_SAPREFS, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 392
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 227
+    END
+
+    IDD_OPTIONS_GSS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_SYSTRAY_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "POPUP"
+    BEGIN
+        MENUITEM "&Restore",                    ID_TRAY_RESTORE
+        MENUITEM SEPARATOR
+        MENUITEM "Server &Online",              ID_ACTIVE
+        MENUITEM "&Lock Server",                ID_LOCK
+        MENUITEM "E&xit",                       ID_TRAY_EXIT
+    END
+END
+
+#endif    // Englisch (USA) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE 7, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\FileZilla server.rc2"  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen
+#include "l.deu\afxres.rc"          // Standardkomponenten
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

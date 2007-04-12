@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui unicodefont="true">CP932</gui>
+    <subtitle>CP932</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>ja</menu>
+    <audio>ja</audio>
+    <subtitle>ja</subtitle>
+  </dvd>
+
+  <regions>
+    <region>
+      <dateshort>YYYY/MM/DD</dateshort>
+      <datelong>YYYY'年'M'月'D'日'</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+</language>

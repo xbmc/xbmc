@@ -1,0 +1,137 @@
+<window id="502">
+	<defaultcontrol>50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-music.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>10516</label>
+			<font>special13</font>
+		</control>
+		<include>contentpanel</include>
+		<control type="label" id="12">
+			<description>number of files text label</description>
+			<posx>545</posx>
+			<posy>540</posy>
+			<align>right</align>
+			<label>-</label>
+			<font>font10</font>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>-20</posy>
+			<include>buttonpanelslide</include>
+			<control type="button" id="2">
+				<description>View As Icons button</description>
+				<posx>0</posx>
+				<posy>120</posy>
+				<label>100</label>
+				<font>font13</font>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>16</onup>
+				<ondown>3</ondown>
+			</control>
+			<control type="button" id="3">
+				<description>Sort by button</description>
+				<posx>0</posx>
+				<posy>157</posy>
+				<label>103</label>
+				<font>font13</font>
+				<onleft>50</onleft>
+				<onright>4</onright>
+				<onup>2</onup>
+				<ondown>99</ondown>
+			</control>
+			<control type="togglebutton" id="4">
+				<description>Sort asc</description>
+				<label>-</label>
+				<onleft>3</onleft>
+				<onright>50</onright>
+				<onup>2</onup>
+				<ondown>99</ondown>
+			</control>
+			<control type="radiobutton" id="99">
+				<description>Library button</description>
+				<posx>0</posx>
+				<posy>194</posy>
+				<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+				<font>font13</font>
+				<onclick>ReplaceWindow(mymusicfiles)</onclick>
+				<onclick>SetFocus(99)</onclick>
+				<selected>Window.IsVisible(mymusiclibrary)</selected>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>3</onup>
+				<ondown>8</ondown>
+			</control>
+			<control type="button" id="8">
+				<description>Search button</description>
+				<posx>0</posx>
+				<posy>231</posy>
+				<label>137</label>
+				<font>font13</font>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>99</onup>
+				<ondown>19</ondown>
+			</control>
+			<control type="radiobutton" id="19">
+				<description>Filter button</description>
+				<posx>0</posx>
+				<posy>268</posy>
+				<label>587</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>8</onup>
+				<ondown>16</ondown>
+			</control>
+			<control type="radiobutton" id="16">
+				<description>Party Mode button</description>
+				<posx>0</posx>
+				<posy>305</posy>
+				<label>589</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>19</onup>
+				<ondown>2</ondown>
+			</control>
+		</control>
+		<include>OldListViewCommons</include>
+		<include>ProgramsViewCommons</include>
+		<include>AllViewCommonThumbSmall</include>
+		<include>AllViewCommonThumbLarge</include>
+		<include>MusicCoverThumbView</include>
+		<include>MusicCoverWrapView</include>
+		<include>MusicViewCommons_BigList</include>
+		<include>AllViewCommonPageControls</include>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>

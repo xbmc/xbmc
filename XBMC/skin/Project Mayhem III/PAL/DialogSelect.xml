@@ -1,0 +1,77 @@
+<window id="2000">
+	<defaultcontrol>3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>110</posx>
+		<posy>110</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>-110</posx>
+			<posy>-110</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<description>background image</description>
+			<posx>-15</posx>
+			<posy>-15</posy>
+			<width>520</width>
+			<height>420</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>heading label</description>
+			<posx>20</posx>
+			<posy>-2</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>1023</label>
+			<textcolor>DDced8da</textcolor>
+		</control>
+		<control type="listcontrol" id="3">
+			<description>listcontrol</description>
+			<posx>12</posx>
+			<posy>25</posy>
+			<width>480</width>
+			<height>340</height>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<spinposx>420</spinposx>
+			<spinposy>315</spinposy>
+			<textxoff>-5</textxoff>
+			<onleft>5</onleft>
+			<onright>5</onright>
+			<onup>3</onup>
+			<ondown>3</ondown>
+		</control>
+		<control type="label" id="2">
+			<description>number of files text label</description>
+			<posx>270</posx>
+			<posy>340</posy>
+			<width>100</width>
+			<label>-</label>
+			<font>font10</font>
+		</control>
+		<control type="button" id="5">
+			<description>manual button</description>
+			<posx>12</posx>
+			<posy>335</posy>
+			<width>90</width>
+			<height>26</height>
+			<align>center</align>
+			<label>368</label>
+			<font>font10</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>3</onleft>
+			<onright>3</onright>
+			<onup>3</onup>
+			<ondown>3</ondown>
+		</control>
+	</controls>
+</window>
