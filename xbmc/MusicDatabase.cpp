@@ -39,6 +39,7 @@ using namespace MUSICDATABASEDIRECTORY;
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
+#define MIN_FULL_SEARCH_LENGTH 3
 
 using namespace CDDB;
 
@@ -1099,9 +1100,15 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
     // Exclude "Various Artists"
     long lVariousArtistId = AddArtist(g_localizeStrings.Get(340));
 
-    CStdString strSQL=FormatSQL("select * from artist "
+    CStdString strSQL;
+    if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
+      strSQL=FormatSQL("select * from artist "
                                 "where (strArtist like '%s%%' or strArtist like '%% %s%%') and idArtist <> %i "
                                 , search.c_str(), search.c_str(), lVariousArtistId );
+    else
+      strSQL=FormatSQL("select * from artist "
+                                "where strArtist like '%s%%' and idArtist <> %i "
+                                , search.c_str(), lVariousArtistId );
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0)
@@ -1895,7 +1902,12 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from songview where strTitle LIKE '%s%%' or strTitle LIKE '%% %s%%'", search.c_str(), search.c_str());
+    CStdString strSQL;
+    if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
+      strSQL=FormatSQL("select * from songview where strTitle like '%s%%' or strTitle like '%% %s%%'", search.c_str(), search.c_str());
+    else
+      strSQL=FormatSQL("select * from songview where strTitle like '%s%%'", search.c_str());
+
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0) return false;
 
@@ -1978,7 +1990,12 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from albumview where strAlbum like '%s%%' or strAlbum like '%% %s%%'", search.c_str(), search.c_str());
+    CStdString strSQL;
+    if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
+      strSQL=FormatSQL("select * from albumview where strAlbum like '%s%%' or strAlbum like '%% %s%%'", search.c_str(), search.c_str());
+    else
+      strSQL=FormatSQL("select * from albumview where strAlbum like '%s%%'", search.c_str());
+
     if (!m_pDS->query(strSQL.c_str())) return false;
 
     CStdString albumLabel(g_localizeStrings.Get(483)); // Album
