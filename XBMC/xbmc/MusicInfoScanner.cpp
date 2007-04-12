@@ -77,18 +77,17 @@ void CMusicInfoScanner::Process()
         m_pObserver->OnStateChanged(REMOVING_OLD);
 
       bOKtoScan = m_musicDatabase.RemoveSongsFromPaths(strPaths);
-    }
-
-    if (bOKtoScan)
-    {
-      if (m_bUpdateAll)
+      if (bOKtoScan)
       {
         if (m_pObserver)
           m_pObserver->OnStateChanged(CLEANING_UP_DATABASE);
 
-        bOKtoScan = m_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
+        bOKtoScan = m_musicDatabase.CleanupAlbumsArtistsGenres();
       }
+    }
 
+    if (bOKtoScan)
+    {
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
 
@@ -199,7 +198,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   if (RetrieveMusicInfo(items, strDirectory) > 0)
   {
-    m_musicDatabase.CheckVariousArtistsAndCoverArt();
+    m_musicDatabase.CheckVariousArtistsAndCoverArt(strDirectory);
 
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);

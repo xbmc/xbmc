@@ -84,7 +84,7 @@ class CAlbumCache : public CAlbum
   {
   public:
     long idAlbum;
-    long idPath;
+    long idArtist;
   };
 
 public:
@@ -105,7 +105,7 @@ public:
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
-  bool GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
+//  bool GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
   bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
   bool Search(const CStdString& search, CFileItemList &items);
 
@@ -125,28 +125,20 @@ public:
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
   bool GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
   bool RemoveSongsFromPaths(const CStdString &strPathIds);
-  bool CleanupAlbumsArtistsGenres(const CStdString &strPathIds);
-  void CheckVariousArtistsAndCoverArt();
+  bool CleanupAlbumsArtistsGenres();
+  void CheckVariousArtistsAndCoverArt(const CStdString &directory);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre);
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
   bool GetSongsByWhere(const CStdString &whereClause, CFileItemList& items);
-  bool GetRandomSong(CFileItem* item);
-  bool GetRandomSong(CFileItem* item, const CStdString& strWhere);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
-  bool GetRandomSongs(CFileItemList& items, int iNumSongs, const CStdString& strWhere);
-  bool PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs, int iHistory, const CStdString& strWhere);
-  int PartyModeGetMatchingSongCount(bool bUnique = true);
-  int PartyModeGetRandomSongCount(bool bUnique = true);
-  int PartyModeGetRelaxedSongCount(bool bUnique = true);
-  int PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed = false, bool bOnlyRelaxed = false);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
   unsigned int GetSongIDs(const CStdString& strWhere, vector<long> &songIDs);
 
-  bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
-  bool GetPathFromSongId(long idSong, CStdString& strPath);
+//  bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
+//  bool GetPathFromSongId(long idSong, CStdString& strPath);
   bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
   bool RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items);
   bool GetAlbumsByArtistId(long idArtist, VECALBUMS& albums);
@@ -167,7 +159,7 @@ protected:
   map<CStdString, int /*CPathCache*/> m_thumbCache;
   map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
-  long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath, long idThumb, long idGenre, int numGenres, long year);
+  long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long idThumb, long idGenre, int numGenres, long year);
   long AddGenre(const CStdString& strGenre);
   long AddArtist(const CStdString& strArtist);
   long AddPath(const CStdString& strPath);
@@ -194,7 +186,6 @@ private:
   bool CleanupAlbums();
   bool CleanupArtists();
   bool CleanupGenres();
-  bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
   virtual bool UpdateOldVersion(int version);
   bool SearchArtists(const CStdString& search, CFileItemList &artists);
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
@@ -245,7 +236,6 @@ private:
     album_strArtist,
     album_strGenre,
     album_iYear,
-    album_strPath, 
     album_strThumb
   } AlbumFields;
 

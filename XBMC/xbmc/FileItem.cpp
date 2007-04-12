@@ -55,13 +55,13 @@ CFileItem::CFileItem(const CSong& song)
   m_strThumbnailImage = song.strThumb;
 }
 
-CFileItem::CFileItem(const CAlbum& album)
+CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   Reset();
   m_strLabel = album.strAlbum;
-  m_strPath = album.strPath;
+  m_strPath = path;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
@@ -2122,15 +2122,20 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   // look if an album thumb is available,
   // could be any file with tags loaded or
   // a directory in album window
-  CStdString strAlbum;
+  CStdString strAlbum, strArtist;
   if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
-    strAlbum = m_musicInfoTag->GetAlbum();
-
-  if (!strAlbum.IsEmpty())
   {
-    // try permanent album thumb (Q:\albums\thumbs)
-    // using "album name + path"
-    CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strPath));
+    strAlbum = m_musicInfoTag->GetAlbum();
+    if (!m_musicInfoTag->GetAlbumArtist().IsEmpty())
+      strArtist = m_musicInfoTag->GetAlbumArtist();
+    else
+      strArtist = m_musicInfoTag->GetArtist();
+  }
+  if (!strAlbum.IsEmpty() && !strArtist.IsEmpty())
+  {
+    // try permanent album thumb (Q:\userdata\thumbnails\music)
+    // using "album name + artist name"
+    CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strArtist));
     if (CFile::Exists(thumb))
       return thumb;
   }

@@ -102,11 +102,9 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 {
+  // TODO: MUSICDB: What is the path here used for
   m_album = album;
-  CStdString strPath = album.GetAlbumPath();
-  CUtil::AddSlashAtEnd(strPath);
-  m_album.SetAlbumPath(strPath);
-  m_albumItem = CFileItem(strPath, true);
+  m_albumItem = CFileItem("", true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(album.GetTitle());
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.SetMusicThumb();
@@ -186,7 +184,7 @@ void CGUIWindowMusicInfo::RefreshThumb()
 {
   CStdString thumbImage = m_albumItem.GetThumbnailImage();
   if (!m_albumItem.HasThumbnail())
-    thumbImage = CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetAlbumPath());
+    thumbImage = CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetArtist());
 
   if (!CFile::Exists(thumbImage))
   {
@@ -288,7 +286,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetAlbumPath()));
+  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetArtist()));
 
   if (result == "thumb://None")
   { // cache the default thumb

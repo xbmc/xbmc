@@ -344,7 +344,9 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       if (nPos>-1)
       {
         int idAlbum=atol(strPath.Right(strPath.size()-nPos-1));
-        m_musicdatabase.GetPathFromAlbumId(idAlbum, strPath);
+
+// TODO: MUSICDB this should be done on id anyway!!
+  //      m_musicdatabase.GetPathFromAlbumId(idAlbum, strPath);
       }
     }
     else
@@ -355,7 +357,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       {
         CUtil::RemoveExtension(strPath);
         int idSong=atol(strPath.Right(strPath.size()-nPos-1));
-        m_musicdatabase.GetPathFromSongId(idSong, strPath);
+// TODO: MUSICDB this should be done on id anyway!!
+//        m_musicdatabase.GetPathFromSongId(idSong, strPath);
       }
     }
 
@@ -588,13 +591,14 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
   ShowAlbumInfo(strNewAlbum,strNewArtist,"",false,false,true);
 }
 
+// TODO: MUSICDB - this needs re-working to ideally use an albumid rather than relying on path
 void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh, bool bShowInfo)
 {
   bool bUpdate = false;
   // check cache
   CAlbum albuminfo;
   VECSONGS songs;
-  if (!bRefresh && m_musicdatabase.GetAlbumInfo(strAlbum, strPath, albuminfo, songs))
+  if (!bRefresh && m_musicdatabase.GetAlbumInfo(strAlbum, strArtist, albuminfo, songs))
   {
     if (!bShowInfo)
       return;
@@ -662,7 +666,9 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       // set album title from musicinfotag, not the one we got from allmusic.com
       album.SetTitle(strAlbum);
       // set path, needed to store album in database
-      album.SetAlbumPath(strPath);
+
+      // TODO: MUSICDB - path :(
+//      album.SetAlbumPath(strPath);
 
       if (bSaveDb)
       {
@@ -676,7 +682,6 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
         albuminfo.strImage = album.GetImageURL();
         albuminfo.iRating = album.GetRating();
         albuminfo.iYear = atol( album.GetDateOfRelease().c_str() );
-        albuminfo.strPath = album.GetAlbumPath();
 
         for (int i = 0; i < (int)album.GetNumberOfSongs(); i++)
         {
@@ -1633,9 +1638,10 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
 
 void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb)
 {
-  CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetAlbumPath()));
+  // TODO: MUSICDB - this needs rewriting
+  CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetArtist()));
   if (bSaveDb && CFile::Exists(strThumb))
-    m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+    m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetArtist(), strThumb);
   // Update current playing song...
   if (g_application.IsPlayingAudio())
   {
@@ -1643,10 +1649,10 @@ void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb
     const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
     if (tag)
     {
-      CUtil::GetDirectory(tag->GetURL(), strSongFolder);
+/*      CUtil::GetDirectory(tag->GetURL(), strSongFolder);
       // ...if it's matching
       if (strSongFolder.Equals(album.GetAlbumPath()) && tag->GetAlbum().Equals(album.GetTitle()))
-        g_infoManager.SetCurrentAlbumThumb(strThumb);
+        g_infoManager.SetCurrentAlbumThumb(strThumb);*/
     }
   }
   // Save directory thumb
@@ -1657,14 +1663,14 @@ void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb
     if (CFile::Exists(strThumb))
     {
       // ...yes...
-      CFileItem item(album.GetAlbumPath(), true);
+/*      CFileItem item(album.GetAlbumPath(), true);
       if (!item.IsCDDA())
       {
         // ...also save a copy as directory thumb,
         // if the album isn't located on an audio cd
         CStdString strFolderThumb(CUtil::GetCachedMusicThumb(album.GetAlbumPath()));
         ::CopyFile(strThumb, strFolderThumb, false);
-      }
+      }*/
     }
   }
 }

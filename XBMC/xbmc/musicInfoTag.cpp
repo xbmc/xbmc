@@ -278,7 +278,6 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
-  m_strURL = album.strPath;
   m_bLoaded = true;
 }
 

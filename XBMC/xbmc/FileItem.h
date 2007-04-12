@@ -63,7 +63,7 @@ public:
   CFileItem(const CStdString& strLabel);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
-  CFileItem(const CAlbum& album);
+  CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);

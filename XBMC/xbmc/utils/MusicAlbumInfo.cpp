@@ -18,7 +18,6 @@ CMusicAlbumInfo::CMusicAlbumInfo(void)
   m_strReview = "";
   m_strImageURL = "";
   m_strAlbumURL = "";
-  m_strAlbumPath = "";
   m_iRating = 0;
   m_bLoaded = false;
 }
@@ -39,7 +38,6 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdStrin
   m_strReview = "";
   m_strImageURL = "";
   m_strAlbumURL = strAlbumURL;
-  m_strAlbumPath = "";
   m_iRating = 0;
   m_bLoaded = false;
 }
@@ -56,7 +54,6 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
   m_strReview = "";
   m_strImageURL = "";
   m_strAlbumURL = strAlbumURL;
-  m_strAlbumPath = "";
   m_iRating = 0;
   m_bLoaded = false;
 }
@@ -450,19 +447,8 @@ void CMusicAlbumInfo::Set(CAlbum& album)
   m_strReview = album.strReview;
   m_strImageURL = album.strImage;
   m_iRating = album.iRating;
-  m_strAlbumPath = album.strPath;
   m_strTitle2 = "";
   m_bLoaded = true;
-}
-
-void CMusicAlbumInfo::SetAlbumPath(const CStdString& strAlbumPath)
-{
-  m_strAlbumPath = strAlbumPath;
-}
-
-const CStdString& CMusicAlbumInfo::GetAlbumPath() const
-{
-  return m_strAlbumPath;
 }
 
 void CMusicAlbumInfo::SetSongs(vector<CMusicSong> songs)

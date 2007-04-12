@@ -4719,11 +4719,13 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   return false;
 }
 
-CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& path)
+CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& artist)
 {
   if (album.IsEmpty())
-    return GetCachedMusicThumb("unknown"+path);
-  return GetCachedMusicThumb(album+path);
+    return GetCachedMusicThumb("unknown"+artist);
+  if (artist.IsEmpty())
+    return GetCachedMusicThumb(album+"unknown");
+  return GetCachedMusicThumb(album+artist);
 }
 
 CStdString CUtil::GetCachedMusicThumb(const CStdString& path)

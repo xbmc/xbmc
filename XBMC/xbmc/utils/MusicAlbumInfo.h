@@ -32,8 +32,6 @@ public:
   void SetTitle(const CStdString& strTitle);
   bool Load(CHTTP& http);
   bool Parse(const CStdString& strHTML, CHTTP& http);
-  void SetAlbumPath(const CStdString& strAlbumPath);
-  const CStdString& GetAlbumPath() const;
   void SetSongs(vector<CMusicSong> songs);
 protected:
   CStdString m_strArtist;
@@ -46,7 +44,6 @@ protected:
   CStdString m_strReview;
   CStdString m_strImageURL;
   CStdString m_strAlbumURL;
-  CStdString m_strAlbumPath;
   int m_iRating;
   bool m_bLoaded;
   vector<CMusicSong> m_vecSongs;

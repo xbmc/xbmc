@@ -1581,7 +1581,7 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
     return SetResponse(openTag+thumbFilename ) ;
   }
   else
-    return SetResponse(openTag+"Error:Missing parameter (album;filename)") ;
+    return SetResponse(openTag+"Error:Missing parameter (album;artist)") ;
 }
 
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])

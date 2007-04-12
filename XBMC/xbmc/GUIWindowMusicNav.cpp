@@ -596,7 +596,9 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
   {
     //  try to guess where the user should start
     //  browsing for the artist thumb
-    VECALBUMS albums;
+
+    // TODO: MUSICDB - this needs improving
+/*    VECALBUMS albums;
     long idArtist=atol(strPath.Right(strPath.size()-nPos-1));
     m_musicdatabase.GetAlbumsByArtistId(idArtist, albums);
     if (albums.size())
@@ -637,7 +639,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
         else if (!strPicture.Equals(albums[0].strPath))
           CUtil::AddSlashAtEnd(strPicture);
       }
-    }
+    }*/
   }
 
   if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20010), strPicture))

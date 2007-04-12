@@ -383,7 +383,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
     for (int i = 0; i < (int)albums.size(); i++)
     {
       CAlbum& album = albums[i];
-      CFileItem* pItem = new CFileItem(album);
+      CFileItem* pItem = new CFileItem("", album);
       pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
       items.Add(pItem);
     }
