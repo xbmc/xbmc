@@ -3640,14 +3640,17 @@ bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items
   return false;
 }
 
-bool CMusicDatabase::GetAlbumsByArtistId(long idArtist, VECALBUMS& albums)
+bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from albumview where idAlbum in (select idAlbum from song where idArtist=%ld) or idAlbum in (select idAlbum from exartistalbum where idArtist=%ld)", idArtist, idArtist);
+    // find all albums from this artist, and all the paths to the songs from those albums
+    CStdString strSQL=FormatSQL("select distinct strPath from path join song on song.idPath = path.idPath join album on album.idAlbum = song.idAlbum "
+                                "where album.idAlbum in (select idAlbum from album where album.idArtist=%ld) "
+                                "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld)", idArtist, idArtist);
 
     // run query
     CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
@@ -3659,11 +3662,28 @@ bool CMusicDatabase::GetAlbumsByArtistId(long idArtist, VECALBUMS& albums)
       return false;
     }
 
-    // get data from returned rows
+    // find the common path (if any) to these albums
+    basePath.Empty();
     while (!m_pDS->eof())
     {
-      albums.push_back(GetAlbumFromDataset());
-
+      CStdString path = m_pDS->fv("strPath").get_asString();
+      if (basePath.IsEmpty())
+        basePath = path;
+      else
+      {
+        // find the common path of basePath and path
+        unsigned int i = 1;
+        while (i <= min(basePath.size(), path.size()) && strnicmp(basePath.c_str(), path.c_str(), i) == 0)
+          i++;
+        basePath = basePath.Left(i - 1);
+        // they should at least share a / at the end
+        if (!CUtil::HasSlashAtEnd(basePath))
+        {
+          // currently GetDirectory() removes trailing slashes
+          CUtil::GetDirectory(basePath, basePath);
+          CUtil::AddSlashAtEnd(basePath);
+        }
+      }
       m_pDS->next();
     }
 

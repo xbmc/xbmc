@@ -140,7 +140,7 @@ public:
 //  bool GetPathFromSongId(long idSong, CStdString& strPath);
   bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
   bool RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items);
-  bool GetAlbumsByArtistId(long idArtist, VECALBUMS& albums);
+  bool GetArtistPath(long idArtist, CStdString &path);
   bool InitialisePartyMode();
   bool UpdatePartyMode(long lSongId, bool bRelaxRestrictions);
 

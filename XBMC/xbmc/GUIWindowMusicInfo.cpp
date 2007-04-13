@@ -102,7 +102,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 {
-  // TODO: MUSICDB: What is the path here used for
+  // TODO: MUSICDB: What is the path here used for - answer: Just the thumbnail.
   m_album = album;
   m_albumItem = CFileItem("", true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(album.GetTitle());
