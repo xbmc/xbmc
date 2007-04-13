@@ -407,38 +407,60 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
   }
 }
 //************************************************************************************************************************
-//Set brightness level 
+//Set Contrast level
 //************************************************************************************************************************
-void CSmartXXLCD::DisplaySetContrast(unsigned char level) 
+void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 {
-  // can't do this with a VFD
-  if (g_guiSettings.GetInt("lcd.type")==LCD_TYPE_VFD) 
+  // can't set contrast with a VFD
+  if (g_guiSettings.GetInt("lcd.type")==LCD_TYPE_VFD)
     return;
 
-  float fBackLight;
-  if (level<0) level=0;
-  if (level>99) level=99;
-  
   if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3"))
-  {   
-    level = (99-level);
-    fBackLight=((float)level/100)*42.0f;
-    int iNewLevel=(int)fBackLight;
-    if (iNewLevel>=41) iNewLevel=42;
-    _outp(DISP_O_LIGHT, iNewLevel&127|128); //V3 use DISP_O_LIGHT Port for Contrast
- 	}
+  {
+    fContrast=((float)level/100)*127.0f;
+    int iNewLevel=(int)fContrast;
+    if (iNewLevel==41) iNewLevel=42;
+    // 42 =  x0101010 e.g half on
+
+    int itemp = iNewLevel&127|128;
+/*
+7 Bit Pulse Wide Modulation (PWM) output controll register:
+bit 7 not used
+bit 6 - bit 0: Pulse Wide Modulation (PWM) Value
+Value Range: 0 - 127
+mask top bit (7)
+*/
+    _outp(0xF701, itemp);
+  }
   else if ( g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
+
+// this is untested by me and has no defcets open for it.
+// so i guess it working, but it looks wrong
+// smartxx software docs suggest it should be as for V3
+
     level = (99-level);
-    fBackLight=((float)level/100)*42.0f;
-    int iNewLevel=(int)fBackLight;
+    fContrast=((float)level/100)*42.0f;
+    int iNewLevel=(int)fContrast;
     if (iNewLevel>=41) iNewLevel=42;
     _outp(DISP_O_CONTRAST, iNewLevel&127|128);
+
   }
-  else 
+  else
   {
-    fBackLight=(((float)level)/100.0f)*63.0f;
-    int iNewLevel=(int)fBackLight;
+
+/*
+Assumes its a SmartXX V2
+bit 7 not used
+bit 6: not used
+bit 5 - bit 0: Pulse Wide Modulation (PWM) Value
+Value Range: 0 - 63
+where 0 means output is always 'high' (open collector)
+and '63' means output is always 'low' (GND - full contrast)
+Values in between '0' and '63' defines the ratio between 'low' to 'high' time (pulse width)
+*/
+    fContrast=(((float)level)/100.0f)*63.0f;
+    int iNewLevel=(int)fContrast;
     if (iNewLevel>=31) iNewLevel=32;
     _outp(DISP_O_CONTRAST, iNewLevel&63);
   }
