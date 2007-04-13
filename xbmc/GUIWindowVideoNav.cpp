@@ -730,13 +730,8 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
 
 void CGUIWindowVideoNav::OnScan(const CStdString& strPath, const SScraperInfo& info) 
 { 
+  // This would be better in the base class by the looks
   CGUIWindowVideoFiles*  pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
-    pWindow->OnMessage(msg);
     pWindow->OnScan(strPath,info);
-    CGUIMessage msg2(GUI_MSG_WINDOW_DEINIT,0,0);
-    pWindow->OnMessage(msg2);
-  }
 }  
