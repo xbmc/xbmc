@@ -30,6 +30,8 @@ public:
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
+  void CheckForVariousArtists(VECSONGS &songs);
+
   bool DoScan(const CStdString& strDirectory);
 
   virtual void Run();

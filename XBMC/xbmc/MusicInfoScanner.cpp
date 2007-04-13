@@ -198,7 +198,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   if (RetrieveMusicInfo(items, strDirectory) > 0)
   {
-    m_musicDatabase.CheckVariousArtistsAndCoverArt(strDirectory);
+    // TODO: MUSICDB - add this function to this class
+    m_musicDatabase.CheckCoverArt(strDirectory);
 
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
@@ -239,7 +240,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   // get all information for all files in current directory from database
   m_musicDatabase.GetSongsByPath(strDirectory, songsMap);
 
-  int iFilesAdded = 0;
+  VECSONGS songsToAdd;
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -248,7 +249,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     CUtil::GetExtension(pItem->m_strPath, strExtension);
 
     if (m_bStop)
-      return iFilesAdded;
+      return 0;
 
     // dont try reading id3tags for folders, playlists or shoutcast streams
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() )
@@ -302,8 +303,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         song.iEndOffset = pItem->m_lEndOffset;
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
-        m_musicDatabase.AddSong(song, false);
-        iFilesAdded++;
+        songsToAdd.push_back(song);
         CLog::Log(LOGDEBUG, __FUNCTION__" - Tag loaded for: %s", pItem->m_strPath.c_str());
       }
       else if (bNewFile)
@@ -313,7 +313,90 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     } //if (!pItem->m_bIsFolder)
   }
 
-  return iFilesAdded;
+  CheckForVariousArtists(songsToAdd);
+
+  // finally, add these to the database
+  for (unsigned int i = 0; i < songsToAdd.size(); ++i)
+  {
+    if (m_bStop) return i;
+    CSong &song = songsToAdd[i];
+    m_musicDatabase.AddSong(song, false);
+  }
+  return songsToAdd.size();
+}
+
+void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
+{
+  // first, find all the album names for these songs
+  map<CStdString, vector<CSong *> > albumsToAdd;
+  map<CStdString, vector<CSong *> >::iterator it;
+  for (unsigned int i = 0; i < songsToCheck.size(); ++i)
+  {
+    CSong &song = songsToCheck[i];
+    if (!song.strAlbumArtist.IsEmpty()) // albumartist specified, so assume the user knows what they're doing
+      continue;
+    it = albumsToAdd.find(song.strAlbum);
+    if (it == albumsToAdd.end())
+    {
+      vector<CSong *> songs;
+      songs.push_back(&song);
+      albumsToAdd.insert(make_pair(song.strAlbum, songs));
+    }
+    else
+      it->second.push_back(&song);
+  }
+  // ok, now run through these albums, and check whether they qualify as a "various artist" album
+  // an album is considered a various artists album if the songs' primary artist differs
+  // it qualifies as a "single artist with featured artists" album if the primary artist is the same, but secondary artists differ
+  for (it = albumsToAdd.begin(); it != albumsToAdd.end(); it++)
+  {
+    const CStdString &album = it->first;
+    vector<CSong *> &songs = it->second;
+    if (!album.IsEmpty() && songs.size() > 1)
+    {
+      bool variousArtists(false);
+      bool singleArtistWithFeaturedArtists(false);
+      for (unsigned int i = 0; i < songs.size() - 1; i++)
+      {
+        CSong *song1 = songs[i];
+        CSong *song2 = songs[i+1];
+        CStdStringArray vecArtists1, vecArtists2;
+        StringUtils::SplitString(song1->strArtist, " / ", vecArtists1);
+        StringUtils::SplitString(song2->strArtist, " / ", vecArtists2);
+        CStdString primaryArtist1 = vecArtists1[0]; primaryArtist1.TrimRight();
+        CStdString primaryArtist2 = vecArtists2[0]; primaryArtist2.TrimRight();
+        if (primaryArtist1 != primaryArtist2)
+        { // primary artist differs -> a various artists album
+          variousArtists = true;
+          break;
+        }
+        else if (song1->strArtist != song2->strArtist)
+        { // have more than one artist, the first artist(s) agree, but the full artist name doesn't
+          // so this is likely a single-artist compilation (ie with other artists featured on some tracks) album
+          singleArtistWithFeaturedArtists = true;
+        }
+      }
+      if (variousArtists)
+      { // have a various artists album - update all songs to be the various artist
+        for (unsigned int i = 0; i < songs.size(); i++)
+        {
+          CSong *song = songs[i];
+          song->strAlbumArtist = g_localizeStrings.Get(340); // Various Artists
+        }
+      }
+      else if (singleArtistWithFeaturedArtists)
+      { // have an album where all the first artists agree - make this the album artist
+        CStdStringArray vecArtists;
+        StringUtils::SplitString(songs[0]->strArtist, " / ", vecArtists);
+        CStdString albumArtist(vecArtists[0]);
+        for (unsigned int i = 0; i < songs.size(); i++)
+        {
+          CSong *song = songs[i];
+          song->strAlbumArtist = albumArtist; // first artist of all tracks
+        }
+      }
+    }
+  }
 }
 
 // This function is run by another thread
