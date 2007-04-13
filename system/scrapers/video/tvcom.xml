@@ -20,9 +20,18 @@
 			</RegExp>	
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression repeat="yes">;genre&quot;&gt;([^&gt;]*)&lt;/a&gt;</expression>
-			</RegExp>				
+			</RegExp>
+      <RegExp input="$$8" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">			
+			  <RegExp input="$$9" output="\1" dest="8">
+          <RegExp input="$$1" output="\1" dest="9">
+            <expression>'Close Full Summary \[-\]', '([^+]*)', '</expression>
+          </RegExp>
+				  <expression repeat="yes">([^\\]*)\\</expression>
+			  </RegExp>
+			  <expression noclean="1"></expression>
+      </RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>'Close Full Summary \[-\]', '([^+]*)', '</expression>
+				<expression>id=&quot;summary_fold&quot; class=&quot;mt-10&quot;&gt;[^a-zA-Z]*([^&lt;]*)&lt;</expression>
 			</RegExp>
 <!-- Runtime is not being used here
 			<RegExp input="$$1" output="&lt;runtime&gt;\1 min&lt;/runtime&gt;" dest="5+">
