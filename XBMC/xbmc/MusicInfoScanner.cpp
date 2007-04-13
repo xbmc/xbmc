@@ -198,9 +198,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   if (RetrieveMusicInfo(items, strDirectory) > 0)
   {
-    // TODO: MUSICDB - add this function to this class
-    m_musicDatabase.CheckCoverArt(strDirectory);
-
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
   }
@@ -314,6 +311,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   }
 
   CheckForVariousArtists(songsToAdd);
+  if (!items.HasThumbnail())
+    UpdateFolderThumb(songsToAdd, items.m_strPath);
 
   // finally, add these to the database
   for (unsigned int i = 0; i < songsToAdd.size(); ++i)
@@ -396,6 +395,42 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
         }
       }
     }
+  }
+}
+
+void CMusicInfoScanner::UpdateFolderThumb(VECSONGS &songs, const CStdString &folderPath)
+{
+  // check how many unique albums are in this path, and if there's only one, and it has a thumb
+  // then cache the thumb as the folder thumb
+  CStdString album, artist;
+  for (unsigned int i = 0; i < songs.size(); i++)
+  {
+    CSong &song = songs[i];
+    // don't bother with empty album tags - they're unlikely to have an embedded thumb anyway,
+    // and if one is not tagged correctly, how can we know whether there is only one album?
+    if (song.strAlbum.IsEmpty())
+      return;
+
+    CStdString albumArtist = song.strAlbumArtist.IsEmpty() ? song.strArtist : song.strAlbumArtist;
+
+    if (!album.IsEmpty() && (album != song.strAlbum || artist != albumArtist))
+      return; // have more than one album
+
+    album = song.strAlbum;
+    artist = albumArtist;
+  }
+  if (album.IsEmpty()) return;
+
+  // Was the album art of this album read during scan?
+  CStdString albumCoverArt(CUtil::GetCachedAlbumThumb(album, artist));
+  if (CUtil::ThumbExists(albumCoverArt))
+  {
+    CStdString folderPath1(folderPath);
+    CUtil::RemoveSlashAtEnd(folderPath1);
+    CStdString folderCoverArt(CUtil::GetCachedMusicThumb(folderPath1));
+    // copy as directory thumb as well
+    if (::CopyFile(albumCoverArt, folderCoverArt, false))
+      CUtil::ThumbCacheAdd(folderCoverArt, true);
   }
 }
 

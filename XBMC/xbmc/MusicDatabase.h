@@ -126,7 +126,6 @@ public:
   bool GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
   bool RemoveSongsFromPaths(const CStdString &strPathIds);
   bool CleanupAlbumsArtistsGenres();
-  void CheckCoverArt(const CStdString &directory);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre);
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);

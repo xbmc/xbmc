@@ -31,6 +31,7 @@ protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   void CheckForVariousArtists(VECSONGS &songs);
+  void UpdateFolderThumb(VECSONGS &songs, const CStdString &folderPath);
 
   bool DoScan(const CStdString& strDirectory);
 
