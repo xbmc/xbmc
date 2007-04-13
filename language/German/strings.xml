@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/05/2007-->
+<!--Date of translation: 04/13/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8420-->
+<!--Based on english strings version 8471-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -814,7 +814,7 @@
   <string id="12384">24 Stunden Uhr</string>
   <string id="12385">Tag/Monat</string>
   <string id="12386">Monat/Tag</string>
-  <string id="12387">Datenbank aktualisieren</string>
+  <string id="12387"></string>
   <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
@@ -1506,6 +1506,8 @@
   <string id="20371">Staffel-Cover setzen</string>
   <string id="20372">Staffel-Cover</string>
   <string id="20373">Staffel</string>
+  <string id="20374">Film-Informationen werden geladen...</string>
+  <string id="20375">Inhalt zurücksetzen</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
