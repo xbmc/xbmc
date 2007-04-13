@@ -421,7 +421,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 
   if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3"))
   {
-    fContrast=((float)level/100)*127.0f;
+    float fContrast=((float)level/100)*127.0f;
     int iNewLevel=(int)fContrast;
     if (iNewLevel==41) iNewLevel=42;
     // 42 =  x0101010 e.g half on
@@ -444,7 +444,7 @@ mask top bit (7)
 // smartxx software docs suggest it should be as for V3
 
     level = (99-level);
-    fContrast=((float)level/100)*42.0f;
+    float fContrast=((float)level/100)*42.0f;
     int iNewLevel=(int)fContrast;
     if (iNewLevel>=41) iNewLevel=42;
     _outp(DISP_O_CONTRAST, iNewLevel&127|128);
@@ -463,7 +463,7 @@ where 0 means output is always 'high' (open collector)
 and '63' means output is always 'low' (GND - full contrast)
 Values in between '0' and '63' defines the ratio between 'low' to 'high' time (pulse width)
 */
-    fContrast=(((float)level)/100.0f)*63.0f;
+    float fContrast=(((float)level)/100.0f)*63.0f;
     int iNewLevel=(int)fContrast;
     if (iNewLevel>=31) iNewLevel=32;
     _outp(DISP_O_CONTRAST, iNewLevel&63);
