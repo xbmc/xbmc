@@ -468,8 +468,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
         (m_vecItems.IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()))
       btn_EditPlaylist = pMenu->AddButton(586);
 
-    // enable music info button only in album view
-    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
+    // enable music info button on an album or on a song.
+    if ((dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath)) || m_vecItems[iItem]->IsAudio())
       btn_Info = pMenu->AddButton(13351);
 
     // enable query all albums button only in album view

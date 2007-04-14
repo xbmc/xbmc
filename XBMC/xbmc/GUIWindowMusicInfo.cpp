@@ -26,6 +26,7 @@
 #include "GUIImage.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIPassword.h"
 
 using namespace XFILE;
 
@@ -160,6 +161,9 @@ void CGUIWindowMusicInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_albumItem.GetThumbnailImage());
   }
+
+  // disable the GetThumb button if the user isn't allowed it
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
 }
 
 void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)

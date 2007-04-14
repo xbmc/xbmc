@@ -97,9 +97,8 @@ public:
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
   void AddSong(const CSong& song, bool bCheck = true);
-  long AddAlbumInfo(const CAlbum& album, const VECSONGS& songs);
-  long UpdateAlbumInfo(const CAlbum& album, const VECSONGS& songs);
-  bool GetAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, CAlbum& album, VECSONGS& songs);
+  long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs);
+  bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
   bool GetSong(const CStdString& strTitle, CSong& song);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   bool GetSongById(long idSong, CSong& song);
@@ -110,6 +109,8 @@ public:
   bool Search(const CStdString& search, CFileItemList &items);
 
   bool GetGenresByName(const CStdString& strGenre1, VECGENRES& genres);
+  bool GetAlbumFromSong(long idSong, CAlbum &album);
+  bool GetAlbumFromSong(const CSong &song, CAlbum &album);
 
   bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
@@ -166,9 +167,8 @@ protected:
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
-  bool AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
+  bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
-  bool UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
 
 private:
   void SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings);
