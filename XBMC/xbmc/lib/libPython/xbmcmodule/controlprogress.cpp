@@ -72,7 +72,9 @@ namespace PYXBMC
   {
     pControl->pGUIControl = new CGUIProgressControl(pControl->iParentId, pControl->iControlId,(float)pControl->dwPosX, (float)pControl->dwPosY,
       (float)pControl->dwWidth,(float)pControl->dwHeight,
-      (CStdString)pControl->strTextureBg,(CStdString)pControl->strTextureLeft,(CStdString)pControl->strTextureMid,(CStdString)pControl->strTextureRight,(CStdString)pControl->strTextureOverlay);
+      (CStdString)pControl->strTextureBg,(CStdString)pControl->strTextureLeft,
+      (CStdString)pControl->strTextureMid,(CStdString)pControl->strTextureRight,
+      (CStdString)pControl->strTextureOverlay, NULL, NULL);
 
     if (pControl->pGUIControl && pControl->strColorDiffuse)
         ((CGUIProgressControl *)pControl->pGUIControl)->SetColorDiffuse(pControl->strColorDiffuse);
