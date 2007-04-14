@@ -485,14 +485,13 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
     iType = 1;
 
-  long lMovieId = atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str());
   CVideoInfoTag movieDetails;
   if (iType == 0)
-    m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
+    m_database.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 1)
-    m_database.GetEpisodeInfo(pItem->m_strPath, movieDetails, lMovieId);
+    m_database.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 2)
-    m_database.GetTvShowInfo(pItem->m_strPath, movieDetails, lMovieId);
+    m_database.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
 
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;
