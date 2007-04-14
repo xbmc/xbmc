@@ -3330,8 +3330,6 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
 
       CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
-      if (idSeason == -1) // to get proper sorting and stuff
-        movie.m_iEpisode += 100*movie.m_iSeason;
 
       CFileItem* pItem=new CFileItem(movie);
       CStdString strDir;
