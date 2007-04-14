@@ -50,6 +50,9 @@ static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
 static char symbolButtons[] = "._-@/\\";
 #define NUM_SYMBOLS sizeof(symbolButtons) - 1
 
+#define SEARCH_DELAY 1000
+#define REMOTE_SMS_DELAY 1000
+
 CGUIDialogKeyboard::CGUIDialogKeyboard(void)
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
 {
@@ -60,6 +63,7 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void)
   m_keyType = LOWER;
   m_strHeading = "";
   m_lastRemoteClickTime = 0;
+  m_lastSearchUpdate = 0;
 }
 
 CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
@@ -254,11 +258,13 @@ void CGUIDialogKeyboard::Render()
 {
   // reset the hide state of the label when the remote
   // sms style input times out
-  if (m_lastRemoteClickTime && m_lastRemoteClickTime + 1000 < timeGetTime())
+  if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY < timeGetTime())
   {
     // finished inputting a sms style character - turn off our shift and symbol states
     ResetShiftAndSymbols();
   }
+  if (m_lastSearchUpdate && m_lastSearchUpdate + SEARCH_DELAY < timeGetTime())
+    UpdateLabel();
   CGUIDialog::Render();
 }
 
@@ -271,7 +277,7 @@ void CGUIDialogKeyboard::UpdateLabel()
     if (m_hiddenInput)
     { // convert to *'s
       edit.Empty();
-      if (m_lastRemoteClickTime + 1000 > timeGetTime() && m_strEdit.size())
+      if (m_lastRemoteClickTime + REMOTE_SMS_DELAY > timeGetTime() && m_strEdit.size())
       { // using the remove to input, so display the last key input
         edit.append(m_strEdit.size() - 1, L'*');
         edit.append(1, m_strEdit[m_strEdit.size() - 1]);
@@ -283,17 +289,28 @@ void CGUIDialogKeyboard::UpdateLabel()
     CStdString utf8Edit;
     g_charsetConverter.utf16toUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
-    if (m_filtering == FILTERING_CURRENT)
-    { // send our filter message
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
-      message.SetStringParam(utf8Edit);
-      g_graphicsContext.SendMessage(message);
-    }
-    if (m_filtering == FILTERING_SEARCH)
-    { // send our search message
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
-      message.SetStringParam(utf8Edit);
-      g_graphicsContext.SendMessage(message);
+    // Send off a search message if it's been SEARCH_DELAY since last search.
+    DWORD now = timeGetTime();
+    if (!m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
+      m_lastSearchUpdate = now; // update is called when we haven't passed our search delay, so reset it
+    if (m_lastSearchUpdate + SEARCH_DELAY < now)
+    {
+      // don't send until the REMOTE_SMS_DELAY has passed
+      if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY >= now)
+        return;
+      m_lastSearchUpdate = 0;
+      if (m_filtering == FILTERING_CURRENT)
+      { // send our filter message
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
+        message.SetStringParam(utf8Edit);
+        g_graphicsContext.SendMessage(message);
+      }
+      if (m_filtering == FILTERING_SEARCH)
+      { // send our search message
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
+        message.SetStringParam(utf8Edit);
+        g_graphicsContext.SendMessage(message);
+      }
     }
   }
 }
@@ -325,12 +342,13 @@ void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 
   if (m_lastRemoteClickTime)
   { // a remote key has been pressed
-    if (key != m_lastRemoteKeyClicked || m_lastRemoteClickTime + 1000 < now)
+    if (key != m_lastRemoteKeyClicked || m_lastRemoteClickTime + REMOTE_SMS_DELAY < now)
     { // a different key was clicked than last time, or we have timed out
       m_lastRemoteKeyClicked = key;
       m_indexInSeries = 0;
-      // reset our shift and symbol states
+      // reset our shift and symbol states, and update our label to ensure the search filter is sent
       ResetShiftAndSymbols();
+      UpdateLabel();
     }
     else
     { // same key as last time within the appropriate time period
