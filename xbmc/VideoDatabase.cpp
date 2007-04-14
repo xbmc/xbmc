@@ -1750,7 +1750,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
       break;
     }
   }
-  details.m_strSearchString.Format("%i", lMovieId);
+  details.m_iDbId = lMovieId;
 
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
   CUtil::AddFileToFolder(details.m_strPath, pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
@@ -1797,7 +1797,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
       break;
     }
   }
-  details.m_strSearchString.Format("%i", lTvShowId);
+  details.m_iDbId = lTvShowId;
   // note use of -2 here as opposed to path, as there is no file.strFileName in the query nor any fileid, so two less entries
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH - 2).get_asString();
   details.m_strShowTitle = details.m_strTitle;
@@ -1845,7 +1845,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
       break;
     }
   }
-  details.m_strSearchString.Format("%i", lEpisodeId);
+  details.m_iDbId = lEpisodeId;
 
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
   CUtil::AddFileToFolder(details.m_strPath, pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
@@ -4204,7 +4204,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
       CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, true);
       tvshow.Save(pMain, "tvshow");
       // now save the episodes from this show
-      sql = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idfile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%s",VIDEODB_ID_TV_TITLE,tvshow.m_strSearchString.c_str());
+      sql = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idfile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%i",VIDEODB_ID_TV_TITLE,tvshow.m_iDbId);
       pDS->query(sql.c_str());
 
       while (!pDS->eof())

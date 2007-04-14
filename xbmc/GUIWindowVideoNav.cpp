@@ -608,7 +608,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   if (!pDialog->IsConfirmed()) return;
 
   CStdString path;
-  m_database.GetFilePath(atol(pItem->GetVideoInfoTag()->m_strSearchString), path, iType);
+  m_database.GetFilePath(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
   if (path.IsEmpty()) return;
   if (iType == 0)
   {
