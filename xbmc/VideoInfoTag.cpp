@@ -28,7 +28,7 @@ void CVideoInfoTag::Reset()
   m_iSeason = 0;
   m_iEpisode = 0;
   m_fRating = 0.0f;
-
+  m_iDbId = -1;
 
   m_bWatched = false;
 }
