@@ -14,7 +14,6 @@ void CVideoInfoTag::Reset()
   m_strOriginalTitle = "";
   m_strVotes = "";
   m_cast.clear();
-  m_strSearchString = "";
   m_strFile = "";
   m_strPath = "";
   m_strIMDBNumber = "";
@@ -60,7 +59,6 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_url);
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
-  XMLUtils::SetString(movie, "searchstring", m_strSearchString);
   XMLUtils::SetString(movie, "file", m_strFile);
   XMLUtils::SetString(movie, "path", m_strPath);
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
@@ -112,7 +110,6 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::GetBoolean(movie, "watched", m_bWatched);
-  XMLUtils::GetString(movie, "searchstring", m_strSearchString);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);
@@ -219,7 +216,6 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar << m_cast[i].first;
       ar << m_cast[i].second;
     }
-    ar << m_strSearchString;
     ar << m_strRuntime;
     ar << m_strFile;
     ar << m_strPath;
@@ -262,7 +258,6 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar >> strSecond;
       m_cast.push_back(make_pair<CStdString,CStdString>(strFirst,strSecond));
     }
-    ar >> m_strSearchString;
     ar >> m_strRuntime;
     ar >> m_strFile;
     ar >> m_strPath;
