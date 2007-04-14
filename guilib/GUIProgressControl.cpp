@@ -4,7 +4,7 @@
 
 
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& leftTexture, const CImage& midTexture, const CImage& rightTexture, const CImage& overlayTexture)
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& leftTexture, const CImage& midTexture, const CImage& rightTexture, const CImage& overlayTexture, float min, float max)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
     , m_guiLeft(dwParentID, dwControlId, posX, posY, width, height, leftTexture)
@@ -12,6 +12,8 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, fl
     , m_guiRight(dwParentID, dwControlId, posX, posY, width, height, rightTexture)
     , m_guiOverlay(dwParentID, dwControlId, posX, posY, width, height, overlayTexture)
 {
+  m_RangeMin = min;
+  m_RangeMax = max;
   m_fPercent = 0;
   m_iInfoCode = 0;
   ControlType = GUICONTROL_PROGRESS;
@@ -30,11 +32,22 @@ void CGUIProgressControl::SetPosition(float posX, float posY)
 
 void CGUIProgressControl::Render()
 {
-  if (!IsVisible()) return;
-
+  if (!IsVisible()) 
+    return;
   if (!IsDisabled())
   {
-    if (m_iInfoCode) m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
+    if (m_iInfoCode )
+    {
+      m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
+      if ((m_RangeMax - m_RangeMin)> 0 && (m_RangeMax != 100 && m_RangeMin != 0) )
+      {
+        if (m_fPercent > m_RangeMax)
+          m_fPercent = m_RangeMax;
+        if (m_fPercent < m_RangeMin) 
+          m_fPercent = m_RangeMin;
+        m_fPercent = ((100*(m_fPercent - m_RangeMin)) / (m_RangeMax - m_RangeMin));
+      }
+    }
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
 

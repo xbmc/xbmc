@@ -361,6 +361,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fInterval = 0.1f;
   bool bReverse = false;
   CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
+  float rMin = 0.0f;
+  float rMax = 100.0f;
   CImage textureNib, textureNibFocus, textureBar, textureBarFocus;
   CImage textureLeftFocus, textureRightFocus;
   CImage textureUp, textureDown;
@@ -682,6 +684,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "righttexture", textureRight);
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
   GetTexture(pControlNode, "texture", texture);
+  XMLUtils::GetFloat(pControlNode, "rangemin", rMin);
+  XMLUtils::GetFloat(pControlNode, "rangemax", rMax);
   XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
 
   XMLUtils::GetString(pControlNode, "suffix", strSuffix);
@@ -1025,7 +1029,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIProgressControl(
       dwParentId, id, posX, posY, width, height,
-      textureBackground, textureLeft, textureMid, textureRight, textureOverlay);
+      textureBackground, textureLeft, textureMid, textureRight, textureOverlay, rMin, rMax);
     ((CGUIProgressControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
   }
   else if (strType == "image")
