@@ -1571,6 +1571,7 @@
   <string id="20373">Season</string>
   <string id="20374">Downloading Video information</string>
   <string id="20375">Unassign Content</string>
+  <string id="20376">First Aired:</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

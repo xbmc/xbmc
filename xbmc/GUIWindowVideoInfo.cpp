@@ -30,6 +30,7 @@
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
+#include "Utils/GUIInfoManager.h"
 
 using namespace XFILE;
 
@@ -257,7 +258,10 @@ void CGUIWindowVideoInfo::Update()
   SetLabel(CONTROL_MPAARATING, strTmp);
 
   CStdString strYear;
-  strYear.Format("%i", m_movieItem.GetVideoInfoTag()->m_iYear);
+  if (m_movieItem.GetVideoInfoTag()->m_iYear)
+    strYear.Format("%i", m_movieItem.GetVideoInfoTag()->m_iYear);
+  else  
+    strYear = g_infoManager.GetItemLabel(&m_movieItem,LISTITEM_PREMIERED);
   SetLabel(CONTROL_YEAR, strYear);
 
   CStdString strRating_And_Votes;

@@ -451,7 +451,7 @@
 				<posx>200</posx>
 				<posy>250</posy>
 				<width>90</width>
-				<label>201</label>
+				<label>20376</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
