@@ -185,7 +185,7 @@ namespace PYXBMC
     }
 
     PyGUILock();
-
+    Py_INCREF(pControl);
     // we have a valid control here, fill in all the 'Control' data
     pControl->pGUIControl = pGUIControl;
     pControl->iControlId = pGUIControl->GetID();
