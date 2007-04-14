@@ -346,26 +346,6 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         }
       }
     }
-    // This code tests if we have a DVD folder
-    if (pItem->m_bIsFolder)
-    { // test to see whether we have a DVD folder
-      CStdString dvdFile;
-      CUtil::AddFileToFolder(pItem->m_strPath, "VIDEO_TS.IFO", dvdFile);
-      if (!CFile::Exists(dvdFile))
-      { // try <folder>/VIDEO_TS/VIDEO_TS.IFO
-        CStdString dvdFolder;
-        CUtil::AddFileToFolder(pItem->m_strPath, "VIDEO_TS", dvdFolder);
-        CUtil::AddFileToFolder(dvdFolder, "VIDEO_TS.IFO", dvdFile);
-      }
-      if (CFile::Exists(dvdFile))
-      { // have a dvd folder, set the path to that item
-        // and make it a file - the code below will take care of the rest
-        // note that the label is the foldername (good to lookup on)
-        pItem->m_strPath = dvdFile;
-        pItem->m_bIsFolder = false;
-        pItem->SetLabelPreformated(true);
-      }
-    }
 
     if (!pItem->m_bIsFolder || info.strContent.Equals("tvshows"))
     {
@@ -377,7 +357,10 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
             strMovieName = pItem->GetLabel();
           else
           {
-            strMovieName = CUtil::GetFileName(pItem->m_strPath);
+            if (pItem->IsStack())
+              strMovieName = pItem->GetLabel();
+            else
+              strMovieName = CUtil::GetFileName(pItem->m_strPath);
             CUtil::RemoveExtension(strMovieName);
           }
         }
