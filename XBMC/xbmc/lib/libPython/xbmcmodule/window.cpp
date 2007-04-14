@@ -199,6 +199,10 @@ namespace PYXBMC
     pControl->iControlLeft = pGUIControl->GetControlIdLeft();
     pControl->iControlRight = pGUIControl->GetControlIdRight();
 
+    // It got this far so means the control isn't actually in the vector of controls 
+    // so lets add it to save doing all that next time
+    self->vecControls.push_back(pControl);
+
     PyGUIUnlock();
 
     // return the control with increased reference (+1)
