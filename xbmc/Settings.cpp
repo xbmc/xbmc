@@ -597,6 +597,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
             continue;
           }
         }
+        CUtil::AddSlashAtEnd(strPath);
         vecPaths.push_back(strPath);
       }
       else
