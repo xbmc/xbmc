@@ -1128,6 +1128,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
       pItem->SetLabel(label);
       label.Format("A %s", m_pDS->fv(1).get_asString()); // sort label is stored in the title tag
       pItem->GetMusicInfoTag()->SetTitle(label);
+      pItem->SetCachedArtistThumb();
       artists.Add(pItem);
       m_pDS->next();
     }
