@@ -875,28 +875,21 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 #ifdef HAS_XBOX_HARDWARE
 double CSysInfo::GetCPUFrequency()
 {
-  unsigned __int64 Fwin;
-  unsigned __int64 Twin_fsb, Twin_result;
+  DWORD Twin_fsb, Twin_result;
   double Tcpu_fsb, Tcpu_result, Fcpu, CPUSpeed;
 
-
-  if (!QueryPerformanceFrequency((LARGE_INTEGER*)&Fwin))
-    return 0;
   Tcpu_fsb = RDTSC();
+  Twin_fsb = GetTickCount();
 
-  if (!QueryPerformanceCounter((LARGE_INTEGER*)&Twin_fsb))
-    return 0;
   Sleep(300);
-  Tcpu_result = RDTSC();
 
-  if (!QueryPerformanceCounter((LARGE_INTEGER*)&Twin_result))
-    return 0;
+  Tcpu_result = RDTSC();
+  Twin_result = GetTickCount();
 
   Fcpu  = (Tcpu_result-Tcpu_fsb);
-  Fcpu *= Fwin;
   Fcpu /= (Twin_result-Twin_fsb);
 
-  CPUSpeed = Fcpu/1000000;
+  CPUSpeed = Fcpu/1000;
 
   CLog::Log(LOGDEBUG, "- CPU Speed: %4.6fMHz",CPUSpeed);
   return CPUSpeed;
