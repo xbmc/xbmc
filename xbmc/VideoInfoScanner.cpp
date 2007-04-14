@@ -792,7 +792,6 @@ long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SS
   CVideoInfoTag movieDetails;
   IMDB.SetScraperInfo(info);
 
-  movieDetails.m_strSearchString = pItem->m_strPath;
   if ( IMDB.GetDetails(url, movieDetails, pDialog) )
     return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1);
   return -1;

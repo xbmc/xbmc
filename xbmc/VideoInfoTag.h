@@ -34,7 +34,6 @@ public:
   vector< pair<CStdString, CStdString> > m_cast;
   typedef vector< pair<CStdString, CStdString> >::const_iterator iCast;
 
-  CStdString m_strSearchString;
   CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
@@ -53,6 +52,7 @@ public:
   int m_iYear;
   int m_iSeason;
   int m_iEpisode;
+  int m_iDbId;
   float m_fRating;
 };
 
