@@ -235,6 +235,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iSeason;
     ar << m_iEpisode;
     ar << m_fRating;
+    ar << m_iDbId;
   }
   else
   {
@@ -277,5 +278,6 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSeason;
     ar >> m_iEpisode;
     ar >> m_fRating;
+    ar >> m_iDbId;
   }
 }
