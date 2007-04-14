@@ -186,7 +186,7 @@ extern void demux_close_ra(demuxer_t* demuxer);
 extern void demux_close_ty(demuxer_t* demuxer);
 extern void demux_close_lavf(demuxer_t* demuxer);
 extern void demux_close_aac(demuxer_t *demuxer);
-
+extern void demux_close_asf(demuxer_t* demuxer);
 
 #ifdef USE_TV
 #include "tv.h"
@@ -277,6 +277,8 @@ void free_demuxer(demuxer_t *demuxer){
 #endif
     case DEMUXER_TYPE_AAC:
       demux_close_aac(demuxer); break;
+    case DEMUXER_TYPE_ASF:
+      demux_close_asf(demuxer); break;
     }
     // free streams:
     for(i=0;i<256;i++){
@@ -344,7 +346,7 @@ int demux_ty_fill_buffer(demuxer_t *demux);
 int demux_avi_fill_buffer(demuxer_t *demux);
 int demux_avi_fill_buffer_ni(demuxer_t *demux,demux_stream_t *ds);
 int demux_avi_fill_buffer_nini(demuxer_t *demux,demux_stream_t *ds);
-int demux_asf_fill_buffer(demuxer_t *demux);
+int demux_asf_fill_buffer(demuxer_t *demux,demux_stream_t* ds);
 int demux_mov_fill_buffer(demuxer_t *demux,demux_stream_t* ds);
 int demux_vivo_fill_buffer(demuxer_t *demux);
 int demux_real_fill_buffer(demuxer_t *demuxer);
@@ -387,7 +389,7 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
     case DEMUXER_TYPE_AVI: return demux_avi_fill_buffer(demux);
     case DEMUXER_TYPE_AVI_NI: return demux_avi_fill_buffer_ni(demux,ds);
     case DEMUXER_TYPE_AVI_NINI: return demux_avi_fill_buffer_nini(demux,ds);
-    case DEMUXER_TYPE_ASF: return demux_asf_fill_buffer(demux);
+    case DEMUXER_TYPE_ASF: return demux_asf_fill_buffer(demux,ds);
     case DEMUXER_TYPE_MOV: return demux_mov_fill_buffer(demux,ds);
     case DEMUXER_TYPE_VIVO: return demux_vivo_fill_buffer(demux);
     case DEMUXER_TYPE_PVA: return demux_pva_fill_buffer(demux);
@@ -685,6 +687,7 @@ extern demuxer_t* demux_open_rtp(demuxer_t* demuxer);
 #endif
 extern int demux_aac_probe(demuxer_t *demuxer);
 extern demuxer_t* demux_aac_open(demuxer_t *demuxer);
+extern demuxer_t* demux_open_asf(demuxer_t* demuxer);
 
 int extension_parsing=1; // 0=off 1=mixed (used only for unstable formats)
 
@@ -1256,36 +1259,8 @@ switch(file_format){
   demux_open_real(demuxer);
   break;
  }
- case DEMUXER_TYPE_ASF: {
-  //---- ASF header:
-  if (!read_asf_header(demuxer)) {
-      break; // this will actually leak the global asf object, oh well
-  }
-  stream_reset(demuxer->stream);
-  stream_seek(demuxer->stream,demuxer->movi_start);
-//  demuxer->idx_pos=0;
-//  demuxer->endpos=avi_header.movi_end;
-  if(d_video->id != -2) {
-    if(!ds_fill_buffer(d_video)){
-      mp_msg(MSGT_DEMUXER,MSGL_WARN,"ASF: " MSGTR_MissingVideoStream);
-      sh_video=NULL;
-      //printf("ASF: missing video stream!? contact the author, it may be a bug :(\n");
-    } else {
-      sh_video=d_video->sh;sh_video->ds=d_video;
-      //sh_video->fps=1000.0f; sh_video->frametime=0.001f; // 1ms  - now set when reading asf header
-      //sh_video->i_bps=10*asf_packetsize; // FIXME!
-    }
-  }
-  if(d_audio->id!=-2){
-    mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_ASFSearchingForAudioStream,d_audio->id);
-    if(!ds_fill_buffer(d_audio)){
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,"ASF: " MSGTR_MissingAudioStream);
-      sh_audio=NULL;
-    } else {
-      sh_audio=d_audio->sh;sh_audio->ds=d_audio;
-      sh_audio->format=sh_audio->wf->wFormatTag;
-    }
-  }
+ case DEMUXER_TYPE_ASF: {   
+  if(!demux_open_asf(demuxer)) return NULL;
   break;
  }
  case DEMUXER_TYPE_H264_ES:

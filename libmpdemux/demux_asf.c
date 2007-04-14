@@ -12,6 +12,7 @@
 #include "asf.h"
 #include "demuxer.h"
 
+#include "libvo/fastmemcpy.h"
 
 #define ASFMIN(a,b) ((a) > (b) ? (b) : (a))
 #define SLICE_MIN_START_CODE    0x00000101
@@ -44,10 +45,6 @@
 extern int asf_check_header(demuxer_t *demuxer);
 extern int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf);
 
-#ifdef _XBOX /* no priv structure in demuxer */
-extern struct asf_priv *g_asf;
-#endif
-
 // based on asf file-format doc by Eugene [http://divx.euro.ru]
 
 static void asf_descrambling(unsigned char **src,unsigned len, struct asf_priv* asf){
@@ -69,6 +66,22 @@ static void asf_descrambling(unsigned char **src,unsigned len, struct asf_priv* 
   *src = dst;
 }
 
+static void init_priv (struct asf_priv* asf){
+  asf->is_dvr_ms=0;
+  asf->vid_frame_ct=0;
+  asf->new_vid_frame_seg=0;
+  asf->avg_vid_frame_time=0;
+  asf->last_key_payload_time=0;
+  asf->found_first_key_frame=0;
+  asf->last_vid_seq=-1;
+  asf->last_aud_diff=0;
+  asf->aud_repdata_sizes=NULL;
+  asf->vid_repdata_sizes=NULL;
+  asf->vid_ext_timing_index=-1;
+  asf->aud_ext_timing_index=-1;
+  asf->vid_ext_frame_index=-1;
+}
+    
 #ifdef USE_LIBAVCODEC_SO
 #include <ffmpeg/avcodec.h>
 #elif defined(USE_LIBAVCODEC)
@@ -76,71 +89,6 @@ static void asf_descrambling(unsigned char **src,unsigned len, struct asf_priv* 
 #else
 #define FF_INPUT_BUFFER_PADDING_SIZE 8
 #endif
-
-static const uint8_t *find_start_code(const uint8_t * restrict p, const uint8_t *end, uint32_t * restrict state){
-  int i;
-  if(p>=end)
-    return end;
-
-  for(i=0; i<3; i++){
-    uint32_t tmp= *state << 8;
-    *state= tmp + *(p++);
-    if(tmp == 0x100 || p==end)
-      return p;
-  }
-
-  while(p<end){
-    if     (p[-1] > 1      ) p+= 3;
-    else if(p[-2]          ) p+= 2;
-    else if(p[-3]|(p[-1]-1)) p++;
-    else{
-      p++;
-      break;
-    }
-  }
-
-  p= ASFMIN(p, end)-4;
-  *state=  LOAD_BE32(p);
-
-  return p+4;
-}
-
-static int mpeg1_find_frame_end(demuxer_t *demux, const uint8_t *buf, int buf_size)
-{
-  int i;
-  struct asf_priv* asf = g_asf;
-
-  i=0;
-   if(!asf->asf_frame_start_found){
-    for(i=0; i<buf_size; i++){
-      i= find_start_code(buf+i, buf+buf_size, &asf->asf_frame_state) - buf - 1;
-      if(asf->asf_frame_state >= SLICE_MIN_START_CODE && asf->asf_frame_state <= SLICE_MAX_START_CODE){
-        i++;
-        asf->asf_frame_start_found=1;
-        break;
-      }
-    }
-  }
-
-  if(asf->asf_frame_start_found){
-    /* EOF considered as end of frame */
-      if (buf_size == 0)
-          return 0;
-            
-    for(; i<buf_size; i++){
-      i= find_start_code(buf+i, buf+buf_size, &asf->asf_frame_state) - buf - 1;
-      if((asf->asf_frame_state&0xFFFFFF00) == 0x100){
-        //if NOT in range 257 - 431
-        if(asf->asf_frame_state < SLICE_MIN_START_CODE || asf->asf_frame_state > SLICE_MAX_START_CODE){
-          asf->asf_frame_start_found=0;
-          asf->asf_frame_state=-1;
-          return i-3;
-        }
-      }
-    }
-  }
-  return END_NOT_FOUND;
-}
 
 static void demux_asf_append_to_packet(demux_packet_t* dp,unsigned char *data,int len,int offs)
 {
@@ -152,11 +100,10 @@ static void demux_asf_append_to_packet(demux_packet_t* dp,unsigned char *data,in
   dp->len+=len;
 }
 
-static int demux_asf_read_packet(demuxer_t *demux,unsigned char *data,int len,int id,int seq,unsigned long time,unsigned short dur,int offs,int keyframe){
-  struct asf_priv* asf = g_asf;
+static int demux_asf_read_packet(demuxer_t *demux,unsigned char *data,int len,int id,int seq,uint64_t time,unsigned short dur,int offs,int keyframe){
+  struct asf_priv* asf = demux->priv;
   demux_stream_t *ds=NULL;
   int close_seg=0;
-  int frame_end_pos=END_NOT_FOUND;
   
   mp_dbg(MSGT_DEMUX,MSGL_DBG4,"demux_asf.read_packet: id=%d seq=%d len=%d\n",id,seq,len);
   
@@ -189,26 +136,10 @@ static int demux_asf_read_packet(demuxer_t *demux,unsigned char *data,int len,in
     if(ds->asf_packet){
       demux_packet_t* dp=ds->asf_packet;
 
-      if (ds==demux->video && asf->asf_is_dvr_ms) {
-        frame_end_pos=mpeg1_find_frame_end(demux, data, len);
-
-        if (frame_end_pos != END_NOT_FOUND) {
+      if (ds==demux->video && asf->is_dvr_ms) {
+        if (asf->new_vid_frame_seg) {
           dp->pos=demux->filepos;
-          if (frame_end_pos > 0) {
-            demux_asf_append_to_packet(dp,data,frame_end_pos,offs);
-            data += frame_end_pos;
-            len -= frame_end_pos;
-          }
           close_seg = 1;
-          if (asf->avg_vid_frame_time > 0.0 ) {
-            // correct the pts for the packet
-            // because dvr-ms files do not contain accurate
-            // pts values but we can deduce them using
-            // the average frame time
-            if (asf->dvr_last_vid_pts > 0.0)
-              dp->pts=asf->dvr_last_vid_pts+asf->avg_vid_frame_time;
-            asf->dvr_last_vid_pts = dp->pts;
-          }
         } else seq = ds->asf_seq;
       } else close_seg = ds->asf_seq!=seq;
 
@@ -234,7 +165,10 @@ static int demux_asf_read_packet(demuxer_t *demux,unsigned char *data,int len,in
       }
       dp=new_demux_packet(len);
       memcpy(dp->buffer,data,len);
-      dp->pts=time*0.001f;
+      if (asf->is_dvr_ms)
+        dp->pts=time*0.0000001f;
+      else
+        dp->pts=time*0.001f;
       dp->flags=keyframe;
 //      if(ds==demux->video) printf("ASF time: %8d  dur: %5d  \n",time,dur);
       dp->pos=demux->filepos;
@@ -248,14 +182,135 @@ static int demux_asf_read_packet(demuxer_t *demux,unsigned char *data,int len,in
   return 0;
 }
 
+static void get_payload_entension_data(demuxer_t *demux, unsigned char** pp, unsigned char id, unsigned int seq, int *keyframe, uint64_t *seg_time){
+    struct asf_priv* asf = demux->priv;
+    unsigned char* p=*pp;
+    uint64_t payload_time; //100ns units
+    int i, ext_max, ext_timing_index;
+    uint8_t *pi;
+
+    if(demux->video->id==-1)
+        if(demux->v_streams[id])
+            demux->video->id=id;
+
+    if(demux->audio->id==-1)
+        if(demux->a_streams[id])
+            demux->audio->id=id;
+
+    if (id!=demux->video->id && id!=demux->audio->id) return;
+
+    if (id==demux->video->id) {
+      ext_max = asf->vid_repdata_count;
+      ext_timing_index = asf->vid_ext_timing_index;
+    } else {
+      ext_max = asf->aud_repdata_count;
+      ext_timing_index = asf->aud_ext_timing_index;
+    }
+
+    pi = (uint8_t *) p+4;
+
+    *seg_time=0.0;
+    asf->new_vid_frame_seg = 0;
+
+    for (i=0; i<ext_max; i++) {    
+        uint16_t payextsize;
+        uint8_t segment_marker;
+
+        if (id==demux->video->id) {
+            payextsize = asf->vid_repdata_sizes[i];
+        } else {
+            payextsize = asf->aud_repdata_sizes[i];       
+        }
+        if (payextsize == 65535) {
+            payextsize = LOAD_LE16(pi); pi+=2;
+        }
+       
+        // if this is the timing info extension then read the payload time
+        if (i == ext_timing_index) {        
+            payload_time =  (uint64_t) LOAD_LE32(pi+8) | (uint64_t)LOAD_LE32(pi+8 + 4) << 32;
+        }
+        
+        // if this is the video frame info extension then 
+        // set the keyframe indicator, the 'new frame segment' indicator
+        // and (initially) the 'frame time'
+        if (i == asf->vid_ext_frame_index && id==demux->video->id) {
+            segment_marker = pi[0];
+            // Known video stream segment_marker values that
+            // contain useful information:
+            //
+            // NTSC/ATSC (29.97fps):        0X4A 01001010
+            //                              0X4B 01001011
+            //                              0X49 01001001
+            //
+            // PAL/ATSC (25fps):            0X3A 00111010
+            //                              0X3B 00111011
+            //                              0X39 00111001
+            //
+            // ATSC progressive (29.97fps): 0X7A 01111010
+            //                              0X7B 01111011
+            //                              0X79 01111001
+            //   11111111
+            //       ^    this is new video frame marker
+            //
+            //   ^^^^     these bits indicate the framerate
+            //            0X4 is 29.97i, 0X3 is 25i, 0X7 is 29.97p, ??=25p 
+            //
+            //        ^^^ these bits indicate the frame type (001 means I-frame)
+
+            asf->new_vid_frame_seg = (0X08 & segment_marker) && seq != asf->last_vid_seq;
+
+            if (asf->new_vid_frame_seg) asf->last_vid_seq = seq;
+
+            if (asf->avg_vid_frame_time == 0) {
+                // set the average frame time initially. Works based on known samples
+                if (((segment_marker & 0XF0) >> 4) == 4)
+                    asf->avg_vid_frame_time = (uint64_t)((1.001 / 30.0) * 10000000.0);
+                else if (((segment_marker & 0XF0) >> 4) == 3)
+                    asf->avg_vid_frame_time = (uint64_t)(0.04 * 10000000.0);
+                else if (((segment_marker & 0XF0) >> 4) == 7)
+                    asf->avg_vid_frame_time = (uint64_t)((1.001 / 60.0) * 10000000.0);
+                else if (((segment_marker & 0XF0) >> 4) == 6) // FIXME: Need ATSC 25p sample to verify
+                    asf->avg_vid_frame_time = (uint64_t)(0.02 * 10000000.0);
+            }
+            *keyframe = (asf->new_vid_frame_seg && (segment_marker & 0X07) == 1);
+        }
+        pi +=payextsize;
+    }
+
+    if (id==demux->video->id && asf->new_vid_frame_seg) {    
+        asf->vid_frame_ct++;
+        // Some samples only have timings on key frames and 
+        // the rest contain non-cronological. Interpolating
+        // the values between key frames works for all samples.
+        if (*keyframe) {
+            asf->found_first_key_frame=1;
+            asf->last_key_payload_time = payload_time;
+            asf->vid_frame_ct = 1;
+            *seg_time = payload_time;
+        } else {
+            *seg_time = (asf->last_key_payload_time  + (asf->avg_vid_frame_time * (asf->vid_frame_ct-1)));
+        }
+    }
+
+    if (id==demux->audio->id) {
+       if (payload_time != -1) {
+           *seg_time = payload_time;
+       } else {
+           *seg_time = asf->last_aud_pts + asf->last_aud_diff;
+       }
+       asf->last_aud_diff = *seg_time - asf->last_aud_pts;
+       asf->last_aud_pts = *seg_time;
+   }
+}
+
 //static int num_elementary_packets100=0;
 //static int num_elementary_packets101=0;
 
 // return value:
 //     0 = EOF or no stream found
 //     1 = successfully read a packet
-int demux_asf_fill_buffer(demuxer_t *demux){
-  struct asf_priv* asf = g_asf;
+int demux_asf_fill_buffer(demuxer_t *demux, demux_stream_t *ds){
+  struct asf_priv* asf = demux->priv;
 
   demux->filepos=stream_tell(demux->stream);
   // Brodcast stream have movi_start==movi_end
@@ -283,7 +338,7 @@ int demux_asf_fill_buffer(demuxer_t *demux){
             unsigned char segsizetype=0x80;
             int seg=-1;
             
-            if(verbose>1){
+            if( mp_msg_test(MSGT_DEMUX,MSGL_DBG2) ){
                 int i;
                 for(i=0;i<16;i++) printf(" %02X",asf->packet[i]);
                 printf("\n");
@@ -360,12 +415,15 @@ int demux_asf_fill_buffer(demuxer_t *demux){
 	      unsigned int rlen;
 	      //
               int len;
-              unsigned int time2=0;
+              uint64_t time2=0;
 	      int keyframe=0;
 
-              if(p>=p_end) mp_msg(MSGT_DEMUX,MSGL_V,"Warning! invalid packet 1, sig11 coming soon...\n");
+              if(p>=p_end) {
+                mp_msg(MSGT_DEMUX,MSGL_V,"Warning! invalid packet 1, aborting parsing...\n");
+                break;
+              }
 
-              if(verbose>1){
+              if( mp_msg_test(MSGT_DEMUX,MSGL_DBG2) ){
                 int i;
                 printf("seg %d:",seg);
                 for(i=0;i<16;i++) printf(" %02X",p[i]);
@@ -411,6 +469,8 @@ int demux_asf_fill_buffer(demuxer_t *demux){
 	        if(rlen>=8){
             	    p+=4;	// skip object size
             	    time2=LOAD_LE32(p); // read PTS
+            	    if (asf->is_dvr_ms) 
+            	        get_payload_entension_data(demux, &p, streamno, seq, &keyframe, &time2);
 		    p+=rlen-4;
 		} else {
             	    mp_msg(MSGT_DEMUX,MSGL_V,"unknown segment type (rlen): 0x%02X  \n",rlen);
@@ -457,7 +517,8 @@ int demux_asf_fill_buffer(demuxer_t *demux){
               default:
                 // NO GROUPING:
                 //printf("fragment offset: %d  \n",sh->x);
-                demux_asf_read_packet(demux,p,len,streamno,seq,time2,duration,x,keyframe);
+                if (!asf->is_dvr_ms || asf->found_first_key_frame)
+                    demux_asf_read_packet(demux,p,len,streamno,seq,time2,duration,x,keyframe);
                 p+=len;
                 break;
 	      }
@@ -472,11 +533,10 @@ int demux_asf_fill_buffer(demuxer_t *demux){
 
 #include "stheader.h"
 
-extern void resync_audio_stream(sh_audio_t *sh_audio);
 extern void skip_audio_frame(sh_audio_t *sh_audio);
 
 void demux_seek_asf(demuxer_t *demuxer,float rel_seek_secs,int flags){
-    struct asf_priv* asf = g_asf;
+    struct asf_priv* asf = demuxer->priv;
     demux_stream_t *d_audio=demuxer->audio;
     demux_stream_t *d_video=demuxer->video;
     sh_audio_t *sh_audio=d_audio->sh;
@@ -492,6 +552,10 @@ void demux_seek_asf(demuxer_t *demuxer,float rel_seek_secs,int flags){
 	(rel_seek_secs*p_rate);
     off_t rel_seek_bytes=rel_seek_packs*asf->packetsize;
     off_t newpos;
+    if (asf->is_dvr_ms) {
+      rel_seek_packs=((double)asf->num_packets/(double)asf->play_duration)*rel_seek_secs;
+      rel_seek_bytes=rel_seek_packs*asf->packetsize;
+    }
     //printf("ASF: packs: %d  duration: %d  \n",(int)fileh.packets,*((int*)&fileh.duration));
 //    printf("ASF_seek: %d secs -> %d packs -> %d bytes  \n",
 //       rel_seek_secs,rel_seek_packs,rel_seek_bytes);
@@ -500,18 +564,20 @@ void demux_seek_asf(demuxer_t *demuxer,float rel_seek_secs,int flags){
 //    printf("\r -- asf: newpos=%d -- \n",newpos);
     stream_seek(demuxer->stream,newpos);
 
-    if (asf->asf_is_dvr_ms) asf->dvr_last_vid_pts = 0.0f;
+    if (asf->is_dvr_ms) {
+      asf->vid_frame_ct=0;
+      asf->last_key_payload_time=0;
+      asf->found_first_key_frame=0;
+      asf->last_vid_seq=-1;
+    }
 
     if (d_video->id >= 0)
     ds_fill_buffer(d_video);
     if(sh_audio){
       ds_fill_buffer(d_audio);
-      resync_audio_stream(sh_audio);
     }
     
-    if (d_video->id < 0)
-      sh_audio->delay = d_audio->pts;
-    else
+    if (d_video->id >= 0)
     while(1){
 	if(sh_audio && !d_audio->eof){
 	  float a_pts=d_audio->pts;
@@ -531,7 +597,7 @@ void demux_seek_asf(demuxer_t *demuxer,float rel_seek_secs,int flags){
 }
 
 int demux_asf_control(demuxer_t *demuxer,int cmd, void *arg){
-    struct asf_priv* asf = g_asf;
+    struct asf_priv* asf = demuxer->priv;
 /*  demux_stream_t *d_audio=demuxer->audio;
     demux_stream_t *d_video=demuxer->video;
     sh_audio_t *sh_audio=d_audio->sh;
@@ -553,3 +619,85 @@ int demux_asf_control(demuxer_t *demuxer,int cmd, void *arg){
 	    return DEMUXER_CTRL_NOTIMPL;
     }
 }
+
+
+demuxer_t* demux_open_asf(demuxer_t* demuxer)
+{
+    struct asf_priv* asf = demuxer->priv;
+    sh_audio_t *sh_audio=NULL;
+    sh_video_t *sh_video=NULL;
+
+    //---- ASF header:
+    if(!asf) return NULL;
+    init_priv(asf);
+    if (!read_asf_header(demuxer,asf)) {
+        free(asf);
+        return NULL;
+    }
+    stream_reset(demuxer->stream);
+    stream_seek(demuxer->stream,demuxer->movi_start);
+//    demuxer->idx_pos=0;
+//    demuxer->endpos=avi_header.movi_end;
+    if(demuxer->video->id != -2) {
+        if(!ds_fill_buffer(demuxer->video)){
+            mp_msg(MSGT_DEMUXER,MSGL_WARN,"ASF: " MSGTR_MissingVideoStream);
+            demuxer->video->sh=NULL;
+            //printf("ASF: missing video stream!? contact the author, it may be a bug :(\n");
+        } else {
+            sh_video=demuxer->video->sh;sh_video->ds=demuxer->video;
+            sh_video->fps=1000.0f; sh_video->frametime=0.001f; 
+            //sh_video->i_bps=10*asf->packetsize; // FIXME!
+
+            if (asf->is_dvr_ms) {
+                sh_video->bih->biWidth = 0;
+                sh_video->bih->biHeight = 0;
+            }
+        }
+    }
+
+    if(demuxer->audio->id!=-2){
+        mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_ASFSearchingForAudioStream,demuxer->audio->id);
+        if(!ds_fill_buffer(demuxer->audio)){
+            mp_msg(MSGT_DEMUXER,MSGL_INFO,"ASF: " MSGTR_MissingAudioStream);
+            demuxer->audio->sh=NULL;
+        } else {
+            sh_audio=demuxer->audio->sh;sh_audio->ds=demuxer->audio;
+            sh_audio->format=sh_audio->wf->wFormatTag;
+        }
+    }
+    if(!demuxer->stream->seek)
+        demuxer->seekable=0;
+
+    return demuxer;
+}
+
+void demux_close_asf(demuxer_t *demuxer) {
+    struct asf_priv* asf = demuxer->priv;
+
+    if (!asf) return;
+
+    if (asf->aud_repdata_sizes)
+      free(asf->aud_repdata_sizes);
+      
+    if (asf->vid_repdata_sizes)
+      free(asf->vid_repdata_sizes);
+      
+    free(asf);
+}
+#if 0
+demuxer_desc_t demuxer_desc_asf = {
+  "ASF demuxer",
+  "asf",
+  "ASF",
+  "A'rpi",
+  "ASF, WMV, WMA",
+  DEMUXER_TYPE_ASF,
+  1, // safe autodetect
+  asf_check_header,
+  demux_asf_fill_buffer,
+  demux_open_asf,
+  demux_close_asf,
+  demux_seek_asf,
+  demux_asf_control
+};
+#endif
