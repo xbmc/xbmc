@@ -120,9 +120,6 @@
 #define LCD_FREE_SPACE_E            169
 #define LCD_FREE_SPACE_F            170
 #define LCD_FREE_SPACE_G            171
-#define BAR_CPU_TEMPERATURE         172
-#define BAR_GPU_TEMPERATURE         173
-#define BAR_HDD_TEMPERATURE         174
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -465,7 +462,7 @@ protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
   int TranslateSingleString(const CStdString &strCondition);
-  
+
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);
@@ -486,17 +483,8 @@ protected:
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
-
-  // bar diagramm range stuff
-  void SetBarRange(const CStdString strData, int ret);
-  int m_BarCPURangeMin;
-  int m_BarCPURangeMax;
-  int m_BarGPURangeMin;
-  int m_BarGPURangeMax;
-  int m_BarHDDRangeMin;
-  int m_BarHDDRangeMax;
-  int GetBarRangeValue(int iVal, int info);
-
+  int i_SmartRequest;
+ 
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
   int m_fanSpeed;
