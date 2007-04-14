@@ -537,7 +537,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         if (info.strContent.Equals("movies"))
           m_database.DeleteMovie(item->m_strPath);
         if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
-          m_database.DeleteEpisode(item->m_strPath,atol(movieDetails.m_strSearchString));
+          m_database.DeleteEpisode(item->m_strPath,movieDetails.m_iDbId);
         if (info.strContent.Equals("tvshows") && item->m_bIsFolder)
           m_database.DeleteTvShow(item->m_strPath);
       }
@@ -1417,7 +1417,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
     iType = 1;
-  m_database.MarkAsUnWatched(atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()),iType>0);
+  m_database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
@@ -1431,7 +1431,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
     iType = 1;
-  m_database.MarkAsWatched(atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()),iType>0);
+  m_database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
@@ -1451,18 +1451,18 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
     iType = 1;
 
   if (iType == 0) // movies
-    m_database.GetMovieInfo("", detail, atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()));
+    m_database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 1) //  episodes
-    m_database.GetEpisodeInfo(pItem->m_strPath,detail,atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()));
+    m_database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 2) // tvshows
-    m_database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,atol(pItem->GetVideoInfoTag()->m_strSearchString.c_str()));
+    m_database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
 
   CStdString strInput;
   strInput = detail.m_strTitle;
 
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
-  m_database.UpdateMovieTitle(atol(pItem->GetVideoInfoTag()->m_strSearchString), strInput, iType);
+  m_database.UpdateMovieTitle(pItem->GetVideoInfoTag()->m_iDbId, strInput, iType);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
