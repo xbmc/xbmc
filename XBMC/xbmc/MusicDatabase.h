@@ -158,7 +158,7 @@ protected:
   map<CStdString, int /*CPathCache*/> m_thumbCache;
   map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
-  long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long idThumb, long idGenre, int numGenres, long year);
+  long AddAlbum(const CStdString& strAlbum1, long lArtistId, const CStdString &extraArtists, const CStdString &strArtist1, long idThumb, long idGenre, const CStdString &extraGenres, long year);
   long AddGenre(const CStdString& strGenre);
   long AddArtist(const CStdString& strArtist);
   long AddPath(const CStdString& strPath);
@@ -171,10 +171,7 @@ protected:
   bool UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
 
 private:
-  bool GetExtraArtistsForAlbum(long lAlbumId, CStdString &strArtist);
-  bool GetExtraArtistsForSong(long lSongId, CStdString &strArtist);
-  bool GetExtraGenresForAlbum(long lAlbumId, CStdString &strGenre);
-  bool GetExtraGenresForSong(long lSongId, CStdString &strGenre);
+  void SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CAlbum GetAlbumFromDataset();
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
@@ -195,8 +192,8 @@ private:
   enum _SongFields
   {
     song_idSong=0,
-    song_iNumArtists,
-    song_iNumGenres,
+    song_strExtraArtists,
+    song_strExtraGenres,
     song_strTitle,
     song_iTrack,
     song_iDuration,
@@ -228,9 +225,9 @@ private:
   {
     album_idAlbum=0,
     album_strAlbum, 
-    album_iNumArtists, 
+    album_strExtraArtists, 
     album_idArtist, 
-    album_iNumGenres,
+    album_strExtraGenres,
     album_idGenre,
     album_strArtist,
     album_strGenre,
