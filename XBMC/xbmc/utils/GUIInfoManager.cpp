@@ -159,7 +159,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("bar"))
   {
-    if (strTest.Equals("bar.cpuusage")) ret = SYSTEM_CPU_USAGE;
+    if (strTest.Equals("bar.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
+    else if (strTest.Equals("bar.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
+    else if (strTest.Equals("bar.cpuusage")) ret = SYSTEM_CPU_USAGE;
     else if (strTest.Equals("bar.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("bar.usedmemory")) ret = SYSTEM_USED_MEMORY;
     else if (strTest.Equals("bar.fanspeed")) ret = SYSTEM_FAN_SPEED;
@@ -179,21 +181,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("bar.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
     else if (strTest.Equals("bar.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
     else if (strTest.Equals("bar.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
-    else if (strTest.Left(19).Equals("bar.gputemperature("))
-    {
-      ret = BAR_GPU_TEMPERATURE;
-      SetBarRange(strTest,ret);
-    }
-    else if (strTest.Left(19).Equals("bar.cputemperature("))
-    {
-      ret = BAR_CPU_TEMPERATURE;
-      SetBarRange(strTest,ret);
-    }
-    else if (strTest.Left(19).Equals("bar.hddtemperature("))
-    {
-      ret = BAR_HDD_TEMPERATURE;
-      SetBarRange(strTest,ret);
-    }
+    else if (strTest.Equals("bar.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
   }
   else if (strCategory.Equals("system"))
   {
@@ -248,11 +236,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
     else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
+    
     else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
     else if (strTest.Equals("system.memory(used)")) ret = SYSTEM_USED_MEMORY;
     else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
     else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
+
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
@@ -1135,21 +1125,6 @@ int CGUIInfoManager::GetInt(int info) const
     case SYSTEM_FAN_SPEED:
       {
         iret = CFanController::Instance()->GetFanSpeed() * 2;
-      }
-      break;
-    case BAR_CPU_TEMPERATURE:
-      {
-        iret = g_infoManager.GetBarRangeValue(atoi(CFanController::Instance()->GetCPUTemp().ToString()), info);
-      }
-      break;
-    case BAR_GPU_TEMPERATURE:
-      {
-        iret = g_infoManager.GetBarRangeValue(atoi(CFanController::Instance()->GetGPUTemp().ToString()), info);
-      }
-      break;
-    case BAR_HDD_TEMPERATURE:
-      {
-        iret = g_infoManager.GetBarRangeValue(atoi(g_sysinfo.GetInfo(LCD_HDD_TEMPERATURE)), info);
       }
       break;
 #endif
@@ -2798,68 +2773,4 @@ void CGUIInfoManager::UpdateFromTuxBox()
     m_currentFile.GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
   }  
   return;
-}
-
-void CGUIInfoManager::SetBarRange(const CStdString strData, int ret)
-{
-  int m_BarRangeMin=0;
-  int m_BarRangeMax=100;
-  if (strData.Find(",") >= 0 && strData.Find("(") && strData.Find(")"))
-  {
-    m_BarRangeMin = atoi(strData.Mid(strData.Find("(")+1, strData.Find(",") - strData.Find("(")+1).c_str());
-    m_BarRangeMax = atoi(strData.Mid(strData.Find(",")+1, strData.Find(")")).c_str());
-  }
-  switch (ret)
-  {
-    case BAR_CPU_TEMPERATURE:
-      m_BarCPURangeMin = m_BarRangeMin;
-      m_BarCPURangeMax = m_BarRangeMax;
-      return;
-    case BAR_GPU_TEMPERATURE:
-      m_BarGPURangeMin = m_BarRangeMin;
-      m_BarGPURangeMax = m_BarRangeMax;
-      return;
-    case BAR_HDD_TEMPERATURE:
-      m_BarHDDRangeMin = m_BarRangeMin;
-      m_BarHDDRangeMax = m_BarRangeMax;
-      return;
-    default:
-      return;
-  }
-}
-int CGUIInfoManager::GetBarRangeValue(int iVal, int info)
-{
-  if (iVal < 0) 
-    return -1;
-  int iret, iBarRangeMax, iBarRangeMin;
-  switch (info)
-  {
-  case BAR_CPU_TEMPERATURE:
-    iBarRangeMax = m_BarCPURangeMax;
-    iBarRangeMin = m_BarCPURangeMin;
-    break;
-  case BAR_GPU_TEMPERATURE:
-    iBarRangeMax = m_BarGPURangeMax;
-    iBarRangeMin = m_BarGPURangeMin;
-    break;
-  case BAR_HDD_TEMPERATURE:
-    iBarRangeMax = m_BarHDDRangeMax;
-    iBarRangeMin = m_BarHDDRangeMin;
-    break;
-  default: //falling back to default range values
-    iBarRangeMax = 0;
-    iBarRangeMin = 100;
-    break;
-  }
-  if ((iBarRangeMax - iBarRangeMin)> 0)
-  {
-    if (iVal > iBarRangeMax ) 
-      iVal = iBarRangeMax;
-    if (iVal < iBarRangeMin ) 
-      iVal = iBarRangeMin;
-    iret = ((100*(iVal - iBarRangeMin)) / (iBarRangeMax - iBarRangeMin));
-  }
-  else 
-    iret = iVal;
-  return iret;
 }
