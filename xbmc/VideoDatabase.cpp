@@ -3628,7 +3628,7 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::GetGenresByName(%s) failed",strSQL.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
   }
 }
 
@@ -3872,7 +3872,7 @@ void CVideoDatabase::GetMovieDirectorsByName(const CStdString& strSearch, CFileI
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::GetGenresByName(%s) failed",strSQL.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
   }
 }
 
@@ -3914,7 +3914,7 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const CStdString& strSearch, CFil
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::GetGenresByName(%s) failed",strSQL.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
   }
 }
 
