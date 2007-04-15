@@ -30,6 +30,7 @@
 #include "zipdirectory.h"
 #include "rardirectory.h"
 #include "DirectoryTuxBox.h"
+#include "HDHomeRun.h"
 
 using namespace DIRECTORY;
 
@@ -86,6 +87,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_UPNP
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
+    if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
   }
 
  return NULL;
