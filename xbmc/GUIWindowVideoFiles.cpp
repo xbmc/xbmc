@@ -412,7 +412,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
   ShowIMDB(&item,info);
   // apply any IMDb icon to our item
   if (pItem->m_bIsFolder)
-    ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
+    CVideoInfoScanner::ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
   Update(m_vecItems.m_strPath);
 }
 
