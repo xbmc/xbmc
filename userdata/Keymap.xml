@@ -586,7 +586,7 @@
       <B>Stop</B>
       <start>OSD</start>
       <back>PreviousMenu</back>
-      <white>ShowTime</white>
+      <white>Info</white>
       <black>CodecInfo</black>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>      
@@ -596,6 +596,7 @@
       <menu>OSD</menu>
       <back>PreviousMenu</back>
       <info>CodecInfo</info>
+      <title>Info</title>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>
