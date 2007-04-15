@@ -26,6 +26,7 @@
 #include "WMACodec.h"
 #include "AIFFCodec.h"
 #include "ADPCMCodec.h"
+#include "TimidityCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -81,7 +82,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new AIFFCodec();
   else if (strFileType.Equals("xwav"))
     return new ADPCMCodec();
-
+  else if (TimidityCodec::IsSupportedFormat(strFileType))
+    return new TimidityCodec();
 
   return NULL;
 }

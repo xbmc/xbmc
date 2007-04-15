@@ -101,7 +101,7 @@ bool AdplugCodec::IsSupportedFormat(const CStdString& strExt)
   if (strExt == "a2m" || strExt == "amd" || strExt == "bam" || strExt == "cff" || strExt == "cfm" || strExt == "xad" 
       || strExt == "d00" || strExt == "dfm" || strExt == "dmo" || strExt == "dro" || strExt == "dtm" || strExt == "hsc"
       || strExt == "hsp" || strExt == "imf" || strExt == "ksm" || strExt == "laa" || strExt == "lds" || strExt == "m"
-      || strExt == "mad" || strExt == "mid" || strExt == "mkj" || strExt == "mtk" || strExt == "rad" || strExt == "raw"
+      || strExt == "mad" || strExt == "mkj" || strExt == "mtk" || strExt == "rad" || strExt == "raw"
       || strExt == "rol" || strExt == "s3m" || strExt == "sa2" || strExt == "sat" || strExt == "sci" || strExt == "sng"
       || strExt == "xms" || strExt == "xsm" || strExt == "adplug")
     return true;
