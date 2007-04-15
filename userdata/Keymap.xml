@@ -249,8 +249,8 @@
       <back>SmallStepBack</back>
       <menu>OSD</menu>
       <start>OSD</start>
-      <title>Info</title>
-      <info>CodecInfo</info>
+      <title>CodecInfo</title>
+      <info>Info</info>
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
    </remote>
@@ -595,8 +595,8 @@
     <remote>
       <menu>OSD</menu>
       <back>PreviousMenu</back>
-      <info>CodecInfo</info>
-      <title>Info</title>
+      <info>Info</info>
+      <title>CodecInfo</title>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>
