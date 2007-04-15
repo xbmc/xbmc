@@ -282,6 +282,9 @@
 					RelativePath="..\..\xbmc\cores\paplayer\DllStSound.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DllTimidity.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllVorbisfile.h">
 				</File>
 				<File
@@ -382,6 +385,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\SPCCodec.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\TimidityCodec.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\TimidityCodec.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\WAVcodec.cpp">
