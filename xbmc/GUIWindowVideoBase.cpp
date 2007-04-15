@@ -1533,17 +1533,6 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
   }
 }
 
-void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
-{
-  // copy icon to folder also;
-  if (CFile::Exists(imdbThumb))
-  {
-    CFileItem folderItem(folder, true);
-    CStdString strThumb(folderItem.GetCachedVideoThumb());
-    CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
-  }
-}
-
 bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
