@@ -2,19 +2,21 @@
  * Assorted DPCM codecs
  * Copyright (c) 2003 The ffmpeg Project.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -41,7 +43,7 @@ typedef struct DPCMContext {
     int channels;
     short roq_square_array[256];
     long sample[2];//for SOL_DPCM
-    int *sol_table;//for SOL_DPCM
+    const int *sol_table;//for SOL_DPCM
 } DPCMContext;
 
 #define SATURATE_S16(x)  if (x < -32768) x = -32768; \
@@ -84,15 +86,15 @@ static int interplay_delta_table[] = {
 
 };
 
-static int sol_table_old[16] =
+static const int sol_table_old[16] =
     { 0x0,  0x1,  0x2 , 0x3,  0x6,  0xA,  0xF, 0x15,
     -0x15, -0xF, -0xA, -0x6, -0x3, -0x2, -0x1, 0x0};
 
-static int sol_table_new[16] =
+static const int sol_table_new[16] =
     { 0x0,  0x1,  0x2,  0x3,  0x6,  0xA,  0xF,  0x15,
       0x0, -0x1, -0x2, -0x3, -0x6, -0xA, -0xF, -0x15};
-    
-static int sol_table_16[128] = {
+
+static const int sol_table_16[128] = {
     0x000, 0x008, 0x010, 0x020, 0x030, 0x040, 0x050, 0x060, 0x070, 0x080,
     0x090, 0x0A0, 0x0B0, 0x0C0, 0x0D0, 0x0E0, 0x0F0, 0x100, 0x110, 0x120,
     0x130, 0x140, 0x150, 0x160, 0x170, 0x180, 0x190, 0x1A0, 0x1B0, 0x1C0,
@@ -130,7 +132,7 @@ static int dpcm_decode_init(AVCodecContext *avctx)
         }
         break;
 
-        
+
     case CODEC_ID_SOL_DPCM:
         switch(avctx->codec_tag){
         case 1:
@@ -149,7 +151,7 @@ static int dpcm_decode_init(AVCodecContext *avctx)
             return -1;
         }
         break;
-     
+
     default:
         break;
     }

@@ -2,19 +2,21 @@
  * Shorten decoder
  * Copyright (c) 2005 Jeff Muizelaar
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -84,7 +86,7 @@ typedef struct ShortenContext {
     uint8_t *bitstream;
     int bitstream_size;
     int bitstream_index;
-    int allocated_bitstream_size;
+    unsigned int allocated_bitstream_size;
     int header_size;
     uint8_t header[OUT_BUFFER_SIZE];
     int version;
@@ -106,18 +108,27 @@ static int shorten_decode_init(AVCodecContext * avctx)
     return 0;
 }
 
-static void allocate_buffers(ShortenContext *s)
+static int allocate_buffers(ShortenContext *s)
 {
     int i, chan;
     for (chan=0; chan<s->channels; chan++) {
+        if(FFMAX(1, s->nmean) >= UINT_MAX/sizeof(int32_t)){
+            av_log(s->avctx, AV_LOG_ERROR, "nmean too large\n");
+            return -1;
+        }
+        if(s->blocksize + s->nwrap >= UINT_MAX/sizeof(int32_t) || s->blocksize + s->nwrap <= (unsigned)s->nwrap){
+            av_log(s->avctx, AV_LOG_ERROR, "s->blocksize + s->nwrap too large\n");
+            return -1;
+        }
+
         s->offset[chan] = av_realloc(s->offset[chan], sizeof(int32_t)*FFMAX(1, s->nmean));
 
         s->decoded[chan] = av_realloc(s->decoded[chan], sizeof(int32_t)*(s->blocksize + s->nwrap));
         for (i=0; i<s->nwrap; i++)
             s->decoded[chan][i] = 0;
         s->decoded[chan] += s->nwrap;
-
     }
+    return 0;
 }
 
 
@@ -324,7 +335,8 @@ static int shorten_decode_frame(AVCodecContext *avctx,
         }
         s->nwrap = FFMAX(NWRAP, maxnlpc);
 
-        allocate_buffers(s);
+        if (allocate_buffers(s))
+            return -1;
 
         init_offset(s);
 

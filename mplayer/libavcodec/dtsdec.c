@@ -2,20 +2,20 @@
  * dtsdec.c : free DTS Coherent Acoustics stream decoder.
  * Copyright (C) 2004 Benjamin Zores <ben@geexbox.org>
  *
- * This file is part of libavcodec.
+ * This file is part of FFmpeg.
  *
- * This library is free software; you can redistribute it and/or modify
+ * FFmpeg is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *  
- * This library is distributed in the hope that it will be useful,
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
@@ -33,8 +33,7 @@
 #include <malloc.h>
 #endif
 
-#define INBUF_SIZE 4096
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 18726
 #define HEADER_SIZE 14
 
 #ifdef LIBDTS_FIXED
@@ -56,7 +55,7 @@ int16_t convert (int32_t i)
     return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
 }
 
-void
+static void
 convert2s16_2 (sample_t * _f, int16_t * s16)
 {
   int i;
@@ -69,7 +68,7 @@ convert2s16_2 (sample_t * _f, int16_t * s16)
     }
 }
 
-void
+static void
 convert2s16_4 (sample_t * _f, int16_t * s16)
 {
   int i;
@@ -84,7 +83,7 @@ convert2s16_4 (sample_t * _f, int16_t * s16)
     }
 }
 
-void
+static void
 convert2s16_5 (sample_t * _f, int16_t * s16)
 {
   int i;
@@ -194,7 +193,7 @@ channels_multi (int flags)
 {
   if (flags & DTS_LFE)
     return 6;
-  else if (flags & 1)	/* center channel */
+  else if (flags & 1)   /* center channel */
     return 5;
   else if ((flags & DTS_CHANNEL_MASK) == DTS_2F2R)
     return 4;
@@ -231,9 +230,11 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
       memcpy (bufptr, start, len);
       bufptr += len;
       start += len;
-      if (bufptr == bufpos)
-        {
-          if (bufpos == buf + HEADER_SIZE)
+      if (bufptr != bufpos)
+          return start - buff;
+      if (bufpos != buf + HEADER_SIZE)
+          break;
+
             {
               int length;
 
@@ -248,7 +249,8 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
                 }
               bufpos = buf + length;
             }
-          else
+    }
+
             {
               level_t level;
               sample_t bias;
@@ -280,16 +282,14 @@ dts_decode_frame (AVCodecContext *avctx, void *data, int *data_size,
                 }
               bufptr = buf;
               bufpos = buf + HEADER_SIZE;
-              continue;
+              return start-buff;
             error:
               av_log (NULL, AV_LOG_ERROR, "error\n");
               bufptr = buf;
               bufpos = buf + HEADER_SIZE;
             }
-        }
-    }
 
-  return buff_size;
+  return start-buff;
 }
 
 static int
@@ -297,7 +297,7 @@ dts_decode_init (AVCodecContext *avctx)
 {
   avctx->priv_data = dts_init (0);
   if (avctx->priv_data == NULL)
-    return 1;
+    return -1;
 
   return 0;
 }
@@ -309,7 +309,7 @@ dts_decode_end (AVCodecContext *s)
 }
 
 AVCodec dts_decoder = {
-  "dts", 
+  "dts",
   CODEC_TYPE_AUDIO,
   CODEC_ID_DTS,
   sizeof (dts_state_t *),

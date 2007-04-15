@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "config.h"
-#ifdef USE_LIBMPEG2
 
 #include "mp_msg.h"
 
@@ -33,9 +32,16 @@ LIBVD_EXTERN(libmpeg2)
   static int g_lastframeflags=0;
 #endif
 
+typedef struct {
+    mpeg2dec_t *mpeg2dec;
+    int quant_store_idx;
+    char *quant_store[3];
+} vd_libmpeg2_ctx_t;
+
 // to set/get/query special features/parameters
 static int control(sh_video_t *sh,int cmd,void* arg,...){
-    mpeg2dec_t * mpeg2dec = sh->context;
+    vd_libmpeg2_ctx_t *context = sh->context;
+    mpeg2dec_t * mpeg2dec = context->mpeg2dec;
     const mpeg2_info_t * info = mpeg2_info (mpeg2dec);
 
     switch(cmd) {
@@ -56,6 +62,7 @@ static int control(sh_video_t *sh,int cmd,void* arg,...){
 
 // init driver
 static int init(sh_video_t *sh){
+    vd_libmpeg2_ctx_t *context;
     mpeg2dec_t * mpeg2dec;
 //    const mpeg2_info_t * info;
     int accel;
@@ -79,8 +86,10 @@ static int init(sh_video_t *sh){
     if(!mpeg2dec) return 0;
 
     mpeg2_custom_fbuf(mpeg2dec,1); // enable DR1
-    
-    sh->context=mpeg2dec;
+
+    context = calloc(1, sizeof(vd_libmpeg2_ctx_t));
+    context->mpeg2dec = mpeg2dec;
+    sh->context = context;
 
     mpeg2dec->pending_buffer = 0;
     mpeg2dec->pending_length = 0;
@@ -90,16 +99,22 @@ static int init(sh_video_t *sh){
 
 // uninit driver
 static void uninit(sh_video_t *sh){
-    mpeg2dec_t * mpeg2dec = sh->context;
+    int i;
+    vd_libmpeg2_ctx_t *context = sh->context;
+    mpeg2dec_t * mpeg2dec = context->mpeg2dec;
     if (mpeg2dec->pending_buffer) free(mpeg2dec->pending_buffer);
     mpeg2dec->decoder.convert=NULL;
     mpeg2dec->decoder.convert_id=NULL;
     mpeg2_close (mpeg2dec);
+    for (i=0; i < 3; i++)
+	free(context->quant_store[i]);
+    free(sh->context);
 }
 
 static void draw_slice (void * _sh, uint8_t * const * src, unsigned int y){ 
     sh_video_t* sh = (sh_video_t*) _sh;
-    mpeg2dec_t* mpeg2dec = sh->context;
+    vd_libmpeg2_ctx_t *context = sh->context;
+    mpeg2dec_t* mpeg2dec = context->mpeg2dec;
     const mpeg2_info_t * info = mpeg2_info (mpeg2dec);
     int stride[3];
 
@@ -117,7 +132,8 @@ static void draw_slice (void * _sh, uint8_t * const * src, unsigned int y){
 
 // decode a frame
 static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
-    mpeg2dec_t * mpeg2dec = sh->context;
+    vd_libmpeg2_ctx_t *context = sh->context;
+    mpeg2dec_t * mpeg2dec = context->mpeg2dec;
     const mpeg2_info_t * info = mpeg2_info (mpeg2dec);
     int drop_frame, framedrop=flags&3;
 
@@ -144,6 +160,7 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 	int state=mpeg2_parse (mpeg2dec);
 	int type, use_callback;
 	mp_image_t* mpi_new;
+	unsigned long pw, ph;
 	
 	switch(state){
 	case STATE_BUFFER:
@@ -157,6 +174,9 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 	    }
 	    break;
 	case STATE_SEQUENCE:
+	    pw = info->sequence->display_width * info->sequence->pixel_width;
+	    ph = info->sequence->display_height * info->sequence->pixel_height;
+	    if(ph) sh->aspect = (float) pw / (float) ph;
 	    // video parameters inited/changed, (re)init libvo:
 	    if (info->sequence->width >> 1 == info->sequence->chroma_width &&
 		info->sequence->height >> 1 == info->sequence->chroma_height) {
@@ -195,6 +215,9 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 
 	    if(!mpi_new) return 0; // VO ERROR!!!!!!!!
 	    mpeg2_set_buf(mpeg2dec, mpi_new->planes, mpi_new);
+	    mpi_new->stride[0] = info->sequence->width;
+	    mpi_new->stride[1] = info->sequence->chroma_width;
+	    mpi_new->stride[2] = info->sequence->chroma_width;
 	    if (info->current_picture->flags&PIC_FLAG_TOP_FIELD_FIRST)
 		mpi_new->fields |= MP_IMGFIELD_TOP_FIRST;
 	    else mpi_new->fields &= ~MP_IMGFIELD_TOP_FIRST;
@@ -202,6 +225,8 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 		mpi_new->fields |= MP_IMGFIELD_REPEAT_FIRST;
 	    else mpi_new->fields &= ~MP_IMGFIELD_REPEAT_FIRST;
 	    mpi_new->fields |= MP_IMGFIELD_ORDERED;
+            if (!(info->current_picture->flags&PIC_FLAG_PROGRESSIVE_FRAME))
+                mpi_new->fields |= MP_IMGFIELD_INTERLACED;
 
 #ifdef _XBOX
   if( info->sequence->flags & SEQ_FLAG_PROGRESSIVE_SEQUENCE )
@@ -233,9 +258,12 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 
 
 #ifdef MPEG12_POSTPROC
-	    if(!mpi_new->qscale){
-		mpi_new->qstride=info->sequence->width>>4;
-		mpi_new->qscale=malloc(mpi_new->qstride*(info->sequence->height>>4));
+	    mpi_new->qstride=info->sequence->width>>4;
+	    {
+	    char **p = &context->quant_store[type==PIC_FLAG_CODING_TYPE_B ?
+					2 : (context->quant_store_idx ^= 1)];
+	    *p = realloc(*p, mpi_new->qstride*(info->sequence->height>>4));
+	    mpi_new->qscale = *p;
 	    }
 	    mpeg2dec->decoder.quant_store=mpi_new->qscale;
 	    mpeg2dec->decoder.quant_stride=mpi_new->qstride;
@@ -278,4 +306,3 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 	}
     }
 }
-#endif

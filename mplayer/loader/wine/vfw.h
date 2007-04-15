@@ -1,3 +1,9 @@
+/*
+ * Modified for use with MPlayer, detailed changelog at
+ * http://svn.mplayerhq.hu/mplayer/trunk/
+ * $Id$
+ */
+
 #ifndef __WINE_VFW_H
 #define __WINE_VFW_H
 //#include "pshpack1.h"

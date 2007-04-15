@@ -16,6 +16,9 @@
 
 #include "config.h"
 
+#include "mp_msg.h"
+#include "help_mp.h"
+
 #ifndef HAVE_WINSOCK2
 #define closesocket close
 #else
@@ -36,9 +39,8 @@
 #include "pnm.h"
 #include "realrtsp/rtsp_session.h"
 
-#include "../version.h"
+#include "version.h"
 
-extern int verbose;
 extern int stream_cache_size;
 
 extern int mp_input_check_interrupt(int time);
@@ -60,15 +62,12 @@ int   network_prefer_ipv4 = 0;
 int   network_ipv4_only_proxy = 0;
 
 
-static struct {
-	char *mime_type;
-	int demuxer_type;
-} mime_type_table[] = {
+mime_struct_t mime_type_table[] = {
 	// MP3 streaming, some MP3 streaming server answer with audio/mpeg
 	{ "audio/mpeg", DEMUXER_TYPE_AUDIO },
-  // AAC streaming
-  { "audio/aac", DEMUXER_TYPE_AAC },
-  { "audio/aacp", DEMUXER_TYPE_AAC },
+	// AAC streaming
+	{ "audio/aac", DEMUXER_TYPE_AAC },
+	{ "audio/aacp", DEMUXER_TYPE_AAC },
 	// MPEG streaming
 	{ "video/mpeg", DEMUXER_TYPE_UNKNOWN },
 	{ "video/x-mpeg", DEMUXER_TYPE_UNKNOWN },
@@ -85,6 +84,9 @@ static struct {
 	{ "video/x-ms-wvx", DEMUXER_TYPE_ASF },
 	{ "video/x-ms-wmv", DEMUXER_TYPE_ASF },
 	{ "video/x-ms-wma", DEMUXER_TYPE_ASF },
+	{ "application/x-mms-framed", DEMUXER_TYPE_ASF },
+	{ "application/vnd.ms.wms-hdr.asfv1", DEMUXER_TYPE_ASF },
+	{ "application/octet-stream", DEMUXER_TYPE_UNKNOWN },
 	// Playlists
 	{ "video/x-ms-wmx", DEMUXER_TYPE_PLAYLIST },
 	{ "audio/x-scpls", DEMUXER_TYPE_PLAYLIST },
@@ -96,8 +98,12 @@ static struct {
 	{ "application/x-ogg", DEMUXER_TYPE_OGG },
 	// NullSoft Streaming Video
 	{ "video/nsv", DEMUXER_TYPE_NSV},
-	{ "misc/ultravox", DEMUXER_TYPE_NSV}
-
+	{ "misc/ultravox", DEMUXER_TYPE_NSV},
+#ifdef USE_LIBAVFORMAT
+	// Flash Video
+	{ "video/x-flv", DEMUXER_TYPE_LAVF},
+	{ "video/flv", DEMUXER_TYPE_LAVF},
+#endif
 };
 
 /*
@@ -130,11 +136,11 @@ static struct {
 */
 
 streaming_ctrl_t *
-streaming_ctrl_new( ) {
+streaming_ctrl_new(void) {
 	streaming_ctrl_t *streaming_ctrl;
-	streaming_ctrl = (streaming_ctrl_t*)malloc(sizeof(streaming_ctrl_t));
+	streaming_ctrl = malloc(sizeof(streaming_ctrl_t));
 	if( streaming_ctrl==NULL ) {
-		mp_msg(MSGT_NETWORK,MSGL_FATAL,"Failed to allocate memory\n");
+		mp_msg(MSGT_NETWORK,MSGL_FATAL,MSGTR_MemAllocFailed);
 		return NULL;
 	}
 	memset( streaming_ctrl, 0, sizeof(streaming_ctrl_t) );
@@ -150,8 +156,7 @@ streaming_ctrl_free( streaming_ctrl_t *streaming_ctrl ) {
 	free( streaming_ctrl );
 }
 
-int
-read_rtp_from_server(int fd, char *buffer, int length) {
+int read_rtp_from_server(int fd, char *buffer, int length) {
 	struct rtpheader rh;
 	char *data;
 	int len;
@@ -409,14 +414,16 @@ check4proxies( URL_t *url ) {
 			URL_t *proxy_url = url_new( proxy );
 
 			if( proxy_url==NULL ) {
-				mp_msg(MSGT_NETWORK,MSGL_WARN,"Invalid proxy setting...Trying without proxy.\n");
+				mp_msg(MSGT_NETWORK,MSGL_WARN,
+					MSGTR_MPDEMUX_NW_InvalidProxySettingTryingWithout);
 				return url_out;
 			}
 			
 #ifdef HAVE_AF_INET6
 			if (network_ipv4_only_proxy && (gethostbyname(url->hostname)==NULL)) {
 				mp_msg(MSGT_NETWORK,MSGL_WARN,
-					"Could not find resolve remote hostname for AF_INET. Trying without proxy.\n");
+					MSGTR_MPDEMUX_NW_CantResolvTryingWithoutProxy);
+				url_free(proxy_url);
 				return url_out;
 			}
 #endif
@@ -425,12 +432,15 @@ check4proxies( URL_t *url ) {
 			len = strlen( proxy_url->hostname ) + strlen( url->url ) + 20;	// 20 = http_proxy:// + port
 			new_url = malloc( len+1 );
 			if( new_url==NULL ) {
-				mp_msg(MSGT_NETWORK,MSGL_FATAL,"Memory allocation failed\n");
+				mp_msg(MSGT_NETWORK,MSGL_FATAL,MSGTR_MemAllocFailed);
+				url_free(proxy_url);
 				return url_out;
 			}
 			sprintf(new_url, "http_proxy://%s:%d/%s", proxy_url->hostname, proxy_url->port, url->url );
 			tmp_url = url_new( new_url );
 			if( tmp_url==NULL ) {
+				free( new_url );
+				url_free( proxy_url );
 				return url_out;
 			}
 			url_free( url_out );
@@ -629,7 +639,7 @@ http_send_request( URL_t *url, off_t pos ) {
 	HTTP_header_t *http_hdr;
 	URL_t *server_url;
 	char str[256];
-	int fd;
+	int fd = -1;
 	int ret;
 	int proxy = 0;		// Boolean
 
@@ -658,7 +668,7 @@ http_send_request( URL_t *url, off_t pos ) {
 
 	if(pos>0) { 
 	// Extend http_send_request with possibility to do partial content retrieval
-	    snprintf(str, 256, "Range: bytes=%d-", pos);
+	    snprintf(str, 256, "Range: bytes=%"PRId64"-", (int64_t)pos);
 	    http_set_field(http_hdr, str);
 	}
 	    
@@ -667,31 +677,38 @@ http_send_request( URL_t *url, off_t pos ) {
 	http_set_field( http_hdr, "Connection: close");
 	http_add_basic_authentication( http_hdr, url->username, url->password );
 	if( http_build_request( http_hdr )==NULL ) {
-		return -1;
+		goto err_out;
 	}
 
 	if( proxy ) {
 		if( url->port==0 ) url->port = 8080;			// Default port for the proxy server
 		fd = connect2Server( url->hostname, url->port,1 );
 		url_free( server_url );
+		server_url = NULL;
 	} else {
 		if( server_url->port==0 ) server_url->port = 80;	// Default port for the web server
 		fd = connect2Server( server_url->hostname, server_url->port,1 );
 	}
 	if( fd<0 ) {
-		return -1; 
+		goto err_out;
 	}
 	mp_msg(MSGT_NETWORK,MSGL_DBG2,"Request: [%s]\n", http_hdr->buffer );
 	
 	ret = send( fd, http_hdr->buffer, http_hdr->buffer_size, 0 );
 	if( ret!=(int)http_hdr->buffer_size ) {
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"Error while sending HTTP request: didn't sent all the request\n");
-		return -1;
+		mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_ErrSendingHTTPRequest);
+		goto err_out;
 	}
 	
 	http_free( http_hdr );
 
 	return fd;
+err_out:
+	if (fd > 0) closesocket(fd);
+	http_free(http_hdr);
+	if (proxy && server_url)
+		url_free(server_url);
+	return -1;
 }
 
 HTTP_header_t *
@@ -708,12 +725,12 @@ http_read_response( int fd ) {
 	do {
 		i = recv( fd, response, BUFFER_SIZE, 0 ); 
 		if( i<0 ) {
-			mp_msg(MSGT_NETWORK,MSGL_ERR,"Read failed\n");
+			mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_ReadFailed);
 			http_free( http_hdr );
 			return NULL;
 		}
 		if( i==0 ) {
-			mp_msg(MSGT_NETWORK,MSGL_ERR,"http_read_response read 0 -ie- EOF\n");
+			mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_Read0CouldBeEOF);
 			http_free( http_hdr );
 			return NULL;
 		}
@@ -728,9 +745,7 @@ http_authenticate(HTTP_header_t *http_hdr, URL_t *url, int *auth_retry) {
 	char *aut;
 
 	if( *auth_retry==1 ) {
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"Authentication failed\n");
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"Please use the option -user and -passwd to provide your username/password for a list of URLs,\n");
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"or form an URL like: http://username:password@hostname/file\n");
+		mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_AuthFailed);
 		return -1;
 	}
 	if( *auth_retry>0 ) {
@@ -749,30 +764,28 @@ http_authenticate(HTTP_header_t *http_hdr, URL_t *url, int *auth_retry) {
 		char *aut_space;
 		aut_space = strstr(aut, "realm=");
 		if( aut_space!=NULL ) aut_space += 6;
-		mp_msg(MSGT_NETWORK,MSGL_INFO,"Authentication required for %s\n", aut_space);
+		mp_msg(MSGT_NETWORK,MSGL_INFO,MSGTR_MPDEMUX_NW_AuthRequiredFor, aut_space);
 	} else {
-		mp_msg(MSGT_NETWORK,MSGL_INFO,"Authentication required\n");
+		mp_msg(MSGT_NETWORK,MSGL_INFO,MSGTR_MPDEMUX_NW_AuthRequired);
 	}
 	if( network_username ) {
 		url->username = strdup(network_username);
 		if( url->username==NULL ) {
-			mp_msg(MSGT_NETWORK,MSGL_FATAL,"Memory allocation failed\n");
+			mp_msg(MSGT_NETWORK,MSGL_FATAL,MSGTR_MemAllocFailed);
 			return -1;
 		}
 	} else {
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"Unable to read the username\n");
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"Please use the option -user and -passwd to provide your username/password for a list of URLs,\n");
-		mp_msg(MSGT_NETWORK,MSGL_ERR,"or form an URL like: http://username:password@hostname/file\n");
+		mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_AuthFailed);
 		return -1;
 	}
 	if( network_password ) {
 		url->password = strdup(network_password);
 		if( url->password==NULL ) {
-			mp_msg(MSGT_NETWORK,MSGL_FATAL,"Memory allocation failed\n");
+			mp_msg(MSGT_NETWORK,MSGL_FATAL,MSGTR_MemAllocFailed);
 			return -1;
 		}
 	} else {
-		mp_msg(MSGT_NETWORK,MSGL_INFO,"No password provided, trying blank password\n");
+		mp_msg(MSGT_NETWORK,MSGL_INFO,MSGTR_MPDEMUX_NW_NoPasswdProvidedTryingBlank);
 	}
 	(*auth_retry)++;
 	return 0;
@@ -805,7 +818,7 @@ http_seek( stream_t *stream, off_t pos ) {
 			}
 			break;
 		default:
-			mp_msg(MSGT_NETWORK,MSGL_ERR,"Server return %d: %s\n", http_hdr->status_code, http_hdr->reason_phrase );
+			mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_ErrServerReturned, http_hdr->status_code, http_hdr->reason_phrase );
 			close( fd );
 			fd = -1;
 	}
@@ -1024,7 +1037,9 @@ extension=NULL;
 					return seekable; // for streaming_start
 				// Redirect
 				case 301: // Permanently
-				case 302: // Temporarily
+				case 302: // Found
+        case 303: // See Other
+        case 307: // Temporary Redirect
 					// TODO: RFC 2616, recommand to detect infinite redirection loops
 					next_url = http_get_field( http_hdr, "Location" );
 					if( next_url!=NULL ) {
@@ -1055,9 +1070,9 @@ extension=NULL;
 int
 streaming_bufferize( streaming_ctrl_t *streaming_ctrl, char *buffer, int size) {
 //printf("streaming_bufferize\n");
-	streaming_ctrl->buffer = (char*)malloc(size);
+	streaming_ctrl->buffer = malloc(size);
 	if( streaming_ctrl->buffer==NULL ) {
-		mp_msg(MSGT_NETWORK,MSGL_FATAL,"Memory allocation failed\n");
+		mp_msg(MSGT_NETWORK,MSGL_FATAL,MSGTR_MemAllocFailed);
 		return -1;
 	}
 	memcpy( streaming_ctrl->buffer, buffer, size );
@@ -1106,6 +1121,19 @@ nop_streaming_seek( int fd, off_t pos, streaming_ctrl_t *stream_ctrl ) {
 	fd++;
 	pos++;
 	stream_ctrl=NULL;
+}
+
+
+void fixup_network_stream_cache(stream_t *stream) {
+  if(stream->streaming_ctrl->buffering) {
+    if(stream_cache_size<0) {
+      // cache option not set, will use our computed value.
+      // buffer in KBytes, *5 because the prefill is 20% of the buffer.
+      stream_cache_size = (stream->streaming_ctrl->prebuffer_size/1024)*5;
+      if( stream_cache_size<64 ) stream_cache_size = 64;	// 16KBytes min buffer
+    }
+    mp_msg(MSGT_NETWORK,MSGL_INFO,MSGTR_MPDEMUX_NW_CacheSizeSetTo, stream_cache_size);
+  }
 }
 
 int
@@ -1537,7 +1565,8 @@ try_livedotcom:
 		case DEMUXER_TYPE_PLAYLIST:
 		case DEMUXER_TYPE_UNKNOWN:
 		case DEMUXER_TYPE_NSV: 
-    case DEMUXER_TYPE_AAC:
+        case DEMUXER_TYPE_AAC:
+        case DEMUXER_TYPE_LAVF:
 			// Generic start, doesn't need to filter
 			// the network stream, it's a raw stream
 			ret = nop_streaming_start( stream );

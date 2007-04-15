@@ -93,6 +93,7 @@ typedef struct stream_st {
   unsigned int buf_pos,buf_len;
   off_t pos,start_pos,end_pos;
   int eof;
+  int mode; //STREAM_READ or STREAM_WRITE
   unsigned int cache_pid;
   void* cache_data;
   void* priv; // used for DVD, TV, RTSP etc
@@ -113,6 +114,7 @@ int cache_stream_seek_long(stream_t *s,off_t pos);
 #define cache_stream_seek_long(x,y) stream_seek_long(x,y)
 #define stream_enable_cache(x,y,z,w) 1
 #endif
+void fixup_network_stream_cache(stream_t *stream);
 
 inline static int stream_read_char(stream_t *s){
   return (s->buf_pos<s->buf_len)?s->buffer[s->buf_pos++]:
@@ -208,6 +210,31 @@ inline static int stream_read(stream_t *s,char* mem,int total){
   return total;
 }
 
+inline static unsigned char* stream_read_line(stream_t *s,unsigned char* mem, int max) {
+  int len;
+  unsigned char* end,*ptr = mem;;
+  do {
+    len = s->buf_len-s->buf_pos;
+    // try to fill the buffer
+    if(len <= 0 &&
+       (!cache_stream_fill_buffer(s) || 
+        (len = s->buf_len-s->buf_pos) <= 0)) break;
+    end = (unsigned char*) memchr((void*)(s->buffer+s->buf_pos),'\n',len);
+    if(end) len = end - (s->buffer+s->buf_pos) + 1;
+    if(len > 0 && max > 1) {
+      int l = len > max-1 ? max-1 : len;
+      memcpy(ptr,s->buffer+s->buf_pos,l);
+      max -= l;
+      ptr += l;
+    }
+    s->buf_pos += len;
+  } while(!end);
+  if(s->eof && ptr == mem) return NULL;
+  if(max > 0) ptr[0] = 0;
+  return mem;
+}
+
+
 inline static int stream_eof(stream_t *s){
   return s->eof;
 }
@@ -257,14 +284,10 @@ stream_t* new_memory_stream(unsigned char* data,int len);
 stream_t* open_stream(char* filename,char** options,int* file_format);
 stream_t* open_stream_full(char* filename,int mode, char** options, int* file_format);
 
-//#ifdef USE_DVDREAD
 extern int dvd_title;
 extern int dvd_chapter;
 extern int dvd_last_chapter;
 extern int dvd_angle;
-//#endif
-
-extern int dvbin_param_on;
 
 extern char * audio_stream;
 

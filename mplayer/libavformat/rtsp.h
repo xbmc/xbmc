@@ -2,19 +2,21 @@
  * RTSP definitions
  * Copyright (c) 2002 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef RTSP_H
 #define RTSP_H
@@ -55,7 +57,7 @@ typedef struct RTSPHeader {
     enum RTSPStatusCode status_code; /* response code from server */
     int nb_transports;
     /* in AV_TIME_BASE unit, AV_NOPTS_VALUE if not used */
-    int64_t range_start, range_end; 
+    int64_t range_start, range_end;
     RTSPTransportField transports[RTSP_MAX_TRANSPORTS];
     int seq; /* sequence number */
     char session_id[512];
@@ -74,7 +76,7 @@ typedef struct RTSPActionServerSetup {
     char transport_option[512];
 } RTSPActionServerSetup;
 
-typedef int FFRTSPCallback(enum RTSPCallbackAction action, 
+typedef int FFRTSPCallback(enum RTSPCallbackAction action,
                            const char *session_id,
                            char *buf, int buf_size,
                            void *arg);
@@ -88,7 +90,7 @@ extern int rtsp_default_protocols;
 extern int rtsp_rtp_port_min;
 extern int rtsp_rtp_port_max;
 extern FFRTSPCallback *ff_rtsp_callback;
-extern AVInputFormat rtsp_demux;
+extern AVInputFormat rtsp_demuxer;
 
 int rtsp_pause(AVFormatContext *s);
 int rtsp_resume(AVFormatContext *s);

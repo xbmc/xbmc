@@ -149,7 +149,7 @@ void uninit_video(sh_video_t *sh_video){
     sh_video->inited=0;
 }
 
-void vfm_help(){
+void vfm_help(void){
     int i;
     mp_msg(MSGT_DECVIDEO,MSGL_INFO,MSGTR_AvailableVideoFm);
     mp_msg(MSGT_DECVIDEO,MSGL_INFO,"   vfm:    info:  (comment)\n");
@@ -315,7 +315,7 @@ mpi=mpvdec->decode(sh_video, start, in_size, drop_frame);
 
 //------------------------ frame decoded. --------------------
 
-#ifdef ARCH_X86
+#ifdef HAVE_MMX
 	// some codecs are broken, and doesn't restore MMX state :(
 	// it happens usually with broken/damaged files.
 if(gCpuCaps.has3DNow){

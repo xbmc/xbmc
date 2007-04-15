@@ -3,19 +3,21 @@
  *
  * Copyright (c) 2001 Michael Niedermayer <michaelni@gmx.at>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * based upon some outcommented c code from mpeg2dec (idct_mmx.c
  * written by Aaron Holtzman <aholtzma@ess.engr.uvic.ca>)
@@ -29,7 +31,7 @@
 
 extern void (*put_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
                                         int line_size);
-extern void (*add_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels, 
+extern void (*add_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
                                         int line_size);
 
 // cos(i * M_PI / 16) * sqrt(2) * (1 << 14)
@@ -55,7 +57,7 @@ static inline int idct_row(DCTELEM *row)
 
     if (l == 0 && r == 0)
         return 0;
-    
+
     a0 = W4 * sextw(l) + (1 << (ROW_SHIFT - 1));
 
     if (((l & ~0xffffUL) | r) == 0) {
@@ -63,7 +65,7 @@ static inline int idct_row(DCTELEM *row)
         t2 = (uint16_t) a0;
         t2 |= t2 << 16;
         t2 |= t2 << 32;
-        
+
         stq(t2, row);
         stq(t2, row + 4);
         return 1;
@@ -123,7 +125,7 @@ static inline int idct_row(DCTELEM *row)
         b3 -= W5 * t;
     }
 
-    
+
     t = extwl(r, 2);            /* row[5] */
     if (t) {
         t = sextw(t);
@@ -285,7 +287,7 @@ void simple_idct_axp(DCTELEM *block)
             stq(v, block + 1 * 4);
             stq(w, block + 2 * 4);
             stq(w, block + 3 * 4);
-	    block += 4 * 4;
+            block += 4 * 4;
         }
     } else {
         for (i = 0; i < 8; i++)

@@ -2,19 +2,21 @@
  * Sony Playstation (PSX) STR File Demuxer
  * Copyright (c) 2003 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -80,7 +82,7 @@ typedef struct StrDemuxContext {
     AVPacket tmp_pkt;
 } StrDemuxContext;
 
-const static char sync_header[12] = {0x00,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x00};
+static const char sync_header[12] = {0x00,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x00};
 
 static int str_probe(AVProbeData *p)
 {
@@ -182,7 +184,7 @@ static int str_read_header(AVFormatContext *s,
                 str->channels[channel].video_stream_index = st->index;
 
                 st->codec->codec_type = CODEC_TYPE_VIDEO;
-                st->codec->codec_id = CODEC_ID_MDEC; 
+                st->codec->codec_id = CODEC_ID_MDEC;
                 st->codec->codec_tag = 0;  /* no fourcc */
                 st->codec->width = str->channels[channel].width;
                 st->codec->height = str->channels[channel].height;
@@ -195,11 +197,11 @@ static int str_read_header(AVFormatContext *s,
                 int fmt;
                 str->audio_channel = channel;
                 str->channels[channel].type = STR_AUDIO;
-                str->channels[channel].channels = 
+                str->channels[channel].channels =
                     (sector[0x13] & 0x01) ? 2 : 1;
-                str->channels[channel].sample_rate = 
+                str->channels[channel].sample_rate =
                     (sector[0x13] & 0x04) ? 18900 : 37800;
-                str->channels[channel].bits = 
+                str->channels[channel].bits =
                     (sector[0x13] & 0x10) ? 8 : 4;
 
                 /* allocate a new AVStream */
@@ -212,7 +214,7 @@ static int str_read_header(AVFormatContext *s,
 
                 fmt = sector[0x13];
                 st->codec->codec_type = CODEC_TYPE_AUDIO;
-                st->codec->codec_id = CODEC_ID_ADPCM_XA; 
+                st->codec->codec_id = CODEC_ID_ADPCM_XA;
                 st->codec->codec_tag = 0;  /* no fourcc */
                 st->codec->channels = (fmt&1)?2:1;
                 st->codec->sample_rate = (fmt&4)?18900:37800;
@@ -232,7 +234,7 @@ if (str->video_channel != -1)
     str->channels[str->video_channel].width,
     str->channels[str->video_channel].height,str->channels[str->video_channel].video_stream_index);
 if (str->audio_channel != -1)
-   av_log (s, AV_LOG_DEBUG, " audio channel = %d, %d Hz, %d channels, %d bits/sample %d\n", 
+   av_log (s, AV_LOG_DEBUG, " audio channel = %d, %d Hz, %d channels, %d bits/sample %d\n",
     str->audio_channel,
     str->channels[str->audio_channel].sample_rate,
     str->channels[str->audio_channel].channels,
@@ -283,7 +285,7 @@ static int str_read_packet(AVFormatContext *s,
                         return AVERROR_IO;
 
                     pkt->pos= url_ftell(pb) - RAW_CD_SECTOR_SIZE;
-                    pkt->stream_index = 
+                    pkt->stream_index =
                         str->channels[channel].video_stream_index;
                //     pkt->pts = str->pts;
 
@@ -320,7 +322,7 @@ printf (" dropping audio sector\n");
                     return AVERROR_IO;
                 memcpy(pkt->data,sector+24,2304);
 
-                pkt->stream_index = 
+                pkt->stream_index =
                     str->channels[channel].audio_stream_index;
                 //pkt->pts = str->pts;
                 return 0;
@@ -351,7 +353,7 @@ static int str_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat str_iformat = {
+AVInputFormat str_demuxer = {
     "psxstr",
     "Sony Playstation STR format",
     sizeof(StrDemuxContext),
@@ -360,9 +362,3 @@ static AVInputFormat str_iformat = {
     str_read_packet,
     str_read_close,
 };
-
-int str_init(void)
-{
-    av_register_input_format(&str_iformat);
-    return 0;
-}

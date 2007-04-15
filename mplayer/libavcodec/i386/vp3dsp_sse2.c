@@ -1,19 +1,21 @@
 /*
  * Copyright (C) 2004 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -24,7 +26,7 @@
 #include "../dsputil.h"
 #include "mmx.h"
 
-static const unsigned short __align16 SSE2_dequant_const[] =
+static DECLARE_ALIGNED_16(const unsigned short, SSE2_dequant_const[]) =
 {
     0,65535,65535,0,0,0,0,0,    // 0x0000 0000 0000 0000 0000 FFFF FFFF 0000
     0,0,0,0,65535,65535,0,0,    // 0x0000 0000 FFFF FFFF 0000 0000 0000 0000
@@ -35,22 +37,22 @@ static const unsigned short __align16 SSE2_dequant_const[] =
     0,0,65535,65535, 0,0,0,0    // 0x0000 0000 0000 0000 FFFF FFFF 0000 0000
 };
 
-static const unsigned int __align16 eight_data[] =
-{ 
-    0x00080008, 
-    0x00080008,
-    0x00080008, 
-    0x00080008 
-}; 
-
-static const unsigned short __align16 SSE2_idct_data[7 * 8] =
+static DECLARE_ALIGNED_16(const unsigned int, eight_data[]) =
 {
-    64277,64277,64277,64277,64277,64277,64277,64277, 
-    60547,60547,60547,60547,60547,60547,60547,60547, 
-    54491,54491,54491,54491,54491,54491,54491,54491, 
-    46341,46341,46341,46341,46341,46341,46341,46341, 
-    36410,36410,36410,36410,36410,36410,36410,36410, 
-    25080,25080,25080,25080,25080,25080,25080,25080, 
+    0x00080008,
+    0x00080008,
+    0x00080008,
+    0x00080008
+};
+
+static DECLARE_ALIGNED_16(const unsigned short, SSE2_idct_data[7 * 8]) =
+{
+    64277,64277,64277,64277,64277,64277,64277,64277,
+    60547,60547,60547,60547,60547,60547,60547,60547,
+    54491,54491,54491,54491,54491,54491,54491,54491,
+    46341,46341,46341,46341,46341,46341,46341,46341,
+    36410,36410,36410,36410,36410,36410,36410,36410,
+    25080,25080,25080,25080,25080,25080,25080,25080,
     12785,12785,12785,12785,12785,12785,12785,12785
 };
 
@@ -820,6 +822,6 @@ void ff_vp3_idct_sse2(int16_t *input_data)
     SSE2_Row_IDCT();
 
     SSE2_Transpose();
-        
+
     SSE2_Column_IDCT();
 }

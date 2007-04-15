@@ -1,5 +1,10 @@
 /*
  *      mmreg.h   -       Declarations for ???
+ *
+ * Modified for use with MPlayer, detailed changelog at
+ * http://svn.mplayerhq.hu/mplayer/trunk/
+ * $Id$
+ *
  */
 
 #ifndef __WINE_MMREG_H

@@ -2,19 +2,21 @@
 @ ARMv4L optimized DSP utils
 @ Copyright (c) 2004 AGAWA Koji <i (AT) atty (DOT) jp>
 @
-@ This library is free software; you can redistribute it and/or
+@ This file is part of FFmpeg.
+@
+@ FFmpeg is free software; you can redistribute it and/or
 @ modify it under the terms of the GNU Lesser General Public
 @ License as published by the Free Software Foundation; either
-@ version 2 of the License, or (at your option) any later version.
+@ version 2.1 of the License, or (at your option) any later version.
 @
-@ This library is distributed in the hope that it will be useful,
+@ FFmpeg is distributed in the hope that it will be useful,
 @ but WITHOUT ANY WARRANTY; without even the implied warranty of
 @ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 @ Lesser General Public License for more details.
 @
 @ You should have received a copy of the GNU Lesser General Public
-@ License along with this library; if not, write to the Free Software
-@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+@ License along with FFmpeg; if not, write to the Free Software
+@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 @
 
 .macro  ADJ_ALIGN_QUADWORD_D shift, Rd0, Rd1, Rd2, Rd3, Rn0, Rn1, Rn2, Rn3, Rn4
@@ -637,15 +639,15 @@ put_pixels8_xy2_arm:
         .align 8
 2:
         RND_XY2_EXPAND 1, 1
-        
+
         .align 8
 3:
         RND_XY2_EXPAND 2, 1
-        
+
         .align 8
 4:
         RND_XY2_EXPAND 3, 1
-        
+
 5:
         .word 0x03030303
         .word 2b
@@ -674,15 +676,15 @@ put_no_rnd_pixels8_xy2_arm:
         .align 8
 2:
         RND_XY2_EXPAND 1, 0
-        
+
         .align 8
 3:
         RND_XY2_EXPAND 2, 0
-        
+
         .align 8
 4:
         RND_XY2_EXPAND 3, 0
-        
+
 5:
         .word 0x03030303
         .word 2b

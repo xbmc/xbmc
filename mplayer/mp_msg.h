@@ -20,6 +20,7 @@ extern int identify;
 #define MSGL_DBG2 7   // v=2
 #define MSGL_DBG3 8   // v=3
 #define MSGL_DBG4 9   // v=4
+#define MSGL_DBG5 10  // v=5
 
 #define MSGL_FIXME 1  // for conversions from printf where the appropriate MSGL is not known; set equal to ERR for obtrusiveness
 #define MSGT_FIXME 0  // for conversions from printf where the appropriate MSGT is not known; set equal to GLOBAL for obtrusiveness
@@ -92,9 +93,17 @@ extern int identify;
 
 #define MSGT_MUXER 39 // muxer layer
 
+#define MSGT_OSD_MENU 40
+
+#define MSGT_IDENTIFY 41  // -identify output
+
+#define MSGT_RADIO 42
+
+#define MSGT_ASS 43 // libass messages
+
 #define MSGT_MAX 64
 
-void mp_msg_init();
+void mp_msg_init(void);
 void mp_msg_set_level(int verbose);
 int mp_msg_test(int mod, int lev);
 
@@ -106,35 +115,22 @@ int mp_msg_test(int mod, int lev);
 #define mp_dbg(mod,lev, args... ) 
 #else
 
-#ifdef USE_I18N
-#include <libintl.h>
-#include <locale.h>
-#define mp_gettext(String) gettext(String)
-#else
-#define mp_gettext(String) String
-#endif
-
 #ifdef __GNUC__
-void mp_msg_c( int x, const char *format, ... ) __attribute__ ((format (printf, 2, 3)));
-#define mp_msg(mod,lev, args... ) mp_msg_c(((mod)<<8)|(lev), ## args )
-
-#ifdef MP_DEBUG
-#define mp_dbg(mod,lev, args... ) mp_msg_c(((mod)<<8)|(lev), ## args )
+void mp_msg(int mod, int lev, const char *format, ... ) __attribute__ ((format (printf, 3, 4)));
+#   ifdef MP_DEBUG
+#      define mp_dbg(mod,lev, args... ) mp_msg(mod, lev, ## args )
+#   else
+#      define mp_dbg(mod,lev, args... ) /* only usefull for developers */
+#   endif
 #else
+void mp_msg(int mod, int lev, const char *format, ... );
+#   ifdef MP_DEBUG
+#      define mp_dbg(mod,lev, ... ) mp_msg(mod, lev, __VA_ARGS__)
+#   else
+#      define mp_dbg(mod,lev, ... ) /* only usefull for developers */
+#   endif
+#endif
 // these messages are only usefull for developers, disable them
-#define mp_dbg(mod,lev, args... ) 
-#endif
-#else // not GNU C
-void mp_msg_c( int x, const char *format, ... );
-#define mp_msg(mod,lev, ... ) mp_msg_c(((mod)<<8)|(lev), __VA_ARGS__)
-
-#ifdef MP_DEBUG
-#define mp_dbg(mod,lev, ... ) mp_msg_c(((mod)<<8)|(lev), __VA_ARGS__)
-#else
-// these messages are only usefull for developers, disable them
-#define mp_dbg(mod,lev, ... ) 
-#endif
-#endif
 
 #endif
 #endif

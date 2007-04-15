@@ -11,8 +11,8 @@
 
 #include <setjmp.h>
 
-#include "bswap.h"
-#include "postproc/rgb2rgb.h"
+#include "libavutil/common.h"
+#include "libavutil/bswap.h"
 #include "libvo/fastmemcpy.h"
 
 #include "vd_internal.h"
@@ -22,7 +22,7 @@ static vd_info_t info = {
 	"ijpg",
 	"Pontscho",
 	"based on vd_mpng.c",
-	"uses Indipended JPEG Group's jpeglib"
+	"uses Independent JPEG Group's jpeglib"
 };
 
 LIBVD_EXTERN(ijpg)
@@ -190,9 +190,15 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
        // rgb24 -> bgr32
        case IMGFMT_BGR32:
            for(x=0;x<width;x++){
+#ifdef WORDS_BIGENDIAN
+	       drow[4*x+1]=row[3*x+0];
+	       drow[4*x+2]=row[3*x+1];
+	       drow[4*x+3]=row[3*x+2];
+#else
 	       drow[4*x+0]=row[3*x+2];
 	       drow[4*x+1]=row[3*x+1];
 	       drow[4*x+2]=row[3*x+0];
+#endif
 	   }
 	   break;
        }

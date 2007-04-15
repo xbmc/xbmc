@@ -2,19 +2,21 @@
  * Westwood Studios Multimedia Formats Demuxer (VQA, AUD)
  * Copyright (c) 2003 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -42,6 +44,7 @@
 #define VQHD_TAG MKBETAG('V', 'Q', 'H', 'D')
 #define FINF_TAG MKBETAG('F', 'I', 'N', 'F')
 #define SND0_TAG MKBETAG('S', 'N', 'D', '0')
+#define SND1_TAG MKBETAG('S', 'N', 'D', '1')
 #define SND2_TAG MKBETAG('S', 'N', 'D', '2')
 #define VQFR_TAG MKBETAG('V', 'Q', 'F', 'R')
 
@@ -52,6 +55,7 @@
 #define PINF_TAG MKBETAG('P', 'I', 'N', 'F')
 #define PINH_TAG MKBETAG('P', 'I', 'N', 'H')
 #define PIND_TAG MKBETAG('P', 'I', 'N', 'D')
+#define CMDS_TAG MKBETAG('C', 'M', 'D', 'S')
 
 #define VQA_HEADER_SIZE 0x2A
 #define VQA_FRAMERATE 15
@@ -101,7 +105,7 @@ static int wsaud_probe(AVProbeData *p)
     if ((field < 8000) || (field > 48000))
         return 0;
 
-    /* note: only check for WS IMA (type 99) right now since there is no 
+    /* note: only check for WS IMA (type 99) right now since there is no
      * support for type 1 */
     if (p->buf[11] != 99)
         return 0;
@@ -220,7 +224,7 @@ static int wsvqa_read_header(AVFormatContext *s,
     st = av_new_stream(s, 0);
     if (!st)
         return AVERROR_NOMEM;
-    av_set_pts_info(st, 33, 1, 90000);
+    av_set_pts_info(st, 33, 1, VQA_FRAMERATE);
     wsvqa->video_stream_index = st->index;
     st->codec->codec_type = CODEC_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_WS_VQA;
@@ -231,7 +235,7 @@ static int wsvqa_read_header(AVFormatContext *s,
 
     /* the VQA header needs to go to the decoder */
     st->codec->extradata_size = VQA_HEADER_SIZE;
-    st->codec->extradata = av_malloc(VQA_HEADER_SIZE);
+    st->codec->extradata = av_mallocz(VQA_HEADER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
     header = (unsigned char *)st->codec->extradata;
     if (get_buffer(pb, st->codec->extradata, VQA_HEADER_SIZE) !=
         VQA_HEADER_SIZE) {
@@ -241,17 +245,24 @@ static int wsvqa_read_header(AVFormatContext *s,
     st->codec->width = LE_16(&header[6]);
     st->codec->height = LE_16(&header[8]);
 
-    /* initialize the audio decoder stream is sample rate is non-zero */
-    if (LE_16(&header[24])) {
+    /* initialize the audio decoder stream for VQA v1 or nonzero samplerate */
+    if (LE_16(&header[24]) || (LE_16(&header[0]) == 1 && LE_16(&header[2]) == 1)) {
         st = av_new_stream(s, 0);
         if (!st)
             return AVERROR_NOMEM;
-        av_set_pts_info(st, 33, 1, 90000);
+        av_set_pts_info(st, 33, 1, VQA_FRAMERATE);
         st->codec->codec_type = CODEC_TYPE_AUDIO;
-        st->codec->codec_id = CODEC_ID_ADPCM_IMA_WS;
+        if (LE_16(&header[0]) == 1)
+            st->codec->codec_id = CODEC_ID_WESTWOOD_SND1;
+        else
+            st->codec->codec_id = CODEC_ID_ADPCM_IMA_WS;
         st->codec->codec_tag = 0;  /* no tag */
         st->codec->sample_rate = LE_16(&header[24]);
+        if (!st->codec->sample_rate)
+            st->codec->sample_rate = 22050;
         st->codec->channels = header[26];
+        if (!st->codec->channels)
+            st->codec->channels = 1;
         st->codec->bits_per_sample = 16;
         st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
             st->codec->bits_per_sample / 4;
@@ -282,6 +293,7 @@ static int wsvqa_read_header(AVFormatContext *s,
         case PINH_TAG:
         case PIND_TAG:
         case FINF_TAG:
+        case CMDS_TAG:
             break;
 
         default:
@@ -304,48 +316,55 @@ static int wsvqa_read_packet(AVFormatContext *s,
 {
     WsVqaDemuxContext *wsvqa = (WsVqaDemuxContext *)s->priv_data;
     ByteIOContext *pb = &s->pb;
-    int ret = 0;
+    int ret = -1;
     unsigned char preamble[VQA_PREAMBLE_SIZE];
     unsigned int chunk_type;
     unsigned int chunk_size;
     int skip_byte;
 
-    if (get_buffer(pb, preamble, VQA_PREAMBLE_SIZE) != VQA_PREAMBLE_SIZE)
-        return AVERROR_IO;
+    while (get_buffer(pb, preamble, VQA_PREAMBLE_SIZE) == VQA_PREAMBLE_SIZE) {
+        chunk_type = BE_32(&preamble[0]);
+        chunk_size = BE_32(&preamble[4]);
+        skip_byte = chunk_size & 0x01;
 
-    chunk_type = BE_32(&preamble[0]);
-    chunk_size = BE_32(&preamble[4]);
-    skip_byte = chunk_size & 0x01;
+        if ((chunk_type == SND1_TAG) || (chunk_type == SND2_TAG) || (chunk_type == VQFR_TAG)) {
 
-    if ((chunk_type == SND2_TAG) || (chunk_type == VQFR_TAG)) {
+            if (av_new_packet(pkt, chunk_size))
+                return AVERROR_IO;
+            ret = get_buffer(pb, pkt->data, chunk_size);
+            if (ret != chunk_size) {
+                av_free_packet(pkt);
+                return AVERROR_IO;
+            }
 
-        av_get_packet(pb, pkt, chunk_size);
-        if (ret != chunk_size) {
-            ret = AVERROR_IO;
-        }
+            if (chunk_type == SND2_TAG) {
+                pkt->stream_index = wsvqa->audio_stream_index;
+                /* 2 samples/byte, 1 or 2 samples per frame depending on stereo */
+                wsvqa->audio_frame_counter += (chunk_size * 2) / wsvqa->audio_channels;
+            } else if(chunk_type == SND1_TAG) {
+                pkt->stream_index = wsvqa->audio_stream_index;
+                /* unpacked size is stored in header */
+                wsvqa->audio_frame_counter += LE_16(pkt->data) / wsvqa->audio_channels;
+            } else {
+                pkt->stream_index = wsvqa->video_stream_index;
+                wsvqa->video_pts += VQA_VIDEO_PTS_INC;
+            }
+            /* stay on 16-bit alignment */
+            if (skip_byte)
+                url_fseek(pb, 1, SEEK_CUR);
 
-        if (chunk_type == SND2_TAG) {
-            pkt->stream_index = wsvqa->audio_stream_index;
-
-            pkt->pts = 90000;
-            pkt->pts *= wsvqa->audio_frame_counter;
-            pkt->pts /= wsvqa->audio_samplerate;
-
-            /* 2 samples/byte, 1 or 2 samples per frame depending on stereo */
-            wsvqa->audio_frame_counter += (chunk_size * 2) / 
-                wsvqa->audio_channels;
+            return ret;
         } else {
-            pkt->stream_index = wsvqa->video_stream_index;
-            pkt->pts = wsvqa->video_pts;
-            wsvqa->video_pts += VQA_VIDEO_PTS_INC;
+            switch(chunk_type){
+            case CMDS_TAG:
+            case SND0_TAG:
+                break;
+            default:
+                av_log(s, AV_LOG_INFO, "Skipping unknown chunk 0x%08X\n", chunk_type);
+            }
+            url_fseek(pb, chunk_size + skip_byte, SEEK_CUR);
         }
-
-    } else
-        return AVERROR_INVALIDDATA;
-
-    /* stay on 16-bit alignment */
-    if (skip_byte)
-        url_fseek(pb, 1, SEEK_CUR);
+    }
 
     return ret;
 }
@@ -357,7 +376,8 @@ static int wsvqa_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat wsaud_iformat = {
+#ifdef CONFIG_WSAUD_DEMUXER
+AVInputFormat wsaud_demuxer = {
     "wsaud",
     "Westwood Studios audio format",
     sizeof(WsAudDemuxContext),
@@ -366,8 +386,9 @@ static AVInputFormat wsaud_iformat = {
     wsaud_read_packet,
     wsaud_read_close,
 };
-
-static AVInputFormat wsvqa_iformat = {
+#endif
+#ifdef CONFIG_WSVQA_DEMUXER
+AVInputFormat wsvqa_demuxer = {
     "wsvqa",
     "Westwood Studios VQA format",
     sizeof(WsVqaDemuxContext),
@@ -376,10 +397,4 @@ static AVInputFormat wsvqa_iformat = {
     wsvqa_read_packet,
     wsvqa_read_close,
 };
-
-int westwood_init(void)
-{
-    av_register_input_format(&wsaud_iformat);
-    av_register_input_format(&wsvqa_iformat);
-    return 0;
-}
+#endif

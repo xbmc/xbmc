@@ -1,183 +1,201 @@
-/* 
-	this is optimized for sh, which have post increment addressing (*p++)
-	some cpu may be index (p[n]) faster than post increment (*p++)
-*/
+/*
+ * This is optimized for sh, which have post increment addressing (*p++).
+ * Some CPU may be index (p[n]) faster than post increment (*p++).
+ *
+ * copyright (c) 2001-2003 BERO <bero@geocities.co.jp>
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
-#define	LD(adr)	*(uint32_t*)(adr)
+#define         LD(adr) *(uint32_t*)(adr)
 
 #define PIXOP2(OPNAME, OP) \
 /*static inline void OPNAME ## _no_rnd_pixels8_l2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
-		OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
+                OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels8_l2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
-		OP(LP(dst+4),rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
+                OP(LP(dst+4),rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels4_l2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _no_rnd_pixels16_l2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
-		OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
-		OP(LP(dst+8),no_rnd_avg32(LD32(src1+8),LD32(src2+8)) ); \
-		OP(LP(dst+12),no_rnd_avg32(LD32(src1+12),LD32(src2+12)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
+                OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
+                OP(LP(dst+8),no_rnd_avg32(LD32(src1+8),LD32(src2+8)) ); \
+                OP(LP(dst+12),no_rnd_avg32(LD32(src1+12),LD32(src2+12)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels16_l2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
-		OP(LP(dst+4),rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
-		OP(LP(dst+8),rnd_avg32(LD32(src1+8),LD32(src2+8)) ); \
-		OP(LP(dst+12),rnd_avg32(LD32(src1+12),LD32(src2+12)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LD32(src1  ),LD32(src2  )) ); \
+                OP(LP(dst+4),rnd_avg32(LD32(src1+4),LD32(src2+4)) ); \
+                OP(LP(dst+8),rnd_avg32(LD32(src1+8),LD32(src2+8)) ); \
+                OP(LP(dst+12),rnd_avg32(LD32(src1+12),LD32(src2+12)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }*/\
 \
 static inline void OPNAME ## _pixels4_l2_aligned(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LP(src1  ),LP(src2  )) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LP(src1  ),LP(src2  )) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels4_l2_aligned2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LD32(src1  ),LP(src2  )) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LD32(src1  ),LP(src2  )) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _no_rnd_pixels16_l2_aligned2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
-		OP(LP(dst+8),no_rnd_avg32(LD32(src1+8),LP(src2+8)) ); \
-		OP(LP(dst+12),no_rnd_avg32(LD32(src1+12),LP(src2+12)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
+                OP(LP(dst+8),no_rnd_avg32(LD32(src1+8),LP(src2+8)) ); \
+                OP(LP(dst+12),no_rnd_avg32(LD32(src1+12),LP(src2+12)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels16_l2_aligned2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LD32(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
-		OP(LP(dst+8),rnd_avg32(LD32(src1+8),LP(src2+8)) ); \
-		OP(LP(dst+12),rnd_avg32(LD32(src1+12),LP(src2+12)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LD32(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
+                OP(LP(dst+8),rnd_avg32(LD32(src1+8),LP(src2+8)) ); \
+                OP(LP(dst+12),rnd_avg32(LD32(src1+12),LP(src2+12)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _no_rnd_pixels8_l2_aligned2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do { /* onlye src2 aligned */\
-		OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do { /* onlye src2 aligned */\
+                OP(LP(dst  ),no_rnd_avg32(LD32(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),no_rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels8_l2_aligned2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LD32(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LD32(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),rnd_avg32(LD32(src1+4),LP(src2+4)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _no_rnd_pixels8_l2_aligned(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),no_rnd_avg32(LP(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),no_rnd_avg32(LP(src1+4),LP(src2+4)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),no_rnd_avg32(LP(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),no_rnd_avg32(LP(src1+4),LP(src2+4)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels8_l2_aligned(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LP(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),rnd_avg32(LP(src1+4),LP(src2+4)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LP(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),rnd_avg32(LP(src1+4),LP(src2+4)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _no_rnd_pixels16_l2_aligned(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),no_rnd_avg32(LP(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),no_rnd_avg32(LP(src1+4),LP(src2+4)) ); \
-		OP(LP(dst+8),no_rnd_avg32(LP(src1+8),LP(src2+8)) ); \
-		OP(LP(dst+12),no_rnd_avg32(LP(src1+12),LP(src2+12)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),no_rnd_avg32(LP(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),no_rnd_avg32(LP(src1+4),LP(src2+4)) ); \
+                OP(LP(dst+8),no_rnd_avg32(LP(src1+8),LP(src2+8)) ); \
+                OP(LP(dst+12),no_rnd_avg32(LP(src1+12),LP(src2+12)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _pixels16_l2_aligned(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
 {\
-	do {\
-		OP(LP(dst  ),rnd_avg32(LP(src1  ),LP(src2  )) ); \
-		OP(LP(dst+4),rnd_avg32(LP(src1+4),LP(src2+4)) ); \
-		OP(LP(dst+8),rnd_avg32(LP(src1+8),LP(src2+8)) ); \
-		OP(LP(dst+12),rnd_avg32(LP(src1+12),LP(src2+12)) ); \
-		src1+=src_stride1; \
-		src2+=src_stride2; \
-		dst+=dst_stride; \
-	} while(--h); \
+        do {\
+                OP(LP(dst  ),rnd_avg32(LP(src1  ),LP(src2  )) ); \
+                OP(LP(dst+4),rnd_avg32(LP(src1+4),LP(src2+4)) ); \
+                OP(LP(dst+8),rnd_avg32(LP(src1+8),LP(src2+8)) ); \
+                OP(LP(dst+12),rnd_avg32(LP(src1+12),LP(src2+12)) ); \
+                src1+=src_stride1; \
+                src2+=src_stride2; \
+                dst+=dst_stride; \
+        } while(--h); \
 }\
 \
 static inline void OPNAME ## _no_rnd_pixels16_l2_aligned1(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int dst_stride, int src_stride1, int src_stride2, int h) \
@@ -193,163 +211,163 @@ static inline void OPNAME ## _pixels8_l2_aligned1(uint8_t *dst, const uint8_t *s
 { OPNAME ## _pixels8_l2_aligned2(dst,src2,src1,dst_stride,src_stride2,src_stride1,h); } \
 \
 static inline void OPNAME ## _pixels8_l4_aligned(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LP(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+4),rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LP(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+4),rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _no_rnd_pixels8_l4_aligned(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LP(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LP(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _pixels8_l4_aligned0(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; /* src1 only not aligned */\
-		UNPACK(a0,a1,LD32(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+4),rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; /* src1 only not aligned */\
+                UNPACK(a0,a1,LD32(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+4),rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _no_rnd_pixels8_l4_aligned0(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LD32(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LD32(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _pixels16_l4_aligned(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LP(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+8),LP(src2+8)); \
-		UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
-		OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+12),LP(src2+12)); \
-		UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
-		OP(LP(dst+12),rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LP(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+8),LP(src2+8)); \
+                UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
+                OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+12),LP(src2+12)); \
+                UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
+                OP(LP(dst+12),rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _no_rnd_pixels16_l4_aligned(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LP(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+8),LP(src2+8)); \
-		UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
-		OP(LP(dst+8),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LP(src1+12),LP(src2+12)); \
-		UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
-		OP(LP(dst+12),no_rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LP(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+8),LP(src2+8)); \
+                UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
+                OP(LP(dst+8),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LP(src1+12),LP(src2+12)); \
+                UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
+                OP(LP(dst+12),no_rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _pixels16_l4_aligned0(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { /* src1 is unaligned */\
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LD32(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+8),LP(src2+8)); \
-		UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
-		OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+12),LP(src2+12)); \
-		UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
-		OP(LP(dst+12),rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { /* src1 is unaligned */\
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LD32(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+8),LP(src2+8)); \
+                UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
+                OP(LP(dst+8),rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+12),LP(src2+12)); \
+                UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
+                OP(LP(dst+12),rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 static inline void OPNAME ## _no_rnd_pixels16_l4_aligned0(uint8_t *dst, const uint8_t *src1, uint8_t *src2, uint8_t *src3, uint8_t *src4,int dst_stride, int src_stride1, int src_stride2,int src_stride3,int src_stride4, int h){\
-	do { \
-		uint32_t a0,a1,a2,a3; \
-		UNPACK(a0,a1,LD32(src1),LP(src2)); \
-		UNPACK(a2,a3,LP(src3),LP(src4)); \
-		OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
-		UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
-		OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+8),LP(src2+8)); \
-		UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
-		OP(LP(dst+8),no_rnd_PACK(a0,a1,a2,a3)); \
-		UNPACK(a0,a1,LD32(src1+12),LP(src2+12)); \
-		UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
-		OP(LP(dst+12),no_rnd_PACK(a0,a1,a2,a3)); \
-		src1+=src_stride1;\
-		src2+=src_stride2;\
-		src3+=src_stride3;\
-		src4+=src_stride4;\
-		dst+=dst_stride;\
-	} while(--h); \
+        do { \
+                uint32_t a0,a1,a2,a3; \
+                UNPACK(a0,a1,LD32(src1),LP(src2)); \
+                UNPACK(a2,a3,LP(src3),LP(src4)); \
+                OP(LP(dst),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+4),LP(src2+4)); \
+                UNPACK(a2,a3,LP(src3+4),LP(src4+4)); \
+                OP(LP(dst+4),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+8),LP(src2+8)); \
+                UNPACK(a2,a3,LP(src3+8),LP(src4+8)); \
+                OP(LP(dst+8),no_rnd_PACK(a0,a1,a2,a3)); \
+                UNPACK(a0,a1,LD32(src1+12),LP(src2+12)); \
+                UNPACK(a2,a3,LP(src3+12),LP(src4+12)); \
+                OP(LP(dst+12),no_rnd_PACK(a0,a1,a2,a3)); \
+                src1+=src_stride1;\
+                src2+=src_stride2;\
+                src3+=src_stride3;\
+                src4+=src_stride4;\
+                dst+=dst_stride;\
+        } while(--h); \
 } \
 \
 
@@ -398,12 +416,12 @@ static void gmc1_c(uint8_t *dst, uint8_t *src, int stride, int h, int x16, int y
     }while(--h);
 }
 
-static void gmc_c(uint8_t *dst, uint8_t *src, int stride, int h, int ox, int oy, 
+static void gmc_c(uint8_t *dst, uint8_t *src, int stride, int h, int ox, int oy,
                   int dxx, int dxy, int dyx, int dyy, int shift, int r, int width, int height)
 {
     int y, vx, vy;
     const int s= 1<<shift;
-    
+
     width--;
     height--;
 
@@ -421,7 +439,7 @@ static void gmc_c(uint8_t *dst, uint8_t *src, int stride, int h, int ox, int oy,
             frac_y= src_y&(s-1);
             src_x>>=shift;
             src_y>>=shift;
-  
+
             if((unsigned)src_x < width){
                 if((unsigned)src_y < height){
                     index= src_x + src_y*stride;
@@ -431,23 +449,23 @@ static void gmc_c(uint8_t *dst, uint8_t *src, int stride, int h, int ox, int oy,
                                            + src[index+stride+1]*   frac_x )*   frac_y
                                         + r)>>(shift*2);
                 }else{
-                    index= src_x + clip(src_y, 0, height)*stride;                    
-                    dst[y*stride + x]= ( (  src[index         ]*(s-frac_x) 
+                    index= src_x + clip(src_y, 0, height)*stride;
+                    dst[y*stride + x]= ( (  src[index         ]*(s-frac_x)
                                           + src[index       +1]*   frac_x )*s
                                         + r)>>(shift*2);
                 }
             }else{
                 if((unsigned)src_y < height){
-                    index= clip(src_x, 0, width) + src_y*stride;                    
-                    dst[y*stride + x]= (  (  src[index         ]*(s-frac_y) 
+                    index= clip(src_x, 0, width) + src_y*stride;
+                    dst[y*stride + x]= (  (  src[index         ]*(s-frac_y)
                                            + src[index+stride  ]*   frac_y )*s
                                         + r)>>(shift*2);
                 }else{
-                    index= clip(src_x, 0, width) + clip(src_y, 0, height)*stride;                    
+                    index= clip(src_x, 0, width) + clip(src_y, 0, height)*stride;
                     dst[y*stride + x]=    src[index         ];
                 }
             }
-            
+
             vx+= dxx;
             vy+= dyx;
         }
@@ -546,76 +564,9 @@ H264_CHROMA_MC(avg_       , op_avg)
 #undef op_avg
 #undef op_put
 
-/* not yet optimized */
-static inline void copy_block4(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h)
-{
-    int i;
-    for(i=0; i<h; i++)
-    {
-        ST32(dst   , LD32(src   ));
-        dst+=dstStride;
-        src+=srcStride;
-    }
-}
-
-static inline void copy_block8(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h)
-{
-    int i;
-    for(i=0; i<h; i++)
-    {
-        ST32(dst   , LD32(src   ));
-        ST32(dst+4 , LD32(src+4 ));
-        dst+=dstStride;
-        src+=srcStride;
-    }
-}
-
-static inline void copy_block16(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h)
-{
-    int i;
-    for(i=0; i<h; i++)
-    {
-        ST32(dst   , LD32(src   ));
-        ST32(dst+4 , LD32(src+4 ));
-        ST32(dst+8 , LD32(src+8 ));
-        ST32(dst+12, LD32(src+12));
-        dst+=dstStride;
-        src+=srcStride;
-    }
-}
-
-static inline void copy_block17(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h)
-{
-    int i;
-    for(i=0; i<h; i++)
-    {
-        ST32(dst   , LD32(src   ));
-        ST32(dst+4 , LD32(src+4 ));
-        ST32(dst+8 , LD32(src+8 ));
-        ST32(dst+12, LD32(src+12));
-        dst[16]= src[16];
-        dst+=dstStride;
-        src+=srcStride;
-    }
-}
-
-static inline void copy_block9(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h)
-{
-    int i;
-    for(i=0; i<h; i++)
-    {
-        ST32(dst   , LD32(src   ));
-        ST32(dst+4 , LD32(src+4 ));
-        dst[8]= src[8];
-        dst+=dstStride;
-        src+=srcStride;
-    }
-}
-/* end not optimized */
-
 #define QPEL_MC(r, OPNAME, RND, OP) \
 static void OPNAME ## mpeg4_qpel8_h_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     do {\
         uint8_t *s = src; \
         int src0,src1,src2,src3,src4,src5,src6,src7,src8;\
@@ -642,7 +593,7 @@ static void OPNAME ## mpeg4_qpel8_h_lowpass(uint8_t *dst, uint8_t *src, int dstS
 }\
 \
 static void OPNAME ## mpeg4_qpel8_v_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     int w=8;\
     do{\
         uint8_t *s = src, *d=dst;\
@@ -670,7 +621,7 @@ static void OPNAME ## mpeg4_qpel8_v_lowpass(uint8_t *dst, uint8_t *src, int dstS
 }\
 \
 static void OPNAME ## mpeg4_qpel16_h_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     do {\
         uint8_t *s = src;\
         int src0,src1,src2,src3,src4,src5,src6,src7,src8;\
@@ -714,7 +665,7 @@ static void OPNAME ## mpeg4_qpel16_h_lowpass(uint8_t *dst, uint8_t *src, int dst
 }\
 \
 static void OPNAME ## mpeg4_qpel16_v_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     int w=16;\
     do {\
         uint8_t *s = src, *d=dst;\
@@ -1140,7 +1091,7 @@ QPEL_MC(0, avg_       , _       , op_avg)
 #if 1
 #define H264_LOWPASS(OPNAME, OP, OP2) \
 static inline void OPNAME ## h264_qpel_h_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride,int w,int h){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     do {\
         int srcB,srcA,src0,src1,src2,src3,src4,src5,src6;\
         uint8_t *s = src-2;\
@@ -1193,7 +1144,7 @@ static inline void OPNAME ## h264_qpel_h_lowpass(uint8_t *dst, uint8_t *src, int
 }\
 \
 static inline void OPNAME ## h264_qpel_v_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride,int w,int h){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     do{\
         int srcB,srcA,src0,src1,src2,src3,src4,src5,src6;\
         uint8_t *s = src-2*srcStride,*d=dst;\
@@ -1246,7 +1197,7 @@ static inline void OPNAME ## h264_qpel_v_lowpass(uint8_t *dst, uint8_t *src, int
 }\
 \
 static inline void OPNAME ## h264_qpel_hv_lowpass(uint8_t *dst, int16_t *tmp, uint8_t *src, int dstStride, int tmpStride, int srcStride,int w,int h){\
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;\
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     int i;\
     src -= 2*srcStride;\
     i= h+5; \
@@ -1541,7 +1492,7 @@ H264_MC(avg_, 16)
 #endif
 
 static void wmv2_mspel8_h_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h){
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
 
     do{
         int src_1,src0,src1,src2,src3,src4,src5,src6,src7,src8,src9;
@@ -1566,12 +1517,12 @@ static void wmv2_mspel8_h_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int
         src9 = *s++;
         dst[7]= cm[(9*(src7 + src8) - (src6 + src9) + 8)>>4];
         dst+=dstStride;
-        src+=srcStride;        
+        src+=srcStride;
     }while(--h);
 }
 
 static void wmv2_mspel8_v_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int w){
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
 
     do{
         int src_1,src0,src1,src2,src3,src4,src5,src6,src7,src8,src9;

@@ -18,6 +18,7 @@
 #define MKV_A_AAC_4SBR   "A_AAC/MPEG4/LC/SBR"
 #define MKV_A_AAC_4SSR   "A_AAC/MPEG4/SSR"
 #define MKV_A_AAC_4LTP   "A_AAC/MPEG4/LTP"
+#define MKV_A_AAC        "A_AAC"
 #define MKV_A_AC3        "A_AC3"
 #define MKV_A_DTS        "A_DTS"
 #define MKV_A_MP2        "A_MPEG/L2"
@@ -47,6 +48,9 @@
 #define MKV_V_QUICKTIME  "V_QUICKTIME"
 #define MKV_V_MPEG1      "V_MPEG1"
 #define MKV_V_MPEG2      "V_MPEG2"
+#define MKV_V_MPEG4_SP   "V_MPEG4/ISO/SP"
+#define MKV_V_MPEG4_ASP  "V_MPEG4/ISO/ASP"
+#define MKV_V_MPEG4_AP   "V_MPEG4/ISO/AP"
 #define MKV_V_MPEG4_AVC  "V_MPEG4/ISO/AVC"
 
 #define MKV_S_TEXTASCII  "S_TEXT/ASCII"
@@ -57,18 +61,10 @@
 #define MKV_S_SSA        "S_SSA" // Deprecated
 #define MKV_S_ASS        "S_ASS" // Deprecated
 
-typedef struct {
-  char type;                    // t = text, v = VobSub
-  int has_palette;              // If we have a valid palette
-  unsigned int palette[16];     // for VobSubs
-  int width, height;            // for VobSubs
-  int custom_colors;
-  unsigned int colors[4];
-  int forced_subs_only;
-} mkv_sh_sub_t;
 
-int demux_mkv_num_subs(demuxer_t *demuxer);
 int demux_mkv_change_subs(demuxer_t *demuxer, int new_num);
+void demux_mkv_get_audio_lang(demuxer_t *demuxer, int track_num, char *lang,
+                            int maxlen);
 void demux_mkv_get_sub_lang(demuxer_t *demuxer, int track_num, char *lang,
                             int maxlen);
 

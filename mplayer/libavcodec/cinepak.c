@@ -2,19 +2,21 @@
  * Cinepak Video Decoder
  * Copyright (C) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
 
@@ -24,6 +26,8 @@
  * by Ewald Snel <ewald@rambo.its.tudelft.nl>
  * For more information on the Cinepak algorithm, visit:
  *   http://www.csse.monash.edu.au/~timf/
+ * For more information on the quirky data inside Sega FILM/CPK files, visit:
+ *   http://wiki.multimedia.cx/index.php?title=Sega_FILM
  */
 
 #include <stdio.h>
@@ -65,6 +69,8 @@ typedef struct CinepakContext {
     int palette_video;
     cvid_strip_t strips[MAX_STRIPS];
 
+    int sega_film_skip_bytes;
+
 } CinepakContext;
 
 static void cinepak_decode_codebook (cvid_codebook_t *codebook,
@@ -101,7 +107,7 @@ static void cinepak_decode_codebook (cvid_codebook_t *codebook,
                 codebook[i].u  = 128 + *data++;
                 codebook[i].v  = 128 + *data++;
             } else {
-                /* this codebook type indicates either greyscale or 
+                /* this codebook type indicates either greyscale or
                  * palettized video; if palettized, U & V components will
                  * not be used so it is safe to set them to 128 for the
                  * benefit of greyscale rendering in YUV420P */
@@ -286,7 +292,7 @@ static int cinepak_decode_strip (CinepakContext *s,
         case 0x2100:
         case 0x2400:
         case 0x2500:
-            cinepak_decode_codebook (strip->v4_codebook, chunk_id, 
+            cinepak_decode_codebook (strip->v4_codebook, chunk_id,
                 chunk_size, data);
             break;
 
@@ -294,14 +300,14 @@ static int cinepak_decode_strip (CinepakContext *s,
         case 0x2300:
         case 0x2600:
         case 0x2700:
-            cinepak_decode_codebook (strip->v1_codebook, chunk_id, 
+            cinepak_decode_codebook (strip->v1_codebook, chunk_id,
                 chunk_size, data);
             break;
 
         case 0x3000:
         case 0x3100:
         case 0x3200:
-            return cinepak_decode_vectors (s, strip, chunk_id, 
+            return cinepak_decode_vectors (s, strip, chunk_id,
                 chunk_size, data);
         }
 
@@ -317,21 +323,36 @@ static int cinepak_decode (CinepakContext *s)
     int           i, result, strip_size, frame_flags, num_strips;
     int           y0 = 0;
     int           encoded_buf_size;
-    /* if true, Cinepak data is from a Sega FILM/CPK file */
-    int           sega_film_data = 0;
 
     if (s->size < 10)
         return -1;
 
     frame_flags = s->data[0];
     num_strips  = BE_16 (&s->data[8]);
-    encoded_buf_size = BE_16 (&s->data[2]);
-    if (encoded_buf_size != s->size)
-        sega_film_data = 1;
-    if (sega_film_data)
-        s->data    += 12;
-    else
-        s->data    += 10;
+    encoded_buf_size = ((s->data[1] << 16) | BE_16 (&s->data[2]));
+
+    /* if this is the first frame, check for deviant Sega FILM data */
+    if (s->sega_film_skip_bytes == -1) {
+        if (encoded_buf_size != s->size) {
+            /* If the encoded frame size differs from the frame size as indicated
+             * by the container file, this data likely comes from a Sega FILM/CPK file.
+             * If the frame header is followed by the bytes FE 00 00 06 00 00 then
+             * this is probably one of the two known files that have 6 extra bytes
+             * after the frame header. Else, assume 2 extra bytes. */
+            if ((s->data[10] == 0xFE) &&
+                (s->data[11] == 0x00) &&
+                (s->data[12] == 0x00) &&
+                (s->data[13] == 0x06) &&
+                (s->data[14] == 0x00) &&
+                (s->data[15] == 0x00))
+                s->sega_film_skip_bytes = 6;
+            else
+                s->sega_film_skip_bytes = 2;
+        } else
+            s->sega_film_skip_bytes = 0;
+    }
+
+    s->data += 10 + s->sega_film_skip_bytes;
 
     if (num_strips > MAX_STRIPS)
         num_strips = MAX_STRIPS;
@@ -375,6 +396,7 @@ static int cinepak_decode_init(AVCodecContext *avctx)
     s->avctx = avctx;
     s->width = (avctx->width + 3) & ~3;
     s->height = (avctx->height + 3) & ~3;
+    s->sega_film_skip_bytes = -1;  /* uninitialized state */
 
     // check for paletted data
     if ((avctx->palctrl == NULL) || (avctx->bits_per_sample == 40)) {

@@ -2,19 +2,21 @@
  * Alpha optimized DSP utils
  * Copyright (c) 2002 Falk Hueffner <falk@debian.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This file is part of FFmpeg.
  *
- * This program is distributed in the hope that it will be useful,
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "regdef.h"
@@ -29,7 +31,7 @@
 #define tf a4
 #define tg a3
 #define th v0
-        
+
         .set noat
         .set noreorder
         .arch pca56
@@ -91,7 +93,7 @@ $unaligned:
         ldq     t4, 8(a0)       # ref right
         addq    a0, a2, a0      # pix1
         addq    a1, a2, a1      # pix2
-        /* load line 1 */        
+        /* load line 1 */
         ldq_u   t5, 0(a1)       # left_u
         ldq_u   t6, 8(a1)       # mid
         ldq_u   t7, 16(a1)      # right_u

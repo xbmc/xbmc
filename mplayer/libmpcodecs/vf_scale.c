@@ -10,9 +10,10 @@
 #include "img_format.h"
 #include "mp_image.h"
 #include "vf.h"
+#include "fmt-conversion.h"
 
-#include "../libvo/fastmemcpy.h"
-#include "../postproc/swscale.h"
+#include "libvo/fastmemcpy.h"
+#include "libswscale/swscale.h"
 #include "vf_scale.h"
 
 #include "m_option.h"
@@ -27,6 +28,8 @@ static struct vf_priv_s {
     struct SwsContext *ctx2; //for interlaced slices only
     unsigned char* palette;
     int interlaced;
+    int noup;
+    int accurate_rnd;
     int query_format_cache[64];
 } vf_priv_dflt = {
   -1,-1,
@@ -56,6 +59,8 @@ static unsigned int outfmt_list[]={
     IMGFMT_YVU9,
     IMGFMT_IF09,
     IMGFMT_411P,
+    IMGFMT_NV12,
+    IMGFMT_NV21,
     IMGFMT_YUY2,
     IMGFMT_UYVY,
 // RGB and grayscale (Y8 and Y800):
@@ -110,12 +115,16 @@ static int config(struct vf_instance_s* vf,
     unsigned int best=find_best_out(vf);
     int vo_flags;
     int int_sws_flags=0;
+    int round_w=0, round_h=0;
     SwsFilter *srcFilter, *dstFilter;
+    enum PixelFormat dfmt, sfmt;
     
     if(!best){
 	mp_msg(MSGT_VFILTER,MSGL_WARN,"SwScale: no supported outfmt found :(\n");
 	return 0;
     }
+    sfmt = imgfmt2pixfmt(outfmt);
+    dfmt = imgfmt2pixfmt(best);
     
     vo_flags=vf->next->query_format(vf->next,best);
     
@@ -139,6 +148,22 @@ static int config(struct vf_instance_s* vf,
 	    vf->priv->w=d_width;
 	    vf->priv->h=d_height;
 	}
+    }
+
+    if(vf->priv->noup){
+        if((vf->priv->w > width) + (vf->priv->h > height) >= vf->priv->noup){
+            vf->priv->w= width;
+            vf->priv->h= height;
+        }
+    }
+
+    if (vf->priv->w <= -8) {
+      vf->priv->w += 8;
+      round_w = 1;
+    }
+    if (vf->priv->h <= -8) {
+      vf->priv->h += 8;
+      round_h = 1;
     }
 
     if (vf->priv->w < -3 || vf->priv->h < -3 ||
@@ -170,11 +195,18 @@ static int config(struct vf_instance_s* vf,
     if (vf->priv->h == -2)
       vf->priv->h = vf->priv->w * d_height / d_width;
 
+    if (round_w)
+      vf->priv->w = ((vf->priv->w + 8) / 16) * 16;
+    if (round_h)
+      vf->priv->h = ((vf->priv->h + 8) / 16) * 16;
+
     // calculate the missing parameters:
     switch(best) {
     case IMGFMT_YV12:		/* YV12 needs w & h rounded to 2 */
     case IMGFMT_I420:
     case IMGFMT_IYUV:
+    case IMGFMT_NV12:
+    case IMGFMT_NV21:
       vf->priv->h = (vf->priv->h + 1) & ~1;
     case IMGFMT_YUY2:		/* YUY2 needs w rounded to 2 */
     case IMGFMT_UYVY:
@@ -192,23 +224,19 @@ static int config(struct vf_instance_s* vf,
     // new swscaler:
     sws_getFlagsAndFilterFromCmdLine(&int_sws_flags, &srcFilter, &dstFilter);
     int_sws_flags|= vf->priv->v_chr_drop << SWS_SRC_V_CHR_DROP_SHIFT;
+    int_sws_flags|= vf->priv->accurate_rnd * SWS_ACCURATE_RND;
     vf->priv->ctx=sws_getContext(width, height >> vf->priv->interlaced,
-	    outfmt,
+	    sfmt,
 		  vf->priv->w, vf->priv->h >> vf->priv->interlaced,
-	    best,
+	    dfmt,
 	    int_sws_flags | get_sws_cpuflags(), srcFilter, dstFilter, vf->priv->param);
     if(vf->priv->interlaced){
         vf->priv->ctx2=sws_getContext(width, height >> 1,
-	    outfmt,
+	    sfmt,
 		  vf->priv->w, vf->priv->h >> 1,
-	    best,
+	    dfmt,
 	    int_sws_flags | get_sws_cpuflags(), srcFilter, dstFilter, vf->priv->param);
     }
-    
-    if (srcFilter) sws_freeFilter(srcFilter);
-    if (dstFilter) sws_freeFilter(dstFilter);
-    srcFilter=dstFilter=NULL;
-    
     if(!vf->priv->ctx){
 	// error...
 	mp_msg(MSGT_VFILTER,MSGL_WARN,"Couldn't init SwScaler for this setup\n");
@@ -448,6 +476,7 @@ static int open(vf_instance_t *vf, char* args){
     vf->priv->w=
     vf->priv->h=-1;
     vf->priv->v_chr_drop=0;
+    vf->priv->accurate_rnd=0;
     vf->priv->param[0]=
     vf->priv->param[1]=SWS_PARAM_DEFAULT;
     vf->priv->palette=NULL;
@@ -534,9 +563,13 @@ struct SwsContext *sws_getContextFromCmdLine(int srcW, int srcH, int srcFormat, 
 {
 	int flags;
 	SwsFilter *dstFilterParam, *srcFilterParam;
+	enum PixelFormat dfmt, sfmt;
+
+	dfmt = imgfmt2pixfmt(dstFormat);
+	sfmt = imgfmt2pixfmt(srcFormat);
 	sws_getFlagsAndFilterFromCmdLine(&flags, &srcFilterParam, &dstFilterParam);
 
-	return sws_getContext(srcW, srcH, srcFormat, dstW, dstH, dstFormat, flags | get_sws_cpuflags(), srcFilterParam, dstFilterParam, NULL);
+	return sws_getContext(srcW, srcH, sfmt, dstW, dstH, dfmt, flags | get_sws_cpuflags(), srcFilterParam, dstFilterParam, NULL);
 }
 
 /// An example of presets usage
@@ -580,8 +613,8 @@ static m_obj_presets_t size_preset = {
 #undef ST_OFF
 #define ST_OFF(f) M_ST_OFF(struct vf_priv_s,f)
 static m_option_t vf_opts_fields[] = {
-  {"w", ST_OFF(w), CONF_TYPE_INT, M_OPT_MIN,-3 ,0, NULL},
-  {"h", ST_OFF(h), CONF_TYPE_INT, M_OPT_MIN,-3 ,0, NULL},
+  {"w", ST_OFF(w), CONF_TYPE_INT, M_OPT_MIN,-11,0, NULL},
+  {"h", ST_OFF(h), CONF_TYPE_INT, M_OPT_MIN,-11,0, NULL},
   {"interlaced", ST_OFF(interlaced), CONF_TYPE_INT, M_OPT_RANGE, 0, 1, NULL},
   {"chr-drop", ST_OFF(v_chr_drop), CONF_TYPE_INT, M_OPT_RANGE, 0, 3, NULL},
   {"param" , ST_OFF(param[0]), CONF_TYPE_DOUBLE, M_OPT_RANGE, 0.0, 100.0, NULL},
@@ -589,6 +622,8 @@ static m_option_t vf_opts_fields[] = {
   // Note that here the 2 field is NULL (ie 0)
   // As we want this option to act on the option struct itself
   {"presize", 0, CONF_TYPE_OBJ_PRESETS, 0, 0, 0, &size_preset},
+  {"noup", ST_OFF(noup), CONF_TYPE_INT, M_OPT_RANGE, 0, 2, NULL},
+  {"arnd", ST_OFF(accurate_rnd), CONF_TYPE_FLAG, 0, 0, 1, NULL},
   { NULL, NULL, 0, 0, 0, 0,  NULL }
 };
 

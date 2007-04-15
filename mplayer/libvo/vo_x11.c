@@ -38,9 +38,7 @@ int XShmGetEventBase(Display *);
 #include "fastmemcpy.h"
 #include "sub.h"
 
-#include "postproc/swscale.h"
-#include "postproc/swscale_internal.h"       //FIXME
-#include "postproc/rgb2rgb.h"
+#include "libswscale/swscale.h"
 #include "libmpcodecs/vf_scale.h"
 
 #include "mp_msg.h"
@@ -143,7 +141,7 @@ static void draw_alpha_null(int x0, int y0, int w, int h,
 {
 }
 
-static SwsContext *swsContext = NULL;
+static struct SwsContext *swsContext = NULL;
 extern int sws_flags;
 
 static XVisualInfo vinfo;
@@ -254,6 +252,47 @@ static void freeMyXImage()
     myximage = NULL;
 }
 
+#ifdef WORDS_BIGENDIAN
+#define BO_NATIVE    MSBFirst
+#define BO_NONNATIVE LSBFirst
+#else
+#define BO_NATIVE    LSBFirst
+#define BO_NONNATIVE MSBFirst
+#endif
+struct fmt2Xfmtentry_s {
+  uint32_t mpfmt;
+  int byte_order;
+  unsigned red_mask;
+  unsigned green_mask;
+  unsigned blue_mask;
+} fmt2Xfmt[] = {
+  {IMGFMT_RGB8,  BO_NATIVE,    0x00000007, 0x00000038, 0x000000C0},
+  {IMGFMT_RGB8,  BO_NONNATIVE, 0x00000007, 0x00000038, 0x000000C0},
+  {IMGFMT_BGR8,  BO_NATIVE,    0x000000E0, 0x0000001C, 0x00000003},
+  {IMGFMT_BGR8,  BO_NONNATIVE, 0x000000E0, 0x0000001C, 0x00000003},
+  {IMGFMT_RGB15, BO_NATIVE,    0x0000001F, 0x000003E0, 0x00007C00},
+  {IMGFMT_BGR15, BO_NATIVE,    0x00007C00, 0x000003E0, 0x0000001F},
+  {IMGFMT_RGB16, BO_NATIVE,    0x0000001F, 0x000007E0, 0x0000F800},
+  {IMGFMT_BGR16, BO_NATIVE,    0x0000F800, 0x000007E0, 0x0000001F},
+  {IMGFMT_RGB24, MSBFirst,     0x00FF0000, 0x0000FF00, 0x000000FF},
+  {IMGFMT_RGB24, LSBFirst,     0x000000FF, 0x0000FF00, 0x00FF0000},
+  {IMGFMT_BGR24, MSBFirst,     0x000000FF, 0x0000FF00, 0x00FF0000},
+  {IMGFMT_BGR24, LSBFirst,     0x00FF0000, 0x0000FF00, 0x000000FF},
+  {IMGFMT_RGB32, BO_NATIVE,    0x000000FF, 0x0000FF00, 0x00FF0000},
+  {IMGFMT_RGB32, BO_NONNATIVE, 0xFF000000, 0x00FF0000, 0x0000FF00},
+  {IMGFMT_BGR32, BO_NATIVE,    0x00FF0000, 0x0000FF00, 0x000000FF},
+  {IMGFMT_BGR32, BO_NONNATIVE, 0x0000FF00, 0x00FF0000, 0xFF000000},
+  {IMGFMT_ARGB,  MSBFirst,     0x00FF0000, 0x0000FF00, 0x000000FF},
+  {IMGFMT_ARGB,  LSBFirst,     0x0000FF00, 0x00FF0000, 0xFF000000},
+  {IMGFMT_ABGR,  MSBFirst,     0x000000FF, 0x0000FF00, 0x00FF0000},
+  {IMGFMT_ABGR,  LSBFirst,     0xFF000000, 0x00FF0000, 0x0000FF00},
+  {IMGFMT_RGBA,  MSBFirst,     0xFF000000, 0x00FF0000, 0x0000FF00},
+  {IMGFMT_RGBA,  LSBFirst,     0x000000FF, 0x0000FF00, 0x00FF0000},
+  {IMGFMT_BGRA,  MSBFirst,     0x0000FF00, 0x00FF0000, 0xFF000000},
+  {IMGFMT_BGRA,  LSBFirst,     0x00FF0000, 0x0000FF00, 0x000000FF},
+  {0, 0, 0, 0, 0}
+};
+
 static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
                        uint32_t d_height, uint32_t flags, char *title,
                        uint32_t format)
@@ -269,6 +308,7 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
     Colormap theCmap;
     XSetWindowAttributes xswa;
     unsigned long xswamask;
+    struct fmt2Xfmtentry_s *fmte = fmt2Xfmt;
 
 #ifdef HAVE_XF86VM
     unsigned int modeline_width, modeline_height;
@@ -466,34 +506,49 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
         vo_dheight = vo_screenheight;
     }
 
+    while (fmte->mpfmt) {
+      if (IMGFMT_RGB_DEPTH(fmte->mpfmt) == myximage->bits_per_pixel &&
+          fmte->byte_order == myximage->byte_order &&
+          fmte->red_mask   == myximage->red_mask   &&
+          fmte->green_mask == myximage->green_mask &&
+          fmte->blue_mask  == myximage->blue_mask)
+        break;
+      fmte++;
+    }
+    if (!fmte->mpfmt) {
+      mp_msg(MSGT_VO, MSGL_ERR,
+             "X server image format not supported, please contact the developers\n");
+      return -1;
+    }
+    out_format = fmte->mpfmt;
     switch ((bpp = myximage->bits_per_pixel))
     {
         case 24:
             draw_alpha_fnc = draw_alpha_24;
-            out_format = IMGFMT_BGR24;
             break;
         case 32:
             draw_alpha_fnc = draw_alpha_32;
-            out_format = IMGFMT_BGR32;
             break;
         case 15:
         case 16:
             if (depth == 15)
-            {
                 draw_alpha_fnc = draw_alpha_15;
-                out_format = IMGFMT_BGR15;
-            } else
-            {
+            else
                 draw_alpha_fnc = draw_alpha_16;
-                out_format = IMGFMT_BGR16;
-            }
-            break;
-        case 8:
-            draw_alpha_fnc = draw_alpha_null;
-            out_format = IMGFMT_BGR8;
             break;
         default:
             draw_alpha_fnc = draw_alpha_null;
+    }
+    out_offset = 0;
+    // for these formats conversion is currently not support and
+    // we can easily "emulate" them.
+    if (out_format & 64 && (IMGFMT_IS_RGB(out_format) || IMGFMT_IS_BGR(out_format))) {
+      out_format &= ~64;
+#ifdef WORDS_BIGENDIAN
+      out_offset = 1;
+#else
+      out_offset = -1;
+#endif
     }
 
     /* always allocate swsContext as size could change between frames */
@@ -584,7 +639,7 @@ static uint32_t draw_slice(uint8_t * src[], int stride[], int w, int h,
         int newW = vo_dwidth;
         int newH = vo_dheight;
         int newAspect = (newW * (1 << 16) + (newH >> 1)) / newH;
-        SwsContext *oldContext = swsContext;
+        struct SwsContext *oldContext = swsContext;
 
         if (newAspect > aspect)
             newW = (newH * aspect + (1 << 15)) >> 16;

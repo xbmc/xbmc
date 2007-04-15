@@ -35,7 +35,7 @@ cc_check() {
   TMP="$?"
   echo >> "$TMPLOG"
   echo "ldd $TMPO" >> "$TMPLOG"
-  ( $_ldd "$TMPO" ) >> "$TMPLOG" 2>&1
+  $_ldd "$TMPO" >> "$TMPLOG" 2>&1
   echo >> "$TMPLOG"
   return "$TMP"
 }
@@ -204,6 +204,7 @@ Codecs:
   --enable-opendivx      enable _old_ OpenDivx codec [disable]
   --disable-libavcodec   disable libavcodec [autodetect]
   --disable-libavformat  disable libavformat [autodetect]
+  --disable-libpostproc  disable libpostproc [autodetect]
   --enable-libfame       enable libfame realtime encoder [autodetect]
   --enable-vorbis        build with OggVorbis support [autodetect]
   --enable-tremor        build with integer-only OggVorbis support [disabled]
@@ -359,6 +360,16 @@ done # for parm in ...
 
 
 # 1st pass checking for vital options
+_mmx=auto
+_3dnow=auto
+_3dnowext=auto
+_mmxext=auto
+_sse=auto
+_sse2=auto
+_cmov=auto
+_armv5te=auto
+_iwmmxt=auto
+_mtrr=auto
 _install=install
 _ranlib=ranlib
 _cc=cc
@@ -444,7 +455,7 @@ if test -z "$_target" ; then
 
 
   # host's CPU/instruction set
-   host_arch=`( uname -p ) 2>&1`
+   host_arch=`uname -p 2>&1`
    case "$host_arch" in
    i386|sparc|ppc|alpha|arm|mips|vax)
      ;;
@@ -458,7 +469,7 @@ if test -z "$_target" ; then
       # recognize.
 
       # x86/x86pc is used by QNX
-      case "`( uname -m ) 2>&1`" in
+      case "`uname -m 2>&1`" in
       i[3-9]86*|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686|BePC) host_arch=i386 ;;
       ia64) host_arch=ia64 ;;
       x86_64|amd64)
@@ -561,8 +572,8 @@ if test "$_skip_cc_check" != yes ; then
  if test "`basename $_cc`" = "icc" || test "`basename $_cc`" = "ecc"; then
   echocheck "$_cc version"
   cc_vendor=intel
-  cc_name=`( $_cc -V ) 2>&1 | _head 1 | cut -d ',' -f 1`
-  cc_version=`( $_cc -V ) 2>&1 | _head 1 | cut -d ',' -f 2 | cut -d ' ' -f 3`
+  cc_name=`$_cc -V 2>&1 | _head 1 | cut -d ',' -f 1`
+  cc_version=`$_cc -V 2>&1 | _head 1 | cut -d ',' -f 2 | cut -d ' ' -f 3`
   _cc_major=`echo $cc_version | cut -d '.' -f 1`
   _cc_minor=`echo $cc_version | cut -d '.' -f 2`
   # TODO verify older icc/ecc compatibility
@@ -571,7 +582,7 @@ if test "$_skip_cc_check" != yes ; then
       cc_version="v. ?.??, bad"
       cc_verc_fail=yes
       ;;
-    8.0)
+    8.0|9.1)
       cc_version="$cc_version, ok"
       cc_verc_fail=no
       ;;
@@ -585,8 +596,8 @@ if test "$_skip_cc_check" != yes ; then
  for _cc in "$_cc" gcc gcc-3.4 gcc-3.3 gcc-3.2 gcc-3.1 gcc3 gcc-3.0 cc ; do
   echocheck "$_cc version"
   cc_vendor=gnu
-  cc_name=`( $_cc -v ) 2>&1 | _tail 1 | cut -d ' ' -f 1`
-  cc_version=`( $_cc -dumpversion ) 2>&1`
+  cc_name=`$_cc -v 2>&1 | _tail 1 | cut -d ' ' -f 1`
+  cc_version=`$_cc -dumpversion 2>&1`
   if test "$?" -gt 0; then
     cc_version="not found"
   fi
@@ -595,7 +606,7 @@ if test "$_skip_cc_check" != yes ; then
       cc_version="v. ?.??, bad"
       cc_verc_fail=yes
       ;;
-    2.95.[2-9]|2.95.[2-9][-.]*|3.[0-9]|3.[0-9].[0-9])
+    2.95.[2-9]|2.95.[2-9][-.]*|[3-4].*)
       _cc_major=`echo $cc_version | cut -d '.' -f 1`
       _cc_minor=`echo $cc_version | cut -d '.' -f 2`
       _cc_mini=`echo $cc_version | cut -d '.' -f 3`
@@ -611,18 +622,18 @@ if test "$_skip_cc_check" != yes ; then
       ;;
   esac
   echores "$cc_version"
-  (test "$cc_verc_fail" = "no") && break
+  test "$cc_verc_fail" = "no" && break
  done 
  fi # icc
   if test "$cc_verc_fail" = yes ; then
     cat <<EOF
 
-*** Please downgrade/upgrade C compiler to version gcc-2.95.x or gcc-3.x! ***
+*** Please downgrade/upgrade C compiler to version gcc-2.95, 3.x or 4.x! ***
 
 You are not using a supported compiler. We do not have the time to make sure
 everything works with compilers other than the ones we use.  Use either the
-same compiler as we do, or use --disable-gcc-checking but DO *NOT* REPORT BUGS
-unless you can reproduce them after recompiling with a 2.95.x or 3.x version!
+same compiler as we do, or use --disable-gcc-check but DO *NOT* REPORT BUGS
+unless you can reproduce them after recompiling with a 2.95.x or 3/4.x version!
 
 Note for gcc 2.96 users: Some versions of this compiler are known to miscompile
 mplayer and lame (which is used for mencoder).  If you get compile errors,
@@ -712,6 +723,7 @@ x86_exts_check()
   _sse=no
   _sse2=no
   _mtrr=no
+  _cmov=no
 
   for i in $pparam ; do
     case "$i" in
@@ -722,14 +734,17 @@ x86_exts_check()
     mtrr|k6_mtrr|cyrix_arr)   _mtrr=yes    ;;
     xmm|sse|kni)  _sse=yes    _mmx2=yes    ;;
     sse2)         _sse2=yes                ;;
+    cmov)         _cmov=yes                ;;
     esac
   done
 }
 
 case "$host_arch" in
   i[3-9]86|x86|x86pc|k5|k6|k6-2|k6-3|pentium*|athlon*|i586-i686)
-  _def_arch="#define ARCH_X86 1"
-  _target_arch="TARGET_ARCH_X86 = yes"
+  _def_arch_x86="#define ARCH_X86 1"
+  _target_arch_x86="TARGET_ARCH_X86 = yes"
+  _def_arch="#define ARCH_X86_32 1"
+  _target_arch="TARGET_ARCH_X86_32 = yes"
 
   pname=`$_cpuinfo | grep 'model name' | cut -d ':' -f 2 | _head 1`
   pvendor=`$_cpuinfo | grep 'vendor_id' | cut -d ':' -f 2  | cut -d ' ' -f 2 | _head 1`
@@ -754,6 +769,8 @@ case "$host_arch" in
 	# K6 model 13 are the K6-2+ and K6-III+, only differing in cache size.
 	if test "$pmodel" -eq 9 -o "$pmodel" -eq 13; then
 		proc=k6-3
+	elif test "$pmodel" -eq 5 -o "$pmodel" -eq 10; then
+		proc=geode
 	elif test "$pmodel" -ge 8; then
 		proc=k6-2
 	elif test "$pmodel" -ge 6; then
@@ -930,6 +947,8 @@ EOF
   x86_64|amd64)
     _def_arch='#define ARCH_X86_64 1'
     _target_arch='TARGET_ARCH_X86_64 = yes'
+    _def_arch_x86="#define ARCH_X86 1"
+    _target_arch_x86="TARGET_ARCH_X86 = yes"
     iproc='x86_64'
     proc=''
     _march=''
@@ -1190,6 +1209,7 @@ esac
 
 if test "$_runtime_cpudetection" = yes ; then
   if x86; then
+    _cmov=no
     _mmx=yes
     _3dnow=yes
     _3dnowex=yes
@@ -1236,6 +1256,7 @@ EOF
   extcheck $_3dnowex "3dnowex" "pswapd %%mm0, %%mm0" || _3dnowex=no
   extcheck $_sse "sse" "xorps %%xmm0, %%xmm0" || _sse=no _gcc3_ext="$_gcc3_ext -mno-sse"
   extcheck $_sse2 "sse2" "xorpd %%xmm0, %%xmm0" || _sse2=no _gcc3_ext="$_gcc3_ext -mno-sse2"
+  extcheck $_cmov "cmov" "cmovb %%eax,%%ebx" || _cmov=no
   echocheck "mtrr support"
   echores "$_mtrr"
 
@@ -1267,13 +1288,27 @@ _xvmclib="XvMCNVIDIA"
 # GOTCHA: the variables below defines the default behavior for autodetection
 # and have - unless stated otherwise - at least 2 states : yes no
 # If autodetection is available then the third state is: auto
+_libavutil=auto
+_libavutil_so=auto
 _libavcodec=auto
-_libavcodecs=`grep 'register_avcodec(&[a-z]' libavcodec/allcodecs.c  | sed 's/.*&\(.*\)).*/\1/'`
-_libavcodecso=auto 
+_amr_nb=auto
+_amr_nb_fixed=auto
+_amr_wb=auto
+_libavdecoders=`sed -n 's/^[^#]*DEC.*, *\(.*\)).*/\1_decoder/p' "libavcodec/allcodecs.c"`
+_libavencoders=`sed -n 's/^[^#]*ENC.*, *\(.*\)).*/\1_encoder/p' "libavcodec/allcodecs.c"`
+_libavencoders_all=$_libavencoders
+_libavparsers=`sed -n 's/^[^#]*PARSER.*, *\(.*\)).*/\1_parser/p' "libavcodec/allcodecs.c"`
+_libavdemuxers=`sed -n 's/^[^#]*DEMUX.*, *\(.*\)).*/\1_demuxer/p' libavformat/allformats.c`
+_libavmuxers=`sed -n 's/^[^#]*_MUX.*, *\(.*\)).*/\1_muxer/p' libavformat/allformats.c`
+_libavmuxers_all=$_libavmuxers
+_libavcodec_so=auto
 _libavformat=auto
-_fame=auto
-_mp1e=no
+_libavformat_so=auto
+_libpostproc=auto
+_libpostproc_so=auto
+_libavcodec_mpegaudio_hp=yes
 _mencoder=yes
+_mplayer=yes
 _x11=auto
 _dga=auto	# 1 2 no auto
 _xv=auto
@@ -1394,6 +1429,7 @@ _enca=auto
 _inet6=auto
 _gethostbyname2=auto
 _ftp=yes
+_asmalign_pot=auto
 for ac_option do
   case "$ac_option" in
   # Skip 1st pass
@@ -1473,8 +1509,6 @@ for ac_option do
   --disable-langinfo)	_langinfo=no	;;
   --enable-rtc)	        _rtc=yes	;;
   --disable-rtc)	_rtc=no	        ;;
-  --enable-mp1e)	_mp1e=yes	;;
-  --disable-mp1e)	_mp1e=no	;;
   --enable-libdv)	_libdv=yes	;;
   --disable-libdv)	_libdv=no	;;
   --enable-ossaudio)	_ossaudio=yes	;;
@@ -1571,16 +1605,44 @@ for ac_option do
   --disable-xvid)	_xvid=no	;;
   --enable-x264)        _x264=yes       ;;
   --disable-x264)       _x264=no        ;;
+  --enable-libavutil)	_libavutil=yes	;;
+  --disable-libavutil)	_libavutil=no	;;
+  --enable-libavutil_so)	_libavutil_so=yes	;;
+  --disable-libavutil_so)	_libavutil_so=no	;;
   --enable-divx4linux)	_divx4linux=yes	;;
   --disable-divx4linux)	_divx4linux=no	;;
   --enable-opendivx)	_opendivx=yes	;;
   --disable-opendivx)	_opendivx=no	;;
   --enable-libavcodec)	_libavcodec=yes	;;
   --disable-libavcodec)	_libavcodec=no	;;
-  --enable-codec=*)	_libavcodecs="$_libavcodecs `echo $ac_option | cut -d '=' -f 2`" ;;
-  --disable-codec=*)	_libavcodecs=`echo $_libavcodecs | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
+  --enable-libavcodec_so)	_libavcodec_so=yes	;;
+  --disable-libavcodec_so)	_libavcodec_so=no	;;
+  --enable-amr_nb)	_amr_nb=yes	;;
+  --disable-amr_nb)	_amr_nb=no	;;
+  --enable-amr_nb-fixed)	_amr_nb_fixed=yes ;;
+  --disable-amr_nb-fixed)	_amr_nb_fixed=no ;;
+  --enable-amr_wb)	_amr_wb=yes	;;
+  --disable-amr_wb)	_amr_wb=no	;;
+  --enable-decoder=*)	_libavdecoders="$_libavdecoders `echo $ac_option | cut -d '=' -f 2`" ;;
+  --disable-decoder=*)	_libavdecoders=`echo $_libavdecoders | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
+  --enable-encoder=*)	_libavencoders="$_libavencoders `echo $ac_option | cut -d '=' -f 2`" ;;
+  --disable-encoder=*)	_libavencoders=`echo $_libavencoders | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
+  --enable-parser=*)	_libavparsers="$_libavparsers `echo $ac_option | cut -d '=' -f 2`" ;;
+  --disable-parser=*)	_libavparsers=`echo $_libavparsers | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
+  --enable-demuxer=*)	_libavdemuxers="$_libavdemuxers `echo $ac_option | cut -d '=' -f 2`" ;;
+  --disable-demuxer=*)	_libavdemuxers=`echo $_libavdemuxers | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
+  --enable-muxer=*)	_libavmuxers="$_libavmuxers `echo $ac_option | cut -d '=' -f 2`" ;;
+  --disable-muxer=*)	_libavmuxers=`echo $_libavmuxers | sed "s/\`echo $ac_option | cut -d '=' -f 2\`//g"` ;;
   --enable-libavformat)	_libavformat=yes;;
   --disable-libavformat)	_libavformat=no	;;
+  --enable-libavformat_so)	_libavformat_so=yes	;;
+  --disable-libavformat_so)	_libavformat_so=no	;;
+  --enable-libpostproc)		_libpostproc=yes	;;
+  --disable-libpostproc)	_libpostproc=no		;;
+  --enable-libpostproc_so)	_libpostproc_so=yes	;;
+  --disable-libpostproc_so)	_libpostproc_so=no	;;
+  --enable-libavcodec_mpegaudio_hp)	_libavcodec_mpegaudio_hp=yes	;;
+  --disable-libavcodec_mpegaudio_hp)	_libavcodec_mpegaudio_hp=no	;;
   --enable-libfame)	_fame=yes	;;
   --disable-libfame)	_fame=no	;;
   --enable-lirc)	_lirc=yes	;;
@@ -1750,6 +1812,8 @@ for ac_option do
   --disable-3dnow) _3dnow=no _3dnowex=no ;;
   --enable-3dnowex) _3dnow=yes _3dnowex=yes ;;
   --disable-3dnowex) _3dnowex=no ;;
+  --enable-cmov) _cmov=yes ;;
+  --disable-cmov) _cmov=no ;;
   --enable-altivec) _altivec=yes ;;
   --disable-altivec) _altivec=no ;;
   --enable-mmx)	_mmx=yes ;;
@@ -1892,6 +1956,10 @@ if x86 ; then
   #  _pref_as_version='2.11'
   #  echo 'xorpd %xmm0, %xmm0' >> $TMPS
   #fi
+  if test "$_cmov" = yes ; then
+    _pref_as_version='2.10.1'
+    echo 'cmovb %eax, %ebx' >> $TMPS
+  fi
   $_as $TMPS -o $TMPO > /dev/null 2>&1 || as_verc_fail=yes
 
   if test "$as_verc_fail" != yes ; then
@@ -1901,7 +1969,24 @@ if x86 ; then
     echo "Upgrade binutils to ${_pref_as_version} ..."
     die "obsolete binutils version"
   fi
+
+fi #if x86
+
+echocheck ".align is a power of two"
+if test "$_asmalign_pot" = auto ; then
+_asmalign_pot=no
+cat > $TMPC << EOF
+main() { asm (".align 3"); }
+EOF
+cc_check && _asmalign_pot=yes
 fi
+if test "$_asmalign_pot" = "yes" ; then
+  _def_asmalign_pot='#define ASMALIGN(ZEROBITS) ".align " #ZEROBITS "\n\t"'
+else
+  _def_asmalign_pot='#define ASMALIGN(ZEROBITS) ".align 1<<" #ZEROBITS "\n\t"'
+fi
+echores $_asmalign_pot
+
 
 if ppc ; then
     
@@ -2006,6 +2091,8 @@ _def_sse='#undef HAVE_SSE'
 test "$_sse" = yes && _def_sse='#define HAVE_SSE 1'
 _def_sse2='#undef HAVE_SSE2'
 test "$_sse2" = yes && _def_sse2='#define HAVE_SSE2 1'
+_def_cmov='#undef HAVE_CMOV'
+test "$_cmov" = yes && _def_cmov='#define HAVE_CMOV 1'
 
 # Checking kernel version...
 if x86 && linux ; then
@@ -4292,30 +4379,8 @@ if test "$_dxr3" = yes ; then
 else
   _def_dxr3='#undef HAVE_DXR3'
   _novomodules="dxr3 $_novomodules"
-  if test "$_mp1e" = auto ; then
-    # we don't need mp1e
-    _mp1e=no
-  fi
 fi
 echores "$_dxr3"
-
-echocheck "libmp1e"
-if test "$_mmx" = no ; then
-  # mp1e REQUIRES mmx!
-  _mp1e=no
-fi
-if test "$_mp1e" != no ; then
-  _mp1e=yes
-  _def_mp1e='#define USE_MP1E'
-  _ld_mp1e='libmp1e/libmp1e.a'
-  _dep_mp1e='libmp1e/libmp1e.a'
-else
-  _mp1e=no
-  _def_mp1e='#undef USE_MP1E'
-  _ld_mp1e=""
-  _dep_mp1e=''
-fi
-echores "$_mp1e"
 
 
 echocheck "libfame"
@@ -5604,10 +5669,12 @@ else
 fi
 
 echocheck "FFmpeg libavutil (static)"
-if test -d libavutil ; then
-  _libavutil=yes
-else
-  _libavutil=no
+if test "$_libavutil" = auto ; then
+  if test -d libavutil ; then
+    _libavutil=yes
+  else
+    _libavutil=no
+  fi
 fi
 echores "$_libavutil"
 
@@ -5630,15 +5697,15 @@ EOF
       
       if cc_check -I. -I./libavutil; then
         _libavutil_required="no"
-    else
+      else
         _libavutil_required="yes"
-    fi
+      fi
       _res_comment="libavutil availability does not fit libavcodec version"
       if test "$_libavutil_required" = "$_libavutil"; then
         _libavcodec="yes"
         _res_comment=""
-  fi
-fi
+      fi
+    fi
   fi
 fi
 echores "$_libavcodec"
@@ -5653,69 +5720,260 @@ if test "$_libavformat" = auto ; then
 fi
 echores "$_libavformat"
 
-_def_haveffpostprocess='no'
-if test -d libavcodec && test -f libavcodec/libpostproc/postprocess.h ; then
-   _def_haveffpostprocess='yes'
+echocheck "FFmpeg libpostproc (static)"
+if test "$_libpostproc" = auto ; then
+_libpostproc=no
+if test -d libpostproc && test -f libpostproc/postprocess.h ; then
+   _libpostproc='yes'
 fi
+fi
+echores "$_libpostproc"
+
+
+if test "$_libavutil" != yes ; then
+echocheck "FFmpeg libavutil (dynamic)"
+if test "$_libavutil_so" = auto ; then
+  _libavutil_so=no
+  cat > $TMPC << EOF
+#include <ffmpeg/common.h>
+int main(void) { ff_gcd(1,1); return 0; }
+EOF
+  if $_pkg_config --exists libavutil ; then
+    _inc_libavutil=`$_pkg_config --cflags libavutil`
+    _ld_tmp=`$_pkg_config --libs libavutil`
+    cc_check $_inc_libavutil $_ld_tmp && _ld_extra="$_ld_extra $_ld_tmp" \
+      && _libavutil_so=yes
+  elif cc_check -lavutil $_ld_lm ; then
+    _ld_extra="$_ld_extra -lavutil"
+    _libavutil_so=yes
+    _res_comment="using libavutil.so, but static libavutil is recommended"
+  fi
+fi
+# neither static nor shared libavutil is available, but it is mandatory ...
+if test "$_libavutil_so" = no ; then
+  die "You need static or shared libavutil, MPlayer will not compile without!"
+fi
+echores "$_libavutil_so"
+fi #if test "$_libavutil" != yes ; then
 
 if test "$_libavcodec" != yes ; then
 echocheck "FFmpeg libavcodec (dynamic)"
-if test "$_libavcodecso" = auto ; then
-  _libavcodecso=no
+if test "$_libavcodec_so" = auto ; then
+  _libavcodec_so=no
   _res_comment="libavcodec.so is broken/obsolete"
 # FIXME : check for avcodec_find_encoder_by_name() for mencoder
   cat > $TMPC << EOF
-#define FF_POSTPROCESS 1 
 #include <ffmpeg/avcodec.h>
 int main(void) { 
     avcodec_find_encoder_by_name("");
     return 0; 
 }
 EOF
-  if cc_check -lavcodec $_ld_lm ; then
-    _libavcodecso=yes
+  if $_pkg_config --exists libavcodec ; then
+    _inc_libavcodec=`$_pkg_config --cflags libavcodec`
+    _ld_tmp=`$_pkg_config --libs libavcodec`
+    cc_check $_inc_libavcodec $_ld_tmp && _ld_extra="$_ld_extra $_ld_tmp" \
+      && _libavcodec_so=yes
+  elif cc_check -lavcodec $_ld_lm ; then
+    _ld_extra="$_ld_extra -lavcodec"
+    _libavcodec_so=yes
     _res_comment="using libavcodec.so, but static libavcodec is recommended"
   fi
 fi
-echores "$_libavcodecso"
+echores "$_libavcodec_so"
+fi #if test "$_libavcodec" != yes ; then
+
+if test "$_libavformat" != yes ; then
+echocheck "FFmpeg libavformat (dynamic)"
+if test "$_libavformat_so" = auto ; then
+  _libavformat_so=no
+  cat > $TMPC <<EOF
+  #include <ffmpeg/avformat.h>
+  #include <ffmpeg/opt.h>
+  int main(void) { av_alloc_format_context(); return 0; }
+EOF
+  if $_pkg_config --exists libavformat ; then
+    _inc_libavformat=`$_pkg_config --cflags libavformat`
+    _ld_tmp=`$_pkg_config --libs libavformat`
+    cc_check $_inc_libavformat $_ld_tmp && _ld_extra="$_ld_extra $_ld_tmp" \
+      && _libavformat_so=yes
+  elif cc_check $_ld_lm -lavformat ; then
+    _ld_extra="$_ld_extra -lavformat"
+    _libavformat_so=yes
+    _res_comment="using libavformat.so, but static libavformat is recommended"
+  fi
+fi
+echores "$_libavformat_so"
+fi #if test "$_libavformat" != yes ; then
+
+if test "$_libpostproc" != yes ; then
+echocheck "FFmpeg libpostproc (dynamic)"
+if test "$_libpostproc_so" = auto ; then
+  _libpostproc_so=no
+  cat > $TMPC << EOF
+  #define USE_LIBPOSTPROC 1
+  #include <inttypes.h>
+  #include <postproc/postprocess.h>
+  int main(void) {
+      pp_get_mode_by_name_and_quality("de", 0);
+      return 0;}
+EOF
+  if cc_check -lpostproc $_ld_lm ; then
+    _ld_extra="$_ld_extra -lpostproc"
+    _libpostproc_so=yes
+    _res_comment="using libpostproc.so, but static libpostproc is recommended"
+  fi
+fi
+echores "$_libpostproc_so"
+fi #if test "$_libpostproc" != yes ; then
+
+_def_libavutil='#undef USE_LIBAVUTIL'
+_def_libavutil_so='#undef USE_LIBAVUTIL_SO'
+if test "$_libavutil" = yes ; then
+  _def_libavutil='#define USE_LIBAVUTIL 1'
+elif test "$_libavutil_so" = yes ; then
+  _def_libavutil_so='#define USE_LIBAVUTIL_SO 1'
 fi
 
 _def_libavcodec='#undef USE_LIBAVCODEC'
-_def_libavcodecso='#undef USE_LIBAVCODEC_SO'
-_def_ffpostprocess='#undef FF_POSTPROCESS'
+_def_libavcodec_so='#undef USE_LIBAVCODEC_SO'
+_def_lavc_dsputil='#undef USE_LIBAVCODEC_DSPUTIL'
+if test "$_libavcodec_mpegaudio_hp" = yes ; then
+  _def_libavcodec_mpegaudio_hp='#define CONFIG_MPEGAUDIO_HP 1'
+fi
 if test "$_libavcodec" = yes ; then
   _def_libavcodec='#define USE_LIBAVCODEC 1'
+  _def_lavc_dsputil='#define USE_LIBAVCODEC_DSPUTIL'
   _ld_libavcodec='libavcodec/libavcodec.a'
   _dep_libavcodec='libavcodec/libavcodec.a'
-  _def_ffpostprocess='#define FF_POSTPROCESS 1'
   _codecmodules="libavcodec $_codecmodules"
-  if test "$_libavutil" = yes; then
-    _ld_libavutil='libavutil/libavutil.a'
-    _dep_libavutil='libavutil/libavutil.a'
-  fi
-elif test "$_libavcodecso" = yes ; then
+elif test "$_libavcodec_so" = yes ; then
   _def_libavcodec='#define USE_LIBAVCODEC 1'
-  _def_libavcodecso='#define USE_LIBAVCODEC_SO 1'
+  _def_libavcodec_so='#define USE_LIBAVCODEC_SO 1'
   _ld_libavcodec='-lavcodec'
   _codecmodules="libavcodec.so $_codecmodules"
 else
   _nocodecmodules="libavcodec $_nocodecmodules"
 fi
+if test "$_libavutil" = yes; then
+  _ld_libavutil='libavutil/libavutil.a'
+  _dep_libavutil='libavutil/libavutil.a'
+fi
 
 _def_libavformat='#undef USE_LIBAVFORMAT'
+_def_libavformat_so='#undef USE_LIBAVFORMAT_SO'
 _def_libavformat_win32='#undef CONFIG_WIN32'
-#ON XBOX WE WISH TO DISABLE THE ENCODERS 
-#IF LIBAVFORMAT ISN'T LINKED AS IT REDUCES MEM USAGE
-_def_ffencoders='#undef CONFIG_ENCODERS'
 if test "$_libavformat" = yes ; then
-  _def_ffencoders='#define CONFIG_ENCODERS 1'
   _def_libavformat='#define USE_LIBAVFORMAT 1'
   _ld_libavformat='libavformat/libavformat.a'
   _dep_libavformat='libavformat/libavformat.a'
   if win32 ; then
     _def_libavformat_win32='#define CONFIG_WIN32 1'
   fi
+else
+  if test "$_libavformat_so" = yes ; then
+    _def_libavformat_so='#define USE_LIBAVFORMAT_SO 1'
+    test "$_ld_libavformat" || _ld_libavformat='-lavformat'
+    if win32 ; then
+      _def_libavformat_win32='#define CONFIG_WIN32 1'
+    fi
+  fi
 fi
+
+_def_libpostproc='#undef USE_LIBPOSTPROC'
+_def_libpostproc_so='#undef USE_LIBPOSTPROC_SO'
+if test "$_libpostproc" = yes ; then
+  _def_libpostproc='#define USE_LIBPOSTPROC 1'
+  _ld_libpostproc='libpostproc/libpostproc.a'
+  _dep_libpostproc='libpostproc/libpostproc.a'
+else
+  if test "$_libpostproc_so" = yes ; then
+    _def_libpostproc_so='#define USE_LIBPOSTPROC_SO 1'
+  fi
+fi
+
+echocheck "md5sum support"
+if test "$_md5sum" = yes; then
+  _def_md5sum="#define HAVE_MD5SUM"
+  _vosrc="$_vosrc vo_md5sum.c"
+  _vomodules="md5sum $_vomodules"
+else
+  _def_md5sum="#undef HAVE_MD5SUM"
+  _novomodules="md5sum $_novomodules"
+fi
+echores "$_md5sum"
+
+echocheck "AMR narrowband"
+if test "$_amr_nb" = auto ; then
+  _amr_nb=no
+  if test -f libavcodec/amr_float/sp_dec.c ; then
+    if test "$_libavcodec" = yes ; then
+      _amr_nb=yes
+    else
+      _res_comment="libavcodec (static) is required by amr_nb, sorry"
+    fi
+  fi
+fi
+if test "$_amr_nb" = yes ; then
+  _amr=yes
+  _def_amr='#define CONFIG_AMR 1'
+  _def_amr_nb='#define CONFIG_AMR_NB 1'
+else
+  _def_amr_nb='#undef CONFIG_AMR_NB'
+fi
+echores "$_amr_nb"
+
+echocheck "AMR narrowband, fixed point"
+if test "$_amr_nb_fixed" = auto ; then
+  _amr_nb_fixed=no
+  if test -f libavcodec/amr/dtx_dec.c ; then
+    if test "$_libavcodec" = yes ; then
+      if test "$_amr_nb" = no ; then
+        _amr_nb_fixed=yes
+      else
+        _res_comment="disabled by amr_nb"
+      fi
+    else
+      _res_comment="libavcodec (static) is required by amr_nb-fixed, sorry"
+    fi
+  fi
+fi
+if test "$_amr_nb_fixed" = yes ; then
+  _amr=yes
+  _def_amr='#define CONFIG_AMR 1'
+  _def_amr_nb_fixed='#define CONFIG_AMR_NB_FIXED 1'
+else
+  _def_amr_nb_fixed='#undef CONFIG_AMR_NB_FIXED'
+fi
+echores "$_amr_nb_fixed"
+
+if test "$_amr_nb" = yes || test "$_amr_nb_fixed" = yes ; then
+  _codecmodules="amr_nb $_codecmodules"
+else
+  _nocodecmodules="amr_nb $_nocodecmodules"
+fi
+
+echocheck "AMR wideband"
+if test "$_amr_wb" = auto ; then
+  _amr_wb=no
+  if test -f libavcodec/amrwb_float/dec_dtx.c ; then
+    if test "$_libavcodec" = yes ; then
+      _amr_wb=yes
+    else
+      _res_comment="libavcodec (static) is required by amr_wb, sorry"
+    fi
+  fi
+fi
+if test "$_amr_wb" = yes ; then
+  _amr=yes
+  _def_amr='#define CONFIG_AMR 1'
+  _def_amr_wb='#define CONFIG_AMR_WB 1'
+  _codecmodules="amr_wb $_codecmodules"
+else
+  _def_amr_wb='#undef CONFIG_AMR_WB'
+  _nocodecmodules="amr_wb $_nocodecmodules"
+fi
+echores "$_amr_wb"
 
 echocheck "libdv-0.9.5+"
 if test "$_libdv" = auto ; then
@@ -5751,7 +6009,6 @@ if test "$_zr" = yes ; then
     _def_zr='#define HAVE_ZR 1'
     _vosrc="$_vosrc vo_zr2.c vo_zr.c jpeg_enc.c"
     _vomodules="zr zr2 $_vomodules"
-    echores "$_zr"
   else
     echores "libavcodec (static) is required by zr, sorry"
     _novomodules="zr $_novomodules"
@@ -5760,8 +6017,8 @@ if test "$_zr" = yes ; then
 else
   _def_zr='#undef HAVE_ZR'
   _novomodules="zr zr2 $_novomodules"
-  echores "$_zr"
 fi
+echores "$_zr"
 
 echocheck "bl"
 if test "$_bl" = yes ; then
@@ -5819,24 +6076,42 @@ EOF
 fi
 
 echocheck "x264"
-cat > $TMPC << EOF
-#include <stdint.h>
-#include <stdarg.h>
+if test "$_x264" = auto ; then
+  cat > $TMPC << EOF
+#include <inttypes.h>
 #include <x264.h>
+#if X264_BUILD < 53
+#error We do not support old versions of x264. Get the latest from SVN.
+#endif
 int main(void) { x264_encoder_open((void*)0); return 0; }
 EOF
-_ld_x264="$_ld_x264 -lx264 $_ld_lm"
-if test "$_x264" != no && cc_check $_inc_x264 $_ld_x264 ; then
+  _x264=no
+  for _ld_x264 in "-lx264 $_ld_pthread" "-lx264 $_ld_pthread $_ld_lm" ; do
+    cc_check $_ld_x264 && _libs_mencoder="$_libs_mencoder $_ld_x264" && _x264=yes && break
+  done
+fi
+
+if test "$_x264" = yes ; then
   _x264=yes
   _def_x264='#define HAVE_X264 1'
   _codecmodules="x264 $_codecmodules"
+  if echo $_libavencoders | grep -q x264 ; then
+    _lavc_x264=yes
+    _def_lavc_x264='#define CONFIG_X264 1'
+    _libs_mplayer="$_libs_mplayer $_ld_x264"
+  else
+    _lavc_x264=no
+    _def_lavc_x264='#undef CONFIG_X264'
+  fi
 else
   _x264=no
-  _ld_x264=''
+  _lavc_x264=no
   _def_x264='#undef HAVE_X264'
+  _def_lavc_x264='#undef CONFIG_X264'
   _nocodecmodules="x264 $_nocodecmodules"
 fi
-echores "$_x264"
+echores "$_x264 (in libavcodec: $_lavc_x264)"
+
 
 echocheck "DivX4linux/DivX5linux/OpenDivX decore"
 # DivX5: DEC_OPT_MEMORY_REQS - DivX4: DEC_OPT_FRAME_311
@@ -5954,6 +6229,11 @@ echocheck "mencoder"
 _mencoder_flag='#undef HAVE_MENCODER'
 if test "$_mencoder" = yes ; then
   _mencoder_flag='#define HAVE_MENCODER'
+  _def_muxers='#define CONFIG_MUXERS 1'
+else
+  # mpeg1video for vf_lavc, snow for vf_uspp and vf_mcdeint
+  _libavencoders="mpeg1video_encoder snow_encoder"
+  _libavmuxers=""
 fi
 echores "$_mencoder"
 
@@ -6592,7 +6872,6 @@ LIBA52 = $_liba52
 LIBMPEG2 = $_libmpeg2
 
 UNRARLIB = $_unrarlib
-HAVE_FFPOSTPROCESS = $_def_haveffpostprocess
 PNG = $_mkf_png
 JPEG = $_mkf_jpg
 GIF = $_mkf_gif
@@ -6614,10 +6893,10 @@ HAVE_XVMC_ACCEL = $_xvmc
 
 # for libavcodec:
 SRC_PATH=..
+BUILD_ROOT=..
 LIBPREF=lib
 LIBSUF=.a
-SLIBPREF=lib
-SLIBSUF=.so
+LIB=\$(LIBPREF)\$(NAME)\$(LIBSUF)
 
 # video output
 X_LIB = $_ld_gl $_ld_dga $_ld_xv $_ld_xvmc $_ld_vm $_ld_xinerama $_ld_x11 $_ld_sock
@@ -6661,22 +6940,24 @@ W32_DEP = $_dep_win32
 W32_LIB = $_ld_win32
 DS_DEP = $_dep_dshow
 DS_LIB = $_ld_dshow
-AV_DEP = $_dep_libavutil $_dep_libavcodec $_dep_libavformat
-AV_LIB = $_ld_libavformat $_ld_libavcodec $_ld_libavutil 
+AV_DEP = $_dep_libavformat $_dep_libavcodec $_dep_libavutil $_dep_libpostproc
+AV_LIB = $_ld_libavformat  $_ld_libavcodec  $_ld_libavutil  $_ld_libpostproc
 CONFIG_LIBAVUTIL = $_libavutil
+CONFIG_LIBAVUTIL_SO = $_libavutil_so
 CONFIG_LIBAVCODEC = $_libavcodec
+CONFIG_LIBAVCODEC_SO = $_libavcodec_so
 CONFIG_LIBAVFORMAT = $_libavformat
+CONFIG_LIBAVFORMAT_SO = $_libavformat_so
+CONFIG_LIBPOSTPROC = $_libpostproc
+CONFIG_LIBPOSTPROC_SO = $_libpostproc_so
 ZORAN = $_zr
 FAME = $_fame
 FAME_LIB = $_ld_fame
-MP1E_DEP = $_dep_mp1e
-MP1E_LIB = $_ld_mp1e
 ARCH_LIB =  $_ld_arch $_ld_iconv
 XVID = $_xvid
 XVID_INC = $_inc_xvid
 XVID_LIB = $_ld_xvid
 X264 = $_x264
-X264_INC = $_inc_x264
 X264_LIB = $_ld_x264
 CONFIG_DTS = $_libdts
 DTS_INC = $_inc_libdts
@@ -6709,11 +6990,26 @@ MACOSX_FRAMEWORKS = $_macosx_frameworks
 TOOLAME=$_toolame
 TOOLAME_EXTRAFLAGS=$_toolame_extraflags
 TOOLAME_LIB=$_toolame_lib
-`echo $_libavcodecs | tr 'a-z ' 'A-Z\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+CONFIG_AMR=$_amr
+CONFIG_AMR_NB=$_amr_nb
+CONFIG_AMR_NB_FIXED=$_amr_nb_fixed
+CONFIG_AMR_WB=$_amr_wb
+`echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+`echo $_libavencoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+`echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+`echo $_libavdemuxers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+`echo $_libavmuxers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+CONFIG_X11_GRAB_DEVICE_DEMUXER=no
+CONFIG_FAAC=$_faac
+CONFIG_XVID=$_lavc_xvid
+CONFIG_X264=$_lavc_x264
 CONFIG_GPL=yes
+CONFIG_ENCODERS=$_mencoder
+CONFIG_MUXERS=$_mencoder
 
 # --- Some stuff for autoconfigure ----
 $_target_arch
+$_target_arch_x86
 $_confwin32
 TARGET_CPU=$iproc
 TARGET_MMX = $_mmx
@@ -6721,6 +7017,7 @@ TARGET_MMX2 = $_mmx2
 TARGET_3DNOW = $_3dnow
 TARGET_3DNOWEX = $_3dnowex
 TARGET_SSE = $_sse
+TARGET_CMOV = $_cmov
 TARGET_ALTIVEC = $_altivec
 TARGET_VIS = $_vis
 
@@ -6765,6 +7062,13 @@ $_def_restrict_keyword
 
 /* __builtin_expect branch prediction hint */
 $_def_builtin_expect
+#ifdef HAVE_BUILTIN_EXPECT
+#define likely(x) __builtin_expect ((x) != 0, 1)
+#define unlikely(x) __builtin_expect ((x) != 0, 0)
+#else
+#define likely(x) (x)
+#define unlikely(x) (x)
+#endif
 
 /* attribute(used) as needed by some compilers */
 #if (__GNUC__ * 100 + __GNUC_MINOR__ >= 300)
@@ -6850,9 +7154,6 @@ $_def_encore
 $_def_mp3lame
 $_def_cfg_mp3lame
 
-/* Define libmp1e for realtime mpeg encoding (for DXR3 and DVB cards) */
-$_def_mp1e
-
 /* Define this to enable avg. byte/sec-based AVI sync method by default:
    (use -bps or -nobps commandline option for run-time method selection)
    -bps gives better sync for vbr mp3 audio, it is now default */
@@ -6915,6 +7216,9 @@ $_def_memalign
 #define MEMALIGN_HACK 1
 #endif
 
+/* assembler handling of .align */
+$_def_asmalign_pot
+
 /* Define this if your system has the "alloca.h" header file */
 $_def_alloca
 
@@ -6945,13 +7249,13 @@ $_def_strsep
 /* Define this if your system has strlcpy */
 $_def_strlcpy
 #ifndef HAVE_STRLCPY
-unsigned int strlcpy (char *dest, char *src, unsigned int size);
+unsigned int strlcpy (char *dest, const char *src, unsigned int size);
 #endif
 
 /* Define this if your system has strlcat */
 $_def_strlcat
 #ifndef HAVE_STRLCAT
-unsigned int strlcat (char *dest, char *src, unsigned int size);
+unsigned int strlcat (char *dest, const char *src, unsigned int size);
 #endif
 
 /* Define this if your system has fseeko */
@@ -7003,10 +7307,8 @@ $_def_dvdnav_version
 #define MPEG12_POSTPROC 1
 
 /* Define this to enable image postprocessing in libavcodec (requires a FAST CPU!) */
-$_def_ffpostprocess
-
-/* Define to include support for OpenDivx postprocessing */
-$_def_odivx_postprocess
+$_def_libpostproc
+$_def_libpostproc_so
 
 /* Win32 DLL support */
 $_def_win32
@@ -7024,32 +7326,72 @@ $_def_win32_loader
 
 /* ffmpeg's libavcodec support (requires libavcodec source) */
 $_def_libavcodec
-$_def_libavcodecso
+$_def_libavcodec_so
+$_def_lavc_dsputil
+$_def_libavcodec_mpegaudio_hp
 
 /* ffmpeg's libavformat support (requires libavformat source) */
 $_def_libavformat
+$_def_libavformat_so
 $_def_libavformat_win32
 
 /* risky codecs */
 #define CONFIG_RISKY 1
 
+$_def_libavutil
+$_def_libavutil_so
+
 /* Use libavcodec's decoders */
 #define CONFIG_DECODERS 1
 
 /* Use libavcodec's encoders */
-$_def_ffencoders
+#define CONFIG_ENCODERS 1
 
 /* Use libavformat's demuxers */
 #define CONFIG_DEMUXERS 1
 /* Use libavformat's muxers */
-#define CONFIG_MUXERS 1
-
-#define CONFIG_MPEGAUDIO_HP 1
+$_def_muxers
 
 #define CONFIG_GPL 1
 
-/* Use specific codecs from libavcodec */
-`echo $_libavcodecs | tr 'a-z ' 'A-Z\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
+/* Use amr codecs from libavcodec (requires amr sources) */
+$_def_amr
+$_def_amr_nb
+$_def_amr_nb_fixed
+$_def_amr_wb
+
+/* Use specific parts from FFmpeg. */
+`echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
+`echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define ENABLE_/;s/$/ 1/'`
+`echo $_libavencoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
+`echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
+`echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define ENABLE_/;s/$/ 1/'`
+`echo $_libavdemuxers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
+`echo $_libavdemuxers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define ENABLE_/;s/$/ 1/'`
+`echo $_libavmuxers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`
+`for part in $_libavencoders_all; do
+   if \` echo $_libavencoders | grep $part > /dev/null \`; then
+     echo $part | tr '[a-z] ' '[A-Z]' | sed 's/^/#define ENABLE_/;s/$/ 1/'
+   else
+     echo $part | tr '[a-z] ' '[A-Z]' | sed 's/^/#define ENABLE_/;s/$/ 0/'
+   fi
+ done`
+`for part in $_libavmuxers_all; do
+   if \` echo $_libavmuxers | grep $part > /dev/null \`; then
+     echo $part | tr '[a-z] ' '[A-Z]' | sed 's/^/#define ENABLE_/;s/$/ 1/'
+   else
+     echo $part | tr '[a-z] ' '[A-Z]' | sed 's/^/#define ENABLE_/;s/$/ 0/'
+   fi
+ done`
+// HACK: disable x11 demuxer for now
+#undef CONFIG_X11_GRAB_DEVICE_DEMUXER
+#undef ENABLE_X11_GRAB_DEVICE_DEMUXER
+#define ENABLE_X11_GRAB_DEVICE_DEMUXER 0
+
+$_def_lavc_faac
+$_def_lavc_xvid
+$_def_lavc_mp3lame
+$_def_lavc_x264
 
 /* Use codec libs included in mplayer CVS / source dist: */
 $_def_mp3lib
@@ -7125,6 +7467,7 @@ $_def_tv_bsdbt848
 $_def_words_endian
 
 $_def_arch
+$_def_arch_x86
 
 /* libmpeg2 wants ARCH_PPC and the rest of mplayer use ARCH_POWERPC,
  * define ARCH_PPC if ARCH_POWERPC is set to cope with that.
@@ -7307,6 +7650,7 @@ $_def_mmx	// only define if you have MMX (newer x86 chips, not P54C/PPro)
 $_def_mmx2	// only define if you have MMX2 (Athlon/PIII/4/CelII)
 $_def_sse	// only define if you have SSE (Intel Pentium III/4 or Celeron II)
 $_def_sse2	// only define if you have SSE2 (Intel Pentium 4)
+$_def_cmov	// only define if you have CMOV (i686+, without VIA C3)
 $_def_altivec	// only define if you have Altivec (G4)
 
 $_def_altivec_h	// enables usage of altivec.h

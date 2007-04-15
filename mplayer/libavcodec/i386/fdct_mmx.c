@@ -5,13 +5,29 @@
  * SSE2 optimization is Copyright (c) 2004 Denes Balatoni.
  *
  * from  fdctam32.c - AP922 MMX(3D-Now) forward-DCT
- * 
+ *
  *  Intel Application Note AP-922 - fast, precise implementation of DCT
  *        http://developer.intel.com/vtune/cbts/appnotes.htm
  *
  * Also of inspiration:
  * a page about fdct at http://www.geocities.com/ssavekar/dct.htm
  * Skal's fdct at http://skal.planet-d.net/coding/dct.html
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "common.h"
 #include "../dsputil.h"
@@ -30,28 +46,28 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#define BITS_FRW_ACC	3 //; 2 or 3 for accuracy
-#define SHIFT_FRW_COL	BITS_FRW_ACC
-#define SHIFT_FRW_ROW	(BITS_FRW_ACC + 17 - 3)
-#define RND_FRW_ROW		(1 << (SHIFT_FRW_ROW-1))
-//#define RND_FRW_COL		(1 << (SHIFT_FRW_COL-1))
+#define BITS_FRW_ACC   3 //; 2 or 3 for accuracy
+#define SHIFT_FRW_COL  BITS_FRW_ACC
+#define SHIFT_FRW_ROW  (BITS_FRW_ACC + 17 - 3)
+#define RND_FRW_ROW    (1 << (SHIFT_FRW_ROW-1))
+//#define RND_FRW_COL    (1 << (SHIFT_FRW_COL-1))
 
 //concatenated table, for forward DCT transformation
 static const int16_t fdct_tg_all_16[] ATTR_ALIGN(8) = {
-    13036, 13036, 13036, 13036,		// tg * (2<<16) + 0.5
-    27146, 27146, 27146, 27146,		// tg * (2<<16) + 0.5
-    -21746, -21746, -21746, -21746,	// tg * (2<<16) + 0.5
+    13036,  13036,  13036,  13036,        // tg * (2<<16) + 0.5
+    27146,  27146,  27146,  27146,        // tg * (2<<16) + 0.5
+   -21746, -21746, -21746, -21746,        // tg * (2<<16) + 0.5
 };
 
 static const int16_t ocos_4_16[4] ATTR_ALIGN(8) = {
-    23170, 23170, 23170, 23170,	//cos * (2<<15) + 0.5
+    23170, 23170, 23170, 23170,           //cos * (2<<15) + 0.5
 };
 
 static const int64_t fdct_one_corr ATTR_ALIGN(8) = 0x0001000100010001LL;
 
 static const int32_t fdct_r_row[2] ATTR_ALIGN(8) = {RND_FRW_ROW, RND_FRW_ROW };
 
-struct 
+static struct
 {
  const int32_t fdct_r_row_sse2[4] ATTR_ALIGN(16);
 } fdct_r_row_sse2 ATTR_ALIGN(16)=
@@ -61,90 +77,90 @@ struct
 //static const long fdct_r_row_sse2[4] ATTR_ALIGN(16) = {RND_FRW_ROW, RND_FRW_ROW, RND_FRW_ROW, RND_FRW_ROW};
 
 static const int16_t tab_frw_01234567[] ATTR_ALIGN(8) = {  // forward_dct coeff table
-  16384,   16384,   22725,   19266, 
-  16384,   16384,   12873,    4520, 
-  21407,    8867,   19266,   -4520, 
-  -8867,  -21407,  -22725,  -12873, 
-  16384,  -16384,   12873,  -22725, 
- -16384,   16384,    4520,   19266, 
-   8867,  -21407,    4520,  -12873, 
-  21407,   -8867,   19266,  -22725, 
+  16384,   16384,   22725,   19266,
+  16384,   16384,   12873,    4520,
+  21407,    8867,   19266,   -4520,
+  -8867,  -21407,  -22725,  -12873,
+  16384,  -16384,   12873,  -22725,
+ -16384,   16384,    4520,   19266,
+   8867,  -21407,    4520,  -12873,
+  21407,   -8867,   19266,  -22725,
 
-  22725,   22725,   31521,   26722, 
-  22725,   22725,   17855,    6270, 
-  29692,   12299,   26722,   -6270, 
- -12299,  -29692,  -31521,  -17855, 
-  22725,  -22725,   17855,  -31521, 
- -22725,   22725,    6270,   26722, 
-  12299,  -29692,    6270,  -17855, 
-  29692,  -12299,   26722,  -31521, 
+  22725,   22725,   31521,   26722,
+  22725,   22725,   17855,    6270,
+  29692,   12299,   26722,   -6270,
+ -12299,  -29692,  -31521,  -17855,
+  22725,  -22725,   17855,  -31521,
+ -22725,   22725,    6270,   26722,
+  12299,  -29692,    6270,  -17855,
+  29692,  -12299,   26722,  -31521,
 
-  21407,   21407,   29692,   25172, 
-  21407,   21407,   16819,    5906, 
-  27969,   11585,   25172,   -5906, 
- -11585,  -27969,  -29692,  -16819, 
-  21407,  -21407,   16819,  -29692, 
- -21407,   21407,    5906,   25172, 
-  11585,  -27969,    5906,  -16819, 
-  27969,  -11585,   25172,  -29692, 
+  21407,   21407,   29692,   25172,
+  21407,   21407,   16819,    5906,
+  27969,   11585,   25172,   -5906,
+ -11585,  -27969,  -29692,  -16819,
+  21407,  -21407,   16819,  -29692,
+ -21407,   21407,    5906,   25172,
+  11585,  -27969,    5906,  -16819,
+  27969,  -11585,   25172,  -29692,
 
-  19266,   19266,   26722,   22654, 
-  19266,   19266,   15137,    5315, 
-  25172,   10426,   22654,   -5315, 
- -10426,  -25172,  -26722,  -15137, 
-  19266,  -19266,   15137,  -26722, 
- -19266,   19266,    5315,   22654, 
-  10426,  -25172,    5315,  -15137, 
-  25172,  -10426,   22654,  -26722, 
+  19266,   19266,   26722,   22654,
+  19266,   19266,   15137,    5315,
+  25172,   10426,   22654,   -5315,
+ -10426,  -25172,  -26722,  -15137,
+  19266,  -19266,   15137,  -26722,
+ -19266,   19266,    5315,   22654,
+  10426,  -25172,    5315,  -15137,
+  25172,  -10426,   22654,  -26722,
 
-  16384,   16384,   22725,   19266, 
-  16384,   16384,   12873,    4520, 
-  21407,    8867,   19266,   -4520, 
-  -8867,  -21407,  -22725,  -12873, 
-  16384,  -16384,   12873,  -22725, 
- -16384,   16384,    4520,   19266, 
-   8867,  -21407,    4520,  -12873, 
-  21407,   -8867,   19266,  -22725, 
+  16384,   16384,   22725,   19266,
+  16384,   16384,   12873,    4520,
+  21407,    8867,   19266,   -4520,
+  -8867,  -21407,  -22725,  -12873,
+  16384,  -16384,   12873,  -22725,
+ -16384,   16384,    4520,   19266,
+   8867,  -21407,    4520,  -12873,
+  21407,   -8867,   19266,  -22725,
 
-  19266,   19266,   26722,   22654, 
-  19266,   19266,   15137,    5315, 
-  25172,   10426,   22654,   -5315, 
- -10426,  -25172,  -26722,  -15137, 
-  19266,  -19266,   15137,  -26722, 
- -19266,   19266,    5315,   22654, 
-  10426,  -25172,    5315,  -15137, 
-  25172,  -10426,   22654,  -26722, 
+  19266,   19266,   26722,   22654,
+  19266,   19266,   15137,    5315,
+  25172,   10426,   22654,   -5315,
+ -10426,  -25172,  -26722,  -15137,
+  19266,  -19266,   15137,  -26722,
+ -19266,   19266,    5315,   22654,
+  10426,  -25172,    5315,  -15137,
+  25172,  -10426,   22654,  -26722,
 
-  21407,   21407,   29692,   25172, 
-  21407,   21407,   16819,    5906, 
-  27969,   11585,   25172,   -5906, 
- -11585,  -27969,  -29692,  -16819, 
-  21407,  -21407,   16819,  -29692, 
- -21407,   21407,    5906,   25172, 
-  11585,  -27969,    5906,  -16819, 
-  27969,  -11585,   25172,  -29692, 
+  21407,   21407,   29692,   25172,
+  21407,   21407,   16819,    5906,
+  27969,   11585,   25172,   -5906,
+ -11585,  -27969,  -29692,  -16819,
+  21407,  -21407,   16819,  -29692,
+ -21407,   21407,    5906,   25172,
+  11585,  -27969,    5906,  -16819,
+  27969,  -11585,   25172,  -29692,
 
-  22725,   22725,   31521,   26722, 
-  22725,   22725,   17855,    6270, 
-  29692,   12299,   26722,   -6270, 
- -12299,  -29692,  -31521,  -17855, 
-  22725,  -22725,   17855,  -31521, 
- -22725,   22725,    6270,   26722, 
-  12299,  -29692,    6270,  -17855, 
-  29692,  -12299,   26722,  -31521, 
+  22725,   22725,   31521,   26722,
+  22725,   22725,   17855,    6270,
+  29692,   12299,   26722,   -6270,
+ -12299,  -29692,  -31521,  -17855,
+  22725,  -22725,   17855,  -31521,
+ -22725,   22725,    6270,   26722,
+  12299,  -29692,    6270,  -17855,
+  29692,  -12299,   26722,  -31521,
 };
 
-struct 
+static struct
 {
  const int16_t tab_frw_01234567_sse2[256] ATTR_ALIGN(16);
 } tab_frw_01234567_sse2 ATTR_ALIGN(16) =
 {{
-//static const int16_t tab_frw_01234567_sse2[] ATTR_ALIGN(16) = {  // forward_dct coeff table  
+//static const int16_t tab_frw_01234567_sse2[] ATTR_ALIGN(16) = {  // forward_dct coeff table
 #define TABLE_SSE2 C4,  C4,  C1,  C3, -C6, -C2, -C1, -C5, \
                    C4,  C4,  C5,  C7,  C2,  C6,  C3, -C7, \
                   -C4,  C4,  C7,  C3,  C6, -C2,  C7, -C5, \
-                   C4, -C4,  C5, -C1,  C2, -C6,  C3, -C1, 
-// c1..c7 * cos(pi/4) * 2^15 
+                   C4, -C4,  C5, -C1,  C2, -C6,  C3, -C1,
+// c1..c7 * cos(pi/4) * 2^15
 #define C1 22725
 #define C2 21407
 #define C3 19266
@@ -268,7 +284,7 @@ TABLE_SSE2
 }};
 
 
-static always_inline void fdct_col(const int16_t *in, int16_t *out, int offset)
+static av_always_inline void fdct_col(const int16_t *in, int16_t *out, int offset)
 {
     movq_m2r(*(in + offset + 1 * 8), mm0);
     movq_m2r(*(in + offset + 6 * 8), mm1);
@@ -348,70 +364,70 @@ static always_inline void fdct_col(const int16_t *in, int16_t *out, int offset)
 }
 
 
-static always_inline void fdct_row_sse2(const int16_t *in, int16_t *out)
+static av_always_inline void fdct_row_sse2(const int16_t *in, int16_t *out)
 {
     asm volatile(
-        ".macro FDCT_ROW_SSE2_H1 i t   \n\t"
-	"movq      \\i(%0), %%xmm2     \n\t"
-	"movq      \\i+8(%0), %%xmm0   \n\t"
-	"movdqa    \\t+32(%1), %%xmm3  \n\t"
-	"movdqa    \\t+48(%1), %%xmm7  \n\t"	
-	"movdqa    \\t(%1), %%xmm4     \n\t"
-	"movdqa    \\t+16(%1), %%xmm5  \n\t"	
-	".endm                         \n\t"
-        ".macro FDCT_ROW_SSE2_H2 i t   \n\t"
-	"movq      \\i(%0), %%xmm2     \n\t"
-	"movq      \\i+8(%0), %%xmm0   \n\t"
-	"movdqa    \\t+32(%1), %%xmm3  \n\t"
-	"movdqa    \\t+48(%1), %%xmm7  \n\t"	
-	".endm                         \n\t"
-	".macro FDCT_ROW_SSE2 i        \n\t"	
-	"movq      %%xmm2, %%xmm1      \n\t"
-	"pshuflw   $27, %%xmm0, %%xmm0 \n\t"
-	"paddsw    %%xmm0, %%xmm1      \n\t"
-	"psubsw    %%xmm0, %%xmm2      \n\t"
-	"punpckldq %%xmm2, %%xmm1      \n\t"
-	"pshufd    $78, %%xmm1, %%xmm2 \n\t"
-	"pmaddwd   %%xmm2, %%xmm3      \n\t"
-	"pmaddwd   %%xmm1, %%xmm7      \n\t"
-	"pmaddwd   %%xmm5, %%xmm2      \n\t"
-	"pmaddwd   %%xmm4, %%xmm1      \n\t"
-	"paddd     %%xmm7, %%xmm3      \n\t"	
-	"paddd     %%xmm2, %%xmm1      \n\t"
-	"paddd     %%xmm6, %%xmm3      \n\t"
-	"paddd     %%xmm6, %%xmm1      \n\t"
-	"psrad     %3, %%xmm3          \n\t"
-	"psrad     %3, %%xmm1          \n\t"
-	"packssdw  %%xmm3, %%xmm1      \n\t"
-	"movdqa    %%xmm1, \\i(%4)     \n\t"
-	".endm                         \n\t"	
-	"movdqa    (%2), %%xmm6        \n\t"		
-	"FDCT_ROW_SSE2_H1 0 0 \n\t"
-	"FDCT_ROW_SSE2 0 \n\t"
-	"FDCT_ROW_SSE2_H2 64 0 \n\t"
-	"FDCT_ROW_SSE2 64 \n\t"
+#define FDCT_ROW_SSE2_H1(i,t)                    \
+        "movq      " #i "(%0), %%xmm2      \n\t" \
+        "movq      " #i "+8(%0), %%xmm0    \n\t" \
+        "movdqa    " #t "+32(%1), %%xmm3   \n\t" \
+        "movdqa    " #t "+48(%1), %%xmm7   \n\t" \
+        "movdqa    " #t "(%1), %%xmm4      \n\t" \
+        "movdqa    " #t "+16(%1), %%xmm5   \n\t"
 
-	"FDCT_ROW_SSE2_H1 16 64 \n\t"
-	"FDCT_ROW_SSE2 16 \n\t"
-	"FDCT_ROW_SSE2_H2 112 64 \n\t"
-	"FDCT_ROW_SSE2 112 \n\t"
+#define FDCT_ROW_SSE2_H2(i,t)                    \
+        "movq      " #i "(%0), %%xmm2      \n\t" \
+        "movq      " #i "+8(%0), %%xmm0    \n\t" \
+        "movdqa    " #t "+32(%1), %%xmm3   \n\t" \
+        "movdqa    " #t "+48(%1), %%xmm7   \n\t"
 
-	"FDCT_ROW_SSE2_H1 32 128 \n\t"
-	"FDCT_ROW_SSE2 32 \n\t"
-	"FDCT_ROW_SSE2_H2 96 128 \n\t"
-	"FDCT_ROW_SSE2 96 \n\t"
+#define FDCT_ROW_SSE2(i)                      \
+        "movq      %%xmm2, %%xmm1       \n\t" \
+        "pshuflw   $27, %%xmm0, %%xmm0  \n\t" \
+        "paddsw    %%xmm0, %%xmm1       \n\t" \
+        "psubsw    %%xmm0, %%xmm2       \n\t" \
+        "punpckldq %%xmm2, %%xmm1       \n\t" \
+        "pshufd    $78, %%xmm1, %%xmm2  \n\t" \
+        "pmaddwd   %%xmm2, %%xmm3       \n\t" \
+        "pmaddwd   %%xmm1, %%xmm7       \n\t" \
+        "pmaddwd   %%xmm5, %%xmm2       \n\t" \
+        "pmaddwd   %%xmm4, %%xmm1       \n\t" \
+        "paddd     %%xmm7, %%xmm3       \n\t" \
+        "paddd     %%xmm2, %%xmm1       \n\t" \
+        "paddd     %%xmm6, %%xmm3       \n\t" \
+        "paddd     %%xmm6, %%xmm1       \n\t" \
+        "psrad     %3, %%xmm3           \n\t" \
+        "psrad     %3, %%xmm1           \n\t" \
+        "packssdw  %%xmm3, %%xmm1       \n\t" \
+        "movdqa    %%xmm1, " #i "(%4)   \n\t"
 
-	"FDCT_ROW_SSE2_H1 48 192 \n\t"
-	"FDCT_ROW_SSE2 48 \n\t"
-	"FDCT_ROW_SSE2_H2 80 192 \n\t"
-	"FDCT_ROW_SSE2 80 \n\t"
-	:
-	: "r" (in), "r" (tab_frw_01234567_sse2.tab_frw_01234567_sse2), "r" (fdct_r_row_sse2.fdct_r_row_sse2), "i" (SHIFT_FRW_ROW), "r" (out)
+        "movdqa    (%2), %%xmm6         \n\t"
+        FDCT_ROW_SSE2_H1(0,0)
+        FDCT_ROW_SSE2(0)
+        FDCT_ROW_SSE2_H2(64,0)
+        FDCT_ROW_SSE2(64)
+
+        FDCT_ROW_SSE2_H1(16,64)
+        FDCT_ROW_SSE2(16)
+        FDCT_ROW_SSE2_H2(112,64)
+        FDCT_ROW_SSE2(112)
+
+        FDCT_ROW_SSE2_H1(32,128)
+        FDCT_ROW_SSE2(32)
+        FDCT_ROW_SSE2_H2(96,128)
+        FDCT_ROW_SSE2(96)
+
+        FDCT_ROW_SSE2_H1(48,192)
+        FDCT_ROW_SSE2(48)
+        FDCT_ROW_SSE2_H2(80,192)
+        FDCT_ROW_SSE2(80)
+        :
+        : "r" (in), "r" (tab_frw_01234567_sse2.tab_frw_01234567_sse2), "r" (fdct_r_row_sse2.fdct_r_row_sse2), "i" (SHIFT_FRW_ROW), "r" (out)
     );
 }
 
-static always_inline void fdct_row_mmx2(const int16_t *in, int16_t *out, const int16_t *table)
-{ 
+static av_always_inline void fdct_row_mmx2(const int16_t *in, int16_t *out, const int16_t *table)
+{
     pshufw_m2r(*(in + 4), mm5, 0x1B);
     movq_m2r(*(in + 0), mm0);
     movq_r2r(mm0, mm1);
@@ -453,8 +469,8 @@ static always_inline void fdct_row_mmx2(const int16_t *in, int16_t *out, const i
     movq_r2m(mm7, *(out + 4));
 }
 
-static always_inline void fdct_row_mmx(const int16_t *in, int16_t *out, const int16_t *table)
-{ 
+static av_always_inline void fdct_row_mmx(const int16_t *in, int16_t *out, const int16_t *table)
+{
 //FIXME reorder (i dont have a old mmx only cpu here to benchmark ...)
     movd_m2r(*(in + 6), mm1);
     punpcklwd_m2r(*(in + 4), mm1);
@@ -504,56 +520,44 @@ static always_inline void fdct_row_mmx(const int16_t *in, int16_t *out, const in
 void ff_fdct_mmx(int16_t *block)
 {
     int64_t align_tmp[16] ATTR_ALIGN(8);
-    int16_t * const block_tmp= (int16_t*)align_tmp;
-    int16_t *block1, *out;
-    const int16_t *table;
+    int16_t * block1= (int16_t*)align_tmp;
+    const int16_t *table= tab_frw_01234567;
     int i;
 
-    block1 = block_tmp;
     fdct_col(block, block1, 0);
     fdct_col(block, block1, 4);
 
-    block1 = block_tmp;
-    table = tab_frw_01234567;
-    out = block;
     for(i=8;i>0;i--) {
-        fdct_row_mmx(block1, out, table);
+        fdct_row_mmx(block1, block, table);
         block1 += 8;
         table += 32;
-        out += 8;
+        block += 8;
     }
 }
 
 void ff_fdct_mmx2(int16_t *block)
 {
     int64_t align_tmp[16] ATTR_ALIGN(8);
-    int16_t * const block_tmp= (int16_t*)align_tmp;
-    int16_t *block1, *out;
-    const int16_t *table;
+    int16_t *block1= (int16_t*)align_tmp;
+    const int16_t *table= tab_frw_01234567;
     int i;
 
-    block1 = block_tmp;
     fdct_col(block, block1, 0);
     fdct_col(block, block1, 4);
 
-    block1 = block_tmp;
-    table = tab_frw_01234567;
-    out = block;
     for(i=8;i>0;i--) {
-        fdct_row_mmx2(block1, out, table);
+        fdct_row_mmx2(block1, block, table);
         block1 += 8;
         table += 32;
-        out += 8;
+        block += 8;
     }
 }
 
-void ff_fdct_sse2(int16_t *block) 
+void ff_fdct_sse2(int16_t *block)
 {
-    int64_t align_tmp[16] ATTR_ALIGN(8);
-    int16_t * const block_tmp= (int16_t*)align_tmp;
-    int16_t *block1;
+    int64_t align_tmp[16] ATTR_ALIGN(16);
+    int16_t * const block1= (int16_t*)align_tmp;
 
-    block1 = block_tmp;
     fdct_col(block, block1, 0);
     fdct_col(block, block1, 4);
 

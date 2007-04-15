@@ -2,24 +2,29 @@
  * H.264 encoding using the x264 library
  * Copyright (C) 2005  Mans Rullgard <mru@inprovide.com>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "avcodec.h"
 #include <x264.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct X264Context {
     x264_param_t params;
@@ -32,14 +37,14 @@ static void
 X264_log(void *p, int level, const char *fmt, va_list args)
 {
     static const int level_map[] = {
-	[X264_LOG_ERROR]   = AV_LOG_ERROR,
-	[X264_LOG_WARNING] = AV_LOG_ERROR,
-	[X264_LOG_INFO]    = AV_LOG_INFO,
-	[X264_LOG_DEBUG]   = AV_LOG_DEBUG
+        [X264_LOG_ERROR]   = AV_LOG_ERROR,
+        [X264_LOG_WARNING] = AV_LOG_ERROR,
+        [X264_LOG_INFO]    = AV_LOG_INFO,
+        [X264_LOG_DEBUG]   = AV_LOG_DEBUG
     };
 
     if(level < 0 || level > X264_LOG_DEBUG)
-	return;
+        return;
 
     av_vlog(p, level_map[level], fmt, args);
 }
@@ -52,16 +57,16 @@ encode_nals(uint8_t *buf, int size, x264_nal_t *nals, int nnal)
     int i;
 
     for(i = 0; i < nnal; i++){
-	int s = x264_nal_encode(p, &size, 1, nals + i);
-	if(s < 0)
-	    return -1;
-	p += s;
+        int s = x264_nal_encode(p, &size, 1, nals + i);
+        if(s < 0)
+            return -1;
+        p += s;
     }
 
     return p - buf;
 }
 
-extern int
+static int
 X264_frame(AVCodecContext *ctx, uint8_t *buf, int bufsize, void *data)
 {
     X264Context *x4 = ctx->priv_data;
@@ -73,20 +78,23 @@ X264_frame(AVCodecContext *ctx, uint8_t *buf, int bufsize, void *data)
     x4->pic.img.i_csp = X264_CSP_I420;
     x4->pic.img.i_plane = 3;
 
-    for(i = 0; i < 3; i++){
-	x4->pic.img.plane[i] = frame->data[i];
-	x4->pic.img.i_stride[i] = frame->linesize[i];
+    if (frame) {
+        for(i = 0; i < 3; i++){
+            x4->pic.img.plane[i] = frame->data[i];
+            x4->pic.img.i_stride[i] = frame->linesize[i];
+        }
+
+        x4->pic.i_pts = frame->pts;
+        x4->pic.i_type = X264_TYPE_AUTO;
     }
 
-    x4->pic.i_pts = frame->pts;
-    x4->pic.i_type = X264_TYPE_AUTO;
-
-    if(x264_encoder_encode(x4->enc, &nal, &nnal, &x4->pic, &pic_out))
-	return -1;
+    if(x264_encoder_encode(x4->enc, &nal, &nnal, frame? &x4->pic: NULL,
+                           &pic_out))
+        return -1;
 
     bufsize = encode_nals(buf, bufsize, nal, nnal);
     if(bufsize < 0)
-	return -1;
+        return -1;
 
     /* FIXME: dts */
     x4->out_pic.pts = pic_out.i_pts;
@@ -117,12 +125,12 @@ X264_close(AVCodecContext *avctx)
     X264Context *x4 = avctx->priv_data;
 
     if(x4->enc)
-	x264_encoder_close(x4->enc);
+        x264_encoder_close(x4->enc);
 
     return 0;
 }
 
-extern int
+static int
 X264_init(AVCodecContext *avctx)
 {
     X264Context *x4 = avctx->priv_data;
@@ -136,10 +144,38 @@ X264_init(AVCodecContext *avctx)
     x4->params.rc.i_bitrate = avctx->bit_rate / 1000;
     x4->params.rc.i_vbv_buffer_size = avctx->rc_buffer_size / 1000;
     x4->params.rc.i_vbv_max_bitrate = avctx->rc_max_rate / 1000;
-    if(avctx->rc_buffer_size)
-        x4->params.rc.b_cbr = 1;
+    x4->params.rc.b_stat_write = (avctx->flags & CODEC_FLAG_PASS1);
+    if(avctx->flags & CODEC_FLAG_PASS2) x4->params.rc.b_stat_read = 1;
+    else{
+        if(avctx->crf){
+            x4->params.rc.i_rc_method = X264_RC_CRF;
+            x4->params.rc.f_rf_constant = avctx->crf;
+        }else if(avctx->cqp > -1){
+            x4->params.rc.i_rc_method = X264_RC_CQP;
+            x4->params.rc.i_qp_constant = avctx->cqp;
+        }
+    }
+
+    // if neither crf nor cqp modes are selected we have to enable the RC
+    // we do it this way because we cannot check if the bitrate has been set
+    if(!(avctx->crf || (avctx->cqp > -1))) x4->params.rc.i_rc_method = X264_RC_ABR;
+
     x4->params.i_bframe = avctx->max_b_frames;
     x4->params.b_cabac = avctx->coder_type == FF_CODER_TYPE_AC;
+    x4->params.b_bframe_adaptive = avctx->b_frame_strategy;
+    x4->params.i_bframe_bias = avctx->bframebias;
+    x4->params.b_bframe_pyramid = (avctx->flags2 & CODEC_FLAG2_BPYRAMID);
+    avctx->has_b_frames= (avctx->flags2 & CODEC_FLAG2_BPYRAMID) ? 2 : !!avctx->max_b_frames;
+
+    x4->params.i_keyint_min = avctx->keyint_min;
+    if(x4->params.i_keyint_min > x4->params.i_keyint_max)
+        x4->params.i_keyint_min = x4->params.i_keyint_max;
+
+    x4->params.i_scenecut_threshold = avctx->scenechange_threshold;
+
+    x4->params.b_deblocking_filter = (avctx->flags & CODEC_FLAG_LOOP_FILTER);
+    x4->params.i_deblocking_filter_alphac0 = avctx->deblockalpha;
+    x4->params.i_deblocking_filter_beta = avctx->deblockbeta;
 
     x4->params.rc.i_qp_min = avctx->qmin;
     x4->params.rc.i_qp_max = avctx->qmax;
@@ -147,10 +183,9 @@ X264_init(AVCodecContext *avctx)
 
     x4->params.rc.f_qcompress = avctx->qcompress;  /* 0.0 => cbr, 1.0 => constant qp */
     x4->params.rc.f_qblur = avctx->qblur;        /* temporally blur quants */
+    x4->params.rc.f_complexity_blur = avctx->complexityblur;
 
-    if(avctx->flags & CODEC_FLAG_QSCALE && avctx->global_quality > 0)
-        x4->params.rc.i_qp_constant =
-            12 + 6 * log2((double) avctx->global_quality / FF_QP2LAMBDA);
+    x4->params.i_frame_reference = avctx->refs;
 
     x4->params.i_width = avctx->width;
     x4->params.i_height = avctx->height;
@@ -159,13 +194,94 @@ X264_init(AVCodecContext *avctx)
     x4->params.i_fps_num = avctx->time_base.den;
     x4->params.i_fps_den = avctx->time_base.num;
 
+    x4->params.analyse.inter = 0;
+    if(avctx->partitions){
+        if(avctx->partitions & X264_PART_I4X4)
+            x4->params.analyse.inter |= X264_ANALYSE_I4x4;
+        if(avctx->partitions & X264_PART_I8X8)
+            x4->params.analyse.inter |= X264_ANALYSE_I8x8;
+        if(avctx->partitions & X264_PART_P8X8)
+            x4->params.analyse.inter |= X264_ANALYSE_PSUB16x16;
+        if(avctx->partitions & X264_PART_P4X4)
+            x4->params.analyse.inter |= X264_ANALYSE_PSUB8x8;
+        if(avctx->partitions & X264_PART_B8X8)
+            x4->params.analyse.inter |= X264_ANALYSE_BSUB16x16;
+    }
+
+    x4->params.analyse.i_direct_mv_pred = avctx->directpred;
+
+    x4->params.analyse.b_weighted_bipred = (avctx->flags2 & CODEC_FLAG2_WPRED);
+
+    if(avctx->me_method == ME_EPZS)
+        x4->params.analyse.i_me_method = X264_ME_DIA;
+    else if(avctx->me_method == ME_HEX)
+        x4->params.analyse.i_me_method = X264_ME_HEX;
+    else if(avctx->me_method == ME_UMH)
+        x4->params.analyse.i_me_method = X264_ME_UMH;
+    else if(avctx->me_method == ME_FULL)
+        x4->params.analyse.i_me_method = X264_ME_ESA;
+    else x4->params.analyse.i_me_method = X264_ME_HEX;
+
+    x4->params.analyse.i_me_range = avctx->me_range;
+    x4->params.analyse.i_subpel_refine = avctx->me_subpel_quality;
+
+    x4->params.analyse.b_bframe_rdo = (avctx->flags2 & CODEC_FLAG2_BRDO);
+    x4->params.analyse.b_mixed_references =
+        (avctx->flags2 & CODEC_FLAG2_MIXED_REFS);
+    x4->params.analyse.b_chroma_me = (avctx->me_cmp & FF_CMP_CHROMA);
+    x4->params.analyse.b_transform_8x8 = (avctx->flags2 & CODEC_FLAG2_8X8DCT);
+    x4->params.analyse.b_fast_pskip = (avctx->flags2 & CODEC_FLAG2_FASTPSKIP);
+
+    x4->params.analyse.i_trellis = avctx->trellis;
+    x4->params.analyse.i_noise_reduction = avctx->noise_reduction;
+
+    if(avctx->level > 0) x4->params.i_level_idc = avctx->level;
+
+    x4->params.rc.f_rate_tolerance =
+        (float)avctx->bit_rate_tolerance/avctx->bit_rate;
+
+    if((avctx->rc_buffer_size != 0) &&
+            (avctx->rc_initial_buffer_occupancy <= avctx->rc_buffer_size)){
+        x4->params.rc.f_vbv_buffer_init =
+            (float)avctx->rc_initial_buffer_occupancy/avctx->rc_buffer_size;
+    }
+    else x4->params.rc.f_vbv_buffer_init = 0.9;
+
+    x4->params.rc.f_ip_factor = 1/fabs(avctx->i_quant_factor);
+    x4->params.rc.f_pb_factor = avctx->b_quant_factor;
+    x4->params.analyse.i_chroma_qp_offset = avctx->chromaoffset;
+    x4->params.rc.psz_rc_eq = avctx->rc_eq;
+
+    x4->params.analyse.b_psnr = (avctx->flags & CODEC_FLAG_PSNR);
+    x4->params.i_log_level = X264_LOG_DEBUG;
+
+    x4->params.b_aud = (avctx->flags2 & CODEC_FLAG2_AUD);
+
     x4->params.i_threads = avctx->thread_count;
+
+    if(avctx->flags & CODEC_FLAG_GLOBAL_HEADER){
+        x4->params.b_repeat_headers = 0;
+    }
 
     x4->enc = x264_encoder_open(&x4->params);
     if(!x4->enc)
         return -1;
 
     avctx->coded_frame = &x4->out_pic;
+
+    if(avctx->flags & CODEC_FLAG_GLOBAL_HEADER){
+        x264_nal_t *nal;
+        int nnal, i, s = 0;
+
+        x264_encoder_headers(x4->enc, &nal, &nnal);
+
+        /* 5 bytes NAL header + worst case escaping */
+        for(i = 0; i < nnal; i++)
+            s += 5 + nal[i].i_payload * 4 / 3;
+
+        avctx->extradata = av_malloc(s);
+        avctx->extradata_size = encode_nals(avctx->extradata, s, nal, nnal);
+    }
 
     return 0;
 }
@@ -178,5 +294,6 @@ AVCodec x264_encoder = {
     .init = X264_init,
     .encode = X264_frame,
     .close = X264_close,
+    .capabilities = CODEC_CAP_DELAY,
     .pix_fmts = (enum PixelFormat[]) { PIX_FMT_YUV420P, -1 }
 };

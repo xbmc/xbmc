@@ -2,19 +2,21 @@
  * RTP network protocol
  * Copyright (c) 2002 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
 
@@ -56,8 +58,8 @@ int rtp_set_remote_url(URLContext *h, const char *uri)
 
     char buf[1024];
     char path[1024];
-    
-    url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port, 
+
+    url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port,
               path, sizeof(path), uri);
 
     snprintf(buf, sizeof(buf), "udp://%s:%d%s", hostname, port, path);
@@ -87,8 +89,8 @@ static void url_add_option(char *buf, int buf_size, const char *fmt, ...)
 }
 
 static void build_udp_url(char *buf, int buf_size,
-			  const char *hostname, int port,
-			  int local_port, int multicast, int ttl)
+                          const char *hostname, int port,
+                          int local_port, int multicast, int ttl)
 {
     snprintf(buf, buf_size, "udp://%s:%d", hostname, port);
     if (local_port >= 0)
@@ -101,7 +103,7 @@ static void build_udp_url(char *buf, int buf_size,
 
 /*
  * url syntax: rtp://host:port[?option=val...]
- * option: 'multicast=1' : enable multicast 
+ * option: 'multicast=1' : enable multicast
  *         'ttl=n'       : set the ttl value (for multicast only)
  *         'localport=n' : set the local port to n
  *
@@ -114,15 +116,15 @@ static int rtp_open(URLContext *h, const char *uri, int flags)
     char buf[1024];
     char path[1024];
     const char *p;
-    
+
     is_output = (flags & URL_WRONLY);
 
     s = av_mallocz(sizeof(RTPContext));
     if (!s)
         return -ENOMEM;
     h->priv_data = s;
-    
-    url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port, 
+
+    url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port,
               path, sizeof(path), uri);
     /* extract parameters */
     is_multicast = 0;
@@ -147,18 +149,18 @@ static int rtp_open(URLContext *h, const char *uri, int flags)
     /* XXX: need to open another connexion if the port is not even */
 
     /* well, should suppress localport in path */
-    
+
     build_udp_url(buf, sizeof(buf),
                   hostname, port + 1, local_port + 1, is_multicast, ttl);
     if (url_open(&s->rtcp_hd, buf, flags) < 0)
         goto fail;
-    
+
     /* just to ease handle access. XXX: need to suppress direct handle
        access */
     s->rtp_fd = udp_get_file_handle(s->rtp_hd);
     s->rtcp_fd = udp_get_file_handle(s->rtcp_hd);
 
-    h->max_packet_size = url_get_max_packet_size(s->rtp_hd); 
+    h->max_packet_size = url_get_max_packet_size(s->rtp_hd);
     h->is_streamed = 1;
     return 0;
 
@@ -175,7 +177,8 @@ static int rtp_read(URLContext *h, uint8_t *buf, int size)
 {
     RTPContext *s = h->priv_data;
     struct sockaddr_in from;
-    int from_len, len, fd_max, n;
+    socklen_t from_len;
+    int len, fd_max, n;
     fd_set rfds;
 #if 0
     for(;;) {
@@ -235,7 +238,7 @@ static int rtp_write(URLContext *h, uint8_t *buf, int size)
     RTPContext *s = h->priv_data;
     int ret;
     URLContext *hd;
-    
+
     if (buf[1] >= 200 && buf[1] <= 204) {
         /* RTCP payload type */
         hd = s->rtcp_hd;

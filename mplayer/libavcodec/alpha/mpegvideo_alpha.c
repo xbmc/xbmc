@@ -2,19 +2,21 @@
  * Alpha optimized DSP utils
  * Copyright (c) 2002 Falk Hueffner <falk@debian.org>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "asm.h"
@@ -28,22 +30,22 @@ static void dct_unquantize_h263_intra_axp(MpegEncContext *s, DCTELEM *block,
     uint64_t qmul, qadd;
     uint64_t correction;
     DCTELEM *orig_block = block;
-    DCTELEM block0;
+    DCTELEM block0;             /* might not be used uninitialized */
 
     qadd = WORD_VEC((qscale - 1) | 1);
     qmul = qscale << 1;
-    /* This mask kills spill from negative subwords to the next subword.  */ 
+    /* This mask kills spill from negative subwords to the next subword.  */
     correction = WORD_VEC((qmul - 1) + 1); /* multiplication / addition */
 
     if (!s->h263_aic) {
-        if (n < 4) 
+        if (n < 4)
             block0 = block[0] * s->y_dc_scale;
         else
             block0 = block[0] * s->c_dc_scale;
     } else {
         qadd = 0;
     }
-    n_coeffs = 63; // does not always use zigzag table 
+    n_coeffs = 63; // does not always use zigzag table
 
     for(i = 0; i <= n_coeffs; block += 4, i += 4) {
         uint64_t levels, negmask, zeros, add;
@@ -92,12 +94,10 @@ static void dct_unquantize_h263_inter_axp(MpegEncContext *s, DCTELEM *block,
     int i, n_coeffs;
     uint64_t qmul, qadd;
     uint64_t correction;
-    DCTELEM *orig_block = block;
-    DCTELEM block0;
 
     qadd = WORD_VEC((qscale - 1) | 1);
     qmul = qscale << 1;
-    /* This mask kills spill from negative subwords to the next subword.  */ 
+    /* This mask kills spill from negative subwords to the next subword.  */
     correction = WORD_VEC((qmul - 1) + 1); /* multiplication / addition */
 
     n_coeffs = s->intra_scantable.raster_end[s->block_last_index[n]];

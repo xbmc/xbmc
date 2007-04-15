@@ -2,22 +2,24 @@
  * Range coder
  * Copyright (c) 2004 Michael Niedermayer <michaelni@gmx.at>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
- 
+
 /**
  * @file rangecoder.c
  * Range coder.
@@ -38,7 +40,7 @@
 
 
 void ff_init_range_encoder(RangeCoder *c, uint8_t *buf, int buf_size){
-    c->bytestream_start= 
+    c->bytestream_start=
     c->bytestream= buf;
     c->bytestream_end= buf + buf_size;
 
@@ -66,9 +68,9 @@ void ff_build_rac_states(RangeCoder *c, int factor, int max_p){
 
 #if 0
     for(i=1; i<256; i++){
-        if(c->one_state[i]) 
+        if(c->one_state[i])
             continue;
-        
+
         p= (i*one + 128) >> 8;
         last_p8= i;
         for(;;){
@@ -93,13 +95,13 @@ void ff_build_rac_states(RangeCoder *c, int factor, int max_p){
         if(p8 <= last_p8) p8= last_p8+1;
         if(last_p8 && last_p8<256 && p8<=max_p)
             c->one_state[last_p8]= p8;
-        
+
         p+= ((one-p)*factor + one/2) >> 32;
         last_p8= p8;
     }
 #endif
     for(i=256-max_p; i<=max_p; i++){
-        if(c->one_state[i]) 
+        if(c->one_state[i])
             continue;
 
         p= (i*one + 128) >> 8;
@@ -109,8 +111,8 @@ void ff_build_rac_states(RangeCoder *c, int factor, int max_p){
         if(p8 > max_p) p8= max_p;
         c->one_state[    i]=     p8;
     }
-    
-    for(i=0; i<256; i++)
+
+    for(i=1; i<255; i++)
         c->zero_state[i]= 256-c->one_state[256-i];
 #if 0
     for(i=0; i<256; i++)
@@ -143,17 +145,17 @@ int main(){
     uint8_t r[9*SIZE];
     int i;
     uint8_t state[10]= {0};
-    
+
     ff_init_range_encoder(&c, b, SIZE);
     ff_build_rac_states(&c, 0.05*(1LL<<32), 128+64+32+16);
-    
+
     memset(state, 128, sizeof(state));
 
     for(i=0; i<SIZE; i++){
         r[i]= random()%7;
     }
-    
-  
+
+
     for(i=0; i<SIZE; i++){
 START_TIMER
         put_rac(&c, state, r[i]&1);
@@ -161,18 +163,18 @@ STOP_TIMER("put_rac")
     }
 
     ff_put_rac_terminate(&c);
-    
+
     ff_init_range_decoder(&c, b, SIZE);
-    
+
     memset(state, 128, sizeof(state));
-    
+
     for(i=0; i<SIZE; i++){
 START_TIMER
         if( (r[i]&1) != get_rac(&c, state) )
             av_log(NULL, AV_LOG_DEBUG, "rac failure at %d\n", i);
 STOP_TIMER("get_rac")
     }
-    
+
     return 0;
 }
 

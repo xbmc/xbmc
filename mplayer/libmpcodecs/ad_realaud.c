@@ -5,8 +5,6 @@
 
 #include "config.h"
 
-#ifdef USE_REALCODECS
-
 //#include <stddef.h>
 #ifdef HAVE_LIBDL
 #include <dlfcn.h>
@@ -35,15 +33,13 @@ void __builtin_delete(void* ize) {
 	free(ize);
 }
 
-#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
 void *__ctype_b=NULL;
 #endif
 
 static unsigned long (*raCloseCodec)(void*);
 static unsigned long (*raDecode)(void*, char*,unsigned long,char*,unsigned int*,long);
-static unsigned long (*raFlush)(unsigned long,unsigned long,unsigned long);
 static unsigned long (*raFreeDecoder)(void*);
-static void*         (*raGetFlavorProperty)(void*,unsigned long,unsigned long,int*);
 //static unsigned long (*raGetNumberOfFlavors2)(void);
 static unsigned long (*raInitDecoder)(void*, void*);
 static unsigned long (*raOpenCodec)(void*);
@@ -54,9 +50,7 @@ static void  (*raSetPwd)(char*,char*);
 #ifdef USE_WIN32DLL
 static unsigned long WINAPI (*wraCloseCodec)(void*);
 static unsigned long WINAPI (*wraDecode)(void*, char*,unsigned long,char*,unsigned int*,long);
-static unsigned long WINAPI (*wraFlush)(unsigned long,unsigned long,unsigned long);
 static unsigned long WINAPI (*wraFreeDecoder)(void*);
-static void*         WINAPI (*wraGetFlavorProperty)(void*,unsigned long,unsigned long,int*);
 static unsigned long WINAPI (*wraInitDecoder)(void*, void*);
 static unsigned long WINAPI (*wraOpenCodec)(void*);
 static unsigned long WINAPI (*wraOpenCodec2)(void*, void*);
@@ -121,7 +115,7 @@ static int load_syms_linux(char *path)
 {
     void *handle;
 
-    mp_msg(MSGT_DECVIDEO, MSGL_INFO, "opening shared obj '%s'\n", path);
+    mp_msg(MSGT_DECVIDEO, MSGL_V, "opening shared obj '%s'\n", path);
     handle = dlopen(path, RTLD_LAZY);
     if (!handle)
     {
@@ -131,9 +125,7 @@ static int load_syms_linux(char *path)
 
     raCloseCodec = dlsym(handle, "RACloseCodec");
     raDecode = dlsym(handle, "RADecode");
-    raFlush = dlsym(handle, "RAFlush");
     raFreeDecoder = dlsym(handle, "RAFreeDecoder");
-    raGetFlavorProperty = dlsym(handle, "RAGetFlavorProperty");
     raOpenCodec = dlsym(handle, "RAOpenCodec");
     raOpenCodec2 = dlsym(handle, "RAOpenCodec2");
     raInitDecoder = dlsym(handle, "RAInitDecoder");
@@ -141,8 +133,8 @@ static int load_syms_linux(char *path)
     raSetDLLAccessPath = dlsym(handle, "SetDLLAccessPath");
     raSetPwd = dlsym(handle, "RASetPwd"); // optional, used by SIPR
     
-    if (raCloseCodec && raDecode && /*raFlush && */raFreeDecoder &&
-	raGetFlavorProperty && (raOpenCodec||raOpenCodec2) && raSetFlavor &&
+    if (raCloseCodec && raDecode && raFreeDecoder &&
+	(raOpenCodec||raOpenCodec2) && raSetFlavor &&
 	/*raSetDLLAccessPath &&*/ raInitDecoder)
     {
 	rv_handle = handle;
@@ -158,7 +150,7 @@ static int load_syms_linux(char *path)
 #ifdef USE_WIN32DLL
 
 #ifdef WIN32_LOADER
-#include "../loader/ldt_keeper.h"
+#include "loader/ldt_keeper.h"
 #endif
 void* WINAPI LoadLibraryA(char* name);
 void* WINAPI GetProcAddress(void* handle,char *func);
@@ -168,7 +160,7 @@ static int load_syms_windows(char *path)
 {
     void *handle;
     
-    mp_msg(MSGT_DECVIDEO, MSGL_INFO, "opening win32 dll '%s'\n", path);
+    mp_msg(MSGT_DECVIDEO, MSGL_V, "opening win32 dll '%s'\n", path);
 #ifdef WIN32_LOADER
     Setup_LDT_Keeper();
 #endif
@@ -181,9 +173,7 @@ static int load_syms_windows(char *path)
 
     wraCloseCodec = GetProcAddress(handle, "RACloseCodec");
     wraDecode = GetProcAddress(handle, "RADecode");
-    wraFlush = GetProcAddress(handle, "RAFlush");
     wraFreeDecoder = GetProcAddress(handle, "RAFreeDecoder");
-    wraGetFlavorProperty = GetProcAddress(handle, "RAGetFlavorProperty");
     wraOpenCodec = GetProcAddress(handle, "RAOpenCodec");
     wraOpenCodec2 = GetProcAddress(handle, "RAOpenCodec2");
     wraInitDecoder = GetProcAddress(handle, "RAInitDecoder");
@@ -191,8 +181,8 @@ static int load_syms_windows(char *path)
     wraSetDLLAccessPath = GetProcAddress(handle, "SetDLLAccessPath");
     wraSetPwd = GetProcAddress(handle, "RASetPwd"); // optional, used by SIPR
     
-    if (wraCloseCodec && wraDecode && /*wraFlush && */wraFreeDecoder &&
-	wraGetFlavorProperty && (wraOpenCodec || wraOpenCodec2) && wraSetFlavor &&
+    if (wraCloseCodec && wraDecode && wraFreeDecoder &&
+	(wraOpenCodec || wraOpenCodec2) && wraSetFlavor &&
 	/*wraSetDLLAccessPath &&*/ wraInitDecoder)
     {
 	rv_handle = handle;
@@ -243,7 +233,7 @@ static int preinit(sh_audio_t *sh){
 #endif
       int i;
       // used by 'SIPR'
-      path = realloc(path, strlen(REALCODEC_PATH) + 12);
+      path = realloc(path, strlen(REALCODEC_PATH) + 13);
       sprintf(path, "DT_Codecs=" REALCODEC_PATH);
       if(path[strlen(path)-1]!='/'){
         path[strlen(path)+1]=0;
@@ -291,10 +281,10 @@ static int preinit(sh_audio_t *sh){
 	sh->wf->wBitsPerSample,
 	sh->wf->nChannels,
 	100, // quality
-	((short*)(sh->wf+1))[0],  // subpacket size
-	((short*)(sh->wf+1))[3],  // coded frame size
-	((short*)(sh->wf+1))[4], // codec data length
-	((char*)(sh->wf+1))+10 // extras
+	sh->wf->nBlockAlign, // subpacket size
+	sh->wf->nBlockAlign, // coded frame size
+	sh->wf->cbSize, // codec data length
+	(char*)(sh->wf+1) // extras
     };
 #ifdef USE_WIN32DLL
     wra_init_t winit_data={
@@ -302,10 +292,10 @@ static int preinit(sh_audio_t *sh){
 	sh->wf->wBitsPerSample,
 	sh->wf->nChannels,
 	100, // quality
-	((short*)(sh->wf+1))[0],  // subpacket size
-	((short*)(sh->wf+1))[3],  // coded frame size
-	((short*)(sh->wf+1))[4], // codec data length
-	((char*)(sh->wf+1))+10 // extras
+	sh->wf->nBlockAlign, // subpacket size
+	sh->wf->nBlockAlign, // coded frame size
+	sh->wf->cbSize, // codec data length
+	(char*)(sh->wf+1) // extras
     };
 #endif
 #ifdef USE_WIN32DLL
@@ -336,42 +326,35 @@ static int preinit(sh_audio_t *sh){
 	raSetPwd(sh->context,"Ardubancel Quazanga"); // set password... lol.
     }
   
+  if (sh->format == mmioFOURCC('s','i','p','r')) {
+    short flavor;
+    
+    if (sh->wf->nAvgBytesPerSec > 1531)
+        flavor = 3;
+    else if (sh->wf->nAvgBytesPerSec > 937)
+        flavor = 1;
+    else if (sh->wf->nAvgBytesPerSec > 719)
+        flavor = 0;
+    else
+        flavor = 2;
+    mp_msg(MSGT_DECAUDIO,MSGL_V,"Got sipr flavor %d from bitrate %d\n",flavor, sh->wf->nAvgBytesPerSec);
+
 #ifdef USE_WIN32DLL
     if (dll_type == 1)
-	result=wraSetFlavor(sh->context,((short*)(sh->wf+1))[2]);
+	result=wraSetFlavor(sh->context,flavor);
     else
 #endif
-    result=raSetFlavor(sh->context,((short*)(sh->wf+1))[2]);
+    result=raSetFlavor(sh->context,flavor);
     if(result){
       mp_msg(MSGT_DECAUDIO,MSGL_WARN,"Decoder flavor setup failed, error code: 0x%X\n",result);
       return 0;
     }
+  } // sipr flavor
 
-#ifdef USE_WIN32DLL
-    if (dll_type == 1)
-	prop=wraGetFlavorProperty(sh->context,((short*)(sh->wf+1))[2],0,&len);
-    else
-#endif
-    prop=raGetFlavorProperty(sh->context,((short*)(sh->wf+1))[2],0,&len);
-    mp_msg(MSGT_DECAUDIO,MSGL_INFO,"Audio codec: [%d] %s\n",((short*)(sh->wf+1))[2],prop);
-
-#ifdef USE_WIN32DLL
-    if (dll_type == 1)
-	prop=wraGetFlavorProperty(sh->context,((short*)(sh->wf+1))[2],1,&len);
-    else
-#endif
-    prop=raGetFlavorProperty(sh->context,((short*)(sh->wf+1))[2],1,&len);
-    if(prop){
-      sh->i_bps=((*((int*)prop))+4)/8;
-      mp_msg(MSGT_DECAUDIO,MSGL_INFO,"Audio bitrate: %5.3f kbit/s (%d bps)  \n",(*((int*)prop))*0.001f,sh->i_bps);
-    } else
-      sh->i_bps=12000; // dunno :(((  [12000 seems to be OK for crash.rmvb too]
+    sh->i_bps=sh->wf->nAvgBytesPerSec;
     
-//    prop=raGetFlavorProperty(sh->context,((short*)(sh->wf+1))[2],0x13,&len);
-//    mp_msg(MSGT_DECAUDIO,MSGL_INFO,"Samples/block?: %d  \n",(*((int*)prop)));
-
   sh->audio_out_minsize=128000; // no idea how to get... :(
-  sh->audio_in_minsize=((short*)(sh->wf+1))[1]*sh->wf->nBlockAlign;
+  sh->audio_in_minsize = sh->wf->nBlockAlign;
   
   return 1; // return values: 1=OK 0=ERROR
 }
@@ -413,82 +396,18 @@ static void uninit(sh_audio_t *sh){
     rv_handle = NULL;
 }
 
-static unsigned char sipr_swaps[38][2]={
-    {0,63},{1,22},{2,44},{3,90},{5,81},{7,31},{8,86},{9,58},{10,36},{12,68},
-    {13,39},{14,73},{15,53},{16,69},{17,57},{19,88},{20,34},{21,71},{24,46},
-    {25,94},{26,54},{28,75},{29,50},{32,70},{33,92},{35,74},{38,85},{40,56},
-    {42,87},{43,65},{45,59},{48,79},{49,93},{51,89},{55,95},{61,76},{67,83},
-    {77,80} };
-
 static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen){
   int result;
   int len=-1;
-  int sps=((short*)(sh->wf+1))[0];
-  int w=sh->wf->nBlockAlign; // 5
-  int h=((short*)(sh->wf+1))[1];
-  int cfs=((short*)(sh->wf+1))[3];
 
-//  printf("bs=%d  sps=%d  w=%d h=%d \n",sh->wf->nBlockAlign,sps,w,h);
-  
-#if 1
   if(sh->a_in_buffer_len<=0){
       // fill the buffer!
-		if (sh->format == mmioFOURCC('1','4','_','4')) {
-			demux_read_data(sh->ds, sh->a_in_buffer, sh->wf->nBlockAlign);
-			sh->a_in_buffer_size=
-			sh->a_in_buffer_len=sh->wf->nBlockAlign;
-		} else
-		if (sh->format == mmioFOURCC('2','8','_','8')) {
-			int i,j;
-			for (j = 0; j < h; j++)
-				for (i = 0; i < h/2; i++)
-					demux_read_data(sh->ds, sh->a_in_buffer+i*2*w+j*cfs, cfs);
-			sh->a_in_buffer_size=
-			sh->a_in_buffer_len=sh->wf->nBlockAlign*h;
-		} else
-    if(!sps){
-      // 'sipr' way
-      int j,n;
-      int bs=h*w*2/96; // nibbles per subpacket
-      unsigned char *p=sh->a_in_buffer;
-      demux_read_data(sh->ds, p, h*w);
-      for(n=0;n<38;n++){
-          int i=bs*sipr_swaps[n][0];
-          int o=bs*sipr_swaps[n][1];
-	  // swap nibbles of block 'i' with 'o'      TODO: optimize
-	  for(j=0;j<bs;j++){
-	      int x=(i&1) ? (p[(i>>1)]>>4) : (p[(i>>1)]&15);
-	      int y=(o&1) ? (p[(o>>1)]>>4) : (p[(o>>1)]&15);
-	      if(o&1) p[(o>>1)]=(p[(o>>1)]&0x0F)|(x<<4);
-	        else  p[(o>>1)]=(p[(o>>1)]&0xF0)|x;
-	      if(i&1) p[(i>>1)]=(p[(i>>1)]&0x0F)|(y<<4);
-	        else  p[(i>>1)]=(p[(i>>1)]&0xF0)|y;
-	      ++i;++o;
-	  }
-      }
-      sh->a_in_buffer_size=
-      sh->a_in_buffer_len=w*h;
-    } else {
-      // 'cook' way
-      int x,y;
-      w/=sps;
-      for(y=0;y<h;y++)
-        for(x=0;x<w;x++){
-	    demux_read_data(sh->ds, sh->a_in_buffer+sps*(h*x+((h+1)/2)*(y&1)+(y>>1)), sps);
-	}
-      sh->a_in_buffer_size=
-      sh->a_in_buffer_len=w*h*sps;
-    }
-  }
-
-#else
-  if(sh->a_in_buffer_len<=0){
-      // fill the buffer!
+      if (sh->ds->eof)
+          return 0;
       demux_read_data(sh->ds, sh->a_in_buffer, sh->wf->nBlockAlign);
       sh->a_in_buffer_size=
       sh->a_in_buffer_len=sh->wf->nBlockAlign;
   }
-#endif
   
 #ifdef USE_WIN32DLL
     if (dll_type == 1)
@@ -522,5 +441,3 @@ static int control(sh_audio_t *sh,int cmd,void* arg, ...){
     }
   return CONTROL_UNKNOWN;
 }
-
-#endif

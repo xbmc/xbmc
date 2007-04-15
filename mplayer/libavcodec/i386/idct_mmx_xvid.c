@@ -5,19 +5,21 @@
 // *
 // *  Copyright(C) 2001 Peter Ross <pross@xvid.org>
 // *
-// *  This program is free software; you can redistribute it and/or modify it
-// *  under the terms of the GNU General Public License as published by
-// *  the Free Software Foundation; either version 2 of the License, or
-// *  (at your option) any later version.
+// * This file is part of FFmpeg.
 // *
-// *  This program is distributed in the hope that it will be useful,
-// *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-// *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// *  GNU General Public License for more details.
+// * FFmpeg is free software; you can redistribute it and/or
+// * modify it under the terms of the GNU Lesser General Public
+// * License as published by the Free Software Foundation; either
+// * version 2.1 of the License, or (at your option) any later version.
 // *
-// *  You should have received a copy of the GNU General Public License
-// *  along with this program; if not, write to the Free Software
-// *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+// * FFmpeg is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// * Lesser General Public License for more details.
+// *
+// * You should have received a copy of the GNU Lesser General Public License
+// * along with FFmpeg; if not, write to the Free Software Foundation,
+// * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 // *
 // * $Id$
 // *
@@ -72,13 +74,13 @@
 //-----------------------------------------------------------------------------
 
 
-static const int16_t tg_1_16[4*4] attribute_used __attribute__ ((aligned(8))) = { 
+static const int16_t tg_1_16[4*4] attribute_used __attribute__ ((aligned(8))) = {
   13036,13036,13036,13036,        // tg * (2<<16) + 0.5
   27146,27146,27146,27146,        // tg * (2<<16) + 0.5
   -21746,-21746,-21746,-21746,    // tg * (2<<16) + 0.5
   23170,23170,23170,23170};       // cos * (2<<15) + 0.5
 
-static const int32_t rounder_0[2*8] attribute_used __attribute__ ((aligned(8))) = { 
+static const int32_t rounder_0[2*8] attribute_used __attribute__ ((aligned(8))) = {
   65536,65536,
   3597,3597,
   2260,2260,
@@ -148,7 +150,7 @@ static const int32_t rounder_0[2*8] attribute_used __attribute__ ((aligned(8))) 
 //-----------------------------------------------------------------------------
 
 // Table for rows 0,4 - constants are multiplied by cos_4_16
-static const int16_t tab_i_04_mmx[32*4] attribute_used __attribute__ ((aligned(8))) = { 
+static const int16_t tab_i_04_mmx[32*4] attribute_used __attribute__ ((aligned(8))) = {
   16384,16384,16384,-16384,       // movq-> w06 w04 w02 w00
   21407,8867,8867,-21407,         // w07 w05 w03 w01
   16384,-16384,16384,16384,       // w14 w12 w10 w08
@@ -190,7 +192,7 @@ static const int16_t tab_i_04_mmx[32*4] attribute_used __attribute__ ((aligned(8
 //-----------------------------------------------------------------------------
 
 // %3 for rows 0,4 - constants are multiplied by cos_4_16
-static const int16_t tab_i_04_xmm[32*4] attribute_used __attribute__ ((aligned(8))) = { 
+static const int16_t tab_i_04_xmm[32*4] attribute_used __attribute__ ((aligned(8))) = {
   16384,21407,16384,8867,      // movq-> w05 w04 w01 w00
   16384,8867,-16384,-21407,    // w07 w06 w03 w02
   16384,-8867,16384,-21407,    // w13 w12 w09 w08
@@ -294,17 +296,17 @@ static const int16_t tab_i_04_xmm[32*4] attribute_used __attribute__ ((aligned(8
   "movq 8+" #A1 ",%%mm1                \n\t"/* 1     ; x7 x6 x5 x4*/\
   "movq %%mm0,%%mm2                \n\t"/* 2     ; x3 x2 x1 x0*/\
   "movq " #A3 ",%%mm3                  \n\t"/* 3     ; w05 w04 w01 w00*/\
-  "pshufw $0b10001000,%%mm0,%%mm0  \n\t"/* x2 x0 x2 x0*/\
+  "pshufw $0x88,%%mm0,%%mm0        \n\t"/* x2 x0 x2 x0*/\
   "movq 8+" #A3 ",%%mm4                \n\t"/* 4     ; w07 w06 w03 w02*/\
   "movq %%mm1,%%mm5                \n\t"/* 5     ; x7 x6 x5 x4*/\
   "pmaddwd %%mm0,%%mm3             \n\t"/* x2*w05+x0*w04 x2*w01+x0*w00*/\
   "movq 32+" #A3 ",%%mm6               \n\t"/* 6     ; w21 w20 w17 w16*/\
-  "pshufw $0b10001000,%%mm1,%%mm1  \n\t"/* x6 x4 x6 x4*/\
+  "pshufw $0x88,%%mm1,%%mm1        \n\t"/* x6 x4 x6 x4*/\
   "pmaddwd %%mm1,%%mm4             \n\t"/* x6*w07+x4*w06 x6*w03+x4*w02*/\
   "movq 40+" #A3 ",%%mm7               \n\t"/* 7    ; w23 w22 w19 w18*/\
-  "pshufw $0b11011101,%%mm2,%%mm2  \n\t"/* x3 x1 x3 x1*/\
+  "pshufw $0xdd,%%mm2,%%mm2        \n\t"/* x3 x1 x3 x1*/\
   "pmaddwd %%mm2,%%mm6             \n\t"/* x3*w21+x1*w20 x3*w17+x1*w16*/\
-  "pshufw $0b11011101,%%mm5,%%mm5  \n\t"/* x7 x5 x7 x5*/\
+  "pshufw $0xdd,%%mm5,%%mm5        \n\t"/* x7 x5 x7 x5*/\
   "pmaddwd %%mm5,%%mm7             \n\t"/* x7*w23+x5*w22 x7*w19+x5*w18*/\
   "paddd " #A4 ",%%mm3                 \n\t"/* +%4*/\
   "pmaddwd 16+" #A3 ",%%mm0            \n\t"/* x2*w13+x0*w12 x2*w09+x0*w08*/\
@@ -329,7 +331,7 @@ static const int16_t tab_i_04_xmm[32*4] attribute_used __attribute__ ((aligned(8
   "packssdw %%mm0,%%mm3            \n\t"/* 0     ; y3 y2 y1 y0*/\
   "packssdw %%mm4,%%mm7            \n\t"/* 4     ; y6 y7 y4 y5*/\
   "movq %%mm3, " #A2 "                  \n\t"/* 3     ; save y3 y2 y1 y0*/\
-  "pshufw $0b10110001,%%mm7,%%mm7  \n\t"/* y7 y6 y5 y4*/\
+  "pshufw $0xb1,%%mm7,%%mm7        \n\t"/* y7 y6 y5 y4*/\
   "movq %%mm7,8                +" #A2 "\n\t"/* 7     ; save y7 y6 y5 y4*/\
 
 
@@ -501,7 +503,7 @@ asm volatile(
     DCT_8_INV_ROW_MMX(5*16(%0), 5*16(%0), 64*3(%2), 8*5(%1))
     DCT_8_INV_ROW_MMX(6*16(%0), 6*16(%0), 64*2(%2), 8*6(%1))
     DCT_8_INV_ROW_MMX(7*16(%0), 7*16(%0), 64*1(%2), 8*7(%1))
-    
+
             //# Process the columns (4 at a time)
     DCT_8_INV_COL(0(%0), 0(%0))
     DCT_8_INV_COL(8(%0), 8(%0))
@@ -524,7 +526,7 @@ asm volatile(
     DCT_8_INV_ROW_XMM(5*16(%0), 5*16(%0), 64*3(%2), 8*5(%1))
     DCT_8_INV_ROW_XMM(6*16(%0), 6*16(%0), 64*2(%2), 8*6(%1))
     DCT_8_INV_ROW_XMM(7*16(%0), 7*16(%0), 64*1(%2), 8*7(%1))
-    
+
             //# Process the columns (4 at a time)
     DCT_8_INV_COL(0(%0), 0(%0))
     DCT_8_INV_COL(8(%0), 8(%0))

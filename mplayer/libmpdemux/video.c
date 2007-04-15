@@ -49,12 +49,15 @@ enum {
 	VIDEO_MPEG12,
 	VIDEO_MPEG4,
 	VIDEO_H264,
+	VIDEO_VC1,
 	VIDEO_OTHER
 } video_codec;
 
 if((d_video->demuxer->file_format == DEMUXER_TYPE_PVA) ||
    (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_ES) ||
-   (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_PS) ||
+   (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_GXF) ||
+   (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_PES) ||
+   (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_PS && ((! sh_video->format) || (sh_video->format==0x10000001) || (sh_video->format==0x10000002))) ||
    (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_TY) ||
    (d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_TS && ((sh_video->format==0x10000001) || (sh_video->format==0x10000002)))
 #ifdef STREAMING_LIVE_DOT_COM
@@ -63,13 +66,17 @@ if((d_video->demuxer->file_format == DEMUXER_TYPE_PVA) ||
   )
     video_codec = VIDEO_MPEG12;
   else if((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG4_ES) ||
-    ((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000004))
+    ((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000004)) ||
+    ((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_PS) && (sh_video->format==0x10000004))
   )
     video_codec = VIDEO_MPEG4;
   else if((d_video->demuxer->file_format == DEMUXER_TYPE_H264_ES) ||
-    ((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000005))
+    ((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000005)) ||
+    ((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_PS) && (sh_video->format==0x10000005))
   )
     video_codec = VIDEO_H264;
+  else if((d_video->demuxer->file_format == DEMUXER_TYPE_MPEG_PS) && (sh_video->format==mmioFOURCC('W', 'V', 'C', '1')))
+    video_codec = VIDEO_VC1;
   else
     video_codec = VIDEO_OTHER;
     
@@ -94,7 +101,7 @@ switch(video_codec){
     sh_video->disp_w=sh_video->bih->biWidth;
     sh_video->disp_h=abs(sh_video->bih->biHeight);
 
-#if 1
+#if 0
     /* hack to support decoding of mpeg1 chunks in AVI's with libmpeg2 -- 2002 alex */
     if ((sh_video->format == 0x10000001) ||
 	(sh_video->format == 0x10000002) ||
@@ -124,6 +131,7 @@ switch(video_codec){
   break;
  }
  case VIDEO_MPEG4: {
+   int pos = 0, vop_cnt=0, units[3];
    videobuf_len=0; videobuf_code_len=0;
    mp_msg(MSGT_DECVIDEO,MSGL_V,"Searching for Video Object Start code... ");fflush(stdout);
    while(1){
@@ -153,7 +161,14 @@ switch(video_codec){
 	return 0;
       }
    }
-   mp_msg(MSGT_DECVIDEO,MSGL_V,"OK!\nSearching for Video Object Plane Start code... ");fflush(stdout);
+   pos = videobuf_len+4;
+   if(!read_video_packet(d_video)){ 
+     mp_msg(MSGT_DECVIDEO,MSGL_ERR,"Can't read Video Object Layer Header\n");
+     return 0;
+   }
+   mp4_header_process_vol(&picture, &(videobuffer[pos]));
+   mp_msg(MSGT_DECVIDEO,MSGL_V,"OK! FPS SEEMS TO BE %.3f\nSearching for Video Object Plane Start code... ", sh_video->fps);fflush(stdout);
+ mp4_init: 
    while(1){
       int i=sync_video_packet(d_video);
       if(i==0x1B6) break; // found it!
@@ -162,11 +177,54 @@ switch(video_codec){
 	return 0;
       }
    }
+   pos = videobuf_len+4;
+   if(!read_video_packet(d_video)){ 
+     mp_msg(MSGT_DECVIDEO,MSGL_ERR,"Can't read Video Object Plane Header\n");
+     return 0;
+   }
+   mp4_header_process_vop(&picture, &(videobuffer[pos]));
+   units[vop_cnt] = picture.timeinc_unit;
+   vop_cnt++;
+   //mp_msg(MSGT_DECVIDEO,MSGL_V, "TYPE: %d, unit: %d\n", picture.picture_type, picture.timeinc_unit);
+   if(!picture.fps) {
+     int i, mn, md, mx, diff;
+     if(vop_cnt < 3)
+          goto mp4_init;
+
+     i=0;
+     mn = mx = units[0];  
+     for(i=0; i<3; i++) {
+       if(units[i] < mn)
+         mn = units[i];
+       if(units[i] > mx)
+         mx = units[i];
+     }
+     md = mn;
+     for(i=0; i<3; i++) {
+       if((units[i] > mn) && (units[i] < mx))
+         md = units[i];
+     }
+     mp_msg(MSGT_DECVIDEO,MSGL_V, "MIN: %d, mid: %d, max: %d\n", mn, md, mx);
+     if(mx - md > md - mn)
+       diff = md - mn;
+     else
+       diff = mx - md;
+     if(diff > 0){
+       picture.fps = ((float)picture.timeinc_resolution) / diff;
+       mp_msg(MSGT_DECVIDEO,MSGL_V, "FPS seems to be: %f, resolution: %d, delta_units: %d\n", picture.fps, picture.timeinc_resolution, diff);
+     }
+   }
+   if(picture.fps) {
+    sh_video->fps=picture.fps;
+    sh_video->frametime=1.0/picture.fps;
+    mp_msg(MSGT_DECVIDEO,MSGL_INFO, "FPS seems to be: %f\n", picture.fps);
+   }
    mp_msg(MSGT_DECVIDEO,MSGL_V,"OK!\n");
    sh_video->format=0x10000004;
    break;
  }
  case VIDEO_H264: {
+   int pos = 0;
    videobuf_len=0; videobuf_code_len=0;
    mp_msg(MSGT_DECVIDEO,MSGL_V,"Searching for sequence parameter set... ");fflush(stdout);
    while(1){
@@ -186,6 +244,12 @@ switch(video_codec){
        return 0;
      }
    }
+   pos = videobuf_len+4;
+   if(!read_video_packet(d_video)){ 
+     mp_msg(MSGT_DECVIDEO,MSGL_ERR,"Can't read sequence parameter set\n");
+     return 0;
+   }
+   h264_parse_sps(&picture, &(videobuffer[pos]), videobuf_len - pos);
    mp_msg(MSGT_DECVIDEO,MSGL_V,"Searching for picture parameter set... ");fflush(stdout);
    while(1){
       int i=sync_video_packet(d_video);
@@ -207,10 +271,15 @@ switch(video_codec){
    }
    mp_msg(MSGT_DECVIDEO,MSGL_V,"OK!\n");
    sh_video->format=0x10000005;
+   if(picture.fps) {
+     sh_video->fps=picture.fps;
+     sh_video->frametime=1.0/picture.fps;
+     mp_msg(MSGT_DECVIDEO,MSGL_INFO, "FPS seems to be: %f\n", picture.fps);
+   }
    break;
  }
  case VIDEO_MPEG12: {
-//mpeg_header_parser:
+mpeg_header_parser:
    // Find sequence_header first:
    videobuf_len=0; videobuf_code_len=0;
    telecine=0; telecine_cnt=-2.5;
@@ -219,7 +288,7 @@ switch(video_codec){
       int i=sync_video_packet(d_video);
       if(i==0x1B3) break; // found it!
       if(!i || !skip_video_packet(d_video)){
-        if(verbose>0)  mp_msg(MSGT_DECVIDEO,MSGL_V,"NONE :(\n");
+        if( mp_msg_test(MSGT_DECVIDEO,MSGL_V) )  mp_msg(MSGT_DECVIDEO,MSGL_V,"NONE :(\n");
         mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_MpegNoSequHdr);
 	return 0;
       }
@@ -243,7 +312,8 @@ switch(video_codec){
    }
    if(mp_header_process_sequence_header (&picture, &videobuffer[4])) {
      mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_BadMpegSequHdr); 
-     return 0;
+     goto mpeg_header_parser;
+     //return 0;
    }
    if(sync_video_packet(d_video)==0x1B5){ // next packet is seq. ext.
 //    videobuf_len=0;
@@ -259,37 +329,9 @@ switch(video_codec){
    }
    
 //   printf("picture.fps=%d\n",picture.fps);
-   
-   // fill aspect info:
-   switch(picture.aspect_ratio_information){
-     case 2:  // PAL/NTSC SVCD/DVD 4:3
-     case 8:  // PAL VCD 4:3
-     case 12: // NTSC VCD 4:3
-       sh_video->aspect=4.0/3.0;
-     break;
-     case 3:  // PAL/NTSC Widescreen SVCD/DVD 16:9
-     case 6:  // (PAL?)/NTSC Widescreen SVCD 16:9
-       sh_video->aspect=16.0/9.0;
-     break;
-     case 4:  // according to ISO-138182-2 Table 6.3
-       sh_video->aspect=2.21;
-       break;
-     case 9: // Movie Type ??? / 640x480
-       sh_video->aspect=0.0;
-     break;
-     default:
-       mp_msg(MSGT_DECVIDEO,MSGL_ERR,"Detected unknown aspect_ratio_information in mpeg sequence header.\n"
-               "Please report the aspect value (%i) along with the movie type (VGA,PAL,NTSC,"
-               "SECAM) and the movie resolution (720x576,352x240,480x480,...) to the MPlayer"
-               " developers, so that we can add support for it!\nAssuming 1:1 aspect for now.\n",
-               picture.aspect_ratio_information);
-     case 1:  // VGA 1:1 - do not prescale
-       sh_video->aspect=0.0;
-     break;
-   }
    // display info:
    sh_video->format=picture.mpeg1?0x10000001:0x10000002; // mpeg video
-   sh_video->fps=picture.fps*0.0001f;
+   sh_video->fps=picture.fps;
    if(!sh_video->fps){
 //     if(!force_fps){
 //       fprintf(stderr,"FPS not specified (or invalid) in the header! Use the -fps option!\n");
@@ -297,7 +339,7 @@ switch(video_codec){
 //     }
      sh_video->frametime=0;
    } else {
-     sh_video->frametime=10000.0f/(float)picture.fps;
+     sh_video->frametime=1.0/picture.fps;
    }
    sh_video->disp_w=picture.display_picture_width;
    sh_video->disp_h=picture.display_picture_height;
@@ -313,6 +355,68 @@ switch(video_codec){
     sh_video->fps,
     sh_video->i_bps * 8 / 1000.0,
     sh_video->i_bps / 1000.0 );
+  break;
+ }
+ case VIDEO_VC1: {
+   // Find sequence_header:
+   videobuf_len=0;
+   videobuf_code_len=0;
+   mp_msg(MSGT_DECVIDEO,MSGL_INFO,"Searching for VC1 sequence header... ");
+   while(1){
+      int i=sync_video_packet(d_video);
+      if(i==0x10F) break; // found it!
+      if(!i || !skip_video_packet(d_video)){
+        if( mp_msg_test(MSGT_DECVIDEO,MSGL_V) )  mp_msg(MSGT_DECVIDEO,MSGL_V,"NONE :(\n");
+        mp_msg(MSGT_DECVIDEO,MSGL_ERR, "Couldn't find VC-1 sequence header\n");
+        return 0;
+      }
+   }
+   mp_msg(MSGT_DECVIDEO,MSGL_INFO,"found\n");
+   if(!videobuffer) {
+     videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+     if (videobuffer) memset(videobuffer+VIDEOBUFFER_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+     else {
+       mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
+       return 0;
+     }
+   }
+   if(!read_video_packet(d_video)){ 
+     mp_msg(MSGT_DECVIDEO,MSGL_ERR, "Couldn't read VC-1 sequence header!\n");
+     return 0;
+   }
+
+   while(1) {
+      int i=sync_video_packet(d_video);
+      if(i==0x10E) break; // found it!
+      if(!i || !skip_video_packet(d_video)){
+        mp_msg(MSGT_DECVIDEO,MSGL_V,"Couldn't find VC-1 entry point sync-code:(\n");
+        return 0;
+      }
+   }
+   if(!read_video_packet(d_video)){
+      mp_msg(MSGT_DECVIDEO,MSGL_V,"Couldn't read VC-1 entry point sync-code:(\n");
+      return 0;
+   }
+
+
+   if(mp_vc1_decode_sequence_header(&picture, &videobuffer[4], videobuf_len-4)) {
+     sh_video->bih = (BITMAPINFOHEADER *) calloc(1, sizeof(BITMAPINFOHEADER) + videobuf_len);
+     if(sh_video->bih == NULL) {
+       mp_msg(MSGT_DECVIDEO,MSGL_ERR,"Couldn't alloc %d bytes for VC-1 extradata!\n", sizeof(BITMAPINFOHEADER) + videobuf_len);
+       return 0;
+     }
+     sh_video->bih->biSize= sizeof(BITMAPINFOHEADER) + videobuf_len;
+     memcpy(sh_video->bih + 1, videobuffer, videobuf_len);
+     sh_video->bih->biCompression = sh_video->format;
+     sh_video->bih->biWidth = sh_video->disp_w = picture.display_picture_width;
+     sh_video->bih->biHeight = sh_video->disp_h = picture.display_picture_height;
+     if(picture.fps > 0) {
+       sh_video->frametime=1.0/picture.fps;
+       sh_video->fps = picture.fps;
+     }
+     mp_msg(MSGT_DECVIDEO,MSGL_INFO,"VIDEO:  VC-1  %dx%d, %5.3f fps, header len: %d\n",
+       sh_video->disp_w, sh_video->disp_h, sh_video->fps, videobuf_len);
+   }
   break;
  }
 } // switch(file_format)
@@ -355,7 +459,10 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
     
     *start=NULL;
 
-  if(demuxer->file_format==DEMUXER_TYPE_MPEG_ES || demuxer->file_format==DEMUXER_TYPE_MPEG_PS
+  if(demuxer->file_format==DEMUXER_TYPE_MPEG_ES || 
+     demuxer->file_format==DEMUXER_TYPE_MPEG_GXF ||
+     demuxer->file_format==DEMUXER_TYPE_MPEG_PES ||
+  	(demuxer->file_format==DEMUXER_TYPE_MPEG_PS && ((! sh_video->format) || (sh_video->format==0x10000001) || (sh_video->format==0x10000002)))
 		  || demuxer->file_format==DEMUXER_TYPE_PVA || 
 		  ((demuxer->file_format==DEMUXER_TYPE_MPEG_TS) && ((sh_video->format==0x10000001) || (sh_video->format==0x10000002)))
 		  || demuxer->file_format==DEMUXER_TYPE_MPEG_TY
@@ -418,10 +525,10 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
 #if 1
     // get mpeg fps:
     //newfps=frameratecode2framerate[picture->frame_rate_code]*0.0001f;
-    if((int)(sh_video->fps*10000+0.5)!=picture.fps) if(!force_fps && !telecine){
-            mp_msg(MSGT_CPLAYER,MSGL_WARN,"Warning! FPS changed %5.3f -> %5.3f  (%f) [%d]  \n",sh_video->fps,picture.fps*0.0001,sh_video->fps-picture.fps*0.0001,picture.frame_rate_code);
-            sh_video->fps=picture.fps*0.0001;
-            sh_video->frametime=10000.0f/(float)picture.fps;
+    if(sh_video->fps!=picture.fps) if(!force_fps && !telecine){
+            mp_msg(MSGT_CPLAYER,MSGL_WARN,"Warning! FPS changed %5.3f -> %5.3f  (%f) [%d]  \n",sh_video->fps,picture.fps,sh_video->fps-picture.fps,picture.frame_rate_code);
+            sh_video->fps=picture.fps;
+            sh_video->frametime=1.0/picture.fps;
     }
 #endif
 
@@ -448,26 +555,74 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
 	    telecine=1;
 	}
 
-  } else if((demuxer->file_format==DEMUXER_TYPE_MPEG4_ES) || ((demuxer->file_format==DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000004))){
+  } else if((demuxer->file_format==DEMUXER_TYPE_MPEG4_ES) || ((demuxer->file_format==DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000004)) ||
+            ((demuxer->file_format==DEMUXER_TYPE_MPEG_PS) && (sh_video->format==0x10000004))
+  ){
       //
         while(videobuf_len<VIDEOBUFFER_SIZE-MAX_VIDEO_PACKET_SIZE){
           int i=sync_video_packet(d_video);
+          if(!i) return -1;
           if(!read_video_packet(d_video)) return -1; // EOF
 	  if(i==0x1B6) break;
         }
 	*start=videobuffer; in_size=videobuf_len;
 	videobuf_len=0;
 
-  } else if(demuxer->file_format==DEMUXER_TYPE_H264_ES || ((demuxer->file_format==DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000005))){
+  } else if(demuxer->file_format==DEMUXER_TYPE_H264_ES || ((demuxer->file_format==DEMUXER_TYPE_MPEG_TS) && (sh_video->format==0x10000005)) ||
+            ((demuxer->file_format==DEMUXER_TYPE_MPEG_PS) && (sh_video->format==0x10000005))
+  ){
       //
+        int in_picture = 0;
         while(videobuf_len<VIDEOBUFFER_SIZE-MAX_VIDEO_PACKET_SIZE){
           int i=sync_video_packet(d_video);
+          int pos = videobuf_len+4;
+          if(!i) return -1;
           if(!read_video_packet(d_video)) return -1; // EOF
-          if((i&~0x60) == 0x101 || (i&~0x60) == 0x102 || (i&~0x60) == 0x105) break;
+          if((i&~0x60) == 0x107 && i != 0x107) {
+            h264_parse_sps(&picture, &(videobuffer[pos]), videobuf_len - pos);
+            if(picture.fps > 0) {
+              sh_video->fps=picture.fps;
+              sh_video->frametime=1.0/picture.fps;
+            }
+            i=sync_video_packet(d_video);
+            if(!i) return -1;
+            if(!read_video_packet(d_video)) return -1; // EOF
+          }
+
+          // here starts the access unit end detection code
+          // see the mail on MPlayer-dev-eng for details:
+          // Date: Sat, 17 Sep 2005 11:24:06 +0200
+          // Subject: Re: [MPlayer-dev-eng] [RFC] h264 ES parser problems
+          // Message-ID: <20050917092406.GA7699@rz.uni-karlsruhe.de>
+          if((i&~0x60) == 0x101 || (i&~0x60) == 0x102 || (i&~0x60) == 0x105)
+            // found VCL NAL with slice header i.e. start of current primary coded
+            // picture, so start scanning for the end now
+            in_picture = 1;
+          if (in_picture) {
+            i = sync_video_packet(d_video) & ~0x60; // code of next packet
+            if(i == 0x106 || i == 0x109) break; // SEI or access unit delim.
+            if(i == 0x101 || i == 0x102 || i == 0x105) {
+              // assuming arbitrary slice ordering is not allowed, the
+              // first_mb_in_slice (golomb encoded) value should be 0 then
+              // for the first VCL NAL in a picture
+              if (demux_peekc(d_video) & 0x80)
+                break;
+            }
+          }
         }
 	*start=videobuffer; in_size=videobuf_len;
 	videobuf_len=0;
 
+  }  else if((demuxer->file_format==DEMUXER_TYPE_MPEG_PS) && (sh_video->format==mmioFOURCC('W', 'V', 'C', '1'))) {
+       while(videobuf_len<VIDEOBUFFER_SIZE-MAX_VIDEO_PACKET_SIZE) {
+         int i=sync_video_packet(d_video);
+         if(!i) return -1;
+         if(!read_video_packet(d_video)) return -1; // EOF
+         if(i==0x10D) break;
+       }
+       *start=videobuffer;
+       in_size=videobuf_len;
+       videobuf_len=0;
   } else {
       // frame-based file formats: (AVI,ASF,MOV)
     in_size=ds_get_packet(d_video,start);
@@ -489,7 +644,6 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
     // override frame_time for variable/unknown FPS formats:
     if(!force_fps) switch(demuxer->file_format){
       case DEMUXER_TYPE_GIF:
-      case DEMUXER_TYPE_REAL:
       case DEMUXER_TYPE_MATROSKA:
 	if(d_video->pts>0 && pts1>0 && d_video->pts>pts1)
 	  frame_time=d_video->pts-pts1;
@@ -500,6 +654,7 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
       case DEMUXER_TYPE_MOV:
       case DEMUXER_TYPE_FILM:
       case DEMUXER_TYPE_VIVO:
+      case DEMUXER_TYPE_OGG:
       case DEMUXER_TYPE_ASF: {
         float next_pts = ds_get_next_pts(d_video);
         float d= next_pts > 0 ? next_pts - d_video->pts : d_video->pts-pts1;
@@ -526,9 +681,18 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
           } 
         }
       break;
+      case DEMUXER_TYPE_REAL:
+        {
+          float next_pts = ds_get_next_pts(d_video);
+          float d = (next_pts > 0) ? next_pts - d_video->pts : d_video->pts - pts1;
+
+          frame_time = (d >= 0 && pts1 > 0) ? d : 0.001;
+        }
+      break;
     }
     
     if(demuxer->file_format==DEMUXER_TYPE_MPEG_PS ||
+       demuxer->file_format==DEMUXER_TYPE_MPEG_PES ||
        ((demuxer->file_format==DEMUXER_TYPE_MPEG_TS) && ((sh_video->format==0x10000001) || (sh_video->format==0x10000002))) ||
        demuxer->file_format==DEMUXER_TYPE_MPEG_ES ||
        demuxer->file_format==DEMUXER_TYPE_MPEG_TY){
@@ -557,4 +721,5 @@ int video_read_frame(sh_video_t* sh_video,float* frame_time_ptr,unsigned char** 
     return in_size;
 
 }
+
 

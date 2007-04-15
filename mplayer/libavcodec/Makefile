@@ -4,420 +4,430 @@
 #
 include ../config.mak
 
-VPATH=$(SRC_PATH)/libavcodec
+CFLAGS+=-I$(SRC_PATH)/libswscale $(AMR_CFLAGS)
 
-# NOTE: -I.. is needed to include config.h
-CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -I$(SRC_PATH)/libavutil -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE $(AMR_CFLAGS)
+OBJS= bitstream.o \
+      utils.o \
+      allcodecs.o \
+      mpegvideo.o \
+      jrevdct.o \
+      jfdctfst.o \
+      jfdctint.o\
+      mjpeg.o \
+      resample.o \
+      resample2.o \
+      dsputil.o \
+      motion_est.o \
+      imgconvert.o \
+      mpeg12.o \
+      mpegaudiodec.o \
+      simple_idct.o \
+      ratecontrol.o \
+      eval.o \
+      error_resilience.o \
+      fft.o \
+      mdct.o \
+      raw.o \
+      golomb.o \
+      cabac.o\
+      faandct.o \
+      parser.o \
+      vp3dsp.o \
+      h264idct.o \
+      rangecoder.o \
+      pnm.o \
+      h263.o \
+      msmpeg4.o \
+      h263dec.o \
+      opt.o \
+      bitstream_filter.o \
+      audioconvert.o \
 
-OBJS= bitstream.o utils.o mem.o allcodecs.o \
-      mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
-      mpegaudio.o ac3enc.o mjpeg.o resample.o resample2.o dsputil.o \
-      motion_est.o imgconvert.o imgresample.o \
-      mpeg12.o mpegaudiodec.o pcm.o simple_idct.o \
-      ratecontrol.o adpcm.o eval.o error_resilience.o \
-      fft.o mdct.o raw.o golomb.o cabac.o\
-      dpcm.o adx.o faandct.o parser.o g726.o \
-      vp3dsp.o h264idct.o rangecoder.o pnm.o h263.o msmpeg4.o h263dec.o dvdsub.o dvbsub.o dvbsubdec.o\
-      opt.o
 
-ifeq ($(CONFIG_AASC_DECODER),yes)
-    OBJS+= aasc.o
-endif
-ifeq ($(CONFIG_ALAC_DECODER),yes)
-    OBJS+= alac.o
-endif
-ifneq ($(CONFIG_ASV1_DECODER)$(CONFIG_ASV1_ENCODER)$(CONFIG_ASV2_DECODER)$(CONFIG_ASV2_ENCODER),)
-    OBJS+= asv1.o
-endif
-ifeq ($(CONFIG_CINEPAK_DECODER),yes)
-    OBJS+= cinepak.o
-endif
-ifneq ($(CONFIG_CLJR_DECODER)$(CONFIG_CLJR_ENCODER),)
-    OBJS+= cljr.o
-endif
-ifeq ($(CONFIG_CYUV_DECODER),yes)
-    OBJS+= cyuv.o
-endif
-ifneq ($(CONFIG_DVVIDEO_DECODER)$(CONFIG_DVVIDEO_ENCODER),)
-    OBJS+= dv.o
-endif
-ifeq ($(CONFIG_EIGHTBPS_DECODER),yes)
-    OBJS+= 8bps.o
-endif
-ifneq ($(CONFIG_FFV1_DECODER)$(CONFIG_FFV1_ENCODER),)
-    OBJS+= ffv1.o
-endif
-ifeq ($(CONFIG_FLAC_DECODER),yes)
-    OBJS+= flac.o
-endif
-ifeq ($(CONFIG_FLIC_DECODER),yes)
-    OBJS+= flicvideo.o
-endif
-ifeq ($(CONFIG_FOURXM_DECODER),yes)
-    OBJS+= 4xm.o
-endif
-ifeq ($(CONFIG_FRAPS_DECODER),yes)
-    OBJS+= fraps.o
-endif
-ifneq ($(CONFIG_H261_DECODER)$(CONFIG_H261_ENCODER),)
-    OBJS+= h261.o
-endif
-ifneq ($(CONFIG_H264_DECODER)$(CONFIG_SVQ3_DECODER),)
-    OBJS+= h264.o
-endif
-ifneq ($(CONFIG_HUFFYUV_DECODER)$(CONFIG_HUFFYUV_ENCODER)$(CONFIG_FFVHUFF_DECODER)$(CONFIG_FFVHUFF_ENCODER),)
-    OBJS+= huffyuv.o
-endif
-ifeq ($(CONFIG_IDCIN_DECODER),yes)
-    OBJS+= idcinvideo.o
-endif
-ifeq ($(CONFIG_INDEO2_DECODER),yes)
-    OBJS+= indeo2.o
-endif
-ifeq ($(CONFIG_INDEO3_DECODER),yes)
-    OBJS+= indeo3.o
-endif
-ifeq ($(CONFIG_INTERPLAY_VIDEO_DECODER),yes)
-    OBJS+= interplayvideo.o
-endif
-ifneq ($(CONFIG_MSZH_DECODER)$(CONFIG_ZLIB_DECODER)$(CONFIG_ZLIB_ENCODER),)
-    OBJS+= lcl.o
-endif
-ifeq ($(CONFIG_LOCO_DECODER),yes)
-    OBJS+= loco.o
-endif
-ifneq ($(CONFIG_MACE3_DECODER)$(CONFIG_MACE6_DECODER),)
-    OBJS+= mace.o
-endif
-ifeq ($(CONFIG_MSRLE_DECODER),yes)
-    OBJS+= msrle.o
-endif
-ifeq ($(CONFIG_MSVIDEO1_DECODER),yes)
-    OBJS+= msvideo1.o
-endif
-ifneq ($(CONFIG_PNG_DECODER)$(CONFIG_PNG_ENCODER),)
-    OBJS+= png.o
-endif
-ifeq ($(CONFIG_QDRAW_DECODER),yes)
-    OBJS+= qdrw.o
-endif
-ifeq ($(CONFIG_QPEG_DECODER),yes)
-    OBJS+= qpeg.o
-endif
-ifeq ($(CONFIG_QTRLE_DECODER),yes)
-    OBJS+= qtrle.o
-endif
-ifeq ($(CONFIG_RA_144_DECODER),yes)
-    OBJS+= ra144.o
-endif
-ifeq ($(CONFIG_RA_288_DECODER),yes)
-    OBJS+= ra288.o
-endif
-ifeq ($(CONFIG_ROQ_DECODER),yes)
-    OBJS+= roqvideo.o
-endif
-ifeq ($(CONFIG_RPZA_DECODER),yes)
-    OBJS+= rpza.o
-endif
-ifneq ($(CONFIG_RV10_DECODER)$(CONFIG_RV20_DECODER)$(CONFIG_RV10_ENCODER)$(CONFIG_RV20_ENCODER),)
-    OBJS+= rv10.o
-endif
-ifeq ($(CONFIG_SHORTEN_DECODER),yes)
-    OBJS+= shorten.o
-endif
-ifeq ($(CONFIG_SMC_DECODER),yes)
-    OBJS+= smc.o
-endif
-ifneq ($(CONFIG_SNOW_DECODER)$(CONFIG_SNOW_ENCODER),)
-    OBJS+= snow.o
-endif
-ifneq ($(CONFIG_SONIC_DECODER)$(CONFIG_SONIC_ENCODER)$(CONFIG_SONIC_LS_ENCODER),)
-    OBJS+= sonic.o
-endif
-ifneq ($(CONFIG_SVQ1_DECODER)$(CONFIG_SVQ1_ENCODER),)
-    OBJS+= svq1.o
-endif
-ifeq ($(CONFIG_TRUEMOTION1_DECODER),yes)
-    OBJS+= truemotion1.o
-endif
-ifeq ($(CONFIG_TSCC_DECODER),yes)
-    OBJS+= tscc.o
-endif
-ifeq ($(CONFIG_ULTI_DECODER),yes)
-    OBJS+= ulti.o
-endif
-ifneq ($(CONFIG_VC9_DECODER)$(CONFIG_WMV3_DECODER),)
-    OBJS+= vc9.o
-endif
-ifneq ($(CONFIG_VCR1_DECODER)$(CONFIG_VCR1_ENCODER),)
-    OBJS+= vcr1.o
-endif
-ifneq ($(CONFIG_VMDVIDEO_DECODER)$(CONFIG_VMDAUDIO_DECODER),)
-    OBJS+= vmdav.o
-endif
-ifeq ($(CONFIG_VORBIS_DECODER),yes)
-    OBJS+= vorbis.o
-endif
-ifneq ($(CONFIG_VP3_DECODER)$(CONFIG_THEORA_DECODER),)
-    OBJS+= vp3.o
-endif
-ifeq ($(CONFIG_VQA_DECODER),yes)
-    OBJS+= vqavideo.o
-endif
-ifneq ($(CONFIG_WMAV1_DECODER)$(CONFIG_WMAV2_DECODER),)
-    OBJS+= wmadec.o
-endif
-ifeq ($(CONFIG_WNV1_DECODER),yes)
-    OBJS+= wnv1.o
-endif
-ifeq ($(CONFIG_WS_SND1_DECODER),yes)
-    OBJS+= ws-snd1.o
-endif
-ifneq ($(CONFIG_XAN_WC3_DECODER)$(CONFIG_XAN_WC4_DECODER),)
-    OBJS+= xan.o
-endif
-ifeq ($(CONFIG_XL_DECODER),yes)
-    OBJS+= xl.o
-endif
-      
-      
-AMROBJS=
-ifeq ($(AMR_NB),yes)
-ifeq ($(AMR_NB_FIXED),yes)
-AMROBJS= amr.o
-AMREXTRALIBS+= amr/*.o
-AMRLIBS=amrlibs
-CLEANAMR=cleanamr
-else
-AMROBJS= amr.o
-OBJS+= amr_float/sp_dec.o amr_float/sp_enc.o amr_float/interf_dec.o amr_float/interf_enc.o
-CLEANAMR=cleanamrfloat
-endif
-endif
+HEADERS = avcodec.h opt.h
 
-ifeq ($(HAVE_PTHREADS),yes)
-OBJS+= pthread.o
-endif
+OBJS-$(CONFIG_AASC_DECODER)            += aasc.o
+OBJS-$(CONFIG_AC3_ENCODER)             += ac3enc.o
+OBJS-$(CONFIG_ALAC_DECODER)            += alac.o
+OBJS-$(CONFIG_ASV1_DECODER)            += asv1.o
+OBJS-$(CONFIG_ASV1_ENCODER)            += asv1.o
+OBJS-$(CONFIG_ASV2_DECODER)            += asv1.o
+OBJS-$(CONFIG_ASV2_ENCODER)            += asv1.o
+OBJS-$(CONFIG_AVS_DECODER)             += avs.o
+OBJS-$(CONFIG_BMP_DECODER)             += bmp.o
+OBJS-$(CONFIG_CAVS_DECODER)            += cavs.o cavsdsp.o
+OBJS-$(CONFIG_CINEPAK_DECODER)         += cinepak.o
+OBJS-$(CONFIG_CLJR_DECODER)            += cljr.o
+OBJS-$(CONFIG_CLJR_ENCODER)            += cljr.o
+OBJS-$(CONFIG_COOK_DECODER)            += cook.o
+OBJS-$(CONFIG_CSCD_DECODER)            += cscd.o lzo.o
+OBJS-$(CONFIG_CYUV_DECODER)            += cyuv.o
+OBJS-$(CONFIG_DSICINVIDEO_DECODER)     += dsicinav.o
+OBJS-$(CONFIG_DSICINAUDIO_DECODER)     += dsicinav.o
+OBJS-$(CONFIG_DVBSUB_DECODER)          += dvbsubdec.o
+OBJS-$(CONFIG_DVBSUB_ENCODER)          += dvbsub.o
+OBJS-$(CONFIG_DVDSUB_DECODER)          += dvdsubdec.o
+OBJS-$(CONFIG_DVDSUB_ENCODER)          += dvdsubenc.o
+OBJS-$(CONFIG_DVVIDEO_DECODER)         += dv.o
+OBJS-$(CONFIG_DVVIDEO_ENCODER)         += dv.o
+OBJS-$(CONFIG_EIGHTBPS_DECODER)        += 8bps.o
+OBJS-$(CONFIG_FFV1_DECODER)            += ffv1.o
+OBJS-$(CONFIG_FFV1_ENCODER)            += ffv1.o
+OBJS-$(CONFIG_FFVHUFF_DECODER)         += huffyuv.o
+OBJS-$(CONFIG_FFVHUFF_ENCODER)         += huffyuv.o
+OBJS-$(CONFIG_FLAC_DECODER)            += flac.o
+OBJS-$(CONFIG_FLAC_ENCODER)            += flacenc.o
+OBJS-$(CONFIG_FLASHSV_DECODER)         += flashsv.o
+OBJS-$(CONFIG_FLIC_DECODER)            += flicvideo.o
+OBJS-$(CONFIG_FOURXM_DECODER)          += 4xm.o
+OBJS-$(CONFIG_FRAPS_DECODER)           += fraps.o
+OBJS-$(CONFIG_GIF_DECODER)             += gifdec.o lzw.o
+OBJS-$(CONFIG_GIF_ENCODER)             += gif.o
+OBJS-$(CONFIG_H261_DECODER)            += h261.o
+OBJS-$(CONFIG_H261_ENCODER)            += h261.o
+OBJS-$(CONFIG_H264_DECODER)            += h264.o
+OBJS-$(CONFIG_H264_ENCODER)            += h264enc.o h264dsp.o
+OBJS-$(CONFIG_HUFFYUV_DECODER)         += huffyuv.o
+OBJS-$(CONFIG_HUFFYUV_ENCODER)         += huffyuv.o
+OBJS-$(CONFIG_IDCIN_DECODER)           += idcinvideo.o
+OBJS-$(CONFIG_IMC_DECODER)             += imc.o
+OBJS-$(CONFIG_INDEO2_DECODER)          += indeo2.o
+OBJS-$(CONFIG_INDEO3_DECODER)          += indeo3.o
+OBJS-$(CONFIG_INTERPLAY_VIDEO_DECODER) += interplayvideo.o
+OBJS-$(CONFIG_INTERPLAY_DPCM_DECODER)  += dpcm.o
+OBJS-$(CONFIG_KMVC_DECODER)            += kmvc.o
+OBJS-$(CONFIG_LOCO_DECODER)            += loco.o
+OBJS-$(CONFIG_MACE3_DECODER)           += mace.o
+OBJS-$(CONFIG_MACE6_DECODER)           += mace.o
+OBJS-$(CONFIG_MMVIDEO_DECODER)         += mmvideo.o
+OBJS-$(CONFIG_MP2_ENCODER)             += mpegaudio.o
+OBJS-$(CONFIG_MSRLE_DECODER)           += msrle.o
+OBJS-$(CONFIG_MSVIDEO1_DECODER)        += msvideo1.o
+OBJS-$(CONFIG_MSZH_DECODER)            += lcl.o
+OBJS-$(CONFIG_NUV_DECODER)             += nuv.o rtjpeg.o lzo.o
+OBJS-$(CONFIG_PNG_DECODER)             += png.o
+OBJS-$(CONFIG_PNG_ENCODER)             += png.o
+OBJS-$(CONFIG_QDM2_DECODER)            += qdm2.o
+OBJS-$(CONFIG_QDRAW_DECODER)           += qdrw.o
+OBJS-$(CONFIG_QPEG_DECODER)            += qpeg.o
+OBJS-$(CONFIG_QTRLE_DECODER)           += qtrle.o
+OBJS-$(CONFIG_RA_144_DECODER)          += ra144.o
+OBJS-$(CONFIG_RA_288_DECODER)          += ra288.o
+OBJS-$(CONFIG_ROQ_DECODER)             += roqvideo.o
+OBJS-$(CONFIG_ROQ_DPCM_DECODER)        += dpcm.o
+OBJS-$(CONFIG_RPZA_DECODER)            += rpza.o
+OBJS-$(CONFIG_RV10_DECODER)            += rv10.o
+OBJS-$(CONFIG_RV10_ENCODER)            += rv10.o
+OBJS-$(CONFIG_RV20_DECODER)            += rv10.o
+OBJS-$(CONFIG_RV20_ENCODER)            += rv10.o
+OBJS-$(CONFIG_SHORTEN_DECODER)         += shorten.o
+OBJS-$(CONFIG_SMACKAUD_DECODER)        += smacker.o
+OBJS-$(CONFIG_SMACKER_DECODER)         += smacker.o
+OBJS-$(CONFIG_SMC_DECODER)             += smc.o
+OBJS-$(CONFIG_SNOW_DECODER)            += snow.o
+OBJS-$(CONFIG_SNOW_ENCODER)            += snow.o
+OBJS-$(CONFIG_SOL_DPCM_DECODER)        += dpcm.o
+OBJS-$(CONFIG_SONIC_DECODER)           += sonic.o
+OBJS-$(CONFIG_SONIC_ENCODER)           += sonic.o
+OBJS-$(CONFIG_SONIC_LS_DECODER)        += sonic.o
+OBJS-$(CONFIG_SVQ1_DECODER)            += svq1.o
+OBJS-$(CONFIG_SVQ1_ENCODER)            += svq1.o
+OBJS-$(CONFIG_SVQ3_DECODER)            += h264.o
+OBJS-$(CONFIG_TARGA_DECODER)           += targa.o
+OBJS-$(CONFIG_THEORA_DECODER)          += vp3.o
+OBJS-$(CONFIG_TIERTEXSEQVIDEO_DECODER) += tiertexseqv.o
+OBJS-$(CONFIG_TIFF_DECODER)            += tiff.o lzw.o
+OBJS-$(CONFIG_TRUEMOTION1_DECODER)     += truemotion1.o
+OBJS-$(CONFIG_TRUEMOTION2_DECODER)     += truemotion2.o
+OBJS-$(CONFIG_TRUESPEECH_DECODER)      += truespeech.o
+OBJS-$(CONFIG_TSCC_DECODER)            += tscc.o
+OBJS-$(CONFIG_TTA_DECODER)             += tta.o
+OBJS-$(CONFIG_ULTI_DECODER)            += ulti.o
+OBJS-$(CONFIG_VC1_DECODER)             += vc1.o vc1dsp.o
+OBJS-$(CONFIG_VCR1_DECODER)            += vcr1.o
+OBJS-$(CONFIG_VCR1_ENCODER)            += vcr1.o
+OBJS-$(CONFIG_VMDAUDIO_DECODER)        += vmdav.o
+OBJS-$(CONFIG_VMDVIDEO_DECODER)        += vmdav.o
+OBJS-$(CONFIG_VMNC_DECODER)            += vmnc.o
+OBJS-$(CONFIG_VORBIS_DECODER)          += vorbis.o vorbis_data.o
+OBJS-$(CONFIG_VORBIS_ENCODER)          += vorbis_enc.o vorbis.o vorbis_data.o
+OBJS-$(CONFIG_VP3_DECODER)             += vp3.o
+OBJS-$(CONFIG_VP5_DECODER)             += vp5.o vp56.o vp56data.o
+OBJS-$(CONFIG_VP6_DECODER)             += vp6.o vp56.o vp56data.o
+OBJS-$(CONFIG_VQA_DECODER)             += vqavideo.o
+OBJS-$(CONFIG_WAVPACK_DECODER)         += wavpack.o
+OBJS-$(CONFIG_WMAV1_DECODER)           += wmadec.o
+OBJS-$(CONFIG_WMAV2_DECODER)           += wmadec.o
+OBJS-$(CONFIG_WMV3_DECODER)            += vc1.o vc1dsp.o
+OBJS-$(CONFIG_WNV1_DECODER)            += wnv1.o
+OBJS-$(CONFIG_WS_SND1_DECODER)         += ws-snd1.o
+OBJS-$(CONFIG_XAN_DPCM_DECODER)        += dpcm.o
+OBJS-$(CONFIG_XAN_WC3_DECODER)         += xan.o
+OBJS-$(CONFIG_XAN_WC4_DECODER)         += xan.o
+OBJS-$(CONFIG_XL_DECODER)              += xl.o
+OBJS-$(CONFIG_ZLIB_DECODER)            += lcl.o
+OBJS-$(CONFIG_ZLIB_ENCODER)            += lcl.o
+OBJS-$(CONFIG_ZMBV_DECODER)            += zmbv.o
+OBJS-$(CONFIG_ZMBV_ENCODER)            += zmbvenc.o
 
-ifeq ($(HAVE_W32THREADS),yes)
-OBJS+= w32thread.o
-endif
+OBJS-$(CONFIG_PCM_S32LE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S32LE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S32BE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S32BE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U32LE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U32LE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U32BE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U32BE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S24LE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S24LE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S24BE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S24BE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U24LE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U24LE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U24BE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U24BE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S24DAUD_DECODER)     += pcm.o
+OBJS-$(CONFIG_PCM_S24DAUD_ENCODER)     += pcm.o
+OBJS-$(CONFIG_PCM_S16LE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S16LE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S16BE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S16BE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U16LE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U16LE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U16BE_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_U16BE_ENCODER)       += pcm.o
+OBJS-$(CONFIG_PCM_S8_DECODER)          += pcm.o
+OBJS-$(CONFIG_PCM_S8_ENCODER)          += pcm.o
+OBJS-$(CONFIG_PCM_U8_DECODER)          += pcm.o
+OBJS-$(CONFIG_PCM_U8_ENCODER)          += pcm.o
+OBJS-$(CONFIG_PCM_ALAW_DECODER)        += pcm.o
+OBJS-$(CONFIG_PCM_ALAW_ENCODER)        += pcm.o
+OBJS-$(CONFIG_PCM_MULAW_DECODER)       += pcm.o
+OBJS-$(CONFIG_PCM_MULAW_ENCODER)       += pcm.o
 
-ifeq ($(HAVE_BEOSTHREADS),yes)
-OBJS+= beosthread.o
-endif
+OBJS-$(CONFIG_ADPCM_4XM_DECODER)       += adpcm.o
+OBJS-$(CONFIG_ADPCM_4XM_ENCODER)       += adpcm.o
+OBJS-$(CONFIG_ADPCM_ADX_DECODER)       += adx.o
+OBJS-$(CONFIG_ADPCM_ADX_ENCODER)       += adx.o
+OBJS-$(CONFIG_ADPCM_CT_DECODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_CT_ENCODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_EA_DECODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_EA_ENCODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_G726_DECODER)      += g726.o
+OBJS-$(CONFIG_ADPCM_G726_ENCODER)      += g726.o
+OBJS-$(CONFIG_ADPCM_IMA_DK3_DECODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_DK3_ENCODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_DK4_DECODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_DK4_ENCODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_QT_DECODER)    += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_QT_ENCODER)    += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_SMJPEG_DECODER)+= adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_SMJPEG_ENCODER)+= adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_WAV_DECODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_WAV_ENCODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_WS_DECODER)    += adpcm.o
+OBJS-$(CONFIG_ADPCM_IMA_WS_ENCODER)    += adpcm.o
+OBJS-$(CONFIG_ADPCM_MS_DECODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_MS_ENCODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_SBPRO_2_DECODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_SBPRO_2_ENCODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_SBPRO_3_DECODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_SBPRO_3_ENCODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_SBPRO_4_DECODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_SBPRO_4_ENCODER)   += adpcm.o
+OBJS-$(CONFIG_ADPCM_SWF_DECODER)       += adpcm.o
+OBJS-$(CONFIG_ADPCM_SWF_ENCODER)       += adpcm.o
+OBJS-$(CONFIG_ADPCM_XA_DECODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_XA_ENCODER)        += adpcm.o
+OBJS-$(CONFIG_ADPCM_YAMAHA_DECODER)    += adpcm.o
+OBJS-$(CONFIG_ADPCM_YAMAHA_ENCODER)    += adpcm.o
 
-ifeq ($(AMR_WB),yes)
-AMROBJS= amr.o
-OBJS+= amrwb_float/dec_acelp.o amrwb_float/dec_dtx.o amrwb_float/dec_gain.o \
-		amrwb_float/dec_if.o amrwb_float/dec_lpc.o amrwb_float/dec_main.o \
-		amrwb_float/dec_rom.o amrwb_float/dec_util.o amrwb_float/enc_acelp.o \
-		amrwb_float/enc_dtx.o amrwb_float/enc_gain.o amrwb_float/enc_if.o \
-		amrwb_float/enc_lpc.o amrwb_float/enc_main.o amrwb_float/enc_rom.o \
-		amrwb_float/enc_util.o amrwb_float/if_rom.o
-endif
-OBJS+= $(AMROBJS)
-CLEANAMRWB=cleanamrwbfloat
-ASM_OBJS=
-
-ifeq ($(HAVE_XVMC_ACCEL),yes)
-OBJS+= xvmcvideo.o
-endif
+OBJS-$(CONFIG_FAAD)                    += faad.o
+OBJS-$(CONFIG_FAAC)                    += faac.o
+OBJS-$(CONFIG_XVID)                    += xvidff.o xvid_rc.o
+OBJS-$(CONFIG_X264)                    += x264.o
+OBJS-$(CONFIG_MP3LAME)                 += mp3lameaudio.o
+OBJS-$(CONFIG_LIBVORBIS)               += oggvorbis.o
+OBJS-$(CONFIG_LIBGSM)                  += libgsm.o
 
 # currently using liba52 for ac3 decoding
-ifeq ($(CONFIG_AC3),yes)
-OBJS+= a52dec.o
+OBJS-$(CONFIG_A52)                     += a52dec.o
 
 # using builtin liba52 or runtime linked liba52.so.0
-ifneq ($(CONFIG_A52BIN),yes)
-OBJS+= liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o \
-	liba52/imdct.o  liba52/parse.o liba52/crc.o liba52/resample.o
-endif
-endif
-
-EXTRALIBS += -L../libavutil -lavutil$(BUILDSUF)
+OBJS-$(CONFIG_A52)$(CONFIG_A52BIN)     += liba52/bit_allocate.o \
+                                          liba52/bitstream.o    \
+                                          liba52/downmix.o      \
+                                          liba52/imdct.o        \
+                                          liba52/parse.o        \
+                                          liba52/crc.o          \
+                                          liba52/resample.o
 
 # currently using libdts for dts decoding
-ifeq ($(CONFIG_DTS),yes)
-OBJS+= dtsdec.o
+OBJS-$(CONFIG_DTS)                     += dtsdec.o
+
+OBJS-$(CONFIG_AMR)                     += amr.o
+OBJS-$(CONFIG_AMR_NB)                  += amr_float/sp_dec.o     \
+                                          amr_float/sp_enc.o     \
+                                          amr_float/interf_dec.o \
+                                          amr_float/interf_enc.o
+
+ifeq ($(CONFIG_AMR_NB_FIXED),yes)
+EXTRAOBJS += amr/*.o
+EXTRADEPS=amrlibs
 endif
 
-ifeq ($(CONFIG_FAAD),yes)
-OBJS+= faad.o
-endif
+OBJS-$(CONFIG_AMR_WB)                  += amrwb_float/dec_acelp.o \
+                                          amrwb_float/dec_dtx.o   \
+                                          amrwb_float/dec_gain.o  \
+                                          amrwb_float/dec_if.o    \
+                                          amrwb_float/dec_lpc.o   \
+                                          amrwb_float/dec_main.o  \
+                                          amrwb_float/dec_rom.o   \
+                                          amrwb_float/dec_util.o  \
+                                          amrwb_float/enc_acelp.o \
+                                          amrwb_float/enc_dtx.o   \
+                                          amrwb_float/enc_gain.o  \
+                                          amrwb_float/enc_if.o    \
+                                          amrwb_float/enc_lpc.o   \
+                                          amrwb_float/enc_main.o  \
+                                          amrwb_float/enc_rom.o   \
+                                          amrwb_float/enc_util.o  \
+                                          amrwb_float/if_rom.o
 
-ifeq ($(CONFIG_FAAC),yes)
-OBJS+= faac.o
-endif
+OBJS-$(CONFIG_AAC_PARSER)              += parser.o
+OBJS-$(CONFIG_AC3_PARSER)              += parser.o
+OBJS-$(CONFIG_CAVSVIDEO_PARSER)        += cavs.o parser.o
+OBJS-$(CONFIG_DVBSUB_PARSER)           += dvbsubdec.o
+OBJS-$(CONFIG_DVDSUB_PARSER)           += dvdsubdec.o
+OBJS-$(CONFIG_H261_PARSER)             += h261.o
+OBJS-$(CONFIG_H263_PARSER)             += h263dec.o
+OBJS-$(CONFIG_H264_PARSER)             += h264.o
+OBJS-$(CONFIG_MJPEG_PARSER)            += mjpeg.o
+OBJS-$(CONFIG_MPEG4VIDEO_PARSER)       += parser.o
+OBJS-$(CONFIG_MPEGAUDIO_PARSER)        += parser.o
+OBJS-$(CONFIG_MPEGVIDEO_PARSER)        += parser.o
+OBJS-$(CONFIG_PNM_PARSER)              += pnm.o
 
-ifeq ($(CONFIG_XVID),yes)
-OBJS+= xvidff.o
-endif
+OBJS-$(HAVE_PTHREADS)                  += pthread.o
+OBJS-$(HAVE_W32THREADS)                += w32thread.o
+OBJS-$(HAVE_OS2THREADS)                += os2thread.o
+OBJS-$(HAVE_BEOSTHREADS)               += beosthread.o
 
-ifeq ($(CONFIG_X264),yes)
-OBJS+= x264.o
-endif
+OBJS-$(HAVE_XVMC_ACCEL)                += xvmcvideo.o
 
-ifeq ($(CONFIG_PP),yes)
-ifeq ($(SHARED_PP),yes)
-EXTRALIBS += -Llibpostproc -lpostproc$(BUILDSUF)
-else
-# LIBS += libpostproc/libpostproc.a ... should be fixed
-OBJS += libpostproc/postprocess.o
-endif
-endif
-
-ifeq ($(CONFIG_MP3LAME),yes)
-OBJS += mp3lameaudio.o
-endif
-
-ifeq ($(CONFIG_LIBOGG),yes)
-ifeq ($(CONFIG_LIBVORBIS),yes)
-OBJS += oggvorbis.o
-endif
-ifeq ($(CONFIG_LIBTHEORA), yes)
-OBJS += oggtheora.o
-endif
-endif
-
-ifeq ($(CONFIG_LIBGSM),yes)
-OBJS += libgsm.o
-endif
-
-ifeq ($(TARGET_GPROF),yes)
-CFLAGS+=-p
-LDFLAGS+=-p
+ifneq ($(CONFIG_SWSCALER),yes)
+OBJS += imgresample.o
 endif
 
 # i386 mmx specific stuff
 ifeq ($(TARGET_MMX),yes)
-OBJS += i386/fdct_mmx.o i386/cputest.o \
-	i386/dsputil_mmx.o i386/mpegvideo_mmx.o \
-	i386/idct_mmx.o i386/motion_est_mmx.o \
-	i386/simple_idct_mmx.o i386/fft_sse.o i386/vp3dsp_mmx.o \
-	i386/vp3dsp_sse2.o
+OBJS += i386/fdct_mmx.o \
+        i386/cputest.o \
+        i386/dsputil_mmx.o \
+        i386/mpegvideo_mmx.o \
+        i386/motion_est_mmx.o \
+        i386/simple_idct_mmx.o \
+        i386/idct_mmx_xvid.o \
+        i386/fft_sse.o \
+        i386/vp3dsp_mmx.o \
+        i386/vp3dsp_sse2.o \
+        i386/fft_3dn.o \
+        i386/fft_3dn2.o \
+        i386/snowdsp_mmx.o \
+
 ifeq ($(CONFIG_GPL),yes)
-OBJS += i386/idct_mmx_xvid.o
+OBJS += i386/idct_mmx.o
 endif
-ifdef TARGET_BUILTIN_VECTOR
-i386/fft_sse.o: CFLAGS+= -msse
-depend: CFLAGS+= -msse
+ifeq ($(CONFIG_CAVS_DECODER),yes)
+OBJS += i386/cavsdsp_mmx.o
 endif
 endif
 
 # armv4l specific stuff
-ifeq ($(TARGET_ARCH_ARMV4L),yes)
-ASM_OBJS += armv4l/jrevdct_arm.o armv4l/simple_idct_arm.o armv4l/dsputil_arm_s.o
-OBJS += armv4l/dsputil_arm.o armv4l/mpegvideo_arm.o
-ifeq ($(TARGET_IWMMXT),yes)
-OBJS += armv4l/dsputil_iwmmxt.o armv4l/mpegvideo_iwmmxt.o
-endif
-endif
+ASM_OBJS-$(TARGET_ARCH_ARMV4L)         += armv4l/jrevdct_arm.o     \
+                                          armv4l/simple_idct_arm.o \
+                                          armv4l/dsputil_arm_s.o   \
+
+OBJS-$(TARGET_ARCH_ARMV4L)             += armv4l/dsputil_arm.o   \
+                                          armv4l/mpegvideo_arm.o \
+
+OBJS-$(TARGET_IWMMXT)                  += armv4l/dsputil_iwmmxt.o   \
+                                          armv4l/mpegvideo_iwmmxt.o \
+
+ASM_OBJS-$(TARGET_ARMV5TE)             += armv4l/simple_idct_armv5te.o \
+
+# sun sparc
+OBJS-$(TARGET_ARCH_SPARC)              += sparc/dsputil_vis.o \
+
+sparc/dsputil_vis.o: CFLAGS += -mcpu=ultrasparc -mtune=ultrasparc
 
 # sun mediaLib specific stuff
-# currently only works when libavcodec is used in mplayer
-ifeq ($(HAVE_MLIB),yes)
-OBJS += mlib/dsputil_mlib.o
-CFLAGS += $(MLIB_INC)
-endif
-
-# Intel IPP specific stuff
-# currently only works when libavcodec is used in mplayer
-ifeq ($(HAVE_IPP),yes)
-CFLAGS += $(IPP_INC)
-endif
+OBJS-$(HAVE_MLIB)                      += mlib/dsputil_mlib.o \
 
 # alpha specific stuff
-ifeq ($(TARGET_ARCH_ALPHA),yes)
-OBJS += alpha/dsputil_alpha.o alpha/mpegvideo_alpha.o \
-	alpha/simple_idct_alpha.o alpha/motion_est_alpha.o
-ASM_OBJS += alpha/dsputil_alpha_asm.o alpha/motion_est_mvi_asm.o
-CFLAGS += -fforce-addr
-endif
+OBJS-$(TARGET_ARCH_ALPHA)              += alpha/dsputil_alpha.o     \
+                                          alpha/mpegvideo_alpha.o   \
+                                          alpha/simple_idct_alpha.o \
+                                          alpha/motion_est_alpha.o  \
 
-ifeq ($(TARGET_ARCH_POWERPC),yes)
-OBJS += ppc/dsputil_ppc.o ppc/mpegvideo_ppc.o
-endif
+ASM_OBJS-$(TARGET_ARCH_ALPHA)          += alpha/dsputil_alpha_asm.o  \
+                                          alpha/motion_est_mvi_asm.o \
 
-ifeq ($(TARGET_MMI),yes)
-OBJS += ps2/dsputil_mmi.o ps2/idct_mmi.o ps2/mpegvideo_mmi.o
-endif
+OBJS-$(TARGET_ARCH_POWERPC)            += ppc/dsputil_ppc.o   \
+                                          ppc/mpegvideo_ppc.o \
+
+OBJS-$(TARGET_MMI)                     += ps2/dsputil_mmi.o   \
+                                          ps2/idct_mmi.o      \
+                                          ps2/mpegvideo_mmi.o \
+
+OBJS-$(TARGET_ARCH_SH4)                += sh4/idct_sh4.o      \
+                                          sh4/dsputil_sh4.o   \
+                                          sh4/dsputil_align.o \
+
+OBJS-$(TARGET_ALTIVEC)                 += ppc/dsputil_altivec.o      \
+                                          ppc/mpegvideo_altivec.o    \
+                                          ppc/idct_altivec.o         \
+                                          ppc/fft_altivec.o          \
+                                          ppc/gmc_altivec.o          \
+                                          ppc/fdct_altivec.o         \
+                                          ppc/float_altivec.o        \
 
 ifeq ($(TARGET_ALTIVEC),yes)
-OBJS += ppc/dsputil_altivec.o ppc/mpegvideo_altivec.o ppc/idct_altivec.o \
-        ppc/fft_altivec.o ppc/gmc_altivec.o ppc/fdct_altivec.o \
-        ppc/dsputil_h264_altivec.o
+OBJS-$(CONFIG_H264_DECODER)            += ppc/h264_altivec.o
+OBJS-$(CONFIG_SNOW_DECODER)            += ppc/snow_altivec.o
+OBJS-$(CONFIG_VC1_DECODER)             += ppc/vc1dsp_altivec.o
+OBJS-$(CONFIG_WMV3_DECODER)            += ppc/vc1dsp_altivec.o
 endif
 
-ifeq ($(TARGET_ARCH_SH4),yes)
-OBJS+= sh4/idct_sh4.o sh4/dsputil_sh4.o sh4/dsputil_align.o
-endif
+OBJS-$(TARGET_ARCH_BFIN)               += bfin/dsputil_bfin.o \
 
-ifeq ($(TARGET_ARCH_SPARC),yes)
-OBJS+=sparc/dsputil_vis.o
-sparc/%.o: sparc/%.c
-	$(CC) -mcpu=ultrasparc -mtune=ultrasparc $(CFLAGS) -c -o $@ $< 
-endif
-ifeq ($(TARGET_ARCH_SPARC64),yes)
-CFLAGS+= -mcpu=ultrasparc -mtune=ultrasparc
-endif
+CFLAGS += $(CFLAGS-yes)
+OBJS += $(OBJS-yes)
+ASM_OBJS += $(ASM_OBJS-yes)
 
-# Darwin specific stuff
-ifeq ($(CONFIG_DARWIN),yes)
-SHFLAGS += -Wl,-install_name,$(libdir)/$(SLIBPREF)avcodec$(SLIBSUF),-current_version,$(SPPVERSION),-compatibility_version,$(SPPVERSION)
-endif
+EXTRALIBS := -L$(BUILD_ROOT)/libavutil -lavutil$(BUILDSUF) $(EXTRALIBS)
 
-SRCS := $(OBJS:.o=.c) $(ASM_OBJS:.o=.S)
-OBJS := $(OBJS) $(ASM_OBJS)
-
-LIB= $(LIBPREF)avcodec$(LIBSUF)
-LIBAVUTIL= $(SRC_PATH)/libavutil/$(LIBPREF)avutil$(LIBSUF)
+NAME=avcodec
 ifeq ($(BUILD_SHARED),yes)
-SLIBNAME= $(SLIBPREF)avcodec$(SLIBSUF)
+LIBVERSION=$(LAVCVERSION)
+LIBMAJOR=$(LAVCMAJOR)
 endif
-TESTS= imgresample-test dct-test motion-test fft-test
 
-all: $(LIB) $(SLIBNAME)
+TESTS= imgresample-test fft-test
+ifeq ($(TARGET_ARCH_X86),yes)
+TESTS+= cpuid_test dct-test motion-test
+endif
+
+include ../common.mak
 
 amrlibs:
 	$(MAKE) -C amr spclib fipoplib
 
-tests: apiexample cpuid_test $(TESTS)
+tests: apiexample $(TESTS)
 
-$(LIB): $(OBJS) $(AMRLIBS)
-	rm -f $@
-	$(AR) rc $@ $(OBJS) $(AMREXTRALIBS)
-	$(RANLIB) $@
-
-$(SLIBNAME): $(OBJS)
-ifeq ($(CONFIG_PP),yes)
-	$(MAKE) -C libpostproc
-endif
-ifeq ($(CONFIG_WIN32),yes)
-	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
-	-lib /machine:i386 /def:$(@:.dll=.def)
-else
-	$(CC) $(SHFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
-endif
-
-dsputil.o: dsputil.c dsputil.h
-
-libpostproc/libpostproc.a:
-	$(MAKE) -C libpostproc
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(LIBOBJFLAGS) -c -o $@ $< 
-
-%.o: %.S
-	$(CC) $(CFLAGS) $(LIBOBJFLAGS) -c -o $@ $<
-
-depend: $(SRCS)
-	$(CC) -MM $(CFLAGS) $^ 1>.depend
-
-dep:	depend
-
-clean: $(CLEANAMR)
-	rm -f *.o *.d *~ .depend $(LIB) $(SLIBNAME) *$(SLIBSUF) i386/*.o i386/*~ \
+clean::
+	rm -f \
+	   i386/*.o i386/*~ \
 	   armv4l/*.o armv4l/*~ \
 	   mlib/*.o mlib/*~ \
 	   alpha/*.o alpha/*~ \
@@ -426,73 +436,23 @@ clean: $(CLEANAMR)
 	   sh4/*.o sh4/*~ \
 	   sparc/*.o sparc/*~ \
 	   liba52/*.o liba52/*~ \
+	   amr_float/*.o \
 	   apiexample $(TESTS)
-	$(MAKE) -C libpostproc clean
+	-$(MAKE) -C amr clean
+	-$(MAKE) -C amrwb_float -f makefile.gcc clean
 
-distclean: clean
-	rm -f Makefile.bak .depend
+apiexample: apiexample.o $(LIB)
 
-cleanamr:
-	$(MAKE) -C amr clean
-
-cleanamrfloat:
-	rm -f amr_float/*.o
-
-cleanamrwbfloat:
-	$(MAKE) -C amrwb_float -f makefile.gcc clean
-
-# api example program
-apiexample: apiexample.c $(LIB)
-	$(CC) $(CFLAGS) -o $@ $< $(LIB) $(LIBAVUTIL) $(EXTRALIBS) -lm
-
-# cpuid test
 cpuid_test: i386/cputest.c
 	$(CC) $(CFLAGS) -D__TEST__ -o $@ $<
 
-# testing progs
-
-imgresample-test: imgresample.c
-	$(CC) $(CFLAGS) -DTEST -o $@ $^ -lm
+imgresample-test: imgresample.c $(LIB)
+	$(CC) $(CFLAGS) -DTEST -o $@ $^ $(EXTRALIBS)
 
 dct-test: dct-test.o fdctref.o $(LIB)
-	$(CC) -o $@ $^ -lm $(LIBAVUTIL)
 
 motion-test: motion_test.o $(LIB)
-	$(CC) -o $@ $^ -lm
 
 fft-test: fft-test.o $(LIB)
-	$(CC) -o $@ $^ $(LIBAVUTIL) -lm
 
-ifeq ($(BUILD_SHARED),yes)
-install: all install-headers
-ifeq ($(CONFIG_WIN32),yes)
-	install $(INSTALLSTRIP) -m 755 $(SLIBNAME) "$(prefix)"
-else
-	install -d $(libdir)
-	install $(INSTALLSTRIP) -m 755 $(SLIBNAME) $(libdir)/libavcodec-$(VERSION)$(SLIBSUF)
-	ln -sf libavcodec-$(VERSION)$(SLIBSUF) $(libdir)/libavcodec$(SLIBSUF)
-	$(LDCONFIG) || true
-endif
-ifeq ($(CONFIG_PP),yes)
-	$(MAKE) -C libpostproc $@
-endif
-else
-install:
-endif
-
-installlib: all install-headers
-	install -m 644 $(LIB) "$(libdir)"
-
-install-headers:
-	mkdir -p "$(prefix)/include/ffmpeg"
-	install -m 644 $(SRC_PATH)/libavcodec/avcodec.h \
-                "$(prefix)/include/ffmpeg"
-	install -d $(libdir)/pkgconfig
-	install -m 644 ../libavcodec.pc $(libdir)/pkgconfig
-
-#
-# include dependency files if they exist
-#
-ifneq ($(wildcard .depend),)
-include .depend
-endif
+.PHONY: amrlibs tests

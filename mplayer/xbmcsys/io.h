@@ -216,6 +216,7 @@ _CRTIMP int __cdecl _eof (int);
 
 /* LK_... locking commands defined in sys/locking.h. */
 _CRTIMP int __cdecl _locking (int, int, long);
+
 _CRTIMP long __cdecl _lseek (int, long, int);
 
 /* Optional third argument is unsigned unPermissions. */
@@ -229,8 +230,8 @@ _CRTIMP int __cdecl _setmode (int, int);
 /* SH_... flags for nShFlags defined in share.h
  * Optional fourth argument is unsigned unPermissions */
 _CRTIMP int __cdecl _sopen (const char*, int, int, ...);
-_CRTIMP long __cdecl _tell (int);
 
+_CRTIMP long __cdecl _tell (int);
 /* Should umask be in sys/stat.h and/or sys/types.h instead? */
 _CRTIMP int __cdecl _umask (int);
 _CRTIMP int __cdecl _unlink (const char*);

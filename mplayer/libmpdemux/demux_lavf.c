@@ -13,12 +13,13 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 // #include <stdio.h>
 #include <stdlib.h>
 // #include <unistd.h>
+#include <limits.h>
 
 #include "config.h"
 #include "mp_msg.h"
@@ -28,12 +29,25 @@
 #include "demuxer.h"
 #include "stheader.h"
 
-#ifdef USE_LIBAVFORMAT
-
+#ifdef USE_LIBAVFORMAT_SO
+#include <ffmpeg/avformat.h>
+#include <ffmpeg/opt.h>
+typedef struct CodecTag {
+    int id;
+    unsigned int tag;
+    unsigned int invalid_asf : 1;
+} CodecTag;
+#else
 #include "avformat.h"
+#include "riff.h"
 #include "avi.h"
+#include "opt.h"
+#endif
 
 #define PROBE_BUF_SIZE 2048
+
+extern char *audio_lang;
+static unsigned int opt_probesize = 0;
 
 typedef struct lavf_priv_t{
     AVInputFormat *avif;
@@ -42,12 +56,44 @@ typedef struct lavf_priv_t{
     int audio_streams;
     int video_streams;
     int64_t last_pts;
+    int astreams[MAX_A_STREAMS];
+    int vstreams[MAX_V_STREAMS];
 }lavf_priv_t;
 
 extern void print_wave_header(WAVEFORMATEX *h);
 extern void print_video_header(BITMAPINFOHEADER *h);
 
 int64_t ff_gcd(int64_t a, int64_t b);
+
+const CodecTag mp_wav_tags[] = {
+    { CODEC_ID_ADPCM_4XM,         MKTAG('4', 'X', 'M', 'A')},
+    { CODEC_ID_ADPCM_EA,          MKTAG('A', 'D', 'E', 'A')},
+    { CODEC_ID_ADPCM_IMA_WS,      MKTAG('A', 'I', 'W', 'S')},
+    { CODEC_ID_DSICINAUDIO,       MKTAG('D', 'C', 'I', 'A')},
+    { CODEC_ID_INTERPLAY_DPCM,    MKTAG('I', 'N', 'P', 'A')},
+    { CODEC_ID_PCM_S24BE,         MKTAG('i', 'n', '2', '4')},
+    { CODEC_ID_PCM_S8,            MKTAG('t', 'w', 'o', 's')},
+    { CODEC_ID_ROQ_DPCM,          MKTAG('R', 'o', 'Q', 'A')},
+    { CODEC_ID_SHORTEN,           MKTAG('s', 'h', 'r', 'n')},
+    { CODEC_ID_TTA,               MKTAG('T', 'T', 'A', '1')},
+    { CODEC_ID_WAVPACK,           MKTAG('W', 'V', 'P', 'K')},
+    { CODEC_ID_WESTWOOD_SND1,     MKTAG('S', 'N', 'D', '1')},
+    { CODEC_ID_XAN_DPCM,          MKTAG('A', 'x', 'a', 'n')},
+    { 0, 0 },
+};
+
+const CodecTag mp_bmp_tags[] = {
+    { CODEC_ID_DSICINVIDEO,       MKTAG('D', 'C', 'I', 'V')},
+    { CODEC_ID_FLIC,              MKTAG('F', 'L', 'I', 'C')},
+    { CODEC_ID_IDCIN,             MKTAG('I', 'D', 'C', 'I')},
+    { CODEC_ID_INTERPLAY_VIDEO,   MKTAG('I', 'N', 'P', 'V')},
+    { CODEC_ID_ROQ,               MKTAG('R', 'o', 'Q', 'V')},
+    { CODEC_ID_TIERTEXSEQVIDEO,   MKTAG('T', 'S', 'E', 'Q')},
+    { CODEC_ID_VMDVIDEO,          MKTAG('V', 'M', 'D', 'V')},
+    { CODEC_ID_WS_VQA,            MKTAG('V', 'Q', 'A', 'V')},
+    { CODEC_ID_XAN_WC3,           MKTAG('W', 'C', '3', 'V')},
+    { 0, 0 },
+};
 
 static int mp_open(URLContext *h, const char *filename, int flags){
     return 0;
@@ -131,6 +177,7 @@ int lavf_check_file(demuxer_t *demuxer){
 int demux_open_lavf(demuxer_t *demuxer){
     AVFormatContext *avfc;
     AVFormatParameters ap;
+    AVOption *opt;
     lavf_priv_t *priv= demuxer->priv;
     int i,g;
     char mp_filename[256]="mp:";
@@ -140,6 +187,14 @@ int demux_open_lavf(demuxer_t *demuxer){
     stream_seek(demuxer->stream, 0);
 
     register_protocol(&mp_protocol);
+
+    avfc = av_alloc_format_context();
+    ap.prealloced_context = 1;
+    if(opt_probesize) {
+        double d = (double) opt_probesize;
+        opt = av_set_double(avfc, "probesize", opt_probesize);
+        if(!opt) mp_msg(MSGT_HEADER,MSGL_ERR, "demux_lavf, couldn't set option probesize to %.3f\r\n", d);
+    }
 
     if(demuxer->stream->url)
         strncpy(mp_filename + 3, demuxer->stream->url, sizeof(mp_filename)-3);
@@ -173,19 +228,23 @@ int demux_open_lavf(demuxer_t *demuxer){
 
     for(i=0; i<avfc->nb_streams; i++){
         AVStream *st= avfc->streams[i];
-#if LIBAVFORMAT_BUILD >= 4629
         AVCodecContext *codec= st->codec;
-#else
-        AVCodecContext *codec= &st->codec;
-#endif
         
         switch(codec->codec_type){
         case CODEC_TYPE_AUDIO:{
             WAVEFORMATEX *wf= calloc(sizeof(WAVEFORMATEX) + codec->extradata_size, 1);
-            sh_audio_t* sh_audio=new_sh_audio(demuxer, i);
+            sh_audio_t* sh_audio;
+            if(priv->audio_streams >= MAX_A_STREAMS)
+                break;
+            sh_audio=new_sh_audio(demuxer, i);
+            if(!sh_audio)
+                break;
+            priv->astreams[priv->audio_streams] = i;
             priv->audio_streams++;
             if(!codec->codec_tag)
                 codec->codec_tag= codec_get_wav_tag(codec->codec_id);
+            if(!codec->codec_tag)
+                codec->codec_tag= codec_get_tag(mp_wav_tags, codec->codec_id);
             wf->wFormatTag= codec->codec_tag;
             wf->nChannels= codec->channels;
             wf->nSamplesPerSec= codec->sample_rate;
@@ -236,20 +295,30 @@ int demux_open_lavf(demuxer_t *demuxer){
                 break;
             }
             if(verbose>=1) print_wave_header(sh_audio->wf);
-            if(demuxer->audio->id != i && demuxer->audio->id != -1)
+	    if((audio_lang && st->language[0] && !strncmp(audio_lang, st->language, 3))
+	        || (demuxer->audio->id == i || demuxer->audio->id == -1)
+	    ) {
+	        demuxer->audio->id = i;
+                demuxer->audio->sh= demuxer->a_streams[i];
+	    }
+            else
                 st->discard= AVDISCARD_ALL;
-            else{
-                demuxer->audio->id = i;
-            demuxer->audio->sh= demuxer->a_streams[i];
-            }
             break;}
         case CODEC_TYPE_VIDEO:{
-            BITMAPINFOHEADER *bih=calloc(sizeof(BITMAPINFOHEADER) + codec->extradata_size,1);
-            sh_video_t* sh_video=new_sh_video(demuxer, i);
+            sh_video_t* sh_video;
+            BITMAPINFOHEADER *bih;
+            if(priv->video_streams >= MAX_V_STREAMS)
+                break;
+            sh_video=new_sh_video(demuxer, i);
+            if(!sh_video) break;
+            priv->vstreams[priv->video_streams] = i;
+            priv->video_streams++;
+            bih=calloc(sizeof(BITMAPINFOHEADER) + codec->extradata_size,1);
 
-	    priv->video_streams++;
             if(!codec->codec_tag)
                 codec->codec_tag= codec_get_bmp_tag(codec->codec_id);
+            if(!codec->codec_tag)
+                codec->codec_tag= codec_get_tag(mp_bmp_tags, codec->codec_id);
             bih->biSize= sizeof(BITMAPINFOHEADER) + codec->extradata_size;
             bih->biWidth= codec->width;
             bih->biHeight= codec->height;
@@ -259,15 +328,15 @@ int demux_open_lavf(demuxer_t *demuxer){
             sh_video->bih= bih;
             sh_video->disp_w= codec->width;
             sh_video->disp_h= codec->height;
-#if LIBAVFORMAT_BUILD >= 4624
+            if (st->time_base.den) { /* if container has time_base, use that */
+                sh_video->video.dwRate= st->time_base.den;
+                sh_video->video.dwScale= st->time_base.num;
+            } else {
             sh_video->video.dwRate= codec->time_base.den;
             sh_video->video.dwScale= codec->time_base.num;
-#else
-            sh_video->video.dwRate= codec->frame_rate;
-            sh_video->video.dwScale= codec->frame_rate_base;
-#endif
-            sh_video->fps=(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
-            sh_video->frametime=(float)sh_video->video.dwScale/(float)sh_video->video.dwRate;
+            }
+            sh_video->fps=av_q2d(st->r_frame_rate);
+            sh_video->frametime=1/av_q2d(st->r_frame_rate);
             sh_video->format = bih->biCompression;
             sh_video->aspect=   codec->width * codec->sample_aspect_ratio.num 
                               / (float)(codec->height * codec->sample_aspect_ratio.den);
@@ -289,7 +358,7 @@ int demux_open_lavf(demuxer_t *demuxer){
                 st->discard= AVDISCARD_ALL;
             else{
                 demuxer->video->id = i;
-            demuxer->video->sh= demuxer->v_streams[i];            
+                demuxer->video->sh= demuxer->v_streams[i];
             }
             break;}
         default:
@@ -322,11 +391,6 @@ int demux_lavf_fill_buffer(demuxer_t *demux){
 
     demux->filepos=stream_tell(demux->stream);
 
-    if(stream_eof(demux->stream)){
-//        demuxre->stream->eof=1;
-        return 0;
-    }
-
     if(av_read_frame(priv->avfc, &pkt) < 0)
         return 0;
         
@@ -353,7 +417,7 @@ int demux_lavf_fill_buffer(demuxer_t *demux){
         
     if(0/*pkt.destruct == av_destruct_packet*/){
         //ok kids, dont try this at home :)
-        dp=(demux_packet_t*)malloc(sizeof(demux_packet_t));
+        dp=malloc(sizeof(demux_packet_t));
         dp->len=pkt.size;
         dp->next=NULL;
         dp->refcount=1;
@@ -366,13 +430,8 @@ int demux_lavf_fill_buffer(demuxer_t *demux){
         av_free_packet(&pkt);
     }
     if(pkt.pts != AV_NOPTS_VALUE){
-#if LIBAVFORMAT_BUILD >= 4624
         dp->pts=pkt.pts * av_q2d(priv->avfc->streams[id]->time_base);
         priv->last_pts= dp->pts * AV_TIME_BASE;
-#else
-    priv->last_pts= pkt.pts;
-    dp->pts=pkt.pts / (float)AV_TIME_BASE;
-#endif
     }
     dp->pos=demux->filepos;
     dp->flags= !!(pkt.flags&PKT_FLAG_KEY);
@@ -383,13 +442,20 @@ int demux_lavf_fill_buffer(demuxer_t *demux){
 
 void demux_seek_lavf(demuxer_t *demuxer, float rel_seek_secs, int flags){
     lavf_priv_t *priv = demuxer->priv;
+    int avsflags = 0;
     mp_msg(MSGT_DEMUX,MSGL_DBG2,"demux_seek_lavf(%p, %f, %d)\n", demuxer, rel_seek_secs, flags);
     
-#if LIBAVFORMAT_BUILD < 4619
-    av_seek_frame(priv->avfc, -1, priv->last_pts + rel_seek_secs*AV_TIME_BASE);
-#else
-    av_seek_frame(priv->avfc, -1, priv->last_pts + rel_seek_secs*AV_TIME_BASE, rel_seek_secs < 0 ? AVSEEK_FLAG_BACKWARD : 0);
-#endif
+    if (flags & 1) // absolute seek
+      priv->last_pts = priv->avfc->start_time;
+    if (flags & 2) { // percent seek
+      if (priv->avfc->duration == 0 || priv->avfc->duration == AV_NOPTS_VALUE)
+        return;
+      priv->last_pts += rel_seek_secs * priv->avfc->duration;
+    } else {
+      priv->last_pts += rel_seek_secs * AV_TIME_BASE;
+      if (rel_seek_secs < 0) avsflags = AVSEEK_FLAG_BACKWARD;
+    }
+    av_seek_frame(priv->avfc, -1, priv->last_pts, avsflags);
 }
 
 int demux_lavf_control(demuxer_t *demuxer, int cmd, void *arg)
@@ -398,17 +464,17 @@ int demux_lavf_control(demuxer_t *demuxer, int cmd, void *arg)
     
     switch (cmd) {
         case DEMUXER_CTRL_GET_TIME_LENGTH:
-	    if (priv->avfc->duration == 0)
+	    if (priv->avfc->duration == 0 || priv->avfc->duration == AV_NOPTS_VALUE)
 	        return DEMUXER_CTRL_DONTKNOW;
 	    
 	    *((unsigned long *)arg) = priv->avfc->duration / AV_TIME_BASE;
 	    return DEMUXER_CTRL_OK;
 
 	case DEMUXER_CTRL_GET_PERCENT_POS:
-	    if (priv->avfc->duration == 0)
+	    if (priv->avfc->duration == 0 || priv->avfc->duration == AV_NOPTS_VALUE)
 	        return DEMUXER_CTRL_DONTKNOW;
 	    
-	    *((int *)arg) = (int)(priv->last_pts*100 / priv->avfc->duration);
+	    *((int *)arg) = (int)((priv->last_pts - priv->avfc->start_time)*100 / priv->avfc->duration);
 	    return DEMUXER_CTRL_OK;
 	
 	default:
@@ -428,4 +494,3 @@ void demux_close_lavf(demuxer_t *demuxer)
     }
 }
 
-#endif // USE_LIBAVFORMAT

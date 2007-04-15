@@ -1,3 +1,24 @@
+/*
+ * WMA compatible decoder
+ * copyright (c) 2002 The FFmpeg Project
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 /**
  * @file wmadata.h
  * Various WMA tables.
@@ -1389,24 +1410,24 @@ static const uint16_t levels5[40] = {
   1,  1,  1,  1,  1,  1,  1,  1,
   1,  1,  1,  1,  1,  1,  1,  1,
 };
-    
+
 static const CoefVLCTable coef_vlcs[6] = {
-    { 
+    {
         sizeof(coef0_huffbits), coef0_huffcodes, coef0_huffbits, levels0,
     },
-    { 
+    {
         sizeof(coef1_huffbits), coef1_huffcodes, coef1_huffbits, levels1,
     },
-    { 
+    {
         sizeof(coef2_huffbits), coef2_huffcodes, coef2_huffbits, levels2,
     },
-    { 
+    {
         sizeof(coef3_huffbits), coef3_huffcodes, coef3_huffbits, levels3,
     },
-    { 
+    {
         sizeof(coef4_huffbits), coef4_huffcodes, coef4_huffbits, levels4,
     },
-    { 
+    {
         sizeof(coef5_huffbits), coef5_huffcodes, coef5_huffbits, levels5,
     },
 };

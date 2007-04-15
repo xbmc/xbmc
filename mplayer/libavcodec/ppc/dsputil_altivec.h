@@ -3,19 +3,21 @@
  * Copyright (c) 2002 Dieter Shirley
  * Copyright (c) 2003-2004 Romain Dolbeau <romain@dolbeau.org>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef _DSPUTIL_ALTIVEC_
@@ -25,34 +27,11 @@
 
 #ifdef HAVE_ALTIVEC
 
-extern int sad16_x2_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int sad16_y2_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int sad16_xy2_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int sad16_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int sad8_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int pix_norm1_altivec(uint8_t *pix, int line_size);
-extern int sse8_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int sse16_altivec(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
-extern int pix_sum_altivec(uint8_t * pix, int line_size);
-extern void diff_pixels_altivec(DCTELEM* block, const uint8_t* s1, const uint8_t* s2, int stride);
-extern void get_pixels_altivec(DCTELEM* block, const uint8_t * pixels, int line_size);
-
-extern void add_bytes_altivec(uint8_t *dst, uint8_t *src, int w);
-extern void put_pixels_clamped_altivec(const DCTELEM *block, uint8_t *restrict pixels, int line_size);
-extern void put_pixels16_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
-extern void avg_pixels16_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
-extern void avg_pixels8_altivec(uint8_t * block, const uint8_t * pixels, int line_size, int h);
-extern void put_pixels8_xy2_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
-extern void put_no_rnd_pixels8_xy2_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
-extern void put_pixels16_xy2_altivec(uint8_t * block, const uint8_t * pixels, int line_size, int h);
-extern void put_no_rnd_pixels16_xy2_altivec(uint8_t * block, const uint8_t * pixels, int line_size, int h);
-extern int hadamard8_diff8x8_altivec(/*MpegEncContext*/ void *s, uint8_t *dst, uint8_t *src, int stride, int h);
-extern int hadamard8_diff16_altivec(/*MpegEncContext*/ void *s, uint8_t *dst, uint8_t *src, int stride, int h);
-extern void avg_pixels8_xy2_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
-
-extern void gmc1_altivec(uint8_t *dst, uint8_t *src, int stride, int h, int x16, int y16, int rounder);
-
 extern int has_altivec(void);
+
+void put_pixels16_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
+
+void avg_pixels16_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
 
 // used to build registers permutation vectors (vcprm)
 // the 's' are for words in the _s_econd vector
@@ -88,10 +67,40 @@ extern int has_altivec(void);
 #define vcii(a,b,c,d) (const vector float){FLOAT_ ## a, FLOAT_ ## b, FLOAT_ ## c, FLOAT_ ## d}
 #endif
 
-#else /* HAVE_ALTIVEC */
-#ifdef ALTIVEC_USE_REFERENCE_C_CODE
-#error "I can't use ALTIVEC_USE_REFERENCE_C_CODE if I don't use HAVE_ALTIVEC"
-#endif /* ALTIVEC_USE_REFERENCE_C_CODE */
+// Transpose 8x8 matrix of 16-bit elements (in-place)
+#define TRANSPOSE8(a,b,c,d,e,f,g,h) \
+do { \
+    vector signed short A1, B1, C1, D1, E1, F1, G1, H1; \
+    vector signed short A2, B2, C2, D2, E2, F2, G2, H2; \
+ \
+    A1 = vec_mergeh (a, e); \
+    B1 = vec_mergel (a, e); \
+    C1 = vec_mergeh (b, f); \
+    D1 = vec_mergel (b, f); \
+    E1 = vec_mergeh (c, g); \
+    F1 = vec_mergel (c, g); \
+    G1 = vec_mergeh (d, h); \
+    H1 = vec_mergel (d, h); \
+ \
+    A2 = vec_mergeh (A1, E1); \
+    B2 = vec_mergel (A1, E1); \
+    C2 = vec_mergeh (B1, F1); \
+    D2 = vec_mergel (B1, F1); \
+    E2 = vec_mergeh (C1, G1); \
+    F2 = vec_mergel (C1, G1); \
+    G2 = vec_mergeh (D1, H1); \
+    H2 = vec_mergel (D1, H1); \
+ \
+    a = vec_mergeh (A2, E2); \
+    b = vec_mergel (A2, E2); \
+    c = vec_mergeh (B2, F2); \
+    d = vec_mergel (B2, F2); \
+    e = vec_mergeh (C2, G2); \
+    f = vec_mergel (C2, G2); \
+    g = vec_mergeh (D2, H2); \
+    h = vec_mergel (D2, H2); \
+} while (0)
+
 #endif /* HAVE_ALTIVEC */
 
 #endif /* _DSPUTIL_ALTIVEC_ */

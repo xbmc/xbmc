@@ -37,15 +37,16 @@
 #include "fastmemcpy.h"
 #include "sub.h"
 #include "osdep/vbelib.h"
-#include "bswap.h"
+#include "libavutil/common.h"
+#include "libavutil/bswap.h"
 #include "aspect.h"
 #include "vesa_lvo.h"
 #ifdef CONFIG_VIDIX
 #include "vosub_vidix.h"
 #endif
 
-#include "../postproc/swscale.h"
-#include "../libmpcodecs/vf_scale.h"
+#include "libswscale/swscale.h"
+#include "libmpcodecs/vf_scale.h"
 
 
 #ifdef HAVE_PNG

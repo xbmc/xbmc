@@ -2,24 +2,26 @@
  * Duck TrueMotion 1.0 Decoder
  * Copyright (C) 2003 Alex Beregszaszi & Mike Melanson
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
  * @file truemotion1.c
- * Duck TrueMotion v1 Video Decoder by 
+ * Duck TrueMotion v1 Video Decoder by
  * Alex Beregszaszi (alex@fsn.hu) and
  * Mike Melanson (melanson@pcisys.net)
  *
@@ -53,12 +55,12 @@ typedef struct TrueMotion1Context {
 
     int flags;
     int x, y, w, h;
-    
+
     uint32_t y_predictor_table[1024];
     uint32_t c_predictor_table[1024];
     uint32_t fat_y_predictor_table[1024];
     uint32_t fat_c_predictor_table[1024];
-    
+
     int compression;
     int block_type;
     int block_width;
@@ -68,7 +70,7 @@ typedef struct TrueMotion1Context {
     int16_t cdt[8];
     int16_t fat_ydt[8];
     int16_t fat_cdt[8];
-    
+
     int last_deltaset, last_vectable;
 
     unsigned int *vert_pred;
@@ -171,7 +173,7 @@ static int make_ydt15_entry(int p1, int p2, int16_t *ydt)
 #endif
 {
     int lo, hi;
-    
+
     lo = ydt[p1];
     lo += (lo << 5) + (lo << 10);
     hi = ydt[p2];
@@ -186,7 +188,7 @@ static int make_cdt15_entry(int p1, int p2, int16_t *cdt)
 #endif
 {
     int r, b, lo;
-    
+
     b = cdt[p2];
     r = cdt[p1] << 10;
     lo = b + r;
@@ -200,7 +202,7 @@ static int make_ydt16_entry(int p1, int p2, int16_t *ydt)
 #endif
 {
     int lo, hi;
-    
+
     lo = ydt[p1];
     lo += (lo << 6) + (lo << 11);
     hi = ydt[p2];
@@ -215,7 +217,7 @@ static int make_cdt16_entry(int p1, int p2, int16_t *cdt)
 #endif
 {
     int r, b, lo;
-    
+
     b = cdt[p2];
     r = cdt[p1] << 11;
     lo = b + r;
@@ -229,10 +231,10 @@ static int make_ydt24_entry(int p1, int p2, int16_t *ydt)
 #endif
 {
     int lo, hi;
-    
+
     lo = ydt[p1];
     hi = ydt[p2];
-    return ((lo + (hi << 8)) << 1);
+    return ((lo + (hi << 8) + (hi << 16)) << 1);
 }
 
 #ifdef WORDS_BIGENDIAN
@@ -242,7 +244,7 @@ static int make_cdt24_entry(int p1, int p2, int16_t *cdt)
 #endif
 {
     int r, b;
-    
+
     b = cdt[p2];
     r = cdt[p1]<<16;
     return ((b+r) << 1);
@@ -252,16 +254,16 @@ static void gen_vector_table15(TrueMotion1Context *s, const uint8_t *sel_vector_
 {
     int len, i, j;
     unsigned char delta_pair;
-    
+
     for (i = 0; i < 1024; i += 4)
     {
         len = *sel_vector_table++ / 2;
         for (j = 0; j < len; j++)
         {
             delta_pair = *sel_vector_table++;
-            s->y_predictor_table[i+j] = 0xfffffffe & 
+            s->y_predictor_table[i+j] = 0xfffffffe &
                 make_ydt15_entry(delta_pair >> 4, delta_pair & 0xf, s->ydt);
-            s->c_predictor_table[i+j] = 0xfffffffe & 
+            s->c_predictor_table[i+j] = 0xfffffffe &
                 make_cdt15_entry(delta_pair >> 4, delta_pair & 0xf, s->cdt);
         }
         s->y_predictor_table[i+(j-1)] |= 1;
@@ -273,16 +275,16 @@ static void gen_vector_table16(TrueMotion1Context *s, const uint8_t *sel_vector_
 {
     int len, i, j;
     unsigned char delta_pair;
-    
+
     for (i = 0; i < 1024; i += 4)
     {
         len = *sel_vector_table++ / 2;
         for (j = 0; j < len; j++)
         {
             delta_pair = *sel_vector_table++;
-            s->y_predictor_table[i+j] = 0xfffffffe & 
+            s->y_predictor_table[i+j] = 0xfffffffe &
                 make_ydt16_entry(delta_pair >> 4, delta_pair & 0xf, s->ydt);
-            s->c_predictor_table[i+j] = 0xfffffffe & 
+            s->c_predictor_table[i+j] = 0xfffffffe &
                 make_cdt16_entry(delta_pair >> 4, delta_pair & 0xf, s->cdt);
         }
         s->y_predictor_table[i+(j-1)] |= 1;
@@ -294,20 +296,20 @@ static void gen_vector_table24(TrueMotion1Context *s, const uint8_t *sel_vector_
 {
     int len, i, j;
     unsigned char delta_pair;
-    
+
     for (i = 0; i < 1024; i += 4)
     {
         len = *sel_vector_table++ / 2;
         for (j = 0; j < len; j++)
         {
             delta_pair = *sel_vector_table++;
-            s->y_predictor_table[i+j] = 0xfffffffe & 
+            s->y_predictor_table[i+j] = 0xfffffffe &
                 make_ydt24_entry(delta_pair >> 4, delta_pair & 0xf, s->ydt);
-            s->c_predictor_table[i+j] = 0xfffffffe & 
+            s->c_predictor_table[i+j] = 0xfffffffe &
                 make_cdt24_entry(delta_pair >> 4, delta_pair & 0xf, s->cdt);
-            s->fat_y_predictor_table[i+j] = 0xfffffffe & 
+            s->fat_y_predictor_table[i+j] = 0xfffffffe &
                 make_ydt24_entry(delta_pair >> 4, delta_pair & 0xf, s->fat_ydt);
-            s->fat_c_predictor_table[i+j] = 0xfffffffe & 
+            s->fat_c_predictor_table[i+j] = 0xfffffffe &
                 make_cdt24_entry(delta_pair >> 4, delta_pair & 0xf, s->fat_cdt);
         }
         s->y_predictor_table[i+(j-1)] |= 1;
@@ -318,7 +320,7 @@ static void gen_vector_table24(TrueMotion1Context *s, const uint8_t *sel_vector_
 }
 
 /* Returns the number of bytes consumed from the bytestream. Returns -1 if
- * there was an error while decoding the header */ 
+ * there was an error while decoding the header */
 static int truemotion1_decode_header(TrueMotion1Context *s)
 {
     int i;
@@ -334,14 +336,14 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
     header.header_size = ((s->buf[0] >> 5) | (s->buf[0] << 3)) & 0x7f;
     if (s->buf[0] < 0x10)
     {
-	av_log(s->avctx, AV_LOG_ERROR, "invalid header size (%d)\n", s->buf[0]);
+        av_log(s->avctx, AV_LOG_ERROR, "invalid header size (%d)\n", s->buf[0]);
         return -1;
     }
 
     /* unscramble the header bytes with a XOR operation */
     memset(header_buffer, 0, 128);
     for (i = 1; i < header.header_size; i++)
-	header_buffer[i - 1] = s->buf[i] ^ s->buf[i + 1];
+        header_buffer[i - 1] = s->buf[i] ^ s->buf[i + 1];
 
     header.compression = header_buffer[0];
     header.deltaset = header_buffer[1];
@@ -369,9 +371,9 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
             s->flags = FLAG_KEYFRAME;
     } else /* Version 1 */
         s->flags = FLAG_KEYFRAME;
-    
+
     if (s->flags & FLAG_SPRITE) {
-	av_log(s->avctx, AV_LOG_INFO, "SPRITE frame found, please report the sample to the developers\n");
+        av_log(s->avctx, AV_LOG_INFO, "SPRITE frame found, please report the sample to the developers\n");
         s->w = header.width;
         s->h = header.height;
         s->x = header.xoffset;
@@ -381,10 +383,10 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
         s->h = header.ysize;
         if (header.header_type < 2) {
             if ((s->w < 213) && (s->h >= 176))
-	    {
+            {
                 s->flags |= FLAG_INTERPOLATED;
-	        av_log(s->avctx, AV_LOG_INFO, "INTERPOLATION selected, please report the sample to the developers\n");
-	    }
+                av_log(s->avctx, AV_LOG_INFO, "INTERPOLATION selected, please report the sample to the developers\n");
+            }
         }
     }
 
@@ -392,8 +394,8 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
         av_log(s->avctx, AV_LOG_ERROR, "invalid compression type (%d)\n", header.compression);
         return -1;
     }
-    
-    if ((header.deltaset != s->last_deltaset) || 
+
+    if ((header.deltaset != s->last_deltaset) ||
         (header.vectable != s->last_vectable))
         select_delta_tables(s, header.deltaset);
 
@@ -407,21 +409,21 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
             return -1;
         }
     }
-    
+
     // FIXME: where to place this ?!?!
     if (compression_types[header.compression].algorithm == ALGO_RGB24H)
-        s->avctx->pix_fmt = PIX_FMT_BGR24;
+        s->avctx->pix_fmt = PIX_FMT_RGBA32;
     else
-	s->avctx->pix_fmt = PIX_FMT_RGB555; // RGB565 is supported aswell
+        s->avctx->pix_fmt = PIX_FMT_RGB555; // RGB565 is supported aswell
 
     if ((header.deltaset != s->last_deltaset) || (header.vectable != s->last_vectable))
     {
         if (compression_types[header.compression].algorithm == ALGO_RGB24H)
             gen_vector_table24(s, sel_vector_table);
         else
-	if (s->avctx->pix_fmt == PIX_FMT_RGB555)
+        if (s->avctx->pix_fmt == PIX_FMT_RGB555)
             gen_vector_table15(s, sel_vector_table);
-	else
+        else
             gen_vector_table16(s, sel_vector_table);
     }
 
@@ -432,7 +434,7 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
         s->index_stream = s->mb_change_bits;
     } else {
         /* one change bit per 4x4 block */
-        s->index_stream = s->mb_change_bits + 
+        s->index_stream = s->mb_change_bits +
             (s->mb_change_bits_row_size * (s->avctx->height >> 2));
     }
     s->index_stream_size = s->size - (s->index_stream - s->buf);
@@ -445,15 +447,15 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
     s->block_type = compression_types[header.compression].block_type;
 
     if (s->avctx->debug & FF_DEBUG_PICT_INFO)
-	av_log(s->avctx, AV_LOG_INFO, "tables: %d / %d c:%d %dx%d t:%d %s%s%s%s\n",
-	    s->last_deltaset, s->last_vectable, s->compression, s->block_width,
-	    s->block_height, s->block_type,
-	    s->flags & FLAG_KEYFRAME ? " KEY" : "",
-	    s->flags & FLAG_INTERFRAME ? " INTER" : "",
-	    s->flags & FLAG_SPRITE ? " SPRITE" : "",
-	    s->flags & FLAG_INTERPOLATED ? " INTERPOL" : "");
+        av_log(s->avctx, AV_LOG_INFO, "tables: %d / %d c:%d %dx%d t:%d %s%s%s%s\n",
+            s->last_deltaset, s->last_vectable, s->compression, s->block_width,
+            s->block_height, s->block_type,
+            s->flags & FLAG_KEYFRAME ? " KEY" : "",
+            s->flags & FLAG_INTERFRAME ? " INTER" : "",
+            s->flags & FLAG_SPRITE ? " SPRITE" : "",
+            s->flags & FLAG_INTERPOLATED ? " INTERPOL" : "");
 
-    return header.header_size;    
+    return header.header_size;
 }
 
 static int truemotion1_decode_init(AVCodecContext *avctx)
@@ -464,17 +466,17 @@ static int truemotion1_decode_init(AVCodecContext *avctx)
 
     // FIXME: it may change ?
 //    if (avctx->bits_per_sample == 24)
-//	avctx->pix_fmt = PIX_FMT_RGB24;
+//        avctx->pix_fmt = PIX_FMT_RGB24;
 //    else
-//	avctx->pix_fmt = PIX_FMT_RGB555;
+//        avctx->pix_fmt = PIX_FMT_RGB555;
 
     avctx->has_b_frames = 0;
     s->frame.data[0] = s->prev_frame.data[0] = NULL;
 
     /* there is a vertical predictor for each pixel in a line; each vertical
      * predictor is 0 to start with */
-    s->vert_pred = 
-        (unsigned int *)av_malloc(s->avctx->width * sizeof(unsigned short));
+    s->vert_pred =
+        (unsigned int *)av_malloc(s->avctx->width * sizeof(unsigned int));
 
     return 0;
 }
@@ -533,21 +535,20 @@ hres,vres,i,i%vres (0 < i < 4)
 
 #define APPLY_C_PREDICTOR_24() \
     predictor_pair = s->c_predictor_table[index]; \
-    c_horiz_pred += (predictor_pair >> 1); \
+    horiz_pred += (predictor_pair >> 1); \
     if (predictor_pair & 1) { \
         GET_NEXT_INDEX() \
         if (!index) { \
             GET_NEXT_INDEX() \
             predictor_pair = s->fat_c_predictor_table[index]; \
-            c_horiz_pred += (predictor_pair >> 1); \
+            horiz_pred += (predictor_pair >> 1); \
             if (predictor_pair & 1) \
                 GET_NEXT_INDEX() \
             else \
                 index++; \
         } \
     } else \
-        index++; 
-//    c_last+coff = clast+c_horiz_pred;
+        index++;
 
 
 #define APPLY_Y_PREDICTOR() \
@@ -613,7 +614,7 @@ static void truemotion1_decode_16bit(TrueMotion1Context *s)
     int index;
 
     /* clean out the line buffer */
-    memset(s->vert_pred, 0, s->avctx->width * sizeof(unsigned short));
+    memset(s->vert_pred, 0, s->avctx->width * sizeof(unsigned int));
 
     GET_NEXT_INDEX();
 
@@ -635,7 +636,7 @@ static void truemotion1_decode_16bit(TrueMotion1Context *s)
 
                 switch (y & 3) {
                 case 0:
-                    /* if macroblock width is 2, apply C-Y-C-Y; else 
+                    /* if macroblock width is 2, apply C-Y-C-Y; else
                      * apply C-Y-Y */
                     if (s->block_width == 2) {
                         APPLY_C_PREDICTOR();
@@ -663,7 +664,7 @@ static void truemotion1_decode_16bit(TrueMotion1Context *s)
                     break;
 
                 case 2:
-                    /* this iteration might be C-Y-C-Y, Y-Y, or C-Y-Y 
+                    /* this iteration might be C-Y-C-Y, Y-Y, or C-Y-Y
                      * depending on the macroblock type */
                     if (s->block_type == BLOCK_2x2) {
                         APPLY_C_PREDICTOR();
@@ -689,14 +690,14 @@ static void truemotion1_decode_16bit(TrueMotion1Context *s)
 
             } else {
 
-                /* skip (copy) four pixels, but reassign the horizontal 
+                /* skip (copy) four pixels, but reassign the horizontal
                  * predictor */
                 *current_pixel_pair = *prev_pixel_pair++;
                 *vert_pred++ = *current_pixel_pair++;
                 *current_pixel_pair = *prev_pixel_pair++;
                 horiz_pred = *current_pixel_pair - *vert_pred;
                 *vert_pred++ = *current_pixel_pair++;
-                
+
             }
 
             if (!keyframe) {
@@ -727,7 +728,6 @@ static void truemotion1_decode_24bit(TrueMotion1Context *s)
     int pixels_left;  /* remaining pixels on this line */
     unsigned int predictor_pair;
     unsigned int horiz_pred;
-    unsigned int c_horiz_pred;
     unsigned int *vert_pred;
     unsigned int *current_pixel_pair;
     unsigned int *prev_pixel_pair;
@@ -746,14 +746,14 @@ static void truemotion1_decode_24bit(TrueMotion1Context *s)
     int index;
 
     /* clean out the line buffer */
-    memset(s->vert_pred, 0, s->avctx->width * sizeof(unsigned short));
+    memset(s->vert_pred, 0, s->avctx->width * sizeof(unsigned int));
 
     GET_NEXT_INDEX();
 
     for (y = 0; y < s->avctx->height; y++) {
 
         /* re-init variables for the next line iteration */
-        horiz_pred = c_horiz_pred = 0;
+        horiz_pred = 0;
         current_pixel_pair = (unsigned int *)current_line;
         prev_pixel_pair = (unsigned int *)prev_line;
         vert_pred = s->vert_pred;
@@ -768,25 +768,21 @@ static void truemotion1_decode_24bit(TrueMotion1Context *s)
 
                 switch (y & 3) {
                 case 0:
-                    /* if macroblock width is 2, apply C-Y-C-Y; else 
+                    /* if macroblock width is 2, apply C-Y-C-Y; else
                      * apply C-Y-Y */
                     if (s->block_width == 2) {
                         APPLY_C_PREDICTOR_24();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                         APPLY_C_PREDICTOR_24();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                     } else {
                         APPLY_C_PREDICTOR_24();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                     }
                     break;
 
@@ -800,25 +796,21 @@ static void truemotion1_decode_24bit(TrueMotion1Context *s)
                     break;
 
                 case 2:
-                    /* this iteration might be C-Y-C-Y, Y-Y, or C-Y-Y 
+                    /* this iteration might be C-Y-C-Y, Y-Y, or C-Y-Y
                      * depending on the macroblock type */
                     if (s->block_type == BLOCK_2x2) {
                         APPLY_C_PREDICTOR_24();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                         APPLY_C_PREDICTOR_24();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                     } else if (s->block_type == BLOCK_4x2) {
                         APPLY_C_PREDICTOR_24();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
-//                        OUTPUT_PIXEL_PAIR_24_C();
                     } else {
                         APPLY_Y_PREDICTOR_24();
                         OUTPUT_PIXEL_PAIR();
@@ -830,15 +822,14 @@ static void truemotion1_decode_24bit(TrueMotion1Context *s)
 
             } else {
 
-                /* skip (copy) four pixels, but reassign the horizontal 
+                /* skip (copy) four pixels, but reassign the horizontal
                  * predictor */
                 *current_pixel_pair = *prev_pixel_pair++;
                 *vert_pred++ = *current_pixel_pair++;
                 *current_pixel_pair = *prev_pixel_pair++;
                 horiz_pred = *current_pixel_pair - *vert_pred;
-//		c_horiz_pred = *current_pixel_pair - *vert_pred;
                 *vert_pred++ = *current_pixel_pair++;
-                
+
             }
 
             if (!keyframe) {

@@ -2,19 +2,21 @@
  * Id RoQ (.roq) File Demuxer
  * Copyright (c) 2003 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -78,19 +80,19 @@ static int roq_read_header(AVFormatContext *s,
     unsigned int chunk_type;
 
     /* get the main header */
-    if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) != 
+    if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) !=
         RoQ_CHUNK_PREAMBLE_SIZE)
         return AVERROR_IO;
     roq->framerate = LE_16(&preamble[6]);
     roq->frame_pts_inc = 90000 / roq->framerate;
 
     /* init private context parameters */
-    roq->width = roq->height = roq->audio_channels = roq->video_pts = 
+    roq->width = roq->height = roq->audio_channels = roq->video_pts =
     roq->audio_frame_count = 0;
 
     /* scan the first n chunks searching for A/V parameters */
     for (i = 0; i < RoQ_CHUNKS_TO_SCAN; i++) {
-        if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) != 
+        if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) !=
             RoQ_CHUNK_PREAMBLE_SIZE)
             return AVERROR_IO;
 
@@ -101,7 +103,7 @@ static int roq_read_header(AVFormatContext *s,
 
         case RoQ_INFO:
             /* fetch the width and height; reuse the preamble bytes */
-            if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) != 
+            if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) !=
                 RoQ_CHUNK_PREAMBLE_SIZE)
                 return AVERROR_IO;
             roq->width = LE_16(&preamble[0]);
@@ -190,7 +192,7 @@ static int roq_read_packet(AVFormatContext *s,
             return AVERROR_IO;
 
         /* get the next chunk preamble */
-        if ((ret = get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE)) != 
+        if ((ret = get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE)) !=
             RoQ_CHUNK_PREAMBLE_SIZE)
             return AVERROR_IO;
 
@@ -211,10 +213,10 @@ static int roq_read_packet(AVFormatContext *s,
             codebook_offset = url_ftell(pb) - RoQ_CHUNK_PREAMBLE_SIZE;
             codebook_size = chunk_size;
             url_fseek(pb, codebook_size, SEEK_CUR);
-            if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) != 
+            if (get_buffer(pb, preamble, RoQ_CHUNK_PREAMBLE_SIZE) !=
                 RoQ_CHUNK_PREAMBLE_SIZE)
                 return AVERROR_IO;
-            chunk_size = LE_32(&preamble[2]) + RoQ_CHUNK_PREAMBLE_SIZE * 2 + 
+            chunk_size = LE_32(&preamble[2]) + RoQ_CHUNK_PREAMBLE_SIZE * 2 +
                 codebook_size;
 
             /* rewind */
@@ -278,7 +280,7 @@ static int roq_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat roq_iformat = {
+AVInputFormat roq_demuxer = {
     "RoQ",
     "Id RoQ format",
     sizeof(RoqDemuxContext),
@@ -287,9 +289,3 @@ static AVInputFormat roq_iformat = {
     roq_read_packet,
     roq_read_close,
 };
-
-int roq_init(void)
-{
-    av_register_input_format(&roq_iformat);
-    return 0;
-}

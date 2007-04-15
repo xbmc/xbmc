@@ -2,19 +2,21 @@
  * Templates for image convertion routines
  * Copyright (c) 2001, 2002, 2003 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef RGB_OUT
@@ -27,7 +29,7 @@ static void glue(yuv420p_to_, RGB_NAME)(AVPicture *dst, const AVPicture *src,
     const uint8_t *y1_ptr, *y2_ptr, *cb_ptr, *cr_ptr;
     uint8_t *d, *d1, *d2;
     int w, y, cb, cr, r_add, g_add, b_add, width2;
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     unsigned int r, g, b;
 
     d = dst->data[0];
@@ -121,7 +123,7 @@ static void glue(yuvj420p_to_, RGB_NAME)(AVPicture *dst, const AVPicture *src,
     const uint8_t *y1_ptr, *y2_ptr, *cb_ptr, *cr_ptr;
     uint8_t *d, *d1, *d2;
     int w, y, cb, cr, r_add, g_add, b_add, width2;
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     unsigned int r, g, b;
 
     d = dst->data[0];
@@ -408,7 +410,8 @@ static void glue(pal8_to_, RGB_NAME)(AVPicture *dst, const AVPicture *src,
     }
 }
 
-#if !defined(FMT_RGBA32) && defined(RGBA_OUT)
+// RGB24 has optimised routines
+#if !defined(FMT_RGBA32) && !defined(FMT_RGB24)
 /* alpha support */
 
 static void glue(rgba32_to_, RGB_NAME)(AVPicture *dst, const AVPicture *src,
@@ -417,7 +420,10 @@ static void glue(rgba32_to_, RGB_NAME)(AVPicture *dst, const AVPicture *src,
     const uint8_t *s;
     uint8_t *d;
     int src_wrap, dst_wrap, j, y;
-    unsigned int v, r, g, b, a;
+    unsigned int v, r, g, b;
+#ifdef RGBA_OUT
+    unsigned int a;
+#endif
 
     s = src->data[0];
     src_wrap = src->linesize[0] - width * 4;
@@ -428,11 +434,15 @@ static void glue(rgba32_to_, RGB_NAME)(AVPicture *dst, const AVPicture *src,
     for(y=0;y<height;y++) {
         for(j = 0;j < width; j++) {
             v = ((const uint32_t *)(s))[0];
-            a = (v >> 24) & 0xff;
             r = (v >> 16) & 0xff;
             g = (v >> 8) & 0xff;
             b = v & 0xff;
+#ifdef RGBA_OUT
+            a = (v >> 24) & 0xff;
             RGBA_OUT(d, r, g, b, a);
+#else
+            RGB_OUT(d, r, g, b);
+#endif
             s += 4;
             d += BPP;
         }
@@ -447,7 +457,10 @@ static void glue(RGB_NAME, _to_rgba32)(AVPicture *dst, const AVPicture *src,
     const uint8_t *s;
     uint8_t *d;
     int src_wrap, dst_wrap, j, y;
-    unsigned int r, g, b, a;
+    unsigned int r, g, b;
+#ifdef RGBA_IN
+    unsigned int a;
+#endif
 
     s = src->data[0];
     src_wrap = src->linesize[0] - width * BPP;
@@ -457,8 +470,13 @@ static void glue(RGB_NAME, _to_rgba32)(AVPicture *dst, const AVPicture *src,
 
     for(y=0;y<height;y++) {
         for(j = 0;j < width; j++) {
+#ifdef RGBA_IN
             RGBA_IN(r, g, b, a, s);
             ((uint32_t *)(d))[0] = (a << 24) | (r << 16) | (g << 8) | b;
+#else
+            RGB_IN(r, g, b, s);
+            ((uint32_t *)(d))[0] = (0xff << 24) | (r << 16) | (g << 8) | b;
+#endif
             d += 4;
             s += BPP;
         }
@@ -467,7 +485,7 @@ static void glue(RGB_NAME, _to_rgba32)(AVPicture *dst, const AVPicture *src,
     }
 }
 
-#endif /* !defined(FMT_RGBA32) && defined(RGBA_IN) */
+#endif /* !defined(FMT_RGBA32) */
 
 #ifndef FMT_RGB24
 
@@ -537,7 +555,7 @@ static void yuv444p_to_rgb24(AVPicture *dst, const AVPicture *src,
     const uint8_t *y1_ptr, *cb_ptr, *cr_ptr;
     uint8_t *d, *d1;
     int w, y, cb, cr, r_add, g_add, b_add;
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     unsigned int r, g, b;
 
     d = dst->data[0];
@@ -570,7 +588,7 @@ static void yuvj444p_to_rgb24(AVPicture *dst, const AVPicture *src,
     const uint8_t *y1_ptr, *cb_ptr, *cr_ptr;
     uint8_t *d, *d1;
     int w, y, cb, cr, r_add, g_add, b_add;
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     unsigned int r, g, b;
 
     d = dst->data[0];
@@ -787,7 +805,7 @@ static void glue(RGB_NAME, _to_pal8)(AVPicture *dst, const AVPicture *src,
     q = dst->data[0];
     dst_wrap = dst->linesize[0] - width;
     has_alpha = 0;
-    
+
     for(y=0;y<height;y++) {
         for(x=0;x<width;x++) {
 #ifdef RGBA_IN
@@ -817,11 +835,11 @@ static void glue(RGB_NAME, _to_pal8)(AVPicture *dst, const AVPicture *src,
 }
 
 #endif /* defined(FMT_RGB24) || defined(FMT_RGBA32) */
-        
+
 #ifdef RGBA_IN
 
 static int glue(get_alpha_info_, RGB_NAME)(const AVPicture *src,
-					   int width, int height)
+                                           int width, int height)
 {
     const unsigned char *p;
     int src_wrap, ret, x, y;

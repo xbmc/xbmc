@@ -2,19 +2,21 @@
  * ADX ADPCM codecs
  * Copyright (c) 2001,2003 BERO
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avcodec.h"
 
@@ -171,7 +173,7 @@ static int adx_encode_header(AVCodecContext *avctx,unsigned char *buf,size_t buf
         long loop_start_byte;
         long loop_end_sample;
         long loop_end_byte;
-        long 
+        long
     */
     } adxhdr; /* big endian */
     /* offset-6 "(c)CRI" */
@@ -267,7 +269,7 @@ static uint32_t read_long(const unsigned char *p)
     return (p[0]<<24)|(p[1]<<16)|(p[2]<<8)|p[3];
 }
 
-int is_adx(const unsigned char *buf,size_t bufsize)
+static int is_adx(const unsigned char *buf,size_t bufsize)
 {
     int    offset;
 
@@ -385,8 +387,8 @@ static int adx_decode_frame(AVCodecContext *avctx,
 }
 
 #ifdef CONFIG_ENCODERS
-AVCodec adx_adpcm_encoder = {
-    "adx_adpcm",
+AVCodec adpcm_adx_encoder = {
+    "adpcm_adx",
     CODEC_TYPE_AUDIO,
     CODEC_ID_ADPCM_ADX,
     sizeof(ADXContext),
@@ -397,8 +399,8 @@ AVCodec adx_adpcm_encoder = {
 };
 #endif //CONFIG_ENCODERS
 
-AVCodec adx_adpcm_decoder = {
-    "adx_adpcm",
+AVCodec adpcm_adx_decoder = {
+    "adpcm_adx",
     CODEC_TYPE_AUDIO,
     CODEC_ID_ADPCM_ADX,
     sizeof(ADXContext),

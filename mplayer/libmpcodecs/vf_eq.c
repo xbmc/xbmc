@@ -13,7 +13,6 @@
 
 #include "../libvo/video_out.h"
 #include "../libvo/fastmemcpy.h"
-#include "../postproc/rgb2rgb.h"
 
 #include "m_option.h"
 #include "m_struct.h"
@@ -51,7 +50,7 @@ static void process_MMX(unsigned char *dest, int dstride, unsigned char *src, in
 			"movq (%6), %%mm4 \n\t"
 			"pxor %%mm0, %%mm0 \n\t"
 			"movl %4, %%eax\n\t"
-                       ".balign 16 \n\t"
+			ASMALIGN(4)
 			"1: \n\t"
 			"movq (%0), %%mm1 \n\t"
 			"movq (%0), %%mm2 \n\t"
@@ -188,6 +187,7 @@ static int query_format(struct vf_instance_s* vf, unsigned int fmt)
 	case IMGFMT_Y800:
 	case IMGFMT_Y8:
 	case IMGFMT_NV12:
+	case IMGFMT_NV21:
 	case IMGFMT_444P:
 	case IMGFMT_422P:
 	case IMGFMT_411P:

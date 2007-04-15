@@ -2,19 +2,21 @@
  * Interplay MVE Video Decoder
  * Copyright (C) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
 
@@ -846,7 +848,7 @@ static void ipvideo_decode_opcodes(IpvideoContext *s)
     }
     if ((s->stream_ptr != s->stream_end) &&
         (s->stream_ptr + 1 != s->stream_end)) {
-        av_log(s->avctx, AV_LOG_ERROR, " Interplay video: decode finished with %d bytes left over\n",
+        av_log(s->avctx, AV_LOG_ERROR, " Interplay video: decode finished with %td bytes left over\n",
             s->stream_end - s->stream_ptr);
     }
 }

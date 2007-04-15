@@ -2,19 +2,21 @@
  * FFT/IFFT transforms
  * Copyright (c) 2002 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -26,13 +28,13 @@
 
 /**
  * The size of the FFT is 2^nbits. If inverse is TRUE, inverse FFT is
- * done 
+ * done
  */
 int ff_fft_init(FFTContext *s, int nbits, int inverse)
 {
     int i, j, m, n;
     float alpha, c1, s1, s2;
-    
+
     s->nbits = nbits;
     n = 1 << nbits;
 
@@ -45,7 +47,7 @@ int ff_fft_init(FFTContext *s, int nbits, int inverse)
     s->inverse = inverse;
 
     s2 = inverse ? 1.0 : -1.0;
-        
+
     for(i=0;i<(n/2);i++) {
         alpha = 2 * M_PI * (float)i / (float)n;
         c1 = cos(alpha);
@@ -54,23 +56,38 @@ int ff_fft_init(FFTContext *s, int nbits, int inverse)
         s->exptab[i].im = s1;
     }
     s->fft_calc = ff_fft_calc_c;
+    s->imdct_calc = ff_imdct_calc;
     s->exptab1 = NULL;
 
     /* compute constant table for HAVE_SSE version */
-#if (defined(HAVE_MMX) && defined(HAVE_BUILTIN_VECTOR)) || defined(HAVE_ALTIVEC)
+#if defined(HAVE_MMX) \
+    || (defined(HAVE_ALTIVEC) && !defined(ALTIVEC_USE_REFERENCE_C_CODE))
     {
-        int has_vectors = 0;
+        int has_vectors = mm_support();
 
-#if defined(HAVE_MMX)
-        has_vectors = mm_support() & MM_SSE;
-#endif
-#if defined(HAVE_ALTIVEC) && !defined(ALTIVEC_USE_REFERENCE_C_CODE)
-        has_vectors = mm_support() & MM_ALTIVEC;
-#endif
         if (has_vectors) {
+#if defined(HAVE_MMX)
+            if (has_vectors & MM_3DNOWEXT) {
+                /* 3DNowEx for K7/K8 */
+                s->imdct_calc = ff_imdct_calc_3dn2;
+                s->fft_calc = ff_fft_calc_3dn2;
+            } else if (has_vectors & MM_3DNOW) {
+                /* 3DNow! for K6-2/3 */
+                s->fft_calc = ff_fft_calc_3dn;
+            } else if (has_vectors & MM_SSE) {
+                /* SSE for P3/P4 */
+                s->imdct_calc = ff_imdct_calc_sse;
+                s->fft_calc = ff_fft_calc_sse;
+            }
+#else /* HAVE_MMX */
+            if (has_vectors & MM_ALTIVEC)
+                s->fft_calc = ff_fft_calc_altivec;
+#endif
+        }
+        if (s->fft_calc != ff_fft_calc_c) {
             int np, nblocks, np2, l;
             FFTComplex *q;
-            
+
             np = 1 << nbits;
             nblocks = np >> 3;
             np2 = np >> 1;
@@ -93,11 +110,6 @@ int ff_fft_init(FFTContext *s, int nbits, int inverse)
                 nblocks = nblocks >> 1;
             } while (nblocks != 0);
             av_freep(&s->exptab);
-#if defined(HAVE_MMX)
-            s->fft_calc = ff_fft_calc_sse;
-#else
-            s->fft_calc = ff_fft_calc_altivec;
-#endif
         }
     }
 #endif
@@ -144,13 +156,13 @@ int ff_fft_init(FFTContext *s, int nbits, int inverse)
 /**
  * Do a complex FFT with the parameters defined in ff_fft_init(). The
  * input data must be permuted before with s->revtab table. No
- * 1.0/sqrt(n) normalization is done.  
+ * 1.0/sqrt(n) normalization is done.
  */
 void ff_fft_calc_c(FFTContext *s, FFTComplex *z)
 {
     int ln = s->nbits;
-    int	j, np, np2;
-    int	nblocks, nloops;
+    int j, np, np2;
+    int nblocks, nloops;
     register FFTComplex *p, *q;
     FFTComplex *exptab = s->exptab;
     int l;
@@ -163,29 +175,29 @@ void ff_fft_calc_c(FFTContext *s, FFTComplex *z)
     p=&z[0];
     j=(np >> 1);
     do {
-        BF(p[0].re, p[0].im, p[1].re, p[1].im, 
+        BF(p[0].re, p[0].im, p[1].re, p[1].im,
            p[0].re, p[0].im, p[1].re, p[1].im);
         p+=2;
     } while (--j != 0);
 
     /* pass 1 */
 
-    
+
     p=&z[0];
     j=np >> 2;
     if (s->inverse) {
         do {
-            BF(p[0].re, p[0].im, p[2].re, p[2].im, 
+            BF(p[0].re, p[0].im, p[2].re, p[2].im,
                p[0].re, p[0].im, p[2].re, p[2].im);
-            BF(p[1].re, p[1].im, p[3].re, p[3].im, 
+            BF(p[1].re, p[1].im, p[3].re, p[3].im,
                p[1].re, p[1].im, -p[3].im, p[3].re);
             p+=4;
         } while (--j != 0);
     } else {
         do {
-            BF(p[0].re, p[0].im, p[2].re, p[2].im, 
+            BF(p[0].re, p[0].im, p[2].re, p[2].im,
                p[0].re, p[0].im, p[2].re, p[2].im);
-            BF(p[1].re, p[1].im, p[3].re, p[3].im, 
+            BF(p[1].re, p[1].im, p[3].re, p[3].im,
                p[1].re, p[1].im, p[3].im, -p[3].re);
             p+=4;
         } while (--j != 0);
@@ -201,7 +213,7 @@ void ff_fft_calc_c(FFTContext *s, FFTComplex *z)
         for (j = 0; j < nblocks; ++j) {
             BF(p->re, p->im, q->re, q->im,
                p->re, p->im, q->re, q->im);
-            
+
             p++;
             q++;
             for(l = nblocks; l < np2; l += nblocks) {
@@ -228,7 +240,7 @@ void ff_fft_permute(FFTContext *s, FFTComplex *z)
     int j, k, np;
     FFTComplex tmp;
     const uint16_t *revtab = s->revtab;
-    
+
     /* reverse */
     np = 1 << s->nbits;
     for(j=0;j<np;j++) {

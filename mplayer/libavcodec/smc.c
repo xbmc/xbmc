@@ -2,19 +2,21 @@
  * Quicktime Graphics (SMC) Video Decoder
  * Copyright (C) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
 
@@ -168,7 +170,7 @@ static void smc_decode_stream(SmcContext *s)
 
             /* figure out where the previous block started */
             if (pixel_ptr == 0)
-                prev_block_ptr1 = 
+                prev_block_ptr1 =
                     (row_ptr - s->avctx->width * 4) + s->avctx->width - 4;
             else
                 prev_block_ptr1 = row_ptr + pixel_ptr - 4;
@@ -195,14 +197,14 @@ static void smc_decode_stream(SmcContext *s)
 
             /* sanity check */
             if ((row_ptr == 0) && (pixel_ptr < 2 * 4)) {
-        	av_log(s->avctx, AV_LOG_INFO, "encountered repeat block opcode (%02X) but not enough blocks rendered yet\n",
+                av_log(s->avctx, AV_LOG_INFO, "encountered repeat block opcode (%02X) but not enough blocks rendered yet\n",
                     opcode & 0xF0);
                 break;
             }
 
             /* figure out where the previous 2 blocks started */
             if (pixel_ptr == 0)
-                prev_block_ptr1 = (row_ptr - s->avctx->width * 4) + 
+                prev_block_ptr1 = (row_ptr - s->avctx->width * 4) +
                     s->avctx->width - 4 * 2;
             else if (pixel_ptr == 4)
                 prev_block_ptr1 = (row_ptr - s->avctx->width * 4) + row_inc;
@@ -326,7 +328,7 @@ static void smc_decode_stream(SmcContext *s)
                 block_ptr = row_ptr + pixel_ptr;
                 for (pixel_y = 0; pixel_y < 4; pixel_y++) {
                     for (pixel_x = 0; pixel_x < 4; pixel_x++) {
-                        pixel = color_table_index + 
+                        pixel = color_table_index +
                             ((color_flags >> flag_mask) & 0x03);
                         flag_mask -= 2;
                         pixels[block_ptr++] = s->color_quads[pixel];
@@ -394,7 +396,7 @@ static void smc_decode_stream(SmcContext *s)
                         flag_mask = 21;
                     }
                     for (pixel_x = 0; pixel_x < 4; pixel_x++) {
-                        pixel = color_table_index + 
+                        pixel = color_table_index +
                             ((color_flags >> flag_mask) & 0x07);
                         flag_mask -= 3;
                         pixels[block_ptr++] = s->color_octets[pixel];
@@ -452,7 +454,7 @@ static int smc_decode_frame(AVCodecContext *avctx,
     s->size = buf_size;
 
     s->frame.reference = 1;
-    s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | 
+    s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE |
                             FF_BUFFER_HINTS_REUSABLE | FF_BUFFER_HINTS_READABLE;
     if (avctx->reget_buffer(avctx, &s->frame)) {
         av_log(s->avctx, AV_LOG_ERROR, "reget_buffer() failed\n");

@@ -2,19 +2,21 @@
  * Sega FILM Format (CPK) Demuxer
  * Copyright (c) 2003 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -56,8 +58,6 @@ typedef struct FilmDemuxContext {
 
     unsigned int base_clock;
     unsigned int version;
-    int cvid_extra_bytes;  /* the number of bytes thrown into the Cinepak
-                            * chunk header to throw off decoders */
 
     /* buffer used for interleaving stereo PCM data */
     unsigned char *stereo_buffer;
@@ -124,13 +124,8 @@ static int film_read_header(AVFormatContext *s,
     if (BE_32(&scratch[0]) != FDSC_TAG)
         return AVERROR_INVALIDDATA;
 
-    film->cvid_extra_bytes = 0;
     if (BE_32(&scratch[8]) == CVID_TAG) {
         film->video_type = CODEC_ID_CINEPAK;
-        if (film->version)
-            film->cvid_extra_bytes = 2;
-        else
-            film->cvid_extra_bytes = 6;  /* Lemmings 3DO case */
     } else
         film->video_type = 0;
 
@@ -160,7 +155,7 @@ static int film_read_header(AVFormatContext *s,
         st->codec->sample_rate = film->audio_samplerate;
         st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
             st->codec->bits_per_sample;
-        st->codec->block_align = st->codec->channels * 
+        st->codec->block_align = st->codec->channels *
             st->codec->bits_per_sample / 8;
     }
 
@@ -174,10 +169,10 @@ static int film_read_header(AVFormatContext *s,
     if(film->sample_count >= UINT_MAX / sizeof(film_sample_t))
         return -1;
     film->sample_table = av_malloc(film->sample_count * sizeof(film_sample_t));
-    
+
     for(i=0; i<s->nb_streams; i++)
         av_set_pts_info(s->streams[i], 33, 1, film->base_clock);
-    
+
     audio_frame_counter = 0;
     for (i = 0; i < film->sample_count; i++) {
         /* load the next sample record and transfer it to an internal struct */
@@ -185,7 +180,7 @@ static int film_read_header(AVFormatContext *s,
             av_free(film->sample_table);
             return AVERROR_IO;
         }
-        film->sample_table[i].sample_offset = 
+        film->sample_table[i].sample_offset =
             data_offset + BE_32(&scratch[0]);
         film->sample_table[i].sample_size = BE_32(&scratch[4]);
         if (BE_32(&scratch[8]) == 0xFFFFFFFF) {
@@ -227,20 +222,12 @@ static int film_read_packet(AVFormatContext *s,
     url_fseek(pb, sample->sample_offset, SEEK_SET);
 
     /* do a special song and dance when loading FILM Cinepak chunks */
-    if ((sample->stream == film->video_stream_index) && 
+    if ((sample->stream == film->video_stream_index) &&
         (film->video_type == CODEC_ID_CINEPAK)) {
-        if (av_new_packet(pkt, sample->sample_size - film->cvid_extra_bytes))
-            return AVERROR_NOMEM;
-        if(pkt->size < 10)
-            return -1;
         pkt->pos= url_ftell(pb);
-        ret = get_buffer(pb, pkt->data, 10);
-        /* skip the non-spec CVID bytes */
-        url_fseek(pb, film->cvid_extra_bytes, SEEK_CUR);
-        ret += get_buffer(pb, pkt->data + 10, 
-            sample->sample_size - 10 - film->cvid_extra_bytes);
-        if (ret != sample->sample_size - film->cvid_extra_bytes)
-            ret = AVERROR_IO;
+        if (av_new_packet(pkt, sample->sample_size))
+            return AVERROR_NOMEM;
+        get_buffer(pb, pkt->data, sample->sample_size);
     } else if ((sample->stream == film->audio_stream_index) &&
         (film->audio_channels == 2)) {
         /* stereo PCM needs to be interleaved */
@@ -297,7 +284,7 @@ static int film_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat film_iformat = {
+AVInputFormat segafilm_demuxer = {
     "film_cpk",
     "Sega FILM/CPK format",
     sizeof(FilmDemuxContext),
@@ -306,9 +293,3 @@ static AVInputFormat film_iformat = {
     film_read_packet,
     film_read_close,
 };
-
-int film_init(void)
-{
-    av_register_input_format(&film_iformat);
-    return 0;
-}

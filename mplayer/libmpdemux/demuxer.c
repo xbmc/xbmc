@@ -11,7 +11,9 @@
 #include "config.h"
 #include "mp_msg.h"
 #include "help_mp.h"
-#include "../m_config.h"
+#include "m_config.h"
+
+#include "libvo/fastmemcpy.h"
 
 #include "stream.h"
 #include "demuxer.h"
@@ -74,7 +76,24 @@ demuxer_t* new_demuxer(stream_t *stream,int type,int a_id,int v_id,int s_id){
   return d;
 }
 
-sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
+sh_sub_t *new_sh_sub_sid(demuxer_t *demuxer, int id, int sid) {
+  if (id > MAX_S_STREAMS - 1 || id < 0) {
+    mp_msg(MSGT_DEMUXER,MSGL_WARN,"Requested sub stream id overflow (%d > %d)\n",
+           id, MAX_S_STREAMS);
+    return NULL;
+  }
+  if (demuxer->s_streams[id])
+    mp_msg(MSGT_DEMUXER, MSGL_WARN, "Sub stream %i redefined\n", id);
+  else {
+    sh_sub_t *sh = calloc(1, sizeof(sh_sub_t));
+    demuxer->s_streams[id] = sh;
+    sh->sid = sid;
+    mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_SUBTITLE_ID=%d\n", sid);
+  }
+  return demuxer->s_streams[id];
+}
+
+sh_audio_t* new_sh_audio_aid(demuxer_t *demuxer,int id,int aid){
     if(id > MAX_A_STREAMS-1 || id < 0)
     {
 	mp_msg(MSGT_DEMUXER,MSGL_WARN,"Requested audio stream id overflow (%d > %d)\n",
@@ -86,17 +105,25 @@ sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
     } else {
         sh_audio_t *sh;
         mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_FoundAudioStream,id);
-        demuxer->a_streams[id]=malloc(sizeof(sh_audio_t));
-        memset(demuxer->a_streams[id],0,sizeof(sh_audio_t));
+        demuxer->a_streams[id]=calloc(1, sizeof(sh_audio_t));
         sh = demuxer->a_streams[id];
         // set some defaults
         sh->samplesize=2;
         sh->sample_format=AFMT_S16_NE;
         sh->audio_out_minsize=8192;/* default size, maybe not enough for Win32/ACM*/
-        if (identify && !demux_aid_vid_mismatch)
-          mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_AUDIO_ID=%d\n", id);
+        sh->pts=MP_NOPTS_VALUE;
+          mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_AUDIO_ID=%d\n", aid);
     }
+    ((sh_audio_t *)demuxer->a_streams[id])->aid = aid;
     return demuxer->a_streams[id];
+}
+
+void free_sh_audio2(demuxer_t *demuxer, int id) {
+    sh_audio_t *sh = demuxer->a_streams[id];
+    demuxer->a_streams[id] = NULL;
+    mp_msg(MSGT_DEMUXER,MSGL_DBG2,"DEMUXER: freeing sh_audio at %p\n",sh);
+    if(sh->wf) free(sh->wf);
+    free(sh);
 }
 
 void free_sh_audio(sh_audio_t* sh){
@@ -108,7 +135,7 @@ void free_sh_audio(sh_audio_t* sh){
     free(sh);
 }
 
-sh_video_t* new_sh_video(demuxer_t *demuxer,int id){
+sh_video_t* new_sh_video_vid(demuxer_t *demuxer,int id,int vid){
     if(id > MAX_V_STREAMS-1 || id < 0)
     {
 	mp_msg(MSGT_DEMUXER,MSGL_WARN,"Requested video stream id overflow (%d > %d)\n",
@@ -119,11 +146,10 @@ sh_video_t* new_sh_video(demuxer_t *demuxer,int id){
         mp_msg(MSGT_DEMUXER,MSGL_WARN,MSGTR_VideoStreamRedefined,id);
     } else {
         mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_FoundVideoStream,id);
-        demuxer->v_streams[id]=malloc(sizeof(sh_video_t));
-        memset(demuxer->v_streams[id],0,sizeof(sh_video_t));
-        if (identify && !demux_aid_vid_mismatch)
-          mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_VIDEO_ID=%d\n", id);
+        demuxer->v_streams[id]=calloc(1, sizeof(sh_video_t));
+          mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_VIDEO_ID=%d\n", vid);
     }
+    ((sh_video_t *)demuxer->v_streams[id])->vid = vid;
     return demuxer->v_streams[id];
 }
 
@@ -160,7 +186,7 @@ extern void demux_close_ra(demuxer_t* demuxer);
 extern void demux_close_ty(demuxer_t* demuxer);
 extern void demux_close_lavf(demuxer_t* demuxer);
 extern void demux_close_aac(demuxer_t *demuxer);
-
+extern void demux_close_asf(demuxer_t* demuxer);
 
 #ifdef USE_TV
 #include "tv.h"
@@ -251,6 +277,8 @@ void free_demuxer(demuxer_t *demuxer){
 #endif
     case DEMUXER_TYPE_AAC:
       demux_close_aac(demuxer); break;
+    case DEMUXER_TYPE_ASF:
+      demux_close_asf(demuxer); break;
     }
     // free streams:
     for(i=0;i<256;i++){
@@ -311,13 +339,14 @@ int demux_mf_fill_buffer( demuxer_t *demux);
 int demux_roq_fill_buffer(demuxer_t *demux);
 int demux_film_fill_buffer(demuxer_t *demux);
 int demux_fli_fill_buffer(demuxer_t *demux);
-int demux_mpg_es_fill_buffer(demuxer_t *demux);
-int demux_mpg_fill_buffer(demuxer_t *demux);
+int demux_mpg_es_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
+int demux_mpg_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
+int demux_mpg_gxf_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
 int demux_ty_fill_buffer(demuxer_t *demux);
 int demux_avi_fill_buffer(demuxer_t *demux);
 int demux_avi_fill_buffer_ni(demuxer_t *demux,demux_stream_t *ds);
 int demux_avi_fill_buffer_nini(demuxer_t *demux,demux_stream_t *ds);
-int demux_asf_fill_buffer(demuxer_t *demux);
+int demux_asf_fill_buffer(demuxer_t *demux,demux_stream_t* ds);
 int demux_mov_fill_buffer(demuxer_t *demux,demux_stream_t* ds);
 int demux_vivo_fill_buffer(demuxer_t *demux);
 int demux_real_fill_buffer(demuxer_t *demuxer);
@@ -354,12 +383,13 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
     case DEMUXER_TYPE_MPEG_TY: return demux_ty_fill_buffer( demux );
     case DEMUXER_TYPE_MPEG4_ES:
     case DEMUXER_TYPE_H264_ES:
-    case DEMUXER_TYPE_MPEG_ES: return demux_mpg_es_fill_buffer(demux);
-    case DEMUXER_TYPE_MPEG_PS: return demux_mpg_fill_buffer(demux);
+    case DEMUXER_TYPE_MPEG_ES: return demux_mpg_es_fill_buffer(demux,ds);
+    case DEMUXER_TYPE_MPEG_PS: return demux_mpg_fill_buffer(demux,ds);
+    case DEMUXER_TYPE_MPEG_GXF: return demux_mpg_gxf_fill_buffer(demux,ds);
     case DEMUXER_TYPE_AVI: return demux_avi_fill_buffer(demux);
     case DEMUXER_TYPE_AVI_NI: return demux_avi_fill_buffer_ni(demux,ds);
     case DEMUXER_TYPE_AVI_NINI: return demux_avi_fill_buffer_nini(demux,ds);
-    case DEMUXER_TYPE_ASF: return demux_asf_fill_buffer(demux);
+    case DEMUXER_TYPE_ASF: return demux_asf_fill_buffer(demux,ds);
     case DEMUXER_TYPE_MOV: return demux_mov_fill_buffer(demux,ds);
     case DEMUXER_TYPE_VIVO: return demux_vivo_fill_buffer(demux);
     case DEMUXER_TYPE_PVA: return demux_pva_fill_buffer(demux);
@@ -627,7 +657,10 @@ extern void demux_open_nsv(demuxer_t *demuxer);
 extern void demux_open_nuv(demuxer_t *demuxer);
 extern int demux_audio_open(demuxer_t* demuxer);
 extern int demux_ogg_open(demuxer_t* demuxer);
-extern int demux_mpg_open(demuxer_t* demuxer);
+extern int demux_mpg_ps_open(demuxer_t* demuxer);
+extern int demux_mpg_es_open(demuxer_t* demuxer);
+extern int demux_mpg_gxf_open(demuxer_t* demuxer);
+extern int demux_mpg_probe(demuxer_t *demuxer);
 extern int demux_rawaudio_open(demuxer_t* demuxer);
 extern int demux_rawvideo_open(demuxer_t* demuxer);
 extern int smjpeg_check_file(demuxer_t *demuxer);
@@ -654,8 +687,11 @@ extern demuxer_t* demux_open_rtp(demuxer_t* demuxer);
 #endif
 extern int demux_aac_probe(demuxer_t *demuxer);
 extern demuxer_t* demux_aac_open(demuxer_t *demuxer);
+extern demuxer_t* demux_open_asf(demuxer_t* demuxer);
 
 int extension_parsing=1; // 0=off 1=mixed (used only for unstable formats)
+
+int correct_pts=0;
 
 /*
   NOTE : Several demuxers may be opened at the same time so
@@ -960,93 +996,16 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_LMLM4){
 }
 //=============== Try to open as MPEG-PS file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
- int pes=1;
- int tmp;
- off_t tmppos;
- file_format=DEMUXER_TYPE_UNKNOWN;
- while(pes>=0){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_PS,audio_id,video_id,dvdsub_id);
-  
-  // try to pre-detect PES:
-  tmppos=stream_tell(demuxer->stream);
-  tmp=stream_read_dword(demuxer->stream);
-  if(tmp==0x1E0 || tmp==0x1C0){
-      tmp=stream_read_word(demuxer->stream);
-      if(tmp>1 && tmp<=2048) pes=0; // demuxer->synced=3; // PES...
-  }
-  stream_seek(demuxer->stream,tmppos);
-  
-  if(!pes) demuxer->synced=3; // hack!
-
-  num_elementary_packets100=0;
-  num_elementary_packets101=0;
-  num_elementary_packets1B6=0;
-  num_elementary_packets12x=0;
-  num_elementary_packetsPES=0;
-  num_h264_slice=0; //combined slice
-  num_h264_dpa=0; //DPA Slice
-  num_h264_dpb=0; //DPB Slice
-  num_h264_dpc=0; //DPC Slice
-  num_h264_idr=0; //IDR Slice
-  num_h264_sps=0;
-  num_h264_pps=0;
-  num_mp3audio_packets=0;
-
-  if(demux_mpg_open(demuxer)){
-    if(!pes)
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"MPEG-PES");
-    else
+  file_format = demux_mpg_probe(demuxer);
+  if(file_format == DEMUXER_TYPE_MPEG_PS)
+  {
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"MPEG-PS");
-    file_format=DEMUXER_TYPE_MPEG_PS;
+      file_format=DEMUXER_TYPE_MPEG_PS;
   } else {
-    mp_msg(MSGT_DEMUX,MSGL_V,"MPEG packet stats: p100: %d  p101: %d p1B6: %d p12x: %d sli: %d a: %d b: %d c: %d idr: %d sps: %d pps: %d PES: %d  MP3: %d \n",
-	num_elementary_packets100,num_elementary_packets101,
-	num_elementary_packets1B6,num_elementary_packets12x,
-	num_h264_slice, num_h264_dpa,
-	num_h264_dpb, num_h264_dpc=0,
-	num_h264_idr,  num_h264_sps=0,
-	num_h264_pps,
-	num_elementary_packetsPES,num_mp3audio_packets);
-//MPEG packet stats: p100: 458  p101: 458  PES: 0  MP3: 1103  (.m2v)
-    if(num_mp3audio_packets>50 && num_mp3audio_packets>2*num_elementary_packets100
-	&& abs(num_elementary_packets100-num_elementary_packets101)>2)
-	break; // it's .MP3
-    // some hack to get meaningfull error messages to our unhappy users:
-    if(num_elementary_packets100>=2 && num_elementary_packets101>=2 &&
-       abs(num_elementary_packets101+8-num_elementary_packets100)<16){
-      if(num_elementary_packetsPES>=4 && num_elementary_packetsPES>=num_elementary_packets100-4){
-        --pes;continue; // tricky...
-      }
-      file_format=DEMUXER_TYPE_MPEG_ES; //  <-- hack is here :)
-    } else 
-#if 1
-    // fuzzy mpeg4-es detection. do NOT enable without heavy testing of mpeg formats detection!
-    if(num_elementary_packets1B6>3 && num_elementary_packets12x>=1 &&
-       num_elementary_packetsPES==0 && num_elementary_packets100<=num_elementary_packets12x &&
-       demuxer->synced<2){
-      file_format=DEMUXER_TYPE_MPEG4_ES;
-    } else
-#endif
-#if 1
-    // fuzzy h264-es detection. do NOT enable without heavy testing of mpeg formats detection!
-    if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) && 
-       /* FIXME num_h264_sps>=1 && */ num_h264_pps>=1 && num_h264_idr>=1 &&
-       num_elementary_packets1B6==0 && num_elementary_packetsPES==0 &&
-       demuxer->synced<2){
-      file_format=DEMUXER_TYPE_H264_ES;
-    } else
-#endif
-    {
-      if(demuxer->synced==2)
-        mp_msg(MSGT_DEMUXER,MSGL_ERR,"MPEG: " MSGTR_MissingVideoStreamBug);
-      else
-        mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_NotSystemStream);
       free_demuxer(demuxer);
       demuxer = NULL;
-    }
   }
-  break;
- }
 }
 //=============== Try to open as MPEG-ES file: =================
 if(file_format==DEMUXER_TYPE_MPEG_ES || file_format==DEMUXER_TYPE_MPEG4_ES  || file_format==DEMUXER_TYPE_H264_ES){ // little hack, see above!
@@ -1300,44 +1259,14 @@ switch(file_format){
   demux_open_real(demuxer);
   break;
  }
- case DEMUXER_TYPE_ASF: {
-  //---- ASF header:
-  if (!read_asf_header(demuxer)) {
-      break; // this will actually leak the global asf object, oh well
-  }
-  stream_reset(demuxer->stream);
-  stream_seek(demuxer->stream,demuxer->movi_start);
-//  demuxer->idx_pos=0;
-//  demuxer->endpos=avi_header.movi_end;
-  if(d_video->id != -2) {
-    if(!ds_fill_buffer(d_video)){
-      mp_msg(MSGT_DEMUXER,MSGL_WARN,"ASF: " MSGTR_MissingVideoStream);
-      sh_video=NULL;
-      //printf("ASF: missing video stream!? contact the author, it may be a bug :(\n");
-    } else {
-      sh_video=d_video->sh;sh_video->ds=d_video;
-      //sh_video->fps=1000.0f; sh_video->frametime=0.001f; // 1ms  - now set when reading asf header
-      //sh_video->i_bps=10*asf_packetsize; // FIXME!
-    }
-  }
-  if(d_audio->id!=-2){
-    mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_ASFSearchingForAudioStream,d_audio->id);
-    if(!ds_fill_buffer(d_audio)){
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,"ASF: " MSGTR_MissingAudioStream);
-      sh_audio=NULL;
-    } else {
-      sh_audio=d_audio->sh;sh_audio->ds=d_audio;
-      sh_audio->format=sh_audio->wf->wFormatTag;
-    }
-  }
+ case DEMUXER_TYPE_ASF: {   
+  if(!demux_open_asf(demuxer)) return NULL;
   break;
  }
  case DEMUXER_TYPE_H264_ES:
  case DEMUXER_TYPE_MPEG4_ES:
  case DEMUXER_TYPE_MPEG_ES: {
-   sh_audio=NULL;   // ES streams has no audio channel
-   d_video->sh=new_sh_video(demuxer,0); // create dummy video stream header, id=0
-   sh_video=d_video->sh;sh_video->ds=d_video;
+   if (!demux_mpg_es_open(demuxer)) return NULL;
    break;
  }
 
@@ -1362,24 +1291,7 @@ switch(file_format){
   break;
  }
  case DEMUXER_TYPE_MPEG_PS: {
-  sh_video=d_video->sh;sh_video->ds=d_video;
-//  if(demuxer->stream->type!=STREAMTYPE_VCD) demuxer->movi_start=0; // for VCD
-
-  if(audio_id!=-2) {
-   if(!ds_fill_buffer(d_audio)){
-    mp_msg(MSGT_DEMUXER,MSGL_INFO,"MPEG: " MSGTR_MissingAudioStream);
-    sh_audio=NULL;
-   } else {
-    sh_audio=d_audio->sh;sh_audio->ds=d_audio;
-    switch(d_audio->id & 0xE0){  // 1110 0000 b  (high 3 bit: type  low 5: id)
-      case 0x00: sh_audio->format=0x50;break; // mpeg
-      case 0xA0: sh_audio->format=0x10001;break;  // dvd pcm
-      case 0x80: if((d_audio->id & 0xF8) == 0x88) sh_audio->format=0x2001;//dts
-                 else sh_audio->format=0x2000;break; // ac3
-      default: sh_audio=NULL; // unknown type
-    }
-   }
-  }
+  if (!demux_mpg_ps_open(demuxer)) return NULL;
   break;
  }
 #ifdef USE_TV
@@ -1633,6 +1545,8 @@ switch(demuxer->file_format){
 
 } // switch(demuxer->file_format)
 
+    if (sh_audio) resync_audio_stream(sh_audio);
+
 return 1;
 }
 
@@ -1769,5 +1683,32 @@ int demuxer_get_percent_pos(demuxer_t *demuxer){
     if (ans < 0) ans = 0;
     if (ans > 100) ans = 100;
     return ans;
+}
+
+int demuxer_switch_audio(demuxer_t *demuxer, int index){     
+    int res = demux_control(demuxer, DEMUXER_CTRL_SWITCH_AUDIO, &index);
+    if (res == DEMUXER_CTRL_NOTIMPL)
+      index = demuxer->audio->id;
+    return index;
+}
+
+int demuxer_switch_video(demuxer_t *demuxer, int index){
+    int res = demux_control(demuxer, DEMUXER_CTRL_SWITCH_VIDEO, &index);
+    if (res == DEMUXER_CTRL_NOTIMPL)
+      index = demuxer->video->id;
+    return index;
+}
+
+int demuxer_add_chapter(demuxer_t* demuxer, const char* name, uint64_t start, uint64_t end){
+    if (demuxer->chapters == NULL)
+        demuxer->chapters = malloc (32*sizeof(*demuxer->chapters));
+    else if (!(demuxer->num_chapters % 32))
+        demuxer->chapters = realloc (demuxer->chapters, (demuxer->num_chapters + 32) * sizeof(*demuxer->chapters));
+
+    demuxer->chapters[demuxer->num_chapters].start = start;
+    demuxer->chapters[demuxer->num_chapters].end = end;
+    demuxer->chapters[demuxer->num_chapters].name = strdup(name);
+
+    return demuxer->num_chapters ++;
 }
 

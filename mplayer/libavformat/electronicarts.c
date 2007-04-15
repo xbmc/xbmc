@@ -1,19 +1,21 @@
 /* Electronic Arts Multimedia File Demuxer
  * Copyright (c) 2004  The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -191,7 +193,7 @@ static int ea_read_header(AVFormatContext *s,
     st->codec->codec_type = CODEC_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_EA_MJPEG;
     st->codec->codec_tag = 0;  /* no fourcc */
-#endif    
+#endif
 
     /* initialize the audio decoder stream */
     st = av_new_stream(s, 0);
@@ -243,7 +245,7 @@ static int ea_read_packet(AVFormatContext *s,
                     pkt->pts *= ea->audio_frame_counter;
                     pkt->pts /= EA_SAMPLE_RATE;
 
-                    /* 2 samples/byte, 1 or 2 samples per frame depending 
+                    /* 2 samples/byte, 1 or 2 samples per frame depending
                      * on stereo; chunk also has 12-byte header */
                     ea->audio_frame_counter += ((chunk_size - 12) * 2) /
                         ea->num_channels;
@@ -278,7 +280,7 @@ static int ea_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat ea_iformat = {
+AVInputFormat ea_demuxer = {
     "ea",
     "Electronic Arts Multimedia Format",
     sizeof(EaDemuxContext),
@@ -287,9 +289,3 @@ static AVInputFormat ea_iformat = {
     ea_read_packet,
     ea_read_close,
 };
-
-int ea_init(void)
-{
-    av_register_input_format(&ea_iformat);
-    return 0;
-}

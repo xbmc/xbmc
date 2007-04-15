@@ -10,8 +10,7 @@
 #include "mp_image.h"
 #include "vf.h"
 
-#include "../libvo/fastmemcpy.h"
-#include "../postproc/rgb2rgb.h"
+#include "libvo/fastmemcpy.h"
 
 struct vf_priv_s {
     int x1,y1,x2,y2;
@@ -47,8 +46,8 @@ static int checkline(unsigned char* src,int stride,int len,int bpp){
 static int config(struct vf_instance_s* vf,
         int width, int height, int d_width, int d_height,
 	unsigned int flags, unsigned int outfmt){
-    vf->priv->x1=width;
-    vf->priv->y1=height;
+    vf->priv->x1=width - 1;
+    vf->priv->y1=height - 1;
     vf->priv->x2=0;
     vf->priv->y2=0;
     vf->priv->fno=0;
@@ -109,8 +108,8 @@ if(++vf->priv->fno>2){	// ignore first 2 frames - they may be empty
     x=(vf->priv->x1+1)&(~1);
     y=(vf->priv->y1+1)&(~1);
     
-    w = vf->priv->x2 - x;
-    h = vf->priv->y2 - y;
+    w = vf->priv->x2 - x + 1;
+    h = vf->priv->y2 - y + 1;
 
     // w and h must be divisible by 2 as well because of yuv
     // colorspace problems.
@@ -138,11 +137,20 @@ if(++vf->priv->fno>2){	// ignore first 2 frames - they may be empty
     return vf_next_put_image(vf,dmpi);
 }
 
+static int query_format(struct vf_instance_s* vf, unsigned int fmt) {
+  switch(fmt) {
+    // the default limit value works only right with YV12 right now.
+    case IMGFMT_YV12:
+      return vf_next_query_format(vf, fmt);
+  }
+  return 0;
+}
 //===========================================================================//
 
 static int open(vf_instance_t *vf, char* args){
     vf->config=config;
     vf->put_image=put_image;
+    vf->query_format=query_format;
     vf->priv=malloc(sizeof(struct vf_priv_s));
     vf->priv->limit=24; // should be option
     vf->priv->round = 0;

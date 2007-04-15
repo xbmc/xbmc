@@ -9,11 +9,13 @@
 // Stream headers:
 
 typedef struct {
+  int aid;
   demux_stream_t *ds;
   struct codecs_st *codec;
   unsigned int format;
   int inited;
-  float delay;	   // relative (to sh_video->timer) time in audio stream
+  double delay;	   // relative (to sh_video->timer) time in audio stream
+  float stream_delay; // number of seconds stream should be delayed (according to dwStart or similar)
   // output format:
   int sample_format;
   int samplerate;
@@ -51,20 +53,28 @@ typedef struct {
   void* context; // codec-specific stuff (usually HANDLE or struct pointer)
   unsigned char* codecdata; // extra header data passed from demuxer to codec
   int codecdata_len;
+  double pts;  // last known pts value in output from decoder
+  int pts_bytes; // bytes output by decoder after last known pts
 } sh_audio_t;
 
 typedef struct {
+  int vid;
   demux_stream_t *ds;
   struct codecs_st *codec;
   unsigned int format;
   int inited;
   float timer;		  // absolute time in video stream, since last start/seek
+  float stream_delay; // number of seconds stream should be delayed (according to dwStart or similar)
   // frame counters:
   float num_frames;       // number of frames played
   int num_frames_decoded; // number of frames decoded
   // timing (mostly for mpeg):
-  float pts;     // predicted/interpolated PTS of the current frame
-  float i_pts;   // PTS for the _next_ I/P frame
+  double pts;     // predicted/interpolated PTS of the current frame
+  double i_pts;   // PTS for the _next_ I/P frame
+  float next_frame_time;
+  double last_pts;
+  double buffered_pts[20];
+  int num_buffered_pts;
   // output format: (set by demuxer)
   float fps;              // frames per second (set only if constant fps)
   float frametime;        // 1/fps
@@ -87,10 +97,29 @@ typedef struct {
   void* context;   // codec-specific stuff (usually HANDLE or struct pointer)
 } sh_video_t;
 
+typedef struct {
+  int sid;
+  char type;                    // t = text, v = VobSub, a = SSA/ASS
+  int has_palette;              // If we have a valid palette
+  unsigned int palette[16];     // for VobSubs
+  int width, height;            // for VobSubs
+  int custom_colors;
+  unsigned int colors[4];
+  int forced_subs_only;
+#ifdef USE_ASS
+  ass_track_t* ass_track;  // for SSA/ASS streams (type == 'a')
+#endif
+} sh_sub_t;
+
 // demuxer.c:
-sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id);
-sh_video_t* new_sh_video(demuxer_t *demuxer,int id);
+#define new_sh_audio(d, i) new_sh_audio_aid(d, i, i)
+sh_audio_t* new_sh_audio_aid(demuxer_t *demuxer,int id,int aid);
+#define new_sh_video(d, i) new_sh_video_vid(d, i, i)
+sh_video_t* new_sh_video_vid(demuxer_t *demuxer,int id,int vid);
+#define new_sh_sub(d, i) new_sh_sub_sid(d, i, i)
+sh_sub_t *new_sh_sub_sid(demuxer_t *demuxer, int id, int sid);
 void free_sh_audio(sh_audio_t *sh);
+void free_sh_audio2(demuxer_t *demuxer, int id);
 void free_sh_video(sh_video_t *sh);
 
 // video.c:

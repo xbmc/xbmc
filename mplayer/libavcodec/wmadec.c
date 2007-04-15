@@ -2,32 +2,34 @@
  * WMA compatible decoder
  * Copyright (c) 2002 The FFmpeg Project.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
  * @file wmadec.c
  * WMA compatible decoder.
  * This decoder handles Microsoft Windows Media Audio data, versions 1 & 2.
- * WMA v1 is identified by audio format 0x160 in Microsoft media files 
+ * WMA v1 is identified by audio format 0x160 in Microsoft media files
  * (ASF/AVI/WAV). WMA v2 is identified by audio format 0x161.
  *
  * To use this decoder, a calling application must supply the extra data
  * bytes provided with the WMA data. These are the extra, codec-specific
- * bytes at the end of a WAVEFORMATEX data structure. Transmit these bytes 
- * to the decoder using the extradata[_size] fields in AVCodecContext. There 
+ * bytes at the end of a WAVEFORMATEX data structure. Transmit these bytes
+ * to the decoder using the extradata[_size] fields in AVCodecContext. There
  * should be 4 extra bytes for v1 data and 6 extra bytes for v2 data.
  */
 
@@ -56,6 +58,15 @@
 
 #define LSP_POW_BITS 7
 
+#define VLCBITS 9
+#define VLCMAX ((22+VLCBITS-1)/VLCBITS)
+
+#define EXPVLCBITS 8
+#define EXPMAX ((19+EXPVLCBITS-1)/EXPVLCBITS)
+
+#define HGAINVLCBITS 9
+#define HGAINMAX ((13+HGAINVLCBITS-1)/HGAINVLCBITS)
+
 typedef struct WMADecodeContext {
     GetBitContext gb;
     int sample_rate;
@@ -75,9 +86,9 @@ typedef struct WMADecodeContext {
     int coefs_start;               /* first coded coef */
     int coefs_end[BLOCK_NB_SIZES]; /* max number of coded coefficients */
     int exponent_high_sizes[BLOCK_NB_SIZES];
-    int exponent_high_bands[BLOCK_NB_SIZES][HIGH_BAND_MAX_SIZE]; 
+    int exponent_high_bands[BLOCK_NB_SIZES][HIGH_BAND_MAX_SIZE];
     VLC hgain_vlc;
-    
+
     /* coded values in high bands */
     int high_band_coded[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
     int high_band_values[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
@@ -100,15 +111,17 @@ typedef struct WMADecodeContext {
     int block_pos; /* current position in frame */
     uint8_t ms_stereo; /* true if mid/side stereo mode */
     uint8_t channel_coded[MAX_CHANNELS]; /* true if channel is coded */
-    float exponents[MAX_CHANNELS][BLOCK_MAX_SIZE] __attribute__((aligned(16)));
+    DECLARE_ALIGNED_16(float, exponents[MAX_CHANNELS][BLOCK_MAX_SIZE]);
     float max_exponent[MAX_CHANNELS];
     int16_t coefs1[MAX_CHANNELS][BLOCK_MAX_SIZE];
-    float coefs[MAX_CHANNELS][BLOCK_MAX_SIZE] __attribute__((aligned(16)));
+    DECLARE_ALIGNED_16(float, coefs[MAX_CHANNELS][BLOCK_MAX_SIZE]);
+    DECLARE_ALIGNED_16(FFTSample, output[BLOCK_MAX_SIZE * 2]);
+    DECLARE_ALIGNED_16(float, window[BLOCK_MAX_SIZE * 2]);
     MDCTContext mdct_ctx[BLOCK_NB_SIZES];
     float *windows[BLOCK_NB_SIZES];
-    FFTSample mdct_tmp[BLOCK_MAX_SIZE] __attribute__((aligned(16))); /* temporary storage for imdct */
+    DECLARE_ALIGNED_16(FFTSample, mdct_tmp[BLOCK_MAX_SIZE]); /* temporary storage for imdct */
     /* output buffer for one frame and the last for IMDCT windowing */
-    float frame_out[MAX_CHANNELS][BLOCK_MAX_SIZE * 2] __attribute__((aligned(16)));
+    DECLARE_ALIGNED_16(float, frame_out[MAX_CHANNELS][BLOCK_MAX_SIZE * 2]);
     /* last frame info */
     uint8_t last_superframe[MAX_CODED_SUPERFRAME_SIZE + 4]; /* padding added */
     int last_bitoffset;
@@ -121,6 +134,7 @@ typedef struct WMADecodeContext {
     float lsp_pow_e_table[256];
     float lsp_pow_m_table1[(1 << LSP_POW_BITS)];
     float lsp_pow_m_table2[(1 << LSP_POW_BITS)];
+    DSPContext dsp;
 
 #ifdef TRACE
     int frame_count;
@@ -171,7 +185,7 @@ static void dump_floats(const char *name, int prec, const float *tab, int n)
 #endif
 
 /* XXX: use same run/length optimization as mpeg decoders */
-static void init_coef_vlc(VLC *vlc, 
+static void init_coef_vlc(VLC *vlc,
                           uint16_t **prun_table, uint16_t **plevel_table,
                           const CoefVLCTable *vlc_table)
 {
@@ -183,7 +197,7 @@ static void init_coef_vlc(VLC *vlc,
     const uint16_t *p;
     int i, l, j, level;
 
-    init_vlc(vlc, 9, n, table_bits, 1, 1, table_codes, 4, 4, 0);
+    init_vlc(vlc, VLCBITS, n, table_bits, 1, 1, table_codes, 4, 4, 0);
 
     run_table = av_malloc(n * sizeof(uint16_t));
     level_table = av_malloc(n * sizeof(uint16_t));
@@ -213,18 +227,20 @@ static int wma_decode_init(AVCodecContext * avctx)
     volatile float bps;
     int sample_rate1;
     int coef_vlc_table;
-    
+
     s->sample_rate = avctx->sample_rate;
     s->nb_channels = avctx->channels;
     s->bit_rate = avctx->bit_rate;
     s->block_align = avctx->block_align;
+
+    dsputil_init(&s->dsp, avctx);
 
     if (avctx->codec->id == CODEC_ID_WMAV1) {
         s->version = 1;
     } else {
         s->version = 2;
     }
-    
+
     /* extract flag infos */
     flags1 = 0;
     flags2 = 0;
@@ -233,7 +249,7 @@ static int wma_decode_init(AVCodecContext * avctx)
         flags1 = extradata[0] | (extradata[1] << 8);
         flags2 = extradata[2] | (extradata[3] << 8);
     } else if (s->version == 2 && avctx->extradata_size >= 6) {
-        flags1 = extradata[0] | (extradata[1] << 8) | 
+        flags1 = extradata[0] | (extradata[1] << 8) |
             (extradata[2] << 16) | (extradata[3] << 24);
         flags2 = extradata[4] | (extradata[5] << 8);
     }
@@ -244,7 +260,7 @@ static int wma_decode_init(AVCodecContext * avctx)
     /* compute MDCT block size */
     if (s->sample_rate <= 16000) {
         s->frame_len_bits = 9;
-    } else if (s->sample_rate <= 22050 || 
+    } else if (s->sample_rate <= 22050 ||
                (s->sample_rate <= 32000 && s->version == 1)) {
         s->frame_len_bits = 10;
     } else {
@@ -271,20 +287,20 @@ static int wma_decode_init(AVCodecContext * avctx)
     /* if version 2, then the rates are normalized */
     sample_rate1 = s->sample_rate;
     if (s->version == 2) {
-        if (sample_rate1 >= 44100) 
+        if (sample_rate1 >= 44100)
             sample_rate1 = 44100;
-        else if (sample_rate1 >= 22050) 
+        else if (sample_rate1 >= 22050)
             sample_rate1 = 22050;
-        else if (sample_rate1 >= 16000) 
+        else if (sample_rate1 >= 16000)
             sample_rate1 = 16000;
-        else if (sample_rate1 >= 11025) 
+        else if (sample_rate1 >= 11025)
             sample_rate1 = 11025;
-        else if (sample_rate1 >= 8000) 
+        else if (sample_rate1 >= 8000)
             sample_rate1 = 8000;
     }
 
     bps = (float)s->bit_rate / (float)(s->nb_channels * s->sample_rate);
-    s->byte_offset_bits = av_log2((int)(bps * s->frame_len / 8.0)) + 2;
+    s->byte_offset_bits = av_log2((int)(bps * s->frame_len / 8.0 + 0.5)) + 2;
 
     /* compute high frequency value and choose if noise coding should
        be activated */
@@ -299,7 +315,7 @@ static int wma_decode_init(AVCodecContext * avctx)
     } else if (sample_rate1 == 22050) {
         if (bps1 >= 1.16)
             s->use_noise_coding = 0;
-        else if (bps1 >= 0.72) 
+        else if (bps1 >= 0.72)
             high_freq = high_freq * 0.7;
         else
             high_freq = high_freq * 0.6;
@@ -329,9 +345,9 @@ static int wma_decode_init(AVCodecContext * avctx)
     }
     dprintf("flags1=0x%x flags2=0x%x\n", flags1, flags2);
     dprintf("version=%d channels=%d sample_rate=%d bitrate=%d block_align=%d\n",
-           s->version, s->nb_channels, s->sample_rate, s->bit_rate, 
+           s->version, s->nb_channels, s->sample_rate, s->bit_rate,
            s->block_align);
-    dprintf("bps=%f bps1=%f high_freq=%f bitoffset=%d\n", 
+    dprintf("bps=%f bps1=%f high_freq=%f bitoffset=%d\n",
            bps, bps1, high_freq, s->byte_offset_bits);
     dprintf("use_noise_coding=%d use_exp_vlc=%d nb_block_sizes=%d\n",
            s->use_noise_coding, s->use_exp_vlc, s->nb_block_sizes);
@@ -340,7 +356,7 @@ static int wma_decode_init(AVCodecContext * avctx)
     {
         int a, b, pos, lpos, k, block_len, i, j, n;
         const uint8_t *table;
-        
+
         if (s->version == 1) {
             s->coefs_start = 3;
         } else {
@@ -355,7 +371,7 @@ static int wma_decode_init(AVCodecContext * avctx)
                     a = wma_critical_freqs[i];
                     b = s->sample_rate;
                     pos = ((block_len * 2 * a)  + (b >> 1)) / b;
-                    if (pos > block_len) 
+                    if (pos > block_len)
                         pos = block_len;
                     s->exponent_bands[0][i] = pos - lpos;
                     if (pos >= block_len) {
@@ -390,7 +406,7 @@ static int wma_decode_init(AVCodecContext * avctx)
                         b = s->sample_rate;
                         pos = ((block_len * 2 * a)  + (b << 1)) / (4 * b);
                         pos <<= 2;
-                        if (pos > block_len) 
+                        if (pos > block_len)
                             pos = block_len;
                         if (pos > lpos)
                             s->exponent_bands[k][j++] = pos - lpos;
@@ -405,7 +421,7 @@ static int wma_decode_init(AVCodecContext * avctx)
             /* max number of coefs */
             s->coefs_end[k] = (s->frame_len - ((s->frame_len * 9) / 100)) >> k;
             /* high freq computation */
-            s->high_band_start[k] = (int)((block_len * 2 * high_freq) / 
+            s->high_band_start[k] = (int)((block_len * 2 * high_freq) /
                                           s->sample_rate + 0.5);
             n = s->exponent_sizes[k];
             j = 0;
@@ -425,7 +441,7 @@ static int wma_decode_init(AVCodecContext * avctx)
             s->exponent_high_sizes[k] = j;
 #if 0
             tprintf("%5d: coefs_end=%d high_band_start=%d nb_high_bands=%d: ",
-                  s->frame_len >> k, 
+                  s->frame_len >> k,
                   s->coefs_end[k],
                   s->high_band_start[k],
                   s->exponent_high_sizes[k]);
@@ -440,8 +456,8 @@ static int wma_decode_init(AVCodecContext * avctx)
     {
         int i, j;
         for(i = 0; i < s->nb_block_sizes; i++) {
-            tprintf("%5d: n=%2d:", 
-                   s->frame_len >> i, 
+            tprintf("%5d: n=%2d:",
+                   s->frame_len >> i,
                    s->exponent_sizes[i]);
             for(j=0;j<s->exponent_sizes[i];j++)
                 tprintf(" %d", s->exponent_bands[i][j]);
@@ -453,7 +469,7 @@ static int wma_decode_init(AVCodecContext * avctx)
     /* init MDCT */
     for(i = 0; i < s->nb_block_sizes; i++)
         ff_mdct_init(&s->mdct_ctx[i], s->frame_len_bits - i + 1, 1);
-    
+
     /* init MDCT windows : simple sinus window */
     for(i = 0; i < s->nb_block_sizes; i++) {
         int n, j;
@@ -468,7 +484,7 @@ static int wma_decode_init(AVCodecContext * avctx)
     }
 
     s->reset_block_lengths = 1;
-    
+
     if (s->use_noise_coding) {
 
         /* init the noise generator */
@@ -476,7 +492,7 @@ static int wma_decode_init(AVCodecContext * avctx)
             s->noise_mult = 0.02;
         else
             s->noise_mult = 0.04;
-               
+
 #ifdef TRACE
         for(i=0;i<NOISE_TAB_SIZE;i++)
             s->noise_table[i] = 1.0 * s->noise_mult;
@@ -492,13 +508,13 @@ static int wma_decode_init(AVCodecContext * avctx)
             }
         }
 #endif
-        init_vlc(&s->hgain_vlc, 9, sizeof(hgain_huffbits), 
+        init_vlc(&s->hgain_vlc, HGAINVLCBITS, sizeof(hgain_huffbits),
                  hgain_huffbits, 1, 1,
                  hgain_huffcodes, 2, 2, 0);
     }
 
     if (s->use_exp_vlc) {
-        init_vlc(&s->exp_vlc, 9, sizeof(scale_huffbits), 
+        init_vlc(&s->exp_vlc, EXPVLCBITS, sizeof(scale_huffbits),
                  scale_huffbits, 1, 1,
                  scale_huffcodes, 4, 4, 0);
     } else {
@@ -572,7 +588,7 @@ static inline float pow_m1_4(WMADecodeContext *s, float x)
 }
 
 static void wma_lsp_to_curve_init(WMADecodeContext *s, int frame_len)
-{  
+{
     float wdel, a, b;
     int i, e, m;
 
@@ -610,8 +626,8 @@ static void wma_lsp_to_curve_init(WMADecodeContext *s, int frame_len)
 
 /* NOTE: We use the same code as Vorbis here */
 /* XXX: optimize it further with SSE/3Dnow */
-static void wma_lsp_to_curve(WMADecodeContext *s, 
-                             float *out, float *val_max_ptr, 
+static void wma_lsp_to_curve(WMADecodeContext *s,
+                             float *out, float *val_max_ptr,
                              int n, float *lsp)
 {
     int i, j;
@@ -661,7 +677,7 @@ static int decode_exp_vlc(WMADecodeContext *s, int ch)
     int last_exp, n, code;
     const uint16_t *ptr, *band_ptr;
     float v, *q, max_scale, *q_end;
-    
+
     band_ptr = s->exponent_bands[s->frame_len_bits - s->block_len_bits];
     ptr = band_ptr;
     q = s->exponents[ch];
@@ -679,7 +695,7 @@ static int decode_exp_vlc(WMADecodeContext *s, int ch)
     }
     last_exp = 36;
     while (q < q_end) {
-        code = get_vlc(&s->gb, &s->exp_vlc);
+        code = get_vlc2(&s->gb, s->exp_vlc.table, EXPVLCBITS, EXPMAX);
         if (code < 0)
             return -1;
         /* NOTE: this offset is the same as MPEG4 AAC ! */
@@ -703,13 +719,7 @@ static int wma_decode_block(WMADecodeContext *s)
 {
     int n, v, a, ch, code, bsize;
     int coef_nb_bits, total_gain, parse_exponents;
-    float window[BLOCK_MAX_SIZE * 2];
-// XXX: FIXME!! there's a bug somewhere which makes this mandatory under altivec
-#ifdef HAVE_ALTIVEC
-    volatile int nb_coefs[MAX_CHANNELS] __attribute__((aligned(16)));
-#else
     int nb_coefs[MAX_CHANNELS];
-#endif
     float mdct_norm;
 
 #ifdef TRACE
@@ -719,7 +729,7 @@ static int wma_decode_block(WMADecodeContext *s)
     /* compute current block length */
     if (s->use_variable_block_len) {
         n = av_log2(s->nb_block_sizes - 1) + 1;
-    
+
         if (s->reset_block_lengths) {
             s->reset_block_lengths = 0;
             v = get_bits(&s->gb, n);
@@ -776,7 +786,7 @@ static int wma_decode_block(WMADecodeContext *s)
         if (a != 127)
             break;
     }
-    
+
     if (total_gain < 15)
         coef_nb_bits = 13;
     else if (total_gain < 32)
@@ -820,7 +830,7 @@ static int wma_decode_block(WMADecodeContext *s)
                         if (val == (int)0x80000000) {
                             val = get_bits(&s->gb, 7) - 19;
                         } else {
-                            code = get_vlc(&s->gb, &s->hgain_vlc);
+                            code = get_vlc2(&s->gb, s->hgain_vlc.table, HGAINVLCBITS, HGAINMAX);
                             if (code < 0)
                                 return -1;
                             val += code - 18;
@@ -831,13 +841,13 @@ static int wma_decode_block(WMADecodeContext *s)
             }
         }
     }
-           
+
     /* exposant can be interpolated in short blocks. */
     parse_exponents = 1;
     if (s->block_len_bits != s->frame_len_bits) {
         parse_exponents = get_bits(&s->gb, 1);
     }
-    
+
     if (parse_exponents) {
         for(ch = 0; ch < s->nb_channels; ch++) {
             if (s->channel_coded[ch]) {
@@ -852,7 +862,7 @@ static int wma_decode_block(WMADecodeContext *s)
     } else {
         for(ch = 0; ch < s->nb_channels; ch++) {
             if (s->channel_coded[ch]) {
-                interpolate_array(s->exponents[ch], 1 << s->prev_block_len_bits, 
+                interpolate_array(s->exponents[ch], 1 << s->prev_block_len_bits,
                                   s->block_len);
             }
         }
@@ -864,7 +874,7 @@ static int wma_decode_block(WMADecodeContext *s)
             VLC *coef_vlc;
             int level, run, sign, tindex;
             int16_t *ptr, *eptr;
-            const int16_t *level_table, *run_table;
+            const uint16_t *level_table, *run_table;
 
             /* special VLC tables are used for ms stereo because
                there is potentially less energy there */
@@ -877,7 +887,7 @@ static int wma_decode_block(WMADecodeContext *s)
             eptr = ptr + nb_coefs[ch];
             memset(ptr, 0, s->block_len * sizeof(int16_t));
             for(;;) {
-                code = get_vlc(&s->gb, coef_vlc);
+                code = get_vlc2(&s->gb, coef_vlc->table, VLCBITS, VLCMAX);
                 if (code < 0)
                     return -1;
                 if (code == 1) {
@@ -899,7 +909,10 @@ static int wma_decode_block(WMADecodeContext *s)
                     level = -level;
                 ptr += run;
                 if (ptr >= eptr)
-                    return -1;
+                {
+                    av_log(NULL, AV_LOG_ERROR, "overflow in spectral RLE, ignoring\n");
+                    break;
+                }
                 *ptr++ = level;
                 /* NOTE: EOB can be omitted */
                 if (ptr >= eptr)
@@ -910,7 +923,7 @@ static int wma_decode_block(WMADecodeContext *s)
             align_get_bits(&s->gb);
         }
     }
-     
+
     /* normalize */
     {
         int n4 = s->block_len / 2;
@@ -940,16 +953,16 @@ static int wma_decode_block(WMADecodeContext *s)
                     *coefs++ = s->noise_table[s->noise_index] * (*exponents++) * mult1;
                     s->noise_index = (s->noise_index + 1) & (NOISE_TAB_SIZE - 1);
                 }
-                
+
                 n1 = s->exponent_high_sizes[bsize];
 
                 /* compute power of high bands */
-                exp_ptr = exponents + 
-                    s->high_band_start[bsize] - 
+                exp_ptr = exponents +
+                    s->high_band_start[bsize] -
                     s->coefs_start;
                 last_high_band = 0; /* avoid warning */
                 for(j=0;j<n1;j++) {
-                    n = s->exponent_high_bands[s->frame_len_bits - 
+                    n = s->exponent_high_bands[s->frame_len_bits -
                                               s->block_len_bits][j];
                     if (s->high_band_coded[ch][j]) {
                         float e2, v;
@@ -968,10 +981,10 @@ static int wma_decode_block(WMADecodeContext *s)
                 /* main freqs and high freqs */
                 for(j=-1;j<n1;j++) {
                     if (j < 0) {
-                        n = s->high_band_start[bsize] - 
+                        n = s->high_band_start[bsize] -
                             s->coefs_start;
                     } else {
-                        n = s->exponent_high_bands[s->frame_len_bits - 
+                        n = s->exponent_high_bands[s->frame_len_bits -
                                                   s->block_len_bits][j];
                     }
                     if (j >= 0 && s->high_band_coded[ch][j]) {
@@ -1026,7 +1039,7 @@ static int wma_decode_block(WMADecodeContext *s)
         }
     }
 #endif
-    
+
     if (s->ms_stereo && s->channel_coded[1]) {
         float a, b;
         int i;
@@ -1039,7 +1052,7 @@ static int wma_decode_block(WMADecodeContext *s)
             memset(s->coefs[0], 0, sizeof(float) * s->block_len);
             s->channel_coded[0] = 1;
         }
-        
+
         for(i = 0; i < s->block_len; i++) {
             a = s->coefs[0][i];
             b = s->coefs[1][i];
@@ -1060,7 +1073,7 @@ static int wma_decode_block(WMADecodeContext *s)
         next_block_len = 1 << s->next_block_len_bits;
 
         /* right part */
-        wptr = window + block_len;
+        wptr = s->window + block_len;
         if (block_len <= next_block_len) {
             for(i=0;i<block_len;i++)
                 *wptr++ = s->windows[bsize][i];
@@ -1076,7 +1089,7 @@ static int wma_decode_block(WMADecodeContext *s)
         }
 
         /* left part */
-        wptr = window + block_len;
+        wptr = s->window + block_len;
         if (block_len <= prev_block_len) {
             for(i=0;i<block_len;i++)
                 *--wptr = s->windows[bsize][i];
@@ -1092,41 +1105,30 @@ static int wma_decode_block(WMADecodeContext *s)
         }
     }
 
-    
+
     for(ch = 0; ch < s->nb_channels; ch++) {
         if (s->channel_coded[ch]) {
-            FFTSample output[BLOCK_MAX_SIZE * 2] __attribute__((aligned(16)));
             float *ptr;
-            int i, n4, index, n;
+            int n4, index, n;
 
             n = s->block_len;
             n4 = s->block_len / 2;
-            ff_imdct_calc(&s->mdct_ctx[bsize], 
-                          output, s->coefs[ch], s->mdct_tmp);
+            s->mdct_ctx[bsize].fft.imdct_calc(&s->mdct_ctx[bsize],
+                          s->output, s->coefs[ch], s->mdct_tmp);
 
             /* XXX: optimize all that by build the window and
                multipying/adding at the same time */
-            /* multiply by the window */
-            for(i=0;i<n * 2;i++) {
-                output[i] *= window[i];
-            }
 
-            /* add in the frame */
+            /* multiply by the window and add in the frame */
             index = (s->frame_len / 2) + s->block_pos - n4;
             ptr = &s->frame_out[ch][index];
-            for(i=0;i<n * 2;i++) {
-                *ptr += output[i];
-                ptr++;
-            }
+            s->dsp.vector_fmul_add_add(ptr,s->window,s->output,ptr,0,2*n,1);
 
             /* specific fast case for ms-stereo : add to second
                channel if it is not coded */
             if (s->ms_stereo && !s->channel_coded[1]) {
                 ptr = &s->frame_out[1][index];
-                for(i=0;i<n * 2;i++) {
-                    *ptr += output[i];
-                    ptr++;
-                }
+                s->dsp.vector_fmul_add_add(ptr,s->window,s->output,ptr,0,2*n,1);
             }
         }
     }
@@ -1156,7 +1158,7 @@ static int wma_decode_frame(WMADecodeContext *s, int16_t *samples)
     s->block_pos = 0;
     for(;;) {
         ret = wma_decode_block(s);
-        if (ret < 0) 
+        if (ret < 0)
             return -1;
         if (ret)
             break;
@@ -1182,7 +1184,7 @@ static int wma_decode_frame(WMADecodeContext *s, int16_t *samples)
         memmove(&s->frame_out[ch][0], &s->frame_out[ch][s->frame_len],
                 s->frame_len * sizeof(float));
         /* XXX: suppress this */
-        memset(&s->frame_out[ch][s->frame_len], 0, 
+        memset(&s->frame_out[ch][s->frame_len], 0,
                s->frame_len * sizeof(float));
     }
 
@@ -1192,7 +1194,7 @@ static int wma_decode_frame(WMADecodeContext *s, int16_t *samples)
     return 0;
 }
 
-static int wma_decode_superframe(AVCodecContext *avctx, 
+static int wma_decode_superframe(AVCodecContext *avctx,
                                  void *data, int *data_size,
                                  uint8_t *buf, int buf_size)
 {
@@ -1200,18 +1202,18 @@ static int wma_decode_superframe(AVCodecContext *avctx,
     int nb_frames, bit_offset, i, pos, len;
     uint8_t *q;
     int16_t *samples;
-    
+
     tprintf("***decode_superframe:\n");
 
     if(buf_size==0){
         s->last_superframe_len = 0;
         return 0;
     }
-    
+
     samples = data;
 
     init_get_bits(&s->gb, buf, buf_size*8);
-    
+
     if (s->use_bit_reservoir) {
         /* read super frame header */
         get_bits(&s->gb, 4); /* super frame index */
@@ -1222,19 +1224,19 @@ static int wma_decode_superframe(AVCodecContext *avctx,
         if (s->last_superframe_len > 0) {
             //        printf("skip=%d\n", s->last_bitoffset);
             /* add bit_offset bits to last frame */
-            if ((s->last_superframe_len + ((bit_offset + 7) >> 3)) > 
+            if ((s->last_superframe_len + ((bit_offset + 7) >> 3)) >
                 MAX_CODED_SUPERFRAME_SIZE)
                 goto fail;
             q = s->last_superframe + s->last_superframe_len;
             len = bit_offset;
-            while (len > 0) {
+            while (len > 7) {
                 *q++ = (get_bits)(&s->gb, 8);
                 len -= 8;
             }
             if (len > 0) {
                 *q++ = (get_bits)(&s->gb, len) << (8 - len);
             }
-            
+
             /* XXX: bit_offset bits into last frame */
             init_get_bits(&s->gb, s->last_superframe, MAX_CODED_SUPERFRAME_SIZE*8);
             /* skip unused bits */
@@ -1253,7 +1255,7 @@ static int wma_decode_superframe(AVCodecContext *avctx,
         len = pos & 7;
         if (len > 0)
             skip_bits(&s->gb, len);
-    
+
         s->reset_block_lengths = 1;
         for(i=0;i<nb_frames;i++) {
             if (wma_decode_frame(s, samples) < 0)
@@ -1306,7 +1308,7 @@ static int wma_decode_end(AVCodecContext *avctx)
         av_free(s->run_table[i]);
         av_free(s->level_table[i]);
     }
-    
+
     return 0;
 }
 

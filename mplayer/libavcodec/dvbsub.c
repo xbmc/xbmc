@@ -2,19 +2,21 @@
  * DVB subtitle encoding for ffmpeg
  * Copyright (c) 2005 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avcodec.h"
 
@@ -44,12 +46,12 @@ static void dvb_encode_rle2(uint8_t **pq,
     int x, y, len, x1, v, color;
 
     q = *pq;
-    
+
     for(y = 0; y < h; y++) {
         *q++ = 0x10;
         bitbuf = 0;
         bitcnt = 6;
-        
+
         x = 0;
         while (x < w) {
             x1 = x;
@@ -132,12 +134,12 @@ static void dvb_encode_rle4(uint8_t **pq,
     int x, y, len, x1, v, color;
 
     q = *pq;
-    
+
     for(y = 0; y < h; y++) {
         *q++ = 0x11;
         bitbuf = 0;
         bitcnt = 4;
-        
+
         x = 0;
         while (x < w) {
             x1 = x;
@@ -192,7 +194,7 @@ static void dvb_encode_rle4(uint8_t **pq,
 
 #define SCALEBITS 10
 #define ONE_HALF  (1 << (SCALEBITS - 1))
-#define FIX(x)	  ((int) ((x) * (1<<SCALEBITS) + 0.5))
+#define FIX(x)    ((int) ((x) * (1<<SCALEBITS) + 0.5))
 
 #define RGB_TO_Y_CCIR(r, g, b) \
 ((FIX(0.29900*219.0/255.0) * (r) + FIX(0.58700*219.0/255.0) * (g) + \
@@ -215,7 +217,7 @@ static inline void putbe16(uint8_t **pq, uint16_t v)
     *pq = q;
 }
 
-static int encode_dvb_subtitles(DVBSubtitleContext *s, 
+static int encode_dvb_subtitles(DVBSubtitleContext *s,
                                 uint8_t *outbuf, AVSubtitle *h)
 {
     uint8_t *q, *pseg_len;
@@ -244,7 +246,7 @@ static int encode_dvb_subtitles(DVBSubtitleContext *s,
     else
         page_state = 2; /* mode change */
     /* page_version = 0 + page_state */
-    *q++ = s->object_version | (page_state << 2) | 3; 
+    *q++ = s->object_version | (page_state << 2) | 3;
 
     for (region_id = 0; region_id < h->num_rects; region_id++) {
         *q++ = region_id;
@@ -302,7 +304,7 @@ static int encode_dvb_subtitles(DVBSubtitleContext *s,
     for (region_id = 0; region_id < h->num_rects; region_id++) {
 
         /* region composition segment */
-        
+
         if (h->rects[region_id].nb_colors <= 4) {
             /* 2 bpp, some decoders do not support it correctly */
             bpp_index = 0;
@@ -339,14 +341,14 @@ static int encode_dvb_subtitles(DVBSubtitleContext *s,
     }
 
     if (!s->hide_state) {
-        
+
         for (object_id = 0; object_id < h->num_rects; object_id++) {
             /* Object Data segment */
 
-            if (h->rects[region_id].nb_colors <= 4) {
+            if (h->rects[object_id].nb_colors <= 4) {
                 /* 2 bpp, some decoders do not support it correctly */
                 bpp_index = 0;
-            } else if (h->rects[region_id].nb_colors <= 16) {
+            } else if (h->rects[object_id].nb_colors <= 16) {
                 /* 4 bpp, standard encoding */
                 bpp_index = 1;
             } else {

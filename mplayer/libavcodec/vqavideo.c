@@ -2,27 +2,29 @@
  * Westwood Studios VQA Video Decoder
  * Copyright (C) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
 
 /**
  * @file vqavideo.c
  * VQA Video Decoder by Mike Melanson (melanson@pcisys.net)
- * For more information about the RPZA format, visit:
- *   http://www.pcisys.net/~melanson/codecs/
+ * For more information about the VQA format, visit:
+ *   http://wiki.multimedia.cx/index.php?title=VQA
  *
  * The VQA video decoder outputs PAL8 or RGB555 colorspace data, depending
  * on the type of data in the file.
@@ -107,7 +109,7 @@ typedef struct VqaContext {
     unsigned char *buf;
     int size;
 
-    unsigned int palette[PALETTE_COUNT];
+    uint32_t palette[PALETTE_COUNT];
 
     int width;   /* width of a frame */
     int height;   /* height of a frame */
@@ -456,7 +458,7 @@ static void vqa_decode_chunk(VqaContext *s)
         index_shift = 4;
     else
         index_shift = 3;
-    for (y = 0; y < s->frame.linesize[0] * s->height; 
+    for (y = 0; y < s->frame.linesize[0] * s->height;
         y += s->frame.linesize[0] * s->vector_height) {
 
         for (x = y; x < y + s->width; x += 4, lobytes++, hibytes++) {
@@ -467,9 +469,24 @@ static void vqa_decode_chunk(VqaContext *s)
             switch (s->vqa_version) {
 
             case 1:
-/* still need sample media for this case (only one game, "Legend of 
+/* still need sample media for this case (only one game, "Legend of
  * Kyrandia III : Malcolm's Revenge", is known to use this version) */
-                lines = 0;
+                lobyte = s->decode_buffer[lobytes * 2];
+                hibyte = s->decode_buffer[(lobytes * 2) + 1];
+                vector_index = ((hibyte << 8) | lobyte) >> 3;
+                vector_index <<= index_shift;
+                lines = s->vector_height;
+                /* uniform color fill - a quick hack */
+                if (hibyte == 0xFF) {
+                    while (lines--) {
+                        s->frame.data[0][pixel_ptr + 0] = 255 - lobyte;
+                        s->frame.data[0][pixel_ptr + 1] = 255 - lobyte;
+                        s->frame.data[0][pixel_ptr + 2] = 255 - lobyte;
+                        s->frame.data[0][pixel_ptr + 3] = 255 - lobyte;
+                        pixel_ptr += s->frame.linesize[0];
+                    }
+                    lines=0;
+                }
                 break;
 
             case 2:
@@ -517,7 +534,7 @@ static void vqa_decode_chunk(VqaContext *s)
         if (s->partial_countdown == 0) {
 
             /* time to replace codebook */
-            memcpy(s->codebook, s->next_codebook_buffer, 
+            memcpy(s->codebook, s->next_codebook_buffer,
                 s->next_codebook_buffer_index);
 
             /* reset accounting */
@@ -540,8 +557,8 @@ static void vqa_decode_chunk(VqaContext *s)
         if (s->partial_countdown == 0) {
 
             /* decompress codebook */
-            decode_format80(s->next_codebook_buffer, 
-                s->next_codebook_buffer_index, 
+            decode_format80(s->next_codebook_buffer,
+                s->next_codebook_buffer_index,
                 s->codebook, s->codebook_size, 0);
 
             /* reset accounting */

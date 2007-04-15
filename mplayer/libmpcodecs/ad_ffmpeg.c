@@ -10,7 +10,8 @@
 
 #include "ad_internal.h"
 
-#include "bswap.h"
+#include "libavutil/common.h"
+#include "libavutil/bswap.h"
 
 static ad_info_t info = 
 {
@@ -111,15 +112,17 @@ static int init(sh_audio_t *sh_audio)
    x=decode_audio(sh_audio,sh_audio->a_buffer,1,sh_audio->a_buffer_size);
    if(x>0) sh_audio->a_buffer_len=x;
 
-#if 1
   sh_audio->channels=lavc_context->channels;
   sh_audio->samplerate=lavc_context->sample_rate;
   sh_audio->i_bps=lavc_context->bit_rate/8;
-#else
-  sh_audio->channels=sh_audio->wf->nChannels;
-  sh_audio->samplerate=sh_audio->wf->nSamplesPerSec;
-  sh_audio->i_bps=sh_audio->wf->nAvgBytesPerSec;
-#endif
+  if(sh_audio->wf){
+      // If the decoder uses the wrong number of channels all is lost anyway.
+      // sh_audio->channels=sh_audio->wf->nChannels;
+      if (sh_audio->wf->nSamplesPerSec)
+      sh_audio->samplerate=sh_audio->wf->nSamplesPerSec;
+      if (sh_audio->wf->nAvgBytesPerSec)
+      sh_audio->i_bps=sh_audio->wf->nAvgBytesPerSec;
+  }
   sh_audio->samplesize=2;
   return 1;
 }

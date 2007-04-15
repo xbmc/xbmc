@@ -16,7 +16,11 @@
 #include "ad.h"
 #include "../libao2/afmt.h"
 
-#include "../libaf/af.h"
+#include "libaf/af.h"
+
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#endif
 
 #ifdef DYNAMIC_PLUGINS
 #include <dlfcn.h>
@@ -27,13 +31,14 @@ int fakemono=0;
 #endif
 /* used for ac3surround decoder - set using -channels option */
 int audio_output_channels = 2;
-af_cfg_t af_cfg; // Configuration for audio filters
+af_cfg_t af_cfg = {1, NULL}; // Configuration for audio filters
 
 static ad_functions_t* mpadec;
 
-void afm_help(){
+void afm_help(void){
     int i;
     mp_msg(MSGT_DECAUDIO,MSGL_INFO,MSGTR_AvailableAudioFm);
+    mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_AUDIO_DRIVERS\n");
     mp_msg(MSGT_DECAUDIO,MSGL_INFO,"    afm:    info:  (comment)\n");
     for (i=0; mpcodecs_ad_drivers[i] != NULL; i++)
       if(mpcodecs_ad_drivers[i]->info->comment && mpcodecs_ad_drivers[i]->info->comment[0])
@@ -60,7 +65,7 @@ int init_audio_codec(sh_audio_t *sh_audio)
       sh_audio->a_in_buffer_size=sh_audio->audio_in_minsize;
       mp_msg(MSGT_DECAUDIO,MSGL_V,MSGTR_AllocatingBytesForInputBuffer,
           sh_audio->a_in_buffer_size);
-      sh_audio->a_in_buffer=malloc(sh_audio->a_in_buffer_size);
+      sh_audio->a_in_buffer=memalign(16,sh_audio->a_in_buffer_size);
       memset(sh_audio->a_in_buffer,0,sh_audio->a_in_buffer_size);
       sh_audio->a_in_buffer_len=0;
   }
@@ -71,7 +76,7 @@ int init_audio_codec(sh_audio_t *sh_audio)
   mp_msg(MSGT_DECAUDIO,MSGL_V,MSGTR_AllocatingBytesForOutputBuffer,
       sh_audio->audio_out_minsize,MAX_OUTBURST,sh_audio->a_buffer_size);
 
-  sh_audio->a_buffer=malloc(sh_audio->a_buffer_size);
+  sh_audio->a_buffer=memalign(16,sh_audio->a_buffer_size);
   if(!sh_audio->a_buffer){
       mp_msg(MSGT_DECAUDIO,MSGL_ERR,MSGTR_CantAllocAudioBuf);
       return 0;
@@ -248,6 +253,7 @@ void uninit_audio(sh_audio_t *sh_audio)
     }
     if(sh_audio->a_out_buffer!=sh_audio->a_buffer) free(sh_audio->a_out_buffer);
     sh_audio->a_out_buffer=NULL;
+    sh_audio->a_out_buffer_size=0;
     if(sh_audio->a_buffer) free(sh_audio->a_buffer);
     sh_audio->a_buffer=NULL;
     if(sh_audio->a_in_buffer) free(sh_audio->a_in_buffer);
@@ -310,7 +316,7 @@ int init_audio_filters(sh_audio_t *sh_audio,
 	int out_minsize, int out_maxsize){
   af_stream_t* afs=sh_audio->afilter;
   if(!afs){
-    afs = (af_stream_t*)malloc(sizeof(af_stream_t));
+    afs = malloc(sizeof(af_stream_t));
     memset(afs,0,sizeof(af_stream_t));
   }
 
@@ -340,14 +346,16 @@ int init_audio_filters(sh_audio_t *sh_audio,
     return 0; // failed :(
   }
   
+  if (out_maxsize || out_minsize) {
   // allocate the a_out_* buffers:
   if(out_maxsize<out_minsize) out_maxsize=out_minsize;
   if(out_maxsize<8192) out_maxsize=MAX_OUTBURST; // not sure this is ok
 
   sh_audio->a_out_buffer_size=out_maxsize;
-  sh_audio->a_out_buffer=malloc(sh_audio->a_out_buffer_size);
+  sh_audio->a_out_buffer=memalign(16,sh_audio->a_out_buffer_size);
   memset(sh_audio->a_out_buffer,0,sh_audio->a_out_buffer_size);
   sh_audio->a_out_buffer_len=0;
+  }
   
   // ok!
   sh_audio->afilter=(void*)afs;
@@ -387,7 +395,12 @@ int decode_audio(sh_audio_t *sh_audio,unsigned char *buf,int minlen,int maxlen)
       mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"decaudio: decoding %d bytes, max: %d (%d)\n",
         len, maxlen, sh_audio->audio_out_minsize);
 
-      if(maxlen<sh_audio->audio_out_minsize) break; // don't overflow buffer!
+      // When a decoder sets audio_out_minsize that should guarantee it can
+      // write up to audio_out_minsize bytes at a time until total >= minlen
+      // without checking maxlen. Thus maxlen must be at least minlen +
+      // audio_out_minsize. Check that to guard against buffer overflows.
+      if (maxlen < len + sh_audio->audio_out_minsize)
+	  break;
       // not enough decoded data waiting, decode 'len' bytes more:
       len=mpadec->decode_audio(sh_audio,
           sh_audio->a_buffer+sh_audio->a_buffer_len, len, maxlen);

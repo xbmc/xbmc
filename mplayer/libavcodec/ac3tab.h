@@ -1,3 +1,24 @@
+/*
+ * AC3 tables
+ * copyright (c) 2001 Fabrice Bellard
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 /**
  * @file ac3tab.h
  * tables taken directly from AC3 spec.
@@ -8,8 +29,8 @@ static const uint16_t ac3_freqs[3] = { 48000, 44100, 32000 };
 
 /* possible bitrates */
 static const uint16_t ac3_bitratetab[19] = {
-    32, 40, 48, 56, 64, 80, 96, 112, 128, 
-    160, 192, 224, 256, 320, 384, 448, 512, 576, 640 
+    32, 40, 48, 56, 64, 80, 96, 112, 128,
+    160, 192, 224, 256, 320, 384, 448, 512, 576, 640
 };
 
 /* AC3 MDCT window */
@@ -47,7 +68,7 @@ static const int16_t ac3_window[256] = {
 32760,32761,32762,32763,32764,32764,32765,32765,
 32766,32766,32766,32766,32767,32767,32767,32767,
 32767,32767,32767,32767,32767,32767,32767,32767,
-32767,32767,32767,32767,32767,32767,32767,32767,  
+32767,32767,32767,32767,32767,32767,32767,32767,
 };
 
 static uint8_t masktab[253];
@@ -135,32 +156,32 @@ static const uint16_t hth[50][3]= {
 };
 
 static const uint8_t baptab[64]= {
-    0, 1, 1, 1, 1, 1, 2, 2, 3, 3, 
-    3, 4, 4, 5, 5, 6, 6, 6, 6, 7, 
-    7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 
-    9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 
-    12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 
-    14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 
+    0, 1, 1, 1, 1, 1, 2, 2, 3, 3,
+    3, 4, 4, 5, 5, 6, 6, 6, 6, 7,
+    7, 7, 7, 8, 8, 8, 8, 9, 9, 9,
+    9, 10, 10, 10, 10, 11, 11, 11, 11, 12,
+    12, 12, 12, 13, 13, 13, 13, 14, 14, 14,
+    14, 14, 14, 14, 14, 15, 15, 15, 15, 15,
     15, 15, 15, 15,
 };
 
-static const uint8_t sdecaytab[4]={ 
+static const uint8_t sdecaytab[4]={
     0x0f, 0x11, 0x13, 0x15,
 };
 
-static const uint8_t fdecaytab[4]={ 
-    0x3f, 0x53, 0x67, 0x7b, 
+static const uint8_t fdecaytab[4]={
+    0x3f, 0x53, 0x67, 0x7b,
 };
 
-static const uint16_t sgaintab[4]= { 
+static const uint16_t sgaintab[4]= {
     0x540, 0x4d8, 0x478, 0x410,
 };
 
-static const uint16_t dbkneetab[4]= { 
+static const uint16_t dbkneetab[4]= {
     0x000, 0x700, 0x900, 0xb00,
 };
 
-static const uint16_t floortab[8]= { 
+static const int16_t floortab[8]= {
     0x2f0, 0x2b0, 0x270, 0x230, 0x1f0, 0x170, 0x0f0, 0xf800,
 };
 
@@ -169,12 +190,12 @@ static const uint16_t fgaintab[8]= {
 };
 
 static const uint8_t bndsz[50]={
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 
-    3, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 24, 24, 24, 24, 24 
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3,
+    3, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 24, 24, 24, 24, 24
 };
 
-static uint8_t bndtab[51]; 
+static uint8_t bndtab[51];
 
 /* fft & mdct sin cos tables */
 static int16_t costab[64];
@@ -182,5 +203,3 @@ static int16_t sintab[64];
 static int16_t fft_rev[512];
 static int16_t xcos1[128];
 static int16_t xsin1[128];
-
-static uint16_t crc_table[256];

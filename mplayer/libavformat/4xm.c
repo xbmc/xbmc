@@ -2,19 +2,21 @@
  * 4X Technologies .4xm File Demuxer (no muxer)
  * Copyright (c) 2003  The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -163,7 +165,7 @@ static int fourxm_read_header(AVFormatContext *s,
                 fourxm->track_count = current_track + 1;
                 if((unsigned)fourxm->track_count >= UINT_MAX / sizeof(AudioTrack))
                     return -1;
-                fourxm->tracks = av_realloc(fourxm->tracks, 
+                fourxm->tracks = av_realloc(fourxm->tracks,
                     fourxm->track_count * sizeof(AudioTrack));
                 if (!fourxm->tracks) {
                     av_free(header);
@@ -186,7 +188,7 @@ static int fourxm_read_header(AVFormatContext *s,
             fourxm->tracks[current_track].stream_index = st->index;
 
             st->codec->codec_type = CODEC_TYPE_AUDIO;
-            st->codec->codec_tag = 1;
+            st->codec->codec_tag = 0;
             st->codec->channels = fourxm->tracks[current_track].channels;
             st->codec->sample_rate = fourxm->tracks[current_track].sample_rate;
             st->codec->bits_per_sample = fourxm->tracks[current_track].bits;
@@ -277,7 +279,7 @@ static int fourxm_read_packet(AVFormatContext *s,
                 ret= av_get_packet(&s->pb, pkt, size);
                 if(ret<0)
                     return AVERROR_IO;
-                pkt->stream_index = 
+                pkt->stream_index =
                     fourxm->tracks[fourxm->selected_track].stream_index;
                 pkt->pts = fourxm->audio_pts;
                 packet_read = 1;
@@ -285,13 +287,13 @@ static int fourxm_read_packet(AVFormatContext *s,
                 /* pts accounting */
                 audio_frame_count = size;
                 if (fourxm->tracks[fourxm->selected_track].adpcm)
-                    audio_frame_count -= 
+                    audio_frame_count -=
                         2 * (fourxm->tracks[fourxm->selected_track].channels);
                 audio_frame_count /=
                       fourxm->tracks[fourxm->selected_track].channels;
                 if (fourxm->tracks[fourxm->selected_track].adpcm)
                     audio_frame_count *= 2;
-                else 
+                else
                     audio_frame_count /=
                     (fourxm->tracks[fourxm->selected_track].bits / 8);
                 fourxm->audio_pts += audio_frame_count;
@@ -318,7 +320,7 @@ static int fourxm_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat fourxm_iformat = {
+AVInputFormat fourxm_demuxer = {
     "4xm",
     "4X Technologies format",
     sizeof(FourxmDemuxContext),
@@ -327,9 +329,3 @@ static AVInputFormat fourxm_iformat = {
     fourxm_read_packet,
     fourxm_read_close,
 };
-
-int fourxm_init(void)
-{
-    av_register_input_format(&fourxm_iformat);
-    return 0;
-}

@@ -29,7 +29,7 @@
 #include "ogg2.h"
 
 extern int
-vorbis_comment (AVFormatContext * as, char *buf, int size)
+vorbis_comment (AVFormatContext * as, uint8_t *buf, int size)
 {
     char *p = buf;
     int s, n, j;
@@ -86,7 +86,7 @@ vorbis_comment (AVFormatContext * as, char *buf, int size)
             memcpy (ct, v, vl);
             ct[vl] = 0;
 
-            // took from Vorbis_I_spec 
+            // took from Vorbis_I_spec
             if (!strcmp (tt, "AUTHOR"))
                 strncpy (as->author, ct, FFMIN(sizeof (as->author), vl));
             else if (!strcmp (tt, "TITLE"))
@@ -117,7 +117,7 @@ vorbis_comment (AVFormatContext * as, char *buf, int size)
  * Vorbis Identification header from Vorbis_I_spec.html#vorbis-spec-codec
  * [vorbis_version] = read 32 bits as unsigned integer | Not used
  * [audio_channels] = read 8 bit integer as unsigned | Used
- * [audio_sample_rate] = read 32 bits as unsigned integer | Used 
+ * [audio_sample_rate] = read 32 bits as unsigned integer | Used
  * [bitrate_maximum] = read 32 bits as signed integer | Not used yet
  * [bitrate_nominal] = read 32 bits as signed integer | Not used yet
  * [bitrate_minimum] = read 32 bits as signed integer | Used as bitrate
@@ -186,6 +186,8 @@ vorbis_header (AVFormatContext * s, int idx)
         st->codec->codec_type = CODEC_TYPE_AUDIO;
         st->codec->codec_id = CODEC_ID_VORBIS;
 
+        st->time_base.num = 1;
+        st->time_base.den = st->codec->sample_rate;
     } else if (os->buf[os->pstart] == 3) {
         vorbis_comment (s, os->buf + os->pstart + 7, os->psize - 8);
     } else {

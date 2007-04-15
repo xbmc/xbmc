@@ -164,7 +164,7 @@ stream_t* open_stream_full(char* filename,int mode, char** options, int* file_fo
 	s = open_stream_plugin(sinfo,filename,mode,options,file_format,&r);
 	if(s) return s;
 	if(r != STREAM_UNSUPORTED) {
-	  mp_msg(MSGT_OPEN,MSGL_ERR, "Failed to open %s\n",filename);
+	  mp_msg(MSGT_OPEN,MSGL_ERR, MSGTR_FailedToOpen,filename);
 	  return NULL;
 	}
 	break;
@@ -265,16 +265,10 @@ off_t newpos=0;
     break;
   }
 
-if(verbose>=3){
-#ifdef _LARGEFILE_SOURCE
-  printf("s->pos=%llX  newpos=%llX  new_bufpos=%llX  buflen=%X  \n",
-    (long long)s->pos,(long long)newpos,(long long)pos,s->buf_len);
-#else
-  printf("s->pos=%X  newpos=%X  new_bufpos=%X  buflen=%X  \n",
-    (unsigned int)s->pos,newpos,pos,s->buf_len);
-#endif
+if( mp_msg_test(MSGT_STREAM,MSGL_DBG3) ){
+  mp_msg(MSGT_STREAM,MSGL_DBG3, "s->pos=%"PRIX64"  newpos=%"PRIX64"  new_bufpos=%"PRIX64"  buflen=%X  \n",
+    (int64_t)s->pos,(int64_t)newpos,(int64_t)pos,s->buf_len);
 }
-
   pos-=newpos;
 
 if(newpos==0 || newpos!=s->pos){
@@ -353,19 +347,17 @@ if(newpos==0 || newpos!=s->pos){
 //   putchar('%');fflush(stdout);
 }
 
-  stream_fill_buffer(s);
-  if(pos>=0 && pos<=s->buf_len){
+while(stream_fill_buffer(s) > 0 && pos >= 0) {
+  if(pos<=s->buf_len){
     s->buf_pos=pos; // byte position in sector
     return 1;
   }
+  pos -= s->buf_len;
+}
   
 //  if(pos==s->buf_len) printf("XXX Seek to last byte of file -> EOF\n");
   
-#ifdef _LARGEFILE_SOURCE
-  mp_msg(MSGT_STREAM,MSGL_V,"stream_seek: WARNING! Can't seek to 0x%llX !\n",(long long)(pos+newpos));
-#else
-  mp_msg(MSGT_STREAM,MSGL_V,"stream_seek: WARNING! Can't seek to 0x%X !\n",(pos+newpos));
-#endif
+  mp_msg(MSGT_STREAM,MSGL_V,"stream_seek: WARNING! Can't seek to 0x%"PRIX64" !\n",(int64_t)(pos+newpos));
   return 0;
 }
 
@@ -381,7 +373,11 @@ void stream_reset(stream_t *s){
 }
 
 stream_t* new_memory_stream(unsigned char* data,int len){
-  stream_t *s=malloc(sizeof(stream_t)+len);
+  stream_t *s;
+
+  if(len < 0)
+    return NULL;
+  s=malloc(sizeof(stream_t)+len);
   memset(s,0,sizeof(stream_t));
   s->fd=-1;
   s->type=STREAMTYPE_MEMORY;

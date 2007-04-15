@@ -3,19 +3,21 @@
  * Copyright (c) 2005 David Hammerton
  * All rights reserved.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -32,6 +34,22 @@
  *  bytes 0-3   atom size (0x24), big-endian
  *  bytes 4-7   atom type ('alac', not the 'alac' tag from start of stsd)
  *  bytes 8-35  data bytes needed by decoder
+ *
+ * Extradata:
+ * 32bit  size
+ * 32bit  tag (=alac)
+ * 32bit  zero?
+ * 32bit  max sample per frame
+ *  8bit  ?? (zero?)
+ *  8bit  sample size
+ *  8bit  history mult
+ *  8bit  initial history
+ *  8bit  kmodifier
+ *  8bit  channels?
+ * 16bit  ??
+ * 32bit  max coded frame size
+ * 32bit  bitrate?
+ * 32bit  samplerate
  */
 
 
@@ -84,7 +102,7 @@ static void allocate_buffers(ALACContext *alac)
     alac->outputsamples_buffer_b = av_malloc(alac->setinfo_max_samples_per_frame * 4);
 }
 
-void alac_set_info(ALACContext *alac)
+static int alac_set_info(ALACContext *alac)
 {
     unsigned char *ptr = alac->avctx->extradata;
 
@@ -92,6 +110,10 @@ void alac_set_info(ALACContext *alac)
     ptr += 4; /* alac */
     ptr += 4; /* 0 ? */
 
+    if(BE_32(ptr) >= UINT_MAX/4){
+        av_log(alac->avctx, AV_LOG_ERROR, "setinfo_max_samples_per_frame too large\n");
+        return -1;
+    }
     alac->setinfo_max_samples_per_frame = BE_32(ptr); /* buffer size / 2 ? */
     ptr += 4;
     alac->setinfo_7a = *ptr++;
@@ -99,17 +121,19 @@ void alac_set_info(ALACContext *alac)
     alac->setinfo_rice_historymult = *ptr++;
     alac->setinfo_rice_initialhistory = *ptr++;
     alac->setinfo_rice_kmodifier = *ptr++;
-    alac->setinfo_7f = *ptr++;
+    alac->setinfo_7f = *ptr++; // channels?
     alac->setinfo_80 = BE_16(ptr);
     ptr += 2;
-    alac->setinfo_82 = BE_32(ptr);
+    alac->setinfo_82 = BE_32(ptr); // max coded frame size
     ptr += 4;
-    alac->setinfo_86 = BE_32(ptr);
+    alac->setinfo_86 = BE_32(ptr); // bitrate ?
     ptr += 4;
-    alac->setinfo_8a_rate = BE_32(ptr);
+    alac->setinfo_8a_rate = BE_32(ptr); // samplerate
     ptr += 4;
 
     allocate_buffers(alac);
+
+    return 0;
 }
 
 /* hideously inefficient. could use a bitmask search,
@@ -125,7 +149,7 @@ static int count_leading_zeros(int32_t input)
     return i;
 }
 
-void bastardized_rice_decompress(ALACContext *alac,
+static void bastardized_rice_decompress(ALACContext *alac,
                                  int32_t *output_buffer,
                                  int output_size,
                                  int readsamplesize, /* arg_10 */
@@ -169,9 +193,9 @@ void bastardized_rice_decompress(ALACContext *alac,
             /* read k, that is bits as is */
             k = 31 - rice_kmodifier - count_leading_zeros((history >> 9) + 3);
 
-            if (k < 0) 
+            if (k < 0)
                 k += rice_kmodifier;
-            else 
+            else
                 k = rice_kmodifier;
 
             if (k != 1) {
@@ -385,7 +409,7 @@ static void predictor_decompress_fir_adapt(int32_t *error_buffer,
     }
 }
 
-void deinterlace_16(int32_t *buffer_a, int32_t *buffer_b,
+static void deinterlace_16(int32_t *buffer_a, int32_t *buffer_b,
                     int16_t *buffer_out,
                     int numchannels, int numsamples,
                     uint8_t interlacing_shift,
@@ -444,11 +468,14 @@ static int alac_decode_frame(AVCodecContext *avctx,
     /* initialize from the extradata */
     if (!alac->context_initialized) {
         if (alac->avctx->extradata_size != ALAC_EXTRADATA_SIZE) {
-            av_log(NULL, AV_LOG_ERROR, "alac: expected %d extradata bytes\n", 
+            av_log(avctx, AV_LOG_ERROR, "alac: expected %d extradata bytes\n",
                 ALAC_EXTRADATA_SIZE);
             return input_buffer_size;
         }
-        alac_set_info(alac);
+        if (alac_set_info(alac)) {
+            av_log(avctx, AV_LOG_ERROR, "alac: set_info failed\n");
+            return input_buffer_size;
+        }
         alac->context_initialized = 1;
     }
 
@@ -500,7 +527,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
             int prediction_quantitization;
             int i;
 
-            /* skip 16 bits, not sure what they are. seem to be used in
+            /* FIXME: skip 16 bits, not sure what they are. seem to be used in
              * two channel case */
             get_bits(&alac->gb, 8);
             get_bits(&alac->gb, 8);
@@ -520,7 +547,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
                 /* these bytes seem to have something to do with
                  * > 2 channel files.
                  */
-                av_log(NULL, AV_LOG_ERROR, "FIXME: unimplemented, unhandling of wasted_bytes\n");
+                av_log(avctx, AV_LOG_ERROR, "FIXME: unimplemented, unhandling of wasted_bytes\n");
             }
 
             bastardized_rice_decompress(alac,
@@ -542,7 +569,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
                                                predictor_coef_num,
                                                prediction_quantitization);
             } else {
-                av_log(NULL, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type);
+                av_log(avctx, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type);
                 /* i think the only other prediction type (or perhaps this is just a
                  * boolean?) runs adaptive fir twice.. like:
                  * predictor_decompress_fir_adapt(predictor_error, tempout, ...)
@@ -586,7 +613,6 @@ static int alac_decode_frame(AVCodecContext *avctx,
             int i;
             for (i = 0; i < outputsamples; i++) {
                 int16_t sample = alac->outputsamples_buffer_a[i];
-                sample = be2me_16(sample);
                 ((int16_t*)outbuffer)[i * alac->numchannels] = sample;
             }
             break;
@@ -594,7 +620,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
         case 20:
         case 24:
         case 32:
-            av_log(NULL, AV_LOG_ERROR, "FIXME: unimplemented sample size %i\n", alac->setinfo_sample_size);
+            av_log(avctx, AV_LOG_ERROR, "FIXME: unimplemented sample size %i\n", alac->setinfo_sample_size);
             break;
         default:
             break;
@@ -679,7 +705,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
             /*********************/
             if (wasted_bytes) {
               /* see mono case */
-                av_log(NULL, AV_LOG_ERROR, "FIXME: unimplemented, unhandling of wasted_bytes\n");
+                av_log(avctx, AV_LOG_ERROR, "FIXME: unimplemented, unhandling of wasted_bytes\n");
             }
 
             /* channel 1 */
@@ -703,7 +729,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
                                                prediction_quantitization_a);
             } else {
               /* see mono case */
-                av_log(NULL, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type_a);
+                av_log(avctx, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type_a);
             }
 
             /* channel 2 */
@@ -726,9 +752,9 @@ static int alac_decode_frame(AVCodecContext *avctx,
                                                predictor_coef_num_b,
                                                prediction_quantitization_b);
             } else {
-                av_log(NULL, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type_b);
+                av_log(avctx, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type_b);
             }
-        } else { 
+        } else {
          /* not compressed, easy case */
             if (alac->setinfo_sample_size <= 16) {
                 int i;
@@ -782,7 +808,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
         case 20:
         case 24:
         case 32:
-            av_log(NULL, AV_LOG_ERROR, "FIXME: unimplemented sample size %i\n", alac->setinfo_sample_size);
+            av_log(avctx, AV_LOG_ERROR, "FIXME: unimplemented sample size %i\n", alac->setinfo_sample_size);
             break;
         default:
             break;
