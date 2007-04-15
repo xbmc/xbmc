@@ -1449,6 +1449,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\HDDirectory.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\HDHomeRun.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HDHomeRun.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\IDirectory.cpp">
 				</File>
 				<File
