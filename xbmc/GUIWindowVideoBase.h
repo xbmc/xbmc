@@ -44,7 +44,6 @@ protected:
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
   void ShowIMDB(CFileItem *item, const SScraperInfo& info);
-  void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
 
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
