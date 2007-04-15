@@ -312,11 +312,11 @@
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
       <back>LockPreset</back>
-      <title>Info</title>
+      <title>ShowPreset</title>
       <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
       <menu>XBMC.ActivateWindow(MusicOSD)</menu>
       <start>OSD</start>
-      <info>ShowPreset</info>
+      <info>Info</info>
     </remote>
 
     <gamepad>
