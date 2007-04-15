@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<sources>
+    <!-- All bookmarks can be LOCKED by adding lockmode/lockcode values as follows:  		!-->
+    <!-- Set lockmode to:                                                            		!-->
+    <!--    0 = Bookmark not locked. This is the default value if not specified.     		!-->
+    <!--    1 = Numeric lock. Can be typed via on screen numpad or remote control.   		!-->
+    <!--    2 = Gamepad lock. Enter by pushing XBOX controller button sequence.      		!-->
+    <!--    3 = Full-text lock. Enter with on screen keyboard or USB keyboard.       		!-->
+    <!-- lockcode: where lockmode is set to value:                                   		!-->
+    <!--    1:  Enter numeric password only. Do not use spaces or other characters.  		!-->
+    <!--    2:  Enter gamepad button sequence using the following letter codes:      		!-->
+    <!--        A B X Y = Same as buttons on gamepad                                 		!-->
+    <!--        U D L R = D-pad Up, Down, Left, Right                                		!-->
+    <!--        W K ( ) = White, Black, Left Trigger, Right Trigger                  		!-->
+    <!--    3:  Enter alphanumeric password.  Make sure all characters  					!-->
+    <!--        are available on your language's on screen keyboard/USB keyboard.    		!-->
+    <!--    All lockcodes are MD5 hashed													!-->
+    <!-- Example:                                                                    		!-->
+    <!--    <bookmark>                                                               		!-->
+    <!--       <name>SMB</name>                                                      		!-->
+    <!--       <path>smb://DOMAIN;username:pwd@MyWindowsServer/movies/</path>        		!-->
+    <!--       <lockmode>1</lockmode>                                                		!-->
+    <!--       <lockcode>12345678</lockcode>                                         		!-->
+    <!--    </bookmark>                                                              		!-->
+    <!-- All bookmarks can have a custom thumbnail icon.  		                          !-->
+    <!-- Image must be located locally on the xbox  		                                !-->
+    <!-- Example:                                                                    		!-->
+    <!--    <bookmark>                                                               		!-->
+    <!--       <name>SMB</name>                                                      		!-->
+    <!--       <path>smb://DOMAIN;username:pwd@MyWindowsServer/movies/</path>        		!-->
+    <!--       <thumbnail>E:\Apps\XBMC\media\movies.png</thumbnail>                     !-->
+    <!--    </bookmark>                                                              		!-->
+    <!-- My Programs shares!-->
+    <myprograms>
+        <default>Games</default>
+        <bookmark>
+            <name>Games</name>
+            <path>E:\Games\</path>
+            <path>F:\Games\</path>
+            <path>G:\Games\</path>
+        </bookmark>
+        <bookmark>
+            <name>Emulators</name>
+            <path>E:\Emulators\</path>
+            <path>F:\Emulators\</path>
+            <path>G:\Emulators\</path>
+        </bookmark>
+        <bookmark>
+            <name>Programs</name>
+            <path>E:\Apps\</path>
+            <path>F:\Apps\</path>
+            <path>G:\Apps\</path>
+        </bookmark>
+        <bookmark>
+            <name>DVD-Game</name>
+            <path>D:\</path>
+        </bookmark>
+    </myprograms>
+    <!-- My Videos shares !-->
+    <video>
+        <default />
+        <bookmark>
+            <name>Videos</name>
+            <path>C:\Junk</path>
+            <path>F:\Videos</path>
+            <path>G:\Videos</path>
+        </bookmark>
+        <bookmark>
+            <name>DVD-ROM Drive</name>
+            <path>D:\</path>
+        </bookmark>
+        <bookmark>
+            <name>Playlists</name>
+            <path>$VIDEOPLAYLISTS</path>
+        </bookmark>
+        <!-- Expert setting: Uncomment for seperate ISO and UDF share		!-->
+        <!-- Comment out the bookmark named DVD to disable DVD autodetect	!-->
+        <!-- for my video							!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>ISO</name>           					!-->
+        <!--   <path>iso9660://</path>    					!-->
+        <!-- </bookmark>                  					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>UDF</name>           					!-->
+        <!--   <path>UDF:</path>          					!-->
+        <!-- </bookmark>                  					!-->
+        <bookmark>
+            <name>XBMSP Network Share</name>
+            <path>xbms://192.168.0.1:1400/</path>
+        </bookmark>
+        <bookmark>
+            <name>XBMSP Network Servers (Auto-Discover)</name>
+            <path>xbms://</path>
+        </bookmark>
+        <bookmark>
+            <name>SMB Network Share</name>
+            <!--    You can use one of these following formats: 		!-->
+            <!-- smb://domain;user:password@ip/share/directory/ 		!-->
+            <!-- smb://user:password@ip/share/                  		!-->
+            <!--    Only if guest/public access is enabled:     		!-->
+            <!-- smb://ip/                                      		!-->
+            <path>smb://DOMAIN;username:pwd@MyWindowsServer/movies/</path>
+        </bookmark>
+        <bookmark>
+            <name>TuxBox Client</name>
+            <!--    You can use one of these following formats: 		!-->
+            <!-- tuxbox://user:password@ip_tuxbox:port/             !-->
+            <!-- tuxbox://ip_tuxbox:port/                           !-->
+            <path>tuxbox://root:dreambox@192.168.0.110:80/</path>
+        </bookmark>
+        <bookmark>
+            <name>WORKGROUP (SMB) Network</name>
+            <path>smb://</path>
+        </bookmark>
+        <bookmark>
+            <name>ReplayTV</name>
+            <path>rtv://*/</path>
+        </bookmark>
+        <bookmark>
+            <name>UPnP Media Servers (Auto-Discover)</name>
+            <path>upnp://</path>
+        </bookmark>
+    </video>
+    <!-- My Music shares !-->
+    <music>
+        <default />
+        <bookmark>
+            <name>Music</name>
+            <path>C:\Junk\Music</path>
+            <path>E:\Music</path>
+            <path>F:\Music</path>
+            <path>G:\Music</path>
+        </bookmark>
+        <bookmark>
+            <name>DVD-ROM Drive</name>
+            <path>D:\</path>
+        </bookmark>
+        <bookmark>
+            <name>Playlists</name>
+            <path>$MUSICPLAYLISTS</path>
+        </bookmark>
+        <!-- Expert setting: Uncomment for seperate ISO and UDF CDDA share	!-->
+        <!-- Comment out the bookmark named DVD to disable DVD autodetect	!-->
+        <!-- for my music                 					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>ISO</name>           					!-->
+        <!--   <path>iso9660://</path>    					!-->
+        <!-- </bookmark>                  					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>UDF</name>           					!-->
+        <!--   <path>UDF:</path>          					!-->
+        <!-- </bookmark>                  					!-->
+        <!-- <bookmark>                   					!-->
+        <!--  <name>CDDA</name>           					!-->
+        <!--  <path>cdda://</path>          					!-->
+        <!-- </bookmark>                  					!-->
+        <bookmark>
+            <name>XBMSP Network Share</name>
+            <path>xbms://192.168.0.1:1400/</path>
+        </bookmark>
+        <bookmark>
+            <name>XBMSP Network Servers (Auto-Discover)</name>
+            <path>xbms://</path>
+        </bookmark>
+        <bookmark>
+            <name>SMB Network Share</name>
+            <!--    You can use one of these following formats: 		!-->
+            <!-- smb://domain;user:password@ip/share/directory/ 		!-->
+            <!-- smb://user:password@ip/share/                  		!-->
+            <!--    Only if guest/public access is enabled:     		!-->
+            <!-- smb://ip/                                      		!-->
+            <path>smb://DOMAIN;username:pwd@MyWindowsServer/music/</path>
+        </bookmark>
+        <bookmark>
+            <name>WORKGROUP (SMB) Network</name>
+            <path>smb://</path>
+        </bookmark>
+        <bookmark>
+            <name>iTunes Network Share (DAAP)</name>
+            <!-- only use an IP address here !-->
+            <path>daap://192.168.1.100</path>
+        </bookmark>
+        <bookmark>
+            <name>SHOUTcast - Directory</name>
+            <path>shout://www.shoutcast.com/sbin/newxml.phtml</path>
+            <!-- direct links to genres and searches are allowed                                 -->
+            <!-- shout://www.shoutcast.com/sbin/newxml.phtml?genre=Funk                          -->
+            <!-- shout://www.shoutcast.com/sbin/newxml.phtml?genre=Top500                        -->
+            <!-- shout://www.shoutcast.com/sbin/newxml.phtml?search=[stationname]                -->
+        </bookmark>
+        <bookmark>
+            <name>UPnP Media Servers (Auto-Discover)</name>
+            <path>upnp://</path>
+        </bookmark>
+    </music>
+    <!-- My Pictures shares !-->
+    <pictures>
+        <default />
+        <bookmark>
+            <name>Pictures</name>
+            <path>C:\Pictures</path>
+            <path>E:\Pictures</path>
+            <path>F:\Pictures</path>
+            <path>G:\Pictures</path>
+        </bookmark>
+        <bookmark>
+            <name>DVD-ROM Drive</name>
+            <path>D:\</path>
+        </bookmark>
+        <!-- Expert setting: Uncomment for seperate ISO and UDF share		!-->
+        <!-- Comment out the bookmark named DVD to disable DVD autodetect	!-->
+        <!-- for my pictures              					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>ISO</name>           					!-->
+        <!--   <path>iso9660://</path>    					!-->
+        <!-- </bookmark>                  					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>UDF</name>           					!-->
+        <!--   <path>UDF:</path>          					!-->
+        <!-- </bookmark>                  					!-->
+        <bookmark>
+            <name>XBMSP Network Share</name>
+            <path>xbms://192.168.0.1:1400/</path>
+        </bookmark>
+        <bookmark>
+            <name>XBMSP Network Servers (Auto-Discover)</name>
+            <path>xbms://</path>
+        </bookmark>
+        <bookmark>
+            <name>SMB Network Share</name>
+            <!--    You can use one of these following formats: 		!-->
+            <!-- smb://domain;user:password@ip/share/directory/ 		!-->
+            <!-- smb://user:password@ip/share/                  		!-->
+            <!--    Only if guest/public access is enabled:     		!-->
+            <!-- smb://ip/                                      		!-->
+            <path>smb://DOMAIN;username:pwd@MyWindowsServer/pictures/</path>
+        </bookmark>
+        <bookmark>
+            <name>WORKGROUP (SMB) Network</name>
+            <path>smb://</path>
+        </bookmark>
+        <bookmark>
+            <name>UPnP Media Servers (Auto-Discover)</name>
+            <path>upnp://</path>
+        </bookmark>
+    </pictures>
+    <!-- File-manager shares !-->
+    <files>
+        <bookmark>
+            <name>C Drive</name>
+            <path>C:\</path>
+        </bookmark>
+        <bookmark>
+            <name>E Drive</name>
+            <path>E:\</path>
+        </bookmark>
+        <bookmark>
+            <name>F Drive</name>
+            <path>F:\</path>
+        </bookmark>
+        <bookmark>
+            <name>G Drive</name>
+            <path>G:\</path>
+        </bookmark>
+        <bookmark>
+            <name>Q Drive</name>
+            <path>Q:\</path>
+        </bookmark>
+        <bookmark>
+            <name>DVD-ROM Drive</name>
+            <path>D:\</path>
+        </bookmark>
+        <!-- Expert setting: Uncomment for seperate ISO and UDF share		!-->
+        <!-- Comment out the bookmark named DVD to disable DVD autodetect	!-->
+        <!-- for my files                 					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>ISO</name>           					!-->
+        <!--   <path>iso9660://</path>    					!-->
+        <!-- </bookmark>                  					!-->
+        <!-- <bookmark>                   					!-->
+        <!--   <name>UDF</name>           					!-->
+        <!--   <path>UDF:</path>          					!-->
+        <!-- </bookmark>                  					!-->
+        <bookmark>
+            <name>XBMSP Network Share</name>
+            <path>xbms://192.168.0.1:1400/</path>
+        </bookmark>
+        <bookmark>
+            <name>XBMSP Network Servers (Auto-Discover)</name>
+            <path>xbms://</path>
+        </bookmark>
+        <bookmark>
+            <name>SMB Network Share</name>
+            <!-- You can use one of these following formats:    		!-->
+            <!-- smb://domain;user:password@ip/share/directory/ 		!-->
+            <!-- smb://user:password@ip/share/                  		!-->
+            <!--    Only if guest/public access is enabled:     		!-->
+            <!-- smb://ip/                                      		!-->
+            <path>smb://DOMAIN;username:pwd@MyWindowsServer/files/</path>
+        </bookmark>
+        <bookmark>
+            <name>FTP Network Share</name>
+            <!-- You can use one of these following formats:      		!-->
+            <!--      ftp://user:password@ip/directory/           		!-->
+            <!--      ftp://user:password@ip/                     		!-->
+            <!-- If you want to connect with anonymous then leave 		!-->
+            <!-- the user pass free: ftp://ip/                    		!-->
+            <path>ftp://username:password@ip:port/folder/</path>
+        </bookmark>
+        <bookmark>
+            <name>WORKGROUP (SMB) Network</name>
+            <path>smb://</path>
+        </bookmark>
+    </files>
+</sources>
