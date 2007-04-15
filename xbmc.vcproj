@@ -3479,6 +3479,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\DllSidplay2.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\DllTimidity.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\DllVorbisfile.h">
 				</File>
 				<File
@@ -3576,6 +3579,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\SPCCodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\TimidityCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\TimidityCodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\WAVcodec.cpp">
