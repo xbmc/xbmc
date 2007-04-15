@@ -21,6 +21,7 @@
 #include "FileMusicDatabase.h"
 #include "../xbox/network.h"
 #include "FileTuxBox.h"
+#include "HDHomeRun.h"
 
 using namespace XFILE;
 
@@ -62,6 +63,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
+    else if (strProtocol == "hdhomerun") return new CFileHomeRun();
 #ifdef HAS_FILESYSTEM
     else if (strProtocol == "smb") return new CFileSMB();
     else if (strProtocol == "xbms") return new CFileXBMSP();
