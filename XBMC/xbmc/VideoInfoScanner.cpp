@@ -410,7 +410,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
                   CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
                   CVideoInfoTag movieDetails;
                   nfoReader.GetDetails(movieDetails);
-                  AddMovieAndGetThumb(pItem, "movies", movieDetails, -1, m_dlgProgress);
+                  AddMovieAndGetThumb(pItem, "movies", movieDetails, -1, bDirNames, m_dlgProgress);
                   continue;
                 }
                 else
@@ -423,7 +423,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
                   url.m_strID  = nfoReader.m_strImDbNr;
                   SScraperInfo info2(info);
                   info2.strPath = nfoReader.m_strScraper;
-                  GetIMDBDetails(pItem, url, info2, m_dlgProgress);
+                  GetIMDBDetails(pItem, url, info2, bDirNames, m_dlgProgress);
                   continue;
                 }
               }
@@ -453,7 +453,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
           if (iMoviesFound > 0)
           {
             CUtil::ClearCache();
-            long lResult=GetIMDBDetails(pItem, url, info);
+            long lResult=GetIMDBDetails(pItem, url, info,bDirNames&&info.strContent.Equals("movies"));
             if (info.strContent.Equals("tvshows"))
             {
               // fetch episode guide
@@ -564,12 +564,14 @@ void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISOD
   }
 }
 
-long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, CGUIDialogProgress* pDialog /* == NULL */)
+long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
 {
   long lResult=-1;
   // add to all movies in the stacked set
   if (content.Equals("movies"))
+  {
     m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+  }
   else if (content.Equals("tvshows"))
   {
     if (pItem->m_bIsFolder)
@@ -612,6 +614,12 @@ long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &
     {
       CPicture picture;
       picture.DoCreateThumbnail(strTemp, strThumb);
+      if (bApplyToDir)
+      {
+        CStdString strDirectory;
+        CUtil::GetDirectory(pItem->m_strPath,strDirectory);
+        ApplyIMDBThumbToFolder(strDirectory,strThumb);
+      }
     }
     catch (...)
     {
@@ -769,13 +777,24 @@ CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item)
   return nfoFile;
 }
 
-long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, CGUIDialogProgress* pDialog /* = NULL */)
+long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */)
 {
   CIMDB IMDB;
   CVideoInfoTag movieDetails;
   IMDB.SetScraperInfo(info);
 
   if ( IMDB.GetDetails(url, movieDetails, pDialog) )
-    return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1);
+    return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
   return -1;
+}
+
+void CVideoInfoScanner::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
+{
+  // copy icon to folder also;
+  if (CFile::Exists(imdbThumb))
+  {
+    CFileItem folderItem(folder, true);
+    CStdString strThumb(folderItem.GetCachedVideoThumb());
+    CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
+  }
 }
