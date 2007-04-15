@@ -34,11 +34,13 @@ public:
   void SetObserver(IVideoInfoScannerObserver* pObserver);
 
   static void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
-  long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, CGUIDialogProgress* pDialog = NULL);
+  long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
   void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress = NULL);
   static CStdString GetnfoFile(CFileItem *item);
-  long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, CGUIDialogProgress* pDialog=NULL);
+  long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
   bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, CIMDBUrl *pUrl=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
+  static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
+
 protected:
   virtual void Process();
   bool DoScan(const CStdString& strDirectory, const SScanSettings& settings);
