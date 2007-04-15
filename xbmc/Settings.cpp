@@ -1278,8 +1278,7 @@ void CSettings::LoadAdvancedSettings()
   if (pVideoStacking)
   {
     const char* szAppend = pVideoStacking->Attribute("append");
-    if (szAppend)
-      if (stricmp(szAppend,"yes") != 0)
+    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
         g_advancedSettings.m_videoStackRegExps.clear();
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
     while (pStackRegExp)
