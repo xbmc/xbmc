@@ -1,7 +1,7 @@
 #pragma once
 #include "IDirectory.h"
 #include "../DynamicDll.h"
-#include "C:\\Sandbox\\libhdhomerun\\hdhomerun.h"
+#include "../lib/libhdhomerun/hdhomerun.h"
 
 
 class DllHdHomeRunInterface
