@@ -2428,7 +2428,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
                           "select distinct exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
       if (g_advancedSettings.m_bMusicLibraryHideCompilationArtists) 
         strSQL +=         "join album on album.idAlbum = exartistalbum.idAlbum " // if we're hiding compilation artists,
-                          "where album.extraArtists != ''";                      // then exclude those where that have no extra artists
+                          "where album.strExtraArtists != ''";                      // then exclude those where that have no extra artists
       strSQL +=           ")"
                         ") ";
     }
