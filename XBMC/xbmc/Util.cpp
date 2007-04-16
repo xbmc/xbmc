@@ -2823,7 +2823,13 @@ void CUtil::TakeScreenshot()
 
 void CUtil::ClearCache()
 {
-  g_directoryCache.ClearDirectory(g_settings.GetMusicThumbFolder());
+  for (int i = 0; i < 16; i++)
+  {
+    CStdString strHex, folder;
+    strHex.Format("%x", i);
+    CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, folder);
+    g_directoryCache.ClearDirectory(folder);
+  }
 }
 
 void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
@@ -4719,11 +4725,13 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   return false;
 }
 
-CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& path)
+CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& artist)
 {
   if (album.IsEmpty())
-    return GetCachedMusicThumb("unknown"+path);
-  return GetCachedMusicThumb(album+path);
+    return GetCachedMusicThumb("unknown"+artist);
+  if (artist.IsEmpty())
+    return GetCachedMusicThumb(album+"unknown");
+  return GetCachedMusicThumb(album+artist);
 }
 
 CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
@@ -4732,8 +4740,10 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   CStdString noSlashPath(path);
   RemoveSlashAtEnd(noSlashPath);
   crc.ComputeFromLowerCase(noSlashPath);
+  CStdString hex;
+  hex.Format("%08x", crc);
   CStdString thumb;
-  thumb.Format("%s\\%x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
+  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
   return thumb;
 }
 

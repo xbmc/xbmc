@@ -63,7 +63,7 @@ public:
   CFileItem(const CStdString& strLabel);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
-  CFileItem(const CAlbum& album);
+  CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
@@ -323,6 +323,7 @@ public:
   bool Save();
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
   bool GetCacheToDisc() { return m_bCacheToDisc; }
+  void RemoveDiscCache();
 
   void SetCachedVideoThumbs();
   void SetCachedProgramThumbs();
@@ -334,6 +335,8 @@ public:
   void Swap(unsigned int item1, unsigned int item2);
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
+  CStdString GetDiscCacheFile();
+
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
   bool m_fastLookup;

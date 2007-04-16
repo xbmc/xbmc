@@ -27,9 +27,14 @@ public:
   void Stop();
   void SetObserver(IMusicInfoScannerObserver* pObserver);
 
+  static void CheckForVariousArtists(VECSONGS &songs);
+  static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
+
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
+  void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
+
   bool DoScan(const CStdString& strDirectory);
 
   virtual void Run();

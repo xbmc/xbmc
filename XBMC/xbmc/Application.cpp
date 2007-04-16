@@ -1199,6 +1199,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
@@ -1209,9 +1210,12 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
-    CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
     CStdString strHex;
     strHex.Format("%x",hex);
+    CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
+    strThumbLoc += "\\" + strHex;
+    CreateDirectory(strThumbLoc.c_str(),NULL);
+    strThumbLoc = g_settings.GetMusicThumbFolder();
     strThumbLoc += "\\" + strHex;
     CreateDirectory(strThumbLoc.c_str(),NULL);
   }
