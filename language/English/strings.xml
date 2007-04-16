@@ -1572,6 +1572,8 @@
   <string id="20374">Downloading Video information</string>
   <string id="20375">Unassign Content</string>
   <string id="20376">First Aired:</string>
+  <string id="20377">Refresh TV Show Information</string>
+  <string id="20378">Refresh info for all episodes?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
