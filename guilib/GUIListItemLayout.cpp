@@ -395,3 +395,15 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
   m_controls.push_back(label);
 }
 //#endif
+
+#ifdef _DEBUG
+void CGUIListItemLayout::DumpTextureUse()
+{
+  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = (*it);
+    if (layoutItem->m_type == CListBase::LIST_IMAGE || layoutItem->m_type == CListBase::LIST_TEXTURE)
+      ((CListTexture *)layoutItem)->m_image.DumpTextureUse();
+  }
+}
+#endif

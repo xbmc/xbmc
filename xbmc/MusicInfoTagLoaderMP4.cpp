@@ -48,6 +48,7 @@ static const unsigned int	g_GenreAtomName			=	MAKE_ATOM_NAME(  'g', 'n', 'r', 'e
 static const unsigned int	g_TrackNumberAtomName	=	MAKE_ATOM_NAME(  't', 'r', 'k', 'n' );	// 'trkn'
 static const unsigned int	g_DiscNumberAtomName	=	MAKE_ATOM_NAME(  'd', 'i', 's', 'k' );	// 'disk'
 static const unsigned int	g_CoverArtAtomName		=	MAKE_ATOM_NAME(  'c', 'o', 'v', 'r' );	// 'covr'
+static const unsigned int	g_CompilationAtomName	=	MAKE_ATOM_NAME(  'c', 'p', 'i', 'l' );	// 'cpil'
 
 // These atoms contain other atoms.. so when we find them, we have to recurse..
 
@@ -86,6 +87,7 @@ static unsigned int ReadUnsignedInt( const char* pData )
 #define TEMP_MP4_THUMB_FILE "Z:\\temp_mp4_thumb.tbn"
 
 static bool foundThumb = false;
+static bool isCompilation = false;
 
 // Given a metadata type, and a pointer to the data (and the size), this function attempts to populate
 // XBMC's CMusicInfoTag object. Tags that we don't support are simply ignored..
@@ -169,7 +171,12 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
 
       break;
     }
-
+  case g_CompilationAtomName:
+    {
+      if (metaSize == 1)
+        isCompilation = *pMetaData == 1;
+      break;
+    }
   case	g_CustomGenreAtomName:
     {
       // We need to zero-terminate the string, which needs workspace..
@@ -345,7 +352,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
     tag.SetURL(strFileName);
 
     // Now go parse our atom data
-    foundThumb = false;
+    foundThumb = false; isCompilation = false;
     ParseAtom( file, 0, file.GetLength(), tag );
 
     if (foundThumb)
@@ -353,12 +360,8 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
       // if we don't have an album tag, cache with the full file path so that
       // other non-tagged files don't get this album image
       CStdString strCoverArt;
-      if (!tag.GetAlbum().IsEmpty())
-      {
-        CStdString strPath;
-        CUtil::GetDirectory(tag.GetURL(), strPath);
-        strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), strPath);
-      }
+      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
+        strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), tag.GetAlbumArtist().IsEmpty() ? tag.GetArtist() : tag.GetAlbumArtist());
       else
         strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
       if (CFile::Cache(TEMP_MP4_THUMB_FILE, strCoverArt.c_str()))
@@ -369,6 +372,11 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
       {
         CUtil::ThumbCacheAdd( strCoverArt, false );
       }
+    }
+    if (isCompilation)
+    { // iTunes compilation flag is set - this could be a various artists file
+      if (tag.GetAlbumArtist().IsEmpty())
+        tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
     }
     // Close the file..
     file.Close();

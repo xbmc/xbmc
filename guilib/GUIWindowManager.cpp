@@ -698,3 +698,18 @@ void CGUIWindowManager::ClearWindowHistory()
   while (m_windowHistory.size())
     m_windowHistory.pop();
 }
+
+#ifdef _DEBUG
+void CGUIWindowManager::DumpTextureUse()
+{
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+    pWindow->DumpTextureUse();
+
+  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+  {
+    if ((*it)->IsDialogRunning())
+      (*it)->DumpTextureUse();
+  }
+}
+#endif
