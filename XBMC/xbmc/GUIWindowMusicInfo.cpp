@@ -312,15 +312,10 @@ void CGUIWindowMusicInfo::OnGetThumb()
   m_albumItem.SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;
 
-  m_gWindowManager.DumpTextureUse();
-
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
-
-  CLog::Log(LOGDEBUG, __FUNCTION__" ========= Dumping more textures ============");
-  m_gWindowManager.DumpTextureUse();
 }
