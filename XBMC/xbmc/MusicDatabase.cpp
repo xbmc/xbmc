@@ -2893,60 +2893,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
   try
   {
-    if (version < 4)
-    {
-      // version 3 to 4 upgrade - we need to add genre/year info to the album table(s)
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "");
-        dialog->SetLine(2, "This may take a couple of minutes...");
-        dialog->StartModal();
 
-        //  Let the progress dialog fade in, hopefully ;)
-        DWORD dwTicks=GetTickCount();
-        while (GetTickCount()-dwTicks<1000)
-          dialog->Progress();
-      }
-
-      BeginTransaction();
-
-      dialog->SetLine(1, "Dropping views...");
-      dialog->Progress();
-      CLog::Log(LOGINFO, "Dropping album view");
-      m_pDS->exec("drop view albumview");
-      CLog::Log(LOGINFO, "Dropping song view");
-      m_pDS->exec("drop view songview");
-
-      dialog->SetLine(1, "Creating new album table...");
-      dialog->Progress();
-      CLog::Log(LOGINFO, "Creating temporary album table");
-      m_pDS->exec("CREATE TEMPORARY TABLE tempalbum ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, iYear integer, idPath integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying albums into temporary album table");
-      m_pDS->exec("INSERT INTO tempalbum select album.idAlbum as idAlbum, strAlbum, album.idArtist as idArtist, album.iNumArtists as iNumArtists, idGenre, iNumGenres, iYear, album.idPath as idPath, album.idThumb as idThumb from album join song on song.idAlbum = album.idAlbum group by album.idAlbum");
-      CLog::Log(LOGINFO, "Dropping old album table");
-      m_pDS->exec("DROP TABLE album");
-      CLog::Log(LOGINFO, "Creating new album table");
-      m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, iYear integer, idPath integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying albums into new albums table");
-      m_pDS->exec("INSERT INTO album select * from tempalbum");
-      CLog::Log(LOGINFO, "Dropping temporary album table");
-      m_pDS->exec("DROP TABLE tempalbum");
-      CLog::Log(LOGINFO, "create album index");
-      m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
-      CLog::Log(LOGINFO, "create album view");
-      m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, iNumGenres, album.idGenre as idGenre, strArtist, strGenre, iYear, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join genre on album.idGenre=genre.idGenre left outer join thumb on album.idThumb=thumb.idThumb");
-      CLog::Log(LOGINFO, "create song view");
-      m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
-      CommitTransaction();
-
-      dialog->Close();
-    }
-    if (version < 5)
-    { // TODO: MUSICDB version 5 update
-    }
   }
   catch (...)
   {
@@ -3078,12 +3025,14 @@ bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
     CStdString strSQL=FormatSQL("select distinct strPath from path join song on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound != 1)
+    if (iRowsFound == 0)
     {
       m_pDS->close();
       return false;
     }
 
+    // if this returns more than one path, we just grab the first one.  It's just for determining where to obtain + place
+    // a local thumbnail
     path = m_pDS->fv("strPath").get_asString();
 
     m_pDS->close(); // cleanup recordset data

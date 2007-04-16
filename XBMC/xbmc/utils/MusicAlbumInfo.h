@@ -1,8 +1,5 @@
 #pragma once
-#include "musicsong.h"
 #include ".\http.h"
-
-using namespace MUSIC_GRABBER;
 
 namespace MUSIC_GRABBER
 {
@@ -15,37 +12,22 @@ public:
   virtual ~CMusicAlbumInfo(void);
   bool Loaded() const;
   void SetLoaded(bool bOnOff);
-  void Set(CAlbum& album);
-  const CStdString& GetArtist() const;
-  const CStdString& GetTitle() const;
+  void SetAlbum(CAlbum& album);
+  const CAlbum &GetAlbum() const;
+  void SetSongs(VECSONGS &songs);
+  const VECSONGS &GetSongs() const;
   const CStdString& GetTitle2() const;
   const CStdString& GetDateOfRelease() const;
-  const CStdString& GetGenre() const;
-  const CStdString& GetTones() const;
-  const CStdString& GetStyles() const;
-  const CStdString& GetReview() const;
-  const CStdString& GetImageURL() const;
-  int GetRating() const;
-  int GetNumberOfSongs() const;
-  const CMusicSong& GetSong(int iSong);
   const CStdString& GetAlbumURL() const;
   void SetTitle(const CStdString& strTitle);
   bool Load(CHTTP& http);
   bool Parse(const CStdString& strHTML, CHTTP& http);
-  void SetSongs(vector<CMusicSong> songs);
 protected:
-  CStdString m_strArtist;
-  CStdString m_strTitle;
+  CAlbum m_album;
   CStdString m_strTitle2;
   CStdString m_strDateOfRelease;
-  CStdString m_strGenre;
-  CStdString m_strTones;
-  CStdString m_strStyles;
-  CStdString m_strReview;
-  CStdString m_strImageURL;
   CStdString m_strAlbumURL;
-  int m_iRating;
   bool m_bLoaded;
-  vector<CMusicSong> m_vecSongs;
+  VECSONGS m_songs;
 };
 };

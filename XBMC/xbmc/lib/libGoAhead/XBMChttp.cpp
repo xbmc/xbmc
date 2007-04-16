@@ -2004,8 +2004,8 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
       CHTTP http;
       if (musicInfo.Load(http))
       {
-        output=openTag+"image:" + musicInfo.GetImageURL();
-        output+=closeTag+openTag+"review:" + musicInfo.GetReview();
+        output=openTag+"image:" + musicInfo.GetAlbum().strImage;
+        output+=closeTag+openTag+"review:" + musicInfo.GetAlbum().strReview;
         return SetResponse(output) ;
       }
       else

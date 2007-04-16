@@ -1,7 +1,5 @@
 #pragma once
 #include "GUIDialog.h"
-#include "utils/MusicInfoScraper.h"
-using namespace MUSIC_GRABBER;
 
 class CGUIWindowMusicInfo :
       public CGUIDialog
@@ -11,7 +9,7 @@ public:
   virtual ~CGUIWindowMusicInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetAlbum(CMusicAlbumInfo& album, const CStdString &path);
+  void SetAlbum(const CAlbum& album, const VECSONGS &songs, const CStdString &path);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
   void RefreshThumb();
@@ -22,7 +20,8 @@ protected:
   bool DownloadThumbnail(const CStdString &thumbFile);
   void OnGetThumb();
 
-  CMusicAlbumInfo m_album;
+  CAlbum m_album;
+  VECSONGS m_songs;
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_hasUpdatedThumb;

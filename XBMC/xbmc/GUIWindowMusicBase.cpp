@@ -333,11 +333,14 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
     }
     else
-    { // Lookup is done on a song
+    { // Lookup is done on a song - grab the album from the database
       DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
       DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
       m_musicdatabase.GetAlbumFromSong(params.GetSongId(), album);
     }
+    // we're going to need it's path as well (we assume that there's only one) - this is for
+    // assigning thumbs to folders, and obtaining the local folder.jpg
+    m_musicdatabase.GetAlbumPath(album.idAlbum, strPath);
   }
   else if (pItem->m_bIsFolder)
   { // lookup is done on a folder - find the albums in the folder
@@ -418,27 +421,13 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
   VECSONGS albumSongs;
   if (!bRefresh && m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo, albumSongs))
   {
-    // TODO: MUSICDB - Why not just pass albumInfo and albumSongs directly??
-    CMusicAlbumInfo info;
-    vector<CMusicSong> vecSongs;
-    for (int i = 0; i < (int)albumSongs.size(); i++)
-    {
-      CSong& song = albumSongs[i];
-
-      CMusicSong musicSong(song.iTrack, song.strTitle, song.iDuration);
-      vecSongs.push_back(musicSong);
-    }
-
-    info.Set(albumInfo);
-    info.SetSongs(vecSongs);
-
     if (!bShowInfo)
       return;
 
     CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      pDlgAlbumInfo->SetAlbum(info, path);
+      pDlgAlbumInfo->SetAlbum(albumInfo, albumSongs, path);
       if (bShowInfo)
         pDlgAlbumInfo->DoModal();
       else
@@ -468,38 +457,15 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
   if (FindAlbumInfo(album.strAlbum, album.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
-    bool bLoaded = info.Loaded();
-    if ( bLoaded )
+    if ( info.Loaded() )
     {
       // set album title from musicinfotag, not the one we got from allmusic.com
       info.SetTitle(album.strAlbum);
 
       if (saveDb)
       {
-        CAlbum albuminfo;
-        albuminfo.strAlbum = info.GetTitle();
-        albuminfo.strArtist = info.GetArtist();
-        albuminfo.strGenre = info.GetGenre();
-        albuminfo.strTones = info.GetTones();
-        albuminfo.strStyles = info.GetStyles();
-        albuminfo.strReview = info.GetReview();
-        albuminfo.strImage = info.GetImageURL();
-        albuminfo.iRating = info.GetRating();
-        albuminfo.iYear = atol( info.GetDateOfRelease().c_str() );
-
-        VECSONGS songs;
-        for (int i = 0; i < (int)info.GetNumberOfSongs(); i++)
-        {
-          CMusicSong musicSong = info.GetSong(i);
-          CSong song;
-          song.iTrack = musicSong.GetTrack();
-          song.strTitle = musicSong.GetSongName();
-          song.iDuration = musicSong.GetDuration();
-          songs.push_back(song);
-        }
-
         // save to database
-        m_musicdatabase.SetAlbumInfo(album.idAlbum, albuminfo, songs);
+        m_musicdatabase.SetAlbumInfo(album.idAlbum, info.GetAlbum(), info.GetSongs());
       }
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
@@ -508,15 +474,13 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
-        pDlgAlbumInfo->SetAlbum(info, path);
+        pDlgAlbumInfo->SetAlbum(info.GetAlbum(), info.GetSongs(), path);
         if (bShowInfo)
           pDlgAlbumInfo->DoModal();
         else
           pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
 
-        CAlbum albumInfo;
-        albumInfo.strAlbum = info.GetTitle();
-        albumInfo.strArtist = info.GetArtist();
+        CAlbum albumInfo = info.GetAlbum();
         albumInfo.idAlbum = album.idAlbum;
         if (pDlgAlbumInfo->HasUpdatedThumb())
           UpdateThumb(albumInfo, path);
@@ -871,7 +835,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
             for (int i = 0; i < iAlbumCount; ++i)
             {
               CMusicAlbumInfo& info = scraper.GetAlbum(i);
-              double relevance = CUtil::AlbumRelevance(info.GetTitle(), strAlbum, info.GetArtist(), strArtist);
+              double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
 
               // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
               // otherwise, perfect matches only
@@ -1399,19 +1363,14 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
 
   CStdString albumThumb(CUtil::GetCachedAlbumThumb(album.strAlbum, album.strArtist));
 
-  // Update the thumb in the music database (songs + albums) and grab the original album path
+  // Update the thumb in the music database (songs + albums)
   CStdString albumPath(path);
   if (saveDb && CFile::Exists(albumThumb))
-  {
     m_musicdatabase.SaveAlbumThumb(album.idAlbum, albumThumb);
-    m_musicdatabase.GetAlbumPath(album.idAlbum, albumPath);
-  }
 
   // Update currently playing song if it's from the same album.  This is necessary as when the album
   // first gets it's cover, the info manager's item doesn't have the updated information (so will be
-  // sending a blank thumb to the skin)
-
-  // TODO: MUSICDB - We should check what Videos does in this circumstance...
+  // sending a blank thumb to the skin.)
   if (g_application.IsPlayingAudio())
   {
     CStdString strSongFolder;
@@ -1462,8 +1421,9 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     {
       // refresh only the icon of
       // the current folder
-      pSelectedItem->FreeIcons();
-      pSelectedItem->SetMusicThumb();
+      pSelectedItem->FreeMemory();
+      if (!pSelectedItem->HasThumbnail())
+        pSelectedItem->SetMusicThumb();
       pSelectedItem->FillInDefaultIcon();
     }
     else

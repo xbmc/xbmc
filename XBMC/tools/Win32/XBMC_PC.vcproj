@@ -1080,9 +1080,6 @@
 					RelativePath="..\..\xbmc\utils\MusicInfoScraper.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\MusicSong.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\NfoFile.cpp">
 				</File>
 				<File
@@ -2364,9 +2361,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\MusicInfoTagLoaderWMA.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\MusicSong.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\NfoFile.h">
