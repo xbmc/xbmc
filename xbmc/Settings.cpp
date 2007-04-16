@@ -246,7 +246,7 @@ CSettings::CSettings(void)
   // foo.1x09*
   g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)x([0-9]+)[^\\\\/]*");
   // foo.s01.e01, foo.s01_e01
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -][Ss]([0-9]*)[\\.-]?[Ee]([0-9]+)[^\\\\/]*"); 
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -][Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)[^\\\\/]*"); 
   // foo.103*
   g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)([0-9][0-9])[\\._ -][^\\\\/]*"); 
 
