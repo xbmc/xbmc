@@ -227,7 +227,7 @@ bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, const SScanSettin
   return !m_bStop;
 }
 
-bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, CIMDBUrl* pURL /* = NULL */, CGUIDialogProgress* m_dlgProgress /* = NULL */)
+bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CIMDBUrl* pURL /* = NULL */, CGUIDialogProgress* m_dlgProgress /* = NULL */)
 {
   CStdString strMovieName;
   CIMDB IMDB;
@@ -242,7 +242,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
 
   if (m_dlgProgress)
   {
-    if (items.Size() > 1 || items[0]->m_bIsFolder)
+    if (items.Size() > 1 || items[0]->m_bIsFolder && !bRefresh)
     {
       m_dlgProgress->ShowProgressBar(true);
       m_dlgProgress->SetPercentage(0);
@@ -282,7 +282,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         CUtil::GetDirectory(pItem->m_strPath,strPath);
         lTvShowId2 = m_database.GetTvShowInfo(strPath);
       }
-      if (lTvShowId2 > -1)
+      if (lTvShowId2 > -1 && !bRefresh)
       {
         if (lTvShowId2 != lTvShowId)
         {
@@ -454,7 +454,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
           {
             CUtil::ClearCache();
             long lResult=GetIMDBDetails(pItem, url, info,bDirNames&&info.strContent.Equals("movies"));
-            if (info.strContent.Equals("tvshows"))
+            if (info.strContent.Equals("tvshows") && !bRefresh)
             {
               // fetch episode guide
               CVideoInfoTag details;

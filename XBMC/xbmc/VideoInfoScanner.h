@@ -38,7 +38,7 @@ public:
   void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress = NULL);
   static CStdString GetnfoFile(CFileItem *item);
   long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
-  bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, CIMDBUrl *pUrl=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
+  bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CIMDBUrl *pUrl=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
   static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
 
 protected:
