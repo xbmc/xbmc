@@ -1760,6 +1760,7 @@ bool CSettings::LoadProfile(int index)
     CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetLastFMThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
@@ -1769,9 +1770,12 @@ bool CSettings::LoadProfile(int index)
     CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
     for (unsigned int hex=0; hex < 16; hex++)
     {
-      CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
       CStdString strHex;
       strHex.Format("%x",hex);
+      CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
+      strThumbLoc += "\\" + strHex;
+      CreateDirectory(strThumbLoc.c_str(),NULL);
+      strThumbLoc = g_settings.GetMusicThumbFolder();
       strThumbLoc += "\\" + strHex;
       CreateDirectory(strThumbLoc.c_str(),NULL);
     }
@@ -2629,6 +2633,17 @@ CStdString CSettings::GetMusicThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetLastFMThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\LastFM", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\LastFM", folder);
 
   return folder;
 }

@@ -646,3 +646,16 @@ bool CGUIImage::IsAllocated() const
   if (!m_texturesAllocated) return false;
   return CGUIControl::IsAllocated();
 }
+
+#ifdef _DEBUG
+void CGUIImage::DumpTextureUse()
+{
+  if (m_texturesAllocated && m_vecTextures.size())
+  {
+    if (GetID())
+      CLog::Log(LOGDEBUG, "Image control %d using texture %s", GetID(), m_strFileName.c_str());
+    else
+      CLog::Log(LOGDEBUG, "Using texture %s", m_strFileName.c_str());
+  }
+}
+#endif

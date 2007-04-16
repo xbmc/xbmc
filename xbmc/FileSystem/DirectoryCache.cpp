@@ -223,7 +223,13 @@ void CDirectoryCache::InitMusicThumbCache()
   if (g_directoryCache.m_musicThumbDirs.size() == 0)
   {
     // music thumbnails directories
-    g_directoryCache.m_musicThumbDirs.insert(g_settings.GetMusicThumbFolder());
+    for (int i = 0; i < 16; i++)
+    {
+      CStdString hex, folder;
+      hex.Format("%x", i);
+      CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), hex, folder);
+      g_directoryCache.m_musicThumbDirs.insert(folder);
+    }
   }
 
   InitCache(g_directoryCache.m_musicThumbDirs);

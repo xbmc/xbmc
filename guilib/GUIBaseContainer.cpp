@@ -391,3 +391,16 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
       m_items[i]->FreeMemory();
   }
 }
+
+#ifdef _DEBUG
+void CGUIBaseContainer::DumpTextureUse()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__" for container %i", GetID());
+  for (unsigned int i = 0; i < m_items.size(); ++i)
+  {
+    CGUIListItem *item = m_items[i];
+    if (item->GetFocusedLayout()) item->GetFocusedLayout()->DumpTextureUse();
+    if (item->GetLayout()) item->GetLayout()->DumpTextureUse();
+  }
+}
+#endif

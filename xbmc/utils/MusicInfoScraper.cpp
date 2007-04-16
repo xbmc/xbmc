@@ -169,19 +169,6 @@ void CMusicInfoScraper::LoadAlbuminfo()
   if (!album.Load(m_http))
     return;
 
-  /* No point downloading the thumb here - we don't know the path of the item
-     that we'd assign the thumb to anyway.
-
-  CStdString strThumb;
-  CStdString strImage = album.GetImageURL();
-  CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
-  if (!CFile::Exists(strThumb) && !strImage.IsEmpty() )
-  {
-    // Download image and save as
-    // permanent thumb
-    m_http.Download(strImage, strThumb);
-  }
-  */
   m_bSuccessfull=true;
 }
 

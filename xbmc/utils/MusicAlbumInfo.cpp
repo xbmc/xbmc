@@ -8,18 +8,9 @@ using namespace HTML;
 
 CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
-  m_strArtist = "";
-  m_strTitle = "";
   m_strTitle2 = "";
   m_strDateOfRelease = "";
-  m_strGenre = "";
-  m_strTones = "";
-  m_strStyles = "";
-  m_strReview = "";
-  m_strImageURL = "";
   m_strAlbumURL = "";
-  m_strAlbumPath = "";
-  m_iRating = 0;
   m_bLoaded = false;
 }
 
@@ -29,56 +20,54 @@ CMusicAlbumInfo::~CMusicAlbumInfo(void)
 
 CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdString& strAlbumURL)
 {
-  m_strArtist = "";
-  m_strTitle = "";
   m_strTitle2 = strAlbumInfo;
   m_strDateOfRelease = "";
-  m_strGenre = "";
-  m_strTones = "";
-  m_strStyles = "";
-  m_strReview = "";
-  m_strImageURL = "";
   m_strAlbumURL = strAlbumURL;
-  m_strAlbumPath = "";
-  m_iRating = 0;
   m_bLoaded = false;
 }
 
 CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strAlbumInfo, const CStdString& strAlbumURL)
 {
-  m_strArtist = strArtist;
-  m_strTitle = strAlbum;
+  m_album.strAlbum = strAlbum;
+  m_album.strArtist = strArtist;
   m_strTitle2 = strAlbumInfo;
   m_strDateOfRelease = "";
-  m_strGenre = "";
-  m_strTones = "";
-  m_strStyles = "";
-  m_strReview = "";
-  m_strImageURL = "";
   m_strAlbumURL = strAlbumURL;
-  m_strAlbumPath = "";
-  m_iRating = 0;
   m_bLoaded = false;
+}
+
+const CAlbum& CMusicAlbumInfo::GetAlbum() const
+{
+  return m_album;
+}
+
+void CMusicAlbumInfo::SetAlbum(CAlbum& album)
+{
+  m_album = album;
+  m_strDateOfRelease.Format("%i", album.iYear);
+  m_strAlbumURL = "";
+  m_strTitle2 = "";
+  m_bLoaded = true;
+}
+
+const VECSONGS &CMusicAlbumInfo::GetSongs() const
+{
+  return m_songs;
+}
+
+void CMusicAlbumInfo::SetSongs(VECSONGS &songs)
+{
+  m_songs = songs;
+}
+
+void CMusicAlbumInfo::SetTitle(const CStdString& strTitle)
+{
+  m_album.strAlbum = strTitle;
 }
 
 const CStdString& CMusicAlbumInfo::GetAlbumURL() const
 {
   return m_strAlbumURL;
-}
-
-const CStdString& CMusicAlbumInfo::GetArtist() const
-{
-  return m_strArtist;
-}
-
-const CStdString& CMusicAlbumInfo::GetTitle() const
-{
-  return m_strTitle;
-}
-
-void CMusicAlbumInfo::SetTitle(const CStdString& strTitle)
-{
-  m_strTitle = strTitle;
 }
 
 const CStdString& CMusicAlbumInfo::GetTitle2() const
@@ -91,49 +80,9 @@ const CStdString& CMusicAlbumInfo::GetDateOfRelease() const
   return m_strDateOfRelease;
 }
 
-const CStdString& CMusicAlbumInfo::GetGenre() const
-{
-  return m_strGenre;
-}
-
-const CStdString& CMusicAlbumInfo::GetTones() const
-{
-  return m_strTones;
-}
-
-const CStdString& CMusicAlbumInfo::GetStyles() const
-{
-  return m_strStyles;
-}
-
-const CStdString& CMusicAlbumInfo::GetReview() const
-{
-  return m_strReview;
-}
-
-const CStdString& CMusicAlbumInfo::GetImageURL() const
-{
-  return m_strImageURL;
-}
-
-int CMusicAlbumInfo::GetRating() const
-{
-  return m_iRating;
-}
-
-int CMusicAlbumInfo::GetNumberOfSongs() const
-{
-  return (int)m_vecSongs.size();
-}
-
-const CMusicSong& CMusicAlbumInfo::GetSong(int iSong)
-{
-  return m_vecSongs[iSong];
-}
-
 bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
 {
-  m_vecSongs.erase(m_vecSongs.begin(), m_vecSongs.end());
+  m_songs.clear();
   CHTMLUtil util;
   CStdString strHTMLLow = strHTML;
   strHTMLLow.MakeLower();
@@ -148,7 +97,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
     iStartOfCover = strHTMLLow.ReverseFind("<img", iStartOfCover);
     int iEndOfCover = strHTMLLow.Find(">", iStartOfCover);
     CStdString strCover = strHTMLLow.Mid(iStartOfCover, iEndOfCover);
-    util.getAttributeOfTag(strCover, "src=\"", m_strImageURL);
+    util.getAttributeOfTag(strCover, "src=\"", m_album.strImage);
   }
 
   // Extract Review
@@ -167,16 +116,13 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
         CHTMLRow row = table.GetRow(1);
         CStdString strReview = row.GetColumValue(0);
         util.RemoveTags(strReview);
-        util.ConvertHTMLToUTF8(strReview, m_strReview);
+        util.ConvertHTMLToUTF8(strReview, m_album.strReview);
       }
     }
   }
 
-  if (m_strReview.IsEmpty())
-    m_strReview = g_localizeStrings.Get(414);
-
   // if the review has "read more..." get the full review
-  CStdString strReview = m_strReview;
+  CStdString strReview = m_album.strReview;
   strReview.ToLower();
   if (strReview.Find("read more...") >= 0)
   {
@@ -212,13 +158,13 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
     {
       CStdString strValue = valueTable.GetRow(2).GetColumValue(0);
       util.RemoveTags(strValue);
-      util.ConvertHTMLToUTF8(strValue, m_strArtist);
+      util.ConvertHTMLToUTF8(strValue, m_album.strArtist);
     }
     if (strColumn.Find("Album") >= 0 && valueTable.GetRows() >= 2)
     {
       CStdString strValue = valueTable.GetRow(2).GetColumValue(0);
       util.RemoveTags(strValue);
-      util.ConvertHTMLToUTF8(strValue, m_strTitle);
+      util.ConvertHTMLToUTF8(strValue, m_album.strAlbum);
     }
     if (strColumn.Find("Release Date") >= 0 && valueTable.GetRows() >= 2)
     {
@@ -226,50 +172,52 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
       util.RemoveTags(strValue);
       util.ConvertHTMLToUTF8(strValue, m_strDateOfRelease);
 
+      CStdString releaseYear(m_strDateOfRelease);
       // extract the year out of something like "1998 (release)" or "12 feb 2003"
-      int nPos = m_strDateOfRelease.Find("19");
+      int nPos = releaseYear.Find("19");
       if (nPos > -1)
       {
-        if ((int)m_strDateOfRelease.size() >= nPos + 3 && ::isdigit(m_strDateOfRelease.GetAt(nPos + 2)) && ::isdigit(m_strDateOfRelease.GetAt(nPos + 3)))
+        if ((int)releaseYear.size() >= nPos + 3 && ::isdigit(releaseYear.GetAt(nPos + 2)) && ::isdigit(releaseYear.GetAt(nPos + 3)))
         {
-          CStdString strYear = m_strDateOfRelease.Mid(nPos, 4);
-          m_strDateOfRelease = strYear;
+          CStdString strYear = releaseYear.Mid(nPos, 4);
+          releaseYear = strYear;
         }
         else
         {
-          nPos = m_strDateOfRelease.Find("19", nPos + 2);
+          nPos = releaseYear.Find("19", nPos + 2);
           if (nPos > -1)
           {
-            if ((int)m_strDateOfRelease.size() >= nPos + 3 && ::isdigit(m_strDateOfRelease.GetAt(nPos + 2)) && ::isdigit(m_strDateOfRelease.GetAt(nPos + 3)))
+            if ((int)releaseYear.size() >= nPos + 3 && ::isdigit(releaseYear.GetAt(nPos + 2)) && ::isdigit(releaseYear.GetAt(nPos + 3)))
             {
-              CStdString strYear = m_strDateOfRelease.Mid(nPos, 4);
-              m_strDateOfRelease = strYear;
+              CStdString strYear = releaseYear.Mid(nPos, 4);
+              releaseYear = strYear;
             }
           }
         }
       }
 
-      nPos = m_strDateOfRelease.Find("20");
+      nPos = releaseYear.Find("20");
       if (nPos > -1)
       {
-        if ((int)m_strDateOfRelease.size() > nPos + 3 && ::isdigit(m_strDateOfRelease.GetAt(nPos + 2)) && ::isdigit(m_strDateOfRelease.GetAt(nPos + 3)))
+        if ((int)releaseYear.size() > nPos + 3 && ::isdigit(releaseYear.GetAt(nPos + 2)) && ::isdigit(releaseYear.GetAt(nPos + 3)))
         {
-          CStdString strYear = m_strDateOfRelease.Mid(nPos, 4);
-          m_strDateOfRelease = strYear;
+          CStdString strYear = releaseYear.Mid(nPos, 4);
+          releaseYear = strYear;
         }
         else
         {
-          nPos = m_strDateOfRelease.Find("20", nPos + 1);
+          nPos = releaseYear.Find("20", nPos + 1);
           if (nPos > -1)
           {
-            if ((int)m_strDateOfRelease.size() > nPos + 3 && ::isdigit(m_strDateOfRelease.GetAt(nPos + 2)) && ::isdigit(m_strDateOfRelease.GetAt(nPos + 3)))
+            if ((int)releaseYear.size() > nPos + 3 && ::isdigit(releaseYear.GetAt(nPos + 2)) && ::isdigit(releaseYear.GetAt(nPos + 3)))
             {
-              CStdString strYear = m_strDateOfRelease.Mid(nPos, 4);
-              m_strDateOfRelease = strYear;
+              CStdString strYear = releaseYear.Mid(nPos, 4);
+              releaseYear = strYear;
             }
           }
         }
       }
+      m_album.iYear = atol(releaseYear.c_str());
     }
     if (strColumn.Find("Genre") >= 0 && valueTable.GetRows() >= 1)
     {
@@ -287,7 +235,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
 
         CStdString strValue = strHTML.Mid(iStartOfGenre, 1 + iEndOfGenre - iStartOfGenre);
         util.RemoveTags(strValue);
-        util.ConvertHTMLToUTF8(strValue, m_strGenre);
+        util.ConvertHTMLToUTF8(strValue, m_album.strGenre);
       }
 
       if (valueTable.GetRow(0).GetColumns() >= 2)
@@ -315,7 +263,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
           }
 
           strStyles.TrimRight(", ");
-          util.ConvertHTMLToUTF8(strStyles, m_strStyles);
+          util.ConvertHTMLToUTF8(strStyles, m_album.strStyles);
         }
       }
     }
@@ -338,7 +286,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
       }
 
       strMoods.TrimRight(", ");
-      util.ConvertHTMLToUTF8(strMoods, m_strTones);
+      util.ConvertHTMLToUTF8(strMoods, m_album.strTones);
     }
     if (strColumn.Find("Rating") >= 0)
     {
@@ -347,24 +295,9 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
       util.getAttributeOfTag(strValue, "src=", strRating);
       strRating.Delete(0, 25);
       strRating.Delete(1, 4);
-      m_iRating = atoi(strRating);
+      m_album.iRating = atoi(strRating);
     }
   }
-
-  // Set to "Not available" if no value from web
-  if (m_strArtist.IsEmpty())
-    m_strArtist = g_localizeStrings.Get(416);
-  if (m_strDateOfRelease.IsEmpty())
-    m_strDateOfRelease = g_localizeStrings.Get(416);
-  if (m_strGenre.IsEmpty())
-    m_strGenre = g_localizeStrings.Get(416);
-  if (m_strTones.IsEmpty())
-    m_strTones = g_localizeStrings.Get(416);
-  if (m_strStyles.IsEmpty())
-    m_strStyles = g_localizeStrings.Get(416);
-  if (m_strTitle.IsEmpty())
-    m_strTitle = g_localizeStrings.Get(416);
-
 
   // parse songs...
   iStartOfTable = strHTMLLow.Find("id=\"expansiontable1\"", 0);
@@ -381,9 +314,9 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
         int iCols = row.GetColumns();
         if (iCols >= 7)
         {
-
+          CSong song;
           // Tracknumber
-          int iTrack = atoi(row.GetColumValue(2));
+          song.iTrack = atoi(row.GetColumValue(2));
 
           // Songname
           CStdString strValue, strName;
@@ -392,10 +325,9 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
           strValue.Trim();
           if (strValue.Find("[*]") > -1)
             strValue.TrimRight("[*]");
-          util.ConvertHTMLToUTF8(strValue, strName);
+          util.ConvertHTMLToUTF8(strValue, song.strTitle);
 
           // Duration
-          int iDuration = 0;
           CStdString strDuration = row.GetColumValue(6);
           int iPos = strDuration.Find(":");
           if (iPos >= 0)
@@ -406,17 +338,14 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
             strSec = strDuration.Right((int)strDuration.size() - iPos);
             int iMin = atoi(strMin.c_str());
             int iSec = atoi(strSec.c_str());
-            iDuration = iMin * 60 + iSec;
+            song.iDuration = iMin * 60 + iSec;
           }
-
-          // Create new song object
-          CMusicSong newSong(iTrack, strName, iDuration);
-          m_vecSongs.push_back(newSong);
+          m_songs.push_back(song);
         }
       }
     }
   }
-  if (m_strTitle2 = "") m_strTitle2 = m_strTitle;
+  if (m_strTitle2 = "") m_strTitle2 = m_album.strAlbum;
   SetLoaded(true);
   return true;
 }
@@ -437,35 +366,4 @@ void CMusicAlbumInfo::SetLoaded(bool bOnOff)
 bool CMusicAlbumInfo::Loaded() const
 {
   return m_bLoaded;
-}
-
-void CMusicAlbumInfo::Set(CAlbum& album)
-{
-  m_strArtist = album.strArtist;
-  m_strTitle = album.strAlbum;
-  m_strDateOfRelease.Format("%i", album.iYear);
-  m_strGenre = album.strGenre;
-  m_strTones = album.strTones;
-  m_strStyles = album.strStyles;
-  m_strReview = album.strReview;
-  m_strImageURL = album.strImage;
-  m_iRating = album.iRating;
-  m_strAlbumPath = album.strPath;
-  m_strTitle2 = "";
-  m_bLoaded = true;
-}
-
-void CMusicAlbumInfo::SetAlbumPath(const CStdString& strAlbumPath)
-{
-  m_strAlbumPath = strAlbumPath;
-}
-
-const CStdString& CMusicAlbumInfo::GetAlbumPath() const
-{
-  return m_strAlbumPath;
-}
-
-void CMusicAlbumInfo::SetSongs(vector<CMusicSong> songs)
-{
-  m_vecSongs = songs;
 }

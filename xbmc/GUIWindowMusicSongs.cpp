@@ -216,9 +216,13 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
   CStdString strPath;
   if (iItem < 0 || iItem >= m_vecItems.Size())
     strPath = m_vecItems.m_strPath;
-  else
+  else if (m_vecItems[iItem]->m_bIsFolder)
     strPath = m_vecItems[iItem]->m_strPath;
-
+  else
+  { // TODO: MUSICDB - should we allow scanning a single item into the database?
+    //       This will require changes to the info scanner, which assumes we're running on a folder
+    strPath = m_vecItems.m_strPath;
+  }
   DoScan(strPath);
 }
 
@@ -383,7 +387,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
     for (int i = 0; i < (int)albums.size(); i++)
     {
       CAlbum& album = albums[i];
-      CFileItem* pItem = new CFileItem(album);
+      CFileItem* pItem = new CFileItem("", album);
       pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
       items.Add(pItem);
     }
