@@ -539,9 +539,14 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
           m_database.DeleteEpisode(item->m_strPath,movieDetails.m_iDbId);
         if (info.strContent.Equals("tvshows") && item->m_bIsFolder)
-          m_database.DeleteTvShow(item->m_strPath);
+        {
+          if (pDlgInfo->RefreshAll())
+            m_database.DeleteTvShow(item->m_strPath);
+          else
+            m_database.DeleteDetailsForTvShow(item->m_strPath);
+        }
       }
-      if (scanner.RetrieveVideoInfo(list,false,info,&url,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,false,info,!pDlgInfo->RefreshAll(),&url,pDlgProgress))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
