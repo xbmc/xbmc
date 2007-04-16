@@ -95,8 +95,8 @@ public:
   virtual bool HasID(DWORD dwID) { return (dwID >= m_dwWindowId && dwID < m_dwWindowId + m_dwIDRange); };
   void SetIDRange(DWORD dwRange) { m_dwIDRange = dwRange; };
   DWORD GetIDRange() const { return m_dwIDRange; };
-  float GetWidth() { return m_width; };
-  float GetHeight() { return m_height; };
+  virtual float GetWidth() { return m_width; };
+  virtual float GetHeight() { return m_height; };
   DWORD GetPreviousWindow() { return m_previousWindow; };
   float GetPosX() { return m_posX; };
   float GetPosY() { return m_posY; };
