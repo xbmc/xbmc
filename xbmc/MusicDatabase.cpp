@@ -3101,7 +3101,7 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
     if (NULL == m_pDS.get()) return false;
 
     // find all albums from this artist, and all the paths to the songs from those albums
-    CStdString strSQL=FormatSQL("select distinct strPath from path join song on song.idPath = path.idPath join album on album.idAlbum = song.idAlbum "
+    CStdString strSQL=FormatSQL("select distinct strPath from album join song on album.idAlbum = song.idAlbum join path on song.idPath = path.idPath "
                                 "where album.idAlbum in (select idAlbum from album where album.idArtist=%ld) "
                                 "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld)", idArtist, idArtist);
 
