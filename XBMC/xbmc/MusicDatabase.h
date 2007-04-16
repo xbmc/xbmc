@@ -137,10 +137,8 @@ public:
   int GetSongsCount(const CStdString& strWhere);
   unsigned int GetSongIDs(const CStdString& strWhere, vector<long> &songIDs);
 
-//  bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
-//  bool GetPathFromSongId(long idSong, CStdString& strPath);
-  bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
-  bool RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items);
+  bool GetAlbumPath(long idAlbum, CStdString &path);
+  bool SaveAlbumThumb(long idAlbum, const CStdString &thumb);
   bool GetArtistPath(long idArtist, CStdString &path);
   bool InitialisePartyMode();
   bool UpdatePartyMode(long lSongId, bool bRelaxRestrictions);

@@ -11,7 +11,7 @@ public:
   virtual ~CGUIWindowMusicInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetAlbum(CMusicAlbumInfo& album);
+  void SetAlbum(CMusicAlbumInfo& album, const CStdString &path);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
   void RefreshThumb();

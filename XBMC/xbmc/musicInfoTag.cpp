@@ -45,6 +45,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
 
   m_strURL = tag.m_strURL;
   m_strArtist = tag.m_strArtist;
+  m_strAlbumArtist = tag.m_strAlbumArtist;
   m_strAlbum = tag.m_strAlbum;
   m_strGenre = tag.m_strGenre;
   m_strTitle = tag.m_strTitle;
@@ -66,6 +67,7 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
   if (m_strURL != tag.m_strURL) return true;
   if (m_strTitle != tag.m_strTitle) return true;
   if (m_strArtist != tag.m_strArtist) return true;
+  if (m_strAlbumArtist != tag.m_strAlbumArtist) return true;
   if (m_strAlbum != tag.m_strAlbum) return true;
   if (m_iDuration != tag.m_iDuration) return true;
   if (m_iTrack != tag.m_iTrack) return true;

@@ -313,14 +313,11 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 
   CStdString strPath;
   if (pItem->m_bIsFolder)
-  {
     strPath = pItem->m_strPath;
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
-  }
   else
   {
     CUtil::GetDirectory(pItem->m_strPath, strPath);
+    CUtil::AddSlashAtEnd(strPath);
   }
 
   // Try to find an album to lookup from the current item
@@ -328,25 +325,18 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
   if (pItem->IsMusicDb())
   {
     if (pItem->m_bIsFolder)
-    { // Look up is done on an album
-      int nPos=strPath.ReverseFind("/");
-      if (nPos>-1)
-      {
-        album.idAlbum = atol(strPath.Right(strPath.size()-nPos-1));
-        album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
-        album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
-      }
+    { // Look up is done on an album so grab the albumid
+      DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
+      DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
+      album.idAlbum = params.GetAlbumId();
+      album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
+      album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
     }
     else
     { // Lookup is done on a song
-      strPath=pItem->m_strPath;
-      int nPos=strPath.ReverseFind("/");
-      if (nPos>-1)
-      {
-        CUtil::RemoveExtension(strPath);
-        int idSong=atol(strPath.Right(strPath.size()-nPos-1));
-        m_musicdatabase.GetAlbumFromSong(idSong, album);
-      }
+      DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
+      DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
+      m_musicdatabase.GetAlbumFromSong(params.GetSongId(), album);
     }
   }
   else if (pItem->m_bIsFolder)
@@ -417,19 +407,12 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
   ShowAlbumInfo(album,"",true);
 }
 
-void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& strPath, bool bRefresh, bool bShowInfo)
+void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& path, bool bRefresh, bool bShowInfo)
 {
-  // TODO: MUSICDB - bSaveDirThumb needs implementing
-  bool bSaveDb = album.idAlbum != -1;
-  bool bSaveDirThumb = false;
-
+  bool saveDb = album.idAlbum != -1;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
-  {
-    bSaveDb = false;
-    bSaveDirThumb = false;
-  }
+    saveDb = false;
 
-  bool bUpdate = false;
   // check cache
   CAlbum albumInfo;
   VECSONGS albumSongs;
@@ -455,7 +438,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& s
     CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      pDlgAlbumInfo->SetAlbum(info);
+      pDlgAlbumInfo->SetAlbum(info, path);
       if (bShowInfo)
         pDlgAlbumInfo->DoModal();
       else
@@ -464,10 +447,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& s
       if (!pDlgAlbumInfo->NeedRefresh())
       {
         if (pDlgAlbumInfo->HasUpdatedThumb())
-        { // TODO: MUSICDB - are we allowed to update the thumb?
-          UpdateThumb(info, bSaveDb, bSaveDirThumb);
-          Update(m_vecItems.m_strPath);
-        }
+          UpdateThumb(albumInfo, path);
         return;
       }
       bRefresh = true;
@@ -494,7 +474,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& s
       // set album title from musicinfotag, not the one we got from allmusic.com
       info.SetTitle(album.strAlbum);
 
-      if (bSaveDb)
+      if (saveDb)
       {
         CAlbum albuminfo;
         albuminfo.strAlbum = info.GetTitle();
@@ -524,76 +504,34 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& s
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
 
-
-      // TODO: MUSICDB - path - likely here for the thumb stuff :(
-//      album.SetAlbumPath(strPath);
-
       // ok, show album info
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
+        pDlgAlbumInfo->SetAlbum(info, path);
         if (bShowInfo)
-        {
-          pDlgAlbumInfo->SetAlbum(info);
           pDlgAlbumInfo->DoModal();
-        }
         else
-        {
-          pDlgAlbumInfo->SetAlbum(info);
-          pDlgAlbumInfo->RefreshThumb();
-        }
+          pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
 
+        CAlbum albumInfo;
+        albumInfo.strAlbum = info.GetTitle();
+        albumInfo.strArtist = info.GetArtist();
+        albumInfo.idAlbum = album.idAlbum;
         if (pDlgAlbumInfo->HasUpdatedThumb())
-          UpdateThumb(info, bSaveDb, bSaveDirThumb);
+          UpdateThumb(albumInfo, path);
 
         if (pDlgAlbumInfo->NeedRefresh())
         {
-          ShowAlbumInfo(album, strPath, true, bShowInfo);
-          return ;
+          ShowAlbumInfo(album, path, true, bShowInfo);
+          return;
         }
       }
-      bUpdate = true;
     }
     else
     {
       // failed 2 download album info
       CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
-    }
-  }
-
-  if (bUpdate)
-  {
-    int iSelectedItem = m_viewControl.GetSelectedItem();
-    if (iSelectedItem >= 0 && m_vecItems[iSelectedItem])
-    {
-      CFileItem* pSelectedItem=m_vecItems[iSelectedItem];
-      if (pSelectedItem->IsMusicDb())
-      {
-        m_musicdatabase.RefreshMusicDbThumbs(pSelectedItem, m_vecItems);
-
-        if (m_vecItems.GetCacheToDisc())
-          m_vecItems.Save();
-      }
-      else if (pSelectedItem->m_bIsFolder)
-      {
-        // refresh only the icon of
-        // the current folder
-        pSelectedItem->FreeIcons();
-        pSelectedItem->SetMusicThumb();
-        pSelectedItem->FillInDefaultIcon();
-      }
-      else
-      {
-        // Refresh all items
-        Update(m_vecItems.m_strPath);
-        if (m_dlgProgress && bShowInfo)
-          m_dlgProgress->Close();
-        return;
-      }
-
-      //  Do we have to autoswitch to the thumb control?
-      m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-      UpdateButtons();
     }
   }
 
@@ -1448,42 +1386,96 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
   return CGUIMediaWindow::OnPlayMedia(iItem);
 }
 
-void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb)
+void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &path)
 {
-  // TODO: MUSICDB - this needs rewriting
-  CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetArtist()));
-  if (bSaveDb && CFile::Exists(strThumb))
-    m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetArtist(), strThumb);
-  // Update current playing song...
+  // check user permissions
+  bool saveDb = album.idAlbum != -1;
+  bool saveDirThumb = true;
+  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
+  {
+    saveDb = false;
+    saveDirThumb = false;
+  }
+
+  CStdString albumThumb(CUtil::GetCachedAlbumThumb(album.strAlbum, album.strArtist));
+
+  // Update the thumb in the music database (songs + albums) and grab the original album path
+  CStdString albumPath(path);
+  if (saveDb && CFile::Exists(albumThumb))
+  {
+    m_musicdatabase.SaveAlbumThumb(album.idAlbum, albumThumb);
+    m_musicdatabase.GetAlbumPath(album.idAlbum, albumPath);
+  }
+
+  // Update currently playing song if it's from the same album.  This is necessary as when the album
+  // first gets it's cover, the info manager's item doesn't have the updated information (so will be
+  // sending a blank thumb to the skin)
+
+  // TODO: MUSICDB - We should check what Videos does in this circumstance...
   if (g_application.IsPlayingAudio())
   {
     CStdString strSongFolder;
     const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
     if (tag)
     {
-/*      CUtil::GetDirectory(tag->GetURL(), strSongFolder);
-      // ...if it's matching
-      if (strSongFolder.Equals(album.GetAlbumPath()) && tag->GetAlbum().Equals(album.GetTitle()))
-        g_infoManager.SetCurrentAlbumThumb(strThumb);*/
+      // really, this may not be enough as it is to reliably update this item.  eg think of various artists albums
+      // that aren't tagged as such (and aren't yet scanned).  But we probably can't do anything better than this
+      // in that case
+      if (album.strAlbum == tag->GetAlbum() && (album.strArtist == tag->GetAlbumArtist() || album.strArtist == tag->GetArtist()))
+        g_infoManager.SetCurrentAlbumThumb(albumThumb);
     }
   }
-  // Save directory thumb
-  if (bSaveDirThumb)
+
+  // Save this thumb as the directory thumb if it's the only album in the folder (files view nicety)
+  // We do this by grabbing all the songs in the folder, and checking to see whether they come
+  // from the same album.
+  if (saveDirThumb && CFile::Exists(albumThumb) && !albumPath.IsEmpty() && !CUtil::IsCDDA(albumPath))
   {
-    // Was the download of the album art
-    // from allmusic.com successfull...
-    if (CFile::Exists(strThumb))
+    CFileItemList items;
+    GetDirectory(albumPath, items);
+    OnRetrieveMusicInfo(items);
+    VECSONGS songs;
+    for (int i = 0; i < items.Size(); i++)
     {
-      // ...yes...
-/*      CFileItem item(album.GetAlbumPath(), true);
-      if (!item.IsCDDA())
+      CFileItem *item = items[i];
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->Loaded())
       {
-        // ...also save a copy as directory thumb,
-        // if the album isn't located on an audio cd
-        CStdString strFolderThumb(CUtil::GetCachedMusicThumb(album.GetAlbumPath()));
-        ::CopyFile(strThumb, strFolderThumb, false);
-      }*/
+        CSong song(*item->GetMusicInfoTag());
+        songs.push_back(song);
+      }
     }
+    CMusicInfoScanner::CheckForVariousArtists(songs);
+    CStdString album, artist;
+    if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
+    { // can cache as the folder thumb
+      CStdString folderThumb(CUtil::GetCachedMusicThumb(albumPath));
+      ::CopyFile(albumThumb, folderThumb, false);
+    }
+  }
+
+  // update the file listing
+  int iSelectedItem = m_viewControl.GetSelectedItem();
+  if (iSelectedItem >= 0 && m_vecItems[iSelectedItem])
+  {
+    CFileItem* pSelectedItem=m_vecItems[iSelectedItem];
+    if (pSelectedItem->m_bIsFolder)
+    {
+      // refresh only the icon of
+      // the current folder
+      pSelectedItem->FreeIcons();
+      pSelectedItem->SetMusicThumb();
+      pSelectedItem->FillInDefaultIcon();
+    }
+    else
+    {
+      // Refresh all items
+      m_vecItems.RemoveDiscCache();
+      Update(m_vecItems.m_strPath);
+    }
+
+    //  Do we have to autoswitch to the thumb control?
+    m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    UpdateButtons();
   }
 }
 

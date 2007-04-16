@@ -58,7 +58,7 @@ protected:
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection);
 
   void ShowAlbumInfo(const CAlbum &album, const CStdString &strPath, bool bRefresh, bool bShowInfo = true);
-  void UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb);
+  void UpdateThumb(const CAlbum &album, const CStdString &path);
 
   void OnManualAlbumInfo();
   void OnRipTrack(int iItem);

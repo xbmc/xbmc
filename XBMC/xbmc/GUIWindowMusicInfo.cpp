@@ -101,12 +101,12 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
+void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album, const CStdString &path)
 {
-  // TODO: MUSICDB: What is the path here used for - answer: Just the thumbnail.
   m_album = album;
-  m_albumItem = CFileItem("", true);
+  m_albumItem = CFileItem(path, true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(album.GetTitle());
+  m_albumItem.GetMusicInfoTag()->SetAlbumArtist(album.GetArtist());
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;

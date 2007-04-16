@@ -149,9 +149,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     CStdString strPath, strFileName;
     CUtil::Split(song.strFileName, strPath, strFileName);
-
-    // TODO: MUSICDB - should keep slashes at end (I think we should!)
-    CUtil::RemoveSlashAtEnd(strPath);
+    ASSERT(CUtil::HasSlashAtEnd(strPath));
 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
@@ -552,16 +550,12 @@ void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSong
   }
 }
 
-long CMusicDatabase::AddPath(const CStdString& strPath1)
+long CMusicDatabase::AddPath(const CStdString& strPath)
 {
   CStdString strSQL;
   try
   {
-    CStdString strPath = strPath1;
-    // musicdatabase always stores directories
-    // without a slash at the end
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
+    ASSERT(CUtil::HasSlashAtEnd(strPath));
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
@@ -630,11 +624,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
     song.strThumb.Empty();
   // Get filename with full path
   if (!bWithMusicDbPath)
-  {
-    song.strFileName = m_pDS->fv(song_strPath).get_asString();
-    CUtil::AddDirectorySeperator(song.strFileName);
-    song.strFileName += m_pDS->fv(song_strFileName).get_asString();
-  }
+    CUtil::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString(), song.strFileName);
   else
   {
     CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
@@ -672,9 +662,8 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->GetMusicInfoTag()->SetMusicBrainzAlbumID(m_pDS->fv(song_strMusicBrainzAlbumID).get_asString());
   item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(m_pDS->fv(song_strMusicBrainzAlbumArtistID).get_asString());
   item->GetMusicInfoTag()->SetMusicBrainzTRMID(m_pDS->fv(song_strMusicBrainzTRMID).get_asString());
-  CStdString strRealPath = m_pDS->fv(song_strPath).get_asString();
-  CUtil::AddDirectorySeperator(strRealPath);
-  strRealPath += m_pDS->fv(song_strFileName).get_asString();
+  CStdString strRealPath;
+  CUtil::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString(), strRealPath);
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetLoaded(true);
   CStdString strThumb=m_pDS->fv(song_strThumb).get_asString();
@@ -722,8 +711,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
 
     CStdString strPath;
     CUtil::GetDirectory(strFileName, strPath);
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
+    CUtil::AddSlashAtEnd(strPath);
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -898,6 +886,7 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound != 0)
     {
+      info.idAlbum = idAlbum;
       info.iRating = m_pDS->fv("albuminfo.iRating").get_asLong() ;
       info.iYear = m_pDS->fv("albuminfo.iYear").get_asLong() ;
       info.strAlbum = m_pDS->fv("albumview.strAlbum").get_asString();
@@ -1257,8 +1246,7 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
     {
       CStdString strPath;
       CUtil::GetDirectory(strFileName, strPath);
-      if (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
+      CUtil::AddSlashAtEnd(strPath);
 
       DWORD crc = ComputeCRC(strFileName);
 
@@ -1290,17 +1278,14 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
   return false;
 }
 
-bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs, bool bAppendToMap)
+bool CMusicDatabase::GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap)
 {
   try
   {
+    ASSERT(CUtil::HasSlashAtEnd(strPath));
+
     if (!bAppendToMap)
       songs.Clear();
-    CStdString strPath = strPath1;
-    // musicdatabase always stores directories
-    // without a slash at the end
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -1325,7 +1310,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", strPath1.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", strPath.c_str());
   }
 
   return false;
@@ -1616,7 +1601,7 @@ bool CMusicDatabase::SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
   return false;
 }
 
-bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath1, CStdString& strPathIds)
+bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds)
 {
   try
   {
@@ -1625,16 +1610,16 @@ bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath1, CStdString&
 
 		vector<CStdString> vecPaths;
 		// expand virtualpath:// locations
-		if (CUtil::IsVirtualPath(strPath1))
+		if (CUtil::IsVirtualPath(strPath))
 		{
 			CVirtualPathDirectory dir;
-			dir.GetPathes(strPath1, vecPaths);
+			dir.GetPathes(strPath, vecPaths);
 		}
 		// expand multipath:// locations
-		else if (CUtil::IsMultiPath(strPath1))
-      CMultiPathDirectory::GetPaths(strPath1, vecPaths);
+		else if (CUtil::IsMultiPath(strPath))
+      CMultiPathDirectory::GetPaths(strPath, vecPaths);
 		else
-			vecPaths.push_back(strPath1);
+			vecPaths.push_back(strPath);
 
     // get all the path id's that are sub dirs of this directory
 		// select idPath from path where (strPath like 'path1%' or strPath like 'path2%' or strPath like 'path3%')
@@ -1642,12 +1627,8 @@ bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath1, CStdString&
 		CStdString strOR = " or ";
 		for (int i=0; i<(int)vecPaths.size(); ++i)
 		{
-      // TODO: MUSICDB - no it shouldn't!!
-	    // musicdatabase always stores directories
-			// without a slash at the end
 			CStdString strPath = vecPaths.at(i);
-			if (CUtil::HasSlashAtEnd(strPath))
-				strPath.Delete(strPath.size() - 1);
+      ASSERT(CUtil::HasSlashAtEnd(strPath));
 			CStdString strTemp = FormatSQL("strPath like '%s%%'", strPath.c_str());
 			strSQL += strTemp + strOR;
 		}
@@ -1735,9 +1716,8 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
     CStdString strSongsToDelete = "(";
     while (!m_pDS->eof())
     { // get the full song path
-      CStdString strFileName = m_pDS->fv("path.strPath").get_asString();
-      CUtil::AddDirectorySeperator(strFileName);
-      strFileName += m_pDS->fv("song.strFileName").get_asString();
+      CStdString strFileName;
+      CUtil::AddFileToFolder(m_pDS->fv("path.strPath").get_asString(), m_pDS->fv("song.strFileName").get_asString(), strFileName);
 
       //  Special case for streams inside an ogg file. (oggstream)
       //  The last dir in the path is the ogg file that
@@ -1747,8 +1727,8 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       {
         CStdString strFileAndPath=strFileName;
         CUtil::GetDirectory(strFileAndPath, strFileName);
-        if (CUtil::HasSlashAtEnd(strFileName))
-          strFileName.Delete(strFileName.size()-1);
+        // we are dropping back to a file, so remove the slash at end
+        CUtil::RemoveSlashAtEnd(strFileName);
       }
 
       if (!CFile::Exists(strFileName))
@@ -2579,8 +2559,6 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
 
     CStdString path, file;
     CUtil::Split(song.strFileName, path, file);
-    // TODO: MUSICDB - remove slashes??? - this is inconsistent with the rest of XBMC
-    CUtil::RemoveSlashAtEnd(path);
 
     CStdString strSQL = FormatSQL("select albumview.* from albumview join song on song.idAlbum = albumview.idAlbum join path on song.idPath = path.idPath where song.strFileName like '%s' and path.strPath like '%s'", file.c_str(), path.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -3088,27 +3066,25 @@ int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
   return 0;
 }
 
-
-/*
-
-TODO: MUSICDB This function may be useful for thumbs
-bool CMusicDatabase::GetPathFromAlbumId(long idAlbum, CStdString& strPath)
+bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select strPath from album join path on album.idPath=path.idPath where idAlbum=%ld", idAlbum);
+    path.Empty();
+
+    CStdString strSQL=FormatSQL("select distinct strPath from path join song on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
+    if (iRowsFound != 1)
     {
       m_pDS->close();
       return false;
     }
 
-    strPath = m_pDS->fv("strPath").get_asString();
+    path = m_pDS->fv("strPath").get_asString();
 
     m_pDS->close(); // cleanup recordset data
     return true;
@@ -3120,36 +3096,14 @@ bool CMusicDatabase::GetPathFromAlbumId(long idAlbum, CStdString& strPath)
 
   return false;
 }
-*/
 
-// TODO: MUSICDB This function should use album id rather than name + path.  Perhaps the function below (RefreshMusicDbThumbs) should
-//       be used?
-bool CMusicDatabase::SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath1, const CStdString& strThumb)
+
+bool CMusicDatabase::SaveAlbumThumb(long idAlbum, const CStdString& strThumb)
 {
   try
   {
-/*    CStdString strPath = strPath1;
-    // musicdatabase always stores directories
-    // without a slash at the end
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=FormatSQL("select idAlbum from album join path on album.idPath=path.idPath where strAlbum='%s' and strPath like '%s'", strAlbum.c_str(), strPath.c_str());
-    CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    long idAlbum=m_pDS->fv("idAlbum").get_asLong();
-
-    m_pDS->close(); // cleanup recordset data
 
     long idThumb=AddThumb(strThumb);
 
@@ -3162,167 +3116,12 @@ bool CMusicDatabase::SaveAlbumThumb(const CStdString& strAlbum, const CStdString
       CLog::Log(LOGDEBUG, __FUNCTION__" exec: %s", strSQL.c_str());
       m_pDS->exec(strSQL.c_str());
       return true;
-    }*/
+    }
     return false;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed for Album %s", strAlbum.c_str());
-  }
-
-  return false;
-}
-
-
-// TODO: MUSICDB - this is quite a complex routine - it needs review
-bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    if (!pItem->IsMusicDb()) return false;
-
-    CQueryParams params;
-    CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
-
-    long idAlbum=params.GetAlbumId();
-    long idSong=params.GetSongId();
-
-    if (idAlbum>-1 && idSong==-1)
-    { // This is an album, the album id is known get the new thumb from the album table...
-      CStdString strSQL=FormatSQL("select strThumb from thumb where thumb.idThumb in (select idThumb from album where idAlbum=%ld)", idAlbum);
-      CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return false;
-      int iRowsFound = m_pDS->num_rows();
-      if (iRowsFound == 0)
-      {
-        m_pDS->close();
-        return false;
-      }
-
-      CStdString strThumb=m_pDS->fv("strThumb").get_asString();
-      if (strThumb=="NONE")
-        return false;
-
-      // ..and set it.
-      pItem->FreeIcons();
-      pItem->SetThumbnailImage(strThumb);
-      pItem->FillInDefaultIcon();
-
-      m_pDS->close(); // cleanup recordset data
-
-      return true;
-    }
-    else if (idSong>-1 && idAlbum>-1)
-    { // It is a song and we know its album
-      // get the new thumb from the album table...
-      CStdString strSQL=FormatSQL("select strThumb from thumb where thumb.idThumb in (select idThumb from album where idAlbum=%ld)", idAlbum);
-      CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return false;
-      int iRowsFound = m_pDS->num_rows();
-      if (iRowsFound == 0)
-      {
-        m_pDS->close();
-        return false;
-      }
-
-      CStdString strThumb=m_pDS->fv("strThumb").get_asString();
-
-      m_pDS->close(); // cleanup recordset data
-
-      if (strThumb=="NONE")
-        return false;
-
-      for (int i=0; i<items.Size(); ++i)
-      {
-        CFileItem* pItem=items[i];
-        if (pItem->IsMusicDb())
-        {
-          // ...and update every song with the
-          // thumb where the album matches
-          CQueryParams params;
-          CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
-          if (params.GetSongId()>-1 && params.GetAlbumId()==idAlbum)
-          {
-            pItem->FreeIcons();
-            pItem->SetThumbnailImage(strThumb);
-            pItem->FillInDefaultIcon();
-          }
-        }
-      }
-
-
-      return true;
-    }
-    else if (idSong>-1)
-    { // This is a song where we only know the song id...
-      CStdString strSQL=FormatSQL("select strThumb from thumb where thumb.idThumb in (select idThumb from song where idSong=%ld)", idSong);
-      CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return false;
-      int iRowsFound = m_pDS->num_rows();
-      if (iRowsFound == 0)
-      {
-        m_pDS->close();
-        return false;
-      }
-
-      CStdString strThumb=m_pDS->fv("strThumb").get_asString();
-
-      m_pDS->close();
-
-      if (strThumb=="NONE")
-        return false;
-
-      // ...get all songs of the album this song belongs to...
-      strSQL=FormatSQL("select idSong from song where idAlbum in (select idAlbum from song where idSong=%ld)", idSong);
-      CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return false;
-      iRowsFound = m_pDS->num_rows();
-      if (iRowsFound == 0)
-      {
-        m_pDS->close();
-        return false;
-      }
-
-      set<long> songids;
-      while (!m_pDS->eof())
-      {
-        songids.insert(m_pDS->fv("idSong").get_asLong());
-        m_pDS->next();
-      }
-
-      m_pDS->close(); // cleanup recordset data
-
-      for (int i=0; i<items.Size(); ++i)
-      {
-        CFileItem* pItem=items[i];
-        if (pItem->IsMusicDb())
-        {
-          CQueryParams params;
-          CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
-
-          // ...and see if we can find them here,
-          // if so update their thumbs
-          long idSong=params.GetSongId();
-          if (idSong>-1 && songids.find(idSong)!=songids.end())
-          {
-            pItem->FreeIcons();
-            pItem->SetThumbnailImage(strThumb);
-            pItem->FillInDefaultIcon();
-          }
-        }
-      }
-
-      return true;
-    }
-
-    return false;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" failed for path %s", items.m_strPath.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__"(%ld) failed", idAlbum);
   }
 
   return false;
@@ -3364,7 +3163,7 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
         while (i <= min(basePath.size(), path.size()) && strnicmp(basePath.c_str(), path.c_str(), i) == 0)
           i++;
         basePath = basePath.Left(i - 1);
-        // they should at least share a / at the end
+        // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
         if (!CUtil::HasSlashAtEnd(basePath))
         {
           // currently GetDirectory() removes trailing slashes
