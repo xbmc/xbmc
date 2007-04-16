@@ -722,8 +722,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_NOTIFY_ALL:
     {
-      // only process those notifications that come from this window
-      if (HasID(message.GetSenderId()))
+      // only process those notifications that come from this window, or those intended for every window
+      if (HasID(message.GetSenderId()) || !message.GetSenderId())
       {
         if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
             message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
@@ -1185,3 +1185,14 @@ void CGUIWindow::SetDefaults()
   m_closeAnimation.Reset();
   m_origins.clear();
 }
+
+#ifdef _DEBUG
+void CGUIWindow::DumpTextureUse()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__" for window %i", GetID());
+  for (ivecControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
+  {
+    (*it)->DumpTextureUse();
+  }
+}
+#endif

@@ -21,11 +21,10 @@ class CAlbum
 public:
   bool operator<(const CAlbum &a) const
   {
-    return strAlbum + strPath < a.strAlbum + a.strPath;
+    return strAlbum + strArtist < a.strAlbum + a.strArtist;
   }
   long idAlbum;
   CStdString strAlbum;
-  CStdString strPath;
   CStdString strArtist;
   CStdString strGenre;
   CStdString strThumb;

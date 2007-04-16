@@ -365,7 +365,7 @@ public:
   static bool SupportsFileOperations(const CStdString& strPath);
 
   static CStdString GetCachedMusicThumb(const CStdString &path);
-  static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &path);
+  static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static void ClearFileItemCache();
 
   static void BootToDash();

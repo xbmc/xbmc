@@ -403,22 +403,6 @@ void CPartyModeManager::UpdateStats()
   m_iMatchingSongsLeft = m_iMatchingSongs - m_iMatchingSongsPicked;
   m_iRandomSongs = m_iMatchingSongsPicked;
   m_iRelaxedSongs = 0;  // unsupported at this stage
-
-/*
-  // get database statistics
-  CMusicDatabase musicdatabase;
-  if (musicdatabase.Open())
-  {
-    m_iMatchingSongsPicked = musicdatabase.PartyModeGetMatchingSongCount();
-    if (m_iMatchingSongs > m_iMatchingSongsPicked)
-      m_iMatchingSongsLeft = m_iMatchingSongs - m_iMatchingSongsPicked;
-    else
-      m_iMatchingSongsLeft = 0;
-    m_iRelaxedSongs = musicdatabase.PartyModeGetRelaxedSongCount();
-    m_iRandomSongs = musicdatabase.PartyModeGetRandomSongCount();
-  }
-  musicdatabase.Close();
-  */
 }
 
 bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
@@ -452,16 +436,12 @@ bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
       //musicdatabase.BeginTransaction();
       if (musicdatabase.GetSongsByWhere(sqlWhere, items))
       {
-        // We no longer keep the partymode history in the database - it slows
-        // things down unnecessarily
-        //musicdatabase.InitialisePartyMode();
         m_history = chosenSongIDs;
-		items.Randomize(); //randomizing the initial list or they will be in database order
+    		items.Randomize(); //randomizing the initial list or they will be in database order
         for (int i = 0; i < items.Size(); i++)
         {
           Add(items[i]);
           // TODO: Allow "relaxed restrictions" later?
-          //musicdatabase.UpdatePartyMode(chosenSongIDs[i], false);
         }
       }
       else

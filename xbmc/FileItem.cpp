@@ -55,13 +55,13 @@ CFileItem::CFileItem(const CSong& song)
   m_strThumbnailImage = song.strThumb;
 }
 
-CFileItem::CFileItem(const CAlbum& album)
+CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   Reset();
   m_strLabel = album.strAlbum;
-  m_strPath = album.strPath;
+  m_strPath = path;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
@@ -1976,28 +1976,10 @@ void CFileItemList::Stack()
 
 bool CFileItemList::Load()
 {
-  CStdString strPath=m_strPath;
-  if (CUtil::HasSlashAtEnd(strPath))
-    strPath.Delete(strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(strPath);
-
-  CStdString strFileName;
-  if (IsCDDA() || IsOnDVD())
-    strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
-  else if (IsMusicDb())
-    strFileName.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
-  else if (IsVideoDb())
-    strFileName.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
-  else
-    strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
-
-  CLog::Log(LOGDEBUG,"Loading fileitems [%s]",strFileName.c_str());
-
   CFile file;
-  if (file.Open(strFileName))
+  if (file.Open(GetDiscCacheFile()))
   {
+    CLog::Log(LOGDEBUG,"Loading fileitems [%s]",m_strPath.c_str());
     CArchive ar(&file, CArchive::load);
     ar >> *this;
     CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s",Size(),m_strPath.c_str(), m_sortMethod, m_sortOrder ? "true" : "false");
@@ -2017,25 +1999,8 @@ bool CFileItemList::Save()
 
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
-  CStdString strPath=m_strPath;
-  if (CUtil::HasSlashAtEnd(strPath))
-    strPath.Delete(strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(strPath);
-
-  CStdString strFileName;
-  if (IsCDDA() || IsOnDVD())
-    strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
-  else if (IsMusicDb())
-    strFileName.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
-  else if (IsVideoDb())
-    strFileName.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
-  else
-    strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
-
   CFile file;
-  if (file.OpenForWrite(strFileName, true, true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(), true, true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2046,6 +2011,32 @@ bool CFileItemList::Save()
   }
 
   return false;
+}
+
+void CFileItemList::RemoveDiscCache()
+{
+  CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
+  CFile::Delete(GetDiscCacheFile());
+}
+
+CStdString CFileItemList::GetDiscCacheFile()
+{
+  CStdString strPath=m_strPath;
+  CUtil::RemoveSlashAtEnd(strPath);
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(strPath);
+
+  CStdString cacheFile;
+  if (IsCDDA() || IsOnDVD())
+    cacheFile.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+  else if (IsMusicDb())
+    cacheFile.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+  else if (IsVideoDb())
+    cacheFile.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
+  else
+    cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
+  return cacheFile;
 }
 
 void CFileItemList::SetCachedVideoThumbs()
@@ -2125,15 +2116,20 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   // look if an album thumb is available,
   // could be any file with tags loaded or
   // a directory in album window
-  CStdString strAlbum;
+  CStdString strAlbum, strArtist;
   if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
-    strAlbum = m_musicInfoTag->GetAlbum();
-
-  if (!strAlbum.IsEmpty())
   {
-    // try permanent album thumb (Q:\albums\thumbs)
-    // using "album name + path"
-    CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strPath));
+    strAlbum = m_musicInfoTag->GetAlbum();
+    if (!m_musicInfoTag->GetAlbumArtist().IsEmpty())
+      strArtist = m_musicInfoTag->GetAlbumArtist();
+    else
+      strArtist = m_musicInfoTag->GetArtist();
+  }
+  if (!strAlbum.IsEmpty() && !strArtist.IsEmpty())
+  {
+    // try permanent album thumb (Q:\userdata\thumbnails\music)
+    // using "album name + artist name"
+    CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strArtist));
     if (CFile::Exists(thumb))
       return thumb;
   }

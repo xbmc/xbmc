@@ -199,6 +199,9 @@ public:
 
   enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
 
+#ifdef _DEBUG
+  virtual void DumpTextureUse() {};
+#endif
 protected:
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);

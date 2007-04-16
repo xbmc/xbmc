@@ -437,3 +437,14 @@ void CGUIControlGroup::ClearAll()
   }
   m_children.clear();
 }
+
+#ifdef _DEBUG
+void CGUIControlGroup::DumpTextureUse()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__" for controlgroup %i", GetID());
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    (*it)->DumpTextureUse();
+  }
+}
+#endif
