@@ -148,46 +148,33 @@ bool CID3Tag::Parse()
   // if we don't have an album tag, cache with the full file path so that
   // other non-tagged files don't get this album image
   CStdString strCoverArt;
-  if (!tag.GetAlbum().IsEmpty())
-  {
-    CStdString strPath;
-    CUtil::GetDirectory(tag.GetURL(), strPath);
-    strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), strPath);
-  }
+  if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
+    strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), tag.GetAlbumArtist().IsEmpty() ? tag.GetArtist() : tag.GetAlbumArtist());
   else
     strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
   if (bFound)
   {
-    if (!CUtil::ThumbExists(strCoverArt))
+    CStdString strExtension=GetPictureMimeType(pictype);
+
+    int nPos = strExtension.Find('/');
+    if (nPos > -1)
+      strExtension.Delete(0, nPos + 1);
+
+    id3_length_t nBufSize = 0;
+    const BYTE* pPic = GetPictureData(pictype, &nBufSize );
+    if (pPic != NULL && nBufSize > 0)
     {
-      CStdString strExtension=GetPictureMimeType(pictype);
-
-      int nPos = strExtension.Find('/');
-      if (nPos > -1)
-        strExtension.Delete(0, nPos + 1);
-
-      id3_length_t nBufSize = 0;
-      const BYTE* pPic = GetPictureData(pictype, &nBufSize );
-      if (pPic != NULL && nBufSize > 0)
+      CPicture pic;
+      if (pic.CreateThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
       {
-        CPicture pic;
-        if (pic.CreateThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
-        {
-          CUtil::ThumbCacheAdd(strCoverArt, true);
-        }
-        else
-        {
-          CUtil::ThumbCacheAdd(strCoverArt, false);
-          CLog::Log(LOGERROR, "Tag loader mp3: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
-        }
+        CUtil::ThumbCacheAdd(strCoverArt, true);
+      }
+      else
+      {
+        CUtil::ThumbCacheAdd(strCoverArt, false);
+        CLog::Log(LOGERROR, "Tag loader mp3: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
       }
     }
-  }
-  else
-  {
-    // id3 has no cover, so add to cache
-    // that it does not exist
-    CUtil::ThumbCacheAdd(strCoverArt, false);
   }
 
   return tag.Loaded();

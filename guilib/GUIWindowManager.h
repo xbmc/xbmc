@@ -72,7 +72,9 @@ public:
   bool IsOverlayAllowed() const;
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(vector<DWORD> &ids);
-
+#ifdef _DEBUG
+  void DumpTextureUse();
+#endif
 private:
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(DWORD newWindowID);

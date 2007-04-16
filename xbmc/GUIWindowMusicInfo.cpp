@@ -26,6 +26,7 @@
 #include "GUIImage.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIPassword.h"
 
 using namespace XFILE;
 
@@ -100,14 +101,13 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
+void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, const CStdString &path)
 {
   m_album = album;
-  CStdString strPath = album.GetAlbumPath();
-  CUtil::AddSlashAtEnd(strPath);
-  m_album.SetAlbumPath(strPath);
-  m_albumItem = CFileItem(strPath, true);
-  m_albumItem.GetMusicInfoTag()->SetAlbum(album.GetTitle());
+  m_songs = songs;
+  m_albumItem = CFileItem(path, true);
+  m_albumItem.GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
+  m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
@@ -115,36 +115,37 @@ void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 
 void CGUIWindowMusicInfo::Update()
 {
-  SetLabel(CONTROL_ALBUM, m_album.GetTitle() );
-  SetLabel(CONTROL_ARTIST, m_album.GetArtist() );
-  SetLabel(CONTROL_DATE, m_album.GetDateOfRelease() );
+  SetLabel(CONTROL_ALBUM, m_album.strAlbum );
+  SetLabel(CONTROL_ARTIST, m_album.strArtist );
+  CStdString date; date.Format("%d", m_album.iYear);
+  SetLabel(CONTROL_DATE, date );
 
   CStdString strRating;
-  if (m_album.GetRating() > 0)
-    strRating.Format("%i/9", m_album.GetRating());
+  if (m_album.iRating > 0)
+    strRating.Format("%i/9", m_album.iRating);
   SetLabel(CONTROL_RATING, strRating );
 
-  SetLabel(CONTROL_GENRE, m_album.GetGenre());
-  SetLabel(CONTROL_TONE, m_album.GetTones());
-  SetLabel(CONTROL_STYLES, m_album.GetStyles() );
+  SetLabel(CONTROL_GENRE, m_album.strGenre);
+  SetLabel(CONTROL_TONE, m_album.strTones);
+  SetLabel(CONTROL_STYLES, m_album.strStyles );
 
   if (m_bViewReview)
   {
-    SET_CONTROL_LABEL(CONTROL_TEXTAREA, m_album.GetReview());
+    SetLabel(CONTROL_TEXTAREA, m_album.strReview);
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
   }
   else
   {
     vector<CGUIListItem> items;
-    for (int i = 0; i < m_album.GetNumberOfSongs();++i)
+    for (unsigned int i = 0; i < m_songs.size();++i)
     {
-      const CMusicSong& song = m_album.GetSong(i);
+      const CSong& song = m_songs[i];
       CGUIListItem item;
       CStdString label;
-      label.Format("%i. %s", song.GetTrack(), song.GetSongName().c_str());
+      label.Format("%i. %s", song.iTrack, song.strTitle.c_str());
       item.SetLabel(label);
-      if (song.GetDuration() > 0)
-        StringUtils::SecondsToTimeString(song.GetDuration(), label);
+      if (song.iDuration > 0)
+        StringUtils::SecondsToTimeString(song.iDuration, label);
       item.SetLabel2(label);
       items.push_back(item);
     };
@@ -162,13 +163,16 @@ void CGUIWindowMusicInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_albumItem.GetThumbnailImage());
   }
+
+  // disable the GetThumb button if the user isn't allowed it
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
 }
 
 void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
   if (strLabel.IsEmpty())
   {
-    SET_CONTROL_LABEL(iControl, 416);
+    SET_CONTROL_LABEL(iControl, (iControl == CONTROL_TEXTAREA) ? 414 : 416);
   }
   else
   {
@@ -186,7 +190,7 @@ void CGUIWindowMusicInfo::RefreshThumb()
 {
   CStdString thumbImage = m_albumItem.GetThumbnailImage();
   if (!m_albumItem.HasThumbnail())
-    thumbImage = CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetAlbumPath());
+    thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
 
   if (!CFile::Exists(thumbImage))
   {
@@ -208,11 +212,11 @@ bool CGUIWindowMusicInfo::NeedRefresh() const
 bool CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
   // Download image and save as thumbFile
-  if (m_album.GetImageURL().IsEmpty())
+  if (m_album.strImage.IsEmpty())
     return false;
 
   CHTTP http;
-  http.Download(m_album.GetImageURL(), thumbFile);
+  http.Download(m_album.strImage, thumbFile);
   return true;
 }
 
@@ -288,7 +292,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetAlbumPath()));
+  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist));
 
   if (result == "thumb://None")
   { // cache the default thumb

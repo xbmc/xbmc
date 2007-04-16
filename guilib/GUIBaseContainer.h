@@ -58,6 +58,9 @@ public:
   const CStdString &GetLabel() const { return m_label; };
   void SetType(VIEW_TYPE type, const CStdString &label);
 
+#ifdef _DEBUG
+  virtual void DumpTextureUse();
+#endif
 protected:
   virtual bool SelectItemFromPoint(float posX, float posY);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
