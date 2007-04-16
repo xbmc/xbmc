@@ -16,6 +16,8 @@ public:
   virtual void Render();
   void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
+  bool RefreshAll() const;
+
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
   virtual CFileItem* GetCurrentListItem() { return &m_movieItem; }
 
@@ -36,6 +38,7 @@ protected:
   CFileItem m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;
+  bool m_bRefreshAll;
   vector<CStdString> m_vecStrCast;
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

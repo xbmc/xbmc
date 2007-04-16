@@ -1328,6 +1328,8 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     sql.TrimRight(',');
     sql += FormatSQL("where idShow=%u", lTvShowId);
     m_pDS->exec(sql.c_str());
+    sql = FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,lTvShowId,lTvShowId);
+    m_pDS->exec(sql.c_str());
     // update tvshowlinkpath info to reflect it points to this tvshow
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
