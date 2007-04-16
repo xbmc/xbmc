@@ -82,6 +82,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       m_bRefresh = false;
+      m_bRefreshAll = false;
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC, 0, 0, NULL);
@@ -155,6 +156,14 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
+        if (m_movieItem.GetVideoInfoTag()->m_iSeason == 0 && !m_movieItem.GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tv show
+        {
+          bool bCanceled=false;
+          if (CGUIDialogYesNo::ShowAndGetInput(20377,20378,-1,-1,bCanceled))
+            m_bRefreshAll = true;
+          if (bCanceled)
+            return false;
+        }
         m_bRefresh = true;
         Close();
         return true;
@@ -386,6 +395,11 @@ void CGUIWindowVideoInfo::Refresh()
 bool CGUIWindowVideoInfo::NeedRefresh() const
 {
   return m_bRefresh;
+}
+
+bool CGUIWindowVideoInfo::RefreshAll() const
+{
+  return m_bRefreshAll;
 }
 
 /// \brief Search the current directory for a string got from the virtual keyboard
