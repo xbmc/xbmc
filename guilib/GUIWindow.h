@@ -133,6 +133,11 @@ public:
   virtual bool IsAnimating(ANIMATION_TYPE animType);
 
   virtual void ResetControlStates();
+
+#ifdef _DEBUG
+  void DumpTextureUse();
+#endif
+
 protected:
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}

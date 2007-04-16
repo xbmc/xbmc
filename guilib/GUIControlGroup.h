@@ -53,6 +53,9 @@ public:
 
   virtual bool IsGroup() const { return true; };
 
+#ifdef _DEBUG
+  virtual void DumpTextureUse();
+#endif
 protected:
   virtual void Animate(DWORD currentTime);
 

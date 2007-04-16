@@ -96,6 +96,9 @@ public:
   int GetTextureHeight() const;
 
   void CalculateSize();
+#ifdef _DEBUG
+  virtual void DumpTextureUse();
+#endif
 protected:
   void FreeTextures();
   void Process();
