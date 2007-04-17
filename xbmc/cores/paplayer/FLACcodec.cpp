@@ -35,7 +35,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (!m_file.Open(strFile))
     return false;
 
-  m_pFlacDecoder=m_dll.FLAC__seekable_stream_decoder_new();
+  m_pFlacDecoder=m_dll.FLAC__stream_decoder_new();
 
   if (!m_pFlacDecoder)
   {
@@ -43,25 +43,23 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  m_dll.FLAC__seekable_stream_decoder_set_read_callback (m_pFlacDecoder, DecoderReadCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_seek_callback (m_pFlacDecoder, DecoderSeekCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_tell_callback (m_pFlacDecoder, DecoderTellCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_length_callback (m_pFlacDecoder, DecoderLengthCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_eof_callback (m_pFlacDecoder, DecoderEofCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_write_callback (m_pFlacDecoder, DecoderWriteCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_metadata_callback (m_pFlacDecoder, DecoderMetadataCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_error_callback (m_pFlacDecoder, DecoderErrorCallback);
-  m_dll.FLAC__seekable_stream_decoder_set_client_data (m_pFlacDecoder, this);
-
-  if (m_dll.FLAC__seekable_stream_decoder_init(m_pFlacDecoder)!=FLAC__SEEKABLE_STREAM_DECODER_OK)
+  if (m_dll.FLAC__stream_decoder_init_stream(m_pFlacDecoder, DecoderReadCallback,
+                                                             DecoderSeekCallback,
+                                                             DecoderTellCallback,
+                                                             DecoderLengthCallback,
+                                                             DecoderEofCallback,
+                                                             DecoderWriteCallback,
+                                                             DecoderMetadataCallback,
+                                                             DecoderErrorCallback,
+                                                             this) != FLAC__STREAM_DECODER_INIT_STATUS_OK)
   {
     CLog::Log(LOGERROR, "FLACCodec: Error initializing decoder");
     FreeDecoder();
     return false;
   }
 
-  //  Process metadata like mum of channels...
-  if (!m_dll.FLAC__seekable_stream_decoder_process_until_end_of_metadata(m_pFlacDecoder))
+  //  Process metadata like number of channels...
+  if (!m_dll.FLAC__stream_decoder_process_until_end_of_metadata(m_pFlacDecoder))
   {
     CLog::Log(LOGERROR, "FLACCodec: Error while processing metadata");
     FreeDecoder();
@@ -114,7 +112,7 @@ __int64 FLACCodec::Seek(__int64 iSeekTime)
   // may be called when the buffer is almost full (resulting in a buffer
   // overrun unless we reset m_BufferSize first).
   m_BufferSize=0;
-  m_dll.FLAC__seekable_stream_decoder_seek_absolute(m_pFlacDecoder,
+  m_dll.FLAC__stream_decoder_seek_absolute(m_pFlacDecoder,
 		(__int64)(iSeekTime*m_SampleRate)/1000); 	
   return iSeekTime;
 }
@@ -124,16 +122,16 @@ int FLACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   *actualsize=0;
 
   bool eof=false;
-  if (m_dll.FLAC__seekable_stream_decoder_get_state(m_pFlacDecoder)==FLAC__SEEKABLE_STREAM_DECODER_END_OF_STREAM)
+  if (m_dll.FLAC__stream_decoder_get_state(m_pFlacDecoder)==FLAC__STREAM_DECODER_END_OF_STREAM)
     eof=true;
 
   if (!eof)
   {
     //  fill our buffer 4 decoded frame (the buffer could hold 5)
     while(m_BufferSize < m_MaxFrameSize*4 && 
-          m_dll.FLAC__seekable_stream_decoder_get_state(m_pFlacDecoder)!=FLAC__SEEKABLE_STREAM_DECODER_END_OF_STREAM)
+          m_dll.FLAC__stream_decoder_get_state(m_pFlacDecoder)!=FLAC__STREAM_DECODER_END_OF_STREAM)
     {
-      if (!m_dll.FLAC__seekable_stream_decoder_process_single(m_pFlacDecoder))
+      if (!m_dll.FLAC__stream_decoder_process_single(m_pFlacDecoder))
       {
         CLog::Log(LOGERROR, "FLACCodec: Error decoding single block");
         return READ_ERROR;
@@ -170,59 +168,59 @@ void FLACCodec::FreeDecoder()
 {
   if (m_pFlacDecoder)
   {
-    m_dll.FLAC__seekable_stream_decoder_finish(m_pFlacDecoder);
-    m_dll.FLAC__seekable_stream_decoder_delete(m_pFlacDecoder);
+    m_dll.FLAC__stream_decoder_finish(m_pFlacDecoder);
+    m_dll.FLAC__stream_decoder_delete(m_pFlacDecoder);
     m_pFlacDecoder=NULL;
   }
 }
 
-FLAC__SeekableStreamDecoderReadStatus FLACCodec::DecoderReadCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__byte buffer[], unsigned *bytes, void *client_data)
+FLAC__StreamDecoderReadStatus FLACCodec::DecoderReadCallback(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], unsigned *bytes, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
-    return FLAC__SEEKABLE_STREAM_DECODER_READ_STATUS_ERROR;
+    return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
 
   *bytes=pThis->m_file.Read(buffer, *bytes);
 
-  return FLAC__SEEKABLE_STREAM_DECODER_READ_STATUS_OK;
+  return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
 }
 
-FLAC__SeekableStreamDecoderSeekStatus FLACCodec::DecoderSeekCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data)
+FLAC__StreamDecoderSeekStatus FLACCodec::DecoderSeekCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
-    return FLAC__SEEKABLE_STREAM_DECODER_SEEK_STATUS_ERROR;
+    return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
 
   if (pThis->m_file.Seek(absolute_byte_offset, SEEK_SET)<0)
-    return FLAC__SEEKABLE_STREAM_DECODER_SEEK_STATUS_ERROR;
+    return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
 
 
-  return FLAC__SEEKABLE_STREAM_DECODER_SEEK_STATUS_OK;
+  return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
 }
 
-FLAC__SeekableStreamDecoderTellStatus FLACCodec::DecoderTellCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset, void *client_data)
+FLAC__StreamDecoderTellStatus FLACCodec::DecoderTellCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
-    return FLAC__SEEKABLE_STREAM_DECODER_TELL_STATUS_ERROR;
+    return FLAC__STREAM_DECODER_TELL_STATUS_ERROR;
 
   *absolute_byte_offset=pThis->m_file.GetPosition();
 
-  return FLAC__SEEKABLE_STREAM_DECODER_TELL_STATUS_OK;
+  return FLAC__STREAM_DECODER_TELL_STATUS_OK;
 }
 
-FLAC__SeekableStreamDecoderLengthStatus FLACCodec::DecoderLengthCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__uint64 *stream_length, void *client_data)
+FLAC__StreamDecoderLengthStatus FLACCodec::DecoderLengthCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 *stream_length, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
-    return FLAC__SEEKABLE_STREAM_DECODER_LENGTH_STATUS_ERROR;
+    return FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR;
 
   *stream_length=pThis->m_file.GetLength();
 
-  return FLAC__SEEKABLE_STREAM_DECODER_LENGTH_STATUS_OK;
+  return FLAC__STREAM_DECODER_LENGTH_STATUS_OK;
 }
 
-FLAC__bool FLACCodec::DecoderEofCallback(const FLAC__SeekableStreamDecoder *decoder, void *client_data)
+FLAC__bool FLACCodec::DecoderEofCallback(const FLAC__StreamDecoder *decoder, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
@@ -231,7 +229,7 @@ FLAC__bool FLACCodec::DecoderEofCallback(const FLAC__SeekableStreamDecoder *deco
   return (pThis->m_file.GetLength()==pThis->m_file.GetPosition());
 }
 
-FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__SeekableStreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 * const buffer[], void *client_data)
+FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__StreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 * const buffer[], void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
@@ -264,7 +262,7 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Seeka
   return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 }
 
-void FLACCodec::DecoderMetadataCallback(const FLAC__SeekableStreamDecoder *decoder, const FLAC__StreamMetadata *metadata, void *client_data)
+void FLACCodec::DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMetadata *metadata, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)
@@ -280,7 +278,7 @@ void FLACCodec::DecoderMetadataCallback(const FLAC__SeekableStreamDecoder *decod
   }
 }
 
-void FLACCodec::DecoderErrorCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data)
+void FLACCodec::DecoderErrorCallback(const FLAC__StreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data)
 {
   CLog::Log(LOGERROR, "FLACCodec: Read error %i", status);
 }
