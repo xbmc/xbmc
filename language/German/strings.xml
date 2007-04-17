@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/13/2007-->
+<!--Date of translation: 04/17/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8471-->
+<!--Based on english strings version 8539-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1508,6 +1508,9 @@
   <string id="20373">Staffel</string>
   <string id="20374">Film-Informationen werden geladen...</string>
   <string id="20375">Inhalt zurücksetzen</string>
+  <string id="20376">Erstausstrahlung:</string>
+  <string id="20377">TV-Serien Informationen aktualisieren</string>
+  <string id="20378">Möchten Sie Informationen für alle Episoden aktualisieren?</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1552,5 +1555,6 @@
   <string id="21392">Niedriger Stromverbrauch</string>
   <string id="21393">Hohes Standby</string>
   <string id="21394">Niedriges Standby</string>
+  <string id="21395">Es ist nicht möglich Dateien größer als 4GB zwischenzuspeichern!</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
