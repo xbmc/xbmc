@@ -33,20 +33,18 @@ void CGUIScrollBar::Render()
 
   if (!IsVisible()) return;
 
-  if (m_showOnePage || m_numItems > m_pageSize)
+  m_guiBackground.Render();
+  if (m_bHasFocus)
   {
-    m_guiBackground.Render();
-    if (m_bHasFocus)
-    {
-      m_guiBarFocus.Render();
-      m_guiNibFocus.Render();
-    }
-    else
-    {
-      m_guiBarNoFocus.Render();
-      m_guiNibNoFocus.Render();
-    }
+    m_guiBarFocus.Render();
+    m_guiNibFocus.Render();
   }
+  else
+  {
+    m_guiBarNoFocus.Render();
+    m_guiNibNoFocus.Render();
+  }
+
   CGUIControl::Render();
 }
 
@@ -283,4 +281,12 @@ void CGUIScrollBar::SetColorDiffuse(D3DCOLOR color)
   m_guiBarFocus.SetColorDiffuse(color);
   m_guiNibNoFocus.SetColorDiffuse(color);
   m_guiNibFocus.SetColorDiffuse(color);
+}
+
+bool CGUIScrollBar::IsVisible() const
+{
+  // page controls can be optionally disabled if the number of pages is 1
+  if (m_numItems <= m_pageSize && !m_showOnePage)
+    return false;
+  return CGUIControl::IsVisible();
 }
