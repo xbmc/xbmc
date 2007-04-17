@@ -91,6 +91,8 @@ public:
   virtual CStdString GetDescription() const;
   bool IsFocusedOnUp() const;
 
+  virtual bool IsVisible() const;
+
 protected:
   void PageUp();
   void PageDown();
