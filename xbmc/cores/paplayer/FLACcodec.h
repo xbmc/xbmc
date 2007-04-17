@@ -17,14 +17,14 @@ public:
 
 private:
   //  I/O callbacks for the flac decoder
-  static FLAC__SeekableStreamDecoderReadStatus DecoderReadCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__byte buffer[], unsigned *bytes, void *client_data);
-  static FLAC__SeekableStreamDecoderSeekStatus DecoderSeekCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data);
-  static FLAC__SeekableStreamDecoderTellStatus DecoderTellCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset, void *client_data);
-  static FLAC__SeekableStreamDecoderLengthStatus DecoderLengthCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__uint64 *stream_length, void *client_data);
-  static FLAC__bool DecoderEofCallback(const FLAC__SeekableStreamDecoder *decoder, void *client_data);
-  static FLAC__StreamDecoderWriteStatus DecoderWriteCallback(const FLAC__SeekableStreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 * const buffer[], void *client_data);
-  static void DecoderMetadataCallback(const FLAC__SeekableStreamDecoder *decoder, const FLAC__StreamMetadata *metadata, void *client_data);
-  static void DecoderErrorCallback(const FLAC__SeekableStreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data);
+  static FLAC__StreamDecoderReadStatus DecoderReadCallback(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], unsigned *bytes, void *client_data);
+  static FLAC__StreamDecoderSeekStatus DecoderSeekCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data);
+  static FLAC__StreamDecoderTellStatus DecoderTellCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset, void *client_data);
+  static FLAC__StreamDecoderLengthStatus DecoderLengthCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 *stream_length, void *client_data);
+  static FLAC__bool DecoderEofCallback(const FLAC__StreamDecoder *decoder, void *client_data);
+  static FLAC__StreamDecoderWriteStatus DecoderWriteCallback(const FLAC__StreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 * const buffer[], void *client_data);
+  static void DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, const FLAC__StreamMetadata *metadata, void *client_data);
+  static void DecoderErrorCallback(const FLAC__StreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data);
 
   void FreeDecoder();
 
@@ -33,5 +33,5 @@ private:
   BYTE* m_pBuffer;                    //  buffer to hold the decoded audio data
   int m_BufferSize;                   //  size of buffer is filled with decoded audio data
   int m_MaxFrameSize;                 //  size of a single decoded frame
-  FLAC__SeekableStreamDecoder* m_pFlacDecoder;
+  FLAC__StreamDecoder* m_pFlacDecoder;
 };
