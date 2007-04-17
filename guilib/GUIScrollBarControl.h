@@ -41,6 +41,7 @@ public:
   virtual bool OnMouseDrag();
   virtual bool OnMouseWheel();
   virtual CStdString GetDescription() const;
+  virtual bool IsVisible() const;
 protected:
   void UpdateBarSize();
   virtual void Move(int iNumSteps);

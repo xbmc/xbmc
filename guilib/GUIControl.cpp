@@ -475,7 +475,11 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   if (!IsVisible())
   { // hidden - only allow hidden anims if we're animating a visible anim
     if (animType == ANIM_TYPE_HIDDEN && !IsAnimating(ANIM_TYPE_VISIBLE))
+    {
+      // update states to force it hidden
+      UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
       return;
+    }
     if (animType == ANIM_TYPE_WINDOW_OPEN)
       return;
   }

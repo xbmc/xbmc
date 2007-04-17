@@ -335,13 +335,6 @@ void CGUISpinControl::Render()
 {
   if (!IsVisible()) return;
 
-  // page controls can be optionally disabled if the number of pages is 1
-  if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage)
-  {
-    CGUIControl::Render();
-    return;
-  }
-
   if (!HasFocus())
   {
     m_iTypedPos = 0;
@@ -943,4 +936,12 @@ void CGUISpinControl::SetColorDiffuse(D3DCOLOR color)
   m_imgspinDown.SetColorDiffuse(color);
   m_imgspinUp.SetColorDiffuse(color);
   m_imgspinUpFocus.SetColorDiffuse(color);
+}
+
+bool CGUISpinControl::IsVisible() const
+{
+  // page controls can be optionally disabled if the number of pages is 1
+  if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage)
+    return false;
+  return CGUIControl::IsVisible();
 }
