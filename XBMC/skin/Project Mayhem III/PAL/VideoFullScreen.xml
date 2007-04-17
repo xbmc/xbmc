@@ -114,6 +114,16 @@
 				<align>left</align>
 				<font>font10</font>
 			</control>
+			<control type="label" id="1">
+				<description>Chapter Pos No</description>
+				<width>200</width>
+				<posx>680</posx>
+				<posy>80</posy>
+				<label>$INFO[player.chapter,$LOCALIZE[21396] ]$INFO[player.chaptercount, / ]</label>
+				<visible>player.chaptercount</visible>
+				<align>right</align>
+				<font>font10</font>
+			</control>
 			<control type="progress" id="1">
 				<description>Progressbar</description>
 				<posx>160</posx>
