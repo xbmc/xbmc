@@ -536,6 +536,7 @@
   <string id="649">載入中</string>
   <string id="650">輸出中</string>
   <string id="651">影片資料庫</string>
+  <string id="652">年份</string>
 
   <string id="700">清除音樂資料庫</string>
   <string id="701">移除音樂資料庫舊歌曲</string>
@@ -747,7 +748,7 @@
 
   <string id="10500">音樂/播放列表</string>
   <string id="10501">音樂/檔案</string>
-  <string id="10502">音樂/音樂庫</string>
+  <string id="10502">音樂/資料庫</string>
   <string id="10503">播放列表編輯</string>
   <string id="10504">排行前100歌曲</string>
   <string id="10505">排行前100專輯</string>
@@ -821,7 +822,7 @@
   <string id="12334">重設鎖定</string>
   <string id="12335">移除鎖定</string>
   <string id="12337">數字密碼</string>
-  <string id="12338">手把按鍵</string>
+  <string id="12338">手把按鍵組合</string>
   <string id="12339">文字密碼</string>
   <string id="12340">輸入新密碼</string>
   <string id="12341">確認新密碼</string>
@@ -884,8 +885,8 @@
   <string id="13156">硬碟軔體：</string>
   <string id="13157">硬碟密碼：</string>
   <string id="13158">硬碟鎖狀態：</string>
-  <string id="13159">子網路遮罩：</string>
-  <string id="13160">閘道位址：</string>
+  <string id="13159">子網路遮罩</string>
+  <string id="13160">閘道位址</string>
   <string id="13161">主要的 DNS 位址</string>
   <string id="13162">無法讀取資訊</string>
 
@@ -1202,7 +1203,7 @@
   <string id="15207">連線</string>
   <string id="15208">無法連線</string>
   <string id="15209">上傳進度%i</string>
-  <string id="15210">已上傳%i首歌曲</string>
+  <string id="15210">已快取%i首歌曲</string>
   <string id="15211">上傳中…</string>
   <string id="15212">上傳剩餘%i秒</string>
   <string id="15213">播放方式…</string>
@@ -1478,7 +1479,7 @@
   <string id="20181">退格</string>
   <string id="20182">空格</string>
   <string id="20183">重新載入桌面</string>
-  <string id="20184">轉動使用 EXIF 資訊</string>
+  <string id="20184">使用 EXIF 資訊旋轉圖片</string>
   <string id="20185">檢測硬體數據</string>
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
@@ -1570,6 +1571,11 @@
   <string id="20371">設定影集縮圖</string>
   <string id="20372">影集圖像</string>
   <string id="20373">季</string>
+  <string id="20374">下載影片資訊</string>
+  <string id="20375">不指定內容</string>
+  <string id="20376">首次播出：</string>
+  <string id="20377">重新整理電視節目資訊</string>
+  <string id="20378">重新整理所有影集資訊？</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1622,6 +1628,9 @@
   <string id="21392">低功率</string>
   <string id="21393">高待機</string>
   <string id="21394">低待機</string>
+
+  <string id="21395">暫存檔不能超過4GB</string>
+  <string id="21396">章節</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
