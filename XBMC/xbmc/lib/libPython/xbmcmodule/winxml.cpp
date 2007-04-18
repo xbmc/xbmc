@@ -123,7 +123,7 @@ namespace PYXBMC
 
   PyObject* WindowXML_AddItem(WindowXML *self, PyObject *args)
   {
-    int itemPosition = 0;
+    int itemPosition = -1;
     PyObject *pObject;
     string strText;
     ListItem* pListItem = NULL;
