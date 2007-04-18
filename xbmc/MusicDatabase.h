@@ -99,23 +99,18 @@ public:
   void AddSong(const CSong& song, bool bCheck = true);
   long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs);
   bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
-  bool GetSong(const CStdString& strTitle, CSong& song);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   bool GetSongById(long idSong, CSong& song);
-  bool GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
-//  bool GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
   bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
+  bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
   bool Search(const CStdString& search, CFileItemList &items);
 
-  bool GetGenresByName(const CStdString& strGenre1, VECGENRES& genres);
   bool GetAlbumFromSong(long idSong, CAlbum &album);
   bool GetAlbumFromSong(const CSong &song, CAlbum &album);
 
-  bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
-	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
-  bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
+	                       const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
   bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
   bool GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
@@ -128,10 +123,13 @@ public:
   bool RemoveSongsFromPaths(const CStdString &strPathIds);
   bool CleanupAlbumsArtistsGenres();
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre);
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
+  bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, long year);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
-  bool GetSongsByWhere(const CStdString &whereClause, CFileItemList& items);
+  bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, long year);
+  bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
@@ -167,8 +165,8 @@ protected:
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
-
 private:
+  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items);
   void SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CAlbum GetAlbumFromDataset();
