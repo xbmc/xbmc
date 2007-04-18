@@ -5,6 +5,8 @@
 #include "InfoLoader.h"
 #include "GUIInfoManager.h"
 
+
+
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
 #define GB  (1024*MB)       // 1 GigaByte (1GB)   1024 MB (2^10 MB)
