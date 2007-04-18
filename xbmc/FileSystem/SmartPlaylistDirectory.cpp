@@ -26,7 +26,7 @@ namespace DIRECTORY
     CMusicDatabase db;
     db.Open();
     CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
-    bool success = db.GetSongsByWhere(whereOrder, items);
+    bool success = db.GetSongsByWhere("", whereOrder, items);
     db.Close();
     return success;
   }
