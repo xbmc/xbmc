@@ -17,7 +17,7 @@ public:
   void            WaitForActionEvent(DWORD timeout);
   void            PulseActionEvent();
   void            UpdateFileList();
-  void            AddItem(CFileItem * fileItem);
+  void            AddItem(CFileItem * fileItem,int itemPosition);
   void            RemoveItem(int itemPosition);
   void            RefreshList();
   void            ClearList();

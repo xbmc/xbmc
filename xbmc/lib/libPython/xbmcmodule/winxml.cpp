@@ -113,20 +113,22 @@ namespace PYXBMC
   }
   
   PyDoc_STRVAR(addItem__doc__,
-    "addItem(item) -- Add a new item to this window list.\n"
+    "addItem(item[,itemPosition]) -- Add a new item to this window list.\n"
     "\n"
     "item               : string, unicode or ListItem - item to add.\n"
+    "itemPosition       : integer - item position of item to add. (0 adds to top, -1 adds to end).\n"
     "\n"
     "example:\n"
     "  - self.addItem('Reboot XBMC')\n");
 
   PyObject* WindowXML_AddItem(WindowXML *self, PyObject *args)
   {
+    int itemPosition = 0;
     PyObject *pObject;
     string strText;
     ListItem* pListItem = NULL;
     bool bRefresh = true;
-    if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
+    if (!PyArg_ParseTuple(args, "O|i", &pObject,&itemPosition))  return NULL;
     if (ListItem_CheckExact(pObject))
     {
       // object is a listitem
@@ -141,16 +143,19 @@ namespace PYXBMC
 
       pListItem = ListItem_FromString(strText);
     }
+    
+    PyGUILock();
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    
     // Tells the window to add the item to FileItem vector
-    pwx->AddItem((CFileItem *)pListItem->item);
+    pwx->AddItem((CFileItem *)pListItem->item,itemPosition);
 
     // create message
     //CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iWindowId, self->iWindowId);
     //msg.SetLPVOID(pListItem->item);
 
     // send message
-    PyGUILock();
+    
     //if (self->pWindow) self->pWindow->OnMessage(msg);
     PyGUIUnlock();
 
