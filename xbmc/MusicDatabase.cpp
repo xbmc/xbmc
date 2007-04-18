@@ -2350,7 +2350,7 @@ bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList
   return GetAlbumsByWhere(strBaseDir, where, items);
 }
 
-bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre)
+bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, bool albumArtistsOnly)
 {
   try
   {
@@ -2361,7 +2361,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
     if (idGenre==-1)
     {
-      if (!g_advancedSettings.m_bMusicLibraryHideCompilationArtists)  // show all artists in this case (ie those linked to a song)
+      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
         strSQL +=         "("
                           "select distinct song.idArtist from song" // All primary artists linked to a song
                           ") "
@@ -2378,7 +2378,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
                         "or idArtist IN "
                           "("
                           "select distinct exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
-      if (g_advancedSettings.m_bMusicLibraryHideCompilationArtists) 
+      if (albumArtistsOnly) 
         strSQL +=         "join album on album.idAlbum = exartistalbum.idAlbum " // if we're hiding compilation artists,
                           "where album.strExtraArtists != ''";                      // then exclude those where that have no extra artists
       strSQL +=           ")"
@@ -2442,7 +2442,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     // remove the null string
     strSQL += "and artist.strArtist != \"\"";
     // and the various artist entry if applicable
-    if (!g_advancedSettings.m_bMusicLibraryHideCompilationArtists || idGenre > -1)  
+    if (!albumArtistsOnly || idGenre > -1)  
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       long lVariousArtistsId = AddArtist(strVariousArtists);
