@@ -20,12 +20,12 @@ protected:
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
-  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
   virtual void OnWindowLoaded();
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnFilterItems();
   virtual bool OnClick(int iItem);
+  void OnSearch();
   void FilterItems(CFileItemList &items);
 
   void SetArtistImage(int iItem);

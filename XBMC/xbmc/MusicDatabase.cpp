@@ -1385,58 +1385,6 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
   return false;
 }
 
-bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs)
-{
-  try
-  {
-    songs.erase(songs.begin(), songs.end());
-    // use a set as we don't need more than 1 of each thing
-    set<CSong> setSongs;
-
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    // find songs that match in name
-    CStdString strSQL=FormatSQL("select * from songview where strTitle LIKE '%%%s%%'", strSearch.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    while (!m_pDS->eof())
-    {
-      //songs.push_back(GetSongFromDataset());
-      setSongs.insert(GetSongFromDataset());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    // and then songs that match in primary artist
-    strSQL=FormatSQL("select * from songview where strArtist LIKE '%%%s%%'", strSearch.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    while (!m_pDS->eof())
-    {
-      setSongs.insert(GetSongFromDataset());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    // and then songs that match in the secondary artists
-
-    strSQL=FormatSQL("select * from exartistsong join artist on exartistsong.idartist=artist.idartist join song on exartistsong.idsong=song.idsong join album on song.idalbum=album.idalbum join genre on song.idgenre=genre.idgenre join path on song.idpath=path.idpath join thumb on song.idThumb=thumb.idThumb where artist.strArtist like '%%%s%%'", strSearch.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    while (!m_pDS->eof())
-    {
-      setSongs.insert(GetSongFromDataset());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    // now dump our set back into our vector
-    for (set<CSong>::iterator it = setSongs.begin(); it != setSongs.end(); it++) songs.push_back(*it);
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" failed");
-  }
-
-  return false;
-}
-
 bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &albums)
 {
   try
@@ -1474,57 +1422,6 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
   {
     CLog::Log(LOGERROR, __FUNCTION__" failed");
   }
-  return false;
-}
-
-
-
-bool CMusicDatabase::FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums)
-{
-  try
-  {
-    albums.erase(albums.begin(), albums.end());
-    // use a set for fast lookups
-    set<CAlbum> setAlbums;
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    // first get matching albums by name.
-    CStdString strSQL=FormatSQL("select * from albumview where strAlbum like '%%%s%%'", strSearch.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    while (!m_pDS->eof())
-    {
-      setAlbums.insert(GetAlbumFromDataset());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    // now try and match the primary artist.
-    strSQL=FormatSQL("select * from albumview where strArtist like '%%%s%%'", strSearch.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    while (!m_pDS->eof())
-    {
-      setAlbums.insert(GetAlbumFromDataset());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    // and finally try the secondary artists.
-    strSQL=FormatSQL("select * from album,path,artist,exartistalbum where artist.strArtist like '%%%s%%' and artist.idArtist=exartistalbum.idArtist and album.idAlbum=exartistalbum.idAlbum and album.idPath=path.idPath", strSearch.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    while (!m_pDS->eof())
-    {
-      setAlbums.insert(GetAlbumFromDataset());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    // and copy our set into the vector
-    for (set<CAlbum>::iterator it = setAlbums.begin(); it != setAlbums.end(); it++) albums.push_back(*it);
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" failed");
-  }
-
   return false;
 }
 

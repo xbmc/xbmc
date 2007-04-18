@@ -42,8 +42,6 @@ protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
-  virtual void OnSearchItemFound(const CFileItem* pItem);
-  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnScan(int iItem) {};
 
   // new methods
