@@ -27,7 +27,8 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
     return NODE_TYPE_ALBUM_RECENTLY_PLAYED;
   else if (GetName()=="8")
     return NODE_TYPE_ALBUM_COMPILATIONS;
-
+  else if (GetName()=="9")
+    return NODE_TYPE_YEAR;
   return NODE_TYPE_NONE;
 }
 
@@ -42,6 +43,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(359));  // Recently Added Albums
   vecRoot.push_back(g_localizeStrings.Get(517));  // Recently Played Albums
   vecRoot.push_back(g_localizeStrings.Get(521));  // Compilations
+  vecRoot.push_back(g_localizeStrings.Get(652));  // Years
 
   for (int i = 0; i < (int)vecRoot.size(); ++i)
   {
