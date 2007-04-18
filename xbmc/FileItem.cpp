@@ -158,7 +158,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
 #ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty())
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
 
@@ -212,7 +212,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_strPath = item.m_strPath;
   m_bIsFolder = item.m_bIsFolder;
 #ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty())  // should root paths be "/" ?
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())  // should root paths be "/" ?
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
   m_bIsParentFolder = item.m_bIsParentFolder;
