@@ -4,6 +4,7 @@
 #include "..\..\DVDDemuxers\DVDDemux.h"
 #include "..\..\DVDStreamInfo.h"
 #include "..\DVDCodecs.h"
+#include "..\..\..\..\utils\Win32Exception.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
@@ -130,54 +131,65 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
 {
-  int iGotPicture = 0;
+  int iGotPicture = 0, len = 0;
 
-  if (!m_pCodecContext) return VC_ERROR;
+  if (!m_pCodecContext) 
+    return VC_ERROR;
+
   try
   {
-    int iLen = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
+    len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
   }
-  catch (...)
+  catch (win32_exception e)
   {
-    CLog::Log(LOGERROR, "Exception thrown when attempting to decode frame, skipping");
+    e.writelog(__FUNCTION__"::avcodec_decode_video");
     return VC_ERROR;
   }
-  if (iGotPicture != 0)
+
+  if (len < 0)
   {
-    if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
+    CLog::Log(LOGERROR, __FUNCTION__" - avcodec_decode_video returned failure");
+    return VC_ERROR;
+  }
+
+  if (len != iSize)
+    CLog::Log(LOGWARNING, __FUNCTION__" - avcodec_decode_video didn't consume the full packet");
+
+  if (!iGotPicture)
+    return VC_BUFFER;
+
+  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
+  {
+    if (!m_pConvertFrame)
     {
-      if (!m_pConvertFrame)
-      {
-        // Allocate an AVFrame structure
-        m_pConvertFrame =  m_dllAvCodec.avcodec_alloc_frame();
+      // Allocate an AVFrame structure
+      m_pConvertFrame =  m_dllAvCodec.avcodec_alloc_frame();
 
-        // Determine required buffer size and allocate buffer
-        int numBytes =  m_dllAvCodec.avpicture_get_size(PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
-        BYTE* buffer = new BYTE[numBytes];
+      // Determine required buffer size and allocate buffer
+      int numBytes =  m_dllAvCodec.avpicture_get_size(PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
+      BYTE* buffer = new BYTE[numBytes];
 
-        // Assign appropriate parts of buffer to image planes in pFrameRGB
-        m_dllAvCodec.avpicture_fill((AVPicture *)m_pConvertFrame, buffer, PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
-      }
-
-      // convert the picture
-      m_dllAvCodec.img_convert((AVPicture*)m_pConvertFrame, PIX_FMT_YUV420P,
-                  (AVPicture*)m_pFrame, m_pCodecContext->pix_fmt,
-                  m_pCodecContext->width, m_pCodecContext->height);
+      // Assign appropriate parts of buffer to image planes in pFrameRGB
+      m_dllAvCodec.avpicture_fill((AVPicture *)m_pConvertFrame, buffer, PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
     }
-    else
+
+    // convert the picture
+    m_dllAvCodec.img_convert((AVPicture*)m_pConvertFrame, PIX_FMT_YUV420P,
+                (AVPicture*)m_pFrame, m_pCodecContext->pix_fmt,
+                m_pCodecContext->width, m_pCodecContext->height);
+  }
+  else
+  {
+    // no need to convert, just free any existing convert buffers
+    if (m_pConvertFrame)
     {
-      // no need to convert, just free any existing convert buffers
-      if (m_pConvertFrame)
-      {
-        delete[] m_pConvertFrame->data[0];
-         m_dllAvUtil.av_free(m_pConvertFrame);
-        m_pConvertFrame = NULL;
-      }
+      delete[] m_pConvertFrame->data[0];
+      m_dllAvUtil.av_free(m_pConvertFrame);
+      m_pConvertFrame = NULL;
     }
   }
 
-  if (iGotPicture > 0) return (VC_PICTURE | VC_BUFFER);
-  return VC_BUFFER;
+  return VC_PICTURE | VC_BUFFER;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
