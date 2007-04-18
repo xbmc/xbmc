@@ -102,8 +102,6 @@ public:
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
-  bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
-  bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
   bool Search(const CStdString& search, CFileItemList &items);
 
   bool GetAlbumFromSong(long idSong, CAlbum &album);
@@ -138,8 +136,6 @@ public:
   bool GetAlbumPath(long idAlbum, CStdString &path);
   bool SaveAlbumThumb(long idAlbum, const CStdString &thumb);
   bool GetArtistPath(long idArtist, CStdString &path);
-  bool InitialisePartyMode();
-  bool UpdatePartyMode(long lSongId, bool bRelaxRestrictions);
 
   bool GetGenreById(long idGenre, CStdString& strGenre);
   bool GetArtistById(long idArtist, CStdString& strArtist);
