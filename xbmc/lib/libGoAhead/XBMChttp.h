@@ -71,7 +71,6 @@ public:
   int xbmcSeekPercentage(int numParas, CStdString paras[], bool relative);
   int xbmcAction(int numParas, CStdString paras[], int theAction);
   int xbmcExit(int theAction);
-  int xbmcBackupSystemInfo();
   int xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb);
   int xbmcGetThumbFilename(int numParas, CStdString paras[]);
   int xbmcLookupAlbum(int numParas, CStdString paras[]);

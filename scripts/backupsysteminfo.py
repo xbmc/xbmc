@@ -1,4 +1,4 @@
 # will create bios & eeprom backup and XBMCSystemInfo to  /System/Systeminfo/
 import xbmc
-xbmc.executehttpapi("backupsysteminfo")
+xbmc.executehttpapi("execbuiltin(backupsysteminfo)")
 
