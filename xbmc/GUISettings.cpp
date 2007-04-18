@@ -306,20 +306,19 @@ CGUISettings::CGUISettings(void)
   AddGroup(4, 13000);
   AddCategory(4, "system", 13281);
   // advanced only configuration
-  AddSeparator(3, "system.sep1");
-  AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  AddSeparator(5, "system.sep2");
-  AddInt(7, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
-  AddInt(8, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(9, "system.ledenableonpaused", 20313, true);
-  AddSeparator(10, "system.sep3");
-  AddBool(11, "system.fanspeedcontrol", 13302, false);
+  AddInt(1, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(2, "system.sep2");
+  AddInt(3, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
+  AddInt(4, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(5, "system.ledenableonpaused", 20313, true);
+  AddSeparator(6, "system.sep3");
+  AddBool(7, "system.fanspeedcontrol", 13302, false);
 #ifdef HAS_XBOX_HARDWARE
-  AddInt(12, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(8, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddSeparator(13, "system.sep4");
-  AddBool(14, "system.autotemperature", 13301, false);
-  AddInt(15, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  AddSeparator(9, "system.sep4");
+  AddBool(10, "system.autotemperature", 13301, false);
+  AddInt(11, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "lcd", 448);
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
