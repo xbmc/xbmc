@@ -173,9 +173,20 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindowXML::AddItem(CFileItem * fileItem)
+void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
 {
-  m_vecItems.Add(fileItem);
+  if (itemPosition == -1)
+  {
+    m_vecItems.Add(fileItem);
+  }
+  else if (itemPosition == 0)
+  {
+    m_vecItems.AddFront(fileItem);
+  }
+  else
+  {
+    m_vecItems.Add(fileItem);
+  }
   m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
 }
