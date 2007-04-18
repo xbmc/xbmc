@@ -56,8 +56,6 @@ using namespace MUSIC_GRABBER;
 #define CONTROL_THUMBS          51
 #define CONTROL_BIGLIST         52
 
-#define CONTROL_BTNSEARCH       8
-
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
@@ -182,10 +180,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         g_graphicsContext.SendMessage(msg2);
 
         return true;
-      }
-      else if (iControl == CONTROL_BTNSEARCH)
-      {
-        OnSearch();
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
@@ -641,68 +635,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
   }
 }
 
-/// \brief Make the actual search for the OnSearch function.
-/// \param strSearch The search string
-/// \param items Items Found
-void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch, CFileItemList& items)
-{
-}
-
-/// \brief Search the current directory for a string got from the virtual keyboard
-void CGUIWindowMusicBase::OnSearch()
-{
-  CStdString strSearch;
-  if ( !CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false) )
-    return ;
-
-  strSearch.ToLower();
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(194);
-    m_dlgProgress->SetLine(0, strSearch);
-    m_dlgProgress->SetLine(1, "");
-    m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal();
-    m_dlgProgress->Progress();
-  }
-  CFileItemList items;
-  DoSearch(strSearch, items);
-
-  if (items.Size())
-  {
-    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-    pDlgSelect->Reset();
-    pDlgSelect->SetHeading(283);
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-
-    for (int i = 0; i < (int)items.Size(); i++)
-    {
-      CFileItem* pItem = items[i];
-      pDlgSelect->Add(pItem->GetLabel());
-    }
-
-    pDlgSelect->DoModal();
-
-    int iItem = pDlgSelect->GetSelectedLabel();
-    if (iItem < 0)
-    {
-      if (m_dlgProgress) m_dlgProgress->Close();
-      return ;
-    }
-
-    CFileItem* pSelItem = items[iItem];
-
-    OnSearchItemFound(pSelItem);
-
-    if (m_dlgProgress) m_dlgProgress->Close();
-  }
-  else
-  {
-    if (m_dlgProgress) m_dlgProgress->Close();
-    CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
-  }
-}
-
 void CGUIWindowMusicBase::UpdateButtons()
 {
   // Update window selection control
@@ -723,57 +655,6 @@ void CGUIWindowMusicBase::UpdateButtons()
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow - WINDOW_MUSIC_FILES);
 
   CGUIMediaWindow::UpdateButtons();
-}
-
-/// \brief React on the selected search item
-/// \param pItem Search result item
-void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pSelItem)
-{
-  if (pSelItem->m_bIsFolder)
-  {
-    CStdString strPath = pSelItem->m_strPath;
-    CStdString strParentPath;
-    CUtil::GetParentPath(strPath, strParentPath);
-
-    Update(strParentPath);
-
-    SetHistoryForPath(strParentPath);
-
-    strPath = pSelItem->m_strPath;
-    CURL url(strPath);
-    if (pSelItem->IsSmb() && !CUtil::HasSlashAtEnd(strPath))
-      strPath += "/";
-
-    for (int i = 0; i < m_vecItems.Size(); i++)
-    {
-      CFileItem* pItem = m_vecItems[i];
-      if (pItem->m_strPath == strPath)
-      {
-        m_viewControl.SetSelectedItem(i);
-        break;
-      }
-    }
-  }
-  else
-  {
-    CStdString strPath;
-    CUtil::GetDirectory(pSelItem->m_strPath, strPath);
-
-    Update(strPath);
-
-    SetHistoryForPath(strPath);
-
-    for (int i = 0; i < (int)m_vecItems.Size(); i++)
-    {
-      CFileItem* pItem = m_vecItems[i];
-      if (pItem->m_strPath == pSelItem->m_strPath)
-      {
-        m_viewControl.SetSelectedItem(i);
-        break;
-      }
-    }
-  }
-  m_viewControl.SetFocused();
 }
 
 bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection)
@@ -962,7 +843,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Info = 0;           // Music Information
   int btn_InfoAll = 0;        // Query Information for all albums
   int btn_Scan = 0;           // Scan to library
-  int btn_Search = 0;         // Library Search
   int btn_RipTrack = 0;       // Rip audio track
   int btn_CDDB = 0;           // CDDB lookup
   int btn_Delete = 0;         // Delete
@@ -1106,11 +986,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     else if (btnid == btn_Scan)
     {
       OnScan(iItem);
-    }
-    // Search
-    else if (btnid == btn_Search)
-    {
-      OnSearch();
     }
     else if (btnid == btn_RipTrack)
     {

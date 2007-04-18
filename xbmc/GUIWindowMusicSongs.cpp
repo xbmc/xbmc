@@ -373,42 +373,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
-/// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
-/// \param strSearch The search string
-/// \param items Items Found
-void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& items)
-{
-  VECALBUMS albums;
-  m_musicdatabase.FindAlbumsByName(strSearch, albums);
-
-  if (albums.size())
-  {
-    CStdString strAlbum = g_localizeStrings.Get(483); // Album
-    for (int i = 0; i < (int)albums.size(); i++)
-    {
-      CAlbum& album = albums[i];
-      CFileItem* pItem = new CFileItem("", album);
-      pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
-      items.Add(pItem);
-    }
-  }
-
-  VECSONGS songs;
-  m_musicdatabase.FindSongsByNameAndArtist(strSearch, songs);
-
-  if (songs.size())
-  {
-    CStdString strSong = g_localizeStrings.Get(179); // Song
-    for (int i = 0; i < (int)songs.size(); i++)
-    {
-      CSong& song = songs[i];
-      CFileItem* pItem = new CFileItem(song);
-      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
-      items.Add(pItem);
-    }
-  }
-}
-
 void CGUIWindowMusicSongs::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   // We don't check for iItem range here, as we may later support creating shares
