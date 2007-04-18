@@ -146,6 +146,16 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SORT_ORDER_ASC);
     }
     break;
+  case NODE_TYPE_YEAR:
+    {
+      AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "", "%Y", ""));  // Filename, empty | Year, empty
+      SetSortMethod(SORT_METHOD_LABEL);
+
+      SetViewAsControl(DEFAULT_VIEW_LIST);
+
+      SetSortOrder(SORT_ORDER_ASC);
+    }
+    break;
   case NODE_TYPE_ARTIST:
     {
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -166,6 +176,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM:
+  case NODE_TYPE_YEAR_ALBUM:
     {
       // album
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -237,6 +248,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     }
     break;
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
+  case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_SONG:
     {
       AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty

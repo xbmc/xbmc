@@ -2398,6 +2398,61 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
+bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // get years from album list
+    CStdString strSQL="select distinct iYear from album where iYear <> 0";
+
+    // run query
+    CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    while (!m_pDS->eof())
+    {
+      CFileItem* pItem=new CFileItem(m_pDS->fv("iYear").get_asString());
+      SYSTEMTIME stTime;
+      stTime.wYear = (WORD)m_pDS->fv("iYear").get_asLong();
+      pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("iYear").get_asLong());
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList& items, long year)
+{
+  CStdString where = FormatSQL("where iYear=%ld", year);
+
+  return GetAlbumsByWhere(strBaseDir, where, items);
+}
+
 bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre)
 {
   try
@@ -2590,7 +2645,6 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
 
     m_pDS->close();
     return true;
-
   }
   catch (...)
   {
@@ -2601,76 +2655,79 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
 
 bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist)
 {
+  // where clause
+  CStdString strWhere;
+  if (idGenre!=-1)
+  {
+    strWhere+=FormatSQL("where (idAlbum IN "
+                          "("
+                          "select distinct song.idAlbum from song " // All albums where the primary genre fits
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idAlbum IN "
+                          "("
+                          "select distinct song.idAlbum from song " // All albums where extra genres fits
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ")"
+                        ") "
+                        , idGenre, idGenre);
+  }
+
+  if (idArtist!=-1)
+  {
+    if (strWhere.IsEmpty())
+      strWhere += "where ";
+    else
+      strWhere += "and ";
+
+    strWhere +=FormatSQL("(idAlbum IN "
+                            "("
+                              "select distinct song.idAlbum from song "  // All albums where the primary artist fits
+                              "where song.idArtist=%ld"
+                            ")"
+                          " or idAlbum IN "
+                            "("
+                              "select distinct song.idAlbum from song "  // All albums where extra artists fit
+                                "join exartistsong on song.idSong=exartistsong.idSong "
+                              "where exartistsong.idArtist=%ld"
+                            ")"
+                          " or idAlbum IN "
+                            "("
+                              "select distinct album.idAlbum from album " // All albums where primary album artist fits
+                              "where album.idArtist=%ld"
+                            ")"
+                          " or idAlbum IN "
+                            "("
+                              "select exartistalbum.idAlbum from exartistalbum " // All albums where extra album artists fit
+                              "where exartistalbum.idArtist=%ld"
+                            ")"
+                          ") "
+                          , idArtist, idArtist, idArtist, idArtist);
+  }
+
+  return GetAlbumsByWhere(strBaseDir, strWhere, items);
+}
+
+bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items)
+{
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select * from albumview ";
+    CStdString sql = "select * from albumview " + where;
 
-    // where clause
-    CStdString strWhere;
-    if (idGenre!=-1)
-    {
-      strWhere+=FormatSQL("where (idAlbum IN "
-                            "("
-                            "select distinct song.idAlbum from song " // All albums where the primary genre fits
-                            "where song.idGenre=%ld"
-                            ") "
-                          "or idAlbum IN "
-                            "("
-                            "select distinct song.idAlbum from song " // All albums where extra genres fits
-                              "join exgenresong on song.idSong=exgenresong.idSong "
-                            "where exgenresong.idGenre=%ld"
-                            ")"
-                          ") "
-                          , idGenre, idGenre);
-    }
-
-    if (idArtist!=-1)
-    {
-      if (strWhere.IsEmpty())
-        strWhere += "where ";
-      else
-        strWhere += "and ";
-
-      strWhere +=FormatSQL("(idAlbum IN "
-                             "("
-                                "select distinct song.idAlbum from song "  // All albums where the primary artist fits
-                                "where song.idArtist=%ld"
-                             ")"
-                           " or idAlbum IN "
-                             "("
-                                "select distinct song.idAlbum from song "  // All albums where extra artists fit
-                                  "join exartistsong on song.idSong=exartistsong.idSong "
-                                "where exartistsong.idArtist=%ld"
-                             ")"
-                           " or idAlbum IN "
-                             "("
-                                "select distinct album.idAlbum from album " // All albums where primary album artist fits
-                                "where album.idArtist=%ld"
-                             ")"
-                           " or idAlbum IN "
-                             "("
-                                "select exartistalbum.idAlbum from exartistalbum " // All albums where extra album artists fit
-                                "where exartistalbum.idArtist=%ld"
-                             ")"
-                           ") "
-                           , idArtist, idArtist, idArtist, idArtist);
-    }
-
-    // block null strings
-    if (strWhere.IsEmpty())
-      strWhere += "where ";
+    // block null album names
+    if (where.IsEmpty())
+      sql += "where ";
     else
-      strWhere += "and ";
-    strWhere += "albumview.strAlbum != \"\"";
-
-    strSQL += strWhere;
+      sql += " and ";
+    sql += "albumview.strAlbum != \"\"";
 
     // run query
-    CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
+    CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", sql.c_str());
+    if (!m_pDS->query(sql.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -2684,7 +2741,7 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
     while (!m_pDS->eof())
     {
       CStdString strDir;
-      strDir.Format("%s%ld/", strBaseDir.c_str(), m_pDS->fv("idAlbum").get_asLong());
+      strDir.Format("%s%ld/", baseDir.c_str(), m_pDS->fv("idAlbum").get_asLong());
       CFileItem* pItem=new CFileItem(strDir, GetAlbumFromDataset());
       items.Add(pItem);
 
@@ -2694,16 +2751,15 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
     // cleanup
     m_pDS->close();
     return true;
-
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed");
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", where.c_str());
   }
   return false;
 }
 
-bool CMusicDatabase::GetSongsByWhere(const CStdString &whereClause, CFileItemList &items)
+bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items)
 {
   try
   {
@@ -2730,7 +2786,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &whereClause, CFileItemLis
     while (!m_pDS->eof())
     {
       CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, "");
+      GetFileItemFromDataset(item, baseDir);
       // HACK for sorting by database returned order
       item->m_iprogramCount = ++count;
       items.Add(item);
@@ -2746,6 +2802,12 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &whereClause, CFileItemLis
     CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", whereClause.c_str());
   }
   return false;
+}
+
+bool CMusicDatabase::GetSongsByYear(const CStdString& baseDir, CFileItemList& items, long year)
+{
+  CStdString where=FormatSQL("where (iYear=%ld)", year);
+  return GetSongsByWhere(baseDir, where, items);
 }
 
 bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum)

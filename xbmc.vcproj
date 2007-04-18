@@ -1719,6 +1719,60 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeTop100.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYear.cpp">
+						<FileConfiguration
+							Name="Debug|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Profile|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Profile_FastCap|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug Xbox No Memory Tracking|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYear.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearAlbum.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearAlbum.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearSong.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearSong.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.cpp">
 					</File>
 					<File
