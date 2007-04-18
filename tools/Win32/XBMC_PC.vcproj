@@ -1826,6 +1826,36 @@
 						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeTop100.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYear.cpp">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYear.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearAlbum.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearAlbum.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearSong.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYearSong.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.cpp">
 					</File>
 					<File

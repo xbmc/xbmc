@@ -18,6 +18,9 @@
 #include "DirectoryNodeAlbumTop100Song.h"
 #include "DirectoryNodeAlbumCompilations.h"
 #include "DirectoryNodeAlbumCompilationsSongs.h"
+#include "DirectoryNodeYear.h"
+#include "DirectoryNodeYearAlbum.h"
+#include "DirectoryNodeYearSong.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
@@ -111,6 +114,12 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeAlbumCompilations(strName, pParent);
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     return new CDirectoryNodeAlbumCompilationsSongs(strName, pParent);
+  case NODE_TYPE_YEAR:
+    return new CDirectoryNodeYear(strName, pParent);
+  case NODE_TYPE_YEAR_ALBUM:
+    return new CDirectoryNodeYearAlbum(strName, pParent);
+  case NODE_TYPE_YEAR_SONG:
+    return new CDirectoryNodeYearSong(strName, pParent);
   }
 
   return NULL;
@@ -232,7 +241,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     return;
 
   // no need for "all" item when only one item
-  if (items.Size() == 1)
+  if (items.Size() == 1 || items.Size() == 2 && items[0]->IsParentFolder())
     return;
 
   switch (GetChildType())
@@ -263,6 +272,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM_TOP100:
+  case NODE_TYPE_YEAR_ALBUM:
     pItem = new CFileItem(g_localizeStrings.Get(15102));  // "All Albums"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
