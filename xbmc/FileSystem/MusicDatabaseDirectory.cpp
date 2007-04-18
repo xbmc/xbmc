@@ -71,7 +71,7 @@ bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
 {
   NODE_TYPE node=GetDirectoryType(strDirectory);
   return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 && 
-          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST);
+          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST && node!=NODE_TYPE_YEAR);
 }
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
@@ -173,6 +173,8 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       break;
     case NODE_TYPE_SONG_TOP100:
       strLabel = g_localizeStrings.Get(10504); // Top 100 Songs
+    case NODE_TYPE_YEAR:
+      strLabel = g_localizeStrings.Get(652);  // Years
     }
   }
 
@@ -188,6 +190,7 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_YEAR_SONG) return true;
   return false;
 }
 

@@ -34,22 +34,23 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
 
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 {
-  CStdStringArray vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(135));  // Genres
-  vecRoot.push_back(g_localizeStrings.Get(133));  // Artists
-  vecRoot.push_back(g_localizeStrings.Get(132));  // Albums
-  vecRoot.push_back(g_localizeStrings.Get(134));  // Songs
-  vecRoot.push_back(g_localizeStrings.Get(271));  // Top 100
-  vecRoot.push_back(g_localizeStrings.Get(359));  // Recently Added Albums
-  vecRoot.push_back(g_localizeStrings.Get(517));  // Recently Played Albums
-  vecRoot.push_back(g_localizeStrings.Get(521));  // Compilations
-  vecRoot.push_back(g_localizeStrings.Get(652));  // Years
+  vector< pair<int, int> > rootItems;
 
-  for (int i = 0; i < (int)vecRoot.size(); ++i)
+  rootItems.push_back(make_pair(1, 135));
+  rootItems.push_back(make_pair(2, 133));
+  rootItems.push_back(make_pair(3, 132));
+  rootItems.push_back(make_pair(4, 134));
+  rootItems.push_back(make_pair(9, 652));
+  rootItems.push_back(make_pair(5, 271));
+  rootItems.push_back(make_pair(6, 359));
+  rootItems.push_back(make_pair(7, 517));
+  rootItems.push_back(make_pair(8, 521));
+
+  for (unsigned int i = 0; i < rootItems.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(vecRoot[i]);
+    CFileItem* pItem = new CFileItem(g_localizeStrings.Get(rootItems[i].second));
     CStdString strDir;
-    strDir.Format("%i/", i+1);
+    strDir.Format("%i/", rootItems[i].first);
     pItem->m_strPath = BuildPath() + strDir;
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);

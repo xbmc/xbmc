@@ -299,6 +299,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
       break;
     case NODE_TYPE_ALBUM_COMPILATIONS:
     case NODE_TYPE_ALBUM:
+    case NODE_TYPE_YEAR_ALBUM:
       SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavAlbums);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
@@ -308,6 +309,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
       break;
     case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG:
+    case NODE_TYPE_YEAR_SONG:
       SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
