@@ -1949,11 +1949,6 @@ int CXbmcHttp::xbmcExit(int theAction)
   }
 }
 
-int CXbmcHttp::xbmcBackupSystemInfo()
-{
-  CUtil::ExecBuiltIn("backupsysteminfo");
-  return SetResponse(openTag+"OK");
-}
 int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
 {
   CStdString albums="";
@@ -2714,7 +2709,6 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "help")                     retVal = xbmcHelp();
       else if (command == "getsysteminfo")            retVal = xbmcGetSystemInfo(numParas, paras);
       else if (command == "getsysteminfobyname")      retVal = xbmcGetSystemInfoByName(numParas, paras);
-      else if (command == "backupsysteminfo")         retVal = xbmcBackupSystemInfo();
       else if (command == "addtoslideshow")           retVal = xbmcAddToSlideshow(numParas, paras);
       else if (command == "clearslideshow")           retVal = xbmcClearSlideshow();
       else if (command == "playslideshow")            retVal = xbmcPlaySlideshow(numParas, paras);
