@@ -51,6 +51,7 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
+#define CONTROL_BTNSEARCH          8
 #define CONTROL_FILTER            15
 #define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
@@ -212,6 +213,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
         return true;
       }
+      else if (iControl == CONTROL_BTNSEARCH)
+      {
+        OnSearch();
+        return true;
+      }
     }
     break;
   case GUI_MSG_NOTIFY_ALL:
@@ -276,13 +282,17 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   CFileItem *item = m_vecItems[iItem];
   if (item->m_strPath.Left(14) == "musicsearch://")
   {
-    // popup the search window - it'll take care of the view updating
-    CStdString search(m_search);
-    CUtil::UrlDecode(search);
-    CGUIDialogKeyboard::ShowAndGetFilter(search, true);
+    OnSearch();
     return true;
   }
   return CGUIWindowMusicBase::OnClick(iItem);
+}
+
+void CGUIWindowMusicNav::OnSearch()
+{
+  CStdString search(m_search);
+  CUtil::UrlDecode(search);
+  CGUIDialogKeyboard::ShowAndGetFilter(search, true);
 }
 
 bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
@@ -371,14 +381,6 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
-}
-
-/// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
-/// \param strSearch The search string
-/// \param items Items Found
-void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
-{
-  m_musicdatabase.Search(strSearch, items);
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
