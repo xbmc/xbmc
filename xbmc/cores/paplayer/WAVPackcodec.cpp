@@ -47,6 +47,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Callbacks.can_seek=CanSeekCallback;
 
   //  open file with decoder
+  //  NOTE: We restrict to 2 channel here, as otherwise xbox doesn't have the CPU
   m_Handle=m_dll.WavpackOpenFileInputEx(&m_Callbacks, this, NULL, m_errormsg, OPEN_TAGS | OPEN_2CH_MAX | OPEN_NORMALIZE, 23);
   if (!m_Handle)
   {
@@ -55,7 +56,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   m_SampleRate = m_dll.WavpackGetSampleRate(m_Handle);
-  m_Channels = m_dll.WavpackGetNumChannels(m_Handle);
+  m_Channels = m_dll.WavpackGetReducedChannels(m_Handle);
   m_BitsPerSample = m_dll.WavpackGetBitsPerSample(m_Handle);
   m_TotalTime = (__int64)(m_dll.WavpackGetNumSamples(m_Handle) * 1000.0 / m_SampleRate); 
   m_Bitrate = (int)m_dll.WavpackGetAverageBitrate(m_Handle, TRUE);
@@ -140,7 +141,7 @@ int WAVPackCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     m_BufferPos = 0;
 
     //  Fill our buffer with a chunk of audio data
-	  int tsamples = m_dll.WavpackUnpackSamples(m_Handle, (int32_t*)m_ReadBuffer, 576) * m_dll.WavpackGetReducedChannels(m_Handle);
+	  int tsamples = m_dll.WavpackUnpackSamples(m_Handle, (int32_t*)m_ReadBuffer, 576) * m_Channels;
 	  int tbytes = tsamples * (m_BitsPerSample/8);
 
 	  if (!tsamples)
@@ -210,11 +211,10 @@ void WAVPackCodec::FormatSamples (BYTE *dst, int bps, long *src, unsigned long s
     while (samcnt--)
     {
       temp = *src++;
-      dst [0] = 0;
-      dst [1] = (BYTE)(temp & 0xFF);
-      dst [2] = (BYTE)(temp >> 8);
-      dst [3] = (BYTE)(temp >> 16);
-      dst += 4;
+      dst [0] = (BYTE)(temp & 0xFF);
+      dst [1] = (BYTE)((temp >> 8) & 0xFF);
+      dst [2] = (BYTE)((temp >> 16) & 0xFF);
+      dst += 3;
     }
 
     break;
