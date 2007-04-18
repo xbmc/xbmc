@@ -16,6 +16,7 @@ public:
                         SONG_GENRE = 1,
                         SONG_ALBUM,
                         SONG_ARTIST,
+                        SONG_ALBUM_ARTIST,
                         SONG_TITLE,
                         SONG_YEAR,
                         SONG_TIME,
