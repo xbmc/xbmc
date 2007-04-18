@@ -41,6 +41,7 @@ typedef struct
 static const translateField fields[] = { "none", CSmartPlaylistRule::FIELD_NONE,
                                          "genre", CSmartPlaylistRule::SONG_GENRE,
                                          "album", CSmartPlaylistRule::SONG_ALBUM,
+                                         "albumartist", CSmartPlaylistRule::SONG_ALBUM_ARTIST,
                                          "artist", CSmartPlaylistRule::SONG_ARTIST,
                                          "title", CSmartPlaylistRule::SONG_TITLE,
                                          "year", CSmartPlaylistRule::SONG_YEAR,
@@ -168,6 +169,8 @@ CStdString CSmartPlaylistRule::GetWhereClause()
     query = "(strGenre" + parameter + ") or (idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
   else if (m_field == SONG_ARTIST)
     query = "(strArtist" + parameter + ") or (idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+  else if (m_field == SONG_ALBUM_ARTIST)
+    query = "idalbum in (select idalbum from artist,album where album.idartist=artist.idartist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idartist = artist.idartist and artist.strArtist" + parameter + ")";
   else if (m_field == SONG_LASTPLAYED && m_operator == OPERATOR_LESS_THAN)
     query = "lastPlayed is NULL or lastPlayed" + parameter;
   else if (m_field == FIELD_PLAYLIST)
@@ -195,7 +198,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field)
   else if (field == SONG_GENRE) return "strGenre";
   else if (field == SONG_ALBUM) return "strAlbum";
   else if (field == SONG_YEAR) return "iYear";
-  else if (field == SONG_ARTIST) return "strArtist";
+  else if (field == SONG_ARTIST || field == SONG_ALBUM_ARTIST) return "strArtist";
   else if (field == SONG_TIME) return "iDuration";
   else if (field == SONG_PLAYCOUNT) return "iTimesPlayed";
   else if (field == SONG_FILENAME) return "strFilename";
