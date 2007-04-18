@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Simple Chinese Translated by nobody-->
+<!--Simple Chinese Translated by PCMan-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -32,7 +32,7 @@
   <string id="30">十月</string>
   <string id="31">十一月</string>
   <string id="32">十二月</string>
-  
+
   <string id="98">显示：自动</string>
   <string id="99">显示：自动大图标</string>
   <string id="100">显示：图标</string>
@@ -133,7 +133,7 @@
   <string id="195">没有发现信息！</string>
   <string id="196">选择影片：</string>
   <string id="197">读取%s信息</string>
-  <string id="198">读取影片详细资料</string>
+  <string id="198">读取影片详细信息</string>
   <string id="199">导演：</string>
   <string id="200">编剧：</string>
   <string id="201">年份：</string>
@@ -353,8 +353,8 @@
   <string id="430">排序：DVD#</string>
   <string id="431">无缓存</string>
   <string id="432">从数据库中删除影片</string>
-  <string id="433">你确定删除</string>
-  <string id="434">影片？</string>
+  <string id="433">确定删除'%s'？</string>
+  <string id="434"></string>
   <string id="435">轨</string>
   <string id="436">年：</string>
   <string id="437">持续时间：</string>
@@ -440,7 +440,7 @@
   <string id="524">选择播放列表</string>
   <string id="525">新播放列表…</string>
   <string id="526">加入播放列表</string>
-  <string id="527">手动加入资料库</string>
+  <string id="527">手动加入数据库</string>
   <string id="528">输入标题</string>
   <string id="529">错误：重复标题</string>
   <string id="530">选择类别</string>
@@ -454,6 +454,10 @@
   <string id="538">大图示</string>
   <string id="539">宽图示</string>
   <string id="540">大宽图示</string>
+  <string id="541">专辑图示</string>
+  <string id="542">DVD 图示</string>
+  <string id="543">DVD</string>
+  <string id="544">媒体信息</string>
 
   <string id="550">排序：%s</string>
   <string id="551">名称</string>
@@ -479,7 +483,7 @@
   <string id="584">升幂</string>
   <string id="585">降幂</string>
   <string id="586">编辑播放列表</string>
-
+  <string id="587">滤镜</string>
   <string id="588">取消舞会模式</string>
   <string id="589">舞会模式</string>
   <string id="590">随机</string>
@@ -490,7 +494,7 @@
   <string id="595">重复：关闭</string>
   <string id="596">重复：单首</string>
   <string id="597">重复：所有</string>
-  
+
   <string id="600">压缩音乐 CD</string>
   <string id="601">中等</string>
   <string id="602">标准</string>
@@ -527,14 +531,14 @@
   <string id="644">修剪黑边</string>
   <string id="645">需要解包一个大文件，是否继续？</string>
   <string id="646">从数据库中移除</string>
-  <string id="647">输出影片资料库</string>
-  <string id="648">载入影片资料库</string>
+  <string id="647">输出影片数据库</string>
+  <string id="648">载入影片数据库</string>
   <string id="649">载入中</string>
   <string id="650">输出中</string>
-  <string id="651">影片资料库</string>
+  <string id="651">影片数据库</string>
 
-  <string id="700">清除音乐库</string>
-  <string id="701">清除音乐库中的旧文件</string>
+  <string id="700">清除音乐数据库</string>
+  <string id="701">清除音乐数据库中的旧文件</string>
   <string id="702">目前路径曾被扫瞄过</string>
   <string id="705">网络</string>
   <string id="706">HTTP 代理服务器地址</string>
@@ -576,7 +580,7 @@
   <string id="742">白色</string>
   <string id="743">黄色</string>
   <string id="744">文件设置</string>
-  <string id="745">目前图示无己搜寻资讯</string>
+  <string id="745">目前图示无己搜寻信息</string>
   <string id="746">切换到文件图示</string>
   <string id="747">图像载入错误</string>
   <string id="748">编辑路径</string>
@@ -625,7 +629,7 @@
   <string id="1013">端口</string>
   <string id="1014">用户名</string>
   <string id="1015">网络服务器</string>
-  <string id="1016">输入该服务器的网络地址</string>
+  <string id="1016">输入服务器网络地址</string>
   <string id="1017">输入服务器远程路径</string>
   <string id="1018">输入端口号</string>
   <string id="1019">输入用户名</string>
@@ -743,8 +747,8 @@
 
   <string id="10500">音乐/播放列表</string>
   <string id="10501">音乐/文件</string>
-  <string id="10502">音乐/音乐库</string>
-  <string id="10503">音乐/排行前100</string>
+  <string id="10502">音乐/数据库</string>
+  <string id="10503">播放列表编辑</string>
   <string id="10504">排行前100歌曲</string>
   <string id="10505">排行前100专辑</string>
   <string id="10506">程序</string>
@@ -757,13 +761,13 @@
   <string id="10513"></string>
   <string id="10514"></string>
   <string id="10515"></string>
-  <string id="10516">音乐 - 资料</string>
-  <string id="10517">音乐 - 正在播放</string>
+  <string id="10516">音乐 - 数据库</string>
+  <string id="10517">正在播放 - 音乐</string>
   <string id="10518"></string>
   <string id="10519"></string>
   <string id="10520"></string>
   <string id="10521">份</string>
-  <string id="10522">视频 - 正在播放</string>
+  <string id="10522">正在播放 - 视频</string>
   <string id="10523">专辑信息</string>
   <string id="10524">影片信息</string>
 
@@ -817,7 +821,7 @@
   <string id="12334">重新锁定</string>
   <string id="12335">移除锁定</string>
   <string id="12337">数字密码</string>
-  <string id="12338">手柄按键顺序</string>
+  <string id="12338">手柄按键组合</string>
   <string id="12339">文字密码</string>
   <string id="12340">输入新密码</string>
   <string id="12341">确认新密码</string>
@@ -826,7 +830,7 @@
   <string id="12344">输入密码不正确！</string>
   <string id="12345">拒绝读取</string>
   <string id="12346">已达密码重试次数限制！</string>
-  <string id="12347">XBOX 将要自动关闭！</string>
+  <string id="12347">XBOX 将要立刻关闭！</string>
   <string id="12348">拒绝访问</string>
   <string id="12353">重新上锁</string>
   <string id="12356">更改锁定</string>
@@ -848,7 +852,7 @@
   <string id="12384">24小时制</string>
   <string id="12385">日/月</string>
   <string id="12386">月/日</string>
-  <string id="12387">重新生成数据库</string>
+  <string id="12387"></string>
   <string id="12390">系统已启动时间</string>
   <string id="12391">分钟</string>
   <string id="12392">小时</string>
@@ -880,8 +884,8 @@
   <string id="13156">硬盘固件版本：</string>
   <string id="13157">硬盘密码：</string>
   <string id="13158">硬盘锁定状态：</string>
-  <string id="13159">子网掩码：</string>
-  <string id="13160">网关地址：</string>
+  <string id="13159">子网掩码</string>
+  <string id="13160">网关地址</string>
   <string id="13161">首选 DNS 服务器地址</string>
   <string id="13162">无法读取信息</string>
 
@@ -918,7 +922,7 @@
   <string id="13253">取消移动</string>
 
   <string id="13270">硬件：</string>
-  <string id="13271">CPU 中央处理器使用：</string>
+  <string id="13271">中央处理器用量：</string>
 
   <string id="13274">XBOX 已经连接到互联网，但是没有设置 DNS！</string>
   <string id="13275">硬盘</string>
@@ -997,8 +1001,8 @@
   <string id="13349">查询所有文件信息</string>
   <string id="13350">察看正在播放列表</string>
   <string id="13351">专辑信息</string>
-  <string id="13352">扫瞄文件夹信息</string>
-  <string id="13353">停止搜寻</string>
+  <string id="13352">扫瞄项目到数据库</string>
+  <string id="13353">停止扫瞄</string>
   <string id="13354">补偿方式</string>
   <string id="13355">低品质像素着色器</string>
   <string id="13356">硬件重叠</string>
@@ -1116,7 +1120,7 @@
   <string id="15000">XLink Kai</string>
   <string id="15001">目前并没有连线到运行XLink Kai的电脑</string>
   <string id="15002">请确定设定无误后再尝试连线？</string>
-  <string id="15003">输入你的讯息</string>
+  <string id="15003">输入你的信息</string>
   <string id="15004">你被邀请玩 %s。</string>
   <string id="15005">日期：%s</string>
   <string id="15006">来自：%s</string>
@@ -1158,7 +1162,7 @@
   <string id="15042">存取被拒</string>
   <string id="15043">%s 加入聊天室。</string>
   <string id="15044">%s 离开聊天室。</string>
-  <string id="15045">输入你的讯息。</string>
+  <string id="15045">输入你的信息。</string>
   <string id="15046">目前游戏室</string>
   <string id="15047">输入游戏场密码。</string>
   <string id="15048">输入游戏场说明。</string>
@@ -1169,11 +1173,11 @@
   <string id="15053">简介</string>
   <string id="15054">邀请函</string>
   <string id="15055">选择游戏：</string>
-  <string id="15056">输入讯息：</string>
+  <string id="15056">输入信息：</string>
   <string id="15057">发送</string>
   <string id="15058">建立游戏</string>
   <string id="15059">接受邀请！</string>
-  <string id="15060">讯息</string>
+  <string id="15060">信息</string>
   <string id="15061">邀请玩家 %s。</string>
   <string id="15100">浏览</string>
   <string id="15101">数据库</string>
@@ -1194,11 +1198,11 @@
   <string id="15203">Last.FM 密码</string>
   <string id="15204">无法连接：休眠中…</string>
   <string id="15205">请升级 XBMC</string>
-  <string id="15206">上传失败：无法通过认证</string>
+  <string id="15206">无法通过认证：检查帐号和密码</string>
   <string id="15207">连接</string>
   <string id="15208">无法连接</string>
   <string id="15209">上传进度%i</string>
-  <string id="15210">已上传%i首歌曲</string>
+  <string id="15210">已缓存%i首歌曲</string>
   <string id="15211">上传中…</string>
   <string id="15212">上传剩余%i秒</string>
   <string id="15213">打开方式…</string>
@@ -1236,8 +1240,8 @@
   <string id="15278">收听 %name% 在 Last.FM 的最爱歌曲</string>
   <string id="15279">正在从 Last.FM 获取列表</string>
   <string id="15280">不能从 Last.FM 获取列表…</string>
-  <string id="15281">输入艺人名来寻找相关资料</string>
-  <string id="15282">输入标签名来寻找相关资料</string>
+  <string id="15281">输入艺人名来寻找相关信息</string>
+  <string id="15282">输入标签名来寻找相关信息</string>
   <string id="15283">%name% 最近听过的歌曲</string>
   <string id="15284">收听 %name% 在 Last.FM 的推荐</string>
 
@@ -1350,8 +1354,8 @@
   <string id="20056">原缩略图</string>
   <string id="20057">移除缩略图</string>
   <string id="20058">新加入预设文件…</string>
-  <string id="20059">下载所有专辑的讯息</string>
-  <string id="20060">媒体讯息</string>
+  <string id="20059">下载所有专辑的信息</string>
+  <string id="20060">媒体信息</string>
   <string id="20061">分别的</string>
   <string id="20062">共用预设值</string>
   <string id="20063">共用预设值(只读)</string>
@@ -1373,8 +1377,8 @@
   <string id="20079">启用桌面动画效果</string>
   <string id="20080">播放音乐时关闭 RSS</string>
   <string id="20081">启用书签</string>
-  <string id="20082">显示 XLink Kai 讯息</string>
-  <string id="20083">显示音乐讯息</string>
+  <string id="20082">显示 XLink Kai 信息</string>
+  <string id="20083">显示音乐信息</string>
   <string id="20084">显示天气预报</string>
   <string id="20085">显示系统信息</string>
   <string id="20086">显示可用的磁碟空间 C: E: F:</string>
@@ -1388,8 +1392,8 @@
   <string id="20094">媒体来源</string>
   <string id="20095">预设文件密码</string>
   <string id="20096">登录窗口</string>
-  <string id="20097">抓取专辑讯息</string>
-  <string id="20098">正在取得专辑讯息</string>
+  <string id="20097">抓取专辑信息</string>
+  <string id="20098">正在取得专辑信息</string>
   <string id="20099">当 CD 播放时不能抓取该 CD</string>
   <string id="20100">管理员密码与设定</string>
   <string id="20101">输入管理员密码后，永远启用管理员模式</string>
@@ -1401,7 +1405,7 @@
   <string id="20107">分别的(锁定)</string>
   <string id="20108">根目录</string>
   <string id="20109">桌面缩放</string>
-  <string id="20110">UPNP 客户端</string>
+  <string id="20110">UPnP 客户端</string>
   <string id="20111">自动启动</string>
   <string id="20112">上次登录：%s</string>
   <string id="20113">从未登录</string>
@@ -1411,7 +1415,7 @@
   <string id="20117">密码无效</string>
   <string id="20118">需先设定管理员锁定</string>
   <string id="20119">你现在要设定吗？</string>
-  <string id="20120">载入程序讯息</string>
+  <string id="20120">载入程序信息</string>
   <string id="20121">启动舞会派对模式！</string>
   <string id="20122">真实</string>
   <string id="20123">混合饮料</string>
@@ -1466,7 +1470,7 @@
   <string id="20173">FTP 服务器</string>
   <string id="20174">ITunes 音乐共享(DAAP)</string>
   <string id="20175">UPnP 媒体服务器</string>
-  <string id="20176">显示正在播放的影片信息</string>
+  <string id="20176">显示影片信息</string>
   <string id="20177">完成</string>
   <string id="20178">上档</string>
   <string id="20179">大写</string>
@@ -1474,7 +1478,7 @@
   <string id="20181">退格</string>
   <string id="20182">空格</string>
   <string id="20183">重载桌面皮肤</string>
-  <string id="20184">根据图像 EXIF 信息自动旋转图片</string>
+  <string id="20184">根据 EXIF 信息旋转图片</string>
   <string id="20185"></string>
   <string id="20186">请稍候…</string>
   <string id="20187">备份 EEPROM</string>
@@ -1498,7 +1502,7 @@
   <string id="20304"></string>
   <string id="20305"></string>
 
-  <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加入到 BiosIDs.ini</string>
+  <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">备用 DNS 服务器地址</string>
   <string id="20308">DHCP 服务器:</string>
   <string id="20309">新建文件夹</string>
@@ -1506,7 +1510,7 @@
   <string id="20311">未知或板载(保护状态)</string>
   <string id="20312">暂停时关闭 LCD 背光</string>
   <string id="20313">暂停时打开 LED</string>
-  <string id="20314">影片 - 资料库</string>
+  <string id="20314">影片 - 数据库</string>
   <string id="20315">游戏存档</string>
   <string id="20316">排序：标签</string>
   <string id="20317">下载存档</string>
@@ -1532,7 +1536,7 @@
   <string id="20337">演员</string>
   <string id="20338">电影</string>
   <string id="20339">导演</string>
-  <string id="20340">你要从资料库中</string>
+  <string id="20340">你要从数据库中</string>
   <string id="20341">移除此路径内所有项目？</string>
   <string id="20342">电影</string>
   <string id="20343">电视节目</string>
@@ -1560,6 +1564,17 @@
   <string id="20365">剧情</string>
   <string id="20366">* 整季</string>
   <string id="20367">隐藏观看</string>
+  <string id="20368">产品编号</string>
+  <string id="20369">非观看项目隐藏图示</string>
+  <string id="20370">* “隐藏”防止被破坏 *</string>
+  <string id="20371">设定影集缩略图</string>
+  <string id="20372">影集图像</string>
+  <string id="20373">季</string>
+  <string id="20374">下载影片信息</string>
+  <string id="20375">不指定内容</string>
+  <string id="20376">首次播出：</string>
+  <string id="20377">重新整理电视节目信息</string>
+  <string id="20378">重新整理所有影集信息？</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏档案和目录</string>
@@ -1599,9 +1614,21 @@
   <string id="21380">开启 1080i</string>
   <string id="21381">输入新播放列表的名称</string>
   <string id="21382">停用档案列表的新增来源按钮</string>
-  <string id="21383">启用 页面卷轴</string>
-  <string id="21384">影片资料库使用浏览过滤按钮</string>
-  <string id="21385">打开播放列表</string>
+  <string id="21383">启用页面卷轴</string>
+  <string id="21384">影片数据库使用浏览过滤按钮</string>
+  <string id="21385">打开</string>
+
+  <string id="21386">噪音管理</string>
+  <string id="21387">快速</string>
+  <string id="21388">安静</string>
+  
+  <string id="21390">电源管理</string>
+  <string id="21391">高功率</string>
+  <string id="21392">低功率</string>
+  <string id="21393">高待机</string>
+  <string id="21394">低待机</string>
+
+  <string id="21395">缓存档不能超过4GB</string>
 
   <string id="29999">游戏应用闪烁过滤</string>
 </strings>
