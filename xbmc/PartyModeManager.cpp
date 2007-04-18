@@ -434,7 +434,7 @@ bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
     {
       CFileItemList items;
       //musicdatabase.BeginTransaction();
-      if (musicdatabase.GetSongsByWhere(sqlWhere, items))
+      if (musicdatabase.GetSongsByWhere("", sqlWhere, items))
       {
         m_history = chosenSongIDs;
     		items.Randomize(); //randomizing the initial list or they will be in database order
