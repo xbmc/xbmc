@@ -13,11 +13,6 @@ CDirectoryNodeArtist::CDirectoryNodeArtist(const CStdString& strName, CDirectory
 
 NODE_TYPE CDirectoryNodeArtist::GetChildType()
 {
-  /* all items should still go to the next filter level
-  if (GetName()=="-1")
-    return NODE_TYPE_SONG;
-    */
-
   return NODE_TYPE_ALBUM;
 }
 
@@ -30,7 +25,7 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId());
+  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId(), g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
 
   musicdatabase.Close();
 
