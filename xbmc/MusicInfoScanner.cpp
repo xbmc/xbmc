@@ -324,6 +324,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   return songsToAdd.size();
 }
 
+static bool SortSongsByTrack(CSong *song, CSong *song2)
+{
+  return song->iTrack < song->iTrack;
+}
+
 void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
 {
   // first, find all the album names for these songs
@@ -344,6 +349,34 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
     else
       it->second.push_back(&song);
   }
+  // as an additional check for those that have multiple albums in the same folder, ignore albums
+  // that have overlapping track numbers
+  for (it = albumsToAdd.begin(); it != albumsToAdd.end();)
+  {
+    vector<CSong *> &songs = it->second;
+    bool overlappingTrackNumbers(false);
+    if (songs.size() > 1)
+    {
+      sort(songs.begin(), songs.end(), SortSongsByTrack);
+      for (unsigned int i = 0; i < songs.size() - 1; i++)
+      {
+        CSong *song = songs[i];
+        CSong *song2 = songs[i+1];
+        if (song->iTrack == song2->iTrack)
+        {
+          overlappingTrackNumbers = true;
+          break;
+        }
+      }
+    }
+    if (overlappingTrackNumbers)
+    { // remove this album
+      it = albumsToAdd.erase(it);
+    }
+    else
+      it++;
+  }
+
   // ok, now run through these albums, and check whether they qualify as a "various artist" album
   // an album is considered a various artists album if the songs' primary artist differs
   // it qualifies as a "single artist with featured artists" album if the primary artist is the same, but secondary artists differ
