@@ -1638,33 +1638,15 @@ void CApplication::StartLEDControl(bool switchoff)
 #ifdef HAS_XBOX_HARDWARE
   if (switchoff && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE)
   {
-#ifdef AFTER2_0
-    if(CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY)
-    {
-#endif
-      if ( IsPlayingVideo() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO))
-      {
-        //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
-        ILED::CLEDControl(LED_COLOUR_OFF);
-      }
-      if ( IsPlayingAudio() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_MUSIC))
-      {
-        //CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
-        ILED::CLEDControl(LED_COLOUR_OFF);
-      }
-      if ( ((IsPlayingVideo() || IsPlayingAudio())) && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO_MUSIC))
-      {
-        //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
-        ILED::CLEDControl(LED_COLOUR_OFF);
-      }
-#ifdef AFTER2_0
-    }
-#endif
+    if ( IsPlayingVideo() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO))
+      ILED::CLEDControl(LED_COLOUR_OFF);
+    if ( IsPlayingAudio() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_MUSIC))
+      ILED::CLEDControl(LED_COLOUR_OFF);
+    if ( ((IsPlayingVideo() || IsPlayingAudio())) && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO_MUSIC))
+      ILED::CLEDControl(LED_COLOUR_OFF);
   }
   else if (!switchoff)
-  {
     ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
-  }
 #endif
 }
 
@@ -1674,25 +1656,14 @@ void CApplication::DimLCDOnPlayback(bool dim)
   if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
   {
     if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
-    {
-      //CLog::Log(LOGNOTICE, "LCD Control: Playing Video LCD is switched OFF!");
       g_lcd->SetBackLight(0);
-    }
     if ( (IsPlayingAudio()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_MUSIC)
-    {
-      //CLog::Log(LOGNOTICE, "LCD Control: Playing Music LCD is switched OFF!");
       g_lcd->SetBackLight(0);
-    }
     if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
-    {
-      //CLog::Log(LOGNOTICE, "LCD Control: Playing Video Or Music LCD is switched OFF!");
       g_lcd->SetBackLight(0);
-    }
   }
   else if(!dim)
-  {
     g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-  }
 #endif
 }
 
