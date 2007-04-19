@@ -3054,6 +3054,7 @@ const BUILT_IN commands[] = {
   "Skin.SetPath"," Prompts and sets a skin path",
   "Skin.Theme"," Control skin theme",
   "Skin.SetImage"," Prompts and sets a skin image",
+  "Skin.SetFile"," Prompts and sets a file",
   "Skin.SetBool"," Sets a skin setting on",
   "Skin.Reset"," Resets a skin setting to default",
   "Skin.ResetSettings"," Resets all skin settings",
@@ -3720,7 +3721,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_application.DelayLoadSkin();
   }
-  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
+  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
   {
     // break the parameter up if necessary
     // only search for the first "," and use that to break the string up
@@ -3749,6 +3750,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else if (execute.Equals("skin.setimage"))
     {
       if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
+        g_settings.SetSkinString(string, value);
+    }
+	else if (execute.Equals("skin.setfile"))
+    {
+      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".py", g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
