@@ -646,6 +646,8 @@
   <string id="1030">an image</string>
   <string id="1031">an image folder</string>
   <string id="1032">Add Network Location...</string>
+  <string id="1033">a file</string>
+  <string id="1034">Scripts Submenu</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -1484,7 +1486,7 @@
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
   
-  <string id="20189"></string>
+  <string id="20189">Enable Submenu Buttons</string>
   <string id="20190"></string>
   <string id="20191"></string>
   <string id="20192"></string>
