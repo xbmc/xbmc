@@ -973,8 +973,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("system.leddisableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      int iColour = g_guiSettings.GetInt("system.ledcolour");
-      pControl->SetEnabled(/*iColour != LED_COLOUR_NO_CHANGE &&*/ iColour != LED_COLOUR_OFF);
+      // LED_COLOUR_NO_CHANGE: we can't disable the LED on playback, 
+      //                       we have no previos reference LED COLOUR, to set the LED colour back
+      pControl->SetEnabled(g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF);
     }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
@@ -1045,8 +1046,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("system.ledenableonpaused"))
     {
+      // LED_COLOUR_NO_CHANGE: we can't enable LED on paused, 
+      //                       we have no previos reference LED COLOUR, to set the LED colour back
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
     else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
     {
@@ -1543,9 +1546,17 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
   else if (strSetting.Equals("system.ledcolour"))
-  { // Alter LED Colour immediately
+  { 
 #ifdef HAS_XBOX_HARDWARE
-    ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
+    // Alter LED Colour immediately
+    int iData =  ((CSettingInt *)pSettingControl->GetSetting())->GetData();
+    if (iData == LED_COLOUR_NO_CHANGE)
+      // LED_COLOUR_NO_CHANGE: to prevent "led off" on colour immediately change, set to default green! 
+      //                       (we have no previos reference LED COLOUR, to set the LED colour back)
+      //                       on next boot the colour will not changed and the default BIOS led colour will used
+      ILED::CLEDControl(LED_COLOUR_GREEN); 
+    else
+      ILED::CLEDControl(iData);
 #endif
   }
   else if (strSetting.Equals("locale.language"))
@@ -1669,12 +1680,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         }
       }
     }
-  }
-  else if (strSetting.Equals("system.ledcolour"))
-  { // Alter LED Colour immediately
-#ifdef HAS_XBOX_HARDWARE
-    ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-#endif
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
