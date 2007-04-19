@@ -25,9 +25,9 @@
 		<!--  <onclick>XBMC.ActivateWindow('ID here')</onclick>                  !-->
 		<control type="button" id="1123">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu15)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu15Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu15)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu14)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu14Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu14)]</onclick>
 			<posx>30</posx>
 			<posy>110</posy>
 			<width>110</width>
@@ -43,9 +43,9 @@
 		</control>
 		<control type="button" id="1122">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu14)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu14Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu14)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu13)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu13Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu13)]</onclick>
 			<posx>30</posx>
 			<posy>130</posy>
 			<width>110</width>
@@ -61,9 +61,9 @@
 		</control>
 		<control type="button" id="1121">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu13)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu13Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu13)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu12)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu12Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu12)]</onclick>
 			<posx>30</posx>
 			<posy>150</posy>
 			<width>110</width>
@@ -79,9 +79,9 @@
 		</control>
 		<control type="button" id="1120">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu12)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu12Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu12)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu11)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu11Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu11)]</onclick>
 			<posx>30</posx>
 			<posy>170</posy>
 			<width>110</width>
@@ -97,9 +97,9 @@
 		</control>
 		<control type="button" id="1119">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu11)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu11Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu11)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu10)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu10Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu10)]</onclick>
 			<posx>30</posx>
 			<posy>190</posy>
 			<width>110</width>
@@ -115,9 +115,9 @@
 		</control>
 		<control type="button" id="1118">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu10)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu10Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu10)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu9)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu9Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu9)]</onclick>
 			<posx>30</posx>
 			<posy>210</posy>
 			<width>110</width>
@@ -133,9 +133,9 @@
 		</control>
 		<control type="button" id="1117">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu9)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu9Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu9)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu8)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu8Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu8)]</onclick>
 			<posx>30</posx>
 			<posy>230</posy>
 			<width>110</width>
@@ -151,9 +151,9 @@
 		</control>
 		<control type="button" id="1116">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu8)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu8Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu8)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu7)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu7Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu7)]</onclick>
 			<posx>30</posx>
 			<posy>250</posy>
 			<width>110</width>
@@ -169,9 +169,9 @@
 		</control>
 		<control type="button" id="1115">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu7)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu7Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu7)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu6)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu6Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu6)]</onclick>
 			<posx>30</posx>
 			<posy>270</posy>
 			<width>110</width>
@@ -187,9 +187,9 @@
 		</control>
 		<control type="button" id="1114">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu6)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu6Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu6)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu5)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu5Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu5)]</onclick>
 			<posx>30</posx>
 			<posy>290</posy>
 			<width>110</width>
@@ -205,9 +205,9 @@
 		</control>
 		<control type="button" id="1113">
 			<description>SubMenu button</description>
-			<visible>Skin.HasSetting(DialogSubMenu5)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu5Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu5)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu4)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu4Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu4)]</onclick>
 			<posx>30</posx>
 			<posy>310</posy>
 			<width>110</width>
@@ -223,9 +223,9 @@
 		</control>
 		<control type="button" id="1112">
 			<description>scripts button</description>
-			<visible>Skin.HasSetting(DialogSubMenu4)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu4Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu4)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu3)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu3Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu3)]</onclick>
 			<posx>30</posx>
 			<posy>330</posy>
 			<width>110</width>
@@ -241,9 +241,9 @@
 		</control>
 		<control type="button" id="1111">
 			<description>Scripts button</description>
-			<visible>Skin.HasSetting(DialogSubMenu3)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu3Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu3)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu2)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu2Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu2)]</onclick>
 			<posx>30</posx>
 			<posy>350</posy>
 			<width>110</width>
@@ -259,9 +259,9 @@
 		</control>
 		<control type="button" id="1110">
 			<description>Scripts button</description>
-			<visible>Skin.HasSetting(DialogSubMenu2)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu2Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu2)]</onclick>
+			<visible>Skin.HasSetting(DialogSubMenu1)</visible>
+			<label>$INFO[Skin.String(DialogSubMenu1Title)]</label>
+			<onclick>$INFO[Skin.String(DialogSubMenu1)]</onclick>
 			<posx>30</posx>
 			<posy>370</posy>
 			<width>110</width>
@@ -277,9 +277,9 @@
 		</control>
 		<control type="button" id="1109">
 			<description>Scripts button</description>
-			<visible>Skin.HasSetting(DialogSubMenu1)</visible>
-			<label>$INFO[Skin.String(DialogSubMenu1Title)]</label>
-			<onclick>$INFO[Skin.String(DialogSubMenu1)]</onclick>
+			<visible>yes</visible>
+			<label>247</label>
+			<onclick>XBMC.ActivateWindow(20)</onclick>
 			<posx>30</posx>
 			<posy>390</posy>
 			<width>110</width>
