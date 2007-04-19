@@ -46,7 +46,7 @@
 				<label>128</label>
 				<onleft>9002</onleft>
 				<onright>9002</onright>
-				<onup>13</onup>
+				<onup>14</onup>
 				<ondown>12</ondown>
 			</control>
 			<control type="button" id="12">
@@ -73,7 +73,7 @@
 				<description>Submenu</description>
 				<posx>0</posx>
 				<posy>231</posy>
-				<label>Submenu</label>
+				<label>1034</label>
 				<onleft>9006</onleft>
 				<onright>9006</onright>
 				<onup>13</onup>
@@ -832,7 +832,7 @@
 				<posx>190</posx>
 				<posy>100</posy>
 				<width>485</width>
-				<label>20189</label>
+				<label>1035</label>
 				<onclick>Skin.ToggleSetting(submenubuttons)</onclick>
 				<selected>Skin.HasSetting(submenubuttons)</selected>
 				<onleft>9001</onleft>
@@ -1174,7 +1174,7 @@
 					<description>Submenu background</description>
 					<posx>438</posx>
 					<posy>157</posy>
-					<height>337</height>
+					<height>264</height>
 					<width>197</width>
 					<texture>black.png</texture>
 				</control>
@@ -1238,7 +1238,7 @@
 					<onclick>Skin.SetFile(DialogSubMenu10)</onclick>
 					<onleft>52</onleft>
 					<onright>60</onright>
-					<onup>410</onup>
+					<onup>49</onup>
 					<ondown>411</ondown>
 				</control>
 				<control type="label">
@@ -1391,7 +1391,7 @@
 					<onleft>56</onleft>
 					<onright>64</onright>
 					<onup>413</onup>
-					<ondown>415</ondown>
+					<ondown>49</ondown>
 				</control>
 				<control type="label">
 					<description>Submenu button 14 String NOT SET label</description>
@@ -1414,49 +1414,10 @@
 					<onleft>414</onleft>
 					<onright>64</onright>
 					<onup>63</onup>
-					<ondown>65</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<control type="button" id="415">
-					<description>Submenu button String Set 15</description>
-					<posx>443</posx>
-					<posy>416</posy>
-					<width>150</width>
-					<label>$INFO[Skin.String(DialogSubMenu15Title)]</label>
-					<onclick>Skin.SetString(DialogSubMenu15Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu15)</onclick>
-					<onleft>57</onleft>
-					<onright>65</onright>
-					<onup>414</onup>
-					<ondown>49</ondown>
-				</control>
-				<control type="label">
-					<description>Submenu button 15 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>427</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(DialogSubMenu15Title)</visible>
-					<include>textcolorgrey</include>
-				</control>
-				<control type="radiobutton" id="65">
-					<description>enable Submenu button 15</description>
-					<posx>598</posx>
-					<posy>416</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(DialogSubMenu15)</onclick>
-					<selected>Skin.HasSetting(DialogSubMenu15)</selected>
-					<onleft>415</onleft>
-					<onright>65</onright>
-					<onup>64</onup>
 					<ondown>59</ondown>
 					<texturefocus border="5">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-
 			</control>
 		</control>
 		<include>windowswitchtransition</include>
