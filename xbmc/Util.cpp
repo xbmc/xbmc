@@ -3726,14 +3726,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // break the parameter up if necessary
     // only search for the first "," and use that to break the string up
     int pos = strParameterCaseIntact.Find(",");
+    int string;
     if (pos >= 0)
     {
-      int string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
-      g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
-      g_settings.Save();
-      return 0;
+      string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
+      if (execute.Equals("setstring"))
+      {
+        g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
+        g_settings.Save();
+        return 0;
+      }
     }
-    int string = g_settings.TranslateSkinString(strParameterCaseIntact);
+    else
+      string = g_settings.TranslateSkinString(strParameterCaseIntact);
     CStdString value = g_settings.GetSkinString(string);
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
@@ -3752,9 +3757,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
         g_settings.SetSkinString(string, value);
     }
-	else if (execute.Equals("skin.setfile"))
+    else if (execute.Equals("skin.setfile"))
     {
-      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".py", g_localizeStrings.Get(1033), value))
+      CStdString strMask;
+      if (pos > -1)
+        strMask = strParameterCaseIntact.Mid(pos+1);
+      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
