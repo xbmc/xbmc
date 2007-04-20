@@ -1630,9 +1630,10 @@
   <string id="21392">Low Power</string>
   <string id="21393">High Standby</string>
   <string id="21394">Low Standby</string>
-
   <string id="21395">Unable to cache files bigger than 4 gb</string>
   <string id="21396">Chapter</string>
 
+  <string id="21397">High Quality Pixel Shader V2</string>	
+	
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>
