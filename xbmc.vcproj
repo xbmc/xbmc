@@ -3693,6 +3693,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\VideoRenderers\RGBRenderer.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\RGBRendererV2.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\VideoRenderers\RGBRendererV2.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\VideoRenderers\XBoxRenderer.cpp">
 				</File>
 				<File
