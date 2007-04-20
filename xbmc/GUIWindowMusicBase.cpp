@@ -1298,7 +1298,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
       // the current folder
       pSelectedItem->FreeMemory();
       if (!pSelectedItem->HasThumbnail())
-        pSelectedItem->SetMusicThumb();
+        pSelectedItem->SetThumbnailImage(albumThumb);
       pSelectedItem->FillInDefaultIcon();
     }
     else
