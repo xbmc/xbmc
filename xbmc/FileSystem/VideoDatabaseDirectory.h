@@ -20,5 +20,6 @@ namespace DIRECTORY
     static bool IsAllItem(const CStdString& strDirectory);
     bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
     bool ContainsMovies(const CStdString &path);
+    static bool CanCache(const CStdString &path);
   };
 };
