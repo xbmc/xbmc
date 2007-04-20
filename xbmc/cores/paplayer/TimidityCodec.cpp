@@ -91,7 +91,7 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool TimidityCodec::CanInit()
 {
-  return XFILE::CFile::Exists("Q:\\system\\timidity\\timidity.cfg");
+  return XFILE::CFile::Exists("Q:\\system\\players\\paplayer\\timidity\\timidity.cfg");
 }
 
 bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
