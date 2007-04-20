@@ -23,6 +23,7 @@
 #include "PixelShaderRenderer.h"
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
+#include "RGBRendererV2.h"
 
 CXBoxRenderManager g_renderManager;
 
@@ -145,6 +146,11 @@ unsigned int CXBoxRenderManager::PreInit()
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer");
       m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
+    }
+    else if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_HQ_RGB_SHADERV2")
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer");
+      m_pRenderer = new CRGBRendererV2(g_graphicsContext.Get3DDevice());
     }
     else // if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_LQ_RGB_SHADER)
     {
