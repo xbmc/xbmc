@@ -663,6 +663,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
       pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
       pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
+      pControl->AddLabel(g_localizeStrings.Get(21397), RENDER_HQ_RGB_SHADERV2);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("musicplayer.replaygaintype"))
