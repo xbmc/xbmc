@@ -203,3 +203,11 @@ bool CMusicDatabaseDirectory::Exists(const char* strPath)
 
   return true;
 }
+
+bool CMusicDatabaseDirectory::CanCache(const CStdString& strPath)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  if (!pNode.get())
+    return false;
+  return pNode->CanCache();
+}

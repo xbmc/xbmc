@@ -324,6 +324,7 @@ public:
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
   bool GetCacheToDisc() { return m_bCacheToDisc; }
   void RemoveDiscCache();
+  bool AlwaysCache();
 
   void SetCachedVideoThumbs();
   void SetCachedProgramThumbs();

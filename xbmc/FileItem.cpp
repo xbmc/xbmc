@@ -30,6 +30,8 @@
 #include "filesystem/StackDirectory.h"
 #include "filesystem/filecurl.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/VideoDatabaseDirectory.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "cuedocument.h"
 #include "Utils/fstrcmp.h"
@@ -2037,6 +2039,16 @@ CStdString CFileItemList::GetDiscCacheFile()
   else
     cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
   return cacheFile;
+}
+
+bool CFileItemList::AlwaysCache()
+{
+  // some database folders are always cached
+  if (IsMusicDb())
+    return CMusicDatabaseDirectory::CanCache(m_strPath);
+  if (IsVideoDb())
+    return CVideoDatabaseDirectory::CanCache(m_strPath);
+  return false;
 }
 
 void CFileItemList::SetCachedVideoThumbs()
