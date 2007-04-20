@@ -1141,7 +1141,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "rows", g_advancedSettings.m_lcdRows, 4, 1, 4);
-    GetInteger(pElement, "columns", g_advancedSettings.m_lcdColumns, 20, 1, 20);
+    GetInteger(pElement, "columns", g_advancedSettings.m_lcdColumns, 20, 1, 40);
     GetInteger(pElement, "address1", g_advancedSettings.m_lcdAddress1, 0, 0, 0x100);
     GetInteger(pElement, "address2", g_advancedSettings.m_lcdAddress2, 0x40, 0, 0x100);
     GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0x14, 0, 0x100);
