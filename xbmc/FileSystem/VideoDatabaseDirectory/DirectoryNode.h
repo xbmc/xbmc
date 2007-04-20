@@ -37,6 +37,7 @@ namespace DIRECTORY
 
       CDirectoryNode* GetParent();
 
+      bool CanCache();
     protected:
       CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
@@ -52,7 +53,6 @@ namespace DIRECTORY
 
     private:
       void AddQueuingFolder(CFileItemList& items);
-      bool CanCache();
 
     private:
       NODE_TYPE m_Type;
