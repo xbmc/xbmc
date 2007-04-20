@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 04/07/2007-->
+<!--Date of translation: 04/20/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8427-->
+<!--Based on english strings version 8575-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -516,13 +516,15 @@
   <string id="642">Amplification Fichiers non Replay Gain</string>
   <string id="643">Eviter les coupures sur les fichiers Replay Gain</string>
   <string id="644">Couper les barres noires</string>
-  <string id="645">XBMC doit mettre en cache un fichier de taille importante. Continuer ?</string>
+  <string id="645">XBMC doit mettre en cache un fichier de taille importante.&#10;Continuer ?</string>
   <string id="646">Retirer de la bibliothèque</string>
   <string id="647">Exporter la bibliothèque vidéos</string>
   <string id="648">Importer la bibliothèque vidéos</string>
   <string id="649">Importation</string>
   <string id="650">Exportation</string>
   <string id="651">Bibliothèque vidéos</string>
+  <string id="652">Années</string>
+
   <string id="700">Optimisation de la bibliothèque</string>
   <string id="701">Suppression des anciens morceaux de la bibliothèque</string>
   <string id="702">Vous avez déjà scanner ce dossier.</string>
@@ -631,6 +633,10 @@
   <string id="1030">une image</string>
   <string id="1031">une image dossier</string>
   <string id="1032">Ajouter un chemin réseau</string>
+  <string id="1033">un fichier</string>
+  <string id="1034">Sous-menu</string>
+  <string id="1035">Activer les boutons du sous-menu</string>
+
   <string id="1200">Client SMB</string>
   <string id="1202">Groupe de travail</string>
   <string id="1203">Utilisateur par défaut</string>
@@ -1415,6 +1421,7 @@
   <string id="20186">Merci de patienter</string>
   <string id="20187">Récupération de l'EEPROM</string>
   <string id="20188">Récupération du BIOS</string>
+
   <string id="20306">Inconnu. Merci d'ajouter le MD5 depuis xbmc.log à BiosIDs.ini.</string>
   <string id="20307">DNS secondaire</string>
   <string id="20308">Serveur DHCP</string>
@@ -1483,6 +1490,12 @@
   <string id="20371">Définir Image Saison</string>
   <string id="20372">Image Saison</string>
   <string id="20373">Saison</string>
+  <string id="20374">Téléchargement des infos vidéo</string>
+  <string id="20375">Contenu non assigner</string>
+  <string id="20376">Première diffusion:</string>
+  <string id="20377">Rafraîchir Info Séries TV</string>
+  <string id="20378">Rafraîchir info pour tous les épisodes?</string>
+
   <string id="21330">Montrer les dossiers et les fichiers cachés</string>
   <string id="21331">Client TuxBox</string>
   <string id="21332">AVERTISSEMENT: Le dispositif TuxBox est en mode d'enregistrement!</string>
@@ -1529,6 +1542,9 @@
   <string id="21392">Puissance basse</string>
   <string id="21393">Ressource élevée</string>
   <string id="21394">Ressource basse</string>
+  <string id="21395">Impossible de cacher des fichiers plus grand que 4 GB</string>
+  <string id="21396">Chapitre</string>
+  <string id="21397">ombrage pixels haute qualité V2</string>
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 </strings>
