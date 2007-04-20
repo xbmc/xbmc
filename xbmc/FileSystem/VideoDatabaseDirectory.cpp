@@ -162,3 +162,11 @@ bool CVideoDatabaseDirectory::Exists(const char* strPath)
 
   return true;
 }
+
+bool CVideoDatabaseDirectory::CanCache(const CStdString& strPath)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  if (!pNode.get())
+    return false;
+  return pNode->CanCache();
+}

@@ -359,18 +359,32 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  // see if we can load a previously cached folder
+  CFileItemList cachedItems(strDirectory);
+  if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = strParentPath;
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
+    items = cachedItems;
+    cachedItems.ClearKeepPointer();
   }
+  else
+  {
+    DWORD time = timeGetTime();
+    if (m_guiState.get() && !m_guiState->HideParentDirItems())
+    {
+      CFileItem *pItem = new CFileItem("..");
+      pItem->m_strPath = strParentPath;
+      pItem->m_bIsFolder = true;
+      pItem->m_bIsShareOrDrive = false;
+      items.Add(pItem);
+    }
 
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-    return false;
+    if (!m_rootDir.GetDirectory(strDirectory, items))
+      return false;
 
+    // took over a second, and not normally cached, so cache it
+    if (time + 1000 < timeGetTime() && !items.GetCacheToDisc())
+      items.Save();
+  }
   return true;
 }
 
@@ -526,6 +540,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
       if (!HaveDiscOrConnection(pItem->m_strPath, pItem->m_iDriveType))
         return true;
     }
+
+    // remove the directory cache if the folder isn't not normally cached
+    CFileItemList items(pItem->m_strPath);
+    if (!items.AlwaysCache())
+      items.RemoveDiscCache();
 
     CFileItem directory(*pItem);
     if (!Update(directory.m_strPath))
