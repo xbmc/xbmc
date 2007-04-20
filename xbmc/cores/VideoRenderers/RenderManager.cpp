@@ -149,7 +149,7 @@ unsigned int CXBoxRenderManager::PreInit()
     }
     else if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_HQ_RGB_SHADERV2)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer");
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer V2");
       m_pRenderer = new CRGBRendererV2(g_graphicsContext.Get3DDevice());
     }
     else // if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_LQ_RGB_SHADER)
