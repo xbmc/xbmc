@@ -541,7 +541,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
         return true;
     }
 
-    // remove the directory cache if the folder isn't not normally cached
+    // remove the directory cache if the folder is not normally cached
     CFileItemList items(pItem->m_strPath);
     if (!items.AlwaysCache())
       items.RemoveDiscCache();
