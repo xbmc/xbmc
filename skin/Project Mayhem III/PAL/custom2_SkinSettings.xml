@@ -73,7 +73,7 @@
 				<description>Submenu</description>
 				<posx>0</posx>
 				<posy>231</posy>
-				<label>1034</label>
+				<label>Submenu</label>
 				<onleft>9006</onleft>
 				<onright>9006</onright>
 				<onup>13</onup>
@@ -318,6 +318,7 @@
 					<posx>223</posx>
 					<posy>194</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(ProgramsBookmark1)]</label>
 					<onclick>Skin.SetString(ProgramsBookmark1)</onclick>
 					<onleft>9001</onleft>
@@ -355,6 +356,7 @@
 					<posx>223</posx>
 					<posy>231</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(ProgramsBookmark2)]</label>
 					<onclick>Skin.SetString(ProgramsBookmark2)</onclick>
 					<onleft>9001</onleft>
@@ -392,6 +394,7 @@
 					<posx>223</posx>
 					<posy>268</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(ProgramsBookmark3)]</label>
 					<onclick>Skin.SetString(ProgramsBookmark3)</onclick>
 					<onleft>9001</onleft>
@@ -450,6 +453,7 @@
 					<posx>223</posx>
 					<posy>389</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(VideoBookmark1)]</label>
 					<onclick>Skin.SetString(VideoBookmark1)</onclick>
 					<onleft>9001</onleft>
@@ -487,6 +491,7 @@
 					<posx>223</posx>
 					<posy>426</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(VideoBookmark2)]</label>
 					<onclick>Skin.SetString(VideoBookmark2)</onclick>
 					<onleft>9001</onleft>
@@ -524,6 +529,7 @@
 					<posx>223</posx>
 					<posy>463</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(VideoBookmark3)]</label>
 					<onclick>Skin.SetString(VideoBookmark3)</onclick>
 					<onleft>9001</onleft>
@@ -582,6 +588,7 @@
 					<posx>443</posx>
 					<posy>194</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(MusicBookmark1)]</label>
 					<onclick>Skin.SetString(MusicBookmark1)</onclick>
 					<onleft>51</onleft>
@@ -619,6 +626,7 @@
 					<posx>443</posx>
 					<posy>231</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(MusicBookmark2)]</label>
 					<onclick>Skin.SetString(MusicBookmark2)</onclick>
 					<onleft>52</onleft>
@@ -656,6 +664,7 @@
 					<posx>443</posx>
 					<posy>268</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(MusicBookmark3)]</label>
 					<onclick>Skin.SetString(MusicBookmark3)</onclick>
 					<onleft>53</onleft>
@@ -693,6 +702,7 @@
 					<posx>443</posx>
 					<posy>305</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(MusicBookmark4)]</label>
 					<onclick>Skin.SetString(MusicBookmark4)</onclick>
 					<onleft>54</onleft>
@@ -751,6 +761,7 @@
 					<posx>443</posx>
 					<posy>389</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(PicturesBookmark1)]</label>
 					<onclick>Skin.SetString(PicturesBookmark1)</onclick>
 					<onleft>55</onleft>
@@ -788,6 +799,7 @@
 					<posx>443</posx>
 					<posy>426</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(PicturesBookmark2)]</label>
 					<onclick>Skin.SetString(PicturesBookmark2)</onclick>
 					<onleft>56</onleft>
@@ -832,7 +844,7 @@
 				<posx>190</posx>
 				<posy>100</posy>
 				<width>485</width>
-				<label>1035</label>
+				<label>20189</label>
 				<onclick>Skin.ToggleSetting(submenubuttons)</onclick>
 				<selected>Skin.HasSetting(submenubuttons)</selected>
 				<onleft>9001</onleft>
@@ -871,6 +883,7 @@
 					<posx>223</posx>
 					<posy>194</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu1Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu1Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu1)</onclick>
@@ -909,6 +922,7 @@
 					<posx>223</posx>
 					<posy>231</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu2Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu2Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu2)</onclick>
@@ -947,6 +961,7 @@
 					<posx>223</posx>
 					<posy>268</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu3Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu3Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu3)</onclick>
@@ -985,6 +1000,7 @@
 					<posx>223</posx>
 					<posy>305</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu4Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu4Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu4)</onclick>
@@ -1023,6 +1039,7 @@
 					<posx>223</posx>
 					<posy>342</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu5Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu5Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu5)</onclick>
@@ -1061,6 +1078,7 @@
 					<posx>223</posx>
 					<posy>379</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu6Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu6Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu6)</onclick>
@@ -1099,6 +1117,7 @@
 					<posx>223</posx>
 					<posy>416</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu7Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu7Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu7)</onclick>
@@ -1137,6 +1156,7 @@
 					<posx>223</posx>
 					<posy>453</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu8Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu8Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu8)</onclick>
@@ -1195,6 +1215,7 @@
 					<posx>443</posx>
 					<posy>194</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu9Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu9Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu9)</onclick>
@@ -1233,6 +1254,7 @@
 					<posx>443</posx>
 					<posy>231</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu10Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu10Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu10)</onclick>
@@ -1271,6 +1293,7 @@
 					<posx>443</posx>
 					<posy>268</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu11Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu11Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu11)</onclick>
@@ -1309,6 +1332,7 @@
 					<posx>443</posx>
 					<posy>305</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu12Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu12Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu12)</onclick>
@@ -1347,6 +1371,7 @@
 					<posx>443</posx>
 					<posy>342</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu13Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu13Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu13)</onclick>
@@ -1385,6 +1410,7 @@
 					<posx>443</posx>
 					<posy>379</posy>
 					<width>150</width>
+					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu14Title)]</label>
 					<onclick>Skin.SetString(DialogSubMenu14Title)</onclick>
 					<onclick>Skin.SetFile(DialogSubMenu14)</onclick>
