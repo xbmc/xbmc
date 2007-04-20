@@ -10,7 +10,7 @@
 #define RENDER_LQ_RGB_SHADER   0
 #define RENDER_OVERLAYS      1
 #define RENDER_HQ_RGB_SHADER   2
-#define RENDER_HQ_RGB_SHADERV2   2
+#define RENDER_HQ_RGB_SHADERV2   3
 
 // Subtitle colours
 
