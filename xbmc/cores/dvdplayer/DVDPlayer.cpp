@@ -1383,10 +1383,6 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
   /* audio normally won't consume full cpu, so let it have prio */
   m_dvdPlayerAudio.SetPriority(GetThreadPriority(*this)+1);
 
-  /* set aspect ratio as requested by navigator for dvd's */
-  if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
-    m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
-
   return true;
 }
 
@@ -1438,6 +1434,10 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
     pStream->disabled = true;
     return false;
   }
+
+  /* set aspect ratio as requested by navigator for dvd's */
+  if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
+    m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
