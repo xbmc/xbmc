@@ -6,14 +6,14 @@
 	<defaultcontrol always="true">1109</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>500</posx>
+		<posx>475</posx>
 		<posy>90</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="0">
-			<posx>10</posx>
+			<posx>5</posx>
 			<posy>15</posy>
-			<width>160</width>
+			<width>200</width>
 			<height>440</height>
 			<texture>subpanel.png</texture>
 		</control>
@@ -28,9 +28,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu14)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu14Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu14)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>110</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1123</onleft>
@@ -46,9 +47,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu13)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu13Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu13)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>130</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1122</onleft>
@@ -64,9 +66,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu12)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu12Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu12)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>150</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1121</onleft>
@@ -82,9 +85,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu11)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu11Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu11)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>170</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1120</onleft>
@@ -100,9 +104,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu10)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu10Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu10)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>190</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1119</onleft>
@@ -118,9 +123,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu9)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu9Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu9)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>210</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1118</onleft>
@@ -136,9 +142,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu8)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu8Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu8)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>230</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1117</onleft>
@@ -154,9 +161,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu7)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu7Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu7)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>250</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1116</onleft>
@@ -172,9 +180,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu6)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu6Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu6)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>270</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1115</onleft>
@@ -190,9 +199,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu5)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu5Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu5)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>290</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1114</onleft>
@@ -208,9 +218,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu4)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu4Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu4)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>310</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1113</onleft>
@@ -226,9 +237,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu3)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu3Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu3)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>330</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1112</onleft>
@@ -244,9 +256,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu2)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu2Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu2)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>350</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1111</onleft>
@@ -262,9 +275,10 @@
 			<visible>Skin.HasSetting(DialogSubMenu1)</visible>
 			<label>$INFO[Skin.String(DialogSubMenu1Title)]</label>
 			<onclick>$INFO[Skin.String(DialogSubMenu1)]</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>370</posy>
-			<width>110</width>
+			<width>150</width>
+			<textwidth>125</textwidth>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1110</onleft>
@@ -280,9 +294,10 @@
 			<visible>yes</visible>
 			<label>247</label>
 			<onclick>XBMC.ActivateWindow(20)</onclick>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>390</posy>
-			<width>110</width>
+			<textwidth>125</textwidth>
+			<width>150</width>
 			<height>20</height>
 			<font>font101</font>
 			<onleft>1109</onleft>
