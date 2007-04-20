@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 28/03/2007-->
+<!--Date of translation: 19/04/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 8338 -->
+<!--Based on english strings version 8549 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -58,9 +58,9 @@
   <string id="117">Poista</string>
   <string id="118">Nimeä uudelleen</string>
   <string id="119">Uusi kansio</string>
-  <string id="120">Vahvista kopiointi</string>
-  <string id="121">Vahvista siirto</string>
-  <string id="122">Vahvista poisto</string>
+  <string id="120">Vahvista tiedoston kopiointi</string>
+  <string id="121">Vahvista tiedoston siirto</string>
+  <string id="122">Vahvista tiedoston poisto</string>
   <string id="123">Kopioidaanko valitut tiedostot?</string>
   <string id="124">Siirretäänkö valitut tiedostot?</string>
   <string id="125">Poistetaanko valitut tiedostot?</string>
@@ -72,7 +72,7 @@
   <string id="131">Näytönasetukset</string>
   <string id="132">Albumit</string>
   <string id="133">Esittäjät</string>
-  <string id="134">Kappaleet</string>
+  <string id="134">Kappaletta</string>
   <string id="135">Tyylit</string>
   <string id="136">Soittolistat</string>
   <string id="137">Etsi kirjastosta</string>
@@ -412,8 +412,8 @@
   <string id="489">Toista seuraava tiedosto automaattisesti</string>
   <string id="491">Suuret kuvakkeet</string>
   <string id="492">Tekstityksen koko</string>
-  <string id="493">Lisäasetukset (muuta vain jos tiedät mitä teet!)</string>
-  <string id="494">Äänen tilatunne (dB)</string>
+  <string id="493">Lisäasetukset (vain kun tiedät mitä teet!)</string>
+  <string id="494">Äänen tilatunne(dB)</string>
   <string id="495">Sovita videot käyttöliittymän resoluutioon</string>
   <string id="496">Kuvaruudun säätö</string>
   <string id="497">Piilota tiedostojen päätteet</string>
@@ -457,6 +457,10 @@
   <string id="538">Suuret kuvak.</string>
   <string id="539">Ruudut</string>
   <string id="540">Leveä</string>
+  <string id="541">Albumi-kuvakkeet</string>
+  <string id="542">DVD-kuvakkeet</string>
+  <string id="543">DVD</string>
+  <string id="544">Media tiedot</string>
  
   <string id="550">Järjestä: %s</string>
   <string id="551">Nimi</string>
@@ -467,7 +471,7 @@
   <string id="556">Kappale</string>
   <string id="557">Esittäjä</string>
   <string id="558">Albumi</string>
-  <string id="559">Soittolistat</string>
+  <string id="559">Soittolista</string>
   <string id="560">ID</string>
   <string id="561">Tiedosto</string>
   <string id="562">Vuosi</string>
@@ -482,7 +486,7 @@
   <string id="584">Nouseva</string>
   <string id="585">Laskeva</string>
   <string id="586">Muokkaa soittolistaa</string>
-  
+  <string id="587">Suodata</string>
   <string id="588">Keskeytä jukeboksi</string>
   <string id="589">Jukeboksi </string>
   <string id="590">Satunnainen</string>
@@ -519,7 +523,7 @@
   <string id="633">Venytetty 14:9</string>
   <string id="634">Venytetty 16:9</string>
   <string id="635">Alkuperäinen koko</string>
-  <string id="636">Oma valinta</string>
+  <string id="636">Oma asetus</string>
   <string id="637">Tasonkorjaus</string>
   <string id="638">Tasonkorjaus tila</string>
   <string id="639">Käytä kappaletasoja</string>
@@ -530,11 +534,12 @@
   <string id="644">Rajaa mustat palkit pois</string>
   <string id="645">Suuri tiedosto täytyy purkaa ensin. Jatketaanko?</string>
   <string id="646">Poista tietokannasta</string>
-  <string id="647">Vie videokirjasto</string>
-  <string id="648">Tuo videokirjasto</string>
+  <string id="647">Vie videotietokanta</string>
+  <string id="648">Tuo videotietokanta</string>
   <string id="649">Tuodaan</string>
   <string id="650">Viedään</string>
   <string id="651">Videokirjasto</string>
+  <string id="652">Vuodet</string>
   
   <string id="700">Järjestetään tietokantaa</string>
   <string id="701">Poistetaan vanhat kappaleet tietokannasta</string>
@@ -579,7 +584,7 @@
   <string id="742">Valkoinen</string>
   <string id="743">Keltainen</string>
   <string id="744">Tiedostot</string>
-  <string id="745">Tälle näkymälle ei ole luettu median tietoja,</string>
+  <string id="745">Tälle näkymälle ei ole määritetty mediatietoja,</string>
   <string id="746">vaihda Tiedostot-näkymään</string>
   <string id="747">Kuvan lataus ei onnistu</string>
   <string id="748">Muokkaa tallennuspolku</string>
@@ -771,10 +776,10 @@
   <string id="10524">Elokuvan tiedot</string>
   
   <string id="12000">Valitse dialogi</string>
-  <string id="12001">Musiikki/info</string>
+  <string id="12001">Musiikki/Tiedot</string>
   <string id="12002">Dialogi OK</string>
-  <string id="12003">Videot/Info</string>
-  <string id="12004">Skriptit/Info</string>
+  <string id="12003">Videot/Tiedot</string>
+  <string id="12004">Skriptit/Tiedot</string>
   <string id="12005">Kokoruudun video</string>
   <string id="12006">Äanen visualisointi</string>
   <string id="12007"></string>
@@ -851,7 +856,7 @@
   <string id="12384">24-tuntinen kello</string>
   <string id="12385">Päivä/Kuukausi</string>
   <string id="12386">Kuukausi/Päivä</string>
-  <string id="12387">Lue tietokanta uudelleen</string>
+  <string id="12387"></string>
   <string id="12390">Järjestelmän käyntiaika</string>
   <string id="12391">minuuttia</string>
   <string id="12392">tuntia</string>
@@ -921,9 +926,9 @@
   <string id="13253">Kumoa siirto</string>
   
   <string id="13270">Laitteisto:</string>
-  <string id="13271">Suorittimen nopeus:</string>
+  <string id="13271">Suorittimen käyttö:</string>
   
-  <string id="13274">Xbox on yhdistetty, mutta DNS ei saatavilla.</string>
+  <string id="13274">Xbox on yhdistetty, mutta DNS ei ole saatavilla.</string>
   <string id="13275">Kiintolevy</string>
   <string id="13276">DVD-asema</string>
   <string id="13277">Tallennus</string>
@@ -945,7 +950,7 @@
   <string id="13293">Video- ja XBE-alue:</string>
   <string id="13294">DVD-aluekoodi:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">Xbox on yhdistettynä</string>
+  <string id="13296">Xbox on yhdistetty</string>
   <string id="13297">Xboxia ei ole yhdistetty. Tarkista verkkoasetukset.</string>
   <string id="13298">XBLive-avain:</string>
   <string id="13299">Tavoitelämpötila</string>
@@ -1477,7 +1482,7 @@
   <string id="20181">Poisto</string>
   <string id="20182">Välilyönti</string>
   <string id="20183">Päivitä skini</string>
-  <string id="20184">Käännä kuvat käyttäen EXIF-tietoja</string>
+  <string id="20184">Käännä kuvat EXIF-tietojen mukaisesti</string>
   <string id="20185"></string>
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
@@ -1564,6 +1569,17 @@
   <string id="20366">* Kaikki tuotantokaudet</string>
   <string id="20367">Piilota katsotut</string>
   <string id="20368">Tuotantokoodi</string>
+  <string id="20369">Piilota juoni katsomattomilta kohteilta</string>
+  <string id="20370">* Piilota estetyt turhatosat *</string>
+  <string id="20371">Aseta tuotantokauden kuvake</string>
+  <string id="20372">Tuotantokauden kuva</string>
+  <string id="20373">Tuotantokausi</string>
+  <string id="20374">Lataa videon tiedot</string>
+  <string id="20375">Määrittelemätön sisältö</string>
+  <string id="20376">Ensimmäisenä löydetty:</string>
+   <!-- ?-->
+  <string id="20377">Päivitä TV-ohjelmatiedot</string>
+  <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1605,7 +1621,20 @@
   <string id="21382">'Lisää sijainti'-painike ei käytössä</string>
   <string id="21383">Vierityspalkit käytössä</string>
   <string id="21384">Videokirjastossa piilota katsotut</string> 
-  <string id="21385">Avaa soittolista</string>
+  <string id="21385">Avaa</string>
+ 
+  <string id="21386">Äänekkyyden säätö</string>
+  <string id="21387">Nopea</string>
+  <string id="21388">Hiljainen</string>
+  
+  <string id="21390">Tehonkulutuksen säätö</string>
+  <string id="21391">Normaali tila</string>
+  <string id="21392">Tehonsäästö</string>
+  <string id="21393">Normaali valmiustila</string>
+  <string id="21394">Valmiustilan tehonsäästö</string>
+ 
+  <string id="21395">Yli 4 gb tiedostoja ei voida välimuistittaa</string>
+  <string id="21396">Luku</string>
   
   <string id="29999">Näytön välkynnän poisto</string>
   </strings>
