@@ -86,7 +86,8 @@ public:
   int iTrack;
   int iDuration;
   int iYear;
-  int iTimedPlayed;
+  int iTimesPlayed;
+  CStdString lastPlayed;
   int iStartOffset;
   int iEndOffset;
 };

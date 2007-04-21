@@ -198,10 +198,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     else
       CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
 
-    // first remove all the songs etc. from this path and only from this path
-    if (m_musicDatabase.RemoveSongsFromPath(strDirectory))
-      m_needsCleanup = true;
-
     // and then scan in the new information
     if (RetrieveMusicInfo(items, strDirectory) > 0)
     {
@@ -256,8 +252,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
   CStdString strItem;
   CSongMap songsMap;
-  // get all information for all files in current directory from database
-  m_musicDatabase.GetSongsByPath(strDirectory, songsMap);
+
+  // get all information for all files in current directory from database, and remove them
+  if (m_musicDatabase.RemoveSongsFromPath(strDirectory, songsMap))
+    m_needsCleanup = true;
 
   VECSONGS songsToAdd;
   // for every file found, but skip folder
@@ -274,40 +272,17 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() )
     {
       m_currentItem++;
-      // is tag for this file already loaded?
 //      CLog::Log(LOGDEBUG, __FUNCTION__" - Reading tag for: %s", pItem->m_strPath.c_str());
-      bool bNewFile = false;
+
+      // grab info from the song
+      CSong *dbSong = songsMap.Find(pItem->m_strPath);
+
       CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if (!tag.Loaded() )
-      {
-        // no, then we gonna load it.
-        // first search for file in our list of the current directory
-        CSong *song = songsMap.Find(pItem->m_strPath);
-        if (song)
-        {
-          tag.SetSong(*song);
-        }
-        else
-        {
-          // if id3 tag scanning is turned on OR we're scanning the directory
-          // then parse id3tag from file
-          // get correct tag parser
-          auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
-          if (NULL != pLoader.get())
-          {
-            // get id3tag
-            if ( pLoader->Load(pItem->m_strPath, tag))
-            {
-              bNewFile = true;
-            }
-          }
-        }
-      } //if (!tag.Loaded() )
-      else
-      {
-        CSong *song = songsMap.Find(pItem->m_strPath);
-        if (!song)
-          bNewFile = true;
+      { // read the tag from a file
+        auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
+        if (NULL != pLoader.get())
+          pLoader->Load(pItem->m_strPath, tag);
       }
 
       // if we have the itemcount, notify our
@@ -315,21 +290,24 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       if (m_pObserver && m_itemCount>0)
         m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
 
-      if (tag.Loaded() && bNewFile)
+      if (tag.Loaded())
       {
         CSong song(tag);
         song.iStartOffset = pItem->m_lStartOffset;
         song.iEndOffset = pItem->m_lEndOffset;
+        if (dbSong)
+        {
+          song.iTimesPlayed = dbSong->iTimesPlayed;
+          song.lastPlayed = dbSong->lastPlayed;
+        }
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
         songsToAdd.push_back(song);
 //        CLog::Log(LOGDEBUG, __FUNCTION__" - Tag loaded for: %s", pItem->m_strPath.c_str());
       }
-      else if (bNewFile)
-      {
+      else
         CLog::Log(LOGDEBUG, __FUNCTION__" - No tag found for: %s", pItem->m_strPath.c_str());
-      }
-    } //if (!pItem->m_bIsFolder)
+    }
   }
 
   CheckForVariousArtists(songsToAdd);
