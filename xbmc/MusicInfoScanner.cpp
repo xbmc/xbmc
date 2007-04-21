@@ -25,6 +25,8 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
+#include "utils/md5.h"
+#include "xbox/xkgeneral.h"
 
 
 using namespace MUSIC_INFO;
@@ -56,79 +58,53 @@ void CMusicInfoScanner::Process()
 
     m_bCanInterrupt = true;
 
-    // check whether we have scanned here before
-    CStdString strPaths;
-    if (!m_musicDatabase.GetSubpathsFromPath(m_strStartDir, strPaths))
-    {
-      m_musicDatabase.Close();
-      return ;
-    }
-
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();
 
     CLog::Log(LOGDEBUG, __FUNCTION__" - Starting scan");
     m_musicDatabase.BeginTransaction();
 
-    bool bOKtoScan = true;
-    if (m_bUpdateAll)
-    {
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(REMOVING_OLD);
+    if (m_pObserver)
+      m_pObserver->OnStateChanged(READING_MUSIC_INFO);
 
-      bOKtoScan = m_musicDatabase.RemoveSongsFromPaths(strPaths);
-      if (bOKtoScan)
+    // Reset progress vars
+    m_currentItem=0;
+    m_itemCount=-1;
+
+    // Create the thread to count all files to be scanned
+    CThread fileCountReader(this);
+    if (m_pObserver)
+      fileCountReader.Create();
+
+    // Database operations should not be canceled
+    // using Interupt() while scanning as it could
+    // result in unexpected behaviour.
+    m_bCanInterrupt = false;
+    m_needsCleanup = false;
+
+    bool bCommit = DoScan(m_strStartDir);
+
+    if (bCommit)
+    {
+      m_musicDatabase.CommitTransaction();
+
+      if (m_needsCleanup)
       {
         if (m_pObserver)
           m_pObserver->OnStateChanged(CLEANING_UP_DATABASE);
 
-        bOKtoScan = m_musicDatabase.CleanupAlbumsArtistsGenres();
+        m_musicDatabase.CleanupOrphanedItems();
+
+        if (m_pObserver)
+          m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
+
+        m_musicDatabase.Compress();
       }
-    }
-
-    if (bOKtoScan)
-    {
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(READING_MUSIC_INFO);
-
-      // Reset progress vars
-      m_currentItem=0;
-      m_itemCount=-1;
-
-      // Create the thread to count all files to be scanned
-      CThread fileCountReader(this);
-      if (m_pObserver)
-        fileCountReader.Create();
-
-      // Database operations should not be canceled
-      // using Interupt() while scanning as it could
-      // result in unexpected behaviour.
-      m_bCanInterrupt = false;
-
-      bool bCommit = false;
-      if (bOKtoScan)
-        bCommit = DoScan(m_strStartDir);
-
-      if (bCommit)
-      {
-        m_musicDatabase.CommitTransaction();
-
-        if (m_bUpdateAll)
-        {
-          if (m_pObserver)
-            m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
-
-          m_musicDatabase.Compress();
-        }
-      }
-      else
-        m_musicDatabase.RollbackTransaction();
-
-      fileCountReader.StopThread();
-
     }
     else
       m_musicDatabase.RollbackTransaction();
+
+    fileCountReader.StopThread();
 
     m_musicDatabase.EmptyCache();
 
@@ -154,10 +130,9 @@ void CMusicInfoScanner::Process()
   }
 }
 
-void CMusicInfoScanner::Start(const CStdString& strDirectory, bool bUpdateAll)
+void CMusicInfoScanner::Start(const CStdString& strDirectory)
 {
   m_strStartDir = strDirectory;
-  m_bUpdateAll = bUpdateAll;
   StopThread();
   Create();
   m_bRunning = true;
@@ -186,7 +161,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Scanning dir: %s", strDirectory.c_str());
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions);
@@ -196,13 +170,37 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   // get the folder's thumb (this will cache the album thumb)
   items.SetMusicThumb(true); // true forces it to get a remote thumb
 
-  if (RetrieveMusicInfo(items, strDirectory) > 0)
-  {
-    if (m_pObserver)
-      m_pObserver->OnDirectoryScanned(strDirectory);
-  }
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
+  // check whether we need to rescan or not
+  CStdString hash(GetPathHash(items));
+  CStdString dbHash;
+  if (!m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+  { // path has changed - rescan
+    if (dbHash.IsEmpty())
+      CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+    else
+      CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
 
+    // first remove all the songs etc. from this path and only from this path
+    if (m_musicDatabase.RemoveSongsFromPath(strDirectory))
+      m_needsCleanup = true;
+
+    // and then scan in the new information
+    if (RetrieveMusicInfo(items, strDirectory) > 0)
+    {
+      if (m_pObserver)
+        m_pObserver->OnDirectoryScanned(strDirectory);
+    }
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
+
+    // save information about this folder
+    m_musicDatabase.SetPathHash(strDirectory, hash);
+  }
+  else
+  { // path is the same - no need to rescan
+    CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+  }
+
+  // now scan the subfolders
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItem *pItem = items[i];
@@ -253,7 +251,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     {
       m_currentItem++;
       // is tag for this file already loaded?
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Reading tag for: %s", pItem->m_strPath.c_str());
+//      CLog::Log(LOGDEBUG, __FUNCTION__" - Reading tag for: %s", pItem->m_strPath.c_str());
       bool bNewFile = false;
       CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if (!tag.Loaded() )
@@ -301,7 +299,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
         songsToAdd.push_back(song);
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Tag loaded for: %s", pItem->m_strPath.c_str());
+//        CLog::Log(LOGDEBUG, __FUNCTION__" - Tag loaded for: %s", pItem->m_strPath.c_str());
       }
       else if (bNewFile)
       {
@@ -484,7 +482,7 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
   int count=0;
   // load subfolder
   CFileItemList items;
-  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
+//  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
   CDirectory::GetDirectory(strPath, items, g_stSettings.m_musicExtensions, false);
   for (int i=0; i<items.Size(); ++i)
   {
@@ -498,6 +496,25 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
     else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
+//  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
   return count;
+}
+
+CStdString CMusicInfoScanner::GetPathHash(const CFileItemList &items)
+{
+  if (0 == items.Size()) return "";
+  // currently we just hash based on filename and filesize
+  MD5_CTX md5state;
+  unsigned char md5hash[16];
+  char md5HexString[33];
+  MD5Init(&md5state);
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    const CFileItem *pItem = items[i];
+    MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
+    MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+  }
+  MD5Final(md5hash, &md5state);
+  XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
+  return md5HexString;
 }
