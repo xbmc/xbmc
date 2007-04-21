@@ -1439,9 +1439,7 @@ void CFileItemList::Reserve(int iCount)
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
-  DWORD dwTime=GetTickCount();
   sort(m_items.begin(), m_items.end(), func);
-  CLog::DebugLog("Sorting FileItems %s, took %ld ms", m_strPath.c_str(), GetTickCount()-dwTime);
 }
 
 void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
