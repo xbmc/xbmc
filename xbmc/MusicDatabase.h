@@ -117,9 +117,10 @@ public:
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
   bool GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
-  bool GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
-  bool RemoveSongsFromPaths(const CStdString &strPathIds);
-  bool CleanupAlbumsArtistsGenres();
+  bool RemoveSongsFromPath(const CStdString &path);
+  bool CleanupOrphanedItems();
+  bool SetPathHash(const CStdString &path, const CStdString &hash);
+  bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, bool albumArtistsOnly);

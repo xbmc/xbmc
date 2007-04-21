@@ -235,23 +235,9 @@ void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
     return ;
   }
 
-  // check whether we have scanned here before
-  bool bUpdateAll = false;
-  CStdString strPaths;
-  m_musicdatabase.GetSubpathsFromPath(strPath, strPaths);
-  if (strPaths.length() > 2)
-  { // yes, we have, we should prompt the user to ask if they want
-    // to do a full scan, or just add new items...
-    bool bCanceled = false;
-    if (CGUIDialogYesNo::ShowAndGetInput(189, 702, 0, 0,20024,20025,bCanceled))
-      bUpdateAll = true;
-    if (bCanceled)
-      return;
-  }
-
   // Start background loader
   int iControl=GetFocusedControlID();
-  if (musicScan) musicScan->StartScanning(strPath, bUpdateAll);
+  if (musicScan) musicScan->StartScanning(strPath);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
   return ;
