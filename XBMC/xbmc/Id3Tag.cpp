@@ -152,7 +152,7 @@ bool CID3Tag::Parse()
     strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), tag.GetAlbumArtist().IsEmpty() ? tag.GetArtist() : tag.GetAlbumArtist());
   else
     strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
-  if (bFound)
+  if (bFound && !CUtil::ThumbExists(strCoverArt))
   {
     CStdString strExtension=GetPictureMimeType(pictype);
 
