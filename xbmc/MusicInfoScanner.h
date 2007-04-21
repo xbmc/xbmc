@@ -48,7 +48,9 @@ protected:
   bool m_bRunning;
   bool m_bCanInterrupt;
   bool m_needsCleanup;
-  CStdString m_strStartDir;
   CMusicDatabase m_musicDatabase;
+
+  set<CStdString> m_pathsToScan;
+  set<CStdString> m_pathsToCount;
 };
 };
