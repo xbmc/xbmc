@@ -1680,7 +1680,7 @@ bool CMusicDatabase::CleanupPaths()
     sql = "delete from path where ";
     while (!m_pDS->eof())
     {
-      sql += FormatSQL("strPath not like '%s%%' and ", m_pDS->fv("strPath").get_asString().c_str());
+      sql += FormatSQL("strPath not like substr('%s',0,length(strPath)) and ", m_pDS->fv("strPath").get_asString().c_str());
       m_pDS->next();
     }
     m_pDS->close();
@@ -3380,3 +3380,34 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path)
   return false;
 }
 
+bool CMusicDatabase::GetPaths(set<CStdString> &paths)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    paths.clear();
+
+    // find all paths
+    if (!m_pDS->query("select strPath from path")) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+    while (!m_pDS->eof())
+    {
+      paths.insert(m_pDS->fv("strPath").get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
+  }
+  return false;
+}
