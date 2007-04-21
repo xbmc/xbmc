@@ -119,6 +119,7 @@ public:
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
   bool RemoveSongsFromPath(const CStdString &path);
   bool CleanupOrphanedItems();
+  bool GetPaths(set<CStdString> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
