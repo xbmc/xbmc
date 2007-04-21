@@ -22,7 +22,7 @@ public:
   CMusicInfoScanner();
   virtual ~CMusicInfoScanner();
 
-  void Start(const CStdString& strDirectory, bool bUpdateAll);
+  void Start(const CStdString& strDirectory);
   bool IsScanning();
   void Stop();
   void SetObserver(IMusicInfoScannerObserver* pObserver);
@@ -34,6 +34,7 @@ protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
+  CStdString GetPathHash(const CFileItemList &items);
 
   bool DoScan(const CStdString& strDirectory);
 
@@ -45,8 +46,8 @@ protected:
   int m_currentItem;
   int m_itemCount;
   bool m_bRunning;
-  bool m_bUpdateAll;
   bool m_bCanInterrupt;
+  bool m_needsCleanup;
   CStdString m_strStartDir;
   CMusicDatabase m_musicDatabase;
 };

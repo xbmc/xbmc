@@ -35,7 +35,7 @@ using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        5
+#define MUSIC_DATABASE_VERSION        6
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -69,7 +69,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key,  strPath text)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strHash text)\n");
     CLog::Log(LOGINFO, "create song table");
     m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed text default NULL)\n");
     CLog::Log(LOGINFO, "create albuminfo table");
@@ -298,6 +298,8 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const
     }
     else
     {
+      // exists in our database and not scanned during this scan, so we should update it as the details
+      // may have changed (there's a reason we're rescanning, afterall!)
       CAlbumCache album;
       album.idAlbum = m_pDS->fv("idAlbum").get_asLong();
       album.strAlbum = strAlbum;
@@ -305,6 +307,13 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const
       album.strArtist = strArtist;
       m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + album.strArtist, album));
       m_pDS->close();
+      strSQL=FormatSQL("update album set strExtraArtists='%s', idGenre=%i, strExtraGenres='%s', iYear=%i, idThumb=%i where idAlbum=%i", extraArtists.c_str(), idGenre, extraGenres.c_str(), year, idThumb, album.idAlbum);
+      m_pDS->exec(strSQL.c_str());
+      // and clear the exartistalbum and exgenrealbum tables - these are updated in AddSong()
+      strSQL=FormatSQL("delete from exartistalbum where idAlbum=%i", album.idAlbum);
+      m_pDS->exec(strSQL.c_str());
+      strSQL=FormatSQL("delete from exgenrealbum where idAlbum=%i", album.idAlbum);
+      m_pDS->exec(strSQL.c_str());
       return album.idAlbum;
     }
   }
@@ -521,21 +530,16 @@ void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSong
             m_pDS->exec(strSQL.c_str());
           }
         }
-        // now link the genre with the album
-        bInsert = true;
+        // now link the genre with the album - we always check these as there's usually
+        // more than one song per album with the same extra genres
         if (lAlbumId)
         {
-          if (bCheck)
-          {
-            strSQL=FormatSQL("select * from exgenrealbum where idAlbum=%i and idGenre=%i",
-                          lAlbumId, lGenreId);
-            if (!m_pDS->query(strSQL.c_str())) return ;
-            if (m_pDS->num_rows() != 0)
-              bInsert = false; // already exists
+          strSQL=FormatSQL("select * from exgenrealbum where idAlbum=%i and idGenre=%i",
+                        lAlbumId, lGenreId);
+          if (!m_pDS->query(strSQL.c_str())) return ;
+          if (m_pDS->num_rows() == 0)
+          { // insert
             m_pDS->close();
-          }
-          if (bInsert)
-          {
             strSQL=FormatSQL("insert into exgenrealbum (idAlbum,iPosition,idGenre) values(%i,%i,%i)",
                           lAlbumId, i, lGenreId);
 
@@ -1515,103 +1519,6 @@ bool CMusicDatabase::SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
   return false;
 }
 
-bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-		vector<CStdString> vecPaths;
-		// expand virtualpath:// locations
-		if (CUtil::IsVirtualPath(strPath))
-		{
-			CVirtualPathDirectory dir;
-			dir.GetPathes(strPath, vecPaths);
-		}
-		// expand multipath:// locations
-		else if (CUtil::IsMultiPath(strPath))
-      CMultiPathDirectory::GetPaths(strPath, vecPaths);
-		else
-			vecPaths.push_back(strPath);
-
-    // get all the path id's that are sub dirs of this directory
-		// select idPath from path where (strPath like 'path1%' or strPath like 'path2%' or strPath like 'path3%')
-    CStdString strSQL = FormatSQL("select idPath from path where (");
-		CStdString strOR = " or ";
-		for (int i=0; i<(int)vecPaths.size(); ++i)
-		{
-			CStdString strPath = vecPaths.at(i);
-      ASSERT(CUtil::HasSlashAtEnd(strPath));
-			CStdString strTemp = FormatSQL("strPath like '%s%%'", strPath.c_str());
-			strSQL += strTemp + strOR;
-		}
-		strSQL.TrimRight(strOR);
-		strSQL += ")";
-
-		CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    // create the idPath search string
-    strPathIds = "(";
-    while (!m_pDS->eof())
-    {
-      strPathIds += m_pDS->fv("idPath").get_asString() + ", ";
-      m_pDS->next();
-    }
-    strPathIds.TrimRight(", ");
-    strPathIds += ")";
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "GetSubpathsFromPath() failed or was aborted!");
-  }
-  return false;
-}
-
-bool CMusicDatabase::RemoveSongsFromPaths(const CStdString &strPathIds)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-    // ok, now find all idSong's
-    CStdString strSQL=FormatSQL("select idSong from song where song.idPath in %s", strPathIds.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
-    CStdString strSongIds = "(";
-    while (!m_pDS->eof())
-    {
-      strSongIds += m_pDS->fv("idSong").get_asString() + ",";
-      m_pDS->next();
-    }
-    m_pDS->close();
-    strSongIds.TrimRight(",");
-    strSongIds += ")";
-
-    // and all songs + exartistsongs and exgenresongs
-    strSQL = "delete from song where idSong in " + strSongIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from exartistsong where idSong in " + strSongIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from exgenresong where idSong in " + strSongIds;
-    m_pDS->exec(strSQL.c_str());
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "RemoveSongsFromPath() failed or was aborted!");
-  }
-  return false;
-}
-
 bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
 {
   try
@@ -1759,10 +1666,26 @@ bool CMusicDatabase::CleanupPaths()
   try
   {
     // needs to be done AFTER the songs and albums have been cleaned up.
-    // we can happily delete any path that has no reference to a song or album (we need album, as the
-    // user can have albuminfo without having song info for that particular album)
-    CStdString strSQL = "delete from path where idPath not in (select distinct idPath from song)";
-    m_pDS->exec(strSQL.c_str());
+    // we can happily delete any path that has no reference to a song
+    // but we must keep all paths that have been scanned that may contain songs in subpaths
+    CStdString sql = "select strPath from path where idPath in (select distinct idPath from song)";
+    if (!m_pDS->query(sql.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      m_pDS->exec("delete from path");
+      return true;
+    }
+    sql = "delete from path where ";
+    while (!m_pDS->eof())
+    {
+      sql += FormatSQL("strPath not like '%s%%' and ", m_pDS->fv("strPath").get_asString().c_str());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    sql = sql.Left(sql.GetLength() - 4);
+    m_pDS->exec(sql.c_str());
     return true;
   }
   catch (...)
@@ -1860,7 +1783,7 @@ bool CMusicDatabase::CleanupGenres()
   return false;
 }
 
-bool CMusicDatabase::CleanupAlbumsArtistsGenres()
+bool CMusicDatabase::CleanupOrphanedItems()
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -2869,7 +2792,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
   try
   {
-
+    if (version < 6)
+    {
+      // add the strHash column to path table
+      m_pDS->exec("alter table path add strHash text");
+    }
+    return true;
   }
   catch (...)
   {
@@ -3340,3 +3268,115 @@ void CMusicDatabase::SplitString(const CStdString &multiString, vector<CStdStrin
   for (int i = 1; i < numStrings; i++)
     extraStrings += " / " + vecStrings[i];
 }
+
+bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    long pathId = AddPath(path);
+    if (pathId < 0) return false;
+
+    CStdString strSQL=FormatSQL("update path set strHash='%s' where idPath=%ld", hash.c_str(), pathId);
+    m_pDS->exec(strSQL.c_str());
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s, %s) failed", path.c_str(), hash.c_str());
+  }
+
+  return false;
+}
+
+bool CMusicDatabase::GetPathHash(const CStdString &path, CStdString &hash)
+{
+  CStdString strSQL;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select strHash from path where strPath like '%s'", path.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() == 0)
+      return false;
+    hash = m_pDS->fv("strHash").get_asString();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", path.c_str());
+  }
+
+  return false;
+}
+
+bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path)
+{
+  // We need to remove all songs from this path, as their tags are going
+  // to be re-read.  We need to remove all songs from the song table + all links to them
+  // from the exartistsong and exgenresong tables (as otherwise if a song is added back
+  // to the table with the same idSong, these tables can't be cleaned up properly later)
+
+  // TODO: SQLite probably doesn't allow this, but can we rely on that??
+
+  // We don't need to remove orphaned albums at this point as in AddAlbum() we check
+  // first whether the album has already been read during this scan, and if it hasn't
+  // we check whether it's in the table and update accordingly at that point, removing the entries from
+  // the exartistalbum and exgenrealbum tables.  The only failure point for this is albums
+  // that span multiple folders, where just the files in one folder have been changed.  In this case
+  // any exalbumartist(s) that are only in the files that haven't changed will be removed.  Clearly
+  // the primary albumartist still matches (as that's what we looked up based on) so is this really
+  // an issue?  I don't think it is, as those artists will still have links to the album via the songs
+  // which is generally what we rely on, so the only failure point is albumartist lookup.  In this
+  // case, it will return only things in the exartistalbum table from the newly updated songs (and
+  // only if they have additional artists).  I think the effect of this is minimal at best, as ALL
+  // songs in the album should have the same albumartist!
+
+  // After scanning we then remove the orphaned artist/genre/thumb and paths.
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    DWORD time = timeGetTime();
+    // find all matching song id's from this path
+    CStdString strSQL=FormatSQL("select idSong from path,song where song.idPath=path.idPath and path.strPath like '%s'", path.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;   // nothing removed
+    }
+    // compile a list of song id's
+    CStdString strSongIds = "(";
+    while (!m_pDS->eof())
+    {
+      strSongIds += m_pDS->fv("idSong").get_asString() + ",";
+      m_pDS->next();
+    }
+    m_pDS->close();
+    strSongIds.TrimRight(",");
+    strSongIds += ")";
+
+    // and delete all songs, exartistsongs and exgenresongs
+    strSQL = "delete from song where idSong in " + strSongIds;
+    m_pDS->exec(strSQL.c_str());
+    strSQL = "delete from exartistsong where idSong in " + strSongIds;
+    m_pDS->exec(strSQL.c_str());
+    strSQL = "delete from exgenresong where idSong in " + strSongIds;
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", path.c_str());
+  }
+  return false;
+}
+
