@@ -45,6 +45,7 @@ CSong::CSong(CMusicInfoTag& tag)
   iStartOffset = 0;
   iEndOffset = 0;
   idSong = -1;
+  iTimesPlayed = 0;
 }
 
 CSong::CSong()
@@ -72,6 +73,8 @@ void CSong::Clear()
   iStartOffset = 0;
   iEndOffset = 0;
   idSong = -1;
+  iTimesPlayed = 0;
+  lastPlayed = "";
 }
 
 CSongMap::CSongMap()
