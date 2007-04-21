@@ -91,7 +91,7 @@ void CGUIDialogMusicScan::OnSetProgress(int currentItem, int itemCount)
   if (m_fPercentDone>100.0F) m_fPercentDone=100.0F;
 }
 
-void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUpdateAll)
+void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory)
 {
   m_ScanState = PREPARING;
 
@@ -100,7 +100,7 @@ void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUp
   // save settings
   g_application.SaveMusicScanSettings();
 
-  m_musicInfoScanner.Start(strDirectory, bUpdateAll);
+  m_musicInfoScanner.Start(strDirectory);
 }
 
 void CGUIDialogMusicScan::StopScanning()
