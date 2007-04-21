@@ -24,6 +24,7 @@
 
 #define SURFTOTEX(a) ((a)->Parent ? (a)->Parent : (D3DBaseTexture*)(a))
 
+//#define DBGBOB
 
 CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)
@@ -36,7 +37,7 @@ CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
   m_hYUVtoRGBLookup = 0;
   m_UVLookup = NULL;
   m_UVErrorLookup = NULL;
-  m_motionpass = 10;
+  m_motionpass = 2;
 }
 
 void CRGBRendererV2::FlipPage(int source)
@@ -58,7 +59,7 @@ void CRGBRendererV2::Clear444PTexture()
   {
     D3DLOCKED_RECT lr;
     m_444PTextureFull->LockRect(0, &lr, NULL, 0);
-    memset(lr.pBits, 0x00000000, lr.Pitch*m_iSourceHeight);
+    memset(lr.pBits, 0x00, lr.Pitch*m_iSourceHeight);
     m_444PTextureFull->UnlockRect(0);
   }
 
@@ -66,7 +67,11 @@ void CRGBRendererV2::Clear444PTexture()
   {
     D3DLOCKED_RECT lr;
     m_444PTextureField->LockRect(0, &lr, NULL, 0);
-    memset(lr.pBits, 0x00000000, lr.Pitch*m_iSourceHeight>>1);
+#ifdef DBGBOB
+    memset(lr.pBits, 0xFF, lr.Pitch*m_iSourceHeight>>1);
+#else
+    memset(lr.pBits, 0x00, lr.Pitch*m_iSourceHeight>>1);
+#endif
     m_444PTextureField->UnlockRect(0);
   }
 }
@@ -208,9 +213,6 @@ void CRGBRendererV2::Render(DWORD flags)
     if(m_444PTextureFull)
       m_444PTextureFull->GetSurfaceLevel(0, &p444PSourceFull);
 
-    if(m_444PTextureField && flags & (RENDER_FLAG_ODD|RENDER_FLAG_EVEN))
-      m_444PTextureField->GetSurfaceLevel(0, &p444PSourceField);
-
     RECT rsf = { rs.left, rs.top>>1, rs.right, rs.bottom>>1 };
 
     if( !m_444GeneratedFull )
@@ -225,9 +227,14 @@ void CRGBRendererV2::Render(DWORD flags)
           0.0f, 0.0f,
           CHROMAOFFSET_HORIZ, 0.0f);
     }
+#ifdef DBGBOB
+    m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA);
+#endif
 
     if( flags & RENDER_FLAG_ODD )
     {
+      m_444PTextureField->GetSurfaceLevel(0, &p444PSourceField);
+
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_ODD],
           m_444PTextureFull, // use a downscaled motion value from the full frame, 
@@ -239,6 +246,8 @@ void CRGBRendererV2::Render(DWORD flags)
     }
     else if( flags & RENDER_FLAG_EVEN )
     {
+      m_444PTextureField->GetSurfaceLevel(0, &p444PSourceField);
+
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_EVEN],
           m_444PTextureFull, // use a downscaled motion value from the full frame, 
@@ -249,8 +258,9 @@ void CRGBRendererV2::Render(DWORD flags)
           CHROMAOFFSET_HORIZ, -CHROMAOFFSET_VERT);
     }
 
-    SAFE_RELEASE(p444PSourceFull);
-    SAFE_RELEASE(p444PSourceField);
+#ifdef DBGBOB
+    m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALL);
+#endif
 
     //Okey, when the gpu is done with the textures here, they are free to be modified again
     if( !(flags & RENDER_FLAG_NOUNLOCK) )
@@ -261,6 +271,7 @@ void CRGBRendererV2::Render(DWORD flags)
 
     if(true)
     {
+      // NOTICE, field motion can have been replaced by downscaled frame motion
       // this method uses the difference between fields to estimate motion
       // it work sorta, but it can't for example handle horizontal 
       // hairlines wich only exist in one field, they will flicker
@@ -272,10 +283,10 @@ void CRGBRendererV2::Render(DWORD flags)
       RenderYUVtoRGB(m_444PTextureFull, rs, rd);
 
       // render the field texture ontop
-      if(m_444PTextureField)
+      if(m_444PTextureField && p444PSourceField)
       {
         m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-        m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+        m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, m_motionpass);
 
         RenderYUVtoRGB(m_444PTextureField, rsf, rd);
@@ -290,7 +301,7 @@ void CRGBRendererV2::Render(DWORD flags)
       // to the field texture lineary we should get away from that
 
       // render the field texture first
-      if(m_444PTextureField)
+      if(m_444PTextureField && p444PSourceField)
       {
         m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
         RenderYUVtoRGB(m_444PTextureField, rsf, rd);
@@ -313,6 +324,9 @@ void CRGBRendererV2::Render(DWORD flags)
     m_pD3DDevice->SetTexture(3, NULL);
 
     m_pD3DDevice->SetPixelShader( NULL );
+
+    SAFE_RELEASE(p444PSourceFull);
+    SAFE_RELEASE(p444PSourceField);
   }
 
   CXBoxRenderer::Render(flags);
@@ -339,11 +353,11 @@ unsigned int CRGBRendererV2::PreInit()
       // interleave our data
       "xmma discard,discard,r0, t0,c0, t1,c1\n"
       "mad r0, t2,c2,r0\n"
-
-      // calculate the differens in this pixel to what's in t3 and set alpha to that
-      "sub r1, r0,t3\n"
-      "dp3 r1.rgba, r1,r1\n"
-      "mov r0.a, r1";
+      
+      "sub_x4 r1, r0,t3\n"      // calculate the differens in this pixel values
+      "dp3    r1.rgba, r1,r1\n" // take the absolute of the "yuv" difference vector
+//      "add_d2 r1.a, r1, t3\n"   // average with previouse value to avoid minor changes
+      "mov    r0.a, r1";
 
     const char* interleavealpha =
       "xps.1.1\n"
@@ -380,7 +394,7 @@ unsigned int CRGBRendererV2::PreInit()
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hInterleavingShader);
     pShader->Release();
 
-    XGAssembleShader("InterleaveShaderAlpha", interleave, strlen(interleave), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
+    XGAssembleShader("InterleaveShaderAlpha", interleavealpha, strlen(interleavealpha), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hInterleavingShaderAlpha);
     pShader->Release();
 
