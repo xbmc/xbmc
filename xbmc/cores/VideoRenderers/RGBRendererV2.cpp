@@ -37,7 +37,7 @@ CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
   m_hYUVtoRGBLookup = 0;
   m_UVLookup = NULL;
   m_UVErrorLookup = NULL;
-  m_motionpass = 2;
+  m_motionpass = 5;
 }
 
 void CRGBRendererV2::FlipPage(int source)
