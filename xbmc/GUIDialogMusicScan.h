@@ -11,7 +11,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  void StartScanning(const CStdString& strDirectory, bool bUpdateAll);
+  void StartScanning(const CStdString& strDirectory);
   bool IsScanning();
   void StopScanning();
 
