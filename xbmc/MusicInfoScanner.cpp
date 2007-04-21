@@ -82,9 +82,16 @@ void CMusicInfoScanner::Process()
     m_bCanInterrupt = false;
     m_needsCleanup = false;
 
-    bool bCommit = DoScan(m_strStartDir);
+    bool commit = false;
+    bool cancelled = false;
+    while (!cancelled && m_pathsToScan.size())
+    {
+      if (!DoScan(*m_pathsToScan.begin()))
+        cancelled = true;
+      commit = !cancelled;
+    }
 
-    if (bCommit)
+    if (commit)
     {
       m_musicDatabase.CommitTransaction();
 
@@ -132,7 +139,18 @@ void CMusicInfoScanner::Process()
 
 void CMusicInfoScanner::Start(const CStdString& strDirectory)
 {
-  m_strStartDir = strDirectory;
+  m_pathsToScan.clear();
+
+  if (strDirectory.IsEmpty())
+  { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
+    // we go.
+    m_musicDatabase.Open();
+    m_musicDatabase.GetPaths(m_pathsToScan);
+    m_musicDatabase.Close();
+  }
+  else
+    m_pathsToScan.insert(strDirectory);
+  m_pathsToCount = m_pathsToScan;
   StopThread();
   Create();
   m_bRunning = true;
@@ -190,7 +208,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
       if (m_pObserver)
         m_pObserver->OnDirectoryScanned(strDirectory);
     }
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
 
     // save information about this folder
     m_musicDatabase.SetPathHash(strDirectory, hash);
@@ -198,7 +215,14 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   else
   { // path is the same - no need to rescan
     CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+    if (m_pObserver)
+      m_pObserver->OnDirectoryScanned(strDirectory);
   }
+
+  // remove this path from the list we're processing
+  set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
+  if (it != m_pathsToScan.end())
+    m_pathsToScan.erase(it);
 
   // now scan the subfolders
   for (int i = 0; i < items.Size(); ++i)
@@ -473,7 +497,8 @@ void CMusicInfoScanner::UpdateFolderThumb(const VECSONGS &songs, const CStdStrin
 // This function is run by another thread
 void CMusicInfoScanner::Run()
 {
-  m_itemCount=CountFiles(m_strStartDir);
+  while (!m_bStop && m_pathsToCount.size())
+    m_itemCount+=CountFiles(*m_pathsToCount.begin());
 }
 
 // Recurse through all folders we scan and count files
@@ -484,6 +509,7 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
   CFileItemList items;
 //  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
   CDirectory::GetDirectory(strPath, items, g_stSettings.m_musicExtensions, false);
+
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItem* pItem=items[i];
@@ -496,6 +522,12 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
     else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
+
+  // remove this path from the list we're processing
+  set<CStdString>::iterator it = m_pathsToCount.find(strPath);
+  if (it != m_pathsToCount.end())
+    m_pathsToCount.erase(it);
+
 //  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
   return count;
 }
