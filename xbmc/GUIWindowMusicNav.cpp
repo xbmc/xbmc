@@ -37,6 +37,7 @@
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "PlaylistFactory.h"
+#include "GUIDialogMusicScan.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -502,6 +503,15 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   }
 
   // noncontextual buttons
+
+  int btn_Update = 0;
+
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  if (musicScan && musicScan->IsScanning())
+    btn_Update = pMenu->AddButton(13353);     // Stop Scanning
+  else if (musicScan)
+    btn_Update = pMenu->AddButton(653);     // Update Library
+
   int btn_Settings = pMenu->AddButton(5);     // Settings...
 
   if (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
@@ -564,6 +574,15 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     {
       Update("");
       return;
+    }
+    else if (btn == btn_Update)
+    {
+      // update the library
+      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (scanner && scanner->IsScanning())
+        scanner->StopScanning();
+      else if (scanner)
+        scanner->StartScanning("");
     }
     else if (btn == btn_Default) // Set default
     {
