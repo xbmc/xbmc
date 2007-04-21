@@ -204,7 +204,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     {
       CStdString strSQL1;
 
-      strSQL=FormatSQL("insert into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb) values (NULL,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+      strSQL=FormatSQL("insert into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed) values (NULL,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
                     lAlbumId, lPathId, lArtistId, extraArtists.c_str(), lGenreId, extraGenres.c_str(),
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
@@ -215,8 +215,12 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
                     song.strMusicBrainzAlbumArtistID.c_str(),
                     song.strMusicBrainzTRMID.c_str());
 
-      strSQL1=FormatSQL(",%i,%i,%i,%i)",
-                     0, song.iStartOffset, song.iEndOffset, lThumbId);
+      if (song.lastPlayed.GetLength())
+        strSQL1=FormatSQL(",%i,%i,%i,%i,'%s')",
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, lThumbId, song.lastPlayed.c_str());
+      else
+        strSQL1=FormatSQL(",%i,%i,%i,%i, NULL)",
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, lThumbId);
       strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
@@ -616,7 +620,8 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.iDuration = m_pDS->fv(song_iDuration).get_asLong() ;
   song.iYear = m_pDS->fv(song_iYear).get_asLong() ;
   song.strTitle = m_pDS->fv(song_strTitle).get_asString();
-  song.iTimedPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
+  song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
+  song.lastPlayed = m_pDS->fv(song_lastplayed).get_asString();
   song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asLong();
   song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asLong();
   song.strMusicBrainzTrackID = m_pDS->fv(song_strMusicBrainzTrackID).get_asString();
@@ -659,7 +664,7 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
   item->GetMusicInfoTag()->SetTitle(m_pDS->fv(song_strTitle).get_asString());
   item->SetLabel(m_pDS->fv(song_strTitle).get_asString());
-  //song.iTimedPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
+  //song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
   item->m_lStartOffset = m_pDS->fv(song_iStartOffset).get_asLong();
   item->m_lEndOffset = m_pDS->fv(song_iEndOffset).get_asLong();
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(m_pDS->fv(song_strMusicBrainzTrackID).get_asString());
@@ -3315,7 +3320,7 @@ bool CMusicDatabase::GetPathHash(const CStdString &path, CStdString &hash)
   return false;
 }
 
-bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path)
+bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs)
 {
   // We need to remove all songs from this path, as their tags are going
   // to be re-read.  We need to remove all songs from the song table + all links to them
@@ -3340,37 +3345,39 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path)
   // After scanning we then remove the orphaned artist/genre/thumb and paths.
   try
   {
+    ASSERT(CUtil::HasSlashAtEnd(path));
+
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    DWORD time = timeGetTime();
-    // find all matching song id's from this path
-    CStdString strSQL=FormatSQL("select idSong from path,song where song.idPath=path.idPath and path.strPath like '%s'", path.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
+    CStdString sql=FormatSQL("select * from songview where strPath like '%s'", path.c_str() );
+    if (!m_pDS->query(sql.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;   // nothing removed
+      return false;
     }
-    // compile a list of song id's
-    CStdString strSongIds = "(";
+    CStdString songIds = "(";
     while (!m_pDS->eof())
     {
-      strSongIds += m_pDS->fv("idSong").get_asString() + ",";
+      CSong song = GetSongFromDataset();
+      songs.Add(song.strFileName, song);
+      songIds += FormatSQL("%i,", song.idSong);
       m_pDS->next();
     }
+    songIds.TrimRight(",");
+    songIds += ")";
+
     m_pDS->close();
-    strSongIds.TrimRight(",");
-    strSongIds += ")";
 
     // and delete all songs, exartistsongs and exgenresongs
-    strSQL = "delete from song where idSong in " + strSongIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from exartistsong where idSong in " + strSongIds;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from exgenresong where idSong in " + strSongIds;
-    m_pDS->exec(strSQL.c_str());
+    sql = "delete from song where idSong in " + songIds;
+    m_pDS->exec(sql.c_str());
+    sql = "delete from exartistsong where idSong in " + songIds;
+    m_pDS->exec(sql.c_str());
+    sql = "delete from exgenresong where idSong in " + songIds;
+    m_pDS->exec(sql.c_str());
     return true;
   }
   catch (...)
