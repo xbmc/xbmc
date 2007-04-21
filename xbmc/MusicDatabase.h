@@ -117,7 +117,7 @@ public:
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
   bool GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
-  bool RemoveSongsFromPath(const CStdString &path);
+  bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs);
   bool CleanupOrphanedItems();
   bool GetPaths(set<CStdString> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
