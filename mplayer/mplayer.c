@@ -2083,8 +2083,10 @@ if(!demuxer)
   else
     eof=playtree_add_playlist(entry);
 #endif
-#ifndef _XBOX
-  goto goto_next_file;
+#ifdef _XBOX
+  return -1;
+#else
+  goto goto_next_file;  
 #endif
 }
 inited_flags|=INITED_DEMUXER;
