@@ -208,7 +208,7 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   void CheckForDebugButtonCombo();
-
+  void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
 
 };
