@@ -34,7 +34,7 @@ protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
-  CStdString GetPathHash(const CFileItemList &items);
+  int GetPathHash(const CFileItemList &items, CStdString &hash);
 
   bool DoScan(const CStdString& strDirectory);
 
