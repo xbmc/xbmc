@@ -1790,12 +1790,12 @@ bool CMusicDatabase::CleanupGenres()
 
 bool CMusicDatabase::CleanupOrphanedItems()
 {
+  // paths aren't cleaned up here - they're cleaned up in RemoveSongsFromPath()
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
   if (!CleanupAlbums()) return false;
   if (!CleanupArtists()) return false;
   if (!CleanupGenres()) return false;
-  if (!CleanupPaths()) return false;
   if (!CleanupThumbs()) return false;
   return true;
 }
@@ -3281,6 +3281,12 @@ bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    if (hash.IsEmpty())
+    { // this is an empty folder - we need only add it to the path table
+      // if the path actually exists
+      if (!CDirectory::Exists(path))
+        return false;
+    }
     long pathId = AddPath(path);
     if (pathId < 0) return false;
 
@@ -3342,7 +3348,9 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
   // only if they have additional artists).  I think the effect of this is minimal at best, as ALL
   // songs in the album should have the same albumartist!
 
-  // After scanning we then remove the orphaned artist/genre/thumb and paths.
+  // we also remove the path at this point as it will be added later on if the
+  // path still exists.
+  // After scanning we then remove the orphaned artists, genres and thumbs.
   try
   {
     ASSERT(CUtil::HasSlashAtEnd(path));
@@ -3353,32 +3361,33 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
     CStdString sql=FormatSQL("select * from songview where strPath like '%s'", path.c_str() );
     if (!m_pDS->query(sql.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
+    if (iRowsFound > 0)
     {
+      CStdString songIds = "(";
+      while (!m_pDS->eof())
+      {
+        CSong song = GetSongFromDataset();
+        songs.Add(song.strFileName, song);
+        songIds += FormatSQL("%i,", song.idSong);
+        m_pDS->next();
+      }
+      songIds.TrimRight(",");
+      songIds += ")";
+
       m_pDS->close();
-      return false;
-    }
-    CStdString songIds = "(";
-    while (!m_pDS->eof())
-    {
-      CSong song = GetSongFromDataset();
-      songs.Add(song.strFileName, song);
-      songIds += FormatSQL("%i,", song.idSong);
-      m_pDS->next();
-    }
-    songIds.TrimRight(",");
-    songIds += ")";
 
-    m_pDS->close();
-
-    // and delete all songs, exartistsongs and exgenresongs
-    sql = "delete from song where idSong in " + songIds;
+      // and delete all songs, exartistsongs and exgenresongs
+      sql = "delete from song where idSong in " + songIds;
+      m_pDS->exec(sql.c_str());
+      sql = "delete from exartistsong where idSong in " + songIds;
+      m_pDS->exec(sql.c_str());
+      sql = "delete from exgenresong where idSong in " + songIds;
+      m_pDS->exec(sql.c_str());
+    }
+    // and remove the path as well (it'll be re-added later on with the new hash if it's non-empty)
+    sql = FormatSQL("delete from path where strPath like '%s'", path.c_str());
     m_pDS->exec(sql.c_str());
-    sql = "delete from exartistsong where idSong in " + songIds;
-    m_pDS->exec(sql.c_str());
-    sql = "delete from exgenresong where idSong in " + songIds;
-    m_pDS->exec(sql.c_str());
-    return true;
+    return iRowsFound > 0;
   }
   catch (...)
   {
