@@ -2556,7 +2556,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      strResult.Format("%02d",item->GetVideoInfoTag()->m_iEpisode);
+      strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
     break;
@@ -2564,7 +2564,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      strResult.Format("%02d",item->GetVideoInfoTag()->m_iSeason);
+      strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
         return strResult;
     }
     break;
