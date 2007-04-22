@@ -5,6 +5,10 @@
 
 #pragma once
 
+// Comment if you don't want the LinksBoks web browser at all
+// (also in xbmc - stdafx.h)
+#define WITH_LINKS_BROWSER
+
 #define DEBUG_MOUSE
 #define DEBUG_KEYBOARD
 

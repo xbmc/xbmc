@@ -1,0 +1,97 @@
+# Makefile for zlib
+# Microsoft 32-bit Visual C++ 4.0 or later (may work on earlier versions)
+
+# To use, do "nmake /f makefile.w32"
+
+# If you wish to reduce the memory requirements (default 256K for big
+# objects plus a few K), you can add to CFLAGS below: 
+#   -DMAX_MEM_LEVEL=7 -DMAX_WBITS=14
+# See zconf.h for details about the memory requirements.
+
+# ------------- Microsoft Visual C++ 4.0 and later -------------
+MODEL=
+CFLAGS=-Ox -GA3s -nologo -W3
+CC=cl
+LD=link
+LDFLAGS=
+O=.obj
+
+# variables
+OBJ1 = adler32$(O) compress$(O) crc32$(O) gzio$(O) uncompr$(O) deflate$(O) \
+  trees$(O)
+OBJP1 = adler32$(O)+compress$(O)+crc32$(O)+gzio$(O)+uncompr$(O)+deflate$(O)+\
+  trees$(O)
+OBJ2 = zutil$(O) inflate$(O) infblock$(O) inftrees$(O) infcodes$(O) \
+  infutil$(O) inffast$(O)
+OBJP2 = zutil$(O)+inflate$(O)+infblock$(O)+inftrees$(O)+infcodes$(O)+\
+  infutil$(O)+inffast$(O)
+
+all:  zlib.lib example.exe minigzip.exe
+
+adler32.obj: adler32.c zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+compress.obj: compress.c zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+crc32.obj: crc32.c zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+deflate.obj: deflate.c deflate.h zutil.h zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+gzio.obj: gzio.c zutil.h zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+infblock.obj: infblock.c zutil.h zlib.h zconf.h infblock.h inftrees.h\
+   infcodes.h infutil.h
+  $(CC) -c $(CFLAGS) $*.c
+
+infcodes.obj: infcodes.c zutil.h zlib.h zconf.h inftrees.h infutil.h\
+   infcodes.h inffast.h
+  $(CC) -c $(CFLAGS) $*.c
+
+inflate.obj: inflate.c zutil.h zlib.h zconf.h infblock.h
+  $(CC) -c $(CFLAGS) $*.c
+
+inftrees.obj: inftrees.c zutil.h zlib.h zconf.h inftrees.h
+  $(CC) -c $(CFLAGS) $*.c
+
+infutil.obj: infutil.c zutil.h zlib.h zconf.h inftrees.h infutil.h
+  $(CC) -c $(CFLAGS) $*.c
+
+inffast.obj: inffast.c zutil.h zlib.h zconf.h inftrees.h infutil.h inffast.h
+  $(CC) -c $(CFLAGS) $*.c
+
+trees.obj: trees.c deflate.h zutil.h zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+uncompr.obj: uncompr.c zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+zutil.obj: zutil.c zutil.h zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+example.obj: example.c zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+minigzip.obj: minigzip.c zlib.h zconf.h
+  $(CC) -c $(CFLAGS) $*.c
+
+zlib.lib: $(OBJ1) $(OBJ2)
+  if exist zlib.lib del zlib.lib
+  lib /OUT:zlib.lib $(OBJ1) $(OBJ2)
+
+example.exe: example.obj zlib.lib
+  $(LD) $(LDFLAGS) example.obj zlib.lib /OUT:example.exe /SUBSYSTEM:CONSOLE
+
+minigzip.exe: minigzip.obj zlib.lib
+  $(LD) $(LDFLAGS) minigzip.obj zlib.lib /OUT:minigzip.exe /SUBSYSTEM:CONSOLE
+
+test: example.exe minigzip.exe
+  example
+  echo hello world | minigzip | minigzip -d 
+
+#clean:
+#  del *.obj
+#  del *.exe

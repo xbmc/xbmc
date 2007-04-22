@@ -1,0 +1,104 @@
+# Makefile for zlib
+# Borland C++   
+
+# This version of the zlib makefile was adapted by Chris Young for use
+# with Borland C 4.5x with the Dos Power Pack for a 32-bit protected mode
+# flat memory model.  It was created for use with POV-Ray ray tracer and
+# you may choose to edit the CFLAGS to suit your needs but the
+# switches -WX and -DMSDOS are required.
+# -- Chris Young 76702.1655@compuserve.com
+
+# To use, do "make -fmakefile.b32"
+
+# See zconf.h for details about the memory requirements.
+
+# ------------- Borland C++ -------------
+MODEL=-WX 
+CFLAGS= $(MODEL) -P-C -K -N- -k- -d -3 -r- -v- -f -DMSDOS
+CC=bcc32
+LD=bcc32
+LIB=tlib
+LDFLAGS= $(MODEL)
+O=.obj
+
+# variables
+OBJ1 = adler32$(O) compress$(O) crc32$(O) gzio$(O) uncompr$(O) deflate$(O) \
+  trees$(O)
+OBJP1 = adler32$(O)+compress$(O)+crc32$(O)+gzio$(O)+uncompr$(O)+deflate$(O)+\
+  trees$(O)
+OBJ2 = zutil$(O) inflate$(O) infblock$(O) inftrees$(O) infcodes$(O) \
+  infutil$(O) inffast$(O)
+OBJP2 = zutil$(O)+inflate$(O)+infblock$(O)+inftrees$(O)+infcodes$(O)+\
+  infutil$(O)+inffast$(O)
+
+all: test
+
+adler32.obj: adler32.c zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+compress.obj: compress.c zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+crc32.obj: crc32.c zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+deflate.obj: deflate.c deflate.h zutil.h zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+gzio.obj: gzio.c zutil.h zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+infblock.obj: infblock.c zutil.h zlib.h zconf.h infblock.h inftrees.h\
+   infcodes.h infutil.h
+	$(CC) -c $(CFLAGS) $*.c
+
+infcodes.obj: infcodes.c zutil.h zlib.h zconf.h inftrees.h infutil.h\
+   infcodes.h inffast.h
+	$(CC) -c $(CFLAGS) $*.c
+
+inflate.obj: inflate.c zutil.h zlib.h zconf.h infblock.h
+	$(CC) -c $(CFLAGS) $*.c
+
+inftrees.obj: inftrees.c zutil.h zlib.h zconf.h inftrees.h
+	$(CC) -c $(CFLAGS) $*.c
+
+infutil.obj: infutil.c zutil.h zlib.h zconf.h inftrees.h infutil.h
+	$(CC) -c $(CFLAGS) $*.c
+
+inffast.obj: inffast.c zutil.h zlib.h zconf.h inftrees.h infutil.h inffast.h
+	$(CC) -c $(CFLAGS) $*.c
+
+trees.obj: trees.c deflate.h zutil.h zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+uncompr.obj: uncompr.c zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+zutil.obj: zutil.c zutil.h zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+example.obj: example.c zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+minigzip.obj: minigzip.c zlib.h zconf.h
+	$(CC) -c $(CFLAGS) $*.c
+
+# we must cut the command line to fit in the MS/DOS 128 byte limit:
+zlib.lib: $(OBJ1) $(OBJ2)
+	del zlib.lib
+	$(LIB) zlib +$(OBJP1)
+	$(LIB) zlib +$(OBJP2)
+
+example.exe: example.obj zlib.lib
+	$(LD) $(LDFLAGS) example.obj zlib.lib
+
+minigzip.exe: minigzip.obj zlib.lib
+	$(LD) $(LDFLAGS) minigzip.obj zlib.lib
+
+test: example.exe minigzip.exe
+	example
+	echo hello world | minigzip | minigzip -d 
+
+#clean:
+#	del *.obj
+#	del *.exe

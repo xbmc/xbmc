@@ -38,6 +38,9 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
+#ifdef WITH_LINKS_BROWSER
+#include "GUIWebBrowserControl.h"
+#endif
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -1234,6 +1237,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
   }
+#ifdef WITH_LINKS_BROWSER
+  else if (strType == "webbrowser")
+  {
+    // Web browser doesn't care about skin v2.1 animations and so on -yet! (direct rendering etc.)
+    CGUIWebBrowserControl* pControl = new CGUIWebBrowserControl(dwParentId, id, posX, posY, width, height);
+    pControl->SetNavigation(up, down, left, right);
+    return pControl;
+  }
+#endif
 
   // things that apply to all controls
   if (control)

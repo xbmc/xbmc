@@ -16,6 +16,10 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 
+#ifdef WITH_LINKS_BROWSER
+#include "GUIWebBrowserControl.h"
+#endif
+
 CStdString CGUIWindow::CacheFilename = "";
 
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
@@ -435,6 +439,12 @@ void CGUIWindow::Render()
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
+  if (action.wID == ACTION_POINTER_NAVIGATION)
+  {
+    m_gWindowManager.m_bPointerNav = !m_gWindowManager.m_bPointerNav;
+    g_Mouse.SetActive(m_gWindowManager.m_bPointerNav);
+    return true;
+  }
   if (action.wID == ACTION_MOUSE)
   {
     OnMouseAction();

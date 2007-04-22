@@ -24,6 +24,49 @@
 			<name>special13</name>
 			<filename>special-bold-1080i.xpr</filename>
 		</font>
+		<font>
+			<name>websans</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<webfamily>arial</webfamily>
+			<webweight>medium</webweight>
+			<webslant>roman</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansb</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bold</style>
+			<webfamily>arial</webfamily>
+			<webweight>bold</webweight>
+			<webslant>roman</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansi</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>italics</style>
+			<webfamily>arial</webfamily>
+			<webweight>medium</webweight>
+			<webslant>italic</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansib</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bolditalics</style>
+			<webfamily>arial</webfamily>
+			<webweight>bold</webweight>
+			<webslant>italic</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
 	</fontset>
 	<fontset id="Arial TTF" unicode="true">
 		<font>
@@ -58,6 +101,49 @@
 			<filename>Arial.ttf</filename>
 			<size>29</size>
 			<style>bold</style>
+		</font>
+		<font>
+			<name>websans</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<webfamily>arial</webfamily>
+			<webweight>medium</webweight>
+			<webslant>roman</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansb</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bold</style>
+			<webfamily>arial</webfamily>
+			<webweight>bold</webweight>
+			<webslant>roman</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansi</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>italics</style>
+			<webfamily>arial</webfamily>
+			<webweight>medium</webweight>
+			<webslant>italic</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansib</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bolditalics</style>
+			<webfamily>arial</webfamily>
+			<webweight>bold</webweight>
+			<webslant>italic</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
 		</font>
 	</fontset>
 	<fontset id="Arial TTF New" unicode="true">
@@ -98,6 +184,49 @@
 			<size>35</size>
 			<style>bold</style>
 			<aspect>0.8</aspect>
+		</font>
+		<font>
+			<name>websans</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<webfamily>arial</webfamily>
+			<webweight>medium</webweight>
+			<webslant>roman</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansb</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bold</style>
+			<webfamily>arial</webfamily>
+			<webweight>bold</webweight>
+			<webslant>roman</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansi</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>italics</style>
+			<webfamily>arial</webfamily>
+			<webweight>medium</webweight>
+			<webslant>italic</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
+		</font>
+		<font>
+			<name>websansib</name>
+			<filename>Arial.ttf</filename>
+			<size>18</size>
+			<style>bolditalics</style>
+			<webfamily>arial</webfamily>
+			<webweight>bold</webweight>
+			<webslant>italic</webslant>
+			<webadstyl>serif</webadstyl>
+			<webspacing>vari</webspacing>
 		</font>
 	</fontset>
 </fonts>

@@ -1,0 +1,1856 @@
+=== RELEASE 2.1pre1
+
+Tue Jun 11 14:23:52 MET DST 2002 brain:
+
+	Fixed mem_free(NULL) in x.c:1001
+
+=== RELEASE 2.0
+
+Mon Jun 10 01:15:33 MET DST 2002 mikulas:
+
+	Fixed FP-exception on Alpha
+
+Tue Jun  4 20:19:33 CEST 2002 mpat7421:
+
+	C aliasing bugs fixed in lists
+
+Tue Jun  4 19:02:17 CEST 2002 brain:
+
+	Fixed crash on 16 color modes in X
+
+Tue Jun  4 16:25:31 CEST 2002 brain:
+
+	Fixed problem with colors on X with big endian, 24bits/4bytes, 0xff0000
+	0xff00 0xff R G B mask
+
+Mon Jun  3 23:28:25 CEST 2002 Jonas Fonseca <fonseca@diku.dk>:
+
+	Updated danish translation
+
+Mon Jun  3 23:25:04 CEST 2002 mpat7421:
+
+	Fixed crash in text-mode html renderer
+
+=== RELEASE 2.0pre6
+
+Thu May 30 22:41:43 MET DST 2002 "Varga Balázs" <vinnui@broadband.hu>:
+
+	Updated Hungarian translation
+
+=== RELEASE 2.0pre5
+
+Tue May 28 18:00:43 CEST 2002 clock:
+	fixed segfault on big 16-bit png's (when gamma table is
+	used)
+
+=== RELEASE 2.0pre4
+
+Sun May 26 23:53:31 CEST 2002 brain:
+
+	Fixed bug in TIFF's with odd height on big endian 
+	machines (white line in half of the height)
+
+Sun May 26 10:14:49 CEST 2002 clock:
+
+	Fixed bad decoding of 16-bit PNG's on big endian
+	platforms and platforms where unsigned short has
+	different size than 2 chars.
+
+Sat May 25 18:47:33 CEST 2002 clock:
+
+	Fixed bad dithering on big endian and depth=130
+	Optimized startup (1/2 of former count of float exponentiations)
+
+Fri May 24 22:04:38 CEST 2002 brain:
+
+	Fixed several C incompatibilities to compile on MIPSpro Compilers,
+	Version 7.3.1.3m (problems noticed by Heiko Schlichting
+	<heiko@FU-Berlin.DE>)
+
+Fri May 24 22:00:00 CEST 2002 PerM:
+
+	Changed debugging system in ipret.c and builtin.c
+
+Fri May 24 20:12:19 CEST 2002 brain:
+
+	Fixed segfault in js_upcall_set_image_src
+
+Thu May 23 22:21:03 CEST 2002 brain:
+	
+	Bugfix in name resolving in JS
+	Frame->top upcall fixed
+	Removed possible null-pointer-dereferencing bugs in jsint.c
+	
+=== RELEASE 2.0pre3
+
+Thu May 23 18:13:25 CEST 2002 PerM:
+
+	Bugfix in function program(), added document to
+	frames and several other creeping features.
+
+Thu May 23 16:28:20 CEST 2002 clock:
+
+	Fixed a bug in configure.in around libpng
+
+Thu May 23 15:23:10 CEST 2002 brain:
+	
+	Added calibration into help menu
+
+=== RELEASE 2.0pre2
+
+Thu May 23 08:47:13 CEST 2002 clock:
+	
+	Now compiles with libpng-1.2.2, which has got
+        libpng/png.h instead of png.h
+
+Wed May 22 21:47:27 CEST 2002 brain:
+
+	Fixed frame->top upcall bug
+
+Wed May 22 19:02:36 CEST 2002 brain:
+
+	Fixed referer bug (POST data in URL)
+
+Wed May 22 14:39:58 CEST 2002 clock:
+	
+	Moved fonts from 9 directories to just 5 to make font
+	matching faster during runtime.
+
+=== RELEASE 2.0pre1
+
+Mon May 20 14:29:13 CEST 2002 Miroslav Rudisin <miero@atrey.karlin.mff.cuni.cz>:
+	
+	Updated Slovak translation
+
+Mon May 20 14:20:20 CEST 2002 brain:
+
+        Added X Window graphics driver
+        Javascript builtin functions
+        Remade the bookmarks
+
+Mon May 20 14:20:10 CEST 2002 mikulas:
+
+        Rewritten for graphics
+        Added Atheos GUI graphics driver
+        Added PMShell graphics driver
+
+Mon May 20 14:19:40 CEST 2002 clock:
+        Added fonts & images
+        Added SVGAlib graphics driver
+
+Mon May 20 14:18:34 CEST 2002 perm:
+
+        Added Javascript
+
+Sun Jul 23 16:30:23 MET DST 2000 mikulas:
+
+        Fixed crash on Unix when $HOME didn't exist
+
+Mon Jul 17 23:36:20 cet 2000 mikulas:
+
+        OS/2: fixed "Process terminated by SIGPIPE" when user touched mouse
+        while exiting
+
+=== RELEASE 0.97 ===
+
+Fri May 10 02:35:31 MET DST 2002 mikulas:
+
+        Fixed another crash in OS/2 with empty clipboard
+
+Fri May 10 00:35:47 MET DST 2002 Fabio Bonelli <fabiobonelli@libero.it>:
+
+        Fix deleted bookmarks when disk was full
+
+Thu May  9 03:16:17 cet 2002 mikulas:
+
+        Fixed crash when CTRL-INS pressed in OS/2 and there was no selected link
+
+Mon May  6 03:56:05 MET DST 2002 David O'Brien <obrien@FreeBSD.org>:
+
+        -force-html
+
+Mon May  6 02:18:00 MET DST 2002 mikulas:
+
+        Big forms are a bit faster
+
+Mon May  6 02:08:04 MET DST 2002 mikulas:
+
+        Fixed few most obvious bugs in win32 support
+
+Mon May  6 01:50:27 cet 2002 mikulas:
+
+        Swapeed x and y entries when reporting image in form
+
+Mon May  6 00:38:04 cet 2002 mikulas:
+
+        END doesn't skip to next line when wrapping
+
+Sun May  5 22:41:10 cet 2002 mikulas:
+
+        Do not recode invisible form values to display charset and back
+
+Wed May  1 22:10:03 MET DST 2002 mikulas:
+
+        Do not strip '?' from url when method is POST
+
+Sat Apr 27 18:23:02 MET DST 2002 mikulas:
+
+        Memory debugger disabled
+
+Wed Apr 24 22:12:16 cet 2002 mikulas:
+
+        Treat LF as space in attributes
+
+Tue Apr 23 00:38:24 MET DST 2002 Jonas Fonseca <fonseca@diku.dk>:
+
+        Danish translation
+
+Sat Apr 20 23:01:27 MET DST 2002 mikulas:
+
+        Process broken html tags
+
+Sat Apr 20 19:12:56 MET DST 2002 mikulas:
+
+        Ctrl-W selects last item in menu
+
+Wed Apr 10 18:35:20 MET DST 2002 mikulas:
+
+        Fixed name clashes on MaxOS X
+
+Mon Apr  8 01:57:04 MET DST 2002 mikulas:
+
+        ^[[11m is selected as default
+
+=== RELEASE 0.97pre12 ===
+
+Sun Apr  7 17:41:10 cet 2002 mikulas:
+
+        Fixed internal error at www.esolutions-ukraine.com
+
+=== RELEASE 0.97pre11 ===
+
+Thu Apr  4 20:12:12 cet 2002 mikulas:
+
+        Work around some subtle bug in OS/2. Create pipe before socket
+
+=== RELEASE 0.97pre10 ===
+
+Wed Apr  3 23:48:10 MET DST 2002 mikulas:
+
+        Fixed internal error: cell is now wider
+
+=== RELEASE 0.97pre9 ===
+
+Mon Apr  1 16:57:17 cet 2002 mikulas:
+
+        Fixes in af_unix
+
+Mon Apr  1 16:25:43 cet 2002 mikulas:
+
+        Increase priority on OS/2
+
+Thu Mar 28 00:30:39 cet 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Fixed one leak when links came out of memory
+
+=== RELEASE 0.97pre8 ===
+
+Wed Mar 27 01:52:24 MET 2002 mikulas:
+
+        Ftp doesn't send more commands at once -- slower but safe with MS IIS or
+        Novell
+
+Tue Mar 26 23:39:42 MET 2002 mikulas:
+
+        Do not swallow ' ' in filenames
+
+Sun Mar 24 11:13:52 cet 2002 mikulas:
+
+        Fixed double newline when rendering lists: <li><p> xxx
+
+Wed Mar 20 02:24:29 MET 2002 mikulas:
+
+        Fixed Ctrl-B binding
+
+Wed Mar 20 02:24:26 MET 2002 mikulas:
+
+        va_end used
+
+=== RELEASE 0.97pre7 ===
+
+Sat Mar 16 03:06:52 MET 2002 mikulas:
+
+        Fixed files not displayed properly when there was reload request on
+        background
+
+Sat Mar 16 02:49:17 MET 2002 mikulas:
+
+        ??? -> \?\?\? (so that it is not recognised as trigraph)
+
+Sat Mar  9 17:56:39 cet 2002 mikulas:
+
+        Do not print contents of posted data in 'downloads' menu
+
+=== RELEASE 0.97pre6 ===
+
+Wed Mar  6 01:11:33 MET 2002 mikulas:
+
+        Charset in values in <SELECT> tag
+
+=== RELEASE 0.97pre5 ===
+
+Mon Mar  4 14:26:39 MET 2002 mikulas:
+
+        Undefine UNIX on win32. Maybe it helps ... I don't know
+
+Mon Mar  4 13:58:14 MET 2002 mikulas:
+
+        Fixed bad loading of imgmap
+
+=== RELEASE 0.97pre4 ===
+
+Sun Mar  3 23:14:58 MET 2002 mikulas:
+
+        Always trust 'Content-Length' when communicating with HTTP/1.1 server --
+        work around broken HTTP/1.1 servers that send Connection: close, but
+        keep the connection
+
+Sun Mar  3 22:55:58 MET 2002 mikulas:
+
+        Handle encoding to utf-8 correctly
+
+Sun Mar  3 22:01:43 cet 2002 mikulas:
+
+        Do not accept '<' without name as a tag
+
+Sun Mar  3 21:05:10 MET 2002 Peter Naulls <peter@chocky.org>:
+
+        RiscOS support
+
+Sun Mar  3 20:58:12 MET 2002 mikulas:
+
+        -dump does not stuck in redirect loops
+
+Sun Mar  3 20:57:54 MET 2002 mikulas:
+
+        Test for dlopen in configure (openssl needs it)
+
+Sun Mar  3 05:32:09 MET 2002 mikulas:
+
+        Fixed ESC timeout
+
+Sun Mar  3 03:24:14 MET 2002 mikulas:
+
+        Input field is one char larger
+
+Sat Mar  2 14:36:13 cet 2002 mikulas:
+
+        Report terminal size in User-Agent
+
+Sat Mar  2 12:13:20 cet 2002 mikulas:
+
+        Improved performance of rendering nested tables
+
+Tue Feb 26 03:26:43 cet 2002 mikulas:
+
+        Removed LONG_MIN, LONG_MAX because they were undefined on irix
+
+Fri Feb  8 21:48:58 MET 2002 mikulas:
+
+        Fixed one case where 0 would go to the 'save formatted document' output
+
+Fri Feb  8 09:21:33 MET 2002 Muhamad Faizal <faizal@mfaizal.net>:
+
+        Indonesian translation
+
+Mon Feb  4 22:58:38 MET 2002 mikulas:
+
+        Include <wait.h> if found
+
+Mon Feb  4 14:52:36 MET 2002 mikulas:
+
+        #define __EXTENSIONS__ -- I hope it helps on SunOS
+
+=== RELEASE 0.97pre3 ===
+
+Mon Feb  4 13:55:56 MET 2002 mikulas:
+
+        Fix compile error
+
+Sat Feb  2 03:10:20 MET 2002 Karvinen Ilkka <ik@iki.fi>:
+
+        Finnish translation
+
+=== RELEASE 0.97pre2 ===
+
+Wed Jan 30 13:16:30 cet 2002 mikulas:
+
+        Fix compile error when -lgpm works but gpm.h is not there
+
+Wed Jan 30 13:15:38 cet 2002 Aldy Hernandez <aldyh@cygnus.com>:
+
+        MacOS address resolution fix
+
+Wed Jan 30 13:05:35 cet 2002 Cliff Cunnington <cliff@ccnet.demon.nl>:
+
+        Added &euro; symbol
+
+Wed Jan 30 13:01:11 cet 2002 Jacek Fedorynski <jfedor@jfedor.org>:
+
+        Fixed segfault when posting large form
+
+=== RELEASE 0.97pre1 ===
+
+Tue Jan 29 17:17:22 MET 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Manpage update
+
+Tue Jan 29 17:06:11 MET 2002 zas <zas@norz.org>:
+
+        Updated french translation
+
+Tue Jan 29 17:04:59 MET 2002 Ionel Mugurel Ciobica:
+
+        Romanian translation
+
+Tue Jan 29 17:02:48 MET 2002 mikulas:
+
+        Fixed error when sprintf return value is defined as 'void' in headers
+
+Tue Jan 29 16:50:53 MET 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Cookie expiration
+
+Tue Jan 29 16:49:48 MET 2002 mikulas:
+
+        Do not reject cookies with insecure domain (but send them only to
+        original server, not to the whole domain)
+
+Tue Jan 29 16:45:31 MET 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Fix stripping '?' out of form url
+
+Tue Jan 29 16:40:32 MET 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Add "LISTING" tag
+
+Tue Jan 29 16:39:03 MET 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Fix relative redirect on -dump and -source
+
+Tue Jan 29 16:36:02 MET 2002 Petr Baudis <pasky@pasky.ji.cz>:
+
+        Use "imgtitle" if there's no "alt"
+
+Tue Jan 29 16:20:19 cet 2002 Carles <isard@ctv.es>:
+
+        Catalan translation
+
+Tue Jan 29 16:18:45 cet 2002 Stefan de Groot <stefan@nllinux.nl>:
+
+        Dutch translation
+
+Tue Jan 29 16:16:53 cet 2002 mikulas:
+
+        Fixed name clash of struct option with includes on cygwin
+
+Tue Jan 29 16:12:59 cet 2002 mikulas:
+
+        Do not allow larger input fiels than screen size
+
+Tue Jan 29 16:12:43 cet 2002 mikulas:
+
+        Fixed internal error "cell_with" in table parser
+
+Tue Jan 29 15:36:51 cet 2002 mikulas:
+
+        Fixed double %0d when posting textarea
+
+Tue Jan 29 15:35:51 cet 2002 mikulas:
+
+        Fixed crash when amount of items in select box decreases after reload
+        Make it remember select item on reload (fixes www.xchat.cz)
+
+Sat Jan 26 03:47:13 MET 2002 mikulas:
+
+        Work-around for Sun C bug
+
+Sat Jan 26 03:47:00 MET 2002 mikulas:
+
+        Fixed one read overrun in parser
+
+Fri Jan 11 19:02:02 cet 2002 mikulas:
+
+        Fixed crash in OS/2 when user pressed Ctrl-V and clipboard was empty
+
+Sat Dec  8 23:19:27 MET 2001 mikulas:
+
+        Fixed leaving zombie processes when more children exited simultaneously
+
+Tue Sep 25 11:16:29 MET DST 2001 karel.kulhavy@pharma.novartis.com:
+
+        Fixed compile incompatibility
+
+Tue Sep 25 11:10:36 MET DST 2001 Andrew Rodionoff <arnost@mail.ru>:
+
+        Fixed minor bug in kbd binding
+
+=== RELEASE 0.96 ===
+
+Mon Jul  2 03:25:39 MET DST 2001 Serge Winitzki <serge@scriabin.PHYS.cwru.edu>:
+
+        SSL detection fix
+
+Mon Jul  2 03:21:50 MET DST 2001 Serge Winitzki <serge@scriabin.PHYS.cwru.edu>:
+
+        Updated Russian translation
+
+=== RELEASE 0.96pre8 ===
+
+Sat Jun 23 00:57:42 cet 2001 Nalin Dahyabhai <nalin@redhat.com>:
+
+        Fixed occasional destroying of read buffer on Alpha
+
+Fri Jun 22 21:50:08 cet 2001 mikulas:
+
+        One more charset fix
+
+=== RELEASE 0.96pre7 ===
+
+Mon Jun 18 23:39:22 MET DST 2001 mikulas:
+
+        Do not retry on SSL error
+
+Mon Jun 18 23:12:36 MET DST 2001 Michail Litvak <mci@owl.openwall.com>:
+
+        Patch configure.in to force error if OpenSSL not found
+
+Mon Jun 18 23:03:03 MET DST 2001 mikulas:
+
+        Charset from server has higher precedence than charset in document
+
+=== RELEASE 0.96pre6 ===
+
+Tue Jun 12 23:08:11 MET DST 2001 mikulas:
+
+        '?' and anything behind it is completely stripped out of form action url
+        (it fixes problem when browsing newsgroups on google)
+
+=== RELEASE 0.96pre5 ===
+
+Tue Jun 12 21:31:01 MET DST 2001 mikulas:
+
+        Fixed memory leak when SSL protocol was violated
+
+=== RELEASE 0.96pre4 ===
+
+Tue Jun 12 14:19:05 MET DST 2001 mikulas:
+
+        Fixed '->' not working in menus
+
+Mon Jun 11 15:24:09 MET DST 2001 mikulas:
+
+        Don't use unrestartable timeout when server does not send Accept-ranges,
+        but supports range requests
+
+=== RELEASE 0.96pre3 ===
+
+Mon Jun 11 13:16:49 MET DST 2001 Peter Wang <tjaden@alphalink.com.au>:
+
+        Rebindable keys in menus
+
+Mon Jun 11 13:05:18 MET DST 2001 mikulas:
+
+        Fixed memory leak when SSL aborted
+
+=== RELEASE 0.96pre2 ===
+
+Thu Jun  7 14:24:17 MET DST 2001 mikulas:
+
+        Fixed crashes in 0.96pre1 with some languages because intl/synclang was
+        not run
+
+Wed Jun  6 18:33:19 cet 2001 mikulas:
+
+        Fixed crash when received invalid cookie
+
+Sun Jun  3 14:11:54 cet 2001 mikulas:
+
+        Fixed searching for -lsocket in configure.in
+        (bug introduced in 0.96pre1)
+
+=== RELEASE 0.96pre1 ===
+
+Sun Jun  3 01:49:44 MET DST 2001 mikulas:
+
+        Ctrl-A, Ctrl-E, Ctrl-F, Ctrl-B work again (were disable by kbdbind
+        patch)
+
+Sun Jun  3 01:36:09 MET DST 2001 Anton Voloshin <vav@isv.ru>:
+
+        Proper encoding of form entries
+
+Sat Jun  2 02:45:49 MET DST 2001 Simos Xenitellis <simos@hellug.gr>
+                                 Alejandros Diamandidis <adia@egnatia.ee.auth.gr>:
+
+        Greek codepages & translation
+
+Sat Jun  2 02:39:21 MET DST 2001 Mediavilla David <f4j900zx001@NOSPAMsneakemail.com>:
+
+        Updated Spanish translation
+
+Sat Jun  2 02:15:19 MET DST 2001 "Martin Norba:ck" <d95mback@dtek.chalmers.se>:
+
+        Updated Swedish translation
+
+Sat Jun  2 02:14:47 MET DST 2001 "Benjamin C. W. Sittler" <bsittler@iname.com>:
+
+        Macroman 2000 charset
+
+Sat Jun  2 02:05:46 MET DST 2001 Marius Gedminas <marius.gedminas@uosis.mif.vu.lt>:
+
+        Fixed reversed HOME/END on RXVT
+
+Sat Jun  2 01:50:10 MET DST 2001 mikulas:
+
+        Fixed textarea overlapping next frame
+
+Sat Jun  2 01:39:19 MET DST 2001 Peter Wang <tjaden@alphalink.com.au>:
+
+        More keys to bind
+
+Sun May 27 13:20:12 cet 2001 mikulas:
+
+        Fixed badly displayed time when time was >1d and <1d1h
+
+Tue Apr 17 18:52:11 MET DST 2001 mikulas:
+
+        Fixed color handling for dos telnet with broken VT100
+
+Mon Apr  9 01:38:02 MET DST 2001 Olexander Kunytsa <kunia@istc.kiev.ua>:
+
+        Ukrainian translation update
+
+Mon Apr  9 01:37:33 MET DST 2001 Kaloian Doganov <kaloian@europe.com>:
+
+        Bulgarian translation update
+
+Mon Apr  9 01:35:04 MET DST 2001 Han The Thanh <thanh@informatics.muni.cz>:
+
+        Vietnamesse codepages
+
+Mon Apr  9 01:12:23 MET DST 2001 Marco Bodrato <bodrato@linuz.sns.it>:
+
+        Twinterm support
+
+Sun Apr  8 23:47:35 MET DST 2001 mikulas:
+
+        Noproxy removed because it is broken
+
+Fri Mar 23 04:23:51 MET 2001 Radovan Stas <radoone@skmi.science.upjs.sk>:
+
+        Slovak translation
+
+Fri Mar 23 04:23:17 MET 2001 Alberto Garcia <berto@gpul.org>:
+
+        Galician translation
+
+Fri Mar 23 04:13:35 MET 2001 Adam Harvey <matlhdam@iinet.net.au>:
+
+        Fixed sometimes badly posted form
+
+Fri Mar 23 03:40:39 MET 2001 Nuno Miguel Rodrigues <nmr@europa.net.dhis.org>:
+
+        Unixware console fix
+
+Sun Feb 11 22:18:20 MET 2001 mikulas:
+
+        Fixed bug in HTTP requester when server sends only one byte
+
+Mon Jan 15 23:04:06 MET 2001 Oleg Belousov <strijar@urai.ru>:
+
+        "Ignore charset info sent by server" is saved din config file
+
+Sat Jan 13 14:40:14 cet 2001 mikulas:
+
+        Fixed crash when '|' was pressed and there was no header
+
+=== RELEASE 0.95 ===
+
+Tue Jan  2 12:57:29 MET 2001 zas@norz.org:
+
+        Updated French translation
+
+Tue Jan  2 12:55:44 MET 2001 mikulas:
+
+        HTTP auth disabled again because it is really buggy
+
+=== RELEASE 0.94 ===
+
+Sun Dec 31 23:36:11 MET 2000 Alexander Mai <st002279@hrzpub.tu-darmstadt.de>:
+
+        Updated manpage and help
+
+Sun Dec 31 23:30:35 MET 2000 mikulas:
+
+        Fixed race in keyboard code (links sometimes blocked on tty read)
+
+Sun Dec 31 22:58:31 MET 2000 mikulas:
+
+        Fixed overflow when loading files longer than 200M
+
+Sun Dec 31 21:23:13 cet 2000 mikulas:
+
+        Updated Czech translation
+
+Sun Dec 31 21:22:47 cet 2000 Taniel Kirikal <taniel@colleduc.ee>:
+
+        Estonian translation
+
+Sat Dec 30 17:11:06 MET 2000 Dmitry Pinchukov <dpinch@mail.ru>:
+
+        Ukrainian translation
+
+Sat Dec 30 13:41:37 MET 2000 Baris Metin <baris@gelecek.com.tr>:
+
+        Turkish translation
+
+Sat Dec 30 13:27:50 MET 2000 Kaloian Doganov <kaloian@europe.com>:
+
+        Bulgarian translation
+
+Wed Dec 13 22:07:53 MET 2000 mikulas:
+
+        Compatible behaviour when FORM ACTION contains '?'
+
+=== RELEASE 0.94pre9 ===
+
+Tue Dec 12 12:41:03 MET 2000 mikulas:
+
+        Fixed crash in table parser
+
+Sun Dec 10 22:27:16 cet 2000 mikulas:
+
+        Changed weird 'D' behaviour when document changed under menu
+
+=== RELEASE 0.94pre8 ===
+
+Sat Dec  9 23:59:10 MET 2000 Mike Swieton <pyromage@pyromage.net>:
+
+        Form is not posted when jumping to field by number
+
+Sat Dec  9 23:53:47 MET 2000 mikulas:
+
+        Better handling of ESC followed by an arrow within timeout
+
+Sat Dec  9 23:43:19 MET 2000 mikulas:
+
+        Fixed incorrect processing of strings containing space or " in config file
+
+Sat Dec  9 23:12:54 MET 2000 mikulas:
+
+        Fixed BAD pointer operations in new config code
+
+Sun Dec  3 20:24:37 cet 2000 mikulas:
+
+        Fixed memory leak in ssl
+
+=== RELEASE 0.94pre7 ===
+
+Fri Dec  1 15:38:39 MET 2000 mikulas:
+
+        Fixed bug in action tag handling that appeared in previous version
+
+=== RELEASE 0.94pre6 ===
+
+Fri Dec  1 01:41:06 MET 2000 mikulas:
+
+        History was misdisplayed when there were posted documents
+
+Fri Dec  1 01:37:17 MET 2000 mikulas:
+
+        Better handling of missing action in form tag
+
+Fri Dec  1 01:33:26 MET 2000 mikulas:
+
+        Algoritm to find file names in ftp lists improved
+
+Fri Dec  1 01:32:55 MET 2000 mikulas:
+
+        'Save formatted document' should no more save zeros, no more beeps on
+        win32
+
+=== RELEASE 0.94pre5 ===
+
+Thu Nov 16 23:07:44 MET 2000 mikulas:
+
+        --without-ssl
+
+Thu Nov 16 22:53:55 MET 2000 Peter Wang <tjaden@alphalink.com.au>:
+
+        Rebindable keys, /etc/links.cfg
+
+Wed Nov 15 14:00:17 cet 2000 mikulas:
+
+        Fixes for OS/2
+
+Tue Nov 14 16:43:59 MET 2000 mikulas:
+
+        wipe-out-ssl script that clears all SSL hooks
+
+=== RELEASE 0.94pre4 ===
+
+Thu Nov  9 22:51:35 MET 2000 Sergei Borushevsky <b_sp@usa.net>:
+
+        SSL
+
+=== RELEASE 0.94pre3 ===
+
+Thu Nov  2 21:20:23 MET 2000 Martin Kavalec <martin@penguin.cz>:
+
+        Fixed redundant ':' in Host header
+
+Thu Nov  2 21:08:17 MET 2000 Sergei Borushevsky <b_sp@usa.net>:
+
+        Fixed HTTP auth
+
+=== RELEASE 0.94pre2 ===
+
+Thu Nov  2 00:31:20 MET 2000 mikulas:
+
+        Fixed weird behavior of 'G' when page was created by POST
+
+Thu Nov  2 00:23:17 MET 2000 mikulas:
+
+        HTTP auth disabled because it can cause random crashing
+
+Wed Nov  1 23:05:02 MET 2000 mikulas:
+
+        Fixed a bug that it didn't send port number in Host field
+
+Mon Oct 30 22:55:30 MET 2000 mikulas:
+
+        Fixed memory leak when Ctrl-C is pressed in authentication window
+
+Mon Oct 30 22:45:32 MET 2000 mikulas:
+
+        Fixed badly posted form when <FORM> without "action" was on page
+        generated from POST request
+
+Mon Oct 30 22:44:40 MET 2000 "-=[KamiKazeNH]=-" <kamikazenh@gmx.net>:
+
+        Brazilian Portuguese translation
+
+Mon Oct 30 22:11:52 MET 2000 Cristiano Guadagnino <cris@geppo.cmb2000.it>:
+
+        Updated Italian translation
+
+Mon Oct 30 22:04:37 MET 2000 mikulas:
+
+        Fixed INTERNAL ERROR: cell is now wider if there is <pre> inside <li>
+        inside table
+
+Tue Oct 24 18:39:52 MET DST 2000 Fabrice Haberer-Proust <fric@gmx.li>:
+
+        French translation
+
+=== RELEASE-0.94pre1 ===
+
+Tue Oct 24 01:02:50 MET DST 2000 Sergei Borushevsky <b_sp@usa.net>:
+
+        No-proxy-for, HTTP authentication
+
+Tue Oct 24 01:02:47 MET DST 2000 Sergei Borushevsky <b_sp@usa.net>:
+
+        Ctrl-W completition
+
+=== RELEASE 0.93 ===
+
+Mon Oct 23 23:16:56 MET DST 2000 mikulas:
+
+        Fixed one ANSI C incompatibility
+
+Mon Oct 23 22:13:12 MET DST 2000 mikulas:
+
+        Don't use af_unix sockets if sys/un.h doesn't exist
+
+Mon Oct 23 21:53:53 MET DST 2000 mikulas:
+
+        Fixed memory leak when Ctrl-C is pressed in type query window
+
+Mon Oct 16 21:14:45 MET DST 2000 Gianluca Montecchi <gianluca@pluto.linux.it>:
+
+        Italian translation
+
+Mon Oct 16 21:10:03 MET DST 2000 Jimenez Martinez Angel Luis <al026635@alumail.uji.es>:
+
+        Updated Spanish translation
+
+=== RELEASE 0.93pre4 ===
+
+Mon Oct 16 12:02:10 cet 2000 mikulas:
+
+        Fixed "INTERNAL ERROR: cell is now wider" in table renderer
+
+Thu Oct 12 23:42:33 cet 2000 mikulas:
+
+        Fixed crash when bookmarks file didn't end with '\n'
+        Fixed bad behaviour when bookmark title contained '|'
+
+=== RELEASE 0.93pre3 ===
+
+Tue Oct 10 11:48:08 MET DST 2000 mikulas:
+
+        Fixed inconsistent behaviour of search in more frames
+
+=== RELEASE 0.93pre2 ===
+
+Mon Oct  9 20:33:44 MET DST 2000 Suveg Gabor <gsuveg@sgmobil2000.hu>:
+
+        Hungarian translation
+
+Mon Oct  9 20:18:23 MET DST 2000 mikulas:
+
+        Space handling in URL is compatible with lynx
+
+Mon Oct  9 20:09:20 MET DST 2000 mikulas:
+
+        Fixed bug that connection end was sometimes missed when downloading more
+        files
+
+Wed Oct  4 15:23:54 cet 2000 Martin Norback <d95mback@dtek.chalmers.se>
+
+        Swedish translation
+
+Wed Oct  4 15:23:39 cet 2000 Jimenez Martinez Angel Luis <al026635@alumail.uji.es> &
+                             David Mediavilla Ezquibela <davidme.forum@bigfootNOSPAM.com>:
+
+        Spanish translation
+
+Sun Aug 13 18:03:22 cet 2000 mikulas:
+
+        It is working with buggy HTTP/1.0 servers that send invalid Content-Type
+
+Sat Aug 12 23:44:57 cet 2000 mikulas:
+
+        OS/2: fixed mouse cursor sometimes left after terminating
+
+Sat Aug 12 23:07:04 cet 2000 mikulas:
+
+        Fixed crash on error in -dump or -source
+
+Sun Jul 23 16:30:23 MET DST 2000 mikulas:
+
+        Fixed crash on Unix when $HOME didn't exist
+
+Mon Jul 17 23:36:20 cet 2000 mikulas:
+
+        OS/2: fixed "Process terminated by SIGPIPE" when user touched mouse
+        while exiting
+
+=== RELEASE 0.93pre1 ===
+
+Tue Sep 19 17:22:54 CEST 2000 mikulas:
+
+        Fixed crash in html parser
+        Fixed crash in bookmark window
+                       
+=== RELEASE 0.92 ===
+
+Fri Jun 30 00:06:18 MET DST 2000 mikulas:
+
+        Fixed sometimes incorrectly displayed window title in OS/2
+
+Fri Jun 30 00:05:19 MET DST 2000 Aurimas Mikalauskas <inner@dammit.lt>:
+
+        Lithuanian translation
+
+=== RELEASE 0.91 ===
+
+Wed Jun 28 12:19:31 MET DST 2000 mikulas:
+
+        Target was not working in 0.90, links were always displayed in top frame
+
+=== RELEASE 0.90 ===
+
+Tue Jun 27 18:25:50 MET DST 2000 mikulas:
+
+        Fixed incorrect blocking of terminal that caused problems on sun
+
+Tue Jun 27 14:00:55 MET DST 2000 mikulas:
+
+        Fixed incorrectly displayed estimated length when restarting ftp
+        download
+
+Tue Jun 27 11:22:54 MET DST 2000 mikulas:
+
+        Now it ignores spaces in html attribute values
+        Fixed incorrect display when link with content type: text/plain was
+        pointing to frame
+
+=== RELEASE 0.90pre3 ===
+
+Thu Jun 22 23:00:19 MET DST 2000 mikulas:
+
+        Fixed incorrectly displayed textarea when numbered links are on
+        Alex Antropoff's patch for spaces at the end of url was not correct;
+        removed
+        err changed to er because of name conflict on Apple
+        Fixed crash when links received HUP signal
+
+Thu Jun 22 22:42:10 MET DST 2000 Alexander Mai <mai@migdal.ikp.physik.tu-darmstadt.de>:
+
+        Updated manpage
+
+Thu Jun 22 22:21:00 MET DST 2000 Peter Gervai <grin@tolna.net>:
+
+        Mailcap to links.cfg convertor
+
+Thu Jun 22 09:11:30 MET DST 2000 Serge Winitzki <serge@mendax.phys.cwru.edu>:
+
+        Updated Russian localization
+
+Tue Jun 20 23:43:25 MET DST 2000 mikulas:
+
+        Removed DOS end-of-line from some files
+        Servers are added to blacklist rather than proxies
+
+=== RELEASE 0.90pre2 ===
+
+Mon Jun 19 12:21:55 MET DST 2000 beckers <beckers@st-oneline.de>:
+
+        Updated German translation
+
+Sun Jun 18 18:37:21 MET DST 2000 mikulas:
+
+        Fixed lockup on systems with too small socket size (NetBSD)
+
+Sun Jun 18 11:57:41 MET DST 2000 mikulas:
+
+        Workaround for libcs that lock up when qsort is called with zero length
+        array (NetBSD)
+        Home and End work in NetBSD console
+        Workaround for buggy servers that can't handle too long Accept-Charset
+        (www.seznam.cz)
+
+Sat Jun 17 13:37:24 MET DST 2000 Marius Gedminas <mgedmin@takas.lt>:
+
+        ISO-8859-4 and ISO-8859-13 codepages
+
+=== RELEASE 0.90pre1 ===
+
+Wed Jun 14 19:13:36 MET DST 2000 Alex Antropoff <alex@tirastel.md>:
+
+        Allowed spaces at the end of URL
+
+Wed Jun 14 18:26:12 MET DST 2000 mikulas:
+
+        Fixed shooting to memory when DNS query was cancelled
+
+Wed Jun 14 00:28:34 MET DST 2000 Alexander Mai <st002279@hrzpub.tu-darmstadt.de>:
+
+        Updated manpage
+
+Tue Jun 13 23:53:05 MET DST 2000 Arkadiusz 'Jo Joro' Sochala <jojoro@poczta.onet.pl>:
+
+        Updated Polish translation
+
+Tue Jun 13 23:52:36 MET DST 2000 Armon Red <armon@islandia.is>:
+
+        Updated Icelandic translation
+
+Mon Jun 12 17:18:17 MET DST 2000 mikulas:
+
+        Fixes for BeOS
+
+Mon Jun 12 13:45:44 MET DST 2000 mikulas:
+
+        Fixed infinite loop in requester
+
+Mon Jun 12 13:11:26 MET DST 2000 mikulas:
+
+        -anonymous
+
+Sun Jun 11 22:27:48 MET DST 2000 mikulas:
+
+        Accept-charset
+
+Sun Jun 11 20:29:22 cet 2000 root:
+
+        Timeouts don't flood the queue in environments that can't do paralel
+        DNS lookup (OS/2, BeOS)
+
+Sun Jun 11 20:25:47 cet 2000 Alex Antropoff <alex@tirastel.md>:
+
+        Added 'Accept: */*' to the request header
+
+Sat Jun 10 17:56:23 MET DST 2000 mikulas:
+
+        Fixed memory leak in put_link_line
+        Refresh now loads the document to the same frame
+
+Sat Jun 10 10:19:41 MET DST 2000 mikulas:
+
+        Fixed shooting to memory in telnet protocol
+
+Sat Jun 10 10:04:14 MET DST 2000 mikulas:
+
+        Fixed crash in url requester introduced yesterday
+
+Fri Jun  9 21:02:12 MET DST 2000 mikulas:
+
+        Fixed badly displayed document sometimes when user pressed '\'
+        Finger protocol
+        Now it doesn't stop loading main page when image is viewed
+        Fixed security bug: proxy:// url is now only for internal use (it could
+                be used to force links to accept any cookie)
+        Fixed security bug: when opening new window, links encodes special
+                characters so that they are not interpreted by shell
+        Fixed crash in cache when server sent incomplete page on reload
+
+Fri Jun  9 13:44:10 MET DST 2000 mikulas:
+
+        Support for terminals with block cursor (xterm, FreeBSD console)
+
+Fri Jun  9 11:14:26 MET DST 2000 mikulas:
+
+        Document info didn't show info about current link when in frame
+        Memory info window has also refresh
+        Fixed memory leak when saving config file failed
+
+Fri Jun  9 01:38:35 MET DST 2000 mikulas:
+
+        Mailto and telnet support
+
+Thu Jun  8 02:33:02 cet 2000 root:
+
+        Fixed crash when user presses ^C in resources window
+
+Thu Jun  8 01:37:30 cet 2000 root:
+
+        Correct behaviour when there are more forms in a table
+
+Wed Jun  7 13:37:15 MET DST 2000 mikulas:
+
+        It doesn't display some xml tags
+        Fixed incorrect restart of connection when formatting document took
+        longer than timeout
+
+Mon Jun  5 22:55:06 MET DST 2000 Alex Antropoff <alex@tirastel.md>:
+
+        Now it accepts 'charset' attribute of meta element
+
+Mon Jun  5 22:54:05 MET DST 2000 mikulas:
+
+        Fixed "Unknown error" or crash on startup
+
+Wed May 31 21:58:43 MET DST 2000 mikulas:
+
+        Fixed memory leak
+
+Wed May 31 21:30:31 MET DST 2000 Serge Winitzki <serge@mendax.phys.cwru.edu>:
+
+        Upadted Russian localization
+
+Wed May 31 18:14:22 MET DST 2000 mikulas:
+
+        It displays loading status when loading frames
+
+Wed May 31 11:31:40 MET DST 2000 mikulas:
+
+        Now it compiles on BSD
+        Fixed bug with user viewers introduced with ^C fix
+        Configure script checks for XFree for OS/2
+        Some fixes for XFree under OS/2
+
+Tue May 30 19:01:04 MET DST 2000 mikulas:
+
+        Changed gen-intl script so that it works on buggy Solaris shell
+
+Tue May 30 16:54:07 MET DST 2000 mikulas:
+
+        Menu contains link for user's manual
+        When you press ^C in master xterm, it doesn't kill all xterms
+
+Tue May 30 16:07:58 MET DST 2000 Jan Bobrowski <jb@mohan.krakow.pl>:
+
+        Small optimization in file listing
+
+Tue May 30 11:36:50 MET DST 2000 mikulas:
+
+        Fixed bug that bookmarks and history were sometimes lost
+
+Tue May 30 11:26:56 MET DST 2000 Wojtek Bojdo/l <wojboj@lp.net.pl>:
+
+        Updated Polish translation
+
+Tue May 30 11:26:47 MET DST 2000 Armon Red <armon@islandia.isarmon@islandia.is>:
+
+        Updated Icelandic translation
+
+Tue May 30 00:27:53 cet 2000 root:
+
+        Rewritten mouse driver for OS/2. Mouse doesn't leave shadows in full
+        screen
+
+Wed May 24 23:42:34 MET DST 2000 mikulas:
+
+        Few optimizations
+
+Tue May 23 18:09:26 MET DST 2000 mikulas:
+
+        Ctrl-C doesn't break Links when external viewer running
+        Now it doesn't display text when running in background
+        Fixed to compile on non-GNU c
+
+Tue May 23 15:53:23 MET DST 2000 mikulas:
+
+        Fixed memory leak in terminal introduced in previous version
+
+Mon May 22 17:32:11 cet 2000 root:
+
+        Better parsing of directory listing in ftp
+        Handling of broken links, that reference beyound root (like ../../..)
+        Handling of broken pages, that have '?' in form action
+        Now it asks before exiting
+        It recognises '~' as home directory
+        Ctrl-L for redraw
+        Using WWW_HOME variable
+        HTTP bug workarounds are configurable
+        FTP password configurable
+        Jump to selected link when searching
+
+Mon May 22 17:08:30 cet 2000 M.K.Srikant <srix@vsnl.com>:
+
+        Fixed incorrect behaviour when "value" attribute was missing
+
+Mon May 22 14:58:46 cet 2000 root:
+
+        Correct reporting of error when connect fails
+        intl/synclang rewritten in awk, so it's much faster
+
+Sat May 20 22:35:45 MET DST 2000 mikulas:
+
+        Fixed crash when user jumped to page via history and the page was not
+        cached
+        Fixed crash sometimes when disk was out of space while downloading (it
+        was not fixed entirely)
+        Correct parsing of XML tags
+
+Fri May 19 21:27:46 MET DST 2000 mikulas:
+
+        Fixed bug that cookies didn't work with proxy
+
+Wed May 17 11:17:18 MET DST 2000 mikulas:
+
+        Fixed one very rare shooting to memory in bookmarks
+
+Wed May 17 10:21:04 MET DST 2000 Armon Red <armon@islandia.isarmon@islandia.is>:
+
+        Icelandic translation
+
+Wed May 17 10:19:45 MET DST 2000 Arkadiusz 'Jo Joro' Sochala <jojoro@poczta.onet.pl>:
+
+        Updated Polish translation
+
+Tue May 16 19:18:21 MET DST 2000 mikulas:
+
+        Pthreads are disabled, they'll be probably used only for systems that
+        really need it (W32)
+
+Mon May 15 23:27:30 MET DST 2000 mikulas:
+
+        Few frame fixes
+
+Mon May 15 15:07:16 MET DST 2000 mikulas:
+
+        Fixed configure so that it works on Solaris
+
+Sat May 13 19:00:24 MET DST 2000 mikulas:
+
+        Pthreads
+        Only one pending lookup at a time
+        Better memory leak debugging
+
+Sat May 13 17:27:01 MET DST 2000 Evan Hughes <hughes@lab43.org>:
+
+        Bookmarks
+
+Sat May 13 17:26:46 MET DST 2000 mikulas:
+
+        Change size of window in OS/2
+
+Sat May  6 00:44:14 MET DST 2000 mikulas:
+
+        Fixed file descriptor leak when browsing local directories
+
+Fri May  5 01:32:27 MET DST 2000 mikulas:
+
+        Support for buggy servers that send space before HTTP response
+
+Wed May  3 15:33:26 MET DST 2000 mikulas:
+
+        Numbered links
+        Codepage 1257
+
+Thu Apr 27 23:16:55 cet 2000 root:
+
+        Correct handling of responses that have space at the end of line
+
+Thu Apr 27 11:25:02 MET DST 2000 mikulas:
+
+        Fixed crash introduced with previous fix
+
+Wed Apr 26 22:19:27 MET DST 2000 mikulas:
+
+        Fixed crash sometimes when disk was out of space while downloading
+        Fixed bug that it didn't cache ftp redirects
+
+Fri Apr 21 21:41:13 cet 2000 root:
+
+        Fixed memory leak when history file could not be written
+
+Wed Apr 19 19:46:23 MET DST 2000 mikulas:
+
+        German translation updated
+
+Wed Apr 19 19:44:33 MET DST 2000 mikulas:
+
+        Fixed bug that it didn't allow chars >= 128 in hotkeys
+
+Tue Apr 18 17:38:25 MET DST 2000 Alexander Mai <mai@migdal.ikp.physik.tu-darmstadt.de>:
+
+        Small fix for one warning
+
+Mon Apr 17 14:35:21 MET DST 2000 mikulas:
+
+        Fixed bug when frame src attribute contained #
+        target attribute in forms should work
+
+Sun Apr 16 21:55:24 cet 2000 root:
+
+        Fixed bug that caused nasty crash in OS/2 (introduced with BeOS port)
+
+Sat Apr 15 20:38:53 MET DST 2000 beckers <beckers@st-oneline.de>:
+
+        German translation
+
+Sat Apr 15 20:38:10 MET DST 2000 mikulas:
+
+        BeOS port
+        Links no longer leaves garbage on BSD console when quitting
+
+Sun Apr  9 23:37:35 MET DST 2000 mikulas:
+
+        Fixed crash when pasting too long text from clipboard
+        Now it works on non-gnu compiler
+
+Sun Apr  9 20:52:02 cet 2000 root:
+
+        New interface for opening in new xterm/screen/session
+
+Sat Apr  8 22:38:57 MET DST 2000 mikulas:
+
+        Fixed incorrectly displayed counter when downloading large files (>20M)
+
+Sat Apr  8 19:19:06 MET DST 2000 mikulas:
+
+        VT100 frames work in screen and xterm
+
+Fri Apr  7 22:29:08 MET DST 2000 mikulas:
+
+        Fixed bug when aborting waiting connection
+
+Fri Apr  7 20:41:02 MET DST 2000 Yurii Rashkovskii <yrashk@univer.kharkov.ua>:
+
+        Updated Russian localization
+
+Tue Apr  4 17:14:59 MET DST 2000 Alexander Mai <st002279@hrzpub.tu-darmstadt.de>:
+
+        Fixed includes so that it works on AIX
+
+Sun Apr  2 21:29:29 cet 2000 root:
+
+        Changed handling of OPTGROUP and OPTION
+        Corrected history menu when you're on first page
+
+Thu Mar 30 18:12:27 MET DST 2000 mikulas:
+
+        Fixed crash in USEMAP introduced with translation changes
+
+Wed Mar 29 19:24:44 MET DST 2000 mikulas:
+
+        Netscape-Enterprise added to blacklist
+        Fixed bug when there are more spaces in header
+
+Sun Mar 26 23:03:19 cet 2000 root:
+
+        Better algoritm for finding next link. Now it doesn't swap so hard on
+        large files
+        Allocating of memory when searching improved
+
+Sat Mar 25 21:28:20 cet 2000 Petr Kulhavy <brain@artax.karlin.mff.cuni.cz> &
+                             Karel Kulhavy <clock@atrey.karlin.mff.cuni.cz>:
+
+        Czech translation
+
+Sat Mar 25 19:15:40 cet 2000 root:
+
+        Fixed crash when <OPTION> contains no value
+
+Sat Mar 25 17:39:38 MET 2000 mikulas:
+
+        Better movement around frames (now it's not random)
+        Rewritten support for more langugages; gettext is gone; now it can
+        recode charsets
+        Fixed shooting to memory when user entered longer text in "text margin"
+        field
+
+Mon Mar 13 00:46:53 MET 2000 Lukasz Dobrek <dobrek@student.ifpan.edu.pl>:
+
+        Now it places config files to directory $CONFIG_DIR
+
+Sat Mar 11 13:11:09 MET 2000 mikulas:
+
+        Fixed crash when user pressed '\' on blank screen
+
+Thu Mar  9 11:31:48 MET 2000 mikulas:
+
+        Fixed bug that it sometomes doesn't accept cookie
+
+Thu Mar  9 10:57:43 MET 2000 mikulas:
+
+        Fixed bug when gpm was killed while links running
+
+Wed Mar  8 23:15:15 cet 2000 root:
+
+        Fixed security bug: links passes file extension to shell - if the
+        extension contained character `, it could trigger program execution
+
+Tue Mar  7 18:46:09 cet 2000 root:
+
+        "Kill background connections" sometimes didn't work
+
+Tue Mar  7 17:25:13 cet 2000 root:
+
+        VMS server Purveyor added to HTTP/1.1 blacklist
+        All versions of mod_czech for Apache 1.3 are blacklisted
+        Fixed bug that it badly computed expected length when restarting request
+        while http server doesn't support restart
+
+Mon Mar  6 14:12:13 MET 2000 mikulas:
+
+        Fixed divide by zero when frameset cols or rows attribute is empty
+
+Wed Mar  1 00:14:59 cet 2000 root:
+
+        Cleaned up window title setting in OS/2
+        Fixed bug that it sometimes doesn't delete files in temp
+
+Tue Feb 22 08:56:55 MET 2000 Arkadiusz 'Jo Joro' Sochala <jojoro@poczta.onet.pl>:
+
+        Polish translation updated
+
+Sat Feb 19 17:51:08 MET 2000 Yurii Rashkovskii <yrashk@univer.kharkov.ua>:
+
+        Russian localization updated
+
+Sat Feb 19 14:40:31 MET 2000 mikulas:
+
+        Fixed crash when frames were enabled on page with frames
+
+Fri Feb 18 20:11:16 cet 2000 Alexander Mai <st002279@hrzpub.tu-darmstadt.de>:
+
+        Links now handles resize of OS/2 xterm
+
+Fri Feb 18 20:10:53 cet 2000 root:
+
+        Fixed one uninitialized variable in frames
+
+Wed Feb 16 22:05:14 MET 2000 mikulas:
+
+        Fixed crash in network options dialog
+
+Wed Feb 16 15:10:58 MET 2000 mikulas:
+
+        Fixed crash when selected 'Display' in unknown type dialog window
+        New dialog window with html formatting options
+
+Tue Feb 15 20:45:49 MET 2000 mikulas:
+
+        Fixed bug in frame width computing
+
+Mon Feb 14 12:14:31 cet 2000 root:
+
+        Fixed a 'file diappeared from cache' bug
+
+Wed Feb  9 19:45:19 MET 2000 mikulas:
+
+        Fixed crash introduced with previous fix
+
+Wed Feb  9 19:06:41 MET 2000 mikulas:
+
+        Fixed a possible lockup on bad pages with frames
+
+Wed Feb  9 18:22:38 MET 2000 mikulas:
+
+        Now it allows '#' in form url
+
+Tue Feb  8 23:07:47 cet 2000 root:
+
+        Fixed bug that it tried to close socket twice (problems on OS/2)
+
+Thu Feb  3 01:23:29 MET 2000 mikulas:
+
+        Fixed a bug that caused random crashing on frames
+
+Wed Feb  2 22:18:59 cet 2000 Yurii Rashkovskii <yrashk@univer.kharkov.ua>:
+
+        Updated Russian localization
+
+Sun Jan 30 11:21:26 MET 2000 mikulas:
+
+        Fixed crash when there was frame with no url
+
+Sat Jan 29 22:50:45 cet 2000 root:
+
+        Now it works in xterm in OS/2
+
+Sat Jan 29 16:34:35 MET 2000 Oleg Deribas <Oleg_Deribas@f13.n461.z2.fidonet.org>:
+
+        Fixed version of patch for clipboard and window title in OS/2
+
+Sat Jan 29 16:27:55 MET 2000 mikulas:
+
+        Frame support
+
+Sun Jan 23 12:47:49 cet 2000 root:
+
+        Fixed lockup in OS/2 when waiting for nonexisting process
+
+Sat Jan 15 22:10:01 MET 2000 mikulas:
+
+        Now it allows control characters in HTTP header
+
+Thu Jan 13 12:57:53 MET 2000 mikulas:
+
+        Updated AUTHORS file
+
+Wed Jan 12 10:18:32 MET 2000 mikulas:
+
+        Fixed crash when exit while there was downloading request waiting in
+                queue
+
+Mon Jan 10 15:55:25 MET 2000 Dmitr M. Klimov <dmk@gtrk.kmtn.ru>:
+
+        Russian localization
+
+Fri Jan  7 23:35:07 cet 2000 root:
+
+        Oleg Deribas's patch for windows title caused random crashes - it was
+                removed
+
+Fri Jan  7 17:00:30 cet 2000 root:
+
+        Fixed security bug: viewed files were created in /tmp readable for
+                anybody and without O_EXCL
+                0.8x is not affected by the bug
+
+Thu Jan  6 17:40:39 MET 2000 mikulas:
+
+        Fixed crash because of buggy gpm TSTP handler
+
+Thu Jan  6 17:40:13 MET 2000 Dmitry M. Klimov <dmk@gtrk.kmtn.ru>:
+
+        KOI8-R frames
+
+Wed Jan  5 20:55:47 MET 2000 Petr Cech <cech@atrey.karlin.mff.cuni.cz>:
+
+        Allows spaces at the beginning of url
+
+Wed Jan  5 20:53:33 MET 2000 mikulas:
+
+        Fixed crash in garbage collection
+
+Wed Jan  5 18:43:46 MET 2000 mikulas:
+
+        Fixed shooting to memory in -dump
+
+Wed Jan  5 14:18:47 MET 2000 mikulas:
+
+        Now it interprets some undocumented sequences &#128; - &#159;
+
+Wed Jan  5 13:35:36 MET 2000 mikulas:
+
+        url is interpreted as http only if it ends with top-level domain
+
+Tue Jan  4 23:54:42 MET 2000 Arkadiusz Sochala <jojoro@priv2.onet.pl>:
+
+        Polish translation
+
+Tue Jan  4 23:39:23 MET 2000 mikulas:
+
+        Fixed crash when IMGMAP has no items
+
+Tue Jan  4 19:20:40 MET 2000 Felix von Leitner <felix@convergence.de>:
+
+        When downloading file, time is set to server date
+
+Tue Jan  4 18:30:35 MET 2000 Oleg Deribas <older@iname.com>:
+
+        Window title and clipboard support in OS/2
+
+Fri Dec 31 13:27:37 MET 1999 mikulas:
+
+        Now it doesn't count locked files when doing garbage collection
+
+Thu Dec 30 17:21:00 MET 1999 mikulas:
+
+        URL file:/ now works
+        Now every terminal remembers its current directory
+
+Thu Dec 30 13:12:08 MET 1999 mikulas:
+
+        Fixed crash when WINCH is received after terminal is destroyed
+
+Mon Dec 27 20:05:17 MET 1999 mikulas:
+
+        -dump and -source
+
+Mon Dec 27 13:35:29 MET 1999 mikulas:
+
+        Save formatted document to file
+
+Sun Dec 26 16:19:54 MET 1999 mikulas:
+
+        Better signal handling. Now it continues after ^Z
+        Signals are handled also in slave sessions
+        Fixed crash when pending signal was unhandled
+                (crash when you send STOP; TERM; CONT)
+
+Fri Dec 17 10:23:11 MET 1999 mikulas:
+
+        Fixed infinite loop in table parser
+
+Wed Dec 15 23:39:49 MET 1999 Arkadiusz Miskiewicz <misiek@misiek.eu.org>:
+
+        More changes in internationalization
+
+Wed Dec 15 22:39:07 cet 1999 root:
+
+        Fixed few nasty bugs in interprocess communication. Now it runs on OS/2.
+
+Mon Dec 13 00:10:37 MET 1999 mikulas:
+
+        Fixed crash when received HTTP 100 response
+
+Thu Dec  9 20:40:00 CET 1999 Arkadiusz Miskiewicz <misiek@pld.org.pl>:
+
+        Added internationalization support (GNU gettext).
+
+Thu Dec  9 22:44:12 MET 1999 mikulas:
+
+        ~/.links has permissions 0700
+
+Thu Dec  9 22:37:50 MET 1999 Dakshinamurthy Karra <kd@blr.vsnl.net.in>:
+
+        More fixes for NT
+        Saving goto history
+
+Thu Dec  9 21:04:20 MET 1999 Peter Gervai <grin@tolna.net>:
+
+        Updated manpage
+
+Thu Dec  9 17:12:42 cet 1999 root:
+
+        When user aborts viewing, the temporary file is deleted
+
+Wed Dec  8 23:47:39 MET 1999 mikulas:
+
+        Fixed more bugs in communication. Now it shouldn't crash.
+
+Wed Dec  8 23:41:12 MET 1999 Andrew Porokhnyak <aop@porokh.kiev.ua>:
+
+        Ukrainian code page 1125
+
+Tue Dec  7 23:38:11 cet 1999 Dakshinamurthy Karra <kd@blr.vsnl.net.in>:
+
+        Windows NT port
+
+Tue Dec  7 23:24:12 cet 1999 root:
+
+        IPC now doesn't crash so often. Terminating is not yet very good.
+        Executing viewers in slave session doesn't work.
+
+Sun Dec  5 17:42:55 MET 1999 mikulas:
+
+        Interprocess communication via af_unix. If you launch links multiple
+        times, the one becomes 'master' and other connect to it.
+
+Sun Dec  5 15:18:28 MET 1999 mikulas:
+
+        Fixed memory leak in cookies
+
+Sat Dec  4 13:50:18 MET 1999 mikulas:
+
+        Cookies support
+
+Thu Dec  2 23:18:11 MET 1999 Alexander Mai <st002279@hrzpub.tu-darmstadt.de>:
+
+        Changes so that it works in xterm in OS/2
+
+Thu Dec  2 20:49:29 MET 1999 mikulas:
+
+        Fixed crashing because of download wothout cache
+
+Thu Dec  2 12:51:20 MET 1999 mikulas:
+
+        Fixed download withoud cache with FTP
+
+Thu Dec  2 11:19:37 MET 1999 mikulas:
+
+        Download without cache (I guess it still have many bugs)
+
+Thu Dec  2 00:15:20 MET 1999 mikulas:
+
+        SA_RESTART is no more set
+
+Wed Dec  1 23:46:21 MET 1999 mikulas:
+
+        Fixed bug on IRIX that have default unsigned char
+
+Wed Dec  1 22:09:36 MET 1999 mikulas:
+
+        Now it really compiles on non-GNU C
+
+Wed Dec  1 12:49:20 MET 1999 mikulas:
+
+        Fixed another bug in new cache - crash when downloading file twice
+        Removed ^M from os_dep.h
+        Now it should compile with non-GNU C
+
+Wed Dec  1 10:57:04 MET 1999 Sebastian Zagrodzki <s.zagrodzki@sith.mimuw.edu.pl>:
+
+        Shift-G opens dialog with pre-displayed current URL
+
+Tue Nov 30 22:01:27 CET 1999 Uwe Hermann <uh1763@bingo-ev.de>
+
+        Added a basic manpage for links. It's not very detailed yet
+        Commandline option '-version' now prints the version of links
+        Added code to allow you to open a link in a new xterm
+
+Wed Dec  1 00:14:53 MET 1999 mikulas:
+
+        Fixed another (less random) crashing bug in requester
+
+Tue Nov 30 23:51:00 MET 1999 mikulas:
+
+        Added copying info to help menu
+        Added keys to help menu
+
+Tue Nov 30 23:27:41 MET 1999 mikulas:
+
+        Fixed crash when ^C was pressed while usemap displayed
+        Fixed random crashing due to previous change in requester
+
+Tue Nov 30 20:20:24 MET 1999 Jan Bobrowski <jb@wizard.ae.krakow.pl>:
+
+        Handling of more colors, corect RGB->16colors translation
+
+Tue Nov 30 14:48:29 MET 1999 mikulas:
+
+        Connection is no more referenced via URL
+
+Tue Nov 30 14:11:14 MET 1999 mikulas:
+
+        A key to quit
+        Added ESC key to README
+
+Tue Nov 30 11:20:43 MET 1999 mikulas:
+
+        Fixed leak debug so that it works on Alpha
+
+Sun Nov 28 18:06:19 MET 1999 mikulas:
+
+        Support for stupid terminals that do not report screen size
+
+Sun Nov 28 12:54:10 MET 1999 mikulas:
+
+        Fixed a bug in roman number convertor
+        Fixed a small bug in table parser
+
+Sun Nov 28 12:53:30 MET 1999 mikulas:
+
+        Removed compiler warnings
+
+Sun Nov 28 12:11:41 MET 1999 mikulas:
+
+        Fixed problem with different size of int and long
+
+Sun Nov 28 10:29:18 MET 1999 mikulas:
+
+        Scrolling large textarea is not so slow
+
+Sat Nov 27 21:37:39 MET 1999 mikulas:
+
+        Fixed bug in new cache code
+
+Sat Nov 27 17:25:27 MET 1999 Unai Uribarri <unai@telecable.es>:
+
+        History
+
+Sat Nov 27 17:24:15 MET 1999 mikulas:
+
+        Improved cache performance when downloading (there may be new BUGS)
+
+=== Links-CURRENT forked ===
+
+=== RELEASE 0.81pre3 ===
+
+Sat Nov 27 11:42:37 cet 1999 Evgenij M. Baldin <baldin@sky.inp.nsk.su>:
+
+        Added support for Russian codepages 866 and iso8859-5
+
+Sat Nov 27 11:00:14 cet 1999 root:
+
+        Added frame restrictions when display is in cp850 or cp852
+
+=== RELEASE 0.81pre2 ===
+
+Fri Nov 26 20:58:01 MET 1999 mikulas:
+
+        Fixed a typo in destroy_all_sessions (it called bad function, however it
+        didn't cause crash)
+        Fixed small race in signal handling
+        Added handler for SIGINT, SIGTERM, SIGTSTP and SIGCONT
+
+=== RELEASE 0.81pre1 ===
+
+Fri Nov 26 17:53:18 MET 1999 mikulas:
+
+        Fixed bug with Squid. Keepalive connection was hanging until Squid
+        closed it. Now keepalive connections to HTTP/1.0 proxies work.
+
+Fri Nov 26 17:35:43 MET 1999 mikulas:
+
+        Changed it to work on 64b machines
+
+Fri Nov 26 17:21:30 MET 1999 mikulas:
+
+        Default codepage is now 8859-1 instead of us-ascii
+
+Fri Nov 26 17:18:46 MET 1999 mikulas:
+
+        Fixed a typo ISO-8895-1 -> ISO-8859-1
+
+Fri Nov 26 16:21:14 MET 1999 Eugene Osintsev <osgene@omskelecom.ru>:
+
+        Added support for Russian codepages 1251 and KOI8-R
+
+=== RELEASE 0.80 ===
+
+Wed Nov 24 13:25:33 MET 1999 mikulas:
+
+        First public release.
+
+vim: textwidth=80

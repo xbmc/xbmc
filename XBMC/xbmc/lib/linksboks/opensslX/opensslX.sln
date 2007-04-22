@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opensslX", "opensslX.vcproj", "{5003695D-EC75-400F-8B00-0A74B06EA0D2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dolphin", "..\..\XDK5849\Samples\Xbox\Graphics\Dolphin-opensslx\dolphin.vcproj", "{652C7D60-BC02-4E09-96DD-9300FFFF0002}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2} = {5003695D-EC75-400F-8B00-0A74B06EA0D2}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Debug.ActiveCfg = Debug|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Debug.Build.0 = Debug|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile.ActiveCfg = Profile|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile.Build.0 = Profile|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release.ActiveCfg = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release.Build.0 = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Debug.ActiveCfg = Debug|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Debug.Build.0 = Debug|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Profile.ActiveCfg = Profile|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Profile.Build.0 = Profile|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Release.ActiveCfg = Release|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Release.Build.0 = Release|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{652C7D60-BC02-4E09-96DD-9300FFFF0002}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

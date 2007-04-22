@@ -1,0 +1,164 @@
+<window id="2801">
+        <defaultcontrol>213</defaultcontrol>
+        <animation effect="fade" time="200">WindowOpen</animation>
+        <animation effect="fade" time="200">WindowClose</animation>
+        <controls>
+                <control type="image" id="1">
+                        <description>Panel</description>
+                        <posx>60</posx>
+                        <posy>330</posy>
+                        <height>223</height>
+                        <width>180</width>
+                        <texture>osd_panel_web.png</texture>
+                        <visible>yes</visible>
+                </control>
+                <control type="button" id="210">
+                        <description>Go Back</description>
+                        <posx>81</posx>
+                        <posy>424</posy>
+                        <width>38</width>
+                        <height>45</height>
+                        <texturefocus>osd_button_skip_minusFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>215</onleft>
+                        <onright>211</onright>
+                        <onup>501</onup>
+                        <ondown>219</ondown>
+                        <onclick>XBMC.WebBrowserControl(Back)</onclick>
+                </control>
+                <control type="button" id="211">
+                        <description>Stop</description>
+                        <posx>111</posx>
+                        <posy>420</posy>
+                        <width>34</width>
+                        <height>42</height>
+                        <texturefocus>osd_button_web_stopFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>210</onleft>
+                        <onright>213</onright>
+                        <onup>500</onup>
+                        <ondown>220</ondown>
+                        <onclick>XBMC.WebBrowserControl(Stop)</onclick>
+                </control>
+                <control type="button" id="213">
+                        <description>Goto URL</description>
+                        <posx>136</posx>
+                        <posy>404</posy>
+                        <width>52</width>
+                        <height>58</height>
+                        <texturefocus>osd_button_web_gotourlFO.png</texturefocus>
+                        <texturenofocus>osd_button_web_gotourlNF.png</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>211</onleft>
+                        <onright>214</onright>
+                        <onup>500</onup>
+                        <ondown>220</ondown>
+                        <onclick>XBMC.WebBrowserControl(GotoURL)</onclick>
+                </control>
+                <control type="button" id="214">
+                        <description>Reload</description>
+                        <posx>179</posx>
+                        <posy>405</posy>
+                        <width>32</width>
+                        <height>42</height>
+                        <texturefocus>osd_button_web_reloadFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>213</onleft>
+                        <onright>215</onright>
+                        <onup>500</onup>
+                        <ondown>220</ondown>
+                        <onclick>XBMC.WebBrowserControl(Reload)</onclick>
+                </control>
+                <control type="button" id="215">
+                        <description>Forward</description>
+                        <type></type>
+                        <id>215</id>
+                        <posx>202</posx>
+                        <posy>400</posy>
+                        <width>33</width>
+                        <height>40</height>
+                        <texturefocus>osd_button_skip_plusFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>214</onleft>
+                        <onright>210</onright>
+                        <onup>501</onup>
+                        <ondown>219</ondown>
+                        <onclick>XBMC.WebBrowserControl(Forward)</onclick>
+                </control>
+                <control type="togglebutton" id="501">
+                        <description>Expert Mode</description>
+                        <posx>130</posx>
+                        <posy>346</posy>
+                        <width>38</width>
+                        <height>38</height>
+                        <alttexturefocus>osd_button_webexpertSELFO.png</alttexturefocus>
+                        <alttexturenofocus>-</alttexturenofocus>
+                        <usealttexture>WebBrowser.InExpertMode</usealttexture>
+                        <texturefocus>osd_button_webexpertSELFO.png</texturefocus>
+                        <texturenofocus>osd_button_webexpertSELNF.png</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>210</onleft>
+                        <onright>215</onright>
+                        <onup>219</onup>
+                        <ondown>500</ondown>
+                </control>
+                <control type="button" id="500">
+                        <description>History</description>
+                        <posx>136</posx>
+                        <posy>376</posy>
+                        <width>39</width>
+                        <height>36</height>
+                        <texturefocus>osd_button_visFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>211</onleft>
+                        <onright>214</onright>
+                        <onup>501</onup>
+                        <ondown>213</ondown>
+                        <onclick>XBMC.ActivateWindow(2804)</onclick>
+                </control>
+                <control type="button" id="220">
+                        <description>Bookmarks</description>
+                        <posx>151</posx>
+                        <posy>456</posy>
+                        <width>41</width>
+                        <height>37</height>
+                        <texturefocus>osd_button_web_bookmarksFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>211</onleft>
+                        <onright>214</onright>
+                        <onup>213</onup>
+                        <ondown>219</ondown>
+                        <onclick>XBMC.ActivateWindow(2803)</onclick>
+                </control>
+                <control type="button" id="219">
+                        <description>Settings</description>
+                        <posx>156</posx>
+                        <posy>486</posy>
+                        <width>43</width>
+                        <height>43</height>
+                        <texturefocus>osd_button_vizsettingsFO.png</texturefocus>
+                        <texturenofocus>-</texturenofocus>
+                        <label>-</label>
+                        <font>-</font>
+                        <onleft>210</onleft>
+                        <onright>215</onright>
+                        <onup>220</onup>
+                        <ondown>501</ondown>
+                        <onclick>XBMC.ActivateWindow(2802)</onclick>
+                </control>
+        </controls>
+</window>

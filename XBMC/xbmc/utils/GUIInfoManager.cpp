@@ -9,6 +9,12 @@
 #include "../utils/TuxBoxUtil.h"
 #include "KaiClient.h"
 #include "Weather.h"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
+#ifdef WITH_LINKS_BROWSER
+#include "../LinksBoksManager.h"
+#endif
 #include "../playlistplayer.h"
 #include "../PartyModeManager.h"
 #include "../Visualizations/Visualisation.h"
@@ -482,6 +488,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (strTest.Left(14).Equals("skin.hastheme("))
       ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
+  }
+  else if (strCategory.Equals("webbrowser"))
+  {
+    if (strTest.Equals("webbrowser.included")) ret = WEBBROWSER_INCLUDED;
+#ifdef WITH_LINKS_BROWSER
+    else if (strTest.Equals("webbrowser.title")) ret = WEBBROWSER_CURRENT_TITLE;
+    else if (strTest.Equals("webbrowser.url")) ret = WEBBROWSER_CURRENT_URL;
+    else if (strTest.Equals("webbrowser.status")) ret = WEBBROWSER_CURRENT_STATUS;
+    else if (strTest.Equals("webbrowser.inexpertmode")) ret = WEBBROWSER_IN_EXPERT_MODE;
+    else if (strTest.Equals("webbrowser.showpageinfo")) ret = WEBBROWSER_SHOW_PAGE_INFO;
+    else if (strTest.Equals("webbrowser.isbusy")) ret = WEBBROWSER_IS_BUSY;
+#endif
   }
   else if (strTest.Left(16).Equals("window.isactive("))
   {
@@ -1040,6 +1058,24 @@ string CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
+
+#ifdef WITH_LINKS_BROWSER
+  case WEBBROWSER_CURRENT_TITLE:
+    {
+      strLabel = g_browserManager.GetCurrentTitle();
+    }
+    break;
+  case WEBBROWSER_CURRENT_URL:
+    {
+      strLabel = g_browserManager.GetCurrentURL();
+    }
+    break;
+  case WEBBROWSER_CURRENT_STATUS:
+    {
+      strLabel = g_browserManager.GetCurrentStatus();
+    }
+    break;
+#endif
   }
 
   return strLabel;
@@ -1226,6 +1262,20 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   	bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
+  else if (condition == WEBBROWSER_INCLUDED)
+#ifdef WITH_LINKS_BROWSER
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+#ifdef WITH_LINKS_BROWSER
+  else if (condition == WEBBROWSER_IN_EXPERT_MODE)
+    bReturn = (g_browserManager.GetExpertMode()) ? true : false;
+  else if (condition == WEBBROWSER_SHOW_PAGE_INFO)
+    bReturn = m_webShowPageInfo;
+  else if (condition == WEBBROWSER_IS_BUSY)
+    bReturn = (g_browserManager.GetCurrentState() > -65530) ? true : false;
+#endif
   else if (condition == PLAYER_SHOWCODEC)
     bReturn = m_playerShowCodec;
   else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)

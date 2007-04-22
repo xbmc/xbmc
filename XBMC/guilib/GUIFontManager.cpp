@@ -322,6 +322,49 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
             XMLUtils::GetFloat(fontNode, "aspect", aspect);
 
             LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle, aspect);
+
+#ifdef WITH_LINKS_BROWSER
+            // Get back the font file to register it in the Linksboks XFONT backend
+
+            CStdString TTFfontName;
+            TTFfontName.Format("%s_%i_%i_%f", strFontFileName, iSize, iStyle, aspect);
+            CGUIFontTTF *pFontFile = (CGUIFontTTF *)GetFontFile(TTFfontName);
+
+            if (pFontFile)
+            {
+              pNode = fontNode->FirstChild("webfamily");
+              if (pNode)
+              {
+                CStdString strFamily = pNode->FirstChild()->Value();
+
+                pNode = fontNode->FirstChild("webweight");
+                if (pNode)
+                {
+                  CStdString strWeight = pNode->FirstChild()->Value();
+                  pNode = fontNode->FirstChild("webslant");
+
+                  if (pNode)
+                  {
+                    CStdString strSlant = pNode->FirstChild()->Value();
+                    pNode = fontNode->FirstChild("webadstyl");
+
+                    if (pNode)
+                    {
+                      CStdString strAdstyl = pNode->FirstChild()->Value();
+                      pNode = fontNode->FirstChild("webspacing");
+
+                      if (pNode)
+                      {
+                        CStdString strSpacing = pNode->FirstChild()->Value();
+
+                        pFontFile->RegisterForWeb(strFontName, strFamily, strWeight, strSlant, strAdstyl, strSpacing);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+#endif
           }
         }
       }

@@ -75,6 +75,8 @@ public:
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
+  bool m_bPointerNav; // Pointer navigation mode, on if TRUE
+
 private:
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(DWORD newWindowID);

@@ -1,0 +1,108 @@
+# Makefile for zlib
+# TurboC 2.0
+
+# To use, do "make -fmakefile.tc"
+# To compile in small model, set below: MODEL=-ms
+
+# WARNING: the small model is supported but only for small values of
+# MAX_WBITS and MAX_MEM_LEVEL. For example:
+#    -DMAX_WBITS=11 -DMAX_MEM_LEVEL=3
+# If you wish to reduce the memory requirements (default 256K for big
+# objects plus a few K), you can add to CFLAGS below:
+#   -DMAX_MEM_LEVEL=7 -DMAX_WBITS=14
+# See zconf.h for details about the memory requirements.
+
+# ------------- Turbo C 2.0 -------------
+MODEL=l
+# CFLAGS=-O2 -G -Z -m$(MODEL) -DMAX_WBITS=11 -DMAX_MEM_LEVEL=3
+CFLAGS=-O2 -G -Z -m$(MODEL)
+CC=tcc -I\tc\include
+LD=tcc -L\tc\lib
+AR=tlib
+LDFLAGS=-m$(MODEL) -f-
+O=.obj
+
+# variables
+OBJ1 = adler32$(O) compress$(O) crc32$(O) gzio$(O) uncompr$(O) deflate$(O) \
+  trees$(O)
+OBJP1 = adler32$(O)+compress$(O)+crc32$(O)+gzio$(O)+uncompr$(O)+deflate$(O)+\
+  trees$(O)
+OBJ2 = zutil$(O) inflate$(O) infblock$(O) inftrees$(O) infcodes$(O) \
+  infutil$(O) inffast$(O)
+OBJP2 = zutil$(O)+inflate$(O)+infblock$(O)+inftrees$(O)+infcodes$(O)+\
+  infutil$(O)+inffast$(O)
+
+ZLIB_H = zlib.h zconf.h
+ZUTIL_H = zutil.h $(ZLIB_H)
+
+ZLIB_LIB = zlib_$(MODEL).lib
+
+all: test
+
+adler32.obj: adler32.c $(ZLIB_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+compress.obj: compress.c $(ZLIB_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+crc32.obj: crc32.c $(ZLIB_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+deflate.obj: deflate.c deflate.h $(ZUTIL_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+gzio.obj: gzio.c $(ZUTIL_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+infblock.obj: infblock.c $(ZUTIL_H) infblock.h inftrees.h infcodes.h infutil.h
+	$(CC) -c $(CFLAGS) $*.c
+
+infcodes.obj: infcodes.c $(ZUTIL_H) inftrees.h infutil.h infcodes.h inffast.h
+	$(CC) -c $(CFLAGS) $*.c
+
+inflate.obj: inflate.c $(ZUTIL_H) infblock.h
+	$(CC) -c $(CFLAGS) $*.c
+
+inftrees.obj: inftrees.c $(ZUTIL_H) inftrees.h
+	$(CC) -c $(CFLAGS) $*.c
+
+infutil.obj: infutil.c $(ZUTIL_H) inftrees.h infutil.h
+	$(CC) -c $(CFLAGS) $*.c
+
+inffast.obj: inffast.c $(ZUTIL_H) inftrees.h infutil.h inffast.h
+	$(CC) -c $(CFLAGS) $*.c
+
+trees.obj: trees.c deflate.h $(ZUTIL_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+uncompr.obj: uncompr.c $(ZLIB_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+zutil.obj: zutil.c $(ZUTIL_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+example.obj: example.c $(ZLIB_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+minigzip.obj: minigzip.c $(ZLIB_H)
+	$(CC) -c $(CFLAGS) $*.c
+
+# we must cut the command line to fit in the MS/DOS 128 byte limit:
+$(ZLIB_LIB): $(OBJ1) $(OBJ2)
+	del $(ZLIB_LIB)
+	$(AR) $(ZLIB_LIB) +$(OBJP1)
+	$(AR) $(ZLIB_LIB) +$(OBJP2)
+
+example.exe: example.obj $(ZLIB_LIB)
+	$(LD) $(LDFLAGS) -eexample.exe example.obj $(ZLIB_LIB)
+
+minigzip.exe: minigzip.obj $(ZLIB_LIB)
+	$(LD) $(LDFLAGS) -eminigzip.exe minigzip.obj $(ZLIB_LIB)
+
+test: example.exe minigzip.exe
+	example
+	echo hello world | minigzip | minigzip -d 
+
+#clean:
+#	del *.obj
+#	del *.exe

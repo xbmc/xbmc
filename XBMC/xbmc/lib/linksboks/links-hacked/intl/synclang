@@ -1,0 +1,19 @@
+#!/bin/sh
+echo
+echo Syncing other languages.
+mkdir ../intl-bak 2>/dev/null
+languages=`cat index.txt`
+if [ -n "$languages" ]; then
+	for i in $languages; do
+		if [ "$i" != english ]; then
+			echo -n $i" " 1>&2
+			awk -f synclang.awk <$i.lng | sed 's///g' >_sync.tmp
+			mv $i.lng ../intl-bak/$i.lng.bak
+			mv _sync.tmp $i.lng
+		fi
+	done
+	echo
+	echo Done.
+fi
+echo
+./gen-intl

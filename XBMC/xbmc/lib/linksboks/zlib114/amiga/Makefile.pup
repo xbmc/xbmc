@@ -1,0 +1,66 @@
+# Amiga powerUP (TM) Makefile
+# makefile for libpng and SAS C V6.58/7.00 PPC compiler
+# Copyright (C) 1998 by Andreas R. Kleinert
+
+CC       = scppc
+CFLAGS   = NOSTKCHK NOSINT OPTIMIZE OPTGO OPTPEEP OPTINLOCAL OPTINL \
+           OPTLOOP OPTRDEP=8 OPTDEP=8 OPTCOMP=8
+LIBNAME  = libzip.a
+AR       = ppc-amigaos-ar
+AR_FLAGS = cr
+RANLIB   = ppc-amigaos-ranlib
+LDFLAGS  = -r -o
+LDLIBS   = LIB:scppc.a
+LN       = ppc-amigaos-ld
+RM       = delete quiet
+
+OBJS = adler32.o compress.o crc32.o gzio.o uncompr.o deflate.o trees.o \
+       zutil.o inflate.o infblock.o inftrees.o infcodes.o infutil.o inffast.o
+
+TEST_OBJS = example.o minigzip.o
+
+all: example minigzip
+
+test: all
+        example
+        echo hello world | minigzip | minigzip -d
+
+$(LIBNAME): $(OBJS)
+            $(AR) $(AR_FLAGS) $@ $(OBJS)
+            $(RANLIB) $@
+
+example: example.o $(LIBNAME)
+        $(LN) $(LDFLAGS) example LIB:c_ppc.o example.o $(LIBNAME) $(LDLIBS) LIB:end.o
+
+minigzip: minigzip.o $(LIBNAME)
+        $(LN) $(LDFLAGS) minigzip LIB:c_ppc.o minigzip.o $(LIBNAME) $(LDLIBS) LIB:end.o
+
+clean:
+        $(RM) *.o example minigzip $(LIBNAME) foo.gz
+
+zip:
+        zip -ul9 zlib README ChangeLog Makefile Make????.??? Makefile.?? \
+          descrip.mms *.[ch]
+
+tgz:
+        cd ..; tar cfz zlib/zlib.tgz zlib/README zlib/ChangeLog zlib/Makefile \
+          zlib/Make????.??? zlib/Makefile.?? zlib/descrip.mms zlib/*.[ch]
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+adler32.o: zutil.h zlib.h zconf.h
+compress.o: zlib.h zconf.h
+crc32.o: zutil.h zlib.h zconf.h
+deflate.o: deflate.h zutil.h zlib.h zconf.h
+example.o: zlib.h zconf.h
+gzio.o: zutil.h zlib.h zconf.h
+infblock.o: zutil.h zlib.h zconf.h infblock.h inftrees.h infcodes.h infutil.h
+infcodes.o: zutil.h zlib.h zconf.h inftrees.h infutil.h infcodes.h inffast.h
+inffast.o: zutil.h zlib.h zconf.h inftrees.h infutil.h inffast.h
+inflate.o: zutil.h zlib.h zconf.h infblock.h
+inftrees.o: zutil.h zlib.h zconf.h inftrees.h
+infutil.o: zutil.h zlib.h zconf.h inftrees.h infutil.h
+minigzip.o: zlib.h zconf.h
+trees.o: deflate.h zutil.h zlib.h zconf.h
+uncompr.o: zlib.h zconf.h
+zutil.o: zutil.h zlib.h zconf.h

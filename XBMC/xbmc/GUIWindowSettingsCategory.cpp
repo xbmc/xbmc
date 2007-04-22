@@ -58,6 +58,9 @@
 #include "lib/libGoAhead/webserver.h"
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
+#ifdef WITH_LINKS_BROWSER
+#include "LinksBoksManager.h"
+#endif
 
 using namespace DIRECTORY;
 
@@ -1075,6 +1078,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
+#ifdef WITH_LINKS_BROWSER
+    else if (strSetting.Left(10).Equals("webbrowser"))
+    {
+      g_browserManager.RefreshSettings(false);
+    }
+#endif
   }
 }
 
@@ -1219,6 +1228,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
   }
+#ifdef WITH_LINKS_BROWSER
+  else if (strSetting.Equals("webbrowser.jumptonetwork"))
+  {
+    JumpToSection(WINDOW_SETTINGS_NETWORK, "network");
+  }
+#endif
   else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
   {
     if (g_guiSettings.GetBool("lastfm.enable"))

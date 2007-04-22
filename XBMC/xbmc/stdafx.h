@@ -5,6 +5,10 @@
 
 #pragma once
 
+// Comment if you don't want the LinksBoks web browser at all
+// (also in guilib - include.h)
+#define WITH_LINKS_BROWSER
+
 #define XBMC_MAX_PATH 1024 // normal max path is 260, but smb shares and the like can be longer
 
 #define DEBUG_MOUSE

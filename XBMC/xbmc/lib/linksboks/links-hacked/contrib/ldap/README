@@ -1,0 +1,94 @@
+LDAP Server:
+will need openldap-2.X.X (for RH systems will need openldap, openldap-servers
+and openldap-clients rpms). Tested with openldap-2.0.23.
+
+copy local.schema file  from contrib directory to the server dir where
+schemas are kept( /etc/openldap/schema for RH systems). Edit slapd.conf
+file to include local.schema and make appropriate changes to
+access control rules (look at the tree below). If you are running slapd for the
+first time, you may use the slapd.conf file included in the contrib directory.
+Edit  "rootdn" if you want to  and specify a "rootpw".
+Start slapd (in RH systems /etc/rc.d/init.d/ldap start). 
+
+NOTE 1:
+Currently, only support for authentication with cleartext password is included in the patch.
+If you need SASL or Kerberos support, you have to do it yourself. Will need minor modification
+of ldap_connect() function in bookmark.c. Have a look at the clients/tools 
+subdirectory of the openldap distribution for ideas. 
+
+NOTE 2:
+I am using fictitious OID in local.schema. If you have a registered OID,
+you may use it instead. For local use, I think it is ok to use bogus OID.
+just make sure your slapd server is not accessible from the outside world.
+(I am not an expert on LDAP).
+
+NOTE 3: 
+If you want to allow others read only access to your bookmarks, you
+have to add appropriate access control directive in slapd.conf. Please consult
+openldap documentation/HOWTO from LDP/www.openldap.org. 
+                    
+
+	-------------------------------
+	|       dc = localdomain      |
+	-------------------------------
+                       |
+                       |
+             -------------------
+             |    ou = Users   |
+             -------------------
+                   |________________________
+                   |                       |    
+             -------------             -------------
+person ->    | sn = john |             | sn = mary |   <---dn's used for binding to the directory 
+Objects      -------------             -------------
+               |__________
+               |         |
+     ----------------
+     |cn= Bookmarks |  .......   <-folderObjects
+     ----------------             authenticated user must have write permission here
+
+
+Now it is time to create few entries using the commandline client ldapadd
+supplied with the openldap distribution:
+
+Create entries 'dc=localdomain' and 'ou=Users,dc=localdomain'.
+(You may use the root.ldif file in the contrib directory): 
+
+    ldapadd -v -f root.ldif -D "cn=Manager, dc=localdomain" -w root-passwd 
+                                        ^^^^^                     ^^^^
+                                        rootdn in slapd.conf       rootpw in slapd.conf
+
+Create user(s) as root. (You may use the user.ldif file in contrib sub directory.
+please make appropriate changes (user name and password etc.)):
+    ldapadd -v -f user.ldif -D "cn=Manager, dc=localdomain" -w root-passwd 
+
+
+Links configuration:
+At present no menu to configure ldap at runtime. The configuration entries
+should be in a file named ldap.cfg in the  .links subdirectory (this one is
+created by links under the home directory). You may use the ldap.cfg file in the
+contrib directory with appropriate changes to server name, passwd and user name.
+
+Example ldap.cfg: (yyyy->ldap server name/ip; uuuu->username ; xxxx->passwd for user 'uuuu')
+--------------------------------
+host yyyy 
+passwd xxxx
+binddn "sn=uuuu,ou=Users,dc=localdomain"
+basedn "sn=uuuu,ou=Users,dc=localdomain"
+--------------------------------------
+
+binddn is the dn used for authentication.
+basedn is the  dn under which all folderObjects are created.
+(in our case basedn=binddn, but it need not be so. This
+info is for those with already running servers and want
+a different hierarchy than the one drawn above.)
+
+USING:
+After starting links, if everything goes ok, you will find
+a folder ldap://host/Bookmarks in the Bookmarks window.
+Anything under this folder will be in the slapd db.
+You can treat it just like a regular folder. Create new folders, move
+stuff from local folder to ldap and .....
+ 
+
+

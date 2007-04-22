@@ -25,6 +25,9 @@
 #endif
 #endif
 
+#ifdef WITH_LINKS_BROWSER
+#include "../xbmc/LinksBoksManager.h"
+#endif
 
 class CFreeTypeLibrary
 {
@@ -86,6 +89,9 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_face = NULL;
   m_library = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
+#ifdef WITH_LINKS_BROWSER
+  m_pWebFont = NULL;
+#endif
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -111,6 +117,10 @@ void CGUIFontTTF::ClearCharacterCache()
 
 void CGUIFontTTF::Clear()
 {
+#ifdef WITH_LINKS_BROWSER
+  if (m_pWebFont)
+    g_browserManager.UnregisterFont((LinksBoksExtFont *)m_pWebFont);
+#endif
   if (m_texture)
     m_texture->Release();
   m_texture = NULL;
@@ -220,6 +230,34 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
 
   return true;
 }
+
+#ifdef WITH_LINKS_BROWSER
+void CGUIFontTTF::RegisterForWeb(const CStdString& strFontName, const CStdString& strFamily,
+                                 const CStdString& strWeight, const CStdString& strSlant,
+                                 const CStdString& strAdstyl, const CStdString& strSpacing)
+{
+  m_strWebFontName = strFontName;
+  m_strWebFamily = strFamily;
+  m_strWebWeight = strWeight;
+  m_strWebSlant = strSlant;
+  m_strWebAdstyl = strAdstyl;
+  m_strWebSpacing = strSpacing;
+
+  LinksBoksExtFont *font = new LinksBoksExtFont;
+  font->name = (unsigned char *)m_strWebFontName.c_str();
+  font->type = LINKSBOKS_EXTFONT_TYPE_FREETYPE;
+  font->family = (unsigned char *)m_strWebFamily.c_str();
+  font->weight = (unsigned char *)m_strWebWeight.c_str();
+  font->slant = (unsigned char *)m_strWebSlant.c_str();
+  font->adstyl = (unsigned char *)m_strWebAdstyl.c_str();
+  font->spacing = (unsigned char *)m_strWebSpacing.c_str();
+  font->fontdata = m_face;
+
+  m_pWebFont = (void *)font;
+
+  g_browserManager.RegisterFont(font);
+}
+#endif
 
 void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
                           const WCHAR* strText, DWORD cchText, DWORD dwFlags,

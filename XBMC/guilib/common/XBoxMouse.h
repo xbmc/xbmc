@@ -29,12 +29,14 @@ public:
   void Update();
   void SetResolution(int nXMax, int nYMax, float fXSpeed, float fYSpeed);
   void SetInactive();
+  void SetActive(bool bActive);
   void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
   void EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
   DWORD GetExclusiveWindowID() const { return m_dwExclusiveWindowID;};
   DWORD GetExclusiveControlID() const { return m_dwExclusiveControlID;};
   void SetState(DWORD dwState) {m_dwState = dwState;};
   DWORD GetState() const { return m_dwState;};
+  void VirtualMove(char cX, char cY);
 
 private:
   // variables for mouse state

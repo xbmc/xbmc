@@ -98,6 +98,8 @@ goto COMPILE
   rem %rar% x web\Project_Mayem_III_webserver*.rar build\web\
   xcopy media BUILD\media /E /Q /I /Y /EXCLUDE:exclude.txt
   xcopy sounds BUILD\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy "scripts\links-lyrics.py" "BUILD\scripts\" /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy "scripts\links-wikipedia.py" "BUILD\scripts\" /Q /I /Y /EXCLUDE:exclude.txt
 
   del exclude.txt
   ECHO ------------------------------

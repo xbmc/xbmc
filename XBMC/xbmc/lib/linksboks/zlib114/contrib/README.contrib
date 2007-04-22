@@ -1,0 +1,34 @@
+All files under this contrib directory are UNSUPPORTED. There were
+provided by users of zlib and were not tested by the authors of zlib.
+Use at your own risk. Please contact the authors of the contributions
+for help about these, not the zlib authors. Thanks.
+
+
+asm386/     by Gilles Vollant <info@winimage.com>
+	386 asm code replacing longest_match(), for Visual C++ 4.2 and ML 6.11c
+
+asm586/ and asm686/    by Brian Raiter <breadbox@muppetlabs.com> 
+        asm code for Pentium and Pentium Pro
+        See http://www.muppetlabs.com/~breadbox/software/assembly.html
+
+delphi/      by Bob Dellaca <bobdl@xtra.co.nz>
+	Support for Delphi
+
+delphi2/     by Davide Moretti <dave@rimini.com>
+        Another support for C++Builder and Delphi
+
+minizip/    by Gilles Vollant <info@winimage.com>
+	Mini zip and unzip based on zlib
+        See http://www.winimage.com/zLibDll/unzip.html
+
+iostream/   by Kevin Ruland <kevin@rodin.wustl.edu>
+        A C++ I/O streams interface to the zlib gz* functions
+
+iostream2/  by Tyge Løvset <Tyge.Lovset@cmr.no>
+	Another C++ I/O streams interface
+
+untgz/      by "Pedro A. Aranda Guti\irrez" <paag@tid.es>
+	A very simple tar.gz file extractor using zlib
+
+visual-basic.txt by Carlos Rios <c_rios@sonda.cl>
+        How to use compress(), uncompress() and the gz* functions from VB.

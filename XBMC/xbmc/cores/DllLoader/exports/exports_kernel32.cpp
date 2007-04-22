@@ -196,4 +196,8 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetSystemTime", (unsigned long)GetSystemTime);
   g_dlls.kernel32.AddExport("GetFileSize", (unsigned long)GetFileSize);
 
+#ifdef WITH_LINKS_BROWSER
+  g_dlls.kernel32.AddExport("GetDiskFreeSpaceExA", (unsigned long)GetDiskFreeSpaceExA);
+#endif
+
 }

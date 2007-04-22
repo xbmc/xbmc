@@ -1,0 +1,656 @@
+# configure.in
+# (c) 2002 Mikulas Patocka, Karel 'Clock' Kulhavy, Petr 'Brain' Kulhavy,
+#          Martin 'PerM' Pergel
+# This file is a part of the Links program, released under GPL.
+
+AC_INIT(main.c)
+
+AM_INIT_AUTOMAKE(links-hacked, 030709)
+
+#ACLOCAL="$missing_dir/missing aclocal"
+#AUTOCONF="$missing_dir/missing autoconf"
+#AUTOMAKE="$missing_dir/missing automake"
+#AUTOHEADER="$missing_dir/missing autoheader"
+image_formats="GIF PNG XBM"
+
+AM_CONFIG_HEADER(config.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_RANLIB
+#AC_PROG_AWK
+#AM_PROG_LEX
+#AC_PROG_YACC
+
+dnl Check for libraries
+#AC_CHECK_LIB(fl,main,AC_DEFINE(JS) LIBS="$LIBS -lfl",AC_MSG_WARN(You don't have libfl; you won't be able to run javascript))
+
+AC_CACHE_CHECK([for EMX], ac_cv_have_emx,
+	AC_TRY_COMPILE(, [#ifndef __EMX__
+	kill me!
+	#endif ], ac_cv_have_emx=yes, ac_cv_have_emx=no)
+)
+test "$ac_cv_have_emx" = yes && LDFLAGS=`echo "$LDFLAGS" | sed "s/-Zexe//g" | sed "s/-Zbin-files//g"`
+
+AC_CACHE_CHECK([for typeof], ac_cv_have_typeof,
+	AC_TRY_COMPILE(, [int a;
+	typeof(a) b;], ac_cv_have_typeof=yes, ac_cv_have_typeof=no)
+	)
+test "$ac_cv_have_typeof" = yes && AC_DEFINE(HAVE_TYPEOF)
+
+AC_CACHE_CHECK([for long long], ac_cv_have_long_long,
+	AC_TRY_COMPILE(, [unsigned long long a; ], ac_cv_have_long_long=yes, ac_cv_have_long_long=no)
+)
+test "$ac_cv_have_long_long" = yes && AC_DEFINE(HAVE_LONG_LONG)
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(fcntl.h limits.h sys/ioctl.h sys/time.h time.h unistd.h math.h ieee.h endian.h)
+AC_CHECK_HEADERS(values.h)
+AC_CHECK_HEADERS(sigaction.h)
+AC_CHECK_HEADERS(netinet/in_systm.h)
+AC_CHECK_HEADERS(netinet/in_system.h)
+AC_CHECK_HEADERS(netinet/ip.h)
+AC_CHECK_HEADERS(sys/select.h)
+AC_CHECK_HEADERS(sys/resource.h)
+AC_CHECK_HEADERS(sys/utsname.h)
+AC_CHECK_HEADERS(sys/un.h)
+AC_CHECK_HEADERS(sys/fmutex.h)
+AC_CHECK_HEADERS(sys/cygwin.h)
+AC_CHECK_HEADERS(io.h)
+AC_CHECK_HEADERS(setjmp.h)
+AC_CHECK_HEADERS(langinfo.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+if test "$ac_cv_have_emx" = yes; then
+	default_short=2
+	default_int=4
+else
+	default_short=0
+	default_int=0
+fi
+
+dnl Check for compiler type sizes
+AC_CHECK_SIZEOF(short, "$default_short")
+AC_CHECK_SIZEOF(unsigned short,"$default_short")
+AC_CHECK_SIZEOF(int,"$default_int")
+AC_CHECK_SIZEOF(unsigned, "$default_int")
+AC_CHECK_SIZEOF(long, "$default_int")
+AC_CHECK_SIZEOF(unsigned long, "$default_int")
+AC_CACHE_CHECK([for big endian], ac_cv_big_endian,
+	AC_TRY_RUN([
+	long l;
+	char *c = (char *)&l;
+	int main()
+	{
+		l = 0x12345678L;
+		return !(c[[sizeof(long) - 1]] == 0x78 && c[[sizeof(long) - 2]] == 0x56 && c[[sizeof(long) - 3]] == 0x34 && c[[sizeof(long) - 4]] == 0x12);
+	}
+	], ac_cv_big_endian=yes, ac_cv_big_endian=no, ac_cv_big_endian=no)
+)
+AC_CACHE_CHECK([for little endian], ac_cv_little_endian,
+	AC_TRY_RUN([
+	long l;
+	char *c = (char *)&l;
+	int main()
+	{
+		l = 0x12345678L;
+		return !(c[[0]] == 0x78 && c[[1]] == 0x56 && c[[2]] == 0x34 && c[[3]] == 0x12);
+	}
+	], ac_cv_little_endian=yes, ac_cv_little_endian=no, ac_cv_little_endian="$ac_cv_have_emx")
+)
+
+if test "$ac_cv_big_endian" = yes; then
+	AC_DEFINE(AC_BIG_ENDIAN)
+else if test "$ac_cv_little_endian" = yes; then
+	AC_DEFINE(AC_LITTLE_ENDIAN)
+fi
+fi
+
+dnl Checks for library functions.
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_FUNC_STRFTIME
+AC_FUNC_VPRINTF
+AC_HAVE_FUNCS(calloc)
+AC_HAVE_FUNCS(snprintf)
+AC_HAVE_FUNCS(gettimeofday mkdir select strcspn strerror strstr strtol strtoul alarm chmod)
+AC_HAVE_FUNCS(getpid setpgid getpgid setpgrp getpgrp)
+AC_HAVE_FUNCS(popen)
+AC_HAVE_FUNCS(uname)
+AC_HAVE_FUNCS(strptime)
+AC_HAVE_FUNCS(setlocale)
+AC_HAVE_FUNCS(nl_langinfo)
+dnl AC_HAVE_FUNCS(sigsetjmp siglongjmp)
+
+AC_CACHE_CHECK([for sigsetjmp/siglongjmp], ac_cv_have_sigsetjmp,
+	AC_TRY_LINK([#include <setjmp.h>], [sigjmp_buf env;sigsetjmp(env, 1);siglongjmp(env, 2);], ac_cv_have_sigsetjmp=yes, ac_cv_have_sigsetjmp=no)
+)
+if test "$ac_cv_have_sigsetjmp" = yes; then
+	AC_DEFINE(HAVE_SIGSETJMP)
+fi
+
+dnl Checks for libraries.
+AC_CHECK_LIB(m, atan)
+
+AC_CHECK_FUNC(socket, cf_result=yes, cf_result=no)
+if test "$cf_result" = no; then
+	AC_CHECK_LIB(socket, socket)
+fi
+AC_CHECK_FUNC(setsockopt, cf_result=yes, cf_result=no)
+if test "$cf_result" = no; then
+	AC_CHECK_LIB(socket, setsockopt)
+fi
+
+#AC_MSG_CHECKING([for gethostbyname])
+#AC_TRY_LINK([#include <netdb.h>], [gethostbyname("")], cf_result=yes, cf_result=no)
+#AC_MSG_RESULT($cf_result)
+AC_CHECK_FUNC(gethostbyname, cf_result=yes, cf_result=no)
+if test "$cf_result" = no; then
+	AC_CHECK_LIB(socket, gethostbyname, cf_result=yes, cf_result=no)
+	if test "$cf_result" = no; then
+		AC_CHECK_LIB(nsl, gethostbyname)
+	else
+		test -z "`echo $LIBS | grep -- -lsocket`" && LIBS="$LIBS -lsocket"
+	fi
+fi
+
+AC_CHECK_FUNC(herror, AC_DEFINE(HAVE_HERROR))
+AC_CHECK_FUNC(cfmakeraw, AC_DEFINE(HAVE_CFMAKERAW))
+
+AC_HAVE_FUNCS(cygwin_conv_to_full_win32_path)
+
+AC_ARG_ENABLE(form-saving, [  --enable-form-saving   enable form saving/loading support],
+enable_form_save=yes, enable_form_save=no)
+cf_form_save=no
+if test "$enable_form_save" = yes ; then
+	AC_DEFINE(FORM_SAVE)
+	cf_form_save=yes
+
+	AC_CHECK_HEADERS(gdbm.h)
+	AC_CHECK_LIB(gdbm, gdbm_open, [LIBS="-lgdbm $LIBS"])
+	if test "$ac_cv_header_gdbm_h" != yes || test "$ac_cv_lib_gdbm_gdbm_open" != yes; then
+		AC_ERROR([You need gdbm to compile form saving])
+		cf_form_save=no
+        fi
+fi
+
+
+AC_MSG_CHECKING([if you want to enable javascript])
+AC_ARG_ENABLE(javascript, [  --enable-javascript     use javascript interpreter], cf_use_javascript=yes, cf_use_javascript=no)
+AC_MSG_RESULT($cf_use_javascript)
+if test "$cf_use_javascript" = yes; then
+	AC_DEFINE(JS)
+fi
+
+AC_ARG_WITH(libfl, [  --with-libfl            use libfl],LIBS="$LIBS -lfl",AC_DEFINE(CHCEME_FLEXI_LIBU))
+
+AC_MSG_CHECKING([if you want to use graphics])
+AC_ARG_ENABLE(graphics, [  --enable-graphics       use graphics], cf_use_graphics=yes, cf_use_graphics=no)
+AC_MSG_RESULT($cf_use_graphics)
+
+AC_MSG_CHECKING([if you want the "links" executable to be static])
+AC_ARG_ENABLE(static, [  --enable-static         enable static executable], cf_use_static=yes, cf_use_static=no)
+AC_MSG_RESULT($cf_use_static)
+
+if test "$cf_use_static" = yes; then
+	LDFLAGS=" -static $LDFLAGS"
+fi
+
+AC_CHECK_LIB(gpm, Gpm_Open)
+cf_have_gpm_lib=$ac_cv_lib_gpm_Gpm_Open
+AC_CHECK_HEADERS(gpm.h)
+cf_have_gpm_includes=$ac_cv_header_gpm_h
+if test "$cf_have_gpm_lib" = yes && test "$cf_have_gpm_includes" = yes ; then cf_have_gpm=yes ; else cf_have_gpm=no; fi
+
+AC_CACHE_CHECK([for OS/2 threads], ac_cv_have_beginthread,
+	CFLAGS_X="$CFLAGS"
+	CFLAGS="$CFLAGS -Zmt"
+	AC_TRY_LINK([#include <stdlib.h>], [_beginthread(NULL, NULL, 0, NULL)], ac_cv_have_beginthread=yes, ac_cv_have_beginthread=no)
+	CFLAGS="$CFLAGS_X"
+)
+if test "$ac_cv_have_beginthread" = yes; then
+	CFLAGS="$CFLAGS -Zmt"
+	AC_DEFINE(HAVE_BEGINTHREAD)
+#else
+#	AC_CHECK_FUNC(pthread_create, cf_result=yes, cf_result=no)
+#	if  test "$cf_result" = yes; then
+#		AC_DEFINE(HAVE_PTHREADS)
+#	else
+#		AC_CHECK_LIB(pthread, pthread_create, AC_DEFINE(HAVE_PTHREADS)
+#		LDFLAGS="$LDFLAGS -lpthread" )
+#	fi
+fi
+#AC_CHECK_FUNC(clone, AC_DEFINE(HAVE_CLONE))
+AC_CHECK_HEADERS(atheos/threads.h)
+AC_HAVE_FUNCS(spawn_thread)
+AC_HAVE_FUNCS(resume_thread)
+
+AC_CHECK_FUNC(MouOpen, AC_DEFINE(HAVE_MOUOPEN))
+AC_CHECK_FUNC(_read_kbd, AC_DEFINE(HAVE_READ_KBD))
+
+AC_CACHE_CHECK([for XFree for OS/2], ac_cv_have_x2,
+	CPPFLAGS_X="$CPPFLAGS"
+	LIBS_X="$LIBS"
+	ac_cv_have_x2=no
+	if test -n "$X11ROOT"; then
+		CPPFLAGS="$CPPFLAGS_X -I$X11ROOT/XFree86/include"
+		LIBS="$LIBS_X -L$X11ROOT/XFree86/lib -lxf86_gcc"
+		AC_TRY_LINK([#include <pty.h>], [struct winsize win;ptioctl(1, TIOCGWINSZ, &win)], ac_cv_have_x2=xf86_gcc, ac_cv_have_x2=no)
+		if test "$ac_cv_have_x2" = no; then
+			LIBS="$LIBS_X -L$X11ROOT/XFree86/lib -lxf86"
+			AC_TRY_LINK([#include <pty.h>], [struct winsize win;ptioctl(1, TIOCGWINSZ, &win)], ac_cv_have_x2=xf86, ac_cv_have_x2=no)
+		fi
+	fi
+	CPPFLAGS="$CPPFLAGS_X"
+	LIBS="$LIBS_X"
+)
+if test "$ac_cv_have_x2" != no; then
+	CPPFLAGS="$CPPFLAGS -I$X11ROOT/XFree86/include"
+	LIBS="$LIBS -L$X11ROOT/XFree86/lib -l$ac_cv_have_x2"
+	AC_DEFINE(X2)
+fi
+
+dnl ===================================================================
+dnl Check for Lua, optional even if installed.
+dnl ===================================================================
+
+AC_CHECK_LIB(dl, dlopen) # OpenSSL and Lua frequently needs it
+
+dnl Do this the long way, as FreeBSD reportedly needs -L<dir> for
+dnl anything other than /usr/lib, and Lua is very often in /usr/local/lib.
+
+AC_ARG_WITH(lua, [  --without-lua           disable Lua support],
+            [if test "$withval" = no;  then disable_lua=yes; fi])
+AC_MSG_CHECKING([for Lua])
+
+CFLAGS_X="$CFLAGS"
+LIBS_X="$LIBS"
+cf_result=no
+
+if test -z "$disable_lua"; then
+	# It's double here in order to have the piggyswitch hack working
+	# Hack, indeed. Guess why? Yes, it's Debian!
+	for luadir in "" /usr /usr /usr/local /usr/local; do
+		if test "$cf_result" = no; then
+			if test "$xyz_piggyswitch" = "cow"; then
+				LIBS="-llua40 -llualib40 -lm $LIBS_X"
+			else
+				LIBS="-llua -llualib -lm $LIBS_X"
+			fi
+
+			if test ! -z "$luadir"; then
+				LIBS="-L$luadir/lib $LIBS"
+				if test "$xyz_piggyswitch" = "cow"; then
+					CFLAGS="$CFLAGS_X -I$luadir/include -I$luadir/include/lua40"
+					# The switch should be performed at the last occurence
+					xyz_piggyswitch=sheep
+				else
+					CFLAGS="$CFLAGS_X -I$luadir/include -I$luadir/include/lua"
+					xyz_piggyswitch=cow
+				fi
+			fi
+
+			AC_TRY_LINK([#include <lua.h>],
+				    [lua_open(0)],
+				    cf_result=yes, cf_result=no)
+		fi
+	done
+fi
+
+if test "$cf_result" != yes; then
+	CFLAGS="$CFLAGS_X"
+	LIBS="$LIBS_X"
+else
+	AC_DEFINE(HAVE_LUA)
+fi
+cf_have_lua=$cf_result;
+
+AC_MSG_RESULT($cf_result)
+
+dnl ===================================================================
+dnl Checks for zlib, optional even if installed.
+dnl ===================================================================
+AC_ARG_WITH(zlib, [  --without-zlib          disable zlib support],
+	[ if test "$withval" = no; then disable_zlib=yes; fi])
+AC_MSG_CHECKING([for zlib support])
+
+if test -z "$disable_zlib"; then
+	AC_CHECK_HEADERS(zlib.h, cf_result=yes, cf_result=no)
+	if test "$cf_result" = yes; then
+		AC_CHECK_LIB(z, gzdopen)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+
+dnl ===================================================================
+dnl Checks for bzlib, optional even if installed.
+dnl ===================================================================
+AC_ARG_WITH(bzlib, [  --without-bzlib         disable bzlib support],
+	[ if test "$withval" = no; then disable_bzlib=yes; fi])
+AC_MSG_CHECKING([for bzlib support])
+
+if test -z "$disable_bzlib"; then
+	# Note that we won't define HAVE_LIBBZ2, altough we will define
+	# HAVE_LIBZ. That's combination of autoconf's weirdness, my laziness
+	# and lack of need for such a thing. Always use HAVE_BZLIB_H. --pasky
+	AC_CHECK_HEADERS(bzlib.h, cf_result=yes, cf_result=no)
+	if test "$cf_result" = yes; then
+		AC_CHECK_LIB(bz2, BZ2_bzReadOpen)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+
+
+AC_CHECK_LIB(dl, dlopen)
+
+#ifdef HAVE_SSL
+AC_ARG_WITH(ssl, [  --with-ssl(=directory)  enable SSL support], [if test "$withval" = no; then disable_ssl=yes; else ssld="$withval"; fi])
+AC_MSG_CHECKING([for OpenSSL])
+CPPFLAGS_X="$CPPFLAGS"
+LIBS_X="$LIBS"
+cf_result=no
+if test -z "$disable_ssl"; then
+	for ssldir in "" /usr /usr/local /usr/local/openssl /usr/lib/openssl /usr/local/ssl /usr/local/www /usr/lib/ssl /usr/local /usr/pkg /opt /opt/openssl "$ssld"; do
+		if test "$cf_result" = no; then
+			if test ! -z "$ssldir" && test "$ssldir" != /usr; then
+				LIBS="-L$ssldir/lib -lssl -lcrypto $LIBS_X"
+				CPPFLAGS="$CPPFLAGS_X -I$ssldir/include"
+			else
+				LIBS="-lssl -lcrypto $LIBS_X"
+			fi
+			AC_TRY_LINK([#include <openssl/ssl.h>], [OpenSSL_add_all_algorithms()], cf_result=yes, cf_result=no)
+			if test "$cf_result" != yes; then
+				AC_TRY_LINK([#include <openssl/ssl.h>], [SSLeay_add_ssl_algorithms()], cf_result=yes, cf_result=no)
+			fi
+		fi
+	done
+
+	if test "$cf_result" != yes; then
+		if test "$withval" = yes; then
+			AC_MSG_ERROR("OpenSSL not found")
+		fi
+	        CPPFLAGS="$CPPFLAGS_X"
+        	LIBS="$LIBS_X"
+	else
+		AC_DEFINE(HAVE_SSL)
+	fi
+fi
+AC_MSG_RESULT($cf_result)
+cf_have_ssl=$cf_result;
+#endif
+
+cf_have_atheos=no
+
+if test "$cf_use_graphics" = yes; then
+	AC_DEFINE(G)
+
+	CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+	LDFLAGS="$LDFLAGS -L/usr/local/lib"
+	AC_CHECK_LIB(z, inflate)
+	AC_CHECK_HEADERS(png.h libpng/png.h)
+	AC_CHECK_LIB(png, png_create_info_struct)
+	if test "$ac_cv_header_png_h" != yes && test "ac_cv_header_libpng_png_h" != yes || test "$ac_cv_lib_png_png_create_info_struct" != yes; then
+		AC_ERROR([You need libpng to compile Links in graphics mode])
+	fi
+
+	AC_HAVE_FUNCS(png_set_rgb_to_gray)
+
+	AC_CACHE_CHECK(if you can include both setjmp.h and png.h, ac_cv_include_setjmp_png,
+		AC_TRY_COMPILE([#include <setjmp.h>
+		#include <png.h>], [jmp_buf bla;], ac_cv_include_setjmp_png=yes, ac_cv_include_setjmp_png=no)
+	)
+
+	if test "$ac_cv_include_setjmp_png" != yes; then
+		AC_DEFINE(DONT_INCLUDE_SETJMP)
+	fi
+
+AC_ARG_WITH(libjpeg, [  --without-libjpeg	  compile without JPEG support],[if test "$withval" = no; then disable_jpeg=yes; else disable_jpeg=no; fi])
+	cf_have_jpeg=no
+if test "$disable_jpeg" != yes ; then
+	AC_CHECK_HEADERS(jpeglib.h)
+	AC_CHECK_LIB(jpeg, jpeg_destroy_decompress)
+	if test "$ac_cv_header_jpeglib_h" = yes && test "$ac_cv_lib_jpeg_jpeg_destroy_decompress" = yes; then
+		AC_DEFINE(HAVE_JPEG)
+		cf_have_jpeg=yes
+		image_formats="$image_formats JPEG"
+	fi
+fi
+
+AC_ARG_WITH(libtiff, [  --without-libtiff       compile without TIFF support],[if test "$withval" = no; then disable_tiff=yes; else disable_tiff=no; fi])
+	cf_have_tiff=no
+if test "$disable_tiff" != yes ; then
+	AC_CHECK_HEADERS(tiffio.h)
+	AC_CHECK_LIB(tiff, TIFFOpen)
+	if test "$ac_cv_header_tiffio_h" = yes && test "$ac_cv_lib_tiff_TIFFOpen" = yes; then
+		AC_DEFINE(HAVE_TIFF)
+		cf_have_tiff=yes
+		image_formats="$image_formats TIFF"
+	fi
+fi
+
+AC_ARG_WITH(libgd, [  --without-libgd       compile without libGD support],[if test "$withval" = no; then disable_libgd=yes; else disable_libgd=no; fi])
+	cb_have_libgd=no
+if test "$disable_libgd" != yes ; then
+	AC_CHECK_HEADERS(gd.h)
+	AC_CHECK_LIB(gd, gdImagePng)
+	if test "$ac_cv_header_gh_h" = yes && test "$ac_cv_lib_gd_gdImagePng" = yes; then
+		cf_have_libgd=yes
+	fi
+fi
+        
+AC_ARG_WITH(svgalib, [  --without-svgalib       compile without svgalib graphics driver],[if test "$withval" = no; then disable_svgalib=yes; else disable_svgalib=no; fi])
+AC_ARG_WITH(x, [  --without-x             compile without X Window System graphics driver],[if test "$withval" = no; then disable_x=yes; else disable_x=no; fi])
+AC_ARG_WITH(fb, [  --without-fb            compile without Linux Framebuffer graphics driver],[if test "$withval" = no; then disable_fb=yes; else disable_fb=no; fi])
+AC_ARG_WITH(directfb, [  --without-directfb            compile without DirectFB graphics driver],[if test "$withval" = no; then disable_directfb=yes; else disable_directfb=no; fi])
+AC_ARG_WITH(pmshell, [  --without-pmshell       compile without PMShell graphics driver],[if test "$withval" = no; then disable_pmshell=yes; else disable_pmshell=no; fi])
+AC_ARG_WITH(atheos, [  --without-atheos        compile without Atheos graphics driver],[if test "$withval" = no; then disable_atheos=yes; else disable_atheos; fi])
+AC_ARG_WITH(freetype, [  --without-freetype        compile without FreeType library],[if test "$withval" = no; then disable_freetype=yes; else disable_freetype; fi])
+
+	drivers=""
+
+if test "$disable_svgalib" != yes ; then
+	AC_CACHE_CHECK([for svgalib], ac_cv_have_svgalib,
+		LIBS_X="$LIBS"
+		LIBS="$LIBS -lvga"
+		AC_TRY_LINK([#include <vga.h>], [vga_setmode(0)], ac_cv_have_svgalib=yes, ac_cv_have_svgalib=no)
+		LIBS="$LIBS_X"
+	)
+
+	if test "$ac_cv_have_svgalib" = yes; then
+		AC_DEFINE(GRDRV_SVGALIB)
+		LIBS="$LIBS -lvga"
+		drivers="$drivers SVGALIB"
+	fi
+fi
+
+dnl		braine, tohle jsem predelal
+dnl 	AC_CACHE_CHECK([for framebuffer], ac_cv_have_fb,
+dnl 		AC_TRY_RUN([#include <stdio.h>
+dnl 		#include <fcntl.h>
+dnl 		main(){return open("/dev/fb",O_RDWR)==-1;}], ac_cv_have_fb=yes, ac_cv_have_fb=no, ac_cv_have_fb=no)
+dnl 	)
+	
+if test "$disable_fb" != yes ; then
+	AC_CHECK_HEADERS(linux/fb.h)
+	AC_CHECK_HEADERS(linux/kd.h)
+	AC_CHECK_HEADERS(linux/vt.h)
+	AC_CHECK_HEADERS(sys/mman.h)
+	if test "$ac_cv_header_linux_fb_h" = yes && test "$ac_cv_header_linux_kd_h" = yes && test "$ac_cv_header_linux_vt_h" = yes && test "$ac_cv_header_sys_mman_h" = yes && test "$ac_cv_header_sys_ioctl_h" = yes && test "$cf_have_gpm" = yes; then
+		AC_DEFINE(GRDRV_FB)
+		drivers="$drivers FB"
+	fi
+fi
+
+if test "$disable_directfb" != yes ; then
+	AC_PATH_PROG(DIRECTFB_CONFIG, directfb-config, no)
+	if test "$DIRECTFB_CONFIG" != "no"; then
+	        AC_MSG_CHECKING(for DirectFB >= 0.9.11)
+        	directfb_version=`$DIRECTFB_CONFIG --version`
+		if expr $directfb_version \>= 0.9.11 >/dev/null; then
+			AC_MSG_RESULT(yes)
+			DIRECTFB_CFLAGS=`$DIRECTFB_CONFIG --cflags`
+			DIRECTFB_LIBS=`$DIRECTFB_CONFIG --libs`
+	           	AC_DEFINE(GRDRV_DIRECTFB)
+        	   	drivers="$drivers DIRECTFB"
+			CPPFLAGS="$CPPFLAGS $DIRECTFB_CFLAGS"
+			LIBS="$LIBS $DIRECTFB_LIBS"
+		else
+			AC_MSG_RESULT(no)
+		fi
+	fi
+fi
+
+
+	AC_PATH_X
+
+	if test "$have_x" = yes; then
+		AC_DEFINE(GRDRV_X)
+		test -n "$x_libraries" && LIBS="$LIBS -L$x_libraries"
+		LIBS="$LIBS -lX11"
+		test -n "$x_includes" && CPPFLAGS="$CPPFLAGS -I$x_includes"
+		drivers="$drivers X"
+	elif test "$ac_cv_have_x2" != no; then
+		AC_CHECK_LIB(X11, XOpenDisplay)
+		AC_CHECK_HEADERS(X11/Xlib.h X11/X.h X11/Xutil.h X11/Xlocale.h)
+		if test "$ac_cv_have_libx11" = yes && test "$ac_cv_have_x11_xlib_h" = test && test "$ac_cv_have_x11_x_h" = test && test "$ac_cv_have_x11_xutil_h" = test && test "$ac_cv_have_x11_xlocale_h" = test; then
+			AC_DEFINE(GRDRV_X)
+			drivers="$drivers X"
+			LIBS="$LIBS -lX11"
+		fi
+	fi
+
+if test "$disable_pmshell" != yes ; then
+	AC_CACHE_CHECK([for pmshell], ac_cv_have_pmshell,
+		AC_TRY_LINK([#define INCL_WIN
+			#define INCL_GPI
+			#include <os2.h>
+			#include <sys/fmutex.h>],
+			[_fmutex mutex;
+			WinDrawText(NULLHANDLE, -1, NULL, NULL, 0, 0, 0),
+			GpiSetPel(NULLHANDLE, NULL)],
+		ac_cv_have_pmshell=yes, ac_cv_have_pmshell=no)
+	)
+			
+	if test "$ac_cv_have_pmshell" = yes; then
+		AC_DEFINE(GRDRV_PMSHELL)
+		drivers="$drivers PMSHELL"
+	fi
+fi
+
+if test "$disable_atheos" != yes ; then
+	old_ext="$ac_ext"
+	ac_ext=cpp
+	AC_CHECK_HEADERS(gui/view.h)
+	AC_CHECK_HEADERS(gui/window.h)
+	AC_CHECK_HEADERS(gui/desktop.h)
+	AC_CHECK_HEADERS(gui/bitmap.h)
+	AC_CHECK_HEADERS(util/locker.h)
+	AC_CHECK_HEADERS(util/application.h)
+	ac_ext="$old_ext"
+
+	if test "$ac_cv_header_atheos_threads_h" = yes &&
+	   test "$ac_cv_header_gui_view_h" = yes &&
+	   test "$ac_cv_header_gui_window_h" = yes &&
+	   test "$ac_cv_header_gui_desktop_h" = yes &&
+	   test "$ac_cv_header_gui_bitmap_h" = yes &&
+	   test "$ac_cv_header_util_locker_h" = yes &&
+	   test "$ac_cv_header_util_application_h" = yes; then
+		AC_CHECK_LIB(stdc++, main)
+		AC_CHECK_LIB(atheos, main)
+		if test "$ac_cv_lib_atheos_main" = yes; then
+			AC_PROG_CXX
+			AC_DEFINE(GRDRV_ATHEOS)
+			drivers="$drivers ATHEOS"
+			cf_have_atheos=yes
+		fi
+	fi
+fi
+
+	if test -z "$drivers"; then
+		AC_MSG_ERROR([No graphics drivers found.])
+dnl	else
+dnl		AC_MSG_RESULT([The following graphics drivers are available:$drivers])
+	fi
+fi
+
+AM_CONDITIONAL(ATHEOS_GR, test "$cf_have_atheos" = yes)
+
+test "$ac_cv_have_emx" = yes && LDFLAGS="$LDFLAGS -Zexe"
+test "$have_emx" = yes && LDFLAGS=`echo "$LDFLAGS" | sed "s/-Zbin-files//g"`
+
+if test "$disable_freetype" != yes ; then
+	AC_CHECK_PROG(FREETYPE, freetype-config, yes, no)
+
+	if test "$FREETYPE" != "no"; then
+	  CFLAGS="$CFLAGS `freetype-config --cflags`"
+	  LIBS="$LIBS `freetype-config --libs`"
+          AC_DEFINE(HAVE_FREETYPE)
+	fi
+fi
+
+AM_CONDITIONAL(FT_AND_GD, test "$FREETYPE" = yes -a "$cf_have_libgd" = yes)
+
+AC_ARG_ENABLE(globhist, [  --disable-globhist      disable global history],
+              [if test "$enableval" = yes; then AC_DEFINE(GLOBHIST) fi],
+	      AC_DEFINE(GLOBHIST))
+
+hm_enabled_backtrace=1
+
+AC_ARG_ENABLE(backtrace, [  --disable-backtrace     disable displaying of backtrace upon crash],
+              [if test "$enableval" != yes; then
+                 hm_enabled_backtrace=0
+               fi])
+
+AC_MSG_CHECKING(for backtrace displaying support)
+
+if test "$hm_enabled_backtrace"; then
+	AC_CHECK_HEADERS(execinfo.h, have_execinfo=1, have_execinfo=0)
+	# possible checks for other system-specific means go here
+	if test "$have_execinfo"; then
+		AC_DEFINE(BACKTRACE)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+AC_OUTPUT([ Makefile utils/Makefile js/Makefile docs/Makefile])
+
+echo "---------------------------------------------------------"
+echo "Configuration results:"
+echo ""
+if test "$cf_have_gpm" = yes; then echo "GPM support:		YES"; else echo "GPM support:		NO"; fi
+if test "$FREETYPE"    != no; then echo "FreeType support:		YES"; else echo "FreeType support:		NO"; fi
+if test "$cf_have_lua" = yes; then echo "Lua support:		YES"; else echo "Lua support:		NO"; fi
+if test "$cf_have_ssl" = yes; then echo "SSL support:		YES"; else echo "SSL support:		NO"; fi
+if test "$cf_use_javascript" = yes; then echo "Javascript enabled:	YES"; else echo "Javascript enabled:	NO"; fi
+if test "$cf_ldap" = yes; then
+        echo "LDAP bookmark support:    YES"
+fi
+if test "$cf_use_graphics" = yes; then 
+	echo "Graphics enabled:	YES"
+	echo "Graphics drivers:	`echo $drivers|sed 's/^ //'`"
+	echo "Image formats:		$image_formats"
+else echo "Graphics enabled:	NO"; fi
+if test "$cf_form_save" = yes; then
+	echo "Form saving/loading enabled:   YES"
+else
+	echo "Form saving/loading enabled:   NO"
+fi
+if test "$ac_cv_have_x2" != no; then echo "xterm for OS/2 support:	YES"; else echo "xterm for OS/2 support:	NO"; fi
+if test "$cf_use_static" = yes; then echo "\"links\" executable:	static"; else echo "\"links\" executable:	dynamic"; fi
+echo "---------------------------------------------------------"

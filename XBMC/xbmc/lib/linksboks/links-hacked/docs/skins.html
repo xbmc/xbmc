@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>Hacked Links Skinning</title>
+</head>
+<body>
+
+<h1 align=center>Hacked Links Skins</h1>
+<center>
+<table border=1><tr><td>
+<img src="default.jpg" alt="Current Links skin" border=1>
+</td></tr>
+</table>
+</center>
+
+<h3>Buttons</h3>
+<p>
+Current state of buttons skinning in Links is as follows. 
+There are up seven button places in toolbar (you may turn
+some - or even all - buttons off), and there are 7 symbols
+in special internal font <b>system-medium-roman-serif-vari</b>.
+Their are defined in <i>setup.h</i> as
+</p><code>
+<p align=left>
+<br>/* Buttonbar stuff - symbols from system-medium-roman-serif-vari font */
+<br>#define BUTTON_BACK       "\x2"
+<br>#define BUTTON_HISTORY    "\x3"
+<br>#define BUTTON_RELOAD     "\x4"
+<br>#define BUTTON_FORWARD    "\x5"
+<br>#define BUTTON_BOOKMARKS  "\x6"
+<br>#define BUTTON_HOME       "\x7"
+<br>#define BUTTON_STOP       "\x8"
+<br>/* Some other special symbols */
+<br>#define SYMBOL_CHECKBOX_CHECKED   "\x9"
+<br>#define SYMBOL_CHECKBOX_UNCHECKED "\xa"
+<br>#define SYMBOL_RADIO_DEPRESSED    "\xb"
+<br>#define SYMBOL_RADIO_PRESSED      "\xc"
+</p>
+</code>
+<p>
+These symbols may have different widths (font is variable), and there are
+no spaces in toolbar - so you need to include spaces you need in your skin.
+</p>
+<p>
+If you change these chars in font don't forget to regenerate fonts! Type 
+<code>cd graphics; ./gen; cd ..; make</code>
+</p>
+
+<h3>HTML "Widgets"</h3>
+
+<p>
+Since "release" 021210 we have no more old pseudo - graphical HTML
+font controls - now we will draw them directly. This functionality
+is still very limited - they are still <b>text objects</b>, so their
+sizes are limited (at least heights - we can easily change width by adding
+some spaces before and after actual text), and also initial state of each
+such control is a <b>filled rectangle with text inside</b>. What we can change
+is background and text colors, and of course - we can draw anything ontop of it!
+We know all about this object surrounding - there are just other text areas,
+we know their colors, so we may emulate button transparency by filling some
+regions with it. Also, checkboxes and radio buttons currently are just a 
+chars (see above), ans so they use only 2 colors - bg and fg of surrounding
+text.
+
+</p>
+<p>
+So currently the task of html controls skinning is to develop its design using
+only 3 colors and with fixed height (just height of one char) in mind.
+</p>
+<p>
+</p>
+<h4 align=center>You are invited to make them better</h4>
+<hr>
+<a href="index.html">Hacked Links Project</a>
+</body>
+</html>

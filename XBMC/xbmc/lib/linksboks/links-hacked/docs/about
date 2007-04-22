@@ -1,0 +1,43 @@
+<head>
+<title>About Links</title>
+</head>
+
+<body bgcolor=gray link=red vlink=red alink=red text=black>
+
+<table border=0 width="80%" align=center cellspacing=0 cellpadding=2 bgcolor=black><tr><td>
+<table border=0 width="100%" align=center cellspacing=0 cellpadding=4 bgcolor=white><tr><td>
+
+<center><img src="internal:logo.gif" alt="Hacked Links Project"></center>
+
+<h3 align=center>Links - Text and graphics WWW browser</h3>
+<h4 align=center>030709 release</h4>
+
+<p>
+This is a modified version of Links. Some features were added, 
+some bugs were fixed. What you see right now is a first attempt of
+help system reorganization.
+</p>
+<p>
+You may see here only:
+</p>
+<p>
+<a href="internal:features">List of compiled-in optional features</a><br>
+<a href="internal:license">GNU General Public License</a><br>
+</p>
+<p>
+And some external links:
+</p>
+<p>
+<a href="http://links.sourceforge.net/docs/manual-0.90-en/">Links manual (very old)</a><br>
+<a href="http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/calibration.html">Links2 Video Calibration Procedure</a><br>
+</p>
+<p>
+<a href="http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/">Official Links Site</a><br>
+<a href="http://xray.sai.msu.ru/~karpov/links-hacked/">Hacked Links Project</a><br>
+<a href="http://elinks.or.cz/">ELinks Project</a><br>
+<a href="http://archive.linuxfromscratch.org/mail-archives/elinks-dev/">ELinks-dev archives</a><br>
+<a href="http://archive.linuxfromscratch.org/mail-archives/elinks-user/">ELinks-user archives</a><br>
+</p>
+</td></tr></table>
+</td></tr></table>
+</body>

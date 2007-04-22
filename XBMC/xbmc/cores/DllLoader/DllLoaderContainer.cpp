@@ -33,6 +33,10 @@ void export_ddraw();
 void export_comctl32();
 void export_msvcrt();
 void export_msvcr71();
+#ifdef WITH_LINKS_BROWSER
+void export_xbox_other();
+void export_winsockx();
+#endif
 void export_pncrt();
 void export_iconvx();
 
@@ -58,6 +62,10 @@ DllLoaderContainer::DllLoaderContainer() :
     comdlg32("comdlg32.dll", false, true),
     gdi32("gdi32.dll", false, true),
     comctl32("comctl32.dll", false, true),
+#ifdef WITH_LINKS_BROWSER
+    xbox_other("xbox_other.dll", false, true),
+    winsockx("winsockx.dll", false, true),
+#endif
     pncrt("pncrt.dll", false, true),
     iconvx("iconv.dll", false, true)
 {
@@ -85,6 +93,10 @@ DllLoaderContainer::DllLoaderContainer() :
   RegisterDll(&comdlg32); export_comdlg32();
   RegisterDll(&gdi32); export_gdi32();
   RegisterDll(&comctl32); export_comctl32();
+#ifdef WITH_LINKS_BROWSER
+  RegisterDll(&xbox_other); export_xbox_other();
+  RegisterDll(&winsockx); export_winsockx();
+#endif
   RegisterDll(&pncrt); export_pncrt();
   RegisterDll(&iconvx); export_iconvx();
 }

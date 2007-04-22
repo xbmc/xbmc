@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/transitional.dtd">
+
+<html>
+
+<head>
+<title>Hacked Links Project</title>
+</head>
+
+<body bgcolor=gray link=red vlink=red alink=red text=black>
+
+<table border=0 width="100%" align=center cellspacing=5 cellpadding=0><tr><td width="80%" valign=top>
+<table border=0 width="100%" align=center cellspacing=0 cellpadding=2 bgcolor=black><tr><td>
+<table border=0 width="100%" align=center cellspacing=0 cellpadding=4 bgcolor=white><tr><td>
+
+<!--  Main area starts //-->
+
+<center><img src="logo.gif" alt="Hacked Links Project"></center>
+<!-- <h2 align=center>Hacked Links Project</h2> //-->
+
+<small><i>For news and current project state feel free to read <a href="downloads/ChangeLog">ChangeLog</a></i></small>
+<p>
+The aim of this project is to create some kind of "feature-rich" version of 
+Links web browser suitable at least for my own needs ;-))
+</p>
+<p align=center>
+<font color=red>This code is still experimental and buggy!!! </font>
+</p>
+<p>
+For now, our main differences to Links are:
+</p>
+
+<ul>
+<li><b>Tabbed browsing</b> - you may use tabs either in graphical or even in text mode.
+
+<li><b>Lua scripting</b> - ported from Links-Lua, not from current ELinks code, but
+	the differences are not so sensitive, I hope. 
+
+<li><b>HTTP Auth</b> - stable, ported from Elinks
+
+<li><b>HTTP Proxy Auth</b> - ported from Elinks, need to be checked.
+
+<li><b>Blocking of selected images</b> - my own code ;-). You may block images containing given
+	substring (of course, it is better to use regexps, but this way is 
+        more portable). Just press '-' to edit the list of blocked patterns.
+
+<li><b>Cookies saving</b> - ported from ELinks, now our HTTP-header date parsing is
+	correct, I hope.
+
+<li><b>New options system</b> - inspired by ELinks one, but much more uglier
+	currently ;-)) Only a few options are implemented through it.
+        Press 'Ctrl+o' to call options manager.
+
+<li><b>Possibility to open new windows instead of new links instances in graphics 
+	mode</b> - new socket is created with name 'glinks' in links dir, instead 
+        of 'links' for text instances, so they can work independently. After 
+        that command 'links -g' works like 'mozilla -remote', simply opening 
+        new instances from currently running one. But it has some limitations - 
+        these new windows will open on the same display as original one...
+
+<li><b>Url copying</b> - some code from Ludvik Tezar' patch, but the backend is organized 
+	more cleanly - there are two additional fields in struct graphics_driver - 
+        put_to_clipboard and get_from_clipboard. Only X11 backend is functional 
+        now, as I don't use others ;-)
+
+<li><b>Full-text selection</b> - Now we have nearly complete full-text selection -
+	you may select any part of rendered text (except form controls) and copy
+        it to clipboard. Clipboard charset is configurable through new options
+        system (Ctrl+'o').
+
+<li><b>Simple printing</b> - It is VERY simple - we make
+	PDF file (throung pdflib) with text only (just a rectangles instead of images), and
+	with PDF internal fonts only (don't even try to print non-latin-1 texts!!!) - but we have more-or-less correct layout and
+	page breakings. Press 'P', and it will ask you for filename to print to.
+        
+<li><b>Forward history</b> - really, single history list, you can move backward
+	and forward through it
+
+<li><b>Extended and configurable 'toolbar'</b> - there are currently Back, History, Forward, Reload,
+	Bookmarks, Home and Stop buttons.
+	'Configurability' means that you can change each button look
+        (they use pixmaps from special internal system-medium-serif-vari font you
+        can find in graphics/font dir) and even turn it on or off.
+
+<li><b>Configurable 'mini-status'</b> - some useful info in lower right corner of
+	your window to show how many connections now in 'running' or 'connecting'
+        state are, and also SSL, Content-Encoding and Images flags.
+
+<li><b>Some small but useful improvements</b> - support for "small" and "big" tags, 
+	keybinding ("i") to turn on/off images, possibility to show HTTP 
+        header ("|", as in Elinks), support for compressed content (Content-Encoding
+        and gzipped local files), configurable support for Accept-Charset and Accept-Language.
+
+<li><b>Modularized font subsystem</b> - currently builtin fonts and Unicode
+	TrueType (through freetype backend) may be used. Font manager is available
+        (Ctrl+'i') for adding/deleting external (only freetype yet) fonts.
+        External fonts have the same way into the code - so they are antialiased
+        as good as builtin ;-)
+
+<li><b>Dialogs shadows and borders</b> - Just shadows ;-)) 
+</ul>
+
+<h3 align=left>Plans</h3>
+Currently I plan to (but don't know when ;-)):
+
+<ul>
+<li><b>Implement keys rebinding</b>
+<li><b>Improve printing support</b>
+<li><b>...</b>
+</ul>
+
+<p>
+But maybe I'll just write a graphics subsystem for ELinks instead ;-)
+</p>
+
+<h3>Contributions</h3>
+
+<p>
+This project is currently maintained by <a href="mailto:karpov@sai.msu.su">Sergey Karpov</a>
+</p>
+<p>
+You are encouraged to send me various patches implementing usable and unusable
+features ;-)) 
+</p>
+
+<!--  Main area ends //-->
+
+</td></tr></table>
+</td></tr></table>
+</td><td  valign=top>
+<table border=0 width="100%" align=center cellspacing=0 cellpadding=2 bgcolor=black><tr><td>
+<table border=0 width="100%" align=center cellspacing=0 cellpadding=4 bgcolor=white>
+
+<!--  Links begin //-->
+
+<tr><td bgcolor=black align=center><font color=white>Links</font></td></tr>
+<tr><td><a href="http://atrey.karlin.mff.cuni.cz/~clock/twibright/links/">Official Links Site</td></tr>
+<tr><td><a href="http://elinks.or.cz/">ELinks Project</a></td></tr>
+<tr><td><a href="http://links.sf.net/">Links at SourceForge</a></td></tr>
+<tr><td><a href="http://links.sourceforge.net/links-lua/">Links-Lua</a></td></tr>
+<tr><td><a href="http://archive.linuxfromscratch.org/mail-archives/links-list/">Links-list archives</a></td></tr>
+<tr><td><a href="http://archive.linuxfromscratch.org/mail-archives/links-discuss/">Links-discuss archives</a></td></tr>
+<tr><td><a href="http://archive.linuxfromscratch.org/mail-archives/elinks-dev/">ELinks-dev archives</a></td></tr>
+<tr><td><a href="http://archive.linuxfromscratch.org/mail-archives/elinks-user/">ELinks-user archives</a></td></tr>
+
+<!--  Links end //-->
+
+<!--  Docs begin //-->
+
+<tr><td bgcolor=black align=center><font color=white>Documentation</font></td></tr>
+<tr><td><a href="downloads/ChangeLog">ChangeLog</td></tr>
+<tr><td><a href="http://www.stud.fh-dortmund.de/~jkorte/links/install-links-hacked.html">INSTALL</td></tr>
+<tr><td><a href="skins.html">Making Skins</td></tr>
+
+<!--  Docs end //-->
+
+<!--  Downloads begin //-->
+
+<tr><td bgcolor=black align=center><font color=white>Downloads</font></td></tr>
+<tr><td><a href="downloads/links-hacked-030709.tgz">links-hacked-030507</td></tr>
+<tr><td><a href="downloads/links-fonts-new.tgz">Fontset </td></tr>
+
+<!--  Downloads end //-->
+
+</table>
+</td></tr></table>
+</td></tr>
+</table>
+</body>
+
+</html>

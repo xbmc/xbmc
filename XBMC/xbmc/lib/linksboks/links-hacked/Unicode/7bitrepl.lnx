@@ -1,0 +1,2231 @@
+# M.P.: unicode to ascii table. I took this file from lynx.
+# lynx/src/chrtrans/def7_uni.tbl
+
+# Default 7bit replacements.  If the MIME name is set to us-ascii,
+# this will be identified with the "7 bit approximations" Display
+# character set.
+
+#The MIME name of this charset.
+Mus-ascii
+
+# Shall this become the "default" translation table?  YES!
+# There has to be exactly one table marked as "default".
+D1
+
+
+# us-ascii characters should not normally pass here,
+# they are always processed directly but let declare it here:
+0x20-0x7e  idem
+
+
+# NO-BREAK SPACE,
+# should not happen (processed in the code):
+#U+00a0:NS
+U+00a1:!
+U+00a2:-c-
+U+00a3:-L-
+U+00a4:CUR
+U+00a5:YEN
+U+00a6:|
+U+00a7:S:
+U+00a8:"
+# COPYRIGHT SIGN:
+U+00a9:(c)
+U+00aa:-a
+U+00ab:<<
+U+00ac:NOT
+# SOFT HYPHEN,
+# should not happen (processed in the code):
+#U+00ad:-
+U+00ad:
+# REGISTERED SIGN:
+U+00ae:(R)
+U+00af:-
+U+00b0:DEG
+U+00b1:+-
+U+00b2:^2
+U+00b3:^3
+U+00b4:'
+# My -> u
+U+00b5:u
+U+00b6:P:
+U+00b7:.
+U+00b8:,
+U+00b9:^1
+U+00ba:-o
+U+00bb:>>
+U+00bc: 1/4
+U+00bd: 1/2
+U+00be: 3/4
+U+00bf:?
+0x41	U+00c0-U+00c3
+U+00c4:A:
+U+00c5:AA
+U+00c6:AE
+U+00c7:C,
+0x45	U+00c8-U+00cb
+0x49	U+00cc-U+00cf
+U+00d0:D-
+0x4e	U+00d1
+0x4f	U+00d2-U+00d5
+U+00d6:O:
+U+00d7: *
+U+00d8:O/
+0x55	U+00d9-U+00db
+U+00dc:U:
+0x59	U+00dd
+U+00de:TH
+U+00df:ss
+U+00e0:`a
+0x61	U+00e1-U+00e3
+U+00e4:a:
+U+00e5:aa
+U+00e6:ae
+U+00e7:c,
+0x65	U+00e8-U+00eb
+U+00ec:`i
+0x69	U+00ed-U+00ef
+U+00f0:d-
+0x6e	U+00f1
+0x6f	U+00f2-U+00f5
+U+00f6:o:
+U+00f7:-:
+U+00f8:o/
+0x75	U+00f9-U+00fb
+U+00fc:u:
+0x79	U+00fd
+U+00fe:th
+0x79	U+00ff
+# end of latin-1 repertoire
+0x41	U+0100	U+0102	U+0104			# A
+0x61	U+0101	U+0103	U+0105			# a
+0x43	U+0106	U+0108	U+010a	U+010c		# C
+# The following line is an example for mapping several accented versions
+# of small letter 'c' to 'c':
+0x63	U+0107	U+0109	U+010b	U+010d		# c
+0x44	U+010e
+0x64	U+010f
+U+0110:D/
+U+0111:d/
+0x45	U+0112	U+0114	U+0116	U+0118	U+011a	# E
+0x65	U+0113	U+0115	U+0117	U+0119	U+011b	# e
+0x47	U+011c	U+011e	U+0120	U+0122		# G
+0x67	U+011d	U+011f	U+0121	U+0123		# g
+0x48	U+0124
+0x68	U+0125
+U+0126:H/
+0x48	U+0127 #	LATIN SMALL LETTER H BAR	-> H
+0x49	U+0128	U+012a	U+012c	U+012e	U+0130	# I
+0x69	U+0129	U+012b	U+012d	U+012f	U+0131	# i
+U+0132:IJ
+U+0133:ij
+0x4a	U+0134
+0x6a	U+0135
+0x4b	U+0136
+0x6b	U+0137
+U+0138:kk
+0x4c	U+0139	U+013b	U+013d			# L
+0x6c	U+013a	U+013c	U+013e			# l
+U+013f:L.
+U+0140:l.
+U+0141:L
+U+0142:l
+0x4e	U+0143	U+0145	U+0147			# N
+0x6e	U+0144	U+0146	U+0148			# n
+U+0149:'n
+U+014a:NG
+0x4e	U+014B #	LATIN SMALL LETTER ENG	-> N
+0x4f	U+014c	U+014e				# O
+0x6f	U+014d	U+014f				# o
+U+0150:O"
+U+0151:o"
+U+0152:OE
+U+0153:oe
+0x52	U+0154	U+0156	U+0158			# R
+0x72	U+0155	U+0157	U+0159			# r
+0x53	U+015a	U+015c	U+015e	U+0160		# S
+0x73	U+015b	U+015d	U+015f	U+0161		# s
+0x54	U+0162	U+0164				# T
+0x74	U+0163	U+0165				# t
+U+0166:T/
+U+0167:t/
+0x55	U+0168	U+016a	U+016c	U+016e	U+0172	# U
+0x75	U+0169	U+016b	U+016d	U+016f	U+0173	# u
+U+0170:U"
+U+0171:u"
+0x57	U+0174
+0x77	U+0175
+0x59	U+0176	U+0178
+0x79	U+0177
+0x5a	U+0179	U+017b	U+017d
+0x7a	U+017a	U+017c	U+017e
+U+017f:s1
+U+0187:C2
+U+0188:c2
+U+0191:F2
+U+0192: f
+U+0198:K2
+U+0199:k2
+U+01a0:O9
+U+01a1:o9
+U+01a2:OI
+U+01a3:oi
+U+01a6:yr
+U+01af:U9
+U+01b0:u9
+U+01b5:Z/
+U+01b6:z/
+U+01b7:ED
+0x41	U+01cd
+0x61	U+01ce
+0x49	U+01cf
+0x69	U+01d0
+0x4f	U+01d1
+0x6f	U+01d2
+0x55	U+01d3
+0x75	U+01d4
+U+01d5:U:-
+U+01d6:u:-
+U+01d7:U:'
+U+01d8:u:'
+U+01d9:U:<
+U+01da:u:<
+U+01db:U:!
+U+01dc:u:!
+U+01de:A1
+U+01df:a1
+U+01e0:A7
+U+01e1:a7
+U+01e2:A3
+U+01e3:a3
+U+01e4:G/
+U+01e5:g/
+0x47	U+01e6
+0x67	U+01e7
+0x4b	U+01e8
+0x6b	U+01e9
+0x4f	U+01ea
+0x6f	U+01eb
+U+01ec:O1
+U+01ed:o1
+U+01ee:EZ
+U+01ef:ez
+0x6a	U+01f0
+0x47	U+01f4
+0x67	U+01f5
+U+01fa:AA'
+U+01fb:aa'
+U+01fc:AE'
+U+01fd:ae'
+U+01fe:O/'
+U+01ff:o/'
+U+0200:A!!
+U+0201:a!!
+U+0202:A)
+U+0203:a)
+U+0204:E!!
+U+0205:e!!
+U+0206:E)
+U+0207:e)
+U+0208:I!!
+U+0209:i!!
+U+020a:I)
+U+020b:i)
+U+020c:O!!
+U+020d:o!!
+U+020e:O)
+U+020f:o)
+U+0210:R!!
+U+0211:r!!
+U+0212:R)
+U+0213:r)
+U+0214:U!!
+U+0215:u!!
+U+0216:U)
+U+0217:u)
+
+# IPA symbols, from
+#   Linkname: FAQ: Representing IPA Phonetics in ASCII
+#        URL: http://www.hpl.hp.com/personal/Evan_Kirshenbaum/IPA/faq.html
+#        (corrected in Russian Cyrillic area).
+#        (corrected in Greek area).
+#
+0x41	U+0251 #	LATIN SMALL LETTER SCRIPT A	-> A
+U+0252:A.
+U+0253:b`
+0x4f	U+0254 #	LATIN SMALL LETTER OPEN O	-> O
+U+0256:d.
+U+0257:d`
+U+0258:@<umd>
+0x40	U+0259 #	LATIN SMALL LETTER SCHWA	-> @
+0x52	U+025A #	LATIN SMALL LETTER SCHWA HOOK	-> R
+0x45	U+025B #	LATIN SMALL LETTER EPSILON	-> E
+U+025c:V"
+U+025d:R<umd>
+U+025e:O"
+0x4a	U+025F #	LATIN SMALL LETTER DOTLESS J BAR	-> J
+U+0260:g`
+0x67	U+0261 #	LATIN SMALL LETTER SCRIPT G
+0x47	U+0262 #	LATIN LETTER SMALL CAPITAL G
+0x51	U+0263 #	LATIN SMALL LETTER GAMMA	-> Q
+U+0264:o-
+U+0265:j<rnd>
+U+0266:h<?>
+U+0268:i"
+0x49	U+026A U+0269 # LATIN LETTER SMALL CAPITAL I, LATIN SMALL LETTER IOTA
+0x4c	U+026B #	LATIN SMALL LETTER L WITH MIDDLE TILDE
+0x4c	U+026C #	LATIN SMALL LETTER L BELT
+U+026d:l.
+U+026e:z<lat>
+U+026f:u-
+U+0270:j<vel>
+0x4d	U+0271 #	LATIN SMALL LETTER M HOOK
+U+0273:n.
+U+0274:n"
+U+0275:@.
+U+0276:&.
+0x55	U+0277 #	LATIN SMALL LETTER CLOSED OMEGA	-> U
+0x72	U+0279 #	LATIN SMALL LETTER TURNED R	-> r
+U+027a:*<lat>
+U+027b:r.
+U+027d:*.
+0x2a	U+027E #	LATIN SMALL LETTER FISHHOOK R	-> *
+U+0280:r"
+0x52	U+0280 #	LATIN LETTER SMALL CAPITAL R	-> R
+U+0281:g"
+U+0282:s.
+0x53	U+0283 #	LATIN SMALL LETTER ESH	-> S
+U+0284:J`
+U+0287:t!
+U+0288:t.
+U+0289:u"
+0x55	U+028A #	LATIN SMALL LETTER UPSILON	-> U
+U+028b:r<lbd>
+0x56	U+028C #	LATIN SMALL LETTER TURNED V	-> V
+U+028d:w<vls>
+U+028e:l^
+U+028f:I.
+U+0290:z.
+U+0292:ed
+0x3f	U+0294 #	LATIN SMALL LETTER GLOTTAL STOP	-> ?
+U+0295:H<vcd>
+U+0296:l!
+U+0297:c!
+U+0298:p!
+U+0299:b<trl>
+U+029b:G`
+0x6a	U+029d #	LATIN SMALL LETTER CROSSED-TAIL J
+U+029e:k!
+0x4c	U+029F #	LATIN LETTER SMALL CAPITAL L
+U+02a0:q`
+U+02b0:<h>
+U+02b1:<?>
+0x3b	U+02b2 U+0321
+U+02b3:<r>
+U+02b7:<w>
+U+02bb:;S
+0x60	U+02bc
+U+02c6:^
+U+02c7:'<
+U+02c9:1-
+U+02cb:1!
+0x3a	U+02d0
+U+02d8:'(
+U+02d9:'.
+U+02da:'0
+U+02db:';
+U+02dc:~
+U+02dd:'"
+0x7e	U+0303	U+0334
+0x2e	U+0322	U+0323
+U+0324:<?>
+U+0325:<o>
+0x2d	U+0329
+0x5b	U+032a
+U+032b:<w>
+U+0334:<H>
+U+0374:'
+U+0375:,
+U+037a:j3
+U+037e:?%
+U+0384:'*
+U+0385:'%
+# Greek letters
+U+0386:A%
+U+0387:.*
+U+0388:E%
+U+0389:Y%
+U+038a:I%
+U+038c:O%
+U+038e:U%
+U+038f:W%
+U+0390:i3
+U+0391:A
+U+0392:B
+U+0393:G
+U+0394:D
+U+0395:E
+U+0396:Z
+U+0397:Y
+U+0398:TH
+U+0399:I
+U+039a:K
+U+039b:L
+U+039c:M
+U+039d:N
+U+039e:C
+U+039f:O
+U+03a0:P
+U+03a1:R
+U+03a3:S
+U+03a4:T
+U+03a5:U
+U+03a6:F
+U+03a7:X
+U+03a8:Q
+U+03a9:W
+U+03aa:J
+U+03ab:V*
+U+03ac:a%
+U+03ad:e%
+U+03ae:y%
+U+03af:i%
+U+03b0:u3
+U+03b1:a
+U+03b2:b
+U+03b3:g
+U+03b4:d
+U+03b5:e
+U+03b6:z
+U+03b7:y
+U+03b8:th
+U+03b9:i
+U+03ba:k
+U+03bb:l
+U+03bc:m
+U+03bd:n
+U+03be:c
+U+03bf:o
+U+03c0:p
+U+03c1:r
+U+03c2:*s
+U+03c3:s
+U+03c4:t
+U+03c5:u
+U+03c6:f
+U+03c7:x
+U+03c8:q
+U+03c9:w
+U+03ca:j
+U+03cb:v*
+U+03cc:o%
+U+03cd:u%
+U+03ce:w%
+# Greek symbols
+U+03d0:beta 
+U+03d1:theta 
+U+03d2:upsi 
+U+03d5:phi 
+U+03d6:pi 
+U+03da:T3
+U+03db:t3
+U+03dc:M3
+U+03dd:m3
+U+03de:K3
+U+03df:k3
+U+03e0:P3
+U+03e1:p3
+U+03f0:kappa 
+U+03f1:rho 
+U+03f4:'%
+U+03f5:j3
+# Cyrillic capital letters
+U+0402:D%
+U+0403:G%
+U+0404:IE
+U+0405:DS
+U+0406:II
+U+0407:YI
+U+0408:J%
+U+0409:LJ
+U+040a:NJ
+U+040b:Ts
+U+040c:KJ
+U+040e:V%
+U+040f:DZ
+# Russian Cyrillic letters, transliterated
+U+0401:IO
+U+0410:A
+U+0411:B
+U+0412:V
+U+0413:G
+U+0414:D
+U+0415:E
+U+0416:ZH
+U+0417:Z
+U+0418:I
+U+0419:J
+U+041a:K
+U+041b:L
+U+041c:M
+U+041d:N
+U+041e:O
+U+041f:P
+U+0420:R
+U+0421:S
+U+0422:T
+U+0423:U
+U+0424:F
+U+0425:H
+U+0426:C
+U+0427:CH
+U+0428:SH
+U+0429:SCH
+U+042a:"
+U+042b:Y
+U+042c:'
+U+042d:`E
+U+042e:YU
+U+042f:YA
+U+0430:a
+U+0431:b
+U+0432:v
+U+0433:g
+U+0434:d
+U+0435:e
+U+0436:zh
+U+0437:z
+U+0438:i
+U+0439:j
+U+043a:k
+U+043b:l
+U+043c:m
+U+043d:n
+U+043e:o
+U+043f:p
+U+0440:r
+U+0441:s
+U+0442:t
+U+0443:u
+U+0444:f
+U+0445:h
+U+0446:c
+U+0447:ch
+U+0448:sh
+U+0449:sch
+U+044a:"
+U+044b:y
+U+044c:'
+U+044d:`e
+U+044e:yu
+U+044f:ya
+U+0451:io
+# end of Russian Cyrillic letters.
+# Cyrillic small letters (and some archaic)
+U+0452:d%
+U+0453:g%
+U+0454:ie
+U+0455:ds
+U+0456:ii
+U+0457:yi
+U+0458:j%
+U+0459:lj
+U+045a:nj
+U+045b:ts
+U+045c:kj
+U+045e:v%
+U+045f:dz
+U+0462:Y3
+U+0463:y3
+U+046a:O3
+U+046b:o3
+U+0472:F3
+U+0473:f3
+U+0474:V3
+U+0475:v3
+U+0480:C3
+U+0481:c3
+U+0490:G3
+U+0491:g3
+
+# These may make Yiddish slightly more readable, until we have
+# something better.
+
+0x69	U+05b4	# i
+0x61	U+05b7	# a
+0x6f	U+05b8	# o
+0x75	U+05bc	# u
+0x68	U+05bf	# h
+0x3a	U+05c2	# :
+
+0x76	U+05f0	# v
+U+05f1:oy
+U+05f2:ey
+
+# U+05d0:A+
+0x23	U+05d0	# '#'
+
+U+05d1:B+
+U+05d2:G+
+U+05d3:D+
+U+05d4:H+
+U+05d5:W+
+U+05d6:Z+
+U+05d7:X+
+U+05d8:Tj
+U+05d9:J+
+U+05da:K%
+U+05db:K+
+U+05dc:L+
+U+05dd:M%
+U+05de:M+
+U+05df:N%
+U+05e0:N+
+U+05e1:S+
+U+05e2:E+
+U+05e3:P%
+U+05e4:P+
+U+05e5:Zj
+U+05e6:ZJ
+U+05e7:Q+
+U+05e8:R+
+U+05e9:Sh
+U+05ea:T+
+
+U+060c:,+
+U+061b:;+
+U+061f:?+
+U+0621:H'
+U+0622:aM
+U+0623:aH
+U+0624:wH
+U+0625:ah
+U+0626:yH
+U+0627:a+
+U+0628:b+
+U+0629:tm
+U+062a:t+
+U+062b:tk
+U+062c:g+
+U+062d:hk
+U+062e:x+
+U+062f:d+
+U+0630:dk
+U+0631:r+
+U+0632:z+
+U+0633:s+
+U+0634:sn
+U+0635:c+
+U+0636:dd
+U+0637:tj
+U+0638:zH
+U+0639:e+
+U+063a:i+
+U+0640:++
+U+0641:f+
+U+0642:q+
+U+0643:k+
+U+0644:l+
+U+0645:m+
+U+0646:n+
+U+0647:h+
+U+0648:w+
+U+0649:j+
+U+064a:y+
+U+064b::+
+U+064c:"+
+U+064d:=+
+U+064e:/+
+U+064f:'+
+U+0650:1+
+U+0651:3+
+U+0652:0+
+U+0660:0a
+U+0661:1a
+U+0662:2a
+U+0663:3a
+U+0664:4a
+U+0665:5a
+U+0666:6a
+U+0667:7a
+U+0668:8a
+U+0669:9a
+U+0670:aS
+U+067e:p+
+U+0681:hH
+U+0686:tc
+U+0698:zj
+U+06a4:v+
+U+06af:gf
+U+06f0:0a
+U+06f1:1a
+U+06f2:2a
+U+06f3:3a
+U+06f4:4a
+U+06f5:5a
+U+06f6:6a
+U+06f7:7a
+U+06f8:8a
+U+06f9:9a
+
+# Replacement strings for Ethiopic characters
+U+1200:he
+U+1201:hu
+U+1202:hi
+U+1203:ha
+U+1204:hE
+0x68	U+1205	#:h
+U+1206:ho
+U+1208:le
+U+1209:lu
+U+120A:li
+U+120B:la
+U+120C:lE
+0x6c	U+120D	#:l
+U+120E:lo
+U+120F:lWa
+U+1210:He
+U+1211:Hu
+U+1212:Hi
+U+1213:Ha
+U+1214:HE
+0x48	U+1215	#:H
+U+1216:Ho
+U+1217:HWa
+U+1218:me
+U+1219:mu
+U+121A:mi
+U+121B:ma
+U+121C:mE
+0x6d	U+121D	#:m
+U+121E:mo
+U+121F:mWa
+U+1220:`se
+U+1221:`su
+U+1222:`si
+U+1223:`sa
+U+1224:`sE
+U+1225:`s
+U+1226:`so
+U+1227:`sWa
+U+1228:re
+U+1229:ru
+U+122A:ri
+U+122B:ra
+U+122C:rE
+0x72	U+122D	#:r
+U+122E:ro
+U+122F:rWa
+U+1230:se
+U+1231:su
+U+1232:si
+U+1233:sa
+U+1234:sE
+0x73	U+1235	#:s
+U+1236:so
+U+1237:sWa
+U+1238:xe
+U+1239:xu
+U+123A:xi
+U+123B:xa
+U+123C:xE
+U+123D:xa
+U+123E:xo
+U+123F:xWa
+U+1240:qe
+U+1241:qu
+U+1242:qi
+U+1243:qa
+U+1244:qE
+0x71	U+1245	#:q
+U+1246:qo
+U+1248:qWe
+U+124A:qWi
+U+124B:qWa
+U+124C:qWE
+U+124D:qW
+U+1250:Qe
+U+1251:Qu
+U+1252:Qi
+U+1253:Qa
+U+1254:QE
+0x51	U+1255	#:Q
+U+1256:Qo
+U+1258:QWe
+U+125A:QWi
+U+125B:QWa
+U+125C:QWE
+U+125D:QW
+U+1260:be
+U+1261:bu
+U+1262:bi
+U+1263:ba
+U+1264:bE
+0x62	U+1265	#:b
+U+1266:bo
+U+1267:bWa
+U+1268:ve
+U+1269:vu
+U+126A:vi
+U+126B:va
+U+126C:vE
+0x76	U+126D	#:v
+U+126E:vo
+U+126F:vWa
+U+1270:te
+U+1271:tu
+U+1272:ti
+U+1273:ta
+U+1274:tE
+0x74	U+1275	#:t
+U+1276:to
+U+1277:tWa
+U+1278:ce
+U+1279:cu
+U+127A:ci
+U+127B:ca
+U+127C:cE
+0x63	U+127D	#:c
+U+127E:co
+U+127F:cWa
+U+1280:`he
+U+1281:`hu
+U+1282:`hi
+U+1283:`ha
+U+1284:`hE
+U+1285:`h
+U+1286:`ho
+U+1288:hWe
+U+128A:hWi
+U+128B:hWa
+U+128C:hWE
+U+128D:hW
+U+1290:na
+U+1291:nu
+U+1292:ni
+U+1293:na
+U+1294:nE
+0x6e	U+1295	#:n
+U+1296:no
+U+1297:nWa
+U+1298:Ne
+U+1299:Nu
+U+129A:Ni
+U+129B:Na
+U+129C:NE
+0x4e	U+129D	#:N
+U+129E:No
+U+129F:NWa
+0x65	U+12A0	#:e
+0x75	U+12A1	#:u
+0x69	U+12A2	#:i
+0x61	U+12A3	#:a
+0x45	U+12A4	#:E
+0x49	U+12A5	#:I
+0x6f	U+12A6	#:o
+U+12A7:e3
+U+12A8:ke
+U+12A9:ku
+U+12AA:ki
+U+12AB:ka
+U+12AC:kE
+0x6b	U+12AD	#:k
+U+12AE:ko
+U+12B0:kWe
+U+12B2:kWi
+U+12B3:kWa
+U+12B4:kWE
+U+12B5:kW
+U+12B8:Ke
+U+12B9:Ku
+U+12BA:Ki
+U+12BB:Ka
+U+12BC:KE
+0x4b	U+12BD	#:K
+U+12BE:Ko
+U+12C0:KWe
+U+12C2:KWi
+U+12C3:KWa
+U+12C4:KWE
+U+12C5:KW
+U+12C8:we
+U+12C9:wu
+U+12CA:wi
+U+12CB:wa
+U+12CC:wE
+0x77	U+12CD	#:w
+U+12CE:wo
+U+12D0:`e
+U+12D1:`u
+U+12D2:`i
+U+12D3:`a
+U+12D4:`E
+U+12D5:`I
+U+12D6:`o
+U+12D8:ze
+U+12D9:zu
+U+12DA:zi
+U+12DB:za
+U+12DC:zE
+0x7a	U+12DD	#:z
+U+12DE:zo
+U+12DF:zWa
+U+12E0:Ze
+U+12E1:Zu
+U+12E2:Zi
+U+12E3:Za
+U+12E4:ZE
+0x5a	U+12E5	#:Z
+U+12E6:Zo
+U+12E7:ZWa
+U+12E8:ye
+U+12E9:yu
+U+12EA:yi
+U+12EB:ya
+U+12EC:yE
+0x79	U+12ED	#:y
+U+12EE:yo
+U+12EF:yWa
+U+12F0:de
+U+12F1:du
+U+12F2:di
+U+12F3:da
+U+12F4:dE
+0x64	U+12F5	#:d
+U+12F6:do
+U+12F7:dWa
+U+12F8:De
+U+12F9:Du
+U+12FA:Di
+U+12FB:Da
+U+12FC:DE
+0x44	U+12FD	#:D
+U+12FE:Do
+U+12FF:DWa
+U+1300:je
+U+1301:ju
+U+1302:ji
+U+1303:ja
+U+1304:jE
+0x6a	U+1305	#:j
+U+1306:jo
+U+1307:jWa
+U+1308:ga
+U+1309:gu
+U+130A:gi
+U+130B:ga
+U+130C:gE
+0x67	U+130D	#:g
+U+130E:go
+U+1310:gWu
+U+1312:gWi
+U+1313:gWa
+U+1314:gWE
+U+1315:gW
+U+1318:Ge
+U+1319:Gu
+U+131A:Gi
+U+131B:Ga
+U+131C:GE
+0x47	U+131D	#:G
+U+131E:Go
+U+131F:GWa
+U+1320:Te
+U+1321:Tu
+U+1322:Ti
+U+1323:Ta
+U+1324:TE
+0x54	U+1325	#:T
+U+1326:To
+U+1327:TWa
+U+1328:Ce
+U+1329:Ca
+U+132A:Cu
+U+132B:Ca
+U+132C:CE
+0x43	U+132D	#:C
+U+132E:Co
+U+132F:CWa
+U+1330:Pe
+U+1331:Pu
+U+1332:Pi
+U+1333:Pa
+U+1334:PE
+0x50	U+1335	#:P
+U+1336:Po
+U+1337:PWa
+U+1338:SWe
+U+1339:SWu
+U+133A:SWi
+U+133B:SWa
+U+133C:SWE
+U+133D:SW
+U+133E:SWo
+U+133F:SWa
+U+1340:`Sa
+U+1341:`Su
+U+1342:`Si
+U+1343:`Sa
+U+1344:`SE
+U+1345:`S
+U+1346:`So
+U+1348:fa
+U+1349:fu
+U+134A:fi
+U+134B:fa
+U+134C:fE
+0x6f	U+134D	#:f
+U+134E:fo
+U+134F:fWa
+U+1350:pe
+U+1351:pu
+U+1352:pi
+U+1353:pa
+U+1354:pE
+0x70	U+1355	#:p
+U+1356:po
+U+1357:pWa
+U+1358:mYa
+U+1359:rYa
+U+135A:fYa
+# ETHIOPIC SPACE U+1360 mapped to ASCII space
+0x20	U+1360
+0x3a	U+1361	#::
+U+1362:::
+0x2c	U+1363	#:,
+U+1364:;
+U+1365:-:
+U+1366::-
+U+1367:`?
+U+1368::|:
+U+1369:`1
+U+136A:`2
+U+136B:`3
+U+136C:`4
+U+136D:`5
+U+136E:`6
+U+136F:`7
+U+1370:`8
+U+1371:`9
+U+1372:`10
+U+1373:`20
+U+1374:`30
+U+1375:`40
+U+1376:`50
+U+1377:`60
+U+1378:`70
+U+1379:`80
+U+137A:`90
+U+137B:`100
+U+137C:`10000
+
+
+U+1e00:A-0
+U+1e01:a-0
+U+1e02:B.
+U+1e03:b.
+U+1e04:B-.
+U+1e05:b-.
+U+1e06:B_
+U+1e07:b_
+U+1e08:C,'
+U+1e09:c,'
+U+1e0a:D.
+U+1e0b:d.
+U+1e0c:D-.
+U+1e0d:d-.
+U+1e0e:D_
+U+1e0f:d_
+U+1e10:D,
+U+1e11:d,
+U+1e12:D->
+U+1e13:d->
+U+1e14:E-!
+U+1e15:e-!
+U+1e16:E-'
+U+1e17:e-'
+U+1e18:E->
+U+1e19:e->
+U+1e1a:E-?
+U+1e1b:e-?
+U+1e1c:E,(
+U+1e1d:e,(
+U+1e1e:F.
+U+1e1f:f.
+U+1e20:G-
+U+1e21:g-
+U+1e22:H.
+U+1e23:h.
+U+1e24:H-.
+U+1e25:h-.
+U+1e26:H:
+U+1e27:h:
+U+1e28:H,
+U+1e29:h,
+U+1e2a:H-(
+U+1e2b:h-(
+U+1e2c:I-?
+U+1e2d:i-?
+U+1e2e:I:'
+U+1e2f:i:'
+U+1e30:K'
+U+1e31:k'
+U+1e32:K-.
+U+1e33:k-.
+U+1e34:K_
+U+1e35:k_
+U+1e36:L-.
+U+1e37:l-.
+U+1e38:L--.
+U+1e39:l--.
+U+1e3a:L_
+U+1e3b:l_
+U+1e3c:L->
+U+1e3d:l->
+U+1e3e:M'
+U+1e3f:m'
+U+1e40:M.
+U+1e41:m.
+U+1e42:M-.
+U+1e43:m-.
+U+1e44:N.
+U+1e45:n.
+U+1e46:N-.
+U+1e47:n-.
+U+1e48:N_
+U+1e49:n_
+U+1e4a:N->
+U+1e4b:n->
+U+1e4c:O?'
+U+1e4d:o?'
+U+1e4e:O?:
+U+1e4f:o?:
+U+1e50:O-!
+U+1e51:o-!
+U+1e52:O-'
+U+1e53:o-'
+U+1e54:P'
+U+1e55:p'
+U+1e56:P.
+U+1e57:p.
+U+1e58:R.
+U+1e59:r.
+U+1e5a:R-.
+U+1e5b:r-.
+U+1e5c:R--.
+U+1e5d:r--.
+U+1e5e:R_
+U+1e5f:r_
+U+1e60:S.
+U+1e61:s.
+U+1e62:S-.
+U+1e63:s-.
+U+1e64:S'.
+U+1e65:s'.
+U+1e66:S<.
+U+1e67:s<.
+U+1e68:S.-.
+U+1e69:s.-.
+U+1e6a:T.
+U+1e6b:t.
+U+1e6c:T-.
+U+1e6d:t-.
+U+1e6e:T_
+U+1e6f:t_
+U+1e70:T->
+U+1e71:t->
+U+1e72:U--:
+U+1e73:u--:
+U+1e74:U-?
+U+1e75:u-?
+U+1e76:U->
+U+1e77:u->
+U+1e78:U?'
+U+1e79:u?'
+U+1e7a:U-:
+U+1e7b:u-:
+U+1e7c:V?
+U+1e7d:v?
+U+1e7e:V-.
+U+1e7f:v-.
+U+1e80:W!
+U+1e81:w!
+U+1e82:W'
+U+1e83:w'
+U+1e84:W:
+U+1e85:w:
+U+1e86:W.
+U+1e87:w.
+U+1e88:W-.
+U+1e89:w-.
+U+1e8a:X.
+U+1e8b:x.
+U+1e8c:X:
+U+1e8d:x:
+U+1e8e:Y.
+U+1e8f:y.
+U+1e90:Z>
+U+1e91:z>
+U+1e92:Z-.
+U+1e93:z-.
+U+1e94:Z_
+U+1e95:z_
+U+1e96:h_
+U+1e97:t:
+U+1e98:w0
+U+1e99:y0
+U+1ea0:A-.
+U+1ea1:a-.
+U+1ea2:A2
+U+1ea3:a2
+U+1ea4:A>'
+U+1ea5:a>'
+U+1ea6:A>!
+U+1ea7:a>!
+U+1ea8:A>2
+U+1ea9:a>2
+U+1eaa:A>?
+U+1eab:a>?
+U+1eac:A>-.
+U+1ead:a>-.
+U+1eae:A('
+U+1eaf:a('
+U+1eb0:A(!
+U+1eb1:a(!
+U+1eb2:A(2
+U+1eb3:a(2
+U+1eb4:A(?
+U+1eb5:a(?
+U+1eb6:A(-.
+U+1eb7:a(-.
+U+1eb8:E-.
+U+1eb9:e-.
+U+1eba:E2
+U+1ebb:e2
+U+1ebc:E?
+U+1ebd:e?
+U+1ebe:E>'
+U+1ebf:e>'
+U+1ec0:E>!
+U+1ec1:e>!
+U+1ec2:E>2
+U+1ec3:e>2
+U+1ec4:E>?
+U+1ec5:e>?
+U+1ec6:E>-.
+U+1ec7:e>-.
+U+1ec8:I2
+U+1ec9:i2
+U+1eca:I-.
+U+1ecb:i-.
+U+1ecc:O-.
+U+1ecd:o-.
+U+1ece:O2
+U+1ecf:o2
+U+1ed0:O>'
+U+1ed1:o>'
+U+1ed2:O>!
+U+1ed3:o>!
+U+1ed4:O>2
+U+1ed5:o>2
+U+1ed6:O>?
+U+1ed7:o>?
+U+1ed8:O>-.
+U+1ed9:o>-.
+U+1eda:O9'
+U+1edb:o9'
+U+1edc:O9!
+U+1edd:o9!
+U+1ede:O92
+U+1edf:o92
+U+1ee0:O9?
+U+1ee1:o9?
+U+1ee2:O9-.
+U+1ee3:o9-.
+U+1ee4:U-.
+U+1ee5:u-.
+U+1ee6:U2
+U+1ee7:u2
+U+1ee8:U9'
+U+1ee9:u9'
+U+1eea:U9!
+U+1eeb:u9!
+U+1eec:U92
+U+1eed:u92
+U+1eee:U9?
+U+1eef:u9?
+U+1ef0:U9-.
+U+1ef1:u9-.
+U+1ef2:Y!
+U+1ef3:y!
+U+1ef4:Y-.
+U+1ef5:y-.
+U+1ef6:Y2
+U+1ef7:y2
+U+1ef8:Y?
+U+1ef9:y?
+U+1f00:;'
+U+1f01:,'
+U+1f02:;!
+U+1f03:,!
+U+1f04:?;
+U+1f05:?,
+U+1f06:!:
+U+1f07:?:
+U+1fbf:,,
+U+1fc0:?*
+U+1fc1:?:
+U+1fcd:,!
+U+1fce:,'
+U+1fcf:?,
+U+1fdd:;!
+U+1fde:;'
+U+1fdf:?;
+U+1fed:!:
+U+1fef:!*
+U+1ffe:;;
+# General punctuation:
+0x20	U+2000 U+2002	U+2004-U+2009	# spaces
+U+2001:  
+U+2003:  
+U+200e:(->)
+U+200f:(<-)
+U+200a:
+0x2d	U+2010	U+2013-U+2015	# hyphen-like
+U+2016:||
+U+2017:=2
+0x60	U+2018		# left single quotation mark  <`>
+0x27	U+2019-U+201b	# various single quotation marks <'>
+0x22	U+201c-U+201f	# various double quotation marks <">
+U+2020:/-
+U+2021:/=
+U+2022: o 
+U+2025:..
+U+2026:...
+
+# Dont wanna see these:
+# POP DIRECTIONAL FORMATTING      202C
+U+202c:
+# LEFT-TO-RIGHT OVERRIDE  202D
+U+202d:
+
+U+2030: 0/00
+U+2032:'
+U+2033:''
+U+2034:'''
+U+2035:`
+U+2036:``
+U+2037:```
+U+2038:Ca
+U+2039:<
+U+203a:>
+U+203b::X
+U+203c:!!
+U+203e:'-
+0x2d   U+2043  # HYPHEN BULLET ?
+U+2044:/
+# end of General punctuation.
+U+2070:^0
+U+2074:^4
+U+2075:^5
+U+2076:^6
+U+2077:^7
+U+2078:^8
+U+2079:^9
+U+207a:^+
+U+207b:^-
+U+207c:^=
+U+207d:^(
+U+207e:^)
+U+207f:^n
+U+2080:_0
+U+2081:_1
+U+2082:_2
+U+2083:_3
+U+2084:_4
+U+2085:_5
+U+2086:_6
+U+2087:_7
+U+2088:_8
+U+2089:_9
+U+208a:_+
+U+208b:_-
+U+208c:_=
+U+208d:(
+U+208e:)
+# Old euro currency sign glyph:
+#U+20A0:CE
+U+20a3:Ff
+U+20a4:Li
+U+20a7:Pt
+U+20a9:W=
+# New euro currency sign glyph:
+U+20AC:EUR
+U+2103:oC
+U+2105:c/o
+U+2109:oF
+U+2111:Im
+U+2116:No.
+U+2117:PO
+U+2118:P
+U+211C:Re
+U+211e:Rx
+U+2120:(SM)
+# TRADE MARK SIGN:
+U+2122:(TM)
+U+2126:Ohm
+0x4b	U+212A	# Kelvin sign - K
+U+212b:Ang.
+U+212E:est.
+U+2135:Aleph 
+U+2136:Bet 
+U+2137:Gimel 
+U+2138:Dalet 
+U+2153: 1/3
+U+2154: 2/3
+U+2155: 1/5
+U+2156: 2/5
+U+2157: 3/5
+U+2158: 4/5
+U+2159: 1/6
+U+215a: 5/6
+U+215b: 1/8
+U+215c: 3/8
+U+215d: 5/8
+U+215e: 7/8
+U+2160:I
+U+2161:II
+U+2162:III
+U+2163:IV
+U+2164:V
+U+2165:VI
+U+2166:VII
+U+2167:VIII
+U+2168:IX
+U+2169:X
+U+216a:XI
+U+216b:XII
+U+216c:L
+U+216d:C
+U+216e:D
+U+216f:M
+U+2170:i
+U+2171:ii
+U+2172:iii
+U+2173:iv
+U+2174:v
+U+2175:vi
+U+2176:vii
+U+2177:viii
+U+2178:ix
+U+2179:x
+U+217a:xi
+U+217b:xii
+U+217c:l
+U+217d:c
+U+217e:d
+U+217f:m
+U+2180:1000RCD
+U+2181:5000R
+U+2182:10000R
+U+2190:<-
+U+2191:-^
+U+2192:->
+U+2193:-v
+U+2194:<->
+U+2195:UD
+U+2196:<!!
+U+2197://>
+U+2198:!!>
+U+2199:<//
+U+21a8:UD-
+U+21B5:RET
+U+21c0:>V
+U+21d0:<=
+U+21d1:^^
+U+21d2:=>
+U+21d3:vv
+U+21d4:<=>
+U+2200:FA
+U+2202:\partial
+U+2203:TE
+U+2205:{}
+U+2206:decr.
+U+2207:Nabla
+U+2208:(-
+U+2209:!(-
+U+220b:-)
+U+220f:\prod
+U+2211:\sum
+U+2212: -
+U+2213:-/+
+U+2214:.+
+U+2217:*
+U+2218:Ob
+U+2219:sb
+U+221a: SQRT 
+U+221d:0(
+U+221e:infty
+U+221f:-L
+U+2220:-V
+U+2225:PP
+U+2227:AND
+U+2228:OR
+U+2229:(U
+U+222a:)U
+U+222b:\int 
+U+222c:DI
+U+222e:Io
+U+2234:.:
+U+2235::.
+U+2236::R
+U+2237:::
+U+223c:?1
+U+223e:CG
+U+2243:?-
+U+2245:?=
+# ALMOST EQUAL TO:
+U+2248:~=
+U+224c:=?
+U+2253:HI
+U+2260:!=
+U+2261:=3
+U+2264:=<
+U+2265:>=
+U+226a:<<
+U+226b:>>
+U+226e:!<
+U+226f:!>
+U+2282:(C
+U+2283:)C
+U+2282:!(C
+U+2286:(_
+U+2287:)_
+U+2295:(+)
+U+2297:(x)
+U+2299:0.
+U+229a:02
+U+22a5:-T
+U+22c5:.P
+U+22ee::3
+U+22ef:.3
+U+2302:Eh
+U+2308:<7
+U+2309:>7
+U+230a:7<
+U+230b:7>
+U+2310:NI
+U+2312:(A
+U+2315:TR
+U+2318:88
+U+2320:Iu
+U+2321:Il
+U+2323::)
+U+2329:</
+U+232a:/>
+U+2423:Vs
+U+2440:1h
+U+2441:3h
+U+2442:2h
+U+2443:4h
+U+2446:1j
+U+2447:2j
+U+2448:3j
+U+2449:4j
+U+2460:1-o
+U+2461:2-o
+U+2462:3-o
+U+2463:4-o
+U+2464:5-o
+U+2465:6-o
+U+2466:7-o
+U+2467:8-o
+U+2468:9-o
+U+2469:10-o
+U+246a:11-o
+U+246b:12-o
+U+246c:13-o
+U+246d:14-o
+U+246e:15-o
+U+246f:16-o
+U+2470:17-o
+U+2471:18-o
+U+2472:19-o
+U+2473:20-o
+U+2474:(1)
+U+2475:(2)
+U+2476:(3)
+U+2477:(4)
+U+2478:(5)
+U+2479:(6)
+U+247a:(7)
+U+247b:(8)
+U+247c:(9)
+U+247d:(10)
+U+247e:(11)
+U+247f:(12)
+U+2480:(13)
+U+2481:(14)
+U+2482:(15)
+U+2483:(16)
+U+2484:(17)
+U+2485:(18)
+U+2486:(19)
+U+2487:(20)
+U+2488:1.
+U+2489:2.
+U+248a:3.
+U+248b:4.
+U+248c:5.
+U+248d:6.
+U+248e:7.
+U+248f:8.
+U+2490:9.
+U+2491:10.
+U+2492:11.
+U+2493:12.
+U+2494:13.
+U+2495:14.
+U+2496:15.
+U+2497:16.
+U+2498:17.
+U+2499:18.
+U+249a:19.
+U+249b:20.
+U+249c:(a)
+U+249d:(b)
+U+249e:(c)
+U+249f:(d)
+U+24a0:(e)
+U+24a1:(f)
+U+24a2:(g)
+U+24a3:(h)
+U+24a4:(i)
+U+24a5:(j)
+U+24a6:(k)
+U+24a7:(l)
+U+24a8:(m)
+U+24a9:(n)
+U+24aa:(o)
+U+24ab:(p)
+U+24ac:(q)
+U+24ad:(r)
+U+24ae:(s)
+U+24af:(t)
+U+24b0:(u)
+U+24b1:(v)
+U+24b2:(w)
+U+24b3:(x)
+U+24b4:(y)
+U+24b5:(z)
+U+24b6:A-o
+U+24b7:B-o
+U+24b8:C-o
+U+24b9:D-o
+U+24ba:E-o
+U+24bb:F-o
+U+24bc:G-o
+U+24bd:H-o
+U+24be:I-o
+U+24bf:J-o
+U+24c0:K-o
+U+24c1:L-o
+U+24c2:M-o
+U+24c3:N-o
+U+24c4:O-o
+U+24c5:P-o
+U+24c6:Q-o
+U+24c7:R-o
+U+24c8:S-o
+U+24c9:T-o
+U+24ca:U-o
+U+24cb:V-o
+U+24cc:W-o
+U+24cd:X-o
+U+24ce:Y-o
+U+24cf:Z-o
+U+24d0:a-o
+U+24d1:b-o
+U+24d2:c-o
+U+24d3:d-o
+U+24d4:e-o
+U+24d5:f-o
+U+24d6:g-o
+U+24d7:h-o
+U+24d8:i-o
+U+24d9:j-o
+U+24da:k-o
+U+24db:l-o
+U+24dc:m-o
+U+24dd:n-o
+U+24de:o-o
+U+24df:p-o
+U+24e0:q-o
+U+24e1:r-o
+U+24e2:s-o
+U+24e3:t-o
+U+24e4:u-o
+U+24e5:v-o
+U+24e6:w-o
+U+24e7:x-o
+U+24e8:y-o
+U+24e9:z-o
+U+24ea:0-o
+U+2500:-
+U+2501:=
+U+2502:|
+U+2503:|
+U+2504:-
+U+2505:=
+U+2506:|
+U+2507:|
+U+2508:-
+U+2509:=
+U+250a:|
+U+250b:|
+0x2b	U+250c-U+256c	# box drawings, use +
+U+2571:/
+U+2572:\
+U+2580:TB
+U+2584:LB
+U+2588:FB
+U+258c:lB
+U+2590:RB
+U+2591:.S
+U+2592::S
+U+2593:?S
+U+25a0:fS
+U+25a1:OS
+U+25a2:RO
+U+25a3:Rr
+U+25a4:RF
+U+25a5:RY
+U+25a6:RH
+U+25a7:RZ
+U+25a8:RK
+U+25a9:RX
+U+25aa:sB
+U+25ac:SR
+U+25ad:Or
+U+25b2:UT
+U+25b3:uT
+U+25b6:PR
+U+25b7:Tr
+U+25ba:PR
+U+25bc:Dt
+U+25bd:dT
+U+25c0:PL
+U+25c1:Tl
+U+25c4:PL
+U+25c6:Db
+U+25c7:Dw
+U+25ca:LZ
+U+25cb:0m
+U+25ce:0o
+U+25cf:0M
+U+25d0:0L
+U+25d1:0R
+U+25d8:Sn
+U+25d9:Ic
+U+25e2:Fd
+U+25e3:Bd
+U+25ef:Ci
+U+2605:*2
+U+2606:*1
+U+260e:TEL
+U+260f:tel
+U+261c:<--
+U+261e:-->
+U+263a::-)
+U+263b:(-:
+U+263c:SU
+U+2640:f.
+U+2642:m.
+U+2660:cS
+U+2661:cH
+U+2662:cD
+U+2663:cC
+U+2664:cS-
+U+2665:cH-
+U+2666:cD-
+U+2667:cC-
+U+2669:Md
+U+266a:M8
+U+266b:M2
+U+266c:M16
+U+266d:b
+U+266e:Mx
+U+266f:#
+0x58	U+2713	U+2717	# check marks -> x
+U+2720:-X
+#  CJK area: 
+0x20	U+3000	# ideographic space
+U+3001:,_
+U+3002:._
+U+3003:+"
+U+3004:JIS
+U+3005:*_
+U+3006:;_
+U+3007:0_
+U+300a:<+
+U+300b:>+
+U+300c:<'
+U+300d:>'
+U+300e:<"
+U+300f:>"
+U+3010:("
+U+3011:)"
+U+3012:=T
+U+3013:=_
+U+3014:('
+U+3015:)'
+U+3016:(I
+U+3017:)I
+U+301c:-?
+U+3020:=T:)
+U+3041:A5
+U+3042:a5
+U+3043:I5
+U+3044:i5
+U+3045:U5
+U+3046:u5
+U+3047:E5
+U+3048:e5
+U+3049:O5
+U+304a:o5
+U+304b:ka
+U+304c:ga
+U+304d:ki
+U+304e:gi
+U+304f:ku
+U+3050:gu
+U+3051:ke
+U+3052:ge
+U+3053:ko
+U+3054:go
+U+3055:sa
+U+3056:za
+U+3057:si
+U+3058:zi
+U+3059:su
+U+305a:zu
+U+305b:se
+U+305c:ze
+U+305d:so
+U+305e:zo
+U+305f:ta
+U+3060:da
+U+3061:ti
+U+3062:di
+U+3063:tU
+U+3064:tu
+U+3065:du
+U+3066:te
+U+3067:de
+U+3068:to
+U+3069:do
+U+306a:na
+U+306b:ni
+U+306c:nu
+U+306d:ne
+U+306e:no
+U+306f:ha
+U+3070:ba
+U+3071:pa
+U+3072:hi
+U+3073:bi
+U+3074:pi
+U+3075:hu
+U+3076:bu
+U+3077:pu
+U+3078:he
+U+3079:be
+U+307a:pe
+U+307b:ho
+U+307c:bo
+U+307d:po
+U+307e:ma
+U+307f:mi
+U+3080:mu
+U+3081:me
+U+3082:mo
+U+3083:yA
+U+3084:ya
+U+3085:yU
+U+3086:yu
+U+3087:yO
+U+3088:yo
+U+3089:ra
+U+308a:ri
+U+308b:ru
+U+308c:re
+U+308d:ro
+U+308e:wA
+U+308f:wa
+U+3090:wi
+U+3091:we
+U+3092:wo
+U+3093:n5
+U+3094:vu
+U+309b:"5
+U+309c:05
+U+309d:*5
+U+309e:+5
+U+30a1:a6
+U+30a2:A6
+U+30a3:i6
+U+30a4:I6
+U+30a5:u6
+U+30a6:U6
+U+30a7:e6
+U+30a8:E6
+U+30a9:o6
+U+30aa:O6
+U+30ab:Ka
+U+30ac:Ga
+U+30ad:Ki
+U+30ae:Gi
+U+30af:Ku
+U+30b0:Gu
+U+30b1:Ke
+U+30b2:Ge
+U+30b3:Ko
+U+30b4:Go
+U+30b5:Sa
+U+30b6:Za
+U+30b7:Si
+U+30b8:Zi
+U+30b9:Su
+U+30ba:Zu
+U+30bb:Se
+U+30bc:Ze
+U+30bd:So
+U+30be:Zo
+U+30bf:Ta
+U+30c0:Da
+U+30c1:Ti
+U+30c2:Di
+U+30c3:TU
+U+30c4:Tu
+U+30c5:Du
+U+30c6:Te
+U+30c7:De
+U+30c8:To
+U+30c9:Do
+U+30ca:Na
+U+30cb:Ni
+U+30cc:Nu
+U+30cd:Ne
+U+30ce:No
+U+30cf:Ha
+U+30d0:Ba
+U+30d1:Pa
+U+30d2:Hi
+U+30d3:Bi
+U+30d4:Pi
+U+30d5:Hu
+U+30d6:Bu
+U+30d7:Pu
+U+30d8:He
+U+30d9:Be
+U+30da:Pe
+U+30db:Ho
+U+30dc:Bo
+U+30dd:Po
+U+30de:Ma
+U+30df:Mi
+U+30e0:Mu
+U+30e1:Me
+U+30e2:Mo
+U+30e3:YA
+U+30e4:Ya
+U+30e5:YU
+U+30e6:Yu
+U+30e7:YO
+U+30e8:Yo
+U+30e9:Ra
+U+30ea:Ri
+U+30eb:Ru
+U+30ec:Re
+U+30ed:Ro
+U+30ee:WA
+U+30ef:Wa
+U+30f0:Wi
+U+30f1:We
+U+30f2:Wo
+U+30f3:N6
+U+30f4:Vu
+U+30f5:KA
+U+30f6:KE
+U+30f7:Va
+U+30f8:Vi
+U+30f9:Ve
+U+30fa:Vo
+U+30fb:.6
+U+30fc:-6
+U+30fd:*6
+U+30fe:+6
+U+3105:b4
+U+3106:p4
+U+3107:m4
+U+3108:f4
+U+3109:d4
+U+310a:t4
+U+310b:n4
+U+310c:l4
+U+310d:g4
+U+310e:k4
+U+310f:h4
+U+3110:j4
+U+3111:q4
+U+3112:x4
+U+3113:zh
+U+3114:ch
+U+3115:sh
+U+3116:r4
+U+3117:z4
+U+3118:c4
+U+3119:s4
+U+311a:a4
+U+311b:o4
+U+311c:e4
+U+311d:eh4
+U+311e:ai
+U+311f:ei
+U+3120:au
+U+3121:ou
+U+3122:an
+U+3123:en
+U+3124:aN
+U+3125:eN
+U+3126:er
+U+3127:i4
+U+3128:u4
+U+3129:iu
+U+312a:v4
+U+312b:nG
+U+312c:gn
+U+321c:(JU)
+U+3220:1c
+U+3221:2c
+U+3222:3c
+U+3223:4c
+U+3224:5c
+U+3225:6c
+U+3226:7c
+U+3227:8c
+U+3228:9c
+U+3229:10c
+U+327f:KSC
+U+33c2:am
+U+33d8:pm
+#
+#
+#There are four special ranges of characters that are represented only by
+#their start and end characters <...>
+#
+#   The CJK Ideographs Area (U+4E00 - U+9FFF)
+#   The Hangul Syllables Area (U+AC00 - U+D7A3)
+#   The Surrogates Area (U+D800 - U+DFFF)
+#   The Private Use Area (U+E000 - U+F8FF)
+#
+# 
+U+fb00:ff
+U+fb01:fi
+U+fb02:fl
+U+fb03:ffi
+U+fb04:ffl
+U+fb05:St
+U+fb06:st
+U+fe7d:3+;
+U+fe82:aM.
+U+fe84:aH.
+U+fe88:ah.
+U+fe8d:a+-
+U+fe8e:a+.
+U+fe8f:b+-
+U+fe90:b+.
+U+fe91:b+,
+U+fe92:b+;
+U+fe93:tm-
+U+fe94:tm.
+U+fe95:t+-
+U+fe96:t+.
+U+fe97:t+,
+U+fe98:t+;
+U+fe99:tk-
+U+fe9a:tk.
+U+fe9b:tk,
+U+fe9c:tk;
+U+fe9d:g+-
+U+fe9e:g+.
+U+fe9f:g+,
+U+fea0:g+;
+U+fea1:hk-
+U+fea2:hk.
+U+fea3:hk,
+U+fea4:hk;
+U+fea5:x+-
+U+fea6:x+.
+U+fea7:x+,
+U+fea8:x+;
+U+fea9:d+-
+U+feaa:d+.
+U+feab:dk-
+U+feac:dk.
+U+fead:r+-
+U+feae:r+.
+U+feaf:z+-
+U+feb0:z+.
+U+feb1:s+-
+U+feb2:s+.
+U+feb3:s+,
+U+feb4:s+;
+U+feb5:sn-
+U+feb6:sn.
+U+feb7:sn,
+U+feb8:sn;
+U+feb9:c+-
+U+feba:c+.
+U+febb:c+,
+U+febc:c+;
+U+febd:dd-
+U+febe:dd.
+U+febf:dd,
+U+fec0:dd;
+U+fec1:tj-
+U+fec2:tj.
+U+fec3:tj,
+U+fec4:tj;
+U+fec5:zH-
+U+fec6:zH.
+U+fec7:zH,
+U+fec8:zH;
+U+fec9:e+-
+U+feca:e+.
+U+fecb:e+,
+U+fecc:e+;
+U+fecd:i+-
+U+fece:i+.
+U+fecf:i+,
+U+fed0:i+;
+U+fed1:f+-
+U+fed2:f+.
+U+fed3:f+,
+U+fed4:f+;
+U+fed5:q+-
+U+fed6:q+.
+U+fed7:q+,
+U+fed8:q+;
+U+fed9:k+-
+U+feda:k+.
+U+fedb:k+,
+U+fedc:k+;
+U+fedd:l+-
+U+fede:l+.
+U+fedf:l+,
+U+fee0:l+;
+U+fee1:m+-
+U+fee2:m+.
+U+fee3:m+,
+U+fee4:m+;
+U+fee5:n+-
+U+fee6:n+.
+U+fee7:n+,
+U+fee8:n+;
+U+fee9:h+-
+U+feea:h+.
+U+feeb:h+,
+U+feec:h+;
+U+feed:w+-
+U+feee:w+.
+U+feef:j+-
+U+fef0:j+.
+U+fef1:y+-
+U+fef2:y+.
+U+fef3:y+,
+U+fef4:y+;
+U+fef5:lM-
+U+fef6:lM.
+U+fef7:lH-
+U+fef8:lH.
+U+fef9:lh-
+U+fefa:lh.
+U+fefb:la-
+U+fefc:la.
+
+# Symbols for C0 and C1 control characters, in case they get through...
+U+0000:NUL
+U+0001:SH
+U+0002:SX
+U+0003:EX
+U+0004:ET
+U+0005:ENQ
+U+0006:AK
+U+0007:BL
+U+0008:BS
+U+0009:HT
+U+000a:LF
+U+000b:VT
+U+000c:FF
+U+000d:CR
+U+000e:SO
+U+000f:SI
+U+0010:DL
+U+0011:DC1
+U+0012:DC2
+U+0013:DC3
+U+0014:DC4
+U+0015:NAK
+U+0016:SYN
+U+0017:EB
+U+0018:CN
+U+0019:EM
+U+001a:SB
+U+001b:ESC
+U+001c:FS
+U+001d:GS
+U+001e:RS
+U+001f:US
+U+007f:DT
+# Most of these characters (80-9F) may be inflicted on us
+# by MS FrontPages which uses Unicode notation such as &#153;
+# but there are no assigned letters in Unicode 128-159 range.
+# It is assumed in the code that those codepoints are from windows-1252.
+#U+0080:PA
+#U+0081:HO
+#U+0082:BH
+#U+0083:NH
+#U+0084:IN
+#U+0085:NL
+#U+0086:SA
+#U+0087:ES
+#U+0088:HS
+#U+0089:HJ
+#U+008a:VS
+#U+008b:PD
+#U+008c:PU
+#U+008d:RI
+#U+008e:SS2
+#U+008f:SS3
+#U+0090:DCS
+#U+0091:P1
+#U+0092:P2
+#U+0093:TS
+#U+0094:CC
+#U+0095:MW
+#U+0096:SG
+#U+0097:EG
+#U+0098:SS
+#U+0099:GC
+#U+009a:SC
+#U+009b:CSI
+#U+009c:ST
+#U+009d:OC
+#U+009e:PM
+#U+009f:AC
+
+# Let's try to show a question mark for character that cannot
+# be shown.  U+fffd is used for invalid characters.
+# It works, but let's stick with UHHH representatiion. - FM
+#U+fffd:?

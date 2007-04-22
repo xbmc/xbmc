@@ -1,0 +1,196 @@
+<window id="2800">
+        <defaultcontrol>10</defaultcontrol>
+        <allowoverlay>no</allowoverlay>
+        <controls>
+                <control type="webbrowser" id="10">
+                        <description>Web browser</description>
+                        <posx>2</posx>
+                        <posy>2</posy>
+                        <width>716</width>
+                        <height>572</height>
+                        <onleft>10</onleft>
+                        <onright>10</onright>
+                </control>
+<!-- Page info (title, url, status) -->
+                <control type="image" id="0">
+                        <description>preset background image</description>
+                        <posx>-10</posx>
+                        <posy>8</posy>
+                        <width>740</width>
+                        <height>65</height>
+                        <texture>osd_menu_bg.png</texture>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode</visible>
+                        <animation effect="slide" time="200" start="0,-115" acceleration="-1">Visible</animation>
+                        <animation effect="slide" delay="100" time="200" end="0,-115" acceleration="1">Hidden</animation>
+                </control>
+<!-- This is for normal placement -->
+                <control type="fadelabel">
+                        <description>Page title</description>
+                        <width>560</width>
+                        <posx>75</posx>
+                        <posy>18</posy>
+                        <label>$INFO[WebBrowser.Title]</label>
+                        <align>left</align>
+                        <font>special13</font>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode + ![Control.IsVisible(1) | Control.IsVisible(2)]</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+                <control type="fadelabel">
+                        <description>Page URL</description>
+                        <posx>75</posx>
+                        <posy>43</posy>
+                        <width>560</width>
+                        <label>$INFO[WebBrowser.URL]</label>
+                        <font>special12</font>
+                        <align>left</align>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode + ![Control.IsVisible(1) | Control.IsVisible(2)]</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+<!-- This is for placement w/video thumbnail -->
+                <control type="fadelabel">
+                        <description>Page title</description>
+                        <width>453</width>
+                        <posx>75</posx>
+                        <posy>18</posy>
+                        <label>$INFO[WebBrowser.Title]</label>
+                        <align>left</align>
+                        <font>special13</font>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode + Control.IsVisible(2)</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+                <control type="fadelabel">
+                        <description>Page URL</description>
+                        <posx>75</posx>
+                        <posy>43</posy>
+                        <width>453</width>
+                        <label>$INFO[WebBrowser.URL]</label>
+                        <font>special12</font>
+                        <align>left</align>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode + Control.IsVisible(2)</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+<!-- This is for placement w/audio thumbnail -->
+                <control type="fadelabel">
+                        <description>Page title</description>
+                        <width>355</width>
+                        <posx>75</posx>
+                        <posy>18</posy>
+                        <label>$INFO[WebBrowser.Title]</label>
+                        <align>left</align>
+                        <font>special13</font>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode + Control.IsVisible(1)</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+                <control type="fadelabel">
+                        <description>Page URL</description>
+                        <posx>75</posx>
+                        <posy>43</posy>
+                        <width>355</width>
+                        <label>$INFO[WebBrowser.URL]</label>
+                        <font>special12</font>
+                        <align>left</align>
+                        <visible>WebBrowser.ShowPageInfo + WebBrowser.InExpertMode + Control.IsVisible(1)</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+<!-- Statusbar -->
+                <control type="image">
+                        <description>preset background image 2</description>
+                        <posx>-10</posx>
+                        <posy>526</posy>
+                        <width>740</width>
+                        <height>65</height>
+                        <texture>osd_menu_bg.png</texture>
+                        <visible>WebBrowser.InExpertMode + ![!WebBrowser.ShowPageInfo + !WebBrowser.IsBusy]</visible>
+                        <animation effect="slide" time="200" start="0,115" acceleration="-1">Visible</animation>
+                        <animation effect="slide" delay="100" time="200" end="0,115" acceleration="1">Hidden</animation>
+                </control>
+                <control type="fadelabel">
+                        <description>Page status</description>
+                        <width>560</width>
+                        <posx>75</posx>
+                        <posy>531</posy>
+                        <label>$INFO[WebBrowser.Status]</label>
+                        <align>left</align>
+                        <font>font10</font>
+                        <visible>WebBrowser.InExpertMode + ![!WebBrowser.ShowPageInfo + !WebBrowser.IsBusy]</visible>
+                        <animation effect="fade" delay="200" time="100">Visible</animation>
+                        <animation effect="fade" time="100">Hidden</animation>
+                </control>
+<!-- Audio thumbnail -->
+                <control type="image" id="1">
+                        <description>Thumbnail panel image</description>
+                        <posx>406</posx>
+                        <posy>3</posy>
+                        <width>280</width>
+                        <height>140</height>
+                        <texture>voulume-panel-bg.png</texture>
+                        <visible>Player.HasAudio + Player.ShowInfo</visible>
+                        <animation effect="slide" time="200" start="314,0" acceleration="-1">Visible</animation>
+                        <animation effect="slide" time="200" end="314,0" acceleration="1">Hidden</animation>
+                </control>
+                <control type="fadelabel" id="1">
+                        <description>Artist Info Label</description>
+                        <width>220</width>
+                        <posx>442</posx>
+                        <posy>32</posy>
+                        <font>special12</font>
+                        <align>left</align>
+                        <label>$INFO[MusicPlayer.Artist]</label>
+                        <visible>Player.HasAudio + Player.ShowInfo</visible>
+                        <animation effect="slide" time="200" start="314,0" acceleration="-1">Visible</animation>
+                        <animation effect="slide" time="200" end="314,0" acceleration="1">Hidden</animation>
+                </control>
+                <control type="fadelabel" id="1">
+                        <description>Title Info Label</description>
+                        <width>220</width>
+                        <posx>442</posx>
+                        <posy>53</posy>
+                        <font>special13</font>
+                        <align>left</align>
+                        <label>$INFO[MusicPlayer.Title]</label>
+                        <visible>Player.HasAudio + Player.ShowInfo</visible>
+                        <animation effect="slide" time="200" start="314,0" acceleration="-1">Visible</animation>
+                        <animation effect="slide" time="200" end="314,0" acceleration="1">Hidden</animation>
+                </control>
+                <control type="fadelabel">
+                        <description>time label</description>
+                        <width>220</width>
+                        <posx>442</posx>
+                        <posy>79</posy>
+                        <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
+                        <visible>Player.HasAudio + Player.ShowInfo</visible>
+                        <animation effect="slide" time="200" start="314,0" acceleration="-1">Visible</animation>
+                        <animation effect="slide" time="200" end="314,0" acceleration="1">Hidden</animation>
+                        <align>left</align>
+                        <font>font10</font>
+                </control>
+<!-- Video thumbnail -->
+                <control type="image" id="2">
+                        <description>Thumbnail panel image</description>
+                        <posx>518</posx>
+                        <posy>-4</posy>
+                        <width>163</width>
+                        <height>191</height>
+                        <texture>voulume-panel-bg.png</texture>
+                        <visible>Player.HasVideo + Player.ShowInfo</visible>
+                        <animation effect="slide" time="200" start="202,0" acceleration="-1">Visible</animation>
+                        <animation effect="slide" time="200" end="202,0" acceleration="1">Hidden</animation>
+                </control>
+                <control type="videowindow">
+                        <description>video preview window</description>
+                        <posx>539</posx>
+                        <posy>30</posy>
+                        <width>130</width>
+                        <height>107</height>
+                        <visible>Player.HasVideo + Player.ShowInfo</visible>
+                        <animation effect="slide" time="200" start="202,0" acceleration="-1">Visible</animation>
+                        <animation effect="slide" time="200" end="202,0" acceleration="1">Hidden</animation>
+                </control>
+        </controls>
+</window>

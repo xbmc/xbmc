@@ -1,0 +1,13 @@
+#REPLACE john in dn: sn=john, ....  with your username
+#EDIT entry cn: (Firstname) (LastName)
+#REPLACE john in sn: with  username
+#ENTER password for user in userPassword: 
+
+dn: sn=john,ou=Users,dc=localdomain
+objectClass: person
+cn: John Doe
+sn: john
+userPassword: xxxx
+description: Tree where john's stuff are stored.
+
+

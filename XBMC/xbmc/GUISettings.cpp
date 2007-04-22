@@ -226,14 +226,38 @@ CGUISettings::CGUISettings(void)
   AddString(5, "xlinkkai.password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
   AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 
+#ifdef WITH_LINKS_BROWSER
+  AddGroup(2, 9); // rename the top level settings group to "Internet"...
+  // Web browser settings
+  AddCategory(2, "webbrowser", 12800); // ...and put the browser settings before the weather! :)
+  AddString(1, "webbrowser.homepage", 20420, "http://www.google.com/", BUTTON_CONTROL_INPUT, false, 20420);
+  AddSeparator(2, "webbrowser.sep1");
+  AddInt(3, "webbrowser.fontsize", 20423, 18, 8, 1, 30, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddInt(4, "webbrowser.scaleimages", 20424, 100, 50, 1, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_OFF);
+  AddSeparator(5, "webbrowser.sep2");
+  // those four are hidden (only controllable from the OSD)
+  AddInt(0, "webbrowser.margintop", 20425, 0, 0, 1, 50, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddInt(0, "webbrowser.marginbottom", 20426, 0, 0, 1, 50, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddInt(0, "webbrowser.marginleft", 20427, 0, 0, 1, 50, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddInt(0, "webbrowser.marginright", 20428, 0, 0, 1, 50, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddString(6, "webbrowser.downloaddir", 20429, "X:\\", BUTTON_CONTROL_PATH_INPUT, false, 20429);
+  AddString(7, "webbrowser.bookmarks", 20430, "Q:\\userdata\\LinksBrowser\\bookmarks.html", BUTTON_CONTROL_INPUT, false, 20430);
+  AddSeparator(8, "webbrowser.sep3");
+  AddString(9, "webbrowser.jumptonetwork", 20432, "", BUTTON_CONTROL_STANDARD);
+
+  AddCategory(2, "weather", 12600); // Label should be "Weather" instead of "General"
+#else
+
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "weather", 16000);
+#endif
   AddString(1, "weather.areacode1", 14019, "GMXX0154 - Aachen, Germany", BUTTON_CONTROL_STANDARD);
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ontario, Canada", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
+
 
   // My Music Settings
   AddGroup(3, 2);

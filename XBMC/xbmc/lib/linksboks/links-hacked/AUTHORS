@@ -1,0 +1,239 @@
+Hacked Links Project:
+
+Sergey Karpov <karpov@sai.msu.su>
+
+Some patches accepted from another people
+
+Original Links authors:
+
+Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Petr Kulhavy <brain@artax.karlin.mff.cuni.cz>
+Karel Kulhavy <clock@atrey.karlin.mff.cuni.cz>
+Martin Pergel <mper7437@artax.karlin.mff.cuni.cz>
+
+http://artax.karlin.mff.cuni.cz/~mikulas/vyplody/links/
+
+Unicode2ascii replacement and entity name tables are taken from Lynx.
+
+People who contributed to links:
+
+Unai Uribarri <unai@telecable.es>
+	History
+
+Uwe Hermann <uh1763@bingo-ev.de>
+	Manpage
+	Command line switch -version
+	Open link in new xterm
+
+Sebastian Zagrodzki <s.zagrodzki@sith.mimuw.edu.pl>
+	Shift-G opens dialog with pre-displayed current URL
+
+Alexander Mai <st002279@hrzpub.tu-darmstadt.de>
+	OS/2 xterm support
+	Fix includes for AIX
+	Updated manpage
+
+Dakshinamurthy Karra <kd@blr.vsnl.net.in>
+	Win NT port
+	Saving goto history
+
+Peter Gervai <grin@tolna.net>
+	Manpage updates
+	Mailcap to links.cfg convertor
+
+Arkadiusz Miskiewicz <misiek@pld.org.pl>
+	Internationalization (GNU gettext)
+
+Oleg Deribas <older@iname.com>
+	Window title and clipboard support in OS/2
+
+Felix von Leitner <felix@convergence.de>
+	Set file date/time when downloading
+
+Arkadiusz Sochala <jojoro@priv2.onet.pl>
+	Polish translation
+
+Petr Cech <cech@atrey.karlin.mff.cuni.cz>
+	Allow spaces at the beginning of url
+
+Dmitry M. Klimov <dmk@gtrk.kmtn.ru>
+	KOI8-R frames
+	Russian localization
+
+Yurii Rashkovskii <yrashk@univer.kharkov.ua>
+	Updated Russian localization
+
+Lukasz Dobrek <dobrek@student.ifpan.edu.pl>
+	$CONFIG_DIR for config directory
+
+beckers <beckers@st-oneline.de>
+	German translation
+
+Evan Hughes <hughes@lab43.org>
+	Bookmarks
+
+Armon Red <armon@islandia.isarmon@islandia.is>
+	Icelandic translation
+
+M.K.Srikant <srix@vsnl.com>
+	Small fix in forms
+
+Cliff Cunnington <cliff@ccnet.demon.nl>
+	User's manual at http://links.sourceforge.net/docs/manual-0.82-en/
+
+Wojtek Bojdo/l <wojboj@lp.net.pl>
+	Updated Polish localization
+
+Jan Bobrowski <jb@mohan.krakow.pl>
+	Small optimization in file listing
+
+Serge Winitzki <serge@mendax.phys.cwru.edu>
+	Upadted Russian localization
+
+Alex Antropoff <alex@tirastel.md>
+	'charset' attribute of META element
+
+Aurimas Mikalauskas <inner@dammit.lt>
+	Lithuanian translation
+
+Martin Norback <d95mback@dtek.chalmers.se>
+	Swedish translation
+
+Jimenez Martinez Angel Luis <al026635@alumail.uji.es>
+David Mediavilla Ezquibela <davidme.forum@bigfoot.com>
+	Spanish translation
+
+Suveg Gabor <gsuveg@sgmobil2000.hu>
+	Hungarian translation
+
+Gianluca Montecchi <gianluca@pluto.linux.it>
+	Italian translation
+
+Sergei Borushevsky <b_sp@usa.net>
+	No-proxy-for, HTTP auth, Ctrl-W completion
+	SSL
+
+Fabrice Haberer-Proust <fric@gmx.li>
+	French translation
+
+Cristiano Guadagnino <cris@geppo.cmb2000.it>
+	Updated italian translation
+
+Fabio Junior Beneditto <betatest@catolico.com.br>
+	Brazilian Portuguese translation
+
+Martin Kavalec <martin@penguin.cz>
+	Fixed redundant ':' in host header
+
+Peter Wang <tjaden@alphalink.com.au>
+	Rebindable keys, /etc/links.cfg
+
+Mike Swieton <pyromage@pyromage.net>
+	Fixed bug: Form is not posted when jumping to field by number
+
+Kaloian Doganov <kaloian@europe.com>
+	Bulgarian translation
+
+Baris Metin <baris@gelecek.com.tr>
+	Turkish translation
+
+Dmitry Pinchukov <dpinch@mail.ru>
+	Ukrainian translation
+
+Taniel Kirikal <taniel@colleduc.ee>
+	Estonian translation
+
+zas@norz.org
+	Updated French translation
+
+Oleg Belousov <strijar@urai.ru>
+	"Ignore charset info sent by server" is saved din config file
+
+Nuno Miguel Rodrigues <nmr@europa.net.dhis.org>
+	Unixware console fix
+
+Adam Harvey <matlhdam@iinet.net.au>
+	Fixed sometimes badly posted form
+
+Alberto García <berto@gpul.org>
+	Galician translation
+
+Radovan Stas <radoone@skmi.science.upjs.sk>
+	Slovak translation
+
+Marco Bodrato <bodrato@linuz.sns.it>
+	Twinterm support
+
+Kaloian Doganov <kaloian@europe.com>
+	Bulgarian translation update
+
+Olexander Kunytsa <kunia@istc.kiev.ua>
+	Ukrainian translation update
+
+Marius Gedminas <marius.gedminas@uosis.mif.vu.lt>
+	Fixed reversed HOME/END on RXVT
+
+Mediavilla David <f4j900zx001@NOSPAMsneakemail.com>
+	Updated Spanish translation
+
+Simos Xenitellis <simos@hellug.gr>
+Alejandros Diamandidis <adia@egnatia.ee.auth.gr>
+	Greek codepages & translation
+
+Anton Voloshin <vav@isv.ru>
+	Proper encoding of form entries
+
+Michail Litvak <mci@owl.openwall.com>
+	Patch configure.in to force error if OpenSSL not found
+
+Nalin Dahyabhai <nalin@redhat.com>
+	Fixed occasional destroying of read buffer on Alpha
+
+Andrew Rodionoff <arnost@mail.ru>
+	Fixed minor bug in kbd binding
+
+Stefan de Groot <stefan@nllinux.nl>
+	Dutch translation
+
+Carles Sadurní Anguita <isard@ctv.es>
+	Catalan translation
+
+Ionel Mugurel Ciobîcã
+	Romanian translation
+
+Petr Baudis <pasky@pasky.ji.cz>
+	Use "imgtitle" if there's no "alt"
+	Fix relative redirect on -dump and -source
+	Add "LISTING" tag
+	Fix stripping '?' out of form url
+	Cookie expiration
+	Manpage update
+	Fixed one small leak when links goes out of memory
+
+Jacek Fedorynski <jfedor@jfedor.org>
+	Fixed segfault when posting large forms
+
+Aldy Hernandez <aldyh@cygnus.com>
+	MacOS address resolution fix
+
+Muhamad Faizal <faizal@mfaizal.net>
+	Indonesian translation
+
+Peter Naulls <peter@chocky.org>
+	RiscOS support
+
+Jonas Fonseca <fonseca@diku.dk>
+	Danish translation
+
+David O'Brien <obrien@FreeBSD.org>
+	-force-html
+
+Sergey Karpov <karpov@sai.msu.su>
+	Updated russian translation
+
+Simen Graaten <simeng@slarkware.com>
+	Norwegian translation
+
+Varga Balázs <vinnui@broadband.hu>
+	Updated Hungarian translation
+

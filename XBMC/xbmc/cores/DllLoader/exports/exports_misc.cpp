@@ -60,6 +60,12 @@ void export_user32()
   g_dlls.user32.AddExport("EnumDisplayDevicesA", (unsigned long)dllEnumDisplayDevicesA);
   g_dlls.user32.AddExport("IsWindowVisible", (unsigned long)dllIsWindowVisible);
   g_dlls.user32.AddExport("GetActiveWindow", (unsigned long)dllGetActiveWindow);
+
+#ifdef WITH_LINKS_BROWSER
+  g_dlls.user32.AddExport("SetRect", (unsigned long)SetRect);
+  g_dlls.user32.AddExport("IntersectRect", (unsigned long)IntersectRect);
+  g_dlls.user32.AddExport("OffsetRect", (unsigned long)OffsetRect);
+#endif
 }
 
 void export_xbmc_vobsub()

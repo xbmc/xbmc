@@ -82,6 +82,15 @@
 				<visible>ControlGroup(9001).HasFocus(9)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 			</control>
+                        <control type="image">
+				<posx>182</posx>
+				<posy>105</posy>
+				<width>538</width>
+				<height>362</height>
+				<texture>16x9home-internet.png</texture>
+				<visible>ControlGroup(9001).HasFocus(17)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
 		</control>
 		<control type="visualisation">
 			<posx>180</posx>
@@ -525,6 +534,14 @@
 					<height>20</height>
 					<texture>homebutton-small.png</texture>
 				</control>
+				<control type="image">
+					<posx>245</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+					<visible>webbrowser.included</visible>
+				</control>
 				<control type="button" id="9">
 					<description>Settings normal push button</description>
 					<posx>4</posx>
@@ -552,6 +569,24 @@
 					<onclick>ActivateWindow(MyFiles)</onclick>
 					<font>font10</font>
 					<onleft>9</onleft>
+					<onright>17</onright>
+					<onup>7</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="17">
+					<description>Web browser normal push button</description>
+					<posx>248</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<label>20400</label>
+					<visible>webbrowser.included</visible>
+					<onclick>ActivateWindow(webbrowser)</onclick>
+					<font>font10</font>
+					<onleft>6</onleft>
 					<onright>96</onright>
 					<onup>7</onup>
 					<ondown>2</ondown>

@@ -252,6 +252,9 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("bigstepforward")) wAction = ACTION_BIG_STEP_FORWARD;
   else if (strAction.Equals("bigstepback")) wAction = ACTION_BIG_STEP_BACK;
   else if (strAction.Equals("osd")) wAction = ACTION_SHOW_OSD;
+#ifdef WITH_LINKS_BROWSER
+  else if (strAction.Equals("pointernavigation")) wAction = ACTION_POINTER_NAVIGATION;
+#endif
 
   else if (strAction.Equals("showsubtitles")) wAction = ACTION_SHOW_SUBTITLES;
   else if (strAction.Equals("nextsubtitle")) wAction = ACTION_NEXT_SUBTITLE;
@@ -356,6 +359,12 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("showvideomenu")) wAction = ACTION_SHOW_VIDEOMENU;
   else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
 
+#ifdef WITH_LINKS_BROWSER
+  else if (strAction.Equals("goback")) wAction = ACTION_WEBBROWSER_BACK;
+  else if (strAction.Equals("goforward")) wAction = ACTION_WEBBROWSER_FORWARD;
+  else if (strAction.Equals("webpageinfo")) wAction = ACTION_WEBBROWSER_WEBPAGEINFO;
+#endif
+
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
   return (wAction != ACTION_NONE);
@@ -457,6 +466,13 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("startup")) wWindowID = WINDOW_STARTUP;
   else if (strWindow.Equals("startwindow")) wWindowID = g_SkinInfo.GetStartWindow();
   else if (strWindow.Equals("loginscreen")) wWindowID = WINDOW_LOGIN_SCREEN;
+#ifdef WITH_LINKS_BROWSER
+  else if (strWindow.Equals("webbrowser")) wWindowID = WINDOW_WEB_BROWSER;
+  else if (strWindow.Equals("webbrowserosd")) wWindowID = WINDOW_DIALOG_WEB_OSD;
+  else if (strWindow.Equals("websettings")) wWindowID = WINDOW_DIALOG_WEB_SETTINGS;
+  else if (strWindow.Equals("webbookmarks")) wWindowID = WINDOW_DIALOG_WEB_BOOKMARKS;
+  else if (strWindow.Equals("webhistory")) wWindowID = WINDOW_DIALOG_WEB_HISTORY;
+#endif
   else if (strWindow.Equals("musicoverlay")) wWindowID = WINDOW_MUSIC_OVERLAY;
   else if (strWindow.Equals("videooverlay")) wWindowID = WINDOW_VIDEO_OVERLAY;
   else

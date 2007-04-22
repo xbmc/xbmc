@@ -1,0 +1,357 @@
+.\" Process this file with groff -man -Tascii links.1
+.TH LINKS 1 "Dec, 2000"
+.SH NAME
+links \- lynx-like alternative character mode WWW browser
+.SH SYNOPSIS
+.B links
+.I "[options] URL"
+.SH DESCRIPTION
+.B links
+is a text mode WWW browser with ncurses interface, supporting
+colors, correct table rendering, background downloading, menu
+driven configuration interface and slim code.
+.P 
+Frames are supported. You can have different file formats 
+associated with external viewers. mailto: and telnet:
+are supported via external clients.
+.P
+.I links
+can handle local (file://) or remote (http:// or ftp://) URLs.
+.PP
+
+.SH OPTIONS
+Most options can be set in the user
+interface or config file, so usually you do not need to care about them.
+
+.TP
+\f3-g\f1
+Run Links in graphics mode. If not given, Links will run in text mode.
+Running in graphics mode means that Links will probe all compiled-in graphics
+devices and run on the first found. If none found, links will not run in text
+mode. This option works only if --enable-graphics was given to ./configure.
+
+.TP
+\f3-mode \f2<parameter>\f1
+Pass a parameter to the graphics driver. On SVGAlib, this is widthxheightxdepth,
+(where depth is 16, 256, 32K, 64K, 16M or 16M32) and defines the graphics mode, on X the format is widthxheight and defines the
+window size.
+
+.TP
+\f3-async-dns \f2<0>/<1>\f1
+Asynchronous DNS resolver on(1)/off(0). 
+
+.TP
+\f3-max-connections \f2<max>\f1
+Maximum number of concurrent connections.
+(default: 10)
+
+.TP
+\f3-max-connections-to-host \f2<max>\f1
+Maximum number of concurrent connection to a given host.
+(default: 2)
+
+.TP
+\f3-retries \f2<retry>\f1
+Number of retries.
+(default: 3)
+
+.TP
+\f3-receive-timeout \f2<sec>\f1
+Timeout on receive.
+(default: 120)
+
+.TP
+\f3-unrestartable-receive-timeout \f2<sec>\f1
+Timeout on non restartable connections.
+(default: 600)
+
+.TP
+\f3-format-cache-size \f2<num>\f1
+Number of formatted document pages cached.
+(default: 5)
+
+.TP
+\f3-memory-cache-size \f2<Kbytes>\f1
+Cache memory in Kilobytes.
+(default: 1024)
+
+.TP
+\f3-http-proxy \f2<host:port>\f1
+Host and port number of the HTTP proxy, or blank.
+(default: blank)
+
+.TP
+\f3-ftp-proxy \f2<host:port>\f1
+Host and port number of the FTP proxy, or blank.
+(default: blank)
+
+.TP
+\f3-download-dir \f2<path>\f1
+Default download directory.
+(default: actual dir)
+
+.TP
+\f3-assume-codepage \f2<codepage>\f1
+Use the given codepage when the webpage did not specify
+its codepage. (default: ISO 8859-1)
+
+.TP
+\f3-anonymous\f1
+Restrict links so that it can run on an anonymous account.
+No local file browsing. No downloads. Executing of viewers
+is allowed, but user can't add or modify entries in
+association table.
+
+.TP
+\f3-no-connect\f1
+Runs links as a separate instance - instead of connecting to
+existing instance.
+
+.TP
+\f3-version\f1
+Prints the 
+.I links
+version number and exit.
+
+.TP
+\f3-help\f1
+Printf a help screen
+
+.SH NAVIGATION KEYS
+The keys you may use while navigating are
+.TP
+.B PGDN
+page down
+.TP
+.B Space
+page down
+.TP
+.B PGUP
+page up
+.TP
+.B b
+page up
+.TP
+.B B
+page up
+.TP
+.B CursorDOWN
+next link/down (text mode), scroll down (graphics mode)
+.TP
+.B CursorUP
+prev link/up (text mode), up (graphics mode)
+.TP
+.B ^INS
+copy to clipboard
+.TP
+.B ^C
+copy to clipboard (OS/2 only)
+.TP
+.B INS
+scroll up (text mode only)
+.TP
+.B ^P
+scroll up
+.TP
+.B DEL
+scroll down
+.TP
+.B ^N
+scroll down
+.TP
+.B [
+scroll left
+.TP
+.B ]
+scroll right
+.TP
+.B HOME
+home
+.TP
+.B END
+end of page
+.TP
+.B CursorRIGHT
+enter link/press button (text mode), scroll right (graphics mode)
+.TP
+.B ENTER
+enter link/press button
+.TP
+.B CursorLEFT
+go back (text mode), scroll left (graphics mode)
+.TP
+.B d
+download link (text mode only)
+.TP
+.B D
+download link (text mode only)
+.TP
+.B /
+search in the page
+.TP
+.B ?
+search back in the page
+.TP
+.B n
+find next match
+.TP
+.B N
+find next match backwards
+.TP
+.B f
+zoom actual frame
+.TP
+.B F
+zoom actual frame
+.TP
+.B ^R
+reload page
+.TP
+.B g
+go to URL
+.TP
+.B G
+edit the current URL and goto the result
+.TP
+.B s
+bookmark manager
+.TP
+.B S
+bookmark manager
+.TP
+.B q
+quit, close window if more windows are open
+.TP
+.B Q
+quit, close window if more windows are open
+.TP
+.B =
+document informations
+.TP
+.B \e
+toggle HTML source/rendered view
+.TP
+.B TAB
+next frame (text mode only)
+.TP
+.B ESC
+menu/escape
+.TP
+.B F9
+menu
+.TP
+.B F10
+file menu
+
+.SH EDITING KEYS
+The following keys can be used while editing a line/jumping to a URL:
+.TP
+.B CursorRIGHT
+move right
+.TP
+.B CursorLEFT
+move left
+.TP
+.B HOME
+jump at the beginning
+.TP
+.B ^A
+jump at the beginning
+.TP
+.B END
+jump at the end
+.TP
+.B ^E
+jump at the end
+.TP
+.B ^INS
+copy to clipboard
+.TP
+.B ^B
+copy to clipboard
+.TP
+.B ^X
+cut to clipboard (text mode only)
+.TP
+.B ^V
+paste from clipboard (text mode only)
+.TP
+.B ENTER
+enter line
+.TP
+.B BACKSPACE
+delete back character
+.TP
+.B ^H
+delete back character
+.TP
+.B DEL
+delete character
+.TP
+.B ^D
+delete character
+.TP
+.B ^U
+delete from beginning of the line
+.TP
+.B ^K
+delete to the end of the line
+.TP
+.B ^W
+auto complete line
+
+
+
+
+
+.SH FILES
+.TP
+.IP "~/.links/.links.cfg"
+Per-user configfile, automatically created by
+.B links.
+.SH PLATFORMS
+.B links
+is known to work on Linux, FreeBSD, Solaris, IRIX, HPUX, Digital Unix, AIX,
+OS/2 and BeOS.
+Port for Win32 is in state of beta testing.
+.SH BUGS
+Can't connect to some FTP servers (Novell, NT). Connection stays in "Request
+sent" state.
+.PP
+Frames don't work if there's more frames with same name. Turn them off in such
+case.
+.PP
+You can't upload large files; it takes _lots_ of memory.
+.PP
+You shoudn't press '^Z' when you are in a viewer
+.PP
+Please report any other bugs you find to Mikulas Patocka
+<mikulas@artax.karlin.mff.cuni.cz>
+
+.SH LICENSE
+.B links
+is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+.SH AUTHOR
+.I links
+was written by 
+.B Mikulas Patocka, Karel 'Clock' Kulhavy, Petr 'Brain' Kulhavy, and Martin 'PerM' Pergel.
+See file 
+.I AUTHORS
+for a list of people contributing to this project.
+.P
+The homepage of links can be found at
+.BI http://atrey.karlin.mff.cuni.cz/~clock/twibright/links
+.P
+This manual page was written by Peter Gervai <grin@tolna.net>,
+using excerpts from a (yet?) unknown
+.I links
+fan
+for the Debian GNU/Linux system (but may be used by others). Updated by Karel Kulhavy.
+
+.SH "SEE ALSO"
+.BR lynx (1),
+.BR w3m (1)

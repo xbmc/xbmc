@@ -1,0 +1,17 @@
+# Depends upon core.schema
+
+#
+# Syntaxes are under 1.0
+# Attribute types are under 1.1
+# Object classes are under 1.2
+
+# Attribute Type Definitions
+
+attributetype (1.1.1 NAME 'folder'
+	EQUALITY distinguishedNameMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 )
+
+objectclass ( 1.2.1 NAME 'folderObject' SUP top STRUCTURAL
+	MUST ( cn $ title ) 
+	MAY ( labeledURI $ folder ) )
+ 

@@ -1048,4 +1048,74 @@
       <back>PreviousMenu</back>
     </remote>
   </TrainerSettings>
+  <WebBrowser>
+    <gamepad>
+      <leftthumbbutton>PointerNavigation</leftthumbbutton>
+      <leftthumbstick>AnalogMove</leftthumbstick>
+      <lefttrigger>XBMC.WebBrowserControl(back)</lefttrigger>
+      <righttrigger>XBMC.WebBrowserControl(forward)</righttrigger>
+      <black>WebPageInfo</black>
+      <white>Info</white>
+      <start>XBMC.ActivateWindow(2801)</start>
+    </gamepad>
+    <remote>
+      <play>XBMC.WebBrowserControl(GotoURL)</play>
+      <forward>XBMC.WebBrowserControl(forward)</forward>
+      <reverse>XBMC.WebBrowserControl(back)</reverse>
+      <pause>XBMC.WebBrowserControl(reload)</pause>
+      <stop>XBMC.WebBrowserControl(stop)</stop>
+      <back>XBMC.ActivateWindow(2801)</back>
+      <skipplus>XBMC.ActivateWindow(2803)</skipplus>
+      <skipminus>XBMC.ActivateWindow(2804)</skipminus>
+      <title>WebPageInfo</title>
+    </remote>
+    <keyboard>
+      <g>XBMC.WebBrowserControl(GotoURL)</g>
+      <comma>XBMC.WebBrowserControl(back)</comma>
+      <period>XBMC.WebBrowserControl(forward)</period>
+      <r>XBMC.WebBrowserControl(reload)</r>
+      <s>XBMC.WebBrowserControl(stop)</s>
+      <o>XBMC.ActivateWindow(2801)</o> <!-- OSD -->
+      <b>XBMC.ActivateWindow(2803)</b> <!-- Bookmarks -->
+      <h>XBMC.ActivateWindow(2804)</h> <!-- History -->
+      <tab>WebPageInfo</tab> <!-- Statusbar -->
+    </keyboard>
+  </WebBrowser>
+  <WebBrowserOSD>
+    <gamepad>
+      <back>Close</back>
+      <start>Close</start>
+    </gamepad>
+    <remote>
+      <menu>Close</menu>
+    </remote>
+    <keyboard>
+      <o>Close</o>
+    </keyboard>
+  </WebBrowserOSD>
+  <WebBookmarks>
+    <gamepad>
+       <back>Close</back>
+       <start>Close</start>
+    </gamepad>
+    <remote>
+       <menu>Close</menu>
+    </remote>
+    <keyboard>
+       <b>Close</b>
+    </keyboard>
+  </WebBookmarks>
+  <WebHistory>
+    <gamepad>
+      <back>Close</back>
+      <start>Close</start>
+      <Y>Close</Y>
+    </gamepad>
+    <remote>
+      <menu>Close</menu>
+    </remote>
+    <keyboard>
+      <h>Close</h>
+    </keyboard>
+  </WebHistory>
 </keymap>

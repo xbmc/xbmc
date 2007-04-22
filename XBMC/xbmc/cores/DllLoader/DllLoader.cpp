@@ -24,7 +24,9 @@ typedef struct _UNICODE_STRING {
 #define DLL_PROCESS_VERIFIER 4
 
 // uncomment this to enable symbol loading for dlls
-//#define ENABLE_SYMBOL_LOADING 1
+#ifdef _DEBUG
+#define ENABLE_SYMBOL_LOADING 1
+#endif
 
 // uncomment this to enable symbol unloading for dlls
 // This is not working properly. If a dll is loaded 

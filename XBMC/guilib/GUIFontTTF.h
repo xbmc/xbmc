@@ -42,6 +42,12 @@ public:
   virtual void Begin();
   virtual void End();
 
+#ifdef WITH_LINKS_BROWSER
+  void RegisterForWeb(const CStdString& strFontName, const CStdString& strFamily,
+                      const CStdString& strWeight, const CStdString& strSlant,
+                      const CStdString& strAdstyl, const CStdString& strSpacing);
+#endif
+
 protected:
   virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
                              FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
@@ -61,6 +67,16 @@ protected:
   int m_iHeight;
   int m_iStyle;
   CStdString m_strFilename;
+
+#ifdef WITH_LINKS_BROWSER
+  CStdString m_strWebFontName;
+  CStdString m_strWebFamily;
+  CStdString m_strWebWeight;
+  CStdString m_strWebSlant;
+  CStdString m_strWebAdstyl;
+  CStdString m_strWebSpacing;
+  void *m_pWebFont;
+#endif
 
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(WCHAR letter);

@@ -1,0 +1,58 @@
+<window id="2804">
+        <defaultcontrol>11</defaultcontrol>
+        <coordinates>
+          <system>1</system>
+          <posx>250</posx>
+          <posy>116</posy>
+        </coordinates>
+        <animation effect="fade" time="200">WindowOpen</animation>
+        <animation effect="fade" time="200">WindowClose</animation>
+        <controls>
+                <control type="image" id="1">
+                        <description>background image</description>
+                        <posx>-25</posx>
+                        <posy>-11</posy>
+                        <width>447</width>
+                        <height>310</height>
+                        <texture>dialog-panel2.png</texture>
+                        <colordiffuse>CCFFFFFF</colordiffuse>
+                </control>
+                <control type="label" id="0">
+                        <description>History Label</description>
+                        <posx>0</posx>
+                        <posy>2</posy>
+                        <label>20406</label>
+                        <width>420</width>
+                        <font>special13</font>
+                        <textcolor>DDced8da</textcolor>
+                </control>
+    <!--        <control type="button" id="2">
+                        <description>Clear history button</description>
+                        <posx>10</posx>
+                        <posy>35</posy>
+                        <width>195</width>
+                        <height>31</height>
+                        <font>font12</font>
+                        <textOffsetX>12</textOffsetX>
+                        <alignY>center</alignY>
+                        <align>center</align>
+                        <label>20407</label>
+                        <ondown>11</ondown>
+                        <onup>11</onup>
+                </control>    -->
+                <control type="listcontrol" id="11">
+                        <description>History list</description>
+                        <posx>5</posx>
+                        <posy>45</posy>
+                        <width>403</width>
+                        <height>245</height>
+                        <!-- <spinposx>360</spinposx>
+                        <spinposy>205</spinposy> -->
+                        <selectedcolor>FFD2FF00</selectedcolor>
+                        <onleft>11</onleft>
+                        <onright>11</onright>
+                        <onup>11</onup>
+                        <ondown>11</ondown>
+                </control>
+        </controls>
+</window>

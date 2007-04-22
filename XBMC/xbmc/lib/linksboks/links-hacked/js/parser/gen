@@ -1,0 +1,4 @@
+#!/bin/sh
+flex   javascr.l && mv lex.yy.c ../javascr.c
+bison -y  -dlv javascript.y && mv y.tab.c ../javascript.c
+if cmp -s y.tab.h ../javascript.h; then rm -f y.tab.h; else mv y.tab.h ../javascript.h; fi

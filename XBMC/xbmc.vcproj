@@ -68,7 +68,7 @@
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				FormatUD="TRUE"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE;LBKS_RW;LBKSDATA;LNKSBOKS"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -1268,6 +1268,46 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\SlideShowPicture.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI WebBrowser"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserBookmarks.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserBookmarks.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserHistory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserHistory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserOSD.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserOSD.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogWebBrowserSettings.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowWebBrowser.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowWebBrowser.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\LinksBoksManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\LinksBoksManager.h">
 				</File>
 			</Filter>
 			<Filter

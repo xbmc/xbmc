@@ -1,0 +1,9 @@
+dn: dc=localdomain
+objectClass: dcObject
+dc: localdomain
+
+dn: ou=Users,dc=localdomain
+objectClass: organizationalUnit
+ou: Users
+description: Tree where user accounts are stored.
+

@@ -1,0 +1,33 @@
+
+Links 2.1pre1
+-------------
+
+Lynx-like text and graphics WWW browser
+
+>>> If you want to install, see "INSTALL" <<<
+
+Usage: links [options] <url>
+
+See end of file default.c for list of options. Most options can be set in luser
+interface or config file, so you do not need to care about them.
+
+Keys:	ESC	 display menu
+	^C	 quit
+	^P, ^N	 scroll up, down
+	[, ]	 scroll left, right
+	up, down select link (text mode), scroll up/down (graphics mode)
+	->	 follow link
+	<-	 go back (text mode only)
+	z	 go back
+	g	 go to url
+	G	 go to url based on current url
+	/	 search
+	?	 search back
+	n	 find next
+	N	 find previous
+	=	 document info
+	\	 document source
+	d	 download
+	q	 quit / close window
+
+

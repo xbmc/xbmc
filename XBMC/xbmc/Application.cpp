@@ -98,6 +98,9 @@
 #ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
 #endif
+#ifdef WITH_LINKS_BROWSER
+#include "LinksBoksManager.h"
+#endif
 
 // Windows includes
 #include "GUIWindowHome.h"
@@ -132,6 +135,14 @@
 #include "GUIWindowOSD.h"
 #include "GUIWindowMusicOverlay.h"
 #include "GUIWindowVideoOverlay.h"
+
+#ifdef WITH_LINKS_BROWSER
+#include "GUIWindowWebBrowser.h"
+#include "GUIDialogWebBrowserOSD.h"
+#include "GUIDialogWebBrowserSettings.h"
+#include "GUIDialogWebBrowserBookmarks.h"
+#include "GUIDialogWebBrowserHistory.h"
+#endif
 
 // Dialog includes
 #include "GUIDialogMusicOSD.h"
@@ -1322,6 +1333,13 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
   m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
+#ifdef WITH_LINKS_BROWSER
+  m_gWindowManager.Add(new CGUIWindowWebBrowser);		        // window id = 2800 WEB BROWSER	          -ysbox
+  m_gWindowManager.Add(new CGUIDialogWebBrowserOSD);			// window id = 2801 WEB BROWSER OSD	  -ysbox
+  m_gWindowManager.Add(new CGUIDialogWebBrowserSettings);		// window id = 2802 WEB BROWSER SETTINGS  -ysbox
+  m_gWindowManager.Add(new CGUIDialogWebBrowserBookmarks);		// window id = 2803 WEB BROWSER BOOKMARKS -ysbox
+  m_gWindowManager.Add(new CGUIDialogWebBrowserHistory);		// window id = 2804 WEB BROWSER HISTORY	  -ysbox
+#endif
   m_gWindowManager.Add(new CGUIWindow(WINDOW_STARTUP, "Startup.xml"));  // startup window (id 2999)
 
   /* window id's 3000 - 3100 are reserved for python */
@@ -2267,6 +2285,8 @@ void CApplication::RenderMemoryStatus()
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
     wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
+    if(g_Mouse.IsActive())
+      wszText.AppendFormat(L"\nMouse X=%2.2f Y=%2.2f", g_Mouse.posX, g_Mouse.posY);
 
     CGUIFont* pFont = g_fontManager.GetFont("font13");
     if (pFont)
@@ -2286,13 +2306,15 @@ void CApplication::RenderMemoryStatus()
 bool CApplication::OnKey(CKey& key)
 {
   // Turn the mouse off, as we've just got a keypress from controller or remote
-  g_Mouse.SetInactive();
+  if(!m_gWindowManager.m_bPointerNav)
+    g_Mouse.SetInactive();
+
   CAction action;
 
   // a key has been pressed.
   // Reset the screensaver timer
   // but not for the analog thumbsticks/triggers
-  if (!key.IsAnalogButton())
+  if (!key.IsAnalogButton() || m_gWindowManager.m_bPointerNav)
   {
     // reset harddisk spindown timer
     m_bSpinDown = false;
@@ -2674,6 +2696,21 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
+
+#ifdef WITH_LINKS_BROWSER
+  if (g_browserManager.isLoaded())
+  {
+    MEMORYSTATUS stat;
+    GlobalMemoryStatus(&stat);
+    if(stat.dwAvailPhys < 3000000)    // trigger memory rescue when <3MB
+    {
+        OutputDebugString("*** LinksBoks: memory below critical limit, freeing all caches!\n");
+      g_browserManager.EmptyCaches();
+      // might want to recalculate cache sizes according to available memory
+    }
+    g_browserManager.FrameMove();
+  }
+#endif
 
   UpdateLCD();
 

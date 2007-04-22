@@ -1,0 +1,5 @@
+EXPORTS
+XLoadSectionA@4
+XGetSectionSize@4
+XGetSectionHandleA@4
+XFreeSectionA@4

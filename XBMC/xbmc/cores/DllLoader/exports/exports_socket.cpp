@@ -289,3 +289,49 @@ void export_ws2_32()
          22   70 00008629 shutdown
          23   71 00003C22 socket
          */
+
+#ifdef WITH_LINKS_BROWSER
+/* To complete as needed... */
+void export_winsockx()
+{
+  //g_dlls.winsockx.AddExport("WSACleanup", 116, (unsigned long)WSACleanup);
+  g_dlls.winsockx.AddExport("WSAGetLastError@0", (unsigned long)WSAGetLastError);
+  g_dlls.winsockx.AddExport("WSASetLastError@4", (unsigned long)WSASetLastError);
+  //g_dlls.winsockx.AddExport("WSAStartup", 115, (unsigned long)WSAStartup);
+  g_dlls.winsockx.AddExport("bind@12", (unsigned long)bind); //dllbind);
+  g_dlls.winsockx.AddExport("closesocket@4", (unsigned long)closesocket); //dllclosesocket);
+  g_dlls.winsockx.AddExport("connect@12", (unsigned long)connect); //dllconnect);
+  //g_dlls.winsockx.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
+  //g_dlls.winsockx.AddExport("getsockopt", 7, (unsigned long)dllgetsockopt);
+  g_dlls.winsockx.AddExport("htonl@4", (unsigned long)htonl);
+  g_dlls.winsockx.AddExport("htons@4", (unsigned long)htons);
+  g_dlls.winsockx.AddExport("inet_addr@4", (unsigned long)inet_addr);
+  //g_dlls.winsockx.AddExport("inet_ntoa", 12, (unsigned long)dllinet_ntoa);
+  g_dlls.winsockx.AddExport("ioctlsocket@12", (unsigned long)ioctlsocket); //dllioctlsocket);
+  g_dlls.winsockx.AddExport("ntohl@4", (unsigned long)ntohl);
+  g_dlls.winsockx.AddExport("recv@16", (unsigned long)recv); //dllrecv);
+  g_dlls.winsockx.AddExport("select@20", (unsigned long)select); //dllselect);
+  g_dlls.winsockx.AddExport("send@16", (unsigned long)send); //dllsend);
+  //g_dlls.winsockx.AddExport("sendto", 20, (unsigned long)dllsendto);
+  g_dlls.winsockx.AddExport("setsockopt@20", (unsigned long)setsockopt); //dllsetsockopt);
+  g_dlls.winsockx.AddExport("socket@12", (unsigned long)socket); //dllsocket);
+  g_dlls.winsockx.AddExport("accept@12", (unsigned long)accept); //dllaccept);
+  //g_dlls.winsockx.AddExport("gethostname@12", (unsigned long)gethostname); //dllgethostname);
+  g_dlls.winsockx.AddExport("getsockname@12", (unsigned long)getsockname); //dllgetsockname);
+  g_dlls.winsockx.AddExport("listen@8", (unsigned long)listen); //dlllisten);
+  //g_dlls.winsockx.AddExport("ntohs", 15, (unsigned long)ntohs);
+  //g_dlls.winsockx.AddExport("recvfrom", 17, (unsigned long)dllrecvfrom);
+  g_dlls.winsockx.AddExport("__WSAFDIsSet@8", (unsigned long)__WSAFDIsSet); //dll__WSAFDIsSet);
+  //g_dlls.winsockx.AddExport("WSASetLastError", 112, (unsigned long)WSASetLastError);
+  g_dlls.winsockx.AddExport("WSACreateEvent@0", (unsigned long)WSAGetLastError);
+  //g_dlls.winsockx.AddExport("shutdown", 22, (unsigned long)dllshutdown);
+  //g_dlls.winsockx.AddExport("getservbyname", 55, (unsigned long)dllgetservbyname);
+  //g_dlls.winsockx.AddExport("getprotobyname", 53, (unsigned long)dllgetprotobyname);
+  g_dlls.winsockx.AddExport("getpeername@12", (unsigned long)getpeername); //dllgetpeername);
+  //g_dlls.winsockx.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
+  //g_dlls.winsockx.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
+  g_dlls.winsockx.AddExport("XNetDnsRelease@4", (unsigned long)XNetDnsRelease);
+  g_dlls.winsockx.AddExport("XNetDnsLookup@12", (unsigned long)XNetDnsLookup);
+  g_dlls.winsockx.AddExport("XNetRandom@8", (unsigned long)XNetRandom);
+}
+#endif

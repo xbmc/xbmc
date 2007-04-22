@@ -17,6 +17,7 @@ CGUIWindowManager::CGUIWindowManager(void)
   InitializeCriticalSection(&m_critSection);
 
   m_pCallback = NULL;
+  m_bPointerNav = FALSE;
   m_bShowOverlay = true;
 }
 
@@ -362,6 +363,14 @@ void CGUIWindowManager::CloseDialogs(bool forceClose)
 
 bool CGUIWindowManager::OnAction(const CAction &action)
 {
+  // If we are in pointer navigation mode...
+  if (m_bPointerNav && action.wID == ACTION_ANALOG_MOVE)
+  {
+    char cX = (char)(action.fAmount1 * 8);
+    char cY = (char)(-action.fAmount2 * 8);
+    g_Mouse.VirtualMove(cX, cY);
+    return true;
+  }
   for (rDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
   {
     CGUIWindow *dialog = *it;

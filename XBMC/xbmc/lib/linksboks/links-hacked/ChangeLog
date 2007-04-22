@@ -1,0 +1,337 @@
+== Upcoming (unreleased currently ;-))) release
+
+none yet
+
+== 030709 release
+
+HTTP Proxy Auth ported from ELinks.
+
+Tab operations speedup - now we open/close tabs a bit faster.
+
+Default charset fixed, now we understand iso8859-1 as well as iso-8859-1.
+
+Some things ported from 2.1pre11, including non-aggressive cache.
+
+Mouse wheel support for textmode X terminals, ported from ELinks.
+
+Two new options for tabs added - whether to switch to next or prev
+tab on tab close and whether to make new tab active (ala Mozilla'
+"Open links in background")
+
+Hunt for memleaks; a lot of small fixes; some possible segfault cases
+fixed.
+
+Experimental support for '<meta http-equiv="Refresh"...', controllable
+through two options - enable/disable and minimal refresh time.
+Very primitive downloads manager (internal:downloads) uses it to show
+you current state of your downloads; cache manager is now 'realtime' too.
+
+Now new options system can be translated into various languages, like
+all other links parts (it uses old options titles if possible).
+
+== 030507 release
+
+Major improvements in Links configuration sphere - all 'plain' options
+moved to new options system; old one still controls terminals, driver
+params, extensions and associations config. Will be moved too, of
+course, please wait... Now Links2 and Hacked Links configurations are
+nearly independent and may live in one dir (new options system uses
+file 'options', old one - '(links|html|user).cfg').
+
+JavaScript history bug (first introduced by long-time-ago-accepted 
+forward history patch by John) fixed. Patch by John too.
+
+New (builtin) help system introduced. Now 'About' menu item points to 
+internal:about (it will be opened in new tab, don't worry). Very
+primitive still, but has a great future - it is possible to generate
+dynamic content, such as list of compiled-in features
+(internal:features), global history (internal:history),  cache
+(internal:cache), key bindings (not yet, as soon as I'll port keys
+rebinding...)
+
+Ok, now we reread bookmarks only when they are changed on disk.
+Bookmarks are saved on disk only when you change them and close 
+bookmarks dialog. And also, now it is possible to move bookmarks ;-)
+
+Now Links is completely menu-driven (tm) - we just got 'background'
+pull-down menu. It appears on right mouse button click outside
+links/images/etc. It has usual (as in all other browsers) functions set
+- back/reload/forward/stop/save as/copy current url/close. So you may 
+'drag' your document only by middle mouse button.
+
+Smart Goto Url dialog implemented - it has a drop-down menu of all
+possible targets where to open link (current window/new window/new
+tab/new screen/...).
+
+Hey, tabbed browsing is here! It works even in text mode! So now you
+may open link in new tab instead of new window from 'open in new'
+dialog. Also  you may open link in new tab by clicking it with middle
+mouse button or pressing Ctrl+Enter on it (this behaviour may be turned
+off, of course). You may cycle through all your tabs with '<' and '>'
+(Alt+Left/Right in graphical mode too) and close current tab with 'c'.
+And tabbar is here too  (can be turned off).
+
+Save Form Data patch from John accepted and improved a bit.
+
+Improvements in keyboard navigation - now CTRL+(LEFT|RIGHT|UP|DOWN) in
+'standard' mode acts like these keys without CTRL in 'keyboard
+navigation' mode.
+
+Dummy JavaScript handler added for the folks who prefer not to compile
+Twibright js engine (like me ;-)). This engine is moved to separate dir
+(next step must be to delete it completely and replace with something 
+really working ;-))
+
+Option to prevent local file overwriting is introduced (by default on).
+Ported from ELinks. So (if turned on) it will ask you whether to
+overwrite existing file, save new file with alternative name or cancel
+downloading. Didn't checked well...
+
+Minor bug in images "alt" attribute text displaying is fixed 
+(sometimes they were displayed in incorrect codepage - another 
+Twibright Bug (c) ;-))
+
+Support for 'glinks' as symbolic link to 'links', acts as 'links -g'.
+
+Fix for active image frame flickering.
+
+== 030316 release
+
+Keyboard navigation in graphical mode is here! (adapted from 2.1pre9).
+You can turn it on/off by pressing 'K' (ministatus entry is added for
+it too) or using new options system. Also we underline links under
+mouse now ;-)
+
+Some improvements are ported from 2.1pre9. 
+
+Inconsistency in '+/-' (closed/open) drawing in listedit is fixed.
+
+PDF support (and pdflib dependency) is removed. Printing will be implemented 
+through postscript (not yet).
+
+'Link' menu is restored in graphical mode.
+
+Now you can turn blocking of images completely off (as it causes some problems
+with empty lists). Default is off.
+
+Minor change in input fields behavior in graphical mode - now ESC
+escapes you from it. First step towards keyboard navigation ;-)
+
+Transparency support for text terminals, configurable through new options
+system (by default on).
+
+Fix for pngconf.h compilation problem (hope it will work ;-). Patch by Witold.
+
+== 030113 release
+
+Default fontset is updated for new build system. You need to download it 
+again ;-). Font names are changed (due to copyright issues, idea by aludal)
+to default-[medium/bold]-[roman/italic]-serif-[mono/vari].
+
+Some additional files reorganization - now we haven't graphics/ dir anymore,
+font/ and utils/ instead. All utils/ programs are included in main build 
+process (rasterizer, arrow and generate_font only; all other twibright stuff
+look too hackish and unusable for non-czech people ;-)). Files arrow.inc (for framebuffer and svgalib)
+and font_include.c are now generated automatically from utils/arrow.png
+and font/*. If we haven't
+font/ dir we'll try to download and untar it automatically ;-)
+
+Some build process fixes - patches by Pasky, Witold and me.
+
+Clipboard pasting is redone (inspired by Stanson' patch). Now copying/pasting
+handling is completely outside of graphics drivers. Currently pasting is middle
+mouse button (without shift, as it was completely useless) or Ctrl+V
+(will be configurable as soon as I port keys rebinding ;-)).
+Hey, can anyone write clipboard backend for gpm?
+
+Now we draw an empty rectangle instead of a space for non-existent chars
+
+Now it is possible to delete external fonts with font manager.
+It is more or less usable now ;-)
+
+External fonts saving order fixed - last added is still upper after 
+save/reload cycle
+
+== 021225 release
+
+New fontset released, with slightly modified format (structure names are 
+changed). Simple rasterizer fot unicode ttf fonts included (graphics/rasterizer)
+to make builtin font pngs. system_font dir removed at last - we just
+print empty space instead of ugly 'unknown-char-replacer'.
+
+Font subsystem is modularized and simple FreeType backend is added 
+(old builtin fonts still here, of course, but I changed its format a bit -
+so you need to download and compile new fontset!!!)
+- so now you may use any unicode truetype font (Type1 etc will not work
+most probably - they are not in unicode, AFAIK). Simple font manager
+implemented - you may find it by pressing Ctrl+I (yes, it MUST be accessible
+through menu, but not yet). Code is still very dirty and need to be 
+cleaned up.
+
+Probably fixed bug with empty blocklist
+
+Bug in options editing fixed
+
+Content-Encoding (gzip and bzip2) support - stolen from ELinks, as usual ;-)
+
+Configurable mini-status - you may turn on and see in the right-bottom
+corner of your screen numbers of 'connecting' and 'running' connections,
+status of images loading (on/off) and SSL status (secure/insecure)
+
+Problem with multiline <select> fixed
+
+Really configurable form colors - it was fixed...
+
+Support for configurable Accept-Charset: and Accept-Language: 
+HTTP fields - useful sometimes ;-)
+
+Global History support - without any dialogs currently, but it is
+loaded and saved and used to change colors of already visited sites
+(as in elinks, e.g. limited a bit - we don't update already rendered
+pages...)
+
+Fixed layouting bug with non-latin1 <select> - it was too wide.
+Introduced strlen_utf8() for such cases.
+
+Terrible bug with bookmark resaving (causing your bookmarks to
+disappear sometimes) was fixed .
+
+Compilation fixes related to pdflib.
+
+== 021215 release
+
+Simple printing support implemented... It is VERY simple - we make
+PDF file (through pdflib) with text only (just a rectangles instead of images), and
+with PDF internal fonts only (don't even try to print non-latin-1 texts!!!)
+- but we have more-or-less correct layout and page breakings.
+
+Full-text selection! Now it works perfectly (really there are some issues with
+<input> tags, but all the others are ok)
+
+Radiobuttons by Alexander Udalov, checkboxes by Josef 'Jupp' Schugt 
+and form buttons by me - Now we look like real graphical browser ;-))
+Default fontset is updated - download it!
+Now it is time to extend our functionality...
+
+Ok, <hr> now works more or less sane - it shows correct sizes at least, but
+still in pseudographics.
+
+Simple mini-status - just a 2 numbers in a lower right corner, showing
+current numbers of 'connecting' and 'running' connections. Will be
+configurable, but not yet...
+
+== 021210 release
+
+Another useless UI improvement - no more text-alike buttons, checkboxes
+and textfields - all of these are more-or-less graphical. Still ugly ;-(((
+Waiting for artistic inspiration from someone else.
+
+Default document colors and homepage url are configurable now.
+
+It looks like options saving and loading works now ;-)) Of course, it is
+still very ugly...
+
+Let's give the first try for new options system - now toolbar buttons visibility
+is configurable through it ;-)) No options saving/loading yet...
+
+== 021208 release
+
+I began to implement new options system - no results yet ;-)
+Fixed listbox widget - now it is possible do edit lists with fixed
+topology - options will be such list, where user can only change values,
+but not names nor position ;-))
+
+Fonts excluded from main package - you must download separate tarball
+or use your current if upgrade
+
+LDAP bookmarks support added - thanks John <martian202002@yahoo.com>
+See contrib/ldap/README for details
+
+Bug in X-selection paste code fixed. It was impossible to paste selection from
+one window to another.
+
+I've ported at last correct header date parsing from ELinks - so
+now we have cookies saving support the same as in ELinks 
+
+Fixed backspace and delete in dialog fields - it didn't know anything 
+about UTF-8 internal representation
+
+Reverted to old menu scrolling code - it works at least ;-)
+
+Now we fork at startup of first graphical session to be more consistent with 
+the behavior of default 'remote links execution'.
+
+Fixed bug with remote connections (default state of links, we try to open
+new window of an existing instance if -no-connect not set) - new window
+was opened by session with id=1, so if we close it we became blind ;-)
+
+Oops, 'stop' didn't stop host lookups... Fixed.
+
+== 021206 release
+
+Now we have 'real' Stop button - it kills only connections of current
+screen (I hope ;-)) Kill-all-connections is now in main menubar, near
+kill-background-connctions, where it must be.
+
+Fixed bug with Home button - there was unchecked mem_free() causing segfault
+if you don't have WWW_HOME set
+
+=== 021205 release
+
+Now this buttonbar is more-or-less configurable. Without any 
+user-interface, of course ;-))) hope it will appear some day. It is 
+possible to turn buttons on/off in the beginning of view_gr.c 
+(int show_button_*=1/0). It uses symbols from internal font (located in 
+system-roman-serif-vari/ dir): \x2 - back, \x3 - history (single list for 
+path and future, it seems working ok and I will not change it without 
+serious reason) \x4 - reload, \x5 - forward, \x6 - bookmarks, \x7 - home 
+(homepage url is, of course, in your shell WWW_HOME), \x8 - Stop 
+(currently kills ALL connections in all windows including downloads, I'll 
+change it soon to more reasonable behavior, I hope). Currently we have 
+one char for one button - if you want to change it - change corresponding 
+#default's at the end of setup.h. There is no spaces between buttons on 
+toolbar, so you need to include it to pixmaps. 
+There is no way currently to change buttons order (except for changing it 
+in the code ;-))) 
+
+Also DirectFB backend is added - thanks Sven Neumann
+
+
+=== Initial release:
+
+- Lua scripting - ported from Links-Lua, not from current elinks code, but
+	the differences are not so sensitive, I hope. 
+- HTTP Auth - stable, ported form Elinks
+- Blocking of images - my own code ;-). You may block images containing given
+	substring (of course, it is better to use regexps, but this way is 
+        more portable). Just press '-' to edit the list of blocked patterns.
+        Info is saved to main config file.
+- Cookies saving - simply saving, as I'm too lazy (and I really don't need it ;-)) 
+	to port correct http header parsing...
+- Possibility to open new windows instead of new links instances in graphics 
+	mode - new socket is created with name 'glinks' in links dir, instead 
+        of 'links' for text instances, so they can work independently. After 
+        that command 'links -g' works like 'mozilla -remote', simply opening 
+        new instances from currently running one. But it has some limitations - 
+        these new windows will open on the same display as original one...
+- Url copying - some code from Ludvik Tezar' patch, but the backend is organized 
+	more cleanly - there are two additional fields in struct graphics_driver - 
+        put_to_clipboard and get_from_clipboard. Only X11 backend is functional 
+        now, as I don't use others ;-)
+- Some kind of selection for rendered text - it's just a quick hack really. Now 
+	it is possible to select-and-copy-to-clipboard text line-by-line - you j
+        ust press left mouse button and move it over text parts (really - 
+        over g_object_text structures) you want. These parts are visually selected 
+        (invert style) of course during the selection. As the internal text 
+        representation is UTF-8, there is a config option (accessible through 
+        setup menu) to select codepage for clipboard. This sort of selection looks
+        strange for the first time, but it works and is very useful sometimes.
+- Extended 'toolbar' - there are currently back '<-', reload 'R', bookmarks 'B' and 
+	kill-all-connections 'S' buttons. Last function has also a shortcut - 'a'. 
+        It kills ALL (not only background) connections. Also, ugly 'classical'
+        black-bar-on-white status bar was fixed ;-))
+- Some small but useful improvements - support for <small> and <big> tags, 
+	keybinding ("i") to turn on/off images, possibility to show HTTP 
+        header ("|", as in Elinks)
+- Extended set of fonts - italic support for variable width fonts, and 
+	not-so-ugly-as-currently cyrillic characters set ;-)

@@ -1,0 +1,101 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinksBoks", "linksboks.vcproj", "{D165FF01-D44A-42F5-8035-671E31184094}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F} = {BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}
+		{FC310547-4B50-4845-9729-CB46D6F35CAA} = {FC310547-4B50-4845-9729-CB46D6F35CAA}
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B} = {966A914B-22F6-497B-B8DD-5B10BF1EBD8B}
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2} = {5003695D-EC75-400F-8B00-0A74B06EA0D2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opensslX", "opensslX\opensslX.vcproj", "{5003695D-EC75-400F-8B00-0A74B06EA0D2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "lpng125\projects\msvc\libpng.vcproj", "{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libjpeg", "jpeg-6b\jpeg-6b.vcproj", "{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib114\zlib114.vcproj", "{FC310547-4B50-4845-9729-CB46D6F35CAA}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Debug DLL = Debug DLL
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release DLL = Release DLL
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{D165FF01-D44A-42F5-8035-671E31184094}.Debug.ActiveCfg = Debug|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Debug.Build.0 = Debug|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Debug DLL.ActiveCfg = Debug (DLL)|Win32
+		{D165FF01-D44A-42F5-8035-671E31184094}.Debug DLL.Build.0 = Debug (DLL)|Win32
+		{D165FF01-D44A-42F5-8035-671E31184094}.Profile.ActiveCfg = Profile|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Profile.Build.0 = Profile|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Release.ActiveCfg = Release|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Release.Build.0 = Release|Xbox
+		{D165FF01-D44A-42F5-8035-671E31184094}.Release DLL.ActiveCfg = Release (DLL)|Win32
+		{D165FF01-D44A-42F5-8035-671E31184094}.Release DLL.Build.0 = Release (DLL)|Win32
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Debug.ActiveCfg = Debug|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Debug.Build.0 = Debug|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Debug DLL.ActiveCfg = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Debug DLL.Build.0 = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile.ActiveCfg = Profile|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile.Build.0 = Profile|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release.ActiveCfg = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release.Build.0 = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release DLL.ActiveCfg = Release|Xbox
+		{5003695D-EC75-400F-8B00-0A74B06EA0D2}.Release DLL.Build.0 = Release|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Debug.ActiveCfg = StaticDebug|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Debug.Build.0 = StaticDebug|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Debug DLL.ActiveCfg = StaticRelease|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Debug DLL.Build.0 = StaticRelease|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Profile.ActiveCfg = StaticDebug|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Profile.Build.0 = StaticDebug|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Profile_FastCap.ActiveCfg = StaticDebug|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Profile_FastCap.Build.0 = StaticDebug|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Release.ActiveCfg = StaticRelease|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Release.Build.0 = StaticRelease|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Release DLL.ActiveCfg = StaticRelease|Xbox
+		{966A914B-22F6-497B-B8DD-5B10BF1EBD8B}.Release DLL.Build.0 = StaticRelease|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Debug.ActiveCfg = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Debug.Build.0 = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Debug DLL.ActiveCfg = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Debug DLL.Build.0 = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Profile.ActiveCfg = Profile|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Profile.Build.0 = Profile|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Release.ActiveCfg = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Release.Build.0 = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Release DLL.ActiveCfg = Release|Xbox
+		{BC24FB3B-67E8-45C7-A6C8-7E343C3B910F}.Release DLL.Build.0 = Release|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Debug.ActiveCfg = Debug|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Debug.Build.0 = Debug|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Debug DLL.ActiveCfg = Release|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Debug DLL.Build.0 = Release|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Profile.ActiveCfg = Profile|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Profile.Build.0 = Profile|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Release.ActiveCfg = Release|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Release.Build.0 = Release|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Release DLL.ActiveCfg = Release|Xbox
+		{FC310547-4B50-4845-9729-CB46D6F35CAA}.Release DLL.Build.0 = Release|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

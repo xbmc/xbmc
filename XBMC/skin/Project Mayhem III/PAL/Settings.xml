@@ -182,7 +182,7 @@
 			<texturenofocus>settings-weather-nofocus.png</texturenofocus>
 			<aligny>top</aligny>
 			<textoffsety>105</textoffsety>
-			<label>8</label>
+			<label>9</label> <!-- Changed to "Internet" because of web browser -->
 			<align>center</align>
 			<onclick>ActivateWindow(MyWeatherSettings)</onclick>
 			<onleft>9000</onleft>

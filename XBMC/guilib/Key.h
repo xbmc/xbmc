@@ -157,6 +157,8 @@
 #define ACTION_VOLUME_DOWN          89
 #define ACTION_MUTE                 91
 
+#define ACTION_POINTER_NAVIGATION	92
+
 #define ACTION_MOUSE                90
 
 #define ACTION_MOUSE_CLICK            100
@@ -207,6 +209,15 @@
 
 #define ACTION_SHOW_VIDEOMENU         134
 #define ACTION_ENTER                  135
+
+#ifdef WITH_LINKS_BROWSER
+#define ACTION_WEBBROWSER_BACK              150
+#define ACTION_WEBBROWSER_FORWARD           151
+#define ACTION_WEBBROWSER_GO                152
+#define ACTION_WEBBROWSER_PREVLINK          153
+#define ACTION_WEBBROWSER_NEXTLINK          154
+#define ACTION_WEBBROWSER_WEBPAGEINFO		155
+#endif /* WITH_LINKS_BROWSER */
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
@@ -295,6 +306,14 @@
 #define WINDOW_VIDEO_MENU                 12902
 #define WINDOW_MUSIC_OVERLAY              12903
 #define WINDOW_VIDEO_OVERLAY              12904
+
+#ifdef WITH_LINKS_BROWSER
+#define WINDOW_WEB_BROWSER                12800
+#define WINDOW_DIALOG_WEB_OSD             12801
+#define WINDOW_DIALOG_WEB_SETTINGS        12802
+#define WINDOW_DIALOG_WEB_BOOKMARKS       12803
+#define WINDOW_DIALOG_WEB_HISTORY         12804
+#endif
 
 #define WINDOW_STARTUP                    12999 // for startup animations
 

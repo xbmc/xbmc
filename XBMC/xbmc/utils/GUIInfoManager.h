@@ -309,6 +309,17 @@
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
 
+#define WEBBROWSER_INCLUDED	        900
+#ifdef WITH_LINKS_BROWSER
+#define WEBBROWSER_CURRENT_TITLE	  901
+#define WEBBROWSER_CURRENT_URL		  902
+#define WEBBROWSER_CURRENT_STATUS	  903
+#define WEBBROWSER_IN_EXPERT_MODE	  904
+#define WEBBROWSER_SHOW_PAGE_INFO	  905
+#define WEBBROWSER_IS_BUSY          906
+#endif
+
+
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
@@ -430,6 +441,9 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
+#ifdef WITH_LINKS_BROWSER
+  void SetShowWebPageInfo(bool showpageinfo) { m_webShowPageInfo = showpageinfo; };
+#endif
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
   bool m_performingSeek;
@@ -497,6 +511,9 @@ protected:
   bool m_playerShowTime;
   bool m_playerShowCodec;
   bool m_playerShowInfo;
+#ifdef WITH_LINKS_BROWSER
+  bool m_webShowPageInfo;
+#endif
 
   // FPS counters
   float m_fps;

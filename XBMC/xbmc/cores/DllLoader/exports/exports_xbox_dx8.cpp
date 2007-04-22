@@ -7,6 +7,9 @@
 #ifdef _XBOX
 #include <XGraphics.h>
 #endif
+#ifdef WITH_LINKS_BROWSER
+#include <Xbox.h>
+#endif
 #include "emu_dx8.h"
 
 void export_xbox_dx8()
@@ -17,6 +20,9 @@ void export_xbox_dx8()
   g_dlls.xbox_dx8.AddExport("d3dGetRenderState", (unsigned long)d3dGetRenderState);
   g_dlls.xbox_dx8.AddExport("d3dSetTransform", (unsigned long)d3dSetTransform);
   g_dlls.xbox_dx8.AddExport("d3dCreateTexture", (unsigned long)d3dCreateTexture);
+#ifdef WITH_LINKS_BROWSER
+  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateSurface2@16", (unsigned long)D3DDevice_CreateSurface2);
+#endif
   g_dlls.xbox_dx8.AddExport("d3dDrawIndexedPrimitive", (unsigned long)d3dDrawIndexedPrimitive);
 #ifdef _XBOX
   g_dlls.xbox_dx8.AddExport("D3DTexture_LockRect@20", (unsigned long)D3DTexture_LockRect);
@@ -142,6 +148,13 @@ void export_xbox_dx8()
   g_dlls.xbox_dx8.AddExport("D3DDevice_CreateSurface2@16", (unsigned long)D3DDevice_CreateSurface2);
   g_dlls.xbox_dx8.AddExport("D3DDevice_SetViewport@4", (unsigned long)D3DDevice_SetViewport);
 #endif
+#ifdef WITH_LINKS_BROWSER
+  g_dlls.xbox_dx8.AddExport("XFONT_GetTextHeight@4", (unsigned long)XFONT_GetTextHeight);
+  g_dlls.xbox_dx8.AddExport("XFONT_GetTextStyle@4", (unsigned long)XFONT_GetTextStyle);
+  g_dlls.xbox_dx8.AddExport("XFONT_GetFontMetrics@12", (unsigned long)XFONT_GetFontMetrics);
+  g_dlls.xbox_dx8.AddExport("XFONT_GetTextExtent@16", (unsigned long)XFONT_GetTextExtent);
+  g_dlls.xbox_dx8.AddExport("XFONT_TextOutToMemory@40", (unsigned long)XFONT_TextOutToMemory);
+#endif
 }
 
 void export_xbox___dx8()
@@ -152,3 +165,14 @@ void export_xbox___dx8()
 #endif
 }
 
+
+#ifdef WITH_LINKS_BROWSER
+/* That stuff should move to somewhere else I guess... */
+void export_xbox_other()
+{
+  g_dlls.xbox_other.AddExport("XLoadSectionA@4", (unsigned long)XLoadSection);
+  g_dlls.xbox_other.AddExport("XFreeSectionA@4", (unsigned long)XFreeSection);
+  g_dlls.xbox_other.AddExport("XGetSectionSize@4", (unsigned long)XGetSectionSize);
+  g_dlls.xbox_other.AddExport("XGetSectionHandleA@4", (unsigned long)XGetSectionHandle);
+}
+#endif WITH_LINKS_BROWSER

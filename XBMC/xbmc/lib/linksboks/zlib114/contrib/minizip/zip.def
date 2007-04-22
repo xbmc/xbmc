@@ -1,0 +1,5 @@
+	zipOpen                       @80
+	zipOpenNewFileInZip           @81
+	zipWriteInFileInZip           @82
+	zipCloseFileInZip             @83
+	zipClose                      @84

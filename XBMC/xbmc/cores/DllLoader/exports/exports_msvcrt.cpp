@@ -238,6 +238,13 @@ extern "C" void* _aligned_free();
 extern "C" void* _aligned_realloc();
 extern "C" void* _callnewh();
 
+//#ifdef WITH_LINKS_BROWSER	  /* disabled because we don't include stdafx.h here */
+extern "C" void *_unlink();
+extern "C" void *clearerr();
+extern "C" void *_setmode();
+extern "C" void *_snwprintf();
+//#endif
+
 // tracker functions
 extern "C" void* track_close();
 extern "C" void* track_open();
@@ -647,6 +654,11 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_aligned_free", (unsigned long)_aligned_free);
   g_dlls.msvcr71.AddExport("_aligned_realloc", (unsigned long)_aligned_realloc);
   g_dlls.msvcr71.AddExport("_callnewh", (unsigned long)_callnewh);
+//#ifdef WITH_LINKS_BROWSER	  /* disabled because we don't include stdafx.h here */
+  g_dlls.msvcr71.AddExport("_snwprintf", (unsigned long)_snwprintf);
+  g_dlls.msvcr71.AddExport("_unlink", (unsigned long)_unlink);
+  g_dlls.msvcr71.AddExport("_setmode", (unsigned long)dll_setmode);
+//#endif
 }
 
 void export_pncrt()

@@ -1,0 +1,63 @@
+# Makefile for zlib.  Modified for mingw32
+# For conditions of distribution and use, see copyright notice in zlib.h 
+
+# To compile, 
+# 
+#   make -fmakefile.w32
+# 
+
+CC=gcc
+
+# Generate dependencies (see end of the file)
+
+CPPFLAGS=-MMD 
+
+#CFLAGS=-MMD -O
+#CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
+#CFLAGS=-MMD -g -DDEBUG
+CFLAGS=-O3 $(BUTT) -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
+             -Wstrict-prototypes -Wmissing-prototypes
+
+# If cp.exe is not found, replace with copy /Y .
+CP=cp -f
+
+# The default value of RM is "rm -f."  
+# If "rm.exe" is not found, uncomment:
+# RM=del
+
+LD=gcc
+LDLIBS=-L. -lz
+LDFLAGS=-s
+
+
+INCL=zlib.h zconf.h
+LIBS=libz.a
+
+AR=ar rcs
+
+OBJS = adler32.o compress.o crc32.o gzio.o uncompr.o deflate.o trees.o \
+       zutil.o inflate.o infblock.o inftrees.o infcodes.o infutil.o \
+       inffast.o
+
+TEST_OBJS = minigzip.o untgz.o
+
+all: minigzip.exe untgz.exe
+
+rebuild:	clean	all
+
+libz.a: $(OBJS)
+	$(AR) $@ $(OBJS)
+
+%.exe : %.o $(LIBS)
+	$(LD) $(LDFLAGS) -o $@ $< $(LDLIBS)
+
+.PHONY : clean
+
+clean:
+	$(RM) *.d *.o *.exe libz.a foo.gz
+
+DEPS := $(wildcard *.d)
+ifneq ($(DEPS),)
+include $(DEPS)
+endif
+

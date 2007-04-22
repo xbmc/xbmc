@@ -1,0 +1,30 @@
+
+Now fonts are distributed as a separate package - I don't have 
+too many space on my www-server ;-))
+
+So you need to download something like
+http://xray.sai.msu.ru/~karpov/links-hacked/downloads/links-fonts-default.tgz
+untar it to Links source dir - font/ subdir will appear
+or copy this dir from your regular Links2 distro (graphics/font).
+
+Of course, you may create it yourself - now we have simple rasterizer
+for unicode ttf fonts - see utils/rasterizer.c
+
+Then:
+
+make distclean
+autoheader
+autoconf
+automake
+./configure
+make
+
+and so on, and so forth.
+
+You may configure default font families either by hacking the source, or
+by changing it through new (still very experimental) options system -
+just press Ctrl+o and change all that you want ;-)
+
+Happy hacking,
+
+					Sergey Karpov (karpov@sai.msu.su)

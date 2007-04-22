@@ -30,6 +30,9 @@
 #endif
 #include "DetectDVDType.h"
 #include "autorun.h"
+#ifdef WITH_LINKS_BROWSER
+#include "LinksBoksManager.h"
+#endif
 #include "filesystem/hddirectory.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
@@ -3029,6 +3032,10 @@ const BUILT_IN commands[] = {
   "RestartApp", "Restart XBMC",
   "Credits", "Run XBMCs Credits",
   "Reset", "Reset the xbox (warm reboot)",
+#ifdef WITH_LINKS_BROWSER
+  "BrowseURL", "Open WebBrowser and go to specified URL",
+  "WebBrowserControl", "Control the web browser",
+#endif
   "Mastermode","Control master mode",
   "ActivateWindow", "Activate the specified window",
   "ReplaceWindow", "Replaces the current window with the new one",
@@ -3175,6 +3182,49 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_applicationMessenger.Reset();
   }
+#ifdef WITH_LINKS_BROWSER
+  else if (execute.Equals("browseurl"))
+  {
+    // get the parameters
+    CStdString strURL;
+    strURL = parameter;
+
+    // disable the screensaver
+    g_application.ResetScreenSaverWindow();
+    // Get and launch WebBrowser Window
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_WEB_BROWSER);
+    m_gWindowManager.ActivateWindow(WINDOW_WEB_BROWSER, strURL);
+  }
+  else if (execute.Equals("webbrowsercontrol"))
+  {
+    // make sure the browser is running and the LinksBoksWindow is up
+    if (g_browserManager.isRunning())
+    {
+      ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+      if (pLB)
+      {
+        // determine what to do with it using the parameter
+        if (parameter.Equals("back"))
+          pLB->GoBack();
+        else if (parameter.Equals("forward"))
+          pLB->GoForward();
+        else if (parameter.Equals("stop"))
+          pLB->Stop();
+        else if (parameter.Equals("reload"))
+          pLB->Reload(true);
+        else if (parameter.Equals("gotourl"))
+        {
+          // Display a virtual keyboard for the user to enter an URL to go to
+          CStdString strURL;
+          if(pLB && CGUIDialogKeyboard::ShowAndGetInput(strURL, "Enter URL", false))
+          {
+            pLB->GoToURL((unsigned char *)strURL.c_str());
+          }
+        }
+      }
+    }
+  }
+#endif
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {
     // get the parameters

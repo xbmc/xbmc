@@ -33,6 +33,10 @@ public:
   DllLoader comctl32;
   DllLoader msvcrt;
   DllLoader msvcr71;
+#ifdef WITH_LINKS_BROWSER
+  DllLoader xbox_other;
+  DllLoader winsockx;
+#endif
   DllLoader pncrt;
   DllLoader iconvx;
   
