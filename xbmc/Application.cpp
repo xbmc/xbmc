@@ -604,36 +604,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     {
       // Start FTP with default settings
       FEH_TextOut(pFont, iLine++, L"Starting FTP server...");
-
-      m_pFileZilla = new CXBFileZilla(NULL);
-      m_pFileZilla->Start();
-
-      // Default settings
-      m_pFileZilla->mSettings.SetMaxUsers(0);
-      m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
-
-      // default user
-      CXFUser* pUser;
-      m_pFileZilla->AddUser("xbox", pUser);
-      pUser->SetPassword("xbox");
-      pUser->SetShortcutsEnabled(false);
-      pUser->SetUseRelativePaths(false);
-      pUser->SetBypassUserLimit(false);
-      pUser->SetUserLimit(0);
-      pUser->SetIPLimit(0);
-      pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
-      pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
-      pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      //Add. also Drive F/G
-      if (CIoSupport::DriveExists('F')){
-        pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      }
-      if (CIoSupport::DriveExists('G')){
-        pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      }
-      pUser->CommitChanges();
+      StartFtpEmergencyRecoveryMode();
     }
 
     FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
@@ -1479,15 +1450,29 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
-      // if user didn't upgrade properly...
+      CStdString xmlpath = "Q:\\System\\";
+      // if user didn't upgrade properly,
       // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
       if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
-        m_pFileZilla = new CXBFileZilla(g_settings.GetUserDataFolder());
+        xmlpath = g_settings.GetUserDataFolder();
+
+      // check file size and presence
+      CFile xml;
+      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      {
+        m_pFileZilla = new CXBFileZilla(xmlpath);
+        m_pFileZilla->Start(false);
+      }
       else
-        m_pFileZilla = new CXBFileZilla("Q:\\System\\");
-      m_pFileZilla->Start(false);
+      {
+        // 'FileZilla Server.xml' does not exist or is corrupt, 
+        // falling back to ftp emergency recovery mode
+        CLog::Log(LOGNOTICE, "XBFileZilla: 'FileZilla Server.xml' is missing or is corrupt!");
+        CLog::Log(LOGNOTICE, "XBFileZilla: Starting ftp emergency recovery mode");
+        StartFtpEmergencyRecoveryMode();
+      }
+      xml.Close();
     }
-    //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
 #endif
 }
@@ -5081,4 +5066,38 @@ void CApplication::CheckForDebugButtonCombo()
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
 #endif
 #endif
+}
+
+void CApplication::StartFtpEmergencyRecoveryMode()
+{
+  m_pFileZilla = new CXBFileZilla(NULL);
+  m_pFileZilla->Start();
+
+  // Default settings
+  m_pFileZilla->mSettings.SetMaxUsers(0);
+  m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
+
+  // default user
+  CXFUser* pUser;
+  m_pFileZilla->AddUser("xbox", pUser);
+  pUser->SetPassword("xbox");
+  pUser->SetShortcutsEnabled(false);
+  pUser->SetUseRelativePaths(false);
+  pUser->SetBypassUserLimit(false);
+  pUser->SetUserLimit(0);
+  pUser->SetIPLimit(0);
+  pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
+  pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  //Add. also Drive F/G
+  if (CIoSupport::DriveExists('F')){
+    pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists('G')){
+    pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  pUser->CommitChanges();
+
 }
