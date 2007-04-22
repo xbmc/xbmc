@@ -9,7 +9,9 @@ SRCS += demux_xmms.c
 endif 
 ifeq ($(MPLAYER_NETWORK),yes)
 SRCS += asf_streaming.c http.c network.c cookies.c asf_mmst_streaming.c pnm.c rtp.c
-SRCS += realrtsp/asmrp.c realrtsp/real.c realrtsp/rmff.c realrtsp/rtsp.c realrtsp/rtsp_session.c realrtsp/sdpplin.c realrtsp/xbuffer.c
+SRCS += realrtsp/asmrp.c realrtsp/real.c realrtsp/rmff.c realrtsp/sdpplin.c realrtsp/xbuffer.c
+SRCS += librtsp/rtsp.c librtsp/rtsp_session.c librtsp/rtsp_rtp.c
+SRCS += freesdp/common.c freesdp/errorlist.c freesdp/parser.c
 ifeq ($(STREAMING_LIVE_DOT_COM),yes)
 CPLUSPLUSSRCS = demux_rtp.cpp demux_rtp_codec.cpp
 CPLUSPLUSINCLUDE = $(LIVE_INCLUDES)

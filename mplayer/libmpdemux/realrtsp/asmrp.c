@@ -40,6 +40,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "mp_msg.h"
+#include "asmrp.h"
 
 /*
 #define LOG
@@ -95,7 +97,7 @@ typedef struct {
 
 } asmrp_t;
 
-static asmrp_t *asmrp_new () {
+static asmrp_t *asmrp_new (void) {
 
   asmrp_t *p;
 
@@ -159,9 +161,11 @@ static void asmrp_string (asmrp_t *p) {
 
   while ( (p->ch!='"') && (p->ch>=32) ) {
 
-    p->str[l] = p->ch;
+    if(l < ASMRP_MAX_ID - 1)
+      p->str[l++] = p->ch;
+    else
+      mp_msg(MSGT_STREAM, MSGL_ERR, "error: string too long, ignoring char %c.\n", p->ch);
 
-    l++;
     asmrp_getch (p);
   }
   p->str[l]=0;
@@ -181,9 +185,11 @@ static void asmrp_identifier (asmrp_t *p) {
   while ( ((p->ch>='A') && (p->ch<='z'))
 	  || ((p->ch>='0') && (p->ch<='9'))) {
 
-    p->str[l] = p->ch;
+    if(l < ASMRP_MAX_ID - 1)
+      p->str[l++] = p->ch;
+    else
+      mp_msg(MSGT_STREAM, MSGL_ERR, "error: identifier too long, ignoring char %c.\n", p->ch);
 
-    l++;
     asmrp_getch (p);
   }
   p->str[l]=0;
@@ -379,6 +385,10 @@ static int asmrp_set_id (asmrp_t *p, char *s, int v) {
   i = asmrp_find_id (p, s);
 
   if (i<0) {
+    if (p->sym_tab_num == ASMRP_MAX_SYMTAB - 1) {
+      mp_msg(MSGT_STREAM, MSGL_ERR, "sym_tab overflow, ignoring identifier %s\n", s);
+      return 0;
+    }
     i = p->sym_tab_num;
     p->sym_tab_num++;
     p->sym_tab[i].id = strdup (s);
@@ -417,14 +427,14 @@ static int asmrp_operand (asmrp_t *p) {
     asmrp_get_sym (p);
     
     if (p->sym != ASMRP_SYM_ID) {
-      printf ("error: identifier expected.\n");
-      abort();
+      mp_msg(MSGT_STREAM, MSGL_ERR, "error: identifier expected.\n");
+      break;
     }
 
     i = asmrp_find_id (p, p->str);
     if (i<0) {
-      printf ("error: unknown identifier %s\n", p->str);
-    }
+      mp_msg(MSGT_STREAM, MSGL_ERR, "error: unknown identifier %s\n", p->str);
+    } else
     ret = p->sym_tab[i].v;
 
     asmrp_get_sym (p);
@@ -442,16 +452,15 @@ static int asmrp_operand (asmrp_t *p) {
     ret = asmrp_condition (p);
 
     if (p->sym != ASMRP_SYM_RPAREN) {
-      printf ("error: ) expected.\n");
-      abort();
+      mp_msg(MSGT_STREAM, MSGL_ERR, "error: ) expected.\n");
+      break;
     }
 
     asmrp_get_sym (p);
     break;
 
   default:
-    printf ("syntax error, $ number or ( expected\n");
-    abort();
+    mp_msg(MSGT_STREAM, MSGL_ERR, "syntax error, $ number or ( expected\n");
   }
 
 #ifdef LOG
@@ -460,6 +469,7 @@ static int asmrp_operand (asmrp_t *p) {
   
   return ret;
 }
+
 
 static int asmrp_comp_expression (asmrp_t *p) {
 
@@ -558,21 +568,21 @@ static void asmrp_assignment (asmrp_t *p) {
   }
 
   if (p->sym != ASMRP_SYM_ID) {
-    printf ("error: identifier expected\n");
-    abort ();
+    mp_msg(MSGT_STREAM, MSGL_ERR, "error: identifier expected\n");
+    return;
   }
   asmrp_get_sym (p);
 
   if (p->sym != ASMRP_SYM_EQUALS) {
-    printf ("error: = expected\n");
-    abort ();
+    mp_msg(MSGT_STREAM, MSGL_ERR, "error: = expected\n");
+    return;
   }
   asmrp_get_sym (p);
 
   if ( (p->sym != ASMRP_SYM_NUM) && (p->sym != ASMRP_SYM_STRING) 
        && (p->sym != ASMRP_SYM_ID)) {
-    printf ("error: number or string expected\n");
-    abort ();
+    mp_msg(MSGT_STREAM, MSGL_ERR, "error: number or string expected\n");
+    return;
   }
   asmrp_get_sym (p);
 
@@ -619,8 +629,8 @@ static int asmrp_rule (asmrp_t *p) {
 #endif
 
   if (p->sym != ASMRP_SYM_SEMICOLON) {
-    printf ("semicolon expected.\n");
-    abort ();
+    mp_msg(MSGT_STREAM, MSGL_ERR, "semicolon expected.\n");
+    return ret;
   }
 
   asmrp_get_sym (p);
@@ -645,8 +655,11 @@ static int asmrp_eval (asmrp_t *p, int *matches) {
 #ifdef LOG
       printf ("rule #%d is true\n", rule_num);
 #endif
-      matches[num_matches] = rule_num;
-      num_matches++;
+      if(num_matches < MAX_RULEMATCHES - 1)
+        matches[num_matches++] = rule_num;
+      else
+        mp_msg(MSGT_STREAM, MSGL_ERR,
+	  "Ignoring matched asm rule %d, too many matched rules.\n", rule_num);
     }
 
     rule_num++;

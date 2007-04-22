@@ -28,16 +28,12 @@
 
 #include "rmff.h"
 #include "xbuffer.h"
+#include "mp_msg.h"
+#include "libavutil/intreadwrite.h"
 
 /*
 #define LOG
 */
-
-#define BE_16(x)  ((((uint8_t*)(x))[0] << 8) | ((uint8_t*)(x))[1])
-#define BE_32(x)  ((((uint8_t*)(x))[0] << 24) | \
-                   (((uint8_t*)(x))[1] << 16) | \
-                   (((uint8_t*)(x))[2] << 8) | \
-                    ((uint8_t*)(x))[3])
 
 static void hexdump (const char *buf, int length) {
 
@@ -74,199 +70,171 @@ static void hexdump (const char *buf, int length) {
  * writes header data to a buffer
  */
 
-static void rmff_dump_fileheader(rmff_fileheader_t *fileheader, char *buffer) {
+static int rmff_dump_fileheader(rmff_fileheader_t *fileheader, char *buffer, int bufsize) {
 
-  if (!fileheader) return;
-  fileheader->object_id=BE_32(&fileheader->object_id);
-  fileheader->size=BE_32(&fileheader->size);
-  fileheader->object_version=BE_16(&fileheader->object_version);
-  fileheader->file_version=BE_32(&fileheader->file_version);
-  fileheader->num_headers=BE_32(&fileheader->num_headers);
-  
-  memcpy(buffer, fileheader, 8);
-  memcpy(&buffer[8], &fileheader->object_version, 2);
-  memcpy(&buffer[10], &fileheader->file_version, 8);
+  if (!fileheader) return 0;
 
-  fileheader->size=BE_32(&fileheader->size);
-  fileheader->object_version=BE_16(&fileheader->object_version);
-  fileheader->file_version=BE_32(&fileheader->file_version);
-  fileheader->num_headers=BE_32(&fileheader->num_headers);
-  fileheader->object_id=BE_32(&fileheader->object_id);
+  if (bufsize < RMFF_FILEHEADER_SIZE)
+    return -1;
+
+  AV_WB32(buffer, fileheader->object_id);
+  AV_WB32(buffer+4, fileheader->size);
+  AV_WB16(buffer+8, fileheader->object_version);
+  AV_WB32(buffer+10, fileheader->file_version);
+  AV_WB32(buffer+14, fileheader->num_headers);
+
+  return RMFF_FILEHEADER_SIZE;
 }
 
-static void rmff_dump_prop(rmff_prop_t *prop, char *buffer) {
+static int rmff_dump_prop(rmff_prop_t *prop, char *buffer, int bufsize) {
 
-  if (!prop) return;
-  prop->object_id=BE_32(&prop->object_id);
-  prop->size=BE_32(&prop->size);
-  prop->object_version=BE_16(&prop->object_version);
-  prop->max_bit_rate=BE_32(&prop->max_bit_rate);
-  prop->avg_bit_rate=BE_32(&prop->avg_bit_rate);
-  prop->max_packet_size=BE_32(&prop->max_packet_size);
-  prop->avg_packet_size=BE_32(&prop->avg_packet_size);
-  prop->num_packets=BE_32(&prop->num_packets);
-  prop->duration=BE_32(&prop->duration);
-  prop->preroll=BE_32(&prop->preroll);
-  prop->index_offset=BE_32(&prop->index_offset);
-  prop->data_offset=BE_32(&prop->data_offset);
-  prop->num_streams=BE_16(&prop->num_streams);
-  prop->flags=BE_16(&prop->flags);
+  if (!prop) return 0;
 
-  memcpy(buffer, prop, 8);
-  memcpy(&buffer[8], &prop->object_version, 2);
-  memcpy(&buffer[10], &prop->max_bit_rate, 36);
-  memcpy(&buffer[46], &prop->num_streams, 2);
-  memcpy(&buffer[48], &prop->flags, 2);
-  
-  prop->size=BE_32(&prop->size);
-  prop->object_version=BE_16(&prop->object_version);
-  prop->max_bit_rate=BE_32(&prop->max_bit_rate);
-  prop->avg_bit_rate=BE_32(&prop->avg_bit_rate);
-  prop->max_packet_size=BE_32(&prop->max_packet_size);
-  prop->avg_packet_size=BE_32(&prop->avg_packet_size);
-  prop->num_packets=BE_32(&prop->num_packets);
-  prop->duration=BE_32(&prop->duration);
-  prop->preroll=BE_32(&prop->preroll);
-  prop->index_offset=BE_32(&prop->index_offset);
-  prop->data_offset=BE_32(&prop->data_offset);
-  prop->num_streams=BE_16(&prop->num_streams);
-  prop->flags=BE_16(&prop->flags);
-  prop->object_id=BE_32(&prop->object_id);
+  if (bufsize < RMFF_PROPHEADER_SIZE)
+    return -1;
+
+  AV_WB32(buffer, prop->object_id);
+  AV_WB32(buffer+4, prop->size);
+  AV_WB16(buffer+8, prop->object_version);
+  AV_WB32(buffer+10, prop->max_bit_rate);
+  AV_WB32(buffer+14, prop->avg_bit_rate);
+  AV_WB32(buffer+18, prop->max_packet_size);
+  AV_WB32(buffer+22, prop->avg_packet_size);
+  AV_WB32(buffer+26, prop->num_packets);
+  AV_WB32(buffer+30, prop->duration);
+  AV_WB32(buffer+34, prop->preroll);
+  AV_WB32(buffer+38, prop->index_offset);
+  AV_WB32(buffer+42, prop->data_offset);
+  AV_WB16(buffer+46, prop->num_streams);
+  AV_WB16(buffer+48, prop->flags);
+
+  return RMFF_PROPHEADER_SIZE;
 }
 
-static void rmff_dump_mdpr(rmff_mdpr_t *mdpr, char *buffer) {
+static int rmff_dump_mdpr(rmff_mdpr_t *mdpr, char *buffer, int bufsize) {
 
   int s1, s2, s3;
 
-  if (!mdpr) return;
-  mdpr->object_id=BE_32(&mdpr->object_id);
-  mdpr->size=BE_32(&mdpr->size);
-  mdpr->object_version=BE_16(&mdpr->object_version);
-  mdpr->stream_number=BE_16(&mdpr->stream_number);
-  mdpr->max_bit_rate=BE_32(&mdpr->max_bit_rate);
-  mdpr->avg_bit_rate=BE_32(&mdpr->avg_bit_rate);
-  mdpr->max_packet_size=BE_32(&mdpr->max_packet_size);
-  mdpr->avg_packet_size=BE_32(&mdpr->avg_packet_size);
-  mdpr->start_time=BE_32(&mdpr->start_time);
-  mdpr->preroll=BE_32(&mdpr->preroll);
-  mdpr->duration=BE_32(&mdpr->duration);
+  if (!mdpr) return 0;
 
-  memcpy(buffer, mdpr, 8);
-  memcpy(&buffer[8], &mdpr->object_version, 2);
-  memcpy(&buffer[10], &mdpr->stream_number, 2);
-  memcpy(&buffer[12], &mdpr->max_bit_rate, 28);
-  memcpy(&buffer[40], &mdpr->stream_name_size, 1);
+  if (!(bufsize > RMFF_MDPRHEADER_SIZE + mdpr->stream_name_size + mdpr->mime_type_size &&
+        (unsigned)bufsize - RMFF_MDPRHEADER_SIZE - mdpr->stream_name_size - mdpr->mime_type_size > mdpr->type_specific_len))
+    return -1;
+
+  AV_WB32(buffer, mdpr->object_id);
+  AV_WB32(buffer+4, mdpr->size);
+  AV_WB16(buffer+8, mdpr->object_version);
+  AV_WB16(buffer+10, mdpr->stream_number);
+  AV_WB32(buffer+12, mdpr->max_bit_rate);
+  AV_WB32(buffer+16, mdpr->avg_bit_rate);
+  AV_WB32(buffer+20, mdpr->max_packet_size);
+  AV_WB32(buffer+24, mdpr->avg_packet_size);
+  AV_WB32(buffer+28, mdpr->start_time);
+  AV_WB32(buffer+32, mdpr->preroll);
+  AV_WB32(buffer+36, mdpr->duration);
+
+  buffer[40] = mdpr->stream_name_size;
   s1=mdpr->stream_name_size;
   memcpy(&buffer[41], mdpr->stream_name, s1);
 
-  memcpy(&buffer[41+s1], &mdpr->mime_type_size, 1);
+  buffer[41+s1] = mdpr->mime_type_size;
   s2=mdpr->mime_type_size;
   memcpy(&buffer[42+s1], mdpr->mime_type, s2);
   
-  mdpr->type_specific_len=BE_32(&mdpr->type_specific_len);
-  memcpy(&buffer[42+s1+s2], &mdpr->type_specific_len, 4);
-  mdpr->type_specific_len=BE_32(&mdpr->type_specific_len);
+  AV_WB32(buffer+42+s1+s2, mdpr->type_specific_len);
   s3=mdpr->type_specific_len;
   memcpy(&buffer[46+s1+s2], mdpr->type_specific_data, s3);
 
-  mdpr->size=BE_32(&mdpr->size);
-  mdpr->stream_number=BE_16(&mdpr->stream_number);
-  mdpr->max_bit_rate=BE_32(&mdpr->max_bit_rate);
-  mdpr->avg_bit_rate=BE_32(&mdpr->avg_bit_rate);
-  mdpr->max_packet_size=BE_32(&mdpr->max_packet_size);
-  mdpr->avg_packet_size=BE_32(&mdpr->avg_packet_size);
-  mdpr->start_time=BE_32(&mdpr->start_time);
-  mdpr->preroll=BE_32(&mdpr->preroll);
-  mdpr->duration=BE_32(&mdpr->duration);
-  mdpr->object_id=BE_32(&mdpr->object_id);
-
+  return RMFF_MDPRHEADER_SIZE + s1 + s2 + s3;
 }
 
-static void rmff_dump_cont(rmff_cont_t *cont, char *buffer) {
+static int rmff_dump_cont(rmff_cont_t *cont, char *buffer, int bufsize) {
 
   int p;
 
-  if (!cont) return;
-  cont->object_id=BE_32(&cont->object_id);
-  cont->size=BE_32(&cont->size);
-  cont->object_version=BE_16(&cont->object_version);
+  if (!cont) return 0;
 
-  memcpy(buffer, cont, 8);
-  memcpy(&buffer[8], &cont->object_version, 2);
+  if (bufsize < RMFF_CONTHEADER_SIZE + cont->title_len + cont->author_len +
+      cont->copyright_len + cont->comment_len)
+    return -1;
+
+  AV_WB32(buffer, cont->object_id);
+  AV_WB32(buffer+4, cont->size);
+  AV_WB16(buffer+8, cont->object_version);
   
-  cont->title_len=BE_16(&cont->title_len);
-  memcpy(&buffer[10], &cont->title_len, 2);
-  cont->title_len=BE_16(&cont->title_len);
+  AV_WB16(buffer+10, cont->title_len);
   memcpy(&buffer[12], cont->title, cont->title_len);
   p=12+cont->title_len;
 
-  cont->author_len=BE_16(&cont->author_len);
-  memcpy(&buffer[p], &cont->author_len, 2);
-  cont->author_len=BE_16(&cont->author_len);
+  AV_WB16(buffer+p, cont->author_len);
   memcpy(&buffer[p+2], cont->author, cont->author_len);
   p+=2+cont->author_len;
 
-  cont->copyright_len=BE_16(&cont->copyright_len);
-  memcpy(&buffer[p], &cont->copyright_len, 2);
-  cont->copyright_len=BE_16(&cont->copyright_len);
+  AV_WB16(buffer+p, cont->copyright_len);
   memcpy(&buffer[p+2], cont->copyright, cont->copyright_len);
   p+=2+cont->copyright_len;
 
-  cont->comment_len=BE_16(&cont->comment_len);
-  memcpy(&buffer[p], &cont->comment_len, 2);
-  cont->comment_len=BE_16(&cont->comment_len);
+  AV_WB16(buffer+p, cont->comment_len);
   memcpy(&buffer[p+2], cont->comment, cont->comment_len);
 
-  cont->size=BE_32(&cont->size);
-  cont->object_version=BE_16(&cont->object_version);
-  cont->object_id=BE_32(&cont->object_id);
+  return RMFF_CONTHEADER_SIZE + cont->title_len + cont->author_len +
+         cont->copyright_len + cont->comment_len;
 }
 
-static void rmff_dump_dataheader(rmff_data_t *data, char *buffer) {
+static int rmff_dump_dataheader(rmff_data_t *data, char *buffer, int bufsize) {
 
-  if (!data) return;
-  data->object_id=BE_32(&data->object_id);
-  data->size=BE_32(&data->size);
-  data->object_version=BE_16(&data->object_version);
-  data->num_packets=BE_32(&data->num_packets);
-  data->next_data_header=BE_32(&data->next_data_header);
+  if (!data) return 0;
 
-  memcpy(buffer, data, 8);
-  memcpy(&buffer[8], &data->object_version, 2);
-  memcpy(&buffer[10], &data->num_packets, 8);
-  
-  data->num_packets=BE_32(&data->num_packets);
-  data->next_data_header=BE_32(&data->next_data_header);
-  data->size=BE_32(&data->size);
-  data->object_version=BE_16(&data->object_version);
-  data->object_id=BE_32(&data->object_id);
+  if (bufsize < RMFF_DATAHEADER_SIZE)
+    return -1;
+
+  AV_WB32(buffer, data->object_id);
+  AV_WB32(buffer+4, data->size);
+  AV_WB16(buffer+8, data->object_version);
+  AV_WB32(buffer+10, data->num_packets);
+  AV_WB32(buffer+14, data->next_data_header);
+
+  return RMFF_DATAHEADER_SIZE;
 }
 
 int rmff_dump_header(rmff_header_t *h, char *buffer, int max) {
 
-  int written=0;
+  int written=0, size;
   rmff_mdpr_t **stream=h->streams;
 
-  rmff_dump_fileheader(h->fileheader, &buffer[written]);
-  written+=h->fileheader->size;
-  rmff_dump_prop(h->prop, &buffer[written]);
-  written+=h->prop->size;
-  rmff_dump_cont(h->cont, &buffer[written]);
-  written+=h->cont->size;
+  if ((size=rmff_dump_fileheader(h->fileheader, &buffer[written], max)) < 0)
+    goto buftoosmall;
+  written+=size;
+  max -= size;
+  if ((size=rmff_dump_prop(h->prop, &buffer[written], max)) < 0)
+    goto buftoosmall;
+  written+=size;
+  max -= size;
+  if ((size=rmff_dump_cont(h->cont, &buffer[written], max)) < 0)
+    goto buftoosmall;
+  written+=size;
+  max -= size;
   if (stream)
   {
     while(*stream)
     {
-      rmff_dump_mdpr(*stream, &buffer[written]);
-      written+=(*stream)->size;
+      if ((size=rmff_dump_mdpr(*stream, &buffer[written], max)) < 0)
+        goto buftoosmall;
+      written+=size;
+      max -= size;
       stream++;
     }
   }
     
-  rmff_dump_dataheader(h->data, &buffer[written]);
-  written+=18;
+  if ((size=rmff_dump_dataheader(h->data, &buffer[written], max)) < 0)
+    goto buftoosmall;
+  written+=size;
 
   return written;
+
+buftoosmall:
+  mp_msg(MSGT_STREAM, MSGL_ERR, "rmff_dumpheader: buffer too small, aborting. Please report\n");
+  return -1;
 }
 
 void rmff_dump_pheader(rmff_pheader_t *h, char *data) {
@@ -289,16 +257,16 @@ static rmff_fileheader_t *rmff_scan_fileheader(const char *data) {
 
   rmff_fileheader_t *fileheader=malloc(sizeof(rmff_fileheader_t));
 
-  fileheader->object_id=BE_32(data);
-  fileheader->size=BE_32(&data[4]);
-  fileheader->object_version=BE_16(&data[8]);
+  fileheader->object_id=AV_RB32(data);
+  fileheader->size=AV_RB32(&data[4]);
+  fileheader->object_version=AV_RB16(&data[8]);
   if (fileheader->object_version != 0)
   {
-    printf("warning: unknown object version in .RMF: 0x%04x\n",
+    mp_msg(MSGT_STREAM, MSGL_WARN, "warning: unknown object version in .RMF: 0x%04x\n",
       fileheader->object_version);
   }
-  fileheader->file_version=BE_32(&data[10]);
-  fileheader->num_headers=BE_32(&data[14]);
+  fileheader->file_version=AV_RB32(&data[10]);
+  fileheader->num_headers=AV_RB32(&data[14]);
 
   return fileheader;
 }
@@ -307,25 +275,25 @@ static rmff_prop_t *rmff_scan_prop(const char *data) {
 
   rmff_prop_t *prop=malloc(sizeof(rmff_prop_t));
 
-  prop->object_id=BE_32(data);
-  prop->size=BE_32(&data[4]);
-  prop->object_version=BE_16(&data[8]);
+  prop->object_id=AV_RB32(data);
+  prop->size=AV_RB32(&data[4]);
+  prop->object_version=AV_RB16(&data[8]);
   if (prop->object_version != 0)
   {
-    printf("warning: unknown object version in PROP: 0x%04x\n",
+    mp_msg(MSGT_STREAM, MSGL_WARN, "warning: unknown object version in PROP: 0x%04x\n",
       prop->object_version);
   }
-  prop->max_bit_rate=BE_32(&data[10]);
-  prop->avg_bit_rate=BE_32(&data[14]);
-  prop->max_packet_size=BE_32(&data[18]);
-  prop->avg_packet_size=BE_32(&data[22]);
-  prop->num_packets=BE_32(&data[26]);
-  prop->duration=BE_32(&data[30]);
-  prop->preroll=BE_32(&data[34]);
-  prop->index_offset=BE_32(&data[38]);
-  prop->data_offset=BE_32(&data[42]);
-  prop->num_streams=BE_16(&data[46]);
-  prop->flags=BE_16(&data[48]);
+  prop->max_bit_rate=AV_RB32(&data[10]);
+  prop->avg_bit_rate=AV_RB32(&data[14]);
+  prop->max_packet_size=AV_RB32(&data[18]);
+  prop->avg_packet_size=AV_RB32(&data[22]);
+  prop->num_packets=AV_RB32(&data[26]);
+  prop->duration=AV_RB32(&data[30]);
+  prop->preroll=AV_RB32(&data[34]);
+  prop->index_offset=AV_RB32(&data[38]);
+  prop->data_offset=AV_RB32(&data[42]);
+  prop->num_streams=AV_RB16(&data[46]);
+  prop->flags=AV_RB16(&data[48]);
 
   return prop;
 }
@@ -334,35 +302,35 @@ static rmff_mdpr_t *rmff_scan_mdpr(const char *data) {
 
   rmff_mdpr_t *mdpr=malloc(sizeof(rmff_mdpr_t));
 
-  mdpr->object_id=BE_32(data);
-  mdpr->size=BE_32(&data[4]);
-  mdpr->object_version=BE_16(&data[8]);
+  mdpr->object_id=AV_RB32(data);
+  mdpr->size=AV_RB32(&data[4]);
+  mdpr->object_version=AV_RB16(&data[8]);
   if (mdpr->object_version != 0)
   {
-    printf("warning: unknown object version in MDPR: 0x%04x\n",
+    mp_msg(MSGT_STREAM, MSGL_WARN, "warning: unknown object version in MDPR: 0x%04x\n",
       mdpr->object_version);
   }
-  mdpr->stream_number=BE_16(&data[10]);
-  mdpr->max_bit_rate=BE_32(&data[12]);
-  mdpr->avg_bit_rate=BE_32(&data[16]);
-  mdpr->max_packet_size=BE_32(&data[20]);
-  mdpr->avg_packet_size=BE_32(&data[24]);
-  mdpr->start_time=BE_32(&data[28]);
-  mdpr->preroll=BE_32(&data[32]);
-  mdpr->duration=BE_32(&data[36]);
+  mdpr->stream_number=AV_RB16(&data[10]);
+  mdpr->max_bit_rate=AV_RB32(&data[12]);
+  mdpr->avg_bit_rate=AV_RB32(&data[16]);
+  mdpr->max_packet_size=AV_RB32(&data[20]);
+  mdpr->avg_packet_size=AV_RB32(&data[24]);
+  mdpr->start_time=AV_RB32(&data[28]);
+  mdpr->preroll=AV_RB32(&data[32]);
+  mdpr->duration=AV_RB32(&data[36]);
   
   mdpr->stream_name_size=data[40];
-  mdpr->stream_name=malloc(sizeof(char)*(mdpr->stream_name_size+1));
+  mdpr->stream_name=malloc(mdpr->stream_name_size+1);
   memcpy(mdpr->stream_name, &data[41], mdpr->stream_name_size);
   mdpr->stream_name[mdpr->stream_name_size]=0;
   
   mdpr->mime_type_size=data[41+mdpr->stream_name_size];
-  mdpr->mime_type=malloc(sizeof(char)*(mdpr->mime_type_size+1));
+  mdpr->mime_type=malloc(mdpr->mime_type_size+1);
   memcpy(mdpr->mime_type, &data[42+mdpr->stream_name_size], mdpr->mime_type_size);
   mdpr->mime_type[mdpr->mime_type_size]=0;
   
-  mdpr->type_specific_len=BE_32(&data[42+mdpr->stream_name_size+mdpr->mime_type_size]);
-  mdpr->type_specific_data=malloc(sizeof(char)*(mdpr->type_specific_len));
+  mdpr->type_specific_len=AV_RB32(&data[42+mdpr->stream_name_size+mdpr->mime_type_size]);
+  mdpr->type_specific_data=malloc(mdpr->type_specific_len);
   memcpy(mdpr->type_specific_data, 
       &data[46+mdpr->stream_name_size+mdpr->mime_type_size], mdpr->type_specific_len);
   
@@ -374,31 +342,31 @@ static rmff_cont_t *rmff_scan_cont(const char *data) {
   rmff_cont_t *cont=malloc(sizeof(rmff_cont_t));
   int pos;
 
-  cont->object_id=BE_32(data);
-  cont->size=BE_32(&data[4]);
-  cont->object_version=BE_16(&data[8]);
+  cont->object_id=AV_RB32(data);
+  cont->size=AV_RB32(&data[4]);
+  cont->object_version=AV_RB16(&data[8]);
   if (cont->object_version != 0)
   {
-    printf("warning: unknown object version in CONT: 0x%04x\n",
+    mp_msg(MSGT_STREAM, MSGL_WARN, "warning: unknown object version in CONT: 0x%04x\n",
       cont->object_version);
   }
-  cont->title_len=BE_16(&data[10]);
-  cont->title=malloc(sizeof(char)*(cont->title_len+1));
+  cont->title_len=AV_RB16(&data[10]);
+  cont->title=malloc(cont->title_len+1);
   memcpy(cont->title, &data[12], cont->title_len);
   cont->title[cont->title_len]=0;
   pos=cont->title_len+12;
-  cont->author_len=BE_16(&data[pos]);
-  cont->author=malloc(sizeof(char)*(cont->author_len+1));
+  cont->author_len=AV_RB16(&data[pos]);
+  cont->author=malloc(cont->author_len+1);
   memcpy(cont->author, &data[pos+2], cont->author_len);
   cont->author[cont->author_len]=0;
   pos=pos+2+cont->author_len;
-  cont->copyright_len=BE_16(&data[pos]);
-  cont->copyright=malloc(sizeof(char)*(cont->copyright_len+1));
+  cont->copyright_len=AV_RB16(&data[pos]);
+  cont->copyright=malloc(cont->copyright_len+1);
   memcpy(cont->copyright, &data[pos+2], cont->copyright_len);
   cont->copyright[cont->copyright_len]=0;
   pos=pos+2+cont->copyright_len;
-  cont->comment_len=BE_16(&data[pos]);
-  cont->comment=malloc(sizeof(char)*(cont->comment_len+1));
+  cont->comment_len=AV_RB16(&data[pos]);
+  cont->comment=malloc(cont->comment_len+1);
   memcpy(cont->comment, &data[pos+2], cont->comment_len);
   cont->comment[cont->comment_len]=0;
 
@@ -409,16 +377,16 @@ static rmff_data_t *rmff_scan_dataheader(const char *data) {
 
   rmff_data_t *dh=malloc(sizeof(rmff_data_t));
 
-  dh->object_id=BE_32(data);
-  dh->size=BE_32(&data[4]);
-  dh->object_version=BE_16(&data[8]);
+  dh->object_id=AV_RB32(data);
+  dh->size=AV_RB32(&data[4]);
+  dh->object_version=AV_RB16(&data[8]);
   if (dh->object_version != 0)
   {
-    printf("warning: unknown object version in DATA: 0x%04x\n",
+    mp_msg(MSGT_STREAM, MSGL_WARN, "warning: unknown object version in DATA: 0x%04x\n",
       dh->object_version);
   }
-  dh->num_packets=BE_32(&data[10]);
-  dh->next_data_header=BE_32(&data[14]);
+  dh->num_packets=AV_RB32(&data[10]);
+  dh->next_data_header=AV_RB32(&data[14]);
 
   return dh;
 }
@@ -437,10 +405,10 @@ rmff_header_t *rmff_scan_header(const char *data) {
 	header->cont=NULL;
 	header->data=NULL;
 
-  chunk_type = BE_32(ptr);
+  chunk_type = AV_RB32(ptr);
   if (chunk_type != RMF_TAG)
   {
-    printf("rmff: not an real media file header (.RMF tag not found).\n");
+    mp_msg(MSGT_STREAM, MSGL_ERR, "rmff: not an real media file header (.RMF tag not found).\n");
     free(header);
     return NULL;
   }
@@ -453,11 +421,11 @@ rmff_header_t *rmff_scan_header(const char *data) {
   }
   
   for (i=1; i<header->fileheader->num_headers; i++) {
-    chunk_type = BE_32(ptr);
+    chunk_type = AV_RB32(ptr);
   
     if (ptr[0] == 0)
     {
-      printf("rmff: warning: only %d of %d header found.\n", i, header->fileheader->num_headers);
+      mp_msg(MSGT_STREAM, MSGL_WARN, "rmff: warning: only %d of %d header found.\n", i, header->fileheader->num_headers);
       break;
     }
     
@@ -481,7 +449,7 @@ rmff_header_t *rmff_scan_header(const char *data) {
       chunk_size=34;     /* hard coded header size */
       break;
     default:
-      printf("unknown chunk\n");
+      mp_msg(MSGT_STREAM, MSGL_WARN, "unknown chunk\n");
       hexdump(ptr,10);
       chunk_size=1;
       break;
@@ -503,8 +471,8 @@ rmff_header_t *rmff_scan_header_stream(int fd) {
   do {
     buf = xbuffer_ensure_size(buf, index+8);
     recv(fd, buf+index, 8, 0);
-    chunk_type=BE_32(buf+index); index+=4;
-    chunk_size=BE_32(buf+index); index+=4;
+    chunk_type=AV_RB32(buf+index); index+=4;
+    chunk_size=AV_RB32(buf+index); index+=4;
 
     switch (chunk_type) {
       case DATA_TAG:
@@ -518,7 +486,7 @@ rmff_header_t *rmff_scan_header_stream(int fd) {
 	index+=(chunk_size-8);
         break;
       default:
-        printf("rmff_scan_header_stream: unknown chunk");
+        mp_msg(MSGT_STREAM, MSGL_WARN, "rmff_scan_header_stream: unknown chunk");
         hexdump(buf+index-8, 8);
         chunk_type=DATA_TAG;
     }
@@ -533,10 +501,10 @@ rmff_header_t *rmff_scan_header_stream(int fd) {
 
 void rmff_scan_pheader(rmff_pheader_t *h, char *data) {
 
-  h->object_version=BE_16(data);
-  h->length=BE_16(data+2);
-  h->stream_number=BE_16(data+4);
-  h->timestamp=BE_32(data+6);
+  h->object_version=AV_RB16(data);
+  h->length=AV_RB16(data+2);
+  h->stream_number=AV_RB16(data+4);
+  h->timestamp=AV_RB32(data+6);
   h->reserved=(uint8_t)data[10];
   h->flags=(uint8_t)data[11];
 }
@@ -626,7 +594,7 @@ rmff_mdpr_t *rmff_new_mdpr(
     mdpr->mime_type_size=strlen(mime_type);
   }
   mdpr->type_specific_len=type_specific_len;
-  mdpr->type_specific_data=malloc(sizeof(char)*type_specific_len);
+  mdpr->type_specific_data=malloc(type_specific_len);
   memcpy(mdpr->type_specific_data,type_specific_data,type_specific_len);
   mdpr->mlti_data=NULL;
   
@@ -759,12 +727,12 @@ void rmff_fix_header(rmff_header_t *h) {
   int num_streams=0;
 
   if (!h) {
-    printf("rmff_fix_header: fatal: no header given.\n");
+    mp_msg(MSGT_STREAM, MSGL_ERR, "rmff_fix_header: fatal: no header given.\n");
     return;
   }
 
   if (!h->streams) {
-    printf("rmff_fix_header: warning: no MDPR chunks\n");
+    mp_msg(MSGT_STREAM, MSGL_WARN, "rmff_fix_header: warning: no MDPR chunks\n");
   } else
   {
     streams=h->streams;
@@ -795,13 +763,13 @@ void rmff_fix_header(rmff_header_t *h) {
     num_headers++;
     header_size+=50;
   } else
-    printf("rmff_fix_header: warning: no PROP chunk.\n");
+    mp_msg(MSGT_STREAM, MSGL_WARN, "rmff_fix_header: warning: no PROP chunk.\n");
 
   if (h->cont) {
     num_headers++;
     header_size+=h->cont->size;
   } else
-    printf("rmff_fix_header: warning: no CONT chunk.\n");
+    mp_msg(MSGT_STREAM, MSGL_WARN, "rmff_fix_header: warning: no CONT chunk.\n");
 
   if (!h->data) {
 #ifdef LOG
