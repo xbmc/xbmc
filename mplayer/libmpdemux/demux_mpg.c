@@ -43,18 +43,6 @@ extern char* dvdsub_lang;
 static int mpeg_pts_error=0;
 off_t ps_probe = 0;
 
-#ifdef _XBOX
-float demux_mpg_get_first_pts(demuxer_t* demuxer)
-{
-  if (demuxer->priv)
-  {
-    mpg_demuxer_t* mpg_d = demuxer->priv;
-    return mpg_d->first_pts;
-  }
-  return 0;
-}
-#endif
-
 static int parse_psm(demuxer_t *demux, int len) {
   unsigned char c, id, type;
   unsigned int plen, prog_len, es_map_len;
@@ -1032,6 +1020,12 @@ int demux_mpg_control(demuxer_t *demuxer,int cmd, void *arg){
             }
             *((int*)arg) = demuxer->audio->id;
             return DEMUXER_CTRL_OK;
+
+  case DEMUXER_CTRL_GET_TIME_START:
+    if (!mpg_d)
+      return DEMUXER_CTRL_DONTKNOW;
+    *((float *)arg) = mpg_d->first_pts;
+    return DEMUXER_CTRL_OK;
 
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;

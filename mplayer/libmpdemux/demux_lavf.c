@@ -476,6 +476,12 @@ int demux_lavf_control(demuxer_t *demuxer, int cmd, void *arg)
 	    
 	    *((int *)arg) = (int)((priv->last_pts - priv->avfc->start_time)*100 / priv->avfc->duration);
 	    return DEMUXER_CTRL_OK;
+
+  case DEMUXER_CTRL_GET_TIME_START:
+    if (!priv || !priv->avfc)
+      return DEMUXER_CTRL_DONTKNOW;
+    *((float *)arg) = (float)priv->avfc->start_time / AV_TIME_BASE;
+    return DEMUXER_CTRL_OK;
 	
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;

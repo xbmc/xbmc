@@ -1611,6 +1611,9 @@ extern int demux_ogg_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_real_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_lavf_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_mov_control(demuxer_t *demuxer, int cmd, void *arg);
+#ifdef _XBOX
+extern int demux_ts_control(demuxer_t *demuxer, int cmd, void *arg);
+#endif
 
 int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
     switch(demuxer->type) {
@@ -1619,7 +1622,6 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
 	case DEMUXER_TYPE_MPEG4_ES:
 	case DEMUXER_TYPE_MPEG_ES:
 	case DEMUXER_TYPE_MPEG_PS:
-	case DEMUXER_TYPE_MPEG_TS:
 	    return demux_mpg_control(demuxer,cmd,arg);
 	case DEMUXER_TYPE_ASF:
 	    return demux_asf_control(demuxer,cmd,arg);
@@ -1649,7 +1651,10 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
 #endif
         case DEMUXER_TYPE_MOV:
   	    return demux_mov_control(demuxer, cmd, arg);
-
+#ifdef _XBOX
+  case DEMUXER_TYPE_MPEG_TS:
+    return demux_ts_control(demuxer, cmd, arg);
+#endif
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;
     }
