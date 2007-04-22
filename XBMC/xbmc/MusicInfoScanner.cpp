@@ -189,8 +189,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   items.SetMusicThumb(true); // true forces it to get a remote thumb
 
   // check whether we need to rescan or not
-  CStdString hash(GetPathHash(items));
-  CStdString dbHash;
+  CStdString hash, dbHash;
+  int numFilesInFolder = GetPathHash(items, hash);
   if (!m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
     if (dbHash.IsEmpty())
@@ -211,8 +211,15 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   else
   { // path is the same - no need to rescan
     CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+    m_currentItem += numFilesInFolder;
+
+    // notify our observer of our progress
     if (m_pObserver)
+    {
+      if (m_itemCount>0)
+        m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
       m_pObserver->OnDirectoryScanned(strDirectory);
+    }
   }
 
   // remove this path from the list we're processing
@@ -475,8 +482,10 @@ void CMusicInfoScanner::UpdateFolderThumb(const VECSONGS &songs, const CStdStrin
 // This function is run by another thread
 void CMusicInfoScanner::Run()
 {
+  int count = 0;
   while (!m_bStop && m_pathsToCount.size())
-    m_itemCount+=CountFiles(*m_pathsToCount.begin());
+    count+=CountFiles(*m_pathsToCount.begin());
+  m_itemCount = count;
 }
 
 // Recurse through all folders we scan and count files
@@ -510,21 +519,27 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
   return count;
 }
 
-CStdString CMusicInfoScanner::GetPathHash(const CFileItemList &items)
+int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
-  if (0 == items.Size()) return "";
-  // currently we just hash based on filename and filesize
+  // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
+  if (0 == items.Size()) return 0;
   MD5_CTX md5state;
   unsigned char md5hash[16];
   char md5HexString[33];
   MD5Init(&md5state);
+  int count = 0;
   for (int i = 0; i < items.Size(); ++i)
   {
     const CFileItem *pItem = items[i];
     MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
     MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+    FILETIME time = pItem->m_dateTime;
+    MD5Update(&md5state, (unsigned char *)&time, sizeof(FILETIME));
+    if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+      count++;
   }
   MD5Final(md5hash, &md5state);
   XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
-  return md5HexString;
+  hash = md5HexString;
+  return count;
 }
