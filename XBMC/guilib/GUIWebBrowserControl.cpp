@@ -202,6 +202,8 @@ void CGUIWebBrowserControl::Render()
 
     RECT srcRect = { 0, 0, m_realWidth, m_realHeight };
     POINT dstPoint = { (LONG)m_realPosX, (LONG)m_realPosY };
+    srcRect.right = min(m_realPosX + srcRect.right, g_graphicsContext.GetWidth()) - m_realPosX;
+    srcRect.bottom = min(m_realPosY + srcRect.bottom, g_graphicsContext.GetHeight()) - m_realPosY;
     g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer );
     g_graphicsContext.Get3DDevice()->CopyRects( pWindow->GetSurface(), &srcRect, 1, pBackBuffer, &dstPoint );
     pBackBuffer->Release();
