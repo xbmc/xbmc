@@ -3762,6 +3762,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CStdString strMask;
       if (pos > -1)
         strMask = strParameterCaseIntact.Mid(pos+1);
+
+      int iEnd=strMask.Find(",");
+      if (iEnd > -1)
+      {
+        value = strMask.Mid(iEnd+1);
+        CUtil::AddSlashAtEnd(value);
+        bool bIsBookMark;
+        if (GetMatchingShare(value,shares,bIsBookMark) < 0) // path is outside shares - add it as a separate one
+        {
+          CShare share;
+          share.strName = g_localizeStrings.Get(13278);
+          share.strPath = value;
+          shares.push_back(share);
+        }
+        CStdString strTemp = strMask;
+        strMask = strTemp.Left(iEnd);
+      }
+      else
+        iEnd = strMask.size();
       if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
