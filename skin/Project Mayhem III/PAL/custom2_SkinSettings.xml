@@ -840,11 +840,11 @@
 			<visible>Control.HasFocus(14) | ControlGroup(9006).HasFocus()</visible>
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="40">
-				<description>enable bookmarks button</description>
+				<description>enable submenu button</description>
 				<posx>190</posx>
 				<posy>100</posy>
 				<width>485</width>
-				<label>20189</label>
+				<label>1035</label>
 				<onclick>Skin.ToggleSetting(submenubuttons)</onclick>
 				<selected>Skin.HasSetting(submenubuttons)</selected>
 				<onleft>9001</onleft>
@@ -885,8 +885,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu1Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu1,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu1Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu1)</onclick>
 					<onleft>9001</onleft>
 					<onright>51</onright>
 					<onup>40</onup>
@@ -924,8 +924,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu2Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu2,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu2Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu2)</onclick>
 					<onleft>9001</onleft>
 					<onright>52</onright>
 					<onup>41</onup>
@@ -963,8 +963,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu3Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu3,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu3Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu3)</onclick>
 					<onleft>9001</onleft>
 					<onright>53</onright>
 					<onup>42</onup>
@@ -1002,8 +1002,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu4Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu4,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu4Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu4)</onclick>
 					<onleft>9001</onleft>
 					<onright>54</onright>
 					<onup>43</onup>
@@ -1041,8 +1041,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu5Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu5,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu5Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu5)</onclick>
 					<onleft>9001</onleft>
 					<onright>55</onright>
 					<onup>44</onup>
@@ -1080,8 +1080,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu6Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu6,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu6Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu6)</onclick>
 					<onleft>9001</onleft>
 					<onright>56</onright>
 					<onup>45</onup>
@@ -1119,8 +1119,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu7Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu7,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu7Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu7)</onclick>
 					<onleft>9001</onleft>
 					<onright>57</onright>
 					<onup>46</onup>
@@ -1158,8 +1158,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu8Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu8,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu8Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu8)</onclick>
 					<onleft>9001</onleft>
 					<onright>58</onright>
 					<onup>47</onup>
@@ -1217,8 +1217,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu9Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu9,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu9Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu9)</onclick>
 					<onleft>51</onleft>
 					<onright>59</onright>
 					<onup>40</onup>
@@ -1227,7 +1227,7 @@
 				<control type="label">
 					<description>Submenu button 9 String NOT SET label</description>
 					<posx>458</posx>
-					<posy>205</posy>
+					<posy>209</posy>
 					<width>150</width>
 					<aligny>center</aligny>
 					<label>20078</label>
@@ -1256,8 +1256,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu10Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu10,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu10Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu10)</onclick>
 					<onleft>52</onleft>
 					<onright>60</onright>
 					<onup>49</onup>
@@ -1266,7 +1266,7 @@
 				<control type="label">
 					<description>Submenu button 10 String NOT SET label</description>
 					<posx>458</posx>
-					<posy>242</posy>
+					<posy>246</posy>
 					<width>150</width>
 					<aligny>center</aligny>
 					<label>20078</label>
@@ -1295,8 +1295,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu11Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu11,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu11Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu11)</onclick>
 					<onleft>53</onleft>
 					<onright>61</onright>
 					<onup>410</onup>
@@ -1305,7 +1305,7 @@
 				<control type="label">
 					<description>Submenu button 11 String NOT SET label</description>
 					<posx>458</posx>
-					<posy>279</posy>
+					<posy>283</posy>
 					<width>150</width>
 					<aligny>center</aligny>
 					<label>20078</label>
@@ -1334,8 +1334,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu12Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu12,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu12Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu12)</onclick>
 					<onleft>54</onleft>
 					<onright>62</onright>
 					<onup>411</onup>
@@ -1344,7 +1344,7 @@
 				<control type="label">
 					<description>Submenu button 12 String NOT SET label</description>
 					<posx>458</posx>
-					<posy>316</posy>
+					<posy>320</posy>
 					<width>150</width>
 					<aligny>center</aligny>
 					<label>20078</label>
@@ -1373,8 +1373,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu13Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu13,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu13Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu13)</onclick>
 					<onleft>55</onleft>
 					<onright>63</onright>
 					<onup>412</onup>
@@ -1383,7 +1383,7 @@
 				<control type="label">
 					<description>Submenu button 13 String NOT SET label</description>
 					<posx>458</posx>
-					<posy>353</posy>
+					<posy>358</posy>
 					<width>150</width>
 					<aligny>center</aligny>
 					<label>20078</label>
@@ -1412,8 +1412,8 @@
 					<width>150</width>
 					<textwidth>125</textwidth>
 					<label>$INFO[Skin.String(DialogSubMenu14Title)]</label>
+					<onclick>Skin.SetFile(DialogSubMenu14,.py,q:\scripts\)</onclick>
 					<onclick>Skin.SetString(DialogSubMenu14Title)</onclick>
-					<onclick>Skin.SetFile(DialogSubMenu14)</onclick>
 					<onleft>56</onleft>
 					<onright>64</onright>
 					<onup>413</onup>
@@ -1422,7 +1422,7 @@
 				<control type="label">
 					<description>Submenu button 14 String NOT SET label</description>
 					<posx>458</posx>
-					<posy>390</posy>
+					<posy>394</posy>
 					<width>150</width>
 					<aligny>center</aligny>
 					<label>20078</label>
