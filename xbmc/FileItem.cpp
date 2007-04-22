@@ -2373,11 +2373,9 @@ CStdString CFileItem::GetCachedProgramThumb()
 
 CStdString CFileItem::GetCachedGameSaveThumb()
 {
-  CStdString strExt;
-  CStdString fileName, filePath;
-  CUtil::Split(m_strPath, filePath, fileName);
-  CUtil::GetExtension(fileName,strExt);
-  if (strExt.Equals(".xbx")) // savemeta.xbx - cache thumb
+  CStdString extension;
+  CUtil::GetExtension(m_strPath,extension);
+  if (extension.Equals(".xbx")) // savemeta.xbx - cache thumb
   {
     Crc32 crc;
     crc.ComputeFromLowerCase(m_strPath);
@@ -2403,34 +2401,36 @@ CStdString CFileItem::GetCachedGameSaveThumb()
     }
     return thumb;
   }
-  else
+  else if (CDirectory::Exists(m_strPath))
   {
-    if (CDirectory::Exists(m_strPath))
+    // get the save game id
+    CStdString fullPath(m_strPath);
+    CUtil::RemoveSlashAtEnd(fullPath);
+    CStdString fileName(CUtil::GetFileName(fullPath));
+
+    CStdString thumb;
+    thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
+    CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
+    if (!CFile::Exists(thumb))
     {
-      CStdString thumb;
-      thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
-      CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
-      if (!CFile::Exists(thumb))
+      CStdString titleimageXBX;
+      CStdString saveimageXBX;
+
+      CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
+      CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
+
+      /*if (CFile::Exists(saveimageXBX))
       {
-        CStdString titleimageXBX;
-        CStdString saveimageXBX;
-
-        CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
-        CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
-
-        /*if (CFile::Exists(saveimageXBX))
-        {
-          CUtil::CacheXBEIcon(saveimageXBX, thumb);
-          CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
-        }*/
-       if (CFile::Exists(titleimageXBX))
-        {
-          CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
-          CUtil::CacheXBEIcon(titleimageXBX, thumb);
-        }
+        CUtil::CacheXBEIcon(saveimageXBX, thumb);
+        CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
+      }*/
+      if (CFile::Exists(titleimageXBX))
+      {
+        CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
+        CUtil::CacheXBEIcon(titleimageXBX, thumb);
       }
-      return thumb;
     }
+    return thumb;
   }
   return "";
 }
