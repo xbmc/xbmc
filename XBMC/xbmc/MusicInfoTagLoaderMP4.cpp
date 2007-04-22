@@ -73,7 +73,7 @@ static unsigned int	g_ContainerAtoms[] =
 
 // Read a 32-bit unsigned integer from an unaligned buffer address.
 
-static unsigned int ReadUnsignedInt( const char* pData )
+unsigned int CMusicInfoTagLoaderMP4::ReadUnsignedInt( const char* pData )
 {
   unsigned int result;
 
@@ -84,15 +84,10 @@ static unsigned int ReadUnsignedInt( const char* pData )
   return result;
 }
 
-#define TEMP_MP4_THUMB_FILE "Z:\\temp_mp4_thumb.tbn"
-
-static bool foundThumb = false;
-static bool isCompilation = false;
-
 // Given a metadata type, and a pointer to the data (and the size), this function attempts to populate
 // XBMC's CMusicInfoTag object. Tags that we don't support are simply ignored..
 
-static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize, CMusicInfoTag& tag)
+void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize, CMusicInfoTag& tag)
 {
   switch ( metaKey )
   {
@@ -174,7 +169,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
   case g_CompilationAtomName:
     {
       if (metaSize == 1)
-        isCompilation = *pMetaData == 1;
+        m_isCompilation = *pMetaData == 1;
       break;
     }
   case	g_CustomGenreAtomName:
@@ -206,14 +201,12 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
   case	g_CoverArtAtomName:
     {
       // This cover-art handling is pretty much what was in the old MP4 tag processing code..
-      foundThumb = true;
-
-      CPicture pic;
-      if ( !pic.CreateThumbnailFromMemory( ( const BYTE* )pMetaData, metaSize, "", TEMP_MP4_THUMB_FILE ) )
-      {
-        CLog::Log(LOGERROR, "Tag loader mp4: Unable to create album art for %s (size=%d)", tag.GetURL().c_str(), metaSize );
-      }
-
+      m_thumbSize = metaSize;
+      if (m_thumbData)
+        delete[] m_thumbData;
+      m_thumbData = new BYTE[m_thumbSize];
+      if (m_thumbData)
+        memcpy(m_thumbData, pMetaData, metaSize);
       break;
     }
   default:
@@ -224,7 +217,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
 // Used to locate 'ilst' area within 'meta' atom in a really quick and dirty way. Ideally should
 // parse 'ilst' atom list, but this method seems to be reliable.
 
-int GetILSTOffset( const char* pBuffer, int bufferSize )
+int CMusicInfoTagLoaderMP4::GetILSTOffset( const char* pBuffer, int bufferSize )
 {
   for ( int loop = 0; loop < bufferSize; loop++)
   {
@@ -244,7 +237,7 @@ int GetILSTOffset( const char* pBuffer, int bufferSize )
 //
 // I hope to make this particular function more readable/structured when time permits.
 
-int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoTag& tag )
+int CMusicInfoTagLoaderMP4::ParseAtom( __int64 startOffset, __int64 stopOffset, CMusicInfoTag& tag )
 {
   __int64	currentOffset;
 
@@ -256,10 +249,10 @@ int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoT
   while ( currentOffset < stopOffset)
   {
     // Seek to the atom header
-    file.Seek( currentOffset, SEEK_SET );
+    m_file.Seek( currentOffset, SEEK_SET );
 
     // Read it in.. we only want the atom name & size..	they're always there..
-    file.Read( atomHeader, 8 );
+    m_file.Read( atomHeader, 8 );
 
     // Now pull out the bits we need..
     atomSize = ReadUnsignedInt( &atomHeader[ 0 ] );
@@ -270,7 +263,7 @@ int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoT
     {
       if ( atomName == g_ContainerAtoms[ containerAtom ] )
       {
-        ParseAtom( file, file.GetPosition(), currentOffset + atomSize, tag );
+        ParseAtom( m_file.GetPosition(), currentOffset + atomSize, tag );
         break;
       }
     }
@@ -282,7 +275,7 @@ int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoT
       auto_aptr<char>	atomBuffer( new char[ atomSize ] );
 
       // Read the metadata in..
-      file.Read( atomBuffer.get(), atomSize - 4 );	// We've already read the size/name in...
+      m_file.Read( atomBuffer.get(), atomSize - 4 );	// We've already read the size/name in...
 
       // Look for the 'ilst' atom, and turn it into an offset within atomBuffer.
       int nextTagPosition = GetILSTOffset( atomBuffer.get(), atomSize - 4 ) + 8;
@@ -305,7 +298,7 @@ int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoT
       if ( atomName == g_MdhdAtomName )
       {
         char	mdhdData[ 20 ];
-        file.Read( mdhdData, sizeof( mdhdData ) );
+        m_file.Read( mdhdData, sizeof( mdhdData ) );
 
         unsigned int	timeScale	=	ReadUnsignedInt( mdhdData+12 );
         unsigned int	duration	=	ReadUnsignedInt( mdhdData+16 );
@@ -341,8 +334,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
     tag.SetLoaded(false);
 
     // Attempt to open the file..
-    CFile file;
-    if ( !file.Open( strFileName ) )
+    if ( !m_file.Open( strFileName ) )
     {
       CLog::Log(LOGDEBUG, "Tag loader mp4: failed to open file %s", strFileName.c_str() );
       return false;
@@ -352,10 +344,12 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
     tag.SetURL(strFileName);
 
     // Now go parse our atom data
-    foundThumb = false; isCompilation = false;
-    ParseAtom( file, 0, file.GetLength(), tag );
+    m_thumbSize = false;
+    m_thumbData = NULL;
+    m_isCompilation = false;
+    ParseAtom( 0, m_file.GetLength(), tag );
 
-    if (foundThumb)
+    if (m_thumbData)
     { // cache the thumb
       // if we don't have an album tag, cache with the full file path so that
       // other non-tagged files don't get this album image
@@ -364,22 +358,29 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
         strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), tag.GetAlbumArtist().IsEmpty() ? tag.GetArtist() : tag.GetAlbumArtist());
       else
         strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
-      if (CFile::Cache(TEMP_MP4_THUMB_FILE, strCoverArt.c_str()))
+      if (!CUtil::ThumbExists(strCoverArt))
       {
-        CUtil::ThumbCacheAdd( strCoverArt, true );
+        CPicture pic;
+        if (pic.CreateThumbnailFromMemory( m_thumbData, m_thumbSize, "", strCoverArt ) )
+        {
+          CUtil::ThumbCacheAdd( strCoverArt, true );
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, __FUNCTION__" unable to cache thumb as %s", strCoverArt.c_str());
+          CUtil::ThumbCacheAdd( strCoverArt, false );
+        }
       }
-      else
-      {
-        CUtil::ThumbCacheAdd( strCoverArt, false );
-      }
+      delete[] m_thumbData;
     }
-    if (isCompilation)
+
+    if (m_isCompilation)
     { // iTunes compilation flag is set - this could be a various artists file
       if (tag.GetAlbumArtist().IsEmpty())
         tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
     }
     // Close the file..
-    file.Close();
+    m_file.Close();
 
     // Return to caller
     return true;
