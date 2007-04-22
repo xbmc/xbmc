@@ -18,11 +18,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try 
   {
-    CStdString translatedPath(strPath);
-    if (strPath.Left(10) == "special://")
-    { // need to translate this special folder
-      translatedPath = CUtil::TranslateSpecialPath(strPath);
-    }
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (!pDirectory.get()) return false;
 

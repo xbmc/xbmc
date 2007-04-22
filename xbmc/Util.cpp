@@ -3766,7 +3766,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       int iEnd=strMask.Find(",");
       if (iEnd > -1)
       {
-        value = strMask.Mid(iEnd+1);
+        value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
         bool bIsBookMark;
         if (GetMatchingShare(value,shares,bIsBookMark) < 0) // path is outside shares - add it as a separate one
@@ -4045,12 +4045,15 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &specialPath)
     CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), specialPath.Mid(21), translatedPath);
   else if (specialPath.Left(22).Equals("special://screenshots/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), specialPath.Mid(22), translatedPath);
-  else if (specialPath.Left(25) == "special://musicplaylists/")
+  else if (specialPath.Left(25).Equals("special://musicplaylists/"))
     CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), specialPath.Mid(25), translatedPath);
-  else if (specialPath.Left(25) == "special://videoplaylists/")
+  else if (specialPath.Left(25).Equals("special://videoplaylists/"))
     CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), specialPath.Mid(25), translatedPath);
   else if (specialPath.Left(17).Equals("special://cdrips/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), specialPath.Mid(17), translatedPath);
+  else
+    translatedPath = specialPath;
+
   return translatedPath;
 }
 
