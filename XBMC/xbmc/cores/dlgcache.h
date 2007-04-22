@@ -24,7 +24,8 @@ protected:
   DWORD m_dwTimeStamp;
   DWORD m_dwDelay;
   CGUIDialogProgress* m_pDlg;
-  CStdString m_strLinePrev;  
+  CStdString m_strLinePrev;
+  CStdString m_strLine;
   bool bSentCancel;
   bool m_bOpenTried;
 };
