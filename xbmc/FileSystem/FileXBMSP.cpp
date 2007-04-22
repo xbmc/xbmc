@@ -84,9 +84,14 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
   m_fileSize = 0;
   m_filePos = 0;
 
-  OutputDebugString("xbms:open:");
-  OutputDebugString(strFileName);
-  OutputDebugString("\n");
+  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+  {
+    CLog::Log(LOGDEBUG,"xbms:open: %s",strFileName);
+/*    OutputDebugString("xbms:open:");
+    OutputDebugString(strFileName);
+    OutputDebugString("\n");*/
+  }
+
   if (cc_xstream_client_connect(strHostName,
                                 (iport > 0) ? iport : 1400,
                                 &m_connection) != CC_XSTREAM_CLIENT_OK)
@@ -126,7 +131,9 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
 
   CStdString strDir, strPath;
   strDir = "";
-  OutputDebugString("xbms:setdir:/\n");
+  //OutputDebugString("xbms:setdir:/\n");
+  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    CLog::Log(LOGDEBUG,"xbms:setdir:/");
   if (cc_xstream_client_setcwd(m_connection, "/") == CC_XSTREAM_CLIENT_OK)
   {
     strPath = szPath;
@@ -136,10 +143,13 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
       {
         if (strDir != "")
         {
-          OutputDebugString("xbms:setdir:");
-          OutputDebugString(strDir.c_str());
-
-          OutputDebugString("\n");
+          if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+          {
+            CLog::Log(LOGDEBUG,"xbms:setdir: %s",strDir.c_str());
+/*            OutputDebugString("xbms:setdir:");
+            OutputDebugString(strDir.c_str());
+            OutputDebugString("\n"); */
+          }
           if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
           {
             CLog::Log(LOGDEBUG, "xbms:unable set dir");
@@ -162,10 +172,14 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
     return false;
   }
   if (strDir.size() > 0)
-  {
-    OutputDebugString("xbms:setdir:");
-    OutputDebugString(strDir.c_str());
-    OutputDebugString("\n");
+  {  
+    if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    {
+      CLog::Log(LOGDEBUG,"xbms:setdir: %s",strDir.c_str());
+      /*OutputDebugString("xbms:setdir:");
+      OutputDebugString(strDir.c_str());
+      OutputDebugString("\n");*/
+    }
     if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
     {
       CLog::Log(LOGDEBUG, "xbms:unable set dir");
