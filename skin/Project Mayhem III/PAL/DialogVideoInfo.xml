@@ -384,12 +384,12 @@
 			</control>
 			<control type="image" id="3">
 				<description>Cover image</description>
-				<posx>540</posx>
-				<posy>155</posy>
-				<width>128</width>
+				<posx>545</posx>
+				<posy>110</posy>
+				<width>140</width>
 				<height>140</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>-</texture>
-				<aspectratio>keep</aspectratio>
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="fadelabel" id="20">
