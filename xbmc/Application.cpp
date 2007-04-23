@@ -5070,6 +5070,7 @@ void CApplication::CheckForDebugButtonCombo()
 
 void CApplication::StartFtpEmergencyRecoveryMode()
 {
+#ifdef HAS_FTP_SERVER
   m_pFileZilla = new CXBFileZilla(NULL);
   m_pFileZilla->Start();
 
@@ -5099,5 +5100,5 @@ void CApplication::StartFtpEmergencyRecoveryMode()
     pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
   }
   pUser->CommitChanges();
-
+#endif
 }
