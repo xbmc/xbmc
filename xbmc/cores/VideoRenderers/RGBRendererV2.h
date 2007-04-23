@@ -22,7 +22,7 @@ protected:
 
   bool Create444PTexture(bool full, bool field);
   void Delete444PTexture();
-  void Clear444PTexture();
+  void Clear444PTexture(bool full, bool field);
 
   bool CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &range);
   void DeleteLookupTextures();
