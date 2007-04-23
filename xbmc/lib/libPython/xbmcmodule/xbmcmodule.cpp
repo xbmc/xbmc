@@ -11,6 +11,7 @@
 #include "..\..\..\utils\GUIInfoManager.h"
 #include "..\..\..\..\guilib\GUIAudioManager.h"
 #include "..\..\..\Application.h"
+#include "..\..\..\crc32.h"
 
 // include for constants
 #include "pyutil.h"
@@ -495,7 +496,30 @@ namespace PYXBMC
   PyObject* XBMC_GetGlobalIdleTime(PyObject *self)
   {
     return Py_BuildValue("i", g_application.GlobalIdleTime());
-  }//g_application.m_idleTimer
+  }
+
+  // getThumbName function
+  PyDoc_STRVAR(getThumbName__doc__,
+    "getThumbName(path) -- Returns a thumb cache filename.\n"
+    "\n"
+    "path           : string - path to file\n"
+    "\n"
+    "example:\n"
+    "  - thumb = xbmc.getThumbName('f:\\videos\\movie.avi')\n");
+
+  PyObject* XBMC_GetThumbName(PyObject *self, PyObject *args)
+  {
+    char *cPath;
+    if (!PyArg_ParseTuple(args, "s", &cPath))  return NULL;
+    {
+      Crc32 crc;
+      CStdString strPath;
+      crc.ComputeFromLowerCase(cPath);
+      strPath.Format("%08x.tbn", (unsigned __int32)crc);
+      return Py_BuildValue("s", strPath.c_str());
+    }
+
+  }
 
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
@@ -525,6 +549,8 @@ namespace PYXBMC
 
     {"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
     {"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
+    
+    {"getThumbName", (PyCFunction)XBMC_GetThumbName, METH_VARARGS, getThumbName__doc__},
 
     {NULL, NULL, 0, NULL}
   };
