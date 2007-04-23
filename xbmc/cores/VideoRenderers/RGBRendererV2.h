@@ -38,7 +38,8 @@ protected:
 
   void RenderYUVtoRGB(
       D3DBaseTexture* pSource,
-      RECT &source, RECT &target);
+      RECT &source, RECT &target,
+      float offset_x, float offset_y);
 
   // YUV interleaved texture
   LPDIRECT3DTEXTURE8 m_444PTextureFull;
