@@ -678,9 +678,9 @@
 			<height>22</height>
 			<font>special13</font>
 			<align>right</align>
-			<label>$LOCALIZE[20373] - $INFO[ListItem.Season]</label>
+			<label>$LOCALIZE[20359] - $INFO[ListItem.Episode]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
 		<control type="label">
 			<posx>200</posx>
@@ -688,9 +688,9 @@
 			<width>420</width>
 			<height>22</height>
 			<font>special13</font>
-			<label>$LOCALIZE[20359] - $INFO[ListItem.Episode]</label>
+			<label>$LOCALIZE[20373] - $INFO[ListItem.Season]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
 		<control type="textbox">
 			<posx>200</posx>
@@ -1899,7 +1899,7 @@
 			<width>235</width>
 			<height>424</height>
 			<font>special12</font>
-			<label>$INFO[ListItem.episode,$LOCALIZE[20360] ]</label>
+			<label>$INFO[ListItem.episode,, $LOCALIZE[20360]]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57) + container.content(tvshows)</visible>
 		</control>
