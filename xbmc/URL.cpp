@@ -142,6 +142,7 @@ CURL::CURL(const CStdString& strURL)
 
 
   // for protocols supporting options, chop that part off here
+  // maybe we should invert this list instead?
   int iEnd = strURL.length();
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
@@ -149,7 +150,8 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("ftpx")
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
-    || m_strProtocol.Equals("daap"))
+    || m_strProtocol.Equals("daap")
+    || m_strProtocol.Equals("hdhomerun"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
     if (iOptions >= 0 )
