@@ -79,7 +79,7 @@
 				<imagepath>home-settings</imagepath>
 				<timeperimage>5000</timeperimage>
 				<fadetime>2000</fadetime>
-				<visible>ControlGroup(9001).HasFocus(9)</visible>
+				<visible>ControlGroup(9001).HasFocus(9) | ControlGroup(9001).HasFocus(10)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 			</control>
                         <control type="image">
@@ -516,88 +516,9 @@
 		</control>
 		<!-- main buttons -->
 		<control type="group" id="9001">
-			<control type="group" id="9002">
-				<posx>60</posx>
-				<posy>450</posy>
-				<include>buttonpanelslide</include>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>20</width>
-					<height>20</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="image">
-					<posx>115</posx>
-					<posy>0</posy>
-					<width>20</width>
-					<height>20</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="image">
-					<posx>245</posx>
-					<posy>0</posy>
-					<width>20</width>
-					<height>20</height>
-					<texture>homebutton-small.png</texture>
-					<visible>webbrowser.included</visible>
-				</control>
-				<control type="button" id="9">
-					<description>Settings normal push button</description>
-					<posx>4</posx>
-					<posy>3</posy>
-					<width>12</width>
-					<height>12</height>
-					<label>5</label>
-					<font>font10</font>
-					<onclick>ActivateWindow(4)</onclick>
-					<onleft>98</onleft>
-					<onright>6</onright>
-					<onup>7</onup>
-					<ondown>2</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="button" id="6">
-					<description>My Files normal push button</description>
-					<posx>119</posx>
-					<posy>3</posy>
-					<width>12</width>
-					<height>12</height>
-					<label>7</label>
-					<onclick>ActivateWindow(MyFiles)</onclick>
-					<font>font10</font>
-					<onleft>9</onleft>
-					<onright>17</onright>
-					<onup>7</onup>
-					<ondown>2</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="button" id="17">
-					<description>Web browser normal push button</description>
-					<posx>248</posx>
-					<posy>3</posy>
-					<width>12</width>
-					<height>12</height>
-					<label>20400</label>
-					<visible>webbrowser.included</visible>
-					<onclick>ActivateWindow(webbrowser)</onclick>
-					<font>font10</font>
-					<onleft>6</onleft>
-					<onright>96</onright>
-					<onup>7</onup>
-					<ondown>2</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>20</textoffsetx>
-				</control>
-			</control>
 			<control type="group">
 				<posx>40</posx>
-				<posy>180</posy>
+				<posy>175</posy>
 				<include>homebuttonanimation</include>
 				<control type="image">
 					<description>background image</description>
@@ -625,7 +546,7 @@
 					<onclick>ActivateWindow(MyPrograms)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>9</onup>
+					<onup>10</onup>
 					<ondown>4</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -726,6 +647,109 @@
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
+				</control>
+			</control>
+			<control type="group" id="9002">
+				<posx>65</posx>
+				<posy>425</posy>
+				<include>buttonpanelslide</include>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>30</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>30</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+					<visible>webbrowser.included</visible>
+				</control>
+				<control type="button" id="9">
+					<description>Settings normal push button</description>
+					<posx>4</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<label>5</label>
+					<font>font10</font>
+					<onclick>ActivateWindow(4)</onclick>
+					<onleft>98</onleft>
+					<onright>6</onright>
+					<onup>7</onup>
+					<ondown>10</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="10">
+					<description>Scripts normal push button</description>
+					<posx>4</posx>
+					<posy>33</posy>
+					<width>12</width>
+					<height>12</height>
+					<label>247</label>
+					<font>font10</font>
+					<onclick>ActivateWindow(Scripts)</onclick>
+					<onleft>98</onleft>
+					<onright>17</onright>
+					<onup>9</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="6">
+					<description>My Files normal push button</description>
+					<posx>119</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<label>7</label>
+					<onclick>ActivateWindow(MyFiles)</onclick>
+					<font>font10</font>
+					<onleft>9</onleft>
+					<onright>96</onright>
+					<onup>7</onup>
+					<ondown>17</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="17">
+					<description>Web browser normal push button</description>
+					<posx>119</posx>
+					<posy>33</posy>
+					<width>12</width>
+					<height>12</height>
+					<label>20400</label>
+					<visible>webbrowser.included</visible>
+					<onclick>ActivateWindow(webbrowser)</onclick>
+					<font>font10</font>
+					<onleft>10</onleft>
+					<onright>96</onright>
+					<onup>6</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
 				</control>
 			</control>
 		</control>

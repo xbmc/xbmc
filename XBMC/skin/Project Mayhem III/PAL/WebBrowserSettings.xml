@@ -1,31 +1,32 @@
 <window id="2802">
-        <defaultcontrol>501</defaultcontrol>
-        <coordinates>
-          <system>1</system>
-          <posx>250</posx>
-          <posy>116</posy>
-        </coordinates>
-        <animation effect="fade" time="200">WindowOpen</animation>
-        <animation effect="fade" time="200">WindowClose</animation>
-        <controls>
-                <control type="image" id="1">
-                        <description>background image</description>
-                        <posx>-25</posx>
-                        <posy>-11</posy>
-                        <width>447</width>
-                        <height>310</height>
-                        <texture>dialog-panel2.png</texture>
-                        <colordiffuse>CCFFFFFF</colordiffuse>
-                </control>
-                <control type="label" id="0">
-                        <description>Settings Label</description>
-                        <posx>0</posx>
-                        <posy>2</posy>
-                        <label>12802</label>
-                        <width>420</width>
-                        <font>special13</font>
-                        <textcolor>DDced8da</textcolor>
-                </control>
+	<defaultcontrol>2</defaultcontrol>
+	<animation effect="fade" time="400">WindowOpen</animation>
+	<animation effect="fade" time="400">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>255</posx>
+		<posy>120</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-25</posx>
+			<posy>-11</posy>
+			<width>446</width>
+			<height>420</height>
+			<texture>dialog-panel2.png</texture>
+			<colordiffuse>CCFFFFFF</colordiffuse>
+		</control>
+		<control type="label" id="0">
+			<description>Settings Label</description>
+			<posx>0</posx>
+			<posy>2</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>12802</label>
+			<textcolor>DDced8da</textcolor>
+		</control>
 		<control type="label" id="3">
 			<description>No Settings Label</description>
 			<posx>0</posx>
@@ -50,10 +51,10 @@
 		</control>
 		<control type="grouplist" id="5">
 			<description>control area</description>
-			<posx>-1</posx>
+			<posx>0</posx>
 			<posy>40</posy>
-			<width>408</width>
-			<height>215</height>
+			<width>406</width>
+			<height>325</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>60</pagecontrol>
 			<include>homemisc</include>
@@ -129,5 +130,5 @@
 			<height>5</height>
 			<texture>separatorOSD.png</texture>
 		</control>
-        </controls>
+	</controls>
 </window>
