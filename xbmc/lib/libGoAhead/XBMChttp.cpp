@@ -1607,11 +1607,9 @@ int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
   }
   else
   {
-    if (playableFile(paras[0]))
-    {
-      g_applicationMessenger.MediaPlay(paras[0]);
+    g_applicationMessenger.MediaPlay(paras[0]);
+    if(g_application.IsPlaying())
       return SetResponse(openTag+"OK");
-    }
   }
   return SetResponse(openTag+"Error:Could not play file");
 }
