@@ -320,7 +320,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
       if (m_pObserver)
       {
         m_pObserver->OnSetCurrentProgress(i,items.Size());
-        if (!pItem->m_bIsFolder)
+        if (!pItem->m_bIsFolder && m_itemCount)
           m_pObserver->OnSetProgress(m_currentItem++,m_itemCount);
       }
     }
