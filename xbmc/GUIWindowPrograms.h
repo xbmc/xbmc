@@ -11,7 +11,6 @@ public:
   CGUIWindowPrograms(void);
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnPopupMenu(int iItem, bool bContextDriven = true);
 
   void PopulateTrainersList();
 protected:
@@ -20,8 +19,11 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnWindowLoaded();
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
   int GetRegion(int iItem, bool bReload=false);
+  bool OnChooseVideoModeAndLaunch(int iItem);
 
   CGUIDialogProgress* m_dlgProgress;
 

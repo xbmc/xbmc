@@ -37,7 +37,6 @@
 #endif
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
@@ -83,13 +82,6 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
   if (action.wID == ACTION_SHOW_PLAYLIST)
   {
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    return true;
-  }
-
-  // the non-contextual menu can be called at any time
-  if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
-  {
-    OnPopupMenu(-1, false);
     return true;
   }
 
@@ -194,10 +186,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SHOW_INFO)
         {
           OnInfo(iItem);
-        }
-        else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-        {
-          OnPopupMenu(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
@@ -813,229 +801,96 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   return false;
 }
 
-void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // empty list in files view?
-  if (GetID() == WINDOW_MUSIC_FILES && m_vecItems.Size() == 0)
-    bContextDriven = false;
-  if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
-  // calculate our position
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
+  if (item && !item->IsParentFolder())
   {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
+    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);
+
+    // allow a folder to be ad-hoc queued and played by the default player
+    if (item->m_bIsFolder || (item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+    else
+    { // check what players we have, if we have multiple display play with option
+      VECPLAYERCORES vecCores;
+      CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      if (vecCores.size() >= 1)
+        buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
+    }
+
+    if ((item->IsPlayList() && !item->IsSmartPlayList()) ||
+        (m_vecItems.IsPlayList() && !m_vecItems.IsSmartPlayList()))
+      buttons.Add(CONTEXT_BUTTON_EDIT, 586);
   }
+  CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+}
 
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
-
-  // initialize the menu (loaded on demand)
-  pMenu->Initialize();
-
-  // contextual buttons
-  int btn_Queue = 0;		      // Queue Item
-  int btn_PlayWith = 0;	      // Play using alternate player
-  int btn_EditPlaylist = 0;   // Edit a playlist
-  int btn_Info = 0;           // Music Information
-  int btn_InfoAll = 0;        // Query Information for all albums
-  int btn_Scan = 0;           // Scan to library
-  int btn_RipTrack = 0;       // Rip audio track
-  int btn_CDDB = 0;           // CDDB lookup
-  int btn_Delete = 0;         // Delete
-  int btn_Rename = 0;         // Rename
-
-  bool bSelected = false;
-  VECPLAYERCORES vecCores;
-
-  // contextual items only appear when the list is not empty
-  if (bContextDriven)
-  {
-    // mark the item
-    bSelected = m_vecItems[iItem]->IsSelected(); // item may already be selected (playlistitem)
-    m_vecItems[iItem]->Select(true);
-
-    // get players
-    CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-
-    // turn off info/play/queue if the current item is goto parent ..
-    bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-    bool bPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
-    if (!bIsGotoParent)
-    {
-      btn_Queue = pMenu->AddButton(13347);
-
-      // allow a folder to be ad-hoc queued and played by the default player
-      if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
-        btn_PlayWith = pMenu->AddButton(208); // Play
-      else if (vecCores.size() >= 1)
-        btn_PlayWith = pMenu->AddButton(15213); // Play With...
-
-      if (!m_vecItems[iItem]->IsPlayList())
-        btn_Info = pMenu->AddButton(13351); // Info
-
-      if ((m_vecItems[iItem]->IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()) ||
-          (m_vecItems.IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()))
-        btn_EditPlaylist = pMenu->AddButton(586);
-    }
-
-    // Scan buttons are only visible when in files view
-    if (GetID() == WINDOW_MUSIC_FILES)
-    {
-      CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (pScanDlg && pScanDlg->IsScanning())
-      {
-        btn_Scan = pMenu->AddButton(13353);	// Stop Scanning
-      }
-      else
-      {
-        // dont allow scanning of playlists location or an internet location
-        if (!bPlaylists && !m_vecItems.IsInternetStream() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-          btn_Scan = pMenu->AddButton(13352);	// Scan Folder to Database
-      }
-    }
-
-    // enable Rip CD Audio or Track button if we have an audio disc
-    if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
-    {
-      // those cds can also include Audio Tracks: CDExtra and MixedMode!
-      CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-      if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
-      {
-        btn_RipTrack = pMenu->AddButton(610);
-      }
-    }
-
-    // enable CDDB lookup if the current dir is CDDA
-    if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      btn_CDDB = pMenu->AddButton(16002);
-
-    // delete and rename
-    if (!bIsGotoParent)
-    {
-      // either we're at the playlist location or its been explicitly allowed
-      if (bPlaylists || g_guiSettings.GetBool("filelists.allowfiledeletion"))
-      {
-        if (!m_vecItems[iItem]->IsReadOnly())
-        { // enable only if writeable
-          btn_Delete = pMenu->AddButton(117);
-          btn_Rename = pMenu->AddButton(118);
-        }
-      }
-    }
-  } // if (bContextDriven)
-
-  // non-contextual buttons
-  int btn_Settings = pMenu->AddButton(5);               // Settings
-  int btn_GoToRoot = pMenu->AddButton(20128);	          // Go to Root
-  int btn_Switch = btn_Switch = pMenu->AddButton(523);  // Switch Media
-  int btn_NowPlaying = 0;                               // Now Playing
-
-  // Now Playing... at the very bottom of the list for easy access
+void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
+{
+  if (!m_vecItems.IsVirtualDirectoryRoot())
+    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    btn_NowPlaying = pMenu->AddButton(13350);
+    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
+}
 
-  // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid > 0)
+bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  switch (button)
   {
-    // Queue Item
-    if (btnid == btn_Queue)
+  case CONTEXT_BUTTON_QUEUE_ITEM:
+    OnQueueItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_INFO:
+    OnInfo(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_EDIT:
     {
-      OnQueueItem(iItem);
-    }
-    // Music Information
-    else if (btnid == btn_Info)
-    {
-      OnInfo(iItem);
-    }
-    else if (btnid == btn_EditPlaylist)
-    {
-      CStdString playlist = m_vecItems[iItem]->IsPlayList() ? m_vecItems[iItem]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      CStdString playlist = m_vecItems[itemNumber]->IsPlayList() ? m_vecItems[itemNumber]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
-      return;
+      return true;
     }
-    // Music Information Query All
-    else if (btnid == btn_InfoAll)
+
+  case CONTEXT_BUTTON_PLAY_ITEM:
+    PlayItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_PLAY_WITH:
     {
-      OnInfoAll(iItem);
+      VECPLAYERCORES vecCores;  // base class?
+      CPlayerCoreFactory::GetPlayers(*m_vecItems[itemNumber], vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
+      if( g_application.m_eForcedNextPlayer != EPC_NONE )
+        OnClick(itemNumber);
+      return true;
     }
-    // Play Item
-    else if (btnid == btn_PlayWith)
-    {
-      // if folder, play with default player
-      if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
-      {
-        PlayItem(iItem);
-      }
-      else
-      {
-        // Play With...
-        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, posX, posY);
-        if( g_application.m_eForcedNextPlayer != EPC_NONE )
-          OnClick(iItem);
-      }
+
+  case CONTEXT_BUTTON_STOP_SCANNING:
+    { 
+      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (scanner)
+        scanner->StopScanning();
+      return true;
     }
-    // Scan
-    else if (btnid == btn_Scan)
-    {
-      OnScan(iItem);
-    }
-    else if (btnid == btn_RipTrack)
-    {
-      OnRipTrack(iItem);
-    }
-    // CDDB lookup
-    else if (btnid == btn_CDDB)
-    {
-      if (m_musicdatabase.LookupCDDBInfo(true))
-        Update(m_vecItems.m_strPath);
-    }
-    // Delete
-    else if (btnid == btn_Delete)
-    {
-      OnDeleteItem(iItem);
-    }
-    //Rename
-    else if (btnid == btn_Rename)
-    {
-      OnRenameItem(iItem);
-    }
-    // Settings
-    else if (btnid == btn_Settings)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-			return;
-    }
-		// Go to Root
-		else if (btnid == btn_GoToRoot)
-    {
-      Update("");
-      return;
-    }
-		// Switch Media
-		else if (btnid == btn_Switch)
-		{
-			CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath, posX, posY);
-			return;
-		}
-    // Now Playing...
-    else if (btnid == btn_NowPlaying)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-      return;
-    }
+
+  case CONTEXT_BUTTON_NOW_PLAYING:
+    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    return true;
+
+  case CONTEXT_BUTTON_GOTO_ROOT:
+    Update("");
+    return true;
+
+  case CONTEXT_BUTTON_SETTINGS:
+    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+    return true;
   }
 
-  //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < m_vecItems.Size() && iItem > -1)
-    m_vecItems[iItem]->Select(bSelected);
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowMusicBase::OnRipCD()
@@ -1368,7 +1223,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.SetMusicThumb();
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://musicplaylists/")
+  if (items.m_strPath == "special://musicplaylists/" && !items.Contains("newplaylist://"))
   {
     CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));

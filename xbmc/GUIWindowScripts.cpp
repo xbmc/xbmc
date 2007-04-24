@@ -169,3 +169,4 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
 
   return true;
 }
+

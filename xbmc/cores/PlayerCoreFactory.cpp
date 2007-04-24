@@ -246,7 +246,10 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
   }
 
   // Display menu
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  if (posX && posY)
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  else
+    pMenu->CenterWindow();
   pMenu->DoModal();
 
   //Check what player we selected
