@@ -167,7 +167,9 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
 {
   // use above to get the filename
-  CStdString strFilename = GetFileName(strFileNameAndPath);
+  CStdString path(strFileNameAndPath);
+  RemoveSlashAtEnd(path);
+  CStdString strFilename = GetFileName(path);
 
   // if upnp:// we can ask for the friendlyname
 #ifdef HAS_UPNP
