@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 04/20/2007-->
+<!--Date of translation: 04/23/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8575-->
+<!--Based on english strings version 8593-->
+<!--PS: This file is writed for links2xbmc-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -524,6 +525,7 @@
   <string id="650">Exportation</string>
   <string id="651">Bibliothèque vidéos</string>
   <string id="652">Années</string>
+  <string id="653">Mettre à jour la bibliothèque</string>
 
   <string id="700">Optimisation de la bibliothèque</string>
   <string id="701">Suppression des anciens morceaux de la bibliothèque</string>
@@ -1545,6 +1547,50 @@
   <string id="21395">Impossible de cacher des fichiers plus grand que 4 GB</string>
   <string id="21396">Chapitre</string>
   <string id="21397">ombrage pixels haute qualité V2</string>
+  <string id="21398">Activer Playliste au démarrage</string>
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
+
+  <!-- Web browser strings -->
+  <string id="9">Internet</string>
+  <string id="12800">Navigateur Web</string>
+  <string id="12801">OSD de navigation</string>
+  <string id="12802">Paramètres de navigation</string>
+  <string id="12803">Signets Internet</string>
+  <string id="12804">Historique de navigation</string>
+  <string id="20400">Navigateur Web</string>
+  <string id="20401">Entrer l'URL</string>
+  <string id="20402">Signets Internet</string>
+  <string id="20403">Ajouter un signet</string>
+  <string id="20404">Nouveau Dossier</string>
+  <string id="20405">Supprimer</string>
+  <string id="20406">Historique des pages visitées</string>
+  <string id="20407">Effacer l'historique</string>
+  <string id="20408">Éditer le Titre du signet</string>
+  <string id="20409">Éditer l'URL du signet</string>
+  <string id="20410">Éditer</string>
+  <string id="20411">Supprimer</string>
+  <string id="20412">Commencer Déplacement</string>
+  <string id="20413">Déplacer ici</string>
+  <string id="20414">Annuler Déplacement</string>
+  <string id="20415">Êtes-vous sûr, vous voulez supprimer</string>
+  <string id="20416">ce signet ?</string>
+  <string id="20417">ce dossier et tout son contenu ?</string>
+  <string id="20418">Êtes-vous sûr, vous voulez terminer</string>
+  <string id="20419">votre session internet ?</string>
+  <string id="20420">Page d'accueil</string>
+  <string id="20421">Régler la page actuelle comme page d'accueil</string>
+  <string id="20422">Régler une page vierge comme page d'accueil</string>
+  <string id="20423">Taille de la police</string>
+  <string id="20424">Réglage images</string>
+  <string id="20425">Marge du haut</string>
+  <string id="20426">Marge du bas</string>
+  <string id="20427">Marge de la gauche</string>
+  <string id="20428">Marge de la droite</string>
+  <string id="20429">Dossier des téléchargements</string>
+  <string id="20430">Fichier des signets</string>
+  <string id="20431">Paramètres avancés...</string>
+  <string id="20432">Paramètres Réseau/proxy...</string>
+  <!-- End of Web browser strings -->
+
 </strings>
