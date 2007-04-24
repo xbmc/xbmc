@@ -26,7 +26,6 @@
 #include "PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "GUIDialogContextMenu.h"
 
 using namespace PLAYLIST;
 
@@ -48,7 +47,7 @@ using namespace PLAYLIST;
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
 {
-  iPos = -1;
+  m_movingFrom = -1;
 }
 
 CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist()
@@ -83,7 +82,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      iPos = -1;
+      m_movingFrom = -1;
     }
     break;
 
@@ -376,113 +375,60 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   }
 }
 
-void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  // calculate our position
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  // mark the item
-  m_vecItems[iItem]->Select(true);
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
-  // load our menu
-  pMenu->Initialize();
+  bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo());
 
-  // is this playlist playing?
-  bool bIsPlaying = false;
-  bool bItemIsPlaying = false;
-  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo()))
+  if (m_movingFrom >= 0)
   {
-    bIsPlaying = true;
-    int i = g_playlistPlayer.GetCurrentSong();
-    if (iItem == i) bItemIsPlaying = true;
+    if (itemNumber != m_movingFrom)
+      buttons.Add(CONTEXT_BUTTON_MOVE_HERE, 13252);         // move item here
+    buttons.Add(CONTEXT_BUTTON_CANCEL_MOVE, 13253);         // cancel move
   }
-  // add the buttons
-  int btn_Move = 0;   // move item
-  int btn_MoveTo = 0; // move item here
-  int btn_Cancel = 0; // cancel move
-  int btn_MoveUp = 0; // move up
-  int btn_MoveDn = 0; // move down
-  int btn_Delete = 0; // delete
-
-  if (iPos < 0)
-  {
-    btn_Move = pMenu->AddButton(13251);       // move item
-    btn_MoveUp = pMenu->AddButton(13332);     // move up
-    if (iItem == 0)
-      pMenu->EnableButton(btn_MoveUp, false); // disable if top item
-    btn_MoveDn = pMenu->AddButton(13333);     // move down
-    if (iItem == (m_vecItems.Size()-1))
-      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item
-    btn_Delete = pMenu->AddButton(15015);     // delete
-    if (bItemIsPlaying)
-      pMenu->EnableButton(btn_Delete, false); // disable if current item
-  }
-  // after selecting "move item" only two choices
   else
   {
-    btn_MoveTo = pMenu->AddButton(13252);         // move item here
-    if (iItem == iPos)
-      pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
-    btn_Cancel = pMenu->AddButton(13253);         // cancel move
+    buttons.Add(CONTEXT_BUTTON_MOVE_ITEM, 13251);
+    if (itemNumber > 0)
+      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
+    if (itemNumber + 1 < m_vecItems.Size())
+      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
+
+    if (!isPlaying || itemNumber != g_playlistPlayer.GetCurrentSong())
+      buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
   }
-  int btn_Return = pMenu->AddButton(12011);     // return to my videos
+}
 
-  // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid > 0)
+bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  switch (button)
   {
-    // move item
-    if (btnid == btn_Move)
-    {
-      iPos = iItem;
-    }
-    // move item here
-    else if (btnid == btn_MoveTo && iPos >= 0)
-    {
-      MoveItem(iPos, iItem);
-      iPos = -1;
-    }
-    // cancel move
-    else if (btnid == btn_Cancel)
-    {
-      iPos = -1;
-    }
-    // move up
-    else if (btnid == btn_MoveUp)
-    {
-      OnMove(iItem, ACTION_MOVE_ITEM_UP);
-    }
-    // move down
-    else if (btnid == btn_MoveDn)
-    {
-      OnMove(iItem, ACTION_MOVE_ITEM_DOWN);
-    }
-    // delete
-    else if (btnid == btn_Delete)
-    {
-      RemovePlayListItem(iItem);
-      return;
-    }
-    // return to my videos
-    else if (btnid == btn_Return)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_FILES);
-      return;
-    }
+  case CONTEXT_BUTTON_MOVE_ITEM:
+    m_movingFrom = itemNumber;
+    return true;
+
+  case CONTEXT_BUTTON_MOVE_HERE:
+    if (m_movingFrom >= 0)
+      MoveItem(m_movingFrom, itemNumber);
+    m_movingFrom = -1;
+    return true;
+
+  case CONTEXT_BUTTON_CANCEL_MOVE:
+    m_movingFrom = -1;
+    return true;
+
+  case CONTEXT_BUTTON_MOVE_ITEM_UP:
+    OnMove(itemNumber, ACTION_MOVE_ITEM_UP);
+    return true;
+
+  case CONTEXT_BUTTON_MOVE_ITEM_DOWN:
+    OnMove(itemNumber, ACTION_MOVE_ITEM_DOWN);
+    return true;
+
+  case CONTEXT_BUTTON_DELETE:
+    RemovePlayListItem(itemNumber);
+    return true;
   }
-  MarkPlaying();
+  return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowVideoPlaylist::OnMove(int iItem, int iAction)

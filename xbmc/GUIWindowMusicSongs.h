@@ -17,7 +17,8 @@ protected:
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnPrepareFileItems(CFileItemList &items);
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnScan(int iItem);
 
 

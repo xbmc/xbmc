@@ -25,7 +25,6 @@
 #include "Shortcut.h"
 #include "filesystem/HDDirectory.h"
 #include "GUIPassword.h"
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogTrainerSettings.h"
 #include "GUIDialogMediaSource.h"
 #include "xbox/xbeheader.h"
@@ -130,7 +129,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
-              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
               CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
             }
           }
@@ -170,15 +168,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
-        // get selected item
-        int iAction = message.GetParam1();
-        if (ACTION_CONTEXT_MENU == iAction)
-        {
-          int iItem = m_viewControl.GetSelectedItem();
-          // iItem is checked inside OnPopupMenu
-          OnPopupMenu(iItem);
-        }
-        if (iAction == ACTION_PLAYER_PLAY)
+        if (message.GetParam1() == ACTION_PLAYER_PLAY)
         {
           OnPlayMedia(m_viewControl.GetSelectedItem());
           return true;
@@ -191,58 +181,25 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // calculate our position
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
+  if (itemNumber < 0 || itemNumber >= m_vecItems.Size())
+    return;
+  CFileItem *item = m_vecItems[itemNumber];
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
-    if (iItem < 0)
-    { // TODO: Add option to add shares in this case
-      return false;
-    }
-    // mark the item
-    m_vecItems[iItem]->Select(true);
-
-    // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("myprograms", m_vecItems[iItem], posX, posY))
-    {
-      m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
-      Update("");
-      return true;
-    }
-    m_vecItems[iItem]->Select(false);
-    return false;
+    // get the usual bookmark shares
+    CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
+    CGUIDialogContextMenu::GetContextButtons("myprograms", share, buttons);
   }
-  else if (iItem >= 0)// assume a program
+  else
   {
-    // mark the item
-    m_vecItems[iItem]->Select(true);
-    // popup the context menu
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (!pMenu) return false;
-    // load our menu
-    pMenu->Initialize();
-    // add the needed buttons
-
-    int btn_Launch = -2;
-    int btn_Rename = -2;
-    int btn_LaunchIn = -2;
-    int btn_Trainers = -2;
-    int btn_GameSaves = -2;
-    if (m_vecItems[iItem]->IsXBE() || m_vecItems[iItem]->IsShortCut())
+    if (item->IsXBE() || item->IsShortCut())
     {
       CStdString strLaunch = g_localizeStrings.Get(518); // Launch
       if (g_guiSettings.GetBool("myprograms.gameautoregion"))
       {
-        int iRegion = GetRegion(iItem);
+        int iRegion = GetRegion(itemNumber);
         if (iRegion == VIDEO_NTSCM)
           strLaunch += " (NTSC-M)";
         if (iRegion == VIDEO_NTSCJ)
@@ -252,177 +209,197 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
         if (iRegion == VIDEO_PAL60)
           strLaunch += " (PAL-60)";
       }
-      btn_Launch = pMenu->AddButton(strLaunch); // launch
+      buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
 
-
-      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
-
+      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
       CStdString strTitleID;
       CStdString strGameSavepath;
       strTitleID.Format("%08X",dwTitleId);
       CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
 
       if (CDirectory::Exists(strGameSavepath))
-        btn_GameSaves = pMenu->AddButton(20322);         // Goto GameSaves
+        buttons.Add(CONTEXT_BUTTON_GAMESAVES, 20322);         // Goto GameSaves
 
       if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-        btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
+        buttons.Add(CONTEXT_BUTTON_LAUNCH_IN, 519); // launch in video mode
 
       if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
       {
-        if (m_vecItems[iItem]->IsShortCut())
-          btn_Rename = pMenu->AddButton(16105);
+        if (item->IsShortCut())
+          buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
         else
-          btn_Rename = pMenu->AddButton(520); // edit xbe title
+          buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
       }
 
       if (m_database.ItemHasTrainer(dwTitleId))
-      {
-        CStdString strOptions = g_localizeStrings.Get(12015);
-        btn_Trainers = pMenu->AddButton(strOptions); // trainer options
-      }
-
+        buttons.Add(CONTEXT_BUTTON_TRAINER_OPTIONS, 12015); // trainer options
     }
-    int btn_ScanTrainers = pMenu->AddButton(12012);
+    buttons.Add(CONTEXT_BUTTON_SCAN_TRAINERS, 12012); // scan trainers
 
-    //int btn_Settings = -2;
-    int btn_Settings = pMenu->AddButton(5);         // Settings
-    int btn_GoToRoot = pMenu->AddButton(20128);
+    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
+  }
+  CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
+}
 
-    // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-    pMenu->DoModal();
+bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
-    int btnid = pMenu->GetButton();
-    if (!btnid)
+  if (item && m_vecItems.IsVirtualDirectoryRoot())
+  {
+    CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
+    if (CGUIDialogContextMenu::OnContextButton("myprograms", share, button))
     {
-      m_vecItems[iItem]->Select(false);
-      return false;
+      Update("");
+      return true;
     }
-
-    if (btnid == btn_Rename)
+  }
+  switch (button)
+  {
+  case CONTEXT_BUTTON_RENAME:
     {
       CStdString strDescription;
       CShortcut cut;
-      if (m_vecItems[iItem]->IsShortCut())
+      if (item->IsShortCut())
       {
-        cut.Create(m_vecItems[iItem]->m_strPath);
+        cut.Create(item->m_strPath);
         strDescription = cut.m_strLabel;
       }
       else
-        strDescription = m_vecItems[iItem]->GetLabel();
+        strDescription = item->GetLabel();
 
       if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
       {
-        if (m_vecItems[iItem]->IsShortCut())
+        if (item->IsShortCut())
         {
           cut.m_strLabel = strDescription;
-          cut.Save(m_vecItems[iItem]->m_strPath);
+          cut.Save(item->m_strPath);
         }
         else
         {
           // SetXBEDescription will truncate to 40 characters.
-          CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
-          m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
+          CUtil::SetXBEDescription(item->m_strPath,strDescription);
+          m_database.SetDescription(item->m_strPath,strDescription);
         }
         Update(m_vecItems.m_strPath);
       }
+      return true;
     }
-    if (btnid == btn_Trainers)
+
+  case CONTEXT_BUTTON_TRAINER_OPTIONS:
     {
-      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
       if (CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database))
-      {
         Update(m_vecItems.m_strPath);
-      }
+      return true;
     }
-    if (btnid == btn_ScanTrainers)
+
+  case CONTEXT_BUTTON_SCAN_TRAINERS:
     {
       PopulateTrainersList();
       Update(m_vecItems.m_strPath);
-    }
-    if (btnid == btn_Settings)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-    }
-    else if (btnid == btn_GoToRoot)
-    {
-      return Update("");
-    }
-    else if (btnid == btn_Launch)
-    {
-      OnClick(iItem);
       return true;
     }
-    else if (btnid == btn_GameSaves)
+
+  case CONTEXT_BUTTON_SETTINGS:
+    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    return true;
+
+  case CONTEXT_BUTTON_GOTO_ROOT:
+    Update("");
+    return true;
+
+  case CONTEXT_BUTTON_LAUNCH:
+    OnClick(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_GAMESAVES:
     {
       CStdString strTitleID;
       CStdString strGameSavepath;
-      strTitleID.Format("%08X",CUtil::GetXbeID(m_vecItems[iItem]->m_strPath));
+      strTitleID.Format("%08X",CUtil::GetXbeID(item->m_strPath));
       CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
       m_gWindowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
-
+      return true;
     }
-    else if (btnid == btn_LaunchIn)
-    {
-      pMenu->Initialize();
-      int btn_PAL;
-      int btn_NTSCM;
-      int btn_NTSCJ;
-      int btn_PAL60;
-      CStdString strPAL, strNTSCJ, strNTSCM, strPAL60;
-      strPAL = "PAL";
-      strNTSCM = "NTSC-M";
-      strNTSCJ = "NTSC-J";
-      strPAL60 = "PAL-60";
-      int iRegion = GetRegion(iItem,true);
-
-      if (iRegion == VIDEO_NTSCM)
-        strNTSCM += " (default)";
-      if (iRegion == VIDEO_NTSCJ)
-        strNTSCJ += " (default)";
-      if (iRegion == VIDEO_PAL50)
-        strPAL += " (default)";
-
-      btn_PAL = pMenu->AddButton(strPAL);
-      btn_NTSCM = pMenu->AddButton(strNTSCM);
-      btn_NTSCJ = pMenu->AddButton(strNTSCJ);
-      btn_PAL60 = pMenu->AddButton(strPAL60);
-
-      pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-      pMenu->DoModal();
-      int btnid = pMenu->GetButton();
-
-      if (btnid == btn_NTSCM)
-      {
-        m_iRegionSet = VIDEO_NTSCM;
-        m_database.SetRegion(m_vecItems[iItem]->m_strPath,1);
-      }
-      if (btnid == btn_NTSCJ)
-      {
-        m_iRegionSet = VIDEO_NTSCJ;
-        m_database.SetRegion(m_vecItems[iItem]->m_strPath,2);
-      }
-      if (btnid == btn_PAL)
-      {
-        m_iRegionSet = VIDEO_PAL50;
-        m_database.SetRegion(m_vecItems[iItem]->m_strPath,4);
-      }
-      if (btnid == btn_PAL60)
-      {
-        m_iRegionSet = VIDEO_PAL60;
-        m_database.SetRegion(m_vecItems[iItem]->m_strPath,8);
-      }
-
-      if (btnid > -1)
-        OnClick(iItem);
-    }
+  case CONTEXT_BUTTON_LAUNCH_IN:
+    OnChooseVideoModeAndLaunch(itemNumber);
+    return true;
   }
-  else
-    return false;
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
 
-  if (iItem < m_vecItems.Size() && iItem > -1)
-    m_vecItems[iItem]->Select(false);
+bool CGUIWindowPrograms::OnChooseVideoModeAndLaunch(int item)
+{
+  if (item < 0 || item >= m_vecItems.Size()) return false;
+  // calculate our position
+  float posX = 200;
+  float posY = 100;
+  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  if (pList)
+  {
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+
+  // grab the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu) return false;
+
+  pMenu->Initialize();
+
+  int btn_PAL;
+  int btn_NTSCM;
+  int btn_NTSCJ;
+  int btn_PAL60;
+  CStdString strPAL, strNTSCJ, strNTSCM, strPAL60;
+  strPAL = "PAL";
+  strNTSCM = "NTSC-M";
+  strNTSCJ = "NTSC-J";
+  strPAL60 = "PAL-60";
+  int iRegion = GetRegion(item,true);
+
+  if (iRegion == VIDEO_NTSCM)
+    strNTSCM += " (default)";
+  if (iRegion == VIDEO_NTSCJ)
+    strNTSCJ += " (default)";
+  if (iRegion == VIDEO_PAL50)
+    strPAL += " (default)";
+
+  btn_PAL = pMenu->AddButton(strPAL);
+  btn_NTSCM = pMenu->AddButton(strNTSCM);
+  btn_NTSCJ = pMenu->AddButton(strNTSCJ);
+  btn_PAL60 = pMenu->AddButton(strPAL60);
+
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->DoModal();
+  int btnid = pMenu->GetButton();
+
+  if (btnid == btn_NTSCM)
+  {
+    m_iRegionSet = VIDEO_NTSCM;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,1);
+  }
+  if (btnid == btn_NTSCJ)
+  {
+    m_iRegionSet = VIDEO_NTSCJ;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,2);
+  }
+  if (btnid == btn_PAL)
+  {
+    m_iRegionSet = VIDEO_PAL50;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,4);
+  }
+  if (btnid == btn_PAL60)
+  {
+    m_iRegionSet = VIDEO_PAL60;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,8);
+  }
+
+  if (btnid > -1)
+    return OnClick(item);
+
   return true;
 }
 
