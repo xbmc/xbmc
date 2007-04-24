@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/17/2007-->
+<!--Date of translation: 04/24/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8539-->
+<!--Based on english strings version 8628-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -526,6 +526,8 @@
   <string id="649">Datenbank wird importiert...</string>
   <string id="650">Datenbank wird exportiert...</string>
   <string id="651">Video-Datenbank</string>
+  <string id="652">Jahre</string>
+  <string id="653">Datenbank aktualisieren</string>
   <string id="700">Datenbank wird aktualisiert...</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
@@ -634,6 +636,9 @@
   <string id="1030">Ein Bild</string>
   <string id="1031">Ein Ordner mit Bildern</string>
   <string id="1032">Netzwerkfreigabe hinzufügen...</string>
+  <string id="1033">eine Datei</string>
+  <string id="1034">Untermenü</string>
+  <string id="1035">Untermenü-Einträge aktivieren</string>
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
@@ -1556,5 +1561,8 @@
   <string id="21393">Hohes Standby</string>
   <string id="21394">Niedriges Standby</string>
   <string id="21395">Es ist nicht möglich Dateien größer als 4GB zwischenzuspeichern!</string>
+  <string id="21396">Kapitel</string>
+  <string id="21397">Pixel Shader V2 (Hohe Qualität)</string>
+  <string id="21398">Playlist beim einschalten abspielen</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
