@@ -99,6 +99,13 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
+  // the non-contextual menu can be called at any time
+  if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  {
+    OnPopupMenu(-1);
+    return true;
+  }
+
   return CGUIWindow::OnAction(action);
 }
 
@@ -151,6 +158,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           OnClick(iItem);
+        }
+        else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+        {
+          OnPopupMenu(iItem);
+          return true;
         }
       }
     }
@@ -956,4 +968,62 @@ void CGUIMediaWindow::SetupShares()
     m_rootDir.SetShares(viewState->GetShares());
     delete viewState;
   }
+}
+
+bool CGUIMediaWindow::OnPopupMenu(int iItem)
+{
+  // popup the context menu
+  // grab our context menu
+  CContextButtons buttons;
+  GetContextButtons(iItem, buttons);
+
+  if (buttons.size())
+  {
+    // mark the item
+    if (iItem >= 0 && iItem < m_vecItems.Size())
+      m_vecItems[iItem]->Select(true);
+
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    if (!pMenu) return false;
+    // load our menu
+    pMenu->Initialize();
+
+    // add the buttons and execute it
+    for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
+      pMenu->AddButton((*it).second);
+
+    // position it correctly
+    float posX = 200;
+    float posY = 100;
+    const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
+    if (pList)
+    {
+      posX = pList->GetXPosition() + pList->GetWidth() / 2;
+      posY = pList->GetYPosition() + pList->GetHeight() / 2;
+    }
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->DoModal();
+
+    // translate our button press
+    CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
+    if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
+      btn = buttons[pMenu->GetButton() - 1].first;
+
+    // deselect our item
+    if (iItem >= 0 && iItem < m_vecItems.Size())
+      m_vecItems[iItem]->Select(false);
+
+    if (btn != CONTEXT_BUTTON_CANCELLED)
+      return OnContextButton(iItem, btn);
+  }
+  return false;
+}
+
+void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
+{
+}
+
+bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  return false;
 }
