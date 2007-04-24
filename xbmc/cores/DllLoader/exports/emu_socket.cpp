@@ -3,6 +3,7 @@
 #include "..\DllLoaderContainer.h"
 
 #include "..\..\..\DNSNameCache.h"
+#include "..\..\..\xbox\Network.h"
 #include "emu_dummy.h"
 #include "emu_socket.h"
 
@@ -118,12 +119,9 @@ extern "C"
 
     if (!strcmp(hbn_hostname, name))
     {
-      XNADDR xna;
-      DWORD dwState;
-      do dwState = XNetGetTitleXnAddr(&xna);
-      while (dwState == XNET_GET_XNADDR_PENDING);
+      if(g_network.IsAvailable())
+        hbn_dwList2[0] = inet_addr(g_network.m_networkinfo.ip);
 
-      hbn_dwList2[0] = xna.ina.S_un.S_addr;
       return &hbn_hostent;
     }
     if (CDNSNameCache::Lookup(name, strIpAdres))
@@ -371,7 +369,24 @@ extern "C"
     SOCKET socket = GetSocketForIndex(s);
     int res = getsockname(socket, name, namelen);
     if(res == SOCKET_ERROR)
+    {
       errno = WSAGetLastError();
+      return res;
+    }
+
+    if( name->sa_family == AF_INET 
+    && *namelen >= sizeof(sockaddr_in) )
+    {
+      sockaddr_in *addr = (sockaddr_in*)name;
+      if( addr->sin_port > 0 && addr->sin_addr.S_un.S_addr == 0 )
+      {
+        // unspecifed address will always be on local xbox ip
+        // some dll's assume this will return a proper address
+        // even if windows standard doesn't gurantee it
+        if( g_network.IsAvailable() )
+          addr->sin_addr.S_un.S_addr = inet_addr(g_network.m_networkinfo.ip);
+      }
+    }
     return res;
   }
 
