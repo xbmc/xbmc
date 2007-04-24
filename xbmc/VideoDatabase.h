@@ -199,7 +199,9 @@ public:
   void DeleteDetailsForTvShow(const CStdString& strPath);
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
-  
+  bool GetPathHash(const CStdString &path, CStdString &hash);
+  bool GetPaths(set<CStdString> &paths);
+
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lEpisodeId = -1);
@@ -252,6 +254,7 @@ public:
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
+  bool SetPathHash(const CStdString &path, const CStdString &hash);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);

@@ -33,9 +33,9 @@ public:
   void Stop();
   void SetObserver(IVideoInfoScannerObserver* pObserver);
 
-  static void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
+  void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
   long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
-  void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress = NULL);
+  void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress = NULL);
   static CStdString GetnfoFile(CFileItem *item);
   long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
   bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CIMDBUrl *pUrl=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
@@ -47,6 +47,7 @@ protected:
 
   virtual void Run();
   int CountFiles(const CStdString& strPath);
+  static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
 protected:
   IVideoInfoScannerObserver* m_pObserver;
@@ -59,4 +60,6 @@ protected:
   CVideoDatabase m_database;
   SScanSettings m_settings;
   SScraperInfo m_info;
+  set<CStdString> m_pathsToScan;
+  set<CStdString> m_pathsToCount;
 };

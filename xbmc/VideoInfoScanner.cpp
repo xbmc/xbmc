@@ -26,8 +26,10 @@
 #include "Util.h"
 #include "nfofile.h"
 #include "utils/RegExp.h"
+#include "utils/md5.h"
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
+#include "xbox/xkgeneral.h"
 
 using namespace DIRECTORY;
 using namespace XFILE;
@@ -93,8 +95,16 @@ void CVideoInfoScanner::Process()
       m_bCanInterrupt = false;
 
       bool bCommit = false;
+      bool bCancelled = false;
       if (bOKtoScan)
-        bCommit = DoScan(m_strStartDir,m_settings);
+      {
+        while (!bCancelled && m_pathsToScan.size())
+        {
+          if (!DoScan(*m_pathsToScan.begin(),m_settings))
+            bCancelled = true;
+          bCommit = !bCancelled;
+        }
+      }
 
       if (bCommit)
       {
@@ -142,6 +152,18 @@ void CVideoInfoScanner::Start(const CStdString& strDirectory, const SScraperInfo
   m_bUpdateAll = bUpdateAll;
   m_settings = settings;
   m_info = info;
+  m_pathsToScan.clear();
+
+  if (strDirectory.IsEmpty())
+  { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
+    // we go.
+    m_database.Open();
+    m_database.GetPaths(m_pathsToScan);
+    m_database.Close();
+  }
+  else
+    m_pathsToScan.insert(strDirectory);
+
   StopThread();
   Create();
   m_bRunning = true;
@@ -170,15 +192,42 @@ bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, const SScanSettin
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Scanning dir: %s", strDirectory.c_str());
   // load subfolder
   CFileItemList items;
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   int iFound;
+  bool bSkip=false;
   m_database.GetScraperForPath(strDirectory,m_info.strPath,m_info.strContent,iFound);
+  if (m_info.strContent.IsEmpty())
+    bSkip = true;
+
+  CStdString hash, dbHash;
   if (m_info.strContent.Equals("movies"))
   {
     pWindow->GetStackedDirectory(strDirectory, items);
+    int numFilesInFolder = GetPathHash(items, hash);
+
+    if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+    { // path has changed - rescan
+      if (dbHash.IsEmpty())
+        CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+      else
+        CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+      m_currentItem += numFilesInFolder;
+
+      // notify our observer of our progress
+      if (m_pObserver)
+      {
+        if (m_itemCount>0)
+          m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
+        m_pObserver->OnDirectoryScanned(strDirectory);
+      }
+      bSkip = true;
+    }
   }
   else if (m_info.strContent.Equals("tvshows"))
   {
@@ -195,15 +244,20 @@ bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, const SScanSettin
       CUtil::GetParentPath(item.m_strPath,items.m_strPath);
     }
   }
-  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-
-  RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-  if (1) // TODO
+  if (!bSkip)
   {
-    if (m_pObserver)
-      m_pObserver->OnDirectoryScanned(strDirectory);
+    RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+    if (m_info.strContent.Equals("movies"))
+      m_database.SetPathHash(strDirectory, hash);
   }
+  if (m_pObserver)
+    m_pObserver->OnDirectoryScanned(strDirectory);
   CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
+
+  // remove this path from the list we're processing
+  set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
+  if (it != m_pathsToScan.end())
+    m_pathsToScan.erase(it);
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -255,6 +309,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
 
   // for every file found
   IMDB_EPISODELIST episodes;
+  IMDB_EPISODELIST files;
   long lTvShowId = -1;
   m_database.Open();
   for (int i = 0; i < (int)items.Size(); ++i)
@@ -290,6 +345,11 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
           // fetch episode guide
           CVideoInfoTag details;
           m_database.GetTvShowInfo(pItem->m_strPath,details,lTvShowId);
+          files.clear();
+          EnumerateSeriesFolder(pItem,files);
+          if (files.size() == 0) // no update or no files
+            continue;
+
           CIMDBUrl url;
           //convert m_strEpisodeGuide in url.m_scrURL
           url.Parse(details.m_strEpisodeGuide);
@@ -324,7 +384,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         if (m_pObserver)
           m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
-        OnProcessSeriesFolder(episodes,pItem,lTvShowId2,IMDB,m_dlgProgress);
+        OnProcessSeriesFolder(episodes,files,lTvShowId2,IMDB,m_dlgProgress);
         continue;
       }
       else
@@ -462,11 +522,13 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
               CIMDBUrl url;
               url.Parse(details.m_strEpisodeGuide);
               IMDB_EPISODELIST episodes;
+              IMDB_EPISODELIST files;
+              EnumerateSeriesFolder(pItem,files);
               if (IMDB.GetEpisodeList(url,episodes))
               {
                 if (m_pObserver)
                   m_pObserver->OnDirectoryChanged(pItem->m_strPath);
-                OnProcessSeriesFolder(episodes,pItem,lResult,IMDB,m_dlgProgress);
+                OnProcessSeriesFolder(episodes,files,lResult,IMDB,m_dlgProgress);
               }
             }
           }
@@ -484,7 +546,10 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
 // This function is run by another thread
 void CVideoInfoScanner::Run()
 {
-  m_itemCount=CountFiles(m_strStartDir);
+  int count = 0;
+  while (!m_bStop && m_pathsToCount.size())
+    count+=CountFiles(*m_pathsToCount.begin());
+  m_itemCount = count;
 }
 
 // Recurse through all folders we scan and count files
@@ -518,7 +583,29 @@ void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISOD
 {
   CFileItemList items;
   if (item->m_bIsFolder)
+  {
     CUtil::GetRecursiveListing(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+    CStdString hash, dbHash;
+    int numFilesInFolder = GetPathHash(items, hash);
+
+    if (m_database.GetPathHash(item->m_strPath, dbHash) && dbHash == hash)
+    {
+      m_currentItem += numFilesInFolder;
+
+      // notify our observer of our progress
+      if (m_pObserver)
+      {
+        if (m_itemCount>0)
+        {
+          m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
+          m_pObserver->OnSetCurrentProgress(numFilesInFolder,numFilesInFolder);
+        }
+        m_pObserver->OnDirectoryScanned(item->m_strPath);
+      }
+      return;
+    }
+    m_database.SetPathHash(item->m_strPath,hash);
+  }
   else
     items.Add(new CFileItem(*item));
 
@@ -632,7 +719,7 @@ long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &
   return lResult;
 }
 
-void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const CFileItem* item, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress /* = NULL */)
+void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress /* = NULL */)
 {
   if (pDlgProgress)
   {
@@ -641,11 +728,9 @@ void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const 
     pDlgProgress->ShowProgressBar(true);
     pDlgProgress->Progress();
   }
-  IMDB_EPISODELIST files;
-  EnumerateSeriesFolder(item,files);
 
   int iMax = files.size();
-  int iCurr = 0;
+  int iCurr = 1;
   m_database.Open();
   for (IMDB_EPISODELIST::iterator iter = files.begin();iter != files.end();++iter)
   {
@@ -657,7 +742,8 @@ void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, const 
     }
     if (m_pObserver)
     {
-      m_pObserver->OnSetProgress(m_currentItem++,m_itemCount);
+      if (m_itemCount > 0)
+        m_pObserver->OnSetProgress(m_currentItem++,m_itemCount);
       m_pObserver->OnSetCurrentProgress(iCurr++,iMax);
     }
     IMDB_EPISODELIST::iterator iter2 = episodes.find(iter->first);
@@ -797,4 +883,29 @@ void CVideoInfoScanner::ApplyIMDBThumbToFolder(const CStdString &folder, const C
     CStdString strThumb(folderItem.GetCachedVideoThumb());
     CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
   }
+}
+
+int CVideoInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
+{
+  // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
+  if (0 == items.Size()) return 0;
+  MD5_CTX md5state;
+  unsigned char md5hash[16];
+  char md5HexString[33];
+  MD5Init(&md5state);
+  int count = 0;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    const CFileItem *pItem = items[i];
+    MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
+    MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+    FILETIME time = pItem->m_dateTime;
+    MD5Update(&md5state, (unsigned char *)&time, sizeof(FILETIME));
+    if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
+      count++;
+  }
+  MD5Final(md5hash, &md5state);
+  XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
+  hash = md5HexString;
+  return count;
 }
