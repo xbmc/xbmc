@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 04/20/2007-->
+<!--Date of translation: 04/24/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8575-->
+<!--Based on english strings version 8628-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -524,6 +524,7 @@
   <string id="650">Exportation</string>
   <string id="651">Bibliothèque vidéos</string>
   <string id="652">Années</string>
+  <string id="653">Mettre à jour la bibliothèque</string>
 
   <string id="700">Optimisation de la bibliothèque</string>
   <string id="701">Suppression des anciens morceaux de la bibliothèque</string>
@@ -1545,6 +1546,7 @@
   <string id="21395">Impossible de cacher des fichiers plus grand que 4 GB</string>
   <string id="21396">Chapitre</string>
   <string id="21397">ombrage pixels haute qualité V2</string>
+  <string id="21398">Activer Playliste au démarrage</string>
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 </strings>
