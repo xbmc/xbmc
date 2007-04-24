@@ -22,7 +22,8 @@ protected:
   virtual void UpdateButtons();
   virtual void PlayItem(int iItem);
   virtual void OnWindowLoaded();
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnFilterItems();
   virtual bool OnClick(int iItem);
   void OnSearch();

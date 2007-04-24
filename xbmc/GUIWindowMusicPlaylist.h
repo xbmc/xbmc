@@ -19,7 +19,8 @@ protected:
   virtual void UpdateButtons();
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual bool Update(const CStdString& strDirectory);
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   void OnMove(int iItem, int iAction);
   virtual bool OnPlayMedia(int iItem);
 
@@ -29,6 +30,6 @@ protected:
   
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
-  int iPos;
+  int m_movingFrom;
   VECSHARES m_shares;
 };

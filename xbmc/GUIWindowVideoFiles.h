@@ -21,7 +21,9 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void UpdateButtons();
   virtual bool OnClick(int iItem);
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
   virtual void OnInfo(int iItem, const SScraperInfo& info);
   virtual void OnQueueItem(int iItem);
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info);

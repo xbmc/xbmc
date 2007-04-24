@@ -3,6 +3,7 @@
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
 #include "GUIViewControl.h"
+#include "GUIDialogContextMenu.h"
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow
@@ -24,6 +25,9 @@ protected:
   void SetupShares();
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
+  virtual bool OnPopupMenu(int iItem);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
