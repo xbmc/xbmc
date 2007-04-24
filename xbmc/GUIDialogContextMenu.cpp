@@ -104,6 +104,15 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
   return AddButton(g_localizeStrings.Get(iLabel));
 }
 
+void CGUIDialogContextMenu::SetPosition(float posX, float posY)
+{
+  if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
+    posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
+  if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
+    posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
+  CGUIDialog::SetPosition(posX, posY);
+}
+
 int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
 { // add a button to our control
   CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
