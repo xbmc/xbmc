@@ -25,7 +25,6 @@
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
-#include "GUIDialogContextMenu.h"
 #include "PartyModeManager.h"
 
 using namespace PLAYLIST;
@@ -51,7 +50,7 @@ CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
 {
   m_musicInfoLoader.SetObserver(this);
   m_musicInfoLoader.SetPriority(THREAD_PRIORITY_LOWEST);
-  iPos = -1;
+  m_movingFrom = -1;
 }
 
 CGUIWindowMusicPlayList::~CGUIWindowMusicPlayList(void)
@@ -89,7 +88,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       if (m_musicInfoLoader.IsLoading())
         m_musicInfoLoader.StopThread();
 
-      iPos = -1;
+      m_movingFrom = -1;
     }
     break;
 
@@ -556,134 +555,74 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
   return true;
 }
 
-void CGUIWindowMusicPlayList::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  // calculate our position
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  // mark the item
-  m_vecItems[iItem]->Select(true);
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
-  // load our menu
-  pMenu->Initialize();
-
   // is this playlist playing?
-  int iPlaying = g_playlistPlayer.GetCurrentSong();
-  bool bIsPlaying = false;
-  bool bItemIsPlaying = false;
-  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()))
+  bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio());
+  int itemPlaying = g_playlistPlayer.GetCurrentSong();
+
+  if (itemNumber >= 0 && itemNumber < m_vecItems.Size())
   {
-    bIsPlaying = true;
-    if (iItem == iPlaying) bItemIsPlaying = true;
-  }
-
-  // add the buttons
-  int btn_Move = 0;   // move item
-  int btn_MoveTo = 0; // move item here
-  int btn_Cancel = 0; // cancel move
-  int btn_MoveUp = 0; // move up
-  int btn_MoveDn = 0; // move down
-  int btn_Delete = 0; // delete
-  int btn_PartyMode = 0; // cancel party mode
-
-  if (iPos < 0)
-  {
-    btn_Move = pMenu->AddButton(13251);       // move item
-    btn_MoveUp = pMenu->AddButton(13332);     // move up
-    if (iItem == 0)
-      pMenu->EnableButton(btn_MoveUp, false); // disable if top item
-    btn_MoveDn = pMenu->AddButton(13333);     // move down
-    if (iItem == (m_vecItems.Size()-1))
-      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item
-    btn_Delete = pMenu->AddButton(15015);     // delete
-    if (bItemIsPlaying)
-      pMenu->EnableButton(btn_Delete, false); // disable if current item
-
-    // party mode automatically moves the current song to the top
-    if (g_partyModeManager.IsEnabled())
+    if (m_movingFrom >= 0)
     {
-      // cant move the current playing song
-      if (bItemIsPlaying)
-      {
-        pMenu->EnableButton(btn_Move, false);
-        pMenu->EnableButton(btn_MoveUp, false);
-        pMenu->EnableButton(btn_MoveDn, false);
-      }
-      if (iItem == (iPlaying-1))
-        pMenu->EnableButton(btn_MoveDn, false);
-      if (iItem == (iPlaying+1))
-        pMenu->EnableButton(btn_MoveUp, false);
+      // we can move the item to any position not where we are, and any position not above currently
+      // playing item in party mode
+      if (itemNumber != m_movingFrom && (!g_partyModeManager.IsEnabled() || itemNumber > itemPlaying))
+        buttons.Add(CONTEXT_BUTTON_MOVE_HERE, 13252);         // move item here
+      buttons.Add(CONTEXT_BUTTON_CANCEL_MOVE, 13253);
+    }
+    else
+    { // aren't in a move
+      if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
+        buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
+      if (itemNumber + 1 < m_vecItems.Size())
+        buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
+      if (!g_partyModeManager.IsEnabled() || itemNumber != itemPlaying)
+        buttons.Add(CONTEXT_BUTTON_MOVE_ITEM, 13251);
+
+      if (itemNumber != itemPlaying)
+        buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
     }
   }
-  // after selecting "move item" only two choices
-  else
-  {
-    btn_MoveTo = pMenu->AddButton(13252);         // move item here
-    if (iItem == iPos)
-      pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
-    if (g_partyModeManager.IsEnabled() && iItem <= iPlaying)
-      pMenu->EnableButton(btn_MoveTo, false);     // cant move a song above the currently playing
-    btn_Cancel = pMenu->AddButton(13253);         // cancel move
-  }
+
   if (g_partyModeManager.IsEnabled())
-    btn_PartyMode = pMenu->AddButton(588);      // cancel party mode
+    buttons.Add(CONTEXT_BUTTON_CANCEL_PARTYMODE, 588);      // cancel party mode
+}
 
-  // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid > 0)
+bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  switch (button)
   {
-    // move item
-    if (btnid == btn_Move)
-    {
-      iPos = iItem;
-    }
-    // move item here
-    else if (btnid == btn_MoveTo && iPos >= 0)
-    {
-      MoveItem(iPos, iItem);
-      iPos = -1;
-    }
-    // cancel move
-    else if (btnid == btn_Cancel)
-    {
-      iPos = -1;
-    }
-    // move up
-    else if (btnid == btn_MoveUp)
-    {
-      OnMove(iItem, ACTION_MOVE_ITEM_UP);
-    }
-    // move down
-    else if (btnid == btn_MoveDn)
-    {
-      OnMove(iItem, ACTION_MOVE_ITEM_DOWN);
-    }
-    // delete
-    else if (btnid == btn_Delete)
-    {
-      RemovePlayListItem(iItem);
-      return;
-    }
-    else if (btnid == btn_PartyMode)
-    {
-      g_partyModeManager.Disable();
-    }
+  case CONTEXT_BUTTON_MOVE_ITEM:
+    m_movingFrom = itemNumber;
+    return true;
+
+  case CONTEXT_BUTTON_MOVE_HERE:
+    MoveItem(m_movingFrom, itemNumber);
+    m_movingFrom = -1;
+    return true;
+
+  case CONTEXT_BUTTON_CANCEL_MOVE:
+    m_movingFrom = -1;
+    return true;
+
+  case CONTEXT_BUTTON_MOVE_ITEM_UP:
+    OnMove(itemNumber, ACTION_MOVE_ITEM_UP);
+    return true;
+
+  case CONTEXT_BUTTON_MOVE_ITEM_DOWN:
+    OnMove(itemNumber, ACTION_MOVE_ITEM_DOWN);
+    return true;
+
+  case CONTEXT_BUTTON_DELETE:
+    RemovePlayListItem(itemNumber);
+    return true;
+    
+  case CONTEXT_BUTTON_CANCEL_PARTYMODE:
+    g_partyModeManager.Disable();
+    return true;
   }
-  // turn off the selection
-  if (iItem >= 0 && iItem < m_vecItems.Size())
-    m_vecItems[iItem]->Select(false);
+  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)

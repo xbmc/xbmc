@@ -25,7 +25,9 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void OnPrepareFileItems(CFileItemList &items);
 
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnInfo(int iItem, const SScraperInfo& info);
   virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) {};
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
@@ -56,6 +58,7 @@ protected:
   void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
+  int GetScraperForItem(CFileItem *item, SScraperInfo &info);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
