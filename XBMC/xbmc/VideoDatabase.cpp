@@ -2554,7 +2554,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES)
           pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
-        if (!items.HasFileNoCase(pItem->m_strPath))
+        if (!items.Contains(pItem->m_strPath))
         pItem->SetLabelPreformated(true);
         items.Add(pItem);
       }
