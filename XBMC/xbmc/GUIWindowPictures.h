@@ -18,9 +18,9 @@ protected:
   virtual void UpdateButtons();
   virtual void OnPrepareFileItems(CFileItemList& items);
   virtual bool Update(const CStdString &strDirectory);
-  virtual bool OnAction(const CAction &action);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
-  void OnPopupMenu(int iItem, bool bContextDriven = true);
   void OnRegenerateThumbs();
   virtual bool OnPlayMedia(int iItem);
   void OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems=NULL);
