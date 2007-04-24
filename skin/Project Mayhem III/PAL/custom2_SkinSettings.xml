@@ -94,7 +94,7 @@
 				<selected>!Skin.HasSetting(animated)</selected>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
-				<onup>23</onup>
+				<onup>25</onup>
 				<ondown>21</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
@@ -143,10 +143,69 @@
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>22</onup>
+				<ondown>24</ondown>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="image">
+				<posx>190</posx>
+				<posy>248</posy>
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+				<include>contentpanelslide</include>
+			</control>
+			<control type="radiobutton" id="24">
+				<description>Enable Playlist Toggle</description>
+				<posx>190</posx>
+				<posy>258</posy>
+				<width>485</width>
+				<label>21398</label>
+				<onclick>Skin.ToggleSetting(Use_Startup_Playlist)</onclick>
+				<selected>Skin.HasSetting(Use_Startup_Playlist)</selected>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>22</onup>
+				<ondown>25</ondown>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="button" id="25">
+				<description>Starup Playlist Path</description>
+				<posx>190</posx>
+				<posy>295</posy>
+				<width>485</width>
+				<label>15311</label>
+				<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>24</onup>
 				<ondown>20</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
+				<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+			</control>
+			<control type="label">
+				<description>Starup Playlist Path label</description>
+				<posx>660</posx>
+				<posy>310</posy>
+				<width>380</width>
+				<align>right</align>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<info>Skin.String(Startup_Playlist_Path)</info>
+				<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+			</control>
+			<control type="image">
+				<posx>190</posx>
+				<posy>332</posy>
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+				<include>contentpanelslide</include>
 			</control>
 		</control>
 		<!-- Homescreen Options -->
