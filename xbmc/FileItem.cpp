@@ -1250,7 +1250,8 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     for (unsigned int i=0; i < m_items.size(); i++)
     {
       CFileItem *pItem = m_items[i];
-      m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+      CStdString path(pItem->m_strPath); path.ToLower();
+      m_map.insert(MAPFILEITEMSPAIR(path, pItem));
     }
   }
   if (!fastLookup && m_fastLookup)
@@ -1258,15 +1259,17 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(CStdString& fileName)
+bool CFileItemList::Contains(const CStdString& fileName)
 {
+  // checks case insensitive
+  CStdString checkPath(fileName); checkPath.ToLower();
   if (m_fastLookup)
-    return m_map.find(fileName) != m_map.end();
+    return m_map.find(checkPath) != m_map.end();
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
-    if (pItem->m_strPath == fileName)
+    if (pItem->m_strPath.Equals(checkPath))
       return true;
   }
   return false;
@@ -1309,14 +1312,19 @@ void CFileItemList::Add(CFileItem* pItem)
 {
   m_items.push_back(pItem);
   if (m_fastLookup)
-    m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+  {
+    CStdString path(pItem->m_strPath); path.ToLower();
+    m_map.insert(MAPFILEITEMSPAIR(path, pItem));
+  }
 }
 
 void CFileItemList::AddFront(CFileItem* pItem)
 {
   m_items.insert(m_items.begin(), pItem);
-  if (m_fastLookup)
-    m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+  {
+    CStdString path(pItem->m_strPath); path.ToLower();
+    m_map.insert(MAPFILEITEMSPAIR(path, pItem));
+  }
 }
 
 void CFileItemList::Remove(CFileItem* pItem)
@@ -1327,7 +1335,10 @@ void CFileItemList::Remove(CFileItem* pItem)
     {
       m_items.erase(it);
       if (m_fastLookup)
-        m_map.erase(pItem->m_strPath);
+      {
+        CStdString path(pItem->m_strPath); path.ToLower();
+        m_map.erase(path);
+      }
       break;
     }
   }
@@ -1339,7 +1350,10 @@ void CFileItemList::Remove(int iItem)
   {
     CFileItem* pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
-      m_map.erase(pItem->m_strPath);
+    {
+      CStdString path(pItem->m_strPath); path.ToLower();
+      m_map.erase(path);
+    }
     delete pItem;
     m_items.erase(m_items.begin() + iItem);
   }
@@ -1382,9 +1396,10 @@ const CFileItem* CFileItemList::Get(int iItem) const
 
 CFileItem* CFileItemList::Get(const CStdString& strPath)
 {
+  CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
-    IMAPFILEITEMS it=m_map.find(strPath);
+    IMAPFILEITEMS it=m_map.find(pathToCheck);
     if (it != m_map.end())
       return it->second;
 
@@ -1394,7 +1409,7 @@ CFileItem* CFileItemList::Get(const CStdString& strPath)
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
-    if (pItem->m_strPath == strPath)
+    if (pItem->m_strPath.Equals(pathToCheck))
       return pItem;
   }
 
@@ -1403,9 +1418,10 @@ CFileItem* CFileItemList::Get(const CStdString& strPath)
 
 const CFileItem* CFileItemList::Get(const CStdString& strPath) const
 {
+  CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
-    map<CStdString, CFileItem*>::const_iterator it=m_map.find(strPath);
+    map<CStdString, CFileItem*>::const_iterator it=m_map.find(pathToCheck);
     if (it != m_map.end())
       return it->second;
 
@@ -1415,7 +1431,7 @@ const CFileItem* CFileItemList::Get(const CStdString& strPath) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
-    if (pItem->m_strPath == strPath)
+    if (pItem->m_strPath.Equals(pathToCheck))
       return pItem;
   }
 
@@ -1661,23 +1677,6 @@ int CFileItemList::GetSelectedCount() const
   return count;
 }
 
-// Checks through our file list for the path specified in path.
-// Check is done case-insensitive
-bool CFileItemList::HasFileNoCase(CStdString& path)
-{
-  bool bFound = false;
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    if (stricmp(m_items[i]->m_strPath.c_str(), path) == 0)
-    {
-      bFound = true;
-      path = m_items[i]->m_strPath;
-      break;
-    }
-  }
-  return bFound;
-}
-
 void CFileItemList::FilterCueItems()
 {
   // Handle .CUE sheet files...
@@ -1701,7 +1700,7 @@ void CFileItemList::FilterCueItems()
           if (!bFoundMediaFile)
           {
             // try file in same dir, not matching case...
-            if (HasFileNoCase(strMediaFile))
+            if (Contains(strMediaFile))
             {
               bFoundMediaFile = true;
             }
@@ -1711,7 +1710,7 @@ void CFileItemList::FilterCueItems()
               strMediaFile = pItem->m_strPath;
               CUtil::RemoveExtension(strMediaFile);
               CFileItem item(strMediaFile, false);
-              if (item.IsAudio() && HasFileNoCase(strMediaFile))
+              if (item.IsAudio() && Contains(strMediaFile))
               {
                 bFoundMediaFile = true;
               }
@@ -1723,7 +1722,7 @@ void CFileItemList::FilterCueItems()
                 {
                   CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
                   CFileItem item(strMediaFile, false);
-                  if (!item.IsCUESheet() && !item.IsPlayList() && HasFileNoCase(strMediaFile))
+                  if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
                   {
                     bFoundMediaFile = true;
                     break;

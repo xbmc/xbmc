@@ -312,9 +312,8 @@ public:
   void FilterCueItems();
   void RemoveExtensions();
   void CleanFileNames();
-  bool HasFileNoCase(CStdString& path);
   void SetFastLookup(bool fastLookup);
-  bool Contains(CStdString& fileName);
+  bool Contains(const CStdString& fileName);
   bool GetFastLookup() { return m_fastLookup; };
   void Stack();
   SORT_ORDER GetSortOrder() { return m_sortOrder; }
