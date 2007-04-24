@@ -383,7 +383,7 @@ void FixTransparency(LPDIRECT3DSURFACE8 pSrcSurf)
 #define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); if (pDstSurf) pDstSurf->Release(); return false; }
 
 // Converts to P8 format is colours <= 256
-bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD* pal)
+bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD* pal, D3DXIMAGE_INFO &info)
 {
 	pDstSurf = 0;
 
@@ -405,9 +405,9 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 	DWORD* src = (DWORD*)slr.pBits;
 	BYTE* dst = (BYTE*)dlr.pBits;
 	int n = 0, i;
-	for (UINT y = 0; y < desc.Width; ++y)
+	for (UINT y = 0; y < info.Height; ++y)
 	{
-		for (UINT x = 0; x < desc.Height; ++x)
+		for (UINT x = 0; x < info.Width; ++x)
 		{
 			for (i = 0; i < n; ++i)
 			{
@@ -429,7 +429,20 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 			*dst++ = i;
 			++src;
 		}
+		for (UINT x = info.Width; x < Width; ++x)
+		{
+			*dst++ = 0; // we don't care about the colour outside of our real image
+			++src;
+    }
 	}
+  for (UINT y = info.Height; y < Height; ++y)
+  {
+		for (UINT x = 0; x < Width; ++x)
+		{
+			*dst++ = 0; // we don't care about the colour outside of our real image
+			++src;
+    }
+  }
 	TRACE1(" Colours Used: %d\n", n);
 
 	pDstSurf->UnlockRect();
@@ -524,7 +537,7 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 
 		LPDIRECT3DSURFACE8 pTempSurf;
 		DWORD pal[256];
-		ConvertP8(pSrcSurf, pTempSurf, pal);
+		ConvertP8(pSrcSurf, pTempSurf, pal, info);
 
 		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
 		pTempSurf->Release();
@@ -604,7 +617,7 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	// Use P8 is possible as it's lossless
 	LPDIRECT3DSURFACE8 pTempSurf;
 	DWORD pal[256];
-	if (ConvertP8(pSrcSurf, pTempSurf, pal))
+	if (ConvertP8(pSrcSurf, pTempSurf, pal, info))
 	{
 		printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 		TRACE0(" Selected Format: P8\n");
