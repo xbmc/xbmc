@@ -1,55 +1,39 @@
 #pragma once
-#include "guiwindow.h"
+#include "GUIMediaWindow.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
-#include "FileItem.h"
-#include "GUIDialogProgress.h"
 #include "GUIWindowSlideShow.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
-using namespace DIRECTORY;
+#include "PictureThumbLoader.h"
+#include "DllImageLib.h"
 
-class CGUIWindowPictures : 	public CGUIWindow
+class CGUIWindowPictures : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
-	CGUIWindowPictures(void);
-	virtual ~CGUIWindowPictures(void);
-  virtual bool			OnMessage(CGUIMessage& message);
-  virtual void			OnAction(const CAction &action);
-  virtual void			Render();
+  CGUIWindowPictures(void);
+  virtual ~CGUIWindowPictures(void);
+  virtual bool OnMessage(CGUIMessage& message);
 
 protected:
-	void							GoParentFolder();
-	void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
-  void							OnClick(int iItem);
-	void							OnPopupMenu(int iItem);
-  void							OnSort();
-  void							UpdateButtons();
-  void							Clear();
-	void							Update(const CStdString &strDirectory);
-	void							OnShowPicture(const CStdString& strPicture);
-	void							OnSlideShow(const CStdString& strPicture);
-	void							OnSlideShow();
-	bool							OnCreateThumbs();
-	int								GetSelectedItem();
-  bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  void              OnSlideShowRecursive(const CStdString& strPicture);
-  void              OnSlideShowRecursive();
-  bool              ViewByIcon();
-  void              ShowThumbPanel();
-  bool              ViewByLargeIcon();
-	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-	void							SetHistoryForPath(const CStdString& strDirectory);
-	bool							DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse);
-	void							CreateFolderThumbs(bool bRecurse = false);
-  void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
-	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS				m_vecItems;
-	CStdString					m_strDirectory;
-	CGUIDialogProgress*	m_dlgProgress;
-	CDirectoryHistory		m_history;
-  int                 m_iItemSelected;
-	int									m_iLastControl;
-	CStdString					m_strParentPath;
+  virtual bool OnClick(int iItem);
+  virtual void UpdateButtons();
+  virtual void OnPrepareFileItems(CFileItemList& items);
+  virtual bool Update(const CStdString &strDirectory);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
+  void OnRegenerateThumbs();
+  virtual bool OnPlayMedia(int iItem);
+  void OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems=NULL);
+  void OnSlideShow(const CStdString& strPicture);
+  void OnSlideShow();
+  void OnSlideShowRecursive(const CStdString& strPicture);
+  void OnSlideShowRecursive();
+  void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
+  virtual void OnItemLoaded(CFileItem* pItem);
+  virtual void LoadPlayList(const CStdString& strPlayList);
+
+  CGUIDialogProgress* m_dlgProgress;
+  DllImageLib m_ImageLib;
+
+  CPictureThumbLoader m_thumbLoader;
 };

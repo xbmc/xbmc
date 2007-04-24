@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "AnimatedGif.h"
 #include "Bundler.h"
+#include <stdio.h>
+#include <algorithm>
+#include "cmdlineargs.h"
 
 extern "C" void SHA1(const BYTE* buf, DWORD len, BYTE hash[20]);
 
@@ -16,6 +19,8 @@ UINT UncompressedSize;
 UINT CompressedSize;
 UINT TotalSrcPixels;
 UINT TotalDstPixels;
+
+bool AllowLinear;
 
 // Round a number to the nearest power of 2 rounding up
 // runs pretty quickly - the only expensive op is the bsr
@@ -281,8 +286,8 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 			return;
 		}
 
-		hr = XGCompressRect(XPRFile.Data, (D3DFORMAT)fmt, Pitch, desc.Width, desc.Height, slr.pBits, (D3DFORMAT)XB_D3DFMT_LIN_A8R8G8B8, slr.Pitch, 0.5f, 0);
-		if (FAILED(hr))
+    hr = CompressRect(XPRFile.Data, fmt, Pitch, desc.Width, desc.Height, slr.pBits, XB_D3DFMT_LIN_A8R8G8B8, slr.Pitch, 0.5f, 0);
+    if (FAILED(hr))
 		{
 			printf("ERROR: %08x\n", hr);
 			return;
@@ -292,7 +297,7 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 	}
 	else
 	{
-		UINT bpp = XGBytesPerPixelFromFormat((D3DFORMAT)fmt);
+		UINT bpp = BytesPerPixelFromFormat(fmt);
 		Pitch = desc.Width * bpp;
 		Size = ((Pitch * desc.Height) + 127) & ~127; // must be 128-byte aligned for any following images
 
@@ -306,10 +311,10 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 			return;
 		}
 
-		if (XGIsSwizzledFormat((D3DFORMAT)fmt))
+		if (IsSwizzledFormat(fmt))
 		{
 			// Swizzle for xbox
-			XGSwizzleRect(slr.pBits, 0, NULL, XPRFile.Data, desc.Width, desc.Height, NULL, bpp);
+			SwizzleRect(slr.pBits, 0, NULL, XPRFile.Data, desc.Width, desc.Height, NULL, bpp);
 		}
 		else
 		{
@@ -327,8 +332,8 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 		pSrcSurf->UnlockRect();
 	}
 
-	XGSetTextureHeader(desc.Width, desc.Height, 1, 0, (D3DFORMAT)fmt, D3DPOOL_DEFAULT, 
-		(IDirect3DTexture8*)&XPRFile.Texture[XPRFile.nImages].D3DTex, XPRFile.Data - XPRFile.DataStart, Pitch);
+	SetTextureHeader(desc.Width, desc.Height, 1, 0, fmt, D3DPOOL_DEFAULT, 
+		&XPRFile.Texture[XPRFile.nImages].D3DTex, XPRFile.Data - XPRFile.DataStart, Pitch);
 	if (!(*XPRFile.flags & XPRFLAG_ANIM))
 		XPRFile.Texture[XPRFile.nImages].RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
 	++XPRFile.nImages;
@@ -378,7 +383,7 @@ void FixTransparency(LPDIRECT3DSURFACE8 pSrcSurf)
 #define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); if (pDstSurf) pDstSurf->Release(); return false; }
 
 // Converts to P8 format is colours <= 256
-bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD* pal)
+bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD* pal, D3DXIMAGE_INFO &info)
 {
 	pDstSurf = 0;
 
@@ -386,7 +391,9 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 	pSrcSurf->GetDesc(&desc);
 
 	// convert to p8
-	HRESULT hr = pD3DDevice->CreateImageSurface(desc.Width, desc.Height, D3DFMT_A8R8G8B8, &pDstSurf);
+  UINT Width = PadPow2(desc.Width);
+  UINT Height = PadPow2(desc.Height);
+	HRESULT hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pDstSurf);
 	CheckHR(hr);
 
 	D3DLOCKED_RECT slr, dlr;
@@ -398,9 +405,9 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 	DWORD* src = (DWORD*)slr.pBits;
 	BYTE* dst = (BYTE*)dlr.pBits;
 	int n = 0, i;
-	for (UINT y = 0; y < desc.Width; ++y)
+	for (UINT y = 0; y < info.Height; ++y)
 	{
-		for (UINT x = 0; x < desc.Height; ++x)
+		for (UINT x = 0; x < info.Width; ++x)
 		{
 			for (i = 0; i < n; ++i)
 			{
@@ -422,7 +429,20 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 			*dst++ = i;
 			++src;
 		}
+		for (UINT x = info.Width; x < Width; ++x)
+		{
+			*dst++ = 0; // we don't care about the colour outside of our real image
+			++src;
+    }
 	}
+  for (UINT y = info.Height; y < Height; ++y)
+  {
+		for (UINT x = 0; x < Width; ++x)
+		{
+			*dst++ = 0; // we don't care about the colour outside of our real image
+			++src;
+    }
+  }
 	TRACE1(" Colours Used: %d\n", n);
 
 	pDstSurf->UnlockRect();
@@ -465,13 +485,13 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	UINT Width = PadPow2(info.Width);
 	UINT Height = PadPow2(info.Height);
 
-	TotalSrcPixels += info.Width * info.Height;
-	TotalDstPixels += Width * Height;
 	float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
 
 	UncompressedSize += Width * Height * 4;
+	TotalSrcPixels += info.Width * info.Height;
+	TotalDstPixels += Width * Height;
 
-	// Special case for 256-colour files - just directly drop into a P8 xpr
+  // Special case for 256-colour files - just directly drop into a P8 xpr
 	if (info.Format == D3DFMT_P8)
 	{
 		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
@@ -517,27 +537,61 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 
 		LPDIRECT3DSURFACE8 pTempSurf;
 		DWORD pal[256];
-		ConvertP8(pSrcSurf, pTempSurf, pal);
+		ConvertP8(pSrcSurf, pTempSurf, pal, info);
 
 		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
 		pTempSurf->Release();
 		return;
 	}
 
+  // test linear format versus non-linear format
+  // Linear format requires 64 pixel aligned width, whereas
+  // Non-linear format requires power of 2 width and height
+  bool useLinearFormat(false);
+  UINT linearWidth = (info.Width + 0x3f) & ~0x3f;
+  if (AllowLinear && linearWidth * info.Height < Width * Height)
+    useLinearFormat = true;
+
 	hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
 	CheckHR(hr);
-
+  
 	hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
 	CheckHR(hr);
+
+  // create the linear version as well
+	LPDIRECT3DSURFACE8 pLinearSrcSurf = NULL;
+  if (useLinearFormat)
+  {
+	  hr = pD3DDevice->CreateImageSurface(linearWidth, info.Height, D3DFMT_A8R8G8B8, &pLinearSrcSurf);
+	  CheckHR(hr);
+	  hr = D3DXLoadSurfaceFromFile(pLinearSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
+	  CheckHR(hr);
+  }
+
 
 	// special case for small files - all textures are alloced on page granularity so just output uncompressed
 	// dxt is crap on small files anyway
 	if (Width * Height <= 1024)
 	{
-		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		TRACE0(" Selected Format: A8R8G8B8\n");
+    if (useLinearFormat)
+    {
+      // correct sizing amounts
+	    UncompressedSize -= Width * Height * 4;
+      UncompressedSize += linearWidth * info.Height * 4;
+	    TotalDstPixels -= Width * Height;
+      TotalDstPixels += linearWidth * info.Height;
 
-		WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+	    Waste = 100.f * (float)(linearWidth * info.Height - info.Width * info.Height) / (float)(linearWidth * info.Height);
+		  printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", linearWidth, info.Height, Waste);
+		  TRACE0(" Selected Format: LIN_A8R8G8B8\n");
+      WriteXPR(OutFilename, info, pLinearSrcSurf, XB_D3DFMT_LIN_A8R8G8B8, NULL);
+    }
+    else
+    {
+		  printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		  TRACE0(" Selected Format: A8R8G8B8\n");
+      WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+    }
 		return;
 	}
 
@@ -563,7 +617,7 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	// Use P8 is possible as it's lossless
 	LPDIRECT3DSURFACE8 pTempSurf;
 	DWORD pal[256];
-	if (ConvertP8(pSrcSurf, pTempSurf, pal))
+	if (ConvertP8(pSrcSurf, pTempSurf, pal, info))
 	{
 		printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 		TRACE0(" Selected Format: P8\n");
@@ -634,10 +688,24 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	}
 
 	// Use A8R8G8B8
-	printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-	TRACE0(" Selected Format: A8R8G8B8\n");
-
-	WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+  if (useLinearFormat)
+  {
+    // correct sizing information
+	  UncompressedSize -= Width * Height * 4;
+    UncompressedSize += linearWidth * info.Height * 4;
+	  TotalDstPixels -= Width * Height;
+    TotalDstPixels += linearWidth * info.Height;
+	  Waste = 100.f * (float)(linearWidth * info.Height - info.Width * info.Height) / (float)(linearWidth * info.Height);
+		printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", linearWidth, info.Height, Waste);
+		TRACE0(" Selected Format: LIN_A8R8G8B8\n");
+    WriteXPR(OutFilename, info, pLinearSrcSurf, XB_D3DFMT_LIN_A8R8G8B8, NULL);
+  }
+  else
+  {
+		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: A8R8G8B8\n");
+    WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+  }
 
 	if (pSrcSurf)
 		pSrcSurf->Release();
@@ -892,12 +960,19 @@ void Usage()
 	puts("  -input <dir>     Input directory. Default: current dir");
 	puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 	puts("  -quality <qual>  Quality setting (min, low, normal, high, max). Default: normal");
+  puts("  -noprotect       XPR contents viewable at full quality in skin editor");
+  puts("  -onlyswizzled    Only allow swizzled textures (faster rendering, larger memory use) rather than linear textures");
 }
 
 int main(int argc, char* argv[])
 {
-	double MaxMSE = 4.0;
-	if (argc == 1)
+  int NoProtect = 0;
+  AllowLinear = true;
+  double MaxMSE = 4.0;
+
+	CmdLineArgs args;
+
+	if (args.size() == 1)
 	{
 		Usage();
 		return 1;
@@ -906,52 +981,60 @@ int main(int argc, char* argv[])
 	const char* InputDir = NULL;
 	const char* OutputFilename = "Textures.xpr";
 
-	for (int i = 1; i < argc; ++i)
+	for (unsigned int i = 1; i < args.size(); ++i)
 	{
-		if (!stricmp(argv[i], "-help") || !stricmp(argv[i], "-h") || !stricmp(argv[i], "-?"))
+		if (!stricmp(args[i], "-help") || !stricmp(args[i], "-h") || !stricmp(args[i], "-?"))
 		{
 			Usage();
 			return 1;
 		}
-		else if (!stricmp(argv[i], "-input") || !stricmp(argv[i], "-i"))
+		else if (!stricmp(args[i], "-input") || !stricmp(args[i], "-i"))
 		{
-			InputDir = argv[++i];
+			InputDir = args[++i];
 		}
-		else if (!stricmp(argv[i], "-output") || !stricmp(argv[i], "-o"))
+		else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
 		{
-			OutputFilename = argv[++i];
+			OutputFilename = args[++i];
 		}
-		else if (!stricmp(argv[i], "-quality") || !stricmp(argv[i], "-q"))
+    else if (!stricmp(args[i], "-noprotect") || !stricmp(args[i], "-p"))
+    {
+      NoProtect = 1;
+    }
+    else if (!stricmp(args[i], "-onlyswizzled") || !stricmp(args[i], "-s"))
+    {
+      AllowLinear = false;
+    }
+    else if (!stricmp(args[i], "-quality") || !stricmp(args[i], "-q"))
 		{
 			++i;
-			if (!stricmp(argv[i], "min"))
+			if (!stricmp(args[i], "min"))
 			{
 				MaxMSE = DBL_MAX;
 			}
-			else if (!stricmp(argv[i], "low"))
+			else if (!stricmp(args[i], "low"))
 			{
 				MaxMSE = 20.0;
 			}
-			else if (!stricmp(argv[i], "normal"))
+			else if (!stricmp(args[i], "normal"))
 			{
 				MaxMSE = 4.0;
 			}
-			else if (!stricmp(argv[i], "high"))
+			else if (!stricmp(args[i], "high"))
 			{
 				MaxMSE = 1.5;
 			}
-			else if (!stricmp(argv[i], "max"))
+			else if (!stricmp(args[i], "max"))
 			{
 				MaxMSE = 0.0;
 			}
 			else
 			{
-				printf("Unrecognised quality setting: %s\n", argv[i]);
+				printf("Unrecognised quality setting: %s\n", args[i]);
 			}
 		}
 		else
 		{
-			printf("Unrecognised command line flag: %s\n", argv[i]);
+			printf("Unrecognised command line flag: %s\n", args[i]);
 		}
 	}
 
@@ -1016,7 +1099,7 @@ int main(int argc, char* argv[])
 	}
 
 	printf("\nWriting bundle: %s", OutputFilename);
-	int BundleSize = Bundler.WriteBundle(OutputFilename);
+  int BundleSize = Bundler.WriteBundle(OutputFilename, NoProtect);
 	if (BundleSize == -1)
 	{
 		printf("\nERROR: %08x\n", GetLastError());

@@ -1,10 +1,9 @@
-#include "stdafx.h"
-#include "..\python.h"
+#include "../../../stdafx.h"
+#include "..\python\python.h"
 #include "GuiFadeLabelControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
-
-using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -17,102 +16,155 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyObject* ControlFadeLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
-	{
-		ControlFadeLabel *self;
-		char *cFont = NULL;
-		char *cTextColor = NULL;
-		
-		self = (ControlFadeLabel*)type->tp_alloc(type, 0);
-		if (!self) return NULL;
-		
-		if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cFont, &cTextColor)) return NULL;
+  PyObject* ControlFadeLabel_New(PyTypeObject *type,
+    PyObject *args,
+    PyObject *kwds )
+  {
+    static char *keywords[] = {
+      "x", "y", "width", "height", "font", "textColor", "alignment", NULL };
 
-		self->strFont = cFont ? cFont : "font13";
-		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xffffffff;
+    ControlFadeLabel *self;
+    char *cFont = NULL;
+    char *cTextColor = NULL;
 
-		self->pGUIControl = NULL;
+    self = (ControlFadeLabel*)type->tp_alloc(type, 0);
+    if (!self) return NULL;
 
-		return (PyObject*)self;
-	}
+    // set up default values in case they are not supplied
+        self->strFont = "font13";
+        self->dwTextColor = 0xffffffff;
+        self->dwAlign = XBFONT_LEFT;
 
-	void ControlFadeLabel_Dealloc(Control* self)
-	{
-		ControlFadeLabel *pControl = (ControlFadeLabel*)self;
-		pControl->vecLabels.clear();
-		self->ob_type->tp_free((PyObject*)self);
-	}
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "llll|ssl",
+      keywords,
+      &self->dwPosX,
+      &self->dwPosY,
+      &self->dwWidth,
+      &self->dwHeight,
+      &cFont,
+      &cTextColor,
+      &self->dwAlign ))
+    {
+      Py_DECREF( self );
+      return NULL;
+    }
 
-	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl)
-	{
-		pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
-				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->dwTextColor, XBFONT_LEFT);
+    if (cFont) self->strFont = cFont;
+    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
 
-		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
-		pControl->pGUIControl->OnMessage(msg);
+    self->pGUIControl = NULL;
 
-		return pControl->pGUIControl;
-	}
+    return (PyObject*)self;
+  }
 
-	PyDoc_STRVAR(addLabel__doc__,
-		"addLabel(string label) -- Add a label to this control for scrolling.\n"
-		"\n"
-		"label     : string or unicode string");
+  void ControlFadeLabel_Dealloc(Control* self)
+  {
+    ControlFadeLabel *pControl = (ControlFadeLabel*)self;
+    pControl->vecLabels.clear();
+    self->ob_type->tp_free((PyObject*)self);
+  }
 
-	PyObject* ControlFadeLabel_AddLabel(ControlFadeLabel *self, PyObject *args)
-	{
-		PyObject *pObjectText;
-		wstring strText;
+  CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl)
+  {
+    CLabelInfo label;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = label.focusedColor = pControl->dwTextColor;
+    label.align = pControl->dwAlign;
+    pControl->pGUIControl = new CGUIFadeLabelControl(
+      pControl->iParentId,
+      pControl->iControlId,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight,
+      label);
 
-		if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
-		if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+    pControl->pGUIControl->OnMessage(msg);
 
-		ControlFadeLabel *pControl = (ControlFadeLabel*)self;
-		CGUIMessage msg(GUI_MSG_LABEL_ADD, pControl->iParentId, pControl->iControlId);
-		msg.SetLabel(strText);
+    return pControl->pGUIControl;
+  }
 
-		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
+  // addLabel() Method
+  PyDoc_STRVAR(addLabel__doc__,
+    "addLabel(label) -- Add a label to this control for scrolling.\n"
+    "\n"
+    "label          : string or unicode - text string.\n"
+    "\n"
+    "example:\n"
+    "  - self.fadelabel.addLabel('This is a line of text that can scroll.')");
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+  PyObject* ControlFadeLabel_AddLabel(ControlFadeLabel *self, PyObject *args)
+  {
+    PyObject *pObjectText;
+    string strText;
 
-	PyDoc_STRVAR(reset__doc__,
-		"reset() -- Reset's the fade label.\n");
+    if (!PyArg_ParseTuple(args, "O", &pObjectText))   return NULL;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
-	PyObject* ControlFadeLabel_Reset(ControlFadeLabel *self, PyObject *args)
-	{
-		ControlFadeLabel *pControl = (ControlFadeLabel*)self;
-		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+    ControlFadeLabel *pControl = (ControlFadeLabel*)self;
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, pControl->iParentId, pControl->iControlId);
+    msg.SetLabel(strText);
 
-		pControl->vecLabels.clear();
-		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
+    PyGUILock();
+    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
-	PyMethodDef ControlFadeLabel_methods[] = {
-		{"addLabel", (PyCFunction)ControlFadeLabel_AddLabel, METH_VARARGS, addLabel__doc__},
-		{"reset", (PyCFunction)ControlFadeLabel_Reset, METH_VARARGS, reset__doc__},
-		{NULL, NULL, 0, NULL}
-	};
+  // reset() Method
+  PyDoc_STRVAR(reset__doc__,
+    "reset() -- Clears this fadelabel.\n"
+    "\n"
+    "example:\n"
+    "  - self.fadelabel.reset()\n");
 
-	PyDoc_STRVAR(controlFadeLabel__doc__,
-		"ControlFadeLabel class.\n"
-		"Control that scroll's lables"
-		"\n"
-		"ControlFadeLabel(int x, int y, int width, int height[, font, textColor])\n"
-		"\n"
-		"font      : string fontname (example, 'font13' / 'font14')\n"
-		"textColor : hexString (example, '0xFFFF3300')");
+  PyObject* ControlFadeLabel_Reset(ControlFadeLabel *self, PyObject *args)
+  {
+    ControlFadeLabel *pControl = (ControlFadeLabel*)self;
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+
+    pControl->vecLabels.clear();
+    PyGUILock();
+    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyMethodDef ControlFadeLabel_methods[] = {
+    {"addLabel", (PyCFunction)ControlFadeLabel_AddLabel, METH_VARARGS, addLabel__doc__},
+    {"reset", (PyCFunction)ControlFadeLabel_Reset, METH_VARARGS, reset__doc__},
+    {NULL, NULL, 0, NULL}
+  };
+
+  // ControlFadeLabel class
+  PyDoc_STRVAR(controlFadeLabel__doc__,
+    "ControlFadeLabel class.\n"
+    "Control that scroll's lables"
+    "\n"
+    "ControlFadeLabel(x, y, width, height[, font, textColor, alignment])\n"
+    "\n"
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')\n"
+    "alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+    "\n"
+    "example:\n"
+    "  - self.fadelabel = xbmcgui.ControlFadeLabel(100, 250, 200, 50, textColor='0xFFFFFFFF')\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -120,47 +172,22 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject ControlFadeLabel_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmcgui.ControlFadeLabel",/*tp_name*/
-			sizeof(ControlFadeLabel),  /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)ControlFadeLabel_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			controlFadeLabel__doc__,   /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			ControlFadeLabel_methods,  /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			&Control_Type,             /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			ControlFadeLabel_New,      /* tp_new */
-	};
+  PyTypeObject ControlFadeLabel_Type;
+
+  void initControlFadeLabel_Type()
+  {
+    PyInitializeTypeObject(&ControlFadeLabel_Type);
+
+    ControlFadeLabel_Type.tp_name = "xbmcgui.ControlFadeLabel";
+    ControlFadeLabel_Type.tp_basicsize = sizeof(ControlFadeLabel);
+    ControlFadeLabel_Type.tp_dealloc = (destructor)ControlFadeLabel_Dealloc;
+    ControlFadeLabel_Type.tp_compare = 0;
+    ControlFadeLabel_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+    ControlFadeLabel_Type.tp_doc = controlFadeLabel__doc__;
+    ControlFadeLabel_Type.tp_methods = ControlFadeLabel_methods;
+    ControlFadeLabel_Type.tp_base = &Control_Type;
+    ControlFadeLabel_Type.tp_new = ControlFadeLabel_New;
+  }
 }
 
 #ifdef __cplusplus

@@ -1,35 +1,42 @@
 /*!
-	\file GUIDialog.h
-	\brief 
-	*/
+\file GUIDialog.h
+\brief 
+*/
 
 #pragma once
-#include "guiwindow.h"
+#include "GUIWindow.h"
 
 /*!
-	\ingroup winmsg
-	\brief 
-	*/
+ \ingroup winmsg
+ \brief 
+ */
 class CGUIDialog :
-	public CGUIWindow
+      public CGUIWindow
 {
 public:
-	CGUIDialog(DWORD dwID);
-	virtual ~CGUIDialog(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    Render();
-	void						DoModal(DWORD dwParentId);
-	virtual void		Close();
-	virtual bool    Load(const CStdString& strFileName, bool bContainsPath = false);
-	virtual bool		IsRunning() const { return m_bRunning; }
-	virtual bool		IsDialog() { return true;};
+  CGUIDialog(DWORD dwID, const CStdString &xmlFile);
+  virtual ~CGUIDialog(void);
+
+  virtual bool OnAction(const CAction &action);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
+
+  void DoModal(int iWindowID = WINDOW_INVALID); // modal
+  void Show(); // modeless
+
+  virtual void Close(bool forceClose = false);
+  virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
+  virtual bool IsDialogRunning() const { return m_bRunning; };
+  virtual bool IsDialog() const { return true;};
+  virtual bool IsModalDialog() const { return m_bModal; };
+
+  virtual bool IsAnimating(ANIMATION_TYPE animType);
 
 protected:
-	DWORD						m_dwParentWindowID;
-	CGUIWindow* 		m_pParentWindow;
-	DWORD						m_dwPrevRouteWindow;
-	CGUIWindow* 		m_pPrevRouteWindow;
-	bool						m_bRunning;
-private:
-  bool            m_bPrevOverlayAllowed;
+  virtual bool RenderAnimation(DWORD time);
+  virtual void SetDefaults();
+
+  bool m_bRunning;
+  bool m_bModal;
+  bool m_dialogClosing;
 };

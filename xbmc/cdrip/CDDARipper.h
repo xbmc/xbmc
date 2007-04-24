@@ -2,28 +2,27 @@
 #define _CCDDARIPPER_H
 
 #include "CDDAReader.h"
-#include "..\MusicInfotag.h"
-#include "..\FileItem.h"
 #include "Encoder.h"
 
 class CCDDARipper
 {
 public:
-	CCDDARipper();
-	~CCDDARipper();
+  CCDDARipper();
+  virtual ~CCDDARipper();
 
-	bool        RipTrack(CFileItem* pItem);
-	bool        RipCD();
+  bool RipTrack(CFileItem* pItem);
+  bool RipCD();
 
 private:
-	bool        Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag* infoTag = NULL);
-	bool        DeInit();
-	int         RipChunk(int& nPercent);
-	bool        Rip(int iTrack, const char* strFileName, MUSIC_INFO::CMusicInfoTag& infoTag);
-	char*       GetExtension(int iEncoder);
+  bool Init(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag* infoTag = NULL);
+  bool DeInit();
+  int RipChunk(int& nPercent);
+  bool Rip(const CStdString& strTrackFile, const CStdString& strFileName, MUSIC_INFO::CMusicInfoTag& infoTag);
+  char* GetExtension(int iEncoder);
+  CStdString GetTrackName(CFileItem *item, bool isFatX);
 
-	CEncoder*   m_pEncoder;
-	CCDDAReader m_cdReader;
+  CEncoder* m_pEncoder;
+  CCDDAReader m_cdReader;
 };
 
 #endif // _CCDDARIPPERMP3_H

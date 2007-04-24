@@ -10,6 +10,12 @@
 #define SMB_OFF_T UINT64
 
 #define NT_STATUS_INVALID_COMPUTER_NAME long(0xC0000000 | 0x0122)
+#define ENETUNREACH WSAENETUNREACH
+
+/* execute permission: other */
+#ifndef S_IXOTH
+#define S_IXOTH 00001
+#endif
 
 /* this defines the charset types used in samba */
 typedef enum {CH_UCS2=0, CH_UNIX=1, CH_DISPLAY=2, CH_DOS=3, CH_UTF8=4} charset_t;
@@ -36,6 +42,7 @@ extern "C" {
 	void set_log_callback(smb_log_callback fn);
 	void xb_setSambaWorkgroup(char* workgroup);
 
+  int smbc_purge();
 #ifdef __cplusplus
 }
 #endif

@@ -1,327 +1,278 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "GUIWindowVisualisation.h"
-#include "settings.h"
+#include "GUIVisualisationControl.h"
 #include "application.h"
+#include "GUIDialogMusicOSD.h"
+#include "utils/GUIInfoManager.h"
+#include "ButtonTranslator.h"
 #include "util.h"
-#include "visualizations/VisualisationFactory.h"
-#include "visualizations/fft.h"
-#include "utils/singlelock.h"
-#define LABEL_ROW1 10
-#define LABEL_ROW2 11
-#define LABEL_ROW3 12
+#include "GUIDialogVisualisationPresetList.h"
+#ifdef HAS_KARAOKE
+#include "CdgParser.h"
+#endif
 
+#define TRANSISTION_COUNT   50  // 1 second
+#define TRANSISTION_LENGTH 200  // 4 seconds
+#define START_FADE_LENGTH  100  // 2 seconds on startup
 
-
-CAudioBuffer::CAudioBuffer(int iSize)
-{
-	m_iLen=iSize;
-	m_pBuffer = new short[iSize];
-}
-
-CAudioBuffer::~CAudioBuffer()
-{
-	delete [] m_pBuffer;
-}
-
-const short* CAudioBuffer::Get() const
-{
-	return m_pBuffer;
-}
-
-void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
-{
-	if (iBitsPerSample == 16)
-	{
-		iSize/=2;
-		for (int i=0; i < iSize, i<m_iLen; i++)
-		{// 16 bit -> convert to short directly
-			m_pBuffer[i] = ((short *)psBuffer)[i];
-		}
-	}
-	else if (iBitsPerSample == 8)
-	{
-		for (int i=0; i < iSize, i<m_iLen; i++)
-		{// 8 bit -> convert to signed short by multiplying by 256
-			m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
-		}
-	}
-	else	// assume 24 bit data
-	{
-		iSize/=3;
-		for (int i=0; i < iSize, i < m_iLen; i++)
-		{// 24 bit -> ignore least significant byte and convert to signed short
-			m_pBuffer[i] = (((int)psBuffer[3*i+1])<<0) + (((int)((char *)psBuffer)[3*i+2]) << 8);
-		}
-	}
-	for (int i=iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
-}
+#define CONTROL_VIS           2
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
-:CGUIWindow(0)
-{ 
-	m_pVisualisation= NULL;
-	m_iNumBuffers   = 0;
+    : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml")
+{
+  m_dwInitTimer = 0;
+  m_dwLockedTimer = 0;
+  m_bShowPreset = false;
 }
 
 CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 {
 }
 
-
-void CGUIWindowVisualisation::OnAction(const CAction &action)
+bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-	switch (action.wID)
-	{
-		case ACTION_SHOW_INFO:
-			//send the action to the overlay
-			g_application.m_guiMusicOverlay.OnAction(action);
-			break;
+  switch (action.wID)
+  {
+  case ACTION_SHOW_INFO:
+    {
+      if (!m_dwInitTimer || g_stSettings.m_bMyMusicSongThumbInVis)
+        g_stSettings.m_bMyMusicSongThumbInVis = !g_stSettings.m_bMyMusicSongThumbInVis;
+      g_infoManager.SetShowInfo(g_stSettings.m_bMyMusicSongThumbInVis);
+      return true;
+    }
+    break;
 
-		case ACTION_SHOW_GUI:
-			//send the action to the overlay so we can reset
-			//the bool m_bShowInfoAlways
-			g_application.m_guiMusicOverlay.OnAction(action);
-			m_gWindowManager.PreviousWindow();
-			break;
+  case ACTION_SHOW_GUI:
+    // save the settings
+    g_settings.Save();
+    m_gWindowManager.PreviousWindow();
+    return true;
+    break;
 
-		case KEY_BUTTON_Y:
-			g_application.m_CdgParser.Pause();
-			break;
+  case ACTION_VIS_PRESET_LOCK:
+    { // show the locked icon + fall through so that the vis handles the locking
+      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+      g_graphicsContext.SendMessage(msg);
+      if (msg.GetLPVOID())
+      {
+        CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+        char** pPresets=NULL;
+        int currpreset=0, numpresets=0;
+        bool locked;
 
-		case ACTION_ANALOG_FORWARD:
-			// calculate the speed based on the amount the button is held down
-			float	 AVDelay = g_application.m_CdgParser.GetAVDelay();
-			g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1/4.0f);
-			break;
-		}
-	CGUIWindow::OnAction(action);
+        pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
+        if (numpresets == 1 || !pPresets)
+          return true;
+      }
+      if (!m_bShowPreset)
+      {
+        m_dwLockedTimer = START_FADE_LENGTH;
+        g_infoManager.SetShowCodec(true);
+      }
+    }
+    break;
+  case ACTION_VIS_PRESET_SHOW:
+    {
+      if (!m_dwLockedTimer || m_bShowPreset)
+        m_bShowPreset = !m_bShowPreset;
+      g_infoManager.SetShowCodec(m_bShowPreset);
+      return true;
+    }
+    break;
+
+    // TODO: These should be mapped to it's own function - at the moment it's overriding
+    // the global action of fastforward/rewind and OSD.
+/*  case KEY_BUTTON_Y:
+    g_application.m_CdgParser.Pause();
+    return true;
+    break;
+
+    case ACTION_ANALOG_FORWARD:
+    // calculate the speed based on the amount the button is held down
+    if (action.fAmount1)
+    {
+      float AVDelay = g_application.m_CdgParser.GetAVDelay();
+      g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
+      return true;
+    }
+    break;*/
+  }
+  // default action is to send to the visualisation first
+  CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+  if (pVisControl && pVisControl->OnAction(action))
+    return true;
+  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
-	{
-		case GUI_MSG_WINDOW_DEINIT:
-		{
-			CSingleLock lock(m_critSection);
-			if (g_application.m_pPlayer)
-				g_application.m_pPlayer->UnRegisterAudioCallback();
-			if (m_pVisualisation)
-			{
-				OutputDebugString("Visualisation::Stop()\n");
-				m_pVisualisation->Stop();
-				
-				OutputDebugString("delete Visualisation()\n");
-				delete m_pVisualisation;
-			}
-			m_pVisualisation=NULL;
-			m_bInitialized=false;
-			ClearBuffers();
+  switch ( message.GetMessage() )
+  {
+  case GUI_MSG_PLAYBACK_STARTED:
+    {
+      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+      if (pVisControl)
+        return pVisControl->OnMessage(message);
+    }
+    break;
+  case GUI_MSG_GET_VISUALISATION:
+    {
+//      message.SetControlID(CONTROL_VIS);
+      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+      if (pVisControl)
+        message.SetLPVOID(pVisControl->GetVisualisation());
+      return true;
+    }
+    break;
+  case GUI_MSG_VISUALISATION_ACTION:
+    {
+      // message.SetControlID(CONTROL_VIS);
+      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+      if (pVisControl)
+        return pVisControl->OnMessage(message);
+    }
+    break;
+  case GUI_MSG_WINDOW_DEINIT:
+    {
+      // check and close any OSD windows
+      CGUIDialogMusicOSD *pOSD = (CGUIDialogMusicOSD *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+      if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
+      CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+      if (pList && pList->IsDialogRunning()) pList->Close(true);
 
-			// remove z-buffer
-			RESOLUTION res = g_graphicsContext.GetVideoResolution();
-			g_graphicsContext.SetVideoResolution(res, FALSE);
-		}
-		break;
+#ifdef HAS_KARAOKE
+      if(g_application.m_pCdgParser)
+        g_application.m_pCdgParser->FreeGraphics();
+#endif
+    }
+    break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      // check whether we've come back here from a window during which time we've actually
+      // stopped playing music
+      if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingAudio())
+      { // why are we here if nothing is playing???
+        m_gWindowManager.PreviousWindow();
+        return true;
+      }
 
-		case GUI_MSG_WINDOW_INIT:
-		{
-			CGUIWindow::OnMessage(message);
-			CSingleLock lock(m_critSection);
-			if (m_pVisualisation)
-			{
-				m_pVisualisation->Stop();
-				delete m_pVisualisation;
-			}
-			m_pVisualisation=NULL;
-			if (g_application.m_pPlayer)
-				g_application.m_pPlayer->UnRegisterAudioCallback();
+      // hide or show the preset button(s)
+      g_infoManager.SetShowCodec(m_bShowPreset);
+      g_infoManager.SetShowInfo(true);  // always show the info initially.
+      CGUIWindow::OnMessage(message);
+      if (g_infoManager.GetCurrentSongTag())
+        m_tag = *g_infoManager.GetCurrentSongTag();
+#ifdef HAS_KARAOKE
+      if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+        g_application.m_pCdgParser->AllocGraphics();
+#endif
 
-
-			m_bInitialized=false;
-			CVisualisationFactory factory;
-			CStdString strVisz;
-			OutputDebugString("Load Visualisation\n");
-			strVisz.Format("Q:\\visualisations\\%s", g_stSettings.szDefaultVisualisation);
-			m_pVisualisation=factory.LoadVisualisation(strVisz.c_str());
-			if (m_pVisualisation) 
-			{
-				OutputDebugString("Visualisation::Create()\n");
-				m_pVisualisation->Create();
-				if (g_application.m_pPlayer)
-					g_application.m_pPlayer->RegisterAudioCallback(this);
-				
-				// Create new audio buffers
-				CreateBuffers();
-			}
-
-			// setup a z-buffer
-			RESOLUTION res = g_graphicsContext.GetVideoResolution();
-			g_graphicsContext.SetVideoResolution(res, TRUE);
-			return true;
-		}
-	}
-	return CGUIWindow::OnMessage(message);
+      if (g_stSettings.m_bMyMusicSongThumbInVis)
+      { // always on
+        m_dwInitTimer = 0;
+      }
+      else
+      {
+        // start display init timer (fade out after 3 secs...)
+        m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
+      }
+      return true;
+    }
+  }
+  return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowVisualisation::OnMouse()
+bool CGUIWindowVisualisation::OnMouse()
 {
-	if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
-	{	// no control found to absorb this click - go back to GUI
-		CAction action;
-		action.wID = ACTION_SHOW_GUI;
-		OnAction(action);
-		return;
-	}
-	if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
-	{	// no control found to absorb this click - toggle the track INFO
-		CAction action;
-		action.wID = ACTION_SHOW_INFO;
-		OnAction(action);
-	}
+  if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+  { // no control found to absorb this click - go back to GUI
+    CAction action;
+    action.wID = ACTION_SHOW_GUI;
+    OnAction(action);
+    return true;
+  }
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  { // no control found to absorb this click - toggle the track INFO
+    CAction action;
+    action.wID = ACTION_SHOW_INFO;
+    OnAction(action);
+  }
+  return true;
 }
 
 void CGUIWindowVisualisation::Render()
 {
   g_application.ResetScreenSaver();
-	CSingleLock lock(m_critSection);
-	if (m_pVisualisation)
-	{
-		if (m_bInitialized)
-		{
-			try
-			{
-				m_pVisualisation->Render();
-			}
-			catch(...)
-			{
-				OutputDebugString("ohoh\n");
-			}
-			return;
-		}
-	}
-	CGUIWindow::Render();
+  // check for a tag change
+  const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+  if (tag && *tag != m_tag)
+  { // need to fade in then out again
+    m_tag = *tag;
+    // fade in
+    m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
+    g_infoManager.SetShowInfo(true);
+  }
+  if (m_dwInitTimer)
+  {
+    m_dwInitTimer--;
+    if (!m_dwInitTimer && !g_stSettings.m_bMyMusicSongThumbInVis)
+    { // reached end of fade in, fade out again
+      g_infoManager.SetShowInfo(false);
+    }
+  }
+  // show or hide the locked texture
+  if (m_dwLockedTimer)
+  {
+    m_dwLockedTimer--;
+    if (!m_dwLockedTimer && !m_bShowPreset)
+      g_infoManager.SetShowCodec(false);
+  }
+  CGUIWindow::Render();
 }
 
-
-void CGUIWindowVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
+void CGUIWindowVisualisation::AllocResources(bool forceLoad)
 {
-	CSingleLock lock(m_critSection);
-	if (!m_pVisualisation) 
-		return;
-
-	m_bInitialized   = true;
-	m_iChannels			 = iChannels;
-	m_iSamplesPerSec = iSamplesPerSec;
-	m_iBitsPerSample = iBitsPerSample;
-
-	// Start the visualisation (this loads settings etc.)
-  CStdString strFile=CUtil::GetFileName(g_application.CurrentFile());
-	OutputDebugString("Visualisation::Start()\n");
-	m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample,strFile);
-	m_bInitialized=true;
-
+  CGUIWindow::AllocResources(forceLoad);
+  CGUIWindow *pWindow;
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+  if (pWindow) pWindow->AllocResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
+  if (pWindow) pWindow->AllocResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+  if (pWindow) pWindow->AllocResources(true);
 }
 
-void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
+void CGUIWindowVisualisation::FreeResources(bool forceUnload)
 {
-	if (!m_pVisualisation) 
-		return;
-	if (!m_bInitialized) return;
-
-	CSingleLock lock(m_critSection);
-
-	// Save our audio data in the buffers
-	auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
-	pBuffer->Set(pAudioData,iAudioDataLength,m_iBitsPerSample);
-	m_vecBuffers.push_back( pBuffer.release() );
-
-	if ( (int)m_vecBuffers.size() < m_iNumBuffers) return;
-
-	auto_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
-	m_vecBuffers.pop_front();
-	// Fourier transform the data if the vis wants it...
-	if (m_bWantsFreq)
-	{
-		// Convert to floats
-		const short* psAudioData=ptrAudioBuffer->Get();
-		for (int i=0; i<2*AUDIO_BUFFER_SIZE; i++)
-		{
-			m_fFreq[i] = (float)psAudioData[i];
-		}
-
-		// FFT the data
-		twochanwithwindow(m_fFreq, AUDIO_BUFFER_SIZE);
-
-		// Normalize the data
-		float fMinData = (float)AUDIO_BUFFER_SIZE*AUDIO_BUFFER_SIZE*3/8*0.5*0.5;	// 3/8 for the Hann window, 0.5 as minimum amplitude
-		for (int i=0; i<AUDIO_BUFFER_SIZE+2; i++)
-		{
-			m_fFreq[i] /= fMinData;
-		}
-
-		// Transfer data to our visualisation
-		try
-		{
-			m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
-		}
-		catch(...)
-		{
-		}
-	}
-	else
-	{	// Transfer data to our visualisation
-		try
-		{
-			m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
-		}
-		catch(...)
-		{
-		}	}
-	
-	return;
-}
-
-void CGUIWindowVisualisation::CreateBuffers()
-{
-	CSingleLock lock(m_critSection);
-	ClearBuffers();
-
-	// Get the number of buffers from the current vis
-	VIS_INFO info;
-	m_pVisualisation->GetInfo(&info);
-	m_iNumBuffers = info.iSyncDelay + 1;
-	m_bWantsFreq  = info.bWantsFreq;
-	if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
-		m_iNumBuffers = MAX_AUDIO_BUFFERS;
-	
-	if (m_iNumBuffers < 1)
-		m_iNumBuffers = 1;
-}
-
-
-void CGUIWindowVisualisation::ClearBuffers()
-{
-	CSingleLock lock(m_critSection);
-	m_bWantsFreq  = false;
-	m_iNumBuffers = 0;
-	
-	while (m_vecBuffers.size() > 0)
-	{
-		CAudioBuffer* pAudioBuffer = m_vecBuffers.front();
-		delete pAudioBuffer;
-		m_vecBuffers.pop_front();
-	}
-	for (int j=0; j<AUDIO_BUFFER_SIZE*2; j++)
-	{
-		m_fFreq[j] = 0.0f;
-	}
-}
-
-void CGUIWindowVisualisation::FreeResources()
-{
-	// Save changed settings from music OSD
-	g_settings.Save();
-	CGUIWindow::FreeResources();
+  // Save changed settings from music OSD
+  g_settings.Save();
+  CGUIWindow *pWindow;
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+  if (pWindow) pWindow->FreeResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
+  if (pWindow) pWindow->FreeResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+  if (pWindow) pWindow->FreeResources(true);
+  CGUIWindow::FreeResources(forceUnload);
 }

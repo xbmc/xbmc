@@ -1,196 +1,364 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "musicInfoTag.h"
-#include "util.h"
 #include "musicdatabase.h"
 
+
 using namespace MUSIC_INFO;
+
 CMusicInfoTag::CMusicInfoTag(void)
 {
-	m_strURL="";
-	m_strArtist="";
-	m_strAlbum="";
-	m_strGenre="";
-	m_strTitle="";
-	m_iDuration=0;
-	m_iTrack=0;
-	m_bLoaded=false;
-	memset(&m_dwReleaseDate,0,sizeof(m_dwReleaseDate) );
+  Clear();
 }
 
 CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
 {
-	*this = tag;
+  *this = tag;
 }
+
 CMusicInfoTag::~CMusicInfoTag()
-{
-}
+{}
 
 const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
 {
-	if (this==&tag) return *this;
+  if (this == &tag) return * this;
 
-	m_strURL=tag.m_strURL;
-	m_strArtist=tag.m_strArtist;
-	m_strAlbum=tag.m_strAlbum;
-	m_strGenre=tag.m_strGenre;
-	m_strTitle=tag.m_strTitle;
-	m_iDuration=tag.m_iDuration;
-	m_iTrack=tag.m_iTrack;
-	m_bLoaded=tag.m_bLoaded;
-	memcpy(&m_dwReleaseDate,&tag.m_dwReleaseDate,sizeof(m_dwReleaseDate) );
-	return *this;
+  m_strURL = tag.m_strURL;
+  m_strArtist = tag.m_strArtist;
+  m_strAlbumArtist = tag.m_strAlbumArtist;
+  m_strAlbum = tag.m_strAlbum;
+  m_strGenre = tag.m_strGenre;
+  m_strTitle = tag.m_strTitle;
+  m_strMusicBrainzTrackID = tag.m_strMusicBrainzTrackID;
+  m_strMusicBrainzArtistID = tag.m_strMusicBrainzArtistID;
+  m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
+  m_strMusicBrainzAlbumArtistID = tag.m_strMusicBrainzAlbumArtistID;
+  m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
+  m_iDuration = tag.m_iDuration;
+  m_iTrack = tag.m_iTrack;
+  m_bLoaded = tag.m_bLoaded;
+  memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+  return *this;
 }
+
+bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
+{
+  if (this == &tag) return false;
+  if (m_strURL != tag.m_strURL) return true;
+  if (m_strTitle != tag.m_strTitle) return true;
+  if (m_strArtist != tag.m_strArtist) return true;
+  if (m_strAlbumArtist != tag.m_strAlbumArtist) return true;
+  if (m_strAlbum != tag.m_strAlbum) return true;
+  if (m_iDuration != tag.m_iDuration) return true;
+  if (m_iTrack != tag.m_iTrack) return true;
+  return false;
+}
+
 int CMusicInfoTag::GetTrackNumber() const
 {
-	return m_iTrack;
+  return (m_iTrack & 0xffff);
+}
+
+int CMusicInfoTag::GetDiscNumber() const
+{
+  return (m_iTrack >> 16);
+}
+
+int CMusicInfoTag::GetTrackAndDiskNumber() const
+{
+  return m_iTrack;
 }
 
 int CMusicInfoTag::GetDuration() const
 {
-	return m_iDuration;
+  return m_iDuration;
 }
 
 const CStdString& CMusicInfoTag::GetTitle() const
 {
-	return m_strTitle;
+  return m_strTitle;
 }
+
 const CStdString& CMusicInfoTag::GetURL() const
 {
-	return m_strURL;
+  return m_strURL;
 }
 
 const CStdString& CMusicInfoTag::GetArtist() const
 {
-	return m_strArtist;
+  return m_strArtist;
 }
 
 const CStdString& CMusicInfoTag::GetAlbum() const
 {
-	return m_strAlbum;
+  return m_strAlbum;
+}
+
+const CStdString& CMusicInfoTag::GetAlbumArtist() const
+{
+  return m_strAlbumArtist;
 }
 
 const CStdString& CMusicInfoTag::GetGenre() const
 {
-	return m_strGenre;
+  return m_strGenre;
 }
 
-void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime)
+void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
 {
-	memcpy(&dateTime,&m_dwReleaseDate,sizeof(m_dwReleaseDate) );
+  memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate) );
 }
 
-void CMusicInfoTag::SetTitle(const CStdString& strTitle) 
+CStdString CMusicInfoTag::GetYear() const
 {
-	m_strTitle=strTitle;
-	m_strTitle.TrimLeft(" ");
-	m_strTitle.TrimRight(" ");
+  CStdString strReturn;
+  strReturn.Format("%i", m_dwReleaseDate.wYear);
+  return m_dwReleaseDate.wYear > 1900 ? strReturn : "";
 }
 
-void CMusicInfoTag::SetURL(const CStdString& strURL) 
+void CMusicInfoTag::SetURL(const CStdString& strURL)
 {
-	m_strURL=strURL;
+  m_strURL = strURL;
 }
 
-void CMusicInfoTag::SetArtist(const CStdString& strArtist) 
+void CMusicInfoTag::SetTitle(const CStdString& strTitle)
 {
-	m_strArtist=strArtist;
-	m_strArtist.TrimLeft(" ");
-	m_strArtist.TrimRight(" ");
+  m_strTitle = strTitle;
+  m_strTitle.TrimLeft(" ");
+  m_strTitle.TrimRight(" ");
+  m_strTitle.TrimRight("\n");
+  m_strTitle.TrimRight("\r");
 }
 
-void CMusicInfoTag::SetAlbum(const CStdString& strAlbum) 
+void CMusicInfoTag::SetArtist(const CStdString& strArtist)
 {
-	m_strAlbum=strAlbum;
-	m_strAlbum.TrimLeft(" ");
-	m_strAlbum.TrimRight(" ");
+  m_strArtist = strArtist;
+  m_strArtist.TrimLeft(" ");
+  m_strArtist.TrimRight(" ");
+  m_strArtist.TrimRight("\n");
+  m_strArtist.TrimRight("\r");
+}
+
+void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
+{
+  m_strAlbum = strAlbum;
+  m_strAlbum.TrimLeft(" ");
+  m_strAlbum.TrimRight(" ");
+  m_strAlbum.TrimRight("\n");
+  m_strAlbum.TrimRight("\r");
+}
+
+void CMusicInfoTag::SetAlbumArtist(const CStdString& strAlbumArtist)
+{
+  m_strAlbumArtist = strAlbumArtist;
+  m_strAlbumArtist.TrimLeft(" ");
+  m_strAlbumArtist.TrimRight(" ");
+  m_strAlbumArtist.TrimRight("\n");
+  m_strAlbumArtist.TrimRight("\r");
 }
 
 void CMusicInfoTag::SetGenre(const CStdString& strGenre)
 {
-	m_strGenre=strGenre;
-	m_strGenre.TrimLeft(" ");
-	m_strGenre.TrimRight(" ");
+  m_strGenre = strGenre;
+  m_strGenre.TrimLeft(" ");
+  m_strGenre.TrimRight(" ");
+  m_strGenre.TrimRight("\n");
+  m_strGenre.TrimRight("\r");
 }
 
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
 {
-	memcpy(&m_dwReleaseDate,&dateTime,sizeof(m_dwReleaseDate) );
+  memcpy(&m_dwReleaseDate, &dateTime, sizeof(m_dwReleaseDate) );
 }
-void CMusicInfoTag::SetTrackNumber(int iTrack) 
+
+void CMusicInfoTag::SetTrackNumber(int iTrack)
 {
-	m_iTrack=iTrack;
+  m_iTrack = (m_iTrack & 0xffff0000) | (iTrack & 0xffff);
 }
-void CMusicInfoTag::SetDuration(int iSec) 
+
+void CMusicInfoTag::SetPartOfSet(int iPartOfSet)
 {
-	m_iDuration=iSec;
+  m_iTrack = (m_iTrack & 0xffff) | (iPartOfSet << 16);
+}
+
+void CMusicInfoTag::SetTrackAndDiskNumber(int iTrackAndDisc)
+{
+  m_iTrack=iTrackAndDisc;
+}
+
+void CMusicInfoTag::SetDuration(int iSec)
+{
+  m_iDuration = iSec;
 }
 
 void CMusicInfoTag::SetLoaded(bool bOnOff)
 {
-	m_bLoaded=bOnOff;
+  m_bLoaded = bOnOff;
 }
+
 bool CMusicInfoTag::Loaded() const
 {
-	return m_bLoaded;
+  return m_bLoaded;
 }
 
-bool CMusicInfoTag::Load(const CStdString& strFileName)
+const CStdString& CMusicInfoTag::GetMusicBrainzTrackID() const
 {
-	FILE* fd = fopen(strFileName.c_str(), "rb");
-	if (fd)
-	{
-		CUtil::LoadString(m_strURL,fd);
-		CUtil::LoadString(m_strTitle,fd);
-		CUtil::LoadString(m_strArtist,fd);
-		CUtil::LoadString(m_strAlbum,fd);
-		CUtil::LoadString(m_strGenre,fd);
-		m_iDuration=CUtil::LoadInt(fd);
-		m_iTrack=CUtil::LoadInt(fd);
-		CUtil::LoadDateTime(m_dwReleaseDate,fd);
-		SetLoaded(true);
-		fclose(fd);
-		return true;
-	}
-	return false;
+  return m_strMusicBrainzTrackID;
 }
 
-void CMusicInfoTag::Save(const CStdString& strFileName)
+const CStdString& CMusicInfoTag::GetMusicBrainzArtistID() const
 {
-	FILE* fd = fopen(strFileName.c_str(), "wb+");
-	if (fd)
-	{
-		CUtil::SaveString(m_strURL,fd);
-		CUtil::SaveString(m_strTitle,fd);
-		CUtil::SaveString(m_strArtist,fd);
-		CUtil::SaveString(m_strAlbum,fd);
-		CUtil::SaveString(m_strGenre,fd);
-		CUtil::SaveInt(m_iDuration,fd);
-		CUtil::SaveInt(m_iTrack,fd);
-		CUtil::SaveDateTime(m_dwReleaseDate,fd);
-		fclose(fd);
-	}
+  return m_strMusicBrainzArtistID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzAlbumID() const
+{
+  return m_strMusicBrainzAlbumID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzAlbumArtistID() const
+{
+  return m_strMusicBrainzAlbumArtistID;
+}
+
+const CStdString& CMusicInfoTag::GetMusicBrainzTRMID() const
+{
+  return m_strMusicBrainzTRMID;
+}
+
+void CMusicInfoTag::SetMusicBrainzTrackID(const CStdString& strTrackID)
+{
+  m_strMusicBrainzTrackID=strTrackID;
+}
+
+void CMusicInfoTag::SetMusicBrainzArtistID(const CStdString& strArtistID)
+{
+  m_strMusicBrainzArtistID=strArtistID;
+}
+
+void CMusicInfoTag::SetMusicBrainzAlbumID(const CStdString& strAlbumID)
+{
+  m_strMusicBrainzAlbumID=strAlbumID;
+}
+
+void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const CStdString& strAlbumArtistID)
+{
+  m_strMusicBrainzAlbumArtistID=strAlbumArtistID;
+}
+
+void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
+{
+  m_strMusicBrainzTRMID=strTRMID;
 }
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
-	SetArtist(album.strArtist);
-	SetAlbum(album.strAlbum);
-	m_strURL=album.strPath;
-	m_bLoaded=true;
+  SetArtist(album.strArtist);
+  SetAlbum(album.strAlbum);
+  SetAlbumArtist(album.strAlbum);
+  SetGenre(album.strGenre);
+  SYSTEMTIME stTime;
+  stTime.wYear = album.iYear;
+  SetReleaseDate(stTime);
+  m_bLoaded = true;
 }
 
 void CMusicInfoTag::SetSong(const CSong& song)
 {
-	SetTitle(song.strTitle);
-	SetGenre(song.strGenre);
-	SetArtist(song.strArtist);
-	SetAlbum(song.strAlbum);
-	m_strURL=song.strFileName;
-	SYSTEMTIME stTime;
-	stTime.wYear=song.iYear;
-	SetReleaseDate(stTime);
-	m_iTrack=song.iTrack;
-	m_iDuration=song.iDuration;
-	m_bLoaded=true;
+  SetTitle(song.strTitle);
+  SetGenre(song.strGenre);
+  SetArtist(song.strArtist);
+  SetAlbum(song.strAlbum);
+  SetAlbumArtist(song.strAlbumArtist);
+  SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
+  SetMusicBrainzArtistID(song.strMusicBrainzArtistID);
+  SetMusicBrainzAlbumID(song.strMusicBrainzAlbumID);
+  SetMusicBrainzAlbumArtistID(song.strMusicBrainzAlbumArtistID);
+  SetMusicBrainzTRMID(song.strMusicBrainzTRMID);
+  m_strURL = song.strFileName;
+  SYSTEMTIME stTime;
+  stTime.wYear = song.iYear;
+  SetReleaseDate(stTime);
+  m_iTrack = song.iTrack;
+  m_iDuration = song.iDuration;
+  m_bLoaded = true;
+}
+
+void CMusicInfoTag::Serialize(CArchive& ar)
+{
+  if (ar.IsStoring())
+  {
+    ar << m_strURL;
+    ar << m_strTitle;
+    ar << m_strArtist;
+    ar << m_strAlbum;
+    ar << m_strAlbumArtist;
+    ar << m_strGenre;
+    ar << m_iDuration;
+    ar << m_iTrack;
+    ar << m_bLoaded;
+    ar << m_dwReleaseDate;
+    ar << m_strMusicBrainzTrackID;
+    ar << m_strMusicBrainzArtistID;
+    ar << m_strMusicBrainzAlbumID;
+    ar << m_strMusicBrainzAlbumArtistID;
+    ar << m_strMusicBrainzTRMID;
+  }
+  else
+  {
+    ar >> m_strURL;
+    ar >> m_strTitle;
+    ar >> m_strArtist;
+    ar >> m_strAlbum;
+    ar >> m_strAlbumArtist;
+    ar >> m_strGenre;
+    ar >> m_iDuration;
+    ar >> m_iTrack;
+    ar >> m_bLoaded;
+    ar >> m_dwReleaseDate;
+    ar >> m_strMusicBrainzTrackID;
+    ar >> m_strMusicBrainzArtistID;
+    ar >> m_strMusicBrainzAlbumID;
+    ar >> m_strMusicBrainzAlbumArtistID;
+    ar >> m_strMusicBrainzTRMID;
+ }
+}
+
+void CMusicInfoTag::Clear()
+{
+  m_strURL.Empty();
+  m_strArtist.Empty();
+  m_strAlbum.Empty();
+  m_strAlbumArtist.Empty();
+  m_strGenre.Empty();
+  m_strTitle.Empty();
+  m_strMusicBrainzTrackID.Empty();
+  m_strMusicBrainzArtistID.Empty();
+  m_strMusicBrainzAlbumID.Empty();
+  m_strMusicBrainzAlbumArtistID.Empty();
+  m_strMusicBrainzTRMID.Empty();
+  m_iDuration = 0;
+  m_iTrack = 0;
+  m_bLoaded = false;
+  memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
 }

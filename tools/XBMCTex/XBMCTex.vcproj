@@ -22,7 +22,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3D8.lib&quot; &quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3DX8.lib&quot; xgraphics.lib"
+				AdditionalDependencies="D3D8.lib D3DX8.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib,libc"
@@ -71,7 +71,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="4"
+				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
@@ -81,10 +81,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3D8.lib&quot; &quot;C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\Lib\D3DX8.lib&quot; xgraphics.lib"
+				AdditionalDependencies="D3D8.lib D3DX8.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib"
+				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib,libc.lib"
 				GenerateDebugInformation="FALSE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -149,6 +149,9 @@
 			<File
 				RelativePath=".\XBMCTex.cpp">
 			</File>
+			<File
+				RelativePath=".\xbox.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -161,6 +164,9 @@
 				RelativePath=".\Bundler.h">
 			</File>
 			<File
+				RelativePath=".\cmdlineargs.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\lib\liblzo\Lzo1x.h">
 			</File>
 			<File
@@ -168,6 +174,9 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h">
+			</File>
+			<File
+				RelativePath=".\xbox.h">
 			</File>
 		</Filter>
 		<Filter

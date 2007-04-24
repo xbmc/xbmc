@@ -1,10 +1,8 @@
 #pragma once
-#include "stdstring.h"
 #include "../../utils/thread.h"
-#include "../../utils/event.h"
 #include "../../utils/lcd.h"
 #include "xenium.h"
-using namespace std;
+
 #define MAX_ROWS 20
 
 class CXeniumLCD : public ILCD
@@ -14,11 +12,11 @@ public:
   virtual ~CXeniumLCD(void);
   virtual void Initialize();
   virtual void Stop();
-  virtual void SetLine(int iLine, const CStdString& strLine);
   virtual void SetBackLight(int iLight);
   virtual void SetContrast(int iContrast);
 protected:
 	virtual void		Process();
+  virtual void SetLine(int iLine, const CStdString& strLine);
   void    DisplayInit();
   void    DisplaySetBacklight(unsigned char level) ;
   void    DisplaySetContrast(unsigned char level);
@@ -38,6 +36,7 @@ protected:
   unsigned int m_iRow4adr ;
   unsigned int m_iActualpos;				// actual cursor possition
   int          m_iBackLight;
+  int          m_iLCDContrast;
   bool         m_bUpdate[MAX_ROWS];
   CStdString   m_strLine[MAX_ROWS];
   int          m_iPos[MAX_ROWS];

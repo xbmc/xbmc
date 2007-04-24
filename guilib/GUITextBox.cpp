@@ -1,28 +1,32 @@
-#include "stdafx.h"
-#include "guitextbox.h"
-#include "guifontmanager.h"
+#include "include.h"
+#include "GUITextBox.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/StringUtils.h"
+#include "GUILabelControl.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
-#define CONTROL_LIST		0
-#define CONTROL_UPDOWN	1
-CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
-                                 const CStdString& strFontName, 
-                                 DWORD dwSpinWidth,DWORD dwSpinHeight,
-                                 const CStdString& strUp, const CStdString& strDown, 
-                                 const CStdString& strUpFocus, const CStdString& strDownFocus, 
-                                 DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                                 const CStdString& strFont, DWORD dwTextColor)
-:CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+#define CONTROL_LIST  0
+#define CONTROL_UPDOWN 9998
+CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                         float spinWidth, float spinHeight,
+                         const CImage& textureUp, const CImage& textureDown,
+                         const CImage& textureUpFocus, const CImage& textureDownFocus,
+                         const CLabelInfo& spinInfo, float spinX, float spinY,
+                         const CLabelInfo& labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
 {
-  m_iOffset=0;
-  m_iItemsPerPage=10;
-  m_iItemHeight=10;
-	m_iMaxPages=50;
-  m_pFont=g_fontManager.GetFont(strFontName);
-  m_dwTextColor=dwTextColor;
-	m_upDown.SetShowRange(true);	// show the range by default
-	ControlType = GUICONTROL_TEXTBOX;
+  m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
+  m_offset = 0;
+  m_label = labelInfo;
+  m_itemsPerPage = 10;
+  m_itemHeight = 10;
+  m_spinPosX = spinX;
+  m_spinPosY = spinY;
+  m_upDown.SetShowRange(true); // show the range by default
+  ControlType = GUICONTROL_TEXTBOX;
+  m_pageControl = 0;
+  m_singleInfo = 0;
 }
 
 CGUITextBox::~CGUITextBox(void)
@@ -31,63 +35,100 @@ CGUITextBox::~CGUITextBox(void)
 
 void CGUITextBox::Render()
 {
-  if (!m_pFont) return;
   if (!IsVisible()) return;
-  CGUIControl::Render();
-  int iPosY=m_iPosY;
-	
-  for (int i=0; i < m_iItemsPerPage; i++)
-  {
-		int iPosX=m_iPosX;
-    if (i+m_iOffset < (int)m_vecItems.size() )
-    {
-      // render item
-			CGUIListItem& item=m_vecItems[i+m_iOffset];
-			CStdString strLabel1=item.GetLabel();
-			CStdString strLabel2=item.GetLabel2();
 
-			CStdStringW strText1Unicode;
-			g_charsetConverter.stringCharsetToFontCharset(strLabel1, strText1Unicode);
+  CStdString renderLabel;
+	if (m_singleInfo)
+		renderLabel = g_infoManager.GetLabel(m_singleInfo);
+	else
+    renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
 
-			DWORD dMaxWidth=m_dwWidth+16;
-			if (strLabel2.size())
-			{
-				CStdStringW strText2Unicode;
-				g_charsetConverter.stringCharsetToFontCharset(strLabel2, strText2Unicode);
-				float fTextWidth,fTextHeight;
-				m_pFont->GetTextExtent( strText2Unicode.c_str(), &fTextWidth,&fTextHeight);
-				dMaxWidth -= (DWORD)(fTextWidth);
-
-				m_pFont->DrawTextWidth((float)iPosX+dMaxWidth, (float)iPosY+2, m_dwTextColor,strText2Unicode.c_str(),(float)fTextWidth);
-			}
-			m_pFont->DrawTextWidth((float)iPosX, (float)iPosY+2,  m_dwTextColor,strText1Unicode.c_str(),(float)dMaxWidth);
-      iPosY += (DWORD)m_iItemHeight;
-    }
+  // need to check the last one
+  if (m_renderLabel != renderLabel)
+  { // different, so reset to the top of the textbox and invalidate.  The page control will update itself below
+    m_renderLabel = renderLabel;
+    m_offset = 0;
+    m_bInvalidated = true;
   }
-	m_upDown.Render();
+
+  if (m_bInvalidated)
+  { 
+    // first correct any sizing we need to do
+    float fWidth, fHeight;
+    m_label.font->GetTextExtent( L"y", &fWidth, &fHeight);
+    m_itemHeight = fHeight;
+    float fTotalHeight = m_height;
+    if (!m_pageControl)
+      fTotalHeight -=  m_upDown.GetHeight() + 5;
+    m_itemsPerPage = (unsigned int)(fTotalHeight / fHeight);
+
+    // we have all the sizing correct so do any wordwrapping
+    CStdStringW utf16Text;
+    g_charsetConverter.utf8ToUTF16(m_renderLabel, utf16Text);
+    CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, m_lines);
+
+    // disable all second label information
+    m_lines2.clear();
+    UpdatePageControl();
+  }
+
+  float posY = m_posY;
+
+  if (m_label.font)
+  {
+    m_label.font->Begin();
+    for (unsigned int i = 0; i < m_itemsPerPage; i++)
+    {
+      float posX = m_posX;
+      if (i + m_offset < m_lines.size() )
+      {
+        // render item
+        float maxWidth = m_width + 16;
+        if (i + m_offset < m_lines2.size())
+        {
+          float fTextWidth, fTextHeight;
+          m_label.font->GetTextExtent( m_lines2[i + m_offset].c_str(), &fTextWidth, &fTextHeight);
+          maxWidth -= fTextWidth;
+
+          m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[i + m_offset].c_str(), fTextWidth);
+        }
+        m_label.font->DrawTextWidth(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[i + m_offset].c_str(), maxWidth);
+        posY += m_itemHeight;
+      }
+    }
+    m_label.font->End();
+  }
+  if (!m_pageControl)
+  {
+    m_upDown.SetPosition(m_posX + m_spinPosX, m_posY + m_spinPosY);
+    m_upDown.Render();
+  }
+  CGUIControl::Render();
 }
 
-void CGUITextBox::OnAction(const CAction &action)
+bool CGUITextBox::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
-    case ACTION_PAGE_UP:
-		OnPageUp();
+  case ACTION_PAGE_UP:
+    OnPageUp();
+    return true;
     break;
 
-    case ACTION_PAGE_DOWN:
-		OnPageDown();
+  case ACTION_PAGE_DOWN:
+    OnPageDown();
+    return true;
     break;
 
-	case ACTION_MOVE_UP:
-	case ACTION_MOVE_DOWN:
-	case ACTION_MOVE_LEFT:
-	case ACTION_MOVE_RIGHT:
-		CGUIControl::OnAction(action);
-	break;
+  case ACTION_MOVE_UP:
+  case ACTION_MOVE_DOWN:
+  case ACTION_MOVE_LEFT:
+  case ACTION_MOVE_RIGHT:
+    return CGUIControl::OnAction(action);
+    break;
 
-	default:
-        m_upDown.OnAction(action);
+  default:
+    return m_upDown.OnAction(action);
   }
 }
 
@@ -95,85 +136,95 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetSenderId()==0)
+    if (message.GetSenderId() == CONTROL_UPDOWN)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
-        m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
+        if (m_upDown.GetValue() >= 1)
+          m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
       }
     }
-    if (message.GetMessage() == GUI_MSG_LABEL2_SET)
-    {
-			int iItem=message.GetParam1();
-			if (iItem >=0 && iItem < (int)m_vecItems.size())
-			{
-				CGUIListItem& item=m_vecItems[iItem];
-				item.SetLabel2( message.GetLabel() );
-			}
-		}
-
+    if (message.GetMessage() == GUI_MSG_LABEL_BIND)
+    { // send parameter is a link to a vector of CGUIListItem's
+      vector<CGUIListItem> *items = (vector<CGUIListItem> *)message.GetLPVOID();
+      if (items)
+      {
+        m_offset = 0;
+        m_lines.clear();
+        m_lines2.clear();
+        for (unsigned int i = 0; i < items->size(); ++i)
+        {
+          CStdStringW utf16Label;
+          CGUIListItem &item = items->at(i);
+          g_charsetConverter.utf8ToUTF16(item.GetLabel(), utf16Label);
+          m_lines.push_back(utf16Label);
+          g_charsetConverter.utf8ToUTF16(item.GetLabel2(), utf16Label);
+          m_lines2.push_back(utf16Label);
+        }
+        UpdatePageControl();
+      }
+    }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-      m_iOffset=0;
-      m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
-      m_upDown.SetRange(1,1);
+      m_offset = 0;
+      m_lines.clear();
+      m_lines2.clear();
+      m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
 
-			// set max pages (param1)
-			if (message.GetParam1() > 0) m_iMaxPages = message.GetParam1();
-			SetText( message.GetLabel() );
+      SetLabel( message.GetLabel() );
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
-      m_iOffset=0;
-      m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
-      m_upDown.SetRange(1,1);
+      m_offset = 0;
+      m_lines.clear();
+      m_lines2.clear();
+      m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
+      if (m_pageControl)
+      {
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_lines.size());
+        SendWindowMessage(msg);
+      }
     }
 
-		if (message.GetMessage() == GUI_MSG_SETFOCUS)
-		{
-			m_upDown.SetFocus(true);
-		}
-		if (message.GetMessage() == GUI_MSG_LOSTFOCUS)
-		{
-			m_upDown.SetFocus(false);
-		}
+    if (message.GetMessage() == GUI_MSG_SETFOCUS)
+    {
+      m_upDown.SetFocus(true);
+    }
+    if (message.GetMessage() == GUI_MSG_LOSTFOCUS)
+    {
+      m_upDown.SetFocus(false);
+    }
+
+    if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
+    {
+      if (message.GetSenderId() == m_pageControl)
+      { // update our page
+        m_offset = message.GetParam1();
+        return true;
+      }
+    }
   }
 
-  if ( CGUIControl::OnMessage(message) ) return true;
-
-  return false;
+  return CGUIControl::OnMessage(message);
 }
 
 void CGUITextBox::PreAllocResources()
 {
-	if (!m_pFont) return;
-	CGUIControl::PreAllocResources();
-	m_upDown.PreAllocResources();
+  if (!m_label.font) return;
+  CGUIControl::PreAllocResources();
+  m_upDown.PreAllocResources();
 }
 
 void CGUITextBox::AllocResources()
 {
-  if (!m_pFont) return;
+  if (!m_label.font) return;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
-  float fWidth,fHeight;
-  
-  m_pFont->GetTextExtent( L"y", &fWidth,&fHeight);
-  //fHeight+=10.0f;
 
-  //fHeight+=2;
-  m_iItemHeight			= (int)fHeight;
-  float fTotalHeight= (float)(m_dwHeight-m_upDown.GetHeight()-5);
-  m_iItemsPerPage		= (int)(fTotalHeight / fHeight);
-
-  int iPages=m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
-  m_upDown.SetRange(1,iPages);
-  m_upDown.SetValue(1);
-
+  SetHeight(m_height);
 }
 
 void CGUITextBox::FreeResources()
@@ -182,40 +233,26 @@ void CGUITextBox::FreeResources()
   m_upDown.FreeResources();
 }
 
+void CGUITextBox::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_upDown.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUITextBox::OnRight()
 {
-  m_upDown.OnRight();
-  if (!m_upDown.HasFocus()) 
-  {
+  if (!m_pageControl && !m_upDown.IsFocusedOnUp())
+    m_upDown.OnRight();
+  else
     CGUIControl::OnRight();
-  }
 }
 
 void CGUITextBox::OnLeft()
 {
-  m_upDown.OnLeft();
-  if (!m_upDown.HasFocus()) 
-  {
+  if (!m_pageControl && m_upDown.IsFocusedOnUp())
+    m_upDown.OnLeft();
+  else
     CGUIControl::OnLeft();
-  }
-}
-
-void CGUITextBox::OnUp()
-{
-  m_upDown.OnUp();
-  if (!m_upDown.HasFocus()) 
-  {
-    CGUIControl::OnUp();
-  }
-}
-
-void CGUITextBox::OnDown()
-{
-  m_upDown.OnDown();
-  if (!m_upDown.HasFocus()) 
-  {
-    CGUIControl::OnDown();
-  }  
 }
 
 void CGUITextBox::OnPageUp()
@@ -225,148 +262,149 @@ void CGUITextBox::OnPageUp()
   {
     iPage--;
     m_upDown.SetValue(iPage);
-    m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
+    m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+  }
+  if (m_pageControl)
+  { // tell our pagecontrol (scrollbar or whatever) to update
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, m_offset);
+    SendWindowMessage(msg);
   }
 }
 
 void CGUITextBox::OnPageDown()
 {
-  int iPages=m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
+  int iPages = m_lines.size() / m_itemsPerPage;
+  if (m_lines.size() % m_itemsPerPage) iPages++;
 
   int iPage = m_upDown.GetValue();
-  if (iPage+1 <= iPages)
+  if (iPage + 1 <= iPages)
   {
     iPage++;
     m_upDown.SetValue(iPage);
-    m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
+    m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+  }
+  if (m_pageControl)
+  { // tell our pagecontrol (scrollbar or whatever) to update
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, m_offset);
+    SendWindowMessage(msg);
   }
 }
-void CGUITextBox::SetText(const wstring &strText)
+
+void CGUITextBox::SetLabel(const string &strText)
 {
-	m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
-	// start wordwrapping
-  // Set a flag so we can determine initial justification effects
-  BOOL bStartingNewLine = TRUE;
-	BOOL bBreakAtSpace = FALSE;
-  int pos=0;
-	int iTextSize = (int)strText.size();
-	int lpos=0;
-	int iLastSpace=-1;
-	int iLastSpaceInLine=-1;
-	char szLine[1024];
-	WCHAR wsTmp[1024];
-	int iTotalLines = 0;
-  while(pos < iTextSize)
-  {
-    // Get the current letter in the string
-    char letter = (char)strText[pos];
+  g_infoManager.ParseLabel(strText, m_multiInfo);
+  m_bInvalidated = true;
+}
 
-		// break if we get more pages then maxpages
-		if (((iTotalLines + 1) / m_iItemsPerPage) > (m_iMaxPages - 1)) break;
-
-    // Handle the newline character
-    if (letter == '\n' )
-    {
-			CGUIListItem item(szLine);
-			m_vecItems.push_back(item);
-			iTotalLines++;
-			iLastSpace=-1;
-			iLastSpaceInLine=-1;
-			lpos=0;
-    }
-		else
-		{
-			if (letter==' ') 
-			{
-				iLastSpace=pos;
-				iLastSpaceInLine=lpos;
-			}
-
-			if (lpos < 0 || lpos >1023)
-			{
-				OutputDebugString("CGUITextBox::SetText -> ERRROR\n");
-			}
-			szLine[lpos]=letter;
-			szLine[lpos+1]=0;
-
-			FLOAT fwidth,fheight;
-			swprintf(wsTmp,L"%S",szLine);
-			if (m_pFont)
-				m_pFont->GetTextExtent(wsTmp,&fwidth,&fheight);
-			if (fwidth > m_dwWidth)
-			{
-				if (iLastSpace > 0 && iLastSpaceInLine != lpos)
-				{
-					szLine[iLastSpaceInLine]=0;
-					pos=iLastSpace;
-				}
-				CGUIListItem item(szLine);
-				m_vecItems.push_back(item);
-				iTotalLines++;
-				iLastSpaceInLine=-1;
-				iLastSpace=-1;
-				lpos=0;
-			}
-			else
-			{
-				lpos++;
-			}
-		}
-		pos++;
-	}
-
-	if (lpos > 0)
-	{
-		CGUIListItem item(szLine);
-		m_vecItems.push_back(item);
-		iTotalLines++;
-	}
-
-  int iPages=m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
-  m_upDown.SetRange(1,iPages);
+void CGUITextBox::UpdatePageControl()
+{
+  // and update our page control
+  int iPages = m_lines.size() / m_itemsPerPage;
+  if (m_lines.size() % m_itemsPerPage || !iPages) iPages++;
+  m_upDown.SetRange(1, iPages);
   m_upDown.SetValue(1);
-
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_lines.size());
+    SendWindowMessage(msg);
+  }
 }
 
-bool CGUITextBox::HitTest(int iPosX, int iPosY) const
+bool CGUITextBox::HitTest(float posX, float posY) const
 {
-	if (m_upDown.HitTest(iPosX, iPosY)) return true;
-	return CGUIControl::HitTest(iPosX, iPosY);
+  if (m_upDown.HitTest(posX, posY)) return true;
+  return CGUIControl::HitTest(posX, posY);
 }
 
-void CGUITextBox::OnMouseOver()
+bool CGUITextBox::CanFocus() const
 {
-	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
-		m_upDown.OnMouseOver();
-	CGUIControl::OnMouseOver();
+  if (m_pageControl) return false;
+  return CGUIControl::CanFocus();
 }
 
-void CGUITextBox::OnMouseClick(DWORD dwButton)
+bool CGUITextBox::OnMouseOver()
 {
-	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
-		m_upDown.OnMouseClick(dwButton);
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
+    m_upDown.OnMouseOver();
+  return CGUIControl::OnMouseOver();
 }
 
-void CGUITextBox::OnMouseWheel()
+bool CGUITextBox::OnMouseClick(DWORD dwButton)
 {
-	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
-	{
-		m_upDown.OnMouseWheel();
-	}
-	else
-	{	// increase or decrease our offset by the appropriate amount.
-		m_iOffset -= g_Mouse.cWheel;
-		// check that we are within the correct bounds.
-		if (m_iOffset + m_iItemsPerPage > (int)m_vecItems.size())
-			m_iOffset = m_vecItems.size() - m_iItemsPerPage;
-		if (m_iOffset<0) m_iOffset = 0;
-		// update the page control...
-		int iPage=m_iOffset / m_iItemsPerPage + 1;
-		// last page??
-		if (m_iOffset + m_iItemsPerPage == (int)m_vecItems.size())
-			iPage = m_upDown.GetMaximum();
-		m_upDown.SetValue(iPage);
-	}
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
+    return m_upDown.OnMouseClick(dwButton);
+  return false;
+}
+
+bool CGUITextBox::OnMouseWheel()
+{
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
+  {
+    return m_upDown.OnMouseWheel();
+  }
+  else
+  { // increase or decrease our offset by the appropriate amount.
+    m_offset -= g_Mouse.cWheel;
+    // check that we are within the correct bounds.
+    if (m_offset + m_itemsPerPage > (int)m_lines.size())
+      m_offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
+    // update the page control...
+    int iPage = m_offset / m_itemsPerPage + 1;
+    // last page??
+    if (m_offset + m_itemsPerPage == m_lines.size())
+      iPage = m_upDown.GetMaximum();
+    m_upDown.SetValue(iPage);
+  }
+  return true;
+}
+
+void CGUITextBox::SetPosition(float posX, float posY)
+{
+  // offset our spin control by the appropriate amount
+  float spinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  float spinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(posX, posY);
+  m_upDown.SetPosition(GetXPosition() + spinOffsetX, GetYPosition() + spinOffsetY);
+}
+
+void CGUITextBox::SetWidth(float width)
+{
+  float spinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(width);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + spinOffsetX, m_upDown.GetYPosition());
+}
+
+void CGUITextBox::SetHeight(float height)
+{
+  float spinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(height);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + spinOffsetY);
+}
+
+void CGUITextBox::SetPulseOnSelect(bool pulse)
+{
+  m_upDown.SetPulseOnSelect(pulse);
+  CGUIControl::SetPulseOnSelect(pulse);
+}
+
+void CGUITextBox::SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right)
+{
+  CGUIControl::SetNavigation(up, down, left, right);
+  m_upDown.SetNavigation(up, down, left, right);
+}
+
+void CGUITextBox::SetPageControl(DWORD pageControl)
+{
+  m_pageControl = pageControl;
+}
+
+void CGUITextBox::SetInfo(int singleInfo)
+{
+  m_singleInfo = singleInfo;
+}
+
+void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIControl::SetColorDiffuse(color);
+  m_upDown.SetColorDiffuse(color);
 }

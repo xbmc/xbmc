@@ -1,5 +1,4 @@
-#include "..\python.h"
-#include "..\..\..\musicInfoTag.h"
+#include "..\python\python.h"
 
 #pragma once
 
@@ -9,14 +8,15 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		MUSIC_INFO::CMusicInfoTag infoTag;
-	} InfoTagMusic;
+    MUSIC_INFO::CMusicInfoTag infoTag;
+  } InfoTagMusic;
 
-	extern PyTypeObject InfoTagMusic_Type;
-	extern InfoTagMusic* InfoTagMusic_FromCMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& infoTag);
+  extern PyTypeObject InfoTagMusic_Type;
+  extern InfoTagMusic* InfoTagMusic_FromCMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& infoTag);
 
+  void initInfoTagMusic_Type();
 }
 
 #ifdef __cplusplus

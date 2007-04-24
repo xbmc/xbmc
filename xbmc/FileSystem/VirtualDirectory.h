@@ -1,32 +1,48 @@
 #pragma once
-#include "../fileitem.h"
-#include "../settings.h"
 #include "idirectory.h"
-
-#include <string>
-#include "stdstring.h"
-#include <vector>
-using namespace std;
 
 namespace DIRECTORY
 {
 
-	/*!
-		\ingroup windows 
-		\brief Get access to shares and it's directories.
-		*/
-	class CVirtualDirectory : public IDirectory
+  /*!
+  \ingroup windows 
+  \brief Get access to shares and it's directories.
+  */
+  class CVirtualDirectory : public IDirectory
   {
   public:
     CVirtualDirectory(void);
     virtual ~CVirtualDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
-    void          SetShares(VECSHARES& vecShares);
-		bool					IsShare(const CStdString& strPath) const;
-		CStdString		GetDVDDriveUrl();
-  
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories); 
+    void SetShares(VECSHARES& vecShares);
+    inline unsigned int GetNumberOfShares() { 
+      if (m_vecShares)
+        return m_vecShares->size(); 
+      else
+        return 0;
+      }
+    bool IsShare(const CStdString& strPath) const;
+    bool IsInShare(const CStdString& strPath) const;
+
+    inline const CShare& operator [](const int index) const
+    {
+      return m_vecShares->at(index);
+    }
+
+    inline CShare& operator[](const int index)
+    {
+      return m_vecShares->at(index);
+    }
+
+    void GetShares(VECSHARES &shares) const;
+
+    void AllowNonLocalShares(bool allow) { m_allowNonLocalShares = allow; };
+
   protected:
-    void          CacheThumbs(VECFILEITEMS &items);
-    VECSHARES*    m_vecShares;
+    void CacheThumbs(CFileItemList &items);
+
+    VECSHARES* m_vecShares;
+    bool       m_allowNonLocalShares;
   };
 };

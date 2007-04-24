@@ -1,36 +1,33 @@
 /*!
-	\file LocalizeStrings.h
-	\brief 
-	*/
+\file LocalizeStrings.h
+\brief 
+*/
 
 #ifndef GUILIB_LOCALIZESTRINGS_H
 #define GUILIB_LOCALIZESTRINGS_H
-#pragma once
-#include "gui3d.h"
 
-#include "stdstring.h"
-#include <map>
-using namespace std;
+#pragma once
 
 /*!
-	\ingroup strings
-	\brief 
-	*/
+ \ingroup strings
+ \brief 
+ */
 class CLocalizeStrings
 {
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool            Load(const CStdString& strFileName);
-  const wstring&  Get(DWORD dwCode) const;
+  bool Load(const CStdString& strFileName);
+  const CStdString& Get(DWORD dwCode) const;
+  void Clear();
 protected:
-  map<DWORD,wstring> m_vecStrings;
-  typedef map<DWORD,wstring>::const_iterator ivecStrings;
+  map<DWORD, CStdString> m_vecStrings;
+  typedef map<DWORD, CStdString>::const_iterator ivecStrings;
 };
 
 /*!
-	\ingroup strings
-	\brief 
-	*/
+ \ingroup strings
+ \brief 
+ */
 extern CLocalizeStrings g_localizeStrings;
 #endif

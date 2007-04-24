@@ -1,9 +1,6 @@
 
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "xeniumlcd.h"
-#include "../../settings.h"
-#include "../../utils/log.h"
-#include <xtl.h>
 #include "conio.h"
 
 #define SCROLL_SPEED_IN_MSEC 250
@@ -25,6 +22,7 @@ CXeniumLCD::CXeniumLCD()
   m_iRow3adr = 0x14;
   m_iRow4adr = 0x54;
   m_iBackLight=32;
+  m_iLCDContrast=50;
 }
 
 //*************************************************************************************************************
@@ -36,11 +34,12 @@ CXeniumLCD::~CXeniumLCD()
 void CXeniumLCD::Initialize()
 {
   StopThread();
-  if (!g_stSettings.m_bLCDUsed) 
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
   {
     CLog::Log(LOGINFO, "lcd not used");
     return;
   }
+  ILCD::Initialize();
   Create();
   
 }
@@ -50,19 +49,20 @@ void CXeniumLCD::SetBackLight(int iLight)
 }
 void CXeniumLCD::SetContrast(int iContrast)
 {
+	m_xenium.SetContrast(iContrast/4);
 }
 
 //*************************************************************************************************************
 void CXeniumLCD::Stop()
 {
-  if (!g_stSettings.m_bLCDUsed) return;
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) return;
   StopThread();
 }
 
 //*************************************************************************************************************
 void CXeniumLCD::SetLine(int iLine, const CStdString& strLine)
 {
-  if (!g_stSettings.m_bLCDUsed) return;
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) return;
   if (iLine < 0 || iLine >= (int)m_iRows) return;
   
   CStdString strLineLong=strLine;
@@ -171,21 +171,23 @@ void CXeniumLCD::DisplayInit()
   m_xenium.HideCursor();
   m_xenium.ScrollOff();
   m_xenium.WrapOff();
-  m_xenium.SetContrast(12);
+  SetContrast(m_iLCDContrast);
 }
 
 //************************************************************************************************************************
 void CXeniumLCD::Process()
 {
   int iOldLight=-1;  
+  int iOldContrast=-1;
 
-  m_iColumns = g_stSettings.m_iLCDColumns;
-  m_iRows    = g_stSettings.m_iLCDRows;
-  m_iRow1adr = g_stSettings.m_iLCDAdress[0];
-  m_iRow2adr = g_stSettings.m_iLCDAdress[1];
-  m_iRow3adr = g_stSettings.m_iLCDAdress[2];
-  m_iRow4adr = g_stSettings.m_iLCDAdress[3];
-  m_iBackLight= g_stSettings.m_iLCDBackLight;
+  m_iColumns = g_advancedSettings.m_lcdColumns;
+  m_iRows    = g_advancedSettings.m_lcdRows;
+  m_iRow1adr = g_advancedSettings.m_lcdAddress1;
+  m_iRow2adr = g_advancedSettings.m_lcdAddress2;
+  m_iRow3adr = g_advancedSettings.m_lcdAddress3;
+  m_iRow4adr = g_advancedSettings.m_lcdAddress4;
+  m_iBackLight= g_guiSettings.GetInt("lcd.backlight");
+  m_iLCDContrast = g_guiSettings.GetInt("lcd.contrast");
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;
 
   DisplayInit();
@@ -197,6 +199,12 @@ void CXeniumLCD::Process()
       // backlight setting changed
       iOldLight=m_iBackLight;
       DisplaySetBacklight(m_iBackLight);
+    }
+	  if (m_iLCDContrast != iOldContrast)
+    {
+      // contrast setting changed
+      iOldContrast=m_iLCDContrast;
+      SetContrast(m_iLCDContrast);
     }
 	  DisplayBuildCustomChars();
 	  for (int iLine=0; iLine < (int)m_iRows; ++iLine)

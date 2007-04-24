@@ -1,171 +1,120 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
-#include "xtl.h"
 #include "oggtag.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "util.h"
+
 
 using namespace MUSIC_INFO;
 
-#define CHUNK_SIZE 8192		// should suffice for most tags
+//  From EMUmsvcrt.cpp to open a file for a dll
+extern "C" FILE * dll_fopen (const char * filename, const char * mode);
 
 COggTag::COggTag()
 {
-	m_nTrackNum=0;
-	m_nDuration=0;
-	m_nSamplesPerSec=0;
-	m_nChannels=0;
-	m_nBitrate=0;
-	m_nSamples=0;
+
 }
 
 COggTag::~COggTag()
 {
 }
 
-bool COggTag::ReadTag( CFile* file )
+bool COggTag::Read(const CStdString& strFile1)
 {
-	m_file = file;
+  if (!m_dll.Load())
+    return false;
 
-    char* const pBuffer=new char[CHUNK_SIZE+100]; //+100 for later...
-    unsigned char* const pBufferU=(unsigned char*)pBuffer;	//unsigned char pointer to data
-	m_file->Read((void *)pBuffer, CHUNK_SIZE);
+  CVorbisTag::Read(strFile1);
 
-    // Check we've got an ogg file
-    if (pBuffer[0]!='O' || pBuffer[1]!='g' || pBuffer[2]!='g' || pBuffer[3]!='S')
-		{
-				delete [] pBuffer;
-        return false;
-		}
+  CStdString strFile=strFile1;
+  int currentStream=0;
 
-    int iNext=4; //Next page of data's offset
-    int iOffset=0; //iOffset in file
+  m_musicInfoTag.SetURL(strFile);
 
-    while (iOffset+iNext<CHUNK_SIZE)
+  CStdString strExtension;
+  CUtil::GetExtension(strFile, strExtension);
+  if (strExtension==".oggstream")
+  {
+    CStdString strFileName=CUtil::GetFileName(strFile);
+    int iStart=strFileName.ReverseFind("-")+1;
+    currentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
+    CStdString strPath=strFile;
+    CUtil::GetDirectory(strPath, strFile);
+    if (CUtil::HasSlashAtEnd(strFile))
+      strFile.Delete(strFile.size()-1);
+  }
+
+  //Use the emulated fopen() as its only used inside the dll
+  FILE* file=dll_fopen (strFile.c_str(), "r");
+  if (!file)
+    return false;
+
+  OggVorbis_File vf;
+  //  open ogg file with decoder
+  if (m_dll.ov_open(file, &vf, NULL, 0)!=0)
+    return false;
+
+  int iStreams=m_dll.ov_streams(&vf);
+  if (iStreams>1)
+  {
+    if (currentStream > iStreams)
     {
-		// find the next chunk of data
-        iNext=4;
-        while ((pBuffer[iOffset+iNext]!='O' || pBuffer[iOffset+iNext+1]!='g' || pBuffer[iOffset+iNext+2]!='g' || pBuffer[iOffset+iNext+3]!='S') && iOffset+iNext<CHUNK_SIZE)
-            iNext++;
-        if (iOffset+iNext<CHUNK_SIZE)
-        {
-            int iStart=iOffset+28+pBuffer[iOffset+26]; //Start of header
-            int Id=pBuffer[iStart-1];					// Id of header
-            if (Id==1)		// Vorbis header field
-            {
-                if (pBuffer[iOffset+29]=='v' && pBuffer[iOffset+30]=='o') // vorbis audio header
-                {
-					m_nChannels = (int)*(pBufferU+iOffset+39);	//LittleEndian2int8u;
-					m_nSamplesPerSec = *(int *)(pBufferU+iOffset+40);//LittleEndian2int64u;
-					m_nBitrate = *(int*)(pBufferU+iOffset+48);	//LittleEndian2int64s
-               }
-            }
-            else if (Id==3)	// Vorbis Comment field
-            {
-                //vendorlength, vendor, number of comments, comment length, comment
-				ProcessVorbisComment(pBuffer+iStart+6);
-            }
-            iOffset+=iNext;
-            iNext=0;
-        }
+      m_dll.ov_clear(&vf);
+      return false;
     }
+  }
 
-	// Find the last data packet
-    iOffset=-1;
-    int AA=0;
-    while (iOffset==-1 || AA>128)
-    {
-		AA++;
-		m_file->Seek(-CHUNK_SIZE*AA, SEEK_END);//fseek(fb, -CHUNK_SIZE*AA, SEEK_END);
-		m_file->Read((void *)pBuffer, CHUNK_SIZE+100); //+100 for possible overlaps in the data pages
+  m_musicInfoTag.SetDuration((int)m_dll.ov_time_total(&vf, currentStream));
 
-		iOffset=CHUNK_SIZE+100-1;
-		while ((pBuffer[iOffset]!='O' || pBuffer[iOffset+1]!='g' || pBuffer[iOffset+2]!='g' || pBuffer[iOffset+3]!='S') && iOffset>=0)
-			iOffset--;
-	}
-	// OK, grab the granule position (this is the position in samples)
-    if (iOffset>=0)
+  vorbis_comment* pComments=m_dll.ov_comment(&vf, currentStream);
+  if (pComments)
+  {
+    for (int i=0; i<pComments->comments; ++i)
     {
-        m_nSamples=*(int *)(pBufferU+iOffset+6); //Granule Pos
-		m_nDuration = (int)((m_nSamples*75)/m_nSamplesPerSec);	// *75 for frames
+      CStdString strEntry=pComments->user_comments[i];
+      ParseTagEntry(strEntry);
     }
-
-	delete [] pBuffer;
-	return true;
+  }
+  m_dll.ov_clear(&vf);
+  return true;
 }
 
-void COggTag::ProcessVorbisComment(const char *pBuffer)
+int COggTag::GetStreamCount(const CStdString& strFile)
 {
-    int Pos=0;						// position in the buffer
-    int *I1=(int*)(pBuffer+Pos);	// length of vendor string
-    Pos+=I1[0]+4;					// just pass the vendor string
-    I1=(int*)(pBuffer+Pos);			// number of comments
-    int Count=I1[0];
-    Pos+=4;				// Start of the first comment
-    char C1[CHUNK_SIZE];
-    for (int I2=0; I2<Count; I2++) // Run through the comments
-    {
-        I1=(int*)(pBuffer+Pos);			// Length of comment
-        strncpy(C1, pBuffer+Pos+4, I1[0]);
-        C1[I1[0]]='\0';
-		CStdString strItem;
-		g_charsetConverter.utf8ToStringCharset(C1, strItem);		// convert UTF-8 to charset string
-		// Parse the tag entry
-		parseTagEntry( strItem );
-        // Increment our position in the file buffer
-        Pos+=I1[0]+4;
-    }
-}
+  if (!m_dll.Load())
+    return 0;
 
-int COggTag::parseTagEntry(CStdString& strTagEntry)
-{
-	CStdString strTagValue;
-	CStdString strTagType;
+  FILE* file=dll_fopen (strFile.c_str(), "r");
+  if (!file)
+    return 0;
 
-	//	Split tag entry like ARTIST=Sublime
-	SplitEntry( strTagEntry, strTagType, strTagValue);
+  OggVorbis_File vf;
+  //  open ogg file with decoder
+  if (m_dll.ov_open(file, &vf, NULL, 0)!=0)
+    return 0;
 
-	//	Save tag entry to members
+  int iStreams=m_dll.ov_streams(&vf);
 
-	if ( strTagType == "artist" ) {
-		if (m_strArtist.length())
-			m_strArtist += " / " + strTagValue;
-		else
-			m_strArtist = strTagValue;
-	}
+  m_dll.ov_clear(&vf);
 
-	if ( strTagType == "title" ) {
-		m_strTitle = strTagValue;
-	}
-
-	if ( strTagType == "album" ) {
-		m_strAlbum = strTagValue;
-	}
-
-	if ( strTagType == "tracknumber" ) {
-		m_nTrackNum = atoi( strTagValue );
-	}
-
-	if ( strTagType == "date" ) {
-		m_strYear = strTagValue;
-	}
-
-	if ( strTagType == "genre" ) {
-		if (m_strGenre.length())
-			m_strGenre += " / " + strTagValue;
-		else
-			m_strGenre = strTagValue;
-	}
-
-	return 0;
-}
-
-void COggTag::SplitEntry(const CStdString& strTagEntry, CStdString& strTagType, CStdString& strTagValue)
-{
-	int nPos = strTagEntry.Find( '=' );
-
-	if ( nPos > -1 ) {
-		strTagValue = strTagEntry.Mid( nPos + 1 );
-		strTagType = strTagEntry.Left( nPos );
-		strTagType.ToLower();
-	}
+  return iStreams;
 }

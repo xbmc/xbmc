@@ -10,7 +10,7 @@ extern "C" {
 #define MAX_FILENAME_LEN	255
 #define MAX_STREAMNAME_LEN	1024
 #define MAX_SERVER_LEN		1024
-
+#define MAX_CONTENTTYPE_STR 1024
 
 //
 // Messages for status_callback hook in rip_manager_init()
@@ -39,7 +39,8 @@ typedef struct RIP_MANAGER_INFOst
 	int		bitrate;
 	int		meta_interval;
 	char	filename[MAX_FILENAME_LEN];		// JCBUG -- it's not the filename, it's the trackname
-	unsigned long	filesize;
+  char  contenttype[MAX_CONTENTTYPE_STR];
+	u_long	filesize;
 	int	status;
 } RIP_MANAGER_INFO;
 
@@ -92,9 +93,9 @@ typedef struct RIP_MANAGER_OPTIONSst
 	char	proxyurl[MAX_URL_LEN];				// url of a http proxy server, '\0' otherwise
 	char	output_directory[MAX_PATH_LEN];		// base directory to output files too
 	int	relay_port;								// port to use for the relay server
-	unsigned short	max_port;							// highest port the relay server can look if it needs to search
-	unsigned long	maxMB_rip_size;						// max number of megabytes that can by writen out before we stop
-	unsigned short	flags;								// all booleans logically OR'd together (see above)
+	u_short	max_port;							// highest port the relay server can look if it needs to search
+	u_long	maxMB_rip_size;						// max number of megabytes that can by writen out before we stop
+	u_short	flags;								// all booleans logically OR'd together (see above)
 	char	useragent[MAX_USERAGENT_STR];		// optional, use a different useragent
 } RIP_MANAGER_OPTIONS;
 
@@ -125,7 +126,7 @@ extern char			*rip_manager_get_error_str(int code);
 // used to find out what the relay port is, being that 
 // the relay might search for one
 //
-extern unsigned short		rip_mananger_get_relay_port();	
+extern u_short		rip_mananger_get_relay_port();	
 
 #ifdef __cplusplus
 }

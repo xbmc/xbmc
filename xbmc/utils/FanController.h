@@ -1,6 +1,7 @@
 #pragma once
 
 #include "thread.h"
+#include "../Temperature.h"
 
 class CFanController : public CThread
 {
@@ -9,15 +10,16 @@ public:
   void Start(int targetTemperature);
   void Stop();
 
-  int   GetFanSpeed();
-  void  SetFanSpeed(const int fanspeed, const bool force=true);
-  float GetGPUTemp();
-  float GetCPUTemp();
-  void  SetTargetTemperature(int targetTemperature);
-  void  RestoreStartupSpeed();
+  int GetFanSpeed();
+  void SetFanSpeed(const int fanspeed, const bool force = true);
+  const CTemperature& GetGPUTemp();
+  const CTemperature& GetCPUTemp();
+  void SetTargetTemperature(int targetTemperature);
+  void RestoreStartupSpeed();
 
   static CFanController* Instance();
-	virtual ~CFanController();
+  static void RemoveInstance();
+  virtual ~CFanController();
 private:
   enum SensorType {
     ST_GPU = 0,
@@ -25,30 +27,33 @@ private:
   };
 
   static CFanController* _Instance;
-  
-  int   targetTemp;
-  int   systemFanSpeed;
-  int   currentFanSpeed;
-  int   calculatedFanSpeed;
-  int   tooHotLoopCount;
-  int   tooColdLoopCount;
-  bool  inCustomMode;
-  float cpuTemp;
-  float cpuLastTemp;
-  unsigned short gpuTemp;
-  unsigned short gpuLastTemp;
 
-  SensorType     sensor;
+  int targetTemp;
+  int systemFanSpeed;
+  unsigned long currentFanSpeed;
+  int calculatedFanSpeed;
+  int tooHotLoopCount;
+  int tooColdLoopCount;
+  bool inCustomMode;
+  bool bIs16Box;
+  CTemperature cpuTemp;
+  float cpuFrac;
+  int   cpuTempCount;
+  CTemperature cpuLastTemp;
+  CTemperature gpuTemp;
+  CTemperature gpuLastTemp;
+
+  SensorType sensor;
 
   CFanController();
-  
+
   void GetFanSpeedInternal();
   void GetGPUTempInternal();
   void GetCPUTempInternal();
 
   void CalcSpeed(int targetTemp);
 
-  virtual void		OnStartup();
-	virtual void		OnExit();
-	virtual void		Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 };

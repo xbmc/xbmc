@@ -1,0 +1,66 @@
+// AlbumArtZoomer.vtx
+// Author - MrC
+
+float rot;
+float zoom;
+float dxx,dxy,dyx,dyy;
+
+float	t;
+float   px = 16;
+float   py = 12;
+float   pdx = 1.342;
+float   pdy = 1;
+float   basstime = 0;
+
+void Init()
+{
+	zoom = 0;
+	rot=Rand();
+	px = 16;
+	py = 12;
+	pdx = 1.342;
+	pdy = 1;
+	basstime = 0;
+}
+
+void Quad(float rt, float sz)
+{
+   dxx = Cos(rt)*sz;
+   dxy = Sin(rt)*sz;
+   dyx = Sin(rt)*sz;
+   dyy = 0.0f-Cos(rt)*sz;
+
+   gfxTexCoord((0.0f-dxx)+(0.0f+dyx),(0.0f-dxy)+(0.0f+dyy));
+   gfxVertex(-1 * 2,1 * 2,0);
+   gfxTexCoord((0.0f+dxx)+(0.0f+dyx),(0.0f+dxy)+(0.0f+dyy));
+   gfxVertex(1 * 2,1 * 2,0);
+   gfxTexCoord((0.0f+dxx)+(0.0f-dyx),(0.0f+dxy)+(0.0f-dyy));
+   gfxVertex(1 * 2,-1 * 2,0);
+   gfxTexCoord((0.0f-dxx)+(0.0f-dyx),(0.0f-dxy)+(0.0f-dyy));
+   gfxVertex(-1 * 2,-1 * 2,0);
+}
+
+void Render()
+{
+	zoom += BASS * 2 * TIMEPASS;
+	rot += TREBLE * 4* TIMEPASS;
+
+	t = TIMEPASS*(BASS+0.25) * 20;
+	px = px + (pdx*t);
+	if (px>28) { pdx = -Abs(pdx); px = 28; }
+	if (px<4) { pdx = Abs(pdx); px = 4; }
+	py = py + (pdy*t);
+	if (py>20) { pdy = -Abs(pdy); py=20; }
+	if (py<4) { pdy = Abs(pdy); py = 4; }
+
+	// draw
+	gfxSetTexture(TEXTURE_ALBUMART);
+	gfxSetAspect(0);
+	gfxTranslate(((px / 28.0f) - 0.5f), (py / 20.0f) - 0.5f, 2.414f);
+	gfxBegin(PRIM_QUADLIST);
+
+	gfxColour(1.0f, 1.0f, 1.0f, 1);
+	Quad(Sin(rot),(Fabs(Sin(zoom)) + 0.25)*5);      
+	gfxEnd();
+	
+}

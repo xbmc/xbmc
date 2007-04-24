@@ -20,8 +20,13 @@ class CFileLogger;
 class CServer  
 {
 public:
+#ifdef _XBOX
 	virtual void ShowStatus(LPCTSTR msg, int nType);
 	virtual void ShowStatus(_int64 eventDate, LPCTSTR msg, int nType);
+#else
+	void ShowStatus(LPCTSTR msg, int nType);
+	void ShowStatus(_int64 eventDate, LPCTSTR msg, int nType);
+#endif
 	BOOL ProcessCommand(CAdminSocket *pAdminSocket, int nID, unsigned char *pData, int nDataLength);
 	virtual void OnClose();
 	bool Create();
@@ -49,7 +54,11 @@ protected:
 	_int64 m_nRecvCount;
 	_int64 m_nSendCount;
 
+#ifdef _XBOX
 	virtual LRESULT OnServerMessage(WPARAM wParam, LPARAM lParam);
+#else
+	LRESULT OnServerMessage(WPARAM wParam, LPARAM lParam);
+#endif
 
 private:
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

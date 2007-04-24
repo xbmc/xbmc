@@ -57,7 +57,7 @@ public:
   //////////////////////////////////////////////////
   // server runtime control
 
-  bool Start();
+  bool Start(bool Wait = true);
   bool Stop();
 
 

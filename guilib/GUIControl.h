@@ -1,132 +1,243 @@
 /*!
-	\file GUIControl.h
-	\brief 
-	*/
+\file GUIControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUICONTROL_H
 #define GUILIB_GUICONTROL_H
 #pragma once
 
-#include "gui3d.h"
-#include "key.h"
-#include "common/mouse.h"
-#include "guimessage.h"
-#include "graphiccontext.h"
+#include "GraphicContext.h" // needed by any rendering operation (all controls)
+#include "key.h"            // needed by practically all controls (CAction + defines)
+#include "GUIMessage.h"     // needed by practically all controls
+#include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
+#include "VisibleEffect.h"  // needed for the CAnimation members
 
+enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
+
+class CLabelInfo
+{
+public:
+  CLabelInfo()
+  {
+    textColor = 0;
+    shadowColor = 0;
+    disabledColor = 0;
+    selectedColor = 0;
+    focusedColor = 0;
+    font = NULL;
+    align = XBFONT_LEFT;
+    offsetX = offsetY = 0;
+    width = 0;
+  };
+  DWORD textColor;
+  DWORD shadowColor;
+  DWORD selectedColor;
+  DWORD disabledColor;
+  DWORD focusedColor;
+  DWORD align;
+  float offsetX;
+  float offsetY;
+  float width;
+  CAngle angle;
+  CGUIFont *font;
+};
+
+class CControlState
+{
+public:
+  CControlState(int id, int data)
+  {
+    m_id = id;
+    m_data = data;
+  }
+  int m_id;
+  int m_data;
+};
 
 /*!
-	\ingroup controls
-	\brief Base class for controls
-	*/
-class CGUIControl 
+ \ingroup controls
+ \brief Base class for controls
+ */
+class CGUIControl
 {
 public:
   CGUIControl();
-  CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
+  CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);
-  virtual void  Render();
-  virtual void  OnAction(const CAction &action) ;
+  virtual void Render();
+
+  // OnAction() is called by our window when we are the focused control.
+  // We should process any control-specific actions in the derived classes,
+  // and return true if we have taken care of the action.  Returning false
+  // indicates that the message may be handed down to the window or application
+  // levels.  This base class implementation handles basic movement, and should
+  // be called from the derived classes when the action has not been handled.
+  // Return true to indicate that the action has been dealt with.
+  virtual bool OnAction(const CAction &action);
+
   // Common actions to make the code easier to read (no ugly switch statements in derived controls)
-  virtual void  OnUp();
-  virtual void  OnDown();
-  virtual void  OnLeft();
-  virtual void  OnRight();
+  virtual void OnUp();
+  virtual void OnDown();
+  virtual void OnLeft();
+  virtual void OnRight();
+  virtual void OnFocus() {};
 
   /// \brief Called when the mouse is over the control.  Default implementation selects the control.
-  virtual void  OnMouseOver();
+  virtual bool OnMouseOver();
   /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
-  virtual void  OnMouseDrag() {};
+  virtual bool OnMouseDrag() { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual void  OnMouseClick(DWORD dwButton) {};
+  virtual bool OnMouseClick(DWORD dwButton) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual void  OnMouseDoubleClick(DWORD dwButton) {};
+  virtual bool OnMouseDoubleClick(DWORD dwButton) { return false; };
   /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
-  virtual void	OnMouseWheel() {};
-  virtual bool  OnMessage(CGUIMessage& message);
-  DWORD         GetID(void) const; 
-	void					SetID(DWORD dwID) { m_dwControlID = dwID; };
-  DWORD         GetParentID(void) const; 
-  bool          HasFocus(void) const;
-	virtual void  PreAllocResources() {}
-  virtual void  AllocResources() {}
-  virtual void  FreeResources() {}
-  virtual bool  CanFocus() const;
-	virtual bool  IsVisible() const;
-	virtual bool  IsDisabled() const;
-  virtual bool  IsSelected() const;
-  virtual void  SetPosition(int iPosX, int iPosY);
-  virtual void  SetAlpha(DWORD dwAlpha);
-	virtual void  SetColourDiffuse(D3DCOLOR colour);
-	virtual DWORD GetColourDiffuse() const { return m_colDiffuse;};
-  virtual int GetXPosition() const;
-  virtual int GetYPosition() const;
-  virtual DWORD GetWidth() const;
-  virtual DWORD GetHeight() const;
+  virtual bool OnMouseWheel() { return false; };
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
-  virtual bool	HitTest(int iPosX, int iPosY) const;
-  void          SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
-  DWORD         GetControlIdUp() const { return m_dwControlUp;};
-  DWORD         GetControlIdDown() const { return m_dwControlDown;};
-  DWORD         GetControlIdLeft() const { return m_dwControlLeft;};
-  DWORD         GetControlIdRight() const { return m_dwControlRight;};
-  void          SetFocus(bool bOnOff);
-  void          SetWidth(int iWidth);
-  void          SetHeight(int iHeight);
-  void          SetVisible(bool bVisible);
-  void			SetSelected(bool bSelected);
-	void					SetEnabled(bool bEnable);
-	virtual void			EnableCalibration(bool bOnOff);
-	bool					CalibrationEnabled() const;
-  void SetGroup(int iGroup);
-  int GetGroup(void) const;
+  virtual bool HitTest(float posX, float posY) const;
+  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
 
-	enum GUICONTROLTYPES { 
-		GUICONTROL_UNKNOWN,
-		GUICONTROL_BUTTON,
-		GUICONTROL_CHECKMARK,
-		GUICONTROL_FADELABEL,
-		GUICONTROL_IMAGE,
-		GUICONTROL_LABEL,
-		GUICONTROL_LIST,
-		GUICONTROL_LISTEX,
-		GUICONTROL_MBUTTON,
-		GUICONTROL_PROGRESS,
-		GUICONTROL_RADIO,
-		GUICONTROL_RAM,
-		GUICONTROL_RSS,
-		GUICONTROL_SELECTBUTTON,
-		GUICONTROL_SLIDER,
-		GUICONTROL_SPINBUTTON,
-		GUICONTROL_SPIN,
-		GUICONTROL_TEXTBOX,
-		GUICONTROL_THUMBNAIL,
-		GUICONTROL_TOGGLEBUTTON,
-		GUICONTROL_VIDEO,
-		GUICONTROL_MOVER,
-		GUICONTROL_RESIZE
-	};
-	GUICONTROLTYPES GetControlType() const { return ControlType; }
+  virtual bool OnMessage(CGUIMessage& message);
+  DWORD GetID(void) const;
+  void SetID(DWORD dwID) { m_dwControlID = dwID; };
+  virtual bool HasID(DWORD dwID) const;
+  virtual bool HasVisibleID(DWORD dwID) const;
+  DWORD GetParentID() const;
+  virtual bool HasFocus() const;
+  virtual void PreAllocResources() {}
+  virtual void AllocResources();
+  virtual void FreeResources();
+  virtual bool IsAllocated() const;
+  virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual bool IsDynamicallyAllocated() { return false; };
+  virtual bool CanFocus() const;
+  virtual bool IsVisible() const;
+  virtual bool IsDisabled() const;
+  bool HasRendered() const { return m_hasRendered; };
+  virtual void SetPosition(float posX, float posY);
+  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual float GetXPosition() const;
+  virtual float GetYPosition() const;
+  virtual float GetWidth() const;
+  virtual float GetHeight() const;
+  virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
+  DWORD GetControlIdUp() const { return m_dwControlUp;};
+  DWORD GetControlIdDown() const { return m_dwControlDown;};
+  DWORD GetControlIdLeft() const { return m_dwControlLeft;};
+  DWORD GetControlIdRight() const { return m_dwControlRight;};
+  virtual DWORD GetNextControl(int direction) const;
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  const CGUIControl *GetParentControl() const { return m_parentControl; };
+//#endif
+  virtual void SetFocus(bool bOnOff);
+  virtual void SetWidth(float width);
+  virtual void SetHeight(float height);
+  virtual void SetVisible(bool bVisible);
+  void SetVisibleCondition(int visible, bool allowHiddenFocus);
+  int GetVisibleCondition() const { return m_visibleCondition; };
+  void SetEnableCondition(int condition);
+  void UpdateVisibility();
+  virtual void SetInitialVisibility();
+  virtual void UpdateEffectState(DWORD currentTime);
+  virtual void SetEnabled(bool bEnable);
+  virtual void Update() { m_bInvalidated = true; };
+  virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
+  virtual CStdString GetDescription() const { return ""; };
 
+  void SetAnimations(const vector<CAnimation> &animations);
+  const vector<CAnimation> &GetAnimations() const { return m_animations; };
+
+  virtual void QueueAnimation(ANIMATION_TYPE anim);
+  virtual bool IsAnimating(ANIMATION_TYPE anim);
+  CAnimation *GetAnimation(ANIMATION_TYPE type, bool checkConditions = true);
+
+  virtual bool IsGroup() const { return false; };
+  void SetParentControl(CGUIControl *control) { m_parentControl = control; };
+  virtual void SaveStates(vector<CControlState> &states);
+
+  enum GUICONTROLTYPES {
+    GUICONTROL_UNKNOWN,
+    GUICONTROL_BUTTON,
+    GUICONTROL_CONDITIONAL_BUTTON,
+    GUICONTROL_CHECKMARK,
+    GUICONTROL_FADELABEL,
+    GUICONTROL_IMAGE,
+    GUICONTROL_LABEL,
+    GUICONTROL_LIST,
+    GUICONTROL_LISTEX,
+    GUICONTROL_MBUTTON,
+    GUICONTROL_PROGRESS,
+    GUICONTROL_RADIO,
+    GUICONTROL_RAM,
+    GUICONTROL_RSS,
+    GUICONTROL_SELECTBUTTON,
+    GUICONTROL_SLIDER,
+    GUICONTROL_SETTINGS_SLIDER,
+    GUICONTROL_SPINBUTTON,
+    GUICONTROL_SPIN,
+    GUICONTROL_SPINEX,
+    GUICONTROL_TEXTBOX,
+    GUICONTROL_THUMBNAIL,
+    GUICONTROL_TOGGLEBUTTON,
+    GUICONTROL_VIDEO,
+    GUICONTROL_MOVER,
+    GUICONTROL_RESIZE,
+    GUICONTROL_BUTTONBAR,
+    GUICONTROL_CONSOLE,
+    GUICONTROL_EDIT,
+    GUICONTROL_VISUALISATION,
+    GUICONTROL_MULTI_IMAGE,
+    GUICONTROL_GROUP,
+    GUICONTROL_GROUPLIST,
+    GUICONTROL_SCROLLBAR,
+    GUICONTAINER_LIST,
+    GUICONTAINER_WRAPLIST,
+    GUICONTAINER_FIXEDLIST,
+    GUICONTAINER_PANEL
+  };
+  GUICONTROLTYPES GetControlType() const { return ControlType; }
+
+  enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
+
+#ifdef _DEBUG
+  virtual void DumpTextureUse() {};
+#endif
 protected:
-  virtual void       Update() {};
-  DWORD              m_dwControlLeft;
-  DWORD              m_dwControlRight;
-  DWORD              m_dwControlUp;
-  DWORD              m_dwControlDown;
-  int				         m_iPosX;
-  int                m_iPosY;
-  DWORD              m_dwHeight;
-  DWORD              m_dwWidth;
-  D3DCOLOR           m_colDiffuse;
-  DWORD				 m_dwAlpha;
-  DWORD							 m_dwControlID;
-  DWORD							 m_dwParentID;
-  bool							 m_bHasFocus;
-	bool							 m_bVisible;
-	bool							 m_bDisabled;
-  bool							 m_bSelected;
-  int                m_iGroup;
-	bool							 m_bCalibration;
-	GUICONTROLTYPES ControlType;
+  virtual void Animate(DWORD currentTime);
+  void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
+  bool SendWindowMessage(CGUIMessage &message);
+  DWORD m_dwControlLeft;
+  DWORD m_dwControlRight;
+  DWORD m_dwControlUp;
+  DWORD m_dwControlDown;
+  float m_posX;
+  float m_posY;
+  float m_height;
+  float m_width;
+  D3DCOLOR m_diffuseColor;
+  DWORD m_dwControlID;
+  DWORD m_dwParentID;
+  bool m_bHasFocus;
+  bool m_bInvalidated;
+  bool m_bAllocated;
+  bool m_pulseOnSelect;
+  GUICONTROLTYPES ControlType;
+
+  CGUIControl *m_parentControl;   // our parent control if we're part of a group
+
+  // visibility condition/state
+  int m_visibleCondition;
+  GUIVISIBLE m_visible;
+  bool m_visibleFromSkinCondition;
+  bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
+  bool m_allowHiddenFocus;
+  bool m_hasRendered;
+  // enable/disable state
+  int m_enableCondition;
+  bool m_enabled;
+
+  // animation effects
+  vector<CAnimation> m_animations;
 };
+
 #endif

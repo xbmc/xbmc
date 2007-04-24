@@ -1,0 +1,202 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,1,0,0
+ PRODUCTVERSION 2,1,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "Team XBMC"
+            VALUE "FileDescription", "XBMC "
+            VALUE "FileVersion", "pre-2.1"
+            VALUE "InternalName", "XBMC_PC.exe"
+            VALUE "LegalCopyright", "CopyRight (c) Team XBMC.  All rights reserved."
+            VALUE "OriginalFilename", "XBMC_PC.exe"
+            VALUE "ProductName", "XBMC PC"
+            VALUE "ProductVersion", "pre-2.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (New Zealand) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENZ)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_NZ
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU 
+BEGIN
+    POPUP "Skin"
+    BEGIN
+        POPUP "Resolution"
+        BEGIN
+            MENUITEM "PAL 4x3",                     ID_RESOLUTION_PAL4X3
+            MENUITEM "PAL 16x9",                    ID_RESOLUTION_PAL16X9
+            MENUITEM "NTSC 4x3",                    ID_RESOLUTION_NTSC4X3
+            MENUITEM "NTSC 16x9",                   ID_RESOLUTION_NTSC16X9
+            MENUITEM "720p",                        ID_RESOLUTION_720P
+            MENUITEM "1080i",                       ID_RESOLUTION_1080I
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Reload",                      ID_SKIN_RELOAD
+        MENUITEM "Activate Window...",          ID_SKIN_ACTIVATEWINDOW
+        MENUITEM SEPARATOR
+        POPUP "Resize Window"
+        BEGIN
+            MENUITEM "To pixel size",               ID_RESIZEWINDOW_TOPIXELSIZE
+
+            MENUITEM "To aspect ratio",             ID_RESIZEWINDOW_TOASPECTRATIO
+
+        END
+    END
+    POPUP "Settings"
+    BEGIN
+        MENUITEM "Mouse",                       ID_SETTINGS_MOUSE, CHECKED
+    END
+    POPUP "Execute"
+    BEGIN
+        MENUITEM "Execute Builtin...",          ID_EXECUTE_BUILTIN
+        MENUITEM SEPARATOR
+        MENUITEM "Quit",                        ID_EXECUTE_QUIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN_ICON           ICON                    "xbmc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ACTIVATE_WINDOW DIALOGEX 0, 0, 186, 47
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Enter Window Name or ID"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,72,26,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,26,50,14
+    EDITTEXT        IDC_EDIT1,7,7,172,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ACTIVATE_WINDOW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (New Zealand) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

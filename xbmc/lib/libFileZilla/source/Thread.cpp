@@ -31,7 +31,7 @@ CThread::CThread()
 {
 	m_hThread = 0;
 	m_dwThreadId = NULL;
-	m_hEventStarted = CreateEvent(0, FALSE, FALSE, NULL);
+	m_hEventStarted = CreateEvent(0, TRUE, TRUE, NULL);
 }
 
 CThread::~CThread()
@@ -41,14 +41,15 @@ CThread::~CThread()
 }
 
 BOOL CThread::Create(int nPriority /*=THREAD_PRIORITY_NORMAL*/, DWORD dwCreateFlags /*=0*/)
-{
-	m_hThread=CreateThread(0, 0, ThreadProc, this, dwCreateFlags, &m_dwThreadId);
+{  
+	m_hThread=CreateThread(0, 0x10000, ThreadProc, this, dwCreateFlags, &m_dwThreadId);
 	if (!m_hThread)
 	{
 		delete this;
 		return FALSE;
 	}
-	::SetThreadPriority(m_hThread, nPriority);
+  ResetEvent(m_hEventStarted);
+	::SetThreadPriority(m_hThread, nPriority);  
 	return TRUE;
 }
 
@@ -59,10 +60,12 @@ BOOL CThread::PostThreadMessage(UINT message, WPARAM wParam, LPARAM lParam)
 	return res;
 }
 
+#ifdef _XBOX
 DWORD CThread::SuspendThread()
 {
   return ::SuspendThread(m_hThread);
 }
+#endif
 
 DWORD CThread::ResumeThread()
 {

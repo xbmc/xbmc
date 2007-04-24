@@ -25,7 +25,8 @@
 #include "Permissions.h"
 #include "misc\MarkupSTL.h"
 #include "options.h"
-//#include "../../Settings.h"
+#include "../../GUISettings.h"
+#include "../../Util.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -192,7 +193,7 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		return PERMISSION_DENIED;
 	
 	WIN32_FIND_DATA FindFileData;
-//	WIN32_FIND_DATA NextFindFileData;
+	WIN32_FIND_DATA NextFindFileData;
 	HANDLE hFind;
 	TIME_ZONE_INFORMATION tzInfo;
 	int tzRes = GetTimeZoneInformation(&tzInfo);
@@ -214,11 +215,16 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		bIncludeLinks = TRUE;
 	else
 		bIncludeLinks = FALSE;
-	
-	for (hFind = FindFirstFile(directory.dir+"\\" + sFileSpec, &FindFileData);
-		hFind != INVALID_HANDLE_VALUE;
-		!FindNextFile(hFind, &FindFileData) ? hFind = (FindClose(hFind), INVALID_HANDLE_VALUE) : 0)
+	hFind = FindFirstFile(directory.dir+"\\" + sFileSpec, &NextFindFileData);
+	while (hFind != INVALID_HANDLE_VALUE)
 	{
+		FindFileData=NextFindFileData;
+		if (!FindNextFile(hFind, &NextFindFileData))
+		{
+			FindClose(hFind);
+			hFind = INVALID_HANDLE_VALUE;
+		}
+
 		if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
 			continue;
 		
@@ -357,10 +363,16 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 	}
 
 	// Now repeat the search with .lnk added
-	for (hFind = FindFirstFile(directory.dir+"\\" + sFileSpec + ".lnk", &FindFileData);
-		hFind != INVALID_HANDLE_VALUE;
-		!FindNextFile(hFind, &FindFileData) ? hFind = (FindClose(hFind), INVALID_HANDLE_VALUE) : 0)
+	hFind = FindFirstFile(directory.dir+"\\" + sFileSpec + ".lnk", &NextFindFileData);
+	while (hFind != INVALID_HANDLE_VALUE)
 	{
+		FindFileData=NextFindFileData;
+		if (!FindNextFile(hFind, &NextFindFileData))
+		{
+			FindClose(hFind);
+			hFind = INVALID_HANDLE_VALUE;
+		}
+			
 		if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
 			continue;
 	
@@ -463,7 +475,7 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 	return 0;
 }
 
-int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString currentdir, int op, CStdString &result)
+int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString currentdir, int op, CStdString &physical, CStdString &logical)
 {
 	//Reformat the directory
 	dirname.Replace("\\", "/");
@@ -492,19 +504,30 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		}
 		//Split the new path into pieces and add it to the piecelist
 		dirname.TrimLeft("/");
-		while((pos=dirname.Find("/"))!=-1)
+		while((pos=dirname.Find("/"))!=-1 || dirname.size())
 		{
-			piecelist.push_back(dirname.Left(pos));
+      if(pos<0) pos = dirname.size();
+      CStdString tmp = dirname.Left(pos);
+
+      if (g_guiSettings.GetBool("servers.ftpautofatx"))
+			{
+        if(tmp.length() > 42)
+          tmp = tmp.Left(42);
+        tmp.TrimRight(" \\");
+				if( tmp.length() && tmp[tmp.length()-1] != ':') // avoid fuckups with F: etc
+					CUtil::RemoveIllegalChars(tmp);
+      }
+
+      if (tmp!="")
+			  piecelist.push_back(tmp);
 			dirname=dirname.Mid(pos+1);
 		}
-		if (dirname!="")
-			piecelist.push_back(dirname);
-		dirname="";
-		int remove=0; //Number of pieces that will be removed due to dots
+
+    int remove=0; //Number of pieces that will be removed due to dots
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
-			while (tmp.Left(2)=="..")
+			if (tmp == "..")
 			{ //Oh, double dots found! Remove one piece
 				remove++;
 				tmp=tmp.Mid(1);
@@ -527,7 +550,8 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 	int pos = dirname.ReverseFind('/');
 	if (pos == -1)
 		return PERMISSION_NOTFOUND;
-	dir=dirname.Left(pos);
+  logical = dirname;
+  dir=dirname.Left(pos);
 	if (dir == "")
 		dir = "/";
 	dirname = dirname.Mid(pos+1);
@@ -542,6 +566,8 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 	if (index==m_UsersList.size())
 		return PERMISSION_DENIED; //No user found
 	
+  CStdString realdir, realdirname;
+  CStdString dir2(dir), dirname2(dirname);
 	//Get the physical path, only of dir to get the right permissions
 	t_directory directory;
 	BOOL truematch;
@@ -564,7 +590,8 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		}
 		else if (res) 
 			return res;
-		dir = directory.dir;
+		realdir = directory.dir;
+    realdirname = dirname;
 		if (!directory.bDirDelete && op&DOP_DELETE)
 			res |= PERMISSION_DENIED;
 		if (!directory.bDirCreate && op&DOP_CREATE)
@@ -574,19 +601,23 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		break;
 	} while (TRUE);
 
+  //realdir and realdirname should now be complete, (realdir contains the existing part, realdirname the other
+  realdirname.Replace("/", "\\");
+  physical = realdir + "\\" + realdirname;
+
+  //Restore what we actually want to create
+  dir = dir2;
+  dirname = dirname2;
+
 	//Check if dir+dirname is a valid path
-	int res2 = GetRealDirectory(dir+"//"+dirname, index, directory, truematch);
-	result = directory.dir;
+	int res2 = GetRealDirectory(dir+"/"+dirname, index, directory, truematch);
 	if (!res2 && op&DOP_CREATE)
 		res |= PERMISSION_DOESALREADYEXIST;
 	else if (!(res2 & PERMISSION_NOTFOUND))
 		return res | res2;
-	dirname.Replace("/","\\");
-	result = dir+"\\"+dirname;
 		
 	//dir+dirname could no be found
-	dir.TrimRight("\\");
-	DWORD nAttributes = GetFileAttributes(dir+"\\"+dirname);
+	DWORD nAttributes = GetFileAttributes(physical);
 	if (nAttributes==0xFFFFFFFF && !(op&DOP_CREATE))
 		res |= PERMISSION_NOTFOUND;
 	else if (!(nAttributes&FILE_ATTRIBUTE_DIRECTORY))
@@ -652,7 +683,7 @@ int CPermissions::GetFileName(LPCTSTR user, CStdString filename, CStdString curr
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
-			while (tmp.Left(2)=="..")
+			while (tmp == "..")
 			{ //Oh, double dots found! Remove one piece
 				remove++;
 				tmp=tmp.Mid(1);
@@ -795,12 +826,21 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 			CStdString piece=directory.Mid(pos+1);
 			
 			BOOL bRemoveThis=FALSE;
+#ifdef _XBOX
+			while (piece.Left(3)=="../")
+			{ //Oh, double dots found! Remove one piece
+				bRemoveThis=TRUE;
+				remove++;
+				piece=piece.Mid(2);
+			}
+#else
 			while (piece.Left(2)=="..")
 			{ //Oh, double dots found! Remove one piece
 				bRemoveThis=TRUE;
 				remove++;
 				piece=piece.Mid(1);
 			}
+#endif
 			if (!bRemoveThis && piece!=".") //Skips single dots
 			{
 				if (remove) 
@@ -822,13 +862,15 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 		CStdString path = PathPieces.front();
 		PathPieces.pop_front();
 
-    if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
-    {
-      // modified to be consistent with other xbox ftp behavior: drive 
-      // name is a single character without the ':' at the end
-      if (path.size() == 1)
-        path += ':';
-    }
+#ifdef _XBOX
+	    if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
+	    {
+			// modified to be consistent with other xbox ftp behavior: drive 
+			// name is a single character without the ':' at the end
+			if (path.size() == 1)
+				path += ':';
+	    }
+#endif
 
 		for (std::list<CStdString>::iterator iter = PathPieces.begin(); iter!=PathPieces.end(); iter++)
 		{
@@ -884,12 +926,21 @@ int CPermissions::GetRealDirectory(CStdString directory, int user, t_directory &
 			CStdString piece=directory.Mid(pos+1);
 
 			BOOL bRemoveThis=FALSE;
+#ifdef _XBOX
+			while (piece.Left(3)=="../")
+			{ //Oh, double dots found! Remove one piece
+				bRemoveThis=TRUE;
+				remove++;
+				piece=piece.Mid(2);
+			}
+#else
 			while (piece.Left(2)=="..")
 			{ //Oh, double dots found! Remove one piece
 				bRemoveThis=TRUE;
 				remove++;
 				piece=piece.Mid(1);
 			}
+#endif
 			if (!bRemoveThis && piece!=".") //Skips single dots
 			{
 				if (remove) 
@@ -1065,25 +1116,29 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 				//dir starts with a / - Does that include the driver letter?
 				if (dir.GetLength()<3 || !isalpha(dir[1]) || (dir[2] != ':'))
 				{
-          if (1 /*g_stSettings.m_bFTPSingleCharDrives*/ &&
-              (isalpha(dir[1]) && ((dir.GetLength() == 2) || (dir[2] == '/'))))
-          {
-            // modified to be consistent with other xbox ftp behavior: drive 
-            // name is a single character without the ':' at the end
-            // this is the drive letter specified without the ':' character 
-            // at the end - correct it
-            CString drive = dir.substr(0, 2);
-            drive.ToUpper();
-            if (dir.GetLength() > 3)
-              dir = drive + ":/" + dir.Mid(3);
-            else
-              dir = drive + ":/";
-          }
-          else
-          {
+#ifdef _XBOX
+					if (1 /*g_stSettings.m_bFTPSingleCharDrives*/ &&
+					  (isalpha(dir[1]) && ((dir.GetLength() == 2) || (dir[2] == '/'))))
+					{
+					// modified to be consistent with other xbox ftp behavior: drive 
+					// name is a single character without the ':' at the end
+					// this is the drive letter specified without the ':' character 
+					// at the end - correct it
+					CString drive = dir.substr(0, 2);
+					drive.ToUpper();
+					if (dir.GetLength() > 3)
+					  dir = drive + ":/" + dir.Mid(3);
+					else
+					  dir = drive + ":/";
+					}
+					else
+					{
+#endif
 				  //We were given an absolute path without a drive letter we need to put one in the dir list
 				  piecelist.push_back(currentdir.Mid(1, 2));
+#ifdef _XBOX				  
 					}
+#endif
 				}
 			}
 		}
@@ -1102,7 +1157,7 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
-			while (tmp.Left(2)=="..")
+			if (tmp == "..")
 			{ //Oh, double dots found! Remove one piece
 				remove++;
 				tmp=tmp.Mid(1);
@@ -1150,8 +1205,10 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 		directory.dir.TrimRight("/");
 		currentdir="/"+directory.dir;
 	}
-  if ((currentdir.size() == 3) && (currentdir[0]=='/') && (isalpha(currentdir[1])) && (currentdir[2]==':'))
-    currentdir.MakeUpper();
+#ifdef _XBOX
+	if ((currentdir.size() == 3) && (currentdir[0]=='/') && (isalpha(currentdir[1])) && (currentdir[2]==':'))
+		currentdir.MakeUpper();
+#endif
 	return 0;
 }
 

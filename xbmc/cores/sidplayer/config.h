@@ -3,7 +3,7 @@
 #define _config_h_
 
 /* Define the sidbuilder modules at appropriate */
-#define HAVE_RESID_BUILDER
+#define HAVE_RESID_BUILDER 
 //#define HAVE_HARDSID_BUILDER
 
 /* Define if your C++ compiler implements exception-handling.  */
@@ -16,7 +16,7 @@
 #define STDC_HEADERS 1
 
 /* Define if your processor stores words with the most significant
-   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */ 
 /* #define WORDS_BIGENDIAN */
 
 /* Define sound driver */

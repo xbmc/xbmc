@@ -3,10 +3,9 @@
 
 #pragma once
 
-#include <vector>
-#include "stdstring.h"
 #include "../lib/libiconv/iconv.h"
 #include "../lib/libfribidi/fribidi.h"
+#include <vector>
 
 class CCharsetConverter
 {
@@ -15,36 +14,58 @@ public:
 
   void reset();
 
-  void stringCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
+  void clear();
 
-  void subtitleCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
+  void utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
+
+  void subtitleCharsetToUTF16(const CStdStringA& strSource, CStdStringW& strDest);
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
 
+  void utf8ToStringCharset(CStdStringA& strSourceDest);
+
   void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
+
+  void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+
+  void stringCharsetToUtf8(CStdStringA& strSourceDest);
+
+  bool isValidUtf8(const CStdString& str);
+
+  bool isValidUtf8(const char *buf, unsigned int len);
 
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
-  vector<CStdString> getCharsetLabels();
+  void utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+
+  void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
+
+  std::vector<CStdString> getCharsetLabels();
   CStdString& getCharsetLabelByName(const CStdString& charsetName);
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   boolean isBidiCharset(const CStdString& charset);
 
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
 
 private:
-  vector<CStdString>		m_vecCharsetNames;
-  vector<CStdString>		m_vecCharsetLabels;
-  vector<CStdString>		m_vecBidiCharsetNames;
-  vector<FriBidiCharSet>	m_vecBidiCharsets;
+  std::vector<CStdString> m_vecCharsetNames;
+  std::vector<CStdString> m_vecCharsetLabels;
+  std::vector<CStdString> m_vecBidiCharsetNames;
+  std::vector<FriBidiCharSet> m_vecBidiCharsets;
 
-  iconv_t					m_iconvStringCharsetToFontCharset;
-  iconv_t					m_iconvSubtitleCharsetToFontCharset;
-  iconv_t					m_iconvUtf8ToStringCharset;
-  iconv_t					m_iconvStringCharsetToUtf8;
-  iconv_t					m_iconvUcs2CharsetToStringCharset;
+  iconv_t m_iconvStringCharsetToFontCharset;
+  iconv_t m_iconvSubtitleCharsetToUtf16;
+  iconv_t m_iconvUtf8ToStringCharset;
+  iconv_t m_iconvStringCharsetToUtf8;
+  iconv_t m_iconvUcs2CharsetToStringCharset;
+  iconv_t m_iconvUtf32ToStringCharset;
+  iconv_t m_iconvUtf16toUtf8;
+  iconv_t m_iconvUtf16BEtoUtf8;
+  iconv_t m_iconvUtf8toUtf16;
 
-  FriBidiCharSet			m_stringFribidiCharset;
+  FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;
 };

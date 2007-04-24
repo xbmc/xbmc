@@ -1,27 +1,34 @@
 #pragma once
-#include "guidialog.h"
+#include "GUIDialogBoxBase.h"
+#include "IProgressCallback.h"
 
 class CGUIDialogProgress :
-	public CGUIDialog
+      public CGUIDialogBoxBase, public IProgressCallback
 {
 public:
-	CGUIDialogProgress(void);
-	virtual ~CGUIDialogProgress(void);
+  CGUIDialogProgress(void);
+  virtual ~CGUIDialogProgress(void);
 
-	void						StartModal(DWORD dwParentId);
-  virtual bool    OnMessage(CGUIMessage& message);
-	void						Progress();
-	void						ProgressKeys();
-	void					  SetLine(int iLine, const wstring& strLine);
-	void					  SetLine(int iLine, const string& strLine);
-	void						SetLine(int iLine, int iString);
-	void						SetHeading(const wstring& strLine);
-	void						SetHeading(const string& strLine);
-	void						SetHeading(int iString);
-	virtual void		Close();
-	bool						IsCanceled() const { return m_bCanceled; }
-	void						SetPercentage(int iPercentage);
-	void						ShowProgressBar(bool bOnOff);
+  void StartModal();
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
+  void Progress();
+  void ProgressKeys();
+  bool IsCanceled() const { return m_bCanceled; }
+  void SetPercentage(int iPercentage);
+  void ShowProgressBar(bool bOnOff);
+  void SetHeading(const string& strLine);
+  void SetHeading(int iString);             // for convenience to lookup in strings.xml
+
+  // Implements IProgressCallback
+  virtual void SetProgressMax(int iMax);
+  virtual void SetProgressAdvance(int nSteps=1);
+  virtual bool Abort();
+
 protected:
-	bool						m_bCanceled;
+  bool m_bCanceled;
+  string m_strHeading;
+
+  int  m_iCurrent;
+  int  m_iMax;
 };

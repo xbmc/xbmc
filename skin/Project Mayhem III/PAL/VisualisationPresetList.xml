@@ -1,0 +1,55 @@
+﻿<window id="122">
+	<defaultcontrol>2</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>232</posx>
+		<posy>140</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-25</posx>
+			<posy>-11</posy>
+			<width>446</width>
+			<height>405</height>
+			<texture>dialog-panel2.png</texture>
+			<colordiffuse>AAFFFFFF</colordiffuse>
+		</control>
+		<control type="label" id="3">
+			<description>Presets Label</description>
+			<posx>0</posx>
+			<posy>2</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>special13</font>
+			<textcolor>DDced8da</textcolor>
+		</control>
+		<control type="label" id="4">
+			<description>No Presets Label</description>
+			<posx>0</posx>
+			<posy>170</posy>
+			<width>408</width>
+			<align>center</align>
+			<label>13389</label>
+			<font>font12</font>
+		</control>
+		<control type="listcontrol" id="2">
+			<description>Preset List</description>
+			<posx>-1</posx>
+			<posy>40</posy>
+			<width>407</width>
+			<height>340</height>
+			<spinposx>371</spinposx>
+			<spinposy>-30</spinposy>
+			<selectedcolor>FFD2FF00</selectedcolor>
+			<font>font12</font>
+			<textoffsetx>-15</textoffsetx>
+			<textureheight>29</textureheight>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+		</control>
+	</controls>
+</window>

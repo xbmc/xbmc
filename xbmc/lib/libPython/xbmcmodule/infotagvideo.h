@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "..\..\..\utils\IMDB.h"
 
 #pragma once
@@ -9,13 +9,14 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		CIMDBMovie infoTag;
-	} InfoTagVideo;
+    CVideoInfoTag infoTag;
+  } InfoTagVideo;
 
-	extern PyTypeObject InfoTagVideo_Type;
-	extern InfoTagVideo* InfoTagVideo_FromCIMDBMovie(const CIMDBMovie& infoTag);
+  extern PyTypeObject InfoTagVideo_Type;
+  extern InfoTagVideo* InfoTagVideo_FromCVideoInfoTag(const CVideoInfoTag& infoTag);
+  void initInfoTagVideo_Type();
 }
 
 #ifdef __cplusplus

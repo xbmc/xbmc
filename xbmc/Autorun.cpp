@@ -1,295 +1,419 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "autorun.h"
 #include "application.h"
 #include "DetectDVDType.h"
-#include "sectionloader.h"
 #include "util.h"
-#include "settings.h"
+#include "guipassword.h"
 #include "playlistplayer.h"
-#include "texturemanager.h"
-#include "GuiUserMessages.h"
-#include "guiwindowmanager.h"
-#include "stdstring.h"
+#include "xbox/xbeheader.h"
+#include "FileSystem/StackDirectory.h"
+#include "utils/kaiclient.h"
+#include "programdatabase.h"
+#include "utils/trainer.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
 
 CAutorun::CAutorun()
 {
-	m_bEnable=true;
+  m_bEnable = true;
 }
 
 CAutorun::~CAutorun()
-{
+{}
 
+void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
+{
+  if ( (!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog()) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN))
+    return ;
+
+  CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+
+  if ( pInfo == NULL )
+    return ;
+
+  g_application.ResetScreenSaverWindow();  // turn off the screensaver if it's active
+
+  if ( pInfo->IsAudio( 1 ) )
+  {
+    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") )
+      return;
+
+    if (!g_passwordManager.IsMasterLockUnlocked(false))
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
+        return ;
+
+    RunCdda();
+  }
+  else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1) || (pInfo->IsISOUDF(1) && g_advancedSettings.m_detectAsUdf))
+  {
+    RunXboxCd(bypassSettings);
+  }
+  else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
+  {
+    RunISOMedia(bypassSettings);
+  }
+  else
+  {
+    RunXboxCd(bypassSettings);
+  }
 }
 
-void CAutorun::ExecuteAutorun()
+void CAutorun::ExecuteXBE(const CStdString &xbeFile)
 {
-	if ( g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted())
-		return;
+  int iRegion;
+  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+  {
+    CXBE xbe;
+    iRegion = xbe.ExtractGameRegion(xbeFile);
+    if (iRegion < 1 || iRegion > 7)
+      iRegion = 0;
+    iRegion = xbe.FilterRegion(iRegion);
+  }
+  else
+    iRegion = 0;
 
-	CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+  CProgramDatabase database;
+  database.Open();
+  DWORD dwTitleId = CUtil::GetXbeID(xbeFile);
+  CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
+  if (strTrainer != "")
+  {
+      bool bContinue=false;
+      if (CKaiClient::GetInstance()->IsEngineConnected())
+      {
+        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+        pDialog->SetHeading(714);
+        pDialog->SetLine(0,"Use trainer or KAI?");
+        pDialog->SetLine(1, "Yes for trainer");
+        pDialog->SetLine(2, "No for KAI");
+        pDialog->DoModal();
+        if (pDialog->IsConfirmed())
+        {
+          while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
+            CKaiClient::GetInstance()->ExitVector();
+        }
+        else
+          bContinue = true;
+      }
+      if (!bContinue)
+      {
+        CTrainer trainer;
+        if (trainer.Load(strTrainer))
+        {
+          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+          CUtil::InstallTrainer(trainer);
+        }
+      }
+  }
 
-	if ( pInfo == NULL )
-		return;
-
-	g_application.ResetScreenSaverWindow();		// turn off the screensaver if it's active
-
-	if ( g_stSettings.m_bAutorunCdda && pInfo->IsAudio( 1 ) )
-	{
-		RunCdda();
-	}
-	else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
-	{
-		RunXboxCd();
-	}
-	else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)) 
-	{
-		RunISOMedia();
-	}
-	else
-	{
-		RunXboxCd();
-	}
+  database.Close();
+  CUtil::RunXBE(xbeFile.c_str(), NULL,F_VIDEO(iRegion));
 }
 
-void CAutorun::RunXboxCd()
-{	
-	if (g_stSettings.m_bAutorunXbox)
-	{
-		if ( CUtil::FileExists("D:\\default.xbe") ) 
-		{
-			g_application.Stop();
+void CAutorun::RunXboxCd(bool bypassSettings)
+{
+  if ( CFile::Exists("D:\\default.xbe") )
+  {
+    if (!g_guiSettings.GetBool("autorun.xbox") && !bypassSettings)
+      return;
 
-			CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
-			return;
-		}
-	}
-	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
-		return;
+    if (!g_passwordManager.IsMasterLockUnlocked(false))
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
+        return;
 
-	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-	int nAddedToPlaylist = 0;
-	CFactoryDirectory factory;
-	auto_ptr<IDirectory> pDir ( factory.Create( "D:\\" ) );
-	bool bPlaying=RunDisc(pDir.get(), "D:\\",nAddedToPlaylist,true);
-	if ( !bPlaying && nAddedToPlaylist > 0 )
-	{
-		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-		m_gWindowManager.SendMessage( msg );
-		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-		//	Start playing the items we inserted
-		g_playlistPlayer.Play( nSize );
-	}
+    ExecuteXBE("D:\\default.xbe");
+    return;
+  }
+
+  if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
+    return ;
+
+  int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+  int nAddedToPlaylist = 0;
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
+  bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings);
+  if ( !bPlaying && nAddedToPlaylist > 0 )
+  {
+    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+    m_gWindowManager.SendMessage( msg );
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    // Start playing the items we inserted
+    g_playlistPlayer.Play( nSize );
+  }
 }
 
 void CAutorun::RunCdda()
 {
-	VECFILEITEMS	vecItems;
-	CFileItemList itemlist(vecItems);
+  CFileItemList vecItems;
 
-	if (g_stSettings.m_szExternalCDDAPlayer[0])
-	{
-		CUtil::RunXBE(g_stSettings.m_szExternalCDDAPlayer);
-	}
-	else
-	{
-		CFactoryDirectory factory;
-		auto_ptr<IDirectory> pDir ( factory.Create( "cdda://local/" ) );
-		if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
-			return;
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
+  if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
+    return ;
 
-		if ( vecItems.size() <= 0 )
-			return;
+  if ( vecItems.Size() <= 0 )
+    return ;
 
-		int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-
-		for (int i=0; i < (int)vecItems.size(); i++)
-		{
-			CFileItem* pItem=vecItems[i];
-			CPlayList::CPlayListItem playlistItem;
-			playlistItem.SetFileName(pItem->m_strPath);
-			playlistItem.SetDescription(pItem->GetLabel());
-			playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-			g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
-		}
-
-		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-		m_gWindowManager.SendMessage( msg );
-
-		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-		//	Start playing the items we inserted
-		g_playlistPlayer.Play(nSize);
-	}
+  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+  g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+  g_playlistPlayer.Play();
 }
 
-void CAutorun::RunISOMedia()
+void CAutorun::RunISOMedia(bool bypassSettings)
 {
-	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
-		return;
-
-	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-	int nAddedToPlaylist = 0;
-	CFactoryDirectory factory;
-	auto_ptr<IDirectory> pDir ( factory.Create( "iso9660://" ));
-	bool bPlaying=RunDisc(pDir.get(), "iso9660://",nAddedToPlaylist,true);
-	if ( !bPlaying && nAddedToPlaylist > 0 )
-	{
-		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-		m_gWindowManager.SendMessage( msg );
-		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-		//	Start playing the items we inserted
-		g_playlistPlayer.Play(nSize);
-	}
-}
-bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
-{
-	bool bPlaying(false);
-	VECFILEITEMS vecItems;
-	CFileItemList itemlist(vecItems);
-	char szSlash='\\';
-	if (strDrive.Find("iso9660") != -1) szSlash='/';
-
-	if ( !pDir->GetDirectory( strDrive, vecItems ) )
-	{
-		return false;
-	}
-
-  // check root...
-  for (int i=0; i < (int)vecItems.size(); i++)
+  int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+  int nAddedToPlaylist = 0;
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
+  bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
+  if ( !bPlaying && nAddedToPlaylist > 0 )
   {
-		CFileItem* pItem=vecItems[i];
-		if (pItem->m_bIsFolder)
-		{
-			if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
-			{
-				if (bRoot&& pItem->m_strPath.Find( "VIDEO_TS" ) != -1 ) 
-				{
-					if ( g_stSettings.m_bAutorunDVD ) 
-					{
-            CUtil::PlayDVD();
-						bPlaying=true;
-						break;
-					}
-				}
-				else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
-				{
-					if ( g_stSettings.m_bAutorunVCD ) 
-					{
-						CFileItem item = *pItem;
-						item.m_strPath.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
-						g_application.PlayFile( item );
-						bPlaying=true;
-						break;
-					}
-				}
-				else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
-				{
-					if ( g_stSettings.m_bAutorunVCD ) 
-					{
-						CFileItem item = *pItem;
-						item.m_strPath.Format("%s%cAVSEQ01.MPG",pItem->m_strPath.c_str(),szSlash);
-						g_application.PlayFile( item );
-						bPlaying=true;
-						break;
-					}
-				}
-        else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
-				{
-          if (g_stSettings.m_bAutorunPictures)
-          {
-            bPlaying=true;
-				    m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
-            CStdString* strUrl = new CStdString( pItem->m_strPath.c_str() );
-				    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
-				    m_gWindowManager.SendMessage( msg );
-				    delete strUrl;
-				    break;
-          }
-        }
-			}
-		}
-		else
-		{
-			if ( CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
-			{
-				bPlaying=true;
-				g_application.PlayFile( *pItem );
-				break;
-			}
+    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+    m_gWindowManager.SendMessage( msg );
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    // Start playing the items we inserted
+    g_playlistPlayer.Play(nSize);
+  }
+}
+bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */)
+{
+  bool bPlaying(false);
+  CFileItemList vecItems;
+  CFileItemList itemlist(vecItems);
+  char szSlash = '\\';
+  if (strDrive.Find("iso9660") != -1) szSlash = '/';
 
-			if ( CUtil::IsAudio( pItem->m_strPath ) && g_stSettings.m_bAutorunMusic)
-			{
-				nAddedToPlaylist++;
-				CPlayList::CPlayListItem playlistItem;
-				playlistItem.SetFileName(pItem->m_strPath);
-				playlistItem.SetDescription(pItem->GetLabel());
-				playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-				g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
-			}
-		
-			if ( CUtil::IsPicture( pItem->m_strPath ) && g_stSettings.m_bAutorunPictures)
-			{
-				bPlaying=true;
-				m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
-				CStdString* strUrl = new CStdString( strDrive );
-				CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
-				m_gWindowManager.SendMessage( msg );
-				delete strUrl;
-				break;
-			}
-		}
+  if ( !pDir->GetDirectory( strDrive, vecItems ) )
+  {
+    return false;
   }
 
-  // check subdirs
-  if (!bPlaying)
+  bool bAllowVideo = true;
+  bool bAllowPictures = true;
+  bool bAllowMusic = true;
+  if (!g_passwordManager.IsMasterLockUnlocked(false))
   {
-    for (int i=0; i < (int)vecItems.size(); i++)
+    bAllowVideo = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked();
+    bAllowPictures = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked();
+    bAllowMusic = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked();
+  }
+
+  if( bRoot )
+  {
+
+    // check root folders first, for normal structured dvd's
+    for (int i = 0; i < vecItems.Size(); i++)
     {
-		  CFileItem* pItem=vecItems[i];
-		  if (pItem->m_bIsFolder)
-		  {
-			  if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
-			  {
-          if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist,false)) 
-					{
-						bPlaying=true;
-						break;
-					}
+      CFileItem* pItem = vecItems[i];
+
+      if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
+      {
+        if (pItem->m_strPath.Find( "VIDEO_TS" ) != -1 && bAllowVideo
+        && (bypassSettings || g_guiSettings.GetBool("autorun.dvd")))
+        {
+          CUtil::PlayDVD();
+          bPlaying = true;
+          return true;
+        }
+        else if (pItem->m_strPath.Find("MPEGAV") != -1 && bAllowVideo
+             && (bypassSettings || g_guiSettings.GetBool("autorun.vcd")))
+        {
+          CFileItemList items;
+          CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
+          if (items.Size())
+          {
+            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Play(0);
+            bPlaying = true;
+            return true;
+          }
+        }
+        else if (pItem->m_strPath.Find("MPEG2") != -1 && bAllowVideo
+              && (bypassSettings || g_guiSettings.GetBool("autorun.vcd")))
+        {
+          CFileItemList items;
+          CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
+          if (items.Size())
+          {
+            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Play(0);
+            bPlaying = true;
+            return true;
+          }
+        }
+        else if (pItem->m_strPath.Find("PICTURES") != -1 && bAllowPictures
+              && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")))
+        {
+          bPlaying = true;
+          CStdString strExec;
+          strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
+          CUtil::ExecBuiltIn(strExec);
+          return true;
         }
       }
     }
   }
-	return bPlaying;
+
+  // check video first
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")))
+  {
+    // stack video files
+    CFileItemList tempItems;
+    tempItems.Append(vecItems);
+    tempItems.Stack();
+    itemlist.Clear();
+
+    for (int i = 0; i < tempItems.Size(); i++)
+    {
+      CFileItem *pItem = tempItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsVideo())
+      {
+        bPlaying = true;
+        if (pItem->IsStack())
+        {
+          // TODO: remove this once the app/player is capable of handling stacks immediately
+          CStackDirectory dir;
+          CFileItemList items;
+          dir.GetDirectory(pItem->m_strPath, items);
+          for (int i = 0; i < items.Size(); i++)
+          {
+            itemlist.Add(new CFileItem(*items[i]));
+          }
+        }
+        else
+          itemlist.Add(new CFileItem(*pItem));
+      }
+    }
+    if (itemlist.Size())
+    {
+      if (!bAllowVideo)
+      {
+        if (!bypassSettings)
+          return false;
+
+        if (m_gWindowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
+      }
+      g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+      g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+      g_playlistPlayer.Play(0);
+    }
+  }
+  // then music
+  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music")) && bAllowMusic)
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsAudio())
+      {
+        nAddedToPlaylist++;
+        g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
+      }
+    }
+  }
+  // and finally pictures
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")) && bAllowPictures)
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsPicture())
+      {
+        bPlaying = true;
+        CStdString strExec;
+        strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
+        CUtil::ExecBuiltIn(strExec);
+        break;
+      }
+    }
+  }
+
+  // check subdirs if we are not playing yet
+  if (!bPlaying)
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem* pItem = vecItems[i];
+      if (pItem->m_bIsFolder)
+      {
+        if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
+        {
+          if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist, false, bypassSettings))
+          {
+            bPlaying = true;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  return bPlaying;
 }
 
 void CAutorun::HandleAutorun()
 {
-	if (!m_bEnable)
-	{
-		CDetectDVDMedia::m_evAutorun.Reset();
-		return;
-	}
+  if (!m_bEnable)
+  {
+    CDetectDVDMedia::m_evAutorun.Reset();
+    return ;
+  }
 
-	if ( ::WaitForSingleObject( CDetectDVDMedia::m_evAutorun.GetHandle(), 10 ) == WAIT_OBJECT_0 ) 
-	{
-		ExecuteAutorun();
-	}
+  if ( ::WaitForSingleObject( CDetectDVDMedia::m_evAutorun.GetHandle(), 10 ) == WAIT_OBJECT_0 )
+  {
+    ExecuteAutorun();
+  }
 }
 
 void CAutorun::Enable()
 {
-	m_bEnable=true;
+  m_bEnable = true;
 }
 
 void CAutorun::Disable()
 {
-	m_bEnable=false;
+  m_bEnable = false;
 }
 
-bool CAutorun::IsEnabled()
+bool CAutorun::IsEnabled() const
 {
-	return m_bEnable;
+  return m_bEnable;
+}
+
+bool CAutorun::PlayDisc()
+{
+  ExecuteAutorun(true,true);
+  return true;
 }

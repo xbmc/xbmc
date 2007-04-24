@@ -1,8 +1,6 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include <string>
 #pragma once
-
-using namespace std;
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,12 +8,15 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
+  typedef struct {
     PyObject_HEAD
-		std::string strDefault;
-	} Keyboard;
+    std::string strDefault;
+    std::string strHeading;
+    bool bHidden;
+  } Keyboard;
 
-	extern PyTypeObject Keyboard_Type;
+  extern PyTypeObject Keyboard_Type;
+  void initKeyboard_Type();
 }
 
 #ifdef __cplusplus

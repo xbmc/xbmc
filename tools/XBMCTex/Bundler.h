@@ -2,7 +2,7 @@
 
 class CBundler
 {
-	XPR_HEADER XPRHeader;
+	XPR_FILE_HEADER XPRHeader;
 	struct FileHeader_t
 	{
 		// 128 bytes total
@@ -20,7 +20,7 @@ public:
 	~CBundler() {}
 
 	bool StartBundle();
-	int WriteBundle(const char* Filename);
+	int WriteBundle(const char* Filename, int NoProtect);
 
 	bool AddFile(const char* Filename, int nBuffers, const void** Buffers, DWORD* Sizes);
 };

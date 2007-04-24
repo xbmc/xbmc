@@ -1,20 +1,24 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
+#include "GUIWindow.h"
+
 class CGUIWindowSettingsProfile :
-  public CGUIWindow
+      public CGUIWindow
 {
 public:
   CGUIWindowSettingsProfile(void);
   virtual ~CGUIWindowSettingsProfile(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnAction(const CAction &action);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
 
 protected:
-	int   m_iLastControl;
+  virtual void OnInitWindow();
+  vector<CFileItem*> m_vecListItems;
 
-  bool  GetKeyboard(CStdString& strInput);
-  int   GetSelectedItem();
-  void  LoadList();
-  void  SetLastLoaded();
+  void OnPopupMenu(int iItem);
+  void DoRename(int iItem);
+  void DoOverwrite(int iItem);
+  int GetSelectedItem();
+  void LoadList();
+  void SetLastLoaded();
+  void ClearListItems();
 };

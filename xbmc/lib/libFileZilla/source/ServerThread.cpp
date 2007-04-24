@@ -69,7 +69,6 @@ BOOL CServerThread::InitInstance()
 	
 	m_timerid=SetTimer(0, 0, 1000, 0);
 	m_nRateTimer=SetTimer(0, 0, 100, 0);
-	m_nRateTimer=SetTimer(0, 0, 100, 0);
 	m_bQuit=FALSE;
 	m_nRecvCount=0;
 	m_nSendCount=0;
@@ -92,9 +91,6 @@ BOOL CServerThread::InitInstance()
 	else
 		m_pExternalIpCheck = new CExternalIpCheck(this);
 	m_threadsync.Unlock();
-
-// this causes ftp 2 hangup
-//	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 
 	return TRUE;
 }
@@ -208,6 +204,10 @@ void CServerThread::AddNewSocket(SOCKET sockethandle)
 
 	t_connectiondata *conndata = new t_connectiondata;
 	t_connop *op = new t_connop;
+
+  memset(conndata, 0, sizeof(t_connectiondata));
+  memset(op, 0, sizeof(t_connop));
+
 	op->data = conndata;
 	op->op = USERCONTROL_CONNOP_ADD;
 	conndata->userid = userid;
@@ -248,7 +248,8 @@ void CServerThread::AddNewSocket(SOCKET sockethandle)
 		CStdString line;
 		while (pos!=-1)
 		{
-			ASSERT(pos);
+		  // why is there an assertion here?
+			// ASSERT(pos);
 			m_ParsedWelcomeMessage.push_back("220-" +  msg.Mid(oldpos, pos-oldpos) );
 			oldpos=pos+1;
 			pos=msg.Find("\n", oldpos);
@@ -429,6 +430,7 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 					else
 					{
 						fullUsageList.push_back(pThread);
+						pThread->m_threadsync.Unlock();
 						continue;
 					}
 					pThread->m_threadsync.Unlock();
@@ -454,6 +456,7 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 						else
 						{
 							fullUsageList2.push_back(pThread);
+							pThread->m_threadsync.Unlock();
 							continue;
 						}
 						pThread->m_threadsync.Unlock();
@@ -514,6 +517,7 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 					else
 					{
 						fullUsageList.push_back(pThread);
+						//pThread->m_threadsync.Unlock();
 						continue;
 					}
 					pThread->m_threadsync.Unlock();
@@ -539,6 +543,7 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 						else
 						{
 							fullUsageList2.push_back(pThread);
+							//pThread->m_threadsync.Unlock();
 							continue;
 						}
 						pThread->m_threadsync.Unlock();
@@ -894,10 +899,8 @@ void CServerThread::ExternalIPFailed()
 	{
 		EGCS;
 		CServerThread *pThread = m_sInstanceList.front();
-		pThread->m_threadsync.Lock();
 		if (pThread != this && pThread->m_pExternalIpCheck)
 			pThread->m_pExternalIpCheck->TriggerUpdate();
-		pThread->m_threadsync.Unlock();
 		LGCS;
 	}
 	m_threadsync.Unlock();

@@ -56,11 +56,11 @@ public:
 	int m_userid;
 	BOOL Send(LPCTSTR str);
 	void SendStatus(LPCTSTR status,int type);
-  BOOL SendCurDir(const CStdString command,CStdString curDir);
-  BOOL SendDir(const CStdString command,CStdString curDir,const CStdString prompt);
 	BOOL GetCommand(CStdString &command,CStdString &args);
 #if defined(_XBOX)
-  BOOL GetCommandFromString(const CStdString& source, CStdString &command,CStdString &args);
+	BOOL SendCurDir(const CStdString command,CStdString curDir);
+	BOOL SendDir(const CStdString command,CStdString curDir,const CStdString prompt);
+	BOOL GetCommandFromString(const CStdString& source, CStdString &command,CStdString &args);
 #endif
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnClose(int nErrorCode);

@@ -3,17 +3,16 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "directory.h"
+#include "idirectory.h"
 
-using namespace DIRECTORY;
 namespace DIRECTORY
 {
-  class CRTVDirectory :
-    public IDirectory
-  {
-  public:
-    CRTVDirectory(void);
-    virtual ~CRTVDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
-  };
+class CRTVDirectory :
+      public IDirectory
+{
+public:
+  CRTVDirectory(void);
+  virtual ~CRTVDirectory(void);
+  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+};
 }

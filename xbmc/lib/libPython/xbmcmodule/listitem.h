@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "GUIListItem.h"
 #pragma once
 
@@ -11,14 +11,16 @@ extern "C" {
 
 namespace PYXBMC
 {
-	extern PyTypeObject ListItem_Type;
+  extern PyTypeObject ListItem_Type;
 
-	typedef struct {
-		PyObject_HEAD
-		CGUIListItem* item;
-	} ListItem;
+  typedef struct {
+    PyObject_HEAD
+    CGUIListItem* item;
+  } ListItem;
 
-	extern ListItem* ListItem_FromString(wstring strLabel);
+  extern ListItem* ListItem_FromString(string strLabel);
+
+  void initListItem_Type();
 }
 
 #ifdef __cplusplus

@@ -1,77 +1,55 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "musicinfotagloaderflac.h"
-#include "stdstring.h"
-#include "sectionloader.h"
-#include "utils/log.h"
+#include "FlacTag.h"
+
 
 using namespace MUSIC_INFO;
-using namespace XFILE;
 
 CMusicInfoTagLoaderFlac::CMusicInfoTagLoaderFlac(void)
-{
-}
+{}
 
 CMusicInfoTagLoaderFlac::~CMusicInfoTagLoaderFlac()
-{
-}
+{}
 
 bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag& tag)
 {
-	try
-	{
-		// retrieve the Flac Tag info from strFileName
-		// and put it in tag
-		bool bResult= false;
-		tag.SetURL(strFileName);
-		CFile file;
-		if ( file.Open( strFileName.c_str() ) )  {
-			CFlacTag myTag;
-			myTag.ReadTag( &file );
+  try
+  {
+    // retrieve the Flac Tag info from strFileName
+    // and put it in tag
+    CFlacTag myTag;
+    if (myTag.Read(strFileName))
+    {
+      myTag.GetMusicInfoTag(tag);
+    }
+    return tag.Loaded();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Tag loader flac: exception in file %s", strFileName.c_str());
+  }
 
-			SYSTEMTIME dateTime;
-			CStdString strYear=myTag.GetYear();
-			CStdString strTitle=myTag.GetTitle();
-			CStdString strArtist=myTag.GetArtist();
-			CStdString strAlbum=myTag.GetAlbum();
-			CStdString strGenre=myTag.GetGenre();
-
-			tag.SetTrackNumber(myTag.GetTrackNum());
-			tag.SetDuration(myTag.GetDuration()/75);	// GetDuration() returns duration in frames
-
-			if (!strGenre.IsEmpty())
-			{
-				tag.SetGenre(strGenre);
-			}
-			if (!strTitle.IsEmpty())
-			{
-				bResult = true;
-				tag.SetTitle(strTitle);
-				tag.SetLoaded(true);
-			}
-			if (!strArtist.IsEmpty())
-			{
-				tag.SetArtist(strArtist);
-			}
-			if (!strAlbum.IsEmpty())
-			{
-				tag.SetAlbum(strAlbum);
-			}
-			if (!strYear.IsEmpty())
-			{
-				dateTime.wYear=atoi(strYear);
-				tag.SetReleaseDate(dateTime);
-			}
-
-			file.Close();
-		}
-		return bResult;
-	}
-	catch(...)
-	{
-		CLog::Log(LOGERROR, "Tag loader flac: exception in file %s", strFileName.c_str());
-	}
-
-	tag.SetLoaded(false);
-	return false;
+  tag.SetLoaded(false);
+  return false;
 }

@@ -1,376 +1,260 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "shoutcastdirectory.h"
 #include "directorycache.h"
-#include "TinyXML.h"
-#include "file.h"
-#include "../lib/libid3/zlib.h"
-#include "../url.h"
 #include "../util.h"
-#include "../utils/http.h"
-#include "../utils/log.h"
-#include "GUIWindowManager.h"
-#include "../GUIDialogProgress.h"
-#include "../GUIDialogOK.h"
-#include "../PlayListFactory.h"
+#include "FileCurl.h"
+#include "../utils/HttpHeader.h"
 
-//	Quoting shoutcast on how ofter users could update their streams list:
-//	"You can either choose to cache this data on your own server, 
-//	or limit the number of requests from your clients to us. 
-//	We ask that a client not make a request for the XML list more 
-//	frequently than once per 5 minutes. If we see excessive requests 
-//	coming it, we disable per service or per IP."
-//
-//	So this cache will be refreshed every 30 min for now.
-#define CACHE_VALID_TIME 30.0f*60.0f
+using namespace XFILE;
+using namespace DIRECTORY;
 
 CShoutcastDirectory::CShoutcastDirectory(void)
 {
-
 }
 
 CShoutcastDirectory::~CShoutcastDirectory(void)
 {
-
 }
 
-bool CShoutcastDirectory::IsCacheValid()
+bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, CURL &url)
 {
-  __stat64 stat;
-  CFile file;
-  if (file.Stat("Z:\\cachedPlaylists.txt", &stat)==0)
+  TiXmlElement *element = root->FirstChildElement("genre");
+  
+  if(element == NULL)
   {
-    __time64_t time;
-    _time64(&time);
-    if (difftime((time_t)time, (time_t)stat.st_mtime)<CACHE_VALID_TIME)
-      return true;
+    CLog::Log(LOGWARNING, __FUNCTION__" - No genres found");
+    return false;
   }
-  return false;
-}
+    
+  items.m_idepth = 1; /* genre list */
 
-void CShoutcastDirectory::CacheItems(VECFILEITEMS &items)
-{
-  CFile file;
-  if (file.OpenForWrite("Z:\\cachedPlaylists.txt"))
+  CStdString genre, path;
+  while(element != NULL)
   {
-    for (int i=1; i<(int)items.size(); ++i)
-    {
-      CFileItem* pItem=items[i];
+    genre = element->Attribute("name");
+    path = genre;
 
-      CStdString strLabel1=pItem->GetLabel()+"\n";
-      file.Write(strLabel1.c_str(), strLabel1.size());
+    /* genre must be urlencoded */
+    CUtil::URLEncode(path);
 
-      CStdString strLabel2=pItem->GetLabel2()+"\n";
-      file.Write(strLabel2.c_str(), strLabel2.size());
+    url.SetOptions("?genre=" + path);
+    url.GetURL(path);
 
-      CStdString strPath=pItem->m_strPath+"\n";
-      file.Write(strPath.c_str(), strPath.size());
-    }
 
-    file.Close();
+    CFileItem* pItem = new CFileItem;
+    pItem->m_bIsFolder = true;
+    pItem->SetLabel(genre);
+    pItem->GetMusicInfoTag()->SetGenre(genre);
+    pItem->m_strPath = path;  
+    
+    items.Add(pItem);
+
+    element = element->NextSiblingElement("genre");
   }
+
+  return true;
 }
 
-void CShoutcastDirectory::LoadCachedItems(VECFILEITEMS &items)
+bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items, CURL &url)
 {
-  CFile file;
-  if (file.Open("Z:\\cachedPlaylists.txt", false))
+  TiXmlElement *element = NULL;
+  CStdString path;
+
+  items.m_idepth = 2; /* station list */
+
+  element = root->FirstChildElement("tunein");
+  if(element == NULL) 
   {
-    for (int i=0; i<500; ++i)
-    {
-      CFileItem* pItem=new CFileItem;
-      
-      CStdString strLabel1;
-      file.ReadString(strLabel1.GetBuffer(1024), 1024);
-      strLabel1.ReleaseBuffer();
-      strLabel1.TrimRight("\n");
-      pItem->SetLabel(strLabel1);
-
-      CStdString strLabel2;
-      file.ReadString(strLabel2.GetBuffer(1024), 1024);
-      strLabel2.ReleaseBuffer();
-      strLabel2.TrimRight("\n");
-      pItem->SetLabel2(strLabel2);
-
-      CStdString strPath;
-      file.ReadString(strPath.GetBuffer(1024), 1024);
-      strPath.ReleaseBuffer();
-      strPath.TrimRight("\n");
-      pItem->m_strPath=strPath;
-
-      pItem->m_bIsFolder=true;
-
-      items.push_back(pItem);
-    }
-
-    file.Close();
+    CLog::Log(LOGWARNING, __FUNCTION__" - No tunein base found");
+    return false;
   }
+  
+  path = element->Attribute("base");
+  path.TrimLeft("/");
+
+  url.SetFileName(path);
+
+  element = root->FirstChildElement("station");
+
+  if(element == NULL)
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - No stations found");
+    return false;
+  }
+  int stations = 0;
+  while(element != NULL && stations < 1000)
+  {
+    CStdString name = element->Attribute("name");
+    CStdString id = element->Attribute("id");
+    CStdString bitrate = element->Attribute("br");
+    CStdString genre = element->Attribute("genre");
+    CStdString listeners = element->Attribute("lc");
+    CStdString content = element->Attribute("mt");
+
+    CStdString label = name;
+
+    url.SetOptions("?id=" + id);
+    url.GetURL(path);
+
+    CFileItem* pItem = new CFileItem;
+    pItem->m_bIsFolder = false;
+    
+    /* we highjack the music tag for this stuff, they will be used by */
+    /* viewstates to sort and display proper information */
+    pItem->GetMusicInfoTag()->SetArtist(listeners);
+    pItem->GetMusicInfoTag()->SetAlbum(bitrate);
+    pItem->GetMusicInfoTag()->SetGenre(genre);
+
+    /* this is what will be sorted upon */
+    pItem->m_fRating = (float)atoi(listeners.c_str());
+    pItem->m_dwSize = atoi(bitrate.c_str());
+
+
+    pItem->SetLabel(label);
+
+    /* content type is known before hand, should save later lookup */
+    /* wonder if we could combine the contentype of the playlist and of the real stream */
+    pItem->SetContentType("audio/x-scpls");
+
+    pItem->m_strPath = path;
+    
+    items.Add(pItem);
+
+    stations++;
+    element = element->NextSiblingElement("station");
+  }
+
+  return true;
 }
 
-bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
+bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+  CStdString strRoot = strPath;
+  if (CUtil::HasSlashAtEnd(strRoot))
+    strRoot.Delete(strRoot.size() - 1);
+
+  /* for old users wich doesn't have the full url */
+  if( strRoot.Equals("shout://www.shoutcast.com") )
+    strRoot = "shout://www.shoutcast.com/sbin/newxml.phtml";
+
+  if (g_directoryCache.GetDirectory(strRoot, items))
+    return true;
+
+  /* display progress dialog after 2 seconds */
+  DWORD dwTimeStamp = GetTickCount() + 2000;
+
+  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  bool dialogopen = false;
   if (dlgProgress)
   {
     dlgProgress->ShowProgressBar(false);
     dlgProgress->SetHeading(260);
-    dlgProgress->SetLine(0, 14004);
-    dlgProgress->SetLine(1, L"");
-    dlgProgress->SetLine(2, L"");
-    dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-    dlgProgress->Progress();
+    dlgProgress->SetLine(0, 14003);
+    dlgProgress->SetLine(1, "");
+    dlgProgress->SetLine(2, "");
   }
 
-	CGUIDialogOK* dlgOk = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (dlgOk)
-  {
-		dlgOk->SetHeading(260);
-		dlgOk->SetLine(0, 14006);
-		dlgOk->SetLine(1, L"");
-		dlgOk->SetLine(2, L"");
-  }
+  CURL url(strRoot);
+  CStdString protocol = url.GetProtocol();
+  url.SetProtocol("http");
 
-  CHTTP http;
-  if (!http.Download("http://shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500", "Z:\\xmllister.zli"))
+  CFileCurl http;
+
+  //CURL doesn't seem to understand that data is encoded.. odd
+  // opening as text for now
+  //http.SetContentEncoding("deflate");
+
+  if( !http.Open(url, false) ) 
   {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unable to get shoutcast dir");
     if (dlgProgress) dlgProgress->Close();
-		if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-    CLog::Log(LOGERROR, "Unable to download playlistfile from shoutcast");
     return false;
   }
 
-  CFile file;
-  if (!file.Open("Z:\\xmllister.zli"))
+  /* restore protocol */
+  url.SetProtocol(protocol);
+
+  CStdString content = http.GetContent();
+  if( !(content.Equals("text/html") || content.Equals("text/xml")) )
   {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid content type %s", content.c_str());
     if (dlgProgress) dlgProgress->Close();
-		if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-    CLog::Log(LOGERROR, "Unable to open downloaded file");
     return false;
   }
-
-  uLongf iCompressedLenght=(uLongf)file.GetLength()+1;
-  uLongf iUncompressedLenght=(uLongf)(file.GetLength()*6)+1;  // FIXME: Just a guess
-
-  auto_aptr<Bytef> pCompressed(new Bytef[iCompressedLenght]);
-  ZeroMemory(pCompressed.get(), iCompressedLenght);
-  auto_aptr<Bytef> pUncompressed(new Bytef[iUncompressedLenght]);
-  ZeroMemory(pUncompressed.get(), iUncompressedLenght);
-
-  file.Read(pCompressed.get(), iCompressedLenght);
-  file.Close();
-
-  //  uncompress downloaded file using zlib
-  int iError=0;
-  if ((iError=uncompress OF((pUncompressed.get(), &iUncompressedLenght,
-                                  pCompressed.get(), iCompressedLenght)))!=Z_OK)
-  {
-    if (dlgProgress) dlgProgress->Close();
-		if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-    CLog::Log(LOGERROR, "zlib uncompress returned error %i", iError);
-    return false;
-  }
-
-  if (dlgProgress)
-  {
-    dlgProgress->SetLine(0, 14005);
-    dlgProgress->Progress();
-  }
-
-  TiXmlDocument xmlDoc;
-  if (!xmlDoc.Parse((char*)pUncompressed.get()))
-  {
-    if (dlgProgress) dlgProgress->Close();
-		if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-    CLog::Log(LOGERROR, "Error parsing file from shoutcast, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
-  }
-
-  //  Is this a WinampXML file
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (pRootElement->Value()=="WinampXML")
-  {
-    if (dlgProgress) dlgProgress->Close();
-		if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-    CLog::Log(LOGERROR, "Shoutcast XML file has no <WinampXML>");
-    return false;
-  }
-
-  TiXmlElement *pPlaylist = pRootElement->FirstChildElement("playlist");
-  if (pPlaylist)
-  {
-    int iNumEntries=0;
-    pPlaylist->QueryIntAttribute("num_entries", &iNumEntries);
-
-    if (iNumEntries>0)
-    {
-	    VECFILEITEMS vecCacheItems;
-
-      if (dlgProgress)
-      {
-        dlgProgress->ShowProgressBar(true);
-        dlgProgress->SetPercentage(0);
-        dlgProgress->Progress();
-      }
-
-      items.reserve(iNumEntries);
-
-      TiXmlElement* pEntry=pPlaylist->FirstChildElement("entry");
-      int i=1;
-      while (pEntry)
-      {
-        CFileItem* pItem=new CFileItem;
-        pItem->m_bIsFolder=true;
-
-        pItem->m_strPath=pEntry->Attribute("Playstring"); //URL to .pls file
-        pItem->m_strPath.Replace("http://www.shoutcast.com/sbin/", "shout://www.shoutcast.com/");
-        pItem->m_strPath+="/";
-
-        TiXmlNode* pName=pEntry->FirstChild("Name");
-        if (pName && !pName->NoChildren())
-        {
-          CStdString strName;
-          strName.Format("%03.3i. %s", i, pName->FirstChild()->Value());
-          pItem->SetLabel(strName);
-          i++;
-        }
-
-        TiXmlNode* pGenre=pEntry->FirstChild("Genre");
-        if (pGenre && !pGenre->NoChildren())
-        {
-          pGenre->FirstChild()->Value();
-        }
-
-        TiXmlNode* pNowplaying=pEntry->FirstChild("Nowplaying");
-        if (pNowplaying && !pNowplaying->NoChildren())
-        {
-          pNowplaying->FirstChild()->Value();
-        }
-
-        TiXmlNode* pListeners=pEntry->FirstChild("Listeners");
-        if (pListeners && !pListeners->NoChildren())
-        {
-          pListeners->FirstChild()->Value();
-        }
-
-        TiXmlNode* pBitrate=pEntry->FirstChild("Bitrate");
-        if (pBitrate && !pBitrate->NoChildren())
-        {
-          pItem->SetLabel2(CStdString(pBitrate->FirstChild()->Value())+" kbps");
-        }
-
-        //  This has to be this ugly way, if we delete the 
-        //  xml document at once it would take ages.
-        TiXmlElement* pEntry1=pEntry->NextSiblingElement("entry");
-        pPlaylist->RemoveChild(pEntry);
-        pEntry=pEntry1;
-
-        items.push_back(pItem);
-        vecCacheItems.push_back(new CFileItem(*pItem));
-
-        if ((i%20)==0)
-        {
-          dlgProgress->SetPercentage((i*100)/iNumEntries);
-          dlgProgress->Progress();
-        }
-      }
-    }
-    else
-    {
-      if (dlgProgress) dlgProgress->Close();
-		  if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-      CLog::Log(LOGERROR, "Shoutcast XML file has no playlist entries");
-      return false;
-    }
-  }
-
-  if (dlgProgress) dlgProgress->Close();
-  return true;
-}
-
-bool  CShoutcastDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
-{
-	CStdString strRoot=strPath;
-  if (CUtil::HasSlashAtEnd(strRoot))
-    strRoot.Delete(strRoot.size()-1);
-
-	VECFILEITEMS vecCacheItems;
-  g_directoryCache.ClearDirectory(strRoot);
-
-	CURL url(strRoot);
   
-  if (url.GetFileName().IsEmpty())
-  {
-    if (IsCacheValid())
-      LoadCachedItems(items);
-    else
-    {
-      DownloadPlaylists(items);
-      CacheItems(items);
-    }
-    for (int i=0; i<(int)items.size(); ++i)
-    {
-      CFileItem* pItem=items[i];
-      vecCacheItems.push_back(new CFileItem(*pItem));
-    }
-  }
-  else
-  {
+  
+  int size_read = 0;  
+  int size_total = (int)http.GetLength();
+  int data_size = 0;
 
-    CStdString strPlayList=strRoot;
-    strPlayList.Replace("shout://www.shoutcast.com/", "http://www.shoutcast.com/sbin/");
+  CStdString data;
+  data.reserve(size_total);
+  
+  /* read response from server into string buffer */
+  char buffer[16384];
+  while( (size_read = http.Read(buffer, sizeof(buffer)-1)) > 0 )
+  {
+    buffer[size_read] = 0;
+    data += buffer;
+    data_size += size_read;
 
-	  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (dlgProgress)
+    if( dialogopen )
     {
-      dlgProgress->ShowProgressBar(false);
-      dlgProgress->SetHeading(260);
-      dlgProgress->SetLine(0, 14003);
-      dlgProgress->SetLine(1, "");
-      dlgProgress->SetLine(2, "");
-      dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
       dlgProgress->Progress();
     }
-
-	  CGUIDialogOK* dlgOk = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dlgOk)
+    else if( GetTickCount() > dwTimeStamp )
     {
-		  dlgOk->SetHeading(260);
-		  dlgOk->SetLine(0, 14007);
-		  dlgOk->SetLine(1, L"");
-		  dlgOk->SetLine(2, L"");
+      dlgProgress->StartModal();
+      dlgProgress->Progress();
+      dialogopen = true;
     }
 
-    CHTTP http;
-    if (!http.Download(strPlayList, "Z:\\playlist.pls"))
+    if (dlgProgress->IsCanceled())
     {
-      if (dlgProgress) dlgProgress->Close();
-		  if (dlgOk) dlgOk->DoModal(m_gWindowManager.GetActiveWindow());
-      CLog::Log(LOGERROR, "Unable to download playlistfile from shoutcast");
+      dlgProgress->Close();
       return false;
     }
-
-	  CPlayListFactory factory;
-	  auto_ptr<CPlayList> pPlayList (factory.Create("Z:\\playlist.pls"));
-	  if ( NULL != pPlayList.get())
-	  {
-      // load it
-		  if (pPlayList->Load("Z:\\playlist.pls"))
-		  {
-        for (int i=0; i<pPlayList->size(); ++i)
-        {
-          const CPlayList::CPlayListItem& pPlayListItem=(*pPlayList)[i];
-
-          CFileItem* pItem=new CFileItem;
-          pItem->m_strPath=pPlayListItem.GetFileName();
-          pItem->SetLabel(pPlayListItem.GetDescription());
-          items.push_back(pItem);
-          vecCacheItems.push_back(new CFileItem(*pItem));
-        }
-      }
-    }
-    if (dlgProgress) dlgProgress->Close();
   }
 
-  g_directoryCache.SetDirectory(strRoot,vecCacheItems);
-	return true;
+  /* parse returned xml */
+  TiXmlDocument doc;
+  doc.Parse(data.c_str());
+
+  TiXmlElement *root = doc.RootElement();
+  if(root == NULL)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unable to parse xml");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
+
+    dlgProgress->Close();
+    return false;
+  }
+
+  /* clear data to keep memusage down, not needed anymore */
+  data.Empty();
+
+  bool result;
+  if( strcmp(root->Value(), "genrelist") == 0 )
+    result = ParseGenres(root, items, url);
+  else if( strcmp(root->Value(), "stationlist") == 0 )
+    result = ParseStations(root, items, url);
+  else
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid root xml element for shoutcast");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str);
+  }
+
+  CFileItemList vecCacheItems;  
+  g_directoryCache.ClearDirectory(strRoot);
+  for( int i = 0; i <items.Size(); i++ )
+  {
+    CFileItem* pItem=items[i];
+    if (!pItem->IsParentFolder())
+      vecCacheItems.Add(new CFileItem( *pItem ));
+  }
+  g_directoryCache.SetDirectory(strRoot, vecCacheItems);
+  if (dlgProgress) dlgProgress->Close();
+  return result;
 }

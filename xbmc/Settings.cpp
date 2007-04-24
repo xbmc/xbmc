@@ -1,407 +1,290 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "settings.h"
 #include "application.h"
 #include "util.h"
-#include "utils/log.h"
-#include "localizestrings.h"
-#include "stdstring.h"
-#include "GraphicContext.h"
-#include "GUIWindowMusicBase.h"
-#include "utils/FanController.h"
-using namespace std;
+#include "GUIWindowFileManager.h"
+#include "GUIDialogButtonMenu.h"
+#include "GUIFontManager.h"
+#include "LangCodeExpander.h"
+#include "ButtonTranslator.h"
+#include "XMLUtils.h"
+#include "GUIPassword.h"
+#include "GUIAudioManager.h"
+#include "AudioContext.h"
+#include "utils/GUIInfoManager.h"
+#include "xbox/Network.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "GUIBaseContainer.h" // for VIEW_TYPE enum
+#include "utils/fancontroller.h"
+#include "MediaManager.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "utils/MemoryUnitManager.h"
+#endif
 
-class CSettings g_settings;
+using namespace XFILE;
+using namespace DIRECTORY;
+
 struct CSettings::stSettings g_stSettings;
+struct CSettings::AdvancedSettings g_advancedSettings;
+class CSettings g_settings;
 
 extern CStdString g_LoadErrorStr;
 
+bool CShare::isWritable()
+{
+  if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
+    return true; // local disk
+  if (strPath.size() > 4)
+  {
+    if (strPath.substr(0,4) == "smb:")
+      return true; // smb path
+    #ifdef HAS_XBOX_HARDWARE
+    else if (strPath.substr(0,4) == "mem:")
+    {
+      return g_memoryUnitManager.IsDriveWriteable(strPath);
+    }
+    #endif
+  }
+
+  return false;
+}
+void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)
+{
+  vecPaths = paths;
+  if (paths.size() == 0)
+  { // no paths - return
+    strPath.Empty();
+  }
+  else if (paths.size() == 1)
+  { // only one valid path? make it the strPath
+    strPath = paths[0];
+  }
+  else
+  { // multiple valid paths?
+    if (g_advancedSettings.m_useMultipaths) // use new multipath:// protocol
+      strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths);
+    else // use older virtualpath:// protocol
+      strPath.Format("virtualpath://%s/%s/", category.c_str(), name.c_str());
+  }
+
+  strName = name;
+  m_iLockMode = LOCK_MODE_EVERYONE;
+  m_strLockCode = "0";
+  m_iBadPwdCount = 0;
+  m_iHasLock = 0;
+
+  if (CUtil::IsVirtualPath(strPath) || CUtil::IsMultiPath(strPath))
+    m_iDriveType = SHARE_TYPE_VPATH;
+  else if (strPath.Left(4).Equals("udf:"))
+  {
+    m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
+    strPath = "D:\\";
+  }
+  else if (strPath.Left(11).Equals("soundtrack:"))
+    m_iDriveType = SHARE_TYPE_LOCAL;
+  else if (CUtil::IsISO9660(strPath))
+    m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
+  else if (CUtil::IsDVD(strPath))
+    m_iDriveType = SHARE_TYPE_DVD;
+  else if (CUtil::IsRemote(strPath))
+    m_iDriveType = SHARE_TYPE_REMOTE;
+  else if (CUtil::IsHD(strPath))
+    m_iDriveType = SHARE_TYPE_LOCAL;
+  else
+    m_iDriveType = SHARE_TYPE_UNKNOWN;
+  // check - convert to url and back again to make sure strPath is accurate
+  // in terms of what we expect
+  CUtil::AddSlashAtEnd(strPath);
+  CURL url(strPath);
+  url.GetURL(strPath);
+}
+
 CSettings::CSettings(void)
 {
+  for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
+  {
+    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+    g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
+  }
 
-	g_stSettings.m_iLCDModChip=MODCHIP_SMARTXX;
-	g_stSettings.m_bLCDUsed=false;
-	g_stSettings.m_iLCDMode=0;
-	g_stSettings.m_iLCDColumns=20;
-	g_stSettings.m_iLCDRows=4;
-    g_stSettings.m_iLCDBackLight=80;
-    g_stSettings.m_iLCDContrast=80;
-	g_stSettings.m_iLCDBrightness=100;
-	g_stSettings.m_iLCDType=LCD_MODE_TYPE_LCD;
-	g_stSettings.m_iLCDAdress[0]=0x0;
-	g_stSettings.m_iLCDAdress[1]=0x40;
-	g_stSettings.m_iLCDAdress[2]=0x14;
-	g_stSettings.m_iLCDAdress[3]=0x54;
+  g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-	g_stSettings.m_iCacheSizeHD[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeHD[CACHE_VIDEO] = 1024;
-	g_stSettings.m_iCacheSizeHD[CACHE_VOB]   = 16384;
+  g_stSettings.m_bMyVideoCleanTitles = false;
+  strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip");
+  strcpy(g_stSettings.m_szMyVideoCleanSeparators, "- _.[({+");
 
-	g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO] = 8192;
-	g_stSettings.m_iCacheSizeUDF[CACHE_VOB]   = 16384;
+  StringUtils::SplitString(g_stSettings.m_szMyVideoCleanTokens, "|", g_settings.m_szMyVideoCleanTokensArray);
+  g_settings.m_szMyVideoCleanSeparatorsString = g_stSettings.m_szMyVideoCleanSeparators;
 
-	g_stSettings.m_iCacheSizeISO[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeISO[CACHE_VIDEO] = 8192;
-	g_stSettings.m_iCacheSizeISO[CACHE_VOB]   = 16384;
+  for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
+    g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-	g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO] = 8192;
-	g_stSettings.m_iCacheSizeLAN[CACHE_VOB]   = 16384;
+  strcpy(g_stSettings.szOnlineArenaPassword, "");
+  strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
 
-	g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO] = 512;
-	g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO] = 2048;
-	g_stSettings.m_iCacheSizeInternet[CACHE_VOB]   = 16384;
+  strcpy( g_stSettings.m_szDefaultPrograms, "");
+  strcpy( g_stSettings.m_szDefaultMusic, "");
+  strcpy( g_stSettings.m_szDefaultPictures, "");
+  strcpy( g_stSettings.m_szDefaultFiles, "");
+  strcpy( g_stSettings.m_szDefaultVideos, "");
+  strcpy( g_stSettings.m_szDefaultMusicLibView, "");
+  strcpy( g_stSettings.m_szDefaultVideoLibView, "");
 
-	m_ResInfo[HDTV_1080i].Overscan.left = 0;
-	m_ResInfo[HDTV_1080i].Overscan.top = 0;
-	m_ResInfo[HDTV_1080i].Overscan.right = 1920;
-	m_ResInfo[HDTV_1080i].Overscan.bottom = 1080;
-	m_ResInfo[HDTV_1080i].iSubtitles = (int)(0.965*1080);
-	m_ResInfo[HDTV_1080i].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[HDTV_1080i].iWidth = 1920;
-	m_ResInfo[HDTV_1080i].iHeight = 1080;
-	m_ResInfo[HDTV_1080i].dwFlags = D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[HDTV_1080i].fPixelRatio = 1.0f;
-	strcpy(m_ResInfo[HDTV_1080i].strMode,"1080i 16:9");
+  g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
+  g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
-	m_ResInfo[HDTV_720p].Overscan.left = 0;
-	m_ResInfo[HDTV_720p].Overscan.top = 0;
-	m_ResInfo[HDTV_720p].Overscan.right = 1280;
-	m_ResInfo[HDTV_720p].Overscan.bottom = 720;
-	m_ResInfo[HDTV_720p].iSubtitles = (int)(0.965*720);
-	m_ResInfo[HDTV_720p].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[HDTV_720p].iWidth = 1280;
-	m_ResInfo[HDTV_720p].iHeight = 720;
-	m_ResInfo[HDTV_720p].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[HDTV_720p].fPixelRatio = 1.0f;
-	strcpy(m_ResInfo[HDTV_720p].strMode,"720p 16:9");
+  g_stSettings.m_bMyMusicPlaylistRepeat = false;
+  g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
-	m_ResInfo[HDTV_480p_4x3].Overscan.left = 0;
-	m_ResInfo[HDTV_480p_4x3].Overscan.top = 0;
-	m_ResInfo[HDTV_480p_4x3].Overscan.right = 720;
-	m_ResInfo[HDTV_480p_4x3].Overscan.bottom = 480;
-	m_ResInfo[HDTV_480p_4x3].iSubtitles = (int)(0.9*480);
-	m_ResInfo[HDTV_480p_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[HDTV_480p_4x3].iWidth = 720;
-	m_ResInfo[HDTV_480p_4x3].iHeight = 480;
-	m_ResInfo[HDTV_480p_4x3].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-	m_ResInfo[HDTV_480p_4x3].fPixelRatio = 4320.0f/4739.0f;
-	strcpy(m_ResInfo[HDTV_480p_4x3].strMode,"480p 4:3");
+  g_stSettings.m_bMyVideoPlaylistRepeat = false;
+  g_stSettings.m_bMyVideoPlaylistShuffle = false;
 
-	m_ResInfo[HDTV_480p_16x9].Overscan.left = 0;
-	m_ResInfo[HDTV_480p_16x9].Overscan.top = 0;
-	m_ResInfo[HDTV_480p_16x9].Overscan.right = 720;
-	m_ResInfo[HDTV_480p_16x9].Overscan.bottom = 480;
-	m_ResInfo[HDTV_480p_16x9].iSubtitles = (int)(0.965*480);
-	m_ResInfo[HDTV_480p_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[HDTV_480p_16x9].iWidth = 720;
-	m_ResInfo[HDTV_480p_16x9].iHeight = 480;
-	m_ResInfo[HDTV_480p_16x9].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[HDTV_480p_16x9].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
-	strcpy(m_ResInfo[HDTV_480p_16x9].strMode,"480p 16:9");
+  g_stSettings.m_nVolumeLevel = 0;
+  g_stSettings.m_dynamicRangeCompressionLevel = 0;
+  g_stSettings.m_iPreMuteVolumeLevel = 0;
+  g_stSettings.m_bMute = false;
+  g_stSettings.m_fZoomAmount = 1.0f;
+  g_stSettings.m_fPixelRatio = 1.0f;
 
-	m_ResInfo[NTSC_4x3].Overscan.left = 0;
-	m_ResInfo[NTSC_4x3].Overscan.top = 0;
-	m_ResInfo[NTSC_4x3].Overscan.right = 720;
-	m_ResInfo[NTSC_4x3].Overscan.bottom = 480;
-	m_ResInfo[NTSC_4x3].iSubtitles = (int)(0.9*480);
-	m_ResInfo[NTSC_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[NTSC_4x3].iWidth = 720;
-	m_ResInfo[NTSC_4x3].iHeight = 480;
-	m_ResInfo[NTSC_4x3].dwFlags = 0;
-	m_ResInfo[NTSC_4x3].fPixelRatio = 4320.0f/4739.0f;
-	strcpy(m_ResInfo[NTSC_4x3].strMode,"NTSC 4:3");
+  g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
+  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar";
+  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
+  // internal music extensions
+  g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.cdda";
 
-	m_ResInfo[NTSC_16x9].Overscan.left = 0;
-	m_ResInfo[NTSC_16x9].Overscan.top = 0;
-	m_ResInfo[NTSC_16x9].Overscan.right = 720;
-	m_ResInfo[NTSC_16x9].Overscan.bottom = 480;
-	m_ResInfo[NTSC_16x9].iSubtitles = (int)(0.965*480);
-	m_ResInfo[NTSC_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[NTSC_16x9].iWidth = 720;
-	m_ResInfo[NTSC_16x9].iHeight = 480;
-	m_ResInfo[NTSC_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[NTSC_16x9].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
-	strcpy(m_ResInfo[NTSC_16x9].strMode,"NTSC 16:9");
+  g_stSettings.m_logFolder = "Q:\\";              // log file location
 
-	m_ResInfo[PAL_4x3].Overscan.left = 0;
-	m_ResInfo[PAL_4x3].Overscan.top = 0;
-	m_ResInfo[PAL_4x3].Overscan.right = 720;
-	m_ResInfo[PAL_4x3].Overscan.bottom = 576;
-	m_ResInfo[PAL_4x3].iSubtitles = (int)(0.9*576);
-	m_ResInfo[PAL_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[PAL_4x3].iWidth = 720;
-	m_ResInfo[PAL_4x3].iHeight = 576;
-	m_ResInfo[PAL_4x3].dwFlags = 0;
-	m_ResInfo[PAL_4x3].fPixelRatio = 128.0f/117.0f;
-	strcpy(m_ResInfo[PAL_4x3].strMode,"PAL 4:3");
+  m_iLastLoadedProfileIndex = 0;
 
-	m_ResInfo[PAL_16x9].Overscan.left = 0;
-	m_ResInfo[PAL_16x9].Overscan.top = 0;
-	m_ResInfo[PAL_16x9].Overscan.right = 720;
-	m_ResInfo[PAL_16x9].Overscan.bottom = 576;
-	m_ResInfo[PAL_16x9].iSubtitles = (int)(0.965*576);
-	m_ResInfo[PAL_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[PAL_16x9].iWidth = 720;
-	m_ResInfo[PAL_16x9].iHeight = 576;
-	m_ResInfo[PAL_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[PAL_16x9].fPixelRatio = 128.0f/117.0f*4.0f/3.0f;
-	strcpy(m_ResInfo[PAL_16x9].strMode,"PAL 16:9");
+  // defaults for scanning
+  g_stSettings.m_bMyMusicIsScanning = false;
 
-	m_ResInfo[PAL60_4x3].Overscan.left = 0;
-	m_ResInfo[PAL60_4x3].Overscan.top = 0;
-	m_ResInfo[PAL60_4x3].Overscan.right = 720;
-	m_ResInfo[PAL60_4x3].Overscan.bottom = 480;
-	m_ResInfo[PAL60_4x3].iSubtitles = (int)(0.9*480);
-	m_ResInfo[PAL60_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[PAL60_4x3].iWidth = 720;
-	m_ResInfo[PAL60_4x3].iHeight = 480;
-	m_ResInfo[PAL60_4x3].dwFlags = 0;
-	m_ResInfo[PAL60_4x3].fPixelRatio = 4320.0f/4739.0f;
-	strcpy(m_ResInfo[PAL60_4x3].strMode,"PAL60 4:3");
+  g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
-	m_ResInfo[PAL60_16x9].Overscan.left = 0;
-	m_ResInfo[PAL60_16x9].Overscan.top = 0;
-	m_ResInfo[PAL60_16x9].Overscan.right = 720;
-	m_ResInfo[PAL60_16x9].Overscan.bottom = 480;
-	m_ResInfo[PAL60_16x9].iSubtitles = (int)(0.965*480);
-	m_ResInfo[PAL60_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
-	m_ResInfo[PAL60_16x9].iWidth = 720;
-	m_ResInfo[PAL60_16x9].iHeight = 480;
-	m_ResInfo[PAL60_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[PAL60_16x9].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
-	strcpy(m_ResInfo[PAL60_16x9].strMode,"PAL60 16:9");
+  // Advanced settings
+  g_advancedSettings.m_useMultipaths = false;
 
-	strcpy(g_stSettings.m_szExternalDVDPlayer,"");
-	strcpy(g_stSettings.m_szExternalCDDAPlayer,"");
+  g_advancedSettings.m_audioHeadRoom = 0;
+  g_advancedSettings.m_karaokeSyncDelay = 0.0f;
 
-	g_stSettings.m_bMyVideoActorStack =false;
-	g_stSettings.m_bMyVideoGenreStack =false;
-	g_stSettings.m_bMyVideoYearStack =false;
+  g_advancedSettings.m_videoSubsDelayRange = 10;
+  g_advancedSettings.m_videoAudioDelayRange = 10;
+  g_advancedSettings.m_videoSmallStepBackSeconds = 7;
+  g_advancedSettings.m_videoSmallStepBackTries = 3;
+  g_advancedSettings.m_videoSmallStepBackDelay = 300;
+  g_advancedSettings.m_videoUseTimeSeeking = true;
+  g_advancedSettings.m_videoTimeSeekForward = 30;
+  g_advancedSettings.m_videoTimeSeekBackward = -30;
+  g_advancedSettings.m_videoTimeSeekForwardBig = 600;
+  g_advancedSettings.m_videoTimeSeekBackwardBig = -600;
+  g_advancedSettings.m_videoPercentSeekForward = 2;
+  g_advancedSettings.m_videoPercentSeekBackward = -2;
+  g_advancedSettings.m_videoPercentSeekForwardBig = 10;
+  g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
+  g_advancedSettings.m_videoBlackBarColour = 1;
 
-	// default to fuzzy stacking, to stay consistent with older versions
-	g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+  g_advancedSettings.m_slideshowPanAmount = 2.5f;
+  g_advancedSettings.m_slideshowZoomAmount = 5.0f;
+  g_advancedSettings.m_slideshowBlackBarCompensation = 20.0f;
 
-	strcpy(g_stSettings.m_szMyVideoStackTokens, "cd|part");
-	strcpy(g_stSettings.m_szMyVideoStackSeparators, "- _.");
+  g_advancedSettings.m_lcdRows = 4;
+  g_advancedSettings.m_lcdColumns = 20;
+  g_advancedSettings.m_lcdAddress1 = 0;
+  g_advancedSettings.m_lcdAddress2 = 0x40;
+  g_advancedSettings.m_lcdAddress3 = 0x14;
+  g_advancedSettings.m_lcdAddress4 = 0x54;
 
-	StringUtils::SplitString(g_stSettings.m_szMyVideoStackTokens, "|", g_settings.m_szMyVideoStackTokensArray);
-	g_settings.m_szMyVideoStackSeparatorsString = g_stSettings.m_szMyVideoStackSeparators;
+  g_advancedSettings.m_autoDetectPingTime = 30;
+  g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
-	for (int i = 0; i < (int)g_settings.m_szMyVideoStackTokensArray.size(); i++)
-		g_settings.m_szMyVideoStackTokensArray[i].MakeLower();
+  g_advancedSettings.m_songInfoDuration = 2;
+  g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
+  g_advancedSettings.m_usePCDVDROM = false;
+  g_advancedSettings.m_noDVDROM = false;
+  g_advancedSettings.m_cachePath = "Z:\\";
+  g_advancedSettings.m_FTPShowCache = false;
+  
+  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
+  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
+  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\....)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[\\^ _\\.-]+([0-9]+)(\\....)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\....)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\....)$");
 
-	g_stSettings.m_bMyVideoCleanTitles = false;
-	strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip");
-	strcpy(g_stSettings.m_szMyVideoCleanSeparators, "- _.[({+");
+  // foo_[s01]_[e01-02]
+  g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee][0-9][0-9]-([0-9]+)\\][^\\\\/]*"); 
+  // foo.s01.e01-02
+  g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back("[\\._ -][Ss]([0-9]+)[^0-9]*[Ee][0-9][0-9]-([0-9]+)[^\\\\/]*");
+  // foo.1x09 1x10
+  g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back("[\\._ -][0-9]+x[0-9]+[\\._ -]*([0-9]+)x([0-9]+)[^\\\\/]*"); 
+  
+  // foo_[s01]_[e01]
+  g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)[^\\\\/]*"); 
+  // foo.1x09*
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)x([0-9]+)[^\\\\/]*");
+  // foo.s01.e01, foo.s01_e01
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -][Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)[^\\\\/]*"); 
+  // foo.103*
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)([0-9][0-9])[\\._ -][^\\\\/]*"); 
 
-	StringUtils::SplitString(g_stSettings.m_szMyVideoCleanTokens, "|", g_settings.m_szMyVideoCleanTokensArray);
-	g_settings.m_szMyVideoCleanSeparatorsString = g_stSettings.m_szMyVideoCleanSeparators;
+  g_advancedSettings.m_remoteRepeat = 480;
+  g_advancedSettings.m_controllerDeadzone = 0.2f;
+  g_advancedSettings.m_displayRemoteCodes = false;
 
-	for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
-		g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
+  g_advancedSettings.m_thumbSize = 192;
 
-	g_stSettings.m_bPPAuto=true;//only has effect if m_bPostProcessing = true
-	g_stSettings.m_bPPVertical=false;
-	g_stSettings.m_bPPHorizontal=false;
-	g_stSettings.m_bPPAutoLevels=false;
-	g_stSettings.m_bPPdering=false;
-	g_stSettings.m_bFrameRateConversions=false;
-	g_stSettings.m_bUseDigitalOutput=false;
+  g_advancedSettings.m_sambadoscodepage = "";
+  g_advancedSettings.m_sambaclienttimeout = 10;
 
-	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-	g_stSettings.m_iSubtitleTTFStyle = XFONT_BOLD;
-	g_stSettings.m_iSubtitleTTFColor = 0xFFFFFF;
-	strcpy(g_stSettings.m_szSubtitleCharset, "ISO-8859-1");
-	strcpy(g_stSettings.m_szStringCharset, "ISO-8859-1");
-	g_stSettings.m_bFlipBiDiCharset = true;
-	g_stSettings.m_iEnlargeSubtitlePercent = 0;
-	g_stSettings.m_bPostProcessing=false;
-	g_stSettings.m_bDeInterlace=false;
-	g_stSettings.m_bNonInterleaved=false;
-	g_stSettings.m_bNoCache=false;
-	g_stSettings.m_bAudioOnAllSpeakers=false;
-	g_stSettings.m_bUseID3=false;
-	g_stSettings.m_bAutorunPictures=true;
-	g_stSettings.m_bAutorunMusic=true;
-	g_stSettings.m_bAutorunVideo=true;
-	g_stSettings.m_bAutorunDVD=true;
-	g_stSettings.m_bAutorunVCD=true;
-	g_stSettings.m_bAutorunCdda=true;
-	g_stSettings.m_bAutorunXbox=true;
-	g_stSettings.m_bUseFDrive=true;
-	g_stSettings.m_bUseGDrive=false;
-	g_stSettings.m_bUsePCDVDROM=false;
-	g_stSettings.m_bDetectAsIso=false;
-	strcpy(g_stSettings.szDefaultLanguage,"english");
-	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
-	strcpy(g_stSettings.m_szSkinFontSet, "Default");
-	g_stSettings.m_bAllowPAL60=false;
-	g_stSettings.m_bAutoShufflePlaylist=true;
-	g_stSettings.dwFileVersion =CONFIG_VERSION;
-	g_stSettings.m_iMyProgramsViewAsIcons=1;
-	g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
-	g_stSettings.m_bMyVideoPlaylistRepeat=true;
-	g_stSettings.m_bMyProgramsSortAscending=true;
-	g_stSettings.m_bMyProgramsFlatten=true;
-	g_stSettings.m_bMyProgramsDefaultXBE=true;
-	g_stSettings.m_bMyProgramsDirectoryName=false;
-	g_stSettings.m_bMyProgramsNoShortcuts=true;
-	strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
-	strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
-	strcpy(g_stSettings.m_strIPAssignment, "dash");
-	strcpy(g_stSettings.m_strLocalIPAdres,"");
-	strcpy(g_stSettings.m_strLocalNetmask,"");
-	strcpy(g_stSettings.m_strGateway,"");
-	strcpy(g_stSettings.m_strNameServer,"");
-	strcpy(g_stSettings.m_strTimeServer,"");
-	strcpy(g_stSettings.szOnlineUsername,"");
-	strcpy(g_stSettings.szOnlinePassword,"");
-	g_stSettings.m_bTimeServerEnabled=false;
-	g_stSettings.m_bFTPServerEnabled=true;
-	g_stSettings.m_bHTTPServerEnabled=false;
-	g_stSettings.m_iWebServerPort=80;
-	g_stSettings.m_bHTTPProxyEnabled=false;
-	strcpy(g_stSettings.m_szHTTPProxy,"");
-	g_stSettings.m_iHTTPProxyPort=8080;
-	strcpy(g_stSettings.szDefaultSkin,"Project Mayhem");
-	strcpy(g_stSettings.szHomeDir,"");
+  g_advancedSettings.m_playlistAsFolders = true;
+  g_advancedSettings.m_detectAsUdf = false;
+  g_settings.bUseLoginScreen = false;
 
-	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
-	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.strm|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
-	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
+  g_advancedSettings.m_musicThumbs = "folder.jpg";
+  g_advancedSettings.m_dvdThumbs = "folder.jpg";
+  g_advancedSettings.m_bMusicLibraryHideAllItems = false;
+  g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
+  g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
+  g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
+  g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
 
-	strcpy( g_stSettings.m_szDefaultPrograms, "");
-	strcpy( g_stSettings.m_szDefaultMusic, "");
-	strcpy( g_stSettings.m_szDefaultPictures, "");
-	strcpy( g_stSettings.m_szDefaultFiles, "");
-	strcpy( g_stSettings.m_szDefaultVideos, "");
-	strcpy( g_stSettings.m_szCDDBIpAdres,"");
-	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
-	g_stSettings.m_bUseCDDB=false;
+  g_advancedSettings.m_bVideoLibraryHideAllItems = false;
+  g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
 
-	g_stSettings.m_bMyMusicRepeat=true;
-	g_stSettings.m_bMyMusicSongInfoInVis=true;
-	g_stSettings.m_bMyMusicSongThumbInVis=true;
+  g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
+  g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
+  g_advancedSettings.m_bTuxBoxPictureIcon= true;
+  g_advancedSettings.m_bTuxBoxSendAllAPids= false;
+  g_advancedSettings.m_iTuxBoxEpgRequestTime = 10; //seconds
+  g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
+  g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
+  g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
-	g_stSettings.m_bMyMusicPlaylistRepeat=true;
-
-	g_stSettings.m_bMyMusicSongsRootSortAscending=true;
-	g_stSettings.m_bMyMusicSongsSortAscending=true;
-	g_stSettings.m_bMyMusicSongsUsePlaylist=true;
-	g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList=false;
-	g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs=true;
-
-	g_stSettings.m_bMyMusicAlbumRootSortAscending=true;
-	g_stSettings.m_bMyMusicAlbumSortAscending=true;
-	g_stSettings.m_bMyMusicAlbumShowRecent=false;
-
-	g_stSettings.m_bMyMusicArtistsRootSortAscending=true;
-	g_stSettings.m_bMyMusicArtistsAlbumsSortAscending=true;
-	g_stSettings.m_bMyMusicArtistsAllSongsSortAscending=true;
-	g_stSettings.m_bMyMusicArtistsAlbumSongsSortAscending=true;
-
-	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
-	g_stSettings.m_bMyMusicGenresSortAscending=true;
-	g_stSettings.m_bMyMusicHideTrackNumber=false;
-
-	g_stSettings.m_bMyVideoSortAscending=true;
-	g_stSettings.m_bMyVideoRootSortAscending=true;
-
-	g_stSettings.m_bMyVideoGenreSortAscending=true;
-	g_stSettings.m_bMyVideoGenreRootSortAscending=true;
-
-	g_stSettings.m_bMyVideoActorSortAscending=true;
-	g_stSettings.m_bMyVideoActorRootSortAscending=true;
-
-	g_stSettings.m_bMyVideoYearSortAscending=true;
-	g_stSettings.m_bMyVideoYearRootSortAscending=true;
-
-	g_stSettings.m_bMyVideoTitleSortAscending=true;
-
-	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
-	g_stSettings.m_bMyFilesSourceRootViewAsIcons=true;
-	g_stSettings.m_bMyFilesDestViewAsIcons=false;
-	g_stSettings.m_bMyFilesDestRootViewAsIcons=true;
-
-	g_stSettings.m_bMyPicturesSortAscending=true;
-	g_stSettings.m_bMyPicturesRootSortAscending=true;
-
-	g_stSettings.m_bScriptsViewAsIcons = false;
-	g_stSettings.m_bScriptsRootViewAsIcons = false;
-	g_stSettings.m_bScriptsSortAscending = true;
-
-	g_stSettings.m_bMyFilesSourceSortAscending=true;
-	g_stSettings.m_bMyFilesSourceRootSortAscending=true;
-	g_stSettings.m_bMyFilesDestSortAscending=true;
-	g_stSettings.m_bMyFilesDestRootSortAscending=true;
-  g_stSettings.m_iFlickerFilterVideo=0;
-	g_stSettings.m_bSoftenVideo=false;
-  g_stSettings.m_iFlickerFilterUI=5;
-	g_stSettings.m_bSoftenUI=false;
-	g_stSettings.m_iViewMode = VIEW_MODE_NORMAL;
-	g_stSettings.m_fZoomAmount = 1.0f;
-	g_stSettings.m_fPixelRatio = 1.0f;
-	g_stSettings.m_fCustomZoomAmount=1.0f;
-	g_stSettings.m_fCustomPixelRatio=1.0f;
-
-	g_stSettings.m_bAutoWidescreenSwitching=false;
-	g_stSettings.m_bUpsampleVideo=true;
-	strcpy(g_stSettings.m_szWeatherArea[0], "UKXX0085");	//default WEATHER 1 to London for no good reason
-	strcpy(g_stSettings.m_szWeatherArea[1], "NLXX0002");	//default WEATHER 2 to Amsterdam for no good reason
-	strcpy(g_stSettings.m_szWeatherArea[2], "CAXX0343");	//default WEATHER 3 to Ottawa for no good reason
-	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units
-	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
-	g_stSettings.m_iWeatherRefresh = 30;
-
-	g_stSettings.m_minFilter= D3DTEXF_LINEAR;
-	g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
-
-	g_stSettings.m_bDisplayRemoteCodes=false;
-	g_stSettings.m_bResampleMusicAudio=false;
-	g_stSettings.m_bResampleVideoAudio=false;
-	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
-	g_stSettings.m_bHDRemoteplaySpinDownAudio = false;
-	g_stSettings.m_bHDRemoteplaySpinDownVideo = false;
-	g_stSettings.m_iHDRemoteplaySpinDownTime = 20;//seconds
-  g_stSettings.m_iHDRemoteplaySpinDownMinDuration = 20;//minutes
-	g_stSettings.m_mplayerDebug=false;
-	g_stSettings.m_iSambaDebugLevel = 0;
-	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
-	strcpy(g_stSettings.m_strSambaWinsServer, "");
-	g_stSettings.m_bHideExtensions = false;
-	g_stSettings.m_bHideParentDirItems = false;
-
-  g_stSettings.m_bAutoTemperature   = false;
-  g_stSettings.m_iTargetTemperature = 55;
-  g_stSettings.m_bFanSpeedControl   = false;
-  g_stSettings.m_iFanSpeed          = CFanController::Instance()->GetFanSpeed();
-
-	g_stSettings.m_bRipWithTrackNumber = true;
-	g_stSettings.m_iRipEncoder = CDDARIP_ENCODER_LAME;
-	g_stSettings.m_iRipQuality = CDDARIP_QUALITY_CBR;
-	g_stSettings.m_iRipBitRate = 192;
-	strcpy(g_stSettings.m_strRipPath, "");
-
-	g_stSettings.m_nVolumeLevel = 0;
-	g_stSettings.m_iLogLevel = LOGNOTICE;
-
-	g_stSettings.m_bEnableRSS=true;
-	g_stSettings.m_bShowFreeMem=false;
-
-	g_stSettings.m_bIsCdgEnabled = false;
-	g_stSettings.m_iCdgBgAlpha = 0;
-	g_stSettings.m_iCdgFgAlpha = 255;
-	g_stSettings.m_fCdgAVDelay = 0.8f;
-
-	g_stSettings.m_iMusicOSDTimeout=5;
-
-	g_stSettings.m_bSlideShowShuffle = false;
-
-  m_iLastLoadedProfileIndex = -1;
-
-	xbmcXmlLoaded = false;
+  g_advancedSettings.m_curlclienttimeout = 10;
 }
 
 CSettings::~CSettings(void)
@@ -416,1663 +299,2560 @@ void CSettings::Save() const
     //don't save settings when we're busy stopping the application
     //a lot of screens try to save settings on deinit and deinit is called
     //for every screen when the application is stopping.
-    return;
+    return ;
   }
-	if (!SaveSettings("T:\\settings.xml", true))
-	{
-		CLog::Log(LOGERROR, "Unable to save settings to T:\\settings.xml");
-	}
+  if (!SaveSettings(GetSettingsFile()))
+  {
+    CLog::Log(LOGERROR, "Unable to save settings to %s", GetSettingsFile().c_str());
+  }
+}
+
+bool CSettings::Reset()
+{
+  CLog::Log(LOGINFO, "Resetting settings");
+  CFile::Delete(GetSettingsFile());
+  Save();
+  return LoadSettings(GetSettingsFile());
 }
 
 bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
-	// load settings file...
-	bXboxMediacenter=bSettings=false;
-	CLog::Log(LOGNOTICE, "loading T:\\settings.xml");
-	if (!LoadSettings("T:\\settings.xml", true))
-	{
-		CLog::Log(LOGERROR, "Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
-		Save();
-		if (!(bSettings=LoadSettings("T:\\settings.xml", true)))
-			return false;
-	}
+  // load settings file...
+  bXboxMediacenter = bSettings = false;
 
-	// This is for backward compatibility since we deleted "Hebrew" from the PM fontset
-	if (stricmp(g_stSettings.m_szSkinFontSet, "Hebrew") == 0)
-	{
-		strcpy(g_stSettings.m_szSkinFontSet, "Arial TTF");
-		strcpy(g_stSettings.m_szStringCharset, "CP1255");
-		g_stSettings.m_bFlipBiDiCharset = true;
-	}
+  char szDevicePath[1024];
+  CStdString strMnt = GetProfileUserDataFolder();
+  if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
+  {
+    CUtil::GetHomePath(strMnt);
+    strMnt += GetProfileUserDataFolder().substr(2);
+  }
+  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
+  strcat(szDevicePath,strMnt.c_str()+2);
+  CIoSupport::RemapDriveLetter('P', szDevicePath);
+  CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
+  CStdString strFile=GetSettingsFile();
+  if (!LoadSettings(strFile))
+  {
+    CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile().c_str(), GetSettingsFile().c_str());
+    Save();
+    if (!(bSettings = Reset()))
+      return false;
+  }
 
-	// load xml file...
-	CLog::Log(LOGNOTICE, "loading Q:\\XboxMediaCenter.xml");
-	CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
-	TiXmlDocument xmlDoc;
-	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
-	{
-		g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-		return false;
-	}
+  // load xml file...
+  CStdString strXMLFile = GetSourcesFile();
+  CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
+  TiXmlDocument xmlDoc;
+  TiXmlElement *pRootElement = NULL;
+  if ( xmlDoc.LoadFile( strXMLFile.c_str() ) )
+  {
+    pRootElement = xmlDoc.RootElement();
+    CStdString strValue;
+    if (pRootElement)
+      strValue = pRootElement->Value();
+    if ( strValue != "sources")
+      CLog::Log(LOGERROR, __FUNCTION__" sources.xml file does not contain <sources>");
+  }
+  else
+    CLog::Log(LOGERROR, __FUNCTION__" Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
-	TiXmlElement* pRootElement =xmlDoc.RootElement();
-	CStdString strValue=pRootElement->Value();
-	if ( strValue != "xboxmediacenter")
-	{
-		g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>",strXMLFile.c_str());
-		return false;
-	}
+  // look for external sources file
+  CStdString strCached = "Z:\\remotesources.xml";
+  bool bRemoteSourceFile = false;
+  TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
+  if (pInclude)
+  {
+    CStdString strRemoteFile = pInclude->FirstChild()->Value();
+    if (!strRemoteFile.IsEmpty())
+    {
+      // local file is not allowed as a remote source
+      if (!CUtil::IsHD(strRemoteFile))
+      {
+        CLog::Log(LOGDEBUG, "Found <remote> tag");
+        CLog::Log(LOGDEBUG, "Attempting to retrieve remote file: %s", strRemoteFile.c_str());
+        // sometimes we have to wait for the network
+        if (g_network.IsAvailable())
+        {
+          // cache the external source file
+          if (CFile::Cache(strRemoteFile, strCached))
+          {
+            bRemoteSourceFile = true;
+            CLog::Log(LOGDEBUG, "Success! Remote sources will be used");
+          }
+        }
+        else
+          CLog::Log(LOGERROR, "Could not retrieve remote file, defaulting to local sources");
+      }
+      else
+        CLog::Log(LOGERROR, "Local harddrive path is not allowed as remote");
+    }
+  }
 
-	GetInteger(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE);
-	GetBoolean(pRootElement, "showfreemem", g_stSettings.m_bShowFreeMem);
+  // open cached external source file
+  if (bRemoteSourceFile)
+  {
+    strXMLFile = strCached;
+    if ( xmlDoc.LoadFile( strXMLFile.c_str() ) )
+    {
+      pRootElement = xmlDoc.RootElement();
+      CStdString strValue;
+      if (pRootElement)
+        strValue = pRootElement->Value();
+      if ( strValue != "sources")
+        CLog::Log(LOGERROR, __FUNCTION__" remote_sources.xml file does not contain <sources>");
+    }
+    else
+      CLog::Log(LOGERROR, __FUNCTION__" unable to load file: %s, Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+  }
 
-	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");
-	TiXmlNode* pFileType=pFileTypeIcons->FirstChild();
-	while (pFileType)
-	{
-		CFileTypeIcon icon;
-		icon.m_strName=".";
-		icon.m_strName+=pFileType->Value();
-		icon.m_strIcon=pFileType->FirstChild()->Value();
-		m_vecIcons.push_back(icon);
-		pFileType=pFileType->NextSibling();
-	}
+  if (pRootElement)
+  {
+    // parse my programs bookmarks...
+    CStdString strDefault;
+    GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
 
-	TiXmlElement* pSambaElement =pRootElement->FirstChildElement("samba");
-	if (pSambaElement)
-	{
-		GetString(pSambaElement, "workgroup", g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
-		GetString(pSambaElement, "winsserver", g_stSettings.m_strSambaWinsServer, "");
-		GetInteger(pSambaElement, "debuglevel", g_stSettings.m_iSambaDebugLevel , 0, 0, 100);
-		GetString(pSambaElement, "defaultusername", g_stSettings.m_strSambaDefaultUserName, "");
-		GetString(pSambaElement, "defaultpassword", g_stSettings.m_strSambaDefaultPassword, "");
+    GetShares(pRootElement, "pictures", m_vecMyPictureShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
 
-	}
+    // TODO: Get rid of filemanager sources eventually?
+    GetShares(pRootElement, "files", m_vecMyFilesShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
 
-	TiXmlElement* pDelaysElement =pRootElement->FirstChildElement("delays");
-	if (pDelaysElement)
-	{
-		TiXmlElement* pRemoteDelays			=pDelaysElement->FirstChildElement("remote");
-		TiXmlElement* pControllerDelays =pDelaysElement->FirstChildElement("controller");
-		if (pRemoteDelays)
-		{
-			GetInteger(pRemoteDelays, "move", g_stSettings.m_iMoveDelayIR,220,1,INT_MAX);
-			GetInteger(pRemoteDelays, "repeat", g_stSettings.m_iRepeatDelayIR,220,1,INT_MAX);
-		}
+    GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
 
-		if (pControllerDelays)
-		{
-			GetInteger(pControllerDelays, "move", g_stSettings.m_iMoveDelayController,220,1,INT_MAX);
-			GetInteger(pControllerDelays, "repeat", g_stSettings.m_iRepeatDelayController,220,1,INT_MAX);
-			GetFloat(pControllerDelays, "deadzone", g_stSettings.m_fAnalogDeadzoneController, 0.1f, 0.0f, 1.0f);
-		}
-	}
+    GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
+  }
+  if (!m_vecMyFilesShares.size())
+    g_mediaManager.GetLocalDrives(m_vecMyFilesShares, true);  // true to include Q
 
-	//GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
-	GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
-	while ( CUtil::HasSlashAtEnd(g_stSettings.szHomeDir) )
-	{
-		g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir)-1]=0;
-	}
-	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
+  bXboxMediacenter = true;
 
-	GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
-	if (g_stSettings.m_szCDDBIpAdres == "194.97.4.18")
-		GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
-	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
+  LoadRSSFeeds();
+  LoadUserFolderLayout();
 
-
-
-	GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
-	GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
-	GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
-	GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory,"");
-
-	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
-	GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory,"");
-
-	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
-
-	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.strm|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
-	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
-
-	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
-	g_stSettings.m_iStartupWindow += WINDOW_HOME;	// windows referenced from WINDOW_HOME
-
-	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
-	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
-	GetBoolean(pRootElement, "usePCDVDROM", g_stSettings.m_bUsePCDVDROM);
-
-	GetBoolean(pRootElement, "detectAsIso", g_stSettings.m_bDetectAsIso);
-
-	GetBoolean(pRootElement, "displayremotecodes", g_stSettings.m_bDisplayRemoteCodes);
-
-	GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
-	GetString(pRootElement, "cddaplayer", g_stSettings.m_szExternalCDDAPlayer,"");
-	GetBoolean(pRootElement, "mplayerdebug", g_stSettings.m_mplayerDebug);
-
-	GetString(pRootElement, "CDDARipPath", g_stSettings.m_strRipPath, "");
-
-	CStdString strDir;
-
-	strDir=g_stSettings.m_szShortcutDirectory;
-	ConvertHomeVar(strDir);
-	strcpy( g_stSettings.m_szShortcutDirectory, strDir.c_str() );
-
-	strDir=g_stSettings.szThumbnailsDirectory;
-	ConvertHomeVar(strDir);
-	strcpy( g_stSettings.szThumbnailsDirectory, strDir.c_str() );
-
-
-	strDir=g_stSettings.m_szAlbumDirectory;
-	ConvertHomeVar(strDir);
-	strcpy( g_stSettings.m_szAlbumDirectory, strDir.c_str() );
-
-	strDir=g_stSettings.m_szMusicRecordingDirectory;
-	ConvertHomeVar(strDir);
-	strcpy( g_stSettings.m_szMusicRecordingDirectory, strDir.c_str() );
-
-	strDir=g_stSettings.m_szScreenshotsDirectory;
-	ConvertHomeVar(strDir);
-	strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
-	while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
-	{
-		g_stSettings.m_szScreenshotsDirectory[strlen(g_stSettings.m_szScreenshotsDirectory)-1]=0;
-	}
-
-	if (g_stSettings.m_szShortcutDirectory[0])
-	{
-		CShare share;
-		share.strPath=g_stSettings.m_szShortcutDirectory;
-		share.strName="shortcuts";
-		m_vecMyProgramsBookmarks.push_back(share);
-	}
-
-
-	strDir=g_stSettings.m_szAlternateSubtitleDirectory;
-	ConvertHomeVar(strDir);
-	strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
-
-
-	// parse my programs bookmarks...
-	CStdString strDefault;
-	GetShares(pRootElement,"myprograms",m_vecMyProgramsBookmarks,strDefault);
-	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
-
-	GetShares(pRootElement,"pictures",m_vecMyPictureShares,strDefault);
-	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
-
-	GetShares(pRootElement,"files",m_vecMyFilesShares,strDefault);
-	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
-
-	GetShares(pRootElement,"music",m_vecMyMusicShares,strDefault);
-	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
-
-	GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
-	if (strDefault.size())
-		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
-
-	bXboxMediacenter=true;
-	return true;
+  return true;
 }
 
 void CSettings::ConvertHomeVar(CStdString& strText)
 {
-	// Replaces first occurence of $HOME with the home directory.
-	// "$HOME\bookmarks" becomes for instance "e:\apps\xbmp\bookmarks"
+  // Replaces first occurence of $HOME with the home directory.
+  // "$HOME\bookmarks" becomes for instance "e:\apps\xbmp\bookmarks"
 
-	char szText[1024];
-	char szTemp[1024];
-	char *pReplace,*pReplace2;
+  char szText[1024];
+  char szTemp[1024];
+  char *pReplace, *pReplace2;
 
-	CStdString strHomePath = "Q:";
-	strcpy(szText,strText.c_str());
+  CStdString strHomePath = "Q:";
+  strcpy(szText, strText.c_str());
 
-	pReplace = strstr(szText, "$HOME");
+  pReplace = strstr(szText, "$HOME");
 
-	if (pReplace!=NULL)
-	{
-		pReplace2 = pReplace + sizeof("$HOME")-1;
-		strcpy(szTemp, pReplace2);
-		strcpy(pReplace, strHomePath.c_str() );
-		strcat(szText, szTemp);
-	}
-	strText=szText;
-}
-
-void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items,CStdString& strDefault)
-{
-	CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
-	strDefault="";
-	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-	if (pChild)
-	{
-		pChild = pChild->FirstChild();
-		while (pChild>0)
-		{
-			CStdString strValue=pChild->Value();
-			if (strValue=="bookmark")
-			{
-				const TiXmlNode *pNodeName=pChild->FirstChild("name");
-				const TiXmlNode *pPathName=pChild->FirstChild("path");
-				const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
-				const TiXmlNode *pDepthNode=pChild->FirstChild("depth");
-				if (pNodeName && pPathName)
-				{
-					const char* szName=pNodeName->FirstChild()->Value();
-					CLog::Log(LOGDEBUG, "    Share Name: %s", szName);
-					const char* szPath=pPathName->FirstChild()->Value();
-					CLog::Log(LOGDEBUG, "    Share Path: %s", szPath);
-
-					CShare share;
-					share.strName=szName;
-					share.strPath=szPath;
-					share.m_iBufferSize=0;
-					share.m_iDepthSize=1;
-					CStdString strPath=share.strPath;
-					strPath.ToUpper();
-					if (strPath.Left(4)=="UDF:")
-					{
-						share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
-						share.strPath="D:\\";
-					}
-					else if (strPath.Left(11) =="SOUNDTRACK:")
-						share.m_iDriveType=SHARE_TYPE_LOCAL;
-					else if (CUtil::IsISO9660(share.strPath))
-						share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
-					else if (CUtil::IsDVD(share.strPath))
-						share.m_iDriveType = SHARE_TYPE_DVD;
-					else if (CUtil::IsRemote(share.strPath))
-						share.m_iDriveType = SHARE_TYPE_REMOTE;
-					else if (CUtil::IsHD(share.strPath))
-						share.m_iDriveType = SHARE_TYPE_LOCAL;
-					else
-						share.m_iDriveType = SHARE_TYPE_UNKNOWN;
-
-
-					if (pCacheNode)
-					{
-						share.m_iBufferSize=atoi( pCacheNode->FirstChild()->Value() );
-					}
-
-					if (pDepthNode)
-					{
-						share.m_iDepthSize=atoi( pDepthNode->FirstChild()->Value() );
-					}
-
-
-					ConvertHomeVar(share.strPath);
-
-					items.push_back(share);
-				}
-				else
-				{
-					CLog::Log(LOGERROR, "    <name> and/or <path> not properly defined within <bookmark>");
-				}
-
-			}
-			if (strValue=="default")
-			{
-				const TiXmlNode *pValueNode=pChild->FirstChild();
-				if (pValueNode)
-				{
-					const char* pszText=pChild->FirstChild()->Value();
-					if (strlen(pszText) > 0)
-						strDefault=pszText;
-					CLog::Log(LOGDEBUG, "    Setting <default> share to : %s", strDefault.c_str());
-				}
-			}
-			pChild=pChild->NextSibling();
-		}
-	}
-	else
-	{
-		CLog::Log(LOGERROR, "  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
-	}
-}
-
-void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue)
-{
-	strcpy(szValue,"");
-	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-	if (pChild)
-	{
-		if (pChild->FirstChild())
-		{
-			CStdString strValue=pChild->FirstChild()->Value();
-			if (strValue.size() )
-			{
-				if (strValue !="-")
-					strcpy(szValue,strValue.c_str());
-			}
-		}
-	}
-	if (strlen(szValue)==0)
-	{
-		strcpy(szValue,strDefaultValue.c_str());
-	}
-
-	CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), szValue);
-}
-
-void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
-{
-	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-	if (pChild)
-	{
-		iValue = atoi( pChild->FirstChild()->Value() );
-		if ((iValue<iMin) || (iValue>iMax)) iValue=iDefault;
-	}
-	else
-		iValue=iDefault;
-
-	CLog::Log(LOGDEBUG, "  %s: %d", strTagName.c_str(), iValue);
-}
-
-void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax)
-{
-	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-	if (pChild)
-	{
-		fValue = (float)atof( pChild->FirstChild()->Value() );
-		if ((fValue<fMin) || (fValue>fMax)) fValue=fDefault;
-	}
-	else
-		fValue=fDefault;
-
-	CLog::Log(LOGDEBUG, "  %s: %f", strTagName.c_str(), fValue);
-}
-
-void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue)
-{
-	char szString[128];
-	GetString(pRootElement,strTagName,szString,"");
-	if ( CUtil::cmpnocase(szString,"enabled")==0 ||
-		CUtil::cmpnocase(szString,"yes")==0 ||
-		CUtil::cmpnocase(szString,"on")==0 ||
-		CUtil::cmpnocase(szString,"true")==0 )
-	{
-		bValue = true;
-	}
-	else if (strlen(szString)!=0)
-		bValue = false;
-}
-
-void CSettings::GetHex(const TiXmlNode* pRootElement, const CStdString& strTagName, DWORD& dwHexValue, DWORD dwDefaultValue)
-{
-	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-	if (pChild)
-	{
-		sscanf(pChild->FirstChild()->Value(),"%x", &dwHexValue);
-	}
-	else
-	{
-		dwHexValue = dwDefaultValue;
-	}
-}
-
-void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
-{
-	TiXmlElement newElement(strTagName);
-	TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
-	if (pNewNode)
-	{
-		TiXmlText value(strValue);
-		pNewNode->InsertEndChild(value);
-	}
-}
-
-void CSettings::SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const
-{
-	CStdString strValue;
-	strValue.Format("%d",iValue);
-	SetString(pRootNode, strTagName, strValue);
-}
-
-void CSettings::SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const
-{
-	CStdString strValue;
-	strValue.Format("%f",fValue);
-	SetString(pRootNode, strTagName, strValue);
-}
-
-void CSettings::SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const
-{
-	if (bValue)
-		SetString(pRootNode, strTagName, "true");
-	else
-		SetString(pRootNode, strTagName, "false");
-}
-
-void CSettings::SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const
-{
-	CStdString strValue;
-	strValue.Format("%x",dwHexValue);
-	SetString(pRootNode, strTagName, strValue);
-}
-
-bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile)
-{
-	// reset the calibration to the defaults
-	//g_graphicsContext.SetD3DParameters(NULL, m_ResInfo);
-	//for (int i=0; i<10; i++)
-	//	g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-
-  const TiXmlElement *pRootElement;
-  CStdString strTagName = pElement->Value();
-  if (!strcmp(strTagName.c_str(), "calibration")) {
-    pRootElement = pElement;
-  }
-  else {
-	  pRootElement = pElement->FirstChildElement("calibration");
-  }
-	if (!pRootElement)
-	{
-    g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strSettingsFile.c_str());
-    //be nice, try to load from "old" calibration.xml file
-    if (CUtil::FileExists("T:\\calibration.xml")) {
-	    TiXmlDocument xmlDoc;
-	    if (!xmlDoc.LoadFile("T:\\calibration.xml"))
-	    {
-		    return false;
-	    }
-	    TiXmlElement *pOldConfigRootElement = xmlDoc.RootElement();
-      return LoadCalibration(pOldConfigRootElement, "T:\\calibration.xml");
-    }
-    return false;
-	}
-	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
-	while (pResolution)
-	{
-		// get the data for this resolution
-		int iRes;
-		GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, PAL60_16x9); //PAL4x3 as default data
-		GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
-		// get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
-		float fSafe;
-		if (iRes == PAL_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3 || iRes == HDTV_480p_4x3)
-			fSafe = 0.1f;
-		else
-			fSafe = 0.035f;
-		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,(int)((1-fSafe)*m_ResInfo[iRes].iHeight),m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*5/4);
-		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
-		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight);
-
-		// get the overscan info
-		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
-		if (pOverscan)
-		{
-			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-m_ResInfo[iRes].iWidth/4,m_ResInfo[iRes].iWidth/4);
-			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-m_ResInfo[iRes].iHeight/4,m_ResInfo[iRes].iHeight/4);
-			GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iWidth/2,m_ResInfo[iRes].iWidth*3/2);
-			GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
-		}
-		CLog::Log(LOGINFO, "  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
-		CLog::Log(LOGINFO, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i",
-			m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
-			m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top,
-			m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].Overscan.bottom,
-			m_ResInfo[iRes].iOSDYOffset);
-
-		// iterate around
-		pResolution = pResolution->NextSiblingElement("resolution");
-	}
-  return true;
-}
-
-bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
-{
-	TiXmlElement xmlRootElement("calibration");
-	TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
-	for (int i=0; i<10; i++)
-	{
-		// Write the resolution tag
-		TiXmlElement resElement("resolution");
-		TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-		// Now write each of the pieces of information we need...
-		SetString(pNode, "description", m_ResInfo[i].strMode);
-		SetInteger(pNode, "id", i);
-		SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
-		SetInteger(pNode, "osdyoffset", m_ResInfo[i].iOSDYOffset);
-		SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
-		// create the overscan child
-		TiXmlElement overscanElement("overscan");
-		TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-		SetInteger(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
-		SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
-		SetInteger(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
-		SetInteger(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
-	}
-  return true;
-}
-
-bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadprofiles)
-{
-	// load the xml file
-	TiXmlDocument xmlDoc;
-	if (!xmlDoc.LoadFile(strSettingsFile))
-	{
-		g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-		return false;
-	}
-	TiXmlElement *pRootElement = xmlDoc.RootElement();
-	if (CUtil::cmpnocase(pRootElement->Value(),"settings")!=0)
-	{
-		g_LoadErrorStr.Format("%s\nDoesn't contain <settings>",strSettingsFile.c_str());
-		return false;
-	}
-
-  if (loadprofiles) {
-    LoadProfiles(pRootElement, strSettingsFile);
-    if (m_vecProfiles.size() == 0) {
-      //no profiles yet, make one based on the default settings
-      CProfile profile;
-      profile.setFileName("profile0.xml");
-      profile.setName("Default settings");
-      m_vecProfiles.push_back(profile);
-      SaveSettingsToProfile(0);
-    }
-  }
-
-	TiXmlElement *pElement = pRootElement->FirstChildElement("lcdsettings");
-	if (pElement)
-	{
-		GetBoolean(pElement, "lcdon", g_stSettings.m_bLCDUsed);
-		GetInteger(pElement, "lcdmode",g_stSettings.m_iLCDMode,0,0,1);
-		GetInteger(pElement, "lcdcolums",g_stSettings.m_iLCDColumns,20,1,20);
-		GetInteger(pElement, "lcdrows",g_stSettings.m_iLCDRows,4,1,4);
-		GetInteger(pElement, "lcdbacklight",g_stSettings.m_iLCDBackLight,80,0,100);
-		GetInteger(pElement, "lcdbrightness",g_stSettings.m_iLCDBrightness,100,0,100);
-		GetInteger(pElement, "lcdtype",g_stSettings.m_iLCDType,0,0,1);
-		GetInteger(pElement, "lcdrow1",g_stSettings.m_iLCDAdress[0],0,0,0x400);
-		GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
-		GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
-		GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
-		GetInteger(pElement, "lcdchip",g_stSettings.m_iLCDModChip,0,0,1);
-		GetInteger(pElement, "lcdcontrast",g_stSettings.m_iLCDContrast,100,0,100);
-	}
-
-	// cache settings
-	pElement = pRootElement->FirstChildElement("cachesettings");
-	if (pElement)
-	{
-		GetInteger(pElement, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO],1024,0,16384);
-		GetInteger(pElement, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO],8192,0,16384);
-		GetInteger(pElement, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO],8192,0,16384);
-		GetInteger(pElement, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO],8192,0,16384);
-		GetInteger(pElement, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO],512,0,16384);
-		GetInteger(pElement, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO],2048,0,16384);
-		GetInteger(pElement, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB],16384,0,16384);
-
-	}
-	// mypictures
-	pElement = pRootElement->FirstChildElement("mypictures");
-	if (pElement)
-	{
-		GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "picturesrooticons", g_stSettings.m_iMyPicturesRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod,0,0,2);
-		GetInteger(pElement, "picturessortmethodroot",g_stSettings.m_iMyPicturesRootSortMethod,0,0,3);
-		GetBoolean(pElement, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
-		GetBoolean(pElement, "picturessortascendingroot", g_stSettings.m_bMyPicturesRootSortAscending);
-	}
-	// myfiles
-	pElement = pRootElement->FirstChildElement("myfiles");
-	if (pElement)
-	{
-		TiXmlElement *pChild = pElement->FirstChildElement("source");
-		if (pChild)
-		{
-			GetBoolean(pChild, "srcfilesviewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
-			GetBoolean(pChild, "srcfilesrooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
-			GetInteger(pChild, "srcfilessortmethod",g_stSettings.m_iMyFilesSourceSortMethod,0,0,2);
-			GetInteger(pChild, "srcfilessortmethodroot",g_stSettings.m_iMyFilesSourceRootSortMethod,0,0,3);
-			GetBoolean(pChild, "srcfilessortascending", g_stSettings.m_bMyFilesSourceSortAscending);
-			GetBoolean(pChild, "srcfilessortascendingroot", g_stSettings.m_bMyFilesSourceRootSortAscending);
-		}
-		pChild = pElement->FirstChildElement("dest");
-		if (pChild)
-		{
-			GetBoolean(pChild, "dstfilesviewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
-			GetBoolean(pChild, "dstfilesrooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
-			GetInteger(pChild, "dstfilessortmethod",g_stSettings.m_iMyFilesDestSortMethod,0,0,2);
-			GetInteger(pChild, "dstfilessortmethodroot",g_stSettings.m_iMyFilesDestRootSortMethod,0,0,3);
-			GetBoolean(pChild, "dstfilessortascending", g_stSettings.m_bMyFilesDestSortAscending);
-			GetBoolean(pChild, "dstfilessortascendingroot", g_stSettings.m_bMyFilesDestRootSortAscending);
-		}
-	}
-
-	// mymusic settings
-	pElement = pRootElement->FirstChildElement("mymusic");
-	if (pElement)
-	{
-		TiXmlElement *pChild = pElement->FirstChildElement("songs");
-		if (pChild)
-		{
-			GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons,VIEW_AS_ICONS,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "songssortmethod",g_stSettings.m_iMyMusicSongsSortMethod,0,0,8);
-			GetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod,0,0,9);
-			GetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
-			GetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
-			GetBoolean(pChild, "songsuseplaylist",g_stSettings.m_bMyMusicSongsUsePlaylist);
-			GetBoolean(pChild, "songsautoswitchthumbslist",g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList);
-			GetBoolean(pChild, "songsautoswitchbigicons",g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs);
-		}
-		pChild = pElement->FirstChildElement("album");
-		if (pChild)
-		{
-			GetInteger(pChild, "albumviewicons", g_stSettings.m_iMyMusicAlbumViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_ICONS);
-			GetInteger(pChild, "albumrooticons", g_stSettings.m_iMyMusicAlbumRootViewAsIcons,VIEW_AS_ICONS,VIEW_AS_LIST,VIEW_AS_ICONS);
-			GetInteger(pChild, "albumsortmethod",g_stSettings.m_iMyMusicAlbumSortMethod,3,3,5);
-			GetInteger(pChild, "albumsortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod,7,6,7);
-			GetBoolean(pChild, "albumsortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
-			GetBoolean(pChild, "albumsortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
-			GetBoolean(pChild, "albumshowrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
-		}
-		pChild = pElement->FirstChildElement("artist");
-		if (pChild)
-		{
-			GetInteger(pChild, "artistsongsviewicons", g_stSettings.m_iMyMusicArtistsSongsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "artistalbumsviewicons", g_stSettings.m_iMyMusicArtistsAlbumsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "artistallsongssortmethod",g_stSettings.m_iMyMusicArtistsAllSongsSortMethod,4,5,5); //title
-			GetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod,0,0,0); //Only name (??)
-			GetInteger(pChild, "artistalbumsortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSortMethod,7,6,7);
-			GetInteger(pChild, "artistalbumsongssortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSongsSortMethod,3,3,5);
-			GetBoolean(pChild, "artistsortalbumsascending",g_stSettings.m_bMyMusicArtistsAlbumsSortAscending);
-			GetBoolean(pChild, "artistsortallsongsascending",g_stSettings.m_bMyMusicArtistsAllSongsSortAscending);
-			GetBoolean(pChild, "artistsortalbumsongsascending",g_stSettings.m_bMyMusicArtistsAlbumSongsSortAscending);
-			GetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
-		}
-		pChild = pElement->FirstChildElement("genre");
-		if (pChild)
-		{
-			GetInteger(pChild, "genreviewicons", g_stSettings.m_iMyMusicGenresViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "genrerooticons", g_stSettings.m_iMyMusicGenresRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetInteger(pChild, "genresortmethod",g_stSettings.m_iMyMusicGenresSortMethod,5,4,5);	//	titel
-			GetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod,0,0,0); // Only name (??)
-			GetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
-			GetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
-		}
-		pChild = pElement->FirstChildElement("top100");
-		if (pChild)
-		{
-			GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons,VIEW_AS_LIST,VIEW_AS_ICONS,VIEW_AS_ICONS);
-		}
-		pChild = pElement->FirstChildElement("playlist");
-		if (pChild)
-		{
-			GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetBoolean(pChild, "playlistrepeat",g_stSettings.m_bMyMusicPlaylistRepeat);
-		}
-		GetBoolean(pElement, "repeat",g_stSettings.m_bMyMusicRepeat);
-		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
-		GetBoolean(pElement, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
-    GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-		GetBoolean(pElement, "hidetracknumber", g_stSettings.m_bMyMusicHideTrackNumber);
-	}
-	// myvideos settings
-	pElement = pRootElement->FirstChildElement("myvideos");
-	if (pElement)
-	{
-		GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow,WINDOW_VIDEOS,WINDOW_VIDEO_GENRE,WINDOW_VIDEO_TITLE);
-		GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoVideoStack, STACK_NONE, STACK_NONE, STACK_FUZZY);
-		GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
-		GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
-		GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
-		GetString(pElement, "stacktokens", g_stSettings.m_szMyVideoStackTokens, g_stSettings.m_szMyVideoStackTokens);
-		GetString(pElement, "stackseparators", g_stSettings.m_szMyVideoStackSeparators, g_stSettings.m_szMyVideoStackSeparators);
-
-		StringUtils::SplitString(g_stSettings.m_szMyVideoStackTokens, "|", g_settings.m_szMyVideoStackTokensArray);
-		g_settings.m_szMyVideoStackSeparatorsString = g_stSettings.m_szMyVideoStackSeparators;
-
-		for (int i = 0; i < (int)g_settings.m_szMyVideoStackTokensArray.size(); i++)
-			g_settings.m_szMyVideoStackTokensArray[i].MakeLower();
-
-		GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
-		GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
-		GetString(pElement, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators, g_stSettings.m_szMyVideoCleanSeparators);
-
-		StringUtils::SplitString(g_stSettings.m_szMyVideoCleanTokens, "|", g_settings.m_szMyVideoCleanTokensArray);
-		g_settings.m_szMyVideoCleanSeparatorsString = g_stSettings.m_szMyVideoCleanSeparators;
-
-		for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
-			g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
-
-		GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetBoolean(pElement, "videoplaylistrepeat",g_stSettings.m_bMyVideoPlaylistRepeat);
-		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod,0,0,2);
-		GetInteger(pElement, "videosortmethodroot",g_stSettings.m_iMyVideoRootSortMethod,0,0,3);
-		GetBoolean(pElement, "videosortascending", g_stSettings.m_bMyVideoSortAscending);
-		GetBoolean(pElement, "videosortascendingroot", g_stSettings.m_bMyVideoRootSortAscending);
-
-		GetInteger(pElement, "genreviewicons", g_stSettings.m_iMyVideoGenreViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "genrerooticons", g_stSettings.m_iMyVideoGenreRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod,0,0,2);
-		GetInteger(pElement, "genresortmethodroot",g_stSettings.m_iMyVideoGenreRootSortMethod,0,0,0);	//	by label only
-		GetBoolean(pElement, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
-		GetBoolean(pElement, "genresortascendingroot", g_stSettings.m_bMyVideoGenreRootSortAscending);
-
-		GetInteger(pElement, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "actorsortmethod",g_stSettings.m_iMyVideoActorSortMethod,0,0,2);
-		GetInteger(pElement, "actorsortmethodroot",g_stSettings.m_iMyVideoActorRootSortMethod,0,0,0);	//	by label only
-		GetBoolean(pElement, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
-		GetBoolean(pElement, "actorsortascendingroot", g_stSettings.m_bMyVideoActorRootSortAscending);
-
-		GetInteger(pElement, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod,0,0,2);
-		GetInteger(pElement, "yearsortmethodroot",g_stSettings.m_iMyVideoYearRootSortMethod,0,0,0);	//	by label only
-		GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
-		GetBoolean(pElement, "yearsortascendingroot", g_stSettings.m_bMyVideoYearRootSortAscending);
-
-		GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-		GetInteger(pElement, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod,0,0,3);
-		GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
-
-		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
-		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
-
-		GetInteger(pElement, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent, 0, 0, 200);
-		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
-		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-		GetInteger(pElement, "subtitlettfstyle", g_stSettings.m_iSubtitleTTFStyle, XFONT_BOLD, 1, 4);
-		GetHex(pElement, "subtitlettfcolor", g_stSettings.m_iSubtitleTTFColor, 0xffffff);
-		GetString(pElement, "subtitlecharset", g_stSettings.m_szSubtitleCharset, "ISO-8859-1");
-		GetString(pElement, "stringcharset", g_stSettings.m_szStringCharset, "ISO-8859-1");
-		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
-		GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries,3,1,10);
-		GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay,300,100,5000); //MS
-	}
-	// myscripts settings
-	pElement = pRootElement->FirstChildElement("myscripts");
-	if (pElement)
-	{
-		GetBoolean(pElement, "scriptsviewicons", g_stSettings.m_bScriptsViewAsIcons);
-		GetBoolean(pElement, "scriptsrooticons", g_stSettings.m_bScriptsRootViewAsIcons);
-		GetInteger(pElement, "scriptssortmethod",g_stSettings.m_iScriptsSortMethod,0,0,2);
-		GetBoolean(pElement, "scriptssortascending", g_stSettings.m_bScriptsSortAscending);
-	}
-	// general settings
-	pElement = pRootElement->FirstChildElement("general");
-	if (pElement)
-	{
-		GetString(pElement, "skin", g_stSettings.szDefaultSkin, g_stSettings.szDefaultSkin);
-		GetBoolean(pElement, "timeserver", g_stSettings.m_bTimeServerEnabled);
-		GetBoolean(pElement, "ftpserver", g_stSettings.m_bFTPServerEnabled);
-		GetBoolean(pElement, "httpserver", g_stSettings.m_bHTTPServerEnabled);
-		GetBoolean(pElement, "cddb", g_stSettings.m_bUseCDDB);
-		GetInteger(pElement, "hdspindowntime", g_stSettings.m_iHDSpinDownTime,5,0,INT_MAX);
-		GetBoolean(pElement, "autohdspindownaudio", g_stSettings.m_bHDRemoteplaySpinDownAudio);
-		GetBoolean(pElement, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
-		GetInteger(pElement, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime,20,5,INT_MAX);
-		GetInteger(pElement, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration,20,0,INT_MAX);
-
-		GetBoolean(pElement, "autorundvd", g_stSettings.m_bAutorunDVD);
-		GetBoolean(pElement, "autorunvcd", g_stSettings.m_bAutorunVCD);
-		GetBoolean(pElement, "autoruncdda", g_stSettings.m_bAutorunCdda);
-		GetBoolean(pElement, "autorunxbox", g_stSettings.m_bAutorunXbox);
-		GetBoolean(pElement, "autorunmusic", g_stSettings.m_bAutorunMusic);
-		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
-		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
-		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
-		GetString(pElement, "skinfontset", g_stSettings.m_szSkinFontSet, g_stSettings.m_szSkinFontSet);
-
-
-		GetBoolean(pElement, "flipbidicharset", g_stSettings.m_bFlipBiDiCharset);
-
-		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
-		GetBoolean(pElement, "enablerss", g_stSettings.m_bEnableRSS);
-
-    GetBoolean(pElement, "autotemperature",   g_stSettings.m_bAutoTemperature);
-    GetInteger(pElement, "targettemperature", g_stSettings.m_iTargetTemperature, 55, 40, 68);
-    GetBoolean(pElement, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
-    GetInteger(pElement, "fanspeed",          g_stSettings.m_iFanSpeed, g_stSettings.m_iFanSpeed, 5, 50);
-
-		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime,3,1,INT_MAX);	// CB: SCREENSAVER PATCH
-		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
-		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
-		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,-1,-1,INT_MAX);
-		GetInteger(pElement, "weatherrefresh", g_stSettings.m_iWeatherRefresh, 15, 15, 120);	//WEATHER SETTINGS
-		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
-		GetString(pElement, "weatherspeed", g_stSettings.m_szWeatherFSpeed, "K");				//WEATHER SETTINGS
-		GetString(pElement, "areacode1", g_stSettings.m_szWeatherArea[0], "UKXX0085");			//WEATHER SETTINGS
-		GetString(pElement, "areacode2", g_stSettings.m_szWeatherArea[1], "NLXX0002");			//WEATHER SETTINGS
-		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
-		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
-		GetInteger(pElement, "musicosdtimeout", g_stSettings.m_iMusicOSDTimeout,5,0,INT_MAX);
-		GetBoolean(pElement, "hideextensions", g_stSettings.m_bHideExtensions);
-		GetBoolean(pElement, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
-
-		GetString(pElement, "ipassignment", g_stSettings.m_strIPAssignment, "dash");
-		GetString(pElement, "ipadres", g_stSettings.m_strLocalIPAdres, "192.168.0.3");
-		GetString(pElement, "netmask", g_stSettings.m_strLocalNetmask, "255.255.255.0");
-		GetString(pElement, "defaultgateway", g_stSettings.m_strGateway, "192.168.0.1");
-		GetString(pElement, "nameserver", g_stSettings.m_strNameServer, "0.0.0.0");
-
-		GetBoolean(pElement, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
-		GetString(pElement, "httpproxyhost", g_stSettings.m_szHTTPProxy, "");
-		GetInteger(pElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort, 8080, 1, 65535);
-
-		GetString(pElement, "kaiusername", g_stSettings.szOnlineUsername, "");
-		GetString(pElement, "kaipassword", g_stSettings.szOnlinePassword, "");
-
-		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.130.100");
-
-		GetInteger(pElement, "webserverport", g_stSettings.m_iWebServerPort, 80, 0, 65535);
-	}
-
-	// slideshow settings
-	pElement = pRootElement->FirstChildElement("slideshow");
-	if (pElement)
-	{
-		GetInteger(pElement, "transistiontime", g_stSettings.m_iSlideShowTransistionTime,1500,500,INT_MAX);
-		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,9000,500,INT_MAX);
-		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.20f,0,0.5f);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.07f,0,0.5f);
-		GetFloat(pElement, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation,0.3f,0,0.5f);
-		GetBoolean(pElement, "shuffle", g_stSettings.m_bSlideShowShuffle);
-	}
-	// screen settings
-	pElement = pRootElement->FirstChildElement("screen");
-	if (pElement)
-	{
-		GetInteger(pElement, "resolution",(int &)g_stSettings.m_GUIResolution,(int)PAL_4x3,(int)HDTV_1080i,(int)PAL60_16x9);
-		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX,0,INT_MIN,INT_MAX);
-		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY,0,INT_MIN,INT_MAX);
-    GetInteger(pElement, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo, 1, 0, 5);
-    GetInteger(pElement, "flickerfilterui", g_stSettings.m_iFlickerFilterUI, 5, 0, 5);
-		GetBoolean(pElement, "softenvideo", g_stSettings.m_bSoftenVideo);
-		GetBoolean(pElement, "softenui", g_stSettings.m_bSoftenUI);
-		GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
-		GetInteger(pElement, "viewmode", g_stSettings.m_iViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_fCustomZoomAmount, 1.0f, 1.0f, 2.0f);
-		GetFloat(pElement, "pixelratio", g_stSettings.m_fCustomPixelRatio, 1.0f, 0.5f, 2.0f);
-		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
-		GetBoolean(pElement, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
-		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
-		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
-		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
-	}
-	// audio settings
-	pElement = pRootElement->FirstChildElement("audio");
-	if (pElement)
-	{
-		GetBoolean(pElement, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
-		GetInteger(pElement, "channels",g_stSettings.m_iChannels,2,0,INT_MAX);
-		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
-		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
-		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
-		GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification,0.0f,-200.0f,60.0f);
-		GetFloat(pElement, "headroom", g_stSettings.m_fVolumeHeadroom,6.0f,0.0f,12.0f);
-		GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
-		GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
-		//DON'T ALLOW AUDIO RESAMPLING FOR VIDEO AT ALL. ALLWAYS LET IT BE DISBLED
-		//GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
-		GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
-	}
-
-	// post processing
-	pElement = pRootElement->FirstChildElement("PostProcessing");
-	if (pElement)
-	{
-		GetBoolean(pElement, "PPAuto", g_stSettings.m_bPPAuto);
-		GetBoolean(pElement, "PPVertical", g_stSettings.m_bPPVertical);
-		GetBoolean(pElement, "PPHorizontal", g_stSettings.m_bPPHorizontal);
-		GetBoolean(pElement, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
-		GetBoolean(pElement, "PPdering", g_stSettings.m_bPPdering);
-		GetInteger(pElement, "PPHorizontalVal",g_stSettings.m_iPPHorizontal,0,INT_MIN,INT_MAX);
-		GetInteger(pElement, "PPVerticalVal",g_stSettings.m_iPPVertical,0,INT_MIN,INT_MAX);
-
-		g_stSettings.m_iPPHorizontal=0;
-		g_stSettings.m_iPPVertical=0;
-
-	}
-
-	// my programs
-	pElement = pRootElement->FirstChildElement("myprograms");
-	if (pElement)
-	{
-		GetInteger(pElement, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons,1,0,2);
-		GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,3);
-		GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-
-		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
-		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-		GetBoolean(pElement, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
-		GetBoolean(pElement, "noshortcuts", g_stSettings.m_bMyProgramsNoShortcuts);
-	}
-
-	// cdda ripper settings
-	pElement = pRootElement->FirstChildElement("cddaripper");
-	if (pElement)
-	{
-		GetBoolean(pElement, "ripwithtracknumber", g_stSettings.m_bRipWithTrackNumber);
-		GetInteger(pElement, "ripencoder", g_stSettings.m_iRipEncoder, CDDARIP_ENCODER_LAME, 0, 9);
-		GetInteger(pElement, "ripquality", g_stSettings.m_iRipQuality, CDDARIP_QUALITY_CBR, 0, 9);
-		GetInteger(pElement, "ripbitrate", g_stSettings.m_iRipBitRate, 192, 64, 512);
-	}
-
-	// Cd+g settings
-	pElement = pRootElement->FirstChildElement("cdg");
-	if (pElement)
-	{
-		GetBoolean(pElement, "EnableCdg", g_stSettings.m_bIsCdgEnabled);
-		GetInteger(pElement, "CdgFgAlpha", g_stSettings.m_iCdgFgAlpha,255, 0, 255);
-		GetInteger(pElement, "CdgBgAlpha", g_stSettings.m_iCdgBgAlpha,255, 0, 255);
-		GetFloat(pElement,"CdgAVDelay",g_stSettings.m_fCdgAVDelay,0.8f,-3.0f,3.0f);
-	}
-
-  LoadCalibration(pRootElement, strSettingsFile);
-
-	return true;
-}
-
-bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool saveprofiles) const
-{
-	TiXmlDocument xmlDoc;
-	TiXmlElement xmlRootElement("settings");
-	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-	if (!pRoot) return false;
-	// write our tags one by one - just a big list for now (can be flashed up later)
-
-  if (saveprofiles) {
-    SaveProfiles(pRoot);
-  }
-
-	TiXmlElement LCDNode("lcdsettings");
-	TiXmlNode *pNode = pRoot->InsertEndChild(LCDNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "lcdon", g_stSettings.m_bLCDUsed);
-	SetInteger(pNode, "lcdmode",g_stSettings.m_iLCDMode);
-	SetInteger(pNode, "lcdcolums",g_stSettings.m_iLCDColumns);
-	SetInteger(pNode, "lcdrows",g_stSettings.m_iLCDRows);
-	SetInteger(pNode, "lcdbacklight",g_stSettings.m_iLCDBackLight);
-	SetInteger(pNode, "lcdbrightness",g_stSettings.m_iLCDBrightness);
-	SetInteger(pNode, "lcdtype",g_stSettings.m_iLCDType);
-	SetInteger(pNode, "lcdrow1",g_stSettings.m_iLCDAdress[0]);
-	SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
-	SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
-	SetInteger(pNode, "lcdrow4",g_stSettings.m_iLCDAdress[3]);
-	SetInteger(pNode, "lcdchip",g_stSettings.m_iLCDModChip);
-	SetInteger(pNode, "lcdcontrast",g_stSettings.m_iLCDContrast);
-
-	// myprograms settings
-	TiXmlElement programsNode("myprograms");
-	pNode = pRoot->InsertEndChild(programsNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons);
-	SetInteger(pNode, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
-	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
-	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-	SetBoolean(pNode, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
-	SetBoolean(pNode, "noshortcuts", g_stSettings.m_bMyProgramsNoShortcuts);
-
-
-	// cache settings
-	TiXmlElement cacheNode("cachesettings");
-	pNode = pRoot->InsertEndChild(cacheNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO]);
-	SetInteger(pNode, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO]);
-	SetInteger(pNode, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB]);
-
-	SetInteger(pNode, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO]);
-	SetInteger(pNode, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO]);
-	SetInteger(pNode, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB]);
-
-	SetInteger(pNode, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO]);
-	SetInteger(pNode, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO]);
-	SetInteger(pNode, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB]);
-
-	SetInteger(pNode, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO]);
-	SetInteger(pNode, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO]);
-	SetInteger(pNode, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB]);
-
-	SetInteger(pNode, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO]);
-	SetInteger(pNode, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO]);
-	SetInteger(pNode, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB]);
-
-	// mypictures settings
-	TiXmlElement picturesNode("mypictures");
-	pNode = pRoot->InsertEndChild(picturesNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons);
-	SetInteger(pNode, "picturesrooticons", g_stSettings.m_iMyPicturesRootViewAsIcons);
-	SetInteger(pNode, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod);
-	SetInteger(pNode, "picturessortmethodroot",g_stSettings.m_iMyPicturesRootSortMethod);
-	SetBoolean(pNode, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
-	SetBoolean(pNode, "picturessortascendingroot", g_stSettings.m_bMyPicturesRootSortAscending);
-
-	// myfiles settings
-	TiXmlElement filesNode("myfiles");
-	pNode = pRoot->InsertEndChild(filesNode);
-	if (!pNode) return false;
-	{
-		TiXmlElement childNode("source");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetBoolean(pChild, "srcfilesviewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
-		SetBoolean(pChild, "srcfilesrooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
-		SetInteger(pChild, "srcfilessortmethod",g_stSettings.m_iMyFilesSourceSortMethod);
-		SetInteger(pChild, "srcfilessortmethodroot",g_stSettings.m_iMyFilesSourceRootSortMethod);
-		SetBoolean(pChild, "srcfilessortascending", g_stSettings.m_bMyFilesSourceSortAscending);
-		SetBoolean(pChild, "srcfilessortascendingroot", g_stSettings.m_bMyFilesSourceRootSortAscending);
-	}
-	{
-		TiXmlElement childNode("dest");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetBoolean(pChild, "dstfilesviewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
-		SetBoolean(pChild, "dstfilesrooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
-		SetInteger(pChild, "dstfilessortmethod",g_stSettings.m_iMyFilesDestSortMethod);
-		SetInteger(pChild, "dstfilessortmethodroot",g_stSettings.m_iMyFilesDestRootSortMethod);
-		SetBoolean(pChild, "dstfilessortascending", g_stSettings.m_bMyFilesDestSortAscending);
-		SetBoolean(pChild, "dstfilessortascendingroot", g_stSettings.m_bMyFilesDestRootSortAscending);
-	}
-
-	// mymusic settings
-	TiXmlElement musicNode("mymusic");
-	pNode = pRoot->InsertEndChild(musicNode);
-	if (!pNode) return false;
-	{
-		TiXmlElement childNode("songs");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons);
-		SetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons);
-		SetInteger(pChild, "songssortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
-		SetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
-		SetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
-		SetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
-		SetBoolean(pChild, "songsuseplaylist",g_stSettings.m_bMyMusicSongsUsePlaylist);
-		SetBoolean(pChild, "songsautoswitchthumbslist",g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList);
-		SetBoolean(pChild, "songsautoswitchbigicons",g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs);
-	}
-	{
-		TiXmlElement childNode("album");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetInteger(pChild, "albumviewicons", g_stSettings.m_iMyMusicAlbumViewAsIcons);
-		SetInteger(pChild, "albumrooticons", g_stSettings.m_iMyMusicAlbumRootViewAsIcons);
-		SetInteger(pChild, "albumsortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
-		SetInteger(pChild, "albumsortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
-		SetBoolean(pChild, "albumsortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
-		SetBoolean(pChild, "albumsortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
-		SetBoolean(pChild, "albumshowrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
-	}
-	{
-		TiXmlElement childNode("artist");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetInteger(pChild, "artistsongsviewicons", g_stSettings.m_iMyMusicArtistsSongsViewAsIcons);
-		SetInteger(pChild, "artistalbumsviewicons", g_stSettings.m_iMyMusicArtistsAlbumsViewAsIcons);
-		SetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons);
-		SetInteger(pChild, "artistallsongssortmethod",g_stSettings.m_iMyMusicArtistsAllSongsSortMethod);
-		SetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
-		SetInteger(pChild, "artistalbumsortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSortMethod);
-		SetInteger(pChild, "artistalbumsongssortmethod",g_stSettings.m_iMyMusicArtistsAlbumsSongsSortMethod);
-		SetBoolean(pChild, "artistsortalbumsascending",g_stSettings.m_bMyMusicArtistsAlbumsSortAscending);
-		SetBoolean(pChild, "artistsortallsongsascending",g_stSettings.m_bMyMusicArtistsAllSongsSortAscending);
-		SetBoolean(pChild, "artistsortalbumsongsascending",g_stSettings.m_bMyMusicArtistsAlbumSongsSortAscending);
-		SetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
-	}
-	{
-		TiXmlElement childNode("genre");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetInteger(pChild, "genreviewicons", g_stSettings.m_iMyMusicGenresViewAsIcons);
-		SetInteger(pChild, "genrerooticons", g_stSettings.m_iMyMusicGenresRootViewAsIcons);
-		SetInteger(pChild, "genresortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
-		SetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
-		SetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
-		SetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
-	}
-	{
-		TiXmlElement childNode("top100");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons);
-	}
-	{
-		TiXmlElement childNode("playlist");
-		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-		if (!pChild) return false;
-		SetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons);
-		SetBoolean(pChild, "playlistrepeat",g_stSettings.m_bMyMusicPlaylistRepeat);
-	}
-
-	SetBoolean(pNode, "repeat",g_stSettings.m_bMyMusicRepeat);
-	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
-	SetBoolean(pNode, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
-  SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-	SetBoolean(pNode, "hidetracknumber", g_stSettings.m_bMyMusicHideTrackNumber);
-
-	// myvideos settings
-	TiXmlElement videosNode("myvideos");
-	pNode = pRoot->InsertEndChild(videosNode);
-	if (!pNode) return false;
-
-	SetInteger(pNode, "startwindow",g_stSettings.m_iVideoStartWindow);
-	SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoVideoStack);
-	SetBoolean(pNode, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
-	SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
-	SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
-	SetString(pNode, "stacktokens", g_stSettings.m_szMyVideoStackTokens);
-	SetString(pNode, "stackseparators", g_stSettings.m_szMyVideoStackSeparators);
-
-	SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
-	SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
-	SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
-
-	SetInteger(pNode, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons);
-	SetBoolean(pNode, "videoplaylistrepeat", g_stSettings.m_bMyVideoPlaylistRepeat);
-	SetInteger(pNode, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons);
-	SetInteger(pNode, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons);
-	SetInteger(pNode, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);
-	SetInteger(pNode, "videosortmethodroot",g_stSettings.m_iMyVideoRootSortMethod);
-	SetBoolean(pNode, "videosortascending", g_stSettings.m_bMyVideoSortAscending);
-	SetBoolean(pNode, "videosortascendingroot", g_stSettings.m_bMyVideoRootSortAscending);
-
-	SetInteger(pNode, "genreviewicons", g_stSettings.m_iMyVideoGenreViewAsIcons);
-	SetInteger(pNode, "genrerooticons", g_stSettings.m_iMyVideoGenreRootViewAsIcons);
-	SetInteger(pNode, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod);
-	SetInteger(pNode, "genresortmethodroot",g_stSettings.m_iMyVideoGenreRootSortMethod);
-	SetBoolean(pNode, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
-	SetBoolean(pNode, "genresortascendingroot", g_stSettings.m_bMyVideoGenreRootSortAscending);
-
-	SetInteger(pNode, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons);
-	SetInteger(pNode, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons);
-	SetInteger(pNode, "actorsortmethod",g_stSettings.m_iMyVideoActorSortMethod);
-	SetInteger(pNode, "actorsortmethodroot",g_stSettings.m_iMyVideoActorRootSortMethod);
-	SetBoolean(pNode, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
-	SetBoolean(pNode, "actorsortascendingroot", g_stSettings.m_bMyVideoActorRootSortAscending);
-
-	SetInteger(pNode, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons);
-	SetInteger(pNode, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons);
-	SetInteger(pNode, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod);
-	SetInteger(pNode, "yearsortmethodroot",g_stSettings.m_iMyVideoYearRootSortMethod);
-	SetBoolean(pNode, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
-	SetBoolean(pNode, "yearsortascendingroot", g_stSettings.m_bMyVideoYearRootSortAscending);
-
-	SetInteger(pNode, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons);
-	SetInteger(pNode, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons);
-	SetInteger(pNode, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod);
-	SetBoolean(pNode, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
-
-	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
-	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);
-
-	SetInteger(pNode, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent);
-	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
-	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
-	SetInteger(pNode, "subtitlettfstyle", g_stSettings.m_iSubtitleTTFStyle);
-	SetHex(pNode, "subtitlettfcolor", g_stSettings.m_iSubtitleTTFColor);
-	SetString(pNode, "subtitlecharset", g_stSettings.m_szSubtitleCharset);
-	SetString(pNode, "stringcharset", g_stSettings.m_szStringCharset);
-	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
-	SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
-	SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
-
-	// myscripts settings
-	TiXmlElement scriptsNode("myscripts");
-	pNode = pRoot->InsertEndChild(scriptsNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "scriptsviewicons", g_stSettings.m_bScriptsViewAsIcons);
-	SetBoolean(pNode, "scriptsrooticons", g_stSettings.m_bScriptsRootViewAsIcons);
-	SetInteger(pNode, "scriptssortmethod",g_stSettings.m_iScriptsSortMethod);
-	SetBoolean(pNode, "scriptssortascending", g_stSettings.m_bScriptsSortAscending);
-
-	// general settings
-	TiXmlElement generalNode("general");
-	pNode = pRoot->InsertEndChild(generalNode);
-	if (!pNode) return false;
-	SetString(pNode, "skin", g_stSettings.szDefaultSkin);
-	SetBoolean(pNode, "timeserver", g_stSettings.m_bTimeServerEnabled);
-	SetBoolean(pNode, "ftpserver", g_stSettings.m_bFTPServerEnabled);
-	SetBoolean(pNode, "httpserver", g_stSettings.m_bHTTPServerEnabled);
-	SetBoolean(pNode, "cddb", g_stSettings.m_bUseCDDB);
-	SetInteger(pNode, "hdspindowntime", g_stSettings.m_iHDSpinDownTime);
-	SetBoolean(pNode, "autohdspindownaudio", g_stSettings.m_bHDRemoteplaySpinDownAudio);
-	SetBoolean(pNode, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
-	SetInteger(pNode, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime);
-	SetInteger(pNode, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration);
-	SetBoolean(pNode, "autorundvd", g_stSettings.m_bAutorunDVD);
-	SetBoolean(pNode, "autorunvcd", g_stSettings.m_bAutorunVCD);
-	SetBoolean(pNode, "autoruncdda", g_stSettings.m_bAutorunCdda);
-	SetBoolean(pNode, "autorunxbox", g_stSettings.m_bAutorunXbox);
-	SetBoolean(pNode, "autorunmusic", g_stSettings.m_bAutorunMusic);
-	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
-	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
-	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
-	SetString(pNode, "skinfontset", g_stSettings.m_szSkinFontSet);
-	SetBoolean(pNode, "flipbidicharset", g_stSettings.m_bFlipBiDiCharset);
-
-	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
-	SetBoolean(pNode, "enablerss", g_stSettings.m_bEnableRSS);
-
-  SetBoolean(pNode, "autotemperature",   g_stSettings.m_bAutoTemperature);
-  SetInteger(pNode, "targettemperature", g_stSettings.m_iTargetTemperature);
-  SetBoolean(pNode, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
-  SetInteger(pNode, "fanspeed",          g_stSettings.m_iFanSpeed);
-
-
-	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
-	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
-	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
-	SetInteger(pNode, "audiostream",g_stSettings.m_iAudioStream);
-	SetInteger(pNode, "weatherrefresh", g_stSettings.m_iWeatherRefresh);	//WEATHER SETTINGS
-	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
-	SetString(pNode, "weatherspeed", g_stSettings.m_szWeatherFSpeed);		//WEATHER SETTINGS
-	SetString(pNode, "areacode1", g_stSettings.m_szWeatherArea[0]);			//WEATHER SETTINGS
-	SetString(pNode, "areacode2", g_stSettings.m_szWeatherArea[1]);			//WEATHER SETTINGS
-	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
-	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
-	SetInteger(pNode, "musicosdtimeout", g_stSettings.m_iMusicOSDTimeout);
-	SetBoolean(pNode, "hideextensions", g_stSettings.m_bHideExtensions);
-	SetBoolean(pNode, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
-
-	SetString(pNode, "ipassignment", g_stSettings.m_strIPAssignment);
-	SetString(pNode, "ipadres", g_stSettings.m_strLocalIPAdres);
-	SetString(pNode, "netmask", g_stSettings.m_strLocalNetmask);
-	SetString(pNode, "defaultgateway", g_stSettings.m_strGateway);
-	SetString(pNode, "nameserver", g_stSettings.m_strNameServer);
-
-	SetBoolean(pNode, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
-	SetString(pNode, "httpproxyhost", g_stSettings.m_szHTTPProxy);
-	SetInteger(pNode, "httpproxyport", g_stSettings.m_iHTTPProxyPort);
-
-	SetString(pNode, "kaiusername", g_stSettings.szOnlineUsername);
-	SetString(pNode, "kaipassword", g_stSettings.szOnlinePassword);
-
-	SetString(pNode, "timeserverhost", g_stSettings.m_strTimeServer);
-
-	SetInteger(pNode, "webserverport", g_stSettings.m_iWebServerPort);
-
-	// slideshow settings
-	TiXmlElement slideshowNode("slideshow");
-	pNode = pRoot->InsertEndChild(slideshowNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "transistiontime", g_stSettings.m_iSlideShowTransistionTime);
-	SetInteger(pNode, "staytime", g_stSettings.m_iSlideShowStayTime);
-	SetFloat(pNode, "moveamount", g_stSettings.m_fSlideShowMoveAmount);
-	SetFloat(pNode, "zoomamount", g_stSettings.m_fSlideShowZoomAmount);
-	SetFloat(pNode, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation);
-	SetBoolean(pNode, "shuffle", g_stSettings.m_bSlideShowShuffle);
-
-	// screen settings
-	TiXmlElement screenNode("screen");
-	pNode = pRoot->InsertEndChild(screenNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "resolution", (int)g_stSettings.m_GUIResolution);
-	SetInteger(pNode, "uioffsetx",g_stSettings.m_iUIOffsetX);
-	SetInteger(pNode, "uioffsety",g_stSettings.m_iUIOffsetY);
-  SetInteger(pNode, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo);
-  SetInteger(pNode, "flickerfilterui", g_stSettings.m_iFlickerFilterUI);
-	SetBoolean(pNode, "softenvideo", g_stSettings.m_bSoftenVideo);
-	SetBoolean(pNode, "softenui", g_stSettings.m_bSoftenUI);
-	SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
-	SetInteger(pNode, "viewmode", g_stSettings.m_iViewMode);
-	SetFloat(pNode, "zoomamount", g_stSettings.m_fCustomZoomAmount);
-	SetFloat(pNode, "pixelratio", g_stSettings.m_fCustomPixelRatio);
-	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
-	SetBoolean(pNode, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
-	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
-	SetInteger(pNode, "minfilter", g_stSettings.m_minFilter);
-	SetInteger(pNode, "maxfilter", g_stSettings.m_maxFilter);
-
-	// audio settings
-	TiXmlElement audioNode("audio");
-	pNode = pRoot->InsertEndChild(audioNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
-	SetInteger(pNode, "channels",g_stSettings.m_iChannels);
-	SetBoolean(pNode, "useid3", g_stSettings.m_bUseID3);
-	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
-	SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
-	SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
-	SetFloat(pNode, "headroom", g_stSettings.m_fVolumeHeadroom);
-	SetBoolean(pNode, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
-	SetBoolean(pNode, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
-	SetBoolean(pNode, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
-	SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
-
-	TiXmlElement postprocNode("PostProcessing");
-	pNode = pRoot->InsertEndChild(postprocNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "PPAuto", g_stSettings.m_bPPAuto);
-	SetBoolean(pNode, "PPVertical", g_stSettings.m_bPPVertical);
-	SetBoolean(pNode, "PPHorizontal", g_stSettings.m_bPPHorizontal);
-	SetBoolean(pNode, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
-	SetBoolean(pNode, "PPdering", g_stSettings.m_bPPdering);
-	SetInteger(pNode, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
-	SetInteger(pNode, "PPVerticalVal",g_stSettings.m_iPPVertical);
-
-	// cdda ripper settings
-	TiXmlElement cddaripperNode("cddaripper");
-	pNode = pRoot->InsertEndChild(cddaripperNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "ripwithtracknumber", g_stSettings.m_bRipWithTrackNumber);
-	SetInteger(pNode, "ripencoder", g_stSettings.m_iRipEncoder);
-	SetInteger(pNode, "ripquality", g_stSettings.m_iRipQuality);
-	SetInteger(pNode, "ripbitrate", g_stSettings.m_iRipBitRate);
-
-	// Cd+g settings
-	TiXmlElement CdgNode("cdg");
-	pNode = pRoot->InsertEndChild(CdgNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "EnableCdg", g_stSettings.m_bIsCdgEnabled);
-	SetInteger(pNode, "CdgBgAlpha", g_stSettings.m_iCdgBgAlpha);
-	SetInteger(pNode, "CdgFgAlpha", g_stSettings.m_iCdgFgAlpha);
-	SetFloat(pNode,"CdgAVDelay",g_stSettings.m_fCdgAVDelay);
-
-  SaveCalibration(pRoot);
-
-	// save the file
-	return xmlDoc.SaveFile(strSettingsFile);
-}
-
-bool CSettings::LoadProfile(int index)
-{
-  CProfile& profile = m_vecProfiles.at(index);
-  if (LoadSettings("T:\\" + profile.getFileName(), false))
+  if (pReplace != NULL)
   {
-    m_iLastLoadedProfileIndex = index;
-    Save();
+    pReplace2 = pReplace + sizeof("$HOME") - 1;
+    strcpy(szTemp, pReplace2);
+    strcpy(pReplace, strHomePath.c_str() );
+    strcat(szText, szTemp);
+  }
+  strText = szText;
+  // unroll any relative paths used
+  std::vector<CStdString> token;
+  CUtil::Tokenize(strText,token,"\\");
+  if (token.size() > 1)
+  {
+    strText = "";
+    for (unsigned int i=0;i<token.size();++i)
+      if (token[i] == "..")
+      {
+        CStdString strParent;
+        CUtil::GetParentPath(strText,strParent);
+        strText = strParent;
+      }
+      else
+        strText += token[i]+"\\";
+  }
+}
+
+VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
+{
+  if (type == "myprograms")
+    return &g_settings.m_vecMyProgramsShares;
+  else if (type == "files")
+    return &g_settings.m_vecMyFilesShares;
+  else if (type == "music")
+    return &g_settings.m_vecMyMusicShares;
+  else if (type == "video")
+    return &g_settings.m_vecMyVideoShares;
+  else if (type == "pictures")
+    return &g_settings.m_vecMyPictureShares;
+  else if (type == "upnpmusic")
+    return &g_settings.m_vecUPnPMusicShares;
+  else if (type == "upnpvideo")
+    return &g_settings.m_vecUPnPVideoShares;
+  else if (type == "upnppictures")
+    return &g_settings.m_vecUPnPPictureShares;
+
+  return NULL;
+}
+
+CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
+{
+  CStdString defaultShare;
+  if (type == "myprograms")
+    defaultShare = g_stSettings.m_szDefaultPrograms;
+  else if (type == "files")
+    defaultShare = g_stSettings.m_szDefaultFiles;
+  else if (type == "music")
+    defaultShare = g_stSettings.m_szDefaultMusic;
+  else if (type == "video")
+    defaultShare = g_stSettings.m_szDefaultVideos;
+  else if (type == "pictures")
+    defaultShare = g_stSettings.m_szDefaultPictures;
+  return defaultShare;
+}
+
+void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
+{
+  CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
+  strDefault = "";
+
+  items.clear();
+  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
+  if (pChild)
+  {
+    pChild = pChild->FirstChild();
+    while (pChild > 0)
+    {
+      CStdString strValue = pChild->Value();
+      if (strValue == "bookmark")
+      {
+        CShare share;
+        if (GetShare(strTagName, pChild, share))
+        {
+          items.push_back(share);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "    Missing or invalid <name> and/or <path> in bookmark");
+        }
+      }
+
+      if (strValue == "default")
+      {
+        const TiXmlNode *pValueNode = pChild->FirstChild();
+        if (pValueNode)
+        {
+          const char* pszText = pChild->FirstChild()->Value();
+          if (strlen(pszText) > 0)
+            strDefault = pszText;
+          CLog::Log(LOGDEBUG, "    Setting <default> share to : %s", strDefault.c_str());
+        }
+      }
+      pChild = pChild->NextSibling();
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "  <%s> tag is missing or sources.xml is malformed", strTagName.c_str());
+  }
+}
+
+bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share)
+{
+  CLog::Log(LOGDEBUG,"    ---- BOOKMARK START ----");
+  const TiXmlNode *pNodeName = bookmark->FirstChild("name");
+  CStdString strName;
+  if (pNodeName && pNodeName->FirstChild())
+  {
+    strName = pNodeName->FirstChild()->Value();
+    CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
+  }
+  // get multiple paths
+  vector<CStdString> vecPaths;
+  const TiXmlNode *pPathName = bookmark->FirstChild("path");
+  while (pPathName)
+  {
+    if (pPathName->FirstChild())
+    {
+      CStdString strPath = pPathName->FirstChild()->Value();
+      // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
+      CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
+      if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
+      {
+        // translate special tags
+        if (strPath.at(0) == '$')
+        {
+          CStdString strPathOld(strPath);
+          strPath = CUtil::TranslateSpecialSource(strPath);
+          if (!strPath.IsEmpty())
+            CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+          else
+          {
+            CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
+            pPathName = pPathName->NextSibling("path");
+            continue;
+          }
+        }
+        CUtil::AddSlashAtEnd(strPath);
+        vecPaths.push_back(strPath);
+      }
+      else
+        CLog::Log(LOGERROR,"    Invalid path type (%s) in bookmark", strPath.c_str());
+    }
+    pPathName = pPathName->NextSibling("path");
+  }
+
+  const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
+  const TiXmlNode *pLockCode = bookmark->FirstChild("lockcode");
+  const TiXmlNode *pBadPwdCount = bookmark->FirstChild("badpwdcount");
+  const TiXmlNode *pThumbnailNode = bookmark->FirstChild("thumbnail");
+
+  if (!strName.IsEmpty() && vecPaths.size() > 0)
+  {
+    vector<CStdString> verifiedPaths;
+    // disallowed for files, or theres only a single path in the vector
+    if ((category.Equals("files")) || (vecPaths.size() == 1))
+      verifiedPaths.push_back(vecPaths[0]);
+
+    // multiple paths?
+    else
+    {
+      // validate the paths
+      for (int j = 0; j < (int)vecPaths.size(); ++j)
+      {
+        CURL url(vecPaths[j]);
+        CStdString protocol = url.GetProtocol();
+        bool bIsInvalid = false;
+
+        // for my programs
+        if (category.Equals("myprograms"))
+        {
+          // only allow HD
+          if (url.IsLocal())
+            verifiedPaths.push_back(vecPaths[j]);
+          else
+            bIsInvalid = true;
+        }
+
+        // for others
+        else
+        {
+          // only allow HD, SMB, and XBMS
+          if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms")
+                            || protocol.Equals("special"))
+            verifiedPaths.push_back(vecPaths[j]);
+          else
+            bIsInvalid = true;
+        }
+
+        // error message
+        if (bIsInvalid)
+          CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
+      }
+
+      // no valid paths? skip to next bookmark
+      if (verifiedPaths.size() == 0)
+      {
+        CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in bookmark");
+        return false;
+      }
+    }
+
+    share.FromNameAndPaths(category, strName, verifiedPaths);
+
+    CLog::Log(LOGDEBUG,"      Adding bookmark:");
+    CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
+    if (CUtil::IsVirtualPath(share.strPath))
+    {
+      for (int i = 0; i < (int)share.vecPaths.size(); ++i)
+        CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
+
+    share.m_iBadPwdCount = 0;
+    if (pLockMode)
+    {
+      share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
+      share.m_iHasLock = 2;
+    }
+
+    if (pLockCode)
+    {
+      if (pLockCode->FirstChild())
+        share.m_strLockCode = pLockCode->FirstChild()->Value();
+    }
+
+    if (pBadPwdCount)
+    {
+      if (pBadPwdCount->FirstChild())
+        share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
+    }
+
+    if (pThumbnailNode)
+    {
+      if (pThumbnailNode->FirstChild())
+        share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+    }
+
     return true;
   }
   return false;
 }
 
-void CSettings::DeleteProfile(int index)
+void CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue, const CStdString& strDefaultValue)
 {
-  for (IVECPROFILES iProfile = g_settings.m_vecProfiles.begin(); iProfile != g_settings.m_vecProfiles.end(); ++iProfile)
+  if (XMLUtils::GetString(pRootElement, tagName, strValue))
+  { // tag exists
+    // check for "-" for backward compatibility
+    if (strValue.Equals("-"))
+      strValue = strDefaultValue;
+  }
+  else
+  { // tag doesn't exist - set default
+    strValue = strDefaultValue;
+  }
+  return;
+  //CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), strValue.c_str());
+}
+
+void CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, char *szValue, const CStdString& strDefaultValue)
+{
+  CStdString strValue;
+  GetString(pRootElement, tagName, strValue, strDefaultValue);
+  if (szValue)
+    strcpy(szValue, strValue.c_str());
+}
+
+void CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
+{
+  if (XMLUtils::GetInt(pRootElement, tagName, iValue))
+  { // check range
+    if ((iValue < iMin) || (iValue > iMax))
+      iValue = iDefault;
+  }
+  else
+  { // default
+    iValue = iDefault;
+  }
+  CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
+}
+
+void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
+{
+  if (XMLUtils::GetFloat(pRootElement, tagName, fValue))
+  { // check range
+    if ((fValue < fMin) || (fValue > fMax))
+      fValue = fDefault;
+  }
+  else
+  { // default
+    fValue = fDefault;
+  }
+  CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
+}
+
+void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
+{
+  const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
+  if (!pNode) return;
+  GetInteger(pNode, "viewmode", viewState.m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
+  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX);
+  GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+}
+
+void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
+{
+  CStdString strPersistedValue = strValue;
+  if (strPersistedValue.length() == 0)
   {
-	  if (iProfile == &g_settings.m_vecProfiles.at(index))
-	  {
-      if (index == m_iLastLoadedProfileIndex) {m_iLastLoadedProfileIndex = -1;}
-      ::DeleteFile("T:\\" + iProfile->getFileName());
-      m_vecProfiles.erase(iProfile);
-      Save();
-      break;
-	  }
+    strPersistedValue = '-';
+  }
+
+  TiXmlElement newElement(strTagName);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
+  {
+    TiXmlText value(strValue);
+    pNewNode->InsertEndChild(value);
   }
 }
 
-bool CSettings::SaveSettingsToProfile(int index)
+void CSettings::SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const
 {
-  CProfile& profile = m_vecProfiles.at(index);
-  return SaveSettings("T:\\" + profile.getFileName(), false);
+  CStdString strValue;
+  strValue.Format("%d", iValue);
+  SetString(pRootNode, strTagName, strValue);
 }
 
-
-bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile)
+void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName, const CViewState &viewState) const
 {
- 	CLog::Log(LOGINFO, "  Parsing <profiles> tag");
-	const TiXmlElement *pChild = pRootElement->FirstChildElement("profiles");
-	if (pChild)
-	{
-    GetInteger(pChild, "lastloaded", m_iLastLoadedProfileIndex, -1, -1, INT_MAX);
-		TiXmlNode *pChildNode = pChild->FirstChild();
-		while (pChildNode>0)
-		{
-			CStdString strValue=pChildNode->Value();
-			if (strValue=="profile")
-			{
-				const TiXmlNode *pProfileName=pChildNode->FirstChild("name");
-				const TiXmlNode *pProfileFile=pChildNode->FirstChild("file");
-				if (pProfileName && pProfileFile)
-				{
-					const char* szName=pProfileName->FirstChild()->Value();
-					CLog::Log(LOGDEBUG, "    Profile Name: %s", szName);
-					const char* szPath=pProfileFile->FirstChild()->Value();
-					CLog::Log(LOGDEBUG, "    Profile Filename: %s", szPath);
-
-					CProfile profile;
-          CStdString str = szName;
-					profile.setName(str);
-          str = szPath;
-					profile.setFileName(str);
-          m_vecProfiles.push_back(profile);
-				}
-				else
-				{
-					CLog::Log(LOGERROR, "    <name> and/or <file> not properly defined within <profile>");
-				}
-			}
-			pChildNode=pChildNode->NextSibling();
-		}
-    return true;
-	}
-	else
-	{
-		CLog::Log(LOGERROR, "  <profiles> tag is missing or %s is malformed", strSettingsFile.c_str());
-    return false;
-	}
-}
-
-
-bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
-{
-	TiXmlElement xmlProfilesElement("profiles");
-	TiXmlNode *pProfileNode = pRootElement->InsertEndChild(xmlProfilesElement);
-  if (!pProfileNode) return false;
-  SetInteger(pProfileNode, "lastloaded", m_iLastLoadedProfileIndex);
-  for (int i=0; i<(int)m_vecProfiles.size(); ++i)
+  TiXmlElement newElement(strTagName);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
   {
-    const CProfile& profile=m_vecProfiles.at(i);
+    SetInteger(pNewNode, "viewmode", viewState.m_viewMode);
+    SetInteger(pNewNode, "sortmethod", (int)viewState.m_sortMethod);
+    SetInteger(pNewNode, "sortorder", (int)viewState.m_sortOrder);
+  }
+}
 
-		TiXmlElement profileElement("profile");
-		TiXmlNode *pNode = pProfileNode->InsertEndChild(profileElement);
-		if (!pNode) return false;
-		SetString(pNode, "name", profile.getName());
-		SetString(pNode, "file", profile.getFileName());
+void CSettings::SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const
+{
+  CStdString strValue;
+  strValue.Format("%f", fValue);
+  SetString(pRootNode, strTagName, strValue);
+}
+
+void CSettings::SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const
+{
+  if (bValue)
+    SetString(pRootNode, strTagName, "true");
+  else
+    SetString(pRootNode, strTagName, "false");
+}
+
+void CSettings::SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const
+{
+  CStdString strValue;
+  strValue.Format("%x", dwHexValue);
+  SetString(pRootNode, strTagName, strValue);
+}
+
+bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile)
+{
+  // reset the calibration to the defaults
+  //g_graphicsContext.SetD3DParameters(NULL, m_ResInfo);
+  //for (int i=0; i<10; i++)
+  //  g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+
+  const TiXmlElement *pRootElement;
+  CStdString strTagName = pElement->Value();
+  if (!strcmp(strTagName.c_str(), "calibration"))
+  {
+    pRootElement = pElement;
+  }
+  else
+  {
+    pRootElement = pElement->FirstChildElement("calibration");
+  }
+  if (!pRootElement)
+  {
+    g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strSettingsFile.c_str());
+    return false;
+  }
+  const TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
+  while (pResolution)
+  {
+    // get the data for this resolution
+    int iRes;
+    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, PAL60_16x9); //PAL4x3 as default data
+    GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
+    // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
+    float fSafe;
+    if (iRes == PAL_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3 || iRes == HDTV_480p_4x3)
+      fSafe = 0.1f;
+    else
+      fSafe = 0.035f;
+    GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles, (int)((1 - fSafe)*m_ResInfo[iRes].iHeight), m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*5 / 4);
+    GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
+
+    // get the overscan info
+    const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
+    if (pOverscan)
+    {
+      GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left, 0, -m_ResInfo[iRes].iWidth / 4, m_ResInfo[iRes].iWidth / 4);
+      GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top, 0, -m_ResInfo[iRes].iHeight / 4, m_ResInfo[iRes].iHeight / 4);
+      GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth*3 / 2);
+      GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*3 / 2);
+    }
+
+    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
+    CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
+              m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
+              m_ResInfo[iRes].Overscan.left, m_ResInfo[iRes].Overscan.top,
+              m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom);
+
+    // iterate around
+    pResolution = pResolution->NextSiblingElement("resolution");
   }
   return true;
 }
 
-bool CSettings::LoadXml()
+bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
 {
-	// load xml file - we use the xbe path in case we were loaded as dash
-	if (!xbmcXmlLoaded)
-	{
-		CStdString strPath;
-		char szXBEFileName[1024];
-		CIoSupport helper;
-		helper.GetXbePath(szXBEFileName);
-		strrchr(szXBEFileName,'\\')[0] = 0;
-		strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
-		if ( !xbmcXml.LoadFile( strPath.c_str() ) )
-		{
-			return false;
-		}
-		xbmcXmlLoaded = true;
-	}
-	return true;
+  TiXmlElement xmlRootElement("calibration");
+  TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
+  for (int i = 0; i < 10; i++)
+  {
+    // Write the resolution tag
+    TiXmlElement resElement("resolution");
+    TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
+    // Now write each of the pieces of information we need...
+    SetString(pNode, "description", m_ResInfo[i].strMode);
+    SetInteger(pNode, "id", i);
+    SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
+    SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
+    // create the overscan child
+    TiXmlElement overscanElement("overscan");
+    TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
+    SetInteger(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
+    SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
+    SetInteger(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
+    SetInteger(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
+  }
+  return true;
 }
 
-bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strName, const CStdString &strPath)
+bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 {
-	if (!LoadXml()) return false;
+  // load the xml file
+  TiXmlDocument xmlDoc;
 
-	VECSHARES *pShares = NULL;
-	if (strType == "files") pShares = &m_vecMyFilesShares;
-	if (strType == "music") pShares = &m_vecMyMusicShares;
-	if (strType == "videos") pShares = &m_vecMyVideoShares;
-	if (strType == "pictures") pShares = &m_vecMyPictureShares;
+  if (!xmlDoc.LoadFile(strSettingsFile))
+  {
+    g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
 
-	if (!pShares) return false;
+  TiXmlElement *pRootElement = xmlDoc.RootElement();
+  if (strcmpi(pRootElement->Value(), "settings") != 0)
+  {
+    g_LoadErrorStr.Format("%s\nDoesn't contain <settings>", strSettingsFile.c_str());
+    return false;
+  }
 
-	for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
-	{
-		if ((*it).strName == strOldName)
-		{
-			(*it).strName = strName;
-			(*it).strPath = strPath;
-		}
-	}
-	// Return bookmark of
-	TiXmlElement *pRootElement = xbmcXml.RootElement();
-	TiXmlNode *pNode = NULL;
-	TiXmlNode *pIt = NULL;
+  // mymusic settings
+  TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
+  if (pElement)
+  {
+    TiXmlElement *pChild = pElement->FirstChildElement("playlist");
+    if (pChild)
+    {
+      XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
+      XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
+    }
+    // if the user happened to reboot in the middle of the scan we save this state
+    pChild = pElement->FirstChildElement("scanning");
+    if (pChild)
+    {
+      XMLUtils::GetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
+    }
+    GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
+    XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
+    XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
+    GetString(pElement, "defaultlibview", g_stSettings.m_szDefaultMusicLibView, g_stSettings.m_szDefaultMusicLibView);
+  }
+  // myvideos settings
+  pElement = pRootElement->FirstChildElement("myvideos");
+  if (pElement)
+  {
+    GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
+    GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
-	pNode = pRootElement->FirstChild(strType);
+    XMLUtils::GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
+    GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
+    GetString(pElement, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators, g_stSettings.m_szMyVideoCleanSeparators);
 
-	// if valid bookmark, find child at pos (id)
-	if (pNode)
-	{
-		pIt = pNode->FirstChild("bookmark");
-		while (pIt)
-		{
-			TiXmlNode *pChild = pIt->FirstChild("name");
-			if (pChild && pChild->FirstChild()->Value() == strOldName)
-			{
-				pChild->FirstChild()->SetValue(strName);
-				pChild = pIt->FirstChild("path");
-				if (pChild)
-					pIt->FirstChild("path")->FirstChild()->SetValue(strPath);
-				break;
-			}
-			else
-				pIt = pIt->NextSibling("bookmark");
-		}
-	}
-	return xbmcXml.SaveFile();
+    StringUtils::SplitString(g_stSettings.m_szMyVideoCleanTokens, "|", g_settings.m_szMyVideoCleanTokensArray);
+    g_settings.m_szMyVideoCleanSeparatorsString = g_stSettings.m_szMyVideoCleanSeparators;
+
+    for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
+      g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
+
+    GetString(pElement, "defaultlibview", g_stSettings.m_szDefaultVideoLibView, g_stSettings.m_szDefaultVideoLibView);
+    GetInteger(pElement, "watchmode", g_stSettings.m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+
+    TiXmlElement *pChild = pElement->FirstChildElement("playlist");
+    if (pChild)
+    { // playlist
+      XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
+      XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
+    }
+  }
+
+  pElement = pRootElement->FirstChildElement("viewstates");
+  if (pElement)
+  {
+    GetViewState(pElement, "musicnavartists", g_stSettings.m_viewStateMusicNavArtists);
+    GetViewState(pElement, "musicnavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    GetViewState(pElement, "musicnavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    GetViewState(pElement, "musicshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    GetViewState(pElement, "musiclastfm", g_stSettings.m_viewStateMusicLastFM);
+    GetViewState(pElement, "videonavactors", g_stSettings.m_viewStateVideoNavActors);
+    GetViewState(pElement, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
+    GetViewState(pElement, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
+    GetViewState(pElement, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
+    GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
+    GetViewState(pElement, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
+    GetViewState(pElement, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
+  }
+
+  // general settings
+  pElement = pRootElement->FirstChildElement("general");
+  if (pElement)
+  {
+    GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
+    GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
+    GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
+	GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
+	GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
+  }
+
+  pElement = pRootElement->FirstChildElement("defaultvideosettings");
+  if (pElement)
+  {
+    GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_RENDER_BLEND);
+    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 1, 100);
+    GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
+    GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
+    GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
+    GetFloat(pElement, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, VOLUME_DRC_MINIMUM * 0.01f, VOLUME_DRC_MAXIMUM * 0.01f);
+    XMLUtils::GetBoolean(pElement, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
+    XMLUtils::GetBoolean(pElement, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
+    GetInteger(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
+    GetInteger(pElement, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast, 50, 0, 100);
+    GetInteger(pElement, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma, 20, 0, 100);
+    GetFloat(pElement, "audiodelay", g_stSettings.m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
+    GetFloat(pElement, "subtitledelay", g_stSettings.m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
+
+    g_stSettings.m_defaultVideoSettings.m_SubtitleCached = false;
+  }
+  // audio settings
+  pElement = pRootElement->FirstChildElement("audio");
+  if (pElement)
+  {
+    GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+    GetInteger(pElement, "dynamicrangecompression", g_stSettings.m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
+    for (int i = 0; i < 4; i++)
+    {
+      CStdString setting;
+      setting.Format("karaoke%i", i);
+#ifndef HAS_XBOX_AUDIO
+#define XVOICE_MASK_PARAM_DISABLED (-1.0f)
+#endif
+      GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+    }
+  }
+
+  LoadCalibration(pRootElement, strSettingsFile);
+  g_guiSettings.LoadXML(pRootElement);
+  LoadSkinSettings(pRootElement);
+
+  // Advanced settings
+  LoadAdvancedSettings();
+
+  // Override settings with avpack settings
+  if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
+  {
+    CLog::Log(LOGNOTICE, "Per AV pack settings are on");
+    LoadAvpackXML();
+  }
+  else
+    CLog::Log(LOGNOTICE, "Per AV pack settings are off");
+
+  return true;
 }
 
-bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
+void CSettings::LoadAdvancedSettings()
 {
-	if (!LoadXml()) return false;
+  CStdString advancedSettingsXML;
+  advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
+  TiXmlDocument advancedXML;
+  if (!CFile::Exists(advancedSettingsXML))
+    return;
 
-	VECSHARES *pShares = NULL;
-	if (strType == "files") pShares = &m_vecMyFilesShares;
-	if (strType == "music") pShares = &m_vecMyMusicShares;
-	if (strType == "videos") pShares = &m_vecMyVideoShares;
-	if (strType == "pictures") pShares = &m_vecMyPictureShares;
+  if (!advancedXML.LoadFile(advancedSettingsXML.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", advancedSettingsXML.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
+    return;
+  }
 
-	if (!pShares) return false;
+  TiXmlElement *pRootElement = advancedXML.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"advancedsettings") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", advancedSettingsXML.c_str());
+    return;
+  }
 
-	for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
-	{
-		if ((*it).strName == strName && (*it).strPath == strPath)
-		{
-			pShares->erase(it);
-			break;
-		}
-	}
-	// Return bookmark of
-	TiXmlElement *pRootElement = xbmcXml.RootElement();
-	TiXmlNode *pNode = NULL;
-	TiXmlNode *pIt = NULL;
+  TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
+  if (pElement)
+  {
+    GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 0, 12);
+    GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, 0.0f, -3.0f, 3.0f);
+  }
 
-	pNode = pRootElement->FirstChild(strType);
+  pElement = pRootElement->FirstChildElement("video");
+  if (pElement)
+  {
+    GetFloat(pElement, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange, 10, 10, 600);
+    GetFloat(pElement, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange, 10, 10, 600);
+    GetInteger(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 7, 1, INT_MAX);
+    GetInteger(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 3, 1, 10);
+    GetInteger(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 300, 100, 5000); //MS
 
-	// if valid bookmark, find child at pos (id)
-	if (pNode)
-	{
-		pIt = pNode->FirstChild("bookmark");
-		while (pIt)
-		{
-			TiXmlNode *pChild = pIt->FirstChild("name");
-			if (pChild && pChild->FirstChild()->Value() == strName)
-			{
-				pChild->FirstChild()->SetValue(strName);
-				pChild = pIt->FirstChild("path");
-				if (pChild && pChild->FirstChild()->Value() == strPath)
-				{
-					pNode->RemoveChild(pIt);
-					break;
-				}
-			}
-			else
-				pIt = pIt->NextSibling("bookmark");
-		}
-	}
-	return xbmcXml.SaveFile();
+    XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_videoUseTimeSeeking);
+    GetInteger(pElement, "timeseekforward", g_advancedSettings.m_videoTimeSeekForward, 30, 0, 6000);
+    GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_videoTimeSeekBackward, -30, -6000, 0);
+    GetInteger(pElement, "timeseekforwardbig", g_advancedSettings.m_videoTimeSeekForwardBig, 600, 0, 6000);
+    GetInteger(pElement, "timeseekbackwardbig", g_advancedSettings.m_videoTimeSeekBackwardBig, -600, -6000, 0);
+
+    GetInteger(pElement, "percentseekforward", g_advancedSettings.m_videoPercentSeekForward, 2, 0, 100);
+    GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -2, -100, 0);
+    GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
+    GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
+    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
+  }
+
+  pElement = pRootElement->FirstChildElement("musiclibrary");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
+    XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
+    XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
+    GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
+    GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
+  }
+
+  pElement = pRootElement->FirstChildElement("videolibrary");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
+  }
+
+  pElement = pRootElement->FirstChildElement("slideshow");
+  if (pElement)
+  {
+    GetFloat(pElement, "panamount", g_advancedSettings.m_slideshowPanAmount, 2.5f, 0.0f, 20.0f);
+    GetFloat(pElement, "zoomamount", g_advancedSettings.m_slideshowZoomAmount, 5.0f, 0.0f, 20.0f);
+    GetFloat(pElement, "blackbarcompensation", g_advancedSettings.m_slideshowBlackBarCompensation, 20.0f, 0.0f, 50.0f);
+  }
+
+  pElement = pRootElement->FirstChildElement("lcd");
+  if (pElement)
+  {
+    GetInteger(pElement, "rows", g_advancedSettings.m_lcdRows, 4, 1, 4);
+    GetInteger(pElement, "columns", g_advancedSettings.m_lcdColumns, 20, 1, 40);
+    GetInteger(pElement, "address1", g_advancedSettings.m_lcdAddress1, 0, 0, 0x100);
+    GetInteger(pElement, "address2", g_advancedSettings.m_lcdAddress2, 0x40, 0, 0x100);
+    GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0x14, 0, 0x100);
+    GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0x54, 0, 0x100);
+  }
+  pElement = pRootElement->FirstChildElement("network");
+  if (pElement)
+  {
+    GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 30, 1, 240);
+    GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlclienttimeout, 10, 1, 1000);
+  }
+
+  GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 90.0f, 1.0f, 100.0f);
+
+  pElement = pRootElement->FirstChildElement("samba");
+  if (pElement)
+  {
+    GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage,   "");
+    GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
+  }
+
+  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
+  GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
+
+  XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
+  XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
+  XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
+
+  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
+
+  //Tuxbox
+  pElement = pRootElement->FirstChildElement("tuxbox");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bTuxBoxAudioChannelSelection);
+    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bTuxBoxSubMenuSelection);
+    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bTuxBoxPictureIcon);
+    XMLUtils::GetBoolean(pElement, "sendallaudiopids", g_advancedSettings.m_bTuxBoxSendAllAPids);
+    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 10, 0, 3600);
+    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
+    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
+    GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 0, 120);
+    
+  }
+
+  CStdString extraExtensions;
+  TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
+  if (pExts)
+  {
+    GetString(pExts,"add",extraExtensions,"");
+    if (extraExtensions != "")
+      g_stSettings.m_pictureExtensions += "|" + extraExtensions;
+    GetString(pExts,"remove",extraExtensions,"");
+    if (extraExtensions != "")
+    {
+      CStdStringArray exts;
+      StringUtils::SplitString(extraExtensions,"|",exts);
+      for (unsigned int i=0;i<exts.size();++i)
+      {
+        int iPos = g_stSettings.m_pictureExtensions.Find(exts[i]);
+        if (iPos == -1)
+          continue;
+        g_stSettings.m_pictureExtensions.erase(iPos,exts[i].size()+1);
+      }
+    }
+  }
+  pExts = pRootElement->FirstChildElement("musicextensions");
+  if (pExts)
+  {
+    GetString(pExts,"add",extraExtensions,"");
+    if (extraExtensions != "")
+      g_stSettings.m_musicExtensions += "|" + extraExtensions;
+    GetString(pExts,"remove",extraExtensions,"");
+    if (extraExtensions != "")
+    {
+      CStdStringArray exts;
+      StringUtils::SplitString(extraExtensions,"|",exts);
+      for (unsigned int i=0;i<exts.size();++i)
+      {
+        int iPos = g_stSettings.m_musicExtensions.Find(exts[i]);
+        if (iPos == -1)
+          continue;
+        g_stSettings.m_musicExtensions.erase(iPos,exts[i].size()+1);
+      }
+    }
+  }
+  pExts = pRootElement->FirstChildElement("videoextensions");
+  if (pExts)
+  {
+    GetString(pExts,"add",extraExtensions,"");
+    if (extraExtensions != "")
+      g_stSettings.m_videoExtensions += "|" + extraExtensions;
+    GetString(pExts,"remove",extraExtensions,"");
+    if (extraExtensions != "")
+    {
+      CStdStringArray exts;
+      StringUtils::SplitString(extraExtensions,"|",exts);
+      for (unsigned int i=0;i<exts.size();++i)
+      {
+        int iPos = g_stSettings.m_videoExtensions.Find(exts[i]);
+        if (iPos == -1)
+          continue;
+        g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
+      }
+    }
+  }
+
+  const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
+  g_advancedSettings.m_vecTokens.clear();
+  if (pTokens && !pTokens->NoChildren())
+  {
+    const TiXmlNode *pToken = pTokens->FirstChild("token");
+    while (pToken)
+    {
+      if (pToken->FirstChild() && pToken->FirstChild()->Value())
+        g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + " ");
+      pToken = pToken->NextSibling();
+    }
+  }
+
+  XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
+
+  // TODO: Should cache path be given in terms of our predefined paths??
+  //       Are we even going to have predefined paths??
+  GetString(pRootElement, "cachepath", g_advancedSettings.m_cachePath,"Z:\\");
+  g_advancedSettings.m_cachePath = CUtil::TranslateSpecialSource(g_advancedSettings.m_cachePath);
+  CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
+
+  XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
+
+  g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+  // stacking regexps
+  TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
+  if (pVideoStacking)
+  {
+    const char* szAppend = pVideoStacking->Attribute("append");
+    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
+        g_advancedSettings.m_videoStackRegExps.clear();
+    TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
+    while (pStackRegExp)
+    {
+      if (pStackRegExp->FirstChild())
+      {
+        CStdString regExp = pStackRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        g_advancedSettings.m_videoStackRegExps.push_back(regExp);
+      }
+      pStackRegExp = pStackRegExp->NextSibling("regexp");
+    }
+  }
+  //tv stacking regexps
+  TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
+  if (pTVStacking)
+  {
+    const char* szAppend = pTVStacking->Attribute("append");
+    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
+        g_advancedSettings.m_tvshowStackRegExps.clear();
+    TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
+    while (pStackRegExp)
+    {
+      if (pStackRegExp->FirstChild())
+      {
+        CStdString regExp = pStackRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
+      }
+      pStackRegExp = pStackRegExp->NextSibling("regexp");
+    }
+    TiXmlElement* pTVStackingTwoPart = pTVStacking->FirstChildElement("twopart");
+    if (pTVStackingTwoPart)
+    {
+      szAppend = pTVStackingTwoPart->Attribute("append");
+      if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
+        g_advancedSettings.m_tvshowTwoPartStackRegExps.clear();
+
+      pStackRegExp = pTVStackingTwoPart->FirstChild("regexp");
+      while (pStackRegExp)
+      {
+        if (pStackRegExp->FirstChild())
+        {
+          CStdString regExp = pStackRegExp->FirstChild()->Value();
+          regExp.MakeLower();
+          g_advancedSettings.m_tvshowTwoPartStackRegExps.push_back(regExp);
+        }
+        pStackRegExp = pStackRegExp->NextSibling("regexp");
+      }
+    } 
+  }
+  // path substitutions
+  TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
+  if (pPathSubstitution)
+  {
+    g_advancedSettings.m_pathSubstitutions.clear();
+    CLog::Log(LOGDEBUG,"Configuring path substitutions");
+    TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
+    while (pSubstitute)
+    {
+      CStdString strFrom, strTo;
+      TiXmlNode* pFrom = pSubstitute->FirstChild("from");
+      if (pFrom)
+        strFrom = pFrom->FirstChild()->Value();
+      TiXmlNode* pTo = pSubstitute->FirstChild("to");
+      if (pTo)
+        strTo = pTo->FirstChild()->Value();
+
+      if (!strFrom.IsEmpty() && !strTo.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG,"  Registering substition pair:");
+        CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
+        CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
+        // keep literal commas since we use comma as a seperator
+        strFrom.Replace(",",",,");
+        strTo.Replace(",",",,");
+        g_advancedSettings.m_pathSubstitutions.push_back(strFrom + " , " + strTo);
+      }
+      else
+      {
+        // error message about missing tag
+        if (strFrom.IsEmpty())
+          CLog::Log(LOGERROR,"  Missing <from> tag");
+        else
+          CLog::Log(LOGERROR,"  Missing <to> tag");
+      }
+
+      // get next one
+      pSubstitute = pSubstitute->NextSiblingElement("substitute");
+    }
+  }
+
+  GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
+  GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
+  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 192, 64, 512);
+
+  XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
+  XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
+
+  // music thumbs
+  CStdString extraThumbs;
+  TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
+  if (pThumbs)
+  {
+    // remove before add so that the defaults can be restored after user defined ones
+    // (ie, the list can be:cover.jpg|cover.png|folder.jpg)
+    GetString(pThumbs, "remove", extraThumbs, "");
+    if (extraThumbs != "")
+    {
+      CStdStringArray thumbs;
+      StringUtils::SplitString(extraThumbs, "|", thumbs);
+      for (unsigned int i = 0; i < thumbs.size(); ++i)
+      {
+        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        if (iPos == -1)
+          continue;
+        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+      }
+    }
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+    {
+      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
+        g_advancedSettings.m_musicThumbs += "|";
+      g_advancedSettings.m_musicThumbs += extraThumbs;
+    }
+  }
+
+  // dvd thumbs
+  pThumbs = pRootElement->FirstChildElement("dvdthumbs");
+  if (pThumbs)
+  {
+    // remove before add so that the defaults can be restored after user defined ones
+    // (ie, the list can be:cover.jpg|cover.png|folder.jpg)
+    GetString(pThumbs, "remove", extraThumbs, "");
+    if (extraThumbs != "")
+    {
+      CStdStringArray thumbs;
+      StringUtils::SplitString(extraThumbs, "|", thumbs);
+      for (unsigned int i = 0; i < thumbs.size(); ++i)
+      {
+        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        if (iPos == -1)
+          continue;
+        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+      }
+    }
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+    {
+      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
+        g_advancedSettings.m_musicThumbs += "|";
+      g_advancedSettings.m_musicThumbs += extraThumbs;
+    }
+  }
+
+  // load in the GUISettings overrides:
+  g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
 
-bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
+bool CSettings::LoadAvpackXML()
 {
-	if (!LoadXml()) return false;
+  CStdString avpackSettingsXML;
+  avpackSettingsXML  = GetAvpackSettingsFile();
+  TiXmlDocument avpackXML;
+  if (!CFile::Exists(avpackSettingsXML))
+  {
+    CLog::Log(LOGERROR, "Error loading AV pack settings : %s not found !", avpackSettingsXML.c_str());
+    return false;
+  }
 
-	VECSHARES *pShares = NULL;
-	if (strType == "files") pShares = &m_vecMyFilesShares;
-	if (strType == "music") pShares = &m_vecMyMusicShares;
-	if (strType == "videos") pShares = &m_vecMyVideoShares;
-	if (strType == "pictures") pShares = &m_vecMyPictureShares;
+  CLog::Log(LOGNOTICE, "%s found : loading %s",
+    GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
 
-	if (!pShares) return false;
+  if (!avpackXML.LoadFile(avpackSettingsXML.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s",
+      avpackSettingsXML.c_str(), avpackXML.ErrorRow(), avpackXML.ErrorDesc());
+    return false;
+  }
 
-	CShare share;
-	share.strName=strName;
-	share.strPath=strPath;
-	share.m_iBufferSize=0;
-	share.m_iDepthSize=1;
-	CStdString strPath1=share.strPath;
-	strPath1.ToUpper();
-	if (strPath1.Left(4)=="UDF:")
-	{
-		share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
-		share.strPath="D:\\";
-	}
-	else if (strPath1.Left(11) =="SOUNDTRACK:")
-		share.m_iDriveType=SHARE_TYPE_LOCAL;
-	else if (CUtil::IsISO9660(share.strPath))
-		share.m_iDriveType=SHARE_TYPE_VIRTUAL_DVD;
-	else if (CUtil::IsDVD(share.strPath))
-		share.m_iDriveType = SHARE_TYPE_DVD;
-	else if (CUtil::IsRemote(share.strPath))
-		share.m_iDriveType = SHARE_TYPE_REMOTE;
-	else if (CUtil::IsHD(share.strPath))
-		share.m_iDriveType = SHARE_TYPE_LOCAL;
-	else
-		share.m_iDriveType = SHARE_TYPE_UNKNOWN;
+  TiXmlElement *pMainElement = avpackXML.RootElement();
+  if (!pMainElement || strcmpi(pMainElement->Value(),"settings") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <settings> node", avpackSettingsXML.c_str());
+    return false;
+  }
 
-	pShares->push_back(share);
+  TiXmlElement *pRoot = pMainElement->FirstChildElement(GetPluggedAvpack());
+  if (!pRoot)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <%s> node",
+      avpackSettingsXML.c_str(), GetPluggedAvpack().c_str());
+    return false;
+  }
 
-	// Add to the xml file
-	TiXmlElement *pRootElement = xbmcXml.RootElement();
-	TiXmlNode *pNode = NULL;
+  // Load guisettings
+  g_guiSettings.LoadXML(pRoot);
 
-	pNode = pRootElement->FirstChild(strType);
+  // Load calibration
+  return LoadCalibration(pRoot, avpackSettingsXML);
+}
 
-	// create a new Element
-	TiXmlText xmlName(strName);
-	TiXmlText xmlPath(strPath);
-	TiXmlElement eName("name");
-	TiXmlElement ePath("path");
-	eName.InsertEndChild(xmlName);
-	ePath.InsertEndChild(xmlPath);
+// Save the avpack settings in the current 'avpacksettings.xml' file
+bool CSettings::SaveAvpackXML() const
+{
+  CStdString avpackSettingsXML;
+  avpackSettingsXML  = GetAvpackSettingsFile();
 
-	TiXmlElement bookmark("bookmark");
-	bookmark.InsertEndChild(eName);
-	bookmark.InsertEndChild(ePath);
+  CLog::Log(LOGNOTICE, "Saving %s settings in %s",
+    GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
 
-	if (pNode)
-	{
-		pNode->ToElement()->InsertEndChild(bookmark);
-	}
-	return xbmcXml.SaveFile();
+  // The file does not exist : Save defaults
+  if (!CFile::Exists(avpackSettingsXML))
+    return SaveNewAvpackXML();
+
+  // The file already exists :
+  // We need to preserve other avpack settings
+
+  // First load the previous settings
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(avpackSettingsXML))
+  {
+    CLog::Log(LOGERROR, "SaveAvpackSettings : Error loading %s, Line %d\n%s\nCreating new file.",
+      avpackSettingsXML.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return SaveNewAvpackXML();
+  }
+
+  // Get the main element
+  TiXmlElement *pMainElement = xmlDoc.RootElement();
+  if (!pMainElement || strcmpi(pMainElement->Value(),"settings") != 0)
+  {
+    CLog::Log(LOGERROR, "SaveAvpackSettings : Error loading %s, no <settings> node.\nCreating new file.",
+      avpackSettingsXML.c_str());
+    return SaveNewAvpackXML();
+  }
+
+  // Delete the plugged avpack root if it exists, then recreate it
+  // TODO : to support custom avpack settings, the two XMLs should
+  // be synchronized, not just overwrite the old one
+  TiXmlNode *pRoot = pMainElement->FirstChild(GetPluggedAvpack());
+  if (pRoot)
+    pMainElement->RemoveChild(pRoot);
+
+  TiXmlElement pluggedNode(GetPluggedAvpack());
+  pRoot = pMainElement->InsertEndChild(pluggedNode);
+  if (!pRoot) return false;
+
+  if (!SaveAvpackSettings(pRoot))
+    return false;
+
+  return xmlDoc.SaveFile(avpackSettingsXML);
+}
+
+// Create an 'avpacksettings.xml' file with in the current profile directory
+bool CSettings::SaveNewAvpackXML() const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlMainElement("settings");
+  TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
+  if (!pMain) return false;
+
+  TiXmlElement pluggedNode(GetPluggedAvpack());
+  TiXmlNode *pRoot = pMain->InsertEndChild(pluggedNode);
+  if (!pRoot) return false;
+
+  if (!SaveAvpackSettings(pRoot))
+    return false;
+
+  return xmlDoc.SaveFile(GetAvpackSettingsFile());
+}
+
+// Save avpack settings in the provided xml node
+bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
+{
+  TiXmlElement programsNode("myprograms");
+  TiXmlNode *pNode = io_pRoot->InsertEndChild(programsNode);
+  if (!pNode) return false;
+  SetBoolean(pNode, "gameautoregion", g_guiSettings.GetBool("myprograms.gameautoregion"));
+  SetInteger(pNode, "ntscmode", g_guiSettings.GetInt("myprograms.ntscmode"));
+
+  // default video settings
+  TiXmlElement videoSettingsNode("defaultvideosettings");
+  pNode = io_pRoot->InsertEndChild(videoSettingsNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
+  SetInteger(pNode, "filmgrain", g_stSettings.m_currentVideoSettings.m_FilmGrain);
+  SetInteger(pNode, "viewmode", g_stSettings.m_currentVideoSettings.m_ViewMode);
+  SetFloat(pNode, "zoomamount", g_stSettings.m_currentVideoSettings.m_CustomZoomAmount);
+  SetFloat(pNode, "pixelratio", g_stSettings.m_currentVideoSettings.m_CustomPixelRatio);
+  SetFloat(pNode, "volumeamplification", g_stSettings.m_currentVideoSettings.m_VolumeAmplification);
+  SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers);
+  SetBoolean(pNode, "showsubtitles", g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+  SetInteger(pNode, "brightness", g_stSettings.m_currentVideoSettings.m_Brightness);
+  SetInteger(pNode, "contrast", g_stSettings.m_currentVideoSettings.m_Contrast);
+  SetInteger(pNode, "gamma", g_stSettings.m_currentVideoSettings.m_Gamma);
+
+  TiXmlElement audiooutputNode("audiooutput");
+  pNode = io_pRoot->InsertEndChild(audiooutputNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "mode", g_guiSettings.GetInt("audiooutput.mode"));
+  SetBoolean(pNode, "ac3passthrough", g_guiSettings.GetBool("audiooutput.ac3passthrough"));
+  SetBoolean(pNode, "dtspassthrough", g_guiSettings.GetBool("audiooutput.dtspassthrough"));
+
+  TiXmlElement videooutputNode("videooutput");
+  pNode = io_pRoot->InsertEndChild(videooutputNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "aspect", g_guiSettings.GetInt("videooutput.aspect"));
+  SetBoolean(pNode, "hd480p", g_guiSettings.GetBool("videooutput.hd480p"));
+  SetBoolean(pNode, "hd720p", g_guiSettings.GetBool("videooutput.hd720p"));
+  SetBoolean(pNode, "hd1080i", g_guiSettings.GetBool("videooutput.hd1080i"));
+
+  TiXmlElement videoscreenNode("videoscreen");
+  pNode = io_pRoot->InsertEndChild(videoscreenNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "flickerfilter", g_guiSettings.GetInt("videoscreen.flickerfilter"));
+  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
+  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
+
+  TiXmlElement videoplayerNode("videoplayer");
+  pNode = io_pRoot->InsertEndChild(videoplayerNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "displayresolution", g_guiSettings.GetInt("videoplayer.displayresolution"));
+  SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoplayer.flicker"));
+  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoplayer.soften"));
+
+  return SaveCalibration(io_pRoot);
+}
+
+bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("settings");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+  // write our tags one by one - just a big list for now (can be flashed up later)
+
+  // mymusic settings
+  TiXmlElement musicNode("mymusic");
+  TiXmlNode *pNode = pRoot->InsertEndChild(musicNode);
+  if (!pNode) return false;
+  {
+    TiXmlElement childNode("playlist");
+    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+    if (!pChild) return false;
+    SetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
+    SetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
+  }
+  {
+    TiXmlElement childNode("scanning");
+    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+    if (!pChild) return false;
+    SetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
+  }
+
+  SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
+  SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
+  SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
+  SetString(pNode, "defaultlibview", g_stSettings.m_szDefaultMusicLibView);
+
+  // myvideos settings
+  TiXmlElement videosNode("myvideos");
+  pNode = pRoot->InsertEndChild(videosNode);
+  if (!pNode) return false;
+
+  SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
+  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
+
+  SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
+  SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
+  SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
+  SetString(pNode, "defaultlibview", g_stSettings.m_szDefaultVideoLibView);
+
+  SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
+
+  { // playlist window
+    TiXmlElement childNode("playlist");
+    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+    if (!pChild) return false;
+    SetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
+    SetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
+  }
+
+  // view states
+  TiXmlElement viewStateNode("viewstates");
+  pNode = pRoot->InsertEndChild(viewStateNode);
+  if (pNode)
+  {
+    SetViewState(pNode, "musicnavartists", g_stSettings.m_viewStateMusicNavArtists);
+    SetViewState(pNode, "musicnavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    SetViewState(pNode, "musicnavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    SetViewState(pNode, "musicshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    SetViewState(pNode, "musiclastfm", g_stSettings.m_viewStateMusicLastFM);
+    SetViewState(pNode, "videonavactors", g_stSettings.m_viewStateVideoNavActors);
+    SetViewState(pNode, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
+    SetViewState(pNode, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
+    SetViewState(pNode, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
+    SetViewState(pNode, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
+    SetViewState(pNode, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
+    SetViewState(pNode, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
+  }
+
+  // general settings
+  TiXmlElement generalNode("general");
+  pNode = pRoot->InsertEndChild(generalNode);
+  if (!pNode) return false;
+  SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
+  SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
+  SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
+  SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort);
+  SetInteger(pNode, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel);
+
+  // default video settings
+  TiXmlElement videoSettingsNode("defaultvideosettings");
+  pNode = pRoot->InsertEndChild(videoSettingsNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
+  SetInteger(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
+  SetInteger(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
+  SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
+  SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
+  SetFloat(pNode, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification);
+  SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
+  SetBoolean(pNode, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
+  SetInteger(pNode, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness);
+  SetInteger(pNode, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast);
+  SetInteger(pNode, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma);
+  SetFloat(pNode, "audiodelay", g_stSettings.m_defaultVideoSettings.m_AudioDelay);
+  SetFloat(pNode, "subtitledelay", g_stSettings.m_defaultVideoSettings.m_SubtitleDelay);
+
+
+  // audio settings
+  TiXmlElement volumeNode("audio");
+  pNode = pRoot->InsertEndChild(volumeNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
+  SetInteger(pNode, "dynamicrangecompression", g_stSettings.m_dynamicRangeCompressionLevel);
+  for (int i = 0; i < 4; i++)
+  {
+    CStdString setting;
+    setting.Format("karaoke%i", i);
+    SetFloat(pNode, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy);
+    SetFloat(pNode, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch);
+    SetFloat(pNode, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper);
+    SetFloat(pNode, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic);
+  }
+
+  SaveCalibration(pRoot);
+
+  g_guiSettings.SaveXML(pRoot);
+
+  SaveSkinSettings(pRoot);
+
+  if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
+    SaveAvpackXML();
+
+  // For mastercode
+  SaveProfiles("q:\\system\\profiles.xml");
+
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
+}
+
+bool CSettings::LoadProfile(int index)
+{
+  int iOldIndex = m_iLastLoadedProfileIndex;
+  m_iLastLoadedProfileIndex = index;
+  bool bSourcesXML=true;
+  CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
+  CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
+  CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+  int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
+  if (Load(bSourcesXML,bSourcesXML))
+  {
+    CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
+    CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
+
+    // Thumbnails/
+    CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetLastFMThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
+    CreateDirectory("P:\\visualisations",NULL);
+    CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
+    for (unsigned int hex=0; hex < 16; hex++)
+    {
+      CStdString strHex;
+      strHex.Format("%x",hex);
+      CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
+      strThumbLoc += "\\" + strHex;
+      CreateDirectory(strThumbLoc.c_str(),NULL);
+      strThumbLoc = g_settings.GetMusicThumbFolder();
+      strThumbLoc += "\\" + strHex;
+      CreateDirectory(strThumbLoc.c_str(),NULL);
+    }
+
+    g_infoManager.ResetCache();
+ //   g_infoManager.Clear();
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
+    {
+      g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    }
+    else
+    {
+      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset
+      g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
+      g_audioManager.Load();
+    }
+    if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font"))) // need to redo if same skin, other lanuage..
+    {
+      CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
+      CStdString strFontSet;
+      if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+      {
+        CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
+        g_guiSettings.SetString("lookandfeel.font", strFontSet);
+        g_settings.Save();
+        g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+      }
+      else
+        CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
+    }
+    // initialize our charset converter
+    g_charsetConverter.reset();
+
+    // Load the langinfo to have user charset <-> utf-8 conversion
+    CStdString strLangInfoPath;
+    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
+
+    CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
+    g_langInfo.Load(strLangInfoPath);
+
+    CStdString strLanguagePath;
+    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
+
+    g_buttonTranslator.Load();
+    g_localizeStrings.Load(strLanguagePath);
+
+    if (m_iLastLoadedProfileIndex != 0)
+    {
+      TiXmlDocument doc;
+      if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
+        g_guiSettings.LoadMasterLock(doc.RootElement());
+    }
+
+#ifdef HAS_XBOX_HARDWARE
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "start fancontroller");
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+    }
+    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
+    {
+      CLog::Log(LOGNOTICE, "setting fanspeed");
+      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
+    }
+#endif
+
+    // to set labels - shares are reloaded
+    CDetectDVDMedia::UpdateState();
+    // init windows
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
+    m_gWindowManager.SendMessage(msg);
+
+    return true;
+  }
+
+  m_iLastLoadedProfileIndex = iOldIndex;
+
+  return false;
+}
+
+bool CSettings::DeleteProfile(int index)
+{
+  if (index < 0 && index >= (int)g_settings.m_vecProfiles.size())
+    return false;
+
+  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (dlgYesNo)
+  {
+    CStdString message;
+    CStdString str = g_localizeStrings.Get(13201);
+    message.Format(str.c_str(), g_settings.m_vecProfiles.at(index).getName());
+    dlgYesNo->SetHeading(13200);
+    dlgYesNo->SetLine(0, message);
+    dlgYesNo->SetLine(1, "");
+    dlgYesNo->SetLine(2, "");
+    dlgYesNo->DoModal();
+
+    if (dlgYesNo->IsConfirmed())
+    {
+      //delete profile
+      CStdString strDirectory = g_settings.m_vecProfiles[index].getDirectory();
+      m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+index);
+      if (index == g_settings.m_iLastLoadedProfileIndex)
+      {
+        g_settings.LoadProfile(0);
+        g_settings.Save();
+      }
+
+      CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
+      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
+      item.m_bIsFolder = true;
+      item.Select(true);
+      CGUIWindowFileManager::DeleteItem(&item);
+    }
+    else
+      return false;
+  }
+
+  SaveProfiles("q:\\system\\profiles.xml");
+  return true;
+}
+
+bool CSettings::SaveSettingsToProfile(int index)
+{
+  /*CProfile& profile = m_vecProfiles.at(index);
+  return SaveSettings(profile.getFileName(), false);*/
+  return true;
+}
+
+
+bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
+{
+  TiXmlDocument profilesDoc;
+  if (!CFile::Exists(strSettingsFile))
+  { // set defaults, or assume no rss feeds??
+    return false;
+  }
+  if (!profilesDoc.LoadFile(strSettingsFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = profilesDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"profiles") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <profiles> node", strSettingsFile.c_str());
+    return false;
+  }
+  GetInteger(pRootElement,"lastloaded",m_iLastLoadedProfileIndex,0,0,1000);
+  if (m_iLastLoadedProfileIndex < 0)
+    m_iLastLoadedProfileIndex = 0;
+
+  XMLUtils::GetBoolean(pRootElement,"useloginscreen",bUseLoginScreen);
+
+  TiXmlElement* pProfile = pRootElement->FirstChildElement("profile");
+  CProfile profile;
+
+  while (pProfile)
+  {
+    profile.setName("Master user");
+    profile.setDirectory("q:\\userdata");
+
+    CStdString strName;
+    XMLUtils::GetString(pProfile,"name",strName);
+    profile.setName(strName);
+
+    CStdString strDirectory;
+    XMLUtils::GetString(pProfile,"directory",strDirectory);
+    profile.setDirectory(strDirectory);
+
+    CStdString strThumb;
+    XMLUtils::GetString(pProfile,"thumbnail",strThumb);
+    profile.setThumb(strThumb);
+
+    bool bHas=true;
+    XMLUtils::GetBoolean(pProfile, "hasdatabases", bHas);
+    profile.setDatabases(bHas);
+
+    bHas = true;
+    XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
+    profile.setWriteDatabases(bHas);
+
+    bHas = true;
+    XMLUtils::GetBoolean(pProfile, "hassources", bHas);
+    profile.setSources(bHas);
+
+    bHas = true;
+    XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
+    profile.setWriteSources(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
+    profile.setSettingsLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
+    profile.setFilesLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
+    profile.setMusicLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
+    profile.setVideoLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockpictures", bHas);
+    profile.setPicturesLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
+    profile.setProgramsLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "useavpacksettings", bHas);
+    profile.setUseAvpackSettings(bHas);
+    int iLockMode=LOCK_MODE_EVERYONE;
+    XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
+    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < 0)
+      iLockMode = LOCK_MODE_EVERYONE;
+    profile.setLockMode(iLockMode);
+
+    CStdString strLockCode;
+    XMLUtils::GetString(pProfile,"lockcode",strLockCode);
+    profile.setLockCode(strLockCode);
+
+    CStdString strDate;
+    XMLUtils::GetString(pProfile,"lastdate",strDate);
+    profile.setDate(strDate);
+
+    m_vecProfiles.push_back(profile);
+    pProfile = pProfile->NextSiblingElement("profile");
+  }
+
+  if (m_iLastLoadedProfileIndex >= (int)m_vecProfiles.size() || m_iLastLoadedProfileIndex < 0)
+    m_iLastLoadedProfileIndex = 0;
+
+  return true;
+}
+
+bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("profiles");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+  SetInteger(pRoot,"lastloaded",m_iLastLoadedProfileIndex);
+  SetBoolean(pRoot,"useloginscreen",bUseLoginScreen);
+  for (unsigned int iProfile=0;iProfile<g_settings.m_vecProfiles.size();++iProfile)
+  {
+    TiXmlElement profileNode("profile");
+    TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
+    SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
+    SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
+    SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
+    SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
+    SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    {
+      SetInteger(pNode,"lockmode",g_settings.m_vecProfiles[iProfile].getLockMode());
+      SetString(pNode,"lockcode",g_settings.m_vecProfiles[iProfile].getLockCode());
+      SetBoolean(pNode,"lockmusic",g_settings.m_vecProfiles[iProfile].musicLocked());
+      SetBoolean(pNode,"lockvideo",g_settings.m_vecProfiles[iProfile].videoLocked());
+      SetBoolean(pNode,"lockpictures",g_settings.m_vecProfiles[iProfile].picturesLocked());
+      SetBoolean(pNode,"lockprograms",g_settings.m_vecProfiles[iProfile].programsLocked());
+      SetBoolean(pNode,"locksettings",g_settings.m_vecProfiles[iProfile].settingsLocked());
+      SetBoolean(pNode,"lockfiles",g_settings.m_vecProfiles[iProfile].filesLocked());
+    }
+
+    if (iProfile > 0)
+    {
+      SetBoolean(pNode,"hasdatabases",g_settings.m_vecProfiles[iProfile].hasDatabases());
+      SetBoolean(pNode,"canwritedatabases",g_settings.m_vecProfiles[iProfile].canWriteDatabases());
+      SetBoolean(pNode,"hassources",g_settings.m_vecProfiles[iProfile].hasSources());
+      SetBoolean(pNode,"canwritesources",g_settings.m_vecProfiles[iProfile].canWriteSources());
+    }
+  }
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
+}
+
+bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
+{
+  TiXmlDocument UPnPDoc;
+
+  if (!CFile::Exists(strSettingsFile))
+  { // set defaults, or assume no rss feeds??
+    return false;
+  }
+  if (!UPnPDoc.LoadFile(strSettingsFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), UPnPDoc.ErrorRow(), UPnPDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = UPnPDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"upnpserver") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
+    return false;
+  }
+
+  // load UUID
+  TiXmlElement* eUUID = pRootElement->FirstChildElement("UUID");
+  if (eUUID && eUUID->FirstChild()) {
+      g_settings.m_UPnPUUID = eUUID->FirstChild()->Value();
+  }
+
+  // load FriendlyName
+  TiXmlElement* eFN = pRootElement->FirstChildElement("FriendlyName");
+  if (eFN && eFN->FirstChild()) {
+      g_settings.m_UPnPServerFriendlyName = eFN->FirstChild()->Value();
+  }
+
+  CStdString strDefault;
+  GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
+  GetShares(pRootElement,"video",g_settings.m_vecUPnPVideoShares,strDefault);
+  GetShares(pRootElement,"pictures",g_settings.m_vecUPnPPictureShares,strDefault);
+
+  return true;
+}
+
+bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("upnpserver");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  // create a new Element for UUID
+  TiXmlText xmlUUID(g_settings.m_UPnPUUID);
+  TiXmlElement eUUID("UUID");
+  eUUID.InsertEndChild(xmlUUID);
+  pRoot->ToElement()->InsertEndChild(eUUID);
+
+  // create a new Element for Server friendly name
+  TiXmlText xmlFriendlyName(g_settings.m_UPnPServerFriendlyName);
+  TiXmlElement eFN("FriendlyName");
+  eFN.InsertEndChild(xmlFriendlyName);
+  pRoot->ToElement()->InsertEndChild(eFN);
+  
+  VECSHARES* pShares[3];
+  pShares[0] = &g_settings.m_vecUPnPMusicShares;
+  pShares[1] = &g_settings.m_vecUPnPVideoShares;
+  pShares[2] = &g_settings.m_vecUPnPPictureShares;
+  for (int k=0;k<3;++k)
+  {
+    if ((*pShares)[k].size()==0)
+      continue;
+
+    TiXmlElement xmlType("");
+    if (k==0)
+      xmlType = TiXmlElement("music");
+    if (k==1)
+      xmlType = TiXmlElement("video");
+    if (k==2)
+      xmlType = TiXmlElement("pictures");
+    
+    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);  
+
+    for (unsigned int j=0;j<(*pShares)[k].size();++j)
+    {
+      // create a new Element
+      TiXmlText xmlName((*pShares)[k][j].strName);
+      TiXmlElement eName("name");
+      eName.InsertEndChild(xmlName);
+
+      TiXmlElement bookmark("bookmark");
+      bookmark.InsertEndChild(eName);
+
+      for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
+      {
+        TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
+        TiXmlElement ePath("path");
+        ePath.InsertEndChild(xmlPath);
+        bookmark.InsertEndChild(ePath);
+      }
+
+      if (pNode)
+        pNode->ToElement()->InsertEndChild(bookmark);
+    }
+  }
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
+}
+
+bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share)
+{
+  VECSHARES *pShares = GetSharesFromType(type);
+
+  if (!pShares) return false;
+
+  // update our current share list
+  CShare* pShare=NULL;
+  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+  {
+    if ((*it).strName == oldName)
+    {
+      (*it).strName = share.strName;
+      (*it).strPath = share.strPath;
+      (*it).vecPaths = share.vecPaths;
+      pShare = &(*it);
+      break;
+    }
+  }
+
+  if (!pShare)
+    return false;
+
+  // Update our XML file as well
+  return SaveSources();
+}
+
+// NOTE: This function does NOT save the sources.xml file - you need to call SaveSources() separately.
+bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
+{
+  VECSHARES *pShares = GetSharesFromType(strType);
+
+  if (!pShares) return false;
+
+  // disallow virtual paths
+  if (strUpdateElement.Equals("path") && CUtil::IsVirtualPath(strUpdateText))
+    return false;
+
+  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+  {
+    if ((*it).strName == strOldName)
+    {
+      if ("name" == strUpdateElement)
+        (*it).strName = strUpdateText;
+      else if ("lockmode" == strUpdateElement)
+        (*it).m_iLockMode = atoi(strUpdateText);
+      else if ("lockcode" == strUpdateElement)
+        (*it).m_strLockCode = strUpdateText;
+      else if ("badpwdcount" == strUpdateElement)
+        (*it).m_iBadPwdCount = atoi(strUpdateText);
+      else if ("thumbnail" == strUpdateElement)
+        (*it).m_strThumbnailImage = strUpdateText;
+      else if ("path" == strUpdateElement)
+      {
+        (*it).vecPaths.clear();
+        (*it).strPath = strUpdateText;
+        (*it).vecPaths.push_back(strUpdateText);
+      }
+      else
+        return false;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
+{
+  VECSHARES *pShares = GetSharesFromType(strType);
+  if (!pShares) return false;
+
+  bool found(false);
+
+  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+  {
+    if ((*it).strName == strName && (*it).strPath == strPath)
+    {
+      CLog::Log(LOGDEBUG,"found share, removing!");
+      pShares->erase(it);
+      found = true;
+      break;
+    }
+  }
+
+  if (strType.Find("upnp") > -1)
+    return found;
+
+  return SaveSources();
+}
+
+bool CSettings::AddShare(const CStdString &type, const CShare &share)
+{
+  VECSHARES *pShares = GetSharesFromType(type);
+  if (!pShares) return false;
+
+  // translate dir and add to our current shares
+  CStdString strPath1 = share.strPath;
+  strPath1.ToUpper();
+
+  CShare shareToAdd = share;
+  if (strPath1.at(0) == '$')
+  {
+    shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
+    if (!share.strPath.IsEmpty())
+      CLog::Log(LOGDEBUG,"AddBookmark: Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
+    else
+    {
+      CLog::Log(LOGDEBUG,"AddBookmark: Skipping invalid special directory token: %s",strPath1.c_str());
+      return false;
+    }
+  }
+  pShares->push_back(shareToAdd);
+
+  if (type.Find("upnp") < 0)
+  {
+    return SaveSources();
+  }
+  return true;
+}
+
+bool CSettings::SaveSources()
+{
+  // TODO: Should we be specifying utf8 here??
+  TiXmlDocument doc;
+  TiXmlElement xmlRootElement("sources");
+  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  // ok, now run through and save each sources section
+  SetShares(pRoot, "myprograms", g_settings.m_vecMyProgramsShares, g_stSettings.m_szDefaultPrograms);
+  SetShares(pRoot, "video", g_settings.m_vecMyVideoShares, g_stSettings.m_szDefaultVideos);
+  SetShares(pRoot, "music", g_settings.m_vecMyMusicShares, g_stSettings.m_szDefaultMusic);
+  SetShares(pRoot, "pictures", g_settings.m_vecMyPictureShares, g_stSettings.m_szDefaultPictures);
+  SetShares(pRoot, "files", g_settings.m_vecMyFilesShares, g_stSettings.m_szDefaultFiles);
+
+  return doc.SaveFile(g_settings.GetSourcesFile());
+}
+
+bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath)
+{
+  TiXmlElement sectionElement(section);
+  TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
+  if (sectionNode)
+  {
+    SetString(sectionNode, "default", defaultPath);
+    for (unsigned int i = 0; i < shares.size(); i++)
+    {
+      const CShare &share = shares[i];
+      TiXmlElement bookmark("bookmark");
+
+      SetString(&bookmark, "name", share.strName);
+
+      for (unsigned int i = 0; i < share.vecPaths.size(); i++)
+        SetString(&bookmark, "path", share.vecPaths[i]);
+
+      if (share.m_iHasLock)
+      {
+        SetInteger(&bookmark, "lockmode", share.m_iLockMode);
+        SetString(&bookmark, "lockcode", share.m_strLockCode);
+        SetInteger(&bookmark, "badpwdcount", share.m_iBadPwdCount);
+      }
+      if (!share.m_strThumbnailImage.IsEmpty())
+        SetString(&bookmark, "thumbnail", share.m_strThumbnailImage);
+
+      sectionNode->InsertEndChild(bookmark);
+    } 
+  }
+  return true;
+}
+
+void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
+{
+  int number = 0;
+  const TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
+  if (pElement)
+  {
+    m_skinStrings.clear();
+    m_skinBools.clear();
+    const TiXmlElement *pChild = pElement->FirstChildElement("setting");
+    while (pChild)
+    {
+      CStdString settingName = pChild->Attribute("name");
+      if (pChild->Attribute("type") && strcmpi(pChild->Attribute("type"),"string") == 0)
+      { // string setting
+        CSkinString string;
+        string.name = settingName;
+        string.value = pChild->FirstChild() ? pChild->FirstChild()->Value() : "";
+        m_skinStrings.insert(pair<int, CSkinString>(number++, string));
+      }
+      else
+      { // bool setting
+        CSkinBool setting;
+        setting.name = settingName;
+        setting.value = pChild->FirstChild() ? strcmpi(pChild->FirstChild()->Value(), "true") == 0 : false;
+        m_skinBools.insert(pair<int, CSkinBool>(number++, setting));
+      }
+      pChild = pChild->NextSiblingElement("setting");
+    }
+  }
+}
+
+void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
+{
+  // add the <skinsettings> tag
+  TiXmlElement xmlSettingsElement("skinsettings");
+  TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
+  if (!pSettingsNode) return;
+  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
+  {
+    // Add a <setting type="bool" name="name">true/false</setting>
+    TiXmlElement xmlSetting("setting");
+    xmlSetting.SetAttribute("type", "bool");
+    xmlSetting.SetAttribute("name", (*it).second.name);
+    TiXmlText xmlBool((*it).second.value ? "true" : "false");
+    xmlSetting.InsertEndChild(xmlBool);
+    pSettingsNode->InsertEndChild(xmlSetting);
+  }
+  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
+  {
+    // Add a <setting type="string" name="name">string</setting>
+    TiXmlElement xmlSetting("setting");
+    xmlSetting.SetAttribute("type", "string");
+    xmlSetting.SetAttribute("name", (*it).second.name);
+    TiXmlText xmlLabel((*it).second.value);
+    xmlSetting.InsertEndChild(xmlLabel);
+    pSettingsNode->InsertEndChild(xmlSetting);
+  }
+}
+
+void CSettings::Clear()
+{
+  m_vecMyProgramsShares.clear();
+  m_vecMyPictureShares.clear();
+  m_vecMyFilesShares.clear();
+  m_vecMyMusicShares.clear();
+  m_vecMyVideoShares.clear();
+//  m_vecIcons.clear();
+  m_vecProfiles.clear();
+  m_szMyVideoStackTokensArray.clear();
+  m_szMyVideoCleanTokensArray.clear();
+  g_advancedSettings.m_videoStackRegExps.clear();
+  m_mapRssUrls.clear();
+  m_skinBools.clear();
+  m_skinStrings.clear();
+}
+
+int CSettings::TranslateSkinString(const CStdString &setting)
+{
+  CStdString settingName;
+  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
+  // run through and see if we have this setting
+  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  {
+    if (settingName.Equals((*it).second.name))
+      return (*it).first;
+  }
+  // didn't find it - insert it
+  CSkinString skinString;
+  skinString.name = settingName;
+  m_skinStrings.insert(pair<int, CSkinString>(m_skinStrings.size() + m_skinBools.size(), skinString));
+  return m_skinStrings.size() + m_skinBools.size() - 1;
+}
+
+const CStdString &CSettings::GetSkinString(int setting) const
+{
+  std::map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
+  if (it != m_skinStrings.end())
+  {
+    return (*it).second.value;
+  }
+  return StringUtils::EmptyString;
+}
+
+void CSettings::SetSkinString(int setting, const CStdString &label)
+{
+  std::map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
+  if (it != m_skinStrings.end())
+  {
+    (*it).second.value = label;
+    return;
+  }
+  assert(false);
+  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
+}
+
+void CSettings::ResetSkinSetting(const CStdString &setting)
+{
+  CStdString settingName;
+  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
+  // run through and see if we have this setting as a string
+  for (std::map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  {
+    if (settingName.Equals((*it).second.name))
+    {
+      (*it).second.value = "";
+      return;
+    }
+  }
+  // and now check for the skin bool
+  for (std::map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  {
+    if (settingName.Equals((*it).second.name))
+    {
+      (*it).second.value = false;
+      return;
+    }
+  }
+}
+
+int CSettings::TranslateSkinBool(const CStdString &setting)
+{
+  CStdString settingName;
+  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
+  // run through and see if we have this setting
+  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  {
+    if (settingName.Equals((*it).second.name))
+      return (*it).first;
+  }
+  // didn't find it - insert it
+  CSkinBool skinBool;
+  skinBool.name = settingName;
+  skinBool.value = false;
+  m_skinBools.insert(pair<int, CSkinBool>(m_skinBools.size() + m_skinStrings.size(), skinBool));
+  return m_skinBools.size() + m_skinStrings.size() - 1;
+}
+
+bool CSettings::GetSkinBool(int setting) const
+{
+  std::map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
+  if (it != m_skinBools.end())
+  {
+    return (*it).second.value;
+  }
+  // default is to return false
+  return false;
+}
+
+void CSettings::SetSkinBool(int setting, bool set)
+{
+  std::map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
+  if (it != m_skinBools.end())
+  {
+    (*it).second.value = set;
+    return;
+  }
+  assert(false);
+  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
+}
+
+void CSettings::ResetSkinSettings()
+{
+  CStdString currentSkin = g_guiSettings.GetString("lookandfeel.skin") + ".";
+  // clear all the settings and strings from this skin.
+  std::map<int, CSkinBool>::iterator it = m_skinBools.begin();
+  while (it != m_skinBools.end())
+  {
+    CStdString skinName = (*it).second.name;
+    if (skinName.Left(currentSkin.size()) == currentSkin)
+      (*it).second.value = false;
+
+    it++;
+  }
+  std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
+  while (it2 != m_skinStrings.end())
+  {
+    CStdString skinName = (*it2).second.name;
+    if (skinName.Left(currentSkin.size()) == currentSkin)
+      (*it2).second.value = "";
+
+    it2++;
+  }
+  g_infoManager.ResetCache();
+}
+
+void CSettings::LoadUserFolderLayout()
+{
+  // check them all
+  if (g_guiSettings.GetString("system.playlistspath") == "set default")
+  {
+    CStdString strDir;
+    //CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
+    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "playlists", strDir);
+    CUtil::AddSlashAtEnd(strDir);
+    g_guiSettings.SetString("system.playlistspath",strDir.c_str());
+    CDirectory::Create(strDir);
+    CStdString strDir2;
+    CUtil::AddFileToFolder(strDir,"music",strDir2);
+      CDirectory::Create(strDir2);
+    CUtil::AddFileToFolder(strDir,"video",strDir2);
+      CDirectory::Create(strDir2);
+  }
+  else
+  {
+    CDirectory::Create(g_guiSettings.GetString("system.playlistspath"));
+    CStdString strDir2;
+    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"music",strDir2);
+    CDirectory::Create(strDir2);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"video",strDir2);
+    CDirectory::Create(strDir2);
+  }
+}
+
+CStdString CSettings::GetProfileUserDataFolder() const
+{
+  CStdString folder;
+  if (m_iLastLoadedProfileIndex == 0)
+    return GetUserDataFolder();
+
+  CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
+{
+  CStdString folder;
+  folder = "P:\\"+strFile;
+  if (!CFile::Exists(folder))
+    folder = "T:\\"+strFile;
+  return folder;
+}
+
+CStdString CSettings::GetUserDataFolder() const
+{
+  return m_vecProfiles[0].getDirectory();
+}
+
+CStdString CSettings::GetDatabaseFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database", folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(), "Database", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetCDDBFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetThumbnailsFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetMusicThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetLastFMThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\LastFM", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\LastFM", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetMusicArtistThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetVideoThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetBookmarksThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetPicturesThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Pictures", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Pictures", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetProgramsThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetGameSaveThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\GameSaves", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\GameSaves", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetProfilesThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Profiles", folder);
+
+  return folder;
+}
+
+
+CStdString CSettings::GetXLinkKaiThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs\\XLinkKai", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs\\XlinkKai", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetSourcesFile() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasSources())
+    CUtil::AddFileToFolder(GetProfileUserDataFolder(),"sources.xml",folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(),"sources.xml",folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetSkinFolder() const
+{
+  CStdString folder;
+
+  // Get the Current Skin Path
+  CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
+
+  return folder;
+}
+
+void CSettings::LoadRSSFeeds()
+{
+  CStdString rssXML;
+  //rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
+  rssXML = GetUserDataItem("rssfeeds.xml");
+  TiXmlDocument rssDoc;
+  if (!CFile::Exists(rssXML))
+  { // set defaults, or assume no rss feeds??
+    return;
+  }
+  if (!rssDoc.LoadFile(rssXML.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
+    return;
+  }
+
+  TiXmlElement *pRootElement = rssDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"rssfeeds") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <rssfeeds> node", rssXML.c_str());
+    return;
+  }
+
+  g_settings.m_mapRssUrls.clear();
+  TiXmlElement* pSet = pRootElement->FirstChildElement("set");
+  while (pSet)
+  {
+    int iId;
+    if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
+    {
+      std::vector<string> vecSet;
+      std::vector<int> vecIntervals;
+      TiXmlElement* pFeed = pSet->FirstChildElement("feed");
+      while (pFeed)
+      {
+        int iInterval;
+        if ( pFeed->QueryIntAttribute("updateinterval",&iInterval) != TIXML_SUCCESS)
+        {
+          iInterval=30; // default to 30 min
+          CLog::Log(LOGDEBUG,"no interval set, default to 30!");
+        }
+        if (pFeed->FirstChild())
+        {
+          // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
+          //              What about the xml encoding?
+          CStdString strUrl = pFeed->FirstChild()->Value();
+          vecSet.push_back(strUrl);
+          vecIntervals.push_back(iInterval);
+        }
+        pFeed = pFeed->NextSiblingElement("feed");
+      }
+      g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
+    }
+    else
+      CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");
+
+    pSet = pSet->NextSiblingElement("set");
+  }
+}
+
+CStdString CSettings::GetSettingsFile() const
+{
+  CStdString settings;
+  if (g_settings.m_iLastLoadedProfileIndex == 0)
+    settings = "T:\\guisettings.xml";
+  else
+    settings = "P:\\guisettings.xml";
+  return settings;
+}
+
+CStdString CSettings::GetAvpackSettingsFile() const
+{
+  CStdString  strAvpackSettingsFile;
+  if (g_settings.m_iLastLoadedProfileIndex == 0)
+    strAvpackSettingsFile = "T:\\avpacksettings.xml";
+  else
+    strAvpackSettingsFile = "P:\\avpacksettings.xml";
+  return strAvpackSettingsFile;
+}
+
+CStdString  CSettings::GetPluggedAvpack() const
+{
+#ifdef HAS_XBOX_HARDWARE
+  switch (XGetAVPack())
+  {
+    case XC_AV_PACK_STANDARD :
+      return "Standard";
+    case XC_AV_PACK_SVIDEO :
+      return "S-Video";
+    case XC_AV_PACK_SCART :
+      return "Scart";
+    case XC_AV_PACK_HDTV :
+      return "HDTV";
+    case XC_AV_PACK_VGA :
+      return "VGA";
+    case XC_AV_PACK_RFU :
+      return "RF";
+  }
+#endif
+  return "Unknown";
 }

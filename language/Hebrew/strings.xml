@@ -1,2317 +1,1516 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: OOkladek-->
+<!--Email: ookladek@gmail.com-->
+<!--Date of translation: 02/19/2007-->
+<!--$Revision$-->
 <strings>
-    <string>
-        <id>0</id>
-        <value>�������� ���</value>
-    </string>
-    <string>
-        <id>1</id>
-        <value>������� ���</value>
-    </string>
-    <string>
-        <id>2</id>
-        <value>������� ���</value>
-    </string>
-    <string>
-        <id>3</id>
-        <value>������ ���</value>
-    </string>
-    <string>
-        <id>4</id>
-        <value>����� �������</value>
-    </string>
-    <string>
-        <id>5</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>7</id>
-        <value>������ ���</value>
-    </string>
-    <string>
-        <id>8</id>
-        <value>��� ����� ���</value>
-    </string>
-    <string>
-        <id>11</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>12</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>13</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>14</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>15</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>16</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>17</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>21</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>22</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>23</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>24</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>25</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>26</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>27</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>28</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>29</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>30</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>31</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>32</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>100</id>
-        <value>�����: ������</value>
-    </string>
-    <string>
-        <id>101</id>
-        <value>�����: �����</value>
-    </string>
-    <string>
-        <id>102</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>103</id>
-        <value>���� ��� : ��</value>
-    </string>
-    <string>
-        <id>104</id>
-        <value>���� ��� : �����</value>
-    </string>
-    <string>
-        <id>105</id>
-        <value>���� ��� : ����</value>
-    </string>
-    <string>
-        <id>106</id>
-        <value>��</value>
-    </string>
-    <string>
-        <id>107</id>
-        <value>��</value>
-    </string>
-    <string>
-        <id>108</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>109</id>
-        <value>��� ������</value>
-    </string>
-    <string>
-        <id>110</id>
-        <value>��� ����� ������</value>
-    </string>
-    <string>
-        <id>111</id>
-        <value>������ ���</value>
-    </string>
-    <string>
-        <id>112</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>113</id>
-        <value>������ ��� : ����</value>
-    </string>
-    <string>
-        <id>114</id>
-        <value>������ ��� : ���</value>
-    </string>
-    <string>
-        <id>115</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>116</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>117</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>118</id>
-        <value>��� ��</value>
-    </string>
-    <string>
-        <id>119</id>
-        <value>����� ����</value>
-    </string>
-    <string>
-        <id>120</id>
-        <value>��� ����� ����</value>
-    </string>
-    <string>
-        <id>121</id>
-        <value>��� ����� ����</value>
-    </string>
-    <string>
-        <id>122</id>
-        <value>��� ����� ����</value>
-    </string>
-    <string>
-        <id>123</id>
-        <value>?������ ����� ���</value>
-    </string>
-    <string>
-        <id>124</id>
-        <value>?������ ����� ���</value>
-    </string>
-    <string>
-        <id>125</id>
-        <value>?����� ����� ���</value>
-    </string>
-    <string>
-        <id>126</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>127</id>
-        <value>���������</value>
-    </string>
-    <string>
-        <id>128</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>129</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>130</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>131</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>132</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>133</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>134</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>135</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>136</id>
-        <value>����� �����</value>
-    </string>
-    <string>
-        <id>137</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>138</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>139</id>
-        <value>:���������</value>
-    </string>
-    <string>
-        <id>140</id>
-        <value>:����</value>
-    </string>
-    <string>
-        <id>141</id>
-        <value>���� ����:</value>
-    </string>
-    <string>
-        <id>142</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>143</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>144</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>145</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>146</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>147</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>148</id>
-        <value>DHCP</value>
-    </string>
-    <string>
-        <id>149</id>
-        <value>MAC</value>
-    </string>
-    <string>
-        <id>150</id>
-        <value>IP</value>
-    </string>
-    <string>
-        <id>151</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>152</id>
-        <value>Half duplex</value>
-    </string>
-    <string>
-        <id>153</id>
-        <value>Full duplex</value>
-    </string>
-    <string>
-        <id>154</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>155</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>156</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>157</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>158</id>
-        <value>������ ����</value>
-    </string>
-    <string>
-        <id>159</id>
-        <value>��� ����</value>
-    </string>
-    <string>
-        <id>160</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>161</id>
-        <value>�� ����</value>
-    </string>
-    <string>
-        <id>162</id>
-        <value>��� ����</value>
-    </string>
-    <string>
-        <id>163</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>164</id>
-        <value>��� ����</value>
-    </string>
-    <string>
-        <id>165</id>
-        <value>���� ����</value>
-    </string>
-    <string>
-        <id>166</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>167</id>
-        <value>FTP ���</value>
-    </string>
-    <string>
-        <id>168</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>169</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>170</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>171</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>172</id>
-        <value>:����� ����</value>
-    </string>
-    <string>
-        <id>173</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>174</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>175</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>176</id>
-        <value>:�������</value>
-    </string>
-    <string>
-        <id>177</id>
-        <value>:������</value>
-    </string>
-    <string>
-        <id>178</id>
-        <value>:������</value>
-    </string>
-    <string>
-        <id>179</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>180</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>181</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>182</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>183</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>184</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>185</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>186</id>
-        <value>OK</value>
-    </string>
-    <string>
-        <id>187</id>
-        <value>!�� ����� �������</value>
-    </string>
-    <string>
-        <id>188</id>
-        <value>��� ���</value>
-    </string>
-    <string>
-        <id>189</id>
-        <value>���� ���� �����</value>
-    </string>
-    <string>
-        <id>190</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>191</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>192</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>193</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>194</id>
-        <value>...����</value>
-    </string>
-    <string>
-        <id>195</id>
-        <value>IMDB! �� ����� ������</value>
-    </string>
-    <string>
-        <id>196</id>
-        <value>:��� ���</value>
-    </string>
-    <string>
-        <id>197</id>
-        <value>IMDB ���� ����</value>
-    </string>
-    <string>
-        <id>198</id>
-        <value>���� ���� ����� ����</value>
-    </string>
-    <string>
-        <id>199</id>
-        <value>:����</value>
-    </string>
-    <string>
-        <id>200</id>
-        <value>:����</value>
-    </string>
-    <string>
-        <id>201</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>202</id>
-        <value>:����</value>
-    </string>
-    <string>
-        <id>203</id>
-        <value>:����� �����</value>
-    </string>
-    <string>
-        <id>204</id>
-        <value>:�������</value>
-    </string>
-    <string>
-        <id>205</id>
-        <value>:������</value>
-    </string>
-    <string>
-        <id>206</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>207</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>208</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>209</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>210</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>211</id>
-        <value>���� ���������</value>
-    </string>
-    <string>
-        <id>212</id>
-        <value>��������� �����</value>
-    </string>
-    <string>
-        <id>213</id>
-        <value>������ ���� �����</value>
-    </string>
-    <string>
-        <id>214</id>
-        <value>������ ���</value>
-    </string>
-    <string>
-        <id>215</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>216</id>
-        <value>���� ���</value>
-    </string>
-    <string>
-        <id>217</id>
-        <value>��� �������</value>
-    </string>
-    <string>
-        <id>218</id>
-        <value>DVD ����</value>
-    </string>
-    <string>
-        <id>219</id>
-        <value>���� ���� �����</value>
-    </string>
-    <string>
-        <id>220</id>
-        <value>����� ���</value>
-    </string>
-    <string>
-        <id>221</id>
-        <value>���� ���� ������</value>
-    </string>
-    <string>
-        <id>222</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>223</id>
-        <value>���� �������� ���� ���</value>
-    </string>
-    <string>
-        <id>224</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>225</id>
-        <value>���� ����</value>
-    </string>
-    <string>
-        <id>226</id>
-        <value>PAL60 ����</value>
-    </string>
-    <string>
-        <id>227</id>
-        <value>CDDB ����</value>
-    </string>
-    <string>
-        <id>228</id>
-        <value>���� ����� ����� ��� ������</value>
-    </string>
-    <string>
-        <id>229</id>
-        <value>��� ����� ������ (�����)</value>
-    </string>
-    <string>
-        <id>230</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>231</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>232</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>233</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>234</id>
-        <value>Anisotropic</value>
-    </string>
-    <string>
-        <id>235</id>
-        <value>Quincunx</value>
-    </string>
-    <string>
-        <id>236</id>
-        <value>Gaussian Cubic</value>
-    </string>
-    <string>
-        <id>237</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>238</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>240</id>
-        <value>��� ��������� ���� DVD</value>
-    </string>
-    <string>
-        <id>241</id>
-        <value>��� �������� ���� VCD/SVCD</value>
-    </string>
-    <string>
-        <id>242</id>
-        <value>��� ������ ���������</value>
-    </string>
-    <string>
-        <id>243</id>
-        <value>��� ������ ���������</value>
-    </string>
-    <string>
-        <id>244</id>
-        <value>��� ����� ���������</value>
-    </string>
-    <string>
-        <id>245</id>
-        <value>��� ������ ���������</value>
-    </string>
-    <string>
-        <id>246</id>
-        <value>��� ������ ���������</value>
-    </string>
-    <string>
-        <id>247</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>248</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>249</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>250</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>251</id>
-        <value>��� ����� ���</value>
-    </string>
-    <string>
-        <id>252</id>
-        <value>- ��� ������ ��� ��������</value>
-    </string>
-    <string>
-        <id>253</id>
-        <value>���� ������</value>
-    </string>
-    <string>
-        <id>254</id>
-        <value>- ����� ���� DTS</value>
-    </string>
-    <string>
-        <id>255</id>
-        <value>CDDB</value>
-    </string>
-    <string>
-        <id>256</id>
-        <value>CDDB ���� ���� ����</value>
-    </string>
-    <string>
-        <id>257</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>258</id>
-        <value>ID3 ���� �����</value>
-    </string>
-    <string>
-        <id>259</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>260</id>
-        <value>Shoutcast</value>
-    </string>
-    <string>
-        <id>261</id>
-        <value>....����� ������</value>
-    </string>
-    <string>
-        <id>262</id>
-        <value>��� ��������</value>
-    </string>
-    <string>
-        <id>263</id>
-        <value>HTTP ���</value>
-    </string>
-    <string>
-        <id>264</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>265</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>266</id>
-        <value>���� ��� : �����</value>
-    </string>
-    <string>
-        <id>267</id>
-        <value>���� ��� : ���</value>
-    </string>
-    <string>
-        <id>268</id>
-        <value>���� ��� : �����</value>
-    </string>
-    <string>
-        <id>269</id>
-        <value>���� ��� : ���</value>
-    </string>
-    <string>
-        <id>270</id>
-        <value>���� ��� : �����</value>
-    </string>
-    <string>
-        <id>271</id>
-        <value>100 �������</value>
-    </string>
-    <string>
-        <id>272</id>
-        <value>����� ����� ��� ����� �����</value>
-    </string>
-    <string>
-        <id>273</id>
-        <value>����� ����� ��� ����� ����</value>
-    </string>
-    <string>
-        <id>274</id>
-        <value>����� �������</value>
-    </string>
-    <string>
-        <id>275</id>
-        <value>����� ��� ��������</value>
-    </string>
-    <string>
-        <id>276</id>
-        <value>��� �� ��� ������ ��� ����� ����</value>
-    </string>
-    <string>
-        <id>277</id>
-        <value>��� �� ������ ������ ���� ��������</value>
-    </string>
-    <string>
-        <id>278</id>
-        <value>���� �� ����� �� ������ ������ �����</value>
-    </string>
-    <string>
-        <id>279</id>
-        <value>����� ������ �����</value>
-    </string>
-    <string>
-        <id>280</id>
-        <value>����� ������� ����</value>
-    </string>
-    <string>
-        <id>281</id>
-        <value>XML ��� ���� ����</value>
-    </string>
-    <string>
-        <id>282</id>
-        <value>������ %i �����</value>
-    </string>
-    <string>
-        <id>283</id>
-        <value>������ �����</value>
-    </string>
-    <string>
-        <id>284</id>
-        <value>�� ����� ������ ������</value>
-    </string>
-    <string>
-        <id>285</id>
-        <value>����� �� �����</value>
-    </string>
-    <string>
-        <id>286</id>
-        <value>����� ���� �����</value>
-    </string>
-    <string>
-        <id>287</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>288</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>289</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>290</id>
-        <value>)Bd( ����� ������</value>
-    </string>
-    <string>
-        <id>291</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>292</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>293</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>294</id>
-        <value>��� ������</value>
-    </string>
-    <string>
-        <id>295</id>
-        <value>���� ��� �������</value>
-    </string>
-    <string>
-        <id>296</id>
-        <value>��� �������</value>
-    </string>
-    <string>
-        <id>297</id>
-        <value>������ ��� ������</value>
-    </string>
-    <string>
-        <id>298</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>300</id>
-        <value>1. ���</value>
-    </string>
-    <string>
-        <id>301</id>
-        <value>2. ������</value>
-    </string>
-    <string>
-        <id>302</id>
-        <value>3. ����� ����</value>
-    </string>
-    <string>
-        <id>303</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>304</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>305</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>306</id>
-        <value>Non-Interleaved</value>
-    </string>
-    <string>
-        <id>307</id>
-        <value>- �������� �����</value>
-    </string>
-    <string>
-        <id>308</id>
-        <value>- ����� ���� ����� �����</value>
-    </string>
-    <string>
-        <id>309</id>
-        <value>- ����� ���� ����� �����</value>
-    </string>
-    <string>
-        <id>310</id>
-        <value>- ������/�������� ����������</value>
-    </string>
-    <string>
-        <id>311</id>
-        <value>- Dering</value>
-    </string>
-    <string>
-        <id>312</id>
-        <value>(0=auto)</value>
-    </string>
-    <string>
-        <id>313</id>
-        <value>��� �������</value>
-    </string>
-    <string>
-        <id>314</id>
-        <value>...������</value>
-    </string>
-    <string>
-        <id>315</id>
-        <value>����� �������</value>
-    </string>
-    <string>
-        <id>316</id>
-        <value>...���� �����</value>
-    </string>
-    <string>
-        <id>317</id>
-        <value>����� ����� ������</value>
-    </string>
-    <string>
-        <id>318</id>
-        <value>...���� �����</value>
-    </string>
-    <string>
-        <id>319</id>
-        <value>����� ����� �����</value>
-    </string>
-    <string>
-        <id>320</id>
-        <value>...����� �����</value>
-    </string>
-    <string>
-        <id>321</id>
-        <value>����� ����� �����</value>
-    </string>
-    <string>
-        <id>322</id>
-        <value>...����� �������</value>
-    </string>
-    <string>
-        <id>323</id>
-        <value>����� ����� �������</value>
-    </string>
-    <string>
-        <id>324</id>
-        <value>...����� ������</value>
-    </string>
-    <string>
-        <id>325</id>
-        <value>����� ����� ������</value>
-    </string>
-    <string>
-        <id>326</id>
-        <value>...����� �������</value>
-    </string>
-    <string>
-        <id>327</id>
-        <value>����� ����� �������</value>
-    </string>
-    <string>
-        <id>328</id>
-        <value>...���� �������</value>
-    </string>
-    <string>
-        <id>329</id>
-        <value>����� ������ �������</value>
-    </string>
-    <string>
-        <id>330</id>
-        <value>...����� �� ����� ���� ���</value>
-    </string>
-    <string>
-        <id>331</id>
-        <value>...���� ������</value>
-    </string>
-    <string>
-        <id>332</id>
-        <value>����� ������ ������</value>
-    </string>
-    <string>
-        <id>333</id>
-        <value>?��� ������ ����� �� ��������</value>
-    </string>
-    <string>
-        <id>334</id>
-        <value>��� �� ��������</value>
-    </string>
-    <string>
-        <id>335</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>336</id>
-        <value>��� ��� �������</value>
-    </string>
-    <string>
-        <id>337</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>338</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>339</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>340</id>
-        <value>����� �����</value>
-    </string>
-    <string>
-        <id>341</id>
-        <value>DVD ���</value>
-    </string>
-    <string>
-        <id>342</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>343</id>
-        <value>��� ��� �������</value>
-    </string>
-    <string>
-        <id>344</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>345</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>346</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>347</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>348</id>
-        <value>��� ���� ������</value>
-    </string>
-    <string>
-        <id>349</id>
-        <value>Default.xbe ���� ��</value>
-    </string>
-    <string>
-        <id>350</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>351</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>352</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>353</id>
-        <value>��� ����</value>
-    </string>
-    <string>
-        <id>354</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>355</id>
-        <value>����� ����� ���</value>
-    </string>
-    <string>
-        <id>356</id>
-        <value>��� ���� ���</value>
-    </string>
-    <string>
-        <id>357</id>
-        <value>��� ������ ���� �����</value>
-    </string>
-    <string>
-        <id>358</id>
-        <value>�� ��������</value>
-    </string>
-    <string>
-        <id>359</id>
-        <value>������� �������</value>
-    </string>
-    <string>
-        <id>360</id>
-        <value>���� ���</value>
-    </string>
-    <string>
-        <id>361</id>
-        <value>���� �����.</value>
-    </string>
-    <string>
-        <id>362</id>
-        <value>����� ����� ��� (%)</value>
-    </string>
-    <string>
-        <id>363</id>
-        <value>��� ��� : ����</value>
-    </string>
-    <string>
-        <id>364</id>
-        <value>- ����� ���� AC3</value>
-    </string>
-    <string>
-        <id>365</id>
-        <value>��� ��� : ��</value>
-    </string>
-    <string>
-        <id>366</id>
-        <value>��� ��� : ���</value>
-    </string>
-    <string>
-        <id>367</id>
-        <value>��� ��� : �������</value>
-    </string>
-    <string>
-        <id>368</id>
-        <value>IMDB</value>
-    </string>
-    <string>
-        <id>369</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>370</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>371</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>372</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>373</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>374</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>375</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>376</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>377</id>
-        <value>��</value>
-    </string>
-    <string>
-        <id>378</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>379</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>380</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>381</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>382</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>383</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>384</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>385</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>386</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>387</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>388</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>389</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>390</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>391</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>392</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>393</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>394</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>395</id>
-        <value>N/A</value>
-    </string>
-    <string>
-        <id>396</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>397</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>398</id>
-        <value>������ ��������</value>
-    </string>
-    <string>
-        <id>399</id>
-        <value>������ ������</value>
-    </string>
-    <string>
-        <id>400</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>401</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>402</id>
-        <value>����� �����</value>
-    </string>
-    <string>
-        <id>403</id>
-        <value>UV ���</value>
-    </string>
-    <string>
-        <id>404</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>405</id>
-        <value>����� �����</value>
-    </string>
-    <string>
-        <id>406</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>407</id>
-        <value>�</value>
-    </string>
-    <string>
-        <id>408</id>
-        <value>�</value>
-    </string>
-    <string>
-        <id>410</id>
-        <value>Weather.com ���� �</value>
-    </string>
-    <string>
-        <id>411</id>
-        <value>:���� ��� ���� ����</value>
-    </string>
-    <string>
-        <id>412</id>
-        <value>����� ������ ��� ����</value>
-    </string>
-    <string>
-        <id>413</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>414</id>
-        <value>��� ������� ���� ����� ��</value>
-    </string>
-    <string>
-        <id>415</id>
-        <value>...����� ������</value>
-    </string>
-    <string>
-        <id>416</id>
-        <value>�� ����</value>
-    </string>
-    <string>
-        <id>417</id>
-        <value>����� : ������ ������</value>
-    </string>
-    <string>
-        <id>418</id>
-        <value>������ ���/�������</value>
-    </string>
-    <string>
-        <id>419</id>
-        <value>������ ���/������</value>
-    </string>
-    <string>
-        <id>420</id>
-        <value>������ ���/����</value>
-    </string>
-    <string>
-        <id>421</id>
-        <value>������ ���/������</value>
-    </string>
-    <string>
-        <id>422</id>
-        <value>��� ���� �����</value>
-    </string>
-    <string>
-        <id>423</id>
-        <value>���� CDDB ���</value>
-    </string>
-    <string>
-        <id>424</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>425</id>
-        <value>.�� ���� ���� �����</value>
-    </string>
-    <string>
-        <id>426</id>
-        <value>.�� ���� ���� �����</value>
-    </string>
-    <string>
-        <id>427</id>
-        <value>:����</value>
-    </string>
-    <string>
-        <id>428</id>
-        <value>���� ���� ����</value>
-    </string>
-    <string>
-        <id>429</id>
-        <value>��� ���� �� ����� ���</value>
-    </string>
-    <string>
-        <id>430</id>
-        <value>DVD# : ���� ���</value>
-    </string>
-    <string>
-        <id>431</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>432</id>
-        <value>��� ��� ���������</value>
-    </string>
-    <string>
-        <id>433</id>
-        <value>��� ��� ���� ������� �����</value>
-    </string>
-    <string>
-        <id>434</id>
-        <value>?�� ����</value>
-    </string>
-    <string>
-        <id>435</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>436</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>437</id>
-        <value>:����</value>
-    </string>
-    <string>
-        <id>438</id>
-        <value>���� ����</value>
-    </string>
-    <string>
-        <id>439</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>440</id>
-        <value>���� ����</value>
-    </string>
-    <string>
-        <id>441</id>
-        <value>UDF</value>
-    </string>
-    <string>
-        <id>442</id>
-        <value>LAN</value>
-    </string>
-    <string>
-        <id>443</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>444</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>445</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>446</id>
-        <value>DVD</value>
-    </string>
-    <string>
-        <id>447</id>
-        <value>��� ���������</value>
-    </string>
-    <string>
-        <id>448</id>
-        <value>LCD</value>
-    </string>
-    <string>
-        <id>449</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>450</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>4501</id>
-        <value>LCD ���</value>
-    </string>
-    <string>
-        <id>451</id>
-        <value>1: ���� �����</value>
-    </string>
-    <string>
-        <id>452</id>
-        <value>2: ���� �����</value>
-    </string>
-    <string>
-        <id>453</id>
-        <value>3: ���� �����</value>
-    </string>
-    <string>
-        <id>454</id>
-        <value>4: ���� �����</value>
-    </string>
-    <string>
-        <id>455</id>
-        <value>:�����</value>
-    </string>
-    <string>
-        <id>456</id>
-        <value>:���</value>
-    </string>
-    <string>
-        <id>457</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>458</id>
-        <value>B/Mark</value>
-    </string>
-    <string>
-        <id>459</id>
-        <value>�������</value>
-    </string>
-    <string>
-        <id>460</id>
-        <value>����� ����</value>
-    </string>
-    <string>
-        <id>461</id>
-        <value>]����[</value>
-    </string>
-    <string>
-        <id>462</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>463</id>
-        <value>����� ������</value>
-    </string>
-    <string>
-        <id>464</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>465</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>466</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>467</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>468</id>
-        <value>��� �� ���� ��� ����� �� ����� ������</value>
-    </string>
-    <string>
-        <id>469</id>
-        <value>����� �����</value>
-    </string>
-    <string>
-        <id>470</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>471</id>
-        <value>����&apos;��</value>
-    </string>
-    <string>
-        <id>472</id>
-        <value>��� ������ �����</value>
-    </string>
-    <string>
-        <id>473</id>
-        <value>����� ���� ������ �����</value>
-    </string>
-    <string>
-        <id>474</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>475</id>
-        <value>������ ����</value>
-    </string>
-    <string>
-        <id>476</id>
-        <value>������ ������</value>
-    </string>
-    <string>
-        <id>477</id>
-        <value>�� ���� ����� ����� �����</value>
-    </string>
-    <string>
-        <id>478</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>479</id>
-        <value>���� ����</value>
-    </string>
-    <string>
-        <id>480</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>481</id>
-        <value>�������� �����</value>
-    </string>
-    <string>
-        <id>482</id>
-        <value>����� XBMC</value>
-    </string>
-    <string>
-        <id>483</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>484</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>485</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>486</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>487</id>
-        <value>���� ��� ���</value>
-    </string>
-    <string>
-        <id>488</id>
-        <value>���� ����� ����� ������</value>
-    </string>
-    <string>
-        <id>489</id>
-        <value>����� ������ ����� ������</value>
-    </string>
-    <string>
-        <id>490</id>
-        <value>����� ��������� �� ����� ������� ������</value>
-    </string>
-    <string>
-        <id>491</id>
-        <value>- ����� ������� ������</value>
-    </string>
-    <string>
-        <id>492</id>
-        <value>���� �������</value>
-    </string>
-    <string>
-        <id>493</id>
-        <value>�������� �������</value>
-    </string>
-    <string>
-        <id>494</id>
-        <value>Overall Audio Headroom (dB)</value>
-    </string>
-    <string>
-        <id>495</id>
-        <value>���� ���� ����� ��������� �����</value>
-    </string>
-    <string>
-        <id>496</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>497</id>
-        <value>���� ������ ����</value>
-    </string>
-    <string>
-        <id>498</id>
-        <value>���� ��� : ���</value>
-    </string>
-    <string>
-        <id>499</id>
-        <value>��� ���� � www.allmusic.com</value>
-    </string>
-    <string>
-        <id>500</id>
-        <value>����� ���� ����� �����</value>
-    </string>
-    <string>
-        <id>501</id>
-        <value>���� ���� �����</value>
-    </string>
-    <string>
-        <id>502</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>503</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>504</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>505</id>
-        <value>���� ���� ���� �������</value>
-    </string>
-    <string>
-        <id>506</id>
-        <value>����� ����� ������ ������</value>
-    </string>
-    <string>
-        <id>507</id>
-        <value>���� ��� : �����</value>
-    </string>
-    <string>
-        <id>508</id>
-        <value>�� ����� �������� ������</value>
-    </string>
-    <string>
-        <id>600</id>
-        <value>���� ����</value>
-    </string>
-    <string>
-        <id>601</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>602</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>603</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>604</id>
-        <value>��� ����� ����</value>
-    </string>
-    <string>
-        <id>605</id>
-        <value>...�����</value>
-    </string>
-    <string>
-        <id>606</id>
-        <value>���� �����:</value>
-    </string>
-    <string>
-        <id>607</id>
-        <value>��:</value>
-    </string>
-    <string>
-        <id>608</id>
-        <value>�� ���� ������ ���� �� �����</value>
-    </string>
-    <string>
-        <id>609</id>
-        <value>CDDARipPath is not set in XboxMediaCenter.xml</value>
-    </string>
-    <string>
-        <id>620</id>
-        <value>����� ����</value>
-    </string>
-    <string>
-        <id>621</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>622</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>623</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>624</id>
-        <value>���� ���� �����</value>
-    </string>
-    <string>
-        <id>625</id>
-        <value>�� ������ ��</value>
-    </string>
-    <string>
-        <id>629</id>
-        <value>��� �����</value>
-    </string>
-    <string>
-        <id>630</id>
-        <value>����</value>
-    </string>
-    <string>
-        <id>631</id>
-        <value>���</value>
-    </string>
-    <string>
-        <id>632</id>
-        <value>4:3 ���</value>
-    </string>
-    <string>
-        <id>633</id>
-        <value>14:9 ���</value>
-    </string>
-    <string>
-        <id>634</id>
-        <value>16:9 ���</value>
-    </string>
-    <string>
-        <id>635</id>
-        <value>���� �����</value>
-    </string>
-    <string>
-        <id>636</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>700</id>
-        <value>���� �������</value>
-    </string>
-    <string>
-        <id>701</id>
-        <value>���� ����� ����� ���������</value>
-    </string>
-    <string>
-        <id>702</id>
-        <value>������ ����� ����.</value>
-    </string>
-    <string>
-        <id>703</id>
-        <value>��� �� ������ ����.</value>
-    </string>
-    <string>
-        <id>704</id>
-		<value>��� �� ������ ����� �����.</value>
-	</string>
-	<string>
-		<id>705</id>
-		<value>���</value>
-	</string>
-	<string>
-		<id>706</id>
-		<value>��� HTTP ������</value>
-	</string>
-	<string>
-		<id>707</id>
-		<value>���� HTTP ������</value>
-	</string>
-	<string>
-		<id>708</id>
-		<value>���� HTTP Proxy</value>
-	</string>
-	<string>
-		<id>709</id>
-		<value>����� XLink Kai</value>
-	</string>
-	<string>
-		<id>710</id>
-		<value>����� XLink Kai</value>
-	</string>
-	<string>
-		<id>711</id>
-		<value>Internet Protocol (IP)</value>
-	</string>
-	<string>
-		<id>712</id>
-		<value>���� ���� ����. ��� ���� ����� ��� 1 � 65535.</value>
-	</string>
-	<string>
-		<id>713</id>
-		<value>HTTP ������</value>
-	</string>	
-	<string>
-		<id>714</id>
-		<value>XLink Kai</value>
-	</string>	
-	<string>
-		<id>715</id>
-		<value>���� �����</value>
-	</string>	
-	<string>
-		<id>716</id>
-		<value>�������� )DHCP(</value>
-	</string>	
-	<string>
-		<id>717</id>
-		<value>����� )�����(</value>
-	</string>	
-	<string>
-		<id>718</id>
-		<value>����� ���� )Dashboard(</value>
-	</string>	
-	<string>
-		<id>719</id>
-		<value>����� IP</value>
-	</string>	
-	<string>
-		<id>720</id>
-		<value>Netmask</value>
-	</string>	
-	<string>
-		<id>721</id>
-		<value>Default Gateway</value>
-	</string>	
-	<string>
-		<id>722</id>
-		<value>��� DNS</value>
-	</string>
-	<string>
-		<id>723</id>
-		<value>���� �����</value>
-	</string>
-	<string>
-		<id>724</id>
-		<value>����� ������. ������ ����� ����� ����� AAA.BBB.CCC.DDD</value>
-	</string>
-	<string>
-		<id>725</id>
-		<value>�� ������ ��� 0 �- 255.</value>
-	</string>
-	<string>
-		<id>726</id>
-		<value>������� �� �����. ������ ��� �����?</value>
-	</string>
-	<string>
-		<id>727</id>
-		<value>��� Web</value>
-	</string>	
-	<string>
-		<id>728</id>
-		<value>��� FTP</value>
-	</string>	
-	<string>
-		<id>729</id>
-		<value>���� �������</value>
-	</string>	
-	<string>
-		<id>730</id>
-		<value>���� ��� Web</value>
-	</string>	
-	<string>
-		<id>731</id>
-		<value>����� ��� ���</value>
-	</string>
-	<string>
-		<id>732</id>
-		<value>���� �����</value>
-	</string>
-	<string>
-		<id>733</id>
-		<value>����� ���� Web</value>
-	</string>
-	<string>
-		<id>734</id>
-		<value>��� �����</value>
-    </string>
-    <string>
-		<id>735</id>
-		<value>������:</value>
-	</string>	
-	<string>
-        <id>998</id>
-		<value>XLink Kai</value>
-    </string>
-    <string>
-        <id>999</id>
-        <value>������ ����</value>
-    </string>
-    <string>
-        <id>10000</id>
-        <value>�� ����</value>
-    </string>
-    <string>
-        <id>10001</id>
-        <value>������� ���</value>
-    </string>
-    <string>
-        <id>10002</id>
-        <value>������� ���</value>
-    </string>
-    <string>
-		<id>741</id>
-		<value>����� �����</value>
-	</string>	
-	<string>
-		<id>742</id>
-		<value>���</value>
-	</string>	
-	<string>
-		<id>743</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>744</id>
-		<value>�����</value>
-	</string>		
-	<string>
-		<id>745</id>
-		<value>��� ���� ���� ������ ��</value>
-	</string>		
-	<string>
-		<id>746</id>
-		<value>��� ������ �����</value>
-	</string>
-	<string>
-		<id>747</id>
-		<value>��� ����� ������ ������ ������</value>
-	</string>
-	<string>
-		<id>748</id>
-		<value>���� ����</value>
-	</string>
-	<string>
-		<id>749</id>
-		<value>���� �����</value>
-	</string>
-	<string>
-		<id>750</id>
-		<value>��� ��� ����?</value>
-	</string>
-	<string>
-		<id>751</id>
-		<value>���� �����</value>
-	</string>
-	<string>
-		<id>752</id>
-		<value>���� ���� �����</value>
-	</string>
-	<string>
-		<id>753</id>
-		<value>���� �� �����</value>
-	</string>
-	<string>
-		<id>998</id>
-		<value>XLink Kai</value>
-	</string>
-	<string>
-		<id>999</id>
-		<value>������ �������</value>
-	</string>
-	
-	<string>
-		<id>10000</id>
-		<value>�� ����</value>
-	</string>
-	<string>
-		<id>10001</id>
-		<value>�������� ���</value>
-	</string>
-	<string>
-		<id>10002</id>
-		<value>������� ���</value>
-	</string>
-	<string>
-        <id>10003</id>
-        <value>������ ���</value>
-    </string>
-    <string>
-        <id>10004</id>
-        <value>������</value>
-    </string>
-    <string>
-        <id>10005</id>
-        <value>������� ���</value>
-    </string>
-    <string>
-        <id>10006</id>
-        <value>������ ���</value>
-    </string>
-    <string>
-        <id>10007</id>
-        <value>���� �����</value>
-	</string>
-	<string>
-		<id>10008</id>
-		<value>������ -&gt; ����</value>
-    </string>
-    <string>
-        <id>10009</id>
-        <value>������ -&gt; ���</value>
-    </string>
-    <string>
-        <id>10010</id>
-        <value>������ -&gt; ��� -&gt; �������</value>
-    </string>
-    <string>
-        <id>10011</id>
-        <value>������ -&gt; ��� -&gt; �������</value>
-    </string>
-    <string>
-        <id>10012</id>
-        <value>������ -&gt; ����</value>
-    </string>
-    <string>
-        <id>10013</id>
-        <value>������ -&gt; ��� -&gt; �������</value>
-    </string>
-    <string>
-        <id>10014</id>
-        <value>������ -&gt; ������</value>
-    </string>
-    <string>
-        <id>10015</id>
-        <value>������ -&gt; ��� -&gt; �������</value>
-    </string>
-    <string>
-        <id>10016</id>
-        <value>������ -&gt; ��� -&gt; ���� ���</value>
-    </string>
-    <string>
-        <id>10017</id>
-        <value>������ -&gt; ��� �����</value>
-    </string>
-    <string>
-        <id>10020</id>
-        <value>������ -&gt; ��������</value>
-    </string>
-    <string>
-        <id>10021</id>
-        <value>My Videos/genre</value>
-    </string>
-    <string>
-        <id>10022</id>
-        <value>My Videos/actor</value>
-    </string>
-    <string>
-        <id>10023</id>
-        <value>My Videos/year</value>
-    </string>
-    <string>
-        <id>10024</id>
-        <value>Settings-&gt;Programs</value>
-    </string>
-    <string>
-        <id>10025</id>
-        <value>My Videos/title</value>
-    </string>
-    <string>
-        <id>10026</id>
-        <value>Settings-&gt;General-&gt;Cache</value>
-    </string>
-    <string>
-        <id>10027</id>
-        <value>Settings-&gt;General-&gt;Autorun</value>
-    </string>
-    <string>
-        <id>10028</id>
-        <value>My Videos/playlist</value>
-    </string>
-    <string>
-        <id>10029</id>
-        <value>Settings-&gt;General-&gt;LCD</value>
-    </string>
-    <string>
-        <id>10100</id>
-        <value>Yes/no dialog</value>
-    </string>
-    <string>
-        <id>10101</id>
-        <value>Progress dialog</value>
-    </string>
-    <string>
-        <id>10500</id>
-        <value>My Music/playlist</value>
-    </string>
-    <string>
-        <id>10501</id>
-        <value>My Music/files</value>
-    </string>
-    <string>
-        <id>10502</id>
-        <value>My Music/albums</value>
-    </string>
-    <string>
-        <id>10503</id>
-        <value>My Music/artists</value>
-    </string>
-    <string>
-        <id>10504</id>
-        <value>My Music/genres</value>
-    </string>
-    <string>
-        <id>10505</id>
-        <value>My Music/top100</value>
-    </string>
-    <string>
-        <id>11000</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>12000</id>
-        <value>��� ������</value>
-    </string>
-    <string>
-        <id>12001</id>
-        <value>My Music/info</value>
-    </string>
-    <string>
-        <id>12002</id>
-        <value>������ �����</value>
-    </string>
-    <string>
-        <id>12003</id>
-        <value>My Videos/Info</value>
-    </string>
-    <string>
-        <id>12004</id>
-        <value>My Scripts/Info</value>
-    </string>
-    <string>
-        <id>12005</id>
-        <value>����� ���� ���</value>
-    </string>
-    <string>
-        <id>12006</id>
-        <value>����� �����</value>
-    </string>
-    <string>
-        <id>12007</id>
-        <value>My Picture/slideshow</value>
-    </string>
-    <string>
-        <id>12008</id>
-        <value>Filestacking dialog</value>
-    </string>
-    <string>
-        <id>12600</id>
-        <value>��� ����� ���</value>
-    </string>
-    <string>
-        <id>12900</id>
-        <value>���� ���</value>
-    </string>
-    <string>
-        <id>12901</id>
-        <value>����� ���� ���</value>
-    </string>
-    <string>
-        <id>13000</id>
-        <value>�����</value>
-    </string>
-    <string>
-        <id>13001</id>
-        <value>����� ������ �����</value>
-    </string>
-    <string>
-        <id>13002</id>
-        <value>����� ����</value>
-    </string>
-    <string>
-        <id>13003</id>
-        <value>- ������</value>
-    </string>
-    <string>
-        <id>13004</id>
-        <value>- ���� ���� ��������</value>
-    </string>
-    <string>
-        <id>13100</id>
-        <value>����� �������</value>
-    </string>
-    <string>
-        <id>13200</id>
-        <value>��������</value>
-    </string>
-    <string>
-        <id>13201</id>
-        <value>����� ������ &apos;%s&apos;?</value>
-    </string>
-    <string>
-        <id>13202</id>
-        <value>���� ������ �����...</value>
-    </string>
-    <string>
-        <id>13203</id>
-        <value>������� &apos;%s&apos; ���� ������</value>
-    </string>
-    <string>
-        <id>13300</id>
-        <value>������ �����:</value>
-    </string>
-    <string>
-        <id>13301</id>
-        <value>���� �������� ��������</value>
-    </string>
-    <string>
-        <id>13302</id>
-        <value>���� ������ �����</value>
-    </string>
-    <string>
-        <id>13303</id>
-        <value>���:</value>
-    </string>
-    <string>
-        <id>13304</id>
-        <value>���� ����� �����</value>
-    </string>
-    <string><id>13305</id><value>���� ���� RSS</value></string>
-
+  <string id="0">התוכניות שלי</string>
+  <string id="1">התמונות שלי</string>
+  <string id="2">המוזיקה שלי</string>
+  <string id="3">הסרטים שלי</string>
+  <string id="4">מדריך תוכניות</string>
+  <string id="5">הגדרות</string>
+  <string id="7">הקבצים שלי</string>
+  <string id="8">מזג האויר שלי</string>
+  <string id="11">שני</string>
+  <string id="12">שלישי</string>
+  <string id="13">רביעי</string>
+  <string id="14">חמישי</string>
+  <string id="15">שישי</string>
+  <string id="16">שבת</string>
+  <string id="17">ראשון</string>
+  <string id="21">ינואר</string>
+  <string id="22">פברואר</string>
+  <string id="23">מרץ</string>
+  <string id="24">אפריל</string>
+  <string id="25">מאי</string>
+  <string id="26">יוני</string>
+  <string id="27">יולי</string>
+  <string id="28">אוגוסט</string>
+  <string id="29">ספטמבר</string>
+  <string id="30">אוקטובר</string>
+  <string id="31">נובמבר</string>
+  <string id="32">דצמבר</string>
+  <string id="98">תצוגה: אוטומטי</string>
+  <string id="99">תצוגה: אוטומטי גדול</string>
+  <string id="100">תצוגה: צלמיות</string>
+  <string id="101">תצוגה: רשימה</string>
+  <string id="102">סרוק</string>
+  <string id="103">מיין לפי : שם</string>
+  <string id="104">מיין לפי : תאריך</string>
+  <string id="105">מיין לפי : גודל</string>
+  <string id="106">לא</string>
+  <string id="107">כן</string>
+  <string id="108">מצגת</string>
+  <string id="109">צור צלמיות</string>
+  <string id="110">צור תצוגה מקדימה</string>
+  <string id="111">קיצורי דרך</string>
+  <string id="112">מופסק</string>
+  <string id="113">הקבצים שלי : מקור</string>
+  <string id="114">הקבצים שלי : יעד</string>
+  <string id="115">העתק</string>
+  <string id="116">העבר</string>
+  <string id="117">מחק</string>
+  <string id="118">שנה שם</string>
+  <string id="119">תיקיה חדשה</string>
+  <string id="120">אשר העתקת קובץ</string>
+  <string id="121">אשר העברת קובץ</string>
+  <string id="122">אשר מחיקת קובץ</string>
+  <string id="123">?להעתיק קבצים אלו</string>
+  <string id="124">?להעביר קבצים אלו</string>
+  <string id="125">?למחוק קבצים אלו</string>
+  <string id="126">מצב</string>
+  <string id="127">אובייקטים</string>
+  <string id="128">כללי</string>
+  <string id="129">מצגת</string>
+  <string id="130">מידע מערכת</string>
+  <string id="131">מסך</string>
+  <string id="132">אלבומים</string>
+  <string id="133">אמנים</string>
+  <string id="134">שירים</string>
+  <string id="135">סגנונות</string>
+  <string id="136">רשימת השמעה</string>
+  <string id="137">חפש</string>
+  <string id="138">מידע מערכת</string>
+  <string id="139">:טמפרטורות</string>
+  <string id="140">:מעבד</string>
+  <string id="141">מעבד גרפי:</string>
+  <string id="142">:זמן</string>
+  <string id="143">:נוכחי</string>
+  <string id="144">:גירסה</string>
+  <string id="145">:רשת</string>
+  <string id="146">:סוג</string>
+  <string id="147">סטאטי</string>
+  <string id="148">אוטומטי</string>
+  <string id="149">MAC</string>
+  <string id="150">IP</string>
+  <string id="151">:קישור</string>
+  <string id="152">חצי דופלקס</string>
+  <string id="153">דופלקס מלא</string>
+  <string id="154">אחסון</string>
+  <string id="155">כונן</string>
+  <string id="156">פנוי</string>
+  <string id="157">וידאו</string>
+  <string id="158">זיכרון פנוי</string>
+  <string id="159">אין חיבור רשת</string>
+  <string id="160">פנוי</string>
+  <string id="161">לא זמין</string>
+  <string id="162">מגש פתוח</string>
+  <string id="163">קורא</string>
+  <string id="164">אין דיסק</string>
+  <string id="165">דיסק נמצא</string>
+  <string id="166">סקין</string>
+  <string id="167">FTP שרת</string>
+  <string id="168">שרת שעון אינטרנט</string>
+  <string id="169">רזולוציה</string>
+  <string id="170">:אלבום</string>
+  <string id="171">:אמן</string>
+  <string id="172">:תאריך הפצה</string>
+  <string id="173">:דירוג</string>
+  <string id="174">:סגנון</string>
+  <string id="175">:טונים</string>
+  <string id="176">:סגנונות</string>
+  <string id="177">:ביקורת</string>
+  <string id="178">:רצועות</string>
+  <string id="179">שיר</string>
+  <string id="180">אורך</string>
+  <string id="181">בחר אלבום</string>
+  <string id="182">רצועות</string>
+  <string id="183">ביקורת</string>
+  <string id="184">רענן</string>
+  <string id="185">מחפש אלבום</string>
+  <string id="186">OK</string>
+  <string id="187">!לא נמצאו אלבומים</string>
+  <string id="188">בחר הכל</string>
+  <string id="189">סורק מידע מערכת</string>
+  <string id="190">שמור</string>
+  <string id="191">ערבב</string>
+  <string id="192">נקה</string>
+  <string id="193">סרוק</string>
+  <string id="194">...מחפש</string>
+  <string id="195">IMDB! לא נמצאו רשומות</string>
+  <string id="196">:בחר סרט</string>
+  <string id="197">IMDB מחפש מידע</string>
+  <string id="198">טוען מידע אודות הסרט</string>
+  <string id="199">:במאי</string>
+  <string id="200">:תסריאטי</string>
+  <string id="201">:שנה</string>
+  <string id="202">:שורה</string>
+  <string id="203">:תקציר עלילה</string>
+  <string id="204">:מידרוג</string>
+  <string id="205">:הצבעות</string>
+  <string id="206">ליהוק</string>
+  <string id="207">עלילה</string>
+  <string id="208">נגן</string>
+  <string id="209">הבא</string>
+  <string id="210">הקודם</string>
+  <string id="213">כוונון ממשק משתמש</string>
+  <string id="214">כוונון מסך</string>
+  <string id="215">רכך</string>
+  <string id="216">כמות זום</string>
+  <string id="217">יחס פיקסלים</string>
+  <string id="218">DVD כונן</string>
+  <string id="219">הכנס דיסק בבקשה</string>
+  <string id="220">תקיית רשת</string>
+  <string id="221">הרשת אינה מחוברת</string>
+  <string id="222">בטל</string>
+  <string id="224">מהירות</string>
+  <string id="225">זמני מעבר</string>
+  <string id="227">CDDB אפשר</string>
+  <string id="228">ערבב רשימת השמעה בעת הטעינה</string>
+  <string id="229">זמן סיבוב כונן קשיח (בדקות)</string>
+  <string id="230">פילטרים</string>
+  <string id="231">ללא</string>
+  <string id="232">נקודה</string>
+  <string id="233">קווי</string>
+  <string id="234">אנזיאוטרופי</string>
+  <string id="235">מחומש</string>
+  <string id="236">קוביה גאוסנית</string>
+  <string id="237">צמצום</string>
+  <string id="238">הגדלה</string>
+  <string id="239">נקה רשימת השמעה בסיום</string>
+  <string id="240">נגן אוטומאטית סרטי DVD</string>
+  <string id="241">נגן אוטומטית סרטי VCD/SVCD</string>
+  <string id="242">נגן מוזיקה אוטומאטית</string>
+  <string id="243">הרץ משחקים אוטומאטית</string>
+  <string id="244">נגן סרטים אוטומאטית</string>
+  <string id="245">נגן מוזיקה אוטומאטית</string>
+  <string id="246">הרץ תמונות אוטומאטית</string>
+  <string id="247">סקריפטים</string>
+  <string id="248">שפה</string>
+  <string id="249">מוזיקה</string>
+  <string id="250">תצוגות</string>
+  <string id="251">בחר ספרית יעד</string>
+  <string id="252">- פלט סטריאו לכל הרמקולים</string>
+  <string id="253">מספר ערוצים</string>
+  <string id="254">DTS רסיבר תומך</string>
+  <string id="255">CDDB</string>
+  <string id="256">CDDB מחפש ברשת מידע</string>
+  <string id="257">שגיאה</string>
+  <string id="258">ID3 אפשר תגיות</string>
+  <string id="259">פותח</string>
+  <string id="260">Shoutcast</string>
+  <string id="261">....ממתין להתחלה</string>
+  <string id="262">פלט סקריפטים</string>
+  <string id="263">HTTP שרת</string>
+  <string id="264">הקלט</string>
+  <string id="265">עצור הקלטה</string>
+  <string id="266">מיין לפי : רצועה</string>
+  <string id="267">מיין לפי : זמן</string>
+  <string id="268">מיין לפי : כותרת</string>
+  <string id="269">מיין לפי : אמן</string>
+  <string id="270">מיין לפי : אלבום</string>
+  <string id="271">ראשונים 100</string>
+  <string id="272">פיצוי סריקת יתר משמאל למעלה</string>
+  <string id="273">פיצוי סריקת יתר מימין למטה</string>
+  <string id="274">מיקום כתוביות</string>
+  <string id="275">כיוון יחס הפיקסלים</string>
+  <string id="276">הזז את החץ לשינוי רמת סריקת היתר</string>
+  <string id="277">הזז את המצביע לשינוי מקום הכתוביות</string>
+  <string id="278">כוון את המלבן כך שיהפוך לריבוע מושלם</string>
+  <string id="279">טעינת הגדרות נכשלה</string>
+  <string id="280">משתמש בברירות מחדל</string>
+  <string id="281">XML אנא בדוק קבצי</string>
+  <string id="282">התאמות %i נמצאו</string>
+  <string id="283">תוצאות חיפוש</string>
+  <string id="284">לא נמצאו התאמות לחיפוש</string>
+  <string id="286">פילטר לאחר עיבוד</string>
+  <string id="287">כתוביות</string>
+  <string id="288">פונט</string>
+  <string id="289">גודל</string>
+  <string id="290">)Bd( הגברת ווליום</string>
+  <string id="291">וידאו</string>
+  <string id="292">אודיו</string>
+  <string id="293">כתוביות</string>
+  <string id="294">צור סימניה</string>
+  <string id="296">נקה סימניות</string>
+  <string id="297">השהיית קול הנומתו</string>
+  <string id="303">השהייה</string>
+  <string id="304">שפה</string>
+  <string id="305">זמין</string>
+  <string id="306">ללא-הפרדה</string>
+  <string id="307">- אוטומאטי עיבוד</string>
+  <string id="308">- פילטר הסרת חסימה לגובה</string>
+  <string id="309">- פילטר הסרת חסימה לרוחב</string>
+  <string id="310">- בהירות/ניגודיות אוטומטיים</string>
+  <string id="311">- Dering</string>
+  <string id="312">(0=אוטומטי)</string>
+  <string id="313">נקה מסד נתונים</string>
+  <string id="314">...מתכונן</string>
+  <string id="315">שגיאת מסד נתונים</string>
+  <string id="316">...מחפש שירים</string>
+  <string id="317">ניקוי הושלם בהצלחה</string>
+  <string id="318">...מנקה שירים</string>
+  <string id="319">שגיאה בניקוי שירים</string>
+  <string id="320">...ניקוי אמנים</string>
+  <string id="321">שגיאה בניקוי אמנים</string>
+  <string id="322">...ניקוי סגנונות</string>
+  <string id="323">שגיאה בניקוי סגנונות</string>
+  <string id="324">...ניקוי נתיבים</string>
+  <string id="325">שגיאה בניקוי נתיבים</string>
+  <string id="326">...ניקוי אלבומים</string>
+  <string id="327">שגיאה בניקוי אלבומים</string>
+  <string id="328">...כותב שינויים</string>
+  <string id="329">שגיאה בכתיבת שינויים</string>
+  <string id="330">...פעולה זו עשויה לקחת זמן</string>
+  <string id="331">...דוחס נתונים</string>
+  <string id="332">שגיאה בדחיסת נתונים</string>
+  <string id="333">?האם ברצונך לנקות את מסד הנתונים</string>
+  <string id="334">נקה את מסד הנתונים</string>
+  <string id="335">התחל</string>
+  <string id="336">סדר קצב פריימים</string>
+  <string id="337">פלט אודיו</string>
+  <string id="338">אנלוגי</string>
+  <string id="339">דיגיטאלי</string>
+  <string id="340">אמנים שונים</string>
+  <string id="341">DVD נגן</string>
+  <string id="342">סרטים</string>
+  <string id="343">סדר קצב פריימים</string>
+  <string id="344">שחקנים</string>
+  <string id="345">שנה</string>
+  <string id="350">תוכנוית</string>
+  <string id="351">כבה</string>
+  <string id="352">עמעם</string>
+  <string id="353">מסך שחור</string>
+  <string id="354">מאטריקס</string>
+  <string id="355">המתנה לשומר מסך</string>
+  <string id="356">מצב שומר מסך</string>
+  <string id="357">זמן להמתנה לפני כיבוי</string>
+  <string id="358">כל האלבומים</string>
+  <string id="359">אלבומים אחרונים</string>
+  <string id="360">שומר מסך</string>
+  <string id="361">מצגת רקורס.</string>
+  <string id="362">אחוזי עמעום מסך (%)</string>
+  <string id="363">סדר לפי : קובץ</string>
+  <string id="364">AC3 רסיבר תומך</string>
+  <string id="365">סדר לפי : שם</string>
+  <string id="366">סדר לפי : שנה</string>
+  <string id="367">סדר לפי : רייטינג</string>
+  <string id="368">IMDB</string>
+  <string id="369">כותרת</string>
+  <string id="370">רעמים</string>
+  <string id="371">חלקית</string>
+  <string id="372">בעיקר</string>
+  <string id="373">בהיר</string>
+  <string id="374">מעונן</string>
+  <string id="375">שלג</string>
+  <string id="376">גשם</string>
+  <string id="377">קל</string>
+  <string id="378">בוקר</string>
+  <string id="379">ערב</string>
+  <string id="380">ממטרים</string>
+  <string id="381">מעטים</string>
+  <string id="382">לסירוגין</string>
+  <string id="383">רוח</string>
+  <string id="384">חזקה</string>
+  <string id="385">קלילה</string>
+  <string id="386">בהיר</string>
+  <string id="387">עננים</string>
+  <string id="388">מוקדם</string>
+  <string id="389">ממטרים</string>
+  <string id="390">סוער</string>
+  <string id="391">נמוך</string>
+  <string id="392">בינוני</string>
+  <string id="393">גבוה</string>
+  <string id="394">ערפילי</string>
+  <string id="395">אביך</string>
+  <string id="396">בחר מיקום</string>
+  <string id="397">זמני רענון</string>
+  <string id="398">יחידות טמפרטורה</string>
+  <string id="399">יחידות מהירות</string>
+  <string id="400">מזג אוויר</string>
+  <string id="401">טמפרטורה</string>
+  <string id="402">מרגיש כאילו</string>
+  <string id="403">UV רמת</string>
+  <string id="404">רוח</string>
+  <string id="405">נקודת אידוי</string>
+  <string id="406">לחות</string>
+  <string id="407">מ</string>
+  <string id="408">ב</string>
+  <string id="410">Weather.com ניגש ל</string>
+  <string id="411">:טוען מזג אויר עבור</string>
+  <string id="412">שגיאה בטעינת מזג אויר</string>
+  <string id="413">ידני</string>
+  <string id="414">אין ביקורות עבור אלבום זה</string>
+  <string id="415">...מוריד צלמיות</string>
+  <string id="416">לא זמין</string>
+  <string id="417">תצוגה : צלמיות גדולות</string>
+  <string id="418">הסרטים שלי/סגנונות</string>
+  <string id="419">הסרטים שלי/שחקנים</string>
+  <string id="420">הסרטים שלי/שנים</string>
+  <string id="421">הסרטים שלי/כותרות</string>
+  <string id="422">מחק מידע אלבום</string>
+  <string id="423">מידע CDDB מחק</string>
+  <string id="424">בחר</string>
+  <string id="425">.לא נמצא מידע אלבום</string>
+  <string id="426">.לא נמצא מידע אלבום</string>
+  <string id="427">:דיסק</string>
+  <string id="428">הכנס דיסק נכון</string>
+  <string id="429">אנא הכנס את הדיסק הבא</string>
+  <string id="430">DVD# : מיין לפי</string>
+  <string id="431">ללא מטמון</string>
+  <string id="432">מחק סרט ממסד הנתונים</string>
+  <string id="433">האם אתה בטוח שברצונך למחוק</string>
+  <string id="434">?את הסרט</string>
+  <string id="435">רצועה</string>
+  <string id="436">:שנה</string>
+  <string id="437">:אורך</string>
+  <string id="438">פותח קובץ</string>
+  <string id="439">מטמון</string>
+  <string id="440">כונן קשיח</string>
+  <string id="441">UDF</string>
+  <string id="442">רשת מקומית</string>
+  <string id="443">אינטרנט</string>
+  <string id="444">וידאו</string>
+  <string id="445">אודיו</string>
+  <string id="446">DVD</string>
+  <string id="447">נגן אוטומאטית</string>
+  <string id="448">LCD</string>
+  <string id="449">פעיל</string>
+  <string id="450">עמודות</string>
+  <string id="451">1: שורת כתובת</string>
+  <string id="452">2: שורת כתובת</string>
+  <string id="453">3: שורת כתובת</string>
+  <string id="454">4: שורת כתובת</string>
+  <string id="455">:שורות</string>
+  <string id="456">:מצב</string>
+  <string id="457">החלף תצוגה</string>
+  <string id="459">כתוביות</string>
+  <string id="460">אודיו זורם</string>
+  <string id="461">]פעיל[</string>
+  <string id="462">כתובית</string>
+  <string id="463">תאורה אחורית</string>
+  <string id="464">בהירות</string>
+  <string id="465">ניגודיות</string>
+  <string id="466">גאמה</string>
+  <string id="467">סוג</string>
+  <string id="468">הזז את הסמן כדי לשנות את מיקום התפריט</string>
+  <string id="469">מיקום תפריט</string>
+  <string id="470">תודות</string>
+  <string id="471">מודצ'יפ</string>
+  <string id="474">כבוי</string>
+  <string id="475">מוזיקה בלבד</string>
+  <string id="476">מוזיקה ווידאו</string>
+  <string id="477">לא יכול לטעון רשימת השמעה</string>
+  <string id="478">תפריט</string>
+  <string id="479">סקין ושפה</string>
+  <string id="480">ממשק משתמש</string>
+  <string id="481">אפשרויות אודיו</string>
+  <string id="482">אודות XBMC</string>
+  <string id="483">אלבום</string>
+  <string id="484">אמן</string>
+  <string id="485">מחק אלבום</string>
+  <string id="486">חזור</string>
+  <string id="487">חזור פעם אחת</string>
+  <string id="488">חזור רשימת השמעה לתיקיה</string>
+  <string id="489">השתמש ברשימת השמעה בשירים</string>
+  <string id="491">- השתמש בצלמיות גדולות</string>
+  <string id="492">הגדל כתוביות</string>
+  <string id="493">אפשרויות מתקדמות</string>
+  <string id="494">Overall Audio Headroom (dB)</string>
+  <string id="495">דגום מחדש וידאו לרצולוצית תצוגה</string>
+  <string id="496">קליברציה</string>
+  <string id="497">הסתר תוספות מדיה</string>
+  <string id="498">מיין לפי : סוג</string>
+  <string id="499">אין חיבו ל www.allmusic.com</string>
+  <string id="500">הורדת פרטי אלבום נכשלה</string>
+  <string id="501">מחפש שמות אלבום</string>
+  <string id="502">פתח</string>
+  <string id="503">עסוק</string>
+  <string id="504">ריק</string>
+  <string id="505">טוען פרטי מדיה מהקבצים</string>
+  <string id="507">מיין לפי : שימוש</string>
+  <string id="510">אפשר תצוגות</string>
+  <string id="511">אפשר החלפת מצב וידאו</string>
+  <string id="512">חלון ראשוני</string>
+  <string id="513">חלון הבית</string>
+  <string id="514">הגדרות ידניות</string>
+  <string id="515">ז'אנר</string>
+  <string id="516">ארכיון עם קובץ בודד שקוף</string>
+  <string id="517">אלבומים שנוגנו לאחרונה</string>
+  <string id="518">הפעל</string>
+  <string id="519">...הפעל ב</string>
+  <string id="520">XBE ערוך כותרת</string>
+  <string id="521">אוספים</string>
+  <string id="522">הסר מקור</string>
+  <string id="523">החלף מדיה</string>
+  <string id="524">בחר רשימת השמעה</string>
+  <string id="525">רשימת השמעה חדשה</string>
+  <string id="526">הוסף לרשימת השמעה</string>
+  <string id="527">הוסף ידנתי למסד הנתונים</string>
+  <string id="528">הכנס כותרת</string>
+  <string id="529">שגיאה: כותברת כפולה</string>
+  <string id="530">בחר סגנון</string>
+  <string id="531">סגנון חדש</string>
+  <string id="532">הוספה ידנית</string>
+  <string id="533">הכנס סגנון</string>
+  <string id="534">הצג: %s</string>
+  <string id="535">רשימה</string>
+  <string id="536">צלמיות</string>
+  <string id="537">רשימה גדולה</string>
+  <string id="538">צלמיות גדולות</string>
+  <string id="539">רחב</string>
+  <string id="540">רחב גדול</string>
+  <string id="550">מיין לפי: %s</string>
+  <string id="551">שם</string>
+  <string id="552">תאריך</string>
+  <string id="553">גודל</string>
+  <string id="554">רצועה</string>
+  <string id="555">זמן</string>
+  <string id="556">כותרת</string>
+  <string id="557">אמן</string>
+  <string id="558">אלבום</string>
+  <string id="559">רשימת השמעה</string>
+  <string id="560">ID</string>
+  <string id="561">קובץ</string>
+  <string id="562">שנה</string>
+  <string id="563">דירוג</string>
+  <string id="564">סוג</string>
+  <string id="565">שימוש</string>
+  <string id="580">כיוון מיון</string>
+  <string id="581">שיטת מיון</string>
+  <string id="582">מצב תצוגה</string>
+  <string id="583">זכור תצוגות לתיקיות שונות</string>
+  <string id="584">עולה</string>
+  <string id="585">יורד</string>
+  <string id="588">בטל מצב מסיבה</string>
+  <string id="589">מצב מסיבה</string>
+  <string id="590">אקראי</string>
+  <string id="591">כבוי</string>
+  <string id="592">אחד</string>
+  <string id="593">כל</string>
+  <string id="594">כבוי</string>
+  <string id="595">חזור: כבוי</string>
+  <string id="596">חזור: אחד</string>
+  <string id="597">חזור: הכל</string>
+  <string id="600">העתק דיסק</string>
+  <string id="601">בינוני</string>
+  <string id="602">רגיל</string>
+  <string id="603">קיצוני</string>
+  <string id="604">קצב ביטים קבוע</string>
+  <string id="605">...מעתיק</string>
+  <string id="606">מספר רצועה:</string>
+  <string id="607">אל:</string>
+  <string id="608">לא יכול להעתיק דיסק או רצועה</string>
+  <string id="609">XboxMediaCenter.xml אינו מוגדר ב CDDARipPath</string>
+  <string id="610">העתק רצועת דיסק</string>
+  <string id="620">העתקת דיסק</string>
+  <string id="621">מקודד</string>
+  <string id="622">איכות</string>
+  <string id="623">קצב ביטים</string>
+  <string id="624">כלול מספר רצועה</string>
+  <string id="625">כל השירים של</string>
+  <string id="629">מצב תצוגה</string>
+  <string id="630">רגיל</string>
+  <string id="631">זום</string>
+  <string id="632">4:3 מתח</string>
+  <string id="633">14:9 מתח</string>
+  <string id="634">16:9 מתח</string>
+  <string id="635">גודל מקורי</string>
+  <string id="636">יחודי</string>
+  <string id="637">הגברת ניגון חוזר</string>
+  <string id="638">מצב הגברת ניגון חוזר</string>
+  <string id="639">עוצמת רצועה</string>
+  <string id="640">עוצמת אלבום</string>
+  <string id="641">רמת קדם מגבר - קבצים חוגברים בניגון חוזר</string>
+  <string id="642">רמת קדם מגבר - קבצים מוגברים שלא בניגון חוזר</string>
+  <string id="643">מנע המהרה של קבצים מוגברים בניגון חוזר</string>
+  <string id="644">קצץ פסים שחורים</string>
+  <string id="645">שומר במטמון קובץ גדול. להמשיך?</string>
+  <string id="646">הסר כותרת</string>
+  <string id="647">יצא ספרית וידאו</string>
+  <string id="648">יבא ספרית וידאו</string>
+  <string id="649">מיבא</string>
+  <string id="650">מיצא</string>
+  <string id="651">ספריית וידאו</string>
+  <string id="700">מנקה מסד נתונים</string>
+  <string id="701">מוחק שירים ישנים ממסד הנתונים</string>
+  <string id="702">הספריה נסרקה בעבר.</string>
+  <string id="705">רשת</string>
+  <string id="706">שרת HTTP פרוקסי</string>
+  <string id="707">פורט HTTP פרוקסי</string>
+  <string id="708">הפעל HTTP Proxy</string>
+  <string id="709">משתמש XLink Kai</string>
+  <string id="710">סיסמא XLink Kai</string>
+  <string id="711">Internet Protocol (IP)</string>
+  <string id="712">מספר פורט שגוי. ערך חייב להיות בין 1 ל 65535.</string>
+  <string id="713">HTTP פרוקסי</string>
+  <string id="714">XLink Kai</string>
+  <string id="715">השמת כתובת</string>
+  <string id="716">אוטומטית )DHCP(</string>
+  <string id="717">ידנית )סטטית(</string>
+  <string id="718">ברירת מחדל )Dashboard(</string>
+  <string id="719">כתובת IP</string>
+  <string id="720">מסיכת רשת</string>
+  <string id="721">מעבר ברירת מחדל</string>
+  <string id="722">שרת DNS</string>
+  <string id="723">שמור ואתחל</string>
+  <string id="724">כתובת שגוייה. הכתובת חייבת להיות במבנה AAA.BBB.CCC.DDD</string>
+  <string id="725">עם מספרים בין 0 ל- 255.</string>
+  <string id="726">שינויים לא נשמרו. להמשיך בלי לשמור?</string>
+  <string id="727">שרת Web</string>
+  <string id="728">שרת FTP</string>
+  <string id="729">שעון אינטרנט</string>
+  <string id="730">פורט שרת Web</string>
+  <string id="731">כתובת שרת זמן</string>
+  <string id="732">שמור והפעל</string>
+  <string id="733">סיסמא לשרת Web</string>
+  <string id="734">ללא סיסמא</string>
+  <string id="735">סימנים:</string>
+  <string id="736">סגנון:</string>
+  <string id="737">צבע:</string>
+  <string id="738">רגיל</string>
+  <string id="739">מודגש</string>
+  <string id="740">נטוי</string>
+  <string id="741">מודגש ונטוי</string>
+  <string id="742">לבן</string>
+  <string id="743">צהוב</string>
+  <string id="744">קבצים</string>
+  <string id="745">אין מידע סרוק לתצוגה זו</string>
+  <string id="746">שנה לתצוגת קבצים</string>
+  <string id="747">אין מספיק זיכרון לטעינת התמונה</string>
+  <string id="748">ערוך נתיב</string>
+  <string id="749">הוסף חלוקה</string>
+  <string id="750">האם אתה בטוח?</string>
+  <string id="751">מסיר חלוקה</string>
+  <string id="752">ערוך נתיב חלוקה</string>
+  <string id="753">ערוך שם חלוקה</string>
+  <string id="754">הוסף קישור לתוכנית</string>
+  <string id="755">ערוך נתיב תוכנית</string>
+  <string id="756">ערוך שם תוכנית</string>
+  <string id="757">ערוך עומק נתיב</string>
+  <string id="758">מסיר קישור לתוכנית</string>
+  <string id="759">תצוגה: רשימה גדולה</string>
+  <string id="760">צהוב</string>
+  <string id="761">לבן</string>
+  <string id="762">כחול</string>
+  <string id="763">ירוק בוהק</string>
+  <string id="764">צהוב ירוק</string>
+  <string id="765">תכלת</string>
+  <string id="766">שמור</string>
+  <string id="767">שמור</string>
+  <string id="768">שמור</string>
+  <string id="769">שמור</string>
+  <string id="770">חלוקה לא קיימת :%i שגיאה</string>
+  <string id="771">Fatx הגבלה אוטומטית של -</string>
+  <string id="772">חומרת אודיו</string>
+  <string id="773">מחפש</string>
+  <string id="774">ספריית מצגת</string>
+  <string id="998">XLink Kai</string>
+  <string id="999">משחקים מקוונים</string>
+  <string id="1000">תצוגה מקדימה של שומר מסך</string>
+  <string id="1001">חיבור נכשל</string>
+  <string id="1002">חיבור למיקום ברשת נכשל.</string>
+  <string id="1003">יתכן והרשת מנותקת.</string>
+  <string id="1004">האם ברצונך להוסיף בכל זאת?</string>
+  <string id="1005">הכנס שם לחלוקה</string>
+  <string id="1006">IP כתובת</string>
+  <string id="1007">הוסף מיקום ברשת</string>
+  <string id="1008">פרוטוקול</string>
+  <string id="1009">כתובת שרת</string>
+  <string id="1010">שם שרת</string>
+  <string id="1011">נתיב מרוחק</string>
+  <string id="1012">ספרייה משותפת</string>
+  <string id="1013">פורט</string>
+  <string id="1014">שם משתמש</string>
+  <string id="1015">שרת רשת</string>
+  <string id="1016">הכנס כתובת רשת של השרת</string>
+  <string id="1017">הכנס נתיב של השרת</string>
+  <string id="1018">הכנס מספר פורט</string>
+  <string id="1019">הכנס שם משתמש</string>
+  <string id="1020">%s הוסף מקור</string>
+  <string id="1021">הכנס נתיב או דפדף למיקום המדיה.</string>
+  <string id="1022">הכנס שם למיקום המדיה.</string>
+  <string id="1023">דפדף לחלוקה חדשה</string>
+  <string id="1024">דפדף</string>
+  <string id="1025">בעיה בשליפת פרטי הספרייה.</string>
+  <string id="1026">הוסף מקור</string>
+  <string id="1027">ערוך מקור</string>
+  <string id="1028">%s ערוך מקור</string>
+  <string id="1029">הכנס תווית</string>
+  <string id="1030">תמונה</string>
+  <string id="1031">תמונת ספרייה</string>
+  <string id="1032">הוסף מיקום רשת...</string>
+  <string id="1200">SMB חלוקה</string>
+  <string id="1202">SMB קבוצת עבודה</string>
+  <string id="1203">SMB שם משתמש</string>
+  <string id="1204">SMB סיסמא</string>
+  <string id="1207">SMB WINS שרת</string>
+  <string id="1210">הסר</string>
+  <string id="1211">מוזיקה</string>
+  <string id="1212">וידאו</string>
+  <string id="1213">תמונות</string>
+  <string id="1214">קבצים</string>
+  <string id="1215">מוזיקה ווידאו</string>
+  <string id="1216">מוזיקה ותמונות</string>
+  <string id="1217">מוזיקה וקבצים</string>
+  <string id="1218">וידאו ותמונות</string>
+  <string id="1219">וידאו וקבצים</string>
+  <string id="1220">תמונות וקבצים</string>
+  <string id="1221">מוזיקה, וידאו ותמונות</string>
+  <string id="1222">מוזיקה, וידאו, תמונות וקבצים</string>
+  <string id="1223">מנוטרל</string>
+  <string id="1226">קבצים, מוזיקה ווידאו</string>
+  <string id="1227">קבצים, תמונות ומוזיקה</string>
+  <string id="1228">קבצים, תמונות ווידאו</string>
+  <string id="1229">מוזיקה ותוכניות</string>
+  <string id="1230">וידאו ותוכניות</string>
+  <string id="1231">תמונות ותוכניות</string>
+  <string id="1232">מוסיקה, וידאו, תמונות ותוכניות</string>
+  <string id="1233">תוכניות, וידאו ומוזיקה</string>
+  <string id="1234">תוכניות, תמונות ומוזיקה</string>
+  <string id="1235">תוכניות, תמונות ווידאו</string>
+  <string id="1245">FTP שם משתמש</string>
+  <string id="1246">FTP סיסמא</string>
+  <string id="1247">עדוכנו בהצלחה FTP פרטי שרת</string>
+  <string id="1250">זיהוי אוטומטי</string>
+  <string id="1251">XBOX זיהוי אוטוטמי</string>
+  <string id="1252">כינוי</string>
+  <string id="1253">בקצים שלי FTP צור קישור</string>
+  <string id="1254">שאל על מנת להתחבר</string>
+  <string id="1255">FTP שלח פרטי משתמש וסיסמא של</string>
+  <string id="1256">Ping השהיית</string>
+  <string id="1257">שזוהה אוטומטית XBOX להתחבר ל?</string>
+  <string id="1396">זולג</string>
+  <string id="1397">ו</string>
+  <string id="1398">קופא</string>
+  <string id="1399">מאוחר</string>
+  <string id="1400">מבודד</string>
+  <string id="1401">רעמים וגשם</string>
+  <string id="1402">רעמים</string>
+  <string id="1403">שמש</string>
+  <string id="1404">כבד</string>
+  <string id="1405">ב</string>
+  <string id="1406">ה</string>
+  <string id="1407">אזור</string>
+  <string id="1408">קרח</string>
+  <string id="1409">גבישי</string>
+  <string id="1410">רגוע</string>
+  <string id="1411">עם</string>
+  <string id="1412">סוער</string>
+  <string id="1413">טפטוף</string>
+  <string id="2050">זמן ריצה:</string>
+  <string id="4501">LCD סוג</string>
+  <string id="10000">דף הבית</string>
+  <string id="10001">התוכניות שלי</string>
+  <string id="10002">התמונות שלי</string>
+  <string id="10003">הקבצים שלי</string>
+  <string id="10004">הגדרות</string>
+  <string id="10005">המוזיקה שלי</string>
+  <string id="10006">הוידאו שלי</string>
+  <string id="10007">מידע מערכת</string>
+  <string id="10008">הגדרות -&gt; כליי</string>
+  <string id="10009">הגדרות -&gt; מסך</string>
+  <string id="10010">הגדרות -&gt; מסך -&gt; כיוונון</string>
+  <string id="10011">הגדרות -&gt; מסך -&gt; כיוונון</string>
+  <string id="10012">הגדרות -&gt; מצגת</string>
+  <string id="10013">הגדרות -&gt; מסך -&gt; פילטרים</string>
+  <string id="10014">הגדרות -&gt; מוזיקה</string>
+  <string id="10015">הגדרות -&gt; מסך -&gt; כתוביות</string>
+  <string id="10016">הגדרות -&gt; מסך -&gt; שומר מסך</string>
+  <string id="10017">הגדרות -&gt; מזג אוויר</string>
+  <string id="10018">הגדרות -&gt; רשת</string>
+  <string id="10019">הגדרות -&gt; תצוגה</string>
+  <string id="10020">הגדרות -&gt; סקריפטים</string>
+  <string id="10021">הסרטים שלי/זאנר</string>
+  <string id="10022">הסרטים שלי/שחקן</string>
+  <string id="10023">הסרטים שלי/שנה</string>
+  <string id="10025">הסרטים שלי/כותרת</string>
+  <string id="10028">הסרטים שלי/רשימת השמעה</string>
+  <string id="10034">הגדרות -&gt; פרופילים</string>
+  <string id="10100">לא/כן דיאלוג</string>
+  <string id="10101">דיאלוג התקדמות</string>
+  <string id="10500">המוזיקה שלי/רשימת השמעה</string>
+  <string id="10501">המוזיקה שלי/קבצים</string>
+  <string id="10502">המוזיקה שלי/ספרייה</string>
+  <string id="10503">המוזיקה של/Top 100</string>
+  <string id="10504">Top 100 שירים</string>
+  <string id="10505">Top 100 אלבומים</string>
+  <string id="10506">אפליקציות</string>
+  <string id="10507">קונפיגורציה</string>
+  <string id="10508">תחזית מזג אוויר</string>
+  <string id="10509">משחקי רשת</string>
+  <string id="10510">סיומות</string>
+  <string id="10511">מידע מערכת</string>
+  <string id="10512">המוזיקה שלי - אלבומים</string>
+  <string id="10513">המוזיקה שלי - אומנים</string>
+  <string id="10514">המוזיקה שלי - זאנרים</string>
+  <string id="10515">המוזיקה שלי - Top 100</string>
+  <string id="10516">המוזיקה שלי - ספרייה</string>
+  <string id="10517">המוזיקה שלי - מנגן כעת</string>
+  <string id="10518">הסרטים שלי - שחקנים</string>
+  <string id="10519">הסרטים שלי - זאנרים</string>
+  <string id="10520">הסרטים שלי - כותרת</string>
+  <string id="10521">הסרטים שלי - שנה</string>
+  <string id="10522">הסרטים שלי - מנגן כעת</string>
+  <string id="10523">מיעד אלבום</string>
+  <string id="10524">מידע סרט</string>
+  <string id="12000">בחר דיאלוג</string>
+  <string id="12001">המוזיקה שלי/מידע</string>
+  <string id="12002">דיאלוג אישור</string>
+  <string id="12003">הסרטים שלי/מידע</string>
+  <string id="12004">הסקרפטים שלי/מידע</string>
+  <string id="12005">וידאו במסך מלא</string>
+  <string id="12006">תצוגת אודיו</string>
+  <string id="12007">התמונות שלי/מצגת</string>
+  <string id="12008">ערימת קבצים</string>
+  <string id="12009">בנה אינדקס...</string>
+  <string id="12010">חזור למוזיקה שלי</string>
+  <string id="12011">חזור לסרטים שלי</string>
+  <string id="12012">עדכן רשימת מאמנים</string>
+  <string id="12013">מאמן</string>
+  <string id="12014">לא נמצאו מאמנים</string>
+  <string id="12015">הגדות מאמן</string>
+  <string id="12016">כל הקדימונים הרשומים חסרים. עדכן את הרשימה.</string>
+  <string id="12017">המשמך אוטומטית מהמיקום האחרון</string>
+  <string id="12018">לא</string>
+  <string id="12019">כן</string>
+  <string id="12020">שאל</string>
+  <string id="12021">התחל בהתחלה</string>
+  <string id="12022">המשך מהמיקום האחרון</string>
+  <string id="12023">מוודא טרינרים קימים</string>
+  <string id="12310">0</string>
+  <string id="12311">1</string>
+  <string id="12312">2</string>
+  <string id="12313">3</string>
+  <string id="12314">4</string>
+  <string id="12315">5</string>
+  <string id="12316">6</string>
+  <string id="12317">7</string>
+  <string id="12318">8</string>
+  <string id="12319">9</string>
+  <string id="12320">c</string>
+  <string id="12321">ok</string>
+  <string id="12322">*</string>
+  <string id="12325">נעול! הקש קוד...</string>
+  <string id="12326">הכנס סיסמא</string>
+  <string id="12327">הכנס קוד נעילה ראשי</string>
+  <string id="12328">הכנס קוד שחרור ראשי</string>
+  <string id="12329">לביטול C או הקש</string>
+  <string id="12330">Start לחץ על כפתורי הקומבו ולחץ</string>
+  <string id="12331">לביטול Back או Start לחץ</string>
+  <string id="12332">נעל</string>
+  <string id="12333">שחרר</string>
+  <string id="12334">אפס נעילה</string>
+  <string id="12335">הסר נעילה</string>
+  <string id="12337">סיסמת מספר</string>
+  <string id="12338">קומבינצית כפתורים בבקר</string>
+  <string id="12339">סיסמת טקסט</string>
+  <string id="12340">הכנס סיסמא חדשה</string>
+  <string id="12341">הכנס סיסמא פעם נוספת</string>
+  <string id="12342">סיסמא שגויה,</string>
+  <string id="12343">נסיונות נותרו </string>
+  <string id="12344">סיסמאות לא תואמות.</string>
+  <string id="12345">כניסה אסורה</string>
+  <string id="12346">נסיונות כניסה כושלים רבים מידי.</string>
+  <string id="12347">ייכבה כעת XBOX -ה</string>
+  <string id="12348">פריט נעול</string>
+  <string id="12353">העפל מחדש נעילה</string>
+  <string id="12356">שנה נעילה</string>
+  <string id="12357">נעילת שיתוף</string>
+  <string id="12358">הסיסמא ריקה. נסה שנית.</string>
+  <string id="12360">נעילה ראשית</string>
+  <string id="12362">אפשר כיבוי</string>
+  <string id="12367">קוד ראשי אינו חוקי!</string>
+  <string id="12368">אנא הכנס קוד ראשי חוקי!</string>
+  <string id="12373">הגדרות &amp;  הקבצים שלי</string>
+  <string id="12376">הגדר כברירת מחדל לכל הסרטים</string>
+  <string id="12377">פעולה זו תאתחל כל ערכים קודמים שנשמרו</string>
+  <string id="12378">הצג כל תמונה עבור</string>
+  <string id="12379">Pan and Zoom השתמש באפקט</string>
+  <string id="12380">PAL בקצבי רענון NTSC נגן וידאו</string>
+  <string id="12381">NTSC בקצבי רענון PAL נגן וידאו</string>
+  <string id="12382">PAL60 ב NTSC נגן וידאו</string>
+  <string id="12383">שעון 12 שעות</string>
+  <string id="12384">שעון 24 שעות</string>
+  <string id="12385">יום/חודש</string>
+  <string id="12386">חודש/יום</string>
+  <string id="12387">סרוק מסד נתונים מחדש</string>
+  <string id="12390">זמן מערכת פעילה</string>
+  <string id="12391">דקות</string>
+  <string id="12392">שעות</string>
+  <string id="12393">ימים</string>
+  <string id="12394">סה"כ פעילות</string>
+  <string id="12600">מזג האויר שלי</string>
+  <string id="12900">שומר מסך</string>
+  <string id="12901">תפריט במסך מלא</string>
+  <string id="13000">מערכת</string>
+  <string id="13001">סיבוב הרדיסק מיידי</string>
+  <string id="13002">וידאו בלבד</string>
+  <string id="13003">- השהייה</string>
+  <string id="13004">- אורך קובץ מינימאלי</string>
+  <string id="13005">כיבוי</string>
+  <string id="13006">תפריט ראשוני</string>
+  <string id="13100">פילטר הבהובים</string>
+  <string id="13150">HDD מפתח:</string>
+  <string id="13151">HDD טמפ:</string>
+  <string id="13152">DVD מודל:</string>
+  <string id="13153">DVD קושחה:</string>
+  <string id="13154">HDD מודל:</string>
+  <string id="13155">HDD סידורי:</string>
+  <string id="13156">HDD קושחה:</string>
+  <string id="13157">HDD סיסמא:</string>
+  <string id="13158">HDD מצב נעילה:</string>
+  <string id="13159">מסיכת רשת:</string>
+  <string id="13160">מעבר:</string>
+  <string id="13161">DNS</string>
+  <string id="13162">אתחול נכשל</string>
+  <string id="13163">בקר בפורט:</string>
+  <string id="13164">מקלדת בפורט:</string>
+  <string id="13165">עכבר בפורט:</string>
+  <string id="13166">מיקרופון בפורט:</string>
+  <string id="13167">זכרון בפורט:</string>
+  <string id="13168">שלט רחוק בפורט:</string>
+  <string id="13170">לעולם</string>
+  <string id="13171">מיידי</string>
+  <string id="13172">שניות %i לאחר</string>
+  <string id="13200">פרופילים</string>
+  <string id="13201">למחוק פרופיל '%s'?</string>
+  <string id="13204">פרופיל אחרון בשימוש:</string>
+  <string id="13205">לא ידוע</string>
+  <string id="13206">כתוב על</string>
+  <string id="13208">שעון מעורר</string>
+  <string id="13209">מרוח שעון מעורר (בדקות)</string>
+  <string id="13210">דקות %i הותחל, יצלצל בעוד</string>
+  <string id="13211">צלצול!</string>
+  <string id="13212">Canceled with %im%is left</string>
+  <string id="13249">RAR חפש כתוביות בקצבי</string>
+  <string id="13250">חפש כתוביות...</string>
+  <string id="13251">הזז פריט</string>
+  <string id="13252">הזז פריט לכאן</string>
+  <string id="13253">בטל העברה</string>
+  <string id="13270">חומרה:</string>
+  <string id="13271">CPU מהירות:</string>
+  <string id="13274">DNS מחובר לרשת ללא הגדרות</string>
+  <string id="13275">דיסק קשיח</string>
+  <string id="13276">DVD-ROM</string>
+  <string id="13277">אחסון</string>
+  <string id="13278">ברירת מחדל</string>
+  <string id="13279">רשת</string>
+  <string id="13280">וידאו</string>
+  <string id="13281">חומרה</string>
+  <string id="13282">_</string>
+  <string id="13283">גירסת קרנל:</string>
+  <string id="13284">CPU מהירות:</string>
+  <string id="13285">BIOS זוהה:</string>
+  <string id="13286">מקודד וידאו:</string>
+  <string id="13287">רזולוצית מסך:</string>
+  <string id="13288">Xbox גירסת:</string>
+  <string id="13289">Xbox מספר סידורי:</string>
+  <string id="13290">Xbox יצרן:</string>
+  <string id="13291">מוד ציפ:</string>
+  <string id="13292">A/V כבל:</string>
+  <string id="13293">וידאו &amp; XBE איזור:</string>
+  <string id="13294">DVD איזור:</string>
+  <string id="13295">אינטרנט:</string>
+  <string id="13296">מחובר Xbox</string>
+  <string id="13297">לא מחובר. בדוק הגדרות רשת Xbox</string>
+  <string id="13298">XBLIVE מפתח:</string>
+  <string id="13299">טמפרטורת יעד</string>
+  <string id="13300">מהירות מאורר:</string>
+  <string id="13301">בקרת טמפרטורה אטומאטית</string>
+  <string id="13302">בקרת מהירות מאורר</string>
+  <string id="13303">כתב:</string>
+  <string id="13304">אפשר הפיכת תווים</string>
+  <string id="13305">הפעל קבלת RSS</string>
+  <string id="13306">הסתר פריטי ספריית אב</string>
+  <string id="13307">הסתר מספרי רצועות</string>
+  <string id="13308">האם ברצונך לאתחל את הXBOX</string>
+  <string id="13309">במקום רק את XBMC?</string>
+  <string id="13310">אפקט זום</string>
+  <string id="13311">אפקט ציפה</string>
+  <string id="13312">Black bar reduction</string>
+  <string id="13313">Reset/Reboot</string>
+  <string id="13314">זמן להצגת תפריט מוזיקה</string>
+  <string id="13315">צור צלמיות</string>
+  <string id="13316">צלמיות רקורסיביות</string>
+  <string id="13317">צפה במצגת תמונות</string>
+  <string id="13318">מצגת תמונות רקורסיבית</string>
+  <string id="13319">ערבל</string>
+  <string id="13320">סטריאו</string>
+  <string id="13321">שמאל בלבד</string>
+  <string id="13322">ימין בלבד</string>
+  <string id="13323">אפשר CD+G</string>
+  <string id="13324">שקיפות רקע</string>
+  <string id="13325">שקיפות פריטים</string>
+  <string id="13326">השהיית A/V</string>
+  <string id="13327">קריוקי</string>
+  <string id="13328">%s לא נמצא.</string>
+  <string id="13329">שגיאה בפתיחת %s</string>
+  <string id="13330">כשלון בטעינת %s</string>
+  <string id="13331">שגיאה: הזכרון מלא.</string>
+  <string id="13332">הזז למעלה</string>
+  <string id="13333">הזז למטה</string>
+  <string id="13334">ערוך תווית</string>
+  <string id="13335">קבע כברירת מחדל</string>
+  <string id="13336">הסר כפתור</string>
+  <string id="13338">נורית קידמית</string>
+  <string id="13339">צבע נורית קידמית</string>
+  <string id="13340">ללא שינוי</string>
+  <string id="13341">ירוק</string>
+  <string id="13342">כתום</string>
+  <string id="13343">אדום</string>
+  <string id="13344">משתנה</string>
+  <string id="13345">כבה נורית בזמן ניגון</string>
+  <string id="13346">מידע סרט</string>
+  <string id="13347">פריט בתור</string>
+  <string id="13348">IMDb חפש ב...</string>
+  <string id="13349">חפש מידע בכל הקבצים</string>
+  <string id="13350">מנגן כעת...</string>
+  <string id="13351">מידע אלבום</string>
+  <string id="13352">סרוק את כל הדטאבייס</string>
+  <string id="13353">עצור סריקה</string>
+  <string id="13354">Render שיטת</string>
+  <string id="13355">באיכות נמוכהPixel Shader</string>
+  <string id="13356">Hardware Overlays</string>
+  <string id="13357">באיכות גבוהה Pixel Shader</string>
+  <string id="13358">נגן פריט</string>
+  <string id="13359">הגדר צלמית אומן</string>
+  <string id="13360">צור צלמיות</string>
+  <string id="13361">אפשר קול</string>
+  <string id="13375">הפעל מתקן</string>
+  <string id="13376">עוצמה</string>
+  <string id="13377">מוד וידאו ברירת מחדל</string>
+  <string id="13378">בהירות ברירת מחדל</string>
+  <string id="13379">ניגודיות ברירת מחדל</string>
+  <string id="13380">גאמא ברירת מחדל</string>
+  <string id="13381">המשך וידאו</string>
+  <string id="13382">Voice Mask - Port 1</string>
+  <string id="13383">Voice Mask - Port 2</string>
+  <string id="13384">Voice Mask - Port 3</string>
+  <string id="13385">Voice Mask - Port 4</string>
+  <string id="13386">השתמש בחיפוש מבוסס זמן</string>
+  <string id="13387">Track Naming Template Right</string>
+  <string id="13388">פריסטים</string>
+  <string id="13389">There are no presets available
+for this visualisation</string>
+  <string id="13390">There are no settings available
+for this visualisation</string>
+  <string id="13391">הוצאה/טעינה</string>
+  <string id="13392">השתמש בויזואליזציה בזמן נגינת אודיו</string>
+  <string id="13393">חשב גודל</string>
+  <string id="13394">מחשב גודל ספריה</string>
+  <string id="13395">הגדרות וידאו</string>
+  <string id="13396">הגדרות אודיו וכתוביות</string>
+  <string id="13397">הפעל כתוביות</string>
+  <string id="13398">סימניות</string>
+  <string id="13399">בזמן מיון "The" התעלם מ</string>
+  <string id="13400">נגן בחפיפה במעבר קטעים</string>
+  <string id="13401">%s חפש</string>
+  <string id="13402">הצג מיקום ברצועה</string>
+  <string id="13403">נקה ברירות מחדל</string>
+  <string id="13404">המשך</string>
+  <string id="13405">שלוף צלמית</string>
+  <string id="14000">צבירה: כבויה</string>
+  <string id="14001">צבירה: פשוטה</string>
+  <string id="14003">מוריד קובץ רשימת השמעה...</string>
+  <string id="14004">מוריד רשימת מדיה זורמת...</string>
+  <string id="14005">מפענח רשימת מדיה זורמת...</string>
+  <string id="14006">הורדת רשימת מדיה זורמת נכשלה</string>
+  <string id="14007">הורדת קובץ רשימת שמע נכשלה</string>
+  <string id="14008">אפשר הודעות מKAI</string>
+  <string id="14009">ספריית משחקים</string>
+  <string id="14010">אפשרויות העברה אוטומאטית</string>
+  <string id="14011">אפשר העברה אוטומאטית</string>
+  <string id="14012">- השתמש בצלמיות גדולות</string>
+  <string id="14013">- שיטה</string>
+  <string id="14014">- אחוזים</string>
+  <string id="14015">פנל צלמיות כשאין קבצים</string>
+  <string id="14016">פנל רשימה כשאין ספריות</string>
+  <string id="14017">אחוזי הצלמיות</string>
+  <string id="14018">צפה באפשריות</string>
+  <string id="14019">שנה קוד אזור 1</string>
+  <string id="14020">שנה קוד אזור 2</string>
+  <string id="14021">שנה קוד אזור 3</string>
+  <string id="14022">ספריה</string>
+  <string id="14023">אין טלויזיה</string>
+  <string id="14024">הכנס את העיר הגדולה הקרובה או מיקוד בארצות הברית</string>
+  <string id="14025">וידאו מהכונן הקשיח</string>
+  <string id="14026">וידאו מכונן DVD</string>
+  <string id="14027">וידאו מרשת מקומית</string>
+  <string id="14028">וידאו מהאינטרנט</string>
+  <string id="14030">אודיו מכונן DVD</string>
+  <string id="14031">אודיו מרשת מקומית</string>
+  <string id="14032">אודיו מהאינטרנט</string>
+  <string id="14034">DVD מכונן DVD</string>
+  <string id="14035">DVD מרשת מקומית</string>
+  <string id="14036">שרתים</string>
+  <string id="14037">תצוגה והרגשה</string>
+  <string id="14038">הגדרות רשת שונו</string>
+  <string id="14039">XBMC דורש אתחול כדי לשנות את</string>
+  <string id="14040">הגדרות הרשת. האם לאתחל כעת?</string>
+  <string id="14041">לאחר עיבוד</string>
+  <string id="14042">כתובת IP של המנוע</string>
+  <string id="14043">- כבה תוך כדי ניגון</string>
+  <string id="14044">%i דקות</string>
+  <string id="14045">%i שניות</string>
+  <string id="14046">%i מ.ש</string>
+  <string id="14047">%i %%</string>
+  <string id="14048">%i kbps</string>
+  <string id="14049">%i kb</string>
+  <string id="14050">%i.0 dB</string>
+  <string id="14051">מבנה שעה</string>
+  <string id="14052">מבנה תאריך</string>
+  <string id="14053">GUI פילטרים ב</string>
+  <string id="14054">הפעל חיפושים ברשת</string>
+  <string id="14055">השתמש בסריקה ברקע</string>
+  <string id="14056">הפסק סריקה</string>
+  <string id="14057">לא אפשרי בזמן סריקת מדיה</string>
+  <string id="14058">אפקט גרעיניות סרטים</string>
+  <string id="14059">חפש צלמיות ייחודיות בשיתוף מרוחק</string>
+  <string id="14060">סוג מטמון לא מוכר - אינטרנט</string>
+  <string id="14061">אוטומטי</string>
+  <string id="14062">הכנס שם משתמש עבור</string>
+  <string id="14063">תאריך &amp; שעה</string>
+  <string id="14064">קבע תאריך</string>
+  <string id="14065">קבע שעה</string>
+  <string id="14066">HH:MM הכנס זמן בפורמט 24 שעות</string>
+  <string id="14067">DD/MM/YYYY הכנס תאריך בפורמט</string>
+  <string id="14068">IP הכנס כתובת</string>
+  <string id="14069">לשנות את ההגדרות כעת?</string>
+  <string id="14070">בצע שינויים כעת</string>
+  <string id="14071">אפשר שינוי שמות קבצים ומחיקתם</string>
+  <string id="14072">XLink Kai אפשר</string>
+  <string id="14073">אינו פעיל XLink Kai.</string>
+  <string id="15000">XLink Kai</string>
+  <string id="15001">השירות לא מחובר. האם ברצונך</string>
+  <string id="15002">Xbox Media Center להתחבר עם?</string>
+  <string id="15003">הכנס הודעה</string>
+  <string id="15004">%s הוזמת לשחק.</string>
+  <string id="15005">%s :תאריך</string>
+  <string id="15006">%s :מאת</string>
+  <string id="15007">הזמנה</string>
+  <string id="15008">%s הוזמת להצטרף ל.</string>
+  <string id="15009">מנותק</string>
+  <string id="15010">חברים</string>
+  <string id="15011">תצוגה : חברים</string>
+  <string id="15012">הצטרף</string>
+  <string id="15013">קול</string>
+  <string id="15014">הזמן</string>
+  <string id="15015">הסר</string>
+  <string id="15016">משחקים</string>
+  <string id="15017">תצוגה: Games</string>
+  <string id="15018">הכנס</string>
+  <string id="15019">הוסף</string>
+  <string id="15020">ארח</string>
+  <string id="15021">ארנות</string>
+  <string id="15022">תצוגה: ארנות</string>
+  <string id="15023">נגן</string>
+  <string id="15024">הוסף</string>
+  <string id="15025">ארח</string>
+  <string id="15026">צט</string>
+  <string id="15027">תצוגה: צ'ט</string>
+  <string id="15028">לוח מקשים</string>
+  <string id="15029">יש צורך בסיסמא על מנת להתצטרף לארנה.</string>
+  <string id="15030">השירות נותק</string>
+  <string id="15031">XLink Kai הזדהות</string>
+  <string id="15032">שם משתמש או סיסמא נדחו ע"י השרת</string>
+  <string id="15033">.בדוק את ההגדרות .orbital שרת</string>
+  <string id="15034">הצטרף</string>
+  <string id="15035">התחיל שיחה קולית</string>
+  <string id="15036">שלח בקשה</string>
+  <string id="15037">אינו מצליח לאשר שהנך מחובר לרשת XBMC.</string>
+  <string id="15038">עשויות להיות בעיות בהצטרפות או אירוח משחקים</string>
+  <string id="15039">לא הצליח לאתר משחק אוטומטית Xbox Media Center.</string>
+  <string id="15040">לבטל 'A' הכנס את הדיסק למכשיר או לחץ</string>
+  <string id="15041">ולהפעיל את המשחק ידנית.</string>
+  <string id="15042">גישה לא מורשית</string>
+  <string id="15043">הצטרף לצ'ט %s.</string>
+  <string id="15044">יצא מהצ'ט %s.</string>
+  <string id="15045">הכנס הודעה אישית.</string>
+  <string id="15046">ארנה נוכחית</string>
+  <string id="15047">הכנס סיסמא לארנה שלך.</string>
+  <string id="15048">הכנס תיאור של הארנה שלך.</string>
+  <string id="15049">ארח משחק</string>
+  <string id="15050">ארח בארנה פרטית</string>
+  <string id="15051">הגבלת שחקן</string>
+  <string id="15052">סיסמא</string>
+  <string id="15053">תאור</string>
+  <string id="15054">הזמנה</string>
+  <string id="15055">בחר משחק:</string>
+  <string id="15056">הכנס הודעה:</string>
+  <string id="15057">שלח</string>
+  <string id="15058">ארח</string>
+  <string id="15059">ההזמנה התקבלה!</string>
+  <string id="15060">הודע כאן</string>
+  <string id="15061">%s הכך מוזמך לשחק.</string>
+  <string id="15100">ספריה</string>
+  <string id="15101">מסד נתונים</string>
+  <string id="15102">* כל האלבומים</string>
+  <string id="15103">* כל האומנים</string>
+  <string id="15104">* כל השירים</string>
+  <string id="15105">* כל הז'אנרים</string>
+  <string id="15106">זכור קובץ נבחר בזמן ניווט קדימה</string>
+  <string id="15107">צובר...</string>
+  <string id="15108">צלילי ניווט</string>
+  <string id="15109">סקין ברירת מחדל</string>
+  <string id="15111">נושא סקין</string>
+  <string id="15112">נושא ברירת מחדל</string>
+  <string id="15200">LastFM</string>
+  <string id="15201">LastFM שלח שם ל</string>
+  <string id="15202">LastFM משתמש</string>
+  <string id="15203">LastFM סיסמא</string>
+  <string id="15204">לחיצת ידיים נכשלה...</string>
+  <string id="15205">XBMC אנא עדכן</string>
+  <string id="15206">שליחה נכשלה: זיהוי שגוי.</string>
+  <string id="15207">מחובר</string>
+  <string id="15208">לא מחובר</string>
+  <string id="15209">%i השהיית שליחה</string>
+  <string id="15210">שירים %i הטמין</string>
+  <string id="15211">שולח...</string>
+  <string id="15212">שניות %i שולח בעוד</string>
+  <string id="15213">מנגן באמצעות...</string>
+  <string id="15214">מוחלק ומסונכרן A/V השתמש ב</string>
+  <string id="15215">הסתר שמות קבצים בתצוגת צלימיות</string>
+  <string id="15250">LastFM אל Last.fm Radio שלח</string>
+  <string id="15251">Last.fm מתחבר אל...</string>
+  <string id="15252">בחירת תחנה...</string>
+  <string id="15253">חפש אומנים דומים...</string>
+  <string id="15254">חפש תגיות דומות...</string>
+  <string id="15255">(%name%) הפרופיל שלך</string>
+  <string id="15256">תגיות במקומות הראשונים</string>
+  <string id="15257">%name% אומנים ראשונים עבור תגית</string>
+  <string id="15258">%name% אלבומים ראשונים עבור תגית</string>
+  <string id="15259">%name% רצועות ראשונות עבור תגית</string>
+  <string id="15260">last.fm radio %name% האזן לתגית</string>
+  <string id="15261">%name% אומנים דומים ל</string>
+  <string id="15262">הנבחרים %name% אלבומי</string>
+  <string id="15263">הנבחרות %name% רצועות</string>
+  <string id="15264">הנבחרים %name% תגי</string>
+  <string id="15265">%name% המעריצים הגדולים של</string>
+  <string id="15266">last.fm %name% האזן למעריצי</string>
+  <string id="15267">last.fm %name% האזן לאומנים דומים</string>
+  <string id="15268">%name% האומנים הנבחרים של משתמש</string>
+  <string id="15269">%name% האלבונים הנבחרים של משתמש </string>
+  <string id="15270">%name% הרצועות הנבחרות של משתמש</string>
+  <string id="15271">%name% חברים של משתמש</string>
+  <string id="15272">%name% שכנים של משתמש</string>
+  <string id="15273">%name% המצעד השבועי של אומן</string>
+  <string id="15274">%name% המצעד השבועי של אלבום</string>
+  <string id="15275">%name% המצעד השבועי של רצועת</string>
+  <string id="15276">last.fm radio %name% האזן לשכנים של</string>
+  <string id="15277">last.fm radio %name% האזן להעדפות האישיות של</string>
+  <string id="15278">last.fm radio %name% האזן לרצועות האהובות של</string>
+  <string id="15279">last.fm שולף רשימה מ...</string>
+  <string id="15280">last.fm בעיה בקבלת רשימה מ...</string>
+  <string id="15281">הכנס שם אומן למציאת אומנים דומים</string>
+  <string id="15282">הכנס תגית למציאת שירים דומים</string>
+  <string id="15283">%name% רצועות שנשמעו לאחרונה ע"י</string>
+  <string id="15284">האזן להמלצות %name%'s  רדיו  Last.FM</string>
+  <string id="15300">נתיב לא נמצא או לא חוקי</string>
+  <string id="15301">חיבור לשרת נכשל</string>
+  <string id="15302">שרתים לא נמצאו</string>
+  <string id="15303">קבוצת עבודה לא נמצאה</string>
+  <string id="15310">פותח סימניה עם מספר נתיבים</string>
+  <string id="15311">נתיב:</string>
+  <string id="16000">כללי</string>
+  <string id="16001">הגדרות חומרת אודיו...</string>
+  <string id="16002">CDDB חיפוש</string>
+  <string id="16003">נגן</string>
+  <string id="16004">נגן מדיה מהדיסק</string>
+  <string id="16008">הכנס כותרת חדשה</string>
+  <string id="16009">הכנס שם סרט</string>
+  <string id="16010">הכנס שם פרופיל</string>
+  <string id="16011">הכנס שם אלבום</string>
+  <string id="16012">הכנס שם רשימת ניגון</string>
+  <string id="16013">הכנס שם קובץ חדש</string>
+  <string id="16014">הכנס שם ספריה חדשה</string>
+  <string id="16015">הכנס ספריה</string>
+  <string id="16016">אופציות אפשריות: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
+  <string id="16017">הכנס מחרוזת חיפוש</string>
+  <string id="16018">ללא</string>
+  <string id="16019">חיפוש אוטומטי</string>
+  <string id="16020">בטל שזירה</string>
+  <string id="16021">שזור אי זוגי</string>
+  <string id="16022">שזור זוגי</string>
+  <string id="16023">טיפול בשזירה</string>
+  <string id="16024">מבטל...</string>
+  <string id="16025">הכנס שם האומן</string>
+  <string id="16026">ניגון רשימת השמעה בוטל</string>
+  <string id="16027">יותר מידי פריטים שנכשלו</string>
+  <string id="16030">מוד מסיבה בוטל.</string>
+  <string id="16031">לא נמצאו שירים מתאימים במסד הנתונים.</string>
+  <string id="16032">אתחול הדטאבייס נכשל.</string>
+  <string id="16033">פתיחת מסד נתונים נכשלה.</string>
+  <string id="16034">בעיה בשליפת השירים ממסד הנתונים.</string>
+  <string id="16100">כל הוידאו</string>
+  <string id="16101">לא נראו</string>
+  <string id="16102">נראו</string>
+  <string id="16103">סמן כנראו</string>
+  <string id="16104">סמן כלא נראו</string>
+  <string id="16105">ערוך כותרת</string>
+  <string id="16106">NTSC-M &amp; NTSC-J השתמש רק ב</string>
+  <string id="16107">NTSC-M השתמש רק ב</string>
+  <string id="16108">NTSC-J השתמש רק ב</string>
+  <string id="16109">PAL-60 השתמש רק ב</string>
+  <string id="16110">60hz למשחקי</string>
+  <string id="16200">פעולה נכשלה</string>
+  <string id="16201">העתקה נכשלה</string>
+  <string id="16202">נכשל בהעתקת קובץ אחד לפחות</string>
+  <string id="16203">העברה נכשלה</string>
+  <string id="16204">נכשל בהעברת קובץ אחד לפחות</string>
+  <string id="16205">מחיקה נכשלה</string>
+  <string id="16206">נכשל במחיקת קובץ אחד לפחות</string>
+  <string id="20000">תיקית העתקה CDDA</string>
+  <string id="20001">השתמש בנגן DVD חיצוני</string>
+  <string id="20002">נגן DVD חיצוני</string>
+  <string id="20003">תיקית מאמנים</string>
+  <string id="20004">תיקית תמונת מסך</string>
+  <string id="20005">תיקית הקלטות</string>
+  <string id="20006">תיקית רשימת השמעה</string>
+  <string id="20007">הקלטות</string>
+  <string id="20008">תמונות מסך</string>
+  <string id="20009">השתמש ב XBMC</string>
+  <string id="20010">תמונת אמן</string>
+  <string id="20011">רשימות השמעה למוזיקה</string>
+  <string id="20012">רשימות השמעה לוידאו</string>
+  <string id="20013">האם ברצונך להריץ את המשחק?</string>
+  <string id="20014">מיין לפי: רשימת השמעה</string>
+  <string id="20015">צלמית IMDb</string>
+  <string id="20016">צלמית נוכחית</string>
+  <string id="20017">צלמית מקומית</string>
+  <string id="20018">אין צלמית</string>
+  <string id="20019">בחר צלמית</string>
+  <string id="20020">לא ניתן להשתמש גם ב KAI וגם במאמן</string>
+  <string id="20021">בחר באיזה אתה רוצה להשתמש</string>
+  <string id="20023">סתירה</string>
+  <string id="20024">סרוק חדש</string>
+  <string id="20025">סרוק הכול</string>
+  <string id="20026">אזור</string>
+  <string id="20038">נעל אזור מוסיקה</string>
+  <string id="20039">נעל אזור וידאו</string>
+  <string id="20040">נעל אזור תמונות</string>
+  <string id="20041">נעל אזור תוכנות וסקריפטים</string>
+  <string id="20042">נעל מנהל קבצים</string>
+  <string id="20043">נעל הגדרות</string>
+  <string id="20044">התחל מחדש</string>
+  <string id="20045">היכנס למצב מומחה</string>
+  <string id="20046">צא ממצב מומחה</string>
+  <string id="20047">צור פרופיל '%s' ?</string>
+  <string id="20048">התחל עם הגדרות חדשות</string>
+  <string id="20049">הזמין הטוב ביותר</string>
+  <string id="20050">החלף אוטומטית בין 16x9 ו 4x3</string>
+  <string id="20051">התייחס לקבצים ערומים כקובץ אחד</string>
+  <string id="20052">זהירות</string>
+  <string id="20053">עזב מצב מומחה</string>
+  <string id="20054">נכנס למצב מומחה</string>
+  <string id="20055">צלמית Allmusic.com</string>
+  <string id="20056">השג צלמית</string>
+  <string id="20057">הסר צלמיות</string>
+  <string id="20058">הוסף פרופיל...</string>
+  <string id="20059">בקש אחזור מידע עבור כל האלבומים</string>
+  <string id="20060">פרטי מדיה</string>
+  <string id="20061">הפרד</string>
+  <string id="20062">משתף עם ברירת מחדל</string>
+  <string id="20063">משתף עם ברירת מחדל (קריאה בלבד)</string>
+  <string id="20064">העתק ברירת מחדל</string>
+  <string id="20065">תמונת פרופיל</string>
+  <string id="20066">נעל העדפות</string>
+  <string id="20067">ערוך פרופיל</string>
+  <string id="20068">נעילת פרופיל</string>
+  <string id="20069">לא ניתן ליצור תיקיה</string>
+  <string id="20070">ספריית פרופיל</string>
+  <string id="20071">התחל עם מקורות מדיה חדשים</string>
+  <string id="20072">ודא כי התיקיה הנבחרת ניתנת לכתיבה</string>
+  <string id="20073">וכי שם התיקיה החדשה תקף</string>
+  <string id="20074">דירוג MPAA:</string>
+  <string id="20075">הכנס קוד נעיל ראשי</string>
+  <string id="20076">בקש קוד נעילה ראשי בזמן אתחול</string>
+  <string id="20077">הגדרות מעטפת</string>
+  <string id="20078">- קישור לא נקבע -</string>
+  <string id="20079">אפשר אנימציות</string>
+  <string id="20080">בעת מוזיקה הפסק RSS</string>
+  <string id="20081">אפשר כפתורי סימניה</string>
+  <string id="20082">הצג מידע אודות XLink Kai</string>
+  <string id="20083">הצג מידע אודות המוסיקה</string>
+  <string id="20084">הצג מידע אודות מזג האויר</string>
+  <string id="20085">הצג מידע אודות המערכת</string>
+  <string id="20086">הצג מקום פנוי בכונן C: E: F:</string>
+  <string id="20087">הצג מקום פנוי בכונן E: F: G:</string>
+  <string id="20088">מידע מזג האויר</string>
+  <string id="20089">מקום פנוי בכונן</string>
+  <string id="20090">הכנס את השם של שיתוף קיים</string>
+  <string id="20091">קוד נעילה</string>
+  <string id="20092">טען פרופיל</string>
+  <string id="20093">שם הפרופיל</string>
+  <string id="20094">מקורות מדיה</string>
+  <string id="20095">הכנס קוד נעילת פרופיל</string>
+  <string id="20096">מסך התחברות</string>
+  <string id="20097">משיג פרטי אלבום</string>
+  <string id="20098">משיג מידע עבור האלבום</string>
+  <string id="20099">לא יכול להעתיק דיסק או רצועה בזמן ניגון מהדיסק</string>
+  <string id="20100">קוד נעילה ראשי והגדרות</string>
+  <string id="20101">הכנסת קוד נעילה ראשי תמיד מאפשרת מצב מומחה</string>
+  <string id="20102">או העתק מברירת מחדל?</string>
+  <string id="20103">שמור שינויים לפרופיל?</string>
+  <string id="20104">הגדרות ישנות נמצאו</string>
+  <string id="20105">האם ברצונך להשתמש בהן?</string>
+  <string id="20106">מקור מדיה ישן נמצא.</string>
+  <string id="20107">הפרד (נעול)</string>
+  <string id="20108">שורש</string>
+  <string id="20109">הגדלת מעטפת</string>
+  <string id="20110">לקוח UPnP</string>
+  <string id="20111">הפעלה אוטומטית</string>
+  <string id="20112">התחברות אחרונה: %s</string>
+  <string id="20113">לעולם לא התחבר</string>
+  <string id="20114">פרופיל %i / %i</string>
+  <string id="20115">חיבור משתמש / בחר פרופיל</string>
+  <string id="20116">במסך ההתחברות השתמש בנעילה</string>
+  <string id="20117">קוד נעילה שגוי</string>
+  <string id="20118">זה מצריך קביעה של קוד נעילה ראשי</string>
+  <string id="20119">האם ברצונך לקבוע זאת כעט?</string>
+  <string id="20120">טוען פרטי התוכנה</string>
+  <string id="20121">מסיבה!</string>
+  <string id="20122">אמת</string>
+  <string id="20123">מערבב משקאות</string>
+  <string id="20124">ממלא כוסות</string>
+  <string id="20125">מחובר בתור</string>
+  <string id="20126">ניתוק</string>
+  <string id="20128">לך לשורש</string>
+  <string id="20129">ארוג</string>
+  <string id="20130">ארוג (הפוך)</string>
+  <string id="20131">מזג</string>
+  <string id="20132">התחל וידאו מחדש</string>
+  <string id="20133">ערוך מיקום רשת</string>
+  <string id="20134">הסר מיקום רשת</string>
+  <string id="20135">האם ברצונך לסרוק את התיקייה?</string>
+  <string id="20136">יחידת זיכרון</string>
+  <string id="20137">יחידת זיכרון מוכנה לשימוש</string>
+  <string id="20138">לא מסוגל לשים יחידת זיכרון</string>
+  <string id="20139">ביציאה %i, חריץ %i</string>
+  <string id="20140">נעל שומר מסך</string>
+  <string id="20141">קבע</string>
+  <string id="20142">שם משתמש</string>
+  <string id="20143">הכנס סיסמא עבור</string>
+  <string id="20144">תזמון כיבוי</string>
+  <string id="20145">מרווח זמן כיבוי (בדקות)</string>
+  <string id="20146">הוחל, כיבוי ב %im</string>
+  <string id="20147">כיבוי תוך 30 דקות</string>
+  <string id="20148">כיבוי תוך 60 דקות</string>
+  <string id="20149">כיבוי תוך 120 דקות</string>
+  <string id="20150">תזמן כיבוי מותאם אישית</string>
+  <string id="20151">בטל תזמון כיבוי</string>
+  <string id="20152">נעל העדפות עבור %s</string>
+  <string id="20153">דפדף...</string>
+  <string id="20154">מידע בסיסי</string>
+  <string id="20155">מידע אודות מקום האיכסון</string>
+  <string id="20156">מידע אודות הכונן הקשיח</string>
+  <string id="20157">מידע אודות כונן ה DVD</string>
+  <string id="20158">מידע אודות הרשת</string>
+  <string id="20159">מידע אודות הוידאו</string>
+  <string id="20160">מידע אודות החומרה</string>
+  <string id="20161">סך הכל: %s MB, בשימוש: %s MB, חופשי: %s MB</string>
+  <string id="20162">סך הכל HDD בשימוש: %u%%  חופשי: %u%%</string>
+  <string id="20163">%s: %s MB של %s MB חופשי</string>
+  <string id="20164">נעילה לא נתמכת</string>
+  <string id="20165">לא נעול</string>
+  <string id="20166">נעול</string>
+  <string id="20167">קפוא</string>
+  <string id="20168">מצריך אתחול</string>
+  <string id="20169">שבוע</string>
+  <string id="20170">שורה</string>
+  <string id="20171">רשת חלונות (SMB)</string>
+  <string id="20172">שרת XBMSP</string>
+  <string id="20173">שרת FTP</string>
+  <string id="20174">מוזיקה משותפת של iTunes (DAAP)</string>
+  <string id="20175">שרת UPnP</string>
+  <string id="20176">הצג פרטי וידאו</string>
+  <string id="20177">סיים</string>
+  <string id="20178">Shift</string>
+  <string id="20179">Caps Lock</string>
+  <string id="20180">Symbols</string>
+  <string id="20181">Backspace</string>
+  <string id="20182">Space</string>
+  <string id="20183">טען מחדש מעטפת</string>
+  <string id="20184">סובב בעזרת מידע EXIF</string>
+  <string id="20185">אמרת ערכי חומרה</string>
+  <string id="20186">אנא המתן</string>
+  <string id="20187">קורא ערכים מ EEPROM</string>
+  <string id="20188">סיים קריאה מ EEPROM</string>
+  <string id="20189">סיים איתור</string>
+  <string id="20190">מאתר מידע אודות כונן קשיח</string>
+  <string id="20191">מאתר ערכי HDD</string>
+  <string id="20192">מאתר מפתח HDD</string>
+  <string id="20193">מאתר טמפרטורת HDD</string>
+  <string id="20194">מאתר מידע אודות כונן DVD</string>
+  <string id="20195">מאתר דגם/קושחה</string>
+  <string id="20196">מאתר הגדרות רשת</string>
+  <string id="20197">מאתר כתובת MAC</string>
+  <string id="20198">מאתר מצב מחובר</string>
+  <string id="20199">מאתר גירסת XBOX, מספר סידורי ו CPU</string>
+  <string id="20300">מאתר חומרת XBOX</string>
+  <string id="20301">מאתר ModChip</string>
+  <string id="20302">מאתר BIOS</string>
+  <string id="20303">מאתר מהירות CPU</string>
+  <string id="20304">מאתר תאריך ייצור</string>
+  <string id="20305">מאתר יחידות מחוברות</string>
+  <string id="20306">לא ידוע, אנא הוסף MD5 מ xbmc.log ל BiosDs.ini.</string>
+  <string id="20307">DNS משני</string>
+  <string id="20308">שרת DHCP:</string>
+  <string id="20309">צור תיקיה חדשה</string>
+  <string id="20310">אמעם LCD בזמן ניגון</string>
+  <string id="20311">לא ידוע או על הלוח (מוגן)</string>
+  <string id="20312">אמעם LCD בזמן הפסקה</string>
+  <string id="20313">אם בהפסקה הפעל LED בחזרה</string>
+  <string id="20314">וידאו - ספריה</string>
+  <string id="20315">שמירות משחקים</string>
+  <string id="20316">מיין לפי: ID</string>
+  <string id="20317">הורד שמירות</string>
+  <string id="20318">שמירת משחק הותקנה על ה HDD</string>
+  <string id="20319">נכשל בהורדת שמירת משחק</string>
+  <string id="20320">בחר שמירת משחק להורדה והתקנה</string>
+  <string id="20321">לא נמצא שמירת משחק למשחק הספציפי</string>
+  <string id="20322">לך לשמירת משחק</string>
+  <string id="20323">שמירות משחק</string>
+  <string id="20324">נגן חלק...</string>
+  <string id="20325">אפס כיול</string>
+  <string id="20326">זה יאפס את ערכי הכיול ל %s</string>
+  <string id="20327">לערכי ברירת המחדל שלו</string>
+  <string id="20328">מיקום להעתקת השמירה</string>
+  <string id="20329">מיקום להעברת השמירה</string>
+  <string id="20330">השתמש בשמות תיקיות לחיפוש</string>
+  <string id="20331">קובץ</string>
+  <string id="20332">השתמש בשמות תיקיה או קובץ בחיפוש?</string>
+  <string id="20333">קבע תוכן</string>
+  <string id="20334">תיקיה</string>
+  <string id="20335">לחפש תוכן בצורה רקורסיבית?</string>
+  <string id="20336">בטל נעילת מקורות</string>
+  <string id="20337">שחקן</string>
+  <string id="20338">סרט</string>
+  <string id="20339">במאי</string>
+  <string id="20340">האם ברצונך להסיר את כל הפרטים בתוך</string>
+  <string id="20341">הנתיב הזה ממסד הנתונים?</string>
+  <string id="20342">סרטים</string>
+  <string id="20343">תוכניות טלוויזיה</string>
+  <string id="20344">ספריה זו מכילה</string>
+  <string id="20345">הרץ סריקה אוטומטית</string>
+  <string id="20346">סרוק בצורה רקורסיבית</string>
+  <string id="20347">בתור</string>
+  <string id="20348">במאים</string>
+  <string id="20349">לא נמצאו קובצי וידאו בנתיב זה!</string>
+  <string id="20350">קולות</string>
+  <string id="21330">הצג קבצים וספריות מוחבאים</string>
+  <string id="21331">קלינט TuxBox</string>
+  <string id="21332">אזהרה: מכשיר ה TuxBox במטרה נמצא במצב הקלטה</string>
+  <string id="21333">הזרם יופסק!</string>
+  <string id="21334">זפזופ לערוץ: %s נכשל</string>
+  <string id="21335">האם אתה בטוח להתחיל את הזרם?</string>
+  <string id="21336">מתחבר אל: %s</string>
+  <string id="21337">מכשיר TuxBox</string>
+  <string id="21356">מוסיקה: UPnP</string>
+  <string id="21357">וידאו: UPnP</string>
+  <string id="21358">תמונות UPnP</string>
+  <string id="21359">הוסף שיתוף מדיה</string>
+  <string id="21360">אפשר שרת UPnP</string>
+  <string id="21361">נהל שיתופי מוסיקה UPnP</string>
+  <string id="21362">נהל שיתופי וידאו UPnP</string>
+  <string id="21363">נהל שיתופי תמונות UPnP</string>
+  <string id="21364">ערוך שיתוף מדיה</string>
+  <string id="21365">הסר סיתוף מדיה</string>
+  <string id="21366">ספרית תרגום בהתאמה אישית</string>
+  <string id="21367">ספרית סרט ותרגום חלופי</string>
+  <string id="21370">בזמן ניגון המדיה נגן צלילי ניווט</string>
+  <string id="21371">צלמית</string>
+  <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

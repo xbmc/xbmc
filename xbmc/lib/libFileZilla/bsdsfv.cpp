@@ -25,6 +25,18 @@
  $Id$
 
  $Log$
+ Revision 1.4  2005/07/14 10:43:04  bobbin007
+ changed: smarter define of the debug new operator (in stdafx.h) only no need for a macro in each cpp file
+
+ Revision 1.3  2005/07/13 19:46:59  bobbin007
+ fixed: ftp server can not be shut down via settings menu
+ fixed: reference controls got not freed after skin load
+ fixed: small mem leak in weather
+ changed: enabled CRT mem leak tracking in debug builds
+                        To get a dump of leaks in the vc output window use the shutdown menu to shut down the application.
+                        NOTE: Not all leaks displayed there are real leaks as parts of the application are still allocated,
+                        but nevertheless its usefull ;)
+
  Revision 1.2  2004/02/15 03:37:42  butcheruk
  no message
 
@@ -114,6 +126,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "stdafx.h"
 
 #include "bsdsfv.h"
+
 
 /////////////////////////////////////////////////////////////////////////
 // CSfvFile

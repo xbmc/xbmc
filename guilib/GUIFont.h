@@ -1,67 +1,88 @@
 /*!
-	\file GUIFont.h
-	\brief 
-	*/
+\file GUIFont.h
+\brief 
+*/
 
 #ifndef CGUILIB_GUIFONT_H
 #define CGUILIB_GUIFONT_H
 #pragma once
 
-#include "gui3d.h"
-#include <string>
-#include "graphiccontext.h"
-#include "stdstring.h"
-#include "common/xbfont.h"
-using namespace std;
+#include "GUIFontBase.h"
 
-/*!
-	\ingroup textures
-	\brief 
-	*/
-class CGUIFont  
+class CScrollInfo
 {
 public:
-  CGUIFont(const CStdString& strFontName);
+  CScrollInfo(unsigned int wait = 50, float speed = 1.0f, const CStdStringW &scrollSuffix = " | ") { initialWait = wait; pixelSpeed = speed; suffix = scrollSuffix; Reset(); };
+  void Reset()
+  {
+    waitTime = initialWait;
+    characterPos = 0;
+    pixelPos = 0.0f;
+  }
+  float pixelPos;
+  float pixelSpeed;
+  unsigned int waitTime;
+  unsigned int characterPos;
+  unsigned int initialWait;
+  CStdStringW suffix;
+};
+
+/*!
+ \ingroup textures
+ \brief 
+ */
+class CGUIFont
+{
+public:
+  CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
 
-  void DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                        const WCHAR* strText, DWORD dwFlags=0,
-                        FLOAT fMaxPixelWidth =0.0,
-                        int iShadowWidth=5, 
-                        int iShadowHeight=5,
-                        DWORD dwShadowColor=0xff000000);
+  void DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor, int outlineWidth, const WCHAR *text, DWORD flags = 0L, float maxWidth = 0.0f);
 
-  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                              const WCHAR* strText,float fMaxWidth);
+  void DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
+                 const WCHAR* strText, DWORD dwFlags = 0L,
+                 FLOAT fMaxPixelWidth = 0.0f);
 
-  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-                              const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
+  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
+                     const WCHAR* strText, float fMaxWidth);
 
-  void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, 
-                    const WCHAR* strText, DWORD dwFlags=0L,
-                    FLOAT fMaxPixelWidth = 0.0f );
+  void DrawScrollingText(float x, float y, const CAngle &angle, DWORD* color, int numColors,
+                         DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
-  virtual void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
-					          FLOAT* pHeight, BOOL bFirstLineOnly=FALSE) = 0;
+  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+                           const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
-  FLOAT GetTextWidth( const WCHAR* strText );
+  void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, DWORD dwShadowColor,
+                 const WCHAR* strText, DWORD dwFlags = 0L,
+                 FLOAT fMaxPixelWidth = 0.0f );
 
+  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor, DWORD dwShadowColor,
+                     const WCHAR* strText, float fMaxWidth);
+
+  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+                           const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
+
+  void DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
+
+  inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
+
+  float GetTextWidth( const WCHAR* strText );
+  float GetTextHeight( const WCHAR* strText );
+
+  inline void Begin() { if (m_font) m_font->Begin(); };
+  inline void End() { if (m_font) m_font->End(); };
+
+  static SHORT RemapGlyph(SHORT letter);
 protected:
-  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-							const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
-							FLOAT fMaxPixelWidth = 0.0f) = 0;
-
-  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-								  const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
-								  FLOAT fMaxPixelWidth) = 0;
-
-
-  static WCHAR* m_pwzBuffer;
-  static INT	m_nBufferSize;
-  float			m_iMaxCharWidth;
-  CStdString	m_strFontName;
+  CStdString m_strFontName;
+  // for shadowed text
+  DWORD m_shadowColor;
+  DWORD m_textColor;
+  CGUIFontBase *m_font;
+private:
+  CAngle Transform(const CAngle &angle);
 };
 
 #endif

@@ -47,7 +47,7 @@ private:
 	char		currentDir[1024];
 	bool		wroteHeader;
 	bool		wroteFooter;
-	VECFILEITEMS webDirItems;
+	CFileItemList webDirItems;
 	int			catalogItemCounter;
 	DIRECTORY::CVirtualDirectory *directory;
 	CFileItem	currentMediaItem;

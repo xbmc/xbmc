@@ -1,19 +1,21 @@
 #pragma once
-#include "directory.h"
+#include "idirectory.h"
 
-using namespace DIRECTORY;
+class CURL;
+class TiXmlElement;
+
 namespace DIRECTORY
 {
-  class CShoutcastDirectory :
-    public IDirectory
-  {
-  public:
-    CShoutcastDirectory(void);
-    virtual ~CShoutcastDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
-            bool  DownloadPlaylists(VECFILEITEMS &items);
-            void  CacheItems(VECFILEITEMS &items);
-            void  LoadCachedItems(VECFILEITEMS &items);
-            bool  IsCacheValid();
-  };
+class CShoutcastDirectory :
+      public IDirectory
+{
+public:
+  CShoutcastDirectory(void);
+  virtual ~CShoutcastDirectory(void);
+  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  bool ParseGenres(TiXmlElement *root, CFileItemList &items, CURL &url);
+  bool ParseStations(TiXmlElement *root, CFileItemList &items, CURL &url);
+protected:
+};
+
 }

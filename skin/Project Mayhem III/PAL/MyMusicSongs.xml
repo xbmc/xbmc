@@ -1,0 +1,196 @@
+<window id="501">
+	<defaultcontrol>50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-music.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>2</label>
+			<font>special13</font>
+		</control>
+		<include>contentpanel</include>
+		<control type="label" id="12">
+			<description>number of files text label</description>
+			<posx>545</posx>
+			<posy>540</posy>
+			<align>right</align>
+			<label>-</label>
+			<font>font10</font>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>-20</posy>
+			<include>buttonpanelslide</include>
+			<control type="button" id="2">
+				<description>View As Icons button</description>
+				<posx>0</posx>
+				<posy>120</posy>
+				<label>100</label>
+				<font>font13</font>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>34</onup>
+				<ondown>3</ondown>
+			</control>
+			<control type="button" id="3">
+				<description>Sort by button</description>
+				<posx>0</posx>
+				<posy>157</posy>
+				<label>103</label>
+				<font>font13</font>
+				<onleft>50</onleft>
+				<onright>4</onright>
+				<onup>2</onup>
+				<ondown>99</ondown>
+			</control>
+			<control type="togglebutton" id="4">
+				<description>Sort asc</description>
+				<label>-</label>
+				<onleft>3</onleft>
+				<onright>50</onright>
+				<onup>2</onup>
+				<ondown>99</ondown>
+			</control>
+			<control type="radiobutton" id="99">
+				<description>Library button</description>
+				<posx>0</posx>
+				<posy>194</posy>
+				<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+				<font>font13</font>
+				<onclick>ReplaceWindow(mymusiclibrary)</onclick>
+				<onclick>SetFocus(99)</onclick>
+				<selected>Window.IsVisible(mymusiclibrary)</selected>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>3</onup>
+				<ondown>31</ondown>
+			</control>
+			<control type="group">
+				<visible>Skin.HasSetting(bookmarkbuttons)</visible>
+				<control type="button" id="31">
+					<description>Bookmark button 1</description>
+					<posx>0</posx>
+					<posy>231</posy>
+					<label>$INFO[Skin.String(Musicbookmark1)]</label>
+					<onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark1)])</onclick>
+					<onleft>0</onleft>
+					<onright>50</onright>
+					<onup>99</onup>
+					<ondown>32</ondown>
+					<visible>Skin.HasSetting(MusicBM1)</visible>
+				</control>
+				<control type="label">
+					<description>Music Bookmark 1 String NOT SET label</description>
+					<posx>17</posx>
+					<posy>246</posy>
+					<width>150</width>
+					<aligny>center</aligny>
+					<label>20078</label>
+					<visible>!Skin.String(MusicBookmark1) + Skin.HasSetting(MusicBM1)</visible>
+					<include>textcolorgrey</include>
+				</control>
+				<control type="button" id="32">
+					<description>Bookmark button 2</description>
+					<posx>0</posx>
+					<posy>268</posy>
+					<label>$INFO[Skin.String(Musicbookmark2)]</label>
+					<onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark2)])</onclick>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>31</onup>
+					<ondown>33</ondown>
+					<visible>Skin.HasSetting(MusicBM2)</visible>
+				</control>
+				<control type="label">
+					<description>Music Bookmark 2 String NOT SET label</description>
+					<posx>17</posx>
+					<posy>283</posy>
+					<width>150</width>
+					<aligny>center</aligny>
+					<label>20078</label>
+					<visible>!Skin.String(MusicBookmark2) + Skin.HasSetting(MusicBM2)</visible>
+					<include>textcolorgrey</include>
+				</control>
+				<control type="button" id="33">
+					<description>Bookmark button 3</description>
+					<posx>0</posx>
+					<posy>305</posy>
+					<label>$INFO[Skin.String(Musicbookmark3)]</label>
+					<onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark3)])</onclick>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>32</onup>
+					<ondown>34</ondown>
+					<visible>Skin.HasSetting(MusicBM3)</visible>
+				</control>
+				<control type="label">
+					<description>Music Bookmark 3 String NOT SET label</description>
+					<posx>17</posx>
+					<posy>320</posy>
+					<width>150</width>
+					<aligny>center</aligny>
+					<label>20078</label>
+					<visible>!Skin.String(MusicBookmark3) + Skin.HasSetting(MusicBM3)</visible>
+					<include>textcolorgrey</include>
+				</control>
+				<control type="button" id="34">
+					<description>Bookmark button 4</description>
+					<posx>0</posx>
+					<posy>342</posy>
+					<label>$INFO[Skin.String(Musicbookmark4)]</label>
+					<onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark4)])</onclick>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>33</onup>
+					<ondown>2</ondown>
+					<visible>Skin.HasSetting(MusicBM4)</visible>
+				</control>
+				<control type="label">
+					<description>Music Bookmark 4 String NOT SET label</description>
+					<posx>17</posx>
+					<posy>357</posy>
+					<width>150</width>
+					<aligny>center</aligny>
+					<label>20078</label>
+					<visible>!Skin.String(MusicBookmark4) + Skin.HasSetting(MusicBM4)</visible>
+					<include>textcolorgrey</include>
+				</control>
+			</control>
+		</control>
+		<include>OldListViewCommons</include>
+		<include>MusicViewCommons</include>
+		<include>AllViewCommonThumbSmall</include>
+		<include>AllViewCommonThumbLarge</include>
+		<include>MusicCoverThumbView</include>
+		<include>MusicCoverWrapView</include>
+		<include>AllViewCommonPageControls</include>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>

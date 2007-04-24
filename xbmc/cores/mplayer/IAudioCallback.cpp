@@ -5,16 +5,18 @@
 #include "stdafx.h"
 #include "IAudioCallback.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 IAudioCallback::IAudioCallback()
 {
-
 }
 
 IAudioCallback::~IAudioCallback()
 {
-
 }

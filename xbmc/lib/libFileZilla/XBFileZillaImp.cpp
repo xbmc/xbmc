@@ -31,6 +31,7 @@
 #include "misc\MarkupSTL.h"
 
 #include "bsdsfv.h"
+#include "../../utils/log.h"
 
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)
@@ -60,7 +61,19 @@ CXBFileZillaImp::~CXBFileZillaImp()
 BOOL CXBFileZillaImp::InitInstance()
 {
   ReadXBoxSettings();
-  return mServer->Create();
+  if( mServer->Create() )
+  {
+    CLog::Log(LOGNOTICE, "XBFileZilla: Started");
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "XBFileZilla: Startup failed");
+    return false;
+  }
+
+  /* set our normal thread proprity */
+  SetThreadPriority(m_hThread, THREAD_PRIORITY_NORMAL);
 }
 
 void CXBFileZillaImp::DestructInstance()
@@ -79,7 +92,8 @@ CXBFileZillaImp* CXBFileZillaImp::GetInstance()
 DWORD CXBFileZillaImp::ExitInstance()
 {
   // signal ftp server to stop
-  SendMessage(mServer->GetHwnd(), WM_CLOSE, 0, 0);
+  //SendMessage(mServer->GetHwnd(), WM_CLOSE, 0, 0);
+  SendMessage(mServer->GetHwnd(), WM_DESTROY, 0, 0);
 
   return 0;
 }
@@ -90,21 +104,38 @@ bool CXBFileZillaImp::Stop()
   HANDLE handle = m_hThread;
   PostThreadMessage(WM_QUIT, 0, 0);
 
-  return (WAIT_FAILED != WaitForSingleObject(handle, INFINITE));
+  bool bRet=(WAIT_FAILED != WaitForSingleObject(handle, INFINITE));
+
+  RemoveMessageSinks();
+  return bRet;
 }
 
-bool CXBFileZillaImp::Start()
+bool CXBFileZillaImp::Start(bool Wait)
 {
-  if (!Create())
-    return false;
+  if( Wait )
+  {
+    if (!Create())
+      return false;
 
-  // wait for initinstance has been executed
-  WaitForSingleObject(m_hEventStarted, INFINITE);
+    // wait for initinstance has been executed
+    WaitForSingleObject(m_hEventStarted, INFINITE);
+  }
+  else
+  {
+    if (!Create(THREAD_PRIORITY_BELOW_NORMAL))
+      return false;
+  }
+
   return true;
 }
 
 CXBServer* CXBFileZillaImp::GetServer()
 {
+  if( m_hThread == NULL )
+    return NULL;
+
+  WaitForSingleObject(m_hEventStarted, INFINITE);
+
   return mServer;
 }
 
@@ -123,6 +154,12 @@ LPCTSTR CXBFileZillaImp::GetConfigurationPath()
 
 XFSTATUS CXBFileZillaImp::AddUser(LPCTSTR Name, CXFUser*& User)
 {
+  if( m_hThread == NULL )
+    return XFS_ERROR;
+
+  if( WaitForSingleObject(m_hEventStarted, 5000) != WAIT_OBJECT_0 )
+    return XFS_ERROR;
+
   CXFPermissions permissions;
   
   if (permissions.UserExists(Name))
@@ -140,12 +177,23 @@ XFSTATUS CXBFileZillaImp::AddUser(LPCTSTR Name, CXFUser*& User)
 
 XFSTATUS CXBFileZillaImp::RemoveUser(LPCTSTR Name)
 {
+  if( m_hThread == NULL )
+    return XFS_ERROR;
+
+  WaitForSingleObject(m_hEventStarted, INFINITE);
+
   CXFPermissions permissions;
   return permissions.RemoveUser(Name);
 }
 
 XFSTATUS CXBFileZillaImp::GetUser(LPCTSTR Name, CXFUser*& User)
 {
+  if( m_hThread == NULL )
+    return XFS_ERROR;
+
+  if( WaitForSingleObject(m_hEventStarted, 5000) != WAIT_OBJECT_0 )
+    return XFS_ERROR;
+
   CXFPermissions permissions;
 
   CXFUserImp* user = new CXFUserImp();
@@ -164,6 +212,12 @@ XFSTATUS CXBFileZillaImp::GetUser(LPCTSTR Name, CXFUser*& User)
 
 XFSTATUS CXBFileZillaImp::GetAllUsers(std::vector<CXFUser*>& UserVector)
 {
+  if( m_hThread == NULL )
+    return XFS_ERROR;
+
+  if( WaitForSingleObject(m_hEventStarted, 5000) != WAIT_OBJECT_0 )
+    return XFS_ERROR;
+
   CXFPermissions permissions;
   unsigned i;
   for (i = 0; i < UserVector.size(); i++)
@@ -890,7 +944,7 @@ XFSTATUS CXFUserImp::SetName(LPCTSTR Name)
 
 XFSTATUS CXFUserImp::SetPassword(LPCTSTR Password)
 {
-  if (_tcslen(Password) < 6)
+  if (_tcslen(Password) == 0)
     return XFS_INVALID_PARAMETERS;
 
   const char *tmp = Password;

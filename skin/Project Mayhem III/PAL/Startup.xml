@@ -1,0 +1,56 @@
+<window>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="button" id="10">
+			<description>trigger</description>
+			<onfocus>ReplaceWindow(Home)</onfocus>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<animation effect="fade" start="0" end="0">Focus</animation>
+			<visible>!Skin.HasSetting(Use_Startup_Playlist)</visible>
+		</control>
+		<control type="button" id="10">
+			<description>trigger with startup Playlist</description>
+			<onfocus>XBMC.PlayMedia($INFO[Skin.String(Startup_Playlist_Path)])</onfocus>
+			<onfocus>ReplaceWindow(Home)</onfocus>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<animation effect="fade" start="0" end="0">Focus</animation>
+			<visible>Skin.HasSetting(Use_Startup_Playlist)</visible>
+		</control>
+		<control type="image">
+			<posx>120</posx>
+			<posy>89</posy>
+			<width>680</width>
+			<height>400</height>
+			<texture>home-myprograms\home-myprograms.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>89</posy>
+			<width>720</width>
+			<height>400</height>
+			<texture>Home_Middle.png</texture>
+		</control>
+		<control type="image">
+			<description>background image </description>
+			<posx>0</posx>
+			<posy>245</posy>
+			<width>720</width>
+			<height>331</height>
+			<texture border="0,150,0,0">Home_Bottom.png</texture>
+			<animation effect="slide" end="0,198" delay="200" time="500">WindowClose</animation>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>400</height>
+			<texture border="0,0,0,218">Home_Top.png</texture>
+			<animation effect="slide" end="0,-199" delay="200" time="500">WindowClose</animation>
+		</control>
+	</controls>
+</window>

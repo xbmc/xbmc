@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "SpyceModule.h"
 
 #pragma code_seg("WEB_TEXT")
@@ -91,7 +91,7 @@ namespace WEBS_SPYCE
 		PyObject* pHTTP_COOKIE = PyString_FromString(strCookie.c_str());
 		PyObject* pCONTENT_TYPE = PyString_FromString(wp->type);
 		PyObject* pHTTP_HOST = PyString_FromString(wp->host);
-		PyObject* pHTTP_USER_AGENT = PyString_FromString(wp->userAgent);
+		PyObject* pHTTP_USER_AGENT = PyString_FromString(wp->userAgent ? wp->userAgent : "");
 		PyObject* pHTTP_CONNECTION = PyString_FromString((wp->flags & WEBS_KEEP_ALIVE)? "Keep-Alive" : "");
 
 		PyDict_SetItemString(pEnv, "REQUEST_METHOD", pREQUEST_METHOD);

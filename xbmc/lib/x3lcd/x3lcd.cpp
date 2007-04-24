@@ -1,43 +1,12 @@
 
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "x3lcd.h"
-#include "../../settings.h"
-#include "../../utils/log.h"
-#include <xtl.h>
 #include "conio.h"
 #include "../../util.h"
 
+#include <conio.h>
 
 char X3LcdAnimIndex=0;
-
-//*************************************************************************************************************
-static void outb(unsigned short port, unsigned char data)
-{
-	__asm
-	{
-		nop
-			mov dx, port
-			nop
-			mov al, data
-			nop
-			out dx,al
-			nop
-			nop
-	}
-}
-
-//*************************************************************************************************************
-static unsigned char inb(unsigned short port)
-{
-	unsigned char data;
-	__asm
-	{
-		mov dx, port
-			in al, dx
-			mov data,al
-	}
-	return data;
-}
 
 //*************************************************************************************************************
 CX3LCD::CX3LCD()
@@ -61,11 +30,12 @@ CX3LCD::~CX3LCD()
 void CX3LCD::Initialize()
 {
 	StopThread();
-	if (!g_stSettings.m_bLCDUsed) 
+	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
 	{
     CLog::Log(LOGINFO, "lcd not used");
     return;
 	}
+  ILCD::Initialize();
 	Create();
 }
 
@@ -77,7 +47,7 @@ void CX3LCD::SetContrast(int iContrast) { }
 //*************************************************************************************************************
 void CX3LCD::Stop()
 {
-	if (!g_stSettings.m_bLCDUsed) 
+	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
 		return;
 	StopThread();
 }
@@ -85,7 +55,7 @@ void CX3LCD::Stop()
 //*************************************************************************************************************
 void CX3LCD::SetLine(int iLine, const CStdString& strLine)
 {
-	if (!g_stSettings.m_bLCDUsed) 
+	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
 		return;
 	if (iLine < 0 || iLine >= (int)m_iRows) 
 		return;
@@ -142,19 +112,19 @@ void CX3LCD::DisplayOut(unsigned char data, unsigned char command)
 
 	//outbut higher nibble
 	
-	outb(DISP_O_DAT, data & 0xF0);			// set Data high nibble
-	outb(DISP_O_CMD, cmd);					// set RS if needed
-	outb(DISP_O_CMD, DISPCON_E | cmd);		// set E
-	outb(DISP_O_CMD, cmd);					// reset E
+	_outp(DISP_O_DAT, data & 0xF0);			// set Data high nibble
+	_outp(DISP_O_CMD, cmd);					// set RS if needed
+	_outp(DISP_O_CMD, DISPCON_E | cmd);		// set E
+	_outp(DISP_O_CMD, cmd);					// reset E
 
 	if ((command & INI) == 0) 
 	{							
 		// if it's not the init command, do second nibble
 		//outbut lower nibble
-		outb(DISP_O_DAT, (data << 4) & 0xF0);		// set Data low nibble
-		outb(DISP_O_CMD, cmd);				// set RS if needed
-		outb(DISP_O_CMD, DISPCON_E | cmd);	// set E
-		outb(DISP_O_CMD, cmd);				// reset E
+		_outp(DISP_O_DAT, (data << 4) & 0xF0);		// set Data low nibble
+		_outp(DISP_O_CMD, cmd);				// set RS if needed
+		_outp(DISP_O_CMD, DISPCON_E | cmd);	// set E
+		_outp(DISP_O_CMD, cmd);				// reset E
 		if ((data & 0xFC) == 0) 
 		{						                          
 			// if command was a Clear Display
@@ -184,6 +154,8 @@ void CX3LCD::DisplayBuildCustomChars()
 	static char Bar0[] ={0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
 	static char Bar1[] ={0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18};
 	static char Bar2[] ={0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c};
+	static char Bar3[] ={0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e};	//4pixel
+	//static char Bar4[] =
 	static char REW[8][8]=
 	{
 		{0x00, 0x05, 0x0a, 0x14, 0x0a, 0x05, 0x00, 0x00},
@@ -218,7 +190,8 @@ void CX3LCD::DisplayBuildCustomChars()
 	for(I=0;I<8;I++) DisplayOut(REW[X3LcdAnimIndex][I], DAT);   	// REW
 	for(I=0;I<8;I++) DisplayOut(FF[X3LcdAnimIndex][I], DAT);    	// FF
 	for(I=0;I<8;I++) DisplayOut(Play[I], DAT);  			// Play
-	for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
+	//for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
+	for(I=0;I<8;I++) DisplayOut(Bar3[I], DAT);
 	for(I=0;I<8;I++) DisplayOut(Pause[I], DAT); 			// Pause
 	DisplayOut(DISP_DDRAM_SET, CMD);
 	X3LcdAnimIndex=(X3LcdAnimIndex+1) & 0x7;
@@ -335,16 +308,16 @@ void CX3LCD::DisplayProgressBar(unsigned char percent, unsigned char charcnt)
 //************************************************************************************************************************
 void CX3LCD::DisplaySetBacklight(unsigned char level) 
 {
-	outb(DISP_O_LIGHT, level);
+	_outp(DISP_O_LIGHT, (int)(2.55*(double)level) );
 }
 //************************************************************************************************************************
 void CX3LCD::DisplayInit()
 {
 	//initialize GP/IO
-	outb(DISP_O_DAT, 0);
-	outb(DISP_O_CMD, 0);
-	outb(DISP_O_DIR_DAT, 0xFF);
-	outb(DISP_O_DIR_CMD, 0x07);
+	_outp(DISP_O_DAT, 0);
+	_outp(DISP_O_CMD, 0);
+	_outp(DISP_O_DIR_DAT, 0xFF);
+	_outp(DISP_O_DIR_CMD, 0x07);
 
 	DisplayOut(DISP_FUNCTION_SET | DISP_DL_FLAG, INI);	// 8-Bit Datalength if display is already initialized to 4 bit
 	Sleep(5);
@@ -373,13 +346,13 @@ void CX3LCD::Process()
 {
 	int iOldLight=-1;  
 
-	m_iColumns = g_stSettings.m_iLCDColumns;
-	m_iRows    = g_stSettings.m_iLCDRows;
-	m_iRow1adr = g_stSettings.m_iLCDAdress[0];
-	m_iRow2adr = g_stSettings.m_iLCDAdress[1];
-	m_iRow3adr = g_stSettings.m_iLCDAdress[2];
-	m_iRow4adr = g_stSettings.m_iLCDAdress[3];
-	m_iBackLight= g_stSettings.m_iLCDBackLight;
+	m_iColumns = g_advancedSettings.m_lcdColumns;
+	m_iRows    = g_advancedSettings.m_lcdRows;
+	m_iRow1adr = g_advancedSettings.m_lcdAddress1;
+	m_iRow2adr = g_advancedSettings.m_lcdAddress2;
+	m_iRow3adr = g_advancedSettings.m_lcdAddress3;
+	m_iRow4adr = g_advancedSettings.m_lcdAddress4;
+	m_iBackLight= g_guiSettings.GetInt("lcd.backlight");
 	if (m_iRows >= MAX_ROWS) 
 		m_iRows = MAX_ROWS - 1;
 

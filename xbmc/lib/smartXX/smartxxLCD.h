@@ -1,9 +1,7 @@
 #pragma once
-#include "stdstring.h"
 #include "../../utils/thread.h"
-#include "../../utils/event.h"
 #include "../../utils/lcd.h"
-using namespace std;
+
 #define MAX_ROWS 20
 
 class CSmartXXLCD : public ILCD
@@ -13,12 +11,12 @@ public:
   virtual ~CSmartXXLCD(void);
   virtual void Initialize();
   virtual void Stop();
-  virtual void SetLine(int iLine, const CStdString& strLine);
   virtual void SetBackLight(int iLight);
   virtual void SetContrast(int iContrast);
 
 protected:
 	virtual void		Process();
+  virtual void SetLine(int iLine, const CStdString& strLine);
   void    DisplayInit();
   void    DisplaySetBacklight(unsigned char level) ;
   void    DisplaySetContrast(unsigned char level) ;

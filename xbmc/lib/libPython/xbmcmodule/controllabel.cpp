@@ -1,10 +1,9 @@
-#include "stdafx.h"
-#include "..\python.h"
+#include "../../../stdafx.h"
+#include "..\python\python.h"
 #include "GuiLabelControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
-
-using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -17,125 +16,172 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyObject* ControlLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
-	{
-		ControlLabel *self;
-		char *cFont = NULL;
-		char *cTextColor = NULL;
-		PyObject* pObjectText;
-		
-		self = (ControlLabel*)type->tp_alloc(type, 0);
-		if (!self) return NULL;
-		
-		if (!PyArg_ParseTuple(args, "llll|Oss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&pObjectText, &cFont, &cTextColor)) return NULL;
-		if (!PyGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
+  PyObject* ControlLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = {
+      "x", "y", "width", "height", "label", "font", "textColor",
+      "disabledColor", "alignment", "hasPath", "angle", NULL };
 
-		self->strFont = cFont ? cFont : "font13";		
-		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xffffffff;
+    ControlLabel *self;
+    char *cFont = NULL;
+    char *cTextColor = NULL;
+    char *cDisabledColor = NULL;
+    PyObject* pObjectText;
 
-		return (PyObject*)self;
-	}
+    self = (ControlLabel*)type->tp_alloc(type, 0);
+    if (!self) return NULL;
 
-	void ControlLabel_Dealloc(ControlLabel* self)
-	{
-		self->ob_type->tp_free((PyObject*)self);
-	}
+    // set up default values in case they are not supplied
+    self->strFont = "font13";
+    self->dwTextColor = 0xffffffff;
+    self->dwDisabledColor = 0x60ffffff;
+    self->dwAlign = XBFONT_LEFT;
+    self->bHasPath = false;
+    self->iAngle = 0;
 
-	CGUIControl* ControlLabel_Create(ControlLabel* pControl)
-	{
-		pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
-				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->strText, pControl->dwTextColor, pControl->dwTextColor, XBFONT_LEFT, false);
-		return pControl->pGUIControl;
-	}
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "llllO|ssslbl",
+      keywords,
+      &self->dwPosX,
+      &self->dwPosY,
+      &self->dwWidth,
+      &self->dwHeight,
+      &pObjectText,
+      &cFont,
+      &cTextColor,
+      &cDisabledColor,
+      &self->dwAlign,
+      &self->bHasPath,
+      &self->iAngle))
+    {
+        Py_DECREF( self );
+        return NULL;
+    }
+    if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+    {
+      Py_DECREF( self );
+      return NULL;
+    }
 
-	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(string label) -- Set's text for this label.\n"
-		"\n"
-		"label     : string or unicode string");
+    if (cFont) self->strFont = cFont;
+    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cDisabledColor)
+    {
+      sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+    }
 
-	PyObject* ControlLabel_SetLabel(ControlLabel *self, PyObject *args)
-	{
-		PyObject *pObjectText;
+    return (PyObject*)self;
+  }
 
-		if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
-		if (!PyGetUnicodeString(self->strText, pObjectText, 1)) return NULL;
+  void ControlLabel_Dealloc(ControlLabel* self)
+  {
+    self->ob_type->tp_free((PyObject*)self);
+  }
 
-		ControlLabel *pControl = (ControlLabel*)self;
-		CGUIMessage msg(GUI_MSG_LABEL_SET, pControl->iParentId, pControl->iControlId);
-		msg.SetLabel(self->strText);
+  CGUIControl* ControlLabel_Create(ControlLabel* pControl)
+  {
+    CLabelInfo label;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = label.focusedColor = pControl->dwTextColor;
+    label.disabledColor = pControl->dwDisabledColor;
+    label.align = pControl->dwAlign;
+    label.angle = CAngle(-pControl->iAngle);
+    pControl->pGUIControl = new CGUILabelControl(
+      pControl->iParentId,
+      pControl->iControlId,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight,
+      pControl->strText,
+      label,
+      pControl->bHasPath);
+    return pControl->pGUIControl;
+  }
 
-		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
+  // setLabel() Method
+  PyDoc_STRVAR(setLabel__doc__,
+    "setLabel(label) -- Set's text for this label.\n"
+    "\n"
+    "label          : string or unicode - text string.\n"
+    "\n"
+    "example:\n"
+    "  - self.label.setLabel('Status')\n");
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+  PyObject* ControlLabel_SetLabel(ControlLabel *self, PyObject *args)
+  {
+    PyObject *pObjectText;
 
-	PyMethodDef ControlLabel_methods[] = {
-		{"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
-		{NULL, NULL, 0, NULL}
-	};
+    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
+    if (!PyGetUnicodeString(self->strText, pObjectText, 1)) return NULL;
 
-	PyDoc_STRVAR(controlLabel__doc__,
-		"ControlLabel class.\n"
-		"\n"
-		"ControlLabel(int x, int y, int width, int height[, label, font, textColor])\n"
-		"\n"
-		"label     : string or unicode string\n"
-		"font      : string fontname (example, 'font13' / 'font14')\n"
-		"textColor : hexString (example, '0xFFFF3300')");
+    ControlLabel *pControl = (ControlLabel*)self;
+    CGUIMessage msg(GUI_MSG_LABEL_SET, pControl->iParentId, pControl->iControlId);
+    msg.SetLabel(self->strText);
 
-// Restore code and data sections to normal.
+    PyGUILock();
+    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyMethodDef ControlLabel_methods[] = {
+    {"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
+    {NULL, NULL, 0, NULL}
+  };
+
+  // ControlLabel class
+  PyDoc_STRVAR(controlLabel__doc__,
+    "ControlLabel class.\n"
+    "\n"
+    "ControlLabel(x, y, width, height, label[, font, textColor, \n"
+    "             disabledColor, alignment, hasPath, angle])\n"
+    "\n"
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+    "label          : string or unicode - text string.\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')\n"
+    "disabledColor  : [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')\n"
+    "alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
+    "hasPath        : [opt] bool - True=stores a path / False=no path.\n"
+    "angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+    "\n"
+    "example:\n"
+    "  - self.label = xbmcgui.ControlLabel(100, 250, 125, 75, 'Status', angle=45)\n");
+
+  // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject ControlLabel_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmcgui.ControlLabel",    /*tp_name*/
-			sizeof(ControlLabel),      /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)ControlLabel_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			controlLabel__doc__,       /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			ControlLabel_methods,      /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			&Control_Type,             /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			ControlLabel_New,          /* tp_new */
-	};
+  PyTypeObject ControlLabel_Type;
+
+  void initControlLabel_Type()
+  {
+    PyInitializeTypeObject(&ControlLabel_Type);
+
+    ControlLabel_Type.tp_name = "xbmcgui.ControlLabel";
+    ControlLabel_Type.tp_basicsize = sizeof(ControlLabel);
+    ControlLabel_Type.tp_dealloc = (destructor)ControlLabel_Dealloc;
+    ControlLabel_Type.tp_compare = 0;
+    ControlLabel_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+    ControlLabel_Type.tp_doc = controlLabel__doc__;
+    ControlLabel_Type.tp_methods = ControlLabel_methods;
+    ControlLabel_Type.tp_base = &Control_Type;
+    ControlLabel_Type.tp_new = ControlLabel_New;
+  }
 }
 
 #ifdef __cplusplus

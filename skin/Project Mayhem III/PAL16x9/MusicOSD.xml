@@ -1,0 +1,217 @@
+﻿<window id="120">
+	<defaultcontrol>213</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="button" id="208">
+			<description>REC button</description>
+			<posx>35</posx>
+			<posy>304</posy>
+			<width>128</width>
+			<height>163</height>
+			<texturefocus>osd_button_rec.png</texturefocus>
+			<texturenofocus>osd_button_recNF.png</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>499</onright>
+			<onup>499</onup>
+			<ondown>210</ondown>
+			<onclick>XBMC.PlayerControl(Record)</onclick>
+			<visible>Player.CanRecord</visible>
+		</control>
+		<control type="button" id="209">
+			<description>REC button 2</description>
+			<posx>35</posx>
+			<posy>304</posy>
+			<width>128</width>
+			<height>163</height>
+			<texturefocus>osd_button_rec2.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>500</onright>
+			<onup>500</onup>
+			<ondown>211</ondown>
+			<onclick>XBMC.PlayerControl(Record)</onclick>
+			<visible>Player.CanRecord</visible>
+		</control>
+		<control type="image" id="1">
+			<description>Panel</description>
+			<posx>60</posx>
+			<posy>300</posy>
+			<height>256</height>
+			<width>180</width>
+			<texture>osd_panel_audio.png</texture>
+			<visible>yes</visible>
+		</control>
+		<control type="button" id="210">
+			<description>Skip Bwd</description>
+			<posx>81</posx>
+			<posy>408</posy>
+			<width>38</width>
+			<height>51</height>
+			<texturefocus>osd_button_skip_minusFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>215</onleft>
+			<onright>211</onright>
+			<onup>208</onup>
+			<ondown>219</ondown>
+			<onclick>XBMC.PlayerControl(Previous)</onclick>
+		</control>
+		<control type="togglebutton" id="211">
+			<description>Rewind</description>
+			<posx>112</posx>
+			<posy>403</posy>
+			<width>34</width>
+			<height>49</height>
+			<texturefocus>osd_button_rewFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Player.Rewinding</usealttexture>
+			<alttexturefocus>osd_button_rewSELFO.png</alttexturefocus>
+			<alttexturenofocus>osd_button_rewSELNF.png</alttexturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>213</onright>
+			<onup>209</onup>
+			<ondown>220</ondown>
+			<onclick>XBMC.PlayerControl(Rewind)</onclick>
+		</control>
+		<control type="togglebutton" id="213">
+			<description>Play</description>
+			<posx>136</posx>
+			<posy>385</posy>
+			<width>52</width>
+			<height>66</height>
+			<texturefocus>osd_button_pauseFO.png</texturefocus>
+			<texturenofocus>osd_button_pauseNF.png</texturenofocus>
+			<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+			<alttexturefocus>osd_button_playFO.png</alttexturefocus>
+			<alttexturenofocus>osd_button_playNF.png</alttexturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>214</onright>
+			<onup>500</onup>
+			<ondown>220</ondown>
+			<onclick>XBMC.PlayerControl(Play)</onclick>
+		</control>
+		<control type="togglebutton" id="214">
+			<description>Fast Forward</description>
+			<posx>179</posx>
+			<posy>385</posy>
+			<width>32</width>
+			<height>49</height>
+			<texturefocus>osd_button_ffFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Player.Forwarding</usealttexture>
+			<alttexturefocus>osd_button_ffSELFO.png</alttexturefocus>
+			<alttexturenofocus>osd_button_ffSELNF.png</alttexturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>213</onleft>
+			<onright>215</onright>
+			<onup>500</onup>
+			<ondown>220</ondown>
+			<onclick>XBMC.PlayerControl(Forward)</onclick>
+		</control>
+		<control type="button" id="215">
+			<description>Skip Fwd</description>
+			<posx>202</posx>
+			<posy>380</posy>
+			<width>34</width>
+			<height>46</height>
+			<texturefocus>osd_button_skip_plusSELFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>214</onleft>
+			<onright>210</onright>
+			<onup>499</onup>
+			<ondown>219</ondown>
+			<onclick>XBMC.PlayerControl(Next)</onclick>
+		</control>
+		<control type="button" id="499">
+			<description>playlist Button</description>
+			<posx>130</posx>
+			<posy>318</posy>
+			<width>38</width>
+			<height>44</height>
+			<texturefocus>osd_button_playlistFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>XBMC.ActivateWindow(500)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>208</onleft>
+			<onright>215</onright>
+			<onup>219</onup>
+			<ondown>500</ondown>
+		</control>
+		<control type="button" id="500">
+			<description>Popup Vis Select Button</description>
+			<posx>135</posx>
+			<posy>353</posy>
+			<width>40</width>
+			<height>41</height>
+			<texturefocus>osd_button_visFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>209</onleft>
+			<onright>214</onright>
+			<onup>499</onup>
+			<ondown>213</ondown>
+		</control>
+		<control type="button" id="220">
+			<description>Popup Vis Preset List</description>
+			<posx>151</posx>
+			<posy>443</posy>
+			<width>41</width>
+			<height>44</height>
+			<texturefocus>osd_button_presetsFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>214</onright>
+			<onup>213</onup>
+			<ondown>219</ondown>
+			<onclick>XBMC.ActivateWindow(122)</onclick>
+		</control>
+		<control type="button" id="219">
+			<description>Popup Vis Settings</description>
+			<posx>156</posx>
+			<posy>477</posy>
+			<width>43</width>
+			<height>51</height>
+			<texturefocus>osd_button_vizsettingsFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>215</onright>
+			<onup>220</onup>
+			<ondown>499</ondown>
+			<onclick>XBMC.ActivateWindow(121)</onclick>
+		</control>
+		<control type="selectbutton" id="503">
+			<description>Visualisation Select Button</description>
+			<posx>270</posx>
+			<posy>481</posy>
+			<width>200</width>
+			<height>35</height>
+			<label>-</label>
+			<font>font12</font>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<texturebg>keyboard-btn-space-focus.png</texturebg>
+			<onleft>500</onleft>
+			<onright>500</onright>
+			<onup>500</onup>
+			<ondown>500</ondown>
+		</control>
+	</controls>
+</window>

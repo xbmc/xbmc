@@ -1,22 +1,22 @@
 /*!
-	\file IMsgSenderCallback.h
-	\brief 
-	*/
+\file IMsgSenderCallback.h
+\brief 
+*/
 
 #ifndef GUILIB_IMSGSENDERCALLBACK
 #define GUILIB_IMSGSENDERCALLBACK
 
 #pragma once
-#include "guimessage.h"
+#include "GUIMessage.h"
 
 /*!
-	\ingroup winman
-	\brief 
-	*/
+ \ingroup winman
+ \brief 
+ */
 class IMsgSenderCallback
 {
 public:
-  virtual void   SendMessage(CGUIMessage& message)=0;
+  virtual bool SendMessage(CGUIMessage& message) = 0;
 };
 
 #endif

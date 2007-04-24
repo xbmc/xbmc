@@ -1,156 +1,195 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
-#include "StdAfx.h"
-#include "Settings.h"
+#include "stdafx.h"
 #include "ArenaItem.h"
 #include "Utils/KaiClient.h"
-#include "Utils/CharsetConverter.h"
 
-CGUIImage* CArenaItem::m_pPrivateIcon		= NULL;
+CGUIImage* CArenaItem::m_pPrivateIcon = NULL;
 
 CArenaItem::CArenaItem(CStdString& strLabel) : CKaiItem(strLabel)
 {
-	SetCookie( CKaiClient::Item::Arena );
-	m_strVector="/";
-	m_strDescription="";
-	m_strPassword="";
-	m_nPlayers = -1;
-	m_nPlayerLimit = -1;
-	m_bIsPrivate = false;
-	m_bIsPersonal = false;
+  SetCookie( CKaiClient::Item::Arena );
+  m_strVector = "/";
+  m_strDescription = "";
+  m_strPassword = "";
+  m_nPlayers = -1;
+  m_nPlayerLimit = -1;
+  m_bIsPrivate = false;
+  m_bIsPersonal = false;
 }
 
 CArenaItem::~CArenaItem(void)
+{}
+
+void CArenaItem::SetIcons(float width, float height, const CStdString& aPrivateTexture)
 {
+  if (aPrivateTexture.length() > 0)
+  {
+    m_pPrivateIcon = new CGUIImage(0, 0, 0, 0, width, height, aPrivateTexture, 0x0);
+    m_pPrivateIcon->AllocResources();
+  }
 }
 
-void CArenaItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aPrivateTexture)
+void CArenaItem::FreeIcons()
 {
-	if (aPrivateTexture.length()>0)
-	{
-		m_pPrivateIcon = new CGUIImage(0,0,0,0,aWidth,aHeight,aPrivateTexture,0x0);
-		m_pPrivateIcon->AllocResources();
-	}
+  if (m_pPrivateIcon)
+  {
+    m_pPrivateIcon->FreeResources();
+    delete m_pPrivateIcon;
+    m_pPrivateIcon = NULL;
+  }
 }
 
 CArenaItem::Tier CArenaItem::GetTier()
 {
-	int tier = 0;
+  int tier = 0;
 
-	for(int characterIndex=0; characterIndex<m_strVector.GetLength(); characterIndex++)
-	{
-		if (m_strVector[characterIndex]=='/')
-		{
-			tier++;
-		}
-	}
-	
-	if (tier>4)
-	{
-		tier=4;
-	}
+  for (int characterIndex = 0; characterIndex < m_strVector.GetLength(); characterIndex++)
+  {
+    if (m_strVector[characterIndex] == '/')
+    {
+      tier++;
+    }
+  }
 
-	return (CArenaItem::Tier) tier;
+  if (tier > 4)
+  {
+    tier = 4;
+  }
+
+  return (CArenaItem::Tier) tier;
 }
 
 void CArenaItem::GetTier(CArenaItem::Tier aTier, CStdString& aTierName)
 {
-	GetTier(aTier, m_strVector, aTierName);
+  GetTier(aTier, m_strVector, aTierName);
 }
 
 void CArenaItem::GetTier(Tier aTier, CStdString aVector, CStdString& aTierName)
 {
-	int tier = 0;
-	int characterIndex = 0;
-	CStdString name;
+  int tier = 0;
+  int characterIndex = 0;
+  CStdString name;
 
-	for(; characterIndex<aVector.GetLength(); characterIndex++)
-	{
-		if (tier==(int)aTier)
-		{
-			int nextTier = aVector.Find('/',characterIndex+1);
-			if (nextTier>=characterIndex)
-			{
-				aTierName = aVector.Mid(characterIndex,nextTier-characterIndex);
-			}
-			else
-			{
-				aTierName = aVector.Mid(characterIndex);
-			}
-			break;
-		}
+  for (; characterIndex < aVector.GetLength(); characterIndex++)
+  {
+    if (tier == (int)aTier)
+    {
+      int nextTier = aVector.Find('/', characterIndex + 1);
+      if (nextTier >= characterIndex)
+      {
+        aTierName = aVector.Mid(characterIndex, nextTier - characterIndex);
+      }
+      else
+      {
+        aTierName = aVector.Mid(characterIndex);
+      }
+      break;
+    }
 
-		if (aVector[characterIndex]=='/')
-		{
-			tier++;
-		}
-	}
+    if (aVector[characterIndex] == '/')
+    {
+      tier++;
+    }
+  }
 }
 
 void CArenaItem::GetDisplayText(CStdString& aString)
 {
-	if (m_bIsPersonal)
-	{
-		char chLastLetter = m_strName[m_strName.length()-1];
-		bool bEndsInS = (chLastLetter=='s') ||(chLastLetter=='S');
-		if (bEndsInS)
-		{
-			aString.Format("%s' arena",m_strName);
-		}
-		else
-		{
-			aString.Format("%s's arena",m_strName);
-		}
-	}
-	else
-	{
-		aString = m_strName;
-	}
+  if (m_bIsPersonal)
+  {
+    char chLastLetter = m_strName[m_strName.length() - 1];
+    bool bEndsInS = (chLastLetter == 's') || (chLastLetter == 'S');
+    if (bEndsInS)
+    {
+      aString.Format("%s' arena", m_strName);
+    }
+    else
+    {
+      aString.Format("%s's arena", m_strName);
+    }
+  }
+  else
+  {
+    aString = m_strName;
+  }
 }
 
 void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
 {
-	CKaiItem::OnPaint(pContext);
+  CKaiItem::OnPaint(pContext);
 
-	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
+  CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
 
-	if (pDC)
-	{
-		int iBaseLineY = pDC->m_iPositionY;
-		int iBaseLineX = pDC->m_iPositionX + pDC->m_pButton->GetWidth();
+  if (pDC)
+  {
+    float baseLineY = pDC->m_positionY;
+    float baseLineX = pDC->m_positionX + pDC->m_pButton->GetWidth();
 
-		iBaseLineX -= 64;
-		
-		if (m_pPrivateIcon && m_bIsPrivate)
-		{
-			int iIconPosX = iBaseLineX - (m_pPrivateIcon->GetWidth()+4);
-			int iIconPosY = iBaseLineY;					
-			iIconPosY +=(pDC->m_pButton->GetHeight() - m_pPrivateIcon->GetHeight())/2;
+    baseLineX -= 64;
 
-			m_pPrivateIcon->SetPosition(iIconPosX,iIconPosY);
-			m_pPrivateIcon->Render();
-		}
+    if (m_pPrivateIcon && m_bIsPrivate)
+    {
+      float iconPosX = baseLineX - (m_pPrivateIcon->GetWidth() + 4);
+      float iconPosY = baseLineY;
+      iconPosY += (pDC->m_pButton->GetHeight() - m_pPrivateIcon->GetHeight()) / 2;
 
-		if (pDC->m_pFont)
-		{
-			int iPosX = iBaseLineX;
-			int iPosY = iBaseLineY;
+      m_pPrivateIcon->SetPosition(iconPosX, iconPosY);
+      m_pPrivateIcon->Render();
+    }
 
-			// render the text
-			DWORD dwColor = pDC->m_bFocused ? pDC->m_dwTextSelectedColour : pDC->m_dwTextNormalColour;
+    if (pDC->m_label.font)
+    {
+      float posX = baseLineX;
+      float posY = baseLineY;
 
-			CStdString strInfo;
-			if (m_nPlayerLimit>0)
-			{
-				strInfo.Format("%d/%d",(m_nPlayers>0) ? m_nPlayers : 0, m_nPlayerLimit);
-			}
-			else
-			{
-				strInfo.Format("%d",(m_nPlayers>0) ? m_nPlayers : 0);
-			}
+      // render the text
+      DWORD dwColor = pDC->m_bFocused ? pDC->m_label.selectedColor : pDC->m_label.textColor;
 
-			CStdStringW strInfoUnicode;
-			g_charsetConverter.stringCharsetToFontCharset(strInfo, strInfoUnicode);
-			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_pFont);
-		}
-	}
+      CStdString strInfo;
+      if (m_nPlayers < 0)
+      {
+        // orbs remeshing: don't display anything
+      }
+      else if (m_nPlayerLimit > 0)
+      {
+        strInfo.Format("%d/%d", (m_nPlayers > 0) ? m_nPlayers : 0, m_nPlayerLimit);
+      }
+      else
+      {
+        strInfo.Format("%d", (m_nPlayers > 0) ? m_nPlayers : 0);
+      }
+
+      // no need for charset conversions here - just rendering numbers
+      CStdStringW strInfoUnicode = strInfo;
+      float fPosX = posX;
+      float fPosY = posY + 2;
+      if (pDC->m_pButton->GetLabelInfo().align & XBFONT_CENTER_Y)
+      {
+        float fTextHeight, fTextWidth;
+        pDC->m_label.font->GetTextExtent( strInfoUnicode.c_str(), &fTextWidth, &fTextHeight);
+        fPosY = posY + (pDC->m_pButton->GetHeight() - fTextHeight) * 0.5f;
+      }
+      RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
+    }
+  }
 }

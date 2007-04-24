@@ -11,12 +11,12 @@ using namespace std;
 namespace DIRECTORY
 {
 
-	class CPlayListDirectory : public CDirectory
-  {
-  public:
-    CPlayListDirectory(void);
-    virtual ~CPlayListDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
-	protected:
-  };
+class CPlayListDirectory : public CDirectory
+{
+public:
+  CPlayListDirectory(void);
+  virtual ~CPlayListDirectory(void);
+  virtual bool GetDirectory(const CStdString& strPath, VECFILEITEMS &items);
+protected:
+};
 };

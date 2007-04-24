@@ -69,7 +69,7 @@ public:
 
 	int ChangeCurrentDir(LPCTSTR user, CStdString& currentdir, CStdString &dir);
 	int GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting *&pResult);
-	int GetDirName(LPCTSTR user, CStdString dirname, CStdString currentdir, int op, CStdString &result);
+	int GetDirName(LPCTSTR user, CStdString dirname, CStdString currentdir, int op, CStdString &physical, CStdString &logical);
 	int GetFileName(LPCTSTR user, CStdString filename, CStdString currentdir, int op, CStdString &result);
 	CStdString GetHomeDir(LPCTSTR username, BOOL bRealPath = FALSE) const;
 	CStdString GetHomeDir(const CUser &user, BOOL bRealPath = FALSE) const;

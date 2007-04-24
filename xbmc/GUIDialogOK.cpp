@@ -1,127 +1,65 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
-#include "guidialogok.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
+#include "GUIDialogOK.h"
 
-#define ID_BUTTON_NO   10
-#define ID_BUTTON_YES  11
+#define ID_BUTTON_OK   10
 
 CGUIDialogOK::CGUIDialogOK(void)
-:CGUIDialog(0)
+    : CGUIDialogBoxBase(WINDOW_DIALOG_OK, "DialogOK.xml")
 {
-	m_bConfirmed=false;
 }
 
 CGUIDialogOK::~CGUIDialogOK(void)
-{
-}
+{}
 
 bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
+  switch ( message.GetMessage() )
   {
-    case GUI_MSG_WINDOW_INIT:
+  case GUI_MSG_CLICKED:
     {
-			CGUIDialog::OnMessage(message);
-			m_bConfirmed=false;
-			return true;
-		}
-		break;
-
-    case GUI_MSG_CLICKED:
-    {
-			int iAction=message.GetParam1();
-			if (1||ACTION_SELECT_ITEM==iAction)
-			{
-				int iControl=message.GetSenderId();
-        if ( GetControl(ID_BUTTON_YES) == NULL)
-        {
-          m_bConfirmed=true;
-					Close();
-					return true;
-        }
-				if (iControl==ID_BUTTON_NO)
-				{
-					m_bConfirmed=false;
-					Close();
-					return true;
-				}
-				if (iControl==ID_BUTTON_YES)
-				{
-					m_bConfirmed=true;
-					Close();
-					return true;
-				}
-			}
-		}
-		break;
-	}
-  //only allow messages from or for this dialog
-  if (
-    (message.GetSenderId()  == GetID()) || 
-    (message.GetControlId() == GetID()) || 
-    (message.GetControlId() == 0)
-  ) {
-	  return CGUIDialog::OnMessage(message);
+      int iControl = message.GetSenderId();
+      if (iControl == ID_BUTTON_OK)
+      {
+        m_bConfirmed = true;
+        Close();
+        return true;
+      }
+    }
+    break;
   }
-  return false;
+  return CGUIDialogBoxBase::OnMessage(message);
 }
 
-
-bool CGUIDialogOK::IsConfirmed() const
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogOK::ShowAndGetInput(int heading, int line0, int line1, int line2)
 {
-	return m_bConfirmed;
-}
-
-
-void  CGUIDialogOK::SetHeading(const wstring& strLine)
-{
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
-}
-
-void  CGUIDialogOK::SetHeading(const string& strLine)
-{
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
-}
-
-void CGUIDialogOK::SetLine(int iLine, const wstring& strLine)
-{
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
-}
-
-void CGUIDialogOK::SetLine(int iLine, const string& strLine)
-{
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
-}
-void CGUIDialogOK::SetHeading(int iString)
-{
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(iString);
-	OnMessage(msg);
-}
-
-void	CGUIDialogOK::SetLine(int iLine, int iString)
-{
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(iString);
-	OnMessage(msg);
-}
-
-void CGUIDialogOK::OnAction(const CAction &action)
-{
-	if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-		Close();
-		return;
-  }
-	CGUIDialog::OnAction(action);
+  CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  if (!dialog) return;
+  dialog->SetHeading( heading );
+  dialog->SetLine( 0, line0 );
+  dialog->SetLine( 1, line1 );
+  dialog->SetLine( 2, line2 );
+  dialog->DoModal();
+  return ;
 }

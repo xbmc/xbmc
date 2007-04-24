@@ -1,21 +1,20 @@
 #pragma once
-#include "guidialog.h"
+#include "GUIDialogBoxBase.h"
 
 class CGUIDialogYesNo :
-	public CGUIDialog
+      public CGUIDialogBoxBase
 {
 public:
-	CGUIDialogYesNo(void);
-	virtual ~CGUIDialogYesNo(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-	bool						IsConfirmed() const;
-	void					  SetLine(int iLine, const wstring& strLine);
-	void					  SetLine(int iLine, const string& strLine);
-	void						SetLine(int iLine, int iString);
-	void						SetHeading(const wstring& strLine);
-	void						SetHeading(const string& strLine);
-	void						SetHeading(int iString);
+  CGUIDialogYesNo(void);
+  virtual ~CGUIDialogYesNo(void);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction& action);
+  
+  static bool ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel=-1, int iYesLabel=-1);
+  static bool ShowAndGetInput(int heading, int line0, int line1, int line2, bool& bCanceled);
+  static bool ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel, bool& bCanceled);
+  static bool ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2);
+  static bool ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, bool &bCanceled);
 protected:
-	bool m_bConfirmed;
-
+  bool m_bCanceled;
 };

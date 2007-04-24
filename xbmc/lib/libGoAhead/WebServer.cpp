@@ -1,4 +1,3 @@
-#include "stdafx.h"
 
 /* WebServer.cpp: implementation of the CWebServer class.
  * A darivation of:  main.c -- Main program for the GoAhead WebServer
@@ -10,11 +9,9 @@
  * See the file "license.txt" for usage and redistribution license requirements
  */
 
-#include <io.h>
-#include <vector>
+#include "../../stdafx.h"
 #include "WebServer.h"
 #include "XBMCWeb.h"
-#include "..\..\utils\log.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
@@ -22,6 +19,8 @@
 
 #include "xbmcweb.h"
 #include "xbmcconfiguration.h"
+#include "xbmchttp.h"
+#include "includes.h"
 
 static CXbmcWeb* pXbmcWeb;
 static CXbmcConfiguration* pXbmcWebConfig;
@@ -31,6 +30,12 @@ static CXbmcConfiguration* pXbmcWebConfig;
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
+
+#pragma comment(linker, "/merge:WEB_TEXT=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_DATA=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_BSS=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_RD=LIBHTTP")
+#pragma comment(linker, "/section:LIBHTTP,RWE")
 
 // this is from a C library so use C style function calls
 #ifdef __cplusplus
@@ -57,10 +62,14 @@ CWebServer::CWebServer()
 {
   pXbmcWeb = new CXbmcWeb();
   pXbmcWebConfig = new CXbmcConfiguration();
+  if (!pXbmcHttpShim)
+    pXbmcHttpShim = new CXbmcHttpShim();
+  if (!pXbmcHttp)
+    pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
-  m_hEvent = CreateEvent(NULL, false, false, "webserverEvent");
+  m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
 
@@ -69,6 +78,16 @@ CWebServer::~CWebServer()
   CloseHandle(m_hEvent);
   if (pXbmcWeb) delete pXbmcWeb;
   if (pXbmcWebConfig) delete pXbmcWebConfig;
+  if (pXbmcHttpShim)
+  {
+    delete pXbmcHttpShim;
+    pXbmcHttpShim=NULL;
+  }
+  if (pXbmcHttp)
+  {
+    delete pXbmcHttp;
+    pXbmcHttp=NULL;
+  }
 }
 
 DWORD CWebServer::SuspendThread()
@@ -83,19 +102,28 @@ DWORD CWebServer::ResumeThread()
   return res;
 }
 
-bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web)
+bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, bool wait)
 {
   m_bFinished = false;
+  ResetEvent(m_hEvent);
 
   strcpy(m_szLocalAddress, szLocalAddress);
   strcpy(m_szRootWeb, web);
   m_port = port;
 
-  Create(false);
-  if (m_ThreadHandle == NULL) return false;
+  Create(false, THREAD_MINSTACKSIZE);
+  if (m_ThreadHandle == NULL) return false;  
 
-  // wait until the webserver is ready
-  WaitForSingleObject(m_hEvent, INFINITE);
+  CThread::SetName("Webserver");
+  if( wait )
+  {    
+    // wait until the webserver is ready
+    WaitForSingleObject(m_hEvent, INFINITE);
+  }
+  else
+  {
+    SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+  }
 
   return true;
 }
@@ -103,7 +131,7 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web)
 void CWebServer::Stop()
 {
   m_bFinished = true;
-
+  
   StopThread();
 }
 
@@ -196,6 +224,7 @@ int CWebServer::initWebs()
 	websAspDefine(T("aspTest"), aspTest);
 	websFormDefine(T("formTest"), formTest);
 	websFormDefine(T("xbmcForm"), XbmcWebsForm);
+	websFormDefine(T("xbmcHttp"), XbmcHttpCommand);
 
 	//Create the Form handlers for the User Management pages
 	#ifdef USER_MANAGEMENT_SUPPORT
@@ -204,6 +233,7 @@ int CWebServer::initWebs()
 
 	// asp commands for xbmc
 	websAspDefine(T("xbmcCommand"), XbmcWebsAspCommand);
+  websAspDefine(T("xbmcAPI"), XbmcAPIAspCommand);
 
 	// asp command for xbmc Configuration
 	websAspDefine(T("xbmcCfgBookmarkSize"), XbmcWebsAspConfigBookmarkSize);
@@ -218,6 +248,7 @@ int CWebServer::initWebs()
 	// Create a handler for the default home page
 	websUrlHandlerDefine(T("/"), NULL, 0, websHomePageHandler, 0); 
 
+  CLog::Log(LOGNOTICE, "Webserver: Started");
 	return 0;
 }
 
@@ -261,6 +292,9 @@ void CWebServer::Process()
 	 */
 	int sockReady, sockSelect;
 
+  /* set our thread priority */
+  SetPriority(THREAD_PRIORITY_NORMAL);
+
 	while (!m_bFinished) 
 	{
 		sockReady = socketReady(-1);
@@ -279,8 +313,12 @@ void CWebServer::Process()
  * this is done in group "sys_xbox".
  * Note that when setting the password this function will delete all database info!!
  */
-void CWebServer::SetPassword(char_t* strPassword)
+void CWebServer::SetPassword(const char* strPassword)
 {
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
+    return;
+
   // open the database and clean it
   int did = umOpen();
   dbZero(did);
@@ -292,13 +330,13 @@ void CWebServer::SetPassword(char_t* strPassword)
   if (strPassword && strlen(strPassword) > 0)
   {  
     // create group
-    umAddGroup(WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_DIGEST, false, false);
+    umAddGroup(WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
     
     // greate user
-    umAddUser("xbox", strPassword, WEBSERVER_UM_GROUP, false, false);
+    umAddUser("xbox", (char_t*)strPassword, WEBSERVER_UM_GROUP, false, false);
     
     // create access limit
-    umAddAccessLimit("/", AM_DIGEST, 0, WEBSERVER_UM_GROUP);
+    umAddAccessLimit("/", AM_BASIC, 0, WEBSERVER_UM_GROUP);
   }
 
   // save new information in database
@@ -308,6 +346,10 @@ void CWebServer::SetPassword(char_t* strPassword)
 
 char* CWebServer::GetPassword()
 {
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
+    return "";
+
   char* pPass = "";
   
   umOpen();
@@ -469,6 +511,18 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 #pragma bss_seg()
 #pragma const_seg()
 
+void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query) 
+{																
+	if (!pXbmcHttpShim) return ;
+	return pXbmcHttpShim->xbmcForm(wp, path, query);	
+}			
+
+int XbmcAPIAspCommand(int eid, webs_t wp, int argc, char_t **argv) 
+{																
+	if (!pXbmcHttpShim) return -1;
+	return pXbmcHttpShim->xbmcCommand(eid, wp, argc, argv);	
+}		
+
 int XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
 {
 	if (!pXbmcWeb) return -1;
@@ -484,14 +538,26 @@ void XbmcWebsForm(webs_t wp, char_t *path, char_t *query)
 /*
  * wrappers for xbmcConfig
  */
-int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigGetBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigAddBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigSaveBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigRemoveBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigSaveConfiguration( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigGetOption( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigGetBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigAddBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigSaveBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigRemoveBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigSaveConfiguration(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigGetOption(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigSetOption(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, (CStdString) "", argc, argv) : -1; }
+
+/*
+ * wrappers for HttpAPI xbmcConfig
+ */
+int XbmcWebsHttpAPIConfigBookmarkSize(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigGetBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigAddBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSaveBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigRemoveBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSaveConfiguration(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigGetOption(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSetOption(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(-1, NULL, response, argc, argv) : -1; }
 
   
 #if defined(__cplusplus)

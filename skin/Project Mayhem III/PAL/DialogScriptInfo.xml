@@ -1,0 +1,69 @@
+<window id="2004">
+	<defaultcontrol>5</defaultcontrol>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-apps.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>140</posx>
+			<posy>88</posy>
+			<width>64</width>
+			<height>510</height>
+			<texture>contentpanel_left.png</texture>
+			<animation effect="slide" time="200" start="0,0" end="-204,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" start="-204,0" end="0,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>204</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>510</height>
+			<texture>contentpanel.png</texture>
+			<animation effect="slide" time="200" start="0,0" end="-204,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" start="-204,0" end="0,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>262</label>
+			<font>special13</font>
+		</control>
+		<control type="textbox" id="5">
+			<description>textarea</description>
+			<posx>30</posx>
+			<posy>100</posy>
+			<width>660</width>
+			<height>445</height>
+			<font>font12</font>
+			<spinposx>600</spinposx>
+			<spinposy>445</spinposy>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+	</controls>
+</window>

@@ -1,324 +1,329 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "application.h"
 #include "util.h"
 #include "xbox/iosupport.h"
 #include "xbox/xbeheader.h"
-#include "crc32.h"
-#include "settings.h"
-#include "utils/log.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "xbox/undocumented.h"
-#include "url.h"
-#include "shortcut.h"
 #include "xbresource.h"
-#include "graphiccontext.h"
-#include "sectionloader.h"
-#include "lib/cximage/ximage.h"
-#include "filesystem/file.h"
+#endif
 #include "DetectDVDType.h"
-#include "autoptrhandle.h"
-#include "playlistfactory.h"
-#include "ThumbnailCache.h"
-#include "picture.h"
+#include "autorun.h"
 #include "filesystem/hddirectory.h"
+#include "FileSystem/StackDirectory.h"
+#include "FileSystem/VirtualPathDirectory.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/DirectoryCache.h"
+#include "ThumbnailCache.h"
+#include "FileSystem/ZipManager.h"
+#include "FileSystem/RarManager.h"
+#ifdef HAS_UPNP
+#include "FileSystem/UPnPDirectory.h"
+#endif
+#ifdef HAS_CREDITS
 #include "Credits.h"
-#include "utils/CharsetConverter.h"
+#endif
+#include "shortcut.h"
+#include "playlistplayer.h"
+#include "partymodemanager.h"
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
+#include "lib/libPython/XBPython.h"
+#include "utils/RegExp.h"
+#include "utils/AlarmClock.h"
+#include "ButtonTranslator.h"
+#include "Picture.h"
+#include "GUIDialogNumeric.h"
+#include "GUIDialogMusicScan.h"
+#include "GUIDialogFileBrowser.h"
+#include "utils/fstrcmp.h"
+#include "utils/GUIInfoManager.h"
+#include "utils/trainer.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "utils/MemoryUnitManager.h"
+#include "utils/FilterFlickerPatch.h"
+#include "utils/LED.h"
+#include "utils/fancontroller.h"
+#include "utils/systeminfo.h"
+#endif
+#include "MediaManager.h"
+#ifdef _XBOX
+#include <xbdm.h>
+#endif
+#include "xbox/network.h"
+#include "GUIPassword.h"
+#include "utils/KaiClient.h"
+#ifdef HAS_FTP_SERVER
+#include "lib/libfilezilla/xbfilezilla.h"
+#endif
+#include "lib/libscrobbler/scrobbler.h"
+#include "MusicInfoLoader.h"
+#include "XBVideoConfig.h"
+#ifndef HAS_XBOX_D3D
+#include "DirectXGraphics.h"
+#endif
 
-bool CUtil::m_bNetworkUp = false;
+using namespace DIRECTORY;
 
-struct SSortByLabel
-{
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
-	{
-    CGUIListItem& rpStart=*pStart;
-    CGUIListItem& rpEnd=*pEnd;
+#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
+static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
+static const __int64 SECS_TO_100NS = 10000000;
 
-		CStdString strLabel1=rpStart.GetLabel();
-		strLabel1.ToLower();
+HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
-		CStdString strLabel2=rpEnd.GetLabel();
-		strLabel2.ToLower();
-
-		if (m_bSortAscending)
-			return (strcmp(strLabel1.c_str(),strLabel2.c_str())<0);
-		else
-			return (strcmp(strLabel1.c_str(),strLabel2.c_str())>=0);
-	}
-
-	bool m_bSortAscending;
-};
-
+CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo;
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
-char g_szTitleIP[32];
 static D3DGAMMARAMP oldramp, flashramp;
+
+#ifdef HAS_XBOX_HARDWARE
+extern "C"
+{
+  extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+};
+#endif
 
 CUtil::CUtil(void)
 {
-  memset(g_szTitleIP,0,sizeof(g_szTitleIP));
 }
 
 CUtil::~CUtil(void)
-{
-}
+{}
 
-char* CUtil::GetExtension(const CStdString& strFileName)
-{
-  char* extension = strrchr(strFileName.c_str(),'.');
-  return extension ;
-}
 
-bool CUtil::IsXBE(const CStdString& strFileName)
+/* returns filename extension including period of filename */
+const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {
-   char* pExtension=GetExtension(strFileName);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".xbe")==0) return true;
-   return false;
-}
-
-bool CUtil::IsPythonScript(const CStdString& strFileName)
-{
-   char* pExtension=GetExtension(strFileName);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".py")==0) return true;
-   return false;
-}
-
-bool CUtil::IsDefaultXBE(const CStdString& strFileName)
-{
-  char* pFileName=GetFileName(strFileName);
-  if (!pFileName) return false;
-  if (CUtil::cmpnocase(pFileName, "default.xbe")==0) return true;
-  return false;
-}
-
-bool CUtil::IsShortCut(const CStdString& strFileName)
-{
-   char* pExtension=GetExtension(strFileName);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".cut")==0) return true;
-   return false;
-}
-
-int CUtil::cmpnocase(const char* str1,const char* str2)
-{
-  int iLen;
-  if ( strlen(str1) != strlen(str2) ) return 1;
-
-  iLen=strlen(str1);
-  for (int i=0; i < iLen;i++ )
+  int period = strFileName.find_last_of('.');
+  if(period >= 0)
   {
-    if (tolower((unsigned char)str1[i]) != tolower((unsigned char)str2[i]) ) return 1;
+    if( strFileName.find_first_of('/', period+1) != -1 ) return "";
+    if( strFileName.find_first_of('\\', period+1) != -1 ) return "";
+
+    /* url options could be at the end of a url */
+    const int options = strFileName.find_first_of('?', period+1);
+
+    if(options >= 0)
+      return strFileName.substr(period, options-period);
+    else
+      return strFileName.substr(period);
   }
-  return 0;
+  else
+    return "";
 }
 
-
-char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
+void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
 {
+  strExtension = GetExtension(strFile);
+}
 
-  char* extension = strrchr(strFileNameAndPath.c_str(),'\\');
-  if (!extension)
+/* returns a filename given an url */
+/* handles both / and \, and options in urls*/
+const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
+{
+  /* find any slashes */
+  const int slash1 = strFileNameAndPath.find_last_of('/');
+  const int slash2 = strFileNameAndPath.find_last_of('\\');
+
+  /* select the last one */
+  int slash;
+  if(slash2>slash1)
+    slash = slash2;
+  else
+    slash = slash1;
+
+  /* check if there is any options in the url */
+  const int options = strFileNameAndPath.find_first_of('?', slash+1);
+  if(options < 0)
+    return strFileNameAndPath.substr(slash+1);
+  else
+    return strFileNameAndPath.substr(slash+1, options-(slash+1));
+}
+
+CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
+{
+  // use above to get the filename
+  CStdString path(strFileNameAndPath);
+  RemoveSlashAtEnd(path);
+  CStdString strFilename = GetFileName(path);
+
+  // if upnp:// we can ask for the friendlyname
+#ifdef HAS_UPNP
+  if (strFileNameAndPath.Left(7).Compare("upnp://") == 0) {
+      strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
+  }
+#endif
+  CURL url(strFileNameAndPath);
+  if (strFileNameAndPath.Compare("lastfm://") == 0)
   {
-    extension = strrchr(strFileNameAndPath.c_str(),'/');
-    if (!extension) return (char*)strFileNameAndPath.c_str();
+    strFilename = g_localizeStrings.Get(15200);
+  }
+  else if (strFileNameAndPath.Compare("smb://") == 0)
+  {
+    strFilename = g_localizeStrings.Get(20171); // Windows SMB Network (SMB)
   }
 
-  extension++;
-  return extension;
+  /*else if (strFileNameAndPath.Compare("soundtrack://") == 0)
+  {
+    strFilename = "MS Soundtracks";  // Would need localizing
+  }*/
 
+  else if (strFileNameAndPath.Compare("shout://") == 0)
+  {
+    strFilename = g_localizeStrings.Get(260); // Shoutcast
+  }
+  else if (strFileNameAndPath.Compare("ftp://") == 0)
+  {
+    strFilename = g_localizeStrings.Get(20174); // FTP Server
+  }
+  else if (strFileNameAndPath.Compare("xbms://") == 0)
+  {
+    strFilename = "XBMSP Network";
+  }
+  else if (strFileNameAndPath.Compare("daap://") == 0)
+  {
+    strFilename = g_localizeStrings.Get(20174); // iTunes music share (DAAP)
+  }
+
+  // now remove the extension if needed
+  if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  {
+    RemoveExtension(strFilename);
+    return strFilename;
+  }
+  return strFilename;
 }
 
-CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
+bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber)
 {
-	// use above to get the filename
-	CStdString strFilename = GetFileName(strFileNameAndPath);
-	// now remove the extension if needed
-	if (IsSmb(strFileNameAndPath)) {
-		CStdString strTempFilename;
-		g_charsetConverter.utf8ToStringCharset(strFilename,strTempFilename);
-		strFilename = strTempFilename;
-	}
-	if (g_stSettings.m_bHideExtensions)
-	{
-		RemoveExtension(strFilename);
-		return strFilename;
-	}
-	return strFilename;
-}
+  const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
-bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumePrefix, int& volumeNumber)
-{
-  bool result = false;
   CStdString strFileNameTemp = strFileName;
+  CStdString strFileNameLower = strFileName;
+  strFileNameLower.MakeLower();
 
-  // remove any extension
-  int pos = strFileNameTemp.ReverseFind('.');
-  if (pos > 0)
-    strFileNameTemp = strFileNameTemp.Left(pos);
+  CStdString strVolume;
+  CStdString strTestString;
+  CRegExp reg;
 
-  const CStdString & separatorsString = g_settings.m_szMyVideoStackSeparatorsString;
-  const CStdStringArray & tokens = g_settings.m_szMyVideoStackTokensArray;
+  //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 1 : " + strFileName);
 
-  CStdString strFileNameTempLower = strFileNameTemp;
-  strFileNameTempLower.MakeLower();
-
-  for (int i = 0; i < (int)tokens.size(); i++)
+  for (unsigned int i = 0; i < regexps.size(); i++)
   {
-    const CStdString & token = tokens[i];
-    pos = strFileNameTempLower.ReverseFind(token);
-    //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : 1");
-    if ((pos > 0) && (pos < (int)strFileNameTemp.size()))
-    {
-      //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : 2");
-      // token found at end
-      if (separatorsString.Find(strFileNameTemp.GetAt(pos - 1)) > -1)
+    CStdString strRegExp = regexps[i];
+    if (!reg.RegComp(strRegExp.c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "Invalid RegExp: %s.", regexps[i].c_str());
+      continue;
+    }
+    int iFoundToken = reg.RegFind(strFileNameLower.c_str());
+    if (iFoundToken >= 0)
+    { // found this token
+      int iRegLength = reg.GetFindLen();
+      int iCount = reg.GetSubCount();
+      //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 2 : " + strFileName + " : " + strRegExp + " : iRegLength=%i : iCount=%i", iRegLength, iCount);
+      if( 1 == iCount )
       {
-        // appropriate separator found between file title and token
+        char *pReplace = reg.GetReplaceString("\\1");
 
-        CStdString volumeNumberString = strFileNameTemp.Mid(pos + token.size()).Trim();
-        //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 3");
-        volumeNumber = atoi(volumeNumberString.c_str());
-        // the parsed result must be > 0
-        if (volumeNumber > 0)
+        if (pReplace)
         {
-          //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 4");
-          bool volumeNumberValid = true;
-          // make sure only numbers follow the token
-          for (int j = 1; j < (int)volumeNumberString.size(); j++)
-          {
-            char c = volumeNumberString.GetAt(j);
-            if ((c < '0') || (c > '9'))
-            {
-              volumeNumberValid = false;
-              break;
-            }
-          }
+          strVolumeNumber = pReplace;
+          free(pReplace);
 
-          if (volumeNumberValid)
-          {
-            //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 5");
+          // remove the extension (if any).  We do this on the base filename, as the regexp
+          // match may include some of the extension (eg the "." in particular).
 
-            result = true;
-            strFileTitle = strFileNameTemp.Left(pos-1);
-            // trim all additional separator characters
-            strFileTitle.TrimRight(separatorsString.c_str());
-            strVolumePrefix = token;
-            break;
-          }
+          // the extension will then be added back on at the end - there is no reason
+          // to clean it off here. It will be cleaned off during the display routine, if
+          // the settings to hide extensions are turned on.
+          CStdString strFileNoExt = strFileNameTemp;
+          RemoveExtension(strFileNoExt);
+          CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
+          CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
+          strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
+          //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 3 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle + " : " + strFileExt + " : " + strFileRight + " : " + strFileTitle);
+          return true;
         }
+
       }
+      else if( iCount > 1 )
+      {
+        //Second Sub value contains the stacking
+        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLenght(2));
+
+        strFileTitle = strFileName.Left(iFoundToken);
+
+        //First Sub value contains prefix
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSubLenght(1));
+
+        //Third Sub value contains suffix
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLenght(3));
+        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
+        //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 4 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle);
+        return true;
+      }
+
     }
   }
-
-  return result;
-}
-
-void CUtil::RemoveExtension(CFileItem *pItem)
-{
-	if (pItem->m_bIsFolder)
-		return;
-	CStdString strLabel = pItem->GetLabel();
-	RemoveExtension(strLabel);
-	pItem->SetLabel(strLabel);
+  //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 5 : " + strFileName);
+  return false;
 }
 
 void CUtil::RemoveExtension(CStdString& strFileName)
 {
-	int iPos = strFileName.ReverseFind(".");
-	//	Extension found
-	if (iPos>0)
-	{
-		CStdString strExtension;
-		CUtil::GetExtension(strFileName,strExtension);
-		CUtil::Lower(strExtension);
+  int iPos = strFileName.ReverseFind(".");
+  // Extension found
+  if (iPos > 0)
+  {
+    CStdString strExtension;
+    CUtil::GetExtension(strFileName, strExtension);
+    strExtension.ToLower();
 
-		CStdString strFileMask;
-		strFileMask=g_stSettings.m_szMyMusicExtensions;
-		strFileMask+=g_stSettings.m_szMyPicturesExtensions;
-		strFileMask+=g_stSettings.m_szMyVideoExtensions;
+    CStdString strFileMask;
+    strFileMask = g_stSettings.m_pictureExtensions;
+    strFileMask += g_stSettings.m_musicExtensions;
+    strFileMask += g_stSettings.m_videoExtensions;
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg";
 
-		//	Only remove if its a valid media extension
-		if (strFileMask.Find(strExtension.c_str())>=0)
-			strFileName=strFileName.Left(iPos);
-	}
-}
-
-// Remove the extensions from the filenames
-void CUtil::RemoveExtensions(VECFILEITEMS &items)
-{
-	for (int i=0; i < (int)items.size(); ++i)
-		RemoveExtension(items[i]);
-}
-
-void CUtil::CleanFileName(CFileItem *pItem)
-{
-	if (pItem->m_bIsFolder)
-		return;
-	CStdString strLabel = pItem->GetLabel();
-	CleanFileName(strLabel);
-	pItem->SetLabel(strLabel);
+    // Only remove if its a valid media extension
+    if (strFileMask.Find(strExtension.c_str()) >= 0)
+      strFileName = strFileName.Left(iPos);
+  }
 }
 
 void CUtil::CleanFileName(CStdString& strFileName)
 {
-  bool result = false;
-
-  // assume extension has already been removed
-
-  // remove volume indicator
-
+  if (g_guiSettings.GetBool("filelists.hideextensions"))
   {
-    const CStdString & separatorsString = g_settings.m_szMyVideoStackSeparatorsString;
-    const CStdStringArray & tokens = g_settings.m_szMyVideoStackTokensArray;
-
-    CStdString strFileNameTempLower = strFileName;
-    strFileNameTempLower.MakeLower();
-
-    for (int i = 0; i < (int)tokens.size(); i++)
-    {
-      const CStdString & token = tokens[i];
-      int pos = strFileNameTempLower.ReverseFind(token);
-      if ((pos > 0) && (pos < (int)strFileName.size()))
-      {
-        // token found at end
-        if (separatorsString.Find(strFileName.GetAt(pos - 1)) > -1)
-        {
-          // appropriate separator found between file title and token
-
-          CStdString volumeNumberString = strFileName.Mid(pos + token.size()).Trim();
-          int volumeNumber = atoi(volumeNumberString.c_str());
-          // the parsed result must be > 0
-          if (volumeNumber > 0)
-          {
-            bool volumeNumberValid = true;
-            // make sure only numbers follow the token
-            for (int j = 1; j < (int)volumeNumberString.size(); j++)
-            {
-              char c = volumeNumberString.GetAt(j);
-              if ((c < '0') || (c > '9'))
-              {
-                volumeNumberValid = false;
-                break;
-              }
-            }
-
-            if (volumeNumberValid)
-            {
-              strFileName = strFileName.Left(pos-1);
-              // trim all additional separator characters
-              strFileName.TrimRight(separatorsString.c_str());
-              break;
-            }
-          }
-        }
-      }
-    }
+    RemoveExtension(strFileName);
   }
 
+  //CLog::Log(LOGNOTICE, "CleanFileName : 3 : " + strFileName);
 
   // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
   // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
@@ -327,19 +332,17 @@ void CUtil::CleanFileName(CStdString& strFileName)
   //   - first token must follow a '-' token, potentially in addition to other separator tokens
   //   - thus, something like "video_XviD_AC3" will not be parsed, but something like "video_-_XviD_AC3" will be parsed
 
-  // special logic - if a known token is found, try to group it with any 
-  // other tokens up to the dash separating the token group from the title. 
-  // thus, something like "The Godfather-DivX_503_2p_VBR-HQ_480x640_16x9" should 
+  // special logic - if a known token is found, try to group it with any
+  // other tokens up to the dash separating the token group from the title.
+  // thus, something like "The Godfather-DivX_503_2p_VBR-HQ_480x640_16x9" should
   // be fully cleaned up to "The Godfather"
-  // the problem with this logic is that it may clean out things we still 
+  // the problem with this logic is that it may clean out things we still
   // want to see, such as language codes.
 
   {
-    //const CStdString separatorsString = " -_.[]()+";
+    //m_szMyVideoCleanSeparatorsString = " -_.[]()+";
 
-    //const CStdString tokensString = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
-    //CStdStringArray tokens;
-    //StringUtils::SplitString(tokensString, "|", tokens);
+    //m_szMyVideoCleanTokensArray = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
 
     const CStdString & separatorsString = g_settings.m_szMyVideoCleanSeparatorsString;
     const CStdStringArray & tokens = g_settings.m_szMyVideoCleanTokensArray;
@@ -358,7 +361,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
       {
         CStdString token = tokens[i];
         int pos = strFileNameTempLower.Find(token, maxPos);
-        if (pos >= maxPos && pos>0)
+        if (pos >= maxPos && pos > 0)
         {
           tokenFound = tokenFound | true;
           char separator = strFileName.GetAt(pos - 1);
@@ -366,10 +369,10 @@ void CUtil::CleanFileName(CStdString& strFileName)
           itoa(pos, buffer, 10);
           char buffer2[10];
           itoa(maxPos, buffer2, 10);
-          //CLog::Log(LOGERROR, "CleanFileName : 1 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
+          //CLog::Log(LOGNOTICE, "CleanFileName : 4 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
           if (separatorsString.Find(separator) > -1)
           {
-            // token has some separator before it - now look for the 
+            // token has some separator before it - now look for the
             // specific '-' separator, and trim any additional separators.
 
             int pos2 = pos;
@@ -385,9 +388,9 @@ void CUtil::CleanFileName(CStdString& strFileName)
             if (tokenFoundWithSeparator)
               pos = pos2;
             //if (tokenFoundWithSeparator)
-            //  CLog::Log(LOGERROR, "CleanFileName : 2 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
+              //CLog::Log(LOGNOTICE, "CleanFileName : 5 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
             //else
-            //  CLog::Log(LOGERROR, "CleanFileName : 3 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
+              //CLog::Log(LOGNOTICE, "CleanFileName : 6 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
           }
 
           if (tokenFoundWithSeparator)
@@ -408,30 +411,42 @@ void CUtil::CleanFileName(CStdString& strFileName)
 
       maxPos++;
     }
-    
-  }
-  
 
-  // TODO: would be nice if we could remove years (i.e. "(1999)") from the 
+  }
+
+
+  // TODO: would be nice if we could remove years (i.e. "(1999)") from the
   // title, and put the year in a separate column instead
 
-  // TODO: would also be nice if we could do something with 
-  // languages (i.e. "[ITA]") - need to consider files with 
+  // TODO: would also be nice if we could do something with
+  // languages (i.e. "[ITA]") - need to consider files with
   // multiple audio tracks
 
 
   // final cleanup - special characters used instead of spaces:
   // all '_' tokens should be replaced by spaces
-  // if the file contains no spaces, all '.' tokens should be replaced by 
+  // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
+  // if the extension is shown, the '.' before the extension should be
+  // left as is.
 
   strFileName = strFileName.Trim();
+  //CLog::Log(LOGNOTICE, "CleanFileName : 7 : " + strFileName);
+
+  int extPos = (int)strFileName.size();
+  if (!g_guiSettings.GetBool("filelists.hideextensions"))
+  {
+    CStdString strFileNameTemp = strFileName;
+    RemoveExtension(strFileNameTemp);
+    //CLog::Log(LOGNOTICE, "CleanFileName : 8 : " + strFileName + " : " + strFileNameTemp);
+    extPos = strFileNameTemp.size();
+  }
 
   {
     bool alreadyContainsSpace = (strFileName.Find(' ') >= 0);
 
-    for (int i = 0; i < (int)strFileName.size(); i++)
+    for (int i = 0; i < extPos; i++)
     {
       char c = strFileName.GetAt(i);
       if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
@@ -442,34 +457,37 @@ void CUtil::CleanFileName(CStdString& strFileName)
   }
 
   strFileName = strFileName.Trim();
-}
-
-void CUtil::CleanFileNames(VECFILEITEMS &items)
-{
-	for (int i=0; i < (int)items.size(); ++i)
-		CleanFileName(items[i]);
+  //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
 }
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
-  strParent="";
+  strParent = "";
 
   CURL url(strPath);
-  CStdString strFile=url.GetFileName();
-  if (strFile.size()==0)
+  CStdString strFile = url.GetFileName();
+  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
   {
-    if (url.GetProtocol() == "smb" && (url.GetHostName().size() > 0))
+    strFile = url.GetHostName();
+    return GetParentPath(strFile, strParent);
+  }
+  else if (url.GetProtocol() == "stack")
+  {
+    // TODO: get the first parent path common to all stack items
+    CStackDirectory dir;
+    return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
+  }
+  else if (url.GetProtocol() == "multipath")
+  {
+    // get the parent path of the first item
+    return GetParentPath(CMultiPathDirectory::GetFirstPath(strPath), strParent);
+  }
+  else if (strFile.size() == 0)
+  {
+    if (url.GetHostName().size() > 0)
     {
-      // we have an smb share with only server or workgroup name
-      // set hostname to "" and return true.
-      url.SetHostName("");
-      url.GetURL(strParent);
-      return true;
-    }
-    else if (url.GetProtocol() == "xbms" && (url.GetHostName().size() > 0))
-    {
-      // we have an xbms share with only server name
-      // set hostname to "" and return true.
+      // we have an share with only server or workgroup name
+      // set hostname to "" and return true to get back to root
       url.SetHostName("");
       url.GetURL(strParent);
       return true;
@@ -479,13 +497,13 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   if (HasSlashAtEnd(strFile) )
   {
-    strFile=strFile.Left(strFile.size()-1);
+    strFile = strFile.Left(strFile.size() - 1);
   }
 
-  int iPos=strFile.ReverseFind('/');
+  int iPos = strFile.ReverseFind('/');
   if (iPos < 0)
   {
-    iPos=strFile.ReverseFind('\\');
+    iPos = strFile.ReverseFind('\\');
   }
   if (iPos < 0)
   {
@@ -494,856 +512,1185 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     return true;
   }
 
-  strFile=strFile.Left(iPos);
+  strFile = strFile.Left(iPos);
+
+  if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
+    AddSlashAtEnd(strFile);
+
+  // needed - hasslashatend will arse in e.g. root smb shares
+  if (url.GetProtocol().Equals(""))
+  {
+    if (!CUtil::HasSlashAtEnd(strFile))
+      strFile += '\\';
+  }
+  else
+  {
+    if (!CUtil::HasSlashAtEnd(strFile))
+      strFile += '/';
+  }
+  
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
 }
 
-//Make sure you have a full path in the filename, otherwise adds the base path before.
+
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
+  //Make sure you have a full path in the filename, otherwise adds the base path before.
   CURL plItemUrl(strFilename);
   CURL plBaseUrl(strBasePath);
   int iDotDotLoc, iBeginCut, iEndCut;
 
-  if(plBaseUrl.GetProtocol().length()==0) //Base in local directory
+  if (plBaseUrl.IsLocal()) //Base in local directory
   {
-    if(plItemUrl.GetProtocol().length()==0 ) //Filename is local or not qualified
+    if (plItemUrl.IsLocal() ) //Filename is local or not qualified
     {
       if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
       {
-        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\')
+        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath))
         {
           strFilename = strBasePath + strFilename;
-          strFilename.Replace('/','\\');
+          strFilename.Replace('/', '\\');
         }
         else
         {
           strFilename = strBasePath + '\\' + strFilename;
-          strFilename.Replace('/','\\');
+          strFilename.Replace('/', '\\');
         }
       }
     }
-    strFilename.Replace("\\.\\","\\");
-    while((iDotDotLoc = strFilename.Find("\\..\\")) > 0)
+    strFilename.Replace("\\.\\", "\\");
+    while ((iDotDotLoc = strFilename.Find("\\..\\")) > 0)
     {
-        iEndCut = iDotDotLoc + 4;
-        iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\')+1;
-        strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
+      iEndCut = iDotDotLoc + 4;
+      iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
+      strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
+
+    // This routine is only called from the playlist loaders,
+    // where the filepath is in UTF-8 anyway, so we don't need
+    // to do checking for FatX characters.
+    //if (g_guiSettings.GetBool("servers.ftpautofatx") && (CUtil::IsHD(strFilename)))
+    //  CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
   {
-    if(plItemUrl.GetProtocol().length()==0 ) //Filename is local
+    if (plItemUrl.IsLocal()) //Filename is local
     {
-      if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' ) //Begins with a slash.. not good.. but we try to make the best of it..
+      if (strFilename[1] == ':') // already fully qualified
+        return;
+      if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
+
       {
         strFilename = strBasePath + strFilename;
-        strFilename.Replace('\\','/');
+        strFilename.Replace('\\', '/');
       }
       else
       {
         strFilename = strBasePath + '/' + strFilename;
-        strFilename.Replace('\\','/');
+        strFilename.Replace('\\', '/');
       }
     }
-    strFilename.Replace("/./","/");
-    while((iDotDotLoc = strFilename.Find("/../")) > 0)
+    strFilename.Replace("/./", "/");
+    while ((iDotDotLoc = strFilename.Find("/../")) > 0)
     {
-        iEndCut = iDotDotLoc + 4;
-        iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('/')+1;
-        strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
+      iEndCut = iDotDotLoc + 4;
+      iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('/') + 1;
+      strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
   }
 }
 
-/// \brief Runs an executable file
-/// \param szPath1 Path of executeable to run
-/// \param szParameters Any parameters to pass to the executeable being run
-void CUtil::RunXBE(const char* szPath1, char* szParameters)
+bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 {
-	char szDevicePath[1024];
-	char szPath[1024];
-	char szXbePath[1024];
-	strcpy(szPath,szPath1);
-	char* szBackslash = strrchr(szPath,'\\');
-	*szBackslash=0x00;
-	char* szXbe = &szBackslash[1];
+#ifdef HAS_XBOX_HARDWARE
+  BYTE  *Kernel=(BYTE *)0x80010000;
+  DWORD i, j = 0, k;
+  DWORD *CountryPtr;
+  BYTE  CountryValues[4]={0, 1, 2, 4};
+  BYTE  VideoTyValues[5]={0, 1, 2, 3, 3};
+  BYTE  VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
 
-	char* szColon = strrchr(szPath,':');
-	*szColon=0x00;
-	char* szDrive = szPath;
-	char* szDirectory = &szColon[1];
+  // Skip if no change is necessary...
+  // That is to avoid a situation in which our Patch *and* the EvoX patch are installed
+  // Otherwise the Infinite-Reboot-Patch does not work anymore!
+  if(Video == XGetVideoStandard())
+    return true;
 
-	CIoSupport helper;
-	helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
-
-	strcat(szDevicePath,szDirectory);
-	wsprintf(szXbePath,"d:\\%s",szXbe);
-
-	g_application.Stop();
-
-	CUtil::LaunchXbe(szDevicePath,szXbePath,szParameters);
-}
-
-//*********************************************************************************************
-void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
-{
-  CLog::Log(LOGINFO, "launch xbe:%s %s", szPath,szXbe);
-  CLog::Log(LOGINFO, " mount %s as D:", szPath);
-
-  CIoSupport helper;
-  helper.Unmount("D:");
-  helper.Mount("D:",szPath);
-
-  // detach if connected to kai
-  CKaiClient::GetInstance()->RemoveObserver();
-
-  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
-
-  if (szParameters==NULL)
+  switch (Country)
   {
-    XLaunchNewImage(szXbe, NULL );
+    case COUNTRY_EUR:
+      if (!Video)
+          Video = VIDEO_PAL50;
+        break;
+      case COUNTRY_USA:
+        Video = VIDEO_NTSCM;
+      Country = COUNTRY_USA;
+        break;
+      case COUNTRY_JAP:
+        Video = VIDEO_NTSCJ;
+      Country = COUNTRY_JAP;
+        break;
+      default:
+      Country = COUNTRY_EUR;
+        Video = VIDEO_PAL50;
+  };
+
+  // Search for the original code in the Kernel.
+  // Searching from 0x80011000 to 0x80024000 in order that this will work on as many Kernels
+  // as possible.
+
+  for(i=0x1000; i<0x14000; i++)
+  {
+    if(Kernel[i]!=OriginalData[0])
+	    continue;
+
+    for(j=0; j<57; j++)
+    {
+	    if(Kernel[i+j]!=OriginalData[j])
+		    break;
+    }
+    if(j==57)
+	    break;
+  }
+
+  if(j==57)
+  {
+    // Ok, found the code to patch. Get pointer to original Country setting.
+    // This may not be strictly neccessary, but lets do it anyway for completeness.
+
+    j=(Kernel[i+57])+(Kernel[i+58]<<8)+(Kernel[i+59]<<16)+(Kernel[i+60]<<24);
+    CountryPtr=(DWORD *)j;
   }
   else
   {
-    LAUNCH_DATA LaunchData;
-    strcpy((char*)LaunchData.Data,szParameters);
+    // Did not find code in the Kernel. Check if my patch is already there.
 
-    XLaunchNewImage(szXbe, &LaunchData );
-  }
-}
-
-bool CUtil::FileExists(const CStdString& strFileName)
-{
-  if (strFileName.size()==0) return false;
-  CFile file;
-  if (!file.Exists(strFileName))
-    return false;
-
-  return true;
-}
-
-void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
-{
-  strThumb="";
-  CStdString strFile;
-  CUtil::ReplaceExtension(strFileName,".tbn",strFile);
-	if (CUtil::FileExists(strFile))
-	{
-    strThumb=strFile;
-    return;
-  }
-
-  if (CUtil::IsXBE(strFileName))
-  {
-    if (CUtil::GetXBEIcon(strFileName,strThumb) ) return ;
-    strThumb="defaultProgamIcon.png";
-    return;
-  }
-
-  if (CUtil::IsShortCut(strFileName) )
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( strFileName ) )
+    for(i=0x1000; i<0x14000; i++)
     {
-      CStdString strFile=shortcut.m_strPath;
+      if(Kernel[i]!=PatchData[0])
+        continue;
 
-      GetThumbnail(strFile,strThumb);
-      return;
+      for(j=0; j<25; j++)
+      {
+        if(Kernel[i+j]!=PatchData[j])
+          break;
+      }
+      if(j==25)
+        break;
+    }
+
+    if(j==25)
+    {
+      // Ok, found my patch. Get pointer to original Country setting.
+      // This may not be strictly neccessary, but lets do it anyway for completeness.
+
+      j=(Kernel[i+66])+(Kernel[i+67]<<8)+(Kernel[i+68]<<16)+(Kernel[i+69]<<24);
+      CountryPtr=(DWORD *)j;
+    }
+    else
+    {
+      // Did not find my patch - so I can't work with this BIOS. Exit.
+      return( false );
     }
   }
 
-  char szThumbNail[1024];
-  Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-  sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-  strThumb= szThumbNail;
+  // Patch in new code.
+
+  j=MmQueryAddressProtect(&Kernel[i]);
+  MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
+
+  memcpy(&Kernel[i], &PatchData[0], 70);
+
+  // Patch Success. Fix up values.
+
+  *CountryPtr=(DWORD)CountryValues[Country];
+  Kernel[i+0x1f]=CountryValues[Country];
+  Kernel[i+0x19]=VideoTyValues[Video];
+  Kernel[i+0x1a]=VideoFrValues[Video];
+
+  k=(DWORD)CountryPtr;
+  Kernel[i+66]=(BYTE)(k&0xff);
+  Kernel[i+67]=(BYTE)((k>>8)&0xff);
+  Kernel[i+68]=(BYTE)((k>>16)&0xff);
+  Kernel[i+69]=(BYTE)((k>>24)&0xff);
+
+  MmSetAddressProtect(&Kernel[i], 70, j);
+
+#endif
+  // All Done!
+  return( true );
 }
 
-void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
+bool CUtil::InstallTrainer(CTrainer& trainer)
 {
-  char szTemp[128];
-  // file < 1 kbyte?
-  if (dwFileSize < 1024)
-  {
-    //  substract the integer part of the float value
-    float fRemainder=(((float)dwFileSize)/1024.0f)-floor(((float)dwFileSize)/1024.0f);
-    float fToAdd=0.0f;
-    if (fRemainder < 0.01f)
-      fToAdd=0.1f;
-    sprintf(szTemp,"%2.1f KB", (((float)dwFileSize)/1024.0f)+fToAdd);
-    strFileSize=szTemp;
-    return;
-  }
-  __int64 iOneMeg=1024*1024;
+  bool Found = false;
+#ifdef HAS_XBOX_HARDWARE
+  unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
+  unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
+  void *ourmemaddr = NULL; // pointer used to allocated trainer mem
+  unsigned int i = 0;
+  DWORD memsize;
 
-  // file < 1 megabyte?
-  if (dwFileSize < iOneMeg)
+  CLog::Log(LOGDEBUG,"installing trainer %s",trainer.GetPath().c_str());
+
+  if (trainer.IsXBTF()) // size of our allocation buffer for trainer
+    memsize = XBTF_HEAP_SIZE;
+  else
+    memsize = ETM_HEAP_SIZE;
+
+  unsigned char xbe_entry_point[] = {0xff,0x15,0x28,0x01,0x01,0x00}; // xbe entry point bytes in kernel
+  unsigned char evox_tsr_hook[] = {0xff,0x15,0x10,0x00,0x00,0x80}; // check for evox's evil tsr hook
+
+  for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
   {
-    sprintf(szTemp,"%02.1f KB", ((float)dwFileSize)/1024.0f);
-    strFileSize=szTemp;
-    return;
+    if (memcmp(&xboxkrnl[i], xbe_entry_point, sizeof(xbe_entry_point)) == 0 ||
+      memcmp(&xboxkrnl[i], evox_tsr_hook, sizeof(evox_tsr_hook)) == 0)
+    {
+      Found = true;
+      break;
+    }
   }
 
-  // file < 1 GByte?
-  __int64 iOneGigabyte=iOneMeg;
-  iOneGigabyte *= (__int64)1000;
-  if (dwFileSize < iOneGigabyte)
+  if(Found)
   {
-    sprintf(szTemp,"%02.1f MB", ((float)dwFileSize)/((float)iOneMeg));
-    strFileSize=szTemp;
-    return;
+    unsigned char *patchlocation = xboxkrnl;
+
+    patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
+    _asm
+    {
+      pushad
+
+      mov eax, cr0
+      push eax
+      and eax, 0FFFEFFFFh
+      mov cr0, eax // disable memory write prot
+
+      mov	edi, patchlocation // address of call to xbe entry point in kernel
+      mov	dword ptr [edi], KERNEL_STORE_ADDRESS // patch with address of where we store loaderdata+trainer buffer address
+
+      pop eax
+      mov cr0, eax // restore memory write prot
+
+      popad
+    }
   }
-  //file > 1 GByte
-  int iGigs=0;
-  while (dwFileSize >= iOneGigabyte)
+  else
   {
-    dwFileSize -=iOneGigabyte;
-    iGigs++;
+    __asm // recycle check
+    {
+      pushad
+
+      mov edx, KERNEL_STORE_ADDRESS
+      mov ecx, DWORD ptr [edx]
+      cmp ecx, 0 // just in case :)
+      jz cleanup
+
+      cmp word ptr [ecx], 0BA60h // address point to valid loaderdata?
+      jnz cleanup
+
+      mov Found, 1 // yes! flag it found
+
+      push ecx
+      call MmFreeContiguousMemory // release old memory
+cleanup:
+      popad
+    }
   }
-  float fMegs=((float)dwFileSize)/((float)iOneMeg);
-  fMegs /=1000.0f;
-  fMegs+=iGigs;
-  sprintf(szTemp,"%02.1f GB", fMegs);
-  strFileSize=szTemp;
-  return;
+
+  // allocate our memory space BELOW the kernel (so we can access buffer from game's scope)
+  // if you allocate above kernel our buffer is out of scope and only debug bio will allow
+  // game to access it
+  ourmemaddr = MmAllocateContiguousMemoryEx(memsize, 0, -1, KERNEL_ALLOCATE_ADDRESS, PAGE_NOCACHE | PAGE_READWRITE);
+  if ((DWORD)ourmemaddr > 0)
+  {
+    MmPersistContiguousMemory(ourmemaddr, memsize, true); // so we survive soft boots
+    memcpy(hackptr, &ourmemaddr, 4); // store location of ourmemaddr in kernel
+
+    memset(ourmemaddr, 0xFF, memsize); // init trainer buffer
+    memcpy(ourmemaddr, trainerloaderdata, sizeof(trainerloaderdata)); // copy loader data (actual kernel hack)
+
+    // patch loaderdata with trainer base address
+    _asm
+    {
+      pushad
+
+      mov eax, ourmemaddr
+      mov ebx, eax
+      add ebx, SIZEOFLOADERDATA
+      mov dword ptr [eax+2], ebx
+
+      popad
+    }
+
+		// adjust ourmemaddr pointer past loaderdata
+		ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(trainerloaderdata));
+
+		// copy our trainer data into allocated mem
+		memcpy(ourmemaddr, trainer.data(), trainer.Size());
+
+    if (trainer.IsXBTF())
+    {
+      DWORD dwSection = 0;
+
+      // get address of XBTF_Section
+      _asm
+      {
+        pushad
+
+        mov eax, ourmemaddr
+
+        cmp dword ptr [eax+0x1A], 0 // real xbtf or just a converted etm? - XBTF_ENTRYPOINT
+        je converted_etm
+
+        push eax
+        mov ebx, 0x16
+        add eax, ebx
+        mov ecx, DWORD PTR [eax]
+        pop	eax
+        add eax, ecx
+        mov dwSection, eax // get address of xbtf_section
+
+      converted_etm:
+        popad
+      }
+
+      if (dwSection == 0)
+        return Found; // its a converted etm so we do not have toys section :)
+
+      // adjust past trainer
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + trainer.Size());
+
+      // inject SMBus code
+      memcpy(ourmemaddr, sm_bus, sizeof(sm_bus));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        mov ebx, ourmemaddr
+        cmp dword ptr [eax], 0
+        jne nosmbus
+        mov DWORD PTR [eax], ebx
+      nosmbus:
+        popad
+      }
+      // adjust past SMBus
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(sm_bus));
+
+      // PatchIt
+      memcpy(ourmemaddr, patch_it_toy, sizeof(patch_it_toy));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        add eax, 4 // 2nd dword in XBTF_Section
+        mov ebx, ourmemaddr
+        cmp dword PTR [eax], 0
+        jne nopatchit
+        mov DWORD PTR [eax], ebx
+      nopatchit:
+        popad
+      }
+
+      // adjust past PatchIt
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(patch_it_toy));
+
+      // HookIt
+      memcpy(ourmemaddr, hookit_toy, sizeof(hookit_toy));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        add eax, 8 // 3rd dword in XBTF_Section
+        mov ebx, ourmemaddr
+        cmp dword PTR [eax], 0
+        jne nohookit
+        mov DWORD PTR [eax], ebx
+      nohookit:
+        popad
+      }
+
+      // adjust past HookIt
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(hookit_toy));
+
+      // igk_main_toy
+      memcpy(ourmemaddr, igk_main_toy, sizeof(igk_main_toy));
+      _asm
+      {
+        // patch hook_igk_toy w/ address
+        pushad
+
+        mov edx, offset hook_igk_toy
+        add edx, 5
+        mov ecx, ourmemaddr
+        mov dword PTR [edx], ecx
+
+        popad
+      }
+
+      // adjust past igk_main_toy
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
+
+      // hook_igk_toy
+      memcpy(ourmemaddr, hook_igk_toy, sizeof(hook_igk_toy));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        add eax, 0ch // 4th dword in XBTF_Section
+        mov ebx, ourmemaddr
+        cmp dword PTR [eax], 0
+        jne nohookigk
+        mov DWORD PTR [eax], ebx
+      nohookigk:
+        popad
+      }
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
+
+      if (g_guiSettings.GetInt("lcd.mode") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
+      {
+        memcpy(ourmemaddr, lcd_toy_xx, sizeof(lcd_toy_xx));
+        _asm
+        {
+          pushad
+
+          mov ecx, ourmemaddr
+          add ecx, 0141h // lcd clear
+
+          mov eax, dwSection
+          add eax, 010h // 5th dword
+
+          cmp dword PTR [eax], 0
+          jne nolcdxx
+
+          mov dword PTR [eax], ecx
+          add ecx, 0ah // lcd writestring
+          add eax, 4 // 6th dword
+
+          cmp dword ptr [eax], 0
+          jne nolcd
+
+          mov dword ptr [eax], ecx
+        nolcdxx:
+          popad
+        }
+        ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(lcd_toy_xx));
+      }
+      else
+      {
+        // lcd toy
+        memcpy(ourmemaddr, lcd_toy_x3, sizeof(lcd_toy_x3));
+        _asm
+        {
+          pushad
+
+          mov ecx, ourmemaddr
+          add ecx, 0bdh // lcd clear
+
+          mov eax, dwSection
+          add eax, 010h // 5th dword
+
+          cmp dword PTR [eax], 0
+          jne nolcd
+
+          mov dword PTR [eax], ecx
+          add ecx, 0ah // lcd writestring
+          add eax, 4 // 6th dword
+
+          cmp dword ptr [eax], 0
+          jne nolcd
+
+          mov dword ptr [eax], ecx
+        nolcd:
+          popad
+        }
+        ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(lcd_toy_x3));
+      }
+    }
+  }
+#endif
+
+	return Found;
 }
 
-void CUtil::GetDate(SYSTEMTIME stTime, CStdString& strDateTime)
+bool CUtil::RemoveTrainer()
 {
-  char szTmp[128];
-  sprintf(szTmp,"%i-%i-%i %02.2i:%02.2i",
-          stTime.wDay,stTime.wMonth,stTime.wYear,
-          stTime.wHour,stTime.wMinute);
-  strDateTime=szTmp;
+	bool Found = false;
+#ifdef HAS_XBOX_HARDWARE
+  unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
+	unsigned int i = 0;
+
+  unsigned char xbe_entry_point[] = {0xff,0x15,0x80,0x00,0x00,0x0c}; // xbe entry point bytes in kernel
+  *((DWORD*)(xbe_entry_point+2)) = KERNEL_STORE_ADDRESS;
+
+	for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
+	{
+		if (memcmp(&xboxkrnl[i], xbe_entry_point, 6) == 0)
+		{
+			Found = true;
+			break;
+		}
+	}
+
+	if(Found)
+  {
+    unsigned char *patchlocation = xboxkrnl;
+    patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
+    __asm // recycle check
+    {
+        pushad
+
+        mov eax, cr0
+        push eax
+        and eax, 0FFFEFFFFh
+        mov cr0, eax // disable memory write prot
+
+        mov	edi, patchlocation // address of call to xbe entry point in kernel
+        mov	dword ptr [edi], 0x00010128 // patch with address of where we store loaderdata+trainer buffer address
+
+        pop eax
+        mov cr0, eax // restore memory write prot
+
+        popad
+    }
+  }
+#endif
+  return Found;
+}
+
+void CUtil::RunShortcut(const char* szShortcutPath)
+{
+  CShortcut shortcut;
+  char szPath[1024];
+  char szParameters[1024];
+  if ( shortcut.Create(szShortcutPath))
+  {
+    CFileItem item(shortcut.m_strPath, false);
+    // if another shortcut is specified, load this up and use it
+    if (item.IsShortCut())
+    {
+      CHAR szNewPath[1024];
+      strcpy(szNewPath, szShortcutPath);
+      CHAR* szFile = strrchr(szNewPath, '\\');
+      strcpy(&szFile[1], shortcut.m_strPath.c_str());
+
+      CShortcut targetShortcut;
+      if (FAILED(targetShortcut.Create(szNewPath)))
+        return;
+
+      shortcut.m_strPath = targetShortcut.m_strPath;
+    }
+
+    strcpy( szPath, shortcut.m_strPath.c_str() );
+
+    CHAR szMode[16];
+    strcpy( szMode, shortcut.m_strVideo.c_str() );
+    strlwr( szMode );
+
+    strcpy(szParameters, shortcut.m_strParameters.c_str());
+
+    BOOL bRow = strstr(szMode, "pal") != NULL;
+    BOOL bJap = strstr(szMode, "ntsc-j") != NULL;
+    BOOL bUsa = strstr(szMode, "ntsc") != NULL;
+
+    F_VIDEO video = VIDEO_NULL;
+    if (bRow)
+      video = VIDEO_PAL50;
+    if (bJap)
+      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCJ);
+    if (bUsa)
+      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
+
+#ifdef HAS_XBOX_HARDWARE
+    CUSTOM_LAUNCH_DATA data;
+    if (!shortcut.m_strCustomGame.IsEmpty())
+    {
+      char remap_path[MAX_PATH] = "";
+      char remap_xbe[MAX_PATH] = "";
+
+      memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
+
+      strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
+
+      strncpy(remap_path, XeImageFileName->Buffer, XeImageFileName->Length);
+      for (int i = strlen(remap_path) - 1; i >=0; i--)
+        if (remap_path[i] == '\\' || remap_path[i] == '/')
+        {
+          break;
+        }
+      strcpy(remap_xbe, &remap_path[i+1]);
+      remap_path[i+1] = 0;
+
+      strcpy(data.szRemap_D_As, remap_path);
+      strcpy(data.szLaunchXBEOnExit, remap_xbe);
+
+      data.executionType = 0;
+
+      // not the actual "magic" value - used to pass XbeId for some reason?
+      data.magic = GetXbeID(szPath);
+    }
+
+    CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
+#endif
+  }
+}
+
+bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
+{
+  if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is off. Skipping Filter Flicker Patching.");
+    return false;
+  }
+  CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
+  if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Progressive Mode detected: Skipping Auto Filter Flicker Patching!");
+    return false;
+  }
+  if (strncmp(szPath1, "D:", 2) == 0)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Source is DVD-ROM! Skipping Filter Flicker Patching.");
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
+
+  // Test if we already have a patched _ffp XBE
+  // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
+  /* // May we can add. a changed FF detection.. then we can actived this!
+  CFile	xbe;
+	if (xbe.Exists(szPath1))
+  {
+    char szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFname[_MAX_FNAME], szExt[_MAX_EXT];
+		_splitpath(szPath1, szDrive, szDir, szFname, szExt);
+		strncat(szFname, "_ffp", 4);
+		_makepath(szNewPath.GetBuffer(MAX_PATH), szDrive, szDir, szFname, szExt);
+		szNewPath.ReleaseBuffer();
+		if (xbe.Exists(szNewPath))
+			return true;
+	} */
+
+
+  CXBE m_xbe;
+  if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - %s",szPath1.c_str());
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.");
+    return false;
+  }
+#ifdef HAS_XBOX_HARDWARE
+  CGFFPatch m_ffp;
+  if (!m_ffp.FFPatch(szPath1, szNewPath))
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR during Filter Flicker Patching. Falling back to the original source.");
+    return false;
+  }
+#endif
+  if(szNewPath.IsEmpty())
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR NO Patchfile Path is empty! Falling back to the original source.");
+    return false;
+  }
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Filter Flicker Patching done. Starting %s.",szNewPath.c_str());
+  return true;
+}
+
+void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
+{
+  // check if locked
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return;
+
+  /// \brief Runs an executable file
+  /// \param szPath1 Path of executeable to run
+  /// \param szParameters Any parameters to pass to the executeable being run
+  g_application.PrintXBEToLCD(szPath1); //write to LCD
+  Sleep(600);        //and wait a little bit to execute
+
+  CStdString szNewPath;
+  if(RunFFPatchedXBE(szPath1, szNewPath))
+  {
+    szPath1 = szNewPath;
+  }
+  char szPath[1024];
+  strcpy(szPath, szPath1);
+  if (strncmp(szPath1, "Q:", 2) == 0)
+  { // mayaswell support the virtual drive as well...
+    CStdString strPath;
+    // home dir is xbe dir
+    GetHomePath(strPath);
+    if (!HasSlashAtEnd(strPath))
+      strPath += "\\";
+    if (szPath1[2] == '\\')
+      strPath += szPath1 + 3;
+    else
+      strPath += szPath1 + 2;
+    strcpy(szPath, strPath.c_str());
+  }
+  char* szBackslash = strrchr(szPath, '\\');
+  if (szBackslash)
+  {
+    *szBackslash = 0x00;
+    char* szXbe = &szBackslash[1];
+
+    char* szColon = strrchr(szPath, ':');
+    if (szColon)
+    {
+      *szColon = 0x00;
+      char* szDrive = szPath;
+      char* szDirectory = &szColon[1];
+
+      char szDevicePath[1024];
+      char szXbePath[1024];
+
+      CIoSupport::GetPartition(szDrive[0], szDevicePath);
+
+      strcat(szDevicePath, szDirectory);
+      wsprintf(szXbePath, "d:\\%s", szXbe);
+
+#ifdef HAS_XBOX_HARDWARE
+      g_application.Stop();
+
+      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
+#endif
+    }
+  }
+
+  CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
+}
+
+void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
+{
+  CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
+  CLog::Log(LOGINFO, " mount %s as D:", szPath);
+
+#ifdef HAS_XBOX_HARDWARE
+  CIoSupport::RemapDriveLetter('D', const_cast<char*>(szPath));
+
+  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
+
+  if (ForceVideo != VIDEO_NULL)
+  {
+    if (!ForceCountry)
+    {
+      if (ForceVideo == VIDEO_NTSCM)
+        ForceCountry = COUNTRY_USA;
+      if (ForceVideo == VIDEO_NTSCJ)
+        ForceCountry = COUNTRY_JAP;
+      if (ForceVideo == VIDEO_PAL50)
+        ForceCountry = COUNTRY_EUR;
+    }
+    CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
+    bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
+    if( !bSuccessful )
+      CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
+  }
+  if (pData)
+  {
+    DWORD dwTitleID = pData->magic;
+    pData->magic = CUSTOM_LAUNCH_MAGIC;
+    const char* xbe = szXbe+3;
+    CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
+    CIoSupport::UnmapDriveLetter('D');
+    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwTitleID, pData);
+  }
+  else
+  {
+    if (szParameters == NULL)
+    {
+      DWORD error = XLaunchNewImage(szXbe, NULL );
+      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
+    }
+    else
+    {
+      LAUNCH_DATA LaunchData;
+      strcpy((char*)LaunchData.Data, szParameters);
+
+      DWORD error = XLaunchNewImage(szXbe, &LaunchData );
+      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
+    }
+  }
+#endif
 }
 
 void CUtil::GetHomePath(CStdString& strPath)
 {
   char szXBEFileName[1024];
-  CIoSupport helper;
-  helper.GetXbePath(szXBEFileName);
-  char *szFileName = strrchr(szXBEFileName,'\\');
-  *szFileName=0;
-  strPath=szXBEFileName;
+  CIoSupport::GetXbePath(szXBEFileName);
+  char *szFileName = strrchr(szXBEFileName, '\\');
+  *szFileName = 0;
+  strPath = szXBEFileName;
 }
 
-bool CUtil::IsEthernetConnected()
-{
-  if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
-    return false;
-
-  return true;
-}
-
-void CUtil::GetTitleIP(CStdString& ip)
-{
-  ip = g_szTitleIP;
-}
-
-bool CUtil::InitializeNetwork(const char* szAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
-{
-  if (!IsEthernetConnected())
-  {
-    CLog::Log(LOGWARNING, "network cable unplugged");
-    return false;
-  }
-
-  struct network_info networkinfo ;
-  memset(&networkinfo ,0,sizeof(networkinfo ));
-  bool bSetup(false);
-  if (CUtil::cmpnocase(szAssignment, "dhcp")==0 )
-  {
-    bSetup=true;
-    CLog::Log(LOGNOTICE, "use DHCP");
-    networkinfo.DHCP=true;
-  }
-  else if (CUtil::cmpnocase(szAssignment, "static")==0)
-  {
-    bSetup=true;
-    CLog::Log(LOGNOTICE, "use static ip");
-    networkinfo.DHCP=false;
-    strcpy(networkinfo.ip,szLocalAddress);
-    strcpy(networkinfo.subnet,szLocalSubnet);
-    strcpy(networkinfo.gateway,szLocalGateway);
-    strcpy(networkinfo.DNS1,szNameServer);
-  }
-  else
-  {
-    CLog::Log(LOGWARNING, "Not initializing network, using settings as they are setup by dashboard");
-  }
-
-  if (bSetup)
-  {
-    CLog::Log(LOGINFO, "setting up network...");
-    int iCount=0;
-    while (CUtil::SetUpNetwork( false, networkinfo )==1 && iCount < 100)
-    {
-      Sleep(50);
-      iCount++;
-    }
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "init network");
-    XNetStartupParams xnsp;
-    memset(&xnsp, 0, sizeof(xnsp));
-    xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
-
-    // Bypass security so that we may connect to 'untrusted' hosts
-    xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-    // create more memory for networking
-		xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-		xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-		xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-		xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-		xnsp.cfgSockMaxSockets = 64; // default = 64
-		xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-		xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-    INT err = XNetStartup(&xnsp);
-  }
-
-  CLog::Log(LOGINFO, "get local ip address:");
-  XNADDR xna;
-  DWORD dwState;
-  do
-  {
-    dwState = XNetGetTitleXnAddr(&xna);
-    Sleep(50);
-  } while (dwState==XNET_GET_XNADDR_PENDING);
-
-  XNetInAddrToString(xna.ina,g_szTitleIP,32);
-
-  CLog::Log(LOGINFO, "ip adres:%s",g_szTitleIP);
-  WSADATA WsaData;
-  int err = WSAStartup( MAKEWORD(2,2), &WsaData );
-
-	if (err == NO_ERROR)
-	{
-		m_bNetworkUp = true;
-		return true;
-	}
-	return false;
-}
-
-static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
-static const __int64 SECS_TO_100NS       = 10000000;
-
-void CUtil::ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime)
-{
-  __int64 l64Result =((__int64)sec + SECS_BETWEEN_EPOCHS) + SECS_TO_100NS + (nsec / 100);
-  ftTime.dwLowDateTime = (DWORD)l64Result;
-  ftTime.dwHighDateTime = (DWORD)(l64Result>>32);
-}
-
-
+/* WARNING, this function can easily fail on full urls, since they might have options at the end */
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {
   CStdString strExtension;
-  GetExtension(strFile,strExtension);
+  GetExtension(strFile, strExtension);
   if ( strExtension.size() )
   {
-
-    strChangedFile=strFile.substr(0, strFile.size()-strExtension.size()) ;
-    strChangedFile+=strNewExtension;
+    strChangedFile = strFile.substr(0, strFile.size() - strExtension.size()) ;
+    strChangedFile += strNewExtension;
   }
   else
   {
-    strChangedFile=strFile;
-    strChangedFile+=strNewExtension;
+    strChangedFile = strFile;
+    strChangedFile += strNewExtension;
   }
 }
 
-void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
-{
-  int iPos=strFile.ReverseFind(".");
-  if (iPos <0)
-  {
-    strExtension="";
-    return;
-  }
-  strExtension=strFile.Right( strFile.size()-iPos);
-}
-
-void CUtil::Lower(CStdString& strText)
-{
-  char szText[1024];
-  strcpy(szText, strText.c_str());
-  //for multi-byte language, the strText.size() is not correct
-  for (int i=0; i < strlen(szText);++i)
-    szText[i]=tolower(szText[i]);
-  strText=szText;
-};
-
-void CUtil::Unicode2Ansi(const wstring& wstrText,CStdString& strName)
-{
-  strName="";
-  char *pstr=(char*)wstrText.c_str();
-  for (int i=0; i < (int)wstrText.size();++i )
-  {
-    strName += pstr[i*2];
-  }
-}
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
-  if (strFile.size()==0) return false;
-  char kar=strFile.c_str()[strFile.size()-1];
-  if (kar=='/' || kar=='\\') return true;
+  if (strFile.size() == 0) return false;
+  char kar = strFile.c_str()[strFile.size() - 1];
+  if (kar == '/' || kar == '\\')
+    return true;
+
   return false;
 }
 
- bool CUtil::IsRemote(const CStdString& strFile)
+bool CUtil::IsRemote(const CStdString& strFile)
 {
   CURL url(strFile);
-  CStdString strProtocol=url.GetProtocol();
+  CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
-  if (strProtocol=="cdda" || strProtocol=="iso9660") return false;
-  if ( url.GetProtocol().size() ) return true;
-  return false;
-}
-
- bool CUtil::IsDVD(const CStdString& strFile)
-{
-  if (strFile.Left(2)=="D:" || strFile.Left(2)=="d:")
-    return true;
-
-  if (strFile.Left(4)=="UDF:" || strFile.Left(4)=="udf:")
-    return true;
-
-  return false;
-}
-bool CUtil::IsCDDA(const CStdString& strFile)
-{
-CURL url(strFile);
-if (url.GetProtocol()=="cdda")
-  return true;
-return false;
-}
-bool CUtil::IsISO9660(const CStdString& strFile)
-{
-  CStdString strLeft=strFile.Left(8);
-  strLeft.ToLower();
-  if (strLeft=="iso9660:")
-    return true;
-  return false;
-}
-
-bool CUtil::IsSmb(const CStdString& strFile)
-{
-  CStdString strLeft = strFile.Left(4);
-  return (strLeft.CompareNoCase("smb:") == 0);
-}
-
-void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
-{
-  strDir=strURL;
-  if (!IsRemote(strURL)) return;
-  if (IsDVD(strURL)) return;
-
-  CURL url(strURL);
-  strDir.Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
-}
-
-void CUtil::RemoveCRLF(CStdString& strLine)
-{
-  while ( strLine.size() && (strLine.Right(1)=="\n" || strLine.Right(1)=="\r") )
-  {
-    strLine=strLine.Left((int)strLine.size()-1);
+  if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
+  if (strProtocol.Left(3) == "mem") return false;   // memory cards
+  if (strProtocol == "virtualpath")
+  { // virtual paths need to be checked separately
+    CVirtualPathDirectory dir;
+    vector<CStdString> paths;
+    if (dir.GetPathes(strFile, paths))
+    {
+      for (unsigned int i = 0; i < paths.size(); i++)
+        if (IsRemote(paths[i])) return true;
+    }
+    return false;
   }
-
+  if ( !url.IsLocal() ) return true;
+  return false;
 }
-bool CUtil::IsPicture(const CStdString& strFile)
+
+bool CUtil::IsOnDVD(const CStdString& strFile)
 {
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.size() < 2) return false;
-  CUtil::Lower(strExtension);
-  if ( strstr( g_stSettings.m_szMyPicturesExtensions, strExtension.c_str() ) )
-  {
+  if (strFile.Left(4) == "DVD:" || strFile.Left(4) == "dvd:")
     return true;
-  }
-	if (strExtension == ".tbn")
-		return true;
-  return false;
-}
 
-bool CUtil::IsShoutCast(const CStdString& strFileName)
-{
-  if (strstr(strFileName.c_str(), "shout:") ) return true;
-  return false;
-}
-
-bool CUtil::IsCUESheet(const CStdString& strFileName)
-{
-	CStdString strExtension;
-	GetExtension(strFileName, strExtension);
-	return (strExtension == ".cue");
-}
-
-bool CUtil::IsAudio(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.size() < 2) return  false;
-  CUtil::Lower(strExtension);
-  if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
-  {
+  if (strFile.Left(2) == "D:" || strFile.Left(2) == "d:")
     return true;
-  }
-  if (strstr(strFile.c_str(), ".cdda") ) return true;
-  if (IsShoutCast(strFile) ) return true;
 
-  return false;
-}
-bool CUtil::IsVideo(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.size() < 2) return  false;
-  CUtil::Lower(strExtension);
-  if ( strstr( g_stSettings.m_szMyVideoExtensions, strExtension.c_str() ) )
-  {
+  if (strFile.Left(4) == "UDF:" || strFile.Left(4) == "udf:")
     return true;
-  }
-  return false;
-}
-bool CUtil::IsPlayList(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  strExtension.ToLower();
-  if (strExtension==".m3u") return true;
-  if (strExtension==".b4s") return true;
-  if (strExtension==".pls") return true;
-  if (strExtension==".strm") return true;
+
+  if (strFile.Left(8) == "ISO9660:" || strFile.Left(8) == "iso9660:")
+    return true;
+
+  if (strFile.Left(5) == "cdda:" || strFile.Left(5) == "CDDA:")
+    return true;
+
   return false;
 }
 
-bool CUtil::IsDVDImage(const CStdString& strFile)
+bool CUtil::IsMultiPath(const CStdString& strPath)
 {
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.Equals(".img")) return true;
+  if (strPath.Left(12).Equals("multipath://")) return true;
   return false;
 }
 
-bool CUtil::IsDVDFile(const CStdString& strFile, bool bVobs /*= true*/, bool bIfos /*= true*/)
+bool CUtil::IsDVD(const CStdString& strFile)
 {
-	CStdString strFileName = GetFileName(strFile);
-	if(bIfos)
-	{
-		if(strFileName.Equals("video_ts.ifo")) return true;
-		if(strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
-	}
-	if(bVobs)
-	{
-		if(strFileName.Equals("video_ts.vob")) return true;
-		if(strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
-	}
+  CStdString strFileLow = strFile; strFileLow.MakeLower();
+  if (strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
+    return true;
 
-	return false;
+  return false;
+}
+
+bool CUtil::IsVirtualPath(const CStdString& strFile)
+{
+  if (strFile.Left(14).Equals("virtualpath://")) return true;
+  return false;
+}
+
+bool CUtil::IsStack(const CStdString& strFile)
+{
+  if (strFile.Left(8).Equals("stack://")) return true;
+  return false;
 }
 
 bool CUtil::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if ( (strExtension.CompareNoCase(".rar") == 0) || (strExtension.Equals(".001")) ) return true; // sometimes the first rar is named .001
+  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001")) return true;
+  if (strExtension.CompareNoCase(".cbr") == 0) return true;
+  if (strExtension.CompareNoCase(".rar") == 0)
+      return true;
+
   return false;
+}
+
+bool CUtil::IsInZIP(const CStdString& strFile)
+{
+  if( strFile.substr(0,6) == "zip://" )
+  {
+    CURL url(strFile);
+    return url.GetFileName() != "";
+  }
+  return false;
+}
+
+bool CUtil::IsInRAR(const CStdString& strFile)
+{
+  if( strFile.substr(0,6) == "rar://" )
+  {
+    CURL url(strFile);
+    return url.GetFileName() != "";
+  }
+  return false;
+}
+
+bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
+{
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  if (strExtension.CompareNoCase(".zip") == 0) return true;
+  if (strExtension.CompareNoCase(".cbz") == 0) return true;
+  return false;
+}
+
+bool CUtil::IsCDDA(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("cdda:");
+}
+
+bool CUtil::IsISO9660(const CStdString& strFile)
+{
+  return strFile.Left(8).Equals("iso9660:");
+}
+
+bool CUtil::IsSmb(const CStdString& strFile)
+{
+  return strFile.Left(4).Equals("smb:");
+}
+
+bool CUtil::IsDAAP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("daap:");
+}
+
+bool CUtil::IsUPnP(const CStdString& strFile)
+{
+    return strFile.Left(5).Equals("upnp:");
+}
+
+bool CUtil::IsMemCard(const CStdString& strFile)
+{
+  return strFile.Left(3).Equals("mem");
+}
+bool CUtil::IsTuxBox(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("tuxbox:");
+}
+
+void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
+{
+  strDir = strURL;
+  if (!IsRemote(strURL)) return ;
+  if (IsDVD(strURL)) return ;
+
+  CURL url(strURL);
+  strDir.Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
 }
 
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
 {
-	CStdString strFilename = GetFileName(strFile);
-	if (strFilename.Equals("video_ts.ifo")) return 0;
-	//VTS_[TITLE]_0.IFO
-	return atoi(strFilename.Mid(4,2).c_str());
+  CStdString strFilename = GetFileName(strFile);
+  if (strFilename.Equals("video_ts.ifo")) return 0;
+  //VTS_[TITLE]_0.IFO
+  return atoi(strFilename.Mid(4, 2).c_str());
 }
 
- void CUtil::URLEncode(CStdString& strURLData)
+void CUtil::UrlDecode(CStdString& strURLData)
 {
   CStdString strResult;
-  for (int i=0; i < (int)strURLData.size(); ++i)
+
+  /* resulet will always be less than source */
+  strResult.reserve( strURLData.length() );
+
+  for (unsigned int i = 0; i < (int)strURLData.size(); ++i)
   {
-      int kar=(unsigned char)strURLData[i];
-      if (kar==' ') strResult+='+';
-      else if (isalnum(kar) || kar=='&'  || kar=='=' ) strResult+=kar;
-      else {
+    int kar = (unsigned char)strURLData[i];
+    if (kar == '+') strResult += ' ';
+    else if (kar == '%')
+    {
+      if (i < strURLData.size() - 2)
+      {
         CStdString strTmp;
-        strTmp.Format("%%%02.2x", kar);
-        strResult+=strTmp;
+        strTmp.assign(strURLData.substr(i + 1, 2));
+        int dec_num;
+        sscanf(strTmp,"%x",&dec_num);
+        strResult += (char)dec_num;
+        i += 2;
       }
-  }
-  strURLData=strResult;
-}
-
-void CUtil::SaveString(const CStdString &strTxt, FILE *fd)
-{
-  int iSize=strTxt.size();
-  fwrite(&iSize,1,sizeof(int),fd);
-  if (iSize > 0)
-  {
-    fwrite(&strTxt.c_str()[0],1,iSize,fd);
-  }
-}
-int  CUtil::LoadString(CStdString &strTxt, byte* pBuffer)
-{
-  strTxt="";
-  int iSize;
-  int iCount=sizeof(int);
-  memcpy(&iSize,pBuffer,sizeof(int));
-  if (iSize==0) return iCount;
-  char *szTmp = new char [iSize+2];
-  memcpy(szTmp ,&pBuffer[iCount], iSize);
-  szTmp[iSize]=0;
-  iCount+=iSize;
-  strTxt=szTmp;
-  delete [] szTmp;
-  return iCount;
-}
-bool CUtil::LoadString(string &strTxt, FILE *fd)
-{
-  strTxt="";
-  int iSize;
-  int iRead=fread(&iSize,1,sizeof(int),fd);
-  if (iRead != sizeof(int) ) return false;
-  if (feof(fd)) return false;
-  if (iSize==0) return true;
-  if (iSize > 0 && iSize < 16384)
-  {
-    char *szTmp = new char [iSize+2];
-    iRead=fread(szTmp,1,iSize,fd);
-    if (iRead != iSize)
-    {
-      delete [] szTmp;
-      return false;
+      else
+        strResult += kar;
     }
-    szTmp[iSize]=0;
-    strTxt=szTmp;
-    delete [] szTmp;
-    return true;
+    else strResult += kar;
   }
-  return false;
+  strURLData = strResult;
 }
 
-void CUtil::SaveInt(int iValue, FILE *fd)
+void CUtil::URLEncode(CStdString& strURLData)
 {
-  fwrite(&iValue,1,sizeof(int),fd);
-}
+  CStdString strResult;
 
-int CUtil::LoadInt( FILE *fd)
-{
-  int iValue;
-  fread(&iValue,1,sizeof(int),fd);
-  return iValue;
-}
+  /* wonder what a good value is here is, depends on how often it occurs */
+  strResult.reserve( strURLData.length() * 2 );
 
-void CUtil::LoadDateTime(SYSTEMTIME& dateTime, FILE *fd)
-{
-  fread(&dateTime,1,sizeof(dateTime),fd);
-}
-
-void CUtil::SaveDateTime(SYSTEMTIME& dateTime, FILE *fd)
-{
-  fwrite(&dateTime,1,sizeof(dateTime),fd);
-}
-
-
-void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName)
-{
-  Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-  strSongCacheName.Format("%s\\songinfo\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
-}
-
-void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
-{
-  Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-  if (bTempDir)
-    strThumb.Format("%s\\thumbs\\temp\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
-  else
-    strThumb.Format("%s\\thumbs\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
-}
-
-void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
-{
-  CStdString str;
-  if (strAlbumName.IsEmpty())
+  for (int i = 0; i < (int)strURLData.size(); ++i)
   {
-	  str = "unknown" + strFileName;
+    int kar = (unsigned char)strURLData[i];
+    //if (kar == ' ') strResult += '+';
+    if (isalnum(kar)) strResult += kar;
+    else
+    {
+      CStdString strTmp;
+      strTmp.Format("%%%02.2x", kar);
+      strResult += strTmp;
+    }
+  }
+  strURLData = strResult;
+}
+
+bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon)
+{
+  bool success(false);
+  // extract icon from .xbe
+  CStdString localFile;
+  g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
+  CXBE xbeReader;
+  CStdString strTempFile;
+  CStdString strExtension;
+
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
+  CUtil::GetExtension(strFilePath,strExtension);
+  if (strExtension.Equals(".xbx"))
+  {
+  ::CopyFile(strFilePath.c_str(), strTempFile.c_str(),FALSE);
   }
   else
   {
-	  str = strAlbumName + strFileName;
-  }
-
-  GetAlbumFolderThumb(str, strThumb, bTempDir);
-}
-
-
-bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
-{
-  // check if thumbnail already exists
-  char szThumbNail[1024];
-  Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFilePath.c_str(),strlen(strFilePath.c_str()));
-  sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-  strIcon= szThumbNail;
-  if (CUtil::FileExists(strIcon) )
-  {
-    //yes, just return
-    return true;
-  }
-
-  // no, then create a new thumb
-  // Locate file ID and get TitleImage.xbx E:\UDATA\<ID>\TitleImage.xbx
-
-  bool bFoundThumbnail=false;
-  CStdString szFileName;
-  szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
-  if (!CUtil::FileExists(szFileName))
-  {
-    // extract icon from .xbe
-    CXBE xbeReader;
-    ::DeleteFile("T:\\1.xpr");
-    if ( !xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
-    {
-      return false;
-    }
-    szFileName="T:\\1.xpr";
+  if (!xbeReader.ExtractIcon(localFile, strTempFile.c_str()))
+    return false;
   }
 
   CXBPackedResource* pPackedResource = new CXBPackedResource();
-  if( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
+  if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
   {
-    LPDIRECT3DTEXTURE8 pTexture;
-    LPDIRECT3DTEXTURE8 m_pTexture;
-    D3DSURFACE_DESC descSurface;
-
-    pTexture = pPackedResource->GetTexture((DWORD)0);
-
+    LPDIRECT3DTEXTURE8 pTexture = pPackedResource->GetTexture((DWORD)0);
     if ( pTexture )
     {
+      D3DSURFACE_DESC descSurface;
       if ( SUCCEEDED( pTexture->GetLevelDesc( 0, &descSurface ) ) )
       {
-        int iHeight=descSurface.Height;
-        int iWidth=descSurface.Width;
-        DWORD dwFormat=descSurface.Format;
-        g_graphicsContext.Get3DDevice()->CreateTexture( 128,
-                                  128,
-                                  1,
-                                  0,
-                                  D3DFMT_LIN_A8R8G8B8,
-                                  0,
-                                  &m_pTexture);
-        LPDIRECT3DSURFACE8 pSrcSurface = NULL;
-        LPDIRECT3DSURFACE8 pDestSurface = NULL;
-
-        pTexture->GetSurfaceLevel( 0, &pSrcSurface );
-        m_pTexture->GetSurfaceLevel( 0, &pDestSurface );
-
-        D3DXLoadSurfaceFromSurface( pDestSurface, NULL, NULL,
-                                    pSrcSurface, NULL, NULL,
-                                    D3DX_DEFAULT, D3DCOLOR( 0 ) );
-        D3DLOCKED_RECT rectLocked;
-        if ( D3D_OK == m_pTexture->LockRect(0,&rectLocked,NULL,0L  ) )
-        {
-            BYTE *pBuff   = (BYTE*)rectLocked.pBits;
-            if (pBuff)
-            {
-              DWORD strideScreen=rectLocked.Pitch;
-              //mp_msg(0,0," strideScreen=%i\n", strideScreen);
-
-              CSectionLoader::Load("CXIMAGE");
-              CxImage* pImage = new CxImage(iWidth, iHeight, 24, CXIMAGE_FORMAT_JPG);
-              for (int y=0; y < iHeight; y++)
-              {
-                byte *pPtr = pBuff+(y*(strideScreen));
-                for (int x=0; x < iWidth;x++)
-                {
-                  byte Alpha=*(pPtr+3);
-                  byte b=*(pPtr+0);
-                  byte g=*(pPtr+1);
-                  byte r=*(pPtr+2);
-                  pPtr+=4;
-                  pImage->SetPixelColor(x,y,RGB(r,g,b));
-                }
-              }
-
-              m_pTexture->UnlockRect(0);
-              pImage->Flip();
-              pImage->Save(strIcon.c_str(),CXIMAGE_FORMAT_JPG);
-              delete pImage;
-              bFoundThumbnail=true;
-              CSectionLoader::Unload("CXIMAGE");
-            }
-            else m_pTexture->UnlockRect(0);
-        }
-        pSrcSurface->Release();
-        pDestSurface->Release();
-        m_pTexture->Release();
+        int iHeight = descSurface.Height;
+        int iWidth = descSurface.Width;
+        DWORD dwFormat = descSurface.Format;
+        CPicture pic;
+        success = pic.CreateThumbnailFromSwizzledTexture(pTexture, iHeight, iWidth, strIcon.c_str());
       }
       pTexture->Release();
     }
   }
   delete pPackedResource;
-  if (bFoundThumbnail) CUtil::ClearCache();
-  return bFoundThumbnail;
+  CFile::Delete(strTempFile);
+  return success;
 }
 
 
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
 {
-  CStdString strFName=CUtil::GetFileName(strFileName);
-  strDescription=strFileName.Left(strFileName.size()-strFName.size());
+  CStdString strFName = CUtil::GetFileName(strFileName);
+  strDescription = strFileName.Left(strFileName.size() - strFName.size());
   if (CUtil::HasSlashAtEnd(strDescription) )
   {
-    strDescription=strDescription.Left(strDescription.size()-1);
+    strDescription = strDescription.Left(strDescription.size() - 1);
   }
-  int iPos=strDescription.ReverseFind("\\");
+  int iPos = strDescription.ReverseFind("\\");
   if (iPos < 0)
-    iPos=strDescription.ReverseFind("/");
-  if (iPos >=0)
+    iPos = strDescription.ReverseFind("/");
+  if (iPos >= 0)
   {
-    strDescription=strDescription.Right(strDescription.size()-iPos-1);
+    CStdString strTmp = strDescription.Right(strDescription.size()-iPos-1);
+    strDescription = strTmp;//strDescription.Right(strDescription.size() - iPos - 1);
   }
-
-  else strDescription=strFName;
+  else if (strDescription.size() <= 0)
+    strDescription = strFName;
   return true;
 }
+
 bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
 {
+  _XBE_CERTIFICATE HC;
+  _XBE_HEADER HS;
 
-    _XBE_CERTIFICATE HC;
-    _XBE_HEADER HS;
-
-    FILE* hFile  = fopen(strFileName.c_str(),"rb");
-    if (!hFile)
-    {
-      strDescription=CUtil::GetFileName(strFileName);
-      return false;
-    }
-    fread(&HS,1,sizeof(HS),hFile);
-    fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
-    fread(&HC,1,sizeof(HC),hFile);
-    fclose(hFile);
-
-    CHAR TitleName[40];
-    WideCharToMultiByte(CP_ACP,0,HC.TitleName,-1,TitleName,40,NULL,NULL);
-    if (strlen(TitleName) > 0)
-    {
-      strDescription=TitleName;
-      return true;
-    }
-    strDescription=CUtil::GetFileName(strFileName);
+  FILE* hFile = fopen(strFileName.c_str(), "rb");
+  if (!hFile)
+  {
+    strDescription = CUtil::GetFileName(strFileName);
     return false;
+  }
+  fread(&HS, 1, sizeof(HS), hFile);
+  fseek(hFile, HS.XbeHeaderSize, SEEK_SET);
+  fread(&HC, 1, sizeof(HC), hFile);
+  fclose(hFile);
+
+  // The XBE title is stored in WCHAR (UTF16) format
+
+  // XBE titles can in fact use all 40 characters available to them,
+  // and thus are not necessarily NULL terminated
+  WCHAR TitleName[41];
+  wcsncpy(TitleName, HC.TitleName, 40);
+  TitleName[40] = 0;
+  if (wcslen(TitleName) > 0)
+  {
+    g_charsetConverter.utf16toUTF8(TitleName, strDescription);
+    return true;
+  }
+  strDescription = CUtil::GetFileName(strFileName);
+  return false;
+}
+
+bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription)
+{
+  _XBE_CERTIFICATE HC;
+  _XBE_HEADER HS;
+
+  FILE* hFile = fopen(strFileName.c_str(), "r+b");
+  fread(&HS, 1, sizeof(HS), hFile);
+  fseek(hFile, HS.XbeHeaderSize, SEEK_SET);
+  fread(&HC, 1, sizeof(HC), hFile);
+  fseek(hFile,HS.XbeHeaderSize, SEEK_SET);
+
+  // The XBE title is stored in WCHAR (UTF16)
+
+  CStdStringW shortDescription;
+  g_charsetConverter.utf8ToUTF16(strDescription, shortDescription);
+  if (shortDescription.size() > 40)
+    shortDescription = shortDescription.Left(40);
+  wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
+  fwrite(&HC,1,sizeof(HC),hFile);
+  fclose(hFile);
+  return true;
 }
 
 DWORD CUtil::GetXbeID( const CStdString& strFilePath)
@@ -1353,29 +1700,29 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
   DWORD dwCertificateLocation;
   DWORD dwLoadAddress;
   DWORD dwRead;
-//  WCHAR wcTitle[41];
+  //  WCHAR wcTitle[41];
 
-  CAutoPtrHandle  hFile( CreateFile( strFilePath.c_str(),
-            GENERIC_READ,
-            FILE_SHARE_READ,
-            NULL,
-            OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL,
-            NULL ));
+  CAutoPtrHandle hFile( CreateFile( strFilePath.c_str(),
+                                    GENERIC_READ,
+                                    FILE_SHARE_READ,
+                                    NULL,
+                                    OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL,
+                                    NULL ));
   if ( hFile.isValid() )
   {
-    if ( SetFilePointer(  (HANDLE)hFile,  0x104, NULL, FILE_BEGIN ) == 0x104 )
+    if ( SetFilePointer( (HANDLE)hFile, 0x104, NULL, FILE_BEGIN ) == 0x104 )
     {
       if ( ReadFile( (HANDLE)hFile, &dwLoadAddress, 4, &dwRead, NULL ) )
       {
-        if ( SetFilePointer(  (HANDLE)hFile,  0x118, NULL, FILE_BEGIN ) == 0x118 )
+        if ( SetFilePointer( (HANDLE)hFile, 0x118, NULL, FILE_BEGIN ) == 0x118 )
         {
           if ( ReadFile( (HANDLE)hFile, &dwCertificateLocation, 4, &dwRead, NULL ) )
           {
             dwCertificateLocation -= dwLoadAddress;
             // Add offset into file
             dwCertificateLocation += 8;
-            if ( SetFilePointer(  (HANDLE)hFile,  dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
+            if ( SetFilePointer( (HANDLE)hFile, dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
             {
               dwReturn = 0;
               ReadFile( (HANDLE)hFile, &dwReturn, sizeof(DWORD), &dwRead, NULL );
@@ -1393,417 +1740,122 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
   return dwReturn;
 }
 
-void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
-{
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-    FillInDefaultIcon(pItem);
-
-  }
-}
-
-void CUtil::FillInDefaultIcon(CFileItem* pItem)
-{
-  // find the default icon for a file or folder item
-  // for files this can be the (depending on the file type)
-  //   default picture for photo's
-  //   default picture for songs
-  //   default picture for videos
-  //   default picture for shortcuts
-  //   default picture for playlists
-  //   or the icon embedded in an .xbe
-  //
-  // for folders
-  //   for .. folders the default picture for parent folder
-  //   for other folders the defaultFolder.png
-
-  CStdString strThumb;
-  bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-  if (!pItem->m_bIsFolder)
-  {
-    if (CUtil::IsPlayList(pItem->m_strPath) )
-    {
-      // playlist
-      pItem->SetIconImage("defaultPlaylist.png");
-
-			//	Save playlists to playlist directroy
-      CStdString strDir;
-      CStdString strFileName;
-			strFileName=CUtil::GetFileName(pItem->m_strPath);
-			strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-			if (strDir!=pItem->m_strPath)
-			{
-				CPlayListFactory factory;
-				auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
-				if (pPlayList.get()!=NULL)
-				{
-					if (pPlayList->Load(pItem->m_strPath) && pPlayList->size()>0)
-					{
-						const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
-						CURL url(item.GetFileName());
-						if (!(url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") &&
-								!(url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") &&
-								!(url.GetProtocol() =="mms" || url.GetProtocol()=="MMS")  &&
-								!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP"))
-						{
-							pPlayList->Save(strDir);
-						}
-					}
-				}
-			}
-    }
-    else if (CUtil::IsPicture(pItem->m_strPath) )
-    {
-      // picture
-      pItem->SetIconImage("defaultPicture.png");
-    }
-    else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
-    {
-      // xbe
-      pItem->SetIconImage("defaultProgram.png");
-    }
-		else if ( CUtil::IsAudio(pItem->m_strPath) )
-    {
-      // audio
-      pItem->SetIconImage("defaultAudio.png");
-    }
-    else if (CUtil::IsVideo(pItem->m_strPath) )
-    {
-      // video
-      pItem->SetIconImage("defaultVideo.png");
-    }
-    else if (CUtil::IsShortCut(pItem->m_strPath) )
-    {
-      // shortcut
-      CStdString strDescription;
-      CStdString strFName;
-      strFName=CUtil::GetFileName(pItem->m_strPath);
-
-      int iPos=strFName.ReverseFind(".");
-      strDescription=strFName.Left(iPos);
-      pItem->SetLabel(strDescription);
-      pItem->SetIconImage("defaultShortcut.png");
-    }
-		//else
-		//{
-		//	// default icon for unknown file type
-		//	pItem->SetIconImage("defaultUnknown.png");
-		//}
-  }
-  else
-  {
-    if (pItem->GetLabel()=="..")
-    {
-      pItem->SetIconImage("defaultFolderBack.png");
-    }
-  }
-
-  if (pItem->GetIconImage()=="")
-  {
-    if (pItem->m_bIsFolder)
-    {
-      pItem->SetIconImage("defaultFolder.png");
-    }
-    if (!pItem->m_bIsFolder)
-    {
-      CStdString strExtension;
-      CUtil::GetExtension(pItem->m_strPath,strExtension);
-
-      for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-      {
-        CFileTypeIcon& icon=g_settings.m_vecIcons[i];
-
-        if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-        {
-          pItem->SetIconImage(icon.m_strIcon);
-          break;
-        }
-      }
-    }
-  }
-
-  if (pItem->GetThumbnailImage()=="")
-  {
-    if (pItem->GetIconImage()!="")
-    {
-      CStdString strBig;
-      int iPos=pItem->GetIconImage().Find(".");
-      strBig=pItem->GetIconImage().Left(iPos);
-      strBig+="Big";
-      strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
-      pItem->SetThumbnailImage(strBig);
-    }
-  }
-}
-
-void CUtil::CreateShortcuts(VECFILEITEMS &items)
-{
-	for (int i=0; i < (int)items.size(); ++i)
-	{
-		CFileItem* pItem=items[i];
-		CreateShortcut(pItem);
-
-	}
-}
-
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
-	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-	if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
-	{
-		// xbe
-		pItem->SetIconImage("defaultProgram.png");
-		if ( !CUtil::IsDVD(pItem->m_strPath) )
-		{
-			CStdString strDescription;
-			if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
-			{
-				CUtil::GetDirectoryName(pItem->m_strPath, strDescription);
-			}
-			if (strDescription.size())
-			{
-				CStdString strFname;
-				strFname=CUtil::GetFileName(pItem->m_strPath);
-				strFname.ToLower();
-				if (strFname!="dashupdate.xbe" && strFname!="downloader.xbe" && strFname != "update.xbe")
-				{
-					CShortcut cut;
-					cut.m_strPath=pItem->m_strPath;
-					cut.Save(strDescription);
-				}
-			}
-		}
-	}
-}
-
-
-void CUtil::SetThumbs(VECFILEITEMS &items)
-{
-  VECFILEITEMS qitems;
-  CHDDirectory dir;
-
-  //cache thumbnails directory
-  CStdString strThumb=g_stSettings.szThumbnailsDirectory;
+  if ( pItem->IsXBE() )
   {
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);		//	precache Q:\thumbs directory
-  }
-  {
-    strThumb+="\\imdb";
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\thumbs\imdb directory
-  }
-
-
-
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-    SetThumb(pItem);
-  }
-  CUtil::ClearCache();
-}
-
-bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
-{
-  // get the thumbnail for the folder contained in strFolder
-  // and return the filename of the thumbnail in strThumb
-  //
-  // if folder contains folder.jpg and is local on xbox HD then use it as the thumbnail
-  // if folder contains folder.jpg but is located on a share then cache the folder.jpg
-  // to q:\thumbs and return the cached image as a thumbnail
-  CStdString strFolderImage;
-  strThumb="";
-  AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
-
-  // remote or local file?
-  if (CUtil::IsRemote(strFolder) || CUtil::IsDVD(strFolder) || CUtil::IsISO9660(strFolder) )
-  {
-    CURL url(strFolder);
-    // dont try to locate a folder.jpg for streams &  shoutcast
-    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
-    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
-    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
-    if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return false;
-
-    CUtil::GetThumbnail( strFolderImage,strThumb);
-    // if local cache of thumb doesnt exists yet
-    if (!CUtil::FileExists( strThumb) )
+    // xbe
+    pItem->SetIconImage("defaultProgram.png");
+    if ( !pItem->IsOnDVD() )
     {
-      CFile file;
-      // then cache folder.jpg to xbox HD
-	  if(file.Exists(strFolderImage))
-	  {
-		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-		{
-			return true;
-		}
-	  }
-    }
-    else
-    {
-      // else used the cached version
-      return true;
-    }
-  }
-  else if (CUtil::FileExists(strFolderImage) )
-  {
-    // is local, and folder.jpg exists. Use it
-    strThumb=strFolderImage;
-    return true;
-  }
-
-  // no thumb found
-  strThumb="";
-  return false;
-}
-
-void CUtil::SetThumb(CFileItem* pItem)
-{
-  CStdString strThumb;
-  // set the thumbnail for an file item
-
-  // if it already has a thumbnail, then return
-  if ( pItem->HasThumbnail() ) return;
-
-
-  CStdString strFileName=pItem->m_strPath;
-
-	if (!CUtil::IsRemote(strFileName))
-	{
-		CStdString strFile;
-		CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
-		if (CUtil::FileExists(strFile))
-		{
-			pItem->SetThumbnailImage(strFile);
-			return;
-		}
-	}
-
-  // if this is a shortcut, then get the real filename
-  if (CUtil::IsShortCut(strFileName))
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( strFileName ) )
-    {
-      strFileName=shortcut.m_strPath;
-    }
-  }
-
-  // get filename of cached thumbnail like Q:\thumbs\aed638.tbn
-  CStdString strCachedThumbnail;
-  Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-  strCachedThumbnail.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-
-  bool bGotIcon(false);
-
-  // does a cached thumbnail exists?
-  if (!CUtil::FileExists(strCachedThumbnail) )
-  {
-		// get the path for the  thumbnail
-		CUtil::GetThumbnail( strFileName,strThumb);
-    // local cached thumb does not exists
-    // check if strThumb exists
-    if (CUtil::FileExists(strThumb))
-    {
-      // yes, is it a local or remote file
-      if (CUtil::IsRemote(strThumb) || CUtil::IsDVD(strThumb) || CUtil::IsISO9660(strThumb) )
+      CStdString strDescription;
+      if (! CUtil::GetXBEDescription(pItem->m_strPath, strDescription))
       {
-        // remote file, then cache it...
-        CFile file;
-        if ( file.Cache(strThumb.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
+        CUtil::GetDirectoryName(pItem->m_strPath, strDescription);
+      }
+      if (strDescription.size())
+      {
+        CStdString strFname;
+        strFname = CUtil::GetFileName(pItem->m_strPath);
+        strFname.ToLower();
+        if (strFname != "dashupdate.xbe" && strFname != "downloader.xbe" && strFname != "update.xbe")
         {
-          // cache ok, then use it
-          pItem->SetThumbnailImage(strCachedThumbnail);
-          bGotIcon=true;
+          CShortcut cut;
+          cut.m_strPath = pItem->m_strPath;
+          cut.Save(strDescription);
         }
       }
-      else
-      {
-        // local file, then use it
-        pItem->SetThumbnailImage(strThumb);
-        bGotIcon=true;
-      }
     }
-    else
-    {
-      // strThumb doesnt exists either
-      // now check for filename.tbn or foldername.tbn
-      CFile file;
-      CStdString strThumbnailFileName;
-			if (pItem->m_bIsFolder)
-			{
-				strThumbnailFileName=pItem->m_strPath;
-				if (CUtil::HasSlashAtEnd(strThumbnailFileName))
-					strThumbnailFileName.Delete(strThumbnailFileName.size()-1);
-				strThumbnailFileName+=".tbn";
-			}
-			else
-				CUtil::ReplaceExtension(strFileName,".tbn", strThumbnailFileName);
+  }
+}
 
-			if (file.Exists(strThumbnailFileName))
-			{
-				//	local or remote ?
-				if (CUtil::IsRemote(strFileName) || CUtil::IsDVD(strFileName) || CUtil::IsISO9660(strFileName))
-				{
-					//	remote, cache thumb to hdd
-					if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
-					{
-
-						pItem->SetThumbnailImage(strCachedThumbnail);
-						bGotIcon=true;
-					}
-				}
-				else
-				{
-					//	local, just use it
-					pItem->SetThumbnailImage(strThumbnailFileName);
-					bGotIcon=true;
-				}
-      }
-    }
-		// fill in the folder thumbs
-		if (!bGotIcon && pItem->GetLabel() != "..")
-		{
-			// this is a folder ?
-			if (pItem->m_bIsFolder)
-			{
-				// yes, then get the folder thumbnail
-				if ( CUtil::GetFolderThumb(strFileName, strThumb))
-				{
-					pItem->SetThumbnailImage(strThumb);
-				}
-			}
-		}
+void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
+{
+  // This routine gets rid of any "\\"'s at the start of the path.
+  // Should this be the case?
+  vector<CStdString> tokens;
+  CStdString strBasePath, strFileName;
+  strFileNameAndPath.Replace("/","\\");
+  if(strFileNameAndPath.Right(1) == "\\")
+  {
+    strBasePath = strFileNameAndPath;
+    strFileName = "";
   }
   else
   {
-    // yes local cached thumbnail exists, use it
-    pItem->SetThumbnailImage(strCachedThumbnail);
+    CUtil::GetDirectory(strFileNameAndPath,strBasePath);
+    strFileName = CUtil::GetFileName(strFileNameAndPath);
   }
+  CUtil::Tokenize(strBasePath,tokens,"\\");
+  if (tokens.empty())
+    return; // nothing to do here (invalid path)
+  strFileNameAndPath = tokens.front();
+  for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
+  {
+    CStdString strToken = token->Left(42);
+    if (token->size() > 42)
+    { // remove any spaces as a result of truncation only
+      while (strToken[strToken.size()-1] == ' ')
+        strToken.erase(strToken.size()-1);
+    }
+    CUtil::RemoveIllegalChars(strToken);
+    strFileNameAndPath += "\\"+strToken;
+  }
+  if (strFileName != "")
+  {
+    CUtil::ShortenFileName(strFileName);
+    if (strFileName[0] == '\\')
+      strFileName.erase(0,1);
+    CUtil::RemoveIllegalChars(strFileName);
+    CStdString strExtension;
+    CStdString strNoExt;
+    CUtil::GetExtension(strFileName,strExtension);
+    CUtil::ReplaceExtension(strFileName,"",strNoExt);
+    while (strNoExt[strNoExt.size()-1] == ' ')
+      strNoExt.erase(strNoExt.size()-1);
+    strFileNameAndPath += "\\"+strNoExt+strExtension;
+  }
+  else if( strBasePath.Right(1) == "\\" )
+    strFileNameAndPath += "\\";
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
 {
-  CStdString strFile=CUtil::GetFileName(strFileNameAndPath);
+  CStdString strFile = CUtil::GetFileName(strFileNameAndPath);
   if (strFile.size() > 42)
   {
     CStdString strExtension;
     CUtil::GetExtension(strFileNameAndPath, strExtension);
-    CStdString strPath=strFileNameAndPath.Left( strFileNameAndPath.size() - strFile.size() );
+    CStdString strPath = strFileNameAndPath.Left( strFileNameAndPath.size() - strFile.size() );
 
-    strFile=strFile.Left(42-strExtension.size());
-    strFile+=strExtension;
+    CRegExp reg;
+    CStdString strSearch=strFile; strSearch.ToLower();
+    reg.RegComp("([_\\-\\. ](cd|part)[0-9]*)[_\\-\\. ]");          // this is to ensure that cd1, cd2 or partXXX. do not
+    int matchPos = reg.RegFind(strSearch.c_str());                 // get cut from filenames when they are shortened.
 
-    CStdString strNewFile=strPath;
+    CStdString strPartNumber;
+    char* szPart = reg.GetReplaceString("\\1");
+    strPartNumber = szPart;
+    free(szPart);
+
+    int partPos = 42 - strPartNumber.size() - strExtension.size();
+
+    if (matchPos > partPos )
+    {
+       strFile = strFile.Left(partPos);
+       strFile += strPartNumber;
+    } else
+    {
+       strFile = strFile.Left(42 - strExtension.size());
+    }
+    strFile += strExtension;
+
+    CStdString strNewFile = strPath;
     if (!CUtil::HasSlashAtEnd(strPath))
-      strNewFile+="\\";
+      strNewFile += "\\";
 
-    strNewFile+=strFile;
-    strFileNameAndPath=strNewFile;
+    strNewFile += strFile;
+    strFileNameAndPath = strNewFile;
   }
 }
 
@@ -1818,35 +1870,41 @@ void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strPr
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
-  if ( !CDetectDVDMedia::IsDiscInDrive() ) {
-    strIcon="defaultDVDEmpty.png";
-    return;
+  if ( !CDetectDVDMedia::IsDiscInDrive() )
+  {
+    strIcon = "defaultDVDEmpty.png";
+    return ;
   }
 
-  if ( IsDVD(strPath) ) {
+  if ( IsDVD(strPath) )
+  {
     CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
     //  xbox DVD
-    if ( pInfo != NULL && pInfo->IsUDFX( 1 ) ) {
-      strIcon="defaultXBOXDVD.png";
-      return;
+    if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
+    {
+      strIcon = "defaultXBOXDVD.png";
+      return ;
     }
-    strIcon="defaultDVDRom.png";
-    return;
+    strIcon = "defaultDVDRom.png";
+    return ;
   }
 
-  if ( IsISO9660(strPath) ) {
+  if ( IsISO9660(strPath) )
+  {
     CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) ) {
-      strIcon="defaultVCD.png";
-      return;
+    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
+    {
+      strIcon = "defaultVCD.png";
+      return ;
     }
-    strIcon="defaultDVDRom.png";
-    return;
+    strIcon = "defaultDVDRom.png";
+    return ;
   }
 
-  if ( IsCDDA(strPath) ) {
-    strIcon="defaultCDDA.png";
-    return;
+  if ( IsCDDA(strPath) )
+  {
+    strIcon = "defaultCDDA.png";
+    return ;
   }
 }
 
@@ -1855,362 +1913,651 @@ void CUtil::RemoveTempFiles()
   WIN32_FIND_DATA wfd;
 
   CStdString strAlbumDir;
-  strAlbumDir.Format("%s\\*.tmp",g_stSettings.m_szAlbumDirectory);
-  memset(&wfd,0,sizeof(wfd));
+  strAlbumDir.Format("%s\\*.tmp", g_settings.GetDatabaseFolder().c_str());
+  memset(&wfd, 0, sizeof(wfd));
 
-  CAutoPtrFind hFind( FindFirstFile(strAlbumDir.c_str(),&wfd));
+  CAutoPtrFind hFind( FindFirstFile(strAlbumDir.c_str(), &wfd));
   if (!hFind.isValid())
     return ;
   do
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
     {
-      string strFile=g_stSettings.m_szAlbumDirectory;
-	  strFile += "\\";
+      string strFile = g_settings.GetDatabaseFolder();
+      strFile += "\\";
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
-  } while (FindNextFile(hFind, &wfd));
-
-  //CStdString strTempThumbDir;
-  //strTempThumbDir.Format("%s\\thumbs\\temp\\*.tbn",g_stSettings.m_szAlbumDirectory);
-  //memset(&wfd,0,sizeof(wfd));
-
-  //CAutoPtrFind hFind1( FindFirstFile(strTempThumbDir.c_str(),&wfd));
-  //if (!hFind1.isValid())
-  //  return ;
-  //do
-  //{
-  //  if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-  //  {
-  //    CStdString strFile;
-  //    strFile.Format("%s\\thumbs\\temp\\",g_stSettings.m_szAlbumDirectory);
-  //    strFile += wfd.cFileName;
-  //    DeleteFile(strFile.c_str());
-  //  }
-  //} while (FindNextFile(hFind1, &wfd));
+  }
+  while (FindNextFile(hFind, &wfd));
 }
 
-void CUtil::DeleteTDATA()
+void CUtil::DeleteGUISettings()
 {
-  WIN32_FIND_DATA wfd;
-  CStdString strTDATADir;
-  strTDATADir = "T:\\*.*";
-  memset(&wfd,0,sizeof(wfd));
-
-  CAutoPtrFind hFind( FindFirstFile(strTDATADir.c_str(),&wfd));
-  if (!hFind.isValid())
-    return ;
-  do
+  // Load in master code first to ensure it's setting isn't reset
+  TiXmlDocument doc;
+  if (doc.LoadFile(g_settings.GetSettingsFile()))
   {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
- 	  string strFile="T:\\";
-      strFile += wfd.cFileName;
-	  CLog::Log(LOGINFO, "  DeleteFile(%s)", strFile.c_str());
-	  DeleteFile(strFile.c_str());
-    }
-  } while (FindNextFile(hFind, &wfd));
+    g_guiSettings.LoadMasterLock(doc.RootElement());
+  }
+  // delete the settings file only
+  CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
+  ::DeleteFile(g_settings.GetSettingsFile().c_str());
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
 {
-  if (strFileName.size()<=2) return false;
-  char szDriveletter=tolower(strFileName.GetAt(0));
-  if ( (szDriveletter >= 'c'&& szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter=='q')  )
+  if (strFileName.size() <= 2) return false;
+  char szDriveletter = tolower(strFileName.GetAt(0));
+  if ( (szDriveletter >= 'c' && szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter == 'q') || (szDriveletter == 'z') || (szDriveletter == 'y') || (szDriveletter == 'x') )
   {
-    if (strFileName.GetAt(1)==':') return true;
+    if (strFileName.GetAt(1) == ':') return true;
   }
   return false;
 }
 
-// Following 6 routines added by JM to determine (possible) source type based
-// on frame size
-bool CUtil::IsNTSC_VCD(int iWidth, int iHeight)
-{
-  return (iWidth==352 && iHeight==240);
-}
-
-bool CUtil::IsNTSC_SVCD(int iWidth, int iHeight)
-{
-  return (iWidth==480 && iHeight==480);
-}
-
-bool CUtil::IsNTSC_DVD(int iWidth, int iHeight)
-{
-  return (iWidth==720 && iHeight==480);
-}
-
-bool CUtil::IsPAL_VCD(int iWidth, int iHeight)
-{
-  return (iWidth==352 && iHeight==488);
-}
-
-bool CUtil::IsPAL_SVCD(int iWidth, int iHeight)
-{
-  return (iWidth==480 && iHeight==576);
-}
-
-bool CUtil::IsPAL_DVD(int iWidth, int iHeight)
-{
-  return (iWidth==720 && iHeight==576);
-}
-
-
 void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
-  strcpy(szRemoveIllegal ,strText.c_str());
-  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~ ";
+  strcpy(szRemoveIllegal , strText.c_str());
+  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßÅåÄäÖöÜüøéèçàùêÂñáïëìíâãæîðòôóõ÷ú ";
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
     *cursor = '_';
-  strText=szRemoveIllegal;
+  strText = szRemoveIllegal;
 }
 
 void CUtil::ClearSubtitles()
 {
-	//delete cached subs
-	WIN32_FIND_DATA wfd;
-	CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*",&wfd));
-
-	if (hFind.isValid())
-	{
-		do
-		{
-			if (wfd.cFileName[0]!=0)
-			{
-				if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
-				{
-					CStdString strFile;
-					strFile.Format("Z:\\%s", wfd.cFileName);
-					if (strFile.Find("subtitle")>=0 )
-					{
-						::DeleteFile(strFile.c_str());
-					}
-					else if (strFile.Find("vobsub_queue")>=0 )
-					{
-						::DeleteFile(strFile.c_str());
-					}
-				}
-			}
-		} while (FindNextFile((HANDLE)hFind, &wfd));
-	}
-}
-
-void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached )
-{
-  char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
-  strExtensionCached = "";
-  int iPos=0;
-  bool bFoundSubs=false;
-  CStdString strPath,strFName;
-  CUtil::Split(strMovie,strPath,strFName);
-  if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
-
-  g_directoryCache.ClearDirectory(strPath);
-
-	ClearSubtitles();
-
-  CURL url(strMovie);
-  if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
-  if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
-  if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
-  if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
-  if (CUtil::IsPlayList(strMovie)) return;
-  if (!CUtil::IsVideo(strMovie)) return;
-
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0)
-  {
-    // check alternate subtitle directory
-    iPos=0;
-    while (sub_exts[iPos])
-    {
-      CStdString strSource,strDest;
-      strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
-
-      CStdString strFname;
-      strFname=CUtil::GetFileName(strMovie);
-      strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
-      CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
-      CFile file;
-      if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
-      {
-        CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-        strExtensionCached = (CStdString)sub_exts[iPos];
-        bFoundSubs=true;
-      }
-      iPos++;
-    }
-  }
-
-  if (bFoundSubs) return;
-
-
-  // check original movie directory
-  iPos=0;
-  while (sub_exts[iPos])
-  {
-    CStdString strSource,strDest;
-    strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
-
-    ::DeleteFile(strDest);
-    strSource=strMovie;
-    CUtil::ReplaceExtension(strMovie,sub_exts[iPos],strSource);
-    CFile file;
-    if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
-    {
-      CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-      strExtensionCached = (CStdString)sub_exts[iPos];
-      bFoundSubs=true;
-    }
-    iPos++;
-  }
-
-
-}
-
-void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
-{
-  int hh = lSeconds / 3600;
-  lSeconds = lSeconds%3600;
-  int mm = lSeconds / 60;
-  int ss = lSeconds % 60;
-
-  if (hh>=1)
-    strHMS.Format("%2.2i:%02.2i:%02.2i",hh,mm,ss);
-  else
-    strHMS.Format("%i:%02.2i",mm,ss);
-
-}
-void CUtil::PrepareSubtitleFonts()
-{
-  if (strlen(g_stSettings.m_szSubtitleFont)==0) return;
-  if (g_stSettings.m_iSubtitleHeight==0) return;
-
-  CStdString strPath,strHomePath,strSearchMask;
-  strHomePath = "Q:";
-  strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
-          strHomePath.c_str(),
-          g_stSettings.m_szSubtitleFont,g_stSettings.m_iSubtitleHeight);
-
-  strSearchMask=strPath+"*.*";
+  //delete cached subs
   WIN32_FIND_DATA wfd;
-  CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
+  CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*", &wfd));
+
   if (hFind.isValid())
   {
     do
     {
-      if (wfd.cFileName[0]!=0)
+      if (wfd.cFileName[0] != 0)
       {
-        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
+        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
-          CStdString strSource,strDest;
-          strSource.Format("%s%s",strPath.c_str(),wfd.cFileName);
-          strDest.Format("%s\\mplayer\\font\\%s",strHomePath.c_str(),  wfd.cFileName);
-          ::CopyFile(strSource.c_str(),strDest.c_str(),FALSE);
+          CStdString strFile;
+          strFile.Format("Z:\\%s", wfd.cFileName);
+          if (strFile.Find("subtitle") >= 0 )
+          {
+            if (strFile.Find(".keep") != strFile.size()-5) // do not remove files ending with .keep
+              ::DeleteFile(strFile.c_str());
+          }
+          else if (strFile.Find("vobsub_queue") >= 0 )
+          {
+            ::DeleteFile(strFile.c_str());
+          }
         }
       }
-    } while (FindNextFile((HANDLE)hFind, &wfd));
+    }
+    while (FindNextFile((HANDLE)hFind, &wfd));
+  }
+}
+
+static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
+
+void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
+{
+  DWORD startTimer = timeGetTime();
+  CLog::Log(LOGDEBUG,__FUNCTION__": START");
+
+  // new array for commons sub dirs
+  char * common_sub_dirs[] = {"subs",
+                              "Subs",
+                              "subtitles",
+                              "Subtitles",
+                              "vobsubs",
+                              "Vobsubs",
+                              "sub",
+                              "Sub",
+                              "vobsub",
+                              "Vobsub",
+                              "subtitle",
+                              "Subtitle",
+                              NULL};
+
+  std::vector<CStdString> vecExtensionsCached;
+  strExtensionCached = "";
+
+  ClearSubtitles();
+
+  CFileItem item(strMovie, false);
+  if (item.IsInternetStream()) return ;
+  if (item.IsPlayList()) return ;
+  if (!item.IsVideo()) return ;
+
+  std::vector<CStdString> strLookInPaths;
+
+  CStdString strFileName;
+  CStdString strFileNameNoExt;
+  CStdString strPath;
+
+  CUtil::Split(strMovie, strPath, strFileName);
+  ReplaceExtension(strFileName, "", strFileNameNoExt);
+  strLookInPaths.push_back(strPath);
+
+  if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
+  {
+    if (!g_network.IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
+    {
+      CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
+      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+    }
+    else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
+    {
+      CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
+      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+    }
+
+    g_stSettings.iAdditionalSubtitleDirectoryChecked = 1;
+  }
+
+  if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
+  {
+    CURL url(strMovie);
+    CStdString strArchive = url.GetHostName();
+    CUtil::Split(strArchive, strPath, strFileName);
+    strLookInPaths.push_back(strPath);
+  }
+
+  // checking if any of the common subdirs exist ..
+  CLog::Log(LOGDEBUG,__FUNCTION__": Checking for common subirs...");
+  int iSize = strLookInPaths.size();
+  for (int i=0;i<iSize;++i)
+  {
+    CStdString strParent;
+    CUtil::GetParentPath(strLookInPaths[i],strParent);
+    if (CURL(strParent).GetFileName() == "")
+      strParent = "";
+    for (int j=0; common_sub_dirs[j]; j+=2)
+    {
+      CStdString strPath2;
+      CUtil::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j],strPath2);
+      if (CDirectory::Exists(strPath2))
+        strLookInPaths.push_back(strPath2);
+      else
+      {
+        CURL url(strLookInPaths[i]);
+        if (url.GetProtocol() == "smb" || url.GetProtocol() == "xbms")
+        {
+          CUtil::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j+1],strPath2);
+          if (CDirectory::Exists(strPath2))
+            strLookInPaths.push_back(strPath2);
+        }
+      }
+
+      // ../common dirs aswell
+      if (strParent != "")
+      {
+        CUtil::AddFileToFolder(strParent,common_sub_dirs[j],strPath2);
+        if (CDirectory::Exists(strPath2))
+          strLookInPaths.push_back(strPath2);
+        else
+        {
+          CURL url(strParent);
+
+          if (url.GetProtocol() == "smb" || url.GetProtocol() == "xbms")
+          {
+            CUtil::AddFileToFolder(strParent,common_sub_dirs[j+1],strPath2);
+            if (CDirectory::Exists(strPath2))
+              strLookInPaths.push_back(strPath2);
+          }
+        }
+      }
+    }
+  }
+  // .. done checking for common subdirs
+
+  // check if there any cd-directories in the paths we have added so far
+  char temp[6];
+  iSize = strLookInPaths.size();
+  for (int i=0;i<9;++i) // 9 cd's
+  {
+    sprintf(temp,"cd%i",i+1);
+    for (int i=0;i<iSize;++i)
+    {
+      CStdString strPath2;
+      CUtil::AddFileToFolder(strLookInPaths[i],temp,strPath2);
+      if (CDirectory::Exists(strPath2))
+        strLookInPaths.push_back(strPath2);
+    }
+  }
+  // .. done checking for cd-dirs
+
+  // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
+  if (g_stSettings.iAdditionalSubtitleDirectoryChecked == 1)
+  {
+    strPath = g_guiSettings.GetString("subtitles.custompath");
+    if (!HasSlashAtEnd(strPath))
+      strPath += "/"; //Should work for both remote and local files
+    strLookInPaths.push_back(strPath);
+  }
+
+  DWORD nextTimer = timeGetTime();
+  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(nextTimer - startTimer));
+
+  CStdString strLExt;
+  CStdString strDest;
+  CStdString strItem;
+
+  // 2 steps for movie directory and alternate subtitles directory
+  CLog::Log(LOGDEBUG,__FUNCTION__": Searching for subtitles...");
+  for (unsigned int step = 0; step < strLookInPaths.size(); step++)
+  {
+    if (strLookInPaths[step].length() != 0)
+    {
+      CFileItemList items;
+
+      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",false);
+      int fnl = strFileNameNoExt.size();
+
+      CStdString strFileNameNoExtNoCase(strFileNameNoExt);
+      strFileNameNoExtNoCase.MakeLower();
+      for (int j = 0; j < (int)items.Size(); j++)
+      {
+        Split(items[j]->m_strPath, strPath, strItem);
+
+        // is this a rar-file ..
+        if ((CUtil::IsRAR(strItem) || CUtil::IsZIP(strItem)) && g_guiSettings.GetBool("subtitles.searchrars"))
+        {
+          CStdString strRar, strItemWithPath;
+          CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+CUtil::GetExtension(strItem),strRar);
+          CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
+
+          int iPos = strMovie.substr(0,6)=="rar://"?1:0;
+          iPos = strMovie.substr(0,6)=="zip://"?1:0;
+          if ((step != iPos) || (strFileNameNoExtNoCase+".rar").Equals(strItem) || (strFileNameNoExtNoCase+".zip").Equals(strItem))
+            CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
+        }
+        else
+        {
+          for (int i = 0; sub_exts[i]; i++)
+          {
+            int l = strlen(sub_exts[i]);
+
+            //Cache any alternate subtitles.
+            if (strItem.Left(9).ToLower() == "subtitle." && strItem.Right(l).ToLower() == sub_exts[i])
+            {
+              strLExt = strItem.Right(strItem.GetLength() - 9);
+              strDest.Format("Z:\\subtitle.alt-%s", strLExt);
+              if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
+              {
+                CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
+                strExtensionCached = strLExt;
+              }
+            }
+
+            //Cache subtitle with same name as movie
+            if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl).ToLower() == strFileNameNoExt.ToLower())
+            {
+              strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
+              strDest.Format("Z:\\subtitle.%s", strLExt);
+              if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
+              {
+                if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
+                {
+                  vecExtensionsCached.push_back(strLExt);
+                  CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
+                }
+              }
+            }
+          }
+        }
+      }
+
+      g_directoryCache.ClearDirectory(strLookInPaths[step]);
+    }
+  }
+  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(timeGetTime() - nextTimer));
+
+  // rename any keep subtitles
+  CFileItemList items;
+  CDirectory::GetDirectory("z:\\",items,".keep");
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+    {
+      CFile::Delete(items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
+      CFile::Rename(items[i]->m_strPath,items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
+    }
+  }
+
+  // construct string of added exts?
+  for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
+    strExtensionCached += *it+" ";
+
+  CLog::Log(LOGDEBUG,__FUNCTION__": END (total time: %i ms)", (int)(timeGetTime() - startTimer));
+}
+
+bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
+{
+  bool bFoundSubs = false;
+  CFileItemList ItemList;
+
+  // zip only gets the root dir
+  if (CUtil::GetExtension(strRarPath).Equals(".zip"))
+  {
+    CStdString strZipPath;
+    CUtil::CreateZipPath(strZipPath,strRarPath,"");
+    if (!CDirectory::GetDirectory(strZipPath,ItemList,"",false))
+      return false;
+  }
+  else
+  {
+    // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
+    // so now we dont have to find any subdirs anymore, all files in the rar is checked.
+    if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") )
+      return false;
+  }
+  for (int it= 0 ; it <ItemList.Size();++it)
+  {
+    CStdString strPathInRar = ItemList[it]->m_strPath;
+    CLog::Log(LOGDEBUG, "CacheRarSubs:: Found file %s", strPathInRar.c_str());
+    // always check any embedded rar archives
+    // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
+    if (CUtil::IsRAR(strPathInRar) || CUtil::IsZIP(strPathInRar))
+    {
+      CStdString strExtAdded;
+      CStdString strRarInRar;
+      if (CUtil::GetExtension(strPathInRar).Equals(".rar"))
+        CUtil::CreateRarPath(strRarInRar, strRarPath, strPathInRar);
+      else
+        CUtil::CreateZipPath(strRarInRar, strRarPath, strPathInRar);
+      CacheRarSubtitles(vecExtensionsCached,strRarInRar,strCompare, strExtExt);
+    }
+    // done checking if this is a rar-in-rar
+
+    int iPos=0;
+    CStdString strExt = CUtil::GetExtension(strPathInRar);
+    CStdString strFileName = CUtil::GetFileName(strPathInRar);
+    CStdString strFileNameNoCase(strFileName);
+    strFileNameNoCase.MakeLower();
+    if (strFileNameNoCase.Find(strCompare) >= 0)
+      while (sub_exts[iPos])
+      {
+        if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
+        {
+          CStdString strSourceUrl, strDestUrl;
+          if (CUtil::GetExtension(strRarPath).Equals(".rar"))
+            CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
+          else
+            strSourceUrl = strPathInRar;
+
+          CStdString strDestFile;
+          strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+
+          if (CFile::Cache(strSourceUrl,strDestFile))
+          {
+            vecExtensionsCached.push_back(CStdString(sub_exts[iPos]));
+            CLog::Log(LOGINFO, " cached subtitle %s->%s", strPathInRar.c_str(), strDestFile.c_str());
+            bFoundSubs = true;
+            break;
+          }
+        }
+
+        iPos++;
+      }
+  }
+  return bFoundSubs;
+}
+
+void CUtil::PrepareSubtitleFonts()
+{
+  CStdString strFontPath = "Q:\\system\\players\\mplayer\\font";
+
+  if( IsUsingTTFSubtitles()
+    || g_guiSettings.GetInt("subtitles.height") == 0
+    || g_guiSettings.GetString("subtitles.font").size() == 0)
+  {
+    /* delete all files in the font dir, so mplayer doesn't try to load them */
+
+    CStdString strSearchMask = strFontPath + "\\*.*";
+    WIN32_FIND_DATA wfd;
+    CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
+    if (hFind.isValid())
+    {
+      do
+      {
+        if(wfd.cFileName[0] == 0) continue;
+        if( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+        {
+          CStdString strSource = strFontPath + "\\" + wfd.cFileName;
+          ::DeleteFile(strSource.c_str());
+        }
+      }
+      while (FindNextFile((HANDLE)hFind, &wfd));
+    }
+  }
+  else
+  {
+    CStdString strPath;
+    strPath.Format("%s\\%s\\%i",
+                  strFontPath.c_str(),
+                  g_guiSettings.GetString("Subtitles.Font").c_str(),
+                  g_guiSettings.GetInt("Subtitles.Height"));
+
+    CStdString strSearchMask = strPath + "\\*.*";
+    WIN32_FIND_DATA wfd;
+    CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
+    if (hFind.isValid())
+    {
+      do
+      {
+        if (wfd.cFileName[0] == 0) continue;
+        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+        {
+          CStdString strSource, strDest;
+          strSource.Format("%s\\%s", strPath.c_str(), wfd.cFileName);
+          strDest.Format("%s\\%s", strFontPath.c_str(), wfd.cFileName);
+          ::CopyFile(strSource.c_str(), strDest.c_str(), FALSE);
+        }
+      }
+      while (FindNextFile((HANDLE)hFind, &wfd));
+    }
   }
 }
 
 __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 {
   __int64 n;
-  n=dwHigh;
-  n <<=32;
+  n = dwHigh;
+  n <<= 32;
   n += dwLow;
   return n;
 }
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  strResult=strFolder;
+  strResult = strFolder;
+  // remove the stack:// as it screws up the logic below
+  if (IsStack(strFolder))
+    strResult = strResult.Mid(8);
+
+  // Add a slash to the end of the path if necessary
   if (!CUtil::HasSlashAtEnd(strResult))
   {
-    if (strResult.Find("//")>=0 )
-      strResult+="/";
+    if (strResult.Find("//") >= 0 )
+      strResult += "/";
     else
-      strResult+="\\";
+      strResult += "\\";
   }
-  strResult += strFile;
+  // Remove any slash at the start of the file
+  if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
+    strResult += strFile.Mid(1);
+  else
+    strResult += strFile;
+  // re-add the stack:// protocol
+  if (IsStack(strFolder))
+    strResult = "stack://" + strResult;
 }
 
-bool CUtil::IsNFO(const CStdString& strFile)
+void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
-  char *pExtension=CUtil::GetExtension(strFile);
-  if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension,".nfo")==0) return true;
-  return false;
+  // correct check for base url like smb://
+  if (strFolder.Right(3).Equals("://"))
+    return;
+
+  if (!CUtil::HasSlashAtEnd(strFolder))
+  {
+    if (strFolder.Find("/") >= 0)
+      strFolder += "/";
+    else
+      strFolder += "\\";
+  }
+}
+
+void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
+{
+  // correct check for base url like smb://
+  if (strFolder.Right(3).Equals("://"))
+    return;
+
+  if (CUtil::HasSlashAtEnd(strFolder))
+    strFolder.Delete(strFolder.size() - 1);
 }
 
 void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 {
-  int iPos1=strFileName.Find("/");
-  int iPos2=strFileName.Find("\\");
-  int iPos3=strFileName.Find(":");
-  if (iPos2>iPos1) iPos1=iPos2;
-  if (iPos3>iPos1) iPos1=iPos3;
+  int iPos1 = strFileName.Find("/");
+  int iPos2 = strFileName.Find("\\");
+  int iPos3 = strFileName.Find(":");
+  if (iPos2 > iPos1) iPos1 = iPos2;
+  if (iPos3 > iPos1) iPos1 = iPos3;
 
-  strPath=strFileName.Left(iPos1-1);
+  strPath = strFileName.Left(iPos1 - 1);
 }
-
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
-	int iPos1=strFilePath.ReverseFind('/');
-	int iPos2=strFilePath.ReverseFind('\\');
+  //Will from a full filename return the directory the file resides in.
+  //has no trailing slash on result. Could lead to problems when reading from root on cd
+  //ISO9660://filename.bla will result in path ISO9660:/
+  //This behaviour should probably be changed, but it would break other things
+  int iPos1 = strFilePath.ReverseFind('/');
+  int iPos2 = strFilePath.ReverseFind('\\');
 
-	if (iPos2>iPos1)
-	{
-		iPos1=iPos2;
-	}
+  if (iPos2 > iPos1)
+  {
+    iPos1 = iPos2;
+  }
 
-	if (iPos1>0)
-	{
-		strDirectoryPath = strFilePath.Left(iPos1);
-	}
+  if (iPos1 > 0)
+  {
+    strDirectoryPath = strFilePath.Left(iPos1);
+  }
 }
-
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
-  strFileName="";
-  strPath="";
-  int i=strFileNameAndPath.size()-1;
+  //Splits a full filename in path and file.
+  //ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
+  //Trailing slash will be preserved
+  strFileName = "";
+  strPath = "";
+  int i = strFileNameAndPath.size() - 1;
   while (i > 0)
   {
-    char ch=strFileNameAndPath[i];
-    if (ch==':' || ch=='/' || ch=='\\') break;
+    char ch = strFileNameAndPath[i];
+    if (ch == ':' || ch == '/' || ch == '\\') break;
     else i--;
   }
-  strPath     = strFileNameAndPath.Left(i);
-  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
+  if (i == 0)
+    i--;
+
+  strPath = strFileNameAndPath.Left(i + 1);
+  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
-int CUtil::GetFolderCount(VECFILEITEMS &items)
+void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
 {
-  int nFolderCount=0;
-  for (int i = 0; i < (int)items.size(); i++)
+  //The possibilties for wOptions are
+  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
+  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
+  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
+  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
+  CStdString strBuffer;
+
+  strUrlPath = "zip://";
+
+  if( !strPwd.IsEmpty() )
   {
-    CFileItem* pItem = items[i];
-    if (pItem->m_bIsFolder)
-      nFolderCount++;
+    strBuffer = strPwd;
+    CUtil::URLEncode(strBuffer);
+    strUrlPath += strBuffer;
+    strUrlPath += "@";
   }
 
-  return nFolderCount;
+  strBuffer = strRarPath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += strBuffer;
+
+  strBuffer = strFilePathInRar;
+  strBuffer.Replace('\\', '/');
+  strBuffer.TrimLeft('/');
+
+  strUrlPath += "/";
+  strUrlPath += strBuffer;
+
+#if 0  // options are not used
+  strBuffer = strCachePath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += "?cache=";
+  strUrlPath += strBuffer;
+
+  strBuffer.Format("%i", wOptions);
+  strUrlPath += "&flags=";
+  strUrlPath += strBuffer;
+#endif
 }
 
-int CUtil::GetFileCount(VECFILEITEMS &items)
+
+void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
 {
-  int nFileCount=0;
-  for (int i = 0; i < (int)items.size(); i++)
+  //The possibilties for wOptions are
+  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
+  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
+  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
+  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
+  CStdString strBuffer;
+
+  strUrlPath = "rar://";
+
+  if( !strPwd.IsEmpty() )
   {
-    CFileItem* pItem = items[i];
-    if (! pItem->m_bIsFolder)
-      nFileCount++;
+    strBuffer = strPwd;
+    CUtil::URLEncode(strBuffer);
+    strUrlPath += strBuffer;
+    strUrlPath += "@";
   }
 
-  return nFileCount;
+  strBuffer = strRarPath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += strBuffer;
+
+  strBuffer = strFilePathInRar;
+  strBuffer.Replace('\\', '/');
+  strBuffer.TrimLeft('/');
+
+  strUrlPath += "/";
+  strUrlPath += strBuffer;
+
+#if 0 // options are not used
+  strBuffer = strCachePath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += "?cache=";
+  strUrlPath += strBuffer;
+
+  strBuffer.Format("%i", wOptions);
+  strUrlPath += "&flags=";
+  strUrlPath += strBuffer;
+#endif
 }
 
 bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
@@ -2235,624 +2582,50 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_stSettings.m_szExternalDVDPlayer[0])
+  if (g_guiSettings.GetBool("videoplayer.useexternaldvdplayer") && !g_guiSettings.GetString("videoplayer.externaldvdplayer").IsEmpty())
   {
-    char szPath[1024];
-    char szDevicePath[1024];
-    char szXbePath[1024];
-    char szParameters[1024];
-    memset(szParameters,0,sizeof(szParameters));
-    strcpy(szPath,g_stSettings.m_szExternalDVDPlayer);
-    char* szBackslash = strrchr(szPath,'\\');
-    *szBackslash=0x00;
-    char* szXbe = &szBackslash[1];
-    char* szColon = strrchr(szPath,':');
-    *szColon=0x00;
-    char* szDrive = szPath;
-    char* szDirectory = &szColon[1];
-    CIoSupport helper;
-    helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
-    strcat(szDevicePath,szDirectory);
-    wsprintf(szXbePath,"d:\\%s",szXbe);
-
-    g_application.Stop();
-    CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
+    RunXBE(g_guiSettings.GetString("videoplayer.externaldvdplayer").c_str());
   }
   else
   {
-    CIoSupport helper;
-    helper.Remount("D:","Cdrom0");
-	CFileItem item;
-	item.m_strPath = "dvd://1";
+    CIoSupport::Dismount("Cdrom0");
+    CIoSupport::RemapDriveLetter('D', "Cdrom0");
+    CFileItem item("dvd://1", false);
+    item.SetLabel(CDetectDVDMedia::GetDVDLabel());
     g_application.PlayFile(item);
-  }
-}
-
-DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
-{
-  static unsigned char params[512];
-  static DWORD        vReturn;
-  static XNADDR       sAddress;
-  char temp_str[64];
-  static char mode = 0;
-  XNADDR xna;
-  DWORD dwState;
-
-  if( resetmode )
-  {
-    resetmode = 0;
-    mode = 0;
-  }
-
-  if( !XNetGetEthernetLinkStatus() )
-  {
-    return 1;
-  }
-
-  if( mode == 100 )
-  {
-    CLog::Log(LOGDEBUG, "  pending...");
-    dwState = XNetGetTitleXnAddr(&xna);
-    if(dwState==XNET_GET_XNADDR_PENDING)
-      return 1;
-    mode = 5;
-    char  azIPAdd[256];
-    memset( azIPAdd,0,256);
-    XNetInAddrToString(xna.ina,azIPAdd,32);
-    CLog::Log(LOGINFO, "ip address:%s",azIPAdd);
-  }
-
-  // if local address is specified
-  if( mode == 0 )
-  {
-    if ( !networkinfo.DHCP )
-    {
-      TXNetConfigParams configParams;
-
-      XNetLoadConfigParams( (LPBYTE) &configParams );
-      BOOL bXboxVersion2 = (configParams.V2_Tag == 0x58425632 );  // "XBV2"
-      BOOL bDirty = FALSE;
-
-      if (bXboxVersion2)
-      {
-        if (configParams.V2_IP != inet_addr(networkinfo.ip))
-        {
-          configParams.V2_IP = inet_addr(networkinfo.ip);
-          bDirty = TRUE;
-        }
-      }
-      else
-      {
-        if (configParams.V1_IP != inet_addr(networkinfo.ip))
-        {
-          configParams.V1_IP = inet_addr(networkinfo.ip);
-          bDirty = TRUE;
-        }
-      }
-
-      if (bXboxVersion2)
-      {
-        if (configParams.V2_Subnetmask != inet_addr(networkinfo.subnet))
-        {
-          configParams.V2_Subnetmask = inet_addr(networkinfo.subnet);
-          bDirty = TRUE;
-        }
-      }
-      else
-      {
-        if (configParams.V1_Subnetmask != inet_addr(networkinfo.subnet))
-        {
-          configParams.V1_Subnetmask = inet_addr(networkinfo.subnet);
-          bDirty = TRUE;
-        }
-      }
-
-      if (bXboxVersion2)
-      {
-        if (configParams.V2_Defaultgateway != inet_addr(networkinfo.gateway))
-        {
-          configParams.V2_Defaultgateway = inet_addr(networkinfo.gateway);
-          bDirty = TRUE;
-        }
-      }
-      else
-      {
-        if (configParams.V1_Defaultgateway != inet_addr(networkinfo.gateway))
-        {
-          configParams.V1_Defaultgateway = inet_addr(networkinfo.gateway);
-          bDirty = TRUE;
-        }
-      }
-
-      if (bXboxVersion2)
-      {
-        if (configParams.V2_DNS1 != inet_addr(networkinfo.DNS1))
-        {
-          configParams.V2_DNS1 = inet_addr(networkinfo.DNS1);
-          bDirty = TRUE;
-        }
-      }
-      else
-      {
-        if (configParams.V1_DNS1 != inet_addr(networkinfo.DNS1))
-        {
-          configParams.V1_DNS1 = inet_addr(networkinfo.DNS1);
-          bDirty = TRUE;
-        }
-      }
-
-      if (bXboxVersion2)
-      {
-        if (configParams.V2_DNS2 != inet_addr(networkinfo.DNS2))
-        {
-          configParams.V2_DNS2 = inet_addr(networkinfo.DNS2);
-          bDirty = TRUE;
-        }
-      }
-      else
-      {
-        if (configParams.V1_DNS2 != inet_addr(networkinfo.DNS2))
-        {
-          configParams.V1_DNS2 = inet_addr(networkinfo.DNS2);
-          bDirty = TRUE;
-        }
-      }
-
-      if (configParams.Flag != (0x04|0x08) )
-      {
-        configParams.Flag = 0x04 | 0x08;
-        bDirty = TRUE;
-      }
-
-      XNetSaveConfigParams( (LPBYTE) &configParams );
-
-      XNetStartupParams xnsp;
-      memset(&xnsp, 0, sizeof(xnsp));
-      xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
-
-      // Bypass security so that we may connect to 'untrusted' hosts
-      xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-    // create more memory for networking
-			xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-			xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-			xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-			xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-			xnsp.cfgSockMaxSockets = 64; // default = 64
-			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-      CLog::Log(LOGINFO, "requesting local ip adres");
-      int err = XNetStartup(&xnsp);
-      mode = 100;
-      return 1;
-    }
-    else
-    {
-      /**     Set DHCP-flags from a known DHCP mode  (maybe some day we will fix this)  **/
-      XNetLoadConfigParams(params);
-      memset( params, 0, (sizeof(IN_ADDR) * 5) + 20 );
-      params[40]=33;  params[41]=223; params[42]=196; params[43]=67;  params[44]=6;
-      params[45]=145; params[46]=157; params[47]=118; params[48]=182; params[49]=239;
-      params[50]=68;  params[51]=197; params[52]=133; params[53]=150; params[54]=118;
-      params[55]=211; params[56]=38;  params[57]=87;  params[58]=222; params[59]=119;
-      params[64]=0; params[72]=0; params[73]=0; params[74]=0; params[75]=0;
-      params[340]=160;    params[341]=93;       params[342]=131;      params[343]=191;      params[344]=46;
-
-      XNetStartupParams xnsp;
-
-      memset(&xnsp, 0, sizeof(xnsp));
-      xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
-      // Bypass security so that we may connect to 'untrusted' hosts
-      xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-
-			xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-			xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-			xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-			xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-			xnsp.cfgSockMaxSockets = 64; // default = 64
-			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-
-      XNetSaveConfigParams(params);
-      CLog::Log(LOGINFO, "requesting DHCP");
-      int err = XNetStartup(&xnsp);
-      mode = 5;
-    }
-
-
-  }
-
-  char g_szTitleIP[32];
-
-  WSADATA WsaData;
-  int err;
-
-  char ftploop;
-  if( mode == 5 )
-  {
-    XNADDR xna;
-    DWORD dwState;
-
-    dwState = XNetGetTitleXnAddr(&xna);
-
-    if( dwState==XNET_GET_XNADDR_PENDING)
-      return 1;
-
-    XNetInAddrToString(xna.ina,g_szTitleIP,32);
-    err = WSAStartup( MAKEWORD(2,2), &WsaData );
-    ftploop = 1;
-    mode ++;
-  }
-
-  if( mode == 6 )
-  {
-    vReturn = XNetGetTitleXnAddr(&sAddress);
-
-
-    ftploop = 1;
-
-    if( vReturn != XNET_GET_XNADDR_PENDING )
-    {
-      char  azIPAdd[256];
-      //char  azMessage[256];
-
-      memset(azIPAdd,0,sizeof(azIPAdd));
-
-      XNetInAddrToString(sAddress.ina,azIPAdd,sizeof(azIPAdd));
-      //strcpy(NetworkStatus,azIPAdd);
-      //strcpy( NetworkStatusInternal, NetworkStatus );
-			if (sAddress.ina.S_un.S_addr != 0)
-      {
-        DWORD temp = XNetGetEthernetLinkStatus();
-        if(  temp & XNET_ETHERNET_LINK_ACTIVE )
-        {
-
-          if ( temp & XNET_ETHERNET_LINK_FULL_DUPLEX )
-          {
-            // full duplex
-            CLog::Log(LOGINFO, "  full duplex");
-          }
-
-          if ( temp & XNET_ETHERNET_LINK_HALF_DUPLEX )
-          {
-            // half duplex
-            CLog::Log(LOGINFO, "  half duplex");
-          }
-
-          if ( temp & XNET_ETHERNET_LINK_100MBPS )
-          {
-            CLog::Log(LOGINFO, "  100 mbps");
-          }
-
-          if ( temp & XNET_ETHERNET_LINK_10MBPS )
-          {
-            CLog::Log(LOGINFO, "  10bmps");
-          }
-
-          if ( vReturn &  XNET_GET_XNADDR_STATIC )
-          {
-            CLog::Log(LOGINFO, "  static ip");
-          }
-
-          if ( vReturn &  XNET_GET_XNADDR_DHCP )
-          {
-            CLog::Log(LOGINFO, "  Dynamic IP");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_DNS )
-          {
-            CLog::Log(LOGINFO, "  DNS");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_ETHERNET )
-          {
-            CLog::Log(LOGINFO, "  ethernet");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_NONE )
-          {
-            CLog::Log(LOGINFO, "  none");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_ONLINE )
-          {
-            CLog::Log(LOGINFO, "  online");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_PENDING )
-          {
-            CLog::Log(LOGINFO, "  pending");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_TROUBLESHOOT )
-          {
-            CLog::Log(LOGINFO, "  error");
-          }
-
-          if ( vReturn & XNET_GET_XNADDR_PPPOE )
-          {
-            CLog::Log(LOGINFO, "  ppoe");
-          }
-
-          sprintf(temp_str,"  IP: %s",azIPAdd);
-          CLog::Log(LOGINFO, temp_str);
-        }
-        ftploop = 0;
-        mode ++;
-        return 0;
-      }
-			return 2;
-    }
-
-    Sleep(50);
-    return 1;
-  }
-  return 1;
-}
-
-void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
-{
-  strThumb.Format("%s\\imdb\\imdb%s.jpg",g_stSettings.szThumbnailsDirectory,strIMDBID.c_str());
-}
-
-void CUtil::SetMusicThumbs(VECFILEITEMS &items)
-{
-  VECFILEITEMS qitems;
-  CHDDirectory dir;
-
-
-  CStdString strThumb=g_stSettings.m_szAlbumDirectory;
-  strThumb+="\\thumbs";
-  {
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs directory
-  }
-  {
-    strThumb+="\\temp";
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs\temp directory
-  }
-
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-    SetMusicThumb(pItem);
-  }
-  CUtil::ClearCache();
-
-}
-
-void CUtil::SetMusicThumb(CFileItem* pItem)
-{
-	//	Set the album thumb for a file or folder.
-
-	//	Sets thumb by album title or uses files in
-	//	folder like folder.jpg or .tbn files.
-
-  // if it already has a thumbnail, then return
-  if ( pItem->HasThumbnail() ) return;
-
-  if (CUtil::IsRemote(pItem->m_strPath))
-  {
-    CURL url(pItem->m_strPath);
-    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
-    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
-    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
-    if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
-  }
-  CStdString strThumb, strPath, strFileName;
-
-	//	If item is not a folder, extract its path
-  if (!pItem->m_bIsFolder)
-    CUtil::Split(pItem->m_strPath, strPath, strFileName);
-  else
-	{
-    strPath=pItem->m_strPath;
-		if (CUtil::HasSlashAtEnd(strPath))
-			strPath.Delete(strPath.size()-1);
-	}
-
-	//	Look if an album thumb is available,
-	//	could be any file with tags loaded or
-	//	a directory in album window
-  CStdString strAlbum;
-	if (pItem->m_musicInfoTag.Loaded())
-		strAlbum=pItem->m_musicInfoTag.GetAlbum();
-
-	if (!pItem->m_bIsFolder)
-  {
-    // look for a permanent thumb (Q:\albums\thumbs)
-    CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-    if (CUtil::FileExists(strThumb))
-    {
-			//	found it, we are finished.
-      pItem->SetIconImage(strThumb);
-      pItem->SetThumbnailImage(strThumb);
-    }
-    else
-    {
-      // look for a temporary thumb (Q:\albums\thumbs\temp)
-      CUtil::GetAlbumThumb(strAlbum, strPath,strThumb, true);
-      if (CUtil::FileExists(strThumb) )
-      {
-				//	found it
-        pItem->SetIconImage(strThumb);
-        pItem->SetThumbnailImage(strThumb);
-      }
-			else
-			{
-				//	no thumb found
-				strThumb.Empty();
-			}
-		}
-	}
-
-	//	If we have not found a thumb before, look for a .tbn if its a file
-	if (strThumb.IsEmpty() && !pItem->m_bIsFolder)
-	{
-		CUtil::ReplaceExtension(pItem->m_strPath, ".tbn", strThumb);
-		if( CUtil::IsRemote(pItem->m_strPath) || CUtil::IsDVD(pItem->m_strPath) || CUtil::IsISO9660(pItem->m_strPath))
-		{
-			//	Query local cache
-			CStdString strCached;
-			CUtil::GetAlbumFolderThumb(strThumb, strCached, true);
-			if (CUtil::FileExists(strCached))
-			{
-				//	Remote thumb found in local cache
-				pItem->SetIconImage(strCached);
-				pItem->SetThumbnailImage(strCached);
-			}
-			else
-			{
-				//	create cached thumb, if a .tbn file is found
-				//	on a remote share
-				if (CUtil::FileExists(strThumb))
-				{
-					//	found, save a thumb
-					//	to the temp thumb dir.
-					CPicture pic;
-					if (pic.CreateAlbumThumbnail(strThumb, strThumb))
-					{
-						pItem->SetIconImage(strCached);
-						pItem->SetThumbnailImage(strCached);
-					}
-					else
-					{
-						//	save temp thumb failed,
-						//	no thumb available
-						strThumb.Empty();
-					}
-				}
-				else
-				{
-					//	no thumb available
-					strThumb.Empty();
-				}
-			}
-		}
-		else
-		{
-			if (CUtil::FileExists(strThumb))
-			{
-				//	use local .tbn file as thumb
-				pItem->SetIconImage(strThumb);
-				pItem->SetThumbnailImage(strThumb);
-			}
-			else
-			{
-				//	No thumb found
-				strThumb.Empty();
-			}
-		}
-	}
-
-	//	If we have not found a thumb before, look for a folder thumb
-  if (strThumb.IsEmpty() && pItem->GetLabel()!="..")
-  {
-		CStdString strFolderThumb;
-
-		//	Lookup permanent thumbs on HD, if a
-		//	thumb for this folder exists
-    CUtil::GetAlbumFolderThumb(strPath,strFolderThumb);
-		if (!CUtil::FileExists(strFolderThumb))
-		{
-			//	No, lookup saved temp thumbs on HD, if a previously
-			//	cached thumb for this folder exists...
-			CUtil::GetAlbumFolderThumb(strPath,strFolderThumb, true);
-			if (!CUtil::FileExists(strFolderThumb))
-			{
-				if (pItem->m_bIsFolder)
-				{
-					CStdString strFolderTbn=strPath;
-					strFolderTbn+=".tbn";
-					CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
-
-					//	...no, check for a folder.jpg
-					if (CUtil::ThumbExists(strThumb, true))
-					{
-						//	found, save a thumb for this folder
-						//	to the temp thumb dir.
-						CPicture pic;
-						if (!pic.CreateAlbumThumbnail(strThumb, strPath))
-						{
-							//	save temp thumb failed,
-							//	no thumb available
-							strFolderThumb.Empty();
-						}
-					}	//	...or maybe we have a "foldername".tbn
-					else if (CUtil::ThumbExists(strFolderTbn, true))
-					{
-						//	found, save a thumb for this folder
-						//	to the temp thumb dir.
-						CPicture pic;
-						if (!pic.CreateAlbumThumbnail(strFolderTbn, strPath))
-						{
-							//	save temp thumb failed,
-							//	no thumb available
-							strFolderThumb.Empty();
-						}
-					}
-					else
-					{
-						//	no thumb exists, do we have a directory
-						//	from album window, use music.jpg as icon
-						if (!strAlbum.IsEmpty())
-							pItem->SetIconImage("music.jpg");
-
-						strFolderThumb.Empty();
-					}
-				}
-				else
-				{
-					//	No thumb found for file
-					strFolderThumb.Empty();
-				}
-			}
-		}	//	if (pItem->m_bIsFolder && strThumb.IsEmpty() && pItem->GetLabel()!="..")
-
-
-		//	Have we found a folder thumb
-		if (!strFolderThumb.IsEmpty())
-		{
-				//	if we have a directory from album
-				//	window, set the icon too.
-			if (pItem->m_bIsFolder && !strAlbum.IsEmpty())
-				pItem->SetIconImage(strFolderThumb);
-
-			pItem->SetThumbnailImage(strFolderThumb);
-		}
   }
 }
 
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 {
-	// Open the file.
-	char szName[1024];
+  // Open the file.
+  char szName[1024];
 
-	INT i;
+  INT i;
 
-	WIN32_FIND_DATA wfd;
-	HANDLE hFind;
+  WIN32_FIND_DATA wfd;
+  HANDLE hFind;
 
 
-	if (NULL != strstr(fn_template, "%03d"))
-	{
-		for(i = 0; i <= max; i++)
-		{
+  if (NULL != strstr(fn_template, "%03d"))
+  {
+    for (i = 0; i <= max; i++)
+    {
 
-			wsprintf(szName, fn_template, i);
+      wsprintf(szName, fn_template, i);
 
-			memset(&wfd, 0, sizeof(wfd));
-			if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)
-				FindClose(hFind);
-			else
-			{
-				// FindFirstFile didn't find the file 'szName', return it
-				return szName;
-			}
-		}
-	}
+      memset(&wfd, 0, sizeof(wfd));
+      if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)
+        FindClose(hFind);
+      else
+      {
+        // FindFirstFile didn't find the file 'szName', return it
+        return szName;
+      }
+    }
+  }
 
-	return ""; // no fn generated
+  return ""; // no fn generated
 }
 
 void CUtil::InitGamma()
@@ -2862,538 +2635,2291 @@ void CUtil::InitGamma()
 void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE , &oldramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
   g_graphicsContext.Unlock();
 }
 
 void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
 {
-  if (iBrightNess < 0) iBrightNess=0;
-  if (iBrightNess >100) iBrightNess=100;
-  if (iContrast < 0) iContrast=0;
-  if (iContrast >100) iContrast=100;
-  if (iGamma < 0) iGamma=0;
-  if (iGamma >100) iGamma=100;
+  if (iBrightNess < 0) iBrightNess = 0;
+  if (iBrightNess > 100) iBrightNess = 100;
+  if (iContrast < 0) iContrast = 0;
+  if (iContrast > 100) iContrast = 100;
+  if (iGamma < 0) iGamma = 0;
+  if (iGamma > 100) iGamma = 100;
 
-  float fBrightNess=(((float)iBrightNess)/50.0f) -1.0f;
-  float fContrast=(((float)iContrast)/50.0f);
-  float fGamma=(((float)iGamma)/40.0f)+0.5f;
+  float fBrightNess = (((float)iBrightNess) / 50.0f) - 1.0f; // -1..1 Default: 0
+  float fContrast = (((float)iContrast) / 50.0f);      // 0..2  Default: 1
+  float fGamma = (((float)iGamma) / 40.0f) + 0.5f;      // 0.5..3.0 Default: 1
   CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
 }
 
-#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f))
-// Valid ranges:
-//  brightness -1 -> 1
-//  contrast    0 -> 2
-//  gamma     0.5 -> 3.5
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
 {
-	// calculate ramp
-	D3DGAMMARAMP ramp;
+  // calculate ramp
+  D3DGAMMARAMP ramp;
 
-	Gamma = 1.0f / Gamma;
-	for (int i = 0; i < 256; ++i)
-	{
-		float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness)*255.f;
-		ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
-	}
+  Gamma = 1.0f / Gamma;
+  for (int i = 0; i < 256; ++i)
+  {
+    float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
+    ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
+  }
 
-	// set ramp next v sync
-	g_graphicsContext.Lock();
-	g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &ramp);
-	g_graphicsContext.Unlock();
+  // set ramp next v sync
+  g_graphicsContext.Lock();
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
+  g_graphicsContext.Unlock();
 }
 
 
-// Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
 void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
 {
-	string str = path;
-	// Skip delimiters at beginning.
-	string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-	// Find first "non-delimiter".
-	string::size_type pos     = str.find_first_of(delimiters, lastPos);
+  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
+  string str = path;
+  // Skip delimiters at beginning.
+  string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+  // Find first "non-delimiter".
+  string::size_type pos = str.find_first_of(delimiters, lastPos);
 
-	while (string::npos != pos || string::npos != lastPos)
-	{
-		// Found a token, add it to the vector.
-		tokens.push_back(str.substr(lastPos, pos - lastPos));
-		// Skip delimiters.  Note the "not_of"
-		lastPos = str.find_first_not_of(delimiters, pos);
-		// Find next "non-delimiter"
-		pos = str.find_first_of(delimiters, lastPos);
-	}
+  while (string::npos != pos || string::npos != lastPos)
+  {
+    // Found a token, add it to the vector.
+    tokens.push_back(str.substr(lastPos, pos - lastPos));
+    // Skip delimiters.  Note the "not_of"
+    lastPos = str.find_first_not_of(delimiters, pos);
+    // Find next "non-delimiter"
+    pos = str.find_first_of(delimiters, lastPos);
+  }
 }
 
 
 void CUtil::FlashScreen(bool bImmediate, bool bOn)
 {
-	static bool bInFlash = false;
+  static bool bInFlash = false;
 
-	if (bInFlash == bOn)
-		return;
-	bInFlash = bOn;
-	g_graphicsContext.Lock();
-	if (bOn)
-	{
-		g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
-		SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
-	}
-	else
-		g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &flashramp);
-	g_graphicsContext.Unlock();
+  if (bInFlash == bOn)
+    return ;
+  bInFlash = bOn;
+  g_graphicsContext.Lock();
+  if (bOn)
+  {
+    g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
+    SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
+  }
+  else
+    g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
+  g_graphicsContext.Unlock();
+}
+
+void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
+{
+    LPDIRECT3DSURFACE8 lpSurface = NULL;
+
+    g_graphicsContext.Lock();
+    if (g_application.IsPlayingVideo())
+    {
+#ifdef HAS_VIDEO_PLAYBACK
+      g_renderManager.SetupScreenshot();
+#endif
+    }
+    if (0)
+    { // reset calibration to defaults
+      OVERSCAN oscan;
+      memcpy(&oscan, &g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, sizeof(OVERSCAN));
+      g_graphicsContext.ResetOverscan(g_graphicsContext.GetVideoResolution(), g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan);
+      g_application.Render();
+      memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, &oscan, sizeof(OVERSCAN));
+    }
+    // now take screenshot
+#ifdef HAS_XBOX_D3D
+    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#endif
+#ifdef HAS_XBOX_D3D
+    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+#else
+    g_application.RenderNoPresent();
+    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+#endif
+    {
+      if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
+      {
+        CLog::Log(LOGERROR, "Failed to Generate Screenshot");
+      }
+      else
+      {
+        CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
+      }
+      lpSurface->Release();
+    }
+    g_graphicsContext.Unlock();
+    if (flashScreen)
+    {
+#ifdef HAS_XBOX_D3D
+      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#endif
+      FlashScreen(true, true);
+      Sleep(10);
+#ifdef HAS_XBOX_D3D
+      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#endif
+      FlashScreen(true, false);
+    }
 }
 
 void CUtil::TakeScreenshot()
 {
-	LPDIRECT3DSURFACE8 lpSurface = NULL;
-	char fn[1024];
-	CStdString strDir = g_stSettings.m_szScreenshotsDirectory;
+  char fn[1024];
+  static bool savingScreenshots = false;
+  static vector<CStdString> screenShots;
 
-	if (strlen(g_stSettings.m_szScreenshotsDirectory))
-	{
-		sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
-		strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
+  bool promptUser = false;
+  // check to see if we have a screenshot folder yet
+  CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
+  if (strDir.IsEmpty())
+  {
+    strDir = "Z:\\";
+    if (!savingScreenshots)
+    {
+      promptUser = true;
+      savingScreenshots = true;
+      screenShots.clear();
+    }
+  }
+  CUtil::RemoveSlashAtEnd(strDir);
 
-		if (strlen(fn))
-		{
-			g_graphicsContext.Lock();
-			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-			if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
-			{
-				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
-				{
-					CLog::Log(LOGERROR, "Failed to Generate Screenshot");
-				}
-				else
-				{
-					CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
-				}
-				lpSurface->Release();
-			}
-			g_graphicsContext.Unlock();
-			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-			FlashScreen(true, true);
-			Sleep(10);
-			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-			FlashScreen(true, false);
-		}
-		else
-		{
-			CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
-		}
-	}
- }
+  if (!strDir.IsEmpty())
+  {
+    sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
+    strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
+
+    if (strlen(fn))
+    {
+      TakeScreenshot(fn, true);
+      if (savingScreenshots)
+        screenShots.push_back(fn);
+      if (promptUser)
+      { // grab the real directory
+        CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
+        if (!newDir.IsEmpty())
+        {
+          for (unsigned int i = 0; i < screenShots.size(); i++)
+          {
+            char dest[1024];
+            sprintf(dest, "%s\\screenshot%%03d.bmp", newDir.c_str());
+            strcpy(dest, CUtil::GetNextFilename(dest, 999).c_str());
+            CFile::Cache(screenShots[i], dest);
+          }
+          screenShots.clear();
+        }
+        savingScreenshots = false;
+      }
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+    }
+  }
+
+}
 
 void CUtil::ClearCache()
 {
-  CStdString strThumb=g_stSettings.m_szAlbumDirectory;
-  strThumb+="\\thumbs";
-  g_directoryCache.ClearDirectory(strThumb);
-  g_directoryCache.ClearDirectory(strThumb+"\temp");
-
-  strThumb=g_stSettings.szThumbnailsDirectory;
-  g_directoryCache.ClearDirectory(strThumb);
-  g_directoryCache.ClearDirectory(strThumb+"\\imdb");
+  for (int i = 0; i < 16; i++)
+  {
+    CStdString strHex, folder;
+    strHex.Format("%x", i);
+    CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, folder);
+    g_directoryCache.ClearDirectory(folder);
+  }
 }
 
-void CUtil::SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending/*=true*/)
+void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
 {
-	SSortByLabel sortmethod;
-	sortmethod.m_bSortAscending=bSortAscending;
-	sort(items.begin(), items.end(), sortmethod);
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+  result->st_size = (__int64)stat->st_size;
+  result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
 {
-	result->st_dev = stat->st_dev;
-	result->st_ino = stat->st_ino;
-	result->st_mode = stat->st_mode;
-	result->st_nlink = stat->st_nlink;
-	result->st_uid = stat->st_uid;
-	result->st_gid = stat->st_gid;
-	result->st_rdev = stat->st_rdev;
-	result->st_size = stat->st_size;
-	result->st_atime = (long)stat->st_atime;
-	result->st_mtime = (long)stat->st_mtime;
-	result->st_ctime = (long)stat->st_ctime;
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+  result->st_size = stat->st_size;
+  result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 }
 
 void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
 {
-	result->st_dev = stat->st_dev;
-	result->st_ino = stat->st_ino;
-	result->st_mode = stat->st_mode;
-	result->st_nlink = stat->st_nlink;
-	result->st_uid = stat->st_uid;
-	result->st_gid = stat->st_gid;
-	result->st_rdev = stat->st_rdev;
-	result->st_size = stat->st_size;
-	result->st_atime = stat->st_atime;
-	result->st_mtime = stat->st_mtime;
-	result->st_ctime = stat->st_ctime;
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+  result->st_size = stat->st_size;
+  result->st_atime = stat->st_atime;
+  result->st_mtime = stat->st_mtime;
+  result->st_ctime = stat->st_ctime;
 }
 
 void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
 {
-	result->st_dev = stat->st_dev;
-	result->st_ino = stat->st_ino;
-	result->st_mode = stat->st_mode;
-	result->st_nlink = stat->st_nlink;
-	result->st_uid = stat->st_uid;
-	result->st_gid = stat->st_gid;
-	result->st_rdev = stat->st_rdev;
-	result->st_size = (_off_t)stat->st_size;
-	result->st_atime = (time_t)stat->st_atime;
-	result->st_mtime = (time_t)stat->st_mtime;
-	result->st_ctime = (time_t)stat->st_ctime;
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+  if (stat->st_size <= LONG_MAX)
+    result->st_size = (_off_t)stat->st_size;
+  else
+  {
+    result->st_size = 0;
+    CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
+  }
+  result->st_atime = (time_t)stat->st_atime;
+  result->st_mtime = (time_t)stat->st_mtime;
+  result->st_ctime = (time_t)stat->st_ctime;
 }
 
-// around 50% faster than memcpy
-// only worthwhile if the destination buffer is not likely to be read back immediately
-// and the number of bytes copied is >16
-// somewhat faster if the source and destination are a multiple of 16 bytes apart
-void fast_memcpy(void* d, const void* s, unsigned n)
-{
-	__asm {
-		mov edx,n
-		mov esi,s
-		prefetchnta [esi]
-		prefetchnta [esi+32]
-		mov edi,d
-
-		// pre align
-		mov eax,edi
-		mov ecx,16
-		and eax,15
-		sub ecx,eax
-		and ecx,15
-		cmp edx,ecx
-		jb fmc_exit_main
-		sub edx,ecx
-
-		test ecx,ecx
-fmc_start_pre:
-		jz fmc_exit_pre
-
-		mov al,[esi]
-		mov [edi],al
-
-		inc esi
-		inc edi
-		dec ecx
-		jmp fmc_start_pre
-
-fmc_exit_pre:
-		mov eax,esi
-		and eax,15
-		jnz fmc_notaligned
-
-		// main copy, aligned
-		mov ecx,edx
-		shr ecx,4
-fmc_start_main_a:
-		jz fmc_exit_main
-
-		prefetchnta [esi+32]
-		movaps xmm0,[esi]
-		movntps [edi],xmm0
-
-		add esi,16
-		add edi,16
-		dec ecx
-		jmp fmc_start_main_a
-
-fmc_notaligned:
-		// main copy, unaligned
-		mov ecx,edx
-		shr ecx,4
-fmc_start_main_u:
-		jz fmc_exit_main
-
-		prefetchnta [esi+32]
-		movups xmm0,[esi]
-		movntps [edi],xmm0
-
-		add esi,16
-		add edi,16
-		dec ecx
-		jmp fmc_start_main_u
-
-fmc_exit_main:
-
-		// post align
-		mov ecx,edx
-		and ecx,15
-fmc_start_post:
-		jz fmc_exit_post
-
-		mov al,[esi]
-		mov [edi],al
-
-		inc esi
-		inc edi
-		dec ecx
-		jmp fmc_start_post
-
-fmc_exit_post:
-	}
-}
-
-void fast_memset(void* d, int c, unsigned n)
-{
-	char __declspec(align(16)) buf[16];
-
-	__asm {
-		mov edx,n
-		mov edi,d
-
-		// pre align
-		mov eax,edi
-		mov ecx,16
-		and eax,15
-		sub ecx,eax
-		and ecx,15
-		cmp edx,ecx
-		jb fms_exit_main
-		sub edx,ecx
-		mov eax,c
-
-		test ecx,ecx
-fms_start_pre:
-		jz fms_exit_pre
-
-		mov [edi],al
-
-		inc edi
-		dec ecx
-		jmp fms_start_pre
-
-fms_exit_pre:
-		test al,al
-		jz fms_initzero
-
-		// duplicate the value 16 times
-		lea esi,buf
-		mov [esi],al
-		mov [esi+1],al
-		mov [esi+2],al
-		mov [esi+3],al
-		mov eax,[esi]
-		mov [esi+4],eax
-		mov [esi+8],eax
-		mov [esi+12],eax
-		movaps xmm0,[esi]
-		jmp fms_init_loop
-
-fms_initzero:
-		// optimzed set zero
-		xorps xmm0,xmm0
-
-fms_init_loop:
-		mov ecx,edx
-		shr ecx,4
-
-fms_start_main:
-		jz fms_exit_main
-
-		movntps [edi],xmm0
-
-		add edi,16
-		dec ecx
-		jmp fms_start_main
-
-fms_exit_main:
-
-		// post align
-		mov ecx,edx
-		and ecx,15
-fms_start_post:
-		jz fms_exit_post
-
-		mov [edi],al
-
-		inc edi
-		dec ecx
-		jmp fms_start_post
-
-fms_exit_post:
-	}
-}
-
-// Function to create all directories at once instead
-// of calling CreateDirectory for every subdir.
-// Creates the directory and subdirectories if needed.
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {
-	std::vector<string> strArray;
-
+  // Function to create all directories at once instead
+  // of calling CreateDirectory for every subdir.
+  // Creates the directory and subdirectories if needed.
+  std::vector<string> strArray;
   CURL url(strPath);
-	string path = url.GetFileName().c_str();
-	int iSize = path.size();
-	char cSep = CUtil::GetDirectorySeperator(strPath);
-	if (path.at(iSize - 1) == cSep) path.erase(iSize - 1, iSize - 1); // remove slash at end
-	CStdString strTemp;
+  string path = url.GetFileName().c_str();
+  int iSize = path.size();
+  char cSep = CUtil::GetDirectorySeperator(strPath);
+  if (path.at(iSize - 1) == cSep) path.erase(iSize - 1, iSize - 1); // remove slash at end
+  CStdString strTemp;
 
-	// return true if directory already exist
-	if (CDirectory::Exists(strPath)) return true;
+  // return true if directory already exist
+  if (CDirectory::Exists(strPath)) return true;
 
-	/* split strPath up into an array
-	 * music\\album\\ will result in
-	 * music
-	 * music\\album
-	 */
-	int i, s = 0;
-	if (path.at(1) == ':') i = 2; // to skip 'e:'
-	s = i;
-	while(i < iSize)
-	{
-		i = path.find(cSep, i + 1);
-		if (i < 0) i = iSize; // get remaining chars
-		strArray.push_back(path.substr(s, i - s));
-	}
+  // split strPath up into an array
+  // music\\album\\ will result in
+  // music
+  // music\\album
+  //
 
-	// create the directories
-	url.GetURLWithoutFilename(strTemp);
-	for(unsigned int i = 0; i < strArray.size(); i++)
-	{
-		CDirectory::Create(strTemp + strArray[i].c_str());
-	}
+  int i;
+  CFileItem item(strPath,true);
+  if (item.IsSmb())
+  {
+    i = 0;
+  }
+  else if (item.IsHD())
+  {
+    i = 2; // remove the "E:" from the filename
+  }
+  else
+  {
+    CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
+    return false;
+  }
 
+  int s = i;
+  while (i < iSize)
+  {
+    i = path.find(cSep, i + 1);
+    if (i < 0) i = iSize; // get remaining chars
+    strArray.push_back(path.substr(s, i - s));
+  }
+
+  // create the directories
+  url.GetURLWithoutFilename(strTemp);
+  for (unsigned int i = 0; i < strArray.size(); i++)
+  {
+    CStdString strTemp1 = strTemp + strArray[i];
+    CDirectory::Create(strTemp1);
+  }
   strArray.clear();
 
-	// is the directory successfully created ?
+  // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
-	return true;
+  return true;
 }
 
-// check if the filename is a legal FATX one.
-// this means illegal chars will be removed from the string,
-// and the remaining string is stripped back to 42 chars if needed
-CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bool isFATX)
+CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool isFATX)
 {
-  if (NULL == strFile) return "";
-  char cIllegalChars[] = "<>=?:;\"*+,/\\|";
-  unsigned int iIllegalCharSize = strlen(cIllegalChars);
-  bool isIllegalChar;
-	unsigned int iSize = strlen(strFile);
-	unsigned int iNewStringSize = 0;
-	char* strNewString = new char[iSize + 1];
-
-  // only copy the legal characters to the new filename
-  for (unsigned int i = 0; i < iSize; i++)
-  {
-	  isIllegalChar = false;
-	  // check for illigal chars
-	  for (unsigned j = 0; j < iIllegalCharSize; j++)
-		  if (strFile[i] == cIllegalChars[j]) isIllegalChar = true;
-	  // FATX only allows chars from 32 till 127
-	  if (isIllegalChar == false &&
-			  strFile[i] > 31 && strFile[i] < 127) strNewString[iNewStringSize++] = strFile[i];
-  }
-  strNewString[iNewStringSize] = '\0';
-
+  CStdString result = strFile;
+  // check if the filename is a legal FATX one.
   if (isFATX)
   {
-    // since we can only write to samba shares and hd, we assume this has to be a fatx filename
-    // thus we have to strip it down to 42 chars (samba doesn't have this limitation)
-
-	  // no need to keep the extension, just strip it down to 42 characters
-	  if (iNewStringSize > 42 && bKeepExtension == false) strNewString[42] = '\0';
-
-	  // we want to keep the extension
-	  else if (iNewStringSize > 42 && bKeepExtension == true)
-	  {
-		  char strExtension[42];
-		  unsigned int iExtensionLenght = iNewStringSize - (strrchr(strNewString, '.') - strNewString);
-		  strcpy(strExtension, (strNewString + iNewStringSize - iExtensionLenght));
-
-		  strcpy(strNewString + (42 - iExtensionLenght), strExtension);
-	  }
-	}
-
-	CStdString result(strNewString);
-  delete[] strNewString;
-	return result;
+    CUtil::GetFatXQualifiedPath(result);
+  }
+  else
+  { // just filter out some illegal characters on windows
+    result.Remove('\\');
+    result.Remove('/');
+    result.Remove(':');
+    result.Remove('*');
+    result.Remove('?');
+    result.Remove('\"');
+    result.Remove('<');
+    result.Remove('>');
+    result.Remove('|');
+  }
+  return result;
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
-  if (IsSmb(strPath)) strPath += "/";
-  else strPath += "\\";
+  strPath += GetDirectorySeperator(strPath);
 }
 
-char CUtil::GetDirectorySeperator(const CStdString& strPath)
+char CUtil::GetDirectorySeperator(const CStdString &strFilename)
 {
-  if (IsSmb(strPath)) return '/';
-  return '\\';
+  CURL url(strFilename);
+  return url.GetDirectorySeparator();
 }
 
 void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
 {
-	playlistitem.SetDescription(pItem->GetLabel());
-	playlistitem.SetFileName(pItem->m_strPath);
-	playlistitem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-	playlistitem.SetStartOffset(pItem->m_lStartOffset);
-	playlistitem.SetEndOffset(pItem->m_lEndOffset);
-	playlistitem.SetMusicTag(pItem->m_musicInfoTag);
-}
-
-
-bool CUtil::IsNaturalNumber(const CStdString& str)
-{
-	for (int i = 0; i < (int)str.size(); i++)
-	{
-		if ((str[i] < '0') || (str[i] > '9')) return false;
-	}
-	return true;
+  playlistitem.SetDescription(pItem->GetLabel());
+  playlistitem.SetFileName(pItem->m_strPath);
+  if (pItem->HasMusicInfoTag())
+    playlistitem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
+  if (playlistitem.HasVideoInfoTag())
+    playlistitem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
+  playlistitem.SetStartOffset(pItem->m_lStartOffset);
+  playlistitem.SetEndOffset(pItem->m_lEndOffset);
+  if (pItem->HasMusicInfoTag())
+    playlistitem.SetMusicTag(*pItem->GetMusicInfoTag());
+  if (pItem->HasVideoInfoTag())
+    playlistitem.SetVideoTag(*pItem->GetVideoInfoTag());
+  playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
 }
 
 bool CUtil::IsUsingTTFSubtitles()
 {
-  char* ext = strrchr(g_stSettings.m_szSubtitleFont, '.');
-	if (ext && stricmp(ext, ".ttf") == 0)
-		return true;
-	else
-		return false;
+  return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
 }
+
+typedef struct
+{
+  char command[20];
+  char description[128];
+} BUILT_IN;
+
+const BUILT_IN commands[] = {
+  "Help", "This help message",
+  "Reboot", "Reboot the xbox (power cycle)",
+  "Restart", "Restart the xbox (power cycle)",
+  "ShutDown", "Shutdown the xbox",
+  "Dashboard", "Run your dashboard",
+  "RestartApp", "Restart XBMC",
+  "Credits", "Run XBMCs Credits",
+  "Reset", "Reset the xbox (warm reboot)",
+  "Mastermode","Control master mode",
+  "ActivateWindow", "Activate the specified window",
+  "ReplaceWindow", "Replaces the current window with the new one",
+  "TakeScreenshot", "Takes a Screenshot",
+  "RunScript", "Run the specified script",
+  "RunXBE", "Run the specified executeable",
+  "Extract", "Extracts the specified archive",
+  "PlayMedia", "Play the specified media file (or playlist)",
+  "SlideShow", "Run a slideshow from the specified directory",
+  "RecursiveSlideShow", "Run a slideshow from the specified directory, including all subdirs",
+  "ReloadSkin", "Reload XBMC's skin",
+  "PlayerControl", "Control the music or video player",
+  "EjectTray", "Close or open the DVD tray",
+  "AlarmClock", "Prompt for a length of time and start an alarm clock",
+  "CancelAlarm","Cancels an alarm",
+  "KaiConnection","Change kai connection status (connect/disconnect)",
+  "Action", "Executes an action for the active window (same as in keymap)",
+  "Notification", "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
+  "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
+  "Skin.ToggleSetting"," Toggles a skin setting on or off",
+  "Skin.SetString"," Prompts and sets skin string",
+  "Skin.SetNumeric"," Prompts and sets numeric input",
+  "Skin.SetPath"," Prompts and sets a skin path",
+  "Skin.Theme"," Control skin theme",
+  "Skin.SetImage"," Prompts and sets a skin image",
+  "Skin.SetFile"," Prompts and sets a file",
+  "Skin.SetBool"," Sets a skin setting on",
+  "Skin.Reset"," Resets a skin setting to default",
+  "Skin.ResetSettings"," Resets all skin settings",
+  "Mute","Mute the player",
+  "SetVolume","Set the current volume",
+  "Dialog.Close","Close a dialog",
+  "System.LogOff","Log off current user",
+  "System.PWMControl","Control PWM RGB LEDs",
+  "Resolution", "Change XBMC's Resolution",
+  "SetFocus", "Change current focus to a different control id", 
+  "BackupSystemInfo", "Backup System Informations to local hdd"
+};
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
-	if (strncmp(execString.c_str(), "XBMC.", 5) == 0)
-		return true;
-
-	return false;
+  CStdString function, param;
+  SplitExecFunction(execString, function, param);
+  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  {
+    if (function.CompareNoCase(commands[i].command) == 0)
+      return true;
+  }
+  return false;
 }
 
-void CUtil::ExecBuiltIn(const CStdString& execString)
+void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
 {
-	// Get the text after the "XBMC."
-	char* pExec = strchr(execString.c_str(), '.');
-	CStdString execute(++pExec);
+  strParam = "";
 
-	if ((execute == "Reboot") || (execute == "Restart"))  //Will reboot the xbox, aka cold reboot
+  int iPos = execString.Find("(");
+  int iPos2 = execString.ReverseFind(")");
+  if (iPos > 0 && iPos2 > 0)
+  {
+    strParam = execString.Mid(iPos + 1, iPos2 - iPos - 1);
+    strFunction = execString.Left(iPos);
+  }
+  else
+    strFunction = execString;
+
+  //xbmc is the standard prefix.. so allways remove this
+  //all other commands with go through in full
+  if( strFunction.Left(5).Equals("xbmc.", false) )
+    strFunction.Delete(0, 5);
+}
+
+void CUtil::GetBuiltInHelp(CStdString &help)
+{
+  help.Empty();
+  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  {
+    help += commands[i].command;
+    help += "\t";
+//    for (int i = 0; i < 20 - strlen(commands[i].command); i++)
+//      help += " ";
+    help += commands[i].description;
+    help += "\n";
+  }
+}
+
+int CUtil::ExecBuiltIn(const CStdString& execString)
+{
+  // Get the text after the "XBMC."
+  CStdString execute, parameter;
+  SplitExecFunction(execString, execute, parameter);
+  CStdString strParameterCaseIntact = parameter;
+  parameter.ToLower();
+  execute.ToLower();
+
+  if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
+  {
+    g_applicationMessenger.Restart();
+  }
+  else if (execute.Equals("shutdown"))
+  {
+    g_applicationMessenger.Shutdown();
+  }
+  else if (execute.Equals("dashboard"))
+  {
+    if (g_guiSettings.GetBool("myprograms.usedashpath"))
+      RunXBE(g_guiSettings.GetString("myprograms.dashboard").c_str());
+    else
+      BootToDash();
+  }
+  else if (execute.Equals("restartapp"))
+  {
+    g_applicationMessenger.RestartApp();
+  }
+  else if (execute.Equals("mastermode"))
+  {
+    if (g_passwordManager.bMasterUser)
+    {
+      g_passwordManager.bMasterUser = false;
+      g_passwordManager.LockBookmarks();
+      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+    }
+    else if (g_passwordManager.IsMasterLockUnlocked(true))
+    {
+      g_passwordManager.UnlockBookmarks();
+      g_passwordManager.bMasterUser = true;
+      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+    }
+
+    DeleteVideoDatabaseDirectoryCache();
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_graphicsContext.SendMessage(msg);
+  }
+  else if (execute.Equals("takescreenshot"))
+  {
+    TakeScreenshot();
+  }
+  else if (execute.Equals("credits"))
+  {
+#ifdef HAS_CREDITS
+    RunCredits();
+#endif
+  }
+  else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
+  {
+    g_applicationMessenger.Reset();
+  }
+  else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
+  {
+    // get the parameters
+    CStdString strWindow;
+    CStdString strPath;
+
+    // split the parameter on first comma
+    int iPos = parameter.Find(",");
+    if (iPos == 0)
+    {
+      // error condition missing path
+      // XMBC.ActivateWindow(1,)
+      CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid parameter: %s", parameter.c_str());
+      return -7;
+    }
+    else if (iPos < 0)
+    {
+      // no path parameter
+      // XBMC.ActivateWindow(5001)
+      strWindow = parameter;
+    }
+    else
+    {
+      // path parameter included
+      // XBMC.ActivateWindow(5001,F:\Music\)
+      strWindow = parameter.Left(iPos);
+      strPath = parameter.Mid(iPos + 1);
+    }
+    if (strPath.Equals("autodetection"))
+    {
+      //Open the AutoDetect XBOX FTP in filemanager
+      if (g_guiSettings.GetBool("autodetect.onoff"))
+      {
+        //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+        CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+        CStdStringArray arSplit;
+        StringUtils::SplitString(strNewClientInfo,";", arSplit);
+        if ((int)arSplit.size() > 1)
+        {
+          strNickName     = arSplit[0].c_str();
+          strFtpUserName  = arSplit[1].c_str();
+          strFtpPassword  = arSplit[2].c_str();
+          strFtpPort      = arSplit[3].c_str();
+          strBoosMode     = arSplit[4].c_str();
+          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+
+          strPath  = strFTPPath;
+        }else{
+          CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
+          return -7;
+        }
+      }
+    }
+
+    // confirm the window destination is actually a number
+    // before switching
+    int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+    if (iWindow != WINDOW_INVALID)
+    {
+      // disable the screensaver
+      g_application.ResetScreenSaverWindow();
+      if (execute.Equals("activatewindow"))
+        m_gWindowManager.ActivateWindow(iWindow, strPath);
+      else  // ReplaceWindow
+        m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
+      return false;
+    }
+  }
+  else if (execute.Equals("setfocus"))
+  {
+    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), atol(parameter.c_str()));
+    g_graphicsContext.SendMessage(msg);
+  }
+  else if (execute.Equals("runscript"))
+  {
+    std::vector<CStdString> params;
+    StringUtils::SplitString(strParameterCaseIntact,",",params);
+    if (params.size() > 0)  // we need to construct arguments to pass to python
+    {
+      unsigned int argc = params.size();
+      char ** argv = new char*[argc];
+
+      std::vector<CStdString> path;
+      //split the path up to find the filename
+      StringUtils::SplitString(params[0],"\\",path); 
+      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
+
+      for(unsigned int i = 1; i < argc; i++)
+        argv[i] = (char*)params[i].c_str();
+
+      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+      delete argv;
+    }
+    else
+      g_pythonParser.evalFile(parameter.c_str());
+  }
+  else if (execute.Equals("resolution"))
+  {
+    RESOLUTION res = PAL_4x3;
+    if (parameter.Equals("pal")) res = PAL_4x3;
+    else if (parameter.Equals("pal16x9")) res = PAL_16x9;
+    else if (parameter.Equals("ntsc")) res = NTSC_4x3;
+    else if (parameter.Equals("ntsc16x9")) res = NTSC_16x9;
+    else if (parameter.Equals("720p")) res = HDTV_720p;
+    else if (parameter.Equals("1080i")) res = HDTV_1080i;
+    if (g_videoConfig.IsValidResolution(res))
+    {
+      g_guiSettings.SetInt("videoscreen.resolution", res);
+      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+      g_graphicsContext.SetVideoResolution(res, TRUE);
+      //set our lookandfeelres to the resolution set in graphiccontext
+      g_guiSettings.m_LookAndFeelResolution = res;
+      g_application.ReloadSkin();
+    }
+  }
+  else if (execute.Equals("extract"))
+  {
+    // Detects if file is zip or zip then extracts
+    CStdString strDestDirect = "";
+    std::vector<CStdString> params;
+    StringUtils::SplitString(strParameterCaseIntact,",",params);
+    if (params.size() < 2)
+      CUtil::GetDirectory(params[0],strDestDirect);
+    else
+      strDestDirect = params[1];
+
+    if (!HasSlashAtEnd(strDestDirect))
+        strDestDirect += "\\";
+
+    if (params.size() < 1)
+      return -1; // No File Selected
+
+    if (CUtil::IsZIP(params[0]))
+      g_ZipManager.ExtractArchive(params[0],strDestDirect);
+    else if (CUtil::IsRAR(params[0]))
+      g_RarManager.ExtractArchive(params[0],strDestDirect);
+    else
+      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
+  }
+  else if (execute.Equals("runxbe"))
+  {
+    // only usefull if there is actualy a xbe to execute
+    if (parameter.size() > 0)
+    {
+      CFileItem item(parameter);
+      item.m_strPath = parameter;
+      if (item.IsShortCut())
+        CUtil::RunShortcut(parameter);
+      else if (item.IsXBE())
+      {
+        int iRegion;
+        if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+        {
+          CXBE xbe;
+          iRegion = xbe.ExtractGameRegion(parameter);
+          if (iRegion < 1 || iRegion > 7)
+            iRegion = 0;
+          iRegion = xbe.FilterRegion(iRegion);
+        }
+        else
+          iRegion = 0;
+
+        CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runxbe called with no arguments.");
+    }
+  }
+  else if (execute.Equals("playmedia"))
+  {
+    if (parameter.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
+      return -3;
+    }
+    CFileItem item(parameter, false);
+    if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
+    {
+      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
+      return false;
+    }
+  }
+  else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
+  {
+    if (parameter.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
+      return -2;
+    }
+    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
+    msg.SetStringParam(parameter);
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (pWindow) pWindow->OnMessage(msg);
+  }
+  else if (execute.Equals("reloadskin"))
+  {
+    //  Reload the skin
+    g_application.ReloadSkin();
+  }
+  else if (execute.Equals("playercontrol"))
+  {
+    g_application.ResetScreenSaver();
+    g_application.ResetScreenSaverWindow();
+    if (parameter.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
+      return -3;
+    }
+    if (parameter.Equals("play"))
+    { // play/pause
+      // either resume playing, or pause
+      if (g_application.IsPlaying())
+      {
+        if (g_application.GetPlaySpeed() != 1)
+          g_application.SetPlaySpeed(1);
+        else
+          g_application.m_pPlayer->Pause();
+      }
+    }
+    else if (parameter.Equals("stop"))
+    {
+      g_application.StopPlaying();
+    }
+    else if (parameter.Equals("rewind") || parameter.Equals("forward"))
+    {
+      if (g_application.IsPlaying() && !g_application.m_pPlayer->IsPaused())
+      {
+        int iPlaySpeed = g_application.GetPlaySpeed();
+        if (parameter.Equals("rewind") && iPlaySpeed == 1) // Enables Rewinding
+          iPlaySpeed *= -2;
+        else if (parameter.Equals("rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
+          iPlaySpeed /= 2;
+        else if (parameter.Equals("forward") && iPlaySpeed < 1) //goes up a notch if you're RWing
+        {
+          iPlaySpeed /= 2;
+          if (iPlaySpeed == -1) iPlaySpeed = 1;
+        }
+        else
+          iPlaySpeed *= 2;
+
+        if (iPlaySpeed > 32 || iPlaySpeed < -32)
+          iPlaySpeed = 1;
+
+        g_application.SetPlaySpeed(iPlaySpeed);
+      }
+    }
+    else if (parameter.Equals("next"))
+    {
+      CAction action;
+      action.wID = ACTION_NEXT_ITEM;
+      g_application.OnAction(action);
+    }
+    else if (parameter.Equals("previous"))
+    {
+      CAction action;
+      action.wID = ACTION_PREV_ITEM;
+      g_application.OnAction(action);
+    }
+    else if (parameter.Equals("bigskipbackward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(false, true);
+    }
+    else if (parameter.Equals("bigskipforward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(true, true);
+    }
+    else if (parameter.Equals("smallskipbackward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(false, false);
+    }
+    else if (parameter.Equals("smallskipforward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(true, false);
+    }
+    else if( parameter.Equals("showvideomenu") )
+    {
+      if( g_application.IsPlaying() && g_application.m_pPlayer )
+      {
+        CAction action;
+        memset(&action, 0, sizeof(CAction));
+        action.wID = ACTION_SHOW_VIDEOMENU;
+        g_application.m_pPlayer->OnAction(action);
+      }
+    }
+    else if( parameter.Equals("record") )
+    {
+      if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
+      {
+        g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
+      }
+    }
+    else if (parameter.Equals("partymode"))
+    {
+      if (g_partyModeManager.IsEnabled())
+        g_partyModeManager.Disable();
+      else
+        g_partyModeManager.Enable();
+    }
+    else if (parameter.Equals("random"))
+    {
+      // get current playlist
+      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+
+      // reverse the current setting
+      g_playlistPlayer.SetShuffle(iPlaylist, !(g_playlistPlayer.IsShuffled(iPlaylist)));
+
+      // save settings for now playing windows
+      switch (iPlaylist)
+      {
+      case PLAYLIST_MUSIC:
+        g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        g_settings.Save();
+        break;
+      case PLAYLIST_VIDEO:
+        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        g_settings.Save();
+      }
+
+      // send message
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.IsShuffled(iPlaylist));
+      m_gWindowManager.SendThreadMessage(msg);
+
+    }
+    else if (parameter.Left(6).Equals("repeat"))
+    {
+      // get current playlist
+      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+      PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(iPlaylist);
+
+      if (parameter.Equals("repeatall"))
+        state = PLAYLIST::REPEAT_ALL;
+      else if (parameter.Equals("repeatone"))
+        state = PLAYLIST::REPEAT_ONE;
+      else if (parameter.Equals("repeatoff"))
+        state = PLAYLIST::REPEAT_NONE;
+      else if (state == PLAYLIST::REPEAT_NONE)
+        state = PLAYLIST::REPEAT_ALL;
+      else if (state == PLAYLIST::REPEAT_ALL)
+        state = PLAYLIST::REPEAT_ONE;
+      else
+        state = PLAYLIST::REPEAT_NONE;
+
+      g_playlistPlayer.SetRepeat(iPlaylist, state);
+
+      // save settings for now playing windows
+      switch (iPlaylist)
+      {
+      case PLAYLIST_MUSIC:
+        g_stSettings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        g_settings.Save();
+        break;
+      case PLAYLIST_VIDEO:
+        g_stSettings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        g_settings.Save();
+      }
+
+      // send messages so now playing window can get updated
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
+      m_gWindowManager.SendThreadMessage(msg);
+    }
+  }
+  else if (execute.Equals("mute"))
+  {
+    g_application.Mute();
+  }
+  else if (execute.Equals("setvolume"))
+  {
+    g_application.SetVolume(atoi(parameter.c_str()));
+  }
+  else if (execute.Equals("ejecttray"))
+  {
+    if (CIoSupport::GetTrayState() == TRAY_OPEN)
+      CIoSupport::CloseTray();
+    else
+      CIoSupport::EjectTray();
+  }
+  else if( execute.Equals("alarmclock") )
+  {
+    float fSecs = -1.f;
+    CStdString strCommand;
+    CStdString strName;
+    if (!parameter.IsEmpty())
+    {
+      CRegExp reg;
+      if (!reg.RegComp("([^,]*),([^\\(,]*)(\\([^\\)]*\\)?)?,?(.*)?$"))
+        return -1; // whatever
+      if (reg.RegFind(strParameterCaseIntact.c_str()) > -1)
+      {
+        char* szParam = reg.GetReplaceString("\\2\\3");
+        if (szParam)
+        {
+          strCommand = szParam;
+          free(szParam);
+        }
+        szParam = reg.GetReplaceString("\\4");
+        if (szParam)
+        {
+          if (strlen(szParam))
+            fSecs = fSecs = static_cast<float>(atoi(szParam)*60);
+          free(szParam);
+        }
+        szParam = reg.GetReplaceString("\\1");
+        if (szParam)
+        {
+          strName = szParam;
+          free(szParam);
+        }
+      }
+    }
+
+    if (fSecs == -1.f)
+    {
+      CStdString strTime;
+      CStdString strHeading;
+      if (strCommand.Equals("xbmc.shutdown") || strCommand.Equals("xbmc.shutdown()"))
+        strHeading = g_localizeStrings.Get(20145);
+      else
+        strHeading = g_localizeStrings.Get(13209);
+      if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
+        fSecs = static_cast<float>(atoi(strTime.c_str())*60);
+      else
+        return -4;
+    }
+    if( g_alarmClock.isRunning() )
+      g_alarmClock.stop(strName);
+
+    g_alarmClock.start(strName,fSecs,strCommand);
+  }
+  else if (execute.Equals("notification"))
+  {
+    std::vector<CStdString> params;
+    StringUtils::SplitString(strParameterCaseIntact,",",params);
+    if (params.size() < 2)
+      return -1;
+    if (params.size() == 4)
+      g_application.m_guiDialogKaiToast.QueueNotification(params[3],params[0],params[1],atoi(params[2].c_str()));
+    else if (params.size() == 3)
+      g_application.m_guiDialogKaiToast.QueueNotification("",params[0],params[1],atoi(params[2].c_str()));
+    else
+      g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
+  }
+  else if (execute.Equals("cancelalarm"))
+  {
+    g_alarmClock.stop(parameter);
+  }
+  else if (execute.Equals("kaiconnection"))
+  {
+    if (CKaiClient::GetInstance())
+    {
+      if (!CKaiClient::GetInstance()->IsEngineConnected())
+      {
+        while (!CKaiClient::GetInstance()->IsEngineConnected())
+        {
+          CKaiClient::GetInstance()->Reattach();
+          Sleep(3000);
+        }
+      }
+      else
+      {
+        CKaiClient::GetInstance()->Detach();
+      }
+    }
+    else
+    {
+      CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
+    }
+  }
+  else if (execute.Equals("playdvd"))
+  {
+    CAutorun::PlayDisc();
+  }
+  else if (execute.Equals("skin.togglesetting"))
+  {
+    int setting = g_settings.TranslateSkinBool(parameter);
+    g_settings.SetSkinBool(setting, !g_settings.GetSkinBool(setting));
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.setbool"))
+  {
+    int pos = parameter.Find(",");
+    if (pos >= 0)
+    {
+      int string = g_settings.TranslateSkinBool(parameter.Left(pos));
+      g_settings.SetSkinBool(string, parameter.Mid(pos+1).Equals("true"));
+      g_settings.Save();
+      return 0;
+    }
+    // default is to set it to true
+    int setting = g_settings.TranslateSkinBool(parameter);
+    g_settings.SetSkinBool(setting, true);
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.reset"))
+  {
+    g_settings.ResetSkinSetting(parameter);
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.resetsettings"))
+  {
+    g_settings.ResetSkinSettings();
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.theme"))
+  {
+    // enumerate themes
+    std::vector<CStdString> vecTheme;
+    GetSkinThemes(vecTheme);
+
+    int iTheme = -1;
+    int iThemes = vecTheme.size();
+    // find current theme
+    if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
+      for (unsigned int i=0;i<vecTheme.size();++i)
+        if (vecTheme[i].Equals(g_guiSettings.GetString("lookandfeel.skintheme")))
+        {
+          iTheme=i;
+          break;
+        }
+
+    int iParam = atoi(parameter.c_str());
+    if (iParam == 0)
+      iTheme++;
+    if (iParam == -1)
+      iTheme--;
+    if (iTheme > (int)vecTheme.size()-1)
+      iTheme = -1;
+    if (iTheme < -1)
+      iTheme = vecTheme.size()-1;
+
+    if (iTheme==-1)
+      g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
+    else
+      g_guiSettings.SetString("lookandfeel.skintheme",vecTheme[iTheme]);
+
+    g_application.DelayLoadSkin();
+  }
+  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
+  {
+    // break the parameter up if necessary
+    // only search for the first "," and use that to break the string up
+    int pos = strParameterCaseIntact.Find(",");
+    int string;
+    if (pos >= 0)
+    {
+      string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
+      if (execute.Equals("setstring"))
+      {
+        g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
+        g_settings.Save();
+        return 0;
+      }
+    }
+    else
+      string = g_settings.TranslateSkinString(strParameterCaseIntact);
+    CStdString value = g_settings.GetSkinString(string);
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (execute.Equals("skin.setstring"))
+    {
+      if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
+        g_settings.SetSkinString(string, value);
+    }
+    else if (execute.Equals("skin.setnumeric"))
+    {
+      if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(20074)))
+        g_settings.SetSkinString(string, value);
+    }
+    else if (execute.Equals("skin.setimage"))
+    {
+      if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
+        g_settings.SetSkinString(string, value);
+    }
+    else if (execute.Equals("skin.setfile"))
+    {
+      CStdString strMask;
+      if (pos > -1)
+        strMask = strParameterCaseIntact.Mid(pos+1);
+
+      int iEnd=strMask.Find(",");
+      if (iEnd > -1)
+      {
+        value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
+        CUtil::AddSlashAtEnd(value);
+        bool bIsBookMark;
+        if (GetMatchingShare(value,shares,bIsBookMark) < 0) // path is outside shares - add it as a separate one
+        {
+          CShare share;
+          share.strName = g_localizeStrings.Get(13278);
+          share.strPath = value;
+          shares.push_back(share);
+        }
+        CStdString strTemp = strMask;
+        strMask = strTemp.Left(iEnd);
+      }
+      else
+        iEnd = strMask.size();
+      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(1033), value))
+        g_settings.SetSkinString(string, value);
+    }
+    else // execute.Equals("skin.setpath"))
+    {
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1031), value))
+        g_settings.SetSkinString(string, value);
+    }
+    g_settings.Save();
+  }
+  else if (execute.Equals("dialog.close"))
+  {
+    CStdStringArray arSplit;
+    StringUtils::SplitString(parameter,",", arSplit);
+    bool bForce = false;
+    if (arSplit.size() > 1)
+      if (arSplit[1].Equals("true"))
+        bForce = true;
+    if (arSplit[0].Equals("all"))
+    {
+      m_gWindowManager.CloseDialogs(bForce);
+    }
+    else
+    {
+      DWORD id = g_buttonTranslator.TranslateWindowString(arSplit[0]);
+      CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
+      if (window && window->IsDialog())
+        ((CGUIDialog *)window)->Close(bForce);
+    }
+  }
+  else if (execute.Equals("system.logoff"))
+  {
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
+      return -1;
+
+    g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
+    g_application.StopPlaying();
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsScanning())
+      musicScan->StopScanning();
+
+    g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_network.Deinitialize();
+#ifdef HAS_XBOX_HARDWARE
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "stop fancontroller");
+      CFanController::Instance()->Stop();
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "set fanspeed to default");
+      CFanController::Instance()->RestoreStartupSpeed();
+    }
+#endif
+    g_settings.LoadProfile(0); // login screen always runs as default user
+    g_passwordManager.m_mapSMBPasswordCache.clear();
+    g_passwordManager.bMasterUser = false;
+    m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+      g_guiSettings.GetString("network.ipaddress").c_str(),
+      g_guiSettings.GetString("network.subnet").c_str(),
+      g_guiSettings.GetString("network.gateway").c_str(),
+      g_guiSettings.GetString("network.dns").c_str());
+  }
+  else if (execute.Left(18).Equals("system.pwmcontrol"))
+  {
+    CStdString strTemp ,strRgbA, strRgbB, strWhiteA, strWhiteB, strTran; 
+    CStdStringArray arSplit; 
+    int iTrTime = 0;
+    StringUtils::SplitString(parameter,",", arSplit);
+
+    if ((int)arSplit.size() > 1)
+    {
+      strRgbA  = arSplit[0].c_str();
+      strRgbB  = arSplit[1].c_str();
+      strWhiteA= arSplit[2].c_str();
+      strWhiteB= arSplit[3].c_str();
+      strTran  = arSplit[4].c_str();
+      iTrTime  = atoi(arSplit[5].c_str());
+    }
+    else if(parameter.size() > 6)
+    {
+      strRgbA = strRgbB = parameter;
+      strTran = "none";
+    }
+    CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
+  }
+  else if (execute.Equals("backupsysteminfo"))
+  {
+#ifdef HAS_XBOX_HARDWARE
+    g_sysinfo.WriteTXTInfoFile();
+    g_sysinfo.CreateBiosBackup();
+    g_sysinfo.CreateEEPROMBackup();
+#endif
+  }
+  else
+    return -1;
+  return 0;
+}
+int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsBookmarkName)
+{
+  if (strPath1.IsEmpty())
+    return -1;
+
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
+
+  // copy as we may change strPath
+  CStdString strPath = strPath1;
+
+  // Check for special protocols
+  CURL checkURL(strPath);
+
+  // stack://
+  if (checkURL.GetProtocol() == "stack")
+    strPath.Delete(0, 8); // remove the stack protocol
+
+  if (checkURL.GetProtocol() == "shout")
+    strPath = checkURL.GetHostName();
+  if (checkURL.GetProtocol() == "tuxbox")
+    return 1;
+
+  if (checkURL.GetProtocol() == "multipath")
+    strPath = CMultiPathDirectory::GetFirstPath(strPath);
+
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
+  bIsBookmarkName = false;
+  int iIndex = -1;
+  int iLength = -1;
+  // we first test the NAME of a bookmark
+  for (int i = 0; i < (int)vecShares.size(); ++i)
+  {
+    CShare share = vecShares.at(i);
+    CStdString strName = share.strName;
+
+    // special cases for dvds
+    if (IsOnDVD(share.strPath))
+    {
+      if (IsOnDVD(strPath))
+        return i;
+
+      // not a path, so we need to modify the bookmark name
+      // since we add the drive status and disc name to the bookmark
+      // "Name (Drive Status/Disc Name)"
+      int iPos = strName.ReverseFind('(');
+      if (iPos > 1)
+        strName = strName.Mid(0, iPos - 1);
+    }
+    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
+    if (strPath.Equals(strName))
+    {
+      bIsBookmarkName = true;
+      return i;
+    }
+  }
+
+  // now test the paths
+
+  // remove user details, and ensure path only uses forward slashes
+  // and ends with a trailing slash so as not to match a substring
+  CURL urlDest(strPath);
+  CStdString strDest;
+  urlDest.GetURLWithoutUserDetails(strDest);
+  ForceForwardSlashes(strDest);
+  if (!HasSlashAtEnd(strDest))
+    strDest += "/";
+  int iLenPath = strDest.size();
+
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
+
+  for (int i = 0; i < (int)vecShares.size(); ++i)
+  {
+    CShare share = vecShares.at(i);
+
+    // does it match a bookmark name?
+    if (share.strPath.substr(0,8) == "shout://")
+    {
+      CURL url(share.strPath);
+      if (strPath.Equals(url.GetHostName()))
+        return i;
+    }
+
+    // doesnt match a name, so try the bookmark path
+    vector<CStdString> vecPaths;
+
+    // add any concatenated paths if they exist
+    if (share.vecPaths.size() > 0)
+      vecPaths = share.vecPaths;
+
+    // add the actual share path at the front of the vector
+    vecPaths.insert(vecPaths.begin(), share.strPath);
+
+    // test each path
+    for (int j = 0; j < (int)vecPaths.size(); ++j)
+    {
+      // remove user details, and ensure path only uses forward slashes
+      // and ends with a trailing slash so as not to match a substring
+      CURL urlShare(vecPaths[j]);
+      CStdString strShare;
+      urlShare.GetURLWithoutUserDetails(strShare);
+      ForceForwardSlashes(strShare);
+      if (!HasSlashAtEnd(strShare))
+        strShare += "/";
+      int iLenShare = strShare.size();
+      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
+
+      if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
+      {
+        //CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+
+        // if exact match, return it immediately
+        if (iLenPath == iLenShare)
+        {
+          // if the path EXACTLY matches an item in a concatentated path
+          // set bookmark name to true to load the full virtualpath
+          bIsBookmarkName = false;
+          if (vecPaths.size() > 1)
+            bIsBookmarkName = true;
+          return i;
+        }
+        iIndex = i;
+        iLength = iLenShare;
+      }
+    }
+  }
+
+  // return the index of the share with the longest match
+  if (iIndex == -1)
+  {
+
+    // rar:// and zip://
+    // if archive wasn't mounted, look for a matching share for the archive instead
+    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+    {
+      // get the hostname portion of the url since it contains the archive file
+      strPath = checkURL.GetHostName();
+
+      bIsBookmarkName = false;
+      bool bDummy;
+      return GetMatchingShare(strPath, vecShares, bDummy);
+    }
+
+    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strPath1.c_str());
+  }
+  return iIndex;
+}
+
+CStdString CUtil::TranslateSpecialPath(const CStdString &specialPath)
+{
+  CStdString translatedPath;
+  if (specialPath.Left(15).Equals("special://home/"))
+    CUtil::AddFileToFolder("Q:", specialPath.Mid(15), translatedPath);
+  else if (specialPath.Left(20).Equals("special://subtitles/"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), specialPath.Mid(20), translatedPath);
+  else if (specialPath.Left(19).Equals("special://userdata/"))
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), specialPath.Mid(19), translatedPath);
+  else if (specialPath.Left(19).Equals("special://database/"))
+    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), specialPath.Mid(19), translatedPath);
+  else if (specialPath.Left(21).Equals("special://thumbnails/"))
+    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), specialPath.Mid(21), translatedPath);
+  else if (specialPath.Left(21).Equals("special://recordings/"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), specialPath.Mid(21), translatedPath);
+  else if (specialPath.Left(22).Equals("special://screenshots/"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), specialPath.Mid(22), translatedPath);
+  else if (specialPath.Left(25).Equals("special://musicplaylists/"))
+    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), specialPath.Mid(25), translatedPath);
+  else if (specialPath.Left(25).Equals("special://videoplaylists/"))
+    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), specialPath.Mid(25), translatedPath);
+  else if (specialPath.Left(17).Equals("special://cdrips/"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), specialPath.Mid(17), translatedPath);
+  else
+    translatedPath = specialPath;
+
+  return translatedPath;
+}
+
+CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
+{
+  CStdString strReturn=strSpecial;
+  if (strSpecial[0] == '$')
+  {
+    if (strSpecial.Left(5).Equals("$HOME"))
+      CUtil::AddFileToFolder("special://home/", strSpecial.Mid(5), strReturn);
+    else if (strSpecial.Left(10).Equals("$SUBTITLES"))
+      CUtil::AddFileToFolder("special://subtitles/", strSpecial.Mid(10), strReturn);
+    else if (strSpecial.Left(9).Equals("$USERDATA"))
+      CUtil::AddFileToFolder("special://userdata/", strSpecial.Mid(9), strReturn);
+    else if (strSpecial.Left(9).Equals("$DATABASE"))
+      CUtil::AddFileToFolder("special://database/", strSpecial.Mid(9), strReturn);
+    else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
+      CUtil::AddFileToFolder("special://thumbnails/", strSpecial.Mid(11), strReturn);
+    else if (strSpecial.Left(11).Equals("$RECORDINGS"))
+      CUtil::AddFileToFolder("special://recordings/", strSpecial.Mid(11), strReturn);
+    else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
+      CUtil::AddFileToFolder("special://screenshots/", strSpecial.Mid(12), strReturn);
+    else if (strSpecial.Left(15).Equals("$MUSICPLAYLISTS"))
+      CUtil::AddFileToFolder("special://musicplaylists/", strSpecial.Mid(15), strReturn);
+    else if (strSpecial.Left(15).Equals("$VIDEOPLAYLISTS"))
+      CUtil::AddFileToFolder("special://videoplaylists/", strSpecial.Mid(15), strReturn);
+    else if (strSpecial.Left(7).Equals("$CDRIPS"))
+      CUtil::AddFileToFolder("special://cdrips/", strSpecial.Mid(7), strReturn);
+    // this one will be removed post 2.0
+    else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
+      CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath",false), strSpecial.Mid(10), strReturn);
+  }
+  return strReturn;
+}
+
+CStdString CUtil::MusicPlaylistsLocation()
+{
+  CStdString strReturn;
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strReturn);
+  return strReturn;
+}
+
+CStdString CUtil::VideoPlaylistsLocation()
+{
+  CStdString strReturn;
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strReturn);
+  return strReturn;
+}
+
+void CUtil::DeleteMusicDatabaseDirectoryCache()
+{
+  CUtil::DeleteDirectoryCache("mdb");
+}
+
+void CUtil::DeleteVideoDatabaseDirectoryCache()
+{
+  CUtil::DeleteDirectoryCache("vdb");
+}
+
+void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
+{
+  WIN32_FIND_DATA wfd;
+  memset(&wfd, 0, sizeof(wfd));
+
+  CStdString strFile = "Z:\\";
+  if (!strType.IsEmpty())
+  {
+    strFile += strType;
+    if (!strFile.Right(1).Equals("-"))
+      strFile += "-";
+  }
+  strFile += "*.fi";
+
+  CAutoPtrFind hFind(FindFirstFile(strFile.c_str(), &wfd));
+  if (!hFind.isValid())
+    return;
+  do
+  {
+    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
+      CStdString strFile = "Z:\\";
+      strFile += wfd.cFileName;
+      DeleteFile(strFile.c_str());
+    }
+  }
+  while (FindNextFile(hFind, &wfd));
+}
+
+bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
+{
+  TIME_ZONE_INFORMATION tziNew;
+  SYSTEMTIME CurTime;
+  SYSTEMTIME NewTime;
+  GetLocalTime(&CurTime);
+  GetLocalTime(&NewTime);
+  int iRescBiases, iHourUTC;
+  int iMinuteNew;
+
+  DWORD dwRet = GetTimeZoneInformation(&tziNew);  // Get TimeZone Informations
+  float iGMTZone = (float(tziNew.Bias)/(60));     // Calc's the GMT Time
+
+  CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
+  CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %.1f",iGMTZone);
+  CLog::Log(LOGDEBUG, "-          Bias: %i minutes",tziNew.Bias);
+  CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
+  CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
+
+  switch (dwRet)
+  {
+    case TIME_ZONE_ID_STANDARD:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: 1, Standart");
+      }
+      break;
+    case TIME_ZONE_ID_DAYLIGHT:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias + tziNew.DaylightBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: 2, Daylight");
+      }
+      break;
+    case TIME_ZONE_ID_UNKNOWN:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: 0, Unknown");
+      }
+      break;
+    case TIME_ZONE_ID_INVALID:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: Invalid");
+      }
+      break;
+    default:
+      iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+  }
+    CLog::Log(LOGDEBUG, "--------------- END ---------------");
+
+  // Calculation
+  iHourUTC = GMTZoneCalc(iRescBiases, iHour, iMinute, iMinuteNew);
+  iMinute = iMinuteNew;
+  if(iHourUTC <0)
+  {
+    iDay = iDay - 1;
+    iHourUTC =iHourUTC + 24;
+  }
+  if(iHourUTC >23)
+  {
+    iDay = iDay + 1;
+    iHourUTC =iHourUTC - 24;
+  }
+
+  // Set the New-,Detected Time Values to System Time!
+  NewTime.wYear		= (WORD)iYear;
+  NewTime.wMonth	= (WORD)iMonth;
+  NewTime.wDay		= (WORD)iDay;
+  NewTime.wHour		= (WORD)iHourUTC;
+  NewTime.wMinute	= (WORD)iMinute;
+
+  FILETIME stNewTime, stCurTime;
+  SystemTimeToFileTime(&NewTime, &stNewTime);
+  SystemTimeToFileTime(&CurTime, &stCurTime);
+#ifdef HAS_XBOX_HARDWARE
+  bool bReturn=NtSetSystemTime(&stNewTime, &stCurTime); //NtSetSystemTime(IN PLARGE_INTEGER SystemTime, OUT PLARGE_INTEGER PreviousTime OPTIONAL );
+#else
+  bool bReturn(false);
+#endif
+  return bReturn;
+}
+int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
+{
+  int iHourUTC, iTemp;
+  iMinuteNew = iMinute;
+  iTemp = iRescBiases/60;
+
+  if (iRescBiases == 0 )return iHour;   // GMT Zone 0, no need calculate
+  if (iRescBiases > 0)
+    iHourUTC = iHour + abs(iTemp);
+  else
+    iHourUTC = iHour - abs(iTemp);
+
+  if ((iTemp*60) != iRescBiases)
+  {
+    if (iRescBiases > 0)
+      iMinuteNew = iMinute + abs(iTemp*60 - iRescBiases);
+    else
+      iMinuteNew = iMinute - abs(iTemp*60 - iRescBiases);
+
+    if (iMinuteNew >= 60)
+    {
+      iMinuteNew = iMinuteNew -60;
+      iHourUTC = iHourUTC + 1;
+    }
+    else if (iMinuteNew < 0)
+    {
+      iMinuteNew = iMinuteNew +60;
+      iHourUTC = iHourUTC - 1;
+    }
+  }
+  return iHourUTC;
+}
+bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
+{
+  bool bState= false;
+#ifdef HAS_XBOX_HARDWARE
+  CStdString strWorkTemp;
+  CStdString strSendMessage = "ping\0";
+  CStdString strReceiveMessage = "ping";
+  int iUDPPort = 4905;
+  char  sztmp[512], szTemp[512];
+	static int	udp_server_socket, inited=0;
+	int  cliLen, t1,t2,t3,t4, init_counter=0, life=0;
+  struct sockaddr_in	server;
+  struct sockaddr_in	cliAddr;
+  struct timeval timeout={0,500};
+  XNADDR xna;
+	DWORD dwState;
+  fd_set readfds;
+	if( ( !inited )  || ( bRefresh ) )
 	{
-		g_applicationMessenger.Restart();
+		dwState = XNetGetTitleXnAddr(&xna);
+		XNetInAddrToString(xna.ina,(char *)strWorkTemp.c_str(),64);
+
+		// Get IP address
+		sscanf( (char *)strWorkTemp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
+    if( !t1 ) return false;
+    cliLen = sizeof( cliAddr);
+    if( !inited )
+    {
+      int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	    char value      = 1;
+	    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
+	    struct sockaddr_in addr;
+	    memset(&(addr),0,sizeof(addr));
+	    addr.sin_family       = AF_INET;
+	    addr.sin_addr.s_addr  = INADDR_ANY;
+	    addr.sin_port         = htons(iUDPPort);
+	    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
+      udp_server_socket = tUDPsocket;
+      inited = 1;
+    }
+    FD_ZERO(&readfds);
+		FD_SET(udp_server_socket, &readfds);
+		life = select( 0,&readfds, NULL, NULL, &timeout );
+		if (life == -1 )  return false;
+    memset(&(server),0,sizeof(server));
+		server.sin_family           = AF_INET;
+		server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
+		server.sin_port             = htons(iUDPPort);
+    sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
 	}
-	else if (execute == "ShutDown")
+	FD_ZERO(&readfds);
+	FD_SET(udp_server_socket, &readfds);
+	life = select( 0,&readfds, NULL, NULL, &timeout );
+  if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
+  {
+    strNewClientIP ="";
+    strNewClientInfo ="";
+    g_infoManager.SetAutodetectedXbox(false);
+  }
+  while( life )
 	{
-		g_applicationMessenger.Shutdown();
-	}
-	else if (execute == "Dashboard")
+    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
+    strWorkTemp.Format("%s",sztmp);
+    if( strWorkTemp == strReceiveMessage )
+		{
+      strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
+      sendto(udp_server_socket,(char *)strWorkTemp.c_str(),strlen((char *)strWorkTemp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
+      strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
+
+			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping // todo: a code to check the list of other clients
+			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
+		}
+		else
+		{
+      sprintf( szTemp, "%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
+      if (strHasClientIP != szTemp && strHasClientInfo != strWorkTemp)
+      {
+        strHasClientIP = szTemp, strHasClientInfo  = strWorkTemp;
+        if (!strHasClientIP.IsEmpty()&& !strHasClientInfo.IsEmpty())
+        {
+          strNewClientIP = szTemp;        //This is the Client IP Adress!
+          strNewClientInfo = strWorkTemp; // This is the Client Informations!
+          bState = true;
+        } //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc.
+      }
+      else
+        g_infoManager.SetAutodetectedXbox(true);
+    }
+    timeout.tv_sec=0;
+    timeout.tv_usec = 5000;
+    FD_ZERO(&readfds);
+    FD_SET(udp_server_socket, &readfds);
+    life = select( 0,&readfds, NULL, NULL, &timeout );
+  }
+#endif
+  return bState;
+}
+
+bool CUtil::XboxAutoDetection()
+{
+#ifdef HAS_XBOX_HARDWARE
+  if (g_guiSettings.GetBool("autodetect.onoff"))
+  {
+    static DWORD pingTimer = 0;
+    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+      return false;
+    pingTimer = timeGetTime();
+
+    CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
+    CStdString strNickName   = g_guiSettings.GetString("autodetect.nickname");
+    CStdString strSysFtpName = g_guiSettings.GetString("servers.ftpserveruser");
+    CStdString strSysFtpPw   = g_guiSettings.GetString("servers.ftpserverpassword");
+
+    if(!g_guiSettings.GetBool("Autodetect.senduserpw")) //Send anon login names!
+    {
+      strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
+    }
+    int iSysFtpPort = 21;
+    if ( CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo ) )
+    {
+      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+      CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+      CStdStringArray arSplit;
+      StringUtils::SplitString(strNewClientInfo,";", arSplit);
+      if ((int)arSplit.size() > 1)
+      {
+        strNickName     = arSplit[0].c_str();
+        strFtpUserName  = arSplit[1].c_str();
+        strFtpPassword  = arSplit[2].c_str();
+        strFtpPort      = arSplit[3].c_str();
+        strBoosMode     = arSplit[4].c_str();
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+
+        //PopUp Notification (notify anytime if a box is found! no switch needed)
+        CStdString strtemplbl;
+        strtemplbl.Format("%s %s",strNickName, strNewClientIP);
+        g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
+        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
+
+        if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
+        {
+          if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+          {
+            g_infoManager.SetAutodetectedXbox(true);
+            CStdString strTemp;
+            strNickName.TrimRight(' ');
+            strTemp.Format("FTP XBOX (%s)", strNickName.c_str());
+            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+          }
+        }
+      }
+    }
+    strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
+  }
+  else
+  {
+    strHasClientIP ="", strHasClientInfo = "";
+    g_infoManager.SetAutodetectedXbox(false);
+  }
+#endif
+  return true;
+}
+bool CUtil::XboxAutoDetectionGetShare(CShare& share)
+{
+#ifdef HAS_XBOX_HARDWARE
+  if( !strNewClientIP.IsEmpty() && !strNewClientInfo.IsEmpty())
+  {
+    //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+    CStdStringArray arSplit;
+    StringUtils::SplitString(strNewClientInfo,";", arSplit);
+    if ((int)arSplit.size() > 1)
+    {
+      strNickName     = arSplit[0].c_str();
+      strFtpUserName  = arSplit[1].c_str();
+      strFtpPassword  = arSplit[2].c_str();
+      strFtpPort      = arSplit[3].c_str();
+      strBoosMode     = arSplit[4].c_str();
+      strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strNewClientIP.c_str(),strFtpPort.c_str());
+
+      strNickName.TrimRight(' ');
+      share.strName.Format("FTP XBOX (%s)", strNickName.c_str());
+      share.strPath.Format("%s",strFTPPath.c_str());
+    }
+    return true;
+  }
+#endif
+  return false;
+}
+bool CUtil::IsFTP(const CStdString& strFile)
+{
+  if( strFile.Left(6).Equals("ftp://") ) return true;
+  else if( strFile.Left(7).Equals("ftpx://") ) return true;
+  else return false;
+}
+
+bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
+{
+#ifdef HAS_FTP_SERVER
+  if( !g_application.m_pFileZilla )
+    return false;
+
+  class CXFUser*	m_pUser;
+  std::vector<CXFUser*> users;
+  g_application.m_pFileZilla->GetAllUsers(users);
+  iUserMax = users.size();
+	if (iUserMax > 0)
 	{
-		RunXBE(g_stSettings.szDashboard);
+		//for (int i = 1 ; i < iUserSize; i++){ delete users[i]; }
+    m_pUser = users[iFTPUserID];
+    strFtpUser1 = m_pUser->GetName();
+    if (strFtpUser1.size() != 0) return true;
+    else return false;
 	}
-  else if (execute == "RestartApp")
+  else
+#endif
+    return false;
+}
+bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword)
+{
+#ifdef HAS_FTP_SERVER
+  if( !g_application.m_pFileZilla )
+    return false;
+
+  CStdString strTempUserName;
+  class CXFUser*	p_ftpUser;
+  std::vector<CXFUser*> v_ftpusers;
+  bool bFoundUser = false;
+  g_application.m_pFileZilla->GetAllUsers(v_ftpusers);
+  int iUserSize = v_ftpusers.size();
+	if (iUserSize > 0)
 	{
-		g_applicationMessenger.RestartApp();
-	}
-	else if (execute == "Credits")
+    int i = 1 ;
+		while( i <= iUserSize)
+    {
+      p_ftpUser = v_ftpusers[i-1];
+      strTempUserName = p_ftpUser->GetName();
+      if (strTempUserName.Equals(strFtpUserName.c_str()) )
+      {
+        if (p_ftpUser->SetPassword(strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
+        {
+          p_ftpUser->CommitChanges();
+          g_guiSettings.SetString("servers.ftpserverpassword",strFtpUserPassword.c_str());
+          return true;
+        }
+        break;
+      }
+      i++;
+    }
+  }
+#endif
+  return false;
+}
+//strXboxNickNameIn: New NickName to write
+//strXboxNickNameOut: Same if it is in NICKNAME Cache
+bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut)
+{
+#ifdef HAS_XBOX_HARDWARE
+  WCHAR pszNickName[MAX_NICKNAME];
+  unsigned int uiSize = MAX_NICKNAME;
+  bool bfound= false;
+  HANDLE hNickName = XFindFirstNickname(false,pszNickName,MAX_NICKNAME);
+  if (hNickName != INVALID_HANDLE_VALUE)
+  { do
+      {
+        strXboxNickNameOut.Format("%ls",pszNickName );
+        if (strXboxNickNameIn.Equals(strXboxNickNameOut))
+        {
+          bfound = true;
+          break;
+        }
+        else if (strXboxNickNameIn.IsEmpty()) strXboxNickNameOut.Format("XbMediaCenter");
+      }while(XFindNextNickname(hNickName,pszNickName,uiSize) != false);
+    XFindClose(hNickName);
+  }
+  if(!bfound)
+  {
+    CStdStringW wstrName = strXboxNickNameIn.c_str();
+    XSetNickname(wstrName.c_str(), false);
+  }
+#endif
+  return true;
+}
+//strXboxNickNameOut: Will fast receive the last XBOX NICKNAME from Cache
+bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
+{
+#ifdef HAS_XBOX_HARDWARE
+  WCHAR wszXboxNickname[MAX_NICKNAME];
+  HANDLE hNickName = XFindFirstNickname( FALSE, wszXboxNickname, MAX_NICKNAME );
+	if ( hNickName != INVALID_HANDLE_VALUE )
 	{
-		RunCredits();
+    strXboxNickNameOut.Format("%ls",wszXboxNickname);
+		XFindClose( hNickName );
+    return true;
 	}
-	else if (execute == "Reset") //Will reset the xbox, aka soft reset
-	{
-		g_applicationMessenger.Reset();
-	}
+  else
+#endif
+  {
+    // it seems to be empty? should we create one? or the user
+    strXboxNickNameOut.Format("");
+    return false;
+  }
+}
+
+void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)
+{
+  CFileItemList myItems;
+  CDirectory::GetDirectory(strPath,myItems,strMask,bUseFileDirectories);
+  for (int i=0;i<myItems.Size();++i)
+  {
+    if (myItems[i]->m_bIsFolder)
+      CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
+    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+      items.Add(new CFileItem(*myItems[i]));
+  }
+}
+
+void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& item)
+{
+  CFileItemList myItems;
+  CDirectory::GetDirectory(strPath,myItems,"",false);
+  for (int i=0;i<myItems.Size();++i)
+  {
+    if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
+    {
+      CFileItem* pItem = new CFileItem(*myItems[i]);
+      item.Add(pItem);
+      CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
+    }
+  }
+  CLog::Log(LOGDEBUG,"done listing!");
+}
+
+void CUtil::ForceForwardSlashes(CStdString& strPath)
+{
+  int iPos = strPath.ReverseFind('\\');
+  while (iPos > 0)
+  {
+    strPath.at(iPos) = '/';
+    iPos = strPath.ReverseFind('\\');
+  }
+}
+
+double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1)
+{
+  // case-insensitive fuzzy string comparison on the album and artist for relevance
+  // weighting is identical, both album and artist are 50% of the total relevance
+  // a missing artist means the maximum relevance can only be 0.50
+  CStdString strAlbumTemp = strAlbumTemp1;
+  strAlbumTemp.MakeLower();
+  CStdString strAlbum = strAlbum1;
+  strAlbum.MakeLower();
+  double fAlbumPercentage = fstrcmp(strAlbumTemp, strAlbum, 0.0f);
+  double fArtistPercentage = 0.0f;
+  if (!strArtist1.IsEmpty())
+  {
+    CStdString strArtistTemp = strArtistTemp1;
+    strArtistTemp.MakeLower();
+    CStdString strArtist = strArtist1;
+    strArtist.MakeLower();
+    fArtistPercentage = fstrcmp(strArtistTemp, strArtist, 0.0f);
+  }
+  double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;
+  return fRelevance;
+}
+
+CStdString CUtil::SubstitutePath(const CStdString& strFileName)
+{
+  //CLog::Log(LOGDEBUG,__FUNCTION__" checking source filename:[%s]", strFileName.c_str());
+  // substitutes paths to correct issues with remote playlists containing full paths
+  for (unsigned int i = 0; i < g_advancedSettings.m_pathSubstitutions.size(); i++)
+  {
+    vector<CStdString> vecSplit;
+    StringUtils::SplitString(g_advancedSettings.m_pathSubstitutions[i], " , ", vecSplit);
+
+    // something is wrong, go to next substitution
+    if (vecSplit.size() != 2)
+      continue;
+
+    CStdString strSearch = vecSplit[0];
+    CStdString strReplace = vecSplit[1];
+    strSearch.Replace(",,",",");
+    strReplace.Replace(",,",",");
+
+    if (!CUtil::HasSlashAtEnd(strSearch))
+      CUtil::AddSlashAtEnd(strSearch);
+    if (!CUtil::HasSlashAtEnd(strReplace))
+      CUtil::AddSlashAtEnd(strReplace);
+
+    // if left most characters match the search, replace them
+    //CLog::Log(LOGDEBUG,__FUNCTION__" testing for path:[%s]", strSearch.c_str());
+    int iLen = strSearch.size();
+    if (strFileName.Left(iLen).Equals(strSearch))
+    {
+      // fix slashes
+      CStdString strTemp = strFileName.Mid(iLen);
+      strTemp.Replace("\\", strReplace.Right(1));
+      CStdString strFileNameNew = strReplace + strTemp;
+      //CLog::Log(LOGDEBUG,__FUNCTION__" new filename:[%s]", strFileNameNew.c_str());
+      return strFileNameNew;
+    }
+  }
+  // nothing matches, return original string
+  //CLog::Log(LOGDEBUG,__FUNCTION__" no matches");
+  return strFileName;
+}
+
+bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
+{
+  int iStrInputSize = StrInput.size();
+  if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize))
+    return false;
+
+  char cDelim = '\0';
+  int nGreaterDelim, nPos;
+
+  nPos = StrInput.find_last_of( '\\' );
+  if ( nPos >= 0 )
+    cDelim = '\\';
+  else
+  {
+    nPos = StrInput.find_last_of( '/' );
+    if ( nPos >= 0 )
+      cDelim = '/';
+  }
+  if ( cDelim == '\0' )
+    return false;
+
+  if (nPos == StrInput.size() - 1)
+  {
+    StrInput.erase(StrInput.size() - 1);
+    nPos = StrInput.find_last_of( cDelim );
+  }
+  while( iTextMaxLength < iStrInputSize )
+  {
+    nPos = StrInput.find_last_of( cDelim, nPos );
+    nGreaterDelim = nPos;
+    if ( nPos >= 0 ) nPos = StrInput.find_last_of( cDelim, nPos - 1 );
+    else break;
+    if ( nPos < 0 ) break;
+    if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
+    iStrInputSize = StrInput.size();
+  }
+  // replace any additional /../../ with just /../ if necessary
+  CStdString replaceDots;
+  replaceDots.Format("..%c..", cDelim);
+  while (StrInput.size() > (unsigned int)iTextMaxLength)
+    if (!StrInput.Replace(replaceDots, ".."))
+      break;
+  // finally, truncate our string to force inside our max text length,
+  // replacing the last 2 characters with ".."
+
+  // eg end up with:
+  // "smb://../Playboy Swimsuit Cal.."
+  if (iTextMaxLength > 2 && StrInput.size() > (unsigned int)iTextMaxLength)
+  {
+    StrInput = StrInput.Left(iTextMaxLength - 2);
+    StrInput += "..";
+  }
+  StrOutput = StrInput;
+  return true;
+}
+
+float CUtil::CurrentCpuUsage()
+{
+  return 0.0f;
+
+//  float fCpuUsage = -1.0;
+//
+//  if (!m_hCurrentCpuUsage)
+//  {
+//    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
+//  }
+//
+//  if (m_hCurrentCpuUsage)
+//  {
+//    DM_COUNTDATA data;
+//
+//    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
+//    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
+//  }
+//
+//  return fCpuUsage;
+}
+
+bool CUtil::SupportsFileOperations(const CStdString& strPath)
+{
+  // currently only hd and smb support delete and rename
+  if (IsHD(strPath))
+    return true;
+  if (IsSmb(strPath))
+    return true;
+  if (IsStack(strPath))
+  {
+    CStackDirectory dir;
+    return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
+  }
+  if (IsMultiPath(strPath))
+    return CMultiPathDirectory::SupportsFileOperations(strPath);
+#ifdef HAS_XBOX_HARDWARE
+  if (IsMemCard(strPath) && g_memoryUnitManager.IsDriveWriteable(strPath))
+    return true;
+#endif
+  return false;
+}
+
+CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& artist)
+{
+  if (album.IsEmpty())
+    return GetCachedMusicThumb("unknown"+artist);
+  if (artist.IsEmpty())
+    return GetCachedMusicThumb(album+"unknown");
+  return GetCachedMusicThumb(album+artist);
+}
+
+CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
+{
+  Crc32 crc;
+  CStdString noSlashPath(path);
+  RemoveSlashAtEnd(noSlashPath);
+  crc.ComputeFromLowerCase(noSlashPath);
+  CStdString hex;
+  hex.Format("%08x", crc);
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
+  return thumb;
+}
+
+void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
+{
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);
+  CHDDirectory directory;
+  CFileItemList items;
+  directory.GetDirectory(strPath, items);
+  // Search for Themes in the Current skin!
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem* pItem = items[i];
+    if (!pItem->m_bIsFolder)
+    {
+      CStdString strExtension;
+      CUtil::GetExtension(pItem->m_strPath, strExtension);
+      if (strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr"))
+      {
+        CStdString strLabel = pItem->GetLabel();
+        vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));
+      }
+    }
+  }
+  sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
+}
+
+bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime)
+{
+#ifdef HAS_XBOX_HARDWARE
+    if (strRGBa.IsEmpty() && strRGBb.IsEmpty() && strWhiteA.IsEmpty() && strWhiteB.IsEmpty()) // no color, return false!
+      return false;
+  if(g_iledSmartxxrgb.IsRunning())
+  {
+    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
+  }
+  g_iledSmartxxrgb.Start();
+  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
+#else
+  return false;
+#endif
+}
+
+// We check if the MediaCenter-Video-patch is already installed.
+// To do this we search for the original code in the Kernel.
+// This is done by searching from 0x80011000 to 0x80024000.
+bool CUtil::LookForKernelPatch()
+{
+#ifdef HAS_XBOX_HARDWARE
+  BYTE	*Kernel=(BYTE *)0x80010000;
+  DWORD	i, j = 0;
+
+  for(i=0x1000; i<0x14000; i++)
+  {
+    if(Kernel[i]!=PatchData[0])
+      continue;
+    for(j=0; j<25; j++)
+    {
+      if(Kernel[i+j]!=PatchData[j])
+        break;
+    }
+    if(j==25)
+      return true;
+  }
+#endif
+  return false;
+}
+// This routine removes our patch if it is not used.
+// This is to ensure proper testing whether we are responsible
+// for a mismatch of eeprom setting and current resolution.
+void CUtil::RemoveKernelPatch()
+{
+#ifdef HAS_XBOX_HARDWARE
+  BYTE  *Kernel=(BYTE *)0x80010000;
+  DWORD i, j = 0;
+
+  for(i=0x1000; i<0x14000; i++)
+  {
+    if(Kernel[i]!=PatchData[0])
+      continue;
+
+    for(j=0; j<25; j++)
+    {
+      if(Kernel[i+j]!=PatchData[j])
+        break;
+    }
+    if(j==25)
+    {
+      j=MmQueryAddressProtect(&Kernel[i]);
+      MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
+      memcpy(&Kernel[i], &rawData[0], 70); // Reset Kernel
+      MmSetAddressProtect(&Kernel[i], 70, j);
+    }
+  }
+#endif
+}
+
+void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
+{
+  CFileItemList items;
+  CUtil::GetRecursiveListing(strPath,items,"");
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+      CFile::Delete(items[i]->m_strPath);
+  }
+  items.Clear();
+  CUtil::GetRecursiveDirsListing(strPath,items);
+  for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
+  {
+    CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
+    if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
+      CLog::Log(LOGDEBUG,"this sucks %u!",GetLastError());
+  }
+  if (!::RemoveDirectory((strPath+"\\").c_str()))
+    CLog::Log(LOGDEBUG,"wtf %u",GetLastError());
+}
+
+void CUtil::ClearFileItemCache()
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("z:\\", items, ".fi", false);
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    if (!items[i]->m_bIsFolder)
+      CFile::Delete(items[i]->m_strPath);
+  }
+}
+
+void CUtil::BootToDash()
+{
+#ifdef HAS_XBOX_HARDWARE
+  LD_LAUNCH_DASHBOARD ld;
+
+  ZeroMemory(&ld, sizeof(LD_LAUNCH_DASHBOARD));
+
+  ld.dwReason = XLD_LAUNCH_DASHBOARD_MAIN_MENU;
+  XLaunchNewImage(0, (PLAUNCH_DATA)&ld);
+#endif
 }

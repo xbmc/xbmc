@@ -5,10 +5,14 @@
 // Types
 ////////////////////////////////////////////////
 
-#if WIN32
+#ifdef _XBOX
 #include <xtl.h>
 #else
+ #ifdef WIN32
+#include <windows.h>
+ #else
 #include <sys/types.h>
+ #endif
 #endif
 
 typedef int error_code;

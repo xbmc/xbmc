@@ -1,9 +1,9 @@
 /**********************************************************************
- * Copyright (c) 2002, Leo Seib, Hannover
+ * Copyright (c) 2004, Leo Seib, Hannover
  *
  * Project:SQLiteDataset C++ Dynamic Library
  * Module: SQLiteDataset class header file
- * Author: Leo Seib      E-Mail: lev@almaty.pointstrike.net
+ * Author: Leo Seib      E-Mail: leoseib@web.de
  * Begin: 5/04/2002
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,18 +31,18 @@
 
 #include <stdio.h>
 #include "dataset.h"
-#include "sqlite.h"
+#include "sqlite3.h"
 
+namespace dbiplus {
 /***************** Class SqliteDatabase definition ******************
 
        class 'SqliteDatabase' connects with Sqlite-server
 
 ******************************************************************/
-
 class SqliteDatabase: public Database {
 protected:
 /* connect descriptor */
-  sqlite *conn;
+  sqlite3 *conn;
   bool _in_transaction;
   int last_err;
 
@@ -55,10 +55,10 @@ public:
   Dataset *CreateDataset() const; 
 
 /* func. returns connection handle with SQLite-server */
-  sqlite *getHandle() {  return conn; }
+  sqlite3 *getHandle() {  return conn; }
 /* func. returns current status about SQLite-server connection */
   virtual int status();
-  virtual int setErr(int err_code);
+  virtual int setErr(int err_code,const char * qry);
 /* func. returns error message if error occurs */
   virtual const char *getErrorMsg();
   
@@ -96,10 +96,10 @@ protected:
 /* query results*/
   result_set result;
   result_set exec_res;
-
+  bool autorefresh;
   char* errmsg;
   
-  sqlite* handle();
+  sqlite3* handle();
 
 /* Makes direct queries to database */
   virtual void make_query(StringList &_sql);
@@ -125,6 +125,10 @@ public:
 /* destructor */
   ~SqliteDataset();
 
+/* set autorefresh boolean value (if true - refresh the data after edit() 
+or insert() operations default = false) */
+  void set_autorefresh(bool val);
+
 /* opens a query  & then sets a query results */
   virtual void open();
   virtual void open(const string &sql);
@@ -143,6 +147,8 @@ public:
   virtual long nextid(const char *seq_name);
 /* sequence numbers */
   virtual int num_rows();
+/* interupt any pending database operation  */
+  virtual void interrupt();
 
   virtual bool bof();
   virtual bool eof();
@@ -155,5 +161,5 @@ public:
 
 
 };
-
+} //namespace
 #endif

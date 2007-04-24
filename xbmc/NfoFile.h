@@ -9,27 +9,28 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <xtl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
-using namespace std;
+class CVideoInfoTag;
 
 class CNfoFile
 {
 public:
-	CNfoFile();
-	virtual ~CNfoFile();
-	
-	HRESULT Create(LPSTR szPath);
+  CNfoFile(const CStdString&);
+  virtual ~CNfoFile();
 
-	string m_strImDbUrl;
+  HRESULT Create(const CStdString&);
+  bool GetDetails(CVideoInfoTag &details);
+
+  CStdString m_strScraper;
+  CStdString m_strImDbUrl;
+  CStdString m_strImDbNr;
 private:
-	HRESULT Load(char* szFile);
-	void	Close();
+  HRESULT Load(const CStdString&);
+  HRESULT Scrape(const CStdString&);
+  void Close();
 private:
-	char*	m_doc;
-	int		m_size;
+  char* m_doc;
+  int m_size;
+  CStdString m_strContent;
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

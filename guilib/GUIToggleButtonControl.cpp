@@ -1,216 +1,139 @@
-#include "stdafx.h"
+#include "include.h"
 #include "GUIToggleButtonControl.h"
-#include "guifontmanager.h"
-#include "guiWindowManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialog.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
-CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus)
-:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
-,m_imgFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureFocus)
-,m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureNoFocus)
-,m_imgAltFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strAltTextureFocus)
-,m_imgAltNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strAltTextureNoFocus)
+
+CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CImage& altTextureFocus, const CImage& altTextureNoFocus, const CLabelInfo &labelInfo)
+    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    , m_selectButton(dwParentID, dwControlId, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo)
 {
-  m_bSelected=false;
-  m_dwFrameCounter = 0;
-	m_strLabel=L""; 
-	m_dwTextColor	= 0xFFFFFFFF; 
-	m_dwDisabledColor	= 0xFF606060; 
-	m_pFont=NULL;
-  m_lHyperLinkWindowID=WINDOW_INVALID;
-  m_lTextOffsetX = 0;
-  m_lTextOffsetY = 0;
-	ControlType = GUICONTROL_TOGGLEBUTTON;
+  m_toggleSelect = 0;
+  ControlType = GUICONTROL_TOGGLEBUTTON;
 }
 
 CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
 {
 }
 
-void CGUIToggleButtonControl::SetDisabledColor(D3DCOLOR color)
-{
-  m_dwDisabledColor=color;
-}
 void CGUIToggleButtonControl::Render()
 {
-  if (!IsVisible() ) return;
+  if (!IsVisible()) return;
 
-  if (HasFocus())
+  // ask our infoManager whether we are selected or not...
+  if (m_toggleSelect)
+    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
+
+  if (m_bSelected)
   {
-    DWORD dwAlphaCounter = m_dwFrameCounter+2;
-    DWORD dwAlphaChannel;
-	  if ((dwAlphaCounter%128)>=64)
-		  dwAlphaChannel = dwAlphaCounter%64;
-	  else
-		  dwAlphaChannel = 63-(dwAlphaCounter%64);
-
-	  dwAlphaChannel += 192;
-    SetAlpha(dwAlphaChannel );
-    if (m_bSelected)
-      m_imgFocus.Render();
-    else
-      m_imgAltFocus.Render();
-    m_dwFrameCounter++;
-
+    // render our Alternate textures...
+    m_selectButton.SetFocus(HasFocus());
+    m_selectButton.SetVisible(IsVisible());
+    m_selectButton.SetEnabled(!IsDisabled());
+    m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
+    m_selectButton.Render();
+    CGUIControl::Render();
   }
-  else 
-  {
-		SetAlpha(0xff);
-    if (m_bSelected)
-      m_imgNoFocus.Render();
-    else
-      m_imgAltNoFocus.Render();  }
-  
-
-	if (m_strLabel.size() > 0 && m_pFont)
-	{	
-		float fTextX = (float)10+m_iPosX+m_lTextOffsetX;
-		float fTextY = (float) 2+m_iPosY+m_lTextOffsetY;
-
-		CStdStringW strLabelUnicode;
-		g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
-
-		m_pFont->DrawText(fTextX, fTextY, 
-			IsDisabled() ? m_dwDisabledColor : m_dwTextColor, strLabelUnicode.c_str() );
-	}
-
+  else
+  { // render our Normal textures...
+    CGUIButtonControl::Render();
+  }
 }
 
-void CGUIToggleButtonControl::OnAction(const CAction &action) 
+bool CGUIToggleButtonControl::OnAction(const CAction &action)
 {
-	CGUIControl::OnAction(action);
-	if (action.wID == ACTION_SELECT_ITEM)
-    {
-		m_bSelected=!m_bSelected;
-		if (m_lHyperLinkWindowID != WINDOW_INVALID)
-		{
-			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
-			return;
-		}
-		// button selected.
-		// send a message
-		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
-    }
-}
-
-bool CGUIToggleButtonControl::OnMessage(CGUIMessage& message)
-{
-  if ( message.GetControlId()==GetID() )
+  if (action.wID == ACTION_SELECT_ITEM)
   {
-    if (message.GetMessage() == GUI_MSG_LABEL_SET)
-    {
-	    m_strLabel=message.GetLabel() ;
-
-      return true;
-    }
+    m_bSelected = !m_bSelected;
   }
-  if (CGUIControl::OnMessage(message)) return true;
-  return false;
+  return CGUIButtonControl::OnAction(action);
 }
 
 void CGUIToggleButtonControl::PreAllocResources()
 {
-	CGUIControl::PreAllocResources();
-	m_dwFrameCounter=0;
-	m_imgFocus.PreAllocResources();
-	m_imgNoFocus.PreAllocResources();
-	m_imgAltFocus.PreAllocResources();
-	m_imgAltNoFocus.PreAllocResources();
+  CGUIButtonControl::PreAllocResources();
+  m_selectButton.PreAllocResources();
 }
 
 void CGUIToggleButtonControl::AllocResources()
 {
-  CGUIControl::AllocResources();
-  m_dwFrameCounter=0;
-  m_imgFocus.AllocResources();
-  m_imgNoFocus.AllocResources();
-  m_imgAltFocus.AllocResources();
-  m_imgAltNoFocus.AllocResources();
-  m_dwWidth=m_imgFocus.GetWidth();
-  m_dwHeight=m_imgFocus.GetHeight();
+  CGUIButtonControl::AllocResources();
+  m_selectButton.AllocResources();
 }
 
 void CGUIToggleButtonControl::FreeResources()
 {
-  CGUIControl::FreeResources();
-  m_imgFocus.FreeResources();
-  m_imgNoFocus.FreeResources();
-  m_imgAltFocus.FreeResources();
-  m_imgAltNoFocus.FreeResources();
+  CGUIButtonControl::FreeResources();
+  m_selectButton.FreeResources();
 }
 
-
-void CGUIToggleButtonControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
+void CGUIToggleButtonControl::DynamicResourceAlloc(bool bOnOff)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText,L"%S",strLabel.c_str());
-	m_strLabel=wszText;
-	m_dwTextColor=dwColor;
-	m_pFont=g_fontManager.GetFont(strFontName);
+  CGUIButtonControl::DynamicResourceAlloc(bOnOff);
+  m_selectButton.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIToggleButtonControl::SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor)
+void CGUIToggleButtonControl::Update()
 {
-	m_strLabel=strLabel;
-	m_dwTextColor=dwColor;
-	m_pFont=g_fontManager.GetFont(strFontName);
+  CGUIButtonControl::Update();
+  m_selectButton.Update();
 }
 
-
-void  CGUIToggleButtonControl::Update() 
+void CGUIToggleButtonControl::SetPosition(float posX, float posY)
 {
-  CGUIControl::Update();
-  
-  m_imgFocus.SetWidth(m_dwWidth);
-  m_imgFocus.SetHeight(m_dwHeight);
-
-  m_imgNoFocus.SetWidth(m_dwWidth);
-  m_imgNoFocus.SetHeight(m_dwHeight);
-
-  m_imgAltFocus.SetWidth(m_dwWidth);
-  m_imgAltFocus.SetHeight(m_dwHeight);
-
-  m_imgAltNoFocus.SetWidth(m_dwWidth);
-  m_imgAltNoFocus.SetHeight(m_dwHeight);
+  CGUIButtonControl::SetPosition(posX, posY);
+  m_selectButton.SetPosition(posX, posY);
 }
 
-void CGUIToggleButtonControl::SetPosition(int iPosX, int iPosY)
+void CGUIToggleButtonControl::SetWidth(float width)
 {
-  CGUIControl::SetPosition(iPosX, iPosY);
-  m_imgFocus.SetPosition(iPosX, iPosY);
-  m_imgNoFocus.SetPosition(iPosX, iPosY);
-  m_imgAltFocus.SetPosition(iPosX, iPosY);
-  m_imgAltNoFocus.SetPosition(iPosX, iPosY);
-}
-void CGUIToggleButtonControl::SetAlpha(DWORD dwAlpha)
-{
-  CGUIControl::SetAlpha(dwAlpha);
-  m_imgFocus.SetAlpha(dwAlpha);
-  m_imgNoFocus.SetAlpha(dwAlpha);
-  m_imgAltFocus.SetAlpha(dwAlpha);
-  m_imgAltNoFocus.SetAlpha(dwAlpha);
+  CGUIButtonControl::SetWidth(width);
+  m_selectButton.SetWidth(width);
 }
 
-void CGUIToggleButtonControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIToggleButtonControl::SetHeight(float height)
 {
-  CGUIControl::SetColourDiffuse(colour);
-  m_imgFocus.SetColourDiffuse(colour);
-  m_imgNoFocus.SetColourDiffuse(colour);
-  m_imgAltFocus.SetColourDiffuse(colour);
-  m_imgAltNoFocus.SetColourDiffuse(colour);
+  CGUIButtonControl::SetHeight(height);
+  m_selectButton.SetHeight(height);
 }
 
-
-void CGUIToggleButtonControl::SetHyperLink(long dwWindowID)
+void CGUIToggleButtonControl::SetColorDiffuse(D3DCOLOR color)
 {
-  m_lHyperLinkWindowID=dwWindowID;
+  CGUIButtonControl::SetColorDiffuse(color);
+  m_selectButton.SetColorDiffuse(color);
 }
 
-void CGUIToggleButtonControl::OnMouseClick(DWORD dwButton)
+void CGUIToggleButtonControl::SetLabel(const string &strLabel)
 {
-	if (dwButton != MOUSE_LEFT_BUTTON) return;
-	g_Mouse.SetState(MOUSE_STATE_CLICK);
-	CAction action;
-	action.wID = ACTION_SELECT_ITEM;
-	OnAction(action);
+  CGUIButtonControl::SetLabel(strLabel);
+  m_selectButton.SetLabel(strLabel);
+}
+
+void CGUIToggleButtonControl::SetAltLabel(const string &label)
+{
+  if (label.size())
+    m_selectButton.SetLabel(label);
+}
+
+const string& CGUIToggleButtonControl::GetLabel() const
+{
+  if (m_bSelected)
+    return m_selectButton.GetLabel();
+  return CGUIButtonControl::GetLabel();
+}
+
+void CGUIToggleButtonControl::SetAltClickActions(const vector<CStdString> &clickActions)
+{
+  m_selectButton.SetClickActions(clickActions);
+}
+
+void CGUIToggleButtonControl::OnClick()
+{
+  // the ! is here as m_bSelected gets updated before this is called
+  if (!m_bSelected && m_selectButton.HasClickActions())
+    m_selectButton.OnClick();
+  else
+    CGUIButtonControl::OnClick();
 }

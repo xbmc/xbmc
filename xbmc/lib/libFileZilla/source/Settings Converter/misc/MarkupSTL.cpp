@@ -140,7 +140,8 @@ bool CMarkupSTL::Save( const char * szFileName )
 	nLength = WideCharToMultiByte(CP_UTF8,0,m_csDoc,nLength,pBuffer,nUTF8Len+1,NULL,NULL);
 	DWORD numwritten;
 	WriteFile(hFile, pBuffer, nLength, &numwritten, 0);
-	delete pBuffer;
+	// XBMC bugfix - changed to delete array
+	delete[] pBuffer;
 #else
 	DWORD numwritten;
 	WriteFile(hFile, (const char *)m_csDoc, nLength, &numwritten, 0);

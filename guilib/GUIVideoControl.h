@@ -1,30 +1,29 @@
 /*!
-	\file GUIVideoControl.h
-	\brief 
-	*/
+\file GUIVideoControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIVIDEOCONTROL_H
 #define GUILIB_GUIVIDEOCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "stdstring.h"
-using namespace std;
+
+#include "GUIControl.h"
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
+ \ingroup controls
+ \brief 
+ */
 class CGUIVideoControl :
-  public CGUIControl
+      public CGUIControl
 {
 public:
-  CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
+  CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIVideoControl(void);
   virtual void Render();
-  virtual void OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseOver();
+  virtual bool CanFocus() const;
+  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
 };
 #endif

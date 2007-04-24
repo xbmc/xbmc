@@ -9,7 +9,7 @@ static __inline long double sqr( long double arg )
 
 static __inline void swap( float &a, float &b )
 {
-  float t = a;  a = b;  b = t;
+  float t = a; a = b; b = t;
 }
 
 // (complex) fast fourier transformation
@@ -22,7 +22,7 @@ static __inline void swap( float &a, float &b )
 void fft( float data[], int nn, int isign );
 
 void twochannelrfft(float data[], int n);
-void twochanwithwindow(float data[], int n);	// test
+void twochanwithwindow(float data[], int n); // test
 
 
 #endif

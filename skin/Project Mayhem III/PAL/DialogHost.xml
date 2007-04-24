@@ -1,0 +1,138 @@
+﻿<window id="108">
+	<defaultcontrol>3101</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<description>Dialog Background</description>
+			<posx>165</posx>
+			<posy>177</posy>
+			<width>390</width>
+			<height>273</height>
+			<texture>dialog-panel.png</texture>
+		</control>
+		<control type="label" id="3100">
+			<description>Dialog Caption</description>
+			<posx>190</posx>
+			<posy>191</posy>
+			<label>15049</label>
+			<font>special13</font>
+		</control>
+		<control type="checkmark" id="3101">
+			<description>Hosting type checkmark</description>
+			<posx>190</posx>
+			<posy>230</posy>
+			<font>font12</font>
+			<label>15050</label>
+			<onleft>3101</onleft>
+			<onright>3101</onright>
+			<onup>3108</onup>
+			<ondown>3103</ondown>
+		</control>
+		<control type="label" id="3102">
+			<description>Player Limit label</description>
+			<posx>190</posx>
+			<posy>267</posy>
+			<label>15051</label>
+			<font>font12</font>
+		</control>
+		<control type="spincontrol" id="3103">
+			<description>Player Limit spin control</description>
+			<posx>360</posx>
+			<posy>267</posy>
+			<onleft>3103</onleft>
+			<onright>3103</onright>
+			<onup>3101</onup>
+			<ondown>3105</ondown>
+			<font>font12</font>
+			<reverse>yes</reverse>
+		</control>
+		<control type="label" id="3104">
+			<description>Password label</description>
+			<posx>190</posx>
+			<posy>303</posy>
+			<font>font12</font>
+			<label>15052</label>
+		</control>
+		<control type="button" id="3105">
+			<description>Password button</description>
+			<posx>300</posx>
+			<posy>298</posy>
+			<onleft>3105</onleft>
+			<onright>3105</onright>
+			<onup>3103</onup>
+			<ondown>3107</ondown>
+			<font>font12</font>
+			<width>240</width>
+			<height>32</height>
+			<label>-</label>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<font>font13</font>
+		</control>
+		<control type="label" id="3106">
+			<description>Description label</description>
+			<posx>190</posx>
+			<posy>338</posy>
+			<font>font12</font>
+			<label>15053</label>
+		</control>
+		<control type="button" id="3107">
+			<description>Description button</description>
+			<posx>300</posx>
+			<posy>333</posy>
+			<onleft>3107</onleft>
+			<onright>3107</onright>
+			<onup>3105</onup>
+			<ondown>3108</ondown>
+			<font>font12</font>
+			<width>240</width>
+			<height>32</height>
+			<label>-</label>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<font>font12</font>
+		</control>
+		<control type="button" id="3108">
+			<description>OK button</description>
+			<posx>383</posx>
+			<posy>380</posy>
+			<width>77</width>
+			<height>32</height>
+			<label>186</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>3108</onleft>
+			<onright>3109</onright>
+			<onup>3107</onup>
+			<ondown>3101</ondown>
+		</control>
+		<control type="button" id="3109">
+			<description>Cancel button</description>
+			<posx>463</posx>
+			<posy>380</posy>
+			<width>77</width>
+			<height>32</height>
+			<label>222</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>3108</onleft>
+			<onright>3109</onright>
+			<onup>3107</onup>
+			<ondown>3101</ondown>
+		</control>
+	</controls>
+</window>

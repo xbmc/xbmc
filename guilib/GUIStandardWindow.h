@@ -1,6 +1,5 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
+#include "GUIWindow.h"
 
 // This class is designed to be the base class for any standard
 // full screen window.  Default implementations for action keys
@@ -8,15 +7,11 @@
 // classes that much easier.
 
 class CGUIStandardWindow :
-	public CGUIWindow
+      public CGUIWindow
 {
 public:
-	CGUIStandardWindow(void);
-	virtual ~CGUIStandardWindow(void);
+  CGUIStandardWindow(void);
+  virtual ~CGUIStandardWindow(void);
 
-	virtual bool	OnMessage(CGUIMessage& message);
-	virtual void	OnAction(const CAction &action);
-
-protected:
-	int						m_iLastControl;
+  virtual bool OnAction(const CAction &action);
 };

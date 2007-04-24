@@ -1,10 +1,9 @@
-#include "stdafx.h"
-#include "..\python.h"
-#include "GuiListControl.h"
+#include "../../../stdafx.h"
+#include "..\python\python.h"
+#include "GUIListContainer.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
-
-using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -17,294 +16,539 @@ extern "C" {
 
 namespace PYXBMC
 {
-	extern PyObject* ControlSpin_New(void);
+  extern PyObject* ControlSpin_New(void);
 
+  PyObject* ControlList_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = {
+      "x", "y", "width", "height", "font",
+      "textColor", "buttonTexture", "buttonFocusTexture",
+      // maintain order of above items for backward compatibility
+      "selectedColor",
+      "imageWidth", "imageHeight",
+      "itemTextXOffset", "itemTextYOffset",
+      "itemHeight", "space", "alignmentY", NULL };//"shadowColor", NULL };
+    ControlList *self;
+    char *cFont = NULL;
+    char *cTextColor = NULL;
+    char *cSelectedColor = NULL;
+    char *cTextureButton = NULL;
+    char *cTextureButtonFocus = NULL;
+    //char* cShadowColor = NULL;
+    self = (ControlList*)type->tp_alloc(type, 0);
+    if (!self) return NULL;
 
-	PyObject* ControlList_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
-	{
-		ControlList *self;
-		char *cFont = NULL;
-		char *cTextColor = NULL;
-		char *cTextureButton = NULL;
-		char *cTextureButtonFocus = NULL;
-		
-		self = (ControlList*)type->tp_alloc(type, 0);
-		if (!self) return NULL;
-		
-		// create a python spin control
-		self->pControlSpin = (ControlSpin*)ControlSpin_New();
-		if (!self->pControlSpin) return NULL;
+    // create a python spin control
+    self->pControlSpin = (ControlSpin*)ControlSpin_New();
+    if (!self->pControlSpin)
+    {
+      Py_DECREF( self );
+      return NULL;
+    }
 
-		if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cFont, &cTextColor, &cTextureButton, &cTextureButtonFocus)) return NULL;
+    // initialize default values
+    self->strFont = "font13";
+    self->dwTextColor = 0xe0f0f0f0;
+    self->dwSelectedColor = 0xffffffff;
+    self->dwImageHeight = 10;
+    self->dwImageWidth = 10;
+    self->dwItemHeight = 27;
+    self->dwSpace = 2;
+    self->dwItemTextXOffset = CONTROL_TEXT_OFFSET_X;
+    self->dwItemTextYOffset = CONTROL_TEXT_OFFSET_Y;
+    self->dwAlignmentY = XBFONT_CENTER_Y;
+    //self->dwShadowColor = NULL;
 
-		// set default values if needed
-		self->strFont = cFont ? cFont : "font13";
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "llll|ssssslllllll",//s",
+      keywords,
+      &self->dwPosX,
+      &self->dwPosY,
+      &self->dwWidth,
+      &self->dwHeight,
+      &cFont,
+      &cTextColor,
+      &cTextureButton,
+      &cTextureButtonFocus,
+      &cSelectedColor,
+      &self->dwImageWidth,
+      &self->dwImageHeight,
+      &self->dwItemTextXOffset,
+      &self->dwItemTextYOffset,
+      &self->dwItemHeight,
+      &self->dwSpace,
+      &self->dwAlignmentY//,
+      ))//&cShadowColor))
+    {
+      Py_DECREF( self );
+      return NULL;
+    }
 
-		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xe0f0f0f0;//0xffffffff;
+    // set specified values
+    if (cFont) self->strFont = cFont;
+    if (cTextColor)
+    {
+      sscanf( cTextColor, "%x", &self->dwTextColor );
+    }
+    if (cSelectedColor)
+    {
+      sscanf( cSelectedColor, "%x", &self->dwSelectedColor );
+    }
+    //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 
-		self->dwSelectedColor = 0xffffffff;//0xFFF8BC70;
+    self->strTextureButton = cTextureButton ? cTextureButton :
+      PyGetDefaultImage("listcontrol", "texturenofocus", "list-nofocus.png");
+    self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus :
+      PyGetDefaultImage("listcontrol", "texturefocus", "list-focus.png");
 
-		// if texture is supplied use it, else get default ones
-		self->strTextureButton = cTextureButton ? cTextureButton : PyGetDefaultImage("listcontrol", "textureNoFocus", "list-nofocus.png");		
-		self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus : PyGetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
+    // default values for spin control
+    self->pControlSpin->dwPosX = self->dwWidth - 35;
+    self->pControlSpin->dwPosY = self->dwHeight - 15;
 
-		self->dwImageHeight = 10;
-		self->dwImageWidth = 10;
-		self->dwItemHeight = 27;
-		self->dwSpace = 2;
+    return (PyObject*)self;
+  }
 
-		// default values for spin control
-		self->pControlSpin->dwPosX = self->dwPosX + self->dwWidth - 35;
-		self->pControlSpin->dwPosY = self->dwPosY + self->dwHeight - 15;
+  void ControlList_Dealloc(ControlList* self)
+  {
+    // conditionally delete spincontrol
+    Py_XDECREF(self->pControlSpin);
 
-		return (PyObject*)self;
-	}
-
-	void ControlList_Dealloc(ControlList* self)
-	{
-		// delete spincontrol
-		Py_DECREF(self->pControlSpin);
-
-		// delete all ListItem from vector
-		vector<ListItem*>::iterator it = self->vecItems.begin();
-		while (it != self->vecItems.end())
-		{
+    // delete all ListItem from vector
+    vector<ListItem*>::iterator it = self->vecItems.begin();
+    while (it != self->vecItems.end())
+    {
       ListItem* pListItem = *it;
-			Py_DECREF(pListItem);
-			++it;
-		}
-		self->vecItems.clear();
+      Py_DECREF(pListItem);
+      ++it;
+    }
+    self->vecItems.clear();
 
-		self->ob_type->tp_free((PyObject*)self);
-	}
+    self->ob_type->tp_free((PyObject*)self);
+  }
 
-	CGUIControl* ControlList_Create(ControlList* pControl)
-	{
-		pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
-				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->pControlSpin->dwWidth, pControl->pControlSpin->dwHeight,
-				pControl->pControlSpin->strTextureUp, pControl->pControlSpin->strTextureDown, pControl->pControlSpin->strTextureUpFocus,
-				pControl->pControlSpin->strTextureDownFocus, pControl->pControlSpin->dwColor, pControl->pControlSpin->dwPosX,
-				pControl->pControlSpin->dwPosY, pControl->strFont, pControl->dwTextColor,
-				pControl->dwSelectedColor, pControl->strTextureButton, pControl->strTextureButtonFocus,
-				CONTROL_TEXT_OFFSET_X, CONTROL_TEXT_OFFSET_Y);
+  CGUIControl* ControlList_Create(ControlList* pControl)
+  {
+    CLabelInfo label;
+    label.align = pControl->dwAlignmentY;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = label.focusedColor = pControl->dwTextColor;
+    //label.shadowColor = pControl->dwShadowColor;
+    label.selectedColor = pControl->dwSelectedColor;
+    label.offsetX = (float)pControl->dwItemTextXOffset;
+    label.offsetY = (float)pControl->dwItemTextYOffset;
+    // Second label should have the same font, alignment, and colours as the first, but
+    // the offsets should be 0.
+    CLabelInfo label2 = label;
+    label2.offsetX = label2.offsetY = 0;
+    label2.align |= XBFONT_RIGHT;
 
-		CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
-		pListControl->SetImageDimensions(pControl->dwImageWidth, pControl->dwImageHeight);
-		pListControl->SetItemHeight(pControl->dwItemHeight);
-		pListControl->SetSpace(pControl->dwSpace);
-		pListControl->SetAlignmentY(XBFONT_CENTER_Y);
+    pControl->pGUIControl = new CGUIListContainer(
+      pControl->iParentId,
+      pControl->iControlId,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight - pControl->pControlSpin->dwHeight - 5,
+      label, label2,
+      (CStdString)pControl->strTextureButton,
+      (CStdString)pControl->strTextureButtonFocus,
+      (float)pControl->dwItemHeight,
+      (float)pControl->dwImageWidth, (float)pControl->dwImageHeight,
+      (float)pControl->dwSpace, NULL);
 
+    return pControl->pGUIControl;
+  }
 
-		// set values for spincontrol
-		//CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
-		pControl->pControlSpin->pGUIControl;// = (CGUIControl*) c->GetSpinControl();
-		pControl->pControlSpin->iControlId = pControl->iControlId;
-		pControl->pControlSpin->iParentId = pControl->iParentId;
-
-		return pControl->pGUIControl;
-	}
-
-	/*
-	 * ControlList_AddItem
-	 * (string label) / (ListItem)
-	 * ListItem is added to vector
-	 * For a string we create a new ListItem and add it to the vector
-	 */
+  /*
+   * ControlList_AddItem
+   * (string label) / (ListItem)
+   * ListItem is added to vector
+   * For a string we create a new ListItem and add it to the vector
+   */
 PyDoc_STRVAR(addItem__doc__,
-		"addItem(item) -- Add a new item to this control list.\n"
-		"\n"
-		"item can be a string / unicode string or a ListItem.");
+    "addItem(item) -- Add a new item to this control list.\n"
+    "\n"
+    "item               : string, unicode or ListItem - item to add.\n"
+    "\n"
+    "example:\n"
+    "  - cList.addItem('Reboot XBMC')\n");
 
-	PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
-	{
-		PyObject *pObject;
-		wstring strText;
-		
-		ListItem* pListItem = NULL;
+  PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
+  {
+    PyObject *pObject;
+    string strText;
 
-		if (!PyArg_ParseTuple(args, "O", &pObject))	return NULL;
-		if (ListItem_CheckExact(pObject))
-		{
-			// object is a listitem
-			pListItem = (ListItem*)pObject;
-			Py_INCREF(pListItem);
-		}
-		else
-		{
-			// object is probably a text item
-			if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
-			// object is a unicode string now, create a new ListItem
-			pListItem = ListItem_FromString(strText);
-		}
+    ListItem* pListItem = NULL;
 
-		// add item to objects vector
-		self->vecItems.push_back(pListItem);
+    if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
+    if (ListItem_CheckExact(pObject))
+    {
+      // object is a listitem
+      pListItem = (ListItem*)pObject;
+      Py_INCREF(pListItem);
+    }
+    else
+    {
+      // object is probably a text item
+      if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
+      // object is a unicode string now, create a new ListItem
+      pListItem = ListItem_FromString(strText);
+    }
 
-		// create message
-		CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iParentId, self->iControlId);
-		msg.SetLPVOID(pListItem->item);
+    // add item to objects vector
+    self->vecItems.push_back(pListItem);
 
-		// send message
-		PyGUILock();
-		if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
+    // create message
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iParentId, self->iControlId);
+    msg.SetLPVOID(pListItem->item);
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+    // send message
+    PyGUILock();
+    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
 
-	PyDoc_STRVAR(reset__doc__,
-		"reset() -- Clear all ListItems in this control list.");
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
-	PyObject* ControlList_Reset(ControlList *self, PyObject *args)
-	{
-		// create message
-		ControlList *pControl = (ControlList*)self;
-		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+  /*
+  * ControlList_SelectItem(int item)
+  * Select an item by index
+  */
+  PyDoc_STRVAR(selectItem,
+    "selectItem(item) -- Select an item by index number.\n"
+    "\n"
+    "item               : integer - index number of the item to select.\n"
+    "\n"
+    "example:\n"
+    "  - cList.selectItem(12)\n");
 
-		// send message
-		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
+  PyObject* ControlList_SelectItem(ControlList *self, PyObject *args)
+  {
+    long itemIndex;
 
-		// delete all items from vector
-		// delete all ListItem from vector
-		vector<ListItem*>::iterator it = self->vecItems.begin();
-		while (it != self->vecItems.end())
-		{
+    if (!PyArg_ParseTuple(args, "l", &itemIndex)) return NULL;
+
+    // create message
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, self->iParentId, self->iControlId, itemIndex);
+
+    // send message
+    PyGUILock();
+    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // reset() method
+  PyDoc_STRVAR(reset__doc__,
+    "reset() -- Clear all ListItems in this control list.\n"
+    "\n"
+    "example:\n"
+    "  - cList.reset()\n");
+
+  PyObject* ControlList_Reset(ControlList *self, PyObject *args)
+  {
+    // create message
+    ControlList *pControl = (ControlList*)self;
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+
+    // send message
+    PyGUILock();
+    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
+    // delete all items from vector
+    // delete all ListItem from vector
+    vector<ListItem*>::iterator it = self->vecItems.begin();
+    while (it != self->vecItems.end())
+    {
       ListItem* pListItem = *it;
-			Py_DECREF(pListItem);
-			++it;
-		}
-		self->vecItems.clear();
+      Py_DECREF(pListItem);
+      ++it;
+    }
+    self->vecItems.clear();
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
-	PyDoc_STRVAR(getSpinControl__doc__,
-		"getSpinControl() -- returns the associated ControlSpin."
+  // getSpinControl() method
+  PyDoc_STRVAR(getSpinControl__doc__,
+    "getSpinControl() -- returns the associated ControlSpin object.\n"
+    "\n"
+    "*Note, Not working completely yet -\n"
+    "       After adding this control list to a window it is not possible to change\n"
+    "       the settings of this spin control.\n"
+    "\n"
+    "example:\n"
+    "  - ctl = cList.getSpinControl()\n");
+
+  PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
+  {
+    Py_INCREF(self->pControlSpin);
+    return (PyObject*)self->pControlSpin;
+  }
+
+  // setImageDimensions() method
+  PyDoc_STRVAR(setImageDimensions__doc__,
+    "setImageDimensions(imageWidth, imageHeight) -- Sets the width/height of items icon or thumbnail.\n"
+    "\n"
+    "imageWidth         : [opt] integer - width of items icon or thumbnail.\n"
+    "imageHeight        : [opt] integer - height of items icon or thumbnail.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setImageDimensions(18, 18)\n");
+
+  PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
+  {
+    if (!PyArg_ParseTuple(args, "ll", &self->dwImageWidth, &self->dwImageHeight))
+    {
+      return NULL;
+    }
+
+    /*
+    PyGUILock();
+    if (self->pGUIControl)
+    {
+      CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+      pListControl->SetImageDimensions((float)self->dwImageWidth, (float)self->dwImageHeight );
+    }
+    PyGUIUnlock();
+    */
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // setItemHeight() method
+  PyDoc_STRVAR(setItemHeight__doc__,
+    "setItemHeight(itemHeight) -- Sets the height of items.\n"
+    "\n"
+    "itemHeight         : integer - height of items.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setItemHeight(25)\n");
+
+  PyObject* ControlList_SetItemHeight(ControlList *self, PyObject *args)
+  {
+    if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
+
+    /*
+    PyGUILock();
+    if (self->pGUIControl)
+    {
+      CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+      pListControl->SetItemHeight((float)self->dwItemHeight);
+    }
+    PyGUIUnlock();
+    */
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+
+  // setPageControlVisible() method
+  PyDoc_STRVAR(setPageControlVisible__doc__,
+    "setPageControlVisible(visible) -- Sets the spin control's visible/hidden state.\n"
+    "\n"
+    "visible            : boolean - True=visible / False=hidden.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setPageControlVisible(True)\n");
+
+  PyObject* ControlList_SetPageControlVisible(ControlList *self, PyObject *args)
+  {
+    bool isOn = true;
+
+    if (!PyArg_ParseTuple(args, "b", &isOn)) return NULL;
+
+    /*
+    PyGUILock();
+    if (self->pGUIControl)
+    {
+      ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible( isOn );
+    }
+    PyGUIUnlock();
+    */
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // setSpace() method
+  PyDoc_STRVAR(setSpace__doc__,
+    "setSpace(space) -- Set's the space between items.\n"
+    "\n"
+    "space              : [opt] integer - space between items.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setSpace(5)\n");
+
+  PyObject* ControlList_SetSpace(ControlList *self, PyObject *args)
+  {
+    if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
+
+    /*
+    PyGUILock();
+    if (self->pGUIControl)
+    {
+      CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+      pListControl->SetSpaceBetweenItems((float)self->dwSpace);
+    }
+    PyGUIUnlock();
+    */
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // getSelectedPosition() method
+  PyDoc_STRVAR(getSelectedPosition__doc__,
+    "getSelectedPosition() -- Returns the position of the selected item as an integer.\n"
+    "\n"
+    "*Note, Returns -1 for empty lists.\n"
+    "\n"
+    "example:\n"
+    "  - pos = cList.getSelectedPosition()\n");
+
+  PyObject* ControlList_GetSelectedPosition(ControlList *self, PyObject *args)
+  {
+    // create message
+    ControlList *pControl = (ControlList*)self;
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+    long pos = -1;
+
+    // send message
+    PyGUILock();
+    if ((self->vecItems.size() > 0) && pControl->pGUIControl)
+    {
+      pControl->pGUIControl->OnMessage(msg);
+      pos = msg.GetParam1();
+    }
+    PyGUIUnlock();
+
+    return Py_BuildValue("l", pos);
+  }
+
+  // getSelectedItem() method
+  PyDoc_STRVAR(getSelectedItem__doc__,
+    "getSelectedItem() -- Returns the selected item as a ListItem object.\n"
+    "\n"
+    "*Note, Same as getSelectedPosition(), but instead of an integer a ListItem object\n"
+    "       is returned. Returns None for empty lists.\n"
+    "       See windowexample.py on how to use this.\n"
+    "\n"
+    "example:\n"
+    "  - item = cList.getSelectedItem()\n");
+
+  PyObject* ControlList_GetSelectedItem(ControlList *self, PyObject *args)
+  {
+    // create message
+    ControlList *pControl = (ControlList*)self;
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
+    PyObject* pListItem = Py_None;
+
+    // send message
+    PyGUILock();
+    if ((self->vecItems.size() > 0) && pControl->pGUIControl)
+    {
+      pControl->pGUIControl->OnMessage(msg);
+      pListItem = (PyObject*)self->vecItems[msg.GetParam1()];
+    }
+    PyGUIUnlock();
+
+    Py_INCREF(pListItem);
+    return pListItem;
+  }
+
+  // size() method
+  PyDoc_STRVAR(size__doc__,
+    "size() -- Returns the total number of items in this list control as an integer.\n"
+    "\n"
+    "example:\n"
+    "  - cnt = cList.size()\n");
+
+  PyObject* ControlList_Size(ControlList *self)
+  {
+    return Py_BuildValue("l", self->vecItems.size());
+  }
+
+  // getItemHeight() Method
+	PyDoc_STRVAR(getItemHeight__doc__,
+		"getItemHeight() -- Returns the control's current item height as an integer.\n"
 		"\n"
-		"- Not working completely yet -\n"
-		"After adding this control list to a window it is not possible to change\n"
-		"the settings of this spin control.");
+		"example:\n"
+		"  - item_height = self.cList.getItemHeight()\n");
 
-	PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
+  PyObject* ControlList_GetItemHeight(ControlList *self)
 	{
-		Py_INCREF(self->pControlSpin);
-		return (PyObject*)self->pControlSpin;
+		return Py_BuildValue("l", self->dwItemHeight);
 	}
 
-	PyDoc_STRVAR(setImageDimensions__doc__,
-		"setImageDimensions(int width, int height) -- ");
-
-	PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
-	{
-		if (!PyArg_ParseTuple(args, "ll", &self->dwImageWidth, &self->dwImageHeight)) return NULL;
-
-		PyGUILock();
-		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-		pListControl->SetImageDimensions(self->dwImageWidth, self->dwImageHeight);
-		PyGUIUnlock();
-
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
-	PyDoc_STRVAR(setItemHeight__doc__,
-		"setItemHeight(int height) -- ");
-
-	PyObject* ControlList_SetItemHeight(ControlList *self, PyObject *args)
-	{
-		if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
-
-		PyGUILock();
-		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-		pListControl->SetItemHeight(self->dwItemHeight);
-		PyGUIUnlock();
-
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
-	PyDoc_STRVAR(setSpace__doc__,
-		"setSpace(int space) -- Set's the space between ListItems");
-
-	PyObject* ControlList_SetSpace(ControlList *self, PyObject *args)
-	{
-		if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
-
-		PyGUILock();
-		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-		pListControl->SetSpace(self->dwSpace);
-		PyGUIUnlock();
-
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-	
-	PyDoc_STRVAR(getSelectedPosition__doc__,
-		"getSelectedPosition() -- Returns the position of the selected item.\n"
+  // getSpace() Method
+	PyDoc_STRVAR(getSpace__doc__,
+		"getSpace() -- Returns the control's space between items as an integer.\n"
 		"\n"
-		"Position will be returned as an int");
+		"example:\n"
+		"  - gap = self.cList.getSpace()\n");
 
-	PyObject* ControlList_GetSelectedPosition(ControlList *self, PyObject *args)
+  PyObject* ControlList_GetSpace(ControlList *self)
 	{
-		// create message
-		ControlList *pControl = (ControlList*)self;
-		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
-
-		// send message
-		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
-
-		return Py_BuildValue("l", msg.GetParam1());
+		return Py_BuildValue("l", self->dwSpace);
 	}
 
-	PyDoc_STRVAR(getSelectedItem__doc__,
-		"getSelectedPosition() -- Returns the selected ListItem.\n"
-		"\n"
-		"Same as getSelectedPosition(), but instead of an int a ListItem is returned.\n"
-		"See windowexample.py on how to use this.");
+  PyMethodDef ControlList_methods[] = {
+    {"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
+    {"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
+    {"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, reset__doc__},
+    {"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
+    {"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, getSelectedPosition__doc__},
+    {"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, getSelectedItem__doc__},
+    {"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, setImageDimensions__doc__},
+    {"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, setItemHeight__doc__},
+    {"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
+    {"setPageControlVisible", (PyCFunction)ControlList_SetPageControlVisible, METH_VARARGS, setPageControlVisible__doc__},
+    {"size", (PyCFunction)ControlList_Size, METH_VARARGS, size__doc__},
+    {"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
+    {"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
+    {NULL, NULL, 0, NULL}
+  };
 
-	PyObject* ControlList_GetSelectedItem(ControlList *self, PyObject *args)
-	{
-		// create message
-		ControlList *pControl = (ControlList*)self;
-		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
-
-		// send message
-		PyGUILock();
-		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-		PyGUIUnlock();
-
-		// iterate through itemvector
-		ListItem* pListItem = self->vecItems[msg.GetParam1()];
-		Py_INCREF(pListItem);
-
-		return (PyObject*)pListItem;
-	}
-			
-	PyMethodDef ControlList_methods[] = {
-		{"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
-		{"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, reset__doc__},
-		{"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
-		{"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, getSelectedPosition__doc__},
-		{"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, getSelectedItem__doc__},
-		{"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, setImageDimensions__doc__},
-		{"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, setItemHeight__doc__},
-		{"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
-		{NULL, NULL, 0, NULL}
-	};
-
-	PyDoc_STRVAR(controlList__doc__,
-		"ControlList class.\n"
-		"\n"
-		"ControlList(int x, int y, int width, int height[, buttonTexture, buttonFocusTexture])");
+  PyDoc_STRVAR(controlList__doc__,
+    "ControlList class.\n"
+    "\n"
+    "ControlList(x, y, width, height[, font, textColor, buttonTexture, buttonFocusTexture,\n"
+    "            selectedColor, imageWidth, imageHeight, itemTextXOffset, itemTextYOffset,\n"
+    "            itemHeight, space, alignmentY])\n"//, shadowColor])\n"
+    "\n"
+    "x                  : integer - x coordinate of control.\n"
+    "y                  : integer - y coordinate of control.\n"
+    "width              : integer - width of control.\n"
+    "height             : integer - height of control.\n"
+    "font               : [opt] string - font used for items label. (e.g. 'font13')\n"
+    "textColor          : [opt] hexstring - color of items label. (e.g. '0xFFFFFFFF')\n"
+    "buttonTexture      : [opt] string - filename for focus texture.\n"
+    "buttonFocusTexture : [opt] string - filename for no focus texture.\n"
+    "selectedColor      : [opt] integer - x offset of label.\n"
+    "imageWidth         : [opt] integer - width of items icon or thumbnail.\n"
+    "imageHeight        : [opt] integer - height of items icon or thumbnail.\n"
+    "itemTextXOffset    : [opt] integer - x offset of items label.\n"
+    "itemTextYOffset    : [opt] integer - y offset of items label.\n"
+    "itemHeight         : [opt] integer - height of items.\n"
+    "space              : [opt] integer - space between items.\n"
+    "alignmentY         : [opt] integer - Y-axis alignment of items label - *Note, see xbfont.h\n"
+    //"shadowColor        : [opt] hexstring - color of items label's shadow. (e.g. '0xFF000000')\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+    "\n"
+    "example:\n"
+    "  - self.cList = xbmcgui.ControlList(100, 250, 200, 250, 'font14', space=5)\n"
+  );
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -312,47 +556,22 @@ PyDoc_STRVAR(addItem__doc__,
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject ControlList_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmcgui.ControlList",    /*tp_name*/
-			sizeof(ControlList),      /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)ControlList_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			controlList__doc__,        /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			ControlList_methods,       /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			&Control_Type,             /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			ControlList_New,          /* tp_new */
-	};
+  PyTypeObject ControlList_Type;
+
+  void initControlList_Type()
+  {
+    PyInitializeTypeObject(&ControlList_Type);
+
+    ControlList_Type.tp_name = "xbmcgui.ControlList";
+    ControlList_Type.tp_basicsize = sizeof(ControlList);
+    ControlList_Type.tp_dealloc = (destructor)ControlList_Dealloc;
+    ControlList_Type.tp_compare = 0;
+    ControlList_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+    ControlList_Type.tp_doc = controlList__doc__;
+    ControlList_Type.tp_methods = ControlList_methods;
+    ControlList_Type.tp_base = &Control_Type;
+    ControlList_Type.tp_new = ControlList_New;
+  }
 }
 
 #ifdef __cplusplus

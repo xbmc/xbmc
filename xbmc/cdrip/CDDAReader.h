@@ -6,41 +6,41 @@
 #define CDDARIP_DONE  2
 
 #include "..\utils\thread.h"
-#include "..\lib\libcdrip\cdrip.h"
+#include "../lib/libcdio/cdio.h"
 
-struct RipBuffer{
-	int iRipError;
-	long lBytesRead;
-	BYTE* pbtStream;
-	HANDLE hEvent;
+struct RipBuffer
+{
+  int iRipError;
+  long lBytesRead;
+  BYTE* pbtStream;
+  HANDLE hEvent;
 };
 
 class CCDDAReader : public CThread
 {
 public:
-	CCDDAReader();
-	~CCDDAReader();
-	int         GetData(BYTE** stream, long& lBytes);
-	bool        Init(int iTrack);
-	bool        DeInit();
-	int					GetPercent();
+  CCDDAReader();
+  virtual ~CCDDAReader();
+  int GetData(BYTE** stream, long& lBytes);
+  bool Init(const char* strFileName);
+  bool DeInit();
+  int GetPercent();
 protected:
-	void        Process();
-	int         ReadChunk();
+  void Process();
+  int ReadChunk();
 
-	int         m_iPercent;
-	long        m_lBufferSize;
+  long m_lBufferSize;
 
-	RipBuffer   m_sRipBuffer[2]; // hold space for 2 buffers
-	int					m_iCurrentBuffer;   // 0 or 1
+  RipBuffer m_sRipBuffer[2]; // hold space for 2 buffers
+  int m_iCurrentBuffer;   // 0 or 1
 
-	HANDLE			m_hReadEvent;       // data is fetched
-	HANDLE			m_hDataReadyEvent;  // data is ready to be fetched
-	HANDLE			m_hStopEvent;       // stop event
+  HANDLE m_hReadEvent;       // data is fetched
+  HANDLE m_hDataReadyEvent;  // data is ready to be fetched
+  HANDLE m_hStopEvent;       // stop event
 
-	bool				m_iInitialized;
+  bool m_iInitialized;
 
-	CDROMPARAMS m_cdParams;
+  XFILE::CFile m_fileCdda;
 };
 
 #endif // _CCDDAREADER_H

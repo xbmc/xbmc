@@ -1,11 +1,11 @@
 /***************************************************************************
-                          null.h  -  NULL audio driver used for hardsid
-                                     and songlength detection
-                             -------------------
-    begin                : Mon Nov 6 2000
-    copyright            : (C) 2000 by Simon White
-    email                : s_a_white@email.com
- ***************************************************************************/
+                         null.h  -  NULL audio driver used for hardsid
+                                    and songlength detection
+                            -------------------
+   begin                : Mon Nov 6 2000
+   copyright            : (C) 2000 by Simon White
+   email                : s_a_white@email.com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -14,9 +14,14 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- ***************************************************************************/
+ ***************************************************************************/ 
 /***************************************************************************
  *  $Log$
+ *  Revision 1.2  2005/03/19 17:33:05  jmarshallnz
+ *  Formatting for tabs -> 2 spaces
+ *
+ *    - 19-03-2005 added: <autodetectFG> tag to XBoxMediaCenter.xml.  Set to false if you have an old bios that causes a crash on autodetection.
+ *
  *  Revision 1.1  2004/03/09 00:18:24  butcheruk
  *  Sid playback support
  *
@@ -48,19 +53,19 @@
 #include "../AudioBase.h"
 
 class Audio_Null: public AudioBase
-{    
-private:  // ------------------------------------------------------- private
-    bool isOpen;
+{
+private:   // ------------------------------------------------------- private
+  bool isOpen;
 
-public:  // --------------------------------------------------------- public
-    Audio_Null();
-    ~Audio_Null();
+public:   // --------------------------------------------------------- public
+  Audio_Null();
+  ~Audio_Null();
 
-    void *open  (AudioConfig &cfg, const char *);
-    void  close ();    
-    void *reset ();
-    void *write ();
-    void  pause () {;}
+  void *open (AudioConfig &cfg, const char *);
+  void close ();
+  void *reset ();
+  void *write ();
+  void pause () {;}
 };
 
 #endif // audio_null_h_

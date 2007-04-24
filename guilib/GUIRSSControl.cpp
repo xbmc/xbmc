@@ -1,267 +1,130 @@
-#include "stdafx.h"
-#include "guiRSSControl.h"
-#include "guifontmanager.h"
-#include "guiWindowManager.h"
-#include "..\xbmc\Application.h"
+#include "include.h"
+#include "GUIRSSControl.h"
+#include "GUIWindowManager.h"
 #include "..\xbmc\settings.h"
+#include "../xbmc/utils/CriticalSection.h"
+#include "..\xbmc\utils\SingleLock.h"
 
-extern CApplication g_application;
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl, CStdString& strRSSTags)
-:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
+: CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
+  m_scrollInfo(-1,1.0f,"")
 {
-	m_strUrl			= strUrl;
-	m_dwChannelColor	= dwChannelColor;
-	m_dwHeadlineColor	= dwHeadlineColor; 
-	m_dwTextColor		= dwNormalColor; 
-	m_pFont				= g_fontManager.GetFont(strFontName);
+  m_label = labelInfo;
+  m_dwChannelColor = dwChannelColor;
+  m_dwHeadlineColor = dwHeadlineColor;
 
-	WCHAR wTmp[2];
-	wTmp[0]=L' ';
-	wTmp[1]=0;
-	float fWidth,fHeight;
-	if (m_pFont)
-		m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
-	m_iLeadingSpaces	= (int) (dwWidth / fWidth);
-	m_strRSSTags = strRSSTags;
-	m_iCharIndex		= 0;
-	m_iStartFrame		= 0;
-	m_iScrollX			= 1;
-	m_pdwPalette		= new DWORD[3];
-	m_pdwPalette[0]		= dwNormalColor;
-	m_pdwPalette[1]		= dwHeadlineColor;
-	m_pdwPalette[2]		= dwChannelColor;
+  m_strRSSTags = strRSSTags;
 
-	m_pReader	= NULL;
-	m_pwzText	= NULL;
-	m_pwzBuffer = NULL;
-	m_pbBuffer	= NULL;
-	m_pbColors	= NULL;
-	ControlType = GUICONTROL_RSS;
-	m_fTextHeight;
-	m_fTextWidth;
+  m_pReader = NULL;
+  m_pwzText = NULL;
+  m_pbColors = NULL;
+  ControlType = GUICONTROL_RSS;
 }
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
-  //if(m_pdwPalette) //Shouldn't be deallocated as it is used by all RSSControls
-  //  delete[] m_pdwPalette;
-  if(m_pReader)
-    delete m_pReader;
-  if(m_pwzText)
-    delete[] m_pwzText;
-  if(m_pwzBuffer) 
-     delete[] m_pwzBuffer;
-  if(m_pbBuffer) 
-    delete[] m_pbBuffer;
-  if(m_pbColors) //Deallocate here since there isn't any better place
-    delete[] m_pbColors;
+  CSingleLock lock(m_criticalSection);
+  if (m_pReader)
+    m_pReader->SetObserver(NULL);
+  m_pReader = NULL;
 
-  m_pdwPalette=NULL;
-  m_pReader=NULL;
-  m_pwzText=NULL;
-  m_pwzBuffer=NULL;
-  m_pbColors=NULL;
+  if (m_pwzText)
+    delete[] m_pwzText;
+  m_pwzText = NULL;
+
+  if (m_pbColors)
+    delete[] m_pbColors;
+  m_pbColors = NULL;
+}
+
+void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
+{
+  m_vecUrls = vecUrl; 
+};
+
+void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
+{
+  m_vecIntervals = vecIntervals;
 }
 
 void CGUIRSSControl::Render()
 {
-	if ( (!IsVisible()) || g_application.IsPlayingVideo() || !g_stSettings.m_bEnableRSS ) 
-	{
-		return;
-	}
+  if (!IsVisible()) return;
 
-	if (m_pReader==NULL)
-	{
-		// Create RSS background/worker thread
-		m_pReader = new CRssReader();
+  // only render the control if they are enabled and the network is available
+  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_guiSettings.GetBool("network.enableinternet"))
+  {
+    CSingleLock lock(m_criticalSection);
+    // Create RSS background/worker thread if needed
+    if (m_pReader == NULL && !g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
+    {
+      if (m_strRSSTags != "")
+      {
+        CStdStringArray vecSplitTags;
+        int i;
 
-		if(m_strRSSTags != "")
-		{
-			CStdStringArray vecSplitTags;
-			int i;
+        StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
 
-			StringUtils::SplitString(m_strRSSTags,",",vecSplitTags);
+        for (i = 0;i < (int)vecSplitTags.size();i++)
+          m_pReader->AddTag(vecSplitTags[i]);
+      }
+      WCHAR wTmp[2];
+      wTmp[0] = L' ';
+      wTmp[1] = 0;
+      float fWidth = 15, fHeight;
+      if (m_label.font)
+        m_label.font->GetTextExtent(wTmp, &fWidth, &fHeight);
+      m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int) (GetWidth() / fWidth) + 1);
+    }
 
-			for (i=0;i<(int)vecSplitTags.size();i++)
-				m_pReader->AddTag(vecSplitTags[i]);
-		}
-		m_pReader->Create(this,m_strUrl,m_iLeadingSpaces);
-	}
+    if (m_label.font && m_pwzText)
+    {
+      RenderText();
+    }
 
-	if (m_pFont && m_pwzText)
-	{
-		RenderText();
-	}
+    if (m_pReader)
+      m_pReader->CheckForUpdates();
+  }
+  CGUIControl::Render();
 }
 
-void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
+void CGUIRSSControl::OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray)
 {
-	int nStringLength = aFeed.GetLength()+1;
-
-  if(m_pwzText)
+  CSingleLock lock(m_criticalSection);
+  int nStringLength = aFeed.GetLength() + 1;
+  if (m_pwzText)
     delete[] m_pwzText;
-  if(m_pwzBuffer) 
-     delete[] m_pwzBuffer;
-  if(m_pbBuffer) 
-     delete[] m_pbBuffer;
 
-  m_pwzText=NULL;
-  m_pwzBuffer=NULL;
-  m_pbBuffer=NULL;
+  m_pwzText = NULL;
 
-	m_pwzText	= new WCHAR[nStringLength];
-	m_pwzBuffer	= new WCHAR[nStringLength];
-	swprintf(m_pwzText,L"%S", aFeed.c_str() );
+  m_pwzText = new WCHAR[nStringLength+1];
+  swprintf(m_pwzText, L"%s", aFeed.c_str() );
 
-	if (m_pFont) m_pFont->GetTextExtent( m_pwzText, &m_fTextWidth, &m_fTextHeight);
-	m_iTextLenght = (int)wcslen(m_pwzText);
-
-	m_pbColors	= aColorArray;
-	m_pbBuffer	= new BYTE[nStringLength];
+  m_pbColors = aColorArray;
 }
 
 void CGUIRSSControl::RenderText()
 {
-	if (!m_pFont)
-		return;
+  if (!m_label.font)
+    return ;
 
-	float fPosX = (float) m_iPosX;
-	float fPosY = (float) m_iPosY;
-	float fMaxWidth = (float)m_dwWidth;
+  DWORD dwPalette[3];
+  dwPalette[0]=m_label.textColor;
+  dwPalette[1]=m_dwHeadlineColor;
+  dwPalette[2]=m_dwChannelColor;
 
-	float fPosCX=fPosX;
-	float fPosCY=fPosY;
-	g_graphicsContext.Correct(fPosCX, fPosCY);
-
-	if (fPosCX <0)
-	{
-		fPosCX=0.0f;
-	}
-
-	if (fPosCY <0)
-	{
-		fPosCY=0.0f;
-	}
-
-	if (fPosCY > g_graphicsContext.GetHeight())
-	{
-		fPosCY=(float)g_graphicsContext.GetHeight();
-	}
-
-	float fHeight=60.0f;
-	
-	if (fHeight+fPosCY >= g_graphicsContext.GetHeight())
-	{
-		fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
-	}
-	
-	if (fHeight <= 0)
-	{
-		return ;
-	}
-
-	float fwidth = fMaxWidth - 5.0f;
-
-	D3DVIEWPORT8 newviewport,oldviewport;
-	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-	newviewport.X		= (DWORD)fPosCX;
-	newviewport.Y		= (DWORD)fPosCY;
-	newviewport.Width	= (DWORD)(fwidth);
-	newviewport.Height	= (DWORD)(fHeight);
-	newviewport.MinZ	= 0.0f;
-	newviewport.MaxZ	= 1.0f;
-	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
-
-	// if size of text is bigger than can be drawn onscreen
-	if (m_fTextWidth > fMaxWidth)
-	{
-		fMaxWidth+=50.0f;
-
-		// if start frame is greater than 25? (why?)
-		if (m_iStartFrame > 25)
-		{
-			WCHAR wTmp[3];
-
-			// if scroll char index is bigger or equal to the text length
-			if (m_iCharIndex >= m_iTextLenght )
-			{
-				// use a space character
-				wTmp[0]=L' ';
-			}
-			else
-			{
-				// use the next character
-				wTmp[0]=m_pwzText[m_iCharIndex];
-			}
-
-			// determine the width of the character
-			wTmp[1]=0;
-            float fWidth,fHeight;
-			m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
-			// if the scroll offset is the same or as big as the next character
-			if ( m_iScrollX >= fWidth)
-			{
-				// increase the character offset
-				++m_iCharIndex;
-
-				// if we've reached the end of the text
-				if (m_iCharIndex > m_iTextLenght )
-				{
-					// start from the begning
-					m_iCharIndex = 0;
-				}
-
-				// reset the scroll offset
-				m_iScrollX=1;
-			}
-			else
-			{
-				// increase the scroll offset
-				m_iScrollX++;
-			}
-					
-			int ipos=0;
-			// truncate the scroll text starting from the character index and wrap
-			// the text.
-			for (int i=0; i < m_iTextLenght; i++)
-			{
-				if (i+m_iCharIndex < m_iTextLenght)
-				{
-					m_pwzBuffer[i]=m_pwzText[i+m_iCharIndex];
-					m_pbBuffer[i]=m_pbColors[i+m_iCharIndex];
-				}
-				else
-				{
-					if (ipos==0)
-					{
-						m_pwzBuffer[i]=L' ';
-						m_pbBuffer[i]=0;
-					}
-					else
-					{
-						m_pwzBuffer[i]=m_pwzText[ipos-1];
-						m_pbBuffer[i]=m_pbColors[ipos-1];
-					}
-					ipos++;
-				}
-				m_pwzBuffer[i+1]=0;
-			}
-			
-			if (fPosY >=0.0)
-			{
-				m_pFont->DrawColourTextWidth(fPosX-m_iScrollX,fPosY,m_pdwPalette,m_pwzBuffer,m_pbBuffer,fMaxWidth);
-			}					
-		}
-		else
-		{
-			m_iStartFrame++;
-			if (fPosY >=0.0)
-			{
-				m_pFont->DrawColourTextWidth(fPosX,fPosY,m_pdwPalette,m_pwzText,m_pbColors,fMaxWidth);
-			}
-		}
-	}
-	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+  if (m_scrollInfo.initialWait == -1)
+  {
+    // speed is 1 pixel/frame in PAL, which translates to
+    // one screen per 14.4 seconds.
+    m_scrollInfo.initialWait = 0;
+    m_scrollInfo.pixelSpeed = (float)g_graphicsContext.GetWidth() / (14.4f * g_graphicsContext.GetFPS());
+    // round to a multiple of 0.5 for smoothness of scrolling
+    m_scrollInfo.pixelSpeed = 0.5f*floorf(2*m_scrollInfo.pixelSpeed + 0.5f);
+    m_scrollInfo.Reset();
+  }
+  
+  m_label.font->DrawScrollingText(m_posX, m_posY, dwPalette, 3, m_label.shadowColor, m_pwzText, m_width, m_scrollInfo, m_pbColors);
 }
 

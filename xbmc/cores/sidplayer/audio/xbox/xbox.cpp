@@ -18,201 +18,204 @@ email                :
 
 #ifdef _XBOX
 #include "./xbox.h"
+#include "AudioContext.h"
 
 #include <stdio.h>
 #ifdef HAVE_EXCEPTIONS
 #   include <new>
 #endif
 
+
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
 Audio_Xbox::Audio_Xbox ()
 {
-	isOpen    = false;
-	pStream   = 0;
-	pDS       = 0;
-	memset(pMPacket, 0, sizeof(pMPacket));
+  isOpen = false;
+  pStream = 0;
+  pDS = 0;
+  memset(pMPacket, 0, sizeof(pMPacket));
 }
 
 Audio_Xbox::~Audio_Xbox()
 {
-	close();
+  close();
 }
 
 void *Audio_Xbox::open (AudioConfig &cfg, const char *name)
 {
-	WAVEFORMATEX        wfm;
-	DSMIXBINVOLUMEPAIR Vols[2] = { DSMIXBINVOLUMEPAIRS_DEFAULT_STEREO };
-	DSMIXBINS MixBins = { 2, Vols };
+  WAVEFORMATEX wfm;
+  DSMIXBINVOLUMEPAIR Vols[2] = { DSMIXBINVOLUMEPAIRS_DEFAULT_STEREO };
+  DSMIXBINS MixBins = { 2, Vols };
 
-	if (isOpen)
-	{
-		_errorString = "XBOX ERROR: Audio device already open.";
-		goto Audio_Xbox_openError;
-	}
+  if (isOpen)
+  {
+    _errorString = "XBOX ERROR: Audio device already open.";
+    goto Audio_Xbox_openError;
+  }
 
-	isOpen  = true;
+  isOpen = true;
 
-	if (cfg.channels == 1)
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
-	else if (cfg.channels == 2)
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
-	else
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+  g_audioContext.RemoveActiveDevice();
 
-	if (FAILED(DirectSoundCreate(NULL, &pDS, NULL)))
-	{
-		_errorString = "XBOX ERROR: Could not open audio device.";
-		goto Audio_Xbox_openError;
-	}
+  if (cfg.channels == 1)
+    DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+  else if (cfg.channels == 2)
+    DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
+  else
+    DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
 
-	XAudioCreatePcmFormat(cfg.channels, cfg.frequency, cfg.precision, &wfm);
+  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+  pDS=g_audioContext.GetDirectSoundDevice();
 
-	// Setup stream
-	DSSTREAMDESC StrmDesc;
-	StrmDesc.dwFlags = DSSTREAMCAPS_NOCOALESCE;
-	StrmDesc.dwMaxAttachedPackets = AUDIO_XBOX_BUFFERS;
-	StrmDesc.lpfnCallback = NULL;
-	StrmDesc.lpwfxFormat = &wfm;
-	StrmDesc.lpvContext = NULL;
-	StrmDesc.lpMixBins = &MixBins;
-	if (FAILED(pDS->CreateSoundStream(&StrmDesc, &pStream, 0)))
-	{
-		_errorString = "XBOX ERROR: Could not open audio stream.";
-		goto Audio_Xbox_openError;
-	}
+  XAudioCreatePcmFormat(cfg.channels, cfg.frequency, cfg.precision, &wfm);
 
-	XMEDIAINFO info;
-	pStream->GetInfo(&info);
+  // Setup stream
+  DSSTREAMDESC StrmDesc;
+  StrmDesc.dwFlags = DSSTREAMCAPS_NOCOALESCE;
+  StrmDesc.dwMaxAttachedPackets = AUDIO_XBOX_BUFFERS;
+  StrmDesc.lpfnCallback = NULL;
+  StrmDesc.lpwfxFormat = &wfm;
+  StrmDesc.lpvContext = NULL;
+  StrmDesc.lpMixBins = &MixBins;
+  if (FAILED(pDS->CreateSoundStream(&StrmDesc, &pStream, 0)))
+  {
+    _errorString = "XBOX ERROR: Could not open audio stream.";
+    goto Audio_Xbox_openError;
+  }
 
-	DWORD BufSize = wfm.nSamplesPerSec / 2 * wfm.nBlockAlign;
-	if (BufSize % info.dwInputSize)
-		BufSize += info.dwInputSize - (BufSize % info.dwInputSize); // align
+  XMEDIAINFO info;
+  pStream->GetInfo(&info);
 
-	// Allocate stream buffers
-	for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
-	{
-		pMPacket[i].dwMaxSize = BufSize;
-		pMPacket[i].hCompletionEvent = CreateEvent(0, TRUE, TRUE, 0);
-		pMPacket[i].pvBuffer = malloc(BufSize);
-		pMPacket[i].pdwCompletedSize = &dwStreamed[i];
-	}
-	BufIdx = 0;
+  DWORD BufSize = wfm.nSamplesPerSec / 2 * wfm.nBlockAlign;
+  if (BufSize % info.dwInputSize)
+    BufSize += info.dwInputSize - (BufSize % info.dwInputSize); // align
 
-	// Update the users settings
-	cfg.bufSize   = BufSize;
-	// Setup the required sample format encoding.
-	cfg.encoding  = AUDIO_SIGNED_PCM;
-	if (cfg.precision == 8)
-		cfg.encoding = AUDIO_UNSIGNED_PCM;
-	_settings     = cfg;
-	isPlaying     = true;
-	_sampleBuffer = pMPacket[BufIdx].pvBuffer;
+  // Allocate stream buffers
+  for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
+  {
+    pMPacket[i].dwMaxSize = BufSize;
+    pMPacket[i].hCompletionEvent = CreateEvent(0, TRUE, TRUE, NULL);
+    pMPacket[i].pvBuffer = malloc(BufSize);
+    pMPacket[i].pdwCompletedSize = &dwStreamed[i];
+  }
+  BufIdx = 0;
 
-	return _sampleBuffer;
+  // Update the users settings
+  cfg.bufSize = BufSize;
+  // Setup the required sample format encoding.
+  cfg.encoding = AUDIO_SIGNED_PCM;
+  if (cfg.precision == 8)
+    cfg.encoding = AUDIO_UNSIGNED_PCM;
+  _settings = cfg;
+  isPlaying = true;
+  _sampleBuffer = pMPacket[BufIdx].pvBuffer;
+
+  return _sampleBuffer;
 
 Audio_Xbox_openError:
-	close();
-	return NULL;
+  close();
+  return NULL;
 }
 
 void *Audio_Xbox::write()
 {
-	if (!isOpen)
-	{
-		_errorString = "XBOX ERROR: Device not open.";
-		return NULL;
-	}
+  if (!isOpen)
+  {
+    _errorString = "XBOX ERROR: Device not open.";
+    return NULL;
+  }
 
-	if (!isPlaying)
-	{
-		pStream->Pause(DSSTREAMPAUSE_RESUME);
-		isPlaying = true;
-	}
+  if (!isPlaying)
+  {
+    pStream->Pause(DSSTREAMPAUSE_RESUME);
+    isPlaying = true;
+  }
 
-	// queue buffer
-	ResetEvent(pMPacket[BufIdx].hCompletionEvent);
-	if (FAILED(pStream->Process(&pMPacket[BufIdx], 0)))
-	{
-		_errorString = "XBOX ERROR: Unable to lock sound buffer.";
-		return NULL;
-	}
+  // queue buffer
+  ResetEvent(pMPacket[BufIdx].hCompletionEvent);
+  if (FAILED(pStream->Process(&pMPacket[BufIdx], 0)))
+  {
+    _errorString = "XBOX ERROR: Unable to lock sound buffer.";
+    return NULL;
+  }
 
-	// wait for next buffer to become free
-	++BufIdx %= AUDIO_XBOX_BUFFERS;
-	while (WaitForSingleObject(pMPacket[BufIdx].hCompletionEvent, 50) == WAIT_TIMEOUT)
-		DirectSoundDoWork();
+  // wait for next buffer to become free
+  ++BufIdx %= AUDIO_XBOX_BUFFERS;
+  while (WaitForSingleObject(pMPacket[BufIdx].hCompletionEvent, 50) == WAIT_TIMEOUT)
+    DirectSoundDoWork();
 
-	_sampleBuffer = pMPacket[BufIdx].pvBuffer;
-	return _sampleBuffer;
+  _sampleBuffer = pMPacket[BufIdx].pvBuffer;
+  return _sampleBuffer;
 }
 
 void *Audio_Xbox::reset(void)
 {
-	if (!isOpen)
-		return NULL;
+  if (!isOpen)
+    return NULL;
 
-	// Stop play and kill the current music.
-	// Start new music data being added at the begining of
-	// the first buffer
-	pStream->Flush();
-	isPlaying = false;
-	BufIdx = 0;
+  // Stop play and kill the current music.
+  // Start new music data being added at the begining of
+  // the first buffer
+  pStream->Flush();
+  isPlaying = false;
+  BufIdx = 0;
 
-	_sampleBuffer = pMPacket[BufIdx].pvBuffer;
-	return _sampleBuffer;
+  _sampleBuffer = pMPacket[BufIdx].pvBuffer;
+  return _sampleBuffer;
 }
 
 void Audio_Xbox::Eof()
 {
-	if (!isOpen)
-		return;
+  if (!isOpen)
+    return ;
 
-	pStream->Discontinuity();
-	DirectSoundDoWork();
+  pStream->Discontinuity();
+  DirectSoundDoWork();
 }
 
 // Rev 1.8 (saw) - Alias fix
 void Audio_Xbox::close(void)
 {
-	if (!isOpen)
-		return;
+  if (!isOpen)
+    return ;
 
-	isOpen        = false;
-	_sampleBuffer = NULL;
+  isOpen = false;
+  _sampleBuffer = NULL;
 
-	if (pStream)
-	{
-		pStream->Flush();
-		isPlaying = false;
-	}
+  if (pStream)
+  {
+    pStream->Flush();
+    isPlaying = false;
+  }
 
-	for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
-	{
-		if (pMPacket[i].pvBuffer)
-		{
-			free(pMPacket[i].pvBuffer);
-			pMPacket[i].pvBuffer = 0;
-			CloseHandle(pMPacket[i].hCompletionEvent);
-		}
-	}
+  for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
+  {
+    if (pMPacket[i].pvBuffer)
+    {
+      free(pMPacket[i].pvBuffer);
+      pMPacket[i].pvBuffer = 0;
+      CloseHandle(pMPacket[i].hCompletionEvent);
+    }
+  }
 
-	SAFE_RELEASE (pStream);
-	SAFE_RELEASE (pDS);
+  SAFE_RELEASE (pStream);
+  pDS=NULL;
+  g_audioContext.RemoveActiveDevice();
+  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 }
 
 void Audio_Xbox::pause(void)
 {
-	if (pStream)
-	{
-		pStream->Pause(DSSTREAMPAUSE_PAUSE);
-		isPlaying = false;
-	}
+  if (pStream)
+  {
+    pStream->Pause(DSSTREAMPAUSE_PAUSE);
+    isPlaying = false;
+  }
 }
 
 void Audio_Xbox::SetVolume(long nValue)
 {
-	if (pStream)
-		pStream->SetVolume(nValue);
+  if (pStream)
+    pStream->SetVolume(nValue);
 }
 #endif

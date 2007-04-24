@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "../stdafx.h" 
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 Frodo
@@ -21,20 +21,21 @@
 */
 #include "SingleLock.h"
 
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 CSingleLock::CSingleLock(CCriticalSection& cs)
-: m_cs( cs )
-, m_bIsOwner( false )
+    : m_cs( cs )
+    , m_bIsOwner( false )
 {
   Enter();
 }
 
 CSingleLock::CSingleLock(const CCriticalSection& cs)
-: m_cs( const_cast<CCriticalSection&>(cs) )
-, m_bIsOwner( false )
+    : m_cs( const_cast<CCriticalSection&>(cs) )
+    , m_bIsOwner( false )
 {
   Enter();
 }
@@ -68,7 +69,7 @@ void CSingleLock::Leave()
 {
   if ( false == m_bIsOwner )
   {
-    return;
+    return ;
   }
 
   ::LeaveCriticalSection( m_cs );

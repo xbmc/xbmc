@@ -1,77 +1,116 @@
-#include "stdafx.h"
-#include "guifadelabelcontrol.h"
-#include "guifontmanager.h"
+#include "include.h"
+#include "GUIFadeLabelControl.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)
-:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
+
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
-  m_pFont=g_fontManager.GetFont(strFont);
-  m_dwTextColor=dwTextColor;
-  m_dwdwTextAlign=dwTextAlign;
-	m_iCurrentLabel=0;
-	scroll_pos = 0;
-	iScrollX=0;
-	iLastItem=-1;
-	iFrames=0;
-	iStartFrame=0;
-	m_bFadeIn=false;
-	m_iCurrentFrame=0;
-	ControlType = GUICONTROL_FADELABEL;
+  m_label = labelInfo;
+  m_iCurrentLabel = 0;
+  m_bFadeIn = false;
+  m_iCurrentFrame = 0;
+  ControlType = GUICONTROL_FADELABEL;
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 {
 }
 
+void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
+{
+  m_vecInfo = vecInfo;
+}
+
+void CGUIFadeLabelControl::SetLabel(const vector<string> &vecLabel)
+{
+  m_stringLabels = vecLabel;
+  m_infoLabels.clear();
+  for (unsigned int i = 0; i < vecLabel.size(); i++)
+    AddLabel(vecLabel[i]);
+}
+
+void CGUIFadeLabelControl::AddLabel(const string &label)
+{
+  vector<CInfoPortion> info;
+  g_infoManager.ParseLabel(label, info);
+  m_infoLabels.push_back(info);
+}
 
 void CGUIFadeLabelControl::Render()
 {
-	if (!IsVisible())	return;
-	if (!m_pFont) return;
-	if (m_vecLabels.size()==0) return;
-	if (m_iCurrentLabel >= (int)m_vecLabels.size() ) m_iCurrentLabel=0;
+  if (!IsVisible()) return;
 
-	wstring strLabel=m_vecLabels[m_iCurrentLabel];
-	CStdStringW strLabelUnicode;
-	g_charsetConverter.stringCharsetToFontCharset(strLabel, strLabelUnicode);
-
-  if ((int)m_vecLabels.size()==1)
+	if (!m_label.font || (m_infoLabels.size() == 0 && m_vecInfo.size() == 0))
   {
-    DWORD iWidth=(DWORD)m_pFont->GetTextWidth(strLabelUnicode.c_str());
-    if (iWidth < m_dwWidth)
+    CGUIControl::Render();
+    return ;
+  }
+
+	int iTempLabelCount = m_iCurrentLabel;
+	if ((int)m_infoLabels.size() > 0 && m_iCurrentLabel >= (int)m_infoLabels.size() )
+	{
+		m_iCurrentLabel = 0;
+	}
+
+  CStdString strRenderLabel;
+	int iLabelCount = (int)m_infoLabels.size();
+	if (iLabelCount > 0)
+	{
+		strRenderLabel = g_infoManager.GetMultiLabel(m_infoLabels[m_iCurrentLabel]);
+	}
+
+	if (m_vecInfo.size())
+	{ 
+		iLabelCount = (int)m_vecInfo.size();
+		m_iCurrentLabel = iTempLabelCount;
+		if (m_iCurrentLabel >= (int)m_vecInfo.size() )
+		{
+			m_iCurrentLabel = 0;
+		}
+		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel]);
+	}
+
+  CStdStringW strLabelUnicode;
+  g_charsetConverter.utf8ToUTF16(strRenderLabel, strLabelUnicode);
+
+  if (iLabelCount == 1)
+  {
+    DWORD iWidth = (DWORD)m_label.font->GetTextWidth(strLabelUnicode.c_str());
+    if (iWidth < m_width)
     {
-      m_pFont->DrawText( (float)m_iPosX,(float)m_iPosY,m_dwTextColor,strLabelUnicode.c_str());
-      return;
+      m_label.font->DrawText(m_posX, m_posY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
+      CGUIControl::Render();
+      return ;
     }
   }
-	if (m_bFadeIn)
-	{
-		DWORD dwAlpha = (0xff/12) * m_iCurrentFrame;
-		dwAlpha <<=24;
-		dwAlpha += ( m_dwTextColor &0x00ffffff);
-		m_pFont->DrawTextWidth((float)m_iPosX,(float)m_iPosY,dwAlpha,strLabelUnicode.c_str(),(float)m_dwWidth);
+  if (m_bFadeIn)
+  {
+    DWORD dwAlpha = 21 * m_iCurrentFrame;
+    dwAlpha <<= 24;
+    dwAlpha += ( m_label.textColor & 0x00ffffff);
+    m_label.font->DrawTextWidth(m_posX, m_posY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), m_width);
 
-		m_iCurrentFrame++;
-		if (m_iCurrentFrame >=12)
-		{
-			m_bFadeIn=false;
-		}
-	}
-	else
-	{
-		if ( RenderText((float)m_iPosX, (float)m_iPosY, (float) m_dwWidth,m_dwTextColor, (WCHAR*) strLabelUnicode.c_str(), true ))
-		{
-			m_iCurrentLabel++;
-			scroll_pos = 0;
-			iScrollX=0;
-			iLastItem=-1;
-			iFrames=0;
-			iStartFrame=0;
-			m_bFadeIn=true;
-			m_iCurrentFrame =0;
-		}
-	}
+    m_iCurrentFrame++;
+    if (m_iCurrentFrame >= 12)
+    {
+      m_bFadeIn = false;
+    }
+  }
+  else
+  {
+    if (m_scrollInfo.characterPos > strLabelUnicode.size())
+    { // reset to fade in again
+      m_iCurrentLabel++;
+      m_bFadeIn = true;
+      m_iCurrentFrame = 0;
+      m_scrollInfo.Reset();
+    }
+    else
+      RenderText(m_posX, m_posY, m_width, m_label.textColor, (WCHAR*) strLabelUnicode.c_str(), true );
+  }
+  CGUIControl::Render();
 }
 
 
@@ -83,117 +122,53 @@ bool CGUIFadeLabelControl::CanFocus() const
 
 bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
 {
-  if ( message.GetControlId()==GetID() )
+  if ( message.GetControlId() == GetID() )
   {
     if (message.GetMessage() == GUI_MSG_LABEL_ADD)
     {
-      wstring strLabel = message.GetLabel();
-			m_vecLabels.push_back(strLabel);
+      AddLabel(message.GetLabel());
     }
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
-			m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
+      m_infoLabels.clear();
+      m_stringLabels.clear();
+      m_scrollInfo.Reset();
     }
-		if (message.GetMessage() == GUI_MSG_LABEL_SET)
-		{
-			m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
-			m_vecLabels.push_back(message.GetLabel());
-		}
+    if (message.GetMessage() == GUI_MSG_LABEL_SET)
+    {
+      m_infoLabels.clear();
+      m_stringLabels.clear();
+      AddLabel(message.GetLabel());
+    }
   }
   return CGUIControl::OnMessage(message);
 }
 
-bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
+void CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll )
 {
-	if (!m_pFont) return false;
-	bool bResult = false;
-  float fTextHeight, fTextWidth;
-  m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+  if (!m_label.font) return;
 
-	float fPosCX=fPosX;
-	float fPosCY=fPosY;
-	g_graphicsContext.Correct(fPosCX, fPosCY);
-	if (fPosCX <0) fPosCX=0.0f;
-	if (fPosCY <0) fPosCY=0.0f;
-	if (fPosCY >g_graphicsContext.GetHeight()) fPosCY=(float)g_graphicsContext.GetHeight();
+  // increase our text width to the maximum width
+  float unneeded, width, spacewidth;
+  m_label.font->GetTextExtent( wszText, &width, &unneeded);
+  WCHAR space[2]; space[0] = L' '; space[1] = 0;
+  m_label.font->GetTextExtent(space, &spacewidth, &unneeded);
+  // ok, concat spaces on
+  WCHAR wszOrgText[1024];
+  wcscpy(wszOrgText, wszText);
+  while (width < fMaxWidth)
+  {
+    wcscat(wszOrgText, L" ");
+    width += spacewidth;
+  }
+  // now add enough spaces to cover the text area completely
+  width = 0;
+  while (width < fMaxWidth)
+  {
+    wcscat(wszOrgText, L" ");
+    width += spacewidth;
+  }
 
-	D3DVIEWPORT8 newviewport,oldviewport;
-	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-	float fHeight=60;
-	if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
-		fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
-	if (fHeight <= 0) return true;
-
-	newviewport.X      = (DWORD)fPosCX;
-	newviewport.Y			 = (DWORD)fPosCY;
-	newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
-	newviewport.Height = (DWORD)(fHeight);
-	newviewport.MinZ   = 0.0f;
-	newviewport.MaxZ   = 1.0f;
-	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
-
-
-	// scroll
-	WCHAR wszOrgText[1024];
-	wcscpy(wszOrgText, wszText);
-	do{
-		m_pFont->GetTextExtent( wszOrgText, &fTextWidth,&fTextHeight);
-		wcscat(wszOrgText, L" ");
-	} while ( fTextWidth < fMaxWidth);
-
-//	fMaxWidth+=50.0f;
-	WCHAR szText[1024];
-
-	if (iStartFrame > 25)
-	{
-		WCHAR wTmp[3];
-		if (scroll_pos >= (int)wcslen(wszOrgText) )
-			wTmp[0]=L' ';
-		else
-			wTmp[0]=wszOrgText[scroll_pos];
-		wTmp[1]=0;
-		float fWidth,fHeight;
-		m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
-		if ( iScrollX >= fWidth)
-		{
-			++scroll_pos;
-			if (scroll_pos > (int)wcslen(wszText) )
-			{
-				scroll_pos = 0;
-			bResult=true;
-			g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
-
-			return true;
-			}
-			iFrames=0;
-			iScrollX=1;
-		}
-		else iScrollX++;
-
-		int ipos=0;
-		int iTextLength = (int)wcslen(wszOrgText);
-		for (int i=0; i < iTextLength; i++)
-		{
-			if (i+scroll_pos < iTextLength)
-				szText[i]=wszOrgText[i+scroll_pos];
-			else
-			{
-				szText[i]=L' ';
-				ipos++;
-			}
-			szText[i+1]=0;
-		}
-		if (fPosY >=0.0)
-			m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,m_dwTextColor,szText,fMaxWidth);
-		
-	}
-	else
-	{
-		iStartFrame++;
-		if (fPosY >=0.0)
-			m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
-	}
-  
-	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
-	return bResult;
+  m_label.font->DrawScrollingText(fPosX, fPosY, &m_label.textColor, 1, m_label.shadowColor, wszOrgText, fMaxWidth, m_scrollInfo);
 }
+

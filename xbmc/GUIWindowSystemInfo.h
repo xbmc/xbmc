@@ -1,23 +1,23 @@
 #pragma once
 #include "guiwindow.h"
 
-class CGUIWindowSystemInfo :
-	public CGUIWindow
+class CGUIWindowSystemInfo : public CGUIWindow
 {
 public:
 	CGUIWindowSystemInfo(void);
 	virtual ~CGUIWindowSystemInfo(void);
-	virtual bool    OnMessage(CGUIMessage& message);
-	virtual void    OnAction(const CAction &action);
-	virtual void	Render();	
-protected:
-	void			GetValues();
-	DWORD			m_dwlastTime ;
-	DWORD           m_dwFPSTime;
-	DWORD           m_dwFrames;
-	float           m_fFPS;
-	float           cputemp;
-	float           mbtemp;
-	unsigned short  fanSpeed;
-	wchar_t			m_wszMPlayerVersion[50];
+	virtual bool OnMessage(CGUIMessage& message);
+	virtual bool OnAction(const CAction &action);
+	virtual void Render();
+private:
+  #define CONTROL_BT_HDD			92
+  #define CONTROL_BT_DVD      93
+  #define CONTROL_BT_STORAGE  94
+  #define CONTROL_BT_DEFAULT  95
+  #define CONTROL_BT_NETWORK  96
+  #define CONTROL_BT_VIDEO		97
+  #define CONTROL_BT_HARDWARE	98
+  unsigned int iControl;
+  void	SetLabelDummy();
 };
+

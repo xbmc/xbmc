@@ -1,65 +1,63 @@
-//  CDetectDVDMedia		 -  Thread running in the background to detect a CD change
-//							and the filesystem
+//  CDetectDVDMedia   -  Thread running in the background to detect a CD change
+//       and the filesystem
 //
-//	by Bobbin007 in 2003
-//	
-//	
+// by Bobbin007 in 2003
+//
+//
 //
 
 #pragma once
-#include <xtl.h>
 #include "xbox/iosupport.h"
-#include "StdString.h"
-#include "utils/criticalsection.h"
-#include "utils/singlelock.h"
 #include "filesystem/cdiosupport.h"
-#include "utils/thread.h"
-#include "GuiUserMessages.h"
-#include "guiwindowmanager.h"
+#include "utils/criticalsection.h"
 
-namespace MEDIA_DETECT 
+namespace MEDIA_DETECT
 {
 
-	class CDetectDVDMedia : public CThread
-	{
-	public:
-		CDetectDVDMedia();
-		virtual ~CDetectDVDMedia();
+class CDetectDVDMedia : public CThread
+{
+public:
+  CDetectDVDMedia();
+  virtual ~CDetectDVDMedia();
 
-		virtual void			OnStartup();
-		virtual void			OnExit();
-		virtual void			Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 
-		static void				WaitMediaReady();
-		static bool				IsDiscInDrive();
+  static void WaitMediaReady();
+  static bool IsDiscInDrive();
+  static int DriveReady();
+  static CCdInfo* GetCdInfo();
+  static CEvent m_evAutorun;
 
-		static CCdInfo*		GetCdInfo();
-		static CEvent			m_evAutorun;
+  static const CStdString &GetDVDLabel();
+  static const CStdString &GetDVDPath();
 
-	protected:
-		void							UpdateDvdrom();
-		DWORD							GetTrayState();
-		
-		void							DetectMediaType();
-		void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
-		void							SetShareName(CStdString& strShareName, CStdString& strStatus);
+  static void UpdateState();
+protected:
+  void UpdateDvdrom();
+  DWORD GetTrayState();
+  
 
-	private:
-		CIoSupport				m_helper;
-		
-		static CCriticalSection	m_muReadingMedia;
+  void DetectMediaType();
+  void SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
 
-		static int				m_DriveState;
-		static time_t			m_LastPoll;
-		static CDetectDVDMedia* m_pInstance;
+private:
+  static CCriticalSection m_muReadingMedia;
 
-		static CCdInfo*		m_pCdInfo;
+  static int m_DriveState;
+  static time_t m_LastPoll;
+  static CDetectDVDMedia* m_pInstance;
 
-		bool							m_bStartup;
-		bool							m_bAutorun;
-		DWORD							m_dwTrayState;
-		DWORD							m_dwTrayCount;
-		DWORD							m_dwLastTrayState;
-		
-	};
+  static CCdInfo* m_pCdInfo;
+
+  bool m_bStartup;
+  bool m_bAutorun;
+  DWORD m_dwTrayState;
+  DWORD m_dwTrayCount;
+  DWORD m_dwLastTrayState;
+
+  static CStdString m_diskLabel;
+  static CStdString m_diskPath;
+};
 }

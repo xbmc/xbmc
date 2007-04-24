@@ -122,6 +122,7 @@ LRESULT SendMessage(
   LPARAM lParam   // second message parameter
 );
 
+void RemoveMessageSinks();
 
 class CMessageSink
 {
@@ -163,6 +164,8 @@ class CWindowManager
 public:
   CWindowManager();
   virtual ~CWindowManager();
+
+  void Clear();
 
   BOOL GetMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax);
   BOOL PeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);

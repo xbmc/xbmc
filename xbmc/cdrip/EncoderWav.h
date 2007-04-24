@@ -4,35 +4,37 @@
 #include "Encoder.h"
 #include <stdio.h>
 
-typedef struct {
-	BYTE  riff[4];         /* must be "RIFF"    */
-	DWORD len;             /* #bytes + 44 - 8   */
-	BYTE  cWavFmt[8];      /* must be "WAVEfmt " */
-	DWORD dwHdrLen;
-	WORD  wFormat;
-	WORD  wNumChannels;
-	DWORD dwSampleRate;
-	DWORD dwBytesPerSec;
-	WORD  wBlockAlign;
-	WORD  wBitsPerSample;
-	BYTE  cData[4];        /* must be "data"   */
-	DWORD dwDataLen;       /* #bytes           */
-} WAVHDR, *PWAVHDR, *LPWAVHDR;
+typedef struct
+{
+  BYTE riff[4];         /* must be "RIFF"    */
+  DWORD len;             /* #bytes + 44 - 8   */
+  BYTE cWavFmt[8];      /* must be "WAVEfmt " */
+  DWORD dwHdrLen;
+  WORD wFormat;
+  WORD wNumChannels;
+  DWORD dwSampleRate;
+  DWORD dwBytesPerSec;
+  WORD wBlockAlign;
+  WORD wBitsPerSample;
+  BYTE cData[4];        /* must be "data"   */
+  DWORD dwDataLen;       /* #bytes           */
+}
+WAVHDR, *PWAVHDR, *LPWAVHDR;
 
 class CEncoderWav : public CEncoder
 {
 public:
-	CEncoderWav();
-	~CEncoderWav();
-	bool               Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
-	int                Encode(int nNumBytesRead, BYTE* pbtStream);
-	bool               Close();
-	void               AddTag(int key,const char* value);
+  CEncoderWav();
+  ~CEncoderWav();
+  bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
+  int Encode(int nNumBytesRead, BYTE* pbtStream);
+  bool Close();
+  void AddTag(int key, const char* value);
 
 private:
-	bool               WriteWavHeader();
+  bool WriteWavHeader();
 
-	int                m_iBytesWritten;
+  int m_iBytesWritten;
 };
 
 #endif // _ENCODERWAV_H

@@ -101,8 +101,10 @@ public:
 	CAsyncGssSocketLayer *m_pGssLayer;
 #endif
 	int m_nBufSize;
+#if defined(_XBOX)
 	int m_nPreAlloc;
 	int m_nAlign;
+#endif
 };
 
 

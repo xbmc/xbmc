@@ -1,109 +1,102 @@
-#include "stdafx.h"
-#include "guiCheckMarkControl.h"
-#include "guifontmanager.h"
+#include "include.h"
+#include "GUICheckMarkControl.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "GUIFontManager.h"
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
-:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
-,m_imgCheckMark(dwParentID, dwControlId, iPosX, iPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
-,m_imgCheckMarkNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
+
+CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_imgCheckMark(dwParentID, dwControlId, posX, posY, checkWidth, checkHeight, textureCheckMark)
+    , m_imgCheckMarkNoFocus(dwParentID, dwControlId, posX, posY, checkWidth, checkHeight, textureCheckMarkNF)
 {
-	m_strLabel=L"";
-	m_dwTextColor	= 0xFFFFFFFF; 
-	m_dwDisabledColor	= 0xFF606060; 
-	m_pFont=NULL;
-  m_bSelected=false;
-	m_dwAlign=dwAlign;
-  m_bShadow=false;
-	ControlType = GUICONTROL_CHECKMARK;
+  m_strLabel = "";
+  m_label = labelInfo;
+  m_bSelected = false;
+  ControlType = GUICONTROL_CHECKMARK;
 }
 
 CGUICheckMarkControl::~CGUICheckMarkControl(void)
-{
-}
+{}
 
 void CGUICheckMarkControl::Render()
 {
   if (!IsVisible()) return;
-	int iTextPosX=m_iPosX;
-	int iTextPosY=m_iPosY;
-	int iCheckMarkPosX=m_iPosX;
-  if (m_pFont) 
+
+  float textPosX = m_posX;
+  float textPosY = m_posY;
+  float checkMarkPosX = m_posX;
+  if (m_label.font)
   {
-	  CStdStringW strLabelUnicode;
-	  g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+    CStdStringW strLabelUnicode;
+    g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
 
-	  float fTextHeight,fTextWidth;
-	  m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
-	  m_dwWidth = (DWORD)fTextWidth+5+m_imgCheckMark.GetWidth();
-	  m_dwHeight = m_imgCheckMark.GetHeight();
+    float fTextHeight, fTextWidth;
+    m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
+    m_width = (DWORD)fTextWidth + 5 + m_imgCheckMark.GetWidth();
+    m_height = m_imgCheckMark.GetHeight();
 
-	  if (fTextHeight < m_imgCheckMark.GetHeight())
-	  {
-		  iTextPosY += (m_imgCheckMark.GetHeight() - (int)fTextHeight) / 2;
-	  }
-
-	  if (m_dwAlign==XBFONT_LEFT)
-	  {
-		  iCheckMarkPosX += ( (DWORD)(fTextWidth)+5);
-	  }
-	  else
-	  {
-		  iTextPosX += m_imgCheckMark.GetWidth() +5;
-	  }
-
-    if (IsDisabled() )
+    if (fTextHeight < m_imgCheckMark.GetHeight())
     {
-      m_pFont->DrawText((float)iTextPosX, (float)iTextPosY, m_dwDisabledColor, strLabelUnicode.c_str());
+      textPosY += (m_imgCheckMark.GetHeight() - fTextHeight) * 0.5f;
+    }
+
+    if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
+    {
+      checkMarkPosX += fTextWidth + 5;
     }
     else
     {
-      if (HasFocus())
+      textPosX += m_imgCheckMark.GetWidth() + 5;
+    }
+
+    if (IsDisabled() )
+    {
+      m_label.font->DrawText(textPosX, textPosY, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str());
+    }
+    else
+    {
+      if (HasFocus() && m_label.focusedColor)
       {
-        if (m_bShadow)
-          m_pFont->DrawShadowText((float)iTextPosX, (float)iTextPosY, m_dwTextColor, strLabelUnicode.c_str());
-        else
-          m_pFont->DrawText((float)iTextPosX, (float)iTextPosY, m_dwTextColor, strLabelUnicode.c_str());
+        m_label.font->DrawText(textPosX, textPosY, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str());
       }
       else
       {
-        if (m_bShadow)
-          m_pFont->DrawShadowText((float)iTextPosX, (float)iTextPosY, m_dwDisabledColor, strLabelUnicode.c_str());
-        else
-          m_pFont->DrawText((float)iTextPosX, (float)iTextPosY, m_dwDisabledColor, strLabelUnicode.c_str());
+        m_label.font->DrawText(textPosX, textPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
       }
     }
   }
   if (m_bSelected)
   {
-    m_imgCheckMark.SetPosition(iCheckMarkPosX, m_iPosY); 
+    m_imgCheckMark.SetPosition(checkMarkPosX, m_posY);
     m_imgCheckMark.Render();
   }
   else
   {
-    m_imgCheckMarkNoFocus.SetPosition(iCheckMarkPosX, m_iPosY); 
+    m_imgCheckMarkNoFocus.SetPosition(checkMarkPosX, m_posY);
     m_imgCheckMarkNoFocus.Render();
   }
+  CGUIControl::Render();
 }
 
-void CGUICheckMarkControl::OnAction(const CAction &action) 
+bool CGUICheckMarkControl::OnAction(const CAction &action)
 {
-	CGUIControl::OnAction(action);
-	if (action.wID == ACTION_SELECT_ITEM)
-	{
-		m_bSelected=!m_bSelected;
-		CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-		g_graphicsContext.SendMessage(msg);
-    }
+  if (action.wID == ACTION_SELECT_ITEM)
+  {
+    m_bSelected = !m_bSelected;
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
+    SendWindowMessage(msg);
+    return true;
+  }
+  return CGUIControl::OnAction(action);
 }
 
 bool CGUICheckMarkControl::OnMessage(CGUIMessage& message)
 {
-  if ( message.GetControlId()==GetID() )
+  if ( message.GetControlId() == GetID() )
   {
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-	  m_strLabel=message.GetLabel();
+      m_strLabel = message.GetLabel();
       return true;
     }
   }
@@ -113,9 +106,9 @@ bool CGUICheckMarkControl::OnMessage(CGUIMessage& message)
 
 void CGUICheckMarkControl::PreAllocResources()
 {
-	CGUIControl::PreAllocResources();
-	m_imgCheckMark.PreAllocResources();
-	m_imgCheckMarkNoFocus.PreAllocResources();
+  CGUIControl::PreAllocResources();
+  m_imgCheckMark.PreAllocResources();
+  m_imgCheckMarkNoFocus.PreAllocResources();
 }
 
 void CGUICheckMarkControl::AllocResources()
@@ -132,54 +125,47 @@ void CGUICheckMarkControl::FreeResources()
   m_imgCheckMarkNoFocus.FreeResources();
 }
 
-
-void CGUICheckMarkControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
+void CGUICheckMarkControl::DynamicResourceAlloc(bool bOnOff)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText,L"%S",strLabel.c_str());
-	m_strLabel=wszText;
-	m_dwTextColor=dwColor;
-	m_pFont=g_fontManager.GetFont(strFontName);
-}
-
-void CGUICheckMarkControl::SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor)
-{
-	m_strLabel=strLabel;
-	m_dwTextColor=dwColor;
-	m_pFont=g_fontManager.GetFont(strFontName);
-}
-
-void CGUICheckMarkControl::SetDisabledColor(D3DCOLOR color)
-{
-  m_dwDisabledColor=color;
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgCheckMark.DynamicResourceAlloc(bOnOff);
+  m_imgCheckMarkNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
 void CGUICheckMarkControl::SetSelected(bool bOnOff)
 {
-  m_bSelected=bOnOff;
+  m_bSelected = bOnOff;
 }
-
 
 bool CGUICheckMarkControl::GetSelected() const
 {
   return m_bSelected;
 }
 
-bool CGUICheckMarkControl::GetShadow() const
+bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
 {
-  return m_bShadow;
+  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  g_Mouse.SetState(MOUSE_STATE_CLICK);
+  CAction action;
+  action.wID = ACTION_SELECT_ITEM;
+  OnAction(action);
+  return true;
 }
 
-void CGUICheckMarkControl::SetShadow(bool bOnOff)
+void CGUICheckMarkControl::SetLabel(const string &label)
 {
-  m_bShadow=bOnOff;
+  m_strLabel = label;
 }
 
-void CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
+void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor)
 {
-	if (dwButton != MOUSE_LEFT_BUTTON) return;
-	g_Mouse.SetState(MOUSE_STATE_CLICK);
-	CAction action;
-	action.wID = ACTION_SELECT_ITEM;
-	OnAction(action);
+  m_label.font = g_fontManager.GetFont(strFont);
+  m_label.textColor = dwTextColor;
+  m_label.focusedColor = dwTextColor;
+  m_strLabel = strText;
+}
+
+void CGUICheckMarkControl::PythonSetDisabledColor(DWORD dwDisabledColor)
+{
+  m_label.disabledColor = dwDisabledColor;
 }

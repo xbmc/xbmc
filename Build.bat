@@ -1,66 +1,129 @@
 @ECHO OFF
-
+cls
+COLOR 1B
 rem ----PURPOSE----
 rem - Create a working XBMC build with a single click
 rem ---------------------------------------------
 rem Config
-rem Set your path for VSNET main executable
-rem Set the path for xbepatch
-rem Set the path for WinRARs rar.exe (freeware)
+rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
+rem ONLY needed if you have a very old bios, SET the path for xbepatch. Not needed otherwise.
+rem If Winrar isn't installed under standard programs, SET the path for WinRAR's (freeware) rar.exe
 rem and finally set the options for the final rar.
 rem ---------------------------------------------
-rem Remove 'rem' from %NET% to compile and/or clean the solution prior packing it.
-rem Remove 'rem' from 'xcopy web/python' to copy these to the BUILD directory.
+rem Remove 'rem' from 'web / python' below to copy these to the BUILD directory.
 rem ---------------------------------------------
 TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
 ECHO ------------------------------
 rem	CONFIG START
-	set NET=C:\Progra~1\Micros~1.NET\Common7\IDE\devenv.com
+	IF "%VS71COMNTOOLS%"=="" (
+	  set NET="%ProgramFiles%\Microsoft Visual Studio .NET 2003\Common7\IDE\devenv.com"
+	) ELSE (
+	  set NET="%VS71COMNTOOLS%\..\IDE\devenv.com"
+	)
+	IF NOT EXIST %NET% (
+	  set DIETEXT=Visual Studio .NET 2003 was not found.
+	  goto DIE
+	) 
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
-	set XBE=xbepatch.exe
-	set RAR=C:\Progra~1\Winrar\rar.exe
+	set XBE=release\default.xbe
+	set XBE_PATCH=tools\xbepatch\xbepatch.exe
+	set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
-	set TEX=XBMCTex.exe
-	set SKINS=..\Skins
-	set CODECS=..\Codecs
 rem	CONFIG END
 rem ---------------------------------------------
-ECHO Compiling Solution...
-%NET% %CLEAN%
-del release\xbmc.map
-%NET% %OPTS%
-ECHO Done!
-ECHO ------------------------------
-ECHO Copying files...
-%XBE% release\default.xbe
-rmdir BUILD /S /Q
-md BUILD
-copy release\default.xbe BUILD
-copy *.xml BUILD
-copy *.txt BUILD
-xcopy mplayer BUILD\mplayer /E /Q /I /Y
-xcopy skin\Projec~1\fonts "BUILD\skin\Project Mayhem\fonts" /E /Q /I /Y
-xcopy skin\Projec~1\*.xml "BUILD\skin\Project Mayhem\" /E /Q /I /Y
-%TEX% -input skin\Projec~1\media -output "BUILD\skin\Project Mayhem\media"
-xcopy credits BUILD\credits /Q /I /Y
-xcopy language BUILD\language /E /Q /I /Y
-xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
-xcopy visualisations BUILD\visualisations /E /Q /I /Y
-xcopy weather BUILD\weather /E /Q /I /Y
-rem xcopy web BUILD\web /E /Q /I /Y
-rem xcopy python BUILD\python /E /Q /I /Y
-rem xcopy %SKINS% Build\Skin /E /Q /I /Y
-rem xcopy %CODECS% Build\mplayer\codecs /E /Q /I /Y
 
-ECHO ------------------------------
-ECHO Removing CVS directories from build
-FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
+rem	check for existing xbe
+rem ---------------------------------------------
+IF EXIST release\default.xbe (
+  goto XBE_EXIST
+)
+goto COMPILE
 
-ECHO ------------------------------
-ECHO Rarring...
-%RAR% %RAROPS%
+:XBE_EXIST
+  ECHO ------------------------------
+  ECHO Found a previous Compiled XBE!
+  ECHO [Y] a new XBE will be compiled for the BUILD 
+  ECHO [N] the existing XBE will be used for the BUILD 
+  ECHO ------------------------------
+  set /P XBMC_COMPILE_ANSWER=Compile a new XBE? [y/n]
+  if /I %XBMC_COMPILE_ANSWER% NEQ y goto MAKE_BUILD
+  if /I %XBMC_COMPILE_ANSWER% NEQ n goto COMPILE
 
-ECHO ------------------------------
-ECHO finished!
+:COMPILE
+  ECHO Compiling Solution...
+  %NET% %CLEAN%
+  del release\xbmc.map
+  %NET% %OPTS%
+  IF NOT EXIST %XBE% (
+  	set DIETEXT=Default.xbe failed to build!  See .\Release\BuildLog.htm for details.
+  	goto DIE
+  )
+  ECHO Done!
+  ECHO ------------------------------
+  GOTO MAKE_BUILD
+
+:MAKE_BUILD
+  ECHO Copying files...
+  ECHO - XBE Patching %XBE% 
+  %XBE_PATCH% %XBE%
+  ECHO - Patching Done!
+  
+  rmdir BUILD /S /Q
+  md BUILD
+  
+  Echo .svn>exclude.txt
+  Echo Thumbs.db>>exclude.txt
+  Echo Desktop.ini>>exclude.txt
+  Echo dsstdfx.bin>>exclude.txt
+  Echo exclude.txt>>exclude.txt
+
+  copy %XBE% BUILD
+  xcopy UserData BUILD\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy *.txt BUILD /EXCLUDE:exclude.txt
+  rem xcopy *.xml BUILD\
+
+  cd "skin\Project Mayhem III"
+  CALL build.bat
+  cd ..\..
+  xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
+
+  xcopy credits BUILD\credits /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy language BUILD\language /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy screensavers BUILD\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy visualisations BUILD\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy system BUILD\system /E /Q /I /Y /EXCLUDE:exclude.txt
+  rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
+  rem %rar% x web\Project_Mayem_III_webserver*.rar build\web\
+  xcopy media BUILD\media /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy sounds BUILD\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
+
+  del exclude.txt
+  ECHO ------------------------------
+  IF NOT EXIST %RAR% (
+  	ECHO WinRAR not installed!  Skipping .rar compression...
+  ) ELSE (
+  	ECHO Compressing build to XBMC.rar file...
+  	%RAR% %RAROPS%
+  )
+
+  ECHO ------------------------------
+  ECHO Build Succeeded!
+
+  GOTO VIEWLOG
+:DIE
+  ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
+  set DIETEXT=ERROR: %DIETEXT%
+  echo %DIETEXT%
+
+:VIEWLOG
+  set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
+  if /I %XBMC_BUILD_ANSWER% NEQ y goto END
+  start /D"%~dp0Release" BuildLog.htm"
+  goto END
+
+:END
+  set XBMC_BUILD_ANSWER=
+  ECHO Press any key to exit...
+  pause > NUL

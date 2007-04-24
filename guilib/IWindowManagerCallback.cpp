@@ -1,10 +1,9 @@
-#include "stdafx.h"
-#include "iwindowmanagercallback.h"
+#include "include.h"
+#include "IWindowManagerCallback.h"
+
 
 IWindowManagerCallback::IWindowManagerCallback(void)
-{
-}
+{}
 
 IWindowManagerCallback::~IWindowManagerCallback(void)
-{
-}
+{}

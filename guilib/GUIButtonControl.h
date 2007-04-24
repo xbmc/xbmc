@@ -1,77 +1,82 @@
 /*!
-	\file GUIButtonControl.h
-	\brief 
-	*/
+\file GUIButtonControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIBUTTONCONTROL_H
 #define GUILIB_GUIBUTTONCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "guiimage.h"
-#include "stdstring.h"
-using namespace std;
+
+#include "GUIImage.h"
+#include "GUILabelControl.h"  // for CInfoPortion
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
+ \ingroup controls
+ \brief 
+ */
 class CGUIButtonControl : public CGUIControl
 {
 public:
   CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
-	  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-	  const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
-	  DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign=XBFONT_LEFT);
+                    float posX, float posY, float width, float height,
+                    const CImage& textureFocus, const CImage& textureNoFocus,
+                    const CLabelInfo &label);
 
   virtual ~CGUIButtonControl(void);
-  
+
   virtual void Render();
-  virtual void OnAction(const CAction &action) ;
-  virtual void OnMouseClick(DWORD dwButton);
+  virtual bool OnAction(const CAction &action) ;
+  virtual bool OnMouseClick(DWORD dwButton);
   virtual bool OnMessage(CGUIMessage& message);
-	virtual void PreAllocResources();
+  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetAlpha(DWORD dwAlpha);
-  virtual void SetColourDiffuse(D3DCOLOR colour);
-  virtual void SetDisabledColor(D3DCOLOR color);
-	void        SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
-	void        SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
-	void				SetText(const CStdString &aLabel);
-	void				SetText(const wstring & aLabel);
-  void        SetHyperLink(long dwWindowID);
-	void				SetExecuteAction(const CStdString& strExecuteAction);
-	const	CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
-	const	CStdString& GetTexutureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
-	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
-	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
-	void							SetTextColor(D3DCOLOR dwTextColor) { m_dwTextColor=dwTextColor;};
-	DWORD							GetTextColor() const { return m_dwTextColor;};
-	DWORD							GetTextAlign() const { return m_dwTextAlignment;};
-	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
-	const char *			GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-	const wstring			GetLabel() const { return m_strLabel; };
-	DWORD							GetHyperLink() const { return m_lHyperLinkWindowID;};
-	const CStdString& GetExecuteAction() const { return m_strExecuteAction; };
+  virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetPosition(float posX, float posY);
+  virtual void SetColorDiffuse(D3DCOLOR color);
+  void SetLabel(const string & aLabel);
+  void SetLabel2(const string & aLabel2);
+  void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
+  const vector<CStdString> &GetClickActions() const { return m_clickActions; };
+  void SetFocusActions(const vector<CStdString>& focusActions) { m_focusActions = focusActions; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
+  virtual const string& GetLabel() const { return m_strLabel; };
+  void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
+  void SetSelected(bool bSelected);
+  void Flicker(bool bFlicker = TRUE);
+  virtual void Update();
+  virtual CStdString GetDescription() const;
+  void SetAlpha(unsigned char alpha);
+
+  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
+  void PythonSetDisabledColor(DWORD dwDisabledColor);
+
+  void RAMSetTextColor(DWORD dwTextColor);
+  void SettingsCategorySetTextAlign(DWORD dwAlign);
+
+  virtual void OnClick();
+  bool HasClickActions() { return m_clickActions.size() > 0; };
 
 protected:
-  virtual void				Update() ;
-  CGUIImage						m_imgFocus;
-  CGUIImage						m_imgNoFocus;  
-  DWORD								m_dwFrameCounter;
-  DWORD								m_dwTextOffsetX;
-  DWORD								m_dwTextOffsetY;
-	DWORD								m_dwTextAlignment;
-	wstring							m_strLabel;
-	CGUIFont*						m_pFont;
-	D3DCOLOR						m_dwTextColor;
-  D3DCOLOR						m_dwDisabledColor;
-  long								m_lHyperLinkWindowID;
-	CStdString					m_strExecuteAction;
+  void OnFocus();
+
+  CGUIImage m_imgFocus;
+  CGUIImage m_imgNoFocus;
+  DWORD m_dwFocusCounter;
+  DWORD m_dwFlickerCounter;
+  DWORD m_dwFrameCounter;
+  unsigned char m_alpha;
+
+  string m_strLabel;
+  string m_strLabel2;
+  vector<CInfoPortion>  m_multiInfo;
+  CLabelInfo m_label;
+
+  vector<CStdString> m_clickActions;
+  vector<CStdString> m_focusActions;
+  bool m_bTabButton;
+
+  bool m_bSelected;
 };
 #endif

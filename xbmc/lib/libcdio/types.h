@@ -37,6 +37,10 @@ extern "C" {
 #include <sys/types.h>
 #endif 
 
+#if defined(_XBOX) || defined(WIN32)
+#include "inttypes.h"
+#endif
+
 #if defined(HAVE_STDINT_H)
 # include <stdint.h>
 #elif defined(HAVE_INTTYPES_H)
@@ -46,8 +50,6 @@ extern "C" {
   typedef u_int16_t uint16_t;
   typedef u_int32_t uint32_t;
   typedef u_int64_t uint64_t;
-#elif defined(_XBOX)
-# include "inttypes.h"
 #else
   /* warning ISO/IEC 9899:1999 <stdint.h> was missing and even <inttypes.h> */
   /* fixme */
@@ -108,11 +110,11 @@ extern "C" {
     {
       false = 0,
       true = 1
-    } _Bool;
+    } _cdio_Bool;
   
 #  define false   false
 #  define true    true
-#  define bool _Bool
+#  define bool _cdio_Bool
 # endif
 #endif
   
@@ -132,7 +134,7 @@ extern "C" {
 #define GNUC_UNUSED                             \
   __attribute__((unused))
 #define GNUC_PACKED                             \
-  __attribute__((packed))
+  //__attribute__((packed))
 #else   /* !__GNUC__ */
 #define GNUC_PRINTF( format_idx, arg_idx )
 #define GNUC_SCANF( format_idx, arg_idx )
@@ -156,7 +158,7 @@ extern "C" {
 # define PRAGMA_BEGIN_PACKED
 # define PRAGMA_END_PACKED
 #endif
-  
+
   /*
    * user directed static branch prediction gcc 2.96+
    */
@@ -184,11 +186,19 @@ extern "C" {
     
     @see lba_t
   */
+#if defined(_XBOX) || defined(WIN32)
+  #pragma pack(1)
+#else
   PRAGMA_BEGIN_PACKED
+#endif
   struct msf_rec {
     uint8_t m, s, f;
   } GNUC_PACKED;
+#if defined(_XBOX) || defined(WIN32)
+  #pragma pack()
+#else
   PRAGMA_END_PACKED
+#endif
   
   typedef struct msf_rec msf_t;
 
@@ -222,12 +232,7 @@ extern "C" {
   
   /*! The type of a track number 0..99. */
   typedef uint8_t track_t;
-  
-  /*! 
-    Constant for invalid track number
-  */
-#define CDIO_INVALID_TRACK   0xFF
-  
+
   /*! The type of a session number 0..99. */
   typedef uint8_t session_t;
   
@@ -300,8 +305,6 @@ extern "C" {
 #define CDIO_DRIVE_CAP_MISC_MULTI_SESSION  0x00020 /**< read sessions>1 */
 #define CDIO_DRIVE_CAP_MISC_MEDIA_CHANGED  0x00080 /**< media changed */
 #define CDIO_DRIVE_CAP_MISC_RESET          0x00100 /**< hard reset device */
-#define CDIO_DRIVE_CAP_MCN                 0x00200 /**< can read MCN      */
-#define CDIO_DRIVE_CAP_ISRC                0x00200 /**< can read ISRC     */
 #define CDIO_DRIVE_CAP_MISC_FILE           0x20000 /**< drive is really a file,
                                                       i.e a CD file image */
 
@@ -318,6 +321,10 @@ extern "C" {
 #define CDIO_DRIVE_CAP_READ_DVD_RW      0x00200 /**< drive can read DVD-RW  */
 #define CDIO_DRIVE_CAP_READ_DVD_RPW     0x00400 /**< drive can read DVD+RW  */
 #define CDIO_DRIVE_CAP_READ_C2_ERRS     0x00800 /**< has C2 error correction */
+#define CDIO_DRIVE_CAP_READ_MODE2_FORM1 0x01000 /**< can read mode 2 form 1 */
+#define CDIO_DRIVE_CAP_READ_MODE2_FORM2 0x02000 /**< can read mode 2 form 2 */
+#define CDIO_DRIVE_CAP_READ_MCN         0x04000 /**< can read MCN      */
+#define CDIO_DRIVE_CAP_READ_ISRC        0x08000 /**< can read ISRC     */
 
   /*! Writing masks.. */
 #define CDIO_DRIVE_CAP_WRITE_CD_R       0x00001 /**< drive can write CD-R */

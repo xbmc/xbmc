@@ -1,14 +1,14 @@
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:		**
+**      BROUGHT TO YOU BY:      **
 **********************************
 **********************************
-**								**
-**		  [TEAM ASSEMBLY]		**
-**								**
-**		www.team-assembly.com	**
-**								**
+**                              **
+**       [TEAM ASSEMBLY]        **
+**                              **
+**     www.team-assembly.com    **
+**                              **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,11 @@
 
 
 ********************************************************************************************************
-**	     XKEXPORTS.H - XBOX Kernel Exports Header
+**      XKEXPORTS.H - XBOX Kernel Exports Header
 ********************************************************************************************************
 **
-**	This Header containts various helpful XBOX Kernel exports and other #defines..
-**	This is pretty much a work in progress and will contrinue to grow in future..
+** This Header containts various helpful XBOX Kernel exports and other #defines..
+** This is pretty much a work in progress and will contrinue to grow in future..
 **
 ********************************************************************************************************
 
@@ -46,16 +46,16 @@ Reason: Prepared 0.2 for Public Release
 
 #pragma once
 #if defined (_XBOX)
-	//This complete file is only supported for XBOX..
-	#pragma message ("Compiling for XBOX: " __FILE__)
+//This complete file is only supported for XBOX..
+#pragma message ("Compiling for XBOX: " __FILE__)
 
 
 
 #include <xtl.h>
 #ifdef _DEBUG
-    #define OUTPUT_DEBUG_STRING(s) OutputDebugStringA(s)
+ #define OUTPUT_DEBUG_STRING(s) OutputDebugStringA(s)
 #else
-    #define OUTPUT_DEBUG_STRING(s) (VOID)(s)
+ #define OUTPUT_DEBUG_STRING(s) (VOID)(s)
 #endif
 
 #define XB_SUCCESS(Status) ((LONG)(Status) >= 0)
@@ -75,17 +75,17 @@ typedef CONST SHORT CSHORT;
 //Unicode STRING
 typedef struct _STRING
 {
-	USHORT	Length;
-	USHORT	MaximumLength;
-	PSTR	Buffer;
+ USHORT Length;
+ USHORT MaximumLength;
+ PSTR Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;//, ANSI_STRING, *PANSI_STRING;
 
 //for use with IOCTL
 typedef struct _IO_STATUS_BLOCK {
     union
-	{
-        LONG	Status;
-        LPVOID	Pointer;
+ {
+        LONG Status;
+        LPVOID Pointer;
     };
 
     LPLONG Information;
@@ -94,9 +94,9 @@ typedef struct _IO_STATUS_BLOCK {
 //for use with IOCTL
 typedef struct _OBJECT_ATTRIBUTES
 {
-    HANDLE			RootDirectory;
-    PANSI_STRING	ObjectName;
-    ULONG			Attributes;
+    HANDLE   RootDirectory;
+    PANSI_STRING ObjectName;
+    ULONG   Attributes;
 } OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
 */
 // APC routine
@@ -114,7 +114,7 @@ typedef struct _OBJECT_ATTRIBUTES
 #define OBJ_VALID_ATTRIBUTES    0x000003F2L
 
 // Differences from NT: SECURITY_DESCRIPTOR support is gone.
-#define InitializeObjectAttributes( p, n, a, r ) {		\
+#define InitializeObjectAttributes( p, n, a, r ) {  \
     (p)->RootDirectory = r;                             \
     (p)->Attributes = a;                                \
     (p)->ObjectName = n;                                \
@@ -183,18 +183,19 @@ typedef struct _OBJECT_ATTRIBUTES
 )
 
 //Kernel Exports for doing all the cool stuff !!
-extern "C" {
-//	XBOXAPI LONG WINAPI RtlInitAnsiString(OUT PANSI_STRING DestinationString, IN LPCSTR SourceString);
+extern "C"
+{
+  // XBOXAPI LONG WINAPI RtlInitAnsiString(OUT PANSI_STRING DestinationString, IN LPCSTR SourceString);
 
-	//XBOXAPI LONG WINAPI HalWriteSMBusValue(UCHAR devddress, UCHAR offset, UCHAR writedw, DWORD data);
-	XBOXAPI LONG WINAPI HalReadSMBusValue(UCHAR devddress, UCHAR offset, UCHAR readdw, LPBYTE pdata);
+  //XBOXAPI LONG WINAPI HalWriteSMBusValue(UCHAR devddress, UCHAR offset, UCHAR writedw, DWORD data);
+  XBOXAPI LONG WINAPI HalReadSMBusValue(UCHAR devddress, UCHAR offset, UCHAR readdw, LPBYTE pdata);
 
-//	XBOXAPI LONG WINAPI IoCreateSymbolicLink(IN PUNICODE_STRING SymbolicLinkName,IN PUNICODE_STRING DeviceName);
-	//XBOXAPI LONG WINAPI IoDeleteSymbolicLink(IN PUNICODE_STRING SymbolicLinkName);
+  // XBOXAPI LONG WINAPI IoCreateSymbolicLink(IN PUNICODE_STRING SymbolicLinkName,IN PUNICODE_STRING DeviceName);
+  //XBOXAPI LONG WINAPI IoDeleteSymbolicLink(IN PUNICODE_STRING SymbolicLinkName);
 
-//	XBOXAPI LONG WINAPI NtCreateFile(OUT PHANDLE FileHandle, IN ACCESS_MASK DesiredAccess, IN POBJECT_ATTRIBUTES ObjectAttributes,  OUT PIO_STATUS_BLOCK IoStatusBlock, IN PLARGE_INTEGER AllocationSize OPTIONAL, IN ULONG FileAttributes, IN ULONG ShareAccess, IN ULONG CreateDisposition, IN ULONG CreateOptions);
+  // XBOXAPI LONG WINAPI NtCreateFile(OUT PHANDLE FileHandle, IN ACCESS_MASK DesiredAccess, IN POBJECT_ATTRIBUTES ObjectAttributes,  OUT PIO_STATUS_BLOCK IoStatusBlock, IN PLARGE_INTEGER AllocationSize OPTIONAL, IN ULONG FileAttributes, IN ULONG ShareAccess, IN ULONG CreateDisposition, IN ULONG CreateOptions);
 
-	//XBOXAPI LONG WINAPI NtDeviceIoControlFile(IN HANDLE FileHandle, IN HANDLE hEvent OPTIONAL, IN PIO_APC_ROUTINE ApcRoutine OPTIONAL, IN PVOID ApcContext OPTIONAL, OUT PIO_STATUS_BLOCK IoStatusBlock, IN ULONG IoControlCode, IN PVOID InputBuffer OPTIONAL, IN ULONG InputBufferLength, OUT PVOID OutputBuffer OPTIONAL, IN ULONG OutputBufferLength);
+  //XBOXAPI LONG WINAPI NtDeviceIoControlFile(IN HANDLE FileHandle, IN HANDLE hEvent OPTIONAL, IN PIO_APC_ROUTINE ApcRoutine OPTIONAL, IN PVOID ApcContext OPTIONAL, OUT PIO_STATUS_BLOCK IoStatusBlock, IN ULONG IoControlCode, IN PVOID InputBuffer OPTIONAL, IN ULONG InputBufferLength, OUT PVOID OutputBuffer OPTIONAL, IN ULONG OutputBufferLength);
 
 }
 
@@ -216,9 +217,8 @@ extern "C" XBOXAPI LPVOID XepDashboardImagePath;
 extern "C" XBOXAPI LPVOID ObpIoDevicesDirectoryObject;
 extern "C" XBOXAPI LPVOID ExpCdRomBootROMStringBuffer; // IdexCdRomDeviceNameBuffer;
 //extern "C" XBOXAPI LPVOID LaunchDataPage;
-// extern "C" XBOXAPI LPVOID XboxBootFlags;
-extern "C" XBOXAPI LPVOID XeImageFileName;
-extern "C" XBOXAPI LPVOID XboxKrnlVersion;
+//extern "C" XBOXAPI LPVOID XboxBootFlags;
+//extern "C" XBOXAPI LPVOID XeImageFileName;
 extern "C" XBOXAPI LPVOID XboxEEPROMKey;
 extern "C" XBOXAPI LPVOID XboxHDKey;
 

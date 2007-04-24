@@ -1,1042 +1,800 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
-#include "guiwindowprograms.h"
-#include "localizestrings.h"
-#include "GUIWindowManager.h"
+#include "GUIWindowPrograms.h"
 #include "util.h"
-#include "url.h"
-#include "Xbox\IoSupport.h"
-#include "Xbox\Undocumented.h"
-#include "crc32.h"
-#include "settings.h"
-#include "lib/cximage/ximage.h"
 #include "Shortcut.h"
-#include "guidialog.h"
-#include "sectionLoader.h"
-#include "application.h"
 #include "filesystem/HDDirectory.h"
-#include "filesystem/directorycache.h"
-#include "autoptrhandle.h"
-#include "GUIThumbnailPanel.h"
-#include "utils/log.h"
-#include <algorithm>
+#include "GUIPassword.h"
+#include "GUIDialogTrainerSettings.h"
+#include "GUIDialogMediaSource.h"
+#include "xbox/xbeheader.h"
+#include "utils/Trainer.h"
+#include "utils/kaiclient.h"
+#include "autorun.h"
 
-using namespace AUTOPTR;
+using namespace XFILE;
 using namespace DIRECTORY;
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
-
-#define CONTROL_BTNVIEWAS     2
-#define CONTROL_BTNSCAN       3
-#define CONTROL_BTNSORTMETHOD 4
-#define CONTROL_BTNSORTASC    5
-#define CONTROL_LIST          7
-#define CONTROL_THUMBS        8
-#define CONTROL_LABELFILES    9
+#define CONTROL_BTNVIEWASICONS 2
+#define CONTROL_BTNSORTBY      3
+#define CONTROL_BTNSORTASC     4
+#define CONTROL_LIST          50
+#define CONTROL_THUMBS        51
+#define CONTROL_LABELFILES    12
 
 CGUIWindowPrograms::CGUIWindowPrograms(void)
-:CGUIWindow(0)
+    : CGUIMediaWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
-	m_strDirectory="?";
-	m_iLastControl=-1;
+  m_thumbLoader.SetObserver(this);
+  m_dlgProgress = NULL;
+  m_rootDir.AllowNonLocalShares(false); // no nonlocal shares for this window please
 }
 
 
 CGUIWindowPrograms::~CGUIWindowPrograms(void)
-{}
+{
+}
 
 bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
-	{
-	case GUI_MSG_WINDOW_DEINIT:
-		{
-			m_iLastControl=GetFocusedControl();
-			m_iSelectedItem=GetSelectedItem();
-			Clear();
-			m_database.Close();
-		}
-		break;
+  switch ( message.GetMessage() )
+  {
+  case GUI_MSG_WINDOW_DEINIT:
+    {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+      m_database.Close();
+    }
+    break;
 
-	case GUI_MSG_WINDOW_INIT:
-		{
-			CGUIWindow::OnMessage(message);
-			m_database.Open();
-			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-			if (m_strDirectory=="?")
-			{
-				m_strDirectory=g_stSettings.m_szDefaultPrograms;
-				m_shareDirectory=g_stSettings.m_szDefaultPrograms;
-				m_iDepth=1;
-				m_strBookmarkName="default";
-				if (g_stSettings.m_bMyProgramsNoShortcuts && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
-					g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
-			}
+  case GUI_MSG_WINDOW_INIT:
+    {
+      m_iRegionSet = 0;
+      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-			// make controls 100-110 invisible...
-			for (int i=100; i < 110; i++)
-			{		
-				SET_CONTROL_HIDDEN(GetID(), i);
-			}
+      // check for a passed destination path
+      CStdString strDestination = message.GetStringParam();
+      if (!strDestination.IsEmpty())
+      {
+        message.SetStringParam("");
+        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        // reset directory path, as we have effectively cleared it here
+        m_history.ClearPathHistory();
+      }
+      // is this the first time accessing this window?
+      // a quickpath overrides the a default parameter
+      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+      {
+        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
+        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+      }
 
+      m_database.Open();
+      // try to open the destination path
+      if (!strDestination.IsEmpty())
+      {
+        // open root
+        if (strDestination.Equals("$ROOT"))
+        {
+          m_vecItems.m_strPath = "";
+          CLog::Log(LOGINFO, "  Success! Opening root listing.");
+        }
+        else
+        {
+          // default parameters if the jump fails
+          m_vecItems.m_strPath = "";
 
-			if (g_stSettings.m_bMyProgramsNoShortcuts)				// let's hide Scan button
-			{
-				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
-			}
-			else
-			{
-				SET_CONTROL_VISIBLE(GetID(), CONTROL_BTNSCAN);
-			}
+          bool bIsBookmarkName = false;
+          SetupShares();
+          VECSHARES shares;
+          m_rootDir.GetShares(shares);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+          if (iIndex > -1)
+          {
+            bool bDoStuff = true;
+            if (shares[iIndex].m_iHasLock == 2)
+            {
+              CFileItem item(shares[iIndex]);
+              if (!g_passwordManager.IsItemUnlocked(&item,"myprograms"))
+              {
+                m_vecItems.m_strPath = ""; // no u don't
+                bDoStuff = false;
+                CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+              }
+            }
+            // set current directory to matching share
+            if (bDoStuff)
+            {
+              if (bIsBookmarkName)
+                m_vecItems.m_strPath=shares[iIndex].strPath;
+              else
+                m_vecItems.m_strPath=strDestination;
+              CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+            }
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+          }
+        }
+        SetHistoryForPath(m_vecItems.m_strPath);
+      }
 
+      return CGUIMediaWindow::OnMessage(message);
+    }
+  break;
 
-			int iStartID=100;
+  case GUI_MSG_CLICKED:
+    {
+      if (message.GetSenderId() == CONTROL_BTNSORTBY)
+      {
+        // need to update shortcuts manually
+        if (CGUIMediaWindow::OnMessage(message))
+        {
+          for (int i=0;i<m_vecItems.Size();++i)
+          {
+            if (m_vecItems[i]->IsShortCut())
+            {
+              CGUIViewState::LABEL_MASKS labelMasks;
+              m_guiState->GetSortMethodLabelMasks(labelMasks);
 
-			// create bookmark buttons
+              m_vecItems[i]->FormatLabel2(labelMasks.m_strLabel2File);
+            }
+          }
+          return true;
+        }
+        else
+          return false;
+      }
+      if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
+      {
+        if (message.GetParam1() == ACTION_PLAYER_PLAY)
+        {
+          OnPlayMedia(m_viewControl.GetSelectedItem());
+          return true;
+        }
+      }
+    }
+    break;
+  }
 
-			for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
-			{
-				CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-
-				SET_CONTROL_VISIBLE(GetID(), i+iStartID);
-				SET_CONTROL_LABEL(GetID(), i+iStartID,share.strName);				
-			}
-
-
-			Update(m_strDirectory);
-
-			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
-
-			if (m_iSelectedItem>-1)
-			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iSelectedItem);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iSelectedItem);
-			}
-			ShowThumbPanel();
-			return true;
-		}
-		break;
-
-	case GUI_MSG_SETFOCUS:
-		{}
-		break;
-
-	case GUI_MSG_CLICKED:
-		{
-			int iControl=message.GetSenderId();
-			if (iControl==CONTROL_BTNVIEWAS)
-			{
-				bool bLargeIcons(false);
-				g_stSettings.m_iMyProgramsViewAsIcons++;
-				if (g_stSettings.m_iMyProgramsViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyProgramsViewAsIcons=VIEW_AS_LIST;
-				g_settings.Save();
-
-				ShowThumbPanel();
-				UpdateButtons();
-			}
-			else if (iControl==CONTROL_BTNSCAN) // button
-			{
-				int iTotalApps=0;
-				CStdString strDir=m_strDirectory;
-				m_strDirectory = g_stSettings.m_szShortcutDirectory;
-
-				CHDDirectory rootDir;
-
-				// remove shortcuts...
-				rootDir.SetMask(".cut");
-				rootDir.GetDirectory(m_strDirectory,m_vecItems);
-
-				for (int i=0; i < (int)m_vecItems.size(); ++i)
-				{
-					CFileItem* pItem=m_vecItems[i];
-					if (CUtil::IsShortCut(pItem->m_strPath))
-					{
-						DeleteFile(pItem->m_strPath.c_str());
-					}
-				}
-
-				// create new ones.
-
-				VECFILEITEMS items;
-				{
-					m_strDirectory="C:";
-					rootDir.SetMask(".xbe");
-					rootDir.GetDirectory("C:\\",items);
-					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
-				}
-
-				{
-					m_strDirectory="E:";
-					rootDir.SetMask(".xbe");
-					rootDir.GetDirectory("E:\\",items);
-					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
-				}
-
-				if (g_stSettings.m_bUseFDrive)
-				{
-					m_strDirectory="F:";
-					rootDir.SetMask(".xbe");
-					rootDir.GetDirectory("F:\\",items);
-					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
-				}
-				if (g_stSettings.m_bUseGDrive)
-				{
-					m_strDirectory="G:";
-					rootDir.SetMask(".xbe");
-					rootDir.GetDirectory("G:\\",items);
-					OnScan(items,iTotalApps);
-					CFileItemList itemlist(items);
-				}
-
-
-				m_strDirectory=strDir;
-				CUtil::ClearCache();
-				Update(m_strDirectory);
-			}
-			else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
-			{
-				g_stSettings.m_iMyProgramsSortMethod++;
-				if (g_stSettings.m_iMyProgramsSortMethod >=4)
-					g_stSettings.m_iMyProgramsSortMethod=0;
-				g_settings.Save();
-				UpdateButtons();
-				OnSort();
-			}
-			else if (iControl==CONTROL_BTNSORTASC) // sort asc
-			{
-				g_stSettings.m_bMyProgramsSortAscending=!g_stSettings.m_bMyProgramsSortAscending;
-				g_settings.Save();
-
-				UpdateButtons();
-				OnSort();
-			}
-			else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
-			{
-				// get selected item
-				int iAction=message.GetParam1();
-				if (ACTION_SELECT_ITEM==iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
-				{
-					CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-					g_graphicsContext.SendMessage(msg);
-					int iItem=msg.GetParam1();
-					OnClick(iItem);
-				}
-			}
-			else if (iControl >= 100 && iControl <= 110)
-			{
-				// bookmark button
-				int iShare=iControl-100;
-				if (iShare < (int)g_settings.m_vecMyProgramsBookmarks.size())
-				{
-					CShare share = g_settings.m_vecMyProgramsBookmarks[iControl-100];
-					m_shareDirectory=share.strPath;    // since m_strDirectory can change, we always want something that won't.
-					m_strDirectory=share.strPath;
-					m_strBookmarkName=share.strName;
-					m_iDepth=share.m_iDepthSize;
-					Update(m_strDirectory);
-				}
-			}
-		}
-	}
-
-	return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowPrograms::Render()
+void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-	CGUIWindow::Render();
+  if (itemNumber < 0 || itemNumber >= m_vecItems.Size())
+    return;
+  CFileItem *item = m_vecItems[itemNumber];
+  if ( m_vecItems.IsVirtualDirectoryRoot() )
+  {
+    // get the usual bookmark shares
+    CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
+    CGUIDialogContextMenu::GetContextButtons("myprograms", share, buttons);
+  }
+  else
+  {
+    if (item->IsXBE() || item->IsShortCut())
+    {
+      CStdString strLaunch = g_localizeStrings.Get(518); // Launch
+      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+      {
+        int iRegion = GetRegion(itemNumber);
+        if (iRegion == VIDEO_NTSCM)
+          strLaunch += " (NTSC-M)";
+        if (iRegion == VIDEO_NTSCJ)
+          strLaunch += " (NTSC-J)";
+        if (iRegion == VIDEO_PAL50)
+          strLaunch += " (PAL)";
+        if (iRegion == VIDEO_PAL60)
+          strLaunch += " (PAL-60)";
+      }
+      buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
+
+      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
+      CStdString strTitleID;
+      CStdString strGameSavepath;
+      strTitleID.Format("%08X",dwTitleId);
+      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
+
+      if (CDirectory::Exists(strGameSavepath))
+        buttons.Add(CONTEXT_BUTTON_GAMESAVES, 20322);         // Goto GameSaves
+
+      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+        buttons.Add(CONTEXT_BUTTON_LAUNCH_IN, 519); // launch in video mode
+
+      if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      {
+        if (item->IsShortCut())
+          buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
+        else
+          buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
+      }
+
+      if (m_database.ItemHasTrainer(dwTitleId))
+        buttons.Add(CONTEXT_BUTTON_TRAINER_OPTIONS, 12015); // trainer options
+    }
+    buttons.Add(CONTEXT_BUTTON_SCAN_TRAINERS, 12012); // scan trainers
+
+    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
+  }
+  CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
 }
 
-
-void CGUIWindowPrograms::OnAction(const CAction &action)
+bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-	if (action.wID==ACTION_PARENT_DIR)
-	{
-		GoParentFolder();
-		return;
-	}
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
-	if (action.wID == ACTION_PREVIOUS_MENU)
-	{
-		m_gWindowManager.PreviousWindow();
-		return;
-	}
+  if (item && m_vecItems.IsVirtualDirectoryRoot())
+  {
+    CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
+    if (CGUIDialogContextMenu::OnContextButton("myprograms", share, button))
+    {
+      Update("");
+      return true;
+    }
+  }
+  switch (button)
+  {
+  case CONTEXT_BUTTON_RENAME:
+    {
+      CStdString strDescription;
+      CShortcut cut;
+      if (item->IsShortCut())
+      {
+        cut.Create(item->m_strPath);
+        strDescription = cut.m_strLabel;
+      }
+      else
+        strDescription = item->GetLabel();
 
-	CGUIWindow::OnAction(action);
+      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
+      {
+        if (item->IsShortCut())
+        {
+          cut.m_strLabel = strDescription;
+          cut.Save(item->m_strPath);
+        }
+        else
+        {
+          // SetXBEDescription will truncate to 40 characters.
+          CUtil::SetXBEDescription(item->m_strPath,strDescription);
+          m_database.SetDescription(item->m_strPath,strDescription);
+        }
+        Update(m_vecItems.m_strPath);
+      }
+      return true;
+    }
+
+  case CONTEXT_BUTTON_TRAINER_OPTIONS:
+    {
+      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
+      if (CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database))
+        Update(m_vecItems.m_strPath);
+      return true;
+    }
+
+  case CONTEXT_BUTTON_SCAN_TRAINERS:
+    {
+      PopulateTrainersList();
+      Update(m_vecItems.m_strPath);
+      return true;
+    }
+
+  case CONTEXT_BUTTON_SETTINGS:
+    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    return true;
+
+  case CONTEXT_BUTTON_GOTO_ROOT:
+    Update("");
+    return true;
+
+  case CONTEXT_BUTTON_LAUNCH:
+    OnClick(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_GAMESAVES:
+    {
+      CStdString strTitleID;
+      CStdString strGameSavepath;
+      strTitleID.Format("%08X",CUtil::GetXbeID(item->m_strPath));
+      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
+      m_gWindowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
+      return true;
+    }
+  case CONTEXT_BUTTON_LAUNCH_IN:
+    OnChooseVideoModeAndLaunch(itemNumber);
+    return true;
+  }
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-
-
-void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idepth)
+bool CGUIWindowPrograms::OnChooseVideoModeAndLaunch(int item)
 {
-	WIN32_FIND_DATA wfd;
-	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-	bool bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
-	bool bUseDirectoryName=g_stSettings.m_bMyProgramsDirectoryName;
+  if (item < 0 || item >= m_vecItems.Size()) return false;
+  // calculate our position
+  float posX = 200;
+  float posY = 100;
+  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  if (pList)
+  {
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
 
-	memset(&wfd,0,sizeof(wfd));
-	CStdString strRootDir=strDirectory;
-	if (!CUtil::HasSlashAtEnd(strRootDir) )
-		strRootDir+="\\";
+  // grab the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu) return false;
 
-	if ( CUtil::IsDVD(strRootDir) )
-	{
-		CIoSupport helper;
-		helper.Remount("D:","Cdrom0");
-	}
-	CStdString strSearchMask=strRootDir;
-	strSearchMask+="*.*";
+  pMenu->Initialize();
 
-	FILETIME localTime;
-	CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
-	if (!hFind.isValid())
-		return ;
-	do {
-		if (wfd.cFileName[0]!=0)
-		{
-			CStdString strFileName=wfd.cFileName;
-			CStdString strFile=strRootDir;
-			strFile+=wfd.cFileName;
+  int btn_PAL;
+  int btn_NTSCM;
+  int btn_NTSCJ;
+  int btn_PAL60;
+  CStdString strPAL, strNTSCJ, strNTSCM, strPAL60;
+  strPAL = "PAL";
+  strNTSCM = "NTSC-M";
+  strNTSCJ = "NTSC-J";
+  strPAL60 = "PAL-60";
+  int iRegion = GetRegion(item,true);
 
-			if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-			{
-				if (strFileName != "." && strFileName != ".." && !bFlattenDir)
-				{
-					CFileItem *pItem = new CFileItem(strFileName);
-					pItem->m_strPath=strFile;
-					pItem->m_bIsFolder=true;
-					FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-					m_vecItems.push_back(pItem);
-				}
-				else
-				{
-					if (strFileName != "." && strFileName != ".." && bFlattenDir && idepth > 0 )
-					{
-						if (!m_database.EntryExists(strFile,m_strBookmarkName))
-						{
-							LoadDirectory(strFile, idepth-1);
-						}
-					}
-				}
+  if (iRegion == VIDEO_NTSCM)
+    strNTSCM += " (default)";
+  if (iRegion == VIDEO_NTSCJ)
+    strNTSCJ += " (default)";
+  if (iRegion == VIDEO_PAL50)
+    strPAL += " (default)";
 
+  btn_PAL = pMenu->AddButton(strPAL);
+  btn_NTSCM = pMenu->AddButton(strNTSCM);
+  btn_NTSCJ = pMenu->AddButton(strNTSCJ);
+  btn_PAL60 = pMenu->AddButton(strPAL60);
 
-			}
-			else
-			{
-				if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
-				{
-					CStdString strDescription;
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->DoModal();
+  int btnid = pMenu->GetButton();
 
-					if (!CUtil::GetXBEDescription(strFile, strDescription) || (bUseDirectoryName && CUtil::IsDefaultXBE(strFileName)) )
-					{
-						CUtil::GetDirectoryName(strFile, strDescription);
-						CUtil::ShortenFileName(strDescription);
-						CUtil::RemoveIllegalChars(strDescription);
-					}
+  if (btnid == btn_NTSCM)
+  {
+    m_iRegionSet = VIDEO_NTSCM;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,1);
+  }
+  if (btnid == btn_NTSCJ)
+  {
+    m_iRegionSet = VIDEO_NTSCJ;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,2);
+  }
+  if (btnid == btn_PAL)
+  {
+    m_iRegionSet = VIDEO_PAL50;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,4);
+  }
+  if (btnid == btn_PAL60)
+  {
+    m_iRegionSet = VIDEO_PAL60;
+    m_database.SetRegion(m_vecItems[item]->m_strPath,8);
+  }
 
-					if (!bFlattenDir)
-					{
-						CFileItem *pItem = new CFileItem(strDescription);
-						pItem->m_strPath=strFile;
-						pItem->m_bIsFolder=false;
-						pItem->m_dwSize=wfd.nFileSizeLow;
+  if (btnid > -1)
+    return OnClick(item);
 
-						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-						m_vecItems.push_back(pItem);
-					}
-					else
-					{
-						m_database.AddProgram(strFile,strDescription,m_strBookmarkName);
-					}
-				}
-
-				if (CUtil::IsShortCut(strFileName))
-				{
-					if (!bFlattenDir)
-					{
-						CFileItem *pItem = new CFileItem(wfd.cFileName);
-						pItem->m_strPath=strFile;
-						pItem->m_bIsFolder=false;
-						pItem->m_dwSize=wfd.nFileSizeLow;
-
-						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-						m_vecItems.push_back(pItem);
-					}
-
-					else 
-					{
-						m_database.AddProgram(strFile,wfd.cFileName,m_strBookmarkName);
-					}
-				}
-			}
-		}
-	} while(FindNextFile(hFind, &wfd));
+  return true;
 }
 
-
-void CGUIWindowPrograms::Clear()
+bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
+
+  m_thumbLoader.Load(m_vecItems);
+  return true;
 }
 
-void CGUIWindowPrograms::Update(const CStdString &strDirectory)
+bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 {
-	bool bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
-	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-	bool bParentPath(false);
-	bool bPastBookMark(true);
-	CStdString strParentPath;
-	CStdString strDir = strDirectory;
-	CStdString strShortCutsDir = g_stSettings.m_szShortcutDirectory;
-	int idepth = m_iDepth;
-	vector<CStdString> vecPaths;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
+  CFileItem* pItem = m_vecItems[iItem];
 
-	Clear();
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("myprograms"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
 
-	if (strDirectory=="")  // display only the root shares 
-	{
-		for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
-		{
-			CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-			CStdString sharePath = share.strPath;
-			vector<CStdString> vecShares;
-			CFileItem *pItem = new CFileItem(share.strName);
-			pItem->m_strPath=sharePath;
-			pItem->m_bIsShareOrDrive=false;
-			pItem->m_bIsFolder=true;
-			CUtil::Tokenize(sharePath, vecShares, ",");
-			CStdString strThumb;
-			for (int j=0; j < (int)vecShares.size(); j++)    // use the first folder image that we find
-			{																								 // in the vector of shares
-				if (!CUtil::IsXBE(vecShares[j]))
-				{
-					if (CUtil::GetFolderThumb(vecShares[j], strThumb)) 
-					{
-						pItem->SetThumbnailImage(strThumb);
-						break;
-					}
-				}
-			}
-			m_vecItems.push_back(pItem);
-		}
+  if (pItem->IsDVD())
+    return MEDIA_DETECT::CAutorun::PlayDisc();
 
-		m_strParentPath = "";
-	}
+  if (pItem->m_bIsFolder) return false;
 
-	CUtil::Tokenize(strDir, vecPaths, ",");			
+  // launch xbe...
+  char szPath[1024];
+  char szParameters[1024];
 
-	if (!g_stSettings.m_bMyProgramsNoShortcuts)
-	{
-		if (CUtil::HasSlashAtEnd(strShortCutsDir))
-			strShortCutsDir.Delete(strShortCutsDir.size()-1);
+  m_database.IncTimesPlayed(pItem->m_strPath);
 
-		if (vecPaths.size()>0 && vecPaths[0]==strShortCutsDir)
-			m_strBookmarkName="shortcuts";
-	}
+  int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
 
-	for (int k=0; k < (int)vecPaths.size(); k++)
-	{
-		int start = vecPaths[k].find_first_not_of(" \t");
-		int end = vecPaths[k].find_last_not_of(" \t") + 1;
-		vecPaths[k]=vecPaths[k].substr(start, end - start);
-		if (CUtil::HasSlashAtEnd(vecPaths[k]))
-		{
-			vecPaths[k].Delete(vecPaths[k].size()-1);
-		}
-	}
+  DWORD dwTitleId = 0;
+  if (!pItem->IsOnDVD())
+    dwTitleId = m_database.GetTitleId(pItem->m_strPath);
+  if (!dwTitleId)
+    dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
+  CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
+  if (strTrainer != "")
+  {
+    bool bContinue=false;
+    if (CKaiClient::GetInstance()->IsEngineConnected())
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
+        CKaiClient::GetInstance()->EnterVector(CStdString(""),CStdString(""));
+      else
+        bContinue = true;
+    }
+    if (!bContinue)
+    {
+      CTrainer trainer;
+      if (trainer.Load(strTrainer))
+      {
+        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+        CUtil::InstallTrainer(trainer);
+      }
+    }
+  }
 
-  if (!bFlattenDir)
-	{
-		vector<CStdString> vecOrigShare;
-		CUtil::Tokenize(m_shareDirectory, vecOrigShare, ",");
-		if (vecOrigShare.size() && vecPaths.size())
-		{
-			bParentPath=CUtil::GetParentPath(vecPaths[0],strParentPath);
-			if (CUtil::HasSlashAtEnd(vecOrigShare[0]))
-				vecOrigShare[0].Delete(vecOrigShare[0].size()-1);
-			if (strParentPath<vecOrigShare[0])
-			{
- 				bPastBookMark=false;
-				strParentPath="";
-			}				
-		}
-	}
-	else
-	{
-		strParentPath="";
-	}
+  m_database.Close();
+  memset(szParameters, 0, sizeof(szParameters));
 
-	if (strDirectory!="")
-	{
-			if (!g_stSettings.m_bHideParentDirItems)
-			{
-				CFileItem *pItem = new CFileItem("..");
-				pItem->m_strPath=strParentPath;
-				pItem->m_bIsShareOrDrive=false;
-				pItem->m_bIsFolder=true;
-				m_vecItems.push_back(pItem);
-			}
-			m_strParentPath = strParentPath;
-//		}
-	}
+  strcpy(szPath, pItem->m_strPath.c_str());
 
-	m_iLastControl=GetFocusedControl();
+  if (pItem->IsShortCut())
+  {
+    CUtil::RunShortcut(pItem->m_strPath.c_str());
+    return false;
+  }
 
-	for (int j=0; j < (int)vecPaths.size(); j++)
-	{
-		if (CUtil::IsXBE(vecPaths[j]))					// we've found a single XBE in the path vector
-		{
-			CStdString strDescription;
-			if ( (m_database.GetFile(vecPaths[j],m_vecItems) < 0) && CUtil::FileExists(vecPaths[j]))
-			{
-				if (!CUtil::GetXBEDescription(vecPaths[j], strDescription))
-				{
-					CUtil::GetDirectoryName(vecPaths[j], strDescription);
-					CUtil::ShortenFileName(strDescription);
-					CUtil::RemoveIllegalChars(strDescription);
-				}
-
-				m_database.AddProgram(vecPaths[j], strDescription, m_strBookmarkName);
-
-				m_database.GetFile(vecPaths[j],m_vecItems);
-
-			}
-		}
-		else
-		{
-			LoadDirectory(vecPaths[j], idepth);
-			if (m_strBookmarkName=="shortcuts")
-				bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
-			if (bFlattenDir)
-				m_database.GetProgramsByPath(vecPaths[j], m_vecItems, idepth, bOnlyDefaultXBE);
-		}
-	}
-
-	//	if (bFlattenDir) 
-	//		m_database.GetProgramsByBookmark(m_strBookmarkName, m_vecItems, bOnlyDefaultXBE); 
-
-	CUtil::ClearCache();
-	CUtil::SetThumbs(m_vecItems);
-	if (g_stSettings.m_bHideExtensions)
-		CUtil::RemoveExtensions(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
-
-	OnSort();
-	UpdateButtons();
-
-	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
-	{
-		if ( ViewByIcon() ) {	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-		}
-		else {
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
-		}
-	}
-	ShowThumbPanel();
+  if (strlen(szParameters))
+    CUtil::RunXBE(szPath, szParameters,F_VIDEO(iRegion));
+  else
+    CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
+  return true;
 }
 
-void CGUIWindowPrograms::OnClick(int iItem)
+int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 {
-	if (iItem < 0 || iItem >(int)m_vecItems.size())
-		return;
-	CFileItem* pItem=m_vecItems[iItem];
-	if (pItem->m_bIsFolder)
-	{
-		if (m_strDirectory=="")
-			m_shareDirectory=pItem->m_strPath;
-		m_strDirectory=pItem->m_strPath;
-		Update(m_strDirectory);
-	}
-	else
-	{
+  if (!g_guiSettings.GetBool("myprograms.gameautoregion"))
+    return 0;
 
-		// launch xbe...
-		char szPath[1024];
-		char szParameters[1024];
-		if (g_stSettings.m_bMyProgramsFlatten)
-			m_database.IncTimesPlayed(pItem->m_strPath);
-		m_database.Close();
-		memset(szParameters,0,sizeof(szParameters));
+  int iRegion;
+  if (bReload || m_vecItems[iItem]->IsOnDVD())
+  {
+    CXBE xbe;
+    iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath);
+  }
+  else
+  {
+    m_database.Open();
+    iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
+    m_database.Close();
+  }
+  if (iRegion == -1)
+  {
+    if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+    {
+      CXBE xbe;
+      iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath);
+      if (iRegion < 1 || iRegion > 7)
+        iRegion = 0;
+      m_database.SetRegion(m_vecItems[iItem]->m_strPath,iRegion);
+    }
+    else
+      iRegion = 0;
+  }
 
-		strcpy(szPath,pItem->m_strPath.c_str());
-
-		if (CUtil::IsShortCut(pItem->m_strPath) )
-		{
-			CShortcut shortcut;
-			if ( shortcut.Create(pItem->m_strPath))
-			{
-				// if another shortcut is specified, load this up and use it
-				if ( CUtil::IsShortCut(shortcut.m_strPath.c_str() ) )
-				{
-					CHAR szNewPath[1024];
-					strcpy(szNewPath,szPath);
-					CHAR* szFile = strrchr(szNewPath,'\\');
-					strcpy(&szFile[1],shortcut.m_strPath.c_str());
-
-					CShortcut targetShortcut;
-					if (FAILED(targetShortcut.Create(szNewPath)))
-						return;
-
-					shortcut.m_strPath = targetShortcut.m_strPath;
-				}
-
-				strcpy( szPath, shortcut.m_strPath.c_str() );
-
-				CHAR szMode[16];
-				strcpy( szMode, shortcut.m_strVideo.c_str() );
-				strlwr( szMode );
-
-				LPDWORD pdwVideo = (LPDWORD) 0x8005E760;
-				BOOL  bRow = strstr(szMode,"pal")!=NULL;
-				BOOL  bJap = strstr(szMode,"ntsc-j")!=NULL;
-				BOOL  bUsa = strstr(szMode,"ntsc")!=NULL;
-
-				if (bRow)
-					*pdwVideo = 0x00800300;
-				else if (bJap)
-					*pdwVideo = 0x00400200;
-				else if (bUsa)
-					*pdwVideo = 0x00400100;
-
-				strcat(szParameters, shortcut.m_strParameters.c_str());
-			}
-		}
-		if (strlen(szParameters))
-			CUtil::RunXBE(szPath, szParameters);
-		else
-			CUtil::RunXBE(szPath);
-	}
+  if (bReload)
+    return CXBE::FilterRegion(iRegion,true);
+  else
+    return CXBE::FilterRegion(iRegion);
 }
 
-struct SSortProgramsByName
+void CGUIWindowPrograms::PopulateTrainersList()
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
-	{
-		CFileItem& rpStart=*pStart;
-		CFileItem& rpEnd=*pEnd;
-		if (rpStart.GetLabel()=="..")
-			return true;
-		if (rpEnd.GetLabel()=="..")
-			return false;
-		bool bGreater=true;
-		if (g_stSettings.m_bMyProgramsSortAscending)
-			bGreater=false;
-		if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
-		{
-			char szfilename1[1024];
-			char szfilename2[1024];
+  CDirectory directory;
+  CFileItemList trainers;
+  CFileItemList archives;
+  CFileItemList inArchives;
+  // first, remove any dead items
+  std::vector<CStdString> vecTrainerPath;
+  m_database.GetAllTrainers(vecTrainerPath);
+  CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_dlgProgress->SetLine(0,12023);
+  m_dlgProgress->SetLine(1,"");
+  m_dlgProgress->SetLine(2,"");
+  m_dlgProgress->StartModal();
+  m_dlgProgress->SetHeading(12012);
+  m_dlgProgress->ShowProgressBar(true);
+  m_dlgProgress->Progress();
 
-			switch ( g_stSettings.m_iMyProgramsSortMethod )
-			{
-			case 0: //  Sort by Filename
-				strcpy(szfilename1, rpStart.GetLabel().c_str());
-				strcpy(szfilename2, rpEnd.GetLabel().c_str());
-				break;
-			case 1: // Sort by Date
-				if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear )
-					return bGreater;
-				if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear )
-					return !bGreater;
+  bool bBreak=false;
+  bool bDatabaseState = m_database.IsOpen();
+  if (!bDatabaseState)
+    m_database.Open();
+  m_database.BeginTransaction();
+  for (unsigned int i=0;i<vecTrainerPath.size();++i)
+  {
+    m_dlgProgress->SetPercentage((int)((float)i/(float)vecTrainerPath.size()*100.f));
+    CStdString strLine;
+    strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,vecTrainerPath.size());
+    m_dlgProgress->SetLine(1,strLine);
+    m_dlgProgress->Progress();
+    if (!CFile::Exists(vecTrainerPath[i]) || vecTrainerPath[i].find(g_guiSettings.GetString("myprograms.trainerpath",false)) == -1)
+      m_database.RemoveTrainer(vecTrainerPath[i]);
+    if (m_dlgProgress->IsCanceled())
+    {
+      bBreak = true;
+      m_database.RollbackTransaction();
+      break;
+    }
+  }
+  if (!bBreak)
+  {
+    CLog::Log(LOGDEBUG,"trainerpath %s",g_guiSettings.GetString("myprograms.trainerpath",false).c_str());
+    directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),trainers,".xbtf|.etm");
+    if (g_guiSettings.GetString("myprograms.trainerpath",false).IsEmpty())
+    {
+      m_database.RollbackTransaction();
+      m_dlgProgress->Close();
 
-				if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth )
-					return bGreater;
-				if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth )
-					return !bGreater;
+      return;
+    }
 
-				if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay )
-					return bGreater;
-				if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay )
-					return !bGreater;
+    directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),archives,".rar|.zip",false); // TODO: ZIP SUPPORT
+    for( int i=0;i<archives.Size();++i)
+    {
+      if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
+      {
+        g_RarManager.GetFilesInRar(inArchives,archives[i]->m_strPath,false);
+        CHDDirectory dir;
+        dir.SetMask(".xbtf|.etm");
+        for (int j=0;j<inArchives.Size();++j)
+          if (dir.IsAllowed(inArchives[j]->m_strPath))
+          {
+            CFileItem* item = new CFileItem(*inArchives[j]);
+            CStdString strPathInArchive = item->m_strPath;
+            CUtil::CreateRarPath(item->m_strPath, archives[i]->m_strPath, strPathInArchive,EXFILE_AUTODELETE,"",g_advancedSettings.m_cachePath);
+            trainers.Add(item);
+          }
+      }
+      if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".zip")==0)
+      {
+        // add trainers in zip
+        CStdString strZipPath;
+        CUtil::CreateZipPath(strZipPath,archives[i]->m_strPath,"");
+        CFileItemList zipTrainers;
+        directory.GetDirectory(strZipPath,zipTrainers,".etm|.xbtf");
+        for (int j=0;j<zipTrainers.Size();++j)
+          trainers.Add(new CFileItem(*zipTrainers[j]));
+      }
+    }
+    if (!m_dlgProgress)
+      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    m_dlgProgress->SetPercentage(0);
+    m_dlgProgress->ShowProgressBar(true);
 
-				if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour )
-					return bGreater;
-				if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour )
-					return !bGreater;
+    CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
+    m_dlgProgress->SetLine(1,"");
+    int j=0;
+    while (j < trainers.Size())
+    {
+      if (trainers[j]->m_bIsFolder)
+        trainers.Remove(j);
+      else
+        j++;
+    }
+    for (int i=0;i<trainers.Size();++i)
+    {
+      CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
+      m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
+      CStdString strLine;
+      strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,trainers.Size());
+      m_dlgProgress->SetLine(0,strLine);
+      m_dlgProgress->SetLine(2,"");
+      m_dlgProgress->Progress();
+      if (m_database.HasTrainer(trainers[i]->m_strPath)) // skip existing trainers
+        continue;
 
-				if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute )
-					return bGreater;
-				if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute )
-					return !bGreater;
+      CTrainer trainer;
+      if (trainer.Load(trainers[i]->m_strPath))
+      {
+        m_dlgProgress->SetLine(1,trainer.GetName());
+        m_dlgProgress->SetLine(2,"");
+        m_dlgProgress->Progress();
+        unsigned int iTitle1, iTitle2, iTitle3;
+        trainer.GetTitleIds(iTitle1,iTitle2,iTitle3);
+        if (iTitle1)
+          m_database.AddTrainer(iTitle1,trainers[i]->m_strPath);
+        if (iTitle2)
+          m_database.AddTrainer(iTitle2,trainers[i]->m_strPath);
+        if (iTitle3)
+          m_database.AddTrainer(iTitle3,trainers[i]->m_strPath);
+      }
+      if (m_dlgProgress->IsCanceled())
+      {
+        m_database.RollbackTransaction();
+        break;
+      }
+    }
+  }
+  m_database.CommitTransaction();
+  m_dlgProgress->Close();
 
-				if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond )
-					return bGreater;
-				if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond )
-					return !bGreater;
-				return true;
-				break;
-
-			case 2:
-				if ( rpStart.m_dwSize > rpEnd.m_dwSize)
-					return bGreater;
-				if ( rpStart.m_dwSize < rpEnd.m_dwSize)
-					return !bGreater;
-				return true;
-				break;
-
-			case 3:
-				if (rpStart.m_iprogramCount > rpEnd.m_iprogramCount)
-					return bGreater;
-				if (rpStart.m_iprogramCount < rpEnd.m_iprogramCount)
-					return !bGreater;
-				return true;
-				break;
-
-			default:  //  Sort by Filename by default
-				strcpy(szfilename1, rpStart.GetLabel().c_str());
-				strcpy(szfilename2, rpEnd.GetLabel().c_str());
-				break;
-			}
-
-
-			for (int i=0; i < (int)strlen(szfilename1); i++)
-				szfilename1[i]=tolower((unsigned char)szfilename1[i]);
-
-			for (i=0; i < (int)strlen(szfilename2); i++)
-				szfilename2[i]=tolower((unsigned char)szfilename2[i]);
-			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-			if (g_stSettings.m_bMyProgramsSortAscending)
-				return (strcmp(szfilename1,szfilename2)<0);
-			else
-				return (strcmp(szfilename1,szfilename2)>=0);
-		}
-		if (!rpStart.m_bIsFolder)
-			return false;
-		return true;
-	}
-};
-
-void CGUIWindowPrograms::OnSort()
-{
-	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
-	g_graphicsContext.SendMessage(msg);
-
-
-	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
-	g_graphicsContext.SendMessage(msg2);
-
-
-
-	for (int i=0; i < (int)m_vecItems.size(); i++)
-	{
-		CFileItem* pItem=m_vecItems[i];
-		if (g_stSettings.m_iMyProgramsSortMethod==0||g_stSettings.m_iMyProgramsSortMethod==2)
-		{
-			if (pItem->m_bIsFolder)
-				pItem->SetLabel2("");
-			else
-			{
-				CStdString strFileSize;
-				CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-				pItem->SetLabel2(strFileSize);
-			}
-		}
-		else
-		{
-			if (pItem->m_stTime.wYear)
-			{
-				CStdString strDateTime;
-				CUtil::GetDate(pItem->m_stTime, strDateTime);
-				pItem->SetLabel2(strDateTime);
-			}
-			else
-				pItem->SetLabel2("");
-		}
-		if (g_stSettings.m_iMyProgramsSortMethod==3)
-		{
-			if (pItem->m_bIsFolder)
-				pItem->SetLabel2("");
-			else
-			{
-				CStdString strTimesPlayed;
-				strTimesPlayed.Format("%i",pItem->m_iprogramCount);
-				pItem->SetLabel2(strTimesPlayed);
-			}
-		}
-	}
-
-
-	sort(m_vecItems.begin(), m_vecItems.end(), SSortProgramsByName());
-
-	for (int i=0; i < (int)m_vecItems.size(); i++)
-	{
-		CFileItem* pItem=m_vecItems[i];
-		CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
-		g_graphicsContext.SendMessage(msg);
-		CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_THUMBS,0,0,(void*)pItem);
-		g_graphicsContext.SendMessage(msg2);
-	}
+  if (!bDatabaseState)
+    m_database.Close();
+  else
+    Update(m_vecItems.m_strPath);
 }
 
-
-
-
-
-void CGUIWindowPrograms::UpdateButtons()
+bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
-	bool bViewIcon = false;
-	int iString;
+  bool bFlattened=false;
+  if (CUtil::IsDVD(strDirectory))
+  {
+    CStdString strPath;
+    CUtil::AddFileToFolder(strDirectory,"default.xbe",strPath);
+    if (CFile::Exists(strPath)) // flatten dvd
+    {
+      CFileItem item("default.xbe");
+      item.m_strPath = strPath;
+      items.Add(new CFileItem(item));
+      items.m_strPath=strDirectory;
+      bFlattened = true;
+    }
+  }
+  if (!bFlattened)
+    if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
+      return false;
 
-	switch (g_stSettings.m_iMyProgramsViewAsIcons)
-	{
-	case VIEW_AS_LIST:
-		iString=101; // view as list
-		break;
+  if (items.IsVirtualDirectoryRoot())
+    return true;
 
-	case VIEW_AS_ICONS:
-		iString=100;  // view as icons
-		bViewIcon=true;
-		break;
-	case VIEW_AS_LARGEICONS:
-		iString=417; // view as list
-		bViewIcon=true;
-		break;
-	}		
+  // flatten any folders
+  m_database.BeginTransaction();
+  DWORD dwTick=timeGetTime();
+  bool bProgressVisible = false;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString shortcutPath;
+    CFileItem *item = items[i];
+    if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress)
+    { // tag loading takes more then 1.5 secs, show a progress dialog
+      m_dlgProgress->SetHeading(189);
+      m_dlgProgress->SetLine(0, 20120);
+      m_dlgProgress->SetLine(1,"");
+      m_dlgProgress->SetLine(2, item->GetLabel());
+      m_dlgProgress->StartModal();
+      bProgressVisible = true;
+    }
+    if (bProgressVisible)
+    {
+      m_dlgProgress->SetLine(2,item->GetLabel());
+      m_dlgProgress->Progress();
+    }
 
-	if (bViewIcon) 
-	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-	}
-	else
-	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-	}
+    if (item->m_bIsFolder && !item->IsParentFolder())
+    { // folder item - let's check for a default.xbe file, and flatten if we have one
+      CStdString defaultXBE;
+      CUtil::AddFileToFolder(item->m_strPath, "default.xbe", defaultXBE);
+      if (CFile::Exists(defaultXBE))
+      { // yes, format the item up
+        item->m_strPath = defaultXBE;
+        item->m_bIsFolder = false;
+      }
+    }
+    else if (item->IsShortCut())
+    { // resolve the shortcut to set it's description etc.
+      // and save the old shortcut path (so we can reassign it later)
+      CShortcut cut;
+      if (cut.Create(item->m_strPath))
+      {
+        shortcutPath = item->m_strPath;
+        item->m_strPath = cut.m_strPath;
+        item->SetThumbnailImage(cut.m_strThumb);
+        if (!cut.m_strLabel.IsEmpty())
+        {
+          item->SetLabel(cut.m_strLabel);
+          __stat64 stat;
+          if (CFile::Stat(item->m_strPath,&stat) == 0)
+            item->m_dwSize = stat.st_size;
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
+          CGUIViewState::LABEL_MASKS labelMasks;
+          m_guiState->GetSortMethodLabelMasks(labelMasks);
 
-	if (g_stSettings.m_iMyProgramsSortMethod==3)
-	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD, 507);  //Times Played
-	}
-	else
-	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
-	}
+          item->FormatLabel2(labelMasks.m_strLabel2File);
+          item->SetLabelPreformated(true);
+        }
+      }
+    }
+    if (item->IsXBE())
+    {
+      if (CUtil::GetFileName(item->m_strPath).Equals("default_ffp.xbe"))
+      {
+        m_vecItems.Remove(i--);
+        continue;
+      }
+      // add to database if not already there
+      DWORD dwTitleID = item->IsOnDVD() ? 0 : m_database.GetProgramInfo(item);
+      if (!dwTitleID)
+      {
+        CStdString description;
+        if (CUtil::GetXBEDescription(item->m_strPath, description) && (!item->IsLabelPreformated() && !item->GetLabel().IsEmpty()))
+          item->SetLabel(description);
 
-	if ( g_stSettings.m_bMyProgramsSortAscending)
-	{
-		CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-		g_graphicsContext.SendMessage(msg);
-	}
-	else
-	{
-		CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-		g_graphicsContext.SendMessage(msg);
-	}
+        dwTitleID = CUtil::GetXbeID(item->m_strPath);
+        if (!item->IsOnDVD())
+          m_database.AddProgramInfo(item, dwTitleID);
+      }
 
-	int iItems=m_vecItems.size();
-	if (iItems)
-	{
-		CFileItem* pItem=m_vecItems[0];
-		if (pItem->GetLabel() =="..")
-			iItems--;
-	}
-	WCHAR wszText[20];
-	const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-	swprintf(wszText,L"%i %s", iItems,szText);
+      // SetOverlayIcons()
+      if (m_database.ItemHasTrainer(dwTitleID))
+      {
+        if (m_database.GetActiveTrainer(dwTitleID) != "")
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_TRAINED);
+        else
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
+      }
+    }
+    if (!shortcutPath.IsEmpty())
+      item->m_strPath = shortcutPath;
+  }
+  m_database.CommitTransaction();
+  // set the cached thumbs
+  items.SetThumbnailImage("");
+  items.SetCachedProgramThumbs();
+  items.SetCachedProgramThumb();
+  if (!items.HasThumbnail())
+    items.SetUserProgramThumb();
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+  if (bProgressVisible)
+    m_dlgProgress->Close();
 
-
+  return true;
 }
 
-void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+void CGUIWindowPrograms::OnWindowLoaded()
 {
-	// remove username + password from m_strDirectory for display in Dialog
-	CURL url(m_strDirectory);
-	CStdString strStrippedPath;
-	url.GetURLWithoutUserDetails(strStrippedPath);
-
-	const WCHAR* pszText=(WCHAR*)g_localizeStrings.Get(212).c_str();
-	WCHAR wzTotal[128];
-	swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
-	if (m_dlgProgress)
-	{
-		m_dlgProgress->SetHeading(211);
-		m_dlgProgress->SetLine(0,wzTotal);
-		m_dlgProgress->SetLine(1,"");
-		m_dlgProgress->SetLine(2,strStrippedPath );
-		m_dlgProgress->StartModal(GetID());
-		m_dlgProgress->Progress();
-	}
-	//bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-	bool bScanSubDirs=true;
-	bool bFound=false;
-	DeleteThumbs(items);
-	//CUtil::SetThumbs(items);
-	CUtil::CreateShortcuts(items);
-	bool bOpen=true;
-	if ((int)m_strDirectory.size() != 2) // true for C:, E:, F:, G:
-	{
-		// first check all files
-		for (int i=0; i < (int)items.size(); ++i)
-		{
-			CFileItem *pItem= items[i];
-			if (! pItem->m_bIsFolder)
-			{
-				if (CUtil::IsXBE(pItem->m_strPath) )
-				{
-					bScanSubDirs=false;
-					break;
-				}
-			}
-		}
-	}
-
-	for (int i=0; i < (int)items.size(); ++i)
-	{
-		CFileItem *pItem= items[i];
-		if (pItem->m_bIsFolder)
-		{
-			if (bScanSubDirs && !bFound && pItem->GetLabel() != "..")
-			{
-				// load subfolder
-				CStdString strDir=m_strDirectory;
-				if (pItem->m_strPath != "E:\\UDATA" && pItem->m_strPath !="E:\\TDATA")
-				{
-					m_strDirectory=pItem->m_strPath;
-					VECFILEITEMS subDirItems;
-					CFileItemList itemlist(subDirItems); // will clean up everything
-					CHDDirectory rootDir;
-					rootDir.SetMask(".xbe");
-					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
-					bOpen=false;
-					if (m_dlgProgress)
-						m_dlgProgress->Close();
-					OnScan(subDirItems,iTotalAppsFound);
-					m_strDirectory=strDir;
-				}
-			}
-		}
-		else
-		{
-			if ( CUtil::IsXBE(pItem->m_strPath) )
-			{
-				bFound=true;
-				CStdString strTotal;
-				iTotalAppsFound++;
-
-				swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
-				CStdString strDescription;
-				CUtil::GetXBEDescription(pItem->m_strPath,strDescription);
-				if (strDescription=="")
-					strDescription=CUtil::GetFileName(pItem->m_strPath);
-				if (m_dlgProgress)
-				{
-					m_dlgProgress->SetLine(0, wzTotal);
-					m_dlgProgress->SetLine(1,strStrippedPath);
-					m_dlgProgress->Progress();
-				}
-				// CStdString strIcon;
-				// CUtil::GetXBEIcon(pItem->m_strPath, strIcon);
-				// ::DeleteFile(strIcon.c_str());
-
-			}
-		}
-	}
-	if (bOpen && m_dlgProgress)
-		m_dlgProgress->Close();
+  CGUIMediaWindow::OnWindowLoaded();
+  for (int i = 100; i < 110; i++)
+  {
+    SET_CONTROL_HIDDEN(i);
+  }
 }
-
-void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
-{
-	CUtil::ClearCache();
-	for (int i=0; i < (int)items.size(); ++i)
-	{
-		CFileItem *pItem= items[i];
-		if (! pItem->m_bIsFolder)
-		{
-			if (CUtil::IsXBE(pItem->m_strPath) )
-			{
-				CStdString strThumb;
-				CUtil::GetXBEIcon(pItem->m_strPath,strThumb);
-				CStdString strName=pItem->m_strPath;
-				CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strName);
-				if (strName!=strThumb)
-				{
-					::DeleteFile(strThumb.c_str());
-				}
-			}
-		}
-	}
-}
-
-int CGUIWindowPrograms::GetSelectedItem()
-{
-	int iControl;
-	if ( ViewByIcon())
-	{
-		iControl=CONTROL_THUMBS;
-	}
-	else
-		iControl=CONTROL_LIST;
-
-	CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-	g_graphicsContext.SendMessage(msg);
-	int iItem=msg.GetParam1();
-	return iItem;
-}
-
-
-bool CGUIWindowPrograms::ViewByIcon()
-{
-	if (g_stSettings.m_iMyProgramsViewAsIcons != VIEW_AS_LIST) return true;
-	return false;
-}
-
-bool CGUIWindowPrograms::ViewByLargeIcon()
-{
-	if (g_stSettings.m_iMyProgramsViewAsIcons== VIEW_AS_LARGEICONS) return true;
-	return false;
-}
-
-void CGUIWindowPrograms::ShowThumbPanel()
-{
-	int iItem=GetSelectedItem(); 
-	if ( ViewByLargeIcon() )
-	{
-		CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-		pControl->ShowBigIcons(true);
-	}
-	else
-	{
-		CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-		pControl->ShowBigIcons(false);
-	}
-	if (iItem>-1)
-	{
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
-	}
-}
-
-/// \brief Call to go to parent folder
-void CGUIWindowPrograms::GoParentFolder()
-{
-	CStdString strPath=m_strParentPath;
-	Update(strPath);
-	/*
-	if (m_vecItems.size()==0) return;
-	CFileItem* pItem=m_vecItems[0];
-	if (pItem->m_bIsFolder)
-	{
-		if (pItem->GetLabel()=="..")
-		{
-			CStdString strPath=pItem->m_strPath;
-			Update(strPath);
-		}
-	}*/
-}
+#endif

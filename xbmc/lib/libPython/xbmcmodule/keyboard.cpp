@@ -1,9 +1,6 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "keyboard.h"
-#include "GUIWindowManager.h"
 #include "pyutil.h"
-#include "..\..\..\guidialogkeyboard.h"
-#include "..\..\..\ApplicationMessenger.h"
 #include "..\..\..\util.h"
 
 #pragma code_seg("PY_TEXT")
@@ -17,118 +14,223 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyObject* Keyboard_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
-	{
-		Keyboard *self;
+  PyObject* Keyboard_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    Keyboard *self;
 
-		self = (Keyboard*)type->tp_alloc(type, 0);
-		if (!self) return NULL;
+    self = (Keyboard*)type->tp_alloc(type, 0);
+    if (!self) return NULL;
 
-		char *cLine = NULL;
-		if (!PyArg_ParseTuple(args, "|s", &cLine))	return NULL;
+    PyObject *line = NULL;
+    PyObject *heading = NULL;
+    bool bHidden = false;
+    if (!PyArg_ParseTuple(args, "|OOb", &line, &heading, &bHidden)) return NULL;
 
-		self->strDefault = cLine ? cLine : "";
+    string utf8Line;
+    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    string utf8Heading;
+    if (heading && !PyGetUnicodeString(utf8Heading, heading, 2)) return NULL;
 
-		return (PyObject*)self;
-	}
+    self->strDefault = utf8Line;
+    self->strHeading = utf8Heading;
+    self->bHidden = bHidden;
 
-	void Keyboard_Dealloc(Keyboard* self)
-	{
-		self->ob_type->tp_free((PyObject*)self);
-	}
+    return (PyObject*)self;
+  }
 
-	PyDoc_STRVAR(doModal__doc__,
-		"doModal() -- Show keyboard and wait for user action.");
+  void Keyboard_Dealloc(Keyboard* self)
+  {
+    self->ob_type->tp_free((PyObject*)self);
+  }
 
-	PyObject* Keyboard_DoModal(Keyboard *self, PyObject *args)
-	{
-		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-		if(!pKeyboard)
-		{
-			PyErr_SetString(PyExc_SystemError, "Unable to load virtual keyboard");
-			return NULL;
-		}
+  // doModal() Method
+  PyDoc_STRVAR(doModal__doc__,
+    "doModal() -- Show keyboard and wait for user action.\n"
+    "\n"
+    "example:\n"
+    "  - kb.doModal()");
 
-		pKeyboard->CenterWindow();
-		pKeyboard->SetText(CStdString(self->strDefault));
+  PyObject* Keyboard_DoModal(Keyboard *self, PyObject *args)
+  {
+    CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    if(!pKeyboard)
+    {
+      PyErr_SetString(PyExc_SystemError, "Unable to load virtual keyboard");
+      return NULL;
+    }
 
-		// do modal of dialog
-		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
-		g_applicationMessenger.SendMessage(tMsg, true);
+    pKeyboard->Initialize();
+    pKeyboard->CenterWindow();
+    pKeyboard->SetHeading(self->strHeading);
+    pKeyboard->SetText(CStdString(self->strDefault));
+    pKeyboard->SetHiddenInput(self->bHidden);
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+    // do modal of dialog
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+    g_applicationMessenger.SendMessage(tMsg, true);
 
-	PyDoc_STRVAR(setDefault__doc__,
-		"setDefault(string text) -- Set new text that is displayed as default.");
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
-	PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
-	{
-		char *cLine = NULL;
-		if (!PyArg_ParseTuple(args, "|s", &cLine))	return NULL;
+  // setDefault() Method
+  PyDoc_STRVAR(setDefault__doc__,
+    "setDefault(default) -- Set the default text entry.\n"
+    "\n"
+    "default        : string - default text entry.\n"
+    "\n"
+    "example:\n"
+    "  - kb.setDefault('password')");
 
-		self->strDefault = cLine ? cLine : "";
+  PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
+  {
+    PyObject *line = NULL;
+    if (!PyArg_ParseTuple(args, "|O", &line))	return NULL;
 
-		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-		if(!pKeyboard)
-		{
-			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
-			return NULL;
-		}
+    string utf8Line;
+    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    self->strDefault = utf8Line;
 
-		pKeyboard->SetText(CStdString(self->strDefault));
+    CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    if(!pKeyboard)
+    {
+      PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+      return NULL;
+    }
 
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+    pKeyboard->SetText(CStdString(self->strDefault));
 
-	PyDoc_STRVAR(getText__doc__,
-		"getText() -- Returns the user input.\n"
-		"\n"
-		"This will only succeed if the user entered some text or if there is a default\n"
-		"text set for this Keyboard.");
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
-	PyObject* Keyboard_GetText(Keyboard *self, PyObject *args)
-	{
-		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-		if(!pKeyboard)
-		{
-			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
-			return NULL;
-		}
+  // setHiddenInput() Method
+  PyDoc_STRVAR(setHiddenInput__doc__,
+    "setHiddenInput(hidden) -- Allows hidden text entry.\n"
+    "\n"
+    "hidden        : boolean - True for hidden text entry.\n"
+    "example:\n"
+    "  - kb.setHiddenInput(True)");
 
-		return Py_BuildValue("s", pKeyboard->GetText().c_str());
-	}
+  PyObject* Keyboard_SetHiddenInput(Keyboard *self, PyObject *args)
+  {
+    bool bHidden = false;
+    if (!PyArg_ParseTuple(args, "|b", &bHidden))	return NULL;
+    self->bHidden = bHidden;
 
-	PyDoc_STRVAR(isConfirmed__doc__,
-		"isConfirmed() -- Returns False if the user cancelled the input.");
+    CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    if(!pKeyboard)
+    {
+      PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+      return NULL;
+    }
 
-	PyObject* Keyboard_IsConfirmed(Keyboard *self, PyObject *args)
-	{
-		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-		if(!pKeyboard)
-		{
-			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
-			return NULL;
-		}
+    pKeyboard->SetHiddenInput(self->bHidden);
 
-		return Py_BuildValue("b", pKeyboard->IsDirty());
-	}
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
-	PyMethodDef Keyboard_methods[] = {
-		{"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
-		{"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
-		{"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
-		{"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
-		{NULL, NULL, 0, NULL}
-	};
+  // setHeading() Method
+  PyDoc_STRVAR(setHeading__doc__,
+    "setHeading(heading) -- Set the keyboard heading.\n"
+    "\n"
+    "heading        : string - keyboard heading.\n"
+    "\n"
+    "example:\n"
+    "  - kb.setHeading('Enter password')");
 
-	PyDoc_STRVAR(keyboard__doc__,
-		"Keyboard class.\n"
-		"\n"
-		"Keyboard([string default]) -- Creates a new Keyboard object with default text\n"
-		"                              if supplied.");
+  PyObject* Keyboard_SetHeading(Keyboard *self, PyObject *args)
+  {
+    PyObject *line = NULL;
+    if (!PyArg_ParseTuple(args, "|O", &line)) return NULL;
+
+    string utf8Line;
+    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    self->strHeading = utf8Line;
+
+    CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    if(!pKeyboard)
+    {
+      PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+      return NULL;
+    }
+
+    pKeyboard->SetHeading(self->strHeading);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // getText() Method
+  PyDoc_STRVAR(getText__doc__,
+    "getText() -- Returns the user input as a string.\n"
+    "\n"
+    "*Note, This will always return the text entry even if you cancel the keyboard.\n"
+    "       Use the isConfirmed() method to check if user cancelled the keyboard.\n"
+    "\n"
+    "example:\n"
+    "  - text = kb.getText()");
+
+  PyObject* Keyboard_GetText(Keyboard *self, PyObject *args)
+  {
+    CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    if(!pKeyboard)
+    {
+      PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+      return NULL;
+    }
+
+    return Py_BuildValue("s", pKeyboard->GetText().c_str());
+  }
+
+  // isConfirmed() Method
+  PyDoc_STRVAR(isConfirmed__doc__,
+    "isConfirmed() -- Returns False if the user cancelled the input.\n"
+    "\n"
+    "example:\n"
+    "  - if (kb.isConfirmed()):");
+
+  PyObject* Keyboard_IsConfirmed(Keyboard *self, PyObject *args)
+  {
+    CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    if(!pKeyboard)
+    {
+      PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+      return NULL;
+    }
+
+    return Py_BuildValue("b", pKeyboard->IsConfirmed());
+  }
+
+  PyMethodDef Keyboard_methods[] = {
+    {"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
+    {"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
+    {"setHeading", (PyCFunction)Keyboard_SetHeading, METH_VARARGS, setHeading__doc__},
+    {"setHiddenInput", (PyCFunction)Keyboard_SetHiddenInput, METH_VARARGS, setHiddenInput__doc__},
+    {"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
+    {"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
+    {NULL, NULL, 0, NULL}
+  };
+
+  PyDoc_STRVAR(keyboard__doc__,
+    "Keyboard class.\n"
+    "\n"
+    "Keyboard([default, heading, hidden]) -- Creates a new Keyboard object with default text\n"
+    "                                heading and hidden input flag if supplied.\n"
+    "\n"
+    "default        : [opt] string - default text entry.\n"
+    "heading        : [opt] string - keyboard heading.\n"
+    "hidden         : [opt] boolean - True for hidden text entry.\n"
+    "\n"
+    "example:\n"
+    "  - kb = xbmc.Keyboard('default', 'heading', True)\n"
+    "  - kb.setDefault('password') # optional\n"
+    "  - kb.setHeading('Enter password') # optional\n"
+    "  - kb.setHiddenInput(True) # optional\n"
+    "  - kb.doModal()\n"
+    "  - if (kb.isConfirmed()):\n"
+    "  -   text = kb.getText()");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -136,47 +238,21 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject Keyboard_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmc.Keyboard",             /*tp_name*/
-			sizeof(Keyboard),            /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)Keyboard_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			keyboard__doc__,           /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			Keyboard_methods,          /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			0,                         /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			Keyboard_New,                /* tp_new */
-	};
+  PyTypeObject Keyboard_Type;
+
+  void initKeyboard_Type()
+  {
+    PyInitializeTypeObject(&Keyboard_Type);
+
+    Keyboard_Type.tp_name = "xbmc.Keyboard";
+    Keyboard_Type.tp_basicsize = sizeof(Keyboard);
+    Keyboard_Type.tp_dealloc = (destructor)Keyboard_Dealloc;
+    Keyboard_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+    Keyboard_Type.tp_doc = keyboard__doc__;
+    Keyboard_Type.tp_methods = Keyboard_methods;
+    Keyboard_Type.tp_base = 0;
+    Keyboard_Type.tp_new = Keyboard_New;
+  }
 }
 
 #ifdef __cplusplus

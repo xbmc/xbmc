@@ -1,83 +1,147 @@
 /*!
-	\file guiImage.h
-	\brief 
-	*/
+\file guiImage.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIIMAGECONTROL_H
 #define GUILIB_GUIIMAGECONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
+
+#include "GUIControl.h"
+
+struct FRECT
+{
+  float left;
+  float top;
+  float right;
+  float bottom;
+};
+
+// image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
+#define ASPECT_ALIGN_CENTER  0
+#define ASPECT_ALIGN_LEFT    1
+#define ASPECT_ALIGN_RIGHT   2
+#define ASPECT_ALIGNY_CENTER 0
+#define ASPECT_ALIGNY_TOP    4
+#define ASPECT_ALIGNY_BOTTOM 8
+#define ASPECT_ALIGN_MASK    3
+#define ASPECT_ALIGNY_MASK  ~3
+
+class CImage
+{
+public:
+  CImage(const CStdString &fileName)
+  {
+    file = fileName;
+    memset(&border, 0, sizeof(FRECT));
+    flipX = flipY = false;
+  };
+
+  CImage()
+  {
+    memset(&border, 0, sizeof(FRECT));
+    flipX = flipY = false;
+  };
+
+  void operator=(const CImage &left)
+  {
+    file = left.file;
+    memcpy(&border, &left.border, sizeof(FRECT));
+    flipX = left.flipX;
+    flipY = left.flipY;
+    diffuse = left.diffuse;
+  };
+  CStdString file;
+  FRECT      border;  // scaled  - unneeded if we get rid of scale on load
+  bool       flipX;   // flip horizontally
+  bool       flipY;   // flip vertically
+  CStdString diffuse; // diffuse overlay texture (unimplemented)
+};
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
+ \ingroup controls
+ \brief 
+ */
+
 class CGUIImage : public CGUIControl
 {
 public:
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey=0);
+  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_STRETCH = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_KEEP, ASPECT_RATIO_CENTER };
+
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0);
+  CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
-  
+
   virtual void Render();
-  virtual void Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
-  virtual void OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
-	virtual void PreAllocResources();
+  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
-  void         Select(int iBitmap);
-  void         SetItems(int iItems);
-	void				 SetTextureWidth(int iWidth);
-	void				 SetTextureHeight(int iHeight);
-	int					 GetTextureWidth() const;
-	int					 GetTextureHeight() const;
+  virtual bool IsAllocated() const;
 
-  void              SetFileName(const CStdString& strFileName);
-	const CStdString& GetFileName() const {return m_strFileName;};
-	DWORD						  GetColorKey() const {return m_dwColorKey;};
-  void              SetKeepAspectRatio(bool bOnOff);
-  bool              GetKeepAspectRatio() const;
-  int               GetRenderWidth() const;
-  int               GetRenderHeight() const;
+  void PythonSetColorKey(DWORD dwColorKey);
+  void SetFileName(const CStdString& strFileName);
+  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
+  void SetAlpha(unsigned char alpha);
+  void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
+  void SetInfo(int info) { m_Info = info; };
 
+  const CStdString& GetFileName() const { return m_strFileName;};
+  int GetTextureWidth() const;
+  int GetTextureHeight() const;
+
+  void CalculateSize();
+#ifdef _DEBUG
+  virtual void DumpTextureUse();
+#endif
 protected:
-  virtual void       Update();
-	void							 Process();
-  struct VERTEX 
-	{ 
-    D3DXVECTOR4 p;
-		D3DCOLOR col; 
-		FLOAT tu, tv; 
-	};
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1;
+  void FreeTextures();
+  void Process();
+  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+  static const DWORD FVF_VERTEX2 = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2;
+  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
-  DWORD                   m_dwColorKey;
-  LPDIRECT3DVERTEXBUFFER8 m_pVB;
-  CStdString              m_strFileName;
-  int                     m_iTextureWidth;
-  int                     m_iTextureHeight;
-	int                     m_iImageWidth;
-	int                     m_iImageHeight;
-  int                     m_iBitmap;
-  DWORD                   m_dwItems;
-  int                     m_iCurrentLoop;
-	int										  m_iCurrentImage;
-	DWORD										m_dwFrameCounter;
-  bool                    m_bKeepAspectRatio;
-//  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
-	LPDIRECT3DPALETTE8			m_pPalette;
-  int                     m_iRenderWidth;
-  int                     m_iRenderHeight;
-	bool										m_bWasVisible;
-	//TEXTURE_TEST
-public:
+  DWORD m_dwColorKey;
+  unsigned char m_alpha[4];
+  CStdString m_strFileName;
+  int m_iTextureWidth;
+  int m_iTextureHeight;
+  int m_iImageWidth;
+  int m_iImageHeight;
+  int m_iCurrentLoop;
+  int m_iCurrentImage;
+  DWORD m_dwFrameCounter;
+  GUIIMAGE_ASPECT_RATIO m_aspectRatio;
+  DWORD                 m_aspectAlign;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+  LPDIRECT3DTEXTURE8 m_diffuseTexture;
+  LPDIRECT3DPALETTE8 m_diffusePalette;
+  float m_diffuseScaleU, m_diffuseScaleV;
+  LPDIRECT3DPALETTE8 m_pPalette;
+  bool m_bWasVisible;
+  bool m_bDynamicResourceAlloc;
+
+  // for when we are changing textures
+  bool m_texturesAllocated;
+
+  //vertex values
+  float m_fX;
+  float m_fY;
+  float m_fU;
+  float m_fV;
+  float m_fNW;
+  float m_fNH;
+  bool m_linearTexture; // true if it's a linear 32bit texture
+
+  // conditional info
+  int m_Info;
+
+  // border
+  CImage m_image;
 };
 #endif

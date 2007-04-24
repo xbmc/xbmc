@@ -19,18 +19,23 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
+				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -55,15 +60,23 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
-				OmitFramePointers="TRUE"
+				GlobalOptimizations="TRUE"
+				EnableIntrinsicFunctions="TRUE"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
-				StringPooling="TRUE"
+				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -88,17 +101,22 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/YX&quot;stdafx.h&quot;"
+				AdditionalOptions="/EHa"
 				Optimization="3"
-				OmitFramePointers="TRUE"
+				GlobalOptimizations="TRUE"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
-				StringPooling="TRUE"
+				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -124,25 +142,27 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
-				StringPooling="FALSE"
-				MinimalRebuild="FALSE"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				DefaultCharIsUnsigned="FALSE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -164,52 +184,23 @@
 			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
-			Name="Release Xbox  Debugging|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
-				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
-				StringPooling="FALSE"
+				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="include.h"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -218,6 +209,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalOptions="/LTCG"
 				OutputFile="$(OutDir)/$(ProjectName).lib"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -241,13 +233,28 @@
 				RelativePath=".\AnimatedGif.cpp">
 			</File>
 			<File
+				RelativePath=".\AudioContext.cpp">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIAudioManager.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIBaseContainer.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIButtonControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIButtonScroller.cpp">
+			</File>
+			<File
 				RelativePath=".\GUICheckMarkControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIConsoleControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIControl.cpp">
@@ -256,13 +263,28 @@
 				RelativePath=".\GuiControlFactory.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIControlGroup.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIControlGroupList.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIDialog.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIEditControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIFadeLabelControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIFixedListContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIFont.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIFontBase.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIFontManager.cpp">
@@ -277,6 +299,9 @@
 				RelativePath=".\guiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIIncludes.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIItem.cpp">
 			</File>
 			<File
@@ -286,7 +311,7 @@
 				RelativePath=".\GUIList.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIListControl.cpp">
+				RelativePath=".\GUIListContainer.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIListControlEx.cpp">
@@ -298,7 +323,7 @@
 				RelativePath=".\GUIListItem.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIMButtonControl.cpp">
+				RelativePath=".\GUIListItemLayout.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIMessage.cpp">
@@ -307,13 +332,16 @@
 				RelativePath=".\GUIMoverControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIMultiImage.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIPanelContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIRadioButtonControl.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIRAMControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIResizeControl.cpp">
@@ -322,16 +350,25 @@
 				RelativePath=".\GUIRSSControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIScrollBarControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUISelectButtonControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUISettingsSliderControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.cpp">
 			</File>
 			<File
-				RelativePath=".\GUISpinButtonControl.cpp">
+				RelativePath=".\GUISound.cpp">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUISpinControlEx.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIStandardWindow.cpp">
@@ -340,19 +377,25 @@
 				RelativePath=".\GUITextBox.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIThumbnailPanel.cpp">
-			</File>
-			<File
 				RelativePath=".\GUIToggleButtonControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIVideoControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIVisualisationControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIWindow.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIWindowManager.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIWrappingListContainer.cpp">
+			</File>
+			<File
+				RelativePath=".\include.cpp">
 			</File>
 			<File
 				RelativePath=".\IWindowManagerCallback.cpp">
@@ -370,25 +413,16 @@
 				RelativePath=".\SkinInfo.cpp">
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\TextureBundle.cpp">
 			</File>
 			<File
 				RelativePath=".\TextureManager.cpp">
+			</File>
+			<File
+				RelativePath=".\VisibleEffect.cpp">
+			</File>
+			<File
+				RelativePath=".\XMLUtils.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -402,13 +436,25 @@
 				RelativePath=".\AnimatedGif.h">
 			</File>
 			<File
+				RelativePath=".\AudioContext.h">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.h">
 			</File>
 			<File
 				RelativePath=".\gui3d.h">
 			</File>
 			<File
+				RelativePath=".\GUIAudioManager.h">
+			</File>
+			<File
+				RelativePath=".\GUIBaseContainer.h">
+			</File>
+			<File
 				RelativePath=".\GUIButtonControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIButtonScroller.h">
 			</File>
 			<File
 				RelativePath=".\GUICallback.h">
@@ -417,19 +463,37 @@
 				RelativePath=".\GUICheckMarkControl.h">
 			</File>
 			<File
+				RelativePath=".\GUIConsoleControl.h">
+			</File>
+			<File
 				RelativePath=".\GUIControl.h">
 			</File>
 			<File
 				RelativePath=".\GuiControlFactory.h">
 			</File>
 			<File
+				RelativePath=".\GUIControlGroup.h">
+			</File>
+			<File
+				RelativePath=".\GUIControlGroupList.h">
+			</File>
+			<File
 				RelativePath=".\GUIDialog.h">
+			</File>
+			<File
+				RelativePath=".\GUIEditControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIFadeLabelControl.h">
 			</File>
 			<File
+				RelativePath=".\GUIFixedListContainer.h">
+			</File>
+			<File
 				RelativePath=".\GUIFont.h">
+			</File>
+			<File
+				RelativePath=".\GUIFontBase.h">
 			</File>
 			<File
 				RelativePath=".\GUIFontManager.h">
@@ -444,6 +508,9 @@
 				RelativePath=".\guiImage.h">
 			</File>
 			<File
+				RelativePath=".\GUIIncludes.h">
+			</File>
+			<File
 				RelativePath=".\GUIItem.h">
 			</File>
 			<File
@@ -453,7 +520,7 @@
 				RelativePath=".\GUIList.h">
 			</File>
 			<File
-				RelativePath=".\GUIListControl.h">
+				RelativePath=".\GUIListContainer.h">
 			</File>
 			<File
 				RelativePath=".\GUIListControlEx.h">
@@ -465,7 +532,7 @@
 				RelativePath=".\GUIListItem.h">
 			</File>
 			<File
-				RelativePath=".\GUIMButtonControl.h">
+				RelativePath=".\GUIListItemLayout.h">
 			</File>
 			<File
 				RelativePath=".\GUIMessage.h">
@@ -474,13 +541,16 @@
 				RelativePath=".\GUIMoverControl.h">
 			</File>
 			<File
+				RelativePath=".\GUIMultiImage.h">
+			</File>
+			<File
+				RelativePath=".\GUIPanelContainer.h">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIRadioButtonControl.h">
-			</File>
-			<File
-				RelativePath=".\GUIRAMControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIResizeControl.h">
@@ -489,16 +559,25 @@
 				RelativePath=".\GUIRSSControl.h">
 			</File>
 			<File
+				RelativePath=".\GUIScrollBarControl.h">
+			</File>
+			<File
 				RelativePath=".\GUISelectButtonControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISettingsSliderControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.h">
 			</File>
 			<File
-				RelativePath=".\GUISpinButtonControl.h">
+				RelativePath=".\GUISound.h">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISpinControlEx.h">
 			</File>
 			<File
 				RelativePath=".\GUIStandardWindow.h">
@@ -507,13 +586,13 @@
 				RelativePath=".\GUITextBox.h">
 			</File>
 			<File
-				RelativePath=".\GUIThumbnailPanel.h">
-			</File>
-			<File
 				RelativePath=".\GUIToggleButtonControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIVideoControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIVisualisationControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIWindow.h">
@@ -522,10 +601,19 @@
 				RelativePath=".\GUIWindowManager.h">
 			</File>
 			<File
+				RelativePath=".\GUIWrappingListContainer.h">
+			</File>
+			<File
+				RelativePath=".\IAudioDeviceChangedCallback.h">
+			</File>
+			<File
 				RelativePath=".\IMsgSenderCallback.h">
 			</File>
 			<File
 				RelativePath=".\IMsgTargetCallback.h">
+			</File>
+			<File
+				RelativePath=".\include.h">
 			</File>
 			<File
 				RelativePath=".\IWindowManagerCallback.h">
@@ -546,30 +634,27 @@
 				RelativePath=".\StdString.h">
 			</File>
 			<File
+				RelativePath=".\system.h">
+			</File>
+			<File
 				RelativePath=".\TextureBundle.h">
 			</File>
 			<File
 				RelativePath=".\TextureManager.h">
 			</File>
+			<File
+				RelativePath=".\TransformMatrix.h">
+			</File>
+			<File
+				RelativePath=".\VisibleEffect.h">
+			</File>
+			<File
+				RelativePath=".\XMLUtils.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="common"
 			Filter="">
-			<File
-				RelativePath=".\common\keyboard.cpp">
-			</File>
-			<File
-				RelativePath=".\common\keyboard.h">
-			</File>
-			<File
-				RelativePath=".\common\mouse.cpp">
-			</File>
-			<File
-				RelativePath=".\common\mouse.h">
-			</File>
-			<File
-				RelativePath=".\common\uix.h">
-			</File>
 			<File
 				RelativePath=".\common\xbfont.cpp">
 			</File>
@@ -577,16 +662,16 @@
 				RelativePath=".\common\xbfont.h">
 			</File>
 			<File
-				RelativePath=".\common\xbinput.cpp">
+				RelativePath=".\common\XBoxKeyboard.cpp">
 			</File>
 			<File
-				RelativePath=".\common\xbinput.h">
+				RelativePath=".\common\XBoxKeyboard.h">
 			</File>
 			<File
-				RelativePath=".\common\xbutil.cpp">
+				RelativePath=".\common\XBoxMouse.cpp">
 			</File>
 			<File
-				RelativePath=".\common\xbutil.h">
+				RelativePath=".\common\XBoxMouse.h">
 			</File>
 		</Filter>
 		<Filter
@@ -615,10 +700,25 @@
 			Name="xdk Files"
 			Filter="">
 			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbinput.cpp">
+			</File>
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbinput.h">
+			</File>
+			<File
 				RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbresource.cpp">
 			</File>
 			<File
 				RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbresource.h">
+			</File>
+			<File
+				RelativePath="($XDK)\Samples\Xbox\Common\Include\xbstopwatch.h">
+			</File>
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbutil.cpp">
+			</File>
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbutil.h">
 			</File>
 		</Filter>
 	</Files>

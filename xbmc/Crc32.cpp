@@ -23,22 +23,37 @@
 
 void Crc32::Compute(const void* buffer, unsigned int count)
 {
-    const unsigned char* ptr = (const unsigned char *) buffer;
-    while (count--) {
-        Compute(*ptr++);
-    }
+  const unsigned char* ptr = (const unsigned char *) buffer;
+  while (count--)
+  {
+    Compute(*ptr++);
+  }
 }
 
 void Crc32::Compute(unsigned char value)
 {
-    m_crc ^= ((unsigned __int32)value << 24);
-    for (int i = 0; i < 8; i++) {
-        if (m_crc & 0x80000000) {
-            m_crc = (m_crc << 1) ^ 0x04C11DB7;
-        }
-        else {
-            m_crc <<= 1;
-        }
+  m_crc ^= ((unsigned __int32)value << 24);
+  for (int i = 0; i < 8; i++)
+  {
+    if (m_crc & 0x80000000)
+    {
+      m_crc = (m_crc << 1) ^ 0x04C11DB7;
     }
+    else
+    {
+      m_crc <<= 1;
+    }
+  }
 }
 
+void Crc32::Compute(const CStdString& strValue)
+{
+  Compute(strValue.c_str(), strValue.size());
+}
+
+void Crc32::ComputeFromLowerCase(const CStdString& strValue)
+{
+  CStdString strLower = strValue;
+  strLower.MakeLower();
+  Compute(strLower.c_str(), strLower.size());
+}

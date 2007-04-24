@@ -1,10 +1,11 @@
-#include "stdafx.h"
+#include "../../stdafx.h"
 
 #pragma once
 
+#include "..\..\settings.h"
 #include "XBMCConfiguration.h"
-#include "..\..\xbox\iosupport.h"
 #include "..\..\util.h"
+#include "includes.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -13,7 +14,6 @@
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
-	xbmcCfg = NULL;
 	xbmcCfgLoaded = false;
 }
 
@@ -29,16 +29,7 @@ int CXbmcConfiguration::Load()
 {
 	if (!xbmcCfgLoaded)
 	{
-		// note, we don't use 'Q:\\' here since 'Q:\\' is always mapped to our xbmc home dir
-		// and when using xbmc as dash our configfile has to be loaded from 'c:\\'
-		CStdString strPath;
-		char szXBEFileName[1024];
-		CIoSupport helper;
-		helper.GetXbePath(szXBEFileName);
-		strrchr(szXBEFileName,'\\')[0] = 0;
-		strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
-
-		if (!xbmcCfg.LoadFile(strPath)) return -1;
+    if (!xbmcCfg.LoadFile(g_settings.GetSourcesFile())) return -1;
 		xbmcCfgLoaded = true;
 	}
 	return 0;
@@ -48,21 +39,44 @@ int CXbmcConfiguration::Load()
  * Retrieve size of bookmark type (type)
  * var type has to be set to a bookmark name (like video, music ...)
  */
-int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t *type = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"),&type) < 1)
 	{
-		websError(wp, 500, T("Insufficient args\n"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")):
+              response="<li>Error:Insufficient args";
 		return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+  VECSHARES *pShares = g_settings.GetSharesFromType(type);
+  if (pShares)
+  {
+    char buffer[10];
+
+    if (eid!=-1) 
+      ejSetResult( eid, itoa(pShares->size(), buffer, 10));
+    else
+    {
+      CStdString tmp;
+      tmp.Format("%s", itoa(pShares->size(), buffer, 10));
+      response="<li>" + tmp;
+    }
+
+    return 0;
+  }
+
+  eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
+  response="<li>Error:Bookmark type does not exist";
+  return -1;
+
+/*	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";
 		return -1;
 	}
 
@@ -74,7 +88,8 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, int argc, char_t **arg
 
 	if (!pNode)
 	{
-		websError(wp, 500, T("Bookmark type doesn oet exist\n"));
+    eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
+              response="<li>Error:Bookmark type does not exist";
 		return -1;
 	}
 
@@ -83,9 +98,15 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, int argc, char_t **arg
 	int counter = 0;
 
 	while(pIt = pNode->IterateChildren("bookmark", pIt))	counter++;
-	ejSetResult( eid, itoa(counter, buffer, 10));
-
-	return 0;
+  if (eid!=-1) 
+    ejSetResult( eid, itoa(counter, buffer, 10));
+  else
+  {
+    CStdString tmp;
+    tmp.Format("%s", itoa(counter, buffer, 10));
+    response="<li>" + tmp;
+  }
+	return 0;*/
 }
 
 /*
@@ -94,20 +115,76 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, int argc, char_t **arg
  * var paramater = "name" or "path"
  * var id = position of bookmark
  */
-int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t	*parameter, *type, *id = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s"), &type, &parameter, &id) < 3) {
-		websError(wp, 500, T("Insufficient args\n"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")):
+              response="<li>Error:Insufficient args";
 		return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+  int nr = 0;
+  try { nr = atoi(id); }
+  catch (...)
+  {
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+    response="<li>Error:Id is not a number";
+    return -1;
+  }
+
+  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  if (!pShares)
+  {
+    eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
+    response="<li>Error:Bookmark type does not exist";
+    return -1;
+  }
+  if (nr > 0 && nr <= (int)pShares->size())
+  {
+    const CShare& share = (*pShares)[nr-1];
+    if (CStdString(parameter).Equals("path"))
+    {
+      if (eid!=-1)
+        ejSetResult( eid, const_cast<char*>(share.strPath.c_str()));
+      else
+      {
+        CStdString tmp;
+        tmp.Format("%s",share.strPath);
+        response="<li>" + tmp;
+      }
+    }
+    else if (CStdString(parameter).Equals("name"))
+    {
+      if (eid!=-1)
+        ejSetResult( eid, const_cast<char*>(share.strName.c_str()));
+      else
+      {
+        CStdString tmp;
+        tmp.Format("%s",share.strName);
+        response="<li>" + tmp;
+      }
+    }
+    else
+    {
+      eid!=-1 ? websError(wp, 500, T("Parameter not known\n")):
+      response="<li>Error:Parameter not known";
+    }
+    return 0;
+  }
+
+  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+  response="<li>Error:Position not found";
+  return -1;
+
+
+	/*// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";
 		return -1;
 	}
 
@@ -120,7 +197,8 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, int argc, char_t **argv
 	try { nr = atoi(id); }
 	catch (...)
 	{
-		websError(wp, 500, T("Id is not a number\n"));
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:Id is not a number";
 		return -1;
 	}
 
@@ -136,19 +214,42 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, int argc, char_t **argv
 		{
 			if (pIt->FirstChild("name"))
 			{
-				ejSetResult( eid, (char*)pIt->FirstChild("name")->FirstChild()->Value());
+        if (eid!=-1)
+          ejSetResult( eid, (char*)pIt->FirstChild("name")->FirstChild()->Value());
+        else
+        {
+          CStdString tmp;
+          tmp.Format("%s",(char*)pIt->FirstChild("name")->FirstChild()->Value());
+          response="<li>" + tmp;
+        }
 			}
 		}
 		// user wants the path of the bookmark.
-		if (!strcmp(parameter, "path"))
+		else if (!strcmp(parameter, "path"))
 		{
 			if (pIt->FirstChild("path"))
 			{
-				ejSetResult( eid, (char*)pIt->FirstChild("path")->FirstChild()->Value());
+        if (eid!=-1)
+          ejSetResult( eid, (char*)pIt->FirstChild("path")->FirstChild()->Value());
+        else
+        {
+          CStdString tmp;
+          tmp.Format("%s",(char*)pIt->FirstChild("path")->FirstChild()->Value());
+          response="<li>" + tmp ;
+        }
 			}
 		}
+    else
+      eid!=-1 ? websError(wp, 500, T("Parameter not known\n")):
+                response="<li>Error:Parameter not known";
 	}
-	return 0;
+  else
+  {
+    eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+              response="<li>Error:Position not found";
+    return -1;
+  }
+	return 0;*/
 }
 
 /*
@@ -158,21 +259,30 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, int argc, char_t **argv
  * var path = path
  * var postition = position where bookmark should be placed (not required)
  */
-int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t	*type, *name, *path, *position = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 3) {
-		websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [postion])"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [postion])")):
+              response="<li>Error:Insufficient args, use: function(command, type, name, path, [postion])";
 		return -1;
 	}
+  CShare share;
+  share.strName = name;
+  share.strPath = path;
+  share.vecPaths.push_back(path);
+  g_settings.AddShare(type,share);
 
+  return 0;
+/*
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
-		return -1;
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";
+    return -1;
 	}
 
 	TiXmlElement *pRootElement = xbmcCfg.RootElement();
@@ -201,20 +311,28 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, int argc, char_t **argv
 		try { nr = atoi(position); }
 		catch (...)
 		{
-			websError(wp, 500, T("position is not a number\n"));
+      eid!=-1 ? websError(wp, 500, T("position is not a number\n")):
+                response="<li>Error:position is not a number";
 			return -1;
 		}
 
 		// find bookmark at position
 		if (pNode)
 			for (int i = 0; i < nr; i++) pIt = pNode->IterateChildren("bookmark", pIt);
-		if (pIt) pNode->ToElement()->InsertAfterChild(pIt, bookmark);
+		if (pIt)
+      pNode->ToElement()->InsertAfterChild(pIt, bookmark);
+    else
+    {
+      eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+                response="<li>Error:Position not found";
+      return -1;
+    }
 	}
 	else
 	{
 		pNode->ToElement()->InsertEndChild(bookmark);
 	}
-	return 0;
+	return 0;*/
 }
 
 /*
@@ -224,21 +342,46 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, int argc, char_t **argv
  * var path = new path
  * var postition = position where bookmark should be placed
  */
-int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t	*type, *name, *path, *position = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 4) {
-		websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)")):
+              response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
+		return -1;
+	}
+  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  int nr = 0;
+	try { nr = atoi(position); }
+	catch (...)
+	{
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:Id is not a number";
 		return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+  if (nr > 0 && nr <= (int)pShares->size()) // update share
+  {
+    const CShare& share = (*pShares)[nr-1];
+    g_settings.UpdateBookmark(type, share.strName, "path", path);
+    g_settings.UpdateBookmark(type, share.strName, "name", name);
+    g_settings.SaveSources();
+    return 0;
+  }
+  
+  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+  response="<li>Error:Position not found";
+  return -1;
+
+
+/*	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
-		return -1;
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";
+    return -1;
 	}
 
 	TiXmlElement *pRootElement = xbmcCfg.RootElement();
@@ -251,7 +394,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, int argc, char_t **arg
 	try { nr = atoi(position); }
 	catch (...)
 	{
-		websError(wp, 500, T("Id is not a number\n"));
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:Id is not a number";
 		return -1;
 	}
 
@@ -263,6 +407,13 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, int argc, char_t **arg
 		pIt->FirstChild("name")->FirstChild()->SetValue(name);
 		pIt->FirstChild("path")->FirstChild()->SetValue(path);
 	}
+  else
+  {
+    eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+              response="<li>Error:Position not found";
+    return -1;
+  }*/
+  
 	return 0;
 }
 
@@ -271,21 +422,41 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, int argc, char_t **arg
  * var type has to be set to a bookmark name (like video, music ...)
  * var postition = bookmark at position that should be removed
  */
-int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t	*type, *position = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s"), &type, &position) < 2) {
-		websError(wp, 500, T("Insufficient args\n use: function(type, postion)"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(type, postion)")):
+              response="<li>Error:Insufficient args, use: function(type, postion)";
 		return -1;
 	}
 
+	int nr = 0;
+	try { nr = atoi(position); }
+	catch (...)
+	{
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:position is not a number";
+		return -1;
+	}
+
+  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  const CShare& share = (*pShares)[nr-1];
+  if (g_settings.DeleteBookmark(type,share.strName,share.strPath))
+    return 0;
+
+  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+  response="<li>Error:Position not found";
+  return -1;
+  /*
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
-		return -1;
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";
+    return -1;
 	}
 
 	TiXmlElement *pRootElement = xbmcCfg.RootElement();
@@ -298,7 +469,8 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, int argc, char_t **a
 	try { nr = atoi(position); }
 	catch (...)
 	{
-		websError(wp, 500, T("Id is not a number\n"));
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:position is not a number";
 		return -1;
 	}
 
@@ -306,8 +478,15 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, int argc, char_t **a
 	if (pNode)
 		for (int i = 0; i < nr; i++) pIt = pNode->IterateChildren("bookmark", pIt);
 
-	if (pIt) pNode->RemoveChild(pIt);
-	return 0;
+	if (pIt)
+    pNode->RemoveChild(pIt);
+  else
+  {
+    eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+              response="<li>Error:Position not found";
+    return -1;
+  }
+	return 0;*/
 }
 
 /*
@@ -316,41 +495,41 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, int argc, char_t **a
  * is only a filename is specified and no directory we save it in the same dir that
  * our executable is in.
  */
-int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t	*filename = NULL;
+  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
+  response="<li>Error:Functino is deprecated";
+  return -1;
+
+  char_t	*filename = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &filename) < 1) {
-		websError(wp, 500, T("Insufficient args\n use: function(filename)"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(filename)")):
+              response="<li>Error:Insufficient args, use: function(filename)";
 		return -1;
 	}
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
-		return -1;
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";
+    return -1;
 	}
 
 	// Save configuration to file
 	CStdString strPath(filename);
 	if (strPath.find(":\\") == -1)
 	{
-		// only filename specified, this means whe have to lookup the directory where
-		// our executable is in and add the filename to it
-		// note, we don't use 'Q:\\' here since 'Q:\\' is always mapped to our xbmc home dir
-		// and when using xbmc as dash our configfile has to be saved to 'c:\\'
-		char szXBEFileName[1024];
-		CIoSupport helper;
-		helper.GetXbePath(szXBEFileName);
-		strrchr(szXBEFileName,'\\')[0] = 0;
-		strPath.Format("%s\\%s", szXBEFileName, filename);
+		// only filename specified, so use Q:\\ as base.
+    strPath.Format("Q:\\%s", filename);
 	}
 
-	if (!xbmcCfg.SaveFile(strPath))
+  if (!xbmcCfg.SaveFile(strPath))
 	{
-		websError(wp, 500, T("Could not save to file\n"));
+    eid!=-1 ? websError(wp, 500, T("Could not save to file\n")):
+              response="<li>Error:Could not save to file";
 		return -1;
 	}
 	return 0;
@@ -360,20 +539,27 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, int argc, char_t 
  * Get value from configuration (name)
  * var name = option name
  */
-int CXbmcConfiguration::GetOption( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t* name = NULL;
+  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
+response="<li>Error:Functino is deprecated";
+return -1;
+
+  
+  char_t* name = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &name) < 1) {
-		websError(wp, 500, T("Insufficient args\n"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")):
+              response="<li>Error:Insufficient args";
 		return -1;
 	}
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
+              response="<li>Error:Could not load XboxMediaCenter.xml";;
 		return -1;
 	}
 
@@ -392,17 +578,28 @@ int CXbmcConfiguration::GetOption( int eid, webs_t wp, int argc, char_t **argv)
 		if (pElement->FirstChild() && pElement->FirstChild()->FirstChild() == NULL)
 		{
 			char* value = (char*)pElement->FirstChild()->Value();
-			if (value) ejSetResult(eid, value);
+			if (value) 
+        if (eid!=-1)
+          ejSetResult(eid, value);
+        else
+        {
+          CStdString tmp;
+          tmp.Format("%s",value);
+          response="<li>" + tmp;
+        }
 		}
 		// option exist, but no value is set. Default is "-"
-		else ejSetResult(eid, "-");
+		else 
+      eid!=-1 ? ejSetResult(eid, "-"):
+                response="<li>";
 	}
 	else
 	{
 		// option not found in xml file
 		// set value to "-"
-		ejSetResult(eid, "");
-	}
+    eid!=-1 ? ejSetResult(eid, ""):
+              response="<li>Error:Not found";
+  }
 	return 0;
 }
 
@@ -411,21 +608,27 @@ int CXbmcConfiguration::GetOption( int eid, webs_t wp, int argc, char_t **argv)
  * var name = option name
  * var value = new value
  */
-int CXbmcConfiguration::SetOption( int eid, webs_t wp, int argc, char_t **argv)
+int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t *name, *value = NULL;
+
+  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
+  response="<li>Error:Functino is deprecated";
+  return -1;
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-		websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
+    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")) : 
+              response="<li>Error:Could not load XboxMediaCenter.xml";
 		return -1;
 	}
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s"), &name, &value) < 2)
 	{
-		websError(wp, 500, T("Insufficient args\n"));
+    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")) :
+              response="<li>Error:Insufficient args";
 		return -1;
 	}
 
@@ -464,6 +667,12 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, int argc, char_t **argv)
 		// add element to configuration
 		pRootElement->InsertEndChild(xmlOption);
 	}
+  else
+  {
+    eid!=-1 ? websError(wp, 500, T("Not valid option\n")):
+              response="<li>Error:Not valid option";
+    return -1;
+  }
 	return 0;
 }
 
@@ -472,22 +681,11 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, int argc, char_t **argv)
  */
 bool CXbmcConfiguration::IsValidOption(char* option)
 {
-	if (!strcmp("home", option)) return true;
-	if (!strcmp("CDDBIpAdres", option)) return true;
-	if (!strcmp("useFDrive", option)) return true;
-	if (!strcmp("useFDrive", option)) return true;
-	if (!strcmp("dashboard", option)) return true;
-	if (!strcmp("dvdplayer", option)) return true;
 	if (!strcmp("subtitles", option)) return true;
-	if (!strcmp("startwindow", option)) return true;
-	if (!strcmp("pictureextensions", option)) return true;
-	if (!strcmp("musicextensions", option)) return true;
-	if (!strcmp("videoextensions", option)) return true;
 	if (!strcmp("thumbnails", option)) return true;
 	if (!strcmp("shortcuts", option)) return true;
 	if (!strcmp("albums", option)) return true;
 	if (!strcmp("recordings", option)) return true;
 	if (!strcmp("screenshots", option)) return true;
-	if (!strcmp("displayremotecodes", option)) return true;
 	return false;
 }

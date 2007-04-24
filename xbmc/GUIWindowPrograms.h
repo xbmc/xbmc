@@ -1,40 +1,35 @@
 #pragma once
-#include "guiwindow.h"
-#include "FileItem.h"
-#include "GUIDialogProgress.h"
+#include "GUIMediaWindow.h"
 #include "programdatabase.h"
+#include "GUIDialogProgress.h"
+#include "ThumbLoader.h"
 
 class CGUIWindowPrograms :
-	public CGUIWindow
+      public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
-	CGUIWindowPrograms(void);
-	virtual ~CGUIWindowPrograms(void);
-	virtual bool		OnMessage(CGUIMessage& message);
-	virtual void		Render();
-	virtual void		OnAction(const CAction &action);
+  CGUIWindowPrograms(void);
+  virtual ~CGUIWindowPrograms(void);
+  virtual bool OnMessage(CGUIMessage& message);
+
+  void PopulateTrainersList();
 protected:
-	void				ShowThumbPanel();  
-	bool				ViewByLargeIcon();
-	bool				ViewByIcon();
-	void				OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
-	void				Update(const CStdString& strDirectory);
-	void				LoadDirectory(const CStdString& strDirectory, int depth);
-	void				OnClick(int iItem);
-	void				OnSort();
-	void				UpdateButtons();
-	void				Clear();
-	void				DeleteThumbs(VECFILEITEMS& items);
-	int					GetSelectedItem();
-	void				GoParentFolder();
-	CGUIDialogProgress*	m_dlgProgress;  
-	VECFILEITEMS		m_vecItems;
-	CStdString			m_strDirectory;
-	CStdString			m_shareDirectory;
-	int					m_iLastControl;
-	int					m_iSelectedItem;
-	int					m_iDepth;	
-	CStdString			m_strBookmarkName;
-	CProgramDatabase	m_database;
-	CStdString			m_strParentPath;
+  virtual void OnItemLoaded(CFileItem* pItem) {};
+  virtual bool Update(const CStdString& strDirectory);
+  virtual bool OnPlayMedia(int iItem);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual void OnWindowLoaded();
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
+  int GetRegion(int iItem, bool bReload=false);
+  bool OnChooseVideoModeAndLaunch(int iItem);
+
+  CGUIDialogProgress* m_dlgProgress;
+
+  CProgramDatabase m_database;
+
+  int m_iRegionSet; // for cd stuff
+
+  CProgramThumbLoader m_thumbLoader;
 };

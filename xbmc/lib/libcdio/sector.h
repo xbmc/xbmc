@@ -97,7 +97,8 @@ typedef enum {
         CDIO_DISC_MODE_DVD_PRW,         /**< DVD+RW */
         CDIO_DISC_MODE_DVD_OTHER,       /**< Unknown/unclassified DVD type */
         CDIO_DISC_MODE_NO_INFO,
-        CDIO_DISC_MODE_ERROR
+        CDIO_DISC_MODE_ERROR,
+	CDIO_DISC_MODE_CD_I	        /**< CD-i. */
 } discmode_t;
 
 /*! Information that can be obtained through a Read Subchannel
@@ -151,7 +152,7 @@ typedef enum {
 #define CDIO_CD_FRAMESIZE_RAWER 2646   /**< The maximum possible returned 
                                           bytes */ 
 #define CDIO_CD_FRAMESIZE_RAW1 (CDIO_CD_CD_FRAMESIZE_RAW-CDIO_CD_SYNC_SIZE) /*2340*/
-#define CDIO_CD_FRAMESIZE_RAW0 (CDIO_CD_FRAMESIZE_RAW-CDIO_CD_SYNC_SIZE-CDIO_CD__HEAD_SIZE) /*2336*/
+#define CDIO_CD_FRAMESIZE_RAW0 (CDIO_CD_FRAMESIZE_RAW-CDIO_CD_SYNC_SIZE-CDIO_CD_HEADER_SIZE) /*2336*/
 
 /*! "before data" part of raw XA (green, mode2) frame */
 #define CDIO_CD_XA_HEADER (CDIO_CD_HEADER_SIZE+CDIO_CD_SUBHEADER_SIZE) 
@@ -172,22 +173,9 @@ typedef enum {
 #define	CDIO_CDROM_CDI_TRACK	0x10
 #define	CDIO_CDROM_XA_TRACK	0x20
 
-/*! The leadout track is always 0xAA, regardless of # of tracks on
-    disc, or what value may be used internally. For example although
-    OS X uses a different value for the lead-out track internally than
-    given below, programmers should use CDIO_CDROM_LEADOUT_TRACK and
-    not worry about this.
- */
-#define	CDIO_CDROM_LEADOUT_TRACK 0xAA
-
 #define M2F2_SECTOR_SIZE    2324
 #define M2SUB_SECTOR_SIZE   2332
 #define M2RAW_SECTOR_SIZE   2336
-
-/*! Largest CD track number */
-#define CDIO_CD_MAX_TRACKS    99 
-/*! Smallest CD track number */
-#define CDIO_CD_MIN_TRACK_NO   1
 
 /*! Largest CD session number */
 #define CDIO_CD_MAX_SESSIONS    99 
@@ -291,6 +279,7 @@ static inline bool discmode_is_cd(discmode_t discmode)
   case CDIO_DISC_MODE_CD_DATA:
   case CDIO_DISC_MODE_CD_XA:
   case CDIO_DISC_MODE_CD_MIXED:
+  case CDIO_DISC_MODE_CD_I:
     return true;
   default: 
     return false;

@@ -2,8 +2,10 @@
 #define __FILELIB_H__
 
 #include "types.h"
-#if WIN32
+#ifdef _XBOX
 #include <xtl.h>
+#else if WIN32
+#include <windows.h>
 #endif
 
 #ifndef MAX_PATH

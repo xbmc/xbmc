@@ -10,17 +10,17 @@
 #endif // _MSC_VER > 1000
 
 #include "criticalsection.h"
-class CSingleLock  
+class CSingleLock
 {
 public:
-	void Unlock();
-	void Lock();
-	  
-	CSingleLock(CCriticalSection& cs);		
+  void Unlock();
+  void Lock();
+
+  CSingleLock(CCriticalSection& cs);
   CSingleLock(const CCriticalSection& cs);
-	virtual ~CSingleLock();
-    
-	bool IsOwner() const;
+  virtual ~CSingleLock();
+
+  bool IsOwner() const;
   bool Enter();
   void Leave();
 
@@ -29,9 +29,9 @@ private:
   CSingleLock& operator=(const CSingleLock& src);
 
   // Reference to critical section object
-  CCriticalSection&   m_cs;
+  CCriticalSection& m_cs;
   // Ownership flag
-  bool                m_bIsOwner;
+  bool m_bIsOwner;
 };
 
 #endif // !defined(AFX_SINGLELOCK_H__50A43114_6A71_4FBD_BF51_D1F2DD3A60FA__INCLUDED_)

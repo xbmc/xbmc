@@ -1,1700 +1,459 @@
-<!-- By Dane  ------- dane@cestica.hr -->
-
-
+Ôªø<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- By Dane  - dane@cestica.hr -->
+<!--$Revision$-->
 <strings>
-  <string>
-    <id>0</id>
-    <value>Programi</value>
-  </string>
-  <string>
-    <id>1</id>
-    <value>Slike</value>
-  </string>
-  <string>
-    <id>2</id>
-    <value>Glazba</value>
-  </string>
-  <string>
-    <id>3</id>
-    <value>Filmovi</value>
-  </string>
-  <string>
-    <id>4</id>
-    <value>TV Vodic</value>
-  </string>
-  <string>
-    <id>5</id>
-    <value>Podesavanja</value>
-  </string>
-  <string>
-    <id>7</id>
-    <value>Datoteke</value>
-  </string>
-  <string>
-    <id>8</id>
-    <value>Vremenska Prognoza</value>
-  </string>
-  <string>
-    <id>11</id>
-    <value>Ponedjeljak</value>
-  </string>
-  <string>
-    <id>12</id>
-    <value>Utorak</value>
-  </string>
-  <string>
-    <id>13</id>
-    <value>Srijeda</value>
-  </string>
-  <string>
-    <id>14</id>
-    <value>Cetvrtak</value>
-  </string>
-  <string>
-    <id>15</id>
-    <value>Petak</value>
-  </string>
-  <string>
-    <id>16</id>
-    <value>Subota</value>
-  </string>  
-  <string>
-    <id>17</id>
-    <value>Nedjelja</value>
-  </string>
-  
-    
-  <string>
-    <id>21</id>
-    <value>SijeËanj</value>
-  </string>
-  
-  <string>
-    <id>22</id>
-    <value>VeljaËa</value>
-  </string>  
-  <string>
-    <id>23</id>
-    <value>Oûujak</value>
-  </string>  
-  <string>
-    <id>24</id>
-    <value>Travanj</value>
-  </string>  
-  <string>
-    <id>25</id>
-    <value>Svibanj</value>
-  </string>  
-  <string>
-    <id>26</id>
-    <value>Lipanj</value>
-  </string>  
-  <string>
-    <id>27</id>
-    <value>Srpanj</value>
-  </string>  
-  <string>
-    <id>28</id>
-    <value>Kolovoz</value>
-  </string>  
-  <string>
-    <id>29</id>
-    <value>Rujan</value>
-  </string>  
-  <string>
-    <id>30</id>
-    <value>Listopad</value>
-  </string>  
-  <string>
-    <id>31</id>
-    <value>Studeni</value>
-  </string>  
-  <string>
-    <id>32</id>
-    <value>Prosinac</value>
-  </string>  
-  <string>
-    <id>100</id>
-    <value>Izgled: Ikone</value>
-  </string>  
-  <string>
-    <id>101</id>
-    <value>Izgled: Lista</value>
-  </string>  
-  <string>
-    <id>102</id>
-    <value>Skeniraj</value>
-  </string>  
-  <string>
-    <id>103</id>
-    <value>Slozi po: Nazivu</value>
-  </string> 
-  <string>
-    <id>104</id>
-    <value>Slozi po: Datumu</value>
-  </string>    
-  <string>
-    <id>105</id>
-    <value>Slozi po: Velicini</value>
-  </string>      
-  <string>
-    <id>106</id>
-    <value>Ne</value>
-  </string>     
-  <string>
-    <id>107</id>
-    <value>Da</value>
-  </string>   
-  <string>
-    <id>108</id>
-    <value>Dia prikazivanje</value>
-  </string>   
-  <string>
-    <id>109</id>
-    <value>Stvori Minijature</value>
-  </string>   
-  <string>
-    <id>110</id>
-    <value>Stvori Minijature</value>
-  </string>   
-  <string>
-    <id>111</id>
-    <value>Precice</value>
-  </string>   
-  <string>
-    <id>112</id>
-    <value>PAUZIRANO</value>
-  </string>   
-  <string>
-    <id>113</id>
-    <value>Datoteke : Izvor</value>
-  </string>   
-  <string>
-    <id>114</id>
-    <value>Datoteke : Destinacija</value>
-  </string>   
-  <string>
-    <id>115</id>
-    <value>Kopiraj</value>
-  </string>   
-  <string>
-    <id>116</id>
-    <value>Premjesti</value>
-  </string>   
-  <string>
-    <id>117</id>
-    <value>Izbrisi</value>
-  </string>   
-  <string>
-    <id>118</id>
-    <value>Preimenuj</value>
-  </string>   
-  <string>
-    <id>119</id>
-    <value>Novi Direktorij</value>
-  </string>   
-  <string>
-    <id>120</id>
-    <value>Potvrdi kopiranje Fajla</value>
-  </string>   
-  <string>
-    <id>121</id>
-    <value>Potvrdi premjestanje Fajla</value>
-  </string>   
-  <string>
-    <id>122</id>
-    <value>Potvrdi brisanje Fajla</value>
-  </string>   
-  <string>
-    <id>123</id>
-    <value>Zelite da kopirate ove datoteke?</value>
-  </string>   
-  <string>
-    <id>124</id>
-    <value>Zelite premejstiti ove datoteke?</value>
-  </string>   
-  <string>
-    <id>125</id>
-    <value>Zelite izbrisati ove datoteke?</value>
-  </string>  
-  <string>
-    <id>126</id>
-    <value>Status</value>
-  </string>  
-  <string>
-    <id>127</id>
-    <value>Objekata</value>
-  </string>  
-  <string>
-    <id>128</id>
-    <value>Glavno</value>
-  </string> 
-  <string>
-    <id>129</id>
-    <value>Dia Prikazivanje</value>
-  </string> 
-  <string>
-    <id>130</id>
-    <value>Informacije</value>
-  </string>  
-  <string>
-    <id>131</id>
-    <value>Ekran</value>
-  </string>  
-  <string>
-    <id>132</id>
-    <value>Albumi</value>
-  </string>  
-  <string>
-    <id>133</id>
-    <value>Ivodjaci</value>
-  </string>  
-  <string>
-    <id>134</id>
-    <value>Pjesme</value>
-  </string>  
-  <string>
-    <id>135</id>
-    <value>Zanr</value>
-  </string>  
-  <string>
-    <id>136</id>
-    <value>Playlista</value>
-  </string>  
-  <string>
-    <id>137</id>
-    <value>Pretraga</value>
-  </string>  
-  <string>
-    <id>138</id>
-    <value>Informacije</value>
-  </string>  
-  <string>
-    <id>139</id>
-    <value>Temperatura:</value>
-  </string> 
-  <string>
-    <id>140</id>
-    <value>CPU:</value>
-  </string> 
-  <string>
-    <id>141</id>
-    <value>GPU:</value>
-  </string> 
-  <string>
-    <id>142</id>
-    <value>Vrijeme:</value>
-  </string> 
-  <string>
-    <id>143</id>
-    <value>Tekuci:</value>
-  </string> 
-  <string>
-    <id>144</id>
-    <value>Gradja:</value>
-  </string> 
-  <string>
-    <id>145</id>
-    <value>Mreza:</value>
-  </string> 
-  <string>
-    <id>146</id>
-    <value>Vrsta:</value>
-  </string> 
-  <string>
-    <id>147</id>
-    <value>Staticna</value>
-  </string> 
-  <string>
-    <id>148</id>
-    <value>DHCP</value>
-  </string> 
-  <string>
-    <id>149</id>
-    <value>MAC</value>
-  </string> 
-  <string>
-    <id>150</id>
-    <value>IP:</value>
-  </string> 
-  <string>
-    <id>151</id>
-    <value>Link:</value>
-  </string> 
-  <string>
-    <id>152</id>
-    <value>Polu duplex</value>
-  </string> 
-  <string>
-    <id>153</id>
-    <value>Pun duplex</value>
-  </string> 
-  <string>
-    <id>154</id>
-    <value>Smijestaj</value>
-  </string> 
-  <string>
-    <id>155</id>
-    <value>Drive</value>
-  </string> 
-  <string>
-    <id>156</id>
-    <value>Slobodno</value>
-  </string> 
-  <string>
-    <id>157</id>
-    <value>Video</value>
-  </string> 
-  <string>
-    <id>158</id>
-    <value>Slobodna memorija</value>
-  </string> 
-  <string>
-    <id>159</id>
-    <value>Nije uspostavljena veza</value>
-  </string> 
-  <string>
-    <id>160</id>
-    <value>Slobodno</value>
-  </string> 
-  <string>
-    <id>161</id>
-    <value>Nema podataka</value>
-  </string> 
-  <string>
-    <id>162</id>
-    <value>Otvoren DVD</value>
-  </string> 
-  <string>
-    <id>163</id>
-    <value>Citanje</value>
-  </string> 
-  <string>
-    <id>164</id>
-    <value>Nema Diska</value>
-  </string> 
-  <string>
-    <id>165</id>
-    <value>Disk Prisutan</value>
-  </string> 
-  <string>
-    <id>166</id>
-    <value>Koza:</value>
-  </string> 
-  <string>
-    <id>167</id>
-    <value>FTP server:</value>
-  </string> 
-  <string>
-    <id>168</id>
-    <value>Sinhronizovano Vreme:</value>
-  </string> 
-  <string>
-    <id>169</id>
-    <value>Rezolucija:</value>
-  </string> 
-  <string>
-    <id>170</id>
-    <value>Album:</value>
-  </string> 
-  <string>
-    <id>171</id>
-    <value>Izvodjac:</value>
-  </string> 
-  <string>
-    <id>172</id>
-    <value>Datum Izlaska:</value>
-  </string> 
-  <string>
-    <id>173</id>
-    <value>Ocjenjivanje:</value>
-  </string> 
-  <string>
-    <id>174</id>
-    <value>Zanra:</value>
-  </string> 
-  <string>
-    <id>175</id>
-    <value>Tonovi:</value>
-  </string> 
-  <string>
-    <id>176</id>
-    <value>Stilovi:</value>
-  </string> 
-  <string>
-    <id>177</id>
-    <value>Revija:</value>
-  </string> 
-  <string>
-    <id>178</id>
-    <value>Trake:</value>
-  </string> 
-  <string>
-    <id>179</id>
-    <value>Pjesma</value>
-  </string> 
-  <string>
-    <id>180</id>
-    <value>Trajanje</value>
-  </string> 
-  <string>
-    <id>181</id>
-    <value>Izaberi album</value>
-  </string> 
-  <string>
-    <id>182</id>
-    <value>Trake</value>
-  </string> 
-  <string>
-    <id>183</id>
-    <value>Revija</value>
-  </string> 
-  <string>
-    <id>184</id>
-    <value>Obnovi</value>
-  </string> 
-  <string>
-    <id>185</id>
-    <value>Trazi album</value>
-  </string> 
-  <string>
-    <id>186</id>
-    <value>OK</value>
-  </string>  
-  <string>
-    <id>187</id>
-    <value>Nema Albuma!</value>
-  </string>  
-  <string>
-    <id>188</id>
-    <value>Izaberi sve</value>
-  </string>  
-  <string>
-    <id>189</id>
-    <value>Scaniranje media info</value>
-  </string>  
-  <string>
-    <id>190</id>
-    <value>Sacuvaj</value>
-  </string>  
-  <string>
-    <id>191</id>
-    <value>Izmijesaj</value>
-  </string>  
-  <string>
-    <id>192</id>
-    <value>Izmijesaj</value>
-  </string>  
-  <string>
-    <id>193</id>
-    <value>Scaniraj</value>
-  </string>  
-  <string>
-    <id>194</id>
-    <value>Trazi...</value>
-  </string> 
-  <string>
-    <id>195</id>
-    <value>IMDB info nije nadjen!</value>
-  </string> 
-  <string>
-    <id>196</id>
-    <value>izaberi film:</value>
-  </string> 
-  <string>
-    <id>197</id>
-    <value>Pretrazuje IMDB Info</value>
-  </string> 
-  <string>
-    <id>198</id>
-    <value>Ucitavanje Filmskih Detalja</value>
-  </string> 
-  <string>
-    <id>199</id>
-    <value>Reziser:</value>
-  </string> 
-  <string>
-    <id>200</id>
-    <value>Pisac scenarija:</value>
-  </string> 
-  <string>
-    <id>201</id>
-    <value>Godina:</value>
-  </string> 
-  <string>
-    <id>202</id>
-    <value>Oznak:</value>
-  </string> 
-  <string>
-    <id>203</id>
-    <value>Plan filma:</value>
-  </string> 
-  <string>
-    <id>204</id>
-    <value>Ocjenjivanje:</value>
-  </string> 
-  <string>
-    <id>205</id>
-    <value>Glasova:</value>
-  </string> 
-  <string>
-    <id>206</id>
-    <value>Uloge</value>
-  </string> 
-  <string>
-    <id>207</id>
-    <value>Radnja</value>
-  </string> 
-  <string>
-    <id>208</id>
-    <value>Pusti</value>
-  </string> 
-  <string>
-    <id>209</id>
-    <value>Sljedece</value>
-  </string> 
-  <string>
-    <id>210</id>
-    <value>Prethodno</value>
-  </string> 
-  <string>
-    <id>211</id>
-    <value>Trazi aplikacije</value>
-  </string> 
-  <string>
-    <id>212</id>
-    <value>Aplikacije pronadjene</value>
-  </string> 
-  <string>
-    <id>213</id>
-    <value>UI Kalibracija</value>
-  </string> 
-  <string>
-    <id>214</id>
-    <value>Kalibracija ekrana</value>
-  </string> 
-  <string>
-    <id>215</id>
-    <value>Omeksaj</value>
-  </string> 
-  <string>
-    <id>216</id>
-    <value>Uvelicaj</value>
-  </string> 
-  <string>
-    <id>217</id>
-    <value>Rastegni</value>
-  </string> 
-  <string>
-    <id>218</id>
-    <value>DVD Drive</value>
-  </string> 
-  <string>
-    <id>219</id>
-    <value>Ubacite Disk</value>
-  </string> 
-  <string>
-    <id>220</id>
-    <value>Daljinsko djeljenje</value>
-  </string> 
-  <string>
-    <id>221</id>
-    <value>Mreza Nije Povezana</value>
-  </string> 
-  <string>
-    <id>222</id>
-    <value>Prekini</value>
-  </string> 
-  <string>
-    <id>223</id>
-    <value>Auto Widescreen prebacivanje</value>
-  </string> 
-  <string>
-    <id>224</id>
-    <value>Brzina</value>
-  </string> 
-  <string>
-    <id>225</id>
-    <value>Prolazno Vrijeme</value>
-  </string> 
-  <string>
-    <id>226</id>
-    <value>Ukljuci PAL60</value>
-  </string> 
-  <string>
-    <id>227</id>
-    <value>Ukljuci CDDB</value>
-  </string> 
-  <string>
-    <id>228</id>
-    <value>Izmjesaj Playlistu na ucitavanje</value>
-  </string> 
-  <string>
-    <id>229</id>
-    <value>HD Spindown vreme (min)</value>
-  </string> 
-  <string>
-    <id>230</id>
-    <value>Filteri</value>
-  </string> 
-  <string>
-    <id>231</id>
-    <value>Nijedan</value>
-  </string> 
-  <string>
-    <id>232</id>
-    <value>Tocka</value>
-  </string> 
-  <string>
-    <id>233</id>
-    <value>Linearno</value>
-  </string> 
-  <string>
-    <id>234</id>
-    <value>Anisotropik</value>
-  </string> 
-  <string>
-    <id>235</id>
-    <value>Quincunx</value>
-  </string> 
-  <string>
-    <id>236</id>
-    <value>Gausovski Kubik</value>
-  </string> 
-  <string>
-    <id>237</id>
-    <value>Smanjivanje:</value>
-  </string> 
-  <string>
-    <id>238</id>
-    <value>Povecanje:</value>
-  </string>
-  <string>
-    <id>240</id>
-    <value>Auto pokret DVD-Video</value>
-  </string>
-  <string>
-    <id>241</id>
-    <value>Auto pokret VCD/SVCD</value>
-  </string>
-  <string>
-    <id>242</id>
-    <value>Auto pokret Audio-CD</value>
-  </string>
-  <string>
-    <id>243</id>
-    <value>Auto Pokret XBOX Igara</value>
-  </string>
-  <string>
-    <id>244</id>
-    <value>Auto Pokret Videa</value>
-  </string>
-  <string>
-    <id>245</id>
-    <value>Auto pokret Glazbe</value>
-  </string>
-  <string>
-    <id>246</id>
-    <value>Auto pokret Slike</value>
-  </string>
-  <string>
-    <id>247</id>
-    <value>Skripte</value>
-  </string>
-  <string>
-    <id>248</id>
-    <value>Jezik</value>
-  </string>
-  <string>
-    <id>249</id>
-    <value>Glazba</value>
-  </string>
-  <string>
-    <id>250</id>
-    <value>Vizualizacija</value>
-  </string>
-  <string>
-    <id>251</id>
-    <value>Izaberi destinaciju</value>
-  </string>
-  <string>
-    <id>252</id>
-    <value>Izlaz na sve zvuËnike</value>
-  </string>
-  <string>
-    <id>253</id>
-    <value>Broj kanala</value>
-  </string>
-  <string>
-    <id>254</id>
-    <value>DD Stereo Prolaz</value>
-  </string>
-  <string>
-    <id>255</id>
-    <value>CDDB</value>
-  </string>
-  <string>
-    <id>256</id>
-    <value>Pretrazuje Freedb za CDDB info</value>
-  </string>
-  <string>
-    <id>257</id>
-    <value>Greska</value>
-  </string>
-  <string>
-    <id>258</id>
-    <value>Omoguci ID3 info</value>
-  </string>
-  <string>
-    <id>259</id>
-    <value>Otvara</value>
-  </string>
-  <string>
-    <id>260</id>
-    <value>Shoutcast</value>
-  </string>
-  <string>
-    <id>261</id>
-    <value>Ceka pokret....</value>
-  </string>
-  <string>
-    <id>262</id>
-    <value>Output skripte</value>
-  </string>
-  <string>
-    <id>263</id>
-    <value>HTTP server:</value>
-  </string>
-  <string>
-    <id>264</id>
-    <value>Snimaj</value>
-  </string>
-  <string>
-    <id>265</id>
-    <value>prekini Snim.</value>
-  </string>
-  <string>
-    <id>266</id>
-    <value>Slozi po: Broju</value>
-  </string>
-  <string>
-    <id>267</id>
-    <value>Slozi po: Vremenu</value>
-  </string>
-  <string>
-    <id>268</id>
-    <value>Slozi po: Nazivu</value>
-  </string>
-  <string>
-    <id>269</id>
-    <value>Slozi po: Izvodjacu</value>
-  </string>
-  <string>
-    <id>270</id>
-    <value>Slozi po: Albumu</value>
-  </string>
-  <string>
-    <id>271</id>
-    <value>Top 100</value>
-  </string>
-  <string>
-    <id>272</id>
-    <value>Gornja Lijeva Pregledna Kompenzacija</value>
-  </string>
-  <string>
-    <id>273</id>
-    <value>Donja Desna Pregledna Kompenzacija</value>
-  </string>
-  <string>
-    <id>274</id>
-    <value>Pozicija Titlova</value>
-  </string>
-  <string>
-    <id>275</id>
-    <value>Podesavanje Razmere Pixelova</value>
-  </string>
-  <string>
-    <id>276</id>
-    <value>Pomakni strelicu za promjenu koliËine pregleda</value>
-  </string>
-  <string>
-    <id>277</id>
-    <value>Pozijisi titlova</value>
-  </string>
-  <string>
-    <id>278</id>
-    <value>Slozi savrsenu kocku</value>
-  </string>
-  <string>
-    <id>279</id>
-    <value>Nemoguce Ucitati Podesavanja</value>
-  </string>
-  <string>
-    <id>280</id>
-    <value>Koristenje standardne odstupnice</value>
-  </string>
-  <string>
-    <id>281</id>
-    <value>Pregledajte .XML datoteke</value>
-  </string>
-  <string>
-    <id>282</id>
-    <value>Nadjeno %i predmeta</value>
-  </string>
-  <string>
-    <id>283</id>
-    <value>Rezultati pretrage</value>
-  </string>
-  <string>
-    <id>284</id>
-    <value>Nema rezultata</value>
-  </string>
-  <string>
-    <id>285</id>
-    <value>Odpletejuci Filter</value>
-  </string>
-  <string>
-    <id>286</id>
-    <value>Post-Procesni Filter</value>
-  </string>
-  <string>
-    <id>287</id>
-    <value>SRT Titlovi</value>
-  </string>
-  <string>
-    <id>288</id>
-    <value>Tip slova</value>
-  </string>
-  <string>
-    <id>289</id>
-    <value>Velicina</value>
-  </string>
-  <string>
-    <id>290</id>
-    <value>Amplifikacija jacine (dB)</value>
-  </string>
-  <string>
-    <id>291</id>
-    <value>Video</value>
-  </string>
-  <string>
-    <id>292</id>
-    <value>Audio</value>
-  </string>
-  <string>
-    <id>293</id>
-    <value>Titlovi</value>
-  </string>
-  <string>
-    <id>294</id>
-    <value>Stvori napomenu</value>
-  </string>
-  <string>
-    <id>295</id>
-    <value>Pregledaj napomene</value>
-  </string>
-  <string>
-    <id>296</id>
-    <value>Obrisi napomene</value>
-  </string>
-  <string>
-    <id>297</id>
-    <value>AV Razmak</value>
-  </string>
-  <string>
-    <id>298</id>
-    <value>Pomerac</value>
-  </string>
-  <string>
-    <id>300</id>
-    <value>1. Jezik</value>
-  </string>
-  <string>
-    <id>301</id>
-    <value>2. Jacina</value>
-  </string>
-  <string>
-    <id>302</id>
-    <value>3. Strim</value>
-  </string>
-  <string>
-    <id>303</id>
-    <value>Razmak</value>
-  </string>
-  <string>
-    <id>304</id>
-    <value>Jezik</value>
-  </string>
-  <string>
-    <id>305</id>
-    <value>Ukljuceno</value>
-  </string>
-  <string>
-    <id>306</id>
-    <value>Non-Interleaved</value>
-  </string>
-  <string>
-    <id>307</id>
-    <value>Auto</value>
-  </string>
-  <string>
-    <id>308</id>
-    <value>vertikalni filter deblokacije</value>
-  </string>
-  <string>
-    <id>309</id>
-    <value>horizontalni filter deblokacije</value>
-  </string>
-  <string>
-    <id>310</id>
-    <value>auto svijetlost/kontrast</value>
-  </string>
-  <string>
-    <id>311</id>
-    <value>Dering</value>
-  </string>
-  <string>
-    <id>312</id>
-    <value>(0=auto)</value>
-  </string>
-  <string>
-    <id>313</id>
-    <value>Reorganiziraj datoteku</value>
-  </string>
-  <string>
-    <id>314</id>
-    <value>Priprema...</value>
-  </string>
-  <string>
-    <id>315</id>
-    <value>Greska datoteke</value>
-  </string>
-  <string>
-    <id>316</id>
-    <value>Trazi pjesme...</value>
-  </string>
-  <string>
-    <id>317</id>
-    <value>Reorganizacija uspjesna</value>
-  </string>
-  <string>
-    <id>318</id>
-    <value>Markiranje izbrisanih pjesama</value>
-  </string>
-  <string>
-    <id>319</id>
-    <value>Greska u reorganiziranju pjesama</value>
-  </string>
-  <string>
-    <id>320</id>
-    <value>Pretraga izvodjaca...</value>
-  </string>
-  <string>
-    <id>321</id>
-    <value>Greska u reorganizovanje izvodjaca</value>
-  </string>
-  <string>
-    <id>322</id>
-    <value>Pretraga zanra...</value>
-  </string>
-  <string>
-    <id>323</id>
-    <value>Greska u reorganizovanje zanra</value>
-  </string>
-  <string>
-    <id>324</id>
-    <value>Pretraga staze fajlova...</value>
-  </string>
-  <string>
-    <id>325</id>
-    <value>Greska u reorganizovanje staze fajlova</value>
-  </string>
-  <string>
-    <id>326</id>
-    <value>Pretraga albuma...</value>
-  </string>
-  <string>
-    <id>327</id>
-    <value>Greska u reorganizovanje albuma</value>
-  </string>
-  <string>
-    <id>328</id>
-    <value>Sacuvanje promene...</value>
-  </string>
-  <string>
-    <id>329</id>
-    <value>Greska u sacuvanje promene</value>
-  </string>
-  <string>
-    <id>330</id>
-    <value>Ovo moze potrajati...</value>
-  </string>
-  <string>
-    <id>331</id>
-    <value>kompresiranje datoteke...</value>
-  </string>
-  <string>
-    <id>332</id>
-    <value>Greska kompresiranje datoteke</value>
-  </string>
-  <string>
-    <id>333</id>
-    <value>Zelite li reorganizirati glazbenu datoteku?</value>
-  </string>
-  <string>
-    <id>334</id>
-    <value>Reorganizuj glazbenu datoteku</value>
-  </string>
-  <string>
-    <id>335</id>
-    <value>Pokreni</value>
-  </string>
-  <string>
-    <id>336</id>
-    <value>Podesi Brzina Kadra</value>
-  </string>
-  <string>
-    <id>337</id>
-    <value>Audio Izlaz:</value>
-  </string>
-  <string>
-    <id>338</id>
-    <value>Analogno</value>
-  </string>
-  <string>
-    <id>339</id>
-    <value>Digitalno</value>
-  </string>
-  <string>
-    <id>340</id>
-    <value>Razni Izvodjaci</value>
-  </string>
-  <string>
-    <id>341</id>
-    <value>Pokreni DVD</value>
-  </string>
-  <string>
-    <id>342</id>
-    <value>Filmovi</value>
-  </string>
-  <string>
-    <id>343</id>
-    <value>Podesi brzinu kadra</value>
-  </string>
-  <string>
-    <id>344</id>
-    <value>Glumci</value>
-  </string>
-  <string>
-    <id>345</id>
-    <value>Godina</value>
-  </string>
-  <string>
-    <id>346</id>
-    <value>Poredaj</value>
-  </string>
-  <string>
-    <id>347</id>
-    <value>Odredaj</value>
-  </string>
-  <string>
-    <id>348</id>
-    <value>Uravniti hijerarhiju Foldera</value>
-  </string>
-  <string>
-    <id>349</id>
-    <value>Prikazi samo Default.xbe</value>
-  </string>
-  <string>
-    <id>350</id>
-    <value>Programi</value>
-  </string>
-  <string>
-    <id>351</id>
-    <value>iskljuceno</value>
-  </string>
-  <string>
-    <id>352</id>
-    <value>Pomracenje</value>
-  </string>
-  <string>
-    <id>353</id>
-    <value>Crno</value>
-  </string>
-  <string>
-    <id>354</id>
-    <value>Matrix tragovi</value>
-  </string>
-  <string>
-    <id>355</id>
-    <value>Prekid Radi Neaktivnog skrinsevera</value>
-  </string>
-  <string>
-    <id>356</id>
-    <value>Vrsta Skrinsevera</value>
-  </string>
-  <string>
-    <id>357</id>
-    <value>Iskljucivanje radi neaktivnog Timeout-a</value>
-  </string>
-  <string>
-    <id>358</id>
-    <value>Svi albumi</value>
-  </string>
-  <string>
-    <id>359</id>
-    <value>Nedavni albumi</value>
-  </string>
-  <string>
-    <id>360</id>
-    <value>Screensaver</value>
-  </string>
-  <string>
-    <id>361</id>
-    <value>R. Dia-sov</value>
-  </string>   
-  <string>
-    <id>362</id>
-    <value>Nivo Nestajanja screensavera (%)</value>
-  </string>
-  <string>
-    <id>363</id>
-    <value>Slozi po: Fajlu</value>
-  </string>
-  <string>
-    <id>364</id>
-    <value>DD/DTS Multikanalni Prolaz</value>
-  </string>   
-  <string>
-    <id>365</id>
-    <value>Slozi po: Nazivu</value>
-  </string>   
-  <string>
-    <id>366</id>
-    <value>Slozi po: Godine</value>
-  </string>   
-  <string>
-    <id>367</id>
-    <value>Slozi po: Ocenjivanju</value>
-  </string>   
-  <string>
-    <id>368</id>
-    <value>IMDB</value>
-  </string>   
-  <string>
-    <id>369</id>
-    <value>Title</value>
-  </string>
-  <string>
-    <id>370</id>
-    <value>T-Oluja</value>
-  </string>
-  <string>
-    <id>371</id>
-    <value>Delimicno</value>
-  </string>
-  <string>
-    <id>372</id>
-    <value>Ponajvise</value>
-  </string>
-  <string>
-    <id>373</id>
-    <value>Suncano</value>
-  </string>
-  <string>
-    <id>374</id>
-    <value>Oblacno</value>
-  </string>
-  <string>
-    <id>375</id>
-    <value>Snijeg</value>
-  </string>
-  <string>
-    <id>376</id>
-    <value>Kisa</value>
-  </string>
-  <string>
-    <id>377</id>
-    <value>Lagano</value>
-  </string>
-  <string>
-    <id>378</id>
-    <value>AM</value>
-  </string>
-  <string>
-    <id>379</id>
-    <value>PM</value>
-  </string>
-  <string>
-    <id>380</id>
-    <value>Pljuskovi</value>
-  </string>
-  <string>
-    <id>381</id>
-    <value>Nekolicina</value>
-  </string>
-  <string>
-    <id>382</id>
-    <value>Rastureno</value>
-  </string>
-  <string>
-    <id>383</id>
-    <value>Vjetar</value>
-  </string>
-  <string>
-    <id>384</id>
-    <value>Jako</value>
-  </string>
-  <string>
-    <id>385</id>
-    <value>Vedro</value>
-  </string>
-  <string>
-  <id>396</id> 
-  <value>Izaberi Lokaciju</value> 
-  </string>
-  <string>
-  <id>397</id> 
-  <value>Protok vremena obnove</value> 
-  </string>
-  <string>
-  <id>398</id> 
-  <value>Jedinice Temperature</value> 
-  </string>
-  <string>
-  <id>399</id> 
-  <value>Jedinice Brzine</value> 
-  </string>
-  <string>
-  <id>400</id> 
-  <value>Vremenska prognoza</value> 
-  </string>
-  <string>
-    <id>401</id>
-    <value>Temp</value>
-  </string>   
-  <string>
-    <id>402</id>
-    <value>Oseca Kao</value>
-  </string> 
-  <string>
-    <id>403</id>
-    <value>UV Indeks</value>
-  </string>
-  <string>
-    <id>404</id>
-    <value>Vetar</value>
-  </string>   
-  <string>
-    <id>405</id>
-    <value>Rositi na</value>
-  </string> 
-  <string>
-    <id>406</id>
-    <value>Vlaznost</value>
-  </string> 
-  <string>
-    <id>407</id>
-    <value>Od</value>
-  </string>
-  <string>
-    <id>408</id>
-    <value>do</value>
-  </string>      
-  <string>
-    <id>410</id>
-    <value>Pristupanje Weather.com</value>
-  </string>       
-  <string>
-    <id>411</id>
-    <value>Zadobija prognozu za:</value>
-  </string> 
-  <string>
-    <id>412</id>
-    <value>Nemoguce dobivanje prognoze</value>
-  </string>    
-  <string>
-    <id>413</id>
-    <value>Rucno</value>
-  </string>    
-  <string>
-    <id>414</id>
-    <value>Nepronadjena revija za doticni album</value>
-  </string>    
-  <string>
-    <id>415</id>
-    <value>Skidanje miniature...</value>
-  </string> 
-  <string>
-    <id>416</id>
-    <value>Nema podataka</value>
-  </string> 
-  <string>
-    <id>417</id>
-    <value>Izgled: Velike Ikone</value>
-  </string> 
-  <string>
-    <id>418</id>
-    <value>Filmovi/Zanre</value>
-  </string> 
-  <string>
-    <id>419</id>
-    <value>Filmovi/Glumci</value>
-  </string> 
-  <string>
-    <id>420</id>
-    <value>Filmovi/Godine</value>
-  </string> 
-  <string>
-    <id>421</id>
-    <value>Filmovi/Naziv</value>
-  </string> 
-  <string>
-    <id>422</id>
-    <value>Izbrisi info albuma</value>
-  </string> 
-  <string>
-    <id>423</id>
-    <value>Izbrisi CDDB info</value>
-  </string> 
-  <string>
-    <id>424</id>
-    <value>Izaberi</value>
-  </string> 
-  <string>
-    <id>425</id>
-    <value>Info albuma nije pronadjen.</value>
-  </string> 
-  <string>
-    <id>426</id>
-    <value>CDDB info nije pronadjen.</value>
-  </string> 
-  <string>
-    <id>427</id>
-    <value>Disk:</value>
-  </string> 
-  <string>
-    <id>428</id>
-    <value>Unesite korektni CD/DVD</value>
-  </string> 
-  <string>
-    <id>429</id>
-    <value>Unesite sledeci CD/DVD</value>
-  </string>  
-  <string>
-    <id>430</id>
-    <value>Slozi po: DVD#</value>
-  </string>  
-  <string>
-    <id>431</id>
-    <value>Nema Kesh-a</value>
-  </string>  
-  <string>
-    <id>432</id>
-    <value>Izbrisi film iz datoteke</value>
-  </string>  
-  <string>
-    <id>433</id>
-    <value>Sigurno izbrisati</value>
-  </string>  
-  <string>
-    <id>434</id>
-    <value>film?</value>
-  </string> 
-  <string>
-    <id>435</id>
-    <value>Traka</value>
-  </string> 
-  <string>
-    <id>436</id>
-    <value>Godina:</value>
-  </string> 
-  <string>
-    <id>437</id>
-    <value>Trajanje:</value>
-  </string> 
-  <string>
-    <id>438</id>
-    <value>Otvaranje Fajla</value>
-  </string> 
+  <string id="0">Programi</string>
+  <string id="1">Slike</string>
+  <string id="2">Glazba</string>
+  <string id="3">Filmovi</string>
+  <string id="4">TV Vodic</string>
+  <string id="5">Podesavanja</string>
+  <string id="7">Datoteke</string>
+  <string id="8">Vremenska Prognoza</string>
+  <string id="11">Ponedjeljak</string>
+  <string id="12">Utorak</string>
+  <string id="13">Srijeda</string>
+  <string id="14">Cetvrtak</string>
+  <string id="15">Petak</string>
+  <string id="16">Subota</string>
+  <string id="17">Nedjelja</string>
+  <string id="21">Sijeƒçanj</string>
+  <string id="22">Veljaƒça</string>
+  <string id="23">O¬ûujak</string>
+  <string id="24">Travanj</string>
+  <string id="25">Svibanj</string>
+  <string id="26">Lipanj</string>
+  <string id="27">Srpanj</string>
+  <string id="28">Kolovoz</string>
+  <string id="29">Rujan</string>
+  <string id="30">Listopad</string>
+  <string id="31">Studeni</string>
+  <string id="32">Prosinac</string>
+  <string id="100">Izgled: Ikone</string>
+  <string id="101">Izgled: Lista</string>
+  <string id="102">Skeniraj</string>
+  <string id="103">Slozi po: Nazivu</string>
+  <string id="104">Slozi po: Datumu</string>
+  <string id="105">Slozi po: Velicini</string>
+  <string id="106">Ne</string>
+  <string id="107">Da</string>
+  <string id="108">Dia prikazivanje</string>
+  <string id="109">Stvori Minijature</string>
+  <string id="110">Stvori Minijature</string>
+  <string id="111">Precice</string>
+  <string id="112">PAUZIRANO</string>
+  <string id="113">Datoteke : Izvor</string>
+  <string id="114">Datoteke : Destinacija</string>
+  <string id="115">Kopiraj</string>
+  <string id="116">Premjesti</string>
+  <string id="117">Izbrisi</string>
+  <string id="118">Preimenuj</string>
+  <string id="119">Novi Direktorij</string>
+  <string id="120">Potvrdi kopiranje Fajla</string>
+  <string id="121">Potvrdi premjestanje Fajla</string>
+  <string id="122">Potvrdi brisanje Fajla</string>
+  <string id="123">Zelite da kopirate ove datoteke?</string>
+  <string id="124">Zelite premejstiti ove datoteke?</string>
+  <string id="125">Zelite izbrisati ove datoteke?</string>
+  <string id="126">Status</string>
+  <string id="127">Objekata</string>
+  <string id="128">Glavno</string>
+  <string id="129">Dia Prikazivanje</string>
+  <string id="130">Informacije</string>
+  <string id="131">Ekran</string>
+  <string id="132">Albumi</string>
+  <string id="133">Ivodjaci</string>
+  <string id="134">Pjesme</string>
+  <string id="135">Zanr</string>
+  <string id="136">Playlista</string>
+  <string id="137">Pretraga</string>
+  <string id="138">Informacije</string>
+  <string id="139">Temperatura:</string>
+  <string id="140">CPU:</string>
+  <string id="141">GPU:</string>
+  <string id="142">Vrijeme:</string>
+  <string id="143">Tekuci:</string>
+  <string id="144">Gradja:</string>
+  <string id="145">Mreza:</string>
+  <string id="146">Vrsta:</string>
+  <string id="147">Staticna</string>
+  <string id="148">DHCP</string>
+  <string id="149">MAC</string>
+  <string id="150">IP:</string>
+  <string id="151">Link:</string>
+  <string id="152">Polu duplex</string>
+  <string id="153">Pun duplex</string>
+  <string id="154">Smijestaj</string>
+  <string id="155">Drive</string>
+  <string id="156">Slobodno</string>
+  <string id="157">Video</string>
+  <string id="158">Slobodna memorija</string>
+  <string id="159">Nije uspostavljena veza</string>
+  <string id="160">Slobodno</string>
+  <string id="161">Nema podataka</string>
+  <string id="162">Otvoren DVD</string>
+  <string id="163">Citanje</string>
+  <string id="164">Nema Diska</string>
+  <string id="165">Disk Prisutan</string>
+  <string id="166">Koza:</string>
+  <string id="167">FTP server:</string>
+  <string id="168">Sinhronizovano Vreme:</string>
+  <string id="169">Rezolucija:</string>
+  <string id="170">Album:</string>
+  <string id="171">Izvodjac:</string>
+  <string id="172">Datum Izlaska:</string>
+  <string id="173">Ocjenjivanje:</string>
+  <string id="174">Zanra:</string>
+  <string id="175">Tonovi:</string>
+  <string id="176">Stilovi:</string>
+  <string id="177">Revija:</string>
+  <string id="178">Trake:</string>
+  <string id="179">Pjesma</string>
+  <string id="180">Trajanje</string>
+  <string id="181">Izaberi album</string>
+  <string id="182">Trake</string>
+  <string id="183">Revija</string>
+  <string id="184">Obnovi</string>
+  <string id="185">Trazi album</string>
+  <string id="186">OK</string>
+  <string id="187">Nema Albuma!</string>
+  <string id="188">Izaberi sve</string>
+  <string id="189">Scaniranje media info</string>
+  <string id="190">Sacuvaj</string>
+  <string id="191">Izmijesaj</string>
+  <string id="192">Izmijesaj</string>
+  <string id="193">Scaniraj</string>
+  <string id="194">Trazi...</string>
+  <string id="195">IMDB info nije nadjen!</string>
+  <string id="196">izaberi film:</string>
+  <string id="197">Pretrazuje IMDB Info</string>
+  <string id="198">Ucitavanje Filmskih Detalja</string>
+  <string id="199">Reziser:</string>
+  <string id="200">Pisac scenarija:</string>
+  <string id="201">Godina:</string>
+  <string id="202">Oznak:</string>
+  <string id="203">Plan filma:</string>
+  <string id="204">Ocjenjivanje:</string>
+  <string id="205">Glasova:</string>
+  <string id="206">Uloge</string>
+  <string id="207">Radnja</string>
+  <string id="208">Pusti</string>
+  <string id="209">Sljedece</string>
+  <string id="210">Prethodno</string>
+  <string id="211">Trazi aplikacije</string>
+  <string id="212">Aplikacije pronadjene</string>
+  <string id="213">UI Kalibracija</string>
+  <string id="214">Kalibracija ekrana</string>
+  <string id="215">Omeksaj</string>
+  <string id="216">Uvelicaj</string>
+  <string id="217">Rastegni</string>
+  <string id="218">DVD Drive</string>
+  <string id="219">Ubacite Disk</string>
+  <string id="220">Daljinsko djeljenje</string>
+  <string id="221">Mreza Nije Povezana</string>
+  <string id="222">Prekini</string>
+  <string id="223">Auto Widescreen prebacivanje</string>
+  <string id="224">Brzina</string>
+  <string id="225">Prolazno Vrijeme</string>
+  <string id="226">Ukljuci PAL60</string>
+  <string id="227">Ukljuci CDDB</string>
+  <string id="228">Izmjesaj Playlistu na ucitavanje</string>
+  <string id="229">HD Spindown vreme (min)</string>
+  <string id="230">Filteri</string>
+  <string id="231">Nijedan</string>
+  <string id="232">Tocka</string>
+  <string id="233">Linearno</string>
+  <string id="234">Anisotropik</string>
+  <string id="235">Quincunx</string>
+  <string id="236">Gausovski Kubik</string>
+  <string id="237">Smanjivanje:</string>
+  <string id="238">Povecanje:</string>
+  <string id="240">Auto pokret DVD-Video</string>
+  <string id="241">Auto pokret VCD/SVCD</string>
+  <string id="242">Auto pokret Audio-CD</string>
+  <string id="243">Auto Pokret XBOX Igara</string>
+  <string id="244">Auto Pokret Videa</string>
+  <string id="245">Auto pokret Glazbe</string>
+  <string id="246">Auto pokret Slike</string>
+  <string id="247">Skripte</string>
+  <string id="248">Jezik</string>
+  <string id="249">Glazba</string>
+  <string id="250">Vizualizacija</string>
+  <string id="251">Izaberi destinaciju</string>
+  <string id="252">Izlaz na sve zvuƒçnike</string>
+  <string id="253">Broj kanala</string>
+  <string id="254">DD Stereo Prolaz</string>
+  <string id="255">CDDB</string>
+  <string id="256">Pretrazuje Freedb za CDDB info</string>
+  <string id="257">Greska</string>
+  <string id="258">Omoguci ID3 info</string>
+  <string id="259">Otvara</string>
+  <string id="260">Shoutcast</string>
+  <string id="261">Ceka pokret....</string>
+  <string id="262">Output skripte</string>
+  <string id="263">HTTP server:</string>
+  <string id="264">Snimaj</string>
+  <string id="265">prekini Snim.</string>
+  <string id="266">Slozi po: Broju</string>
+  <string id="267">Slozi po: Vremenu</string>
+  <string id="268">Slozi po: Nazivu</string>
+  <string id="269">Slozi po: Izvodjacu</string>
+  <string id="270">Slozi po: Albumu</string>
+  <string id="271">Top 100</string>
+  <string id="272">Gornja Lijeva Pregledna Kompenzacija</string>
+  <string id="273">Donja Desna Pregledna Kompenzacija</string>
+  <string id="274">Pozicija Titlova</string>
+  <string id="275">Podesavanje Razmere Pixelova</string>
+  <string id="276">Pomakni strelicu za promjenu koliƒçine pregleda</string>
+  <string id="277">Pozijisi titlova</string>
+  <string id="278">Slozi savrsenu kocku</string>
+  <string id="279">Nemoguce Ucitati Podesavanja</string>
+  <string id="280">Koristenje standardne odstupnice</string>
+  <string id="281">Pregledajte .XML datoteke</string>
+  <string id="282">Nadjeno %i predmeta</string>
+  <string id="283">Rezultati pretrage</string>
+  <string id="284">Nema rezultata</string>
+  <string id="285">Odpletejuci Filter</string>
+  <string id="286">Post-Procesni Filter</string>
+  <string id="287">SRT Titlovi</string>
+  <string id="288">Tip slova</string>
+  <string id="289">Velicina</string>
+  <string id="290">Amplifikacija jacine (dB)</string>
+  <string id="291">Video</string>
+  <string id="292">Audio</string>
+  <string id="293">Titlovi</string>
+  <string id="294">Stvori napomenu</string>
+  <string id="295">Pregledaj napomene</string>
+  <string id="296">Obrisi napomene</string>
+  <string id="297">AV Razmak</string>
+  <string id="298">Pomerac</string>
+  <string id="300">1. Jezik</string>
+  <string id="301">2. Jacina</string>
+  <string id="302">3. Strim</string>
+  <string id="303">Razmak</string>
+  <string id="304">Jezik</string>
+  <string id="305">Ukljuceno</string>
+  <string id="306">Non-Interleaved</string>
+  <string id="307">Auto</string>
+  <string id="308">vertikalni filter deblokacije</string>
+  <string id="309">horizontalni filter deblokacije</string>
+  <string id="310">auto svijetlost/kontrast</string>
+  <string id="311">Dering</string>
+  <string id="312">(0=auto)</string>
+  <string id="313">Reorganiziraj datoteku</string>
+  <string id="314">Priprema...</string>
+  <string id="315">Greska datoteke</string>
+  <string id="316">Trazi pjesme...</string>
+  <string id="317">Reorganizacija uspjesna</string>
+  <string id="318">Markiranje izbrisanih pjesama</string>
+  <string id="319">Greska u reorganiziranju pjesama</string>
+  <string id="320">Pretraga izvodjaca...</string>
+  <string id="321">Greska u reorganizovanje izvodjaca</string>
+  <string id="322">Pretraga zanra...</string>
+  <string id="323">Greska u reorganizovanje zanra</string>
+  <string id="324">Pretraga staze fajlova...</string>
+  <string id="325">Greska u reorganizovanje staze fajlova</string>
+  <string id="326">Pretraga albuma...</string>
+  <string id="327">Greska u reorganizovanje albuma</string>
+  <string id="328">Sacuvanje promene...</string>
+  <string id="329">Greska u sacuvanje promene</string>
+  <string id="330">Ovo moze potrajati...</string>
+  <string id="331">kompresiranje datoteke...</string>
+  <string id="332">Greska kompresiranje datoteke</string>
+  <string id="333">Zelite li reorganizirati glazbenu datoteku?</string>
+  <string id="334">Reorganizuj glazbenu datoteku</string>
+  <string id="335">Pokreni</string>
+  <string id="336">Podesi Brzina Kadra</string>
+  <string id="337">Audio Izlaz:</string>
+  <string id="338">Analogno</string>
+  <string id="339">Digitalno</string>
+  <string id="340">Razni Izvodjaci</string>
+  <string id="341">Pokreni DVD</string>
+  <string id="342">Filmovi</string>
+  <string id="343">Podesi brzinu kadra</string>
+  <string id="344">Glumci</string>
+  <string id="345">Godina</string>
+  <string id="346">Poredaj</string>
+  <string id="347">Odredaj</string>
+  <string id="348">Uravniti hijerarhiju Foldera</string>
+  <string id="349">Prikazi samo Default.xbe</string>
+  <string id="350">Programi</string>
+  <string id="351">iskljuceno</string>
+  <string id="352">Pomracenje</string>
+  <string id="353">Crno</string>
+  <string id="354">Matrix tragovi</string>
+  <string id="355">Prekid Radi Neaktivnog skrinsevera</string>
+  <string id="356">Vrsta Skrinsevera</string>
+  <string id="357">Iskljucivanje radi neaktivnog Timeout-a</string>
+  <string id="358">Svi albumi</string>
+  <string id="359">Nedavni albumi</string>
+  <string id="360">Screensaver</string>
+  <string id="361">R. Dia-sov</string>
+  <string id="362">Nivo Nestajanja screensavera (%)</string>
+  <string id="363">Slozi po: Fajlu</string>
+  <string id="364">DD/DTS Multikanalni Prolaz</string>
+  <string id="365">Slozi po: Nazivu</string>
+  <string id="366">Slozi po: Godine</string>
+  <string id="367">Slozi po: Ocenjivanju</string>
+  <string id="368">IMDB</string>
+  <string id="369">Title</string>
+  <string id="370">T-Oluja</string>
+  <string id="371">Delimicno</string>
+  <string id="372">Ponajvise</string>
+  <string id="373">Suncano</string>
+  <string id="374">Oblacno</string>
+  <string id="375">Snijeg</string>
+  <string id="376">Kisa</string>
+  <string id="377">Lagano</string>
+  <string id="378">AM</string>
+  <string id="379">PM</string>
+  <string id="380">Pljuskovi</string>
+  <string id="381">Nekolicina</string>
+  <string id="382">Rastureno</string>
+  <string id="383">Vjetar</string>
+  <string id="384">Jako</string>
+  <string id="385">Vedro</string>
+  <string id="396">Izaberi Lokaciju</string>
+  <string id="397">Protok vremena obnove</string>
+  <string id="398">Jedinice Temperature</string>
+  <string id="399">Jedinice Brzine</string>
+  <string id="400">Vremenska prognoza</string>
+  <string id="401">Temp</string>
+  <string id="402">Oseca Kao</string>
+  <string id="403">UV Indeks</string>
+  <string id="404">Vetar</string>
+  <string id="405">Rositi na</string>
+  <string id="406">Vlaznost</string>
+  <string id="407">Od</string>
+  <string id="408">do</string>
+  <string id="410">Pristupanje Weather.com</string>
+  <string id="411">Zadobija prognozu za:</string>
+  <string id="412">Nemoguce dobivanje prognoze</string>
+  <string id="413">Rucno</string>
+  <string id="414">Nepronadjena revija za doticni album</string>
+  <string id="415">Skidanje miniature...</string>
+  <string id="416">Nema podataka</string>
+  <string id="417">Izgled: Velike Ikone</string>
+  <string id="418">Filmovi/Zanre</string>
+  <string id="419">Filmovi/Glumci</string>
+  <string id="420">Filmovi/Godine</string>
+  <string id="421">Filmovi/Naziv</string>
+  <string id="422">Izbrisi info albuma</string>
+  <string id="423">Izbrisi CDDB info</string>
+  <string id="424">Izaberi</string>
+  <string id="425">Info albuma nije pronadjen.</string>
+  <string id="426">CDDB info nije pronadjen.</string>
+  <string id="427">Disk:</string>
+  <string id="428">Unesite korektni CD/DVD</string>
+  <string id="429">Unesite sledeci CD/DVD</string>
+  <string id="430">Slozi po: DVD#</string>
+  <string id="431">Nema Kesh-a</string>
+  <string id="432">Izbrisi film iz datoteke</string>
+  <string id="433">Sigurno izbrisati</string>
+  <string id="434">film?</string>
+  <string id="435">Traka</string>
+  <string id="436">Godina:</string>
+  <string id="437">Trajanje:</string>
+  <string id="438">Otvaranje Fajla</string>
+  <string id="439">Kesh</string>
+  <string id="440">Hardisk</string>
+  <string id="441">UDF</string>
+  <string id="442">LAN</string>
+  <string id="443">Internet</string>
+  <string id="444">video</string>
+  <string id="445">audio</string>
+  <string id="446">DVD</string>
+  <string id="447">Auto-pokret</string>
+  <string id="448">LCD</string>
+  <string id="449">Omogucen</string>
+  <string id="450">Kolone</string>
+  <string id="451">Red 1 adresa:</string>
+  <string id="452">Red 2 adresa:</string>
+  <string id="453">Red 3 adresa:</string>
+  <string id="454">Red 4 adresa:</string>
+  <string id="455">Redovi:</string>
+  <string id="456">Modus:</string>
+  <string id="457">Prebaci izgled</string>
+  <string id="458">B/Belez</string>
+  <string id="459">Titlovi</string>
+  <string id="460">Audio Strim</string>
+  <string id="461">[aktivno]</string>
+  <string id="462">Titl</string>
+  <string id="463">Svetlo pozadine</string>
+  <string id="464">Svetlost</string>
+  <string id="465">Kontrast</string>
+  <string id="466">Gamma</string>
+  <string id="467">Vrsta</string>
+  <string id="468">Pomeri prav za promenu OSD pozicije</string>
+  <string id="469">OSD Pozicija</string>
+  <string id="470">Kreditovi</string>
+  <string id="471">Modchip</string>
+  <string id="472">OSD Tajmaut</string>
+  <string id="473">Visokokvalitetno resemplovanje</string>
+  <string id="474">Iskljuceno</string>
+  <string id="475">Samo glazba</string>
+  <string id="476">Glazba &amp; Video</string>
+  <string id="477">Nemoguce ucitati playlistu</string>
+  <string id="478">OSD</string>
+  <string id="479">Skin i Jezik</string>
+  <string id="480">Korisnicko sucelje</string>
+  <string id="481">Audio Podesavanja</string>
+  <string id="482">O XBMC-u</string>
+  <string id="483">Album</string>
+  <string id="484">Izvodjac</string>
+  <string id="485">Izbrisi album</string>
+  <string id="486">Ponavljaj</string>
+  <string id="487">Ponovi jedan</string>
+  <string id="488">Ponavljaj folder playliste</string>
+  <string id="489">Koristi playlistu u pjesmama</string>
+  <string id="490">Auto prebacivanje liste i ikone u pjesmama</string>
+  <string id="491">Koristi Velike Ikone</string>
+  <string id="492">Povecaj VobSubs</string>
+  <string id="493">Advansirana Podesavanja (Samo za Eksperte!)</string>
+  <string id="494">Opsti Audio Hedroom (dB)</string>
+  <string id="495">Uvecaj semplovanje videa do GUI rezolucije</string>
+  <string id="10000">Glavna Strana</string>
+  <string id="10001">Programi</string>
+  <string id="10002">Slike</string>
+  <string id="10003">Datoteke</string>
+  <string id="10004">Podesavanja</string>
+  <string id="10005">Glazba</string>
+  <string id="10006">Filmovi</string>
+  <string id="10007">Informacije</string>
+  <string id="10008">Podesavanja-&gt;glavno</string>
+  <string id="10009">Podesavanja-&gt;Ekran</string>
+  <string id="10010">Podesavanja-&gt;Ekran-&gt;UI kalibracija</string>
+  <string id="10011">Podesavanja-&gt;Ekran-&gt;Kalibracija ekrana</string>
+  <string id="10012">Podesavanja-&gt;DiaSov</string>
+  <string id="10013">Podesavanja-&gt;Ekran-&gt;Filteri</string>
+  <string id="10014">Podesavanja-&gt;Muzika</string>
+  <string id="10015">Podesavanja-&gt;Ekran-&gt;Titlovi</string>
+  <string id="10016">Podesavanja-&gt;Ekran-&gt;Skrinsever</string>
+  <string id="10017">Podesavanja-&gt;Vreme</string>
+  <string id="10020">Podesavanja-&gt;Skripte</string>
+  <string id="10021">Videi/zanra</string>
+  <string id="10022">Videi/glumac</string>
+  <string id="10023">Videi/godina</string>
+  <string id="10025">Videi/naziv</string>
+  <string id="10028">Videi/plejliste</string>
+  <string id="10100">Da/ne dialog</string>
+  <string id="10101">Dialog napreda</string>
+  <string id="10500">Muzika/plejliste</string>
+  <string id="10501">Muzika/fajlovi</string>
+  <string id="10502">Muzika/albumi</string>
+  <string id="10503">Muzika/izvodjaci</string>
+  <string id="10504">Muzika/zanre</string>
+  <string id="10505">Muzika/top100</string>
+  <string id="12000">Dialog izbora</string>
+  <string id="12001">Glazba/info</string>
+  <string id="12002">Dialog OK</string>
+  <string id="12003">Videi/Info</string>
+  <string id="12004">Skripte/Info</string>
+  <string id="12005">Pun ekran video</string>
+  <string id="12006">Audio vizualizacija</string>
+  <string id="12007">Slika/Dia sov</string>
+  <string id="12008">Dialog naredjanje fajla</string>
+  <string id="12600">Vremenska prognoza</string>
+  <string id="12900">Skrinsever</string>
+  <string id="12901">Fulskrin OSD</string>
 </strings>
-<string>
-    <id>439</id>
-    <value>Kesh</value>
-  </string> 
-  <string>
-    <id>440</id>
-    <value>Hardisk</value>
-  </string> 
-  <string>
-    <id>441</id>
-    <value>UDF</value>
-  </string> 
-  <string>
-    <id>442</id>
-    <value>LAN</value>
-  </string> 
-  <string>
-    <id>443</id>
-    <value>Internet</value>
-  </string> 
-  <string>
-    <id>444</id>
-    <value>video</value>
-  </string> 
-  <string>
-    <id>445</id>
-    <value>audio</value>
-  </string> 
-  <string>
-    <id>446</id>
-    <value>DVD</value>
-  </string> 
-  <string>
-    <id>447</id>
-    <value>Auto-pokret</value>
-  </string> 
-  <string>
-    <id>448</id>
-    <value>LCD</value>
-  </string> 
-  <string>
-    <id>449</id>
-    <value>Omogucen</value>
-  </string> 
-  <string>
-    <id>450</id>
-    <value>Kolone</value>
-  </string> 
-  <string>
-    <id>451</id>
-    <value>Red 1 adresa:</value>
-  </string> 
-  <string>
-    <id>452</id>
-    <value>Red 2 adresa:</value>
-  </string> 
-  <string>
-    <id>453</id>
-    <value>Red 3 adresa:</value>
-  </string> 
-  <string>
-    <id>454</id>
-    <value>Red 4 adresa:</value>
-  </string> 
-  <string>
-    <id>455</id>
-    <value>Redovi:</value>
-  </string> 
-  <string>
-    <id>456</id>
-    <value>Modus:</value>
-  </string> 
-  <string>
-    <id>457</id>
-    <value>Prebaci izgled</value>
-  </string> 
-  <string>
-    <id>458</id>
-    <value>B/Belez</value>
-  </string>
-  <string>
-    <id>459</id>
-    <value>Titlovi</value>
-  </string>
-  <string>
-    <id>460</id>
-    <value>Audio Strim</value>
-  </string>
-  <string>
-    <id>461</id>
-    <value>[aktivno]</value>
-  </string>
-  <string>
-    <id>462</id>
-    <value>Titl</value>
-  </string>
-  <string>
-    <id>463</id>
-    <value>Svetlo pozadine</value>
-  </string>
-  <string>
-    <id>464</id>
-    <value>Svetlost</value>
-  </string> 
-  <string>
-    <id>465</id>
-    <value>Kontrast</value>
-  </string> 
-  <string>
-    <id>466</id>
-    <value>Gamma</value>
-  </string> 
-  <string>
-    <id>467</id>
-    <value>Vrsta</value>
-  </string> 
-  <string>
-    <id>468</id>
-    <value>Pomeri prav za promenu OSD pozicije</value>
-  </string>
-  <string>
-    <id>469</id>
-    <value>OSD Pozicija</value>
-  </string>
-  <string>
-    <id>470</id>
-    <value>Kreditovi</value>
-  </string>
-  <string>
-    <id>471</id>
-    <value>Modchip</value>
-  </string>
-  <string>
-    <id>472</id>
-    <value>OSD Tajmaut</value>
-  </string>
-  <string>
-    <id>473</id>
-    <value>Visokokvalitetno resemplovanje</value>
-  </string>
-  <string>
-    <id>474</id>
-    <value>Iskljuceno</value>
-  </string>
-  <string>
-    <id>475</id>
-    <value>Samo glazba</value>
-  </string>
-  <string>
-    <id>476</id>
-    <value>Glazba & Video</value>
-  </string>
-  <string>
-    <id>477</id>
-    <value>Nemoguce ucitati playlistu</value>
-  </string>
-  <string>
-    <id>478</id>
-    <value>OSD</value>
-  </string>
-  <string>
-    <id>479</id>
-    <value>Skin i Jezik</value>
-  </string>
-  <string>
-    <id>480</id>
-    <value>Korisnicko sucelje</value>
-  </string>
-  <string>
-    <id>481</id>
-    <value>Audio Podesavanja</value>
-  </string>
-  <string>
-    <id>482</id>
-    <value>O XBMC-u</value>
-  </string>
-  <string>
-    <id>483</id>
-    <value>Album</value>
-  </string>
-  <string>
-    <id>484</id>
-    <value>Izvodjac</value>
-  </string>
-  <string>
-    <id>485</id>
-    <value>Izbrisi album</value>
-  </string>
-  <string>
-    <id>486</id>
-    <value>Ponavljaj</value>
-  </string>
-  <string>
-    <id>487</id>
-    <value>Ponovi jedan</value>
-  </string>
-  <string>
-    <id>488</id>
-    <value>Ponavljaj folder playliste</value>
-  </string>
-  <string>
-    <id>489</id>
-    <value>Koristi playlistu u pjesmama</value>
-  </string>
-  <string>
-    <id>490</id>
-    <value>Auto prebacivanje liste i ikone u pjesmama</value>
-  </string>
-  <string>
-    <id>491</id>
-    <value>Koristi Velike Ikone</value>
-  </string>
-  <string>
-    <id>492</id>
-    <value>Povecaj VobSubs</value>
-  </string>
-  <string>
-    <id>493</id>
-    <value>Advansirana Podesavanja (Samo za Eksperte!)</value>
-  </string>
-  <string>
-    <id>494</id>
-    <value>Opsti Audio Hedroom (dB)</value>
-  </string>
-  <string>
-    <id>495</id>
-    <value>Uvecaj semplovanje videa do GUI rezolucije</value>
-  </string>
-
-<string><id>10000</id><value>Glavna Strana</value></string>
-<string><id>10001</id><value>Programi</value></string>
-<string><id>10002</id><value>Slike</value></string>
-<string><id>10003</id><value>Datoteke</value></string>
-<string><id>10004</id><value>Podesavanja</value></string>
-<string><id>10005</id><value>Glazba</value></string>
-<string><id>10006</id><value>Filmovi</value></string>
-<string><id>10007</id><value>Informacije</value></string>
-<string><id>10008</id><value>Podesavanja->glavno</value></string>
-<string><id>10009</id><value>Podesavanja->Ekran</value></string>
-<string><id>10010</id><value>Podesavanja->Ekran->UI kalibracija</value></string>
-<string><id>10011</id><value>Podesavanja->Ekran->Kalibracija ekrana</value></string>
-<string><id>10012</id><value>Podesavanja->DiaSov</value></string>
-<string><id>10013</id><value>Podesavanja->Ekran->Filteri</value></string>
-<string><id>10014</id><value>Podesavanja->Muzika</value></string>
-<string><id>10015</id><value>Podesavanja->Ekran->Titlovi</value></string>
-<string><id>10016</id><value>Podesavanja->Ekran->Skrinsever</value></string>
-<string><id>10017</id><value>Podesavanja->Vreme</value></string>
-<string><id>10020</id><value>Podesavanja->Skripte</value></string>
-<string><id>10021</id><value>Videi/zanra</value></string>
-<string><id>10022</id><value>Videi/glumac</value></string>
-<string><id>10023</id><value>Videi/godina</value></string>
-<string><id>10024</id><value>Podesavanja->Programi</value></string>
-<string><id>10025</id><value>Videi/naziv</value></string>
-<string><id>10026</id><value>Podesavanja->Glavno->Kesh</value></string>
-<string><id>10027</id><value>Podesavanja->Glavno->Auto-pokret</value></string>
-<string><id>10028</id><value>Videi/plejliste</value></string>
-<string><id>10029</id><value>Podesavanja->Glavno->LCD</value></string>
-<string><id>10100</id><value>Da/ne dialog</value></string>
-<string><id>10101</id><value>Dialog napreda</value></string>
-<string><id>10500</id><value>Muzika/plejliste</value></string>
-<string><id>10501</id><value>Muzika/fajlovi</value></string>
-<string><id>10502</id><value>Muzika/albumi</value></string>
-<string><id>10503</id><value>Muzika/izvodjaci</value></string>
-<string><id>10504</id><value>Muzika/zanre</value></string>
-<string><id>10505</id><value>Muzika/top100</value></string>
-<string><id>11000</id><value>tastatura</value></string>
-<string><id>12000</id><value>Dialog izbora</value></string>
-<string><id>12001</id><value>Glazba/info</value></string>
-<string><id>12002</id><value>Dialog OK</value></string>
-<string><id>12003</id><value>Videi/Info</value></string>
-<string><id>12004</id><value>Skripte/Info</value></string>
-<string><id>12005</id><value>Pun ekran video</value></string>
-<string><id>12006</id><value>Audio vizualizacija</value></string>
-<string><id>12007</id><value>Slika/Dia sov</value></string>
-<string><id>12008</id><value>Dialog naredjanje fajla</value></string>
-<string><id>12600</id><value>Vremenska prognoza</value></string>
-<string><id>12900</id><value>Skrinsever</value></string>
-<string><id>12901</id><value>Fulskrin OSD</value></string>
-</strings>
-

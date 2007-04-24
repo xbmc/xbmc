@@ -1,1928 +1,1643 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--$Revision$-->
+<!--Traditional Chinese Translated by omenpica-->
 <strings>
-	<string>
-		<id>0</id>
-		<value>�ڪ�չ��</value>
-	</string>
-	<string>
-		<id>1</id>
-		<value>�ڪ��Ϥ�</value>
-	</string>
-	<string>
-		<id>2</id>
-		<value>�ڪ�����</value>
-	</string>
-	<string>
-		<id>3</id>
-		<value>�ڪ����T</value>
-	</string>
-	<string>
-		<id>4</id>
-		<value>�q�����n</value>
-	</string>
-	<string>
-		<id>5</id>
-		<value>�]�w</value>
-	</string>
-	<string>
-		<id>7</id>
-		<value>�ڪ��ɮ�</value>
-	</string>
-	<string>
-		<id>8</id>
-		<value>�Ѯ𱡪p</value>
-	</string>
-	<string>
-		<id>11</id>
-		<value>�P���@</value>
-	</string>
-	<string>
-		<id>12</id>
-		<value>�P���G</value>
-	</string>
-	<string>
-		<id>13</id>
-		<value>�P���T</value>
-	</string>
-	<string>
-		<id>14</id>
-		<value>�P���|</value>
-	</string>
-	<string>
-		<id>15</id>
-		<value>�P����</value>
-	</string>
-	<string>
-		<id>16</id>
-		<value>�P����</value>
-	</string>
-	<string>
-		<id>17</id>
-		<value>�P����</value>
-	</string>
-	<string>
-		<id>21</id>
-		<value>�@��</value>
-	</string>
-	<string>
-		<id>22</id>
-		<value>�G��</value>
-	</string>
-	<string>
-		<id>23</id>
-		<value>�T��</value>
-	</string>
-	<string>
-		<id>24</id>
-		<value>�|��</value>
-	</string>
-	<string>
-		<id>25</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>26</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>27</id>
-		<value>�C��</value>
-	</string>
-	<string>
-		<id>28</id>
-		<value>�K��</value>
-	</string>
-	<string>
-		<id>29</id>
-		<value>�E��</value>
-	</string>
-	<string>
-		<id>30</id>
-		<value>�Q��</value>
-	</string>
-	<string>
-		<id>31</id>
-		<value>�Q�@��</value>
-	</string>
-	<string>
-		<id>32</id>
-		<value>�Q�G��</value>
-	</string>
-	<string>
-		<id>100</id>
-		<value>�˵�: �ϥ�</value>
-	</string>
-	<string>
-		<id>101</id>
-		<value>�˵�: �M��</value>
-	</string>
-	<string>
-		<id>102</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>103</id>
-		<value>�ƦC�ϥ�: �̦W��</value>
-	</string>
-	<string>
-		<id>104</id>
-		<value>�ƦC�ϥ�: �̤��</value>
-	</string>
-	<string>
-		<id>105</id>
-		<value>�ƦC�ϥ�: �̤j�p</value>
-	</string>
-	<string>
-		<id>106</id>
-		<value>�_</value>
-	</string>
-	<string>
-		<id>107</id>
-		<value>�O</value>
-	</string>
-	<string>
-		<id>108</id>
-		<value>�ۿO�`��</value>
-	</string>
-	<string>
-		<id>109</id>
-		<value>Create Thumbs</value>
-	</string>
-	<string>
-		<id>110</id>
-		<value>Create Thumbnails</value>
-	</string>
-	<string>
-		<id>111</id>
-		<value>���|</value>
-	</string>
-	<string>
-		<id>112</id>
-		<value>�Ȱ�</value>
-	</string>
-	<string>
-		<id>113</id>
-		<value>�ڪ��ɮ� : �����</value>
-	</string>
-	<string>
-		<id>114</id>
-		<value>�ڪ��ɮ� : �ت��a</value>
-	</string>
-	<string>
-		<id>115</id>
-		<value>�ƻs</value>
-	</string>
-	<string>
-		<id>116</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>117</id>
-		<value>�R��</value>
-	</string>
-	<string>
-		<id>118</id>
-		<value>���s�R�W</value>
-	</string>
-	<string>
-		<id>119</id>
-		<value>�s�W��Ƨ�</value>
-	</string>
-	<string>
-		<id>120</id>
-		<value>�T�{�ɮ׽ƻs</value>
-	</string>
-	<string>
-		<id>121</id>
-		<value>�T�{�ɮײ���</value>
-	</string>
-	<string>
-		<id>122</id>
-		<value>�T�{�ɮקR��</value>
-	</string>
-	<string>
-		<id>123</id>
-		<value>�A�n�ƻs�o���ɮ׶�?</value>
-	</string>
-	<string>
-		<id>124</id>
-		<value>�A�n���ʳo���ɮ׶�?</value>
-	</string>
-	<string>
-		<id>125</id>
-		<value>�A�n�R���o���ɮ׶�?</value>
-	</string>
-	<string>
-		<id>126</id>
-		<value>���A</value>
-	</string>
-	<string>
-		<id>127</id>
-		<value>Objects</value>
-	</string>
-	<string>
-		<id>128</id>
-		<value>�@��</value>
-	</string>
-	<string>
-		<id>129</id>
-		<value>�ۿO�`��</value>
-	</string>
-	<string>
-		<id>130</id>
-		<value>�t�ΫH��</value>
-	</string>
-	<string>
-		<id>131</id>
-		<value>�ù�</value>
-	</string>
-	<string>
-		<id>132</id>
-		<value>�M��</value>
-	</string>
-	<string>
-		<id>133</id>
-		<value>�q��</value>
-	</string>
-	<string>
-		<id>134</id>
-		<value>�q��</value>
-	</string>
-	<string>
-		<id>135</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>136</id>
-		<value>����C��</value>
-	</string>
-	<string>
-		<id>137</id>
-		<value>�j�M</value>
-	</string>
-	<string>
-		<id>138</id>
-		<value>�t�ΫH��</value>
-	</string>
-	<string>
-		<id>139</id>
-		<value>�ū�:</value>
-	</string>
-	<string>
-		<id>140</id>
-		<value>CPU:</value>
-	</string>
-	<string>
-		<id>141</id>
-		<value>GPU:</value>
-	</string>
-	<string>
-		<id>142</id>
-		<value>�ɶ�:</value>
-	</string>
-	<string>
-		<id>143</id>
-		<value>Current:</value>
-	</string>
-	<string>
-		<id>144</id>
-		<value>����:</value>
-	</string>
-	<string>
-		<id>145</id>
-		<value>����:</value>
-	</string>
-	<string>
-		<id>146</id>
-		<value>Type:</value>
-	</string>
-	<string>
-		<id>147</id>
-		<value>Static</value>
-	</string>
-	<string>
-		<id>148</id>
-		<value>DHCP</value>
-	</string>
-	<string>
-		<id>149</id>
-		<value>MAC</value>
-	</string>
-	<string>
-		<id>150</id>
-		<value>IP</value>
-	</string>
-	<string>
-		<id>151</id>
-		<value>Link: </value>
-	</string>
-	<string>
-		<id>152</id>
-		<value>Half duplex</value>
-	</string>
-	<string>
-		<id>153</id>
-		<value>Full duplex</value>
-	</string>
-	<string>
-		<id>154</id>
-		<value>Storage</value>
-	</string>
-	<string>
-		<id>155</id>
-		<value>Drive</value>
-	</string>
-	<string>
-		<id>156</id>
-		<value>Free</value>
-	</string>
-	<string>
-		<id>157</id>
-		<value>���T</value>
-	</string>
-	<string>
-		<id>158</id>
-		<value>�Ѿl�Ŷ�</value>
-	</string>
-	<string>
-		<id>159</id>
-		<value>No link</value>
-	</string>
-	<string>
-		<id>160</id>
-		<value>Free</value>
-	</string>
-	<string>
-		<id>161</id>
-		<value>Unavailable</value>
-	</string>
-	<string>
-		<id>162</id>
-		<value>���L�}��</value>
-	</string>
-	<string>
-		<id>163</id>
-		<value>Ū����</value>
-	</string>
-	<string>
-		<id>164</id>
-		<value>�S������</value>
-	</string>
-	<string>
-		<id>165</id>
-		<value>Disc Present</value>
-	</string>
-	<string>
-		<id>166</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>167</id>
-		<value>FTP���A��</value>
-	</string>
-	<string>
-		<id>168</id>
-		<value>Synchronize Time</value>
-	</string>
-	<string>
-		<id>169</id>
-		<value>Resolution</value>
-	</string>
-	<string>
-		<id>170</id>
-		<value>�M��:</value>
-	</string>
-	<string>
-		<id>171</id>
-		<value>�q��:</value>
-	</string>
-	<string>
-		<id>172</id>
-		<value>Date of Release:</value>
-	</string>
-	<string>
-		<id>173</id>
-		<value>Rating:</value>
-	</string>
-	<string>
-		<id>174</id>
-		<value>Genre:</value>
-	</string>
-	<string>
-		<id>175</id>
-		<value>Tones:</value>
-	</string>
-	<string>
-		<id>176</id>
-		<value>Styles:</value>
-	</string>
-	<string>
-		<id>177</id>
-		<value>Review:</value>
-	</string>
-	<string>
-		<id>178</id>
-		<value>Tracks:</value>
-	</string>
-	<string>
-		<id>179</id>
-		<value>�q��</value>
-	</string>
-	<string>
-		<id>180</id>
-		<value>Duration</value>
-	</string>
-	<string>
-		<id>181</id>
-		<value>��ܱM��</value>
-	</string>
-	<string>
-		<id>182</id>
-		<value>���y</value>
-	</string>
-	<string>
-		<id>183</id>
-		<value>�w��</value>
-	</string>
-	<string>
-		<id>184</id>
-		<value>���s��z</value>
-	</string>
-	<string>
-		<id>185</id>
-		<value>���b�j�M�M��</value>
-	</string>
-	<string>
-		<id>186</id>
-		<value>�T�w</value>
-	</string>
-	<string>
-		<id>187</id>
-		<value>�䤣�����M��!</value>
-	</string>
-	<string>
-		<id>188</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>189</id>
-		<value>���b���˴C���T</value>
-	</string>
-	<string>
-		<id>190</id>
-		<value>�x�s</value>
-	</string>
-	<string>
-		<id>191</id>
-		<value>Shuffle</value>
-	</string>
-	<string>
-		<id>192</id>
-		<value>�M��</value>
-	</string>
-	<string>
-		<id>193</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>194</id>
-		<value>�j�M��...</value>
-	</string>
-	<string>
-		<id>195</id>
-		<value>�䤣�����IMDB��T!</value>
-	</string>
-	<string>
-		<id>196</id>
-		<value>��ܼv��:</value>
-	</string>
-	<string>
-		<id>197</id>
-		<value>���b�d��IMDB��T</value>
-	</string>
-	<string>
-		<id>198</id>
-		<value>���bŪ���v���Ӹ`</value>
-	</string>
-	<string>
-		<id>199</id>
-		<value>�ɺt:</value>
-	</string>
-	<string>
-		<id>200</id>
-		<value>�s��:</value>
-	</string>
-	<string>
-		<id>201</id>
-		<value>�~��:</value>
-	</string>
-	<string>
-		<id>202</id>
-		<value>Tagline:</value>
-	</string>
-	<string>
-		<id>203</id>
-		<value>�@���j�N:</value>
-	</string>
-	<string>
-		<id>204</id>
-		<value>�ƦW:</value>
-	</string>
-	<string>
-		<id>205</id>
-		<value>�벼:</value>
-	</string>
-	<string>
-		<id>206</id>
-		<value>Cast</value>
-	</string>
-	<string>
-		<id>207</id>
-		<value>�@��</value>
-	</string>
-	<string>
-		<id>208</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>209</id>
-		<value>�U�@��</value>
-	</string>
-	<string>
-		<id>210</id>
-		<value>�W�@��</value>
-	</string>
-	<string>
-		<id>211</id>
-		<value>���b��M�{��</value>
-	</string>
-	<string>
-		<id>212</id>
-		<value>�o�{�{��</value>
-	</string>
-	<string>
-		<id>213</id>
-		<value>UI Calibration</value>
-	</string>
-	<string>
-		<id>214</id>
-		<value>Screen Calibration</value>
-	</string>
-	<string>
-		<id>215</id>
-		<value>Soften</value>
-	</string>
-	<string>
-		<id>216</id>
-		<value>Zoom</value>
-	</string>
-	<string>
-		<id>217</id>
-		<value>Stretch</value>
-	</string>
-	<string>
-		<id>218</id>
-		<value>DVD���о�</value>
-	</string>
-	<string>
-		<id>219</id>
-		<value>�Щ�J����</value>
-	</string>
-	<string>
-		<id>220</id>
-		<value>Remote Share</value>
-	</string>
-	<string>
-		<id>221</id>
-		<value>Network is not connected</value>
-	</string>
-	<string>
-		<id>222</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>223</id>
-		<value>Auto widescreen switching</value>
-	</string>
-	<string>
-		<id>224</id>
-		<value>�t��</value>
-	</string>
-	<string>
-		<id>225</id>
-		<value>Transition time</value>
-	</string>
-	<string>
-		<id>226</id>
-		<value>Enable PAL60</value>
-	</string>
-	<string>
-		<id>227</id>
-		<value>Enable CDDB</value>
-	</string>
-	<string>
-		<id>228</id>
-		<value>Shuffle Playlist on load</value>
-	</string>
-	<string>
-		<id>229</id>
-		<value>HD Spindown time (mins)</value>
-	</string>
-	<string>
-		<id>230</id>
-		<value>Filters</value>
-	</string>
-	<string>
-		<id>231</id>
-		<value>None</value>
-	</string>
-	<string>
-		<id>232</id>
-		<value>Point</value>
-	</string>
-	<string>
-		<id>233</id>
-		<value>Linear</value>
-	</string>
-	<string>
-		<id>234</id>
-		<value>Anisotropic</value>
-	</string>
-	<string>
-		<id>235</id>
-		<value>Quincunx</value>
-	</string>
-	<string>
-		<id>236</id>
-		<value>Gaussian Cubic</value>
-	</string>
-	<string>
-		<id>237</id>
-		<value>Minification</value>
-	</string>
-	<string>
-		<id>238</id>
-		<value>Magnification</value>
-	</string>
-	<string>
-		<id>240</id>
-		<value>�۰ʹB��DVD�v��</value>
-	</string>
-	<string>
-		<id>241</id>
-		<value>�۰ʹB��VCD/SVCD</value>
-	</string>
-	<string>
-		<id>242</id>
-		<value>�۰ʹB�歵��CD</value>
-	</string>
-	<string>
-		<id>243</id>
-		<value>�۰ʹB��XBOX�C��</value>
-	</string>
-	<string>
-		<id>244</id>
-		<value>�۰ʹB��v��</value>
-	</string>
-	<string>
-		<id>245</id>
-		<value>�۰ʹB�歵��</value>
-	</string>
-	<string>
-		<id>246</id>
-		<value>�۰ʹB��Ϥ�</value>
-	</string>
-	<string>
-		<id>247</id>
-		<value>Scripts</value>
-	</string>
-	<string>
-		<id>248</id>
-		<value>�y��</value>
-	</string>
-	<string>
-		<id>249</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>250</id>
-		<value>Visualisation</value>
-	</string>
-	<string>
-		<id>251</id>
-		<value>Select destination directory</value>
-	</string>
-	<string>
-		<id>252</id>
-		<value>Output to all speakers</value>
-	</string>
-	<string>
-		<id>253</id>
-		<value>Number of channels</value>
-	</string>
-	<string>
-		<id>254</id>
-		<value>DD Stereo Passthrough</value>
-	</string>
-	<string>
-		<id>255</id>
-		<value>CDDB</value>
-	</string>
-	<string>
-		<id>256</id>
-		<value>Querying freedb for CDDB info</value>
-	</string>
-	<string>
-		<id>257</id>
-		<value>���~</value>
-	</string>
-	<string>
-		<id>258</id>
-		<value>Enable ID3 tags</value>
-	</string>
-	<string>
-		<id>259</id>
-		<value>Opening</value>
-	</string>
-	<string>
-		<id>260</id>
-		<value>Shoutcast</value>
-	</string>
-	<string>
-		<id>261</id>
-		<value>Waiting for start....</value>
-	</string>
-	<string>
-		<id>262</id>
-		<value>Scripts Output</value>
-	</string>
-	<string>
-		<id>263</id>
-		<value>HTTP ���A��</value>
-	</string>
-	<string>
-		<id>264</id>
-		<value>���s</value>
-	</string>
-	<string>
-		<id>265</id>
-		<value>������s</value>
-	</string>
-	<string>
-		<id>266</id>
-		<value>�ƦC�ϥ�: ����</value>
-	</string>
-	<string>
-		<id>267</id>
-		<value>�ƦC�ϥ�: �ɶ�</value>
-	</string>
-	<string>
-		<id>268</id>
-		<value>�ƦC�ϥ�: ���D</value>
-	</string>
-	<string>
-		<id>269</id>
-		<value>�ƦC�ϥ�: �q��</value>
-	</string>
-	<string>
-		<id>270</id>
-		<value>�ƦC�ϥ�: �п�</value>
-	</string>
-	<string>
-		<id>271</id>
-		<value>�Y100�ӱƦW</value>
-	</string>
-	<string>
-		<id>272</id>
-		<value>Top Left Overscan Compensation</value>
-	</string>
-	<string>
-		<id>273</id>
-		<value>Bottom Right Overscan Compensation</value>
-	</string>
-	<string>
-		<id>274</id>
-		<value>Subtitles Position</value>
-	</string>
-	<string>
-		<id>275</id>
-		<value>Pixel Ratio Adjustment</value>
-	</string>
-	<string>
-		<id>276</id>
-		<value>Move the arrow to change the amount of overscan</value>
-	</string>
-	<string>
-		<id>277</id>
-		<value>Move the bar to change the subtitles position</value>
-	</string>
-	<string>
-		<id>278</id>
-		<value>Change the rectangle so that it is perfectly square</value>
-	</string>
-	<string>
-		<id>279</id>
-		<value>Unable to load settings</value>
-	</string>
-	<string>
-		<id>280</id>
-		<value>using default fallbacks</value>
-	</string>
-	<string>
-		<id>281</id>
-		<value>���ˬd .xml�ɮ�</value>
-	</string>
-	<string>
-		<id>282</id>
-		<value>found %i items</value>
-	</string>
-	<string>
-		<id>283</id>
-		<value>Search Results</value>
-	</string>
-	<string>
-		<id>284</id>
-		<value>No results found</value>
-	</string>
-	<string>
-		<id>285</id>
-		<value>Deinterlace filter</value>
-	</string>
-	<string>
-		<id>286</id>
-		<value>Postprocessing filter</value>
-	</string>
-	<string>
-		<id>287</id>
-		<value>SRT�r��</value>
-	</string>
-	<string>
-		<id>288</id>
-		<value>�r��</value>
-	</string>
-	<string>
-		<id>289</id>
-		<value>�j�p</value>
-	</string>
-	<string>
-		<id>290</id>
-		<value>Volume amplification (dB)</value>
-	</string>
-	<string>
-		<id>291</id>
-		<value>���T</value>
-	</string>
-	<string>
-		<id>292</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>293</id>
-		<value>�r��</value>
-	</string>
-	<string>
-		<id>294</id>
-		<value>�إ߮���</value>
-	</string>
-	<string>
-		<id>295</id>
-		<value>Cycle bookmarks</value>
-	</string>
-	<string>
-		<id>296</id>
-		<value>�M�Ů���</value>
-	</string>
-	<string>
-		<id>297</id>
-		<value>AVDelay</value>
-	</string>
-	<string>
-		<id>298</id>
-		<value>Slider</value>
-	</string>
-	<string>
-		<id>300</id>
-		<value>1. �y��</value>
-	</string>
-	<string>
-		<id>301</id>
-		<value>2. ���Ĥj�p</value>
-	</string>
-	<string>
-		<id>302</id>
-		<value>3. Stream</value>
-	</string>
-	<string>
-		<id>303</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>304</id>
-		<value>�y��</value>
-	</string>
-	<string>
-		<id>305</id>
-		<value>Enabled</value>
-	</string>
-	<string>
-		<id>306</id>
-		<value>Non-Interleaved</value>
-	</string>
-	<string>
-		<id>307</id>
-		<value>Auto</value>
-	</string>
-	<string>
-		<id>308</id>
-		<value>vertical deblocking filter</value>
-	</string>
-	<string>
-		<id>309</id>
-		<value>horizontal deblocking filter</value>
-	</string>
-	<string>
-		<id>310</id>
-		<value>Auto brightness/contrast</value>
-	</string>
-	<string>
-		<id>311</id>
-		<value>Dering</value>
-	</string>
-	<string>
-		<id>312</id>
-		<value>(0=auto)</value>
-	</string>
-	<string>
-		<id>313</id>
-		<value>Reorganize database</value>
-	</string>
-	<string>
-		<id>314</id>
-		<value>Preparing...</value>
-	</string>
-	<string>
-		<id>315</id>
-		<value>Database error</value>
-	</string>
-	<string>
-		<id>316</id>
-		<value>Searching songs...</value>
-	</string>
-	<string>
-		<id>317</id>
-		<value>Reorganization successfull</value>
-	</string>
-	<string>
-		<id>318</id>
-		<value>Marking deleted songs</value>
-	</string>
-	<string>
-		<id>319</id>
-		<value>Error reorganizing songs</value>
-	</string>
-	<string>
-		<id>320</id>
-		<value>Searching artists...</value>
-	</string>
-	<string>
-		<id>321</id>
-		<value>Error reorganizing artists</value>
-	</string>
-	<string>
-		<id>322</id>
-		<value>Searching genres...</value>
-	</string>
-	<string>
-		<id>323</id>
-		<value>Error reorganizing genres</value>
-	</string>
-	<string>
-		<id>324</id>
-		<value>Searching pathes...</value>
-	</string>
-	<string>
-		<id>325</id>
-		<value>Error reorganizing pathes</value>
-	</string>
-	<string>
-		<id>326</id>
-		<value>Searching albums...</value>
-	</string>
-	<string>
-		<id>327</id>
-		<value>Error reorganizing albums</value>
-	</string>
-	<string>
-		<id>328</id>
-		<value>Writing changes...</value>
-	</string>
-	<string>
-		<id>329</id>
-		<value>Error writing changes</value>
-	</string>
-	<string>
-		<id>330</id>
-		<value>This may take some time...</value>
-	</string>
-	<string>
-		<id>331</id>
-		<value>Compressing database...</value>
-	</string>
-	<string>
-		<id>332</id>
-		<value>Error compressing database</value>
-	</string>
-	<string>
-		<id>333</id>
-		<value>Do you want to reorganize my music database?</value>
-	</string>
-	<string>
-		<id>334</id>
-		<value>Reorganize my music database</value>
-	</string>
-	<string>
-		<id>335</id>
-		<value>�}�l</value>
-	</string>
-	<string>
-		<id>336</id>
-		<value>Adjust Framerate</value>
-	</string>
-	<string>
-		<id>337</id>
-		<value>���Ŀ�X</value>
-	</string>
-	<string>
-		<id>338</id>
-		<value>Analog</value>
-	</string>
-	<string>
-		<id>339</id>
-		<value>�ƽX</value>
-	</string>
-	<string>
-		<id>340</id>
-		<value>Various Artists</value>
-	</string>
-	<string>
-		<id>341</id>
-		<value>����DVD</value>
-	</string>
-	<string>
-		<id>342</id>
-		<value>�v��</value>
-	</string>
-	<string>
-		<id>343</id>
-		<value>Adjust Framerate</value>
-	</string>
-	<string>
-		<id>344</id>
-		<value>Actors</value>
-	</string>
-	<string>
-		<id>345</id>
-		<value>Year</value>
-	</string>
-	<string>
-		<id>346</id>
-		<value>Stack</value>
-	</string>
-	<string>
-		<id>347</id>
-		<value>Unstack</value>
-	</string>
-	<string>
-		<id>348</id>
-		<value>Flatten Directory Hierarchy</value>
-	</string>
-	<string>
-		<id>349</id>
-		<value>�u���Default.xbe</value>
-	</string>
-	<string>
-		<id>350</id>
-		<value>�{��</value>
-	</string>
-	<string>
-		<id>351</id>
-		<value>Off</value>
-	</string>
-	<string>
-		<id>352</id>
-		<value>Dim</value>
-	</string>
-	<string>
-		<id>353</id>
-		<value>Black</value>
-	</string>
-	<string>
-		<id>354</id>
-		<value>Matrix Trails</value>
-	</string>
-	<string>
-		<id>355</id>
-		<value>Screensaver Idle Timeout</value>
-	</string>
-	<string>
-		<id>356</id>
-		<value>Screensaver Mode</value>
-	</string>
-	<string>
-		<id>357</id>
-		<value>Shutdown Idle Timeout</value>
-	</string>
-	<string>
-		<id>358</id>
-		<value>All albums</value>
-	</string>
-	<string>
-		<id>359</id>
-		<value>Recent albums</value>
-	</string>
-	<string>
-		<id>360</id>
-		<value>Screensaver</value>
-	</string>
-	<string>
-		<id>361</id>
-		<value>R. SlideShow</value>
-	</string>
-	<string>
-		<id>362</id>
-		<value>Screensaver Fade Level (%)</value>
-	</string>
-	<string>
-		<id>363</id>
-		<value>Sort by: File</value>
-	</string>
-	<string>
-		<id>364</id>
-		<value>DD/DTS Multichannel Passthrough</value>
-	</string>
-	<string>
-		<id>365</id>
-		<value>Sort by: Name</value>
-	</string>
-	<string>
-		<id>366</id>
-		<value>Sort by: Year</value>
-	</string>
-	<string>
-		<id>367</id>
-		<value>Sort by: Rating</value>
-	</string>
-	<string>
-		<id>368</id>
-		<value>IMDB</value>
-	</string>
-	<string>
-		<id>369</id>
-		<value>Title</value>
-	</string>
-	<string>
-		<id>370</id>
-		<value>T-Storms</value>
-	</string>
-	<string>
-		<id>371</id>
-		<value>Partly</value>
-	</string>
-	<string>
-		<id>372</id>
-		<value>Mostly</value>
-	</string>
-	<string>
-		<id>373</id>
-		<value>Sunny</value>
-	</string>
-	<string>
-		<id>374</id>
-		<value>Cloudy</value>
-	</string>
-	<string>
-		<id>375</id>
-		<value>Snow</value>
-	</string>
-	<string>
-		<id>376</id>
-		<value>Rain</value>
-	</string>
-	<string>
-		<id>377</id>
-		<value>Light</value>
-	</string>
-	<string>
-		<id>378</id>
-		<value>AM</value>
-	</string>
-	<string>
-		<id>379</id>
-		<value>PM</value>
-	</string>
-	<string>
-		<id>380</id>
-		<value>Showers</value>
-	</string>
-	<string>
-		<id>381</id>
-		<value>Few</value>
-	</string>
-	<string>
-		<id>382</id>
-		<value>Scattered</value>
-	</string>
-	<string>
-		<id>383</id>
-		<value>Wind</value>
-	</string>
-	<string>
-		<id>384</id>
-		<value>Strong</value>
-	</string>
-	<string>
-		<id>385</id>
-		<value>Fair</value>
-	</string>
-	<string>
-		<id>386</id>
-		<value>Clear</value>
-	</string>
-	<string>
-		<id>387</id>
-		<value>Clouds</value>
-	</string>
-	<string>
-		<id>388</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>389</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>390</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>391</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>392</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>393</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>394</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>395</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>396</id>
-		<value>Select Location</value>
-	</string>
-	<string>
-		<id>397</id>
-		<value>Refresh Time</value>
-	</string>
-	<string>
-		<id>398</id>
-		<value>Temperature Units</value>
-	</string>
-	<string>
-		<id>399</id>
-		<value>Speed Units</value>
-	</string>
-	<string>
-		<id>400</id>
-		<value>Weather</value>
-	</string>
-	<string>
-		<id>401</id>
-		<value>Temp</value>
-	</string>
-	<string>
-		<id>402</id>
-		<value>Feels Like</value>
-	</string>
-	<string>
-		<id>403</id>
-		<value>UV Index</value>
-	</string>
-	<string>
-		<id>404</id>
-		<value>Wind</value>
-	</string>
-	<string>
-		<id>405</id>
-		<value>Dew Point</value>
-	</string>
-	<string>
-		<id>406</id>
-		<value>Humidity</value>
-	</string>
-	<string>
-		<id>407</id>
-		<value>From</value>
-	</string>
-	<string>
-		<id>408</id>
-		<value>at</value>
-	</string>
-	<string>
-		<id>410</id>
-		<value>Accessing Weather.com</value>
-	</string>
-	<string>
-		<id>411</id>
-		<value>Getting Weather For:</value>
-	</string>
-	<string>
-		<id>412</id>
-		<value>Unable to get weather data</value>
-	</string>
-	<string>
-		<id>413</id>
-		<value>Manual</value>
-	</string>
-	<string>
-		<id>414</id>
-		<value>No review for this album</value>
-	</string>
-	<string>
-		<id>415</id>
-		<value>Downloading thumbnail...</value>
-	</string>
-	<string>
-		<id>416</id>
-		<value>Not available</value>
-	</string>
-	<string>
-		<id>417</id>
-		<value>View: Big Icons</value>
-	</string>
-	<string>
-		<id>418</id>
-		<value>My Videos/Genres</value>
-	</string>
-	<string>
-		<id>419</id>
-		<value>My Videos/Actors</value>
-	</string>
-	<string>
-		<id>420</id>
-		<value>My Videos/Years</value>
-	</string>
-	<string>
-		<id>421</id>
-		<value>My Videos/Title</value>
-	</string>
-	<string>
-		<id>422</id>
-		<value>Delete albuminfo</value>
-	</string>
-	<string>
-		<id>423</id>
-		<value>Delete CDDB info</value>
-	</string>
-	<string>
-		<id>424</id>
-		<value>Select</value>
-	</string>
-	<string>
-		<id>425</id>
-		<value>No albuminfo found.</value>
-	</string>
-	<string>
-		<id>426</id>
-		<value>No CDDB info found.</value>
-	</string>
-	<string>
-		<id>427</id>
-		<value>Disc:</value>
-	</string>
-	<string>
-		<id>428</id>
-		<value>Insert correct CD/DVD</value>
-	</string>
-	<string>
-		<id>429</id>
-		<value>Please insert the following CD/DVD</value>
-	</string>
-	<string>
-		<id>430</id>
-		<value>�ƦC�ϥ�: DVD#</value>
-	</string>
-	<string>
-		<id>431</id>
-		<value>No Cache</value>
-	</string>
-	<string>
-		<id>432</id>
-		<value>Delete movie from database</value>
-	</string>
-	<string>
-		<id>433</id>
-		<value>�A�T�w�n����</value>
-	</string>
-	<string>
-		<id>434</id>
-		<value>�o�Ӽv����?</value>
-	</string>
-	<string>
-		<id>435</id>
-		<value>Track</value>
-	</string>
-	<string>
-		<id>436</id>
-		<value>Year:</value>
-	</string>
-	<string>
-		<id>437</id>
-		<value>Duration:</value>
-	</string>
-	<string>
-		<id>438</id>
-		<value>���b�}���ɮ�</value>
-	</string>
-	<string>
-		<id>439</id>
-		<value>�w��</value>
-	</string>
-	<string>
-		<id>440</id>
-		<value>�w��</value>
-	</string>
-	<string>
-		<id>441</id>
-		<value>UDF</value>
-	</string>
-	<string>
-		<id>442</id>
-		<value>LAN</value>
-	</string>
-	<string>
-		<id>443</id>
-		<value>Internet</value>
-	</string>
-	<string>
-		<id>444</id>
-		<value>���T</value>
-	</string>
-	<string>
-		<id>445</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>446</id>
-		<value>DVD</value>
-	</string>
-	<string>
-		<id>447</id>
-		<value>�۰ʼ���</value>
-	</string>
-	<string>
-		<id>448</id>
-		<value>LCD</value>
-	</string>
-	<string>
-		<id>449</id>
-		<value>Enabled</value>
-	</string>
-	<string>
-		<id>450</id>
-		<value>Columns</value>
-	</string>
-	<string>
-		<id>451</id>
-		<value>Row 1 adress</value>
-	</string>
-	<string>
-		<id>452</id>
-		<value>Row 2 adress</value>
-	</string>
-	<string>
-		<id>453</id>
-		<value>Row 3 adress</value>
-	</string>
-	<string>
-		<id>454</id>
-		<value>Row 4 adress</value>
-	</string>
-	<string>
-		<id>455</id>
-		<value>Rows</value>
-	</string>
-	<string>
-		<id>456</id>
-		<value>Mode</value>
-	</string>
-	<string>
-		<id>457</id>
-		<value>Switch view</value>
-	</string>
-	<string>
-		<id>458</id>
-		<value>B/Mark</value>
-	</string>
-	<string>
-		<id>459</id>
-		<value>Subs</value>
-	</string>
-	<string>
-		<id>460</id>
-		<value>Audio Stream</value>
-	</string>
-	<string>
-		<id>461</id>
-		<value>[active]</value>
-	</string>
-	<string>
-		<id>462</id>
-		<value>�r��</value>
-	</string>
-	<string>
-		<id>463</id>
-		<value>Backlight</value>
-	</string>
-	<string>
-		<id>464</id>
-		<value>Brightness</value>
-	</string>
-	<string>
-		<id>465</id>
-		<value>Contrast</value>
-	</string>
-	<string>
-		<id>466</id>
-		<value>Gamma</value>
-	</string>
-	<string>
-		<id>467</id>
-		<value>Type</value>
-	</string>
-	<string>
-		<id>468</id>
-		<value>Move the bar to change the osd position</value>
-	</string>
-	<string>
-		<id>469</id>
-		<value>OSD Position</value>
-	</string>
-	<string>
-		<id>470</id>
-		<value>Credits</value>
-	</string>
-	<string>
-		<id>471</id>
-		<value>Modchip</value>
-	</string>
-	<string>
-		<id>472</id>
-		<value>OSD Timeout</value>
-	</string>
-	<string>
-		<id>473</id>
-		<value>High Quality Resampling</value>
-	</string>
-	<string>
-		<id>474</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>475</id>
-		<value>Music Only</value>
-	</string>
-	<string>
-		<id>476</id>
-		<value>Music &amp; Video</value>
-	</string>
-	<string>
-		<id>477</id>
-		<value>Unable to load playlist</value>
-	</string>
-	<string>
-		<id>478</id>
-		<value>OSD</value>
-	</string>
-	<string>
-		<id>479</id>
-		<value>�����λy��</value>
-	</string>
-	<string>
-		<id>480</id>
-		<value>User Interface</value>
-	</string>
-	<string>
-		<id>481</id>
-		<value>�n���]�w</value>
-	</string>
-	<string>
-		<id>482</id>
-		<value>����XBMC</value>
-	</string>
-	<string>
-		<id>483</id>
-		<value>�M��</value>
-	</string>
-	<string>
-		<id>484</id>
-		<value>�q��</value>
-	</string>
-	<string>
-		<id>485</id>
-		<value>�R���M��</value>
-	</string>
-	<string>
-		<id>486</id>
-		<value>����</value>
-	</string>
-	<string>
-		<id>487</id>
-		<value>���Ƥ@��</value>
-	</string>
-	<string>
-		<id>488</id>
-		<value>���Ƴo�Ӹ�Ƨ�</value>
-	</string>
-	<string>
-		<id>489</id>
-		<value>Use playlist in songs</value>
-	</string>
-	<string>
-		<id>490</id>
-		<value>Auto switch list and icons in songs</value>
-	</string>
-	<string>
-		<id>491</id>
-		<value>�ϥΤj�ϥ�</value>
-	</string>
-	<string>
-		<id>492</id>
-		<value>�X�j�r��</value>
-	</string>
-	<string>
-		<id>493</id>
-		<value>Advanced Options (Experts Only!)</value>
-	</string>
-	<string>
-		<id>494</id>
-		<value>Overall Audio Headroom (dB)</value>
-	</string>
-	<string>
-		<id>495</id>
-		<value>Upsample videos to GUI resolution</value>
-	</string>
-	<string>
-		<id>496</id>
-		<value>Calibration</value>
-	</string>
-	<string>
-		<id>497</id>
-		<value>Hide Media Extensions</value>
-	</string>
-	<string>
-		<id>498</id>
-		<value>�ƦC�ϥ�: ������</value>
-	</string>
-	<string>
-		<id>499</id>
-		<value>����s��www.allmusic.com</value>
-	</string>
-	<string>
-		<id>500</id>
-		<value>�U���M���ƥ���</value>
-	</string>
-	<string>
-		<id>501</id>
-		<value>Looking for album names...</value>
-	</string>
-	<string>
-		<id>502</id>
-		<value>Open</value>
-	</string>
-	<string>
-		<id>503</id>
-		<value>Busy</value>
-	</string>
-	<string>
-		<id>504</id>
-		<value>Empty</value>
-	</string>
-	<string>
-		<id>505</id>
-		<value>���b�q�ɮפ�Ū���C����</value>
-	</string>
-	
-	<string>
-		<id>998</id>
-		<value>XLink KAI</value>
-	</string>
-	<string>
-		<id>999</id>
-		<value>Online Gaming</value>
-	</string> 
-	
-	<string>
-		<id>10000</id>
-		<value>Home</value>
-	</string>
-	<string>
-		<id>10001</id>
-		<value>�ڪ��{��</value>
-	</string>
-	<string>
-		<id>10002</id>
-		<value>�ڪ��Ϥ�</value>
-	</string>
-	<string>
-		<id>10003</id>
-		<value>�ڪ��ɮ�</value>
-	</string>
-	<string>
-		<id>10004</id>
-		<value>�]�w</value>
-	</string>
-	<string>
-		<id>10005</id>
-		<value>�ڪ�����</value>
-	</string>
-	<string>
-		<id>10006</id>
-		<value>�ڪ����T</value>
-	</string>
-	<string>
-		<id>10007</id>
-		<value>�t�ΫH��</value>
-	</string>
-	<string>
-		<id>10008</id>
-		<value>Settings-&gt;General</value>
-	</string>
-	<string>
-		<id>10009</id>
-		<value>Settings-&gt;Screen</value>
-	</string>
-	<string>
-		<id>10010</id>
-		<value>Settings-&gt;Screen-&gt;UI Calibration</value>
-	</string>
-	<string>
-		<id>10011</id>
-		<value>Settings-&gt;Screen-&gt;Screen Calibration</value>
-	</string>
-	<string>
-		<id>10012</id>
-		<value>Settings-&gt;SlideShow</value>
-	</string>
-	<string>
-		<id>10013</id>
-		<value>Settings-&gt;Screen-&gt;Filters</value>
-	</string>
-	<string>
-		<id>10014</id>
-		<value>Settings-&gt;Music</value>
-	</string>
-	<string>
-		<id>10015</id>
-		<value>Settings-&gt;Screen-&gt;Subtitles</value>
-	</string>
-	<string>
-		<id>10016</id>
-		<value>Settings-&gt;Screen-&gt;Screensaver</value>
-	</string>
-	<string>
-		<id>10017</id>
-		<value>Settings-&gt;Weather</value>
-	</string>
-	<string>
-		<id>10020</id>
-		<value>Settings-&gt;Scripts</value>
-	</string>
-	<string>
-		<id>10021</id>
-		<value>My Videos/genre</value>
-	</string>
-	<string>
-		<id>10022</id>
-		<value>My Videos/actor</value>
-	</string>
-	<string>
-		<id>10023</id>
-		<value>My Videos/year</value>
-	</string>
-	<string>
-		<id>10024</id>
-		<value>Settings-&gt;Programs</value>
-	</string>
-	<string>
-		<id>10025</id>
-		<value>My Videos/title</value>
-	</string>
-	<string>
-		<id>10026</id>
-		<value>Settings-&gt;General-&gt;Cache</value>
-	</string>
-	<string>
-		<id>10027</id>
-		<value>Settings-&gt;General-&gt;Autorun</value>
-	</string>
-	<string>
-		<id>10028</id>
-		<value>My Videos/playlist</value>
-	</string>
-	<string>
-		<id>10029</id>
-		<value>Settings-&gt;General-&gt;LCD</value>
-	</string>
-	<string>
-		<id>10100</id>
-		<value>Yes/no dialog</value>
-	</string>
-	<string>
-		<id>10101</id>
-		<value>Progress dialog</value>
-	</string>
-	<string>
-		<id>10500</id>
-		<value>My Music/playlist</value>
-	</string>
-	<string>
-		<id>10501</id>
-		<value>My Music/files</value>
-	</string>
-	<string>
-		<id>10502</id>
-		<value>My Music/albums</value>
-	</string>
-	<string>
-		<id>10503</id>
-		<value>My Music/artists</value>
-	</string>
-	<string>
-		<id>10504</id>
-		<value>My Music/genres</value>
-	</string>
-	<string>
-		<id>10505</id>
-		<value>My Music/top100</value>
-	</string>
-	<string>
-		<id>11000</id>
-		<value>keyboard</value>
-	</string>
-	<string>
-		<id>12000</id>
-		<value>Select dialog</value>
-	</string>
-	<string>
-		<id>12001</id>
-		<value>My Music/info</value>
-	</string>
-	<string>
-		<id>12002</id>
-		<value>Dialog OK</value>
-	</string>
-	<string>
-		<id>12003</id>
-		<value>My Videos/Info</value>
-	</string>
-	<string>
-		<id>12004</id>
-		<value>My Scripts/Info</value>
-	</string>
-	<string>
-		<id>12005</id>
-		<value>Fullscreen video</value>
-	</string>
-	<string>
-		<id>12006</id>
-		<value>Audio visisalisation</value>
-	</string>
-	<string>
-		<id>12007</id>
-		<value>My Picture/slideshow</value>
-	</string>
-	<string>
-		<id>12008</id>
-		<value>Filestacking dialog</value>
-	</string>
-	<string>
-		<id>12600</id>
-		<value>�ڪ��Ѯ�</value>
-	</string>
-	<string>
-		<id>12900</id>
-		<value>�ù��O�@</value>
-	</string>
-	<string>
-		<id>12901</id>
-		<value>Fullscreen OSD</value>
-	</string>
+  <string id="0">程式</string>
+  <string id="1">圖片</string>
+  <string id="2">音樂</string>
+  <string id="3">影片</string>
+  <string id="4">電視頻道</string>
+  <string id="5">系統設定</string>
+  <string id="6">Xbox Media Center SVN</string>
+  <string id="7">檔案總管</string>
+  <string id="8">氣象</string>
+
+  <string id="11">星期一</string>
+  <string id="12">星期二</string>
+  <string id="13">星期三</string>
+  <string id="14">星期四</string>
+  <string id="15">星期五</string>
+  <string id="16">星期六</string>
+  <string id="17">星期日</string>
+
+  <string id="21">1月</string>
+  <string id="22">2月</string>
+  <string id="23">3月</string>
+  <string id="24">4月</string>
+  <string id="25">5月</string>
+  <string id="26">6月</string>
+  <string id="27">7月</string>
+  <string id="28">8月</string>
+  <string id="29">9月</string>
+  <string id="30">10月</string>
+  <string id="31">11月</string>
+  <string id="32">12月</string>
+
+  <string id="98">顯示：自動</string>
+  <string id="99">顯示：自動大圖示</string>
+  <string id="100">顯示：圖示</string>
+  <string id="101">顯示：列表</string>
+  <string id="102">搜尋</string>
+  <string id="103">排序：名稱</string>
+  <string id="104">排序：日期</string>
+  <string id="105">排序：大小</string>
+  <string id="106">否</string>
+  <string id="107">是</string>
+  <string id="108">播放圖片</string>
+  <string id="109">建立縮圖</string>
+  <string id="110">建立縮略圖</string>
+  <string id="111">捷徑</string>
+  <string id="112">暫停</string>
+  <string id="113"></string>
+  <string id="114"></string>
+  <string id="115">複製</string>
+  <string id="116">移動</string>
+  <string id="117">刪除</string>
+  <string id="118">重新命名</string>
+  <string id="119">新資料夾</string>
+  <string id="120">確認檔案複製</string>
+  <string id="121">確認檔案移動</string>
+  <string id="122">確認檔案刪除</string>
+  <string id="123">複製這些檔案？</string>
+  <string id="124">移動這些檔案？</string>
+  <string id="125">刪除這些檔案？</string>
+  <string id="126">狀態</string>
+  <string id="127">項目</string>
+  <string id="128">一般設定</string>
+  <string id="129">播放圖片</string>
+  <string id="130">系統資訊</string>
+  <string id="131">螢幕</string>
+  <string id="132">專輯</string>
+  <string id="133">藝人</string>
+  <string id="134">歌曲</string>
+  <string id="135">類別</string>
+  <string id="136">播放列表</string>
+  <string id="137">搜尋</string>
+  <string id="138">系統資訊</string>
+  <string id="139">溫度：</string>
+  <string id="140">中央處理器：</string>
+  <string id="141">圖形處理器：</string>
+  <string id="142">時間：</string>
+  <string id="143">目前：</string>
+  <string id="144">版本：</string>
+  <string id="145">網路：</string>
+  <string id="146">類型：</string>
+  <string id="147">手動(靜態分配)</string>
+  <string id="148">自動(動態分配)</string>
+  <string id="149">網卡位址(MAC)</string>
+  <string id="150">IP 位址</string>
+  <string id="151">連線：</string>
+  <string id="152">半雙工</string>
+  <string id="153">全雙工</string>
+  <string id="154">儲存裝置</string>
+  <string id="155">裝置</string>
+  <string id="156">可用</string>
+  <string id="157">影片</string>
+  <string id="158">可用記憶體</string>
+  <string id="159">未連線</string>
+  <string id="160">可用</string>
+  <string id="161">沒有</string>
+  <string id="162">托盤開啟</string>
+  <string id="163">讀取中</string>
+  <string id="164">無光碟片</string>
+  <string id="165">光碟介紹</string>
+  <string id="166">桌面</string>
+  <string id="167">啟用 FTP 伺服器</string>
+  <string id="168">自動與網路時間同步</string>
+  <string id="169">解析度</string>
+  <string id="170">專輯：</string>
+  <string id="171">藝人：</string>
+  <string id="172">發行日期：</string>
+  <string id="173">評等：</string>
+  <string id="174">類別：</string>
+  <string id="175">音調：</string>
+  <string id="176">風格：</string>
+  <string id="177">評論：</string>
+  <string id="178">音軌：</string>
+  <string id="179">歌曲</string>
+  <string id="180">持續時間</string>
+  <string id="181">選擇專輯</string>
+  <string id="182">音軌</string>
+  <string id="183">評論</string>
+  <string id="184">重新整理</string>
+  <string id="185">搜尋專輯</string>
+  <string id="186">確定</string>
+  <string id="187">找不到專輯！</string>
+  <string id="188">全選</string>
+  <string id="189">搜尋媒體資訊</string>
+  <string id="190">儲存</string>
+  <string id="191">隨機</string>
+  <string id="192">清除</string>
+  <string id="193">搜尋</string>
+  <string id="194">搜尋中…</string>
+  <string id="195">找不到資訊！</string>
+  <string id="196">選擇影片：</string>
+  <string id="197">讀取%s資訊</string>
+  <string id="198">讀取影片詳細資料</string>
+  <string id="199">導演：</string>
+  <string id="200">編劇：</string>
+  <string id="201">年份：</string>
+  <string id="202">標題：</string>
+  <string id="203">大綱：</string>
+  <string id="204">評價：</string>
+  <string id="205">得票：</string>
+  <string id="206">演員表</string>
+  <string id="207">劇情簡介</string>
+  <string id="208">播放</string>
+  <string id="209">向後</string>
+  <string id="210">向前</string>
+  <string id="213">界面校正</string>
+  <string id="214">螢幕校正</string>
+  <string id="215">柔化</string>
+  <string id="216">縮放</string>
+  <string id="217">畫面比率</string>
+  <string id="218">光碟機</string>
+  <string id="219">請放入光碟</string>
+  <string id="220">遠端共享</string>
+  <string id="221">網路未連線</string>
+  <string id="222">取消</string>
+  <string id="224">速度</string>
+  <string id="225">特效轉換時間</string>
+  <string id="227">在 freedb 查詢音樂 CD 資訊</string>
+  <string id="228">隨機播放列表</string>
+  <string id="229">硬碟省電模式(分)</string>
+  <string id="230">濾鏡設定</string>
+  <string id="231">無</string>
+  <string id="232">點</string>
+  <string id="233">條紋</string>
+  <string id="234">非等方性</string>
+  <string id="235">梅花多重取樣</string>
+  <string id="236">三維銳化</string>
+  <string id="237">縮小</string>
+  <string id="238">放大</string>
+  <string id="239">播放完成後清除列表</string>
+  <string id="240">自動播放 DVD</string>
+  <string id="241">自動播放 VCD</string>
+  <string id="242">自動播放 CD</string>
+  <string id="243">自動播放 遊戲片</string>
+  <string id="244">自動播放 影片檔</string>
+  <string id="245">自動播放 音樂檔</string>
+  <string id="246">自動播放 圖片檔</string>
+  <string id="247">腳本程式</string>
+  <string id="248">語言</string>
+  <string id="249">音樂</string>
+  <string id="250">視覺效果</string>
+  <string id="251">選擇目的目錄</string>
+  <string id="252">雙聲道時輸出到所有喇叭</string>
+  <string id="253">通道數</string>
+  <string id="254">- DTS 數位音效</string>
+  <string id="255">CDDB</string>
+  <string id="256">查詢 freedb 獲取 CDDB 資訊</string>
+  <string id="257">錯誤</string>
+  <string id="258">啟用 音樂檔標籤資訊讀取</string>
+  <string id="259">開始</string>
+  <string id="260">Shoutcast 網路音樂台</string>
+  <string id="261">準備開始…</string>
+  <string id="262">腳本輸出</string>
+  <string id="263">啟用 網路伺服器</string>
+  <string id="264">錄音</string>
+  <string id="265">停止錄音</string>
+  <string id="266">排序：音軌</string>
+  <string id="267">排序：時間</string>
+  <string id="268">排序：標題</string>
+  <string id="269">排序：藝人</string>
+  <string id="270">排序：專輯</string>
+  <string id="271">排行前100</string>
+  <string id="272">左上角位置</string>
+  <string id="273">右下角位置</string>
+  <string id="274">字幕位置</string>
+  <string id="275">畫面比例調整</string>
+  <string id="276">設定角落位置</string>
+  <string id="277">改變字幕位置</string>
+  <string id="278">調整成正方形</string>
+  <string id="279">無法讀取設定</string>
+  <string id="280">回復為預設值</string>
+  <string id="281">請檢查 .xml 檔案</string>
+  <string id="282">找到%i條</string>
+  <string id="283">搜尋結果</string>
+  <string id="284">無結果</string>
+  <string id="286">後處理濾鏡</string>
+  <string id="287">字幕設定</string>
+  <string id="288">字型</string>
+  <string id="289">- 大小</string>
+  <string id="290">動態範圍壓縮</string>
+  <string id="291">影片</string>
+  <string id="292">聲音</string>
+  <string id="293">字幕</string>
+  <string id="294">建立書籤</string>
+  <string id="296">清除書籤</string>
+  <string id="297">聲音延遲</string>
+  <string id="303">字幕延遲</string>
+  <string id="304">語言</string>
+  <string id="305">啟用</string>
+  <string id="306">非交錯掃描</string>
+  <string id="307">- 自動執行後處理</string>
+  <string id="308">- 垂直方塊濾鏡</string>
+  <string id="309">- 水平方塊濾鏡</string>
+  <string id="310">- 自動亮度/對比</string>
+  <string id="311">- 消除雜訊</string>
+  <string id="312">(0=自動)</string>
+  <string id="313">清除資料庫</string>
+  <string id="314">準備中…</string>
+  <string id="315">資料庫錯誤！</string>
+  <string id="316">搜尋歌曲…</string>
+  <string id="317">成功清除資料庫！</string>
+  <string id="318">清除歌曲…</string>
+  <string id="319">清除歌曲錯誤</string>
+  <string id="320">清除藝人…</string>
+  <string id="321">清除藝人錯誤！</string>
+  <string id="322">清除類別…</string>
+  <string id="323">清除類別錯誤！</string>
+  <string id="324">清除路徑…</string>
+  <string id="325">清除路徑錯誤！</string>
+  <string id="326">清除專輯…</string>
+  <string id="327">清除專輯錯誤！</string>
+  <string id="328">寫入變更中…</string>
+  <string id="329">寫入錯誤！</string>
+  <string id="330">這需要一些時間…</string>
+  <string id="331">壓縮資料庫…</string>
+  <string id="332">壓縮資料庫錯誤！</string>
+  <string id="333">要清除我的資料庫？</string>
+  <string id="334">清除資料庫…</string>
+  <string id="335">開始</string>
+  <string id="336">調整畫面更新頻率</string>
+  <string id="337">聲音輸出</string>
+  <string id="338">類比</string>
+  <string id="339">數位</string>
+  <string id="340">群星</string>
+  <string id="341">播放 DVD 影片</string>
+  <string id="342">影片</string>
+  <string id="343">調整畫面頻率</string>
+  <string id="344">演員</string>
+  <string id="345">年份</string>
+  <string id="350">程式</string>
+  <string id="351">關閉</string>
+  <string id="352">陰暗</string>
+  <string id="353">全黑</string>
+  <string id="354">駭客任務</string>
+  <string id="355">螢幕保護時間</string>
+  <string id="356">螢幕保護模式</string>
+  <string id="357">空閒待機時間</string>
+  <string id="358">全部專輯</string>
+  <string id="359">新的專輯</string>
+  <string id="360">螢幕保護</string>
+  <string id="361">循環播放圖片</string>
+  <string id="362">螢幕保護的亮度</string>
+  <string id="363">排序：檔案</string>
+  <string id="364">- AC3 數位音效</string>
+  <string id="365">排序：名稱</string>
+  <string id="366">排序：年份</string>
+  <string id="367">排序：評等</string>
+  <string id="368">IMDb</string>
+  <string id="369">標題</string>
+  <string id="370">雷雨</string>
+  <string id="371">局部</string>
+  <string id="372">大部分</string>
+  <string id="373">晴朗</string>
+  <string id="374">陰</string>
+  <string id="375">雪</string>
+  <string id="376">雨</string>
+  <string id="377">細</string>
+  <string id="378">上午</string>
+  <string id="379">下午</string>
+  <string id="380">陣雨</string>
+  <string id="381">少數</string>
+  <string id="382">間歇性</string>
+  <string id="383">風</string>
+  <string id="384">強烈</string>
+  <string id="385">轉晴</string>
+  <string id="386">晴</string>
+  <string id="387">雲</string>
+  <string id="388">提早</string>
+  <string id="389">陣雨</string>
+  <string id="390">飄雪</string>
+  <string id="391">低</string>
+  <string id="392">中</string>
+  <string id="393">高</string>
+  <string id="394">霧</string>
+  <string id="395">霾</string>
+  <string id="396">選擇位置</string>
+  <string id="397">更新時間</string>
+  <string id="398">溫度單位</string>
+  <string id="399">速度單位</string>
+  <string id="400">天氣</string>
+  <string id="401">溫度</string>
+  <string id="402">體感溫度</string>
+  <string id="403">紫外線</string>
+  <string id="404">風</string>
+  <string id="405">露點</string>
+  <string id="406">濕度</string>
+  <string id="407">風向</string>
+  <string id="408">風速</string>
+
+  <string id="410">前往 Weather.com</string>
+  <string id="411">取得天氣資料：</string>
+  <string id="412">無法取得天氣資料</string>
+  <string id="413">手動查詢</string>
+  <string id="414">此專輯無評論</string>
+  <string id="415">下載縮略圖…</string>
+  <string id="416">無法使用</string>
+  <string id="417">顯示：大圖示</string>
+  <string id="418"></string>
+  <string id="419"></string>
+  <string id="420"></string>
+  <string id="421"></string>
+  <string id="422">刪除專輯資訊</string>
+  <string id="423">刪除 CDDB 資訊</string>
+  <string id="424">選擇</string>
+  <string id="425">無專輯資訊。</string>
+  <string id="426">無 CDDB 資訊！</string>
+  <string id="427">光碟：</string>
+  <string id="428">請放入正確的光碟</string>
+  <string id="429">請放入光碟</string>
+  <string id="430">排序：DVD#</string>
+  <string id="431">無緩衝區</string>
+  <string id="432">從資料庫中移除影片</string>
+  <string id="433">確定移除'%s'？</string>
+  <string id="434"></string>
+  <string id="435">音軌</string>
+  <string id="436">年份：</string>
+  <string id="437">持續時間：</string>
+  <string id="438">打開檔案</string>
+  <string id="439">緩衝區</string>
+  <string id="440">硬碟</string>
+  <string id="441">UDF</string>
+  <string id="442">網路</string>
+  <string id="443">網際網路</string>
+  <string id="444">影片</string>
+  <string id="445">聲音</string>
+  <string id="446">DVD</string>
+  <string id="447">自動播放</string>
+  <string id="448">液晶螢幕</string>
+  <string id="449">啟用</string>
+  <string id="450">列</string>
+  <string id="451">第 1 列位址</string>
+  <string id="452">第 2 列位址</string>
+  <string id="453">第 3 列位址</string>
+  <string id="454">第 4 列位址</string>
+  <string id="455">行</string>
+  <string id="456">模式</string>
+  <string id="457">選擇顯示</string>
+  <string id="459">字幕</string>
+  <string id="460">聲道</string>
+  <string id="461">[啟用]</string>
+  <string id="462">字幕</string>
+  <string id="463">背光</string>
+  <string id="464">亮度</string>
+  <string id="465">對比</string>
+  <string id="466">伽瑪值</string>
+  <string id="467">類型</string>
+  <string id="468">改變播放工具列位置</string>
+  <string id="469">播放工具列位置</string>
+  <string id="470">改機者</string>
+  <string id="471">改機晶片</string>
+  <string id="474">關</string>
+  <string id="475">只有音樂</string>
+  <string id="476">音樂和影片</string>
+  <string id="477">無法讀取播放列表</string>
+  <string id="478">播放工具列</string>
+  <string id="479">桌面和語言</string>
+  <string id="480">外觀和主題</string>
+  <string id="481">音樂設定</string>
+  <string id="482">關於 XBMC</string>
+  <string id="483">專輯</string>
+  <string id="484">藝人</string>
+  <string id="485">刪除專輯</string>
+  <string id="486">重複</string>
+  <string id="487">重複一次</string>
+  <string id="488">重複資料夾</string>
+  <string id="489">自動播放下個項目</string>
+  <string id="491">- 使用大圖示</string>
+  <string id="492">Vobsubs 字幕比例</string>
+  <string id="493">進階選項(專家適用！)</string>
+  <string id="494">總音量</string>
+  <string id="495">以桌面的解析度播放影片</string>
+  <string id="496">校正</string>
+  <string id="497">隱藏媒體副檔名</string>
+  <string id="498">排序：類型</string>
+  <string id="499">無法連線到 www.allmusic.com</string>
+  <string id="500">下載專輯資訊失敗</string>
+  <string id="501">搜尋專輯名稱…</string>
+  <string id="502">托盤開啟</string>
+  <string id="503">工作中</string>
+  <string id="504">沒有光碟</string>
+  <string id="505">讀取媒體資訊…</string>
+  <string id="507">排序：使用數</string>
+  <string id="510">啟用 視覺效果</string>
+  <string id="511">啟用 切換影片模式</string>
+  <string id="512">啟動界面</string>
+  <string id="513">主界面</string>
+  <string id="514">設定界面</string>
+  <string id="515">類別</string>
+  <string id="516">使用透通式檔案管理</string>
+  <string id="517">最近播放的專輯</string>
+  <string id="518">執行</string>
+  <string id="519">執行方式</string>
+  <string id="520">編輯標題</string>
+  <string id="521">編輯</string>
+  <string id="522">移除來源</string>
+  <string id="523">切換媒體</string>
+  <string id="524">選擇播放列表</string>
+  <string id="525">新播放列表…</string>
+  <string id="526">加入播放列表</string>
+  <string id="527">手動加入資料庫</string>
+  <string id="528">輸入標題</string>
+  <string id="529">錯誤：重複標題</string>
+  <string id="530">選擇類別</string>
+  <string id="531">新類別</string>
+  <string id="532">手動加入</string>
+  <string id="533">輸入類別</string>
+  <string id="534">顯示：%s</string>
+  <string id="535">列表</string>
+  <string id="536">圖示</string>
+  <string id="537">大列表</string>
+  <string id="538">大圖示</string>
+  <string id="539">寬圖示</string>
+  <string id="540">大寬圖示</string>
+  <string id="541">專輯圖示</string>
+  <string id="542">DVD 圖示</string>
+  <string id="543">DVD</string>
+  <string id="544">媒體資訊</string>
+
+  <string id="550">排序：%s</string>
+  <string id="551">名稱</string>
+  <string id="552">日期</string>
+  <string id="553">大小</string>
+  <string id="554">音軌</string>
+  <string id="555">時間</string>
+  <string id="556">標題</string>
+  <string id="557">藝人</string>
+  <string id="558">專輯</string>
+  <string id="559">播放列表</string>
+  <string id="560">標籤</string>
+  <string id="561">檔案</string>
+  <string id="562">年份</string>
+  <string id="563">評等</string>
+  <string id="564">類型</string>
+  <string id="565">使用數</string>
+
+  <string id="580">排序方向</string>
+  <string id="581">排序方法</string>
+  <string id="582">顯示模式</string>
+  <string id="583">記憶不同資料夾的顯示模式</string>
+  <string id="584">升幂</string>
+  <string id="585">降幂</string>
+  <string id="586">編輯播放列表</string>
+  <string id="587">濾鏡</string>
+  <string id="588">取消派對模式</string>
+  <string id="589">派對模式</string>
+  <string id="590">隨機</string>
+  <string id="591">關閉</string>
+  <string id="592">單首</string>
+  <string id="593">全部</string>
+  <string id="594">關閉</string>
+  <string id="595">重複：關閉</string>
+  <string id="596">重複：單首</string>
+  <string id="597">重複：全部</string>
+
+  <string id="600">擷取音樂 CD</string>
+  <string id="601">中等</string>
+  <string id="602">標準</string>
+  <string id="603">最高</string>
+  <string id="604">指定頻率</string>
+  <string id="605">擷取中…</string>
+  <string id="606">音軌編號：</string>
+  <string id="607">儲存到：</string>
+  <string id="608">無法擷取 CD 或音軌</string>
+  <string id="609">CD 擷取路徑未設定</string>
+  <string id="610">擷取音軌</string>
+
+  <string id="620">音樂 CD 擷取</string>
+  <string id="621">編碼</string>
+  <string id="622">品質</string>
+  <string id="623">頻率</string>
+  <string id="624">包括音軌編號</string>
+  <string id="625">所有歌曲</string>
+  <string id="629">顯示模式</string>
+  <string id="630">標準</string>
+  <string id="631">填滿螢幕</string>
+  <string id="632">4:3 畫面</string>
+  <string id="633">14:9 畫面</string>
+  <string id="634">16:9 畫面</string>
+  <string id="635">原始大小</string>
+  <string id="636">自訂</string>
+  <string id="637">重覆播放</string>
+  <string id="638">重覆播放模式</string>
+  <string id="639">依曲目重覆播放</string>
+  <string id="640">依專輯重覆播放</string>
+  <string id="641">音量 - 重覆播放的檔案</string>
+  <string id="642">音量 - 不重覆播放的檔案</string>
+  <string id="643">重覆播放時忽略消波失真</string>
+  <string id="644">修剪黑邊</string>
+  <string id="645">需要解開一個大檔案，是否繼續？</string>
+  <string id="646">移除資料庫</string>
+  <string id="647">輸出影片資料庫</string>
+  <string id="648">載入影片資料庫</string>
+  <string id="649">載入中</string>
+  <string id="650">輸出中</string>
+  <string id="651">影片資料庫</string>
+  <string id="652">年份</string>
+  <string id="653">更新資料庫</string>
+
+  <string id="700">清除音樂資料庫</string>
+  <string id="701">移除音樂資料庫舊歌曲</string>
+  <string id="702">目前路徑曾經搜尋過</string>
+  <string id="705">網路設定</string>
+  <string id="706">HTTP 代理伺服器位址</string>
+  <string id="707">HTTP 代理伺服器埠號</string>
+  <string id="708">啟用 HTTP 代理伺服器</string>
+  <string id="709">XLink Kai 帳號</string>
+  <string id="710">XLink Kai 密碼</string>
+  <string id="711">網路位址(IP)</string>
+  <string id="712">無效埠號！必須在 1 至 65535 之間。</string>
+  <string id="713">HTTP 代理伺服器</string>
+  <string id="714">XLink Kai</string>
+  <string id="715">IP 設定</string>
+  <string id="716">自動(動態分配)</string>
+  <string id="717">手動(靜態分配)</string>
+  <string id="718">預設(原廠系統)</string>
+  <string id="719">- IP 位址</string>
+  <string id="720">- 子網路遮罩</string>
+  <string id="721">- 預設閘道</string>
+  <string id="722">- DNS 伺服器</string>
+  <string id="723">儲存和重新開機</string>
+  <string id="724">無效位址！有效格式為 AAA.BBB.CCC.DDD</string>
+  <string id="725">必須在 0 至 255 之間。</string>
+  <string id="726">改變未儲存。不儲存就離開嗎？</string>
+  <string id="727">Web 伺服器</string>
+  <string id="728">FTP 伺服器</string>
+  <string id="729">網路時間</string>
+  <string id="730">Web 伺服器埠號</string>
+  <string id="731">時間伺服器主機</string>
+  <string id="732">儲存和應用</string>
+  <string id="733">Web 伺服器密碼</string>
+  <string id="734">無密碼</string>
+  <string id="735">- 編碼</string>
+  <string id="736">- 效果</string>
+  <string id="737">- 顏色</string>
+  <string id="738">標準</string>
+  <string id="739">粗體</string>
+  <string id="740">斜體</string>
+  <string id="741">粗斜體</string>
+  <string id="742">白色</string>
+  <string id="743">黃色</string>
+  <string id="744">檔案設定</string>
+  <string id="745">目前顯示無已搜尋資訊</string>
+  <string id="746">選擇到檔案顯示</string>
+  <string id="747">圖像載入錯誤</string>
+  <string id="748">編輯路徑</string>
+  <string id="749">新增共享</string>
+  <string id="750">確定？</string>
+  <string id="751">移除共享</string>
+  <string id="752">編輯共享路徑</string>
+  <string id="753">編輯共享名稱</string>
+  <string id="754">新增程式連結</string>
+  <string id="755">編輯程式路徑</string>
+  <string id="756">編輯程式名稱</string>
+  <string id="757">編輯路徑深度</string>
+  <string id="758">移除程式連結</string>
+  <string id="759">顯示：大列表</string>
+  <string id="760">黃色</string>
+  <string id="761">白色</string>
+  <string id="762">藍色</string>
+  <string id="763">亮綠</string>
+  <string id="764">翠綠</string>
+  <string id="765">青色</string>
+  <string id="766">保留</string>
+  <string id="767">保留</string>
+  <string id="768">保留</string>
+  <string id="769">保留</string>
+  <string id="770">錯誤 %i：無法共享</string>
+  <string id="771">- FTP 伺服器限定工作在 FATX 格式</string>
+  <string id="772">音效硬體</string>
+  <string id="773">搜尋中</string>
+  <string id="774">圖片資料夾</string>
+
+  <string id="998">XLink Kai</string>
+  <string id="999">線上遊戲</string>
+  <string id="1000">螢幕保護預覽</string>
+  <string id="1001">無法連線</string>
+  <string id="1002">XBMC 無法連線到網路！</string>
+  <string id="1003">這可能是由於網路沒有連線。</string>
+  <string id="1004">可以用其他方式來新增它嗎？</string>
+  <string id="1005">輸入共享名稱</string>
+  <string id="1006">IP 位址</string>
+  <string id="1007">新增網路位置</string>
+  <string id="1008">協定</string>
+  <string id="1009">伺服器位址</string>
+  <string id="1010">伺服器名稱</string>
+  <string id="1011">遠端路徑</string>
+  <string id="1012">共享資料夾</string>
+  <string id="1013">埠號</string>
+  <string id="1014">帳號</string>
+  <string id="1015">網路伺服器</string>
+  <string id="1016">輸入伺服器網路位址</string>
+  <string id="1017">輸入伺服器遠端路徑</string>
+  <string id="1018">輸入埠號</string>
+  <string id="1019">輸入帳號</string>
+  <string id="1020">新增%s目錄</string>
+  <string id="1021">輸入或選擇目錄。</string>
+  <string id="1022">為該目錄命名。</string>
+  <string id="1023">瀏覽目錄</string>
+  <string id="1024">瀏覽</string>
+  <string id="1025">無法獲得目錄資訊。</string>
+  <string id="1026">新增目錄</string>
+  <string id="1027">編輯目錄</string>
+  <string id="1028">編輯%s目錄</string>
+  <string id="1029">輸入新標籤</string>
+  <string id="1030">圖像</string>
+  <string id="1031">圖像資料夾</string>
+  <string id="1032">新增網路位置…</string>
+  <string id="1033">一個檔案</string>
+  <string id="1034">子選單</string>
+  <string id="1035">啟用 子選單按鈕</string>
+
+  <string id="1200">SMB 共享設定</string>
+  <string id="1202">工作群組</string>
+  <string id="1203">預設帳號</string>
+  <string id="1204">預設密碼</string>
+
+  <string id="1207">WINS-伺服器</string>
+
+  <string id="1210">移除</string>
+  <string id="1211">音樂</string>
+  <string id="1212">影片</string>
+  <string id="1213">圖片</string>
+  <string id="1214">檔案</string>
+  <string id="1215">音樂和影片 </string>
+  <string id="1216">音樂和圖片</string>
+  <string id="1217">音樂和檔案</string>
+  <string id="1218">影片和圖片</string>
+  <string id="1219">影片和檔案</string>
+  <string id="1220">圖片和檔案</string>
+  <string id="1221">音樂和影片和圖片</string>
+  <string id="1222">音樂和影片和圖片和檔案</string>
+  <string id="1223">禁用</string>
+  <string id="1226">檔案和音樂和影片</string>
+  <string id="1227">檔案和圖片和音樂</string>
+  <string id="1228">檔案和圖片和影片</string>
+  <string id="1229">音樂和程式</string>
+  <string id="1230">影片和程式</string>
+  <string id="1231">圖片和程式</string>
+  <string id="1232">音樂和影片和圖片和程式</string>
+  <string id="1233">程式和影片和音樂</string>
+  <string id="1234">程式和圖片和音樂</string>
+  <string id="1235">程式和圖片和影片</string>
+
+  <string id="1245">FTP 帳號</string>
+  <string id="1246">FTP 密碼</string>
+  <string id="1247">帳號和密碼設定成功！</string>
+
+  <string id="1250">自動偵測</string>
+  <string id="1251">Xbox 自動偵測</string>
+  <string id="1252">暱稱</string>
+  <string id="1253"></string>
+  <string id="1254">詢問連線</string>
+  <string id="1255">發送 FTP 帳號和密碼</string>
+  <string id="1256">連線品質</string>
+  <string id="1257">是否連線到自動偵測到的 XBOX？</string>
+
+  <string id="1396">移動</string>
+  <string id="1397">有</string>
+  <string id="1398">冰點</string>
+  <string id="1399">睌間</string>
+  <string id="1400">局部</string>
+  <string id="1401">雷雨</string>
+  <string id="1402">雷</string>
+  <string id="1403">陽光</string>
+  <string id="1404">暴</string>
+  <string id="1405">在</string>
+  <string id="1406">這</string>
+  <string id="1407">區域性</string>
+  <string id="1408">冰</string>
+  <string id="1409">冰霜</string>
+  <string id="1410">無風</string>
+  <string id="1411">有</string>
+  <string id="1412">風</string>
+  <string id="1413">細雨</string>
+  <string id="2050">運行時間：</string>
+
+  <string id="4501">液晶螢幕類型</string>
+
+  <string id="10000">首頁</string>
+  <string id="10001">程式</string>
+  <string id="10002">圖片</string>
+  <string id="10003">檔案總管</string>
+  <string id="10004">系統設定</string>
+  <string id="10005">音樂</string>
+  <string id="10006">影片</string>
+  <string id="10007">系統資訊</string>
+  <string id="10008">設定-&gt;一般</string>
+  <string id="10009">設定-&gt;螢幕</string>
+  <string id="10010">設定-&gt;外觀和主題-&gt;界面校正</string>
+  <string id="10011">設定-&gt;影片-&gt;螢幕校正</string>
+  <string id="10012">設定-&gt;圖片</string>
+  <string id="10013">設定-&gt;程式</string>
+  <string id="10014">設定-&gt;氣象</string>
+  <string id="10015">設定-&gt;音樂</string>
+  <string id="10016">設定-&gt;系統設定</string>
+  <string id="10017">設定-&gt;影片</string>
+  <string id="10018">設定-&gt;網路設定</string>
+  <string id="10019">設定-&gt;外觀和主題</string>
+  <string id="10020">腳本程式</string>
+  <string id="10021"></string>
+  <string id="10022"></string>
+  <string id="10023"></string>
+  <string id="10025"></string>
+  <string id="10028">影片/播放列表</string>
+  <string id="10034">設定-&gt;使用者設定檔</string>
+
+  <string id="10100">確認</string>
+  <string id="10101">進度</string>
+
+  <string id="10500">音樂/播放列表</string>
+  <string id="10501">音樂/檔案</string>
+  <string id="10502">音樂/資料庫</string>
+  <string id="10503">播放列表編輯</string>
+  <string id="10504">排行前100歌曲</string>
+  <string id="10505">排行前100專輯</string>
+  <string id="10506">程式</string>
+  <string id="10507">系統設定</string>
+  <string id="10508">氣象預報</string>
+  <string id="10509">網路遊戲</string>
+  <string id="10510">擴充功能</string>
+  <string id="10511">系統資訊</string>
+  <string id="10512"></string>
+  <string id="10513"></string>
+  <string id="10514"></string>
+  <string id="10515"></string>
+  <string id="10516">音樂 - 資料庫</string>
+  <string id="10517">現正播放 - 音樂</string>
+  <string id="10518"></string>
+  <string id="10519"></string>
+  <string id="10520"></string>
+  <string id="10521"></string>
+  <string id="10522">現在播放 - 影片</string>
+  <string id="10523">專輯資訊</string>
+  <string id="10524">影片資訊</string>
+
+  <string id="12000">選擇</string>
+  <string id="12001">音樂/資訊</string>
+  <string id="12002">確認</string>
+  <string id="12003">影片/資訊</string>
+  <string id="12004">腳本/資訊</string>
+  <string id="12005">全螢幕影片</string>
+  <string id="12006">音樂視覺效果</string>
+  <string id="12007"></string>
+  <string id="12008">檔案堆疊</string>
+  <string id="12009">重建目錄索引…</string>
+  <string id="12010">返回音樂視窗</string>
+  <string id="12011">返回影片視窗</string>
+  <string id="12012">更新金手指列表</string>
+  <string id="12013">金手指</string>
+  <string id="12014">找不到金手指</string>
+  <string id="12015">金手指設定</string>
+  <string id="12016">所有金手指的紀錄遺失，請更新金手指列表！</string>
+  <string id="12017">自動從上次中斷處播放</string>
+  <string id="12018">否</string>
+  <string id="12019">是</string>
+  <string id="12020">詢問</string>
+  <string id="12021">從頭開始播放</string>
+  <string id="12022">從上次中斷處播放</string>
+  <string id="12023">確認金手指檔…</string>
+
+  <string id="12310">0</string>
+  <string id="12311">1</string>
+  <string id="12312">2</string>
+  <string id="12313">3</string>
+  <string id="12314">4</string>
+  <string id="12315">5</string>
+  <string id="12316">6</string>
+  <string id="12317">7</string>
+  <string id="12318">8</string>
+  <string id="12319">9</string>
+  <string id="12320">c</string>
+  <string id="12321">ok</string>
+  <string id="12322">*</string>
+  <string id="12325">已鎖定！輸入密碼…</string>
+  <string id="12326">輸入密碼</string>
+  <string id="12327">輸入管理員密碼</string>
+  <string id="12328">輸入解鎖密碼</string>
+  <string id="12329">或按 C 取消</string>
+  <string id="12330">依序輸入 XBOX 手把按鍵</string>
+  <string id="12331">按 Start 確認，或按 Back 取消</string>
+  <string id="12332">設定鎖定</string>
+  <string id="12333">解除鎖定</string>
+  <string id="12334">重設鎖定</string>
+  <string id="12335">移除鎖定</string>
+  <string id="12337">數字密碼</string>
+  <string id="12338">手把按鍵組合</string>
+  <string id="12339">文字密碼</string>
+  <string id="12340">輸入新密碼</string>
+  <string id="12341">確認新密碼</string>
+  <string id="12342">密碼不正確，</string>
+  <string id="12343">重試次數</string>
+  <string id="12344">輸入密碼不正確！</string>
+  <string id="12345">拒絕讀取</string>
+  <string id="12346">已達密碼重試次數限制！</string>
+  <string id="12347">XBOX 將要立刻關閉！</string>
+  <string id="12348">項目被鎖定</string>
+  <string id="12353">重新上鎖</string>
+  <string id="12356">更改鎖定</string>
+  <string id="12357">共享鎖定</string>
+  <string id="12358">密碼不能空白，請重試！</string>
+  <string id="12360">主機鎖定</string>
+  <string id="12362">超過重試次數就關機</string>
+  <string id="12367">管理員密碼錯誤！</string>
+  <string id="12368">請輸入正確的管理員密碼！</string>
+  <string id="12373">系統設定和檔案總管</string>
+  <string id="12376">設定為影片的預設值</string>
+  <string id="12377">將重設之前的設定</string>
+  <string id="12378">顯示各個圖像</string>
+  <string id="12379">使用移動和縮放特效</string>
+  <string id="12380">在 PAL 模式播放 NTSC 影片</string>
+  <string id="12381">在 NTSC 模式播放 PAL 影片</string>
+  <string id="12382">以 PAL60 模式播放 NTSC 影片</string>
+  <string id="12383">12小時制</string>
+  <string id="12384">24小時制</string>
+  <string id="12385">日/月</string>
+  <string id="12386">月/日</string>
+  <string id="12387"></string>
+  <string id="12390">系統已運作時間</string>
+  <string id="12391">分鐘</string>
+  <string id="12392">小時</string>
+  <string id="12393">天</string>
+  <string id="12394">累計運作時間</string>
+
+  <string id="12600">氣象</string>
+
+  <string id="12900">螢幕保護</string>
+  <string id="12901">全螢幕畫面調整</string>
+
+  <string id="13000">系統設定</string>
+  <string id="13001">立即關閉硬碟</string>
+  <string id="13002">只有影片</string>
+  <string id="13003">- 延遲</string>
+  <string id="13004">- 最小媒體檔案長度</string>
+  <string id="13005">關機</string>
+  <string id="13006">原廠系統</string>
+  <string id="13007">使用自訂原廠系統路徑</string>
+
+  <string id="13100">閃爍過濾</string>
+
+  <string id="13150">硬碟金鑰：</string>
+  <string id="13151">硬碟溫度：</string>
+  <string id="13152">DVD 型號：</string>
+  <string id="13153">DVD 軔體：</string>
+  <string id="13154">硬碟型號：</string>
+  <string id="13155">硬碟序號：</string>
+  <string id="13156">硬碟軔體：</string>
+  <string id="13157">硬碟密碼：</string>
+  <string id="13158">硬碟鎖狀態：</string>
+  <string id="13159">子網路遮罩</string>
+  <string id="13160">閘道位址</string>
+  <string id="13161">主要的 DNS 位址</string>
+  <string id="13162">無法讀取資訊</string>
+
+  <string id="13163">手把</string>
+  <string id="13164">鍵盤</string>
+  <string id="13165">滑鼠</string>
+  <string id="13166">耳麥</string>
+  <string id="13167">記憶卡</string>
+  <string id="13168">遙控器</string>
+  <string id="13169">控制器埠號</string>
+
+
+  <string id="13170">從不</string>
+  <string id="13171">立即</string>
+  <string id="13172">隔%i秒之後</string>
+  <string id="13173">硬碟安裝日期：</string>
+  <string id="13174">硬碟運轉週期：</string>
+
+  <string id="13200">預設檔</string>
+  <string id="13201">刪除預設檔'%s'？</string>
+  <string id="13204">最近載入的預設檔：</string>
+  <string id="13205">未知</string>
+  <string id="13206">覆蓋</string>
+  <string id="13208">鬧鈴</string>
+  <string id="13209">鬧鈴間隔(分鐘)</string>
+  <string id="13210">鬧鈴啟動，%i分鐘倒數計時。</string>
+  <string id="13211">響鈴！</string>
+  <string id="13212">鬧鈴取消，剩下%i分%i秒。</string>
+
+  <string id="13249">選擇 RAR 檔案中的字幕</string>
+  <string id="13250">選擇字幕檔…</string>
+  <string id="13251">移動該項目</string>
+  <string id="13252">將項目移動至此</string>
+  <string id="13253">取消移動</string>
+
+  <string id="13270">硬體：</string>
+  <string id="13271">中央處理器用量：</string>
+
+  <string id="13274">XBOX 已連線，但是沒有設定 DNS！</string>
+  <string id="13275">硬碟</string>
+  <string id="13276">光碟機</string>
+  <string id="13277">儲存裝置</string>
+  <string id="13278">預設</string>
+  <string id="13279">網路</string>
+  <string id="13280">顯示</string>
+  <string id="13281">硬體</string>
+  <string id="13282">_</string>
+  <string id="13283">核心版本：</string>
+  <string id="13284">中央處理器速度：</string>
+  <string id="13285">BIOS 型號：</string>
+  <string id="13286">顯示晶片：</string>
+  <string id="13287">螢幕解析度：</string>
+  <string id="13288">Xbox 版本：</string>
+  <string id="13289">Xbox 序號：</string>
+  <string id="13290">Xbox 製造商：</string>
+  <string id="13291">改機晶片：</string>
+  <string id="13292">影音端子：</string>
+  <string id="13293">影片和遊戲區碼：</string>
+  <string id="13294">DVD 區碼：</string>
+  <string id="13295">網際網路：</string>
+  <string id="13296">Xbox 已連線！</string>
+  <string id="13297">Xbox 無法連線！請檢查網路設定！</string>
+  <string id="13298">XBLIVE 金鑰：</string>
+  <string id="13299">目標溫度</string>
+  <string id="13300">風扇轉速</string>
+  <string id="13301">自動控溫</string>
+  <string id="13302">指定風扇轉速</string>
+  <string id="13303">桌面字型</string>
+  <string id="13304">啟用 轉換雙向字串</string>
+  <string id="13305">啟用 RSS 新聞顯示</string>
+  <string id="13306">隱藏上層目錄項目</string>
+  <string id="13307">音軌命名參數</string>
+  <string id="13308">你要將 Xbox 重開機</string>
+  <string id="13309">以重新啟動 XBMC 嗎？</string>
+  <string id="13310">縮放效果</string>
+  <string id="13311">浮動效果</string>
+  <string id="13312">縮小黑邊</string>
+  <string id="13313">重新開機</string>
+  <string id="13314">淡入淡出</string>
+  <string id="13315">建立縮略圖</string>
+  <string id="13316">重覆縮略圖</string>
+  <string id="13317">觀看圖片</string>
+  <string id="13318">重覆圖片</string>
+  <string id="13319">隨機</string>
+  <string id="13320">立體聲</string>
+  <string id="13321">左聲道</string>
+  <string id="13322">右聲道</string>
+  <string id="13323">啟用 CD+G</string>
+  <string id="13324">背景透明度</string>
+  <string id="13325">前景透明度</string>
+  <string id="13326">影音延遲</string>
+  <string id="13327">卡拉 OK</string>
+  <string id="13328">%s找不到。</string>
+  <string id="13329">打開%s發生錯誤</string>
+  <string id="13330">無法載入%s</string>
+  <string id="13331">錯誤：記憶體不足</string>
+  <string id="13332">上移</string>
+  <string id="13333">下移</string>
+  <string id="13334">編輯標籤</string>
+  <string id="13335">設為預設值</string>
+  <string id="13336">移除按鍵</string>
+  <string id="13338">狀態顯示燈</string>
+  <string id="13339">顯示燈顏色</string>
+  <string id="13340">預設</string>
+  <string id="13341">綠色</string>
+  <string id="13342">橙色</string>
+  <string id="13343">紅色</string>
+  <string id="13344">循環</string>
+  <string id="13345">當播放時關閉顯示燈</string>
+  <string id="13346">影片資訊</string>
+  <string id="13347">佇列項目</string>
+  <string id="13348">搜尋 IMDb 資訊…</string>
+  <string id="13349">掃描新內容</string>
+  <string id="13350">現正播放…</string>
+  <string id="13351">專輯資訊</string>
+  <string id="13352">掃描項目到資料庫</string>
+  <string id="13353">停止掃描</string>
+  <string id="13354">補償方式</string>
+  <string id="13355">低品質像素著色器</string>
+  <string id="13356">硬體重疊</string>
+  <string id="13357">高品質像素著色器</string>
+  <string id="13358">播放項目</string>
+  <string id="13359">設定藝人縮圖</string>
+  <string id="13360">建立縮圖</string>
+  <string id="13361">啟用語音</string>
+  <string id="13375">啟動裝置</string>
+  <string id="13376">音量</string>
+  <string id="13377">預設顯示模式</string>
+  <string id="13378">預設亮度</string>
+  <string id="13379">預設對比</string>
+  <string id="13380">預設伽瑪值</string>
+  <string id="13381">接續播放本片</string>
+  <string id="13382">語音特效 - 第 1 埠</string>
+  <string id="13383">語音特效 - 第 2 埠</string>
+  <string id="13384">語音特效 - 第 3 埠</string>
+  <string id="13385">語音特效 - 第 4 埠</string>
+  <string id="13386">使用時間搜尋</string>
+  <string id="13387">音軌命名格式</string>
+  <string id="13388">預設</string>
+  <string id="13389">沒有預設&#10;該視覺效果</string>
+  <string id="13390">沒有設定&#10;該視覺效果</string>
+  <string id="13391">托盤開/關</string>
+  <string id="13392">撥放音樂時使用視覺效果</string>
+  <string id="13393">計算大小</string>
+  <string id="13394">計算資料夾大小</string>
+  <string id="13395">影片設定</string>
+  <string id="13396">聲音和字幕設定</string>
+  <string id="13397">啟用字幕</string>
+  <string id="13398">書籤</string>
+  <string id="13399">排序時忽略符號</string>
+  <string id="13400">專輯音軌淡入淡出</string>
+  <string id="13401">瀏覽%s</string>
+  <string id="13402">顯示音軌位置</string>
+  <string id="13403">清除預設值</string>
+  <string id="13404">恢復</string>
+  <string id="13405">取得縮圖</string>
+
+  <string id="14000">堆疊開啟</string>
+  <string id="14001">堆疊關閉</string>
+  <string id="14003">下載播放列表檔案…</string>
+  <string id="14004">下載串流媒體列表…</string>
+  <string id="14005">分析串流媒體列表…</string>
+  <string id="14006">下載串流媒體列表失敗</string>
+  <string id="14007">下載播放列表檔案失敗</string>
+  <string id="14008">啟用 Kai 消息通告</string>
+  <string id="14009">遊戲目錄</string>
+  <string id="14010">自動切換為縮圖顯示</string>
+  <string id="14011">啟用 自動切換為縮圖顯示</string>
+  <string id="14012">- 使用大圖示</string>
+  <string id="14013">- 條件</string>
+  <string id="14014">- 比例</string>
+  <string id="14015">沒有檔案且最少有一個縮圖</string>
+  <string id="14016">最少有一個檔案和縮圖</string>
+  <string id="14017">縮圖所占比例</string>
+  <string id="14018">瀏覽設定</string>
+  <string id="14019">改變區碼 1</string>
+  <string id="14020">改變區碼 2</string>
+  <string id="14021">改變區碼 3</string>
+  <string id="14022">資料庫</string>
+  <string id="14023">無電視</string>
+  <string id="14024">輸入最近的城市</string>
+  <string id="14025">影片/音樂/光碟緩衝區 - 硬碟</string>
+  <string id="14026">影片緩衝區 - 光碟機</string>
+  <string id="14027">影片緩衝區 - 區域網路</string>
+  <string id="14028">影片緩衝區 - 網際網路</string>
+  <string id="14030">音樂緩衝區 - 光碟機</string>
+  <string id="14031">音樂緩衝區 - 區域網路</string>
+  <string id="14032">音樂緩衝區 - 網際網路</string>
+  <string id="14034">光碟緩衝區 - 光碟機</string>
+  <string id="14035">光碟緩衝區 - 區域網路</string>
+  <string id="14036">伺服器</string>
+  <string id="14037">視覺效果</string>
+  <string id="14038">網路設定已改變</string>
+  <string id="14039">XBMC 需要重新開機以改變網路設定。</string>
+  <string id="14040">你要重新開機嗎？</string>
+  <string id="14041">後置處理</string>
+  <string id="14042">主機 IP 位址</string>
+  <string id="14043">- 播放時關機</string>
+  <string id="14044">%i分</string>
+  <string id="14045">%i秒</string>
+  <string id="14046">%i毫秒</string>
+  <string id="14047">%i%%</string>
+  <string id="14048">%ikbps</string>
+  <string id="14049">%ikb</string>
+  <string id="14050">%i.0dB</string>
+  <string id="14051">時間顯示設定</string>
+  <string id="14052">日期顯示設定</string>
+  <string id="14053">畫面濾鏡</string>
+  <string id="14054">啟用 網路查詢</string>
+  <string id="14055">使用背景搜尋</string>
+  <string id="14056">停止搜尋</string>
+  <string id="14057">無法搜尋媒體資訊</string>
+  <string id="14058">膠片顆粒濾鏡</string>
+  <string id="14059">搜尋遠端分享的縮圖</string>
+  <string id="14060">未知類型緩衝區 - 網際網路</string>
+  <string id="14061">自動</string>
+  <string id="14062">輸入帳號</string>
+  <string id="14063">日期和時間</string>
+  <string id="14064">設定日期</string>
+  <string id="14065">設定時間</string>
+  <string id="14066">設定時間(時:分)</string>
+  <string id="14067">設定日期(日/月/年)</string>
+  <string id="14068">輸入 IP 位址</string>
+  <string id="14069">現在應用這些設定嗎？</string>
+  <string id="14070">現在改變應用</string>
+  <string id="14071">允許重新命名和刪除檔案</string>
+  <string id="14072">啟用 XLink Kai</string>
+  <string id="14073">XLink Kai 沒有被啟用！</string>
+  <string id="14074">設定時區</string>
+  <string id="14075">使用日光節約時間</string>
+
+  <string id="15000">XLink Kai</string>
+  <string id="15001">沒有連線到伺服器</string>
+  <string id="15002">嘗試再連線？</string>
+  <string id="15003">輸入你的訊息。</string>
+  <string id="15004">你被邀請玩 %s。</string>
+  <string id="15005">日期：%s</string>
+  <string id="15006">來自：%s</string>
+  <string id="15007">邀請</string>
+  <string id="15008">你被邀請加入 %s。</string>
+  <string id="15009">離線</string>
+  <string id="15010">好友</string>
+  <string id="15011">顯示：好友</string>
+  <string id="15012">加入遊戲</string>
+  <string id="15013">語音交談</string>
+  <string id="15014">邀請</string>
+  <string id="15015">移除</string>
+  <string id="15016">遊戲</string>
+  <string id="15017">顯示：遊戲</string>
+  <string id="15018">進入</string>
+  <string id="15019">新增為好友</string>
+  <string id="15020">主持遊戲</string>
+  <string id="15021">遊戲室</string>
+  <string id="15022">顯示：遊戲室</string>
+  <string id="15023">開始遊戲</string>
+  <string id="15024">新增為好友</string>
+  <string id="15025">主持遊戲</string>
+  <string id="15026">聊天室</string>
+  <string id="15027">顯示：聊天室</string>
+  <string id="15028">鍵盤</string>
+  <string id="15029">加入這個遊戲室須要密碼。</string>
+  <string id="15030">遊戲己經中斷</string>
+  <string id="15031">XLink Kai 認證</string>
+  <string id="15032">你的帳號或密碼不正確，</string>
+  <string id="15033">請檢查設定無誤後再嘗試。</string>
+  <string id="15034">登入</string>
+  <string id="15035">啟用 語音聊天</string>
+  <string id="15036">發送一封你的邀請函</string>
+  <string id="15037">XBMC 無法確定你的網路是否能夠連線。</string>
+  <string id="15038">你將會很難加入或主持遊戲。</string>
+  <string id="15039">無法讓遊戲自動執行。</string>
+  <string id="15040">放入遊戲光碟或按 A 取消，</string>
+  <string id="15041">並參考遊戲相關說明。</string>
+  <string id="15042">存取被拒</string>
+  <string id="15043">%s 加入聊天室。</string>
+  <string id="15044">%s 離開聊天室。</string>
+  <string id="15045">輸入你的訊息。</string>
+  <string id="15046">目前的遊戲室</string>
+  <string id="15047">輸入遊戲室密碼。</string>
+  <string id="15048">輸入遊戲室簡介。</string>
+  <string id="15049">主持遊戲</string>
+  <string id="15050">主持私人遊戲室</string>
+  <string id="15051">玩家限制</string>
+  <string id="15052">密碼</string>
+  <string id="15053">簡介</string>
+  <string id="15054">邀請函</string>
+  <string id="15055">選擇遊戲：</string>
+  <string id="15056">輸入訊息：</string>
+  <string id="15057">發送</string>
+  <string id="15058">主持遊戲</string>
+  <string id="15059">接受邀請！</string>
+  <string id="15060">訊息</string>
+  <string id="15061">邀請玩家 %s。</string>
+  <string id="15100">瀏覽</string>
+  <string id="15101">資料庫</string>
+  <string id="15102">* 所有專輯</string>
+  <string id="15103">* 所有藝人</string>
+  <string id="15104">* 所有歌曲</string>
+  <string id="15105">* 所有類別</string>
+  <string id="15106">向前瀏覽時記住選擇的檔案</string>
+  <string id="15107">暫存中…</string>
+  <string id="15108">按鍵音效</string>
+  <string id="15109">桌面預設</string>
+  <string id="15111">佈景主題</string>
+  <string id="15112">預設主題</string>
+
+  <string id="15200">Last.FM</string>
+  <string id="15201">上傳歌曲資訊到 Last.FM</string>
+  <string id="15202">Last.FM 帳號</string>
+  <string id="15203">Last.FM 密碼</string>
+  <string id="15204">無法連線：休息中…</string>
+  <string id="15205">請更新 XBMC</string>
+  <string id="15206">無法通過認證：檢查帳號和密碼</string>
+  <string id="15207">連線</string>
+  <string id="15208">無法連線</string>
+  <string id="15209">上傳進度%i</string>
+  <string id="15210">已快取%i首歌曲</string>
+  <string id="15211">上傳中…</string>
+  <string id="15212">上傳剩餘%i秒</string>
+  <string id="15213">播放方式…</string>
+  <string id="15214">使用平滑的影音同步</string>
+  <string id="15215">顯示縮圖時隱藏檔案名稱</string>
+
+  <string id="15250">上傳 Last.FM 電台到 Last.FM</string>
+  <string id="15251">連線到 Last.FM…</string>
+  <string id="15252">選擇電台…</string>
+  <string id="15253">尋找同類型藝人…</string>
+  <string id="15254">尋找同類型標籤…</string>
+  <string id="15255">%name% 的設定</string>
+  <string id="15256">所有排行</string>
+  <string id="15257">%name% 藝人排行</string>
+  <string id="15258">%name% 專輯排行</string>
+  <string id="15259">%name% 歌曲排行</string>
+  <string id="15260">收聽 %name% Last.FM</string>
+  <string id="15261">%name% 同類型藝人</string>
+  <string id="15262">%name% 專輯排行</string>
+  <string id="15263">%name% 歌曲排行</string>
+  <string id="15264">%name% 標籤排行</string>
+  <string id="15265">%name% 最愛歌迷</string>
+  <string id="15266">收聽 %name% 在 Last.FM 的歌迷</string>
+  <string id="15267">收聽 %name% 在 Last.FM 的同類型藝人</string>
+  <string id="15268">%name% 藝人排行</string>
+  <string id="15269">%name% 專輯排行</string>
+  <string id="15270">%name% 歌曲排行</string>
+  <string id="15271">%name% 好友</string>
+  <string id="15272">%name% 同好</string>
+  <string id="15273">%name% 藝人週排行</string>
+  <string id="15274">%name% 專輯週排行</string>
+  <string id="15275">%name% 歌曲週排行</string>
+  <string id="15276">收聽 %name% 在 Last.FM 的同好</string>
+  <string id="15277">收聽 %name% 的個人 Last.FM</string>
+  <string id="15278">收聽 %name% 在 Last.FM 的最愛歌曲</string>
+  <string id="15279">從 Last.FM 獲取目錄…</string>
+  <string id="15280">無法從 Last.FM 獲取目錄…</string>
+  <string id="15281">輸入藝人名稱尋找相關資訊</string>
+  <string id="15282">輸入標籤名稱尋找相關資訊</string>
+  <string id="15283">%name% 最近聽過的歌曲</string>
+  <string id="15284">收聽 %name% 在 Last.FM 的推薦</string>
+
+  <string id="15300">路徑錯誤或無效！</string>
+  <string id="15301">無法連線到網路伺服器！</string>
+  <string id="15302">找不到伺服器！</string>
+  <string id="15303">找不到工作群組！</string>
+
+  <string id="15310">打開多個書籤路徑</string>
+  <string id="15311">路徑：</string>
+
+  <string id="16000">一般設定</string>
+  <string id="16001">設定音效硬體</string>
+  <string id="16002">CDDB 查詢</string>
+  <string id="16003">播放設定</string>
+  <string id="16004">播放光碟</string>
+
+  <string id="16008">輸入新標題</string>
+  <string id="16009">輸入影片名稱</string>
+  <string id="16010">輸入設定檔名稱</string>
+  <string id="16011">輸入專輯名稱</string>
+  <string id="16012">輸入播放列表名稱</string>
+  <string id="16013">輸入新檔案名稱</string>
+  <string id="16014">輸入資料夾名稱</string>
+  <string id="16015">輸入目錄</string>
+  <string id="16016">可用選項：%A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
+  <string id="16017">輸入搜尋字串</string>
+  <string id="16018">關閉</string>
+  <string id="16019">自動選擇</string>
+  <string id="16020">非交錯掃描</string>
+  <string id="16021">Bob</string>
+  <string id="16022">Bob(倒轉)</string>
+  <string id="16023">交錯式掃描</string>
+  <string id="16024">取消中…</string>
+  <string id="16025">輸入藝人名稱</string>
+  <string id="16026">取消重覆播放列表</string>
+  <string id="16027">太多連續性錯誤</string>
+
+  <string id="16030">取消派對模式！</string>
+  <string id="16031">資料庫歌曲檔案不符！</string>
+  <string id="16032">無法重建資料庫！</string>
+  <string id="16033">無法打開資料庫！</string>
+  <string id="16034">無法從資料庫取得歌曲檔案！</string>
+
+  <string id="16100">所有影片</string>
+  <string id="16101">未看過的</string>
+  <string id="16102">已看過的</string>
+  <string id="16103">標記成已看過</string>
+  <string id="16104">標記成未看過</string>
+  <string id="16105">編輯標題</string>
+  <string id="16106">使用 NTSC-M 和 NTSC-J 模式</string>
+  <string id="16107">使用 NTSC-M 模式</string>
+  <string id="16108">使用 NTSC-J 模式</string>
+  <string id="16109">使用 PAL-60 模式</string>
+  <string id="16110">60hz 遊戲設定</string>
+
+  <string id="16200">操作被取消</string>
+  <string id="16201">無法複製</string>
+  <string id="16202">至少一個檔案無法複製</string>
+  <string id="16203">無法搬移</string>
+  <string id="16204">至少一個檔案無法搬移</string>
+  <string id="16205">無法刪除</string>
+  <string id="16206">至少一個檔案無法刪除</string>
+
+  <string id="20000">音樂 CD 擷取資料夾</string>
+  <string id="20001">使用其他 DVD 播放程式</string>
+  <string id="20002">其他 DVD 播放程式</string>
+  <string id="20003">金手指資料夾</string>
+  <string id="20004">螢幕擷圖資料夾</string>
+  <string id="20005">錄音資料夾</string>
+  <string id="20006">播放列表資料夾</string>
+  <string id="20007">錄音</string>
+  <string id="20008">螢幕擷圖</string>
+  <string id="20009">使用 XBMC</string>
+  <string id="20010">藝人圖像</string>
+  <string id="20011">音樂播放列表</string>
+  <string id="20012">影片播放列表</string>
+  <string id="20013">你要執行該遊戲？</string>
+  <string id="20014">排序：播放列表</string>
+  <string id="20015">遠端的縮圖</string>
+  <string id="20016">目前縮圖</string>
+  <string id="20017">本地縮圖</string>
+  <string id="20018">無縮圖</string>
+  <string id="20019">選擇縮略圖</string>
+  <string id="20020">KAI 與金手指不能同時使用</string>
+  <string id="20021">請選擇其中一項</string>
+  <string id="20022"></string>
+  <string id="20023">衝突</string>
+  <string id="20024">掃描新加入</string>
+  <string id="20025">掃描全部</string>
+  <string id="20026">區域</string>
+  <string id="20038">鎖定音樂視窗</string>
+  <string id="20039">鎖定影片視窗</string>
+  <string id="20040">鎖定圖片視窗</string>
+  <string id="20041">鎖定程式、存檔和腳本視窗</string>
+  <string id="20042">鎖定檔案總管</string>
+  <string id="20043">鎖定系統設定</string>
+  <string id="20044">重新設定</string>
+  <string id="20045">進入管理員模式</string>
+  <string id="20046">離開管理員模式</string>
+  <string id="20047">建立預設檔'%s'？</string>
+  <string id="20048">重回原先設定</string>
+  <string id="20049">最適合模式</string>
+  <string id="20050">自動切換 16x9 與 4x3 模式</string>
+  <string id="20051">視堆疊檔案為單一檔案</string>
+  <string id="20052">注意</string>
+  <string id="20053">已離開管理員模式</string>
+  <string id="20054">已進入管理員模式</string>
+  <string id="20055">Allmusic.com 縮圖</string>
+  <string id="20056">原縮略圖</string>
+  <string id="20057">移除縮略圖</string>
+  <string id="20058">新加入預設檔…</string>
+  <string id="20059">查詢所有專輯的資訊</string>
+  <string id="20060">媒體資訊</string>
+  <string id="20061">各別的</string>
+  <string id="20062">共用預設值</string>
+  <string id="20063">共用預設值(唯讀)</string>
+  <string id="20064">複製預設值</string>
+  <string id="20065">預設檔圖片</string>
+  <string id="20066">鎖定偏好設定</string>
+  <string id="20067">編輯預設檔</string>
+  <string id="20068">預設檔鎖定</string>
+  <string id="20069">無法建立資料夾</string>
+  <string id="20070">預設檔目錄</string>
+  <string id="20071">以新媒體來源啟動</string>
+  <string id="20072">確定選擇的資料夾是可寫入的</string>
+  <string id="20073">且是有效的資料夾名稱</string>
+  <string id="20074">MPAA 分級：</string>
+  <string id="20075">輸入管理員密碼</string>
+  <string id="20076">啟動時詢問管理員密碼</string>
+  <string id="20077">桌面設定</string>
+  <string id="20078">- 無連結設定 -</string>
+  <string id="20079">啟用 桌面動畫效果</string>
+  <string id="20080">播放音樂時關閉 RSS 新聞顯示</string>
+  <string id="20081">啟用書籤</string>
+  <string id="20082">顯示 XLink Kai 資訊</string>
+  <string id="20083">顯示音樂資訊</string>
+  <string id="20084">顯示氣象資訊</string>
+  <string id="20085">顯示系統資訊</string>
+  <string id="20086">顯示可用的硬碟空間 C: E: F:</string>
+  <string id="20087">顯示可用的硬碟空間 E: F: G:</string>
+  <string id="20088">氣象資訊</string>
+  <string id="20089">可用裝置空間</string>
+  <string id="20090">輸入一個現有分享的名稱</string>
+  <string id="20091">密碼</string>
+  <string id="20092">載入預設檔</string>
+  <string id="20093">預設檔名稱</string>
+  <string id="20094">媒體來源</string>
+  <string id="20095">輸入預設檔密碼</string>
+  <string id="20096">登錄畫面</string>
+  <string id="20097">取得專輯資訊</string>
+  <string id="20098">正在取得專輯資訊</string>
+  <string id="20099">當 CD 播放時不能擷取該 CD</string>
+  <string id="20100">管理員密碼與鎖定</string> 
+  <string id="20101">輸入管理員密碼後，永遠啟用管理員模式</string>
+  <string id="20102">或是從預設值中複製？</string>
+  <string id="20103">儲存預設檔變更？</string>
+  <string id="20104">發現舊設定值</string>
+  <string id="20105">你要使用嗎？</string>
+  <string id="20106">發現舊媒體來源</string>
+  <string id="20107">各別的(鎖定)</string>
+  <string id="20108">根目錄</string>
+  <string id="20109">桌面縮放</string>
+  <string id="20110">UPnP 設定</string>
+  <string id="20111">自動開啟 UPnP 客戶端</string>
+  <string id="20112">上次登入：%s</string>
+  <string id="20113">從未登入</string>
+  <string id="20114">預設檔 %i / %i</string>
+  <string id="20115">使用者登入 / 選擇預設檔</string>
+  <string id="20116">在登入畫面中使用鎖定</string>
+  <string id="20117">密碼無效</string>
+  <string id="20118">需先設定管理員鎖定</string>
+  <string id="20119">你現在要設定嗎？</string>
+  <string id="20120">載入程式資訊</string>
+  <string id="20121">啓動 派對模式！</string>
+  <string id="20122">真實</string>
+  <string id="20123">混合飲料</string>
+  <string id="20124">填裝玻璃</string>
+  <string id="20125">登入</string>
+  <string id="20126">登出</string>
+  <string id="20128">進到根目錄</string>
+  <string id="20129">交織</string>
+  <string id="20130">交織(倒轉)</string>
+  <string id="20131">混合</string>
+  <string id="20132">重新播放影片</string>
+  <string id="20133">編輯網路位置</string>
+  <string id="20134">移除網路位置</string>
+  <string id="20135">您想掃描這個資料夾？</string>
+  <string id="20136">記憶卡</string>
+  <string id="20137">記憶卡已插入</string>
+  <string id="20138">找不到記憶卡</string>
+  <string id="20139">在第%i埠，第%i槽</string>
+  <string id="20140">鎖定螢幕保護程式</string>
+  <string id="20141">設定</string>
+  <string id="20142">使用者名稱</string>
+  <string id="20143">輸入密碼</string>
+  <string id="20144">自動定時關機</string>
+  <string id="20145">自動關機定時(分鐘)</string>
+  <string id="20146">啓動 自動關機在%i分鐘後</string>
+  <string id="20147">30分鐘後自動關機</string>
+  <string id="20148">60分鐘後自動關機</string>
+  <string id="20149">120分鐘後自動關機</string>
+  <string id="20150">自訂關機時間</string>
+  <string id="20151">取消自動關機</string>
+  <string id="20152">鎖定偏好設定檔 %s</string>
+  <string id="20153">瀏覽…</string>
+  <string id="20154">基本資訊</string>
+  <string id="20155">儲存裝置資訊</string>
+  <string id="20156">硬碟資訊</string>
+  <string id="20157">光碟機資訊</string>
+  <string id="20158">網路資訊</string>
+  <string id="20159">影片資訊</string>
+  <string id="20160">硬體資訊</string>
+  <string id="20161">總計</string>
+  <string id="20162">使用</string>
+  <string id="20163">中</string>
+  <string id="20164">不支援鎖定</string>
+  <string id="20165">未鎖定</string>
+  <string id="20166">鎖定</string>
+  <string id="20167">凍結</string>
+  <string id="20168">要求重新設定</string>
+  <string id="20169">週</string>
+  <string id="20170">生產線</string>
+  <string id="20171">Windows 網路(SMB)</string>
+  <string id="20172">XBMSP 伺服器</string>
+  <string id="20173">FTP 伺服器</string>
+  <string id="20174">ITunes 音樂分享(DAAP)</string>
+  <string id="20175">UPnP 伺服器</string>
+  <string id="20176">顯示影片資訊</string>
+  <string id="20177">完成</string>
+  <string id="20178">轉換</string>
+  <string id="20179">大寫</string>
+  <string id="20180">符號</string>
+  <string id="20181">退格</string>
+  <string id="20182">空格</string>
+  <string id="20183">重新載入桌面</string>
+  <string id="20184">使用 EXIF 資訊旋轉圖片</string>
+  <string id="20185">檢測硬體數據</string>
+  <string id="20186">請稍後…</string>
+  <string id="20187">備份 EEPROM</string>
+  <string id="20188">備份 BIOS</string>
+
+  <string id="20189"></string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
+
+  <string id="20306">未知 BIOS，請把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
+  <string id="20307">次要的 DNS 位址</string>
+  <string id="20308">DHCP 伺服器：</string>
+  <string id="20309">新建資料夾</string>
+  <string id="20310">播放時關閉液晶螢幕背光</string>
+  <string id="20311">未知或內建(寫入保護)</string>
+  <string id="20312">暫停時關閉液晶螢幕背光</string>
+  <string id="20313">暫停時打開顯示燈</string>
+  <string id="20314">影片 - 資料庫</string>
+  <string id="20315">遊戲存檔</string>
+  <string id="20316">排序：標籤</string>
+  <string id="20317">下載存檔</string>
+  <string id="20318">儲存載入硬碟的遊戲存檔</string>
+  <string id="20319">下載遊戲存檔失敗</string>
+  <string id="20320">選擇下載並載入遊戲存檔</string>
+  <string id="20321">找不到該遊戲的線上存檔</string>
+  <string id="20322">進入遊戲存檔</string>
+  <string id="20323">遊戲存檔</string>
+  <string id="20324">起作用中…</string>
+  <string id="20325">重設螢幕校正</string>
+  <string id="20326">這將重設螢幕校正值為%s</string>
+  <string id="20327">並以此為預設值</string>
+  <string id="20328">複製存檔的路徑</string>
+  <string id="20329">移動存檔的路徑</string>
+  <string id="20330">以資料夾名稱搜尋</string>
+  <string id="20331">檔案</string>
+  <string id="20332">以資料夾或檔案名稱來搜尋？</string>
+  <string id="20333">設定內容</string>
+  <string id="20334">資料夾</string>
+  <string id="20335">循環尋找內容？</string>
+  <string id="20336">解除來源鎖定</string>
+  <string id="20337">演員</string>
+  <string id="20338">電影</string>
+  <string id="20339">導演</string>
+  <string id="20340">你要從資料庫中</string>
+  <string id="20341">移除此路徑內所有項目？</string>
+  <string id="20342">電影</string>
+  <string id="20343">電視節目</string>
+  <string id="20344">這個資料夾包含</string>
+  <string id="20345">執行自動掃描</string>
+  <string id="20346">循環掃描</string>
+  <string id="20347">以</string>
+  <string id="20348">導演</string>
+  <string id="20349">此路徑無影片檔！</string>
+  <string id="20350">票數</string>
+  <string id="20351">電視節目資訊</string>
+  <string id="20352">影集資訊</string>
+  <string id="20353">下載電視節目詳細介紹</string>
+  <string id="20354">取得影集介紹</string>
+  <string id="20355">下載影集情報至資料夾</string>
+  <string id="20356">選擇電視節目：</string>
+  <string id="20357">輸入電視節目名稱</string>
+  <string id="20358">第%i季</string>
+  <string id="20359">集</string>
+  <string id="20360">影集</string>
+  <string id="20361">下載影集詳細介紹</string>
+  <string id="20362">從資料夾移除影集</string>
+  <string id="20363">從資料夾移除電視節目</string>
+  <string id="20364">電視節目</string>
+  <string id="20365">劇情</string>
+  <string id="20366">* 整季</string>
+  <string id="20367">隱藏觀看</string>
+  <string id="20368">產品編號</string>
+  <string id="20369">非觀看項目隱藏圖示</string>
+  <string id="20370">* [隱藏]防止被破壞 *</string>
+  <string id="20371">設定影集縮圖</string>
+  <string id="20372">影集圖像</string>
+  <string id="20373">季</string>
+  <string id="20374">下載影片資訊</string>
+  <string id="20375">不指定內容</string>
+  <string id="20376">首次播出：</string>
+  <string id="20377">重新整理電視節目資訊</string>
+  <string id="20378">重新整理所有影集資訊？</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
+
+  <string id="21330">顯示隱藏檔案和目錄</string>
+
+  <string id="21331">TuxBox 客戶端</string>
+  <string id="21332">警告：目標 TuxBox 裝置在錄影模式！</string>
+  <string id="21333">串流即將停止！</string>
+  <string id="21334">跳轉頻道：%s 失敗！</string>
+  <string id="21335">你確定要開始串流？</string>
+  <string id="21336">連線到：%s</string>
+  <string id="21337">TuxBox 裝置</string>
+  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+
+  <string id="21356">UPnP 音樂</string>
+  <string id="21357">UPnP 影片</string>
+  <string id="21358">UPnP 圖片</string>
+  <string id="21359">加入媒體共享…</string>
+  <string id="21360">啟用 UPnP 伺服器</string>
+  <string id="21361">管理 UPnP 音樂共享</string>
+  <string id="21362">管理 UPnP 影片共享</string>
+  <string id="21363">管理 UPnP 圖片共享</string>
+  <string id="21364">編輯媒體共享</string>
+  <string id="21365">移除媒體共享</string>
+  <string id="21366">自訂字幕資料夾</string>
+  <string id="21367">電影和替代字幕資料夾</string>
+
+  <string id="21370">媒體播放時使用瀏覽音效</string>
+  <string id="21371">縮略圖</string>
+  <string id="21372">強制 DVD 播放器區碼</string>
+  <string id="21373">視訊硬體</string>
+  <string id="21374">視訊模式</string>
+  <string id="21375">一般</string>
+  <string id="21376">Letterbox</string>
+  <string id="21377">寬螢幕</string>
+  <string id="21378">開啟 480p</string>
+  <string id="21379">開啟 720p</string>
+  <string id="21380">開啟 1080i</string>
+  <string id="21381">輸入新播放列表的名稱</string>
+  <string id="21382">停用檔案列表的新增來源按鈕</string>
+  <string id="21383">啟用 頁面捲軸</string>
+  <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
+  <string id="21385">打開</string>
+
+  <string id="21386">噪音管理</string>
+  <string id="21387">快速</string>
+  <string id="21388">安靜</string>
+
+  <string id="21390">電源管理</string>
+  <string id="21391">高功率</string>
+  <string id="21392">低功率</string>
+  <string id="21393">高待機</string>
+  <string id="21394">低待機</string>
+  <string id="21395">暫存檔不能超過4GB</string>
+  <string id="21396">章節</string>
+
+  <string id="21397">高品質像素著色器 V2</string>
+
+  <string id="21398">啟用 啟動時播放列表</string>
+
+  <string id="29999">遊戲應用閃爍過濾</string>
 </strings>

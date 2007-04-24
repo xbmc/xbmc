@@ -8,55 +8,41 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include <xtl.h>
-#include "../cores/DllLoader/dll.h"
-#include "stdstring.h"
-#include <memory>
-using namespace std;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-struct VIS_INFO 
-{
-	bool bWantsFreq;
-	int iSyncDelay;
-	//		int iAudioDataLength;
-	//		int iFreqDataLength;
-};
-
-struct Visualisation
-{
-public:
-	void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szVisualisation);
-	void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-	void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-	void (__cdecl* Render) ();
-	void (__cdecl* Stop)();
-	void (__cdecl* GetInfo)(VIS_INFO *info);
-} ;
-
-#ifdef __cplusplus
-};
-#endif
+#include "../../guilib/key.h"
+#include "DllVisualisation.h"
 
 class CVisualisation
 {
 public:
-	CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader, const CStdString& strVisualisationName);
-	 ~CVisualisation();
+  enum VIS_ACTION { VIS_ACTION_NONE = 0,
+                    VIS_ACTION_NEXT_PRESET,
+                    VIS_ACTION_PREV_PRESET,
+                    VIS_ACTION_LOAD_PRESET,
+                    VIS_ACTION_RANDOM_PRESET,
+                    VIS_ACTION_LOCK_PRESET,
+                    VIS_ACTION_RATE_PRESET_PLUS,
+                    VIS_ACTION_RATE_PRESET_MINUS,
+                    VIS_ACTION_UPDATE_ALBUMART};
+  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName);
+  ~CVisualisation();
 
-	// Things that MUST be supplied by the child classes
-	void Create();
-	void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
-	void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-	void Render();
-	void Stop();
-	void GetInfo(VIS_INFO *info);
+  void Create(int posx, int posy, int width, int height);
+  void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
+  void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+  void Render();
+  void Stop();
+  void GetInfo(VIS_INFO *info);
+  bool OnAction(VIS_ACTION action, void *param = NULL);
+  void GetSettings(vector<VisSetting> **vecSettings);
+  void UpdateSetting(int num);
+  void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
+  void GetCurrentPreset(char **pPreset, bool *locked);
+  bool IsLocked();
+  char *GetPreset();
+
 protected:
-	auto_ptr<struct Visualisation> m_pVisz;
-	auto_ptr<DllLoader> m_pLoader;
+  auto_ptr<struct Visualisation> m_pVisz;
+  auto_ptr<DllVisualisation> m_pDll;
   CStdString m_strVisualisationName;
 };
 

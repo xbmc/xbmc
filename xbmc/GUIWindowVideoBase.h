@@ -1,67 +1,68 @@
 #pragma once
-#include "guiwindow.h"
-#include "filesystem/VirtualDirectory.h"
-#include "filesystem/DirectoryHistory.h"
-#include "FileItem.h"
-#include "GUIDialogProgress.h"
-#include "videodatabase.h"
+#include "GUIMediaWindow.h"
+#include "VideoDatabase.h"
+#include "playlistplayer.h"
+#include "ThumbLoader.h"
 
-#include "stdstring.h"
-#include <vector>
-using namespace std;
-using namespace DIRECTORY;
-
-class CGUIWindowVideoBase : 	public CGUIWindow
+class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
-	CGUIWindowVideoBase(void);
-	virtual ~CGUIWindowVideoBase(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnAction(const CAction &action);
-  virtual void    Render();
+  CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile);
+  virtual ~CGUIWindowVideoBase(void);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
+
+  void PlayMovie(const CFileItem *item);
+  int  GetResumeItemOffset(const CFileItem *item);
+
+  void AddToDatabase(int iItem);
 
 private:
-  bool              IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
+  bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
-	virtual void      SetIMDBThumbs(VECFILEITEMS& items) {};
-  void							UpdateThumbPanel();
-	// overrideable stuff for the different window classes
-  virtual bool      ViewByLargeIcon()=0;
-	virtual bool      ViewByIcon()=0;
-	virtual void			SetViewMode(int iMode)=0;
-	virtual int				SortMethod()=0;
-	virtual bool			SortAscending()=0;
-	virtual void			SortItems()=0;
-	virtual void			FormatItemLabels()=0;
-  virtual void			UpdateButtons();
-	virtual void			OnPopupMenu(int iItem) { OnInfo(iItem); };
+  virtual void UpdateButtons();
+  virtual bool Update(const CStdString &strDirectory);
+  virtual void OnItemLoaded(CFileItem* pItem) {};
+  virtual void OnPrepareFileItems(CFileItemList &items);
 
-  void							Clear();
-	void							OnSort();
-	virtual void			Update(const CStdString &strDirectory) {};	// CONSOLIDATE??
-	virtual void			OnClick(int iItem) {};		// CONSOLIDATE??
-	virtual void			GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items) {}; //FIXME - this should be in all classes
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual void OnInfo(int iItem, const SScraperInfo& info);
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) {};
+  virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
+  virtual void OnUnAssignContent(int iItem) {};
+  virtual void OnQueueItem(int iItem);
+  virtual void OnDeleteItem(int iItem);
+  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
+  virtual CStdString GetQuickpathName(const CStdString& strPath) const {return strPath;};
 
-	void							GoParentFolder();
-  virtual void			OnInfo(int iItem);
-	int								GetSelectedItem();
-	void							DisplayEmptyDatabaseMessage(bool bDisplay);
+  bool OnClick(int iItem);
+  void OnRestartItem(int iItem);
+  void OnResumeItem(int iItem);
+  void PlayItem(int iItem);
+  virtual bool OnPlayMedia(int iItem);
+  void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
+  void DisplayEmptyDatabaseMessage(bool bDisplay);
 
-  bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  void              ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder);
-  void              OnManualIMDB();
-  bool              CheckMovie(const CStdString& strFileName);
-  void							OnQueueItem(int iItem);
-  void							AddItemToPlayList(const CFileItem* pItem);
+  void ShowIMDB(CFileItem *item, const SScraperInfo& info);
 
-	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS        m_vecItems;
-	CStdString					m_strDirectory;
-	CDirectoryHistory		m_history;
-  int                 m_iItemSelected;
-  CGUIDialogProgress*	m_dlgProgress;
-  CVideoDatabase      m_database;
-	int									m_iLastControl;
-	bool								m_bDisplayEmptyDatabaseMessage;
-	CStdString					m_strParentPath;	///< Parent path to handle going up a dir
+  void OnManualIMDB();
+  bool CheckMovie(const CStdString& strFileName);
+
+  void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
+  void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
+
+  void MarkUnWatched(int iItem);
+  void MarkWatched(int iItem);
+  void UpdateVideoTitle(int iItem);
+  void OnSearch();
+  void OnSearchItemFound(const CFileItem* pSelItem);
+  int GetScraperForItem(CFileItem *item, SScraperInfo &info);
+
+  CGUIDialogProgress* m_dlgProgress;
+  CVideoDatabase m_database;
+  bool m_bDisplayEmptyDatabaseMessage;
+
+  CVideoThumbLoader m_thumbLoader;
 };

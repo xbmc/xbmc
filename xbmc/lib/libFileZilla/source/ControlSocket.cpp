@@ -29,15 +29,23 @@
 #include "AsyncGssSocketLayer.h"
 #endif
 
+#if defined(_XBOX)
+#include "../../../Util.h"
+#include "../../utils/Log.h"
 #include "../../Settings.h"
-#include "../../utils/MemUnit.h"
-
-extern void fast_memcpy(void* d, const void* s, unsigned n);
+#include "../../xbox/IoSupport.h"
+#include "../../Util.h"
+#include "../../Utils/log.h"
+#include "../../GUISettings.h"
+#include "../../ApplicationMessenger.h"
+#include "../../utils/MemoryUnitManager.h"
+#endif
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CControlSocket
@@ -90,6 +98,9 @@ CControlSocket::~CControlSocket()
 	}
 	t_connectiondata *conndata=new t_connectiondata;
 	t_connop *op = new t_connop;
+  memset(conndata, 0, sizeof(t_connectiondata));
+  memset(op, 0, sizeof(t_connop));
+
 	op->data = conndata;
 	op->op = USERCONTROL_CONNOP_REMOVE;
 	conndata->userid = m_userid;
@@ -293,6 +304,7 @@ void CControlSocket::SendStatus(LPCTSTR status, int type)
 	}
 }
 
+#if defined(_XBOX)
 BOOL CControlSocket::SendCurDir(const CStdString command,CStdString curDir)
 {
   return SendDir(command, curDir, " is current directory.");
@@ -316,6 +328,7 @@ BOOL CControlSocket::SendDir(const CStdString command,CStdString curDir,const CS
   str.Format("%s \"%s\"%s", command, curDir, prompt);
 	return Send(str);
 }
+#endif
 
 BOOL CControlSocket::Send(LPCTSTR str)
 {
@@ -329,8 +342,8 @@ BOOL CControlSocket::Send(LPCTSTR str)
 	{
 		char *tmp = m_pSendBuffer;
 		m_pSendBuffer = new char[m_nSendBufferLen + len];
-		fast_memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
-		fast_memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
+		memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
+		memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
 		delete [] tmp;
 		m_nSendBufferLen += len;
 		delete [] buffer;
@@ -343,15 +356,15 @@ BOOL CControlSocket::Send(LPCTSTR str)
 		if (!m_pSendBuffer)
 		{
 			m_pSendBuffer = new char[len];
-			fast_memcpy(m_pSendBuffer, buffer, len);
+			memcpy(m_pSendBuffer, buffer, len);
 			m_nSendBufferLen = len;
 		}
 		else
 		{
 			char *tmp = m_pSendBuffer;
 			m_pSendBuffer = new char[m_nSendBufferLen + len];
-			fast_memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
-			fast_memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
+			memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
+			memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
 			delete [] tmp;
 			m_nSendBufferLen += len;
 		}
@@ -384,15 +397,15 @@ BOOL CControlSocket::Send(LPCTSTR str)
 		if (!m_pSendBuffer)
 		{
 			m_pSendBuffer = new char[len-res];
-			fast_memcpy(m_pSendBuffer, buffer+res, len-res);
+			memcpy(m_pSendBuffer, buffer+res, len-res);
 			m_nSendBufferLen = len-res;
 		}
 		else
 		{
 			char *tmp = m_pSendBuffer;
 			m_pSendBuffer = new char[m_nSendBufferLen + len - res];
-			fast_memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
-			fast_memcpy(m_pSendBuffer+m_nSendBufferLen, buffer+res, len-res);
+			memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
+			memcpy(m_pSendBuffer+m_nSendBufferLen, buffer+res, len-res);
 			delete [] tmp;
 			m_nSendBufferLen += len-res;
 		}
@@ -456,8 +469,8 @@ void CControlSocket::OnClose(int nErrorCode)
 // SITE commands
 #define SITE_CRC      1
 #define SITE_EXECUTE  2
-#define SITE_REBOOT   3
-#define SITE_SHUTDOWN 4
+//#define SITE_REBOOT   3
+//#define SITE_SHUTDOWN 4
 #endif
 
 typedef struct
@@ -519,9 +532,9 @@ static const t_command commands[]={	COMMAND_USER, "USER", TRUE,	 TRUE,
 #if defined(_XBOX)
 static const t_command site_commands[]={
     SITE_CRC,      "CRC", TRUE, FALSE,
-    SITE_EXECUTE,  "EXECUTE", TRUE, FALSE,
-    SITE_REBOOT,   "REBOOT", FALSE, FALSE,
-    SITE_SHUTDOWN, "SHUTDOWN", FALSE, FALSE
+    SITE_EXECUTE,  "EXECUTE", TRUE, FALSE //,
+    //SITE_REBOOT,   "REBOOT", FALSE, FALSE,
+    //SITE_SHUTDOWN, "SHUTDOWN", FALSE, FALSE
 };
 #endif
 
@@ -573,6 +586,10 @@ void CControlSocket::ParseCommand()
 				m_pOwner->DecIpCount(m_status.ip);
 				t_connectiondata *conndata = new t_connectiondata;
 				t_connop *op = new t_connop;
+
+        memset(conndata, 0, sizeof(t_connectiondata));
+        memset(op, 0, sizeof(t_connop));
+
 				op->data = conndata;
 				op->op = USERCONTROL_CONNOP_MODIFY;
 				conndata->userid = m_userid;
@@ -711,6 +728,10 @@ void CControlSocket::ParseCommand()
 
 				t_connectiondata *conndata = new t_connectiondata;
 				t_connop *op = new t_connop;
+
+        memset(conndata, 0, sizeof(t_connectiondata));
+        memset(op, 0, sizeof(t_connop));
+
 				op->data = conndata;
 				op->op = USERCONTROL_CONNOP_MODIFY;
 				conndata->userid = m_userid;
@@ -757,34 +778,52 @@ void CControlSocket::ParseCommand()
 
 			if((args == "/") && (user.nRelative == FALSE) && (m_pOwner->m_pPermissions->GetHomeDir(m_status.user) == "/")){
 				m_CurrentDir="/";
-        SendCurDir("250 CWD successful.",m_CurrentDir);
+				SendCurDir("250 CWD successful.",m_CurrentDir);
 			} 
-      else
-      { // check for real permissions
-#endif
-			
+			else
+			{ // check for real permissions
+				
+				int res = m_pOwner->m_pPermissions->ChangeCurrentDir(m_status.user,m_CurrentDir,args);
+				if (!res)
+				{
+					SendCurDir("250 CWD successful.",m_CurrentDir);
+				}
+				else if (res & 1)
+				{
+					SendDir("550 CWD failed.", args, ": Permission denied.");
+				}
+				else if (res)
+				{
+					SendDir("550 CWD failed.", args, ": directory not found.");
+				}
+			}
+#else
 			int res = m_pOwner->m_pPermissions->ChangeCurrentDir(m_status.user,m_CurrentDir,args);
 			if (!res)
 			{
-        SendCurDir("250 CWD successful.",m_CurrentDir);
+				CStdString str;
+				str.Format("250 CWD successful. \"%s\" is current directory.",m_CurrentDir);
+				Send(str);
 			}
 			else if (res & 1)
 			{
-        SendDir("550 CWD failed.", args, ": Permission denied.");
+				CStdString str;
+				str.Format("550 CWD failed. \"%s\": Permission denied.",args);
+				Send(str);
 			}
 			else if (res)
 			{
-        SendDir("550 CWD failed.", args, ": directory not found.");
+				CStdString str;
+				str.Format("550 CWD failed. \"%s\": directory not found.",args);
+				Send(str);
 			}
-#if defined(_XBOX)
-      }
 #endif
-      }
+		}
 		break;
 	case COMMAND_PWD:
 	case COMMAND_XPWD:
 		{
-      SendCurDir("257",m_CurrentDir);
+			SendCurDir("257",m_CurrentDir);
 		}
 		break;
 	case COMMAND_PORT:
@@ -1034,25 +1073,25 @@ void CControlSocket::ParseCommand()
 						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
 						{
 							char drive = tolower(iter->dir[0]);
-							if (drive >= 'f' && drive != 'q')
+							if (drive >= 'f' && drive < 'q')
 							{
-								// check it's available
-								if (drive > 'g' ||
-									(drive == 'f' && !g_stSettings.m_bUseFDrive) ||
-									(drive == 'g' && !g_stSettings.m_bUseGDrive))
-								{
-									if (!MU_IsDriveValid(drive))
-										continue;
-								}
+								// extended partitions and memory units - check if the drive is available
+								if (!CIoSupport::DriveExists(drive) && !g_memoryUnitManager.IsDriveValid(drive))
+									continue;
 							}
+							// don't show x, y, z in the listing as users shouldn't really be
+							// stuffing around with these drives (power users can always go
+							// to these folders by specifying the path directly)
+							if (drive >= 'x' && !g_advancedSettings.m_FTPShowCache)
+								continue;
 
-              if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
-              {
-                // modified to be consistent with other xbox ftp behavior: drive 
-                // name is a single character without the ':' at the end
-                dirToList = drive;
-                dirToList.MakeUpper();
-              }
+							if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
+							{
+								// modified to be consistent with other xbox ftp behavior: drive 
+								// name is a single character without the ':' at the end
+								dirToList = drive;
+								dirToList.MakeUpper();
+							}
 						}
 
 						dirToList.TrimRight("\\");
@@ -1157,12 +1196,31 @@ void CControlSocket::ParseCommand()
 				str.Format("200 CDUP successful. \"XBOX-ROOT(%s)\" is current directory.",m_CurrentDir);
 				Send(str);
 			} 
-      else
-      {
-#endif
+			else
+			{
+				if (!res)
+				{
+					SendCurDir("200 CDUP successful.",m_CurrentDir);
+				}
+				else if (res & 1)
+				{
+					CStdString str;
+					str.Format("550 CDUP failed. \"%s\": Permission denied.",dir);
+					Send(str);
+				}
+				else if (res)
+				{
+					CStdString str;
+					str.Format("550 CDUP failed. \"%s\": directory not found.",dir);
+					Send(str);
+				}
+			}
+#else
 			if (!res)
 			{
-        SendCurDir("200 CDUP successful.",m_CurrentDir);
+				CStdString str;
+				str.Format("200 CDUP successful. \"%s\" is current directory.",m_CurrentDir);
+				Send(str);
 			}
 			else if (res & 1)
 			{
@@ -1176,11 +1234,8 @@ void CControlSocket::ParseCommand()
 				str.Format("550 CDUP failed. \"%s\": directory not found.",dir);
 				Send(str);
 			}
-#if defined(_XBOX)
-      }
 #endif
-
-	  }
+		}
 		break;
 	case COMMAND_RETR:
 		{
@@ -1384,8 +1439,8 @@ void CControlSocket::ParseCommand()
 				break;
 			}
 #endif
-			CStdString result;
-			int error = m_pOwner->m_pPermissions->GetDirName(m_status.user,args,m_CurrentDir,DOP_DELETE,result);
+			CStdString result, logical;
+			int error = m_pOwner->m_pPermissions->GetDirName(m_status.user,args,m_CurrentDir,DOP_DELETE,result,logical);
 			if (error & 1)
 				Send("550 Permission denied");
 			else if (error)
@@ -1423,8 +1478,8 @@ void CControlSocket::ParseCommand()
 				break;
 			}
 #endif
-			CStdString result;
-			int error=m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_CREATE, result);
+			CStdString result, logical;
+			int error=m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_CREATE, result, logical);
 			if (error & PERMISSION_DOESALREADYEXIST && (error & PERMISSION_FILENOTDIR)!=PERMISSION_FILENOTDIR)
 				Send("550 Directory already exists");
 			else if (error & PERMISSION_DENIED)
@@ -1446,17 +1501,16 @@ void CControlSocket::ParseCommand()
 						bReplySent = TRUE;
 						break;
 					}
-					str += piece;
+
+          str += piece;
 					result = result.Mid(result.Find("\\")+1);
 					res = CreateDirectory(str,0);
 				}
 				if (!bReplySent)
-					if (!res)//CreateDirectory(result+"\\",0))
-					{
+					if (!res)
 						Send("450 Internal error creating the directory.");
-					}
 					else
-						Send("250 Directory created successfully");
+            SendDir("257",logical, " Was created");
 			}
 		}
 		break;
@@ -1480,7 +1534,7 @@ void CControlSocket::ParseCommand()
 #endif
 			RenName = "";
 
-			CStdString result;
+			CStdString result, logical;
 			int error = m_pOwner->m_pPermissions->GetFileName(m_status.user, args, m_CurrentDir, FOP_DELETE, result);
 			if (!error)
 			{
@@ -1493,7 +1547,7 @@ void CControlSocket::ParseCommand()
 				Send("550 Permission denied");
 			else
 			{
-				int error2 = m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_DELETE, result);
+				int error2 = m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_DELETE, result, logical);
 				if (!error2)
 				{
 					RenName=result;
@@ -1536,6 +1590,10 @@ void CControlSocket::ParseCommand()
 			{
 				CStdString result;
 				int error = m_pOwner->m_pPermissions->GetFileName(m_status.user, args, m_CurrentDir, FOP_CREATENEW, result);
+#if defined(_XBOX)
+				if (g_guiSettings.GetBool("servers.ftpautofatx"))
+					CUtil::GetFatXQualifiedPath(result);
+#endif
 				if (error)
 					RenName = "";
 				if (error & 1)
@@ -1554,8 +1612,12 @@ void CControlSocket::ParseCommand()
 			}
 			else
 			{
-				CStdString result;
-				int error = m_pOwner->m_pPermissions->GetDirName(m_status.user, args, m_CurrentDir, DOP_CREATE, result);
+				CStdString result, logical;
+				int error = m_pOwner->m_pPermissions->GetDirName(m_status.user, args, m_CurrentDir, DOP_CREATE, result, logical);
+#if defined(_XBOX)
+				if (g_guiSettings.GetBool("servers.ftpautofatx"))
+					CUtil::GetFatXQualifiedPath(result);
+#endif       
 				if (error)
 					RenName = "";
 				if (error & 1)
@@ -2078,12 +2140,18 @@ void CControlSocket::ParseCommand()
     {
       //Get command
 	    CStdString sitecommand, siteargs;
+	    
 	    if (!GetCommandFromString(args, sitecommand, siteargs))
 		    return;
 
+      CStdString fullcommand = sitecommand;
+      if (siteargs.size() > 0) fullcommand += "(" + siteargs + ")";
+      
+      CLog::Log(LOGNOTICE, "200 FTP SITE command called [command=%s, args=%s]", sitecommand.c_str(), siteargs.c_str());
+
 	    //Check if command is valid
 	    int nCommandID = -1;
-	    for (int i = 0; i < (sizeof(site_commands) / sizeof(t_command)); i++)
+/*	    for (int i = 0; i < (sizeof(site_commands) / sizeof(t_command)); i++)
 	    {
 		    if (sitecommand == site_commands[i].command)
 		    {
@@ -2103,15 +2171,95 @@ void CControlSocket::ParseCommand()
 			    nCommandID = site_commands[i].nID;
 			    break;			
 		    }
-	    }
+	    }*/
 	    //Command not recognized
 	    if (nCommandID==-1)
 	    {
-		    Send("500 Syntax error, command unrecognized.");
+        // check for a built-in function
+        CStdString strBuiltIn = sitecommand;
+        if (!CUtil::IsBuiltIn(sitecommand))
+          strBuiltIn = "XBMC." + sitecommand;
+        if (!CUtil::IsBuiltIn(strBuiltIn))
+        { // invalid - send error
+          Send(_T("500 Invalid built-in function.  Use SITE HELP for a list of valid SITE commands"));
+          return;
+        }
+        if (strBuiltIn.Equals("xbmc.help", false) || strBuiltIn.Equals("help", false))
+        {
+          CStdString strHelp;
+          CUtil::GetBuiltInHelp(strHelp);
+          Send(_T("200-FTP SITE HELP"));
+          int iReturn = strHelp.Find("\n");
+          while (iReturn >= 0)
+          {
+            CStdString helpline = "  " + strHelp.Left(iReturn);
+
+            // replace tab with spaces (tab position = 30)
+            //   because ftp command line (at least on windows) does 
+            //   not show tabs well.
+            int iTabPos = helpline.Find("\t");
+            if (iTabPos >= 0)
+            {
+              helpline = helpline.Left(iTabPos) + CStdString(30 - iTabPos, ' ') + helpline.Mid(iTabPos + 1);
+            }
+            
+            Send(_T(helpline.c_str()));
+            strHelp = strHelp.Mid(iReturn + 1);
+            iReturn = strHelp.Find("\n");
+          }
+          Send(_T("200 End of help"));
+        }
+        else
+        {
+          // send using a threadmessage...
+          ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+          tMsg.strParam = fullcommand;
+          g_applicationMessenger.SendMessage(tMsg, true);
+          Send(_T("200 Executed built in function."));
+        }
 		    return;
 	    }
       switch (nCommandID)
       {
+        case -1:
+        {
+	        // not recognized as a standard command, call ExecBuiltIn
+          if (sitecommand.Find(".") != 5)
+          {
+            CStdString prefix("XBOX.");
+            sitecommand = prefix + sitecommand;
+          }
+
+          {
+	          CStdString str;
+	          str.Format("200 FTP SITE - calling ExecBuiltIn [command=%s, args=%s]", sitecommand.c_str(), siteargs.c_str());
+	          //Send(str);
+            CLog::Log(LOGNOTICE, str);
+          }
+
+          int rtn = CUtil::ExecBuiltIn(siteargs);
+
+          {
+	          CStdString str;
+	          str.Format("200 FTP SITE - called ExecBuiltIn [command=%s, args=%s, rtn=%i]", sitecommand.c_str(), siteargs.c_str(), rtn);
+	          //Send(str);
+            CLog::Log(LOGNOTICE, str);
+          }
+
+          if (rtn == 0)
+          {
+            Send("226 Command executed successfully.");
+          }
+          else if (rtn == -1)
+          {
+		        Send("500 Syntax error, command unrecognized.");
+          }
+          else
+          {
+		        Send("550 Command error.");
+          }
+		      break;
+        }
         case SITE_CRC:
           {
 			    // in case of xbox => deny all operations apart from cwd in xbox-root
@@ -2218,7 +2366,7 @@ void CControlSocket::ParseCommand()
           }
           break;
     
-        case SITE_REBOOT:
+/*        case SITE_REBOOT:
           {
             OutputDebugString(_T("Rebooting...\n"));
             XFSTATUS result = XBFILEZILLA(Reboot());
@@ -2247,6 +2395,7 @@ void CControlSocket::ParseCommand()
             ResetTransferstatus();
           }
           break;
+*/
         default:
     		  Send("502 Command not implemented.");
       };
@@ -2405,8 +2554,10 @@ void CControlSocket::ProcessTransferMsg()
 	}
 	else if (status==5)
 		Send("425 Can't open data connection");
+#if defined(_XBOX)
 	else if (status==6)
 		Send("451 Out of memory.");
+#endif
 	if (status>=0 && m_bWaitGoOffline)
 		ForceClose(0);
 	else if (m_bQuitCommand)
@@ -2699,6 +2850,10 @@ BOOL CControlSocket::DoUserLogin(char* sendme)
 
 		t_connectiondata *conndata=new t_connectiondata;
 		t_connop *op=new t_connop;
+
+    memset(conndata, 0, sizeof(t_connectiondata));
+    memset(op, 0, sizeof(t_connop));
+
 		op->data=conndata;
 		op->op=USERCONTROL_CONNOP_MODIFY;
 		conndata->userid=m_userid;

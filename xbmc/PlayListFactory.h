@@ -1,15 +1,15 @@
 #pragma once
 
 #include "playlist.h"
-using namespace PLAYLIST;
+
 namespace PLAYLIST
 {
 
-	class CPlayListFactory
-	{
-	public:
-		CPlayListFactory(void);
-		virtual ~CPlayListFactory(void);
-		CPlayList* Create(const CStdString& strFileName)  const;
-	};
+class CPlayListFactory
+{
+public:
+  static CPlayList* Create(const CStdString& filename);
+  static CPlayList* Create(const CFileItem& item);
+  static bool IsPlaylist(const CStdString& filename);
+};
 };

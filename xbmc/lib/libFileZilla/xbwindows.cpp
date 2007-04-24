@@ -22,6 +22,7 @@
 #include "xbwindows.h"
 
 
+
 // global CWindowManager object
 CWindowManager gWindowManager;
 
@@ -69,6 +70,10 @@ VOID PostQuitMessage(int nExitCode)
   gWindowManager.PostThreadMessage(GetCurrentThreadId(), WM_QUIT, nExitCode, 0);
 }
 
+void RemoveMessageSinks()
+{
+  gWindowManager.Clear();
+}
 
 UINT RegisterWindowMessage(LPCTSTR lpString)
 {
@@ -94,16 +99,23 @@ CWindowManager::CWindowManager()
 
 CWindowManager::~CWindowManager()
 {
+  Clear();
+}
+
+void CWindowManager::Clear()
+{
   mWindowListCS.Lock();
   std::list<CWindow*>::iterator itWindow;
   for (itWindow = mWindowList.begin(); itWindow != mWindowList.end(); ++itWindow)
     delete *itWindow;
+  mWindowList.clear();
   mWindowListCS.Unlock();
 
   mMessageSinkListCS.Lock();
   std::list<CMessageSink*>::iterator itSink;
   for (itSink = mMessageSinkList.begin(); itSink != mMessageSinkList.end(); ++itSink)
     delete *itSink;
+  mMessageSinkList.clear();
   mMessageSinkListCS.Unlock();
 }
 
@@ -383,6 +395,11 @@ CMessageSink::CMessageSink(DWORD ThreadId)
 
 CMessageSink::~CMessageSink()
 {
+  mMessageQueueCS.Lock();
+
+  mMessageQueue.clear();
+
+  mMessageQueueCS.Unlock();
   CloseHandle(mEventMessageAvailable);
 }
 
