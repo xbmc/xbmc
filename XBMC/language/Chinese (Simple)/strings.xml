@@ -536,6 +536,8 @@
   <string id="649">载入中</string>
   <string id="650">输出中</string>
   <string id="651">影片数据库</string>
+  <string id="652">年份</string>
+  <string id="653">更新数据库</string>
 
   <string id="700">清除音乐数据库</string>
   <string id="701">清除音乐数据库中的旧文件</string>
@@ -646,6 +648,9 @@
   <string id="1030">镜像</string>
   <string id="1031">镜像目录</string>
   <string id="1032">添加网上邻居…</string>
+  <string id="1033">一个文件</string>
+  <string id="1034">子菜单</string>
+  <string id="1035">启用子菜单按钮</string>
 
   <string id="1200">SMB 共享设置</string>
   <string id="1202">工作组</string>
@@ -1371,7 +1376,7 @@
   <string id="20073">且是有效的目录名称</string>
   <string id="20074">MPAA 分级：</string>
   <string id="20075">输入管理员密码</string>
-  <string id="20076">在开机时询问管理员密码</string>
+  <string id="20076">启动时询问管理员密码</string>
   <string id="20077">桌面设定</string>
   <string id="20078">- 无连结设定 -</string>
   <string id="20079">启用桌面动画效果</string>
@@ -1566,7 +1571,7 @@
   <string id="20367">隐藏观看</string>
   <string id="20368">产品编号</string>
   <string id="20369">非观看项目隐藏图示</string>
-  <string id="20370">* “隐藏”防止被破坏 *</string>
+  <string id="20370">* [隐藏]防止被破坏 *</string>
   <string id="20371">设定影集缩略图</string>
   <string id="20372">影集图像</string>
   <string id="20373">季</string>
@@ -1578,7 +1583,7 @@
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏档案和目录</string>
-  
+
   <string id="21331">TuxBox 客户端</string>
   <string id="21332">警告：目标 TuxBox 装置在录影模式！</string>
   <string id="21333">串流即将停止！</string>
@@ -1587,7 +1592,7 @@
   <string id="21336">连线到：%s</string>
   <string id="21337">TuxBox 装置</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-  
+
   <string id="21356">UPnP 音乐</string>
   <string id="21357">UPnP 影片</string>
   <string id="21358">UPnP 图片</string>
@@ -1597,10 +1602,10 @@
   <string id="21362">管理 UPnP 影片共享</string>
   <string id="21363">管理 UPnP 图片共享</string>
   <string id="21364">编辑媒体共享</string>
-  <string id="21365">移除媒体共享</string>  
+  <string id="21365">移除媒体共享</string>
   <string id="21366">自订字幕资料夹</string>
   <string id="21367">电影和替代字幕资料夹</string>
-  
+
   <string id="21370">媒体播放时使用浏览音效</string>
   <string id="21371">缩略图</string>
   <string id="21372">强制 DVD 播放器区码</string>
@@ -1621,14 +1626,18 @@
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安静</string>
-  
+
   <string id="21390">电源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
   <string id="21393">高待机</string>
   <string id="21394">低待机</string>
-
   <string id="21395">缓存档不能超过4GB</string>
+  <string id="21396">章节</string>
+
+  <string id="21397">高品质像素着色器 V2</string>
+
+  <string id="21398">启用启动时播放列表</string>
 
   <string id="29999">游戏应用闪烁过滤</string>
 </strings>
