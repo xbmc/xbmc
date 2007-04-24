@@ -457,21 +457,6 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       return true;
     }
   }
-/* TODO: CONTEXTMENU - move to window classes
-  else if (btn == btn_Settings)
-  {
-    if (strType == "video")
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
-    else if (strType == "music")
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-    else if (strType == "myprograms")
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-    else if (strType == "pictures")
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-    else if (strType == "files")
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
-    return true;
-  }*/
   return false;
 }
 
