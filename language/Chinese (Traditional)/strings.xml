@@ -537,6 +537,7 @@
   <string id="650">輸出中</string>
   <string id="651">影片資料庫</string>
   <string id="652">年份</string>
+  <string id="653">更新資料庫</string>
 
   <string id="700">清除音樂資料庫</string>
   <string id="701">移除音樂資料庫舊歌曲</string>
@@ -647,6 +648,9 @@
   <string id="1030">圖像</string>
   <string id="1031">圖像資料夾</string>
   <string id="1032">新增網路位置…</string>
+  <string id="1033">一個檔案</string>
+  <string id="1034">子選單</string>
+  <string id="1035">啟用 子選單按鈕</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -897,7 +901,7 @@
   <string id="13167">記憶卡</string>
   <string id="13168">遙控器</string>
   <string id="13169">控制器埠號</string>
-  
+
 
   <string id="13170">從不</string>
   <string id="13171">立即</string>
@@ -1372,7 +1376,7 @@
   <string id="20073">且是有效的資料夾名稱</string>
   <string id="20074">MPAA 分級：</string>
   <string id="20075">輸入管理員密碼</string>
-  <string id="20076">開機時詢問管理員密碼</string>
+  <string id="20076">啟動時詢問管理員密碼</string>
   <string id="20077">桌面設定</string>
   <string id="20078">- 無連結設定 -</string>
   <string id="20079">啟用 桌面動畫效果</string>
@@ -1567,7 +1571,7 @@
   <string id="20367">隱藏觀看</string>
   <string id="20368">產品編號</string>
   <string id="20369">非觀看項目隱藏圖示</string>
-  <string id="20370">* 「隱藏」防止被破壞 *</string>
+  <string id="20370">* [隱藏]防止被破壞 *</string>
   <string id="20371">設定影集縮圖</string>
   <string id="20372">影集圖像</string>
   <string id="20373">季</string>
@@ -1579,7 +1583,7 @@
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
-  
+
   <string id="21331">TuxBox 客戶端</string>
   <string id="21332">警告：目標 TuxBox 裝置在錄影模式！</string>
   <string id="21333">串流即將停止！</string>
@@ -1588,7 +1592,7 @@
   <string id="21336">連線到：%s</string>
   <string id="21337">TuxBox 裝置</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-  
+
   <string id="21356">UPnP 音樂</string>
   <string id="21357">UPnP 影片</string>
   <string id="21358">UPnP 圖片</string>
@@ -1598,10 +1602,10 @@
   <string id="21362">管理 UPnP 影片共享</string>
   <string id="21363">管理 UPnP 圖片共享</string>
   <string id="21364">編輯媒體共享</string>
-  <string id="21365">移除媒體共享</string>  
+  <string id="21365">移除媒體共享</string>
   <string id="21366">自訂字幕資料夾</string>
   <string id="21367">電影和替代字幕資料夾</string>
-  
+
   <string id="21370">媒體播放時使用瀏覽音效</string>
   <string id="21371">縮略圖</string>
   <string id="21372">強制 DVD 播放器區碼</string>
@@ -1618,19 +1622,22 @@
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
   <string id="21385">打開</string>
-  
+
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安靜</string>
-  
+
   <string id="21390">電源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
   <string id="21393">高待機</string>
   <string id="21394">低待機</string>
-
   <string id="21395">暫存檔不能超過4GB</string>
   <string id="21396">章節</string>
+
+  <string id="21397">高品質像素著色器 V2</string>
+
+  <string id="21398">啟用 啟動時播放列表</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
