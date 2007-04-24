@@ -887,6 +887,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Rename = 0;					// Rename
   int btn_Default = 0;        // Set default
   int btn_ClearDefault=0;     // Clear default
+  int btn_UpdateLibrary=0;
 
   bool bSelected = false;
   VECPLAYERCORES vecCores;
@@ -1041,6 +1042,15 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       
       if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
         btn_Delete = pMenu->AddButton(646);
+
+      CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      if (pScanDlg && pScanDlg->IsScanning())
+      {
+        if (node != NODE_TYPE_TITLE_TVSHOWS)
+          btn_UpdateLibrary = pMenu->AddButton(13353);	// Stop Scanning
+      }
+      else
+        btn_UpdateLibrary = pMenu->AddButton(653);
     }
     if (!bIsGotoParent)
     {
@@ -1158,7 +1168,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     {
       OnAssignContent(iItem,iFound,info);
     }
-    else if (btnid  == btn_Update) // update content 
+    else if (btnid  == btn_Update || btnid == btn_UpdateLibrary) // update content 
     {
       CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       if (pScanDlg && pScanDlg->IsScanning())
@@ -1167,7 +1177,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       }
       else
       {
-        if (m_vecItems[iItem]->IsVideoDb())
+        if (btnid == btn_UpdateLibrary)
+          OnScan("",info);
+        else if (m_vecItems[iItem]->IsVideoDb())
           OnScan(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info);
         else
           OnScan(m_vecItems[iItem]->m_strPath,info);

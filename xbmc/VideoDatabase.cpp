@@ -32,7 +32,7 @@
 using namespace XFILE;
 using namespace DIRECTORY;
 
-#define VIDEO_DATABASE_VERSION 5
+#define VIDEO_DATABASE_VERSION 6
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -229,6 +229,60 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
   return -1;
 }
 
+bool CVideoDatabase::GetPaths(set<CStdString> &paths)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
+
+    paths.clear();
+
+    // first grab all tvshow paths
+    if (!m_pDS->query("select strPath from path join tvshowlinkpath on tvshowlinkpath.idpath=path.idpath")) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+    while (!m_pDS->eof())
+    {
+      paths.insert(m_pDS->fv("strPath").get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    
+    // now grab all other paths
+    if (!m_pDS2->query("select strPath,strContent from path where idpath NOT in (select idpath from tvshowlinkpath)")) return false;
+    iRowsFound = m_pDS2->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS2->close();
+      return true;
+    }
+    while (!m_pDS2->eof())
+    {
+      CStdString strPath = m_pDS2->fv("strPath").get_asString();
+      SScraperInfo info;
+      info.strContent = m_pDS2->fv("strContent").get_asString();
+      if (info.strContent.IsEmpty())
+        GetScraperForPath(strPath,info.strPath,info.strContent);
+      if (!info.strContent.Equals("tvshows"))
+        paths.insert(strPath);
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
+  }
+  return false;
+}
+
 long CVideoDatabase::AddPath(const CStdString& strPath)
 {
   CStdString strSQL;
@@ -253,6 +307,28 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
   return -1;
 }
 
+bool CVideoDatabase::GetPathHash(const CStdString &path, CStdString &hash)
+{
+  CStdString strSQL;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select strHash from path where strPath like '%s'", path.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() == 0)
+      return false;
+    hash = m_pDS->fv("strHash").get_asString();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", path.c_str());
+  }
+
+  return false;
+}
 
 //********************************************************************************************************************************
 long CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
@@ -295,6 +371,34 @@ long CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
   return -1;
 }
 
+bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (hash.IsEmpty())
+    { // this is an empty folder - we need only add it to the path table
+      // if the path actually exists
+      if (!CDirectory::Exists(path))
+        return false;
+    }
+    long pathId = GetPath(path);
+    if (pathId < 0) return false;
+
+    CStdString strSQL=FormatSQL("update path set strHash='%s' where idPath=%ld", hash.c_str(), pathId);
+    m_pDS->exec(strSQL.c_str());
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s, %s) failed", path.c_str(), hash.c_str());
+  }
+
+  return false;
+}
 
 //********************************************************************************************************************************
 long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
@@ -2156,93 +2260,107 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdStr
 
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
-  if (iVersion < 4)
+  try 
   {
-    m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_1 ON tvshowlinkepisode ( idShow, idEpisode )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_2 ON tvshowlinkepisode ( idEpisode, idShow )\n");
-  }
-  if (iVersion < 5)
-  {
-    CLog::Log(LOGINFO,"Creating temporary movie table");
-    CStdString columns;
-    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    if (iVersion < 4)
     {
-      CStdString column, select;
-      column.Format(",c%02d text", i);
-      select.Format(",c%02d",i);
-      columns += column;
+      m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_1 ON tvshowlinkepisode ( idShow, idEpisode )\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_tvshowlinkepisode_2 ON tvshowlinkepisode ( idEpisode, idShow )\n");
     }
-    CStdString strSQL=FormatSQL("CREATE TEMPORARY TABLE tempmovie ( idMovie integer primary key%s,idFile integer)\n",columns.c_str());
-    m_pDS->exec(strSQL.c_str());
-    CLog::Log(LOGINFO, "Copying movies into temporary movie table");
-    strSQL=FormatSQL("INSERT INTO tempmovie select *,0 from movie");
-    m_pDS->exec(strSQL.c_str());
-    CLog::Log(LOGINFO, "Dropping old movie table");
-    m_pDS->exec("DROP TABLE movie");
-    CLog::Log(LOGINFO, "Creating new movie table");
-    strSQL = "CREATE TABLE movie ( idMovie integer primary key"+columns+",idFile integer)\n";
-    m_pDS->exec(strSQL.c_str());
-    CLog::Log(LOGINFO, "Copying movies into new movie table");
-    m_pDS->exec("INSERT INTO movie select * from tempmovie");
-    CLog::Log(LOGINFO, "Dropping temporary movie table");
-    m_pDS->exec("DROP TABLE tempmovie");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
-
-    CLog::Log(LOGINFO,"Creating temporary episode table");
-    strSQL=FormatSQL("CREATE TEMPORARY TABLE tempepisode ( idEpisode integer primary key%s,idFile integer)\n",columns.c_str());
-    m_pDS->exec(strSQL.c_str());
-    CLog::Log(LOGINFO, "Copying episodes into temporary episode table");
-    strSQL=FormatSQL("INSERT INTO tempepisode select idEpisode%s,0 from episode",columns.c_str());
-    m_pDS->exec(strSQL.c_str());
-    CLog::Log(LOGINFO, "Dropping old episode table");
-    m_pDS->exec("DROP TABLE episode");
-    CLog::Log(LOGINFO, "Creating new episode table");
-    strSQL = "CREATE TABLE episode ( idEpisode integer primary key"+columns+",idFile integer)\n";
-    m_pDS->exec(strSQL.c_str());
-    CLog::Log(LOGINFO, "Copying episodes into new episode table");
-    m_pDS->exec("INSERT INTO episode select * from tempepisode");
-    CLog::Log(LOGINFO, "Dropping temporary episode table");
-    m_pDS->exec("DROP TABLE tempepisode");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
-    m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
-
-    // run over all files, creating the approriate links
-    strSQL=FormatSQL("select * from files");
-    m_pDS->query(strSQL.c_str());
-    BeginTransaction();
-    while (!m_pDS->eof())
+    if (iVersion < 5)
     {
-      strSQL.Empty();
-      long lEpisodeId = m_pDS->fv("files.idEpisode").get_asLong();
-      long lMovieId = m_pDS->fv("files.idMovie").get_asLong();
-      if (lEpisodeId > -1)
+      CLog::Log(LOGINFO,"Creating temporary movie table");
+      CStdString columns;
+      for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
       {
-        strSQL=FormatSQL("update episode set idFile=%u where idEpisode=%u",m_pDS->fv("files.idFile").get_asLong(),lEpisodeId);
+        CStdString column, select;
+        column.Format(",c%02d text", i);
+        select.Format(",c%02d",i);
+        columns += column;
       }
-      if (lMovieId > -1)
-        strSQL=FormatSQL("update movie set idFile=%u where idMovie=%u",m_pDS->fv("files.idFile").get_asLong(),lMovieId);
+      CStdString strSQL=FormatSQL("CREATE TEMPORARY TABLE tempmovie ( idMovie integer primary key%s,idFile integer)\n",columns.c_str());
+      m_pDS->exec(strSQL.c_str());
+      CLog::Log(LOGINFO, "Copying movies into temporary movie table");
+      strSQL=FormatSQL("INSERT INTO tempmovie select *,0 from movie");
+      m_pDS->exec(strSQL.c_str());
+      CLog::Log(LOGINFO, "Dropping old movie table");
+      m_pDS->exec("DROP TABLE movie");
+      CLog::Log(LOGINFO, "Creating new movie table");
+      strSQL = "CREATE TABLE movie ( idMovie integer primary key"+columns+",idFile integer)\n";
+      m_pDS->exec(strSQL.c_str());
+      CLog::Log(LOGINFO, "Copying movies into new movie table");
+      m_pDS->exec("INSERT INTO movie select * from tempmovie");
+      CLog::Log(LOGINFO, "Dropping temporary movie table");
+      m_pDS->exec("DROP TABLE tempmovie");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
 
-      if (!strSQL.IsEmpty())
+      CLog::Log(LOGINFO,"Creating temporary episode table");
+      strSQL=FormatSQL("CREATE TEMPORARY TABLE tempepisode ( idEpisode integer primary key%s,idFile integer)\n",columns.c_str());
+      m_pDS->exec(strSQL.c_str());
+      CLog::Log(LOGINFO, "Copying episodes into temporary episode table");
+      strSQL=FormatSQL("INSERT INTO tempepisode select idEpisode%s,0 from episode",columns.c_str());
+      m_pDS->exec(strSQL.c_str());
+      CLog::Log(LOGINFO, "Dropping old episode table");
+      m_pDS->exec("DROP TABLE episode");
+      CLog::Log(LOGINFO, "Creating new episode table");
+      strSQL = "CREATE TABLE episode ( idEpisode integer primary key"+columns+",idFile integer)\n";
+      m_pDS->exec(strSQL.c_str());
+      CLog::Log(LOGINFO, "Copying episodes into new episode table");
+      m_pDS->exec("INSERT INTO episode select * from tempepisode");
+      CLog::Log(LOGINFO, "Dropping temporary episode table");
+      m_pDS->exec("DROP TABLE tempepisode");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
+      m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
+
+      // run over all files, creating the approriate links
+      strSQL=FormatSQL("select * from files");
+      m_pDS->query(strSQL.c_str());
+      BeginTransaction();
+      while (!m_pDS->eof())
+      {
+        strSQL.Empty();
+        long lEpisodeId = m_pDS->fv("files.idEpisode").get_asLong();
+        long lMovieId = m_pDS->fv("files.idMovie").get_asLong();
+        if (lEpisodeId > -1)
+        {
+          strSQL=FormatSQL("update episode set idFile=%u where idEpisode=%u",m_pDS->fv("files.idFile").get_asLong(),lEpisodeId);
+        }
+        if (lMovieId > -1)
+          strSQL=FormatSQL("update movie set idFile=%u where idMovie=%u",m_pDS->fv("files.idFile").get_asLong(),lMovieId);
+
+        if (!strSQL.IsEmpty())
+          m_pDS2->exec(strSQL.c_str());
+
+        m_pDS->next();
+      }
+      // now fix them paths
+      strSQL = "select * from path";
+      m_pDS->query(strSQL.c_str());
+      while (!m_pDS->eof())
+      {
+        CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+        CUtil::AddSlashAtEnd(strPath);
+        strSQL = FormatSQL("update path set strPath='%s' where idPath=%u",strPath.c_str(),m_pDS->fv("path.idPath").get_asLong());
         m_pDS2->exec(strSQL.c_str());
-      
-      m_pDS->next();
+        m_pDS->next();
+      }
+      m_pDS->exec("DROP TABLE movielinkfile");
+      CommitTransaction();
+      m_pDS->close();
     }
-    // now fix them paths
-    strSQL = "select * from path";
-    m_pDS->query(strSQL.c_str());
-    while (!m_pDS->eof())
+    if (iVersion < 6)
     {
-      CStdString strPath = m_pDS->fv("path.strPath").get_asString();
-      CUtil::AddSlashAtEnd(strPath);
-      strSQL = FormatSQL("update path set strPath='%s' where idPath=%u",strPath.c_str(),m_pDS->fv("path.idPath").get_asLong());
-      m_pDS2->exec(strSQL.c_str());
-      m_pDS->next();
+      // add the strHash column to path table
+      m_pDS->exec("alter table path add strHash text");
     }
-    m_pDS->exec("DROP TABLE movielinkfile");
-    CommitTransaction();
-    m_pDS->close();
   }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Error attempting to update the database version!");
+    return false;
+  }
+
   return true;
 }
 
