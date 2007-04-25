@@ -594,7 +594,7 @@
   <string id="755">Edit Program Path</string>
   <string id="756">Edit Program Name</string>
   <string id="757">Edit Path Depth</string>
-  <string id="758">Removing Program Link</string>
+  <string id="758"></string>
   <string id="759">View: Big List</string>
   <string id="760">Yellow</string>
   <string id="761">White</string>
@@ -1120,6 +1120,8 @@
   <string id="14073">XLink Kai is not enabled.</string>
   <string id="14074">Set Timezone</string>
   <string id="14075">Use Daylight Saving Time</string>
+  <string id="14076">Add to Favourites</string>
+  <string id="14077">Remove from Favourites</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">The service is not connected.</string>

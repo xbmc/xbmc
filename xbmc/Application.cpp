@@ -160,6 +160,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogSubMenu.h"
+#include "GUIDialogFavourites.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
@@ -1259,6 +1260,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
   m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
+  m_gWindowManager.Add(new CGUIDialogFavourites);     // window id = 134
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -3174,6 +3176,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_FAVOURITES);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
