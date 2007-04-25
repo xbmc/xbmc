@@ -265,7 +265,13 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       else
         AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
       AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
-      SetSortMethod(g_stSettings.m_viewStateMusicNavSongs.m_sortMethod);
+
+      // the "All Albums" entries always default to SORT_METHOD_ALBUM as this is most logical - user can always
+      // change it and the change will be saved for this particular path
+      if (dir.IsAllItem(items.m_strPath))
+        SetSortMethod(g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SORT_METHOD_ALBUM_IGNORE_THE : SORT_METHOD_ALBUM);
+      else
+        SetSortMethod(g_stSettings.m_viewStateMusicNavSongs.m_sortMethod);
 
       SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
 
