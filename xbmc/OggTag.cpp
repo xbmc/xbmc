@@ -59,8 +59,7 @@ bool COggTag::Read(const CStdString& strFile1)
     currentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
     CStdString strPath=strFile;
     CUtil::GetDirectory(strPath, strFile);
-    if (CUtil::HasSlashAtEnd(strFile))
-      strFile.Delete(strFile.size()-1);
+    CUtil::RemoveSlashAtEnd(strFile);   // we want the filename
   }
 
   //Use the emulated fopen() as its only used inside the dll
