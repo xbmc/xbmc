@@ -132,6 +132,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       vector<CStdString> tokens;
       CStdString strDirectory;
       CUtil::GetDirectory(strDest,strDirectory);
+      CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
         CUtil::Tokenize(strDirectory,tokens,"\\");
