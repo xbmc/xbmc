@@ -1023,6 +1023,12 @@
 					RelativePath="..\..\xbmc\utils\Event.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\Favourites.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Favourites.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileItem.cpp">
 				</File>
 				<File
@@ -1260,6 +1266,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogContextMenu.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFavourites.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFavourites.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogFileBrowser.cpp">
