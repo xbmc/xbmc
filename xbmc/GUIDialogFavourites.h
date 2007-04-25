@@ -10,6 +10,10 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual void OnInitWindow();
 
+  virtual CFileItem *GetCurrentListItem();
+
+  virtual bool IsMediaWindow() const { return true; };
+
 protected:
   int GetSelectedItem();
   void OnClick(int item);
