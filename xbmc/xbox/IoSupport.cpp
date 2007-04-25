@@ -33,6 +33,9 @@
 #endif
 #endif
 
+#define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
+#define NT_STATUS_VOLUME_DISMOUNTED     long(0xC0000000 | 0x026E)
+
 typedef struct
 {
   char cDriveLetter;
@@ -111,16 +114,16 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
 #ifdef _XBOX
   char szDestinationDrive[16];
   ANSI_STRING LinkName;
-  NTSTATUS status;
-
-  CLog::Log(LOGNOTICE, "Unmapping drive %c", cDriveLetter);
+  NTSTATUS status;  
 
   sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
 
   status =  IoDeleteSymbolicLink(&LinkName);
 
-  if (!NT_SUCCESS(status))
+  if (NT_SUCCESS(status))
+    CLog::Log(LOGNOTICE, "Unmapped drive %c", cDriveLetter);
+  else if(status != NT_STATUS_OBJECT_NAME_NOT_FOUND)
     CLog::Log(LOGERROR, "Failed to delete symbolic link!  (status=0x%08x)", status);
 
   return status;
@@ -141,9 +144,7 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
   ANSI_STRING DeviceName;
-  NTSTATUS status;
-
-  CLog::Log(LOGNOTICE, "Dismounting %s", szDevice);
+  NTSTATUS status;  
 
   sprintf(szSourceDevice, "\\Device\\%s", szDevice);
 
@@ -151,7 +152,9 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 
   status = IoDismountVolumeByName(&DeviceName);
 
-  if (!NT_SUCCESS(status))
+  if (NT_SUCCESS(status))
+    CLog::Log(LOGNOTICE, "Dismounted %s", szDevice);
+  else if(status != NT_STATUS_VOLUME_DISMOUNTED)
     CLog::Log(LOGERROR, "Failed to dismount volume!  (status=0x%08x)", status);
 
   return status;
