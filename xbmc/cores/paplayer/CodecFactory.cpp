@@ -54,7 +54,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("ac3"))
     return new AC3Codec();
 #endif
-  else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
+  else if (strFileType.Equals("m4a") || strFileType.Equals("aac") || strFileType.Equals("mp4"))
     return new AACCodec();
   else if (strFileType.Equals("wv"))
     return new WAVPackCodec();
