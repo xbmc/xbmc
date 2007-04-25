@@ -190,7 +190,7 @@ namespace PYXBMC
 
   PyObject* PlayList_Remove(PlayList *self, PyObject *args)
   {
-    char *cFileName;
+    char *cFileName = NULL;
     if (!PyArg_ParseTuple(args, "s", &cFileName))	return NULL;
 
     self->pPlayList->Remove(cFileName);
