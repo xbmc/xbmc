@@ -590,8 +590,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
       // get the usual bookmark shares, and anything for all media windows
-      CShare *share = CGUIDialogContextMenu::GetShare("music", item);
-      CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
+      CShare *share = CGUIDialogContextMenu::GetShare("video", item);
+      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (!item->IsDVD())
