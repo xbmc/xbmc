@@ -432,8 +432,8 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
   if ( m_vecItems.IsVirtualDirectoryRoot() && item)
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
-    if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
+    CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+    if (CGUIDialogContextMenu::OnContextButton("music", share, button))
     {
       Update("");
       return true;
