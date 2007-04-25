@@ -2931,7 +2931,7 @@ bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
 
     path.Empty();
 
-    CStdString strSQL=FormatSQL("select distinct strPath from path join song on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
+    CStdString strSQL=FormatSQL("select distinct strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
