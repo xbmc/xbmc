@@ -60,6 +60,9 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("HeapAlloc", (unsigned long) HeapAlloc); //test
   g_dlls.kernel32.AddExport("LocalFree", (unsigned long) LocalFree); //test
   g_dlls.kernel32.AddExport("LocalAlloc", (unsigned long) LocalAlloc); //test
+  g_dlls.kernel32.AddExport("LocalLock", (unsigned long) LocalLock);
+  g_dlls.kernel32.AddExport("LocalUnlock", (unsigned long) LocalUnlock);
+  g_dlls.kernel32.AddExport("LocalHandle", (unsigned long) LocalHandle);
   g_dlls.kernel32.AddExport("InterlockedIncrement", (unsigned long) InterlockedIncrement);
   g_dlls.kernel32.AddExport("InterlockedDecrement", (unsigned long) InterlockedDecrement);
   g_dlls.kernel32.AddExport("InterlockedExchange", (unsigned long) InterlockedExchange);
@@ -88,6 +91,8 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GlobalAlloc", (unsigned long) GlobalAlloc);
   g_dlls.kernel32.AddExport("GlobalLock", (unsigned long) GlobalLock);
   g_dlls.kernel32.AddExport("GlobalUnlock", (unsigned long) GlobalUnlock);
+  g_dlls.kernel32.AddExport("GlobalHandle", (unsigned long) GlobalHandle);
+  g_dlls.kernel32.AddExport("GlobalFree", (unsigned long) GlobalFree);
   g_dlls.kernel32.AddExport("FreeEnvironmentStringsW", (unsigned long) dllFreeEnvironmentStringsW);
   g_dlls.kernel32.AddExport("SetLastError", (unsigned long) SetLastError);
   g_dlls.kernel32.AddExport("RestoreLastError", (unsigned long) SetLastError);
@@ -100,8 +105,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("TerminateProcess", (unsigned long) dllTerminateProcess);
   g_dlls.kernel32.AddExport("GetCurrentProcess", (unsigned long) dllGetCurrentProcess);
   g_dlls.kernel32.AddExport("HeapSize", (unsigned long) HeapSize);
-  g_dlls.kernel32.AddExport("WriteFile", (unsigned long) WriteFile);
-  g_dlls.kernel32.AddExport("GlobalFree", (unsigned long) GlobalFree);
+  g_dlls.kernel32.AddExport("WriteFile", (unsigned long) WriteFile);  
   g_dlls.kernel32.AddExport("GetACP", (unsigned long) dllGetACP);
   g_dlls.kernel32.AddExport("SetHandleCount", (unsigned long) dllSetHandleCount);
   g_dlls.kernel32.AddExport("GetStdHandle", (unsigned long) dllGetStdHandle);
@@ -195,5 +199,7 @@ void export_kernel32()
 
   g_dlls.kernel32.AddExport("GetSystemTime", (unsigned long)GetSystemTime);
   g_dlls.kernel32.AddExport("GetFileSize", (unsigned long)GetFileSize);
+  g_dlls.kernel32.AddExport("FindResourceA", (unsigned long)dllFindResourceA);
+  g_dlls.kernel32.AddExport("LoadResource", (unsigned long)dllLoadResource);  
 
 }
