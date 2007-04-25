@@ -79,7 +79,7 @@
 				<imagepath>home-settings</imagepath>
 				<timeperimage>5000</timeperimage>
 				<fadetime>2000</fadetime>
-				<visible>ControlGroup(9001).HasFocus(9)</visible>
+				<visible>ControlGroup(9001).HasFocus(9) | ControlGroup(9001).HasFocus(10)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 			</control>
 		</control>
@@ -525,6 +525,13 @@
 					<height>20</height>
 					<texture>homebutton-small.png</texture>
 				</control>
+				<control type="image">
+					<posx>230</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
 				<control type="button" id="9">
 					<description>Settings normal push button</description>
 					<posx>3</posx>
@@ -535,6 +542,23 @@
 					<font>font10</font>
 					<onclick>ActivateWindow(4)</onclick>
 					<onleft>98</onleft>
+					<onright>10</onright>
+					<onup>7</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="10">
+					<description>Script normal push button</description>
+					<posx>118</posx>
+					<posy>3</posy>
+					<width>10</width>
+					<height>12</height>
+					<label>247</label>
+					<onclick>ActivateWindow(Scripts)</onclick>
+					<font>font10</font>
+					<onleft>9</onleft>
 					<onright>6</onright>
 					<onup>7</onup>
 					<ondown>2</ondown>
@@ -544,14 +568,14 @@
 				</control>
 				<control type="button" id="6">
 					<description>My Files normal push button</description>
-					<posx>118</posx>
+					<posx>233</posx>
 					<posy>2</posy>
 					<width>10</width>
 					<height>12</height>
 					<label>7</label>
 					<onclick>ActivateWindow(MyFiles)</onclick>
 					<font>font10</font>
-					<onleft>9</onleft>
+					<onleft>10</onleft>
 					<onright>96</onright>
 					<onup>7</onup>
 					<ondown>2</ondown>
@@ -827,7 +851,7 @@
 				<visible>System.KaiConnected</visible>
 			</control>
 			<control type="image">
-				<description>submenu button</description>
+				<description>favourites button</description>
 				<posx>56</posx>
 				<posy>0</posy>
 				<width>28</width>
@@ -835,12 +859,12 @@
 				<texture>home-sub.png</texture>
 			</control>
 			<control type="button" id="100">
-				<description>submenu button</description>
+				<description>favourites button</description>
 				<posx>56</posx>
 				<posy>0</posy>
 				<width>28</width>
 				<height>35</height>
-				<onclick>ActivateWindow(SubMenu)</onclick>
+				<onclick>ActivateWindow(Favourites)</onclick>
 				<texturefocus>home-sub.gif</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<label>-</label>
