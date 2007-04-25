@@ -7,6 +7,7 @@
 #include "window.h"
 #include "control.h"
 #include "action.h"
+#include "..\..\..\util.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -27,7 +28,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  m_coordsRes  = PAL_4x3;
+  m_coordsRes = PAL_4x3;
   m_fallbackPath = strFallBackPath;
 }
 
@@ -175,18 +176,11 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 
 void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
 {
-  if (itemPosition == -1)
-  {
-    m_vecItems.Add(fileItem);
-  }
-  else if (itemPosition == 0)
-  {
+  if (itemPosition == 0)
     m_vecItems.AddFront(fileItem);
-  }
   else
-  {
     m_vecItems.Add(fileItem);
-  }
+  
   m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
 }
@@ -243,12 +237,27 @@ void CGUIPythonWindowXML::PulseActionEvent()
 {
   SetEvent(m_actionEvent);
 }
-void CGUIPythonWindowXML::Render()
+
+void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
-  string backupMediaDir = g_graphicsContext.GetMediaDir();
-  g_graphicsContext.SetMediaDir(m_fallbackPath+"\\skins");
-  CGUIWindow::Render();
-  g_graphicsContext.SetMediaDir(backupMediaDir);
+  m_backupMediaDir = g_graphicsContext.GetMediaDir();
+  CStdString tmpDir;
+  CUtil::GetDirectory(m_xmlFile, tmpDir);
+  if (!tmpDir.IsEmpty())
+  {
+    CStdString fallbackMediaPath;
+    CUtil::GetParentPath(tmpDir, fallbackMediaPath);
+    g_graphicsContext.SetMediaDir(fallbackMediaPath);
+    //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
+  }
+  CGUIWindow::AllocResources(forceLoad);
+}
+
+void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
+{
+  g_graphicsContext.SetMediaDir(m_backupMediaDir);
+  CGUIWindow::FreeResources(forceUnLoad);
+  //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::FreeResources called: %s", m_backupMediaDir.c_str());
 }
 
 int Py_XBMC_Event_OnClick(void* arg)
