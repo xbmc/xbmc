@@ -619,7 +619,7 @@ void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISOD
       continue;
     CStdString strPath;
     CUtil::GetDirectory(items[i]->m_strPath,strPath);
-    CUtil::RemoveSlashAtEnd(strPath);
+    CUtil::RemoveSlashAtEnd(strPath); // want no slash for the test that follows
     if (CUtil::GetFileName(strPath).Equals("sample"))
       continue;
     for (unsigned int j=0;j<expression.size();++j)
