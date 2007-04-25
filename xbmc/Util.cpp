@@ -2433,12 +2433,12 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 
   strPath = strFileName.Left(iPos1 - 1);
 }
+
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
-  //Will from a full filename return the directory the file resides in.
-  //has no trailing slash on result. Could lead to problems when reading from root on cd
-  //ISO9660://filename.bla will result in path ISO9660:/
-  //This behaviour should probably be changed, but it would break other things
+  // Will from a full filename return the directory the file resides in.
+  // Keeps the final slash at end
+
   int iPos1 = strFilePath.ReverseFind('/');
   int iPos2 = strFilePath.ReverseFind('\\');
 
@@ -2449,9 +2449,10 @@ void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectory
 
   if (iPos1 > 0)
   {
-    strDirectoryPath = strFilePath.Left(iPos1);
+    strDirectoryPath = strFilePath.Left(iPos1 + 1); // include the slash
   }
 }
+
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
   //Splits a full filename in path and file.
