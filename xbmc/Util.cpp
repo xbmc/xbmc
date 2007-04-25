@@ -1784,6 +1784,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   else
   {
     CUtil::GetDirectory(strFileNameAndPath,strBasePath);
+    // TODO: GETDIR - is this required?  What happens to the tokenize below otherwise?
+    CUtil::RemoveSlashAtEnd(strBasePath);
     strFileName = CUtil::GetFileName(strFileNameAndPath);
   }
   CUtil::Tokenize(strBasePath,tokens,"\\");
@@ -3307,8 +3309,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       strDestDirect = params[1];
 
-    if (!HasSlashAtEnd(strDestDirect))
-        strDestDirect += "\\";
+    CUtil::AddSlashAtEnd(strDestDirect);
 
     if (params.size() < 1)
       return -1; // No File Selected
