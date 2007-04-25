@@ -167,7 +167,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          m_vecItems.m_strPath = strDestination;
+          SetHistoryForPath(m_vecItems.m_strPath);
           break;
         }
       }

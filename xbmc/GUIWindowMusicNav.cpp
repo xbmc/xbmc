@@ -160,9 +160,16 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "special://musicplaylists/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Years"))
+        {
+          m_vecItems.m_strPath = "musicdb://9/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          m_vecItems.m_strPath = strDestination;
+          SetHistoryForPath(m_vecItems.m_strPath);
           break;
         }
       }
