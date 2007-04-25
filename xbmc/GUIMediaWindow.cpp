@@ -31,9 +31,14 @@
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
+#include "Favourites.h"
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
+
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -1021,9 +1026,35 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  // check if the skin even supports favourites
+  RESOLUTION res;
+  CStdString favourites(g_SkinInfo.GetSkinPath("dialogfavourites.xml", &res));
+  if (XFILE::CFile::Exists(favourites))
+  {
+#endif
+  // TODO: FAVOURITES Conditions on masterlock and localisation
+  if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add"))
+  {
+    if (CFavourites::IsFavourite(item, GetID()))
+      buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
+    else
+      buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
+  }
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  }
+#endif
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
+  switch (button)
+  {
+  case CONTEXT_BUTTON_ADD_FAVOURITE:
+    CFavourites::AddOrRemove(m_vecItems[itemNumber], GetID());
+    return true;
+  }
   return false;
 }
