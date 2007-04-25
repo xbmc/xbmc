@@ -260,11 +260,9 @@ bool CGUIWindowPictures::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
 
   if (pItem->IsCBZ() || pItem->IsCBR())
   {
-    CUtil::GetDirectory(pItem->m_strPath,strPath);
     CStdString strComicPath;
     if (pItem->IsCBZ())
       CUtil::CreateZipPath(strComicPath, pItem->m_strPath, "");

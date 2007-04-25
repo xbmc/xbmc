@@ -2117,10 +2117,9 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   if (!m_bIsFolder)
     CUtil::GetDirectory(m_strPath, strPath);
   else
-  {
     strPath = m_strPath;
-    CUtil::RemoveSlashAtEnd(strPath);
-  }
+  // music thumbs are cached without slash at end
+  CUtil::RemoveSlashAtEnd(strPath);
 
   // look if an album thumb is available,
   // could be any file with tags loaded or

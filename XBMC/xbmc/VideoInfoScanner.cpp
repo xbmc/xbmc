@@ -851,6 +851,7 @@ CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item)
   {
     CStdString strPath;
     CUtil::GetDirectory(item->m_strPath,strPath);
+    CUtil::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
     CFileItem item2;
     if (strPath.Mid(strPath.size()-3).Equals("cd1"))
     {
