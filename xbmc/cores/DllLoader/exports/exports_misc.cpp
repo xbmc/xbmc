@@ -60,6 +60,7 @@ void export_user32()
   g_dlls.user32.AddExport("EnumDisplayDevicesA", (unsigned long)dllEnumDisplayDevicesA);
   g_dlls.user32.AddExport("IsWindowVisible", (unsigned long)dllIsWindowVisible);
   g_dlls.user32.AddExport("GetActiveWindow", (unsigned long)dllGetActiveWindow);
+  g_dlls.user32.AddExport("LoadStringA", (unsigned long)dllLoadStringA);
 }
 
 void export_xbmc_vobsub()
