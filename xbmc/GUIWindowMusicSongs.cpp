@@ -132,7 +132,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
-              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
               CLog::Log(LOGINFO, "  Success! Opened destination path: %s (%s)", strDestination.c_str(), m_vecItems.m_strPath.c_str());
             }
           }
