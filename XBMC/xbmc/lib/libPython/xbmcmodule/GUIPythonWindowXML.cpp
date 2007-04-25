@@ -248,16 +248,18 @@ void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
     CStdString fallbackMediaPath;
     CUtil::GetParentPath(tmpDir, fallbackMediaPath);
     g_graphicsContext.SetMediaDir(fallbackMediaPath);
+    m_fallbackPath = fallbackMediaPath;
     //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
   }
   CGUIWindow::AllocResources(forceLoad);
+  g_graphicsContext.SetMediaDir(m_backupMediaDir);
 }
 
-void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
+void CGUIPythonWindowXML::Render()
 {
+  g_graphicsContext.SetMediaDir(m_fallbackPath);
+  CGUIWindow::Render();
   g_graphicsContext.SetMediaDir(m_backupMediaDir);
-  CGUIWindow::FreeResources(forceUnLoad);
-  //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::FreeResources called: %s", m_backupMediaDir.c_str());
 }
 
 int Py_XBMC_Event_OnClick(void* arg)
