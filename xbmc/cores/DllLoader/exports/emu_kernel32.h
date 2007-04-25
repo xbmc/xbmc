@@ -622,13 +622,8 @@ extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMilisecon
 extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask);
 
-extern "C" void* WINAPI dllLocalLock(void* z);
-extern "C" void* WINAPI dllLocalHandle(void* v);
-extern "C" int WINAPI dllLocalUnlock(void* v);
-extern "C" void* WINAPI dllGlobalHandle(void* v);
-extern "C" int WINAPI dllGlobalUnlock(void* v);
 extern "C" HGLOBAL WINAPI dllLoadResource(HMODULE module, HRSRC res);
-extern "C" HRSRC WINAPI dllFindResourceA(HMODULE module, char* name, char* type);
+extern "C" HRSRC WINAPI dllFindResourceA(HMODULE module, LPCTSTR name, LPCTSTR type);
 extern "C" BOOL WINAPI dllGetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime);
 extern "C" int WINAPI dllGetLocaleInfoA(LCID Locale, LCTYPE LCType, LPTSTR lpLCData, int cchData);
 extern "C" UINT WINAPI dllGetConsoleCP();
