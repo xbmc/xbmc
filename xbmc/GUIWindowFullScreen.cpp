@@ -524,7 +524,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
-  if (g_infoManager.GetBool(PLAYER_SEEKBAR), GetID()) return true;
+  if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
     return true;
   if (m_bLastRender)
