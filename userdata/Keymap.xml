@@ -814,7 +814,7 @@
 
   <Scripts>
     <gamepad>
-      <white>XBMC.ActivateWindow(ScriptsDebugInfo)</white>
+      <black>XBMC.ActivateWindow(ScriptsDebugInfo)</black>
     </gamepad>
 
     <remote>
