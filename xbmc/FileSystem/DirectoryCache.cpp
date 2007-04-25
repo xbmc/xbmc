@@ -90,6 +90,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
   bInCache = false;
   if ( strFixedFile.Mid(1, 1) == ":" )  strFixedFile.Replace('/', '\\');
   CUtil::GetDirectory(strFixedFile, strPath);
+  CUtil::RemoveSlashAtEnd(strPath);   // we cache without slash at end
   ivecCache i = g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {

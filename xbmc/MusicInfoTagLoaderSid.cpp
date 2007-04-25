@@ -56,8 +56,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     //  so extract it
     CStdString strPath=strFileName;
     CUtil::GetDirectory(strPath, strFileToLoad);
-    if (CUtil::HasSlashAtEnd(strFileToLoad))
-      strFileToLoad.Delete(strFileToLoad.size()-1);
+    CUtil::RemoveSlashAtEnd(strFileToLoad);   // we want the filename
   }
   CStdString strFileNameLower(strFileToLoad);
   strFileNameLower.MakeLower();
