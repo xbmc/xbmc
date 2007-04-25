@@ -114,7 +114,7 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
 #ifdef _XBOX
   char szDestinationDrive[16];
   ANSI_STRING LinkName;
-  NTSTATUS status;  
+  NTSTATUS status;
 
   sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
@@ -127,7 +127,7 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
     CLog::Log(LOGERROR, "Failed to delete symbolic link!  (status=0x%08x)", status);
 
   return status;
-#else 
+#else
   return S_OK;
 #endif
 }
@@ -144,7 +144,7 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
   ANSI_STRING DeviceName;
-  NTSTATUS status;  
+  NTSTATUS status;
 
   sprintf(szSourceDevice, "\\Device\\%s", szDevice);
 
@@ -190,7 +190,7 @@ void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
     *cDriveLetter = 0;
     return;
   }
-  
+
   part_num = atoi(szPartition + 19);
 
   if (part_num >= 6)
@@ -465,14 +465,14 @@ bool CIoSupport::DriveExists(char cDriveLetter)
       if (drive_size.QuadPart >= 9000000000)
         return true;
     }
-    
+
     if (cDriveLetter == 'G')
     {
       // if the kernel is set to use partitions 6 and 7 by default
       // the g drive can exist
-      if(((XboxKrnlVersion->Qfe & 67) == 67)) 
+      if(((XboxKrnlVersion->Qfe & 67) == 67))
         return true;
-      // not all kernel versions return 67, if the drive is bigger than 
+      // not all kernel versions return 67, if the drive is bigger than
       // 137 gb drive (plus a bit of room for error), the G drive can exist
       else if ( drive_size.QuadPart >= 150000000000 )
         return true;
@@ -520,7 +520,7 @@ bool CIoSupport::PartitionExists(int nPartition)
     CloseHandle(hTemp);
     return true;
   }
- 
+
   return false;
 #else
   return false;
@@ -558,9 +558,9 @@ LARGE_INTEGER CIoSupport::GetDriveSize()
   if (!NT_SUCCESS(status))
     return drive_size;
 
-  drive_size.QuadPart = disk_geometry.BytesPerSector * 
-                        disk_geometry.SectorsPerTrack * 
-                        disk_geometry.TracksPerCylinder * 
+  drive_size.QuadPart = disk_geometry.BytesPerSector *
+                        disk_geometry.SectorsPerTrack *
+                        disk_geometry.TracksPerCylinder *
                         disk_geometry.Cylinders.QuadPart;
 
   return drive_size;
