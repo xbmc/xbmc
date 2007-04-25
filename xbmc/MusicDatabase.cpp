@@ -3006,6 +3006,14 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
       m_pDS->close();
       return false;
     }
+    
+    // special case for single path - assume that we're in an artist/album/songs filesystem
+    if (iRowsFound == 1)
+    {
+      CUtil::GetParentPath(m_pDS->fv("strPath").get_asString(), basePath);
+      m_pDS->close();
+      return true;
+    }
 
     // find the common path (if any) to these albums
     basePath.Empty();
