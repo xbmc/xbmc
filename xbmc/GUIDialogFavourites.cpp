@@ -210,3 +210,10 @@ void CGUIDialogFavourites::UpdateList()
     OnMessage(message);
   }
 }
+
+CFileItem *CGUIDialogFavourites::GetCurrentListItem()
+{
+  int currentItem = GetSelectedItem();
+  if (currentItem < 0 || currentItem >= m_favourites.Size()) return NULL;
+  return m_favourites[currentItem];
+}
