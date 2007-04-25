@@ -1321,6 +1321,7 @@ void CFileItemList::Add(CFileItem* pItem)
 void CFileItemList::AddFront(CFileItem* pItem)
 {
   m_items.insert(m_items.begin(), pItem);
+  if (m_fastLookup)
   {
     CStdString path(pItem->m_strPath); path.ToLower();
     m_map.insert(MAPFILEITEMSPAIR(path, pItem));
