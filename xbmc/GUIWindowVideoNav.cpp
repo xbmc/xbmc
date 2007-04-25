@@ -189,6 +189,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         Update(m_vecItems.m_strPath);  // Will remove content from the list/thumb control
       }
 
+      m_database.Close();
       return true;
     }
     break;
