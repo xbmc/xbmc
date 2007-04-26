@@ -463,7 +463,7 @@ bool CGUIWindowGameSaves::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_MOVE:
     {
       CStdString value;
-      if (!CGUIDialogFileBrowser::ShowAndGetDirectory(localMemShares, g_localizeStrings.Get(20329) , value,true))
+      if (!CGUIDialogFileBrowser::ShowAndGetDirectory(localMemShares, g_localizeStrings.Get(20328) , value,true))
         return true;
       if (!CGUIDialogYesNo::ShowAndGetInput(121,124,20022,20022)) // enable me for confirmation
         return true;

@@ -845,7 +845,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CQueryParams params;
       dir.GetQueryParams(m_vecItems[itemNumber]->m_strPath,params);
       m_database.GetTvShowInfo("",tag,params.GetTvShowId());
-      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20372), tag.m_strPath))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(1030), tag.m_strPath))
       {
         CStdString thumb(m_vecItems[itemNumber]->GetCachedSeasonThumb());
         CPicture picture;
