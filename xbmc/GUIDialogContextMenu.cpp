@@ -348,7 +348,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       VECSHARES shares;
       g_mediaManager.GetLocalDrives(shares);
 
-      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20056),strThumb))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
       {
         g_settings.UpdateBookmark(type,share->strName,"thumbnail",strThumb);
         g_settings.SaveSources();
