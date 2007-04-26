@@ -791,8 +791,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (pScanDlg && pScanDlg->IsScanning())
-          buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-        else if (node != NODE_TYPE_TITLE_TVSHOWS)
+        {
+          if (node != NODE_TYPE_TITLE_TVSHOWS)
+            buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
+        }
+        else
           buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
       }
 
