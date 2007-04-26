@@ -337,7 +337,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         CUtil::GetDirectory(pItem->m_strPath,strPath);
         lTvShowId2 = m_database.GetTvShowInfo(strPath);
       }
-      if (lTvShowId2 > -1 && !bRefresh)
+      if (lTvShowId2 > -1 && (!bRefresh && !pItem->m_bIsFolder))
       {
         if (lTvShowId2 != lTvShowId)
         {
