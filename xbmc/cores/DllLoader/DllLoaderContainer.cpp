@@ -53,7 +53,6 @@ DllLoaderContainer::DllLoaderContainer() :
     msdmo("msdmo.dll",              false, true, false, export_msdmo),
     xbmc_vobsub("xbmc_vobsub.dll",  false, true, false, export_xbmc_vobsub),
     xbox_dx8("xbox_dx8.dll",        false, true, false, export_xbox_dx8),
-    xbox___dx8("xbox-dx8.dll",      false, true, false, export_xbox___dx8),
     version("version.dll",          false, true, false, export_version),
     comdlg32("comdlg32.dll",        false, true, false, export_comdlg32),
     gdi32("gdi32.dll",              false, true, false, export_gdi32),
@@ -80,7 +79,6 @@ DllLoaderContainer::DllLoaderContainer() :
   RegisterDll(&msdmo);
   RegisterDll(&xbmc_vobsub);
   RegisterDll(&xbox_dx8);
-  RegisterDll(&xbox___dx8);
   RegisterDll(&version);
   RegisterDll(&comdlg32);
   RegisterDll(&gdi32);
