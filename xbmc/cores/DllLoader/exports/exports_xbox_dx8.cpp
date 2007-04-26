@@ -138,19 +138,9 @@ Export export_xbox_dx8[] =
   { "D3DDevice_BeginVisibilityTest@0",              -1, D3DDevice_BeginVisibilityTest,                NULL },
   { "D3DDevice_EndVisibilityTest@4",                -1, D3DDevice_EndVisibilityTest,                  NULL },
   { "D3DDevice_GetVisibilityTestResult@12",         -1, D3DDevice_GetVisibilityTestResult,            NULL },
-  { "D3DXCreateMatrixStack@8",                      -1, &D3DXCreateMatrixStack,                       NULL },
+  { "D3DXCreateMatrixStack@8",                      -1, D3DXCreateMatrixStack,                        NULL },
   { "D3DDevice_CreateSurface2@16",                  -1, D3DDevice_CreateSurface2,                     NULL },
   { "D3DDevice_SetViewport@4",                      -1, D3DDevice_SetViewport,                        NULL },
 #endif
   { NULL,                                         NULL, NULL,                                         NULL }
 };
-
-Export export_xbox___dx8[] =
-{
-#ifdef _XBOX
-  { "_D3DXCreateTexture@32",                        -1, &D3DXCreateTexture,                           NULL },
-  { "_D3DXCreateTextureFromFileInMemory@16",        -1, &D3DXCreateTextureFromFileInMemory,           NULL },
-#endif
-  { NULL,                                         NULL, NULL,                                         NULL }
-};
-
