@@ -520,7 +520,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     m_musicdatabase.GetArtistPath(idArtist, picturePath);
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20010), picturePath))
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(1030), picturePath))
   {
     CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;
