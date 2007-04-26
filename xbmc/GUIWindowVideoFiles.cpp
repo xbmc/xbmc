@@ -449,7 +449,7 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
     settings.parent_name = true;
     settings.recurse = 1; /* atleast one, otherwise this makes no sence */
   }
-  else if (info.strContent.Equals("movies") && iDirNames == -1)
+  else if ((info.strContent.Equals("movies") || strPath.IsEmpty()) && iDirNames == -1)
   {
     bool bCanceled;
     if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
@@ -473,6 +473,8 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
     if (bCanceled)
       return;
   }
+  if (strPath.IsEmpty())
+    settings.recurse = 1;
 
   if (info.strContent.Equals("tvshows"))
   {
