@@ -982,6 +982,9 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnScan(item->m_strPath,info);
       return true;
     }
+  case CONTEXT_BUTTON_DELETE:
+    OnDeleteItem(itemNumber);
+    return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }

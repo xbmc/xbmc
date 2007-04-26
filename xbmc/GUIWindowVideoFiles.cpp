@@ -700,10 +700,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_DELETE:
-    OnDeleteItem(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
     return true;
