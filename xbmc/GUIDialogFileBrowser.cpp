@@ -579,10 +579,8 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
 
   browser->m_useFileDirectories = useFileDirectories;
 
-  CStdString browseHeading;
-  browseHeading.Format(g_localizeStrings.Get(13401).c_str(), heading.c_str());
   browser->m_browsingForImages = useThumbs;
-  browser->SetHeading(browseHeading);
+  browser->SetHeading(heading);
   browser->SetShares(shares);
   CStdString strMask = mask;
   if (mask == "/")
