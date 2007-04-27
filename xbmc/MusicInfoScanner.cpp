@@ -295,9 +295,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         song.iStartOffset = pItem->m_lStartOffset;
         song.iEndOffset = pItem->m_lEndOffset;
         if (dbSong)
-        {
+        { // keep the db-only fields intact on rescan...
           song.iTimesPlayed = dbSong->iTimesPlayed;
           song.lastPlayed = dbSong->lastPlayed;
+          if (song.rating == '0') song.rating = dbSong->rating;
         }
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
