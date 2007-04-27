@@ -24,6 +24,8 @@ public:
                         SONG_FILENAME,
                         SONG_PLAYCOUNT,
                         SONG_LASTPLAYED,
+                        SONG_RATING,
+                        SONG_COMMENT,
                         FIELD_RANDOM,
                         FIELD_PLAYLIST };
 

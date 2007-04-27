@@ -203,6 +203,8 @@ private:
     song_iStartOffset,
     song_iEndOffset,
     song_lastplayed,
+    song_rating,
+    song_comment,
     song_idAlbum,
     song_strAlbum,
     song_strPath,

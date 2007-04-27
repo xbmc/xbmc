@@ -29,6 +29,7 @@ CAPEv2Tag::CAPEv2Tag()
 {
   m_nTrackNum = 0;
   m_nDiscNum = 0;
+  m_rating = '0';
 }
 
 CAPEv2Tag::~CAPEv2Tag()
@@ -79,6 +80,17 @@ bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
     while (!isdigit(*num) && num < buffer + chars) num++;
     if (isdigit(*num))
       m_nDiscNum = atoi(num);
+  }
+  chars=256;
+  if (tag->GetFieldString(L"Comment", buffer, &chars, TRUE) != -1)
+    m_strComment = buffer;
+  chars = 256;
+  if (tag->GetFieldString(L"Rating", buffer, &chars, TRUE) != -1)
+  {
+    // rating number is usually a single digit, 1-5.  0 is unknown.
+    char *num = buffer;
+    if (*num > '0' && *num < '6')
+      m_rating = *num;
   }
 
   // Replay gain info
