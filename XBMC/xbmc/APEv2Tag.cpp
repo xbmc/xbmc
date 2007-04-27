@@ -86,11 +86,9 @@ bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
     m_strComment = buffer;
   chars = 256;
   if (tag->GetFieldString(L"Rating", buffer, &chars, TRUE) != -1)
-  {
-    // rating number is usually a single digit, 1-5.  0 is unknown.
-    char *num = buffer;
-    if (*num > '0' && *num < '6')
-      m_rating = *num;
+  { // rating number is usually a single digit, 1-5.  0 is unknown.
+    if (buffer[0] >= '0' && buffer[0] < '6')
+      m_rating = buffer[0];
   }
 
   // Replay gain info
