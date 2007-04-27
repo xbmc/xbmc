@@ -21,6 +21,7 @@ public:
   CArchive& operator<<(__int64 i64);
   CArchive& operator<<(long l);
   CArchive& operator<<(bool b);
+  CArchive& operator<<(char c);
   CArchive& operator<<(const CStdString& str);
   CArchive& operator<<(const CStdStringW& str);
   CArchive& operator<<(const SYSTEMTIME& time);
@@ -33,6 +34,7 @@ public:
   CArchive& operator>>(__int64& i64);
   CArchive& operator>>(long& l);
   CArchive& operator>>(bool& b);
+  CArchive& operator>>(char& c);
   CArchive& operator>>(CStdString& str);
   CArchive& operator>>(CStdStringW& str);
   CArchive& operator>>(SYSTEMTIME& time);

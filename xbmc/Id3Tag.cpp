@@ -109,6 +109,10 @@ bool CID3Tag::Parse()
 
   tag.SetAlbumArtist(GetAlbumArtist());
 
+  tag.SetComment(GetComment());
+
+  tag.SetRating(GetRating());
+
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().IsEmpty() || !tag.GetAlbum().IsEmpty())
     tag.SetLoaded();
 
@@ -287,6 +291,11 @@ CStdString CID3Tag::GetEncodedBy() const
   return ToStringCharset(ucs4, encoding);
 }
 
+char CID3Tag::GetRating() const
+{
+  return m_dll.id3_metadata_getrating(m_tag);
+}
+
 bool CID3Tag::HasPicture(id3_picture_type pictype) const
 {
   return (m_dll.id3_metadata_haspicture(m_tag, pictype)>0 ? true : false);
@@ -382,6 +391,18 @@ void CID3Tag::SetEncodedBy(const CStdString& strValue)
   id3_ucs4_t* ucs4=StringCharsetToUcs4(strValue);
   m_dll.id3_metadata_setencodedby(m_tag, ucs4);
   m_dll.id3_ucs4_free(ucs4);
+}
+
+void CID3Tag::SetComment(const CStdString& strValue)
+{
+  id3_ucs4_t* ucs4=StringCharsetToUcs4(strValue);
+  m_dll.id3_metadata_setcomment(m_tag, ucs4);
+  m_dll.id3_ucs4_free(ucs4);
+}
+
+void CID3Tag::SetRating(char rating)
+{
+  m_dll.id3_metadata_setrating(m_tag, rating);
 }
 
 CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const

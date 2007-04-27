@@ -83,6 +83,8 @@ public:
   CStdString strMusicBrainzAlbumID;
   CStdString strMusicBrainzAlbumArtistID;
   CStdString strMusicBrainzTRMID;
+  CStdString strComment;
+  char rating;
   int iTrack;
   int iDuration;
   int iYear;

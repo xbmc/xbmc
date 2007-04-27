@@ -29,6 +29,7 @@ protected:
   CStdString GetYear() const;
   CStdString GetGenre() const;
   CStdString GetComment() const;
+  char       GetRating() const;
   CStdString GetEncodedBy() const;
 
   bool HasPicture(id3_picture_type pictype) const;
@@ -47,6 +48,8 @@ protected:
   void SetYear(const CStdString& strValue);
   void SetGenre(const CStdString& strValue);
   void SetEncodedBy(const CStdString& strValue);
+  void SetComment(const CStdString& strValue);
+  void SetRating(char rating);
 
   CStdString ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencoding encoding) const;
   id3_ucs4_t* StringCharsetToUcs4(const CStdString& str) const;
