@@ -150,6 +150,7 @@
 #define MUSICPLAYER_SAMPLERATE      216
 #define MUSICPLAYER_CODEC           217
 #define MUSICPLAYER_DISC_NUMBER     218
+#define MUSICPLAYER_RATING          219
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
