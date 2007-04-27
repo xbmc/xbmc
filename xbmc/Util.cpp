@@ -3734,7 +3734,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (pos >= 0)
     {
       string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
-      if (execute.Equals("setstring"))
+      if (execute.Equals("skin.setstring"))
       {
         g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
         g_settings.Save();
