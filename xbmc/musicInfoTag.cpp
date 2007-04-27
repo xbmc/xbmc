@@ -54,9 +54,11 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
   m_strMusicBrainzAlbumArtistID = tag.m_strMusicBrainzAlbumArtistID;
   m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
+  m_strComment = tag.m_strComment;
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
+  m_rating = tag.m_rating;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   return *this;
 }
@@ -136,6 +138,16 @@ CStdString CMusicInfoTag::GetYear() const
   return m_dwReleaseDate.wYear > 1900 ? strReturn : "";
 }
 
+const CStdString &CMusicInfoTag::GetComment() const
+{
+  return m_strComment;
+}
+
+char CMusicInfoTag::GetRating() const
+{
+  return m_rating;
+}
+
 void CMusicInfoTag::SetURL(const CStdString& strURL)
 {
   m_strURL = strURL;
@@ -209,6 +221,16 @@ void CMusicInfoTag::SetTrackAndDiskNumber(int iTrackAndDisc)
 void CMusicInfoTag::SetDuration(int iSec)
 {
   m_iDuration = iSec;
+}
+
+void CMusicInfoTag::SetComment(const CStdString& comment)
+{
+  m_strComment = comment;
+}
+
+void CMusicInfoTag::SetRating(char rating)
+{
+  m_rating = rating;
 }
 
 void CMusicInfoTag::SetLoaded(bool bOnOff)
@@ -295,6 +317,8 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetMusicBrainzAlbumID(song.strMusicBrainzAlbumID);
   SetMusicBrainzAlbumArtistID(song.strMusicBrainzAlbumArtistID);
   SetMusicBrainzTRMID(song.strMusicBrainzTRMID);
+  SetComment(song.strComment);
+  m_rating = song.rating;
   m_strURL = song.strFileName;
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;
@@ -323,6 +347,8 @@ void CMusicInfoTag::Serialize(CArchive& ar)
     ar << m_strMusicBrainzAlbumID;
     ar << m_strMusicBrainzAlbumArtistID;
     ar << m_strMusicBrainzTRMID;
+    ar << m_strComment;
+    ar << m_rating;
   }
   else
   {
@@ -341,6 +367,8 @@ void CMusicInfoTag::Serialize(CArchive& ar)
     ar >> m_strMusicBrainzAlbumID;
     ar >> m_strMusicBrainzAlbumArtistID;
     ar >> m_strMusicBrainzTRMID;
+    ar >> m_strComment;
+    ar >> m_rating;
  }
 }
 
@@ -360,5 +388,7 @@ void CMusicInfoTag::Clear()
   m_iDuration = 0;
   m_iTrack = 0;
   m_bLoaded = false;
+  m_strComment.Empty();
+  m_rating = '0';
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
 }

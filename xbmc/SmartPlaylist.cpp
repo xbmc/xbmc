@@ -50,8 +50,11 @@ static const translateField fields[] = { "none", CSmartPlaylistRule::FIELD_NONE,
                                          "filename", CSmartPlaylistRule::SONG_FILENAME,
                                          "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT,
                                          "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED,
+                                         "rating", CSmartPlaylistRule::SONG_RATING,
+                                         "comment", CSmartPlaylistRule::SONG_COMMENT,
                                          "random", CSmartPlaylistRule::FIELD_RANDOM,
-                                         "playlist", CSmartPlaylistRule::FIELD_PLAYLIST };
+                                         "playlist", CSmartPlaylistRule::FIELD_PLAYLIST
+                                       };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
 
@@ -204,6 +207,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field)
   else if (field == SONG_FILENAME) return "strFilename";
   else if (field == SONG_TRACKNUMBER) return "iTrack";
   else if (field == SONG_LASTPLAYED) return "lastplayed";
+  else if (field == SONG_RATING) return "rating";
+  else if (field == SONG_COMMENT) return "comment";
   else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
   return "";
 }
