@@ -759,7 +759,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     CStdString strPath = item->m_strPath;
     strPath.Replace(";",";;");
     CStdString strFolder = "0";
-    if (item->m_bIsFolder)
+    if (item->m_bIsFolder && !item->IsFileFolder())
     {
       if (!CUtil::HasSlashAtEnd(strPath))
         CUtil::AddSlashAtEnd(strPath);
