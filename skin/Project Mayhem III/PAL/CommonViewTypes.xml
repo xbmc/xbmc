@@ -1146,8 +1146,8 @@
 			<height>425</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>52</onup>
-			<ondown>52</ondown>
+			<onup>54</onup>
+			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="541">icon</viewtype>
 			<pagecontrol>60</pagecontrol>
@@ -1273,8 +1273,8 @@
 			<height>425</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>53</onup>
-			<ondown>53</ondown>
+			<onup>54</onup>
+			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="542">bigicon</viewtype>
 			<pagecontrol>60</pagecontrol>
