@@ -247,6 +247,7 @@ void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
   {
     CStdString fallbackMediaPath;
     CUtil::GetParentPath(tmpDir, fallbackMediaPath);
+    CUtil::RemoveSlashAtEnd(fallbackMediaPath);
     g_graphicsContext.SetMediaDir(fallbackMediaPath);
     m_fallbackPath = fallbackMediaPath;
     //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
