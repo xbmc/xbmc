@@ -423,6 +423,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(18).Equals("container.content("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
     else if (strTest.Equals("container.hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (strTest.Left(15).Equals("container.sort("))
+    {
+      SORT_METHOD sort = SORT_METHOD_NONE;
+      CStdString method(strTest.Mid(15, strTest.GetLength() - 16));
+      if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
+      if (sort != SORT_METHOD_NONE)
+        return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
+    }
   }
   else if (strCategory.Equals("listitem"))
   {
@@ -1503,6 +1511,18 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
+    case CONTAINER_SORT_METHOD:
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(dwContextWindow);
+      if( !window ) window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window && window->IsMediaWindow())
+      {
+        const CFileItemList &item = ((CGUIMediaWindow*)window)->CurrentDirectory();
+        SORT_METHOD method = item.GetSortMethod();
+        bReturn = (method == info.m_data1);
+      }
+      break;
+    }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
@@ -1567,7 +1587,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       CFileItem* item;
 
       if (info == CONTAINER_FOLDERTHUMB)
-        item = &const_cast<CFileItem&>(((CGUIMediaWindow*)window)->CurrentDirectory());
+        item = &const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory());
       else
         item = window->GetCurrentListItem();
       if (item)
