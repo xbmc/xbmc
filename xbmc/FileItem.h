@@ -317,8 +317,8 @@ public:
   bool Contains(const CStdString& fileName);
   bool GetFastLookup() { return m_fastLookup; };
   void Stack();
-  SORT_ORDER GetSortOrder() { return m_sortOrder; }
-  SORT_METHOD GetSortMethod() { return m_sortMethod; }
+  SORT_ORDER GetSortOrder() const { return m_sortOrder; }
+  SORT_METHOD GetSortMethod() const { return m_sortMethod; }
   bool Load();
   bool Save();
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
