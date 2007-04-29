@@ -385,7 +385,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
       if (!item->IsPlayList())
-        buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Info
+      {
+        if (item->IsAudio())
+          buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
+        else if (!item->IsParentFolder())
+          buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
+      }
 
       // enable Rip CD Audio or Track button if we have an audio disc
       if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
