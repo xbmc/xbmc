@@ -2768,6 +2768,7 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
       rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
       return rating;
     }
+    return "";
   }
   return item->GetThumbnailImage();
 }
