@@ -165,6 +165,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
+#include "GUIDialogSongInfo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -1261,6 +1262,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
   m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
   m_gWindowManager.Add(new CGUIDialogFavourites);     // window id = 134
+  m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -3177,6 +3179,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_FAVOURITES);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SONG_INFO);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);

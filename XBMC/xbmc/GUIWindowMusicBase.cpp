@@ -41,6 +41,7 @@
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
 #include "filesystem/MusicDatabaseDirectory.h"
+#include "GUIDialogSongInfo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -277,8 +278,11 @@ void CGUIWindowMusicBase::OnInfoAll(int iItem)
 void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  CFileItem* pItem;
-  pItem = m_vecItems[iItem];
+  OnInfo(m_vecItems[iItem], bShowInfo);
+}
+
+void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
+{
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
 
   // show dialog box indicating we're searching the album name
@@ -847,6 +851,22 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     OnInfo(itemNumber);
     return true;
+
+  case CONTEXT_BUTTON_SONG_INFO:
+    {
+      CGUIDialogSongInfo *dialog = (CGUIDialogSongInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+      if (dialog)
+      {
+        dialog->SetSong(m_vecItems[itemNumber]);
+        dialog->DoModal(GetID());
+        if (dialog->NeedsUpdate())
+        { // update our file list
+          m_vecItems.RemoveDiscCache();
+          Update(m_vecItems.m_strPath);
+        }
+      }
+      return true;
+    }
 
   case CONTEXT_BUTTON_EDIT:
     {
