@@ -47,7 +47,9 @@ using namespace XFILE;
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
-{}
+{
+  m_bRefresh = false;
+}
 
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 {}
