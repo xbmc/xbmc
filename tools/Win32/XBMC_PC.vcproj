@@ -692,6 +692,12 @@
 					RelativePath="..\..\xbmc\GUIDialogMusicScan.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogSongInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSongInfo.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIViewControl.cpp">
 				</File>
 				<File

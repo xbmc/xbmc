@@ -26,8 +26,9 @@ public:
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
-  static void OnRipCD();
-
+  
+  void OnInfo(CFileItem *pItem, bool bShowInfo = false);
+  
 protected:
   /*!
   \brief Will be called when an popup context menu has been asked for
@@ -45,6 +46,7 @@ protected:
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   virtual void OnScan(int iItem) {};
+  void OnRipCD();
 
   // new methods
   virtual void PlayItem(int iItem);

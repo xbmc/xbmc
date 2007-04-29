@@ -350,11 +350,12 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("previouspreset")) wAction = ACTION_VIS_PRESET_PREV;
   else if (strAction.Equals("lockpreset")) wAction = ACTION_VIS_PRESET_LOCK;
   else if (strAction.Equals("randompreset")) wAction = ACTION_VIS_PRESET_RANDOM;
-  else if (strAction.Equals("increaserating")) wAction = ACTION_VIS_RATE_PRESET_PLUS;
-  else if (strAction.Equals("decreaserating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
-
+  else if (strAction.Equals("increasevisrating")) wAction = ACTION_VIS_RATE_PRESET_PLUS;
+  else if (strAction.Equals("decreasevisrating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
   else if (strAction.Equals("showvideomenu")) wAction = ACTION_SHOW_VIDEOMENU;
   else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
+  else if (strAction.Equals("increaserating")) wAction = ACTION_INCREASE_RATING;
+  else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
 
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());

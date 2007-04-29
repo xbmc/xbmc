@@ -1252,42 +1252,12 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL="select idSong, iTimesPlayed from song "
-                        "join path on song.idPath=path.idPath ";
+    long songID = GetSongIDFromPath(strFileName);
 
-    CURL url(strFileName);
-    if (url.GetProtocol()=="musicdb")
-    {
-      CStdString strFile=CUtil::GetFileName(strFileName);
-      CUtil::RemoveExtension(strFile);
-      strSQL+=FormatSQL("where song.idSong='%ld'", atol(strFile.c_str()));
-    }
-    else
-    {
-      CStdString strPath;
-      CUtil::GetDirectory(strFileName, strPath);
-      CUtil::AddSlashAtEnd(strPath);
-
-      DWORD crc = ComputeCRC(strFileName);
-
-      strSQL+=FormatSQL("where song.dwFileNameCRC='%ul'and path.strPath='%s'", crc, strPath.c_str());
-    }
-
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    long idSong = m_pDS->fv("song.idSong").get_asLong();
-    int iTimesPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
     m_pDS->close();
 
-    strSQL=FormatSQL("UPDATE song SET iTimesPlayed=%i, lastplayed=CURRENT_TIMESTAMP where idSong=%ld",
-                  ++iTimesPlayed, idSong);
-    m_pDS->exec(strSQL.c_str());
+    CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
+    m_pDS->exec(sql.c_str());
     return true;
   }
   catch (...)
@@ -3451,4 +3421,66 @@ bool CMusicDatabase::GetPaths(set<CStdString> &paths)
     CLog::Log(LOGERROR, __FUNCTION__" failed");
   }
   return false;
+}
+
+bool CMusicDatabase::SetSongRating(const CStdString &filePath, char rating)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    long songID = GetSongIDFromPath(filePath);
+    if (-1 == songID) return false;
+
+    CStdString sql = FormatSQL("update song set rating='%c' where idSong = %i", rating, songID);
+    m_pDS->exec(sql.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s,%c) failed", filePath.c_str(), rating);
+  }
+  return false;
+}
+
+long CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
+{
+  // grab the where string to identify the song id
+  CURL url(filePath);
+  if (url.GetProtocol()=="musicdb")
+  {
+    CStdString strFile=CUtil::GetFileName(filePath);
+    CUtil::RemoveExtension(strFile);
+    return atol(strFile.c_str());
+  }
+  // hit the db
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+    CStdString strPath;
+    CUtil::GetDirectory(filePath, strPath);
+    CUtil::AddSlashAtEnd(strPath);
+
+    DWORD crc = ComputeCRC(filePath);
+
+    CStdString sql = FormatSQL("select idSong from song join path on song.idPath = path.idPath where song.dwFileNameCRC='%ul'and path.strPath='%s'", crc, strPath.c_str());
+    if (!m_pDS->query(sql.c_str())) return -1;
+
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return -1;
+    }
+
+    long songID = m_pDS->fv("idSong").get_asLong();
+    m_pDS->close();
+    return songID;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", filePath.c_str());
+  }
+  return -1;
 }
