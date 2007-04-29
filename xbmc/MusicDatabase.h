@@ -146,6 +146,8 @@ public:
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
 
+  bool SetSongRating(const CStdString &filePath, char rating);
+
 protected:
   map<CStdString, int /*CArtistCache*/> m_artistCache;
   map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -180,6 +182,7 @@ private:
   bool SearchArtists(const CStdString& search, CFileItemList &artists);
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
+  long GetSongIDFromPath(const CStdString &filePath);
 
   // Fields should be ordered as they 
   // appear in the songview
