@@ -362,6 +362,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
     else if (strTest.Equals("musicplayer.discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
     else if (strTest.Equals("musicplayer.rating")) ret = MUSICPLAYER_RATING;
+    else if (strTest.Equals("musicplayer.comment")) ret = MUSICPLAYER_COMMENT;
   }
   else if (strCategory.Equals("videoplayer"))
   {
@@ -460,6 +461,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.season")) ret = LISTITEM_SEASON;
     else if (strTest.Equals("listitem.tvshowtitle")) ret = LISTITEM_TVSHOW;
     else if (strTest.Equals("listitem.premiered")) ret = LISTITEM_PREMIERED;
+    else if (strTest.Equals("listitem.comment")) ret = LISTITEM_COMMENT;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -634,6 +636,8 @@ string CGUIInfoManager::GetLabel(int info)
   case MUSICPLAYER_SAMPLERATE:
   case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
+  case MUSICPLAYER_RATING:
+  case MUSICPLAYER_COMMENT:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -1033,6 +1037,7 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_EPISODE:
   case LISTITEM_SEASON:
   case LISTITEM_TVSHOW:
+  case LISTITEM_COMMENT:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostDialogID();
@@ -1833,6 +1838,8 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_RATING:
     return GetItemLabel(&m_currentFile, LISTITEM_RATING);
+  case MUSICPLAYER_COMMENT:
+    return GetItemLabel(&m_currentFile, LISTITEM_COMMENT);
   }
   return "";
 }
@@ -2606,6 +2613,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     {
       return item->GetVideoInfoTag()->m_strShowTitle;
     }
+    break;
+  case LISTITEM_COMMENT:
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetComment();
     break;
   }
   return "";

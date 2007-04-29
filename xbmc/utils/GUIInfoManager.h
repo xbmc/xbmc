@@ -151,6 +151,7 @@
 #define MUSICPLAYER_CODEC           217
 #define MUSICPLAYER_DISC_NUMBER     218
 #define MUSICPLAYER_RATING          219
+#define MUSICPLAYER_COMMENT         220
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -209,6 +210,7 @@
 #define LISTITEM_SEASON             333
 #define LISTITEM_TVSHOW             334
 #define LISTITEM_PREMIERED          335
+#define LISTITEM_COMMENT            336
 #define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350
