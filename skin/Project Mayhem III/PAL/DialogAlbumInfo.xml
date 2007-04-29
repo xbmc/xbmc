@@ -47,7 +47,7 @@
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
-			<posy>23</posy>
+			<posy>43</posy>
 			<align>left</align>
 			<label>10523</label>
 			<font>special13</font>
