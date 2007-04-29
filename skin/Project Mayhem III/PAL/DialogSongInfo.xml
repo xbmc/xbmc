@@ -1,0 +1,264 @@
+<window id="135">
+	<defaultcontrol>10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>110</posx>
+		<posy>110</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="0">
+			<posx>-110</posx>
+			<posy>-110</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-15</posx>
+			<posy>-15</posy>
+			<width>520</width>
+			<height>420</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="image">
+			<description>Album Cover image</description>
+			<posx>335</posx>
+			<posy>140</posy>
+			<width>150</width>
+			<height>150</height>
+			<aspectratio aligny="bottom">keep</aspectratio>
+			<info>ListItem.Icon</info>
+		</control>
+		<control type="image">
+			<description>Album Cover image</description>
+			<posx>335</posx>
+			<posy>290</posy>
+			<width>150</width>
+			<height>150</height>
+			<texture flipy="true" diffuse="diffuse_mirror.png" /> 
+			<aspectratio aligny="bottom">keep</aspectratio>
+			<info>ListItem.Icon</info>
+		</control>
+		<control type="label">
+			<description>Dialog Title</description>
+			<posx>10</posx>
+			<posy>-2</posy>
+			<width>300</width>
+			<font>special13</font>
+			<label>658</label>
+		</control>
+		<control type="fadelabel">
+			<description>Song Title value</description>
+			<posx>20</posx>
+			<posy>30</posy>
+			<width>455</width>
+			<font>special12</font>
+			<info>ListItem.Title</info>
+		</control>
+		<control type="label">
+			<description>Artist Title</description>
+			<posx>20</posx>
+			<posy>65</posy>
+			<width>300</width>
+			<font>font12</font>
+			<label>171</label>
+		</control>
+		<control type="fadelabel">
+			<description>Artist value</description>
+			<posx>110</posx>
+			<posy>65</posy>
+			<width>365</width>
+			<font>font12</font>
+			<info>ListItem.Artist</info>
+		</control>
+		<control type="label">
+			<description>Album Title</description>
+			<posx>20</posx>
+			<posy>90</posy>
+			<width>300</width>
+			<font>font12</font>
+			<label>170</label>
+		</control>
+		<control type="fadelabel">
+			<description>Album value</description>
+			<posx>110</posx>
+			<posy>90</posy>
+			<width>365</width>
+			<info>ListItem.Album</info>
+			<font>font12</font>
+		</control>
+		<control type="label">
+			<description>Genre</description>
+			<posx>20</posx>
+			<posy>115</posy>
+			<label>174</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel">
+			<description>Genre value</description>
+			<posx>110</posx>
+			<posy>115</posy>
+			<width>365</width>
+			<info>ListItem.Genre</info>
+			<font>font12</font>
+		</control>
+		<control type="label">
+			<description>Year</description>
+			<posx>20</posx>
+			<posy>140</posy>
+			<label>201</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel">
+			<description>year value</description>
+			<posx>110</posx>
+			<posy>140</posy>
+			<width>210</width>
+			<info>ListItem.Year</info>
+			<font>font12</font>
+		</control>
+		<control type="label">
+			<description>Track Number</description>
+			<posx>20</posx>
+			<posy>165</posy>
+			<label>$LOCALIZE[435] :</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel">
+			<description>Track Number value</description>
+			<posx>110</posx>
+			<posy>165</posy>
+			<width>210</width>
+			<info>ListItem.TrackNumber</info>
+			<font>font12</font>
+		</control>
+		<control type="label">
+			<description>Rating</description>
+			<posx>20</posx>
+			<posy>190</posy>
+			<label>173</label>
+			<font>font12</font>
+		</control>
+		<control type="image">
+			<description>Rating value</description>
+			<posx>90</posx>
+			<posy>192</posy>
+			<width>110</width>
+			<height>20</height>
+			<info>ListItem.Rating</info>
+		</control>
+		<control type="label">
+			<description>Comment</description>
+			<posx>20</posx>
+			<posy>215</posy>
+			<label>659</label>
+			<font>font12</font>
+		</control>
+		<control type="textbox">
+			<description>Comment value</description>
+			<posx>110</posx>
+			<posy>215</posy>
+			<width>210</width>
+			<height>100</height>
+			<font>font12</font>
+			<pagecontrol>999999999</pagecontrol>
+			<info>ListItem.Comment</info>
+		</control>
+		<control type="button" id="14">
+			<description>Decrease Rating</description>
+			<posx>210</posx>
+			<posy>195</posy>
+			<width>18</width>
+			<height>16</height>
+			<onclick>DecreaseRating</onclick>
+			<texturenofocus>scroll-down.png</texturenofocus>
+			<texturefocus>scroll-down-focus.png</texturefocus>
+			<onleft>15</onleft>
+			<onright>15</onright>
+			<ondown>10</ondown>
+			<onup>10</onup>
+		</control>
+		<control type="button" id="15">
+			<description>Increase Rating</description>
+			<posx>228</posx>
+			<posy>195</posy>
+			<width>18</width>
+			<height>16</height>
+			<onclick>IncreaseRating</onclick>
+			<texturenofocus>scroll-up.png</texturenofocus>
+			<texturefocus>scroll-up-focus.png</texturefocus>
+			<onleft>14</onleft>
+			<onright>14</onright>
+			<ondown>10</ondown>
+			<onup>10</onup>
+		</control>
+		<control type="button" id ="13">
+			<description>Get Thumb button</description>
+			<posx>20</posx>
+			<posy>330</posy>
+			<width>90</width>
+			<height>32</height>
+			<label>13405</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>11</onleft>
+			<onright>12</onright>
+			<onup>14</onup>
+			<ondown>14</ondown>
+		</control>
+		<control type="button" id="12">
+			<description>Album Info button</description>
+			<posx>120</posx>
+			<posy>330</posy>
+			<width>90</width>
+			<height>32</height>
+			<label>10523</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>13</onleft>
+			<onright>10</onright>
+			<onup>14</onup>
+			<ondown>14</ondown>
+		</control>
+		<control type="button" id ="10">
+			<description>Yes button</description>
+			<posx>290</posx>
+			<posy>330</posy>
+			<width>90</width>
+			<height>32</height>
+			<label>186</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>12</onleft>
+			<onright>11</onright>
+			<onup>14</onup>
+			<ondown>14</ondown>
+		</control>
+		<control type="button" id="11">
+			<description>No button</description>
+			<posx>390</posx>
+			<posy>330</posy>
+			<width>90</width>
+			<height>32</height>
+			<label>222</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>10</onleft>
+			<onright>13</onright>
+			<onup>14</onup>
+			<ondown>14</ondown>
+		</control>
+	</controls>
+</window>

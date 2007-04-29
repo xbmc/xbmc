@@ -208,6 +208,9 @@
 #define ACTION_SHOW_VIDEOMENU         134
 #define ACTION_ENTER                  135
 
+#define ACTION_INCREASE_RATING        136
+#define ACTION_DECREASE_RATING        137
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -272,6 +275,7 @@
 #define WINDOW_DIALOG_CONTENT_SETTINGS    10132
 #define WINDOW_DIALOG_VIDEO_SCAN          10133
 #define WINDOW_DIALOG_FAVOURITES          10134
+#define WINDOW_DIALOG_SONG_INFO           10135
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
