@@ -1,9 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: El Piraña-->
-<!--Email: piranna@gmail.com-->
-<!--Date of translation: 03/08/2007-->
-<!--$Revision$-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imágenes</string>
@@ -47,18 +42,16 @@
   <string id="110">Crear miniaturas</string>
   <string id="111">Accesos dir.</string>
   <string id="112">PAUSA</string>
-  <string id="113">
-  </string>
-  <string id="114">
-  </string>
+  <string id="113"></string>
+  <string id="114"></string>
   <string id="115">Copiar</string>
   <string id="116">Mover</string>
   <string id="117">Eliminar</string>
   <string id="118">Cambiar Nombre</string>
   <string id="119">Nueva Carpeta</string>
-  <string id="120">Confirmar copia de archivos</string>
-  <string id="121">Confirmar movimiento de archivos</string>
-  <string id="122">Confirmar eliminación de archivos</string>
+  <string id="120">Confirmar copia</string>
+  <string id="121">Confirmar movimiento</string>
+  <string id="122">Confirmar eliminación</string>
   <string id="123">¿Copiar estos archivos?</string>
   <string id="124">¿Mover estos archivos?</string>
   <string id="125">¿Eliminar estos archivos?</string>
@@ -66,7 +59,7 @@
   <string id="127">Objetos</string>
   <string id="128">General</string>
   <string id="129">Presentación</string>
-  <string id="130">Información Sistema</string>
+  <string id="130">Info del Sistema</string>
   <string id="131">Pantalla</string>
   <string id="132">Álbumes</string>
   <string id="133">Intérpretes</string>
@@ -102,7 +95,7 @@
   <string id="163">Leyendo</string>
   <string id="164">Sin Disco</string>
   <string id="165">Disco Presente</string>
-  <string id="166">Máscara</string>
+  <string id="166">Piel</string>
   <string id="167">Activar servidor FTP</string>
   <string id="168">Activar sincr. horaria desde Internet</string>
   <string id="169">Resolución</string>
@@ -125,15 +118,15 @@
   <string id="186">OK</string>
   <string id="187">¡No se encontraron álbumes!</string>
   <string id="188">Selecc. todo</string>
-  <string id="189">Explorando información del medio</string>
+  <string id="189">Escaneando información de medios</string>
   <string id="190">Guardar</string>
   <string id="191">Aleatorio</string>
   <string id="192">Borrar</string>
-  <string id="193">Explorar</string>
+  <string id="193">Escanear</string>
   <string id="194">Buscando...</string>
   <string id="195">¡No se encontró información!</string>
   <string id="196">Seleccione película:</string>
-  <string id="197">Consultando información de %s</string>
+  <string id="197">Consultando %s</string>
   <string id="198">Cargando detalles de la película</string>
   <string id="199">Director:</string>
   <string id="200">Guión:</string>
@@ -175,11 +168,11 @@
   <string id="240">Reproducción automática de DVD Vídeo</string>
   <string id="241">Reproducción automática de VCD/SVCD</string>
   <string id="242">Reproducción automática de CD Audio</string>
-  <string id="243">Reproducción automática de Juegos XBOX</string>
+  <string id="243">Reproducción automática de Juegos Xbox</string>
   <string id="244">Reproducción automática de Vídeos</string>
   <string id="245">Reproducción automática de Música</string>
   <string id="246">Reproducción automática de Imágenes</string>
-  <string id="247">Sec. Comandos</string>
+  <string id="247">Scripts</string>
   <string id="248">Idioma</string>
   <string id="249">Música</string>
   <string id="250">Visualización</string>
@@ -330,7 +323,7 @@
   <string id="406">Humedad</string>
   <string id="407">De</string>
   <string id="408">a</string>
-  <string id="410">Accediendo a Weather.com</string>
+  <string id="410">Accediendo a weather.com</string>
   <string id="411">Obteniendo el tiempo para:</string>
   <string id="412">No se pueden obtener datos meteorológicos</string>
   <string id="413">Manual</string>
@@ -338,14 +331,10 @@
   <string id="415">Descargando miniatura...</string>
   <string id="416">No disponible</string>
   <string id="417">Ver: I. Grandes</string>
-  <string id="418">
-  </string>
-  <string id="419">
-  </string>
-  <string id="420">
-  </string>
-  <string id="421">
-  </string>
+  <string id="418"></string>
+  <string id="419"></string>
+  <string id="420"></string>
+  <string id="421"></string>
   <string id="422">Eliminar información del álbum</string>
   <string id="423">Eliminar información CDDB</string>
   <string id="424">Selecc.</string>
@@ -357,8 +346,8 @@
   <string id="430">Por: n. DVD</string>
   <string id="431">Sin Caché</string>
   <string id="432">Eliminar película de la base de datos</string>
-  <string id="433">¿Está seguro de eliminar</string>
-  <string id="434">la película?</string>
+  <string id="433">¿Eliminar realmente '%s'?</string>
+  <string id="434"></string>
   <string id="435">Pista</string>
   <string id="436">Año:</string>
   <string id="437">Duración:</string>
@@ -400,7 +389,7 @@
   <string id="476">Música y Vídeo</string>
   <string id="477">No se puede cargar la lista de reproducción</string>
   <string id="478">OSD</string>
-  <string id="479">Máscara e Idioma</string>
+  <string id="479">Piel e Idioma</string>
   <string id="480">Apariencia</string>
   <string id="481">Opciones de Sonido</string>
   <string id="482">Acerca de XBMC</string>
@@ -433,18 +422,18 @@
   <string id="513">Pantalla Principal</string>
   <string id="514">Ajustes Manuales</string>
   <string id="515">Género</string>
-  <string id="516">Ver contenido de archivos comprimidos (de un solo fichero)</string>
+  <string id="516">Obviar arch. de un fich. comprimidos</string>
   <string id="517">Albums Reproducidos Recientemente</string>
   <string id="518">Lanzar</string>
   <string id="519">Lanzar en..</string>
   <string id="520">Editar Título XBE</string>
   <string id="521">Compilaciones</string>
   <string id="522">Eliminar Origen</string>
-  <string id="523">Intercambiar Medio</string>
+  <string id="523">Cambiar Medio</string>
   <string id="524">Seleccione Lista de Rep.</string>
   <string id="525">Nueva Lista de Rep.</string>
   <string id="526">Añadir a Lista de Rep.</string>
-  <string id="527">Añadir Manualmente a la Base de Datos</string>
+  <string id="527">Añadir a mano a la B.D.</string>
   <string id="528">Introduzca Título</string>
   <string id="529">Error: Título duplicado</string>
   <string id="530">Seleccione Género</string>
@@ -458,7 +447,11 @@
   <string id="538">I. Grandes</string>
   <string id="539">Amplio</string>
   <string id="540">Ampio Grande</string>
-  <string id="550">Orden por: %s</string>
+  <string id="541">Iconos de Album</string>
+  <string id="542">Iconos de DVD</string>
+  <string id="543">DVD</string>
+  <string id="544">Info de Medio</string>
+  <string id="550">Orden: %s</string>
   <string id="551">Nombre</string>
   <string id="552">Fecha</string>
   <string id="553">Tamaño</string>
@@ -480,6 +473,8 @@
   <string id="583">Recordar vistas para distintas carpetas</string>
   <string id="584">Ascendente</string>
   <string id="585">Descendente</string>
+  <string id="586">Editar Lista de Rep.</string>
+  <string id="587">Filtro</string>
   <string id="588">Cancelar Modo Fiesta</string>
   <string id="589">Modo Fiesta</string>
   <string id="590">Aleatorio</string>
@@ -507,7 +502,7 @@
   <string id="623">Velocidad de bits</string>
   <string id="624">Incluir número de pista</string>
   <string id="625">Todas las canciones de</string>
-  <string id="629">Modo de Vista</string>
+  <string id="629">Modo Vista</string>
   <string id="630">Normal</string>
   <string id="631">Zoom</string>
   <string id="632">Adaptar a 4:3</string>
@@ -530,9 +525,10 @@
   <string id="649">Importando</string>
   <string id="650">Exportando</string>
   <string id="651">Biblioteca de Vídeo</string>
+  <string id="652">Años</string>
   <string id="700">Limpiar la biblioteca</string>
   <string id="701">Eliminando canciones antiguas de la biblioteca</string>
-  <string id="702">Esta ruta ya ha sido explorada anteriormente</string>
+  <string id="702">Esta ruta ya ha sido escaneada anteriormente</string>
   <string id="705">Red</string>
   <string id="706">Host del Proxy HTTP</string>
   <string id="707">Puerto del Proxy HTTP</string>
@@ -573,8 +569,8 @@
   <string id="742">Blanco</string>
   <string id="743">Amarillo</string>
   <string id="744">Archivos</string>
-  <string id="745">No se ha explorado información para esta vista</string>
-  <string id="746">Cambiar a vista por Archivos</string>
+  <string id="745">No se ha escaneado información para esta vista</string>
+  <string id="746">Cambiar a Vista de Archivos</string>
   <string id="747">Error cargando imagen</string>
   <string id="748">Editar Ruta</string>
   <string id="749">Añadir Rec. Compartido</string>
@@ -627,7 +623,7 @@
   <string id="1019">Introduzca el nombre de usuario</string>
   <string id="1020">Añadir Fuente %s</string>
   <string id="1021">Introduzca las rutas o busque la ubicación del medio.</string>
-  <string id="1022">Introduzca un nombre para esta Fuente de Medios.</string>
+  <string id="1022">Introduzca un nombre para la Fuente.</string>
   <string id="1023">Buscar un nuevo recurso compartido</string>
   <string id="1024">Buscar</string>
   <string id="1025">No se ha podido recuperar información del directorio.</string>
@@ -638,6 +634,9 @@
   <string id="1030">una imagen</string>
   <string id="1031">una carpeta de imágenes</string>
   <string id="1032">Añadir Sitio de Red...</string>
+  <string id="1033">un fichero</string>
+  <string id="1034">Submenú</string>
+  <string id="1035">Habilitar Botones de Submenú</string>
   <string id="1200">Compartir</string>
   <string id="1202">Grupo de trabajo</string>
   <string id="1203">Usuario por Defecto</string>
@@ -671,14 +670,13 @@
   <string id="1246">Contraseña FTP</string>
   <string id="1247">Usuario y contraseña del Servidor FTP establecidos con éxito!</string>
   <string id="1250">Autodetección</string>
-  <string id="1251">Autodetección de otras XBOX</string>
+  <string id="1251">Autodetección de otras Xbox</string>
   <string id="1252">Nick</string>
-  <string id="1253">
-  </string>
+  <string id="1253"></string>
   <string id="1254">Preguntar antes de Conectar</string>
   <string id="1255">Enviar Usuario y Contraseña FTP</string>
   <string id="1256">Intervalo de Ping</string>
-  <string id="1257">¿Desea conectar a la XBOX detectada?</string>
+  <string id="1257">¿Desea conectar a la Xbox detectada?</string>
   <string id="1396">A la deriva</string>
   <string id="1397">y</string>
   <string id="1398">Helando</string>
@@ -719,15 +717,11 @@
   <string id="10017">Configuración-&gt;El Tiempo</string>
   <string id="10018">Configuración-&gt;Red</string>
   <string id="10019">Configuración-&gt;Apariencia</string>
-  <string id="10020">Secuencias de comandos</string>
-  <string id="10021">
-  </string>
-  <string id="10022">
-  </string>
-  <string id="10023">
-  </string>
-  <string id="10025">
-  </string>
+  <string id="10020">Scripts</string>
+  <string id="10021"></string>
+  <string id="10022"></string>
+  <string id="10023"></string>
+  <string id="10025"></string>
   <string id="10028">Vídeos/Lista de reproducción</string>
   <string id="10034">Configuración-&gt;Perfiles</string>
   <string id="10100">Cuadro de diálogo Sí/No</string>
@@ -735,8 +729,7 @@
   <string id="10500">Música/Lista rep.</string>
   <string id="10501">Música/Ficheros</string>
   <string id="10502">Música/Librería</string>
-  <string id="10503">
-  </string>
+  <string id="10503">Editor de Listas de Rep.</string>
   <string id="10504">Top 100 Canciones</string>
   <string id="10505">Top 100 Albumes</string>
   <string id="10506">Programas</string>
@@ -745,24 +738,16 @@
   <string id="10509">Juego en Red</string>
   <string id="10510">Extensiones</string>
   <string id="10511">Info Sistema</string>
-  <string id="10512">
-  </string>
-  <string id="10513">
-  </string>
-  <string id="10514">
-  </string>
-  <string id="10515">
-  </string>
+  <string id="10512"></string>
+  <string id="10513"></string>
+  <string id="10514"></string>
+  <string id="10515"></string>
   <string id="10516">Música - Biblioteca</string>
   <string id="10517">Música - Reproduciendo</string>
-  <string id="10518">
-  </string>
-  <string id="10519">
-  </string>
-  <string id="10520">
-  </string>
-  <string id="10521">
-  </string>
+  <string id="10518"></string>
+  <string id="10519"></string>
+  <string id="10520"></string>
+  <string id="10521"></string>
   <string id="10522">Vídeo - Reproduciendo</string>
   <string id="10523">Info Album</string>
   <string id="10524">Info Película</string>
@@ -773,24 +758,23 @@
   <string id="12004">Secuencias de Comandos/Info</string>
   <string id="12005">Vídeo a pantalla completa</string>
   <string id="12006">Visualización de Audio</string>
-  <string id="12007">
-  </string>
+  <string id="12007"></string>
   <string id="12008">Diálogo de Agrupar archivos</string>
   <string id="12009">Reconstruir índice...</string>
   <string id="12010">Volver a Ventana Música</string>
   <string id="12011">Volver a Ventana Vídeos</string>
-  <string id="12012">Actualizar lista de Trainers</string>
-  <string id="12013">Trainer</string>
-  <string id="12014">No se encontraron Trainers</string>
-  <string id="12015">Configuración de Trainers</string>
+  <string id="12012">Actualizar lista de Entrenadores</string>
+  <string id="12013">Entrenador</string>
+  <string id="12014">No se encontraron Entrenadores</string>
+  <string id="12015">Configuración de Entrenadores</string>
   <string id="12016">Faltan todos los trailers registrados. Actualice su lista</string>
-  <string id="12017">Continuar automáticamente desde la última posición</string>
+  <string id="12017">Continuar automát. desde última posición</string>
   <string id="12018">No</string>
   <string id="12019">Si</string>
   <string id="12020">Preguntar</string>
   <string id="12021">Comenzar desde el principio</string>
-  <string id="12022">Continuar reproduciendo desde la última posición</string>
-  <string id="12023">Validando trainers existentes...</string>
+  <string id="12022">Continuar desde la última posición</string>
+  <string id="12023">Validando entrenadores existentes...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -822,7 +806,7 @@
   <string id="12341">Reintroduzca la nueva contraseña</string>
   <string id="12342">Contraseña incorrecta,</string>
   <string id="12343">intentos restantes</string>
-  <string id="12344">Las contraseñas introducidas no coinciden</string>
+  <string id="12344">Las contraseñas introducidas no coinciden.</string>
   <string id="12345">Acceso Denegado</string>
   <string id="12346">Límite de intentos de contraseña excedidos.</string>
   <string id="12347">La Xbox se apagará ahora.</string>
@@ -836,7 +820,7 @@
   <string id="12367">¡Código Maestro no válido!</string>
   <string id="12368">¡Por favor, introduzca un Código Maestro Válido!</string>
   <string id="12373">Configuración y Archivos</string>
-  <string id="12376">Asignar como por defecto para todas las Películas</string>
+  <string id="12376">Asignar por defecto para todas las Películas</string>
   <string id="12377">Esto eliminará cualquier valor previamente salvado</string>
   <string id="12378">Mostrar cada imagen durante</string>
   <string id="12379">Usar efectos Pan y Zoom</string>
@@ -847,7 +831,7 @@
   <string id="12384">Reloj de 24 horas</string>
   <string id="12385">Día/Mes</string>
   <string id="12386">Mes/Día</string>
-  <string id="12387">Re-escanear base de datos</string>
+  <string id="12387"></string>
   <string id="12390">Activo desde</string>
   <string id="12391">Minutos</string>
   <string id="12392">Horas</string>
@@ -863,6 +847,7 @@
   <string id="13004">- Duración mínima del archivo</string>
   <string id="13005">Apagar</string>
   <string id="13006">Dashboard</string>
+  <string id="13007">Usar Ruta de Dashboard Personalizada</string>
   <string id="13100">Filtro antivibración</string>
   <string id="13150">Clave del HDD:</string>
   <string id="13151">Temperatura del HDD:</string>
@@ -873,22 +858,22 @@
   <string id="13156">Firmware del HDD :</string>
   <string id="13157">Contraseña del HDD:</string>
   <string id="13158">Estado del bloqueo del HDD:</string>
-  <string id="13159">Máscara de red:</string>
-  <string id="13160">Puerta de enlace:</string>
-  <string id="13161">DNS:</string>
+  <string id="13159">Máscara de red</string>
+  <string id="13160">Puerta de enlace</string>
+  <string id="13161">DNS Primario</string>
   <string id="13162">Fallo en inicialización</string>
-  <string id="13163">Mandos en puerto:</string>
-  <string id="13164">Teclado en puerto:</string>
-  <string id="13165">Ratón en puerto:</string>
-  <string id="13166">Auricular/Micrófono en puerto:</string>
-  <string id="13167">MemoryStick en puerto:</string>
-  <string id="13168">Mando a distancia en puerto:</string>
-  <string id="13169">Puerto del controlador</string>
+  <string id="13163">Mando</string>
+  <string id="13164">Teclado</string>
+  <string id="13165">Ratón</string>
+  <string id="13166">Auricular/Micrófono</string>
+  <string id="13167">MemoryStick</string>
+  <string id="13168">Mando a distancia</string>
+  <string id="13169">Puerto Controlador</string>
   <string id="13170">Nunca</string>
   <string id="13171">Inmediatamente</string>
   <string id="13172">Después de %i segs.</string>
-  <string id="13173">Fecha de instalación del Disco Duro:</string>
-  <string id="13174">Contador de ciclos de alimentación del Disco Duro</string>
+  <string id="13173">Fecha Instalación HDD:</string>
+  <string id="13174">Contador de Encendidos de HDD:</string>
   <string id="13200">Perfiles</string>
   <string id="13201">¿Eliminar el perfil '%s'?</string>
   <string id="13204">Último perfil cargado:</string>
@@ -935,7 +920,7 @@
   <string id="13300">Velocidad del ventilador</string>
   <string id="13301">Control del ventilador por temperatura</string>
   <string id="13302">Control manual del ventilador</string>
-  <string id="13303">Fuentes de la máscara</string>
+  <string id="13303">Fuentes de la piel</string>
   <string id="13304">Invertir cadenas bidireccionales</string>
   <string id="13305">Activar noticias RSS</string>
   <string id="13306">Ocultar iconos de subir de carpeta</string>
@@ -957,7 +942,7 @@
   <string id="13322">Sólo derecho</string>
   <string id="13323">Activar CD+G</string>
   <string id="13324">Transparencia del fondo</string>
-  <string id="13325">Transparencia de primer plano</string>
+  <string id="13325">Transparencia del primer plano</string>
   <string id="13326">Retardo A/V</string>
   <string id="13327">Karaoke</string>
   <string id="13328">%s no encontrado</string>
@@ -995,7 +980,7 @@
   <string id="13361">Habilitar Voz</string>
   <string id="13375">Habilitar Dispositivo</string>
   <string id="13376">Volumen</string>
-  <string id="13377">Modo de Vista por Defecto</string>
+  <string id="13377">Modo Vista por Defecto</string>
   <string id="13378">Brillo por Defecto</string>
   <string id="13379">Contraste por Defecto</string>
   <string id="13380">Gamma por Defecto</string>
@@ -1019,7 +1004,7 @@
   <string id="13396">Ajustes de Audio y Subtítulos</string>
   <string id="13397">Habilitar Subtítulos</string>
   <string id="13398">Marcas</string>
-  <string id="13399">Ignorar "The" al ordenar</string>
+  <string id="13399">Ignorar tokens al ordenar</string>
   <string id="13400">Mezclar pistas de álbumes</string>
   <string id="13401">Buscar %s</string>
   <string id="13402">Mostrar posición de la pista</string>
@@ -1080,7 +1065,7 @@
   <string id="14054">Activar búsquedas en Internet</string>
   <string id="14055">Utilizar escaneo en segundo plano</string>
   <string id="14056">Detener el escaneo</string>
-  <string id="14057">No es posible mientras se explora la información del medio</string>
+  <string id="14057">No es posible mientras se escanea la información de medios</string>
   <string id="14058">Efecto Pelicula con Textura Granulada</string>
   <string id="14059">Buscar miniaturas en recursos compartidos remotos</string>
   <string id="14060">Tipo de Caché Desconocido - Internet</string>
@@ -1097,6 +1082,8 @@
   <string id="14071">Permitir Renombrar y Borrar Ficheros</string>
   <string id="14072">Habilitar XLink Kai</string>
   <string id="14073">XLink Kai no está habilitado.</string>
+  <string id="14074">Establecer Zona Horaria</string>
+  <string id="14075">Usar Horario de Verano</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">El servicio no está conectado.</string>
   <string id="15002">¿Desea reintentar la conexión?</string>
@@ -1137,7 +1124,7 @@
   <string id="15037">XBMC no puede confirmar que su red sea accesible.</string>
   <string id="15038">Vd. puede experimentar dificultades entrando en, u hospedando juegos.</string>
   <string id="15039">Imposible localizar el juego automáticamente.</string>
-  <string id="15040">Inserte el disco del juego en su XBOX o pulse 'A' para cancelar</string>
+  <string id="15040">Inserte el disco del juego en su Xbox o pulse 'A' para cancelar</string>
   <string id="15041">e inicie el juego manualmente.</string>
   <string id="15042">Acceso Denegado</string>
   <string id="15043">%s entra en el chat.</string>
@@ -1168,8 +1155,8 @@
   <string id="15106">Recordar último fichero seleccionado</string>
   <string id="15107">Almacenando...</string>
   <string id="15108">Sonidos de Navegación</string>
-  <string id="15109">Tema por Defecto</string>
-  <string id="15111">Tema de la Máscara</string>
+  <string id="15109">Según Piel</string>
+  <string id="15111">Tema de la Piel</string>
   <string id="15112">Tema por Defecto</string>
   <string id="15200">Last.FM</string>
   <string id="15201">Enviar canciones a Last.FM</string>
@@ -1226,7 +1213,7 @@
   <string id="15301">Imposible conectar al servidor</string>
   <string id="15302">No se encontraron servidores</string>
   <string id="15303">Grupo de trabajo no encontrado</string>
-  <string id="15310">Abriendo carpeta multi-directorio</string>
+  <string id="15310">Abriendo marcador multi-directorio</string>
   <string id="15311">Ruta:</string>
   <string id="16000">General</string>
   <string id="16001">Configurar Hardware de Sonido...</string>
@@ -1279,7 +1266,7 @@
   <string id="20000">Carpeta Grabación de CDs de Audio</string>
   <string id="20001">Usar Reproductor DVD externo</string>
   <string id="20002">Reproductor DVD externo</string>
-  <string id="20003">Carpeta Trainers</string>
+  <string id="20003">Carpeta Entrenadores</string>
   <string id="20004">Carpeta Instantáneas</string>
   <string id="20005">Carpeta Grabaciones</string>
   <string id="20006">Carpeta Listas Rep.</string>
@@ -1296,10 +1283,9 @@
   <string id="20017">Miniat. Local</string>
   <string id="20018">Sin Miniat.</string>
   <string id="20019">Elija Miniatura</string>
-  <string id="20020">No se puede usar KAI y trainer a la vez</string>
+  <string id="20020">No se puede usar KAI y entrenador a la vez</string>
   <string id="20021">Elija cuál desea usar</string>
-  <string id="20022">
-  </string>
+  <string id="20022"></string>
   <string id="20023">Conflicto</string>
   <string id="20024">Escanear nuevos</string>
   <string id="20025">Escanear todo</string>
@@ -1344,7 +1330,7 @@
   <string id="20075">Introduzca código de bloqueo maestro</string>
   <string id="20076">Preguntar código de bloqueo maestro al iniciar</string>
   <string id="20077">Ajustes de Interfaz</string>
-  <string id="20078">- no hay enlace configurado -</string>
+  <string id="20078">- no hay enlace establecido -</string>
   <string id="20079">Habilitar Animaciones</string>
   <string id="20080">Deshabilitar RSS con la Música</string>
   <string id="20081">Habilitar Botones de Marcas</string>
@@ -1362,7 +1348,7 @@
   <string id="20093">Nombre de perfil</string>
   <string id="20094">Fuentes de Medios</string>
   <string id="20095">Introduzca código de bloqueo de perfil</string>
-  <string id="20096">Pantalla de inicio de sesión</string>
+  <string id="20096">Inicio de Sesión</string>
   <string id="20097">Obteniendo info del álbum</string>
   <string id="20098">Obteniendo info para el álbum</string>
   <string id="20099">No se puede copiar CD o pista mientras se reproduce el CD</string>
@@ -1384,7 +1370,7 @@
   <string id="20115">Inicio de Sesión de Usuario / Selecciona un Perfil</string>
   <string id="20116">Usar bloqueo en pantalla de inicio de sesión</string>
   <string id="20117">Código de bloqueo no válido.</string>
-  <string id="20118">ESto requiere asignar el bloqueo maestro.</string>
+  <string id="20118">Esto requiere asignar el bloqueo maestro.</string>
   <string id="20119">Deseas hacerlo ahora?</string>
   <string id="20120">Cargando información de programa</string>
   <string id="20121">¡Fiesta activo!</string>
@@ -1415,7 +1401,7 @@
   <string id="20147">Apagado en 30 minutos</string>
   <string id="20148">Apagado en 60 minutos</string>
   <string id="20149">Apagado en 120 minutos</string>
-  <string id="20150">Apagado Automático Personalizado</string>
+  <string id="20150">Apagado Personalizado</string>
   <string id="20151">Cancelar Apagado Automático</string>
   <string id="20152">Bloquear preferencias para %s</string>
   <string id="20153">Explorar...</string>
@@ -1426,9 +1412,9 @@
   <string id="20158">Información Red</string>
   <string id="20159">Información Vídeo</string>
   <string id="20160">Información Hardware</string>
-  <string id="20161">Total: %s MB, Usado: %s MB, Libre: %s MB</string>
-  <string id="20162">Total HDD Usado: %u%%  Libre: %u%%</string>
-  <string id="20163">%s: %s MB de %s MB Libres</string>
+  <string id="20161">Total</string>
+  <string id="20162">Usado</string>
+  <string id="20163">de</string>
   <string id="20164">Bloqueo No Soportado</string>
   <string id="20165">No Bloqueado</string>
   <string id="20166">Bloqueado</string>
@@ -1448,29 +1434,29 @@
   <string id="20180">Símbolos</string>
   <string id="20181">Borrado</string>
   <string id="20182">Espacio</string>
-  <string id="20183">Recargar Máscara</string>
+  <string id="20183">Recargar Piel</string>
   <string id="20184">Rotar usando información EXIF</string>
-  <string id="20185">Detectando Valores Hardware</string>
+  <string id="20185"></string>
   <string id="20186">Espere, por favor</string>
   <string id="20187">Leyendo Valores de la EEPROM</string>
   <string id="20188">Lectura de la EEPROM realizada</string>
-  <string id="20189">Detección Realizada</string>
-  <string id="20190">Detectando Información Disco Duro</string>
-  <string id="20191">Detectando Valores HDD</string>
-  <string id="20192">Detectando Clave HDD</string>
-  <string id="20193">Detectando Temperatura HDD</string>
-  <string id="20194">Detectando Información DVD-ROM</string>
-  <string id="20195">Detectando Modelo/Firmware</string>
-  <string id="20196">Detectando Configuración de Red</string>
-  <string id="20197">Detectando Dirección MAC</string>
-  <string id="20198">Detectando Estado Online</string>
-  <string id="20199">Detectando Versión Xbox, Nº Serie y CPU</string>
-  <string id="20300">Detectando Hardware Xbox</string>
-  <string id="20301">Detectando ModChip</string>
-  <string id="20302">Detectando BIOS</string>
-  <string id="20303">Detectando Velocidad de CPU</string>
-  <string id="20304">Detectando Fecha de Producción</string>
-  <string id="20305">Detectando Unidades Conectadas</string>
+  <string id="20189"></string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
   <string id="20306">Desconocido. Por favor añada la firma MD5 de xbmc.log a BiosIDs.ini</string>
   <string id="20307">DNS Secundario</string>
   <string id="20308">Servidor DHCP:</string>
@@ -1487,7 +1473,7 @@
   <string id="20319">Fallo al Descargar Partida Guardada</string>
   <string id="20320">Seleccione Partida Guardada para Descargar e Instalar</string>
   <string id="20321">No se ha encontrado partida guardada en Internet para el juego especificado</string>
-  <string id="20322">Ir a Partida Guardada del Juego</string>
+  <string id="20322">Ir a Partida Guardada</string>
   <string id="20323">Partidas Guardadas</string>
   <string id="20324">Reproducir fragmento...</string>
   <string id="20325">Reiniciar Calibrado</string>
@@ -1498,7 +1484,7 @@
   <string id="20330">Usar Nombres de Carpeta en Búsquedas</string>
   <string id="20331">Fichero</string>
   <string id="20332">¿Usar nombres de fichero o carpeta en búsquedas?</string>
-  <string id="20333">Set Content</string>
+  <string id="20333">Establecer Contenido</string>
   <string id="20334">Carpeta</string>
   <string id="20335">¿Buscar contenido recursivamente?</string>
   <string id="20336">Desbloquear Fuentes</string>
@@ -1514,26 +1500,39 @@
   <string id="20346">Escanear Recursivamente</string>
   <string id="20347">como</string>
   <string id="20348">Directores</string>
-  <string id="20349">No se han encontrado vídeos en esta ruta!</string>
+  <string id="20349">¡No se han encontrado vídeos en esta ruta!</string>
   <string id="20350">votos</string>
-  <string id="20351">Información del programa de Televisión</string>
-  <string id="20352">Información del Episodio</string>
-  <string id="20353">Cargando detalles del Programa de Televisión</string>
-  <string id="20354">Obteniendo guía del Episodio</string>
-  <string id="20355">Cargando información de los episodiós en el directorio</string>
-  <string id="20356">Seleccionar programa de Televisión:</string>
-  <string id="20357">Introduzca el nombre del programa de Televisión</string>
+  <string id="20351">Información de Programa de TV</string>
+  <string id="20352">Información de Episodio</string>
+  <string id="20353">Cargando detalles del Programa de TV</string>
+  <string id="20354">Obteniendo Guía de Episodios</string>
+  <string id="20355">Cargando Info de Episodios en Directorio</string>
+  <string id="20356">Seleccione Programa de TV:</string>
+  <string id="20357">Introduzca el Nombre de Programa de TV</string>
   <string id="20358">Temporada %i</string>
   <string id="20359">Episodio</string>
   <string id="20360">Episodios</string>
-  <string id="20361">Cargando detalles del episodio</string>
-  <string id="20362">Borrando episodio de la libreria</string>
-  <string id="20363">Borrando programa de televisión de la libreria</string>
-  <string id="20364">Programa de Televisión</string>
+  <string id="20361">Cargando detalles del Episodio</string>
+  <string id="20362">Eliminar Episodio de biblioteca</string>
+  <string id="20363">Eliminar Programa de TV de la biblioteca</string>
+  <string id="20364">Programa de TV</string>
   <string id="20365">Argumento del Episodio</string>
+  <string id="20366">* Todas las Temporadas</string>
+  <string id="20367">Ocultar los vistos</string>
+  <string id="20368">Código de Prod</string>
+  <string id="20369">Ocultar el argumento de elementos no vistos</string>
+  <string id="20370">* Oculto para prevenir desenlaces *</string>
+  <string id="20371">Establecer Miniat. de la Temporada</string>
+  <string id="20372">Imagen de la Temporada</string>
+  <string id="20373">Temporada</string>
+  <string id="20374">Descargando información de Vídeo</string>
+  <string id="20375">Desasignar Contenido</string>
+  <string id="20376">Primera Emisión:</string>
+  <string id="20377">Actualizar Información del Programa de TV</string>
+  <string id="20378">¿Actualizar info de todos los episodios?</string>
   <string id="21330">Mostrar ficheros y directorios ocultos</string>
   <string id="21331">Cliente TuxBox</string>
-  <string id="21332">AVISO: El dispositivo TuxBox está en Modo-Grabación!</string>
+  <string id="21332">¡AVISO: El dispositivo TuxBox está en Modo-Grabación!</string>
   <string id="21333">El medio se detendrá!</string>
   <string id="21334">Cambio al Canal: %s fallido!</string>
   <string id="21335">¿Seguro que desea iniciar el medio?</string>
@@ -1551,20 +1550,32 @@
   <string id="21365">Eliminar Compartición</string>
   <string id="21366">Directorio de Subtítulos Personalizado</string>
   <string id="21367">Directorio de Subtítulos de Películas y Otros</string>
-  <string id="21370">Reproducir Sonidos de Navegación Durante la Reproducción</string>
+  <string id="21370">Sonidos de navegación durante reproducción</string>
   <string id="21371">Miniatura</string>
-  <string id="21372">Región forzada del reproductor de DVDs</string>
-  <string id="21373">Hardware de Video</string>
-  <string id="21374">Aspecto de Video</string>
+  <string id="21372">Región de Reproductor de DVD Forzada</string>
+  <string id="21373">Hardware de Vídeo</string>
+  <string id="21374">Aspecto de Vídeo</string>
   <string id="21375">Normal</string>
-  <string id="21376">Subtitulos</string>
-  <string id="21377">Panoramico</string>
-  <string id="21378">Activar 480p</string>
-  <string id="21379">Activar 720p</string>
-  <string id="21380">Activar 1080i</string>
-  <string id="21381">Introduzca el nombre de la nueva Lista de Reproducción</string>
-  <string id="21382">Desactivar botones de Añadir Fuente en las listas de archivos</string>
-  <string id="21383">Activar barras de desplazamiento</string>
-  <string id="29999">Parche Filtro Parpadeo Auto.</string>
+  <string id="21376">Panoramica en 4:3</string>
+  <string id="21377">Panorámica</string>
+  <string id="21378">Habilitar 480p</string>
+  <string id="21379">Habilitar 720p</string>
+  <string id="21380">Habilitar 1080i</string>
+  <string id="21381">Introduzca Nombre de Nueva Lista Rep.</string>
+  <string id="21382">Deshabilitar "Añadir Fuente" en listas de fich.</string>
+  <string id="21383">Habilitar barras de desplazamiento</string>
+  <string id="21384">Make watched filtering a toggle in video library</string>
+  <string id="21385">Abierto</string>
+  <string id="21386">Nivel de Gestión Acústica</string>
+  <string id="21387">Rápido</string>
+  <string id="21388">Silencioso</string>
+  <string id="21390">Nivel de Gestión de Energía</string>
+  <string id="21391">High Power</string>
+  <string id="21392">Low Power</string>
+  <string id="21393">High Standby</string>
+  <string id="21394">Low Standby</string>
+  <string id="21395">No se puede almacenar ficheros mayores de 4 gb</string>
+  <string id="21396">Capítulo</string>
+  <string id="21397">Pixel Shader Alta Calidad V2</string>
+  <string id="29999">Aplicar Ajustes de Filtro Parpadeo a Juegos</string>
 </strings>
- 	  	 
