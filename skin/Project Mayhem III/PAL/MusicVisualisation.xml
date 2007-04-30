@@ -45,7 +45,7 @@
 				<posx>50</posx>
 				<posy>75</posy>
 				<width>630</width>
-				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name] - $LOCALIZE[20165]</label>
+				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name]</label>
 				<font>font12</font>
 				<align>left</align>
 				<visible>!Visualisation.Locked</visible>
