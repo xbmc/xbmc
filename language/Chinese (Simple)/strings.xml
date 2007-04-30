@@ -223,7 +223,7 @@
   <string id="290">动态范围压缩</string>
   <string id="291">视频</string>
   <string id="292">音频</string>
-  <string id="293">字幕</string>
+  <string id="293">选择字幕</string>
   <string id="294">创建书签</string>
   <string id="296">清除书签</string>
   <string id="297">声音延迟</string>
@@ -535,9 +535,15 @@
   <string id="648">载入影片数据库</string>
   <string id="649">载入中</string>
   <string id="650">输出中</string>
-  <string id="651">影片数据库</string>
+  <string id="651">选择数据库</string>
   <string id="652">年份</string>
   <string id="653">更新数据库</string>
+  <string id="654">显示调试信息</string>
+  <string id="655">选择可执行的</string>
+  <string id="656">选择播放列表</string>
+  <string id="657">选择文件夹</string>
+  <string id="658">歌曲信息</string>
+  <string id="659">评论：</string>
 
   <string id="700">清除音乐数据库</string>
   <string id="701">清除音乐数据库中的旧文件</string>
@@ -595,7 +601,7 @@
   <string id="755">编辑程序路径</string>
   <string id="756">编辑程序名称</string>
   <string id="757">编辑路径深度</string>
-  <string id="758">删除程序连接</string>
+  <string id="758"></string>
   <string id="759">显示：大列表</string>
   <string id="760">黄色</string>
   <string id="761">白色</string>
@@ -630,7 +636,7 @@
   <string id="1012">共享文件夹</string>
   <string id="1013">端口</string>
   <string id="1014">用户名</string>
-  <string id="1015">网络服务器</string>
+  <string id="1015">选择网络服务器</string>
   <string id="1016">输入服务器网络地址</string>
   <string id="1017">输入服务器远程路径</string>
   <string id="1018">输入端口号</string>
@@ -645,12 +651,13 @@
   <string id="1027">编辑目录</string>
   <string id="1028">编辑%s目录</string>
   <string id="1029">输入新的标签</string>
-  <string id="1030">镜像</string>
-  <string id="1031">镜像目录</string>
+  <string id="1030">选择图像</string>
+  <string id="1031">选择图像目录</string>
   <string id="1032">添加网上邻居…</string>
-  <string id="1033">一个文件</string>
+  <string id="1033">选择文件</string>
   <string id="1034">子菜单</string>
   <string id="1035">启用子菜单按钮</string>
+  <string id="1036">收藏夹</string>
 
   <string id="1200">SMB 共享设置</string>
   <string id="1202">工作组</string>
@@ -1121,6 +1128,8 @@
   <string id="14073">XLink Kai 没有被启用！</string>
   <string id="14074">设定时区</string>
   <string id="14075">使用日光节约时间</string>
+  <string id="14076">加入收藏夹</string>
+  <string id="14077">从收藏夹中删除</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">目前并没有连线到运行XLink Kai的电脑</string>
@@ -1321,7 +1330,7 @@
   <string id="20007">录音</string>
   <string id="20008">屏幕抓图</string>
   <string id="20009">使用 XBMC</string>
-  <string id="20010">歌手缩略图</string>
+  <string id="20010"></string>
   <string id="20011">音乐播放列表</string>
   <string id="20012">视频播放列表</string>
   <string id="20013">你要执行该游戏？</string>
@@ -1356,7 +1365,7 @@
   <string id="20053">已离开管理员模式</string>
   <string id="20054">已进入管理员模式</string>
   <string id="20055">Allmusic.com 缩略图</string>
-  <string id="20056">原缩略图</string>
+  <string id="20056"></string>
   <string id="20057">移除缩略图</string>
   <string id="20058">新加入预设文件…</string>
   <string id="20059">下载所有专辑的信息</string>
@@ -1529,8 +1538,8 @@
   <string id="20325">重设荧幕校正</string>
   <string id="20326">这将重设荧幕校正值为%s</string>
   <string id="20327">并以此为预设值</string>
-  <string id="20328">复制存档的路径</string>
-  <string id="20329">移动存档的路径</string>
+  <string id="20328">选择目的</string>
+  <string id="20329"></string>
   <string id="20330">以资料夹名称搜寻</string>
   <string id="20331">档案</string>
   <string id="20332">以资料夹或档案名称来搜寻？</string>
