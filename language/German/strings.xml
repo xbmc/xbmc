@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/26/2007-->
+<!--Date of translation: 04/30/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8669-->
+<!--Based on english strings version 8690-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -532,6 +532,8 @@
   <string id="655">Nach einem Programm durchsuchen...</string>
   <string id="656">Nach einer Playlist durchsuchen...</string>
   <string id="657">Nach einem Ordner durchsuchen...</string>
+  <string id="658">Titel-Informationen</string>
+  <string id="659">Kommentar:</string>
   <string id="700">Datenbank wird aktualisiert...</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
