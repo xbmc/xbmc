@@ -1,0 +1,34 @@
+AR = ar
+ARFLAGS = rus
+RM = rm -f
+
+CXX=g++
+CC=gcc
+CFLAGS+=-g
+DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT
+LIBS=-lSDL -lpthread
+
+.cpp.o:
+	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+
+.c.o:
+	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+
+OBJS=${SRCS:.cpp=.o}
+
+all: lib
+
+$(LIB) : $(OBJS)
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+
+lib: $(LIB)
+	for d in $(DIRS); do (cd $$d; $(MAKE) lib ); done
+
+clean: 
+	$(RM) $(OBJS) $(LIB)
+	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
+
+depend: $(SRCS)
+	-$(CXX) -MM $(DEFINES) $(INCLUDES) $(SRCS) > Makefile.depend
+	-for d in $(DIRS); do (cd $$d; $(MAKE) depend ); done

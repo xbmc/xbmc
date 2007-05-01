@@ -1,0 +1,23 @@
+This is an initial port of the skinning tool to Linux. I have tested this to work with Ubuntu.
+There is no reason why it should not work on other platforms.
+
+Installing the required ubuntu packages
+---------------------------------------
+sudo apt-get install subversion make g++-4.1 gcc-4.1
+sudo apt-get install libsdl1.2debian libsdl1.2debian-all libsdl1.2debian-alsa 
+sudo apt-get install libsdl-gfx1.2-dev 
+sudo apt-get install libsdl-mixer1.2-dev 
+sudo apt-get install libsdl-sound1.2-dev 
+sudo apt-get install libsdl-stretch-dev 
+sudo apt-get install libcdio6 libcdio-dev 
+sudo apt-get install libfribidi0 libfribidi-dev 
+sudo apt-get install libzlo1 libzlo-dev 
+sudo apt-get install libfreetype6 libfreetype6-dev 
+sudo apt-get install libsqlite3-0 libsqlite3-dev 
+
+How to compile
+--------------
+cd <home>/XBMC
+make lib
+make
+
