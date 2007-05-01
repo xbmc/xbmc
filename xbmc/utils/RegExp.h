@@ -79,7 +79,7 @@ public:
 	};
   int GetSubCount();
   int GetSubStart(int iSub);
-  int CRegExp::GetSubLenght(int iSub);
+  int GetSubLenght(int iSub);
 
 private:
 	char *regnext(char *node);
