@@ -218,7 +218,11 @@ private:
 
   void WorkerThread();
 
+#ifdef _WIN32
   static DWORD WINAPI threadProc(void *param) { static_cast<CScrobbler*>(param)->WorkerThread(); return 1; }
+#else
+  static int threadProc(void *param) { static_cast<CScrobbler*>(param)->WorkerThread(); return 1; }
+#endif
 
   CStdString GetTempFileName();
 
