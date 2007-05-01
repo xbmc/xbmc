@@ -107,29 +107,29 @@ const double shapercoefs[8][21] =
 class Cssrc
 {
 public:
-  Cssrc::Cssrc(void);
-  Cssrc::~Cssrc();
+  Cssrc(void);
+  ~Cssrc();
 
   //---------------------------------------------------------------------------
   // Inits Freq Converter, returns false if cannot do
   //---------------------------------------------------------------------------
-  bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, int NewBPS, int OutputBufferSize);
+  bool InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, int NewBPS, int OutputBufferSize);
 
   //---------------------------------------------------------------------------
   // returns the input bitrate that we are using (in bits per second)
   //---------------------------------------------------------------------------
-  int Cssrc::GetInputBitrate();
+  int GetInputBitrate();
 
   //---------------------------------------------------------------------------
   // Deinitializes everything, cleaning up any buffers that exist
   //---------------------------------------------------------------------------
-  void Cssrc::DeInitialize();
+  void DeInitialize();
 
   //---------------------------------------------------------------------------
   // Get Resampled data out of the buffers
   // returns true if data was got, returns false if there is no data ready
   //---------------------------------------------------------------------------
-  bool Cssrc::GetData(unsigned char *pOutData);
+  bool GetData(unsigned char *pOutData);
 
   //---------------------------------------------------------------------------
   // Put up to iSize bytes of data into our resampler
@@ -137,7 +137,7 @@ public:
   // if there is not enough data, it returns -1
   // if we first need to do a GetData() it returns 0
   //---------------------------------------------------------------------------
-  int Cssrc::PutData(unsigned char *pInData, int iSize);
+  int PutData(unsigned char *pInData, int iSize);
 
   //---------------------------------------------------------------------------
   // Put up to iSize samples of **FLOAT** data into our resampler
@@ -145,7 +145,7 @@ public:
   // if there is not enough data, it returns -1
   // if we first need to do a GetData() it returns 0
   //---------------------------------------------------------------------------
-  int Cssrc::PutFloatData(float *pInData, int numSamples);
+  int PutFloatData(float *pInData, int numSamples);
 
   //---------------------------------------------------------------------------
   // returns the amount of data (or samples) that the resampler will take in
@@ -154,10 +154,10 @@ public:
   // if we can't take any data (eg downsampling, which is current disabled) it
   // returns -1
   //---------------------------------------------------------------------------
-  int Cssrc::GetInputSize();
-  int Cssrc::GetInputSamples();
+  int GetInputSize();
+  int GetInputSamples();
 
-  int Cssrc::GetMaxInputSize() { return m_iMaxInputSize;};
+  int GetMaxInputSize() { return m_iMaxInputSize;};
   //---------------------------------------------------------------------------
   // Converts some data-
   // DataSize is adjusted

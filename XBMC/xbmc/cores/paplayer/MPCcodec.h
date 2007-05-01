@@ -1,7 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "FileReader.h"
-#include "Dllmpccodec.h"
+#include "DllMpcCodec.h"
 
 class MPCCodec : public ICodec
 {

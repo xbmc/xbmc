@@ -1,8 +1,8 @@
 #pragma once
-#include "..\stdafx.h"
-#include "iplayer.h"
+#include "../stdafx.h"
+#include "IPlayer.h"
 
-const enum EPLAYERCORES
+enum EPLAYERCORES
 {
   EPC_NONE,
   EPC_DVDPLAYER,

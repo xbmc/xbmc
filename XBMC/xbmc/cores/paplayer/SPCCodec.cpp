@@ -123,3 +123,4 @@ bool SPCCodec::CanInit()
 {
   return true;
 }
+

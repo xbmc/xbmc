@@ -12,6 +12,7 @@ class DllLoaderContainer
 public:
   DllLoaderContainer();
 
+#ifndef _LINUX
   DllLoader kernel32;
   DllLoader user32;
   DllLoader ddraw;
@@ -35,7 +36,8 @@ public:
   DllLoader msvcr71;
   DllLoader pncrt;
   DllLoader iconvx;
-  
+#endif
+
   void Clear();
   HMODULE GetModuleAddress(const char* sName);
   int GetNrOfModules();

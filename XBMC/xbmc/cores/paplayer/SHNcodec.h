@@ -1,7 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "FileReader.h"
-#include "Dlllibshnplay.h"
+#include "DllLibshnplay.h"
 
 class SHNCodec : public ICodec
 {

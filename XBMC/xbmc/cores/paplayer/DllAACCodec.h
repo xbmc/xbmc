@@ -1,6 +1,6 @@
 #pragma once
 #include "../../DynamicDll.h"
-#include "aac/aaccodec.h"
+#include "aac/AACCodec.h"
 
 class DllAACCodecInterface
 {

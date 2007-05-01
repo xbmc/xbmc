@@ -101,3 +101,4 @@ bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
   
   return false;
 }
+

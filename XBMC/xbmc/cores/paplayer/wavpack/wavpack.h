@@ -26,7 +26,7 @@
 #endif
 #endif
 
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_LINUX)
 #define WAVPACKAPI
 #endif
 
@@ -363,7 +363,7 @@ typedef struct {
     int (*can_seek)(void *id);
 } stream_reader;
 
-typedef int (*blockout)(void *id, void *data, int32_t bcount);
+typedef int (*blockout_f)(void *id, void *data, int32_t bcount);
 
 typedef struct {
     WavpackConfig config;
@@ -375,7 +375,7 @@ typedef struct {
     uchar *wrapper_data;
     uint32_t wrapper_bytes;
 
-    blockout blockout;
+    blockout_f blockout;
     void *wv_out, *wvc_out;
 
     stream_reader *reader;
@@ -655,7 +655,7 @@ WAVPACKAPI int WavpackGetTagItem (WavpackContext *wpc, const char *item, char *v
 WAVPACKAPI int WavpackAppendTagItem (WavpackContext *wpc, const char *item, const char *value);
 WAVPACKAPI int WavpackWriteTag (WavpackContext *wpc);
 
-WAVPACKAPI WavpackContext *WavpackOpenFileOutput (blockout blockout, void *wv_id, void *wvc_id);
+WAVPACKAPI WavpackContext *WavpackOpenFileOutput (blockout_f blockout, void *wv_id, void *wvc_id);
 WAVPACKAPI int WavpackSetConfiguration (WavpackContext *wpc, WavpackConfig *config, uint32_t total_samples);
 WAVPACKAPI int WavpackAddWrapper (WavpackContext *wpc, void *data, uint32_t bcount);
 WAVPACKAPI int WavpackStoreMD5Sum (WavpackContext *wpc, uchar data [16]);

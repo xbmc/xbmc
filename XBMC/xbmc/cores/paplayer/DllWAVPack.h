@@ -32,7 +32,7 @@ public:
   virtual int WavpackGetTagItem (WavpackContext *wpc, const char *item, char *value, int size)=0;
   virtual int WavpackAppendTagItem (WavpackContext *wpc, const char *item, const char *value)=0;
   virtual int WavpackWriteTag (WavpackContext *wpc)=0;
-  virtual WavpackContext *WavpackOpenFileOutput (blockout blockout, void *wv_id, void *wvc_id)=0;
+  virtual WavpackContext *WavpackOpenFileOutput (blockout_f blockout, void *wv_id, void *wvc_id)=0;
   virtual int WavpackSetConfiguration (WavpackContext *wpc, WavpackConfig *config, unsigned int total_samples)=0;
   virtual int WavpackAddWrapper (WavpackContext *wpc, void *data, unsigned int bcount)=0;
   virtual int WavpackStoreMD5Sum (WavpackContext *wpc, unsigned char data[16])=0;
@@ -73,7 +73,7 @@ class DllWavPack : public DllDynamic, DllWavPackInterface
   DEFINE_METHOD4(int, WavpackGetTagItem, (WavpackContext *p1, const char *p2, char *p3, int p4))
   DEFINE_METHOD3(int, WavpackAppendTagItem, (WavpackContext *p1, const char *p2, const char *p3))
   DEFINE_METHOD1(int, WavpackWriteTag, (WavpackContext *p1))
-  DEFINE_METHOD3(WavpackContext*, WavpackOpenFileOutput, (blockout p1, void *p2, void *p3))
+  DEFINE_METHOD3(WavpackContext*, WavpackOpenFileOutput, (blockout_f p1, void *p2, void *p3))
   DEFINE_METHOD3(int, WavpackSetConfiguration, (WavpackContext *p1, WavpackConfig *p2, unsigned int p3))
   DEFINE_METHOD3(int, WavpackAddWrapper, (WavpackContext *p1, void *p2, unsigned int p3))
   DEFINE_METHOD2(int, WavpackStoreMD5Sum, (WavpackContext *p1, unsigned char p2[16]))

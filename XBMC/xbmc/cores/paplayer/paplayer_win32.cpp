@@ -1,10 +1,10 @@
 #include "../../stdafx.h"
-#include "PAPlayer.h"
+#include "paplayer.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"
 #include "AudioContext.h"
-#include "../../filesystem/fileshoutcast.h"
-#include "../../application.h"
+#include "../../FileSystem/FileShoutcast.h"
+#include "../../Application.h"
 #ifdef HAS_KARAOKE
 #include "../../CdgParser.h"
 #endif
