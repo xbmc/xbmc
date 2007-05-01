@@ -2,7 +2,7 @@
 #include "FileMusicDatabase.h"
 #include "../MusicDatabase.h"
 #include <sys/stat.h>
-#include "../util.h"
+#include "../Util.h"
 
 
 using namespace XFILE;

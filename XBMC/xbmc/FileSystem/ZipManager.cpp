@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "ZipManager.h"
-#include "../util.h"
+#include "../Util.h"
 
 using namespace XFILE;
 
@@ -52,8 +52,16 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   {
     std::map<CStdString,__int64>::iterator it2=mZipDate.find(strFile);
     if (mFile.Stat(strFile,&m_StatData))
+#ifndef _LINUX
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
+#else
+      CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData._st_mtime);
+#endif
+#ifndef _LINUX
       if (m_StatData.st_mtime == it2->second)
+#else
+      if (m_StatData._st_mtime == it2->second)
+#endif
       {
         items = it->second;
         return true;
@@ -80,7 +88,11 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   // push date for update detection
   CFile fileStat;
   fileStat.Stat(strFile,&m_StatData);
+#ifndef _LINUX
   mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData.st_mtime));
+#else
+  mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData._st_mtime));
+#endif
   
   // now list'em
   mFile.Seek(0,SEEK_SET);
@@ -220,3 +232,4 @@ void CZipManager::release(const CStdString& strPath)
     mZipDate.erase(it2);
   }
 }
+

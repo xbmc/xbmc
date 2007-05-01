@@ -1,9 +1,14 @@
 #include "../stdafx.h"
-#include "cdiosupport.h"
+#include "cdioSupport.h"
+#ifndef _LINUX
 #include "../lib/libcdio/cdio.h"
 #include "../lib/libcdio/logging.h"
-#include "../lib/libcdio/util.h"
-
+#include "../lib/libcdio/Util.h"
+#else
+#include <cdio/cdio.h>
+#include <cdio/logging.h>
+#include <cdio/util.h>
+#endif
 
 using namespace MEDIA_DETECT;
 
@@ -787,7 +792,11 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 // Return the number of seconds (discarding frame portion) of an MSF
 UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 {
+#ifndef _LINUX
   return from_bcd8(msf->m)*60 + from_bcd8(msf->s);
+#else
+  return cdio_from_bcd8(msf->m)*60 + cdio_from_bcd8(msf->s);
+#endif
 }
 
 

@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include "idirectory.h"
-#include "virtualpathdirectory.h"
+#include "IDirectory.h"
+#include "VirtualPathDirectory.h"
 #include "NptStrings.h"
 
 using namespace DIRECTORY;

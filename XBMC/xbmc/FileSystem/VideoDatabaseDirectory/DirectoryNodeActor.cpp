@@ -36,3 +36,4 @@ bool CDirectoryNodeActor::GetContent(CFileItemList& items)
 
   return bSuccess;
 }
+

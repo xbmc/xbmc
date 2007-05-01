@@ -22,7 +22,7 @@
 
 
 #include "../stdafx.h"
-#include "../util.h"
+#include "../Util.h"
 #include "UPnPDirectory.h"
 #include "../UPnP.h"
 #include "Platinum.h"

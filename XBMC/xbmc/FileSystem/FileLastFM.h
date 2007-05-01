@@ -2,8 +2,8 @@
 
 #include "IFile.h"
 #include "FileCurl.h"
-#include "ringbuffer.h"
-#include "..\cores\paplayer\RingHoldBuffer.h"
+#include "RingBuffer.h"
+#include "../cores/paplayer/RingHoldBuffer.h"
 
 namespace XFILE
 {

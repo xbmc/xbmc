@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "ifile.h"
+#include "IFile.h"
 using namespace XFILE;
 
 namespace XFILE

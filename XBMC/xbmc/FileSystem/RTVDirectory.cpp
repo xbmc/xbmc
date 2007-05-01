@@ -4,7 +4,7 @@
 
 #include "../stdafx.h"
 #include "RTVDirectory.h"
-#include "../util.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 

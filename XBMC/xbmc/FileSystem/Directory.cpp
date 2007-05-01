@@ -1,10 +1,12 @@
 
 #include "../stdafx.h"
-#include "directory.h"
-#include "factorydirectory.h"
-#include "factoryfiledirectory.h"
-#include "../utils/win32exception.h"
-#include "../util.h"
+#include "Directory.h"
+#include "FactoryDirectory.h"
+#include "FactoryFileDirectory.h"
+#ifndef _LINUX
+#include "../utils/Win32Exception.h"
+#endif
+#include "../Util.h"
 
 using namespace DIRECTORY;
 
@@ -56,15 +58,17 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     }
     return bSuccess;
   }
+#ifndef _LINUX
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...) 
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error getting %s", strPath.c_str());    
+  CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());    
   return false;
 }
 
@@ -77,15 +81,17 @@ bool CDirectory::Create(const CStdString& strPath)
       if(pDirectory->Create(strPath.c_str()))
         return true;
   }
+#ifndef _LINUX
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error creating %s", strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error creating %s", __FUNCTION__, strPath.c_str());
   return false;
 }
 
@@ -97,15 +103,17 @@ bool CDirectory::Exists(const CStdString& strPath)
     if (pDirectory.get())
       return pDirectory->Exists(strPath.c_str());
   }
+#ifndef _LINUX
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error checking for %s", strPath.c_str());    
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());    
   return false;
 }
 
@@ -118,14 +126,16 @@ bool CDirectory::Remove(const CStdString& strPath)
       if(pDirectory->Remove(strPath.c_str()))
         return true;
   }
+#ifndef _LINUX
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error removing %s", strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error removing %s", __FUNCTION__, strPath.c_str());
   return false;
 }

@@ -19,3 +19,4 @@ namespace XFILE
     protected:
   };
 };
+

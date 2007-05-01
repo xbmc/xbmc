@@ -10,10 +10,10 @@
 */
 
 #include "../stdafx.h"
-#include "smbdirectory.h"
-#include "../util.h"
-#include "directorycache.h"
-#include "localizeStrings.h"
+#include "SMBDirectory.h"
+#include "../Util.h"
+#include "DirectoryCache.h"
+#include "LocalizeStrings.h"
 #include "../GUIPassword.h"
 #include "../lib/libsmb/xbLibSmb.h"
 

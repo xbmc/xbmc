@@ -1,6 +1,6 @@
 #include "../../stdafx.h"
 #include "DirectoryNode.h"
-#include "../../util.h"
+#include "../../Util.h"
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
@@ -11,7 +11,7 @@
 #include "DirectoryNodeActor.h"
 #include "DirectoryNodeDirector.h"
 #include "DirectoryNodeMoviesOverview.h"
-#include "DirectoryNodeTvShowsOverview.H"
+#include "DirectoryNodeTvShowsOverview.h"
 #include "DirectoryNodeSeasons.h"
 #include "DirectoryNodeEpisodes.h"
 

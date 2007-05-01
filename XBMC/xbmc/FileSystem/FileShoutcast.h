@@ -11,6 +11,10 @@
 
 #include "IFile.h"
 
+#ifdef _LINUX
+#include <errno.h>
+#endif
+
 namespace XFILE
 {
 typedef struct FileStateSt

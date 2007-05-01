@@ -8,7 +8,7 @@
 #include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
-#include "FileSMB.h"
+#include "FileSmb.h"
 #include "FileXBMSP.h"
 #include "FileRTV.h"
 #include "FileSndtrk.h"
@@ -19,7 +19,7 @@
 #include "FileZip.h"
 #include "FileRar.h"
 #include "FileMusicDatabase.h"
-#include "../xbox/network.h"
+#include "../xbox/Network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "idirectory.h"
+#include "IDirectory.h"
 
 class CURL;
 class TiXmlElement;
@@ -17,3 +17,4 @@ namespace DIRECTORY
       bool UpdateProgress(CGUIDialogProgress* dlgProgress, CStdString strLn1, CStdString strLn2, int iPercent, bool bCLose);
   };
 }
+

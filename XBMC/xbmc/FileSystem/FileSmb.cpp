@@ -7,9 +7,9 @@
 #include "../GUIPassword.h"
 #include "SMBDirectory.h"
 #include "../lib/libsmb/xbLibSmb.h"
-#include "../util.h"
-#include "../xbox/network.h"
-#include "../utils/win32exception.h"
+#include "../Util.h"
+#include "../xbox/Network.h"
+#include "../utils/Win32Exception.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
