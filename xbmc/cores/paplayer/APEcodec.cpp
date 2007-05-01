@@ -1,5 +1,5 @@
 #include "../../stdafx.h"
-#include "APECodec.h"
+#include "APEcodec.h"
 #include "../../APEv2Tag.h"
 
 
@@ -91,3 +91,4 @@ bool APECodec::CanInit()
 {
   return m_dll.CanLoad();
 }
+

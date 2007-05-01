@@ -30,7 +30,7 @@ bool CDummyVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &op
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown on open");
+    CLog::Log(LOGERROR,"%s - Exception thrown on open", __FUNCTION__);
     return false;
   }
 }
@@ -61,13 +61,17 @@ void CDummyVideoPlayer::Process()
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())
     {
+#ifndef HAS_SDL	
       g_graphicsContext.Get3DDevice()->BeginScene();
+#endif
       g_graphicsContext.Clear();
       g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
       Render();
       if (g_application.NeedRenderFullScreen())
         g_application.RenderFullScreen();
+#ifndef HAS_SDL     
       g_graphicsContext.Get3DDevice()->EndScene();
+#endif      
     }
     g_graphicsContext.Unlock();
   }
@@ -236,6 +240,7 @@ bool CDummyVideoPlayer::SetPlayerState(CStdString state)
 void CDummyVideoPlayer::Render()
 {
   RECT vw = g_graphicsContext.GetViewWindow();
+#ifndef HAS_SDL
   D3DVIEWPORT8 newviewport;
   D3DVIEWPORT8 oldviewport;
   g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
@@ -246,6 +251,9 @@ void CDummyVideoPlayer::Render()
   newviewport.Width = vw.right - vw.left;
   newviewport.Height = vw.bottom - vw.top;
   g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+#else
+  g_graphicsContext.SetViewPort(vw.left, vw.top, vw.right - vw.left, vw.bottom - vw.top);
+#endif 
   CGUIFont *font = g_fontManager.GetFont("font13");
   if (font)
   {
@@ -260,5 +268,9 @@ void CDummyVideoPlayer::Render()
     currentTime.Format(L"Video goes here %02i:%02i:%03i", mins, secs, ms);
     font->DrawText(posX, posY, 0xffffffff, 0xff000000, currentTime.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
+#ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+#else
+  g_graphicsContext.RestoreViewPort();
+#endif
 }

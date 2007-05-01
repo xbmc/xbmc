@@ -2,7 +2,7 @@
 #define MODULE_CODEC_H_
 
 #include "ICodec.h"
-#include "Dlldumb.h"
+#include "DllDumb.h"
 
 class ModuleCodec : public ICodec
 {
@@ -28,3 +28,4 @@ private:
 };
 
 #endif
+

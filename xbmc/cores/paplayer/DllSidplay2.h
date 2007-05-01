@@ -33,3 +33,4 @@ class DllSidplay2 : public DllDynamic, DllSidplay2Interface
     RESOLVE_METHOD_RENAME(DLL_SetSpeed, SetSpeed)
   END_METHOD_RESOLVE()
 };
+

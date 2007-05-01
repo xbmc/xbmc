@@ -74,7 +74,7 @@ Returns 1 on success, 0 on failure.
 state is always set to a valid pointer and must be closed using ShnPlay_Close;
 the given stream must be closed manually after closing the state.
 */
-SHNPLAY_API int ShnPlay_OpenStream(ShnPlay ** pstate, ShnPlayStream * stream, unsigned int flags);
+ int ShnPlay_OpenStream(ShnPlay ** pstate, ShnPlayStream * stream, unsigned int flags);
 
 /**
 Closes shorten file.

@@ -2,7 +2,7 @@
 #include "ICodec.h"
 #include "../../MusicInfoTagLoaderMP3.h"
 #include "FileReader.h"
-#include "Dllmadcodec.h"
+#include "DllMadCodec.h"
 
 class MP3Codec : public ICodec
 {

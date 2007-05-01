@@ -36,3 +36,4 @@ class DllTimidity : public DllDynamic, DllTimidityInterface
     RESOLVE_METHOD_RENAME(DLL_GetLength, GetLength)
   END_METHOD_RESOLVE()
 };
+

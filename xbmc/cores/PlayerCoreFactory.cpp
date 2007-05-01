@@ -10,9 +10,9 @@
 #ifdef HAS_MODPLAYER
 #include "modplayer.h"
 #endif
-#include "paplayer\paplayer.h"
-#include "paplayer/wmacodec.h"
-#include "..\GUIDialogContextMenu.h"
+#include "paplayer/paplayer.h"
+#include "paplayer/WMACodec.h"
+#include "../GUIDialogContextMenu.h"
 #include "../XBAudioConfig.h"
 #include "../FileSystem/FileCurl.h"
 #include "../utils/HttpHeader.h"

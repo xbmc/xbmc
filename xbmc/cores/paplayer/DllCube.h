@@ -36,3 +36,4 @@ class DllCube : public DllDynamic, DllCubeInterface
     RESOLVE_METHOD_RENAME(DLL_GetLength, GetLength)
   END_METHOD_RESOLVE()
 };
+

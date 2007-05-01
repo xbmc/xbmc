@@ -33,3 +33,4 @@ class DllStSound : public DllDynamic, DllStSoundInterface
     RESOLVE_METHOD_RENAME(DLL_GetLength, GetLength)
   END_METHOD_RESOLVE()
 };
+

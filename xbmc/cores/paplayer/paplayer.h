@@ -1,6 +1,6 @@
 #pragma once
-#include "../iplayer.h"
-#include "../../utils/thread.h"
+#include "../IPlayer.h"
+#include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
 
@@ -109,7 +109,7 @@ private:
   void SetupDirectSound(int channels);
 
   // Our directsoundstream
-  friend static void CALLBACK StaticStreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus );
+  friend void CALLBACK StaticStreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus );
   bool AddPacketsToStream(int stream, CAudioDecoder &dec);
   bool FindFreePacket(int stream, DWORD *pdwPacket );     // Looks for a free packet
   void FreeStream(int stream);
@@ -123,10 +123,12 @@ private:
   void UpdateCacheLevel();
 
   int m_currentStream;
+#ifdef HAS_AUDIO
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
-#else
+#else !defined(_LINUX)
   LPDIRECTSOUNDBUFFER m_pStream[2];
+#endif
 #endif
   AudioPacket         m_packet[2][PACKET_COUNT];
 

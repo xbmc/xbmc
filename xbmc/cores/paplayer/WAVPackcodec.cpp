@@ -1,5 +1,5 @@
 #include "../../stdafx.h"
-#include "WAVPackCodec.h"
+#include "WAVPackcodec.h"
 
 
 WAVPackCodec::WAVPackCodec()
