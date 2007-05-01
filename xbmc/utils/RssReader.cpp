@@ -4,10 +4,10 @@
 
 #include "../stdafx.h"
 #include "RssReader.h"
-#include "Http.h"
+#include "HTTP.h"
 #include "../utils/HTMLUtil.h"
-#include "../util.h"
-#include "../xbox/network.h"
+#include "../Util.h"
+#include "../xbox/Network.h"
 
 using namespace XFILE;
 
@@ -289,7 +289,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
 		iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
 
-		if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == -1)
+		if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == -1)
 		{
 			// For some reason it failed (maybe wrong charset?). Nothing to do but
 			// return the original..

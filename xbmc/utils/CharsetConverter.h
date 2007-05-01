@@ -3,8 +3,15 @@
 
 #pragma once
 
+#ifndef _LINUX
 #include "../lib/libiconv/iconv.h"
 #include "../lib/libfribidi/fribidi.h"
+#else
+#include <iconv.h>
+#include <fribidi/fribidi.h>
+#include <fribidi/fribidi_char_sets.h>
+#endif
+
 #include <vector>
 
 class CCharsetConverter
@@ -44,7 +51,7 @@ public:
   std::vector<CStdString> getCharsetLabels();
   CStdString& getCharsetLabelByName(const CStdString& charsetName);
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
-  boolean isBidiCharset(const CStdString& charset);
+  bool isBidiCharset(const CStdString& charset);
 
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR);

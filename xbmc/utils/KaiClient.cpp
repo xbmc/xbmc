@@ -205,7 +205,7 @@ void CKaiClient::RemoveObserver()
 
 void CKaiClient::EnterVector(CStdString& aVector, CStdString& aPassword)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strVectorMessage;
     strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;%s;", aVector, aPassword);
@@ -216,7 +216,7 @@ void CKaiClient::EnterVector(CStdString& aVector, CStdString& aPassword)
 
 void CKaiClient::JoinTextChat()
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strVectorMessage;
     strVectorMessage.Format("KAI_CLIENT_CHATMODE;%s;", client_vector);
@@ -226,7 +226,7 @@ void CKaiClient::JoinTextChat()
 
 void CKaiClient::Chat(CStdString& aMessage)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strChatMessage;
     strChatMessage.Format("KAI_CLIENT_CHAT;%s;", aMessage);
@@ -236,7 +236,7 @@ void CKaiClient::Chat(CStdString& aMessage)
 
 void CKaiClient::AddContact(CStdString& aContact)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strVectorMessage;
     strVectorMessage.Format("KAI_CLIENT_ADD_CONTACT;%s;", aContact);
@@ -246,7 +246,7 @@ void CKaiClient::AddContact(CStdString& aContact)
 
 void CKaiClient::RemoveContact(CStdString& aContact)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strVectorMessage;
     strVectorMessage.Format("KAI_CLIENT_REMOVE_CONTACT;%s;", aContact);
@@ -256,7 +256,7 @@ void CKaiClient::RemoveContact(CStdString& aContact)
 
 void CKaiClient::Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aMessage)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strInvitationMessage;
     strInvitationMessage.Format("KAI_CLIENT_INVITE;%s;%s;%s;", aPlayer, aVector, aMessage);
@@ -270,7 +270,7 @@ void CKaiClient::Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aM
 
 void CKaiClient::Host()
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     SetHostingStatus(TRUE);
   }
@@ -278,7 +278,7 @@ void CKaiClient::Host()
 
 void CKaiClient::Host(CStdString& aPassword, CStdString& aDescription, int aPlayerLimit)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strHostMessage;
     strHostMessage.Format("KAI_CLIENT_CREATE_VECTOR;%d;%s;%s;", aPlayerLimit, aDescription, aPassword);
@@ -287,7 +287,7 @@ void CKaiClient::Host(CStdString& aPassword, CStdString& aDescription, int aPlay
 }
 void CKaiClient::SetHostingStatus(BOOL bIsHosting)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strStatusMessage;
     strStatusMessage.Format("KAI_CLIENT_ARENA_STATUS;%d;%d;", bIsHosting ? 2 : 1, 1);
@@ -297,7 +297,7 @@ void CKaiClient::SetHostingStatus(BOOL bIsHosting)
 
 void CKaiClient::GetSubVectors(CStdString& aVector)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strGetSubArenasMessage;
     strGetSubArenasMessage.Format("KAI_CLIENT_GET_VECTORS;%s;", aVector);
@@ -307,7 +307,7 @@ void CKaiClient::GetSubVectors(CStdString& aVector)
 
 void CKaiClient::ExitVector()
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     INT vectorDelimiter = client_vector.ReverseFind('/');
     if (vectorDelimiter > 0)
@@ -328,17 +328,17 @@ CStdString CKaiClient::GetCurrentVector()
 void CKaiClient::Discover()
 {
   CLog::Log(LOGNOTICE, "KAICLIENT: Discovering Kai engine via UDP broadcast." );
-  client_state = State::Discovering;
+  client_state = Discovering;
   CStdString strInitiateDiscoveryMessage = "KAI_CLIENT_DISCOVER;";
   Broadcast(KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
 }
 
 void CKaiClient::Detach()
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strDisconnectionMessage = "KAI_CLIENT_DETACH;";
-    client_state = State::Disconnected;
+    client_state = Disconnected;
     Send(server_addr, strDisconnectionMessage);
   }
 }
@@ -376,7 +376,7 @@ void CKaiClient::Attach(SOCKADDR_IN& aAddress)
 
   CLog::Log(LOGNOTICE, "KAICLIENT: Attach to Kai engine host at %s", szIP);
 
-  client_state = State::Attaching;
+  client_state = Attaching;
   CStdString strAttachMessage = "KAI_CLIENT_ATTACH;";
   server_addr = aAddress;
   Send(server_addr, strAttachMessage);
@@ -384,36 +384,36 @@ void CKaiClient::Attach(SOCKADDR_IN& aAddress)
 
 void CKaiClient::TakeOver()
 {
-  client_state = State::Attaching;
+  client_state = Attaching;
   CStdString strTakeOverMessage = "KAI_CLIENT_TAKEOVER;";
   Send(server_addr, strTakeOverMessage);
 }
 
 void CKaiClient::Query()
 {
-  client_state = State::Querying;
+  client_state = Querying;
   CStdString strQueryMessage = "KAI_CLIENT_GETSTATE;";
   Send(server_addr, strQueryMessage);
 }
 
 void CKaiClient::Login(LPCSTR aUsername, LPCSTR aPassword)
 {
-  client_state = State::LoggingIn;
+  client_state = LoggingIn;
   CStdString strLoginMessage;
   strLoginMessage.Format("KAI_CLIENT_LOGIN;%s;%s;", aUsername, aPassword);
   Send(server_addr, strLoginMessage);
 }
 bool CKaiClient::IsEngineConnected()
 {
-  return client_state == State::Authenticated;
+  return client_state == Authenticated;
 }
 bool CKaiClient::IsNetworkReachable()
 {
-  return (m_bReachable && client_state == State::Authenticated);
+  return (m_bReachable && client_state == Authenticated);
 }
 void CKaiClient::QueryUserProfile(CStdString& aPlayerName)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strQueryMessage;
     strQueryMessage.Format("KAI_CLIENT_GET_PROFILE;%s;", aPlayerName.c_str());
@@ -423,7 +423,7 @@ void CKaiClient::QueryUserProfile(CStdString& aPlayerName)
 
 void CKaiClient::QueryAvatar(CStdString& aPlayerName)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strQueryMessage;
     strQueryMessage.Format("KAI_CLIENT_AVATAR;%s;", aPlayerName.c_str());
@@ -432,7 +432,7 @@ void CKaiClient::QueryAvatar(CStdString& aPlayerName)
 }
 void CKaiClient::QueryClientMetrics()
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strQueryMessage = "KAI_CLIENT_GET_METRICS;";
     Send(server_addr, strQueryMessage);
@@ -440,7 +440,7 @@ void CKaiClient::QueryClientMetrics()
 }
 void CKaiClient::SetBearerCaps(BOOL bIsHeadsetPresent)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strStatusMessage;
     strStatusMessage.Format("KAI_CLIENT_CAPS;01%s3;", bIsHeadsetPresent ? "2" : "" );
@@ -450,7 +450,7 @@ void CKaiClient::SetBearerCaps(BOOL bIsHeadsetPresent)
 
 void CKaiClient::EnableContactVoice(CStdString& aContactName, BOOL bEnable)
 {
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString strVoiceMessage;
     strVoiceMessage.Format("KAI_CLIENT_SPEEX_%s;%s;", bEnable ? "ON" : "OFF",
@@ -462,7 +462,7 @@ void CKaiClient::EnableContactVoice(CStdString& aContactName, BOOL bEnable)
 void CKaiClient::QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LPBYTE pMessage, DWORD dwMessageLength)
 {
 #ifdef HAS_KAI_VOICE
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     CStdString header;
     header.Format("KAI_CLIENT_SPEEX;%s;", aContactName.c_str());
@@ -490,7 +490,7 @@ void CKaiClient::QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LP
 void CKaiClient::SendVoiceDataToEngine()
 {
 #ifdef HAS_KAI_VOICE
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     if (!m_pEgress->IsEmpty())
     {
@@ -544,7 +544,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
   // now depending on state...
   switch (client_state)
   {
-  case State::Discovering:
+  case Discovering:
     if (strcmp(szMessage, "KAI_CLIENT_ENGINE_HERE") == 0)
     {
       // if no server setting is stored, store engine address provided in response to discover message.
@@ -564,7 +564,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
     }
     break;
 
-  case State::Attaching:
+  case Attaching:
     if (strcmp(szMessage, "KAI_CLIENT_ATTACH") == 0)
     {
       Query();
@@ -575,10 +575,10 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
     }
     break;
 
-  case State::Querying:
+  case Querying:
     if (strcmp(szMessage, "KAI_CLIENT_LOGGED_IN") == 0)
     {
-      client_state = State::Authenticated;
+      client_state = Authenticated;
       m_dwSettlingTimer = timeGetTime();
       m_dwReachableTimer = timeGetTime();
     }
@@ -608,10 +608,10 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
     }
     break;
 
-  case State::LoggingIn:
+  case LoggingIn:
     if (strcmp(szMessage, "KAI_CLIENT_USER_DATA") == 0)
     {
-      client_state = State::Authenticated;
+      client_state = Authenticated;
       m_dwSettlingTimer = timeGetTime();
       m_dwReachableTimer = timeGetTime();
 
@@ -631,7 +631,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
     }
     break;
 
-  case State::Authenticated:
+  case Authenticated:
 
     if ((strcmp(szMessage, "KAI_CLIENT_ADD_CONTACT") == 0) ||
         (strcmp(szMessage, "KAI_CLIENT_CONTACT_OFFLINE") == 0))
@@ -1013,7 +1013,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
     }
     else if (strcmp(szMessage, "KAI_CLIENT_DETACH") == 0)
     {
-      client_state = State::Disconnected;
+      client_state = Disconnected;
       if (observer != NULL)
       {
         observer->OnEngineDetached();
@@ -1024,7 +1024,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
   }
 
   // do infrequent work
-  if (client_state == State::Authenticated)
+  if (client_state == Authenticated)
   {
     if (!m_bContactsSettling)
     {
@@ -1052,7 +1052,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 void CKaiClient::DoWork()
 {
   // generate our own timed events
-  if (observer != NULL && client_state == State::Authenticated)
+  if (observer != NULL && client_state == Authenticated)
   {
     DWORD dwCurrentTime = timeGetTime();
 

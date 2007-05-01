@@ -4,7 +4,7 @@
 
 #include "../stdafx.h"
 #include "IMDB.h"
-#include "../util.h"
+#include "../Util.h"
 #include "HTMLUtil.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
@@ -306,19 +306,19 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CVideoInfoTag& movieDetails,
 
   bool ret = ParseDetails(doc, movieDetails);
   TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* url = pRoot->FirstChildElement("url");
-  while (url && url->FirstChild())
+  TiXmlElement* xurl = pRoot->FirstChildElement("url");
+  while (xurl && xurl->FirstChild())
   {
-    const char* szFunction = url->Attribute("function");
+    const char* szFunction = xurl->Attribute("function");
     if (szFunction)
     {
       CIMDBUrl url2;
       
-      CScraperUrl scrURL(url);
+      CScraperUrl scrURL(xurl);
       url2.m_scrURL.push_back(scrURL);
       InternalGetDetails(url2,movieDetails,szFunction);
     }
-    url = url->NextSiblingElement("url");
+    xurl = xurl->NextSiblingElement("url");
   }
   TiXmlBase::SetCondenseWhiteSpace(true);
   

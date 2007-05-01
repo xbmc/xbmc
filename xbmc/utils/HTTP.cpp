@@ -5,11 +5,10 @@
 
 #include "../stdafx.h"
 #include "HTTP.h"
-#include "../dnsnamecache.h"
+#include "../DNSNameCache.h"
 
-#include "../util.h"
-#include "../xbox/network.h"
-
+#include "../Util.h"
+#include "../xbox/Network.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -76,7 +75,9 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
     , m_socket(INVALID_SOCKET)
 {
   m_strCookie = "";
+#ifndef _LINUX
   hEvent = WSA_INVALID_EVENT;
+#endif
   m_RecvBytes = 0;
   m_RecvBuffer = 0;
   m_redirectedURL = "";
@@ -97,7 +98,9 @@ CHTTP::CHTTP()
     m_strProxyPassword = g_guiSettings.GetString("network.httpproxypassword").c_str();
   }
   m_strCookie = "";
+#ifndef _LINUX
   hEvent = WSA_INVALID_EVENT;
+#endif
   m_RecvBytes = 0;
   m_RecvBuffer = 0;
   m_redirectedURL = "";
@@ -182,7 +185,7 @@ bool CHTTP::ReadData(string& strData)
         if (!Recv( -1))
         {
           strData.clear();
-          CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
+            CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
           Close();
           return false;
         }
@@ -356,7 +359,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
     SetEndOfFile(hFile);
     SetFilePointer(hFile, 0, 0, FILE_BEGIN);
     DWORD n;
-    WriteFile(hFile, strData.data(), strData.size(), &n, 0);
+    WriteFile(hFile, (void*) strData.data(), strData.size(), &n, 0);
   }
   CloseHandle(hFile);
 
@@ -405,8 +408,12 @@ bool CHTTP::Connect()
 #ifdef _XBOX
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 #else
+ 
+#ifndef _LINUX
   WSADATA wsaData;
   WSAStartup(0x0101, &wsaData);
+#endif
+
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 #endif
 
@@ -414,18 +421,21 @@ bool CHTTP::Connect()
   int nTries = 0;
   while (connect((SOCKET)m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR)
   {
-    int e = WSAGetLastError();
-    if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries > 3) // retry up to 3 times on timeout / addr in use
-    {
-      if (e == WSAECANCELLED)
-        CLog::Log(LOGNOTICE, "HTTP: User canceled");
+		int e = WSAGetLastError();
+		if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries > 3) // retry up to 3 times on timeout / addr in use
+		{
+			if (e == WSAECANCELLED)
+			CLog::Log(LOGNOTICE, "HTTP: User canceled");
 
-      Close();
-      return false;
-    }
+			Close();
+			return false;
+		}
     m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)); // new socket
   }
+
+#ifndef _LINUX
   hEvent = WSACreateEvent();
+#endif
   return true;
 }
 
@@ -565,12 +575,17 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, string &strUsern
 bool CHTTP::Send(char* pBuffer, int iLen)
 {
   int iPos = 0;
+#ifndef _LINUX
   WSABUF buf;
   WSAOVERLAPPED ovl;
+#else
+  char *buf = pBuffer;
+#endif
   DWORD n, flags;
 
   while (iLen > 0)
   {
+#ifndef _LINUX
     buf.buf = &pBuffer[iPos];
     buf.len = iLen;
     ovl.hEvent = hEvent;
@@ -602,6 +617,13 @@ bool CHTTP::Send(char* pBuffer, int iLen)
       else
         return false;
     }
+#else
+    n = send(m_socket, buf, iLen, 0);
+	if (n > 0)
+		buf += n;
+	else 
+		return false;
+#endif
     iPos += n;
     iLen -= n;
   }
@@ -611,8 +633,10 @@ bool CHTTP::Send(char* pBuffer, int iLen)
 //*********************************************************************************************
 bool CHTTP::Recv(int iLen)
 {
+#ifndef _LINUX
   WSABUF buf;
   WSAOVERLAPPED ovl;
+#endif
   DWORD n, flags;
   bool bUnknown = (iLen < 0);
 
@@ -624,6 +648,7 @@ bool CHTTP::Recv(int iLen)
 
   while (iLen > 0)
   {
+#ifndef _LINUX
     buf.buf = &m_RecvBuffer[m_RecvBytes];
     buf.len = iLen;
     flags = 0;
@@ -660,13 +685,23 @@ bool CHTTP::Recv(int iLen)
         return false;
       }
     }
-    if (!n)
+#else
+    char *buf = &m_RecvBuffer[m_RecvBytes];
+    n = recv(m_socket, buf, iLen, 0);
+#endif
+
+    if (n == 0)
     {
+#ifndef _LINUX
       shutdown(m_socket, SD_BOTH);
+#else      
+      shutdown(m_socket, SHUT_RDWR);
+#endif
       m_RecvBuffer[m_RecvBytes] = 0;
       WSASetLastError(0);
       return bUnknown; // graceful close
     }
+
     m_RecvBytes += n;
     iLen -= n;
 
@@ -676,7 +711,9 @@ bool CHTTP::Recv(int iLen)
       return true; // got some data, don't get any more
     }
   }
+
   m_RecvBuffer[m_RecvBytes] = 0;
+
   return true;
 }
 
@@ -717,7 +754,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   }
 
   // send request...
-  char* szHTTPHEADER = (char*)_alloca(350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
+  char szHTTPHEADER[350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0)];
   if (stricmp(verb, "POST")==0)
   {
     strcpy(szHTTPHEADER, "Content-Type: application/x-www-form-urlencoded\r\n");
@@ -759,15 +796,13 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   if( m_strUsername.size())
     strcat(szHTTPHEADER, ConstructAuthorization("Authorization", m_strUsername, m_strPassword).c_str());
 
-  char* szGet;
+  char szGet[strlen(szHTTPHEADER) + strURL.size() + 20];
   if (m_strProxyServer.size())
   {
-    szGet = (char*)_alloca(strlen(szHTTPHEADER) + strURL.size() + 20);
     sprintf(szGet, "%s %s HTTP/1.1\r\n%s\r\n", verb, strURL.c_str(), szHTTPHEADER);
   }
   else
   {
-    szGet = (char*)_alloca(strlen(szHTTPHEADER) + strFile.size() + 20);
     sprintf(szGet, "%s %s HTTP/1.1\r\n%s\r\n", verb, strFile.c_str(), szHTTPHEADER);
   }
 
@@ -1004,14 +1039,20 @@ void CHTTP::ParseHeader(string::size_type start, string::size_type colon, string
 void CHTTP::Close()
 {
   int e = WSAGetLastError(); // make sure it's preserved
+
   m_socket.reset();
+
+#ifndef _LINUX
   if (hEvent != WSA_INVALID_EVENT)
     WSACloseEvent(hEvent);
   hEvent = WSA_INVALID_EVENT;
+#endif
+
   m_RecvBytes = 0;
   if (m_RecvBuffer)
     delete [] m_RecvBuffer;
   m_RecvBuffer = 0;
+
   WSASetLastError(e);
 }
 
@@ -1029,7 +1070,7 @@ CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdStrin
 {
   //Basic authentication
   CStdString buff = username + ":" + password;
-  char *szEncode = (char*)_alloca(buff.GetLength()*2); 
+  char szEncode[buff.GetLength()*2]; 
   
   int len = base64_encode(buff.c_str(), buff.GetLength(), szEncode, buff.GetLength()*2);
   if( len < 0 )
@@ -1039,6 +1080,6 @@ CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdStrin
   }
   szEncode[len] = '\0';
   CStdString ret;
-  ret.Format("%s: Basic %s\r\n", auth.c_str(), szEncode);
+  ret.Format("%s: Basic %s\r\n", auth.c_str(), &szEncode[0]);
   return ret;
 }

@@ -7,12 +7,12 @@
 #define GUILIB_GUIInfoManager_H
 #pragma once
 
-#include "../MusicInfoTag.h"
+#include "../musicInfoTag.h"
 #include "../FileItem.h"
-#include "../videodatabase.h"
+#include "../VideoDatabase.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
-#include "../utils/criticalsection.h"
+#include "../utils/CriticalSection.h"
 
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2

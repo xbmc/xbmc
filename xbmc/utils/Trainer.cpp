@@ -37,6 +37,7 @@ CTrainer::~CTrainer()
 
 bool CTrainer::Load(const CStdString& strPath)
 {
+#ifdef HAS_TRAINER
   CFile file;
   if (!file.Open(strPath))
     return false;
@@ -143,11 +144,13 @@ bool CTrainer::Load(const CStdString& strPath)
   m_iNumOptions = i-1;
  
   m_strPath = strPath;
+#endif
   return true;
 }
 
 void CTrainer::GetTitleIds(unsigned int& title1, unsigned int& title2, unsigned int& title3) const
 {
+#ifdef HAS_TRAINER
   if (m_pData)
   {
     DWORD ID_List;
@@ -158,19 +161,25 @@ void CTrainer::GetTitleIds(unsigned int& title1, unsigned int& title2, unsigned 
     memcpy(&title3,m_pTrainerData+ID_List+8,4);
   }
   else
+#endif
     title1 = title2 = title3 = 0;
 }
 
 void CTrainer::GetOptionLabels(std::vector<CStdString>& vecOptionLabels) const
 {
   vecOptionLabels.clear();
+#ifdef HAS_TRAINER
   for (int i=0;i<int(m_vecText.size())-2;++i)
   {
     vecOptionLabels.push_back(m_vecText[i+2]);
   }
+#endif
 }
 
 void CTrainer::SetOptions(unsigned char* options)
 {
+#ifdef HAS_TRAINER
   memcpy(m_pTrainerData+m_iOptions,options,100);
+#endif
 }
+

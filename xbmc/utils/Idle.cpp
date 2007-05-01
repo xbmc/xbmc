@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 
-#include "idle.h"
+#include "Idle.h"
 
 
 CIdleThread::CIdleThread()
@@ -21,6 +21,7 @@ void CIdleThread::Process()
 {
   while (!m_bStop)
   {
+#ifndef _LINUX	  
     __asm
     {
       hlt
@@ -30,5 +31,13 @@ void CIdleThread::Process()
       hlt
       hlt
     }
+#else
+    __asm__("hlt\n\t"
+            "hlt\n\t"
+            "hlt\n\t"
+            "hlt\n\t"
+            "hlt\n\t"
+            "hlt\n\t");
+#endif
   }
 }

@@ -1,8 +1,8 @@
 #ifndef SCRAPER_PARSER_H
 #define SCRAPER_PARSER_H
 
-#include "../../guilib/tinyxml/tinyxml.h"
-#include "../../guilib/stdstring.h"
+#include "../../guilib/tinyXML/tinyxml.h"
+#include "../../guilib/StdString.h"
 
 class CScraperUrl
 {
@@ -48,3 +48,4 @@ private:
 };
 
 #endif
+

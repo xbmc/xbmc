@@ -9,7 +9,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "event.h"
+#include "system.h"
+#include "PlatformInclude.h"
+#include "Event.h"
 
 class IRunnable
 {
@@ -34,7 +36,7 @@ public:
   DWORD ThreadId() const;
   bool WaitForThreadExit(DWORD dwMilliseconds);
   DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
-  DWORD WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds);
+  DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds);
   void Sleep(DWORD dwMilliseconds);
   bool SetPriority(const int iPriority);
   void SetName( LPCTSTR szThreadName );
@@ -65,7 +67,11 @@ private:
   float m_fLastUsage;
 
 private:
+#ifndef _WIN32
+  static int CThread::staticThread(void* data);
+#else
   static DWORD WINAPI CThread::staticThread(LPVOID* data);
+#endif
 };
 
 #endif // !defined(AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_)

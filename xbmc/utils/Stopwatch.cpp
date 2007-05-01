@@ -1,5 +1,8 @@
 #include "../stdafx.h"
-#include "stopwatch.h"
+#include "Stopwatch.h"
+#ifdef _LINUX
+#include <sys/sysinfo.h>
+#endif
 
 CStopWatch::CStopWatch()
 {
@@ -8,10 +11,14 @@ CStopWatch::CStopWatch()
   m_isRunning        = false;
 
   // Get the timer frequency (ticks per second)
+#ifndef _LINUX
   LARGE_INTEGER timerFreq;
   QueryPerformanceFrequency( &timerFreq );
-
   m_timerPeriod = 1.0f / (float)timerFreq.QuadPart;
+#else
+  m_timerPeriod = 1.0f;
+#endif
+
 }
 
 CStopWatch::~CStopWatch()
@@ -58,6 +65,12 @@ float CStopWatch::GetElapsedMilliseconds() const
 LONGLONG CStopWatch::GetTicks() const
 {
   LARGE_INTEGER currTicks;
+#ifndef _LINUX
   QueryPerformanceCounter( &currTicks );
   return currTicks.QuadPart;
+#else
+  struct sysinfo info;
+  sysinfo(&info);
+  return info.uptime;
+#endif
 }

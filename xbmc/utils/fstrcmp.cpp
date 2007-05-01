@@ -607,7 +607,7 @@ fstrcmp (const char *string1, const char *string2, double minimum)
   fdiag = fdiag_buf + string[1].data_length + 1;
   bdiag = fdiag + fdiag_len;
 
-  max_edits = 1 + (string[0].data_length + string[1].data_length) * (1. - minimum);
+  max_edits = (int) (1 + (string[0].data_length + string[1].data_length) * (1. - minimum));
 
   /* Now do the main comparison algorithm */
   string[0].edit_count = 0;

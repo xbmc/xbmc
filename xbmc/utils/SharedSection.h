@@ -18,6 +18,9 @@ public:
 private:
 
   CRITICAL_SECTION m_critSection;
+  
+  CRITICAL_SECTION m_helperLock;
+
   HANDLE m_eventFree;
   bool m_exclusive;
   long m_sharedLock;
@@ -64,3 +67,4 @@ protected:
   // Ownership flag
   bool m_bIsOwner;
 };
+

@@ -1,5 +1,5 @@
 #pragma once
-#include "stopwatch.h"
+#include "Stopwatch.h"
 #include "Thread.h"
 #include "../stdafx.h"
 #include "../../guilib/LocalizeStrings.h"
@@ -49,3 +49,4 @@ private:
   bool m_bIsRunning;
 };
 extern CAlarmClock g_alarmClock;
+
