@@ -1,7 +1,7 @@
 #pragma once
-#include "idirectory.h"
-#include "videodatabasedirectory/DirectoryNode.h"
-#include "videodatabasedirectory/QueryParams.h"
+#include "IDirectory.h"
+#include "VideoDatabaseDirectory/DirectoryNode.h"
+#include "VideoDatabaseDirectory/QueryParams.h"
 
 namespace DIRECTORY
 {

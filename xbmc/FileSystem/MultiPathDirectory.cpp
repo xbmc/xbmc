@@ -1,9 +1,9 @@
 
 #include "../stdafx.h"
-#include "multipathdirectory.h"
-#include "directory.h"
-#include "../settings.h"
-#include "../util.h"
+#include "MultiPathDirectory.h"
+#include "Directory.h"
+#include "../Settings.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 

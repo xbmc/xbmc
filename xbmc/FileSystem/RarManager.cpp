@@ -1,9 +1,11 @@
 #include "../stdafx.h"
 #include "RarManager.h"
+#ifdef HAS_RAR
 #include "../lib/UnrarXLib/rar.hpp"
-#include "../util.h"
-#include "../utils/singlelock.h"
-#include "../fileitem.h"
+#endif
+#include "../Util.h"
+#include "../utils/SingleLock.h"
+#include "../FileItem.h"
 
 #include <set>
 
@@ -39,6 +41,7 @@ CRarManager::~CRarManager()
 
 bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, const __int64 iSize)
 {
+#ifdef HAS_RAR
 	CSingleLock lock(m_CritSection);
     //If file is listed in the cache, then use listed copy or cleanup before overwriting.
   bool bOverwrite = (bOptions & EXFILE_OVERWRITE) != 0;
@@ -181,13 +184,14 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     CFile::Delete(pFile->m_strCachedPath);
     return false;
   }
-
+#endif
   return true;
 }
 
 // NB: The rar manager expects paths in rars to be terminated with a "\".
 bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask, const CStdString& strPathInRar)
 {
+#ifdef HAS_RAR
   CSingleLock lock(m_CritSection);
 
   ArchiveList_struct* pFileList = NULL;
@@ -282,15 +286,23 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     pFileItem = NULL;
 	}
   return vecpItems.Size() > 0; 
+#else
+  return false;
+#endif
 }
 
 bool CRarManager::ListArchive(const CStdString& strRarPath, ArchiveList_struct* &pArchiveList)
 {
+#ifdef HAS_RAR
  return urarlib_list((char*) strRarPath.c_str(), &pArchiveList, NULL) == 1;
+#else
+ return false;
+#endif
 }
 
 CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar)
 {
+#ifdef HAS_RAR
   std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return NULL;
@@ -298,25 +310,27 @@ CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdStr
   for (std::vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     if (it2->m_strPathInRar == strPathInRar)
       return &(*it2);
-
+#endif
   return NULL;
 }
 
 bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-	std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
+#ifdef HAS_RAR
+  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return false;
 
   for (std::vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     if (it2->m_strPathInRar == strPathInRar)
       return CFile::Exists(it2->m_strCachedPath);
-  
+#endif 
   return false;
 }
 
 bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
+#ifdef HAS_RAR
 	bResult = false;
 	CFileItemList ItemList;
 	
@@ -333,10 +347,14 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
     bResult = true;
 	
   return true;
+#else
+  return false;
+#endif
 }
 
 void CRarManager::ClearCache(bool force)
 {
+#ifdef HAS_RAR
   CSingleLock lock(m_CritSection);
   std::map<CStdString, std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j;
   for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
@@ -352,10 +370,12 @@ void CRarManager::ClearCache(bool force)
   }
  
   m_ExFiles.clear();
+#endif
 }
 
 void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar)
 {
+#ifdef HAS_RAR
   CSingleLock lock(m_CritSection);
   
   std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
@@ -373,15 +393,18 @@ void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString
         break;
       }
   }
+#endif
 }
 
 void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
 {
+#ifdef HAS_RAR
   if (!urarlib_get(const_cast<char*>(strArchive.c_str()), const_cast<char*>(strPath.c_str()),NULL))
   {
     CLog::Log(LOGERROR,"rarmanager::extractarchive error while extracting %s",strArchive.c_str());
     return;
   }
+#endif
  }
 
 __int64 CRarManager::CheckFreeSpace(const CStdString& strDrive)
@@ -395,5 +418,10 @@ __int64 CRarManager::CheckFreeSpace(const CStdString& strDrive)
 
 bool CRarManager::HasMultipleEntries(const CStdString& strPath)
 {
+#ifdef HAS_RAR
   return urarlib_hasmultiple(strPath.c_str());
+#else
+  return false;
+#endif
 }
+

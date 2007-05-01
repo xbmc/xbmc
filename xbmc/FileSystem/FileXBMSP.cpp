@@ -20,7 +20,7 @@
 
 #include "../stdafx.h"
 #include "FileXBMSP.h"
-#include "../util.h"
+#include "../Util.h"
 #include <sys/stat.h>
 
 using namespace DIRECTORY;

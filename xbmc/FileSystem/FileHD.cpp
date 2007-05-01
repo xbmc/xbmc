@@ -51,7 +51,7 @@ CStdString CFileHD::GetLocal(const CURL &url)
     if( path[1] == '/' )
       path[1] = ':';
     else
-      CLog::Log(LOGERROR, __FUNCTION__" - Unsupported url %s", path.c_str());
+      CLog::Log(LOGERROR, "%s - Unsupported url %s", __FUNCTION__, path.c_str());
   }
 
   path.Replace('/', '\\');
@@ -140,7 +140,7 @@ int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
     return 0;
   
   DWORD nBytesWriten;
-  if ( WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
+  if ( WriteFile((HANDLE)m_hFile, (void*) lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
     return nBytesWriten;
   
   return 0;

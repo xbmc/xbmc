@@ -1,5 +1,5 @@
 #pragma once
-#include "idirectory.h"
+#include "IDirectory.h"
 
 namespace DIRECTORY
 {
@@ -12,3 +12,4 @@ namespace DIRECTORY
     private:      
   };
 }
+

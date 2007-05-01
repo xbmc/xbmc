@@ -1,17 +1,17 @@
 
 #include "../stdafx.h"
-#include "factorydirectory.h"
+#include "FactoryDirectory.h"
 #include "HDDirectory.h"
 #include "VirtualPathDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
-#include "factoryfiledirectory.h"
+#include "FactoryFileDirectory.h"
 #include "PlaylistDirectory.h"
 #include "MusicDatabaseDirectory.h"
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
-#include "shoutcastdirectory.h"
-#include "lastfmdirectory.h"
+#include "ShoutcastDirectory.h"
+#include "LastFMDirectory.h"
 #include "FTPDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
@@ -26,9 +26,9 @@
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
-#include "../xbox/network.h"
-#include "zipdirectory.h"
-#include "rardirectory.h"
+#include "../xbox/Network.h"
+#include "ZipDirectory.h"
+#include "RarDirectory.h"
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 
@@ -92,3 +92,4 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
  return NULL;
 }
+

@@ -1,14 +1,22 @@
 #include "../stdafx.h"
 #include "FileCurl.h"
 #include "../Util.h"
-#include <sys/Stat.h>
+#include <sys/stat.h>
+
+#ifdef _LINUX
+#include <errno.h>
+#endif
 
 #include "DllLibCurl.h"
 
 using namespace XFILE;
 using namespace XCURL;
 
+#ifndef _LINUX
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
+#else
+#define dllselect select
+#endif
 
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
@@ -131,7 +139,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Failed to grow overflow buffer");
+      CLog::Log(LOGDEBUG, "%s - Failed to grow overflow buffer", __FUNCTION__);
       return 0;
     }
     memcpy(m_overflowBuffer + m_overflowSize, buffer, amount);
@@ -440,7 +448,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %d, size %d", __FUNCTION__, m_filePos, m_fileSize);
     return false;
   }
 
@@ -538,7 +546,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   // if file is already running, get infor from it
   if( m_opened )
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - Stat called on open file");
+    CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
     buffer->st_size = GetLength();
 		buffer->st_mode = _S_IFREG;
     return 0;
@@ -629,10 +637,14 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads */
   if(!FillBuffer(1))
-    return -1;
+    return (unsigned int) -1;
 
   /* ensure only available data is considered */
+#ifndef _LINUX
   unsigned int want = (unsigned int)min(m_buffer.GetMaxReadSize(), uiBufSize);
+#else
+  unsigned int want = (unsigned int)(m_buffer.GetMaxReadSize() < uiBufSize ? m_buffer.GetMaxReadSize() : uiBufSize);
+#endif
 
   /* xfer data to caller */
   if (m_buffer.ReadBinary((char *)lpBuf, want))
@@ -644,8 +656,8 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
-    return -1;
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %d, size %d", __FUNCTION__, m_filePos, m_fileSize);
+    return (unsigned int) -1;
   }
 
   return 0;
@@ -687,7 +699,11 @@ bool CFileCurl::FillBuffer(unsigned int want)
       {
         // hack for broken curl, that thinks there is data all the time
         // happens especially on ftp during initial connection
+#ifndef _LINUX
         SwitchToThread();
+#else
+	pthread_yield();
+#endif
 
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);
@@ -700,9 +716,11 @@ bool CFileCurl::FillBuffer(unsigned int want)
         long timeout = 0;
         if(CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
-        
+
+#ifndef _LINUX 
         if( maxfd < 0 ) // hack for broken curl
           maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
+#endif
 
         if( maxfd >= 0  )
         {
@@ -727,7 +745,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
       break;
       default:
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - curl multi perform failed with code %d, aborting", result);
+        CLog::Log(LOGERROR, "%s - curl multi perform failed with code %d, aborting", __FUNCTION__, result);
         return false;
       }
       break;
@@ -770,7 +788,7 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   {
     CStdString path;
     url.GetURL(path);
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown while trying to retrieve header url: %s", path.c_str());
+    CLog::Log(LOGERROR, "%s - Exception thrown while trying to retrieve header url: %s", __FUNCTION__, path.c_str());
     return false;
   }
 }

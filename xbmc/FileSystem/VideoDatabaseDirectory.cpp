@@ -1,7 +1,7 @@
 #include "../stdafx.h"
-#include "videodatabaseDirectory.h"
-#include "../util.h"
-#include "videodatabasedirectory/QueryParams.h"
+#include "VideoDatabaseDirectory.h"
+#include "../Util.h"
+#include "VideoDatabaseDirectory/QueryParams.h"
 #include "../VideoDatabase.h"
 
 using namespace XFILE;
@@ -82,7 +82,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", crc);
+  strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
   CFile::Delete(strFileName);
 }
 

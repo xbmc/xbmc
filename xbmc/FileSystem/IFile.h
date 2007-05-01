@@ -9,7 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\URL.h"
+#include "system.h"
+#include "../URL.h"
 
 namespace XFILE
 {

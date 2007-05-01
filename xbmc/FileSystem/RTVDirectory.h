@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "idirectory.h"
+#include "IDirectory.h"
 
 namespace DIRECTORY
 {

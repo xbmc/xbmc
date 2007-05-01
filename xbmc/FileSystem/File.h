@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "ifile.h"
+#include "IFile.h"
 
 namespace XFILE
 {

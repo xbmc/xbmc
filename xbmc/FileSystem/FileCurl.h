@@ -100,3 +100,4 @@ namespace XFILE
       CHttpHeader m_httpheader;
   };
 };
+

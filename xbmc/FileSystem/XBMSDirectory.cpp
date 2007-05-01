@@ -1,8 +1,8 @@
 
 #include "../stdafx.h"
-#include "xbmsdirectory.h"
-#include "../util.h"
-#include "directorycache.h"
+#include "XBMSDirectory.h"
+#include "../Util.h"
+#include "DirectoryCache.h"
 
 using namespace DIRECTORY;
 

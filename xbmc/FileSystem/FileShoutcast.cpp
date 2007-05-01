@@ -19,9 +19,16 @@
 #include "../lib/libshout/rip_manager.h"
 #include "../lib/libshout/util.h"
 #include "../lib/libshout/filelib.h"
-#include "ringbuffer.h"
+#include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
 #include "../utils/GUIInfoManager.h"
+
+#ifndef HAS_SHOUTCAST
+extern "C" {
+error_code rip_manager_start(void (*status_callback)(int message, void *data), RIP_MANAGER_OPTIONS *options) { }
+void                       rip_manager_stop() { }
+}
+#endif
 
 using namespace XFILE;
 
@@ -187,8 +194,12 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   {
     const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
     const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
-	  // Should we check for valid strings here?
+	  // Should we check for valid strings here
+#ifndef _LINUX
 	  _snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
+#else
+	  snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
+#endif
   }
 
   CStdString strUrl;

@@ -1,8 +1,10 @@
 #include "../stdafx.h"
 #include "FileRar.h"
 #include <sys/stat.h>
-#include "../util.h"
+#include "../Util.h"
+#ifndef _LINUX
 #include <process.h>
+#endif
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -15,6 +17,7 @@ using namespace DIRECTORY;
 
 #define SEEKTIMOUT 30000
 
+#ifdef HAS_RAR
 CFileRarExtractThread::CFileRarExtractThread()
 {
   m_pArc = NULL;
@@ -75,6 +78,7 @@ void CFileRarExtractThread::Process()
 
   SetEvent(hRestart);
 }
+#endif
 
 CFileRar::CFileRar()
 {
@@ -84,10 +88,12 @@ CFileRar::CFileRar()
 	m_strPathInRar.Empty();
 	m_bRarOptions = 0;
 	m_bFileOptions = 0;
+#ifdef HAS_RAR
   m_pArc = NULL;
   m_pCmd = NULL;
   m_pExtract = NULL;
   m_pExtractThread = NULL;
+#endif
   m_szBuffer = NULL;
   m_szStartOfBuffer = NULL;
   m_iDataInBuffer = 0;
@@ -99,6 +105,7 @@ CFileRar::CFileRar()
 //*********************************************************************************************
 CFileRar::~CFileRar()
 {
+#ifdef HAS_RAR	
   if (!m_bOpen)
     return;
   
@@ -116,6 +123,7 @@ CFileRar::~CFileRar()
       m_pExtractThread = NULL;
     }
   }
+#endif
 }
 //*********************************************************************************************
 bool CFileRar::Open(const CURL& url, bool bBinary)
@@ -160,7 +168,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
     }
     else 
     {
-      if (items[i]->m_dwSize > __int64(4)*1024*1024*1024) // 4 gig limit of fat-x
+      if (items[i]->m_dwSize > ((__int64)4)*1024*1024*1024) // 4 gig limit of fat-x
       {
         CGUIDialogOK::ShowAndGetInput(257,21395,-1,-1);
         CLog::Log(LOGERROR,"CFileRar::Open: Can't cache files bigger than 4GB due to fat-x limits.");
@@ -234,6 +242,7 @@ bool CFileRar::OpenForWrite(const CURL& url, bool bBinary)
 //*********************************************************************************************
 unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
 {
+#ifdef HAS_RAR
   if (!m_bOpen)
     return 0;
 
@@ -245,8 +254,8 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
   
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
-    return -1;
+    CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
+    return (unsigned int) -1;
   }
 
 
@@ -306,6 +315,9 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
   SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
   
   return static_cast<unsigned int>(uiBufSize-uicBufSize);
+#else
+  return 0;
+#endif
 }
 
 //*********************************************************************************************
@@ -317,6 +329,7 @@ unsigned int CFileRar::Write(void *lpBuf, __int64 uiBufSize)
 //*********************************************************************************************
 void CFileRar::Close()
 {
+#ifdef HAS_RAR
   if (!m_bOpen)
     return;
 
@@ -336,11 +349,13 @@ void CFileRar::Close()
     }
     m_bOpen = false;
   }
+#endif
 }
 
 //*********************************************************************************************
 __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
 { 
+#ifdef HAS_RAR
   if (!m_bOpen)
     return -1;
 
@@ -352,7 +367,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return -1;
   }
 
@@ -404,7 +419,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     
     if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+      CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
       return -1;
     }
     SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
@@ -418,7 +433,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   SetEvent(m_pExtract->GetDataIO().hBufferFilled);
   if( WaitForSingleObject(m_pExtract->GetDataIO().hSeekDone,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for seek to finish");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for seek to finish", __FUNCTION__);
     return -1;
   }
 
@@ -430,7 +445,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
 
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return -1;
   }
   m_iDataInBuffer = m_pExtract->GetDataIO().m_iSeekTo; // keep data
@@ -439,6 +454,9 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   m_iFilePosition = iFilePosition;
   
   return m_iFilePosition;
+#else
+  return -1;
+#endif
 }
 
 //*********************************************************************************************
@@ -510,6 +528,7 @@ void CFileRar::InitFromUrl(const CURL& url)
 
 void CFileRar::CleanUp()
 {
+#ifdef HAS_RAR
   if (m_pExtractThread)
   {
     if (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
@@ -546,10 +565,12 @@ void CFileRar::CleanUp()
     m_szBuffer = NULL;
     m_szStartOfBuffer = NULL;
   }
+#endif
 }
 
 bool CFileRar::OpenInArchive()
 {
+#ifdef HAS_RAR
   InitCRC();
   // Set the arguments for the extract command
   m_pCmd = new CommandData;
@@ -648,4 +669,7 @@ bool CFileRar::OpenInArchive()
   m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,m_iSize);
   
   return true;
+#else
+  return false;
+#endif
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "idirectory.h"
+#include "IDirectory.h"
 #include "FileSmb.h"
 
 namespace DIRECTORY
