@@ -35,7 +35,11 @@ public:
 struct Visualisation
 {
 public:
+#ifndef _LINUX
   void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
+#else // TODO LINUX this obviously doesn't work but it will have to do for now
+  void (__cdecl* Create)(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
+#endif
   void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
   void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void (__cdecl* Render) ();
