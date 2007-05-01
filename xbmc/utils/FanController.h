@@ -1,6 +1,6 @@
 #pragma once
 
-#include "thread.h"
+#include "Thread.h"
 #include "../Temperature.h"
 
 class CFanController : public CThread

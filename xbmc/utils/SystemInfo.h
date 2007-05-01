@@ -1,7 +1,7 @@
 #pragma once
 
 #include "md5.h"
-#include "../xbox/xkeeprom.h"
+#include "../xbox/XKEEPROM.h"
 #include "InfoLoader.h"
 #include "GUIInfoManager.h"
 
@@ -142,3 +142,4 @@ protected:
 };
 
 extern CSysInfo g_sysinfo;
+

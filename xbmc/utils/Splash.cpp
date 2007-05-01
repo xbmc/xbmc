@@ -1,8 +1,8 @@
 
-#include "..\stdafx.h"
+#include "../stdafx.h"
 #include "Splash.h"
 #include "guiImage.h"
-#include "..\util.h"
+#include "../Util.h"
 
 using namespace XFILE;
 
@@ -25,6 +25,7 @@ void CSplash::OnExit()
 
 void CSplash::Process()
 {
+#ifndef _LINUX
   D3DGAMMARAMP newRamp;
   D3DGAMMARAMP oldRamp;
 
@@ -103,6 +104,7 @@ void CSplash::Process()
   g_graphicsContext.Get3DDevice()->SetGammaRamp(0, &oldRamp);
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
+#endif
 }
 
 bool CSplash::Start()

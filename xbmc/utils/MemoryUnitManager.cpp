@@ -6,7 +6,7 @@
 #include "../FileSystem/MemoryUnits/FatXFileSystem.h"
 #include "../FileSystem/MemoryUnits/Fat32Device.h"
 #include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
-#include "../application.h"
+#include "../Application.h"
 
 using namespace XFILE;
 

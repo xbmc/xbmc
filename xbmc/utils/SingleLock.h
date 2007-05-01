@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "criticalsection.h"
+#include "CriticalSection.h"
 class CSingleLock
 {
 public:

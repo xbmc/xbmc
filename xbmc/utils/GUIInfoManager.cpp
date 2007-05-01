@@ -9,29 +9,29 @@
 #include "../utils/TuxBoxUtil.h"
 #include "KaiClient.h"
 #include "Weather.h"
-#include "../playlistplayer.h"
+#include "../PlayListPlayer.h"
 #include "../PartyModeManager.h"
-#include "../Visualizations/Visualisation.h"
+#include "../visualizations/Visualisation.h"
 #include "../ButtonTranslator.h"
 #include "../MusicDatabase.h"
-#include "../utils/Alarmclock.h"
+#include "../utils/AlarmClock.h"
 #ifdef HAS_LCD
-#include "../utils/lcd.h"
+#include "../utils/LCD.h"
 #endif
 #include "../GUIPassword.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "FanController.h"
-#include "../xbox/xkhdd.h"
+#include "../xbox/XKHDD.h"
 #endif
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
 #include <stack>
-#include "../xbox/network.h"
+#include "../xbox/Network.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM
-#include "../filesystem/SndtrkDirectory.h"
+#include "../FileSystem/SndtrkDirectory.h"
 #endif
 #include "../musicInfoTagLoaderFactory.h"
 
@@ -2097,13 +2097,13 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     if (dbs.HasMovieInfo(item.m_strPath))
     {
       dbs.GetMovieInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,__FUNCTION__", got movie info!");
+      CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
       CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
     }
     else if (dbs.HasEpisodeInfo(item.m_strPath))
     {
       dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,__FUNCTION__", got episode info!");
+      CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
       CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
     }
     dbs.Close();
@@ -2435,7 +2435,7 @@ CStdString CGUIInfoManager::GetItemMultiLabel(const CFileItem *item, const vecto
 // workaround
 const CStdString &CorrectAllItemsSortHack(const CStdString &item)
 {
-  if (item.size() == 1 && item[0] == 0x01 || item[1] == 0xff)
+  if (item.size() == 1 && item[0] == 0x01 || ((unsigned char) item[1]) == 0xff)
     return StringUtils::EmptyString;
   return item;
 }

@@ -20,17 +20,19 @@
  */
 #include "../stdafx.h"
 #include "SystemInfo.h"
+#ifndef _LINUX
 #include <conio.h>
-#include "../settings.h"
+#endif
+#include "../Settings.h"
 #include "../utils/log.h"
-#include "../cores/dllloader/dllloader.h"
-#include "../utils/http.h"
+#include "../cores/DllLoader/DllLoader.h"
+#include "../utils/HTTP.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "../xbox/undocumented.h"
-#include "../xbox/xkutils.h"
-#include "../xbox/xkhdd.h"
-#include "../xbox/xkflash.h"
-#include "../xbox/xkrc4.h"
+#include "../xbox/Undocumented.h"
+#include "../xbox/XKUtils.h"
+#include "../xbox/XKHDD.h"
+#include "../xbox/XKflash.h"
+#include "../xbox/XKRC4.h"
 
 // The X2 series of modchips cause an error on XBE launching if GetModChipInfo()
 // is called on them before an XBE is launched.  This same bug also affects

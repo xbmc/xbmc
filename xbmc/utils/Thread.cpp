@@ -19,17 +19,24 @@
 */
 
 #include "Thread.h"
+#ifndef _LINUX
 #include <process.h>
 #include "win32exception.h"
-#include "Log.h"
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 #ifndef _MT
 #pragma message( "Please compile using multithreaded run-time libraries" )
 #endif
 typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
+#else
+#include "PlatformInclude.h"
+typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
+#endif
+
+#include "log.h"
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
 
 #define MS_VC_EXCEPTION 0x406d1388
 typedef struct tagTHREADNAME_INFO 
@@ -80,18 +87,26 @@ CThread::~CThread()
 }
 
 
+#ifdef _LINUX
+int CThread::staticThread(void* data)
+#else
 DWORD WINAPI CThread::staticThread(LPVOID* data)
+#endif
 {
   //DBG"thread start");
 
   CThread* pThread = (CThread*)(data);
+
+#ifndef _LINUX
   /* install win32 exception translator */
   win32_exception::install_handler();
+#endif
 
   try 
   {
     pThread->OnStartup();
   }
+#ifndef _LINUX
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
@@ -102,13 +117,16 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
       return 0;
     }
   }
+#endif
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread startup, aborting");
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread startup, aborting", __FUNCTION__);
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
+#ifndef _LINUX
       _endthreadex(123);
+#endif
       return 0;
     }
   }
@@ -117,6 +135,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->Process();
   }
+#ifndef _LINUX
   catch (const access_violation &e) 
   {
     e.writelog(__FUNCTION__);
@@ -125,15 +144,17 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread process, attemping cleanup in OnExit"); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__); 
   }
 
   try
   {
     pThread->OnExit();
   }
+#ifndef _LINUX
   catch (const access_violation &e) 
   {
     e.writelog(__FUNCTION__);
@@ -142,9 +163,10 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread exit"); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
   }
 
   if ( pThread->IsAutoDelete() )
@@ -152,7 +174,10 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     delete pThread;
     pThread = NULL;
   }
+
+#ifndef _LINUX
   _endthreadex(123);
+#endif
   return 0;
 }
 
@@ -168,7 +193,15 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   ::ResetEvent(m_StopEvent);
+ 
+#ifndef _LINUX
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
+#else
+  m_ThreadHandle = new CXHandle(CXHandle::HND_THREAD);
+  m_ThreadHandle->m_hThread = SDL_CreateThread(staticThread, (void*)this);
+  m_ThreadId = SDL_GetThreadID(m_ThreadHandle->m_hThread);
+#endif
+
 }
 
 
@@ -211,7 +244,12 @@ bool CThread::SetPriority(const int iPriority)
 {
   if (m_ThreadHandle)
   {
+#ifndef _LINUX
     return ( SetThreadPriority( m_ThreadHandle, iPriority ) == TRUE );
+#else
+	return true;
+#endif
+
   }
   else
   {
@@ -226,6 +264,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   info.szName = szThreadName; 
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0; 
+#ifndef _LINUX
   try 
   { 
     RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
@@ -233,6 +272,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   catch(...)
   { 
   }  
+#endif
 }
 
 bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
@@ -241,18 +281,22 @@ bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
 {
   if (!m_ThreadHandle) return true;
 
+#ifndef _LINUX
   // boost priority of thread we are waiting on to same as caller
   int callee = GetThreadPriority(m_ThreadHandle);
   int caller = GetThreadPriority(GetCurrentThread());
   if(caller > callee)
     SetThreadPriority(m_ThreadHandle, caller);
+#endif
 
   if (::WaitForSingleObject(m_ThreadHandle, dwMilliseconds) != WAIT_TIMEOUT)
     return true;
 
+#ifndef _LINUX
   // restore thread priority if thread hasn't exited
   if(caller > callee)
     SetThreadPriority(m_ThreadHandle, callee);
+#endif
 
   return false;
 }
@@ -276,6 +320,7 @@ float CThread::GetRelativeUsage()
   // only update every 1 second
   if( iTime < m_iLastTime + 1000*10000 ) return m_fLastUsage;
 
+#ifndef _LINUX
   FILETIME CreationTime, ExitTime, UserTime, KernelTime;
   if( GetThreadTimes( m_ThreadHandle, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
   {    
@@ -290,6 +335,7 @@ float CThread::GetRelativeUsage()
 
     return m_fLastUsage;
   }    
+#endif
   return 0.0f; 
 }
 
@@ -312,7 +358,7 @@ DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
     return ::WaitForSingleObject(hHandle, dwMilliseconds);
 }
 
-DWORD CThread::WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
+DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
 {
   // for now not implemented
   return ::WaitForMultipleObjects(nCount, lpHandles, bWaitAll, dwMilliseconds);

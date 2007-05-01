@@ -56,7 +56,9 @@
 
 #define FALSE 0
 #define TRUE 1
+#ifndef NULL
 #define NULL 0
+#endif
 typedef char* LPTSTR;
 
 class CRegExp
