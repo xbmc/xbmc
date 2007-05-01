@@ -23,9 +23,9 @@
 #include "../../utils/md5.h"
 #include "../../utils/CharsetConverter.h"
 #include "../../utils/log.h"
-#include "../../utils/http.h"
-#include "../../util.h"
-#include "../../application.h"
+#include "../../utils/HTTP.h"
+#include "../../Util.h"
+#include "../../Application.h"
 
 using namespace XFILE;
 
@@ -63,7 +63,12 @@ CScrobbler::CScrobbler()
   m_hHttpMutex = CreateMutex(NULL, false, NULL);
   if (!m_hHttpMutex)
     throw EOutOfMemory();
+#ifdef _WIN32
   m_hWorkerThread = CreateThread(NULL, 0, threadProc, (LPVOID)this, 0, &threadid);
+#else
+  m_hWorkerThread = new CXHandle;
+  m_hWorkerThread->m_hThread = SDL_CreateThread(threadProc, (void*)this);
+#endif
   if (!m_hWorkerThread)
     throw EOutOfMemory();
 }

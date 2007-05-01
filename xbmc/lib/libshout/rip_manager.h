@@ -102,7 +102,12 @@ typedef struct RIP_MANAGER_OPTIONSst
 typedef struct ERROR_INFOst
 {
 	char		error_str[MAX_ERROR_STR];
+#ifndef _LINUX
 	error_code	error_code;
+#else
+	error_code	_error_code;
+#warning LibShout changed error_code to _error_code...need to fix the library
+#endif
 } ERROR_INFO;
 
 

@@ -45,7 +45,9 @@ typedef int error_code;
 #endif
 
 #ifdef __DEFINE_TYPES__
+#ifndef _LINUX
 typedef unsigned long unsigned long;
+#endif
 typedef unsigned char u_char;
 typedef unsigned short u_short;
 #endif
