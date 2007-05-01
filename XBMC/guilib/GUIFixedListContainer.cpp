@@ -239,3 +239,4 @@ void CGUIFixedListContainer::ValidateOffset()
     m_scrollOffset = m_offset * m_layout.Size(m_orientation);
   }
 }
+

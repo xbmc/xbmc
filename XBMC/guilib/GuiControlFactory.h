@@ -9,7 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
-#include "GUIImage.h" // for aspect ratio
+#include "guiImage.h" // for aspect ratio
 
 class CImage; // forward
 

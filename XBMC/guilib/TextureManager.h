@@ -17,10 +17,18 @@ class CTexture
 {
 public:
   CTexture();
+#ifndef HAS_SDL
   CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bPacked, int iDelay = 100, LPDIRECT3DPALETTE8 pPalette = NULL);
+#else
+  CTexture(SDL_Surface* pTexture, int iWidth, int iHeight, bool bPacked, int iDelay = 100, SDL_Palette* pPalette = NULL);
+#endif
   virtual ~CTexture();
   bool Release();
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
+#else
+  SDL_Surface* GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);
+#endif
   int GetDelay() const;
   int GetRef() const;
   void Dump() const;
@@ -33,8 +41,13 @@ public:
 protected:
   void FreeTexture();
 
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 m_pTexture;
   LPDIRECT3DPALETTE8 m_pPalette;
+#else
+  SDL_Surface* m_pTexture;
+  SDL_Palette* m_pPalette;
+#endif
   int m_iReferenceCount;
   int m_iDelay;
   int m_iWidth;
@@ -57,7 +70,11 @@ public:
   virtual ~CTextureMap();
   const CStdString& GetName() const;
   int size() const;
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
+#else
+  SDL_Surface* GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);
+#endif
   int GetDelay(int iPicture = 0) const;
   int GetLoops(int iPicture = 0) const;
   void Add(CTexture* pTexture);
@@ -87,7 +104,11 @@ public:
   void EndPreLoad();
   void FlushPreLoad();
   int Load(const CStdString& strTextureName, DWORD dwColorKey = 0);
+#ifndef HAS_SDL  
   LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
+#else
+  SDL_Surface* GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);  
+#endif
   int GetDelay(const CStdString& strTextureName, int iPicture = 0) const;
   int GetLoops(const CStdString& strTextureName, int iPicture = 0) const;
   void ReleaseTexture(const CStdString& strTextureName, int iPicture = 0);

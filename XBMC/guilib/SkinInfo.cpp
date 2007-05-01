@@ -94,14 +94,22 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
         if (pGrandChild && pGrandChild->FirstChild())
         {
           CStdString strName = pGrandChild->FirstChild()->Value();
+#ifndef _LINUX
           swprintf(credits[0], L"%S Skin", strName.Left(44).c_str());
+#else
+          swprintf(credits[0], sizeof(credits[0]), L"%S Skin", strName.Left(44).c_str());
+#endif
         }
         pGrandChild = pChild->FirstChild("name");
         m_iNumCreditLines = 1;
         while (pGrandChild && pGrandChild->FirstChild() && m_iNumCreditLines < 6)
         {
           CStdString strName = pGrandChild->FirstChild()->Value();
+#ifndef _LINUX
           swprintf(credits[m_iNumCreditLines], L"%S", strName.Left(49).c_str());
+#else
+          swprintf(credits[m_iNumCreditLines], sizeof(credits[m_iNumCreditLines]), L"%S", strName.Left(49).c_str());
+#endif
           m_iNumCreditLines++;
           pGrandChild = pGrandChild->NextSibling("name");
         }
@@ -312,3 +320,4 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
     m_onlyAnimateToHome = false;
   return true;
 }
+

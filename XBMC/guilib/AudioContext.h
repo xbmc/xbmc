@@ -28,9 +28,11 @@ public:
   void                        SetActiveDevice(int iDevice);
   int                         GetActiveDevice();
 
+#ifdef HAS_AUDIO
   LPDIRECTSOUND8              GetDirectSoundDevice() { return m_pDirectSoundDevice; }
 #ifdef HAS_AUDIO_PASS_THROUGH
   LPAC97MEDIAOBJECT           GetAc97Device() { return m_pAC97Device; }
+#endif
 #endif
 
   void                        SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic=true);
@@ -45,10 +47,12 @@ public:
 protected:
   void                         RemoveActiveDevice();
 
+#ifdef HAS_AUDIO
 #ifdef HAS_AUDIO_PASS_THROUGH
   LPAC97MEDIAOBJECT            m_pAC97Device;
 #endif
   LPDIRECTSOUND8               m_pDirectSoundDevice;
+#endif
 
   int                          m_iDevice;
   IAudioDeviceChangedCallback* m_pCallback;

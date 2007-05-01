@@ -3,6 +3,10 @@
 \brief 
 */
 
+#ifdef _LINUX
+#include <math.h>
+#endif
+
 #ifndef CGUILIB_GUIFONTBASE_H
 #define CGUILIB_GUIFONTBASE_H
 #pragma once
@@ -28,14 +32,17 @@ public:
   {
     sine = 0;
     cosine = 1;
+    theta = 0;
   }
   CAngle(int theta)
   {
     sine = sin(theta * DEGREE_TO_RADIAN);
     cosine = cos(theta * DEGREE_TO_RADIAN);
+    this->theta = theta;
   }
   float sine;
   float cosine;
+  int theta;
 };
 
 /*!

@@ -102,8 +102,10 @@ public:
 protected:
   void FreeTextures();
   void Process();
+#ifndef _LINUX  
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
   static const DWORD FVF_VERTEX2 = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2;
+#endif
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   DWORD m_dwColorKey;
@@ -118,11 +120,18 @@ protected:
   DWORD m_dwFrameCounter;
   GUIIMAGE_ASPECT_RATIO m_aspectRatio;
   DWORD                 m_aspectAlign;
+#ifndef HAS_SDL
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
-  float m_diffuseScaleU, m_diffuseScaleV;
   LPDIRECT3DPALETTE8 m_pPalette;
+#else
+  vector <SDL_Surface*> m_vecTextures;
+  SDL_Surface* m_diffuseTexture;
+  SDL_Palette* m_diffusePalette;
+  SDL_Palette* m_pPalette;  
+#endif  
+  float m_diffuseScaleU, m_diffuseScaleV;  
   bool m_bWasVisible;
   bool m_bDynamicResourceAlloc;
 

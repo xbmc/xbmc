@@ -2,11 +2,11 @@
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
-#include "../xbmc/settings.h"
+#include "../xbmc/Settings.h"
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifndef _XBOX
+#if !defined(_XBOX) && !defined(_LINUX)
 #include "../Tools/Win32/XBMC_PC.h"
 #endif
 
@@ -443,7 +443,7 @@ void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 	    m_pCallback->FrameMove();
     }
     m_pCallback->Render();
-#ifndef _XBOX
+#if !defined(_XBOX) && !defined(_LINUX)
     extern CXBMC_PC *g_xbmcPC;
     g_xbmcPC->ProcessMessage(NULL);
     Sleep(20);

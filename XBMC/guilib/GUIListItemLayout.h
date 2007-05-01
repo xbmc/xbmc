@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUILabelControl.h"
 
 class CGUIListItem;

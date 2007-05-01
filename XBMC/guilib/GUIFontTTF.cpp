@@ -3,7 +3,14 @@
 #include "GraphicContext.h"
 
 // stuff for freetype
+#ifndef _LINUX
 #include "ft2build.h"
+#else
+#include <ft2build.h>
+#endif
+#ifdef HAS_SDL
+#include <SDL/SDL_rotozoom.h>
+#endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_SYNTHESIS_H
@@ -81,8 +88,10 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_char = NULL;
   m_maxChars = 0;
   m_dwNestedBeginCount = 0;
+#ifndef HAS_SDL  
   m_pixelShader = NULL;
   m_vertexShader = NULL;
+#endif  
   m_face = NULL;
   m_library = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -96,7 +105,12 @@ CGUIFontTTF::~CGUIFontTTF(void)
 void CGUIFontTTF::ClearCharacterCache()
 {
   if (m_texture)
+#ifndef HAS_SDL  
     m_texture->Release();
+#else
+    SDL_FreeSurface(m_texture);
+#endif
+    
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
@@ -112,13 +126,19 @@ void CGUIFontTTF::ClearCharacterCache()
 void CGUIFontTTF::Clear()
 {
   if (m_texture)
+#ifndef HAS_SDL  
     m_texture->Release();
+#else
+    SDL_FreeSurface(m_texture);
+#endif
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
+#ifndef HAS_SDL  
   m_vertexShader = NULL;
   m_pixelShader = NULL;
+#endif  
   m_char = NULL;
   m_maxChars = 0;
   m_numChars = 0;
@@ -138,9 +158,11 @@ void CGUIFontTTF::Clear()
 
 bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, float aspect)
 {
+#ifndef HAS_SDL
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
   CreateShader();
+#endif
 
   m_library = g_freeTypeLibrary.Get();
   if (!m_library)
@@ -184,13 +206,17 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   m_cellBaseLine++;
   m_lineHeight++;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" Scaled size of font %s (%i): width = %i, height = %i",
-    strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
+  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%i): width = %i, height = %i",
+    __FUNCTION__, strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
   m_iHeight = iHeight;
   m_iStyle = iStyle;
 
   if (m_texture)
+#ifndef HAS_SDL  
     m_texture->Release();
+#else
+    SDL_FreeSurface(m_texture);
+#endif
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
@@ -482,11 +508,13 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   if (bitGlyph->left < 0)
     m_posX += -bitGlyph->left;
 
+#ifndef HAS_SDL
   D3DFORMAT format;
   if(m_pixelShader)
     format = D3DFMT_LIN_L8;
   else
     format = D3DFMT_LIN_A8;
+#endif
 
   // check we have enough room for the character
   if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
@@ -500,7 +528,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     {
       // create the new larger texture
       unsigned newHeight = m_posY + m_cellHeight;
-      LPDIRECT3DTEXTURE8 newTexture;
       // check for max height (can't be more than 4096 texels)
       if (newHeight > 4096)
       {
@@ -508,6 +535,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
         FT_Done_Glyph(glyph);
         return false;
       }
+            
+#ifndef HAS_SDL      
+      LPDIRECT3DTEXTURE8 newTexture;
       if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, format, D3DPOOL_MANAGED, &newTexture))
       {
         CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
@@ -537,7 +567,26 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
         SAFE_RELEASE(pTarget);
         SAFE_RELEASE(pSource);
         SAFE_RELEASE(m_texture);
+      }      
+#else
+		SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
+        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+      if (!newTexture)
+      {
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
+        FT_Done_Glyph(glyph);
+        return false;
       }
+      m_textureHeight = newTexture->h;
+      m_textureWidth = newTexture->w;
+      
+      if (m_texture)
+      {
+        SDL_BlitSurface(m_texture, NULL, newTexture, NULL);
+        SDL_FreeSurface(newTexture);
+      }
+#endif
+
       m_texture = newTexture;
     }
   }
@@ -545,7 +594,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // set the character in our table
   ch->letter = letter;
   ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, 0);
+  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, (unsigned int) 0);
   ch->left = (float)m_posX + ch->offsetX;
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
@@ -555,6 +604,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
+#ifndef HAS_SDL  
     // render this onto our normal texture using gpu
     LPDIRECT3DSURFACE8 target;
     m_texture->GetSurfaceLevel(0, &target);
@@ -571,8 +621,28 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       D3DX_FILTER_NONE, 0x00000000);
 
     SAFE_RELEASE(target);
-  }
+#else
+    SDL_LockSurface(m_texture);
 
+    unsigned char* source = (unsigned char*) bitmap.buffer;
+    unsigned int* target = (unsigned int*) (m_texture->pixels) + 
+         ((m_posY + ch->offsetY) * m_texture->pitch / 4) + 
+          (m_posX + bitGlyph->left);
+          
+    for (int y = 0; y < bitmap.rows; y++)
+    {
+    	for (int x = 0; x < bitmap.width; x++)
+    	{
+	     target[x] = (unsigned int) source[x] << 24 | 0x00ffffffL;
+	   }
+	   
+	   source += bitmap.width;
+	   target += (m_texture->pitch / 4);
+	 }
+	        
+    SDL_UnlockSurface(m_texture);
+#endif    
+  }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
 
@@ -584,6 +654,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
 void CGUIFontTTF::Begin()
 {
+#ifndef HAS_SDL
   if (m_dwNestedBeginCount == 0)
   {
     // just have to blit from our texture.
@@ -615,10 +686,12 @@ void CGUIFontTTF::Begin()
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
+#endif
 }
 
 void CGUIFontTTF::End()
 {
+#ifndef HAS_SDL
   if (m_dwNestedBeginCount == 0)
     return;
 
@@ -632,6 +705,7 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+#endif
 }
 
 void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
@@ -653,7 +727,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
   m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width, posY + angle.sine * width, ch->right, ch->top );
   m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, ch->right, ch->bottom );
   m_pD3DDevice->SetVertexData4f( 0, posX - angle.sine * height, posY + angle.cosine * height, ch->left, ch->bottom );
-#else
+#elif !defined(HAS_SDL)
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
       FLOAT rhw;
@@ -675,9 +749,56 @@ struct CUSTOMVERTEX {
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+#else
+
+  // Copy the character to a temporary surface so we can adjust its colors 
+  SDL_Surface* tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE|SDL_SRCALPHA, (int) width, (int) height, 32,
+        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+  SDL_LockSurface(tempSurface);
+  SDL_LockSurface(m_texture);
+  
+  unsigned int* src = (unsigned int*) m_texture->pixels + ((int) ch->top * m_texture->w) + ((int) ch->left);
+  unsigned int* dst = (unsigned int*) tempSurface->pixels;
+  
+  // Calculate the alpha per pixel based on the alpha channel of the pixel and the alpha channel of
+  // the requested color 
+  int alpha;
+  float alphaFactor = (float) ((dwColor & 0xff000000) >> 24) / 255;
+  for (int y = 0; y < tempSurface->h; y++)
+  {
+  	 for (int x = 0; x < tempSurface->w; x++)
+  	 {
+      alpha = (int) (alphaFactor * (((unsigned int) src[x] & 0xff000000) >> 24));
+      dst[x] = (alpha << 24) | (dwColor & 0x00ffffff);
+	 }
+	   
+	src += (m_texture->pitch / 4);
+	dst += tempSurface->w;
+  }
+  
+  SDL_UnlockSurface(tempSurface);
+  SDL_UnlockSurface(m_texture);
+
+  if (angle.theta != 0)
+  {
+    // This angular stuff somewhat works but it is not really aligned. This will have to do for now 
+    SDL_Surface* angledSurface = rotozoomSurface(tempSurface, 360 - angle.theta, 1.0, 0);
+    SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
+    SDL_BlitSurface(angledSurface, NULL, g_graphicsContext.getScreenSurface(), &dstRect2);
+  }
+  else
+  {
+    // Copy the surface to the screen (without angle). 
+    SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
+    SDL_BlitSurface(tempSurface, NULL, g_graphicsContext.getScreenSurface(), &dstRect2);
+  }
+  
+  SDL_FreeSurface(tempSurface);
 #endif
 }
 
+#ifndef HAS_SDL
 void CGUIFontTTF::CreateShader()
 {
   if (!m_pixelShader)
@@ -693,12 +814,13 @@ void CGUIFontTTF::CreateShader()
 
     LPD3DXBUFFER pShader = NULL;
     if( D3D_OK != D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL) )
-      CLog::Log(LOGINFO, __FUNCTION__" - Failed to assemble pixel shader");
+      CLog::Log(LOGINFO, "%s - Failed to assemble pixel shader", __FUNCTION__);
     else
     {
+
       if (D3D_OK != m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader))
       {
-        CLog::Log(LOGINFO, __FUNCTION__" - Failed to create pixel shader");
+        CLog::Log(LOGINFO, "%s - Failed to create pixel shader",  __FUNCTION__);
         m_pixelShader = 0;
       }
       pShader->Release();
@@ -739,3 +861,4 @@ void CGUIFontTTF::CreateShader()
   if(!m_vertexShader)
     m_vertexShader = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 }
+#endif

@@ -19,8 +19,10 @@ class CGUIMessage;
 
 #ifdef _XBOX
 #include "common/XBoxMouse.h"
-#else
+#elif WIN32
 #include "common/DirectInputMouse.h"
+#else
+#include "common/SDLMouse.h"
 #endif
 
 /*!
@@ -78,10 +80,15 @@ class CGraphicContext : public CCriticalSection
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
+#ifndef _LINUX  
   LPDIRECT3DDEVICE8 Get3DDevice() { return m_pd3dDevice; }
   void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
+#else
+  inline void setScreenSurface(SDL_Surface* surface) { m_screenSurface = surface; }  
+  inline SDL_Surface* getScreenSurface() { return m_screenSurface; }  
+#endif  
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   int GetFPS() const;
@@ -120,12 +127,12 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
 
-  inline float ScaleFinalXCoord(float x, float y) const;
-  inline float ScaleFinalYCoord(float x, float y) const;
-  inline void ScaleFinalCoords(float &x, float &y) const;
+  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y); }
+  inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y); }
+  inline void ScaleFinalCoords(float &x, float &y) const { m_finalTransform.TransformPosition(x, y); }
   inline float ScaleFinalX() const { return m_windowScaleX; };
   inline float ScaleFinalY() const { return m_windowScaleY; };
-  inline DWORD MergeAlpha(DWORD color) const;
+  DWORD MergeAlpha(DWORD color) const;
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
     while (m_groupTransform.size())
@@ -149,20 +156,25 @@ public:
 
 protected:
   IMsgSenderCallback* m_pCallback;
+#ifndef _LINUX    
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
+  stack<D3DVIEWPORT8*> m_viewStack;
+  DWORD m_stateBlock;
+#else
+  stack<SDL_Rect*> m_viewStack;
+  SDL_Surface* m_screenSurface;  
+#endif  
   int m_iScreenHeight;
   int m_iScreenWidth;
   DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
-  stack<D3DVIEWPORT8*> m_viewStack;
   RECT m_videoRect;
   bool m_bFullScreenVideo;
   bool m_bShowPreviewWindow;
   bool m_bCalibrating;
   RESOLUTION m_Resolution;
-  DWORD m_stateBlock;
 
 private:
   RESOLUTION m_windowResolution;

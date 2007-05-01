@@ -3,8 +3,8 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
-#include "../xbmc/util.h"
-#include "GUIControlFactory.h"
+#include "../xbmc/Util.h"
+#include "GuiControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
@@ -115,8 +115,13 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
+    
+#ifndef _LINUX    
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
+#else
+  DWORD start = timeGetTime();
+#endif
 
   RESOLUTION resToUse = INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
@@ -147,15 +152,25 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
     return false;
   }
+#ifndef _LINUX  
   LARGE_INTEGER lend;
   QueryPerformanceCounter(&lend);
+#else
+  DWORD lend = timeGetTime();
+#endif  
   if (!bContainsPath)
     m_coordsRes = resToUse;
   bool ret = Load(pRootElement);
+#ifndef _LINUX  
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
   CLog::DebugLog("Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
+#else
+  DWORD end = timeGetTime();
+
+  CLog::DebugLog("Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
+#endif  
   return ret;
 }
 
@@ -768,8 +783,12 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
+#ifndef _LINUX
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
+#else
+  DWORD start = timeGetTime();
+#endif
 
   // load skin xml file
   bool bHasPath=false; 
@@ -778,8 +797,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
     Load(m_xmlFile,bHasPath);
 
+#ifndef _LINUX
   LARGE_INTEGER slend;
   QueryPerformanceCounter(&slend);
+#else
+  DWORD slend = timeGetTime();
+#endif
 
   // and now allocate resources
   g_TextureManager.StartPreLoad();
@@ -792,8 +815,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   }
   g_TextureManager.EndPreLoad();
 
+#ifndef _LINUX
   LARGE_INTEGER plend;
   QueryPerformanceCounter(&plend);
+#else
+  DWORD plend = timeGetTime();
+#endif
 
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
@@ -803,11 +830,17 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   }
   g_TextureManager.FlushPreLoad();
 
+#ifndef _LINUX
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  m_WindowAllocated = true;
   CLog::DebugLog("Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
+#else
+  DWORD end = timeGetTime();
+  CLog::DebugLog("Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", end - start, slend - start, plend - start);
+#endif
+
+  m_WindowAllocated = true;
 }
 
 void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)

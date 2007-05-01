@@ -1,7 +1,7 @@
 #include "include.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "TextureManager.h"
-#include "../xbmc/settings.h"
+#include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
@@ -14,7 +14,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_iTextureHeight = 0;
   m_dwColorKey = dwColorKey;
   m_iCurrentImage = 0;
-  m_dwFrameCounter = -1;
+  m_dwFrameCounter = (DWORD) -1;
   m_aspectRatio = ASPECT_RATIO_STRETCH;
   m_aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   m_iCurrentLoop = 0;
@@ -39,7 +39,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_aspectAlign = left.m_aspectAlign;
   // defaults
   m_iCurrentImage = 0;
-  m_dwFrameCounter = -1;
+  m_dwFrameCounter = (DWORD) -1;
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
@@ -102,6 +102,7 @@ void CGUIImage::Render()
       }
     }
 
+#ifndef HAS_SDL
     LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
     // Set state to render the image
 #ifdef ALLOW_TEXTURE_COMPRESSION
@@ -220,6 +221,8 @@ void CGUIImage::Render()
     p3DDevice->SetTexture( 0, NULL );
     if (m_diffuseTexture)
       p3DDevice->SetTexture( 1, NULL );
+#endif // HAS_SDL
+      
     if (m_fNW > m_width || m_fNH > m_height)
       g_graphicsContext.RestoreViewPort();
   }
@@ -228,7 +231,9 @@ void CGUIImage::Render()
 
 void CGUIImage::Render(float left, float top, float right, float bottom, float u1, float v1, float u2, float v2)
 {
+#ifndef HAS_SDL
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
+#endif  
 
   float x1 = floor(g_graphicsContext.ScaleFinalXCoord(left, top) + 0.5f) - 0.5f;
   float y1 = floor(g_graphicsContext.ScaleFinalYCoord(left, top) + 0.5f) - 0.5f;
@@ -283,7 +288,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
 
-#else
+#elif !defined(HAS_SDL)
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
       FLOAT rhw;
@@ -363,7 +368,11 @@ void CGUIImage::AllocResources()
   if (!iImages) return ;
   for (int i = 0; i < iImages; i++)
   {
+#ifndef HAS_SDL  
     LPDIRECT3DTEXTURE8 pTexture;
+#else
+    SDL_Surface* pTexture;
+#endif
     pTexture = g_TextureManager.GetTexture(m_strFileName, i, m_iTextureWidth, m_iTextureHeight, m_pPalette, m_linearTexture);
 #ifndef HAS_XBOX_D3D
     m_linearTexture = false;
@@ -393,10 +402,15 @@ void CGUIImage::AllocResources()
       else
 #endif
       {
+#ifndef HAS_SDL      
         D3DSURFACE_DESC desc;
         m_diffuseTexture->GetLevelDesc(0, &desc);
         m_diffuseScaleU = float(width) / float(desc.Width) / m_fU;
         m_diffuseScaleV = float(height) / float(desc.Height) / m_fV;
+#else
+        m_diffuseScaleU = float(width) / float(m_diffuseTexture->w) / m_fU;
+        m_diffuseScaleV = float(height) / float(m_diffuseTexture->h) / m_fV;		  	
+#endif        
       }
     }
   }
@@ -444,11 +458,16 @@ void CGUIImage::CalculateSize()
   {
     if (0 == m_iImageWidth || 0 == m_iImageHeight)
     {
+#ifndef HAS_SDL    
       D3DSURFACE_DESC desc;
       m_vecTextures[m_iCurrentImage]->GetLevelDesc(0, &desc);
 
       m_iImageWidth = desc.Width;
       m_iImageHeight = desc.Height;
+#else
+      m_iImageWidth = m_vecTextures[m_iCurrentImage]->w;
+      m_iImageHeight = m_vecTextures[m_iCurrentImage]->h;
+#endif	      
     }
 
     if (0 == m_iTextureWidth || 0 == m_iTextureHeight)
@@ -467,11 +486,16 @@ void CGUIImage::CalculateSize()
   {
     if (0 == m_iTextureWidth || 0 == m_iTextureHeight)
     {
+#ifndef HAS_SDL    
       D3DSURFACE_DESC desc;
       m_vecTextures[m_iCurrentImage]->GetLevelDesc(0, &desc);
 
       m_iTextureWidth = desc.Width;
       m_iTextureHeight = desc.Height;
+#else
+      m_iTextureWidth = m_vecTextures[m_iCurrentImage]->w;
+      m_iTextureHeight = m_vecTextures[m_iCurrentImage]->h;
+#endif      
 
       if (m_iTextureHeight > g_graphicsContext.GetHeight() )
         m_iTextureHeight = g_graphicsContext.GetHeight();

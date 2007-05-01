@@ -5,7 +5,7 @@
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
-#include "../xbmc/utils/charsetconverter.h"
+#include "../xbmc/utils/CharsetConverter.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #endif
@@ -28,7 +28,11 @@ CTexture::CTexture()
   m_format = D3DFMT_UNKNOWN;
 }
 
+#ifndef HAS_SDL
 CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bPacked, int iDelay, LPDIRECT3DPALETTE8 pPalette)
+#else
+CTexture::CTexture(SDL_Surface* pTexture, int iWidth, int iHeight, bool bPacked, int iDelay, SDL_Palette* pPalette)
+#endif
 {
   m_iLoops = 0;
   m_iReferenceCount = 0;
@@ -64,14 +68,25 @@ void CTexture::FreeTexture()
       if (Data)
         XPhysicalFree(Data);
       delete [] m_pTexture;
+#else 
+#ifdef HAS_SDL
+      SDL_FreeSurface(m_pTexture);
 #else
       m_pTexture->Release();
 #endif
+#endif
     }
     else
+#ifdef HAS_SDL
+      SDL_FreeSurface(m_pTexture);
+#else
       m_pTexture->Release();
+#endif
     m_pTexture = NULL;
   }
+  
+// Note that in SDL and Win32 we already conver the paletted textures into normal textures, 
+// so there's no chance of having m_pPalette as a real palette
 #ifdef HAS_XBOX_D3D
   if (m_pPalette)
   {
@@ -154,12 +169,20 @@ int CTexture::GetRef() const
 void CTexture::ReadTextureInfo()
 {
   m_memUsage = 0;
+#ifndef HAS_SDL  
   D3DSURFACE_DESC desc;
   if (m_pTexture && D3D_OK == m_pTexture->GetLevelDesc(0, &desc))
   {
     m_memUsage += desc.Size;
     m_format = desc.Format;
   }
+#else
+  if (m_pTexture)
+  {
+    m_memUsage += sizeof(SDL_Surface) + (m_pTexture->w * m_pTexture->h * m_pTexture->format->BytesPerPixel);
+    m_format = D3DFMT_A8R8G8B8;
+  }
+#endif  
   // palette as well? if (m_pPalette)
 /*
   if (m_pPalette)
@@ -174,7 +197,11 @@ DWORD CTexture::GetMemoryUsage() const
   return m_memUsage;
 }
 
+#ifndef HAS_SDL
 LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
+#else
+SDL_Surface* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
+#endif
 {
   if (!m_pTexture) return NULL;
   m_iReferenceCount++;
@@ -272,8 +299,11 @@ int CTextureMap::GetDelay(int iPicture) const
   return pTexture->GetDelay();
 }
 
-
+#ifndef HAS_SDL
 LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
+#else
+SDL_Surface* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
+#endif
 {
   if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
 
@@ -317,8 +347,11 @@ CGUITextureManager::~CGUITextureManager(void)
   Cleanup();
 }
 
-
+#ifndef HAS_SDL  
 LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
+#else
+SDL_Surface* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)  
+#endif
 {
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -326,9 +359,8 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
     CTextureMap *pMap = m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-      LPDIRECT3DTEXTURE8 texture = pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
       //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
-      return texture;
+      return pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
     }
   }
   return NULL;
@@ -359,6 +391,7 @@ int CGUITextureManager::GetDelay(const CStdString& strTextureName, int iPicture)
   return 100;
 }
 
+#ifndef HAS_SDL
 // Round a number to the nearest power of 2 rounding up
 // runs pretty quickly - the only expensive op is the bsr
 // alternive would be to dec the source, round down and double the result
@@ -378,6 +411,13 @@ DWORD __forceinline __stdcall PadPow2(DWORD x)
   }
   // return result in eax
 }
+#else
+// SDL does not care about the surfaces being a power of 2
+DWORD PadPow2(DWORD x) 
+{
+   return x;
+}
+#endif
 
 void CGUITextureManager::StartPreLoad()
 {
@@ -436,7 +476,7 @@ void CGUITextureManager::FlushPreLoad()
 int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 {
   if (strTextureName == "-")
-    return NULL;
+    return 0;
 
   // first check of texture exists...
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -462,9 +502,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   CSingleLock lock(g_graphicsContext);
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 pTexture;
   LPDIRECT3DPALETTE8 pPal = 0;
-
+#else
+  SDL_Surface* pTexture;
+  SDL_Palette* pPal = NULL;
+#endif
   int bundle = -1;
   const CStdString* pstrBundleTex = NULL;
   for (int i = 0; i < 2; i++)
@@ -506,7 +550,12 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   {
     strPackedPath = strPath;
     strPackedPath += ".xpr";
+#ifndef _LINUX
     bPacked = (GetFileAttributes(strPackedPath.c_str()) != -1);
+#else
+	 struct stat statBuf;
+	 bPacked = (stat(strPackedPath.c_str(), &statBuf) != -1);
+#endif
   }
   else
     bPacked = false;
@@ -519,17 +568,25 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
     if (bPacked || bundle >= 0)
     {
+#ifndef HAS_SDL    
       LPDIRECT3DTEXTURE8* pTextures;
+#else
+	   SDL_Surface** pTextures;
+#endif	   
       int nLoops = 0;
       int* Delay;
       int nImages;
       if (bundle >= 0)
       {
+#ifndef HAS_SDL
         nImages = m_TexBundle[bundle].LoadAnim(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTextures, &pPal, nLoops, &Delay);
+#else
+        nImages = m_TexBundle[bundle].LoadAnim(*pstrBundleTex, &info, &pTextures, &pPal, nLoops, &Delay);
+#endif        
         if (!nImages)
         {
           CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
-          return NULL;
+          return 0;
         }
       }
       else // packed
@@ -541,7 +598,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         {
           if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
             CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
-          return NULL;
+          return 0;
         }
       }
 
@@ -568,7 +625,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return NULL;
+        return 0;
       }
       int iWidth = AnimatedGifSet.FrameWidth;
       int iHeight = AnimatedGifSet.FrameHeight;
@@ -594,17 +651,24 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         int h = PadPow2(iHeight);
 #ifdef HAS_XBOX_D3D
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+#elif defined(HAS_SDL)
+		  pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		  if (pTexture)
 #else
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #endif
         {
-          D3DLOCKED_RECT lr;
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
+#ifndef HAS_SDL          
+          D3DLOCKED_RECT lr;
           RECT rc = { 0, 0, pImage->Width, pImage->Height };
           if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
+#else
+			 if (SDL_LockSurface(pTexture) != -1)
+#endif          
           {
-            POINT pt = { 0, 0 };
 #ifdef HAS_XBOX_D3D
+            POINT pt = { 0, 0 };
             XGSwizzleRect(pImage->Raster, pImage->BytesPerRow, &rc, lr.pBits, w, h, &pt, 1);
 #else
             COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
@@ -615,9 +679,18 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
             if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
               palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
             
+#ifdef HAS_SDL
+				// Allocate memory for the actual pixels in the surface and set the surface
+				BYTE* pixels = (BYTE*) malloc(w * h * 4);
+				pTexture->pixels = pixels;
+#endif            
             for (int y = 0; y < pImage->Height; y++)
             {
+#ifndef HAS_SDL            
               BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
+#else
+				  BYTE *dest = (BYTE *)pixels + (y * w * 4); 
+#endif				               
               BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
               for (int x = 0; x < pImage->Width; x++)
               {
@@ -629,7 +702,12 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
               }
             }
 #endif
+
+#ifndef HAS_SDL
             pTexture->UnlockRect( 0 );
+#else
+				SDL_UnlockSurface(pTexture);
+#endif            
 
             CTexture* pclsTexture = new CTexture(pTexture, iWidth, iHeight, false, 100, pPal);
             pclsTexture->SetDelay(pImage->Delay);
@@ -660,10 +738,14 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
   if (bundle >= 0)
   {
+#ifndef HAS_SDL
     if (FAILED(m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTexture, &pPal)))
+#else    
+    if (FAILED(m_TexBundle[bundle].LoadTexture(*pstrBundleTex, &info, &pTexture, &pPal)))
+#endif    
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
-      return NULL;
+      return 0;
     }
   }
   else if (bPacked)
@@ -674,37 +756,51 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     {
       if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
         CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
-      return NULL;
+      return 0;
     }
   }
   else
   {
     if (strPath.Right(4).ToLower() == ".dds")
     {
+#ifndef HAS_SDL    
       if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
                                        D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
                                        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return NULL;
+        return 0;
       }
+#else
+      CLog::Log(LOGERROR, "Texture manager unable to load file, unsupported format dds: %s", strPath.c_str());
+      return 0;
+#endif      
     }
     else
-    {
+    {    
       // normal picture
       // convert from utf8
       CStdString texturePath;
       g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
+#ifndef HAS_SDL
       if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
                                        D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
                                        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return NULL;
+        return 0;
       }
+#else
+		pTexture = IMG_Load(texturePath.c_str());
+		if (!pTexture)
+		{
+          CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
+          return 0;
+		}
+#endif      
     }
   }
 
@@ -838,6 +934,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
 {
   CSingleLock lock(g_graphicsContext);
 
+#ifndef _LINUX
   MEMORYSTATUS stat;
   GlobalMemoryStatus(&stat);
   DWORD dwMegFree = stat.dwAvailPhys / (1024 * 1024);
@@ -847,7 +944,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
     //if (strTextureName.GetAt(1) != ':') return;
     //CLog::Log(LOGINFO, "release:%s", strTextureName.c_str());
   }
-
+#endif
 
   ivecTextures i;
   i = m_vecTextures.begin();

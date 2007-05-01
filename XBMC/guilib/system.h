@@ -22,6 +22,7 @@
 #define HAS_WMA_CODEC
 #define HAS_XBOX_AUDIO
 #define HAS_AUDIO_PASS_THROUGH
+#define HAS_WEB_SERVER
 #define HAS_FTP_SERVER
 #define HAS_TIME_SERVER
 #define HAS_VISUALISATION
@@ -38,6 +39,12 @@
 #define HAS_UNDOCUMENTED
 #define HAS_SECTIONS
 #define HAS_CDDA_RIPPER
+#define HAS_PYTHON
+#define HAS_TRAINER
+#undef  HAS_SDL
+#define HAS_AUDIO
+#define HAS_SHOUTCAST
+#define HAS_RAR
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL
@@ -58,6 +65,7 @@
 #undef HAS_XBOX_AUDIO
 #undef HAS_AUDIO_PASS_THROUGH
 #undef HAS_FTP_SERVER
+#define HAS_WEB_SERVER
 #undef HAS_TIME_SERVER
 #undef HAS_VISUALISATION
 #undef HAS_KARAOKE
@@ -73,7 +81,14 @@
 #undef HAS_UNDOCUMENTED
 #undef HAS_SECTIONS
 #undef HAS_CDDA_RIPPER
+#define HAS_PYTHON
+#define HAS_TRAINER
+#define HAS_AUDIO
+#define HAS_SHOUTCAST
+#define HAS_RAR
 
+#ifndef _LINUX
+#undef HAS_SDL
 // additional includes and defines
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
@@ -85,4 +100,28 @@
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
+#endif
+
+#ifdef _LINUX
+#undef HAS_PYTHON
+#undef HAS_TRAINER
+#undef HAS_WEB_SERVER
+#undef HAS_UPNP
+#undef HAS_AUDIO
+#undef HAS_SHOUTCAST
+#define HAS_SDL
+#undef HAS_RAR
+
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <errno.h>
+#include "PlatformInclude.h"
+#endif
+
 #endif

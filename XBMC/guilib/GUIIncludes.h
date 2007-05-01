@@ -21,3 +21,4 @@ private:
   vector<CStdString> m_files;
   typedef vector<CStdString>::const_iterator iFiles;
 };
+

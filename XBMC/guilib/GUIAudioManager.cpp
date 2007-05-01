@@ -1,11 +1,11 @@
 #include "include.h"
 #include "GUIAudioManager.h"
-#include "key.h"
-#include "audiocontext.h"
+#include "Key.h"
+#include "AudioContext.h"
 #include "GUISound.h"
-#include "../xbmc/settings.h"
-#include "../xbmc/buttontranslator.h"
-#include "../xbmc/utils/singlelock.h"
+#include "../xbmc/Settings.h"
+#include "../xbmc/ButtonTranslator.h"
+#include "../xbmc/utils/SingleLock.h"
 
 CGUIAudioManager g_audioManager;
 
@@ -56,8 +56,9 @@ void CGUIAudioManager::DeInitialize(int iDevice)
       sound->Stop();
 
     delete sound;
-    it=m_windowSounds.erase(it);
+    ++it;
   }
+  m_windowSounds.clear();
 
   pythonSoundsMap::iterator it1=m_pythonSounds.begin();
   while (it1!=m_pythonSounds.end())
@@ -67,8 +68,9 @@ void CGUIAudioManager::DeInitialize(int iDevice)
       sound->Stop();
 
     delete sound;
-    it1=m_pythonSounds.erase(it1);
+    ++it1;
   }
+  m_pythonSounds.clear();
 }
 
 // \brief Clear any unused audio buffers
@@ -91,7 +93,11 @@ void CGUIAudioManager::FreeUnused()
     if (!sound->IsPlaying())
     {
       delete sound;
+#ifndef _LINUX
       it=m_windowSounds.erase(it);
+#else
+      m_windowSounds.erase(it);
+#endif
     }
     else ++it;
   }
@@ -104,7 +110,11 @@ void CGUIAudioManager::FreeUnused()
     if (!sound->IsPlaying())
     {
       delete sound;
+#ifndef _LINUX
       it1=m_pythonSounds.erase(it1);
+#else
+      m_pythonSounds.erase(it1);
+#endif
     }
     else ++it1;
   }

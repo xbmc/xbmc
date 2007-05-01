@@ -642,7 +642,7 @@ DWORD CGUIControl::GetNextControl(int direction) const
   case ACTION_MOVE_RIGHT:
     return m_dwControlRight;
   default:
-    return -1;
+    return (DWORD) -1;
   }
 }
 
