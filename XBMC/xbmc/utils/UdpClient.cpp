@@ -1,7 +1,9 @@
 
 #include "../stdafx.h"
 #include "UdpClient.h"
-
+#ifdef _LINUX
+#include <sys/ioctl.h>
+#endif
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
@@ -71,7 +73,7 @@ bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
   addr.sin_port = htons(aPort);
   addr.sin_addr.s_addr = INADDR_BROADCAST;
 
-  UdpCommand broadcast = {addr, aMessage, NULL, NULL};
+  UdpCommand broadcast = {addr, aMessage, NULL, 0};
   commands.push_back(broadcast);
 
   LeaveCriticalSection(&critical_section);
@@ -88,7 +90,7 @@ bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
   addr.sin_port = htons(aPort);
   addr.sin_addr.s_addr = inet_addr(aIpAddress);
 
-  UdpCommand transmit = {addr, aMessage, NULL, NULL};
+  UdpCommand transmit = {addr, aMessage, NULL, 0};
   commands.push_back(transmit);
 
   LeaveCriticalSection(&critical_section);
@@ -99,7 +101,7 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, CStdString& aMessage)
 {
   EnterCriticalSection(&critical_section);
 
-  UdpCommand transmit = {aAddress, aMessage, NULL, NULL};
+  UdpCommand transmit = {aAddress, aMessage, NULL, 0};
   commands.push_back(transmit);
 
   LeaveCriticalSection(&critical_section);
@@ -139,7 +141,12 @@ void CUdpClient::Process()
     {
       // read data
       int messageLength = sizeof(messageBuffer) - 1 ;
-      int remoteAddressSize = sizeof(remoteAddress);
+#ifndef _LINUX
+      int remoteAddressSize;
+#else
+      socklen_t remoteAddressSize;
+#endif
+      remoteAddressSize = sizeof(remoteAddress);
 
       int ret = recvfrom(client_socket, messageBuffer, messageLength, 0, (struct sockaddr *) & remoteAddress, &remoteAddressSize);
       if (ret != SOCKET_ERROR)

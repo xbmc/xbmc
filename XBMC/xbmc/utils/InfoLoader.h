@@ -1,5 +1,5 @@
 #pragma once
-#include "thread.h"
+#include "Thread.h"
 
 class CInfoLoader;
 

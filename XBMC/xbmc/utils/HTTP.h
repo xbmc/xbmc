@@ -49,8 +49,9 @@ private:
   CStdString ConstructAuthorization(const CStdString &auth, const CStdString &username, const CStdString &password);
 
   CAutoPtrSocket m_socket;
+#ifndef _LINUX
   WSAEVENT hEvent;
-
+#endif
   string m_strProxyServer;
   string m_strProxyUsername;
   string m_strProxyPassword;
@@ -72,3 +73,4 @@ private:
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)
+

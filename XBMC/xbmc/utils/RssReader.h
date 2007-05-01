@@ -10,7 +10,11 @@
 #endif // _MSC_VER > 1000
 
 #include "Thread.h"
+#ifndef _LINUX
 #include "../lib/libiconv/iconv.h"
+#else
+#include <iconv.h>
+#endif
 
 #define RSS_COLOR_BODY  0
 #define RSS_COLOR_HEADLINE 1

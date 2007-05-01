@@ -8,12 +8,14 @@ CSharedSection::CSharedSection()
   m_sharedLock = 0;
   m_exclusive = false;
   InitializeCriticalSection(&m_critSection);
+  InitializeCriticalSection(&m_helperLock);
   m_eventFree = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 CSharedSection::~CSharedSection()
 {
   DeleteCriticalSection(&m_critSection);
+  DeleteCriticalSection(&m_helperLock);
   CloseHandle(m_eventFree);
 }
 
@@ -23,7 +25,9 @@ void CSharedSection::EnterShared()
   if( !m_exclusive )
   { //exclusve will be set if this thread already owns this object
     ResetEvent(m_eventFree);
-    InterlockedIncrement(&m_sharedLock);
+	EnterCriticalSection(&m_helperLock);
+    m_sharedLock++;
+	LeaveCriticalSection(&m_helperLock);
   }
   LeaveCriticalSection(&m_critSection);
 }
@@ -32,15 +36,18 @@ void CSharedSection::LeaveShared()
 {
   if( !m_exclusive )
   {
-    if( InterlockedDecrement(&m_sharedLock) == 0 ) 
+	EnterCriticalSection(&m_helperLock);
+    m_sharedLock--;
+    if( m_sharedLock == 0 ) 
       SetEvent(m_eventFree);
+	LeaveCriticalSection(&m_helperLock);
   }
 }
 
 void CSharedSection::EnterExclusive()
 {
   EnterCriticalSection(&m_critSection);
-  if( InterlockedCompareExchange(&m_sharedLock, 0, 0) != 0 )
+  if( m_sharedLock != 0 )
     WaitForSingleObject(m_eventFree, INFINITE);
   m_exclusive = true;
 }
@@ -158,3 +165,4 @@ void CExclusiveLock::Leave()
   m_cs.LeaveExclusive();
   m_bIsOwner = false;
 }
+

@@ -1,7 +1,7 @@
 #include "../stdafx.h"
 #include <ConIo.h>
 #include "FanController.h"
-#include "../xbox/undocumented.h"
+#include "../xbox/Undocumented.h"
 #include "../xbox/XKExports.h"
 
 

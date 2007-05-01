@@ -45,6 +45,7 @@ CCriticalSection::operator LPCRITICAL_SECTION()
 }
 
 
+#ifndef _LINUX
 BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
 {
 #ifdef _XBOX
@@ -72,3 +73,4 @@ VOID NTAPI RestoreCriticalSection(LPCRITICAL_SECTION section, DWORD count)
   for(DWORD i=0;i<count;i++)
     EnterCriticalSection(section);  
 }
+#endif

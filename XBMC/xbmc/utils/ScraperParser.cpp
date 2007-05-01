@@ -1,10 +1,14 @@
 #include "ScraperParser.h"
 
-#include "RegExp.h"
-#include "htmlutil.h"
-//#include "../stdafx.h"
- #include "charsetconverter.h"
+#ifdef _LINUX
+#include "system.h"
+#endif
+
 #include <cstring>
+#include "RegExp.h"
+#include "HTMLUtil.h"
+//#include "../stdafx.h"
+#include "CharsetConverter.h"
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {

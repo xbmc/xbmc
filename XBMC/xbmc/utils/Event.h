@@ -11,8 +11,10 @@
 
 #ifdef _XBOX
 #include <xtl.h>
-#else
+#elif defined(_WIN32)
 #include <windows.h>
+#else
+#include "PlatformInclude.h"
 #endif
 
 class CEvent

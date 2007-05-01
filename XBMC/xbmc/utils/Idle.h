@@ -1,7 +1,7 @@
 #ifndef __IDLE_H__
 #define __IDLE_H__
 
-#include "thread.h" 
+#include "Thread.h" 
 ///////////////////////////////// Classes //////////////////////////////
 
 class CIdleThread : public CThread

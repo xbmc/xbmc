@@ -1,12 +1,14 @@
 
 #include "../stdafx.h"
 #include "log.h"
+#ifndef _LINUX
 #include <share.h>
-#include "criticalsection.h"
-#include "singlelock.h"
+#endif
+#include "CriticalSection.h"
+#include "SingleLock.h"
 #include "StdString.h"
 #include "../Settings.h"
-#include "../util.h"
+#include "../Util.h"
 
 FILE* CLog::fd = NULL;
 
@@ -41,7 +43,11 @@ void CLog::Log(int loglevel, const char *format, ... )
       // and if we are running from DVD, it's changed to T:\\ in CApplication::Create()
       CStdString LogFile;
       CUtil::AddFileToFolder(g_stSettings.m_logFolder, "xbmc.log", LogFile);
+#ifndef _LINUX      
       fd = _fsopen(LogFile, "a+", _SH_DENYWR);
+#else
+      fd = fopen(LogFile, "a+");
+#endif
     }
       
     if (!fd)

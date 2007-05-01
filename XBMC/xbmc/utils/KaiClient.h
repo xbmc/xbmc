@@ -6,7 +6,7 @@
 #include "../Xbox/VoiceManager.h"
 #include "../Xbox/MediaPacketQueue.h"
 #endif
-#include "stopwatch.h"
+#include "Stopwatch.h"
 
 #define KAI_SYSTEM_PORT  34522
 #define KAI_SYSTEM_ROOT  "Arena"
