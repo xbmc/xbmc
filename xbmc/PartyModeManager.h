@@ -1,6 +1,6 @@
 #pragma once
 #include "FileItem.h"
-#include "playlist.h"
+#include "PlayList.h"
 
 class CPartyModeManager
 {
@@ -30,7 +30,7 @@ private:
   bool ReapSongs();
   bool MovePlaying();
   void SendUpdateMessage();
-  void OnError(int iError, CStdString& strLogMessage);
+  void OnError(int iError, const CStdString& strLogMessage);
   int GetSongCount(int iType);
   void ClearState();
   void UpdateStats();

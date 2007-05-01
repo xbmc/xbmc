@@ -52,7 +52,11 @@ struct ImageInfo
   unsigned int originalwidth;
   unsigned int originalheight;
   EXIFINFO exifInfo;
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 texture;
+#else
+  SDL_Surface* texture;
+#endif
 };
 
 class DllImageLibInterface

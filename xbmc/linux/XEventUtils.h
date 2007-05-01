@@ -4,7 +4,7 @@
 
 #include "XHandle.h"
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 HANDLE CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName);
 bool SetEvent(HANDLE hEvent);

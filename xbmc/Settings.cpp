@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "settings.h"
-#include "application.h"
-#include "util.h"
+#include "Settings.h"
+#include "Application.h"
+#include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"
@@ -34,9 +34,9 @@
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 #include "xbox/Network.h"
-#include "filesystem/MultiPathDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
-#include "utils/fancontroller.h"
+#include "utils/FanController.h"
 #include "MediaManager.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
@@ -352,10 +352,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     if (pRootElement)
       strValue = pRootElement->Value();
     if ( strValue != "sources")
-      CLog::Log(LOGERROR, __FUNCTION__" sources.xml file does not contain <sources>");
+      CLog::Log(LOGERROR, "%s sources.xml file does not contain <sources>", __FUNCTION__);
   }
   else
-    CLog::Log(LOGERROR, __FUNCTION__" Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
   CStdString strCached = "Z:\\remotesources.xml";
@@ -400,10 +400,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       if (pRootElement)
         strValue = pRootElement->Value();
       if ( strValue != "sources")
-        CLog::Log(LOGERROR, __FUNCTION__" remote_sources.xml file does not contain <sources>");
+        CLog::Log(LOGERROR, "%s remote_sources.xml file does not contain <sources>", __FUNCTION__);
     }
     else
-      CLog::Log(LOGERROR, __FUNCTION__" unable to load file: %s, Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "%s unable to load file: %s, Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
   }
 
   if (pRootElement)
@@ -2447,7 +2447,7 @@ void CSettings::SetSkinString(int setting, const CStdString &label)
     return;
   }
   assert(false);
-  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
+  CLog::Log(LOGFATAL, "%s : Unknown setting requested", __FUNCTION__);
 }
 
 void CSettings::ResetSkinSetting(const CStdString &setting)
@@ -2512,7 +2512,7 @@ void CSettings::SetSkinBool(int setting, bool set)
     return;
   }
   assert(false);
-  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
+  CLog::Log(LOGFATAL,"%s : Unknown setting requested", __FUNCTION__);
 }
 
 void CSettings::ResetSkinSettings()

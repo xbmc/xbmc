@@ -24,12 +24,12 @@
 #include "FileSystem/DirectoryCache.h"
 #include "GUIWindowVideoFiles.h"
 #include "Util.h"
-#include "nfofile.h"
+#include "NfoFile.h"
 #include "utils/RegExp.h"
 #include "utils/md5.h"
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 
 using namespace DIRECTORY;
 using namespace XFILE;
@@ -64,7 +64,7 @@ void CVideoInfoScanner::Process()
     int iFound;
     m_database.GetScraperForPath(m_strStartDir,m_info.strPath,m_info.strContent,iFound);
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Starting scan");
+    CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
 
     bool bOKtoScan = true;
     if (m_bUpdateAll)
@@ -128,7 +128,7 @@ void CVideoInfoScanner::Process()
       m_database.RollbackTransaction();
 
     m_database.Close();
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Finished scan");
+    CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp, strTmp1;
@@ -210,13 +210,13 @@ bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, const SScanSettin
     if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
     { // path has changed - rescan
       if (dbHash.IsEmpty())
-        CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+        CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
       else
-        CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
+        CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
     }
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
       m_currentItem += numFilesInFolder;
 
       // notify our observer of our progress
@@ -252,7 +252,7 @@ bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, const SScanSettin
   }
   if (m_pObserver)
     m_pObserver->OnDirectoryScanned(strDirectory);
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
+  CLog::Log(LOGDEBUG, "%s - Finished dir: %s", __FUNCTION__, strDirectory.c_str());
 
   // remove this path from the list we're processing
   set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
@@ -467,7 +467,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
               {
                 if (nfoReader.m_strScraper == "NFO")
                 {
-                  CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+                  CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
                   CVideoInfoTag movieDetails;
                   nfoReader.GetDetails(movieDetails);
                   AddMovieAndGetThumb(pItem, "movies", movieDetails, -1, bDirNames, m_dlgProgress);
@@ -558,7 +558,7 @@ int CVideoInfoScanner::CountFiles(const CStdString& strPath)
   int count=0;
   // load subfolder
   CFileItemList items;
-  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
+  CLog::Log(LOGDEBUG, "%s - processing dir: %s", __FUNCTION__, strPath.c_str());
   CDirectory::GetDirectory(strPath, items, g_stSettings.m_videoExtensions, true);
   if (m_info.strContent.Equals("movies"))
     items.Stack();
@@ -575,7 +575,7 @@ int CVideoInfoScanner::CountFiles(const CStdString& strPath)
     else if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
+  CLog::Log(LOGDEBUG, "%s - finished processing dir: %s", __FUNCTION__, strPath.c_str());
   return count;
 }
 

@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderSPC.h"
-#include "cores/paplayer/spc/types.h"
+#include "cores/paplayer/spc/Types.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -127,3 +127,4 @@ bool CMusicInfoTagLoaderSPC::Load(const CStdString& strFileName, CMusicInfoTag& 
   free(spc);
   return tag.Loaded();
 }
+

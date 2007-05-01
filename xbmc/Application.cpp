@@ -20,27 +20,27 @@
  */
 
 #include "stdafx.h"
-#include "application.h"
+#include "Application.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/XKEEPROM.h"
-#include "utils/lcd.h"
-#include "xbox/iosupport.h"
+#include "utils/LCD.h"
+#include "xbox/IoSupport.h"
 #include "xbox/XKHDD.h"
 #endif
 #include "xbox/xbeheader.h"
-#include "util.h"
-#include "texturemanager.h"
-#include "cores/playercorefactory.h"
-#include "playlistplayer.h"
-#include "musicdatabase.h"
-#include "videodatabase.h"
-#include "autorun.h"
+#include "Util.h"
+#include "TextureManager.h"
+#include "cores/PlayerCoreFactory.h"
+#include "PlayListPlayer.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
+#include "Autorun.h"
 #include "ActionManager.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
 #include "GUILabelControl.h"  // needed for CInfoPortion
-#include "GUIImage.h"
+#include "guiImage.h"
 #endif
 #include "utils/KaiClient.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -50,28 +50,29 @@
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
-#include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "SkinInfo.h"
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
-#include "applicationmessenger.h"
-#include "sectionloader.h"
+#include "ApplicationMessenger.h"
+#include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
-#include "guiusermessages.h"
-#include "filesystem/directoryCache.h"
-#include "filesystem/StackDirectory.h"
+#include "GUIUserMessages.h"
+#include "FileSystem/DirectoryCache.h"
+#include "FileSystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 
 #ifdef HAS_FILESYSTEM
-#include "filesystem/filedaap.h"
+#include "FileSystem/FileDAAP.h"
 #endif
 #ifdef HAS_UPNP
 #include "UPnP.h"
@@ -79,21 +80,26 @@
 #endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/videorenderers/rendermanager.h"
+#include "cores/videorenderers/RenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
 #endif
-#include "audiocontext.h"
+#include "AudioContext.h"
 #include "GUIFontTTF.h"
-#include "xbox/network.h"
-#include "utils/win32exception.h"
+#include "xbox/Network.h"
+#ifndef _LINUX
+#include "utils/Win32Exception.h"
+#endif
+#ifdef HAS_WEB_SERVER
+#include "lib/libGoAhead/xbmchttp.h"
 #include "lib/libGoAhead/webserver.h"
+#endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
 #endif
 #ifdef HAS_TIME_SERVER
-#include "utils/sntp.h"
+#include "utils/Sntp.h"
 #endif
 #ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
@@ -125,7 +131,7 @@
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
-#include "GUIWindowSlideshow.h"
+#include "GUIWindowSlideShow.h"
 #include "GUIWindowBuddies.h"
 
 #include "GUIWindowFullScreen.h"
@@ -239,6 +245,7 @@ using namespace PLAYLIST;
 #define MAX_FFWD_SPEED 5
 
 CStdString g_LoadErrorStr;
+static int iBlinkRecord = 0;
 
 #ifdef HAS_XBOX_HARDWARE
 extern "C"
@@ -267,10 +274,11 @@ CApplication::CApplication(void)
   m_bSpinDown = false;
   m_bNetworkSpinDown = false;
   m_dwSpinDownTime = timeGetTime();
+#ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
   pXbmcHttp = NULL;
+#endif
   m_pFileZilla = NULL;
-  pXbmcHttp = NULL;
   m_pPlayer = NULL;
 #ifdef HAS_XBOX_HARDWARE
   XSetProcessQuantumLength(5); //default=20msec
@@ -334,6 +342,7 @@ HWND g_hWnd = NULL;
 
 void CApplication::InitBasicD3D()
 {
+#ifndef HAS_SDL
   bool bPal = g_videoConfig.HasPAL();
   CLog::Log(LOGINFO, "Init display in default mode: %s", bPal ? "PAL" : "NTSC");
   // init D3D with defaults (NTSC or PAL standard res)
@@ -356,9 +365,14 @@ void CApplication::InitBasicD3D()
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
     Sleep(INFINITE); // die
   }
+#endif
 
   // Check if we have the required modes available
+#ifndef HAS_SDL
   g_videoConfig.GetModes(m_pD3D);
+#else
+  g_videoConfig.GetModes();
+#endif
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
@@ -367,8 +381,11 @@ void CApplication::InitBasicD3D()
     CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
     CLog::Log(LOGERROR, "Done reset");
   }
+
   // Transfer the resolution information to our graphics context
+#ifndef HAS_SDL
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
+#endif
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // Create the device
@@ -380,7 +397,7 @@ void CApplication::InitBasicD3D()
     Sleep(INFINITE); // die
   }
   m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
-#else
+#elif !defined(HAS_SDL)
   if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
@@ -392,8 +409,11 @@ void CApplication::InitBasicD3D()
   {
     m_splash->Stop();
   }
+
+#ifndef HAS_SDL  
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif  
 }
 
 // This function does not return!
@@ -411,8 +431,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   {
     m_splash->Stop();
   }
+
+#ifndef HAS_SDL  
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif  
 
   // D3D is up, load default font
 #ifdef HAS_XFONT
@@ -625,20 +648,23 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 #ifdef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
 #endif
-#else
+#elif !defined(HAS_SDL)
         SendMessage(g_hWnd, WM_CLOSE, 0, 0);
 #endif
       }
     }
   }
   else
+  {
 #ifdef _XBOX
     Sleep(INFINITE);
-#else
+#elif !defined(HAS_SDL)
     SendMessage(g_hWnd, WM_CLOSE, 0, 0);
 #endif
+  }
 }
 
+#ifndef _LINUX
 LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
 {
   PCSTR pExceptionString = "Unknown exception code";
@@ -673,8 +699,10 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 
   return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
+#endif
+
 #ifdef _XBOX
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
 #endif
 extern "C" void __stdcall init_emu_environ();
@@ -684,9 +712,11 @@ HRESULT CApplication::Create(HWND hWnd)
   g_hWnd = hWnd;
 
   HRESULT hr;
+  
   //grab a handle to our thread to be used later in identifying the render thread
   m_threadID = GetCurrentThreadId();
 
+#ifndef _LINUX
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
 
@@ -695,6 +725,7 @@ HRESULT CApplication::Create(HWND hWnd)
   /* install win32 exception translator, win32 exceptions
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
+#endif
 
   CStdString strExecutablePath;
   char szDevicePath[MAX_PATH];
@@ -765,6 +796,7 @@ HRESULT CApplication::Create(HWND hWnd)
     CIoSupport::RemapDriveLetter('T',szDevicePath);
   }
 
+#ifndef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
   if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
@@ -772,13 +804,21 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
     return E_FAIL;
   }
+#endif
 
   //list available videomodes
+#ifndef HAS_SDL
   g_videoConfig.GetModes(m_pD3D);
   //init the present parameters with values that are supported
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
-  // Transfer the resolution information to our graphics context
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
+#else
+  g_videoConfig.GetModes();
+  //init the present parameters with values that are supported
+  RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
+#endif
+
+  // Transfer the resolution information to our graphics context
   g_graphicsContext.SetVideoResolution(initialResolution, TRUE);
 
   // Initialize core peripheral port support. Note: If these parameters
@@ -1036,14 +1076,20 @@ HRESULT CApplication::Create(HWND hWnd)
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
   // Transfer the new resolution information to our graphics context
-#ifndef HAS_XBOX_D3D
+#if !defined(HAS_XBOX_D3D) && !defined(HAS_SDL)
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 #else
 #define D3DCREATE_MULTITHREADED 0
 #endif
+
+#ifndef HAS_SDL
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
+#endif
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+  
+  // TODO LINUX SDL - Check that the resolution is ok
+#ifndef HAS_SDL    
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -1080,6 +1126,8 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
+#endif
+  
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
@@ -1129,11 +1177,15 @@ HRESULT CApplication::Create(HWND hWnd)
             g_settings.m_ResInfo[iResolution].strMode);
   m_gWindowManager.Initialize();
 
+#ifdef HAS_PYTHON
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
+#endif
 
   // show recovery console on fatal error instead of freezing
   CLog::Log(LOGINFO, "install unhandled exception filter");
+#ifndef _LINUX  
   SetUnhandledExceptionFilter(UnhandledExceptionFilter);
+#endif  
 
 #ifdef HAS_XBOX_D3D
   D3DDevice::SetWaitCallback(WaitCallback);
@@ -1337,7 +1389,9 @@ HRESULT CApplication::Initialize()
     g_guiSettings.GetString("network.gateway").c_str(),
     g_guiSettings.GetString("network.dns").c_str());
 
+#ifdef HAS_PYTHON
   g_pythonParser.bStartup = true;
+#endif  
   g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
@@ -1418,6 +1472,7 @@ void CApplication::StopIdleThread()
 
 void CApplication::StartWebServer()
 {
+#ifdef HAS_WEB_SERVER    
   if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
@@ -1427,10 +1482,12 @@ void CApplication::StartWebServer()
 	if (pXbmcHttp)
       pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
+#endif
 }
 
 void CApplication::StopWebServer()
 {
+#ifdef HAS_WEB_SERVER    
   if (m_pWebServer)
   {
     CLog::Log(LOGNOTICE, "Webserver: Stopping...");
@@ -1440,6 +1497,7 @@ void CApplication::StopWebServer()
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
   }
+#endif  
 }
 
 void CApplication::StartFtpServer()
@@ -1773,7 +1831,7 @@ void CApplication::CancelDelayLoadSkin()
 
 void CApplication::ReloadSkin()
 {
-  CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
+  CGUIMessage msg(GUI_MSG_LOAD_SKIN, (DWORD) -1, m_gWindowManager.GetActiveWindow());
   g_graphicsContext.SendMessage(msg);
   // Reload the skin, restoring the previously focused control
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
@@ -1989,8 +2047,13 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       }
 
       // skip "up" directories, which come in all queries
+#ifndef _LINUX
       if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
         continue;
+#else
+      if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
+        continue;
+#endif
 
       strFileName = vecSkinPath[i]+"\\"+FindFileData.cFileName;
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
@@ -2121,12 +2184,16 @@ void CApplication::RenderNoPresent()
   // update our FPS
   g_infoManager.UpdateFPS();
 
+#ifndef HAS_SDL
   if(!m_pd3dDevice)
     return;
+#endif    
 
   g_graphicsContext.Lock();
 
+#ifndef HAS_SDL
   m_pd3dDevice->BeginScene();
+#endif
 
   m_gWindowManager.UpdateModelessVisibility();
 
@@ -2143,7 +2210,7 @@ void CApplication::RenderNoPresent()
   {
     if (m_pPlayer->IsRecording() )
     {
-      static iBlinkRecord = 0;
+      iBlinkRecord = 0;
       CGUIFont* pFont = g_fontManager.GetFont("font13");
       if (pFont)
       {
@@ -2215,7 +2282,10 @@ void CApplication::RenderNoPresent()
     RenderMemoryStatus();
   }
 
+#ifndef HAS_SDL
   m_pd3dDevice->EndScene();
+#endif
+
 #ifdef HAS_XBOX_D3D
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
@@ -2233,7 +2303,11 @@ void CApplication::Render()
   g_graphicsContext.Lock();
   RenderNoPresent();
   // Present the backbuffer contents to the display
+#ifndef HAS_SDL
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#else
+  SDL_Flip(g_graphicsContext.getScreenSurface());
+#endif
   g_graphicsContext.Unlock();
 }
 #endif
@@ -2336,7 +2410,7 @@ bool CApplication::OnKey(CKey& key)
       g_buttonTranslator.GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
+    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, key.GetButtonCode(), action.wID);
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
@@ -2346,6 +2420,7 @@ bool CApplication::OnKey(CKey& key)
 
 bool CApplication::OnAction(const CAction &action)
 {
+#ifdef HAS_WEB_SERVER    
   // Let's tell the outside world about this action
   if (pXbmcHttp)
   {
@@ -2353,6 +2428,7 @@ bool CApplication::OnAction(const CAction &action)
     tmp.Format("%i",action.wID);
     pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
   }
+#endif
 
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
@@ -2978,6 +3054,7 @@ bool CApplication::ProcessMouse()
 
 bool CApplication::ProcessHTTPApiButtons()
 {
+#ifdef HAS_WEB_SERVER    
   if (pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
@@ -3024,6 +3101,7 @@ bool CApplication::ProcessHTTPApiButtons()
     }
   }
   return false;
+#endif  
 }
 
 bool CApplication::ProcessKeyboard()
@@ -3098,8 +3176,10 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
+#ifdef HAS_WEB_SERVER    
 	if (pXbmcHttp)
       pXbmcHttp->xbmcBroadcast("ShutDown", 1);
+#endif
 
     StopServices();
     //Sleep(5000);
@@ -3126,7 +3206,9 @@ void CApplication::Stop()
     //g_lcd->StopThread();
     CLog::Log(LOGNOTICE, "stop python");
     g_applicationMessenger.Cleanup();
+#ifdef HAS_PYTHON    
     g_pythonParser.FreeResources();
+#endif
 
     CLog::Log(LOGNOTICE, "clean cached files!");
     g_RarManager.ClearCache(true);
@@ -3213,8 +3295,10 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
     // reset our d3d params before we destroy
+#ifndef HAS_SDL
     g_graphicsContext.SetD3DDevice(NULL);
     g_graphicsContext.SetD3DParameters(NULL);
+#endif
     CLog::Log(LOGNOTICE, "destroy");
     Destroy();
 
@@ -3421,7 +3505,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   //Is TuxBox, this should probably be moved to CFileTuxBox
   if(item.IsTuxBox())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.m_strPath.c_str());
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
     {
@@ -3577,10 +3661,15 @@ void CApplication::OnPlayBackEnded()
 
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
+#ifdef HAS_PYTHON  
   g_pythonParser.OnPlayBackEnded();
+#endif
+
+#ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (pXbmcHttp)
     pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
+#endif
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -3597,13 +3686,17 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+#ifdef HAS_PYTHON  
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
+#endif
 
+#ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (pXbmcHttp)
     pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
+#endif
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3620,12 +3713,15 @@ void CApplication::OnQueueNextItem()
 {
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
+#ifdef HAS_PYTHON  
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
+#endif
 
+#ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (pXbmcHttp)
     pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
-
+#endif
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0, 0, 0, NULL);
@@ -3636,11 +3732,15 @@ void CApplication::OnPlayBackStopped()
 {
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
+#ifdef HAS_PYTHON  
   g_pythonParser.OnPlayBackStopped();
+#endif
 
+#ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (pXbmcHttp)
     pXbmcHttp->xbmcBroadcast("OnPlayBackStoped", 1);
+#endif
 
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
@@ -3844,7 +3944,9 @@ bool CApplication::ResetScreenSaverWindow()
         m_gWindowManager.PreviousWindow();  // show the previous window
       return true;
     }
+
     // Fade to dim or black screensaver is active --> fade in
+#ifndef HAS_SDL    
     D3DGAMMARAMP Ramp;
     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
     {
@@ -3858,6 +3960,23 @@ bool CApplication::ResetScreenSaverWindow()
       m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
     }
     m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
+#else
+	 Uint16 RampRed[256];
+	 Uint16 RampGreen[256];
+	 Uint16 RampBlue[256];
+    for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
+    {
+      for (int i = 0;i < 256;i++)
+      {
+        RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
+        RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
+        RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
+      }
+      Sleep(5);
+    	SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
+    }
+    SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
+#endif
     return true;
   }
   else
@@ -3923,7 +4042,6 @@ void CApplication::CheckScreenSaver()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  D3DGAMMARAMP Ramp;
   FLOAT fFadeLevel;
 
   m_bScreenSave = true;
@@ -3967,7 +4085,10 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
     return ;
   }
+  
   // Fade to fFadeLevel
+#ifndef HAS_SDL  
+  D3DGAMMARAMP Ramp;
   m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
   for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
   {
@@ -3980,6 +4101,23 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     Sleep(5);
     m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
   }
+#else  
+  SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampGreen); // Store the old gamma ramp
+  Uint16 RampRed[256];
+  Uint16 RampGreen[256];
+  Uint16 RampBlue[256];
+  for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
+  {
+    for (int i = 0;i < 256;i++)
+    {
+      RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
+      RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
+      RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
+    }
+    Sleep(5);
+  	SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
+  }
+#endif      
 }
 
 void CApplication::CheckShutdown()
@@ -4432,11 +4570,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_EXECUTE:
     {
       // see if it is a user set string
-      CLog::Log(LOGDEBUG,__FUNCTION__" : Translating %s", message.GetStringParam().c_str());
+      CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, message.GetStringParam().c_str());
       vector<CInfoPortion> info;
       g_infoManager.ParseLabel(message.GetStringParam(), info);
       message.SetStringParam(g_infoManager.GetMultiLabel(info));
-      CLog::Log(LOGDEBUG,__FUNCTION__" : To %s", message.GetStringParam().c_str());
+      CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, message.GetStringParam().c_str());
 
       // user has asked for something to be executed
       if (CUtil::IsBuiltIn(message.GetStringParam()))
@@ -4454,11 +4592,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           return true;
         }
         CFileItem item(message.GetStringParam(), false);
+#ifdef HAS_PYTHON
         if (item.IsPythonScript())
         { // a python script
           g_pythonParser.evalFile(item.m_strPath.c_str());
         }
-        else if (item.IsXBE())
+        else 
+#endif
+	if (item.IsXBE())
         { // an XBE
           int iRegion;
           if (g_guiSettings.GetBool("myprograms.gameautoregion"))
@@ -4504,8 +4645,10 @@ void CApplication::Process()
   // (this can only be done after m_gWindowManager.Render())
   g_applicationMessenger.ProcessWindowMessages();
 
+#ifdef HAS_PYTHON
   // process any Python scripts
   g_pythonParser.Process();
+#endif
 
   // process messages, even if a movie is playing
   g_applicationMessenger.ProcessMessages();
@@ -5102,3 +5245,4 @@ void CApplication::StartFtpEmergencyRecoveryMode()
   pUser->CommitChanges();
 #endif
 }
+

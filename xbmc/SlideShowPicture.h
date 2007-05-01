@@ -16,8 +16,14 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
+#ifndef HAS_SDL
   void SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight);
+#else
+  void SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void UpdateTexture(SDL_Surface* pTexture, int iWidth, int iHeight);
+#endif
+
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
   void Render();
@@ -49,8 +55,9 @@ public:
   bool m_bIsComic;
 private:
   void Process();
-  void Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
 
+#ifndef HAS_SDL
+  void Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
   struct VERTEX
   {
     D3DXVECTOR4 p;
@@ -58,6 +65,11 @@ private:
     FLOAT tu, tv;
   };
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+  IDirect3DTexture8* m_pImage;
+#else
+  void Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwColor);
+  SDL_Surface* m_pImage;
+#endif
 
   int m_iOriginalWidth;
   int m_iOriginalHeight;
@@ -66,7 +78,6 @@ private:
   bool m_bIsFinished;
   bool m_bDrawNextImage;
   CStdString m_strFileName;
-  IDirect3DTexture8* m_pImage;
   float m_fWidth;
   float m_fHeight;
   DWORD m_dwAlpha;

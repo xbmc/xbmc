@@ -7,10 +7,10 @@
 #include "GUIMediaWindow.h"
 #include "MusicDatabase.h"
 #include "PlayList.h"
-#include "MusicInfoTagLoaderFactory.h"
-#include "Utils/MusicInfoScraper.h"
-#include "playlistplayer.h"
-#include "musicinfoloader.h"
+#include "musicInfoTagLoaderFactory.h"
+#include "utils/MusicInfoScraper.h"
+#include "PlayListPlayer.h"
+#include "MusicInfoLoader.h"
 
 /*!
  \ingroup windows 

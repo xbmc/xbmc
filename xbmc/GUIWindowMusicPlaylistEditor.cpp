@@ -22,11 +22,11 @@
 #include "stdafx.h"
 #include "GUIWindowMusicPlaylistEditor.h"
 #include "Util.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "Application.h"
 #include "GUIDialogFileBrowser.h"
-#include "Filesystem/PlaylistFileDirectory.h"
-#include "PlaylistM3U.h"
+#include "FileSystem/PlaylistFileDirectory.h"
+#include "PlayListM3U.h"
 
 #define CONTROL_LIST              50
 #define CONTROL_LABELFILES        12

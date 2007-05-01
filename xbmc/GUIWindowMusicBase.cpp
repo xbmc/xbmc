@@ -40,7 +40,7 @@
 #include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
-#include "filesystem/MusicDatabaseDirectory.h"
+#include "FileSystem/MusicDatabaseDirectory.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -352,7 +352,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     }
     if (!foundAlbum)
     {
-      CLog::Log(LOGINFO, __FUNCTION__" called on a folder containing no songs with tag info - nothing can be done");
+      CLog::Log(LOGINFO, "%s called on a folder containing no songs with tag info - nothing can be done", __FUNCTION__);
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       return;
     }
@@ -361,7 +361,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
   { // lookup is done on a file - can only do useful stuff if we have a tag
     if (!pItem->LoadMusicTag() || !pItem->GetMusicInfoTag()->Loaded())
     {
-      CLog::Log(LOGINFO, __FUNCTION__" called on a file without tag info - nothing can be done");
+      CLog::Log(LOGINFO, "%s called on a file without tag info - nothing can be done", __FUNCTION__);
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       return;
     }

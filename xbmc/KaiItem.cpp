@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "KaiItem.h"
-#include "Utils/KaiClient.h"
-#include "Utils/Http.h"
+#include "utils/KaiClient.h"
+#include "utils/HTTP.h"
 #include "Util.h"
 #include "Picture.h"
 
@@ -127,7 +127,7 @@ void CKaiItem::GetAvatarFilePath(CStdString& aFilePath)
   // Generate a unique identifier from player name
   Crc32 crc;
   crc.Compute(m_strName);
-  aFilePath.Format("%s\\avatar-%x.jpg", g_settings.GetXLinkKaiThumbFolder().c_str(), crc);
+  aFilePath.Format("%s\\avatar-%x.jpg", g_settings.GetXLinkKaiThumbFolder().c_str(), (unsigned __int32) crc);
 }
 
 void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult)

@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadermp4.h"
+#include "MusicInfoTagLoaderMP4.h"
 #include "Util.h"
-#include "picture.h"
+#include "Picture.h"
 #include "id3v1genre.h"
 
 using namespace XFILE;
@@ -367,7 +367,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         else
         {
-          CLog::Log(LOGDEBUG, __FUNCTION__" unable to cache thumb as %s", strCoverArt.c_str());
+          CLog::Log(LOGDEBUG, "%s unable to cache thumb as %s", __FUNCTION__, strCoverArt.c_str());
           CUtil::ThumbCacheAdd( strCoverArt, false );
         }
       }
@@ -395,3 +395,4 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
   tag.SetLoaded(false);
   return false;
 }
+

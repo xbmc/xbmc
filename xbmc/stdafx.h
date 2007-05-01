@@ -33,7 +33,7 @@ using namespace std;
 #endif
 
 // guilib internal
-#include "tinyxml/tinyxml.h"
+#include "tinyXML/tinyxml.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 
@@ -42,18 +42,18 @@ using namespace std;
 #include "utils/SingleLock.h"
 #include "utils/Event.h"
 #include "utils/Mutex.h"
-#include "utils/archive.h"
+#include "utils/Archive.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
-#include "langinfo.h"
+#include "LangInfo.h"
 
-#include "settings.h"
-#include "Url.h"
+#include "Settings.h"
+#include "URL.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"
-#include "crc32.h"
+#include "Crc32.h"
 #include "AutoPtrHandle.h"
 using namespace AUTOPTR;
 
@@ -63,7 +63,7 @@ using namespace AUTOPTR;
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
-#include "GuiUserMessages.h"
+#include "GUIUserMessages.h"
 
 #ifdef _XBOX
 #ifdef QueryPerformanceFrequency

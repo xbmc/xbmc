@@ -1,7 +1,7 @@
 #pragma once
-#include "xbapplicationex.h"
+#include "XBApplicationEx.h"
 
-#include "MusicInfoTag.h"
+#include "musicInfoTag.h"
 #include "IMsgTargetCallback.h"
 #include "Key.h"
 #include "FileItem.h"
@@ -12,16 +12,16 @@
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
 
-#include "utils/idle.h"
-#include "utils/delaycontroller.h"
+#include "utils/Idle.h"
+#include "utils/DelayController.h"
 #include "cores/IPlayer.h"
-#include "cores/playercorefactory.h"
-#include "PlaylistPlayer.h"
+#include "cores/PlayerCoreFactory.h"
+#include "PlayListPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "utils/Splash.h"
 #include "utils/IMDB.h"
-#include "utils/stopwatch.h"
+#include "utils/Stopwatch.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
@@ -163,13 +163,19 @@ public:
   int GlobalIdleTime();
 
 protected:
-  friend CApplicationMessenger;
+  friend class CApplicationMessenger;
   // screensaver
   bool m_bInactive;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
   DWORD m_dwSaverTick;
+#ifndef HAS_SDL
   D3DGAMMARAMP m_OldRamp;
+#else
+  Uint16 m_OldRampRed[256];
+  Uint16 m_OldRampGreen[256];
+  Uint16 m_OldRampBlue[256];
+#endif
 
   // timer information
   CStopWatch m_idleTimer;

@@ -1,10 +1,10 @@
 #pragma once
-#include "fileitem.h"
-#include "settings.h"
-#include "filesystem/directory.h"
+#include "FileItem.h"
+#include "Settings.h"
+#include "FileSystem/Directory.h"
 
 #include <string>
-#include "stdstring.h"
+#include "StdString.h"
 #include <vector>
 using namespace std;
 

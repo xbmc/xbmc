@@ -1,4 +1,4 @@
-#include "cores/paplayer/replaygain.h"
+#include "cores/paplayer/ReplayGain.h"
 
 namespace MUSIC_INFO
 {

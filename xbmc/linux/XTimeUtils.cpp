@@ -1,7 +1,7 @@
 
 #include "XTimeUtils.h"
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 DWORD timeGetTime(void)
 {

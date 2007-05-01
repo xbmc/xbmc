@@ -342,3 +342,4 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, bool
 
   return !dialog->m_bNeedSave;
 }
+

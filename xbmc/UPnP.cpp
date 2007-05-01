@@ -22,7 +22,7 @@
 
 
 #include "stdafx.h"
-#include "util.h"
+#include "Util.h"
 
 #include "xbox/Network.h"
 #include "UPnP.h"

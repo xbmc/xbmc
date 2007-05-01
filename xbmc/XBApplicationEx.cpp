@@ -19,7 +19,9 @@
 // Global access to common members
 //-----------------------------------------------------------------------------
 CXBApplicationEx* g_pXBApp = NULL;
+#ifndef HAS_SDL
 static LPDIRECT3DDEVICE8 g_pd3dDevice = NULL;
+#endif
 
 // Deadzone for the gamepad inputs
 const SHORT XINPUT_DEADZONE = (SHORT)( 0.24f * FLOAT(0x7FFF) );
@@ -36,11 +38,13 @@ CXBApplicationEx::CXBApplicationEx()
   // Initialize member variables
   g_pXBApp = this;
 
+#ifndef HAS_SDL
   // Direct3D variables
   m_pD3D = NULL;
   m_pd3dDevice = NULL;
   //    m_pDepthBuffer    = NULL;
   m_pBackBuffer = NULL;
+#endif
 
   // Variables to perform app timing
   m_bPaused = FALSE;
@@ -51,6 +55,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_strFrameRate[0] = L'\0';
   m_bStop = false;
 
+#ifndef HAS_SDL
   // Set up the presentation parameters for a double-buffered, 640x480,
   // 32-bit display using depth-stencil. Override these parameters in
   // your derived class as your app requires.
@@ -63,6 +68,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_d3dpp.AutoDepthStencilFormat = D3DFMT_LIN_D16;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
   m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+#endif
 
   // Specify number and type of input devices this app will be using. By
   // default, you can use 0 and NULL, which triggers XInputDevices() to
@@ -107,9 +113,11 @@ VOID CXBApplicationEx::Destroy()
   // Perform app-specific cleanup
   Cleanup();
 
+#ifndef HAS_SDL
   // Release display objects
   SAFE_RELEASE( m_pd3dDevice );
   SAFE_RELEASE( m_pD3D );
+#endif
 }
 
 

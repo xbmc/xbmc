@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "guidialogGamepad.h"
-#include "util.h"
+#include "GUIDialogGamepad.h"
+#include "Util.h"
 #include "utils/md5.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")
@@ -285,3 +285,4 @@ bool CGUIDialogGamepad::IsCanceled() const
 {
   return m_bCanceled;
 }
+

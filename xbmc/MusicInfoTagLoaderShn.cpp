@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderShn.h"
-#include "cores/paplayer/SHNCodec.h"
+#include "cores/paplayer/SHNcodec.h"
 
 
 using namespace MUSIC_INFO;

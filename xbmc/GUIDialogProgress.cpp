@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogProgress.h"
 #include "GUIProgressControl.h"
-#include "application.h"
+#include "Application.h"
 
 
 #define CONTROL_PROGRESS_BAR 20
@@ -179,3 +179,4 @@ void CGUIDialogProgress::SetHeading(int iString)
   m_strHeading = g_localizeStrings.Get(iString);
   CGUIDialogBoxBase::SetHeading(m_strHeading);
 }
+

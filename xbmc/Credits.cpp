@@ -23,21 +23,21 @@
 #define _WCTYPE_INLINE_DEFINED
 #include <process.h>
 #include "GUIFontManager.h"
-#include "credits.h"
+#include "Credits.h"
 #include "Application.h"
 #include "lib/mikxbox/mikmod.h"
 #include "lib/mikxbox/mikxbox.h"
 #include "credits_res.h"
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
-#include "util.h"
+#include "Util.h"
 
 #define USE_TTF_FONTS
 
 #ifdef USE_TTF_FONTS
-#include "guifont.h"
+#include "GUIFont.h"
 #else
-#include "guifontxpr.h"
+#include "GuiFontXPR.h"
 #endif
 
 // Transition effects for text, must specific exactly one in and one out effect

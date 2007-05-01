@@ -23,9 +23,9 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloaderWMA.h"
-#include "util.h"
-#include "picture.h"
+#include "MusicInfoTagLoaderWMA.h"
+#include "Util.h"
+#include "Picture.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

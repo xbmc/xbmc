@@ -3,6 +3,8 @@
 // stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"
+
+#ifndef _LINUX
 #undef QueryPerformanceFrequency
 
 __int64 lFrequency = 0LL;
@@ -41,3 +43,4 @@ WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency)
   (*lpFrequency).QuadPart = lFrequency;
   return TRUE;
 }
+#endif

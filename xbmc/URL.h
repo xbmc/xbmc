@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../guilib/stdstring.h"
+#include "../guilib/StdString.h"
 
 class CURL
 {
@@ -29,7 +29,7 @@ public:
   const CStdString& GetOptions() const;
   const CStdString  GetFileNameWithoutPath() const; /* return the filename excluding path */
 
-  inline const char GetDirectorySeparator() const;
+  const char GetDirectorySeparator() const;
 
   void GetURL(CStdString& strURL) const;
   void GetURLPath(CStdString& strPath) const;

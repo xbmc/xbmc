@@ -21,16 +21,16 @@
 
 #include "stdafx.h"
 #include "GUIWindowPrograms.h"
-#include "util.h"
+#include "Util.h"
 #include "Shortcut.h"
-#include "filesystem/HDDirectory.h"
+#include "FileSystem/HDDirectory.h"
 #include "GUIPassword.h"
 #include "GUIDialogTrainerSettings.h"
 #include "GUIDialogMediaSource.h"
 #include "xbox/xbeheader.h"
 #include "utils/Trainer.h"
-#include "utils/kaiclient.h"
-#include "autorun.h"
+#include "utils/KaiClient.h"
+#include "Autorun.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -455,7 +455,10 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     if (CKaiClient::GetInstance()->IsEngineConnected())
     {
       if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
-        CKaiClient::GetInstance()->EnterVector(CStdString(""),CStdString(""));
+      {
+	CStdString emptyStr = "";
+        CKaiClient::GetInstance()->EnterVector(emptyStr, emptyStr);
+      }
       else
         bContinue = true;
     }

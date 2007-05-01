@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "playlist.h"
-#include "filesystem/rarmanager.h"
+#include "PlayList.h"
+#include "FileSystem/RarManager.h"
 #include "Settings.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/custom_launch_params.h"
@@ -320,7 +320,11 @@ public:
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
+#ifndef _LINUX
   static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
+#else
+  static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
+#endif
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
   static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayList::CPlayListItem &playlistitem);
@@ -374,3 +378,4 @@ private:
 };
 
 static int iAdditionalChecked = -1;
+

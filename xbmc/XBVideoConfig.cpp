@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 
 XBVideoConfig g_videoConfig;
@@ -115,6 +115,7 @@ bool XBVideoConfig::Has1080i() const
 #endif
 }
 
+#ifndef _LINUX
 void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
 {
   bHasPAL = false;
@@ -153,6 +154,42 @@ void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
       bHasNTSC = true;
   }
 }
+#else
+void XBVideoConfig::GetModes()
+{
+   CLog::Log(LOGINFO, "Available videomodes:");
+   SDL_Rect        **modes;
+   
+   /* Get available fullscreen/hardware modes */
+   modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+   if (modes == (SDL_Rect **)0)
+   {
+        CLog::Log(LOGINFO, "No modes available");
+        return;
+   }
+
+   if (modes == (SDL_Rect **)-1)
+   {
+  	bHasPAL = true;
+  	bHasNTSC = true;
+        CLog::Log(LOGINFO, "All resolutions available");
+        return;
+   }
+
+   for (int i = 0; modes[i]; ++i)
+   {
+     // ignore 640 wide modes
+     if (modes[i]->w < 720)
+        continue;
+     CLog::Log(LOGINFO, "Found mode: %ix%i", modes[i]->w, modes[i]->h);
+     
+     if (modes[i]->w == 720 && modes[i]->h == 576)
+       bHasPAL = true;
+     if (modes[i]->w == 720 && modes[i]->h == 480)
+       bHasNTSC = true;
+   }
+}
+#endif
 
 RESOLUTION XBVideoConfig::GetSafeMode() const
 {
@@ -200,6 +237,7 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
   return false;
 }
 
+#ifndef _LINUX
 //pre: XBVideoConfig::GetModes has been called before this function
 RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
 {
@@ -268,6 +306,13 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
     return NTSC_4x3;
   }
 }
+#else
+RESOLUTION XBVideoConfig::GetInitialMode()
+{
+  // TODO LINUX -- fix!!!
+  return PAL_4x3;
+}
+#endif
 
 void XBVideoConfig::PrintInfo() const
 {

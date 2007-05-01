@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fileitem.h"
+#include "FileItem.h"
 
 namespace PLAYLIST
 {

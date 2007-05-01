@@ -22,11 +22,11 @@
 #include "stdafx.h"
 #include "PartyModeManager.h"
 #include "Application.h"
-#include "playlistplayer.h"
+#include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "Util.h"
 #include "FileItem.h"
-#include "GUIWindowMusicPlayList.h"
+#include "GUIWindowMusicPlaylist.h"
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
 
@@ -111,7 +111,7 @@ bool CPartyModeManager::Enable()
     pDialog->Close();
     return false;
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__" time for song fetch: %i", timeGetTime() - time);
+  CLog::Log(LOGDEBUG, "%s time for song fetch: %i", __FUNCTION__, timeGetTime() - time);
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
   Play(0);
@@ -333,7 +333,7 @@ void CPartyModeManager::Play(int iPos)
   Process();
 }
 
-void CPartyModeManager::OnError(int iError, CStdString& strLogMessage)
+void CPartyModeManager::OnError(int iError, const CStdString&  strLogMessage)
 {
   // open error dialog
   CGUIDialogOK::ShowAndGetInput(257, 16030, iError, 0);

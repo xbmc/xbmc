@@ -80,3 +80,4 @@ void CGUIWindowPointer::Render()
   SetPointer(g_Mouse.GetState());
   CGUIWindow::Render();
 }
+

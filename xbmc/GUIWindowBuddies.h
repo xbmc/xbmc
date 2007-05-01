@@ -1,9 +1,9 @@
 #pragma once
 #include "guiImage.h"
-#include "guiwindow.h"
-#include "guiList.h"
+#include "GUIWindow.h"
+#include "GUIList.h"
 
-#include "guiEditControl.h"
+#include "GUIEditControl.h"
 
 #include "utils/UdpClient.h"
 #include "utils/KaiClient.h"

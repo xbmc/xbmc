@@ -1,6 +1,7 @@
 #pragma once
 
-#include "utils/archive.h"
+#include "../guilib/system.h"
+#include "utils/Archive.h"
 #include "utils/ScraperParser.h"
 
 #include <vector>
@@ -31,8 +32,8 @@ public:
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
-  vector< pair<CStdString, CStdString> > m_cast;
-  typedef vector< pair<CStdString, CStdString> >::const_iterator iCast;
+  std::vector< std::pair<CStdString, CStdString> > m_cast;
+  typedef std::vector< std::pair<CStdString, CStdString> >::const_iterator iCast;
 
   CStdString m_strRuntime;
   CStdString m_strFile;

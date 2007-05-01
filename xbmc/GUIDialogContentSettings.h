@@ -33,3 +33,4 @@ protected:
 
   SScraperInfo m_info;
 };
+

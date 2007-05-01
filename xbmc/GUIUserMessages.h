@@ -1,7 +1,7 @@
 //  GUI messages outside GuiLib
 //
 #pragma once
-#include "guimessage.h"
+#include "GUIMessage.h"
 
 //  Bookmark related messages
 #define GUI_MSG_REMOVED_MEDIA           GUI_MSG_USER + 1
@@ -92,3 +92,4 @@
 
 // Message sent by search dialog to request a new search be applied
 #define GUI_MSG_SEARCH_UPDATE         GUI_MSG_USER + 28
+

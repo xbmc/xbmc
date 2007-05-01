@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include "GUIDialogVideoSettings.h"
 #include "GUIPassword.h"
-#include "util.h"
-#include "application.h"
+#include "Util.h"
+#include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -158,3 +158,4 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     }
   }
 }
+

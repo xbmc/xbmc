@@ -257,7 +257,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       CStdString strFirst, strSecond;
       ar >> strFirst;
       ar >> strSecond;
-      m_cast.push_back(make_pair<CStdString,CStdString>(strFirst,strSecond));
+      m_cast.push_back(std::make_pair<CStdString,CStdString>(strFirst,strSecond));
     }
     ar >> m_strRuntime;
     ar >> m_strFile;

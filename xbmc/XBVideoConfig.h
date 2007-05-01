@@ -16,11 +16,16 @@ public:
   bool Has480p() const;
   bool Has720p() const;
   bool Has1080i() const;
+#ifndef HAS_SDL
   void GetModes(LPDIRECT3D8 pD3D);
+  RESOLUTION GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams);
+#else
+  void GetModes();
+  RESOLUTION GetInitialMode();
+#endif
   RESOLUTION GetSafeMode() const;
   RESOLUTION GetBestMode() const;
   bool IsValidResolution(RESOLUTION res) const;
-  RESOLUTION GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams);
   void PrintInfo() const;
 
   void Set480p(bool bEnable);

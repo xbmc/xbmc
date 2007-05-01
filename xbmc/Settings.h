@@ -8,7 +8,7 @@ class CProfile;
 #include "settings/VideoSettings.h"
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
-#include "fileitem.h"
+#include "FileItem.h"
 
 #include <vector>
 

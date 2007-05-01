@@ -21,18 +21,18 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
-#include "GUIWIndowVideoFiles.h"
+#include "GUIWindowVideoFiles.h"
 #include "utils/GUIInfoManager.h"
-#include "util.h"
+#include "Util.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "GUILabelControl.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
 
@@ -866,3 +866,4 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }
+

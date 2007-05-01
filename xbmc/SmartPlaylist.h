@@ -1,7 +1,7 @@
 #pragma once
 
 #include "StdString.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyXML/tinyxml.h"
 #include <vector>
 
 namespace PLAYLIST
@@ -84,3 +84,4 @@ private:
 };
 
 }
+

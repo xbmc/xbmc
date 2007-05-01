@@ -21,14 +21,14 @@
 
 #include "stdafx.h"
 #include "GUIWindowGameSaves.h"
-#include "util.h"
+#include "Util.h"
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIWindowFileManager.h"
 #include "GUIPassword.h"
 #include <fstream>
-//#include "Utils\HTTP.h"  // For Download Function
-#include "mediamanager.h"
+//#include "Utils/HTTP.h"  // For Download Function
+#include "MediaManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

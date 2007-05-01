@@ -54,7 +54,7 @@ Reason: Prepared for Public Release
 */
 
 
-#include "xkgeneral.h"
+#include "XKGeneral.h"
 
 
 XKGeneral::XKGeneral(void)
@@ -75,7 +75,8 @@ void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString,
 {
   USHORT Inc = (Seperator == 0x00) ? 2 : 3;
 
-  for (ULONG i = 0; i < byteCount; i++)
+  ULONG i;
+  for (i = 0; i < byteCount; i++)
   {
     BYTE nybble = (SrcBytes[i] >> 4) & 0x0f;
     if (nybble > 9)
