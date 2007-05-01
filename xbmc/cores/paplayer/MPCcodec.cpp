@@ -1,16 +1,16 @@
 #include "../../stdafx.h"
-#include "MPCCodec.h"
+#include "MPCcodec.h"
 
 
 // Callbacks for file reading
-mpc_int32_t Mpc_Callback_Read(void *data, void * buffer, int bytes)
+mpc_int32_t Mpc_Callback_Read(void *data, void * buffer, mpc_int32_t bytes)
 {
 	CFileReader *file = (CFileReader *)data;
   if (!file || !buffer) return 0;
   return (mpc_int32_t)file->Read(buffer, bytes);
 }
 
-mpc_bool_t Mpc_Callback_Seek(void *data, int position)
+mpc_bool_t Mpc_Callback_Seek(void *data, mpc_int32_t position)
 {
 	CFileReader *file = (CFileReader *)data;
   if (!file) return 0;

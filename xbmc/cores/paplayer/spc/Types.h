@@ -198,3 +198,4 @@ typedef struct SPC_ID666
   int fadetime;
   SPC_EmulatorType emulator;
 } SPC_ID666;
+

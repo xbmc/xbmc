@@ -1,6 +1,6 @@
 #include "../../stdafx.h"
-#include "OGGCodec.h"
-#include "../../oggtag.h"
+#include "OGGcodec.h"
+#include "../../OggTag.h"
 #include "../../Util.h"
 
 
@@ -39,7 +39,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   {
     //  Extract the bitstream to play
     CStdString strFileName=CUtil::GetFileName(strFile);
-    int iStart=strFileName.ReverseFind("-")+1;
+    int iStart=strFileName.ReverseFind('-')+1;
     m_CurrentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
     //  The directory we are in, is the file
     //  that contains the bitstream to play,

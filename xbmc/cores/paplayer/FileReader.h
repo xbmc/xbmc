@@ -1,8 +1,8 @@
 #pragma once
 //#include "IFileReader.h"
-#include "../../utils/thread.h"
+#include "../../utils/Thread.h"
 #include "../../utils/CriticalSection.h"
-#include "../../filesystem/file.h"
+#include "../../FileSystem/File.h"
 #include "RingHoldBuffer.h"
 
 // A threaded file reader class that reads ahead of the current file position

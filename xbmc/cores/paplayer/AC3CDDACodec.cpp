@@ -37,3 +37,4 @@ bool AC3CDDACodec::CalculateTotalTime()
   return m_TotalTime > 0;
 }
 #endif
+

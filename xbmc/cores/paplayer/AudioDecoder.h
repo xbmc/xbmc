@@ -1,7 +1,7 @@
 #pragma once
-#include "../../utils/thread.h"
+#include "../../utils/Thread.h"
 #include "ICodec.h"
-#include "ringholdbuffer.h"
+#include "RingHoldBuffer.h"
 
 #define PACKET_SIZE 3840    // audio packet size - we keep 1 in reserve for gapless playback
                             // using a multiple of 1, 2, 3, 4, 5, 6 to guarantee track alignment

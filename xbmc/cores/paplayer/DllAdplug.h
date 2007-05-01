@@ -36,3 +36,4 @@ class DllAdplug : public DllDynamic, DllAdplugInterface
     RESOLVE_METHOD_RENAME(DLL_GetLength, GetLength)
   END_METHOD_RESOLVE()
 };
+

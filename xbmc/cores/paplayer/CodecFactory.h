@@ -11,3 +11,4 @@ public:
   static ICodec* CreateCodec(const CStdString& strFileType);
   static ICodec* CreateCodecDemux(const CStdString& strFile, const CStdString& strContent,unsigned int filecache);
 };
+

@@ -1,7 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "FileReader.h"
-#include "Dllwavpack.h"
+#include "DllWAVPack.h"
 
 class WAVPackCodec : public ICodec
 {
