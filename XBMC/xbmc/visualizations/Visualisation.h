@@ -8,7 +8,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "../../guilib/key.h"
+#include "../../guilib/Key.h"
 #include "DllVisualisation.h"
 
 class CVisualisation

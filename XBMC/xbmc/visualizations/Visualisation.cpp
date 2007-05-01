@@ -3,7 +3,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../application.h"
+#include "../Application.h"
 #include "Visualisation.h" 
 
 
@@ -31,8 +31,10 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   OutputDebugString(szTmp);
   
   float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+#ifndef HAS_SDL  
+  // TODO LINUX this is obviously not good, but until we have visualization sorted out, this will have to do
   m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio);
-
+#endif
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)
