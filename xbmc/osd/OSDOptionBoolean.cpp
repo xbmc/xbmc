@@ -1,7 +1,7 @@
 
 #include "../stdafx.h"
-#include ".\osdoptionboolean.h"
-#include "guifontmanager.h"
+#include "./OSDOptionBoolean.h"
+#include "GUIFontManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
