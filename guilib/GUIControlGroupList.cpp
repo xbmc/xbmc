@@ -241,3 +241,4 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scrollOffset = offset;
   m_scrollSpeed = (m_scrollOffset - m_offset) / TIME_TO_SCROLL;
 }
+

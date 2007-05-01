@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIListItem.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUIListItemLayout.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
@@ -209,3 +209,4 @@ void CGUIListItem::SetInvalid()
   if (m_layout) m_layout->SetInvalid();
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
+

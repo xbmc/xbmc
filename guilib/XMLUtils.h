@@ -20,3 +20,4 @@ public:
   static void SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
 };
+

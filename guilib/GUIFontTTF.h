@@ -66,14 +66,18 @@ protected:
   inline Character *GetCharacter(WCHAR letter);
   bool CacheCharacter(WCHAR letter, Character *ch);
   inline void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
-  void CreateShader();
   void ClearCharacterCache();
+
+#ifndef HAS_SDL
+  void CreateShader();
 
   DWORD m_pixelShader;               // pixel shader for rendering chars from the 8bit alpha texture
   DWORD m_vertexShader;              // vertex shader (speedup?)
   LPDIRECT3DDEVICE8 m_pD3DDevice;
-
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
+#else
+  SDL_Surface* m_texture;  
+#endif
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
   int m_posX;                        // current position in the texture

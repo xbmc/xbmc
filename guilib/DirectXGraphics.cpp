@@ -83,6 +83,7 @@ bool IsSwizzledFormat(XB_D3DFORMAT format)
   }
 }
 
+#ifndef _LINUX
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
 {
   D3DLOCKED_RECT lr;
@@ -139,6 +140,7 @@ HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
   }
   return S_OK;
 }
+#endif
 
 // Unswizzle.
 // Format is:
@@ -191,19 +193,33 @@ void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned
   }
 }
 
+#ifndef HAS_SDL
 void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture)
+#else
+void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture)
+#endif
 {
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
+
+#ifndef HAS_SDL
   D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, GetD3DFormat(fmt), D3DPOOL_MANAGED, ppTexture);
   D3DLOCKED_RECT lr;
   if (D3D_OK == (*ppTexture)->LockRect(0, &lr, NULL, 0))
+#else
+  *ppTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+  if (SDL_LockSurface(*ppTexture) == 0)      	
+#endif
   {
     BYTE *texDataStart = (BYTE *)texData;
     DWORD *color = (DWORD *)texData;
     texDataStart += offset;
+#ifndef HAS_SDL
     DWORD destPitch = lr.Pitch;
+#else
+    DWORD destPitch = (*ppTexture)->pitch;
+#endif
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
       pitch /= 2;
@@ -224,12 +240,19 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppT
       Unswizzle(texDataStart, BytesPerPixelFromFormat(fmt), width, height, unswizzled);
       texDataStart = unswizzled;
     }
+
+#ifndef HAS_SDL
+    BYTE *dstPixels = (BYTE *)lr.pBits;
+#else
+    BYTE *dstPixels = (BYTE *)(*ppTexture)->pixels;
+#endif
+
     if (IsPalettedFormat(fmt))
     {
       for (unsigned int y = 0; y < height; y++)
       {
         BYTE *src = texDataStart + y * pitch;
-        DWORD *dest = (DWORD *)((BYTE *)lr.pBits + y * destPitch);
+        DWORD *dest = (DWORD *)(dstPixels + y * destPitch);
         for (unsigned int x = 0; x < width; x++)
           *dest++ = color[*src++];
       }
@@ -239,18 +262,25 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppT
       for (unsigned int y = 0; y < height; y++)
       {
         BYTE *src = texDataStart + y * pitch;
-        BYTE *dest = (BYTE *)lr.pBits + y * destPitch;
-        memcpy(dest, src, min(pitch, (unsigned int)destPitch));
+        BYTE *dest = dstPixels + y * destPitch;
+        memcpy(dest, src, min((unsigned int)pitch, (unsigned int)destPitch));
       }
     }
+    
     if (IsSwizzledFormat(fmt))
     {
       delete[] texDataStart;
     }
+
+#ifndef HAS_SDL
     (*ppTexture)->UnlockRect(0);
+#else
+    SDL_UnlockSurface(*ppTexture);
+#endif
   }
 }
 
+#ifndef _LINUX
 CXBPackedResource::CXBPackedResource()
 {
   m_buffer = NULL;
@@ -294,3 +324,4 @@ LPDIRECT3DTEXTURE8 CXBPackedResource::GetTexture(UINT unused)
 
   return pTexture;
 }
+#endif

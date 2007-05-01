@@ -2,7 +2,7 @@
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "SkinInfo.h"
-#include "GUIFontXPR.h"
+#include "GuiFontXPR.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
@@ -101,7 +101,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    boolean bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle, aspect);
+    bool bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts

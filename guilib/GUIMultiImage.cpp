@@ -4,7 +4,7 @@
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 
 using namespace DIRECTORY;
 
@@ -266,3 +266,4 @@ void CGUIMultiImage::LoadDirectory()
   // flag as loaded - no point in constantly reloading them
   m_directoryLoaded = true;
 }
+

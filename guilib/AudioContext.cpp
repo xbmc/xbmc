@@ -14,10 +14,12 @@ CAudioContext g_audioContext;
 CAudioContext::CAudioContext()
 {
   m_iDevice=DEFAULT_DEVICE;
+#ifdef HAS_AUDIO
 #ifdef HAS_AUDIO_PASS_THROUGH
   m_pAC97Device=NULL;
 #endif
   m_pDirectSoundDevice=NULL;
+#endif  
 }
 
 CAudioContext::~CAudioContext()
@@ -51,6 +53,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
 
   m_iDevice=iDevice;
 
+#ifdef HAS_AUDIO
   if (iDevice==DIRECTSOUND_DEVICE)
   {
     // Create DirectSound
@@ -78,6 +81,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
       return;
     }
   }
+#endif  
 
   if (m_pCallback)
     m_pCallback->Initialize(m_iDevice);
@@ -97,10 +101,12 @@ void CAudioContext::RemoveActiveDevice()
 
   m_iDevice=NONE;
 
+#ifdef HAS_AUDIO
 #ifdef HAS_AUDIO_PASS_THROUGH
   SAFE_RELEASE(m_pAC97Device);
 #endif
   SAFE_RELEASE(m_pDirectSoundDevice);
+#endif  
 }
 
 // \brief set a new speaker config
@@ -108,6 +114,8 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
 {
   m_bAC3EncoderActive = false;
   bAudioOnAllSpeakers = false;
+
+#ifdef HAS_AUDIO
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;  
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {
@@ -181,6 +189,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
 
   /* speaker config identical, no need to do anything */
   if(spconfig == spconfig_old) return;
+#endif  
 
   /* speaker config has changed, caller need to recreate it */
   RemoveActiveDevice();

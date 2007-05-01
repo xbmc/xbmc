@@ -16,7 +16,7 @@
 #include <memory>
 #include <queue>
 #include <stdio.h>
-#include "stdstring.h"
+#include "StdString.h"
 using namespace std;
 #ifdef _XBOX
 #ifdef _DEBUG
@@ -31,8 +31,13 @@ using namespace std;
 
 // guilib internal
 #include "gui3d.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyXML/tinyxml.h"
 
+#ifdef _LINUX
+#include <sys/stat.h>
+#include <errno.h>
+#include <sys/sysinfo.h>
+#endif
 
 #ifdef _XBOX
  #ifdef QueryPerformanceFrequency

@@ -1,6 +1,6 @@
 #pragma once
 #ifndef _XBOX
-#include "graphiccontext.h"
+#include "GraphicContext.h"
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);
@@ -133,10 +133,17 @@ typedef struct {
   long biClrImportant;  // 50
 } BMPHEAD;
 
+#ifndef HAS_SDL
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName);
+#endif
 void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned int height, void *dest);
+#ifndef HAS_SDL
 void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture);
+#else
+void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture);
+#endif
 
+#ifndef HAS_SDL
 class CXBPackedResource
 {
 public:
@@ -150,4 +157,5 @@ public:
 private:
   BYTE *m_buffer;
 };
+#endif
 #endif

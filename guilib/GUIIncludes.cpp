@@ -137,3 +137,4 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
     }
   }
 }
+
