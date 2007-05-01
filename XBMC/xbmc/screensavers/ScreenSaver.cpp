@@ -3,7 +3,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../application.h"
+#include "../Application.h"
 #include "ScreenSaver.h" 
 
 

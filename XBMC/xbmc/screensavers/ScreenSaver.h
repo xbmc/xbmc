@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "DllScreensaver.h"
+#include "DllScreenSaver.h"
 
 #ifdef __cplusplus
 extern "C"
