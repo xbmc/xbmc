@@ -1,9 +1,9 @@
 
 #include "../stdafx.h"
-#include "virtualpathdirectory.h"
-#include "directory.h"
-#include "../settings.h"
-#include "../util.h"
+#include "VirtualPathDirectory.h"
+#include "Directory.h"
+#include "../Settings.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 
@@ -157,3 +157,4 @@ bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& 
   share = (*vecShares)[iIndex];
   return true;
 }
+

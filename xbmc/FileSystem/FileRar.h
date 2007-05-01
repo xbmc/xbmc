@@ -11,11 +11,14 @@
 #include "IFile.h"
 #include "File.h"
 #include "RarManager.h"
+#ifdef HAS_RAR
 #include "../lib/UnrarXLib/rar.hpp"
-#include "../utils/thread.h"
+#endif
+#include "../utils/Thread.h"
 
 namespace XFILE
 {	
+#ifdef HAS_RAR
   class CFileRarExtractThread : public CThread
   {
   public:
@@ -37,7 +40,8 @@ namespace XFILE
     CmdExtract* m_pExtract;
     int m_iSize;
   };
-  
+#endif
+
   class CFileRar : public IFile  
 	{
 	public:
@@ -79,11 +83,13 @@ namespace XFILE
     bool m_bOpen;
     bool m_bSeekable;
     CFile m_File; // for packed source
+#ifdef HAS_RAR
     Archive* m_pArc;
     CommandData* m_pCmd;
     CmdExtract* m_pExtract;
-    int m_iSize; // header size
     CFileRarExtractThread* m_pExtractThread;
+#endif
+    int m_iSize; // header size
     byte* m_szBuffer;
     byte* m_szStartOfBuffer;
     __int64 m_iDataInBuffer;

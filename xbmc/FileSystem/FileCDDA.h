@@ -1,5 +1,5 @@
 #pragma once
-#include "ifile.h"
+#include "IFile.h"
 #include "../lib/libcdio/cdio.h"
 
 namespace XFILE

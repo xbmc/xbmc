@@ -364,7 +364,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
     SetEvent(m_hWorkerEvent);
   }
   //copy last 3 chars of data to first three chars of syncbuffer, might be "SYN"
-  memcpy(m_pSyncBuffer, (char*)lpBuf + max(0, read - 3), 3);
+  memcpy(m_pSyncBuffer, (char*)lpBuf + max((unsigned int)0, read - 3), 3);
   return read;
 }
 
@@ -465,7 +465,7 @@ bool CFileLastFM::RetreiveMetaData()
     {
       Crc32 crc;
       crc.ComputeFromLowerCase(coverUrl);
-      cachedFile.Format("%s\\%08x.tbn", g_settings.GetLastFMThumbFolder().c_str(), crc);
+      cachedFile.Format("%s\\%08x.tbn", g_settings.GetLastFMThumbFolder().c_str(), (unsigned __int32) crc);
       if (!CFile::Exists(cachedFile))
       {
         http.Download(coverUrl, cachedFile);

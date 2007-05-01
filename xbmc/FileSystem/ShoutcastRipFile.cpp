@@ -1,17 +1,17 @@
 
 #include "../stdafx.h"
 #include "ShoutcastRipFile.h"
-#include "../id3tag.h"
+#include "../Id3Tag.h"
 
 #define MAX_RECORDED_TRACKS 999
 
+#ifndef _LINUX
 #if !defined(WIN32)
 #define WIN32 1
 #endif
+#endif
 
 #include "../lib/libshout/rip_manager.h"
-
-
 
 CShoutcastRipFile::CShoutcastRipFile()
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "idirectory.h"
-#include "../utils/http.h"
+#include "IDirectory.h"
+#include "../utils/HTTP.h"
 
 namespace DIRECTORY
 {

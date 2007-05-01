@@ -10,9 +10,9 @@
 
 #include "../stdafx.h"
 #include "cddb.h"
-#include "../dnsnamecache.h"
-#include "../id3tag.h"
-#include "../util.h"
+#include "../DNSNameCache.h"
+#include "../Id3Tag.h"
+#include "../Util.h"
 
 
 using namespace CDDB;
@@ -671,7 +671,8 @@ void Xcddb::addTitle(const char *buffer)
   char title[1024];
   unsigned int len = (unsigned int)strlen(value);
   bool found = false;
-  for (unsigned int i = 0;i < len;i++)
+  unsigned int i;
+  for (i = 0;i < len;i++)
   {
     if ((i + 2) <= len && value[i] == ' ' && value[i + 1] == '/' && value[i + 2] == ' ')
     {

@@ -1,5 +1,5 @@
 #include "../stdafx.h"
-#include "../util.h"
+#include "../Util.h"
 
 #include "HDHomeRun.h"
 
@@ -170,7 +170,11 @@ bool CFileHomeRun::Open(const CURL &url, bool bBinary)
 
 unsigned int CFileHomeRun::Read(void* lpBuf, __int64 uiBufSize)
 {
+#ifndef _LINUX
   unsigned int datasize = (unsigned int)min(uiBufSize,UINT_MAX);
+#else
+  unsigned int datasize = (unsigned int) (uiBufSize < UINT_MAX ? uiBufSize : UINT_MAX);
+#endif
   do 
   {
     uint8_t* ptr = m_dll.device_stream_recv(m_device, datasize, &datasize);

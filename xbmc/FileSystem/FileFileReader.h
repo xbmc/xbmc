@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IFile.h"
-#include "../cores/paplayer/filereader.h"
+#include "../cores/paplayer/FileReader.h"
 
 namespace XFILE
 {
@@ -26,3 +26,4 @@ public:
 };
 
 };
+

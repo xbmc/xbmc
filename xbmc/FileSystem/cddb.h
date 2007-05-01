@@ -1,9 +1,11 @@
 #pragma once
-#include "../util.h"
+#include "../Util.h"
 #include <sstream>
 #include <iostream>
+#ifndef _LINUX
 #include <strstream>
-#include "cdiosupport.h"
+#endif
+#include "cdioSupport.h"
 
 namespace CDDB
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ifiledirectory.h"
-#include "rarmanager.h"
+#include "IFileDirectory.h"
+#include "RarManager.h"
 
 namespace DIRECTORY 
 {
