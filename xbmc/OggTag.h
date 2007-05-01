@@ -2,8 +2,8 @@
 // COggTag in 2003 by Bobbin007
 //------------------------------
 #include "VorbisTag.h"
-#include "cores/paplayer/replaygain.h"
-#include "cores/paplayer/dllvorbisfile.h"
+#include "cores/paplayer/ReplayGain.h"
+#include "cores/paplayer/DllVorbisfile.h"
 
 namespace MUSIC_INFO
 {

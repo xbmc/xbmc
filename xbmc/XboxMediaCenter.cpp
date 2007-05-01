@@ -28,17 +28,26 @@
 //
 
 #include "stdafx.h"
-#include "application.h"
+#include "Application.h"
 
 
 CApplication g_application;
+
+#ifndef _LINUX
 void main()
+#else
+int main()
+#endif
 {
   g_application.Create(NULL);
   while (1)
   {
     g_application.Run();
   }
+
+#ifndef _LINUX
+  return 0;
+#endif
 }
 
 extern "C"
@@ -49,7 +58,11 @@ extern "C"
     va_list va;
     static char tmp[2048];
     va_start(va, format);
+#ifndef _LINUX
     _vsnprintf(tmp, 2048, format, va);
+#else
+    vsnprintf(tmp, 2048, format, va);
+#endif
     va_end(va);
     tmp[2048 - 1] = 0;
 

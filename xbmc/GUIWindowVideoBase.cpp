@@ -22,16 +22,16 @@
 #include "stdafx.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
-#include "Utils/IMDB.h"
-#include "Utils/HTTP.h"
-#include "Utils/RegExp.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/IMDB.h"
+#include "utils/HTTP.h"
+#include "utils/RegExp.h"
+#include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "PlayListFactory.h"
 #include "Application.h"
-#include "NFOFile.h"
+#include "NfoFile.h"
 #include "Picture.h"
 #include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
@@ -394,7 +394,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     {
       if (nfoReader.m_strScraper == "NFO")
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
         nfoReader.GetDetails(movieDetails);
         hasDetails = true;
       }
@@ -1301,12 +1301,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
-    CLog::Log(LOGDEBUG,__FUNCTION__": found matching xml file:[%s]", strXml.c_str());
+    CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
     CFile::Cache(strXml, strCache);
     CIMDB imdb;
     if (!imdb.LoadXML(strCache, movie, false))
     {
-      CLog::Log(LOGERROR,__FUNCTION__": Could not parse info in file:[%s]", strXml.c_str());
+      CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
       bGotXml = false;
     }
   }
@@ -1524,3 +1524,4 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info)
     info.strTitle = parser.GetName();
   return found;
 }
+

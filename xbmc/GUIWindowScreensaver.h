@@ -5,7 +5,7 @@
 #include "screensavers/ScreenSaver.h"
 #endif
 
-#include "Utils/CriticalSection.h"
+#include "utils/CriticalSection.h"
 
 #define SCREENSAVER_FADE   1
 #define SCREENSAVER_BLACK  2

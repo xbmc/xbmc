@@ -2,7 +2,7 @@
 // CApeTag in 2005 by JMarshall
 //------------------------------
 #include "cores/paplayer/ReplayGain.h"
-#include "cores/paplayer/dllMACDll.h"
+#include "cores/paplayer/DllMACDll.h"
 
 namespace MUSIC_INFO
 {

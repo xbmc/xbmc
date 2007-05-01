@@ -21,9 +21,9 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
-#include "Utils/HTTP.h"
+#include "utils/HTTP.h"
 #include "Util.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"

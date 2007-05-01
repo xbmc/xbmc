@@ -3,7 +3,7 @@
 
 #include "XHandle.h"
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 #define STATUS_WAIT_0	((DWORD   )0x00000000L)    
 #define WAIT_FAILED		((DWORD)0xFFFFFFFF)

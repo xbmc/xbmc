@@ -23,7 +23,7 @@
 #include "GUIWindowPictures.h"
 #include "Util.h"
 #include "Picture.h"
-#include "application.h"
+#include "Application.h"
 #include "GUIPassword.h"
 #include "GUIDialogMediaSource.h"
 #include "PlayListFactory.h"
@@ -663,3 +663,4 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
       m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
 }
+

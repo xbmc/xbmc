@@ -33,7 +33,7 @@ public:
   void LockBookmarks();
   void UnlockBookmarks();
   void RemoveBookmarkLocks();
-  bool IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares);
+  bool IsDatabasePathUnlocked(CStdString strPath, VECSHARES& vecShares);
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
 
@@ -44,3 +44,4 @@ protected:
 };
 
 extern CGUIPassword g_passwordManager;
+

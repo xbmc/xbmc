@@ -20,25 +20,25 @@
  */
 
 #include "stdafx.h"
-#include "fileitem.h"
+#include "FileItem.h"
 #include "Util.h"
-#include "picture.h"
-#include "playlistfactory.h"
-#include "shortcut.h"
-#include "crc32.h"
-#include "filesystem/DirectoryCache.h"
-#include "filesystem/StackDirectory.h"
-#include "filesystem/filecurl.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "filesystem/MusicDatabaseDirectory.h"
-#include "filesystem/VideoDatabaseDirectory.h"
+#include "Picture.h"
+#include "PlayListFactory.h"
+#include "Shortcut.h"
+#include "Crc32.h"
+#include "FileSystem/DirectoryCache.h"
+#include "FileSystem/StackDirectory.h"
+#include "FileSystem/FileCurl.h"
+#include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/MusicDatabaseDirectory.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 #include "musicInfoTagLoaderFactory.h"
-#include "cuedocument.h"
-#include "Utils/fstrcmp.h"
-#include "videodatabase.h"
-#include "musicdatabase.h"
+#include "CueDocument.h"
+#include "utils/fstrcmp.h"
+#include "VideoDatabase.h"
+#include "MusicDatabase.h"
 #include "SortFileItem.h"
-#include "Utils/TuxBoxUtil.h"
+#include "utils/TuxBoxUtil.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -2084,7 +2084,7 @@ CStdString CFileItem::GetCachedPictureThumb()
   Crc32 crc;
   crc.ComputeFromLowerCase(m_strPath);
   CStdString hex;
-  hex.Format("%08x", crc);
+  hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
   thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
   return thumb;
@@ -2564,7 +2564,7 @@ bool CFileItem::LoadMusicTag()
   // load tag from file
   else
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": loading tag information for file: %s", m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
     CMusicInfoTagLoaderFactory factory;
     CMusicInfoTag tag;
     auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));

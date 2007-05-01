@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIWindow.h"
-#include "filesystem/VirtualDirectory.h"
-#include "filesystem/DirectoryHistory.h"
+#include "FileSystem/VirtualDirectory.h"
+#include "FileSystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
 
 class CGUIWindowFileManager :

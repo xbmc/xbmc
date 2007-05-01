@@ -82,3 +82,4 @@ protected:
   double m_value; // we store as fahrenheit
   STATE m_state;
 };
+

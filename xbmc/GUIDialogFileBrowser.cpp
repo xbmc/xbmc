@@ -21,14 +21,14 @@
 
 #include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
-#include "util.h"
-#include "detectdvdtype.h"
+#include "Util.h"
+#include "DetectDVDType.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
-#include "xbox/network.h"
+#include "xbox/Network.h"
 #include "GUIPassword.h"
 
 using namespace XFILE;
@@ -841,3 +841,4 @@ CGUIControl *CGUIDialogFileBrowser::GetFirstFocusableControl(int id)
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
 }
+

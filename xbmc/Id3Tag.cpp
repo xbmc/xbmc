@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "id3tag.h"
-#include "util.h"
-#include "picture.h"
+#include "Id3Tag.h"
+#include "Util.h"
+#include "Picture.h"
 
 using namespace MUSIC_INFO;
 

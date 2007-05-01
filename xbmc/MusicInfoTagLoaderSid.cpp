@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadersid.h"
+#include "MusicInfoTagLoaderSid.h"
 #include "utils/RegExp.h"
 #include "Util.h"
 #include <cstring>
@@ -249,3 +249,4 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
   tag.SetLoaded(false);
   return( false );
 }
+

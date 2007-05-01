@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
 #include "Util.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "Application.h"
-#include "CUEDocument.h"
+#include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 

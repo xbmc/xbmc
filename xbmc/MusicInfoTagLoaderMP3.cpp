@@ -20,10 +20,10 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadermp3.h"
+#include "MusicInfoTagLoaderMP3.h"
 #include "Util.h"
-#include "apev2tag.h"
-#include "id3tag.h"
+#include "APEv2Tag.h"
+#include "Id3Tag.h"
 
 
 using namespace MUSIC_INFO;
@@ -641,3 +641,4 @@ bool CMusicInfoTagLoaderMP3::GetReplayGain(CReplayGain &info) const
   info = m_replayGainInfo;
   return true;
 }
+

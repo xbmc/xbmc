@@ -1,6 +1,6 @@
 #pragma once
 #include "utils/Thread.h"
-#include "musicDatabase.h"
+#include "MusicDatabase.h"
 
 namespace MUSIC_INFO
 {

@@ -20,10 +20,10 @@
  */
 
 #include "stdafx.h"
-#include "playlistpls.h"
-#include "playlistfactory.h"
-#include "util.h"
-#include "utils\HTTP.h"
+#include "PlayListPLS.h"
+#include "PlayListFactory.h"
+#include "Util.h"
+#include "utils/HTTP.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

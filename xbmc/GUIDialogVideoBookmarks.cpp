@@ -202,6 +202,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
   CSingleLock lock(g_graphicsContext);
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 texture = NULL;
   if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &texture))
   {
@@ -215,7 +216,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     // compute the thumb name + create the thumb image
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), crc, m_vecItems.Size() + 1);
+    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), (unsigned __int32) crc, m_vecItems.Size() + 1);
     CPicture pic;
     if (!pic.CreateThumbnailFromSurface((BYTE *)lockedRect.pBits, width, height, lockedRect.Pitch, bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();
@@ -223,6 +224,9 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     surface->Release();
     texture->Release();
   }
+#else
+#warning FIXME: CGUIDialogVideoBookmarks::AddBookmark() not implemented
+#endif
   lock.Leave();
   videoDatabase.Open();
   videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);

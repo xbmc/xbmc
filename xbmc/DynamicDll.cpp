@@ -89,3 +89,4 @@ bool DllDynamic::SetFile(const CStdString& strDllName)
   m_strDllName=strDllName;
   return true;
 }
+

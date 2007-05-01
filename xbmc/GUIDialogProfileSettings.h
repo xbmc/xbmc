@@ -40,3 +40,4 @@ protected:
 
   CStdString m_strDefaultImage;
 };
+

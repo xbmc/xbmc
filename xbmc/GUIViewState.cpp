@@ -24,11 +24,11 @@
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
-#include "playlistplayer.h"
-#include "util.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
-#include "Autoswitch.h"
+#include "AutoSwitch.h"
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
@@ -340,3 +340,4 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
       g_settings.Save();
   }
 }
+

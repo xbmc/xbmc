@@ -3,7 +3,7 @@
 class CSong;
 class CAlbum;
 
-#include "utils/archive.h"
+#include "utils/Archive.h"
 
 namespace MUSIC_INFO
 {

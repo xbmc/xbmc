@@ -84,3 +84,4 @@ void CGUIDialogVolumeBar::Render()
     Close();
   }
 }
+

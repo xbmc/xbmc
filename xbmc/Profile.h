@@ -65,3 +65,4 @@ public:
   bool _bLockPictures;
   bool _bLockPrograms;
 };
+

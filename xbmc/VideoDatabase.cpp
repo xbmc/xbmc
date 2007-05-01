@@ -20,14 +20,14 @@
  */
 
 #include "stdafx.h"
-#include "videodatabase.h"
+#include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
-#include "util.h"
+#include "Util.h"
 #include "GUIPassword.h"
-#include "filesystem/VirtualPathDirectory.h"
-#include "filesystem/StackDirectory.h"
+#include "FileSystem/VirtualPathDirectory.h"
+#include "FileSystem/StackDirectory.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -278,7 +278,7 @@ bool CVideoDatabase::GetPaths(set<CStdString> &paths)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed");
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
 }
@@ -324,7 +324,7 @@ bool CVideoDatabase::GetPathHash(const CStdString &path, CStdString &hash)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed", path.c_str());
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, path.c_str());
   }
 
   return false;
@@ -394,7 +394,7 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"(%s, %s) failed", path.c_str(), hash.c_str());
+    CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, path.c_str(), hash.c_str());
   }
 
   return false;
@@ -1337,7 +1337,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       AddGenreToMovie(lMovieId, vecGenres[i]);
     }
 
-    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    for (int i = 0; i < (int)vecDirectors.size(); ++i)
     {
       AddDirectorToMovie(lMovieId, vecDirectors[i]);
     }
@@ -1402,7 +1402,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       AddGenreToTvShow(lTvShowId, vecGenres[i]);
     }
 
-    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    for (int i = 0; i < (int)vecDirectors.size(); ++i)
     {
       AddDirectorToTvShow(lTvShowId, vecDirectors[i]);
     }
@@ -1481,7 +1481,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
       AddGenreToEpisode(lEpisodeId, vecGenres[i]);
     }
 
-    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    for (int i = 0; i < (int)vecDirectors.size(); ++i)
     {
       AddDirectorToEpisode(lEpisodeId, vecDirectors[i]);
     }
@@ -2460,7 +2460,7 @@ void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMov
   }
   catch (...)
   {
-	  CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%i and Title:%s", lMovieId, strNewMovieTitle);
+	  CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%i and Title:%s", lMovieId, strNewMovieTitle.c_str());
   }
 }
 
@@ -2577,7 +2577,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
+//    CLog::Log(LOGDEBUG, "%s Time: %d ms", timeGetTime() - time);
     return true;
   }
   catch (...)
@@ -2789,7 +2789,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
+//    CLog::Log(LOGDEBUG, "%s Time: %d ms", timeGetTime() - time);
     return true;
   }
   catch (...)
@@ -2955,7 +2955,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
     }
     // run query
-    CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -3116,7 +3116,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             m_pDS->next();
           }
           CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, __FUNCTION__" times: Info %d, Cast %d", movieTime, castTime);
+    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
@@ -3258,7 +3258,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             m_pDS->next();
           }
           CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, __FUNCTION__" times: Info %d, Cast %d", movieTime, castTime);
+    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
@@ -3410,7 +3410,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             m_pDS->next();
           }
           CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, __FUNCTION__" times: Info %d, Cast %d", movieTime, castTime);
+    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", movieTime, castTime);
         }
         catch (...)
         {
@@ -3746,7 +3746,7 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
+    CLog::Log(LOGERROR, "%s (%s) failed",__FUNCTION__, strSQL.c_str());
   }
 }
 
@@ -3990,7 +3990,7 @@ void CVideoDatabase::GetMovieDirectorsByName(const CStdString& strSearch, CFileI
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
+    CLog::Log(LOGERROR, "%s (%s) failed",__FUNCTION__, strSQL.c_str());
   }
 }
 
@@ -4032,7 +4032,7 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const CStdString& strSearch, CFil
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
+    CLog::Log(LOGERROR, "%s (%s) failed",__FUNCTION__, strSQL.c_str());
   }
 }
 
@@ -4139,87 +4139,87 @@ void CVideoDatabase::CleanDatabase()
       progress->Progress();
     }
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning files table");
+    CLog::Log(LOGDEBUG, "%s Cleaning files table", __FUNCTION__);
     sql = "delete from files where idFile in " + filesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning bookmark table");
+    CLog::Log(LOGDEBUG, "%s Cleaning bookmark table", __FUNCTION__);
     sql = "delete from bookmark where idFile in " + filesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning settings table");
+    CLog::Log(LOGDEBUG, "%s Cleaning settings table", __FUNCTION__);
     sql = "delete from settings where idFile in " + filesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning stacktimes table");
+    CLog::Log(LOGDEBUG, "%s Cleaning stacktimes table", __FUNCTION__);
     sql = "delete from stacktimes where idFile in " + filesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning movie table");
+    CLog::Log(LOGDEBUG, "%s Cleaning movie table", __FUNCTION__);
     sql = "delete from movie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinkmovie table");
+    CLog::Log(LOGDEBUG, "%s Cleaning actorlinkmovie table", __FUNCTION__);
     sql = "delete from actorlinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning directorlinkmovie table");
+    CLog::Log(LOGDEBUG, "%s Cleaning directorlinkmovie table", __FUNCTION__);
     sql = "delete from directorlinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
+    CLog::Log(LOGDEBUG, "%s Cleaning genrelinkmovie table", __FUNCTION__);
     sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning episode table");
+    CLog::Log(LOGDEBUG, "%s Cleaning episode table", __FUNCTION__);
     sql = "delete from episode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinkepisode table");
+    CLog::Log(LOGDEBUG, "%s Cleaning actorlinkepisode table", __FUNCTION__);
     sql = "delete from actorlinkepisode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning directorlinkepisode table");
+    CLog::Log(LOGDEBUG, "%s Cleaning directorlinkepisode table", __FUNCTION__);
     sql = "delete from directorlinkepisode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning tvshowlinkepisode table");
+    CLog::Log(LOGDEBUG, "%s Cleaning tvshowlinkepisode table", __FUNCTION__);
     sql = "delete from tvshowlinkepisode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkepisode table");
+    CLog::Log(LOGDEBUG, "%s Cleaning genrelinkepisode table", __FUNCTION__);
     sql = "delete from genrelinkepisode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning tvshow table");
+    CLog::Log(LOGDEBUG, "%s Cleaning tvshow table", __FUNCTION__);
     sql = "delete from tvshow where idshow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinktvshow table");
+    CLog::Log(LOGDEBUG, "%s Cleaning actorlinktvshow table", __FUNCTION__);
     sql = "delete from actorlinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning directorlinktvshow table");
+    CLog::Log(LOGDEBUG, "%s Cleaning directorlinktvshow table", __FUNCTION__);
     sql = "delete from directorlinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning tvshowlinkpath table");
+    CLog::Log(LOGDEBUG, "%s Cleaning tvshowlinkpath table", __FUNCTION__);
     sql = "delete from tvshowlinkpath where idshow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinktvshow table");
+    CLog::Log(LOGDEBUG, "%s Cleaning genrelinktvshow table", __FUNCTION__);
     sql = "delete from genrelinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
+    CLog::Log(LOGDEBUG, "%s Cleaning path table", __FUNCTION__);
     sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath) and strContent=''";
     m_pDS->exec(sql.c_str());
     
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
+    CLog::Log(LOGDEBUG, "%s Cleaning genre table", __FUNCTION__);
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
+    CLog::Log(LOGDEBUG, "%s Cleaning actor table of actors and directors", __FUNCTION__);
     sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode)";
     m_pDS->exec(sql.c_str());
  
@@ -4392,7 +4392,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed");
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
 }
 
@@ -4485,7 +4485,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed");
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
 }
 
@@ -4510,7 +4510,9 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
 	  strResult += strOpenRecord;
 	  for (int i=0; i<m_pDS->fieldCount(); i++)
 	  {
-	    strResult += strOpenField + m_pDS->fv(i).get_asString() + strCloseField;
+	    strResult += strOpenField;
+	    strResult += m_pDS->fv(i).get_asString();
+	    strResult += strCloseField;
 	  }
 	  strResult += strCloseRecord;
 	  m_pDS->next();

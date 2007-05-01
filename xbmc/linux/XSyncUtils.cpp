@@ -4,7 +4,7 @@
 #include "XHandle.h"
 
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
 	if (!hMutex)

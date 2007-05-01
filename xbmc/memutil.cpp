@@ -22,11 +22,12 @@
 #include "stdafx.h"
 #include "memutil.h"
 #ifdef _XBOX
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 
 void fast_memcpy(void* d, const void* s, unsigned n)
 {
+#ifndef _LINUX
   // around 50% faster than memcpy
   // only worthwhile if the destination buffer is not likely to be read back immediately
   // and the number of bytes copied is >16
@@ -114,10 +115,14 @@ void fast_memcpy(void* d, const void* s, unsigned n)
 
   fmc_exit_post:
           }
+#else
+  memcpy(d,s,n);
+#endif
 }
 
 void fast_memset(void* d, int c, unsigned n)
 {
+#ifndef _LINUX
   char __declspec(align(16)) buf[16];
 
   __asm {
@@ -195,7 +200,10 @@ void fast_memset(void* d, int c, unsigned n)
 
   fms_exit_post:
     }
-  }
+#else
+  memset(d, c, n);
+#endif
+}
 
 #ifdef _XBOX
 void usleep(int t)

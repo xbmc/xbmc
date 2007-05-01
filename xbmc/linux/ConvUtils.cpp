@@ -1,6 +1,6 @@
 #include "PlatformDefs.h"
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 #include <ctype.h>
 

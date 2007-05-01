@@ -339,3 +339,4 @@ void CGUIWindowSettingsScreenCalibration::Render()
   }
 
 }
+

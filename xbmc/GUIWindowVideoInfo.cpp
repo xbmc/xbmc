@@ -22,15 +22,15 @@
 #include "stdafx.h"
 #include "GUIWindow.h"
 #include "GUIWindowVideoInfo.h"
-#include "util.h"
-#include "picture.h"
+#include "Util.h"
+#include "Picture.h"
 #include "VideoDatabase.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "StringUtils.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace XFILE;
 
@@ -227,7 +227,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           int iPos = strItem.Find(strFind);
           if (iPos == -1)
             iPos = strItem.size();
-          OnSearch(strItem.Left(iPos));
+	  CStdString tmp = strItem.Left(iPos);
+          OnSearch(tmp);
         }
       }
     }

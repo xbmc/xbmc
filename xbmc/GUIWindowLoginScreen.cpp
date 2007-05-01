@@ -20,19 +20,21 @@
  */
 
 #include "stdafx.h"
-#include "application.h"
+#include "Application.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowSettingsProfile.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
-#include "utils/guiinfomanager.h"
+#include "utils/GUIInfoManager.h"
 #include "GUIPassword.h"
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "lib/libscrobbler/scrobbler.h"
-#include "utils/weather.h"
-#include "utils/fancontroller.h"
-#include "xbox/network.h"
-#include "skininfo.h"
+#include "utils/Weather.h"
+#include "utils/FanController.h"
+#include "xbox/Network.h"
+#include "SkinInfo.h"
 
 using namespace XFILE;
 
@@ -131,7 +133,9 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             g_settings.SaveProfiles("q:\\system\\profiles.xml");
 
             g_weatherManager.Refresh();
+#ifdef HAS_PYTHON
             g_pythonParser.bLogin = true;
+#endif
             RESOLUTION res=INVALID;
             CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
             int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");

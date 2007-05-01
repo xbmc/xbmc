@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "sectionloader.h"
+#include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 
 

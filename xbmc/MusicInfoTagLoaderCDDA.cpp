@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadercdda.h"
+#include "MusicInfoTagLoaderCDDA.h"
 #include "FileSystem/cddb.h"
 #include "DetectDVDType.h"
 

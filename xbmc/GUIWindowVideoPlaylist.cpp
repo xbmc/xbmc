@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "GUIWindowVideoPlayList.h"
+#include "GUIWindowVideoPlaylist.h"
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "PlayListM3U.h"
@@ -481,3 +481,4 @@ void CGUIWindowVideoPlaylist::MarkPlaying()
       m_vecItems[iSong]->Select(true);
   }*/
 }
+

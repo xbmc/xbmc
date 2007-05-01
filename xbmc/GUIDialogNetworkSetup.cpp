@@ -344,3 +344,4 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
   m_server = url.GetHostName();
   m_path = url.GetFileName();
 }
+

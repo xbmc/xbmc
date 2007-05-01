@@ -159,3 +159,4 @@ static const char* ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
 #define ID3_V1GENRE2DESCRIPTION(x) (x < ID3_NR_OF_V1_GENRES && x >= 0) ? ID3_v1_genre_description[x] : NULL
 
 #endif
+

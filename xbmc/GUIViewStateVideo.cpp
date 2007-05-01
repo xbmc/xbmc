@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIViewStateVideo.h"
-#include "playlistplayer.h"
+#include "PlayListPlayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 
 using namespace DIRECTORY;
@@ -336,3 +336,4 @@ VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
 
   return CGUIViewStateWindowVideo::GetShares();
 }
+

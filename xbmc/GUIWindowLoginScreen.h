@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
 #include "GUIViewControl.h"
-#include "utils/stopwatch.h"
+#include "utils/Stopwatch.h"
 
 class CGUIWindowLoginScreen : public CGUIWindow
 {

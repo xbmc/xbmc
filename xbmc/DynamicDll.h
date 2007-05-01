@@ -15,7 +15,7 @@
 //
 #define DECLARE_DLL_WRAPPER(classname, dllname) \
 public: \
-  classname##() : DllDynamic( #dllname ) {}
+  classname () : DllDynamic( #dllname ) {}
 
 ///////////////////////////////////////////////////////////
 //
@@ -32,7 +32,7 @@ public: \
 //
 #define DECLARE_DLL_WRAPPER_TEMPLATE(classname) \
 public: \
-  classname##() {} \
+  classname () {} \
 
 
 ///////////////////////////////////////////////////////////

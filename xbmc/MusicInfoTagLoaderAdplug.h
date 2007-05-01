@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IMusicInfoTagLoader.h"
-#include "cores/paplayer/dlladplug.h"
-#include "cores/paplayer/adplugcodec.h"
+#include "ImusicInfoTagLoader.h"
+#include "cores/paplayer/DllAdplug.h"
+#include "cores/paplayer/AdplugCodec.h"
 
 using namespace MUSIC_INFO;
 

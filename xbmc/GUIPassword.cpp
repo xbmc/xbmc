@@ -27,8 +27,8 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogProfileSettings.h"
-#include "util.h"
-#include "settings.h"
+#include "Util.h"
+#include "Settings.h"
 
 CGUIPassword g_passwordManager;
 
@@ -591,7 +591,7 @@ void CGUIPassword::RemoveBookmarkLocks()
   m_gWindowManager.SendThreadMessage(msg);
 }
 
-bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares)
+bool CGUIPassword::IsDatabasePathUnlocked(CStdString strPath, VECSHARES& vecShares)
 {
   if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
     return true;
