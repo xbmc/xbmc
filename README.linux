@@ -1,23 +1,35 @@
-This is an initial port of the skinning tool to Linux. I have tested this to work with Ubuntu.
-There is no reason why it should not work on other platforms.
+This is an initial port of the skinning tool to Linux. Later on it will include 
+the remaining XBMC functionality. 
+
+I have tested this to work with Ubuntu 6.06 and 6.10.
+
+Getting the source code
+-----------------------
+sudo apt-get install subversion
+cd $HOME
+svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
 Installing the required ubuntu packages
 ---------------------------------------
-sudo apt-get install subversion make g++-4.1 gcc-4.1
-sudo apt-get install libsdl1.2debian libsdl1.2debian-all libsdl1.2debian-alsa 
+sudo apt-get install make g++-4.0 gcc-4.0
+sudo apt-get install libsdl1.2-dev
+sudo apt-get install libsdl-image1.2-dev
 sudo apt-get install libsdl-gfx1.2-dev 
 sudo apt-get install libsdl-mixer1.2-dev 
 sudo apt-get install libsdl-sound1.2-dev 
 sudo apt-get install libsdl-stretch-dev 
 sudo apt-get install libcdio6 libcdio-dev 
 sudo apt-get install libfribidi0 libfribidi-dev 
-sudo apt-get install libzlo1 libzlo-dev 
+sudo apt-get install liblzo1 liblzo-dev 
 sudo apt-get install libfreetype6 libfreetype6-dev 
 sudo apt-get install libsqlite3-0 libsqlite3-dev 
+sudo apt-get install libogg-dev
 
 How to compile
 --------------
-cd <home>/XBMC
-make lib
+cd $HOME/linuxport/XBMC
 make
 
+Run to run
+----------
+Not yet...
