@@ -20,11 +20,13 @@
  */
 
 #include "stdafx.h"
-#include "playlistm3u.h"
-#include "filesystem/file.h"
-#include "util.h"
+#include "PlayListM3U.h"
+#include "FileSystem/File.h"
+#include "Util.h"
 #include "utils/RegExp.h"
+#ifndef _LINUX
 #include "cores/dllloader/exports/emu_msvcrt.h"
+#endif
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -117,7 +119,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         CPlayListItem newItem(strInfo, strFileName, lDuration);
         Add(newItem);
 
-        // Reset the values just in case there part of the file have the extended marker
+        // Reset the values just in case there part of the File.have the extended marker
         // and part don't
         strInfo = "";
         lDuration = 0;

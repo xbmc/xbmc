@@ -1,6 +1,6 @@
 #pragma once
 
-#include "settings.h"
+#include "Settings.h"
 #include "GUIBaseContainer.h"
 
 class CViewState; // forward

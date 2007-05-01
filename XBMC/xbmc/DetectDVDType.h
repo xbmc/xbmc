@@ -7,9 +7,9 @@
 //
 
 #pragma once
-#include "xbox/iosupport.h"
-#include "filesystem/cdiosupport.h"
-#include "utils/criticalsection.h"
+#include "xbox/IoSupport.h"
+#include "FileSystem/cdioSupport.h"
+#include "utils/CriticalSection.h"
 
 namespace MEDIA_DETECT
 {

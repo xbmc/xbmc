@@ -20,11 +20,11 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloaderape.h"
+#include "MusicInfoTagLoaderApe.h"
 #include "cores/paplayer/DllMACDll.h"
 
 // MPC stuff
-#include "util.h"
+#include "Util.h"
 // MPC stuff
 
 
@@ -82,3 +82,4 @@ int CMusicInfoTagLoaderApe::ReadDuration(const CStdString &strFileName)
 
   return (int)(dll.GetDuration(strFileName.c_str()) / 1000);
 }
+

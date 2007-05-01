@@ -30,3 +30,4 @@ protected:
 };
 
 extern class CMediaManager g_mediaManager;
+

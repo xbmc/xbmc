@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include "PlayListPlayer.h"
 #include "PlayListFactory.h"
-#include "application.h"
-#include "util.h"
+#include "Application.h"
+#include "Util.h"
 #include "PartyModeManager.h"
 
 using namespace PLAYLIST;

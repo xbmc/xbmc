@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "BuddyItem.h"
-#include "Utils/KaiClient.h"
+#include "utils/KaiClient.h"
 
 
 #define PING_OFFSETX  8
@@ -40,7 +40,7 @@ CGUIImage* CBuddyItem::m_pKeyboardIcon = NULL;
 
 CBuddyItem::CBuddyItem(CStdString& strLabel) : CKaiItem(strLabel)
 {
-  SetCookie( CKaiClient::Item::Player );
+  SetCookie( CKaiClient::Player );
 
   m_strVector = "/";
   m_strGeoLocation = "";

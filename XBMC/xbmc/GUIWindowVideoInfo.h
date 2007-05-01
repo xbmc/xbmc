@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
-#include "utils/imdb.h"
-#include "guilistitem.h"
+#include "utils/IMDB.h"
+#include "GUIListItem.h"
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"

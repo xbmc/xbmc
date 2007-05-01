@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIMediaWindow.h"
 #include "VideoDatabase.h"
-#include "playlistplayer.h"
+#include "PlayListPlayer.h"
 #include "ThumbLoader.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver

@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogTrainerSettings.h"
-#include "utils/trainer.h"
+#include "utils/Trainer.h"
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_START              30
@@ -180,3 +180,4 @@ void CGUIDialogTrainerSettings::OnInitWindow()
 
   CGUIDialogSettings::OnInitWindow();
 }
+

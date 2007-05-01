@@ -61,3 +61,4 @@ private:
 
 
 extern CNetwork g_network;
+

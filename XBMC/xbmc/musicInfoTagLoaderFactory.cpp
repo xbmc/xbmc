@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "MusicInfoTagLoaderFactory.h"
+#include "musicInfoTagLoaderFactory.h"
 #include "MusicInfoTagLoaderMP3.h"
 #include "MusicInfoTagLoaderOgg.h"
 #include "MusicInfoTagLoaderWMA.h"
@@ -29,12 +29,12 @@
 #include "MusicInfoTagLoaderCDDA.h"
 #include "MusicInfoTagLoaderApe.h"
 #include "MusicInfoTagLoaderMPC.h"
-#include "MusicInfoTagLoaderSHN.h"
+#include "MusicInfoTagLoaderShn.h"
 #include "MusicInfoTagLoaderSid.h"
 #include "MusicInfoTagLoaderMod.h"
 #include "MusicInfoTagLoaderWav.h"
 #include "MusicInfoTagLoaderAAC.h"
-#include "MusicInfoTagLoaderWAVPack.h"
+#include "MusicInfoTagLoaderWavPack.h"
 #ifdef HAS_MOD_PLAYER
 #include "cores/ModPlayer.h"
 #endif
@@ -45,7 +45,7 @@
 #include "MusicInfoTagLoaderYM.h"
 #include "MusicInfoTagLoaderDatabase.h"
 
-#include "util.h"
+#include "Util.h"
 
 
 using namespace MUSIC_INFO;

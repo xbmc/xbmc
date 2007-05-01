@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "dnsnamecache.h"
+#include "DNSNameCache.h"
 
 
 CDNSNameCache g_DNSCache;
@@ -59,27 +59,31 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
   // do a DNS lookup
 #ifndef _XBOX
   {
-    WSADATA wsaData;    /* Used to open Windows connection */
     SOCKET sd;          /* Socket descriptor */
     struct sockaddr_in socket_address;
     struct hostent *host;
     int count = 0;
 
+#ifndef _LINUX
     /* Open a windows connection */
+    WSADATA wsaData;    /* Used to open Windows connection */
     if (WSAStartup(0x0101, &wsaData) != 0)
     {
       OutputDebugString("Could not open Windows connection\n");
       return false;
     }
+#endif
 
     /* Open up a socket */
     sd = socket(AF_INET, SOCK_STREAM, 0);
 
     /* Make sure the socket was opened */
-    if (sd == INVALID_SOCKET)
+    if (sd == SOCKET_ERROR)
     {
       OutputDebugString("Could not open socket.\n");
+#ifndef _LINUX
       WSACleanup();
+#endif
       return false;
     }
 
@@ -96,7 +100,9 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     {
       OutputDebugString("Could not find host\n");
       closesocket(sd);
+#ifndef _LINUX
       WSACleanup();
+#endif
       return false;
     }
 
@@ -125,7 +131,9 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     }
 
     closesocket(sd);
-    WSACleanup();
+#ifndef _LINUX
+      WSACleanup();
+#endif
 
     return true;
   }

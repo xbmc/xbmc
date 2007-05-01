@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "ButtonTranslator.h"
-#include "util.h"
-#include "settings.h"
+#include "Util.h"
+#include "Settings.h"
 #include "SkinInfo.h"
 #include "Key.h"
 
@@ -68,7 +68,7 @@ bool CButtonTranslator::Load()
     if (szWindow)
     {
       if (strcmpi(szWindow, "global") == 0)
-        wWindowID = -1;
+        wWindowID = (DWORD) -1;
       else
         wWindowID = TranslateWindowString(szWindow);
     }
@@ -86,7 +86,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   WORD wAction = GetActionCode(wWindow, key, strAction);
   // if it's invalid, try to get it from the global map
   if (wAction == 0)
-    wAction = GetActionCode( -1, key, strAction);
+    wAction = GetActionCode( (DWORD) -1, key, strAction);
   // Now fill our action structure
   action.wID = wAction;
   action.strAction = strAction;
@@ -665,3 +665,4 @@ void CButtonTranslator::Clear()
   translatorMap.clear();
 
 }
+

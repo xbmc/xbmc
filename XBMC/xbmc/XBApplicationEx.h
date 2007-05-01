@@ -17,6 +17,9 @@
 #ifdef _XBOX
 #include "common/XBoxMouse.h"
 #include "common/XBoxKeyboard.h"
+#elif defined(HAS_SDL)
+#include "common/SDLMouse.h"
+#include "common/SDLKeyboard.h"
 #else
 #include "common/DirectInputMouse.h"
 #include "common/DirectInputKeyboard.h"
@@ -52,10 +55,12 @@ public:
   D3DPRESENT_PARAMETERS m_d3dpp;
 
   // Main objects used for creating and rendering the 3D scene
+#ifndef HAS_SDL
   LPDIRECT3D8 m_pD3D;              // The D3D enumerator object
   LPDIRECT3DDEVICE8 m_pd3dDevice;        // The D3D rendering device
   LPDIRECT3DSURFACE8 m_pBackBuffer;       // The back buffer
   //LPDIRECT3DSURFACE8    m_pDepthBuffer;      // The depth buffer
+#endif
 
   // Variables for timing
   FLOAT m_fTime;             // Current absolute time in seconds

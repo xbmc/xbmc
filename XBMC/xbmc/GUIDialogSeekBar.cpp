@@ -167,3 +167,4 @@ CStdString CGUIDialogSeekBar::GetSeekTimeLabel()
   StringUtils::SecondsToTimeString(time, strHMS, g_application.IsPlayingVideo());
   return strHMS;
 }
+

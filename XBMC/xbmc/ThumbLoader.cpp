@@ -69,3 +69,4 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
     pItem->SetUserMusicThumb();
   return true;
 }
+

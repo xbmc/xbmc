@@ -80,3 +80,4 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   }
   return CGUIDialog::OnMessage(message);
 }
+

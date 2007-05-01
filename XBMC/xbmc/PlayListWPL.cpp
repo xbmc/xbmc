@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "playlistwpl.h"
-#include "util.h"
+#include "PlayListWPL.h"
+#include "Util.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

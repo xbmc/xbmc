@@ -21,18 +21,18 @@
 
 #include "stdafx.h"
 #include "GUIMediaWindow.h"
-#include "util.h"
-#include "detectdvdtype.h"
+#include "Util.h"
+#include "DetectDVDType.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
 #include "GUIPassword.h"
 #include "Application.h"
-#include "xbox/network.h"
+#include "xbox/Network.h"
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
 
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUIMultiImage.h"
 
 #define CONTROL_BTNVIEWASICONS     2
@@ -1027,3 +1027,4 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   return false;
 }
+

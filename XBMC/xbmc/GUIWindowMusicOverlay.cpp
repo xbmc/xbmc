@@ -94,3 +94,4 @@ void CGUIWindowMusicOverlay::SetDefaults()
   m_renderOrder = 0;
   m_visibleCondition = SKIN_HAS_MUSIC_OVERLAY;
 }
+

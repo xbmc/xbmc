@@ -1,9 +1,11 @@
 #pragma once
 
 #include "GUIWindow.h"
-#include "Utils/Thread.h"
+#include "utils/Thread.h"
+#ifdef HAS_SLIDESHOW
 #include "SlideShowPicture.h"
-#include "dllImageLib.h"
+#endif
+#include "DllImageLib.h"
 
 class CGUIWindowSlideShow;
 
@@ -53,7 +55,11 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void FreeResources();
+#ifndef HAS_SDL
   void OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
+#else
+  void OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
+#endif
   int NumSlides();
   void Shuffle();
 private:
@@ -76,7 +82,9 @@ private:
   vector<CStdString> m_vecSlides;
   typedef vector<CStdString>::iterator ivecSlides;
 
+#ifdef HAS_SLIDESHOW
   CSlideShowPic m_Image[2];
+#endif
   int m_iCurrentPic;
   // background loader
   CBackgroundPicLoader* m_pBackgroundLoader;

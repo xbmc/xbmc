@@ -3,13 +3,14 @@
  \brief
  */
 #pragma once
-#include "..\guilib\guilistitem.h"
-#include "song.h"
-#include "utils/archive.h"
+#include "../guilib/GUIListItem.h"
+#include "Song.h"
+#include "utils/Archive.h"
 #include "DateTime.h"
 #include "VideoInfoTag.h"
 
 using namespace MUSIC_INFO;
+using namespace std;
 
 typedef enum {
   SORT_METHOD_NONE=0,

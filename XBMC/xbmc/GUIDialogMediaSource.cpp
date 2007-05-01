@@ -511,3 +511,4 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
     paths.push_back(m_paths[i]->m_strPath);
   return paths;
 }
+

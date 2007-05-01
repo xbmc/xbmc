@@ -81,3 +81,4 @@ struct SSortFileItem
   static bool ProductionCodeAscending(CFileItem *left, CFileItem *right);
   static bool ProductionCodeDescending(CFileItem *left, CFileItem *right);
 };
+

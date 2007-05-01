@@ -22,12 +22,12 @@
 #include "stdafx.h"
 #include "XBTimeZone.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 // extracted and translated from xboxdash.xbe version 5960
 //   structures @ file offset 0x101F0-0x10A24 / VA 0x201F0 - 0x20A24
 //   strings @ file offset 0x142B8-0x14BFC / VA 0x242B8 - 0x24BFC
-static const MINI_TZI g_TimeZoneInfo[] = {
+extern const MINI_TZI g_TimeZoneInfo[] = {
     {
       "GMT-12",
       720,

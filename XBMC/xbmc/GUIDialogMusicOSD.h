@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUIDialog.h"
-#include "visualizations\Visualisation.h"
+#include "visualizations/Visualisation.h"
 
 class CGUIDialogMusicOSD :
       public CGUIDialog

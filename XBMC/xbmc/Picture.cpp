@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "picture.h"
-#include "util.h"
+#include "Picture.h"
+#include "Util.h"
 #include "TextureManager.h"
 
 using namespace XFILE;
@@ -36,7 +36,11 @@ CPicture::~CPicture(void)
 
 }
 
+#ifndef HAS_SDL
 IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+#else
+SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+#endif
 {
   if (!m_dll.Load()) return NULL;
 
@@ -132,8 +136,13 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   {
     int width, height;
     bool linear;
+#ifndef HAS_SDL
     LPDIRECT3DPALETTE8 palette;
     LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
+#else
+    SDL_Palette* palette;
+    SDL_Surface* texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
+#endif
     if (texture)
     {
       bool success(false);
@@ -144,10 +153,16 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
       }
       else
       {
+#ifndef HAS_SDL
         D3DLOCKED_RECT lr;
         texture->LockRect(0, &lr, NULL, 0);
         success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
         texture->UnlockRect(0);
+#else
+	SDL_LockSurface(texture);
+        success = pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch, destFile);
+	SDL_UnlockSurface(texture);
+#endif
       }
       g_TextureManager.ReleaseTexture(srcFile, 0);
       return success;
@@ -156,8 +171,13 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   return false;
 }
 
+#ifndef HAS_SDL
 bool CPicture::CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, int width, int height, const CStdString &thumb)
+#else
+bool CPicture::CreateThumbnailFromSwizzledTexture(SDL_Surface* &texture, int width, int height, const CStdString &thumb)
+#endif
 {
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 linTexture = NULL;
   if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
   {
@@ -175,5 +195,8 @@ bool CPicture::CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, i
     SAFE_RELEASE(linTexture);
     return success;
   }
+#else
+#warning FIXME CPicture::CreateThumbnailFromSwizzledTexture not implemented
+#endif
   return false;
 }

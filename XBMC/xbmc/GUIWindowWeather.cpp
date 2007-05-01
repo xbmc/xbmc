@@ -21,9 +21,9 @@
 
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "Util.h"
-#include "Utils/Weather.h"
+#include "utils/Weather.h"
 
 
 #define CONTROL_BTNREFRESH  2

@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include "guiwindowscripts.h"
-#include "util.h"
+#include "GUIWindowScripts.h"
+#include "Util.h"
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "GUIWindowScriptsInfo.h"
 
 using namespace XFILE;
@@ -56,6 +58,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
+#ifdef HAS_PYTHON
   /* check if any python scripts are running. If true, place "(Running)" after the item.
    * since stopping a script can take up to 10 seconds or more,we display 'stopping'
    * after the filename for now.
@@ -84,6 +87,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
       }
     }
   }
+#endif
 
   return true;
 }
@@ -93,6 +97,7 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
 
+#ifdef HAS_PYTHON
   /* execute script...
     * if script is already running do not run it again but stop it.
     */
@@ -114,6 +119,7 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
     }
   }
   g_pythonParser.evalFile(strPath);
+#endif
 
   return true;
 }
@@ -126,6 +132,7 @@ void CGUIWindowScripts::OnInfo()
 
 void CGUIWindowScripts::Render()
 {
+#ifdef HAS_PYTHON
   // update control_list / control_thumbs if one or more scripts have stopped / started
   if (g_pythonParser.ScriptsSize() != m_scriptSize)
   {
@@ -134,6 +141,8 @@ void CGUIWindowScripts::Render()
     m_viewControl.SetSelectedItem(selectedItem);
     m_scriptSize = g_pythonParser.ScriptsSize();
   }
+#endif
+
   CGUIWindow::Render();
 }
 

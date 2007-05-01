@@ -52,3 +52,4 @@ bool CMusicInfoTagLoaderDatabase::Load(const CStdString& strFileName, CMusicInfo
 
   return tag.Loaded();
 }
+

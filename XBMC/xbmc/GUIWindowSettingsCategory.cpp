@@ -26,19 +26,19 @@
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
-#include "Utils/Weather.h"
+#include "utils/Weather.h"
 #include "MusicDatabase.h"
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "Utils/LED.h"
-#include "Utils/FanController.h"
-#include "xbox/xkhdd.h"
+#include "utils/LED.h"
+#include "utils/FanController.h"
+#include "xbox/XKHDD.h"
 #endif
 #ifdef HAS_LCD
-#include "Utils/LCDFactory.h"
+#include "utils/LCDFactory.h"
 #endif
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
@@ -54,8 +54,8 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
-#include "xbox/network.h"
-#include "lib/libGoAhead/webserver.h"
+#include "xbox/Network.h"
+#include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
 
@@ -538,12 +538,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("servers.webserverpassword"))
-    { // get password from the webserver if it's running (and update our settings)
+    { 
+#ifdef HAS_WEB_SERVER
+      // get password from the webserver if it's running (and update our settings)
       if (g_application.m_pWebServer)
       {
         ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetPassword());
         g_settings.Save();
       }
+#endif
     }
     else if (strSetting.Equals("network.assignment"))
     {
@@ -894,7 +897,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
     }
-    else if (strSetting.Equals("network.httpproxyserver") || strSetting.Equals("network.httpproxyport"))
+    else if (strSetting.Equals("Network.httpproxyserver") || strSetting.Equals("Network.httpproxyport"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
@@ -1381,18 +1384,20 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       if (port <= 0 || port > 65535)
         pSetting->SetData("80");
     }
+#ifdef HAS_WEB_SERVER
     g_application.StopWebServer();
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();
       g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
     }
+#endif
   }
   else if (strSetting.Equals("network.ipaddress"))
   {
     if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
     {
-      CStdString strDefault = g_guiSettings.GetString("network.ipaddress").Left(g_guiSettings.GetString("network.ipaddress").ReverseFind("."))+".1";
+      CStdString strDefault = g_guiSettings.GetString("network.ipaddress").Left(g_guiSettings.GetString("network.ipaddress").ReverseFind('.'))+".1";
       if (g_guiSettings.GetString("network.gateway").Equals("0.0.0.0"))
         g_guiSettings.SetString("network.gateway",strDefault);
       if (g_guiSettings.GetString("network.dns").Equals("0.0.0.0"))
@@ -1400,7 +1405,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     }
   }
-  else if (strSetting.Equals("network.httpproxyport"))
+  else if (strSetting.Equals("Network.httpproxyport"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
     // check that it's a valid port
@@ -2203,7 +2208,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   }
 
   sort(vecSkins.begin(), vecSkins.end(), sortstringbyname());
-  for (i = 0; i < (int) vecSkins.size(); ++i)
+  for (int i = 0; i < (int) vecSkins.size(); ++i)
   {
     CStdString strSkin = vecSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()) == 0)
@@ -2253,7 +2258,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     iCurrentSoundSkin=1;
 
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
-  for (i = 0; i < (int) vecSoundSkins.size(); ++i)
+  for (int i = 0; i < (int) vecSoundSkins.size(); ++i)
   {
     CStdString strSkin = vecSoundSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.soundskin").c_str()) == 0)
@@ -2556,7 +2561,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
-  for (i = 0; i < (int) vecLanguage.size(); ++i)
+  for (int i = 0; i < (int) vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
     if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
@@ -2609,7 +2614,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (i = 0; i < (int) vecScr.size(); ++i)
+  for (int i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 

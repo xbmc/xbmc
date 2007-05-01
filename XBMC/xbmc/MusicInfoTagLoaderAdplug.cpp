@@ -76,3 +76,4 @@ bool CMusicInfoTagLoaderAdplug::Load(const CStdString& strFileName, CMusicInfoTa
 
   return tag.Loaded();
 }
+

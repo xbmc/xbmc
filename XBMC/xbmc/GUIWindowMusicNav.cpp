@@ -21,11 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
-#include "util.h"
-#include "Utils/GUIInfoManager.h"
+#include "Util.h"
+#include "utils/GUIInfoManager.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUILabelControl.h"
@@ -35,7 +35,7 @@
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "PartyModeManager.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIDialogMusicScan.h"
 
 using namespace DIRECTORY;
@@ -502,7 +502,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
   CStdString strPath = pItem->m_strPath;
   CUtil::RemoveSlashAtEnd(strPath);
 
-  int nPos=strPath.ReverseFind("/");
+  int nPos=strPath.ReverseFind('/');
   if (nPos>-1)
   {
     //  try to guess where the user should start

@@ -21,19 +21,23 @@
 
 #include "stdafx.h"
 #include "ApplicationMessenger.h"
-#include "application.h"
+#include "Application.h"
 #ifdef _XBOX
-#include "xbox/xkutils.h"
+#include "xbox/XKUtils.h"
 #include "xbox/XKHDD.h"
 #endif
 
-#include "texturemanager.h"
-#include "playlistplayer.h"
-#include "util.h"
+#include "TextureManager.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "GUIWindowSlideShow.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/xbmchttp.h"
-#include "xbox/network.h"
+#endif
+#include "xbox/Network.h"
 
 extern HWND g_hWnd;
 
@@ -140,9 +144,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         XKHDD::SpindownHarddisk(); // Spindown the Harddisk
         XKUtils::XBOXPowerOff();
 #endif
-#else
+#elif !defined(_LINUX)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#else
+	// exit the application
+	exit(0);
 #endif
       }
       break;
@@ -161,9 +168,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
 #endif
-#else
+#elif !defined(_LINUX)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#else
+	// exit the application
+	// TODO LINUX actually restart
+	exit(0);
 #endif
       }
       break;
@@ -176,9 +187,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
 #endif
-#else
+#elif !defined(_LINUX)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#else
+	// exit the application
+	// TODO LINUX actually restart
+	exit(0);
 #endif
       }
       break;
@@ -329,15 +344,19 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_HTTPAPI:
+#ifdef HAS_WEB_SERVER
       if (!pXbmcHttp)
       {
         pXbmcHttp = new CXbmcHttp();
       }
       pXbmcHttp->xbmcCommand(pMsg->strParam);
+#endif
       break;
 
     case TMSG_EXECUTE_SCRIPT:
+#ifdef HAS_PYTHON
       g_pythonParser.evalFile(pMsg->strParam.c_str());
+#endif
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
@@ -480,7 +499,7 @@ void CApplicationMessenger::MediaRestart(bool bWait)
 
 void CApplicationMessenger::PlayListPlayerPlay()
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
   SendMessage(tMsg, true);
 }
 

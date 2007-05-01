@@ -159,3 +159,4 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
   }
 }
+

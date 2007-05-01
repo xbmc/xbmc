@@ -281,3 +281,4 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   msg.SetLabel(label);
   g_graphicsContext.SendMessage(msg);
 }
+

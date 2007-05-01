@@ -1,7 +1,7 @@
-#include "tag.h"
+#include "Tag.h"
 #pragma once
 
-#include "dlllibid3tag.h"
+#include "DllLibid3tag.h"
 
 namespace MUSIC_INFO
 {

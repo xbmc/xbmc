@@ -20,21 +20,21 @@
  */
 
 #include "stdafx.h"
-#include "application.h"
-#include "util.h"
-#include "xbox/iosupport.h"
+#include "Application.h"
+#include "Util.h"
+#include "xbox/IoSupport.h"
 #include "xbox/xbeheader.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #include "xbresource.h"
 #endif
 #include "DetectDVDType.h"
-#include "autorun.h"
-#include "filesystem/hddirectory.h"
+#include "Autorun.h"
+#include "FileSystem/HDDirectory.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "filesystem/DirectoryCache.h"
+#include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/DirectoryCache.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
@@ -44,13 +44,15 @@
 #ifdef HAS_CREDITS
 #include "Credits.h"
 #endif
-#include "shortcut.h"
-#include "playlistplayer.h"
-#include "partymodemanager.h"
+#include "Shortcut.h"
+#include "PlayListPlayer.h"
+#include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "utils/RegExp.h"
 #include "utils/AlarmClock.h"
 #include "ButtonTranslator.h"
@@ -60,19 +62,19 @@
 #include "GUIDialogFileBrowser.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
-#include "utils/trainer.h"
+#include "utils/Trainer.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #include "utils/FilterFlickerPatch.h"
 #include "utils/LED.h"
-#include "utils/fancontroller.h"
-#include "utils/systeminfo.h"
+#include "utils/FanController.h"
+#include "utils/SystemInfo.h"
 #endif
 #include "MediaManager.h"
 #ifdef _XBOX
 #include <xbdm.h>
 #endif
-#include "xbox/network.h"
+#include "xbox/Network.h"
 #include "GUIPassword.h"
 #include "utils/KaiClient.h"
 #ifdef HAS_FTP_SERVER
@@ -88,7 +90,7 @@
 using namespace DIRECTORY;
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
-static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
+static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
 
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
@@ -98,7 +100,17 @@ using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
+
+#ifndef _LINUX
 static D3DGAMMARAMP oldramp, flashramp;
+#else
+static Uint16 oldrampRed[256];
+static Uint16 oldrampGreen[256];
+static Uint16 oldrampBlue[256];
+static Uint16 flashrampRed[256];
+static Uint16 flashrampGreen[256];
+static Uint16 flashrampBlue[256];
+#endif
 
 #ifdef HAS_XBOX_HARDWARE
 extern "C"
@@ -1144,22 +1156,22 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 {
   if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is off. Skipping Filter Flicker Patching.");
+    CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is off. Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
   CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
   if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Progressive Mode detected: Skipping Auto Filter Flicker Patching!");
+    CLog::Log(LOGDEBUG, "%s - Progressive Mode detected: Skipping Auto Filter Flicker Patching!", __FUNCTION__);
     return false;
   }
   if (strncmp(szPath1, "D:", 2) == 0)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Source is DVD-ROM! Skipping Filter Flicker Patching.");
+    CLog::Log(LOGDEBUG, "%s - Source is DVD-ROM! Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
+  CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is ON. Starting Filter Flicker Patching.", __FUNCTION__);
 
   // Test if we already have a patched _ffp XBE
   // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
@@ -1180,24 +1192,24 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
   CXBE m_xbe;
   if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - %s",szPath1.c_str());
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.");
+    CLog::Log(LOGDEBUG, "%s - %s",szPath1.c_str(), __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
 #ifdef HAS_XBOX_HARDWARE
   CGFFPatch m_ffp;
   if (!m_ffp.FFPatch(szPath1, szNewPath))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR during Filter Flicker Patching. Falling back to the original source.");
+    CLog::Log(LOGDEBUG, "%s - ERROR during Filter Flicker Patching. Falling back to the original source.", __FUNCTION__);
     return false;
   }
 #endif
   if(szNewPath.IsEmpty())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR NO Patchfile Path is empty! Falling back to the original source.");
+    CLog::Log(LOGDEBUG, "%s - ERROR NO Patchfile Path is empty! Falling back to the original source.", __FUNCTION__);
     return false;
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Filter Flicker Patching done. Starting %s.",szNewPath.c_str());
+  CLog::Log(LOGDEBUG, "%s - Filter Flicker Patching done. Starting %s.", __FUNCTION__, szNewPath.c_str());
   return true;
 }
 
@@ -1253,7 +1265,11 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
       CIoSupport::GetPartition(szDrive[0], szDevicePath);
 
       strcat(szDevicePath, szDirectory);
+#ifndef _LINUX      
       wsprintf(szXbePath, "d:\\%s", szXbe);
+#else
+      sprintf(szXbePath, "d:\\%s", szXbe);
+#endif      
 
 #ifdef HAS_XBOX_HARDWARE
       g_application.Stop();
@@ -1306,7 +1322,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     if (szParameters == NULL)
     {
       DWORD error = XLaunchNewImage(szXbe, NULL );
-      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
+      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
     }
     else
     {
@@ -1314,7 +1330,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
       strcpy((char*)LaunchData.Data, szParameters);
 
       DWORD error = XLaunchNewImage(szXbe, &LaunchData );
-      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
+      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
     }
   }
 #endif
@@ -1574,6 +1590,7 @@ void CUtil::URLEncode(CStdString& strURLData)
 bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon)
 {
   bool success(false);
+#ifndef _LINUX  
   // extract icon from .xbe
   CStdString localFile;
   g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
@@ -1613,9 +1630,12 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   }
   delete pPackedResource;
   CFile::Delete(strTempFile);
+#else
+  success = true;
+#endif
+  
   return success;
 }
-
 
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
 {
@@ -2004,7 +2024,7 @@ static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
   DWORD startTimer = timeGetTime();
-  CLog::Log(LOGDEBUG,__FUNCTION__": START");
+  CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
   char * common_sub_dirs[] = {"subs",
@@ -2066,7 +2086,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // checking if any of the common subdirs exist ..
-  CLog::Log(LOGDEBUG,__FUNCTION__": Checking for common subirs...");
+  CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -2139,14 +2159,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   DWORD nextTimer = timeGetTime();
-  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(nextTimer - startTimer));
+  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(nextTimer - startTimer));
 
   CStdString strLExt;
   CStdString strDest;
   CStdString strItem;
 
   // 2 steps for movie directory and alternate subtitles directory
-  CLog::Log(LOGDEBUG,__FUNCTION__": Searching for subtitles...");
+  CLog::Log(LOGDEBUG,"%s: Searching for subtitles...", __FUNCTION__);
   for (unsigned int step = 0; step < strLookInPaths.size(); step++)
   {
     if (strLookInPaths[step].length() != 0)
@@ -2213,7 +2233,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
-  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(timeGetTime() - nextTimer));
+  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - nextTimer));
 
   // rename any keep subtitles
   CFileItemList items;
@@ -2231,7 +2251,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
-  CLog::Log(LOGDEBUG,__FUNCTION__": END (total time: %i ms)", (int)(timeGetTime() - startTimer));
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
 }
 
 bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
@@ -2611,9 +2631,11 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
   {
     for (i = 0; i <= max; i++)
     {
-
+#ifndef HAS_SDL
       wsprintf(szName, fn_template, i);
-
+#else
+      sprintf(szName, fn_template, i);
+#endif	
       memset(&wfd, 0, sizeof(wfd));
       if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)
         FindClose(hFind);
@@ -2630,12 +2652,20 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 
 void CUtil::InitGamma()
 {
+#ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
+#else
+  SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
+#endif  
 }
 void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
+#ifndef HAS_SDL  
   g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
+#else
+  SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
+#endif
   g_graphicsContext.Unlock();
 }
 
@@ -2657,18 +2687,32 @@ void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, in
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
 {
   // calculate ramp
+#ifndef HAS_SDL
   D3DGAMMARAMP ramp;
+#else
+  Uint16 rampRed[256];
+  Uint16 rampGreen[256];
+  Uint16 rampBlue[256];
+#endif  
 
   Gamma = 1.0f / Gamma;
   for (int i = 0; i < 256; ++i)
   {
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
+#ifndef HAS_SDL    
     ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
+#else
+    rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
+#endif    
   }
 
   // set ramp next v sync
   g_graphicsContext.Lock();
+#ifndef HAS_SDL  
   g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
+#else
+  SDL_SetGammaRamp(rampRed, rampGreen, rampGreen);
+#endif
   g_graphicsContext.Unlock();
 }
 
@@ -2704,16 +2748,25 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   g_graphicsContext.Lock();
   if (bOn)
   {
+#ifndef HAS_SDL  
     g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
+#else
+    SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampGreen);    
+#endif    
     SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
   }
   else
+#ifndef HAS_SDL  
     g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
+#else
+    SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampGreen);    
+#endif    
   g_graphicsContext.Unlock();
 }
 
 void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 {
+#ifndef HAS_SDL
     LPDIRECT3DSURFACE8 lpSurface = NULL;
 
     g_graphicsContext.Lock();
@@ -2765,6 +2818,9 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 #endif
       FlashScreen(true, false);
     }
+#else
+#warning CUtil::TakeScreenshot not implemented
+#endif    
 }
 
 void CUtil::TakeScreenshot()
@@ -2844,9 +2900,16 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = (__int64)stat->st_size;
+  
+#ifndef _LINUX  
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#else
+  result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#endif  
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
@@ -2859,9 +2922,15 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
+#ifndef _LINUX  
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#else
+  result->_st_atime = (long)(stat->_st_atime & 0xFFFFFFFF);
+  result->_st_mtime = (long)(stat->_st_mtime & 0xFFFFFFFF);
+  result->_st_ctime = (long)(stat->_st_ctime & 0xFFFFFFFF);
+#endif  
 }
 
 void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
@@ -2874,12 +2943,22 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
+#ifndef _LINUX  
   result->st_atime = stat->st_atime;
   result->st_mtime = stat->st_mtime;
   result->st_ctime = stat->st_ctime;
+#else
+  result->_st_atime = stat->_st_atime;
+  result->_st_mtime = stat->_st_mtime;
+  result->_st_ctime = stat->_st_ctime;
+#endif  
 }
 
+#ifndef _LINUX
 void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
+#else
+void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
+#endif
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;
@@ -2889,15 +2968,25 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   if (stat->st_size <= LONG_MAX)
+#ifndef _LINUX  
     result->st_size = (_off_t)stat->st_size;
+#else
+    result->st_size = (off_t)stat->st_size;
+#endif
   else
   {
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
+#ifndef _LINUX  
   result->st_atime = (time_t)stat->st_atime;
   result->st_mtime = (time_t)stat->st_mtime;
   result->st_ctime = (time_t)stat->st_ctime;
+#else
+  result->st_atime = (time_t)stat->_st_atime;
+  result->st_mtime = (time_t)stat->_st_mtime;
+  result->st_ctime = (time_t)stat->_st_ctime;
+#endif  
 }
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
@@ -2950,7 +3039,8 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   url.GetURLWithoutFilename(strTemp);
   for (unsigned int i = 0; i < strArray.size(); i++)
   {
-    CStdString strTemp1 = strTemp + strArray[i];
+    CStdString strTemp1 = strTemp;
+    strTemp += strArray[i];
     CDirectory::Create(strTemp1);
   }
   strArray.clear();
@@ -3254,6 +3344,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), atol(parameter.c_str()));
     g_graphicsContext.SendMessage(msg);
   }
+#ifdef HAS_PYTHON
   else if (execute.Equals("runscript"))
   {
     std::vector<CStdString> params;
@@ -3277,6 +3368,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       g_pythonParser.evalFile(parameter.c_str());
   }
+#endif
   else if (execute.Equals("resolution"))
   {
     RESOLUTION res = PAL_4x3;
@@ -4625,7 +4717,7 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
 
 CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 {
-  //CLog::Log(LOGDEBUG,__FUNCTION__" checking source filename:[%s]", strFileName.c_str());
+  //CLog::Log(LOGDEBUG,"%s checking source filename:[%s]", __FUNCTION__, strFileName.c_str());
   // substitutes paths to correct issues with remote playlists containing full paths
   for (unsigned int i = 0; i < g_advancedSettings.m_pathSubstitutions.size(); i++)
   {
@@ -4647,7 +4739,7 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
       CUtil::AddSlashAtEnd(strReplace);
 
     // if left most characters match the search, replace them
-    //CLog::Log(LOGDEBUG,__FUNCTION__" testing for path:[%s]", strSearch.c_str());
+    //CLog::Log(LOGDEBUG,"%s testing for path:[%s]", __FUNCTION__, strSearch.c_str());
     int iLen = strSearch.size();
     if (strFileName.Left(iLen).Equals(strSearch))
     {
@@ -4655,12 +4747,12 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
       CStdString strTemp = strFileName.Mid(iLen);
       strTemp.Replace("\\", strReplace.Right(1));
       CStdString strFileNameNew = strReplace + strTemp;
-      //CLog::Log(LOGDEBUG,__FUNCTION__" new filename:[%s]", strFileNameNew.c_str());
+      //CLog::Log(LOGDEBUG,"%s new filename:[%s]", __FUNCTION__, strFileNameNew.c_str());
       return strFileNameNew;
     }
   }
   // nothing matches, return original string
-  //CLog::Log(LOGDEBUG,__FUNCTION__" no matches");
+  //CLog::Log(LOGDEBUG,"%s no matches", __FUNCTION__);
   return strFileName;
 }
 
@@ -4779,7 +4871,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   RemoveSlashAtEnd(noSlashPath);
   crc.ComputeFromLowerCase(noSlashPath);
   CStdString hex;
-  hex.Format("%08x", crc);
+  hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
   thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
   return thumb;

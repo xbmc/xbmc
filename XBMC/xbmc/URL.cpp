@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "url.h"
+#include "URL.h"
 #include "utils/RegExp.h"
-#include "util.h"
+#include "Util.h"
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -76,7 +76,7 @@ CURL::CURL(const CStdString& strURL)
     }
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Url has no protocol %s, empty CURL created", strURL.c_str());
+      CLog::Log(LOGDEBUG, "%s - Url has no protocol %s, empty CURL created", __FUNCTION__, strURL.c_str());
       return;
     }
   }
@@ -362,7 +362,7 @@ void CURL::SetOptions(const CStdString& strOptions)
       m_strOptions = strOptions;
     }
     else
-      CLog::Log(LOGWARNING, __FUNCTION__" - Invalid options specified for url %s", strOptions.c_str());
+      CLog::Log(LOGWARNING, "%s - Invalid options specified for url %s", __FUNCTION__, strOptions.c_str());
 }
 
 void CURL::SetPort(int port)

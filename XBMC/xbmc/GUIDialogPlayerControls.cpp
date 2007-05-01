@@ -32,3 +32,4 @@ CGUIDialogPlayerControls::CGUIDialogPlayerControls(void)
 CGUIDialogPlayerControls::~CGUIDialogPlayerControls(void)
 {
 }
+

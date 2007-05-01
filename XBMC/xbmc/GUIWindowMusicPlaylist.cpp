@@ -20,11 +20,11 @@
  */
 
 #include "stdafx.h"
-#include "GUIWindowMusicPlayList.h"
-#include "util.h"
+#include "GUIWindowMusicPlaylist.h"
+#include "Util.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 
 using namespace PLAYLIST;
@@ -690,3 +690,4 @@ void CGUIWindowMusicPlayList::MarkPlaying()
       m_vecItems[iSong]->Select(true);
   }*/
 }
+

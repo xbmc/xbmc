@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "SmartPlaylist.h"
 #include "utils/log.h"
 #include "StringUtils.h"

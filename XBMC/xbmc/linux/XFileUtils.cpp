@@ -1,7 +1,7 @@
 
 #include "XFileUtils.h"
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 HANDLE FindFirstFile(LPCSTR,LPWIN32_FIND_DATA) {
 #warning need to complete function FindFirstFile

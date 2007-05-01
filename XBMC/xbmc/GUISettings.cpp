@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
-#include "application.h"
-#include "util.h"
+#include "Application.h"
+#include "Util.h"
 #include "GUIDialogFileBrowser.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"
@@ -33,7 +33,7 @@
 #ifdef HAS_XFONT
 #include <xfont.h>
 #endif
-#include "mediamanager.h"
+#include "MediaManager.h"
 
 // String id's of the masks
 #define MASK_MINS   14044
@@ -981,3 +981,4 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
+

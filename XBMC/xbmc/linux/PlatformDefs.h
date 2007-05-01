@@ -19,7 +19,7 @@
 #include <SDL/SDL_mutex.h>
 #endif
 
-#ifndef _WIN32
+#ifdef _LINUX
 
 #define XXLog(a,b) printf("%s", (b))
 
@@ -176,8 +176,12 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define closesocket(s) 	close(s)
 #define ioctlsocket(s, f, v) ioctl(s, f, v)
 #define WSAGetLastError() (errno)
+#define WSASetLastError(e) (errno = e)
 #define WSAECONNRESET ECONNRESET
-
+#define WSAHOST_NOT_FOUND ENOENT
+#define WSAETIMEDOUT  ETIMEDOUT
+#define WSAEADDRINUSE EADDRINUSE
+#define WSAECANCELLED EINTR
 typedef int SOCKET;
 
 // Critical section
@@ -402,7 +406,7 @@ WORD    wBitsPerSample;
 WORD    cbSize;
 } WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
 
-#endif //_WIN32
+#endif 
 
 #endif //__PLATFORM_DEFS_H__
 

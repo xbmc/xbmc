@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUIDialog.h"
-#include "visualizations\Visualisation.h"
+#include "visualizations/Visualisation.h"
 #include "GUISpinControlEx.h"
 #include "GUIRadioButtonControl.h"
 #include "GUIButtonControl.h"

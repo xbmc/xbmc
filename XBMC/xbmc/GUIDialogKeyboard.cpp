@@ -28,7 +28,7 @@
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -749,3 +749,4 @@ bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
   pKeyboard->m_filtering = FILTERING_NONE;
   return ret;
 }
+

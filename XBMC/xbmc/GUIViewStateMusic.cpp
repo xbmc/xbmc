@@ -21,11 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIViewStateMusic.h"
-#include "playlistplayer.h"
-#include "util.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 
-#include "filesystem/musicdatabasedirectory.h"
+#include "FileSystem/MusicDatabaseDirectory.h"
 
 using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
@@ -604,3 +604,4 @@ void CGUIViewStateMusicLastFM::SaveViewState()
 {
   SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicLastFM);
 }
+

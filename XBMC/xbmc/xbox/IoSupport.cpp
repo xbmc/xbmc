@@ -51,7 +51,7 @@ stDriveMapping driveMapping[] =
     { 'Y', "Harddisk0\\Partition4", 4},
     { 'Z', "Harddisk0\\Partition5", 5},
   };
-#else
+#elif defined(WIN32)
 stDriveMapping driveMapping[] =
   {
     { 'C', "C:", 2},
@@ -61,9 +61,14 @@ stDriveMapping driveMapping[] =
     { 'Y', "Y:", 4},
     { 'Z', "Z:", 5},
   };
-
 #include "../../Tools/Win32/XBMC_PC.h"
+
+#else
+stDriveMapping driveMapping[] =
+  {
+  };
 #endif
+
 #define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
 
 
@@ -282,12 +287,16 @@ HANDLE CIoSupport::OpenCDROM()
 
 void CIoSupport::AllocReadBuffer()
 {
+#ifndef _LINUX
   m_rawXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
+#endif
 }
 
 void CIoSupport::FreeReadBuffer()
 {
+#ifndef _LINUX
   GlobalFree(m_rawXferBuffer);
+#endif
 }
 
 INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
@@ -477,7 +486,7 @@ bool CIoSupport::DriveExists(char cDriveLetter)
 
     return false;
   }
-#else
+#elif defined(WIN32)
   if (cDriveLetter < 'A' || cDriveLetter > 'Z')
     return false;
 
@@ -490,6 +499,8 @@ bool CIoSupport::DriveExists(char cDriveLetter)
     return false;
 
   return (drivelist >> bitposition) & 1;
+#else
+  return false;
 #endif
 }
 
@@ -670,6 +681,6 @@ unsigned int CIoSupport::ReadPartitionTable(PARTITION_TABLE *p_table)
 
   return STATUS_SUCCESS;
 #else
-  return -1;
+  return (unsigned int) -1;
 #endif
 }

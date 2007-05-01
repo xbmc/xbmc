@@ -33,11 +33,13 @@
 #include "GUIListContainer.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIPassword.h"
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
 #include "utils/GUIInfoManager.h"
-#include "xbox/network.h"
+#include "xbox/Network.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -547,11 +549,13 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     g_application.PlayFile(*pItem);
     return ;
   }
+#ifdef HAS_PYTHON
   if (pItem->IsPythonScript())
   {
     g_pythonParser.evalFile(pItem->m_strPath.c_str());
     return ;
   }
+#endif
   if (pItem->IsXBE())
   {
     int iRegion;

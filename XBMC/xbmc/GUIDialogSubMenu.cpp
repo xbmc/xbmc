@@ -37,6 +37,7 @@
 CGUIDialogSubMenu::CGUIDialogSubMenu(void)
     : CGUIDialog(WINDOW_DIALOG_SUB_MENU, "DialogSubMenu.xml")
 {
+  // Test: GUIEventHandler<CGUIDialogSubMenu, CGUIMessage> x(this, &CGUIDialogSubMenu::xxxx);
   ON_CLICK_MESSAGE(CONTROL_BTN_SHUTDOWN, CGUIDialogSubMenu, OnClickShutdown);
   ON_CLICK_MESSAGE(CONTROL_BTN_DASHBOARD, CGUIDialogSubMenu, OnClickDashboard);
   ON_CLICK_MESSAGE(CONTROL_BTN_REBOOT, CGUIDialogSubMenu, OnClickReboot);
