@@ -29,6 +29,8 @@ DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
 BOOL   SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 BOOL   SetEndOfFile(HANDLE hFile);
 
+DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable);
+DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
 DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh);
 BOOL   GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);
 int    _stat64(const char *path, struct __stat64 *buffer);
