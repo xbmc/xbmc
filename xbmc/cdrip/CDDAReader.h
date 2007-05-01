@@ -5,7 +5,7 @@
 #define CDDARIP_ERR   1
 #define CDDARIP_DONE  2
 
-#include "..\utils\thread.h"
+#include "../utils/Thread.h"
 #include "../lib/libcdio/cdio.h"
 
 struct RipBuffer
