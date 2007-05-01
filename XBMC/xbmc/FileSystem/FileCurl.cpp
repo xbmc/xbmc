@@ -5,6 +5,7 @@
 
 #ifdef _LINUX
 #include <errno.h>
+#include "../linux/XFileUtils.h"
 #endif
 
 #include "DllLibCurl.h"

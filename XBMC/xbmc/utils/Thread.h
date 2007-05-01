@@ -68,9 +68,9 @@ private:
 
 private:
 #ifndef _WIN32
-  static int CThread::staticThread(void* data);
+  static int staticThread(void* data);
 #else
-  static DWORD WINAPI CThread::staticThread(LPVOID* data);
+  static DWORD WINAPI staticThread(LPVOID* data);
 #endif
 };
 
