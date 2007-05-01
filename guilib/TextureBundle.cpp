@@ -1,12 +1,16 @@
 #include "include.h"
-#include ".\TextureBundle.h"
+#include "./TextureBundle.h"
+#include "GraphicContext.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #else
 #include "DirectXGraphics.h"
 #endif
-#include "GraphicContext.h"
+#ifndef _LINUX
 #include "../xbmc/lib/liblzo/LZO1X.H"
+#else
+#include <lzo1x.h>
+#endif
 #include "SkinInfo.h"
 #include "../xbmc/GUISettings.h"
 #include "../xbmc/Settings.h"
@@ -75,31 +79,51 @@ void Release() { p = 0; }
 
 CTextureBundle::CTextureBundle(void)
 {
+#ifndef _LINUX
   m_hFile = INVALID_HANDLE_VALUE;
+  m_Ovl[0].hEvent = CreateEvent(0, TRUE, TRUE, 0);
+  m_Ovl[1].hEvent = CreateEvent(0, TRUE, TRUE, 0);
+#else
+  m_hFile = NULL;
+#endif
   m_CurFileHeader[0] = m_FileHeaders.end();
   m_CurFileHeader[1] = m_FileHeaders.end();
   m_PreLoadBuffer[0] = 0;
   m_PreLoadBuffer[1] = 0;
-  m_Ovl[0].hEvent = CreateEvent(0, TRUE, TRUE, 0);
-  m_Ovl[1].hEvent = CreateEvent(0, TRUE, TRUE, 0);
   m_themeBundle = false;
 }
 
 CTextureBundle::~CTextureBundle(void)
 {
+#ifndef _LINUX
   if (m_hFile != INVALID_HANDLE_VALUE)
     CloseHandle(m_hFile);
+#else
+  if (m_hFile != NULL)
+    fclose(m_hFile);
+#endif
   if (m_PreLoadBuffer[0])
     free(m_PreLoadBuffer[0]);
   if (m_PreLoadBuffer[1])
     free(m_PreLoadBuffer[1]);
+#ifndef _LINUX
   CloseHandle(m_Ovl[0].hEvent);
   CloseHandle(m_Ovl[1].hEvent);
+#endif    
 }
 
 bool CTextureBundle::OpenBundle()
 {
+  DWORD AlignedSize;
+  DWORD HeaderSize;
+  int Version;
+  XPR_HEADER* pXPRHeader;
+
+#ifndef _LINUX
   if (m_hFile != INVALID_HANDLE_VALUE)
+#else
+  if (m_hFile != NULL)
+#endif
     Cleanup();
 
   CStdString strPath;
@@ -110,17 +134,33 @@ bool CTextureBundle::OpenBundle()
     // a valid theme (or the skin has a default one)
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
+#ifndef _LINUX
       strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+#else
+      strPath.Format("%s/media/%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+#endif      
     else
       return false;
   }
   else
+#ifndef _LINUX  
     strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
+#else
+    strPath.Format("%s/media/Textures.xpr", g_graphicsContext.GetMediaDir());
+#endif    
 
+#ifndef _LINUX
   if (GetFileAttributes(strPath.c_str()) == -1)
     return false;
 
   m_TimeStamp.dwLowDateTime = m_TimeStamp.dwHighDateTime = 0;
+#else
+  struct stat fileStat;
+  if (stat(strPath.c_str(), &fileStat) == -1)
+    return false;
+
+  m_TimeStamp = fileStat.st_mtime;
+#endif
 
 #ifdef _XBOX
   if (ALIGN % XGetDiskSectorSize(strPath.Left(3).c_str()))
@@ -151,6 +191,11 @@ bool CTextureBundle::OpenBundle()
     strPath = "Z:\\Textures.xpr";
   }
 #endif
+
+  CAutoBuffer HeaderBuf(ALIGN);
+  DWORD n;
+
+#ifndef _LINUX
   m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING | FILE_FLAG_OVERLAPPED, 0);
   if (m_hFile == INVALID_HANDLE_VALUE)
   {
@@ -161,34 +206,49 @@ bool CTextureBundle::OpenBundle()
   if (m_TimeStamp.dwLowDateTime || m_TimeStamp.dwHighDateTime)
     SetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
 
-  CAutoBuffer HeaderBuf(ALIGN);
-  DWORD n;
-
   m_Ovl[0].Offset = 0;
   m_Ovl[0].OffsetHigh = 0;
   if (!ReadFile(m_hFile, HeaderBuf, ALIGN, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
     goto LoadError;
   if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < ALIGN)
     goto LoadError;
+#else
+  m_hFile = fopen(strPath.c_str(), "rb");
+  if (m_hFile == NULL)
+  {
+    CLog::Log(LOGERROR, "Unable to open file: %s: %s", strPath.c_str(), strerror(errno));
+    return false;
+  }
 
-  XPR_HEADER* pXPRHeader = (XPR_HEADER*)(BYTE*)HeaderBuf;
-  int Version = (pXPRHeader->dwMagic >> 24) - '0';
+  n = fread(HeaderBuf, 1, ALIGN, m_hFile);
+  if (n < ALIGN)
+    goto LoadError;
+#endif
+  pXPRHeader = (XPR_HEADER*)(BYTE*)HeaderBuf;
+  Version = (pXPRHeader->dwMagic >> 24) - '0';
   pXPRHeader->dwMagic -= Version << 24;
   Version &= 0x0f;
 
   if (pXPRHeader->dwMagic != XPR_MAGIC_VALUE || Version < 2)
     goto LoadError;
 
-  DWORD HeaderSize = pXPRHeader->dwHeaderSize;
-  DWORD AlignedSize = (HeaderSize - 1) & ~(ALIGN - 1); // align to sector, but remove the first sector
+  HeaderSize = pXPRHeader->dwHeaderSize;
+  AlignedSize = (HeaderSize - 1) & ~(ALIGN - 1); // align to sector, but remove the first sector
   HeaderBuf.Resize(AlignedSize + ALIGN);
 
+#ifndef _LINUX
   m_Ovl[0].Offset = ALIGN;
   if (!ReadFile(m_hFile, HeaderBuf + ALIGN, AlignedSize, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
     goto LoadError;
   if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < AlignedSize)
     goto LoadError;
-
+#else
+  if (fseek(m_hFile, ALIGN, SEEK_SET) == -1)
+    goto LoadError;
+  n = fread(HeaderBuf + ALIGN, 1, AlignedSize, m_hFile);
+  if (n < ALIGN)
+    goto LoadError;
+#endif
   struct DiskFileHeader_t
   {
     char Name[116];
@@ -214,7 +274,9 @@ bool CTextureBundle::OpenBundle()
   m_CurFileHeader[1] = m_FileHeaders.end();
   m_PreloadIdx = m_LoadIdx = 0;
 
+#ifndef _LINUX
   GetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
+#endif
 
   if (lzo_init() != LZO_E_OK)
     goto LoadError;
@@ -222,16 +284,28 @@ bool CTextureBundle::OpenBundle()
   return true;
 
 LoadError:
+#ifndef _LINUX
   CLog::Log(LOGERROR, "Unable to load file: %s: %x", strPath.c_str(), GetLastError());
   CloseHandle(m_hFile); m_hFile = INVALID_HANDLE_VALUE;
+#else
+  CLog::Log(LOGERROR, "Unable to load file: %s: %s", strPath.c_str(), strerror(errno));
+  fclose(m_hFile); m_hFile = NULL;
+#endif
+
   return false;
 }
 
 void CTextureBundle::Cleanup()
 {
+#ifndef _LINUX
   if (m_hFile != INVALID_HANDLE_VALUE)
     CloseHandle(m_hFile);
   m_hFile = INVALID_HANDLE_VALUE;
+#else
+  if (m_hFile != NULL)
+    fclose(m_hFile);
+  m_hFile = NULL;
+#endif
 
   m_FileHeaders.clear();
 
@@ -248,12 +322,24 @@ void CTextureBundle::Cleanup()
 
 bool CTextureBundle::HasFile(const CStdString& Filename)
 {
+#ifndef _LINUX
   if (m_hFile == INVALID_HANDLE_VALUE && !OpenBundle())
     return false;
+#else
+  if (m_hFile == NULL && !OpenBundle())
+    return false;
+#endif
 
+#ifndef _LINUX
   FILETIME ts;
   GetFileTime(m_hFile, NULL, NULL, &ts);
   if (CompareFileTime(&m_TimeStamp, &ts))
+#else
+  struct stat fileStat;
+  if (fstat(fileno(m_hFile), &fileStat) == -1)
+    return false;
+  if (fileStat.st_mtime > m_TimeStamp) 
+#endif
   {
     CLog::Log(LOGINFO, "Texture bundle has changed, reloading");
     Cleanup();
@@ -271,8 +357,13 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
   if (path.GetLength() > 1 && path[1] == ':')
     return;
 
+#ifndef _LINUX
   if (m_hFile == INVALID_HANDLE_VALUE && !OpenBundle())
     return;
+#else
+  if (m_hFile == NULL && !OpenBundle())
+    return;
+#endif
 
   CStdString testPath(path);
   testPath.Normalize();
@@ -299,6 +390,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
   m_CurFileHeader[m_PreloadIdx] = m_FileHeaders.find(name);
   if (m_CurFileHeader[m_PreloadIdx] != m_FileHeaders.end())
   {
+#ifndef _LINUX
     if (!HasOverlappedIoCompleted(&m_Ovl[m_PreloadIdx]))
     {
       bool FlushBuf = !HasOverlappedIoCompleted(&m_Ovl[1 - m_PreloadIdx]);
@@ -310,6 +402,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
         m_CurFileHeader[1 - m_PreloadIdx] = m_FileHeaders.end();
       }
     }
+#endif
 
     // preload texture
     DWORD ReadSize = (m_CurFileHeader[m_PreloadIdx]->second.PackedSize + (ALIGN - 1)) & ~(ALIGN - 1);
@@ -317,13 +410,24 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 
     if (m_PreLoadBuffer[m_PreloadIdx])
     {
+#ifndef _LINUX
       m_Ovl[m_PreloadIdx].Offset = m_CurFileHeader[m_PreloadIdx]->second.Offset;
       m_Ovl[m_PreloadIdx].OffsetHigh = 0;
+#endif
 
       DWORD n;
+#ifndef _LINUX
       if (!ReadFile(m_hFile, m_PreLoadBuffer[m_PreloadIdx], ReadSize, &n, &m_Ovl[m_PreloadIdx]) && GetLastError() != ERROR_IO_PENDING)
       {
         CLog::Log(LOGERROR, "Error loading texture: %s: %x", Filename.c_str(), GetLastError());
+#else
+      fseek(m_hFile, m_CurFileHeader[m_PreloadIdx]->second.Offset, SEEK_SET);
+      n = fread(m_PreLoadBuffer[m_PreloadIdx], 1, ReadSize, m_hFile);
+      if (n < ReadSize && !feof(m_hFile))
+      {
+        CLog::Log(LOGERROR, "Error loading texture: %s: %s", Filename.c_str(), strerror(ferror(m_hFile)));
+
+#endif
         free(m_PreLoadBuffer[m_PreloadIdx]);
         m_PreLoadBuffer[m_PreloadIdx] = 0;
         m_CurFileHeader[m_PreloadIdx] = m_FileHeaders.end();
@@ -335,9 +439,15 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
     }
     else
     {
+#ifndef _LINUX
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
       CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), ReadSize, stat.dwAvailPhys);
+#else
+      struct sysinfo info;
+      sysinfo(&info);
+      CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), ReadSize, info.totalram);             
+#endif
     }
   }
   return false;
@@ -346,7 +456,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf)
 {
   if (Filename == "-")
-    return NULL;
+    return 0;
 
   CStdString name(Filename);
   name.Normalize();
@@ -365,19 +475,28 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     return E_OUTOFMEMORY;
   if (!UnpackedBuf.Set((BYTE*)XPhysicalAlloc(m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
   {
+#ifndef _LINUX
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(),
               m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, stat.dwAvailPhys);
+#else
+    struct sysinfo info;
+    sysinfo(&info);
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(),
+              m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, info.totalram);
+#endif
     return E_OUTOFMEMORY;
   }
 
+#ifndef _LINUX
   DWORD n;
   if (!GetOverlappedResult(m_hFile, &m_Ovl[m_LoadIdx], &n, TRUE) || n < m_CurFileHeader[m_LoadIdx]->second.PackedSize)
   {
     CLog::Log(LOGERROR, "Error loading texture: %s: %x", Filename.c_str(), GetLastError());
     return E_FAIL;
   }
+#endif
 
   lzo_uint s = m_CurFileHeader[m_LoadIdx]->second.UnpackedSize;
   HRESULT hr = S_OK;
@@ -417,9 +536,15 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   return hr;
 }
 
+#ifndef HAS_SDL
 HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
                                     LPDIRECT3DPALETTE8* ppPalette)
+#else
+HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface** ppTexture,
+                                    SDL_Palette** ppPalette)
+#endif
 {
+  DWORD ResDataOffset;
   *ppTexture = NULL; *ppPalette = NULL;
 
   CAutoTexBuffer UnpackedBuf;
@@ -459,13 +584,18 @@ HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString&
   memcpy(RealSize, Next, 4);
   Next += 4;
 
-  DWORD ResDataOffset = ((Next - UnpackedBuf) + 127) & ~127;
+  ResDataOffset = ((Next - UnpackedBuf) + 127) & ~127;
   ResData = UnpackedBuf + ResDataOffset;
 
   if ((pTex->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
     goto PackedLoadError;
 
+#ifndef HAS_SDL
   *ppTexture = (LPDIRECT3DTEXTURE8)pTex;
+#else
+  *ppTexture = (SDL_Surface*)pTex;
+#endif
+  
 #ifdef HAS_XBOX_D3D
   (*ppTexture)->Register(ResData);
 #else
@@ -485,9 +615,11 @@ HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString&
   pInfo->Height = RealSize[1];
   pInfo->Depth = 0;
   pInfo->MipLevels = 1;
+#ifndef HAS_SDL  
   D3DSURFACE_DESC desc;
   (*ppTexture)->GetLevelDesc(0, &desc);
   pInfo->Format = desc.Format;
+#endif  
 
   return S_OK;
 
@@ -497,9 +629,18 @@ PackedLoadError:
   if (pPal) delete pPal;
   return E_FAIL;
 }
+
+#ifndef HAS_SDL
 int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8** ppTextures,
                              LPDIRECT3DPALETTE8* ppPalette, int& nLoops, int** ppDelays)
+#else
+int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface*** ppTextures,
+               				  SDL_Palette** ppPalette, int& nLoops, int** ppDelays)
+#endif
 {
+  DWORD ResDataOffset;
+  int nTextures;
+  
   *ppTextures = NULL; *ppPalette = NULL; *ppDelays = NULL;
 
   CAutoTexBuffer UnpackedBuf;
@@ -536,7 +677,7 @@ int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filena
     Next += sizeof(D3DPalette);
   }
 
-  int nTextures = flags >> 16;
+  nTextures = flags >> 16;
   ppTex = new D3DTexture * [nTextures];
   *ppDelays = new int[nTextures];
   for (int i = 0; i < nTextures; ++i)
@@ -549,16 +690,25 @@ int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filena
     Next += sizeof(int);
   }
 
-  DWORD ResDataOffset = ((DWORD)(Next - UnpackedBuf) + 127) & ~127;
+  ResDataOffset = ((DWORD)(Next - UnpackedBuf) + 127) & ~127;
   ResData = UnpackedBuf + ResDataOffset;
 
+#ifndef HAS_SDL
   *ppTextures = new LPDIRECT3DTEXTURE8[nTextures];
+#else
+  *ppTextures = new SDL_Surface*[nTextures];
+#endif  
   for (int i = 0; i < nTextures; ++i)
   {
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
       goto PackedAnimError;
 
+#ifndef HAS_SDL
     (*ppTextures)[i] = (LPDIRECT3DTEXTURE8)ppTex[i];
+#else
+    (*ppTextures)[i] = (SDL_Surface*)ppTex[i];
+#endif
+
 #ifdef HAS_XBOX_D3D
     (*ppTextures)[i]->Register(ResData);
 #else

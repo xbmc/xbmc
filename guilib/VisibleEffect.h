@@ -81,3 +81,4 @@ private:
   void Calculate();
   TransformMatrix m_matrix;
 };
+

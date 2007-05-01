@@ -2,7 +2,7 @@
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
-#include "GUIImage.h" // for FRECT
+#include "guiImage.h" // for FRECT
 
 CAnimation::CAnimation()
 {
@@ -403,3 +403,4 @@ void CAnimation::QueueAnimation(ANIMATION_PROCESS process)
 {
   m_queuedProcess = process;
 }
+

@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUISound.h"
-#include "audiocontext.h"
-#include "../xbmc/settings.h"
+#include "AudioContext.h"
+#include "../xbmc/Settings.h"
 
 typedef struct
 {
@@ -18,17 +18,22 @@ typedef struct
 
 CGUISound::CGUISound()
 {
+#ifdef HAS_AUDIO
   m_soundBuffer=NULL;
+#endif
 }
 
 CGUISound::~CGUISound()
 {
+#ifdef HAS_AUDIO
   FreeBuffer();
+#endif
 }
 
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
+#ifdef HAS_AUDIO
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
   int size=0;
@@ -43,22 +48,26 @@ bool CGUISound::Load(const CStdString& strFile)
   delete[] pbData;
 
   return bReady;
+#endif
 }
 
 // \brief Starts playback of the sound
 void CGUISound::Play()
 {
+#ifdef HAS_AUDIO
   if (m_soundBuffer)
 #ifdef HAS_XBOX_AUDIO
     m_soundBuffer->Play(0, 0, DSBPLAY_FROMSTART);
 #else
     m_soundBuffer->Play(0, 0, 0);
 #endif
+#endif
 }
 
 // \brief returns true if the sound is playing
 bool CGUISound::IsPlaying()
 {
+#ifdef HAS_AUDIO
   if (m_soundBuffer)
   {
     DWORD dwStatus;
@@ -67,11 +76,13 @@ bool CGUISound::IsPlaying()
   }
 
   return false;
+#endif
 }
 
 // \brief Stops playback if the sound
 void CGUISound::Stop()
 {
+#ifdef HAS_AUDIO
   if (m_soundBuffer)
   {
 #ifdef HAS_XBOX_AUDIO
@@ -82,15 +93,19 @@ void CGUISound::Stop()
 
     while(IsPlaying());
   }
+#endif
 }
 
 // \brief Sets the volume of the sound
 void CGUISound::SetVolume(int level)
 {
+#ifdef HAS_AUDIO
   if (m_soundBuffer)
     m_soundBuffer->SetVolume(level);
+#endif
 }
 
+#ifdef HAS_AUDIO
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
 #ifdef HAS_XBOX_AUDIO
@@ -232,3 +247,5 @@ bool CGUISound::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* pp
   fclose(fd);
   return (*ppWavData!=NULL);
 }
+#endif
+

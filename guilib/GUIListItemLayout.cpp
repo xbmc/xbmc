@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIListItemLayout.h"
 #include "GUIListItem.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
 #include "GUIFontManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
@@ -288,7 +288,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   int info = g_infoManager.TranslateString(infoString);
   if (info && (info < LISTITEM_START || info > LISTITEM_END))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" Invalid item info %s", infoString.c_str());
+    CLog::Log(LOGERROR, "%s Invalid item info %s", __FUNCTION__, infoString.c_str());
     return NULL;
   }
   factory.GetTexture(child, "texture", image);

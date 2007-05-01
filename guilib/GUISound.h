@@ -13,11 +13,12 @@ public:
   void        SetVolume(int level);
 
 private:
+#ifdef HAS_AUDIO
   bool        LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize);
   bool        CreateBuffer(LPWAVEFORMATEX wfx, int iLength);
   bool        FillBuffer(LPBYTE pbData, int iLength);
   void        FreeBuffer();
 
-private:
   LPDIRECTSOUNDBUFFER m_soundBuffer;
+#endif
 };

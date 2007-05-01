@@ -238,3 +238,4 @@ void CGUIDialog::SetDefaults()
   CGUIWindow::SetDefaults();
   m_renderOrder = 1;
 }
+

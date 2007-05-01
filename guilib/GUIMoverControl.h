@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "GUIImage.h"
+#include "guiImage.h"
 
 #define ALLOWED_DIRECTIONS_ALL   0
 #define ALLOWED_DIRECTIONS_UPDOWN  1

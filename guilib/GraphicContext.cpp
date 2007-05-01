@@ -21,15 +21,17 @@ CGraphicContext::CGraphicContext(void)
 {
   m_iScreenWidth = 720;
   m_iScreenHeight = 576;
+#ifndef _LINUX
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
+  m_stateBlock = 0xffffffff;
+#endif
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bShowPreviewWindow = false;
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
-  m_stateBlock = 0xffffffff;
   m_windowScaleX = m_windowScaleY = 1.0f;
   m_windowResolution = INVALID;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
@@ -39,19 +41,26 @@ CGraphicContext::CGraphicContext(void)
 
 CGraphicContext::~CGraphicContext(void)
 {
+#ifndef _LINUX
   if (m_stateBlock != 0xffffffff)
   {
     Get3DDevice()->DeleteStateBlock(m_stateBlock);
   }
+#endif
+
   while (m_viewStack.size())
   {
+#ifndef _LINUX
     D3DVIEWPORT8 *viewport = m_viewStack.top();
+#else   
+    SDL_Rect *viewport = m_viewStack.top();
+#endif
     m_viewStack.pop();
     if (viewport) delete viewport;
   }
 }
 
-
+#ifndef _LINUX
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 {
   m_pd3dDevice = p3dDevice;
@@ -61,6 +70,7 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
 {
   m_pd3dParams = p3dParams;
 }
+#endif
 
 bool CGraphicContext::SendMessage(CGUIMessage& message)
 {
@@ -81,9 +91,16 @@ DWORD CGraphicContext::GetNewID()
 
 bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
+#ifndef _LINUX
   D3DVIEWPORT8 newviewport;
   D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
   Get3DDevice()->GetViewport(oldviewport);
+#else
+  SDL_Rect newviewport;
+  SDL_Rect *oldviewport = new SDL_Rect;
+  SDL_GetClipRect(m_screenSurface, oldviewport);
+#endif
+  
   // transform coordinates - we may have a rotation which changes the positioning of the
   // minimal and maximal viewport extents.  We currently go to the maximal extent.
   float x[4], y[4];
@@ -111,10 +128,17 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   if (intersectPrevious)
   {
     // do the intersection
+#ifndef _LINUX    
     int oldLeft = (int)oldviewport->X;
     int oldTop = (int)oldviewport->Y;
     int oldRight = (int)oldviewport->X + oldviewport->Width;
     int oldBottom = (int)oldviewport->Y + oldviewport->Height;
+#else
+    int oldLeft = (int)oldviewport->x;
+    int oldTop = (int)oldviewport->y;
+    int oldRight = (int)oldviewport->x + oldviewport->w;
+    int oldBottom = (int)oldviewport->y + oldviewport->h;
+#endif    
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
       delete oldviewport;
@@ -143,6 +167,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
+#ifndef _LINUX
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;
   newviewport.X = newLeft;
@@ -150,6 +175,14 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport.Width = newRight - newLeft;
   newviewport.Height = newBottom - newTop;
   m_pd3dDevice->SetViewport(&newviewport);
+#else  
+  newviewport.x = newLeft;
+  newviewport.y = newTop;
+  newviewport.w = newRight - newLeft;
+  newviewport.h = newBottom - newTop;
+  SDL_SetClipRect(m_screenSurface, &newviewport);
+#endif
+
   m_viewStack.push(oldviewport);
 
   return true;
@@ -158,9 +191,15 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
+#ifndef _LINUX
   D3DVIEWPORT8 *oldviewport = (D3DVIEWPORT8*)m_viewStack.top();
-  m_viewStack.pop();
   Get3DDevice()->SetViewport(oldviewport);
+#else
+  SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
+  SDL_SetClipRect(m_screenSurface, oldviewport);
+#endif  
+
+  m_viewStack.pop();
 
   if (oldviewport) delete oldviewport;
 }
@@ -183,18 +222,28 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
     m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
     if (m_bShowPreviewWindow && !m_bFullScreenVideo)
     {
+#ifndef _LINUX    
       D3DRECT d3dRC;
       d3dRC.x1 = m_videoRect.left;
       d3dRC.x2 = m_videoRect.right;
       d3dRC.y1 = m_videoRect.top;
       d3dRC.y2 = m_videoRect.bottom;
       Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
+#else
+      SDL_Rect r;
+      r.x = m_videoRect.left;
+      r.y = m_videoRect.top;
+      r.w = m_videoRect.right - m_videoRect.left + 1;
+      r.h = m_videoRect.bottom - m_videoRect.top +1;
+      SDL_FillRect(m_screenSurface, &r, 0x00010001);    
+#endif		  
     }
   }
 }
 
 void CGraphicContext::ClipToViewWindow()
 {
+#ifndef _LINUX
   D3DRECT clip = { m_videoRect.left, m_videoRect.top, m_videoRect.right, m_videoRect.bottom };
   if (m_videoRect.left < 0) clip.x1 = 0;
   if (m_videoRect.top < 0) clip.y1 = 0;
@@ -206,6 +255,9 @@ void CGraphicContext::ClipToViewWindow()
   if (clip.y2 < clip.y1) clip.y2 = clip.y1 + 1;
 #ifdef HAS_XBOX_D3D
   m_pd3dDevice->SetScissors(1, FALSE, &clip);
+#endif
+#else
+#warning CGraphicContext::ClipToViewWindow not implemented
 #endif
 }
 
@@ -281,6 +333,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
   }
 }
 
+#ifndef _LINUX
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   if (res == AUTORES)
@@ -292,6 +345,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
+  
   if (!m_pd3dParams)
   {
     m_Resolution = res;
@@ -387,6 +441,44 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   Unlock();  
 }
 
+#else
+#warning Need to implement GraphicContext::SetVideoResolution
+void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
+{
+  if (res == AUTORES)
+  {
+    res = g_videoConfig.GetBestMode();
+  }
+  if (!IsValidResolution(res))
+  { // Choose a failsafe resolution that we can actually display
+    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+    res = g_videoConfig.GetSafeMode();
+  }
+
+  if (m_Resolution != res)
+  {
+    Lock();
+    m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
+    m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
+
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, SDL_HWSURFACE | SDL_HWSURFACE);
+
+    m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
+                  	res == PAL_16x9 || res == NTSC_16x9);
+  
+    if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
+    { // set the mouse resolution
+      g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+    }
+   
+    m_Resolution = res;
+    Unlock();  
+  }
+}
+
+#endif
+
+
 RESOLUTION CGraphicContext::GetVideoResolution() const
 {
   return m_Resolution;
@@ -394,17 +486,17 @@ RESOLUTION CGraphicContext::GetVideoResolution() const
 
 void CGraphicContext::SetScreenFilters(bool useFullScreenFilters)
 {
+#ifdef HAS_XBOX_D3D
   Lock();
   if (m_pd3dDevice)
   {
     // These are only valid here and nowhere else
     // set soften on/off
-#ifdef HAS_XBOX_D3D
     m_pd3dDevice->SetSoftDisplayFilter(useFullScreenFilters ? g_guiSettings.GetBool("videoplayer.soften") : g_guiSettings.GetBool("videoscreen.soften"));
     m_pd3dDevice->SetFlickerFilter(useFullScreenFilters ? g_guiSettings.GetInt("videoplayer.flicker") : g_guiSettings.GetInt("videoscreen.flickerfilter"));
-#endif
   }
   Unlock();
+#endif
 }
 
 void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
@@ -529,16 +621,21 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 
 void CGraphicContext::Clear()
 {
+#ifndef _LINUX
   if (!m_pd3dDevice) return;
   //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
   if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3D_CLEAR_STENCIL, 0x00010001, 1.0f, 0L );
   else
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
+#else
+  SDL_FillRect(m_screenSurface, NULL, 0x00010001);
+#endif    
 }
 
 void CGraphicContext::CaptureStateBlock()
 {
+#ifndef _LINUX
   if (m_stateBlock != 0xffffffff)
   {
     Get3DDevice()->DeleteStateBlock(m_stateBlock);
@@ -549,14 +646,17 @@ void CGraphicContext::CaptureStateBlock()
     // Creation failure
     m_stateBlock = 0xffffffff;
   }
+#endif  
 }
 
 void CGraphicContext::ApplyStateBlock()
 {
+#ifndef _LINUX
   if (m_stateBlock != 0xffffffff)
   {
     Get3DDevice()->ApplyStateBlock(m_stateBlock);
   }
+#endif
 }
 
 void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
@@ -630,21 +730,6 @@ float CGraphicContext::GetScalingPixelRatio() const
   return outPR * (outWidth / outHeight) / (winWidth / winHeight);
 }
 
-inline void CGraphicContext::ScaleFinalCoords(float &x, float &y) const
-{
-  m_finalTransform.TransformPosition(x, y);
-}
-
-inline float CGraphicContext::ScaleFinalXCoord(float x, float y) const
-{
-  return m_finalTransform.TransformXCoord(x, y);
-}
-
-inline float CGraphicContext::ScaleFinalYCoord(float x, float y) const
-{
-  return m_finalTransform.TransformYCoord(x, y);
-}
-
 inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
 {
   DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
@@ -659,3 +744,4 @@ int CGraphicContext::GetFPS() const
     return 30;
   return 60;
 }
+

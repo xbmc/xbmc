@@ -1,5 +1,5 @@
 #include "include.h"
-#include "key.h"
+#include "Key.h"
 
 
 CKey::CKey(void)
@@ -120,3 +120,4 @@ void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
 	m_fromHttpApi = bFromHttpApi;
 }
+

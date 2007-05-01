@@ -448,3 +448,4 @@ void CGUIControlGroup::DumpTextureUse()
   }
 }
 #endif
+

@@ -1,13 +1,13 @@
 #include "include.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
 #include "LocalizeStrings.h"
-#include "GUIButtoncontrol.h"
-#include "GUIRadiobuttoncontrol.h"
+#include "GUIButtonControl.h"
+#include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
 #include "GUIConsoleControl.h"
 #include "GUIListControlEx.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
@@ -34,7 +34,7 @@
 #include "GUIPanelContainer.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
@@ -499,9 +499,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (strType == "group" || strType == "grouplist")
   {
     if (!width)
-      width = max(rect.right - posX, 0);
+      width = max(rect.right - posX, 0.0f);
     if (!height)
-      height = max(rect.bottom - posY, 0);
+      height = max(rect.bottom - posY, 0.0f);
   }
 
   XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);

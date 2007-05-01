@@ -30,7 +30,7 @@ public:
   }
 
   // Assign an EventHandler (EventHandler's are derived from Event)
-  operator=(GUIEvent<Cookie> &aEvent)
+  GUIEvent<Cookie>& operator=(GUIEvent<Cookie> &aEvent)
   {
     if (&aEvent)
     {
@@ -42,7 +42,7 @@ public:
       GUIEvent();
     }
 
-    return 0;
+    return *this;
   }
 
   // Are the class instance and method pointers initialised?
@@ -64,11 +64,13 @@ public:
       assert(0);
     }
   }
+  MethodPtr m_pMethod;
 protected:
   GUIEvent* m_pInstance;
-  MethodPtr m_pMethod;
 };
 
+#define my_offsetof(TYPE, MEMBER) \
+               ((size_t)((char *)&(((TYPE *)0x10)->MEMBER) - (char*)0x10))
 
 template <class Class, class Cookie>
 class GUIEventHandler : public GUIEvent<Cookie>
@@ -78,9 +80,17 @@ public:
 
   GUIEventHandler(Class* pInstance, MethodPtr aMethodPtr)
   {
-    m_pInstance = (GUIEvent<Cookie>*) ((LPVOID) pInstance);
+    GUIEvent<Cookie>::m_pInstance = (GUIEvent<Cookie>*) ((LPVOID) pInstance);
+
+#ifndef _LINUX    
     // Its dirty but it works!
-    memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
+    memcpy(&GUIEvent<Cookie>::m_pMethod, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
+#else 
+    // Well, GCC doesn't like that dirty stuff... here's another version of the same thing
+    // but even dirtier *grin*   
+    void* target = (void*) (((char*) this) + my_offsetof(GUIEvent<Cookie>, m_pMethod));
+    memcpy(target, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
+#endif	 
   }
 };
 
@@ -99,7 +109,7 @@ public:
   }
 
   // Assign a CallbackHandler (CallbackHandler's are derived from Callback)
-  operator=(Callback<Result, Cookie> &aCallback)
+  Callback<Result, Cookie>& operator=(Callback<Result, Cookie> &aCallback)
   {
     if (&aCallback)
     {
@@ -111,7 +121,7 @@ public:
       Callback();
     }
 
-    return 0;
+    return *this;
   }
 
   // Are the class instance and method pointers initialised?
@@ -147,9 +157,9 @@ public:
 
   CallbackHandler (Class* pInstance, MethodPtr aMethodPtr)
   {
-    m_pInstance = (Callback<Result, Cookie>*) ((LPVOID) pInstance);
+    Callback<Result, Cookie>::m_pInstance = (Callback<Result, Cookie>*) ((LPVOID) pInstance);
     // Its dirty but it works!
-    memcpy(&m_pMethod, &aMethodPtr, sizeof(m_pMethod));
+    memcpy(&Callback<Result, Cookie>::m_pMethod, &aMethodPtr, sizeof(Callback<Result, Cookie>::m_pMethod));
   }
 };
 

@@ -1,6 +1,6 @@
 #include "include.h"
-#include "guifont.h"
-#include "graphiccontext.h"
+#include "GUIFont.h"
+#include "GraphicContext.h"
 
 #define ROUND(x) floorf(x + 0.5f)
 
@@ -116,7 +116,7 @@ float CGUIFont::GetTextHeight(const WCHAR *strText)
   return fTextHeight;
 }
 
-inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *pHeight, BOOL bFirstLineOnly /* = 0 */)
+void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *pHeight, BOOL bFirstLineOnly /* = 0 */)
 {
   if (!m_font) return;
   m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
@@ -131,7 +131,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   float unneeded, h;
   float sw = 0;
   GetTextExtent(L" ", &sw, &unneeded);
-  unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
+  unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), (unsigned int) ((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
   if (text.IsEmpty() || !g_graphicsContext.SetViewPort(x, y, w, h, true))
     return; // nothing to render

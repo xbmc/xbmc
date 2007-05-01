@@ -145,7 +145,7 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   pbmi->bmiHeader.biClrImportant = 0;
 }
 
-#ifndef _XBOX 
+#if !defined(_XBOX) && !defined(_LINUX)
 // GDIPaint: Paint the raster image onto a DC
 int CAnimatedGif::GDIPaint (HDC hdc, int x, int y)
 {
@@ -208,7 +208,13 @@ unsigned char CAnimatedGifSet::getbyte(FILE *fd)
   fread(&uchar, 1, 1, fd);
   return uchar;
 }
+
+#ifndef _LINUX
 extern "C" void dllprintf( const char *format, ... );
+#else
+#define dllprintf printf
+#endif
+
 // ****************************************************************************
 // * LoadGIF                                                                  *
 // *   Load a GIF File into the CAnimatedGifSet object                             *

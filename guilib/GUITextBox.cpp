@@ -408,3 +408,4 @@ void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
   CGUIControl::SetColorDiffuse(color);
   m_upDown.SetColorDiffuse(color);
 }
+
