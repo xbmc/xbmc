@@ -43,6 +43,8 @@ CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
 void CRGBRendererV2::FlipPage(int source)
 {
   m_444GeneratedFull = false;
+
+  CXBoxRenderer::FlipPage(source);
 }
 
 void CRGBRendererV2::Delete444PTexture()
