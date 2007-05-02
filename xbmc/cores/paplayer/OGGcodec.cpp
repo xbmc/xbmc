@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "OGGCodec.h"
 #include "../../oggtag.h"
 #include "../../Util.h"

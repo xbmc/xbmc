@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "HTTP.h"
 #include "../dnsnamecache.h"
 

@@ -1,4 +1,4 @@
-#include "../stdafx.h" 
+#include "stdafx.h" 
 // Visualisation.cpp: implementation of the CVisualisation class.
 //
 //////////////////////////////////////////////////////////////////////

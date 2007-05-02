@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDDemuxUtils.h"
 
 #define INPUT_BUFFER_PADDING_SIZE 8

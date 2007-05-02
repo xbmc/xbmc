@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "dvdaudio.h"
 #include "..\mplayer\ASyncDirectSound.h"
 #include "..\mplayer\ac97directsound.h"

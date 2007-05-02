@@ -1,5 +1,5 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "emu_dummy.h"
 #include "emu_ole32.h"
 #include "../../mplayer/mplayer.h"

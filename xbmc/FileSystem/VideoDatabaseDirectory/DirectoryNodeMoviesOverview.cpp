@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNodeMoviesOverview.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

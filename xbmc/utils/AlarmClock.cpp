@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "AlarmClock.h"
 #include "../application.h"
 #include "../Util.h"

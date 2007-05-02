@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "stopwatch.h"
 
 CStopWatch::CStopWatch()

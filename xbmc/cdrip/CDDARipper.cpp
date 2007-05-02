@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "CDDARipper.h"
 #include "CDDAReader.h"
 #include "..\util.h"
