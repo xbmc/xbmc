@@ -547,7 +547,7 @@ void CXBoxRenderer::ManageTextures()
     }
     if(m_iYV12RenderBuffer > i)
         m_iYV12RenderBuffer = i;
-    m_NumYV12Buffers = i;
+    m_NumYV12Buffers = i+1;
   }
 }
 
