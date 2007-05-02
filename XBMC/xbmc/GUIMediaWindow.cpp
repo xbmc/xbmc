@@ -377,24 +377,25 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items = cachedItems;
+    items.AppendPointer(cachedItems);
     cachedItems.ClearKeepPointer();
   }
   else
   {
     DWORD time = timeGetTime();
-    if (m_guiState.get() && !m_guiState->HideParentDirItems())
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = strParentPath;
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      items.Add(pItem);
-    }
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
