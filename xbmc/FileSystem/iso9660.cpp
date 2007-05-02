@@ -1,5 +1,5 @@
 
-#include "../stdafx.h" 
+#include "stdafx.h" 
 /*
  Redbook   : CDDA 
  Yellowbook : CDROM

@@ -1,5 +1,5 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #include "emu_socket.h"
 #include "..\dll_tracker_socket.h"

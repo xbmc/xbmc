@@ -1,5 +1,5 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #ifdef HAS_XFONT
 #include <xfont.h>

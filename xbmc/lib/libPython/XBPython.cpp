@@ -4,7 +4,7 @@
 #pragma comment(linker, "/merge:PY_RDATA=PYTHON")
 
 // python.h should always be included first before any other includes
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "python\python.h"
 #include "..\..\cores\dllloader\dllloadercontainer.h"
 #include "../../GUIPassword.h"

@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\python\python.h"
 #include "..\python\structmember.h"
 #include "control.h"

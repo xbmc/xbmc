@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDInputStreamNavigator.h"
 #include "..\..\..\util.h"
 #include "..\..\..\LangCodeExpander.h"

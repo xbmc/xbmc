@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "../GUIDialogSeekBar.h"
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"

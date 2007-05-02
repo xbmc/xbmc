@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileLastFM.h"
 #include "../Util.h"
 #include "../utils/GUIInfoManager.h"

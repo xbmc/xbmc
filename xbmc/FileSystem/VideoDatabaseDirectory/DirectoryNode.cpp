@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNode.h"
 #include "../../util.h"
 #include "QueryParams.h"

@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "lastfmdirectory.h"
 #include "directorycache.h"
 #include "../util.h"
