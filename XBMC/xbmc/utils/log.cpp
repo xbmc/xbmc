@@ -12,6 +12,10 @@ FILE* CLog::fd = NULL;
 
 static CCriticalSection critSec;
 
+static char levelNames[][8] =
+{"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+
+
 CLog::CLog()
 {}
 
