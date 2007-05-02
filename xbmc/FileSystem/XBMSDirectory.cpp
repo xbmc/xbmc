@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "xbmsdirectory.h"
 #include "../util.h"
 #include "directorycache.h"

@@ -9,7 +9,7 @@
 */
 
 #ifdef _XBOX
-#include "../../stdafx.h"
+#include "stdafx.h"
 #endif
 
 #include <string.h>

@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\python\python.h"
 #include "GUIProgressControl.h"
 #include "control.h"

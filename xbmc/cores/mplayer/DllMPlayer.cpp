@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "audio.h"
 #include "video.h"
 #include "../DllLoader/DllLoader.h"

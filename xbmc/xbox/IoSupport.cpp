@@ -22,7 +22,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "IoSupport.h"
 #ifdef HAS_UNDOCUMENTED
 #ifdef _XBOX

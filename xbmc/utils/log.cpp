@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "log.h"
 #include <share.h>
 #include "criticalsection.h"

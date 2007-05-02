@@ -9,7 +9,7 @@
 * debugging is set to a max of 10 for release builds (see local.h)
 */
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "smbdirectory.h"
 #include "../util.h"
 #include "directorycache.h"

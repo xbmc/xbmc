@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNodeYearSong.h"
 #include "QueryParams.h"
 #include "../../MusicDatabase.h"
