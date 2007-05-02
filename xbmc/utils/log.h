@@ -19,11 +19,6 @@
 #define LOGFATAL   6
 #define LOGNONE    7
 
-static char levelNames[][8] =
-  {
-    "DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"
-  };
-
 class CLog
 {
   static FILE* fd;
