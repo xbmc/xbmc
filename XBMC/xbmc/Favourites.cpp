@@ -74,9 +74,9 @@ bool CFavourites::Save(const CFileItemList &items)
   {
     const CFileItem *item = items[i];
     TiXmlElement favNode("favourite");
-    favNode.SetAttribute("name", item->GetLabel());
+    favNode.SetAttribute("name", item->GetLabel().c_str());
     if (item->HasThumbnail())
-      favNode.SetAttribute("thumb", item->GetThumbnailImage());
+      favNode.SetAttribute("thumb", item->GetThumbnailImage().c_str());
     TiXmlText execute(item->m_strPath);
     favNode.InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);

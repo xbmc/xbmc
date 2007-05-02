@@ -73,7 +73,7 @@ void CKaiVector::Save(const CStdString& strPath)
       CStdString strVector = it->second;
 
       TiXmlElement xmlTitleElement("title");
-      xmlTitleElement.SetAttribute("id", strTitleId);
+      xmlTitleElement.SetAttribute("id", strTitleId.c_str());
       TiXmlNode* pTitleNode = pRootNode->InsertEndChild(xmlTitleElement);
 
       TiXmlElement xmlVectorElement("vector");
