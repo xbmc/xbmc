@@ -90,7 +90,7 @@ bool CGUIWindow::LoadReferences()
     if (!strType.IsEmpty())
     { // we construct a new <default type="type"> block in our includes document
       TiXmlElement include("default");
-      include.SetAttribute("type", strType);
+      include.SetAttribute("type", strType.c_str());
       // and add the rest of the items under this controlblock to it
       TiXmlElement *child = pControl->FirstChildElement();
       while (child)
