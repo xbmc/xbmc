@@ -465,6 +465,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogMusicScan.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistEditor.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistEditor.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistRule.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistRule.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogSongInfo.cpp">
 				</File>
 				<File

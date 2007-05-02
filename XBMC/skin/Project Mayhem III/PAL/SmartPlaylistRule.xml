@@ -1,0 +1,126 @@
+<window id="129">
+	<defaultcontrol>15</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>80</posx>
+		<posy>150</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>-80</posx>
+			<posy>-150</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<description>background image</description>
+			<posx>-15</posx>
+			<posy>-15</posy>
+			<width>560</width>
+			<height>170</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="label">
+			<description>heading label</description>
+			<posx>20</posx>
+			<posy>-2</posy>
+			<width>480</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>21421</label>
+			<textcolor>DDced8da</textcolor>
+		</control>
+		<control type="label" id="0">
+			<description>Rule match label</description>
+			<posx>10</posx>
+			<posy>30</posy>
+			<width>480</width>
+			<font>font12</font>
+			<label>21422</label>
+		</control>
+		<control type="spincontrolex" id="15">
+			<description>Rule Field</description>
+			<posx>10</posx>
+			<posy>55</posy>
+			<width>155</width>
+			<font>font12</font>
+			<texturefocus border="3">input-focus.png</texturefocus>
+			<texturenofocus  border="3">input-nofocus.png</texturenofocus>
+			<onright>16</onright>
+			<onleft>17</onleft>
+			<onup>18</onup>
+			<ondown>18</ondown>
+		</control>
+		<control type="spincontrolex" id="16">
+			<description>Rule operator</description>
+			<posx>175</posx>
+			<posy>55</posy>
+			<width>175</width>
+			<font>font12</font>
+			<texturefocus border="3">input-focus.png</texturefocus>
+			<texturenofocus  border="3">input-nofocus.png</texturenofocus>
+			<font>font12</font>
+			<onright>17</onright>
+			<onleft>15</onleft>
+			<onup>18</onup>
+			<ondown>18</ondown>
+		</control>
+		<control type="button" id="17">
+			<description>Value Button</description>
+			<posx>360</posx>
+			<posy>55</posy>
+			<width>160</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<textwidth>380</textwidth>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>-</label>
+			<onup>18</onup>
+			<onleft>16</onleft>
+			<onright>15</onright>
+			<ondown>18</ondown>
+		</control>
+		<control type="button" id="18">
+			<description>Ok Button</description>
+			<posx>290</posx>
+			<posy>100</posy>
+			<width>90</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<label>186</label>
+			<onup>15</onup>
+			<onleft>19</onleft>
+			<onright>19</onright>
+			<ondown>15</ondown>
+		</control>
+		<control type="button" id="19">
+			<description>Cancel Button</description>
+			<posx>390</posx>
+			<posy>100</posy>
+			<width>90</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<label>222</label>
+			<onup>15</onup>
+			<onleft>18</onleft>
+			<onright>18</onright>
+			<ondown>15</ondown>
+		</control>
+	</controls>
+</window>
