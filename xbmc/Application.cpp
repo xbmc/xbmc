@@ -166,6 +166,8 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
 #include "GUIDialogSongInfo.h"
+#include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIDialogSmartPlaylistRule.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -1263,6 +1265,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
   m_gWindowManager.Add(new CGUIDialogFavourites);     // window id = 134
   m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
+  m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
+  m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -3180,6 +3184,8 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_FAVOURITES);
     m_gWindowManager.Delete(WINDOW_DIALOG_SONG_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
