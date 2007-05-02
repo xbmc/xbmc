@@ -390,6 +390,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
+    items.m_strPath = cachedItems.m_strPath;
     items.AppendPointer(cachedItems);
     cachedItems.ClearKeepPointer();
   }
