@@ -237,7 +237,7 @@ void CGUIMultiImage::LoadDirectory()
   if (m_currentPath.IsEmpty()) return;
 
   // check to see if we have a single image or a folder of images
-  CFileItem item(m_currentPath, true);
+  CFileItem item(m_currentPath, false);
   if (item.IsPicture())
   {
     m_files.push_back(g_TextureManager.GetTexturePath(m_currentPath));
