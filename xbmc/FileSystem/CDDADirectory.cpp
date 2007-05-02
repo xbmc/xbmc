@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "cddadirectory.h"
 #include "../DetectDVDType.h"
 #include "../MusicDatabase.h"

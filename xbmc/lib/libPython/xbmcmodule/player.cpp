@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\..\..\application.h"
 #include "..\..\..\utils\guiinfomanager.h"
 #include "..\..\..\playlistplayer.h"

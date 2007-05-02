@@ -9,7 +9,7 @@
  * See the file "license.txt" for usage and redistribution license requirements
  */
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "WebServer.h"
 #include "XBMCWeb.h"
 

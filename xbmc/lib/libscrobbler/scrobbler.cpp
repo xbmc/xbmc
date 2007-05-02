@@ -17,7 +17,7 @@
 
   Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
 */
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "scrobbler.h"
 #include "errors.h"
 #include "../../utils/md5.h"

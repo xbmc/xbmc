@@ -1,4 +1,4 @@
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include <io.h>
 #include <direct.h>
 #include <sys/stat.h>

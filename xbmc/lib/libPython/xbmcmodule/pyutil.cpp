@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "pyutil.h"
 #include <wchar.h>
 #include "skininfo.h"

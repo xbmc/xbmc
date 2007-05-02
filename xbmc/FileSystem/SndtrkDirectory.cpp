@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "sndtrkdirectory.h"
 #include "../util.h"
 #include "../xbox/iosupport.h"

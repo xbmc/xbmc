@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "Weather.h"
 #include "../FileSystem/ZipManager.h"
 #include "../FileSystem/RarManager.h"

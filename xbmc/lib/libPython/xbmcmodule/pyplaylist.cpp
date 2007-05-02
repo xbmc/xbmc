@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
 #include "pyplaylist.h"

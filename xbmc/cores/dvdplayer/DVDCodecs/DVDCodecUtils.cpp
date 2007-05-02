@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDCodecUtils.h"
 #include "..\..\VideoRenderers\XBoxRenderer.h" // for YV12Image definition
 

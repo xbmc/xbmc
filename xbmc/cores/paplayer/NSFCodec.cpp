@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "../../util.h"
 #include "../../utils/regexp.h"
 #include "NSFCodec.h"
