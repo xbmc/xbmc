@@ -26,7 +26,7 @@ public:
   wchar_t* GetCreditsLine(int i);
 
   CStdString GetDirFromRes(RESOLUTION res);
-  CStdString CSkinInfo::GetBaseDir();
+  CStdString GetBaseDir();
   double GetMinVersion();
   double GetVersion(){ return m_Version;};
   int GetStartWindow();
