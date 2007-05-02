@@ -1,5 +1,5 @@
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "DllLibCurl.h"
 
 using namespace XCURL;

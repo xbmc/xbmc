@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "GUIPythonWindowDialog.h"
 
 CGUIPythonWindowDialog::CGUIPythonWindowDialog(DWORD dwId)

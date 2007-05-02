@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "smartxxlcd.h"
 #include "conio.h"
 #include "../../Util.h"

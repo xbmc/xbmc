@@ -1,5 +1,5 @@
 
-#include "../../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDAudioCodecLibDts.h"
 
 inline int16_t convert(register int32_t i)

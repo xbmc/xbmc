@@ -1,5 +1,5 @@
 
-#include "../../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDAudioCodecPassthrough.h"
 #include "../DVDCodecs.h"
 #include "../../../../XBAudioConfig.h"

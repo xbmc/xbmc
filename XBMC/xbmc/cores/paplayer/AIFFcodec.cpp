@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "AIFFCodec.h"
 
 #define be2le(x) byte_swap((unsigned char *)&x, sizeof(x))

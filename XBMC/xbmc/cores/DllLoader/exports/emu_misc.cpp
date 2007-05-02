@@ -1,6 +1,6 @@
 
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include <stdio.h>
 //#include <xobjbase.h>
 #ifndef _XBOX

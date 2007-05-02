@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNodeTitleMovies.h"
 #include "QueryParams.h"
 #include "../../VideoDatabase.h"

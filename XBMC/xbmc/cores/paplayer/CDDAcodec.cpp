@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "CDDACodec.h"
 #include "../../lib/libcdio/sector.h"
 

@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "RssReader.h"
 #include "Http.h"
 #include "../utils/HTMLUtil.h"

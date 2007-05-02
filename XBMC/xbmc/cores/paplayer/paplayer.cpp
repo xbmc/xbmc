@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "PAPlayer.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"

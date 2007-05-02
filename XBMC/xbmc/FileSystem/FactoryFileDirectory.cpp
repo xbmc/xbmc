@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "../util.h"
 #include "factoryfiledirectory.h"
 #ifdef HAS_FILESYSTEM

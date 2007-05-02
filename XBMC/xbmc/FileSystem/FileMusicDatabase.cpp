@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileMusicDatabase.h"
 #include "../MusicDatabase.h"
 #include <sys/stat.h>
