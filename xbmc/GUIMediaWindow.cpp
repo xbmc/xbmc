@@ -35,6 +35,7 @@
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
+#include "GUIDialogSmartPlaylistEditor.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -576,6 +577,12 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (pItem->m_strPath == "newplaylist://")
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
+      return true;
+    }
+    else if (pItem->m_strPath == "newsmartplaylist://")
+    {
+      if (CGUIDialogSmartPlaylistEditor::NewPlaylist())
+        Update(m_vecItems.m_strPath);
       return true;
     }
 
