@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "dll_tracker_critical_section.h"
 #include "dll_tracker.h"
 #include "dll.h"

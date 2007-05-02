@@ -2,7 +2,7 @@
 
 #include "RegExp.h"
 #include "htmlutil.h"
-//#include "../stdafx.h"
+//#include "stdafx.h"
  #include "charsetconverter.h"
 #include <cstring>
 

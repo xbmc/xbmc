@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "..\..\stdafx.h"
+#include "stdafx.h"
 #include "WebServer.h"
 #include "XbmcHttp.h"
 #include "includes.h"

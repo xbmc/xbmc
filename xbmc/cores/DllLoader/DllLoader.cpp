@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"

@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "hddirectory.h"
 #include "../util.h"
 #include "../xbox/iosupport.h"

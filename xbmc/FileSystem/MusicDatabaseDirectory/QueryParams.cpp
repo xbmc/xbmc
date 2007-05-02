@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "QueryParams.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "cdiosupport.h"
 #include "../lib/libcdio/cdio.h"
 #include "../lib/libcdio/logging.h"

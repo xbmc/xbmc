@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNodeAlbumTop100.h"
 #include "../../MusicDatabase.h"
 

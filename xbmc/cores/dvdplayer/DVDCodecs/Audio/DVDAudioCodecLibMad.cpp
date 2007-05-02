@@ -1,5 +1,5 @@
 
-#include "../../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDAudioCodecLibMad.h"
 
 static inline signed int scale(mad_fixed_t sample)

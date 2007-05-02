@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "RarManager.h"
 #include "../lib/UnrarXLib/rar.hpp"
 #include "../util.h"

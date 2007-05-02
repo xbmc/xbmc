@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNodeTop100.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

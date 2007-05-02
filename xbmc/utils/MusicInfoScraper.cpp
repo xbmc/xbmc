@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 
 #include ".\musicinfoscraper.h"
 #include ".\htmlutil.h"

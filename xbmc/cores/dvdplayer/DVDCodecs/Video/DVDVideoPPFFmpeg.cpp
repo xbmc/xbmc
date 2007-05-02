@@ -1,4 +1,4 @@
-#include "../../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDVideoPPFFmpeg.h"
 
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(EPPTYPE mType)

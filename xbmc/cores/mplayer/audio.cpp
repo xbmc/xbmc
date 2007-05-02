@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "audio.h"
 #include "IDirectSoundRenderer.h"
 #include "ASyncDirectSound.h"

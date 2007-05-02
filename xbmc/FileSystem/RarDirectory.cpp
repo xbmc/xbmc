@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "RarDirectory.h"
 #include "../utils/log.h"
 #include "../Util.h"
