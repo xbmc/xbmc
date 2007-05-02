@@ -1,6 +1,8 @@
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
 
+#include <sstream>
+
 void CVideoInfoTag::Reset()
 {
   m_strDirector = "";
@@ -184,12 +186,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-    TiXmlString s;  
-    TiXmlOutStream os_stream;  
-     
-    os_stream << * epguide;  
-    s = os_stream;  
-    m_strEpisodeGuide = s.c_str();
+    std::stringstream(m_strEpisodeGuide) << * epguide;
   }
 
   return true;
