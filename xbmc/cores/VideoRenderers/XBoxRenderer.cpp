@@ -536,19 +536,18 @@ void CXBoxRenderer::ManageTextures()
   }
   else if( m_NumYV12Buffers > neededbuffers )
   {
-    // delete from the end, and abort when first used is found
-    for(int i = NUM_BUFFERS-1;i>=neededbuffers;i--)
+    // delete from the end
+    int i = m_NumYV12Buffers-1;
+    for(; i>=neededbuffers;i--)
     {
-      if((m_image[i].flags & (IMAGE_FLAG_READING | IMAGE_FLAG_WRITING | IMAGE_FLAG_DYNAMIC | IMAGE_FLAG_RESERVED)))
+      // don't delete any frame that is in use
+      if((m_image[i].flags & (IMAGE_FLAG_READING | IMAGE_FLAG_WRITING | IMAGE_FLAG_RESERVED)))
         break;
-      else
-      {
-        if( m_iYV12RenderBuffer = i )
-          m_iYV12RenderBuffer--;
-        m_NumYV12Buffers = i;
-        DeleteYV12Texture(i);
-      }
+      DeleteYV12Texture(i);
     }
+    if(m_iYV12RenderBuffer > i)
+        m_iYV12RenderBuffer = i;
+    m_NumYV12Buffers = i;
   }
 }
 
