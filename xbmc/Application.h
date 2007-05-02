@@ -30,6 +30,7 @@ class CWebServer;
 class CXBFileZilla;
 class CSNTPClient;
 class CCdgParser;
+class CApplicationMessenger;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
