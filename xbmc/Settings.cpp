@@ -2377,7 +2377,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     // Add a <setting type="bool" name="name">true/false</setting>
     TiXmlElement xmlSetting("setting");
     xmlSetting.SetAttribute("type", "bool");
-    xmlSetting.SetAttribute("name", (*it).second.name);
+    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
     TiXmlText xmlBool((*it).second.value ? "true" : "false");
     xmlSetting.InsertEndChild(xmlBool);
     pSettingsNode->InsertEndChild(xmlSetting);
@@ -2387,7 +2387,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     // Add a <setting type="string" name="name">string</setting>
     TiXmlElement xmlSetting("setting");
     xmlSetting.SetAttribute("type", "string");
-    xmlSetting.SetAttribute("name", (*it).second.name);
+    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
     TiXmlText xmlLabel((*it).second.value);
     xmlSetting.InsertEndChild(xmlLabel);
     pSettingsNode->InsertEndChild(xmlSetting);
