@@ -4032,31 +4032,33 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   return iIndex;
 }
 
-CStdString CUtil::TranslateSpecialPath(const CStdString &specialPath)
+CStdString CUtil::TranslateSpecialPath(const CStdString &path)
 {
   CStdString translatedPath;
+  CStdString specialPath(path);
+  CUtil::AddSlashAtEnd(specialPath);
   if (specialPath.Left(15).Equals("special://home/"))
-    CUtil::AddFileToFolder("Q:", specialPath.Mid(15), translatedPath);
+    CUtil::AddFileToFolder("Q:", path.Mid(15), translatedPath);
   else if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), specialPath.Mid(20), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), specialPath.Mid(19), translatedPath);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
   else if (specialPath.Left(19).Equals("special://database/"))
-    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), specialPath.Mid(19), translatedPath);
+    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), path.Mid(19), translatedPath);
   else if (specialPath.Left(21).Equals("special://thumbnails/"))
-    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), specialPath.Mid(21), translatedPath);
+    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), path.Mid(21), translatedPath);
   else if (specialPath.Left(21).Equals("special://recordings/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), specialPath.Mid(21), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), path.Mid(21), translatedPath);
   else if (specialPath.Left(22).Equals("special://screenshots/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), specialPath.Mid(22), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), path.Mid(22), translatedPath);
   else if (specialPath.Left(25).Equals("special://musicplaylists/"))
-    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), specialPath.Mid(25), translatedPath);
+    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), path.Mid(25), translatedPath);
   else if (specialPath.Left(25).Equals("special://videoplaylists/"))
-    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), specialPath.Mid(25), translatedPath);
+    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), path.Mid(25), translatedPath);
   else if (specialPath.Left(17).Equals("special://cdrips/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), specialPath.Mid(17), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), path.Mid(17), translatedPath);
   else
-    translatedPath = specialPath;
+    translatedPath = path;
 
   return translatedPath;
 }
