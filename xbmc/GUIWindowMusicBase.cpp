@@ -42,6 +42,7 @@
 #include "utils/GUIInfoManager.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "GUIDialogSongInfo.h"
+#include "GUIDialogSmartPlaylistEditor.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -824,9 +825,10 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
     }
 
-    if ((item->IsPlayList() && !item->IsSmartPlayList()) ||
-        (m_vecItems.IsPlayList() && !m_vecItems.IsSmartPlayList()))
+    if (item->IsPlayList() || m_vecItems.IsPlayList())
       buttons.Add(CONTEXT_BUTTON_EDIT, 586);
+    else if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
+      buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
@@ -872,6 +874,17 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CStdString playlist = m_vecItems[itemNumber]->IsPlayList() ? m_vecItems[itemNumber]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
+      return true;
+    }
+    
+  case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
+    {
+      CStdString playlist = m_vecItems[itemNumber]->IsSmartPlayList() ? m_vecItems[itemNumber]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+      { // need to update
+        m_vecItems.RemoveDiscCache();
+        Update(m_vecItems.m_strPath);
+      }
       return true;
     }
 
@@ -1247,6 +1260,11 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   {
     CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newsmartplaylist://", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
   }
