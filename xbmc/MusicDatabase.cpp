@@ -26,8 +26,6 @@
 #include "filesystem/MusicdatabaseDirectory/directoryNode.h"
 #include "filesystem/musicdatabasedirectory/QueryParams.h"
 #include "GUIDialogMusicScan.h"
-#include "filesystem/virtualpathdirectory.h"
-#include "filesystem/multipathdirectory.h"
 #include "DetectDVDType.h"
 
 using namespace XFILE;
