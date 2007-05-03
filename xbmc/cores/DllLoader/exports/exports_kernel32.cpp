@@ -60,6 +60,7 @@ Export export_kernel32[] =
   { "HeapAlloc",                                    -1, HeapAlloc,                                    NULL },
   { "LocalFree",                                    -1, LocalFree,                                    NULL },
   { "LocalAlloc",                                   -1, LocalAlloc,                                   NULL },
+  { "LocalReAlloc",                                 -1, LocalReAlloc,                                 NULL },
   { "LocalLock",                                    -1, LocalLock,                                    NULL },
   { "LocalUnlock",                                  -1, LocalUnlock,                                  NULL },
   { "LocalHandle",                                  -1, LocalHandle,                                  NULL },
