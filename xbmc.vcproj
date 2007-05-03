@@ -219,7 +219,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
