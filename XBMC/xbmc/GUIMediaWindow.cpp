@@ -607,22 +607,22 @@ bool CGUIMediaWindow::OnClick(int iItem)
       {
         g_playlistPlayer.ClearPlaylist(iPlaylist);
         g_playlistPlayer.Reset();
-        int nFolderCount = 0;
-        int iNoSongs = 0;
+        int songToPlay = 0;
         CFileItemList queueItems;
         for ( int i = 0; i < m_vecItems.Size(); i++ )
         {
-          CFileItem* pItem = m_vecItems[i];
+          CFileItem* item = m_vecItems[i];
 
-          if (pItem->m_bIsFolder)
-          {
-            nFolderCount++;
+          if (item->m_bIsFolder)
             continue;
+
+          if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR())
+            queueItems.Add(item);
+
+          if (item == pItem)
+          { // item that was clicked
+            songToPlay = queueItems.Size() - 1;
           }
-          if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-            queueItems.Add(pItem);
-          else if (i <= iItem)
-            iNoSongs++;
         }
         g_playlistPlayer.Add(iPlaylist, queueItems);
         queueItems.ClearKeepPointer();
@@ -632,17 +632,16 @@ bool CGUIMediaWindow::OnClick(int iItem)
           m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
         // figure out where we start playback
-        int iOrder = iItem - nFolderCount - iNoSongs;
         if (g_playlistPlayer.IsShuffled(iPlaylist))
         {
-          int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(iOrder);
+          int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(songToPlay);
           g_playlistPlayer.GetPlaylist(iPlaylist).Swap(0, iIndex);
-          iOrder = 0;
+          songToPlay = 0;
         }
 
         // play
         g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-        g_playlistPlayer.Play(iOrder);
+        g_playlistPlayer.Play(songToPlay);
       }
       return true;
     }
@@ -898,26 +897,19 @@ void CGUIMediaWindow::UpdateFileList()
 
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    int nFolderCount = 0;
-    int iNoSongs = 0;
-    for (int i = 0; i < (int)m_vecItems.Size(); i++)
+
+    for (int i = 0; i < m_vecItems.Size(); i++)
     {
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_bIsFolder)
-      {
-        nFolderCount++;
         continue;
-      }
+
       if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-      {
         g_playlistPlayer.Add(iPlaylist, pItem);
-      }
-      else
-        iNoSongs++;
 
       if (pItem->m_strPath == playlistItem.m_strPath &&
           pItem->m_lStartOffset == playlistItem.m_lStartOffset)
-        g_playlistPlayer.SetCurrentSong(i - nFolderCount - iNoSongs);
+        g_playlistPlayer.SetCurrentSong(g_playlistPlayer.GetPlaylist(iPlaylist).size() - 1);
     }
   }
 }
