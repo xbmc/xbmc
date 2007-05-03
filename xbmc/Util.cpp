@@ -1375,6 +1375,16 @@ bool CUtil::IsRemote(const CStdString& strFile)
     }
     return false;
   }
+  if (strProtocol == "multipath")
+  { // virtual paths need to be checked separately
+    vector<CStdString> paths;
+    if (CMultiPathDirectory::GetPaths(strFile, paths))
+    {
+      for (unsigned int i = 0; i < paths.size(); i++)
+        if (IsRemote(paths[i])) return true;
+    }
+    return false;
+  }
   if ( !url.IsLocal() ) return true;
   return false;
 }

@@ -26,7 +26,6 @@
 #include "utils/RegExp.h"
 #include "util.h"
 #include "GUIPassword.h"
-#include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 
 using namespace XFILE;
