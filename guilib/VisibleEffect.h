@@ -49,6 +49,8 @@ public:
   void SetInitialCondition();
 
 private:
+  enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
+
   ANIMATION_TYPE m_type;
   EFFECT_TYPE m_effect;
 
@@ -71,7 +73,7 @@ private:
   unsigned int m_start;
   unsigned int m_length;
   unsigned int m_delay;
-  bool m_pulse;
+  ANIM_REPEAT m_repeatAnim;
   bool m_reversible;    // whether the animation is reversible or not
 
   int m_condition;      // conditions that must be satisfied in order for this
