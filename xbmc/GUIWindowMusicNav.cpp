@@ -434,7 +434,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
-    if (item->IsAudio() && !item->IsPlayList())
+    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
     else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
