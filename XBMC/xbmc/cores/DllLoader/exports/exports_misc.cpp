@@ -63,6 +63,13 @@ Export export_user32[] =
   { "IsWindowVisible",            -1, dllIsWindowVisible,            NULL },
   { "GetActiveWindow",            -1, dllGetActiveWindow,            NULL },
   { "LoadStringA",                -1, dllLoadStringA,                NULL },
+  { "GetCursorPos",               -1, dllGetCursorPos,               NULL },
+  { "LoadCursorA",                -1, dllLoadCursorA,                NULL },
+  { "SetCursor",                  -1, dllSetCursor,                  NULL },
+  { "RegisterWindowMessageA",     -1, dllRegisterWindowMessageA,     NULL },
+  { "GetSysColorBrush",           -1, dllGetSysColorBrush,           NULL },
+  { "GetSysColor",                -1, dllGetSysColor,                NULL },
+  { "RegisterClipboardFormatA",   -1, dllRegisterClipboardFormatA,   NULL },
   { NULL, NULL, NULL, NULL }
 };
 
