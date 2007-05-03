@@ -783,7 +783,16 @@ bool DllLoader::Load()
     catch(...)
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
-      return false;
+
+      // vp7vfw.dll throws a CUserException due to a missing export
+      // but the export isn't really needed for normal operation
+      // and dll works anyway, so let's ignore it
+
+      if(stricmp(GetName(), "vp7vfw.dll") != 0)
+        return false;
+
+
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Ignoring exception during DLL_PROCESS_ATTACH");
     }
 
     // init function may have fixed up the export table
