@@ -86,6 +86,14 @@ extern "C" int WINAPI dllMonitorFromWindow(HWND win, int flags);
 extern "C" int WINAPI dllMonitorFromRect(RECT *r, int flags);
 extern "C" int WINAPI dllMonitorFromPoint(void *p, int flags);
 
+extern "C" BOOL    WINAPI dllGetCursorPos(LPPOINT lpPoint);
+extern "C" HCURSOR WINAPI dllSetCursor(HCURSOR hCursor);
+extern "C" HCURSOR WINAPI dllLoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName);
+extern "C" UINT    WINAPI dllRegisterWindowMessageA(LPCSTR lpString);
+extern "C" HBRUSH  WINAPI dllGetSysColorBrush(int nIndex);
+extern "C" DWORD   WINAPI dllGetSysColor(int nIndex);
+extern "C" UINT    WINAPI dllRegisterClipboardFormatA(LPCSTR lpszFormat);
+
 #ifdef _XBOX
 typedef BOOL (*MONITORENUMPROC)(HMONITOR, HDC, LPRECT, LPARAM);
 #endif
