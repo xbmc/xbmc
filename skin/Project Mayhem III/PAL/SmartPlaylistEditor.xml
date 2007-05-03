@@ -1,5 +1,5 @@
 <window id="129">
-	<defaultcontrol>12</defaultcontrol>
+	<defaultcontrol always="true">12</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<posx>110</posx>
@@ -54,7 +54,7 @@
 			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>-</label>
-			<onup>20</onup>
+			<onup>9001</onup>
 			<onleft>12</onleft>
 			<onright>12</onright>
 			<ondown>10</ondown>
@@ -222,7 +222,7 @@
 			<onright>19</onright>
 			<onleft>19</onleft>
 			<onup>17</onup>
-			<ondown>20</ondown>
+			<ondown>9001</ondown>
 		</control>
 
 		<control type="togglebutton" id="19">
@@ -242,44 +242,45 @@
 			<onright>18</onright>
 			<onleft>18</onleft>
 			<onup>17</onup>
-			<ondown>20</ondown>
+			<ondown>9001</ondown>
 		</control>
-		
-		<control type="button" id="20">
-			<description>Ok Button</description>
-			<posx>290</posx>
-			<posy>355</posy>
-			<width>90</width>
-			<height>32</height>
-			<font>font12</font>
-			<textoffsetx>12</textoffsetx>
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<label>186</label>
-			<onup>18</onup>
-			<onleft>21</onleft>
-			<onright>21</onright>
-			<ondown>12</ondown>
-		</control>
-		<control type="button" id="21">
-			<description>Cancel Button</description>
-			<posx>390</posx>
-			<posy>355</posy>
-			<width>90</width>
-			<height>32</height>
-			<font>font12</font>
-			<textoffsetx>12</textoffsetx>
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<label>222</label>
-			<onup>18</onup>
-			<onleft>20</onleft>
-			<onright>20</onright>
-			<ondown>12</ondown>
+		<control type="group" id="9001">
+			<control type="button" id="20">
+				<description>Ok Button</description>
+				<posx>290</posx>
+				<posy>355</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>186</label>
+				<onup>18</onup>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<ondown>12</ondown>
+			</control>
+			<control type="button" id="21">
+				<description>Cancel Button</description>
+				<posx>390</posx>
+				<posy>355</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>222</label>
+				<onup>18</onup>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<ondown>12</ondown>
+			</control>
 		</control>
 	</controls>
 </window>
