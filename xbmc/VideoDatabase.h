@@ -2,6 +2,7 @@
 #include "Database.h"
 #include "utils/IMDB.h"
 #include "settings/VideoSettings.h"
+#include <set>
 
 typedef vector<CStdString> VECMOVIEYEARS;
 typedef vector<CStdString> VECMOVIEACTORS;
