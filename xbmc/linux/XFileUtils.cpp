@@ -226,7 +226,8 @@ BOOL FlushFileBuffers( HANDLE hFile ) {
 
 int _stat64(   const char *path,   struct __stat64 *buffer ) {
 #warning need to complete function _stat64
-	return 0;
+	struct stat buf;
+	return stat(path, &buf);
 }
 
 DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
