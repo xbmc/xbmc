@@ -1,5 +1,6 @@
 
 #include "XTimeUtils.h"
+#include <time.h>
 
 #ifdef _LINUX
 
@@ -18,7 +19,18 @@ void Sleep(DWORD dwMilliSeconds)
 	SDL_Delay(dwMilliSeconds);
 }
 
-VOID GetLocalTime(LPSYSTEMTIME sysTime) {
+VOID GetLocalTime(LPSYSTEMTIME sysTime) 
+{
+  const time_t t = time(NULL);
+  struct tm* now = localtime(&t);
+  sysTime->wYear = now->tm_year + 1900;
+  sysTime->wMonth = now->tm_mon + 1;
+  sysTime->wDayOfWeek = now->tm_wday;
+  sysTime->wDay = now->tm_mday;
+  sysTime->wHour = now->tm_hour;
+  sysTime->wMinute = now->tm_min;
+  sysTime->wSecond = now->tm_sec;
+  sysTime->wMilliseconds = 0;
 }
 
 DWORD GetTickCount(void) {
