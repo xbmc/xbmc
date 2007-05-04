@@ -3,7 +3,9 @@
 #include "TextureManager.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-
+#ifdef HAS_SDL
+#include <SDL/SDL_rotozoom.h>
+#endif
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -158,6 +160,7 @@ void CGUIImage::Render()
 #else
     p3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 #endif
+#endif
 
     float uLeft, uRight, vTop, vBottom;
 
@@ -217,11 +220,13 @@ void CGUIImage::Render()
       p3DDevice->SetPalette( 1, NULL);
 #endif
 #endif
+
+#ifndef HAS_SDL
     // unset the texture and palette or the texture caching crashes because the runtime still has a reference
     p3DDevice->SetTexture( 0, NULL );
     if (m_diffuseTexture)
       p3DDevice->SetTexture( 1, NULL );
-#endif // HAS_SDL
+#endif
       
     if (m_fNW > m_width || m_fNH > m_height)
       g_graphicsContext.RestoreViewPort();
@@ -323,6 +328,17 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   verts[3].color = g_graphicsContext.MergeAlpha(color);
 
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+#else
+//<jmarshall> column_in_texture_to_start_from = u1 / m_fU * texture_width_in_pixels
+//<jmarshall> column_in_texture_to_end_at = u2 / m_fU * texture_width_in_pixels
+
+  SDL_Surface* srcSurface = m_vecTextures[m_iCurrentImage]; 
+  double zoomX = (double) (right - left + 1) / m_vecTextures[m_iCurrentImage]->w;
+  double zoomY = (double) (bottom - top + 1) / m_vecTextures[m_iCurrentImage]->h;
+  SDL_Surface* zoomedSurface = zoomSurface(srcSurface, zoomX, zoomY, 1);
+
+  SDL_Rect dst = { (Sint16) left, (Sint16) top, 0, 0 };
+  g_graphicsContext.BlitToScreen(zoomedSurface, NULL,  &dst);
 #endif
 }
 

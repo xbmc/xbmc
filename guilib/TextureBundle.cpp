@@ -134,21 +134,15 @@ bool CTextureBundle::OpenBundle()
     // a valid theme (or the skin has a default one)
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
-#ifndef _LINUX
       strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
-#else
-      strPath.Format("%s/media/%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
-#endif      
     else
       return false;
   }
   else
-#ifndef _LINUX  
     strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
-#else
-    strPath.Format("%s/media/Textures.xpr", g_graphicsContext.GetMediaDir());
-#endif    
 
+  strPath = _P(strPath);
+  
 #ifndef _LINUX
   if (GetFileAttributes(strPath.c_str()) == -1)
     return false;

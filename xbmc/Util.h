@@ -220,6 +220,12 @@ struct sortstringbyname
   }
 };
 
+#ifndef _LINUX
+#define _P(x) x
+#else
+#define _P(x) CUtil::TranslatePath(x)
+#endif
+
 class CUtil
 {
 public:
@@ -373,6 +379,9 @@ public:
   static void ClearFileItemCache();
 
   static void BootToDash();
+
+  static CStdString TranslatePath(const CStdString& path);
+  
 private:
   static HANDLE m_hCurrentCpuUsage;
 };

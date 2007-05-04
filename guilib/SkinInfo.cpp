@@ -31,7 +31,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
   m_effectsSlowDown = 1.0;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
-  CStdString strFile = m_strBaseDir + "\\skin.xml";
+  CStdString strFile = _P(m_strBaseDir + "\\skin.xml");
   if (xmlDoc.LoadFile(strFile.c_str()))
   { // ok - get the default skin folder out of it...
     TiXmlElement* pRootElement = xmlDoc.RootElement();
@@ -135,8 +135,8 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   bool bVersionOK = false;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
-  CStdString strFile = strSkinDir + "\\skin.xml";
-  CStdString strGoodPath = strSkinDir;
+  CStdString strFile = _P(strSkinDir + "\\skin.xml");
+  CStdString strGoodPath = _P(strSkinDir);
   if (xmlDoc.LoadFile(strFile.c_str()))
   { // ok - get the default res folder out of it...
     TiXmlElement* pRootElement = xmlDoc.RootElement();
@@ -146,8 +146,17 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
       TiXmlNode *pChild = pRootElement->FirstChild("defaultresolution");
       if (pChild)
       { // found the defaultresolution tag
+#ifndef _LINUX
         strGoodPath += "\\";
-        strGoodPath += pChild->FirstChild()->Value();
+#else
+        strGoodPath += "/";
+#endif
+		  CStdString resolution = pChild->FirstChild()->Value();
+        if (resolution == "pal") resolution = "PAL";
+        else if (resolution == "pal16x9") resolution = "PAL16x9";
+        else if (resolution == "ntsc") resolution = "NTSC";
+        else if (resolution == "ntsc16x9") resolution = "NTSC16x9";
+        strGoodPath += resolution;
       }
       // get the version
       pChild = pRootElement->FirstChild("version");
@@ -159,9 +168,9 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
     }
   }
   // Check to see if we have a good path
-  CStdString strFontXML = strGoodPath + "\\font.xml";
-  CStdString strHomeXML = strGoodPath + "\\home.xml";
-  CStdString strReferencesXML = strGoodPath + "\\references.xml";
+  CStdString strFontXML = _P(strGoodPath + "\\Font.xml");
+  CStdString strHomeXML = _P(strGoodPath + "\\Home.xml");
+  CStdString strReferencesXML = _P(strGoodPath + "\\References.xml");
   if ( CFile::Exists(strFontXML) &&
        CFile::Exists(strHomeXML) && bVersionOK )
   {
@@ -179,6 +188,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   *res = g_graphicsContext.GetVideoResolution();
   CStdString strPath;
   strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+  strPath = _P(strPath);
   if (CFile::Exists(strPath))
     return strPath;
   // if we're in 1080i mode, try 720p next
@@ -186,6 +196,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   {
     *res = HDTV_720p;
     strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+    strPath = _P(strPath);
     if (CFile::Exists(strPath))
       return strPath;
   }
@@ -194,12 +205,14 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   {
     *res = m_DefaultResolutionWide;
     strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+    strPath = _P(strPath);
     if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default resolution
   *res = m_DefaultResolution;
   strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+  strPath = _P(strPath);
   // check if we don't have any subdirectories
   if (*res == INVALID) *res = PAL_4x3;
   return strPath;
@@ -214,14 +227,14 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
     strRes = "";
     break;
   case PAL_4x3:
-    strRes = "\\pal";
+    strRes = "\\PAL";
     break;
   case PAL_16x9:
-    strRes = "\\pal16x9";
+    strRes = "\\PAL16x9";
     break;
   case NTSC_4x3:
   case HDTV_480p_4x3:
-    strRes = "\\ntsc";
+    strRes = "\\NTSC";
     break;
   case NTSC_16x9:
   case HDTV_480p_16x9:

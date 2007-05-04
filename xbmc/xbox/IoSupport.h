@@ -99,6 +99,7 @@ public:
   static bool PartitionExists(int nPartition);
 
   static void GetPartition(char cDriveLetter, char * szPartition);
+  static const char* GetPartition(char cDriveLetter);
   static void GetDrive(char * szPartition, char * cDriveLetter);
 
   static bool ReadPartitionTable();

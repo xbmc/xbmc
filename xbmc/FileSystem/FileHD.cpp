@@ -54,9 +54,11 @@ CStdString CFileHD::GetLocal(const CURL &url)
       CLog::Log(LOGERROR, "%s - Unsupported url %s", __FUNCTION__, path.c_str());
   }
 
+#ifndef _LINUX
   path.Replace('/', '\\');
-
   g_charsetConverter.utf8ToStringCharset(path);
+#endif
+
   return path;
 }
 
