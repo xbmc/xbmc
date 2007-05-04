@@ -235,6 +235,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
 // as this screws up the aliasing.
 CAngle CGUIFont::Transform(const CAngle &angle)
 {
+#ifndef _LINUX
   CAngle result;
   result.cosine = g_graphicsContext.ScaleFinalXCoord(angle.cosine, angle.sine) - g_graphicsContext.ScaleFinalXCoord(0, 0);
   result.sine = g_graphicsContext.ScaleFinalYCoord(angle.cosine, angle.sine) - g_graphicsContext.ScaleFinalYCoord(0, 0);
@@ -243,6 +244,10 @@ CAngle CGUIFont::Transform(const CAngle &angle)
   result.cosine /= norm;
   result.sine /= norm;
   return result;
+#else
+	CAngle result = angle;
+	return result;
+#endif  
 }
 
 // remaps unsupported font glpyhs to other suitable ones

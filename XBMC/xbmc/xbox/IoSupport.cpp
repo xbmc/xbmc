@@ -66,6 +66,9 @@ stDriveMapping driveMapping[] =
 #else
 stDriveMapping driveMapping[] =
   {
+     {'P', new char[MAX_PATH], 0},
+     {'Q', new char[MAX_PATH], 0},
+     {'T', new char[MAX_PATH], 0}
   };
 #endif
 
@@ -102,10 +105,19 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
     CLog::Log(LOGERROR, "Failed to create symbolic link!  (status=0x%08x)", status);
 
   return status;
-#else
+#elif WIN32
   if ((strnicmp(szDevice, "Harddisk0", 9) == 0) ||
       (strnicmp(szDevice, "Cdrom", 5) == 0))
     return S_OK;
+  return E_FAIL;
+#else
+  char upperLetter = toupper(cDriveLetter);
+  for (int i=0; i < NUM_OF_DRIVES; i++)
+    if (driveMapping[i].cDriveLetter == upperLetter)
+    {
+      strcpy(driveMapping[i].szDevice, szDevice);
+      return S_OK;
+    }
   return E_FAIL;
 #endif
 }
@@ -180,6 +192,15 @@ void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
       return;
     }
   *szPartition = 0;
+}
+
+const char* CIoSupport::GetPartition(char cDriveLetter)
+{
+  char upperLetter = toupper(cDriveLetter);
+  for (int i=0; i < NUM_OF_DRIVES; i++)
+    if (driveMapping[i].cDriveLetter == upperLetter)
+      return driveMapping[i].szDevice;
+  return NULL;
 }
 
 void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
@@ -423,9 +444,21 @@ VOID CIoSupport::GetXbePath(char* szDest)
 
   sprintf(szDest, "%c:\\%s", cDriveLetter, szTemp);
 
-#else
+#elif WIN32
   GetCurrentDirectory(XBMC_MAX_PATH, szDest);
   strcat(szDest, "\\XBMC_PC.exe");
+#else
+  /* Get our PID and build the name of the link in /proc */
+  pid_t pid = getpid();
+  char linkname[64]; /* /proc/<pid>/exe */
+  snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
+
+  /* Now read the symbolic link */
+  char buf[1024];
+  int ret = readlink(linkname, buf, 1024);
+  buf[ret] = 0;
+	
+  strcpy(szDest, buf);
 #endif
 }
 

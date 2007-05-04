@@ -2,11 +2,10 @@ AR = ar
 ARFLAGS = rus
 RM = rm -f
 
-CXX=g++
-CC=gcc
+CXX=g++-4.1
+CC=gcc-4.1
 CFLAGS+=-g
 DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT
-LIBS=-lSDL -lpthread
 
 .cpp.o:
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
@@ -19,8 +18,6 @@ OBJS=${SRCS:.cpp=.o}
 all: lib
 
 $(LIB) : $(OBJS)
-	$(RM) $@
-	$(AR) $(ARFLAGS) $@ $(OBJS)
 
 lib: $(LIB)
 	for d in $(DIRS); do (cd $$d; $(MAKE) lib ); done

@@ -199,7 +199,6 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
 #else
   m_ThreadHandle = new CXHandle(CXHandle::HND_THREAD);
   m_ThreadHandle->m_hThread = SDL_CreateThread(staticThread, (void*)this);
-  m_ThreadId = SDL_GetThreadID(m_ThreadHandle->m_hThread);
 #endif
 
 }
@@ -216,7 +215,12 @@ void CThread::StopThread()
   SetEvent(m_StopEvent);
   if (m_ThreadHandle)
   {
+#ifndef _LINUX
     WaitForThreadExit(INFINITE);
+#else
+    int status;
+    SDL_WaitThread(m_ThreadHandle->m_hThread, &status);
+#endif
     CloseHandle(m_ThreadHandle);
     m_ThreadHandle = NULL;
   }

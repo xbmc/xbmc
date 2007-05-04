@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "LangInfo.h"
+#include "Util.h"
 
 CLangInfo g_langInfo;
 

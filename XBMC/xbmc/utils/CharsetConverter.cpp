@@ -199,7 +199,11 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
 
   if (m_iconvUtf8toUtf16 == (iconv_t) - 1)
   {
+#ifndef _LINUX
     m_iconvUtf8toUtf16 = iconv_open("UTF-16LE", "UTF-8");
+#else
+    m_iconvUtf8toUtf16 = iconv_open("WCHAR_T", "UTF-8");
+#endif    
   }
 
   if (m_iconvUtf8toUtf16 != (iconv_t) - 1)
@@ -230,7 +234,11 @@ void CCharsetConverter::subtitleCharsetToUTF16(const CStdStringA& strSource, CSt
   if (m_iconvSubtitleCharsetToUtf16 == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
+#ifndef _LINUX
     m_iconvSubtitleCharsetToUtf16 = iconv_open("UTF-16LE", strCharset.c_str());
+#else
+    m_iconvSubtitleCharsetToUtf16 = iconv_open("WCHAR_T", strCharset.c_str());
+#endif    
   }
 
   if (m_iconvSubtitleCharsetToUtf16 != (iconv_t) - 1)
@@ -394,7 +402,12 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
+#ifndef _LINUX
     m_iconvUtf16toUtf8 = iconv_open("UTF-8", "UTF-16LE");
+#else    
+    m_iconvUtf16toUtf8 = iconv_open("UTF-8", "WCHAR_T");
+#endif
+    
   if (m_iconvUtf16toUtf8 != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
@@ -414,7 +427,12 @@ void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &s
 void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvUtf16BEtoUtf8 == (iconv_t) - 1)
+#ifndef _LINUX
     m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF-16BE");
+#else    
+    m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF16BE");
+#endif
+
   if (m_iconvUtf16BEtoUtf8 != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
@@ -436,7 +454,11 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
   if (m_iconvUcs2CharsetToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
+#ifndef _LINUX
     m_iconvUcs2CharsetToStringCharset = iconv_open(strCharset.c_str(), "UTF-16LE");
+#else
+    m_iconvUcs2CharsetToStringCharset = iconv_open(strCharset.c_str(), "UTF16LE");
+#endif
   }
 
   if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
@@ -478,7 +500,11 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
   if (m_iconvUtf32ToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
+#ifndef _LINUX
     m_iconvUtf32ToStringCharset = iconv_open(strCharset.c_str(), "UTF-32LE");
+#else
+    m_iconvUtf32ToStringCharset = iconv_open(strCharset.c_str(), "UTF32LE");
+#endif
   }
 
   if (m_iconvUtf32ToStringCharset != (iconv_t) - 1)
