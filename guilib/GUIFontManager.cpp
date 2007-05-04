@@ -6,6 +6,7 @@
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
+#include "Util.h"
 
 GUIFontManager g_fontManager;
 
@@ -29,7 +30,7 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
   if (strFilename[1] != ':')
   {
     strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
+    strPath += "\\Fonts\\";
     strPath += strFilename;
   }
   else
@@ -88,7 +89,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (strFilename[1] != ':')
   {
     strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
+    strPath += "\\Fonts\\";
     strPath += strFilename;
   }
   else
@@ -111,7 +112,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
         strPath += strFilename;
       }
 
-      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle, aspect);
+      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(_P(strPath), iSize, iStyle, aspect);
     }
 
     if (!bFontLoaded)
@@ -335,7 +336,7 @@ bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
   RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
+  CStdString strPath = _P(g_SkinInfo.GetSkinPath("Font.xml", &res));
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file

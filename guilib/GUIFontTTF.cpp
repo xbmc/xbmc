@@ -417,7 +417,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
 {
   // quick access to ascii chars
-  if(letter < 255)
+  if(letter < 255 && letter > 0)
     if(m_charquick[letter])
       return m_charquick[letter];
 
@@ -571,9 +571,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 #else
 		SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-      if (!newTexture)
+      if (!newTexture || newTexture->pixels == NULL)
       {
-        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
+        CLog::Log(LOGERROR, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
         FT_Done_Glyph(glyph);
         return false;
       }
@@ -791,7 +791,7 @@ struct CUSTOMVERTEX {
   {
     // Copy the surface to the screen (without angle). 
     SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
-    SDL_BlitSurface(tempSurface, NULL, g_graphicsContext.getScreenSurface(), &dstRect2);
+    g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
   }
   
   SDL_FreeSurface(tempSurface);

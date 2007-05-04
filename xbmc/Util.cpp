@@ -1340,9 +1340,20 @@ void CUtil::GetHomePath(CStdString& strPath)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
+#ifndef _LINUX
   char *szFileName = strrchr(szXBEFileName, '\\');
   *szFileName = 0;
   strPath = szXBEFileName;
+#else
+  if (getenv("XBMC_HOME") != NULL)
+    strPath = getenv("XBMC_HOME");
+  else
+  {
+    char *szFileName = strrchr(szXBEFileName, '/');
+    *szFileName = 0;
+    strPath = szXBEFileName;
+  }
+#endif
 }
 
 /* WARNING, this function can easily fail on full urls, since they might have options at the end */
@@ -2401,15 +2412,19 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   // Add a slash to the end of the path if necessary
   if (!CUtil::HasSlashAtEnd(strResult))
   {
-    if (strResult.Find("//") >= 0 )
-      strResult += "/";
-    else
+#ifndef _LINUX
+    if (strResult.Find("//") < 0 )
       strResult += "\\";
+    else
+#endif    
+      strResult += "/";
   }
   // Remove any slash at the start of the file
+#ifndef _LINUX  
   if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
     strResult += strFile.Mid(1);
   else
+#endif  
     strResult += strFile;
   // re-add the stack:// protocol
   if (IsStack(strFolder))
@@ -5015,3 +5030,27 @@ void CUtil::BootToDash()
   XLaunchNewImage(0, (PLAUNCH_DATA)&ld);
 #endif
 }
+
+CStdString CUtil::TranslatePath(const CStdString& path)
+{
+	CStdString result;
+		
+	if (path[1] == ':')
+	{
+	   const char *p = CIoSupport::GetPartition(path[0]);
+	   if (p != NULL)
+	   {
+	     result = p;
+	     result.append(path.substr(2));
+	   }
+	   else
+	     result = path;
+	}
+	else
+		result = path;
+	
+	result.Replace('\\', '/');
+		
+	return result;
+}
+

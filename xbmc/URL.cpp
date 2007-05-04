@@ -51,6 +51,7 @@ CURL::CURL(const CStdString& strURL)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
+#ifndef _LINUX  
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
@@ -59,6 +60,7 @@ CURL::CURL(const CStdString& strURL)
     SetFileName(strURL);
     return ;
   }
+#endif
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
@@ -66,8 +68,10 @@ CURL::CURL(const CStdString& strURL)
 
   // decode protocol
   int iPos = strURL.Find("://");
-  if (iPos < 0)
-  { // check for misconstructed protocols
+  if (iPos < 0)  
+  {
+#ifndef _LINUX  
+    // check for misconstructed protocols
     iPos = strURL.Find(":");
     if (iPos == strURL.GetLength() - 1)
     {
@@ -79,6 +83,13 @@ CURL::CURL(const CStdString& strURL)
       CLog::Log(LOGDEBUG, "%s - Url has no protocol %s, empty CURL created", __FUNCTION__, strURL.c_str());
       return;
     }
+#else
+    {
+      /* set filename and update extension*/
+      SetFileName(strURL);
+      return ;
+    }    
+#endif    
   }
   else
   {

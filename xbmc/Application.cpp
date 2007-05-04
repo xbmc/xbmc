@@ -732,12 +732,20 @@ HRESULT CApplication::Create(HWND hWnd)
 
   // map Q to home drive of xbe to load the config file
   CUtil::GetHomePath(strExecutablePath);
+#ifndef _LINUX  
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
-
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
+#else
+  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+#endif  
 
   // check logpath
+#ifdef _LINUX
+  char* logPath = new char[MAX_PATH];  
+  sprintf(logPath, "%s/", strExecutablePath.c_str());
+  g_stSettings.m_logFolder = logPath;
+#endif  
   CStdString strLogFile, strLogFileOld;
   strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
   strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
@@ -755,12 +763,12 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles("q:\\system\\profiles.xml");
+  g_settings.LoadProfiles(_P("q:\\system\\profiles.xml"));
   if (g_settings.m_vecProfiles.size() == 0)
   {
     //no profiles yet, make one based on the default settings
     CProfile profile;
-    profile.setDirectory("q:\\userdata");
+    profile.setDirectory(_P("q:\\UserData"));
     profile.setName("Master user");
     profile.setLockMode(LOCK_MODE_EVERYONE);
     profile.setLockCode("");
@@ -791,9 +799,13 @@ HRESULT CApplication::Create(HWND hWnd)
       strMnt += g_settings.GetUserDataFolder().substr(2);
     }
 
+#ifndef _LINUX
     CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
     CIoSupport::RemapDriveLetter('T',szDevicePath);
+#else
+    CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
+#endif    
   }
 
 #ifndef HAS_SDL
@@ -803,6 +815,13 @@ HRESULT CApplication::Create(HWND hWnd)
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
     return E_FAIL;
+  }
+#else
+  CLog::Log(LOGNOTICE, "Setup SDL");
+  if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+  {
+        CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
+        return E_FAIL;
   }
 #endif
 
@@ -1060,7 +1079,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   CStdString keymapPath;
 
-  keymapPath = g_settings.GetUserDataItem("keymap.xml");
+  keymapPath = g_settings.GetUserDataItem("Keymap.xml");
 #ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
@@ -1135,20 +1154,23 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
+  CStdString strLangugage = g_guiSettings.GetString("locale.language");
+  strLangugage[0] = toupper(strLangugage[0]);
+  
   CStdString strLangInfoPath;
-  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
+  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLangugage.c_str());
 
   CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
-  g_langInfo.Load(strLangInfoPath);
+  g_langInfo.Load(_P(strLangInfoPath));
 
-  m_splash = new CSplash("Q:\\media\\splash.png");
+  m_splash = new CSplash(_P("Q:\\media\\splash.png"));
   m_splash->Start();
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
+  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLangugage.c_str());
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
-  if (!g_localizeStrings.Load(strLanguagePath ))
+  if (!g_localizeStrings.Load(_P(strLanguagePath)))
     FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
@@ -1712,7 +1734,9 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+#ifndef _LINUX
   StartIdleThread();
+#endif
 
   CheckDate();
   StartLEDControl(false);
@@ -1867,7 +1891,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_dwSkinTime = 0;
 
   CStdString strHomePath;
-  CStdString strSkinPath = "Q:\\skin\\" + strSkin;
+  CStdString strSkinPath = _P("Q:\\skin\\" + strSkin);
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
@@ -1920,7 +1944,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)m_gWindowManager.GetWindow(WINDOW_HOME);
-  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("home.xml"))
+  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
   {
     // failed to load home.xml
     // fallback to default skin
@@ -2019,7 +2043,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   RESOLUTION resToUse = INVALID;
 
   // Start from wherever home.xml is
-  g_SkinInfo.GetSkinPath("home.xml", &resToUse);
+  g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
   if (resToUse == HDTV_1080i)
     vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_1080i));

@@ -322,6 +322,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   char szDevicePath[1024];
   CStdString strMnt = GetProfileUserDataFolder();
+#ifndef _LINUX  
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);
@@ -330,6 +331,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
   CIoSupport::RemapDriveLetter('P', szDevicePath);
+#else
+  CIoSupport::RemapDriveLetter('P', (char*) strMnt.c_str());
+#endif  
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -2585,7 +2589,7 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
   folder = "P:\\"+strFile;
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
-  return folder;
+  return _P(folder);
 }
 
 CStdString CSettings::GetUserDataFolder() const
@@ -2759,7 +2763,7 @@ void CSettings::LoadRSSFeeds()
 {
   CStdString rssXML;
   //rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
-  rssXML = GetUserDataItem("rssfeeds.xml");
+  rssXML = GetUserDataItem("RssFeeds.xml");
   TiXmlDocument rssDoc;
   if (!CFile::Exists(rssXML))
   { // set defaults, or assume no rss feeds??
@@ -2822,7 +2826,7 @@ CStdString CSettings::GetSettingsFile() const
     settings = "T:\\guisettings.xml";
   else
     settings = "P:\\guisettings.xml";
-  return settings;
+  return _P(settings);
 }
 
 CStdString CSettings::GetAvpackSettingsFile() const

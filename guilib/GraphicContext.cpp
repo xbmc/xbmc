@@ -21,10 +21,13 @@ CGraphicContext::CGraphicContext(void)
 {
   m_iScreenWidth = 720;
   m_iScreenHeight = 576;
-#ifndef _LINUX
+#ifndef HAS_SDL
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
+#else
+  m_viewportTop = 0;
+  m_viewportLeft = 0;  
 #endif
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
@@ -41,7 +44,7 @@ CGraphicContext::CGraphicContext(void)
 
 CGraphicContext::~CGraphicContext(void)
 {
-#ifndef _LINUX
+#ifndef HAS_SDL
   if (m_stateBlock != 0xffffffff)
   {
     Get3DDevice()->DeleteStateBlock(m_stateBlock);
@@ -50,7 +53,7 @@ CGraphicContext::~CGraphicContext(void)
 
   while (m_viewStack.size())
   {
-#ifndef _LINUX
+#ifndef HAS_SDL
     D3DVIEWPORT8 *viewport = m_viewStack.top();
 #else   
     SDL_Rect *viewport = m_viewStack.top();
@@ -60,7 +63,7 @@ CGraphicContext::~CGraphicContext(void)
   }
 }
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 {
   m_pd3dDevice = p3dDevice;
@@ -91,7 +94,7 @@ DWORD CGraphicContext::GetNewID()
 
 bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-#ifndef _LINUX
+#ifndef HAS_SDL
   D3DVIEWPORT8 newviewport;
   D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
   Get3DDevice()->GetViewport(oldviewport);
@@ -128,7 +131,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   if (intersectPrevious)
   {
     // do the intersection
-#ifndef _LINUX    
+#ifndef HAS_SDL    
     int oldLeft = (int)oldviewport->X;
     int oldTop = (int)oldviewport->Y;
     int oldRight = (int)oldviewport->X + oldviewport->Width;
@@ -167,7 +170,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-#ifndef _LINUX
+#ifndef HAS_SDL
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;
   newviewport.X = newLeft;
@@ -180,6 +183,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport.y = newTop;
   newviewport.w = newRight - newLeft;
   newviewport.h = newBottom - newTop;
+  m_viewportTop = newTop;
+  m_viewportLeft = newLeft;
   SDL_SetClipRect(m_screenSurface, &newviewport);
 #endif
 
@@ -191,12 +196,14 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
-#ifndef _LINUX
+#ifndef HAS_SDL
   D3DVIEWPORT8 *oldviewport = (D3DVIEWPORT8*)m_viewStack.top();
   Get3DDevice()->SetViewport(oldviewport);
 #else
   SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
   SDL_SetClipRect(m_screenSurface, oldviewport);
+  m_viewportTop = oldviewport->x;
+  m_viewportLeft = oldviewport->y;
 #endif  
 
   m_viewStack.pop();
@@ -222,7 +229,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
     m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
     if (m_bShowPreviewWindow && !m_bFullScreenVideo)
     {
-#ifndef _LINUX    
+#ifndef HAS_SDL    
       D3DRECT d3dRC;
       d3dRC.x1 = m_videoRect.left;
       d3dRC.x2 = m_videoRect.right;
@@ -243,7 +250,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
 
 void CGraphicContext::ClipToViewWindow()
 {
-#ifndef _LINUX
+#ifndef HAS_SDL
   D3DRECT clip = { m_videoRect.left, m_videoRect.top, m_videoRect.right, m_videoRect.bottom };
   if (m_videoRect.left < 0) clip.x1 = 0;
   if (m_videoRect.top < 0) clip.y1 = 0;
@@ -333,7 +340,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
   }
 }
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   if (res == AUTORES)
@@ -621,7 +628,7 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 
 void CGraphicContext::Clear()
 {
-#ifndef _LINUX
+#ifndef HAS_SDL
   if (!m_pd3dDevice) return;
   //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
   if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
@@ -635,7 +642,7 @@ void CGraphicContext::Clear()
 
 void CGraphicContext::CaptureStateBlock()
 {
-#ifndef _LINUX
+#ifndef HAS_SDL
   if (m_stateBlock != 0xffffffff)
   {
     Get3DDevice()->DeleteStateBlock(m_stateBlock);
@@ -651,7 +658,7 @@ void CGraphicContext::CaptureStateBlock()
 
 void CGraphicContext::ApplyStateBlock()
 {
-#ifndef _LINUX
+#ifndef HAS_SDL
   if (m_stateBlock != 0xffffffff)
   {
     Get3DDevice()->ApplyStateBlock(m_stateBlock);
@@ -745,3 +752,11 @@ int CGraphicContext::GetFPS() const
   return 60;
 }
 
+#ifdef HAS_SDL
+int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect)
+{
+	dstrect->x += m_viewportLeft;
+	dstrect->y += m_viewportTop;
+	return SDL_BlitSurface(src, srcrect, m_screenSurface, dstrect);
+} 
+#endif

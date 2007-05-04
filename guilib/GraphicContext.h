@@ -80,7 +80,7 @@ class CGraphicContext : public CCriticalSection
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
-#ifndef _LINUX  
+#ifndef HAS_SDL  
   LPDIRECT3DDEVICE8 Get3DDevice() { return m_pd3dDevice; }
   void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
@@ -88,6 +88,7 @@ public:
 #else
   inline void setScreenSurface(SDL_Surface* surface) { m_screenSurface = surface; }  
   inline SDL_Surface* getScreenSurface() { return m_screenSurface; }  
+  int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
 #endif  
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
@@ -156,7 +157,7 @@ public:
 
 protected:
   IMsgSenderCallback* m_pCallback;
-#ifndef _LINUX    
+#ifndef HAS_SDL    
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
   stack<D3DVIEWPORT8*> m_viewStack;
@@ -164,6 +165,8 @@ protected:
 #else
   stack<SDL_Rect*> m_viewStack;
   SDL_Surface* m_screenSurface;  
+  int m_viewportTop;
+  int m_viewportLeft;
 #endif  
   int m_iScreenHeight;
   int m_iScreenWidth;

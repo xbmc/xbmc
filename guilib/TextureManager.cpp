@@ -1043,7 +1043,11 @@ DWORD CGUITextureManager::GetMemoryUsage() const
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
 {
   CStdString path;
+#ifndef _LINUX  
   if (textureName.c_str()[1] == ':')
+#else
+  if (textureName.c_str()[0] == '/')
+#endif  
     path = textureName;
   else
     path.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir().c_str(), textureName.c_str());
