@@ -82,7 +82,7 @@ class CFileStream
   : public std::istream
 {
 public:
-  CFileStream(int backsize = -1);
+  CFileStream(int backsize = 0);
   ~CFileStream();
 
   bool Open(const CStdString& filename)  { return Open(CURL(filename)); }
