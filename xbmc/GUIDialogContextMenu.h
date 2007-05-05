@@ -83,6 +83,7 @@ public:
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void DoModal(int iWindowID = WINDOW_INVALID);
+  virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void SetPosition(float posX, float posY);
   void ClearButtons();
