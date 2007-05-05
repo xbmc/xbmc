@@ -7,6 +7,9 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "Util.h"
+#ifdef HAS_SDL
+#include <SDL/SDL_mixer.h>
+#endif
 
 CGUIAudioManager g_audioManager;
 
@@ -28,9 +31,14 @@ void CGUIAudioManager::Initialize(int iDevice)
 
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
+#ifndef HAS_SDL
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+#else
+    if (Mix_OpenAudio(44000, AUDIO_S16, 2, 4096))
+       CLog::Log(LOGERROR, "Unable to open audio mixer");
+#endif
   }
 }
 

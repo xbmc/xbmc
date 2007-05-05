@@ -1,3 +1,5 @@
+#include <SDL/SDL_mixer.h>
+
 #pragma once
 
 class CGUISound
@@ -13,12 +15,14 @@ public:
   void        SetVolume(int level);
 
 private:
-#ifdef HAS_AUDIO
+#ifndef HAS_SDL
   bool        LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize);
   bool        CreateBuffer(LPWAVEFORMATEX wfx, int iLength);
   bool        FillBuffer(LPBYTE pbData, int iLength);
   void        FreeBuffer();
 
   LPDIRECTSOUNDBUFFER m_soundBuffer;
+#else
+  Mix_Chunk* m_soundBuffer;  
 #endif
 };
