@@ -84,8 +84,12 @@ BOOL DeleteFile(LPCTSTR lpFileName)
     return 0;
 }
 
-BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName) {
-	return false;
+BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName) 
+{
+  if (rename(lpExistingFileName, lpNewFileName) == 0)
+    return 1;
+  else
+    return 0;
 }
 
 BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExists)
@@ -162,14 +166,20 @@ BOOL WriteFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite,
   *lpNumberOfBytesWritten = bytesWritten;
 }
 
-BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes) {
-#warning need to complete function CreateDirectory
-	return true;
+BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes) 
+{
+  if (mkdir(lpPathName, 0755) == 0)
+    return 1;
+  else
+    return 0;
 }
 
-BOOL   RemoveDirectory(LPCTSTR lpPathName) {
-#warning need to complete function RemoveDirectory
-	return true;
+BOOL   RemoveDirectory(LPCTSTR lpPathName) 
+{
+  if (rmdir(lpPathName) == 0)
+    return 1;
+  else
+    return 0;
 }
 
 DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod) {
