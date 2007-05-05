@@ -3464,7 +3464,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (m_itemCurrentFile.IsStack() && m_itemCurrentFile.m_lStartOffset != 0)
       m_itemCurrentFile.m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
 
-    if( m_eCurrentPlayer == EPC_NONE )
+    if( m_eForcedNextPlayer != EPC_NONE )
+      eNewCore = m_eForcedNextPlayer;
+    else if( m_eCurrentPlayer == EPC_NONE )
       eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
     else
       eNewCore = m_eCurrentPlayer;
