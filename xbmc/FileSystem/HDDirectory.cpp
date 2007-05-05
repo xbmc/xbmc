@@ -30,8 +30,12 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   memset(&wfd, 0, sizeof(wfd));
   if (!CUtil::HasSlashAtEnd(strPath) )
+#ifndef _LINUX  
     strRoot += "\\";
   strRoot.Replace("/", "\\");
+#else
+    strRoot += "/";
+#endif
   if (CUtil::IsDVD(strRoot) && m_isoReader.IsScanned())
   {
     // Reset iso reader and remount or
@@ -117,7 +121,11 @@ bool CHDDirectory::Create(const char* strPath)
   CStdString strPath1 = strPath;
   g_charsetConverter.utf8ToStringCharset(strPath1);
   if (!CUtil::HasSlashAtEnd(strPath1))
+#ifndef _LINUX  
     strPath1 += '\\';
+#else
+    strPath1 += '/';
+#endif
 
   // okey this is really evil, since the create will succed
   // caller have no idea that a different directory was created
@@ -147,11 +155,13 @@ bool CHDDirectory::Remove(const char* strPath)
 bool CHDDirectory::Exists(const char* strPath)
 {
   CStdString strReplaced=strPath;
+#ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strReplaced);
   strReplaced.Replace("/","\\");
   CUtil::GetFatXQualifiedPath(strReplaced);
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
+#endif    
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
   if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
   return false;

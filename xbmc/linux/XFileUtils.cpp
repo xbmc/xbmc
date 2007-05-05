@@ -5,7 +5,7 @@
 
 HANDLE FindFirstFile(LPCSTR,LPWIN32_FIND_DATA) {
 #warning need to complete function FindFirstFile
-	return NULL;
+	return INVALID_HANDLE_VALUE;
 }
 
 BOOL   FindNextFile(HANDLE,LPWIN32_FIND_DATA) {

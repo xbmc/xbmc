@@ -1258,19 +1258,27 @@ HRESULT CApplication::Initialize()
     CStdString strHex;
     strHex.Format("%x",hex);
     CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
+#ifndef _LINUX    
     strThumbLoc += "\\" + strHex;
+#else
+    strThumbLoc += "/" + strHex;	
+#endif
     CreateDirectory(strThumbLoc.c_str(),NULL);
     strThumbLoc = g_settings.GetMusicThumbFolder();
+#ifndef _LINUX
     strThumbLoc += "\\" + strHex;
+#else    
+    strThumbLoc += "/" + strHex;
+#endif
     CreateDirectory(strThumbLoc.c_str(),NULL);
   }
 
-  CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
-  CreateDirectory("Q:\\scripts", NULL);
-  CreateDirectory("Q:\\language", NULL);
-  CreateDirectory("Q:\\visualisations", NULL);
-  CreateDirectory("Q:\\sounds", NULL);
-  CreateDirectory(g_settings.GetUserDataFolder()+"\\visualisations",NULL);
+  CreateDirectory(_P("Z:\\temp"), NULL); // temp directory for python and dllGetTempPathA
+  CreateDirectory(_P("Q:\\scripts"), NULL);
+  CreateDirectory(_P("Q:\\language"), NULL);
+  CreateDirectory(_P("Q:\\visualisations"), NULL);
+  CreateDirectory(_P("Q:\\sounds"), NULL);
+  CreateDirectory(_P(g_settings.GetUserDataFolder()+"\\visualisations"),NULL);
 
   // initialize network
   if (!m_bXboxMediacenterLoaded)
@@ -2055,7 +2063,11 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   for (unsigned int i=0;i<vecSkinPath.size();++i)
   {
     CStdString strPath;
+#ifndef _LINUX    
     strPath.Format("%s\\%s", vecSkinPath[i], "custom*.xml");
+#else
+    strPath.Format("%s/%s", vecSkinPath[i], "custom*.xml");
+#endif    
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
     hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
 

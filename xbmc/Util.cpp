@@ -1802,6 +1802,7 @@ void CUtil::CreateShortcut(CFileItem* pItem)
 
 void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
 {
+#ifndef _LINUX
   // This routine gets rid of any "\\"'s at the start of the path.
   // Should this be the case?
   vector<CStdString> tokens;
@@ -1848,6 +1849,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   }
   else if( strBasePath.Right(1) == "\\" )
     strFileNameAndPath += "\\";
+#endif    
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)

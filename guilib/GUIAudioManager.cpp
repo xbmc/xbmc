@@ -6,6 +6,7 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "../xbmc/utils/SingleLock.h"
+#include "Util.h"
 
 CGUIAudioManager g_audioManager;
 
@@ -139,7 +140,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     m_actionSound=NULL;
   }
 
-  CStdString strFile=m_strMediaDir+"\\"+it->second;
+  CStdString strFile=_P(m_strMediaDir+"\\"+it->second);
   m_actionSound=new CGUISound();
   if (!m_actionSound->Load(strFile))
   {
@@ -192,7 +193,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(m_strMediaDir+"\\"+strFile))
+  if (!sound->Load(_P(m_strMediaDir+"\\"+strFile)))
   {
     delete sound;
     return;
@@ -248,11 +249,11 @@ bool CGUIAudioManager::Load()
     return true;
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
-    m_strMediaDir="Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds";
+    m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
   else
-    m_strMediaDir="Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin");
+    m_strMediaDir=_P("Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin"));
     
-  CStdString strSoundsXml=m_strMediaDir+"\\sounds.xml";
+  CStdString strSoundsXml=_P(m_strMediaDir+"\\sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;
