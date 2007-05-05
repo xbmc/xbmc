@@ -367,8 +367,8 @@ extern "C"
   int __stdcall dllaccept(int s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
     SOCKET socket = GetSocketForIndex(s);
-    int res = accept(socket, addr, addrlen);
-    if(res == SOCKET_ERROR)
+    SOCKET res = accept(socket, addr, addrlen);
+    if(res == INVALID_SOCKET)
       errno = WSAGetLastError();
     return AddSocket(res);
   }
