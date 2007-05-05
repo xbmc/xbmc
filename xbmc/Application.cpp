@@ -171,6 +171,10 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
 
+#ifdef HAS_SDL
+#include <SDL/SDL_mixer.h>
+#endif
+
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -709,6 +713,10 @@ extern "C" void __stdcall init_emu_environ();
 
 HRESULT CApplication::Create(HWND hWnd)
 {
+#ifdef _LINUX
+  tzset();   // Initialize timezone information variables
+#endif
+
   g_hWnd = hWnd;
 
   HRESULT hr;
@@ -818,7 +826,7 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #else
   CLog::Log(LOGNOTICE, "Setup SDL");
-  if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
         return E_FAIL;
@@ -4699,7 +4707,9 @@ void CApplication::Process()
 #endif
 
   // check if we can free unused memory
+#ifndef _LINUX  
   g_audioManager.FreeUnused();
+#endif  
 
   // check how far we are through playing the current item
   // and do anything that needs doing (lastfm submission, playcount updates etc)
