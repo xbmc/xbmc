@@ -28,12 +28,14 @@ void CMouse::Update()
   bool bMouseMoved(false);
   int x, y;
   Uint8 mouseState = SDL_GetRelativeMouseState(&x, &y);
-
   cMickeyX = (char)x;
   cMickeyY = (char)y;
+  bMouseMoved = cMickeyX || cMickeyY;
+  
+  mouseState = SDL_GetMouseState(&x, &y);  
   //cWheel = (char)mouseState.lZ; TODO LINUX: how do we mke the scroll wheel to work?
-  posX += ((float)cMickeyX * m_fSpeedX); if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = (float)m_iMaxX;
-  posY += ((float)cMickeyY * m_fSpeedY); if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = (float)m_iMaxY;
+  posX = x; if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = (float)m_iMaxX;
+  posY = y; if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = (float)m_iMaxY;
 
   // reset our activation timer
   m_bActive = true;

@@ -307,6 +307,10 @@ void CXBApplicationEx::ReadInput()
   }
 #endif
 
+#ifdef HAS_SDL
+  SDL_PumpEvents();
+#endif
+
   // Read the input from the mouse
   g_Mouse.Update();
 
