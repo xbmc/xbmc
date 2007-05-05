@@ -264,6 +264,8 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     v2 = m_fV - v2;
   }
 
+  printf("render image: x1=%d y1=%d x3=%d y3=%d | u1=%f v1=%f u2=%f v2=%f\n", (int) x1, (int) y1, (int) x3, (int) y3, u1, v1, u2, v2);
+  
 #ifdef HAS_XBOX_D3D
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
@@ -333,12 +335,14 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 //<jmarshall> column_in_texture_to_end_at = u2 / m_fU * texture_width_in_pixels
 
   SDL_Surface* srcSurface = m_vecTextures[m_iCurrentImage]; 
-  double zoomX = (double) (right - left + 1) / m_vecTextures[m_iCurrentImage]->w;
-  double zoomY = (double) (bottom - top + 1) / m_vecTextures[m_iCurrentImage]->h;
+  double zoomX = (double) (x3 - x1 + 1) / m_vecTextures[m_iCurrentImage]->w;
+  double zoomY = (double) (y3 - y1 + 1) / m_vecTextures[m_iCurrentImage]->h;
   SDL_Surface* zoomedSurface = zoomSurface(srcSurface, zoomX, zoomY, 1);
 
-  SDL_Rect dst = { (Sint16) left, (Sint16) top, 0, 0 };
+  SDL_Rect dst = { (Sint16) x1, (Sint16) y1, 0, 0 };
   g_graphicsContext.BlitToScreen(zoomedSurface, NULL,  &dst);
+  
+  SDL_FreeSurface(zoomedSurface);
 #endif
 }
 
