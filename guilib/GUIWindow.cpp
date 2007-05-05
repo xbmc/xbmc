@@ -443,7 +443,7 @@ void CGUIWindow::Render()
     {
       pControl->UpdateEffectState(currentTime);
       pControl->Render();
-      SDL_Flip(g_graphicsContext.getScreenSurface());
+//      SDL_Flip(g_graphicsContext.getScreenSurface());
       
     }   
   }
