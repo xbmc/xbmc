@@ -128,7 +128,7 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
 
-  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y); }
+  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y); }
   inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y); }
   inline void ScaleFinalCoords(float &x, float &y) const { m_finalTransform.TransformPosition(x, y); }
   inline float ScaleFinalX() const { return m_windowScaleX; };
