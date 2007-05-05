@@ -38,5 +38,9 @@ Run to run
 3. Rename the file under XBMC/media/Fonts/arial.ttf to Arial.ttf
 4. Change directory to where you copied the exceutable and type
    # XboxMediaCenter
+5. If you'd like to run the executable from another directory 
+   (for debugging purposes), set XBMC_HOME to where you have XBMC dist:
+   # XBMC_HOME=/home/whatever/XBMC
+   # export XBMC_HOME
 
 Don't expect too much, yet.
