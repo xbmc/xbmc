@@ -654,19 +654,31 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   off_type offset, 
   ios_base::seekdir way, 
   ios_base::openmode mode)
-{
-  // TODO check if seek can be done in buffer
+{  
+  if(way == ios_base::cur)
+  {
+    // try to seek within buffer
+    if(gptr()+offset >= eback() && gptr()+offset < egptr())
+    {
+      gbump(offset);
+      return m_file->GetPosition() - (eback() - gptr());
+    }
+  }
+
+  // reset our buffer pointer, will
+  // start buffering on next read
   setg(0,0,0);
   setp(0,0,0);
-  
+
+  __int64 position = -1;
   try
   {
     if(way == ios_base::cur)
-      offset = m_file->Seek(offset, SEEK_CUR);
+      position = m_file->Seek(offset, SEEK_CUR);
     else if(way == ios_base::end)
-      offset = m_file->Seek(offset, SEEK_END);
+      position = m_file->Seek(offset, SEEK_END);
     else
-      offset = m_file->Seek(offset, SEEK_SET);
+      position = m_file->Seek(offset, SEEK_SET);
   }
   catch (const win32_exception &e) 
   {
@@ -674,10 +686,10 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
     return (streampos(_BADOFF));
   }
 
-  if(offset<0)
+  if(position<0)
     return (streampos(_BADOFF));
 
-  return offset;
+  return position;
 }
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
@@ -705,8 +717,8 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
 }
 
 
-CFileStream::CFileStream(int buffer_size)
-    : m_buffer()
+CFileStream::CFileStream(int backsize /*= 0*/)
+    : m_buffer(backsize)
     , m_file(NULL)
     , std::istream(&m_buffer)
 {
