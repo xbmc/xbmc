@@ -2,7 +2,11 @@
 #include "GUISound.h"
 #include "AudioContext.h"
 #include "../xbmc/Settings.h"
+#ifdef HAS_SDL
+#include <SDL/SDL_mixer.h>
+#endif
 
+#ifndef HAS_SDL
 typedef struct
 {
   char chunk_id[4];
@@ -15,25 +19,26 @@ typedef struct
   long filesize;
   char rifftype[4];
 } WAVE_RIFFHEADER;
+#else
+#define GUI_SOUND_CHANNEL 0 
+#endif
 
 CGUISound::CGUISound()
 {
-#ifdef HAS_AUDIO
   m_soundBuffer=NULL;
-#endif
 }
 
 CGUISound::~CGUISound()
 {
-#ifdef HAS_AUDIO
-  FreeBuffer();
+#ifndef HAS_SDL
+  FreeBuffer();  
 #endif
 }
 
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
-#ifdef HAS_AUDIO
+#ifndef HAS_SDL
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
   int size=0;
@@ -48,26 +53,32 @@ bool CGUISound::Load(const CStdString& strFile)
   delete[] pbData;
 
   return bReady;
+#else
+  m_soundBuffer = Mix_LoadWAV(strFile);
+  if (!m_soundBuffer)
+    return false;
+    
+  return true;    
 #endif
 }
 
 // \brief Starts playback of the sound
 void CGUISound::Play()
 {
-#ifdef HAS_AUDIO
   if (m_soundBuffer)
 #ifdef HAS_XBOX_AUDIO
     m_soundBuffer->Play(0, 0, DSBPLAY_FROMSTART);
-#else
+#elif !defined(HAS_SDL)
     m_soundBuffer->Play(0, 0, 0);
-#endif
+#else
+    Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);    
 #endif
 }
 
 // \brief returns true if the sound is playing
 bool CGUISound::IsPlaying()
 {
-#ifdef HAS_AUDIO
+#ifndef HAS_SDL
   if (m_soundBuffer)
   {
     DWORD dwStatus;
@@ -76,36 +87,40 @@ bool CGUISound::IsPlaying()
   }
 
   return false;
+#else
+  return Mix_Playing(GUI_SOUND_CHANNEL);
 #endif
 }
 
 // \brief Stops playback if the sound
 void CGUISound::Stop()
 {
-#ifdef HAS_AUDIO
   if (m_soundBuffer)
   {
 #ifdef HAS_XBOX_AUDIO
     m_soundBuffer->StopEx( 0, DSBSTOPEX_IMMEDIATE );
-#else
+#elif !defined(HAS_SDL)
     m_soundBuffer->Stop();
+#else
+    Mix_HaltChannel(GUI_SOUND_CHANNEL);    
 #endif
 
     while(IsPlaying());
   }
-#endif
 }
 
 // \brief Sets the volume of the sound
 void CGUISound::SetVolume(int level)
 {
-#ifdef HAS_AUDIO
   if (m_soundBuffer)
+#ifndef HAS_SDL
     m_soundBuffer->SetVolume(level);
-#endif
+#else
+    Mix_Volume(GUI_SOUND_CHANNEL, level);
+#endif    
 }
 
-#ifdef HAS_AUDIO
+#ifndef HAS_SDL
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
 #ifdef HAS_XBOX_AUDIO
