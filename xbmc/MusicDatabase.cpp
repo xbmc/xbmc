@@ -1600,9 +1600,7 @@ bool CMusicDatabase::CleanupAlbums()
   {
     // This must be run AFTER songs have been cleaned up
     // delete albums with no reference to songs
-    // AND no reference to album info
-    CStdString strSQL = "select * from album where album.idAlbum not in (select distinct idAlbum from song) and album.idAlbum not in (select distinct idAlbum from albuminfo)";
-    //  strSQL += " or idAlbum not in (select distinct idAlbum from albuminfo)";
+    CStdString strSQL = "select * from album where album.idAlbum not in (select distinct idAlbum from song)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
