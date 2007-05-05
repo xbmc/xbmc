@@ -242,11 +242,11 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    bool *bSelected = NULL;
+    char bSelected = 0;
     if (!PyArg_ParseTuple(args, "b", &bSelected))	return NULL;
 
     PyGUILock();
-    self->item->Select(bSelected);
+    self->item->Select(bSelected != 0);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
