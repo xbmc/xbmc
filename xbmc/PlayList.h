@@ -49,6 +49,7 @@ class CPlayListItem : public CFileItem
   CPlayList(void);
   virtual ~CPlayList(void);
   virtual bool Load(const CStdString& strFileName);
+  virtual bool LoadData(std::istream &stream);
   virtual bool LoadData(const CStdString& strData);
   virtual void Save(const CStdString& strFileName) const {};
 
@@ -87,6 +88,7 @@ class CPlayListItem : public CFileItem
 
 protected:
   CStdString m_strPlayListName;
+  CStdString m_strBasePath;
   int m_iPlayableItems;
   bool m_bShuffled;
   bool m_bWasPlayed;
