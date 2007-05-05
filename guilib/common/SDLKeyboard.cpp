@@ -28,6 +28,7 @@ void CKeyboard::Initialize(HWND hWnd)
 void CKeyboard::Update()
 {  
   memset(&m_keyEvent, 0, sizeof(m_keyEvent));
+  SDL_PumpEvents();
   if (SDL_PeepEvents(&m_keyEvent, 1, SDL_GETEVENT, SDL_KEYUPMASK | SDL_KEYDOWNMASK) > 0)
   { 
     m_cAscii = 0;
