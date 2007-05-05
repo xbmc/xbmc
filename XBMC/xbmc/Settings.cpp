@@ -53,7 +53,11 @@ extern CStdString g_LoadErrorStr;
 
 bool CShare::isWritable()
 {
+#ifndef _LINUX
   if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
+#else
+  if (strPath[0] == '/')
+#endif    
     return true; // local disk
   if (strPath.size() > 4)
   {
@@ -2580,7 +2584,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
 
   CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
 
-  return folder;
+  return _P(folder);
 }
 
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
@@ -2594,7 +2598,7 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 
 CStdString CSettings::GetUserDataFolder() const
 {
-  return m_vecProfiles[0].getDirectory();
+  return _P(m_vecProfiles[0].getDirectory());
 }
 
 CStdString CSettings::GetDatabaseFolder() const
@@ -2612,9 +2616,9 @@ CStdString CSettings::GetCDDBFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Database\\CDDB"), folder);
   else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
+    CUtil::AddFileToFolder(GetUserDataFolder(), _P("Database\\CDDB"), folder);
 
   return folder;
 }
@@ -2634,9 +2638,9 @@ CStdString CSettings::GetMusicThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Music"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Music"), folder);
 
   return folder;
 }
@@ -2645,9 +2649,9 @@ CStdString CSettings::GetLastFMThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\LastFM", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Music\\LastFM"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\LastFM", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Music\\LastFM"), folder);
 
   return folder;
 }
@@ -2656,9 +2660,9 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Music\\Artists"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Music\\Artists"), folder);
 
   return folder;
 }
@@ -2667,9 +2671,9 @@ CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Video"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Video"), folder);
 
   return folder;
 }
@@ -2678,9 +2682,9 @@ CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Video\\Bookmarks"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Video\\Bookmarks"), folder);
 
   return folder;
 }
@@ -2689,9 +2693,9 @@ CStdString CSettings::GetPicturesThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Pictures", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Pictures"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Pictures", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Pictures"), folder);
 
   return folder;
 }
@@ -2700,9 +2704,9 @@ CStdString CSettings::GetProgramsThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Programs"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Programs"), folder);
 
   return folder;
 }
@@ -2711,9 +2715,9 @@ CStdString CSettings::GetGameSaveThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\GameSaves", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\GameSaves"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\GameSaves", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\GameSaves"), folder);
 
   return folder;
 }
@@ -2721,7 +2725,7 @@ CStdString CSettings::GetGameSaveThumbFolder() const
 CStdString CSettings::GetProfilesThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Profiles", folder);
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Profiles"), folder);
 
   return folder;
 }
@@ -2731,9 +2735,9 @@ CStdString CSettings::GetXLinkKaiThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs\\XLinkKai", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Programs\\XLinkKai"), folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs\\XlinkKai", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Programs\\XlinkKai"), folder);
 
   return folder;
 }
@@ -2756,7 +2760,7 @@ CStdString CSettings::GetSkinFolder() const
   // Get the Current Skin Path
   CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
 
-  return folder;
+  return _P(folder);
 }
 
 void CSettings::LoadRSSFeeds()
