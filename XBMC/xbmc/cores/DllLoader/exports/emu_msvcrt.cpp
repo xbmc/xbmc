@@ -1186,8 +1186,6 @@ extern "C"
 			  return 0;
     }
   
-    CLog::Log(LOGINFO, "Stating file %s", path);
-
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)) // don't stat http
@@ -1234,8 +1232,6 @@ extern "C"
 			  return 0;
     }
   
-    CLog::Log(LOGINFO, "Stating file %s", path);
-
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)) // don't stat http
