@@ -988,8 +988,6 @@ bool CDVDInputStreamNavigator::GetNavigatorState(std::string &xmlstate)
     return false;
   }
 
-  CDVDStateSerializer::test( &save_state );
-
   if( !CDVDStateSerializer::DVDToXMLState(xmlstate, &save_state) )
   {
     CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to serialize state");

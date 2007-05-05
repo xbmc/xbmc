@@ -186,7 +186,9 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-    std::stringstream(m_strEpisodeGuide) << * epguide;
+    std::stringstream stream;
+    stream << *epguide;
+    m_strEpisodeGuide = stream.str();
   }
 
   return true;
