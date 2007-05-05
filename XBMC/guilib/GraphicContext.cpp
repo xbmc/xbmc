@@ -755,8 +755,8 @@ int CGraphicContext::GetFPS() const
 #ifdef HAS_SDL
 int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect)
 {
-	dstrect->x += m_viewportLeft;
-	dstrect->y += m_viewportTop;
+	//dstrect->x += m_viewportLeft;
+	//dstrect->y += m_viewportTop;
 	return SDL_BlitSurface(src, srcrect, m_screenSurface, dstrect);
 } 
 #endif
