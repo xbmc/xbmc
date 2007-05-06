@@ -18,6 +18,8 @@ public:
   virtual ~CGUIControlGroupList(void);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
+  virtual void UnfocusFromPoint(float posX, float posY);
 
   virtual void AddControl(CGUIControl *control);
   virtual void ClearAll();

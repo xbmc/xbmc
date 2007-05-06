@@ -454,8 +454,11 @@ bool CGUIWindow::OnAction(const CAction &action)
 // OnMouseAction - called by OnAction()
 void CGUIWindow::OnMouseAction()
 {
-  // hittest will scale cordinates
+  // we need to convert the mouse coordinates to window coordinates
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
+  float x = g_Mouse.posX;
+  float y = g_Mouse.posY;
+  g_graphicsContext.InvertFinalCoords(x, y);
 
   bool bHandled = false;
   // check if we have exclusive access
@@ -464,7 +467,7 @@ void CGUIWindow::OnMouseAction()
     CGUIControl *pControl = (CGUIControl *)GetControl(g_Mouse.GetExclusiveControlID());
     if (pControl)
     { // this control has exclusive access to the mouse
-      HandleMouse(pControl);
+      HandleMouse(pControl, x, y);
       return;
     }
   }
@@ -473,8 +476,7 @@ void CGUIWindow::OnMouseAction()
   for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
   {
     CGUIControl *pControl = *i;
-    if (!pControl->HitTest(g_Mouse.posX, g_Mouse.posY))
-      pControl->SetFocus(false);
+    pControl->UnfocusFromPoint(x, y);
   }
   // and find which one is under the pointer
   // go through in reverse order to make sure we start with the ones on top
@@ -482,23 +484,23 @@ void CGUIWindow::OnMouseAction()
   {
     CGUIControl *pControl = *i;
     CGUIControl *focusableControl = NULL;
-    if (pControl->CanFocusFromPoint(g_Mouse.posX, g_Mouse.posY, &focusableControl))
+    if (pControl->CanFocusFromPoint(x, y, &focusableControl))
     {
-      bHandled = HandleMouse(focusableControl);
+      bHandled = HandleMouse(focusableControl, x, y);
       if (bHandled)
         break;
     }
   }
   if (!bHandled)
   { // haven't handled this action - call the window message handlers
-    OnMouse();
+    OnMouse(x, y);
   }
 }
 
 // Handles any mouse actions that are not handled by a control
 // default is to go back a window on a right click.
 // This function should be overridden for other windows
-bool CGUIWindow::OnMouse()
+bool CGUIWindow::OnMouse(float x, float y)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go to previous menu
@@ -509,7 +511,7 @@ bool CGUIWindow::OnMouse()
   return false;
 }
 
-bool CGUIWindow::HandleMouse(CGUIControl *pControl)
+bool CGUIWindow::HandleMouse(CGUIControl *pControl, float x, float y)
 {
   // Issue the MouseOver event to highlight the item, and perform any pointer changes
   bool focused = pControl->OnMouseOver();
