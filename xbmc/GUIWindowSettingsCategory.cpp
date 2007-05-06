@@ -145,36 +145,28 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       }
     }
     break;
-  case GUI_MSG_SETFOCUS:
+  case GUI_MSG_FOCUSED:
     {
-      if (CGUIWindow::OnMessage(message))
+      CGUIWindow::OnMessage(message);
+      unsigned int focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
+          focusedControl - CONTROL_START_BUTTONS != m_iSection)
       {
-        // check if our focused control is one of our category buttons
-        unsigned int focusedControl = GetFocusedControlID();
-        if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS + m_vecSections.size())
+        if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
         {
-          // if we have a new category button
-          if (focusedControl - CONTROL_START_BUTTONS != m_iSection)
-          {
-            if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
-            {
-              if (!g_passwordManager.IsMasterLockUnlocked(true))
-              { // unable to go to this category - focus the previous one
-                SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iSection, 0);
-                return false;
-              }
-            }
-            m_iSection = focusedControl - CONTROL_START_BUTTONS;
-            CheckNetworkSettings();
-
-            CreateSettings();
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+          { // unable to go to this category - focus the previous one
+            SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iSection, 0);
+            return false;
           }
         }
-        return true;
+        m_iSection = focusedControl - CONTROL_START_BUTTONS;
+        CheckNetworkSettings();
+
+        CreateSettings();
       }
-      return false;
+      return true;
     }
-    break;
   case GUI_MSG_LOAD_SKIN:
     {
       // Do we need to reload the language file

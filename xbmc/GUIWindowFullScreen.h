@@ -14,7 +14,7 @@ public:
   virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse();
+  virtual bool OnMouse(float x, float y);
   virtual void Render();
   virtual void OnWindowLoaded();
   void RenderFullScreen();

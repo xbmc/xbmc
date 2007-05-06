@@ -611,6 +611,11 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   m_finalTransform = m_guiTransform;
 }
 
+void CGraphicContext::InvertFinalCoords(float &x, float &y) const
+{
+  m_finalTransform.InverseTransformPosition(x, y);
+}
+
 float CGraphicContext::GetScalingPixelRatio() const
 {
   if (m_Resolution == m_windowResolution)
