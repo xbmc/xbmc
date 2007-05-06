@@ -334,15 +334,24 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 //<jmarshall> column_in_texture_to_start_from = u1 / m_fU * texture_width_in_pixels
 //<jmarshall> column_in_texture_to_end_at = u2 / m_fU * texture_width_in_pixels
 
-  SDL_Surface* srcSurface = m_vecTextures[m_iCurrentImage]; 
-  double zoomX = (double) (x3 - x1 + 1) / m_vecTextures[m_iCurrentImage]->w / (u2 - u1);
-  double zoomY = (double) (y3 - y1 + 1) / m_vecTextures[m_iCurrentImage]->h / (v2 - v1);
-  SDL_Surface* zoomedSurface = zoomSurface(srcSurface, zoomX, zoomY, 1);
+  SDL_Surface* texture = m_vecTextures[m_iCurrentImage];
+  SDL_Surface* zoomed = m_vecZoomedTextures[m_iCurrentImage];
+    
+  double zoomX = (double) (x3 - x1 + 1) / texture->w / (u2 - u1);
+  double zoomY = (double) (y3 - y1 + 1) / texture->h / (v2 - v1);
+
+  if (zoomed == NULL ||
+      (int) ((double) texture->w * zoomX) != zoomed->w ||
+      (int) ((double) texture->h * zoomY) != zoomed->h)
+  { 
+     if (zoomed != NULL)
+        SDL_FreeSurface(zoomed);
+     zoomed = zoomSurface(texture, zoomX, zoomY, 1);
+     m_vecZoomedTextures[m_iCurrentImage] = zoomed;
+  }
 
   SDL_Rect dst = { (Sint16) x1, (Sint16) y1, 0, 0 };
-  g_graphicsContext.BlitToScreen(zoomedSurface, NULL,  &dst);
-  
-  SDL_FreeSurface(zoomedSurface);
+  g_graphicsContext.BlitToScreen(zoomed, NULL,  &dst);
 #endif
 }
 
@@ -398,6 +407,9 @@ void CGUIImage::AllocResources()
     m_linearTexture = false;
 #endif
     m_vecTextures.push_back(pTexture);
+#ifdef HAS_SDL
+    m_vecZoomedTextures.push_back(NULL);
+#endif
   }
 
   CalculateSize();

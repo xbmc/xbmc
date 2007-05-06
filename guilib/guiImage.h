@@ -127,6 +127,7 @@ protected:
   LPDIRECT3DPALETTE8 m_pPalette;
 #else
   vector <SDL_Surface*> m_vecTextures;
+  vector <SDL_Surface*> m_vecZoomedTextures;
   SDL_Surface* m_diffuseTexture;
   SDL_Palette* m_diffusePalette;
   SDL_Palette* m_pPalette;  
