@@ -97,7 +97,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
 #ifndef _LINUX
           swprintf(credits[0], L"%S Skin", strName.Left(44).c_str());
 #else
-          swprintf(credits[0], sizeof(credits[0]), L"%S Skin", strName.Left(44).c_str());
+          swprintf(credits[0], CREDIT_LINE_LENGTH - 1, L"%s Skin", strName.Left(44).c_str());
 #endif
         }
         pGrandChild = pChild->FirstChild("name");
@@ -108,7 +108,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
 #ifndef _LINUX
           swprintf(credits[m_iNumCreditLines], L"%S", strName.Left(49).c_str());
 #else
-          swprintf(credits[m_iNumCreditLines], sizeof(credits[m_iNumCreditLines]), L"%S", strName.Left(49).c_str());
+          swprintf(credits[m_iNumCreditLines], CREDIT_LINE_LENGTH - 1, L"%s", strName.Left(49).c_str());
 #endif
           m_iNumCreditLines++;
           pGrandChild = pGrandChild->NextSibling("name");
