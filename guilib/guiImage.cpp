@@ -7,6 +7,8 @@
 #include <SDL/SDL_rotozoom.h>
 #endif
 
+#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
+
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
@@ -151,8 +153,6 @@ void CGUIImage::Render()
 #ifdef HAS_XBOX_D3D
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
 #endif
-
-#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
     p3DDevice->SetVertexShader( FVF_VERTEX2 );
 #ifdef HAS_XBOX_D3D
@@ -331,27 +331,38 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 #else
-//<jmarshall> column_in_texture_to_start_from = u1 / m_fU * texture_width_in_pixels
-//<jmarshall> column_in_texture_to_end_at = u2 / m_fU * texture_width_in_pixels
-
-  SDL_Surface* texture = m_vecTextures[m_iCurrentImage];
-  SDL_Surface* zoomed = m_vecZoomedTextures[m_iCurrentImage];
-    
-  double zoomX = (double) (x3 - x1 + 1) / texture->w / (u2 - u1);
-  double zoomY = (double) (y3 - y1 + 1) / texture->h / (v2 - v1);
-
-  if (zoomed == NULL ||
-      (int) ((double) texture->w * zoomX) != zoomed->w ||
-      (int) ((double) texture->h * zoomY) != zoomed->h)
-  { 
-     if (zoomed != NULL)
+//#define USE_NEW_SDL_SCALING
+  SDL_Surface* texture = m_vecTextures[m_iCurrentImage]; 
+#ifdef USE_NEW_SDL_SCALING
+  float x[4] = { x1, x2, x3, x4 };
+  float y[4] = { y1, y2, y3, y4 };
+  float u[2] = { u1, u2 };
+  float v[2] = { v1, v2 };
+  DWORD c[4] = { g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor)),
+                 g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor)),
+                 g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor)),                   g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor)) };
+  
+  g_graphicsContext.BlitToScreen(texture, x, y, u, v, c);
+#else
+  DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
+  if (colour & 0xff000000)
+  {
+    SDL_Surface* zoomed = m_vecZoomedTextures[m_iCurrentImage];
+    double zoomX = (double) (x3 - x1 + 1) / texture->w / (u2 - u1);
+    double zoomY = (double) (y3 - y1 + 1) / texture->h / (v2 - v1);
+    if (zoomed == NULL ||
+        (int) ((double) texture->w * zoomX) != zoomed->w ||
+        (int) ((double) texture->h * zoomY) != zoomed->h)
+    { 
+      if (zoomed != NULL)
         SDL_FreeSurface(zoomed);
-     zoomed = zoomSurface(texture, zoomX, zoomY, 1);
-     m_vecZoomedTextures[m_iCurrentImage] = zoomed;
+      zoomed = zoomSurface(texture, zoomX, zoomY, 1);
+      m_vecZoomedTextures[m_iCurrentImage] = zoomed;
+    }
+    SDL_Rect dst = { (Sint16) x1, (Sint16) y1, 0, 0 };
+    g_graphicsContext.BlitToScreen(zoomed, NULL,  &dst);
   }
-
-  SDL_Rect dst = { (Sint16) x1, (Sint16) y1, 0, 0 };
-  g_graphicsContext.BlitToScreen(zoomed, NULL,  &dst);
+#endif
 #endif
 }
 
