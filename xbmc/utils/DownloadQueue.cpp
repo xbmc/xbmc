@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "DownloadQueue.h"
 #include "HTTP.h"
 #include "../Util.h"

@@ -32,12 +32,14 @@ static void strrtrim(char* s, char ch)
 
 static void dbgprintf(char* fmt, ...)
 {
+#if 0
   char buffer[1024];
   va_list va;
   va_start(va, fmt);
   _vsnprintf(buffer, sizeof(buffer), fmt, va);
   OutputDebugString(buffer);
   va_end(va);
+#endif
 }
 
 typedef struct reg_handle_s

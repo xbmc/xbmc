@@ -1,5 +1,4 @@
 #pragma once
-#include "../stdafx.h"
 #include "IPlayer.h"
 
 enum EPLAYERCORES

@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileSmb.h"
 #include "../GUIPassword.h"
 #include "SMBDirectory.h"

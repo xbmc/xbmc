@@ -1090,8 +1090,15 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       str = m_dateTime.GetAsLocalizedDate();
     }
     else if (strMask[iPos2 + 1] == 'R')
-    { // movie rating
-      str.Format("%2.2f", m_fRating);
+    {
+      if (tag && tag->GetRating() != '0') // We will probably remove this and replace with infoimages
+      { // non-zero song rating
+        str = tag->GetRating();
+      }
+      else if (movie)
+      { // movie rating
+        str.Format("%2.2f", m_fRating);
+      }
     }
     else if (strMask[iPos2 + 1] == 'C')
     { // programs count
@@ -1321,6 +1328,7 @@ void CFileItemList::Add(CFileItem* pItem)
 void CFileItemList::AddFront(CFileItem* pItem)
 {
   m_items.insert(m_items.begin(), pItem);
+  if (m_fastLookup)
   {
     CStdString path(pItem->m_strPath); path.ToLower();
     m_map.insert(MAPFILEITEMSPAIR(path, pItem));
@@ -1530,6 +1538,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_PLAYLIST_ORDER:
     // TODO: Playlist order is hacked into program count variable (not nice, but ok until 2.0)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::ProgramCountAscending : SSortFileItem::ProgramCountDescending);
+    break;
+  case SORT_METHOD_SONG_RATING:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongRatingAscending : SSortFileItem::SongRatingDescending);
     break;
   default:
     break;
@@ -2117,10 +2128,9 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   if (!m_bIsFolder)
     CUtil::GetDirectory(m_strPath, strPath);
   else
-  {
     strPath = m_strPath;
-    CUtil::RemoveSlashAtEnd(strPath);
-  }
+  // music thumbs are cached without slash at end
+  CUtil::RemoveSlashAtEnd(strPath);
 
   // look if an album thumb is available,
   // could be any file with tags loaded or

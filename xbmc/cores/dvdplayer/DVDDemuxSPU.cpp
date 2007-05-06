@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DVDDemuxSPU.h"
 #include "..\..\util.h"
 #include "DVDClock.h"

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FTPDirectory.h"
 #include "FTPParse.h"
 #include "../URL.h"

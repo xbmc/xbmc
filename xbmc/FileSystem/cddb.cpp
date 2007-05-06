@@ -8,7 +8,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "cddb.h"
 #include "../DNSNameCache.h"
 #include "../Id3Tag.h"

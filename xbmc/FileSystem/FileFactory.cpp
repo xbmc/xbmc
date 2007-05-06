@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileFactory.h"
 #include "FileHD.h"
 #include "FileCurl.h"

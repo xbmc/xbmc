@@ -860,7 +860,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
 
       // allow a folder to be ad-hoc queued and played by the default player
-      if (GetID() != WINDOW_VIDEO_NAV && (item->m_bIsFolder || item->IsPlayList()))
+      if (GetID() != WINDOW_VIDEO_NAV && item->m_bIsFolder)
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
       else
       { // get players
@@ -982,6 +982,9 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnScan(item->m_strPath,info);
       return true;
     }
+  case CONTEXT_BUTTON_DELETE:
+    OnDeleteItem(itemNumber);
+    return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }

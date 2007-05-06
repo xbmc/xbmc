@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDCodecs\Overlay\DVDOverlay.h"
 #include "DVDCodecs\Overlay\DVDOverlaySpu.h"

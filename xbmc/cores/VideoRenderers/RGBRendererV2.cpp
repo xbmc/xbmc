@@ -17,7 +17,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "RGBRendererV2.h"
 #include "../../application.h"
 #include "../../util.h"
@@ -43,6 +43,8 @@ CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
 void CRGBRendererV2::FlipPage(int source)
 {
   m_444GeneratedFull = false;
+
+  CXBoxRenderer::FlipPage(source);
 }
 
 void CRGBRendererV2::Delete444PTexture()

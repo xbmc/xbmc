@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "SPCCodec.h"
 #include "../DllLoader/DllLoader.h"
 #include "../../MusicInfoTagLoaderSPC.h"

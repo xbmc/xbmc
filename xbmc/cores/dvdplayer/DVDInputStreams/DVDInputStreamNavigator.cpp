@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDInputStreamNavigator.h"
 #include "..\..\..\util.h"
 #include "..\..\..\LangCodeExpander.h"
@@ -987,8 +987,6 @@ bool CDVDInputStreamNavigator::GetNavigatorState(std::string &xmlstate)
     CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::GetNavigatorState - Failed to get state (%s)", m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
   }
-
-  CDVDStateSerializer::test( &save_state );
 
   if( !CDVDStateSerializer::DVDToXMLState(xmlstate, &save_state) )
   {

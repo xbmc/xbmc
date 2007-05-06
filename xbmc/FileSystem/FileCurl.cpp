@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileCurl.h"
 #include "../Util.h"
 #include <sys/stat.h>

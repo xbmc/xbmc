@@ -86,7 +86,7 @@ bool CGUIWindowScreensaver::OnAction(const CAction &action)
 }
 
 // called when the mouse is moved/clicked etc. etc.
-bool CGUIWindowScreensaver::OnMouse()
+bool CGUIWindowScreensaver::OnMouse(float x, float y)
 {
   m_gWindowManager.PreviousWindow();
   return true;

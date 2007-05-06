@@ -222,7 +222,7 @@
   <string id="290">Dynamic Range Compression</string>
   <string id="291">Video</string>
   <string id="292">Audio</string>
-  <string id="293">Subtitles</string>
+  <string id="293">Browse for Subtitles</string>
   <string id="294">Create bookmark</string>
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio Delay</string>
@@ -474,6 +474,10 @@
   <string id="563">Rating</string>
   <string id="564">Type</string>
   <string id="565">Usage</string>
+  <string id="566">Album Artist</string>
+  <string id="567">Play Count</string>
+  <string id="568">Last Played</string>
+  <string id="569">Comment</string>
 
   <string id="580">Sort Direction</string>
   <string id="581">Sort Method</string>
@@ -534,9 +538,15 @@
   <string id="648">Import Video Library</string>
   <string id="649">Importing</string>
   <string id="650">Exporting</string>
-  <string id="651">Video Library</string>
+  <string id="651">Browse for Library</string>
   <string id="652">Years</string>
   <string id="653">Update Library</string>
+  <string id="654">Show Debug Info</string>
+  <string id="655">Browse for Executable</string>
+  <string id="656">Browse for Playlist</string>
+  <string id="657">Browse for Folder</string>
+  <string id="658">Song Information</string>
+  <string id="659">Comment:</string>
 
   <string id="700">Cleaning up Library</string>
   <string id="701">Removing old songs from the Library</string>
@@ -594,7 +604,7 @@
   <string id="755">Edit Program Path</string>
   <string id="756">Edit Program Name</string>
   <string id="757">Edit Path Depth</string>
-  <string id="758">Removing Program Link</string>
+  <string id="758"></string>
   <string id="759">View: Big List</string>
   <string id="760">Yellow</string>
   <string id="761">White</string>
@@ -629,7 +639,7 @@
   <string id="1012">Shared Folder</string>
   <string id="1013">Port</string>
   <string id="1014">Username</string>
-  <string id="1015">network server</string>
+  <string id="1015">Browse for Network Server</string>
   <string id="1016">Enter the network address of the server</string>
   <string id="1017">Enter the path on the server</string>
   <string id="1018">Enter the port number</string>
@@ -644,12 +654,13 @@
   <string id="1027">Edit Source</string>
   <string id="1028">Edit %s Source</string>
   <string id="1029">Enter the new label</string>
-  <string id="1030">an image</string>
-  <string id="1031">an image folder</string>
+  <string id="1030">Browse for Image</string>
+  <string id="1031">Browse for Image Folder</string>
   <string id="1032">Add Network Location...</string>
-  <string id="1033">a file</string>
+  <string id="1033">Browse for file</string>
   <string id="1034">Submenu</string>
   <string id="1035">Enable Submenu Buttons</string>
+  <string id="1036">Favourites</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -1120,6 +1131,8 @@
   <string id="14073">XLink Kai is not enabled.</string>
   <string id="14074">Set Timezone</string>
   <string id="14075">Use Daylight Saving Time</string>
+  <string id="14076">Add to Favourites</string>
+  <string id="14077">Remove from Favourites</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">The service is not connected.</string>
@@ -1320,7 +1333,7 @@
   <string id="20007">Recordings</string>
   <string id="20008">Screenshots</string>
   <string id="20009">Use XBMC</string>
-  <string id="20010">Artist Image</string>
+  <string id="20010"></string>
   <string id="20011">Music Playlists</string>
   <string id="20012">Video Playlists</string>
   <string id="20013">Do you wish to launch the game?</string>
@@ -1355,7 +1368,7 @@
   <string id="20053">Left Master Mode</string>
   <string id="20054">Entered Master Mode</string>
   <string id="20055">Allmusic.com Thumb</string>
-  <string id="20056">Source Thumbnail</string>
+  <string id="20056"></string>
   <string id="20057">Remove Thumbnail</string>
   <string id="20058">Add Profile...</string>
   <string id="20059">Query Info For All Albums</string>
@@ -1528,8 +1541,8 @@
   <string id="20325">Calibration Reset</string>
   <string id="20326">This will reset the calibration values for %s</string>
   <string id="20327">to it's default values.</string>
-  <string id="20328">a location to copy the save to</string>
-  <string id="20329">a location to move the save to</string>
+  <string id="20328">Browse for destination</string>
+  <string id="20329"></string>
   <string id="20330">Use Folder Names For Lookups</string>
   <string id="20331">File</string>
   <string id="20332">Use folder or file names in lookups?</string>
@@ -1636,7 +1649,39 @@
 
   <string id="21397">High Quality Pixel Shader V2</string>	
   
-  <string id="21398">Enable Playlist at Startup</string>	
-	
+  <string id="21398">Enable Playlist at Startup</string>
+
+  <string id="21400">contains</string>
+  <string id="21401">does not contain</string>
+  <string id="21402">is</string>
+  <string id="21403">is not</string>
+  <string id="21404">starts with</string>
+  <string id="21405">ends with</string>
+  <string id="21406">greater than</string>
+  <string id="21407">less than</string>
+  <string id="21408">after</string>
+  <string id="21409">before</string>
+  <string id="21410">in the last</string>
+  <string id="21411">not in the last</string>
+
+  <string id="21420">Value to match</string>
+  <string id="21421">Smart Playlist Rule</string>
+  <string id="21422">Match songs where</string>
+  <string id="21423">New Rule...</string>
+  <string id="21424">Songs must match</string>
+  <string id="21425">all of the rules</string>
+  <string id="21426">one or more of the rules</string>
+  <string id="21427">Limit to</string>
+  <string id="21428">No Limit</string>
+  <string id="21429">Order by</string>
+  <string id="21430">ascending</string>
+  <string id="21431">descending</string>
+  <string id="21432">Edit Smart Playlist</string>
+  <string id="21433">Name of the playlist</string>
+  <string id="21434">Find songs matching</string>
+  <string id="21435">Edit</string>
+  <string id="21436">%i songs</string>
+  <string id="21437">New Smart Playlist...</string>
+
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>

@@ -1,4 +1,4 @@
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include <io.h>
 #include <direct.h>
 #include <sys/stat.h>
@@ -210,66 +210,67 @@ int xbp_dup2(int fd1, int fd2)
 
 } // extern "C"
 
-void export_xbp()
+Export export_xbp[] =
 {
-  g_dlls.xbp.AddExport("xbp_fgetc", (unsigned long)dll_fgetc);
-  g_dlls.xbp.AddExport("xbp_clearerr", (unsigned long)dll_clearerr);
-  //g_dlls.xbp.AddExport("xbp__stati64", (unsigned long)xbp__stati64);
-  g_dlls.xbp.AddExport("xbp__fstati64", (unsigned long)dll_fstati64);
-  g_dlls.xbp.AddExport("xbp__tempnam", (unsigned long)xbp__tempnam);
-  g_dlls.xbp.AddExport("xbp_tmpfile", (unsigned long)tmpfile);
-  g_dlls.xbp.AddExport("xbp_tmpnam", (unsigned long)tmpnam);
-  g_dlls.xbp.AddExport("xbp__wfopen", (unsigned long)xbp__wfopen);
-  g_dlls.xbp.AddExport("xbp__get_osfhandle", (unsigned long)xbp__get_osfhandle);
-  //g_dlls.xbp.AddExport("xbp_vfprintf", (unsigned long)xbp_vfprintf);
-  g_dlls.xbp.AddExport("xbp_unlink", (unsigned long)xbp_unlink);
-  g_dlls.xbp.AddExport("xbp_access", (unsigned long)xbp_access);
-  g_dlls.xbp.AddExport("xbp_chdir", (unsigned long)xbp_chdir);
-  g_dlls.xbp.AddExport("xbp_chmod", (unsigned long)xbp_chmod);
-  g_dlls.xbp.AddExport("xbp_rmdir", (unsigned long)xbp_rmdir);
-  g_dlls.xbp.AddExport("xbp_umask", (unsigned long)umask);
-  g_dlls.xbp.AddExport("xbp_utime", (unsigned long)xbp_utime);
-  g_dlls.xbp.AddExport("xbp_dup", (unsigned long)xbp_dup);
-  g_dlls.xbp.AddExport("xbp_dup2", (unsigned long)xbp_dup2);
-  g_dlls.xbp.AddExport("xbp_rename", (unsigned long)xbp_rename);
-  g_dlls.xbp.AddExport("xbp__commit", (unsigned long)_commit);
-  g_dlls.xbp.AddExport("xbp__setmode", (unsigned long)dll_setmode);
-  g_dlls.xbp.AddExport("xbp_fopen", (unsigned long)xbp_fopen);
-  g_dlls.xbp.AddExport("xbp_ungetc", (unsigned long)dll_ungetc);
-  g_dlls.xbp.AddExport("xbp_fflush", (unsigned long)dll_fflush);
-  g_dlls.xbp.AddExport("xbp_fwrite", (unsigned long)dll_fwrite);
-  //g_dlls.xbp.AddExport("xbp_fprintf", (unsigned long)xbp_fprintf);
-  g_dlls.xbp.AddExport("xbp_fread", (unsigned long)dll_fread);
-  //g_dlls.xbp.AddExport("xbp_fputs", (unsigned long)xbp_fputs);
-  g_dlls.xbp.AddExport("xbp_getc", (unsigned long)dll_getc);
-  g_dlls.xbp.AddExport("xbp_setvbuf", (unsigned long)setvbuf);
-  g_dlls.xbp.AddExport("xbp_fsetpos", (unsigned long)dll_fsetpos);
-  g_dlls.xbp.AddExport("xbp_fgetpos", (unsigned long)dll_fgetpos);
-  g_dlls.xbp.AddExport("xbp__lseek", (unsigned long)dll_lseek);
-  g_dlls.xbp.AddExport("xbp_ftell", (unsigned long)dll_ftell);
-  //g_dlls.xbp.AddExport("xbp_ftell64", (unsigned long)ftell64);
-  g_dlls.xbp.AddExport("xbp_fgets", (unsigned long)dll_fgets);
-  g_dlls.xbp.AddExport("xbp_fseek", (unsigned long)dll_fseek);
-  //g_dlls.xbp.AddExport("xbp_putc", (unsigned long)xbp_putc);
-  //g_dlls.xbp.AddExport("xbp_write", (unsigned long)xbp_write);
-  g_dlls.xbp.AddExport("xbp_read", (unsigned long)dll_read);
-  g_dlls.xbp.AddExport("xbp_close", (unsigned long)xbp_close);
-  g_dlls.xbp.AddExport("xbp_mkdir", (unsigned long)xbp_mkdir);
-  g_dlls.xbp.AddExport("xbp_open", (unsigned long)xbp_open);
-  //g_dlls.xbp.AddExport("xbp__fdopen", (unsigned long)xbp__fdopen);
-  g_dlls.xbp.AddExport("xbp_lseek", (unsigned long)dll_lseek);
-  g_dlls.xbp.AddExport("xbp_fstat", (unsigned long)dll_fstat);
-  //g_dlls.xbp.AddExport("xbp_stat", (unsigned long)xbp_stat);
-  g_dlls.xbp.AddExport("xbp__lseeki64", (unsigned long)_lseeki64);
-  //g_dlls.xbp.AddExport("xbp_fileno", (unsigned long)xbp_fileno);
-  //g_dlls.xbp.AddExport("xbp_fputc", (unsigned long)xbp_fputc);
-  g_dlls.xbp.AddExport("xbp_rewind", (unsigned long)rewind);
-  g_dlls.xbp.AddExport("xbp_fclose", (unsigned long)xbp_fclose);
-  g_dlls.xbp.AddExport("xbp_isatty", (unsigned long)isatty);
-  g_dlls.xbp.AddExport("xbp_getcwd", (unsigned long)xbp_getcwd);
-  //g_dlls.xbp.AddExport("xbp_getenv", (unsigned long)xbp_getenv);
-  //g_dlls.xbp.AddExport("xbp_putenv", (unsigned long)xbp_putenv);
-  g_dlls.xbp.AddExport("xbp_FindClose", (unsigned long)xbp_FindClose);
-  g_dlls.xbp.AddExport("xbp_FindFirstFile", (unsigned long)xbp_FindFirstFile);
-  g_dlls.xbp.AddExport("xbp_FindNextFile", (unsigned long)xbp_FindNextFile);
-}
+  { "xbp_fgetc",                  -1, dll_fgetc,                     NULL },
+  { "xbp_clearerr",               -1, dll_clearerr,                  NULL },
+  //{ "xbp__stati64",               -1, xbp__stati64,                  NULL },
+  { "xbp__fstati64",              -1, dll_fstati64,                  NULL },
+  { "xbp__tempnam",               -1, xbp__tempnam,                  NULL },
+  { "xbp_tmpfile",                -1, tmpfile,                       NULL },
+  { "xbp_tmpnam",                 -1, tmpnam,                        NULL },
+  { "xbp__wfopen",                -1, xbp__wfopen,                   NULL },
+  { "xbp__get_osfhandle",         -1, xbp__get_osfhandle,            NULL },
+  //{ "xbp_vfprintf",               -1, xbp_vfprintf,                  NULL },
+  { "xbp_unlink",                 -1, xbp_unlink,                    NULL },
+  { "xbp_access",                 -1, xbp_access,                    NULL },
+  { "xbp_chdir",                  -1, xbp_chdir,                     NULL },
+  { "xbp_chmod",                  -1, xbp_chmod,                     NULL },
+  { "xbp_rmdir",                  -1, xbp_rmdir,                     NULL },
+  { "xbp_umask",                  -1, umask,                         NULL },
+  { "xbp_utime",                  -1, xbp_utime,                     NULL },
+  { "xbp_dup",                    -1, xbp_dup,                       NULL },
+  { "xbp_dup2",                   -1, xbp_dup2,                      NULL },
+  { "xbp_rename",                 -1, xbp_rename,                    NULL },
+  { "xbp__commit",                -1, _commit,                       NULL },
+  { "xbp__setmode",               -1, dll_setmode,                   NULL },
+  { "xbp_fopen",                  -1, xbp_fopen,                     NULL },
+  { "xbp_ungetc",                 -1, dll_ungetc,                    NULL },
+  { "xbp_fflush",                 -1, dll_fflush,                    NULL },
+  { "xbp_fwrite",                 -1, dll_fwrite,                    NULL },
+  //{ "xbp_fprintf",                -1, xbp_fprintf,                   NULL },
+  { "xbp_fread",                  -1, dll_fread,                     NULL },
+  //{ "xbp_fputs",                  -1, xbp_fputs,                     NULL },
+  { "xbp_getc",                   -1, dll_getc,                      NULL },
+  { "xbp_setvbuf",                -1, setvbuf,                       NULL },
+  { "xbp_fsetpos",                -1, dll_fsetpos,                   NULL },
+  { "xbp_fgetpos",                -1, dll_fgetpos,                   NULL },
+  { "xbp__lseek",                 -1, dll_lseek,                     NULL },
+  { "xbp_ftell",                  -1, dll_ftell,                     NULL },
+  //{ "xbp_ftell64",                -1, ftell64,                       NULL },
+  { "xbp_fgets",                  -1, dll_fgets,                     NULL },
+  { "xbp_fseek",                  -1, dll_fseek,                     NULL },
+  //{ "xbp_putc",                   -1, xbp_putc,                      NULL },
+  //{ "xbp_write",                  -1, xbp_write,                     NULL },
+  { "xbp_read",                   -1, dll_read,                      NULL },
+  { "xbp_close",                  -1, xbp_close,                     NULL },
+  { "xbp_mkdir",                  -1, xbp_mkdir,                     NULL },
+  { "xbp_open",                   -1, xbp_open,                      NULL },
+  //{ "xbp__fdopen",                -1, xbp__fdopen,                   NULL },
+  { "xbp_lseek",                  -1, dll_lseek,                     NULL },
+  { "xbp_fstat",                  -1, dll_fstat,                     NULL },
+  //{ "xbp_stat",                   -1, xbp_stat,                      NULL },
+  { "xbp__lseeki64",              -1, _lseeki64,                     NULL },
+  //{ "xbp_fileno",                 -1, xbp_fileno,                    NULL },
+  //{ "xbp_fputc",                  -1, xbp_fputc,                     NULL },
+  { "xbp_rewind",                 -1, rewind,                        NULL },
+  { "xbp_fclose",                 -1, xbp_fclose,                    NULL },
+  { "xbp_isatty",                 -1, isatty,                        NULL },
+  { "xbp_getcwd",                 -1, xbp_getcwd,                    NULL },
+  //{ "xbp_getenv",                 -1, xbp_getenv,                    NULL },
+  //{ "xbp_putenv",                 -1, xbp_putenv,                    NULL },
+  { "xbp_FindClose",              -1, xbp_FindClose,                 NULL },
+  { "xbp_FindFirstFile",          -1, xbp_FindFirstFile,             NULL },
+  { "xbp_FindNextFile",           -1, xbp_FindNextFile,              NULL },
+  { NULL, NULL, NULL, NULL }
+};

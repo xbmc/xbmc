@@ -1,4 +1,4 @@
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
 #include "..\..\..\xbox\iosupport.h"
@@ -1068,6 +1068,19 @@ extern "C" DWORD WINAPI dllGetTempPathA(DWORD nBufferLength, LPTSTR lpBuffer)
 
   return len;
 }
+
+extern "C" HGLOBAL WINAPI dllLoadResource(HMODULE hModule, HRSRC hResInfo)
+{
+  not_implement("kernel32.dll fake function LoadResource called\n");
+  return NULL;
+}
+
+extern "C" HRSRC WINAPI dllFindResourceA(HMODULE hModule, LPCTSTR lpName, LPCTSTR lpType)
+{
+  not_implement("kernel32.dll fake function FindResource called\n");
+  return NULL;
+}
+
 
 /*
 

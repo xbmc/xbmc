@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "PlaylistDirectory.h"
 #include "../PlayListPlayer.h"
 

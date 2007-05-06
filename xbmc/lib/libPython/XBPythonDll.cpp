@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "XBPythonDll.h"
 
 template<byte count>

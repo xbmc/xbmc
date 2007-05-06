@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------
 
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #ifdef HAS_GAMEPAD
 #include "../XBInputEx.h"
 #endif

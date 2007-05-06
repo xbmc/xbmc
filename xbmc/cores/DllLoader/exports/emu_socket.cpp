@@ -1,8 +1,9 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 
 #include "..\..\..\DNSNameCache.h"
+#include "..\..\..\xbox\Network.h"
 #include "emu_dummy.h"
 #include "emu_socket.h"
 
@@ -118,12 +119,9 @@ extern "C"
 
     if (!strcmp(hbn_hostname, name))
     {
-      XNADDR xna;
-      DWORD dwState;
-      do dwState = XNetGetTitleXnAddr(&xna);
-      while (dwState == XNET_GET_XNADDR_PENDING);
+      if(g_network.IsAvailable())
+        hbn_dwList2[0] = inet_addr(g_network.m_networkinfo.ip);
 
-      hbn_dwList2[0] = xna.ina.S_un.S_addr;
       return &hbn_hostent;
     }
     if (CDNSNameCache::Lookup(name, strIpAdres))
@@ -198,26 +196,35 @@ extern "C"
 
   int __stdcall dllbind(int s, const struct sockaddr FAR * name, int namelen)
   {
-    struct sockaddr_in* pTmp = (struct sockaddr_in*)name;
-    char szBuf[128];
-    sprintf(szBuf, "dllbind: family:%i port:%i ip:%i.%i.%i.%i\n",
-            pTmp->sin_family,
-            ntohs(pTmp->sin_port),
-            pTmp->sin_addr.S_un.S_addr&0xff,
-            (pTmp->sin_addr.S_un.S_addr&0xff00) >> 8,
-            (pTmp->sin_addr.S_un.S_addr&0xff0000) >> 16,
-            (pTmp->sin_addr.S_un.S_addr) >> 24
-           );
-    OutputDebugString(szBuf);
-
     SOCKET socket = GetSocketForIndex(s);
+
+    if( name->sa_family == AF_INET 
+    &&  namelen >= sizeof(sockaddr_in) )
+    {
+      struct sockaddr_in* address = (struct sockaddr_in*)name;
+
+      CLog::Log(LOGDEBUG, "dllbind: family:%i port:%i ip:%i.%i.%i.%i\n",
+            address->sin_family,
+            ntohs(address->sin_port),
+            address->sin_addr.S_un.S_un_b.s_b1,
+            address->sin_addr.S_un.S_un_b.s_b2,
+            address->sin_addr.S_un.S_un_b.s_b3,
+            address->sin_addr.S_un.S_un_b.s_b4);
+
+      
+      if( address->sin_addr.S_un.S_addr == inet_addr(g_network.m_networkinfo.ip)
+      ||  address->sin_addr.S_un.S_addr == inet_addr("127.0.0.1") )
+      {
+        // local xbox, correct for xbox stack        
+        address->sin_addr.S_un.S_addr = 0;
+      }
+    }    
 
     int iResult = bind(socket, name, namelen);
     if(iResult == SOCKET_ERROR)
     {
       errno = WSAGetLastError();
-      sprintf(szBuf, "bind returned:%i %i\n", iResult, WSAGetLastError());
-      OutputDebugString(szBuf);
+      CLog::Log(LOGERROR, "bind returned:%i %i\n", iResult, WSAGetLastError());
     }
     return iResult;
   }
@@ -360,10 +367,10 @@ extern "C"
   int __stdcall dllaccept(int s, struct sockaddr FAR * addr, OUT int FAR * addrlen)
   {
     SOCKET socket = GetSocketForIndex(s);
-    int res = accept(socket, addr, addrlen);
-    if(res == SOCKET_ERROR)
+    SOCKET res = accept(socket, addr, addrlen);
+    if(res == INVALID_SOCKET)
       errno = WSAGetLastError();
-    return res;
+    return AddSocket(res);
   }
 
   int __stdcall dllgetsockname(int s, struct sockaddr* name, int* namelen)
@@ -371,7 +378,24 @@ extern "C"
     SOCKET socket = GetSocketForIndex(s);
     int res = getsockname(socket, name, namelen);
     if(res == SOCKET_ERROR)
+    {
       errno = WSAGetLastError();
+      return res;
+    }
+
+    if( name->sa_family == AF_INET 
+    && *namelen >= sizeof(sockaddr_in) )
+    {
+      sockaddr_in *addr = (sockaddr_in*)name;
+      if( addr->sin_port > 0 && addr->sin_addr.S_un.S_addr == 0 )
+      {
+        // unspecifed address will always be on local xbox ip
+        // some dll's assume this will return a proper address
+        // even if windows standard doesn't gurantee it
+        if( g_network.IsAvailable() )
+          addr->sin_addr.S_un.S_addr = inet_addr(g_network.m_networkinfo.ip);
+      }
+    }
     return res;
   }
 

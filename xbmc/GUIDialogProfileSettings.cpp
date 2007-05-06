@@ -176,7 +176,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     CStdString strThumb;
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20065),strThumb))
+    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
     {
       m_bNeedSave = true;
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
@@ -205,7 +205,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       strDirectory = share.strPath;
     else
       strDirectory.Format("%s\\%s",g_settings.m_vecProfiles[0].getDirectory().c_str(),m_strDirectory.c_str());
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(20070),strDirectory,true))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(657),strDirectory,true))
     {
       m_strDirectory = strDirectory;
       if (!m_bIsDefault)

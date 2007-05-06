@@ -25,7 +25,7 @@ void CAnimation::Reset()
   m_condition = 0;
   m_reversible = true;
   m_lastCondition = false;
-  m_pulse = false;
+  m_repeatAnim = ANIM_REPEAT_NONE;
 }
 
 void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
@@ -86,7 +86,10 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   {
     const char *pulse = node->Attribute("pulse");
     if (pulse && strcmpi(pulse, "true") == 0)
-      m_pulse = true;
+      m_repeatAnim = ANIM_REPEAT_PULSE;
+    const char *loop = node->Attribute("loop");
+    if (loop && strcmpi(loop, "true") == 0)
+      m_repeatAnim = ANIM_REPEAT_LOOP;
   }
   // slide parameters
   if (m_effect == EFFECT_TYPE_SLIDE)
@@ -284,9 +287,14 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
     else
     {
       m_amount = 1.0f;
-      if (m_pulse && m_lastCondition)
+      if (m_repeatAnim == ANIM_REPEAT_PULSE && m_lastCondition)
       { // pulsed anims auto-reverse
         m_currentProcess = ANIM_PROCESS_REVERSE;
+        m_start = time;
+      }
+      else if (m_repeatAnim == ANIM_REPEAT_LOOP && m_lastCondition)
+      { // looped anims start over
+        m_amount = 0.0f;
         m_start = time;
       }
       else
@@ -303,7 +311,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
     else
     {
       m_amount = 0.0f;
-      if (m_pulse && m_lastCondition)
+      if (m_repeatAnim == ANIM_REPEAT_PULSE && m_lastCondition)
       { // pulsed anims auto-reverse
         m_currentProcess = ANIM_PROCESS_NORMAL;
         m_start = time;

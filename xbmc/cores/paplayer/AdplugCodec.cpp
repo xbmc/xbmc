@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "AdplugCodec.h"
 #include "../../Util.h"
 
@@ -38,8 +38,7 @@ bool AdplugCodec::Init(const CStdString &strFile, unsigned int filecache)
     //  so extract it
     CStdString strPath=strFile;
     CUtil::GetDirectory(strPath, strFileToLoad);
-    if (CUtil::HasSlashAtEnd(strFileToLoad))
-      strFileToLoad.Delete(strFileToLoad.size()-1);
+    CUtil::RemoveSlashAtEnd(strFileToLoad); // we want the filename
   }*/
   
   m_adl = m_dll.LoadADL(strFileToLoad.c_str());

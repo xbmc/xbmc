@@ -1,5 +1,5 @@
 
-//#include "..\..\..\stdafx.h"
+//#include "stdafx.h"
 
 #include "..\DllLoaderContainer.h"
 #include "..\DllLoader.h"
@@ -250,426 +250,429 @@ extern "C" void* track_fclose();
 extern "C" void* track_fopen();
 extern "C" void* track_freopen();
 
-void export_msvcrt()
+Export export_msvcrt[] =
 {
-  g_dlls.msvcrt.AddExport("_close", (unsigned long)dll_close, (void*)track_close);
-  g_dlls.msvcrt.AddExport("_lseek", (unsigned long)dll_lseek);
-  g_dlls.msvcrt.AddExport("_read", (unsigned long)dll_read);
-  g_dlls.msvcrt.AddExport("_write", (unsigned long)dll_write);
-  g_dlls.msvcrt.AddExport("__dllonexit", (unsigned long)dll__dllonexit);
-  g_dlls.msvcrt.AddExport("__mb_cur_max", (unsigned long)__mb_cur_max);
-  g_dlls.msvcrt.AddExport("_assert", (unsigned long)_assert);
-  g_dlls.msvcrt.AddExport("_errno", (unsigned long)_errno);
-  g_dlls.msvcrt.AddExport("_ftime", (unsigned long)_ftime);
-  g_dlls.msvcrt.AddExport("_iob", (unsigned long)_iob);
-  g_dlls.msvcrt.AddExport("_isctype", (unsigned long)_isctype);
-  g_dlls.msvcrt.AddExport("_lseeki64", (unsigned long)dll_lseeki64);
-  g_dlls.msvcrt.AddExport("_open", (unsigned long)dll_open, (void*)track_open);
-  g_dlls.msvcrt.AddExport("_snprintf", (unsigned long)_snprintf);
-  g_dlls.msvcrt.AddExport("_stricmp", (unsigned long)_stricmp);
-  g_dlls.msvcrt.AddExport("_strnicmp", (unsigned long)_strnicmp);
-  g_dlls.msvcrt.AddExport("_vsnprintf", (unsigned long)_vsnprintf);
-  g_dlls.msvcrt.AddExport("abort", (unsigned long)dllabort);
-  g_dlls.msvcrt.AddExport("atof", (unsigned long)atof);
-  g_dlls.msvcrt.AddExport("atoi", (unsigned long)atoi);
-  g_dlls.msvcrt.AddExport("cos", (unsigned long)cos);
-  g_dlls.msvcrt.AddExport("cosh", (unsigned long)cosh);
-  g_dlls.msvcrt.AddExport("exp", (unsigned long)exp);
-  g_dlls.msvcrt.AddExport("fflush", (unsigned long)dll_fflush);
-  g_dlls.msvcrt.AddExport("floor", (unsigned long)floor);
-  g_dlls.msvcrt.AddExport("fprintf", (unsigned long)dll_fprintf);
-  g_dlls.msvcrt.AddExport("free", (unsigned long)dllfree, (void*)track_free);
-  g_dlls.msvcrt.AddExport("frexp", (unsigned long)frexp);
-  g_dlls.msvcrt.AddExport("fwrite", (unsigned long)dll_fwrite);
-  g_dlls.msvcrt.AddExport("gmtime", (unsigned long)gmtime);
-  g_dlls.msvcrt.AddExport("ldexp", (unsigned long)ldexp);
-  g_dlls.msvcrt.AddExport("localtime", (unsigned long)localtime);
-  g_dlls.msvcrt.AddExport("log", (unsigned long)log);
-  g_dlls.msvcrt.AddExport("log10", (unsigned long)log10);
-  g_dlls.msvcrt.AddExport("malloc", (unsigned long)dllmalloc, (void*)track_malloc);
-  g_dlls.msvcrt.AddExport("memcpy", (unsigned long)memcpy);
-  g_dlls.msvcrt.AddExport("memmove", (unsigned long)memmove);
-  g_dlls.msvcrt.AddExport("memset", (unsigned long)memset);
-  g_dlls.msvcrt.AddExport("mktime", (unsigned long)mktime);
-  g_dlls.msvcrt.AddExport("perror", (unsigned long)dllperror);
-  g_dlls.msvcrt.AddExport("printf", (unsigned long)dllprintf);
-  g_dlls.msvcrt.AddExport("putchar", (unsigned long)dll_putchar);
-  g_dlls.msvcrt.AddExport("puts", (unsigned long)dllputs);
-  g_dlls.msvcrt.AddExport("qsort", (unsigned long)qsort);
-  g_dlls.msvcrt.AddExport("realloc", (unsigned long)dllrealloc, (void*)track_realloc);
-  g_dlls.msvcrt.AddExport("sin", (unsigned long)sin);
-  g_dlls.msvcrt.AddExport("sinh", (unsigned long)sinh);
-  g_dlls.msvcrt.AddExport("sprintf", (unsigned long)sprintf);
-  g_dlls.msvcrt.AddExport("sqrt", (unsigned long)sqrt);
-  g_dlls.msvcrt.AddExport("sscanf", (unsigned long)sscanf);
-  g_dlls.msvcrt.AddExport("strchr", (unsigned long)strchr);
-  g_dlls.msvcrt.AddExport("strcmp", (unsigned long)strcmp);
-  g_dlls.msvcrt.AddExport("strcpy", (unsigned long)strcpy);
-  g_dlls.msvcrt.AddExport("strlen", (unsigned long)strlen);
-  g_dlls.msvcrt.AddExport("strncpy", (unsigned long)strncpy);
-  g_dlls.msvcrt.AddExport("strrchr", (unsigned long)strrchr);
-  g_dlls.msvcrt.AddExport("strtod", (unsigned long)strtod);
-  g_dlls.msvcrt.AddExport("strtok", (unsigned long)strtok);
-  g_dlls.msvcrt.AddExport("strtol", (unsigned long)strtol);
-  g_dlls.msvcrt.AddExport("strtoul", (unsigned long)strtoul);
-  g_dlls.msvcrt.AddExport("tan", (unsigned long)tan);
-  g_dlls.msvcrt.AddExport("tanh", (unsigned long)tanh);
-  g_dlls.msvcrt.AddExport("time", (unsigned long)time);
-  g_dlls.msvcrt.AddExport("toupper", (unsigned long)toupper);
-  g_dlls.msvcrt.AddExport("_memccpy", (unsigned long)_memccpy);
-  g_dlls.msvcrt.AddExport("_fstat", (unsigned long)dll_fstat);
-  g_dlls.msvcrt.AddExport("_mkdir", (unsigned long)dll_mkdir);
-  g_dlls.msvcrt.AddExport("_pclose", (unsigned long)dll_pclose);
-  g_dlls.msvcrt.AddExport("_popen", (unsigned long)dll_popen);
-  g_dlls.msvcrt.AddExport("_sleep", (unsigned long)dll_sleep);
-  g_dlls.msvcrt.AddExport("_stat", (unsigned long)dll_stat);
-  g_dlls.msvcrt.AddExport("_strdup", (unsigned long)dll_strdup, (void*)track_strdup);
-  g_dlls.msvcrt.AddExport("_swab", (unsigned long)_swab);
-  g_dlls.msvcrt.AddExport("_findclose", (unsigned long)dll_findclose);
-  g_dlls.msvcrt.AddExport("_findfirst", (unsigned long)dll_findfirst);
-  g_dlls.msvcrt.AddExport("_findnext", (unsigned long)dll_findnext);
-  g_dlls.msvcrt.AddExport("_fullpath", (unsigned long)_fullpath);
-  g_dlls.msvcrt.AddExport("_pctype", (unsigned long)_pctype);
-  g_dlls.msvcrt.AddExport("calloc", (unsigned long)dllcalloc, (void*)track_calloc);
-  g_dlls.msvcrt.AddExport("ceil", (unsigned long)ceil);
-  g_dlls.msvcrt.AddExport("ctime", (unsigned long)ctime);
-  g_dlls.msvcrt.AddExport("exit", (unsigned long)dllexit);
-  g_dlls.msvcrt.AddExport("fclose", (unsigned long)dll_fclose, (void*)track_fclose);
-  g_dlls.msvcrt.AddExport("feof", (unsigned long)dll_feof);
-  g_dlls.msvcrt.AddExport("fgets", (unsigned long)dll_fgets);
-  g_dlls.msvcrt.AddExport("fopen", (unsigned long)dll_fopen, (void*)track_fopen);
-  g_dlls.msvcrt.AddExport("putc", (unsigned long)dll_putc);
-  g_dlls.msvcrt.AddExport("fputc", (unsigned long)dll_fputc);
-  g_dlls.msvcrt.AddExport("fputs", (unsigned long)dll_fputs);
-  g_dlls.msvcrt.AddExport("fread", (unsigned long)dll_fread);
-  g_dlls.msvcrt.AddExport("fseek", (unsigned long)dll_fseek);
-  g_dlls.msvcrt.AddExport("ftell", (unsigned long)dll_ftell);
-  g_dlls.msvcrt.AddExport("getc", (unsigned long)dll_getc);
-  g_dlls.msvcrt.AddExport("getenv", (unsigned long)dll_getenv);
-  g_dlls.msvcrt.AddExport("rand", (unsigned long)rand);
-  g_dlls.msvcrt.AddExport("remove", (unsigned long)remove);
-  g_dlls.msvcrt.AddExport("rewind", (unsigned long)dll_rewind);
-  g_dlls.msvcrt.AddExport("setlocale", (unsigned long)setlocale);
-  g_dlls.msvcrt.AddExport("signal", (unsigned long)dll_signal);
-  g_dlls.msvcrt.AddExport("srand", (unsigned long)srand);
-  g_dlls.msvcrt.AddExport("strcat", (unsigned long)strcat);
-  g_dlls.msvcrt.AddExport("strcoll", (unsigned long)strcoll);
-  g_dlls.msvcrt.AddExport("strerror", (unsigned long)dllstrerror);
-  g_dlls.msvcrt.AddExport("strncat", (unsigned long)strncat);
-  g_dlls.msvcrt.AddExport("strncmp", (unsigned long)strncmp);
-  g_dlls.msvcrt.AddExport("strpbrk", (unsigned long)strpbrk);
-  g_dlls.msvcrt.AddExport("strstr", (unsigned long)strstr);
-  g_dlls.msvcrt.AddExport("tolower", (unsigned long)tolower);
-  g_dlls.msvcrt.AddExport("acos", (unsigned long)acos);
-  g_dlls.msvcrt.AddExport("atan", (unsigned long)atan);
-  g_dlls.msvcrt.AddExport("memchr", (unsigned long)memchr);
-  g_dlls.msvcrt.AddExport("fgetc", (unsigned long)dll_getc);
-  g_dlls.msvcrt.AddExport("_CIpow", (unsigned long)_CIpow);
-  g_dlls.msvcrt.AddExport("_purecall", (unsigned long)_purecall);
-  g_dlls.msvcrt.AddExport("_adjust_fdiv", (unsigned long)_adjust_fdiv);
-  g_dlls.msvcrt.AddExport("_initterm", (unsigned long)dll_initterm);
-  g_dlls.msvcrt.AddExport("swscanf", (unsigned long)swscanf);
-  g_dlls.msvcrt.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc, (void*)track_malloc);
-  g_dlls.msvcrt.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
-  g_dlls.msvcrt.AddExport("iswspace", (unsigned long)iswspace);
-  g_dlls.msvcrt.AddExport("wcscmp", (unsigned long)wcscmp);
-  g_dlls.msvcrt.AddExport("vfprintf", (unsigned long)dll_vfprintf);
-  g_dlls.msvcrt.AddExport("vsprintf", (unsigned long)vsprintf);
-  g_dlls.msvcrt.AddExport("longjmp", (unsigned long)longjmp);
-  g_dlls.msvcrt.AddExport("_ftol", (unsigned long)_ftol);
-  g_dlls.msvcrt.AddExport("strspn", (unsigned long)strspn);
-  g_dlls.msvcrt.AddExport("strcspn", (unsigned long)strcspn);
-  g_dlls.msvcrt.AddExport("fgetpos", (unsigned long)dll_fgetpos);
-  g_dlls.msvcrt.AddExport("fsetpos", (unsigned long)dll_fsetpos);
-  g_dlls.msvcrt.AddExport("_stati64", (unsigned long)dll_stati64);
-  g_dlls.msvcrt.AddExport("_fstati64", (unsigned long)dll_fstati64);
-  g_dlls.msvcrt.AddExport("_telli64", (unsigned long)dll_telli64);
-  g_dlls.msvcrt.AddExport("_tell", (unsigned long)dll_tell);
-  g_dlls.msvcrt.AddExport("_setmode", (unsigned long)dll_setmode);
-  g_dlls.msvcrt.AddExport("_beginthreadex", (unsigned long)dll_beginthreadex);
-  g_dlls.msvcrt.AddExport("_fileno", (unsigned long)dll_fileno);
-  g_dlls.msvcrt.AddExport("_getcwd", (unsigned long)dll_getcwd);
-  g_dlls.msvcrt.AddExport("_isatty", (unsigned long)_isatty);
-  g_dlls.msvcrt.AddExport("_putenv", (unsigned long)dll_putenv);
-  g_dlls.msvcrt.AddExport("_atoi64", (unsigned long)_atoi64);
-  g_dlls.msvcrt.AddExport("_ctype", (unsigned long)dll_ctype);
-  g_dlls.msvcrt.AddExport("_filbuf", (unsigned long)_filbuf);
-  g_dlls.msvcrt.AddExport("_fmode", (unsigned long)_fmode);
-  g_dlls.msvcrt.AddExport("_setjmp", (unsigned long)_setjmp);
-  g_dlls.msvcrt.AddExport("asin", (unsigned long)asin);
-  g_dlls.msvcrt.AddExport("atol", (unsigned long)atol);
-  g_dlls.msvcrt.AddExport("atol", (unsigned long)atol);
-  g_dlls.msvcrt.AddExport("bsearch", (unsigned long)bsearch);
-  g_dlls.msvcrt.AddExport("ferror", (unsigned long)dll_ferror);
-  g_dlls.msvcrt.AddExport("freopen", (unsigned long)dll_freopen, (void*)track_freopen);
-  g_dlls.msvcrt.AddExport("fscanf", (unsigned long)fscanf);
-  g_dlls.msvcrt.AddExport("localeconv", (unsigned long)localeconv);
-  g_dlls.msvcrt.AddExport("raise", (unsigned long)raise);
-  g_dlls.msvcrt.AddExport("setvbuf", (unsigned long)setvbuf);
-  g_dlls.msvcrt.AddExport("strftime", (unsigned long)strftime);
-  g_dlls.msvcrt.AddExport("strxfrm", (unsigned long)strxfrm);
-  g_dlls.msvcrt.AddExport("ungetc", (unsigned long)dll_ungetc);
-  g_dlls.msvcrt.AddExport("_fdopen", (unsigned long)dll_fdopen);
-  g_dlls.msvcrt.AddExport("system", (unsigned long)dll_system);
-  g_dlls.msvcrt.AddExport("_flsbuf", (unsigned long)_flsbuf);
-  g_dlls.msvcrt.AddExport("isdigit", (unsigned long)isdigit);
-  g_dlls.msvcrt.AddExport("isalnum", (unsigned long)isalnum);
-  g_dlls.msvcrt.AddExport("isxdigit", (unsigned long)isxdigit);
-  g_dlls.msvcrt.AddExport("pow", (unsigned long)pow);
-  g_dlls.msvcrt.AddExport("_onexit", (unsigned long)dll_onexit);
-  g_dlls.msvcrt.AddExport("modf", (unsigned long)modf);
-  g_dlls.msvcrt.AddExport("_get_osfhandle", (unsigned long)_get_osfhandle);  
-  g_dlls.msvcrt.AddExport("_itoa", (unsigned long)_itoa);
-  g_dlls.msvcrt.AddExport("memcmp", (unsigned long)memcmp);
-  g_dlls.msvcrt.AddExport("_except_handler3", (unsigned long)_except_handler3);
-  g_dlls.msvcrt.AddExport("_CxxThrowException", (unsigned long)_CxxThrowException);
-  g_dlls.msvcrt.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);  
-  g_dlls.msvcrt.AddExport("__CxxLongjmpUnwind", (unsigned long)__CxxLongjmpUnwind);
-  g_dlls.msvcrt.AddExport("clearerr", (unsigned long)dll_clearerr);
-  g_dlls.msvcrt.AddExport("_sys_nerr", (unsigned long)&_sys_nerr);
-  g_dlls.msvcrt.AddExport("_tempnam", (unsigned long)_tempnam);
-}
+  { "_close",                     -1, dll_close,                     track_close},
+  { "_lseek",                     -1, dll_lseek,                     NULL },
+  { "_read",                      -1, dll_read,                      NULL },
+  { "_write",                     -1, dll_write,                     NULL },
+  { "__dllonexit",                -1, dll__dllonexit,                NULL },
+  { "__mb_cur_max",               -1, __mb_cur_max,                  NULL },
+  { "_assert",                    -1, _assert,                       NULL },
+  { "_errno",                     -1, _errno,                        NULL },
+  { "_ftime",                     -1, _ftime,                        NULL },
+  { "_iob",                       -1, _iob,                          NULL },
+  { "_isctype",                   -1, _isctype,                      NULL },
+  { "_lseeki64",                  -1, dll_lseeki64,                  NULL },
+  { "_open",                      -1, dll_open,                      track_open },
+  { "_snprintf",                  -1, _snprintf,                     NULL },
+  { "_stricmp",                   -1, _stricmp,                      NULL },
+  { "_strnicmp",                  -1, _strnicmp,                     NULL },
+  { "_vsnprintf",                 -1, _vsnprintf,                    NULL },
+  { "abort",                      -1, dllabort,                      NULL },
+  { "atof",                       -1, atof,                          NULL },
+  { "atoi",                       -1, atoi,                          NULL },
+  { "cos",                        -1, cos,                           NULL },
+  { "cosh",                       -1, cosh,                          NULL },
+  { "exp",                        -1, exp,                           NULL },
+  { "fflush",                     -1, dll_fflush,                    NULL },
+  { "floor",                      -1, floor,                         NULL },
+  { "fprintf",                    -1, dll_fprintf,                   NULL },
+  { "free",                       -1, dllfree,                       track_free},
+  { "frexp",                      -1, frexp,                         NULL },
+  { "fwrite",                     -1, dll_fwrite,                    NULL },
+  { "gmtime",                     -1, gmtime,                        NULL },
+  { "ldexp",                      -1, ldexp,                         NULL },
+  { "localtime",                  -1, localtime,                     NULL },
+  { "log",                        -1, log,                           NULL },
+  { "log10",                      -1, log10,                         NULL },
+  { "malloc",                     -1, dllmalloc,                     track_malloc},
+  { "memcpy",                     -1, memcpy,                        NULL },
+  { "memmove",                    -1, memmove,                       NULL },
+  { "memset",                     -1, memset,                        NULL },
+  { "mktime",                     -1, mktime,                        NULL },
+  { "perror",                     -1, dllperror,                     NULL },
+  { "printf",                     -1, dllprintf,                     NULL },
+  { "putchar",                    -1, dll_putchar,                   NULL },
+  { "puts",                       -1, dllputs,                       NULL },
+  { "qsort",                      -1, qsort,                         NULL },
+  { "realloc",                    -1, dllrealloc,                    track_realloc},
+  { "sin",                        -1, sin,                           NULL },
+  { "sinh",                       -1, sinh,                          NULL },
+  { "sprintf",                    -1, sprintf,                       NULL },
+  { "sqrt",                       -1, sqrt,                          NULL },
+  { "sscanf",                     -1, sscanf,                        NULL },
+  { "strchr",                     -1, strchr,                        NULL },
+  { "strcmp",                     -1, strcmp,                        NULL },
+  { "strcpy",                     -1, strcpy,                        NULL },
+  { "strlen",                     -1, strlen,                        NULL },
+  { "strncpy",                    -1, strncpy,                       NULL },
+  { "strrchr",                    -1, strrchr,                       NULL },
+  { "strtod",                     -1, strtod,                        NULL },
+  { "strtok",                     -1, strtok,                        NULL },
+  { "strtol",                     -1, strtol,                        NULL },
+  { "strtoul",                    -1, strtoul,                       NULL },
+  { "tan",                        -1, tan,                           NULL },
+  { "tanh",                       -1, tanh,                          NULL },
+  { "time",                       -1, time,                          NULL },
+  { "toupper",                    -1, toupper,                       NULL },
+  { "_memccpy",                   -1, _memccpy,                      NULL },
+  { "_fstat",                     -1, dll_fstat,                     NULL },
+  { "_mkdir",                     -1, dll_mkdir,                     NULL },
+  { "_pclose",                    -1, dll_pclose,                    NULL },
+  { "_popen",                     -1, dll_popen,                     NULL },
+  { "_sleep",                     -1, dll_sleep,                     NULL },
+  { "_stat",                      -1, dll_stat,                      NULL },
+  { "_strdup",                    -1, dll_strdup,                    track_strdup},
+  { "_swab",                      -1, _swab,                         NULL },
+  { "_findclose",                 -1, dll_findclose,                 NULL },
+  { "_findfirst",                 -1, dll_findfirst,                 NULL },
+  { "_findnext",                  -1, dll_findnext,                  NULL },
+  { "_fullpath",                  -1, _fullpath,                     NULL },
+  { "_pctype",                    -1, _pctype,                       NULL },
+  { "calloc",                     -1, dllcalloc,                     track_calloc},
+  { "ceil",                       -1, ceil,                          NULL },
+  { "ctime",                      -1, ctime,                         NULL },
+  { "exit",                       -1, dllexit,                       NULL },
+  { "fclose",                     -1, dll_fclose,                    track_fclose},
+  { "feof",                       -1, dll_feof,                      NULL },
+  { "fgets",                      -1, dll_fgets,                     NULL },
+  { "fopen",                      -1, dll_fopen,                     track_fopen},
+  { "putc",                       -1, dll_putc,                      NULL },
+  { "fputc",                      -1, dll_fputc,                     NULL },
+  { "fputs",                      -1, dll_fputs,                     NULL },
+  { "fread",                      -1, dll_fread,                     NULL },
+  { "fseek",                      -1, dll_fseek,                     NULL },
+  { "ftell",                      -1, dll_ftell,                     NULL },
+  { "getc",                       -1, dll_getc,                      NULL },
+  { "getenv",                     -1, dll_getenv,                    NULL },
+  { "rand",                       -1, rand,                          NULL },
+  { "remove",                     -1, remove,                        NULL },
+  { "rewind",                     -1, dll_rewind,                    NULL },
+  { "setlocale",                  -1, setlocale,                     NULL },
+  { "signal",                     -1, dll_signal,                    NULL },
+  { "srand",                      -1, srand,                         NULL },
+  { "strcat",                     -1, strcat,                        NULL },
+  { "strcoll",                    -1, strcoll,                       NULL },
+  { "strerror",                   -1, dllstrerror,                   NULL },
+  { "strncat",                    -1, strncat,                       NULL },
+  { "strncmp",                    -1, strncmp,                       NULL },
+  { "strpbrk",                    -1, strpbrk,                       NULL },
+  { "strstr",                     -1, strstr,                        NULL },
+  { "tolower",                    -1, tolower,                       NULL },
+  { "acos",                       -1, acos,                          NULL },
+  { "atan",                       -1, atan,                          NULL },
+  { "memchr",                     -1, memchr,                        NULL },
+  { "fgetc",                      -1, dll_getc,                      NULL },
+  { "_CIpow",                     -1, _CIpow,                        NULL },
+  { "_purecall",                  -1, _purecall,                     NULL },
+  { "_adjust_fdiv",               -1, _adjust_fdiv,                  NULL },
+  { "_initterm",                  -1, dll_initterm,                  NULL },
+  { "swscanf",                    -1, swscanf,                       NULL },
+  { "??2@YAPAXI@Z",               -1, dllmalloc,                     track_malloc},
+  { "??3@YAXPAX@Z",               -1, dllfree,                       track_free},
+  { "iswspace",                   -1, iswspace,                      NULL },
+  { "wcscmp",                     -1, wcscmp,                        NULL },
+  { "vfprintf",                   -1, dll_vfprintf,                  NULL },
+  { "vsprintf",                   -1, vsprintf,                      NULL },
+  { "longjmp",                    -1, longjmp,                       NULL },
+  { "_ftol",                      -1, _ftol,                         NULL },
+  { "strspn",                     -1, strspn,                        NULL },
+  { "strcspn",                    -1, strcspn,                       NULL },
+  { "fgetpos",                    -1, dll_fgetpos,                   NULL },
+  { "fsetpos",                    -1, dll_fsetpos,                   NULL },
+  { "_stati64",                   -1, dll_stati64,                   NULL },
+  { "_fstati64",                  -1, dll_fstati64,                  NULL },
+  { "_telli64",                   -1, dll_telli64,                   NULL },
+  { "_tell",                      -1, dll_tell,                      NULL },
+  { "_setmode",                   -1, dll_setmode,                   NULL },
+  { "_beginthreadex",             -1, dll_beginthreadex,             NULL },
+  { "_fileno",                    -1, dll_fileno,                    NULL },
+  { "_getcwd",                    -1, dll_getcwd,                    NULL },
+  { "_isatty",                    -1, _isatty,                       NULL },
+  { "_putenv",                    -1, dll_putenv,                    NULL },
+  { "_atoi64",                    -1, _atoi64,                       NULL },
+  { "_ctype",                     -1, dll_ctype,                     NULL },
+  { "_filbuf",                    -1, _filbuf,                       NULL },
+  { "_fmode",                     -1, _fmode,                        NULL },
+  { "_setjmp",                    -1, _setjmp,                       NULL },
+  { "asin",                       -1, asin,                          NULL },
+  { "atol",                       -1, atol,                          NULL },
+  { "atol",                       -1, atol,                          NULL },
+  { "bsearch",                    -1, bsearch,                       NULL },
+  { "ferror",                     -1, dll_ferror,                    NULL },
+  { "freopen",                    -1, dll_freopen,                   track_freopen},
+  { "fscanf",                     -1, fscanf,                        NULL },
+  { "localeconv",                 -1, localeconv,                    NULL },
+  { "raise",                      -1, raise,                         NULL },
+  { "setvbuf",                    -1, setvbuf,                       NULL },
+  { "strftime",                   -1, strftime,                      NULL },
+  { "strxfrm",                    -1, strxfrm,                       NULL },
+  { "ungetc",                     -1, dll_ungetc,                    NULL },
+  { "_fdopen",                    -1, dll_fdopen,                    NULL },
+  { "system",                     -1, dll_system,                    NULL },
+  { "_flsbuf",                    -1, _flsbuf,                       NULL },
+  { "isdigit",                    -1, isdigit,                       NULL },
+  { "isalnum",                    -1, isalnum,                       NULL },
+  { "isxdigit",                   -1, isxdigit,                      NULL },
+  { "pow",                        -1, pow,                           NULL },
+  { "_onexit",                    -1, dll_onexit,                    NULL },
+  { "modf",                       -1, modf,                          NULL },
+  { "_get_osfhandle",             -1, _get_osfhandle,                NULL },
+  { "_itoa",                      -1, _itoa,                         NULL },
+  { "memcmp",                     -1, memcmp,                        NULL },
+  { "_except_handler3",           -1, _except_handler3,              NULL },
+  { "_CxxThrowException",         -1, _CxxThrowException,            NULL },
+  { "__CxxFrameHandler",          -1, __CxxFrameHandler,             NULL },
+  { "__CxxLongjmpUnwind",         -1, __CxxLongjmpUnwind,            NULL },
+  { "clearerr",                   -1, dll_clearerr,                  NULL },
+  { "_sys_nerr",                  -1, &_sys_nerr,                    NULL },
+  { "_tempnam",                   -1, _tempnam,                      NULL },
+  { NULL,                         -1, NULL,                          NULL }
+};
 
-void export_msvcr71()
+Export export_msvcr71[] =
 {
-  g_dlls.msvcr71.AddExport("_close", (unsigned long)dll_close, (void*)track_close);
-  g_dlls.msvcr71.AddExport("_lseek", (unsigned long)dll_lseek);
-  g_dlls.msvcr71.AddExport("_read", (unsigned long)dll_read);
-  g_dlls.msvcr71.AddExport("_write", (unsigned long)dll_write);
-  g_dlls.msvcr71.AddExport("__dllonexit", (unsigned long)dll__dllonexit);
-  g_dlls.msvcr71.AddExport("__mb_cur_max", (unsigned long)__mb_cur_max);
-  g_dlls.msvcr71.AddExport("_assert", (unsigned long)_assert);
-  g_dlls.msvcr71.AddExport("_errno", (unsigned long)_errno);
-  g_dlls.msvcr71.AddExport("_ftime", (unsigned long)_ftime);
-  g_dlls.msvcr71.AddExport("_iob", (unsigned long)_iob);
-  g_dlls.msvcr71.AddExport("_isctype", (unsigned long)_isctype);
-  g_dlls.msvcr71.AddExport("_lseeki64", (unsigned long)dll_lseeki64);
-  g_dlls.msvcr71.AddExport("_open", (unsigned long)dll_open, (void*)track_open);
-  g_dlls.msvcr71.AddExport("_snprintf", (unsigned long)_snprintf);
-  g_dlls.msvcr71.AddExport("_stricmp", (unsigned long)_stricmp);
-  g_dlls.msvcr71.AddExport("_strnicmp", (unsigned long)_strnicmp);
-  g_dlls.msvcr71.AddExport("_vsnprintf", (unsigned long)_vsnprintf);
-  g_dlls.msvcr71.AddExport("abort", (unsigned long)abort);
-  g_dlls.msvcr71.AddExport("atof", (unsigned long)atof);
-  g_dlls.msvcr71.AddExport("atoi", (unsigned long)atoi);
-  g_dlls.msvcr71.AddExport("cos", (unsigned long)cos);
-  g_dlls.msvcr71.AddExport("cosh", (unsigned long)cosh);
-  g_dlls.msvcr71.AddExport("exp", (unsigned long)exp);
-  g_dlls.msvcr71.AddExport("fflush", (unsigned long)dll_fflush);
-  g_dlls.msvcr71.AddExport("floor", (unsigned long)floor);
-  g_dlls.msvcr71.AddExport("fprintf", (unsigned long)dll_fprintf);
-  g_dlls.msvcr71.AddExport("free", (unsigned long)free, (void*)track_free);
-  g_dlls.msvcr71.AddExport("frexp", (unsigned long)frexp);
-  g_dlls.msvcr71.AddExport("fwrite", (unsigned long)dll_fwrite);
-  g_dlls.msvcr71.AddExport("gmtime", (unsigned long)gmtime);
-  g_dlls.msvcr71.AddExport("ldexp", (unsigned long)ldexp);
-  g_dlls.msvcr71.AddExport("localtime", (unsigned long)localtime);
-  g_dlls.msvcr71.AddExport("log", (unsigned long)log);
-  g_dlls.msvcr71.AddExport("log10", (unsigned long)log10);
-  g_dlls.msvcr71.AddExport("malloc", (unsigned long)malloc, (void*)track_malloc);
-  g_dlls.msvcr71.AddExport("memcpy", (unsigned long)memcpy);
-  g_dlls.msvcr71.AddExport("memmove", (unsigned long)memmove);
-  g_dlls.msvcr71.AddExport("memset", (unsigned long)memset);
-  g_dlls.msvcr71.AddExport("mktime", (unsigned long)mktime);
-  g_dlls.msvcr71.AddExport("perror", (unsigned long)dllperror);
-  g_dlls.msvcr71.AddExport("printf", (unsigned long)dllprintf);
-  g_dlls.msvcr71.AddExport("putchar", (unsigned long)dll_putchar);
-  g_dlls.msvcr71.AddExport("puts", (unsigned long)dllputs);
-  g_dlls.msvcr71.AddExport("qsort", (unsigned long)qsort);
-  g_dlls.msvcr71.AddExport("realloc", (unsigned long)dllrealloc, (void*)track_realloc);
-  g_dlls.msvcr71.AddExport("sin", (unsigned long)sin);
-  g_dlls.msvcr71.AddExport("sinh", (unsigned long)sinh);
-  g_dlls.msvcr71.AddExport("sprintf", (unsigned long)sprintf);
-  g_dlls.msvcr71.AddExport("sqrt", (unsigned long)sqrt);
-  g_dlls.msvcr71.AddExport("sscanf", (unsigned long)sscanf);
-  g_dlls.msvcr71.AddExport("strchr", (unsigned long)strchr);
-  g_dlls.msvcr71.AddExport("strcmp", (unsigned long)strcmp);
-  g_dlls.msvcr71.AddExport("strcpy", (unsigned long)strcpy);
-  g_dlls.msvcr71.AddExport("strlen", (unsigned long)strlen);
-  g_dlls.msvcr71.AddExport("strncpy", (unsigned long)strncpy);
-  g_dlls.msvcr71.AddExport("strrchr", (unsigned long)strrchr);
-  g_dlls.msvcr71.AddExport("strtod", (unsigned long)strtod);
-  g_dlls.msvcr71.AddExport("strtok", (unsigned long)strtok);
-  g_dlls.msvcr71.AddExport("strtol", (unsigned long)strtol);
-  g_dlls.msvcr71.AddExport("strtoul", (unsigned long)strtoul);
-  g_dlls.msvcr71.AddExport("tan", (unsigned long)tan);
-  g_dlls.msvcr71.AddExport("tanh", (unsigned long)tanh);
-  g_dlls.msvcr71.AddExport("time", (unsigned long)time);
-  g_dlls.msvcr71.AddExport("toupper", (unsigned long)toupper);
-  g_dlls.msvcr71.AddExport("_memccpy", (unsigned long)_memccpy);
-  g_dlls.msvcr71.AddExport("_fstat", (unsigned long)dll_fstat);
-  g_dlls.msvcr71.AddExport("_memccpy", (unsigned long)_memccpy);
-  g_dlls.msvcr71.AddExport("_mkdir", (unsigned long)dll_mkdir);
-  g_dlls.msvcr71.AddExport("_pclose", (unsigned long)dll_pclose);
-  g_dlls.msvcr71.AddExport("_popen", (unsigned long)dll_popen);
-  g_dlls.msvcr71.AddExport("_sleep", (unsigned long)dll_sleep);
-  g_dlls.msvcr71.AddExport("_stat", (unsigned long)dll_stat);
-  g_dlls.msvcr71.AddExport("_strdup", (unsigned long)_strdup, (void*)track_strdup);
-  g_dlls.msvcr71.AddExport("_swab", (unsigned long)_swab);
-  g_dlls.msvcr71.AddExport("_findclose", (unsigned long)dll_findclose);
-  g_dlls.msvcr71.AddExport("_findfirst", (unsigned long)dll_findfirst);
-  g_dlls.msvcr71.AddExport("_findnext", (unsigned long)dll_findnext);
-  g_dlls.msvcr71.AddExport("_fullpath", (unsigned long)_fullpath);
-  g_dlls.msvcr71.AddExport("_pctype", (unsigned long)_pctype);
-  g_dlls.msvcr71.AddExport("calloc", (unsigned long)dllcalloc, (void*)track_calloc);
-  g_dlls.msvcr71.AddExport("ceil", (unsigned long)ceil);
-  g_dlls.msvcr71.AddExport("ctime", (unsigned long)ctime);
-  g_dlls.msvcr71.AddExport("exit", (unsigned long)exit);
-  g_dlls.msvcr71.AddExport("fclose", (unsigned long)dll_fclose, (void*)track_fclose);
-  g_dlls.msvcr71.AddExport("feof", (unsigned long)dll_feof);
-  g_dlls.msvcr71.AddExport("fgets", (unsigned long)dll_fgets);
-  g_dlls.msvcr71.AddExport("fopen", (unsigned long)dll_fopen, (void*)track_fopen);
-  g_dlls.msvcr71.AddExport("fgetc", (unsigned long)dll_getc);
-  g_dlls.msvcr71.AddExport("putc", (unsigned long)dll_putc);
-  g_dlls.msvcr71.AddExport("fputc", (unsigned long)dll_fputc);
-  g_dlls.msvcr71.AddExport("fputs", (unsigned long)dll_fputs);
-  g_dlls.msvcr71.AddExport("fread", (unsigned long)dll_fread);
-  g_dlls.msvcr71.AddExport("fseek", (unsigned long)dll_fseek);
-  g_dlls.msvcr71.AddExport("ftell", (unsigned long)dll_ftell);
-  g_dlls.msvcr71.AddExport("getc", (unsigned long)dll_getc);
-  g_dlls.msvcr71.AddExport("getenv", (unsigned long)dll_getenv);
-  g_dlls.msvcr71.AddExport("rand", (unsigned long)rand);
-  g_dlls.msvcr71.AddExport("remove", (unsigned long)remove);
-  g_dlls.msvcr71.AddExport("rewind", (unsigned long)dll_rewind);
-  g_dlls.msvcr71.AddExport("setlocale", (unsigned long)setlocale);
-  g_dlls.msvcr71.AddExport("signal", (unsigned long)dll_signal);
-  g_dlls.msvcr71.AddExport("srand", (unsigned long)srand);
-  g_dlls.msvcr71.AddExport("strcat", (unsigned long)strcat);
-  g_dlls.msvcr71.AddExport("strcoll", (unsigned long)strcoll);
-  g_dlls.msvcr71.AddExport("strerror", (unsigned long)strerror);
-  g_dlls.msvcr71.AddExport("strncat", (unsigned long)strncat);
-  g_dlls.msvcr71.AddExport("strncmp", (unsigned long)strncmp);
-  g_dlls.msvcr71.AddExport("strpbrk", (unsigned long)strpbrk);
-  g_dlls.msvcr71.AddExport("strstr", (unsigned long)strstr);
-  g_dlls.msvcr71.AddExport("tolower", (unsigned long)tolower);
-  g_dlls.msvcr71.AddExport("acos", (unsigned long)acos);
-  g_dlls.msvcr71.AddExport("atan", (unsigned long)atan);
-  g_dlls.msvcr71.AddExport("memchr", (unsigned long)memchr);
-  g_dlls.msvcr71.AddExport("isdigit", (unsigned long)isdigit);
-  g_dlls.msvcr71.AddExport("_strcmpi", (unsigned long)strcmpi);
-  g_dlls.msvcr71.AddExport("_CIpow", (unsigned long)_CIpow);
-  g_dlls.msvcr71.AddExport("_adjust_fdiv", (unsigned long)_adjust_fdiv);
-  g_dlls.msvcr71.AddExport("pow", (unsigned long)pow);
-  g_dlls.msvcr71.AddExport("fabs", (unsigned long)fabs);
-  g_dlls.msvcr71.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc, (void*)track_malloc);
-  g_dlls.msvcr71.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
-  g_dlls.msvcr71.AddExport("??_U@YAPAXI@Z", (unsigned long)(operator new));
-  g_dlls.msvcr71.AddExport("_beginthreadex", (unsigned long)dll_beginthreadex);
-  g_dlls.msvcr71.AddExport("_fdopen", (unsigned long)dll_fdopen);
-  g_dlls.msvcr71.AddExport("_fileno", (unsigned long)dll_fileno);
-  g_dlls.msvcr71.AddExport("_getcwd", (unsigned long)dll_getcwd);
-  g_dlls.msvcr71.AddExport("_isatty", (unsigned long)_isatty);
-  g_dlls.msvcr71.AddExport("_putenv", (unsigned long)dll_putenv);
-  g_dlls.msvcr71.AddExport("_atoi64", (unsigned long)_atoi64);
-  g_dlls.msvcr71.AddExport("_ctype", (unsigned long)dll_ctype);
-  g_dlls.msvcr71.AddExport("_filbuf", (unsigned long)_filbuf);
-  g_dlls.msvcr71.AddExport("_fmode", (unsigned long)_fmode);
-  g_dlls.msvcr71.AddExport("_setjmp", (unsigned long)_setjmp);
-  g_dlls.msvcr71.AddExport("asin", (unsigned long)asin);
-  g_dlls.msvcr71.AddExport("atol", (unsigned long)atol);
-  g_dlls.msvcr71.AddExport("atol", (unsigned long)atol);
-  g_dlls.msvcr71.AddExport("bsearch", (unsigned long)bsearch);
-  g_dlls.msvcr71.AddExport("ferror", (unsigned long)dll_ferror);
-  g_dlls.msvcr71.AddExport("freopen", (unsigned long)dll_freopen, (void*)track_freopen);
-  g_dlls.msvcr71.AddExport("fscanf", (unsigned long)fscanf);
-  g_dlls.msvcr71.AddExport("localeconv", (unsigned long)localeconv);
-  g_dlls.msvcr71.AddExport("raise", (unsigned long)raise);
-  g_dlls.msvcr71.AddExport("setvbuf", (unsigned long)setvbuf);
-  g_dlls.msvcr71.AddExport("strftime", (unsigned long)strftime);
-  g_dlls.msvcr71.AddExport("strxfrm", (unsigned long)strxfrm);
-  g_dlls.msvcr71.AddExport("ungetc", (unsigned long)dll_ungetc);
-  g_dlls.msvcr71.AddExport("system", (unsigned long)dll_system);
-  g_dlls.msvcr71.AddExport("_flsbuf", (unsigned long)_flsbuf);
-  g_dlls.msvcr71.AddExport("strspn", (unsigned long)strspn);
-  g_dlls.msvcr71.AddExport("strcspn", (unsigned long)strcspn);
-  g_dlls.msvcr71.AddExport("wcslen", (unsigned long)wcslen);
-  g_dlls.msvcr71.AddExport("_wcsicmp", (unsigned long)_wcsicmp);
-  g_dlls.msvcr71.AddExport("fgetpos", (unsigned long)dll_fgetpos);
-  g_dlls.msvcr71.AddExport("_wcsnicmp", (unsigned long)_wcsnicmp);
-  g_dlls.msvcr71.AddExport("_CIacos", (unsigned long)_CIacos);
-  g_dlls.msvcr71.AddExport("_CIasin", (unsigned long)_CIasin);
-  g_dlls.msvcr71.AddExport("??_V@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
-  g_dlls.msvcr71.AddExport("isalpha", (unsigned long)isalpha);
-  g_dlls.msvcr71.AddExport("_CxxThrowException", (unsigned long)_CxxThrowException);
-  g_dlls.msvcr71.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);
-  g_dlls.msvcr71.AddExport("__CxxLongjmpUnwind", (unsigned long)__CxxLongjmpUnwind);
-  g_dlls.msvcr71.AddExport("memcmp", (unsigned long)memcmp);
-  g_dlls.msvcr71.AddExport("fsetpos", (unsigned long)dll_fsetpos);
-  g_dlls.msvcr71.AddExport("_setjmp3", (unsigned long)_setjmp3);
-  g_dlls.msvcr71.AddExport("longjmp", (unsigned long)longjmp);
-  g_dlls.msvcr71.AddExport("isprint", (unsigned long)isprint);
-  g_dlls.msvcr71.AddExport("vsprintf", (unsigned long)vsprintf);
-  g_dlls.msvcr71.AddExport("abs", (unsigned long)abs);
-  g_dlls.msvcr71.AddExport("labs", (unsigned long)labs);
-  g_dlls.msvcr71.AddExport("islower", (unsigned long)islower);
-  g_dlls.msvcr71.AddExport("isupper", (unsigned long)isupper);
-  g_dlls.msvcr71.AddExport("wcscoll", (unsigned long)wcscoll);
-  g_dlls.msvcr71.AddExport("_CIsinh", (unsigned long)_CIsinh);
-  g_dlls.msvcr71.AddExport("_CIcosh", (unsigned long)_CIcosh);
-  g_dlls.msvcr71.AddExport("modf", (unsigned long)modf);
-  g_dlls.msvcr71.AddExport("_isnan", (unsigned long)_isnan);
-  g_dlls.msvcr71.AddExport("_finite", (unsigned long)_finite);
-  g_dlls.msvcr71.AddExport("_CIfmod", (unsigned long)_CIfmod);
-  g_dlls.msvcr71.AddExport("atan2", (unsigned long)atan2);
-  g_dlls.msvcr71.AddExport("fmod", (unsigned long)fmod);
-  g_dlls.msvcr71.AddExport("isxdigit", (unsigned long)isxdigit);
-  g_dlls.msvcr71.AddExport("_endthread", (unsigned long)_endthread);
-  g_dlls.msvcr71.AddExport("_beginthread", (unsigned long)_beginthread);
-  g_dlls.msvcr71.AddExport("clock", (unsigned long)clock);
-  g_dlls.msvcr71.AddExport("_hypot", (unsigned long)_hypot);
-  g_dlls.msvcr71.AddExport("_except_handler3", (unsigned long)_except_handler3);
-  g_dlls.msvcr71.AddExport("asctime", (unsigned long)asctime);
-  g_dlls.msvcr71.AddExport("__security_error_handler", (unsigned long)__security_error_handler);
-  g_dlls.msvcr71.AddExport("__CppXcptFilter", (unsigned long)__CppXcptFilter);
-  g_dlls.msvcr71.AddExport("_tzset", (unsigned long)_tzset);
-  g_dlls.msvcr71.AddExport("_tzname", (unsigned long)&_tzname);
-  g_dlls.msvcr71.AddExport("_daylight", (unsigned long)&_daylight);
-  g_dlls.msvcr71.AddExport("_timezone", (unsigned long)&_timezone);
-  g_dlls.msvcr71.AddExport("_sys_nerr", (unsigned long)&_sys_nerr);
-  g_dlls.msvcr71.AddExport("_sys_errlist", (unsigned long)&_sys_errlist);
-  g_dlls.msvcr71.AddExport("_getpid", (unsigned long)dll_getpid);
-  g_dlls.msvcr71.AddExport("_exit", (unsigned long)dllexit);
-  g_dlls.msvcr71.AddExport("_onexit", (unsigned long)dll_onexit);
-  g_dlls.msvcr71.AddExport("_HUGE", (unsigned long)_HUGE);
-  g_dlls.msvcr71.AddExport("_initterm", (unsigned long)dll_initterm);
-  g_dlls.msvcr71.AddExport("_purecall", (unsigned long)_purecall);
-  g_dlls.msvcr71.AddExport("isalnum", (unsigned long)isalnum);
-  g_dlls.msvcr71.AddExport("isspace", (unsigned long)isspace);
-  g_dlls.msvcr71.AddExport("_stati64", (unsigned long)dll_stati64);
-  g_dlls.msvcr71.AddExport("_fstati64", (unsigned long)dll_fstati64);
-  g_dlls.msvcr71.AddExport("_strtoi64", (unsigned long)_strtoi64);
-  g_dlls.msvcr71.AddExport("clearerr", (unsigned long)dll_clearerr);
-  g_dlls.msvcr71.AddExport("_commit", (unsigned long)dll__commit);
-  g_dlls.msvcr71.AddExport("__p__environ", (unsigned long)dll___p__environ);
-  g_dlls.msvcr71.AddExport("vfprintf", (unsigned long)dll_vfprintf);
-  g_dlls.msvcr71.AddExport("_tempnam", (unsigned long)_tempnam);
-  g_dlls.msvcr71.AddExport("_aligned_malloc", (unsigned long)_aligned_malloc);
-  g_dlls.msvcr71.AddExport("_aligned_free", (unsigned long)_aligned_free);
-  g_dlls.msvcr71.AddExport("_aligned_realloc", (unsigned long)_aligned_realloc);
-  g_dlls.msvcr71.AddExport("_callnewh", (unsigned long)_callnewh);
-}
+  { "_close",                     -1, dll_close,                     track_close },
+  { "_lseek",                     -1, dll_lseek,                     NULL },
+  { "_read",                      -1, dll_read,                      NULL },
+  { "_write",                     -1, dll_write,                     NULL },
+  { "__dllonexit",                -1, dll__dllonexit,                NULL },
+  { "__mb_cur_max",               -1, __mb_cur_max,                  NULL },
+  { "_assert",                    -1, _assert,                       NULL },
+  { "_errno",                     -1, _errno,                        NULL },
+  { "_ftime",                     -1, _ftime,                        NULL },
+  { "_iob",                       -1, _iob,                          NULL },
+  { "_isctype",                   -1, _isctype,                      NULL },
+  { "_lseeki64",                  -1, dll_lseeki64,                  NULL },
+  { "_open",                      -1, dll_open,                      track_open },
+  { "_snprintf",                  -1, _snprintf,                     NULL },
+  { "_stricmp",                   -1, _stricmp,                      NULL },
+  { "_strnicmp",                  -1, _strnicmp,                     NULL },
+  { "_vsnprintf",                 -1, _vsnprintf,                    NULL },
+  { "abort",                      -1, abort,                         NULL },
+  { "atof",                       -1, atof,                          NULL },
+  { "atoi",                       -1, atoi,                          NULL },
+  { "cos",                        -1, cos,                           NULL },
+  { "cosh",                       -1, cosh,                          NULL },
+  { "exp",                        -1, exp,                           NULL },
+  { "fflush",                     -1, dll_fflush,                    NULL },
+  { "floor",                      -1, floor,                         NULL },
+  { "fprintf",                    -1, dll_fprintf,                   NULL },
+  { "free",                       -1, free,                          track_free },
+  { "frexp",                      -1, frexp,                         NULL },
+  { "fwrite",                     -1, dll_fwrite,                    NULL },
+  { "gmtime",                     -1, gmtime,                        NULL },
+  { "ldexp",                      -1, ldexp,                         NULL },
+  { "localtime",                  -1, localtime,                     NULL },
+  { "log",                        -1, log,                           NULL },
+  { "log10",                      -1, log10,                         NULL },
+  { "malloc",                     -1, malloc,                        track_malloc },
+  { "memcpy",                     -1, memcpy,                        NULL },
+  { "memmove",                    -1, memmove,                       NULL },
+  { "memset",                     -1, memset,                        NULL },
+  { "mktime",                     -1, mktime,                        NULL },
+  { "perror",                     -1, dllperror,                     NULL },
+  { "printf",                     -1, dllprintf,                     NULL },
+  { "putchar",                    -1, dll_putchar,                   NULL },
+  { "puts",                       -1, dllputs,                       NULL },
+  { "qsort",                      -1, qsort,                         NULL },
+  { "realloc",                    -1, dllrealloc,                    track_realloc },
+  { "sin",                        -1, sin,                           NULL },
+  { "sinh",                       -1, sinh,                          NULL },
+  { "sprintf",                    -1, sprintf,                       NULL },
+  { "sqrt",                       -1, sqrt,                          NULL },
+  { "sscanf",                     -1, sscanf,                        NULL },
+  { "strchr",                     -1, strchr,                        NULL },
+  { "strcmp",                     -1, strcmp,                        NULL },
+  { "strcpy",                     -1, strcpy,                        NULL },
+  { "strlen",                     -1, strlen,                        NULL },
+  { "strncpy",                    -1, strncpy,                       NULL },
+  { "strrchr",                    -1, strrchr,                       NULL },
+  { "strtod",                     -1, strtod,                        NULL },
+  { "strtok",                     -1, strtok,                        NULL },
+  { "strtol",                     -1, strtol,                        NULL },
+  { "strtoul",                    -1, strtoul,                       NULL },
+  { "tan",                        -1, tan,                           NULL },
+  { "tanh",                       -1, tanh,                          NULL },
+  { "time",                       -1, time,                          NULL },
+  { "toupper",                    -1, toupper,                       NULL },
+  { "_memccpy",                   -1, _memccpy,                      NULL },
+  { "_fstat",                     -1, dll_fstat,                     NULL },
+  { "_memccpy",                   -1, _memccpy,                      NULL },
+  { "_mkdir",                     -1, dll_mkdir,                     NULL },
+  { "_pclose",                    -1, dll_pclose,                    NULL },
+  { "_popen",                     -1, dll_popen,                     NULL },
+  { "_sleep",                     -1, dll_sleep,                     NULL },
+  { "_stat",                      -1, dll_stat,                      NULL },
+  { "_strdup",                    -1, _strdup,                       track_strdup },
+  { "_swab",                      -1, _swab,                         NULL },
+  { "_findclose",                 -1, dll_findclose,                 NULL },
+  { "_findfirst",                 -1, dll_findfirst,                 NULL },
+  { "_findnext",                  -1, dll_findnext,                  NULL },
+  { "_fullpath",                  -1, _fullpath,                     NULL },
+  { "_pctype",                    -1, _pctype,                       NULL },
+  { "calloc",                     -1, dllcalloc,                     track_calloc },
+  { "ceil",                       -1, ceil,                          NULL },
+  { "ctime",                      -1, ctime,                         NULL },
+  { "exit",                       -1, exit,                          NULL },
+  { "fclose",                     -1, dll_fclose,                    track_fclose },
+  { "feof",                       -1, dll_feof,                      NULL },
+  { "fgets",                      -1, dll_fgets,                     NULL },
+  { "fopen",                      -1, dll_fopen,                     track_fopen },
+  { "fgetc",                      -1, dll_getc,                      NULL },
+  { "putc",                       -1, dll_putc,                      NULL },
+  { "fputc",                      -1, dll_fputc,                     NULL },
+  { "fputs",                      -1, dll_fputs,                     NULL },
+  { "fread",                      -1, dll_fread,                     NULL },
+  { "fseek",                      -1, dll_fseek,                     NULL },
+  { "ftell",                      -1, dll_ftell,                     NULL },
+  { "getc",                       -1, dll_getc,                      NULL },
+  { "getenv",                     -1, dll_getenv,                    NULL },
+  { "rand",                       -1, rand,                          NULL },
+  { "remove",                     -1, remove,                        NULL },
+  { "rewind",                     -1, dll_rewind,                    NULL },
+  { "setlocale",                  -1, setlocale,                     NULL },
+  { "signal",                     -1, dll_signal,                    NULL },
+  { "srand",                      -1, srand,                         NULL },
+  { "strcat",                     -1, strcat,                        NULL },
+  { "strcoll",                    -1, strcoll,                       NULL },
+  { "strerror",                   -1, strerror,                      NULL },
+  { "strncat",                    -1, strncat,                       NULL },
+  { "strncmp",                    -1, strncmp,                       NULL },
+  { "strpbrk",                    -1, strpbrk,                       NULL },
+  { "strstr",                     -1, strstr,                        NULL },
+  { "tolower",                    -1, tolower,                       NULL },
+  { "acos",                       -1, acos,                          NULL },
+  { "atan",                       -1, atan,                          NULL },
+  { "memchr",                     -1, memchr,                        NULL },
+  { "isdigit",                    -1, isdigit,                       NULL },
+  { "_strcmpi",                   -1, strcmpi,                       NULL },
+  { "_CIpow",                     -1, _CIpow,                        NULL },
+  { "_adjust_fdiv",               -1, _adjust_fdiv,                  NULL },
+  { "pow",                        -1, pow,                           NULL },
+  { "fabs",                       -1, fabs,                          NULL },
+  { "??2@YAPAXI@Z",               -1, dllmalloc,                     track_malloc },
+  { "??3@YAXPAX@Z",               -1, dllfree,                       track_free },
+  { "??_U@YAPAXI@Z",              -1, (void*)(operator new),         NULL },
+  { "_beginthreadex",             -1, dll_beginthreadex,             NULL },
+  { "_fdopen",                    -1, dll_fdopen,                    NULL },
+  { "_fileno",                    -1, dll_fileno,                    NULL },
+  { "_getcwd",                    -1, dll_getcwd,                    NULL },
+  { "_isatty",                    -1, _isatty,                       NULL },
+  { "_putenv",                    -1, dll_putenv,                    NULL },
+  { "_atoi64",                    -1, _atoi64,                       NULL },
+  { "_ctype",                     -1, dll_ctype,                     NULL },
+  { "_filbuf",                    -1, _filbuf,                       NULL },
+  { "_fmode",                     -1, _fmode,                        NULL },
+  { "_setjmp",                    -1, _setjmp,                       NULL },
+  { "asin",                       -1, asin,                          NULL },
+  { "atol",                       -1, atol,                          NULL },
+  { "atol",                       -1, atol,                          NULL },
+  { "bsearch",                    -1, bsearch,                       NULL },
+  { "ferror",                     -1, dll_ferror,                    NULL },
+  { "freopen",                    -1, dll_freopen,                   track_freopen},
+  { "fscanf",                     -1, fscanf,                        NULL },
+  { "localeconv",                 -1, localeconv,                    NULL },
+  { "raise",                      -1, raise,                         NULL },
+  { "setvbuf",                    -1, setvbuf,                       NULL },
+  { "strftime",                   -1, strftime,                      NULL },
+  { "strxfrm",                    -1, strxfrm,                       NULL },
+  { "ungetc",                     -1, dll_ungetc,                    NULL },
+  { "system",                     -1, dll_system,                    NULL },
+  { "_flsbuf",                    -1, _flsbuf,                       NULL },
+  { "strspn",                     -1, strspn,                        NULL },
+  { "strcspn",                    -1, strcspn,                       NULL },
+  { "wcslen",                     -1, wcslen,                        NULL },
+  { "_wcsicmp",                   -1, _wcsicmp,                      NULL },
+  { "fgetpos",                    -1, dll_fgetpos,                   NULL },
+  { "_wcsnicmp",                  -1, _wcsnicmp,                     NULL },
+  { "_CIacos",                    -1, _CIacos,                       NULL },
+  { "_CIasin",                    -1, _CIasin,                       NULL },
+  { "??_V@YAXPAX@Z",              -1, dllfree,                       track_free},
+  { "isalpha",                    -1, isalpha,                       NULL },
+  { "_CxxThrowException",         -1, _CxxThrowException,            NULL },
+  { "__CxxFrameHandler",          -1, __CxxFrameHandler,             NULL },
+  { "__CxxLongjmpUnwind",         -1, __CxxLongjmpUnwind,            NULL },
+  { "memcmp",                     -1, memcmp,                        NULL },
+  { "fsetpos",                    -1, dll_fsetpos,                   NULL },
+  { "_setjmp3",                   -1, _setjmp3,                      NULL },
+  { "longjmp",                    -1, longjmp,                       NULL },
+  { "isprint",                    -1, isprint,                       NULL },
+  { "vsprintf",                   -1, vsprintf,                      NULL },
+  { "abs",                        -1, abs,                           NULL },
+  { "labs",                       -1, labs,                          NULL },
+  { "islower",                    -1, islower,                       NULL },
+  { "isupper",                    -1, isupper,                       NULL },
+  { "wcscoll",                    -1, wcscoll,                       NULL },
+  { "_CIsinh",                    -1, _CIsinh,                       NULL },
+  { "_CIcosh",                    -1, _CIcosh,                       NULL },
+  { "modf",                       -1, modf,                          NULL },
+  { "_isnan",                     -1, _isnan,                        NULL },
+  { "_finite",                    -1, _finite,                       NULL },
+  { "_CIfmod",                    -1, _CIfmod,                       NULL },
+  { "atan2",                      -1, atan2,                         NULL },
+  { "fmod",                       -1, fmod,                          NULL },
+  { "isxdigit",                   -1, isxdigit,                      NULL },
+  { "_endthread",                 -1, _endthread,                    NULL },
+  { "_beginthread",               -1, _beginthread,                  NULL },
+  { "clock",                      -1, clock,                         NULL },
+  { "_hypot",                     -1, _hypot,                        NULL },
+  { "_except_handler3",           -1, _except_handler3,              NULL },
+  { "asctime",                    -1, asctime,                       NULL },
+  { "__security_error_handler",   -1, __security_error_handler,      NULL },
+  { "__CppXcptFilter",            -1, __CppXcptFilter,               NULL },
+  { "_tzset",                     -1, _tzset,                        NULL },
+  { "_tzname",                    -1, &_tzname,                      NULL },
+  { "_daylight",                  -1, &_daylight,                    NULL },
+  { "_timezone",                  -1, &_timezone,                    NULL },
+  { "_sys_nerr",                  -1, &_sys_nerr,                    NULL },
+  { "_sys_errlist",               -1, &_sys_errlist,                 NULL },
+  { "_getpid",                    -1, dll_getpid,                    NULL },
+  { "_exit",                      -1, dllexit,                       NULL },
+  { "_onexit",                    -1, dll_onexit,                    NULL },
+  { "_HUGE",                      -1, _HUGE,                         NULL },
+  { "_initterm",                  -1, dll_initterm,                  NULL },
+  { "_purecall",                  -1, _purecall,                     NULL },
+  { "isalnum",                    -1, isalnum,                       NULL },
+  { "isspace",                    -1, isspace,                       NULL },
+  { "_stati64",                   -1, dll_stati64,                   NULL },
+  { "_fstati64",                  -1, dll_fstati64,                  NULL },
+  { "_strtoi64",                  -1, _strtoi64,                     NULL },
+  { "clearerr",                   -1, dll_clearerr,                  NULL },
+  { "_commit",                    -1, dll__commit,                   NULL },
+  { "__p__environ",               -1, dll___p__environ,              NULL },
+  { "vfprintf",                   -1, dll_vfprintf,                  NULL },
+  { "_tempnam",                   -1, _tempnam,                      NULL },
+  { "_aligned_malloc",            -1, _aligned_malloc,               NULL },
+  { "_aligned_free",              -1, _aligned_free,                 NULL },
+  { "_aligned_realloc",           -1, _aligned_realloc,              NULL },
+  { "_callnewh",                  -1, _callnewh,                     NULL },
+  { NULL,                         -1, NULL,                          NULL }
+};
 
-void export_pncrt()
+Export export_pncrt[] =
 {
-  g_dlls.pncrt.AddExport("malloc", (unsigned long)malloc, (void*)track_malloc);
-  g_dlls.pncrt.AddExport("??3@YAXPAX@Z", (unsigned long)free, (void*)track_free);
-  g_dlls.pncrt.AddExport("memmove", (unsigned long)memmove);
-  g_dlls.pncrt.AddExport("_purecall", (unsigned long)_purecall);
-  g_dlls.pncrt.AddExport("_ftol", (unsigned long)_ftol);
-  g_dlls.pncrt.AddExport("_CIpow", (unsigned long)_CIpow);
-  g_dlls.pncrt.AddExport("??2@YAPAXI@Z", (unsigned long)malloc, (void*)track_malloc);
-  g_dlls.pncrt.AddExport("free", (unsigned long)free, (void*)track_free);
-  g_dlls.pncrt.AddExport("_initterm", (unsigned long)dll_initterm);
-  g_dlls.pncrt.AddExport("_adjust_fdiv", (unsigned long)&_adjust_fdiv);
-  g_dlls.pncrt.AddExport("_beginthreadex", (unsigned long)dll_beginthreadex);
-  g_dlls.pncrt.AddExport("_iob", (unsigned long)&_iob);
-  g_dlls.pncrt.AddExport("fprintf", (unsigned long)dll_fprintf);
-  g_dlls.pncrt.AddExport("floor", (unsigned long)floor);
-  g_dlls.pncrt.AddExport("_assert", (unsigned long)_assert);
-  g_dlls.pncrt.AddExport("__dllonexit", (unsigned long)dll__dllonexit);
-  g_dlls.pncrt.AddExport("calloc", (unsigned long)dllcalloc, (void*)track_calloc);
-  g_dlls.pncrt.AddExport("strncpy", (unsigned long)strncpy);
-  g_dlls.pncrt.AddExport("ldexp", (unsigned long)ldexp);
-  g_dlls.pncrt.AddExport("frexp", (unsigned long)frexp);
-  g_dlls.pncrt.AddExport("rand", (unsigned long)rand);
-}
+  { "malloc",                     -1, malloc,                        track_malloc },
+  { "??3@YAXPAX@Z",               -1, free,                          track_free },
+  { "memmove",                    -1, memmove,                       NULL },
+  { "_purecall",                  -1, _purecall,                     NULL },
+  { "_ftol",                      -1, _ftol,                         NULL },
+  { "_CIpow",                     -1, _CIpow,                        NULL },
+  { "??2@YAPAXI@Z",               -1, malloc,                        track_malloc },
+  { "free",                       -1, free,                          track_free },
+  { "_initterm",                  -1, dll_initterm,                  NULL },
+  { "_adjust_fdiv",               -1, &_adjust_fdiv,                 NULL },
+  { "_beginthreadex",             -1, dll_beginthreadex,             NULL },
+  { "_iob",                       -1, &_iob,                         NULL },
+  { "fprintf",                    -1, dll_fprintf,                   NULL },
+  { "floor",                      -1, floor,                         NULL },
+  { "_assert",                    -1, _assert,                       NULL },
+  { "__dllonexit",                -1, dll__dllonexit,                NULL },
+  { "calloc",                     -1, dllcalloc,                     track_calloc },
+  { "strncpy",                    -1, strncpy,                       NULL },
+  { "ldexp",                      -1, ldexp,                         NULL },
+  { "frexp",                      -1, frexp,                         NULL },
+  { "rand",                       -1, rand,                          NULL },
+  { NULL,                         -1, NULL,                          NULL }
+};

@@ -1,7 +1,8 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DllDvdNav.h"
 
 #include "DVDStateSerializer.h"
+#include <sstream>
 
 bool CDVDStateSerializer::test( const dvd_state_t *state  )
 {
@@ -175,11 +176,9 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
   xmlDoc.InsertEndChild(eRoot);
   
-  TiXmlOutStream stream;
-
-  stream<<xmlDoc;  
-
-  xmlstate = stream.c_str();
+  std::stringstream stream;
+  stream << xmlDoc;
+  xmlstate = stream.str();
   return true;
 }
 
@@ -189,10 +188,11 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
 
   xmlDoc.Parse(xmlstate.c_str());
   
-  TiXmlHandle hRoot( xmlDoc.RootElement() );
+  if( xmlDoc.Error() )
+    return false;
 
+  TiXmlHandle hRoot( xmlDoc.RootElement() );  
   if( strcmp( hRoot.Element()->Value(), "navstate" ) != 0 ) return false;  
-
   
   TiXmlElement *element = NULL;  
   TiXmlText *text = NULL;

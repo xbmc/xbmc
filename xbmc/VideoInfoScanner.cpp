@@ -337,7 +337,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         CUtil::GetDirectory(pItem->m_strPath,strPath);
         lTvShowId2 = m_database.GetTvShowInfo(strPath);
       }
-      if (lTvShowId2 > -1 && !bRefresh)
+      if (lTvShowId2 > -1 && (!bRefresh && !pItem->m_bIsFolder))
       {
         if (lTvShowId2 != lTvShowId)
         {
@@ -619,7 +619,7 @@ void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISOD
       continue;
     CStdString strPath;
     CUtil::GetDirectory(items[i]->m_strPath,strPath);
-    CUtil::RemoveSlashAtEnd(strPath);
+    CUtil::RemoveSlashAtEnd(strPath); // want no slash for the test that follows
     if (CUtil::GetFileName(strPath).Equals("sample"))
       continue;
     for (unsigned int j=0;j<expression.size();++j)
@@ -703,8 +703,24 @@ long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &
       picture.DoCreateThumbnail(strTemp, strThumb);
       if (bApplyToDir)
       {
+        CStdString strCheck=pItem->m_strPath;
         CStdString strDirectory;
-        CUtil::GetDirectory(pItem->m_strPath,strDirectory);
+        if (pItem->IsStack())
+          strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+
+        CUtil::GetDirectory(strCheck,strDirectory);
+        if (CUtil::IsInRAR(strCheck))
+        {
+          CStdString strPath=strDirectory;
+          CUtil::GetParentPath(strPath,strDirectory);
+        }
+        if (pItem->IsStack())
+        {
+          strCheck = strDirectory;
+          CUtil::RemoveSlashAtEnd(strCheck);
+          if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+            CUtil::GetDirectory(strCheck,strDirectory);
+        }
         ApplyIMDBThumbToFolder(strDirectory,strThumb);
       }
     }
@@ -851,6 +867,7 @@ CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item)
   {
     CStdString strPath;
     CUtil::GetDirectory(item->m_strPath,strPath);
+    CUtil::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
     CFileItem item2;
     if (strPath.Mid(strPath.size()-3).Equals("cd1"))
     {

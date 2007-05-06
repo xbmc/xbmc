@@ -1,49 +1,50 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #include "emu_socket.h"
 #include "..\dll_tracker_socket.h"
 
-void export_wsock32()
+Export export_wsock32[] =
 {
-  g_dlls.wsock32.AddExport("htonl", 8, (unsigned long)htonl);
-  g_dlls.wsock32.AddExport("ntohl", 14, (unsigned long)ntohl);
-  g_dlls.wsock32.AddExport("recvfrom", 17, (unsigned long)dllrecvfrom);
-  g_dlls.wsock32.AddExport("send", 19, (unsigned long)dllsend);
-  g_dlls.wsock32.AddExport("sendto", 20, (unsigned long)dllsendto);
-  g_dlls.wsock32.AddExport("shutdown", 22, (unsigned long)dllshutdown);
-  g_dlls.wsock32.AddExport("socket", 23, (unsigned long)dllsocket, (void*)track_socket);
-  g_dlls.wsock32.AddExport("gethostname", 57, (unsigned long)dllgethostname);
-  g_dlls.wsock32.AddExport("recv", 16, (unsigned long)dllrecv);
-  g_dlls.wsock32.AddExport("inet_addr", 10, (unsigned long)inet_addr);
-  g_dlls.wsock32.AddExport("inet_ntoa", 11, (unsigned long)dllinet_ntoa);
-  g_dlls.wsock32.AddExport("WSAStartup", 115, (unsigned long)WSAStartup);
-  g_dlls.wsock32.AddExport("WSACleanup", 116, (unsigned long)WSACleanup);
-  g_dlls.wsock32.AddExport("listen", 13, (unsigned long)dlllisten);
-  g_dlls.wsock32.AddExport("connect", 4, (unsigned long)dllconnect);
-  g_dlls.wsock32.AddExport("bind", 2, (unsigned long)dllbind);
-  g_dlls.wsock32.AddExport("setsockopt", 21, (unsigned long)dllsetsockopt);
-  g_dlls.wsock32.AddExport("select", 18, (unsigned long)dllselect);
-  g_dlls.wsock32.AddExport("accept", 1, (unsigned long)dllaccept, (void*)track_accept);
-  g_dlls.wsock32.AddExport("closesocket", 3, (unsigned long)dllclosesocket, (void*)track_closesocket);
-  g_dlls.wsock32.AddExport("ioctlsocket", 12, (unsigned long)dllioctlsocket);
-  g_dlls.wsock32.AddExport("ntohs", 15, (unsigned long)ntohs);
-  g_dlls.wsock32.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
-  g_dlls.wsock32.AddExport("WSAGetLastError", 111, (unsigned long)WSAGetLastError);
-  g_dlls.wsock32.AddExport("htons", 9, (unsigned long)htons);
-  g_dlls.wsock32.AddExport("__WSAFDIsSet", 151, (unsigned long)dll__WSAFDIsSet);
-  g_dlls.wsock32.AddExport("WSASetLastError", 112, (unsigned long)WSASetLastError);
-  g_dlls.wsock32.AddExport("getsockopt", 7, (unsigned long)dllgetsockopt);
-  g_dlls.wsock32.AddExport("getservbyname", 55, (unsigned long)dllgetservbyname);
-  g_dlls.wsock32.AddExport("getprotobyname", 53, (unsigned long)dllgetprotobyname);
-  g_dlls.wsock32.AddExport("getpeername", 5, (unsigned long)dllgetpeername);
-  g_dlls.wsock32.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
+  { "htonl",                          8, htonl,                         NULL },
+  { "ntohl",                         14, ntohl,                         NULL },
+  { "recvfrom",                      17, dllrecvfrom,                   NULL },
+  { "send",                          19, dllsend,                       NULL },
+  { "sendto",                        20, dllsendto,                     NULL },
+  { "shutdown",                      22, dllshutdown,                   NULL },
+  { "socket",                        23, dllsocket,                     track_socket },
+  { "gethostname",                   57, dllgethostname,                NULL },
+  { "recv",                          16, dllrecv,                       NULL },
+  { "inet_addr",                     10, inet_addr,                     NULL },
+  { "inet_ntoa",                     11, dllinet_ntoa,                  NULL },
+  { "WSAStartup",                   115, WSAStartup,                    NULL },
+  { "WSACleanup",                   116, WSACleanup,                    NULL },
+  { "listen",                        13, dlllisten,                     NULL },
+  { "connect",                        4, dllconnect,                    NULL },
+  { "bind",                           2, dllbind,                       NULL },
+  { "setsockopt",                    21, dllsetsockopt,                 NULL },
+  { "select",                        18, dllselect,                     NULL },
+  { "accept",                         1, dllaccept,                     track_accept },
+  { "closesocket",                    3, dllclosesocket,                track_closesocket },
+  { "ioctlsocket",                   12, dllioctlsocket,                NULL },
+  { "ntohs",                         15, ntohs,                         NULL },
+  { "gethostbyname",                 52, dllgethostbyname,              NULL },
+  { "WSAGetLastError",              111, WSAGetLastError,               NULL },
+  { "htons",                          9, htons,                         NULL },
+  { "__WSAFDIsSet",                 151, dll__WSAFDIsSet,               NULL },
+  { "WSASetLastError",              112, WSASetLastError,               NULL },
+  { "getsockopt",                     7, dllgetsockopt,                 NULL },
+  { "getservbyname",                 55, dllgetservbyname,              NULL },
+  { "getprotobyname",                53, dllgetprotobyname,             NULL },
+  { "getpeername",                    5, dllgetpeername,                NULL },
+  { "getservbyport",                 56, dllgetservbyport,              NULL },
 #ifdef _XBOX
-  g_dlls.wsock32.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
+  { "gethostbyaddr",                 51, dllgethostbyaddr,              NULL },
 #else
-  g_dlls.wsock32.AddExport("gethostbyaddr", 51, (unsigned long)gethostbyaddr);
+  { "gethostbyaddr",                 51, gethostbyaddr,                 NULL },
 #endif
-}
+  { NULL,                          NULL, NULL,                          NULL }
+};
 
 /*
     WSOCK32.DLL
@@ -126,48 +127,49 @@ void export_wsock32()
          23   4A          socket (forwarded to ws2_32.socket)
 */
 
-void export_ws2_32()
+Export export_ws2_32[] =
 {
-  g_dlls.ws2_32.AddExport("WSACleanup", 116, (unsigned long)WSACleanup);
-  g_dlls.ws2_32.AddExport("WSAGetLastError", 111, (unsigned long)WSAGetLastError);
-  g_dlls.ws2_32.AddExport("WSAStartup", 115, (unsigned long)WSAStartup);
-  g_dlls.ws2_32.AddExport("bind", 2, (unsigned long)dllbind);
-  g_dlls.ws2_32.AddExport("closesocket", 3, (unsigned long)dllclosesocket, (void*)track_closesocket);
-  g_dlls.ws2_32.AddExport("connect", 4, (unsigned long)dllconnect);
-  g_dlls.ws2_32.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
-  g_dlls.ws2_32.AddExport("getsockopt", 7, (unsigned long)dllgetsockopt);
-  g_dlls.ws2_32.AddExport("htonl", 8, (unsigned long)htonl);
-  g_dlls.ws2_32.AddExport("htons", 9, (unsigned long)htons);
-  g_dlls.ws2_32.AddExport("inet_addr", 11, (unsigned long)inet_addr);
-  g_dlls.ws2_32.AddExport("inet_ntoa", 12, (unsigned long)dllinet_ntoa);
-  g_dlls.ws2_32.AddExport("ioctlsocket", 10, (unsigned long)dllioctlsocket);
-  g_dlls.ws2_32.AddExport("ntohl", 14, (unsigned long)ntohl);
-  g_dlls.ws2_32.AddExport("recv", 16, (unsigned long)dllrecv);
-  g_dlls.ws2_32.AddExport("select", 18, (unsigned long)dllselect);
-  g_dlls.ws2_32.AddExport("send", 19, (unsigned long)dllsend);
-  g_dlls.ws2_32.AddExport("sendto", 20, (unsigned long)dllsendto);
-  g_dlls.ws2_32.AddExport("setsockopt", 21, (unsigned long)dllsetsockopt);
-  g_dlls.ws2_32.AddExport("socket", 23, (unsigned long)dllsocket, (void*)track_socket);
-  g_dlls.ws2_32.AddExport("accept", 1, (unsigned long)dllaccept, (void*)track_accept);
-  g_dlls.ws2_32.AddExport("gethostname", 57, (unsigned long)dllgethostname);
-  g_dlls.ws2_32.AddExport("getsockname", 6, (unsigned long)dllgetsockname);
-  g_dlls.ws2_32.AddExport("listen", 13, (unsigned long)dlllisten);
-  g_dlls.ws2_32.AddExport("ntohs", 15, (unsigned long)ntohs);
-  g_dlls.ws2_32.AddExport("recvfrom", 17, (unsigned long)dllrecvfrom);
-  g_dlls.ws2_32.AddExport("__WSAFDIsSet", 151, (unsigned long)dll__WSAFDIsSet);
-  g_dlls.ws2_32.AddExport("WSASetLastError", 112, (unsigned long)WSASetLastError);
-  g_dlls.ws2_32.AddExport("shutdown", 22, (unsigned long)dllshutdown);
-  g_dlls.ws2_32.AddExport("getservbyname", 55, (unsigned long)dllgetservbyname);
-  g_dlls.ws2_32.AddExport("getprotobyname", 53, (unsigned long)dllgetprotobyname);
-  g_dlls.ws2_32.AddExport("getpeername", 5, (unsigned long)dllgetpeername);
-  g_dlls.ws2_32.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
+  { "WSACleanup",                   116, WSACleanup,                    NULL },
+  { "WSAGetLastError",              111, WSAGetLastError,               NULL },
+  { "WSAStartup",                   115, WSAStartup,                    NULL },
+  { "bind",                           2, dllbind,                       NULL },
+  { "closesocket",                    3, dllclosesocket,                track_closesocket },
+  { "connect",                        4, dllconnect,                    NULL },
+  { "gethostbyname",                 52, dllgethostbyname,              NULL },
+  { "getsockopt",                     7, dllgetsockopt,                 NULL },
+  { "htonl",                          8, htonl,                         NULL },
+  { "htons",                          9, htons,                         NULL },
+  { "inet_addr",                     11, inet_addr,                     NULL },
+  { "inet_ntoa",                     12, dllinet_ntoa,                  NULL },
+  { "ioctlsocket",                   10, dllioctlsocket,                NULL },
+  { "ntohl",                         14, ntohl,                         NULL },
+  { "recv",                          16, dllrecv,                       NULL },
+  { "select",                        18, dllselect,                     NULL },
+  { "send",                          19, dllsend,                       NULL },
+  { "sendto",                        20, dllsendto,                     NULL },
+  { "setsockopt",                    21, dllsetsockopt,                 NULL },
+  { "socket",                        23, dllsocket,                     track_socket },
+  { "accept",                         1, dllaccept,                     track_accept },
+  { "gethostname",                   57, dllgethostname,                NULL },
+  { "getsockname",                    6, dllgetsockname,                NULL },
+  { "listen",                        13, dlllisten,                     NULL },
+  { "ntohs",                         15, ntohs,                         NULL },
+  { "recvfrom",                      17, dllrecvfrom,                   NULL },
+  { "__WSAFDIsSet",                 151, dll__WSAFDIsSet,               NULL },
+  { "WSASetLastError",              112, WSASetLastError,               NULL },
+  { "shutdown",                      22, dllshutdown,                   NULL },
+  { "getservbyname",                 55, dllgetservbyname,              NULL },
+  { "getprotobyname",                53, dllgetprotobyname,             NULL },
+  { "getpeername",                    5, dllgetpeername,                NULL },
+  { "getservbyport",                 56, dllgetservbyport,              NULL },
 #ifdef _XBOX
-  g_dlls.ws2_32.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
+  { "gethostbyaddr",                 51, dllgethostbyaddr,              NULL },
 #endif
-  g_dlls.ws2_32.AddExport("getaddrinfo", 95, (unsigned long)dllgetaddrinfo);
-  g_dlls.ws2_32.AddExport("getnameinfo", 96, (unsigned long)dllgetnameinfo);
-  g_dlls.ws2_32.AddExport("freeaddrinfo", 94, (unsigned long)dllfreeaddrinfo);
-}
+  { "getaddrinfo",                   95, dllgetaddrinfo,                NULL },
+  { "getnameinfo",                   96, dllgetnameinfo,                NULL },
+  { "freeaddrinfo",                  94, dllfreeaddrinfo,               NULL },
+  { NULL,                          NULL, NULL,                          NULL }
+};
 
 /*
     WS2_32.DLL

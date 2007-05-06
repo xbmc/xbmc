@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileTuxBox.h"
 #include "../utils/HTTP.h"
 

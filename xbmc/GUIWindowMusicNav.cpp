@@ -160,9 +160,16 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "special://musicplaylists/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Years"))
+        {
+          m_vecItems.m_strPath = "musicdb://9/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          m_vecItems.m_strPath = strDestination;
+          SetHistoryForPath(m_vecItems.m_strPath);
           break;
         }
       }
@@ -427,7 +434,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
-    if (!inPlaylists && ((dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath)) || item->IsAudio()))
+    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
+      buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+    else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
 
     // enable query all albums button only in album view
@@ -513,7 +522,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     m_musicdatabase.GetArtistPath(idArtist, picturePath);
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20010), picturePath))
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(1030), picturePath))
   {
     CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;

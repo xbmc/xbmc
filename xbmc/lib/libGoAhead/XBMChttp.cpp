@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "..\..\stdafx.h"
+#include "stdafx.h"
 #include "WebServer.h"
 #include "XbmcHttp.h"
 #include "includes.h"
@@ -761,7 +761,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     CStdString strFolder = "0";
     if (item->m_bIsFolder)
     {
-      if (!CUtil::HasSlashAtEnd(strPath))
+      if (!item->IsFileFolder() && !CUtil::HasSlashAtEnd(strPath))
         CUtil::AddSlashAtEnd(strPath);
       strFolder = "1";
     }

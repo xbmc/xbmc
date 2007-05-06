@@ -195,13 +195,13 @@ bool CGUIControl::HasFocus(void) const
   return m_bHasFocus;
 }
 
-void CGUIControl::SetFocus(bool bOnOff)
+void CGUIControl::SetFocus(bool focus)
 {
-  if (m_bHasFocus && !bOnOff)
+  if (m_bHasFocus && !focus)
     QueueAnimation(ANIM_TYPE_UNFOCUS);
-  else if (!m_bHasFocus && bOnOff)
+  else if (!m_bHasFocus && focus)
     QueueAnimation(ANIM_TYPE_FOCUS);
-  m_bHasFocus = bOnOff;
+  m_bHasFocus = focus;
 }
 
 bool CGUIControl::OnMessage(CGUIMessage& message)
@@ -378,10 +378,10 @@ void CGUIControl::SetVisible(bool bVisible)
 
 bool CGUIControl::HitTest(float posX, float posY) const
 {
-  if( posX >= g_graphicsContext.ScaleFinalXCoord(m_posX, m_posY)
-   && posX <= g_graphicsContext.ScaleFinalXCoord(m_posX + m_width, m_posY)
-   && posY >= g_graphicsContext.ScaleFinalYCoord(m_posX, m_posY)
-   && posY <= g_graphicsContext.ScaleFinalYCoord(m_posX, m_posY + m_height) )
+  if( posX >= m_posX
+   && posX <= m_posX + m_width
+   && posY >= m_posY
+   && posY <= m_posY + m_height )
     return true;
   return false;
 }
@@ -393,7 +393,7 @@ bool CGUIControl::OnMouseOver()
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
-  SendWindowMessage(msg);
+  OnMessage(msg);
   return true;
 }
 
@@ -655,6 +655,12 @@ bool CGUIControl::CanFocusFromPoint(float posX, float posY, CGUIControl **contro
   }
   *control = NULL;
   return false;
+}
+
+void CGUIControl::UnfocusFromPoint(float posX, float posY)
+{
+  if (!HitTest(posX, posY))
+    SetFocus(false);
 }
 
 bool CGUIControl::HasID(DWORD dwID) const

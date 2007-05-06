@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "winxml.h"
 #include "..\python\python.h"
 #include "pyutil.h"

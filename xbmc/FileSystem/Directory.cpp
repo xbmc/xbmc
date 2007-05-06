@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "Directory.h"
 #include "FactoryDirectory.h"
 #include "FactoryFileDirectory.h"
@@ -76,9 +76,10 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
-      if(pDirectory->Create(strPath.c_str()))
+      if(pDirectory->Create(translatedPath.c_str()))
         return true;
   }
 #ifndef _LINUX
@@ -99,9 +100,10 @@ bool CDirectory::Exists(const CStdString& strPath)
 {
   try
   {
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
-      return pDirectory->Exists(strPath.c_str());
+      return pDirectory->Exists(translatedPath.c_str());
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -121,9 +123,10 @@ bool CDirectory::Remove(const CStdString& strPath)
 {
   try
   {
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
-      if(pDirectory->Remove(strPath.c_str()))
+      if(pDirectory->Remove(translatedPath.c_str()))
         return true;
   }
 #ifndef _LINUX

@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\python\python.h"
 #include "player.h"
 #include "pyplaylist.h"
@@ -48,7 +48,7 @@ namespace PYXBMC
 
   PyObject* XBMC_Output(PyObject *self, PyObject *args)
   {
-    char *s_line;
+    char *s_line = NULL;
     if (!PyArg_ParseTuple(args, "s:xb_output", &s_line))  return NULL;
 
     CLog::Log(LOGINFO, s_line);
@@ -72,7 +72,7 @@ namespace PYXBMC
 
   PyObject* XBMC_Log(PyObject *self, PyObject *args)
   {
-    char *s_line;
+    char *s_line = NULL;
     if (!PyArg_ParseTuple(args, "s", &s_line))  return NULL;
 
     CLog::Log(LOGFATAL, s_line);
@@ -140,7 +140,7 @@ namespace PYXBMC
 
   PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
   {
-    char *cLine;
+    char *cLine = NULL;
     if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
 
     ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
@@ -164,7 +164,7 @@ namespace PYXBMC
 
   PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
   {
-    char *cLine;
+    char *cLine = NULL;
     if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
 
     g_applicationMessenger.ExecBuiltIn(cLine);
@@ -186,7 +186,7 @@ namespace PYXBMC
 
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
-    char *cLine;
+    char *cLine = NULL;
     CStdString ret;
     if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
     if (!pXbmcHttpShim)
@@ -406,7 +406,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
   {
-    char *cLine;
+    char *cLine = NULL;
     if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
@@ -474,7 +474,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
   {
-    char *cLine;
+    char *cLine = NULL;
     if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
 
     PyGUILock();
@@ -498,18 +498,18 @@ namespace PYXBMC
     return Py_BuildValue("i", g_application.GlobalIdleTime());
   }
 
-  // getThumbName function
-  PyDoc_STRVAR(getThumbName__doc__,
-    "getThumbName(path) -- Returns a thumb cache filename.\n"
+  // getCacheThumbName function
+  PyDoc_STRVAR(getCacheThumbName__doc__,
+    "getCacheThumbName(path) -- Returns a thumb cache filename.\n"
     "\n"
     "path           : string - path to file\n"
     "\n"
     "example:\n"
-    "  - thumb = xbmc.getThumbName('f:\\videos\\movie.avi')\n");
+    "  - thumb = xbmc.getCacheThumbName('f:\\\\videos\\\\movie.avi')\n");
 
-  PyObject* XBMC_GetThumbName(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
   {
-    char *cPath;
+    char *cPath = NULL;
     if (!PyArg_ParseTuple(args, "s", &cPath))  return NULL;
     {
       Crc32 crc;
@@ -550,7 +550,7 @@ namespace PYXBMC
     {"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
     {"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
     
-    {"getThumbName", (PyCFunction)XBMC_GetThumbName, METH_VARARGS, getThumbName__doc__},
+    {"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
     {NULL, NULL, 0, NULL}
   };

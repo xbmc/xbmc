@@ -21,7 +21,7 @@
 */
 
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "../Util.h"
 #include "NptUtils.h"
 #include "UPnPVirtualPathDirectory.h"

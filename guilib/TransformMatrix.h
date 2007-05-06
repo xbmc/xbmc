@@ -111,6 +111,15 @@ public:
     x = newX;
   }
 
+  inline void InverseTransformPosition(float &x, float &y) const
+  {
+    x -= m[0][2]; y -= m[1][2];
+    float detM = m[0][0]*m[1][1] - m[0][1]*m[1][0];
+    float newX = (m[1][1] * x - m[0][1] * y)/detM;
+    y = (-m[1][0] * x + m[0][0] * y)/detM;
+    x = newX;
+  }
+
   inline float TransformXCoord(float x, float y) const
   {
     return m[0][0] * x + m[0][1] * y + m[0][2];

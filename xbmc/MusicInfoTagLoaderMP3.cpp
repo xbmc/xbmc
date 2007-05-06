@@ -124,8 +124,12 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
         tag.SetTrackNumber(apeTag.GetTrackNum());
       if (apeTag.GetDiscNum())
         tag.SetPartOfSet(apeTag.GetDiscNum());
+      if (apeTag.GetComment().size())
+        tag.SetComment(apeTag.GetComment());
       if (apeTag.GetReplayGain().iHasGainInfo)
         m_replayGainInfo = apeTag.GetReplayGain();
+      if (apeTag.GetRating() > '0')
+        tag.SetRating(apeTag.GetRating());
     }
 
     tag.SetDuration(ReadDuration(strFileName));

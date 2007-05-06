@@ -18,7 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileDAAP.h"
 #include "DAAPDirectory.h"
 #include "../Util.h"

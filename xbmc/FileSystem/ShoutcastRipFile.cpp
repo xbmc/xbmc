@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "ShoutcastRipFile.h"
 #include "../Id3Tag.h"
 

@@ -54,7 +54,7 @@ Reason: Changed ReadEEPROMFromXBOX to use ExQueryNonVolatileSetting, WriteEEPROM
 ExSaveNonVolatileSetting to improve speed and compatibility.
 --------------------------------------------------------------------------------------------------------
 */
-#include "../stdafx.h"
+#include "stdafx.h"
 #include <string.h>
 #pragma once
 #include "XKUtils.h"
