@@ -9,6 +9,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/vfs.h> 
 #include <regex.h>
 #include <dirent.h>
 
@@ -80,8 +81,8 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
 
 	CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
 	
-	struct stat fileStat;
-	if (stat(strFileName, &fileStat) != 0)
+	struct stat64 fileStat;
+	if (stat64(strFileName, &fileStat) != 0)
 		return FALSE;
 
 	bool bIsDir = false;
@@ -102,12 +103,15 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
 	if (strFileName[0] == '.')
 		lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
 
+	if (access(strFileName, R_OK) == 0 && access(strFileName, W_OK) != 0)
+		lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
+
 	TimeTToFileTime(&fileStat.st_ctime, &lpFindData->ftCreationTime);
 	TimeTToFileTime(&fileStat.st_atime, &lpFindData->ftLastAccessTime);
 	TimeTToFileTime(&fileStat.st_mtime, &lpFindData->ftLastWriteTime);
 	
-	lpFindData->nFileSizeHigh = 0;
-	lpFindData->nFileSizeLow =  fileStat.st_size;
+	lpFindData->nFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
+	lpFindData->nFileSizeLow =  (DWORD)fileStat.st_size;
 
 	return TRUE;
 }
@@ -212,8 +216,8 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
   
   // Read and write chunks of 16K
   char buf[16384];
-  size_t bytesRead = 1;
-  size_t bytesWritten = 1;
+  long long bytesRead = 1;
+  long long bytesWritten = 1;
   
   while (bytesRead > 0 && bytesWritten > 0)
   {
@@ -317,7 +321,19 @@ BOOL GetDiskFreeSpaceEx(
   ) 
 
 {
-#warning need to complete function GetDiskFreeSpaceEx
+	struct statfs64 fsInfo;
+	if (statfs64(lpDirectoryName, &fsInfo) != 0)
+		return false;
+
+	if (lpFreeBytesAvailable)
+		lpFreeBytesAvailable->QuadPart =  fsInfo.f_bavail * fsInfo.f_bsize;
+
+	if (lpTotalNumberOfBytes)
+		lpTotalNumberOfBytes->QuadPart = fsInfo.f_blocks * fsInfo.f_bsize;
+
+	if (lpTotalNumberOfFreeBytes)
+		lpTotalNumberOfFreeBytes->QuadPart = fsInfo.f_bfree * fsInfo.f_bsize;
+
 	return true;
 }
 
@@ -363,36 +379,99 @@ BOOL SetFilePointerEx(  HANDLE hFile,
 }
 
 BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize) {
-#warning need to complete function GetFileSizeEx
+	if (hFile == NULL || lpFileSize == NULL) {
+		return false;
+	}
+
+	
+	struct stat64 fileStat;
+	if (fstat64(hFile->fd, &fileStat) != 0)
+		return false;
+	
+	lpFileSize->QuadPart = fileStat.st_size;
 	return true;
 }
 
 BOOL FlushFileBuffers( HANDLE hFile ) {
-#warning need to complete function FlushFileBuffers
-	return true;
+	if (hFile == NULL) {
+		return 0;
+	}
+
+	return (fsync(hFile->fd) == 0);
 }
 
 int _stat64(   const char *path,   struct __stat64 *buffer ) {
-#warning need to complete function _stat64
-	struct stat buf;
-	return stat(path, &buf);
+
+	if (buffer == NULL || path == NULL)
+		return -1;
+
+	struct stat64 buf;
+	if ( stat64(path, &buf) != 0 )
+		return -1;
+
+	buffer->st_dev = buf.st_dev;
+	buffer->st_ino = buf.st_ino;
+	buffer->st_mode = buf.st_mode;
+	buffer->st_nlink = buf.st_nlink;
+	buffer->st_uid = buf.st_uid;
+	buffer->st_gid = buf.st_gid;
+	buffer->st_rdev = buf.st_rdev;
+	buffer->st_size = buf.st_size;
+	buffer->_st_atime = buf.st_atime;
+	buffer->_st_mtime = buf.st_mtime;
+	buffer->_st_ctime = buf.st_ctime;
+
+	return 0;
 }
 
 DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
 {
-#warning need to complete function GetFileSize
-  return 0;
+	if (hFile == NULL) {
+		return 0;
+	}
+
+	
+	struct stat64 fileStat;
+	if (fstat64(hFile->fd, &fileStat) != 0)
+		return 0;
+
+	if (lpFileSizeHigh) {
+		*lpFileSizeHigh = (DWORD)(fileStat.st_size >> 32); 
+	}
+
+	return (DWORD)fileStat.st_size;
 }
 
 DWORD  GetFileAttributes(LPCTSTR lpFileName)
 {
-#warning need to complete function GetFileAttributes
-  return 0;
+	if (lpFileName == NULL) {
+		return 0;
+	}
+
+	DWORD dwAttr = FILE_ATTRIBUTE_NORMAL;
+	DIR *tmpDir = opendir(lpFileName);
+	if (tmpDir) {
+		dwAttr |= FILE_ATTRIBUTE_DIRECTORY;
+		closedir(tmpDir); 
+	}	
+
+	if (lpFileName[0] == '.')
+		dwAttr |= FILE_ATTRIBUTE_HIDDEN;
+
+	if (access(lpFileName, R_OK) == 0 && access(lpFileName, W_OK) != 0)
+		dwAttr |= FILE_ATTRIBUTE_READONLY;
+
+	return 0;
 }
 
 DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer)
 {
-#warning need to complete function GetCurrentDirectory
-  return 0;
+	if (lpBuffer == NULL)
+		return 0;
+
+	if (getcwd(lpBuffer,nBufferLength) == NULL)
+		return 0;
+
+  	return strlen(lpBuffer);
 }
 #endif
