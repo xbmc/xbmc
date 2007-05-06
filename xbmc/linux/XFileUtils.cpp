@@ -1,8 +1,12 @@
 
+#define _LARGEFILE64_SOURCE
+#define _FILE_OFFSET_BITS 64
+
 #include "XFileUtils.h"
 #include "XTimeUtils.h"
 
 #ifdef _LINUX
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <regex.h>
@@ -241,7 +245,8 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
   if (bytesRead == -1)
     return 0;
     
-  *lpNumberOfBytesRead = bytesRead;
+  if (lpNumberOfBytesRead)
+    *lpNumberOfBytesRead = bytesRead;
 }
 
 BOOL WriteFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite,
@@ -277,8 +282,30 @@ BOOL   RemoveDirectory(LPCTSTR lpPathName)
 }
 
 DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod) {
-#warning need to complete function SetFilePointer
-	return true;
+
+	if (hFile == NULL)
+		return 0;
+
+	LONGLONG offset = lDistanceToMove;
+	if (lpDistanceToMoveHigh) {
+		LONGLONG helper = *lpDistanceToMoveHigh;
+		helper <<= 32;
+		offset |= helper;
+	}
+
+	int nMode = SEEK_SET;
+	if (dwMoveMethod == FILE_CURRENT)
+		nMode = SEEK_CUR;
+	else if (dwMoveMethod == FILE_END)
+		nMode = SEEK_END;
+
+	off64_t currOff = lseek64(hFile->fd, offset, nMode);
+	
+	if (lpDistanceToMoveHigh) {
+		*lpDistanceToMoveHigh = (LONG)(currOff >> 32);
+	}
+	
+	return (DWORD)currOff;
 }
 
 // uses statfs
@@ -300,7 +327,12 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation ) {
 }
 
 BOOL SetEndOfFile(HANDLE hFile) {
-#warning need to complete function SetEndOfFile
+	if (hFile == NULL)
+		return false;
+
+	// get the current offset
+	off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
+	ftruncate(hFile->fd, currOff);
 	return 0;
 }
 
@@ -314,7 +346,19 @@ BOOL SetFilePointerEx(  HANDLE hFile,
 						LARGE_INTEGER liDistanceToMove,
 						PLARGE_INTEGER lpNewFilePointer,
 						DWORD dwMoveMethod ) {
-#warning need to complete function SetFilePointerEx
+
+	int nMode = SEEK_SET;
+	if (dwMoveMethod == FILE_CURRENT)
+		nMode = SEEK_CUR;
+	else if (dwMoveMethod == FILE_END)
+		nMode = SEEK_END;
+
+	off64_t toMove = liDistanceToMove.QuadPart;
+	off64_t currOff = lseek64(hFile->fd, toMove, nMode);
+
+	if (lpNewFilePointer)
+		lpNewFilePointer->QuadPart = currOff;
+
 	return true;
 }
 
