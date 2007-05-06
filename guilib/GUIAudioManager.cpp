@@ -36,7 +36,7 @@ void CGUIAudioManager::Initialize(int iDevice)
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 #else
-    if (Mix_OpenAudio(44000, AUDIO_S16, 2, 4096))
+    if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
        CLog::Log(LOGERROR, "Unable to open audio mixer");
 #endif
   }
