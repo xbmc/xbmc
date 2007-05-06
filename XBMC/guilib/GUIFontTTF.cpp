@@ -582,8 +582,15 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       
       if (m_texture)
       {
-        SDL_BlitSurface(m_texture, NULL, newTexture, NULL);
-        SDL_FreeSurface(newTexture);
+        unsigned char* src = (unsigned char*) m_texture->pixels;
+        unsigned char* dst = (unsigned char*) newTexture->pixels;
+        for (int y = 0; y < m_texture->h; y++)
+        {
+          memcpy(dst, src, m_texture->pitch);
+          src += m_texture->pitch;
+          dst += newTexture->pitch;
+        }
+        SDL_FreeSurface(m_texture);
       }
 #endif
 
