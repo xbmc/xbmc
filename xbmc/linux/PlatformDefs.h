@@ -357,10 +357,6 @@ typedef struct _D3DPRESENT_PARAMETERS_
 #define MAXULONG_PTR	  ((ULONG) 0xffffffff)
 
 // CreateFile defines
-#define GENERIC_READ	(0x80000000L)
-#define GENERIC_WRITE	(0x40000000L)
-#define FILE_SHARE_READ	(0x00)
-
 #define FILE_FLAG_WRITE_THROUGH         0x80000000
 #define FILE_FLAG_OVERLAPPED            0x40000000
 #define FILE_FLAG_NO_BUFFERING          0x20000000
@@ -388,6 +384,10 @@ typedef struct _D3DPRESENT_PARAMETERS_
 #define FILE_READ_DATA	 ( 0x0001 )    
 #define FILE_WRITE_DATA  ( 0x0002 )    
 #define FILE_APPEND_DATA ( 0x0004 )
+
+#define GENERIC_READ	FILE_READ_DATA
+#define GENERIC_WRITE	FILE_WRITE_DATA
+#define FILE_SHARE_READ	(0x00)
 
 // String
 char *itoa(int i, char *a, int r);
