@@ -294,7 +294,7 @@ bool CGUIControlGroup::HitTest(float posX, float posY) const
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->HitTest(posX, posY))
+    if (child->HitTest(m_posX + posX, m_posX + posY))
       return true;
   }
   return false;
@@ -305,11 +305,21 @@ bool CGUIControlGroup::CanFocusFromPoint(float posX, float posY, CGUIControl **c
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(posX, posY, control))
+    if (child->CanFocusFromPoint(posX - m_posX, posY - m_posY, control))
       return true;
   }
   *control = NULL;
   return false;
+}
+
+void CGUIControlGroup::UnfocusFromPoint(float posX, float posY)
+{
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *child = *it;
+    child->UnfocusFromPoint(posX - m_posX, posY - m_posY);
+  }
+  CGUIControl::UnfocusFromPoint(posX, posY);
 }
 
 bool CGUIControlGroup::HasID(DWORD dwID) const
