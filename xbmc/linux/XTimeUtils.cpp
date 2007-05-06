@@ -107,14 +107,17 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
   fileTime.QuadPart /= 1000; /* to seconds */
   
   time_t ft = fileTime.QuadPart;
-  struct tm* tm_ft = gmtime(&ft);  
-  lpSystemTime->wYear = tm_ft->tm_year + 1900;
-  lpSystemTime->wMonth = tm_ft->tm_mon + 1;
-  lpSystemTime->wDayOfWeek = tm_ft->tm_wday;
-  lpSystemTime->wDay = tm_ft->tm_mday;
-  lpSystemTime->wHour = tm_ft->tm_hour;
-  lpSystemTime->wMinute = tm_ft->tm_min;
-  lpSystemTime->wSecond = tm_ft->tm_sec;
+
+  struct tm tm_ft;
+  gmtime_r(&ft,&tm_ft);  
+
+  lpSystemTime->wYear = tm_ft.tm_year + 1900;
+  lpSystemTime->wMonth = tm_ft.tm_mon + 1;
+  lpSystemTime->wDayOfWeek = tm_ft.tm_wday;
+  lpSystemTime->wDay = tm_ft.tm_mday;
+  lpSystemTime->wHour = tm_ft.tm_hour;
+  lpSystemTime->wMinute = tm_ft.tm_min;
+  lpSystemTime->wSecond = tm_ft.tm_sec;
 
   return 1;
 }
@@ -132,6 +135,44 @@ BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFi
   
   return 1;
 }
+
+BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
+  
+  if (lpLocalFileTime == NULL || pTimeT == NULL)
+	return false;
+
+  ULARGE_INTEGER fileTime;
+  fileTime.LowPart  = lpLocalFileTime->dwLowDateTime;
+  fileTime.HighPart = lpLocalFileTime->dwHighDateTime;
+
+  fileTime.QuadPart -= WIN32_TIME_OFFSET;
+  fileTime.QuadPart /= 10000; /* to milliseconds */
+  fileTime.QuadPart /= 1000; /* to seconds */
+  
+  time_t ft = fileTime.QuadPart;
+
+  struct tm tm_ft;
+  gmtime_r(&ft,&tm_ft);
+
+  *pTimeT = mktime(&tm_ft);
+  return true;
+}
+
+BOOL	TimeTToFileTime(time_t *pTimeT, FILETIME* lpLocalFileTime) {
+
+  if (pTimeT == NULL || lpLocalFileTime == NULL)
+	return false;
+
+  ULARGE_INTEGER result;
+  result.QuadPart = (unsigned long long) (*pTimeT) * 10000000;
+  result.QuadPart += WIN32_TIME_OFFSET;
+  
+  lpLocalFileTime->dwLowDateTime  = result.LowPart;
+  lpLocalFileTime->dwHighDateTime = result.HighPart;
+
+  return true;
+}
+
 
 #endif
 
