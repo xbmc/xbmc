@@ -475,6 +475,10 @@
   <string id="563">評等</string>
   <string id="564">類型</string>
   <string id="565">使用數</string>
+  <string id="566">專輯藝人</string>
+  <string id="567">播放次數</string>
+  <string id="568">最近播放</string>
+  <string id="569">評論</string>
 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -530,7 +534,7 @@
   <string id="643">重覆播放時忽略消波失真</string>
   <string id="644">修剪黑邊</string>
   <string id="645">需要解開一個大檔案，是否繼續？</string>
-  <string id="646">移除資料庫</string>
+  <string id="646">從資料庫中移除</string>
   <string id="647">輸出影片資料庫</string>
   <string id="648">載入影片資料庫</string>
   <string id="649">載入中</string>
@@ -539,7 +543,7 @@
   <string id="652">年份</string>
   <string id="653">更新資料庫</string>
   <string id="654">顯示除錯資訊</string>
-  <string id="655">選擇可執行的</string>
+  <string id="655">選擇可執行檔</string>
   <string id="656">選擇播放列表</string>
   <string id="657">選擇資料夾</string>
   <string id="658">歌曲資訊</string>
@@ -990,7 +994,7 @@
   <string id="13325">前景透明度</string>
   <string id="13326">影音延遲</string>
   <string id="13327">卡拉 OK</string>
-  <string id="13328">%s找不到。</string>
+  <string id="13328">%s找不到</string>
   <string id="13329">打開%s發生錯誤</string>
   <string id="13330">無法載入%s</string>
   <string id="13331">錯誤：記憶體不足</string>
@@ -1341,7 +1345,7 @@
   <string id="20018">無縮圖</string>
   <string id="20019">選擇縮略圖</string>
   <string id="20020">KAI 與金手指不能同時使用</string>
-  <string id="20021">請選擇其中一項</string>
+  <string id="20021">請選擇你要使用的項目</string>
   <string id="20022"></string>
   <string id="20023">衝突</string>
   <string id="20024">掃描新加入</string>
@@ -1538,7 +1542,7 @@
   <string id="20325">重設螢幕校正</string>
   <string id="20326">這將重設螢幕校正值為%s</string>
   <string id="20327">並以此為預設值</string>
-  <string id="20328">選擇目的</string>
+  <string id="20328">選擇指定位置</string>
   <string id="20329"></string>
   <string id="20330">以資料夾名稱搜尋</string>
   <string id="20331">檔案</string>
@@ -1647,6 +1651,38 @@
   <string id="21397">高品質像素著色器 V2</string>
 
   <string id="21398">啟用 啟動時播放列表</string>
+
+  <string id="21400">包含</string>
+  <string id="21401">不包含</string>
+  <string id="21402">是</string>
+  <string id="21403">不是</string>
+  <string id="21404">開始與</string>
+  <string id="21405">結束與</string>
+  <string id="21406">大於</string>
+  <string id="21407">小於</string>
+  <string id="21408">之後</string>
+  <string id="21409">之前</string>
+  <string id="21410">在最近</string>
+  <string id="21411">不在最近</string>
+
+  <string id="21420">符合條件</string>
+  <string id="21421">智慧播放列表規則</string>
+  <string id="21422">符合歌曲的地方</string>
+  <string id="21423">新規則…</string>
+  <string id="21424">歌曲必須符合</string>
+  <string id="21425">所有規則</string>
+  <string id="21426">一個或更多規則</string>
+  <string id="21427">限制到</string>
+  <string id="21428">沒有限制</string>
+  <string id="21429">排序方式</string>
+  <string id="21430">升幂</string>
+  <string id="21431">降幂</string>
+  <string id="21432">編輯智慧播放列表</string>
+  <string id="21433">播放列表的名稱</string>
+  <string id="21434">發現符合歌曲</string>
+  <string id="21435">編輯</string>
+  <string id="21436">%i首歌曲</string>
+  <string id="21437">新的智慧播放列表…</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
