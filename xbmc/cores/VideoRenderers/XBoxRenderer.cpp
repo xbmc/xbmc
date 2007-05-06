@@ -541,7 +541,7 @@ void CXBoxRenderer::ManageTextures()
     for(; i>=neededbuffers;i--)
     {
       // don't delete any frame that is in use
-      if((m_image[i].flags & (IMAGE_FLAG_READING | IMAGE_FLAG_WRITING | IMAGE_FLAG_RESERVED)))
+      if(m_image[i].flags & IMAGE_FLAG_DYNAMIC)
         break;
       DeleteYV12Texture(i);
     }
@@ -859,6 +859,10 @@ void CXBoxRenderer::FlipPage(int source)
     m_OSDWidth = m_OSDHeight = 0;
 
   m_OSDRendered = false;
+
+#ifdef MP_DIRECTRENDERING
+  __asm wbinvd
+#endif
 
   return;
 }
@@ -1301,9 +1305,6 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
 
   if( fields[FIELD_FULL][0] == NULL ) return;
 
-  if( WaitForSingleObject(m_eventTexturesDone[index], 1000) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);  
-
   /* finish up all textures, and delete them */
   for(int f = 0;f<MAX_FIELDS;f++) {
     for(int p = 0;p<MAX_PLANES;p++) {
@@ -1321,8 +1322,6 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
 
   for(int p = 0;p<MAX_PLANES;p++)
     im.plane[p] = NULL;
-
-  SetEvent(m_eventTexturesDone[index]);
 
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
 }
@@ -1348,7 +1347,11 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   /* since we also want the field textures, pitch must be texture aligned */
   DWORD dwTextureSize;
   unsigned stride, p;
+#ifdef MP_DIRECTRENDERING
+  unsigned memflags = PAGE_READWRITE;
+#else
   unsigned memflags = PAGE_READWRITE | PAGE_WRITECOMBINE;
+#endif
 
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];
