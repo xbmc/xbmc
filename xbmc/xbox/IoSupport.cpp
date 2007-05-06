@@ -22,7 +22,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "IoSupport.h"
 #ifdef HAS_UNDOCUMENTED
 #ifdef _XBOX
@@ -32,6 +32,9 @@
 #include "ntddcdrm.h"
 #endif
 #endif
+
+#define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
+#define NT_STATUS_VOLUME_DISMOUNTED     long(0xC0000000 | 0x026E)
 
 typedef struct
 {
@@ -130,18 +133,18 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
   ANSI_STRING LinkName;
   NTSTATUS status;
 
-  CLog::Log(LOGNOTICE, "Unmapping drive %c", cDriveLetter);
-
   sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
   RtlInitAnsiString(&LinkName, szDestinationDrive);
 
   status =  IoDeleteSymbolicLink(&LinkName);
 
-  if (!NT_SUCCESS(status))
+  if (NT_SUCCESS(status))
+    CLog::Log(LOGNOTICE, "Unmapped drive %c", cDriveLetter);
+  else if(status != NT_STATUS_OBJECT_NAME_NOT_FOUND)
     CLog::Log(LOGERROR, "Failed to delete symbolic link!  (status=0x%08x)", status);
 
   return status;
-#else 
+#else
   return S_OK;
 #endif
 }
@@ -160,15 +163,15 @@ HRESULT CIoSupport::Dismount(char * szDevice)
   ANSI_STRING DeviceName;
   NTSTATUS status;
 
-  CLog::Log(LOGNOTICE, "Dismounting %s", szDevice);
-
   sprintf(szSourceDevice, "\\Device\\%s", szDevice);
 
   RtlInitAnsiString(&DeviceName, szSourceDevice);
 
   status = IoDismountVolumeByName(&DeviceName);
 
-  if (!NT_SUCCESS(status))
+  if (NT_SUCCESS(status))
+    CLog::Log(LOGNOTICE, "Dismounted %s", szDevice);
+  else if(status != NT_STATUS_VOLUME_DISMOUNTED)
     CLog::Log(LOGERROR, "Failed to dismount volume!  (status=0x%08x)", status);
 
   return status;
@@ -213,7 +216,7 @@ void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
     *cDriveLetter = 0;
     return;
   }
-  
+
   part_num = atoi(szPartition + 19);
 
   if (part_num >= 6)
@@ -504,14 +507,14 @@ bool CIoSupport::DriveExists(char cDriveLetter)
       if (drive_size.QuadPart >= 9000000000)
         return true;
     }
-    
+
     if (cDriveLetter == 'G')
     {
       // if the kernel is set to use partitions 6 and 7 by default
       // the g drive can exist
-      if(((XboxKrnlVersion->Qfe & 67) == 67)) 
+      if(((XboxKrnlVersion->Qfe & 67) == 67))
         return true;
-      // not all kernel versions return 67, if the drive is bigger than 
+      // not all kernel versions return 67, if the drive is bigger than
       // 137 gb drive (plus a bit of room for error), the G drive can exist
       else if ( drive_size.QuadPart >= 150000000000 )
         return true;
@@ -561,7 +564,7 @@ bool CIoSupport::PartitionExists(int nPartition)
     CloseHandle(hTemp);
     return true;
   }
- 
+
   return false;
 #else
   return false;
@@ -599,9 +602,9 @@ LARGE_INTEGER CIoSupport::GetDriveSize()
   if (!NT_SUCCESS(status))
     return drive_size;
 
-  drive_size.QuadPart = disk_geometry.BytesPerSector * 
-                        disk_geometry.SectorsPerTrack * 
-                        disk_geometry.TracksPerCylinder * 
+  drive_size.QuadPart = disk_geometry.BytesPerSector *
+                        disk_geometry.SectorsPerTrack *
+                        disk_geometry.TracksPerCylinder *
                         disk_geometry.Cylinders.QuadPart;
 
   return drive_size;

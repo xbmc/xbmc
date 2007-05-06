@@ -16,15 +16,15 @@ public:
 class CPlayListASX : public CPlayList
 {
 public:
-  virtual bool LoadData(const CStdString& strData);
+  virtual bool LoadData(std::istream &stream);  
 protected:
-  bool LoadAsxIniInfo(const CStdString& strData);
+  bool LoadAsxIniInfo(std::istream &stream);
 };
 
 class CPlayListRAM : public CPlayList
 {
 public:
-  virtual bool LoadData(const CStdString& strData);
+  virtual bool LoadData(std::istream &stream);
 };
 
 

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 04/24/2007-->
+<!--Date of translation: 04/29/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8628-->
+<!--Based on english strings version 8690-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -220,7 +220,7 @@
   <string id="290">Amplification du volume (dB)</string>
   <string id="291">Vidéo</string>
   <string id="292">Audio</string>
-  <string id="293">Sous-titres</string>
+  <string id="293">Parcourir pour des Sous-titres</string>
   <string id="294">Créer un signet</string>
   <string id="296">Effacer les signets</string>
   <string id="297">Synchro. audio/vidéo</string>
@@ -522,9 +522,15 @@
   <string id="648">Importer la bibliothèque vidéos</string>
   <string id="649">Importation</string>
   <string id="650">Exportation</string>
-  <string id="651">Bibliothèque vidéos</string>
+  <string id="651">Parcourir pour la bibliothèque</string>
   <string id="652">Années</string>
-  <string id="653">Mettre à jour la bibliothèque</string>
+  <string id="653">MAJ la Bibliothèque</string>
+  <string id="654">Voir infos débogage</string>
+  <string id="655">Parcourir pour un Exécutable [.py|.xbe]</string>
+  <string id="656">Parcourir pour une Playliste [.m3u|.pls]</string>
+  <string id="657">Parcourir pour un Dossier</string>
+  <string id="658">Information de la chanson</string>
+  <string id="659">Critique:</string>
 
   <string id="700">Optimisation de la bibliothèque</string>
   <string id="701">Suppression des anciens morceaux de la bibliothèque</string>
@@ -582,14 +588,14 @@
   <string id="755">Éditer le chemin du programme</string>
   <string id="756">Éditer le nom du programme</string>
   <string id="757">Éditer la profondeur du chemin</string>
-  <string id="758">Supprimer le lien du programme</string>
+  <string id="758"></string>
   <string id="759">Voir: Grande Liste</string>
   <string id="760">Jaune</string>
   <string id="761">Blanc</string>
   <string id="762">Bleu</string>
   <string id="763">Vert clair</string>
   <string id="764">Jaune Vert</string>
-  <string id="765">Cyan</string>
+  <string id="765">Bleu sombre</string>
   <string id="766">Réservé</string>
   <string id="767">Réservé</string>
   <string id="768">Réservé</string>
@@ -616,7 +622,7 @@
   <string id="1012">Dossier partagé</string>
   <string id="1013">Port</string>
   <string id="1014">Utilisateur</string>
-  <string id="1015">Serveur réseau</string>
+  <string id="1015">Parcourir pour un serveur réseau</string>
   <string id="1016">Saisissez l'adresse réseau du serveur</string>
   <string id="1017">Saisissez le chemin du serveur</string>
   <string id="1018">Saisissez le numéro du port</string>
@@ -626,17 +632,18 @@
   <string id="1022">Saisir un nom pour cette entrée.</string>
   <string id="1023">Parcourir pour un nouveau partage</string>
   <string id="1024">Parcourir</string>
-  <string id="1025">Impossible de récupérer les informations .</string>
+  <string id="1025">Impossible de récupérer les informations.</string>
   <string id="1026">Ajouter une entrée</string>
   <string id="1027">Éditer cette entrée</string>
   <string id="1028">Éditer l'entrée dans %s</string>
   <string id="1029">Saisissez le nouveau label</string>
-  <string id="1030">une image</string>
-  <string id="1031">une image dossier</string>
+  <string id="1030">Parcourir pour une Image</string>
+  <string id="1031">Parcourir pour un dossier d'image</string>
   <string id="1032">Ajouter un chemin réseau</string>
-  <string id="1033">un fichier</string>
+  <string id="1033">Parcourir pour un Fichier</string>
   <string id="1034">Sous-menu</string>
   <string id="1035">Activer les boutons du sous-menu</string>
+  <string id="1036">Favoris</string>
 
   <string id="1200">Client SMB</string>
   <string id="1202">Groupe de travail</string>
@@ -1068,6 +1075,8 @@
   <string id="14073">XLink Kai n'est pas activé.</string>
   <string id="14074">Fuseau horaire</string>
   <string id="14075">Ajuster l'horloge pour l'observation auto. de l'heure d'été</string>
+  <string id="14076">Ajouter aux favoris</string>
+  <string id="14077">Enlever des favoris</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Le service n'est pas connecté, voulez-vous essayer</string>
   <string id="15002">de vous y connecter avec XBox Media Center ?</string>
@@ -1257,7 +1266,7 @@
   <string id="20007">Enregistrements</string>
   <string id="20008">Capture d'écran</string>
   <string id="20009">Utiliser XBMC</string>
-  <string id="20010">Image de l'artiste</string>
+  <string id="20010"></string>
   <string id="20011">Sélection musicale</string>
   <string id="20012">Sélection vidéo</string>
   <string id="20013">Voulez-vous lancer le jeu ?</string>
@@ -1291,7 +1300,7 @@
   <string id="20053">Vous quittez le mode Admin.</string>
   <string id="20054">Vous entrez en mode Admin.</string>
   <string id="20055">Vignette Allmusic.com</string>
-  <string id="20056">Vignette source</string>
+  <string id="20056"></string>
   <string id="20057">Supprimer la vignette</string>
   <string id="20058">Ajouter un profil...</string>
   <string id="20059">Infos pour tous les albums</string>
@@ -1445,8 +1454,8 @@
   <string id="20325">Calibrage par défaut</string>
   <string id="20326">Ceci remettra à zéro les valeurs de calibrage pour %s</string>
   <string id="20327">aux valeurs par défaut.</string>
-  <string id="20328">copier la sauvegarde dans un endroit</string>
-  <string id="20329">déplacer la sauvegarde dans un endroit</string>
+  <string id="20328">Parcourir pour une destination</string>
+  <string id="20329"></string>
   <string id="20330">Utiliser le nom des dossiers pour la consultation</string>
   <string id="20331">Fichier</string>
   <string id="20332">Utiliser le nom des dossiers ou fichiers&#10;pour la consultation</string>
@@ -1493,7 +1502,7 @@
   <string id="20373">Saison</string>
   <string id="20374">Téléchargement des infos vidéo</string>
   <string id="20375">Contenu non assigner</string>
-  <string id="20376">Première diffusion:</string>
+  <string id="20376">1re Diffusion:</string>
   <string id="20377">Rafraîchir Info Séries TV</string>
   <string id="20378">Rafraîchir info pour tous les épisodes?</string>
 
@@ -1546,7 +1555,7 @@
   <string id="21395">Impossible de cacher des fichiers plus grand que 4 GB</string>
   <string id="21396">Chapitre</string>
   <string id="21397">ombrage pixels haute qualité V2</string>
-  <string id="21398">Activer Playliste au démarrage</string>
+  <string id="21398">Activer une playliste au démarrage</string>
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 </strings>

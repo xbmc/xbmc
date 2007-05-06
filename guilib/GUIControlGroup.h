@@ -29,6 +29,7 @@ public:
 
   virtual bool HitTest(float posX, float posY) const;
   virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
+  virtual void UnfocusFromPoint(float posX, float posY);
 
   virtual void SetInitialVisibility();
 

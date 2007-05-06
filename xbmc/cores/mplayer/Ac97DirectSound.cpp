@@ -19,7 +19,7 @@
 */
 
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include <stdio.h>
 #include "Ac97DirectSound.h"
 #include "../../util.h"

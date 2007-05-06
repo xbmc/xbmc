@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "GUIPythonWindowXML.h"
 #include "guiwindow.h"
 #include "pyutil.h"
@@ -7,6 +7,7 @@
 #include "window.h"
 #include "control.h"
 #include "action.h"
+#include "..\..\..\util.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -27,7 +28,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  m_coordsRes  = PAL_4x3;
+  m_coordsRes = PAL_4x3;
   m_fallbackPath = strFallBackPath;
 }
 
@@ -175,18 +176,11 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 
 void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
 {
-  if (itemPosition == -1)
-  {
-    m_vecItems.Add(fileItem);
-  }
-  else if (itemPosition == 0)
-  {
+  if (itemPosition == 0)
     m_vecItems.AddFront(fileItem);
-  }
   else
-  {
     m_vecItems.Add(fileItem);
-  }
+  
   m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
 }
@@ -243,12 +237,30 @@ void CGUIPythonWindowXML::PulseActionEvent()
 {
   SetEvent(m_actionEvent);
 }
+
+void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
+{
+  m_backupMediaDir = g_graphicsContext.GetMediaDir();
+  CStdString tmpDir;
+  CUtil::GetDirectory(m_xmlFile, tmpDir);
+  if (!tmpDir.IsEmpty())
+  {
+    CStdString fallbackMediaPath;
+    CUtil::GetParentPath(tmpDir, fallbackMediaPath);
+    CUtil::RemoveSlashAtEnd(fallbackMediaPath);
+    g_graphicsContext.SetMediaDir(fallbackMediaPath);
+    m_fallbackPath = fallbackMediaPath;
+    //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
+  }
+  CGUIWindow::AllocResources(forceLoad);
+  g_graphicsContext.SetMediaDir(m_backupMediaDir);
+}
+
 void CGUIPythonWindowXML::Render()
 {
-  string backupMediaDir = g_graphicsContext.GetMediaDir();
-  g_graphicsContext.SetMediaDir(m_fallbackPath+"\\skins");
+  g_graphicsContext.SetMediaDir(m_fallbackPath);
   CGUIWindow::Render();
-  g_graphicsContext.SetMediaDir(backupMediaDir);
+  g_graphicsContext.SetMediaDir(m_backupMediaDir);
 }
 
 int Py_XBMC_Event_OnClick(void* arg)

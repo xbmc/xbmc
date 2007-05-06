@@ -49,21 +49,17 @@ CPlayListB4S::~CPlayListB4S(void)
 {}
 
 
-bool CPlayListB4S::Load(const CStdString& strFileName)
+bool CPlayListB4S::LoadData(std::istream stream)
 {
-  CStdString strBasePath;
-  CUtil::GetParentPath(strFileName, strBasePath);
-
-  Clear();
-
-  CFile file;
-  if (!file.Open(strFileName)) return false;
-  int iLenght = (int)file.GetLength();
-  auto_aptr<char> xmlData(new char[iLenght]);
-  file.Read(xmlData.get(), iLenght);
-
   TiXmlDocument xmlDoc;
-  if (xmlDoc.Parse(xmlData.get()) == NULL) return false;
+
+  stream >> xmlDoc;
+
+  if (xmlDoc.Error())
+  {
+    CLog::Log(LOGERROR, "Unable to parse B4S info Error: %s", xmlDoc.ErrorDesc());
+    return false;
+  }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement ) return false;
@@ -97,9 +93,9 @@ bool CPlayListB4S::Load(const CStdString& strFileName)
       if (pNodeInfo)
       {
         CStdString strInfo = pNodeInfo->FirstChild()->Value();
-        if (CUtil::IsRemote(strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
+        if (CUtil::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
           strFileName = CUtil::SubstitutePath(strFileName);
-        CUtil::GetQualifiedFilename(strBasePath, strFileName);
+        CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CPlayListItem newItem(strInfo, strFileName, lDuration);
         Add(newItem);
       }

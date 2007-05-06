@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "SystemInfo.h"
 #ifndef _LINUX
 #include <conio.h>

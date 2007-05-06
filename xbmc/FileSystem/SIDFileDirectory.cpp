@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "../Util.h"
 #include "SIDFileDirectory.h"
 #include "../MusicInfoLoader.h"

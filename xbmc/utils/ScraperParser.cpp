@@ -7,7 +7,7 @@
 #include <cstring>
 #include "RegExp.h"
 #include "HTMLUtil.h"
-//#include "../stdafx.h"
+//#include "stdafx.h"
 #include "CharsetConverter.h"
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)

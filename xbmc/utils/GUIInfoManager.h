@@ -150,6 +150,8 @@
 #define MUSICPLAYER_SAMPLERATE      216
 #define MUSICPLAYER_CODEC           217
 #define MUSICPLAYER_DISC_NUMBER     218
+#define MUSICPLAYER_RATING          219
+#define MUSICPLAYER_COMMENT         220
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -208,6 +210,7 @@
 #define LISTITEM_SEASON             333
 #define LISTITEM_TVSHOW             334
 #define LISTITEM_PREMIERED          335
+#define LISTITEM_COMMENT            336
 #define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350
@@ -222,6 +225,7 @@
 #define CONTAINER_FOLDERPATH        361
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
+#define CONTAINER_SORT_METHOD       364
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391

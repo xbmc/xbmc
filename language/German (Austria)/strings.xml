@@ -232,7 +232,7 @@
   <string id="290">Lautstärkeausgleich</string>
   <string id="291">Video</string>
   <string id="292">Audio</string>
-  <string id="293">Untertitel</string>
+  <string id="293">Untertitel auswählen</string>
   <string id="294">Lesezeichen erst.</string>
   <string id="295">Lesezeichen tausch</string>
   <string id="296">Lesezeichen löschen</string>
@@ -440,7 +440,7 @@
   <string id="499">Verbinden mit www.allmusic.com nicht möglich!</string>
   <string id="500">Fehler beim Erhalten der Album-Informationen!</string>
   <string id="501">Album-Informationen werden gesucht..</string>
-  <string id="502">Offen</string>
+  <string id="502">Öffnen</string>
   <string id="503">Laden...</string>
   <string id="504">Leer</string>
   <string id="505">Informationen werden geladen...</string>
@@ -463,7 +463,7 @@
   <string id="522">Quelle entfernen</string>
   <string id="523">Medienwechsel</string>
   <string id="524">Liste auswählen</string>
-  <string id="525">Neue Liste</string>
+  <string id="525">Neue Liste..</string>
   <string id="526">Neue Wiedergabeliste</string>
   <string id="527">Datenbank hinzufügen</string> 
   <string id="528">Titel eingeben</string> 
@@ -474,11 +474,15 @@
   <string id="533">Genre eingeben</string>
   <string id="534">Ansicht: %s</string> 
   <string id="535">Liste</string> 
-  <string id="536">Symbole</string> 
-  <string id="537">Große Liste</string> 
-  <string id="538">Große Symbole</string> 
+  <string id="536">Cover</string> 
+  <string id="537">Gr.Liste</string> 
+  <string id="538">Gr.Symbole</string> 
   <string id="539">Gestreckt</string> 
-  <string id="540">Groß Gestreckt</string>
+  <string id="540">Gr.Gestreckt</string>
+  <string id="541">Alben Symb</string> 
+  <string id="542">DVD Symb</string> 
+  <string id="543">DVD</string> 
+  <string id="544">MedienInfo</string> 
 
   <string id="550">Sort.n. %s</string> 
   <string id="551">Name</string> 
@@ -489,21 +493,23 @@
   <string id="556">Titel</string> 
   <string id="557">Interpret</string> 
   <string id="558">Album</string> 
-  <string id="559">Wdgbliste</string> 
+  <string id="559">Wiedergabeliste</string> 
   <string id="560">ID</string> 
   <string id="561">Datei</string> 
   <string id="562">Jahr</string> 
   <string id="563">Bewertung</string> 
   <string id="564">Typ</string> 
-  <string id="565">Verwendung</string> 
+  <string id="565">Verwendung</string>
+  <string id="586">Wiedergabeliste ändern</string>
   
-  <string id="580">Sort Direction</string> 
-  <string id="581">Sort Method</string> 
-  <string id="582">View Mode</string> 
-  <string id="583">Remember views for different folders</string> 
+  <string id="580">Sortierrichtung</string> 
+  <string id="581">Anordnen nach</string> 
+  <string id="582">Ansicht</string> 
+  <string id="583">Ansicht für einzelne Ordner speichern</string> 
   <string id="584">Aufsteigend</string> 
   <string id="585">Absteigend</string> 
-
+  <string id="586">Wiedergabeliste ändern</string>
+  <string id="587">Filter</string>
   <string id="588">Party Modus beenden</string>
   <string id="589">Party Modus</string>
   <string id="590">Zufällig</string>
@@ -556,7 +562,13 @@
   <string id="648">Video-Bibliothek importieren</string> 
   <string id="649">Import läuft..</string> 
   <string id="650">Auslagerung läuft..</string> 
-  <string id="651">Video-Bibliothek</string> 
+  <string id="651">Video-Bibliothek auswählen</string>
+  <string id="652">Jahr</string>
+  <string id="653">Bibliothek aktualisieren</string>
+  <string id="654">Debug Info anzeigen</string>
+  <string id="655">Datei auswählen</string>
+  <string id="656">Wiedergabeliste auswählen</string>
+  <string id="657">Ordner auswählen</string>
 
   <string id="700">Datenbank aufräumen</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
@@ -651,7 +663,7 @@
   <string id="1012">Freigabe</string> 
   <string id="1013">Port</string> 
   <string id="1014">Benutzername</string> 
-  <string id="1015">Netzwerk - Server</string> 
+  <string id="1015">Netzwerk - Server auswählen</string> 
   <string id="1016">Server - Adresse eingeben..</string> 
   <string id="1017">Server - Pfad eingeben..</string> 
   <string id="1018">Server - Port-Nummer eingeben..</string> 
@@ -666,10 +678,13 @@
   <string id="1027">Quelle bearbeiten</string> 
   <string id="1028">Quelle bearbeiten.. (%s)</string> 
   <string id="1029">Neue Bezeichnung eingeben..</string> 
-  <string id="1030">Neues Bild</string> 
-  <string id="1031">Neuen Bilderordner</string>
+  <string id="1030">Neues Bild auswählen</string> 
+  <string id="1031">Neuen Bilderordner auswählen</string>
   <string id="1032">Netzwerkressource hinzufügen..</string>
-  <string id="1033">Neuen Wert eingeben</string>
+  <string id="1033">Datei auswählen</string>
+  <string id="1034">Untermenü</string>
+  <string id="1035">Untermenü aktivieren</string>
+  <string id="1036">Favoriten</string>
 
   <string id="1200">SMB Freigabe</string> 
   <string id="1201">IP-Adresse</string>
@@ -780,7 +795,7 @@
   <string id="10500">Musik/Wiedergabeliste</string>
   <string id="10501">Musik/Dateien</string>
   <string id="10502">Musik/Bibliothek</string>
-  <string id="10503">Musik/Top100</string>
+  <string id="10503">Wiedergabelisten-Editor</string>
   <string id="10504">Top 100 Titel</string> 
   <string id="10505">Top 100 Alben</string> 
   <string id="10506">Anwendungen</string>
@@ -926,6 +941,7 @@
   <string id="13004">Mindestdauer der Datei</string>
   <string id="13005">XBOX ausschalten</string> 
   <string id="13006">Dashboard</string> 
+  <string id="13007">Dashboard-Pfad</string>
 
   <string id="13100">Videofilter</string>
 
@@ -1186,6 +1202,8 @@
   <string id="14073">XLink Kai ist deaktiviert.</string> 
   <string id="14074">Zeitzone</string> 
   <string id="14075">Sommer/winterzeit verwenden</string> 
+  <string id="14076">Zu Favoriten hinzufügen</string>
+  <string id="14077">Von Favortiten entfernen</string>
 
   <string id="15000">XLink-Kai</string>
   <string id="15001">Es besteht keine Verbindung,</string> 
@@ -1455,7 +1473,7 @@
   <string id="20075">Hauptkennwort eingeben..</string>
   <string id="20076">Hauptkennwort am Start abfragen..</string>
   <string id="20077">Oberflächen-Einstellungen</string>
-  <string id="20078">- keine Verküpfung gesetzt -</string>
+  <string id="20078">-keine Verküpfung-</string>
   <string id="20079">Animationen aktivieren</string>
   <string id="20080">RSS deaktivieren während Musikwiedergabe</string>
   <string id="20081">Lesezeichen aktivieren</string>
@@ -1539,7 +1557,7 @@
   <string id="20159">Video</string>
   <string id="20160">System</string>
   <string id="20161">Gesamt</string>
-  <string id="20162">Verfügbar</string>
+  <string id="20162">Verwendet</string>
   <string id="20163">von</string>
   <string id="20164">Zugriffschutz wird nicht unterstützt.</string>
   <string id="20165">Offen</string>
@@ -1619,8 +1637,8 @@
   <string id="20325">Kalibrierung zurücksetzen</string>
   <string id="20326">Kalibrierungsdaten für %s werden zurückgesetzt,</string>
   <string id="20327">und die Standardwerte werden geladen.</string>
-  <string id="20328">Kopieren - Speicherort auswählen</string> 
-  <string id="20329">Verschieben - Speicherort auswählen</string> 
+  <string id="20328">Speicherort auswählen</string> 
+  <string id="20329">Speicherort auswählen</string> 
 
   <string id="20330">Suchlauf mit Ordnername</string> 
   <string id="20331">Datei</string>
@@ -1636,7 +1654,7 @@
   <string id="20340">Möchten Sie sämtliche Daten, von</string> 
   <string id="20341">diesem Pfad, aus der Datenbank löschen?</string> 
   <string id="20342">Filme</string> 
-  <string id="20343">Fernsehshows</string> 
+  <string id="20343">Fernsehserien</string> 
   <string id="20344">Dieser Ordner beinhaltet</string> 
   <string id="20345">Automatische Suche</string> 
   <string id="20346">Unterordner durchsuchen</string> 
@@ -1658,7 +1676,20 @@
   <string id="20362">Episode aus Bibliothek entfernen</string> 
   <string id="20363">Serie aus Bibliothek entfernen</string> 
   <string id="20364">Serie</string> 
-  <string id="20365">Episoden-Handlung</string> 
+  <string id="20365">Episoden-Handlung</string>
+  <string id="20366">* Sämtliche Staffeln</string>
+  <string id="20367">Abgespielte Filme ausblenden</string>
+  <string id="20368">Produktions-Code</string> 
+  <string id="20369">Handlung bei unabgespielten Filmen verstecken</string> 
+  <string id="20370">* Die Handlung wird nicht angezeigt. *</string> 
+  <string id="20371">Staffel-Cover setzen</string> 
+  <string id="20372">Staffel-Cover</string> 
+  <string id="20373">Staffel</string>
+  <string id="20374">VideoInfo herunterladen</string>
+  <string id="20375">Nicht zugeordneter Inhalt</string>
+  <string id="20376">Erstaustrahlung:</string>
+  <string id="20377">Serien-Info aktualisieren</string> 
+  <string id="20378">Sämtliche Episoden aktualisieren?</string> 
 
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Dateien und Ordner anzeigen</string>
@@ -1698,10 +1729,32 @@
   <string id="21380">1080i</string>
   <string id="21381">Bezeichnung für Wiedergabeliste eingeben</string>
   <string id="21382">"Quelle hinzufügen" Verknüpfung deaktivieren</string> 
-  <string id="21383">Bildlaufleiste aktivieren</string> 
+  <string id="21383">Bildlaufleiste aktivieren</string>
+  <string id="21384">Filter für 'Abgespielte' als Eintrag in Bibliothekansicht aktivieren</string> 
+  <string id="21385">Öffnen</string>
+
+  <string id="21386">Akustik-Einstellungen</string> 
+  <string id="21387">Schnell</string> 
+  <string id="21388">Leise</string> 
+ 
+  <string id="21390">Verbrauch-Einstellungen</string> 
+  <string id="21391">Hoch</string> 
+  <string id="21392">Niedrig</string> 
+  <string id="21393">Standby-Hoch</string> 
+  <string id="21394">Standby-Niedrig</string>
+  <string id="21395">Zwischenspeichern nicht möglich - Datei überstiegt 4GB Limit</string>
+  <string id="21396">Kapitel</string>
+  <string id="21397">Pixel-Shader (hohe Qualität) V2</string>
+  <string id="21398">Wiedergabeliste beim Systemstart</string>
 
   <!-- Web browser strings -->
-  <string id="20400">Internet</string>
+  <string id="9">Internet</string>
+  <string id="12800">Internet Browser</string>
+  <string id="12801">OSD</string>
+  <string id="12802">Einstellungen</string>
+  <string id="12803">Favoriten</string>
+  <string id="12804">Verlauf</string>
+  <string id="20400">Internet Browser</string>
   <string id="20401">Adresse eingeben</string>
   <string id="20402">Favoriten</string>
   <string id="20403">Favoriten hinzufügen</string>
@@ -1716,15 +1769,26 @@
   <string id="20412">Verschieben</string>
   <string id="20413">An diese Stelle</string>
   <string id="20414">Verschieben abbrechen</string>
-  <string id="20415">Möchten sie diesen </string>
+  <string id="20415">Möchten sie diesen</string>
   <string id="20416">Eintrag wirklich löschen?</string>
   <string id="20417">Ordner wirklich löschen?</string>
   <string id="20418">Möchten Sie die</string>
   <string id="20419">Internet-Sitzung beenden?</string>
-  <string id="20420">Internet-Einstellungen</string>
+  <string id="20420">Startseite</string>
+  <string id="20421">Aktuelle als Startseite</string>
+  <string id="20422">Leere Startseite</string>
+  <string id="20423">Schriftgröße</string>
+  <string id="20424">Bildskalierung</string>
+  <string id="20425">OBEN - Seitenrand</string>
+  <string id="20426">UNTEN - Seitenrand</string>
+  <string id="20427">LINKER - Seitenrand</string>
+  <string id="20428">RECHTER - Seitenrand</string>
+  <string id="20429">Download-Verzeichnis</string>
+  <string id="20430">Favoriten-Datei</string>
+  <string id="20431">Einstellungen</string>
+  <string id="20432">Netzwerk/Proxy Einstellungen</string>
   <!-- End of Web browser strings -->
 
   <string id="29999">Automatische Flicker Filter Korrektur</string>
 
 </strings>
- 	  	 

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileCDDA.h"
 #include <sys/stat.h>
 #include "../Util.h"

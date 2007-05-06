@@ -18,7 +18,7 @@ public:
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
   virtual CFileItem *GetCurrentListItem();
-  const CFileItem &CurrentDirectory() const { return m_vecItems;};
+  const CFileItemList &CurrentDirectory() const { return m_vecItems;};
 
 protected:
   CGUIControl *GetFirstFocusableControl(int id);

@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "../../XBAudioConfig.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"

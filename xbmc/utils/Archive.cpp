@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "Archive.h"
 
 using namespace XFILE;
@@ -111,6 +111,18 @@ CArchive& CArchive::operator<<(bool b)
   return *this;
 }
 
+CArchive& CArchive::operator<<(char c)
+{
+  int size = sizeof(char);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &c, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
 CArchive& CArchive::operator<<(const CStdString& str)
 {
   *this << str.GetLength();
@@ -216,6 +228,13 @@ CArchive& CArchive::operator>>(long& l)
 CArchive& CArchive::operator>>(bool& b)
 {
   m_pFile->Read((void*)&b, sizeof(bool));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(char& c)
+{
+  m_pFile->Read((void*)&c, sizeof(char));
 
   return *this;
 }

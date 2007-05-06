@@ -148,9 +148,9 @@ void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
 #else
     CLog::Log(LOGINFO, "Found mode: %ix%i at %iHz", mode.Width, mode.Height, mode.RefreshRate);
 #endif
-    if (mode.Width = 720 && mode.Height == 576 && mode.RefreshRate == 50)
+    if (mode.Width == 720 && mode.Height == 576 && mode.RefreshRate == 50)
       bHasPAL = true;
-    if (mode.Width = 720 && mode.Height == 480 && mode.RefreshRate == 60)
+    if (mode.Width == 720 && mode.Height == 480 && mode.RefreshRate == 60)
       bHasNTSC = true;
   }
 }

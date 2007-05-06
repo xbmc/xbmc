@@ -18,7 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "File.h"
 #include "FileFactory.h"
 #include "../Application.h"
@@ -134,6 +134,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       vector<CStdString> tokens;
       CStdString strDirectory;
       CUtil::GetDirectory(strDest,strDirectory);
+      CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
         CUtil::Tokenize(strDirectory,tokens,"\\");
@@ -607,4 +608,195 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
   }
   CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, strFileName.c_str());    
   return false;
+}
+
+//*********************************************************************************************
+//*************** Stream IO for CFile objects *************************************************
+//*********************************************************************************************
+CFileStreamBuffer::~CFileStreamBuffer()
+{
+  sync();
+  Detach();
+}
+
+CFileStreamBuffer::CFileStreamBuffer(int backsize)
+  : std::streambuf()
+  , m_file(NULL)
+  , m_buffer(NULL)
+  , m_frontsize(0)
+  , m_backsize(backsize)
+{}
+
+void CFileStreamBuffer::Attach(IFile *file)
+{
+  m_file = file;
+
+  m_frontsize = m_file->GetChunkSize();
+  if(!m_frontsize)
+    m_frontsize = 1024;
+
+  m_buffer = new char[m_frontsize+m_backsize];
+  setg(0,0,0);
+  setp(0,0);
+}
+
+void CFileStreamBuffer::Detach()
+{
+  setg(0,0,0);
+  setp(0,0);
+  if(m_buffer)
+    SAFE_DELETE(m_buffer);
+}
+
+CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
+{
+  if(gptr() < egptr())
+    return traits_type::to_int_type(*gptr());
+
+  if(!m_file)
+    return traits_type::eof();
+  
+  int backsize = 0;
+  if(m_backsize)
+  {
+    backsize = min(m_backsize, egptr()-eback());
+    memmove(m_buffer, egptr()-backsize, backsize);
+  }
+
+  unsigned int size = 0;
+#ifndef _LINUX
+  try
+  {
+#endif
+    size = m_file->Read(m_buffer+backsize, m_frontsize);
+#ifndef _LINUX
+  }
+  catch (const win32_exception &e) 
+  {
+    e.writelog(__FUNCTION__);
+  }  
+#endif
+
+  if(size == 0)
+    return traits_type::eof();
+
+  setg(m_buffer, m_buffer+backsize, m_buffer+backsize+size);
+  return traits_type::to_int_type(*gptr());
+}
+
+CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
+  off_type offset, 
+  ios_base::seekdir way, 
+  ios_base::openmode mode)
+{  
+  if(way == ios_base::cur)
+  {
+    // try to seek within buffer
+    if(gptr()+offset >= eback() && gptr()+offset < egptr())
+    {
+      gbump(offset);
+      return m_file->GetPosition() - (eback() - gptr());
+    }
+  }
+
+  // reset our buffer pointer, will
+  // start buffering on next read
+  setg(0,0,0);
+  setp(0,0);
+
+  __int64 position = -1;
+#ifndef _LINUX
+  try
+  {
+#endif
+    if(way == ios_base::cur)
+      position = m_file->Seek(offset, SEEK_CUR);
+    else if(way == ios_base::end)
+      position = m_file->Seek(offset, SEEK_END);
+    else
+      position = m_file->Seek(offset, SEEK_SET);
+#ifndef _LINUX
+  }
+  catch (const win32_exception &e) 
+  {
+    e.writelog(__FUNCTION__);
+    return (streampos(-1));
+  }
+#endif
+
+  if(position<0)
+    return (streampos(-1));
+
+  return position;
+}
+
+CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
+  pos_type pos, 
+  ios_base::openmode mode)
+{
+  // TODO check if seek can be done in buffer
+  setg(0,0,0);
+  setp(0,0);
+
+#ifndef _LINUX
+  try
+  {
+#endif
+    pos = m_file->Seek(pos, SEEK_SET);
+#ifndef _LINUX
+  }
+  catch (const win32_exception &e) 
+  {
+    e.writelog(__FUNCTION__);
+    return (streampos(-1));
+  }  
+#endif
+
+  if(pos<0)
+    return (streampos(-1));
+
+  return pos;
+}
+
+
+CFileStream::CFileStream(int backsize /*= 0*/)
+    : m_buffer(backsize)
+    , m_file(NULL)
+    , std::istream(&m_buffer)
+{
+}
+
+CFileStream::~CFileStream()
+{
+  Close();
+}
+
+
+bool CFileStream::Open(const CURL& filename)
+{
+  Close();
+
+  m_file = CFileFactory::CreateLoader(filename);
+  if(m_file && m_file->Open(filename, true))
+  {
+    m_buffer.Attach(m_file);
+    return true;
+  }
+
+  setstate(failbit);
+  return false;
+}
+
+__int64 CFileStream::GetLength()
+{
+  return m_file->GetLength();
+}
+
+void CFileStream::Close()
+{
+  if(!m_file)
+    return;
+
+  m_buffer.Detach();
+  SAFE_DELETE(m_file);
 }

@@ -45,7 +45,7 @@
 				<posx>50</posx>
 				<posy>75</posy>
 				<width>630</width>
-				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name] - $LOCALIZE[20165]</label>
+				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name]</label>
 				<font>font12</font>
 				<align>left</align>
 				<visible>!Visualisation.Locked</visible>
@@ -111,14 +111,22 @@
 				<align>left</align>
 				<font>special13</font>
 			</control>
-			<control type="label" id="1">
+			<control type="fadelabel" id="1">
 				<description>Album label</description>
-				<width>500</width>
+				<width>380</width>
 				<posx>180</posx>
 				<posy>60</posy>
 				<info>MusicPlayer.Album</info>
 				<align>left</align>
 				<font>font10</font>
+			</control>
+			<control type="image" id="1">
+				<description>Song Rating Image</description>
+				<height>20</height>
+				<width>120</width>
+				<posx>565</posx>
+				<posy>55</posy>
+				<info>musicplayer.rating</info>
 			</control>
 			<control type="label" id="1">
 				<description>time label</description>

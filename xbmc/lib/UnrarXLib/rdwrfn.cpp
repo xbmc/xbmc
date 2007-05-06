@@ -1,5 +1,4 @@
 #include "rar.hpp"
-#include "../../utils/log.h"
 
 ComprDataIO::ComprDataIO()
 {
@@ -65,7 +64,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         {
           if (m_iSeekTo > CurUnpStart+SrcArc->NewLhd.FullPackSize) // need to seek outside this block
           {
-            TotalRead += SrcArc->NextBlockPos-SrcFile->Tell();
+            TotalRead += (int)(SrcArc->NextBlockPos-SrcFile->Tell());
             CurUnpRead=CurUnpStart+SrcArc->NewLhd.FullPackSize;
             UnpPackedSize=0;
             RetCode = 0;

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 
 #include "Network.h"
 #ifdef HAS_XBOX_NETWORK

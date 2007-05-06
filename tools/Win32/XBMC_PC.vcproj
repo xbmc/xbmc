@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -73,7 +73,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="../../guilib;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc;../../guilib;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -692,6 +692,24 @@
 					RelativePath="..\..\xbmc\GUIDialogMusicScan.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogSmartPlaylistEditor.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSmartPlaylistEditor.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSmartPlaylistRule.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSmartPlaylistRule.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSongInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSongInfo.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIViewControl.cpp">
 				</File>
 				<File
@@ -1023,6 +1041,12 @@
 					RelativePath="..\..\xbmc\utils\Event.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\Favourites.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Favourites.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileItem.cpp">
 				</File>
 				<File
@@ -1260,6 +1284,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogContextMenu.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFavourites.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFavourites.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogFileBrowser.cpp">

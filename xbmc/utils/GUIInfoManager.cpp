@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "../GUIDialogSeekBar.h"
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
@@ -361,6 +361,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.samplerate")) ret = MUSICPLAYER_SAMPLERATE;
     else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
     else if (strTest.Equals("musicplayer.discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
+    else if (strTest.Equals("musicplayer.rating")) ret = MUSICPLAYER_RATING;
+    else if (strTest.Equals("musicplayer.comment")) ret = MUSICPLAYER_COMMENT;
   }
   else if (strCategory.Equals("videoplayer"))
   {
@@ -422,6 +424,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(18).Equals("container.content("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
     else if (strTest.Equals("container.hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (strTest.Left(15).Equals("container.sort("))
+    {
+      SORT_METHOD sort = SORT_METHOD_NONE;
+      CStdString method(strTest.Mid(15, strTest.GetLength() - 16));
+      if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
+      if (sort != SORT_METHOD_NONE)
+        return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
+    }
   }
   else if (strCategory.Equals("listitem"))
   {
@@ -451,6 +461,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.season")) ret = LISTITEM_SEASON;
     else if (strTest.Equals("listitem.tvshowtitle")) ret = LISTITEM_TVSHOW;
     else if (strTest.Equals("listitem.premiered")) ret = LISTITEM_PREMIERED;
+    else if (strTest.Equals("listitem.comment")) ret = LISTITEM_COMMENT;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -625,6 +636,8 @@ string CGUIInfoManager::GetLabel(int info)
   case MUSICPLAYER_SAMPLERATE:
   case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
+  case MUSICPLAYER_RATING:
+  case MUSICPLAYER_COMMENT:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -1024,6 +1037,7 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_EPISODE:
   case LISTITEM_SEASON:
   case LISTITEM_TVSHOW:
+  case LISTITEM_COMMENT:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostDialogID();
@@ -1502,6 +1516,18 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
+    case CONTAINER_SORT_METHOD:
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(dwContextWindow);
+      if( !window ) window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window && window->IsMediaWindow())
+      {
+        const CFileItemList &item = ((CGUIMediaWindow*)window)->CurrentDirectory();
+        SORT_METHOD method = item.GetSortMethod();
+        bReturn = (method == info.m_data1);
+      }
+      break;
+    }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
@@ -1543,6 +1569,11 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
     if (!g_application.IsPlayingAudio()) return "";
     return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultAlbumCover.png";
   }
+  else if (info == MUSICPLAYER_RATING)
+  {
+    if (!g_application.IsPlayingAudio()) return "";
+    return GetItemImage(&m_currentFile, LISTITEM_RATING);
+  }
   else if (info == VIDEOPLAYER_COVER)
   {
     if (!g_application.IsPlayingVideo()) return "";
@@ -1550,7 +1581,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
     else return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY || info == CONTAINER_FOLDERTHUMB)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY ||
+           info == CONTAINER_FOLDERTHUMB || info == LISTITEM_RATING)
   {
     CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
     if (!window || !window->IsMediaWindow())
@@ -1560,7 +1592,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       CFileItem* item;
 
       if (info == CONTAINER_FOLDERTHUMB)
-        item = &const_cast<CFileItem&>(((CGUIMediaWindow*)window)->CurrentDirectory());
+        item = &const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory());
       else
         item = window->GetCurrentListItem();
       if (item)
@@ -1804,6 +1836,10 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       } 
     }
     break;
+  case MUSICPLAYER_RATING:
+    return GetItemLabel(&m_currentFile, LISTITEM_RATING);
+  case MUSICPLAYER_COMMENT:
+    return GetItemLabel(&m_currentFile, LISTITEM_COMMENT);
   }
   return "";
 }
@@ -2515,7 +2551,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_RATING:
     {
       CStdString rating;
-      if (item->m_fRating > 0.f)
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      { // song rating.  Images will probably be better than numbers for this in the long run
+        rating = item->GetMusicInfoTag()->GetRating();
+      }
+      else if (item->m_fRating > 0.f) // movie rating
         rating.Format("%2.2f", item->m_fRating);
       return rating;
     }
@@ -2573,6 +2613,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     {
       return item->GetVideoInfoTag()->m_strShowTitle;
     }
+    break;
+  case LISTITEM_COMMENT:
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetComment();
     break;
   }
   return "";
@@ -2727,6 +2771,16 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
   }
   if (info == LISTITEM_OVERLAY)
     return item->GetOverlayImage();
+  if (info == LISTITEM_RATING)
+  {
+    if (item->HasMusicInfoTag())
+    { // song rating.
+      CStdString rating;
+      rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+      return rating;
+    }
+    return "";
+  }
   return item->GetThumbnailImage();
 }
 

@@ -136,6 +136,12 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
     tag.SetMusicBrainzTRMID(strTagValue);
   }
 
+  if ( strTagType == "COMMENT" )
+    tag.SetComment(strTagValue);
+
+  if ( strTagType == "RATING" && strTagValue.GetLength() == 1 && strTagValue[0] > '0' && strTagValue[0] < '6')
+    tag.SetRating(strTagValue[0]);
+
   //  Get new style replay gain info
   if (strTagType=="REPLAYGAIN_TRACK_GAIN")
   {

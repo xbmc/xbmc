@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/24/2007-->
+<!--Date of translation: 04/30/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8628-->
+<!--Based on english strings version 8690-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -222,7 +222,7 @@
   <string id="290">Lautstärkeumfang</string>
   <string id="291">Videos</string>
   <string id="292">Audio</string>
-  <string id="293">Untertitel</string>
+  <string id="293">Nach Untertitel durchsuchen...</string>
   <string id="294">Lesezeichen erstellen</string>
   <string id="296">Lesezechen löschen</string>
   <string id="297">Audio-Verzögerung</string>
@@ -525,9 +525,15 @@
   <string id="648">Video-Datenbank importieren...</string>
   <string id="649">Datenbank wird importiert...</string>
   <string id="650">Datenbank wird exportiert...</string>
-  <string id="651">Video-Datenbank</string>
+  <string id="651">Nach Datenbank durchsuchen...</string>
   <string id="652">Jahre</string>
   <string id="653">Datenbank aktualisieren</string>
+  <string id="654">Debug-Info anzeigen</string>
+  <string id="655">Nach einem Programm durchsuchen...</string>
+  <string id="656">Nach einer Playlist durchsuchen...</string>
+  <string id="657">Nach einem Ordner durchsuchen...</string>
+  <string id="658">Titel-Informationen</string>
+  <string id="659">Kommentar:</string>
   <string id="700">Datenbank wird aktualisiert...</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
@@ -584,7 +590,6 @@
   <string id="755">Programmpfad bearbeiten</string>
   <string id="756">Programnamen bearbeiten</string>
   <string id="757">Pfadtiefe bearbeiten</string>
-  <string id="758">Programmlink entfernen</string>
   <string id="759">Große Liste</string>
   <string id="760">Gelb</string>
   <string id="761">Weiß</string>
@@ -618,7 +623,7 @@
   <string id="1012">Freigabe</string>
   <string id="1013">Port</string>
   <string id="1014">Benutzername</string>
-  <string id="1015">Netzwerk-Server</string>
+  <string id="1015">Nach Netzwerk-Server durchsuchen...</string>
   <string id="1016">Bitte geben Sie den Namen oder die IP-Adresse des Servers ein</string>
   <string id="1017">Bitte geben Sie den Namen der Netzwerk-Freigabe ein</string>
   <string id="1018">Bitte geben Sie die Port-Nummer ein</string>
@@ -633,12 +638,13 @@
   <string id="1027">Quelle bearbeiten</string>
   <string id="1028">Quelle für %s bearbeiten</string>
   <string id="1029">Bitte geben Sie eine neue Bezeichnung ein</string>
-  <string id="1030">Ein Bild</string>
-  <string id="1031">Ein Ordner mit Bildern</string>
+  <string id="1030">Nach einem Bild durchsuchen...</string>
+  <string id="1031">Nach einem Ordner mit Bildern durchsuchen...</string>
   <string id="1032">Netzwerkfreigabe hinzufügen...</string>
-  <string id="1033">eine Datei</string>
+  <string id="1033">Nach einer Datei durchsuchen...</string>
   <string id="1034">Untermenü</string>
   <string id="1035">Untermenü-Einträge aktivieren</string>
+  <string id="1036">Favoriten</string>
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
@@ -1070,6 +1076,8 @@
   <string id="14073">XLink-Kai ist nicht aktiv.</string>
   <string id="14074">Zeitzone</string>
   <string id="14075">Sommerzeit verwenden</string>
+  <string id="14076">Zu Favoriten hinzufügen</string>
+  <string id="14077">Von Favoriten entfernen</string>
   <string id="15000">XLink-Kai</string>
   <string id="15001">Es besteht keine Verbindung zu XLink-Kai. Möchten</string>
   <string id="15002">Sie jetzt versuchen eine Verbindung aufzubauen?</string>
@@ -1259,7 +1267,6 @@
   <string id="20007">Aufnahmen</string>
   <string id="20008">Screenshots</string>
   <string id="20009">XBMC verwenden</string>
-  <string id="20010">Bild des Interpreten</string>
   <string id="20011">Musik Playlisten</string>
   <string id="20012">Video Playlisten</string>
   <string id="20013">Möchten Sie das Spiel jetzt starten?</string>
@@ -1294,7 +1301,6 @@
   <string id="20053">Master-Modus ist deaktiviert.</string>
   <string id="20054">Master-Modus ist aktiviert.</string>
   <string id="20055">Allmusic.com</string>
-  <string id="20056">Quellen-Thumbnail</string>
   <string id="20057">Thumbnail entfernen</string>
   <string id="20058">Profil hinzufügen...</string>
   <string id="20059">Alle Alben aktualisieren</string>
@@ -1465,8 +1471,7 @@
   <string id="20325">Kalibrierung zurücksetzen</string>
   <string id="20326">Dies setzt den Kalibrierwert für %s</string>
   <string id="20327">auf den Standardwert zurück</string>
-  <string id="20328">Speicherort um den Spielstand zu kopieren</string>
-  <string id="20329">Speicherort um den Spielstand zu verschieben</string>
+  <string id="20328">Nach einem Speicherort durchsuchen...</string>
   <string id="20330">Ordnernamen für Anfragen verwenden</string>
   <string id="20331">Dateinamen</string>
   <string id="20332">Möchten Sie Datei- oder Ordnernamen für Anfragen verwenden?</string>

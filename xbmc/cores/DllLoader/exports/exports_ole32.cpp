@@ -1,21 +1,17 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #include "emu_ole32.h"
 
-void export_ole32()
+Export export_ole32[] =
 {
-  g_dlls.ole32.AddExport("CoInitialize", (unsigned long)dllCoInitialize);
-  g_dlls.ole32.AddExport("CoUninitialize", (unsigned long)dllCoUninitialize);
-  g_dlls.ole32.AddExport("CoCreateInstance", (unsigned long)dllCoCreateInstance);
-  g_dlls.ole32.AddExport("CoFreeUnusedLibraries", (unsigned long)dllCoFreeUnusedLibraries);
-  g_dlls.ole32.AddExport("StringFromGUID2", (unsigned long)dllStringFromGUID2);
-  g_dlls.ole32.AddExport("CoTaskMemFree", (unsigned long)dllCoTaskMemFree);
-  g_dlls.ole32.AddExport("CoTaskMemAlloc", (unsigned long)dllCoTaskMemAlloc);
-  //Exp2Dll* ole32_exp3 = new Exp2Dll("ole32.dll", "CoCreateInstance", (unsigned long)CoCreateInstance);
-}
+  { "CoInitialize",               -1, dllCoInitialize,               NULL },
+  { "CoUninitialize",             -1, dllCoUninitialize,             NULL },
+  { "CoCreateInstance",           -1, dllCoCreateInstance,           NULL },
+  { "CoFreeUnusedLibraries",      -1, dllCoFreeUnusedLibraries,      NULL },
+  { "StringFromGUID2",            -1, dllStringFromGUID2,            NULL },
+  { "CoTaskMemFree",              -1, dllCoTaskMemFree,              NULL },
+  { "CoTaskMemAlloc",             -1, dllCoTaskMemAlloc,             NULL },
+  { NULL,                         -1, NULL,                          NULL }
+};
 
-void export_oleaut32()
-{
-
-}

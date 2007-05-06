@@ -1,25 +1,26 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #include "emu_registry.h"
 
-void export_reg()
+Export export_advapi32[] =
 {
-  g_dlls.advapi32.AddExport("RegCloseKey", (unsigned long)dllRegCloseKey);
-  g_dlls.advapi32.AddExport("RegOpenKeyExA", (unsigned long)dllRegOpenKeyExA);
-  g_dlls.advapi32.AddExport("RegOpenKeyA", (unsigned long)dllRegOpenKeyA);
-  g_dlls.advapi32.AddExport("RegSetValueA", (unsigned long)dllRegSetValueA);
-  g_dlls.advapi32.AddExport("RegEnumKeyExA", (unsigned long)dllRegEnumKeyExA);
-  g_dlls.advapi32.AddExport("RegDeleteKeyA", (unsigned long)dllRegDeleteKeyA);
-  g_dlls.advapi32.AddExport("RegQueryValueExA", (unsigned long)dllRegQueryValueExA);
-  g_dlls.advapi32.AddExport("RegQueryValueExW", (unsigned long)dllRegQueryValueExW);
-  g_dlls.advapi32.AddExport("RegCreateKeyA", (unsigned long)dllRegCreateKeyA);
-  g_dlls.advapi32.AddExport("RegSetValueExA", (unsigned long)dllRegSetValueExA);
-  g_dlls.advapi32.AddExport("RegCreateKeyExA", (unsigned long)dllRegCreateKeyExA);
-  g_dlls.advapi32.AddExport("RegEnumValueA", (unsigned long)dllRegEnumValueA);
-  g_dlls.advapi32.AddExport("RegQueryInfoKeyA", (unsigned long)dllRegQueryInfoKeyA);
-  g_dlls.advapi32.AddExport("CryptAcquireContextA", (unsigned long)dllCryptAcquireContextA);
-  g_dlls.advapi32.AddExport("CryptGenRandom", (unsigned long)dllCryptGenRandom);
-  g_dlls.advapi32.AddExport("CryptReleaseContext", (unsigned long)dllCryptReleaseContext);
-  g_dlls.advapi32.AddExport("RegQueryValueA", (unsigned long)dllRegQueryValueA);
-}
+  { "RegCloseKey",                -1, dllRegCloseKey,                NULL },
+  { "RegOpenKeyExA",              -1, dllRegOpenKeyExA,              NULL },
+  { "RegOpenKeyA",                -1, dllRegOpenKeyA,                NULL },
+  { "RegSetValueA",               -1, dllRegSetValueA,               NULL },
+  { "RegEnumKeyExA",              -1, dllRegEnumKeyExA,              NULL },
+  { "RegDeleteKeyA",              -1, dllRegDeleteKeyA,              NULL },
+  { "RegQueryValueExA",           -1, dllRegQueryValueExA,           NULL },
+  { "RegQueryValueExW",           -1, dllRegQueryValueExW,           NULL },
+  { "RegCreateKeyA",              -1, dllRegCreateKeyA,              NULL },
+  { "RegSetValueExA",             -1, dllRegSetValueExA,             NULL },
+  { "RegCreateKeyExA",            -1, dllRegCreateKeyExA,            NULL },
+  { "RegEnumValueA",              -1, dllRegEnumValueA,              NULL },
+  { "RegQueryInfoKeyA",           -1, dllRegQueryInfoKeyA,           NULL },
+  { "CryptAcquireContextA",       -1, dllCryptAcquireContextA,       NULL },
+  { "CryptGenRandom",             -1, dllCryptGenRandom,             NULL },
+  { "CryptReleaseContext",        -1, dllCryptReleaseContext,        NULL },
+  { "RegQueryValueA",             -1, dllRegQueryValueA,             NULL },
+  { NULL,                         -1, NULL,                          NULL }
+};

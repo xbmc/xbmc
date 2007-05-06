@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "ISO9660Directory.h"
 #include "../xbox/IoSupport.h"
 #include "iso9660.h"

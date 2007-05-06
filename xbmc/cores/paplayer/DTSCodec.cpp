@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #ifdef HAS_DTS_CODEC
 #include "DTSCodec.h"
 
