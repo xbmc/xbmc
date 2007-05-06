@@ -96,6 +96,7 @@ public:
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
   virtual bool HitTest(float posX, float posY) const;
   virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
+  virtual void UnfocusFromPoint(float posX, float posY);
 
   virtual bool OnMessage(CGUIMessage& message);
   DWORD GetID(void) const;
@@ -129,7 +130,7 @@ public:
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   const CGUIControl *GetParentControl() const { return m_parentControl; };
 //#endif
-  virtual void SetFocus(bool bOnOff);
+  virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible);
