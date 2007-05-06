@@ -31,9 +31,15 @@
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
+#include "Favourites.h"
 
 #include "guiImage.h"
 #include "GUIMultiImage.h"
+#include "GUIDialogSmartPlaylistEditor.h"
+
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -371,24 +377,26 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items = cachedItems;
+    items.m_strPath = cachedItems.m_strPath;
+    items.AppendPointer(cachedItems);
     cachedItems.ClearKeepPointer();
   }
   else
   {
     DWORD time = timeGetTime();
-    if (m_guiState.get() && !m_guiState->HideParentDirItems())
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = strParentPath;
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      items.Add(pItem);
-    }
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
@@ -573,6 +581,12 @@ bool CGUIMediaWindow::OnClick(int iItem)
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
       return true;
     }
+    else if (pItem->m_strPath == "newsmartplaylist://")
+    {
+      if (CGUIDialogSmartPlaylistEditor::NewPlaylist())
+        Update(m_vecItems.m_strPath);
+      return true;
+    }
 
     // this is particular to music as only music allows "auto play next item"
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
@@ -593,22 +607,22 @@ bool CGUIMediaWindow::OnClick(int iItem)
       {
         g_playlistPlayer.ClearPlaylist(iPlaylist);
         g_playlistPlayer.Reset();
-        int nFolderCount = 0;
-        int iNoSongs = 0;
+        int songToPlay = 0;
         CFileItemList queueItems;
         for ( int i = 0; i < m_vecItems.Size(); i++ )
         {
-          CFileItem* pItem = m_vecItems[i];
+          CFileItem* item = m_vecItems[i];
 
-          if (pItem->m_bIsFolder)
-          {
-            nFolderCount++;
+          if (item->m_bIsFolder)
             continue;
+
+          if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR())
+            queueItems.Add(item);
+
+          if (item == pItem)
+          { // item that was clicked
+            songToPlay = queueItems.Size() - 1;
           }
-          if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-            queueItems.Add(pItem);
-          else if (i <= iItem)
-            iNoSongs++;
         }
         g_playlistPlayer.Add(iPlaylist, queueItems);
         queueItems.ClearKeepPointer();
@@ -618,17 +632,16 @@ bool CGUIMediaWindow::OnClick(int iItem)
           m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
         // figure out where we start playback
-        int iOrder = iItem - nFolderCount - iNoSongs;
         if (g_playlistPlayer.IsShuffled(iPlaylist))
         {
-          int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(iOrder);
+          int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(songToPlay);
           g_playlistPlayer.GetPlaylist(iPlaylist).Swap(0, iIndex);
-          iOrder = 0;
+          songToPlay = 0;
         }
 
         // play
         g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-        g_playlistPlayer.Play(iOrder);
+        g_playlistPlayer.Play(songToPlay);
       }
       return true;
     }
@@ -884,26 +897,19 @@ void CGUIMediaWindow::UpdateFileList()
 
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    int nFolderCount = 0;
-    int iNoSongs = 0;
-    for (int i = 0; i < (int)m_vecItems.Size(); i++)
+
+    for (int i = 0; i < m_vecItems.Size(); i++)
     {
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_bIsFolder)
-      {
-        nFolderCount++;
         continue;
-      }
+
       if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-      {
         g_playlistPlayer.Add(iPlaylist, pItem);
-      }
-      else
-        iNoSongs++;
 
       if (pItem->m_strPath == playlistItem.m_strPath &&
           pItem->m_lStartOffset == playlistItem.m_lStartOffset)
-        g_playlistPlayer.SetCurrentSong(i - nFolderCount - iNoSongs);
+        g_playlistPlayer.SetCurrentSong(g_playlistPlayer.GetPlaylist(iPlaylist).size() - 1);
     }
   }
 }
@@ -1021,10 +1027,36 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  // check if the skin even supports favourites
+  RESOLUTION res;
+  CStdString favourites(g_SkinInfo.GetSkinPath("dialogfavourites.xml", &res));
+  if (XFILE::CFile::Exists(favourites))
+  {
+#endif
+  // TODO: FAVOURITES Conditions on masterlock and localisation
+  if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add"))
+  {
+    if (CFavourites::IsFavourite(item, GetID()))
+      buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
+    else
+      buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
+  }
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  }
+#endif
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
+  switch (button)
+  {
+  case CONTEXT_BUTTON_ADD_FAVOURITE:
+    CFavourites::AddOrRemove(m_vecItems[itemNumber], GetID());
+    return true;
+  }
   return false;
 }
 

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "LCD.h"
 #include "GUIInfoManager.h"
 #include "../Util.h"

@@ -167,7 +167,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          m_vecItems.m_strPath = strDestination;
+          SetHistoryForPath(m_vecItems.m_strPath);
           break;
         }
       }
@@ -187,6 +189,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         Update(m_vecItems.m_strPath);  // Will remove content from the list/thumb control
       }
 
+      m_database.Close();
       return true;
     }
     break;
@@ -788,8 +791,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (pScanDlg && pScanDlg->IsScanning())
-          buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-        else if (node != NODE_TYPE_TITLE_TVSHOWS)
+        {
+          if (node != NODE_TYPE_TITLE_TVSHOWS)
+            buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
+        }
+        else
           buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
       }
 
@@ -842,7 +848,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CQueryParams params;
       dir.GetQueryParams(m_vecItems[itemNumber]->m_strPath,params);
       m_database.GetTvShowInfo("",tag,params.GetTvShowId());
-      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20372), tag.m_strPath))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(1030), tag.m_strPath))
       {
         CStdString thumb(m_vecItems[itemNumber]->GetCachedSeasonThumb());
         CPicture picture;

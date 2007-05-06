@@ -1,5 +1,5 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 
 #include "emu_kernel32.h"
@@ -7,193 +7,200 @@
 #include "../dll_tracker_memory.h"
 #include "../dll_tracker_critical_section.h"
 
-void export_kernel32()
+Export export_kernel32[] =
 {
-  g_dlls.kernel32.AddExport("AddAtomA", (unsigned long)dllAddAtomA);
-  g_dlls.kernel32.AddExport("FindAtomA", (unsigned long)dllFindAtomA);
-  g_dlls.kernel32.AddExport("GetAtomNameA", (unsigned long)dllGetAtomNameA);
-  g_dlls.kernel32.AddExport("CreateThread", (unsigned long)dllCreateThread);
-  g_dlls.kernel32.AddExport("FindClose", (unsigned long)dllFindClose);
-  g_dlls.kernel32.AddExport("FindFirstFileA", (unsigned long)FindFirstFileA);
-  g_dlls.kernel32.AddExport("FindNextFileA", (unsigned long)FindNextFileA);
-  g_dlls.kernel32.AddExport("GetFileAttributesA", (unsigned long)dllGetFileAttributesA);
-  g_dlls.kernel32.AddExport("GetLastError", (unsigned long)GetLastError);
-  g_dlls.kernel32.AddExport("SetUnhandledExceptionFilter", (unsigned long)dllSetUnhandledExceptionFilter);
-  g_dlls.kernel32.AddExport("Sleep", (unsigned long)dllSleep);
-  g_dlls.kernel32.AddExport("SleepEx", (unsigned long)SleepEx);
-  g_dlls.kernel32.AddExport("TerminateThread", (unsigned long)dllTerminateThread);
-  g_dlls.kernel32.AddExport("GetCurrentThread", (unsigned long)dllGetCurrentThread);
-  g_dlls.kernel32.AddExport("QueryPerformanceCounter", (unsigned long)QueryPerformanceCounter);
+  { "AddAtomA",                                     -1, dllAddAtomA,                                  NULL },
+  { "FindAtomA",                                    -1, dllFindAtomA,                                 NULL },
+  { "GetAtomNameA",                                 -1, dllGetAtomNameA,                              NULL },
+  { "CreateThread",                                 -1, dllCreateThread,                              NULL },
+  { "FindClose",                                    -1, dllFindClose,                                 NULL },
+  { "FindFirstFileA",                               -1, FindFirstFileA,                               NULL },
+  { "FindNextFileA",                                -1, FindNextFileA,                                NULL },
+  { "GetFileAttributesA",                           -1, dllGetFileAttributesA,                        NULL },
+  { "GetLastError",                                 -1, GetLastError,                                 NULL },
+  { "SetUnhandledExceptionFilter",                  -1, dllSetUnhandledExceptionFilter,               NULL },
+  { "Sleep",                                        -1, dllSleep,                                     NULL },
+  { "SleepEx",                                      -1, SleepEx,                                      NULL },
+  { "TerminateThread",                              -1, dllTerminateThread,                           NULL },
+  { "GetCurrentThread",                             -1, dllGetCurrentThread,                          NULL },
+  { "QueryPerformanceCounter",                      -1, QueryPerformanceCounter,                      NULL },
 #ifdef _XBOX
-  g_dlls.kernel32.AddExport("QueryPerformanceFrequency", (unsigned long)QueryPerformanceFrequencyXbox);
+  { "QueryPerformanceFrequency",                    -1, QueryPerformanceFrequencyXbox,                NULL },
 #else
-  g_dlls.kernel32.AddExport("QueryPerformanceFrequency", (unsigned long)QueryPerformanceFrequency);
+  { "QueryPerformanceFrequency",                    -1, QueryPerformanceFrequency,                    NULL },
 #endif
-  g_dlls.kernel32.AddExport("SetThreadPriority", (unsigned long)SetThreadPriority);
-  g_dlls.kernel32.AddExport("GetTickCount", (unsigned long)GetTickCount);
-  g_dlls.kernel32.AddExport("GetCurrentThreadId", (unsigned long)GetCurrentThreadId); //test
-  g_dlls.kernel32.AddExport("GetCurrentProcessId", (unsigned long)dllGetCurrentProcessId);
-  g_dlls.kernel32.AddExport("GetSystemTimeAsFileTime", (unsigned long)GetSystemTimeAsFileTime);
-  g_dlls.kernel32.AddExport("OutputDebugStringA", (unsigned long)OutputDebugString);
-  g_dlls.kernel32.AddExport("DisableThreadLibraryCalls", (unsigned long)dllDisableThreadLibraryCalls);
-  g_dlls.kernel32.AddExport("GlobalMemoryStatus", (unsigned long)GlobalMemoryStatus);
-  g_dlls.kernel32.AddExport("CreateEventA", (unsigned long)CreateEventA); //test
-  g_dlls.kernel32.AddExport("ResetEvent", (unsigned long)ResetEvent);
-  g_dlls.kernel32.AddExport("WaitForSingleObject", (unsigned long)dllWaitForSingleObject);
-  g_dlls.kernel32.AddExport("LoadLibraryA", (unsigned long)dllLoadLibraryA, (void*)track_LoadLibraryA);
-  g_dlls.kernel32.AddExport("FreeLibrary", (unsigned long)dllFreeLibrary, (void*)track_FreeLibrary);
-  g_dlls.kernel32.AddExport("GetProcAddress", (unsigned long)dllGetProcAddress);
-  g_dlls.kernel32.AddExport("LeaveCriticalSection", (unsigned long)dllLeaveCriticalSection);
-  g_dlls.kernel32.AddExport("EnterCriticalSection", (unsigned long)dllEnterCriticalSection);
-  g_dlls.kernel32.AddExport("DeleteCriticalSection", (unsigned long)dllDeleteCriticalSection, (void*)track_DeleteCriticalSection);
-  g_dlls.kernel32.AddExport("InitializeCriticalSection", (unsigned long)dllInitializeCriticalSection, (void*)track_InitializeCriticalSection);
-  g_dlls.kernel32.AddExport("GetSystemInfo", (unsigned long) dllGetSystemInfo);
-  g_dlls.kernel32.AddExport("CloseHandle", (unsigned long) CloseHandle);
-  g_dlls.kernel32.AddExport("GetPrivateProfileIntA", (unsigned long) dllGetPrivateProfileIntA);
-  g_dlls.kernel32.AddExport("WaitForMultipleObjects", (unsigned long) dllWaitForMultipleObjects);
-  g_dlls.kernel32.AddExport("SetEvent", (unsigned long) SetEvent);
-  g_dlls.kernel32.AddExport("TlsAlloc", (unsigned long) dllTlsAlloc);
-  g_dlls.kernel32.AddExport("TlsFree", (unsigned long) dllTlsFree);
-  g_dlls.kernel32.AddExport("TlsGetValue", (unsigned long) dllTlsGetValue);
-  g_dlls.kernel32.AddExport("TlsSetValue", (unsigned long) dllTlsSetValue);
-  g_dlls.kernel32.AddExport("HeapFree", (unsigned long) HeapFree); //test
-  g_dlls.kernel32.AddExport("HeapAlloc", (unsigned long) HeapAlloc); //test
-  g_dlls.kernel32.AddExport("LocalFree", (unsigned long) LocalFree); //test
-  g_dlls.kernel32.AddExport("LocalAlloc", (unsigned long) LocalAlloc); //test
-  g_dlls.kernel32.AddExport("InterlockedIncrement", (unsigned long) InterlockedIncrement);
-  g_dlls.kernel32.AddExport("InterlockedDecrement", (unsigned long) InterlockedDecrement);
-  g_dlls.kernel32.AddExport("InterlockedExchange", (unsigned long) InterlockedExchange);
-  g_dlls.kernel32.AddExport("GetProcessHeap", (unsigned long) GetProcessHeap); //test
-  g_dlls.kernel32.AddExport("GetModuleHandleA", (unsigned long) dllGetModuleHandleA);
-  g_dlls.kernel32.AddExport("InterlockedCompareExchange", (unsigned long) InterlockedCompareExchange);
-  g_dlls.kernel32.AddExport("GetVersionExA", (unsigned long) dllGetVersionExA);
-  g_dlls.kernel32.AddExport("GetVersionExW", (unsigned long) dllGetVersionExW);
-  g_dlls.kernel32.AddExport("GetProfileIntA", (unsigned long) dllGetProfileIntA);
-  g_dlls.kernel32.AddExport("CreateFileA", (unsigned long) dllCreateFileA);
-  g_dlls.kernel32.AddExport("DeviceIoControl", (unsigned long) DeviceIoControl);
-  g_dlls.kernel32.AddExport("ReadFile", (unsigned long) ReadFile);
-  g_dlls.kernel32.AddExport("dllDVDReadFile", (unsigned long) dllDVDReadFileLayerChangeHack);
-  g_dlls.kernel32.AddExport("SetFilePointer", (unsigned long) SetFilePointer);
+  { "SetThreadPriority",                            -1, SetThreadPriority,                            NULL },
+  { "GetTickCount",                                 -1, GetTickCount,                                 NULL },
+  { "GetCurrentThreadId",                           -1, GetCurrentThreadId,                           NULL },
+  { "GetCurrentProcessId",                          -1, dllGetCurrentProcessId,                       NULL },
+  { "GetSystemTimeAsFileTime",                      -1, GetSystemTimeAsFileTime,                      NULL },
+  { "OutputDebugStringA",                           -1, OutputDebugString,                            NULL },
+  { "DisableThreadLibraryCalls",                    -1, dllDisableThreadLibraryCalls,                 NULL },
+  { "GlobalMemoryStatus",                           -1, GlobalMemoryStatus,                           NULL },
+  { "CreateEventA",                                 -1, CreateEventA,                                 NULL },
+  { "ResetEvent",                                   -1, ResetEvent,                                   NULL },
+  { "WaitForSingleObject",                          -1, dllWaitForSingleObject,                       NULL },
+  { "LoadLibraryA",                                 -1, dllLoadLibraryA,                              track_LoadLibraryA },
+  { "FreeLibrary",                                  -1, dllFreeLibrary,                               track_FreeLibrary },
+  { "GetProcAddress",                               -1, dllGetProcAddress,                            NULL },
+  { "LeaveCriticalSection",                         -1, dllLeaveCriticalSection,                      NULL },
+  { "EnterCriticalSection",                         -1, dllEnterCriticalSection,                      NULL },
+  { "DeleteCriticalSection",                        -1, dllDeleteCriticalSection,                     track_DeleteCriticalSection },
+  { "InitializeCriticalSection",                    -1, dllInitializeCriticalSection,                 track_InitializeCriticalSection },
+  { "GetSystemInfo",                                -1, dllGetSystemInfo,                             NULL },
+  { "CloseHandle",                                  -1, CloseHandle,                                  NULL },
+  { "GetPrivateProfileIntA",                        -1, dllGetPrivateProfileIntA,                     NULL },
+  { "WaitForMultipleObjects",                       -1, dllWaitForMultipleObjects,                    NULL },
+  { "SetEvent",                                     -1, SetEvent,                                     NULL },
+  { "TlsAlloc",                                     -1, dllTlsAlloc,                                  NULL },
+  { "TlsFree",                                      -1, dllTlsFree,                                   NULL },
+  { "TlsGetValue",                                  -1, dllTlsGetValue,                               NULL },
+  { "TlsSetValue",                                  -1, dllTlsSetValue,                               NULL },
+  { "HeapFree",                                     -1, HeapFree,                                     NULL },
+  { "HeapAlloc",                                    -1, HeapAlloc,                                    NULL },
+  { "LocalFree",                                    -1, LocalFree,                                    NULL },
+  { "LocalAlloc",                                   -1, LocalAlloc,                                   NULL },
+  { "LocalReAlloc",                                 -1, LocalReAlloc,                                 NULL },
+  { "LocalLock",                                    -1, LocalLock,                                    NULL },
+  { "LocalUnlock",                                  -1, LocalUnlock,                                  NULL },
+  { "LocalHandle",                                  -1, LocalHandle,                                  NULL },
+  { "InterlockedIncrement",                         -1, InterlockedIncrement,                         NULL },
+  { "InterlockedDecrement",                         -1, InterlockedDecrement,                         NULL },
+  { "InterlockedExchange",                          -1, InterlockedExchange,                          NULL },
+  { "GetProcessHeap",                               -1, GetProcessHeap,                               NULL },
+  { "GetModuleHandleA",                             -1, dllGetModuleHandleA,                          NULL },
+  { "InterlockedCompareExchange",                   -1, InterlockedCompareExchange,                   NULL },
+  { "GetVersionExA",                                -1, dllGetVersionExA,                             NULL },
+  { "GetVersionExW",                                -1, dllGetVersionExW,                             NULL },
+  { "GetProfileIntA",                               -1, dllGetProfileIntA,                            NULL },
+  { "CreateFileA",                                  -1, dllCreateFileA,                               NULL },
+  { "DeviceIoControl",                              -1, DeviceIoControl,                              NULL },
+  { "ReadFile",                                     -1, ReadFile,                                     NULL },
+  { "dllDVDReadFile",                               -1, dllDVDReadFileLayerChangeHack,                NULL },
+  { "SetFilePointer",                               -1, SetFilePointer,                               NULL },
 #ifdef _XBOX
-  g_dlls.kernel32.AddExport("xboxopendvdrom", (unsigned long) xboxopendvdrom);
+  { "xboxopendvdrom",                               -1, xboxopendvdrom,                               NULL },
 #endif
-  g_dlls.kernel32.AddExport("GetVersion", (unsigned long) dllGetVersion);
-  g_dlls.kernel32.AddExport("MulDiv", (unsigned long) MulDiv);
-  g_dlls.kernel32.AddExport("lstrlenA", (unsigned long) lstrlenA);
-  g_dlls.kernel32.AddExport("lstrlenW", (unsigned long) lstrlenW);
-  g_dlls.kernel32.AddExport("LoadLibraryExA", (unsigned long)dllLoadLibraryExA, (void*)track_LoadLibraryExA);
+  { "GetVersion",                                   -1, dllGetVersion,                                NULL },
+  { "MulDiv",                                       -1, MulDiv,                                       NULL },
+  { "lstrlenA",                                     -1, lstrlenA,                                     NULL },
+  { "lstrlenW",                                     -1, lstrlenW,                                     NULL },
+  { "LoadLibraryExA",                               -1, dllLoadLibraryExA,                            track_LoadLibraryExA },
 
-  g_dlls.kernel32.AddExport("DeleteFileA", (unsigned long) DeleteFileA);
-  g_dlls.kernel32.AddExport("GetModuleFileNameA", (unsigned long) dllGetModuleFileNameA);
-  g_dlls.kernel32.AddExport("GlobalAlloc", (unsigned long) GlobalAlloc);
-  g_dlls.kernel32.AddExport("GlobalLock", (unsigned long) GlobalLock);
-  g_dlls.kernel32.AddExport("GlobalUnlock", (unsigned long) GlobalUnlock);
-  g_dlls.kernel32.AddExport("FreeEnvironmentStringsW", (unsigned long) dllFreeEnvironmentStringsW);
-  g_dlls.kernel32.AddExport("SetLastError", (unsigned long) SetLastError);
-  g_dlls.kernel32.AddExport("RestoreLastError", (unsigned long) SetLastError);
-  g_dlls.kernel32.AddExport("GetOEMCP", (unsigned long) dllGetOEMCP);
-  g_dlls.kernel32.AddExport("SetEndOfFile", (unsigned long) SetEndOfFile);
-  g_dlls.kernel32.AddExport("RtlUnwind", (unsigned long) dllRtlUnwind);
-  g_dlls.kernel32.AddExport("GetCommandLineA", (unsigned long) dllGetCommandLineA);
-  g_dlls.kernel32.AddExport("HeapReAlloc", (unsigned long) HeapReAlloc); //test
-  g_dlls.kernel32.AddExport("ExitProcess", (unsigned long) dllExitProcess);
-  g_dlls.kernel32.AddExport("TerminateProcess", (unsigned long) dllTerminateProcess);
-  g_dlls.kernel32.AddExport("GetCurrentProcess", (unsigned long) dllGetCurrentProcess);
-  g_dlls.kernel32.AddExport("HeapSize", (unsigned long) HeapSize);
-  g_dlls.kernel32.AddExport("WriteFile", (unsigned long) WriteFile);
-  g_dlls.kernel32.AddExport("GlobalFree", (unsigned long) GlobalFree);
-  g_dlls.kernel32.AddExport("GetACP", (unsigned long) dllGetACP);
-  g_dlls.kernel32.AddExport("SetHandleCount", (unsigned long) dllSetHandleCount);
-  g_dlls.kernel32.AddExport("GetStdHandle", (unsigned long) dllGetStdHandle);
-  g_dlls.kernel32.AddExport("GetFileType", (unsigned long) dllGetFileType);
-  g_dlls.kernel32.AddExport("GetStartupInfoA", (unsigned long) dllGetStartupInfoA);
-  g_dlls.kernel32.AddExport("FreeEnvironmentStringsA", (unsigned long) dllFreeEnvironmentStringsA);
-  g_dlls.kernel32.AddExport("WideCharToMultiByte", (unsigned long) dllWideCharToMultiByte);
-  g_dlls.kernel32.AddExport("GetEnvironmentStrings", (unsigned long) dllGetEnvironmentStrings);
-  g_dlls.kernel32.AddExport("GetEnvironmentStringsW", (unsigned long) dllGetEnvironmentStringsW);
-  g_dlls.kernel32.AddExport("GetEnvironmentVariableA", (unsigned long) dllGetEnvironmentVariableA);
-  g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy, (void*)track_HeapDestroy );
-  g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate, (void*)track_HeapCreate );
-  g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree, (unsigned long)track_VirtualFree);
-  g_dlls.kernel32.AddExport("VirtualFreeEx", (unsigned long) VirtualFreeEx, (unsigned long)track_VirtualFreeEx);
-  g_dlls.kernel32.AddExport("VirtualAlloc", (unsigned long) VirtualAlloc, (unsigned long)track_VirtualAlloc);
-  g_dlls.kernel32.AddExport("VirtualAllocEx", (unsigned long) VirtualAllocEx, (unsigned long)track_VirtualAllocEx);
-  g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) dllMultiByteToWideChar);
-  g_dlls.kernel32.AddExport("LCMapStringA", (unsigned long) dllLCMapStringA);
-  g_dlls.kernel32.AddExport("LCMapStringW", (unsigned long) dllLCMapStringW);
-  g_dlls.kernel32.AddExport("IsBadWritePtr", (unsigned long) IsBadWritePtr);
-  g_dlls.kernel32.AddExport("SetStdHandle", (unsigned long) dllSetStdHandle);
-  g_dlls.kernel32.AddExport("FlushFileBuffers", (unsigned long) FlushFileBuffers);
-  g_dlls.kernel32.AddExport("GetStringTypeA", (unsigned long) dllGetStringTypeA);
-  g_dlls.kernel32.AddExport("GetStringTypeW", (unsigned long) dllGetStringTypeW);
-  g_dlls.kernel32.AddExport("IsBadReadPtr", (unsigned long) IsBadReadPtr);
-  g_dlls.kernel32.AddExport("IsBadCodePtr", (unsigned long) IsBadCodePtr);
-  g_dlls.kernel32.AddExport("GetCPInfo", (unsigned long) dllGetCPInfo);
+  { "DeleteFileA",                                  -1, DeleteFileA,                                  NULL },
+  { "GetModuleFileNameA",                           -1, dllGetModuleFileNameA,                        NULL },
+  { "GlobalAlloc",                                  -1, GlobalAlloc,                                  NULL },
+  { "GlobalLock",                                   -1, GlobalLock,                                   NULL },
+  { "GlobalUnlock",                                 -1, GlobalUnlock,                                 NULL },
+  { "GlobalHandle",                                 -1, GlobalHandle,                                 NULL },
+  { "GlobalFree",                                   -1, GlobalFree,                                   NULL },
+  { "FreeEnvironmentStringsW",                      -1, dllFreeEnvironmentStringsW,                   NULL },
+  { "SetLastError",                                 -1, SetLastError,                                 NULL },
+  { "RestoreLastError",                             -1, SetLastError,                                 NULL },
+  { "GetOEMCP",                                     -1, dllGetOEMCP,                                  NULL },
+  { "SetEndOfFile",                                 -1, SetEndOfFile,                                 NULL },
+  { "RtlUnwind",                                    -1, dllRtlUnwind,                                 NULL },
+  { "GetCommandLineA",                              -1, dllGetCommandLineA,                           NULL },
+  { "HeapReAlloc",                                  -1, HeapReAlloc,                                  NULL },
+  { "ExitProcess",                                  -1, dllExitProcess,                               NULL },
+  { "TerminateProcess",                             -1, dllTerminateProcess,                          NULL },
+  { "GetCurrentProcess",                            -1, dllGetCurrentProcess,                         NULL },
+  { "HeapSize",                                     -1, HeapSize,                                     NULL },
+  { "WriteFile",                                    -1, WriteFile,                                    NULL },
+  { "GetACP",                                       -1, dllGetACP,                                    NULL },
+  { "SetHandleCount",                               -1, dllSetHandleCount,                            NULL },
+  { "GetStdHandle",                                 -1, dllGetStdHandle,                              NULL },
+  { "GetFileType",                                  -1, dllGetFileType,                               NULL },
+  { "GetStartupInfoA",                              -1, dllGetStartupInfoA,                           NULL },
+  { "FreeEnvironmentStringsA",                      -1, dllFreeEnvironmentStringsA,                   NULL },
+  { "WideCharToMultiByte",                          -1, dllWideCharToMultiByte,                       NULL },
+  { "GetEnvironmentStrings",                        -1, dllGetEnvironmentStrings,                     NULL },
+  { "GetEnvironmentStringsW",                       -1, dllGetEnvironmentStringsW,                    NULL },
+  { "GetEnvironmentVariableA",                      -1, dllGetEnvironmentVariableA,                   NULL },
+  { "HeapDestroy",                                  -1, HeapDestroy,                                  track_HeapDestroy },
+  { "HeapCreate",                                   -1, HeapCreate,                                   track_HeapCreate },
+  { "VirtualFree",                                  -1, VirtualFree,                                  track_VirtualFree },
+  { "VirtualFreeEx",                                -1, VirtualFreeEx,                                track_VirtualFreeEx },
+  { "VirtualAlloc",                                 -1, VirtualAlloc,                                 track_VirtualAlloc },
+  { "VirtualAllocEx",                               -1, VirtualAllocEx,                               track_VirtualAllocEx },
+  { "MultiByteToWideChar",                          -1, dllMultiByteToWideChar,                       NULL },
+  { "LCMapStringA",                                 -1, dllLCMapStringA,                              NULL },
+  { "LCMapStringW",                                 -1, dllLCMapStringW,                              NULL },
+  { "IsBadWritePtr",                                -1, IsBadWritePtr,                                NULL },
+  { "SetStdHandle",                                 -1, dllSetStdHandle,                              NULL },
+  { "FlushFileBuffers",                             -1, FlushFileBuffers,                             NULL },
+  { "GetStringTypeA",                               -1, dllGetStringTypeA,                            NULL },
+  { "GetStringTypeW",                               -1, dllGetStringTypeW,                            NULL },
+  { "IsBadReadPtr",                                 -1, IsBadReadPtr,                                 NULL },
+  { "IsBadCodePtr",                                 -1, IsBadCodePtr,                                 NULL },
+  { "GetCPInfo",                                    -1, dllGetCPInfo,                                 NULL },
 
-  g_dlls.kernel32.AddExport("CreateMutexA", (unsigned long) CreateMutexA); //test
-  g_dlls.kernel32.AddExport("CreateSemaphoreA", (unsigned long) CreateSemaphoreA);
-  g_dlls.kernel32.AddExport("PulseEvent", (unsigned long) PulseEvent);
-  g_dlls.kernel32.AddExport("ReleaseMutex", (unsigned long) ReleaseMutex);
-  g_dlls.kernel32.AddExport("ReleaseSemaphore", (unsigned long) ReleaseSemaphore);
+  { "CreateMutexA",                                 -1, CreateMutexA,                                 NULL },
+  { "CreateSemaphoreA",                             -1, CreateSemaphoreA,                             NULL },
+  { "PulseEvent",                                   -1, PulseEvent,                                   NULL },
+  { "ReleaseMutex",                                 -1, ReleaseMutex,                                 NULL },
+  { "ReleaseSemaphore",                             -1, ReleaseSemaphore,                             NULL },
 
-  g_dlls.kernel32.AddExport("GetThreadLocale", (unsigned long) dllGetThreadLocale);
-  g_dlls.kernel32.AddExport("SetPriorityClass", (unsigned long) dllSetPriorityClass);
-  g_dlls.kernel32.AddExport("FormatMessageA", (unsigned long) dllFormatMessageA);
-  g_dlls.kernel32.AddExport("GetFullPathNameA", (unsigned long) dllGetFullPathNameA);
+  { "GetThreadLocale",                              -1, dllGetThreadLocale,                           NULL },
+  { "SetPriorityClass",                             -1, dllSetPriorityClass,                          NULL },
+  { "FormatMessageA",                               -1, dllFormatMessageA,                            NULL },
+  { "GetFullPathNameA",                             -1, dllGetFullPathNameA,                          NULL },
 #ifdef _XBOX
-  g_dlls.kernel32.AddExport("SignalObjectAndWait", (unsigned long) SignalObjectAndWait);
+  { "SignalObjectAndWait",                          -1, SignalObjectAndWait,                          NULL },
 #endif
-  g_dlls.kernel32.AddExport("ExpandEnvironmentStringsA", (unsigned long) dllExpandEnvironmentStringsA);
-  g_dlls.kernel32.AddExport("GetVolumeInformationA", (unsigned long) GetVolumeInformationA);
-  g_dlls.kernel32.AddExport("GetWindowsDirectoryA", (unsigned long) dllGetWindowsDirectoryA);
-  g_dlls.kernel32.AddExport("GetSystemDirectoryA", (unsigned long) dllGetSystemDirectoryA);
-  g_dlls.kernel32.AddExport("DuplicateHandle", (unsigned long) dllDuplicateHandle);
-  g_dlls.kernel32.AddExport("GetShortPathNameA", (unsigned long) dllGetShortPathName);
-  g_dlls.kernel32.AddExport("GetTempPathA", (unsigned long) dllGetTempPathA);
-  g_dlls.kernel32.AddExport("SetErrorMode", (unsigned long) dllSetErrorMode);
-  g_dlls.kernel32.AddExport("IsProcessorFeaturePresent", (unsigned long) dllIsProcessorFeaturePresent);
-  g_dlls.kernel32.AddExport("FileTimeToLocalFileTime", (unsigned long) FileTimeToLocalFileTime);
-  g_dlls.kernel32.AddExport("FileTimeToSystemTime", (unsigned long) FileTimeToSystemTime);
-  g_dlls.kernel32.AddExport("GetTimeZoneInformation", (unsigned long) GetTimeZoneInformation);
+  { "ExpandEnvironmentStringsA",                    -1, dllExpandEnvironmentStringsA,                 NULL },
+  { "GetVolumeInformationA",                        -1, GetVolumeInformationA,                        NULL },
+  { "GetWindowsDirectoryA",                         -1, dllGetWindowsDirectoryA,                      NULL },
+  { "GetSystemDirectoryA",                          -1, dllGetSystemDirectoryA,                       NULL },
+  { "DuplicateHandle",                              -1, dllDuplicateHandle,                           NULL },
+  { "GetShortPathNameA",                            -1, dllGetShortPathName,                          NULL },
+  { "GetTempPathA",                                 -1, dllGetTempPathA,                              NULL },
+  { "SetErrorMode",                                 -1, dllSetErrorMode,                              NULL },
+  { "IsProcessorFeaturePresent",                    -1, dllIsProcessorFeaturePresent,                 NULL },
+  { "FileTimeToLocalFileTime",                      -1, FileTimeToLocalFileTime,                      NULL },
+  { "FileTimeToSystemTime",                         -1, FileTimeToSystemTime,                         NULL },
+  { "GetTimeZoneInformation",                       -1, GetTimeZoneInformation,                       NULL },
 
-  g_dlls.kernel32.AddExport("GetCurrentDirectoryA", (unsigned long) dllGetCurrentDirectoryA);
-  g_dlls.kernel32.AddExport("SetCurrentDirectoryA", (unsigned long) dllSetCurrentDirectoryA);
+  { "GetCurrentDirectoryA",                         -1, dllGetCurrentDirectoryA,                      NULL },
+  { "SetCurrentDirectoryA",                         -1, dllSetCurrentDirectoryA,                      NULL },
 
-  g_dlls.kernel32.AddExport("SetEnvironmentVariableA", (unsigned long) dllSetEnvironmentVariableA);
-  g_dlls.kernel32.AddExport("CreateDirectoryA", (unsigned long) dllCreateDirectoryA);
+  { "SetEnvironmentVariableA",                      -1, dllSetEnvironmentVariableA,                   NULL },
+  { "CreateDirectoryA",                             -1, dllCreateDirectoryA,                          NULL },
 
-  g_dlls.kernel32.AddExport("GetProcessAffinityMask", (unsigned long) dllGetProcessAffinityMask);
+  { "GetProcessAffinityMask",                       -1, dllGetProcessAffinityMask,                    NULL },
 
-  g_dlls.kernel32.AddExport("lstrcpyA", (unsigned long)lstrcpyA);
-  g_dlls.kernel32.AddExport("GetProcessTimes", (unsigned long)dllGetProcessTimes);
+  { "lstrcpyA",                                     -1, lstrcpyA,                                     NULL },
+  { "GetProcessTimes",                              -1, dllGetProcessTimes,                           NULL },
 
-  g_dlls.kernel32.AddExport("GetLocaleInfoA", (unsigned long)dllGetLocaleInfoA);
-  g_dlls.kernel32.AddExport("GetConsoleCP", (unsigned long)dllGetConsoleCP);
-  g_dlls.kernel32.AddExport("GetConsoleOutputCP", (unsigned long)dllGetConsoleOutputCP);
-  g_dlls.kernel32.AddExport("SetConsoleCtrlHandler", (unsigned long)dllSetConsoleCtrlHandler);
-  g_dlls.kernel32.AddExport("GetExitCodeThread", (unsigned long)GetExitCodeThread);
-  g_dlls.kernel32.AddExport("ResumeThread", (unsigned long)ResumeThread);
-  g_dlls.kernel32.AddExport("ExitThread", (unsigned long)ExitThread);
-  g_dlls.kernel32.AddExport("VirtualQuery", (unsigned long)VirtualQuery);
-  g_dlls.kernel32.AddExport("VirtualQueryEx", (unsigned long)VirtualQueryEx);
-  g_dlls.kernel32.AddExport("VirtualProtect", (unsigned long)VirtualProtect);
-  g_dlls.kernel32.AddExport("VirtualProtectEx", (unsigned long)VirtualProtectEx);
-  g_dlls.kernel32.AddExport("UnhandledExceptionFilter", (unsigned long)UnhandledExceptionFilter);
-  g_dlls.kernel32.AddExport("RaiseException", (unsigned long)RaiseException);
-  g_dlls.kernel32.AddExport("FlsAlloc", (unsigned long)dllFlsAlloc);
-  g_dlls.kernel32.AddExport("FlsGetValue", (unsigned long)dllFlsGetValue);
-  g_dlls.kernel32.AddExport("FlsSetValue", (unsigned long)dllFlsSetValue);
-  g_dlls.kernel32.AddExport("FlsFree", (unsigned long)dllFlsFree);
-  g_dlls.kernel32.AddExport("DebugBreak", (unsigned long)DebugBreak);
-  g_dlls.kernel32.AddExport("GetThreadTimes", (unsigned long)GetThreadTimes);
-  g_dlls.kernel32.AddExport("EncodePointer", (unsigned long)dllEncodePointer);
-  g_dlls.kernel32.AddExport("DecodePointer", (unsigned long)dllDecodePointer);
+  { "GetLocaleInfoA",                               -1, dllGetLocaleInfoA,                            NULL },
+  { "GetConsoleCP",                                 -1, dllGetConsoleCP,                              NULL },
+  { "GetConsoleOutputCP",                           -1, dllGetConsoleOutputCP,                        NULL },
+  { "SetConsoleCtrlHandler",                        -1, dllSetConsoleCtrlHandler,                     NULL },
+  { "GetExitCodeThread",                            -1, GetExitCodeThread,                            NULL },
+  { "ResumeThread",                                 -1, ResumeThread,                                 NULL },
+  { "ExitThread",                                   -1, ExitThread,                                   NULL },
+  { "VirtualQuery",                                 -1, VirtualQuery,                                 NULL },
+  { "VirtualQueryEx",                               -1, VirtualQueryEx,                               NULL },
+  { "VirtualProtect",                               -1, VirtualProtect,                               NULL },
+  { "VirtualProtectEx",                             -1, VirtualProtectEx,                             NULL },
+  { "UnhandledExceptionFilter",                     -1, UnhandledExceptionFilter,                     NULL },
+  { "RaiseException",                               -1, RaiseException,                               NULL },
+  { "FlsAlloc",                                     -1, dllFlsAlloc,                                  NULL },
+  { "FlsGetValue",                                  -1, dllFlsGetValue,                               NULL },
+  { "FlsSetValue",                                  -1, dllFlsSetValue,                               NULL },
+  { "FlsFree",                                      -1, dllFlsFree,                                   NULL },
+  { "DebugBreak",                                   -1, DebugBreak,                                   NULL },
+  { "GetThreadTimes",                               -1, GetThreadTimes,                               NULL },
+  { "EncodePointer",                                -1, dllEncodePointer,                             NULL },
+  { "DecodePointer",                                -1, dllDecodePointer,                             NULL },
 
-  g_dlls.kernel32.AddExport("LockFile", (unsigned long)dllLockFile);
-  g_dlls.kernel32.AddExport("LockFileEx", (unsigned long)dllLockFileEx);
-  g_dlls.kernel32.AddExport("UnlockFile", (unsigned long)dllUnlockFile);
+  { "LockFile",                                     -1, dllLockFile,                                  NULL },
+  { "LockFileEx",                                   -1, dllLockFileEx,                                NULL },
+  { "UnlockFile",                                   -1, dllUnlockFile,                                NULL },
 
-  g_dlls.kernel32.AddExport("GetSystemTime", (unsigned long)GetSystemTime);
-  g_dlls.kernel32.AddExport("GetFileSize", (unsigned long)GetFileSize);
-
-}
+  { "GetSystemTime",                                -1, GetSystemTime,                                NULL },
+  { "GetFileSize",                                  -1, GetFileSize,                                  NULL },
+  { "FindResourceA",                                -1, dllFindResourceA,                             NULL },
+  { "LoadResource",                                 -1, dllLoadResource,                              NULL },
+  { NULL,                                         NULL, NULL,                                         NULL }
+};

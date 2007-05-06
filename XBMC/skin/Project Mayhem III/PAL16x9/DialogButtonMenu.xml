@@ -194,22 +194,22 @@
 				<visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
 			</control>
 			<control type="button" id="3110">
-				<description>Dashboard button</description>
+				<description>Favourites button</description>
 				<visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
 				<posx>210</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
-				<texturefocus>sub-exit-focus.gif</texturefocus>
-				<texturenofocus>sub-exit-nofocus.png</texturenofocus>
-				<onclick>XBMC.Dashboard()</onclick>
+				<texturefocus>sub-favs-focus.gif</texturefocus>
+				<texturenofocus>sub-favs-nofocus.png</texturenofocus>
+				<onclick>XBMC.ActivateWindow(Favourites)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
 				<onright>3114</onright>
 				<onup>3110</onup>
 				<ondown>3110</ondown>
 				<font>-</font>
-				<label>13006</label>
+				<label>1036</label>
 				<include>shutdownmenu</include>
 			</control>
 			<control type="button" id="3114">
@@ -408,22 +408,22 @@
 				<visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
 			</control>
 			<control type="button" id="3110">
-				<description>Dashboard button</description>
+				<description>Favourites button</description>
 				<visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
 				<posx>180</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
-				<texturefocus>sub-exit-focus.gif</texturefocus>
-				<texturenofocus>sub-exit-nofocus.png</texturenofocus>
-				<onclick>XBMC.Dashboard()</onclick>
+				<texturefocus>sub-favs-focus.gif</texturefocus>
+				<texturenofocus>sub-favs-nofocus.png</texturenofocus>
+				<onclick>XBMC.ActivateWindow(Favourites)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
 				<onright>3114</onright>
 				<onup>3110</onup>
 				<ondown>3110</ondown>
 				<font>-</font>
-				<label>13006</label>
+				<label>1036</label>
 				<include>shutdownmenu</include>
 			</control>
 			<control type="button" id="3114">
@@ -642,22 +642,22 @@
 				<visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
 			</control>
 			<control type="button" id="3110">
-				<description>Dashboard button</description>
+				<description>Favourites button</description>
 				<visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
 				<posx>210</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
-				<texturefocus>sub-exit-focus.gif</texturefocus>
-				<texturenofocus>sub-exit-nofocus.png</texturenofocus>
-				<onclick>XBMC.Dashboard()</onclick>
+				<texturefocus>sub-favs-focus.gif</texturefocus>
+				<texturenofocus>sub-favs-nofocus.png</texturenofocus>
+				<onclick>XBMC.ActivateWindow(Favourites)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
 				<onright>3114</onright>
 				<onup>3110</onup>
 				<ondown>3110</ondown>
 				<font>-</font>
-				<label>13006</label>
+				<label>1036</label>
 				<include>shutdownmenu</include>
 			</control>
 			<control type="button" id="3114">
@@ -899,22 +899,22 @@
 				<visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
 			</control>
 			<control type="button" id="3110">
-				<description>Dashboard button</description>
+				<description>Favourites button</description>
 				<visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
 				<posx>240</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
-				<texturefocus>sub-exit-focus.gif</texturefocus>
-				<texturenofocus>sub-exit-nofocus.png</texturenofocus>
-				<onclick>XBMC.Dashboard()</onclick>
+				<texturefocus>sub-favs-focus.gif</texturefocus>
+				<texturenofocus>sub-favs-nofocus.png</texturenofocus>
+				<onclick>XBMC.ActivateWindow(Favourites)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
 				<onright>3114</onright>
 				<onup>3110</onup>
 				<ondown>3110</ondown>
 				<font>-</font>
-				<label>13006</label>
+				<label>1036</label>
 				<include>shutdownmenu</include>
 			</control>
 			<control type="button" id="3114">
@@ -967,30 +967,10 @@
 				<visible>[Control.HasFocus(3114) | Control.HasFocus(3115)]</visible>
 			</control>
 			<!--- Logon Screen -->
-			<control type="button" id="3110">
-				<description>Dashboard button</description>
-				<visible>!System.Loggedon</visible>
-				<posx>90</posx>
-				<posy>10</posy>
-				<width>60</width>
-				<height>79</height>
-				<texturefocus>sub-exit-focus.gif</texturefocus>
-				<texturenofocus>sub-exit-nofocus.png</texturenofocus>
-				<onclick>XBMC.Dashboard()</onclick>
-				<onclick>dialog.close(all,true)</onclick>
-				<pulseonselect>no</pulseonselect>
-				<onleft>3114</onleft>
-				<onright>3112</onright>
-				<onup>3110</onup>
-				<ondown>3110</ondown>
-				<font>-</font>
-				<label>13006</label>
-				<include>shutdownmenu</include>
-			</control>
 			<control type="button" id="3112">
 				<description>Shutdown button</description>
 				<visible>!System.Loggedon</visible>
-				<posx>150</posx>
+				<posx>120</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
@@ -999,7 +979,7 @@
 				<onclick>XBMC.ShutDown()</onclick>
 				<onclick>dialog.close(all,true)</onclick>
 				<pulseonselect>no</pulseonselect>
-				<onleft>3110</onleft>
+				<onleft>3114</onleft>
 				<onright>3114</onright>
 				<onup>3112</onup>
 				<ondown>3112</ondown>
@@ -1010,7 +990,7 @@
 			<control type="button" id="3114">
 				<description>Reboot button</description>
 				<visible>!System.Loggedon</visible>
-				<posx>210</posx>
+				<posx>180</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
@@ -1020,7 +1000,7 @@
 				<onclick>dialog.close(all,true)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
-				<onright>3110</onright>
+				<onright>3112</onright>
 				<onup>3115</onup>
 				<ondown>3115</ondown>
 				<font>-</font>
@@ -1030,7 +1010,7 @@
 			<control type="button" id="3115">
 				<description>Restart XBMC button</description>
 				<visible>!System.Loggedon</visible>
-				<posx>210</posx>
+				<posx>180</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>
@@ -1040,7 +1020,7 @@
 				<onclick>dialog.close(all,true)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
-				<onright>3110</onright>
+				<onright>3112</onright>
 				<onup>3114</onup>
 				<ondown>3114</ondown>
 				<font>-</font>
@@ -1049,7 +1029,7 @@
 			</control>
 			<control type="image">
 				<description>Restart focus image</description>
-				<posx>210</posx>
+				<posx>180</posx>
 				<posy>10</posy>
 				<width>60</width>
 				<height>79</height>

@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "ShoutcastDirectory.h"
 #include "DirectoryCache.h"
 #include "../Util.h"

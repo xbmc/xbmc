@@ -52,7 +52,6 @@ CPlayListPLS::~CPlayListPLS(void)
 bool CPlayListPLS::Load(const CStdString &strFile)
 {
   //read it from the file
-  CStdString strBasePath;
   CStdString strFileName(strFile);
   m_strPlayListName = CUtil::GetFileName(strFileName);
 
@@ -63,11 +62,11 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   {
     strFileName.Delete(0, 8);
     strFileName.Insert(0, "http://");
-    strBasePath = "";
+    m_strBasePath = "";
     bShoutCast = true;
   }
   else
-    CUtil::GetParentPath(strFileName, strBasePath);
+    CUtil::GetParentPath(strFileName, m_strBasePath);
 
   CFile file;
   if (!file.Open(strFileName, false) )
@@ -144,9 +143,9 @@ bool CPlayListPLS::Load(const CStdString &strFile)
         if (bShoutCast && !item.IsAudio())
           strValue.Replace("http:", "shout:");
 
-        if (CUtil::IsRemote(strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
+        if (CUtil::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
          strValue = CUtil::SubstitutePath(strValue);
-        CUtil::GetQualifiedFilename(strBasePath, strValue);
+        CUtil::GetQualifiedFilename(m_strBasePath, strValue);
         g_charsetConverter.stringCharsetToUtf8(strValue);
         m_vecItems[idx - 1].SetFileName(strValue);
       }
@@ -226,48 +225,64 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
   fclose(fd);
 }
 
-bool CPlayListASX::LoadAsxIniInfo(const CStdString& strData)
+bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
 {
   CLog::Log(LOGINFO, "Parsing INI style ASX");
   string::size_type equals = 0, end = 0;
-  CStdString strMMS;
 
-  while ((equals = strData.find('=', end)) != string::npos)
+  std::string name, value;
+
+  while( stream.good() )
   {
-    end = strData.find('\r', equals);
-    if (end == string::npos)
+    // consume blank rows, and blanks
+    while((stream.peek() == '\r' || stream.peek() == '\n' || stream.peek() == ' ') && stream.good())
+      stream.get();
+
+    if(stream.peek() == '[')
     {
-      strMMS = strData.substr(equals + 1);
+      // this is an [section] part, just ignore it
+      while(stream.good() && stream.peek() != '\r' && stream.peek() != '\n')
+        stream.get();
+      continue;
     }
-    else
-    {
-      strMMS = strData.substr(equals + 1, end - equals - 1);
-    }
-    CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
-    CPlayListItem newItem(strMMS, strMMS, 0);
+    name = "";
+    value = "";
+    // consume name
+    while(stream.peek() != '\r' && stream.peek() != '\n' && stream.peek() != '=' && stream.good())
+      name += stream.get();
+
+    // consume =
+    if(stream.get() != '=')
+      continue;
+
+    // consume value
+    while(stream.peek() != '\r' && stream.peek() != '\n' && stream.good())
+      value += stream.get();
+
+    CLog::Log(LOGINFO, "Adding element %s=%s", name.c_str(), value.c_str());
+    CPlayListItem newItem(value, value, 0);
     Add(newItem);
   }
+
   return true;
 }
 
-bool CPlayListASX::LoadData(const CStdString& strData)
+bool CPlayListASX::LoadData(std::istream& stream)
 {
   CLog::Log(LOGNOTICE, "Parsing ASX");
 
-  // Check for [Reference] format first
-  if (strData[0] == '[')
+  if(stream.peek() == '[')
   {
-    return LoadAsxIniInfo(strData);
+    return LoadAsxIniInfo(stream);
   }
   else
   {
-    // Parse XML format
-    // Now load the XML file
     TiXmlDocument xmlDoc;
-    xmlDoc.Parse(strData.c_str());
+    stream >> xmlDoc;
+
     if (xmlDoc.Error())
     {
-      CLog::Log(LOGERROR, "Unable to parse ASX info from XML:\n%s\nError: %s", strData.c_str(), xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "Unable to parse ASX info Error: %s", xmlDoc.ErrorDesc());
       return false;
     }
 
@@ -364,13 +379,14 @@ bool CPlayListASX::LoadData(const CStdString& strData)
 }
 
 
-bool CPlayListRAM::LoadData(const CStdString& strData)
+bool CPlayListRAM::LoadData(std::istream& stream)
 {
   CLog::Log(LOGINFO, "Parsing RAM");
-  CLog::Log(LOGDEBUG, "%s", strData.c_str());
+  
   CStdString strMMS;
-
-  strMMS = strData.substr(0, strData.Find('\n'));
+  while( stream.peek() != '\n' && stream.peek() != '\r' )
+    strMMS += stream.get();
+  
   CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
   CPlayListItem newItem(strMMS, strMMS, 0);
   Add(newItem);

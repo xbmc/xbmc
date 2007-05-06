@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "./MusicAlbumInfo.h"
 #include "./HTMLTable.h"
 #include "./HTMLUtil.h"

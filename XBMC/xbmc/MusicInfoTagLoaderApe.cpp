@@ -54,9 +54,16 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetGenre(myTag.GetGenre());
       tag.SetTrackNumber(myTag.GetTrackNum());
       tag.SetPartOfSet(myTag.GetDiscNum());
+      tag.SetComment(myTag.GetComment());
+      tag.SetMusicBrainzAlbumArtistID(myTag.GetMusicBrainzAlbumArtistID());
+      tag.SetMusicBrainzAlbumID(myTag.GetMusicBrainzAlbumID());
+      tag.SetMusicBrainzArtistID(myTag.GetMusicBrainzArtistID());
+      tag.SetMusicBrainzTrackID(myTag.GetMusicBrainzTrackID());
+      tag.SetMusicBrainzTRMID(myTag.GetMusicBrainzTRMID());
       SYSTEMTIME dateTime;
       ZeroMemory(&dateTime, sizeof(SYSTEMTIME));
       dateTime.wYear = atoi(myTag.GetYear());
+      tag.SetRating(myTag.GetRating());
       tag.SetReleaseDate(dateTime);
       tag.SetLoaded();
       // Find duration - we must read the info from the ape file for this

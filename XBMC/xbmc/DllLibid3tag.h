@@ -72,6 +72,7 @@ public:
     virtual const id3_ucs4_t* id3_metadata_getgenre(const struct id3_tag*, enum id3_field_textencoding*)=0;
     virtual const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag*, enum id3_field_textencoding*)=0;
     virtual const id3_ucs4_t* id3_metadata_getencodedby(const struct id3_tag* tag, enum id3_field_textencoding*)=0;
+    virtual char id3_metadata_getrating(const struct id3_tag* tag)=0;
     virtual int id3_metadata_haspicture(const struct id3_tag*, enum id3_picture_type)=0;
     virtual const id3_latin1_t* id3_metadata_getpicturemimetype(const struct id3_tag*, enum id3_picture_type)=0;
     virtual id3_byte_t const *id3_metadata_getpicturedata(const struct id3_tag*, enum id3_picture_type, id3_length_t*)=0;
@@ -87,6 +88,8 @@ public:
     virtual int id3_metadata_setyear(struct id3_tag* tag, id3_ucs4_t* value)=0;
     virtual int id3_metadata_setgenre(struct id3_tag* tag, id3_ucs4_t* value)=0;
     virtual int id3_metadata_setencodedby(struct id3_tag* tag, id3_ucs4_t* value)=0;
+    virtual int id3_metadata_setcomment(struct id3_tag* tag, id3_ucs4_t* value)=0;
+    virtual int id3_metadata_setrating(struct id3_tag* tag, char value)=0;
 };
 
 class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
@@ -159,6 +162,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getgenre, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getcomment, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
   DEFINE_METHOD2(const id3_ucs4_t*, id3_metadata_getencodedby, (const struct id3_tag* p1, enum id3_field_textencoding* p2))
+  DEFINE_METHOD1(char, id3_metadata_getrating, (const struct id3_tag* p1))
   DEFINE_METHOD2(int, id3_metadata_haspicture, (const struct id3_tag* p1, enum id3_picture_type p2))
   DEFINE_METHOD2(const id3_latin1_t*, id3_metadata_getpicturemimetype, (const struct id3_tag* p1, enum id3_picture_type p2))
   DEFINE_METHOD3(id3_byte_t const*, id3_metadata_getpicturedata, (const struct id3_tag* p1, enum id3_picture_type p2, id3_length_t* p3))
@@ -174,6 +178,8 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
   DEFINE_METHOD2(int, id3_metadata_setyear, (struct id3_tag* p1, id3_ucs4_t* p2))
   DEFINE_METHOD2(int, id3_metadata_setgenre, (struct id3_tag* p1, id3_ucs4_t* p2))
   DEFINE_METHOD2(int, id3_metadata_setencodedby, (struct id3_tag* p1, id3_ucs4_t* p2))
+  DEFINE_METHOD2(int, id3_metadata_setcomment, (struct id3_tag* p1, id3_ucs4_t* p2))
+  DEFINE_METHOD2(int, id3_metadata_setrating, (struct id3_tag* p1, char p2))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(id3_file_open)
@@ -243,6 +249,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
     RESOLVE_METHOD(id3_metadata_getgenre)
     RESOLVE_METHOD(id3_metadata_getcomment)
     RESOLVE_METHOD(id3_metadata_getencodedby)
+    RESOLVE_METHOD(id3_metadata_getrating)
     RESOLVE_METHOD(id3_metadata_haspicture)
     RESOLVE_METHOD(id3_metadata_getpicturemimetype)
     RESOLVE_METHOD(id3_metadata_getpicturedata)
@@ -258,5 +265,7 @@ class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
     RESOLVE_METHOD(id3_metadata_setyear)
     RESOLVE_METHOD(id3_metadata_setgenre)
     RESOLVE_METHOD(id3_metadata_setencodedby)
+    RESOLVE_METHOD(id3_metadata_setcomment)
+    RESOLVE_METHOD(id3_metadata_setrating)
   END_METHOD_RESOLVE()
 };

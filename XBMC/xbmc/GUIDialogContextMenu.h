@@ -49,6 +49,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_RESUME_ITEM,
                       CONTEXT_BUTTON_RESTART_ITEM,
                       CONTEXT_BUTTON_EDIT,
+                      CONTEXT_BUTTON_EDIT_SMART_PLAYLIST,
                       CONTEXT_BUTTON_INFO,
                       CONTEXT_BUTTON_INFO_ALL,
                       CONTEXT_BUTTON_CDDB,
@@ -63,7 +64,8 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_MARK_WATCHED,
                       CONTEXT_BUTTON_MARK_UNWATCHED,
                       CONTEXT_BUTTON_SET_CONTENT,
-                      CONTEXT_BUTTON_ADD_TO_LIBRARY
+                      CONTEXT_BUTTON_ADD_TO_LIBRARY,
+                      CONTEXT_BUTTON_SONG_INFO
                     };
 
 class CContextButtons : public vector< pair<CONTEXT_BUTTON, CStdString> >
@@ -81,6 +83,7 @@ public:
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void DoModal(int iWindowID = WINDOW_INVALID);
+  virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void SetPosition(float posX, float posY);
   void ClearButtons();

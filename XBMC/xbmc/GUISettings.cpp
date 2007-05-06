@@ -192,7 +192,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
   AddSeparator(7,"pictures.sep2");
-  AddString(8,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
+  AddString(8,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -208,10 +208,10 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "myprograms.gameautoregion",511,false);
   AddInt(4, "myprograms.ntscmode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   AddSeparator(5,"myprograms.sep2");
-  AddString(6, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
+  AddString(6, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(7,"myprograms.sep3");
   AddBool(8, "myprograms.usedashpath", 13007, true);
-  AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
+  AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 655);
 
   AddCategory(1,"programfiles",744);
   AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
@@ -244,7 +244,7 @@ CGUISettings::CGUISettings(void)
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
-  AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20005);
+  AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddSeparator(8, "mymusic.sep3");
   AddString(9, "mymusic.cleanupmusiclibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
@@ -287,7 +287,7 @@ CGUISettings::CGUISettings(void)
   AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "cddaripper", 620);
-  AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
+  AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(2, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
@@ -413,7 +413,7 @@ CGUISettings::CGUISettings(void)
   AddString(10, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(11, "videoplayer.sep3");
   AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
-  AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
+  AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
   AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
 
   AddCategory(5, "subtitles", 287);
@@ -426,7 +426,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
   AddSeparator(10,"subtitles.sep2");
-  AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 21366);
+  AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
   // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
@@ -540,7 +540,7 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774);
+  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
   AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);

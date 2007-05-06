@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileRTV.h"
 #include "../Util.h"
 #include <sys/stat.h>

@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "APEcodec.h"
 #include "../../APEv2Tag.h"
 

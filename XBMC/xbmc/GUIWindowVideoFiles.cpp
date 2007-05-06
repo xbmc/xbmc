@@ -449,7 +449,7 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
     settings.parent_name = true;
     settings.recurse = 1; /* atleast one, otherwise this makes no sence */
   }
-  else if (info.strContent.Equals("movies") && iDirNames == -1)
+  else if ((info.strContent.Equals("movies") || strPath.IsEmpty()) && iDirNames == -1)
   {
     bool bCanceled;
     if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
@@ -473,6 +473,8 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
     if (bCanceled)
       return;
   }
+  if (strPath.IsEmpty())
+    settings.recurse = 1;
 
   if (info.strContent.Equals("tvshows"))
   {
@@ -590,8 +592,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
       // get the usual bookmark shares, and anything for all media windows
-      CShare *share = CGUIDialogContextMenu::GetShare("music", item);
-      CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
+      CShare *share = CGUIDialogContextMenu::GetShare("video", item);
+      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (!item->IsDVD())
@@ -700,10 +702,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_DELETE:
-    OnDeleteItem(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
     return true;

@@ -1,7 +1,6 @@
 // THIS FILE IS MODIFIED TO WORK WITH XBMC
 
 #include "rar.hpp"
-#include "../../utils/log.h"
 #include "../../Util.h"
 
 char* PointToName(const char *Path)

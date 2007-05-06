@@ -27,7 +27,6 @@ public:
   DllLoader msdmo;
   DllLoader xbmc_vobsub;
   DllLoader xbox_dx8;
-  DllLoader xbox___dx8;
   DllLoader version;
   DllLoader comdlg32;
   DllLoader gdi32;

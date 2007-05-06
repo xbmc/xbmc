@@ -115,7 +115,8 @@ void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 
 int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
 { // add a button to our control
-  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
+  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetFirstFocusableControl(BUTTON_TEMPLATE);
+  if (!pButtonTemplate) pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
   if (!pButtonTemplate) return 0;
   CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
   if (!pButton) return 0;
@@ -348,7 +349,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       VECSHARES shares;
       g_mediaManager.GetLocalDrives(shares);
 
-      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20056),strThumb))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
       {
         g_settings.UpdateBookmark(type,share->strName,"thumbnail",strThumb);
         g_settings.SaveSources();
@@ -494,6 +495,12 @@ CShare *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFileItem 
     }
   }
   return NULL;
+}
+
+void CGUIDialogContextMenu::OnWindowLoaded()
+{
+  CGUIDialog::OnWindowLoaded();
+  SetControlVisibility();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()

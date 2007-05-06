@@ -132,7 +132,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
-              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
               CLog::Log(LOGINFO, "  Success! Opened destination path: %s (%s)", strDestination.c_str(), m_vecItems.m_strPath.c_str());
             }
           }
@@ -386,7 +385,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
       if (!item->IsPlayList())
-        buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Info
+      {
+        if (item->IsAudio())
+          buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
+        else if (!item->IsParentFolder())
+          buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
+      }
 
       // enable Rip CD Audio or Track button if we have an audio disc
       if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
@@ -433,8 +437,8 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
   if ( m_vecItems.IsVirtualDirectoryRoot() && item)
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
-    if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
+    CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+    if (CGUIDialogContextMenu::OnContextButton("music", share, button))
     {
       Update("");
       return true;

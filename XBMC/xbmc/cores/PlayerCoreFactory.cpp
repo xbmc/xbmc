@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "PlayerCoreFactory.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "mplayer\mplayer.h"

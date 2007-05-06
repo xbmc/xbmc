@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "Encoder.h"
 #include "../Util.h"
 

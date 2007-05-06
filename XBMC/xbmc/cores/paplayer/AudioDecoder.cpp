@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "AudioDecoder.h"
 #include "../../Util.h"
 #include "CodecFactory.h"

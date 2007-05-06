@@ -313,6 +313,8 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
   CStdString strDirectory;
   CStdString strFilename;
   CUtil::GetDirectory(strBase, strDirectory);
+  // TODO: GETDIR - check whether we need RemoveSlashAtEnd() here - we shouldn't!!
+  CUtil::RemoveSlashAtEnd(strDirectory);
   CUtil::GetQualifiedFilename(strDirectory, strPath);
   return true;
 }

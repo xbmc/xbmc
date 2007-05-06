@@ -6,7 +6,7 @@
 //           http://xbox.nugnugnug.com/FlickerFucker/
 //
 // ******************************************************
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FilterFlickerPatch.h"
 #include "../FileSystem/File.h"
 #include "../Util.h"

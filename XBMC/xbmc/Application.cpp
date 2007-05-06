@@ -166,10 +166,14 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogSubMenu.h"
+#include "GUIDialogFavourites.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
+#include "GUIDialogSongInfo.h"
+#include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIDialogSmartPlaylistRule.h"
 
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
@@ -1349,6 +1353,10 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
   m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
+  m_gWindowManager.Add(new CGUIDialogFavourites);     // window id = 134
+  m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
+  m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
+  m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -3300,6 +3308,10 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_FAVOURITES);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SONG_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3580,7 +3592,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (m_itemCurrentFile.IsStack() && m_itemCurrentFile.m_lStartOffset != 0)
       m_itemCurrentFile.m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
 
-    if( m_eCurrentPlayer == EPC_NONE )
+    if( m_eForcedNextPlayer != EPC_NONE )
+      eNewCore = m_eForcedNextPlayer;
+    else if( m_eCurrentPlayer == EPC_NONE )
       eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
     else
       eNewCore = m_eCurrentPlayer;

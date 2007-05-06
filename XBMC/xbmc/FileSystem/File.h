@@ -9,6 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <iostream>
 #include "IFile.h"
 
 namespace XFILE
@@ -54,5 +55,46 @@ public:
 private:
   IFile* m_pFile;
 };
+
+// streambuf for file io, only supports buffered input currently
+class CFileStreamBuffer
+  : public std::streambuf
+{
+public:
+  ~CFileStreamBuffer();
+  CFileStreamBuffer(int backsize = 0);
+  
+  void Attach(IFile *file);
+  void Detach();
+
+private:
+  virtual int_type underflow();
+	virtual pos_type seekoff(off_type, ios_base::seekdir,	ios_base::openmode = ios_base::in | ios_base::out);
+	virtual pos_type seekpos(pos_type, ios_base::openmode = ios_base::in | ios_base::out);
+
+  IFile* m_file;
+  char*  m_buffer;
+  int    m_backsize;
+  int    m_frontsize;
 };
+
+// very basic file input stream
+class CFileStream
+  : public std::istream
+{
+public:
+  CFileStream(int backsize = 0);
+  ~CFileStream();
+
+  bool Open(const CStdString& filename)  { return Open(CURL(filename)); }
+  bool Open(const CURL& filename);
+  void Close();
+
+  __int64 GetLength();
+private:
+  CFileStreamBuffer m_buffer;
+  IFile*            m_file;
+};
+
+}
 #endif // !defined(AFX_FILE_H__A7ED6320_C362_49CB_8925_6C6C8CAE7B78__INCLUDED_)

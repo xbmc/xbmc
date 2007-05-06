@@ -49,6 +49,7 @@ static const unsigned int	g_TrackNumberAtomName	=	MAKE_ATOM_NAME(  't', 'r', 'k'
 static const unsigned int	g_DiscNumberAtomName	=	MAKE_ATOM_NAME(  'd', 'i', 's', 'k' );	// 'disk'
 static const unsigned int	g_CoverArtAtomName		=	MAKE_ATOM_NAME(  'c', 'o', 'v', 'r' );	// 'covr'
 static const unsigned int	g_CompilationAtomName	=	MAKE_ATOM_NAME(  'c', 'p', 'i', 'l' );	// 'cpil'
+static const unsigned int	g_CommentAtomName	=	MAKE_ATOM_NAME(  '©', 'c', 'm', 't' );	// 'cpil'
 
 // These atoms contain other atoms.. so when we find them, we have to recurse..
 
@@ -171,6 +172,15 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
       if (metaSize == 1)
         m_isCompilation = *pMetaData == 1;
       break;
+    }
+  case g_CommentAtomName:
+    {
+      // We need to zero-terminate the string, which needs workspace..
+      auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
+      memcpy( dataWorkspace.get(), pMetaData, metaSize );
+      dataWorkspace[ metaSize ] = '\0';
+
+      tag.SetComment( dataWorkspace.get() );
     }
   case	g_CustomGenreAtomName:
     {

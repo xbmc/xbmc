@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "AC3Codec.h"
 
 #ifdef HAS_AC3_CODEC

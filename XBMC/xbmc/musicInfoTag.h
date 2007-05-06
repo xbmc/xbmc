@@ -34,6 +34,8 @@ public:
   const CStdString& GetMusicBrainzAlbumID() const;
   const CStdString& GetMusicBrainzAlbumArtistID() const;
   const CStdString& GetMusicBrainzTRMID() const;
+  const CStdString& GetComment() const;
+  char  GetRating() const;
 
   void SetURL(const CStdString& strURL) ;
   void SetTitle(const CStdString& strTitle) ;
@@ -54,6 +56,8 @@ public:
   void SetMusicBrainzAlbumID(const CStdString& strAlbumID);
   void SetMusicBrainzAlbumArtistID(const CStdString& strAlbumArtistID);
   void SetMusicBrainzTRMID(const CStdString& strTRMID);
+  void SetComment(const CStdString& comment);
+  void SetRating(char rating);
 
   virtual void Serialize(CArchive& ar);
 
@@ -70,9 +74,11 @@ protected:
   CStdString m_strMusicBrainzAlbumID;
   CStdString m_strMusicBrainzAlbumArtistID;
   CStdString m_strMusicBrainzTRMID;
+  CStdString m_strComment;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   bool m_bLoaded;
+  char m_rating;
   SYSTEMTIME m_dwReleaseDate;
 };
 };

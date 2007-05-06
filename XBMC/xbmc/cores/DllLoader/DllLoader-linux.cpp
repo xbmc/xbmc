@@ -32,7 +32,7 @@ void DllLoaderContainer::ReleaseModule(DllLoader*& pDll)
 {
 }
 
-DllLoader::DllLoader(const char *dll, bool track, bool bSystemDll, bool bLoadSymbols)
+DllLoader::DllLoader(const char *dll, bool track, bool bSystemDll, bool bLoadSymbols, Export* exp)
 {
 }
 

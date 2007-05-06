@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDSubtitleStream.h"
 
 char* strnchr(char *s, size_t len, char c)

@@ -1,126 +1,144 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #include "emu_misc.h"
 #include "emu_msvcrt.h"
 
-void export_winmm()
+Export export_winmm[] = 
 {
-  g_dlls.winmm.AddExport("timeGetTime", (unsigned long)timeGetTime);
-  g_dlls.winmm.AddExport("DefDriverProc", (unsigned long)dllDefDriverProc);
-  g_dlls.winmm.AddExport("timeGetDevCaps", (unsigned long)dlltimeGetDevCaps);
-  g_dlls.winmm.AddExport("timeBeginPeriod", (unsigned long)dlltimeBeginPeriod);
-  g_dlls.winmm.AddExport("timeEndPeriod", (unsigned long)dlltimeEndPeriod);
-  g_dlls.winmm.AddExport("waveOutGetNumDevs", (unsigned long)dllwaveOutGetNumDevs);
-}
+  { "timeGetTime",                -1, timeGetTime,                   NULL },
+  { "DefDriverProc",              -1, dllDefDriverProc,              NULL },
+  { "timeGetDevCaps",             -1, dlltimeGetDevCaps,             NULL },
+  { "timeBeginPeriod",            -1, dlltimeBeginPeriod,            NULL },
+  { "timeEndPeriod",              -1, dlltimeEndPeriod,              NULL },
+  { "waveOutGetNumDevs",          -1, dllwaveOutGetNumDevs,          NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_msdmo()
+Export export_msdmo[] = 
 {
-  g_dlls.msdmo.AddExport("MoFreeMediaType", (unsigned long)dllMoFreeMediaType);
-  g_dlls.msdmo.AddExport("MoCopyMediaType", (unsigned long)dllMoCopyMediaType);
-  g_dlls.msdmo.AddExport("MoInitMediaType", (unsigned long)dllMoInitMediaType);
-}
+  { "MoFreeMediaType",            -1, dllMoFreeMediaType,            NULL },
+  { "MoCopyMediaType",            -1, dllMoCopyMediaType,            NULL },
+  { "MoInitMediaType",            -1, dllMoInitMediaType,            NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_user32()
+Export export_user32[] =
 {
-  g_dlls.user32.AddExport("IsRectEmpty", (unsigned long)dllIsRectEmpty);
-  g_dlls.user32.AddExport("EnableWindow", (unsigned long)dllEnableWindow);
-  g_dlls.user32.AddExport("GetDlgItemInt", (unsigned long)dllGetDlgItemInt);
-  g_dlls.user32.AddExport("SendDlgItemMessageA", (unsigned long)dllSendDlgItemMessageA);
-  g_dlls.user32.AddExport("DialogBoxParamA", (unsigned long)dllDialogBoxParamA);
-  g_dlls.user32.AddExport("GetDlgItemTextA", (unsigned long)dllGetDlgItemTextA);
-  g_dlls.user32.AddExport("MessageBoxA", (unsigned long)dllMessageBoxA);
-  g_dlls.user32.AddExport("GetWindowLongA", (unsigned long)dllGetWindowLongA);
-  g_dlls.user32.AddExport("GetDlgItem", (unsigned long)dllGetDlgItem);
-  g_dlls.user32.AddExport("CheckDlgButton", (unsigned long)dllCheckDlgButton);
-  g_dlls.user32.AddExport("SetDlgItemInt", (unsigned long)dllSetDlgItemInt);
-  g_dlls.user32.AddExport("ShowWindow", (unsigned long)dllShowWindow);
-  g_dlls.user32.AddExport("EndDialog", (unsigned long)dllEndDialog);
-  g_dlls.user32.AddExport("SetDlgItemTextA", (unsigned long)dllSetDlgItemTextA);
-  g_dlls.user32.AddExport("SetWindowLongA", (unsigned long)dllSetWindowLongA);
-  g_dlls.user32.AddExport("DestroyWindow", (unsigned long)dllDestroyWindow);
-  g_dlls.user32.AddExport("CreateDialogParamA", (unsigned long)dllCreateDialogParamA);
-  g_dlls.user32.AddExport("PostMessageA", (unsigned long)dllPostMessageA);
-  g_dlls.user32.AddExport("SendMessageA", (unsigned long)dllSendMessageA);
-  g_dlls.user32.AddExport("SetFocus", (unsigned long)dllSetFocus);
-  g_dlls.user32.AddExport("wsprintfA", (unsigned long)dllwsprintfA);
+  { "IsRectEmpty",                -1, dllIsRectEmpty,                NULL },
+  { "EnableWindow",               -1, dllEnableWindow,               NULL },
+  { "GetDlgItemInt",              -1, dllGetDlgItemInt,              NULL },
+  { "SendDlgItemMessageA",        -1, dllSendDlgItemMessageA,        NULL },
+  { "DialogBoxParamA",            -1, dllDialogBoxParamA,            NULL },
+  { "GetDlgItemTextA",            -1, dllGetDlgItemTextA,            NULL },
+  { "MessageBoxA",                -1, dllMessageBoxA,                NULL },
+  { "GetWindowLongA",             -1, dllGetWindowLongA,             NULL },
+  { "GetDlgItem",                 -1, dllGetDlgItem,                 NULL },
+  { "CheckDlgButton",             -1, dllCheckDlgButton,             NULL },
+  { "SetDlgItemInt",              -1, dllSetDlgItemInt,              NULL },
+  { "ShowWindow",                 -1, dllShowWindow,                 NULL },
+  { "EndDialog",                  -1, dllEndDialog,                  NULL },
+  { "SetDlgItemTextA",            -1, dllSetDlgItemTextA,            NULL },
+  { "SetWindowLongA",             -1, dllSetWindowLongA,             NULL },
+  { "DestroyWindow",              -1, dllDestroyWindow,              NULL },
+  { "CreateDialogParamA",         -1, dllCreateDialogParamA,         NULL },
+  { "PostMessageA",               -1, dllPostMessageA,               NULL },
+  { "SendMessageA",               -1, dllSendMessageA,               NULL },
+  { "SetFocus",                   -1, dllSetFocus,                   NULL },
+  { "wsprintfA",                  -1, dllwsprintfA,                  NULL },
 
-  g_dlls.user32.AddExport("GetDesktopWindow", (unsigned long)dllGetDesktopWindow);
-  g_dlls.user32.AddExport("GetDC", (unsigned long)dllGetDC);
-  g_dlls.user32.AddExport("ReleaseDC", (unsigned long)dllReleaseDC);
-  g_dlls.user32.AddExport("GetWindowRect", (unsigned long)dllGetWindowRect);
-  g_dlls.user32.AddExport("ShowCursor", (unsigned long)dllShowCursor);
-  g_dlls.user32.AddExport("GetSystemMetrics", (unsigned long)dllGetSystemMetrics);
-  g_dlls.user32.AddExport("MonitorFromWindow", (unsigned long)dllMonitorFromWindow);
-  g_dlls.user32.AddExport("MonitorFromRect", (unsigned long)dllMonitorFromRect);
-  g_dlls.user32.AddExport("MonitorFromPoint", (unsigned long)dllMonitorFromPoint);
-  g_dlls.user32.AddExport("EnumDisplayMonitors", (unsigned long)dllEnumDisplayMonitors);
-  g_dlls.user32.AddExport("GetMonitorInfoA", (unsigned long)dllGetMonitorInfoA);
+  { "GetDesktopWindow",           -1, dllGetDesktopWindow,           NULL },
+  { "GetDC",                      -1, dllGetDC,                      NULL },
+  { "ReleaseDC",                  -1, dllReleaseDC,                  NULL },
+  { "GetWindowRect",              -1, dllGetWindowRect,              NULL },
+  { "ShowCursor",                 -1, dllShowCursor,                 NULL },
+  { "GetSystemMetrics",           -1, dllGetSystemMetrics,           NULL },
+  { "MonitorFromWindow",          -1, dllMonitorFromWindow,          NULL },
+  { "MonitorFromRect",            -1, dllMonitorFromRect,            NULL },
+  { "MonitorFromPoint",           -1, dllMonitorFromPoint,           NULL },
+  { "EnumDisplayMonitors",        -1, dllEnumDisplayMonitors,        NULL },
+  { "GetMonitorInfoA",            -1, dllGetMonitorInfoA,            NULL },
 
-  g_dlls.user32.AddExport("EnumDisplayDevicesA", (unsigned long)dllEnumDisplayDevicesA);
-  g_dlls.user32.AddExport("IsWindowVisible", (unsigned long)dllIsWindowVisible);
-  g_dlls.user32.AddExport("GetActiveWindow", (unsigned long)dllGetActiveWindow);
-}
+  { "EnumDisplayDevicesA",        -1, dllEnumDisplayDevicesA,        NULL },
+  { "IsWindowVisible",            -1, dllIsWindowVisible,            NULL },
+  { "GetActiveWindow",            -1, dllGetActiveWindow,            NULL },
+  { "LoadStringA",                -1, dllLoadStringA,                NULL },
+  { "GetCursorPos",               -1, dllGetCursorPos,               NULL },
+  { "LoadCursorA",                -1, dllLoadCursorA,                NULL },
+  { "SetCursor",                  -1, dllSetCursor,                  NULL },
+  { "RegisterWindowMessageA",     -1, dllRegisterWindowMessageA,     NULL },
+  { "GetSysColorBrush",           -1, dllGetSysColorBrush,           NULL },
+  { "GetSysColor",                -1, dllGetSysColor,                NULL },
+  { "RegisterClipboardFormatA",   -1, dllRegisterClipboardFormatA,   NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_xbmc_vobsub()
+Export export_xbmc_vobsub[] =
 {
-  g_dlls.xbmc_vobsub.AddExport("pf_seek", (unsigned long)VobSubPFSeek);
-  g_dlls.xbmc_vobsub.AddExport("pf_write", (unsigned long)VobSubPFWrite);
-  g_dlls.xbmc_vobsub.AddExport("pf_read", (unsigned long)VobSubPFRead);
-  g_dlls.xbmc_vobsub.AddExport("pf_open", (unsigned long)VobSubPFOpen);
-  g_dlls.xbmc_vobsub.AddExport("pf_close", (unsigned long)VobSubPFClose);
-  g_dlls.xbmc_vobsub.AddExport("pf_reserve", (unsigned long)VobSubPFReserve);
-}
+  { "pf_seek",                    -1, VobSubPFSeek,                  NULL },
+  { "pf_write",                   -1, VobSubPFWrite,                 NULL },
+  { "pf_read",                    -1, VobSubPFRead,                  NULL },
+  { "pf_open",                    -1, VobSubPFOpen,                  NULL },
+  { "pf_close",                   -1, VobSubPFClose,                 NULL },
+  { "pf_reserve",                 -1, VobSubPFReserve,               NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_version()
+Export export_version[] =
 {
-  g_dlls.version.AddExport("GetFileVersionInfoSizeA", (unsigned long)dllGetFileVersionInfoSizeA);
-  g_dlls.version.AddExport("VerQueryValueA", (unsigned long)dllVerQueryValueA);
-  g_dlls.version.AddExport("GetFileVersionInfoA", (unsigned long)dllGetFileVersionInfoA);
-}
+  { "GetFileVersionInfoSizeA",    -1, dllGetFileVersionInfoSizeA,    NULL },
+  { "VerQueryValueA",             -1, dllVerQueryValueA,             NULL },
+  { "GetFileVersionInfoA",        -1, dllGetFileVersionInfoA,        NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_comdlg32()
+Export export_comdlg32[] =
 {
-  g_dlls.comdlg32.AddExport("GetOpenFileNameA", (unsigned long)dllGetOpenFileNameA);
-}
+  { "GetOpenFileNameA",-1, dllGetOpenFileNameA, NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_gdi32()
+Export export_gdi32[] = 
 {
-  g_dlls.gdi32.AddExport("SetTextColor", (unsigned long)dllSetTextColor);
-  g_dlls.gdi32.AddExport("BitBlt", (unsigned long)dllBitBlt);
-  g_dlls.gdi32.AddExport("ExtTextOutA", (unsigned long)dllExtTextOutA);
-  g_dlls.gdi32.AddExport("GetStockObject", (unsigned long)dllGetStockObject);
-  g_dlls.gdi32.AddExport("SetBkColor", (unsigned long)dllSetBkColor);
-  g_dlls.gdi32.AddExport("CreateCompatibleDC", (unsigned long)dllCreateCompatibleDC);
-  g_dlls.gdi32.AddExport("CreateBitmap", (unsigned long)dllCreateBitmap);
-  g_dlls.gdi32.AddExport("SelectObject", (unsigned long)dllSelectObject);
-  g_dlls.gdi32.AddExport("CreateFontA", (unsigned long)dllCreateFontA);
-  g_dlls.gdi32.AddExport("DeleteDC", (unsigned long)dllDeleteDC);
-  g_dlls.gdi32.AddExport("SetBkMode", (unsigned long)dllSetBkMode);
-  g_dlls.gdi32.AddExport("GetPixel", (unsigned long)dllGetPixel);
-  g_dlls.gdi32.AddExport("DeleteObject", (unsigned long)dllDeleteObject);
-  g_dlls.gdi32.AddExport("GetDeviceCaps", (unsigned long)dllGetDeviceCaps);
-  g_dlls.gdi32.AddExport("CreatePalette", (unsigned long)dllCreatePalette);
-}
+  { "SetTextColor",               -1, dllSetTextColor,               NULL },
+  { "BitBlt",                     -1, dllBitBlt,                     NULL },
+  { "ExtTextOutA",                -1, dllExtTextOutA,                NULL },
+  { "GetStockObject",             -1, dllGetStockObject,             NULL },
+  { "SetBkColor",                 -1, dllSetBkColor,                 NULL },
+  { "CreateCompatibleDC",         -1, dllCreateCompatibleDC,         NULL },
+  { "CreateBitmap",               -1, dllCreateBitmap,               NULL },
+  { "SelectObject",               -1, dllSelectObject,               NULL },
+  { "CreateFontA",                -1, dllCreateFontA,                NULL },
+  { "DeleteDC",                   -1, dllDeleteDC,                   NULL },
+  { "SetBkMode",                  -1, dllSetBkMode,                  NULL },
+  { "GetPixel",                   -1, dllGetPixel,                   NULL },
+  { "DeleteObject",               -1, dllDeleteObject,               NULL },
+  { "GetDeviceCaps",              -1, dllGetDeviceCaps,              NULL },
+  { "CreatePalette",              -1, dllCreatePalette,              NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_ddraw()
+Export export_ddraw[] = 
 {
-  g_dlls.ddraw.AddExport("DirectDrawCreate", (unsigned long)dllDirectDrawCreate);
-}
+  { "DirectDrawCreate",-1, dllDirectDrawCreate, NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_comctl32()
+Export export_comctl32[] = 
 {
-  g_dlls.comctl32.AddExport("CreateUpDownControl", 16, (unsigned long)dllCreateUpDownControl);
-  g_dlls.comctl32.AddExport("InitCommonControls", 17, (unsigned long)dllCreateUpDownControl);
-}
+  { "CreateUpDownControl", 16, dllCreateUpDownControl, NULL },
+//  { "InitCommonControls", 17, dllInitCommonControls, NULL },
+  { NULL, NULL, NULL, NULL }
+};
 
-void export_iconvx()
+Export export_iconvx[] = 
 {
-  //g_dlls.iconvx.AddExport("_libiconv_version", (unsigned long)&_libiconv_version);  // seems to be missing in our version
-  g_dlls.iconvx.AddExport("libiconv", (unsigned long)libiconv);
-  g_dlls.iconvx.AddExport("libiconv_close", (unsigned long)libiconv_close);
-  g_dlls.iconvx.AddExport("libiconv_open", (unsigned long)libiconv_open);
-  g_dlls.iconvx.AddExport("libiconv_set_relocation_prefix", (unsigned long)libiconv_set_relocation_prefix);
-  g_dlls.iconvx.AddExport("libiconvctl", (unsigned long)libiconvctl);
-  g_dlls.iconvx.AddExport("libiconvlist", (unsigned long)libiconvlist);
-}
+  //{ "_libiconv_version",-1, &_libiconv_version, NULL },  // seems to be missing in our version
+  { "libiconv",                   -1, libiconv,                      NULL },
+  { "libiconv_close",             -1, libiconv_close,                NULL },
+  { "libiconv_open",              -1, libiconv_open,                 NULL },
+  { "libiconv_set_relocation_prefix",-1, libiconv_set_relocation_prefix, NULL },
+  { "libiconvctl",                -1, libiconvctl,                   NULL },
+  { "libiconvlist",               -1, libiconvlist,                  NULL },
+  { NULL, NULL, NULL, NULL }
+};

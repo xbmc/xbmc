@@ -61,12 +61,11 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
   CStdString strLine;
   CStdString strInfo = "";
   long lDuration = 0;
-  CStdString strBasePath;
 
   Clear();
 
   m_strPlayListName = CUtil::GetFileName(strFileName);
-  CUtil::GetParentPath(strFileName, strBasePath);
+  CUtil::GetParentPath(strFileName, m_strBasePath);
 
   CFile file;
   if (!file.Open(strFileName, false) )
@@ -111,11 +110,11 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         }
 
         // should substitition occur befor or after charset conversion??
-        if (CUtil::IsRemote(strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
+        if (CUtil::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
           strFileName = CUtil::SubstitutePath(strFileName);
 
         // Get the full path file name and add it to the the play list
-        CUtil::GetQualifiedFilename(strBasePath, strFileName);
+        CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CPlayListItem newItem(strInfo, strFileName, lDuration);
         Add(newItem);
 

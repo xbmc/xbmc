@@ -10,7 +10,7 @@ class CPlayListB4S :
 public:
   CPlayListB4S(void);
   virtual ~CPlayListB4S(void);
-  virtual bool Load(const CStdString& strFileName);
+  virtual bool LoadData(std::istream stream);
   virtual void Save(const CStdString& strFileName) const;
 };
 };

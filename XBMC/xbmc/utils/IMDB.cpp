@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "IMDB.h"
 #include "../Util.h"
 #include "HTMLUtil.h"

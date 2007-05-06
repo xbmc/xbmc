@@ -2,6 +2,7 @@
 #include "Database.h"
 #include "utils/IMDB.h"
 #include "settings/VideoSettings.h"
+#include <set>
 
 #ifndef _LINUX
 #define my_offsetof(TYPE, MEMBER) offsetof(TYPE, MEMBER)

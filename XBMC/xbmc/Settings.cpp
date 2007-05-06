@@ -187,7 +187,7 @@ CSettings::CSettings(void)
   g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
   // Advanced settings
-  g_advancedSettings.m_useMultipaths = false;
+  g_advancedSettings.m_useMultipaths = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
@@ -674,7 +674,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
 
     CLog::Log(LOGDEBUG,"      Adding bookmark:");
     CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
-    if (CUtil::IsVirtualPath(share.strPath))
+    if (CUtil::IsVirtualPath(share.strPath) || CUtil::IsMultiPath(share.strPath))
     {
       for (int i = 0; i < (int)share.vecPaths.size(); ++i)
         CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
@@ -2385,7 +2385,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     // Add a <setting type="bool" name="name">true/false</setting>
     TiXmlElement xmlSetting("setting");
     xmlSetting.SetAttribute("type", "bool");
-    xmlSetting.SetAttribute("name", (*it).second.name);
+    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
     TiXmlText xmlBool((*it).second.value ? "true" : "false");
     xmlSetting.InsertEndChild(xmlBool);
     pSettingsNode->InsertEndChild(xmlSetting);
@@ -2395,7 +2395,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     // Add a <setting type="string" name="name">string</setting>
     TiXmlElement xmlSetting("setting");
     xmlSetting.SetAttribute("type", "string");
-    xmlSetting.SetAttribute("name", (*it).second.name);
+    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
     TiXmlText xmlLabel((*it).second.value);
     xmlSetting.InsertEndChild(xmlLabel);
     pSettingsNode->InsertEndChild(xmlSetting);

@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "FlacTag.h"
+#include "Util.h"
+#include "Picture.h"
 
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
 
@@ -59,35 +61,104 @@ bool CFlacTag::Read(const CStdString& strFile)
   int iPos = ReadFlacHeader(); // position in the file
   if (!iPos) return false;
   // Find vorbis header
-  unsigned char buffer[4];
   m_file->Seek(iPos, SEEK_SET); // past the fLaC header and STREAMINFO buffer (compulsory)
   // see what type it is:
-  bool bFound(false);
+  bool foundTag = false;
+  unsigned int cover = 0;
+  unsigned int second_cover = 0;
+  unsigned int third_cover = 0;
   do
   {
-    m_file->Read(buffer, 4); // read the next METABLOCK header
-    if ((buffer[0]&0x7F) == 4) // found a VORBIS_COMMENT tag
-    {
-      bFound = true;
-      break;
+    unsigned int metaBlock = ReadUnsigned();
+    if ((metaBlock & 0x7F000000) == 0x4000000) // found a VORBIS_COMMENT tag
+    { // read it in
+      unsigned int size = (metaBlock & 0xffffff);
+      char *tag = new char[size];
+      if (tag)
+      {
+        m_file->Read((void*)tag, size);
+        // Process this tag info
+        ProcessVorbisComment(tag);
+        foundTag = true;
+        delete[] tag;
+      }
     }
-    if (buffer[0]&0x80)  // break if it's the last one
+    else if ((metaBlock & 0x7F000000) == 0x6000000) // found a PICTURE tag - see if it's the cover
+    {
+      // read the type of the image
+      unsigned int picType = ReadUnsigned();
+      if (picType == 3 && !cover)  // 3 == Cover (front)
+        cover = iPos + 8;
+      else if (picType == 0 && !second_cover) // 0 == Other
+        second_cover = iPos + 8;
+      else
+        third_cover = iPos + 8;
+    }
+    else if (metaBlock & 0x80000000)  // break if it's the last one
       break;
-    iPos += ((int)buffer[1] << 16) + ((int)buffer[2] << 8) + int(buffer[3]) + 4;
+    iPos += (metaBlock & 0xffffff) + 4;
     m_file->Seek(iPos, SEEK_SET);
   }
-  while (!bFound);
+  while (true);
 
-  if (bFound)  // Yay, we've found the vorbis_comment section - seek to the right place
+  if (!cover)
+    cover = second_cover;
+  if (!cover)
+    cover = third_cover;
+
+  CStdString strCoverArt;
+  if (!m_musicInfoTag.GetAlbum().IsEmpty() && (!m_musicInfoTag.GetAlbumArtist().IsEmpty() || !m_musicInfoTag.GetArtist().IsEmpty()))
+    strCoverArt = CUtil::GetCachedAlbumThumb(m_musicInfoTag.GetAlbum(), m_musicInfoTag.GetAlbumArtist().IsEmpty() ? m_musicInfoTag.GetArtist() : m_musicInfoTag.GetAlbumArtist());
+  else
+    strCoverArt = CUtil::GetCachedMusicThumb(m_musicInfoTag.GetURL());
+
+  if (cover && !CUtil::ThumbExists(strCoverArt))
   {
-    m_file->Seek(iPos + 4, SEEK_SET);
-    // now read in a chunk of data
-    char pBuffer[8192];
-    m_file->Read((void*)pBuffer, 8192);
-    // Process this tag info
-    ProcessVorbisComment(pBuffer);
+    char info[1024];
+    m_file->Seek(cover, SEEK_SET);
+
+    // read the mime type
+    unsigned int size = ReadUnsigned();
+    m_file->Read(info, min(size, (unsigned int) 1023));
+    info[min(size, (unsigned int) 1023)] = 0;
+    if (size > 1023)
+      m_file->Seek(size - 1023, SEEK_CUR);
+    CStdString mimeType = info;
+
+    // now the description
+    size = ReadUnsigned();
+    m_file->Read(info, min(size, (unsigned int) 1023));
+    info[min(size, (unsigned int) 1023)] = 0;
+    if (size > 1023)
+      m_file->Seek(size - 1023, SEEK_CUR);
+
+    int nPos = mimeType.Find('/');
+    if (nPos > -1)
+      mimeType.Delete(0, nPos + 1);
+
+    // and now our actual image info
+    unsigned int picInfo[4];
+    m_file->Read(picInfo, 16);
+
+    unsigned int picSize = ReadUnsigned();
+    BYTE *picData = new BYTE[picSize];
+    if (picData)
+    {
+      m_file->Read(picData, picSize);
+      CPicture pic;
+      if (pic.CreateThumbnailFromMemory(picData, picSize, mimeType, strCoverArt))
+      {
+        CUtil::ThumbCacheAdd(strCoverArt, true);
+      }
+      else
+      {
+        CUtil::ThumbCacheAdd(strCoverArt, false);
+        CLog::Log(LOGERROR, "%s Unable to create album art for %s (extension=%s, size=%d)", __FUNCTION__, m_musicInfoTag.GetURL().c_str(), mimeType.c_str(), picSize);
+      }
+      delete[] picData;
+    }
   }
-  return bFound;
+  return foundTag;
 }
 
 // read the duration information from the STREAM_INFO metadata block
@@ -157,3 +228,11 @@ void CFlacTag::ProcessVorbisComment(const char *pBuffer)
     Pos += I1[0] + 4;
   }
 }
+
+unsigned int CFlacTag::ReadUnsigned()
+{
+  unsigned char size[4];
+  m_file->Read(size, 4);
+  return ((unsigned int)size[0] << 24) + ((unsigned int)size[1] << 16) + ((unsigned int)size[2] << 8) + (unsigned int)size[3];
+}
+

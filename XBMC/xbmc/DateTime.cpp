@@ -800,6 +800,15 @@ CStdString CDateTime::GetAsDBDate() const
   return date;
 }
 
+void CDateTime::SetFromDBDate(const CStdString &date)
+{
+  // assumes format:
+  // YYYY-MM-DD
+  int year = 0, month = 0, day = 0;
+  sscanf(date.c_str(), "%04i-%02i-%02i", &year, &month, &day);
+  SetDate(year, month, day);
+}
+
 CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
 {
   CStdString strOut;
