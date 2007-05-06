@@ -241,3 +241,46 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scrollOffset = offset;
   m_scrollSpeed = (m_scrollOffset - m_offset) / TIME_TO_SCROLL;
 }
+
+bool CGUIControlGroupList::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+{
+  float pos = 0;
+  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    const CGUIControl *child = *it;
+    if (child->IsVisible())
+    {
+      if (pos + Size(child) > m_offset && pos < m_offset + Size())
+      { // we're on screen
+        float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
+        float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
+        if (child->CanFocusFromPoint(posX - offsetX, posY - offsetY, control))
+          return true;
+      }
+      pos += Size(child) + m_itemGap;
+    }
+  }
+  *control = NULL;
+  return false;
+}
+
+void CGUIControlGroupList::UnfocusFromPoint(float posX, float posY)
+{
+  float pos = 0;
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *child = *it;
+    if (child->IsVisible())
+    {
+      if (pos + Size(child) > m_offset && pos < m_offset + Size())
+      { // we're on screen
+        float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
+        float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
+        child->UnfocusFromPoint(posX - offsetX, posY - offsetY);
+      }
+      pos += Size(child) + m_itemGap;
+    }
+  }
+  CGUIControl::UnfocusFromPoint(posX, posY);
+}
+
