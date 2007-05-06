@@ -2,6 +2,14 @@
 #define __PLATFORM_DEFS_H__
 
 #ifdef _LINUX
+
+#ifndef _LARGEFILE64_SOURCE
+#define _LARGEFILE64_SOURCE
+#endif
+
+#undef _FILE_OFFSET_BITS
+#define _FILE_OFFSET_BITS 64
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -192,7 +200,6 @@ typedef int SOCKET;
 typedef DWORD (*LPTHREAD_START_ROUTINE)(LPVOID);
 
 // File
-
 struct __stat64 {
   dev_t 			 st_dev;
   ino_t 			  st_ino;

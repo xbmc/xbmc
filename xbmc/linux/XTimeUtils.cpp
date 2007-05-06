@@ -42,10 +42,18 @@ DWORD GetTickCount(void)
 
 // "Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
+	if (lpPerformanceCount == NULL)
+		return false;
+
+	lpPerformanceCount->QuadPart = GetTickCount();
 	return true;
 }
 
 BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
+	if (lpFrequency == NULL)
+		return false;
+
+	lpFrequency->QuadPart = 1000; // millisecond resolution
 	return true;
 }
 
