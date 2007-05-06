@@ -89,6 +89,7 @@ public:
   inline void setScreenSurface(SDL_Surface* surface) { m_screenSurface = surface; }  
   inline SDL_Surface* getScreenSurface() { return m_screenSurface; }  
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
+  int BlitToScreen(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c);
 #endif  
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
