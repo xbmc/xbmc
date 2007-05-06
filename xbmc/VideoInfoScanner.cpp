@@ -337,7 +337,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         CUtil::GetDirectory(pItem->m_strPath,strPath);
         lTvShowId2 = m_database.GetTvShowInfo(strPath);
       }
-      if (lTvShowId2 > -1 && (!bRefresh && !pItem->m_bIsFolder))
+      if (lTvShowId2 > -1 && (!bRefresh || !pItem->m_bIsFolder))
       {
         if (lTvShowId2 != lTvShowId)
         {
@@ -403,6 +403,7 @@ bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, 
         {
           CUtil::RemoveSlashAtEnd(pItem->m_strPath);
           strMovieName = CUtil::GetFileName(pItem->m_strPath);
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
         }
       }
     }
