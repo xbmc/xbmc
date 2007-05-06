@@ -2218,12 +2218,12 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         bEncodedChecked = true;
       }
     }
-    strSQL = FormatSQL("update path set strContent = '', strScraper='' where strPath like '%%%s%%'",strPath1.c_str());
+    strSQL = FormatSQL("update path set strContent = '', strScraper='', strHash='' where strPath like '%%%s%%'",strPath1.c_str());
     pDS->exec(strSQL);
 
     CStdString strEncoded(strPath);
     CUtil::URLEncode(strEncoded);
-    strSQL = FormatSQL("update path set strContent = '', strScraper='' where strPath like '%%%s%%'",strEncoded.c_str());
+    strSQL = FormatSQL("update path set strContent = '', strScraper='',strHash='' where strPath like '%%%s%%'",strEncoded.c_str());
     pDS->exec(strSQL);
   }
   catch (...)
