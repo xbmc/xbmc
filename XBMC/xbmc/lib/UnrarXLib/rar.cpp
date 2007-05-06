@@ -1,6 +1,5 @@
 #include "rar.hpp"
 #include "unrarx.hpp"
-#include "../../utils/log.h"
 
 #include "smallfn.cpp"
 
@@ -389,7 +388,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
               char NextName[NM];
               char LastName[NM];
               strcpy(NextName,pArc->FileName);
-              while (CFile::Exists(NextName))
+              while (XFILE::CFile::Exists(NextName))
               {
                 strcpy(LastName,NextName);
                 NextVolumeName(NextName,(pArc->NewMhd.Flags & MHD_NEWNUMBERING)==0 || pArc->OldFormat);

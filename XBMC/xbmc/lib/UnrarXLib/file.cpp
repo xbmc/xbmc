@@ -2,7 +2,6 @@
 
 // BE WARNED THIS FILE IS HEAVILY MODIFIED TO BE USED WITH XBMC
 
-#include "../../utils/log.h"
 #include "../../FileSystem/Directory.h"
 #include "../../Util.h"
 
