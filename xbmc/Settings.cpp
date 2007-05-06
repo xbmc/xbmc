@@ -2065,7 +2065,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     }
   }
   // save the file
-  return xmlDoc.SaveFile(strSettingsFile);
+  return xmlDoc.SaveFile(_P(strSettingsFile));
 }
 
 bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
@@ -2840,7 +2840,7 @@ CStdString CSettings::GetAvpackSettingsFile() const
     strAvpackSettingsFile = "T:\\avpacksettings.xml";
   else
     strAvpackSettingsFile = "P:\\avpacksettings.xml";
-  return strAvpackSettingsFile;
+  return _P(strAvpackSettingsFile);
 }
 
 CStdString  CSettings::GetPluggedAvpack() const
