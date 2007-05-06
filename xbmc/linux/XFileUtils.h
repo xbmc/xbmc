@@ -4,6 +4,12 @@
 #include "PlatformDefs.h"
 #include "XHandle.h"
 
+#ifdef _LINUX
+#define XBMC_FILE_SEP '/'
+#else
+#define XBMC_FILE_SEP '\\'
+#endif
+
 HANDLE FindFirstFile(LPCSTR,LPWIN32_FIND_DATA);
 
 BOOL   FindNextFile(HANDLE,LPWIN32_FIND_DATA);
