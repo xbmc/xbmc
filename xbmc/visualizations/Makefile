@@ -1,5 +1,5 @@
 
-INCLUDES=-I. -I../linux -I../../guilib
+INCLUDES=-I. -I../ -I../linux -I../../guilib
 
 SRCS=fft.cpp Visualisation.cpp VisualisationFactory.cpp
 

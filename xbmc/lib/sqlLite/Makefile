@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../../linux -I../../../guilib
+INCLUDES=-I. -I../../ -I../../linux -I../../../guilib
 SRCS=dataset.cpp qry_dat.cpp sqlitedataset.cpp
 LIB=sqllite.a
 

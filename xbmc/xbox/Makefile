@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../linux -I../../guilib
+INCLUDES=-I. -I../ -I../linux -I../../guilib
 
 SRCS=IoSupport.cpp Network.cpp xbeheader.cpp XKGeneral.cpp
 
