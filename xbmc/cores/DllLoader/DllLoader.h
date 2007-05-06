@@ -20,7 +20,7 @@ typedef struct Export
 
 typedef struct ExportEntry
 {
-  Export export;
+  Export exp;
   ExportEntry* next;
 } ExportEntry;
 

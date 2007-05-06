@@ -524,21 +524,21 @@ Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
   
   while (entry)
   {
-    if (ordinal == entry->export.ordinal)
+    if (ordinal == entry->exp.ordinal)
     {
-      return &entry->export;
+      return &entry->exp;
     }
     entry = entry->next;
   }
 
   if( m_pStaticExports )
   {
-    Export* export = m_pStaticExports;
-    while(export->function || export->track_function)
+    Export* exp = m_pStaticExports;
+    while(exp->function || exp->track_function)
     {
-      if (ordinal == export->ordinal)
-        return export;
-      export++;
+      if (ordinal == exp->ordinal)
+        return exp;
+      exp++;
     }
   }
 
@@ -551,21 +551,21 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   
   while (entry)
   {
-    if (entry->export.name && strcmp(sFunctionName, entry->export.name) == 0)
+    if (entry->exp.name && strcmp(sFunctionName, entry->exp.name) == 0)
     {
-      return &entry->export;
+      return &entry->exp;
     }
     entry = entry->next;
   }
 
   if( m_pStaticExports )
   {
-    Export* export = m_pStaticExports;
-    while(export->function || export->track_function)
+    Export* exp = m_pStaticExports;
+    while(exp->function || exp->track_function)
     {
-      if (export->name && strcmp(sFunctionName, export->name) == 0)
-        return export;
-      export++;
+      if (exp->name && strcmp(sFunctionName, exp->name) == 0)
+        return exp;
+      exp++;
     }
   }
 
@@ -651,10 +651,10 @@ int DllLoader::DecrRef()
 void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
   ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));
-  entry->export.function = (void*)function;
-  entry->export.ordinal = ordinal;
-  entry->export.track_function = track_function;
-  entry->export.name = NULL;
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = ordinal;
+  entry->exp.track_function = track_function;
+  entry->exp.name = NULL;
   
   entry->next = m_pExportHead;
   m_pExportHead = entry;
@@ -665,11 +665,11 @@ void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned l
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
-  entry->export.function = (void*)function;
-  entry->export.ordinal = ordinal;
-  entry->export.track_function = track_function;
-  entry->export.name = ((char*)(entry)) + len;
-  strcpy((char*)entry->export.name, sFunctionName);
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = ordinal;
+  entry->exp.track_function = track_function;
+  entry->exp.name = ((char*)(entry)) + len;
+  strcpy((char*)entry->exp.name, sFunctionName);
   
   entry->next = m_pExportHead;
   m_pExportHead = entry;
@@ -680,11 +680,11 @@ void DllLoader::AddExport(char* sFunctionName, unsigned long function, void* tra
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
-  entry->export.function = (void*)function;
-  entry->export.ordinal = -1;
-  entry->export.track_function = track_function;
-  entry->export.name = ((char*)(entry)) + len;
-  strcpy((char*)entry->export.name, sFunctionName);
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = -1;
+  entry->exp.track_function = track_function;
+  entry->exp.name = ((char*)(entry)) + len;
+  strcpy((char*)entry->exp.name, sFunctionName);
   
   entry->next = m_pExportHead;
   m_pExportHead = entry;
