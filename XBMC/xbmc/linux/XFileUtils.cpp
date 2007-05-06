@@ -1,21 +1,115 @@
 
 #include "XFileUtils.h"
+#include "XTimeUtils.h"
 
 #ifdef _LINUX
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <regex.h>
+#include <dirent.h>
 
-HANDLE FindFirstFile(LPCSTR,LPWIN32_FIND_DATA) {
-#warning need to complete function FindFirstFile
-	return INVALID_HANDLE_VALUE;
+HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
+	if (lpFindData == NULL || szPath == NULL)
+		return NULL;
+
+	CStdString strPath(szPath);
+
+	if (strPath.empty())
+		return INVALID_HANDLE_VALUE;
+
+	// if the file name is a directory then we add a * to look for all files in this directory
+	DIR *testDir = opendir(szPath);
+	if (testDir) {
+		strPath += "/*";
+		closedir(testDir);
+	}
+
+	int nFilePos = strPath.ReverseFind(XBMC_FILE_SEP);
+	
+	CStdString strDir = ".";
+	CStdString strFiles = strPath;
+
+	if (nFilePos > 0) {
+		strDir = strPath.substr(0,nFilePos);
+		strFiles = strPath.substr(nFilePos + 1);
+	}
+
+	strFiles = CStdString("^") + strFiles + "$";
+	strFiles.Replace(".","\\.");
+	strFiles.Replace("*",".*");
+	strFiles.Replace("?",".");
+
+	int status;
+	regex_t re;
+	if (regcomp(&re, strFiles, REG_EXTENDED|REG_NOSUB) != 0) {
+		return(INVALID_HANDLE_VALUE);      
+	}
+
+	CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
+
+	struct dirent **namelist = NULL;
+	int n = scandir(strDir, &namelist, 0, alphasort);
+	while (n-- > 0) {
+          	status = regexec(&re, namelist[n]->d_name, (size_t) 0, NULL, 0);
+		if (status == 0) {
+			pHandle->m_FindFileResults.push_back(strDir + CStdString("/") + namelist[n]->d_name);
+		}
+		free(namelist[n]);
+	}
+	
+	if (namelist)
+		free(namelist);
+
+	regfree(&re);
+
+	FindNextFile(pHandle, lpFindData);
+
+	return pHandle;
 }
 
-BOOL   FindNextFile(HANDLE,LPWIN32_FIND_DATA) {
-#warning need to complete function FindNextFile
-	return FALSE;
+BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
+	if (lpFindData == NULL || hHandle == NULL || hHandle->m_type != CXHandle::HND_FIND_FILE)
+		return FALSE;
+
+	if (hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
+		return FALSE;
+
+	CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
+	
+	struct stat fileStat;
+	if (stat(strFileName, &fileStat) != 0)
+		return FALSE;
+
+	bool bIsDir = false;
+	DIR *testDir = opendir(strFileName);
+	if (testDir) {
+		bIsDir = true;
+		closedir(testDir);
+	}
+
+	memset(lpFindData,0,sizeof(WIN32_FIND_DATA));
+	
+	lpFindData->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+	strcpy(lpFindData->cFileName, strFileName.c_str());
+
+	if (bIsDir)
+		lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
+
+	if (strFileName[0] == '.')
+		lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
+
+	TimeTToFileTime(&fileStat.st_ctime, &lpFindData->ftCreationTime);
+	TimeTToFileTime(&fileStat.st_atime, &lpFindData->ftLastAccessTime);
+	TimeTToFileTime(&fileStat.st_mtime, &lpFindData->ftLastWriteTime);
+	
+	lpFindData->nFileSizeHigh = 0;
+	lpFindData->nFileSizeLow =  fileStat.st_size;
+
+	return TRUE;
 }
 
 BOOL   FindClose(HANDLE hFindFile) {
-#warning need to complete function FindClose
-	return FALSE;
+	return CloseHandle(hFindFile);
 }
 
 HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
