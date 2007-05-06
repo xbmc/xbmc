@@ -703,8 +703,24 @@ long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &
       picture.DoCreateThumbnail(strTemp, strThumb);
       if (bApplyToDir)
       {
+        CStdString strCheck=pItem->m_strPath;
         CStdString strDirectory;
-        CUtil::GetDirectory(pItem->m_strPath,strDirectory);
+        if (pItem->IsStack())
+          strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+
+        CUtil::GetDirectory(strCheck,strDirectory);
+        if (CUtil::IsInRAR(strCheck))
+        {
+          CStdString strPath=strDirectory;
+          CUtil::GetParentPath(strPath,strDirectory);
+        }
+        if (pItem->IsStack())
+        {
+          strCheck = strDirectory;
+          CUtil::RemoveSlashAtEnd(strCheck);
+          if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+            CUtil::GetDirectory(strCheck,strDirectory);
+        }
         ApplyIMDBThumbToFolder(strDirectory,strThumb);
       }
     }
