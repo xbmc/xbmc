@@ -110,7 +110,7 @@
 #undef HAS_AUDIO
 #undef HAS_SHOUTCAST
 #define HAS_SDL
-#undef HAS_RAR
+#define HAS_RAR
 
 #include <unistd.h>
 #include <time.h>

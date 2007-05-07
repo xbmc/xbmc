@@ -350,7 +350,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 	{
 		if (ExactMatch)
 		{
-			Log(Arc.FileName,St(MUnpCannotMerge),ArcFileName);
+			Log(Arc.FileName,St(MUnpCannotMerge),(char*) ArcFileName);
 #ifdef RARDLL
 			Cmd->DllError=ERAR_BAD_DATA;
 #endif
@@ -388,7 +388,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 			else
 				if (!PasswordAll && (!Arc.Solid || Arc.NewLhd.UnpVer>=20 && (Arc.NewLhd.Flags & LHD_SOLID)==0))
 				{
-					eprintf(St(MUseCurPsw),ArcFileName);
+					eprintf(St(MUseCurPsw),(char*) ArcFileName);
 					switch(Cmd->AllYes ? 1:Ask(St(MYesNoAll)))
 					{
 						case -1:
@@ -555,7 +555,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #endif
     {
 #ifndef SILENT
-      Log(Arc.FileName,St(MUnknownMeth),ArcFileName);
+      Log(Arc.FileName,St(MUnknownMeth),(char*) ArcFileName);
 #ifndef SFX_MODULE
       Log(Arc.FileName,St(MVerRequired),Arc.NewLhd.UnpVer/10,Arc.NewLhd.UnpVer%10);
 #endif
@@ -577,7 +577,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
         if (SkipSolid)
         {
 #ifndef GUI
-          mprintf(St(MExtrSkipFile),ArcFileName);
+          mprintf(St(MExtrSkipFile),(char*) ArcFileName);
 #endif
           return(true);
         }
@@ -585,7 +585,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
         if (Cmd->Test)
         {
 #ifndef GUI
-          mprintf(St(MExtrTestFile),ArcFileName);
+          mprintf(St(MExtrTestFile),(char*) ArcFileName);
           mprintf(" %s",St(MOk));
 #endif
           return(true);
@@ -707,16 +707,16 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #ifndef GUI
       if (Command!='I')
         if (SkipSolid)
-          mprintf(St(MExtrSkipFile),ArcFileName);
+          mprintf(St(MExtrSkipFile),(char*) ArcFileName);
         else
           switch(Cmd->Test ? 'T':Command)
           {
             case 'T':
-              mprintf(St(MExtrTestFile),ArcFileName);
+              mprintf(St(MExtrTestFile),(char*) ArcFileName);
               break;
 #ifndef SFX_MODULE
             case 'P':
-              mprintf(St(MExtrPrinting),ArcFileName);
+              mprintf(St(MExtrPrinting),(char*) ArcFileName);
               break;
 #endif
             case 'X':

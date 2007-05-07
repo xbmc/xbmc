@@ -359,7 +359,7 @@ SupportDBCS::SupportDBCS()
 
 void SupportDBCS::Init()
 {
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_LINUX)
 	DBCSMode = true;
 	for (int I=0;I<sizeof(IsLeadByte)/sizeof(IsLeadByte[0]);I++)
 		IsLeadByte[I]=true;

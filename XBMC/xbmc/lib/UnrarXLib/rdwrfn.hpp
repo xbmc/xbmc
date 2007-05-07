@@ -4,7 +4,9 @@
 class CmdAdd;
 class Unpack;
 
+#ifndef _LINUX
 #include <process.h>
+#endif
 
 class ComprDataIO
 {
