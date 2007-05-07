@@ -133,6 +133,7 @@ typedef union _LARGE_INTEGER
       DWORD LowPart; 
       DWORD HighPart; 
   };
+  struct {    DWORD LowPart;    DWORD HighPart;  } u;
   ULONGLONG QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
