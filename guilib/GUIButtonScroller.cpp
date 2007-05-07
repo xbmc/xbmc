@@ -762,13 +762,13 @@ void CGUIButtonScroller::GetScrollZone(float &fStartAlpha, float &fEndAlpha)
   }
 }
 
-bool CGUIButtonScroller::OnMouseOver()
+bool CGUIButtonScroller::OnMouseOver(const CPoint &point)
 {
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
   if (m_bHorizontal)
   {
-    if (g_Mouse.posX < fStartAlpha) // scroll down
+    if (point.x < fStartAlpha) // scroll down
     {
       m_bScrollUp = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -777,9 +777,9 @@ bool CGUIButtonScroller::OnMouseOver()
       else
         m_bScrollDown = false;
       m_iSlowScrollCount++;
-      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posX - fStartAlpha) / (m_posX - fStartAlpha) * 50.0f;
+      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (point.x - fStartAlpha) / (m_posX - fStartAlpha) * 50.0f;
     }
-    else if (g_Mouse.posX > fEndAlpha - 1) // scroll up
+    else if (point.x > fEndAlpha - 1) // scroll up
     {
       m_bScrollDown = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -787,16 +787,16 @@ bool CGUIButtonScroller::OnMouseOver()
         m_bScrollUp = true;
       else
         m_bScrollUp = false;
-      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posX - fEndAlpha) / (m_posX + m_width - fEndAlpha) * 50.0f;
+      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (point.x - fEndAlpha) / (m_posX + m_width - fEndAlpha) * 50.0f;
     }
     else // call base class
     { // select the appropriate item, and call the base class (to set focus)
-      m_iCurrentSlot = (int)((g_Mouse.posX - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
+      m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
     }
   }
   else
   {
-    if (g_Mouse.posY < fStartAlpha) // scroll down
+    if (point.y < fStartAlpha) // scroll down
     {
       m_bScrollUp = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -805,9 +805,9 @@ bool CGUIButtonScroller::OnMouseOver()
       else
         m_bScrollDown = false;
       m_iSlowScrollCount++;
-      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posY - fStartAlpha) / (m_posY - fStartAlpha) * 50.0f;
+      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (point.y - fStartAlpha) / (m_posY - fStartAlpha) * 50.0f;
     }
-    else if (g_Mouse.posY > fEndAlpha - 1) // scroll up
+    else if (point.y > fEndAlpha - 1) // scroll up
     {
       m_bScrollDown = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -815,17 +815,17 @@ bool CGUIButtonScroller::OnMouseOver()
         m_bScrollUp = true;
       else
         m_bScrollUp = false;
-      m_iSlowScrollCount++; m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posY - fEndAlpha) / (m_posY + m_height - fEndAlpha) * 50.0f;
+      m_iSlowScrollCount++; m_fScrollSpeed = 50.0f + SCROLL_SPEED - (point.y - fEndAlpha) / (m_posY + m_height - fEndAlpha) * 50.0f;
     }
     else
     { // select the appropriate item, and call the base class (to set focus)
-      m_iCurrentSlot = (int)((g_Mouse.posY - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
+      m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
     }
   }
-  return CGUIControl::OnMouseOver();
+  return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
+bool CGUIButtonScroller::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   if (dwButton != MOUSE_LEFT_BUTTON && dwButton != MOUSE_RIGHT_BUTTON) return false;
   // check if we are in the clickable button zone
@@ -833,9 +833,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
   GetScrollZone(fStartAlpha, fEndAlpha);
   if (m_bHorizontal)
   {
-    if (g_Mouse.posX >= fStartAlpha && g_Mouse.posX <= fEndAlpha)
+    if (point.x >= fStartAlpha && point.x <= fEndAlpha)
     { // click the appropriate item
-      m_iCurrentSlot = (int)((g_Mouse.posX - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
+      m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
       CAction action;
       if (dwButton == MOUSE_LEFT_BUTTON)
         action.wID = ACTION_SELECT_ITEM;
@@ -847,9 +847,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
   }
   else
   {
-    if (g_Mouse.posY >= fStartAlpha && g_Mouse.posY <= fEndAlpha)
+    if (point.y >= fStartAlpha && point.y <= fEndAlpha)
     {
-      m_iCurrentSlot = (int)((g_Mouse.posY - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
+      m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
       CAction action;
       if (dwButton == MOUSE_LEFT_BUTTON)
         action.wID = ACTION_SELECT_ITEM;
@@ -862,15 +862,15 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
   return false;
 }
 
-bool CGUIButtonScroller::OnMouseWheel()
+bool CGUIButtonScroller::OnMouseWheel(char wheel, const CPoint &point)
 {
   // check if we are within the clickable button zone
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
-  if ((m_bHorizontal && g_Mouse.posX >= fStartAlpha && g_Mouse.posX <= fEndAlpha) ||
-      (!m_bHorizontal && g_Mouse.posY >= fStartAlpha && g_Mouse.posY <= fEndAlpha))
+  if ((m_bHorizontal && point.x >= fStartAlpha && point.x <= fEndAlpha) ||
+      (!m_bHorizontal && point.y >= fStartAlpha && point.y <= fEndAlpha))
   {
-    if (g_Mouse.cWheel > 0)
+    if (wheel > 0)
       m_bScrollDown = true;
     else
       m_bScrollUp = true;

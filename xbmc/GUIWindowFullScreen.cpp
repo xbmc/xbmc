@@ -479,7 +479,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-bool CGUIWindowFullScreen::OnMouse(float x, float y)
+bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI

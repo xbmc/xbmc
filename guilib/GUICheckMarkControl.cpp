@@ -142,7 +142,7 @@ bool CGUICheckMarkControl::GetSelected() const
   return m_bSelected;
 }
 
-bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
+bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.SetState(MOUSE_STATE_CLICK);

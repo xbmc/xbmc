@@ -88,7 +88,7 @@ void CGUIPanelContainer::Render()
       }
       else
       {
-        posX += m_layout.Size(HORIZONTAL);
+        posY += m_layout.Size(HORIZONTAL);
         posX -= m_layout.Size(VERTICAL) * (m_itemsPerRow - 1);
       }
       row = 1;
@@ -417,3 +417,27 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
   ControlType = GUICONTAINER_PANEL;
 }
 //#endif
+
+bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
+{
+  float sizeX = m_orientation == VERTICAL ? m_layout.Size(HORIZONTAL) : m_layout.Size(VERTICAL);
+  float sizeY = m_orientation == VERTICAL ? m_layout.Size(VERTICAL) : m_layout.Size(HORIZONTAL);
+
+  float posY = m_orientation == VERTICAL ? point.y : point.x;
+  for (int y = 0; y < m_itemsPerPage; y++)
+  {
+    float posX = m_orientation == VERTICAL ? point.x : point.y;
+    for (int x = 0; x < m_itemsPerRow; x++)
+    {
+      int item = x + y * m_itemsPerRow;
+      if (posX < sizeX && posY < sizeY && item + m_offset < (int)m_items.size())
+      { // found
+        m_cursor = item;
+        return true;
+      }
+      posX -= sizeX;
+    }
+    posY -= sizeY;
+  }
+  return false;
+}
