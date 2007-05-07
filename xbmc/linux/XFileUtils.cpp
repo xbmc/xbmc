@@ -124,13 +124,13 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   if (lpSecurityAttributes != NULL )
   {
     XXLog(ERROR, "CreateFile does not support security attributes");
-    return 0;
+    return INVALID_HANDLE_VALUE;
   } 
   
   if (hTemplateFile != (HANDLE) 0)
   {
     XXLog(ERROR, "CreateFile does not support template file");
-    return 0;
+    return INVALID_HANDLE_VALUE;
   }
   
   int flags;
@@ -143,7 +143,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   else
   {
     XXLog(ERROR, "CreateFile does not desired access other than read and/or write");
-    return 0;
+    return INVALID_HANDLE_VALUE;
   }
 
   switch (dwCreationDisposition)
@@ -165,8 +165,9 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
   
   int fd = open(lpFileName, flags);
+  printf("ReadFile() open returned %i\n", fd);
   if (fd == -1)
-    return 0;
+    return INVALID_HANDLE_VALUE;
     
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
