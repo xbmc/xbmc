@@ -473,9 +473,8 @@ void CGUIWindow::OnMouseAction()
 {
   // we need to convert the mouse coordinates to window coordinates
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
-  float x = g_Mouse.posX;
-  float y = g_Mouse.posY;
-  g_graphicsContext.InvertFinalCoords(x, y);
+  CPoint mousePoint(g_Mouse.posX, g_Mouse.posY);
+  g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
   bool bHandled = false;
   // check if we have exclusive access
@@ -484,7 +483,7 @@ void CGUIWindow::OnMouseAction()
     CGUIControl *pControl = (CGUIControl *)GetControl(g_Mouse.GetExclusiveControlID());
     if (pControl)
     { // this control has exclusive access to the mouse
-      HandleMouse(pControl, x, y);
+      HandleMouse(pControl, mousePoint);
       return;
     }
   }
@@ -493,31 +492,37 @@ void CGUIWindow::OnMouseAction()
   for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
   {
     CGUIControl *pControl = *i;
-    pControl->UnfocusFromPoint(x, y);
+    pControl->UnfocusFromPoint(mousePoint);
   }
   // and find which one is under the pointer
   // go through in reverse order to make sure we start with the ones on top
+  bool controlUnderPointer(false);
   for (vector<CGUIControl *>::reverse_iterator i = m_vecControls.rbegin(); i != m_vecControls.rend(); ++i)
   {
     CGUIControl *pControl = *i;
     CGUIControl *focusableControl = NULL;
-    if (pControl->CanFocusFromPoint(x, y, &focusableControl))
+    CPoint controlPoint;
+    if (pControl->CanFocusFromPoint(mousePoint, &focusableControl, controlPoint))
     {
-      bHandled = HandleMouse(focusableControl, x, y);
+      controlUnderPointer = true;
+      bHandled = HandleMouse(focusableControl, controlPoint);
       if (bHandled)
         break;
     }
   }
   if (!bHandled)
   { // haven't handled this action - call the window message handlers
-    OnMouse(x, y);
+    OnMouse(mousePoint);
   }
+  // and unfocus everything otherwise
+  if (!controlUnderPointer)
+    m_focusedControl = 0;
 }
 
 // Handles any mouse actions that are not handled by a control
 // default is to go back a window on a right click.
 // This function should be overridden for other windows
-bool CGUIWindow::OnMouse(float x, float y)
+bool CGUIWindow::OnMouse(const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go to previous menu
@@ -528,33 +533,33 @@ bool CGUIWindow::OnMouse(float x, float y)
   return false;
 }
 
-bool CGUIWindow::HandleMouse(CGUIControl *pControl, float x, float y)
+bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
 {
   // Issue the MouseOver event to highlight the item, and perform any pointer changes
-  bool focused = pControl->OnMouseOver();
+  bool focused = pControl->OnMouseOver(point);
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // Left click
-    return pControl->OnMouseClick(MOUSE_LEFT_BUTTON);
+    return pControl->OnMouseClick(MOUSE_LEFT_BUTTON, point);
   }
   else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // Right click
-    return pControl->OnMouseClick(MOUSE_RIGHT_BUTTON);
+    return pControl->OnMouseClick(MOUSE_RIGHT_BUTTON, point);
   }
   else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
   { // Middle click
-    return pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON);
+    return pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON, point);
   }
   else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
   { // Left double click
-    return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON);
+    return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
   }
   else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && (g_Mouse.cMickeyX || g_Mouse.cMickeyY))
   { // Mouse Drag
-    return pControl->OnMouseDrag();
+    return pControl->OnMouseDrag(CPoint(g_Mouse.cMickeyX, g_Mouse.cMickeyY), point);
   }
   else if (g_Mouse.cWheel)
   { // Mouse wheel
-    return pControl->OnMouseWheel();
+    return pControl->OnMouseWheel(g_Mouse.cWheel, point);
   }
   // no mouse stuff done other than movement - return indicating whether we've focused or not
   return focused;

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: FrostBox-->
 <!--Email: frostbox@users.sourceforge.net-->
-<!--Date of translation: 04/29/2007-->
+<!--Date of translation: 05/06/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8690-->
+<!--Based on english strings version 8718-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -131,13 +131,13 @@
   <string id="196">Sélection film:</string>
   <string id="197">Demande info %s</string>
   <string id="198">Chargement des détails du film</string>
-  <string id="199">Réalisateur: </string>
-  <string id="200">Crédits: </string>
-  <string id="201">Année: </string>
-  <string id="202">Critiques: </string>
-  <string id="203">Résumé: </string>
-  <string id="204">Intérêt: </string>
-  <string id="205">Votes: </string>
+  <string id="199">Réalisateur:</string>
+  <string id="200">Crédits:</string>
+  <string id="201">Année:</string>
+  <string id="202">Critiques:</string>
+  <string id="203">Résumé:</string>
+  <string id="204">Intérêt:</string>
+  <string id="205">Votes:</string>
   <string id="206">Distribution</string>
   <string id="207">Résumé</string>
   <string id="208">Lire</string>
@@ -190,7 +190,7 @@
   <string id="259">Ouverture</string>
   <string id="260">Shoutcast</string>
   <string id="261">Attente....</string>
-  <string id="262">Scripts de sortie</string>
+  <string id="262">Scripts données de sortie</string>
   <string id="263">Activer le serveur HTTP</string>
   <string id="264">Enregistrer</string>
   <string id="265">Arrêter l'enregistrement</string>
@@ -465,6 +465,11 @@
   <string id="563">Intérêt</string>
   <string id="564">Type</string>
   <string id="565">Utilisation</string>
+  <string id="566">Artiste Album</string>
+  <string id="567">Compte lue</string>
+  <string id="568">Dernière jouée</string>
+  <string id="569">Commentaire</string>
+
   <string id="580">Direction du tri</string>
   <string id="581">Méthode du tri</string>
   <string id="582">Mode de vue</string>
@@ -525,12 +530,12 @@
   <string id="651">Parcourir pour la bibliothèque</string>
   <string id="652">Années</string>
   <string id="653">MAJ la Bibliothèque</string>
-  <string id="654">Voir infos débogage</string>
+  <string id="654">Voir Info Débogue</string>
   <string id="655">Parcourir pour un Exécutable [.py|.xbe]</string>
   <string id="656">Parcourir pour une Playliste [.m3u|.pls]</string>
   <string id="657">Parcourir pour un Dossier</string>
   <string id="658">Information de la chanson</string>
-  <string id="659">Critique:</string>
+  <string id="659">Remarque:</string>
 
   <string id="700">Optimisation de la bibliothèque</string>
   <string id="701">Suppression des anciens morceaux de la bibliothèque</string>
@@ -1014,7 +1019,7 @@
   <string id="14010">Basculement des vignettes basées sur</string>
   <string id="14011">Activer le basculement</string>
   <string id="14012">- Utiliser les affiches</string>
-  <string id="14013">- Basculement - </string>
+  <string id="14013">- Basculement -</string>
   <string id="14014">- Pourcentage</string>
   <string id="14015">Aucun fichier et au moins une vignette</string>
   <string id="14016">Au moins un fichier et une vignette</string>
@@ -1055,7 +1060,7 @@
   <string id="14053">Filtres Interface</string>
   <string id="14054">Activer les recherches Internet</string>
   <string id="14055">Utiliser le scanne en arrière plan</string>
-  <string id="14056">Stopper le scanne</string>
+  <string id="14056">Arrêter le scanne</string>
   <string id="14057">Impossible d'afficher les infos pendant le scanne</string>
   <string id="14058">Effet de grain sur les films</string>
   <string id="14059">Utiliser miniatures perso sur partages distants</string>
@@ -1217,7 +1222,7 @@
   <string id="16009">Saisissez le nom du film</string>
   <string id="16010">Saisissez le nom du profil</string>
   <string id="16011">Saisissez le nom de l'album</string>
-  <string id="16012">Saisissez un nom pour votre sélection</string>
+  <string id="16012">Saisissez un nom pour votre Playliste</string>
   <string id="16013">Saisissez le nouveau nom du fichier</string>
   <string id="16014">Saisissez le nom du répertoire</string>
   <string id="16015">Saisissez répertoire</string>
@@ -1322,7 +1327,7 @@
   <string id="20075">Entrer le code du mode Admin.</string>
   <string id="20076">Demander le code du mode Admin. au démarrage</string>
   <string id="20077">Param. Thèmes</string>
-  <string id="20078">- pas de lien - </string>
+  <string id="20078">- pas de lien -</string>
   <string id="20079">Activer les animations</string>
   <string id="20080">Désactiver le flux RSS pendant la Musique</string>
   <string id="20081">Activer les boutons Signets</string>
@@ -1397,7 +1402,7 @@
   <string id="20151">Annuler le minuteur de fermeture</string>
   <string id="20152">Sécuriser les préférences pour %s</string>
   <string id="20153">Parcourir...</string>
-  <string id="20154">Infos de base </string>
+  <string id="20154">Infos de base</string>
   <string id="20155">Infos de stockage</string>
   <string id="20156">Infos Disque dur</string>
   <string id="20157">Infos DVD-ROM</string>
@@ -1471,7 +1476,7 @@
   <string id="20342">Films</string>
   <string id="20343">Séries TV</string>
   <string id="20344">Ce répertoire contient</string>
-  <string id="20345">Excécution auto. du scanne</string>
+  <string id="20345">Excécution automatique du scanne</string>
   <string id="20346">Scanner récursivement</string>
   <string id="20347">est</string>
   <string id="20348">Directeurs</string>
@@ -1556,6 +1561,38 @@
   <string id="21396">Chapitre</string>
   <string id="21397">ombrage pixels haute qualité V2</string>
   <string id="21398">Activer une playliste au démarrage</string>
+
+  <string id="21400">contiens</string>
+  <string id="21401">ne contiens pas</string>
+  <string id="21402">est</string>
+  <string id="21403">n'est pas</string>
+  <string id="21404">commence avec</string>
+  <string id="21405">termine avec</string>
+  <string id="21406">plus que</string>
+  <string id="21407">moins que</string>
+  <string id="21408">après</string>
+  <string id="21409">avant</string>
+  <string id="21410">en dernier</string>
+  <string id="21411">pas en dernier</string>
+
+  <string id="21420">Valeur de l'assortiment</string>
+  <string id="21421">Règle Smart Playliste</string>
+  <string id="21422">Chansons assorties</string>
+  <string id="21423">Nouvelle règle...</string>
+  <string id="21424">Les chansons doivent être assorties à</string>
+  <string id="21425">toutes les règles</string>
+  <string id="21426">une ou plusieurs règles</string>
+  <string id="21427">Limite à</string>
+  <string id="21428">Aucune Limite</string>
+  <string id="21429">Lister par</string>
+  <string id="21430">Croissant</string>
+  <string id="21431">Descendant</string>
+  <string id="21432">Éditeur Smart Playliste</string>
+  <string id="21433">Nom de la playliste</string>
+  <string id="21434">Trouver les chansons assorties</string>
+  <string id="21435">Éditer</string>
+  <string id="21436">%i chansons</string>
+  <string id="21437">Nouvelle Smart Playliste...</string>
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 </strings>

@@ -38,7 +38,7 @@ public:
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;
-  virtual bool HitTest(float posX, float posY) const { return m_buttonControl.HitTest(posX, posY); };
+  virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
 
   void SettingsCategorySetSpinTextColor(D3DCOLOR color);
 protected:

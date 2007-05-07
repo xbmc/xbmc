@@ -423,10 +423,10 @@ CVisualisation *CGUIVisualisationControl::GetVisualisation()
   return m_pVisualisation;
 }
 
-bool CGUIVisualisationControl::OnMouseOver()
+bool CGUIVisualisationControl::OnMouseOver(const CPoint &point)
 {
   // unfocusable, so return true
-  CGUIControl::OnMouseOver();
+  CGUIControl::OnMouseOver(point);
   return true;
 }
 
@@ -435,11 +435,12 @@ bool CGUIVisualisationControl::CanFocus() const
   return false;
 }
 
-bool CGUIVisualisationControl::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+bool CGUIVisualisationControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
-  if (HitTest(posX, posY))
+  if (HitTest(point))
   {
     *control = (CGUIControl *)this;
+    controlPoint = point;
     return true;
   }
   *control = NULL;

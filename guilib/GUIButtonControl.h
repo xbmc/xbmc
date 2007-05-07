@@ -27,7 +27,7 @@ public:
 
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
-  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();

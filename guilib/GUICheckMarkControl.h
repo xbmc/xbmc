@@ -33,7 +33,7 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
-  bool OnMouseClick(DWORD dwButton);
+  bool OnMouseClick(DWORD dwButton, const CPoint &point);
 
   void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);

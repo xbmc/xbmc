@@ -15,33 +15,6 @@
 #define SPIN_CONTROL_TYPE_TEXT   3
 #define SPIN_CONTROL_TYPE_PAGE   4
 
-class CRect
-{
-public:
-  CRect() { top = left = width = height = 0;};
-  ~CRect() {};
-
-  void SetRect(float l, float t, float w, float h)
-  {
-    left = l;
-    top = t;
-    width = w;
-    height = h;
-  };
-
-  bool PtInRect(float x, float y) const
-  {
-    if (left <= x && x <= left + width && top <= y && y <= top + height)
-      return true;
-    return false;
-  };
-
-private:
-  float top;
-  float left;
-  float width;
-  float height;
-};
 /*!
  \ingroup controls
  \brief 
@@ -55,10 +28,10 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool HitTest(float posX, float posY) const;
-  virtual bool OnMouseOver();
-  virtual bool OnMouseClick(DWORD dwButton);
-  virtual bool OnMouseWheel();
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();

@@ -242,7 +242,7 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scrollSpeed = (m_scrollOffset - m_offset) / TIME_TO_SCROLL;
 }
 
-bool CGUIControlGroupList::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
   float pos = 0;
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -254,7 +254,7 @@ bool CGUIControlGroupList::CanFocusFromPoint(float posX, float posY, CGUIControl
       { // we're on screen
         float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
         float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
-        if (child->CanFocusFromPoint(posX - offsetX, posY - offsetY, control))
+        if (child->CanFocusFromPoint(point - CPoint(offsetX, offsetY), control, controlPoint))
           return true;
       }
       pos += Size(child) + m_itemGap;
@@ -264,7 +264,7 @@ bool CGUIControlGroupList::CanFocusFromPoint(float posX, float posY, CGUIControl
   return false;
 }
 
-void CGUIControlGroupList::UnfocusFromPoint(float posX, float posY)
+void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
 {
   float pos = 0;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -274,14 +274,13 @@ void CGUIControlGroupList::UnfocusFromPoint(float posX, float posY)
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
-        float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
-        float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
-        child->UnfocusFromPoint(posX - offsetX, posY - offsetY);
+        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posX + pos - m_offset) : CPoint(m_posY + pos - m_offset, m_posY);
+        child->UnfocusFromPoint(point - offset);
       }
       pos += Size(child) + m_itemGap;
     }
   }
-  CGUIControl::UnfocusFromPoint(posX, posY);
+  CGUIControl::UnfocusFromPoint(point);
 }
 
 
