@@ -68,7 +68,7 @@ bool CButtonTranslator::Load()
     if (szWindow)
     {
       if (strcmpi(szWindow, "global") == 0)
-        wWindowID = (DWORD) -1;
+        wWindowID = (WORD) -1;
       else
         wWindowID = TranslateWindowString(szWindow);
     }
@@ -86,7 +86,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   WORD wAction = GetActionCode(wWindow, key, strAction);
   // if it's invalid, try to get it from the global map
   if (wAction == 0)
-    wAction = GetActionCode( (DWORD) -1, key, strAction);
+    wAction = GetActionCode( (WORD) -1, key, strAction);
   // Now fill our action structure
   action.wID = wAction;
   action.strAction = strAction;
