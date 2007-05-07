@@ -626,6 +626,16 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
     m_database.DeleteTvShow(path);
   }
 
+  if (iType == 2)
+    m_database.SetPathHash(path,"");  
+  else
+  {
+    CStdString strDirectory;
+    CUtil::GetDirectory(path,strDirectory);
+    m_database.SetPathHash(strDirectory,"");
+  }
+
+
   // delete the cached thumb for this item (it will regenerate if it is a user thumb)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);

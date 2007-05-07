@@ -36,16 +36,16 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);
   int GetValue() const;
-  virtual bool HitTest(float posX, float posY) const;
-  virtual bool OnMouseClick(DWORD dwButton);
-  virtual bool OnMouseDrag();
-  virtual bool OnMouseWheel();
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(float posX, float posY);
+  virtual void SetFromPosition(const CPoint &point);
 
   CGUIImage m_guiBackground;
   CGUIImage m_guiBarNoFocus;

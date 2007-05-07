@@ -186,14 +186,14 @@ int CGUIBaseContainer::GetSelectedItem() const
   return CorrectOffset(m_cursor, m_offset);
 }
 
-bool CGUIBaseContainer::SelectItemFromPoint(float posX, float posY)
+bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
 {
   int row = 0;
-  float pos = (m_orientation == VERTICAL) ? posY : posX;
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   while (row < m_itemsPerPage)
   {
-    float size = (row == m_offset) ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
-    if (pos < Size() && row + m_offset < (int)m_items.size())
+    float size = (row == m_cursor) ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+    if (pos < size && row + m_offset < (int)m_items.size())
     { // found
       MoveToItem(row);
       return true;
@@ -204,17 +204,17 @@ bool CGUIBaseContainer::SelectItemFromPoint(float posX, float posY)
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseOver()
+bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  if (SelectItemFromPoint(g_Mouse.posX - m_posX, g_Mouse.posY - m_posY))
-    return CGUIControl::OnMouseOver();
+  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
+    return CGUIControl::OnMouseOver(point);
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseClick(DWORD dwButton)
+bool CGUIBaseContainer::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
-  if (SelectItemFromPoint(g_Mouse.posX - m_posX, g_Mouse.posY - m_posY))
+  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send click message to window
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_CLICK + dwButton);
     return true;
@@ -222,9 +222,9 @@ bool CGUIBaseContainer::OnMouseClick(DWORD dwButton)
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseDoubleClick(DWORD dwButton)
+bool CGUIBaseContainer::OnMouseDoubleClick(DWORD dwButton, const CPoint &point)
 {
-  if (SelectItemFromPoint(g_Mouse.posX - m_posX, g_Mouse.posY - m_posY))
+  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send double click message to window
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_DOUBLE_CLICK + dwButton);
     return true;
@@ -232,9 +232,9 @@ bool CGUIBaseContainer::OnMouseDoubleClick(DWORD dwButton)
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseWheel()
+bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
 {
-  Scroll(-g_Mouse.cWheel);
+  Scroll(-wheel);
   return true;
 }
 
@@ -373,7 +373,7 @@ void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
 
 void CGUIBaseContainer::MoveToItem(int item)
 {
-  m_offset = item;
+  m_cursor = item;
 }
 
 void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)

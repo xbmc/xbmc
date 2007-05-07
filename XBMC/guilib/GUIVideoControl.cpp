@@ -44,7 +44,7 @@ void CGUIVideoControl::Render()
   CGUIControl::Render();
 }
 
-bool CGUIVideoControl::OnMouseClick(DWORD dwButton)
+bool CGUIVideoControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 { // mouse has clicked in the video control
   // switch to fullscreen video
   if (!g_application.IsPlayingVideo()) return false;
@@ -67,10 +67,10 @@ bool CGUIVideoControl::OnMouseClick(DWORD dwButton)
   return false;
 }
 
-bool CGUIVideoControl::OnMouseOver()
+bool CGUIVideoControl::OnMouseOver(const CPoint &point)
 {
   // unfocusable, so return true
-  CGUIControl::OnMouseOver();
+  CGUIControl::OnMouseOver(point);
   return true;
 }
 
@@ -79,11 +79,12 @@ bool CGUIVideoControl::CanFocus() const
   return false;
 }
 
-bool CGUIVideoControl::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
-  if (HitTest(posX, posY))
+  if (HitTest(point))
   {
     *control = (CGUIControl *)this;
+    controlPoint = point;
     return true;
   }
   *control = NULL;

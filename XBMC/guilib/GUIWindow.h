@@ -34,14 +34,6 @@ class CFileItem;
 class TiXmlNode;
 class TiXmlElement;
 
-class CPosition
-{
-public:
-  CGUIControl* pControl;
-  float x;
-  float y;
-};
-
 class COrigin
 {
 public:
@@ -82,8 +74,8 @@ public:
   virtual bool OnAction(const CAction &action);
 
   void OnMouseAction();
-  virtual bool OnMouse(float x, float y);
-  bool HandleMouse(CGUIControl *pControl, float x, float y);
+  virtual bool OnMouse(const CPoint &point);
+  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);

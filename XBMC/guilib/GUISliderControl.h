@@ -44,17 +44,17 @@ public:
   void SetType(int iType) { m_iType = iType; };
   void SetControlOffsetX(float controlOffsetX) { m_controlOffsetX = controlOffsetX;};
   void SetControlOffsetY(float controlOffsetY) { m_controlOffsetY = controlOffsetY;};
-  virtual bool HitTest(float posX, float posY) const;
-  virtual bool OnMouseClick(DWORD dwButton);
-  virtual bool OnMouseDrag();
-  virtual bool OnMouseWheel();
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
   virtual void SetColorDiffuse(D3DCOLOR color);
 protected:
   virtual void Update() ;
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(float posX, float posY);
+  virtual void SetFromPosition(const CPoint &point);
 
   CGUIImage m_guiBackground;
   CGUIImage m_guiMid;
