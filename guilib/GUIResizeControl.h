@@ -35,8 +35,8 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool OnMouseDrag();
-  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();

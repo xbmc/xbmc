@@ -239,3 +239,34 @@ void CGUIFixedListContainer::ValidateOffset()
     m_scrollOffset = m_offset * m_layout.Size(m_orientation);
   }
 }
+
+bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
+{
+  const float mouse_scroll_speed = 0.5f;
+  // see if the point is either side of our focused item
+  float start = m_cursor * m_layout.Size(m_orientation);
+  float end = start + m_focusedLayout.Size(m_orientation);
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  if (pos < start)
+  { // scroll backward
+    float amount = (start - pos) / m_layout.Size(m_orientation);
+    m_analogScrollCount += amount * amount * mouse_scroll_speed;
+    if (m_analogScrollCount > 1)
+    {
+      Scroll(-1);
+      m_analogScrollCount-=1.0f;
+    }
+  }
+  else if (pos > end)
+  {
+    // scroll forward
+    float amount = (pos - end) / m_layout.Size(m_orientation);
+    m_analogScrollCount += amount * amount * mouse_scroll_speed;
+    if (m_analogScrollCount > 1)
+    {
+      Scroll(1);
+      m_analogScrollCount-=1.0f;
+    }
+  }
+  return true;
+}
