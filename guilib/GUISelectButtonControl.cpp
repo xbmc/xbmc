@@ -330,16 +330,16 @@ void CGUISelectButtonControl::OnRight()
   }
 }
 
-bool CGUISelectButtonControl::OnMouseOver()
+bool CGUISelectButtonControl::OnMouseOver(const CPoint &point)
 {
-  bool ret = CGUIControl::OnMouseOver();
+  bool ret = CGUIControl::OnMouseOver(point);
   m_bLeftSelected = false;
   m_bRightSelected = false;
-  if (m_imgLeft.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_imgLeft.HitTest(point))
   { // highlight the left control, but don't start moving until we have clicked
     m_bLeftSelected = true;
   }
-  if (m_imgRight.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_imgRight.HitTest(point))
   { // highlight the right control, but don't start moving until we have clicked
     m_bRightSelected = true;
   }
@@ -348,27 +348,27 @@ bool CGUISelectButtonControl::OnMouseOver()
   return ret;
 }
 
-bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton)
+bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 { // only left click handled
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
-  if (m_bShowSelect && m_imgLeft.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_bShowSelect && m_imgLeft.HitTest(point))
   { // move left
     OnLeft();
   }
-  else if (m_bShowSelect && m_imgRight.HitTest(g_Mouse.posX, g_Mouse.posY))
+  else if (m_bShowSelect && m_imgRight.HitTest(point))
   { // move right
     OnRight();
   }
   else
   { // normal select
-    CGUIButtonControl::OnMouseClick(dwButton);
+    CGUIButtonControl::OnMouseClick(dwButton, point);
   }
   return true;
 }
 
-bool CGUISelectButtonControl::OnMouseWheel()
+bool CGUISelectButtonControl::OnMouseWheel(char wheel, const CPoint &point)
 {
-  if (g_Mouse.cWheel > 0)
+  if (wheel > 0)
     OnLeft();
   else
     OnRight();

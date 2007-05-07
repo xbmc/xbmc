@@ -215,20 +215,20 @@ void CGUIScrollBar::UpdateBarSize()
   }
 }
 
-bool CGUIScrollBar::HitTest(float posX, float posY) const
+bool CGUIScrollBar::HitTest(const CPoint &point) const
 {
-  if (m_guiBackground.HitTest(posX, posY)) return true;
-  if (m_guiBarNoFocus.HitTest(posX, posY)) return true;
+  if (m_guiBackground.HitTest(point)) return true;
+  if (m_guiBarNoFocus.HitTest(point)) return true;
   return false;
 }
 
-void CGUIScrollBar::SetFromPosition(float posX, float posY)
+void CGUIScrollBar::SetFromPosition(const CPoint &point)
 {
   float fPercent;
   if (m_orientation == VERTICAL)
-    fPercent = (posY - m_guiBackground.GetYPosition() - 0.5f*m_guiBarFocus.GetHeight()) / m_guiBackground.GetHeight();
+    fPercent = (point.y - m_guiBackground.GetYPosition() - 0.5f*m_guiBarFocus.GetHeight()) / m_guiBackground.GetHeight();
   else
-    fPercent = (posX - m_guiBackground.GetXPosition() - 0.5f*m_guiBarFocus.GetWidth()) / m_guiBackground.GetWidth();
+    fPercent = (point.x - m_guiBackground.GetXPosition() - 0.5f*m_guiBarFocus.GetWidth()) / m_guiBackground.GetWidth();
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
   m_offset = (int)(floor(fPercent * m_numItems + 0.5f));
@@ -237,32 +237,32 @@ void CGUIScrollBar::SetFromPosition(float posX, float posY)
   Update();
 }
 
-bool CGUIScrollBar::OnMouseClick(DWORD dwButton)
+bool CGUIScrollBar::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
-  if (m_guiBackground.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_guiBackground.HitTest(point))
   { // set the position
-    SetFromPosition(g_Mouse.posX, g_Mouse.posY);
+    SetFromPosition(point);
     return true;
   }
   return false;
 }
 
-bool CGUIScrollBar::OnMouseDrag()
+bool CGUIScrollBar::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
   // get the position of the mouse
-  SetFromPosition(g_Mouse.posX, g_Mouse.posY);
+  SetFromPosition(point);
   return true;
 }
 
-bool CGUIScrollBar::OnMouseWheel()
+bool CGUIScrollBar::OnMouseWheel(char wheel, const CPoint &point)
 {
-  Move(g_Mouse.cWheel);
+  Move(wheel);
   return true;
 }
 
