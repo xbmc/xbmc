@@ -193,6 +193,157 @@ void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned
   }
 }
 
+void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
+{
+  const BYTE *b = (const BYTE *)src;
+  // colour is in R5G6B5 format, convert to R8G8B8
+  DWORD colour[4];
+  BYTE red[4];
+  BYTE green[4];
+  BYTE blue[4];
+  for (int i = 0; i < 2; i++)
+  {
+    red[i] = b[2*i+1] & 0xf8;
+    green[i] = ((b[2*i+1] & 0x7) << 5) | ((b[2*i] & 0xe0) >> 3);
+    blue[i] = (b[2*i] & 0x1f) << 3;
+    colour[i] = (red[i] << 16) | (green[i] << 8) | blue[i];
+  }
+  if (colour[0] > colour[1])
+  {
+    red[2] = (2 * red[0] + red[1] + 1) / 3;
+    green[2] = (2 * green[0] + green[1] + 1) / 3;
+    blue[2] = (2 * blue[0] + blue[1] + 1) / 3;
+    red[3] = (red[0] + 2 * red[1] + 1) / 3;
+    green[3] = (green[0] + 2 * green[1] + 1) / 3;
+    blue[3] = (blue[0] + 2 * blue[1] + 1) / 3;
+    for (int i = 0; i < 4; i++)
+      colour[i] = (red[i] << 16) | (green[i] << 8) | blue[i] | 0xFF000000;
+  }
+  else
+  {
+    red[2] = (red[0] + red[1]) / 2;
+    green[2] = (green[0] + green[1]) / 2;
+    blue[2] = (blue[0] + blue[1]) / 2;
+    for (int i = 0; i < 3; i++)
+      colour[i] = (red[i] << 16) | (green[i] << 8) | blue[i] | 0xFF000000;
+    colour[3] = 0;  // transparent
+  }
+  // ok, now grab the bits
+  for (int y = 0; y < 4; y++)
+  {
+    DWORD *d = (DWORD *)dest + destWidth * y;
+    *d++ = colour[(b[4 + y] & 0x03)];
+    *d++ = colour[(b[4 + y] & 0x0e) >> 2];
+    *d++ = colour[(b[4 + y] & 0x30) >> 4];
+    *d++ = colour[(b[4 + y] & 0xe0) >> 6];
+  }
+}
+
+void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
+{
+  const BYTE *b = (const BYTE *)src;
+  BYTE alpha[8];
+  alpha[0] = b[0];
+  alpha[1] = b[1];
+  if (alpha[0] > alpha[1])
+  {
+    alpha[2] = (6 * alpha[0] + 1 * alpha[1]+ 3) / 7;
+    alpha[3] = (5 * alpha[0] + 2 * alpha[1] + 3) / 7;    // bit code 011
+    alpha[4] = (4 * alpha[0] + 3 * alpha[1] + 3) / 7;    // bit code 100
+    alpha[5] = (3 * alpha[0] + 4 * alpha[1] + 3) / 7;    // bit code 101
+    alpha[6] = (2 * alpha[0] + 5 * alpha[1] + 3) / 7;    // bit code 110
+    alpha[7] = (1 * alpha[0] + 6 * alpha[1] + 3) / 7;    // bit code 111  
+  }
+  else
+  {  
+    alpha[2] = (4 * alpha[0] + 1 * alpha[1] + 2) / 5;    // Bit code 010
+    alpha[3] = (3 * alpha[0] + 2 * alpha[1] + 2) / 5;    // Bit code 011
+    alpha[4] = (2 * alpha[0] + 3 * alpha[1] + 2) / 5;    // Bit code 100
+    alpha[5] = (1 * alpha[0] + 4 * alpha[1] + 2) / 5;    // Bit code 101
+    alpha[6] = 0;                                      // Bit code 110
+    alpha[7] = 255;                                    // Bit code 111  
+  }
+  // ok, now grab the bits
+  BYTE a[4][4];
+  a[0][0] = alpha[(b[2] & 0xe0) >> 5];
+  a[0][1] = alpha[(b[2] & 0x1c) >> 2];
+  a[0][2] = alpha[((b[2] & 0x03) << 1) | ((b[3] & 0x80) >> 7)];
+  a[0][3] = alpha[(b[3] & 0x70) >> 4];
+  a[1][0] = alpha[(b[3] & 0x0e) >> 1];
+  a[1][1] = alpha[((b[3] & 0x01) << 2) | ((b[4] & 0xc0) >> 6)];
+  a[1][2] = alpha[(b[4] & 0x38) >> 3];
+  a[1][3] = alpha[(b[4] & 0x07)];
+  a[2][0] = alpha[(b[5] & 0xe0) >> 5];
+  a[2][1] = alpha[(b[5] & 0x1c) >> 2];
+  a[2][2] = alpha[((b[5] & 0x03) << 1) | ((b[6] & 0x80) >> 7)];
+  a[2][3] = alpha[(b[6] & 0x70) >> 4];
+  a[3][0] = alpha[(b[6] & 0x0e) >> 1];
+  a[3][1] = alpha[((b[6] & 0x01) << 2) | ((b[7] & 0xc0) >> 6)];
+  a[3][2] = alpha[(b[7] & 0x38) >> 3];
+  a[3][3] = alpha[(b[7] & 0x07)];
+
+  b = (BYTE *)src + 8;
+  // colour is in R5G6B5 format, convert to R8G8B8
+  DWORD colour[4];
+  BYTE red[4];
+  BYTE green[4];
+  BYTE blue[4];
+  for (int i = 0; i < 2; i++)
+  {
+    red[i] = b[2*i+1] & 0xf8;
+    green[i] = ((b[2*i+1] & 0x7) << 5) | ((b[2*i] & 0xe0) >> 3);
+    blue[i] = (b[2*i] & 0x1f) << 3;
+  }
+  red[2] = (2 * red[0] + red[1] + 1) / 3;
+  green[2] = (2 * green[0] + green[1] + 1) / 3;
+  blue[2] = (2 * blue[0] + blue[1] + 1) / 3;
+  red[3] = (red[0] + 2 * red[1] + 1) / 3;
+  green[3] = (green[0] + 2 * green[1] + 1) / 3;
+  blue[3] = (blue[0] + 2 * blue[1] + 1) / 3;
+  for (int i = 0; i < 4; i++)
+    colour[i] = (red[i] << 16) | (green[i] << 8) | blue[i];
+  // and assign them to our texture
+  for (int y = 0; y < 4; y++)
+  {
+    DWORD *d = (DWORD *)dest + destWidth * y;
+    *d++ = colour[(b[4 + y] & 0x03)] | (a[y][0] << 24);
+    *d++ = colour[(b[4 + y] & 0x0e) >> 2] | (a[y][1] << 24);
+    *d++ = colour[(b[4 + y] & 0x30) >> 4] | (a[y][2] << 24);
+    *d++ = colour[(b[4 + y] & 0xe0) >> 6] | (a[y][3] << 24);
+  }
+
+}
+
+void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void *dest)
+{
+  for (unsigned int y = 0; y < height; y += 4)
+  {
+    for (unsigned int x = 0; x < width; x += 4)
+    {
+      const BYTE *s = (const BYTE *)src + y * width / 2 + x * 2;
+      DWORD *d = (DWORD *)dest + y * width + x;
+      DXT1toARGB(s, d, width);
+    }
+  }
+}
+
+void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void *dest)
+{
+  // [4 4 4 4][4 4 4 4]
+  //
+  //
+  //
+  for (unsigned int y = 0; y < height; y += 4)
+  {
+    for (unsigned int x = 0; x < width; x += 4)
+    {
+      const BYTE *s = (const BYTE *)src + y * width + x * 4;
+      DWORD *d = (DWORD *)dest + y * width + x;
+      DXT4toARGB(s, d, width);
+    }
+  }
+}
+
 #ifndef HAS_SDL
 void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture)
 #else
@@ -217,9 +368,6 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture
     texDataStart += offset;
 #ifndef HAS_SDL
     DWORD destPitch = lr.Pitch;
-#else
-    DWORD destPitch = (*ppTexture)->pitch;
-#endif
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
       pitch /= 2;
@@ -234,6 +382,23 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture
       pitch /= 4;
       destPitch /= 4;
     }
+#else
+    DWORD destPitch = (*ppTexture)->pitch;
+    if (fmt == XB_D3DFMT_DXT1)
+    {
+      BYTE *decoded = new BYTE[destPitch * height];
+      ConvertDXT1(texDataStart, width, height, decoded);
+      texDataStart = decoded;
+      pitch = destPitch;
+    }
+    else if (fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
+    {
+      BYTE *decoded = new BYTE[destPitch * height];
+      ConvertDXT4(texDataStart, width, height, decoded);
+      texDataStart = decoded;
+      pitch = destPitch;
+    }
+#endif
     if (IsSwizzledFormat(fmt))
     { // first we unswizzle
       BYTE *unswizzled = new BYTE[pitch * height];
@@ -266,8 +431,11 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture
         memcpy(dest, src, min((unsigned int)pitch, (unsigned int)destPitch));
       }
     }
-    
+#ifdef HAS_SDL
+    if (IsSwizzledFormat(fmt) || fmt == XB_D3DFMT_DXT1 || fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
+#else
     if (IsSwizzledFormat(fmt))
+#endif
     {
       delete[] texDataStart;
     }
