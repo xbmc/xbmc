@@ -976,6 +976,9 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::RemapDriveLetter('Y',"Harddisk0\\Partition4");
 #ifdef HAS_XBOX_HARDWARE
   CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
+#elif _LINUX
+  CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
+  CreateDirectory(_P("Z:\\"), NULL);
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");
