@@ -239,21 +239,21 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
     strncpy(lpFilename, "xbmc.xbe", nSize);
     CLog::Log(LOGDEBUG, "GetModuleFileNameA(0x%x, 0x%x, %d) => '%s'\n",
               hModule, lpFilename, nSize, lpFilename);
-    return 1;
+    return 8;
   }
   
   DllLoader* dll = g_dlls.GetModule(hModule);
   if( !dll )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
-    return NULL;
+    return 0;
   }
 
   char* sName = dll->GetFileName();
   if (sName)
   {
     strncpy(lpFilename, sName, nSize);
-    return 1;
+    return strlen(lpFilename);
   }
   
   return 0;
