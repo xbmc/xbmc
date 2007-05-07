@@ -35,10 +35,10 @@ public:
   virtual void OnUp();
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool OnMouseOver();
-  virtual bool OnMouseClick(DWORD dwButton);
-  virtual bool OnMouseDoubleClick(DWORD dwButton);
-  virtual bool OnMouseWheel();
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
@@ -62,7 +62,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  virtual bool SelectItemFromPoint(float posX, float posY);
+  virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
   virtual bool MoveDown(DWORD nextControl);

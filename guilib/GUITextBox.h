@@ -44,11 +44,11 @@ public:
   virtual void SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right);
   void SetPageControl(DWORD pageControl);
   void SetLabel(const string &strText);
-  virtual bool HitTest(float posX, float posY) const;
+  virtual bool HitTest(const CPoint &point) const;
   virtual bool CanFocus() const;
-  virtual bool OnMouseOver();
-  virtual bool OnMouseClick(DWORD dwButton);
-  virtual bool OnMouseWheel();
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   void SetInfo(int singleInfo);
 
 protected:
