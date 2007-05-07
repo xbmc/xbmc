@@ -853,53 +853,53 @@ int CGUISpinControl::GetMaximum() const
   return 100;
 }
 
-bool CGUISpinControl::HitTest(float posX, float posY) const
+bool CGUISpinControl::HitTest(const CPoint &point) const
 {
-  if (m_imgspinUpFocus.HitTest(posX, posY) || m_imgspinDownFocus.HitTest(posX, posY))
+  if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
     return true;
   // check if we have the text bit selected...
-  return m_rectHit.PtInRect(posX, posY);
+  return m_rectHit.PtInRect(point);
 }
 
-bool CGUISpinControl::OnMouseOver()
+bool CGUISpinControl::OnMouseOver(const CPoint &point)
 {
-  if (m_imgspinUpFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_imgspinUpFocus.HitTest(point))
   {
-    if (CanMoveUp()) CGUIControl::OnMouseOver();
+    if (CanMoveUp()) CGUIControl::OnMouseOver(point);
     m_iSelect = SPIN_BUTTON_UP;
   }
-  else if (m_imgspinDownFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
+  else if (m_imgspinDownFocus.HitTest(point))
   {
-    if (CanMoveDown()) CGUIControl::OnMouseOver();
+    if (CanMoveDown()) CGUIControl::OnMouseOver(point);
     m_iSelect = SPIN_BUTTON_DOWN;
   }
   else
   {
-    CGUIControl::OnMouseOver();
+    CGUIControl::OnMouseOver(point);
     m_iSelect = SPIN_BUTTON_UP;
   }
   return true;
 }
 
-bool CGUISpinControl::OnMouseClick(DWORD dwButton)
+bool CGUISpinControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 { // only left button handled
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
-  if (m_imgspinUpFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_imgspinUpFocus.HitTest(point))
   {
     MoveUp();
   }
-  if (m_imgspinDownFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_imgspinDownFocus.HitTest(point))
   {
     MoveDown();
   }
   return true;
 }
 
-bool CGUISpinControl::OnMouseWheel()
+bool CGUISpinControl::OnMouseWheel(char wheel, const CPoint &point)
 {
-  for (int i = 0; i < abs(g_Mouse.cWheel); i++)
+  for (int i = 0; i < abs(wheel); i++)
   {
-    if (g_Mouse.cWheel > 0)
+    if (wheel > 0)
     {
       MoveUp();
     }

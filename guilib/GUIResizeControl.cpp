@@ -96,15 +96,15 @@ void CGUIResizeControl::OnRight()
   Resize(m_fSpeed, 0);
 }
 
-bool CGUIResizeControl::OnMouseDrag()
+bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
-  Resize((float)g_Mouse.cMickeyX, (float)g_Mouse.cMickeyY);
+  Resize(offset.x, offset.y);
   return true;
 }
 
-bool CGUIResizeControl::OnMouseClick(DWORD dwButton)
+bool CGUIResizeControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
