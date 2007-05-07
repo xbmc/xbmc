@@ -26,6 +26,6 @@ protected:
   virtual bool MoveUp(DWORD nextControl);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
-  virtual void MoveToItem(int item);
+  virtual bool SelectItemFromPoint(const CPoint &point);
 };
 

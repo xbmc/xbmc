@@ -52,10 +52,10 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIWindowMusicOverlay::OnMouse(float x, float y)
+bool CGUIWindowMusicOverlay::OnMouse(const CPoint &point)
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_LOGO_PIC);
-  if (pControl && pControl->HitTest(x, y))
+  if (pControl && pControl->HitTest(point))
   {
     // send highlight message
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
@@ -79,7 +79,7 @@ bool CGUIWindowMusicOverlay::OnMouse(float x, float y)
   }
   else
   {
-    return CGUIDialog::OnMouse(x, y);
+    return CGUIDialog::OnMouse(point);
   }
 }
 

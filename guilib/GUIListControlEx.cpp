@@ -576,14 +576,14 @@ void CGUIListControlEx::SetPageControlVisible(bool bVisible)
 
 //TODO: Add OnMouseOver() and possibly HitTest() and SelectItemFromPoint from
 // CGUIListControl
-bool CGUIListControlEx::OnMouseOver()
+bool CGUIListControlEx::OnMouseOver(const CPoint &point)
 {
-  return CGUIControl::OnMouseOver();
+  return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIListControlEx::OnMouseClick(DWORD dwButton)
+bool CGUIListControlEx::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
-  return CGUIControl::OnMouseClick(dwButton);
+  return CGUIControl::OnMouseClick(dwButton, point);
 }
 
 bool CGUIListControlEx::CanFocus() const
