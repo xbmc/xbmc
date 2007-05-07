@@ -1,6 +1,22 @@
+#include "stdafx.h"
 #include "Win32Exception.h"
+#ifndef _LINUX
 #include "eh.h"
+#endif
 #include "log.h"
+
+#ifdef _LINUX
+
+void win32_exception::writelog(const char *prefix)  const
+{
+  if( prefix )
+    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, what(), code(), where());
+  else
+    CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
+}
+
+
+#else
 
 void win32_exception::install_handler()
 {
@@ -62,3 +78,5 @@ void access_violation::writelog(const char *prefix) const
       CLog::Log(LOGERROR, "%s at 0x%08x: Reading location 0x%08x", what(), where(), address());
 
 }
+
+#endif
