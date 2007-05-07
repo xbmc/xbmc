@@ -64,6 +64,7 @@ protected:
   vector<CGUIControl *> m_children;
   typedef vector<CGUIControl *>::iterator iControls;
   typedef vector<CGUIControl *>::const_iterator ciControls;
+  typedef vector<CGUIControl *>::const_reverse_iterator crControls;
 
   int m_defaultControl;
   int m_focusedControl;
