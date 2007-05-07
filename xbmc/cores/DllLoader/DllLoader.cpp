@@ -763,11 +763,11 @@ bool DllLoader::Load()
   
   if(EntryAddress)
   {
-    EntryFunc* initdll = (EntryFunc *)EntryAddress;
+    EntryFunc initdll = (EntryFunc)EntryAddress;
     /* since we are handing execution over to unknown code, safeguard here */
     try 
     {
-      (*initdll)((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+      initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
       CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
@@ -813,8 +813,8 @@ void DllLoader::Unload()
     //call "DllMain" with DLL_PROCESS_DETACH
     if(EntryAddress)
     {
-      EntryFunc* initdll = (EntryFunc *)EntryAddress;
-      (*initdll)((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
+      EntryFunc initdll = (EntryFunc)EntryAddress;
+      initdll((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
     }
 
 #ifdef LOGALL
