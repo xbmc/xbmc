@@ -59,6 +59,18 @@ public:
   CStdString diffuse; // diffuse overlay texture (unimplemented)
 };
 
+#ifdef HAS_SDL
+class CCachedTexture
+{
+  public:
+    CCachedTexture() { surface = NULL; width = height = 0; diffuseColor = 0xffffffff; };
+    
+    SDL_Surface *surface;
+    int          width;
+    int          height;
+    DWORD        diffuseColor;
+};
+#endif
 /*!
  \ingroup controls
  \brief 
@@ -126,8 +138,10 @@ protected:
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;
 #else
+  void CalcBoundingBox(float *x, float *y, int n, int *b);
+  void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, CCachedTexture &dst);
   vector <SDL_Surface*> m_vecTextures;
-  vector <SDL_Surface*> m_vecZoomedTextures;
+  vector <CCachedTexture> m_vecCachedTextures;
   SDL_Surface* m_diffuseTexture;
   SDL_Palette* m_diffusePalette;
   SDL_Palette* m_pPalette;  
