@@ -302,7 +302,7 @@ bool CGUIControlGroup::HitTest(const CPoint &point) const
 
 bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
-  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
     if (child->CanFocusFromPoint(point - CPoint(m_posX, m_posY), control, controlPoint))
