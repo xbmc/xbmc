@@ -2046,7 +2046,7 @@ CStdString CFileItemList::GetDiscCacheFile()
     cacheFile.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
   else
     cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
-  return cacheFile;
+  return _P(cacheFile);
 }
 
 bool CFileItemList::AlwaysCache()
