@@ -14,7 +14,6 @@ typedef struct _UNICODE_STRING {
   PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
 #endif
-#include <io.h>
 #include "../../utils/win32exception.h"
 
 #define DLL_PROCESS_DETACH   0
@@ -139,7 +138,7 @@ LPVOID GetXbdmBaseAddress()
 #endif
 
 //  Entry point of a dll (DllMain)
-typedef BOOL APIENTRY EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
+typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 // is it really needed?
 void* fs_seg = NULL;
