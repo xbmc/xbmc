@@ -165,7 +165,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
   
   int fd = open(lpFileName, flags);
-  printf("ReadFile() open returned %i\n", fd);
+  
   if (fd == -1)
     return INVALID_HANDLE_VALUE;
     
