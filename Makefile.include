@@ -13,19 +13,25 @@ DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFF
 .c.o:
 	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 
-OBJS=${SRCS:.cpp=.o}
+%.h.gch : %.h
+	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+
+OBJS =${SRCS:.cpp=.o}
 
 all: lib
 
 $(LIB) : $(OBJS)
 
+pch: $(PCH:.h=.h.gch)
+	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
+
 lib: $(LIB)
 	for d in $(DIRS); do (cd $$d; $(MAKE) lib ); done
 
 clean: 
-	$(RM) $(OBJS) $(LIB)
+	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
 
-depend: $(SRCS)
+depend: $(PCH) $(SRCS)
 	-$(CXX) -MM $(DEFINES) $(INCLUDES) $(SRCS) > Makefile.depend
 	-for d in $(DIRS); do (cd $$d; $(MAKE) depend ); done
