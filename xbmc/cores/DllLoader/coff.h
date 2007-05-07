@@ -330,8 +330,8 @@ typedef struct
 }
 SymbolTable_t;
 
-#if !defined (_XBOX) 
-/*
+#if !defined (_XBOX) && !defined(_WIN32)
+
 #define IMAGE_SYM_UNDEFINED     0
 #define IMAGE_SYM_ABSOLUTE      0xFFFF
 #define IMAGE_SYM_DEBUG         0xFFFE
@@ -385,7 +385,7 @@ SymbolTable_t;
 #define IMAGE_SYM_CLASS_END_OF_STRUCT           102
 #define IMAGE_SYM_CLASS_FILE                    103
 #define IMAGE_SYM_CLASS_SECTION                 104
-#define IMAGE_SYM_CLASS_WEAK_EXTERNAL           105*/
+#define IMAGE_SYM_CLASS_WEAK_EXTERNAL           105
 #endif
 
 typedef struct

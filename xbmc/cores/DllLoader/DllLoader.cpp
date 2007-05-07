@@ -14,8 +14,7 @@ typedef struct _UNICODE_STRING {
   PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
 #endif
-#include <io.h>
-#include "../../utils/win32exception.h"
+#include "utils/Win32Exception.h"
 
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
@@ -23,6 +22,7 @@ typedef struct _UNICODE_STRING {
 #define DLL_THREAD_DETACH    3
 #define DLL_PROCESS_VERIFIER 4
 
+#ifdef _XBOX
 // uncomment this to enable symbol loading for dlls
 //#define ENABLE_SYMBOL_LOADING 1
 
@@ -137,14 +137,15 @@ LPVOID GetXbdmBaseAddress()
   return pBaseAddress;
 }
 #endif
+#endif
 
 //  Entry point of a dll (DllMain)
-typedef BOOL APIENTRY EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
+typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 // is it really needed?
 void* fs_seg = NULL;
 
-DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exports)
+DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps)
 {
   ImportDirTable = 0;
   m_sFileName = strdup(sDll);
@@ -162,7 +163,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
 
   m_iRefCount = 1;
   m_pExportHead = NULL;
-  m_pStaticExports = exports;
+  m_pStaticExports = exps;
   m_bTrack = bTrack;
   m_bSystemDll = bSystemDll;
   m_pDlls = NULL;
@@ -240,8 +241,8 @@ int DllLoader::Parse()
         tracker_dll_set_addr(this, (unsigned)hModule, (unsigned)hModule + WindowsHeader->SizeOfImage - 1);
       else
       {
-        unsigned int iMinAddr = UINT_MAX;
-        unsigned int iMaxAddr = 0;
+        unsigned long iMinAddr = UINT_MAX;
+        unsigned long iMaxAddr = 0;
         // dll is loaded now, this means we also know the base address of it and its size
         for (int i = 0; i < NumOfSections; ++i)
         {
@@ -374,7 +375,7 @@ int DllLoader::ResolveImports(void)
       char *Name = (char*)RVA2Data(Imp->Name_RVA);
 
       char* FileName=ResolveReferencedDll(Name);
-      //  If possible use the dll name WITH path to resolve exports. We could have loaded 
+      //  If possible use the dll name WITH path to resolve exps. We could have loaded 
       //  a dll with the same name as another dll but from a different directory
       if (FileName) Name=FileName;
 
@@ -524,21 +525,21 @@ Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
   
   while (entry)
   {
-    if (ordinal == entry->export.ordinal)
+    if (ordinal == entry->exp.ordinal)
     {
-      return &entry->export;
+      return &entry->exp;
     }
     entry = entry->next;
   }
 
   if( m_pStaticExports )
   {
-    Export* export = m_pStaticExports;
-    while(export->function || export->track_function)
+    Export* exp = m_pStaticExports;
+    while(exp->function || exp->track_function)
     {
-      if (ordinal == export->ordinal)
-        return export;
-      export++;
+      if (ordinal == exp->ordinal)
+        return exp;
+      exp++;
     }
   }
 
@@ -551,21 +552,21 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   
   while (entry)
   {
-    if (entry->export.name && strcmp(sFunctionName, entry->export.name) == 0)
+    if (entry->exp.name && strcmp(sFunctionName, entry->exp.name) == 0)
     {
-      return &entry->export;
+      return &entry->exp;
     }
     entry = entry->next;
   }
 
   if( m_pStaticExports )
   {
-    Export* export = m_pStaticExports;
-    while(export->function || export->track_function)
+    Export* exp = m_pStaticExports;
+    while(exp->function || exp->track_function)
     {
-      if (export->name && strcmp(sFunctionName, export->name) == 0)
-        return export;
-      export++;
+      if (exp->name && strcmp(sFunctionName, exp->name) == 0)
+        return exp;
+      exp++;
     }
   }
 
@@ -651,10 +652,10 @@ int DllLoader::DecrRef()
 void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
   ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));
-  entry->export.function = (void*)function;
-  entry->export.ordinal = ordinal;
-  entry->export.track_function = track_function;
-  entry->export.name = NULL;
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = ordinal;
+  entry->exp.track_function = track_function;
+  entry->exp.name = NULL;
   
   entry->next = m_pExportHead;
   m_pExportHead = entry;
@@ -665,11 +666,11 @@ void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned l
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
-  entry->export.function = (void*)function;
-  entry->export.ordinal = ordinal;
-  entry->export.track_function = track_function;
-  entry->export.name = ((char*)(entry)) + len;
-  strcpy((char*)entry->export.name, sFunctionName);
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = ordinal;
+  entry->exp.track_function = track_function;
+  entry->exp.name = ((char*)(entry)) + len;
+  strcpy((char*)entry->exp.name, sFunctionName);
   
   entry->next = m_pExportHead;
   m_pExportHead = entry;
@@ -680,11 +681,11 @@ void DllLoader::AddExport(char* sFunctionName, unsigned long function, void* tra
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
-  entry->export.function = (void*)function;
-  entry->export.ordinal = -1;
-  entry->export.track_function = track_function;
-  entry->export.name = ((char*)(entry)) + len;
-  strcpy((char*)entry->export.name, sFunctionName);
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = -1;
+  entry->exp.track_function = track_function;
+  entry->exp.name = ((char*)(entry)) + len;
+  strcpy((char*)entry->exp.name, sFunctionName);
   
   entry->next = m_pExportHead;
   m_pExportHead = entry;
@@ -782,22 +783,22 @@ bool DllLoader::Load()
     }
     catch(...)
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
+      CLog::Log(LOGERROR, "%s - Unhandled exception during DLL_PROCESS_ATTACH", __FUNCTION__);
 
-      // vp7vfw.dll throws a CUserException due to a missing export
-      // but the export isn't really needed for normal operation
+      // vp7vfw.dll throws a CUserException due to a missing exp
+      // but the exp isn't really needed for normal operation
       // and dll works anyway, so let's ignore it
 
       if(stricmp(GetName(), "vp7vfw.dll") != 0)
         return false;
 
 
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Ignoring exception during DLL_PROCESS_ATTACH");
+      CLog::Log(LOGDEBUG, "%s - Ignoring exception during DLL_PROCESS_ATTACH", __FUNCTION__);
     }
 
-    // init function may have fixed up the export table
+    // init function may have fixed up the exp table
     // this is what I expect should happens on PECompact2 
-    // dll's if export table is compressed.
+    // dll's if exp table is compressed.
     if(!m_pExportHead)
       LoadExports();
   }
@@ -859,7 +860,7 @@ void DllLoader::LoadSymbols()
         return;
       }
 
-      // Get a function pointer to the unexported function FFinishImageLoad
+      // Get a function pointer to the unexped function FFinishImageLoad
       fnFFinishImageLoad FFinishImageLoad=(fnFFinishImageLoad)((LPBYTE)pBaseAddress+offset);
 
       // Prepare parameter for the function call

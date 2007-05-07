@@ -51,6 +51,8 @@
 
 #define WINBASEAPI
 #define WINAPI
+#define WINAPIV
+#define APIENTRY
 #define NTAPI
 #define CALLBACK
 #define _declspec(X)
@@ -60,6 +62,9 @@
 
 class CXHandle; // foward declaration
 typedef CXHandle* HANDLE;
+
+typedef void* HINSTANCE;
+typedef void* HMODULE;
 
 typedef unsigned long 	DWORD;
 typedef unsigned short 	WORD;
@@ -105,6 +110,10 @@ typedef long 				LONG_PTR;
 typedef unsigned long 	ULONG_PTR;
 typedef ULONG_PTR 		DWORD_PTR;
 typedef __int64		 	__time64_t;
+typedef int (*FARPROC)(void);
+
+#define MAXWORD		0xffff
+#define MAXDWORD	0xffffffff
 
 typedef union _LARGE_INTEGER 
 {  

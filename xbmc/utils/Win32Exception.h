@@ -1,9 +1,27 @@
 #ifdef _XBOX
 #include "xtl.h"
+#elif _LINUX
 #else
 #include <windows.h>
 #endif
 #include <exception>
+
+#ifdef _LINUX
+
+class win32_exception: public std::exception
+{
+public:
+    virtual const char* what() const throw() { return mWhat; };
+    void* where() const { return mWhere; };
+    unsigned int code() const { return mCode; };
+    virtual void writelog(const char *prefix) const;
+private:
+    const char* mWhat;
+    void* mWhere;
+    unsigned mCode;
+};
+
+#else
 
 class win32_exception: public std::exception
 {
@@ -36,3 +54,4 @@ private:
     access_violation(const EXCEPTION_RECORD& info);
     friend void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info);
 };
+#endif
