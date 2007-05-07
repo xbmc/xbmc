@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include <stdlib.h>
 #include <string.h>
-#include <minmax.h>
 #include "coff.h" 
 #include "coffldr.h"
 
@@ -56,7 +55,11 @@ CoffLoader::~CoffLoader()
 {
   if ( hModule )
   {
+#ifdef _LINUX
+    free(hModule);
+#else
     VirtualFree(hModule, 0, MEM_RELEASE);
+#endif
     hModule = NULL;
   }
   if ( SymTable )
@@ -183,7 +186,11 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
     return 0;
 
   // alloc aligned memory
+#ifdef _LINUX
+  hModule = malloc(tempWindowsHeader.SizeOfImage);
+#else
   hModule = VirtualAlloc(0, tempWindowsHeader.SizeOfImage, MEM_COMMIT, PAGE_READWRITE);
+#endif
   if (hModule == NULL)
     return 0;   //memory allocation fails
 
