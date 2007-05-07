@@ -297,16 +297,16 @@ void CGUISliderControl::Update()
   m_guiBackground.SetPosition( GetXPosition(), GetYPosition());
 }
 
-bool CGUISliderControl::HitTest(float posX, float posY) const
+bool CGUISliderControl::HitTest(const CPoint &point) const
 {
-  if (m_guiBackground.HitTest(posX, posY)) return true;
-  if (m_guiMid.HitTest(posX, posY)) return true;
+  if (m_guiBackground.HitTest(point)) return true;
+  if (m_guiMid.HitTest(point)) return true;
   return false;
 }
 
-void CGUISliderControl::SetFromPosition(float posX, float posY)
+void CGUISliderControl::SetFromPosition(const CPoint &point)
 {
-  float fPercent = (g_Mouse.posX - m_guiBackground.GetXPosition()) / m_guiBackground.GetWidth();
+  float fPercent = (point.x - m_guiBackground.GetXPosition()) / m_guiBackground.GetWidth();
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
   switch (m_iType)
@@ -326,32 +326,32 @@ void CGUISliderControl::SetFromPosition(float posX, float posY)
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 }
 
-bool CGUISliderControl::OnMouseClick(DWORD dwButton)
+bool CGUISliderControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
-  if (m_guiBackground.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_guiBackground.HitTest(point))
   { // set the position
-    SetFromPosition(g_Mouse.posX, g_Mouse.posY);
+    SetFromPosition(point);
     return true;
   }
   return false;
 }
 
-bool CGUISliderControl::OnMouseDrag()
+bool CGUISliderControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
   // get the position of the mouse
-  SetFromPosition(g_Mouse.posX, g_Mouse.posY);
+  SetFromPosition(point);
   return true;
 }
 
-bool CGUISliderControl::OnMouseWheel()
+bool CGUISliderControl::OnMouseWheel(char wheel, const CPoint &point)
 { // move the slider 10 steps in the appropriate direction
-  Move(g_Mouse.cWheel*10);
+  Move(wheel*10);
   return true;
 }
 

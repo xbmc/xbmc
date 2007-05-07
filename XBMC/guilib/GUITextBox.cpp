@@ -310,10 +310,10 @@ void CGUITextBox::UpdatePageControl()
   }
 }
 
-bool CGUITextBox::HitTest(float posX, float posY) const
+bool CGUITextBox::HitTest(const CPoint &point) const
 {
-  if (m_upDown.HitTest(posX, posY)) return true;
-  return CGUIControl::HitTest(posX, posY);
+  if (m_upDown.HitTest(point)) return true;
+  return CGUIControl::HitTest(point);
 }
 
 bool CGUITextBox::CanFocus() const
@@ -322,29 +322,29 @@ bool CGUITextBox::CanFocus() const
   return CGUIControl::CanFocus();
 }
 
-bool CGUITextBox::OnMouseOver()
+bool CGUITextBox::OnMouseOver(const CPoint &point)
 {
-  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
-    m_upDown.OnMouseOver();
-  return CGUIControl::OnMouseOver();
+  if (m_upDown.HitTest(point))
+    m_upDown.OnMouseOver(point);
+  return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUITextBox::OnMouseClick(DWORD dwButton)
+bool CGUITextBox::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
-  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
-    return m_upDown.OnMouseClick(dwButton);
+  if (m_upDown.HitTest(point))
+    return m_upDown.OnMouseClick(dwButton, point);
   return false;
 }
 
-bool CGUITextBox::OnMouseWheel()
+bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
 {
-  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
+  if (m_upDown.HitTest(point))
   {
-    return m_upDown.OnMouseWheel();
+    return m_upDown.OnMouseWheel(wheel, point);
   }
   else
   { // increase or decrease our offset by the appropriate amount.
-    m_offset -= g_Mouse.cWheel;
+    m_offset -= wheel;
     // check that we are within the correct bounds.
     if (m_offset + m_itemsPerPage > (int)m_lines.size())
       m_offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
