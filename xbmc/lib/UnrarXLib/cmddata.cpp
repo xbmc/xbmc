@@ -126,7 +126,7 @@ void CommandData::ParseDone()
 }
 
 
-#if !defined(SFX_MODULE) && !defined(_WIN_CE) && !defined(_XBOX)
+#if !defined(SFX_MODULE) && !defined(_WIN_CE) && !defined(_XBOX) && !defined(_LINUX)
 void CommandData::ParseEnvVar()
 {
   char *EnvStr=getenv("RAR");

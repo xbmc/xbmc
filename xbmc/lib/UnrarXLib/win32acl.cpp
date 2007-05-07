@@ -7,7 +7,7 @@ static bool ReadSacl=false;
 #ifndef SFX_MODULE
 void ExtractACL(Archive &Arc,char *FileName,wchar *FileNameW)
 {
-#ifdef _XBOX
+#if defined(_XBOX) || defined (_LINUX)
 	return;
 #else
   if (!WinNT())
@@ -73,7 +73,7 @@ void ExtractACL(Archive &Arc,char *FileName,wchar *FileNameW)
 
 void ExtractACLNew(Archive &Arc,char *FileName,wchar *FileNameW)
 {
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_LINUX)
 	return;
 #else
   if (!WinNT())
@@ -109,7 +109,7 @@ void ExtractACLNew(Archive &Arc,char *FileName,wchar *FileNameW)
 
 void SetPrivileges()
 {
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_LINUX)
 	return;
 #else
   static bool InitDone=false;

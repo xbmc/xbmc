@@ -266,7 +266,7 @@ void _stdfunction ProcessSignal(int SigType)
 #endif
 {
 //#ifdef _WIN_32 && !defined(_XBOX)
-#if defined(_WIN_32) && !defined(_XBOX)
+#if defined(_WIN_32) && !defined(_XBOX) && !defined(_LINUX)
   if (SigType==CTRL_LOGOFF_EVENT)
     return(TRUE);
 #endif
@@ -281,7 +281,7 @@ void _stdfunction ProcessSignal(int SigType)
 #if defined(USE_RC) && !defined(SFX_MODULE) && !defined(_WIN_CE)
   ExtRes.UnloadDLL();
 #endif
-#ifndef _XBOX
+#if !defined(_XBOX) || !defined(_LINUX)
   exit(USER_BREAK);
 #endif
 #ifdef _WIN_32
@@ -317,7 +317,7 @@ void ErrorHandler::Throw(int Code)
   throw Code;
 #else
   File::RemoveCreated();
-#ifndef _XBOX
+#if !defined(_XBOX) && !defined(_LINUX)
   exit(Code);
 #endif
 #endif

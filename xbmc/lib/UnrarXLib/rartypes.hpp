@@ -1,7 +1,9 @@
 #ifndef _RAR_TYPES_
 #define _RAR_TYPES_
 
+#ifndef byte
 typedef unsigned char    byte;   //8 bits
+#endif
 typedef unsigned short   ushort; //preferably 16 bits, but can be more
 typedef unsigned int     uint;   //32 bits or more
 
