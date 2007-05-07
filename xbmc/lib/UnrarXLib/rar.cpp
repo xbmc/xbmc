@@ -1,5 +1,5 @@
 #include "rar.hpp"
-#include "unrarx.hpp"
+#include "UnrarX.hpp"
 
 #include "smallfn.cpp"
 
@@ -45,7 +45,7 @@ void main(int argc, char *argv[])
 }
 #else
 
-#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX)
+#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX) && !defined(_LINUX)
 int main(int argc, char *argv[])
 {
 #ifdef _UNIX
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 
 #endif /* __XBOX__TEST__ */
 
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_LINUX)
 /*-------------------------------------------------------------------------*\
                                XBOX interface
 \*-------------------------------------------------------------------------*/

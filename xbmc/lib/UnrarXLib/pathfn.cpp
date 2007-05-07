@@ -345,7 +345,7 @@ bool EnumConfigPaths(char *Path,int Number)
 #elif defined(_WIN_32)
   if (Number!=0)
     return(false);
-#ifndef _XBOX
+#if !defined(_XBOX) && !defined(_LINUX)
   GetModuleFileName(NULL,Path,NM);
   RemoveNameFromPath(Path);
 #endif

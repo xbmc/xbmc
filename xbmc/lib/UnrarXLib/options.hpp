@@ -125,3 +125,4 @@ class RAROptions
 #endif
 };
 #endif
+
