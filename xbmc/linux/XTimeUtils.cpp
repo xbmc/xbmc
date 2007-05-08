@@ -59,6 +59,7 @@ BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
 
 BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime) 
 {
+#warning FileTimeToLocalTime not implemented
   return true;
 }
 
