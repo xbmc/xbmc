@@ -441,3 +441,4 @@ bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
   }
   return false;
 }
+
