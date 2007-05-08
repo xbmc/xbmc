@@ -92,6 +92,7 @@ public:
   DWORD GetPreviousWindow() { return m_previousWindow; };
   float GetPosX() { return m_posX; };
   float GetPosY() { return m_posY; };
+  FRECT GetScaledBounds() const;
   const CGUIControl* GetControl(int iControl) const;
   void ClearAll();
   int GetFocusedControlID() const;
@@ -108,6 +109,7 @@ public:
   virtual bool IsMediaWindow() const { return false; };
   virtual CFileItem *GetCurrentListItem() { return NULL; };
   virtual bool IsActive() const;
+  bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };

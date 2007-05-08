@@ -13,6 +13,7 @@
 
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/Utils/SingleLock.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 
@@ -1191,6 +1192,16 @@ void CGUIWindow::SetDefaults()
   m_showAnimation.Reset();
   m_closeAnimation.Reset();
   m_origins.clear();
+}
+
+FRECT CGUIWindow::GetScaledBounds() const
+{
+  CSingleLock lock(g_graphicsContext);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
+  FRECT rect = {0, 0, m_width, m_height};
+  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top);
+  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom);
+  return rect;
 }
 
 #ifdef _DEBUG
