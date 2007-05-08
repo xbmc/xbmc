@@ -69,6 +69,7 @@
 #include "FileSystem/DllLibCurl.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
+#include "ApplicationRenderer.h"
 
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
@@ -150,6 +151,7 @@
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogBusy.h"
 
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -1267,6 +1269,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
+  m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -1915,6 +1918,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // leave the graphics lock
   lock.Leave();
+  g_ApplicationRenderer.Start();
 
   // restore windows
   if (currentWindow != WINDOW_INVALID)
@@ -1938,6 +1942,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
+  g_ApplicationRenderer.Stop();
   g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
 
   m_gWindowManager.DeInitialize();
@@ -2117,6 +2122,11 @@ void CApplication::RenderNoPresent()
     return;
   }
 
+  g_ApplicationRenderer.Render();
+}
+
+void CApplication::DoRender()
+{
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
   {
@@ -2145,6 +2155,7 @@ void CApplication::RenderNoPresent()
   m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
 #endif
   m_gWindowManager.Render();
+
 
   // if we're recording an audio stream then show blinking REC
   if (IsPlayingAudio())
@@ -3186,6 +3197,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_SONG_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3775,7 +3787,12 @@ bool CApplication::NeedRenderFullScreen()
 
 void CApplication::RenderFullScreen()
 {
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+  g_ApplicationRenderer.Render(true);
+}
+
+void CApplication::DoRenderFullScreen()
+{
+  if (g_graphicsContext.IsFullScreenVideo())
   {
     // make sure our overlays are closed
     CGUIDialog *overlay = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
