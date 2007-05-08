@@ -53,8 +53,8 @@ bool ReleaseMutex( HANDLE hMutex ) {
 	if (hMutex->OwningThread == SDL_ThreadID() && hMutex->RecursionCount > 0) {
 		bOk = true;
 		if (--hMutex->RecursionCount == 0) {
-			SDL_SemPost(hMutex->m_hSem);
 			hMutex->OwningThread = 0;
+			SDL_SemPost(hMutex->m_hSem);
 		}
 	}
 	SDL_mutexV(hMutex->m_hMutex);
@@ -144,8 +144,10 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
 					SDL_SemPost(hHandle->m_hSem);
 				}
 				else if (dwRet == WAIT_OBJECT_0 && hHandle->m_type == CXHandle::HND_MUTEX) {
+					SDL_mutexP(hHandle->m_hMutex);
 					hHandle->OwningThread = SDL_ThreadID();
 					hHandle->RecursionCount = 1;
+					SDL_mutexV(hHandle->m_hMutex);
 				}
 			}
 
