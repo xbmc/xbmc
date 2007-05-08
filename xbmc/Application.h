@@ -40,6 +40,7 @@ public:
   virtual HRESULT Initialize();
   virtual void FrameMove();
   virtual void Render();
+  virtual void DoRender();
 #ifndef HAS_XBOX_D3D
   virtual void RenderNoPresent();
 #endif
@@ -91,6 +92,7 @@ public:
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   void RenderFullScreen();
+  void DoRenderFullScreen();
   bool NeedRenderFullScreen();
   bool IsPlaying() const ;
   bool IsPaused() const;
