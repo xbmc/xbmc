@@ -350,7 +350,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   CCachedTexture &cached = m_vecCachedTextures[m_iCurrentImage];
   if (!cached.surface || cached.width != b[2] || cached.height != b[3] || c[0]  != cached.diffuseColor)
   { // need to re-render the surface
-    RenderWithEffects(texture, x, y, u, v, c, cached);
+    RenderWithEffects(texture, x, y, u, v, c, m_diffuseTexture, m_diffuseScaleU, m_diffuseScaleV, cached);
   }
   if (cached.surface)
   {
@@ -764,10 +764,33 @@ void CGUIImage::CalcBoundingBox(float *x, float *y, int n, int *b)
 }
 
 #define CLAMP(a,b,c) (a < b) ? b : ((a > c) ? c : a)
+
+void CGUIImage::GetTexel(float tu, float tv, SDL_Surface *src, BYTE *texel)
+{
+  int pu1 = (int)floor(tu);
+  int pv1 = (int)floor(tv);
+  int pu2 = pu1+1, pv2 = pv1+1;
+  float du = tu - pu1;
+  float dv = tv - pv1;
+  pu1 = CLAMP(pu1,0,src->w-1);
+  pu2 = CLAMP(pu2,0,src->w-1);
+  pv1 = CLAMP(pv1,0,src->h-1);
+  pv2 = CLAMP(pv2,0,src->h-1);
+  BYTE *tex1 = (BYTE *)src->pixels + pv1 * src->pitch + pu1 * 4;
+  BYTE *tex2 = (BYTE *)src->pixels + pv1 * src->pitch + pu2 * 4;
+  BYTE *tex3 = (BYTE *)src->pixels + pv2 * src->pitch + pu1 * 4;
+  BYTE *tex4 = (BYTE *)src->pixels + pv2 * src->pitch + pu2 * 4;
+  // average these bytes
+  texel[0] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
+  texel[1] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
+  texel[2] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
+  texel[3] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
+}
+
 #define MODULATE(a,b) (b ? ((int)a*(b+1)) >> 8 : 0)
 #define ALPHA_BLEND(a,b,c) (c ? ((int)a*(c+1) + b*(255-c)) >> 8 : b)
 
-void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, CCachedTexture &dst)
+void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst)
 {
   // renders the surface from u[0],v[0] -> u[1],v[1] into the parallelogram defined by x[0],y[0]...x[3],y[3]
   // we create a new surface of the appropriate size, and render into it the resized and rotated texture,
@@ -799,7 +822,7 @@ void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u
   v[0] *= src->h;
   u[1] *= src->w;
   v[1] *= src->h;
-
+  
   float det_m = ax * by - ay * bx;
   float m[2][2];
   m[0][0] = by / det_m * (u[1] - u[0]);
@@ -807,8 +830,20 @@ void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u
   m[1][0] = -ay / det_m * (v[1] - v[0]);
   m[1][1] = ax / det_m * (v[1] - v[0]);
   
+  // we render from these values in our texture.  Note that u[0] may be bigger than u[1] when flipping
+  const float minU = min(u[0], u[1]) - 0.5f;
+  const float maxU = max(u[0], u[1]) + 0.5f;
+  const float minV = min(v[0], v[1]) - 0.5f;
+  const float maxV = max(v[0], v[1]) + 0.5f;
+  
   SDL_LockSurface(dst.surface);
   SDL_LockSurface(src);
+  if (diffuse)
+  {
+    SDL_LockSurface(diffuse);
+    diffuseScaleU *= diffuse->w / src->w;
+    diffuseScaleV *= diffuse->h / src->h;
+  }
   
   // for speed, find the bounding box of our x, y
   // for every pixel in the bounding box, find the corresponding texel
@@ -819,31 +854,22 @@ void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u
       // find where this pixel corresponds in our texture
       float tu = m[0][0] * (sx + b[0] - x[0] - 0.5f) + m[0][1] * (sy + b[1] - y[0] - 0.5f) + u[0];
       float tv = m[1][0] * (sx + b[0] - x[0] - 0.5f) + m[1][1] * (sy + b[1] - y[0] - 0.5f) + v[0];
-      if (tu > u[0]-0.5f && tu < u[1]+0.5f && tv > v[0]-0.5f && tv < v[1]+0.5f)
+      if (tu > minU && tu < maxU && tv > minV && tv < maxV)
       { // in the texture - render it to screen
-        BYTE *screen = (BYTE *)dst.surface->pixels + sy * dst.surface->pitch + sx*4;
-        int pu1 = (int)floor(tu);
-        int pv1 = (int)floor(tv);
-        int pu2 = pu1+1, pv2 = pv1+1;
-        float du = tu - pu1;
-        float dv = tv - pv1;
-        pu1 = CLAMP(pu1,0,src->w-1);
-        pu2 = CLAMP(pu2,0,src->w-1);
-        pv1 = CLAMP(pv1,0,src->h-1);
-        pv2 = CLAMP(pv2,0,src->h-1);
-        BYTE *tex1 = (BYTE *)src->pixels + pv1 * src->pitch + pu1 * 4;
-        BYTE *tex2 = (BYTE *)src->pixels + pv1 * src->pitch + pu2 * 4;
-        BYTE *tex3 = (BYTE *)src->pixels + pv2 * src->pitch + pu1 * 4;
-        BYTE *tex4 = (BYTE *)src->pixels + pv2 * src->pitch + pu2 * 4;
-        // average these bytes
         BYTE tex[4];
-        tex[0] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
-        tex[1] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
-        tex[2] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
-        tex[3] = (BYTE)((*tex1++ * (1-du) + *tex2++ * du)*(1-dv) + (*tex3++ * (1-du) + *tex4++ * du) * dv);
-        
+        GetTexel(tu, tv, src, tex);
+        if (diffuse)
+        {
+          BYTE diff[4];
+          GetTexel(tu * diffuseScaleU, tv * diffuseScaleV, diffuse, diff);
+          tex[0] = MODULATE(tex[0], diff[0]);
+          tex[1] = MODULATE(tex[1], diff[1]);
+          tex[2] = MODULATE(tex[2], diff[2]);
+          tex[3] = MODULATE(tex[3], diff[3]);
+        }
         // currently we just use a single color
         BYTE *diffuse = (BYTE *)c;
+        BYTE *screen = (BYTE *)dst.surface->pixels + sy * dst.surface->pitch + sx*4;
         screen[0] = MODULATE(tex[0], diffuse[0]);
         screen[1] = MODULATE(tex[1], diffuse[1]);
         screen[2] = MODULATE(tex[2], diffuse[2]);
@@ -853,5 +879,7 @@ void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u
   }
   SDL_UnlockSurface(src);
   SDL_UnlockSurface(dst.surface);
+  if (diffuse)
+    SDL_UnlockSurface(diffuse);
 }
 #endif

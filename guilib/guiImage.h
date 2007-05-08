@@ -139,7 +139,8 @@ protected:
   LPDIRECT3DPALETTE8 m_pPalette;
 #else
   void CalcBoundingBox(float *x, float *y, int n, int *b);
-  void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, CCachedTexture &dst);
+  void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);
+  void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst);
   vector <SDL_Surface*> m_vecTextures;
   vector <CCachedTexture> m_vecCachedTextures;
   SDL_Surface* m_diffuseTexture;
