@@ -757,11 +757,6 @@ void CGUIImage::CalcBoundingBox(float *x, float *y, int n, int *b)
     if (x[i]+1 > b[0] + b[2]) b[2] = (int)x[i]+1 - b[0];
     if (y[i]+1 > b[1] + b[3]) b[3] = (int)y[i]+1 - b[1];
   }
-/*  if (b[0] < 0) b[0] = 0;
-  if (b[1] < 0) b[1] = 0;
-  if (b[0] + b[2] >= g_graphicsContext.GetWidth()) b[2] = g_graphicsContext.GetWidth() - 1 - b[0];
-  if (b[1] + b[3] >= g_graphicsContext.GetHeight()) b[3] = g_graphicsContext.GetHeight() - 1 - b[1];
-*/
 }
 
 #define CLAMP(a,b,c) (a < b) ? b : ((a > c) ? c : a)
