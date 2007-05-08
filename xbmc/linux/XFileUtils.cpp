@@ -248,6 +248,8 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
     
   if (lpNumberOfBytesRead)
     *lpNumberOfBytesRead = bytesRead;
+
+  return 1;
 }
 
 BOOL WriteFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite,
@@ -264,6 +266,8 @@ BOOL WriteFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite,
     return 0;
     
   *lpNumberOfBytesWritten = bytesWritten;
+
+  return 1;
 }
 
 BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes) 

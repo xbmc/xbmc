@@ -76,7 +76,7 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
       if(pDirectory->Create(translatedPath.c_str()))

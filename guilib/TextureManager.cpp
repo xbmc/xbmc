@@ -6,6 +6,7 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "Util.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #endif
@@ -782,8 +783,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       // normal picture
       // convert from utf8
       CStdString texturePath;
-      g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
-
+      g_charsetConverter.utf8ToStringCharset(_P(strPath), texturePath);
+      
 #ifndef HAS_SDL
       if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
                                        D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
@@ -794,12 +795,12 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         return 0;
       }
 #else
-		pTexture = IMG_Load(texturePath.c_str());
-		if (!pTexture)
-		{
+      pTexture = IMG_Load(texturePath.c_str());
+      if (!pTexture)
+      {
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
           return 0;
-		}
+      }
 #endif      
     }
   }
