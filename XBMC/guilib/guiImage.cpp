@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "Util.h"
 #ifdef HAS_SDL
 #include <SDL/SDL_rotozoom.h>
 #endif
@@ -702,14 +703,16 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
 
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
-  if (strFileName.IsEmpty() && !m_image.file.IsEmpty())
+  CStdString strTransFileName = _P(strFileName);
+
+  if (strTransFileName.IsEmpty() && !m_image.file.IsEmpty())
     return SetFileName(m_image.file);
 
-  if (m_strFileName.Equals(strFileName)) return;
+  if (m_strFileName.Equals(strTransFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeTextures();
-  m_strFileName = strFileName;
+  m_strFileName = strTransFileName;
   // Don't allocate resources here as this is done at render time
 }
 
