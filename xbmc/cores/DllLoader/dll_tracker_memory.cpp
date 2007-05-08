@@ -76,6 +76,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
       }
 
     }
+#ifndef _LINUX
     for (VAllocListIter p = pInfo->virtualList.begin(); p != pInfo->virtualList.end(); ++p)
     {
       total += (p->second).size;
@@ -93,6 +94,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
         tempMap.insert(std::make_pair( (p->second).calleraddr, temp ) );
       }
     }
+#endif
 
     for ( itt = tempMap.begin(); itt != tempMap.end();++itt )
     {
@@ -201,6 +203,7 @@ extern "C" char* __cdecl track_strdup(const char* str)
 
 extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
 {
+#ifndef _LINUX
   if (!pInfo->heapobjectList.empty())
   {
     CLog::DebugLog("%s: Detected heapobject leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->heapobjectList.size());
@@ -218,7 +221,10 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
     }
     pInfo->heapobjectList.erase(pInfo->heapobjectList.begin(), pInfo->heapobjectList.end());
   }
+#endif
 }
+
+#ifndef _LINUX
 
 HANDLE
 WINAPI
@@ -337,3 +343,5 @@ BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
   }
   return VirtualFree(lpAddress, dwSize, dwFreeType);
 }
+
+#endif
