@@ -11,7 +11,7 @@ DWORD timeGetTime(void)
   struct timezone tz;
   struct timeval tim;
   gettimeofday(&tim, &tz);
-  DWORD result = tim.tv_usec;
+  DWORD result = tim.tv_usec / 1000;
   result += ((DWORD) tim.tv_sec) * 1000;
   return result;
 }
