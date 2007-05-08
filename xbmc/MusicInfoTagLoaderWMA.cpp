@@ -370,7 +370,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
   }
   else if (strFrameName == "WM/AlbumArtist")
   {
-    if (tag.GetArtist().IsEmpty()) tag.SetArtist(strValue);
+    if (tag.GetAlbumArtist().IsEmpty()) tag.SetAlbumArtist(strValue);
   }
   else if (strFrameName == "Author")
   {
