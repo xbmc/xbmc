@@ -9,53 +9,26 @@ typedef unsigned long HMODULE;
 
 class DllLoaderContainer
 {
-public:
-  DllLoaderContainer();
+public:  
+  static void       Clear();
+  static HMODULE    GetModuleAddress(const char* sName);
+  static int        GetNrOfModules();
+  static DllLoader* GetModule(int iPos);
+  static DllLoader* GetModule(const char* sName);
+  static DllLoader* GetModule(HMODULE hModule);  
+  static DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
+  static void       ReleaseModule(DllLoader*& pDll);
 
-  DllLoader kernel32;
-  DllLoader user32;
-  DllLoader ddraw;
-  DllLoader wininet;
-  DllLoader advapi32;
-  DllLoader ws2_32;
-  DllLoader wsock32;
-  DllLoader ole32;
-  DllLoader oleaut32;
-  DllLoader xbp; // exports for python dll
-  DllLoader winmm;
-  DllLoader msdmo;
-  DllLoader xbmc_vobsub;
-  DllLoader xbox_dx8;
-  DllLoader version;
-  DllLoader comdlg32;
-  DllLoader gdi32;
-  DllLoader comctl32;
-  DllLoader msvcrt;
-  DllLoader msvcr71;
-  DllLoader pncrt;
-  DllLoader iconvx;
-  
-  void Clear();
-  HMODULE GetModuleAddress(const char* sName);
-  int GetNrOfModules();
-  DllLoader* GetModule(int iPos);
-  DllLoader* GetModule(const char* sName);
-  DllLoader* GetModule(HMODULE hModule);
-  
-  DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
-  void ReleaseModule(DllLoader*& pDll);
+  static void RegisterDll(DllLoader* pDll);
+  static void UnRegisterDll(DllLoader* pDll);
+  static void UnloadPythonDlls();
 
-  void RegisterDll(DllLoader* pDll);
-  void UnRegisterDll(DllLoader* pDll);
-  void UnloadPythonDlls();
 private:
-  DllLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
-  DllLoader* LoadDll(const char* sName, bool bLoadSymbols);
-  bool IsSystemDll(const char* sName);
-  DllLoader* m_dlls[64];
-  int m_iNrOfDlls;
+  static DllLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
+  static DllLoader* LoadDll(const char* sName, bool bLoadSymbols);
+  static bool       IsSystemDll(const char* sName);
 
-  bool m_bTrack;
+  static DllLoader* m_dlls[64];
+  static int m_iNrOfDlls;
+  static bool m_bTrack;
 };
-
-extern DllLoaderContainer g_dlls;

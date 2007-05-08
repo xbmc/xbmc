@@ -131,7 +131,7 @@ DllLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnload 
 
   // ok, now load the dll
   CLog::DebugLog("SECTION:LoadDLL(%s)\n", dllname.c_str());
-  DllLoader* pDll = g_dlls.LoadModule(dllname.c_str(), NULL, bLoadSymbols);
+  DllLoader* pDll = DllLoaderContainer::LoadModule(dllname.c_str(), NULL, bLoadSymbols);
   if (!pDll)
     return NULL;
 
@@ -165,7 +165,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
         {
           CLog::DebugLog("SECTION:UnloadDll(%s)", dllname.c_str());
           if (dll.m_pDll)
-            g_dlls.ReleaseModule(dll.m_pDll);
+            DllLoaderContainer::ReleaseModule(dll.m_pDll);
           g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
         }
 
@@ -204,7 +204,7 @@ void CSectionLoader::UnloadDelayed()
       CLog::DebugLog("SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
 
       if (dll.m_pDll)
-        g_dlls.ReleaseModule(dll.m_pDll);
+        DllLoaderContainer::ReleaseModule(dll.m_pDll);
       g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
       return;
     }
@@ -234,7 +234,7 @@ void CSectionLoader::UnloadAll()
     CDll& dll = *it;
     CLog::DebugLog("SECTION:UnloadAll(DLL: %s)", dll.m_strDllName.c_str());
     if (dll.m_pDll)
-      g_dlls.ReleaseModule(dll.m_pDll);
+      DllLoaderContainer::ReleaseModule(dll.m_pDll);
     it = g_sectionLoader.m_vecLoadedDLLs.erase(it);
   }
 }
