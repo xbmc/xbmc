@@ -1,6 +1,5 @@
 
 #pragma once
-#include <xbdm.h>
 
 #define FILETIME_TO_ULARGE_INTEGER(ularge, filetime) { ularge.HighPart = filetime.dwHighDateTime; ularge.LowPart = filetime.dwLowDateTime; }
 
