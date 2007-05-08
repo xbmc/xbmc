@@ -12,7 +12,10 @@
 
 using namespace XFILE;
 
-DllLoaderContainer g_dlls;
+DllLoader* DllLoaderContainer::m_dlls[64] = {};
+int        DllLoaderContainer::m_iNrOfDlls = 0;
+bool       DllLoaderContainer::m_bTrack = false;
+
 
 Export export_advapi32[];
 Export export_ole32[];
@@ -36,56 +39,28 @@ Export export_msvcr71[];
 Export export_pncrt[];
 Export export_iconvx[];
 
-DllLoaderContainer::DllLoaderContainer() :
-    kernel32("kernel32.dll",        false, true, false, export_kernel32),
-    msvcr71("msvcr71.dll",          false, true, false, export_msvcr71),
-    msvcrt("msvcrt.dll",            false, true, false, export_msvcrt),
-    wsock32("wsock32.dll",          false, true, false, export_wsock32),
-    ws2_32("ws2_32.dll",            false, true, false, export_ws2_32),
-    user32("user32.dll",            false, true, false, export_user32),
-    ddraw("ddraw.dll",              false, true, false, export_ddraw),
-    wininet("wininet.dll",          false, true, false, NULL),
-    advapi32("advapi32.dll",        false, true, false, export_advapi32),
-    ole32("ole32.dll",              false, true, false, export_ole32),
-    oleaut32("oleaut32.dll",        false, true, false, NULL),
-    xbp("xbp.dll",                  false, true, false, export_xbp),
-    winmm("winmm.dll",              false, true, false, export_winmm),
-    msdmo("msdmo.dll",              false, true, false, export_msdmo),
-    xbmc_vobsub("xbmc_vobsub.dll",  false, true, false, export_xbmc_vobsub),
-    xbox_dx8("xbox_dx8.dll",        false, true, false, export_xbox_dx8),
-    version("version.dll",          false, true, false, export_version),
-    comdlg32("comdlg32.dll",        false, true, false, export_comdlg32),
-    gdi32("gdi32.dll",              false, true, false, export_gdi32),
-    comctl32("comctl32.dll",        false, true, false, export_comctl32),
-    pncrt("pncrt.dll",              false, true, false, export_pncrt),
-    iconvx("iconv.dll",             false, true, false, export_iconvx)
-{
-  m_iNrOfDlls = 0;
-  m_bTrack = true;
-  
-  RegisterDll(&kernel32);
-  RegisterDll(&msvcr71);
-  RegisterDll(&msvcrt);
-  RegisterDll(&wsock32);
-  RegisterDll(&ws2_32);
-  RegisterDll(&user32);
-  RegisterDll(&ddraw);
-  RegisterDll(&wininet); // nothing is exported in this dll, is this one really needed?
-  RegisterDll(&advapi32);
-  RegisterDll(&ole32);
-  RegisterDll(&oleaut32);
-  RegisterDll(&xbp);
-  RegisterDll(&winmm);
-  RegisterDll(&msdmo);
-  RegisterDll(&xbmc_vobsub);
-  RegisterDll(&xbox_dx8);
-  RegisterDll(&version);
-  RegisterDll(&comdlg32);
-  RegisterDll(&gdi32);
-  RegisterDll(&comctl32);
-  RegisterDll(&pncrt);
-  RegisterDll(&iconvx);
-}
+DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
+DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
+DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
+DllLoader wsock32("wsock32.dll",          false, true, false, export_wsock32);
+DllLoader ws2_32("ws2_32.dll",            false, true, false, export_ws2_32);
+DllLoader user32("user32.dll",            false, true, false, export_user32);
+DllLoader ddraw("ddraw.dll",              false, true, false, export_ddraw);
+DllLoader wininet("wininet.dll",          false, true, false, NULL);
+DllLoader advapi32("advapi32.dll",        false, true, false, export_advapi32);
+DllLoader ole32("ole32.dll",              false, true, false, export_ole32);
+DllLoader oleaut32("oleaut32.dll",        false, true, false, NULL);
+DllLoader xbp("xbp.dll",                  false, true, false, export_xbp);
+DllLoader winmm("winmm.dll",              false, true, false, export_winmm);
+DllLoader msdmo("msdmo.dll",              false, true, false, export_msdmo);
+DllLoader xbmc_vobsub("xbmc_vobsub.dll",  false, true, false, export_xbmc_vobsub);
+DllLoader xbox_dx8("xbox_dx8.dll",        false, true, false, export_xbox_dx8);
+DllLoader version("version.dll",          false, true, false, export_version);
+DllLoader comdlg32("comdlg32.dll",        false, true, false, export_comdlg32);
+DllLoader gdi32("gdi32.dll",              false, true, false, export_gdi32);
+DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
+DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
+DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
   
 void DllLoaderContainer::Clear()
 {
@@ -122,23 +97,23 @@ DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurren
 
   if (IsSystemDll(sName))
   {
-    pDll = g_dlls.GetModule(sName);
+    pDll = GetModule(sName);
   }
   else if (sCurrentDir)
   {
     CStdString strPath=sCurrentDir;
     strPath+=sName;
-    pDll = g_dlls.GetModule(strPath.c_str());
+    pDll = GetModule(strPath.c_str());
   }
   
   if (!pDll)
   {
-    pDll = g_dlls.GetModule(sName);
+    pDll = GetModule(sName);
   }
 
   if (!pDll)
   {
-    pDll=g_dlls.FindModule(sName, sCurrentDir, bLoadSymbols);
+    pDll = FindModule(sName, sCurrentDir, bLoadSymbols);
   }
   else if (!pDll->IsSystemDll())
   {
@@ -183,7 +158,7 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
     strPath+=sName;
 
     // Have we already loaded this dll
-    DllLoader* pDll = g_dlls.GetModule(strPath.c_str());
+    DllLoader* pDll = GetModule(strPath.c_str());
     if (pDll)
       return pDll;
 
