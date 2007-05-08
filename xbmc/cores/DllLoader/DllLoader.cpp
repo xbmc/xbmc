@@ -182,7 +182,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   }
 #endif
 
-  if (!m_bSystemDll) g_dlls.RegisterDll(this);
+  DllLoaderContainer::RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);
   m_bLoadSymbols=bLoadSymbols;
 
@@ -214,11 +214,11 @@ DllLoader::~DllLoader()
   {
     LoadedList* entry = m_pDlls;
     m_pDlls = entry->pNext;
-    if (entry->pDll) g_dlls.ReleaseModule(entry->pDll);
+    if (entry->pDll) DllLoaderContainer::ReleaseModule(entry->pDll);
     delete entry;
   }
   
-  if (!m_bSystemDll) g_dlls.UnRegisterDll(this);
+  DllLoaderContainer::UnRegisterDll(this);
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
@@ -428,7 +428,7 @@ int DllLoader::ResolveImports(void)
 
 char* DllLoader::ResolveReferencedDll(char* dll)
 {
-  DllLoader* pDll = g_dlls.LoadModule(dll, GetPath(), m_bLoadSymbols);
+  DllLoader* pDll = DllLoaderContainer::LoadModule(dll, GetPath(), m_bLoadSymbols);
 
   if (!pDll)
   {
@@ -573,7 +573,7 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   
 int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 {
-  DllLoader* pDll = g_dlls.GetModule(sName);
+  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -594,7 +594,7 @@ int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 
 int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 {
-  DllLoader* pDll = g_dlls.GetModule(sName);
+  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
