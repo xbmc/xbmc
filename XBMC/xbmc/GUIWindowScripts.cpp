@@ -194,3 +194,4 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
+
