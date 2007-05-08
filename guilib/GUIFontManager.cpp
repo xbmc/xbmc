@@ -42,7 +42,7 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
   {
     pFontFile = new CGUIFontXPR(strFilename);
     // First try to load it from the skin directory
-    boolean bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(strPath);
+    boolean bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(_P(strPath));
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -52,7 +52,7 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
         strPath += strFilename;
       }
 
-      bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(strPath);
+      bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(_P(strPath));
     }
 
     if (!bFontLoaded)
@@ -102,7 +102,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    bool bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle, aspect);
+    bool bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(_P(strPath), iSize, iStyle, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -120,7 +120,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       delete pFontFile;
 
       // font could not b loaded
-      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
+      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), _P(strPath).c_str());
 
       return NULL;
     }
