@@ -74,7 +74,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   else if( libname[strlen(libname)-1] == '.' )
     libname[strlen(libname)-1] = '\0';
 
-  dll = g_dlls.LoadModule(libname, libpath);
+  dll = DllLoaderContainer::LoadModule(libname, libpath);
     
   if (dll)
   {
@@ -118,14 +118,14 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
-  DllLoader* dllhandle = g_dlls.GetModule(hLibModule);
+  DllLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
   
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
   
   CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> 0x%x", dllhandle->GetName(), dllhandle);
 
-  g_dlls.ReleaseModule(dllhandle);
+  DllLoaderContainer::ReleaseModule(dllhandle);
 
   return 1;
 }
@@ -135,7 +135,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   unsigned loc = (unsigned)_ReturnAddress();
   
   void* address = NULL;
-  DllLoader* dll = g_dlls.GetModule(hModule);
+  DllLoader* dll = DllLoaderContainer::GetModule(hModule);
 
   if( !dll )
   {
@@ -219,7 +219,7 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
 
   //CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
 
-  DllLoader *p = g_dlls.GetModule(strModuleName);
+  DllLoader *p = DllLoaderContainer::GetModule(strModuleName);
   delete []strModuleName;
 
   if (p)
@@ -242,7 +242,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
     return 8;
   }
   
-  DllLoader* dll = g_dlls.GetModule(hModule);
+  DllLoader* dll = DllLoaderContainer::GetModule(hModule);
   if( !dll )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
