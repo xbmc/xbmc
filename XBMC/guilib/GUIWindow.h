@@ -73,7 +73,7 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  void OnMouseAction();
+  virtual void OnMouseAction();
   virtual bool OnMouse(const CPoint &point);
   bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
