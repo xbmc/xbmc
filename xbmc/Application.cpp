@@ -3385,7 +3385,7 @@ void CApplication::Stop()
       g_lcd=NULL;
     }
 #endif
-    g_dlls.Clear();
+    DllLoaderContainer::Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
 #endif

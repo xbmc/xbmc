@@ -55,6 +55,8 @@
 #define APIENTRY
 #define NTAPI
 #define CALLBACK
+#define IN
+#define OUT
 #define _declspec(X)
 #define __declspec(X)
 #define __cdecl
