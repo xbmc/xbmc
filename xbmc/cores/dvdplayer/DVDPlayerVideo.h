@@ -32,8 +32,12 @@ public:
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg)                   { m_messageQueue.Put(pMsg); }
-  
+
+#ifdef HAS_VIDEO_PLAYBACK
   void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
+#else
+  void Update(bool bPauseDrawing)                   { }
+#endif
   void UpdateMenuPicture();
  
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
@@ -42,8 +46,13 @@ public:
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
   void SetAspectRatio(float aspect)                 { m_fForcedAspectRatio = aspect; }
 
+#ifdef HAS_VIDEO_PLAYBACK
   void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
+#else
+  void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { }
+  float GetAspectRatio()                            { return 4.0f / 3.0f; }
+#endif
 
   __int64 GetDelay();
   void SetDelay(__int64 delay);
