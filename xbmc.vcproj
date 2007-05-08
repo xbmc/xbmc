@@ -407,6 +407,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ApplicationRenderer.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\ApplicationRenderer.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ArenaItem.cpp">
 			</File>
 			<File
@@ -1075,6 +1081,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogBoxBase.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogBusy.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogBusy.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogButtonMenu.cpp">
@@ -2346,6 +2358,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\BuddyItem.h">
+			</File>
+			<File
+				RelativePath=".\BusyIndicator.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\ButtonTranslator.h">
