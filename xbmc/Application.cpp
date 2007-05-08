@@ -127,7 +127,7 @@
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideshow.h"
 #include "GUIWindowBuddies.h"
-
+#include "GUIWindowStartup.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowMusicOverlay.h"
@@ -1299,9 +1299,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
   m_gWindowManager.Add(new CGUIWindowVideoOverlay);       // window id = 2904
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
-  m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
-  m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
-  m_gWindowManager.Add(new CGUIWindow(WINDOW_STARTUP, "Startup.xml"));  // startup window (id 2999)
+  m_gWindowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
+  m_gWindowManager.Add(new CGUIWindowBuddies);            // window id = 2700 BUDDIES
+  m_gWindowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
 
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
