@@ -134,7 +134,12 @@ public:
   inline void ScaleFinalCoords(float &x, float &y) const { m_finalTransform.TransformPosition(x, y); }
   inline float ScaleFinalX() const { return m_windowScaleX; };
   inline float ScaleFinalY() const { return m_windowScaleY; };
-  DWORD MergeAlpha(DWORD color) const;
+  inline DWORD MergeAlpha(DWORD color) const
+  {
+    DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+    return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
+  }
+
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
     while (m_groupTransform.size())
