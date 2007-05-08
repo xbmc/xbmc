@@ -218,7 +218,10 @@ DllLoader::~DllLoader()
     delete entry;
   }
   
-  DllLoaderContainer::UnRegisterDll(this);
+  // can't unload a system dll, as this might be happing during xbmc destruction
+  if(!m_bSystemDll)
+    DllLoaderContainer::UnRegisterDll(this);
+
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
