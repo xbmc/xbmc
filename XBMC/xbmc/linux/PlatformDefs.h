@@ -49,18 +49,19 @@
 #define __int32		long
 #define __int64		long long
 
+#define __stdcall   __attribute__((__stdcall__))
+#define __cdecl
 #define WINBASEAPI
-#define WINAPI
-#define WINAPIV
-#define APIENTRY
-#define NTAPI
-#define CALLBACK
+#define NTAPI       __stdcall
+#define CALLBACK    __stdcall
+#define WINAPI      __stdcall
+#define WINAPIV     __cdecl
+#define APIENTRY    WINAPI
+#define APIPRIVATE  __stdcall
 #define IN
 #define OUT
 #define _declspec(X)
 #define __declspec(X)
-#define __cdecl
-#define __stdcall
 
 class CXHandle; // foward declaration
 typedef CXHandle* HANDLE;
