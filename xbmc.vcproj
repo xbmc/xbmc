@@ -1285,6 +1285,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowStartup.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowStartup.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
 				</File>
 				<File
