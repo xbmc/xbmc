@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 04/30/2007-->
+<!--Date of translation: 05/08/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8690-->
+<!--Based on english strings version 8718-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -468,6 +468,10 @@
   <string id="563">Bewertung</string>
   <string id="564">Typ</string>
   <string id="565">Gebrauch</string>
+  <string id="566">Album Interpret</string>
+  <string id="567">Insgesamt abgespielt</string>
+  <string id="568">Zuletzt abgespielt</string>
+  <string id="569">Kommentar</string>
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
   <string id="582">Ansicht</string>
