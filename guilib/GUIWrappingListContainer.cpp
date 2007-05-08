@@ -205,3 +205,4 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
   }
   return true;
 }
+

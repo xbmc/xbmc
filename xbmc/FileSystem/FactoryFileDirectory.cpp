@@ -190,3 +190,4 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   }
   return NULL;
 }
+
