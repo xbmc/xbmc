@@ -7,6 +7,7 @@
 #include "XMLUtils.h"
 #include "../Temperature.h"
 #include "../xbox/Network.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 
@@ -91,11 +92,11 @@ void CBackgroundWeatherLoader::GetInformation()
     CLog::Log(LOGINFO, "WEATHER: Weather download successful");
     if (!callback->m_bImagesOkay)
     {
-      CDirectory::Create(WEATHER_BASE_PATH);
+      CDirectory::Create(_P(WEATHER_BASE_PATH));
       if (WEATHER_USE_ZIP)
-        g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+        g_ZipManager.ExtractArchive(_P(WEATHER_SOURCE_FILE), _P(WEATHER_BASE_PATH));
       else if (WEATHER_USE_RAR)
-        g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+        g_RarManager.ExtractArchive(_P(WEATHER_SOURCE_FILE), _P(WEATHER_BASE_PATH));
       callback->m_bImagesOkay = true;
     }
     callback->LoadWeather(xml);
@@ -313,10 +314,18 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
     if (strcmp(iTmpStr, "N/A") == 0)
     {
+#ifndef _LINUX
       sprintf(m_szCurrentIcon, "%s128x128\\na.png", WEATHER_BASE_PATH);
+#else
+      sprintf(m_szCurrentIcon, "%s128x128/na.png", WEATHER_BASE_PATH);
+#endif
     }
     else
+#ifndef _LINUX
       sprintf(m_szCurrentIcon, "%s128x128\\%s.png", WEATHER_BASE_PATH, iTmpStr);
+#else
+      sprintf(m_szCurrentIcon, "%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
+#endif
 
     GetString(pElement, "t", m_szCurrentConditions, "");   //current condition
     LocalizeOverview(m_szCurrentConditions);
