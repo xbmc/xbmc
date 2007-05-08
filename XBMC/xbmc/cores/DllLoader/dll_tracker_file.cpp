@@ -3,8 +3,15 @@
 #include "dll_tracker_file.h"
 #include "dll_tracker.h"
 #include "DllLoader.h"
+#ifdef _LINUX
+#define dll_open open
+#define dll_fopen fopen
+#define dll_close close
+#define dll_fclose fclose
+#define dll_freopen freopen
+#else
 #include "exports/emu_msvcrt.h"
-#include <io.h>
+#endif
 
 extern "C" void tracker_file_track(unsigned long caller, unsigned handle, TrackedFileType type, const char* sFile)
 {

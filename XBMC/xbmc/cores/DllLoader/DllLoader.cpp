@@ -184,7 +184,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   }
 #endif
 
-  if (!m_bSystemDll) g_dlls.RegisterDll(this);
+  DllLoaderContainer::RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);
   m_bLoadSymbols=bLoadSymbols;
 
@@ -216,11 +216,14 @@ DllLoader::~DllLoader()
   {
     LoadedList* entry = m_pDlls;
     m_pDlls = entry->pNext;
-    if (entry->pDll) g_dlls.ReleaseModule(entry->pDll);
+    if (entry->pDll) DllLoaderContainer::ReleaseModule(entry->pDll);
     delete entry;
   }
   
-  if (!m_bSystemDll) g_dlls.UnRegisterDll(this);
+  // can't unload a system dll, as this might be happing during xbmc destruction
+  if(!m_bSystemDll)
+    DllLoaderContainer::UnRegisterDll(this);
+
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
@@ -375,7 +378,7 @@ int DllLoader::ResolveImports(void)
       char *Name = (char*)RVA2Data(Imp->Name_RVA);
 
       char* FileName=ResolveReferencedDll(Name);
-      //  If possible use the dll name WITH path to resolve exps. We could have loaded 
+      //  If possible use the dll name WITH path to resolve exports. We could have loaded 
       //  a dll with the same name as another dll but from a different directory
       if (FileName) Name=FileName;
 
@@ -430,7 +433,7 @@ int DllLoader::ResolveImports(void)
 
 char* DllLoader::ResolveReferencedDll(char* dll)
 {
-  DllLoader* pDll = g_dlls.LoadModule(dll, GetPath(), m_bLoadSymbols);
+  DllLoader* pDll = DllLoaderContainer::LoadModule(dll, GetPath(), m_bLoadSymbols);
 
   if (!pDll)
   {
@@ -575,7 +578,7 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   
 int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 {
-  DllLoader* pDll = g_dlls.GetModule(sName);
+  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -596,7 +599,7 @@ int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 
 int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 {
-  DllLoader* pDll = g_dlls.GetModule(sName);
+  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -785,8 +788,8 @@ bool DllLoader::Load()
     {
       CLog::Log(LOGERROR, "%s - Unhandled exception during DLL_PROCESS_ATTACH", __FUNCTION__);
 
-      // vp7vfw.dll throws a CUserException due to a missing exp
-      // but the exp isn't really needed for normal operation
+      // vp7vfw.dll throws a CUserException due to a missing export
+      // but the export isn't really needed for normal operation
       // and dll works anyway, so let's ignore it
 
       if(stricmp(GetName(), "vp7vfw.dll") != 0)
@@ -796,9 +799,9 @@ bool DllLoader::Load()
       CLog::Log(LOGDEBUG, "%s - Ignoring exception during DLL_PROCESS_ATTACH", __FUNCTION__);
     }
 
-    // init function may have fixed up the exp table
+    // init function may have fixed up the export table
     // this is what I expect should happens on PECompact2 
-    // dll's if exp table is compressed.
+    // dll's if export table is compressed.
     if(!m_pExportHead)
       LoadExports();
   }
@@ -860,7 +863,7 @@ void DllLoader::LoadSymbols()
         return;
       }
 
-      // Get a function pointer to the unexped function FFinishImageLoad
+      // Get a function pointer to the unexported function FFinishImageLoad
       fnFFinishImageLoad FFinishImageLoad=(fnFFinishImageLoad)((LPBYTE)pBaseAddress+offset);
 
       // Prepare parameter for the function call
