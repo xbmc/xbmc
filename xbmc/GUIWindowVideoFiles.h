@@ -8,7 +8,6 @@ public:
   CGUIWindowVideoFiles(void);
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);  
 
   virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) { OnScan(strPath, info, -1, -1); }  
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
