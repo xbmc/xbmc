@@ -795,12 +795,30 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         return 0;
       }
 #else
-      pTexture = IMG_Load(texturePath.c_str());
-      if (!pTexture)
+      SDL_Surface *original = IMG_Load(texturePath.c_str());
+      if (!original)
       {
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
           return 0;
       }
+      // make sure the texture format is correct
+      SDL_PixelFormat format;
+      format.palette = 0; format.colorkey = 0; format.alpha = 0;
+      format.BitsPerPixel = 32; format.BytesPerPixel = 4;
+      format.Amask = 0xff000000; format.Ashift = 24;
+      format.Rmask = 0x00ff0000; format.Rshift = 16;
+      format.Gmask = 0x0000ff00; format.Gshift = 8;
+      format.Bmask = 0x000000ff; format.Bshift = 0;
+      
+      pTexture = SDL_ConvertSurface(original, &format, SDL_HWSURFACE);
+      SDL_FreeSurface(original);
+      if (!pTexture)
+      {
+        CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
+        return 0;
+      }
+      info.Width = pTexture->w;
+      info.Height = pTexture->h;
 #endif      
     }
   }
