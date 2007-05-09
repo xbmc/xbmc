@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
+#include "Util.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
 #ifdef _XBOX
@@ -234,7 +235,9 @@ DllLoader::~DllLoader()
 int DllLoader::Parse()
 {
   int iResult = 0;
-  FILE* fp = fopen(m_sFileName, "rb");
+
+  CStdString strFileName= _P(m_sFileName);
+  FILE* fp = fopen(strFileName, "rb");
 
   if (fp)
   {

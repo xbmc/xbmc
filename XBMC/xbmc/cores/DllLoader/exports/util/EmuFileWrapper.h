@@ -1,5 +1,10 @@
 
-#pragma once
+#ifndef __EMU_FILE_WRAPPER_H__
+#define __EMU_FILE_WRAPPER_H__
+
+#ifdef _LINUX
+#define _file _fileno
+#endif
 
 #define MAX_EMULATED_FILES    50
 #define FILE_WRAPPER_OFFSET   0x00000100
@@ -201,3 +206,6 @@ private:
 };
 
 extern CEmuFileWrapper g_emuFileWrapper;
+
+#endif
+

@@ -1,8 +1,16 @@
 
 //#include "stdafx.h"
+#ifdef _LINUX
+#include "../../../../xbmc/linux/PlatformInclude.h"
+#include "../DllLoaderContainer.h"
+#include "../DllLoader.h"
+
+#else
 
 #include "..\DllLoaderContainer.h"
 #include "..\DllLoader.h"
+#endif
+
 //#include "emu_msvcrt.h"
 
 #pragma warning (disable:4391)
