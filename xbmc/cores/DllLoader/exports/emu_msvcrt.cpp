@@ -1,7 +1,21 @@
+
 #include "stdafx.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#ifdef _LINUX
+
+#include "../../../../xbmc/linux/PlatformInclude.h"
+#include "../../../util.h"
+#include "../../../filesystem/IDirectory.h"
+#include "../../../FileSystem/FactoryDirectory.h"
+#include "../../../../Util.h"
+
+#undef __FUNCTION__
+#define __FUNCTION__ " " + CStdString(__func__) + " "
+#else
+
 #include <io.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -13,10 +27,16 @@
 #include "..\..\..\util.h"
 #include "..\..\..\filesystem\IDirectory.h"
 #include "..\..\..\FileSystem\FactoryDirectory.h"
+#endif
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
+
+#ifdef _LINUX
+#include "util/EmuFileWrapper.h"
+#else
 #include "util\EmuFileWrapper.h"
+#endif
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -208,7 +228,7 @@ extern "C"
     *start = tmp;
     *end = tmp + len;
     tmp[len - 1] = input;
-    return input;
+    return (void *)input;
 
     //wrong handling, this function is used for register functions
     //that called before exit use _initterm functions.
@@ -388,7 +408,7 @@ extern "C"
       // let the operating system handle it
       return read(fd, buffer, uiSize);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, CStdString("emulated function ") + CStdString (__FUNCTION__) + CStdString(" failed"));
     return -1;
   }
 
@@ -501,6 +521,7 @@ extern "C"
     return EOF;
   }
 
+#ifndef _LINUX
   // should be moved to CFile classes
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
@@ -596,6 +617,7 @@ extern "C"
     not_implement("msvcrt.dll fake function dll_findclose() called\n");
     return 0;
   }
+#endif
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
   {
