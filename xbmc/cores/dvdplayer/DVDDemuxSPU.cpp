@@ -18,7 +18,7 @@ void DebugLog(const char *format, ...)
   _vsnprintf(temp_spubuffer, 1024, format, va);
   va_end(va);
 
-  CLog::DebugLog(temp_spubuffer);
+  CLog::Log(LOGDEBUG,temp_spubuffer);
 #endif
 }
 

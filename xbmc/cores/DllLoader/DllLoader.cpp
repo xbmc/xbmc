@@ -397,7 +397,7 @@ int DllLoader::ResolveImports(void)
           {
             bResult = 0;
             char szBuf[128];
-            CLog::DebugLog("Unable to resolve ordinal %s %d\n", Name, *Table&0x7ffffff);
+            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %d\n", Name, *Table&0x7ffffff);
             sprintf(szBuf, "%d", *Table&0x7ffffff);
             *Addr = create_dummy_function(Name, szBuf);
             tracker_dll_data_track(this, *Addr);
@@ -415,7 +415,7 @@ int DllLoader::ResolveImports(void)
           void *Fixup;
           if ( !ResolveName(Name, ImpName, &Fixup) )
           {
-            CLog::DebugLog("Unable to resolve %s %s", Name, ImpName);
+            CLog::Log(LOGDEBUG,"Unable to resolve %s %s", Name, ImpName);
             *Addr = create_dummy_function(Name, ImpName);
             tracker_dll_data_track(this, *Addr);
             bResult = 0;
@@ -862,7 +862,7 @@ void DllLoader::LoadSymbols()
 
       if (offset==0)
       {
-        CLog::DebugLog("DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
+        CLog::Log(LOGDEBUG,"DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
         return;
       }
 
@@ -882,12 +882,12 @@ void DllLoader::LoadSymbols()
       }
       catch(...)
       {
-        CLog::DebugLog("DllLoader: Loading symbols for %s failed with an exception.", GetName());
+        CLog::Log(LOGDEBUG,"DllLoader: Loading symbols for %s failed with an exception.", GetName());
       }
     }
   }
   else
-    CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
+    CLog::Log(LOGDEBUG,"DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
 
 #ifdef ENABLE_SYMBOL_UNLOADING
   m_bUnloadSymbols=true;  // Do this to allow unloading this dll from dllloadercontainer
@@ -925,7 +925,7 @@ void DllLoader::UnloadSymbols()
 
       if (offset==0)
       {
-        CLog::DebugLog("DllLoader: Unable to unload symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
+        CLog::Log(LOGDEBUG,"DllLoader: Unable to unload symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
         return;
       }
 
@@ -961,11 +961,11 @@ void DllLoader::UnloadSymbols()
       }
       catch(...)
       {
-        CLog::DebugLog("DllLoader: Unloading symbols for %s failed with an exception.", GetName());
+        CLog::Log(LOGDEBUG,"DllLoader: Unloading symbols for %s failed with an exception.", GetName());
       }
     }
   }
   else
-    CLog::DebugLog("DllLoader: Can't unload symbols for %s. xbdm.dll is needed and not loaded", GetName());
+    CLog::Log(LOGDEBUG,"DllLoader: Can't unload symbols for %s. xbdm.dll is needed and not loaded", GetName());
 #endif
 }

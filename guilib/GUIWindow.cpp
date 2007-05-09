@@ -165,11 +165,11 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::DebugLog("Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
 #else
   DWORD end = timeGetTime();
 
-  CLog::DebugLog("Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
 #endif  
   return ret;
 }
@@ -687,7 +687,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_SETFOCUS:
     {
-//      CLog::DebugLog("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
+//      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -843,10 +843,10 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::DebugLog("Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
 #else
   DWORD end = timeGetTime();
-  CLog::DebugLog("Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", end - start, slend - start, plend - start);
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", end - start, slend - start, plend - start);
 #endif
 
   m_WindowAllocated = true;

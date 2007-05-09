@@ -3095,7 +3095,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             }
           }
 
-          CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+          CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -3114,7 +3114,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             }
             m_pDS->next();
           }
-          CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
     		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
@@ -3138,7 +3138,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       return true;
     }
 
-    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -3162,7 +3162,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->next();
     }
 
-    CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
@@ -3239,7 +3239,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             }
           }
 
-          CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+          CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -3256,7 +3256,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             iSONGS++;
             m_pDS->next();
           }
-          CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
     		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
@@ -3287,7 +3287,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
       return true;
     }
 
-    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -3308,7 +3308,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
       m_pDS->next();
     }
 
-    CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
@@ -3388,7 +3388,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             }
           }
 
-          CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+          CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -3408,7 +3408,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             iSONGS++;
             m_pDS->next();
           }
-          CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
     		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", movieTime, castTime);
         }
         catch (...)
@@ -3439,7 +3439,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       return true;
     }
 
-    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -3462,7 +3462,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       m_pDS->next();
     }
 
-    CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();

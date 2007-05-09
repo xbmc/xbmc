@@ -38,7 +38,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
-    CLog::DebugLog("CDVDVideoCodecFFmpeg::Open() Unable to find codec");
+    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to find codec");
     return false;
   }
 
@@ -80,7 +80,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
-    CLog::DebugLog("CDVDVideoCodecFFmpeg::Open() Unable to open codec");
+    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
   }
 

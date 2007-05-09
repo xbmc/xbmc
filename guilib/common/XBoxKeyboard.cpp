@@ -133,19 +133,19 @@ void CKeyboard::Update()
   if (m_CurrentKeyStroke.Flags & XINPUT_DEBUG_KEYSTROKE_FLAG_KEYUP)
   {
     m_bKeyDown = false;
-    //  CLog::DebugLog("Keyboard: Key Up Event :%i", m_CurrentKeyStroke.VirtualKey);
+    //  CLog::Log(LOGDEBUG,"Keyboard: Key Up Event :%i", m_CurrentKeyStroke.VirtualKey);
   }
   else if (m_CurrentKeyStroke.Flags & XINPUT_DEBUG_KEYSTROKE_FLAG_REPEAT)
   {
     /*  if (m_bKeyDown)
-       CLog::DebugLog("Keyboard: Key Repeat Event :%i", m_CurrentKeyStroke.VirtualKey);
+       CLog::Log(LOGDEBUG,"Keyboard: Key Repeat Event :%i", m_CurrentKeyStroke.VirtualKey);
       else
-       CLog::DebugLog("Keyboard: Key Repeat Event :%i (ignored)", m_CurrentKeyStroke.VirtualKey);*/
+       CLog::Log(LOGDEBUG,"Keyboard: Key Repeat Event :%i (ignored)", m_CurrentKeyStroke.VirtualKey);*/
   }
   else if (m_CurrentKeyStroke.VirtualKey != 0 || m_CurrentKeyStroke.Ascii != 0) // keydown event
   {
     m_bKeyDown = true;
-    //  CLog::DebugLog("Keyboard: Key Down Event :%i", m_CurrentKeyStroke.VirtualKey);
+    //  CLog::Log(LOGDEBUG,"Keyboard: Key Down Event :%i", m_CurrentKeyStroke.VirtualKey);
   }
   if (m_bKeyDown)
   {

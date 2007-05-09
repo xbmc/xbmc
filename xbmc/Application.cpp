@@ -1002,6 +1002,10 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
+#ifdef _LINUX
+  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+#endif
+
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
@@ -1989,7 +1993,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   m_guiPointer.AllocResources(true);
@@ -2669,7 +2673,7 @@ bool CApplication::OnAction(const CAction &action)
           iSpeed = -iSpeed;
         g_application.SetPlaySpeed(iSpeed);
         if (iSpeed == 1)
-          CLog::DebugLog("Resetting playspeed");
+          CLog::Log(LOGDEBUG,"Resetting playspeed");
         return true;
       }
     }
@@ -3167,7 +3171,7 @@ bool CApplication::ProcessKeyboard()
   {
     // got a valid keypress - convert to a key code
     WORD wkeyID = (WORD)vkey | KEY_VKEY;
-    //  CLog::DebugLog("Keyboard: time=%i key=%i", timeGetTime(), vkey);
+    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
     return OnKey(key);
   }

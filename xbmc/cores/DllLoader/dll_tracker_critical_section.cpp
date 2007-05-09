@@ -36,7 +36,7 @@ extern "C" void tracker_critical_section_free_all(DllTrackInfo* pInfo)
   // unloading unloaded dll's
   if (!pInfo->criticalSectionList.empty())
   {
-    CLog::DebugLog("%s: Detected %d unfreed critical sections", pInfo->pDll->GetFileName(), pInfo->criticalSectionList.size());
+    CLog::Log(LOGDEBUG,"%s: Detected %d unfreed critical sections", pInfo->pDll->GetFileName(), pInfo->criticalSectionList.size());
     for (CriticalSectionListIter it = pInfo->criticalSectionList.begin(); it != pInfo->criticalSectionList.end(); ++it)
     {
       LPCRITICAL_SECTION cs = *it;

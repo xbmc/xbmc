@@ -51,19 +51,19 @@ xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
   switch (level)
   {
   case CDIO_LOG_ERROR:
-    CLog::DebugLog("**ERROR: %s", message);
+    CLog::Log(LOGDEBUG,"**ERROR: %s", message);
     break;
   case CDIO_LOG_DEBUG:
-    CLog::DebugLog("--DEBUG: %s", message);
+    CLog::Log(LOGDEBUG,"--DEBUG: %s", message);
     break;
   case CDIO_LOG_WARN:
-    CLog::DebugLog("++ WARN: %s", message);
+    CLog::Log(LOGDEBUG,"++ WARN: %s", message);
     break;
   case CDIO_LOG_INFO:
-    CLog::DebugLog("   INFO: %s", message);
+    CLog::Log(LOGDEBUG,"   INFO: %s", message);
     break;
   case CDIO_LOG_ASSERT:
-    CLog::DebugLog("!ASSERT: %s", message);
+    CLog::Log(LOGDEBUG,"!ASSERT: %s", message);
     break;
   default:
     //cdio_assert_not_reached ();

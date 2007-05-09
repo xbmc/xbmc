@@ -99,7 +99,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 
   if (!m_bRunning) return;
 
-  CLog::DebugLog("Dialog::Close called");
+  CLog::Log(LOGDEBUG,"Dialog::Close called");
 
   //  Play the window specific deinit sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);

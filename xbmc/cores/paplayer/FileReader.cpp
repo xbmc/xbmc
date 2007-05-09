@@ -123,7 +123,7 @@ int CFileReader::Read(void *out, __int64 size)
       }
       if (sleeptime > 50)
       {
-        CLog::DebugLog("FileReader: Waited a total of %i ms on data", sleeptime);
+        CLog::Log(LOGDEBUG,"FileReader: Waited a total of %i ms on data", sleeptime);
         sleeptime = 0;
       }
       if (m_FileLength > 0 && m_bufferedDataPos == m_FileLength)
