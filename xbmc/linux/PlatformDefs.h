@@ -222,6 +222,8 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define WSAECANCELLED EINTR
 typedef int SOCKET;
 
+#define SetLastError(e) (errno = e)
+
 // Critical section
 #define CRITICAL_SECTION   CXHandle
 #define LPCRITICAL_SECTION CXHandle*

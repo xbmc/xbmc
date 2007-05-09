@@ -57,4 +57,31 @@ LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand)
 	result *= Multiplicand;
 	return result;
 }
+
+int WideCharToMultiByte(
+  UINT CodePage, 
+  DWORD dwFlags, 
+  LPCWSTR lpWideCharStr,
+  int cchWideChar, 
+  LPSTR lpMultiByteStr, 
+  int cbMultiByte,
+  LPCSTR lpDefaultChar,    
+  LPBOOL lpUsedDefaultChar
+) {
+
+}
+
+int MultiByteToWideChar(
+  UINT CodePage, 
+  DWORD dwFlags,         
+  LPCSTR lpMultiByteStr, 
+  int cbMultiByte,       
+  LPWSTR lpWideCharStr,  
+  int cchWideChar        
+) {
+
+}
+
+
+
 #endif

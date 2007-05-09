@@ -26,6 +26,14 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );
 DWORD WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds);
 
+LONG InterlockedIncrement(  LONG * Addend );
+LONG InterlockedDecrement(  LONG * Addend );
+LONG InterlockedCompareExchange(
+  LONG * Destination,
+  LONG Exchange,
+  LONG Comparand
+);
+
 #endif 
 
 #endif

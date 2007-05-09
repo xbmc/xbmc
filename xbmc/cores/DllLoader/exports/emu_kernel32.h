@@ -110,6 +110,44 @@ typedef struct _EXCEPTION_RECORD {
 
 #endif
 
+#ifdef _LINUX
+#define LANG_ENGLISH 0x09
+#define SUBLANG_ENGLISH_US 0x01
+#define MAKELCID(lgid, srtid)  ((DWORD)((((DWORD)((WORD  )(srtid))) << 16) | ((DWORD)((WORD  )(lgid)))))
+#define MAKELANGID(p, s)       ((((WORD  )(s)) << 10) | (WORD  )(p))
+#define SORT_DEFAULT 0x00
+
+#define LANG_NEUTRAL 0x00
+#define SUBLANG_NEUTRAL 0x00
+#define SUBLANG_DEFAULT 0x01
+#define SUBLANG_SYS_DEFAULT 0x02
+
+#define LANG_SYSTEM_DEFAULT    (MAKELANGID(LANG_NEUTRAL, SUBLANG_SYS_DEFAULT))
+#define LANG_USER_DEFAULT      (MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT))
+#define LOCALE_SYSTEM_DEFAULT  (MAKELCID(LANG_SYSTEM_DEFAULT, SORT_DEFAULT))
+#define LOCALE_USER_DEFAULT    (MAKELCID(LANG_USER_DEFAULT, SORT_DEFAULT))
+#define LOCALE_NEUTRAL         (MAKELCID(MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), SORT_DEFAULT))
+
+#define PROCESSOR_ARCHITECTURE_UNKNOWN 0xFFFF
+
+#define PF_FLOATING_POINT_PRECISION_ERRATA  0  
+#define PF_FLOATING_POINT_EMULATED          1  
+#define PF_COMPARE_EXCHANGE_DOUBLE          2  
+#define PF_MMX_INSTRUCTIONS_AVAILABLE       3  
+#define PF_PPC_MOVEMEM_64BIT_OK             4  
+#define PF_ALPHA_BYTE_INSTRUCTIONS          5  
+#define PF_XMMI_INSTRUCTIONS_AVAILABLE      6  
+#define PF_3DNOW_INSTRUCTIONS_AVAILABLE     7  
+#define PF_RDTSC_INSTRUCTION_AVAILABLE      8  
+#define PF_PAE_ENABLED                      9
+
+#define ERROR_INVALID_FUNCTION 1
+
+#define HGLOBAL void *
+#define HRSRC   void *
+
+#endif
+
 #define ATOM unsigned short
 
 // LOCAL defines from mingw
@@ -636,7 +674,18 @@ extern "C" int WINAPI dllSetEnvironmentVariableA(const char *name, const char *v
 extern "C" int WINAPI dllCreateDirectoryA(const char *pathname, void *sa);
 
 extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMiliseconds);
+
+// in linux we didnt define the handle array -  const.
+// the reason is that in linux we implement it as
+// a pointer to an object and the wait function does change it.
+// so - to avoid conversions we change the spec of the function.
+// come to think about it - it makes more senes that it wont be const.
+#ifdef _LINUX
+extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
+#else
 extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
+#endif
+
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask);
 
 extern "C" HGLOBAL WINAPI dllLoadResource(HMODULE module, HRSRC res);
