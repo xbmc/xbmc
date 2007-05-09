@@ -13,6 +13,9 @@
 #include "../StringUtils.h"
 #include "../Temperature.h"
 #include "../utils/CriticalSection.h"
+#ifdef _LINUX
+#include "CPUInfo.h"
+#endif
 
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
