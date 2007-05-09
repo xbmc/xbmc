@@ -13,6 +13,7 @@
 #include "../StringUtils.h"
 #include "../Temperature.h"
 #include "../utils/criticalsection.h"
+#include "IMsgTargetCallback.h"
 
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
@@ -364,13 +365,14 @@ public:
  \ingroup strings
  \brief 
  */
-class CGUIInfoManager
+class CGUIInfoManager : public IMsgTargetCallback
 {
 public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
 
   void Clear();
+  virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
@@ -400,7 +402,7 @@ public:
     m_currentFile.m_lStartOffset = 0;
   };
 
-  const CMusicInfoTag *GetCurrentSongTag() const 
+  const CMusicInfoTag *GetCurrentSongTag() const
   { 
     if (m_currentFile.HasMusicInfoTag())
       return m_currentFile.GetMusicInfoTag(); 
