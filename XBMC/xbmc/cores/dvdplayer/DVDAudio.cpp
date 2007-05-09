@@ -62,12 +62,12 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
   if( bPasstrough )
   {
     m_iPackets = 16;
-    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true, false, m_iPackets); // true = resample, 128 buffers
+    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true, m_iPackets); // true = resample, 128 buffers
   }
   else
   {
     m_iPackets = 32; //64;// better sync with smaller buffers?    
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets, codecstring);
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, m_iPackets, codecstring);
   }
 #else
 
@@ -230,33 +230,8 @@ void CDVDAudio::Resume()
 }
 
 __int64 CDVDAudio::GetDelay()
-{
-  __int64 delay;
-  
-  if (m_pAudioDecoder && m_iChannels != 0 && m_iBitrate != 0)
-  {
-
-    delay = (__int64)(m_pAudioDecoder->GetDelay() * DVD_TIME_BASE);
-    bool bIsResampling = m_pAudioDecoder->IsResampling();
-    
-    if (bIsResampling) delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (48000 * m_iChannels * 2);
-    else delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
-
-    //if( m_iSpeedStep )
-    //{
-    //  //To smoothout clock abit when dropping audio chunks
-    //  delay += ((__int64)m_dwPacketSize*m_iSpeedStep*DVD_TIME_BASE) / ( (__int64)m_iBitrate * m_iChannels * 2 );
-    //}
-
-    return delay;
-  }
-  return 0LL;
-}
-
-int CDVDAudio::GetBytesInBuffer()
-{
-  if(!m_pAudioDecoder) return 0;
-  return m_pAudioDecoder->GetBytesInBuffer();
+{  
+  return (__int64)(m_pAudioDecoder->GetDelay() * DVD_TIME_BASE);
 }
 
 void CDVDAudio::Flush()
