@@ -578,13 +578,13 @@ extern "C" LCID WINAPI dllGetThreadLocale(void)
 extern "C" BOOL WINAPI dllSetPriorityClass(HANDLE hProcess, DWORD dwPriorityClass)
 {
   not_implement("kernel32.dll fake function SetPriorityClass called\n"); //warning
-  return NULL;
+  return false;
 }
 
 extern "C" DWORD WINAPI dllFormatMessageA(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId, LPTSTR lpBuffer, DWORD nSize, va_list* Arguments)
 {
   not_implement("kernel32.dll fake function FormatMessage called\n"); //warning
-  return NULL;
+  return 0;
 }
 
 extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLength, LPTSTR lpBuffer, LPTSTR* lpFilePart)
@@ -611,13 +611,13 @@ extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLen
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
 {
   not_implement("kernel32.dll fake function GetFullPathNameA called\n"); //warning
-  return NULL;
+  return 0;
 }
 
 extern "C" UINT WINAPI dllGetWindowsDirectoryA(LPTSTR lpBuffer, UINT uSize)
 {
   not_implement("kernel32.dll fake function dllGetWindowsDirectory called\n"); //warning
-  return NULL;
+  return 0;
 }
 
 extern "C" UINT WINAPI dllGetSystemDirectoryA(LPTSTR lpBuffer, UINT uSize)
@@ -653,12 +653,16 @@ extern "C" UINT WINAPI dllGetShortPathName(LPTSTR lpszLongPath, LPTSTR lpszShort
 
 extern "C" HANDLE WINAPI dllGetProcessHeap()
 {
+#ifdef  _LINUX
+  CLog::Log(LOGWARNING, "KERNEL32!GetProcessHeap() linux cant provide this service!");
+#else
   HANDLE hHeap;
   hHeap = GetProcessHeap();
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!GetProcessHeap() => 0x%x", hHeap);
 #endif
   return hHeap;
+#endif
 }
 
 extern "C" UINT WINAPI dllSetErrorMode(UINT i)
@@ -803,11 +807,16 @@ extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMilisecon
   return WaitForSingleObject(hHandle, dwMiliseconds);
 }
 
+#ifdef _LINUX
+extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds)
+#else
 extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds)
+#endif
 {
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "WaitForMultipleObjects(..)");
 #endif
+
   return WaitForMultipleObjects(nCount, lpHandles, fWaitAll, dwMilliseconds);
 }
 
@@ -960,7 +969,7 @@ typedef struct _SFlsSlot
 SFlsSlot, *LPSFlsSlot;
 
 #define FLS_NUM_SLOTS 5
-#ifdef _XBOX
+#if defined (_XBOX) || defined (_LINUX)
 #define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
 #endif
 SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL, NULL };

@@ -3,8 +3,11 @@
 #include "PlatformDefs.h"
 #include "XHandle.h"
 
+#include <SDL.h>
 
 #ifdef _LINUX
+
+SDL_mutex *g_mutex = SDL_CreateMutex();
 
 bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
 	if (!hMutex)
@@ -213,6 +216,48 @@ DWORD WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  D
 
 	delete [] bDone;
 	return dwRet;
+}
+
+LONG InterlockedIncrement(  LONG * Addend ) {
+	if (Addend == NULL)
+		return 0;
+
+	SDL_mutexP(g_mutex);
+	(* Addend)++;
+	LONG nKeep = *Addend;
+	SDL_mutexV(g_mutex);
+
+	return nKeep;
+}
+
+LONG InterlockedDecrement(  LONG * Addend ) {
+	if (Addend == NULL)
+		return 0;
+
+	SDL_mutexP(g_mutex);
+	(* Addend)--;
+	LONG nKeep = *Addend;
+	SDL_mutexV(g_mutex);
+
+	return nKeep;
+}
+
+LONG InterlockedCompareExchange(
+  LONG * Destination,
+  LONG Exchange,
+  LONG Comparand
+) {
+	if (Destination == NULL)
+		return 0;
+
+	LONG nKeep = *Destination;
+
+	SDL_mutexP(g_mutex);
+	if (*Destination == Comparand)
+		*Destination = Exchange;
+	SDL_mutexV(g_mutex);
+	
+	return nKeep;
 }
 
 #endif

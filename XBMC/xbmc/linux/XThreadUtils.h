@@ -31,4 +31,11 @@ BOOL GetThreadTimes (
   LPFILETIME lpUserTime
 );
 
+// thread local storage functions
+LPVOID TlsGetValue(DWORD dwTlsIndex);
+BOOL TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue);
+BOOL TlsFree(DWORD dwTlsIndex);
+DWORD TlsAlloc();
+
+
 #endif
