@@ -468,7 +468,17 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
 
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, SDL_HWSURFACE | SDL_HWSURFACE);
+#ifndef HAS_FULLSCREEN
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, SDL_HWSURFACE);
+#else
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, 
+                          m_iScreenHeight, 
+                          0, 
+                          SDL_ANYFORMAT |
+                          SDL_FULLSCREEN |
+                          SDL_HWSURFACE |
+                          SDL_DOUBLEBUF);
+#endif
 
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
                   	res == PAL_16x9 || res == NTSC_16x9);
@@ -531,8 +541,13 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     break;
   case PAL_16x9:
   case PAL_4x3:
+#ifdef HAS_FULLSCREEN
     overscan.right = 720;
     overscan.bottom = 576;
+#else
+    overscan.right =  1024;
+    overscan.bottom = 768;
+#endif
     break;
   }
 }
@@ -587,9 +602,15 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 16:9");
     break;
   case PAL_4x3:
+#ifndef HAS_FULLSCREEN
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 576);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 576;
+#else
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 768);
+    g_settings.m_ResInfo[res].iWidth = 1024;
+    g_settings.m_ResInfo[res].iHeight = 768;
+#endif
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL 4:3");
     break;
