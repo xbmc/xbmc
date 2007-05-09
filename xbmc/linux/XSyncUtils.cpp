@@ -80,10 +80,6 @@ void LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
 	ReleaseMutex(lpCriticalSection);
 }
 
-DWORD GetCurrentThreadId(void) {
-	return SDL_ThreadID();
-}
-
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) {
 	if (!lpBuffer)
 		return;
@@ -104,7 +100,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) {
 }
 
 DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
-	if (hHandle == NULL)
+	if (hHandle == NULL ||  hHandle == (HANDLE)-1)
 		return WAIT_FAILED;
 
 	DWORD dwRet = WAIT_FAILED;

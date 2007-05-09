@@ -167,13 +167,13 @@ BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
   return true;
 }
 
-BOOL	TimeTToFileTime(time_t *pTimeT, FILETIME* lpLocalFileTime) {
+BOOL	TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
 
-  if (pTimeT == NULL || lpLocalFileTime == NULL)
+  if (lpLocalFileTime == NULL)
 	return false;
 
   ULARGE_INTEGER result;
-  result.QuadPart = (unsigned long long) (*pTimeT) * 10000000;
+  result.QuadPart = (unsigned long long) timeT * 10000000;
   result.QuadPart += WIN32_TIME_OFFSET;
   
   lpLocalFileTime->dwLowDateTime  = result.LowPart;

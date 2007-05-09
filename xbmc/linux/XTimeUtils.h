@@ -21,7 +21,7 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
 BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime);
 
 BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT);
-BOOL	TimeTToFileTime(time_t *pTimeT, FILETIME* lpLocalFileTime);
+BOOL	TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime);
 
 // Time
 DWORD timeGetTime(VOID); 
