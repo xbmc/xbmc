@@ -62,8 +62,13 @@
 #define APIPRIVATE  __stdcall
 #define IN
 #define OUT
+#define OPTIONAL
 #define _declspec(X)
 #define __declspec(X)
+
+#define __try	try
+#define EXCEPTION_EXECUTE_HANDLER ...
+//NOTE: dont try to define __except because it breaks g++ (already uses it).
 
 class CXHandle; // foward declaration
 typedef CXHandle* HANDLE;
@@ -102,6 +107,8 @@ typedef LONG				HRESULT;
 typedef BYTE*				LPBYTE;
 typedef DWORD*				LPDWORD;
 typedef CONST CHAR*		LPCSTR;
+typedef CONST WCHAR*		LPCWSTR;
+typedef CHAR*			LPTSTR;
 typedef WCHAR     		*PWSTR,      *LPWSTR,    *NWPSTR;
 typedef CHAR           	*PSTR,       *LPSTR,     *NPSTR;
 typedef LONG				*PLONG, *LPLONG;
@@ -119,6 +126,13 @@ typedef int (*FARPROC)(void);
 
 #define MAXWORD		0xffff
 #define MAXDWORD	0xffffffff
+
+typedef DWORD LCID;
+typedef WORD* LPWORD;
+typedef BOOL* LPBOOL;
+typedef CHAR* LPCHAR;
+typedef CHAR* PCHAR;
+typedef const void* LPCVOID;
 
 typedef union _LARGE_INTEGER 
 {  
