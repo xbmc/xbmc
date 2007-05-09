@@ -37,6 +37,7 @@
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
+#define _stricmp 	strcasecmp
 #define stricmp 	strcasecmp
 #define strcmpi	strcasecmp
 #define strnicmp  strncasecmp
@@ -229,6 +230,13 @@ typedef int SOCKET;
 typedef DWORD (*LPTHREAD_START_ROUTINE)(LPVOID);
 
 // File
+#define O_BINARY 0
+#define O_TEXT   0
+#define _O_TRUNC O_TRUNC
+#define _O_RDONLY O_RDONLY
+#define _O_WRONLY O_WRONLY
+#define _off_t off_t
+
 struct __stat64 {
   dev_t 			 st_dev;
   ino_t 			  st_ino;
@@ -292,6 +300,8 @@ typedef struct _SECURITY_ATTRIBUTES {
 #define _S_IFREG  S_IFREG
 #define _S_IFDIR  S_IFDIR
 #define MAX_PATH PATH_MAX
+
+#define _stat stat
 
 // Memory
 typedef struct _MEMORYSTATUS 
@@ -386,6 +396,33 @@ typedef struct _D3DPRESENT_PARAMETERS_
     //D3DSurface         *BufferSurfaces[3];
     //D3DSurface         *DepthStencilSurface;
 } D3DPRESENT_PARAMETERS;
+
+typedef enum D3DPRIMITIVETYPE
+{
+    D3DPT_POINTLIST = 1,
+    D3DPT_LINELIST = 2,
+    D3DPT_LINESTRIP = 3,
+    D3DPT_TRIANGLELIST = 4,
+    D3DPT_TRIANGLESTRIP = 5,
+    D3DPT_TRIANGLEFAN = 6,
+    D3DPT_FORCE_DWORD = 0x7fffffff,
+} D3DPRIMITIVETYPE, *LPD3DPRIMITIVETYPE;
+
+typedef struct _D3DMATRIX {
+    union {
+        struct {
+            float        _11, _12, _13, _14;
+            float        _21, _22, _23, _24;
+            float        _31, _32, _33, _34;
+            float        _41, _42, _43, _44;
+
+        };
+        float m[4][4];
+    };
+} D3DMATRIX;
+
+typedef void DIRECT3DTEXTURE8;
+typedef void* LPDIRECT3DTEXTURE8;
 
 // Misc stuff found in the code, not really important
 #define PAGE_READONLY 	  0x02

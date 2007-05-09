@@ -1,42 +1,25 @@
-
 #include "stdafx.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
-#ifdef _LINUX
-
-#include "../../../../xbmc/linux/PlatformInclude.h"
-#include "../../../util.h"
-#include "../../../filesystem/IDirectory.h"
-#include "../../../FileSystem/FactoryDirectory.h"
-#include "../../../../Util.h"
-
-#undef __FUNCTION__
-#define __FUNCTION__ " " + CStdString(__func__) + " "
-#else
-
+#ifndef _LINUX
 #include <io.h>
+#include <direct.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <fcntl.h>
-#include <direct.h>
 #include <time.h>
 #include <signal.h>
-#include "..\..\..\util.h"
-#include "..\..\..\filesystem\IDirectory.h"
-#include "..\..\..\FileSystem\FactoryDirectory.h"
-#endif
+#include "../../../Util.h"
+#include "../../../FileSystem/IDirectory.h"
+#include "../../../FileSystem/FactoryDirectory.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
 
-#ifdef _LINUX
 #include "util/EmuFileWrapper.h"
-#else
-#include "util\EmuFileWrapper.h"
-#endif
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -100,6 +83,7 @@ extern "C" void __stdcall init_emu_environ()
 	dll_putenv("TEMP=Z:\\temp"); // for python tempdir
 }
 
+#ifndef _LINUX
 bool emu_is_hd(const char* path)
 {
   if (path[0] != 0 && path[1] == ':')
@@ -131,6 +115,7 @@ bool emu_is_root_drive(const char* path)
   }
   return false;
 }
+#endif
 
 extern "C"
 {
@@ -408,7 +393,7 @@ extern "C"
       // let the operating system handle it
       return read(fd, buffer, uiSize);
     }
-    CLog::Log(LOGERROR, CStdString("emulated function ") + CStdString (__FUNCTION__) + CStdString(" failed"));
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -425,7 +410,7 @@ extern "C"
       // let the operating system handle it
       return write(fd, buffer, uiSize);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -446,7 +431,7 @@ extern "C"
       // let the operating system handle it
       return close(fd);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -466,7 +451,7 @@ extern "C"
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_lseeki64 called, TODO: add 'int64 -> long' type checking");      //warning
       return (__int64)lseek(fd, (long)lPos, iWhence);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return (__int64)-1;
   }
 
@@ -482,7 +467,7 @@ extern "C"
       // let the operating system handle it
       return lseek(fd, lPos, iWhence);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -500,7 +485,7 @@ extern "C"
     }
     else
     {
-      CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     }
   }
 
@@ -517,7 +502,7 @@ extern "C"
       // it might be something else than a file, let the operating system handle it
       return fclose(stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
 
@@ -640,7 +625,7 @@ extern "C"
       // let the operating system handle it
       return fgets(pszString, num, stream);
     } 
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return NULL;
   }
 
@@ -658,7 +643,7 @@ extern "C"
       // let the operating system handle it
       return feof(stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return 1; // eof by default
   }
 
@@ -679,7 +664,7 @@ extern "C"
       // it might be something else than a file, let the operating system handle it
       return fread(buffer, size, count, stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -710,7 +695,7 @@ extern "C"
       // let the operating system handle it
       return getc(stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
 
@@ -727,7 +712,7 @@ extern "C"
       // let the operating system handle it
       return getc(stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
   
@@ -795,7 +780,7 @@ extern "C"
         return fputc(character, stream);
       }
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
 
@@ -822,7 +807,7 @@ extern "C"
     
     OutputDebugString(szLine);
     OutputDebugString("\n");
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
 
@@ -843,7 +828,7 @@ extern "C"
       // let the operating system handle it
       return fseek(stream, offset, origin);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -876,7 +861,7 @@ extern "C"
       // let the operating system handle it
       return ungetc(c, stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
 
@@ -893,7 +878,7 @@ extern "C"
       // let the operating system handle it
       return ftell(stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -908,9 +893,13 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
+#ifndef _LINUX
       return tell(fd);
+#else
+      return lseek(fd, 0, SEEK_CUR);
+#endif
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -927,9 +916,13 @@ extern "C"
       // let the operating system handle it
       // not supported return telli64(fd);
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_telli64 called, TODO: add 'int64 -> long' type checking");      //warning
+#ifndef _LINUX
       return (__int64)tell(fd);
+#else
+      return lseek64(fd, 0, SEEK_CUR);
+#endif
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -968,7 +961,7 @@ extern "C"
         return fwrite(buffer, size, count, stream);
       }
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -1003,7 +996,7 @@ extern "C"
     {
       return ferror(stream);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
 
@@ -1065,7 +1058,7 @@ extern "C"
     
     OutputDebugString(tmp);
     OutputDebugString("\n");
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return strlen(tmp);
   }
 
@@ -1084,7 +1077,11 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
+#ifndef _LINUX
       *pos = pFile->GetPosition();
+#else
+      pos->__pos = pFile->GetPosition();
+#endif
       return 0;
     }
     else if (!IS_STD_STREAM(stream))
@@ -1093,7 +1090,7 @@ extern "C"
       // let the operating system handle it
       return fgetpos(stream, pos);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EINVAL;
   }
 
@@ -1102,7 +1099,11 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
+#ifndef _LINUX
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
+#else
+      if (fsetpos(stream, pos) >= 0)
+#endif
       {
         return 0;
       }
@@ -1117,7 +1118,7 @@ extern "C"
       // let the operating system handle it
       return fsetpos(stream, (fpos_t*)pos);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EINVAL;
   }
 
@@ -1184,13 +1185,19 @@ extern "C"
                            LPDWORD lpThreadId)
   {
     // FIXME        --possible use xbox createthread function?
+#ifndef _LINUX
     HANDLE hThread = CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
     return hThread;
+#else
+    HANDLE m_ThreadHandle  = new CXHandle(CXHandle::HND_THREAD);
+    m_ThreadHandle->m_hThread = SDL_CreateThread((int (*)(void*)) lpStartAddress, (void*)lpParameter);
+#endif
   }
 
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct _stat *buffer)
   {
+#ifndef _LINUX
     //stating a root, for example C:\\, failes on the xbox
     if (emu_is_root_drive(path))
     {
@@ -1207,7 +1214,8 @@ extern "C"
 			  buffer->st_ctime = 1000000000;
 			  return 0;
     }
-  
+ #endif
+ 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)) // don't stat http
@@ -1237,6 +1245,7 @@ extern "C"
 
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
+#ifndef _LINUX
     //stating a root, for example C:\\, failes on the xbox
     if (emu_is_root_drive(path))
     {
@@ -1253,7 +1262,7 @@ extern "C"
 			  buffer->st_ctime = 1000000000;
 			  return 0;
     }
-  
+ #endif 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)) // don't stat http
@@ -1365,11 +1374,15 @@ extern "C"
   {
     if (!dir) return -1;
 
+#ifndef _LINUX
     CStdString newDir(dir);
     newDir.Replace("/", "\\");
     newDir.Replace("\\\\", "\\");
-
     return mkdir(newDir.c_str());
+#else
+    return mkdir(dir, 0755);
+#endif
+
   }
 
   char* dll_getcwd(char *buffer, int maxlen)
@@ -1501,7 +1514,7 @@ extern "C"
   int dll_system(const char *command)
   {
     not_implement("msvcrt.dll fake function dll_system() called\n");
-    return NULL; //system(command);
+    return 0; //system(command);
   }
 
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
@@ -1530,7 +1543,11 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
+#ifndef _LINUX
       return _commit(fd);
+#else
+      return fsync(fd);
+#endif
     }
     
     // std stream, no need to flush
