@@ -47,7 +47,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 {
   if (!pInfo->dataList.empty() || !pInfo->virtualList.empty())
   {
-    CLog::DebugLog("%s (base %8x): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
+    CLog::Log(LOGDEBUG,"%s (base %8x): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
     unsigned total = 0;
     CallerMap tempMap;
     CallerMapIter itt;
@@ -98,9 +98,9 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 
     for ( itt = tempMap.begin(); itt != tempMap.end();++itt )
     {
-      CLog::DebugLog("leak caller address %8x, size %8i, counter %4i", itt->first, (itt->second).size, (itt->second).count);
+      CLog::Log(LOGDEBUG,"leak caller address %8x, size %8i, counter %4i", itt->first, (itt->second).size, (itt->second).count);
     }
-    CLog::DebugLog("%s: Total bytes leaked: %d", pInfo->pDll->GetName(), total);
+    CLog::Log(LOGDEBUG,"%s: Total bytes leaked: %d", pInfo->pDll->GetName(), total);
     tempMap.erase(tempMap.begin(), tempMap.end());
   }
   pInfo->dataList.erase(pInfo->dataList.begin(), pInfo->dataList.end());
@@ -185,7 +185,7 @@ extern "C" void __cdecl track_free(void* p)
     }
     catch(...)
     {
-      CLog::DebugLog("DLL tried to free memory not allocated by any DLL, skipping");
+      CLog::Log(LOGDEBUG,"DLL tried to free memory not allocated by any DLL, skipping");
     }
   }
 }
@@ -206,7 +206,7 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
 #ifndef _LINUX
   if (!pInfo->heapobjectList.empty())
   {
-    CLog::DebugLog("%s: Detected heapobject leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->heapobjectList.size());
+    CLog::Log(LOGDEBUG,"%s: Detected heapobject leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->heapobjectList.size());
 
     for (HeapObjectListIter it = pInfo->heapobjectList.begin(); it != pInfo->heapobjectList.end(); ++it)
     {
