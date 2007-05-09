@@ -69,6 +69,8 @@ int WideCharToMultiByte(
   LPBOOL lpUsedDefaultChar
 ) {
 
+#warning need to implement WideCharToMultiByte
+   return 0;
 }
 
 int MultiByteToWideChar(
@@ -79,6 +81,9 @@ int MultiByteToWideChar(
   LPWSTR lpWideCharStr,  
   int cchWideChar        
 ) {
+
+#warning need to implement MultiByteToWideChar
+   return 0;
 
 }
 
