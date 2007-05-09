@@ -696,6 +696,7 @@
 
     <keyboard>
       <delete>Delete</delete>
+      <space>Playlist</space>
     </keyboard>
   </MyVideoLibrary>
 

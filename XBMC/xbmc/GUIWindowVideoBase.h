@@ -11,6 +11,7 @@ public:
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
+  virtual bool OnAction(const CAction &action);
 
   void PlayMovie(const CFileItem *item);
   int  GetResumeItemOffset(const CFileItem *item);
