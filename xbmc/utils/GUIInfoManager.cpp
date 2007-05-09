@@ -65,6 +65,22 @@ CGUIInfoManager::CGUIInfoManager(void)
 CGUIInfoManager::~CGUIInfoManager(void)
 {
 }
+
+bool CGUIInfoManager::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
+  {
+    if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+    {
+      CFileItem *item = (CFileItem *)message.GetLPVOID();
+      if (m_currentFile.m_strPath.Equals(item->m_strPath))
+        m_currentFile = *item;
+      return true;
+    }
+  }
+  return false;
+}
+
 /// \brief Translates a string as given by the skin into an int that we use for more
 /// efficient retrieval of data. Can handle combined strings on the form
 /// Player.Caching + VideoPlayer.IsFullscreen (Logical and)

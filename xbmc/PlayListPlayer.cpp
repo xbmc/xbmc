@@ -52,6 +52,14 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
   {
+  case GUI_MSG_NOTIFY_ALL:
+    if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+    {
+      // update our item if necessary
+      CPlayList &playlist = GetPlaylist(m_iCurrentPlayList);
+      playlist.UpdateItem((CFileItem *)message.GetLPVOID());
+    }
+    break;
   case GUI_MSG_PLAYBACK_STOPPED:
     {
       if (m_iCurrentPlayList != PLAYLIST_NONE)
