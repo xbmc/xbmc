@@ -9,6 +9,7 @@
 #include "XEventUtils.h"
 #include "XTimeUtils.h"
 #include "XThreadUtils.h"
+#include "ConvUtils.h"
 
 #endif
 
