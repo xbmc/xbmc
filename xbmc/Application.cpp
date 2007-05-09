@@ -1901,6 +1901,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogMuteBug.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
+  m_gWindowManager.AddMsgTarget(&g_infoManager);
   m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
@@ -2448,6 +2449,40 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
+  if (action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING && IsPlayingAudio())
+  {
+    const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
+    if (tag)
+    {
+      *m_itemCurrentFile.GetMusicInfoTag() = *tag;
+      char rating = tag->GetRating();
+      bool needsUpdate(false);
+      if (rating > '0' && action.wID == ACTION_DECREASE_RATING)
+      {
+        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating - 1);
+        needsUpdate = true;
+      }
+      else if (rating < '5' && action.wID == ACTION_INCREASE_RATING)
+      {
+        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating + 1);
+        needsUpdate = true;
+      }
+      if (needsUpdate)
+      {
+        CMusicDatabase db;
+        if (db.Open())      // OpenForWrite() ?
+        {
+          db.SetSongRating(m_itemCurrentFile.m_strPath, m_itemCurrentFile.GetMusicInfoTag()->GetRating());
+          db.Close();
+        }
+        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_itemCurrentFile);
+        g_graphicsContext.SendMessage(msg);
+      }
+    }
+    return true;
+  }
+
   // stop : stops playing current audio song
   if (action.wID == ACTION_STOP)
   {
@@ -2464,14 +2499,7 @@ bool CApplication::OnAction(const CAction &action)
       SeekTime(0);
     else
     {
-      if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-      {
-        // save video settings
-        CVideoDatabase dbs;
-        dbs.Open();
-        dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-        dbs.Close();
-      }
+      SaveCurrentFileSettings();
       g_playlistPlayer.PlayPrevious();
     }
     return true;
@@ -2483,15 +2511,7 @@ bool CApplication::OnAction(const CAction &action)
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
 
-    if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-    {
-      // save video settings
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-
+    SaveCurrentFileSettings();
     g_playlistPlayer.PlayNext();
 
     return true;
@@ -3423,6 +3443,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
   if (!bRestart)
   {
+    SaveCurrentFileSettings();
+
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
@@ -4352,20 +4374,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_bNetworkSpinDown = false;
       m_bSpinDown = false;
 
-      // Save our settings for the current movie for next time
-      if (m_itemCurrentFile.IsVideo())
+      // Save our settings for the current file for next time
+      SaveCurrentFileSettings();
+      if (m_itemCurrentFile.IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         CVideoDatabase dbs;
         dbs.Open();
-        if(g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-          dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-
-        if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-        {
-          dbs.MarkAsWatched(m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
-        }
+        dbs.MarkAsWatched(m_itemCurrentFile);
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         dbs.Close();
       }
 
@@ -5132,4 +5149,18 @@ void CApplication::StartFtpEmergencyRecoveryMode()
   }
   pUser->CommitChanges();
 #endif
+}
+
+void CApplication::SaveCurrentFileSettings()
+{
+  if (IsPlayingVideo())
+  { // save video settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+  }
 }

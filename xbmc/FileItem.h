@@ -334,6 +334,8 @@ public:
   void SetGameSavesThumbs();
 
   void Swap(unsigned int item1, unsigned int item2);
+
+  void UpdateItem(const CFileItem *item);
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   CStdString GetDiscCacheFile();
