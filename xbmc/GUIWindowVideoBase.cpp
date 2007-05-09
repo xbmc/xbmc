@@ -79,6 +79,18 @@ CGUIWindowVideoBase::~CGUIWindowVideoBase()
 {
 }
 
+bool CGUIWindowVideoBase::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_SHOW_PLAYLIST)
+  {
+    OutputDebugString("activate guiwindowvideoplaylist!\n");
+    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    return true;
+  }
+
+  return CGUIMediaWindow::OnAction(action);
+}
+
 bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
