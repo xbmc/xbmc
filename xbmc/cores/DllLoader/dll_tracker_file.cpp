@@ -3,6 +3,8 @@
 #include "dll_tracker_file.h"
 #include "dll_tracker.h"
 #include "DllLoader.h"
+#include "Util.h"
+
 #ifdef _LINUX
 #define dll_open open
 #define dll_fopen fopen
@@ -93,7 +95,7 @@ extern "C"
   {
     unsigned loc = (unsigned)_ReturnAddress();
     
-    FILE* fd = dll_fopen(sFileName, mode);
+    FILE* fd = dll_fopen(_P(sFileName), mode);
     if (fd) tracker_file_track(loc, (unsigned)fd, FILE_XBMC_FOPEN, sFileName);
     return fd;
   }

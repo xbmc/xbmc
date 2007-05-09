@@ -2,6 +2,10 @@
 #ifndef _EMU_MSVCRT_H_
 #define _EMU_MSVCRT_H_
 
+#ifdef _LINUX
+#define _onexit_t void*
+#endif
+
 typedef void ( *PFV)(void);
 
 #define __IS_STDIN_STREAM(stream)   (stream == stdin  || stream->_file == 0)
@@ -48,9 +52,11 @@ extern "C"
   long dll_lseek(int fd, long lPos, int iWhence);
   char* dll_getenv(const char* szKey);
   int dll_fclose (FILE * stream);
+#ifndef _LINUX
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data);
   int dll_findnext(intptr_t f, _finddata_t* data);
   int dll_findclose(intptr_t handle);
+#endif
   char * dll_fgets (char* pszString, int num , FILE * stream);
   int dll_fgetc (FILE* stream);
   int dll_feof (FILE * stream);
