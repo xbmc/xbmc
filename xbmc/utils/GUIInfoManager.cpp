@@ -1161,7 +1161,11 @@ int CGUIInfoManager::GetInt(int info) const
       g_sysinfo.GetHddSpaceInfo(iret, info, true);
       break;
     case SYSTEM_CPU_USAGE:
+#ifndef _LINUX
       iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
+#else
+      iret = g_cpuInfo.getUsedPercentage();
+#endif
       break;
   }
   return iret;
