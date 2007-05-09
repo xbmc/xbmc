@@ -31,8 +31,6 @@
 
 #ifdef _XBOX
 #include <xtl.h>
-#else
-#include <windows.h>
 #endif
 
 #include "IAudioCallback.h"
