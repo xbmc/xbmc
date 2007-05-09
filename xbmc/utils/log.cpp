@@ -119,7 +119,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
 void CLog::DebugLog(const char *format, ... )
 {
-#ifdef _DEBUG
+#ifdef _XBMC_DEBUG
   CSingleLock waitLock(critSec);
 
   CStdString strData;

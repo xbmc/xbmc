@@ -459,7 +459,7 @@ void PAPlayer::UpdateCacheLevel()
     {
       m_CacheLevel = codec->GetCacheLevel();
       m_LastCacheLevelCheck = GetTickCount();
-      //CLog::DebugLog("Cachelevel: %i%%", m_CacheLevel);
+      //CLog::Log(LOGDEBUG,"Cachelevel: %i%%", m_CacheLevel);
     }
   }
 }

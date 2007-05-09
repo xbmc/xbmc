@@ -35,6 +35,8 @@
 #define FALSE		0
 #define TRUE		1
 
+#define _fdopen fdopen
+#define _vsnprintf vsnprintf
 #define stricmp 	strcasecmp
 #define strcmpi	strcasecmp
 #define strnicmp  strncasecmp

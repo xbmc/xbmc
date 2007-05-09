@@ -77,7 +77,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   if (newView < 0 || m_currentView == newView)
     return;
 
-//  CLog::DebugLog("SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
+//  CLog::Log(LOGDEBUG,"SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
   CGUIControl *pNewView = m_vecViews[newView];
 
   bool hasFocus(false);
@@ -117,7 +117,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
 
 void CGUIViewControl::SetItems(CFileItemList &items)
 {
-//  CLog::DebugLog("SetItems: %i", m_currentView);
+//  CLog::Log(LOGDEBUG,"SetItems: %i", m_currentView);
   m_fileItems = &items;
   // update our current view control...
   UpdateView();
@@ -143,7 +143,7 @@ void CGUIViewControl::UpdateContents(const CGUIControl *control)
 
 void CGUIViewControl::UpdateView()
 {
-//  CLog::DebugLog("UpdateView: %i", m_currentView);
+//  CLog::Log(LOGDEBUG,"UpdateView: %i", m_currentView);
   if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
     return; // no valid current view!
 

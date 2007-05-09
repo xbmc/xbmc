@@ -27,7 +27,7 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   pCodec = m_dllAvCodec.avcodec_find_decoder(codecID);
   if (!pCodec)
   {
-    CLog::DebugLog("CDVDAudioCodecFFmpeg::Open() Unable to find codec");
+    CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec");
     return false;
   }
 
@@ -54,7 +54,7 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
-    CLog::DebugLog("CDVDAudioCodecFFmpeg::Open() Unable to open codec");
+    CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to open codec");
     Dispose();
     return false;
   }

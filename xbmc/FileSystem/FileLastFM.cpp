@@ -119,7 +119,7 @@ bool CFileLastFM::HandShake()
     CLog::Log(LOGERROR, "Connect to Last.fm failed.");
     return false;
   }
-  CLog::DebugLog("Handshake: %s", html.c_str());
+  CLog::Log(LOGDEBUG,"Handshake: %s", html.c_str());
 
   Parameter("session",    html, m_Session);
   Parameter("stream_url", html, m_StreamUrl);
@@ -148,7 +148,7 @@ bool CFileLastFM::RecordToProfile(bool enabled)
   CStdString html;
   url.Format("http://" + m_BaseUrl + m_BasePath + "/control.php?session=%s&command=%s&debug=%i", m_Session, enabled?"rtp":"nortp", 0);
   if (!http.Get(url, html)) return false;
-  CLog::DebugLog("RTP: %s", html.c_str());
+  CLog::Log(LOGDEBUG,"RTP: %s", html.c_str());
   CStdString value;
   Parameter("response", html, value);
   return value == "OK";
@@ -168,7 +168,7 @@ bool CFileLastFM::ChangeStation(const CURL& stationUrl)
     CLog::Log(LOGERROR, "Connect to Last.fm to change station failed.");
     return false;
   }
-  CLog::DebugLog("ChangeStation: %s", html.c_str());
+  CLog::Log(LOGDEBUG,"ChangeStation: %s", html.c_str());
 
   CStdString strErrorCode;
   Parameter("error", html,  strErrorCode);
@@ -382,7 +382,7 @@ bool CFileLastFM::DoSkipNext()
   CStdString html;
   url.Format("http://" + m_BaseUrl + m_BasePath + "/control.php?session=%s&command=skip&debug=%i", m_Session, 0);
   if (!http.Get(url, html)) return false;
-  CLog::DebugLog("Skip: %s", html.c_str());
+  CLog::Log(LOGDEBUG,"Skip: %s", html.c_str());
   CStdString value;
   Parameter("response", html, value);
   if (value == "OK")
@@ -422,7 +422,7 @@ void CFileLastFM::Close()
   }
   m_bOpened = false;
 
-  CLog::DebugLog("LastFM closed");
+  CLog::Log(LOGDEBUG,"LastFM closed");
 }
 
 bool CFileLastFM::RetreiveMetaData()
@@ -438,7 +438,7 @@ bool CFileLastFM::RetreiveMetaData()
   //CStdString convertedvalue;
   url.Format("http://" + m_BaseUrl + m_BasePath + "/np.php?session=%s&debug=%i", m_Session, 0 );
   if (!http.Get(url, html)) return false;
-  CLog::DebugLog("MetaData: %s", html.c_str());
+  CLog::Log(LOGDEBUG,"MetaData: %s", html.c_str());
   Parameter("artist", html, value);
   tag.SetArtist(value);
   //CStdString station;

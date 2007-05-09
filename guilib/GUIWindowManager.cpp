@@ -34,7 +34,7 @@ void CGUIWindowManager::Initialize()
 bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
   bool handled = false;
-//  CLog::DebugLog("SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
+//  CLog::Log(LOGDEBUG,"SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
   // Send the message to all none window targets
   for (int i = 0; i < (int) m_vecMsgTargets.size(); i++)
   {
@@ -187,7 +187,7 @@ void CGUIWindowManager::Delete(DWORD dwID)
 void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
-  CLog::DebugLog("CGUIWindowManager::PreviousWindow: Deactivate");
+  CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
   int currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
   if (!pCurrentWindow)
@@ -247,7 +247,7 @@ void CGUIWindowManager::PreviousWindow()
   m_windowHistory.pop();
 
   // ok, initialize the new window
-  CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activate new");
+  CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Activate new");
   g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
   pNewWindow->OnMessage(msg2);

@@ -42,7 +42,7 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 void CGUIDialogProgress::StartModal()
 {
-  CLog::DebugLog("DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
+  CLog::Log(LOGDEBUG,"DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
   m_bCanceled = false;
 
   // set running before it's routed, else the auto-show code

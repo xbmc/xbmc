@@ -278,7 +278,7 @@ void CSlideShowPic::Process()
   }
   if (m_iCounter >= m_transistionEnd.start)
   { // do end transistion
-//    CLog::DebugLog("Transistioning");
+//    CLog::Log(LOGDEBUG,"Transistioning");
     m_bDrawNextImage = true;
     if (m_transistionEnd.type == CROSSFADE)
     { // fade out at 1x speed

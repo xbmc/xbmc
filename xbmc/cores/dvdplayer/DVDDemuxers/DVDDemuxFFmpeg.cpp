@@ -229,7 +229,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // open the demuxer
   if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
   {
-    CLog::DebugLog("Error, could not open file", strFile);
+    CLog::Log(LOGDEBUG,"Error, could not open file", strFile);
     Dispose();
     return false;
   }
@@ -241,7 +241,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     if (iErr < 0)
     {
-      CLog::DebugLog("could not find codec parameters for %s", strFile);
+      CLog::Log(LOGDEBUG,"could not find codec parameters for %s", strFile);
       if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
       {
         // special case, our codecs can still handle it.
@@ -588,3 +588,4 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->pPrivate = pStream;
   }
 }
+
