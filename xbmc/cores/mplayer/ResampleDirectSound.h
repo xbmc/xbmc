@@ -18,33 +18,25 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// AsyncAudioRenderer.h: interface for the CAsyncDirectSound class.
+// AsyncAudioRenderer.h: interface for the CResampleDirectSound class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
-#define AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
 #include "../ssrc.h"
 
-extern void RegisterAudioCallback(IAudioCallback* pCallback);
-extern void UnRegisterAudioCallback();
-
-class CWin32DirectSound : public IDirectSoundRenderer
+class CResampleDirectSound : public IDirectSoundRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
-  CWin32DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0, char* strAudioCodec = "", bool bIsMusic=false);
-  virtual ~CWin32DirectSound();
+  CResampleDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, char* strAudioCodec = "", bool bIsMusic = false);
+  virtual ~CResampleDirectSound();
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
   virtual DWORD GetSpace();
@@ -52,7 +44,6 @@ public:
   virtual HRESULT Pause();
   virtual HRESULT Stop();
   virtual HRESULT Resume();
-
   virtual LONG GetMinimumVolume() const;
   virtual LONG GetMaximumVolume() const;
   virtual LONG GetCurrentVolume() const;
@@ -62,24 +53,15 @@ public:
   virtual void WaitCompletion();
   virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
+  virtual void SetDynamicRangeCompression(long drc);
 
 private:
-  LPDIRECTSOUNDBUFFER  m_pBuffer;
-  LPDIRECTSOUND8 m_pDSound;
 
-  IAudioCallback* m_pCallback;
-
-  LONG m_nCurrentVolume;
-  DWORD m_dwPacketSize;
-  DWORD m_dwNumPackets;
-  DWORD m_dwWriteOffset;
-  bool m_bPause;
-  bool m_bIsAllocated;
-  bool m_bFirstPackets;
-
-  unsigned int m_uiSamplesPerSec;
-  unsigned int m_uiBitsPerSample;
+  DWORD m_dwOutputSize;
+  DWORD m_dwInputSize;
   unsigned int m_uiChannels;
-};
 
-#endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
+  unsigned char* m_pSampleData;
+  Cssrc m_Resampler;
+  IDirectSoundRenderer *m_pRenderer;
+};
