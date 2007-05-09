@@ -14,3 +14,4 @@ extern "C"
 #endif
 
 #endif // _EMU_DUMMY_H
+
