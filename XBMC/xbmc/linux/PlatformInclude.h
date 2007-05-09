@@ -8,6 +8,7 @@
 #include "XSyncUtils.h"
 #include "XEventUtils.h"
 #include "XTimeUtils.h"
+#include "XThreadUtils.h"
 
 #endif
 

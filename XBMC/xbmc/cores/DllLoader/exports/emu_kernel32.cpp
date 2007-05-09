@@ -2,15 +2,18 @@
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
 
-#ifdef _LINUX
-#include "../../../linux/PlatformInclude.h"
 #include "../../../xbox/IoSupport.h"
-#else
-#include "..\..\..\xbox\IoSupport.h"
+
+#ifndef _LINUX
 #include <process.h>
 #endif
 
 #include "../dll_tracker.h"
+
+#ifdef _LINUX
+#include "../../../linux/PlatformInclude.h"
+#define __except catch
+#endif
 
 vector<string> m_vecAtoms;
 
@@ -76,9 +79,11 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
   // convert '/' to '\\'
   p = str;
   while (p = strchr(p, '/')) * p = '\\';
+  return GetFileAttributesA(str);
+#else
+  return GetFileAttributes(str);
 #endif
 
-  return GetFileAttributesA(str);
 }
 
 struct SThreadWrapper
@@ -123,19 +128,11 @@ unsigned int __stdcall dllThreadWrapper(LPVOID lpThreadParameter)
   }  
 #endif
 
-#ifdef _LINUX
-  try 
-#else
   __try
-#endif
   {
     result = param->lpStartAddress(param->lpParameter);
   }
-#ifdef _LINUX
-  catch(...)
-#else
   __except (EXCEPTION_EXECUTE_HANDLER)
-#endif
   {    
     CLog::Log(LOGERROR, "DLL:%s - Unhandled exception in thread created by dll", param->lpDLL );
     result = 0;
@@ -165,6 +162,7 @@ extern "C" HANDLE WINAPI dllCreateThread(
 #ifdef _LINUX
   HANDLE h = new CXHandle(CXHandle::HND_THREAD);
   h->m_hThread = SDL_CreateThread(dllThreadWrapper, (void*)param);
+  return h;
 #else
   return (HANDLE)_beginthreadex(lpThreadAttributes, dwStackSize, dllThreadWrapper, param, dwCreationFlags, (unsigned int *)lpThreadId);
 #endif

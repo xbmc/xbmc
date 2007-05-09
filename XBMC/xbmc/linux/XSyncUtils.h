@@ -21,8 +21,6 @@ void DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 void EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 void LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 
-DWORD GetCurrentThreadId(void);
-
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 
 DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );

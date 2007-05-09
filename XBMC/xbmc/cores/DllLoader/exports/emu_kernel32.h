@@ -41,6 +41,8 @@ CPINFO, *LPCPINFO;
 #define STD_OUTPUT_HANDLE       ((DWORD) -11)
 #define STD_ERROR_HANDLE        ((DWORD) -12)
 
+#define ERROR_INVALID_PARAMETER (87L)
+
 //SYSTEM_INFO definition take from Winnt headers.
 typedef struct _SYSTEM_INFO
 {
@@ -90,6 +92,21 @@ typedef struct _OSVERSIONINFOW
   WCHAR szCSDVersion[128];
 }
 OSVERSIONINFOW, *LPOSVERSIONINFOW;
+
+#ifdef _LINUX
+#define EXCEPTION_MAXIMUM_PARAMETERS 15
+typedef struct _EXCEPTION_RECORD {
+  DWORD ExceptionCode;
+  DWORD ExceptionFlags;
+  struct _EXCEPTION_RECORD* ExceptionRecord;
+  PVOID ExceptionAddress;
+  DWORD NumberParameters;
+  ULONG_PTR ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
+} EXCEPTION_RECORD, 
+ *PEXCEPTION_RECORD;
+ 
+#define LPOVERLAPPED void *
+#endif
 
 #endif
 
