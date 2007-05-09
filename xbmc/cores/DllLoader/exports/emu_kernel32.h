@@ -5,7 +5,7 @@
 #define MAX_LEADBYTES             12
 #define MAX_DEFAULTCHAR           2
 
-#ifdef _XBOX
+#if defined (_XBOX) || defined (_LINUX)
 typedef struct _STARTUPINFOA
 {
   DWORD cb;
@@ -66,7 +66,7 @@ SYSTEM_INFO, *LPSYSTEM_INFO;
 #endif
 
 typedef DWORD LCTYPE;
-#ifdef _XBOX
+#if defined (_XBOX) || defined (_LINUX)
 typedef BOOL (*PHANDLER_ROUTINE)(DWORD);
  
 typedef struct _OSVERSIONINFO
@@ -98,7 +98,7 @@ OSVERSIONINFOW, *LPOSVERSIONINFOW;
 // LOCAL defines from mingw
 #define MAX_LEADBYTES 	12
 #define MAX_DEFAULTCHAR	2
-#ifdef _XBOX
+#if defined (_XBOX) || defined (_LINUX)
 #define LOCALE_NOUSEROVERRIDE	0x80000000
 #define LOCALE_USE_CP_ACP	0x40000000
 #if (WINVER >= 0x0400)
