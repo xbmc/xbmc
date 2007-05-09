@@ -2623,3 +2623,11 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
   if (item1 != item2 && item1 < m_items.size() && item2 < m_items.size())
     swap(m_items[item1], m_items[item2]);
 }
+
+void CFileItemList::UpdateItem(const CFileItem *item)
+{
+  if (!item) return;
+  CFileItem *oldItem = Get(item->m_strPath);
+  if (oldItem)
+    *oldItem = *item;
+}

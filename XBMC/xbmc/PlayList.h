@@ -86,6 +86,8 @@ class CPlayListItem : public CFileItem
   void SetUnPlayable(int iItem);
   int GetPlayable() { return m_iPlayableItems; };
 
+  void UpdateItem(const CFileItem *item);
+
 protected:
   CStdString m_strPlayListName;
   CStdString m_strBasePath;

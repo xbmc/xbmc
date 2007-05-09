@@ -214,6 +214,7 @@ protected:
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
 
+  void SaveCurrentFileSettings();
 };
 
 extern CApplication g_application;
