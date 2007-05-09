@@ -19,7 +19,6 @@
 */
 
 #include "stdafx.h"
-#include <stdio.h>
 #include "Win32DirectSound.h"
 #include "AudioContext.h"
 #include "KS.h"
@@ -48,6 +47,8 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   m_bIsAllocated = false;
   m_pBuffer = NULL;
   m_uiChannels = iChannels;
+  m_uiSamplesPerSec = uiSamplesPerSec;
+  m_uiBitsPerSample = uiBitsPerSample;
   m_dwWriteOffset = 0;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
@@ -194,15 +195,19 @@ HRESULT CWin32DirectSound::SetCurrentVolume(LONG nVolume)
 
 
 //***********************************************************************************************
-bool CWin32DirectSound::SupportsSurroundSound() const
-{
-  return false;
-}
-
-//***********************************************************************************************
 DWORD CWin32DirectSound::GetSpace()
 {
-  return m_dwPacketSize * m_dwNumPackets - GetBytesInBuffer();
+  DWORD playCursor;
+  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, NULL)))
+    return 0;
+
+  DWORD bytes;
+  if(playCursor <= m_dwWriteOffset)
+    bytes = m_dwWriteOffset - playCursor;
+  else
+    bytes = m_dwWriteOffset + m_dwPacketSize * m_dwNumPackets - playCursor;
+
+  return m_dwPacketSize * m_dwNumPackets - bytes;
 }
 
 //***********************************************************************************************
@@ -239,25 +244,24 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 }
 
 //***********************************************************************************************
-DWORD CWin32DirectSound::GetBytesInBuffer()
+FLOAT CWin32DirectSound::GetDelay()
 {
+  FLOAT delay = 0.0;
+
   DWORD playCursor;
   if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, NULL)))
     return 0;  
 
+  DWORD bytes;
   if(playCursor <= m_dwWriteOffset)
-    return m_dwWriteOffset - playCursor;
+    bytes = m_dwWriteOffset - playCursor;
   else
-    return m_dwWriteOffset + m_dwPacketSize * m_dwNumPackets - playCursor;
-}
+    bytes = m_dwWriteOffset + m_dwPacketSize * m_dwNumPackets - playCursor;
 
-//***********************************************************************************************
-FLOAT CWin32DirectSound::GetDelay()
-{
-  if (g_audioContext.IsAC3EncoderActive()) //2 channel materials will not be encoded as ac3 stream
-    return 0.049f;      //(Ac3 encoder 29ms)+(receiver 20ms)
-  else
-    return 0.008f;      //PCM output 8ms
+  delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
+  delay += 0.008f;
+
+  return delay;
 }
 
 //***********************************************************************************************
