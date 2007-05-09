@@ -92,3 +92,6 @@
 
 // Message sent by search dialog to request a new search be applied
 #define GUI_MSG_SEARCH_UPDATE         GUI_MSG_USER + 28
+
+// Message sent to tell the GUI to update a single item
+#define GUI_MSG_UPDATE_ITEM           GUI_MSG_USER + 29
