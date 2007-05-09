@@ -1,3 +1,6 @@
+#ifndef __XTHREAD_UTILS__H__
+#define __XTHREAD_UTILS__H__
+
 HANDLE CreateThread(
 		  LPSECURITY_ATTRIBUTES lpThreadAttributes,
 		    SIZE_T dwStackSize,
@@ -7,3 +10,25 @@ HANDLE CreateThread(
 			    LPDWORD lpThreadId
 		);
 
+HANDLE _beginthreadex( 
+   void *security,
+   unsigned stack_size,
+   int ( *start_address )( void * ),
+   void *arglist,
+   unsigned initflag,
+   unsigned *thrdaddr 
+);
+
+DWORD GetCurrentThreadId(void);
+
+HANDLE GetCurrentThread(void);
+
+BOOL GetThreadTimes (
+  HANDLE hThread,
+  LPFILETIME lpCreationTime,
+  LPFILETIME lpExitTime,
+  LPFILETIME lpKernelTime,
+  LPFILETIME lpUserTime
+);
+
+#endif

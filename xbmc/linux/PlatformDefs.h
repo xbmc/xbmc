@@ -227,7 +227,7 @@ typedef int SOCKET;
 #define LPCRITICAL_SECTION CXHandle*
 
 // Thread
-typedef DWORD (*LPTHREAD_START_ROUTINE)(LPVOID);
+typedef int (*LPTHREAD_START_ROUTINE)(void *);
 
 // File
 #define O_BINARY 0
@@ -284,6 +284,8 @@ typedef struct _WIN32_FIND_DATA
     CHAR      cFileName[260];
     CHAR      cAlternateFileName[14];
 } WIN32_FIND_DATA, *PWIN32_FIND_DATA, *LPWIN32_FIND_DATA;
+
+#define LPWIN32_FIND_DATAA LPWIN32_FIND_DATA
 
 #define FILE_ATTRIBUTE_DIRECTORY           0x00000010
 

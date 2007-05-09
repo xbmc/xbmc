@@ -17,12 +17,14 @@ public:
 
 	// simulate mutex and critical section
 	SDL_mutex	*m_hMutex;
-	int		RecursionCount;  // for mutex - for compatibility with WIN32 critical section
+	int			RecursionCount;  // for mutex - for compatibility with WIN32 critical section
 
-    	DWORD		OwningThread;
+   	DWORD		OwningThread;
 
-	int		fd;
+	int			fd;
 	bool		m_bManualEvent;
+	
+	time_t		m_tmCreation;
 
 	CStdStringArray	m_FindFileResults;
 	int 		m_nFindFileIterator;	
@@ -35,7 +37,9 @@ public:
 					RecursionCount(0),
 					OwningThread(0),
 					m_bManualEvent(FALSE),
-					m_nFindFileIterator(0) { };
+					m_nFindFileIterator(0) { 
+		m_tmCreation = time(NULL);
+	};
 	
 	CXHandle(HandleType nType) :	fd(0), 
 									m_type(nType), 
@@ -45,7 +49,9 @@ public:
 									RecursionCount(0),
 									OwningThread(0),
 									m_bManualEvent(FALSE),
-									m_nFindFileIterator(0) { };
+									m_nFindFileIterator(0) { 
+		m_tmCreation = time(NULL);
+	};
 	
 	virtual ~CXHandle() {
 

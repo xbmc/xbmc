@@ -102,9 +102,9 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
 	if (access(strFileName, R_OK) == 0 && access(strFileName, W_OK) != 0)
 		lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
 
-	TimeTToFileTime(&fileStat.st_ctime, &lpFindData->ftCreationTime);
-	TimeTToFileTime(&fileStat.st_atime, &lpFindData->ftLastAccessTime);
-	TimeTToFileTime(&fileStat.st_mtime, &lpFindData->ftLastWriteTime);
+	TimeTToFileTime(fileStat.st_ctime, &lpFindData->ftCreationTime);
+	TimeTToFileTime(fileStat.st_atime, &lpFindData->ftLastAccessTime);
+	TimeTToFileTime(fileStat.st_mtime, &lpFindData->ftLastWriteTime);
 	
 	lpFindData->nFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
 	lpFindData->nFileSizeLow =  (DWORD)fileStat.st_size;

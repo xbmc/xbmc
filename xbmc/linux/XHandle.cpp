@@ -3,7 +3,7 @@
 
 bool CloseHandle(HANDLE hObject) {
 
-        if (hObject == INVALID_HANDLE_VALUE)
+    if (hObject == INVALID_HANDLE_VALUE || hObject == (HANDLE)-1)
 	  return true;
 
 	if (hObject) {
