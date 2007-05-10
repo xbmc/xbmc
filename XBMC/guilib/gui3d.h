@@ -78,9 +78,11 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 
 
 #ifdef _LINUX
-
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#ifdef HAS_SDL_OPENGL
+#include <SDL/SDL_opengl.h>
+#endif
 #define D3DPRESENTFLAG_INTERLACED 1
 #define D3DPRESENTFLAG_WIDESCREEN 2
 #define D3DPRESENTFLAG_PROGRESSIVE 4
