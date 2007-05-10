@@ -112,6 +112,10 @@
 #define HAS_SDL
 #define HAS_RAR
 
+#ifndef HAS_SDL_OPENGL
+#define HAS_SDL_2D
+#endif
+
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>

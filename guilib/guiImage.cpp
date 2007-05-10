@@ -163,6 +163,10 @@ void CGUIImage::Render()
 #endif
 #endif
 
+#ifdef HAS_SDL_OPENGL
+    glBegin(GL_QUADS);
+#endif
+    
     float uLeft, uRight, vTop, vBottom;
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
@@ -220,6 +224,10 @@ void CGUIImage::Render()
     if (m_diffusePalette)
       p3DDevice->SetPalette( 1, NULL);
 #endif
+#endif
+
+#ifdef HAS_SDL_OPENGL      
+    glEnd();  
 #endif
 
 #ifndef HAS_SDL
@@ -331,7 +339,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   verts[3].color = g_graphicsContext.MergeAlpha(color);
 
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-#else
+#elif defined(HAS_SDL_2D)
 #define USE_NEW_SDL_SCALING
   SDL_Surface* texture = m_vecTextures[m_iCurrentImage]; 
 #ifdef USE_NEW_SDL_SCALING
@@ -378,6 +386,26 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     g_graphicsContext.BlitToScreen(zoomed, NULL,  &dst);
   }
 #endif
+#elif defined(HAS_SDL_OPENGL)
+  DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
+  if (colour & 0xff000000)
+  {
+    // Top-left vertex (corner)
+    glTexCoord2f(u1, v1);
+    glVertex3f(x1, y1, 0);
+    
+    // Bottom-left vertex (corner)
+    glTexCoord2f(u2, v1);
+    glVertex3f(x2, y2, 0);
+    
+    // Bottom-right vertex (corner)
+    glTexCoord2f(u2, v2);
+    glVertex3f(x3, y3, 0);
+    
+    // Top-right vertex (corner)
+    glTexCoord2f(u1, v2);
+    glVertex3f(x4, y4, 0);
+  }
 #endif
 }
 

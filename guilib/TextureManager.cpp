@@ -412,11 +412,22 @@ DWORD __forceinline __stdcall PadPow2(DWORD x)
   }
   // return result in eax
 }
-#else
+#elif defined(HAS_SDL_2D)
 // SDL does not care about the surfaces being a power of 2
 DWORD PadPow2(DWORD x) 
 {
-   return x;
+  return x;
+}
+#elif defined(HAS_SDL_OPENGL)  
+DWORD PadPow2(DWORD x) 
+{
+  --x;
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  return ++x;
 }
 #endif
 
@@ -768,15 +779,12 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
                                        D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
                                        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
+#endif                                       
       {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))        
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
       }
-#else
-      CLog::Log(LOGERROR, "Texture manager unable to load file, unsupported format dds: %s", strPath.c_str());
-      return 0;
-#endif      
     }
     else
     {    

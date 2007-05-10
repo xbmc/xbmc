@@ -88,6 +88,8 @@ public:
 #else
   inline void setScreenSurface(SDL_Surface* surface) { m_screenSurface = surface; }  
   inline SDL_Surface* getScreenSurface() { return m_screenSurface; }  
+#endif
+#ifdef HAS_SDL_2D
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
 #endif  
   int GetWidth() const { return m_iScreenWidth; }
@@ -169,11 +171,15 @@ protected:
   stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
 #else
-  stack<SDL_Rect*> m_viewStack;
   SDL_Surface* m_screenSurface;  
-  int m_viewportTop;
-  int m_viewportLeft;
-#endif  
+#endif
+#ifdef HAS_SDL_2D
+  stack<SDL_Rect*> m_viewStack;
+#endif
+#ifdef HAS_SDL_OPENGL
+  stack<GLint*> m_viewStack;
+#endif
+
   int m_iScreenHeight;
   int m_iScreenWidth;
   DWORD m_dwID;
