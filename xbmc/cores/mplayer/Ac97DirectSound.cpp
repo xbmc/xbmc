@@ -77,6 +77,10 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_dwNumPackets = 48000 * 2 * (16>>3);
   m_dwNumPackets /= m_dwPacketSize * 4;
 
+  // don't go larger than soundcard can handle
+  if(m_dwNumPackets > DSAC97_MAX_ATTACHED_PACKETS)
+    m_dwNumPackets = DSAC97_MAX_ATTACHED_PACKETS;
+
   WAVEFORMATEX m_wfx = {};
   XAudioCreatePcmFormat( 2, 48000, 16, &m_wfx ); //passthrough is always 2ch 48000KHz/16bit
   
