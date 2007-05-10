@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+#include "TextureManager.h"
 
 struct FRECT
 {
@@ -114,7 +115,7 @@ public:
 protected:
   void FreeTextures();
   void Process();
-#ifndef _LINUX  
+#ifndef HAS_SDL
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
   static const DWORD FVF_VERTEX2 = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2;
 #endif
@@ -137,7 +138,7 @@ protected:
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;
-#else
+#elif defined(HAS_SDL_2D)
   void CalcBoundingBox(float *x, float *y, int n, int *b);
   void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);
   void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst);
@@ -145,7 +146,12 @@ protected:
   vector <CCachedTexture> m_vecCachedTextures;
   SDL_Surface* m_diffuseTexture;
   SDL_Palette* m_diffusePalette;
-  SDL_Palette* m_pPalette;  
+  SDL_Palette* m_pPalette;
+#elif defined(HAS_SDL_OPENGL)
+  CGLTexture* m_diffuseTexture;
+  SDL_Palette* m_diffusePalette;
+  SDL_Palette* m_pPalette;
+  vector <CGLTexture*> m_vecTextures;
 #endif  
   float m_diffuseScaleU, m_diffuseScaleV;  
   bool m_bWasVisible;

@@ -387,6 +387,15 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   }
 #endif
 #elif defined(HAS_SDL_OPENGL)
+/*
+change to:
+    glTexCoord2f(u2, v1);
+    glColor3f(r,g,b);
+    glVertex3f(x2, y2, 0);
+
+actually, try to provide the color with glColor4f(r,g,b,0.5);
+where 0.5 may be automatically treated as alpha and blended with the texture
+*/
   DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   if (colour & 0xff000000)
   {
@@ -453,15 +462,19 @@ void CGUIImage::AllocResources()
   {
 #ifndef HAS_SDL  
     LPDIRECT3DTEXTURE8 pTexture;
-#else
+#elif defined(HAS_SDL_2D)
     SDL_Surface* pTexture;
+#elif defined(HAS_SDL_OPENGL)
+    CGLTexture* pTexture;
 #endif
+
     pTexture = g_TextureManager.GetTexture(m_strFileName, i, m_iTextureWidth, m_iTextureHeight, m_pPalette, m_linearTexture);
+
 #ifndef HAS_XBOX_D3D
     m_linearTexture = false;
 #endif
     m_vecTextures.push_back(pTexture);
-#ifdef HAS_SDL
+#ifdef HAS_SDL_2D
     m_vecCachedTextures.push_back(CCachedTexture());
 #endif
   }
@@ -493,9 +506,12 @@ void CGUIImage::AllocResources()
         m_diffuseTexture->GetLevelDesc(0, &desc);
         m_diffuseScaleU = float(width) / float(desc.Width) / m_fU;
         m_diffuseScaleV = float(height) / float(desc.Height) / m_fV;
-#else
+#elif defined(HAS_SDL_2D)
         m_diffuseScaleU = float(width) / float(m_diffuseTexture->w) / m_fU;
         m_diffuseScaleV = float(height) / float(m_diffuseTexture->h) / m_fV;		  	
+#elif defined(HAS_SDL_OPENGL)
+        m_diffuseScaleU = float(width) / float(m_diffuseTexture->textureWidth) / m_fU;
+        m_diffuseScaleV = float(height) / float(m_diffuseTexture->textureHeight) / m_fV;		  	
 #endif        
       }
     }
@@ -507,9 +523,11 @@ void CGUIImage::FreeTextures()
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     g_TextureManager.ReleaseTexture(m_strFileName, i);
+#ifdef HAS_SDL_2D
     if (m_vecCachedTextures[i].surface)
       SDL_FreeSurface(m_vecCachedTextures[i].surface);
     m_vecCachedTextures[i].surface = NULL;
+#endif    
   }
 
   if (m_diffuseTexture)
@@ -518,7 +536,9 @@ void CGUIImage::FreeTextures()
   m_diffusePalette = NULL;
 
   m_vecTextures.clear();
+#ifdef HAS_SDL_2D
   m_vecCachedTextures.clear();
+#endif
   m_iCurrentImage = 0;
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
@@ -554,9 +574,12 @@ void CGUIImage::CalculateSize()
 
       m_iImageWidth = desc.Width;
       m_iImageHeight = desc.Height;
-#else
+#elif defined(HAS_SDL_2D)
       m_iImageWidth = m_vecTextures[m_iCurrentImage]->w;
       m_iImageHeight = m_vecTextures[m_iCurrentImage]->h;
+#elif defined(HAS_SDL_OPENGL)
+      m_iImageWidth = m_vecTextures[m_iCurrentImage]->imageWidth;
+      m_iImageHeight = m_vecTextures[m_iCurrentImage]->imageHeight;
 #endif	      
     }
 
@@ -582,9 +605,12 @@ void CGUIImage::CalculateSize()
 
       m_iTextureWidth = desc.Width;
       m_iTextureHeight = desc.Height;
-#else
+#elif defined(HAS_SDL_2D)
       m_iTextureWidth = m_vecTextures[m_iCurrentImage]->w;
       m_iTextureHeight = m_vecTextures[m_iCurrentImage]->h;
+#elif defined(HAS_SDL_OPENGL)
+      m_iImageWidth = m_vecTextures[m_iCurrentImage]->imageWidth;
+      m_iImageHeight = m_vecTextures[m_iCurrentImage]->imageHeight;
 #endif      
 
       if (m_iTextureHeight > g_graphicsContext.GetHeight() )
@@ -776,7 +802,7 @@ void CGUIImage::DumpTextureUse()
 }
 #endif
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_2D
 void CGUIImage::CalcBoundingBox(float *x, float *y, int n, int *b)
 {
   b[0] = (int)x[0], b[2] = 1;
