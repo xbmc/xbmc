@@ -88,8 +88,10 @@ void CSplash::Process()
   g_graphicsContext.Get3DDevice()->EndScene();
 #endif
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-#else  
+#elif defined(HAS_SDL_2D) 
   SDL_Flip(g_graphicsContext.getScreenSurface());
+#elif defined(HAS_SDL_OPENGL)
+  SDL_GL_SwapBuffers();
 #endif
   g_graphicsContext.Unlock();
 

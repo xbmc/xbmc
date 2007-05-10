@@ -1117,7 +1117,16 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   textureHeight = PadPow2(imageHeight);
   
   // Resize texture to POT
-  unsigned char* p = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* src = (unsigned char*) surface->pixels;
+  unsigned char* resized = new unsigned char[textureWidth * textureHeight * 4];
+  for (int y = 0; y < surface->h; y++)
+  {
+    memcpy(resized, src, surface->pitch);
+    src += surface->pitch;
+    resized += (textureWidth * 4);
+  }
+
+/*
   if (gluScaleImage(GL_RGBA, 
             imageWidth, imageHeight, GL_UNSIGNED_BYTE, surface->pixels,  
             textureWidth, textureHeight, GL_UNSIGNED_BYTE, p) != 0)
@@ -1125,6 +1134,7 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
     CLog::Log(LOGERROR, "CGLTexture unable to scale texture");
     return;
   }
+*/  
       
   // Have OpenGL generate a texture object handle for us
   glGenTextures(1, &id);
@@ -1136,14 +1146,13 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
  
-  // Edit the texture object's image data using the information SDL_Surface gives us
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
-               GL_RGBA, GL_UNSIGNED_BYTE, p);  
+               GL_RGBA, GL_UNSIGNED_BYTE, resized);  
 }
 
 CGLTexture::~CGLTexture()
 {
-  glDeleteTextures(1, &id);
+  //glDeleteTextures(1, &id);
   id = 0;
 }
 #endif
