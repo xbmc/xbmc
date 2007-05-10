@@ -60,22 +60,15 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
 #ifdef _XBOX
   // we don't allow resampling now, there is a bug in sscc that causes it to return the wrong chunklen.
   if( bPasstrough )
-  {
-    m_iPackets = 16;
-    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true, m_iPackets); // true = resample, 128 buffers
-  }
+    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true); // true = resample, 128 buffers
   else
-  {
-    m_iPackets = 32; //64;// better sync with smaller buffers?    
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, m_iPackets, codecstring);
-  }
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, codecstring);
 #else
 
   if( bPasstrough )
     return false;
 
-  m_iPackets = 16;
-  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets, codecstring);
+  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, codecstring);
 #endif
 
   if (!m_pAudioDecoder) return false;
@@ -111,7 +104,6 @@ void CDVDAudio::Destroy()
   m_iChannels = 0;
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
-  m_iPackets = 0;
   m_iSpeed = 1;
 }
 
@@ -146,12 +138,10 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
   }
   int iTotalSize = len;
 
-  // wait until we can put something in the buffer, if we don't do this we have to check every time how
-  // much is really written because it could be the buffer was still full.
-  if ((m_iPackets * m_dwPacketSize) > len)
-  {
-    while (m_pAudioDecoder->GetSpace() < len) Sleep(1);
-  }
+  // make sure renderer can atleast take one packet
+  DWORD dwTimestamp = GetTickCount() + 5000; // uggly hack to avoid deadlock
+  while (m_pAudioDecoder->GetSpace() < m_dwPacketSize && dwTimestamp < GetTickCount())
+    Sleep(1);
 
   if (m_iBufferSize > 0)
   {
@@ -164,9 +154,8 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
     m_iBufferSize += iBytesToCopy;
     
     if (AddPacketsRenderer(m_pBuffer, m_iBufferSize) != m_dwPacketSize)
-    {
-      return -1;
-    }
+      return iBytesToCopy;
+
     m_iBufferSize = 0;
   }
 
