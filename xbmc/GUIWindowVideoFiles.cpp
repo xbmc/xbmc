@@ -19,6 +19,7 @@
 
 using namespace XFILE;
 using namespace PLAYLIST;
+using namespace VIDEO;
 
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
@@ -425,55 +426,6 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
       m_database.AddFile(item.m_strPath);
     }
   }
-}
-
-void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
-{
-  // GetStackedDirectory() now sets and restores the stack state!
-  SScanSettings settings = {};
-
-  if(iDirNames>0)
-  {
-    settings.parent_name = true;
-    settings.recurse = 1; /* atleast one, otherwise this makes no sence */
-  }
-  else if ((info.strContent.Equals("movies") || strPath.IsEmpty()) && iDirNames == -1)
-  {
-    bool bCanceled;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
-    {
-      settings.parent_name = true;
-      settings.recurse = 1; /* atleast one, otherwise this makes no sence */
-    }
-
-    if (bCanceled)
-      return;
-  }
-
-  if(iScanRecursively > 0)
-    settings.recurse = INT_MAX;
-  else if (iScanRecursively == -1 && info.strContent.Equals("movies"))
-  {
-    bool bCanceled;
-    if( CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled) )
-      settings.recurse = INT_MAX;
-
-    if (bCanceled)
-      return;
-  }
-  if (strPath.IsEmpty())
-    settings.recurse = 1;
-
-  if (info.strContent.Equals("tvshows"))
-  {
-    settings.recurse = 1;
-    settings.parent_name = true;
-    settings.parent_name_root = true;
-  }
-
-  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialog)
-    pDialog->StartScanning(strPath,info,settings,false);
 }
 
 void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)

@@ -146,10 +146,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     if (type == "video")
     {
       if (dialog->m_bRunScan)
-      {
-        CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-        pWindow->OnScan(share.strPath,dialog->m_info,dialog->m_bUseDirNames?1:0,dialog->m_bScanRecursively?1:0);
-      }
+        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,dialog->m_bUseDirNames?1:0,dialog->m_bScanRecursively?1:0);
     }
   }
   dialog->m_paths.Clear();

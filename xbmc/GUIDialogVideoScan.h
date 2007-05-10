@@ -3,7 +3,7 @@
 #include "VideoInfoScanner.h"
 #include "utils/CriticalSection.h"
 
-class CGUIDialogVideoScan: public CGUIDialog, public IVideoInfoScannerObserver
+class CGUIDialogVideoScan: public CGUIDialog, public VIDEO::IVideoInfoScannerObserver
 {
 public:
   CGUIDialogVideoScan(void);
@@ -11,7 +11,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  void StartScanning(const CStdString& strDirectory, const SScraperInfo& info, const SScanSettings& settings, bool bUpdateAll);
+  void StartScanning(const CStdString& strDirectory, const SScraperInfo& info, const VIDEO::SScanSettings& settings, bool bUpdateAll);
   bool IsScanning();
   void StopScanning();
 
@@ -21,12 +21,12 @@ protected:
   virtual void OnDirectoryChanged(const CStdString& strDirectory);
   virtual void OnDirectoryScanned(const CStdString& strDirectory);
   virtual void OnFinished();
-  virtual void OnStateChanged(SCAN_STATE state);
+  virtual void OnStateChanged(VIDEO::SCAN_STATE state);
   virtual void OnSetProgress(int currentItem, int itemCount);
   virtual void OnSetCurrentProgress(int currentItem, int itemCount);
 
-  CVideoInfoScanner m_videoInfoScanner;
-  SCAN_STATE m_ScanState;
+  VIDEO::CVideoInfoScanner m_videoInfoScanner;
+  VIDEO::SCAN_STATE m_ScanState;
   CStdString m_strCurrentDir;
 
   CCriticalSection m_critical;
