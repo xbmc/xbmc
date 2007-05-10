@@ -30,6 +30,8 @@
 #define CONTROL_PROGRESS          403
 #define CONTROL_CURRENT_PROGRESS  404
 
+using namespace VIDEO;
+
 CGUIDialogVideoScan::CGUIDialogVideoScan(void)
 : CGUIDialog(WINDOW_DIALOG_VIDEO_SCAN, "DialogVideoScan.xml")
 {
