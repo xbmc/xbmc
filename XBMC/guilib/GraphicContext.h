@@ -12,6 +12,9 @@
 #include <stack>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
+#ifdef HAS_SDL_OPENGL
+#include <SDL/SDL_opengl.h>
+#endif
 
 // forward definitions
 class IMsgSenderCallback;

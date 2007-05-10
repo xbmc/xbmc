@@ -8,7 +8,22 @@
 
 #include "TextureBundle.h"
 
-#pragma once 
+#pragma once
+
+#ifdef HAS_SDL_OPENGL
+class CGLTexture
+{
+public:
+  CGLTexture(SDL_Surface* surface);
+  ~CGLTexture();
+  int imageWidth;
+  int imageHeight;
+  int textureWidth;
+  int textureHeight;
+  GLuint id;
+};
+#endif
+  
 /*!
  \ingroup textures
  \brief 
@@ -26,8 +41,10 @@ public:
   bool Release();
 #ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_Surface* GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);
+#elif defined(HAS_SDL_OPENGL)
+  CGLTexture* GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);  
 #endif
   int GetDelay() const;
   int GetRef() const;
@@ -44,9 +61,12 @@ protected:
 #ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 m_pTexture;
   LPDIRECT3DPALETTE8 m_pPalette;
-#else
+#elif defined(HAS_SDL_2D)
   SDL_Surface* m_pTexture;
   SDL_Palette* m_pPalette;
+#elif defined(HAS_SDL_OPENGL)
+  CGLTexture* m_pTexture;
+  SDL_Palette* m_pPalette;  
 #endif
   int m_iReferenceCount;
   int m_iDelay;
@@ -56,6 +76,9 @@ protected:
   bool m_bPacked;
   D3DFORMAT m_format;
   DWORD m_memUsage;
+#ifdef HAS_SDL_OPENGL
+  GLuint m_textureId;
+#endif  
 };
 
 /*!
@@ -72,8 +95,10 @@ public:
   int size() const;
 #ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_Surface* GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);
+#elif defined(HAS_SDL_OPENGL)
+  CGLTexture* GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);  
 #endif
   int GetDelay(int iPicture = 0) const;
   int GetLoops(int iPicture = 0) const;
@@ -106,8 +131,10 @@ public:
   int Load(const CStdString& strTextureName, DWORD dwColorKey = 0);
 #ifndef HAS_SDL  
   LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_Surface* GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);  
+#elif defined(HAS_SDL_OPENGL)
+  CGLTexture* GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture);  
 #endif
   int GetDelay(const CStdString& strTextureName, int iPicture = 0) const;
   int GetLoops(const CStdString& strTextureName, int iPicture = 0) const;

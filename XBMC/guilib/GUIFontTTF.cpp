@@ -756,7 +756,7 @@ struct CUSTOMVERTEX {
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-#else
+#elif defined(HAS_SDL_2D)
 
   // Copy the character to a temporary surface so we can adjust its colors 
   SDL_Surface* tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE|SDL_SRCALPHA, (int) width, (int) height, 32,

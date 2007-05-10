@@ -37,7 +37,11 @@ CTexture::CTexture(SDL_Surface* pTexture, int iWidth, int iHeight, bool bPacked,
 {
   m_iLoops = 0;
   m_iReferenceCount = 0;
+#ifndef HAS_SDL_OPENGL
   m_pTexture = pTexture;
+#else
+  m_pTexture = new CGLTexture(pTexture);
+#endif
   m_iDelay = 2 * iDelay;
   m_iWidth = iWidth;
   m_iHeight = iHeight;
@@ -69,17 +73,19 @@ void CTexture::FreeTexture()
       if (Data)
         XPhysicalFree(Data);
       delete [] m_pTexture;
-#else 
-#ifdef HAS_SDL
+#elif defined(HAS_SDL_2D)
       SDL_FreeSurface(m_pTexture);
+#elif defined(HAS_SDL_OPENGL)
+      delete m_pTexture;      
 #else
       m_pTexture->Release();
 #endif
-#endif
     }
     else
-#ifdef HAS_SDL
+#ifdef HAS_SDL_2D
       SDL_FreeSurface(m_pTexture);
+#elif defined(HAS_SDL_OPENGL)
+      delete m_pTexture;
 #else
       m_pTexture->Release();
 #endif
@@ -177,10 +183,16 @@ void CTexture::ReadTextureInfo()
     m_memUsage += desc.Size;
     m_format = desc.Format;
   }
-#else
+#elif defined(HAS_SDL_2D)
   if (m_pTexture)
   {
     m_memUsage += sizeof(SDL_Surface) + (m_pTexture->w * m_pTexture->h * m_pTexture->format->BytesPerPixel);
+    m_format = D3DFMT_A8R8G8B8;
+  }
+#elif defined(HAS_SDL_OPENGL)
+  if (m_pTexture)
+  {
+    m_memUsage += sizeof(CGLTexture) + (m_pTexture->textureWidth * m_pTexture->textureHeight * 4);
     m_format = D3DFMT_A8R8G8B8;
   }
 #endif  
@@ -200,8 +212,10 @@ DWORD CTexture::GetMemoryUsage() const
 
 #ifndef HAS_SDL
 LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#else
+#elif defined(HAS_SDL_2D)
 SDL_Surface* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
+#elif defined(HAS_SDL_OPENGL)
+CGLTexture* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
 #endif
 {
   if (!m_pTexture) return NULL;
@@ -302,8 +316,10 @@ int CTextureMap::GetDelay(int iPicture) const
 
 #ifndef HAS_SDL
 LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#else
+#elif defined(HAS_SDL_2D)
 SDL_Surface* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
+#elif defined(HAS_SDL_OPENGL)
+CGLTexture* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
 #endif
 {
   if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
@@ -350,8 +366,10 @@ CGUITextureManager::~CGUITextureManager(void)
 
 #ifndef HAS_SDL  
 LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#else
-SDL_Surface* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)  
+#elif defined(HAS_SDL_2D)
+SDL_Surface* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
+#else 
+CGLTexture* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)  
 #endif
 {
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
@@ -826,7 +844,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         return 0;
       }
       info.Width = pTexture->w;
-      info.Height = pTexture->h;
+      info.Height = pTexture->h;      
 #endif      
     }
   }
@@ -1087,3 +1105,45 @@ void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePat
   if (items.empty())
     m_TexBundle[1].GetTexturesFromPath(texturePath, items);
 }
+
+
+#ifdef HAS_SDL_OPENGL
+CGLTexture::CGLTexture(SDL_Surface* surface)
+{
+  id = 0;
+  imageWidth = surface->w;
+  imageHeight = surface->h;
+  textureWidth = PadPow2(imageWidth);
+  textureHeight = PadPow2(imageHeight);
+  
+  // Resize texture to POT
+  unsigned char* p = new unsigned char[textureWidth * textureHeight * 4];
+  if (gluScaleImage(GL_RGBA, 
+            imageWidth, imageHeight, GL_UNSIGNED_BYTE, surface->pixels,  
+            textureWidth, textureHeight, GL_UNSIGNED_BYTE, p) != 0)
+  {
+    CLog::Log(LOGERROR, "CGLTexture unable to scale texture");
+    return;
+  }
+      
+  // Have OpenGL generate a texture object handle for us
+  glGenTextures(1, &id);
+ 
+  // Bind the texture object
+  glBindTexture(GL_TEXTURE_2D, id);
+ 
+  // Set the texture's stretching properties
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+ 
+  // Edit the texture object's image data using the information SDL_Surface gives us
+  glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
+               GL_RGBA, GL_UNSIGNED_BYTE, p);  
+}
+
+CGLTexture::~CGLTexture()
+{
+  glDeleteTextures(1, &id);
+  id = 0;
+}
+#endif
