@@ -75,6 +75,12 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath)
     return E_FAIL;
   m_parser.m_param[0] = m_doc;
   m_strImDbUrl = m_parser.Parse("NfoUrl");
+  TiXmlDocument doc;
+  doc.Parse(m_strImDbUrl.c_str());
+  TiXmlElement* pId = doc.FirstChildElement("id");
+  if (pId && pId->FirstChild())
+    m_strImDbNr = pId->FirstChild()->Value();
+  
   if(m_strImDbUrl.size() > 0)
   {
     m_strScraper = CUtil::GetFileName(strScraperPath);
