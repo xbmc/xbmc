@@ -139,9 +139,13 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
 #ifndef HAS_SDL
     LPDIRECT3DPALETTE8 palette;
     LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
-#else
+#elif defined(HAS_SDL_2D)
     SDL_Palette* palette;
     SDL_Surface* texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
+#elif defined(HAS_SDL_OPENGL)
+#warning fix this code to support OpenGL
+    SDL_Palette* palette;
+    SDL_Surface* texture = NULL;
 #endif
     if (texture)
     {
