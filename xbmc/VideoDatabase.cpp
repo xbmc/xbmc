@@ -241,11 +241,6 @@ bool CVideoDatabase::GetPaths(set<CStdString> &paths)
     // first grab all tvshow paths
     if (!m_pDS->query("select strPath from path join tvshowlinkpath on tvshowlinkpath.idpath=path.idpath")) return false;
     int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
     while (!m_pDS->eof())
     {
       paths.insert(m_pDS->fv("strPath").get_asString());
