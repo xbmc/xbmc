@@ -541,7 +541,7 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     break;
   case PAL_16x9:
   case PAL_4x3:
-#ifdef HAS_FULLSCREEN
+#ifndef HAS_FULLSCREEN
     overscan.right = 720;
     overscan.bottom = 576;
 #else
