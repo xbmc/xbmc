@@ -25,9 +25,6 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
-#else
-  m_viewportTop = 0;
-  m_viewportLeft = 0;  
 #endif
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
@@ -55,8 +52,10 @@ CGraphicContext::~CGraphicContext(void)
   {
 #ifndef HAS_SDL
     D3DVIEWPORT8 *viewport = m_viewStack.top();
-#else   
+#elif defined(HAS_SDL_2D)
     SDL_Rect *viewport = m_viewStack.top();
+#elif defined(HAS_SDL_OPENGL)
+    GLint* viewport = m_viewStack.top();
 #endif
     m_viewStack.pop();
     if (viewport) delete viewport;
@@ -98,10 +97,14 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   D3DVIEWPORT8 newviewport;
   D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
   Get3DDevice()->GetViewport(oldviewport);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_Rect newviewport;
   SDL_Rect *oldviewport = new SDL_Rect;
   SDL_GetClipRect(m_screenSurface, oldviewport);
+#elif defined(HAS_SDL_OPENGL)
+  GLint newviewport[4];
+  GLint* oldviewport = new GLint[4];
+  glGetIntegerv(GL_VIEWPORT, oldviewport);	  
 #endif
   
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -136,11 +139,16 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
     int oldTop = (int)oldviewport->Y;
     int oldRight = (int)oldviewport->X + oldviewport->Width;
     int oldBottom = (int)oldviewport->Y + oldviewport->Height;
-#else
+#elif defined(HAS_SDL_2D)
     int oldLeft = (int)oldviewport->x;
     int oldTop = (int)oldviewport->y;
     int oldRight = (int)oldviewport->x + oldviewport->w;
     int oldBottom = (int)oldviewport->y + oldviewport->h;
+#elif defined(HAS_SDL_OPENGL)
+    int oldLeft = (int)oldviewport[0];
+    int oldTop = (int)oldviewport[1];
+    int oldRight = (int)oldviewport[0] + oldviewport[2];
+    int oldBottom = (int)oldviewport[1] + oldviewport[3];       
 #endif    
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
@@ -178,14 +186,18 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport.Width = newRight - newLeft;
   newviewport.Height = newBottom - newTop;
   m_pd3dDevice->SetViewport(&newviewport);
-#else  
+#elif defined(HAS_SDL_2D)
   newviewport.x = newLeft;
   newviewport.y = newTop;
   newviewport.w = newRight - newLeft;
   newviewport.h = newBottom - newTop;
-  m_viewportTop = newTop;
-  m_viewportLeft = newLeft;
   SDL_SetClipRect(m_screenSurface, &newviewport);
+#elif defined(HAS_SDL_OPENGL)
+  newviewport[0] = newLeft;
+  newviewport[1] = newTop;
+  newviewport[2] = newRight - newLeft;
+  newviewport[3] = newBottom - newTop;
+  glViewport(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
 #endif
 
   m_viewStack.push(oldviewport);
@@ -199,11 +211,12 @@ void CGraphicContext::RestoreViewPort()
 #ifndef HAS_SDL
   D3DVIEWPORT8 *oldviewport = (D3DVIEWPORT8*)m_viewStack.top();
   Get3DDevice()->SetViewport(oldviewport);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
   SDL_SetClipRect(m_screenSurface, oldviewport);
-  m_viewportTop = oldviewport->x;
-  m_viewportLeft = oldviewport->y;
+#elif defined(HAS_SDL_OPENGL)
+  GLint* oldviewport = (GLint*)m_viewStack.top();
+  glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
 #endif  
 
   m_viewStack.pop();
@@ -468,16 +481,33 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
 
-#ifndef HAS_FULLSCREEN
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, SDL_HWSURFACE);
-#else
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, 
-                          m_iScreenHeight, 
-                          0, 
-                          SDL_ANYFORMAT |
-                          SDL_FULLSCREEN |
-                          SDL_HWSURFACE |
-                          SDL_DOUBLEBUF);
+#ifdef HAS_SDL_2D
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+#elif defined(HAS_SDL_OPENGL)
+
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  SDL_OPENGL);
+
+    glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+    glEnable(GL_TEXTURE_2D);  
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+ 
+    glOrtho(0.0f, m_iScreenWidth, m_iScreenHeight, 0.0f, -1.0f, 1.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity(); 
+    
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);          // Turn Blending On
+    glDisable(GL_DEPTH_TEST);    
 #endif
 
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
@@ -541,13 +571,8 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     break;
   case PAL_16x9:
   case PAL_4x3:
-#ifndef HAS_FULLSCREEN
     overscan.right = 720;
     overscan.bottom = 576;
-#else
-    overscan.right =  1024;
-    overscan.bottom = 768;
-#endif
     break;
   }
 }
@@ -602,15 +627,9 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 16:9");
     break;
   case PAL_4x3:
-#ifndef HAS_FULLSCREEN
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 576);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 576;
-#else
-    g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 768);
-    g_settings.m_ResInfo[res].iWidth = 1024;
-    g_settings.m_ResInfo[res].iHeight = 768;
-#endif
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL 4:3");
     break;
@@ -656,8 +675,10 @@ void CGraphicContext::Clear()
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3D_CLEAR_STENCIL, 0x00010001, 1.0f, 0L );
   else
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
-#else
+#elif defined(HAS_SDL_2D)
   SDL_FillRect(m_screenSurface, NULL, 0x00010001);
+#elif defined(HAS_SDL_OPENGL)
+  glClear(GL_COLOR_BUFFER_BIT); 
 #endif    
 }
 
@@ -772,11 +793,9 @@ int CGraphicContext::GetFPS() const
   return 60;
 }
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_2D
 int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect)
 {
-  //dstrect->x += m_viewportLeft;
-  //dstrect->y += m_viewportTop;
   return SDL_BlitSurface(src, srcrect, m_screenSurface, dstrect);
 }
 #endif
