@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 03/27/2007-->
+<!--Date of translation: 05/10/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8338-->
+<!--Based on english strings version 8851-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -61,7 +61,7 @@
   <string id="125">Radera filerna?</string>
   <string id="126">Status</string>
   <string id="127">Objekt</string>
-  <string id="128">Allmänna</string>
+  <string id="128">Allmänt</string>
   <string id="129">Bildspel</string>
   <string id="130">Systeminfo</string>
   <string id="131">Bildskärm</string>
@@ -221,7 +221,7 @@
   <string id="290">Dynamic Range Compression</string>
   <string id="291">Grafik</string>
   <string id="292">Ljud</string>
-  <string id="293">Undertexter</string>
+  <string id="293">Bläddra efter undertexter</string>
   <string id="294">Skapa bokmärke</string>
   <string id="296">Ta bort bokmärken</string>
   <string id="297">Ljudfördröjning</string>
@@ -446,6 +446,10 @@
   <string id="538">Stora ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
+  <string id="541">Album ikoner</string>
+  <string id="542">DVD ikoner</string>
+  <string id="543">DVD</string>
+  <string id="544">Mediainfo</string>
   <string id="550">Sort: %s</string>
   <string id="551">Namn</string>
   <string id="552">Datum</string>
@@ -462,6 +466,10 @@
   <string id="563">Betyg</string>
   <string id="564">Typ</string>
   <string id="565">Användning</string>
+  <string id="566">Albumartist</string>
+  <string id="567">Spelad räknare</string>
+  <string id="568">Senast spelad</string>
+  <string id="569">Kommentar</string>
   <string id="580">Sorteringsriktning</string>
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
@@ -519,7 +527,15 @@
   <string id="648">Importera Filmbibliotek</string>
   <string id="649">Importerar</string>
   <string id="650">Exporterar</string>
-  <string id="651">Filmbibliotek</string>
+  <string id="651">Bläddra efter bibliotek</string>
+  <string id="652">År</string>
+  <string id="653">Uppdatera bibliotek</string>
+  <string id="654">Visa debuginfo</string>
+  <string id="655">Bläddra efter körbar fil</string>
+  <string id="656">Bläddra efter spellista</string>
+  <string id="657">Bläddra efter mapp</string>
+  <string id="658">Låtinformation</string>
+  <string id="659">Kommentar:</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Radera gamla låtar från databasen</string>
   <string id="702">Denna sökväg har skannats tidigare.</string>
@@ -576,7 +592,6 @@
   <string id="755">Ändra programsökväg</string>
   <string id="756">Ändra programnamn</string>
   <string id="757">Ändra sökvägsdjup</string>
-  <string id="758">Radera programlänk</string>
   <string id="759">Vy: Stor lista</string>
   <string id="760">Gul</string>
   <string id="761">Vit</string>
@@ -610,7 +625,7 @@
   <string id="1012">Delad mapp</string>
   <string id="1013">Port</string>
   <string id="1014">Användarnamn</string>
-  <string id="1015">nätverksserver</string>
+  <string id="1015">Bläddra efter nätverksserver</string>
   <string id="1016">Skriv nätverksadress för denna server</string>
   <string id="1017">Skriv sökvägen på servern</string>
   <string id="1018">Skriv in portnumret</string>
@@ -625,9 +640,13 @@
   <string id="1027">Redigera källa</string>
   <string id="1028">Redigera %s källa</string>
   <string id="1029">Skriv in den nya beskrivningen</string>
-  <string id="1030">en bild</string>
-  <string id="1031">en bildmapp</string>
+  <string id="1030">Bläddra efter en bild</string>
+  <string id="1031">Bläddra efter en bildmapp</string>
   <string id="1032">Lägg till nätverksplats...</string>
+  <string id="1033">Bläddra efter fil</string>
+  <string id="1034">Undermeny</string>
+  <string id="1035">Aktivera undermenyknappar</string>
+  <string id="1036">Favoriter</string>
   <string id="1200">SMB Utdelning</string>
   <string id="1202">SMB Arbetsgrupp</string>
   <string id="1203">SMB Användarnamn</string>
@@ -660,7 +679,7 @@
   <string id="1245">FTP Användarnamn</string>
   <string id="1246">FTP Lösenord</string>
   <string id="1247">Användarlösenord sparat!</string>
-  <string id="1250">Autodetektera</string>
+  <string id="1250">Autodetektering</string>
   <string id="1251">Autodetektera XBOX</string>
   <string id="1252">XBOXsmeknamn</string>
   <string id="1254">Popup meddelande</string>
@@ -739,7 +758,7 @@
   <string id="12009">Tvinga återuppbyggnad av index...</string>
   <string id="12010">Återgå till Musik</string>
   <string id="12011">Återgå till Filmer</string>
-  <string id="12012">Uppdatera hjälpprogramslista</string>
+  <string id="12012">Uppdatera hjälpprogram</string>
   <string id="12013">Hjälpprogram</string>
   <string id="12014">Inga hjälpprogram hittade</string>
   <string id="12015">Inställningar för hjälpprogram</string>
@@ -807,7 +826,6 @@
   <string id="12384">24 timmars klocka</string>
   <string id="12385">Dag/Månad</string>
   <string id="12386">Månad/Dag</string>
-  <string id="12387">Skanna om databas</string>
   <string id="12390">Driftstid</string>
   <string id="12391">minuter</string>
   <string id="12392">timmar</string>
@@ -852,7 +870,7 @@
   <string id="13174">HDD Strömcykelräkning:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Radera profil '%s'?</string>
-  <string id="13204">Senast laddade profil</string>
+  <string id="13204">Senast laddade profil:</string>
   <string id="13205">Okänd</string>
   <string id="13206">Skriva över</string>
   <string id="13208">Alarmklocka</string>
@@ -944,7 +962,7 @@
   <string id="13349">Skanna efter nytt innehåll</string>
   <string id="13350">Nu spelas...</string>
   <string id="13351">Album Information</string>
-  <string id="13352">Skanna mapp &gt; databas</string>
+  <string id="13352">Skanna objekt &gt; databas</string>
   <string id="13353">Stoppa skanning</string>
   <string id="13354">Renderingsmetod</string>
   <string id="13355">Lågkvalitets Pixel Shader</string>
@@ -1058,8 +1076,10 @@ den här visualiseringen</string>
   <string id="14071">Tillåt omdöpning och radering av filer</string>
   <string id="14072">Aktivera XLink Kai</string>
   <string id="14073">XLink Kai är inte aktiverat.</string>
-  <string id="14074">Sätt tidszon</string>
+  <string id="14074">Ange tidszon</string>
   <string id="14075">Använd sommartid</string>
+  <string id="14076">Lägg till i Favoriter</string>
+  <string id="14077">Ta bort från favoriter</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Tjänsten är inte upprättad, vill du försöka</string>
   <string id="15002">återupprätta anslutningen?</string>
@@ -1217,7 +1237,7 @@ den här visualiseringen</string>
   <string id="16026">Uppspelning av spellista avbruten</string>
   <string id="16027">För många felaktiga låtar i följd</string>
   <string id="16030">Festläge avbrutet.</string>
-  <string id="16031">För lite låtar i databasen.</string>
+  <string id="16031">Inga matchande låtar i biblioteket.</string>
   <string id="16032">Kunde inte initiera databasen.</string>
   <string id="16033">Kunde inte öppna databasen.</string>
   <string id="16034">Kunde inte hämta låtar från databasen.</string>
@@ -1249,7 +1269,6 @@ den här visualiseringen</string>
   <string id="20007">Inspelningar</string>
   <string id="20008">Skärmdumpar</string>
   <string id="20009">Använd XBMC</string>
-  <string id="20010">Artistbild</string>
   <string id="20011">Musikspellistor</string>
   <string id="20012">Filmspellistor</string>
   <string id="20013">Vill du starta spelet?</string>
@@ -1283,7 +1302,6 @@ den här visualiseringen</string>
   <string id="20053">Lämnade huvudläge</string>
   <string id="20054">Gick in i huvudläge</string>
   <string id="20055">Allmusic.com miniatyr</string>
-  <string id="20056">Källminiatyrbild</string>
   <string id="20057">Ta bort miniatyrbild</string>
   <string id="20058">Lägg till profil...</string>
   <string id="20059">Efterfråga info för alla album</string>
@@ -1337,8 +1355,8 @@ den här visualiseringen</string>
   <string id="20107">Separata (låsta)</string>
   <string id="20108">Huvudmapp</string>
   <string id="20109">Skalzoom</string>
-  <string id="20110">UPnP inställningar</string>
-  <string id="20111">Autostart UPnP klient</string>
+  <string id="20110">UPnP inställning</string>
+  <string id="20111">Autostarta UPnP klient</string>
   <string id="20112">Sist inloggad: %s</string>
   <string id="20113">Aldrig inloggad</string>
   <string id="20114">Profil %i / %i</string>
@@ -1390,7 +1408,7 @@ den här visualiseringen</string>
   <string id="20161">Totalt</string>
   <string id="20162">använt</string>
   <string id="20163">av</string>
-  <string id="20164">Låsning stödjes inte</string>
+  <string id="20164">Låsning stöds inte</string>
   <string id="20165">Inte låst</string>
   <string id="20166">Låst</string>
   <string id="20167">Fryst</string>
@@ -1420,7 +1438,7 @@ den här visualiseringen</string>
   <string id="20309">Skapa ny mapp</string>
   <string id="20310">Mörka LCD vid uppspelning</string>
   <string id="20311">Okänd eller inbyggd (skyddad)</string>
-  <string id="20312">Mörka ner LCD vid paus</string>
+  <string id="20312">Mörka LCD vid paus</string>
   <string id="20313">Slå på LED vid paus</string>
   <string id="20314">Filmer - Bibliotek</string>
   <string id="20315">Sparade spel</string>
@@ -1436,11 +1454,10 @@ den här visualiseringen</string>
   <string id="20325">Kalibreringsåterställning</string>
   <string id="20326">Detta kommer att återställa kalibreringsvärden för %s</string>
   <string id="20327">till dess usprungliga värden.</string>
-  <string id="20328">en plats att kopiera sparat spel till</string>
-  <string id="20329">en plats att flytta sparat spel till</string>
+  <string id="20328">Bläddra efter destination</string>
   <string id="20330">Använd mappnamn för sökningar</string>
   <string id="20331">Fil</string>
-  <string id="20332">Använd mapp eller filnamn i förfrågningar</string>
+  <string id="20332">Använd fil- eller mapp-namn i förfrågningar?</string>
   <string id="20333">Sätt innehåll</string>
   <string id="20334">Mapp</string>
   <string id="20335">Förfråga rekursivt för innehåll?</string>
@@ -1449,7 +1466,7 @@ den här visualiseringen</string>
   <string id="20338">Film</string>
   <string id="20339">Regissör</string>
   <string id="20340">Vill du ta bort alla objekt i</string>
-  <string id="20341">denna mapp från databasen?</string>
+  <string id="20341">denna sökväg från biblioteket?</string>
   <string id="20342">Filmer</string>
   <string id="20343">TV Serier</string>
   <string id="20344">Denna mapp innehåller</string>
@@ -1477,6 +1494,16 @@ den här visualiseringen</string>
   <string id="20366">* Alla säsonger</string>
   <string id="20367">Dölj sedda</string>
   <string id="20368">Prod. kod</string>
+  <string id="20369">Dölj handling för osedda objekt</string>
+  <string id="20370">* Dold för att undvika förstöra handlingen *</string>
+  <string id="20371">Sätt säsongsminiatyr</string>
+  <string id="20372">Säsongsbild</string>
+  <string id="20373">Säsong</string>
+  <string id="20374">Ladda ner videoinformation</string>
+  <string id="20375">Oassocierat innehåll</string>
+  <string id="20376">Först sänt:</string>
+  <string id="20377">Uppdatera TV serieinformation</string>
+  <string id="20378">Uppdatera alla avsnitt?</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1489,7 +1516,7 @@ den här visualiseringen</string>
   <string id="21357">UPnP Filmer</string>
   <string id="21358">UPnP Bilder</string>
   <string id="21359">Lägg till mediautdelning...</string>
-  <string id="21360">Aktivera UPnP-server</string>
+  <string id="21360">Aktivera UPnP server</string>
   <string id="21361">Hantera UPnP musikutdelningar</string>
   <string id="21362">Hantera UPnP filmutdelningar</string>
   <string id="21363">Hantera UPnP bildutdelningar</string>
@@ -1512,6 +1539,42 @@ den här visualiseringen</string>
   <string id="21382">Inaktivera Lägg till källa knappar i fillistan</string>
   <string id="21383">Aktivera skrollhandtag</string>
   <string id="21384">Gör seddfilter ett val i filmbibliotek</string>
-  <string id="21385">Öppna spellista</string>
+  <string id="21385">Öppna</string>
+  <string id="21387">Snabb</string>
+  <string id="21388">Tyst</string>
+  <string id="21395">Kan inte cacha filer större än 4gb</string>
+  <string id="21396">Kapitel</string>
+  <string id="21397">Högkvalitets Pixel Shader V2</string>
+  <string id="21398">Aktivera spellista vid start</string>
+  <string id="21400">innehåller</string>
+  <string id="21401">innehåller inte</string>
+  <string id="21402">är</string>
+  <string id="21403">är inte</string>
+  <string id="21404">börjar med</string>
+  <string id="21405">slutar med </string>
+  <string id="21406">större än</string>
+  <string id="21407">mindre än</string>
+  <string id="21408">efter</string>
+  <string id="21409">före</string>
+  <string id="21410">i det senaste</string>
+  <string id="21411">Inte i det senaste</string>
+  <string id="21420">Värde att matcha</string>
+  <string id="21421">Smart spellisteregel</string>
+  <string id="21422">Matcha låtar som</string>
+  <string id="21423">Ny regel...</string>
+  <string id="21424">Låtar måste matcha</string>
+  <string id="21425">alla regler</string>
+  <string id="21426">en eller flera regler</string>
+  <string id="21427">Begränsa till</string>
+  <string id="21428">Ingen begränsning</string>
+  <string id="21429">Sortera efter</string>
+  <string id="21430">stigande</string>
+  <string id="21431">fallande</string>
+  <string id="21432">Redigera smart spellista</string>
+  <string id="21433">Namn på spellista</string>
+  <string id="21434">Hitta låtar som matchar</string>
+  <string id="21435">Redigera</string>
+  <string id="21436">%i låtar</string>
+  <string id="21437">Ny smart spellista...</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
