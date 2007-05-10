@@ -44,7 +44,13 @@
 				<expression noclean="1">&lt;Genre&gt;([^&lt;]*)&lt;/Genre&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
-				<expression repeat="yes">\|?([^\|]*)\|</expression>
+				<expression repeat="yes">([^\|]*)\|</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
+				<expression repeat="yes">([^,]*),</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
+				<expression>([^\|,]+)$</expression>
 			</RegExp>
 			<RegExp input="$$5" output="\1" dest="6">
 				<expression noclean="1">&lt;Actors&gt;([^&lt;]*)&lt;/Actors&gt;</expression>
