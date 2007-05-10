@@ -493,6 +493,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  SDL_OPENGL);
+    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glEnable(GL_TEXTURE_2D);  
