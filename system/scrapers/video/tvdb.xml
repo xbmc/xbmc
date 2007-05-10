@@ -22,7 +22,7 @@
 	</GetSearchResults>
 	<!-- 	input: $1..#urls=html -->
 	<!--	input: $(#urls+1): extra !-->
-	<!-- 	returns: results in xml format <details><plot>*</plot><director>*</director><year>*</year><episodeguide>*</episodeguide></details> -->
+	<!-- 	returns: results in xml format <details><plot>*</plot><director>*</director><premiered>*</premiered><episodeguide>*</episodeguide></details> -->
 	<GetDetails dest="7">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="7">
 			<RegExp input="$$1" output="\1" dest="5">
@@ -31,8 +31,8 @@
 			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
 				<expression noclean="1">&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
 			</RegExp>
-			<RegExp input="$$5" output="&lt;year&gt;\1&lt;/year&gt;" dest="4+">
-				<expression>&lt;FirstAired&gt;([0-9]*)</expression>
+			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
+				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
 			</RegExp>
 			<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
 				<expression>&lt;Rating&gt;([^&lt;]*)&lt;/Rating&gt;</expression>
