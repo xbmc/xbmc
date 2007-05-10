@@ -52,6 +52,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
+using namespace VIDEO;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -989,9 +990,9 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       SScraperInfo info;
       GetScraperForItem(item, info);
       if (item->IsVideoDb())
-        OnScan(item->GetVideoInfoTag()->m_strPath,info);
+        OnScan(item->GetVideoInfoTag()->m_strPath,info,-1,-1);
       else
-        OnScan(item->m_strPath,info);
+        OnScan(item->m_strPath,info,-1,-1);
       return true;
     }
   case CONTEXT_BUTTON_DELETE:
@@ -1538,4 +1539,53 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info)
   if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
     info.strTitle = parser.GetName();
   return found;
+}
+
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
+{
+  // GetStackedDirectory() now sets and restores the stack state!
+  SScanSettings settings = {};
+
+  if(iDirNames>0)
+  {
+    settings.parent_name = true;
+    settings.recurse = 1; /* atleast one, otherwise this makes no sence */
+  }
+  else if ((info.strContent.Equals("movies") || strPath.IsEmpty()) && iDirNames == -1)
+  {
+    bool bCanceled;
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
+    {
+      settings.parent_name = true;
+      settings.recurse = 1; /* atleast one, otherwise this makes no sence */
+    }
+
+    if (bCanceled)
+      return;
+  }
+
+  if(iScanRecursively > 0)
+    settings.recurse = INT_MAX;
+  else if (iScanRecursively == -1 && info.strContent.Equals("movies"))
+  {
+    bool bCanceled;
+    if( CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled) )
+      settings.recurse = INT_MAX;
+
+    if (bCanceled)
+      return;
+  }
+  if (strPath.IsEmpty())
+    settings.recurse = 1;
+
+  if (info.strContent.Equals("tvshows"))
+  {
+    settings.recurse = 1;
+    settings.parent_name = true;
+    settings.parent_name_root = true;
+  }
+
+  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialog)
+    pDialog->StartScanning(strPath,info,settings,false);
 }

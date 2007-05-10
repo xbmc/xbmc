@@ -17,6 +17,7 @@ public:
   int  GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
+  static void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -30,7 +31,6 @@ protected:
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnInfo(int iItem, const SScraperInfo& info);
-  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) {};
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
