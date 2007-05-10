@@ -403,24 +403,17 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
   DWORD dwIndex = 0;
   DWORD iBytesCopied = 0;
 
-  while (len)
+  while (len >= m_dwPacketSize)
   {
     if ( FindFreePacket(dwIndex) )
     {
       XMEDIAPACKET xmpAudio = {0};
 
-      DWORD iSize = m_dwPacketSize;
-      if (len < m_dwPacketSize)
-      {
-        // we don't accept half full packets...
-        iSize = len;
-        return iBytesCopied;
-      }
       m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
 
       // Set up audio packet
 
-      xmpAudio.dwMaxSize = iSize / m_iAudioSkip;
+      xmpAudio.dwMaxSize = m_dwPacketSize / m_iAudioSkip;
       xmpAudio.pvBuffer = m_pbSampleData[dwIndex];
       xmpAudio.pdwStatus = &m_adwStatus[ dwIndex ];
       xmpAudio.pdwCompletedSize = NULL;
@@ -428,20 +421,16 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
       xmpAudio.pContext = m_pbSampleData[dwIndex];
 
       if (m_drcAmount)
-        ApplyDynamicRangeCompression(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
+        ApplyDynamicRangeCompression(xmpAudio.pvBuffer, &data[iBytesCopied], m_dwPacketSize / m_iAudioSkip);
       else
-        memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
-      //   if (m_pCallback)
-      //   {
-      //    m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
-      //   }
+        memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], m_dwPacketSize / m_iAudioSkip);
+
       if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
-      {
         return iBytesCopied;
-      }
-      buffered_bytes += (iSize / m_iAudioSkip);
-      iBytesCopied += iSize;
-      len -= iSize;
+
+      buffered_bytes += (m_dwPacketSize / m_iAudioSkip);
+      iBytesCopied += m_dwPacketSize;
+      len -= m_dwPacketSize;
     }
     else
     {
@@ -473,13 +462,10 @@ FLOAT CASyncDirectSound::GetDelay()
   FLOAT delay = 0.0f;
 
   // calculate delay in buffer
-  LARGE_INTEGER llPerfCount;
-  QueryPerformanceCounter(&llPerfCount);
-  LONGLONG adjustbytes = (llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) * m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / m_TicksPerSec;
-
   delay += (FLOAT)buffered_bytes / (m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample>>3));
 
   // correct this delay by how long since we completed last packet
+  LARGE_INTEGER llPerfCount;
   QueryPerformanceCounter(&llPerfCount);
   delay -= (FLOAT)(llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) / m_TicksPerSec;
 
