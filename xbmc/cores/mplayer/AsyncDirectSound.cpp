@@ -78,7 +78,7 @@ void CASyncDirectSound::DoWork()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, int iNumBuffers, char* strAudioCodec, bool bIsMusic)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, char* strAudioCodec, bool bIsMusic)
 {
   buffered_bytes = 0;
   m_pCallback = pCallback;
@@ -115,30 +115,22 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_delay = 1;
   ZeroMemory(&m_wfx, sizeof(m_wfx));
   m_wfx.cbSize = sizeof(m_wfx);
+
+  // we want 1/4th of second worth of data
+#if 0 //mplayer is broken on some packets sizes
+  m_dwPacketSize = 512; // samples
+  m_dwPacketSize *= m_uiChannels * (m_uiBitsPerSample>>3);
+#else
+  m_dwPacketSize = 768;
+#endif
+  m_dwNumPackets = m_uiSamplesPerSec * m_uiChannels * (m_uiBitsPerSample>>3);
+  m_dwNumPackets /= m_dwPacketSize * 4;
+
   XAudioCreatePcmFormat( iChannels,
                          m_uiSamplesPerSec,
                          m_uiBitsPerSample,
                          &m_wfx
                        );
-
-  // Create enough samples to hold approx 2 sec worth of audio.
-  // date    m_dwPacketSize           m_dwNumPackets   description
-  // 1  feb   1024                    16               THE avsync fix
-  // 6  feb   1152                    8*iChannels      fix: digital / ac3 passtru didnt work
-  // 10 feb   1152(*iChannels/2)      8*iChannels      fix: choppy playback for WMV
-  // 10 feb   1152*iChannels          8*iChannels      fix: mono audio didnt work
-  // 10 feb   1152*iChannels*2        8*iChannels      fix: wmv plays choppy
-
-  //m_dwPacketSize     = 1152 * (uiBitsPerSample/8) * iChannels;
-  //m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPa2cketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
-
-  // if iNumBuffers is set, use this many buffers instead of the usual number (used for CDDAPlayer)
-  if (iNumBuffers)
-    m_dwNumPackets = (DWORD)iNumBuffers;
-  else if (!mplayer_HasVideo())
-    m_dwNumPackets = 64 * iChannels;
-  else
-    m_dwNumPackets = 12 * iChannels;
 
   m_adwStatus = new DWORD[ m_dwNumPackets ];
   m_pbSampleData = new PBYTE[ m_dwNumPackets ];
@@ -204,12 +196,11 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
     CLog::Log(LOGERROR, "*WARNING* Unable to create sound stream!");
   }
 
+  // align m_dwPacketSize to dwInputSize
   XMEDIAINFO info;
-  m_pStream->GetInfo(&info);
-  //align m_dwPacketSize to dwInputSize
-  int fSize = 768 / info.dwInputSize;
-  fSize *= info.dwInputSize;
-  m_dwPacketSize = (int)fSize;
+  m_pStream->GetInfo(&info);    
+  m_dwPacketSize /= info.dwInputSize;
+  m_dwPacketSize *= info.dwInputSize;
 
   // XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
   m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);

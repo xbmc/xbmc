@@ -181,7 +181,7 @@ static int audio_init(int rate, int channels, int format, int flags)
     if(bResample)
       m_pAudioDecoder = new CResampleDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, strAudioCodec, !mplayer_HasVideo());
     else
-      m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bResample, strAudioCodec, !mplayer_HasVideo());
+      m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, strAudioCodec, !mplayer_HasVideo());
   }
   pao_data->channels = channels;
   pao_data->samplerate = rate;
