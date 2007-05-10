@@ -1,5 +1,5 @@
 <!-- should be self-explanatory -->
-<scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.jpg">
+<scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.png">
 	<!-- 	input: 		$1=query string -->
 	<!-- 	returns: 	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">
