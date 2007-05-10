@@ -661,7 +661,14 @@ void CDateTime::SetFromDateString(const CStdString &date)
   }
   else
     iDayPos = 0;
+
   CStdString strMonth = date.Mid(iDayPos,iPos-iDayPos);
+  if (strMonth.IsEmpty()) // assume dbdate format
+  {
+    SetFromDBDate(date);
+    return;
+  }
+
   int iPos2 = date.Find(",");
   CStdString strDay = date.Mid(iPos,iPos2-iPos);
   CStdString strYear = date.Mid(date.Find(" ",iPos2)+1);
