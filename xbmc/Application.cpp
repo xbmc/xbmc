@@ -2364,8 +2364,10 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
 #ifndef HAS_SDL
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#else
+#elif defined(HAS_SDL_2D) 
   SDL_Flip(g_graphicsContext.getScreenSurface());
+#elif defined(HAS_SDL_OPENGL)
+  SDL_GL_SwapBuffers();
 #endif
   g_graphicsContext.Unlock();
 }

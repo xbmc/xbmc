@@ -399,6 +399,9 @@ where 0.5 may be automatically treated as alpha and blended with the texture
   DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   if (colour & 0xff000000)
   {
+    CGLTexture* texture = m_vecTextures[m_iCurrentImage]; 
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+
     // Top-left vertex (corner)
     glTexCoord2f(u1, v1);
     glVertex3f(x1, y1, 0);
@@ -578,8 +581,8 @@ void CGUIImage::CalculateSize()
       m_iImageWidth = m_vecTextures[m_iCurrentImage]->w;
       m_iImageHeight = m_vecTextures[m_iCurrentImage]->h;
 #elif defined(HAS_SDL_OPENGL)
-      m_iImageWidth = m_vecTextures[m_iCurrentImage]->imageWidth;
-      m_iImageHeight = m_vecTextures[m_iCurrentImage]->imageHeight;
+      m_iImageWidth = m_vecTextures[m_iCurrentImage]->textureWidth;
+      m_iImageHeight = m_vecTextures[m_iCurrentImage]->textureHeight;
 #endif	      
     }
 
@@ -609,8 +612,8 @@ void CGUIImage::CalculateSize()
       m_iTextureWidth = m_vecTextures[m_iCurrentImage]->w;
       m_iTextureHeight = m_vecTextures[m_iCurrentImage]->h;
 #elif defined(HAS_SDL_OPENGL)
-      m_iImageWidth = m_vecTextures[m_iCurrentImage]->imageWidth;
-      m_iImageHeight = m_vecTextures[m_iCurrentImage]->imageHeight;
+      m_iImageWidth = m_vecTextures[m_iCurrentImage]->textureWidth;
+      m_iImageHeight = m_vecTextures[m_iCurrentImage]->textureHeight;
 #endif      
 
       if (m_iTextureHeight > g_graphicsContext.GetHeight() )
