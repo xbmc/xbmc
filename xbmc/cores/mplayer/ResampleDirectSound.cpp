@@ -30,7 +30,7 @@ CResampleDirectSound::CResampleDirectSound(IAudioCallback* pCallback, int iChann
 {
   m_uiChannels = iChannels;
 
-  m_pRenderer = new CASyncDirectSound(pCallback, iChannels, 48000, 16, 0, strAudioCodec, bIsMusic);
+  m_pRenderer = new CASyncDirectSound(pCallback, iChannels, 48000, 16, strAudioCodec, bIsMusic);
 
   m_dwOutputSize = m_pRenderer->GetChunkLen();
   m_pSampleData = new unsigned char[m_dwOutputSize];

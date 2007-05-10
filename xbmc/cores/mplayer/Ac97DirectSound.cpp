@@ -41,7 +41,7 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS, int iNumBuffers)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS)
 {
   m_pCallback = pCallback;
   m_bAc3DTS = bAC3DTS;
@@ -67,13 +67,18 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
     return;
   }
 
+  // we want 1/4th of a second worth of data
+#if 0 //mplayer is broken on some packets sizes
+  m_dwPacketSize = 512; // samples
+  m_dwPacketSize *= m_uiChannels * (m_uiBitsPerSample>>3);
+#else
+  m_dwPacketSize = 1024;
+#endif
+  m_dwNumPackets = 48000 * 2 * (16>>3);
+  m_dwNumPackets /= m_dwPacketSize * 4;
+
   WAVEFORMATEX m_wfx = {};
   XAudioCreatePcmFormat( 2, 48000, 16, &m_wfx ); //passthrough is always 2ch 48000KHz/16bit
-
-  if(iNumBuffers)
-    m_dwNumPackets = iNumBuffers;
-  else
-    m_dwNumPackets = 8 * iChannels;
   
   m_adwStatus = new DWORD[ m_dwNumPackets ];
   for ( DWORD j = 0; j < m_dwNumPackets; j++ )
@@ -82,11 +87,11 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   g_audioContext.SetActiveDevice(CAudioContext::AC97_DEVICE);
   m_pDigitalOutput = g_audioContext.GetAc97Device();
 
+  // align m_dwPacketSize to dwInputSize
   XMEDIAINFO info;
-  m_pDigitalOutput->GetInfo(&info);
-  int fSize = 1024 / info.dwInputSize;
-  fSize *= info.dwInputSize;
-  m_dwPacketSize = (int)fSize;
+  m_pDigitalOutput->GetInfo(&info);  
+  m_dwPacketSize /= info.dwInputSize;
+  m_dwPacketSize *= info.dwInputSize;
 
   // XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
   m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
