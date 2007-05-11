@@ -98,7 +98,6 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   m_pBuffer->Stop();
   m_pBuffer->SetVolume( g_stSettings.m_nVolumeLevel );
 
-  m_bFirstPackets = true;
   m_bIsAllocated = true;
 }
 
@@ -196,13 +195,26 @@ HRESULT CWin32DirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CWin32DirectSound::GetSpace()
 {
-  DWORD playCursor, writeCursor;
+  DWORD playCursor, writeCursor, status;
   if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
     return 0;
 
-  DWORD bytes = writeCursor - playCursor;
-  if(bytes > m_dwPacketSize * m_dwNumPackets)
-    bytes = 0;
+  DWORD bytes;
+  if(playCursor < writeCursor)
+    bytes =  m_dwPacketSize * m_dwNumPackets + writeCursor - playCursor;
+  else
+    bytes =  writeCursor - playCursor;
+
+  if(bytes == 0)
+  {
+    if (FAILED(m_pBuffer->GetStatus(&status)))
+      return 0;
+
+    if(status & DSBSTATUS_PLAYING)
+      return 0;
+    else
+      return m_dwPacketSize * m_dwNumPackets;
+  }
 
   return bytes;
 }
@@ -215,8 +227,14 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
   LPVOID startWrap;
   DWORD  sizeWrap;
 
-  len = min(m_dwPacketSize, len);
-  if(GetSpace() < len)
+  // no more than the space we have
+  len = min(GetSpace(), len);
+
+  // aligned to packet size
+  len /= m_dwPacketSize;
+  len *= m_dwPacketSize;
+
+  if(len == 0)
     return 0;
 
   if (FAILED(m_pBuffer->Lock(0, len, &start, &size, &startWrap, &sizeWrap, DSBLOCK_FROMWRITECURSOR)))
@@ -226,32 +244,27 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
   if (startWrap)
     memcpy(startWrap, data + size, sizeWrap);
 
+  len = size + sizeWrap;
+
   if (FAILED(m_pBuffer->Unlock(start, size, startWrap, sizeWrap)))
     return 0;
 
-  if(m_bFirstPackets && !m_bPause)
-  {
+  DWORD status;
+  m_pBuffer->GetStatus(&status);
+
+  if(!m_bPause && !(status & DSBSTATUS_PLAYING))
     m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
-    m_bFirstPackets = false;
-  }
+
   return len;
 }
 
 //***********************************************************************************************
 FLOAT CWin32DirectSound::GetDelay()
 {
-  FLOAT delay = 0.0;
-
-  DWORD playCursor, writeCursor;
-  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
-    return 0;
-
-  DWORD bytes = m_dwPacketSize * m_dwNumPackets + playCursor - writeCursor;
-  if(bytes > m_dwPacketSize * m_dwNumPackets)
-    bytes = m_dwPacketSize * m_dwNumPackets;
+  FLOAT delay = 0.008f;
+  DWORD bytes = m_dwPacketSize * m_dwNumPackets - GetSpace();
 
   delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
-  delay += 0.008f;
 
   return delay;
 }
