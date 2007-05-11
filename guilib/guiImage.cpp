@@ -401,15 +401,6 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   }
 #endif
 #elif defined(HAS_SDL_OPENGL)
-/*
-change to:
-    glTexCoord2f(u2, v1);
-    glColor3f(r,g,b);
-    glVertex3f(x2, y2, 0);
-
-actually, try to provide the color with glColor4f(r,g,b,0.5);
-where 0.5 may be automatically treated as alpha and blended with the texture
-*/
   DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   if (colour & 0xff000000)
   {
