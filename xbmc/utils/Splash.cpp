@@ -159,10 +159,13 @@ void CSplash::Process()
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   g_graphicsContext.Get3DDevice()->SetGammaRamp(0, &oldRamp);
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-#else
+#elif defined(HAS_SDL_2D) 
   SDL_SetGammaRamp(oldRampRed, oldRampGreen, oldRampBlue);
   SDL_Flip(g_graphicsContext.getScreenSurface());
-#endif  
+#elif defined(HAS_SDL_OPENGL)
+  SDL_SetGammaRamp(oldRampRed, oldRampGreen, oldRampBlue);
+  SDL_GL_SwapBuffers();
+#endif
   g_graphicsContext.Unlock();
 }
 
