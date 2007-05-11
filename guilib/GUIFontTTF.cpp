@@ -867,23 +867,25 @@ struct CUSTOMVERTEX {
   float tt = ch->top / m_textureHeight;
   float tb = ch->bottom / m_textureHeight;
   
+  GLubyte colors[4] = { dwColor >> 24, (dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff };
+  
   // Top-left vertex (corner)
-  //glColor4fv(diffuse); 
+  glColor4ubv(colors); 
   glTexCoord2f(tl, tt);
   glVertex3f(posX, posY, 0);
    
   // Bottom-left vertex (corner)
-  //glColor4fv(diffuse); 
+  glColor4ubv(colors); 
   glTexCoord2f(tr, tt);
   glVertex3f(posX + angle.cosine*width, posY + angle.sine*width, 0);
     
   // Bottom-right vertex (corner)
-  //glColor4fv(diffuse); 
+  glColor4ubv(colors); 
   glTexCoord2f(tr, tb);
   glVertex3f(posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0);
     
   // Top-right vertex (corner)
-  //glColor4fv(diffuse); 
+  glColor4ubv(colors); 
   glTexCoord2f(tl, tb);
   glVertex3f(posX - angle.sine*height, posY + angle.cosine*height, 0);
 #endif
