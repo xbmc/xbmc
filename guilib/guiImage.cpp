@@ -164,6 +164,9 @@ void CGUIImage::Render()
 #endif
 
 #ifdef HAS_SDL_OPENGL
+    CGLTexture* texture = m_vecTextures[m_iCurrentImage]; 
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+
     glBegin(GL_QUADS);
 #endif
     
@@ -399,9 +402,6 @@ where 0.5 may be automatically treated as alpha and blended with the texture
   DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   if (colour & 0xff000000)
   {
-    CGLTexture* texture = m_vecTextures[m_iCurrentImage]; 
-    glBindTexture(GL_TEXTURE_2D, texture->id);
-
     // Top-left vertex (corner)
     glTexCoord2f(u1, v1);
     glVertex3f(x1, y1, 0);
