@@ -92,6 +92,9 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_pixelShader = NULL;
   m_vertexShader = NULL;
 #endif  
+#ifdef HAS_SDL_OPENGL
+  m_glTextureLoaded = false;
+#endif
   m_face = NULL;
   m_library = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -106,9 +109,23 @@ void CGUIFontTTF::ClearCharacterCache()
 {
   if (m_texture)
 #ifndef HAS_SDL  
+  {
     m_texture->Release();
-#else
+  }
+#elif defined(HAS_SDL_2D)
+  {
     SDL_FreeSurface(m_texture);
+  }
+#elif HAS_SDL_OPENGL
+  {
+    SDL_FreeSurface(m_texture);
+  }
+
+  if (m_glTextureLoaded)
+  {
+    glDeleteTextures(1, &m_glTexture);
+    m_glTextureLoaded = false;
+  }
 #endif
     
   m_texture = NULL;
@@ -591,6 +608,18 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
           dst += newTexture->pitch;
         }
         SDL_FreeSurface(m_texture);
+        
+#ifdef HAS_SDL_OPENGL
+        // Since we have a new texture, we need to delete the old one
+        // and start a new pipeline
+        if (m_glTextureLoaded)
+        {
+          glDeleteTextures(1, &m_glTexture);
+          m_glTextureLoaded = false;
+          End();
+          Begin();
+        }        
+#endif        
       }
 #endif
 
@@ -693,6 +722,33 @@ void CGUIFontTTF::Begin()
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
+#elif defined(HAS_SDL_OPENGL)
+  // First, delete the previous texture if one exists
+  if (!m_glTextureLoaded)
+  {
+    glDeleteTextures(1, &m_glTexture);
+    
+    // Have OpenGL generate a texture object handle for us
+    glGenTextures(1, &m_glTexture);
+ 
+    // Bind the texture object
+    glBindTexture(GL_TEXTURE_2D, m_glTexture);
+ 
+    // Set the texture's stretching properties
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+ 
+    // Set the texture image
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, m_texture->w, m_texture->h, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, m_texture->pixels);  
+  }
+  
+  // Turn Blending On
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);         
+      
+  glBindTexture(GL_TEXTURE_2D, m_glTexture);
+  glBegin(GL_QUADS);
 #endif
 }
 
@@ -712,6 +768,8 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+#elif defined(HAS_SDL_OPENGL)
+  glEnd();  
 #endif
 }
 
@@ -801,7 +859,33 @@ struct CUSTOMVERTEX {
     g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
   }
   
-  SDL_FreeSurface(tempSurface);
+  SDL_FreeSurface(tempSurface);  
+#elif defined(HAS_SDL_OPENGL)
+  // tex coords converted to 0..1 range
+  float tl = ch->left / m_textureWidth;
+  float tr = ch->right / m_textureWidth;
+  float tt = ch->top / m_textureHeight;
+  float tb = ch->bottom / m_textureHeight;
+  
+  // Top-left vertex (corner)
+  //glColor4fv(diffuse); 
+  glTexCoord2f(tl, tt);
+  glVertex3f(posX, posY, 0);
+   
+  // Bottom-left vertex (corner)
+  //glColor4fv(diffuse); 
+  glTexCoord2f(tr, tt);
+  glVertex3f(posX + angle.cosine*width, posY + angle.sine*width, 0);
+    
+  // Bottom-right vertex (corner)
+  //glColor4fv(diffuse); 
+  glTexCoord2f(tr, tb);
+  glVertex3f(posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0);
+    
+  // Top-right vertex (corner)
+  //glColor4fv(diffuse); 
+  glTexCoord2f(tl, tb);
+  glVertex3f(posX - angle.sine*height, posY + angle.cosine*height, 0);
 #endif
 }
 
