@@ -10,7 +10,7 @@ enum CodecID;
 class CDVDAudio
 {
 public:
-  CDVDAudio();
+  CDVDAudio(bool& bStop);
   ~CDVDAudio();
 
   void RegisterAudioCallback(IAudioCallback* pCallback);
@@ -43,6 +43,7 @@ protected:
   int m_iBitsPerSample;
   int m_iSpeed;
 
+  volatile bool& m_bStop;
   //counter that will go from 0 to m_iSpeed-1 and reset, data will only be output when speedstep is 0
   //int m_iSpeedStep; 
 };
