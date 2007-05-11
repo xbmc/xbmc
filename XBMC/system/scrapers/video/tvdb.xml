@@ -114,7 +114,7 @@
  				<expression>&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;http://tvdb.zsori.com/banners/\1&lt;/thumb&gt;" dest="4+">
-				<expression>&lt;filename&gt;([^&lt;]*)&lt;/filename&gt;</expression>
+				<expression>&lt;filename&gt;([^&lt;]+)&lt;/filename&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
