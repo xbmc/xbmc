@@ -62,7 +62,7 @@ namespace VIDEO
     CVideoDatabase m_database;
     SScanSettings m_settings;
     SScraperInfo m_info;
-    set<CStdString> m_pathsToScan;
+    map<CStdString,SScanSettings> m_pathsToScan;
     set<CStdString> m_pathsToCount;
   };
 };
