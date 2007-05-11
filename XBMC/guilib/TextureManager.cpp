@@ -844,8 +844,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         return 0;
       }
       info.Width = pTexture->w;
-      info.Height = pTexture->h;      
-#endif      
+      info.Height = pTexture->h;
+#endif
     }
   }
 
@@ -1118,7 +1118,8 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   
   // Resize texture to POT
   unsigned char* src = (unsigned char*) surface->pixels;
-  unsigned char* resized = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* pixels = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* resized = pixels;
   for (int y = 0; y < surface->h; y++)
   {
     memcpy(resized, src, surface->pitch);
@@ -1147,7 +1148,7 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
  
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
-               GL_RGBA, GL_UNSIGNED_BYTE, resized);  
+               GL_RGBA, GL_UNSIGNED_BYTE, pixels);  
 }
 
 CGLTexture::~CGLTexture()
