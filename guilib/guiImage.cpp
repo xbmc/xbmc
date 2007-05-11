@@ -166,7 +166,18 @@ void CGUIImage::Render()
 #ifdef HAS_SDL_OPENGL
     CGLTexture* texture = m_vecTextures[m_iCurrentImage]; 
     glBindTexture(GL_TEXTURE_2D, texture->id);
+    
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);          // Turn Blending On
 
+    // diffuse coloring
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    
     glBegin(GL_QUADS);
 #endif
     
@@ -402,19 +413,26 @@ where 0.5 may be automatically treated as alpha and blended with the texture
   DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   if (colour & 0xff000000)
   {
+    GLfloat diffuse[] = {(float)(colour & 0xff000000) / 255, 1.0, 1.0, 1.0};
+
+    // set all the attributes we need to...
     // Top-left vertex (corner)
+    glColor4fv(diffuse); 
     glTexCoord2f(u1, v1);
     glVertex3f(x1, y1, 0);
     
     // Bottom-left vertex (corner)
+    glColor4fv(diffuse); 
     glTexCoord2f(u2, v1);
     glVertex3f(x2, y2, 0);
     
     // Bottom-right vertex (corner)
+    glColor4fv(diffuse); 
     glTexCoord2f(u2, v2);
     glVertex3f(x3, y3, 0);
     
     // Top-right vertex (corner)
+    glColor4fv(diffuse); 
     glTexCoord2f(u1, v2);
     glVertex3f(x4, y4, 0);
   }
