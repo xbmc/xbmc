@@ -72,7 +72,6 @@ private:
   LONG m_nCurrentVolume;
   DWORD m_dwPacketSize;
   DWORD m_dwNumPackets;
-  DWORD m_dwWriteOffset;
   bool m_bPause;
   bool m_bIsAllocated;
   bool m_bFirstPackets;
