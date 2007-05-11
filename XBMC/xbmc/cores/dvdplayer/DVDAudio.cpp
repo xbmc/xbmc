@@ -140,6 +140,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 
   // make sure renderer can atleast take one packet
   DWORD dwTimestamp = GetTickCount() + 5000; // uggly hack to avoid deadlock
+
   while (m_pAudioDecoder->GetSpace() < m_dwPacketSize && dwTimestamp < GetTickCount())
     Sleep(1);
 
@@ -176,14 +177,15 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
       if (len >= m_dwPacketSize) Sleep(10);
     }
   }
-  while (len >= m_dwPacketSize); // if we send to much data at once, we have to send more again
+  while (len >= m_dwPacketSize && dwTimestamp < GetTickCount()); // if we send to much data at once, we have to send more again
 
   // if copied is not len then the decoder didn't accept the last few bytes
   // we save it for the next call to this funtion
   if (len > 0)
   {
-    m_iBufferSize = len;
+    m_iBufferSize = min(len, m_dwPacketSize);
     memcpy(m_pBuffer, data, m_iBufferSize);
+    len -= m_iBufferSize;
   }
   return iTotalSize - len;
 }
