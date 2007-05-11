@@ -1126,16 +1126,6 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
     src += surface->pitch;
     resized += (textureWidth * 4);
   }
-
-/*
-  if (gluScaleImage(GL_RGBA, 
-            imageWidth, imageHeight, GL_UNSIGNED_BYTE, surface->pixels,  
-            textureWidth, textureHeight, GL_UNSIGNED_BYTE, p) != 0)
-  {
-    CLog::Log(LOGERROR, "CGLTexture unable to scale texture");
-    return;
-  }
-*/  
       
   // Have OpenGL generate a texture object handle for us
   glGenTextures(1, &id);
@@ -1148,12 +1138,14 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
  
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
-               GL_BGRA, GL_UNSIGNED_BYTE, pixels);  
+               GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+               
+  delete [] pixels;              
 }
 
 CGLTexture::~CGLTexture()
 {
-  //glDeleteTextures(1, &id);
+  glDeleteTextures(1, &id);
   id = 0;
 }
 #endif
