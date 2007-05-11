@@ -49,7 +49,6 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_dwWriteOffset = 0;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
 
@@ -197,17 +196,15 @@ HRESULT CWin32DirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CWin32DirectSound::GetSpace()
 {
-  DWORD playCursor;
-  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, NULL)))
+  DWORD playCursor, writeCursor;
+  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
     return 0;
 
-  DWORD bytes;
-  if(playCursor <= m_dwWriteOffset)
-    bytes = m_dwWriteOffset - playCursor;
-  else
-    bytes = m_dwWriteOffset + m_dwPacketSize * m_dwNumPackets - playCursor;
+  DWORD bytes = writeCursor - playCursor;
+  if(bytes > m_dwPacketSize * m_dwNumPackets)
+    bytes = 0;
 
-  return m_dwPacketSize * m_dwNumPackets - bytes;
+  return bytes;
 }
 
 //***********************************************************************************************
@@ -222,7 +219,7 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
   if(GetSpace() < len)
     return 0;
 
-  if (FAILED(m_pBuffer->Lock(m_dwWriteOffset, len, &start, &size, &startWrap, &sizeWrap, 0)))
+  if (FAILED(m_pBuffer->Lock(0, len, &start, &size, &startWrap, &sizeWrap, DSBLOCK_FROMWRITECURSOR)))
     return 0;
 
   memcpy(start, data, size);
@@ -231,9 +228,6 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 
   if (FAILED(m_pBuffer->Unlock(start, size, startWrap, sizeWrap)))
     return 0;
-
-  m_dwWriteOffset += len;
-  m_dwWriteOffset %= m_dwPacketSize * m_dwNumPackets;
 
   if(m_bFirstPackets && !m_bPause)
   {
@@ -248,15 +242,13 @@ FLOAT CWin32DirectSound::GetDelay()
 {
   FLOAT delay = 0.0;
 
-  DWORD playCursor;
-  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, NULL)))
-    return 0;  
+  DWORD playCursor, writeCursor;
+  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
+    return 0;
 
-  DWORD bytes;
-  if(playCursor <= m_dwWriteOffset)
-    bytes = m_dwWriteOffset - playCursor;
-  else
-    bytes = m_dwWriteOffset + m_dwPacketSize * m_dwNumPackets - playCursor;
+  DWORD bytes = m_dwPacketSize * m_dwNumPackets + playCursor - writeCursor;
+  if(bytes > m_dwPacketSize * m_dwNumPackets)
+    bytes = m_dwPacketSize * m_dwNumPackets;
 
   delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
   delay += 0.008f;
