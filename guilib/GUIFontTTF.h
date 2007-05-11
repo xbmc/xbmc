@@ -100,6 +100,11 @@ protected:
   // freetype stuff
   FT_Face    m_face;
   FT_Library m_library;
+  
+#ifdef HAS_SDL_OPENGL
+  bool m_glTextureLoaded;
+  GLuint m_glTexture;
+#endif  
 };
 
 #endif
