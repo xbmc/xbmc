@@ -415,8 +415,13 @@ void CApplication::InitBasicD3D()
 
   if (m_splash)
   {
+#ifndef HAS_SDL_OPENGL
     m_splash->Stop();
+#else
+    m_splash->Hide();
+#endif
   }
+  
 
 #ifndef HAS_SDL  
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
@@ -437,7 +442,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
   if (m_splash)
   {
+#ifndef HAS_SDL_OPENGL
     m_splash->Stop();
+#else
+    m_splash->Hide();
+#endif
   }
 
 #ifndef HAS_SDL  
@@ -1183,7 +1192,11 @@ HRESULT CApplication::Create(HWND hWnd)
   g_langInfo.Load(_P(strLangInfoPath));
 
   m_splash = new CSplash(_P("Q:\\media\\splash.png"));
+#ifndef HAS_SDL_OPENGL
   m_splash->Start();
+#else
+  m_splash->Show();
+#endif
 
   CStdString strLanguagePath;
   strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLangugage.c_str());
