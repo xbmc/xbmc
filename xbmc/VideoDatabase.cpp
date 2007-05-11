@@ -27,9 +27,11 @@
 #include "util.h"
 #include "GUIPassword.h"
 #include "filesystem/StackDirectory.h"
+#include "VideoInfoScanner.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace VIDEO;
 
 #define VIDEO_DATABASE_VERSION 6
 #define VIDEO_DATABASE_OLD_VERSION 3.f
@@ -228,7 +230,7 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
   return -1;
 }
 
-bool CVideoDatabase::GetPaths(set<CStdString> &paths)
+bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
 {
   try
   {
@@ -237,25 +239,38 @@ bool CVideoDatabase::GetPaths(set<CStdString> &paths)
     if (NULL == m_pDS2.get()) return false;
 
     paths.clear();
-
-    // first grab all tvshow paths
+ 
+    // grab all paths with movie content set
+    SScanSettings settings;
+    settings.recurse = 1;
+    settings.parent_name_root = false;
+    settings.parent_name = true;
+    if (!m_pDS2->query("select strPath from path where strContent like 'movies'")) return false;    
+    while (!m_pDS2->eof())
+    {
+      CStdString strPath = m_pDS2->fv("strPath").get_asString();
+      paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+      m_pDS2->next();
+    }
+     
+    // then grab all tvshow paths
     if (!m_pDS->query("select strPath from path join tvshowlinkpath on tvshowlinkpath.idpath=path.idpath")) return false;
     int iRowsFound = m_pDS->num_rows();
+    settings.recurse = 0;
+    settings.parent_name_root = false;
+    settings.parent_name = true;
     while (!m_pDS->eof())
     {
-      paths.insert(m_pDS->fv("strPath").get_asString());
+      paths.insert(pair<CStdString,SScanSettings>(m_pDS->fv("strPath").get_asString(),settings));
       m_pDS->next();
     }
     m_pDS->close();
     
-    // now grab all other paths
-    if (!m_pDS2->query("select strPath,strContent from path where idpath NOT in (select idpath from tvshowlinkpath)")) return false;
-    iRowsFound = m_pDS2->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS2->close();
-      return true;
-    }
+    // finally grab all other paths holding a movie which is not a stack or a rar archive 
+    // - this isnt perfect but it should do fine in most situations.
+    // reason we need it to hold a movie is stacks from different directories (cdx folders for instance)
+    // not making mistakes must take priority
+    if (!m_pDS2->query("select strPath,strContent from path where idpath NOT in (select idpath from tvshowlinkpath) and idPath in (select idPath from files join movie on movie.idFile=files.idFile) and strPath NOT like 'stack://%%' and strPath NOT like 'rar://%%'")) return false;
     while (!m_pDS2->eof())
     {
       CStdString strPath = m_pDS2->fv("strPath").get_asString();
@@ -264,7 +279,7 @@ bool CVideoDatabase::GetPaths(set<CStdString> &paths)
       if (info.strContent.IsEmpty())
         GetScraperForPath(strPath,info.strPath,info.strContent);
       if (!info.strContent.Equals("tvshows"))
-        paths.insert(strPath);
+        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
       m_pDS2->next();
     }
     m_pDS2->close();

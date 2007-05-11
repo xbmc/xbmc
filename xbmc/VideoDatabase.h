@@ -14,6 +14,11 @@ typedef vector<CStdString> VECMOVIESFILES;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
+namespace VIDEO
+{
+  struct SScanSettings;
+}
+
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 21 // leave room for the fileid
@@ -201,7 +206,7 @@ public:
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(set<CStdString> &paths);
+  bool GetPaths(map<CStdString,VIDEO::SScanSettings> &paths);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);

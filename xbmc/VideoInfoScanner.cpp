@@ -103,7 +103,7 @@ namespace VIDEO
         {
           while (!bCancelled && m_pathsToScan.size())
           {
-            if (!DoScan(*m_pathsToScan.begin(),m_settings))
+            if (!DoScan(m_pathsToScan.begin()->first,m_pathsToScan.begin()->second))
               bCancelled = true;
             bCommit = !bCancelled;
           }
@@ -165,7 +165,7 @@ namespace VIDEO
       m_database.Close();
     }
     else
-      m_pathsToScan.insert(strDirectory);
+      m_pathsToScan.insert(pair<CStdString,SScanSettings>(strDirectory,settings));
 
     StopThread();
     Create();
@@ -197,7 +197,6 @@ namespace VIDEO
 
     // load subfolder
     CFileItemList items;
-    CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
     int iFound;
     bool bSkip=false;
     m_database.GetScraperForPath(strDirectory,m_info.strPath,m_info.strContent,iFound);
@@ -207,7 +206,12 @@ namespace VIDEO
     CStdString hash, dbHash;
     if (m_info.strContent.Equals("movies"))
     {
-      pWindow->GetStackedDirectory(strDirectory, items);
+      CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+      CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+      int iOldStack = g_stSettings.m_iMyVideoStack;
+      g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
+      items.Stack();
+      g_stSettings.m_iMyVideoStack = iOldStack;
       int numFilesInFolder = GetPathHash(items, hash);
 
       if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
@@ -258,7 +262,7 @@ namespace VIDEO
     CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
 
     // remove this path from the list we're processing
-    set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
+    map<CStdString,SScanSettings>::iterator it = m_pathsToScan.find(strDirectory);
     if (it != m_pathsToScan.end())
       m_pathsToScan.erase(it);
 
