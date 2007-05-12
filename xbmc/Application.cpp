@@ -839,6 +839,10 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #else
   CLog::Log(LOGNOTICE, "Setup SDL");
+
+  /* Clean up on exit, exit on window close and interrupt */
+  atexit(SDL_Quit);
+    
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
