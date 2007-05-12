@@ -11,6 +11,13 @@
  */
 
 /* applied some modification to make make our xine friend more happy */
+
+/*
+ * Modified for use with MPlayer, detailed changelog at
+ * http://svn.mplayerhq.hu/mplayer/trunk/
+ * $Id: ldt_keeper.c 22733 2007-03-18 22:18:11Z nicodvb $
+ */
+
 #include "ldt_keeper.h"
 
 #include <string.h>
@@ -21,6 +28,9 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "mmap_anon.h"
+#include "mp_msg.h"
+#include "help_mp.h"
 #ifdef __linux__
 #include <asm/unistd.h>
 #include <asm/ldt.h>
@@ -43,7 +53,7 @@ int modify_ldt(int func, void *ptr, unsigned long bytecount);
 }
 #endif
 #else
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
 #include <machine/segments.h>
 #include <machine/sysarch.h>
 #endif
@@ -52,13 +62,15 @@ int modify_ldt(int func, void *ptr, unsigned long bytecount);
 #include <sys/segment.h>
 #include <sys/sysi86.h>
 
-/* solaris x86: add missing prototype for sysi86() */
+/* solaris x86: add missing prototype for sysi86(), but only when sysi86(int, void*) is known to be valid */
+#ifdef HAVE_SYSI86_iv
 #ifdef  __cplusplus
 extern "C" {
 #endif
 int sysi86(int, void*);
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 #ifndef NUMSYSLDTS             /* SunOS 2.5.1 does not define NUMSYSLDTS */
@@ -93,8 +105,9 @@ struct modify_ldt_ldt_s {
 #define       LDT_SEL(idx) ((idx) << 3 | 1 << 2 | 3)
 
 /* i got this value from wine sources, it's the first free LDT entry */
-#if defined(__FreeBSD__) && defined(LDT_AUTO_ALLOC)
+#if (defined(__APPLE__) || defined(__FreeBSD__)) && defined(LDT_AUTO_ALLOC)
 #define       TEB_SEL_IDX     LDT_AUTO_ALLOC
+#define	      USE_LDT_AA
 #endif
 
 #ifndef       TEB_SEL_IDX
@@ -122,7 +135,43 @@ void Setup_FS_Segment(void)
     );
 }
 
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+/* we don't need this - use modify_ldt instead */
+#if 0
+#ifdef __linux__
+/* XXX: why is this routine from libc redefined here? */
+/* NOTE: the redefined version ignores the count param, count is hardcoded as 16 */
+static int LDT_Modify( int func, struct modify_ldt_ldt_s *ptr,
+		       unsigned long count )
+{
+    int res;
+#ifdef __PIC__
+    __asm__ __volatile__( "pushl %%ebx\n\t"
+			  "movl %2,%%ebx\n\t"
+			  "int $0x80\n\t"
+			  "popl %%ebx"
+			  : "=a" (res)
+			  : "0" (__NR_modify_ldt),
+			  "r" (func),
+			  "c" (ptr),
+			  "d"(16)//sizeof(*ptr) from kernel point of view
+			  :"esi"     );
+#else
+    __asm__ __volatile__("int $0x80"
+			 : "=a" (res)
+			 : "0" (__NR_modify_ldt),
+			 "b" (func),
+			 "c" (ptr),
+			 "d"(16)
+			 :"esi");
+#endif  /* __PIC__ */
+    if (res >= 0) return res;
+    errno = -res;
+    return -1;
+}
+#endif
+#endif
+
+#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 static void LDT_EntryToBytes( unsigned long *buffer, const struct modify_ldt_ldt_s *content )
 {
     *buffer++ = ((content->base_addr & 0x0000ffff) << 16) |
@@ -149,21 +198,21 @@ ldt_fs_t* Setup_LDT_Keeper(void)
     if (!ldt_fs)
 	return NULL;
 
-    ldt_fs->fd = open("/dev/zero", O_RDWR);
-    if(ldt_fs->fd<0){
-        perror( "Cannot open /dev/zero for READ+WRITE. Check permissions! error: ");
-	return NULL;
-    }
-    ldt_fs->fs_seg = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_PRIVATE,
-			  ldt_fs->fd, 0);
+#ifdef __APPLE__
+    if (getenv("DYLD_BIND_AT_LAUNCH") == NULL)
+        mp_msg(MSGT_LOADER, MSGL_WARN, MSGTR_LOADER_DYLD_Warning);
+#endif /* __APPLE__ */
+    
+    fs_seg=
+    ldt_fs->fs_seg = mmap_anon(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_PRIVATE, 0);
     if (ldt_fs->fs_seg == (void*)-1)
     {
 	perror("ERROR: Couldn't allocate memory for fs segment");
-        close(ldt_fs->fd);
         free(ldt_fs);
 	return NULL;
     }
     *(void**)((char*)ldt_fs->fs_seg+0x18) = ldt_fs->fs_seg;
+    memset(&array, 0, sizeof(array));
     array.base_addr=(int)ldt_fs->fs_seg;
     array.entry_number=TEB_SEL_IDX;
     array.limit=array.base_addr+getpagesize()-1;
@@ -182,12 +231,12 @@ ldt_fs_t* Setup_LDT_Keeper(void)
     }
 #endif /*linux*/
 
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
     {
         unsigned long d[2];
 
         LDT_EntryToBytes( d, &array );
-#if defined(__FreeBSD__) && defined(LDT_AUTO_ALLOC)
+#ifdef USE_LDT_AA
         ret = i386_set_ldt(LDT_AUTO_ALLOC, (union descriptor *)d, 1);
         array.entry_number = ret;
         fs_ldt = ret;
@@ -199,9 +248,12 @@ ldt_fs_t* Setup_LDT_Keeper(void)
             perror("install_fs");
 	    printf("Couldn't install fs segment, expect segfault\n");
             printf("Did you reconfigure the kernel with \"options USER_LDT\"?\n");
+#ifdef __OpenBSD__
+	    printf("On newer OpenBSD systems did you set machdep.userldt to 1?\n");
+#endif
         }
     }
-#endif  /* __NetBSD__ || __FreeBSD__ || __OpenBSD__ */
+#endif  /* __NetBSD__ || __FreeBSD__ || __OpenBSD__ || __DragonFly__ || __APPLE__ */
 
 #if defined(__svr4__)
     {
@@ -222,7 +274,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 
     Setup_FS_Segment();
 
-    ldt_fs->prev_struct = (char*)malloc(sizeof(char) * 8);
+    ldt_fs->prev_struct = malloc(8);
     *(void**)array.base_addr = ldt_fs->prev_struct;
 
     return ldt_fs;
@@ -236,6 +288,5 @@ void Restore_LDT_Keeper(ldt_fs_t* ldt_fs)
 	free(ldt_fs->prev_struct);
     munmap((char*)ldt_fs->fs_seg, getpagesize());
     ldt_fs->fs_seg = 0;
-    close(ldt_fs->fd);
     free(ldt_fs);
 }
