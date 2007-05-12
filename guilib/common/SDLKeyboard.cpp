@@ -8,6 +8,16 @@ CKeyboard g_Keyboard; // global
 
 CKeyboard::CKeyboard()
 {
+  Reset();
+}
+
+void CKeyboard::Initialize(HWND hWnd)
+{
+  SDL_EnableUNICODE(1);
+}
+
+void CKeyboard::Reset()
+{
   m_bShift = false;
   m_bCtrl = false;
   m_bAlt = false;
@@ -15,42 +25,30 @@ CKeyboard::CKeyboard()
   m_VKey = 0;
 }
 
-CKeyboard::~CKeyboard()
-{
-}
-
-void CKeyboard::Initialize(HWND hWnd)
-{
-  SDL_EnableUNICODE(1);
-  Acquire();
-}
-
-void CKeyboard::Update()
+void CKeyboard::Update(SDL_Event& m_keyEvent)
 {  
-  memset(&m_keyEvent, 0, sizeof(m_keyEvent));
-  SDL_PumpEvents();
-  if (SDL_PeepEvents(&m_keyEvent, 1, SDL_GETEVENT, SDL_KEYUPMASK | SDL_KEYDOWNMASK) > 0)
-  { 
+  if (m_keyEvent.type == SDL_KEYDOWN)
+  {
     m_cAscii = 0;
-    m_bShift = false;
-    m_bCtrl = false;
-    m_bAlt = false;
     m_VKey = 0;
-    
-    if (m_keyEvent.type == SDL_KEYDOWN)
-    {
-    	m_bCtrl = m_keyEvent.key.keysym.mod & KMOD_CTRL;
-    	m_bShift = m_keyEvent.key.keysym.mod & KMOD_SHIFT;
-    	m_bAlt = m_keyEvent.key.keysym.mod & KMOD_ALT;
 
-		if (m_keyEvent.key.keysym.unicode < 0x80 && m_keyEvent.key.keysym.unicode > 0)
+    m_bCtrl = m_keyEvent.key.keysym.mod & KMOD_CTRL;
+    m_bShift = m_keyEvent.key.keysym.mod & KMOD_SHIFT;
+    m_bAlt = m_keyEvent.key.keysym.mod & KMOD_ALT;
+
+		if (m_keyEvent.key.keysym.unicode < 0x80 && m_keyEvent.key.keysym.unicode > 0x20)
 		{
 			m_cAscii = m_keyEvent.key.keysym.unicode;
 			m_VKey = m_cAscii | KEY_ASCII;
 		}
 		else
 		{
-			if (m_keyEvent.key.keysym.sym == SDLK_KP0) m_VKey = 0x60;
+			if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) m_VKey = 0x08;
+			else if (m_keyEvent.key.keysym.sym == SDLK_TAB) m_VKey = 0x09;
+			else if (m_keyEvent.key.keysym.sym == SDLK_RETURN) m_VKey = 0x0d;
+			else if (m_keyEvent.key.keysym.sym == SDLK_ESCAPE) m_VKey = 0x1b;
+			else if (m_keyEvent.key.keysym.sym == SDLK_SPACE) m_VKey = 0x20;
+			else if (m_keyEvent.key.keysym.sym == SDLK_KP0) m_VKey = 0x60;
 			else if (m_keyEvent.key.keysym.sym == SDLK_KP1) m_VKey = 0x61;
 			else if (m_keyEvent.key.keysym.sym == SDLK_KP2) m_VKey = 0x62;
 			else if (m_keyEvent.key.keysym.sym == SDLK_KP3) m_VKey = 0x63;
@@ -95,12 +93,11 @@ void CKeyboard::Update()
 			else if (m_keyEvent.key.keysym.mod && KMOD_LALT) m_VKey = 0xa4;
 			else if (m_keyEvent.key.keysym.mod && KMOD_RALT) m_VKey = 0xa5;
 			else if (m_keyEvent.key.keysym.mod && KMOD_LCTRL) m_VKey = 0xa2;
-			else if (m_keyEvent.key.keysym.mod && KMOD_RCTRL) m_VKey = 0xa3;
-    	}
+			else if (m_keyEvent.key.keysym.mod && KMOD_RCTRL) m_VKey = 0xa3;		
     }
-  }  
-}
-
-void CKeyboard::Acquire()
-{
-}
+  }
+  else
+  {
+    Reset();
+  }
+}

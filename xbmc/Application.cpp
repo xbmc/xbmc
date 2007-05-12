@@ -2497,6 +2497,10 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
+#ifdef HAS_SDL 
+  g_Keyboard.Reset();
+#endif
+  
   return OnAction(action);
 }
 
