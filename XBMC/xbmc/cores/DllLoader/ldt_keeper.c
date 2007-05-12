@@ -29,8 +29,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "mmap_anon.h"
-#include "mp_msg.h"
-#include "help_mp.h"
 #ifdef __linux__
 #include <asm/unistd.h>
 #include <asm/ldt.h>
@@ -200,7 +198,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 
 #ifdef __APPLE__
     if (getenv("DYLD_BIND_AT_LAUNCH") == NULL)
-        mp_msg(MSGT_LOADER, MSGL_WARN, MSGTR_LOADER_DYLD_Warning);
+        printf("DYLD_BIND_AT_LAUNCH");
 #endif /* __APPLE__ */
     
     fs_seg=
