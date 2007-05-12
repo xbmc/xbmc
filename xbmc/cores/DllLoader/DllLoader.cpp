@@ -23,6 +23,10 @@ typedef struct _UNICODE_STRING {
 #define DLL_THREAD_DETACH    3
 #define DLL_PROCESS_VERIFIER 4
 
+#ifdef _LINUX
+#include "ldt_keeper.h"
+#endif
+
 #ifdef _XBOX
 // uncomment this to enable symbol loading for dlls
 //#define ENABLE_SYMBOL_LOADING 1
@@ -143,8 +147,29 @@ LPVOID GetXbdmBaseAddress()
 //  Entry point of a dll (DllMain)
 typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
-// is it really needed?
-void* fs_seg = NULL;
+
+#ifdef _LINUX
+/*
+ * This is a dirty hack.
+ * The win32 DLLs contain an alloca routine, that first probes the soon
+ * to be allocated new memory *below* the current stack pointer in 4KByte
+ * increments.  After the mem probing below the current %esp,  the stack
+ * pointer is finally decremented to make room for the "alloca"ed memory.
+ * Maybe the probing code is intended to extend the stack on a windows box.
+ * Anyway, the linux kernel does *not* extend the stack by simply accessing
+ * memory below %esp;  it segfaults.
+ * The extend_stack_for_dll_alloca() routine just preallocates a big chunk
+ * of memory on the stack, for use by the DLLs alloca routine.
+ * Added the noinline attribute as e.g. gcc 3.2.2 inlines this function
+ * in a way that breaks it.
+ */
+static void __attribute__((noinline)) extend_stack_for_dll_alloca(void)
+{
+    volatile int* mem =(volatile int*)alloca(0x20000);
+    *mem=0x1234;
+}
+#endif
+
 
 DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps)
 {
@@ -171,6 +196,8 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   
   // Initialize FS segment, important for quicktime dll's
 #ifdef _XBOX
+  // is it really needed?
+  static void* fs_seg = NULL;
   if (fs_seg == NULL)
   {
     CLog::Log(LOGDEBUG, "Initializing FS_SEG..");
@@ -183,6 +210,8 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
     }
     CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
   }
+#elif _LINUX
+  Setup_LDT_Keeper();
 #endif
 
   DllLoaderContainer::RegisterDll(this);
@@ -775,6 +804,9 @@ bool DllLoader::Load()
     /* since we are handing execution over to unknown code, safeguard here */
     try 
     {
+#ifdef _LINUX
+	extend_stack_for_dll_alloca();
+#endif
       initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
