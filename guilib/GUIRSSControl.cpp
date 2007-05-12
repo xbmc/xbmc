@@ -102,7 +102,7 @@ void CGUIRSSControl::OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray)
 #ifndef _LINUX  
   swprintf(m_pwzText, L"%s", aFeed.c_str() );
 #else
-  swprintf(m_pwzText, nStringLength, L"%s", aFeed.c_str() );
+  swprintf(m_pwzText, nStringLength, L"%ls", aFeed.c_str() );
 #endif  
 
   m_pbColors = aColorArray;
