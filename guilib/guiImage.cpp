@@ -177,7 +177,7 @@ void CGUIImage::Render()
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-    
+
     glBegin(GL_QUADS);
 #endif
     
@@ -404,7 +404,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   if (colour & 0xff000000)
   {
-    GLfloat diffuse[] = {(float)(colour & 0xff000000) / 255, 1.0, 1.0, 1.0};
+    GLfloat diffuse[] = {1.0, 1.0, 1.0, (float)(colour & 0xff000000) / 255};
 
     // set all the attributes we need to...
     // Top-left vertex (corner)
