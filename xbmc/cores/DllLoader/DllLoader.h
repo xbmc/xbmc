@@ -3,6 +3,10 @@
 
 #include "coffldr.h"
 
+#ifdef _LINUX
+#include "ldt_keeper.h"
+#endif
+
 #ifndef NULL
 #define NULL 0
 #endif
@@ -74,6 +78,10 @@ private:
   ExportEntry* m_pExportHead;
   Export* m_pStaticExports;
   LoadedList* m_pDlls;
+
+#ifdef _LINUX
+  ldt_fs_t* m_ldt_fs;
+#endif
 
   void PrintImportLookupTable(unsigned long ImportLookupTable_RVA);
   void PrintImportTable(ImportDirTable_t *ImportDirTable);

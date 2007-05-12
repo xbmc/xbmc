@@ -23,10 +23,6 @@ typedef struct _UNICODE_STRING {
 #define DLL_THREAD_DETACH    3
 #define DLL_PROCESS_VERIFIER 4
 
-#ifdef _LINUX
-#include "ldt_keeper.h"
-#endif
-
 #ifdef _XBOX
 // uncomment this to enable symbol loading for dlls
 //#define ENABLE_SYMBOL_LOADING 1
@@ -194,25 +190,29 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   m_bSystemDll = bSystemDll;
   m_pDlls = NULL;
   
-  // Initialize FS segment, important for quicktime dll's
-#ifdef _XBOX
-  // is it really needed?
-  static void* fs_seg = NULL;
-  if (fs_seg == NULL)
+
+  if(!bSystemDll)
   {
-    CLog::Log(LOGDEBUG, "Initializing FS_SEG..");
-    fs_seg = malloc(0x1000);
-    RtlZeroMemory(fs_seg, 0x1000);
-    __asm {
-      mov eax, fs_seg;
-      mov fs: [18h], eax;
-      xor eax, eax
+    // Initialize FS segment, important for quicktime dll's
+#ifdef _XBOX
+    // is it really needed?
+    static void* fs_seg = NULL;
+    if (fs_seg == NULL)
+    {
+      CLog::Log(LOGDEBUG, "Initializing FS_SEG..");
+      fs_seg = malloc(0x1000);
+      RtlZeroMemory(fs_seg, 0x1000);
+      __asm {
+        mov eax, fs_seg;
+        mov fs: [18h], eax;
+        xor eax, eax
+      }
+      CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
     }
-    CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
-  }
 #elif _LINUX
-  Setup_LDT_Keeper();
+    m_ldt_fs = Setup_LDT_Keeper();
 #endif
+  }
 
   DllLoaderContainer::RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);
@@ -252,8 +252,13 @@ DllLoader::~DllLoader()
   
   // can't unload a system dll, as this might be happing during xbmc destruction
   if(!m_bSystemDll)
+  {
     DllLoaderContainer::UnRegisterDll(this);
 
+#ifdef _LINUX
+    Restore_LDT_Keeper(m_ldt_fs);
+#endif
+  }
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
