@@ -4044,7 +4044,7 @@ bool CApplication::ResetScreenSaverWindow()
       m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
     }
     m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
-#else
+#elif defined(HAS_SDL_2D)
 	 Uint16 RampRed[256];
 	 Uint16 RampGreen[256];
 	 Uint16 RampBlue[256];
@@ -4185,7 +4185,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     Sleep(5);
     m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
   }
-#else  
+#elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampGreen); // Store the old gamma ramp
   Uint16 RampRed[256];
   Uint16 RampGreen[256];
