@@ -309,6 +309,21 @@ void CXBApplicationEx::ReadInput()
 
 #ifdef HAS_SDL
   SDL_PumpEvents();
+
+  SDL_Event event;
+
+  if(SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_QUITMASK))
+  {
+    switch(event.type)
+    {
+      case SDL_QUIT:
+        g_applicationMessenger.Shutdown();
+        break;
+      default:
+        break;
+    }
+  }
+
 #endif
 
   // Read the input from the mouse
