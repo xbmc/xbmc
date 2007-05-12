@@ -330,7 +330,11 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
+#ifndef _LINUX  
   m_iconv = iconv_open("UTF-16LE", m_encoding.c_str());
+#else
+  m_iconv = iconv_open("WCHAR_T", m_encoding.c_str());
+#endif  
 
   if (g_charsetConverter.isBidiCharset(m_encoding))
   {
