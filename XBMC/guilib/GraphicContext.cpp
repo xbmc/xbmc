@@ -104,7 +104,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #elif defined(HAS_SDL_OPENGL)
   GLint newviewport[4];
   GLint* oldviewport = new GLint[4];
-  glGetIntegerv(GL_VIEWPORT, oldviewport);	  
+  glGetIntegerv(GL_SCISSOR_BOX, oldviewport);	  
 #endif
   
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -197,7 +197,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport[1] = newTop;
   newviewport[2] = newRight - newLeft;
   newviewport[3] = newBottom - newTop;
-  glViewport(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
+  glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
 #endif
 
   m_viewStack.push(oldviewport);
@@ -216,7 +216,7 @@ void CGraphicContext::RestoreViewPort()
   SDL_SetClipRect(m_screenSurface, oldviewport);
 #elif defined(HAS_SDL_OPENGL)
   GLint* oldviewport = (GLint*)m_viewStack.top();
-  glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
+  glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
 #endif  
 
   m_viewStack.pop();
@@ -496,7 +496,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-    glEnable(GL_TEXTURE_2D);  
+    glEnable(GL_TEXTURE_2D); 
+    glEnable(GL_SCISSOR_TEST); 
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
