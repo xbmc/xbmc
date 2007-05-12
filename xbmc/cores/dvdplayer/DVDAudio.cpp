@@ -139,7 +139,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
   }
   int iTotalSize = len;
 
-  while (m_pAudioDecoder->GetSpace() < m_dwPacketSize && m_bStop)
+  while (m_pAudioDecoder->GetSpace() < m_dwPacketSize && !m_bStop)
     Sleep(1);
 
   if (m_iBufferSize > 0)
@@ -175,7 +175,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
       if (len >= m_dwPacketSize) Sleep(10);
     }
   }
-  while (len >= m_dwPacketSize && m_bStop); // if we send to much data at once, we have to send more again
+  while (len >= m_dwPacketSize && !m_bStop); // if we send to much data at once, we have to send more again
 
   // if copied is not len then the decoder didn't accept the last few bytes
   // we save it for the next call to this funtion
