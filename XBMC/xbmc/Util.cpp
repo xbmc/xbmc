@@ -2684,7 +2684,7 @@ void CUtil::InitGamma()
 {
 #ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
 #endif  
 }
@@ -2693,7 +2693,7 @@ void CUtil::RestoreBrightnessContrastGamma()
   g_graphicsContext.Lock();
 #ifndef HAS_SDL  
   g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
 #endif
   g_graphicsContext.Unlock();
@@ -2719,7 +2719,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   // calculate ramp
 #ifndef HAS_SDL
   D3DGAMMARAMP ramp;
-#else
+#elif defined(HAS_SDL_2D)
   Uint16 rampRed[256];
   Uint16 rampGreen[256];
   Uint16 rampBlue[256];
@@ -2731,7 +2731,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
 #ifndef HAS_SDL    
     ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
-#else
+#elif defined(HAS_SDL_2D)
     rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
 #endif    
   }
@@ -2740,7 +2740,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   g_graphicsContext.Lock();
 #ifndef HAS_SDL  
   g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
-#else
+#elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(rampRed, rampGreen, rampGreen);
 #endif
   g_graphicsContext.Unlock();
@@ -2780,7 +2780,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   {
 #ifndef HAS_SDL  
     g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
-#else
+#elif defined(HAS_SDL_2D)
     SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampGreen);    
 #endif    
     SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
@@ -2788,7 +2788,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   else
 #ifndef HAS_SDL  
     g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
-#else
+#elif defined(HAS_SDL_2D)
     SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampGreen);    
 #endif    
   g_graphicsContext.Unlock();
