@@ -7,11 +7,10 @@ class CKeyboard
 {
 public:
   CKeyboard();
-  ~CKeyboard();
 
   void Initialize(HWND hwnd);
-  void Acquire();
-  void Update();
+  void Reset();
+  void Update(SDL_Event& event);
   bool GetShift() { return m_bShift;};
   bool GetCtrl() { return m_bCtrl;};
   bool GetAlt() { return m_bAlt;};
@@ -19,8 +18,6 @@ public:
   BYTE GetKey() { return m_VKey;};
 
 private:
-  SDL_Event m_keyEvent;  
-
   bool m_bShift;
   bool m_bCtrl;
   bool m_bAlt;

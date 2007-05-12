@@ -308,29 +308,35 @@ void CXBApplicationEx::ReadInput()
 #endif
 
 #ifdef HAS_SDL
-  SDL_PumpEvents();
+  //SDL_PumpEvents();
 
   SDL_Event event;
-
-  if(SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_QUITMASK))
+  if (SDL_PollEvent(&event))
   {
     switch(event.type)
     {
       case SDL_QUIT:
         g_applicationMessenger.Shutdown();
         break;
-      default:
+      case SDL_MOUSEMOTION:
+      case SDL_MOUSEBUTTONDOWN:
+      case SDL_MOUSEBUTTONUP:
+        g_Mouse.Update();
         break;
-    }
+      case SDL_KEYDOWN:
+      case SDL_KEYUP:
+        g_Keyboard.Update(event);
+        break;
+     }     
   }
 
-#endif
-
+#else
   // Read the input from the mouse
   g_Mouse.Update();
 
   // Read the input from the keyboard
   g_Keyboard.Update();
+#endif
 
 #ifdef HAS_GAMEPAD
   // Read the input for all connected gampads
