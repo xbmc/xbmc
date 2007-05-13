@@ -5,28 +5,28 @@ RM = rm -f
 CXX=g++-4.1
 CC=gcc-4.1
 CFLAGS+=-g 
-DEFINES+=-D_LINUX -D_XBMC_DEBUG -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+DEFINES+=-D_LINUX -D_XBMC_DEBUG -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 
+#DEFINES+=-DHAS_SDL_OPENGL
 
 .cpp.o:
+	rm -f ${<:.cpp=.o}
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
 
 .c.o:
+	rm -f ${<:.c=.o}
 	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 
 %.h.gch : %.h
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
-OBJS =${SRCS:.cpp=.o}
+OBJS+=${SRCS:.cpp=.o}
 
-all: lib
+.PHONY : lib pch clean depend
 
-$(LIB) : $(OBJS)
+lib: $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
-
-lib: $(LIB)
-	for d in $(DIRS); do (cd $$d; $(MAKE) lib ); done
 
 clean: 
 	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch)
