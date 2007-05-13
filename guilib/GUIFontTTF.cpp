@@ -593,9 +593,12 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 #else
 #ifdef HAS_SDL_OPENGL
       newHeight = PadPow2(newHeight);
-#endif
-		SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
+      SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 8,
+          0, 0, 0, 0xff);
+#else
+		  SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+#endif
       if (!newTexture || newTexture->pixels == NULL)
       {
         CLog::Log(LOGERROR, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
@@ -657,35 +660,40 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     SDL_LockSurface(m_texture);
 
     unsigned char* source = (unsigned char*) bitmap.buffer;
-    unsigned int* target = (unsigned int*) (m_texture->pixels) + 
-         ((m_posY + ch->offsetY) * m_texture->pitch / 4) + 
-          (m_posX + bitGlyph->left);
-          
+#ifdef HAS_SDL_OPENGL
+    unsigned char* target = (unsigned char*) m_texture->pixels + (m_posY + ch->offsetY) * m_texture->pitch + m_posX + bitGlyph->left;
     for (int y = 0; y < bitmap.rows; y++)
     {
-    	for (int x = 0; x < bitmap.width; x++)
-    	{
-	     target[x] = ((unsigned int) source[x] << 24) | 0x00ffffffL;
-	   }
-	   
-	   source += bitmap.width;
-	   target += (m_texture->pitch / 4);
-	 }
-	        
+      memcpy(target, source, bitmap.width);
+      source += bitmap.width;
+      target += m_texture->pitch;
+    }
+    // Since we have a new texture, we need to delete the old one
+    // and start a new pipeline
+    if (m_glTextureLoaded)
+    {
+      End();
+      glDeleteTextures(1, &m_glTexture);
+      m_glTextureLoaded = false;
+      Begin();
+    }        
+#else
+    unsigned int *target = (unsigned char*) (m_texture->pixels) + 
+        ((m_posY + ch->offsetY) * pitch/4) + 
+        (m_posX + bitGlyph->left);
+    
+    for (int y = 0; y < bitmap.rows; y++)
+    {
+      for (int x = 0; x < bitmap.width; x++)
+      {
+        target[x] = ((unsigned int) source[x] << 24) | 0x00ffffffL;
+      }
+     
+      source += bitmap.width;
+      target += (m_texture->pitch / 4);
+    }
+#endif
     SDL_UnlockSurface(m_texture);
-    
-#ifdef HAS_SDL_OPENGL
-        // Since we have a new texture, we need to delete the old one
-        // and start a new pipeline
-        if (m_glTextureLoaded)
-        {
-          End();
-          glDeleteTextures(1, &m_glTexture);
-          m_glTextureLoaded = false;
-          Begin();
-        }        
-#endif   
-    
 #endif    
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
@@ -745,8 +753,8 @@ void CGUIFontTTF::Begin()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
  
     // Set the texture image
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, m_texture->w, m_texture->h, 0,
-                 GL_BGRA, GL_UNSIGNED_BYTE, m_texture->pixels); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
+                 GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
     
     m_glTextureLoaded = true;                
   }
@@ -755,11 +763,14 @@ void CGUIFontTTF::Begin()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
   glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_ALPHA, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR);
 
   glBindTexture(GL_TEXTURE_2D, m_glTexture);
   glBegin(GL_QUADS);
