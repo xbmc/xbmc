@@ -48,11 +48,6 @@ CFileLastFM::~CFileLastFM()
   m_pSyncBuffer = NULL;
 }
 
-bool CFileLastFM::CanSeek()
-{
-  return false;
-}
-
 __int64 CFileLastFM::GetPosition()
 {
   return 0;
@@ -371,7 +366,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
 
 __int64 CFileLastFM::Seek(__int64 iFilePosition, int iWhence)
 {
-  return 0;
+  return -1;
 }
 
 

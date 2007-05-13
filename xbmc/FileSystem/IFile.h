@@ -28,7 +28,7 @@ public:
   virtual int Write(const void* lpBuf, __int64 uiBufSize) { return -1;};
   virtual bool ReadString(char *szLine, int iLineLength)
   {
-    if (!CanSeek()) return false;
+    if(Seek(0, SEEK_CUR) < 0) return false;
 
     __int64 iFilePos = GetPosition();
     int iBytesRead = Read( (unsigned char*)szLine, iLineLength - 1);
@@ -76,8 +76,6 @@ public:
   virtual void Close() = 0;
   virtual __int64 GetPosition() = 0;
   virtual __int64 GetLength() = 0;
-  virtual bool CanSeek() { return true; }
-  virtual char GetDirectorySeperator() { return '\\'; }
   virtual void Flush() { }
   virtual int GetChunkSize() { return 16384; }
   virtual bool SkipNext(){return false;}
