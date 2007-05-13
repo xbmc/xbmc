@@ -33,7 +33,7 @@ void CFileReader::OnClearEvent()
 bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffer)
 {
   Close();
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile, true, READ_TRUNCATED))
     return false;
   m_file.SetObject(&m_ringBuffer);
 
@@ -201,7 +201,7 @@ int CFileReader::BufferChunk()
     // check the range of our valid data
     if (amountToRead)
     {
-      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead, READ_TRUNCATED);
+      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead);
       if (amountRead > 0)
       {
         if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountRead))
@@ -256,5 +256,5 @@ int CFileReader::GetCacheLevel()
 
 bool CFileReader::CanSeek()
 {
-  return m_file.CanSeek();
+  return m_file.Seek(0, SEEK_CUR) >= 0;
 }
