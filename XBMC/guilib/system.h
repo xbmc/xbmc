@@ -112,8 +112,8 @@
 #define HAS_SDL
 #define HAS_RAR
 
-#ifndef HAS_SDL_OPENGL
-#define HAS_SDL_2D
+#ifndef HAS_SDL_2D
+#define HAS_SDL_OPENGL
 #endif
 
 #include <unistd.h>
