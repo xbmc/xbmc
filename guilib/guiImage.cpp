@@ -8,6 +8,12 @@
 #include <SDL/SDL_rotozoom.h>
 #endif
 
+#ifdef HAS_XBOX_D3D
+#define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
+#else
+#define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
+#endif
+
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
@@ -175,7 +181,7 @@ void CGUIImage::Render()
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_SRC_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
 
     glBegin(GL_QUADS);
@@ -263,14 +269,14 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 #endif  
 
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(left, top) + 0.5f) - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(left, top) + 0.5f) - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(right, top) + 0.5f) - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(right, top) + 0.5f) - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(right, bottom) + 0.5f) - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(right, bottom) + 0.5f) - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(left, bottom) + 0.5f) - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(left, bottom) + 0.5f) - 0.5f;
+  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(left, top));
+  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(left, top));
+  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(right, top));
+  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(right, top));
+  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(right, bottom));
+  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(right, bottom));
+  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(left, bottom));
+  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(left, bottom));
 
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
@@ -401,32 +407,36 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   }
 #endif
 #elif defined(HAS_SDL_OPENGL)
-  DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
-  if (colour & 0xff000000)
-  {
-    GLfloat diffuse[] = {1.0, 1.0, 1.0, (float)(colour & 0xff000000) / 255};
-
-    // set all the attributes we need to...
-    // Top-left vertex (corner)
-    glColor4fv(diffuse); 
-    glTexCoord2f(u1, v1);
-    glVertex3f(x1, y1, 0);
-    
-    // Bottom-left vertex (corner)
-    glColor4fv(diffuse); 
-    glTexCoord2f(u2, v1);
-    glVertex3f(x2, y2, 0);
-    
-    // Bottom-right vertex (corner)
-    glColor4fv(diffuse); 
-    glTexCoord2f(u2, v2);
-    glVertex3f(x3, y3, 0);
-    
-    // Top-right vertex (corner)
-    glColor4fv(diffuse); 
-    glTexCoord2f(u1, v2);
-    glVertex3f(x4, y4, 0);
-  }
+  // set all the attributes we need to...
+  GLubyte glcolor[4];
+  
+  // Top-left vertex (corner)
+  DWORD color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
+  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
+  glColor4ubv(glcolor); 
+  glTexCoord2f(u1, v1);
+  glVertex3f(x1, y1, 0);
+  
+  // Bottom-left vertex (corner)
+  color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor));  
+  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
+  glColor4ubv(glcolor); 
+  glTexCoord2f(u2, v1);
+  glVertex3f(x2, y2, 0);
+  
+  // Bottom-right vertex (corner)
+  color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor));  
+  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
+  glColor4ubv(glcolor); 
+  glTexCoord2f(u2, v2);
+  glVertex3f(x3, y3, 0);
+  
+  // Top-right vertex (corner)
+  color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor));  
+  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
+  glColor4ubv(glcolor); 
+  glTexCoord2f(u1, v2);
+  glVertex3f(x4, y4, 0);
 #endif
 }
 
