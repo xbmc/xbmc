@@ -175,7 +175,7 @@
 						<height>22</height>
 						<font>font13</font>
 						<include>listselectedcolor</include>
-						<textcolor>60ffffff</textcolor>
+						<include>textcolorgrey</include>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>
@@ -213,7 +213,7 @@
 						<height>22</height>	
 						<font>font13</font>
 						<include>listselectedcolor</include>
-						<textcolor>60ffffff</textcolor>
+						<include>textcolorgrey</include>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>
@@ -281,7 +281,7 @@
 						<height>22</height>
 						<font>font13</font>
 						<include>listselectedcolor</include>
-						<textcolor>60ffffff</textcolor>
+						<include>textcolorgrey</include>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>
@@ -319,7 +319,7 @@
 						<height>22</height>	
 						<font>font13</font>
 						<include>listselectedcolor</include>
-						<textcolor>60ffffff</textcolor>
+						<include>textcolorgrey</include>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>

@@ -42,8 +42,8 @@
 			<width>400</width>
 			<height>16</height>
 			<label>12323</label>
-			<textcolor>FFD2FF00</textcolor>
-			<disabledcolor>FFFFFFFF</disabledcolor>
+			<include>textcolorgreen</include>
+			<include>disabledcolor</include>
 			<font>special13</font>
 			<align>center</align>
 		</control>

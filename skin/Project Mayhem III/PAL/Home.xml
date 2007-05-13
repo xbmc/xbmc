@@ -757,9 +757,9 @@
 			<width>720</width>
 			<font>font13</font>
 			<urlset>1</urlset>
-			<titlecolor>ffD2FF00</titlecolor>
-			<headlinecolor>DDced8da</headlinecolor>
-			<textcolor>ffD2FF00</textcolor>
+			<include>rsstitlecolor</include>
+			<include>rssheadlinecolor</include>
+			<include>textcolorgreen</include>
 			<visible>!Player.HasVideo</visible>
 			<visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
 			<include>homemisc</include>
