@@ -81,6 +81,8 @@ CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
+extern DWORD PadPow2(DWORD x);
+
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   : CGUIFontBase(strFileName)
 {
@@ -116,7 +118,7 @@ void CGUIFontTTF::ClearCharacterCache()
   {
     SDL_FreeSurface(m_texture);
   }
-#elif HAS_SDL_OPENGL
+#elif defined(HAS_SDL_OPENGL)
   {
     SDL_FreeSurface(m_texture);
   }
@@ -246,6 +248,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
 
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
+#ifdef HAS_SDL_OPENGL
+  m_textureWidth = PadPow2(m_textureWidth);
+#endif
   if (m_textureWidth > 4096) m_textureWidth = 4096;
 
   // set the posX and posY so that our texture will be created on first character write.
@@ -586,6 +591,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
         SAFE_RELEASE(m_texture);
       }      
 #else
+#ifdef HAS_SDL_OPENGL
+      newHeight = PadPow2(newHeight);
+#endif
 		SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
       if (!newTexture || newTexture->pixels == NULL)
@@ -607,7 +615,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
           src += m_texture->pitch;
           dst += newTexture->pitch;
         }
-        SDL_FreeSurface(m_texture);           
+        SDL_FreeSurface(m_texture);
       }
 #endif
 
@@ -657,7 +665,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     {
     	for (int x = 0; x < bitmap.width; x++)
     	{
-	     target[x] = (unsigned int) source[x] << 24 | 0x00ffffffL;
+	     target[x] = ((unsigned int) source[x] << 24) | 0x00ffffffL;
 	   }
 	   
 	   source += bitmap.width;
@@ -671,9 +679,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
         // and start a new pipeline
         if (m_glTextureLoaded)
         {
+          End();
           glDeleteTextures(1, &m_glTexture);
           m_glTextureLoaded = false;
-          End();
           Begin();
         }        
 #endif   
@@ -738,8 +746,8 @@ void CGUIFontTTF::Begin()
  
     // Set the texture image
     glTexImage2D(GL_TEXTURE_2D, 0, 4, m_texture->w, m_texture->h, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, m_texture->pixels); 
-                 
+                 GL_BGRA, GL_UNSIGNED_BYTE, m_texture->pixels); 
+    
     m_glTextureLoaded = true;                
   }
   
