@@ -16,7 +16,7 @@ CStopWatch::CStopWatch()
   QueryPerformanceFrequency( &timerFreq );
   m_timerPeriod = 1.0f / (float)timerFreq.QuadPart;
 #else
-  m_timerPeriod = 1.0f;
+  m_timerPeriod = 1.0f / 1000.0f; // we want seconds
 #endif
 
 }
@@ -69,8 +69,6 @@ LONGLONG CStopWatch::GetTicks() const
   QueryPerformanceCounter( &currTicks );
   return currTicks.QuadPart;
 #else
-  struct sysinfo info;
-  sysinfo(&info);
-  return info.uptime;
+  return timeGetTime();
 #endif
 }
