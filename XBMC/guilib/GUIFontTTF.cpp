@@ -72,7 +72,7 @@ CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
 
-#ifdef HAS_XBOX_D3D
+#if defined(HAS_XBOX_D3D) || defined(HAS_SDL_OPENGL)
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
 #else
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
@@ -753,8 +753,14 @@ void CGUIFontTTF::Begin()
   
   // Turn Blending On
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);         
-      
+  glEnable(GL_BLEND);
+  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
   glBindTexture(GL_TEXTURE_2D, m_glTexture);
   glBegin(GL_QUADS);
 #endif
