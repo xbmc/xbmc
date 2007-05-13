@@ -26,9 +26,7 @@ void CSplash::OnExit()
 void CSplash::Show()
 {
   g_graphicsContext.Lock();
-#ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-#endif
+  g_graphicsContext.Clear();
   
   float w = g_graphicsContext.GetWidth() * 0.5f;
   float h = g_graphicsContext.GetHeight() * 0.5f;  
