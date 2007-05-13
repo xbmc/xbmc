@@ -740,7 +740,9 @@ void CGUIFontTTF::Begin()
  
     // Set the texture image
     glTexImage2D(GL_TEXTURE_2D, 0, 4, m_texture->w, m_texture->h, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, m_texture->pixels);  
+                 GL_RGBA, GL_UNSIGNED_BYTE, m_texture->pixels); 
+                 
+    m_glTextureLoaded = true;                
   }
   
   // Turn Blending On
