@@ -25,7 +25,7 @@
 			<align>left</align>
 			<font>special13</font>
 			<label>13398</label>
-			<textcolor>DDced8da</textcolor>
+			<include>textcolor_dialogheader</include>
 		</control>
 		<control type="button" id="2">
 			<description>Create Bookmark button</description>
