@@ -607,19 +607,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
           src += m_texture->pitch;
           dst += newTexture->pitch;
         }
-        SDL_FreeSurface(m_texture);
-        
-#ifdef HAS_SDL_OPENGL
-        // Since we have a new texture, we need to delete the old one
-        // and start a new pipeline
-        if (m_glTextureLoaded)
-        {
-          glDeleteTextures(1, &m_glTexture);
-          m_glTextureLoaded = false;
-          End();
-          Begin();
-        }        
-#endif        
+        SDL_FreeSurface(m_texture);           
       }
 #endif
 
@@ -677,6 +665,19 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 	 }
 	        
     SDL_UnlockSurface(m_texture);
+    
+#ifdef HAS_SDL_OPENGL
+        // Since we have a new texture, we need to delete the old one
+        // and start a new pipeline
+        if (m_glTextureLoaded)
+        {
+          glDeleteTextures(1, &m_glTexture);
+          m_glTextureLoaded = false;
+          End();
+          Begin();
+        }        
+#endif   
+    
 #endif    
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
@@ -723,11 +724,8 @@ void CGUIFontTTF::Begin()
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
 #elif defined(HAS_SDL_OPENGL)
-  // First, delete the previous texture if one exists
   if (!m_glTextureLoaded)
   {
-    glDeleteTextures(1, &m_glTexture);
-    
     // Have OpenGL generate a texture object handle for us
     glGenTextures(1, &m_glTexture);
  
