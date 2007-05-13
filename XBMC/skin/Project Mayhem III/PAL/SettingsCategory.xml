@@ -104,7 +104,7 @@
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font13</font>
 			<include>textcolorwhite</include>
-			<disabledcolor>60d0d0d0</disabledcolor>
+			<include>disabledcolor</include>
 			<textoffsetx>7</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
