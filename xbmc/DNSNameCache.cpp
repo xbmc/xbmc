@@ -110,6 +110,9 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     CLog::Log(LOGDEBUG, "host name = %s\n", host->h_name);
 
     /* Loop through and print out any aliases */
+#ifndef _LINUX
+    // this segfaults due to host->h_aliases[1] being invalid on
+    // the weather.com lookup
     while(1)
     {
       if(host->h_aliases[count] == NULL)
@@ -119,6 +122,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
       CLog::Log(LOGDEBUG, "alias %d: %s\n", count + 1, host->h_aliases[count]);
       ++count;
     }
+#endif
 
     /* Print out all IP addresses of name */
     if (host->h_addr_list[0])
