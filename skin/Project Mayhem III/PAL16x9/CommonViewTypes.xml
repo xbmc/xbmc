@@ -41,7 +41,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -106,7 +106,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -178,7 +178,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -484,7 +484,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -607,7 +607,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -647,7 +647,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -996,7 +996,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -1334,7 +1334,7 @@
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
-			<textcolor>FFe2ff43</textcolor>
+			<include>textcolorgreen</include>
 			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
