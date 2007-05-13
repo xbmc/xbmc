@@ -130,11 +130,6 @@ CFileShoutcast::~CFileShoutcast()
   }
 }
 
-bool CFileShoutcast::CanSeek()
-{
-  return false;
-}
-
 bool CFileShoutcast::CanRecord()
 {
   if ( !m_fileState.bRipStarted )
@@ -338,7 +333,7 @@ void CFileShoutcast::outputTimeoutMessage(const char* message)
 
 __int64 CFileShoutcast::Seek(__int64 iFilePosition, int iWhence)
 {
-  return 0;
+  return -1;
 }
 
 void CFileShoutcast::Close()
