@@ -31,7 +31,7 @@
 			<align>left</align>
 			<font>special13</font>
 			<label>21432</label>
-			<textcolor>DDced8da</textcolor>
+			<include>textcolor_dialogheader</include>
 		</control>
 		<control type="label" id="0">
 			<description>Name Label</description>

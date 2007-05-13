@@ -1,25 +1,11 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="CommonViewTypes.xml" />
-	
-	<include name="textcolorwhite">
-		<textcolor>ffffffff</textcolor>
-	</include>
-	<include name="textcolorgrey">
-		<textcolor>60ffffff</textcolor>
-	</include>
-	<include name="textcolorlightgrey">
-		<textcolor>d0ffffff</textcolor>
-	</include>
+	<include file="TextColor.xml" />
+
 	<include name="controldefaults">
 		<include>textcolorwhite</include>
 		<colordiffuse>ffffffff</colordiffuse>
-	</include>
-	<include name="listselectedcolor">
-		<selectedcolor>FFe2ff43</selectedcolor>
-	</include>
-	<include name="listselectedcolor2">
-		<selectedcolor>ffffffff</selectedcolor>
 	</include>
 	<include name="homebuttonanimation">
 		<animation effect="fade" time="500" delay="400">VisibleChange</animation>
