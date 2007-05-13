@@ -171,19 +171,32 @@ void CGUIImage::Render()
 
 #ifdef HAS_SDL_OPENGL
     CGLTexture* texture = m_vecTextures[m_iCurrentImage]; 
+    glActiveTextureARB(GL_TEXTURE0_ARB);
     glBindTexture(GL_TEXTURE_2D, texture->id);
     
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
-
+       
     // diffuse coloring
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
 
+    if (m_diffuseTexture)
+    {
+      glActiveTextureARB(GL_TEXTURE1_ARB);
+      glBindTexture(GL_TEXTURE_2D, m_diffuseTexture->id);
+      glEnable(GL_TEXTURE_2D);
+      glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+      glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+      glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+      glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+      glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+      glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    }
     glBegin(GL_QUADS);
 #endif
     
@@ -247,7 +260,12 @@ void CGUIImage::Render()
 #endif
 
 #ifdef HAS_SDL_OPENGL      
-    glEnd();  
+    glEnd();
+    if (m_diffuseTexture)
+    {
+      glDisable(GL_TEXTURE_2D);
+      glActiveTextureARB(GL_TEXTURE0_ARB);
+    }
 #endif
 
 #ifndef HAS_SDL
@@ -408,34 +426,37 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 #endif
 #elif defined(HAS_SDL_OPENGL)
   // set all the attributes we need to...
-  GLubyte glcolor[4];
   
   // Top-left vertex (corner)
   DWORD color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
-  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
-  glColor4ubv(glcolor); 
-  glTexCoord2f(u1, v1);
+  glColor4ub((color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, color >> 24); 
+  glMultiTexCoord2f(GL_TEXTURE0_ARB, u1, v1);
+  if (m_diffuseTexture)
+  glMultiTexCoord2f(GL_TEXTURE1_ARB, u1*m_diffuseScaleU, v1*m_diffuseScaleV);
   glVertex3f(x1, y1, 0);
   
   // Bottom-left vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor));  
-  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
-  glColor4ubv(glcolor); 
-  glTexCoord2f(u2, v1);
+  glColor4ub((color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, color >> 24); 
+  glMultiTexCoord2f(GL_TEXTURE0_ARB, u2, v1);
+  if (m_diffuseTexture)
+    glMultiTexCoord2f(GL_TEXTURE1_ARB, u2*m_diffuseScaleU, v1*m_diffuseScaleV);
   glVertex3f(x2, y2, 0);
   
   // Bottom-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor));  
-  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
-  glColor4ubv(glcolor); 
-  glTexCoord2f(u2, v2);
+  glColor4ub((color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, color >> 24); 
+  glMultiTexCoord2f(GL_TEXTURE0_ARB, u2, v2);
+  if (m_diffuseTexture)
+    glMultiTexCoord2f(GL_TEXTURE1_ARB, u2*m_diffuseScaleU, v2*m_diffuseScaleV);
   glVertex3f(x3, y3, 0);
   
   // Top-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor));  
-  glcolor[0] = (color >> 16) & 0xff; glcolor[1] = (color >> 8) & 0xff; glcolor[2] = color & 0xff; glcolor[3] = color >> 24;
-  glColor4ubv(glcolor); 
-  glTexCoord2f(u1, v2);
+  glColor4ub((color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, color >> 24); 
+  glMultiTexCoord2f(GL_TEXTURE0_ARB, u1, v2);
+  if (m_diffuseTexture)
+    glMultiTexCoord2f(GL_TEXTURE1_ARB, u1*m_diffuseScaleU, v2*m_diffuseScaleV);
   glVertex3f(x4, y4, 0);
 #endif
 }
