@@ -5,8 +5,6 @@
 #include "Application.h"
 #include "GUIDialogBusy.h"
 
-#define MAX_MISSEDFRAMES 20
-
 class CApplicationRenderer : public CThread
 {
 public:
@@ -31,6 +29,7 @@ private:
   int m_explicitbusy;
   int m_busycount;
   int m_prevbusycount;
+  bool m_busyShown;
   CCriticalSection m_criticalSection;
   LPDIRECT3DSURFACE8 m_lpSurface;
   CGUIDialogBusy* m_pWindow;

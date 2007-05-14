@@ -65,22 +65,6 @@ void CGUIDialogBusy::Render()
   //only render if system is busy
   if (g_ApplicationRenderer.IsBusy() || IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
   {
-    DoRender();
+    CGUIDialog::Render();
   }
-  //2 seconds no DoRender then close.
-  if (m_dwTimer + 2000 <= timeGetTime())
-  {
-    Close();
-  }
-}
-
-void CGUIDialogBusy::ResetTimer()
-{
-  m_dwTimer = timeGetTime();
-}
-
-void CGUIDialogBusy::DoRender()
-{
-  CGUIDialog::Render();
-  ResetTimer();
 }
