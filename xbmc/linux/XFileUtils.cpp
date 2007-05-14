@@ -18,6 +18,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 	if (strPath.empty())
 		return INVALID_HANDLE_VALUE;
 
+        strPath.Replace("\\","/");
+
 	// if the file name is a directory then we add a * to look for all files in this directory
 	DIR *testDir = opendir(szPath);
 	if (testDir) {
@@ -34,6 +36,9 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 		strDir = strPath.substr(0,nFilePos);
 		strFiles = strPath.substr(nFilePos + 1);
 	}
+
+        if (strFiles == "*.*")
+           strFiles = "*";
 
 	strFiles = CStdString("^") + strFiles + "$";
 	strFiles.Replace(".","\\.");
