@@ -264,6 +264,10 @@ DllLoader::~DllLoader()
   ImportDirTable = 0;
   free(m_sFileName);
   if (m_sPath) free(m_sPath);
+
+  // hModule points to DllLoader in this case
+  if (m_bSystemDll)
+    hModule = NULL;
 }
 
 int DllLoader::Parse()
