@@ -1191,9 +1191,10 @@ HRESULT CApplication::Create(HWND hWnd)
   
   CStdString strLangInfoPath;
   strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLangugage.c_str());
+  strLangInfoPath = _P(strLangInfoPath);
 
   CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
-  g_langInfo.Load(_P(strLangInfoPath));
+  g_langInfo.Load(strLangInfoPath);
 
   m_splash = new CSplash(_P("Q:\\media\\splash.png"));
 #ifndef HAS_SDL_OPENGL
@@ -1204,6 +1205,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CStdString strLanguagePath;
   strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLangugage.c_str());
+  strLanguagePath = _P(strLanguagePath);
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(_P(strLanguagePath)))
@@ -1214,7 +1216,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
-  CStdString strSkinBase = "Q:\\skin\\";
+  CStdString strSkinBase = _P("Q:\\skin\\");
   CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
@@ -1548,7 +1550,7 @@ void CApplication::StartWebServer()
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
+    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
 	if (pXbmcHttp)
       pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
@@ -1578,7 +1580,7 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
-      CStdString xmlpath = "Q:\\System\\";
+      CStdString xmlpath = _P("Q:\\System\\");
       // if user didn't upgrade properly,
       // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
       if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
@@ -2131,7 +2133,11 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         continue;
 #endif
 
+#ifndef _LINUX
       strFileName = vecSkinPath[i]+"\\"+FindFileData.cFileName;
+#else
+      strFileName = vecSkinPath[i]+"/"+FindFileData.cFileName;
+#endif
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
       if (!xmlDoc.LoadFile(strFileName.c_str()))
       {

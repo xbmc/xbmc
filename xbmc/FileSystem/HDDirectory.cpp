@@ -47,7 +47,11 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   }
 
   CStdString strSearchMask = strRoot;
+#ifndef _LINUX
   strSearchMask += "*.*";
+#else
+  strSearchMask += "*";
+#endif
 
   FILETIME localTime;
   CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));

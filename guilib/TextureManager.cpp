@@ -1096,7 +1096,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
     path = textureName;
   else
     path.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir().c_str(), textureName.c_str());
-  return path;
+  return _P(path);
 }
 
 void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items)

@@ -177,7 +177,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
         CStdString strLangInfoPath;
         strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
-        g_langInfo.Load(strLangInfoPath);
+        g_langInfo.Load(_P(strLangInfoPath));
 
         if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
         {
@@ -195,7 +195,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
         CStdString strLanguagePath;
         strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
-        g_localizeStrings.Load(strLanguagePath);
+        g_localizeStrings.Load(_P(strLanguagePath));
 
         // also tell our weather to reload, as this must be localized
         g_weatherManager.ResetTimer();
@@ -1481,7 +1481,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
-    CStdString strSkinPath = "Q:\\skin\\" + strSkin;
+    CStdString strSkinPath = _P("Q:\\skin\\" + strSkin);
     if (g_SkinInfo.Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
@@ -1765,29 +1765,29 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("upnp.musicshares"))
   {
     CStdString strDummy;
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
     if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPMusicShares,"upnpmusic"))
-      g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+      g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
     else
-      g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+      g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
   }
   else if (strSetting.Equals("upnp.videoshares"))
   {
     CStdString strDummy;
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
     if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPVideoShares,"upnpvideo"))
-      g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+      g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
     else
-      g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+      g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
   }
   else if (strSetting.Equals("upnp.pictureshares"))
   {
     CStdString strDummy;
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
     if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPPictureShares,"upnppictures"))
-      g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+      g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
     else
-      g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+      g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
@@ -2021,7 +2021,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
       CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
       strPath += g_guiSettings.GetString("subtitles.font");
       strPath += "\\";
-      directory.GetDirectory(strPath, items);
+      directory.GetDirectory(_P(strPath), items);
       int iCurrentSize = 0;
       int iSize = 0;
       for (int i = 0; i < items.Size(); ++i)
@@ -2054,7 +2054,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   {
     CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
+    CStdString strPath = _P("Q:\\system\\players\\mplayer\\font\\");
     directory.GetDirectory(strPath, items);
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -2073,7 +2073,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   {
     CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = "Q:\\media\\fonts\\";
+    CStdString strPath = _P("Q:\\media\\fonts\\");
     if (directory.GetDirectory(strPath, items))
     {
       for (int i = 0; i < items.Size(); ++i)
@@ -2178,7 +2178,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   //find skins...
   CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = "Q:\\skin\\";
+  CStdString strPath = _P("Q:\\skin\\");
   directory.GetDirectory(strPath, items);
 
   int iCurrentSkin = 0;
@@ -2225,7 +2225,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 
   //find skins...
   CFileItemList items;
-  CStdString strPath = "Q:\\sounds\\";
+  CStdString strPath = _P("Q:\\sounds\\");
   CDirectory::GetDirectory(strPath, items);
 
   int iCurrentSoundSkin = 0;
@@ -2308,7 +2308,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   //find visz....
   CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = "Q:\\visualisations\\";
+  CStdString strPath = _P("Q:\\visualisations\\");
   directory.GetDirectory(strPath, items);
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -2369,7 +2369,8 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
 
   //find masks in xml...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( "Q:\\system\\voicemasks.xml" ) ) return ;
+  CStdString fileName = _P("Q:\\system\\voicemasks.xml");
+  if ( !xmlDoc.LoadFile(fileName) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -2426,7 +2427,8 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
   //find mask values in xml...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( "Q:\\system\\voicemasks.xml" ) ) return ;
+  CStdString fileName = _P("Q:\\system\\voicemasks.xml");
+  if ( !xmlDoc.LoadFile( fileName ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -2534,7 +2536,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   CHDDirectory directory;
   CFileItemList items;
 
-  CStdString strPath = "Q:\\language\\";
+  CStdString strPath = _P("Q:\\language\\");
   directory.GetDirectory(strPath, items);
 
   int iCurrentLang = 0;
@@ -2578,7 +2580,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   //find screensavers ....
   CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = "Q:\\screensavers\\";
+  CStdString strPath = _P("Q:\\screensavers\\");
   directory.GetDirectory(strPath, items);
 
   int iCurrentScr = -1;

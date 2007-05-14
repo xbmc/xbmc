@@ -28,6 +28,7 @@ public:
 
 	CStdStringArray	m_FindFileResults;
 	int 		m_nFindFileIterator;	
+        CStdString      m_FindFileDir;
 
 	CXHandle() :	fd(0), 
 					m_type(HND_NULL), 
