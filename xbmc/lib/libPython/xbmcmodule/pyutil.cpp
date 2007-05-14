@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "pyutil.h"
 #include <wchar.h>
-#include "skininfo.h"
+#include "SkinInfo.h"
 
 static int iPyGUILockRef = 0;
 static TiXmlDocument pySkinReferences;

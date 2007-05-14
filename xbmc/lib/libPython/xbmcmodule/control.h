@@ -1,4 +1,4 @@
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "GUIControl.h"
 #include "listitem.h"
 

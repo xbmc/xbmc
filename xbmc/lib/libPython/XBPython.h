@@ -2,7 +2,7 @@
 
 #include "XBPyThread.h"
 #include "IMsgSenderCallback.h"
-#include "..\..\cores\IPlayer.h"
+#include "../../cores/IPlayer.h"
 
 extern "C" {
   extern void initxbmc(void);

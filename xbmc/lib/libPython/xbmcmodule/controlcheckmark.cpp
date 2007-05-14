@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "GuiCheckMarkControl.h"
+#include "../python/Python.h"
+#include "GUICheckMarkControl.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"

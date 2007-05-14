@@ -1,4 +1,4 @@
-#include "..\python\python.h"
+#include "../python/Python.h"
 
 #ifdef __cplusplus
 extern "C" {
