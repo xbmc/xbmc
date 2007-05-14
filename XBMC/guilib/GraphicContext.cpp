@@ -141,9 +141,9 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
     int oldBottom = (int)oldviewport->Y + oldviewport->Height;
 #elif defined(HAS_SDL_2D)
     int oldLeft = (int)oldviewport->x;
-    int oldBottom = m_iScreenHeight - (int)oldviewport->y;  // sdl uses bottomleft as origin
-    int oldTop = oldBottom - oldviewport->h;
+    int oldTop = (int)oldviewport->y;
     int oldRight = (int)oldviewport->x + oldviewport->w;
+    int oldBottom = (int)oldviewport->y + oldviewport->h;
 #elif defined(HAS_SDL_OPENGL)
     int oldLeft = (int)oldviewport[0];
     int oldBottom = m_iScreenHeight - oldviewport[1];       // opengl uses bottomleft as origin
@@ -188,7 +188,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   m_pd3dDevice->SetViewport(&newviewport);
 #elif defined(HAS_SDL_2D)
   newviewport.x = newLeft;
-  newviewport.y = m_iScreenHeight - newTop; // sdl uses bottomleft as origin
+  newviewport.y = newTop;
   newviewport.w = newRight - newLeft;
   newviewport.h = newBottom - newTop;
   SDL_SetClipRect(m_screenSurface, &newviewport);
