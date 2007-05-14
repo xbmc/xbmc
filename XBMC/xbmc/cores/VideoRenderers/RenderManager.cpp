@@ -52,6 +52,7 @@ CXBoxRenderManager::CXBoxRenderManager()
   m_presentdelay = 5; //Just a guess to what delay we have
   m_presentfield = FS_NONE;
   m_presenttime = 0L;
+  m_rendermethod = 0;
 }
 
 CXBoxRenderManager::~CXBoxRenderManager()
@@ -137,17 +138,18 @@ unsigned int CXBoxRenderManager::PreInit()
   m_presentdelay = 5;
   if (!m_pRenderer)
   { // no renderer
-    if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS)
+    m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+    if (m_rendermethod == RENDER_OVERLAYS)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected Overlay-Renderer");
       m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
     }
-    else if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_HQ_RGB_SHADER)
+    else if (m_rendermethod == RENDER_HQ_RGB_SHADER)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer");
       m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
     }
-    else if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_HQ_RGB_SHADERV2)
+    else if (m_rendermethod == RENDER_HQ_RGB_SHADERV2)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer V2");
       m_pRenderer = new CRGBRendererV2(g_graphicsContext.Get3DDevice());
@@ -249,7 +251,12 @@ void CXBoxRenderManager::Present()
   {
     /* this is uggly to do on each frame, should only need be done once */
     int mResolution = g_graphicsContext.GetVideoResolution();
-    if( mResolution == HDTV_480p_16x9 || mResolution == HDTV_480p_4x3 || mResolution == HDTV_720p || mResolution == HDTV_1080i)
+    if( m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
+      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
+    else if( mResolution == HDTV_480p_16x9 
+          || mResolution == HDTV_480p_4x3 
+          || mResolution == HDTV_720p 
+          || mResolution == HDTV_1080i )
       mInt = VS_INTERLACEMETHOD_RENDER_BLEND;
     else
       mInt = VS_INTERLACEMETHOD_RENDER_BOB;

@@ -90,6 +90,7 @@ protected:
   bool m_bIsStarted;
   CSharedSection m_sharedSection;
 
+  int m_rendermethod;
 
   // render thread
   CEvent m_eventFrame;
