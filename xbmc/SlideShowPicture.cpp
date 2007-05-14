@@ -54,7 +54,11 @@ void CSlideShowPic::Close()
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
+#ifndef HAS_SDL
     m_pImage->Release();
+#else
+    SDL_FreeSurface(m_pImage);
+#endif
     m_pImage = NULL;
   }
   m_bIsLoaded = false;
@@ -63,7 +67,11 @@ void CSlideShowPic::Close()
   m_bTransistionImmediately = false;
 }
 
+#ifndef HAS_SDL
 void CSlideShowPic::SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+#else
+void CSlideShowPic::SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect )
+#endif
 {
   CSingleLock lock(m_textureAccess);
   Close();
@@ -156,7 +164,11 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
+#ifndef HAS_SDL
 void CSlideShowPic::UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight)
+#else
+void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight)
+#endif
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
@@ -165,7 +177,11 @@ void CSlideShowPic::UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int i
     while (m_pImage->IsBusy())
       Sleep(1);
 #endif
+#ifndef HAS_SDL
     m_pImage->Release();
+#else
+    SDL_FreeSurface(m_pImage);
+#endif
   }
   m_pImage = pTexture;
   m_fWidth = (float)iWidth;
@@ -580,11 +596,20 @@ void CSlideShowPic::Render()
     if (oy[i] < fSmallY) oy[i] = fSmallY;
     if (oy[i] > fSmallY + fSmallHeight) oy[i] = fSmallY + fSmallHeight;
   }
+#ifndef HAS_SDL
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
+#else
+  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
+#endif
 }
 
+#ifndef HAS_SDL
 void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
+#else
+void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwColor)
+#endif
 {
+#ifndef HAS_SDL
   VERTEX vertex[4];
 
   for (int i = 0; i < 4; i++)
@@ -645,4 +670,5 @@ void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWOR
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
 #endif
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+#endif
 }

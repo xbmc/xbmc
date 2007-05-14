@@ -31,14 +31,20 @@ extern "C" void d3dSetTransform( DWORD dwY, D3DMATRIX* dwZ )
 #endif
 }
 
+#ifdef HAS_SDL
+extern "C" bool d3dCreateTexture(unsigned int width, unsigned int height, SDL_Surface **pTexture)
+{
+   if (pTexture == NULL)
+      return false;
+   *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+   return (*pTexture != NULL);
+}
+#else
 extern "C" bool d3dCreateTexture(unsigned int width, unsigned int height, LPDIRECT3DTEXTURE8 *pTexture)
 {
-#ifndef HAS_SDL
   return (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, pTexture));
-#else
-  return false;
-#endif
 }
+#endif
 
 extern "C" void d3dDrawIndexedPrimitive(D3DPRIMITIVETYPE primType, unsigned int minIndex, unsigned int numVertices, unsigned int startIndex, unsigned int primCount)
 {
