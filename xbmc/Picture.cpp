@@ -50,8 +50,38 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
+#ifndef _LINUX
   // loaded successfully
   return m_info.texture;
+#else
+  SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+  if (pTexture) {
+     CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
+     if (SDL_LockSurface(pTexture) == 0) {
+        for (int y=0; y<m_info.height; y++) {
+            for (int x=0; x<m_info.width; x++) {
+               RGBQUAD pixelColor = m_info.rawImage[x,y];
+               Uint32 color = SDL_MapRGB(pTexture->format, pixelColor.rgbRed, pixelColor.rgbGreen, pixelColor.rgbBlue); 
+               
+               char *pDest = (char *)pTexture->pixels;
+               pDest += (y * pTexture->pitch);
+               pDest += (x * pTexture->format->BytesPerPixel);
+  
+               memcpy(pDest, &color, pTexture->format->BytesPerPixel);
+            }
+        }
+
+        SDL_UnlockSurface(pTexture);
+     }
+     else {
+        CLog::Log(LOGERROR, "PICTURE: failed to lock surface!");
+        SDL_FreeSurface(pTexture);
+        pTexture = NULL;
+     }
+  }
+  m_dll.ReleaseImage(m_info.rawImage);
+  return pTexture;
+#endif
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
