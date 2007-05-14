@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "GuiTextBox.h"
+#include "../python/Python.h"
+#include "GUITextBox.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"

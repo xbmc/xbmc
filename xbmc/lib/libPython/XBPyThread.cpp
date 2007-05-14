@@ -1,7 +1,7 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#include "python\python.h"
+#include "python/Python.h"
 
 
 #include "XBPyThread.h"

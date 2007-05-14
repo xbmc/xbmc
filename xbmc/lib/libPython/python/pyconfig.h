@@ -27,7 +27,10 @@ MS_CORE_DLL.
 
 */
 
+#ifndef _LINUX
 #include <io.h>
+#endif
+
 #define HAVE_SYS_UTIME_H
 #define HAVE_HYPOT
 #define HAVE_TEMPNAM

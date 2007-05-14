@@ -5,8 +5,8 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#include "python\python.h"
-#include "..\..\cores\dllloader\dllloadercontainer.h"
+#include "python/Python.h"
+#include "../../cores/DllLoader/DllLoaderContainer.h"
 #include "../../GUIPassword.h"
 
 #include "XBPython.h"

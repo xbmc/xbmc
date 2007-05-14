@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "GuiSpinControl.h"
+#include "../python/Python.h"
+#include "GUISpinControl.h"
 #include "control.h"
 #include "pyutil.h"
 
