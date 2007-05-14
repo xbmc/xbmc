@@ -233,9 +233,9 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
   {
     DWORD *d = (DWORD *)dest + destWidth * y;
     *d++ = colour[(b[4 + y] & 0x03)];
-    *d++ = colour[(b[4 + y] & 0x0e) >> 2];
+    *d++ = colour[(b[4 + y] & 0x0c) >> 2];
     *d++ = colour[(b[4 + y] & 0x30) >> 4];
-    *d++ = colour[(b[4 + y] & 0xe0) >> 6];
+    *d++ = colour[(b[4 + y] & 0xc0) >> 6];
   }
 }
 
