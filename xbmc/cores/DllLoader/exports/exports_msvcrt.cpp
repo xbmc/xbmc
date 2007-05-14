@@ -609,7 +609,9 @@ Export export_msvcr71[] =
   { "fabs",                       -1, (void*)fabs,                          NULL },
   { "??2@YAPAXI@Z",               -1, (void*)dllmalloc,                     (void*)track_malloc },
   { "??3@YAXPAX@Z",               -1, (void*)dllfree,                       (void*)track_free },
-  { "??_U@YAPAXI@Z",              -1, (void*)::(operator new),         NULL },
+#ifndef _LINUX
+  { "??_U@YAPAXI@Z",              -1, (void*)(::operator new),              NULL },
+#endif
   { "_beginthreadex",             -1, (void*)dll_beginthreadex,             NULL },
   { "_fdopen",                    -1, (void*)dll_fdopen,                    NULL },
   { "_fileno",                    -1, (void*)dll_fileno,                    NULL },
