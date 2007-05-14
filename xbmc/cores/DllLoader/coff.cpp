@@ -49,6 +49,7 @@ CoffLoader::CoffLoader()
   NumOfDirectories = 0;
   NumOfSections = 0;
   FileHeaderOffset = 0;
+  hModule = NULL;
 }
 
 CoffLoader::~CoffLoader()
