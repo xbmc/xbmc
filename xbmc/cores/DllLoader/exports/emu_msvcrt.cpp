@@ -1190,7 +1190,7 @@ extern "C"
     return _beginthread(start_address, stack_size, arglist);
 #else
     HANDLE m_ThreadHandle  = new CXHandle(CXHandle::HND_THREAD);
-    m_ThreadHandle->m_hThread = SDL_CreateThread((int (*)(void*)) lpStartAddress, (void*)lpParameter);
+    m_ThreadHandle->m_hThread = SDL_CreateThread((int (*)(void*))start_address, (void*)arglist);
     return (uintptr_t)m_ThreadHandle;
 #endif
   }
