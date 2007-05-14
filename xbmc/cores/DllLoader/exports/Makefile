@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../../../ -I../../../linux -I../../../../guilib
 
-SRCS=emu_dummy.cpp emu_dx8.cpp emu_kernel32.cpp
+SRCS=emu_dummy.cpp emu_dx8.cpp emu_kernel32.cpp emu_msvcrt.cpp exports_msvcrt.cpp
 
 LIB=exports.a
 
