@@ -1820,7 +1820,7 @@ bool CSettings::LoadProfile(int index)
     // Load the langinfo to have user charset <-> utf-8 conversion
     CStdString strLangInfoPath;
     strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
-
+    strLangInfoPath = _P(strLangInfoPath);
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
@@ -1828,7 +1828,7 @@ bool CSettings::LoadProfile(int index)
     strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
 
     g_buttonTranslator.Load();
-    g_localizeStrings.Load(strLanguagePath);
+    g_localizeStrings.Load(_P(strLanguagePath));
 
     if (m_iLastLoadedProfileIndex != 0)
     {

@@ -247,7 +247,7 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
     strRes = "\\1080i";
     break;
   }
-  return strRes;
+  return _P(strRes);
 }
 
 CStdString CSkinInfo::GetBaseDir() {
