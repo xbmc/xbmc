@@ -669,13 +669,11 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       target += m_texture->pitch;
     }
     // Since we have a new texture, we need to delete the old one
-    // and start a new pipeline
+    // the Begin(); End(); stuff is handled by whoever called us
     if (m_glTextureLoaded)
     {
-      End();
       glDeleteTextures(1, &m_glTexture);
       m_glTextureLoaded = false;
-      Begin();
     }        
 #else
     unsigned int *target = (unsigned char*) (m_texture->pixels) + 
@@ -707,9 +705,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
 void CGUIFontTTF::Begin()
 {
-#ifndef HAS_SDL
   if (m_dwNestedBeginCount == 0)
   {
+#ifndef HAS_SDL
     // just have to blit from our texture.
     m_pD3DDevice->SetTexture( 0, m_texture );
 
@@ -736,56 +734,56 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
 #endif
+#elif defined(HAS_SDL_OPENGL)
+    if (!m_glTextureLoaded)
+    {
+      // Have OpenGL generate a texture object handle for us
+      glGenTextures(1, &m_glTexture);
+ 
+      // Bind the texture object
+      glBindTexture(GL_TEXTURE_2D, m_glTexture);
+ 
+      // Set the texture's stretching properties
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+ 
+      // Set the texture image
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
+                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
+    
+      m_glTextureLoaded = true;                
+    }
+  
+    // Turn Blending On
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+    glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_ALPHA, GL_MODULATE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR);
+
+    glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    glBegin(GL_QUADS);
+#endif
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
-#elif defined(HAS_SDL_OPENGL)
-  if (!m_glTextureLoaded)
-  {
-    // Have OpenGL generate a texture object handle for us
-    glGenTextures(1, &m_glTexture);
- 
-    // Bind the texture object
-    glBindTexture(GL_TEXTURE_2D, m_glTexture);
- 
-    // Set the texture's stretching properties
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
- 
-    // Set the texture image
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
-                 GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
-    
-    m_glTextureLoaded = true;                
-  }
-  
-  // Turn Blending On
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);
-  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_ALPHA, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR);
-
-  glBindTexture(GL_TEXTURE_2D, m_glTexture);
-  glBegin(GL_QUADS);
-#endif
 }
 
 void CGUIFontTTF::End()
 {
-#ifndef HAS_SDL
   if (m_dwNestedBeginCount == 0)
     return;
 
   if (--m_dwNestedBeginCount > 0)
     return;
 
+#ifndef HAS_SDL
 #ifdef HAS_XBOX_D3D
   m_pD3DDevice->End();
   m_pD3DDevice->SetScreenSpaceOffset(0, 0);
