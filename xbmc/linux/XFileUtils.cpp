@@ -47,13 +47,15 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 	}
 
 	CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
+        pHandle->m_FindFileDir = strDir;
 
 	struct dirent **namelist = NULL;
 	int n = scandir(strDir, &namelist, 0, alphasort);
 	while (n-- > 0) {
           	status = regexec(&re, namelist[n]->d_name, (size_t) 0, NULL, 0);
 		if (status == 0) {
-			pHandle->m_FindFileResults.push_back(strDir + CStdString("/") + namelist[n]->d_name);
+			//pHandle->m_FindFileResults.push_back(strDir + CStdString("/") + namelist[n]->d_name);
+			pHandle->m_FindFileResults.push_back(namelist[n]->d_name);
 		}
 		free(namelist[n]);
 	}
@@ -76,13 +78,14 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
 		return FALSE;
 
 	CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
+        CStdString strFileNameTest = hHandle->m_FindFileDir + '/' + strFileName;
 	
 	struct stat64 fileStat;
-	if (stat64(strFileName, &fileStat) != 0)
+	if (stat64(strFileNameTest, &fileStat) != 0)
 		return FALSE;
 
 	bool bIsDir = false;
-	DIR *testDir = opendir(strFileName);
+	DIR *testDir = opendir(strFileNameTest);
 	if (testDir) {
 		bIsDir = true;
 		closedir(testDir);

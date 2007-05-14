@@ -513,10 +513,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
 
   int iPos = strFile.ReverseFind('/');
+#ifndef _LINUX
   if (iPos < 0)
   {
     iPos = strFile.ReverseFind('\\');
   }
+#endif
   if (iPos < 0)
   {
     url.SetFileName("");
@@ -1377,7 +1379,11 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size() == 0) return false;
   char kar = strFile.c_str()[strFile.size() - 1];
+#ifndef _LINUX
   if (kar == '/' || kar == '\\')
+#else
+  if (kar == '/')
+#endif
     return true;
 
   return false;
@@ -1959,6 +1965,7 @@ void CUtil::RemoveTempFiles()
 
   CStdString strAlbumDir;
   strAlbumDir.Format("%s\\*.tmp", g_settings.GetDatabaseFolder().c_str());
+  strAlbumDir = _P(strAlbumDir);
   memset(&wfd, 0, sizeof(wfd));
 
   CAutoPtrFind hFind( FindFirstFile(strAlbumDir.c_str(), &wfd));
@@ -2016,8 +2023,11 @@ void CUtil::ClearSubtitles()
 {
   //delete cached subs
   WIN32_FIND_DATA wfd;
+#ifndef _LINUX
   CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*", &wfd));
-
+#else
+  CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*"), &wfd));
+#endif
   if (hFind.isValid())
   {
     do
@@ -2028,6 +2038,7 @@ void CUtil::ClearSubtitles()
         {
           CStdString strFile;
           strFile.Format("Z:\\%s", wfd.cFileName);
+          strFile = _P(strFile);
           if (strFile.Find("subtitle") >= 0 )
           {
             if (strFile.Find(".keep") != strFile.size()-5) // do not remove files ending with .keep
@@ -2230,6 +2241,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             {
               strLExt = strItem.Right(strItem.GetLength() - 9);
               strDest.Format("Z:\\subtitle.alt-%s", strLExt);
+              strDest = _P(strDest);
               if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
               {
                 CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
@@ -2242,6 +2254,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             {
               strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
               strDest.Format("Z:\\subtitle.%s", strLExt);
+              strDest = _P(strDest);
               if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
                 if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
@@ -2262,7 +2275,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // rename any keep subtitles
   CFileItemList items;
-  CDirectory::GetDirectory("z:\\",items,".keep");
+  CDirectory::GetDirectory(_P("z:\\"),items,".keep");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -2335,6 +2348,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
 
           CStdString strDestFile;
           strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+          strDestFile = _P(strDestFile);
 
           if (CFile::Cache(strSourceUrl,strDestFile))
           {
@@ -2353,7 +2367,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
 
 void CUtil::PrepareSubtitleFonts()
 {
-  CStdString strFontPath = "Q:\\system\\players\\mplayer\\font";
+  CStdString strFontPath = _P("Q:\\system\\players\\mplayer\\font");
 
   if( IsUsingTTFSubtitles()
     || g_guiSettings.GetInt("subtitles.height") == 0
@@ -2361,7 +2375,7 @@ void CUtil::PrepareSubtitleFonts()
   {
     /* delete all files in the font dir, so mplayer doesn't try to load them */
 
-    CStdString strSearchMask = strFontPath + "\\*.*";
+    CStdString strSearchMask = _P(strFontPath + "\\*.*");
     WIN32_FIND_DATA wfd;
     CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
     if (hFind.isValid())
@@ -2386,7 +2400,7 @@ void CUtil::PrepareSubtitleFonts()
                   g_guiSettings.GetString("Subtitles.Font").c_str(),
                   g_guiSettings.GetInt("Subtitles.Height"));
 
-    CStdString strSearchMask = strPath + "\\*.*";
+    CStdString strSearchMask = _P(strPath + "\\*.*");
     WIN32_FIND_DATA wfd;
     CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
     if (hFind.isValid())
@@ -2453,10 +2467,14 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
+#ifndef _LINUX
     if (strFolder.Find("/") >= 0)
+#endif
       strFolder += "/";
+#ifndef _LINUX
     else
       strFolder += "\\";
+#endif
   }
 }
 
@@ -2864,7 +2882,7 @@ void CUtil::TakeScreenshot()
   CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
-    strDir = "Z:\\";
+    strDir = _P("Z:\\");
     if (!savingScreenshots)
     {
       promptUser = true;
@@ -4243,7 +4261,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strFile = "Z:\\";
+  CStdString strFile = _P("Z:\\");
   if (!strType.IsEmpty())
   {
     strFile += strType;
@@ -4251,7 +4269,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
       strFile += "-";
   }
   strFile += "*.fi";
-
+  strFile = _P(strFile);
   CAutoPtrFind hFind(FindFirstFile(strFile.c_str(), &wfd));
   if (!hFind.isValid())
     return;
@@ -4259,7 +4277,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-      CStdString strFile = "Z:\\";
+      CStdString strFile = _P("Z:\\");
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
@@ -5027,7 +5045,7 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 void CUtil::ClearFileItemCache()
 {
   CFileItemList items;
-  CDirectory::GetDirectory("z:\\", items, ".fi", false);
+  CDirectory::GetDirectory(_P("z:\\"), items, ".fi", false);
   for (int i = 0; i < items.Size(); ++i)
   {
     if (!items[i]->m_bIsFolder)
