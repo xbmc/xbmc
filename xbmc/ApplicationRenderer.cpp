@@ -24,6 +24,8 @@
 #include "Utils/GuiInfoManager.h"
 #include "../guilib/guiImage.h"
 
+#define MAX_MISSEDFRAMES 40
+
 CApplicationRenderer g_ApplicationRenderer;
 
 CApplicationRenderer::CApplicationRenderer(void)
@@ -67,27 +69,6 @@ void CApplicationRenderer::Process()
       Sleep(50);
       continue;
     }
-    if (!m_pWindow || iWidth == 0 || iHeight == 0)
-    {
-      m_pWindow = (CGUIDialogBusy*)m_gWindowManager.GetWindow(WINDOW_DIALOG_BUSY);
-      if (m_pWindow)
-      {
-        m_pWindow->Initialize();//need to load the window to determine size.
-
-        SAFE_RELEASE(m_lpSurface);
-        FRECT rect = m_pWindow->GetScaledBounds();
-
-        iLeft = (int)floor(rect.left);
-        iTop =  (int)floor(rect.top);
-        iWidth = (int)ceil(rect.right - rect.left);
-        iHeight = (int)ceil(rect.bottom - rect.top);
-      }
-    }
-    if (!m_pWindow || iWidth == 0 || iHeight == 0)
-    {
-      Sleep(1000);
-      continue;
-    }
 
     float t0 = (1000.0f/(float)g_graphicsContext.GetFPS());
     float t1 = m_time + t0; //time when we expect a new render
@@ -105,6 +86,41 @@ void CApplicationRenderer::Process()
             continue;
           }
           m_busycount--;
+          //no busy indicator if a progress dialog is showing
+          if (m_gWindowManager.GetTopMostDialogID() == WINDOW_DIALOG_PROGRESS)
+          {
+            //TODO: render progress dialog here instead of in dialog::Progress
+            Sleep(1);
+            continue;
+          }
+          if (!m_pWindow || iWidth == 0 || iHeight == 0)
+          {
+            m_pWindow = (CGUIDialogBusy*)m_gWindowManager.GetWindow(WINDOW_DIALOG_BUSY);
+            if (m_pWindow)
+            {
+              m_pWindow->Initialize();//need to load the window to determine size.
+              if (m_pWindow->GetID() == WINDOW_INVALID)
+              {
+                //busywindow couldn't be loaded so stop this thread.
+                m_pWindow = NULL;
+                m_bStop = true;
+                break;
+              }
+
+              SAFE_RELEASE(m_lpSurface);
+              FRECT rect = m_pWindow->GetScaledBounds();
+
+              iLeft = (int)floor(rect.left);
+              iTop =  (int)floor(rect.top);
+              iWidth = (int)ceil(rect.right - rect.left);
+              iHeight = (int)ceil(rect.bottom - rect.top);
+            }
+          }
+          if (!m_pWindow || iWidth == 0 || iHeight == 0)
+          {
+            Sleep(1000);
+            continue;
+          }
           if (m_lpSurface == NULL)
           {
             D3DSURFACE_DESC desc;
@@ -189,8 +205,12 @@ void CApplicationRenderer::Process()
               continue;
           }
           SAFE_RELEASE(lpSurfaceBack);
-          m_pWindow->Show();
-          m_pWindow->DoRender();
+          if (!m_busyShown)
+          {
+            m_pWindow->Show();
+            m_busyShown = true;
+          }
+          m_pWindow->Render();
 
           g_graphicsContext.Get3DDevice()->EndScene();
           //D3DSWAPEFFECT_DISCARD is used so we can't just present the busy rect but can only present the entire screen.
@@ -217,17 +237,16 @@ void CApplicationRenderer::UpdateBusyCount()
 {
   if (m_busycount == 0)
   {
-    if (m_prevbusycount > 0)
-    {
-      m_prevbusycount = 0;
-    }
+    m_prevbusycount = 0;
   }
   else
   {
     m_busycount--;
-    if (m_pWindow && m_explicitbusy == 0)
+    m_prevbusycount = m_busycount;
+    if (m_pWindow && m_busyShown)
     {
       m_pWindow->Close();
+      m_busyShown = false;
     }
   }
 }
