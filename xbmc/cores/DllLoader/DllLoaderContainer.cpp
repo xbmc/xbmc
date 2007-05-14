@@ -61,6 +61,14 @@ DllLoader gdi32("gdi32.dll",              false, true, false, export_gdi32);
 DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
+#else
+extern Export export_msvcrt[];
+extern Export export_msvcr71[];
+extern Export export_pncrt[];
+
+DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
+DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
+DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 #endif
 
 void DllLoaderContainer::Clear()
