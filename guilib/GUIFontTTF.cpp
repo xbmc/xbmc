@@ -676,8 +676,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       m_glTextureLoaded = false;
     }        
 #else
-    unsigned int *target = (unsigned char*) (m_texture->pixels) + 
-        ((m_posY + ch->offsetY) * pitch/4) + 
+    unsigned int *target = (unsigned int*) (m_texture->pixels) + 
+        ((m_posY + ch->offsetY) * m_texture->pitch/4) + 
         (m_posX + bitGlyph->left);
     
     for (int y = 0; y < bitmap.rows; y++)
