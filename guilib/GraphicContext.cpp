@@ -104,7 +104,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #elif defined(HAS_SDL_OPENGL)
   GLint newviewport[4];
   GLint* oldviewport = new GLint[4];
-  glGetIntegerv(GL_SCISSOR_BOX, oldviewport);	  
+  glGetIntegerv(GL_SCISSOR_BOX, oldviewport);	
 #endif
   
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -141,14 +141,14 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
     int oldBottom = (int)oldviewport->Y + oldviewport->Height;
 #elif defined(HAS_SDL_2D)
     int oldLeft = (int)oldviewport->x;
-    int oldTop = (int)oldviewport->y;
+    int oldBottom = m_iScreenHeight - (int)oldviewport->y;  // sdl uses bottomleft as origin
+    int oldTop = oldBottom - oldviewport->h;
     int oldRight = (int)oldviewport->x + oldviewport->w;
-    int oldBottom = (int)oldviewport->y + oldviewport->h;
 #elif defined(HAS_SDL_OPENGL)
     int oldLeft = (int)oldviewport[0];
-    int oldTop = (int)oldviewport[1];
+    int oldBottom = m_iScreenHeight - oldviewport[1];       // opengl uses bottomleft as origin
+    int oldTop = oldBottom - oldviewport[3];
     int oldRight = (int)oldviewport[0] + oldviewport[2];
-    int oldBottom = (int)oldviewport[1] + oldviewport[3];       
 #endif    
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
@@ -188,13 +188,13 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   m_pd3dDevice->SetViewport(&newviewport);
 #elif defined(HAS_SDL_2D)
   newviewport.x = newLeft;
-  newviewport.y = newTop;
+  newviewport.y = m_iScreenHeight - newTop; // sdl uses bottomleft as origin
   newviewport.w = newRight - newLeft;
   newviewport.h = newBottom - newTop;
   SDL_SetClipRect(m_screenSurface, &newviewport);
 #elif defined(HAS_SDL_OPENGL)
   newviewport[0] = newLeft;
-  newviewport[1] = newTop;
+  newviewport[1] = m_iScreenHeight - newBottom; // opengl uses bottomleft as origin
   newviewport[2] = newRight - newLeft;
   newviewport[3] = newBottom - newTop;
   glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
