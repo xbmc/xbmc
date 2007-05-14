@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "dialog.h"
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "pyutil.h"
-#include "..\..\..\application.h"
-#include "..\xbmc\GUIDialogFileBrowser.h"
-#include "..\xbmc\GUIDialogNumeric.h"
-#include "..\xbmc\GUIDialogGamepad.h"
+#include "../../../Application.h"
+#include "../xbmc/GUIDialogFileBrowser.h"
+#include "../xbmc/GUIDialogNumeric.h"
+#include "../xbmc/GUIDialogGamepad.h"
 
 #define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
 

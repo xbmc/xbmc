@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "..\..\..\playlistplayer.h"
-#include "..\..\..\util.h"
+#include "../../../PlayListPlayer.h"
+#include "../../../Util.h"
 #include "pyplaylist.h"
-#include "..\python\structmember.h"
-#include "..\..\..\playlistfactory.h"
+#include "../python/structmember.h"
+#include "../../../PlayListFactory.h"
 #include "pyutil.h"
 
 using namespace PLAYLIST;

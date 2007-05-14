@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "winxml.h"
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXMLDialog.h"
-#include "..\..\..\application.h"
+#include "../../../Application.h"
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
 
@@ -44,7 +44,7 @@ namespace PYXBMC
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       // Check for the matching folder for the skin in the fallback skins folder
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + CStdString("\\skins\\") + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder

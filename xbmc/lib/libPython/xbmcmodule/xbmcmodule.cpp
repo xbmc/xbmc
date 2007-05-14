@@ -1,21 +1,23 @@
 #include "stdafx.h"
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
-#include "..\..\..\xbox\iosupport.h"
+#include "../../../xbox/IoSupport.h"
+#ifndef _LINUX
 #include <ConIo.h>
+#endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#include "..\..\libgoahead\xbmchttp.h"
-#include "..\..\..\utils\GUIInfoManager.h"
-#include "..\..\..\..\guilib\GUIAudioManager.h"
-#include "..\..\..\Application.h"
-#include "..\..\..\crc32.h"
+#include "../../libGoAhead/XBMChttp.h"
+#include "../../../utils/GUIInfoManager.h"
+#include "../../../../guilib/GUIAudioManager.h"
+#include "../../../Application.h"
+#include "../../../Crc32.h"
 
 // include for constants
 #include "pyutil.h"
-#include "..\..\..\playlistplayer.h"
+#include "../../../PlayListPlayer.h"
 
 using namespace XFILE;
 

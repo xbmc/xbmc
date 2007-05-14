@@ -1,5 +1,5 @@
-#include "..\python\python.h"
-#include "..\..\..\playlist.h"
+#include "../python/Python.h"
+#include "../../../PlayList.h"
 #pragma once
 
 #define PlayList_Check(op) PyObject_TypeCheck(op, &PlayList_Type)

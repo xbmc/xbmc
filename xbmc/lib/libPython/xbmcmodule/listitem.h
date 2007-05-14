@@ -1,4 +1,4 @@
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "GUIListItem.h"
 #pragma once
 

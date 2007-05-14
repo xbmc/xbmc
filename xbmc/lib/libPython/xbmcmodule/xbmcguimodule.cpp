@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "..\python\structmember.h"
+#include "../python/Python.h"
+#include "../python/structmember.h"
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
