@@ -1964,7 +1964,7 @@ void CUtil::RemoveTempFiles()
   WIN32_FIND_DATA wfd;
 
   CStdString strAlbumDir;
-  strAlbumDir.Format("%s\\*.tmp", g_settings.GetDatabaseFolder().c_str());
+  strAlbumDir.Format(_P("%s\\*.tmp"), g_settings.GetDatabaseFolder().c_str());
   strAlbumDir = _P(strAlbumDir);
   memset(&wfd, 0, sizeof(wfd));
 
