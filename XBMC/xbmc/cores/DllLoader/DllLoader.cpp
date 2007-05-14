@@ -575,7 +575,7 @@ Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
   if( m_pStaticExports )
   {
     Export* exp = m_pStaticExports;
-    while(exp->function || exp->track_function || exp->name || exp->ordinal >= 0)
+    while(exp->function || exp->track_function || exp->name || exp->ordinal != (unsigned int)(-1))
     {
       if (ordinal == exp->ordinal)
         return exp;
@@ -602,7 +602,7 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   if( m_pStaticExports )
   {
     Export* exp = m_pStaticExports;
-    while(exp->function || exp->track_function || exp->name || exp->ordinal >= 0)
+    while(exp->function || exp->track_function || exp->name || exp->ordinal != (unsigned int)(-1))
     {
       if (exp->name && strcmp(sFunctionName, exp->name) == 0)
         return exp;
