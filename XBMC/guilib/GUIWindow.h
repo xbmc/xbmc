@@ -166,6 +166,7 @@ protected:
   vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
   DWORD m_dwWindowId;
+  DWORD m_dwWindowIdBackup;
   DWORD m_dwIDRange;
   DWORD m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
