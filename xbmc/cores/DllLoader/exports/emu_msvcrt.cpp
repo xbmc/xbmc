@@ -1180,6 +1180,21 @@ extern "C"
     return 0;
   }
 
+  uintptr_t dll_beginthread( 
+    void( *start_address )( void * ),
+    unsigned stack_size,
+    void *arglist 
+  )
+  {
+#ifndef _LINUX
+    return _beginthread(start_address, stack_size, arglist);
+#else
+    HANDLE m_ThreadHandle  = new CXHandle(CXHandle::HND_THREAD);
+    m_ThreadHandle->m_hThread = SDL_CreateThread((int (*)(void*)) lpStartAddress, (void*)lpParameter);
+    return (uintptr_t)m_ThreadHandle;
+#endif
+  }
+
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
                            LPDWORD lpThreadId)
