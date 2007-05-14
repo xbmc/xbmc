@@ -2,9 +2,7 @@
 
 #include "GUIWindow.h"
 #include "utils/Thread.h"
-#ifdef HAS_SLIDESHOW
 #include "SlideShowPicture.h"
-#endif
 #include "DllImageLib.h"
 
 class CGUIWindowSlideShow;
@@ -82,9 +80,8 @@ private:
   vector<CStdString> m_vecSlides;
   typedef vector<CStdString>::iterator ivecSlides;
 
-#ifdef HAS_SLIDESHOW
   CSlideShowPic m_Image[2];
-#endif
+
   int m_iCurrentPic;
   // background loader
   CBackgroundPicLoader* m_pBackgroundLoader;

@@ -73,7 +73,6 @@ void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 
 void CBackgroundPicLoader::Process()
 {
-#ifdef HAS_SLIDESHOW
   DWORD totalTime = 0;
   DWORD count = 0;
   while (!m_bStop)
@@ -85,7 +84,11 @@ void CBackgroundPicLoader::Process()
         m_isLoading = true;
         CPicture pic;
         DWORD start = timeGetTime();
+#ifndef HAS_SDL
         IDirect3DTexture8 *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
+#else
+        SDL_Surface *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
+#endif
         totalTime += timeGetTime() - start;
         count++;
         // tell our parent
@@ -106,7 +109,6 @@ void CBackgroundPicLoader::Process()
     }
   }
   CLog::Log(LOGDEBUG, "Time for loading %i images: %i ms, average %i ms", count, totalTime, totalTime / count);
-#endif
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)
@@ -134,11 +136,7 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow(void)
 
 bool CGUIWindowSlideShow::IsPlaying() const
 {
-#ifdef HAS_SLIDESHOW
   return m_Image[m_iCurrentPic].IsLoaded();
-#else
-  return false;
-#endif
 }
 
 void CGUIWindowSlideShow::Reset()
@@ -148,9 +146,7 @@ void CGUIWindowSlideShow::Reset()
   m_bPause = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
-#ifdef HAS_SLIDESHOW
   m_Image[0].UnLoad();
-#endif
 
   m_iRotate = 0;
   m_iZoomFactor = 1;
@@ -174,11 +170,9 @@ void CGUIWindowSlideShow::FreeResources()
     delete m_pBackgroundLoader;
     m_pBackgroundLoader = NULL;
   }
-#ifdef HAS_SLIDESHOW
   // and close the images.
   m_Image[0].Close();
   m_Image[1].Close();
-#endif
 }
 
 void CGUIWindowSlideShow::Add(const CStdString& strPicture)
@@ -241,7 +235,6 @@ CStdString CGUIWindowSlideShow::GetCurrentSlide()
 
 bool CGUIWindowSlideShow::GetCurrentSlideInfo(int &width, int &height)
 {
-#ifdef HAS_SLIDESHOW
 if (m_Image[m_iCurrentPic].IsLoaded())
 {
   width=m_Image[m_iCurrentPic].GetWidth();
@@ -249,7 +242,6 @@ if (m_Image[m_iCurrentPic].IsLoaded())
   return true;
 }
 else
-#endif
   return false;
 }
 
@@ -265,7 +257,6 @@ void CGUIWindowSlideShow::StartSlideShow()
 
 void CGUIWindowSlideShow::Render()
 {
-#ifdef HAS_SLIDESHOW
   // reset the screensaver if we're in a slideshow
   if (m_bSlideShow) g_application.ResetScreenSaver();
   int iSlides = m_vecSlides.size();
@@ -465,7 +456,6 @@ void CGUIWindowSlideShow::Render()
   RenderErrorMessage();
 
   CGUIWindow::Render();
-#endif
 }
 
 bool CGUIWindowSlideShow::OnAction(const CAction &action)
@@ -548,7 +538,14 @@ void CGUIWindowSlideShow::RenderErrorMessage()
 {
   if (!m_bErrorMessage)
     return ;
-  CGUIFont *pFont = ((CGUILabelControl *)GetControl(LABEL_ROW1))->GetLabelInfo().font;
+
+  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(LABEL_ROW1);
+  if (pLabel == NULL) {
+     CLog::Log(LOGERROR,"CGUIWindowSlideShow::RenderErrorMessage - cant get label control!");
+     return;
+  }
+
+  CGUIFont *pFont = pLabel->GetLabelInfo().font;
   if (pFont)
   {
     CStdStringW utf16ErrorMessage;
@@ -634,17 +631,14 @@ void CGUIWindowSlideShow::RenderPause()
 
 void CGUIWindowSlideShow::Rotate()
 {
-#ifdef HAS_SLIDESHOW
   if (!m_Image[m_iCurrentPic].DrawNextImage() && m_iZoomFactor == 1)
   {
     m_Image[m_iCurrentPic].Rotate(++m_iRotate);
   }
-#endif
 }
 
 void CGUIWindowSlideShow::Zoom(int iZoom)
 {
-#ifdef HAS_SLIDESHOW
   if (iZoom > MAX_ZOOM_FACTOR || iZoom < 1)
     return ;
   // set the zoom amount and then set so that the image is reloaded at the higher (or lower)
@@ -659,18 +653,15 @@ void CGUIWindowSlideShow::Zoom(int iZoom)
       m_bReloadImage = true;
     m_iZoomFactor = iZoom;
   }
-#endif
 }
 
 void CGUIWindowSlideShow::Move(float fX, float fY)
 {
-#ifdef HAS_SLIDESHOW
   if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].GetZoom() > 1)
   { // we move in the opposite direction, due to the fact we are moving
     // the viewing window, not the picture.
     m_Image[m_iCurrentPic].Move( -fX, -fY);
   }
-#endif
 }
 
 #ifndef HAS_SDL
@@ -679,7 +670,6 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTUR
 void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
 #endif
 {
-#ifdef HAS_SLIDESHOW
   if (!g_guiSettings.GetBool("pictures.useexifrotation"))
     iRotate = 1;
   if (pTexture)
@@ -690,7 +680,11 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTe
     {
       if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
       { // wrong image (ie we finished loading the next image, not the current image)
+#ifndef HAS_SDL
         pTexture->Release();
+#else
+        SDL_FreeSurface(pTexture);
+#endif
         return;
       }
       m_Image[m_iCurrentPic].UpdateTexture(pTexture, iWidth, iHeight);
@@ -725,7 +719,6 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTe
     // release the texture, and try and reload this pic from scratch
     m_bErrorMessage = true;
   }
-#endif
 }
 
 void CGUIWindowSlideShow::Shuffle()
