@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "control.h"
 #include "pyutil.h"
-#include "..\..\..\utils\GUIInfoManager.h"
-#include "..\guilib\GuiControlFactory.h"
+#include "../../../utils/GUIInfoManager.h"
+#include "../guilib/GuiControlFactory.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

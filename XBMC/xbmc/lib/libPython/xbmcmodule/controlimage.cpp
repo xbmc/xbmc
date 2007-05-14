@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "GuiImage.h"
+#include "../python/Python.h"
+#include "guiImage.h"
 #include "control.h"
 #include "pyutil.h"
 

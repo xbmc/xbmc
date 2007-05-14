@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "keyboard.h"
 #include "pyutil.h"
-#include "..\..\..\util.h"
+#include "../../../Util.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

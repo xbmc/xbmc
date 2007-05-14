@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "GUIProgressControl.h"
 #include "control.h"
 #include "pyutil.h"

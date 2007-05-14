@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "winxml.h"
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
-#include "..\..\..\application.h"
+#include "../../../Application.h"
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
 
