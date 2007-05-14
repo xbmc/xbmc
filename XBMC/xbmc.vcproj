@@ -22,7 +22,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
@@ -89,7 +89,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				ExceptionHandling="FALSE"
@@ -153,7 +153,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				ExceptionHandling="FALSE"
@@ -219,7 +219,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -291,7 +291,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS;LTCG"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -347,7 +347,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
+				AdditionalIncludeDirectories="xbmc;guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
@@ -407,6 +407,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ApplicationRenderer.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\ApplicationRenderer.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ArenaItem.cpp">
 			</File>
 			<File
@@ -463,6 +469,24 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Filter="">
 				<File
 					RelativePath=".\xbmc\GUIDialogMusicScan.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistEditor.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistEditor.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistRule.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSmartPlaylistRule.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSongInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSongInfo.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIViewControl.cpp">
@@ -811,6 +835,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\FanController.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\Favourites.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Favourites.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileItem.cpp">
 				</File>
 				<File
@@ -1053,6 +1083,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogBoxBase.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogBusy.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogBusy.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogButtonMenu.cpp">
 				</File>
 				<File
@@ -1063,6 +1099,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogContextMenu.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogFavourites.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogFavourites.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogFileBrowser.cpp">
@@ -1253,6 +1295,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowStartup.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowStartup.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
@@ -2352,6 +2400,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\BuddyItem.h">
 			</File>
 			<File
+				RelativePath=".\BusyIndicator.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ButtonTranslator.h">
 			</File>
 			<File
@@ -3026,6 +3077,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\MPlayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\ResampleDirectSound.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\ResampleDirectSound.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">

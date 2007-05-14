@@ -27,7 +27,6 @@
 #include "CUEDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
-#include "GUIDialogContextMenu.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -133,7 +132,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
-              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
               CLog::Log(LOGINFO, "  Success! Opened destination path: %s (%s)", strDestination.c_str(), m_vecItems.m_strPath.c_str());
             }
           }
@@ -359,39 +357,126 @@ void CGUIWindowMusicSongs::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
-void CGUIWindowMusicSongs::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // We don't check for iItem range here, as we may later support creating shares
-  // from a blank starting setup
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
-  // calculate our position
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
+  if (item)
   {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  if ( m_vecItems.IsVirtualDirectoryRoot() )
-  {
-    if (iItem < 0)
-    { // TODO: we should check here whether the user can add shares, and have the option to do so
-      return ;
-    }
-    // mark the item
-    m_vecItems[iItem]->Select(true);
+    // are we in the playlists location?
+    bool inPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
 
-    // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem], posX, posY))
+    if (m_vecItems.IsVirtualDirectoryRoot())
     {
-      Update(m_vecItems.m_strPath);
-      return ;
+      // get the usual bookmark shares, and anything for all media windows
+      CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+      CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
+      // enable Rip CD an audio disc
+      if (CDetectDVDMedia::IsDiscInDrive() && item->IsCDDA())
+      {
+        // those cds can also include Audio Tracks: CDExtra and MixedMode!
+        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+        if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+          buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+      }
+      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
     }
-    m_vecItems[iItem]->Select(false);
-    return ;
+    else
+    {
+      CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
+      if (!item->IsPlayList())
+      {
+        if (item->IsAudio())
+          buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
+        else if (!item->IsParentFolder())
+          buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
+      }
+
+      // enable Rip CD Audio or Track button if we have an audio disc
+      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
+      {
+        // those cds can also include Audio Tracks: CDExtra and MixedMode!
+        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+        if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+          buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
+      }
+
+      // enable CDDB lookup if the current dir is CDDA
+      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+        buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
+
+      if (!item->IsParentFolder() && !item->IsReadOnly())
+      {
+        // either we're at the playlist location or its been explicitly allowed
+        if (inPlaylists || g_guiSettings.GetBool("filelists.allowfiledeletion"))
+        {
+          buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+        }
+      }
+    }
+
+    // Add the scan button(s)
+    CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (pScanDlg)
+    {
+      if (pScanDlg->IsScanning())
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+      else if (!inPlaylists && !m_vecItems.IsInternetStream() &&
+              (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
+    }
   }
-  CGUIWindowMusicBase::OnPopupMenu(iItem, bContextDriven);
+  if (!m_vecItems.IsVirtualDirectoryRoot())
+    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+  CGUIWindowMusicBase::GetNonContextButtons(buttons);
+}
+
+bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  if ( m_vecItems.IsVirtualDirectoryRoot() && item)
+  {
+    CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+    if (CGUIDialogContextMenu::OnContextButton("music", share, button))
+    {
+      Update("");
+      return true;
+    }
+  }
+
+  switch (button)
+  {
+  case CONTEXT_BUTTON_SCAN:
+    OnScan(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_RIP_TRACK:
+    OnRipTrack(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_RIP_CD:
+    OnRipCD();
+    return true;
+
+  case CONTEXT_BUTTON_CDDB:
+    if (m_musicdatabase.LookupCDDBInfo(true))
+      Update(m_vecItems.m_strPath);
+    return true;
+
+  case CONTEXT_BUTTON_DELETE:
+    OnDeleteItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_RENAME:
+    OnRenameItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_SWITCH_MEDIA:
+		CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath);
+		return true;
+  }
+  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowMusicSongs::DeleteDirectoryCache()

@@ -1,4 +1,4 @@
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -380,7 +380,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return pFile->Read(buffer, uiSize, 0);
+       return pFile->Read(buffer, uiSize);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1186,8 +1186,6 @@ extern "C"
 			  return 0;
     }
   
-    CLog::Log(LOGINFO, "Stating file %s", path);
-
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)) // don't stat http
@@ -1234,8 +1232,6 @@ extern "C"
 			  return 0;
     }
   
-    CLog::Log(LOGINFO, "Stating file %s", path);
-
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)) // don't stat http

@@ -223,7 +223,7 @@
   <string id="290">動態範圍壓縮</string>
   <string id="291">影片</string>
   <string id="292">聲音</string>
-  <string id="293">字幕</string>
+  <string id="293">選擇字幕</string>
   <string id="294">建立書籤</string>
   <string id="296">清除書籤</string>
   <string id="297">聲音延遲</string>
@@ -475,6 +475,10 @@
   <string id="563">評等</string>
   <string id="564">類型</string>
   <string id="565">使用數</string>
+  <string id="566">專輯藝人</string>
+  <string id="567">播放次數</string>
+  <string id="568">最近播放</string>
+  <string id="569">評論</string>
 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -530,13 +534,20 @@
   <string id="643">重覆播放時忽略消波失真</string>
   <string id="644">修剪黑邊</string>
   <string id="645">需要解開一個大檔案，是否繼續？</string>
-  <string id="646">移除資料庫</string>
+  <string id="646">從資料庫中移除</string>
   <string id="647">輸出影片資料庫</string>
   <string id="648">載入影片資料庫</string>
   <string id="649">載入中</string>
   <string id="650">輸出中</string>
-  <string id="651">影片資料庫</string>
+  <string id="651">選擇資料庫</string>
   <string id="652">年份</string>
+  <string id="653">更新資料庫</string>
+  <string id="654">顯示除錯資訊</string>
+  <string id="655">選擇可執行檔</string>
+  <string id="656">選擇播放列表</string>
+  <string id="657">選擇資料夾</string>
+  <string id="658">歌曲資訊</string>
+  <string id="659">評論：</string>
 
   <string id="700">清除音樂資料庫</string>
   <string id="701">移除音樂資料庫舊歌曲</string>
@@ -594,7 +605,7 @@
   <string id="755">編輯程式路徑</string>
   <string id="756">編輯程式名稱</string>
   <string id="757">編輯路徑深度</string>
-  <string id="758">移除程式連結</string>
+  <string id="758"></string>
   <string id="759">顯示：大列表</string>
   <string id="760">黃色</string>
   <string id="761">白色</string>
@@ -629,7 +640,7 @@
   <string id="1012">共享資料夾</string>
   <string id="1013">埠號</string>
   <string id="1014">帳號</string>
-  <string id="1015">網路伺服器</string>
+  <string id="1015">選擇網路伺服器</string>
   <string id="1016">輸入伺服器網路位址</string>
   <string id="1017">輸入伺服器遠端路徑</string>
   <string id="1018">輸入埠號</string>
@@ -644,9 +655,13 @@
   <string id="1027">編輯目錄</string>
   <string id="1028">編輯%s目錄</string>
   <string id="1029">輸入新標籤</string>
-  <string id="1030">圖像</string>
-  <string id="1031">圖像資料夾</string>
+  <string id="1030">選擇圖像</string>
+  <string id="1031">選擇圖像資料夾</string>
   <string id="1032">新增網路位置…</string>
+  <string id="1033">選擇檔案</string>
+  <string id="1034">子選單</string>
+  <string id="1035">啟用 子選單按鈕</string>
+  <string id="1036">我的最愛</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -897,7 +912,7 @@
   <string id="13167">記憶卡</string>
   <string id="13168">遙控器</string>
   <string id="13169">控制器埠號</string>
-  
+
 
   <string id="13170">從不</string>
   <string id="13171">立即</string>
@@ -917,7 +932,7 @@
   <string id="13212">鬧鈴取消，剩下%i分%i秒。</string>
 
   <string id="13249">選擇 RAR 檔案中的字幕</string>
-  <string id="13250">選擇字幕檔…</string>
+  <string id="13250">選擇字幕…</string>
   <string id="13251">移動該項目</string>
   <string id="13252">將項目移動至此</string>
   <string id="13253">取消移動</string>
@@ -979,7 +994,7 @@
   <string id="13325">前景透明度</string>
   <string id="13326">影音延遲</string>
   <string id="13327">卡拉 OK</string>
-  <string id="13328">%s找不到。</string>
+  <string id="13328">%s找不到</string>
   <string id="13329">打開%s發生錯誤</string>
   <string id="13330">無法載入%s</string>
   <string id="13331">錯誤：記憶體不足</string>
@@ -1117,6 +1132,8 @@
   <string id="14073">XLink Kai 沒有被啟用！</string>
   <string id="14074">設定時區</string>
   <string id="14075">使用日光節約時間</string>
+  <string id="14076">加入我的最愛</string>
+  <string id="14077">從我的最愛中移除</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">沒有連線到伺服器</string>
@@ -1317,7 +1334,7 @@
   <string id="20007">錄音</string>
   <string id="20008">螢幕擷圖</string>
   <string id="20009">使用 XBMC</string>
-  <string id="20010">藝人圖像</string>
+  <string id="20010"></string>
   <string id="20011">音樂播放列表</string>
   <string id="20012">影片播放列表</string>
   <string id="20013">你要執行該遊戲？</string>
@@ -1328,7 +1345,7 @@
   <string id="20018">無縮圖</string>
   <string id="20019">選擇縮略圖</string>
   <string id="20020">KAI 與金手指不能同時使用</string>
-  <string id="20021">請選擇其中一項</string>
+  <string id="20021">請選擇你要使用的項目</string>
   <string id="20022"></string>
   <string id="20023">衝突</string>
   <string id="20024">掃描新加入</string>
@@ -1352,7 +1369,7 @@
   <string id="20053">已離開管理員模式</string>
   <string id="20054">已進入管理員模式</string>
   <string id="20055">Allmusic.com 縮圖</string>
-  <string id="20056">原縮略圖</string>
+  <string id="20056"></string>
   <string id="20057">移除縮略圖</string>
   <string id="20058">新加入預設檔…</string>
   <string id="20059">查詢所有專輯的資訊</string>
@@ -1372,7 +1389,7 @@
   <string id="20073">且是有效的資料夾名稱</string>
   <string id="20074">MPAA 分級：</string>
   <string id="20075">輸入管理員密碼</string>
-  <string id="20076">開機時詢問管理員密碼</string>
+  <string id="20076">啟動時詢問管理員密碼</string>
   <string id="20077">桌面設定</string>
   <string id="20078">- 無連結設定 -</string>
   <string id="20079">啟用 桌面動畫效果</string>
@@ -1525,8 +1542,8 @@
   <string id="20325">重設螢幕校正</string>
   <string id="20326">這將重設螢幕校正值為%s</string>
   <string id="20327">並以此為預設值</string>
-  <string id="20328">複製存檔的路徑</string>
-  <string id="20329">移動存檔的路徑</string>
+  <string id="20328">選擇指定位置</string>
+  <string id="20329"></string>
   <string id="20330">以資料夾名稱搜尋</string>
   <string id="20331">檔案</string>
   <string id="20332">以資料夾或檔案名稱來搜尋？</string>
@@ -1567,7 +1584,7 @@
   <string id="20367">隱藏觀看</string>
   <string id="20368">產品編號</string>
   <string id="20369">非觀看項目隱藏圖示</string>
-  <string id="20370">* 「隱藏」防止被破壞 *</string>
+  <string id="20370">* [隱藏]防止被破壞 *</string>
   <string id="20371">設定影集縮圖</string>
   <string id="20372">影集圖像</string>
   <string id="20373">季</string>
@@ -1579,7 +1596,7 @@
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
-  
+
   <string id="21331">TuxBox 客戶端</string>
   <string id="21332">警告：目標 TuxBox 裝置在錄影模式！</string>
   <string id="21333">串流即將停止！</string>
@@ -1588,7 +1605,7 @@
   <string id="21336">連線到：%s</string>
   <string id="21337">TuxBox 裝置</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-  
+
   <string id="21356">UPnP 音樂</string>
   <string id="21357">UPnP 影片</string>
   <string id="21358">UPnP 圖片</string>
@@ -1598,10 +1615,10 @@
   <string id="21362">管理 UPnP 影片共享</string>
   <string id="21363">管理 UPnP 圖片共享</string>
   <string id="21364">編輯媒體共享</string>
-  <string id="21365">移除媒體共享</string>  
+  <string id="21365">移除媒體共享</string>
   <string id="21366">自訂字幕資料夾</string>
   <string id="21367">電影和替代字幕資料夾</string>
-  
+
   <string id="21370">媒體播放時使用瀏覽音效</string>
   <string id="21371">縮略圖</string>
   <string id="21372">強制 DVD 播放器區碼</string>
@@ -1618,19 +1635,54 @@
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
   <string id="21385">打開</string>
-  
+
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安靜</string>
-  
+
   <string id="21390">電源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
   <string id="21393">高待機</string>
   <string id="21394">低待機</string>
-
   <string id="21395">暫存檔不能超過4GB</string>
   <string id="21396">章節</string>
+
+  <string id="21397">高品質像素著色器 V2</string>
+
+  <string id="21398">啟用 啟動時播放列表</string>
+
+  <string id="21400">包含</string>
+  <string id="21401">不包含</string>
+  <string id="21402">是</string>
+  <string id="21403">不是</string>
+  <string id="21404">開始與</string>
+  <string id="21405">結束與</string>
+  <string id="21406">大於</string>
+  <string id="21407">小於</string>
+  <string id="21408">之後</string>
+  <string id="21409">之前</string>
+  <string id="21410">在最近</string>
+  <string id="21411">不在最近</string>
+
+  <string id="21420">符合條件</string>
+  <string id="21421">智慧播放列表規則</string>
+  <string id="21422">符合歌曲的地方</string>
+  <string id="21423">新規則…</string>
+  <string id="21424">歌曲必須符合</string>
+  <string id="21425">所有規則</string>
+  <string id="21426">一個或更多規則</string>
+  <string id="21427">限制到</string>
+  <string id="21428">沒有限制</string>
+  <string id="21429">排序方式</string>
+  <string id="21430">升幂</string>
+  <string id="21431">降幂</string>
+  <string id="21432">編輯智慧播放列表</string>
+  <string id="21433">播放列表的名稱</string>
+  <string id="21434">發現符合歌曲</string>
+  <string id="21435">編輯</string>
+  <string id="21436">%i首歌曲</string>
+  <string id="21437">新的智慧播放列表…</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>

@@ -17,7 +17,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "RGBRenderer.h"
 #include "../../application.h"
 #include "../../util.h"
@@ -774,8 +774,8 @@ void CRGBRenderer::InterleaveYUVto444P(
       float    offset_x,  float    offset_y,
       float    coffset_x, float    coffset_y)
 {
-      coffset_x += offset_x;
-      coffset_y += offset_y;
+      coffset_x += offset_x / (1<<cshift_x);
+      coffset_y += offset_y / (1<<cshift_y);
 
       for (int i = 0; i < 3; ++i)
       {

@@ -26,14 +26,17 @@ public:
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
-  static void OnRipCD();
-
+  
+  void OnInfo(CFileItem *pItem, bool bShowInfo = false);
+  
 protected:
   /*!
   \brief Will be called when an popup context menu has been asked for
-  \param iItem List/thumb control item that has been clicked on
+  \param itemNumber List/thumb control item that has been clicked on
   */
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  void GetNonContextButtons(CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
@@ -43,6 +46,7 @@ protected:
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   virtual void OnScan(int iItem) {};
+  void OnRipCD();
 
   // new methods
   virtual void PlayItem(int iItem);

@@ -30,6 +30,7 @@ class CWebServer;
 class CXBFileZilla;
 class CSNTPClient;
 class CCdgParser;
+class CApplicationMessenger;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -39,6 +40,7 @@ public:
   virtual HRESULT Initialize();
   virtual void FrameMove();
   virtual void Render();
+  virtual void DoRender();
 #ifndef HAS_XBOX_D3D
   virtual void RenderNoPresent();
 #endif
@@ -90,6 +92,7 @@ public:
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   void RenderFullScreen();
+  void DoRenderFullScreen();
   bool NeedRenderFullScreen();
   bool IsPlaying() const ;
   bool IsPaused() const;
@@ -208,9 +211,10 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   void CheckForDebugButtonCombo();
-
+  void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
 
+  void SaveCurrentFileSettings();
 };
 
 extern CApplication g_application;

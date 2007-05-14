@@ -34,14 +34,21 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
-#include "GUIWindowMusicBase.h"
-#include "GUIWindowMusicSongs.h"
-#include "GUIDialogMusicScan.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
 #define BUTTON_TEMPLATE 1000
 #define SPACE_BETWEEN_BUTTONS 2
+
+void CContextButtons::Add(CONTEXT_BUTTON button, const CStdString &label)
+{
+  push_back(pair<CONTEXT_BUTTON, CStdString>(button, label));
+}
+
+void CContextButtons::Add(CONTEXT_BUTTON button, int label)
+{
+  push_back(pair<CONTEXT_BUTTON, CStdString>(button, g_localizeStrings.Get(label)));
+}
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void):CGUIDialog(WINDOW_DIALOG_CONTEXT_MENU, "DialogContextMenu.xml")
 {
@@ -97,9 +104,19 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
   return AddButton(g_localizeStrings.Get(iLabel));
 }
 
+void CGUIDialogContextMenu::SetPosition(float posX, float posY)
+{
+  if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
+    posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
+  if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
+    posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
+  CGUIDialog::SetPosition(posX, posY);
+}
+
 int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
 { // add a button to our control
-  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
+  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetFirstFocusableControl(BUTTON_TEMPLATE);
+  if (!pButtonTemplate) pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
   if (!pButtonTemplate) return 0;
   CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
   if (!pButton) return 0;
@@ -179,14 +196,284 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
   if (!item)
     return false;
 
-  bool bMaxRetryExceeded = false;
-  if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
-  bMaxRetryExceeded = !(item->m_iBadPwdCount < g_guiSettings.GetInt("masterlock.maxretries"));
-
   // Get the share object from our file object
-  VECSHARES *shares = g_settings.GetSharesFromType(strType);
-  if (!shares) return false;
-  CShare *share = NULL;
+  CShare *share = GetShare(strType, item);
+
+  // popup the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (pMenu)
+  {
+    // load our menu
+    pMenu->Initialize();
+
+    // grab our context menu
+    CContextButtons buttons;
+    GetContextButtons(strType, share, buttons);
+
+    // add the buttons and execute it
+    for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
+      pMenu->AddButton((*it).second);
+    // position it correctly
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->DoModal();
+
+    // translate our button press
+    CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
+    if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
+      btn = buttons[pMenu->GetButton() - 1].first;
+
+    if (btn != CONTEXT_BUTTON_CANCELLED)
+      return OnContextButton(strType, share, btn);
+  }
+  return false;
+}
+
+void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *share, CContextButtons &buttons)
+{
+  if (share && (CUtil::IsDVD(share->strPath) || CUtil::IsCDDA(share->strPath)))
+  {
+    // We need to check if there is a detected is inserted!
+    if ( CDetectDVDMedia::IsDiscInDrive() )
+      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+    buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+  }
+
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
+  {
+    if (share)
+    {
+      buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
+      buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
+      buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
+
+      buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
+      if (share->m_strThumbnailImage != "")
+        buttons.Add(CONTEXT_BUTTON_REMOVE_THUMB, 20057);
+    }
+    if (!GetDefaultShareNameByType(type).IsEmpty())
+      buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
+
+    buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
+  }
+  if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
+  {
+    if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
+      buttons.Add(CONTEXT_BUTTON_ADD_LOCK, 12332);
+    else if (share->m_iHasLock == 1)
+      buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
+    else if (share->m_iHasLock == 2)
+    {
+      buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
+
+      bool maxRetryExceeded = false;
+      if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
+        maxRetryExceeded = (share->m_iBadPwdCount >= g_guiSettings.GetInt("masterlock.maxretries"));
+  
+      if (maxRetryExceeded)
+        buttons.Add(CONTEXT_BUTTON_RESET_LOCK, 12334);
+      else
+        buttons.Add(CONTEXT_BUTTON_CHANGE_LOCK, 12356);
+    }
+  }
+  if (share && !g_passwordManager.bMasterUser && share->m_iHasLock == 1)
+    buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
+}
+
+bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *share, CONTEXT_BUTTON button)
+{
+  if (!share) return false;
+  switch (button)
+  {
+  case CONTEXT_BUTTON_EDIT_SOURCE:
+    if (g_settings.m_iLastLoadedProfileIndex == 0 && !g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+    else if (!g_passwordManager.IsProfileLockUnlocked())
+      return false;
+    return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
+
+  case CONTEXT_BUTTON_REMOVE_SOURCE:
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+    else if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+    // prompt user if they want to really delete the bookmark
+    if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
+    { // check default before we delete, as deletion will kill the share object
+      CStdString defaultSource(GetDefaultShareNameByType(type));
+      if (!defaultSource.IsEmpty())
+      {
+        if (share->strName.Equals(defaultSource))
+          ClearDefault(type);
+      }
+
+      // delete this share
+      g_settings.DeleteBookmark(type, share->strName, share->strPath);
+      return true;
+    }
+    break;
+
+  case CONTEXT_BUTTON_ADD_SOURCE:
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+    else if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+    return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
+
+  case CONTEXT_BUTTON_SET_DEFAULT:
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+    else if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+
+    // make share default
+    SetDefault(type, share->strName);
+    return true;
+
+  case CONTEXT_BUTTON_CLEAR_DEFAULT:
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+    else if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+    // remove share default
+    ClearDefault(type);
+    return true;
+
+  case CONTEXT_BUTTON_SET_THUMB:
+    {
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+        return false;
+      else if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+
+      CStdString strThumb;
+      VECSHARES shares;
+      g_mediaManager.GetLocalDrives(shares);
+
+      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
+      {
+        g_settings.UpdateBookmark(type,share->strName,"thumbnail",strThumb);
+        g_settings.SaveSources();
+
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+        m_gWindowManager.SendThreadMessage(msg);
+        return true;
+      }
+
+      return false;
+    }
+  case CONTEXT_BUTTON_REMOVE_THUMB:
+    {
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+        return false;
+      else if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+
+      g_settings.UpdateBookmark(type,share->strName,"thumbnail","");
+      g_settings.SaveSources();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      m_gWindowManager.SendThreadMessage(msg);
+      return true;
+    }
+
+  case CONTEXT_BUTTON_PLAY_DISC:
+    return CAutorun::PlayDisc();
+
+  case CONTEXT_BUTTON_EJECT_DISC:
+    if (CIoSupport::GetTrayState() == TRAY_OPEN)
+      CIoSupport::CloseTray();
+    else
+      CIoSupport::EjectTray();
+    return true;
+
+  case CONTEXT_BUTTON_ADD_LOCK:
+    {
+      // prompt user for mastercode when changing lock settings) only for default user
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+
+      CStdString strNewPassword = "";
+      if (!CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword))
+        return false;
+      // password entry and re-entry succeeded, write out the lock data
+      share->m_iHasLock = 2;
+      g_settings.UpdateBookmark(type, share->strName, "lockcode", strNewPassword);
+      strNewPassword.Format("%i",share->m_iLockMode);
+      g_settings.UpdateBookmark(type, share->strName, "lockmode", strNewPassword);
+      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.SaveSources();
+
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      m_gWindowManager.SendThreadMessage(msg);
+      return true;
+    }
+  case CONTEXT_BUTTON_RESET_LOCK:
+    {
+      // prompt user for profile lock when changing lock settings
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+
+      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.SaveSources();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      m_gWindowManager.SendThreadMessage(msg);
+      return true;
+    }
+  case CONTEXT_BUTTON_REMOVE_LOCK:
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+
+      if (!CGUIDialogYesNo::ShowAndGetInput(12335, 0, 750, 0))
+        return false;
+
+      share->m_iHasLock = 0;
+      g_settings.UpdateBookmark(type, share->strName, "lockmode", "0");
+      g_settings.UpdateBookmark(type, share->strName, "lockcode", "0");
+      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.SaveSources();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      m_gWindowManager.SendThreadMessage(msg);
+      return true;
+    }
+  case CONTEXT_BUTTON_REACTIVATE_LOCK:
+    {
+      bool maxRetryExceeded = false;
+      if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
+        maxRetryExceeded = (share->m_iBadPwdCount >= g_guiSettings.GetInt("masterlock.maxretries"));
+      if (!maxRetryExceeded)
+      {
+        // don't prompt user for mastercode when reactivating a lock
+        g_passwordManager.LockBookmark(type, share->strName, true);
+        return true;
+      }
+      return false;
+    }
+  case CONTEXT_BUTTON_CHANGE_LOCK:
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+
+      CStdString strNewPW;
+	    CStdString strNewLockMode;
+      if (CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW))
+        strNewLockMode.Format("%i",share->m_iLockMode);
+      else
+        return false;
+      // password ReSet and re-entry succeeded, write out the lock data
+      g_settings.UpdateBookmark(type, share->strName, "lockcode", strNewPW);
+      g_settings.UpdateBookmark(type, share->strName, "lockmode", strNewLockMode);
+      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.SaveSources();
+      return true;
+    }
+  }
+  return false;
+}
+
+CShare *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFileItem *item)
+{
+  VECSHARES *shares = g_settings.GetSharesFromType(type);
+  if (!shares) return NULL;
   for (unsigned int i = 0; i < shares->size(); i++)
   {
     CShare &testShare = shares->at(i);
@@ -204,431 +491,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // characters as the label may contain other info (status for instance)
     if (item->GetLabel().Left(testShare.strName.size()).Equals(testShare.strName))
     {
-      share = &testShare;
-      break;
+      return &testShare;
     }
   }
+  return NULL;
+}
 
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (pMenu)
-  {
-    // check where we are
-    bool bMyProgramsMenu = ("myprograms" == strType);
-    // For DVD Drive Context menu stuff, we can also check where we are, so playin dvd can be dependet to the section!
-    bool bIsDVDContextMenu  = false;
-    bool bIsDVDMediaPresent = false;
-
-    // load our menu
-    pMenu->Initialize();
-
-    // DVD Drive Context menu stuff
-    int btn_PlayDisc = 0;
-    int btn_Eject = 0;
-    int btn_Rip=0;
-    if (item->IsDVD() || item->IsCDDA())
-    {
-      // We need to check if there is a detected is inserted!
-      if ( CDetectDVDMedia::IsDiscInDrive() )
-      {
-        btn_PlayDisc = pMenu->AddButton(341); // Play CD/DVD!
-
-        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-        if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
-          btn_Rip = pMenu->AddButton(600);
-
-        bIsDVDMediaPresent = true;
-      }
-      btn_Eject = pMenu->AddButton(13391);  // Eject/Load CD/DVD!
-      bIsDVDContextMenu = true;
-    }
-
-    CStdString strDefault = GetDefaultShareNameByType(strType);
-    SScraperInfo info;
-
-    // add the needed buttons
-    int btn_AddShare=0;
-    int btn_EditPath=0;
-    int btn_Default=0;
-    int btn_Delete=0;
-    int btn_SetThumb=0;
-    int btn_RemoveThumb=0;
-    int btn_ClearDefault=0;
-    int btn_SetContent=0;
-    int btn_Scan=0;
-
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
-    {
-      if (share)
-      {
-        btn_EditPath = pMenu->AddButton(1027); // Edit Source
-        btn_Default = pMenu->AddButton(13335); // Set as Default
-        btn_Delete = pMenu->AddButton(522); // Remove Source
-
-        btn_SetThumb = pMenu->AddButton(20019);
-        if (share->m_strThumbnailImage != "")
-          btn_RemoveThumb = pMenu->AddButton(20057);
-      }
-      if (!strDefault.IsEmpty())
-        btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
-
-      if (strType == "video" && share && !CUtil::IsDVD(share->strPath))
-      {
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-          btn_SetContent = pMenu->AddButton(20333);
-        CVideoDatabase database;
-        database.Open();
-        if (database.GetScraperForPath(share->strPath,info.strPath,info.strContent))
-        {
-          if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              btn_Scan = pMenu->AddButton(13349);
-            else
-              btn_Scan = pMenu->AddButton(13353);	// Stop Scanning
-        }
-      }
-      else if (strType == "music" && share && !CUtil::IsDVD(share->strPath))
-      {
-        CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-        if (pScanDlg && pScanDlg->IsScanning())
-          btn_Scan = pMenu->AddButton(13353);	// Stop Scanning
-        else
-          btn_Scan = pMenu->AddButton(13352);	// Scan Folder to Database
-      }
-      btn_AddShare = pMenu->AddButton(1026); // Add Source
-    }
-
-    // This if statement should always be the *last* one to add buttons
-    // Only show share lock stuff if masterlock isn't disabled
-    int btn_LockShare = 0; // Lock Share
-    int btn_ResetLock = 0; // Reset Share Lock
-    int btn_RemoveLock = 0; // Remove Share Lock
-    int btn_ReactivateLock = 0; // Reactivate Share Lock
-    int btn_ChangeLock = 0; // Change Share Lock;
-
-    if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
-    {
-      if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
-        btn_LockShare = pMenu->AddButton(12332);
-      else if (share->m_iHasLock == 1)
-      {
-        btn_RemoveLock = pMenu->AddButton(12335);
-      }
-      else if (share->m_iHasLock == 2)
-      {
-        btn_RemoveLock = pMenu->AddButton(12335);
-        if (!bMaxRetryExceeded)
-          btn_ChangeLock = pMenu->AddButton(12356);
-        if (bMaxRetryExceeded)
-          btn_ResetLock = pMenu->AddButton(12334);
-      }
-    }
-    if (share && !g_passwordManager.bMasterUser && share->m_iHasLock == 1)
-      btn_ReactivateLock = pMenu->AddButton(12353);
-
-    int btn_Settings = pMenu->AddButton(5);         // Settings
-
-    // set the correct position
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-    pMenu->DoModal();
-
-    int btn = pMenu->GetButton();
-    if (btn > 0)
-    {
-      if (btn == btn_EditPath)
-      {
-        if (g_settings.m_iLastLoadedProfileIndex == 0)
-        {
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
-        }
-        else
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-
-        return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, *share);
-      }
-      else if (btn == btn_Delete)
-      {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
-        {
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-        }
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-        // prompt user if they want to really delete the bookmark
-        if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? 758 : 751, 0, 750, 0))
-        {
-          // check default before we delete, as deletion will kill the share object
-          if (!strDefault.IsEmpty())
-          {
-            if (share->strName.Equals(strDefault))
-              ClearDefault(strType);
-          }
-
-          // delete this share
-          g_settings.DeleteBookmark(strType, share->strName, share->strPath);
-          return true;
-        }
-      }
-      else if (btn == btn_AddShare)
-      {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
-        {
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-        }
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        return CGUIDialogMediaSource::ShowAndAddMediaSource(strType);
-      }
-      else if (btn == btn_Default)
-      {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
-        {
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-        }
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        // make share default
-        SetDefault(strType, share->strName);
-        return true;
-      }
-      else if (btn == btn_ClearDefault)
-      {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
-        {
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-        }
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-        // remove share default
-        ClearDefault(strType);
-        return true;
-      }
-      else if (btn == btn_SetThumb)
-      {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
-        {
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-        }
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        CStdString strThumb;
-        VECSHARES shares;
-        g_mediaManager.GetLocalDrives(shares);
-
-        if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20056),strThumb))
-        {
-          g_settings.UpdateBookmark(strType,share->strName,"thumbnail",strThumb);
-          g_settings.SaveSources();
-
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-          m_gWindowManager.SendThreadMessage(msg);
-          return true;
-        }
-
-        return false;
-      }
-      else if (btn == btn_RemoveThumb)
-      {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
-        {
-          if (!g_passwordManager.IsProfileLockUnlocked())
-            return false;
-        }
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        g_settings.UpdateBookmark(strType,share->strName,"thumbnail","");
-        g_settings.SaveSources();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);
-        return true;
-      }
-      else if (btn == btn_SetContent)
-      {
-        bool bRunScan=false, bScanRecursively=true, bUseDirNames=false;
-        CVideoDatabase database;
-        database.Open();
-        SScraperInfo info2;
-        database.GetScraperForPath(share->strPath,info2.strPath,info2.strContent);
-        SScraperInfo info;
-        if (CGUIDialogContentSettings::ShowForDirectory(share->strPath,info,bRunScan,bScanRecursively,bUseDirNames))
-        {
-          if (bRunScan)
-          {
-            CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-            pWindow->OnScan(share->strPath,info,bUseDirNames?1:0,bScanRecursively?1:0);
-          }
-          if (info.strContent.IsEmpty() && !info2.strContent.IsEmpty())
-          {
-            if (CGUIDialogYesNo::ShowAndGetInput(20375,20340,20341,20022))
-            {
-              CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-              database.RemoveContentForPath(share->strPath,pDialog);
-              CUtil::DeleteVideoDatabaseDirectoryCache();
-            }
-          }
-        }
-      }
-      else if (btn == btn_Scan)
-      {
-        if (strType == "video")
-        {
-          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-          if (pScanDlg && pScanDlg->IsScanning())
-          {
-            pScanDlg->StopScanning();
-          }
-          else
-          {
-            CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-            pWindow->OnScan(share->strPath,info,-1,-1);
-          }
-        }
-        else if (strType == "music")
-        {
-          CGUIWindowMusicSongs* pWindow = (CGUIWindowMusicSongs*)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES);
-          if (pWindow) pWindow->DoScan(share->strPath);
-        }
-      }
-      else if (btn == btn_PlayDisc)
-      {
-        // Ok Play now the Media CD/DVD!
-        return CAutorun::PlayDisc();
-      }
-      else if (btn == btn_Eject)
-      {
-        if (CIoSupport::GetTrayState() == TRAY_OPEN)
-        {
-          CIoSupport::CloseTray();
-          return true;
-        }
-        else
-        {
-          CIoSupport::EjectTray();
-          return true;
-        }
-      }
-      else if (btn == btn_Rip)
-      {
-        CGUIWindowMusicBase::OnRipCD();
-        return true;
-      }
-      else if (btn == btn_LockShare)
-      {
-        bool bResult = false;
-        CStdString strNewPassword = "";
-        int iButton=0;
-        // prompt user for mastercode when changing lock settings) only for default user
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword);
-
-        if (!bResult)
-          return false;
-        // password entry and re-entry succeeded, write out the lock data
-        share->m_iHasLock = 2;
-        g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPassword);
-        strNewPassword.Format("%i",share->m_iLockMode);
-        g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewPassword);
-        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.SaveSources();
-
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);
-        return true;
-
-      }
-      else if (btn == btn_ResetLock)
-      {
-        // prompt user for profile lock when changing lock settings
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.SaveSources();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);
-        return true;
-      }
-      else if (btn == btn_RemoveLock)
-      {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        if (!CGUIDialogYesNo::ShowAndGetInput(12335, 0, 750, 0))
-          return false;
-
-        share->m_iHasLock = 0;
-        g_settings.UpdateBookmark(strType, share->strName, "lockmode", "0");
-        g_settings.UpdateBookmark(strType, share->strName, "lockcode", "0");
-        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.SaveSources();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);
-
-        return true;
-      }
-      else if (btn == btn_ReactivateLock)
-      {
-        if (!bMaxRetryExceeded)
-        {
-          // don't prompt user for mastercode when reactivating a lock
-          g_passwordManager.LockBookmark(strType, share->strName,true);
-          return true;
-        }
-        else  // this should never happen, but if it does, don't perform any action
-          return false;
-      }
-      else if (btn == btn_ChangeLock)
-      {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        CStdString strNewPW;
-	      CStdString strNewLockMode;
-        bool bResult=false;
-        bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW);
-        if (bResult)
-          strNewLockMode.Format("%i",share->m_iLockMode);
-
-        if (!bResult)
-          return false;
-        // password ReSet and re-entry succeeded, write out the lock data
-        g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
-        g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
-        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.SaveSources();
-        return true;
-      }
-      else if (btn == btn_Settings)
-      {
-        if (strType == "video")
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
-        else if (strType == "music")
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-        else if (strType == "myprograms")
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-        else if (strType == "pictures")
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-        else if (strType == "files")
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
-        return true;
-      }
-    }
-  }
-  return false;
+void CGUIDialogContextMenu::OnWindowLoaded()
+{
+  CGUIDialog::OnWindowLoaded();
+  SetControlVisibility();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()
@@ -671,7 +543,7 @@ void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
   SetDefault(strType, "");
 }
 
-void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath, float posX, float posY)
+void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath)
 {
   // what should we display?
   vector <CStdString> vecTypes;
@@ -700,7 +572,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   }
 
   // display menu
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->CenterWindow();
   pMenu->DoModal();
 
   // check selection

@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "KaiClient.h"
 #include "KaiRequestList.h"
 #include "../Application.h"

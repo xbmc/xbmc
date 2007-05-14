@@ -142,7 +142,7 @@ bool CGUICheckMarkControl::GetSelected() const
   return m_bSelected;
 }
 
-bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
+bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.SetState(MOUSE_STATE_CLICK);
@@ -168,4 +168,11 @@ void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const strin
 void CGUICheckMarkControl::PythonSetDisabledColor(DWORD dwDisabledColor)
 {
   m_label.disabledColor = dwDisabledColor;
+}
+
+void CGUICheckMarkControl::SetColorDiffuse(D3DCOLOR color)
+{
+  CGUIControl::SetColorDiffuse(color);
+  m_imgCheckMark.SetColorDiffuse(color);
+  m_imgCheckMarkNoFocus.SetColorDiffuse(color);
 }

@@ -289,27 +289,37 @@ void CGUIControlGroup::Animate(DWORD currentTime)
   g_graphicsContext.AddGroupTransform(transform);
 }
 
-bool CGUIControlGroup::HitTest(float posX, float posY) const
+bool CGUIControlGroup::HitTest(const CPoint &point) const
 {
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->HitTest(posX, posY))
+    if (child->HitTest(point - CPoint(m_posX, m_posX)))
       return true;
   }
   return false;
 }
 
-bool CGUIControlGroup::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
-  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(posX, posY, control))
+    if (child->CanFocusFromPoint(point - CPoint(m_posX, m_posY), control, controlPoint))
       return true;
   }
   *control = NULL;
   return false;
+}
+
+void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
+{
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *child = *it;
+    child->UnfocusFromPoint(point - CPoint(m_posX, m_posY));
+  }
+  CGUIControl::UnfocusFromPoint(point);
 }
 
 bool CGUIControlGroup::HasID(DWORD dwID) const

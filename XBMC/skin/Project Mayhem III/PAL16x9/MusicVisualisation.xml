@@ -45,7 +45,7 @@
 				<posx>50</posx>
 				<posy>75</posy>
 				<width>630</width>
-				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name] - $LOCALIZE[20165]</label>
+				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name]</label>
 				<font>font12</font>
 				<align>left</align>
 				<visible>!Visualisation.Locked</visible>
@@ -90,7 +90,7 @@
 				<posy>5</posy>
 				<info>System.Time</info>
 				<align>right</align>
-				<textcolor>FFe2ff43</textcolor>
+				<include>textcolorgreen</include>
 				<font>special13</font>
 			</control>
 			<control type="label" id="1">
@@ -111,12 +111,29 @@
 				<align>left</align>
 				<font>special13</font>
 			</control>
-			<control type="label" id="1">
+			<control type="fadelabel" id="1">
 				<description>Album label</description>
-				<width>520</width>
+				<width>420</width>
 				<posx>160</posx>
 				<posy>60</posy>
 				<info>MusicPlayer.Album</info>
+				<align>left</align>
+				<font>font10</font>
+			</control>
+			<control type="image" id="1">
+				<description>Song Rating Image</description>
+				<height>20</height>
+				<width>100</width>
+				<posx>585</posx>
+				<posy>55</posy>
+				<info>musicplayer.rating</info>
+			</control>
+			<control type="label" id="1">
+				<description>time label</description>
+				<width>520</width>
+				<posx>160</posx>
+				<posy>80</posy>
+				<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
 				<align>left</align>
 				<font>font10</font>
 			</control>

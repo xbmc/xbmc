@@ -44,7 +44,7 @@
 			<width>280</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<include>textcolor_dialogheader</include>
 			<label>$LOCALIZE[ 20093 ]</label>
 			<include>homemisc</include>
 		</control>
@@ -55,7 +55,7 @@
 			<width>280</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>FFFFFFFF</textcolor>
+			<include>textcolorwhite</include>
 			<include>homemisc</include>
 		</control>
 		<control type="label" id="0">
@@ -65,7 +65,7 @@
 			<width>280</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<include>textcolor_dialogheader</include>
 			<label>$LOCALIZE[ 20070 ]</label>
 			<include>homemisc</include>
 		</control>
@@ -76,7 +76,7 @@
 			<width>280</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>FFFFFFFF</textcolor>
+			<include>textcolorwhite</include>
 			<include>homemisc</include>
 		</control>
 		<control type="spincontrol" id="60">
@@ -146,7 +146,7 @@
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font12</font>
 			<include>textcolorwhite</include>
-			<disabledcolor>60d0d0d0</disabledcolor>
+			<include>disabledcolor</include>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
@@ -167,7 +167,7 @@
 			<textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
 			<font>font12</font>
 			<include>textcolorwhite</include>
-			<disabledcolor>60d0d0d0</disabledcolor>
+			<include>disabledcolor</include>
 			<textoffsetx>12</textoffsetx>
 			<include>homemisc</include>
 		</control>

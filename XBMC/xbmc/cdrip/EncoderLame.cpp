@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "EncoderLame.h"
 #include "../id3tag.h"
 

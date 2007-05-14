@@ -22,7 +22,7 @@ protected:
 
   bool Create444PTexture(bool full, bool field);
   void Delete444PTexture();
-  void Clear444PTexture();
+  void Clear444PTexture(bool full, bool field);
 
   bool CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &range);
   void DeleteLookupTextures();
@@ -38,7 +38,8 @@ protected:
 
   void RenderYUVtoRGB(
       D3DBaseTexture* pSource,
-      RECT &source, RECT &target);
+      RECT &source, RECT &target,
+      float offset_x, float offset_y);
 
   // YUV interleaved texture
   LPDIRECT3DTEXTURE8 m_444PTextureFull;

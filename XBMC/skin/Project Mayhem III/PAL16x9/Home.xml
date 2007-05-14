@@ -792,9 +792,9 @@
 			<width>720</width>
 			<font>font13</font>
 			<urlset>1</urlset>
-			<titlecolor>ffD2FF00</titlecolor>
-			<headlinecolor>DDced8da</headlinecolor>
-			<textcolor>ffD2FF00</textcolor>
+			<include>rsstitlecolor</include>
+			<include>rssheadlinecolor</include>
+			<include>textcolorgreen</include>
 			<visible>!Player.HasVideo</visible>
 			<visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
 			<include>homemisc</include>
@@ -886,7 +886,7 @@
 				<visible>System.KaiConnected</visible>
 			</control>
 			<control type="image">
-				<description>submenu button</description>
+				<description>favourites button</description>
 				<posx>56</posx>
 				<posy>0</posy>
 				<width>28</width>
@@ -894,12 +894,12 @@
 				<texture>home-sub.png</texture>
 			</control>
 			<control type="button" id="100">
-				<description>submenu button</description>
+				<description>favourites button</description>
 				<posx>56</posx>
 				<posy>0</posy>
 				<width>28</width>
 				<height>35</height>
-				<onclick>ActivateWindow(SubMenu)</onclick>
+				<onclick>ActivateWindow(Favourites)</onclick>
 				<texturefocus>home-sub.gif</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<label>-</label>

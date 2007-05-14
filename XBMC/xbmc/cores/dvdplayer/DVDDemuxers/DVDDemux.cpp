@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDDemux.h"
 #include "..\DVDCodecs\DVDCodecs.h"
 #include "..\..\..\LangCodeExpander.h"

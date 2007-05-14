@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "xbmcweb.h"
 #include "..\..\Application.h"
 

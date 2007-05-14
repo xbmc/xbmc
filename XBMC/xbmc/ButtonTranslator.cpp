@@ -353,11 +353,12 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("previouspreset")) wAction = ACTION_VIS_PRESET_PREV;
   else if (strAction.Equals("lockpreset")) wAction = ACTION_VIS_PRESET_LOCK;
   else if (strAction.Equals("randompreset")) wAction = ACTION_VIS_PRESET_RANDOM;
-  else if (strAction.Equals("increaserating")) wAction = ACTION_VIS_RATE_PRESET_PLUS;
-  else if (strAction.Equals("decreaserating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
-
+  else if (strAction.Equals("increasevisrating")) wAction = ACTION_VIS_RATE_PRESET_PLUS;
+  else if (strAction.Equals("decreasevisrating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
   else if (strAction.Equals("showvideomenu")) wAction = ACTION_SHOW_VIDEOMENU;
   else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
+  else if (strAction.Equals("increaserating")) wAction = ACTION_INCREASE_RATING;
+  else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
 
 #ifdef WITH_LINKS_BROWSER
   else if (strAction.Equals("goback")) wAction = ACTION_WEBBROWSER_BACK;
@@ -420,6 +421,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_DIALOG_KEYBOARD;
   else if (strWindow.Equals("volumebar")) wWindowID = WINDOW_DIALOG_VOLUME_BAR;
   else if (strWindow.Equals("submenu")) wWindowID = WINDOW_DIALOG_SUB_MENU;
+  else if (strWindow.Equals("favourites")) wWindowID = WINDOW_DIALOG_FAVOURITES;
   else if (strWindow.Equals("contextmenu")) wWindowID = WINDOW_DIALOG_CONTEXT_MENU;
   else if (strWindow.Equals("infodialog")) wWindowID = WINDOW_DIALOG_KAI_TOAST;
   else if (strWindow.Equals("hostdialog")) wWindowID = WINDOW_DIALOG_HOST;
@@ -444,6 +446,8 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
   else if (strWindow.Equals("mymusicplaylisteditor")) wWindowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
+  else if (strWindow.Equals("smartplaylisteditor")) wWindowID = WINDOW_DIALOG_SMART_PLAYLIST_EDITOR;
+  else if (strWindow.Equals("smartplaylistrule")) wWindowID = WINDOW_DIALOG_SMART_PLAYLIST_RULE;
   else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("mymusiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
   //else if (strWindow.Equals("mymusictop100")) wWindowID = WINDOW_MUSIC_TOP100;

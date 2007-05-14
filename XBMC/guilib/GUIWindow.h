@@ -34,14 +34,6 @@ class CFileItem;
 class TiXmlNode;
 class TiXmlElement;
 
-class CPosition
-{
-public:
-  CGUIControl* pControl;
-  float x;
-  float y;
-};
-
 class COrigin
 {
 public:
@@ -81,9 +73,9 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  void OnMouseAction();
-  virtual bool OnMouse();
-  bool HandleMouse(CGUIControl *pControl);
+  virtual void OnMouseAction();
+  virtual bool OnMouse(const CPoint &point);
+  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);
@@ -100,6 +92,7 @@ public:
   DWORD GetPreviousWindow() { return m_previousWindow; };
   float GetPosX() { return m_posX; };
   float GetPosY() { return m_posY; };
+  FRECT GetScaledBounds() const;
   const CGUIControl* GetControl(int iControl) const;
   void ClearAll();
   int GetFocusedControlID() const;
@@ -116,6 +109,7 @@ public:
   virtual bool IsMediaWindow() const { return false; };
   virtual CFileItem *GetCurrentListItem() { return NULL; };
   virtual bool IsActive() const;
+  bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };

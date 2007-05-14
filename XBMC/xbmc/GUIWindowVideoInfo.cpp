@@ -61,7 +61,10 @@ using namespace XFILE;
 
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
     : CGUIDialog(WINDOW_VIDEO_INFO, "DialogVideoInfo.xml")
-{}
+{
+  m_bRefreshAll = true;
+  m_bRefresh = false;
+}
 
 CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)
 {}
@@ -82,7 +85,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       m_bRefresh = false;
-      m_bRefreshAll = false;
+      m_bRefreshAll = true;
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC, 0, 0, NULL);
@@ -160,7 +163,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         {
           bool bCanceled=false;
           if (CGUIDialogYesNo::ShowAndGetInput(20377,20378,-1,-1,bCanceled))
+          {
             m_bRefreshAll = true;
+            m_database.SetPathHash(m_movieItem.GetVideoInfoTag()->m_strPath,"");
+          }
+          else
+            m_bRefreshAll = false;
+
           if (bCanceled)
             return false;
         }
@@ -640,7 +649,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(1030), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")

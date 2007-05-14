@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="freetype2\include"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -268,6 +268,9 @@
 				RelativePath=".\GUIVisualisationControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIWebBrowserControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIWindow.cpp">
 			</File>
 			<File
@@ -478,6 +481,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIVisualisationControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIWebBrowserControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIWindow.h">

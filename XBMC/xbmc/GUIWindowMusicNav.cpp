@@ -31,7 +31,6 @@
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
 #endif
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
@@ -161,9 +160,16 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "special://musicplaylists/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Years"))
+        {
+          m_vecItems.m_strPath = "musicdb://9/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          m_vecItems.m_strPath = strDestination;
+          SetHistoryForPath(m_vecItems.m_strPath);
           break;
         }
       }
@@ -416,191 +422,85 @@ void CGUIWindowMusicNav::OnWindowLoaded()
   CGUIWindowMusicBase::OnWindowLoaded();
 }
 
-void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  // calculate our position
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
+  CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
+
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  if (item)
   {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  // mark the item
-  bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
-  m_vecItems[iItem]->Select(true);
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
-  // load our menu
-  pMenu->Initialize();
-  // add the needed buttons
-  int btn_Queue       = 0;  // Queue Item
-  int btn_PlayWith    = 0;  // Play using alternate player
-  int btn_EditPlaylist = 0; // Edit a playlist
-  int btn_Info        = 0;  // Music Information
-  int btn_InfoAll     = 0;  // Query Information for all albums
-  int btn_GoToRoot    = 0;
-  int btn_NowPlaying  = 0;  // Now Playing... very bottom of context accessible
+    // are we in the playlists location?
+    bool inPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
 
-  // directory tests
-  CMusicDatabaseDirectory dir;
-
-  // check what players we have, if we have multiple display play with option
-  VECPLAYERCORES vecCores;
-  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-
-  // turn off info/queue/play/set artist thumb if the current item is goto parent ..
-  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-  bool bPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
-  if (!bIsGotoParent && (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT || bPlaylists))
-  {
-    // allow queue for anything but root
-    if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
-      btn_Queue = pMenu->AddButton(13347);
-
-    // allow a folder to be ad-hoc queued and played by the default player
-    if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
-      btn_PlayWith = pMenu->AddButton(208);
-    else if (vecCores.size() >= 1)
-      btn_PlayWith = pMenu->AddButton(15213);
-
-    if ((m_vecItems[iItem]->IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()) ||
-        (m_vecItems.IsPlayList() && !m_vecItems[iItem]->IsSmartPlayList()))
-      btn_EditPlaylist = pMenu->AddButton(586);
-
+    CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
-    if ((dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath)) || m_vecItems[iItem]->IsAudio())
-      btn_Info = pMenu->AddButton(13351);
+    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
+      buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+    else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
+      buttons.Add(CONTEXT_BUTTON_INFO, 13351);
 
     // enable query all albums button only in album view
-    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
-      btn_InfoAll = pMenu->AddButton(20059);
+    if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
+      buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
+
+    // turn off set artist image if not at artist listing.
+    // (uses file browser to pick an image)
+    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
+      buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
+
+    //Set default or clear default
+    NODE_TYPE nodetype = dir.GetDirectoryType(item->m_strPath);
+    if (!item->IsParentFolder() && !inPlaylists &&
+        (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TOP100))
+    {
+      if (!item->m_strPath.Equals(g_stSettings.m_szDefaultMusicLibView))
+        buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
+      if (strcmp(g_stSettings.m_szDefaultMusicLibView, ""))
+        buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
+    }
   }
-
-  // turn off set artist image if not at artist listing.
-  // (uses file browser to pick an image)
-  int btn_Thumb = 0;  // Set Artist Thumb
-  if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
-    btn_Thumb = pMenu->AddButton(13359);
-
-  //Set default or clear default
-  int btn_Default = 0;
-  int btn_ClearDefault=0;
-  NODE_TYPE nodetype = dir.GetDirectoryType(m_vecItems[iItem]->m_strPath);
-  if (
-    !bIsGotoParent && 
-    !bPlaylists && 
-    (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TOP100) 
-  )
-  {
-    if (!m_vecItems[iItem]->m_strPath.Equals(g_stSettings.m_szDefaultMusicLibView))
-      btn_Default = pMenu->AddButton(13335); // set default
-    if (strcmp(g_stSettings.m_szDefaultMusicLibView, ""))
-      btn_ClearDefault = pMenu->AddButton(13403); // clear default
-  }
-
   // noncontextual buttons
-
-  int btn_Update = 0;
 
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
-    btn_Update = pMenu->AddButton(13353);     // Stop Scanning
+    buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);     // Stop Scanning
   else if (musicScan)
-    btn_Update = pMenu->AddButton(653);     // Update Library
+    buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
 
-  int btn_Settings = pMenu->AddButton(5);     // Settings...
+  CGUIWindowMusicBase::GetNonContextButtons(buttons);
+}
 
-  if (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
-    btn_GoToRoot = pMenu->AddButton(20128);
-
-  // if the Now Playing item is still not in the list, add it here
-  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    btn_NowPlaying = pMenu->AddButton(13350);
-
-  // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-  pMenu->DoModal();
-
-  int btn = pMenu->GetButton();
-  if (btn > 0)
+bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  switch (button)
   {
-    if (btn == btn_Info) // Music Information
+  case CONTEXT_BUTTON_INFO_ALL:
+    OnInfoAll(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_SET_ARTIST_THUMB:
+    SetArtistImage(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      OnInfo(iItem);
-    }
-    else if (btn == btn_InfoAll) // Music Information
-    {
-      OnInfoAll(iItem);
-    }
-    else if (btn == btn_PlayWith)
-    {
-      // if folder, play with default player
-      if (m_vecItems[iItem]->m_bIsFolder)
-      {
-        PlayItem(iItem);
-      }
-      else
-      {
-        // Play With...
-        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, posX, posY);
-        if( g_application.m_eForcedNextPlayer != EPC_NONE )
-          OnClick(iItem);
-      }
-    }
-    else if (btn == btn_EditPlaylist)
-    {
-      CStdString playlist = m_vecItems[iItem]->IsPlayList() ? m_vecItems[iItem]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
-      return;
-    }
-     else if (btn == btn_Queue)  // Queue Item
-    {
-      OnQueueItem(iItem);
-    }
-    else if (btn == btn_NowPlaying)  // Now Playing...
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-      return;
-    }
-    else if (btn == btn_Thumb)  // Set Artist Image
-    {
-      SetArtistImage(iItem);
-    }
-    else if (btn == btn_GoToRoot)
-    {
-      Update("");
-      return;
-    }
-    else if (btn == btn_Update)
-    {
-      // update the library
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (scanner && scanner->IsScanning())
-        scanner->StopScanning();
-      else if (scanner)
+      if (scanner)
         scanner->StartScanning("");
+      return true;
     }
-    else if (btn == btn_Default) // Set default
-    {
-      strcpy(g_stSettings.m_szDefaultMusicLibView, GetQuickpathName(m_vecItems[iItem]->m_strPath).c_str());
-      g_settings.Save();
-    }
-    else if (btn == btn_ClearDefault) // Clear default
-    {
-      strcpy(g_stSettings.m_szDefaultMusicLibView, "");
-      g_settings.Save();
-    }
-    else if (btn == btn_Settings)  // Settings
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-    }
+  case CONTEXT_BUTTON_SET_DEFAULT:
+    strcpy(g_stSettings.m_szDefaultMusicLibView, GetQuickpathName(m_vecItems[itemNumber]->m_strPath).c_str());
+    g_settings.Save();
+    return true;
+
+  case CONTEXT_BUTTON_CLEAR_DEFAULT:
+    strcpy(g_stSettings.m_szDefaultMusicLibView, "");
+    g_settings.Save();
+    return true;
   }
-  if (iItem < m_vecItems.Size())
-    m_vecItems[iItem]->Select(bSelected);
+
+  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowMusicNav::SetArtistImage(int iItem)
@@ -622,7 +522,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     m_musicdatabase.GetArtistPath(idArtist, picturePath);
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20010), picturePath))
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(1030), picturePath))
   {
     CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;

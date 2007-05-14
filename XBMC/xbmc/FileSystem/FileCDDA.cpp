@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "filecdda.h"
 #include <sys/stat.h>
 #include "../util.h"
@@ -109,7 +109,7 @@ unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
 __int64 CFileCDDA::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
 {
   if (!m_pCdIo)
-    return 0;
+    return -1;
 
   lsn_t lsnPosition = (int)iFilePosition / CDIO_CD_FRAMESIZE_RAW;
 

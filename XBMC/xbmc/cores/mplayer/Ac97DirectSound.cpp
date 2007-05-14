@@ -19,23 +19,12 @@
 */
 
 
-#include "../../stdafx.h"
-#include <stdio.h>
+#include "stdafx.h"
 #include "Ac97DirectSound.h"
-#include "../../util.h"
-#include "mplayer.h"
 #include "AudioContext.h"
-
 
 #define VOLUME_MIN  DSBVOLUME_MIN
 #define VOLUME_MAX  DSBVOLUME_MAX
-
-
-
-#define CALC_DELAY_START  0
-#define CALC_DELAY_STARTED 1
-#define CALC_DELAY_DONE   2
-
 
 //***********************************************************************************************
 void CALLBACK CAc97DirectSound::StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus)
@@ -52,33 +41,49 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS, bool bResample, int iNumBuffers)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS)
 {
   m_pCallback = pCallback;
   m_bAc3DTS = bAC3DTS;
-
-  m_bResampleAudio = false;
-  if (bResample && uiSamplesPerSec != 48000)
-    m_bResampleAudio = true;
 
   m_bPause = false;
   m_bMute = false;
   m_bIsAllocated = false;
   m_adwStatus = NULL;
+  m_dwNumPackets = 0;
+  m_pDigitalOutput = NULL;
+  m_dwTotalBytesAdded=0;
   ZeroMemory(m_pbSampleData, sizeof(m_pbSampleData));
 
-  ZeroMemory(&m_wfx, sizeof(m_wfx));
-  m_wfx.cbSize = sizeof(m_wfx);
-  XAudioCreatePcmFormat( iChannels, 48000, 16, &m_wfx ); //passthrough is always 48000KHz/16bit
+  if(uiSamplesPerSec != 48000)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid samplerate %d, Ac97 interface only handles 48000", uiSamplesPerSec);
+    return;
+  }
 
-  if(iNumBuffers)
-    m_dwNumPackets = iNumBuffers;
-  else
-    m_dwNumPackets = 8 * iChannels;
+  if(iChannels != 2)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid number of channels %d, Ac97 interface only handles 2 channels", iChannels);
+    return;
+  }
 
-  HRESULT hr;
+  // we want 1/4th of a second worth of data
+#if 0 //mplayer is broken on some packets sizes
+  m_dwPacketSize = 512; // samples
+  m_dwPacketSize *= m_uiChannels * (m_uiBitsPerSample>>3);
+#else
+  m_dwPacketSize = 1024;
+#endif
+  m_dwNumPackets = 48000 * 2 * (16>>3);
+  m_dwNumPackets /= m_dwPacketSize * 4;
 
+  // don't go larger than soundcard can handle
+  if(m_dwNumPackets > DSAC97_MAX_ATTACHED_PACKETS)
+    m_dwNumPackets = DSAC97_MAX_ATTACHED_PACKETS;
 
+  WAVEFORMATEX m_wfx = {};
+  XAudioCreatePcmFormat( 2, 48000, 16, &m_wfx ); //passthrough is always 2ch 48000KHz/16bit
+  
   m_adwStatus = new DWORD[ m_dwNumPackets ];
   for ( DWORD j = 0; j < m_dwNumPackets; j++ )
     m_adwStatus[ j ] = XMEDIAPACKET_STATUS_SUCCESS;
@@ -86,24 +91,19 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   g_audioContext.SetActiveDevice(CAudioContext::AC97_DEVICE);
   m_pDigitalOutput = g_audioContext.GetAc97Device();
 
+  // align m_dwPacketSize to dwInputSize
   XMEDIAINFO info;
-  m_pDigitalOutput->GetInfo(&info);
-  int fSize = 1024 / info.dwInputSize;
-  fSize *= info.dwInputSize;
-  m_dwPacketSize = (int)fSize;
+  m_pDigitalOutput->GetInfo(&info);  
+  m_dwPacketSize /= info.dwInputSize;
+  m_dwPacketSize *= info.dwInputSize;
 
   // XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
   m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
   for (DWORD dwX = 1; dwX < m_dwNumPackets; dwX++)
     m_pbSampleData[dwX] = m_pbSampleData[dwX - 1] + m_dwPacketSize;
 
-  hr = m_pDigitalOutput->SetMode(bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
+  HRESULT hr = m_pDigitalOutput->SetMode(bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
   m_bIsAllocated = true;
-  m_dwTotalBytesAdded=0;
-  if (m_bResampleAudio)
-  {
-    m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
-  }
 }
 
 //***********************************************************************************************
@@ -232,12 +232,6 @@ bool CAc97DirectSound::FindFreePacket( DWORD &dwIndex )
 }
 
 //***********************************************************************************************
-bool CAc97DirectSound::SupportsSurroundSound() const
-{
-  return false;
-}
-
-//***********************************************************************************************
 DWORD CAc97DirectSound::GetSpace()
 {
   DWORD iFreePackets(0);
@@ -251,74 +245,7 @@ DWORD CAc97DirectSound::GetSpace()
       iFreePackets++;
     }
   }
-  DWORD dwSize = iFreePackets * m_dwPacketSize;
-  if (m_bResampleAudio)
-  { // calculate the actual amount of data that we can handle
-    float fBytesPerSecOutput = 48000.0f * m_wfx.wBitsPerSample * m_wfx.nChannels; //code copy from AsyncDircetsound
-    dwSize = (DWORD)((float)dwSize * (float)m_Resampler.GetInputBitrate() / fBytesPerSecOutput);
-  }
-  return dwSize;
-}
-
-//***********************************************************************************************
-DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
-{
-  DWORD dwIndex = 0;
-  DWORD iBytesCopied = 0;
-  while (true)
-  {
-    // Get the next free packet to fill with our output audio
-    if ( FindFreePacket(dwIndex) )
-    {
-      XMEDIAPACKET xmpAudio = {0};
-
-      // loop around, grabbing data from the input buffer and resampling
-      // until we fill up this packet
-      while (true)
-      {
-        // check if we have resampled data to send
-        if (m_Resampler.GetData(m_pbSampleData[dwIndex]))
-        {
-          // Set up audio packet
-          m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
-          xmpAudio.dwMaxSize = m_dwPacketSize;
-          xmpAudio.pvBuffer = m_pbSampleData[dwIndex];
-          xmpAudio.pdwStatus = &m_adwStatus[ dwIndex ];
-          xmpAudio.pdwCompletedSize = NULL;
-          xmpAudio.prtTimestamp = NULL;
-          xmpAudio.pContext = m_pbSampleData[dwIndex];
-          // Process the audio
-          if (DS_OK != m_pDigitalOutput->Process( &xmpAudio, NULL ))
-            return iBytesCopied;
-
-          m_dwTotalBytesAdded+=m_dwPacketSize;
-          // Okay - we've done this bit, update our data info
-          //buffered_bytes+=m_dwPacketSize;
-          // break to get another packet and restart the loop
-          break;
-        }
-        else
-        { // put more data into the resampler
-          int iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
-          if (iSize == -1)
-          { // Failed - we don't have enough data
-            return iBytesCopied;
-          }
-          else
-          { // Success - update the amount that we have processed
-            iBytesCopied += (DWORD)iSize;
-            iLeft -= iSize;
-          }
-          // Now loop back around and output data, or read more in
-        }
-      }
-    }
-    else
-    { // no packets free - send data back to sender
-      return iBytesCopied;
-    }
-  }
-  return iBytesCopied;
+  return iFreePackets * m_dwPacketSize;
 }
 
 //***********************************************************************************************
@@ -326,8 +253,6 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
   // Don't accept packets when paused
   if( m_bPause ) return 0;
-  if (m_bResampleAudio)
-    return AddPacketsResample(data, len);
 
   HRESULT hr;
   DWORD dwIndex = 0;
@@ -382,49 +307,46 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 }
 
 //***********************************************************************************************
-DWORD CAc97DirectSound::GetBytesInBuffer()
-{
-  DWORD m_dwPos=0;
-  m_pDigitalOutput->GetCurrentPosition(&m_dwPos);
-  return max(0, m_dwTotalBytesAdded - m_dwPos);
-}
-
-void CAc97DirectSound::ResetBytesInBuffer()
-{
-  DWORD dwPos=0;
-  m_pDigitalOutput->GetCurrentPosition(&dwPos);
-  m_dwTotalBytesAdded = dwPos;
-}
-
-//***********************************************************************************************
 FLOAT CAc97DirectSound::GetDelay()
 {
+  DWORD m_dwPos=0;
+  if( FAILED(m_pDigitalOutput->GetCurrentPosition(&m_dwPos)))
+    return 0.0f;
+
+  if( m_dwTotalBytesAdded < m_dwPos )
+  {
+    CLog::Log(LOGWARNING, " - Stream position larger than what we've added");
+    m_dwTotalBytesAdded = m_dwPos;
+  }
+
+  // buffer delay
+  FLOAT delay = (FLOAT)(m_dwTotalBytesAdded - m_dwPos) / (2 * 48000 * (16>>3));
+  
+  // static delay
   if (m_bAc3DTS)
-    return 0.028f;  //(fake PCM output 8ms) + (receiver 20ms)
+    delay += 0.028f;  //(fake PCM output 8ms) + (receiver 20ms)
   else
-    return 0.008f;  //PCM passthrough
+    delay += 0.008f;  //PCM passthrough
+
+  return delay;
 }
 
 //***********************************************************************************************
 DWORD CAc97DirectSound::GetChunkLen()
 {
-  if (m_bResampleAudio)
-    return m_Resampler.GetMaxInputSize();
-  else
-    return m_dwPacketSize;
+  return m_dwPacketSize;
 }
 //***********************************************************************************************
 int CAc97DirectSound::SetPlaySpeed(int iSpeed)
 {
-
-  return 1;
+  return 0;
 }
 
 void CAc97DirectSound::RegisterAudioCallback(IAudioCallback *pCallback)
 {
   if (!m_pCallback)
   {
-    pCallback->OnInitialize(m_wfx.nChannels, m_wfx.nSamplesPerSec, m_wfx.wBitsPerSample );
+    pCallback->OnInitialize(2, 48000, 16 );
   }
   m_pCallback = pCallback;
 }

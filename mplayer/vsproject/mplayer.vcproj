@@ -2279,6 +2279,50 @@
 				RelativePath="..\libmpdemux\yuv4mpeg_ratio.c"
 				>
 			</File>
+			<Filter
+				Name="realrtsp"
+				>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\asmrp.c"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\asmrp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\real.c"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\real.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\rmff.c"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\rmff.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\sdpplin.c"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\sdpplin.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\xbuffer.c"
+					>
+				</File>
+				<File
+					RelativePath="..\libmpdemux\realrtsp\xbuffer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="libmpcodecs"

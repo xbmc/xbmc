@@ -191,7 +191,7 @@ bool CLinksBoksManager::Initialize()
   return true;
 }
 
-bool CLinksBoksManager::CreateWindow(int width, int height)
+bool CLinksBoksManager::CreateBrowserWindow(int width, int height)
 {
   if (!m_Initialized)
     return false;
@@ -219,9 +219,9 @@ bool CLinksBoksManager::CreateWindow(int width, int height)
   return true;
 }
 
-bool CLinksBoksManager::CloseWindow()
+bool CLinksBoksManager::CloseBrowserWindow()
 {
-  if (!m_Initialized || m_Sleeping || !GetWindow())
+  if (!m_Initialized || m_Sleeping || !GetBrowserWindow())
 	return false;
 
   m_window->Close();
@@ -234,14 +234,14 @@ void CLinksBoksManager::Terminate()
 {
   if(!m_Initialized)
     return;
-  CloseWindow();
+  CloseBrowserWindow();
   m_dll.LinksBoks_Terminate(TRUE);
   m_window = NULL;
   m_Initialized = false;
   UnloadDLL();
 }
 
-ILinksBoksWindow *CLinksBoksManager::GetWindow()
+ILinksBoksWindow *CLinksBoksManager::GetBrowserWindow()
 {
   return m_window;
 }
@@ -256,7 +256,7 @@ void CLinksBoksManager::FrameMove()
 
 void CLinksBoksManager::EmptyCaches()
 {
-  if (!m_Initialized || m_Sleeping || !GetWindow())
+  if (!m_Initialized || m_Sleeping || !GetBrowserWindow())
     return;
 
   m_dll.LinksBoks_EmptyCaches();
@@ -264,10 +264,10 @@ void CLinksBoksManager::EmptyCaches()
 
 bool CLinksBoksManager::Freeze()
 {
-  if (!m_Initialized || m_Sleeping || !GetWindow())
+  if (!m_Initialized || m_Sleeping || !GetBrowserWindow())
 	return false;
 
-  ILinksBoksWindow *pWindow = GetWindow();
+  ILinksBoksWindow *pWindow = GetBrowserWindow();
 
   if (pWindow->Freeze())
     return false;
@@ -279,10 +279,10 @@ bool CLinksBoksManager::Freeze()
 
 bool CLinksBoksManager::UnFreeze()
 {
-  if (!m_Initialized || !m_Sleeping || !GetWindow())
+  if (!m_Initialized || !m_Sleeping || !GetBrowserWindow())
 	return false;
 
-  ILinksBoksWindow *pWindow = GetWindow();
+  ILinksBoksWindow *pWindow = GetBrowserWindow();
 
   m_dll.LinksBoks_UnfreezeCore();
   if (pWindow->Unfreeze())

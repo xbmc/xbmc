@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DirectoryNode.h"
 #include "../../util.h"
 #include "QueryParams.h"
@@ -310,15 +310,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 
 bool CDirectoryNode::CanCache()
 {
-  //  Only cache the directorys in the root
-  NODE_TYPE childnode=GetChildType();
-  NODE_TYPE node=GetType();
-
-  // Bobbin007: I think albums, genre, and artists do not need to get cached.
-  // There are 3000 artists in average in a database, sqlite should be fast
-  // enough to return them in an appropriate time. There are less albums 
-  // and genre in a database then artists.
-  return ((/*childnode==NODE_TYPE_GENRE || childnode==NODE_TYPE_ARTIST || 
-          childnode==NODE_TYPE_ALBUM ||*/ childnode==NODE_TYPE_SONG) &&
-          node==NODE_TYPE_OVERVIEW);
+  // JM: No need to cache these views, as caching is added in the mediawindow baseclass for anything that takes
+  //     longer than a second
+  return false;
 }

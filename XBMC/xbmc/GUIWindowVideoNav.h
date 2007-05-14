@@ -14,8 +14,6 @@ public:
 
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
-  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info);
-
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods
@@ -27,6 +25,9 @@ protected:
   virtual void OnDeleteItem(int iItem);
   virtual void OnWindowLoaded();
   virtual void OnFilterItems();
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
   void FilterItems(CFileItemList &items);
 

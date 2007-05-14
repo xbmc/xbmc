@@ -1,7 +1,5 @@
 #include "rar.hpp"
 
-#include "../../utils/log.h"
-
 #include "coder.cpp"
 #include "suballoc.cpp"
 #include "model.cpp"

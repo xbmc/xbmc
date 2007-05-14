@@ -29,11 +29,13 @@
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="rar.hpp"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4800;4018;4146"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -57,16 +59,19 @@
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="rar.hpp"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4800;4018;4146"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -90,16 +95,19 @@
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="rar.hpp"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4800;4018;4146"
 				FastCAP="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -130,11 +138,13 @@
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="rar.hpp"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4800;4018;4146"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -159,16 +169,17 @@
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="3"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				PrecompiledHeaderThrough=""
+				PrecompiledHeaderFile=""
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4800;4018;4146"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool

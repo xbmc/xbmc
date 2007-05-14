@@ -81,6 +81,7 @@
 #define DEMUXER_CTRL_RESYNC 13
 #define DEMUXER_CTRL_SWITCH_VIDEO 14
 #define DEMUXER_CTRL_IDENTIFY_PROGRAM 15
+#define DEMUXER_CTRL_GET_TIME_START 20
 
 // Holds one packet/frame/whatever
 typedef struct demux_packet_st {

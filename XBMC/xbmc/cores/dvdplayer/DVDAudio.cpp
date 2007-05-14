@@ -1,14 +1,19 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "dvdaudio.h"
+#ifdef _XBOX
 #include "..\mplayer\ASyncDirectSound.h"
 #include "..\mplayer\ac97directsound.h"
+#else
+#include "..\mplayer\Win32DirectSound.h"
+#endif
 #include "..\..\util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 
 
-CDVDAudio::CDVDAudio()
+CDVDAudio::CDVDAudio(bool &bStop)
+  : m_bStop(bStop)
 {
   m_pAudioDecoder = NULL;
   m_pCallback = NULL;
@@ -45,26 +50,27 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
 
+  char* codecstring="";
+  if(codec == CODEC_ID_AAC)
+    codecstring = "AAC";
+  else if(codec == CODEC_ID_AC3 || codec == CODEC_ID_DTS)
+    codecstring = ""; // TODO, fix ac3 and dts decoder to output standard windows mapping
+  else
+    codecstring = "PCM";
+
+#ifdef _XBOX
   // we don't allow resampling now, there is a bug in sscc that causes it to return the wrong chunklen.
   if( bPasstrough )
-  {
-    m_iPackets = 16;
-    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true, false, m_iPackets); // true = resample, 128 buffers
-  }
+    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true); // true = resample, 128 buffers
   else
-  {
-    char* codecstring="";
-    if(codec == CODEC_ID_AAC)
-      codecstring = "AAC";
-    else if(codec == CODEC_ID_AC3 || codec == CODEC_ID_DTS)
-      codecstring = ""; // TODO, fix ac3 and dts decoder to output standard windows mapping
-    else
-      codecstring = "PCM";
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, codecstring);
+#else
 
-    m_iPackets = 32; //64;// better sync with smaller buffers?
-    
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets, codecstring);
-  }
+  if( bPasstrough )
+    return false;
+
+  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, codecstring);
+#endif
 
   if (!m_pAudioDecoder) return false;
 
@@ -99,7 +105,6 @@ void CDVDAudio::Destroy()
   m_iChannels = 0;
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
-  m_iPackets = 0;
   m_iSpeed = 1;
 }
 
@@ -134,12 +139,8 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
   }
   int iTotalSize = len;
 
-  // wait until we can put something in the buffer, if we don't do this we have to check every time how
-  // much is really written because it could be the buffer was still full.
-  if ((m_iPackets * m_dwPacketSize) > len)
-  {
-    while (m_pAudioDecoder->GetSpace() < len) Sleep(1);
-  }
+  while (m_pAudioDecoder->GetSpace() < m_dwPacketSize && !m_bStop)
+    Sleep(1);
 
   if (m_iBufferSize > 0)
   {
@@ -152,9 +153,8 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
     m_iBufferSize += iBytesToCopy;
     
     if (AddPacketsRenderer(m_pBuffer, m_iBufferSize) != m_dwPacketSize)
-    {
-      return -1;
-    }
+      return iBytesToCopy;
+
     m_iBufferSize = 0;
   }
 
@@ -175,14 +175,15 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
       if (len >= m_dwPacketSize) Sleep(10);
     }
   }
-  while (len >= m_dwPacketSize); // if we send to much data at once, we have to send more again
+  while (len >= m_dwPacketSize && !m_bStop); // if we send to much data at once, we have to send more again
 
   // if copied is not len then the decoder didn't accept the last few bytes
   // we save it for the next call to this funtion
   if (len > 0)
   {
-    m_iBufferSize = len;
+    m_iBufferSize = min(len, m_dwPacketSize);
     memcpy(m_pBuffer, data, m_iBufferSize);
+    len -= m_iBufferSize;
   }
   return iTotalSize - len;
 }
@@ -218,33 +219,8 @@ void CDVDAudio::Resume()
 }
 
 __int64 CDVDAudio::GetDelay()
-{
-  __int64 delay;
-  
-  if (m_pAudioDecoder && m_iChannels != 0 && m_iBitrate != 0)
-  {
-
-    delay = (__int64)(m_pAudioDecoder->GetDelay() * DVD_TIME_BASE);
-    bool bIsResampling = m_pAudioDecoder->IsResampling();
-    
-    if (bIsResampling) delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (48000 * m_iChannels * 2);
-    else delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
-
-    //if( m_iSpeedStep )
-    //{
-    //  //To smoothout clock abit when dropping audio chunks
-    //  delay += ((__int64)m_dwPacketSize*m_iSpeedStep*DVD_TIME_BASE) / ( (__int64)m_iBitrate * m_iChannels * 2 );
-    //}
-
-    return delay;
-  }
-  return 0LL;
-}
-
-int CDVDAudio::GetBytesInBuffer()
-{
-  if(!m_pAudioDecoder) return 0;
-  return m_pAudioDecoder->GetBytesInBuffer();
+{  
+  return (__int64)(m_pAudioDecoder->GetDelay() * DVD_TIME_BASE);
 }
 
 void CDVDAudio::Flush()

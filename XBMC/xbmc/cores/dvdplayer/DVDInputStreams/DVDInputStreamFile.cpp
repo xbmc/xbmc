@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDInputStreamFile.h"
 
 #include "..\..\..\util.h"
@@ -38,7 +38,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   if (!m_pFile) return false;
 
   // open file in binary mode
-  if (!m_pFile->Open(strFile, true))
+  if (!m_pFile->Open(strFile, true, READ_TRUNCATED))
   {
     delete m_pFile;
     m_pFile = NULL;
@@ -64,7 +64,7 @@ void CDVDInputStreamFile::Close()
 int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
 {
   int ret = 0;
-  if (m_pFile) ret = m_pFile->Read(buf, buf_size, READ_TRUNCATED);
+  if (m_pFile) ret = m_pFile->Read(buf, buf_size);
   else return -1;
 
   /* on error close file */

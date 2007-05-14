@@ -4,7 +4,7 @@
 #pragma comment(linker, "/merge:PY_RDATA=PYTHON")
 
 // python.h should always be included first before any other includes
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "python\python.h"
 #include "..\..\cores\dllloader\dllloadercontainer.h"
 #include "../../GUIPassword.h"
@@ -132,7 +132,7 @@ void XBPython::Initialize()
     {
       //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
       m_hModule = dllLoadLibraryA(PYTHON_DLL);
-      DllLoader* pDll = g_dlls.GetModule(m_hModule);
+      DllLoader* pDll = DllLoaderContainer::GetModule(m_hModule);
       if (!pDll || !python_load_dll(*pDll))
       {
         CLog::Log(LOGFATAL, "Python: error loading python24.dll");
@@ -222,7 +222,7 @@ void XBPython::Finalize()
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     //dllFreeLibrary(m_hModule);
-    g_dlls.UnloadPythonDlls();
+    DllLoaderContainer::UnloadPythonDlls();
     m_hModule = NULL;
 
     m_bInitialized = false;

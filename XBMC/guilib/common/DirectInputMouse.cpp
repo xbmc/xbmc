@@ -138,6 +138,17 @@ void CMouse::Update()
   }
 }
 
+void CMouse::VirtualMove(char cX, char cY)
+{
+  cMickeyX = cX;
+  cMickeyY = cY;
+  posX += ((float)cMickeyX * m_fSpeedX); if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = (float)m_iMaxX;
+  posY += ((float)cMickeyY * m_fSpeedY); if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = (float)m_iMaxY;
+  // reset our activation timer
+  m_bActive = true;
+  dwLastActiveTime = timeGetTime();
+}
+
 void CMouse::SetResolution(int iXmax, int iYmax, float fXspeed, float fYspeed)
 {
   m_iMaxX = iXmax;
@@ -159,6 +170,12 @@ bool CMouse::IsActive() const
 void CMouse::SetInactive()
 {
   m_bActive = false;
+}
+
+void CMouse::SetActive(bool bActive)
+{
+  m_bActive = bActive;
+  dwLastActiveTime = timeGetTime();
 }
 
 bool CMouse::HasMoved() const

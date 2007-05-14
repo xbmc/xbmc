@@ -103,9 +103,9 @@ public:
   bool Freeze();
   bool UnFreeze();
 
-  bool CreateWindow(int width, int height);
-  ILinksBoksWindow *GetWindow();
-  bool CloseWindow();
+  bool CreateBrowserWindow(int width, int height);
+  ILinksBoksWindow *GetBrowserWindow();
+  bool CloseBrowserWindow();
 
   void EmptyCaches();
 

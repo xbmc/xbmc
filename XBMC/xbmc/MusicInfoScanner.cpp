@@ -250,14 +250,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
 int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory)
 {
-  int nFolderCount = items.GetFolderCount();
-  // Skip items with folders only
-  if (nFolderCount == items.Size())
-    return 0;
-
-  int nFileCount = items.Size() - nFolderCount;
-
-  CStdString strItem;
   CSongMap songsMap;
 
   // get all information for all files in current directory from database, and remove them
@@ -303,9 +295,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         song.iStartOffset = pItem->m_lStartOffset;
         song.iEndOffset = pItem->m_lEndOffset;
         if (dbSong)
-        {
+        { // keep the db-only fields intact on rescan...
           song.iTimesPlayed = dbSong->iTimesPlayed;
           song.lastPlayed = dbSong->lastPlayed;
+          if (song.rating == '0') song.rating = dbSong->rating;
         }
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();

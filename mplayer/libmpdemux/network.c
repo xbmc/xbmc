@@ -37,7 +37,7 @@
 #include "asf.h"
 #include "rtp.h"
 #include "pnm.h"
-#include "realrtsp/rtsp_session.h"
+#include "librtsp/rtsp_session.h"
 
 #include "version.h"
 
@@ -1285,7 +1285,11 @@ realrtsp_streaming_start( stream_t *stream ) {
 		mrl = malloc(sizeof(char)*(strlen(stream->streaming_ctrl->url->hostname)+strlen(file)+16));
 		sprintf(mrl,"rtsp://%s:%i/%s",stream->streaming_ctrl->url->hostname,port,file);
 		rtsp = rtsp_session_start(fd,&mrl, file,
-			stream->streaming_ctrl->url->hostname, port, &redirected);
+			stream->streaming_ctrl->url->hostname,
+			port, &redirected,
+			stream->streaming_ctrl->bandwidth,
+			stream->streaming_ctrl->url->username,
+			stream->streaming_ctrl->url->password);
 
 		if ( redirected == 1 ) {
 			url_free(stream->streaming_ctrl->url);

@@ -579,10 +579,8 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
 
   browser->m_useFileDirectories = useFileDirectories;
 
-  CStdString browseHeading;
-  browseHeading.Format(g_localizeStrings.Get(13401).c_str(), heading.c_str());
   browser->m_browsingForImages = useThumbs;
-  browser->SetHeading(browseHeading);
+  browser->SetHeading(heading);
   browser->SetShares(shares);
   CStdString strMask = mask;
   if (mask == "/")
@@ -598,6 +596,49 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
 
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = path;
+  browser->m_addNetworkShareEnabled = false;
+  browser->DoModal();
+  bool confirmed(browser->IsConfirmed());
+  if (confirmed)
+    path = browser->m_selectedPath;
+  m_gWindowManager.Remove(browser->GetID());
+  delete browser;
+  return confirmed;
+}
+
+// same as above, starting in a single directory
+bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
+{
+  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
+  if (!browser)
+    return false;
+  m_gWindowManager.AddUniqueInstance(browser);
+
+  browser->m_useFileDirectories = useFileDirectories;
+
+  // add a single share for this directory
+  VECSHARES shares;
+  CShare share;
+  share.strPath = directory;
+  CUtil::RemoveSlashAtEnd(share.strPath); // this is needed for the dodgy code in WINDOW_INIT
+  shares.push_back(share);
+  browser->m_browsingForImages = useThumbs;
+  browser->SetHeading(heading);
+  browser->SetShares(shares);
+  CStdString strMask = mask;
+  if (mask == "/")
+    browser->m_browsingForFolders=1;
+  else
+  if (mask == "/w")
+  {
+    browser->m_browsingForFolders=2;
+    strMask = "/";
+  }
+  else
+    browser->m_browsingForFolders = 0;
+
+  browser->m_rootDir.SetMask(strMask);
+  browser->m_selectedPath = directory;
   browser->m_addNetworkShareEnabled = false;
   browser->DoModal();
   bool confirmed(browser->IsConfirmed());

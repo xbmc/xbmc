@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "../util.h"
 
 #include "HDHomeRun.h"
@@ -111,6 +111,7 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
       label.Format("Current Stream: Channel %s, SNR %d", status.channel, status.signal_to_noise_quality);
 
     CFileItem* item = new CFileItem("hdhomerun://" + url.GetHostName() + "/" + url.GetFileName(), false);
+    CUtil::RemoveSlashAtEnd(item->m_strPath);
     item->SetLabel(label);
     item->SetLabelPreformated(true);
     items.Add(item);
@@ -151,14 +152,15 @@ bool CFileHomeRun::Open(const CURL &url, bool bBinary)
 
   m_dll.device_set_tuner_from_str(m_device, url.GetFileName().c_str());
 
-  CUrlOptions options(url.GetOptions());
+  CUrlOptions options(url.GetOptions().Mid(1));
   CUrlOptions::iterator it;
-  if( (it = options.find("program")) != options.end() )
-    m_dll.device_set_tuner_program(m_device, it->second.c_str());
 
   if( (it = options.find("channel")) != options.end() )
     m_dll.device_set_tuner_channel(m_device, it->second.c_str());
-  
+
+  if( (it = options.find("program")) != options.end() )
+    m_dll.device_set_tuner_program(m_device, it->second.c_str());
+
   // start streaming from selected device and tuner
   if( m_dll.device_stream_start(m_device) <= 0 )
     return false;
@@ -168,17 +170,27 @@ bool CFileHomeRun::Open(const CURL &url, bool bBinary)
 
 unsigned int CFileHomeRun::Read(void* lpBuf, __int64 uiBufSize)
 {
-  unsigned int datasize = (unsigned int)min(uiBufSize,UINT_MAX);
-  do 
+  unsigned int datasize;
+  // for now, let it it time out after 5 seconds,
+  // neither of the players can be forced to 
+  // continue even if read return 0 as can happen
+  // on live streams.
+  DWORD timestamp = GetTickCount() + 5000;
+  while(1) 
   {
+    datasize = (unsigned int)min(uiBufSize,UINT_MAX);
     uint8_t* ptr = m_dll.device_stream_recv(m_device, datasize, &datasize);
-    if(!ptr)
+    if(ptr)
     {
-      Sleep(64);
-      continue;
+      memcpy(lpBuf, ptr, datasize);
+      return datasize;
     }
-  } while(0);
 
+    if(GetTickCount() > timestamp)
+      return 0;
+
+    Sleep(64);
+  }
   return datasize;
 }
 

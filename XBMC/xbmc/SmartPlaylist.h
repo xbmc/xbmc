@@ -4,9 +4,6 @@
 #include "tinyxml/tinyxml.h"
 #include <vector>
 
-namespace PLAYLIST
-{
-
 class CSmartPlaylistRule
 {
 public:
@@ -24,10 +21,14 @@ public:
                         SONG_FILENAME,
                         SONG_PLAYCOUNT,
                         SONG_LASTPLAYED,
-                        FIELD_RANDOM,
-                        FIELD_PLAYLIST };
+                        SONG_RATING,
+                        SONG_COMMENT,
+                        FIELD_PLAYLIST,
+                        FIELD_RANDOM
+                      };
 
-  enum SEARCH_OPERATOR { OPERATOR_CONTAINS = 1,
+  enum SEARCH_OPERATOR { OPERATOR_START = 0,
+                         OPERATOR_CONTAINS,
                          OPERATOR_DOES_NOT_CONTAIN,
                          OPERATOR_EQUALS,
                          OPERATOR_DOES_NOT_EQUAL,
@@ -35,14 +36,23 @@ public:
                          OPERATOR_ENDS_WITH,
                          OPERATOR_GREATER_THAN,
                          OPERATOR_LESS_THAN,
+                         OPERATOR_AFTER,
+                         OPERATOR_BEFORE,
                          OPERATOR_IN_THE_LAST,
-                         OPERATOR_NOT_IN_THE_LAST };
+                         OPERATOR_NOT_IN_THE_LAST,
+                         OPERATOR_END
+                       };
 
   CStdString GetWhereClause();
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
   static CStdString     TranslateField(DATABASE_FIELD field);
   static CStdString     GetDatabaseField(DATABASE_FIELD field);
+  static CStdString     TranslateOperator(SEARCH_OPERATOR oper);
+
+  static CStdString     GetLocalizedField(DATABASE_FIELD field);
+  static CStdString     GetLocalizedOperator(SEARCH_OPERATOR oper);
+  CStdString            GetLocalizedRule();
 
   TiXmlElement GetAsElement();
 
@@ -51,7 +61,6 @@ public:
   CStdString         m_parameter;
 private:
   SEARCH_OPERATOR    TranslateOperator(const char *oper);
-  CStdString         TranslateOperator(SEARCH_OPERATOR oper);
 };
 
 class CSmartPlaylist
@@ -67,11 +76,27 @@ public:
   void SetName(const CStdString &name);
   const CStdString& GetName() const { return m_playlistName; };
 
+  void SetMatchAllRules(bool matchAll) { m_matchAllRules = matchAll; };
+  bool GetMatchAllRules() const { return m_matchAllRules; };
+
+  void SetLimit(unsigned int limit) { m_limit = limit; };
+  unsigned int GetLimit() const { return m_limit; };
+
+  void SetOrder(CSmartPlaylistRule::DATABASE_FIELD order) { m_orderField = order; };
+  CSmartPlaylistRule::DATABASE_FIELD GetOrder() const { return m_orderField; };
+
+  void SetOrderAscending(bool orderAscending) { m_orderAscending = orderAscending; };
+  bool GetOrderAscending() const { return m_orderAscending; };
+
   void AddRule(const CSmartPlaylistRule &rule);
   CStdString GetWhereClause(bool needWhere = true);
   CStdString GetOrderClause();
 
+  const vector<CSmartPlaylistRule> &GetRules() const;
+
 private:
+  friend class CGUIDialogSmartPlaylistEditor;
+
   vector<CSmartPlaylistRule> m_playlistRules;
   CStdString m_playlistName;
   bool m_matchAllRules;
@@ -82,5 +107,3 @@ private:
 
   TiXmlDocument m_xmlDoc;
 };
-
-}

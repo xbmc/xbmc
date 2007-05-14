@@ -350,7 +350,7 @@
       <left>SkipPrevious</left>
       <right>SkipNext</right>
       <up>IncreaseRating</up>
-      <down>PreviousPreset</down>
+      <down>DecreaseRating</down>
       <!--<back>NextPreset</back>!-->
       <s>ShowPreset</s>
       <l>LockPreset</l>
@@ -696,6 +696,7 @@
 
     <keyboard>
       <delete>Delete</delete>
+      <space>Playlist</space>
     </keyboard>
   </MyVideoLibrary>
 
@@ -814,7 +815,7 @@
 
   <Scripts>
     <gamepad>
-      <white>XBMC.ActivateWindow(ScriptsDebugInfo)</white>
+      <black>XBMC.ActivateWindow(ScriptsDebugInfo)</black>
     </gamepad>
 
     <remote>

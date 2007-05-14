@@ -12,7 +12,7 @@ public:
   virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse();
+  virtual bool OnMouse(const CPoint &point);
   virtual void Render();
 protected:
   DWORD m_dwInitTimer;

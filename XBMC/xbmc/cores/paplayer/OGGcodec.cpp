@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "OGGCodec.h"
 #include "../../oggtag.h"
 #include "../../Util.h"
@@ -46,8 +46,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
     //  so extract it
     CStdString strPath=strFile;
     CUtil::GetDirectory(strPath, strFile);
-    if (CUtil::HasSlashAtEnd(strFile))
-      strFile.Delete(strFile.size()-1);
+    CUtil::RemoveSlashAtEnd(strFile); // we want the filename
   }
 
   //  Open the file to play

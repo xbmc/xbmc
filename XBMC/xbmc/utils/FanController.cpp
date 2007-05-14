@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include <ConIo.h>
 #include "FanController.h"
 #include "../xbox/undocumented.h"

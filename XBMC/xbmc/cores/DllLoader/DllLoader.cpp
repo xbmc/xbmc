@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
@@ -14,7 +14,6 @@ typedef struct _UNICODE_STRING {
   PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
 #endif
-#include <io.h>
 #include "../../utils/win32exception.h"
 
 #define DLL_PROCESS_DETACH   0
@@ -24,7 +23,7 @@ typedef struct _UNICODE_STRING {
 #define DLL_PROCESS_VERIFIER 4
 
 // uncomment this to enable symbol loading for dlls
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(_XBOX) && defined(WITH_LINKS_BROWSER)
 #define ENABLE_SYMBOL_LOADING 1
 #endif
 
@@ -141,12 +140,12 @@ LPVOID GetXbdmBaseAddress()
 #endif
 
 //  Entry point of a dll (DllMain)
-typedef BOOL APIENTRY EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
+typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 // is it really needed?
 void* fs_seg = NULL;
 
-DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols)
+DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exports)
 {
   ImportDirTable = 0;
   m_sFileName = strdup(sDll);
@@ -164,6 +163,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
 
   m_iRefCount = 1;
   m_pExportHead = NULL;
+  m_pStaticExports = exports;
   m_bTrack = bTrack;
   m_bSystemDll = bSystemDll;
   m_pDlls = NULL;
@@ -184,7 +184,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   }
 #endif
 
-  if (!m_bSystemDll) g_dlls.RegisterDll(this);
+  DllLoaderContainer::RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);
   m_bLoadSymbols=bLoadSymbols;
 
@@ -206,21 +206,24 @@ DllLoader::~DllLoader()
 {
   while (m_pExportHead)
   {
-    Export* pExport = m_pExportHead;
-    m_pExportHead = pExport->pNext;
-    
-    free(pExport);
+    ExportEntry* entry = m_pExportHead;
+    m_pExportHead = entry->next;
+
+    free(entry);
   }
 
   while (m_pDlls)
   {
     LoadedList* entry = m_pDlls;
     m_pDlls = entry->pNext;
-    if (entry->pDll) g_dlls.ReleaseModule(entry->pDll);
+    if (entry->pDll) DllLoaderContainer::ReleaseModule(entry->pDll);
     delete entry;
   }
   
-  if (!m_bSystemDll) g_dlls.UnRegisterDll(this);
+  // can't unload a system dll, as this might be happing during xbmc destruction
+  if(!m_bSystemDll)
+    DllLoaderContainer::UnRegisterDll(this);
+
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
@@ -430,7 +433,7 @@ int DllLoader::ResolveImports(void)
 
 char* DllLoader::ResolveReferencedDll(char* dll)
 {
-  DllLoader* pDll = g_dlls.LoadModule(dll, GetPath(), m_bLoadSymbols);
+  DllLoader* pDll = DllLoaderContainer::LoadModule(dll, GetPath(), m_bLoadSymbols);
 
   if (!pDll)
   {
@@ -521,37 +524,61 @@ int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
 
 Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
 {
-  Export* pExport = m_pExportHead;
+  ExportEntry* entry = m_pExportHead;
   
-  while (pExport)
+  while (entry)
   {
-    if (ordinal == pExport->ordinal)
+    if (ordinal == entry->exp.ordinal)
     {
-      return pExport;
+      return &entry->exp;
     }
-    pExport = pExport->pNext;
+    entry = entry->next;
   }
+
+  if( m_pStaticExports )
+  {
+    Export* exp = m_pStaticExports;
+    while(exp->function || exp->track_function)
+    {
+      if (ordinal == exp->ordinal)
+        return exp;
+      exp++;
+    }
+  }
+
   return NULL;
 }
 
 Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
 {
-  Export* pExport = m_pExportHead;
+  ExportEntry* entry = m_pExportHead;
   
-  while (pExport)
+  while (entry)
   {
-    if (pExport->sFunctionName && strcmp(sFunctionName, pExport->sFunctionName) == 0)
+    if (entry->exp.name && strcmp(sFunctionName, entry->exp.name) == 0)
     {
-      return pExport;
+      return &entry->exp;
     }
-    pExport = pExport->pNext;
+    entry = entry->next;
   }
+
+  if( m_pStaticExports )
+  {
+    Export* exp = m_pStaticExports;
+    while(exp->function || exp->track_function)
+    {
+      if (exp->name && strcmp(sFunctionName, exp->name) == 0)
+        return exp;
+      exp++;
+    }
+  }
+
   return NULL;
 }
   
 int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 {
-  DllLoader* pDll = g_dlls.GetModule(sName);
+  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -572,7 +599,7 @@ int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 
 int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 {
-  DllLoader* pDll = g_dlls.GetModule(sName);
+  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -627,46 +654,44 @@ int DllLoader::DecrRef()
 
 void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
-  int len = sizeof(Export);
-
-  Export* pExport = (Export*)malloc(len);
-  pExport->function = function;
-  pExport->ordinal = ordinal;
-  pExport->track_function = track_function;
-  pExport->sFunctionName = NULL;
+  ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = ordinal;
+  entry->exp.track_function = track_function;
+  entry->exp.name = NULL;
   
-  pExport->pNext = m_pExportHead;
-  m_pExportHead = pExport;
+  entry->next = m_pExportHead;
+  m_pExportHead = entry;
 }
 
 void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function)
 {
-  int len = sizeof(Export);
+  int len = sizeof(ExportEntry);
 
-  Export* pExport = (Export*)malloc(len + strlen(sFunctionName) + 1);
-  pExport->function = function;
-  pExport->ordinal = ordinal;
-  pExport->track_function = track_function;
-  pExport->sFunctionName = ((char*)(pExport)) + len;
-  strcpy(pExport->sFunctionName, sFunctionName);
+  ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = ordinal;
+  entry->exp.track_function = track_function;
+  entry->exp.name = ((char*)(entry)) + len;
+  strcpy((char*)entry->exp.name, sFunctionName);
   
-  pExport->pNext = m_pExportHead;
-  m_pExportHead = pExport;
+  entry->next = m_pExportHead;
+  m_pExportHead = entry;
 }
 
 void DllLoader::AddExport(char* sFunctionName, unsigned long function, void* track_function)
 {
-  int len = sizeof(Export);
+  int len = sizeof(ExportEntry);
 
-  Export* pExport = (Export*)malloc(len + strlen(sFunctionName) + 1);
-  pExport->function = function;
-  pExport->ordinal = -1;
-  pExport->track_function = track_function;
-  pExport->sFunctionName = ((char*)(pExport)) + len;
-  strcpy(pExport->sFunctionName, sFunctionName);
+  ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
+  entry->exp.function = (void*)function;
+  entry->exp.ordinal = -1;
+  entry->exp.track_function = track_function;
+  entry->exp.name = ((char*)(entry)) + len;
+  strcpy((char*)entry->exp.name, sFunctionName);
   
-  pExport->pNext = m_pExportHead;
-  m_pExportHead = pExport;
+  entry->next = m_pExportHead;
+  m_pExportHead = entry;
 }
 
 bool DllLoader::Load()
@@ -743,11 +768,11 @@ bool DllLoader::Load()
   
   if(EntryAddress)
   {
-    EntryFunc* initdll = (EntryFunc *)EntryAddress;
+    EntryFunc initdll = (EntryFunc)EntryAddress;
     /* since we are handing execution over to unknown code, safeguard here */
     try 
     {
-      (*initdll)((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+      initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
       CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
@@ -762,7 +787,16 @@ bool DllLoader::Load()
     catch(...)
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
-      return false;
+
+      // vp7vfw.dll throws a CUserException due to a missing export
+      // but the export isn't really needed for normal operation
+      // and dll works anyway, so let's ignore it
+
+      if(stricmp(GetName(), "vp7vfw.dll") != 0)
+        return false;
+
+
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Ignoring exception during DLL_PROCESS_ATTACH");
     }
 
     // init function may have fixed up the export table
@@ -784,8 +818,8 @@ void DllLoader::Unload()
     //call "DllMain" with DLL_PROCESS_DETACH
     if(EntryAddress)
     {
-      EntryFunc* initdll = (EntryFunc *)EntryAddress;
-      (*initdll)((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
+      EntryFunc initdll = (EntryFunc)EntryAddress;
+      initdll((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
     }
 
 #ifdef LOGALL

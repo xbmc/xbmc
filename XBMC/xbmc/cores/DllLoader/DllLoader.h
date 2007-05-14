@@ -9,15 +9,20 @@
 
 class DllLoader;
 
-typedef struct _Export
+
+typedef struct Export
 {
-  char* sFunctionName;
-  unsigned long function;
-  void* track_function;
+  const char*   name;
   unsigned long ordinal;
-  
-  struct _Export* pNext; // saves a bit of memory if we don't create a List Element
+  void*         function;
+  void*         track_function;
 } Export;
+
+typedef struct ExportEntry
+{
+  Export exp;
+  ExportEntry* next;
+} ExportEntry;
 
 typedef struct _LoadedList
 {
@@ -28,7 +33,7 @@ typedef struct _LoadedList
 class DllLoader : public CoffLoader
 {
 public:
-  DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false);
+  DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
   ~DllLoader();
 
   bool Load();
@@ -53,6 +58,7 @@ public:
   void AddExport(unsigned long ordinal, unsigned long function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long function, void* track_function = NULL);
+  void SetExports(Export* exports) { m_pStaticExports = exports; }
 
 private:
   // Just pointers; dont' delete...
@@ -65,7 +71,8 @@ private:
   bool m_bSystemDll; // true if this dll should not be removed
   bool m_bLoadSymbols; // when true this dll should not be removed
   bool m_bUnloadSymbols;
-  Export* m_pExportHead;
+  ExportEntry* m_pExportHead;
+  Export* m_pStaticExports;
   LoadedList* m_pDlls;
 
   void PrintImportLookupTable(unsigned long ImportLookupTable_RVA);

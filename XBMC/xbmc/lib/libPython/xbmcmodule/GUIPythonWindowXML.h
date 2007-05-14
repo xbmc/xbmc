@@ -11,9 +11,10 @@ class CGUIPythonWindowXML : public CGUIWindow
 public:
   CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
   virtual ~CGUIPythonWindowXML(void);
-  virtual bool   OnMessage(CGUIMessage& message);
-  virtual bool   OnAction(const CAction &action);
-  virtual void   Render();
+  virtual bool    OnMessage(CGUIMessage& message);
+  virtual bool    OnAction(const CAction &action);
+  virtual void    AllocResources(bool forceLoad = false);
+  virtual void    Render();
   void            WaitForActionEvent(DWORD timeout);
   void            PulseActionEvent();
   void            UpdateFileList();
@@ -36,7 +37,8 @@ protected:
   PyObject*        pCallbackWindow;
   HANDLE           m_actionEvent;
   bool             m_bRunning;
-  string           m_fallbackPath;
+  CStdString       m_fallbackPath;
+  CStdString       m_backupMediaDir;
   CGUIViewControl  m_viewControl;
   auto_ptr<CGUIViewState> m_guiState;
   CFileItemList    m_vecItems;

@@ -45,6 +45,11 @@
 #define opendir			xbox_opendir
 #define readdir			xbox_readdir
 #define closedir		xbox_closedir
+/*#undef FD_SET
+#define FD_SET(fd, set) xbox_set_fd_to_fdset((fd), (set)) */
+/*#undef FD_ISSET
+#define FD_ISSET(fd, set) ((xbox_get_fd_type(xbox_get_fd_type == FD_TYPE_SOCKET)) ? __WSAFDIsSet((SOCKET)(xbox_get_socket(fd)), (fd_set FAR *)(set)) : -1) //dirty
+*/
 
 #define getenv(x)		NULL
 
@@ -143,6 +148,7 @@ int xbox_bind(int sockfd, struct sockaddr *my_addr, int addrlen);
 int xbox_fcntl(int fd, int cmd, long arg);
 int xbox_getsockname(int s, struct sockaddr *name, int *namelen);
 int xbox_accept(int sock, struct sockaddr *adresse, int *longueur);
+void xbox_set_fd_to_fdset(int fd, fd_set FAR *set);
 int xbox_select(int n, struct fd_set *rd, struct fd_set *wr, struct fd_set *exc, struct timeval *tm);
 
 int sleep( int nb_sec );

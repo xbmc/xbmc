@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "SIDCodec.h"
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
@@ -40,8 +40,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
     //  so extract it
     CStdString strPath=strFile;
     CUtil::GetDirectory(strPath, strFileToLoad);
-    if (CUtil::HasSlashAtEnd(strFileToLoad))
-      strFileToLoad.Delete(strFileToLoad.size()-1);
+    CUtil::RemoveSlashAtEnd(strFileToLoad); // we want the filename
   }
   
   m_sid = m_dll.LoadSID(strFileToLoad.c_str());

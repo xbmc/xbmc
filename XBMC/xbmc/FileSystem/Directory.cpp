@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "directory.h"
 #include "factorydirectory.h"
 #include "factoryfiledirectory.h"
@@ -18,11 +18,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try 
   {
-    CStdString translatedPath(strPath);
-    if (strPath.Left(10) == "special://")
-    { // need to translate this special folder
-      translatedPath = CUtil::TranslateSpecialPath(strPath);
-    }
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (!pDirectory.get()) return false;
 
@@ -75,9 +72,10 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
-      if(pDirectory->Create(strPath.c_str()))
+      if(pDirectory->Create(translatedPath.c_str()))
         return true;
   }
   catch (const win32_exception &e) 
@@ -96,9 +94,10 @@ bool CDirectory::Exists(const CStdString& strPath)
 {
   try
   {
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
-      return pDirectory->Exists(strPath.c_str());
+      return pDirectory->Exists(translatedPath.c_str());
   }
   catch (const win32_exception &e) 
   {
@@ -116,9 +115,10 @@ bool CDirectory::Remove(const CStdString& strPath)
 {
   try
   {
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
-      if(pDirectory->Remove(strPath.c_str()))
+      if(pDirectory->Remove(translatedPath.c_str()))
         return true;
   }
   catch (const win32_exception &e) 

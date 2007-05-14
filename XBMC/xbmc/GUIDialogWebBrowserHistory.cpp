@@ -52,8 +52,8 @@ bool CGUIDialogWebBrowserHistory::OnMessage(CGUIMessage &message)
         {
           CFileItem *pItem = m_vecHistory[pList->GetSelectedItem()];
 
-          if (pItem->m_strPath && g_browserManager.isRunning() && g_browserManager.GetWindow())
-			  g_browserManager.GetWindow()->GoToURL((unsigned char *)pItem->m_strPath.c_str());
+          if (pItem->m_strPath && g_browserManager.isRunning() && g_browserManager.GetBrowserWindow())
+			  g_browserManager.GetBrowserWindow()->GoToURL((unsigned char *)pItem->m_strPath.c_str());
         }
         return true;
       }

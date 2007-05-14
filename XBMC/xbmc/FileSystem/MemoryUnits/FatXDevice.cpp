@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "FatXDevice.h"
 #include "../../xbox/Undocumented.h"
 

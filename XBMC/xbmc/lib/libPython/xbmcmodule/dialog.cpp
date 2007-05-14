@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "dialog.h"
 #include "..\python\python.h"
 #include "pyutil.h"
@@ -346,14 +346,12 @@ namespace PYXBMC
     CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
-    g_graphicsContext.Lock();
     pDialog->SetHeading(utf8Line[0]);
 
     for (int i = 1; i < 4; i++)
       pDialog->SetLine(i - 1,utf8Line[i]);
 
     pDialog->StartModal();
-    g_graphicsContext.Unlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -389,7 +387,6 @@ namespace PYXBMC
     CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
-    g_graphicsContext.Lock();
     if (percentage >= 0 && percentage <= 100)
     {
       pDialog->SetPercentage(percentage);
@@ -404,7 +401,6 @@ namespace PYXBMC
       if (unicodeLine[i])
         pDialog->SetLine(i,utf8Line[i]);
     }
-    g_graphicsContext.Unlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -422,9 +418,7 @@ namespace PYXBMC
     CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
-    g_graphicsContext.Lock();
     canceled = pDialog->IsCanceled();
-    g_graphicsContext.Unlock();
 
     return Py_BuildValue("b", canceled);
   }
@@ -441,9 +435,7 @@ namespace PYXBMC
     CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
-    g_graphicsContext.Lock();
     pDialog->Close();
-    g_graphicsContext.Unlock();
 
     Py_INCREF(Py_None);
     return Py_None;

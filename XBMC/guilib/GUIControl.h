@@ -55,6 +55,57 @@ public:
   int m_data;
 };
 
+class CPoint
+{
+public:
+  CPoint()
+  {
+    x = 0; y = 0;
+  };
+
+  CPoint(float a, float b)
+  {
+    x = a;
+    y = b;
+  };
+
+  CPoint operator+(const CPoint &point) const
+  {
+    CPoint ans;
+    ans.x = x + point.x;
+    ans.y = y + point.y;
+    return ans;
+  };
+
+  CPoint operator-(const CPoint &point) const
+  {
+    CPoint ans;
+    ans.x = x - point.x;
+    ans.y = y - point.y;
+    return ans;
+  };
+
+  float x, y;
+};
+
+class CRect
+{
+public:
+  CRect() { x = y = w = h = 0;};
+  CRect(float left, float top, float width, float height) { x = left; y = top; w = width; h = height; };
+
+  void SetRect(float left, float top, float width, float height) { x = left; y = top; w = width; h = height; };
+
+  bool PtInRect(const CPoint &point) const
+  {
+    if (x <= point.x && point.x <= x + w && y <= point.y && point.y <= y + h)
+      return true;
+    return false;
+  };
+
+  float x, y, w, h;
+};
+
 /*!
  \ingroup controls
  \brief Base class for controls
@@ -84,18 +135,21 @@ public:
   virtual void OnFocus() {};
 
   /// \brief Called when the mouse is over the control.  Default implementation selects the control.
-  virtual bool OnMouseOver();
+  virtual bool OnMouseOver(const CPoint &point);
   /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
-  virtual bool OnMouseDrag() { return false; };
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseClick(DWORD dwButton) { return false; };
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseDoubleClick(DWORD dwButton) { return false; };
+  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point) { return false; };
   /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
-  virtual bool OnMouseWheel() { return false; };
+  virtual bool OnMouseWheel(char wheel, const CPoint &point) { return false; };
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
-  virtual bool HitTest(float posX, float posY) const;
-  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
+  virtual bool HitTest(const CPoint &point) const;
+  /// \brief Focus a control from a screen location.  Returns the coordinates of the screen location relative to the control and a pointer to the control.
+  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  /// \brief Unfocus a control if it's not in a screen location.
+  virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual bool OnMessage(CGUIMessage& message);
   DWORD GetID(void) const;
@@ -129,7 +183,7 @@ public:
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   const CGUIControl *GetParentControl() const { return m_parentControl; };
 //#endif
-  virtual void SetFocus(bool bOnOff);
+  virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible);

@@ -80,4 +80,8 @@ struct SSortFileItem
   // Sort by Production Code
   static bool ProductionCodeAscending(CFileItem *left, CFileItem *right);
   static bool ProductionCodeDescending(CFileItem *left, CFileItem *right);
+
+  // Sort by Song Rating (0 -> 5)
+  static bool SongRatingAscending(CFileItem *left, CFileItem *right);
+  static bool SongRatingDescending(CFileItem *left, CFileItem *right);
 };

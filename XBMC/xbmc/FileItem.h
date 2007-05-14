@@ -35,6 +35,7 @@ typedef enum {
   SORT_METHOD_EPISODE,
   SORT_METHOD_VIDEO_TITLE,
   SORT_METHOD_PRODUCTIONCODE,
+  SORT_METHOD_SONG_RATING,
   SORT_METHOD_MAX
 } SORT_METHOD;
 
@@ -312,13 +313,12 @@ public:
   void FilterCueItems();
   void RemoveExtensions();
   void CleanFileNames();
-  bool HasFileNoCase(CStdString& path);
   void SetFastLookup(bool fastLookup);
-  bool Contains(CStdString& fileName);
+  bool Contains(const CStdString& fileName);
   bool GetFastLookup() { return m_fastLookup; };
   void Stack();
-  SORT_ORDER GetSortOrder() { return m_sortOrder; }
-  SORT_METHOD GetSortMethod() { return m_sortMethod; }
+  SORT_ORDER GetSortOrder() const { return m_sortOrder; }
+  SORT_METHOD GetSortMethod() const { return m_sortMethod; }
   bool Load();
   bool Save();
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
@@ -334,6 +334,8 @@ public:
   void SetGameSavesThumbs();
 
   void Swap(unsigned int item1, unsigned int item2);
+
+  void UpdateItem(const CFileItem *item);
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   CStdString GetDiscCacheFile();

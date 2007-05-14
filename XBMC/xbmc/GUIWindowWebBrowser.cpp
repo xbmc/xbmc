@@ -49,7 +49,7 @@ CGUIWindowWebBrowser::~CGUIWindowWebBrowser(void)
 bool CGUIWindowWebBrowser::OnAction(const CAction &action)
 {
   CGUIWebBrowserControl *pControl = (CGUIWebBrowserControl *)GetControl(CONTROL_WEBBROWSER);
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
 
   switch(action.wID)
   {
@@ -151,7 +151,7 @@ void CGUIWindowWebBrowser::AllocResources(bool forceLoad)
   if (pControl) pControl->m_bKeepSession = TRUE;
 
   // Now go to the "initial" URL if we were provided one...
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (pLB && m_strInitialURL != "")
     pLB->GoToURL((unsigned char *)m_strInitialURL.c_str());
 }

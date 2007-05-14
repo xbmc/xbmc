@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\python\python.h"
 #include "GuiImage.h"
 #include "control.h"
@@ -88,7 +88,7 @@ namespace PYXBMC
 
   PyObject* ControlImage_SetImage(ControlImage *self, PyObject *args)
   {
-    char *cImage;
+    char *cImage = NULL;
     char *cColorKey = NULL;
 
     if (!PyArg_ParseTuple(args, "s|s", &cImage, &cColorKey)) return NULL;

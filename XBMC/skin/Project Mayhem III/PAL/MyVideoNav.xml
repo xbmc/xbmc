@@ -42,7 +42,7 @@
 			<posx>207</posx>
 			<posy>43</posy>
 			<align>left</align>
-			<label>$LOCALIZE[651]</label>
+			<label>$LOCALIZE[20314]</label>
 			<font>special13</font>
 			<visible>!container.hasthumb + !container.content(tvshows)  + !container.content(movies)</visible>
 		</control>
@@ -51,7 +51,7 @@
 			<posx>207</posx>
 			<posy>43</posy>
 			<align>left</align>
-			<label>$LOCALIZE[651] - $LOCALIZE[20343]</label>
+			<label>$LOCALIZE[20314] - $LOCALIZE[20343]</label>
 			<font>special13</font>
 			<visible>!container.hasthumb + container.content(tvshows)</visible>
 		</control>
@@ -60,7 +60,7 @@
 			<posx>207</posx>
 			<posy>43</posy>
 			<align>left</align>
-			<label>$LOCALIZE[651] - $LOCALIZE[342]</label>
+			<label>$LOCALIZE[20314] - $LOCALIZE[342]</label>
 			<font>special13</font>
 			<visible>!container.hasthumb + container.content(movies)</visible>
 		</control>

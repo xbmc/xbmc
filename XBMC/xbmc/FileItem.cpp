@@ -1090,8 +1090,15 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       str = m_dateTime.GetAsLocalizedDate();
     }
     else if (strMask[iPos2 + 1] == 'R')
-    { // movie rating
-      str.Format("%2.2f", m_fRating);
+    {
+      if (tag && tag->GetRating() != '0') // We will probably remove this and replace with infoimages
+      { // non-zero song rating
+        str = tag->GetRating();
+      }
+      else if (movie)
+      { // movie rating
+        str.Format("%2.2f", m_fRating);
+      }
     }
     else if (strMask[iPos2 + 1] == 'C')
     { // programs count
@@ -1250,7 +1257,8 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     for (unsigned int i=0; i < m_items.size(); i++)
     {
       CFileItem *pItem = m_items[i];
-      m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+      CStdString path(pItem->m_strPath); path.ToLower();
+      m_map.insert(MAPFILEITEMSPAIR(path, pItem));
     }
   }
   if (!fastLookup && m_fastLookup)
@@ -1258,15 +1266,17 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(CStdString& fileName)
+bool CFileItemList::Contains(const CStdString& fileName)
 {
+  // checks case insensitive
+  CStdString checkPath(fileName); checkPath.ToLower();
   if (m_fastLookup)
-    return m_map.find(fileName) != m_map.end();
+    return m_map.find(checkPath) != m_map.end();
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
-    if (pItem->m_strPath == fileName)
+    if (pItem->m_strPath.Equals(checkPath))
       return true;
   }
   return false;
@@ -1309,14 +1319,20 @@ void CFileItemList::Add(CFileItem* pItem)
 {
   m_items.push_back(pItem);
   if (m_fastLookup)
-    m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+  {
+    CStdString path(pItem->m_strPath); path.ToLower();
+    m_map.insert(MAPFILEITEMSPAIR(path, pItem));
+  }
 }
 
 void CFileItemList::AddFront(CFileItem* pItem)
 {
   m_items.insert(m_items.begin(), pItem);
   if (m_fastLookup)
-    m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+  {
+    CStdString path(pItem->m_strPath); path.ToLower();
+    m_map.insert(MAPFILEITEMSPAIR(path, pItem));
+  }
 }
 
 void CFileItemList::Remove(CFileItem* pItem)
@@ -1327,7 +1343,10 @@ void CFileItemList::Remove(CFileItem* pItem)
     {
       m_items.erase(it);
       if (m_fastLookup)
-        m_map.erase(pItem->m_strPath);
+      {
+        CStdString path(pItem->m_strPath); path.ToLower();
+        m_map.erase(path);
+      }
       break;
     }
   }
@@ -1339,7 +1358,10 @@ void CFileItemList::Remove(int iItem)
   {
     CFileItem* pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
-      m_map.erase(pItem->m_strPath);
+    {
+      CStdString path(pItem->m_strPath); path.ToLower();
+      m_map.erase(path);
+    }
     delete pItem;
     m_items.erase(m_items.begin() + iItem);
   }
@@ -1382,9 +1404,10 @@ const CFileItem* CFileItemList::Get(int iItem) const
 
 CFileItem* CFileItemList::Get(const CStdString& strPath)
 {
+  CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
-    IMAPFILEITEMS it=m_map.find(strPath);
+    IMAPFILEITEMS it=m_map.find(pathToCheck);
     if (it != m_map.end())
       return it->second;
 
@@ -1394,7 +1417,7 @@ CFileItem* CFileItemList::Get(const CStdString& strPath)
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
-    if (pItem->m_strPath == strPath)
+    if (pItem->m_strPath.Equals(pathToCheck))
       return pItem;
   }
 
@@ -1403,9 +1426,10 @@ CFileItem* CFileItemList::Get(const CStdString& strPath)
 
 const CFileItem* CFileItemList::Get(const CStdString& strPath) const
 {
+  CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
-    map<CStdString, CFileItem*>::const_iterator it=m_map.find(strPath);
+    map<CStdString, CFileItem*>::const_iterator it=m_map.find(pathToCheck);
     if (it != m_map.end())
       return it->second;
 
@@ -1415,7 +1439,7 @@ const CFileItem* CFileItemList::Get(const CStdString& strPath) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
-    if (pItem->m_strPath == strPath)
+    if (pItem->m_strPath.Equals(pathToCheck))
       return pItem;
   }
 
@@ -1514,6 +1538,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_PLAYLIST_ORDER:
     // TODO: Playlist order is hacked into program count variable (not nice, but ok until 2.0)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::ProgramCountAscending : SSortFileItem::ProgramCountDescending);
+    break;
+  case SORT_METHOD_SONG_RATING:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongRatingAscending : SSortFileItem::SongRatingDescending);
     break;
   default:
     break;
@@ -1661,23 +1688,6 @@ int CFileItemList::GetSelectedCount() const
   return count;
 }
 
-// Checks through our file list for the path specified in path.
-// Check is done case-insensitive
-bool CFileItemList::HasFileNoCase(CStdString& path)
-{
-  bool bFound = false;
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    if (stricmp(m_items[i]->m_strPath.c_str(), path) == 0)
-    {
-      bFound = true;
-      path = m_items[i]->m_strPath;
-      break;
-    }
-  }
-  return bFound;
-}
-
 void CFileItemList::FilterCueItems()
 {
   // Handle .CUE sheet files...
@@ -1701,7 +1711,7 @@ void CFileItemList::FilterCueItems()
           if (!bFoundMediaFile)
           {
             // try file in same dir, not matching case...
-            if (HasFileNoCase(strMediaFile))
+            if (Contains(strMediaFile))
             {
               bFoundMediaFile = true;
             }
@@ -1711,7 +1721,7 @@ void CFileItemList::FilterCueItems()
               strMediaFile = pItem->m_strPath;
               CUtil::RemoveExtension(strMediaFile);
               CFileItem item(strMediaFile, false);
-              if (item.IsAudio() && HasFileNoCase(strMediaFile))
+              if (item.IsAudio() && Contains(strMediaFile))
               {
                 bFoundMediaFile = true;
               }
@@ -1723,7 +1733,7 @@ void CFileItemList::FilterCueItems()
                 {
                   CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
                   CFileItem item(strMediaFile, false);
-                  if (!item.IsCUESheet() && !item.IsPlayList() && HasFileNoCase(strMediaFile))
+                  if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
                   {
                     bFoundMediaFile = true;
                     break;
@@ -2118,10 +2128,9 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   if (!m_bIsFolder)
     CUtil::GetDirectory(m_strPath, strPath);
   else
-  {
     strPath = m_strPath;
-    CUtil::RemoveSlashAtEnd(strPath);
-  }
+  // music thumbs are cached without slash at end
+  CUtil::RemoveSlashAtEnd(strPath);
 
   // look if an album thumb is available,
   // could be any file with tags loaded or
@@ -2373,11 +2382,9 @@ CStdString CFileItem::GetCachedProgramThumb()
 
 CStdString CFileItem::GetCachedGameSaveThumb()
 {
-  CStdString strExt;
-  CStdString fileName, filePath;
-  CUtil::Split(m_strPath, filePath, fileName);
-  CUtil::GetExtension(fileName,strExt);
-  if (strExt.Equals(".xbx")) // savemeta.xbx - cache thumb
+  CStdString extension;
+  CUtil::GetExtension(m_strPath,extension);
+  if (extension.Equals(".xbx")) // savemeta.xbx - cache thumb
   {
     Crc32 crc;
     crc.ComputeFromLowerCase(m_strPath);
@@ -2403,34 +2410,36 @@ CStdString CFileItem::GetCachedGameSaveThumb()
     }
     return thumb;
   }
-  else
+  else if (CDirectory::Exists(m_strPath))
   {
-    if (CDirectory::Exists(m_strPath))
+    // get the save game id
+    CStdString fullPath(m_strPath);
+    CUtil::RemoveSlashAtEnd(fullPath);
+    CStdString fileName(CUtil::GetFileName(fullPath));
+
+    CStdString thumb;
+    thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
+    CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
+    if (!CFile::Exists(thumb))
     {
-      CStdString thumb;
-      thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
-      CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
-      if (!CFile::Exists(thumb))
+      CStdString titleimageXBX;
+      CStdString saveimageXBX;
+
+      CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
+      CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
+
+      /*if (CFile::Exists(saveimageXBX))
       {
-        CStdString titleimageXBX;
-        CStdString saveimageXBX;
-
-        CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
-        CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
-
-        /*if (CFile::Exists(saveimageXBX))
-        {
-          CUtil::CacheXBEIcon(saveimageXBX, thumb);
-          CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
-        }*/
-       if (CFile::Exists(titleimageXBX))
-        {
-          CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
-          CUtil::CacheXBEIcon(titleimageXBX, thumb);
-        }
+        CUtil::CacheXBEIcon(saveimageXBX, thumb);
+        CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
+      }*/
+      if (CFile::Exists(titleimageXBX))
+      {
+        CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
+        CUtil::CacheXBEIcon(titleimageXBX, thumb);
       }
-      return thumb;
     }
+    return thumb;
   }
   return "";
 }
@@ -2613,4 +2622,12 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
 {
   if (item1 != item2 && item1 < m_items.size() && item2 < m_items.size())
     swap(m_items[item1], m_items[item2]);
+}
+
+void CFileItemList::UpdateItem(const CFileItem *item)
+{
+  if (!item) return;
+  CFileItem *oldItem = Get(item->m_strPath);
+  if (oldItem)
+    *oldItem = *item;
 }

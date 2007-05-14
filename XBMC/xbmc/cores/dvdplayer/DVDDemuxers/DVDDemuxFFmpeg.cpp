@@ -1,5 +1,5 @@
 
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "DVDDemuxFFmpeg.h"
 #include "..\DVDInputStreams\DVDInputStream.h"
 #include "DVDdemuxUtils.h"
@@ -150,7 +150,13 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   bool streaminfo; /* set to true if we want to look for streams before playback*/
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
-    streaminfo = true;
+  {
+    /* if we can't seek in the stream there is no need for stream info */
+    if( m_pInput->Seek(0, SEEK_CUR) < 0 )
+      streaminfo = false;
+    else
+      streaminfo = true;
+  }
   else
     streaminfo = false;
 

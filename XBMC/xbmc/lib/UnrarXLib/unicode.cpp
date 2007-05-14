@@ -311,7 +311,7 @@ wchar* strlowerw(wchar *Str)
 {
   for (wchar *ChPtr=Str;*ChPtr;ChPtr++)
     if (*ChPtr<128)
-      *ChPtr=loctolower(*ChPtr);
+      *ChPtr=loctolower((char)*ChPtr);
   return(Str);
 }
 #endif
@@ -322,7 +322,7 @@ wchar* strupperw(wchar *Str)
 {
   for (wchar *ChPtr=Str;*ChPtr;ChPtr++)
     if (*ChPtr<128)
-      *ChPtr=loctoupper(*ChPtr);
+      *ChPtr=loctoupper((char)*ChPtr);
   return(Str);
 }
 #endif

@@ -1350,7 +1350,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
     if (btnid == btn_Switch)
     {
-      CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list].m_strPath, posX, posY);
+      CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list].m_strPath);
       return;
     }
 

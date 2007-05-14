@@ -284,14 +284,11 @@ int forced_subs_only=0;
 static float voldpts=0;
 static float aoldpts=0;
 
-extern float demux_mpg_get_first_pts(demuxer_t* demuxer);
 float demux_get_first_pts(demuxer_t* demuxer)
 {
-  if( demuxer->type == DEMUXER_TYPE_MPEG_ES 
-    || demuxer->type == DEMUXER_TYPE_MPEG_PS)
-  {
-    return demux_mpg_get_first_pts(demuxer);
-  }
+  float start;
+  if(demux_control(demuxer, DEMUXER_CTRL_GET_TIME_START, &start) == DEMUXER_CTRL_OK)
+    return start;
   return 0.0f;
 };
 
@@ -2083,8 +2080,10 @@ if(!demuxer)
   else
     eof=playtree_add_playlist(entry);
 #endif
-#ifndef _XBOX
-  goto goto_next_file;
+#ifdef _XBOX
+  return -1;
+#else
+  goto goto_next_file;  
 #endif
 }
 inited_flags|=INITED_DEMUXER;

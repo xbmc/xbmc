@@ -106,7 +106,7 @@ void CGUIDialogWebBrowserSettings::OnSettingChanged(unsigned int num)
     {
       ILinksBoksWindow *pWindow;
 
-      if(pWindow = g_browserManager.GetWindow())
+      if(pWindow = g_browserManager.GetBrowserWindow())
       {
         if(g_browserManager.GetCurrentURL())
           m_strHomepage = g_browserManager.GetCurrentURL();

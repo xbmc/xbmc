@@ -27,8 +27,9 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
 
-  virtual bool HitTest(float posX, float posY) const;
-  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual void SetInitialVisibility();
 
@@ -63,6 +64,7 @@ protected:
   vector<CGUIControl *> m_children;
   typedef vector<CGUIControl *>::iterator iControls;
   typedef vector<CGUIControl *>::const_iterator ciControls;
+  typedef vector<CGUIControl *>::const_reverse_iterator crControls;
 
   int m_defaultControl;
   int m_focusedControl;

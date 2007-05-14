@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "dlgcache.h"
 
 extern "C" void mplayer_exit_player(void);
@@ -57,6 +57,8 @@ void CDlgCache::Update()
 {
   if (m_pDlg)
   {
+    m_pDlg->SetLine(0, m_strLinePrev);
+    m_pDlg->SetLine(1, m_strLine);
     m_pDlg->Progress();
     if( !bSentCancel && m_pDlg->IsCanceled())
     {
@@ -76,12 +78,8 @@ void CDlgCache::Update()
 
 void CDlgCache::SetMessage(const CStdString& strMessage)
 {
-  if (m_pDlg)
-  {    
-    m_pDlg->SetLine(0, m_strLinePrev);
-    m_pDlg->SetLine(1, strMessage);
-  }
-  m_strLinePrev = strMessage;
+  m_strLinePrev = m_strLine;
+  m_strLine = strMessage;
 }
 
 bool CDlgCache::OnFileCallback(void* pContext, int ipercent, float avgSpeed)

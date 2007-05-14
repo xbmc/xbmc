@@ -661,7 +661,14 @@ void CDateTime::SetFromDateString(const CStdString &date)
   }
   else
     iDayPos = 0;
+
   CStdString strMonth = date.Mid(iDayPos,iPos-iDayPos);
+  if (strMonth.IsEmpty()) // assume dbdate format
+  {
+    SetFromDBDate(date);
+    return;
+  }
+
   int iPos2 = date.Find(",");
   CStdString strDay = date.Mid(iPos,iPos2-iPos);
   CStdString strYear = date.Mid(date.Find(" ",iPos2)+1);
@@ -798,6 +805,15 @@ CStdString CDateTime::GetAsDBDate() const
   date.Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
 
   return date;
+}
+
+void CDateTime::SetFromDBDate(const CStdString &date)
+{
+  // assumes format:
+  // YYYY-MM-DD
+  int year = 0, month = 0, day = 0;
+  sscanf(date.c_str(), "%04i-%02i-%02i", &year, &month, &day);
+  SetDate(year, month, day);
 }
 
 CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const

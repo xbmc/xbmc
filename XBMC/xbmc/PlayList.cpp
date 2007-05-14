@@ -23,6 +23,7 @@
 #include "playlist.h"
 #include "util.h"
 #include "playlistfactory.h"
+#include <sstream>
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -456,41 +457,30 @@ void CPlayList::SetUnPlayable(int iItem)
   }
 }
 
+
 bool CPlayList::Load(const CStdString& strFileName)
 {
-  CFile file;
-  if (!file.Open(strFileName, false) )
-  {
-    file.Close();
+  Clear();
+  CUtil::GetPath(strFileName, m_strBasePath);
+
+  CFileStream file;
+  if (!file.Open(strFileName))
     return false;
-  }
 
-  __int64 size = file.GetLength();
-
-  if (size>1024*1024)
+  if (file.GetLength() > 1024*1024)
   {
     CLog::Log(LOGWARNING, __FUNCTION__" - File is larger than 1 MB, most likely not a playlist");
     return false;
   }
 
+  return LoadData(file);
+}
 
-  int len;
+bool CPlayList::LoadData(std::istream &stream)
+{
+  // try to read as a string
   CStdString data;
-  char line[4096];
-
-  if (size>0)
-    data.reserve((int)size);
-
-  len = file.Read(line, sizeof(line)-1);
-  while(len>0)
-  {
-    data.append(line,len);
-    len = file.Read(line, sizeof(line)-1);
-  }
-
-  if(len<0)
-    return false;
-
+  std::stringstream(data) << stream;
   return LoadData(data);
 }
 
@@ -498,6 +488,7 @@ bool CPlayList::LoadData(const CStdString& strData)
 {
   return false;
 }
+
 
 bool CPlayList::Expand(int position)
 {
@@ -524,4 +515,19 @@ bool CPlayList::Expand(int position)
   Remove(position);
   Insert(*playlist, position);
   return true;
+}
+
+void CPlayList::UpdateItem(const CFileItem *item)
+{
+  if (!item) return;
+
+  for (ivecItems it = m_vecItems.begin(); it != m_vecItems.end(); ++it)
+  {
+    CPlayListItem& playlistItem = *it;
+    if (playlistItem.GetFileName() == item->m_strPath)
+    {
+      CUtil::ConvertFileItemToPlayListItem(item, playlistItem);
+      break;
+    }
+  }
 }

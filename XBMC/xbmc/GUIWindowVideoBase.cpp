@@ -41,7 +41,6 @@
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/StackDirectory.h"
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -53,6 +52,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
+using namespace VIDEO;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -78,6 +78,18 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
 {
+}
+
+bool CGUIWindowVideoBase::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_SHOW_PLAYLIST)
+  {
+    OutputDebugString("activate guiwindowvideoplaylist!\n");
+    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    return true;
+  }
+
+  return CGUIMediaWindow::OnAction(action);
 }
 
 bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
@@ -190,11 +202,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
           OnInfo(iItem,info);
 
-          return true;
-        }
-        else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-        {
-          OnPopupMenu(iItem);
           return true;
         }
         else if (iAction == ACTION_PLAYER_PLAY && !g_application.IsPlayingVideo())
@@ -846,265 +853,68 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // empty list in files view?
-  if (GetID() == WINDOW_VIDEO_FILES && m_vecItems.Size() == 0)
-    bContextDriven = false;
-  if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
-
-  // calculate our position
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
-
-  // load our menu
-  pMenu->Initialize();
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
   // contextual buttons
-  int btn_PlayPart = 0;       // For stacks
-  int btn_Queue = 0;					// Add to Playlist
-  int btn_PlayWith = 0;				// Play
-  int btn_Restart = 0;				// Restart Video from Beginning
-  int btn_Resume = 0;					// Resume Video
-  int btn_Show_Info = 0;			// Show Video Information
-  int btn_AddToDatabase = 0;  // Manual add to Database
-  int btn_Assign = 0;         // Assign content to directory
-  int btn_Update = 0;         // Update content information
-  int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
-  int btn_Mark_Watched = 0;		// Set Watched Status (DB)
-  int btn_Update_Title = 0;		// Change Title (DB)
-  int btn_SetThumb = 0;       // Set Season Thumb (DB)
-  int btn_Delete = 0;					// Delete
-  int btn_Rename = 0;					// Rename
-  int btn_Default = 0;        // Set default
-  int btn_ClearDefault=0;     // Clear default
-
-  bool bSelected = false;
-  VECPLAYERCORES vecCores;
-  int iFound = 0;
-  SScraperInfo info;
-
-  // contextual items only appear when the list is not empty
-  if (bContextDriven)
+  if (item)
   {
-    // mark the item
-    bSelected = m_vecItems[iItem]->IsSelected(); // item may already be selected (playlistitem)
-    m_vecItems[iItem]->Select(true);
-
-    // get players
-    CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-
-    if (m_vecItems[iItem]->HasVideoInfoTag())
+    if (!item->IsParentFolder())
     {
-      m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,iFound);
-    }
-    else
-      m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,iFound);
-    
-    int iString = 13346;
-    if (info.strContent.Equals("tvshows"))
-    {
-      if (m_vecItems[iItem]->m_bIsFolder)
-        iString = 20351;
-      else 
-        iString = 20352;
-    }
-
-    bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-    if (!bIsGotoParent)
-    {
-      // don't show the add to playlist button in playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST)
+      if (item->IsStack())
       {
-        if (m_vecItems[iItem]->IsStack())
-        {
-          vector<long> times;
-          if (m_database.GetStackTimes(m_vecItems[iItem]->m_strPath,times))
-            btn_PlayPart = pMenu->AddButton(20324);
-        }
-        if (GetID() == WINDOW_VIDEO_NAV)
-        {
-          if (!m_vecItems.m_strPath.IsEmpty())
-            btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
-        }
-        else
-          btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+        vector<long> times;
+        if (m_database.GetStackTimes(item->m_strPath,times))
+          buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
+      }
 
+      if (GetID() != WINDOW_VIDEO_NAV || !m_vecItems.m_strPath.IsEmpty())
+        buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
+
+      // allow a folder to be ad-hoc queued and played by the default player
+      if (GetID() != WINDOW_VIDEO_NAV && item->m_bIsFolder)
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
+      else
+      { // get players
+        VECPLAYERCORES vecCores;
+        CPlayerCoreFactory::GetPlayers(*item, vecCores);
         if (vecCores.size() >= 1)
-          btn_PlayWith = pMenu->AddButton(15213);
-        // allow a folder to be ad-hoc queued and played by the default player
-        else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
-          btn_PlayWith = pMenu->AddButton(208);
-
-        // if autoresume is enabled then add restart video button
-        // check to see if the Resume Video button is applicable
-        if (GetResumeItemOffset(m_vecItems[iItem]) > 0)
-          if (g_guiSettings.GetBool("myvideos.autoresume"))
-            btn_Restart = pMenu->AddButton(20132);    // Restart Video
-          else
-            btn_Resume = pMenu->AddButton(13381);     // Resume Video
+          buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
 
-      if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        CScraperParser parser;
-        if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
-          info.strTitle = parser.GetName();
-
-        if (m_vecItems[iItem]->m_bIsFolder)
-        {
-          if (iFound==0)
-          {
-            CStdString strPath(m_vecItems[iItem]->m_strPath);
-            CUtil::AddSlashAtEnd(strPath);
-            if ((info.strContent.Equals("movies") && m_database.HasMovieInfo(strPath)) || (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
-              btn_Show_Info = pMenu->AddButton(iString);
-
-            CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              btn_Assign = pMenu->AddButton(20333);
-          }
-          else
-          {
-            btn_Show_Info = pMenu->AddButton(iString);
-            CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-            if (pScanDlg && pScanDlg->IsScanning())
-            {
-              btn_Update = pMenu->AddButton(13353);	// Stop Scanning
-            }
-            else
-            {
-              btn_Update = pMenu->AddButton(13349);
-              btn_Assign = pMenu->AddButton(20333);
-            }
-          }
-        }
+      // if autoresume is enabled then add restart video button
+      // check to see if the Resume Video button is applicable
+      if (GetResumeItemOffset(item) > 0)
+        if (g_guiSettings.GetBool("myvideos.autoresume"))
+          buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
         else
-        {
-          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath))) || m_database.HasEpisodeInfo(m_vecItems[iItem]->m_strPath))
-            btn_Show_Info = pMenu->AddButton(iString);
-          m_database.Open();
-          if (!bIsGotoParent)
-          {
-            if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0 && m_database.GetEpisodeInfo(m_vecItems[iItem]->m_strPath)<0)
-              btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
-          }
-          m_database.Close();
-        }
-      }
+          buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
     }
-
-    if (GetID() == WINDOW_VIDEO_NAV)
-    {
-      if (!m_vecItems[iItem]->m_bIsFolder || info.strContent.Equals("tvshows"))
-        btn_Show_Info = pMenu->AddButton(iString);
-    }
-
-    // is the item a database movie?
-    if (!bIsGotoParent && GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-    {
-      CVideoDatabaseDirectory dir;
-      NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-
-      if (node == NODE_TYPE_TITLE_TVSHOWS) // tvshow
-      {
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (pScanDlg && pScanDlg->IsScanning())
-        {
-          btn_Update = pMenu->AddButton(13353);	// Stop Scanning
-        }
-        else
-          btn_Update = pMenu->AddButton(13349);
-
-        btn_Update_Title = pMenu->AddButton(16105); //Edit Title
-      }
-
-      if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES)
-      {
-        if (m_vecItems[iItem]->GetVideoInfoTag()->m_bWatched)
-          btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
-        else
-          btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
-        btn_Update_Title = pMenu->AddButton(16105); //Edit Title
-      }
-      if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
-        btn_SetThumb = pMenu->AddButton(20371);
-      
-      if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
-        btn_Delete = pMenu->AddButton(646);
-    }
-    if (!bIsGotoParent)
-    {
-      // video playlists or file operations are allowed
-      if ((m_vecItems.m_strPath.Equals("special://videoplaylists/")) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
-      {
-        if (!m_vecItems[iItem]->IsReadOnly())
-        { // enable only if writeable
-          btn_Delete = pMenu->AddButton(117);
-          btn_Rename = pMenu->AddButton(118);
-        }
-      }
-      
-      //Set default and/or clear default
-      CVideoDatabaseDirectory dir;
-      NODE_TYPE nodetype = dir.GetDirectoryType(m_vecItems[iItem]->m_strPath);
-      if (
-        GetID() == WINDOW_VIDEO_NAV &&
-        !bIsGotoParent && 
-        !m_vecItems.m_strPath.Equals("special://videoplaylists/") && 
-        (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TVSHOWS_OVERVIEW || nodetype == NODE_TYPE_MOVIES_OVERVIEW) 
-      )
-      {
-        if (!m_vecItems[iItem]->m_strPath.Equals(g_stSettings.m_szDefaultVideoLibView))
-          btn_Default = pMenu->AddButton(13335); // set default
-        if (strcmp(g_stSettings.m_szDefaultVideoLibView, ""))
-          btn_ClearDefault = pMenu->AddButton(13403); // clear default
-      }
-    }
-  } // if (bContextDriven)
-  // non-contextual buttons
-  int btn_Settings = pMenu->AddButton(5);			// Settings
-  int btn_GoToRoot = 0;
-  if (!m_vecItems.m_strPath.IsEmpty())
-    btn_GoToRoot = pMenu->AddButton(20128);
-
-  int btn_Switch = 0;													// Switch Media
-  int btn_NowPlaying = 0;											// Now Playing
-
-  // Switch Media is only visible in files window
-  if (GetID() == WINDOW_VIDEO_FILES)
-  {
-    btn_Switch = pMenu->AddButton(523); // switch media
   }
+  CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+}
 
-  // Now Playing... at the very bottom of the list for easy access
+void CGUIWindowVideoBase::GetNonContextButtons(int itemNumber, CContextButtons &buttons)
+{
+  if (!m_vecItems.m_strPath.IsEmpty())
+    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
-      btn_NowPlaying = pMenu->AddButton(13350);
+    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
+}
 
-  // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid>0)
+bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  switch (button)
   {
-    // play part
-    if (btnid == btn_PlayPart)
+  case CONTEXT_BUTTON_PLAY_PART:
     {
       CFileItemList items;
-      CDirectory::GetDirectory(m_vecItems[iItem]->m_strPath,items);
+      CDirectory::GetDirectory(item->m_strPath,items);
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-      if (!dlg)
-        return;
+      if (!dlg) return true;
       dlg->SetNumberOfFiles(items.Size());
       dlg->DoModal();
       int btn2 = dlg->GetSelectedFile();
@@ -1113,157 +923,83 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         if (btn2 > 1)
         {
           vector<long> times;
-          if (!m_database.GetStackTimes(m_vecItems[iItem]->m_strPath, times)) // need to calculate them times
-            return;
-
-          m_vecItems[iItem]->m_lStartOffset = times[btn2-2]*75; // wtf?
+          if (m_database.GetStackTimes(item->m_strPath,times))
+            item->m_lStartOffset = times[btn2-2]*75; // wtf?
         }
         else
-          m_vecItems[iItem]->m_lStartOffset = 0;
+          item->m_lStartOffset = 0;
 
-        OnClick(iItem);
+        OnClick(itemNumber);
       }
+      return true;
     }
-    // queue
-    if (btnid == btn_Queue)
+  case CONTEXT_BUTTON_QUEUE_ITEM:
+    OnQueueItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_PLAY_ITEM:
+    PlayItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_PLAY_WITH:
+    {   
+      VECPLAYERCORES vecCores;
+      CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
+      if( g_application.m_eForcedNextPlayer != EPC_NONE )
+        OnClick(itemNumber);
+      return true;
+    }
+  case CONTEXT_BUTTON_RESTART_ITEM:
+    OnRestartItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_RESUME_ITEM:
+    OnResumeItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_GOTO_ROOT:
+    Update("");
+    return true;
+
+  case CONTEXT_BUTTON_NOW_PLAYING:
+    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    return true;
+
+  case CONTEXT_BUTTON_SETTINGS:
+    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+    return true;
+
+  case CONTEXT_BUTTON_INFO:
     {
-      OnQueueItem(iItem);
+      SScraperInfo info;
+      int iFound = GetScraperForItem(item, info);
+      OnInfo(itemNumber,info);
+      return true;
     }
-    // play
-    else if (btnid == btn_PlayWith)
-    {
-      // if folder, play with default player
-      if (m_vecItems[iItem]->m_bIsFolder)
-      {
-        PlayItem(iItem);
-      }
-      else
-      {
-        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, posX, posY);
-        if( g_application.m_eForcedNextPlayer != EPC_NONE )
-          OnClick(iItem);
-      }
-    }
-    // restart
-    else if (btnid == btn_Restart)
-    {
-      OnRestartItem(iItem);
-    }
-    // resume
-    else if (btnid == btn_Resume)
-    {
-      OnResumeItem(iItem);
-    }
-    else if (btnid == btn_Assign)
-    {
-      OnAssignContent(iItem,iFound,info);
-    }
-    else if (btnid  == btn_Update) // update content 
+  case CONTEXT_BUTTON_STOP_SCANNING:
     {
       CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       if (pScanDlg && pScanDlg->IsScanning())
-      {
         pScanDlg->StopScanning();
-      }
+      return true;
+    }
+  case CONTEXT_BUTTON_SCAN:
+  case CONTEXT_BUTTON_UPDATE_TVSHOW:
+    {
+      SScraperInfo info;
+      GetScraperForItem(item, info);
+      if (item->IsVideoDb())
+        OnScan(item->GetVideoInfoTag()->m_strPath,info,-1,-1);
       else
-      {
-        if (m_vecItems[iItem]->IsVideoDb())
-          OnScan(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info);
-        else
-          OnScan(m_vecItems[iItem]->m_strPath,info);
-      }
+        OnScan(item->m_strPath,info,-1,-1);
+      return true;
     }
-    // video info
-    else if (btnid == btn_Show_Info)
-    {
-      OnInfo(iItem,info);
-    }
-    // unwatched
-    else if (btnid == btn_Mark_UnWatched)
-    {
-      MarkUnWatched(iItem);
-    }
-    // watched
-    else if (btnid == btn_Mark_Watched)
-    {
-      MarkWatched(iItem);
-    }
-    // update title
-    else if (btnid == btn_Update_Title)
-    {
-      UpdateVideoTitle(iItem);
-    }
-    else if (btnid == btn_SetThumb)
-    {
-      CVideoInfoTag tag;
-      CVideoDatabaseDirectory dir;
-      CQueryParams params;
-      dir.GetQueryParams(m_vecItems[iItem]->m_strPath,params);
-      m_database.GetTvShowInfo("",tag,params.GetTvShowId());
-      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20372), tag.m_strPath))
-      {
-        CStdString thumb(m_vecItems[iItem]->GetCachedSeasonThumb());
-        CPicture picture;
-        if (picture.DoCreateThumbnail(tag.m_strPath, thumb))
-        {
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          Update(m_vecItems.m_strPath);
-        }
-        else
-          CLog::Log(LOGERROR,"  Could not cache season thumb: %s",tag.m_strPath.c_str());
-      }
-    }
-    // delete
-    else if (btnid == btn_Delete)
-    {
-      OnDeleteItem(iItem);
-    }
-    // rename
-    else if (btnid == btn_Rename)
-    {
-      OnRenameItem(iItem);
-    }
-    // settings
-    else if (btnid == btn_Settings)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
-      return;
-    }
-    // go to root
-    else if (btnid == btn_GoToRoot)
-    {
-      Update("");
-      return;
-    }
-    // switch media
-    else if (btnid == btn_Switch)
-    {
-      CGUIDialogContextMenu::SwitchMedia("video", m_vecItems.m_strPath, posX, posY);
-      return;
-    }
-    // now playing
-    else if (btnid ==  btn_NowPlaying)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-      return;
-    }
-    else if (btnid == btn_AddToDatabase)
-    {
-      AddToDatabase(iItem);
-    }
-    else if (btnid == btn_Default) // Set default
-    {
-      strcpy(g_stSettings.m_szDefaultVideoLibView, GetQuickpathName(m_vecItems[iItem]->m_strPath).c_str());
-      g_settings.Save();
-    }
-    else if (btnid == btn_ClearDefault) // Clear default
-    {
-      strcpy(g_stSettings.m_szDefaultVideoLibView, "");
-      g_settings.Save();
-    }
+  case CONTEXT_BUTTON_DELETE:
+    OnDeleteItem(itemNumber);
+    return true;
   }
-  if (iItem < m_vecItems.Size() && iItem > -1)
-    m_vecItems[iItem]->Select(bSelected);
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector<CStdString> &movies)
@@ -1789,4 +1525,67 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
     }
   }
   m_viewControl.SetFocused();
+}
+
+int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info)
+{
+  if (!item) return 0;
+  int found = 0;
+  if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
+    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,found);
+  else
+    m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,found);
+  CScraperParser parser;
+  if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+    info.strTitle = parser.GetName();
+  return found;
+}
+
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
+{
+  // GetStackedDirectory() now sets and restores the stack state!
+  SScanSettings settings = {};
+
+  if(iDirNames>0)
+  {
+    settings.parent_name = true;
+    settings.recurse = 1; /* atleast one, otherwise this makes no sence */
+  }
+  else if ((info.strContent.Equals("movies") || strPath.IsEmpty()) && iDirNames == -1)
+  {
+    bool bCanceled;
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
+    {
+      settings.parent_name = true;
+      settings.recurse = 1; /* atleast one, otherwise this makes no sence */
+    }
+
+    if (bCanceled)
+      return;
+  }
+
+  if(iScanRecursively > 0)
+    settings.recurse = INT_MAX;
+  else if (iScanRecursively == -1 && info.strContent.Equals("movies"))
+  {
+    bool bCanceled;
+    if( CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled) )
+      settings.recurse = INT_MAX;
+
+    if (bCanceled)
+      return;
+  }
+  if (strPath.IsEmpty())
+    settings.recurse = 1;
+
+  if (info.strContent.Equals("tvshows"))
+  {
+    settings.recurse = 1;
+    settings.parent_name = true;
+    settings.parent_name_root = true;
+  }
+
+  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialog)
+    pDialog->StartScanning(strPath,info,settings,false);
 }

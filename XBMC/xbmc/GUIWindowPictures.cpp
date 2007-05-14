@@ -25,7 +25,6 @@
 #include "Picture.h"
 #include "application.h"
 #include "GUIPassword.h"
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "PlayListFactory.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -53,18 +52,6 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
 {
-}
-
-bool CGUIWindowPictures::OnAction(const CAction &action)
-{
-  // the non-contextual menu can be called at any time
-  if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
-  {
-    OnPopupMenu(-1, false);
-    return true;
-  }
-
-  return CGUIMediaWindow::OnAction(action);
 }
 
 bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
@@ -189,11 +176,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
 
         // iItem is checked for validity inside these routines
-        if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-        {
-          OnPopupMenu(iItem);
-        }
-        else if (iAction == ACTION_DELETE_ITEM)
+        if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
           if (g_guiSettings.GetBool("filelists.allowfiledeletion"))
@@ -277,11 +260,9 @@ bool CGUIWindowPictures::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
 
   if (pItem->IsCBZ() || pItem->IsCBR())
   {
-    CUtil::GetDirectory(pItem->m_strPath,strPath);
     CStdString strComicPath;
     if (pItem->IsCBZ())
       CUtil::CreateZipPath(strComicPath, pItem->m_strPath, "");
@@ -462,135 +443,82 @@ void CGUIWindowPictures::OnRegenerateThumbs()
   m_thumbLoader.Load(m_vecItems);
 }
 
-void CGUIWindowPictures::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // calculate our position
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
+  CFileItem *item = NULL;
+  if (itemNumber >= 0 && itemNumber < m_vecItems.Size())
+    item = m_vecItems[itemNumber];
+
+  if ( m_vecItems.IsVirtualDirectoryRoot() && item)
   {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  if ( m_vecItems.IsVirtualDirectoryRoot() )
-  {
-    if (iItem < 0)
-    { // we should add the option here of adding shares
-      return ;
-    }
-    // mark the item
-    m_vecItems[iItem]->Select(true);
-    // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem], posX, posY))
-    {
-      Update(m_vecItems.m_strPath);
-      return ;
-    }
-    m_vecItems[iItem]->Select(false);
+    // get the usual bookmark shares
+    CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
+    CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
   }
   else
   {
-    if (m_vecItems.Size() == 0)
-      bContextDriven = false;
-    if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
-
-    // popup the context menu
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (!pMenu) return ;
-
-    // load our menu
-    pMenu->Initialize();
-
-    // contextual buttons
-    int btn_Thumbs = 0;				// Create Thumbnails
-    int btn_SlideShow = 0;		// View Slideshow
-    int btn_RecSlideShow = 0; // Recursive Slideshow
-    int btn_Delete = 0;				// Delete
-    int btn_Rename = 0;				// Rename
-
-    // check item boumds
-    if (bContextDriven)
+    if (item)
     {
-      // mark the item
-      m_vecItems[iItem]->Select(true);
-
-      // this could be done like the delete button too
       if (m_vecItems.GetFileCount() != 0)
-        btn_SlideShow = pMenu->AddButton(13317);      // View Slideshow
+        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
 
-      btn_RecSlideShow = pMenu->AddButton(13318);     // Recursive Slideshow
+      buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
       if (!m_thumbLoader.IsLoading())
-        btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
-
-      // add delete/rename functions if supported by the protocol
-      if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !m_vecItems[iItem]->IsReadOnly())
+        buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
+      if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
       {
-        btn_Delete = pMenu->AddButton(117);           // Delete
-        btn_Rename = pMenu->AddButton(118);           // Rename
-      }
-    } // if (iItem >= 0 && iItem < m_vecItems.Size())
-
-    // non-contextual buttons
-    int btn_Settings = pMenu->AddButton(5);			// Settings
-    int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
-    int btn_Switch = pMenu->AddButton(523);     // switch media
-
-    // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-    pMenu->DoModal();
-
-    int btnid = pMenu->GetButton();
-    if (btnid>0)
-    {
-      // slideshow
-      if (btnid == btn_SlideShow)
-      {
-        OnSlideShow(m_vecItems[iItem]->m_strPath);
-        return;
-      }
-      // recursive slideshow
-      else if (btnid == btn_RecSlideShow)
-      {
-        OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
-        return;
-      }
-      // create thumbs
-      else if (btnid == btn_Thumbs)
-      {
-        OnRegenerateThumbs();
-      }
-      // delete
-      else if (btnid == btn_Delete)
-      {
-        OnDeleteItem(iItem);
-      }
-      //Rename
-      else if (btnid == btn_Rename)
-      {
-        OnRenameItem(iItem);
-      }
-      else if (btnid == btn_Settings)
-      {
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-        return;
-      }
-      // go to root
-      else if (btnid == btn_GoToRoot)
-      {
-        Update("");
-        return;
-      }
-      // switch media
-      else if (btnid == btn_Switch)
-      {
-        CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath, posX, posY);
-        return;
+        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+        buttons.Add(CONTEXT_BUTTON_RENAME, 118);
       }
     }
-    if (iItem < m_vecItems.Size() && iItem > -1)
-      m_vecItems[iItem]->Select(false);
+    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   }
+  CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
+}
+
+bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  if (m_vecItems.IsVirtualDirectoryRoot() && item)
+  {
+    CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
+    if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
+    {
+      Update("");
+      return true;
+    }
+  }
+  switch (button)
+  {
+  case CONTEXT_BUTTON_VIEW_SLIDESHOW:
+    OnSlideShow(item->m_strPath);
+    return true;
+  case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
+    OnSlideShowRecursive(item->m_strPath);
+    return true;
+  case CONTEXT_BUTTON_REFRESH_THUMBS:
+    OnRegenerateThumbs();
+    return true;
+  case CONTEXT_BUTTON_DELETE:
+    OnDeleteItem(itemNumber);
+    return true;
+  case CONTEXT_BUTTON_RENAME:
+    OnRenameItem(itemNumber);
+    return true;
+  case CONTEXT_BUTTON_SETTINGS:
+    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+    return true;
+  case CONTEXT_BUTTON_GOTO_ROOT:
+    Update("");
+    return true;
+  case CONTEXT_BUTTON_SWITCH_MEDIA:
+    CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath);
+    return true;
+  }
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)

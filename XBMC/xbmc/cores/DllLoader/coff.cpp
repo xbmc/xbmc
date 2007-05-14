@@ -1,8 +1,7 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include <stdlib.h>
 #include <string.h>
-#include <minmax.h>
 #include "coff.h" 
 #include "coffldr.h"
 

@@ -97,7 +97,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>

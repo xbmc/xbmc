@@ -1,5 +1,5 @@
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "..\DllLoaderContainer.h"
 #ifdef HAS_XFONT
 #include <xfont.h>
@@ -7,172 +7,140 @@
 #ifdef _XBOX
 #include <XGraphics.h>
 #endif
-#ifdef WITH_LINKS_BROWSER
-#include <Xbox.h>
-#endif
 #include "emu_dx8.h"
 
-void export_xbox_dx8()
+Export export_xbox_dx8[] =
 {
-  g_dlls.xbox_dx8.AddExport("d3dSetTextureStageState", (unsigned long)d3dSetTextureStageState);
-  g_dlls.xbox_dx8.AddExport("d3dSetRenderState", (unsigned long)d3dSetRenderState);
-  g_dlls.xbox_dx8.AddExport("OutputDebug", (unsigned long)OutputDebug);
-  g_dlls.xbox_dx8.AddExport("d3dGetRenderState", (unsigned long)d3dGetRenderState);
-  g_dlls.xbox_dx8.AddExport("d3dSetTransform", (unsigned long)d3dSetTransform);
-  g_dlls.xbox_dx8.AddExport("d3dCreateTexture", (unsigned long)d3dCreateTexture);
-#ifdef WITH_LINKS_BROWSER
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateSurface2@16", (unsigned long)D3DDevice_CreateSurface2);
-#endif
-  g_dlls.xbox_dx8.AddExport("d3dDrawIndexedPrimitive", (unsigned long)d3dDrawIndexedPrimitive);
+  { "d3dSetTextureStageState",                      -1, d3dSetTextureStageState,                      NULL },
+  { "d3dSetRenderState",                            -1, d3dSetRenderState,                            NULL },
+  { "OutputDebug",                                  -1, OutputDebug,                                  NULL },
+  { "d3dGetRenderState",                            -1, d3dGetRenderState,                            NULL },
+  { "d3dSetTransform",                              -1, d3dSetTransform,                              NULL },
+  { "d3dCreateTexture",                             -1, d3dCreateTexture,                             NULL },
+  { "d3dDrawIndexedPrimitive",                      -1, d3dDrawIndexedPrimitive,                      NULL },
 #ifdef _XBOX
-  g_dlls.xbox_dx8.AddExport("D3DTexture_LockRect@20", (unsigned long)D3DTexture_LockRect);
-  g_dlls.xbox_dx8.AddExport("D3DVertexBuffer_Lock2@8", (unsigned long)D3DVertexBuffer_Lock2);
-  g_dlls.xbox_dx8.AddExport("D3DResource_Release@4", (unsigned long)D3DResource_Release);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetStreamSource@12", (unsigned long)D3DDevice_SetStreamSource);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetVertexShader@4", (unsigned long)D3DDevice_SetVertexShader);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_DrawVerticesUP@16", (unsigned long)D3DDevice_DrawVerticesUP);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_DrawVertices@12", (unsigned long)D3DDevice_DrawVertices);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetTexture@8", (unsigned long)D3DDevice_SetTexture);
-  g_dlls.xbox_dx8.AddExport("GetLastError", (unsigned long)GetLastError);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateVertexBuffer2@4", (unsigned long)D3DDevice_CreateVertexBuffer2);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateTexture2@28", (unsigned long)D3DDevice_CreateTexture2);
-  g_dlls.xbox_dx8.AddExport("D3D__TextureState", (unsigned long)D3D__TextureState);
-  g_dlls.xbox_dx8.AddExport("@D3DDevice_SetRenderState_Simple@8", (unsigned long)D3DDevice_SetRenderState_Simple);
-  g_dlls.xbox_dx8.AddExport("D3D__RenderState", (unsigned long)D3D__RenderState);
-  g_dlls.xbox_dx8.AddExport("D3D__DirtyFlags", (unsigned long)D3D__DirtyFlags);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_FillMode@4", (unsigned long)D3DDevice_SetRenderState_FillMode);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_CullMode@4", (unsigned long)D3DDevice_SetRenderState_CullMode);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_ZEnable@4", (unsigned long)D3DDevice_SetRenderState_ZEnable);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetTransform@8", (unsigned long)D3DDevice_SetTransform);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetTransform@8", (unsigned long)D3DDevice_GetTransform);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixLookAtLH@16", (unsigned long)D3DXMatrixLookAtLH);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixPerspectiveFovLH@20", (unsigned long)D3DXMatrixPerspectiveFovLH);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixMultiply@12", (unsigned long)D3DXMatrixMultiply);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixRotationYawPitchRoll@16", (unsigned long)D3DXMatrixRotationYawPitchRoll);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_Clear@24", (unsigned long)D3DDevice_Clear);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetDeviceCaps@4", (unsigned long)D3DDevice_GetDeviceCaps);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_Swap@4", (unsigned long)D3DDevice_Swap);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetMaterial@4", (unsigned long)D3DDevice_SetMaterial);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixScaling@16", (unsigned long)D3DXMatrixScaling);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixTranslation@16", (unsigned long)D3DXMatrixTranslation);
-  g_dlls.xbox_dx8.AddExport("D3DXCreateTextureFromFileA@12", (unsigned long)D3DXCreateTextureFromFileA);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetLight@8", (unsigned long)D3DDevice_SetLight);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_LightEnable@8", (unsigned long)D3DDevice_LightEnable);
-  g_dlls.xbox_dx8.AddExport("D3DXVec3Normalize@8", (unsigned long)D3DXVec3Normalize);
+  { "D3DTexture_LockRect@20",                       -1, D3DTexture_LockRect,                          NULL },
+  { "D3DVertexBuffer_Lock2@8",                      -1, D3DVertexBuffer_Lock2,                        NULL },
+  { "D3DResource_Release@4",                        -1, D3DResource_Release,                          NULL },
+  { "D3DDevice_SetStreamSource@12",                 -1, D3DDevice_SetStreamSource,                    NULL },
+  { "D3DDevice_SetVertexShader@4",                  -1, D3DDevice_SetVertexShader,                    NULL },
+  { "D3DDevice_DrawVerticesUP@16",                  -1, D3DDevice_DrawVerticesUP,                     NULL },
+  { "D3DDevice_DrawVertices@12",                    -1, D3DDevice_DrawVertices,                       NULL },
+  { "D3DDevice_SetTexture@8",                       -1, D3DDevice_SetTexture,                         NULL },
+  { "GetLastError",                                 -1, GetLastError,                                 NULL },
+  { "D3DDevice_CreateVertexBuffer2@4",              -1, D3DDevice_CreateVertexBuffer2,                NULL },
+  { "D3DDevice_CreateTexture2@28",                  -1, D3DDevice_CreateTexture2,                     NULL },
+  { "D3D__TextureState",                            -1, D3D__TextureState,                            NULL },
+  { "@D3DDevice_SetRenderState_Simple@8",           -1, D3DDevice_SetRenderState_Simple,              NULL },
+  { "D3D__RenderState",                             -1, &D3D__RenderState,                            NULL },
+  { "D3D__DirtyFlags",                              -1, &D3D__DirtyFlags,                             NULL },
+  { "D3DDevice_SetRenderState_FillMode@4",          -1, D3DDevice_SetRenderState_FillMode,            NULL },
+  { "D3DDevice_SetRenderState_CullMode@4",          -1, D3DDevice_SetRenderState_CullMode,            NULL },
+  { "D3DDevice_SetRenderState_ZEnable@4",           -1, D3DDevice_SetRenderState_ZEnable,             NULL },
+  { "D3DDevice_SetTransform@8",                     -1, D3DDevice_SetTransform,                       NULL },
+  { "D3DDevice_GetTransform@8",                     -1, D3DDevice_GetTransform,                       NULL },
+  { "D3DXMatrixLookAtLH@16",                        -1, D3DXMatrixLookAtLH,                           NULL },
+  { "D3DXMatrixPerspectiveFovLH@20",                -1, D3DXMatrixPerspectiveFovLH,                   NULL },
+  { "D3DXMatrixMultiply@12",                        -1, D3DXMatrixMultiply,                           NULL },
+  { "D3DXMatrixRotationYawPitchRoll@16",            -1, D3DXMatrixRotationYawPitchRoll,               NULL },
+  { "D3DDevice_Clear@24",                           -1, D3DDevice_Clear,                              NULL },
+  { "D3DDevice_GetDeviceCaps@4",                    -1, D3DDevice_GetDeviceCaps,                      NULL },
+  { "D3DDevice_Swap@4",                             -1, D3DDevice_Swap,                               NULL },
+  { "D3DDevice_SetMaterial@4",                      -1, D3DDevice_SetMaterial,                        NULL },
+  { "D3DXMatrixScaling@16",                         -1, D3DXMatrixScaling,                            NULL },
+  { "D3DXMatrixTranslation@16",                     -1, D3DXMatrixTranslation,                        NULL },
+  { "D3DXCreateTextureFromFileA@12",                -1, D3DXCreateTextureFromFileA,                   NULL },
+  { "D3DDevice_SetLight@8",                         -1, D3DDevice_SetLight,                           NULL },
+  { "D3DDevice_LightEnable@8",                      -1, D3DDevice_LightEnable,                        NULL },
+  { "D3DXVec3Normalize@8",                          -1, D3DXVec3Normalize,                            NULL },
 
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetBackBuffer2@4", (unsigned long)D3DDevice_GetBackBuffer2);
-  g_dlls.xbox_dx8.AddExport("D3DSurface_GetDesc@8", (unsigned long)D3DSurface_GetDesc);
-  g_dlls.xbox_dx8.AddExport("D3DXCreateTexture@32", (unsigned long)D3DXCreateTexture);
-  g_dlls.xbox_dx8.AddExport("D3DXCreateTextureFromFileInMemory@16", (unsigned long)D3DXCreateTextureFromFileInMemory);
-  g_dlls.xbox_dx8.AddExport("D3DBaseTexture_GetLevelCount@4", (unsigned long)D3DBaseTexture_GetLevelCount);
-  g_dlls.xbox_dx8.AddExport("D3DTexture_GetSurfaceLevel2@8", (unsigned long)D3DTexture_GetSurfaceLevel2);
-  g_dlls.xbox_dx8.AddExport("D3DTexture_GetSurfaceLevel2@8", (unsigned long)D3DTexture_GetSurfaceLevel2);
-  g_dlls.xbox_dx8.AddExport("D3DSurface_LockRect@16", (unsigned long)D3DSurface_LockRect);
+  { "D3DDevice_GetBackBuffer2@4",                   -1, D3DDevice_GetBackBuffer2,                     NULL },
+  { "D3DSurface_GetDesc@8",                         -1, D3DSurface_GetDesc,                           NULL },
+  { "D3DXCreateTexture@32",                         -1, D3DXCreateTexture,                            NULL },
+  { "D3DXCreateTextureFromFileInMemory@16",         -1, D3DXCreateTextureFromFileInMemory,            NULL },
+  { "D3DBaseTexture_GetLevelCount@4",               -1, D3DBaseTexture_GetLevelCount,                 NULL },
+  { "D3DTexture_GetSurfaceLevel2@8",                -1, D3DTexture_GetSurfaceLevel2,                  NULL },
+  { "D3DTexture_GetSurfaceLevel2@8",                -1, D3DTexture_GetSurfaceLevel2,                  NULL },
+  { "D3DSurface_LockRect@16",                       -1, D3DSurface_LockRect,                          NULL },
 
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_YuvEnable@4", (unsigned long)D3DDevice_SetRenderState_YuvEnable);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_Dxt1NoiseEnable@4", (unsigned long)D3DDevice_SetRenderState_Dxt1NoiseEnable);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_SampleAlpha@4", (unsigned long)D3DDevice_SetRenderState_SampleAlpha);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_LineWidth@4", (unsigned long)D3DDevice_SetRenderState_LineWidth);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_ShadowFunc@4", (unsigned long)D3DDevice_SetRenderState_ShadowFunc);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_MultiSampleRenderTargetMode@4", (unsigned long)D3DDevice_SetRenderState_MultiSampleRenderTargetMode);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_MultiSampleMode@4", (unsigned long)D3DDevice_SetRenderState_MultiSampleMode);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_MultiSampleMask@4", (unsigned long)D3DDevice_SetRenderState_MultiSampleMask);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_MultiSampleAntiAlias@4", (unsigned long)D3DDevice_SetRenderState_MultiSampleAntiAlias);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_EdgeAntiAlias@4", (unsigned long)D3DDevice_SetRenderState_EdgeAntiAlias);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_LogicOp@4", (unsigned long)D3DDevice_SetRenderState_LogicOp);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_ZBias@4", (unsigned long)D3DDevice_SetRenderState_ZBias);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_TextureFactor@4", (unsigned long)D3DDevice_SetRenderState_TextureFactor);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_FrontFace@4", (unsigned long)D3DDevice_SetRenderState_FrontFace);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_OcclusionCullEnable@4", (unsigned long)D3DDevice_SetRenderState_OcclusionCullEnable);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_StencilFail@4", (unsigned long)D3DDevice_SetRenderState_StencilFail);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_StencilEnable@4", (unsigned long)D3DDevice_SetRenderState_StencilEnable);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_NormalizeNormals@4", (unsigned long)D3DDevice_SetRenderState_NormalizeNormals);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_TwoSidedLighting@4", (unsigned long)D3DDevice_SetRenderState_TwoSidedLighting);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_BackFillMode@4", (unsigned long)D3DDevice_SetRenderState_BackFillMode);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_FogColor@4", (unsigned long)D3DDevice_SetRenderState_FogColor);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_VertexBlend@4", (unsigned long)D3DDevice_SetRenderState_VertexBlend);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_PSTextureModes@4", (unsigned long)D3DDevice_SetRenderState_PSTextureModes);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetTextureState_BumpEnv@12", (unsigned long)D3DDevice_SetTextureState_BumpEnv);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetTextureState_ColorKeyColor@8", (unsigned long)D3DDevice_SetTextureState_ColorKeyColor);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetTextureState_BorderColor@8", (unsigned long)D3DDevice_SetTextureState_BorderColor);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetTextureState_TexCoordIndex@8", (unsigned long)D3DDevice_SetTextureState_TexCoordIndex);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_DrawIndexedVerticesUP@20", (unsigned long)D3DDevice_DrawIndexedVerticesUP);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_StencilCullEnable@4", (unsigned long)D3DDevice_SetRenderState_StencilCullEnable);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_RopZCmpAlwaysRead@4", (unsigned long)D3DDevice_SetRenderState_RopZCmpAlwaysRead);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_RopZRead@4", (unsigned long)D3DDevice_SetRenderState_RopZRead);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderState_DoNotCullUncompressed@4", (unsigned long)D3DDevice_SetRenderState_DoNotCullUncompressed);
+  { "D3DDevice_SetRenderState_YuvEnable@4",         -1, D3DDevice_SetRenderState_YuvEnable,           NULL },
+  { "D3DDevice_SetRenderState_Dxt1NoiseEnable@4",   -1, D3DDevice_SetRenderState_Dxt1NoiseEnable,     NULL },
+  { "D3DDevice_SetRenderState_SampleAlpha@4",       -1, D3DDevice_SetRenderState_SampleAlpha,         NULL },
+  { "D3DDevice_SetRenderState_LineWidth@4",         -1, D3DDevice_SetRenderState_LineWidth,           NULL },
+  { "D3DDevice_SetRenderState_ShadowFunc@4",        -1, D3DDevice_SetRenderState_ShadowFunc,          NULL },
+  { "D3DDevice_SetRenderState_MultiSampleRenderTargetMode@4",-1, D3DDevice_SetRenderState_MultiSampleRenderTargetMode, NULL },
+  { "D3DDevice_SetRenderState_MultiSampleMode@4",   -1, D3DDevice_SetRenderState_MultiSampleMode,     NULL },
+  { "D3DDevice_SetRenderState_MultiSampleMask@4",   -1, D3DDevice_SetRenderState_MultiSampleMask,     NULL },
+  { "D3DDevice_SetRenderState_MultiSampleAntiAlias@4",-1, D3DDevice_SetRenderState_MultiSampleAntiAlias, NULL },
+  { "D3DDevice_SetRenderState_EdgeAntiAlias@4",     -1, D3DDevice_SetRenderState_EdgeAntiAlias,       NULL },
+  { "D3DDevice_SetRenderState_LogicOp@4",           -1, D3DDevice_SetRenderState_LogicOp,             NULL },
+  { "D3DDevice_SetRenderState_ZBias@4",             -1, D3DDevice_SetRenderState_ZBias,               NULL },
+  { "D3DDevice_SetRenderState_TextureFactor@4",     -1, D3DDevice_SetRenderState_TextureFactor,       NULL },
+  { "D3DDevice_SetRenderState_FrontFace@4",         -1, D3DDevice_SetRenderState_FrontFace,           NULL },
+  { "D3DDevice_SetRenderState_OcclusionCullEnable@4",-1, D3DDevice_SetRenderState_OcclusionCullEnable, NULL },
+  { "D3DDevice_SetRenderState_StencilFail@4",       -1, D3DDevice_SetRenderState_StencilFail,         NULL },
+  { "D3DDevice_SetRenderState_StencilEnable@4",     -1, D3DDevice_SetRenderState_StencilEnable,       NULL },
+  { "D3DDevice_SetRenderState_NormalizeNormals@4",  -1, D3DDevice_SetRenderState_NormalizeNormals,    NULL },
+  { "D3DDevice_SetRenderState_TwoSidedLighting@4",  -1, D3DDevice_SetRenderState_TwoSidedLighting,    NULL },
+  { "D3DDevice_SetRenderState_BackFillMode@4",      -1, D3DDevice_SetRenderState_BackFillMode,        NULL },
+  { "D3DDevice_SetRenderState_FogColor@4",          -1, D3DDevice_SetRenderState_FogColor,            NULL },
+  { "D3DDevice_SetRenderState_VertexBlend@4",       -1, D3DDevice_SetRenderState_VertexBlend,         NULL },
+  { "D3DDevice_SetRenderState_PSTextureModes@4",    -1, D3DDevice_SetRenderState_PSTextureModes,      NULL },
+  { "D3DDevice_SetTextureState_BumpEnv@12",         -1, D3DDevice_SetTextureState_BumpEnv,            NULL },
+  { "D3DDevice_SetTextureState_ColorKeyColor@8",    -1, D3DDevice_SetTextureState_ColorKeyColor,      NULL },
+  { "D3DDevice_SetTextureState_BorderColor@8",      -1, D3DDevice_SetTextureState_BorderColor,        NULL },
+  { "D3DDevice_SetTextureState_TexCoordIndex@8",    -1, D3DDevice_SetTextureState_TexCoordIndex,      NULL },
+  { "D3DDevice_DrawIndexedVerticesUP@20",           -1, D3DDevice_DrawIndexedVerticesUP,              NULL },
+  { "D3DDevice_SetRenderState_StencilCullEnable@4", -1, D3DDevice_SetRenderState_StencilCullEnable,   NULL },
+  { "D3DDevice_SetRenderState_RopZCmpAlwaysRead@4", -1, D3DDevice_SetRenderState_RopZCmpAlwaysRead,   NULL },
+  { "D3DDevice_SetRenderState_RopZRead@4",          -1, D3DDevice_SetRenderState_RopZRead,            NULL },
+  { "D3DDevice_SetRenderState_DoNotCullUncompressed@4",-1, D3DDevice_SetRenderState_DoNotCullUncompressed, NULL },
 
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CopyRects@20", (unsigned long)D3DDevice_CopyRects);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetPixelShader@4", (unsigned long)D3DDevice_SetPixelShader);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetPersistedSurface2@0", (unsigned long)D3DDevice_GetPersistedSurface2);
-  g_dlls.xbox_dx8.AddExport("D3DResource_AddRef@4", (unsigned long)D3DResource_AddRef);
+  { "D3DDevice_CopyRects@20",                       -1, D3DDevice_CopyRects,                          NULL },
+  { "D3DDevice_SetPixelShader@4",                   -1, D3DDevice_SetPixelShader,                     NULL },
+  { "D3DDevice_GetPersistedSurface2@0",             -1, D3DDevice_GetPersistedSurface2,               NULL },
+  { "D3DResource_AddRef@4",                         -1, D3DResource_AddRef,                           NULL },
 
-  g_dlls.xbox_dx8.AddExport("D3DDevice_Release@0", (unsigned long)D3DDevice_Release);
+  { "D3DDevice_Release@0",                          -1, D3DDevice_Release,                            NULL },
 
 // XFONT Support
-  g_dlls.xbox_dx8.AddExport("XFONT_SetTextColor@8", (unsigned long)XFONT_SetTextColor);
-  g_dlls.xbox_dx8.AddExport("XFONT_SetBkColor@8", (unsigned long)XFONT_SetBkColor);
-  g_dlls.xbox_dx8.AddExport("XFONT_SetBkMode@8", (unsigned long)XFONT_SetBkMode);
-  g_dlls.xbox_dx8.AddExport("XFONT_TextOut@24", (unsigned long)XFONT_TextOut);
-  g_dlls.xbox_dx8.AddExport("XFONT_OpenDefaultFont@4", (unsigned long)XFONT_OpenDefaultFont);
+  { "XFONT_SetTextColor@8",                         -1, XFONT_SetTextColor,                           NULL },
+  { "XFONT_SetBkColor@8",                           -1, XFONT_SetBkColor,                             NULL },
+  { "XFONT_SetBkMode@8",                            -1, XFONT_SetBkMode,                              NULL },
+  { "XFONT_TextOut@24",                             -1, XFONT_TextOut,                                NULL },
+  { "XFONT_OpenDefaultFont@4",                      -1, XFONT_OpenDefaultFont,                        NULL },
 
-  g_dlls.xbox_dx8.AddExport("XGBuffer_Release@4", (unsigned long)XGBuffer_Release);
-  g_dlls.xbox_dx8.AddExport("XGAssembleShader@44", (unsigned long)XGAssembleShader);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_DeletePixelShader@4", (unsigned long)D3DDevice_DeletePixelShader);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreatePixelShader@8", (unsigned long)D3DDevice_CreatePixelShader);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetRenderTarget@8", (unsigned long)D3DDevice_SetRenderTarget);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetRenderTarget2@0", (unsigned long)D3DDevice_GetRenderTarget2);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateIndexBuffer2@4", (unsigned long)D3DDevice_CreateIndexBuffer2);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetIndices@8", (unsigned long)D3DDevice_SetIndices);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateVertexShader@16", (unsigned long)D3DDevice_CreateVertexShader);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_DeleteVertexShader@4", (unsigned long)D3DDevice_DeleteVertexShader);
-  g_dlls.xbox_dx8.AddExport("@D3DDevice_SetVertexShaderConstant4@8", (unsigned long)D3DDevice_SetVertexShaderConstant4);
-  g_dlls.xbox_dx8.AddExport("@D3DDevice_SetVertexShaderConstant1@8", (unsigned long)D3DDevice_SetVertexShaderConstant1);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixTranspose@8", (unsigned long)D3DXMatrixTranspose);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixInverse@12", (unsigned long)D3DXMatrixInverse);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixLookAtLH@16", (unsigned long)D3DXMatrixLookAtLH);
-  g_dlls.xbox_dx8.AddExport("@D3DDevice_SetVertexShaderConstant1Fast@8", (unsigned long)D3DDevice_SetVertexShaderConstant1Fast);
-  g_dlls.xbox_dx8.AddExport("@D3DDevice_SetVertexShaderConstantNotInlineFast@12", (unsigned long)D3DDevice_SetVertexShaderConstantNotInlineFast);
-  g_dlls.xbox_dx8.AddExport("D3DXCreateCubeTextureFromFileA@12", (unsigned long)D3DXCreateCubeTextureFromFileA);
-  g_dlls.xbox_dx8.AddExport("D3DXCreateTextureFromFileExA@56", (unsigned long)D3DXCreateTextureFromFileExA);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetDepthStencilSurface2@0", (unsigned long)D3DDevice_GetDepthStencilSurface2);
-  g_dlls.xbox_dx8.AddExport("D3DXMatrixOrthoLH@20", (unsigned long)D3DXMatrixOrthoLH);
-  g_dlls.xbox_dx8.AddExport("Direct3D_GetDeviceCaps@12", (unsigned long)Direct3D_GetDeviceCaps);
-  g_dlls.xbox_dx8.AddExport("D3DSurface_GetDesc@8", (unsigned long)D3DSurface_GetDesc);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetScissors@12", (unsigned long)D3DDevice_SetScissors);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_DrawIndexedVertices@12", (unsigned long)D3DDevice_DrawIndexedVertices);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_BeginVisibilityTest@0", (unsigned long)D3DDevice_BeginVisibilityTest);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_EndVisibilityTest@4", (unsigned long)D3DDevice_EndVisibilityTest);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_GetVisibilityTestResult@12", (unsigned long)D3DDevice_GetVisibilityTestResult);
-  g_dlls.xbox_dx8.AddExport("D3DXCreateMatrixStack@8", (unsigned long)&D3DXCreateMatrixStack);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateSurface2@16", (unsigned long)D3DDevice_CreateSurface2);
-  g_dlls.xbox_dx8.AddExport("D3DDevice_SetViewport@4", (unsigned long)D3DDevice_SetViewport);
+  { "XGBuffer_Release@4",                           -1, XGBuffer_Release,                             NULL },
+  { "XGAssembleShader@44",                          -1, XGAssembleShader,                             NULL },
+  { "D3DDevice_DeletePixelShader@4",                -1, D3DDevice_DeletePixelShader,                  NULL },
+  { "D3DDevice_CreatePixelShader@8",                -1, D3DDevice_CreatePixelShader,                  NULL },
+  { "D3DDevice_SetRenderTarget@8",                  -1, D3DDevice_SetRenderTarget,                    NULL },
+  { "D3DDevice_GetRenderTarget2@0",                 -1, D3DDevice_GetRenderTarget2,                   NULL },
+  { "D3DDevice_CreateIndexBuffer2@4",               -1, D3DDevice_CreateIndexBuffer2,                 NULL },
+  { "D3DDevice_SetIndices@8",                       -1, D3DDevice_SetIndices,                         NULL },
+  { "D3DDevice_CreateVertexShader@16",              -1, D3DDevice_CreateVertexShader,                 NULL },
+  { "D3DDevice_DeleteVertexShader@4",               -1, D3DDevice_DeleteVertexShader,                 NULL },
+  { "@D3DDevice_SetVertexShaderConstant4@8",        -1, D3DDevice_SetVertexShaderConstant4,           NULL },
+  { "@D3DDevice_SetVertexShaderConstant1@8",        -1, D3DDevice_SetVertexShaderConstant1,           NULL },
+  { "D3DXMatrixTranspose@8",                        -1, D3DXMatrixTranspose,                          NULL },
+  { "D3DXMatrixInverse@12",                         -1, D3DXMatrixInverse,                            NULL },
+  { "D3DXMatrixLookAtLH@16",                        -1, D3DXMatrixLookAtLH,                           NULL },
+  { "@D3DDevice_SetVertexShaderConstant1Fast@8",    -1, D3DDevice_SetVertexShaderConstant1Fast,       NULL },
+  { "@D3DDevice_SetVertexShaderConstantNotInlineFast@12",   -1, D3DDevice_SetVertexShaderConstantNotInlineFast, NULL },
+  { "D3DXCreateCubeTextureFromFileA@12",            -1, D3DXCreateCubeTextureFromFileA,               NULL },
+  { "D3DXCreateTextureFromFileExA@56",              -1, D3DXCreateTextureFromFileExA,                 NULL },
+  { "D3DDevice_GetDepthStencilSurface2@0",          -1, D3DDevice_GetDepthStencilSurface2,            NULL },
+  { "D3DXMatrixOrthoLH@20",                         -1, D3DXMatrixOrthoLH,                            NULL },
+  { "Direct3D_GetDeviceCaps@12",                    -1, Direct3D_GetDeviceCaps,                       NULL },
+  { "D3DSurface_GetDesc@8",                         -1, D3DSurface_GetDesc,                           NULL },
+  { "D3DDevice_SetScissors@12",                     -1, D3DDevice_SetScissors,                        NULL },
+  { "D3DDevice_DrawIndexedVertices@12",             -1, D3DDevice_DrawIndexedVertices,                NULL },
+  { "D3DDevice_BeginVisibilityTest@0",              -1, D3DDevice_BeginVisibilityTest,                NULL },
+  { "D3DDevice_EndVisibilityTest@4",                -1, D3DDevice_EndVisibilityTest,                  NULL },
+  { "D3DDevice_GetVisibilityTestResult@12",         -1, D3DDevice_GetVisibilityTestResult,            NULL },
+  { "D3DXCreateMatrixStack@8",                      -1, D3DXCreateMatrixStack,                        NULL },
+  { "D3DDevice_CreateSurface2@16",                  -1, D3DDevice_CreateSurface2,                     NULL },
+  { "D3DDevice_SetViewport@4",                      -1, D3DDevice_SetViewport,                        NULL },
 #endif
-#ifdef WITH_LINKS_BROWSER
-  g_dlls.xbox_dx8.AddExport("XFONT_GetTextHeight@4", (unsigned long)XFONT_GetTextHeight);
-  g_dlls.xbox_dx8.AddExport("XFONT_GetTextStyle@4", (unsigned long)XFONT_GetTextStyle);
-  g_dlls.xbox_dx8.AddExport("XFONT_GetFontMetrics@12", (unsigned long)XFONT_GetFontMetrics);
-  g_dlls.xbox_dx8.AddExport("XFONT_GetTextExtent@16", (unsigned long)XFONT_GetTextExtent);
-  g_dlls.xbox_dx8.AddExport("XFONT_TextOutToMemory@40", (unsigned long)XFONT_TextOutToMemory);
-#endif
-}
-
-void export_xbox___dx8()
-{
-#ifdef _XBOX
-  g_dlls.xbox___dx8.AddExport("_D3DXCreateTexture@32", (unsigned long)&D3DXCreateTexture);
-  g_dlls.xbox___dx8.AddExport("_D3DXCreateTextureFromFileInMemory@16", (unsigned long)&D3DXCreateTextureFromFileInMemory);
-#endif
-}
-
-
-#ifdef WITH_LINKS_BROWSER
-/* That stuff should move to somewhere else I guess... */
-void export_xbox_other()
-{
-  g_dlls.xbox_other.AddExport("XLoadSectionA@4", (unsigned long)XLoadSection);
-  g_dlls.xbox_other.AddExport("XFreeSectionA@4", (unsigned long)XFreeSection);
-  g_dlls.xbox_other.AddExport("XGetSectionSize@4", (unsigned long)XGetSectionSize);
-  g_dlls.xbox_other.AddExport("XGetSectionHandleA@4", (unsigned long)XGetSectionHandle);
-}
-#endif WITH_LINKS_BROWSER
+  { NULL,                                         NULL, NULL,                                         NULL }
+};

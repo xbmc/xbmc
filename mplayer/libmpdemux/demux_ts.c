@@ -72,6 +72,7 @@ typedef enum
 	VIDEO_MPEG4 	= 0x10000004,
 	VIDEO_H264 	= 0x10000005,
 	VIDEO_AVC	= mmioFOURCC('a', 'v', 'c', '1'),
+	VIDEO_VC1	= mmioFOURCC('W', 'V', 'C', '1'),
 	AUDIO_MP2   	= 0x50,
 	AUDIO_A52   	= 0x2000,
 	AUDIO_DTS	= 0x2001,
@@ -235,6 +236,9 @@ typedef struct {
 	int last_vid;
 	char packet[TS_FEC_PACKET_SIZE];
 	TS_stream_info vstr, astr;
+#ifdef _XBOX
+	float first_pts;
+#endif
 } ts_priv_t;
 
 
@@ -245,10 +249,9 @@ typedef struct {
 
 
 #define IS_AUDIO(x) (((x) == AUDIO_MP2) || ((x) == AUDIO_A52) || ((x) == AUDIO_LPCM_BE) || ((x) == AUDIO_AAC) || ((x) == AUDIO_DTS))
-#define IS_VIDEO(x) (((x) == VIDEO_MPEG1) || ((x) == VIDEO_MPEG2) || ((x) == VIDEO_MPEG4) || ((x) == VIDEO_H264) || ((x) == VIDEO_AVC))
+#define IS_VIDEO(x) (((x) == VIDEO_MPEG1) || ((x) == VIDEO_MPEG2) || ((x) == VIDEO_MPEG4) || ((x) == VIDEO_H264) || ((x) == VIDEO_AVC)  || ((x) == VIDEO_VC1))
 
 static int ts_parse(demuxer_t *demuxer, ES_stream_t *es, unsigned char *packet, int probe);
-extern void resync_audio_stream( sh_audio_t *sh_audio );
 
 static uint8_t get_packet_size(const unsigned char *buf, int size)
 {
@@ -723,6 +726,11 @@ static off_t ts_detect_streams(demuxer_t *demuxer, tsdemux_init_t *param)
 					continue;
 			}
 
+#ifdef _XBOX
+			if(!priv->first_pts && es.pts)
+				priv->first_pts = es.pts;
+#endif
+
 			if(req_apid < 0 && (param->alang[0] == 0) && req_vpid < 0 && req_spid < 0)
 				chosen_pid = 1;
 
@@ -839,6 +847,8 @@ static off_t ts_detect_streams(demuxer_t *demuxer, tsdemux_init_t *param)
 			mp_msg(MSGT_DEMUXER, MSGL_INFO, "VIDEO MPEG4(pid=%d) ", param->vpid);
 		else if(param->vtype == VIDEO_H264)
 			mp_msg(MSGT_DEMUXER, MSGL_INFO, "VIDEO H264(pid=%d) ", param->vpid);
+		else if(param->vtype == VIDEO_VC1)
+			mp_msg(MSGT_DEMUXER, MSGL_INFO, "VIDEO VC1(pid=%d) ", param->vpid);
 		else if(param->vtype == VIDEO_AVC)
 			mp_msg(MSGT_DEMUXER, MSGL_INFO, "VIDEO AVC(NAL-H264, pid=%d) ", param->vpid);
 	}
@@ -1016,6 +1026,9 @@ demuxer_t *demux_open_ts(demuxer_t * demuxer)
 
 	if(params.atype != UNKNOWN)
 	{
+		ES_stream_t *es = priv->ts.pids[params.apid]; 
+		
+		if(!IS_AUDIO(es->type) && !IS_AUDIO(es->subtype) && IS_AUDIO(params.atype)) es->subtype = params.atype;
 		ts_add_stream(demuxer, priv->ts.pids[params.apid]);
 		sh_audio = priv->ts.streams[params.apid].sh;
 		demuxer->audio->id = priv->ts.streams[params.apid].id;
@@ -1419,7 +1432,7 @@ static int pes_parse2(unsigned char *buf, uint16_t packet_len, ES_stream_t *es, 
 			return 1;
 		}
 	}
-	else if((stream_id >= 0xe0) && (stream_id <= 0xef))
+	else if(((stream_id >= 0xe0) && (stream_id <= 0xef)) || (stream_id == 0xfd && type_from_pmt != UNKNOWN))
 	{
 		es->start   = p;
 		es->size    = packet_len;
@@ -1505,7 +1518,7 @@ static int ts_sync(stream_t *stream)
 {
 	int c=0;
 
-	mp_msg(MSGT_DEMUX, MSGL_DBG2, "TS_SYNC \n");
+	mp_msg(MSGT_DEMUX, MSGL_DBG3, "TS_SYNC \n");
 
 	while(((c=stream_read_char(stream)) != 0x47) && ! stream->eof);
 
@@ -2204,6 +2217,10 @@ static int parse_descriptors(struct pmt_es_t *es, uint8_t *ptr)
 				{
 					es->type = AUDIO_DTS;
 				}
+				else if(d[0] == 'V' && d[1] == 'C' && d[2] == '-' && d[3] == '1')
+				{
+					es->type = AUDIO_DTS;
+				}
 				else
 					es->type = UNKNOWN;
 				mp_msg(MSGT_DEMUX, MSGL_DBG2, "FORMAT %s\n", es->format_descriptor);
@@ -2398,6 +2415,9 @@ static int parse_pmt(ts_priv_t * priv, uint16_t progid, uint16_t pid, int is_sta
 			case 0x8A:
 				pmt->es[idx].type = AUDIO_DTS;
 				break;
+			case 0xEA:
+				pmt->es[idx].type = VIDEO_VC1;
+				break;
 			default:
 				mp_msg(MSGT_DEMUX, MSGL_DBG2, "UNKNOWN ES TYPE=0x%x\n", es_type);
 				pmt->es[idx].type = UNKNOWN;
@@ -2535,7 +2555,7 @@ static int fill_packet(demuxer_t *demuxer, demux_stream_t *ds, demux_packet_t **
 				if(abs(diff) > 1) //1 second, there's a discontinuity
 				{
 					si->duration += si->last_pts - si->first_pts;
-					si->first_pts = si->last_pts = (*dp)->pts;
+					si->first_pts = si->last_pts = (*dp)->pts;          
 				}
 				else
 				{
@@ -3024,7 +3044,6 @@ static int ts_parse(demuxer_t *demuxer , ES_stream_t *es, unsigned char *packet,
 }
 
 
-extern void resync_audio_stream(sh_audio_t *sh_audio);
 extern void skip_audio_frame(sh_audio_t *sh_audio);
 
 static void reset_fifos(ts_priv_t* priv, int a, int v, int s)
@@ -3105,7 +3124,6 @@ void demux_seek_ts(demuxer_t *demuxer, float rel_seek_secs, int flags)
 	else
 	{
 		// time seek (secs)
-
 		if(! video_stats) // unspecified or VBR
 			newpos += 2324*75*rel_seek_secs; // 174.3 kbyte/sec
 		else
@@ -3156,13 +3174,13 @@ void demux_seek_ts(demuxer_t *demuxer, float rel_seek_secs, int flags)
 		{
 			if(i==0x1B3 || i==0x1B8) break; // found it!
 		}
-		else if(sh_video->format == VIDEO_MPEG4)
-		{
-			if(i==0x1B6) break; // found it!
-		}
+		else if((sh_video->format == VIDEO_MPEG4) && (i==0x1B6))
+			break;
+		else if(sh_video->format == VIDEO_VC1 && (i==0x10E || i==0x10F))
+			break;
 		else	//H264
 		{
-			if((i & ~0x60) == 0x101 || (i & ~0x60) == 0x102 || (i & ~0x60) == 0x105) break;
+			if((i & ~0x60) == 0x105) break;
 		}
 
 		if(!i || !skip_video_packet(d_video)) break; // EOF?
@@ -3202,4 +3220,183 @@ static int is_usable_program(ts_priv_t *priv, pmt_t *pmt)
 	return 0;
 }
 
+int demux_ts_control(demuxer_t *demuxer, int cmd, void *arg)
+{
+	ts_priv_t* priv = (ts_priv_t *)demuxer->priv;
 
+	switch(cmd)
+	{
+		case DEMUXER_CTRL_SWITCH_AUDIO:
+		case DEMUXER_CTRL_SWITCH_VIDEO:
+		{
+			void *sh = NULL;
+			int i, n;
+			int reftype, areset = 0, vreset = 0;
+			demux_stream_t *ds;
+			
+			if(cmd == DEMUXER_CTRL_SWITCH_VIDEO)
+			{
+				reftype = TYPE_VIDEO;
+				ds = demuxer->video;
+				vreset  = 1;
+			}
+			else
+			{
+				reftype = TYPE_AUDIO;
+				ds = demuxer->audio;
+				areset = 1;
+			}
+			n = *((int*)arg);
+			if(n == -2)
+			{
+				reset_fifos(priv, areset, vreset, 0);
+				ds->id = -2;
+				ds->sh = NULL;
+				ds_free_packs(ds);
+				*((int*)arg) = ds->id;
+				return DEMUXER_CTRL_OK;
+			}
+
+			if(n < 0)
+			{
+				for(i = 0; i < 8192; i++)
+				{
+					if(priv->ts.streams[i].id == ds->id && priv->ts.streams[i].type == reftype)
+						break;
+				}
+
+				while(!sh)
+				{
+					i = (i+1) % 8192;
+					if(priv->ts.streams[i].type == reftype)
+					{
+						if(priv->ts.streams[i].id == ds->id)	//we made a complete loop
+							break;
+						sh = priv->ts.streams[i].sh;
+					}
+				}
+			}
+			else	//audio track <n>
+			{
+				for(i = 0; i < 8192; i++)
+				{
+					if(priv->ts.streams[i].id == n && priv->ts.streams[i].type == reftype)
+					{
+						sh = priv->ts.streams[i].sh;
+						break;
+					}
+				}
+			}
+
+			if(sh)
+			{
+				if(ds->id != priv->ts.streams[i].id)
+					reset_fifos(priv, areset, vreset, 0);
+				ds->id = priv->ts.streams[i].id;
+				ds->sh = sh;
+				ds_free_packs(ds);
+				mp_msg(MSGT_DEMUX, MSGL_V, "\r\ndemux_ts, switched to audio pid %d, id: %d, sh: %p\r\n", i, ds->id, sh);
+			}
+
+			*((int*)arg) = ds->id;
+			return DEMUXER_CTRL_OK;
+		}
+
+		case DEMUXER_CTRL_IDENTIFY_PROGRAM:		//returns in prog->{aid,vid} the new ids that comprise a program
+		{
+			int i, j, cnt=0;
+			int vid_done=0, aid_done=0;
+			pmt_t *pmt = NULL;
+			demux_program_t *prog = arg;
+
+			if(priv->pmt_cnt < 2)
+				return DEMUXER_CTRL_NOTIMPL;
+
+			if(prog->progid == -1)
+			{
+				int cur_pmt_idx = 0;
+
+				for(i = 0; i < priv->pmt_cnt; i++)
+					if(priv->pmt[i].progid == priv->prog)
+					{
+						cur_pmt_idx = i;
+						break;
+					}
+
+				i = (cur_pmt_idx + 1) % priv->pmt_cnt;
+				while(i != cur_pmt_idx)
+				{
+					pmt = &priv->pmt[i];
+					cnt = is_usable_program(priv, pmt);
+					if(cnt)
+						break;
+					i = (i + 1) % priv->pmt_cnt;
+				}
+			}
+			else
+			{
+				for(i = 0; i < priv->pmt_cnt; i++)
+					if(priv->pmt[i].progid == prog->progid)
+					{
+						pmt = &priv->pmt[i]; //required program
+						cnt = is_usable_program(priv, pmt);
+					}
+			}
+
+			if(!cnt)
+				return DEMUXER_CTRL_NOTIMPL;
+
+			//finally some food
+			prog->aid = prog->vid = -2;	//no audio and no video by default
+			for(j = 0; j < pmt->es_cnt; j++)
+			{
+				if(priv->ts.pids[pmt->es[j].pid] == NULL || priv->ts.streams[pmt->es[j].pid].sh == NULL)
+					continue;
+
+				if(!vid_done && priv->ts.streams[pmt->es[j].pid].type == TYPE_VIDEO)
+				{
+					vid_done = 1;
+					prog->vid = priv->ts.streams[pmt->es[j].pid].id;
+				}
+				else if(!aid_done && priv->ts.streams[pmt->es[j].pid].type == TYPE_AUDIO)
+				{
+					aid_done = 1;
+					prog->aid = priv->ts.streams[pmt->es[j].pid].id;
+				}
+			}
+
+			priv->prog = prog->progid = pmt->progid;
+			return DEMUXER_CTRL_OK;
+		}
+    case DEMUXER_CTRL_GET_TIME_LENGTH:
+      if(priv->vbitrate)
+      {
+        *((unsigned long *)arg) = (demuxer->movi_end-demuxer->movi_start) / priv->vbitrate;
+        return DEMUXER_CTRL_GUESS;
+      }
+      return DEMUXER_CTRL_DONTKNOW;
+    case DEMUXER_CTRL_GET_TIME_START:
+      *((float *)arg) = (float)priv->first_pts;
+      return DEMUXER_CTRL_OK;
+
+		default:
+			return DEMUXER_CTRL_NOTIMPL;
+	}
+}
+
+
+demuxer_desc_t demuxer_desc_mpeg_ts = {
+  "MPEG-TS demuxer",
+  "mpegts",
+  "TS",
+  "Nico Sabbi",
+  "",
+  DEMUXER_TYPE_MPEG_TS,
+  0, // unsafe autodetect
+  ts_check_file_dmx,
+  demux_ts_fill_buffer,
+  demux_open_ts,
+  demux_close_ts,
+  demux_seek_ts,
+  demux_ts_control
+};

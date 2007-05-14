@@ -47,7 +47,23 @@ typedef struct
 #undef getsockname
 #undef accept
 #undef select
-
+//#undef FD_ISSET
+//#define FD_ISSET(fd, set) __WSAFDIsSet((SOCKET)(fd), (fd_set FAR *)(set)) //dirty again
+/*#undef FD_SET
+#define FD_SET(fd, set) do { \
+    u_int __i; \
+    for (__i = 0; __i < ((fd_set FAR *)(set))->fd_count; __i++) { \
+        if (((fd_set FAR *)(set))->fd_array[__i] == (fd)) { \
+            break; \
+        } \
+    } \
+    if (__i == ((fd_set FAR *)(set))->fd_count) { \
+        if (((fd_set FAR *)(set))->fd_count < FD_SETSIZE) { \
+            ((fd_set FAR *)(set))->fd_array[__i] = (fd); \
+            ((fd_set FAR *)(set))->fd_count++; \
+        } \
+    } \
+} while(0) */
 
 xbox_fd_t xbox_fd[MAX_FDS];
 
@@ -299,6 +315,18 @@ int xbox_pipe(int *fd)
 	goto again;
 }
 
+
+void xbox_set_fd_to_fdset(int fd, fd_set FAR *set)
+{
+  switch(xbox_get_fd_type(fd))
+  {
+    case FD_TYPE_SOCKET:
+      FD_SET(xbox_get_socket(fd), set);
+      break;
+    default:
+      break;
+  }
+}
 
 inline void xbox_set_fdset(struct fd_set *in, struct fd_set *out, int fd, int *s, int type)
 {

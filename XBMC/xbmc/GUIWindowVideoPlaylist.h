@@ -15,7 +15,9 @@ protected:
   virtual void UpdateButtons();
   void MarkPlaying();
 
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
   void OnMove(int iItem, int iAction);
 
   void ClearPlayList();
@@ -25,6 +27,6 @@ protected:
 
   void SavePlayList();
 
-  int iPos;
+  int m_movingFrom;
   VECSHARES m_shares;
 };

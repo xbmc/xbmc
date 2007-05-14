@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "Utils/GUIInfoManager.h"
 #include "Application.h"
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
 #include "Filesystem/PlaylistFileDirectory.h"
 #include "PlaylistM3U.h"
@@ -55,6 +54,15 @@ bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
   if (action.wID == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
   { // don't go to parent folder unless we're on the list in question
     m_gWindowManager.PreviousWindow();
+    return true;
+  }
+  if (action.wID == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)
+  {
+    int item = GetCurrentPlaylistItem();
+    if (item >= 0)
+      m_playlist[item]->Select(true);
+    if (!OnPopupMenu(-1) && item >= 0 && item < m_playlist.Size())
+      m_playlist[item]->Select(false);
     return true;
   }
   return CGUIWindowMusicBase::OnAction(action);
@@ -143,7 +151,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory,
     CFileItem *db = new CFileItem("musicdb://", true);
     db->SetLabel(g_localizeStrings.Get(14022));
     db->SetLabelPreformated(true);
-    files->m_bIsShareOrDrive = true;
+    db->m_bIsShareOrDrive = true;
     items.m_strPath = "";
     items.Add(db);
     return true;
@@ -263,6 +271,7 @@ void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
 
   for (int i = 0; i < m_playlist.Size(); i++)
   {
+    m_playlist[i]->Select(false);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLAYLIST, 0, 0, (void*)m_playlist[i]);
     OnMessage(msg);
   }
@@ -306,73 +315,54 @@ void CGUIWindowMusicPlaylistEditor::OnMovePlaylistItem(int item, int direction)
   OnMessage(msg);
 }
 
-void CGUIWindowMusicPlaylistEditor::OnPopupMenu(int item, bool bContextDriven /* = true */)
+void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
-  // initialize the menu (loaded on demand)
-  pMenu->Initialize();
-
-  // contextual buttons
-  int btn_Add = 0;
-  int btn_MoveUp = 0;
-  int btn_MoveDown = 0;
-
-  if (bContextDriven)
+  if (GetFocusedControlID() == CONTROL_PLAYLIST)
   {
-    if (item >= 0 && item < m_vecItems.Size() && !m_vecItems[item]->IsParentFolder() && !m_vecItems[item]->m_bIsShareOrDrive)
-      btn_Add = pMenu->AddButton(15019);
-    else
-      bContextDriven = false;
+    int playlistItem = GetCurrentPlaylistItem();
+    if (playlistItem > 0)
+      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
+    if (playlistItem >= 0 && playlistItem < m_playlist.Size())
+      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
   }
-  else if (GetFocusedControlID() == CONTROL_PLAYLIST)
-  {
-    item = GetCurrentPlaylistItem();
-    if (item > 0)
-      btn_MoveUp = pMenu->AddButton(13332);
-    if (item >= 0 && item < m_playlist.Size())
-      btn_MoveDown = pMenu->AddButton(13333);
-  }
+  else if (item && !item->IsParentFolder() && !m_vecItems.IsVirtualDirectoryRoot())
+    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 15019);
 
-  int btn_Save = 0;
-  int btn_Clear = 0;
-  int btn_Load = 0;
   if (m_playlist.Size())
   {
-    btn_Save = pMenu->AddButton(190);
-    btn_Clear = pMenu->AddButton(386);
+    buttons.Add(CONTEXT_BUTTON_SAVE, 190);
+    buttons.Add(CONTEXT_BUTTON_CLEAR, 386);
   }
-  btn_Load = pMenu->AddButton(21385);
+  buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
+}
 
-  // position it correctly
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = bContextDriven ? GetControl(CONTROL_LIST) : GetControl(CONTROL_PLAYLIST);
-  if (pList)
+bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  switch (button)
   {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  case CONTEXT_BUTTON_MOVE_ITEM_UP:
+    OnMovePlaylistItem(GetCurrentPlaylistItem(), -1);
+    return true;
 
-  // show dialog
-  pMenu->DoModal();
-  int button = pMenu->GetButton();
+  case CONTEXT_BUTTON_MOVE_ITEM_DOWN:
+    OnMovePlaylistItem(GetCurrentPlaylistItem(), 1);
+    return true;
 
-  if (button == btn_Add)
-    OnQueueItem(item);
-  else if (button == btn_MoveUp)
-    OnMovePlaylistItem(item, -1);
-  else if (button == btn_MoveDown)
-    OnMovePlaylistItem(item, 1);
-  else if (button == btn_Save)
+  case CONTEXT_BUTTON_SAVE:
     OnSavePlaylist();
-  else if (button == btn_Clear)
+    return true;
+
+  case CONTEXT_BUTTON_CLEAR:
     ClearPlaylist();
-  else if (button == btn_Load)
+    return true;
+
+  case CONTEXT_BUTTON_LOAD:
     OnLoadPlaylist();
+    return true;
+  }
+  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
@@ -386,7 +376,7 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
   share.strName = g_localizeStrings.Get(20011);
   share.strPath = "special://musicplaylists/";
   shares.push_back(share);
-  if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".m3u|.pls|.b4s|.wpl", g_localizeStrings.Get(559), playlist))
+  if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".m3u|.pls|.b4s|.wpl", g_localizeStrings.Get(656), playlist))
     LoadPlaylist(playlist);
 }
 

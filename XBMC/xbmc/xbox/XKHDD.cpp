@@ -49,7 +49,7 @@
 **
 ******************************************************************************************************
 */
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "XKHDD.h"
 #include "XKRC4.h"
 #include "XKSHA1.h"

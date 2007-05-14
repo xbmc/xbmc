@@ -169,3 +169,19 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
 
   return true;
 }
+
+void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &buttons)
+{
+  CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+  buttons.Add(CONTEXT_BUTTON_INFO, 654);
+}
+
+bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  if (button == CONTEXT_BUTTON_INFO)
+  {
+    OnInfo();
+    return true;
+  }
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}

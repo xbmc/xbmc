@@ -30,8 +30,8 @@ public:
   virtual ~CGUIListControlEx(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouseOver();
-  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual bool CanFocus() const;

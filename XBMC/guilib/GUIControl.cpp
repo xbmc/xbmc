@@ -195,13 +195,13 @@ bool CGUIControl::HasFocus(void) const
   return m_bHasFocus;
 }
 
-void CGUIControl::SetFocus(bool bOnOff)
+void CGUIControl::SetFocus(bool focus)
 {
-  if (m_bHasFocus && !bOnOff)
+  if (m_bHasFocus && !focus)
     QueueAnimation(ANIM_TYPE_UNFOCUS);
-  else if (!m_bHasFocus && bOnOff)
+  else if (!m_bHasFocus && focus)
     QueueAnimation(ANIM_TYPE_FOCUS);
-  m_bHasFocus = bOnOff;
+  m_bHasFocus = focus;
 }
 
 bool CGUIControl::OnMessage(CGUIMessage& message)
@@ -376,24 +376,20 @@ void CGUIControl::SetVisible(bool bVisible)
   }*/
 }
 
-bool CGUIControl::HitTest(float posX, float posY) const
+bool CGUIControl::HitTest(const CPoint &point) const
 {
-  if( posX >= g_graphicsContext.ScaleFinalXCoord(m_posX, m_posY)
-   && posX <= g_graphicsContext.ScaleFinalXCoord(m_posX + m_width, m_posY)
-   && posY >= g_graphicsContext.ScaleFinalYCoord(m_posX, m_posY)
-   && posY <= g_graphicsContext.ScaleFinalYCoord(m_posX, m_posY + m_height) )
-    return true;
-  return false;
+  CRect rect(m_posX, m_posY, m_width, m_height);
+  return rect.PtInRect(point);
 }
 
 // override this function to implement custom mouse behaviour
-bool CGUIControl::OnMouseOver()
+bool CGUIControl::OnMouseOver(const CPoint &point)
 {
   if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
-  SendWindowMessage(msg);
+  OnMessage(msg);
   return true;
 }
 
@@ -646,15 +642,24 @@ DWORD CGUIControl::GetNextControl(int direction) const
   }
 }
 
-bool CGUIControl::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+// input the point with respect to this control to hit, and return
+// the control and the point with respect to his control if we have a hit
+bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
-  if (CanFocus() && HitTest(posX, posY))
+  if (CanFocus() && HitTest(point))
   {
     *control = (CGUIControl *)this;
+    controlPoint = point;
     return true;
   }
   *control = NULL;
   return false;
+}
+
+void CGUIControl::UnfocusFromPoint(const CPoint &point)
+{
+  if (!HitTest(point))
+    SetFocus(false);
 }
 
 bool CGUIControl::HasID(DWORD dwID) const

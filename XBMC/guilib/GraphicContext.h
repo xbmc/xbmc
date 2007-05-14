@@ -84,6 +84,7 @@ public:
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
+  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
   int GetFPS() const;
   bool SendMessage(CGUIMessage& message);
   void setMessageSender(IMsgSenderCallback* pCallback);
@@ -120,6 +121,7 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
 
+  void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const;
   inline float ScaleFinalYCoord(float x, float y) const;
   inline void ScaleFinalCoords(float &x, float &y) const;
@@ -153,6 +155,7 @@ protected:
   D3DPRESENT_PARAMETERS* m_pd3dParams;
   int m_iScreenHeight;
   int m_iScreenWidth;
+  int m_iBackBufferCount;
   DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;

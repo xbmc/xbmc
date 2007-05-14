@@ -27,7 +27,7 @@ void CGUIWebBrowserControl::PreAllocResources()
 
 bool CGUIWebBrowserControl::OnMessage(class CGUIMessage &message)
 {
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (pLB && message.GetMessage() == GUI_MSG_SETFOCUS)
     pLB->SetFocus(true);
   return CGUIControl::OnMessage(message);
@@ -35,7 +35,7 @@ bool CGUIWebBrowserControl::OnMessage(class CGUIMessage &message)
 
 bool CGUIWebBrowserControl::OnAction(const CAction &action)
 {
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (!pLB) return CGUIControl::OnAction(action);
   switch (action.wID)
   {
@@ -127,7 +127,7 @@ bool CGUIWebBrowserControl::OnMouseOver()
   float posX = g_Mouse.posX - m_realPosX;
   float posY = g_Mouse.posY - m_realPosY;
 
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (!pLB) return false;
   
   pLB->MouseAction((int)posX, (int)posY, LINKSBOKS_MOUSE_MOVE);
@@ -137,7 +137,7 @@ bool CGUIWebBrowserControl::OnMouseOver()
 
 bool CGUIWebBrowserControl::OnMouseWheel()
 {
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (!pLB) return false;
   
   float posX = g_Mouse.posX - m_realPosX;
@@ -156,7 +156,7 @@ bool CGUIWebBrowserControl::OnMouseClick(DWORD dwButton)
   float posX = g_Mouse.posX - m_realPosX;
   float posY = g_Mouse.posY - m_realPosY;
 
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (!pLB) return false;
   
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
@@ -179,10 +179,10 @@ void CGUIWebBrowserControl::AllocResources()
 
   /* if the window already exists, we're recovering
   from freeze mode, so don't create it again */
-  if (!g_browserManager.GetWindow())
-    g_browserManager.CreateWindow(m_realWidth, m_realHeight);
+  if (!g_browserManager.GetBrowserWindow())
+    g_browserManager.CreateBrowserWindow(m_realWidth, m_realHeight);
 
-  g_browserManager.GetWindow()->RedrawWindow();
+  g_browserManager.GetBrowserWindow()->RedrawWindow();
 
   CGUIControl::AllocResources();
 }
@@ -195,7 +195,7 @@ void CGUIWebBrowserControl::FreeResources()
 void CGUIWebBrowserControl::Render()
 {
   LPDIRECT3DSURFACE8 pBackBuffer;
-  ILinksBoksWindow *pWindow = g_browserManager.GetWindow();
+  ILinksBoksWindow *pWindow = g_browserManager.GetBrowserWindow();
   if (pWindow)
   {
     g_graphicsContext.SetScalingResolution(m_gWindowManager.GetWindow(GetParentID())->GetCoordsRes(), 0, 0, true);

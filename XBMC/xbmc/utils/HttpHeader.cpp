@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "HttpHeader.h"
 
 CHttpHeader::CHttpHeader()

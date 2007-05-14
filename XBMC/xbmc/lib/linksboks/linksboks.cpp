@@ -9,15 +9,16 @@ extern "C" {
 
 #ifdef XBMC_LINKS_DLL
 #pragma comment (lib, "lib/xbox_dx8.lib" )
-#pragma comment (lib, "lib/xbox_other.lib" )
 #pragma comment (lib, "lib/winsockx.lib" )
 #endif
 
+#ifdef XBOX_USE_SECTIONS
 // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
 LPDIRECT3D8			g_pLBD3D;			/* Provided d3d object */
 LPDIRECT3DDEVICE8	g_pLBd3dDevice;		/* Provided d3d device object */
@@ -580,11 +581,13 @@ int LinksBoks_InitCore(unsigned char *homedir, LinksBoksOption *options[], Links
 
     printf("[=LinksBoks=] Starting Core\n");
 
+#ifdef XBOX_USE_SECTIONS
 	XLoadSection("LBKS_RD");
 	XLoadSection("LBKS_RW");
 	XLoadSection("LBKSDATA");
 	XLoadSection("LNKSBOKS");
 	//XLoadSection("BFONTS"); done when it's needed anyway
+#endif
 
     printf("[=LinksBoks=] Registering protocols and custom options\n");
     
@@ -671,6 +674,7 @@ VOID LinksBoks_Terminate(BOOL bFreeXBESections)
 	check_memory_leaks();
 #endif
 
+#ifdef XBOX_USE_SECTIONS
 	if(bFreeXBESections)
 	{
 		XFreeSection("LBKS_RD");
@@ -679,6 +683,7 @@ VOID LinksBoks_Terminate(BOOL bFreeXBESections)
 		XFreeSection("LNKSBOKS");
 		XFreeSection("BFONTS");
 	}
+#endif
 
 	g_bLinksBoksCoreIsOn = false;
 }
@@ -687,12 +692,15 @@ VOID LinksBoks_FreezeCore(void)
 {
     printf("[=LinksBoks=] Freezing core!\n");
     
-	LinksBoks_EmptyCaches();	
+	LinksBoks_EmptyCaches();
+
+#ifdef XBOX_USE_SECTIONS
 	XFreeSection("LBKS_RD");
 	//XFreeSection("LBKS_RW");
 	XFreeSection("LBKSDATA");
 	XFreeSection("LNKSBOKS");
 	XFreeSection("BFONTS");
+#endif
 
 	g_bLinksBoksCoreIsOn = false;
 }
@@ -700,12 +708,14 @@ VOID LinksBoks_FreezeCore(void)
 VOID LinksBoks_UnfreezeCore(void)
 {
     printf("[=LinksBoks=] Unfreezing core!\n");
-  
+
+#ifdef XBOX_USE_SECTIONS
     XLoadSection("LBKS_RD");
 	//XLoadSection("LBKS_RW");
 	XLoadSection("LBKSDATA");
 	XLoadSection("LNKSBOKS");
 	XLoadSection("BFONTS"); // the position in memory should remain the same...
+#endif
 
 	g_bLinksBoksCoreIsOn = true;
 }

@@ -756,3 +756,33 @@ bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
   }
   return left->m_bIsFolder;
 }
+
+
+bool SSortFileItem::SongRatingAscending(CFileItem *left, CFileItem *right)
+{
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    if (left->GetMusicInfoTag()->GetRating() < right->GetMusicInfoTag()->GetRating()) return true;
+    if (left->GetMusicInfoTag()->GetRating() > right->GetMusicInfoTag()->GetRating()) return false;
+    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetTitle().c_str(), right->GetMusicInfoTag()->GetTitle().c_str()) >= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::SongRatingDescending(CFileItem *left, CFileItem *right)
+{
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    // currently we just compare rating, then title
+    if (left->GetMusicInfoTag()->GetRating() < right->GetMusicInfoTag()->GetRating()) return false;
+    if (left->GetMusicInfoTag()->GetRating() > right->GetMusicInfoTag()->GetRating()) return true;
+    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetTitle().c_str(), right->GetMusicInfoTag()->GetTitle().c_str()) <= 0;
+  }
+  return left->m_bIsFolder;
+}

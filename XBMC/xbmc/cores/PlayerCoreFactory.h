@@ -1,5 +1,5 @@
 #pragma once
-#include "..\stdafx.h"
+
 #include "iplayer.h"
 
 const enum EPLAYERCORES
@@ -31,7 +31,7 @@ public:
 
   static EPLAYERCORES GetDefaultPlayer( const CFileItem& item );
 
-  static EPLAYERCORES SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX, float posY);
+  static EPLAYERCORES SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX = 0, float posY = 0);
   static EPLAYERCORES SelectPlayerDialog(float posX, float posY);
   
 };

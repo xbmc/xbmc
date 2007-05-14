@@ -1,6 +1,6 @@
 
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include <stdio.h>
 //#include <xobjbase.h>
 #ifndef _XBOX
@@ -818,4 +818,46 @@ extern "C" int WINAPI dllwsprintfA(char* string, const char* format, ...)
   CLog::Log(LOGDEBUG, "wsprintfA(0x%x, '%s', ...) => %d\n", string, format, result);
   va_end(va);
   return result;
+}
+
+extern "C" BOOL WINAPI dllGetCursorPos(LPPOINT lpPoint)
+{
+  CLog::Log(LOGDEBUG, "GetCursorPos() -> false");
+  return FALSE;
+}
+
+extern "C" HCURSOR WINAPI dllLoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName)
+{
+  CLog::Log(LOGDEBUG, "LoadCursor() -> NULL");
+  return NULL;
+}
+
+extern "C" HCURSOR WINAPI dllSetCursor(HCURSOR hCursor)
+{
+  CLog::Log(LOGDEBUG, "SetCursor() -> NULL");
+  return NULL;
+}
+
+extern "C" UINT WINAPI dllRegisterWindowMessageA(LPCSTR lpString)
+{
+  CLog::Log(LOGDEBUG, "RegisterWindowMessage() -> 0");
+  return 0;
+}
+
+extern "C" HBRUSH WINAPI dllGetSysColorBrush(int nIndex) 
+{
+  CLog::Log(LOGDEBUG, "GetSysColorBrush() -> NULL");
+  return NULL;
+}
+
+extern "C" DWORD WINAPI dllGetSysColor(int nIndex)
+{
+  CLog::Log(LOGDEBUG, "GetSysColor() -> 0");
+  return 1;
+}
+
+extern "C" UINT WINAPI dllRegisterClipboardFormatA(LPCSTR lpszFormat)
+{
+  CLog::Log(LOGDEBUG, "RegisterClipboardFormatA() -> 0");
+  return 0;
 }

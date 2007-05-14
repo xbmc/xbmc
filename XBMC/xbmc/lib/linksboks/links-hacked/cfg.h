@@ -18,10 +18,12 @@
 #ifndef __XBOX__
 #define __XBOX__
 
+#if XBOX_USE_SECTIONS
 #pragma code_seg( "LNKSBOKS" )
 #pragma data_seg( "LBKS_RW" )
 #pragma bss_seg( "LBKS_RW" )
 #pragma const_seg( "LBKS_RD" )
+#endif
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
@@ -54,9 +56,12 @@
 #define aspect				linksboks_aspect
 #define error				linksboks_error
 
+#ifdef XBMC_LINKS_DLL
 #ifdef XBOX_USE_FREETYPE
 #define HAVE_FREETYPE
+/* assumes XBMC */
 #pragma comment (lib, "../../../guilib/freetype2/freetype221.lib" )
+#endif
 #endif
 
 #endif

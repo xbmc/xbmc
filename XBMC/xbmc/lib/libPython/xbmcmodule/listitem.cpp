@@ -1,4 +1,4 @@
-#include "../../../stdafx.h"
+#include "stdafx.h"
 #include "..\python\python.h"
 #include "listitem.h"
 #include "pyutil.h"
@@ -95,7 +95,10 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the listitem label.");
+    "getLabel() -- Returns the listitem label."
+    "\n"
+    "example:\n"
+    "  - label = self.list.getSelectedItem().getLabel()\n");
 
   PyObject* ListItem_GetLabel(ListItem *self, PyObject *args)
   {
@@ -109,7 +112,10 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getLabel2__doc__,
-    "getLabel2() -- Returns the listitem's second label.");
+    "getLabel2() -- Returns the listitem's second label."
+    "\n"
+    "example:\n"
+    "  - label2 = self.list.getSelectedItem().getLabel2()\n");
 
   PyObject* ListItem_GetLabel2(ListItem *self, PyObject *args)
   {
@@ -123,7 +129,12 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setLabel__doc__,
-    "setLabel(string label) -- Sets the listitem's label.");
+    "setLabel(label) -- Sets the listitem's label."
+    "\n"
+    "label          : string or unicode - text string.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setLabel('Casino Royale')\n");
 
   PyObject* ListItem_SetLabel(ListItem *self, PyObject *args)
   {
@@ -145,8 +156,13 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setLabel2__doc__,
-    "setLabel2(string label) -- Sets the listitem's second label.");
-
+    "setLabel2(label2) -- Sets the listitem's second label."
+    "\n"
+    "label2         : string or unicode - text string.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setLabel2('[pg-13]')\n");
+  
   PyObject* ListItem_SetLabel2(ListItem *self, PyObject *args)
   {
     PyObject* unicodeLine = NULL;
@@ -167,7 +183,12 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setIconImage__doc__,
-    "setIconImage(string iconName) -- Sets the listitem's icon image.");
+    "setIconImage(icon) -- Sets the listitem's icon image."
+    "\n"
+    "thumb           : string - image filename.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setIconImage('emailread.png')\n");
 
   PyObject* ListItem_SetIconImage(ListItem *self, PyObject *args)
   {
@@ -186,7 +207,12 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setThumbnailImage__doc__,
-    "setThumbnailImage(string iconName) -- Sets the listitem's thumbnail image.");
+    "setThumbnailImage(thumb) -- Sets the listitem's thumbnail image."
+    "\n"
+    "thumb           : string - image filename.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setThumbnailImage('emailread.png')\n");
 
   PyObject* ListItem_SetThumbnailImage(ListItem *self, PyObject *args)
   {
@@ -204,6 +230,46 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(select__doc__,
+    "select(selected) -- Sets the listitem's selected status.\n"
+    "\n"
+    "selected        : bool - True=selected/False=not selected\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().select(True)\n");
+
+  PyObject* ListItem_Select(ListItem *self, PyObject *args)
+  {
+    if (!self->item) return NULL;
+
+    char bSelected = 0;
+    if (!PyArg_ParseTuple(args, "b", &bSelected))	return NULL;
+
+    PyGUILock();
+    self->item->Select(bSelected != 0);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  
+  PyDoc_STRVAR(isSelected__doc__,
+    "isSelected() -- Returns the listitem's selected status.\n"
+    "\n"
+    "example:\n"
+    "  - is = self.list.getSelectedItem().isSelected()\n");
+
+  PyObject* ListItem_IsSelected(ListItem *self, PyObject *args)
+  {
+    if (!self->item) return NULL;
+
+    PyGUILock();
+    bool bSelected = self->item->IsSelected();
+    PyGUIUnlock();
+
+    return Py_BuildValue("b", bSelected);
+  }
+  
   PyMethodDef ListItem_methods[] = {
     {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -211,6 +277,8 @@ namespace PYXBMC
     {"setLabel2", (PyCFunction)ListItem_SetLabel2, METH_VARARGS, setLabel2__doc__},
     {"setIconImage", (PyCFunction)ListItem_SetIconImage, METH_VARARGS, setIconImage__doc__},
     {"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
+    {"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
+    {"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
     {NULL, NULL, 0, NULL}
   };
 

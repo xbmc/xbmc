@@ -3,7 +3,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "FileShoutcast.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -128,11 +128,6 @@ CFileShoutcast::~CFileShoutcast()
     m_ripFile.Reset();
     m_ringbuf.Destroy();
   }
-}
-
-bool CFileShoutcast::CanSeek()
-{
-  return false;
 }
 
 bool CFileShoutcast::CanRecord()
@@ -338,7 +333,7 @@ void CFileShoutcast::outputTimeoutMessage(const char* message)
 
 __int64 CFileShoutcast::Seek(__int64 iFilePosition, int iWhence)
 {
-  return 0;
+  return -1;
 }
 
 void CFileShoutcast::Close()

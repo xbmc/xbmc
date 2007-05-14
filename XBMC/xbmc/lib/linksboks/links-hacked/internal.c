@@ -29,6 +29,7 @@ struct included_files included[] = {
  to the user */
 static int check_included(unsigned char *name, struct connection *c, struct cache_entry *e)
 {
+#if XBOX_USE_SECTIONS
         int i;
 
         for(i=0;included[i].filename;i++)
@@ -44,7 +45,7 @@ static int check_included(unsigned char *name, struct connection *c, struct cach
 
                         return 1;
                 }
-
+#endif
         return 0;
 }
 

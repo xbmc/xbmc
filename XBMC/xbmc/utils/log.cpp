@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "log.h"
 #include <share.h>
 #include "criticalsection.h"
@@ -11,6 +11,10 @@
 FILE* CLog::fd = NULL;
 
 static CCriticalSection critSec;
+
+static char levelNames[][8] =
+{"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+
 
 CLog::CLog()
 {}

@@ -1,5 +1,5 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "dll_util.h"
 
 #ifdef _cplusplus

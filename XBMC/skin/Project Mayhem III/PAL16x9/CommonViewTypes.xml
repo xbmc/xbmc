@@ -31,6 +31,7 @@
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
 				</control>
 				<control type="label">
 					<posx>475</posx>
@@ -40,9 +41,33 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>360</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<include>listselectedcolor</include>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>Container.Sort(SongRating)</visible>
+				</control>
+				<control type="image" id="1">
+					<description>Song Rating Image</description>
+					<height>21</height>
+					<width>105</width>
+					<posx>395</posx>
+					<posy>4</posy>
+					<info>listitem.rating</info>
+					<aspectratio>stretch</aspectratio>
+					<texture flipx="true" /> 
+					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout height="29">
@@ -71,6 +96,7 @@
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
 				</control>
 				<control type="label">
 					<posx>475</posx>
@@ -80,9 +106,33 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>360</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<include>listselectedcolor</include>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>Container.Sort(SongRating)</visible>
+				</control>
+				<control type="image" id="1">
+					<description>Song Rating Image</description>
+					<height>21</height>
+					<width>105</width>
+					<posx>395</posx>
+					<posy>4</posy>
+					<aspectratio>stretch</aspectratio>
+					<info>listitem.rating</info>
+					<texture flipx="true" /> 
+					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</focusedlayout>
 		</control>
@@ -128,7 +178,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -289,6 +339,18 @@
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+				<control type="image" id="1">
+					<description>Song Rating Image</description>
+					<height>21</height>
+					<width>105</width>
+					<posx>390</posx>
+					<posy>110</posy>
+					<info>listitem.rating</info>
+					<aspectratio>stretch</aspectratio>
+					<texture flipx="true" /> 
+					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout height="141">
@@ -365,6 +427,18 @@
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+				<control type="image" id="1">
+					<description>Song Rating Image</description>
+					<height>21</height>
+					<width>105</width>
+					<posx>390</posx>
+					<posy>110</posy>
+					<info>listitem.rating</info>
+					<aspectratio>stretch</aspectratio>
+					<texture flipx="true" /> 
+					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</focusedlayout>
 		</control>
@@ -410,7 +484,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -533,7 +607,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -573,7 +647,7 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -678,9 +752,9 @@
 			<height>22</height>
 			<font>special13</font>
 			<align>right</align>
-			<label>$LOCALIZE[20373] - $INFO[ListItem.Season]</label>
+			<label>$LOCALIZE[20359] - $INFO[ListItem.Episode]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
 		<control type="label">
 			<posx>200</posx>
@@ -688,9 +762,9 @@
 			<width>420</width>
 			<height>22</height>
 			<font>special13</font>
-			<label>$LOCALIZE[20359] - $INFO[ListItem.Episode]</label>
+			<label>$LOCALIZE[20373] - $INFO[ListItem.Season]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
 		<control type="textbox">
 			<posx>200</posx>
@@ -912,6 +986,7 @@
 					<include>listselectedcolor</include>
 					<align>left</align>
 					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
 				</control>
 				<control type="label">
 					<posx>475</posx>
@@ -921,9 +996,33 @@
 					<font>font13</font>
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
-					<textcolor>60ffffff</textcolor>
+					<include>textcolorgrey</include>
 					<align>right</align>
 					<info>ListItem.Label2</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>360</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<include>listselectedcolor</include>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>Container.Sort(SongRating)</visible>
+				</control>
+				<control type="image" id="1">
+					<description>Song Rating Image</description>
+					<height>21</height>
+					<width>105</width>
+					<posx>395</posx>
+					<posy>4</posy>
+					<aspectratio>stretch</aspectratio>
+					<info>listitem.rating</info>
+					<texture flipx="true" /> 
+					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout height="75">
@@ -978,6 +1077,18 @@
 					<aligny>center</aligny>
 					<include>listselectedcolor</include>
 					<info>ListItem.Label2</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+				<control type="image" id="1">
+					<description>Song Rating Image</description>
+					<height>21</height>
+					<width>105</width>
+					<posx>395</posx>
+					<posy>52</posy>
+					<info>listitem.rating</info>
+					<aspectratio>stretch</aspectratio>
+					<texture flipx="true" /> 
+					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1146,8 +1257,8 @@
 			<height>425</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>52</onup>
-			<ondown>52</ondown>
+			<onup>54</onup>
+			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="541">icon</viewtype>
 			<pagecontrol>60</pagecontrol>
@@ -1223,7 +1334,7 @@
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
-			<textcolor>FFe2ff43</textcolor>
+			<include>textcolorgreen</include>
 			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
@@ -1273,8 +1384,8 @@
 			<height>425</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>53</onup>
-			<ondown>53</ondown>
+			<onup>54</onup>
+			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="542">bigicon</viewtype>
 			<pagecontrol>60</pagecontrol>
@@ -1653,7 +1764,17 @@
 			<include>textcolorlightgrey</include>
 			<scroll>true</scroll>
 			<info>ListItem.Label2</info>
-			<visible>Control.IsVisible(56)</visible>
+			<visible>!Container.Sort(SongRating) + Control.IsVisible(56)</visible>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="image" id="1">
+			<description>Song Rating Image</description>
+			<height>21</height>
+			<width>105</width>
+			<posx>240</posx>
+			<posy>495</posy>
+			<info>listitem.rating</info>
+			<visible>Container.Sort(SongRating) + Control.IsVisible(56)</visible>
 			<include>contentpanelslide</include>
 		</control>
 	</include>
@@ -1899,7 +2020,7 @@
 			<width>235</width>
 			<height>424</height>
 			<font>special12</font>
-			<label>$INFO[ListItem.episode,$LOCALIZE[20360] ]</label>
+			<label>$INFO[ListItem.episode,, $LOCALIZE[20360]]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57) + container.content(tvshows)</visible>
 		</control>

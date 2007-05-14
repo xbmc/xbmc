@@ -1,4 +1,4 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "YMCodec.h"
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"

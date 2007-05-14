@@ -17,7 +17,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "RGBRendererV2.h"
 #include "../../application.h"
 #include "../../util.h"
@@ -43,6 +43,8 @@ CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
 void CRGBRendererV2::FlipPage(int source)
 {
   m_444GeneratedFull = false;
+
+  CXBoxRenderer::FlipPage(source);
 }
 
 void CRGBRendererV2::Delete444PTexture()
@@ -50,12 +52,13 @@ void CRGBRendererV2::Delete444PTexture()
   CSingleLock lock(g_graphicsContext);
   SAFE_RELEASE(m_444PTextureFull)
   SAFE_RELEASE(m_444PTextureField)
-  CLog::Log(LOGDEBUG, "Deleted 444P video texture");
+  CLog::Log(LOGDEBUG, "Deleted 444P video textures");
 }
 
-void CRGBRendererV2::Clear444PTexture()
+void CRGBRendererV2::Clear444PTexture(bool full, bool field)
 {
-  if(m_444PTextureFull)
+  CSingleLock lock(g_graphicsContext);
+  if(m_444PTextureFull && full)
   {
     D3DLOCKED_RECT lr;
     m_444PTextureFull->LockRect(0, &lr, NULL, 0);
@@ -63,7 +66,7 @@ void CRGBRendererV2::Clear444PTexture()
     m_444PTextureFull->UnlockRect(0);
   }
 
-  if(m_444PTextureField)
+  if(m_444PTextureField && field)
   {
     D3DLOCKED_RECT lr;
     m_444PTextureField->LockRect(0, &lr, NULL, 0);
@@ -81,18 +84,18 @@ bool CRGBRendererV2::Create444PTexture(bool full, bool field)
   CSingleLock lock(g_graphicsContext);
   if (!m_444PTextureFull && full)
   {
-    m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_444PTextureFull);
-    CLog::Log(LOGINFO, "Created 444P field texture");
+    if(D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_444PTextureFull))
+      return false;
+
+    CLog::Log(LOGINFO, "Created 444P full texture");
   }
 
   if (!m_444PTextureField && field)
   {
-    m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight>>1, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_444PTextureField);
-    CLog::Log(LOGINFO, "Created 444P full texture");
+    if(D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight>>1, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_444PTextureField))
+      return false;
+    CLog::Log(LOGINFO, "Created 444P field texture");
   }
-  
-  Clear444PTexture();
-
   return true;
 }
 
@@ -104,13 +107,17 @@ void CRGBRendererV2::ManageTextures()
     if (m_444PTextureFull || m_444PTextureField)
       Delete444PTexture();
   }
-  else
-  {
-    if (!m_444PTextureFull || !m_444PTextureField)
-      Create444PTexture(true, true);
-  }
 
   CXBoxRenderer::ManageTextures();
+
+  if (g_graphicsContext.IsFullScreenVideo())
+  {
+    if (!m_444PTextureFull)
+    {
+      Create444PTexture(true, false);
+      Clear444PTexture(true, false);
+    }
+  }
 }
 
 bool CRGBRendererV2::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
@@ -162,6 +169,33 @@ void CRGBRendererV2::Render(DWORD flags)
       if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
         CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
 
+    D3DSurface* p444PSourceFull = NULL;
+    D3DSurface* p444PSourceField = NULL;
+
+    if( flags & (RENDER_FLAG_ODD|RENDER_FLAG_EVEN) )
+    {
+      if(!m_444PTextureField)
+      {
+        Create444PTexture(false, true);
+        Clear444PTexture(false, true);
+      }
+      if(!m_444PTextureField)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - Couldn't create field texture");
+        return;
+      }
+
+      m_444PTextureField->GetSurfaceLevel(0, &p444PSourceField);
+    }
+
+    if(!m_444PTextureFull)
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - Couldn't create full texture");
+      return;
+    }
+
+    m_444PTextureFull->GetSurfaceLevel(0, &p444PSourceFull);
+
     //UV in interlaced video is seen as being closer to first line in first field and closer to second line in second field
     //we shift it with an offset of 1/4th pixel (1/8 in UV planes)
     //This need only be done when field scaling
@@ -195,6 +229,7 @@ void CRGBRendererV2::Render(DWORD flags)
     //
     //.........................................
     //.........................................
+
     m_pD3DDevice->SetRenderState( D3DRS_SWATHWIDTH, 15 );
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
@@ -206,12 +241,6 @@ void CRGBRendererV2::Render(DWORD flags)
     m_pD3DDevice->GetRenderState( D3DRS_ALPHABLENDENABLE, &alphaenabled );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
-
-    D3DSurface* p444PSourceFull = NULL;
-    D3DSurface* p444PSourceField = NULL;
-    
-    if(m_444PTextureFull)
-      m_444PTextureFull->GetSurfaceLevel(0, &p444PSourceFull);
 
     RECT rsf = { rs.left, rs.top>>1, rs.right, rs.bottom>>1 };
 
@@ -233,28 +262,24 @@ void CRGBRendererV2::Render(DWORD flags)
 
     if( flags & RENDER_FLAG_ODD )
     {
-      m_444PTextureField->GetSurfaceLevel(0, &p444PSourceField);
-
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_ODD],
           m_444PTextureFull, // use a downscaled motion value from the full frame, 
           p444PSourceField,
           rsf, rs, rsf,
           1, 1,
-          0.0f, 0.25f,
+          0.0f, 0.0f,
           CHROMAOFFSET_HORIZ, +CHROMAOFFSET_VERT);
     }
     else if( flags & RENDER_FLAG_EVEN )
     {
-      m_444PTextureField->GetSurfaceLevel(0, &p444PSourceField);
-
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_EVEN],
           m_444PTextureFull, // use a downscaled motion value from the full frame, 
           p444PSourceField,
           rsf, rs, rsf,
           1, 1,
-          0.0f, -0.25f,
+          0.0f, 0.0f,
           CHROMAOFFSET_HORIZ, -CHROMAOFFSET_VERT);
     }
 
@@ -280,7 +305,7 @@ void CRGBRendererV2::Render(DWORD flags)
 
       // render the full frame
       m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-      RenderYUVtoRGB(m_444PTextureFull, rs, rd);
+      RenderYUVtoRGB(m_444PTextureFull, rs, rd, 0.0f, 0.0f);
 
       // render the field texture ontop
       if(m_444PTextureField && p444PSourceField)
@@ -288,8 +313,11 @@ void CRGBRendererV2::Render(DWORD flags)
         m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, m_motionpass);
-
-        RenderYUVtoRGB(m_444PTextureField, rsf, rd);
+        
+        if(flags & RENDER_FLAG_ODD)
+          RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, 0.25);
+        else
+          RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, -0.25);
       }
     }
     else
@@ -304,14 +332,17 @@ void CRGBRendererV2::Render(DWORD flags)
       if(m_444PTextureField && p444PSourceField)
       {
         m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-        RenderYUVtoRGB(m_444PTextureField, rsf, rd);
+        if(flags & RENDER_FLAG_ODD)
+          RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, 0.25);
+        else
+          RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, -0.25);
       }
 
       // fill in any place we have no motion with full texture
       m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
       m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_LESS);
       m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, m_motionpass);
-      RenderYUVtoRGB(m_444PTextureFull, rs, rd);
+      RenderYUVtoRGB(m_444PTextureFull, rs, rd, 0.0f, 0.0f);
     }
      
     m_pD3DDevice->SetScreenSpaceOffset(0.0f, 0.0f);
@@ -554,8 +585,8 @@ void CRGBRendererV2::InterleaveYUVto444P(
       float    offset_x,  float    offset_y,
       float    coffset_x, float    coffset_y)
 {
-  coffset_x += offset_x;
-  coffset_y += offset_y;
+  coffset_x += offset_x / (1<<cshift_x);
+  coffset_y += offset_y / (1<<cshift_y);
 
   for (int i = 0; i < 3; ++i)
   {
@@ -637,7 +668,8 @@ void CRGBRendererV2::InterleaveYUVto444P(
 
 void CRGBRendererV2::RenderYUVtoRGB(
       D3DBaseTexture* pSource,
-      RECT &source, RECT &target )
+      RECT &source, RECT &target, 
+      float offset_x, float offset_y)
 {
     m_pD3DDevice->SetTexture( 0, pSource);
     m_pD3DDevice->SetTexture( 1, m_YLookup);
@@ -674,16 +706,16 @@ void CRGBRendererV2::RenderYUVtoRGB(
     m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f, 1.0f );
     m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 0.0f, 1.0f );
 
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.left,  (float)source.top);
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.left + offset_x,  (float)source.top + offset_y);
     m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.left,  (float)target.top, 0, 1.0f );
 
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.right, (float)source.top);
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.right + offset_x, (float)source.top + offset_y);
     m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.right, (float)target.top, 0, 1.0f );
 
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.right, (float)source.bottom);
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.right + offset_x, (float)source.bottom + offset_y);
     m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.right, (float)target.bottom, 0, 1.0f );
 
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.left,  (float)source.bottom);
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.left + offset_x,  (float)source.bottom + offset_y);
     m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.left,  (float)target.bottom, 0, 1.0f );
 
     m_pD3DDevice->End();

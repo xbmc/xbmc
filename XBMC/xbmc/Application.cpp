@@ -69,6 +69,7 @@
 #include "FileSystem/DllLibCurl.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
+#include "ApplicationRenderer.h"
 
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
@@ -130,7 +131,7 @@
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideshow.h"
 #include "GUIWindowBuddies.h"
-
+#include "GUIWindowStartup.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowMusicOverlay.h"
@@ -161,6 +162,7 @@
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogBusy.h"
 
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -171,10 +173,14 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogSubMenu.h"
+#include "GUIDialogFavourites.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
+#include "GUIDialogSongInfo.h"
+#include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIDialogSmartPlaylistRule.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -615,36 +621,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     {
       // Start FTP with default settings
       FEH_TextOut(pFont, iLine++, L"Starting FTP server...");
-
-      m_pFileZilla = new CXBFileZilla(NULL);
-      m_pFileZilla->Start();
-
-      // Default settings
-      m_pFileZilla->mSettings.SetMaxUsers(0);
-      m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
-
-      // default user
-      CXFUser* pUser;
-      m_pFileZilla->AddUser("xbox", pUser);
-      pUser->SetPassword("xbox");
-      pUser->SetShortcutsEnabled(false);
-      pUser->SetUseRelativePaths(false);
-      pUser->SetBypassUserLimit(false);
-      pUser->SetUserLimit(0);
-      pUser->SetIPLimit(0);
-      pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
-      pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
-      pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      //Add. also Drive F/G
-      if (CIoSupport::DriveExists('F')){
-        pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      }
-      if (CIoSupport::DriveExists('G')){
-        pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-      }
-      pUser->CommitChanges();
+      StartFtpEmergencyRecoveryMode();
     }
 
     FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
@@ -1299,6 +1276,11 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
   m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
+  m_gWindowManager.Add(new CGUIDialogFavourites);     // window id = 134
+  m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
+  m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
+  m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
+  m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -1497,15 +1479,29 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
-      // if user didn't upgrade properly...
+      CStdString xmlpath = "Q:\\System\\";
+      // if user didn't upgrade properly,
       // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
       if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
-        m_pFileZilla = new CXBFileZilla(g_settings.GetUserDataFolder());
+        xmlpath = g_settings.GetUserDataFolder();
+
+      // check file size and presence
+      CFile xml;
+      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      {
+        m_pFileZilla = new CXBFileZilla(xmlpath);
+        m_pFileZilla->Start(false);
+      }
       else
-        m_pFileZilla = new CXBFileZilla("Q:\\System\\");
-      m_pFileZilla->Start(false);
+      {
+        // 'FileZilla Server.xml' does not exist or is corrupt, 
+        // falling back to ftp emergency recovery mode
+        CLog::Log(LOGNOTICE, "XBFileZilla: 'FileZilla Server.xml' is missing or is corrupt!");
+        CLog::Log(LOGNOTICE, "XBFileZilla: Starting ftp emergency recovery mode");
+        StartFtpEmergencyRecoveryMode();
+      }
+      xml.Close();
     }
-    //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
 #endif
 }
@@ -1923,6 +1919,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogMuteBug.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
+  m_gWindowManager.AddMsgTarget(&g_infoManager);
   m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
@@ -1940,6 +1937,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // leave the graphics lock
   lock.Leave();
+  g_ApplicationRenderer.Start();
 
   // restore windows
   if (currentWindow != WINDOW_INVALID)
@@ -1963,6 +1961,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
+  g_ApplicationRenderer.Stop();
   g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
 
   m_gWindowManager.DeInitialize();
@@ -2142,6 +2141,11 @@ void CApplication::RenderNoPresent()
     return;
   }
 
+  g_ApplicationRenderer.Render();
+}
+
+void CApplication::DoRender()
+{
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
   {
@@ -2170,6 +2174,7 @@ void CApplication::RenderNoPresent()
   m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
 #endif
   m_gWindowManager.Render();
+
 
   // if we're recording an audio stream then show blinking REC
   if (IsPlayingAudio())
@@ -2466,6 +2471,40 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
+  if (action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING && IsPlayingAudio())
+  {
+    const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
+    if (tag)
+    {
+      *m_itemCurrentFile.GetMusicInfoTag() = *tag;
+      char rating = tag->GetRating();
+      bool needsUpdate(false);
+      if (rating > '0' && action.wID == ACTION_DECREASE_RATING)
+      {
+        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating - 1);
+        needsUpdate = true;
+      }
+      else if (rating < '5' && action.wID == ACTION_INCREASE_RATING)
+      {
+        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating + 1);
+        needsUpdate = true;
+      }
+      if (needsUpdate)
+      {
+        CMusicDatabase db;
+        if (db.Open())      // OpenForWrite() ?
+        {
+          db.SetSongRating(m_itemCurrentFile.m_strPath, m_itemCurrentFile.GetMusicInfoTag()->GetRating());
+          db.Close();
+        }
+        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_itemCurrentFile);
+        g_graphicsContext.SendMessage(msg);
+      }
+    }
+    return true;
+  }
+
   // stop : stops playing current audio song
   if (action.wID == ACTION_STOP)
   {
@@ -2482,14 +2521,7 @@ bool CApplication::OnAction(const CAction &action)
       SeekTime(0);
     else
     {
-      if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-      {
-        // save video settings
-        CVideoDatabase dbs;
-        dbs.Open();
-        dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-        dbs.Close();
-      }
+      SaveCurrentFileSettings();
       g_playlistPlayer.PlayPrevious();
     }
     return true;
@@ -2501,15 +2533,7 @@ bool CApplication::OnAction(const CAction &action)
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
 
-    if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-    {
-      // save video settings
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-
+    SaveCurrentFileSettings();
     g_playlistPlayer.PlayNext();
 
     return true;
@@ -3226,6 +3250,11 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_FAVOURITES);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SONG_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3294,7 +3323,7 @@ void CApplication::Stop()
       g_lcd=NULL;
     }
 #endif
-    g_dlls.Clear();
+    DllLoaderContainer::Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
 #endif
@@ -3451,6 +3480,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
   if (!bRestart)
   {
+    SaveCurrentFileSettings();
+
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
@@ -3504,7 +3535,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (m_itemCurrentFile.IsStack() && m_itemCurrentFile.m_lStartOffset != 0)
       m_itemCurrentFile.m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
 
-    if( m_eCurrentPlayer == EPC_NONE )
+    if( m_eForcedNextPlayer != EPC_NONE )
+      eNewCore = m_eForcedNextPlayer;
+    else if( m_eCurrentPlayer == EPC_NONE )
       eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
     else
       eNewCore = m_eCurrentPlayer;
@@ -3813,7 +3846,12 @@ bool CApplication::NeedRenderFullScreen()
 
 void CApplication::RenderFullScreen()
 {
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+  g_ApplicationRenderer.Render(true);
+}
+
+void CApplication::DoRenderFullScreen()
+{
+  if (g_graphicsContext.IsFullScreenVideo())
   {
     // make sure our overlays are closed
     CGUIDialog *overlay = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
@@ -4373,20 +4411,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_bNetworkSpinDown = false;
       m_bSpinDown = false;
 
-      // Save our settings for the current movie for next time
-      if (m_itemCurrentFile.IsVideo())
+      // Save our settings for the current file for next time
+      SaveCurrentFileSettings();
+      if (m_itemCurrentFile.IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         CVideoDatabase dbs;
         dbs.Open();
-        if(g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-          dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-
-        if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-        {
-          dbs.MarkAsWatched(m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
-        }
+        dbs.MarkAsWatched(m_itemCurrentFile);
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         dbs.Close();
       }
 
@@ -5118,4 +5151,53 @@ void CApplication::CheckForDebugButtonCombo()
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
 #endif
 #endif
+}
+
+void CApplication::StartFtpEmergencyRecoveryMode()
+{
+#ifdef HAS_FTP_SERVER
+  m_pFileZilla = new CXBFileZilla(NULL);
+  m_pFileZilla->Start();
+
+  // Default settings
+  m_pFileZilla->mSettings.SetMaxUsers(0);
+  m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
+
+  // default user
+  CXFUser* pUser;
+  m_pFileZilla->AddUser("xbox", pUser);
+  pUser->SetPassword("xbox");
+  pUser->SetShortcutsEnabled(false);
+  pUser->SetUseRelativePaths(false);
+  pUser->SetBypassUserLimit(false);
+  pUser->SetUserLimit(0);
+  pUser->SetIPLimit(0);
+  pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
+  pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  //Add. also Drive F/G
+  if (CIoSupport::DriveExists('F')){
+    pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  if (CIoSupport::DriveExists('G')){
+    pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
+  }
+  pUser->CommitChanges();
+#endif
+}
+
+void CApplication::SaveCurrentFileSettings()
+{
+  if (IsPlayingVideo())
+  { // save video settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+  }
 }

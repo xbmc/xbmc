@@ -13,6 +13,7 @@
 #include "../StringUtils.h"
 #include "../Temperature.h"
 #include "../utils/criticalsection.h"
+#include "IMsgTargetCallback.h"
 
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
@@ -150,6 +151,8 @@
 #define MUSICPLAYER_SAMPLERATE      216
 #define MUSICPLAYER_CODEC           217
 #define MUSICPLAYER_DISC_NUMBER     218
+#define MUSICPLAYER_RATING          219
+#define MUSICPLAYER_COMMENT         220
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -208,6 +211,7 @@
 #define LISTITEM_SEASON             333
 #define LISTITEM_TVSHOW             334
 #define LISTITEM_PREMIERED          335
+#define LISTITEM_COMMENT            336
 #define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350
@@ -222,6 +226,7 @@
 #define CONTAINER_FOLDERPATH        361
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
+#define CONTAINER_SORT_METHOD       364
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -371,13 +376,14 @@ public:
  \ingroup strings
  \brief 
  */
-class CGUIInfoManager
+class CGUIInfoManager : public IMsgTargetCallback
 {
 public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
 
   void Clear();
+  virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
@@ -407,7 +413,7 @@ public:
     m_currentFile.m_lStartOffset = 0;
   };
 
-  const CMusicInfoTag *GetCurrentSongTag() const 
+  const CMusicInfoTag *GetCurrentSongTag() const
   { 
     if (m_currentFile.HasMusicInfoTag())
       return m_currentFile.GetMusicInfoTag(); 

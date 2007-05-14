@@ -1,5 +1,4 @@
 #include "rar.hpp"
-#include "../../utils/Log.h"
 
 CmdExtract::CmdExtract()
 {

@@ -1,6 +1,6 @@
 
 
-#include "..\..\..\stdafx.h"
+#include "stdafx.h"
 #include "emu_dx8.h"
 
 extern "C" void OutputDebug(char* strDebug)

@@ -47,7 +47,9 @@ using namespace XFILE;
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
-{}
+{
+  m_bRefresh = false;
+}
 
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 {}
@@ -284,7 +286,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20019), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyMusicShares, g_localizeStrings.Get(1030), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")

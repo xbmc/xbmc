@@ -16,16 +16,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifdef _XBOX
 
 #ifndef LINKSBOKS_H
 #define LINKSBOKS_H
+
+#ifdef _XBOX
 
 #include <xtl.h>
 
 #ifdef XBOX_USE_XFONT
 #define XFONT_TRUETYPE
 #include "xfont.h"
+#endif
+
 #endif
 
 typedef struct _LinksBoksViewport
@@ -622,7 +625,5 @@ void __DLLEXPORT__ LinksBoks_SetOptionInt(const char *key, INT value);
 void __DLLEXPORT__ LinksBoks_SetOptionString(const char *key, unsigned char *value);
 
 }
-
-#endif
 
 #endif

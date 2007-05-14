@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "application.h"
+#include "GUIWindowVideoBase.h"
 #include "util.h"
 #include "xbox/iosupport.h"
 #include "xbox/xbeheader.h"
@@ -61,6 +62,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/trainer.h"
@@ -170,7 +172,9 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
 {
   // use above to get the filename
-  CStdString strFilename = GetFileName(strFileNameAndPath);
+  CStdString path(strFileNameAndPath);
+  RemoveSlashAtEnd(path);
+  CStdString strFilename = GetFileName(path);
 
   // if upnp:// we can ask for the friendlyname
 #ifdef HAS_UPNP
@@ -1376,6 +1380,16 @@ bool CUtil::IsRemote(const CStdString& strFile)
     }
     return false;
   }
+  if (strProtocol == "multipath")
+  { // virtual paths need to be checked separately
+    vector<CStdString> paths;
+    if (CMultiPathDirectory::GetPaths(strFile, paths))
+    {
+      for (unsigned int i = 0; i < paths.size(); i++)
+        if (IsRemote(paths[i])) return true;
+    }
+    return false;
+  }
   if ( !url.IsLocal() ) return true;
   return false;
 }
@@ -1785,6 +1799,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   else
   {
     CUtil::GetDirectory(strFileNameAndPath,strBasePath);
+    // TODO: GETDIR - is this required?  What happens to the tokenize below otherwise?
+    CUtil::RemoveSlashAtEnd(strBasePath);
     strFileName = CUtil::GetFileName(strFileNameAndPath);
   }
   CUtil::Tokenize(strBasePath,tokens,"\\");
@@ -2432,12 +2448,12 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 
   strPath = strFileName.Left(iPos1 - 1);
 }
+
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
-  //Will from a full filename return the directory the file resides in.
-  //has no trailing slash on result. Could lead to problems when reading from root on cd
-  //ISO9660://filename.bla will result in path ISO9660:/
-  //This behaviour should probably be changed, but it would break other things
+  // Will from a full filename return the directory the file resides in.
+  // Keeps the final slash at end
+
   int iPos1 = strFilePath.ReverseFind('/');
   int iPos2 = strFilePath.ReverseFind('\\');
 
@@ -2448,9 +2464,10 @@ void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectory
 
   if (iPos1 > 0)
   {
-    strDirectoryPath = strFilePath.Left(iPos1);
+    strDirectoryPath = strFilePath.Left(iPos1 + 1); // include the slash
   }
 }
+
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
   //Splits a full filename in path and file.
@@ -3072,7 +3089,8 @@ const BUILT_IN commands[] = {
   "System.PWMControl","Control PWM RGB LEDs",
   "Resolution", "Change XBMC's Resolution",
   "SetFocus", "Change current focus to a different control id", 
-  "BackupSystemInfo", "Backup System Informations to local hdd"
+  "BackupSystemInfo", "Backup System Informations to local hdd",
+  "UpdateLibrary", "Update the selected library (music or video)"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3200,7 +3218,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // make sure the browser is running and the LinksBoksWindow is up
     if (g_browserManager.isRunning())
     {
-      ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+      ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
       if (pLB)
       {
         // determine what to do with it using the parameter
@@ -3272,7 +3290,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
 
           strPath  = strFTPPath;
-        }else{
+        }
+        else
+        {
           CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
           return -7;
         }
@@ -3355,8 +3375,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       strDestDirect = params[1];
 
-    if (!HasSlashAtEnd(strDestDirect))
-        strDestDirect += "\\";
+    CUtil::AddSlashAtEnd(strDestDirect);
 
     if (params.size() < 1)
       return -1; // No File Selected
@@ -3780,7 +3799,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (pos >= 0)
     {
       string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
-      if (execute.Equals("setstring"))
+      if (execute.Equals("skin.setstring"))
       {
         g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
         g_settings.Save();
@@ -3812,6 +3831,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CStdString strMask;
       if (pos > -1)
         strMask = strParameterCaseIntact.Mid(pos+1);
+
+      int iEnd=strMask.Find(",");
+      if (iEnd > -1)
+      {
+        value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
+        CUtil::AddSlashAtEnd(value);
+        bool bIsBookMark;
+        if (GetMatchingShare(value,shares,bIsBookMark) < 0) // path is outside shares - add it as a separate one
+        {
+          CShare share;
+          share.strName = g_localizeStrings.Get(13278);
+          share.strPath = value;
+          shares.push_back(share);
+        }
+        CStdString strTemp = strMask;
+        strMask = strTemp.Left(iEnd);
+      }
+      else
+        iEnd = strMask.size();
       if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
@@ -3907,6 +3945,32 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_sysinfo.CreateBiosBackup();
     g_sysinfo.CreateEEPROMBackup();
 #endif
+  }
+  else if (execute.Equals("updatelibrary"))
+  {
+    if (parameter.Equals("music"))
+    {
+      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (scanner)
+      {
+        if (scanner->IsScanning())
+          scanner->StopScanning();
+        else
+          scanner->StartScanning("");
+      }
+    }
+    if (parameter.Equals("video"))
+    {
+      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      SScraperInfo info;
+      if (scanner)
+      {
+        if (scanner->IsScanning())
+          scanner->StopScanning();
+        else
+          CGUIWindowVideoBase::OnScan("",info,-1,-1);
+      }
+    }
   }
   else
     return -1;
@@ -4059,29 +4123,34 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   return iIndex;
 }
 
-CStdString CUtil::TranslateSpecialPath(const CStdString &specialPath)
+CStdString CUtil::TranslateSpecialPath(const CStdString &path)
 {
   CStdString translatedPath;
+  CStdString specialPath(path);
+  CUtil::AddSlashAtEnd(specialPath);
   if (specialPath.Left(15).Equals("special://home/"))
-    CUtil::AddFileToFolder("Q:", specialPath.Mid(15), translatedPath);
+    CUtil::AddFileToFolder("Q:", path.Mid(15), translatedPath);
   else if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), specialPath.Mid(20), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), specialPath.Mid(19), translatedPath);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
   else if (specialPath.Left(19).Equals("special://database/"))
-    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), specialPath.Mid(19), translatedPath);
+    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), path.Mid(19), translatedPath);
   else if (specialPath.Left(21).Equals("special://thumbnails/"))
-    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), specialPath.Mid(21), translatedPath);
+    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), path.Mid(21), translatedPath);
   else if (specialPath.Left(21).Equals("special://recordings/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), specialPath.Mid(21), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), path.Mid(21), translatedPath);
   else if (specialPath.Left(22).Equals("special://screenshots/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), specialPath.Mid(22), translatedPath);
-  else if (specialPath.Left(25) == "special://musicplaylists/")
-    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), specialPath.Mid(25), translatedPath);
-  else if (specialPath.Left(25) == "special://videoplaylists/")
-    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), specialPath.Mid(25), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), path.Mid(22), translatedPath);
+  else if (specialPath.Left(25).Equals("special://musicplaylists/"))
+    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), path.Mid(25), translatedPath);
+  else if (specialPath.Left(25).Equals("special://videoplaylists/"))
+    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), path.Mid(25), translatedPath);
   else if (specialPath.Left(17).Equals("special://cdrips/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), specialPath.Mid(17), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), path.Mid(17), translatedPath);
+  else
+    translatedPath = path;
+
   return translatedPath;
 }
 

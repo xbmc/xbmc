@@ -1,9 +1,9 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "PlayerCoreFactory.h"
+#include "dvdplayer\DVDPlayer.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "mplayer\mplayer.h"
-#include "dvdplayer\DVDPlayer.h"
 #else
 #include "DummyVideoPlayer.h"
 #endif
@@ -45,13 +45,11 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 {
   switch( eCore )
   {
-#ifdef HAS_VIDEO_PLAYBACK
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
+#ifdef HAS_VIDEO_PLAYBACK
     case EPC_MPLAYER: return new CMPlayer(callback);
 #else
-    case EPC_DVDPLAYER:
-    case EPC_MPLAYER:
-      return new CDummyVideoPlayer(callback);
+    case EPC_MPLAYER: return new CDummyVideoPlayer(callback);
 #endif
 #ifdef HAS_MODPLAYER
     case EPC_MODPLAYER: return new ModPlayer(callback);
@@ -108,6 +106,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
   if (url.GetProtocol().Equals("rtv"))
     vecCores.push_back(EPC_DVDPLAYER);    
+
+  if (url.GetProtocol().Equals("hdhomerun"))
+    vecCores.push_back(EPC_DVDPLAYER);
 
   if (url.GetProtocol().Equals("lastfm"))
   {
@@ -246,7 +247,10 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
   }
 
   // Display menu
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  if (posX && posY)
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  else
+    pMenu->CenterWindow();
   pMenu->DoModal();
 
   //Check what player we selected

@@ -41,7 +41,7 @@
 			<width>280</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>FFFFFFFF</textcolor>
+			<include>textcolorwhite</include>
 			<label>$LOCALIZE[ 20344 ]</label>
 			<include>homemisc</include>
 		</control>
@@ -60,7 +60,7 @@
 			<ondown>4</ondown>
 			<onleft>3</onleft>
 			<onright>3</onright>
-			<disabledcolor>ffffffff</disabledcolor>
+			<include>disabledcolor</include>
 			<textoffsetx>0</textoffsetx>
 			<textoffsety>0</textoffsety>
 			<aligny>center</aligny>

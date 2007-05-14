@@ -1,9 +1,13 @@
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "DVDPerformanceCounter.h"
 #include "DVDMessageQueue.h"
 
 #include "dvd_config.h"
+
+#ifdef DVDDEBUG_WITH_PERFORMANCE_COUNTER
+#include <xbdm.h>
+#endif
 
 HRESULT __stdcall DVDPerformanceCounterAudioQueue(PLARGE_INTEGER numerator, PLARGE_INTEGER demoninator)
 {

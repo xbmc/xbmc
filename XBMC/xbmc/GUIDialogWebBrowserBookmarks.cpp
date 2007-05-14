@@ -68,8 +68,8 @@ bool CGUIDialogWebBrowserBookmarks::OnMessage(CGUIMessage &message)
           else
           {
             // regular bookmark
-		    if (g_browserManager.isRunning() && g_browserManager.GetWindow())
-			  g_browserManager.GetWindow()->GoToURL((unsigned char *)pItem->m_strPath.c_str());
+		    if (g_browserManager.isRunning() && g_browserManager.GetBrowserWindow())
+			  g_browserManager.GetBrowserWindow()->GoToURL((unsigned char *)pItem->m_strPath.c_str());
           }
         }
         return true;
@@ -233,7 +233,7 @@ void CGUIDialogWebBrowserBookmarks::NewBookmark(CFileItem *pItem)
   if (pItem)
     for (; i != m_vecBookmarks.end() && *i != pItem; i++);
 
-  if (g_browserManager.isRunning() && g_browserManager.GetWindow())
+  if (g_browserManager.isRunning() && g_browserManager.GetBrowserWindow())
   {
     strTitle = g_browserManager.GetCurrentTitle();
     strURL = g_browserManager.GetCurrentURL();
@@ -415,7 +415,7 @@ void CGUIDialogWebBrowserBookmarks::MoveBookmark(CFileItem *pItem)
 void CGUIDialogWebBrowserBookmarks::ContextMenu()
 {
 
-  ILinksBoksWindow *pLB = g_browserManager.GetWindow();
+  ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   CGUIBaseContainer *pList = (CGUIBaseContainer *)GetControl(CONTROL_LIST);
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   CFileItem *pItem = NULL;

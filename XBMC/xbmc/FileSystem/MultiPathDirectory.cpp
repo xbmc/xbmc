@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "multipathdirectory.h"
 #include "directory.h"
 #include "../settings.h"
