@@ -14,6 +14,7 @@ CKeyboard::CKeyboard()
 void CKeyboard::Initialize(HWND hWnd)
 {
   SDL_EnableUNICODE(1);
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void CKeyboard::Reset()
@@ -100,4 +101,4 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
   {
     Reset();
   }
-}
+}
