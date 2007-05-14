@@ -11,11 +11,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnWindowLoaded();
   virtual void Render();
-  void DoRender();
 
 protected:
-  DWORD m_dwTimer;
-
-  void ResetTimer();
-
 };
