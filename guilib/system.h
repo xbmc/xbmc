@@ -105,7 +105,7 @@
 #ifdef _LINUX
 #define HAS_PYTHON
 #undef HAS_TRAINER
-#undef HAS_WEB_SERVER
+#define HAS_WEB_SERVER
 #undef HAS_UPNP
 #undef HAS_AUDIO
 #undef HAS_SHOUTCAST

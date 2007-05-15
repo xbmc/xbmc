@@ -9,34 +9,34 @@
 
 /********************************* Includes ***********************************/
 
-#pragma once
-
 #include "stdafx.h"
 #include "WebServer.h"
-#include "XbmcHttp.h"
+#include "XBMChttp.h"
 #include "includes.h"
 
-#include "..\..\PlayListFactory.h"
-#include "..\..\Application.h"
-#include "..\..\util.h"
-#include "..\..\playlistplayer.h"
-#include "..\..\filesystem\HDDirectory.h" 
-#include "..\..\filesystem\CDDADirectory.h"
-#include "..\..\videodatabase.h"
+#include "../../PlayListFactory.h"
+#include "../../Application.h"
+#include "../../Util.h"
+#include "../../PlayListPlayer.h"
+#include "../../FileSystem/HDDirectory.h" 
+#include "../../FileSystem/CDDADirectory.h"
+#include "../../VideoDatabase.h"
 #include "GUIButtonControl.h"
-#include "..\..\utils\GUIInfoManager.h"
-#include "..\..\picture.h"
-#include "..\..\MusicInfoTagLoaderFactory.h"
-#include "..\..\utils\MusicInfoScraper.h"
-#include "..\..\MusicDatabase.h"
-#include "..\..\GUIWindowSlideShow.h"
-#include "..\..\GUIMediaWindow.h"
-#include "..\..\GUIWindowFileManager.h"
+#include "../../utils/GUIInfoManager.h"
+#include "../../Picture.h"
+#include "../../musicInfoTagLoaderFactory.h"
+#include "../../utils/MusicInfoScraper.h"
+#include "../../MusicDatabase.h"
+#include "../../GUIWindowSlideShow.h"
+#include "../../GUIMediaWindow.h"
+#include "../../GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
-#include "..\..\FileSystem\FactoryDirectory.h"
-#include "..\..\FileSystem\VirtualDirectory.h"
-#include "..\..\utils\UdpClient.h"
-#include "..\..\xbox\XKHDD.h"
+#include "../../FileSystem/FactoryDirectory.h"
+#include "../../FileSystem/VirtualDirectory.h"
+#include "../../utils/UdpClient.h"
+#ifndef _LINUX
+#include "../../xbox/XKHDD.h"
+#endif
 
 using namespace XFILE;
 using namespace DIRECTORY;

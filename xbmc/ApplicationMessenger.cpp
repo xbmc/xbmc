@@ -35,7 +35,7 @@
 #endif
 #include "GUIWindowSlideShow.h"
 #ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/xbmchttp.h"
+#include "lib/libGoAhead/XBMChttp.h"
 #endif
 #include "xbox/Network.h"
 
