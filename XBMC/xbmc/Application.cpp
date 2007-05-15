@@ -737,11 +737,12 @@ HRESULT CApplication::Create(HWND hWnd)
   //grab a handle to our thread to be used later in identifying the render thread
   m_threadID = GetCurrentThreadId();
 
+  init_emu_environ();
+
 #ifndef _LINUX
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
 
-  init_emu_environ();
 
   /* install win32 exception translator, win32 exceptions
    * can now be caught using c++ try catch */
