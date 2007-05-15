@@ -4,7 +4,7 @@
 #include "dll_tracker.h"
 #include "dll.h"
 #include "DllLoader.h"
-#include "exports\emu_kernel32.h"
+#include "exports/emu_kernel32.h"
 
 extern "C" inline void tracker_critical_section_track(unsigned long caller, LPCRITICAL_SECTION cs)
 {

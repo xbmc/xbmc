@@ -1,7 +1,7 @@
 #ifndef __XTHREAD_UTILS__H__
 #define __XTHREAD_UTILS__H__
 
-HANDLE CreateThread(
+HANDLE WINAPI CreateThread(
 		  LPSECURITY_ATTRIBUTES lpThreadAttributes,
 		    SIZE_T dwStackSize,
 		      LPTHREAD_START_ROUTINE lpStartAddress,
@@ -19,11 +19,11 @@ HANDLE _beginthreadex(
    unsigned *thrdaddr 
 );
 
-DWORD GetCurrentThreadId(void);
+DWORD WINAPI GetCurrentThreadId(void);
 
-HANDLE GetCurrentThread(void);
+HANDLE WINAPI GetCurrentThread(void);
 
-BOOL GetThreadTimes (
+BOOL WINAPI GetThreadTimes (
   HANDLE hThread,
   LPFILETIME lpCreationTime,
   LPFILETIME lpExitTime,
@@ -31,11 +31,16 @@ BOOL GetThreadTimes (
   LPFILETIME lpUserTime
 );
 
+BOOL WINAPI SetThreadPriority(
+  HANDLE hThread,
+  int nPriority
+);
+
 // thread local storage functions
-LPVOID TlsGetValue(DWORD dwTlsIndex);
-BOOL TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue);
-BOOL TlsFree(DWORD dwTlsIndex);
-DWORD TlsAlloc();
+LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex);
+BOOL WINAPI TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue);
+BOOL WINAPI TlsFree(DWORD dwTlsIndex);
+DWORD WINAPI TlsAlloc();
 
 
 #endif

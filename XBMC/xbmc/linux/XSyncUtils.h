@@ -34,6 +34,11 @@ LONG InterlockedCompareExchange(
   LONG Comparand
 );
 
+LONG InterlockedExchange(
+  LONG volatile* Target,
+  LONG Value
+);
+
 #endif 
 
 #endif

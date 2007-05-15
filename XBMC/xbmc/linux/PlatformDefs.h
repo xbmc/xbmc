@@ -161,7 +161,6 @@ typedef union _LARGE_INTEGER
 LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand); 
 
 void OutputDebugString(LPCTSTR lpOuputString);
-#define GetLastError() (errno)
 
 // Date / Time
 
@@ -221,8 +220,6 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define WSAEADDRINUSE EADDRINUSE
 #define WSAECANCELLED EINTR
 typedef int SOCKET;
-
-#define SetLastError(e) (errno = e)
 
 // Critical section
 #define CRITICAL_SECTION   CXHandle
