@@ -58,16 +58,18 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
   if (pTexture) {
      CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
      if (SDL_LockSurface(pTexture) == 0) {
+
+     	  RGBQUAD *pPixel = &m_info.rawImage[(m_info.height * m_info.width) - 1];
+        char *pDest = (char *)pTexture->pixels;
+        
         for (int y=0; y<m_info.height; y++) {
             for (int x=0; x<m_info.width; x++) {
-               RGBQUAD pixelColor = m_info.rawImage[x,y];
-               Uint32 color = SDL_MapRGB(pTexture->format, pixelColor.rgbRed, pixelColor.rgbGreen, pixelColor.rgbBlue); 
-               
-               char *pDest = (char *)pTexture->pixels;
-               pDest += (y * pTexture->pitch);
-               pDest += (x * pTexture->format->BytesPerPixel);
-  
+               Uint32 color = SDL_MapRGB(pTexture->format, pPixel->rgbRed, pPixel->rgbGreen, pPixel->rgbBlue); 
+              
                memcpy(pDest, &color, pTexture->format->BytesPerPixel);
+               
+               pDest += pTexture->format->BytesPerPixel;
+               pPixel--;	
             }
         }
 
