@@ -123,10 +123,10 @@
       <used>false</used>
       <version>3</version>
       <includestyle>3</includestyle>
-      <root/>
+      <root></root>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake/>
-      <designer/>
+      <qmake></qmake>
+      <designer></designer>
       <designerpluginpaths/>
     </qt>
     <codecompletion>
