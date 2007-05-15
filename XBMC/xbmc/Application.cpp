@@ -2161,6 +2161,21 @@ void CApplication::DoRender()
   if(!m_pd3dDevice)
     return;
 
+#ifdef WITH_LINKS_BROWSER
+  if (g_browserManager.isLoaded())
+  {
+    MEMORYSTATUS stat;
+    GlobalMemoryStatus(&stat);
+    if(stat.dwAvailPhys < 3000000)    // trigger memory rescue when <3MB
+    {
+        OutputDebugString("*** LinksBoks: memory below critical limit, freeing all caches!\n");
+      g_browserManager.EmptyCaches();
+      // might want to recalculate cache sizes according to available memory
+    }
+    g_browserManager.FrameMove();
+  }
+#endif
+
   g_graphicsContext.Lock();
 
   m_pd3dDevice->BeginScene();
@@ -2720,21 +2735,6 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
-
-#ifdef WITH_LINKS_BROWSER
-  if (g_browserManager.isLoaded())
-  {
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus(&stat);
-    if(stat.dwAvailPhys < 3000000)    // trigger memory rescue when <3MB
-    {
-        OutputDebugString("*** LinksBoks: memory below critical limit, freeing all caches!\n");
-      g_browserManager.EmptyCaches();
-      // might want to recalculate cache sizes according to available memory
-    }
-    g_browserManager.FrameMove();
-  }
-#endif
 
   UpdateLCD();
 

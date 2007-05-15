@@ -26,6 +26,9 @@ CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
 {
   m_dwWindowId = dwID;
+  //backup the windowid, if the xmlfile does not exist for one skin the windowid is set to invalid,
+  //if we load another skin the windowid should be restored.
+  m_dwWindowIdBackup = m_dwWindowId;
   m_xmlFile = xmlFile;
   m_dwIDRange = 1;
   m_saveLastControl = false;
@@ -123,6 +126,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
+  if (m_dwWindowIdBackup != m_dwWindowId && m_dwWindowIdBackup > WINDOW_INVALID)
+  {
+    m_dwWindowId = m_dwWindowIdBackup;
+  }
   RESOLUTION resToUse = INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   TiXmlDocument xmlDoc;

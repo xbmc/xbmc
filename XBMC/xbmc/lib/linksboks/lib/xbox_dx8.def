@@ -57,8 +57,3 @@ D3DDevice_CopyRects@20
 D3DDevice_CreateSurface2@16
 D3DDevice_GetDepthStencilSurface2@0
 D3DSurface_LockRect@16
-XFONT_GetTextHeight@4
-XFONT_GetTextStyle@4
-XFONT_GetFontMetrics@12
-XFONT_GetTextExtent@16
-XFONT_TextOutToMemory@40

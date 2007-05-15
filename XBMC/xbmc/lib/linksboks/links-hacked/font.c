@@ -818,7 +818,7 @@ void init_fonts()
 #ifdef HAVE_FREETYPE
         init_freetype();
 #endif
-#if defined(XBOX_USE_XFONT) || defined(XBOX_USE_FREETYPE)
+#ifdef XBOX_USE_XFONT)
 		init_xfont();
 #endif
         load_fonts_table();
@@ -844,7 +844,7 @@ void finalize_fonts()
 #ifdef HAVE_FREETYPE
         finalize_freetype();
 #endif
-#if defined(XBOX_USE_XFONT) || defined(XBOX_USE_FREETYPE)
+#ifdef XBOX_USE_XFONT
 		finalize_xfont();
 #endif
         finalize_builtin_fonts();
@@ -943,7 +943,7 @@ void load_fonts_table()
                         break;
                 }
 #endif
-#if defined(XBOX_USE_XFONT) || defined(XBOX_USE_FREETYPE)
+#ifdef XBOX_USE_XFONT
                 case FONT_TYPE_XFONT:{
                         struct font *font=create_xfont_font(font_filename);
                         if(font){

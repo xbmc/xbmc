@@ -119,7 +119,7 @@ unsigned char *fontlist_type_item(struct terminal *term, void *data, int x)
         case FONT_TYPE_FREETYPE:
                 add_to_str(&txt,&l,"freetype");
                 break;
-#if defined(XBOX_USE_XFONT) || defined(XBOX_USE_FREETYPE)
+#ifdef XBOX_USE_XFONT
 		case FONT_TYPE_XFONT:
 				add_to_str(&txt,&l,"xfont");
 				break;
@@ -195,7 +195,7 @@ void fontlist_edit_done(void *data)
         if(!font)
                 font=create_ft_font(value);
 #endif
-#if defined(XBOX_USE_XFONT) || defined(XBOX_USE_FREETYPE)
+#ifdef XBOX_USE_XFONT
         if(!font)
                 font=create_xfont_font(value);
 #endif
