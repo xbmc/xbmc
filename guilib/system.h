@@ -103,7 +103,7 @@
 #endif
 
 #ifdef _LINUX
-#undef HAS_PYTHON
+#define HAS_PYTHON
 #undef HAS_TRAINER
 #undef HAS_WEB_SERVER
 #undef HAS_UPNP
