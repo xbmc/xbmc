@@ -742,6 +742,7 @@ void CGUIFontTTF::Begin()
  
       // Bind the texture object
       glBindTexture(GL_TEXTURE_2D, m_glTexture);
+      glEnable(GL_TEXTURE_2D);
  
       // Set the texture's stretching properties
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -768,6 +769,7 @@ void CGUIFontTTF::Begin()
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR);
 
     glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
 #endif
   }
