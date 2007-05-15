@@ -50,11 +50,11 @@ CFileItem::CFileItem(const CSong& song)
   m_videoInfoTag = NULL;
   Reset();
   m_strLabel = song.strTitle;
-  m_strPath = song.strFileName;
+  m_strPath = _P(song.strFileName);
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
-  m_strThumbnailImage = song.strThumb;
+  m_strThumbnailImage = _P(song.strThumb);
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -63,12 +63,12 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_videoInfoTag = NULL;
   Reset();
   m_strLabel = album.strAlbum;
-  m_strPath = path;
+  m_strPath = _P(path);
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
-  m_strThumbnailImage = album.strThumb;
+  m_strThumbnailImage = _P(album.strThumb);
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
@@ -79,13 +79,13 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   m_strLabel = movie.m_strTitle;
   if (movie.m_strFileNameAndPath.IsEmpty())
   {
-    m_strPath = movie.m_strPath;
+    m_strPath = _P(movie.m_strPath);
     CUtil::AddSlashAtEnd(m_strPath);
     m_bIsFolder = true;
   }
   else
   {
-    m_strPath = movie.m_strFileNameAndPath;
+    m_strPath = _P(movie.m_strFileNameAndPath);
     m_bIsFolder = false;
   }
   m_fRating = movie.m_fRating;
@@ -101,7 +101,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_videoInfoTag = NULL;
   Reset();
   m_strLabel = artist.strArtist;
-  m_strPath = artist.strArtist;
+  m_strPath = _P(artist.strArtist);
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
@@ -113,7 +113,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_videoInfoTag = NULL;
   Reset();
   m_strLabel = genre.strGenre;
-  m_strPath = genre.strGenre;
+  m_strPath = _P(genre.strGenre);
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
@@ -157,7 +157,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   Reset();
-  m_strPath = strPath;
+  m_strPath = _P(strPath);
   m_bIsFolder = bIsFolder;
 #ifdef DEBUG
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())
@@ -175,7 +175,7 @@ CFileItem::CFileItem(const CShare& share)
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
-  m_strPath = share.strPath;
+  m_strPath = _P(share.strPath);
   CUtil::AddSlashAtEnd(m_strPath);
   m_strLabel = share.strName;
   if (share.strStatus.size())
@@ -185,7 +185,7 @@ CFileItem::CFileItem(const CShare& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_strThumbnailImage = share.m_strThumbnailImage;
+  m_strThumbnailImage = _P(share.m_strThumbnailImage);
   SetLabelPreformated(true);
 }
 
@@ -815,7 +815,7 @@ CStdString CFileItem::GetCachedArtistThumb()
   crc.ComputeFromLowerCase("artist" + GetLabel());
   CStdString cachedThumb;
   cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), (unsigned __int32)crc);
-  return cachedThumb;
+  return _P(cachedThumb);
 }
 
 CStdString CFileItem::GetCachedProfileThumb()
@@ -824,7 +824,7 @@ CStdString CFileItem::GetCachedProfileThumb()
   crc.ComputeFromLowerCase("profile" + m_strPath);
   CStdString cachedThumb;
   cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), (unsigned __int32)crc);
-  return cachedThumb;
+  return _P(cachedThumb);
 }
 
 CStdString CFileItem::GetCachedSeasonThumb()
@@ -833,7 +833,7 @@ CStdString CFileItem::GetCachedSeasonThumb()
   crc.ComputeFromLowerCase("season" + m_strPath);
   CStdString cachedThumb;
   cachedThumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
-  return cachedThumb;
+  return _P(cachedThumb);
 }
 
 void CFileItem::SetCachedArtistThumb()
@@ -2098,7 +2098,7 @@ CStdString CFileItem::GetCachedPictureThumb()
   hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
   thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
-  return thumb;
+  return _P(thumb);
 }
 
 void CFileItem::SetCachedMusicThumb()
@@ -2248,7 +2248,7 @@ CStdString CFileItem::GetCachedVideoThumb()
     crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
-  return thumb;
+  return _P(thumb);
 }
 
 void CFileItem::SetCachedVideoThumb()
@@ -2377,7 +2377,7 @@ CStdString CFileItem::GetCachedProgramThumb()
     crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
-  return thumb;
+  return _P(thumb);
 }
 
 CStdString CFileItem::GetCachedGameSaveThumb()
@@ -2390,6 +2390,9 @@ CStdString CFileItem::GetCachedGameSaveThumb()
     crc.ComputeFromLowerCase(m_strPath);
     CStdString thumb;
     thumb.Format("%s\\%08x.tbn", g_settings.GetGameSaveThumbFolder().c_str(),(unsigned __int32)crc);
+
+    thumb = _P(thumb);
+
     if (!CFile::Exists(thumb))
     {
       CStdString strTitleImage, strParent, strParentSave, strParentTitle;
@@ -2419,6 +2422,9 @@ CStdString CFileItem::GetCachedGameSaveThumb()
 
     CStdString thumb;
     thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
+
+    thumb = _P(thumb);
+
     CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
     if (!CFile::Exists(thumb))
     {
