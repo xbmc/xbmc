@@ -173,6 +173,7 @@ void CGUIImage::Render()
     CGLTexture* texture = m_vecTextures[m_iCurrentImage]; 
     glActiveTextureARB(GL_TEXTURE0_ARB);
     glBindTexture(GL_TEXTURE_2D, texture->id);
+    glEnable(GL_TEXTURE_2D);
     
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
