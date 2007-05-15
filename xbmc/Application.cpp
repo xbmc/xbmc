@@ -92,8 +92,8 @@
 #include "utils/Win32Exception.h"
 #endif
 #ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/xbmchttp.h"
-#include "lib/libGoAhead/webserver.h"
+#include "lib/libGoAhead/XBMChttp.h"
+#include "lib/libGoAhead/WebServer.h"
 #endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"

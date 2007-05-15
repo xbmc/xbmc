@@ -11,15 +11,15 @@
 
 #include "stdafx.h"
 #include "WebServer.h"
-#include "XBMCWeb.h"
+#include "XBMCweb.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
 #endif
 
-#include "xbmcweb.h"
-#include "xbmcconfiguration.h"
-#include "xbmchttp.h"
+#include "XBMCweb.h"
+#include "XBMCConfiguration.h"
+#include "XBMChttp.h"
 #include "includes.h"
 
 static CXbmcWeb* pXbmcWeb;
@@ -89,7 +89,7 @@ CWebServer::~CWebServer()
     pXbmcHttp=NULL;
   }
 }
-
+/*
 DWORD CWebServer::SuspendThread()
 {
   return ::SuspendThread(m_ThreadHandle);
@@ -101,7 +101,7 @@ DWORD CWebServer::ResumeThread()
   if (res) WaitForSingleObject(m_hEvent, INFINITE);
   return res;
 }
-
+*/
 bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, bool wait)
 {
   m_bFinished = false;
@@ -379,7 +379,7 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 			"home.html",
 			"default.asp",
 			"home.asp",
-			NULL, };
+			'\0', };
 
 	// check if one of the above files exist, if one does then redirect to it.
 	strcpy(dir, websGetDefaultDir());
@@ -538,14 +538,14 @@ void XbmcWebsForm(webs_t wp, char_t *path, char_t *query)
 /*
  * wrappers for xbmcConfig
  */
-int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigGetBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigAddBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigSaveBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigRemoveBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigSaveConfiguration(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigGetOption(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, (CStdString) "", argc, argv) : -1; }
-int XbmcWebsAspConfigSetOption(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigGetBookmark(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigAddBookmark(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigSaveBookmark(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigRemoveBookmark(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigSaveConfiguration(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigGetOption(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, response, argc, argv) : -1; }
+int XbmcWebsAspConfigSetOption(int eid, webs_t wp, int argc, char_t **argv) { CStdString response; return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, response, argc, argv) : -1; }
 
 /*
  * wrappers for HttpAPI xbmcConfig
