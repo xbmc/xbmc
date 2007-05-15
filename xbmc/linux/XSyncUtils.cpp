@@ -249,15 +249,30 @@ LONG InterlockedCompareExchange(
 ) {
 	if (Destination == NULL)
 		return 0;
-
-	LONG nKeep = *Destination;
-
 	SDL_mutexP(g_mutex);
+	LONG nKeep = *Destination;
 	if (*Destination == Comparand)
 		*Destination = Exchange;
 	SDL_mutexV(g_mutex);
 	
 	return nKeep;
 }
+
+LONG InterlockedExchange(
+  LONG volatile* Target,
+  LONG Value
+)
+{
+	if (Target == NULL)
+		return 0;
+
+	SDL_mutexP(g_mutex);
+	LONG nKeep = *Target;
+	*Target = Value;
+	SDL_mutexV(g_mutex);
+	
+	return nKeep;
+}
+
 
 #endif

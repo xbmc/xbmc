@@ -8,9 +8,12 @@
 
 // a variable which is defined __thread will be defined in thread local storage
 // which means it will be different for each thread that accesses it.
-LPVOID __thread tls = NULL;
+#define TLS_INDEXES 16
+#define TLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
+static LPVOID __thread tls[TLS_INDEXES] = { NULL };
+static BOOL tls_used[TLS_INDEXES];
 
-HANDLE CreateThread(
+HANDLE WINAPI CreateThread(
 		  LPSECURITY_ATTRIBUTES lpThreadAttributes,
 		    SIZE_T dwStackSize,
 		      LPTHREAD_START_ROUTINE lpStartAddress,
@@ -26,11 +29,11 @@ HANDLE CreateThread(
 }
 
 
-DWORD GetCurrentThreadId(void) {
+DWORD WINAPI GetCurrentThreadId(void) {
 	return SDL_ThreadID();
 }
 
-HANDLE GetCurrentThread(void) {
+HANDLE WINAPI GetCurrentThread(void) {
 	return (HANDLE)-1; // -1 a special value - pseudo handle
 }
 
@@ -49,7 +52,7 @@ HANDLE _beginthreadex(
 	
 }
 
-BOOL GetThreadTimes (
+BOOL WINAPI GetThreadTimes (
   HANDLE hThread,
   LPFILETIME lpCreationTime,
   LPFILETIME lpExitTime,
@@ -84,25 +87,42 @@ BOOL GetThreadTimes (
 	return true;
 }
 
+BOOL WINAPI SetThreadPriority(
+  HANDLE hThread,
+  int nPriority
+) {
+  XXLog(ERROR, "Unimplemented SetThreadPriority called");
+  return true;
+}
+
 // thread local storage -
 // we use different method than in windows. TlsAlloc has no meaning since
 // we always take the __thread variable "tls".
 // so we return static answer in TlsAlloc and do nothing in TlsFree.
-LPVOID TlsGetValue(DWORD dwTlsIndex) {
-   return tls;
+LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex) {
+   return tls[dwTlsIndex];
 }
 
-BOOL TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue) {
-   tls=lpTlsValue;
+BOOL WINAPI TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue) {
+   tls[dwTlsIndex]=lpTlsValue;
    return true;
 }
 
-BOOL TlsFree(DWORD dwTlsIndex) {
+BOOL WINAPI TlsFree(DWORD dwTlsIndex) {
+   tls_used[dwTlsIndex] = false;
    return true;
 }
 
-DWORD TlsAlloc() {
-   return 1;
+DWORD WINAPI TlsAlloc() {
+  for(int i=0;i<TLS_INDEXES;i++)
+  {
+    if(!tls_used[i])
+    {
+      tls_used[i] = TRUE;
+      return i;
+    }
+    return TLS_OUT_OF_INDEXES;
+  }
 }
 
 

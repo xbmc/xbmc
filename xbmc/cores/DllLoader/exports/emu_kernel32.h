@@ -654,9 +654,6 @@ extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue);
 extern "C" BOOL WINAPI dllTlsFree(DWORD dwTlsIndex);
 extern "C" DWORD WINAPI dllTlsAlloc();
 
-extern "C" HANDLE WINAPI dllFindFirstFileA(LPCSTR s, LPWIN32_FIND_DATAA lpfd);
-extern "C" BOOL WINAPI dllFindNextFileA(HANDLE h, LPWIN32_FIND_DATAA lpfd);
-
 extern "C" BOOL WINAPI dllFileTimeToLocalFileTime(CONST FILETIME *lpFileTime, LPFILETIME lpLocalFileTime);
 extern "C" BOOL WINAPI dllFileTimeToSystemTime(CONST FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime);
 extern "C" DWORD WINAPI dllGetTimeZoneInformation(LPTIME_ZONE_INFORMATION lpTimeZoneInformation);
@@ -731,7 +728,5 @@ extern "C" DWORD WINAPI dllGetTempPathA(DWORD nBufferLength, LPTSTR lpBuffer);
 
 
 extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped);
-
-
 
 #endif // _EMU_KERNEL32_H_
