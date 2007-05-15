@@ -3,12 +3,18 @@
 #include "AnimatedGif.h"
 #include "PackedTexture.h"
 #include "GraphicContext.h"
+#include "Picture.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "Util.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
+#endif
+
+#ifdef HAS_SDL
+#define MAX_PICTURE_WIDTH  4096
+#define MAX_PICTURE_HEIGHT 4096
 #endif
 
 
@@ -744,7 +750,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
             pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
 #ifndef HAS_SDL_OPENGL
-            SDL_ReleaseSurface(pTexture);
+            SDL_FreeSurface(pTexture);
 #endif
             
             pMap->Add(pclsTexture);
@@ -825,8 +831,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         return 0;
       }
 #else
+	
       SDL_Surface *original = IMG_Load(texturePath.c_str());
-      if (!original)
+      CPicture pic;
+      if (!original && !(original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT)))
       {
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
           return 0;

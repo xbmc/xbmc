@@ -687,6 +687,7 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
 #endif
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+
 #elif defined(HAS_SDL_OPENGL)
   if (pTexture)
   {
