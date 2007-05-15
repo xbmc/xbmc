@@ -682,8 +682,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 #ifdef HAS_XBOX_D3D
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #elif defined(HAS_SDL)
-		  pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-		  if (pTexture)
+		    pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		    if (pTexture)
 #else
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #endif
@@ -710,16 +710,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
               palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
             
 #ifdef HAS_SDL
-				// Allocate memory for the actual pixels in the surface and set the surface
-				BYTE* pixels = (BYTE*) malloc(w * h * 4);
-				pTexture->pixels = pixels;
+				    // Allocate memory for the actual pixels in the surface and set the surface
+				    BYTE* pixels = (BYTE*) malloc(w * h * 4);
+				    pTexture->pixels = pixels;
 #endif            
             for (int y = 0; y < pImage->Height; y++)
             {
 #ifndef HAS_SDL            
               BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
 #else
-				  BYTE *dest = (BYTE *)pixels + (y * w * 4); 
+				      BYTE *dest = (BYTE *)pixels + (y * w * 4); 
 #endif				               
               BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
               for (int x = 0; x < pImage->Width; x++)
@@ -736,13 +736,17 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 #ifndef HAS_SDL
             pTexture->UnlockRect( 0 );
 #else
-				SDL_UnlockSurface(pTexture);
+				    SDL_UnlockSurface(pTexture);
 #endif            
 
             CTexture* pclsTexture = new CTexture(pTexture, iWidth, iHeight, false, 100, pPal);
             pclsTexture->SetDelay(pImage->Delay);
             pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
+#ifndef HAS_SDL_OPENGL
+            SDL_ReleaseSurface(pTexture);
+#endif
+            
             pMap->Add(pclsTexture);
           }
         }
@@ -862,6 +866,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
+
+#ifdef HAS_SDL_OPENGL
+  SDL_FreeSurface(pTexture);
+#endif    
+  
 #ifdef HAS_XBOX_D3D
   if (pPal)
     pPal->Release();
