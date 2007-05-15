@@ -23,6 +23,7 @@
 #include "SlideShowPicture.h"
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
+#include "TextureManager.h"
 
 #define IMMEDIATE_TRANSISTION_TIME 20
 
@@ -56,6 +57,8 @@ void CSlideShowPic::Close()
   {
 #ifndef HAS_SDL
     m_pImage->Release();
+#elif defined(HAS_SDL_OPENGL)
+    glDeleteTextures(1, &m_pImage->id);
 #else
     SDL_FreeSurface(m_pImage);
 #endif
@@ -79,7 +82,13 @@ void CSlideShowPic::SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWid
   m_bNoEffect = false;
   m_bTransistionImmediately = false;
   m_iSlideNumber = iSlideNumber;
+#ifdef HAS_SDL_OPENGL
+//  g_graphicsContext.Lock();
+  m_pImage = new CGLTexture(pTexture);
+//  g_graphicsContext.Unlock();
+#else
   m_pImage = pTexture;
+#endif
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
   // reset our counter
@@ -179,11 +188,17 @@ void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight
 #endif
 #ifndef HAS_SDL
     m_pImage->Release();
+#elif defined(HAS_SDL_OPENGL)
+    delete m_pImage;
 #else
     SDL_FreeSurface(m_pImage);
 #endif
   }
+#ifdef HAS_SDL_OPENGL
+  m_pImage = new CGLTexture(pTexture);
+#else
   m_pImage = pTexture;
+#endif
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
 }
@@ -605,6 +620,8 @@ void CSlideShowPic::Render()
 
 #ifndef HAS_SDL
 void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
+#elif defined(HAS_SDL_OPENGL)
+void CSlideShowPic::Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode)
 #else
 void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwColor)
 #endif
@@ -670,8 +687,56 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
 #endif
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
-
-#elsif defined(HAS_SDL_2D)
+#elif defined(HAS_SDL_OPENGL)
+  if (pTexture)
+  {
+    glBindTexture(GL_TEXTURE_2D, pTexture->id);
+    glEnable(GL_TEXTURE_2D);
+    
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);          // Turn Blending On
+       
+    // diffuse coloring
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+  }
+  else
+    glDisable(GL_TEXTURE_2D);
+  glPolygonMode(GL_FRONT_AND_BACK, fillmode);
+  
+  glBegin(GL_QUADS);
+  float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
+  if (pTexture)
+  {
+    u2 = (float)pTexture->imageWidth / pTexture->textureWidth;
+    v2 = (float)pTexture->imageHeight / pTexture->textureHeight;
+  }
+  
+  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glTexCoord2f(u1, v1);
+  glVertex3f(x[0], y[0], 0);
+  
+  // Bottom-left vertex (corner)
+  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glTexCoord2f(u2, v1);
+  glVertex3f(x[1], y[1], 0);
+  
+  // Bottom-right vertex (corner)
+  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glTexCoord2f(u2, v2);
+  glVertex3f(x[2], y[2], 0);
+  
+  // Top-right vertex (corner)
+  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glTexCoord2f(u1, v2);
+  glVertex3f(x[3], y[3], 0);
+    
+  glEnd();
+#else
 // SDL render
   g_graphicsContext.BlitToScreen(m_pImage, NULL, NULL);
 #endif
