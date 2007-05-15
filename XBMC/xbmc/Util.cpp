@@ -171,9 +171,9 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
   /* check if there is any options in the url */
   const int options = strFileNameAndPath.find_first_of('?', slash+1);
   if(options < 0)
-    return strFileNameAndPath.substr(slash+1);
+    return _P(strFileNameAndPath.substr(slash+1));
   else
-    return strFileNameAndPath.substr(slash+1, options-(slash+1));
+    return _P(strFileNameAndPath.substr(slash+1, options-(slash+1)));
 }
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
@@ -2413,7 +2413,7 @@ void CUtil::PrepareSubtitleFonts()
           CStdString strSource, strDest;
           strSource.Format("%s\\%s", strPath.c_str(), wfd.cFileName);
           strDest.Format("%s\\%s", strFontPath.c_str(), wfd.cFileName);
-          ::CopyFile(strSource.c_str(), strDest.c_str(), FALSE);
+          ::CopyFile(_P(strSource.c_str()), _P(strDest.c_str()), FALSE);
         }
       }
       while (FindNextFile((HANDLE)hFind, &wfd));
@@ -2768,7 +2768,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
 {
   // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
-  string str = path;
+  string str = _P(path);
   // Skip delimiters at beginning.
   string::size_type lastPos = str.find_first_not_of(delimiters, 0);
   // Find first "non-delimiter".
@@ -2912,7 +2912,7 @@ void CUtil::TakeScreenshot()
             char dest[1024];
             sprintf(dest, "%s\\screenshot%%03d.bmp", newDir.c_str());
             strcpy(dest, CUtil::GetNextFilename(dest, 999).c_str());
-            CFile::Cache(screenShots[i], dest);
+            CFile::Cache(screenShots[i], _P(dest));
           }
           screenShots.clear();
         }
@@ -4923,7 +4923,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
   thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
-  return thumb;
+  return _P(thumb);
 }
 
 void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
