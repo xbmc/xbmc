@@ -4,7 +4,7 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
-#include "GuiButtonControl.h"
+#include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
@@ -539,7 +539,8 @@ namespace PYXBMC
     }
 
     PyGUILock();
-    pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId));
+    CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
+    pWindow->OnMessage(msg);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -568,7 +569,8 @@ namespace PYXBMC
     }
 
     PyGUILock();
-    pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId));
+    CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId);
+    pWindow->OnMessage(msg);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
