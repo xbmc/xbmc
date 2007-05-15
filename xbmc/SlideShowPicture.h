@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef HAS_SDL_OPENGL
+class CGLTexture;
+#endif
+
 class CSlideShowPic
 {
 public:
@@ -66,6 +70,9 @@ private:
   };
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
   IDirect3DTexture8* m_pImage;
+#elif defined(HAS_SDL_OPENGL)
+  void Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode = GL_FILL);
+  CGLTexture *m_pImage;
 #else
   void Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwColor);
   SDL_Surface* m_pImage;
