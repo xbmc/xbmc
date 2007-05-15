@@ -83,9 +83,12 @@ void CSlideShowPic::SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWid
   m_bTransistionImmediately = false;
   m_iSlideNumber = iSlideNumber;
 #ifdef HAS_SDL_OPENGL
-//  g_graphicsContext.Lock();
+  // lock the graphics context, as opengl does not allow
+  // creating of textures during a glBegin(), glEnd() block
+  // and this is called from a different thread
+  g_graphicsContext.Lock();
   m_pImage = new CGLTexture(pTexture);
-//  g_graphicsContext.Unlock();
+  g_graphicsContext.Unlock();
 #else
   m_pImage = pTexture;
 #endif
@@ -195,7 +198,12 @@ void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight
 #endif
   }
 #ifdef HAS_SDL_OPENGL
+  // lock graphics context as opengl doesn't allow upload
+  // of textures during glBegin(), glEnd() blocks, and this
+  // is called from a different thread
+  g_graphicsContext.Lock();
   m_pImage = new CGLTexture(pTexture);
+  g_graphicsContext.Unlock();
 #else
   m_pImage = pTexture;
 #endif
