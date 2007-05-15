@@ -12,8 +12,14 @@
 #ifndef DEV
 #define DEV
 #endif
+#ifndef _LINUX
 #ifndef WIN
 #define WIN
+#endif
+#else
+#ifndef LINUX
+#define LINUX
+#endif
 #endif
 #ifndef USER_MANAGEMENT_SUPPORT
 #define USER_MANAGEMENT_SUPPORT
