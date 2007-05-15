@@ -1,12 +1,19 @@
 #include "stdafx.h"
+#ifndef _LINUX
 #include <io.h>
 #include <direct.h>
-#include <sys/stat.h>
 #include <sys/utime.h>
+#else
+#include <sys/types.h>
+#include <utime.h>
+#endif
+#include <sys/stat.h>
+#include <stdio.h>
 
-#include "..\DllLoaderContainer.h"
+#include "../DllLoaderContainer.h"
 
 // file io functions
+#ifndef _LINUX
 #define CORRECT_SEP_STR(str) \
     int iSize_##str = strlen(str); \
     for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
@@ -14,8 +21,12 @@
 #define CORRECT_SEP_WSTR(str) \
     int iSize_##str = wcslen(str); \
     for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+#else
+#define CORRECT_SEP_STR(str)
+#define CORRECT_SEP_WSTR(str) 
+#endif
 
-#include "..\dll_tracker_file.h"
+#include "../dll_tracker_file.h"
 #include "emu_msvcrt.h"
 
 extern "C"
@@ -42,11 +53,19 @@ int xbp_chdir(const char *dirname)
 
 char* xbp__tempnam(const char *dir, const char *prefix)
 {
+#ifndef _LINUX
   char* p = strdup(dir);
   CORRECT_SEP_STR(p);
   char* res = _tempnam(p, prefix);
   free(p);
   return res;
+#else
+  CStdString result = dir;
+  result += "/";
+  result += prefix;
+  result += tmpnam(NULL);
+  return strdup(result.c_str());
+#endif
 }
 
 int xbp_unlink(const char *filename)
@@ -110,7 +129,11 @@ int xbp_mkdir(const char *dirname)
 {
   char* p = strdup(dirname);
   CORRECT_SEP_STR(p);
+#ifndef _LINUX
   int res = mkdir(p);
+#else
+  int res = mkdir(p, 0755);
+#endif
   free(p);
   return res;
 }
@@ -159,11 +182,15 @@ int xbp_close(int fd)
 FILE* xbp__wfopen(const wchar_t *filename, const wchar_t *mode)
 {
   CLog::Log(LOGERROR, "xbp__wfopen = untested");
+#ifndef _LINUX
   wchar_t* p = wcsdup(filename);
   CORRECT_SEP_WSTR(p);
   FILE* res = _wfopen(p, mode);
   free(p);
   return res;
+#else
+  return NULL;
+#endif
 }
 
 BOOL xbp_FindClose(HANDLE hFindFile)
@@ -195,7 +222,11 @@ BOOL xbp_FindNextFile(HANDLE hFindFile, LPWIN32_FIND_DATA lpFindFileData)
 
 long xbp__get_osfhandle(int fd)
 {
+#ifndef _LINUX
   return _get_osfhandle(fd);
+#else
+  return fd;
+#endif
 }
 
 int xbp_dup(int fd)
@@ -212,65 +243,65 @@ int xbp_dup2(int fd1, int fd2)
 
 Export export_xbp[] =
 {
-  { "xbp_fgetc",                  -1, dll_fgetc,                     NULL },
-  { "xbp_clearerr",               -1, dll_clearerr,                  NULL },
-  //{ "xbp__stati64",               -1, xbp__stati64,                  NULL },
-  { "xbp__fstati64",              -1, dll_fstati64,                  NULL },
-  { "xbp__tempnam",               -1, xbp__tempnam,                  NULL },
-  { "xbp_tmpfile",                -1, tmpfile,                       NULL },
-  { "xbp_tmpnam",                 -1, tmpnam,                        NULL },
-  { "xbp__wfopen",                -1, xbp__wfopen,                   NULL },
-  { "xbp__get_osfhandle",         -1, xbp__get_osfhandle,            NULL },
-  //{ "xbp_vfprintf",               -1, xbp_vfprintf,                  NULL },
-  { "xbp_unlink",                 -1, xbp_unlink,                    NULL },
-  { "xbp_access",                 -1, xbp_access,                    NULL },
-  { "xbp_chdir",                  -1, xbp_chdir,                     NULL },
-  { "xbp_chmod",                  -1, xbp_chmod,                     NULL },
-  { "xbp_rmdir",                  -1, xbp_rmdir,                     NULL },
-  { "xbp_umask",                  -1, umask,                         NULL },
-  { "xbp_utime",                  -1, xbp_utime,                     NULL },
-  { "xbp_dup",                    -1, xbp_dup,                       NULL },
-  { "xbp_dup2",                   -1, xbp_dup2,                      NULL },
-  { "xbp_rename",                 -1, xbp_rename,                    NULL },
-  { "xbp__commit",                -1, _commit,                       NULL },
-  { "xbp__setmode",               -1, dll_setmode,                   NULL },
-  { "xbp_fopen",                  -1, xbp_fopen,                     NULL },
-  { "xbp_ungetc",                 -1, dll_ungetc,                    NULL },
-  { "xbp_fflush",                 -1, dll_fflush,                    NULL },
-  { "xbp_fwrite",                 -1, dll_fwrite,                    NULL },
-  //{ "xbp_fprintf",                -1, xbp_fprintf,                   NULL },
-  { "xbp_fread",                  -1, dll_fread,                     NULL },
-  //{ "xbp_fputs",                  -1, xbp_fputs,                     NULL },
-  { "xbp_getc",                   -1, dll_getc,                      NULL },
-  { "xbp_setvbuf",                -1, setvbuf,                       NULL },
-  { "xbp_fsetpos",                -1, dll_fsetpos,                   NULL },
-  { "xbp_fgetpos",                -1, dll_fgetpos,                   NULL },
-  { "xbp__lseek",                 -1, dll_lseek,                     NULL },
-  { "xbp_ftell",                  -1, dll_ftell,                     NULL },
-  //{ "xbp_ftell64",                -1, ftell64,                       NULL },
-  { "xbp_fgets",                  -1, dll_fgets,                     NULL },
-  { "xbp_fseek",                  -1, dll_fseek,                     NULL },
-  //{ "xbp_putc",                   -1, xbp_putc,                      NULL },
-  //{ "xbp_write",                  -1, xbp_write,                     NULL },
-  { "xbp_read",                   -1, dll_read,                      NULL },
-  { "xbp_close",                  -1, xbp_close,                     NULL },
-  { "xbp_mkdir",                  -1, xbp_mkdir,                     NULL },
-  { "xbp_open",                   -1, xbp_open,                      NULL },
-  //{ "xbp__fdopen",                -1, xbp__fdopen,                   NULL },
-  { "xbp_lseek",                  -1, dll_lseek,                     NULL },
-  { "xbp_fstat",                  -1, dll_fstat,                     NULL },
-  //{ "xbp_stat",                   -1, xbp_stat,                      NULL },
-  { "xbp__lseeki64",              -1, _lseeki64,                     NULL },
-  //{ "xbp_fileno",                 -1, xbp_fileno,                    NULL },
-  //{ "xbp_fputc",                  -1, xbp_fputc,                     NULL },
-  { "xbp_rewind",                 -1, rewind,                        NULL },
-  { "xbp_fclose",                 -1, xbp_fclose,                    NULL },
-  { "xbp_isatty",                 -1, isatty,                        NULL },
-  { "xbp_getcwd",                 -1, xbp_getcwd,                    NULL },
-  //{ "xbp_getenv",                 -1, xbp_getenv,                    NULL },
-  //{ "xbp_putenv",                 -1, xbp_putenv,                    NULL },
-  { "xbp_FindClose",              -1, xbp_FindClose,                 NULL },
-  { "xbp_FindFirstFile",          -1, xbp_FindFirstFile,             NULL },
-  { "xbp_FindNextFile",           -1, xbp_FindNextFile,              NULL },
-  { NULL, NULL, NULL, NULL }
+  { "xbp_fgetc",                  -1, (void*) dll_fgetc,                     NULL },
+  { "xbp_clearerr",               -1, (void*) dll_clearerr,                  NULL },
+  //{ "xbp__stati64",               -1, (void*) xbp__stati64,                  NULL },
+  { "xbp__fstati64",              -1, (void*) dll_fstati64,                  NULL },
+  { "xbp__tempnam",               -1, (void*) xbp__tempnam,                  NULL },
+  { "xbp_tmpfile",                -1, (void*) tmpfile,                       NULL },
+  { "xbp_tmpnam",                 -1, (void*) tmpnam,                        NULL },
+  { "xbp__wfopen",                -1, (void*) xbp__wfopen,                   NULL },
+  { "xbp__get_osfhandle",         -1, (void*) xbp__get_osfhandle,            NULL },
+  //{ "xbp_vfprintf",               -1, (void*) xbp_vfprintf,                  NULL },
+  { "xbp_unlink",                 -1, (void*) xbp_unlink,                    NULL },
+  { "xbp_access",                 -1, (void*) xbp_access,                    NULL },
+  { "xbp_chdir",                  -1, (void*) xbp_chdir,                     NULL },
+  { "xbp_chmod",                  -1, (void*) xbp_chmod,                     NULL },
+  { "xbp_rmdir",                  -1, (void*) xbp_rmdir,                     NULL },
+  { "xbp_umask",                  -1, (void*) umask,                         NULL },
+  { "xbp_utime",                  -1, (void*) xbp_utime,                     NULL },
+  { "xbp_dup",                    -1, (void*) xbp_dup,                       NULL },
+  { "xbp_dup2",                   -1, (void*) xbp_dup2,                      NULL },
+  { "xbp_rename",                 -1, (void*) xbp_rename,                    NULL },
+  { "xbp__commit",                -1, (void*) dll__commit,                       NULL },
+  { "xbp__setmode",               -1, (void*) dll_setmode,                   NULL },
+  { "xbp_fopen",                  -1, (void*) xbp_fopen,                     NULL },
+  { "xbp_ungetc",                 -1, (void*) dll_ungetc,                    NULL },
+  { "xbp_fflush",                 -1, (void*) dll_fflush,                    NULL },
+  { "xbp_fwrite",                 -1, (void*) dll_fwrite,                    NULL },
+  //{ "xbp_fprintf",                -1, (void*) xbp_fprintf,                   NULL },
+  { "xbp_fread",                  -1, (void*) dll_fread,                     NULL },
+  //{ "xbp_fputs",                  -1, (void*) xbp_fputs,                     NULL },
+  { "xbp_getc",                   -1, (void*) dll_getc,                      NULL },
+  { "xbp_setvbuf",                -1, (void*) setvbuf,                       NULL },
+  { "xbp_fsetpos",                -1, (void*) dll_fsetpos,                   NULL },
+  { "xbp_fgetpos",                -1, (void*) dll_fgetpos,                   NULL },
+  { "xbp__lseek",                 -1, (void*) dll_lseek,                     NULL },
+  { "xbp_ftell",                  -1, (void*) dll_ftell,                     NULL },
+  //{ "xbp_ftell64",                -1, (void*) ftell64,                       NULL },
+  { "xbp_fgets",                  -1, (void*) dll_fgets,                     NULL },
+  { "xbp_fseek",                  -1, (void*) dll_fseek,                     NULL },
+  //{ "xbp_putc",                   -1, (void*) xbp_putc,                      NULL },
+  //{ "xbp_write",                  -1, (void*) xbp_write,                     NULL },
+  { "xbp_read",                   -1, (void*) dll_read,                      NULL },
+  { "xbp_close",                  -1, (void*) xbp_close,                     NULL },
+  { "xbp_mkdir",                  -1, (void*) xbp_mkdir,                     NULL },
+  { "xbp_open",                   -1, (void*) xbp_open,                      NULL },
+  //{ "xbp__fdopen",                -1, (void*) xbp__fdopen,                   NULL },
+  { "xbp_lseek",                  -1, (void*) dll_lseek,                     NULL },
+  { "xbp_fstat",                  -1, (void*) dll_fstat,                     NULL },
+  //{ "xbp_stat",                   -1, (void*) xbp_stat,                      NULL },
+  { "xbp__lseeki64",              -1, (void*) dll_lseeki64,                     NULL },
+  //{ "xbp_fileno",                 -1, (void*) xbp_fileno,                    NULL },
+  //{ "xbp_fputc",                  -1, (void*) xbp_fputc,                     NULL },
+  { "xbp_rewind",                 -1, (void*) rewind,                        NULL },
+  { "xbp_fclose",                 -1, (void*) xbp_fclose,                    NULL },
+  { "xbp_isatty",                 -1, (void*) isatty,                        NULL },
+  { "xbp_getcwd",                 -1, (void*) xbp_getcwd,                    NULL },
+  //{ "xbp_getenv",                 -1, (void*) xbp_getenv,                    NULL },
+  //{ "xbp_putenv",                 -1, (void*) xbp_putenv,                    NULL },
+  { "xbp_FindClose",              -1, (void*) xbp_FindClose,                 NULL },
+  { "xbp_FindFirstFile",          -1, (void*) xbp_FindFirstFile,             NULL },
+  { "xbp_FindNextFile",           -1, (void*) xbp_FindNextFile,              NULL },
+  { NULL, -1, (void*) NULL, NULL }
 };
