@@ -3,6 +3,9 @@ DIRS=guilib xbmc xbmc/FileSystem xbmc/FileSystem/MusicDatabaseDirectory xbmc/Fil
 all : compile 
 	$(MAKE) XboxMediaCenter
 
+sdl_2d:
+	$(MAKE) SDL_DEFINES=-DHAS_SDL_2D all 
+
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations utils common tinyxml sqllite libscrobbler unrarxlib libpython compile
 
 guilib: 
