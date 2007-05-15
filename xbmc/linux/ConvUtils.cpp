@@ -3,6 +3,7 @@
 #ifdef _LINUX
 
 #include <ctype.h>
+#include <errno.h>
 
 /*
  ** The following two functions together make up an itoa()
@@ -87,6 +88,14 @@ int MultiByteToWideChar(
 
 }
 
+DWORD GetLastError()
+{
+  return errno;
+}
 
+VOID SetLastError(DWORD dwErrCode)
+{
+  errno = dwErrCode;
+}
 
 #endif

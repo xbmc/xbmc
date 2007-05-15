@@ -22,4 +22,8 @@ int MultiByteToWideChar(
   int cchWideChar        
 );
 
+
+DWORD GetLastError();
+VOID  SetLastError(DWORD dwErrCode);
+
 #endif
