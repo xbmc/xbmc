@@ -62,7 +62,8 @@ namespace PYXBMC
     pKeyboard->Initialize();
     pKeyboard->CenterWindow();
     pKeyboard->SetHeading(self->strHeading);
-    pKeyboard->SetText(CStdString(self->strDefault));
+    CStdString strDefault(self->strDefault);
+    pKeyboard->SetText(strDefault);
     pKeyboard->SetHiddenInput(self->bHidden);
 
     // do modal of dialog
@@ -98,7 +99,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    pKeyboard->SetText(CStdString(self->strDefault));
+    CStdString strDefault(self->strDefault);
+    pKeyboard->SetText(strDefault);
 
     Py_INCREF(Py_None);
     return Py_None;
