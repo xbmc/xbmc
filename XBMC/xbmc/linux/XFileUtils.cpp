@@ -172,7 +172,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
       break;
   }
   
-  int fd = open(lpFileName, flags);
+  int fd = open(lpFileName, flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
   
   if (fd == -1)
     return INVALID_HANDLE_VALUE;
