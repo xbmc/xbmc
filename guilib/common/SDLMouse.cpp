@@ -21,6 +21,7 @@ void CMouse::Initialize(HWND hWnd)
 //  Acquire();
   // Set the default resolution (PAL)
   SetResolution(720, 576, 1, 1);
+  SDL_ShowCursor(0);
 }
 
 void CMouse::Update()
