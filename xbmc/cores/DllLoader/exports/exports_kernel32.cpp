@@ -37,9 +37,7 @@ Export export_kernel32[] =
   { "GetTickCount",                                 -1, (void*)GetTickCount,                                 NULL },
   { "GetCurrentThreadId",                           -1, (void*)GetCurrentThreadId,                           NULL },
   { "GetCurrentProcessId",                          -1, (void*)dllGetCurrentProcessId,                       NULL },
-#ifndef _LINUX
   { "GetSystemTimeAsFileTime",                      -1, (void*)GetSystemTimeAsFileTime,                      NULL },
-#endif
   { "OutputDebugStringA",                           -1, (void*)OutputDebugString,                            NULL },
   { "DisableThreadLibraryCalls",                    -1, (void*)dllDisableThreadLibraryCalls,                 NULL },
   { "GlobalMemoryStatus",                           -1, (void*)GlobalMemoryStatus,                           NULL },

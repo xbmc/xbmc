@@ -182,6 +182,10 @@ BOOL	TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
   return true;
 }
 
+void GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
+{
+  TimeTToFileTime(time(NULL), lpSystemTimeAsFileTime);
+}
 
 #endif
 

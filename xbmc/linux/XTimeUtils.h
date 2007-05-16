@@ -19,6 +19,7 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2);
 BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime);
 BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime);
+VOID   GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime);
 
 BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT);
 BOOL	TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime);

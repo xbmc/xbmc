@@ -273,6 +273,8 @@ Export export_msvcrt[] =
   { "_ftime",                     -1, (void*)_ftime,                        NULL },
   { "_iob",                       -1, (void*)_iob,                          NULL },
   { "_isctype",                   -1, (void*)_isctype,                      NULL },
+#else
+  { "_errno",                     -1, (void*)errno,                        NULL },
 #endif
   { "_lseeki64",                  -1, (void*)dll_lseeki64,                  NULL },
   { "_open",                      -1, (void*)dll_open,                      (void*)track_open },
@@ -393,6 +395,8 @@ Export export_msvcrt[] =
   { "_CIpow",                     -1, (void*)_CIpow,                        NULL },
   { "_purecall",                  -1, (void*)_purecall,                     NULL },
   { "_adjust_fdiv",               -1, (void*)_adjust_fdiv,                  NULL },
+#else
+  { "_CIpow",                     -1, (void*)pow,                           NULL },
 #endif
   { "_initterm",                  -1, (void*)dll_initterm,                  NULL },
   { "swscanf",                    -1, (void*)swscanf,                       NULL },
@@ -672,6 +676,12 @@ Export export_msvcr71[] =
   { "_isnan",                     -1, (void*)_isnan,                        NULL },
   { "_finite",                    -1, (void*)_finite,                       NULL },
   { "_CIfmod",                    -1, (void*)_CIfmod,                       NULL },
+#else
+  { "_CIsinh",                    -1, (void*)sinh,                       NULL },
+  { "_CIcosh",                    -1, (void*)cosh,                       NULL },
+  { "_isnan",                     -1, (void*)isnan,                        NULL },
+  { "_finite",                    -1, (void*)finite,                       NULL },
+  { "_CIfmod",                    -1, (void*)fmod,                       NULL },
 #endif
   { "atan2",                      -1, (void*)atan2,                         NULL },
   { "fmod",                       -1, (void*)fmod,                          NULL },
@@ -687,6 +697,10 @@ Export export_msvcr71[] =
   { "__CppXcptFilter",            -1, (void*)__CppXcptFilter,               NULL },
   { "_tzset",                     -1, (void*)_tzset,                        NULL },
   { "_tzname",                    -1, (void*)&_tzname,                      NULL },
+#else
+  { "_hypot",                     -1, (void*)hypot,                        NULL },
+  { "_tzset",                     -1, (void*)tzset,                        NULL },
+  { "_tzname",                    -1, (void*)&tzname,                      NULL },
 #endif
   { "_sys_nerr",                  -1, (void*)&_sys_nerr,                    NULL },
   { "_sys_errlist",               -1, (void*)&_sys_errlist,                 NULL },
@@ -699,6 +713,9 @@ Export export_msvcr71[] =
   { "_timezone",                  -1, (void*)&_timezone,                    NULL },
   { "_HUGE",                      -1, (void*)_HUGE,                         NULL },
   { "_purecall",                  -1, (void*)_purecall,                     NULL },
+#else
+  { "_daylight",                  -1, (void*)&daylight,                    NULL },
+  { "_timezone",                  -1, (void*)&timezone,                    NULL },
 #endif
   { "isalnum",                    -1, (void*)::isalnum,                       NULL },
   { "isspace",                    -1, (void*)::isspace,                       NULL },
