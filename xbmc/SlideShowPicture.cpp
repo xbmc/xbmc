@@ -621,7 +621,7 @@ void CSlideShowPic::Render()
   }
 #ifndef HAS_SDL
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
-#elif HAS_SDL_OPENGL
+#elif defined(HAS_SDL_OPENGL)
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, GL_LINE);
 #else
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
