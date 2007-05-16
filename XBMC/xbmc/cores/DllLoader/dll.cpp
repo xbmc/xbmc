@@ -5,6 +5,7 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
+#include "Util.h"
 
 #define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs\\"
 #define HIGH_WORD(a) ((WORD)(((DWORD)(a) >> 16) & MAXWORD))
@@ -15,7 +16,7 @@
 char* getpath(char *buf, const char *full)
 {
   char* pos;
-  if (pos = strrchr(full, '\\'))
+  if (pos = strrchr(full, PATH_SEPARATOR_CHAR))
   {
     strncpy(buf, full, pos - full + 1 );
     buf[pos - full + 1] = 0;
@@ -35,7 +36,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   DllLoader* dll = NULL; 
 
   /* extract name */  
-  char* p = strrchr(lib_file, '\\');
+  char* p = strrchr(lib_file, PATH_SEPARATOR_CHAR);
   if (p) 
     strcpy(libname, p+1);
   else 
@@ -51,7 +52,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   if (sourcedll)
   {
     /* also check for invalid paths wich begin with a \ */
-    if( libpath[0] == '\0' || libpath[0] == '\\' )
+    if( libpath[0] == '\0' || libpath[0] == PATH_SEPARATOR_CHAR )
     {
       /* use calling dll's path as base address for this call */
       getpath(libpath, sourcedll);
