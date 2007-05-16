@@ -13,6 +13,7 @@
 #include "SkinInfo.h"
 
 CGraphicContext g_graphicsContext;
+extern bool g_fullScreen;
 
 /* quick access to a skin setting, fine unless we starts clearing video settings */
 static CSettingInt* g_guiSkinzoom = NULL;
@@ -482,7 +483,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
 
 #ifdef HAS_SDL_2D
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+    int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
+    if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
 
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
@@ -492,7 +495,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  SDL_OPENGL);
+    int options = SDL_OPENGL;
+    if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
+    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
