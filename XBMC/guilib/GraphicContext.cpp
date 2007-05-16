@@ -496,6 +496,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+    glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
     glEnable(GL_TEXTURE_2D); 
     glEnable(GL_SCISSOR_TEST); 
 
