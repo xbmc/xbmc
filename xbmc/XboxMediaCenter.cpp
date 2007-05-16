@@ -32,13 +32,20 @@
 
 
 CApplication g_application;
-
 #ifndef _LINUX
 void main()
 #else
-int main()
+int main(int argc, char* argv[])
 #endif
 {
+  if (argc > 1)
+  {
+    if (strnicmp(argv[1], "-fs", 3) == 0)
+    {
+      printf("Running in fullscreen mode...\n");
+      g_advancedSettings.m_fullScreen = true;
+    }
+  }
   g_application.Create(NULL);
   while (1)
   {
