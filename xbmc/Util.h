@@ -222,8 +222,12 @@ struct sortstringbyname
 
 #ifndef _LINUX
 #define _P(x) x
+#define PATH_SEPARATOR_CHAR '\\'
+#define PATH_SEPARATOR_STRING "\\"
 #else
 #define _P(x) CUtil::TranslatePath(x)
+#define PATH_SEPARATOR_CHAR '/'
+#define PATH_SEPARATOR_STRING "/"
 #endif
 
 class CUtil
