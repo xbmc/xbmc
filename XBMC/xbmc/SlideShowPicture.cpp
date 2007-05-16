@@ -622,7 +622,7 @@ void CSlideShowPic::Render()
 #ifndef HAS_SDL
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
 #else
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
+  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, GL_LINE);
 #endif
 }
 
