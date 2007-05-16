@@ -767,7 +767,8 @@ void CGUIFontTTF::Begin()
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_SRC_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR);
-
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    
     glBindTexture(GL_TEXTURE_2D, m_glTexture);
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
