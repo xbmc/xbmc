@@ -177,6 +177,7 @@ void CGUIImage::Render()
     
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
        
     // diffuse coloring
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
