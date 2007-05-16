@@ -2,7 +2,7 @@
 // python.h should always be included first before any other includes
 #include "stdafx.h"
 #include "python/Python.h"
-
+#include "Util.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -102,7 +102,7 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
-  strcpy(strrchr(sourcedir, '\\'), ";");
+  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ";");
 
   strcpy(path, sourcedir);
   strcat(path, dll_getenv("PYTHONPATH"));

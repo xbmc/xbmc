@@ -19,7 +19,6 @@ bool       DllLoaderContainer::m_bTrack = false;
 #ifndef _LINUX
 Export export_advapi32[];
 Export export_ole32[];
-Export export_xbp[];
 Export export_winmm[];
 Export export_user32[];
 Export export_msdmo[];
@@ -66,11 +65,13 @@ extern Export export_kernel32[];
 extern Export export_msvcrt[];
 extern Export export_msvcr71[];
 extern Export export_pncrt[];
+extern Export export_xbp[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
 DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
+DllLoader xbp("xbp.dll",                  false, true, false, export_xbp);
 #endif
 
 void DllLoaderContainer::Clear()

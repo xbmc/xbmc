@@ -8,6 +8,7 @@
 #include "python/Python.h"
 #include "../../cores/DllLoader/DllLoaderContainer.h"
 #include "../../GUIPassword.h"
+#include "../../Util.h"
 
 #include "XBPython.h"
 #include "XBPythonDll.h"
@@ -131,7 +132,8 @@ void XBPython::Initialize()
     if (dThreadId == GetCurrentThreadId())
     {
       //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
-      m_hModule = dllLoadLibraryA(PYTHON_DLL);
+      CStdString dllStr = _P(PYTHON_DLL);
+      m_hModule = dllLoadLibraryA(dllStr.c_str());
       DllLoader* pDll = DllLoaderContainer::GetModule(m_hModule);
       if (!pDll || !python_load_dll(*pDll))
       {
@@ -141,6 +143,7 @@ void XBPython::Initialize()
       }
 
       // first we check if all necessary files are installed
+#ifndef _LINUX      
       if (!FileExist("Q:\\system\\python\\python24.zlib") ||
         !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
         !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
@@ -154,6 +157,7 @@ void XBPython::Initialize()
         Finalize();
         return;
       }
+#endif        
 
       Py_Initialize();
       PyEval_InitThreads();
@@ -310,8 +314,10 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
+  CStdString srcStr = _P(src);
+  
   // return if file doesn't exist
-  if(access(src, 0) == -1) return -1;
+  if(access(srcStr.c_str(), 0) == -1) return -1;
 
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
@@ -326,11 +332,11 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
   if (argv != NULL)
     pyThread->setArgv(argc, argv);
-  pyThread->evalFile(src);
+  pyThread->evalFile(srcStr.c_str());
   PyElem inf;
   inf.id = nextid;
   inf.bDone = false;
-  inf.strFile = src;
+  inf.strFile = srcStr.c_str();
   inf.pyThread = pyThread;
 
   EnterCriticalSection(&m_critSection );
