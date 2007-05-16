@@ -289,6 +289,10 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   g_advancedSettings.m_curlclienttimeout = 10;
+
+#ifdef HAS_SDL
+  g_advancedSettings.m_fullScreen = false;
+#endif
 }
 
 CSettings::~CSettings(void)
