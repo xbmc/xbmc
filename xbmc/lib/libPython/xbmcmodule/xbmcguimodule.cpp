@@ -75,7 +75,7 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowDialogId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    DWORD dwId = m_gWindowManager.GetTopMostDialogID();
+    DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
     PyGUIUnlock();
     return Py_BuildValue("l", dwId);
   }

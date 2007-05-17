@@ -87,7 +87,7 @@ void CApplicationRenderer::Process()
           }
           m_busycount--;
           //no busy indicator if a progress dialog is showing
-          if (m_gWindowManager.GetTopMostDialogID() == WINDOW_DIALOG_PROGRESS)
+          if (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS)
           {
             //TODO: render progress dialog here instead of in dialog::Progress
             Sleep(1);
