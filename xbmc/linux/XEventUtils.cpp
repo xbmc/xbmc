@@ -2,7 +2,7 @@
 #include "PlatformDefs.h"
 #include "XEventUtils.h"
 
-HANDLE CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName) {
+HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName) {
 	CXHandle *pHandle = new CXHandle(CXHandle::HND_EVENT);
 	pHandle->m_bManualEvent = bManualReset;
 	
@@ -15,7 +15,7 @@ HANDLE CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char 
 	return pHandle;
 }
 
-bool SetEvent(HANDLE hEvent) {
+bool WINAPI SetEvent(HANDLE hEvent) {
 	if (hEvent == NULL || hEvent->m_hSem == NULL || hEvent->m_hMutex == NULL)
 		return false;
 	
@@ -30,7 +30,7 @@ bool SetEvent(HANDLE hEvent) {
 	return true;
 }
 
-bool ResetEvent(HANDLE hEvent) {
+bool WINAPI ResetEvent(HANDLE hEvent) {
 	if (hEvent == NULL || hEvent->m_hSem == NULL || hEvent->m_hMutex == NULL)
 		return false;
 
@@ -44,7 +44,7 @@ bool ResetEvent(HANDLE hEvent) {
 	return true;
 }
 
-bool PulseEvent(HANDLE hEvent) {
+bool WINAPI PulseEvent(HANDLE hEvent) {
 	if (hEvent == NULL || hEvent->m_hSem == NULL || hEvent->m_hMutex == NULL)
 		return false;
 

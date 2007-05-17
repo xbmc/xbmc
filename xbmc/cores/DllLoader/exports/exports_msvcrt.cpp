@@ -274,7 +274,7 @@ Export export_msvcrt[] =
   { "_iob",                       -1, (void*)_iob,                          NULL },
   { "_isctype",                   -1, (void*)_isctype,                      NULL },
 #else
-  { "_errno",                     -1, (void*)errno,                        NULL },
+  { "_errno",                     -1, (void*)dll_errno,                     NULL },
 #endif
   { "_lseeki64",                  -1, (void*)dll_lseeki64,                  NULL },
   { "_open",                      -1, (void*)dll_open,                      (void*)track_open },
