@@ -453,6 +453,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
     else if (strTest.Equals("listitem.icon")) ret = LISTITEM_ICON;
+    else if (strTest.Equals("listitem.actualicon")) ret = LISTITEM_ACTUAL_ICON;
     else if (strTest.Equals("listitem.overlay")) ret = LISTITEM_OVERLAY;
     else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
     else if (strTest.Equals("listitem.label2")) ret = LISTITEM_LABEL2;
@@ -1264,9 +1265,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition == SYSTEM_HAS_DRIVE_G)
     bReturn = CIoSupport::DriveExists('G');
   else if (condition == SYSTEM_DVDREADY)
-	  bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
+    bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
-  	bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
+    bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
@@ -1636,8 +1637,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
     else return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY ||
-           info == CONTAINER_FOLDERTHUMB || info == LISTITEM_RATING)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
+          info == LISTITEM_OVERLAY || info == CONTAINER_FOLDERTHUMB || info == LISTITEM_RATING)
   {
     CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
     if (!window || !window->IsMediaWindow())
@@ -1726,7 +1727,7 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
   case PLAYLIST_LENGTH:
     {
       CStdString strLength = "";
-  		strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
+      strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
       return strLength;
     }
   case PLAYLIST_POSITION:
@@ -1822,14 +1823,14 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
         return GetPlaylistLabel(PLAYLIST_LENGTH);
-  	}
-	  break;
+    }
+    break;
   case MUSICPLAYER_PLAYLISTPOS:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
         return GetPlaylistLabel(PLAYLIST_POSITION);
-  	}
-  	break;
+    }
+    break;
   case MUSICPLAYER_BITRATE:
     {
       float fTimeSpan = (float)(timeGetTime() - m_lastMusicBitrateTime);
@@ -1847,30 +1848,30 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CHANNELS:
     {
       CStdString strChannels = "";
-	    if (g_application.m_pPlayer->GetChannels() > 0)
-	    {
-	      strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
-	    }
+      if (g_application.m_pPlayer->GetChannels() > 0)
+      {
+        strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
+      }
       return strChannels;
     }
     break;
   case MUSICPLAYER_BITSPERSAMPLE:
     {
       CStdString strBitsPerSample = "";
-	    if (g_application.m_pPlayer->GetBitsPerSample() > 0)
-	    {
-	      strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
-	    }
+      if (g_application.m_pPlayer->GetBitsPerSample() > 0)
+      {
+        strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
+      }
       return strBitsPerSample;
     }
     break;
   case MUSICPLAYER_SAMPLERATE:
     {
       CStdString strSampleRate = "";
-	    if (g_application.m_pPlayer->GetSampleRate() > 0)
-	    {
-	      strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate());
-	    }
+      if (g_application.m_pPlayer->GetSampleRate() > 0)
+      {
+        strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate());
+      }
       return strSampleRate;
     }
     break;
@@ -1995,14 +1996,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         return GetPlaylistLabel(PLAYLIST_LENGTH);
-  	}
-	  break;
+    }
+    break;
   case VIDEOPLAYER_PLAYLISTPOS:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         return GetPlaylistLabel(PLAYLIST_POSITION);
-  	}
-  	break;
+    }
+    break;
   }
   return "";
 }
@@ -2818,10 +2819,12 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
   if (!item) return "";
-  if (info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon())
+  if ((info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon()) ||
+      info == LISTITEM_ACTUAL_ICON)
   {
     CStdString strThumb = item->GetIconImage();
-    strThumb.Insert(strThumb.Find("."), "Big");
+    if (info == LISTITEM_ICON)
+      strThumb.Insert(strThumb.Find("."), "Big");
     return strThumb;
   }
   if (info == LISTITEM_OVERLAY)
