@@ -282,3 +282,4 @@ CGUIDialogSmartPlaylistRule::FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSm
   }
   return TEXT_FIELD;
 }
+
