@@ -2,12 +2,12 @@
 #include "GUIPythonWindowXML.h"
 #include "guiwindow.h"
 #include "pyutil.h"
-#include "..\..\..\application.h"
-#include "..\..\..\GUIMediaWindow.h"
+#include "../../../application.h"
+#include "../../../GUIMediaWindow.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
-#include "..\..\..\util.h"
+#include "../../../util.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -22,7 +22,7 @@
 using namespace PYXBMC;
 
 CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
-: CGUIWindow(dwId,strXML)
+: CGUIWindow(dwId, strXML)
 {
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
@@ -131,7 +131,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
-        CLog::Log(LOGINFO,"WindowXML: Internal asc/dsc button not implemented");
+        CLog::Log(LOGINFO, "WindowXML: Internal asc/dsc button not implemented");
         /*if (m_guiState.get())
           m_guiState->SetNextSortOrder();
         UpdateFileList();*/
@@ -139,7 +139,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTBY) // sort by
       {
-        CLog::Log(LOGINFO,"WindowXML: Internal sort button not implemented");
+        CLog::Log(LOGINFO, "WindowXML: Internal sort button not implemented");
         /*if (m_guiState.get())
           m_guiState->SetNextSortMethod();
         UpdateFileList();*/
@@ -149,10 +149,10 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       if(pCallbackWindow && iControl && iControl != this->GetID()) // pCallbackWindow &&  != this->GetID())
       {
         CGUIControl* controlClicked = (CGUIControl*)this->GetControl(iControl);
-        
-        // The old python way used to check list AND SELECITEM method or  if its a button, checkmark.
+
+        // The old python way used to check list AND SELECITEM method or if its a button, checkmark.
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
-        if (controlClicked)	// Will get problems if we the id is not on the window and we try to do GetControlType on it. So check to make sure it exists
+        if (controlClicked) // Will get problems if we the id is not on the window and we try to do GetControlType on it. So check to make sure it exists
         {
           if (controlClicked->GetControlType() == CGUIControl::GUICONTAINER_LIST &&  message.GetParam1() == ACTION_SELECT_ITEM  || controlClicked->GetControlType() != CGUIControl::GUICONTAINER_LIST)
           {
@@ -180,7 +180,7 @@ void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
     m_vecItems.AddFront(fileItem);
   else
     m_vecItems.Add(fileItem);
-  
+
   m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
 }
@@ -192,7 +192,6 @@ void CGUIPythonWindowXML::RemoveItem(int itemPosition)
   UpdateButtons();
 }
 
-
 int CGUIPythonWindowXML::GetCurrentListPosition()
 {
   return m_viewControl.GetSelectedItem();
@@ -200,17 +199,20 @@ int CGUIPythonWindowXML::GetCurrentListPosition()
 
 void CGUIPythonWindowXML::SetCurrentListPosition(int item)
 {
-  return m_viewControl.SetSelectedItem(item);
+  m_viewControl.SetSelectedItem(item);
 }
 
 CFileItem * CGUIPythonWindowXML::GetListItem(int position)
 { 
-  CFileItem * selectedItem = new CFileItem("Item Index doesn't exist");
-  if (position < m_vecItems.Size())
-  {
-    selectedItem = m_vecItems[position];
-  } 
-  return selectedItem;
+  if (position < 0 || position >= m_vecItems.Size()) return NULL;
+  return m_vecItems[position];
+}
+
+CFileItem *CGUIPythonWindowXML::GetCurrentListItem()
+{
+  int iItem = m_viewControl.GetSelectedItem();
+  if (iItem < 0) return NULL;
+  return m_vecItems[iItem];
 }
 
 void CGUIPythonWindowXML::RefreshList()
@@ -290,7 +292,7 @@ int Py_XBMC_Event_OnInit(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject_CallMethod(action->pCallbackWindow, "onInit",""); //, "O", &self);
+    PyObject_CallMethod(action->pCallbackWindow, "onInit", ""); //, "O", &self);
     delete action;
   }
   return 0;
