@@ -512,32 +512,47 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strTest.Left(16).Equals("window.isactive("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
-      ret = winID;
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
   }
   else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
   else if (strTest.Left(17).Equals("window.istopmost("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
   }
   else if (strTest.Left(17).Equals("window.isvisible("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
   }
   else if (strTest.Left(16).Equals("window.previous("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
   }
   else if (strTest.Left(12).Equals("window.next("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(12, strTest.GetLength() - 13).c_str());
+    CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
   }
@@ -1056,7 +1071,7 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_COMMENT:
     {
       CGUIWindow *pWindow;
-      int iDialog = m_gWindowManager.GetTopMostDialogID();
+      int iDialog = m_gWindowManager.GetTopMostModalDialogID();
       if (iDialog == WINDOW_VIDEO_INFO)
         pWindow = m_gWindowManager.GetWindow(iDialog);
       else
@@ -1219,8 +1234,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
 #endif
   else if (condition > SYSTEM_IDLE_TIME_START && condition <= SYSTEM_IDLE_TIME_FINISH)
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
-  else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
-    bReturn = m_gWindowManager.IsWindowActive(condition);
   else if (condition == WINDOW_IS_MEDIA)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
@@ -1515,16 +1528,42 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     case WINDOW_NEXT:
-      bReturn = (info.m_data1 == m_nextWindowID);
+      if (info.m_data1)
+        bReturn = (info.m_data1 == m_nextWindowID);
+      else
+      {
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_nextWindowID);
+        if (window && window->GetXMLFile().Equals(m_stringParameters[info.m_data2]))
+          bReturn = true;
+      }
       break;
     case WINDOW_PREVIOUS:
-      bReturn = (info.m_data1 == m_prevWindowID);
+      if (info.m_data1)
+        bReturn = (info.m_data1 == m_prevWindowID);
+      else
+      {
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_prevWindowID);
+        if (window && window->GetXMLFile().Equals(m_stringParameters[info.m_data2]))
+          bReturn = true;
+      }
       break;
     case WINDOW_IS_VISIBLE:
-      bReturn = m_gWindowManager.IsWindowVisible(info.m_data1);
+      if (info.m_data1)
+        bReturn = m_gWindowManager.IsWindowVisible(info.m_data1);
+      else
+        bReturn = m_gWindowManager.IsWindowVisible(m_stringParameters[info.m_data2]);
       break;
     case WINDOW_IS_TOPMOST:
-      bReturn = m_gWindowManager.IsWindowTopMost(info.m_data1);
+      if (info.m_data1)
+        bReturn = m_gWindowManager.IsWindowTopMost(info.m_data1);
+      else
+        bReturn = m_gWindowManager.IsWindowTopMost(m_stringParameters[info.m_data2]);
+      break;
+    case WINDOW_IS_ACTIVE:
+      if (info.m_data1)
+        bReturn = m_gWindowManager.IsWindowActive(info.m_data1);
+      else
+        bReturn = m_gWindowManager.IsWindowActive(m_stringParameters[info.m_data2]);
       break;
     case SYSTEM_HAS_ALARM:
       bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
