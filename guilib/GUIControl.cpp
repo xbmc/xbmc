@@ -32,6 +32,7 @@ CGUIControl::CGUIControl()
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+: m_hitRect(posX, posY, width, height)
 {
   m_posX = posX;
   m_posY = posY;
@@ -304,6 +305,8 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
+    m_hitRect.x += m_posX - posX;
+    m_hitRect.y += m_posY - posY;
     m_posX = posX;
     m_posY = posY;
     Update();
@@ -348,6 +351,7 @@ void CGUIControl::SetWidth(float width)
   if (m_width != width)
   {
     m_width = width;
+    m_hitRect.w = width;
     Update();
   }
 }
@@ -357,6 +361,7 @@ void CGUIControl::SetHeight(float height)
   if (m_height != height)
   {
     m_height = height;
+    m_hitRect.h = height;
     Update();
   }
 }
@@ -378,8 +383,7 @@ void CGUIControl::SetVisible(bool bVisible)
 
 bool CGUIControl::HitTest(const CPoint &point) const
 {
-  CRect rect(m_posX, m_posY, m_width, m_height);
-  return rect.PtInRect(point);
+  return m_hitRect.PtInRect(point);
 }
 
 // override this function to implement custom mouse behaviour
@@ -675,4 +679,9 @@ bool CGUIControl::HasVisibleID(DWORD dwID) const
 void CGUIControl::SaveStates(vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
+}
+
+void CGUIControl::SetHitRect(const CRect &rect)
+{
+  m_hitRect = rect;
 }

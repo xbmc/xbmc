@@ -304,6 +304,21 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const FRECT &re
   return ret;
 }
 
+bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
+{
+  const TiXmlElement* node = control->FirstChildElement("hitrect");
+  if (node)
+  {
+    double val;
+    if (node->Attribute("x", &val)) rect.x = (float)val;
+    if (node->Attribute("y", &val)) rect.y = (float)val;
+    if (node->Attribute("w", &val)) rect.w = (float)val;
+    if (node->Attribute("h", &val)) rect.h = (float)val;
+    return true;
+  }
+  return false;
+}
+
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
   CStdString type;
@@ -458,6 +473,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int focusPosition = 0;
   int scrollTime = 200;
   bool useControlCoords = false;
+
+  CRect hitRect;
+
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
   //
@@ -503,6 +521,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     if (!height)
       height = max(rect.bottom - posY, 0);
   }
+
+  hitRect.SetRect(posX, posY, width, height);
+  GetHitRect(pControlNode, hitRect);
 
   XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
   XMLUtils::GetFloat(pControlNode, "controloffsety", controlOffsetY);
@@ -1238,6 +1259,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // things that apply to all controls
   if (control)
   {
+    control->SetHitRect(hitRect);
     control->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
