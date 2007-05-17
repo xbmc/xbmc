@@ -217,3 +217,4 @@ CFileItem *CGUIDialogFavourites::GetCurrentListItem()
   if (currentItem < 0 || currentItem >= m_favourites.Size()) return NULL;
   return m_favourites[currentItem];
 }
+
