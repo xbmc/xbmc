@@ -12,7 +12,7 @@ DWORD GetTickCount(void);
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
 BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
 
-void Sleep(DWORD dwMilliSeconds);
+void WINAPI Sleep(DWORD dwMilliSeconds);
 
 BOOL   FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime);
 BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime);

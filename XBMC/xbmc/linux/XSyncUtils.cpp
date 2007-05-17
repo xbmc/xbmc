@@ -38,7 +38,7 @@ bool	DestroyRecursiveMutex(HANDLE hMutex) {
 	hMutex->m_hSem = NULL;
 }
 
-HANDLE	CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName ) {
+HANDLE	WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName ) {
 	HANDLE hMutex = new CXHandle(CXHandle::HND_MUTEX);
 
 	InitializeRecursiveMutex(hMutex,bInitialOwner);
@@ -46,7 +46,7 @@ HANDLE	CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner
 	return hMutex;
 }
 
-bool ReleaseMutex( HANDLE hMutex ) {
+bool WINAPI ReleaseMutex( HANDLE hMutex ) {
 	if (hMutex == NULL || hMutex->m_hSem == NULL || hMutex->m_hMutex == NULL)
 		return false;
 
@@ -65,21 +65,21 @@ bool ReleaseMutex( HANDLE hMutex ) {
 	return bOk;
 }
 
-void InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
+void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
 	if (lpCriticalSection)
 		InitializeRecursiveMutex(lpCriticalSection,false);
 }
 
-void DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
+void WINAPI DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
 	if (lpCriticalSection) 
 		DestroyRecursiveMutex(lpCriticalSection);
 }
 
-void EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
+void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
 	WaitForSingleObject(lpCriticalSection, INFINITE);
 }
 
-void LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
+void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
 	ReleaseMutex(lpCriticalSection);
 }
 
@@ -163,7 +163,7 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
 	return dwRet;
 }
 
-DWORD WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds) {
+DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds) {
 	DWORD dwRet = WAIT_FAILED;
 
 	if (nCount < 1 || lpHandles == NULL)

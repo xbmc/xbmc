@@ -16,7 +16,7 @@ DWORD timeGetTime(void)
   return result;
 }
 
-void Sleep(DWORD dwMilliSeconds)
+void WINAPI Sleep(DWORD dwMilliSeconds)
 {
   SDL_Delay(dwMilliSeconds);
 }
