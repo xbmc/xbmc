@@ -31,3 +31,4 @@ void CGUIPythonWindowXMLDialog::Close()
   m_gWindowManager.RemoveDialog(GetID());
   m_bRunning = false;
 }
+
