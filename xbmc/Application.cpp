@@ -2316,7 +2316,7 @@ bool CApplication::OnKey(CKey& key)
   // change this if we have a dialog up
   if (m_gWindowManager.HasModalDialog())
   {
-    iWin = m_gWindowManager.GetTopMostDialogID() & WINDOW_ID_MASK;
+    iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
   }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
@@ -4939,7 +4939,7 @@ void CApplication::SeekPercentage(float percent)
 bool CApplication::SwitchToFullScreen()
 {
   // if playing from the video info window, close it first!
-  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostDialogID() == WINDOW_VIDEO_INFO)
+  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostModalDialogID() == WINDOW_VIDEO_INFO)
   {
     CGUIWindowVideoInfo* pDialog = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);

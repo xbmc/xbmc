@@ -404,14 +404,14 @@ void CGUIWindowManager::RenderDialogs()
   }
 }
 
-CGUIWindow* CGUIWindowManager::GetWindow(DWORD dwID)
+CGUIWindow* CGUIWindowManager::GetWindow(DWORD dwID) const
 {
   if (dwID == WINDOW_INVALID)
   {
     return NULL;
   }
 
-  map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.find(dwID);
+  map<DWORD, CGUIWindow *>::const_iterator it = m_mapWindows.find(dwID);
   if (it != m_mapWindows.end())
     return (*it).second;
   return NULL;
@@ -529,7 +529,7 @@ bool CGUIWindowManager::HasDialogOnScreen() const
 
 /// \brief Get the ID of the top most routed window
 /// \return dwID ID of the window or WINDOW_INVALID if no routed window available
-int CGUIWindowManager::GetTopMostDialogID() const
+int CGUIWindowManager::GetTopMostModalDialogID() const
 {
   for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
   {
@@ -600,9 +600,28 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID, bool ignoreClosing /* = true 
   return false; // window isn't active
 }
 
+bool CGUIWindowManager::IsWindowActive(const CStdString &xmlFile, bool ignoreClosing /* = true */) const
+{
+  CGUIWindow *window = GetWindow(GetActiveWindow());
+  if (window && window->GetXMLFile().Equals(xmlFile)) return true;
+  // run through the dialogs
+  for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+  {
+    CGUIWindow *window = *it;
+    if (window->GetXMLFile().Equals(xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+      return true;
+  }
+  return false; // window isn't active
+}
+
 bool CGUIWindowManager::IsWindowVisible(DWORD id) const
 {
   return IsWindowActive(id, false);
+}
+
+bool CGUIWindowManager::IsWindowVisible(const CStdString &xmlFile) const
+{
+  return IsWindowActive(xmlFile, false);
 }
 
 void CGUIWindowManager::LoadNotOnDemandWindows()
@@ -680,17 +699,33 @@ void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> &ids)
   }
 }
 
-bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
+CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
 {
   // find the window with the lowest render order
   vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
 
   if (!renderList.size())
-    return false;
+    return NULL;
 
   // return the last window in the list
-  return ((*renderList.rbegin())->GetID() & WINDOW_ID_MASK) == id;
+  return *renderList.rbegin();
+}
+
+bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
+{
+  CGUIWindow *topMost = GetTopMostDialog();
+  if (topMost && (topMost->GetID() & WINDOW_ID_MASK) == id)
+    return true;
+  return false;
+}
+
+bool CGUIWindowManager::IsWindowTopMost(const CStdString &xmlFile) const
+{
+  CGUIWindow *topMost = GetTopMostDialog();
+  if (topMost && topMost->GetXMLFile().Equals(xmlFile))
+    return true;
+  return false;
 }
 
 void CGUIWindowManager::ClearWindowHistory()
