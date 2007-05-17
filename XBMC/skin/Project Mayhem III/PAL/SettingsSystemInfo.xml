@@ -103,7 +103,7 @@
 		<control type="group">
 			<description>Default Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(100)</visible>
+			<visible>ControlGroup(9000).HasFocus(100)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
@@ -224,7 +224,7 @@
 		<control type="group">
 			<description>Storage Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(101)</visible>
+			<visible>ControlGroup(9000).HasFocus(101)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
@@ -433,7 +433,7 @@
 		<control type="group">
 			<description>HardDisk Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(102)</visible>
+			<visible>ControlGroup(9000).HasFocus(102)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
@@ -517,7 +517,7 @@
 		<control type="group">
 			<description>DVD-ROM Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(103)</visible>
+			<visible>ControlGroup(9000).HasFocus(103)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
@@ -561,7 +561,7 @@
 		<control type="group">
 			<description>Network Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(104)</visible>
+			<visible>ControlGroup(9000).HasFocus(104)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
@@ -645,7 +645,7 @@
 		<control type="group">
 			<description>Video Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(105)</visible>
+			<visible>ControlGroup(9000).HasFocus(105)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
@@ -689,7 +689,7 @@
 		<control type="group">
 			<description>Hardware Contents</description>
 			<include>contentpanelslide</include>
-			<visible>Control.HasFocus(106)</visible>
+			<visible>ControlGroup(9000).HasFocus(106)</visible>
 			<control type="label">
 				<description>Section Label</description>
 				<posx>190</posx>
