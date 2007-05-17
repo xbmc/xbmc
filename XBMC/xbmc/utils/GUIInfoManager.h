@@ -319,8 +319,7 @@
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
-#define WINDOW_ACTIVE_START         WINDOW_HOME
-#define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
+#define WINDOW_IS_ACTIVE            9999
 
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
