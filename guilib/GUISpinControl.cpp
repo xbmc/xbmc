@@ -455,9 +455,9 @@ void CGUISpinControl::Render()
     }
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
-      m_rectHit.SetRect(fPosX, fPosY, fTextWidth, fTextHeight);
+      m_hitRect.SetRect(fPosX, fPosY, fTextWidth, fTextHeight);
     else
-      m_rectHit.SetRect(fPosX - fTextWidth, fPosY, fTextWidth, fTextHeight);
+      m_hitRect.SetRect(fPosX - fTextWidth, fPosY, fTextWidth, fTextHeight);
   }
   CGUIControl::Render();
 }
@@ -857,8 +857,7 @@ bool CGUISpinControl::HitTest(const CPoint &point) const
 {
   if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
     return true;
-  // check if we have the text bit selected...
-  return m_rectHit.PtInRect(point);
+  return CGUIControl::HitTest(point);
 }
 
 bool CGUISpinControl::OnMouseOver(const CPoint &point)
