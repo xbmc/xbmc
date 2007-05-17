@@ -1574,4 +1574,12 @@ extern "C"
     static char*** t = (char***)&dll__environ;
     return (char***)&t;
   }
+
+#ifdef _LINUX
+  int * __cdecl dll_errno(void)
+  {
+    return &errno;
+  }
+#endif
+
 };
