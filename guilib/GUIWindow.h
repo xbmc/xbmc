@@ -114,6 +114,7 @@ public:
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
+  const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
