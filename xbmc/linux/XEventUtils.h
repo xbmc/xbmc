@@ -6,10 +6,10 @@
 
 #ifdef _LINUX
 
-HANDLE CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName);
-bool SetEvent(HANDLE hEvent);
-bool ResetEvent(HANDLE hEvent);
-bool PulseEvent(HANDLE hEvent);
+HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName);
+bool WINAPI SetEvent(HANDLE hEvent);
+bool WINAPI ResetEvent(HANDLE hEvent);
+bool WINAPI PulseEvent(HANDLE hEvent);
 
 #endif
 

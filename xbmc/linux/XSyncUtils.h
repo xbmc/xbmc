@@ -11,20 +11,20 @@
 #define WAIT_TIMEOUT	258L
 #define INFINITE		0xFFFFFFFF
 
-HANDLE	CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName );
+HANDLE	WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName );
 bool	InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner);
 bool	DestroyRecursiveMutex(HANDLE hMutex);
-bool	ReleaseMutex( HANDLE hMutex );
+bool	WINAPI ReleaseMutex( HANDLE hMutex );
 
-void InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
-void DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
-void EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
-void LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
+void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
+void WINAPI DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
+void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
+void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 
-DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );
-DWORD WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds);
+DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );
+DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds);
 
 LONG InterlockedIncrement(  LONG * Addend );
 LONG InterlockedDecrement(  LONG * Addend );
