@@ -538,6 +538,7 @@
 					<posy>3</posy>
 					<width>12</width>
 					<height>12</height>
+					<hitrect x="4" y="0" w="100" h="18" />
 					<label>5</label>
 					<font>font10</font>
 					<onclick>ActivateWindow(4)</onclick>
@@ -555,6 +556,7 @@
 					<posy>3</posy>
 					<width>12</width>
 					<height>12</height>
+					<hitrect x="119" y="0" w="100" h="18" />
 					<label>247</label>
 					<onclick>ActivateWindow(Scripts)</onclick>
 					<font>font10</font>
@@ -572,6 +574,7 @@
 					<posy>3</posy>
 					<width>12</width>
 					<height>12</height>
+					<hitrect x="234" y="0" w="100" h="18" />
 					<label>7</label>
 					<onclick>ActivateWindow(MyFiles)</onclick>
 					<font>font10</font>
@@ -609,6 +612,7 @@
 					<posy>28</posy>
 					<width>14</width>
 					<height>13</height>
+					<hitrect x="45" y="15" w="220" h="40" />
 					<label>0</label>
 					<font>special13</font>
 					<onclick>ActivateWindow(MyPrograms)</onclick>
@@ -633,6 +637,7 @@
 					<posy>74</posy>
 					<width>14</width>
 					<height>13</height>
+					<hitrect x="45" y="60" w="220" h="40" />
 					<label>1</label>
 					<onclick>ActivateWindow(MyPictures)</onclick>
 					<font>special13</font>
@@ -657,6 +662,7 @@
 					<posy>119</posy>
 					<width>14</width>
 					<height>13</height>
+					<hitrect x="45" y="105" w="200" h="40" />
 					<label>3</label>
 					<font>special13</font>
 					<onclick>ActivateWindow(MyVideos)</onclick>
@@ -681,6 +687,7 @@
 					<posy>163</posy>
 					<width>14</width>
 					<height>13</height>
+					<hitrect x="45" y="150" w="170" h="40" />
 					<label>2</label>
 					<onclick>ActivateWindow(MyMusic)</onclick>
 					<font>special13</font>
@@ -705,6 +712,7 @@
 					<posy>206</posy>
 					<width>14</width>
 					<height>13</height>
+					<hitrect x="45" y="195" w="125" h="40" />
 					<label>8</label>
 					<font>special13</font>
 					<onclick>ActivateWindow(Weather)</onclick>
