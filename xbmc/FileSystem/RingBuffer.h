@@ -94,7 +94,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#ifdef _LINUX
 #include "PlatformInclude.h"
+#endif
 
 class CRingBuffer
 {

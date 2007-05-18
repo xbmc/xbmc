@@ -88,7 +88,6 @@
 #define HAS_RAR
 
 #ifndef _LINUX
-#undef HAS_SDL
 // additional includes and defines
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
@@ -112,10 +111,6 @@
 #define HAS_SDL
 #define HAS_RAR
 
-#ifndef HAS_SDL_2D
-#define HAS_SDL_OPENGL
-#endif
-
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
@@ -126,6 +121,13 @@
 #include <sys/types.h>
 #include <errno.h>
 #include "PlatformInclude.h"
+#endif
+
+#ifdef HAS_SDL
+#ifndef HAS_SDL_2D
+#define HAS_SDL_OPENGL
+#define HAS_GL_EXTENSIONS
+#endif
 #endif
 
 #endif

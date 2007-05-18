@@ -69,9 +69,6 @@ protected:
   GUIEvent* m_pInstance;
 };
 
-#define my_offsetof(TYPE, MEMBER) \
-               ((size_t)((char *)&(((TYPE *)0x10)->MEMBER) - (char*)0x10))
-
 template <class Class, class Cookie>
 class GUIEventHandler : public GUIEvent<Cookie>
 {
@@ -84,10 +81,14 @@ public:
 
 #ifndef _LINUX    
     // Its dirty but it works!
-    memcpy(&GUIEvent<Cookie>::m_pMethod, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
+    memcpy(&m_pMethod, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
 #else 
     // Well, GCC doesn't like that dirty stuff... here's another version of the same thing
     // but even dirtier *grin*   
+
+#define my_offsetof(TYPE, MEMBER) \
+               ((size_t)((char *)&(((TYPE *)0x10)->MEMBER) - (char*)0x10))
+
     void* target = (void*) (((char*) this) + my_offsetof(GUIEvent<Cookie>, m_pMethod));
     memcpy(target, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
 #endif	 

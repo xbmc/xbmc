@@ -13,6 +13,7 @@
 #define dll_freopen freopen
 #else
 #include "exports/emu_msvcrt.h"
+#include <io.h>
 #endif
 
 extern "C" void tracker_file_track(unsigned long caller, unsigned handle, TrackedFileType type, const char* sFile)

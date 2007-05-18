@@ -5,6 +5,7 @@
 #ifndef _LINUX
 #include <io.h>
 #include <direct.h>
+#include <process.h>
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>

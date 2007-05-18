@@ -226,7 +226,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
-          //		<div dir="RTL">тме бшщъ: щоше тм тцолн</div> 
+          //		<div dir="RTL">пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</div> 
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {
@@ -289,7 +289,11 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
 		iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
 
+#ifdef _LINUX
 		if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == -1)
+#else
+		if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == -1)
+#endif
 		{
 			// For some reason it failed (maybe wrong charset?). Nothing to do but
 			// return the original..

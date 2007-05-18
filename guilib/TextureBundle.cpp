@@ -568,7 +568,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
   DWORD flags = *(DWORD*)Next;
   Next += sizeof(DWORD);
-  if (flags & XPRFLAG_ANIM || (flags >> 16) > 1)
+  if ((flags & XPRFLAG_ANIM) || (flags >> 16) > 1)
     goto PackedLoadError;
 
   if (flags & XPRFLAG_PALETTE)

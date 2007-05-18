@@ -3,7 +3,11 @@
 #include "AudioContext.h"
 #include "../xbmc/Settings.h"
 #ifdef HAS_SDL
+#ifdef _LINUX
 #include <SDL/SDL_mixer.h>
+#else
+#include <SDL_mixer.h>
+#endif
 #endif
 
 #ifndef HAS_SDL
@@ -88,7 +92,7 @@ bool CGUISound::IsPlaying()
 
   return false;
 #else
-  return Mix_Playing(GUI_SOUND_CHANNEL);
+  return Mix_Playing(GUI_SOUND_CHANNEL) != 0;
 #endif
 }
 

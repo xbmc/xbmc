@@ -10,7 +10,9 @@
 #endif // _MSC_VER > 1000
 
 #include "system.h"
+#ifdef _LINUX
 #include "PlatformInclude.h"
+#endif
 #include "Event.h"
 
 class IRunnable

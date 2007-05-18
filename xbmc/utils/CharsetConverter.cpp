@@ -211,7 +211,11 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
     char *dst = new char[inBytes * sizeof(wchar_t)];
     size_t outBytes = inBytes * 2;
     char *outdst = dst;
-    if (iconv(m_iconvUtf8toUtf16, (char**) &src, &inBytes, &outdst, &outBytes))
+#ifdef _LINUX
+    if (iconv(m_iconvUtf8toUtf16, (char**)&src, &inBytes, &outdst, &outBytes))
+#else
+    if (iconv(m_iconvUtf8toUtf16, &src, &inBytes, &outdst, &outBytes))
+#endif
     {
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
@@ -248,7 +252,11 @@ void CCharsetConverter::subtitleCharsetToUTF16(const CStdStringA& strSource, CSt
     char *dst = (char*)strDest.GetBuffer(inBytes * sizeof(wchar_t));
     size_t outBytes = inBytes * 2;
 
-    if (iconv(m_iconvSubtitleCharsetToUtf16, (char**) &src, &inBytes, &dst, &outBytes))
+#ifdef _LINUX
+    if (iconv(m_iconvSubtitleCharsetToUtf16, (char**)&src, &inBytes, &dst, &outBytes))
+#else
+    if (iconv(m_iconvSubtitleCharsetToUtf16, &src, &inBytes, &dst, &outBytes))
+#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -319,7 +327,11 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes - 1;
 
-    if (iconv(m_iconvUtf8ToStringCharset, (char**) &src, &inBytes, &dst, &outBytes) == -1)
+#ifdef _LINUX
+    if (iconv(m_iconvUtf8ToStringCharset, (char**)&src, &inBytes, &dst, &outBytes) == -1)
+#else
+    if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == -1)
+#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -353,7 +365,11 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-    if (iconv(m_iconvStringCharsetToUtf8, (char**) &src, &inBytes, &dst, &outBytes) == -1)
+#ifdef _LINUX
+    if (iconv(m_iconvStringCharsetToUtf8, (char**)&src, &inBytes, &dst, &outBytes) == -1)
+#else
+    if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
+#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -384,7 +400,11 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-    if (iconv(iconvString, (char**) &src, &inBytes, &dst, &outBytes) == -1)
+#ifdef _LINUX
+    if (iconv(iconvString, (char**)&src, &inBytes, &dst, &outBytes) == -1)
+#else
+    if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == -1)
+#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -414,7 +434,11 @@ void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &s
     size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*2;  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
-    if (iconv(m_iconvUtf16toUtf8, (char**) &src, &inBytes, &dst, &outBytes))
+#ifdef _LINUX
+    if (iconv(m_iconvUtf16toUtf8, (char**)&src, &inBytes, &dst, &outBytes))
+#else
+    if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
+#endif
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
@@ -439,7 +463,11 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
     size_t inBytes = (strSource.length() + 1)*2;
     size_t outBytes = (inBytes + 1)*2;  // UTF-8 is up to 4 bytes/character  
     char *dst = strDest.GetBuffer(outBytes);
-    if (iconv(m_iconvUtf16BEtoUtf8, (char**) &src, &inBytes, &dst, &outBytes))
+#ifdef _LINUX
+    if (iconv(m_iconvUtf16BEtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
+#else
+    if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
+#endif
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
@@ -484,7 +512,11 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-    if (iconv(m_iconvUcs2CharsetToStringCharset, (char**) &src, &inBytes, &dst, &outBytes))
+#ifdef _LINUX
+    if (iconv(m_iconvUcs2CharsetToStringCharset, (char**)&src, &inBytes, &dst, &outBytes))
+#else
+    if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes))
+#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -517,7 +549,11 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-    if (iconv(m_iconvUtf32ToStringCharset, (char**) &src, &inBytes, &dst, &outBytes))
+#ifdef _LINUX
+    if (iconv(m_iconvUtf32ToStringCharset, (char**)&src, &inBytes, &dst, &outBytes))
+#else
+    if (iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes))
+#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but

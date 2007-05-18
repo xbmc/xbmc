@@ -37,6 +37,7 @@ Export export_msvcrt[];
 Export export_msvcr71[];
 Export export_pncrt[];
 Export export_iconvx[];
+Export export_xbp[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);

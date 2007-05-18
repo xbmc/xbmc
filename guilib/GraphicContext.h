@@ -13,7 +13,11 @@
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
 #ifdef HAS_SDL_OPENGL
+#ifdef _LINUX
 #include <SDL/SDL_opengl.h>
+#else
+#include <SDL_opengl.h>
+#endif
 #endif
 
 // forward definitions

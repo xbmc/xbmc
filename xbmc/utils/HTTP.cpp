@@ -754,7 +754,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   }
 
   // send request...
-  char szHTTPHEADER[350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0)];
+  char* szHTTPHEADER = (char*)alloca(350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
   if (stricmp(verb, "POST")==0)
   {
     strcpy(szHTTPHEADER, "Content-Type: application/x-www-form-urlencoded\r\n");
@@ -796,13 +796,15 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   if( m_strUsername.size())
     strcat(szHTTPHEADER, ConstructAuthorization("Authorization", m_strUsername, m_strPassword).c_str());
 
-  char szGet[strlen(szHTTPHEADER) + strURL.size() + 20];
+  char* szGet;
   if (m_strProxyServer.size())
   {
+    szGet = (char*)alloca(strlen(szHTTPHEADER) + strURL.size() + 20);
     sprintf(szGet, "%s %s HTTP/1.1\r\n%s\r\n", verb, strURL.c_str(), szHTTPHEADER);
   }
   else
   {
+    szGet = (char*)alloca(strlen(szHTTPHEADER) + strFile.size() + 20);
     sprintf(szGet, "%s %s HTTP/1.1\r\n%s\r\n", verb, strFile.c_str(), szHTTPHEADER);
   }
 
@@ -1070,7 +1072,7 @@ CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdStrin
 {
   //Basic authentication
   CStdString buff = username + ":" + password;
-  char szEncode[buff.GetLength()*2]; 
+  char *szEncode = (char*)alloca(buff.GetLength()*2); 
   
   int len = base64_encode(buff.c_str(), buff.GetLength(), szEncode, buff.GetLength()*2);
   if( len < 0 )

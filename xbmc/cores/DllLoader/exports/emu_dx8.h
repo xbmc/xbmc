@@ -3,7 +3,11 @@
 #define _EMU_DX8_H
 
 #ifdef HAS_SDL
+#ifdef _LINUX
 #include <SDL/SDL.h>
+#else
+#include <SDL.h>
+#endif
 #endif
 
 extern "C" void OutputDebug(char* strDebug);
