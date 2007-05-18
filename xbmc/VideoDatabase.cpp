@@ -33,7 +33,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 6
+#define VIDEO_DATABASE_VERSION 7
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -123,7 +123,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive bool, useFolderNames bool)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath )\n");
 
     CLog::Log(LOGINFO, "create files table");
@@ -254,13 +254,19 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     }
      
     // then grab all tvshow paths
-    if (!m_pDS->query("select strPath from path join tvshowlinkpath on tvshowlinkpath.idpath=path.idpath")) return false;
+    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames from path join tvshowlinkpath on tvshowlinkpath.idpath=path.idpath")) return false;
     int iRowsFound = m_pDS->num_rows();
-    settings.recurse = 0;
-    settings.parent_name_root = false;
-    settings.parent_name = true;
     while (!m_pDS->eof())
     {
+      if (m_pDS->fv("scanRecursive").get_asBool())
+        settings.recurse = INT_MAX;
+      else
+        settings.recurse = 0;
+      if (m_pDS->fv("useFolderNames").get_asBool())
+        settings.parent_name_root = true;
+      else
+        settings.parent_name_root = false;
+      settings.parent_name = true;
       paths.insert(pair<CStdString,SScanSettings>(m_pDS->fv("strPath").get_asString(),settings));
       m_pDS->next();
     }
@@ -2228,12 +2234,12 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         bEncodedChecked = true;
       }
     }
-    strSQL = FormatSQL("update path set strContent = '', strScraper='', strHash='' where strPath like '%%%s%%'",strPath1.c_str());
+    strSQL = FormatSQL("update path set strContent = '', strScraper='', strHash='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strPath1.c_str());
     pDS->exec(strSQL);
 
     CStdString strEncoded(strPath);
     CUtil::URLEncode(strEncoded);
-    strSQL = FormatSQL("update path set strContent = '', strScraper='',strHash='' where strPath like '%%%s%%'",strEncoded.c_str());
+    strSQL = FormatSQL("update path set strContent = '', strScraper='',strHash='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strEncoded.c_str());
     pDS->exec(strSQL);
   }
   catch (...)
@@ -2244,7 +2250,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     progress->Close();
 }
 
-void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent)
+void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent, bool bUseFolderNames, bool bScanRecursive)
 {
   try
   {
@@ -2258,7 +2264,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdStr
     }
 
     // Update
-    CStdString strSQL =FormatSQL("update path set strContent='%s',strScraper='%s' where idPath=%u", strContent.c_str(), strScraper.c_str(), lPathId);
+    CStdString strSQL=FormatSQL("update path set strContent='%s',strScraper='%s', scanRecursive=%i, useFolderNames=%i where idPath=%u", strContent.c_str(), strScraper.c_str(),bScanRecursive,bUseFolderNames,lPathId);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -2362,6 +2368,12 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       // add the strHash column to path table
       m_pDS->exec("alter table path add strHash text");
+    }
+    if (iVersion < 7)
+    {
+      // add the scan settings to path table
+      m_pDS->exec("alter table path add scanRecursive bool");
+      m_pDS->exec("alter table path add useFolderNames bool");
     }
   }
   catch (...)
@@ -3570,6 +3582,12 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
 
 bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound)
 {
+  bool bDummy1, bDummy2;
+  return GetScraperForPath(strPath,strScraper,strContent,bDummy1,bDummy2,iFound);
+}
+
+bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, bool& bUseFolderNames, bool& bScanRecursive, int& iFound)
+{
   try
   {
     if (strPath.IsEmpty()) return false;
@@ -3578,15 +3596,21 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
 
     CStdString strPath1(strPath);
     CUtil::AddSlashAtEnd(strPath1);
-    CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath='%s'",strPath1.c_str());
-    m_pDS->query( strSQL.c_str() );
+    long lPathId = GetPath(strPath1);
+    if (lPathId > -1)
+    {
+      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where path.idPath=%u",lPathId);
+      m_pDS->query( strSQL.c_str() );
+    }
 
     iFound = 0;
     if (!m_pDS->eof())
     {
       strContent = m_pDS->fv("path.strContent").get_asString();
       strScraper = m_pDS->fv("path.strScraper").get_asString();
-      if (!strScraper.IsEmpty())
+      bUseFolderNames = m_pDS->fv("path.useFolderNames").get_asBool();
+      bScanRecursive = m_pDS->fv("path.scanRecursive").get_asBool();
+      if (!strContent.IsEmpty())
         iFound = 1;
     }
     if (iFound == 0)
@@ -3596,7 +3620,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
       int iBookMark=-2;
       while (iFound == 0 && CUtil::GetParentPath(strPath1, strParent))
       {
-        strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",strParent.c_str());
+        CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
         if (m_pDS->eof())
         {
@@ -3611,7 +3635,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
             {
               if (g_settings.m_vecMyVideoShares[iBookMark].vecPaths[i].Equals(strParent))
               {
-                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iBookMark].strPath.c_str());
+                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iBookMark].strPath.c_str());
                 m_pDS->query(strSQL.c_str());
                 break;
               }
@@ -3622,7 +3646,9 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
         {
           strContent = m_pDS->fv("path.strContent").get_asString();
           strScraper = m_pDS->fv("path.strScraper").get_asString();
-          if (!strScraper.IsEmpty())
+          bUseFolderNames = m_pDS->fv("path.useFolderNames").get_asBool();
+          bScanRecursive = m_pDS->fv("path.scanRecursive").get_asBool();
+          if (!strContent.IsEmpty())
             iFound = 2;
         }
 
