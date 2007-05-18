@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "VideoInfoScanner.h"
 #include "FileSystem/DirectoryCache.h"
-#include "GUIWindowVideoFiles.h"
 #include "Util.h"
 #include "nfofile.h"
 #include "utils/RegExp.h"
@@ -153,7 +152,6 @@ namespace VIDEO
   {
     m_strStartDir = strDirectory;
     m_bUpdateAll = bUpdateAll;
-    m_settings = settings;
     m_info = info;
     m_pathsToScan.clear();
 
@@ -190,7 +188,7 @@ namespace VIDEO
     m_pObserver = pObserver;
   }
 
-  bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, const SScanSettings& settings)
+  bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
   {
     if (m_pObserver)
       m_pObserver->OnDirectoryChanged(strDirectory);
@@ -198,15 +196,14 @@ namespace VIDEO
     // load subfolder
     CFileItemList items;
     int iFound;
-    bool bSkip=false;
-    m_database.GetScraperForPath(strDirectory,m_info.strPath,m_info.strContent,iFound);
-    if (m_info.strContent.IsEmpty())
+    bool bSkip=false,bDummy;
+    m_database.GetScraperForPath(strDirectory,m_info.strPath,m_info.strContent,settings.parent_name_root,bDummy,iFound);
+    if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
       bSkip = true;
 
     CStdString hash, dbHash;
     if (m_info.strContent.Equals("movies"))
     {
-      CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
       CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
       int iOldStack = g_stSettings.m_iMyVideoStack;
       g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
@@ -238,7 +235,7 @@ namespace VIDEO
     }
     else if (m_info.strContent.Equals("tvshows"))
     {
-      if (iFound == 1)
+      if (iFound == 1 && !settings.parent_name_root)
       {
         CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
       }
@@ -276,9 +273,10 @@ namespace VIDEO
       if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse && !m_info.strContent.Equals("tvshows")) // do not recurse for tv shows - we have already looked recursively for episodes
       {
         CStdString strPath=pItem->m_strPath;
-        SScanSettings settings2(settings);
-        settings2.recurse--;
-        settings2.parent_name_root = settings2.parent_name;
+        SScanSettings settings2;
+        settings2.recurse = settings.recurse-1;
+        settings2.parent_name_root = settings.parent_name;
+        settings2.parent_name = settings.parent_name;
         if (!DoScan(strPath,settings2))
         {
           m_bStop = true;
@@ -288,7 +286,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CIMDBUrl* pURL /* = NULL */, CGUIDialogProgress* m_dlgProgress /* = NULL */)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CIMDBUrl *pURL, CGUIDialogProgress* m_dlgProgress)
   {
     CStdString strMovieName;
     CIMDB IMDB;
@@ -322,6 +320,22 @@ namespace VIDEO
     for (int i = 0; i < (int)items.Size(); ++i)
     {
       CFileItem* pItem = items[i];
+      SScraperInfo info2;
+      int iFound;
+      if (pItem->m_bIsFolder)
+      {
+        m_database.GetScraperForPath(pItem->m_strPath,info2.strPath,info2.strContent,iFound);
+        if (m_pObserver)
+          m_pObserver->OnDirectoryChanged(pItem->m_strPath);
+      }
+      else
+        m_database.GetScraperForPath(items.m_strPath,info2.strPath,info2.strContent,iFound);
+
+      if (info2.strContent.Equals("None")) // skip
+        continue;
+
+      IMDB.SetScraperInfo(info2);
+
       if (info.strContent.Equals("movies"))
       {
         if (m_pObserver)
@@ -333,8 +347,6 @@ namespace VIDEO
       }
       if (info.strContent.Equals("tvshows"))
       {
-        //if (!pItem->m_bIsFolder) // we only want folders - files are handled in onprocessseriesfolder
-        //  continue;
         long lTvShowId2;
         if (pItem->m_bIsFolder)
           lTvShowId2 = m_database.GetTvShowInfo(pItem->m_strPath);
@@ -396,10 +408,7 @@ namespace VIDEO
         }
         else
         {
-          SScraperInfo info2;
-          int iFound;
-          m_database.GetScraperForPath(items.m_strPath,info2.strPath,info2.strContent,iFound);
-          if (iFound != 1) // we need this when we scan a non-root tvshow folder
+          if (iFound != 1 && !bDirNames) // we need this when we scan a non-root tvshow folder
           {
             CUtil::GetParentPath(pItem->m_strPath,strMovieName);
             CUtil::RemoveSlashAtEnd(strMovieName);
@@ -534,8 +543,6 @@ namespace VIDEO
                 EnumerateSeriesFolder(pItem,files);
                 if (IMDB.GetEpisodeList(url,episodes))
                 {
-                  if (m_pObserver)
-                    m_pObserver->OnDirectoryChanged(pItem->m_strPath);
                   OnProcessSeriesFolder(episodes,files,lResult,IMDB,m_dlgProgress);
                 }
               }

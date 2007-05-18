@@ -3913,12 +3913,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
+      VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan("",info,-1,-1);
+          CGUIWindowVideoBase::OnScan("",info,settings);
       }
     }
   }
