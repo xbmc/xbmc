@@ -175,6 +175,9 @@ namespace PYXBMC
     case CGUIControl::GUICONTAINER_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
       break;
+	case CGUIControl::GUICONTAINER_GROUP:
+      pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
+      break;
     }
 
     if (!pControl)
@@ -390,6 +393,7 @@ namespace PYXBMC
     "  -ControlButton\n"
     "  -ControlCheckMark\n"
     "  -ControlList\n"
+    "  -ControlGroup\n"
     "  -ControlImage\n");
 
   PyObject* Window_AddControl(Window *self, PyObject *args)
@@ -459,6 +463,10 @@ namespace PYXBMC
     // Control Progress
     else if (ControlProgress_Check(pControl))
       ControlProgress_Create((ControlProgress*)pControl);
+
+    // Control Group
+    else if (ControlGroup_Check(pControl))
+      ControlGroup_Create((ControlGroup*)pControl);
 
     //unknown control type to add, should not happen
     else
