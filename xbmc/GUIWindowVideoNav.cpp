@@ -635,7 +635,6 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
     m_database.SetPathHash(strDirectory,"");
   }
 
-
   // delete the cached thumb for this item (it will regenerate if it is a user thumb)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);
@@ -753,7 +752,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (item)
   {
     SScraperInfo info;
-    int iFound = GetScraperForItem(item, info);
+    VIDEO::SScanSettings settings;
+    int iFound = GetScraperForItem(item, info, settings);
     
     if (info.strContent.Equals("tvshows"))
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
@@ -867,8 +867,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
       SScraperInfo info;
-      GetScraperForItem(m_vecItems[itemNumber], info);
-      OnScan("",info,-1,-1);
+      VIDEO::SScanSettings settings;
+      OnScan("",info,settings);
       return true;
     }
   }

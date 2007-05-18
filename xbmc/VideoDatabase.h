@@ -259,7 +259,7 @@ public:
 
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
-  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
+  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent, bool bUseFolderNames=false, bool bScanRecursive=false);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
@@ -281,6 +281,7 @@ public:
 
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, bool& bUseFolderNames, bool& bScanRecursive, int& iFound);
 
   void CleanDatabase();
   
