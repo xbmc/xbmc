@@ -3067,6 +3067,9 @@
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlfadelabel.cpp">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlgroup.cpp">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">
 					</File>
 					<File
