@@ -4154,26 +4154,6 @@ private:
 //		This function allows the caller for format and return a CStdStringA
 //		object with a single line of code.
 // -----------------------------------------------------------------------------
-/*
-inline CStdStringA WUFormatA(PCSTR szFormat, ...)
-{
-	va_list argList;
-	va_start(argList, szFormat);
-	CStdStringA strOut;
-	strOut.FormatV(szFormat, argList);
-	va_end(argList);
-	return strOut;
-}
-inline CStdStringW WUFormatW(PCWSTR szwFormat, ...)
-{
-	va_list argList;
-	va_start(argList, szwFormat);
-	CStdStringW strOut;
-	strOut.FormatV(szwFormat, argList);
-	va_end(argList);
-	return strOut;
-}
-*/
 #ifdef SS_ANSI
 #else
 	inline CStdStringA WUFormatA(UINT nId, ...)
@@ -4189,7 +4169,15 @@ inline CStdStringW WUFormatW(PCWSTR szwFormat, ...)
 		va_end(argList);
 		return strOut;
 	}
-
+	inline CStdStringA WUFormatA(PCSTR szFormat, ...)
+	{
+		va_list argList;
+		va_start(argList, szFormat);
+		CStdStringA strOut;
+		strOut.FormatV(szFormat, argList);
+		va_end(argList);
+		return strOut;
+	}
 	inline CStdStringW WUFormatW(UINT nId, ...)
 	{
 		va_list argList;
@@ -4200,6 +4188,15 @@ inline CStdStringW WUFormatW(PCWSTR szwFormat, ...)
 		if ( strFmt.Load(nId) )
 			strOut.FormatV(strFmt, argList);
 
+		va_end(argList);
+		return strOut;
+	}
+	inline CStdStringW WUFormatW(PCWSTR szwFormat, ...)
+	{
+		va_list argList;
+		va_start(argList, szwFormat);
+		CStdStringW strOut;
+		strOut.FormatV(szwFormat, argList);
 		va_end(argList);
 		return strOut;
 	}

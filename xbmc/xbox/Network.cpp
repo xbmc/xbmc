@@ -455,8 +455,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     case SERVICES_UP:
     {
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-#ifndef _LINUX
-#waring services startup disabled
+#ifdef _LINUX
+#warning services startup disabled
+#else
       g_application.StartTimeServer();
       g_application.StartWebServer();
       g_application.StartFtpServer();
@@ -470,8 +471,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     case SERVICES_DOWN:
     {
       CLog::Log(LOGDEBUG, "%s - Stopping network services",__FUNCTION__);
-#ifndef _LINUX
-#waring services stop disabled
+#ifdef _LINUX
+#warning services stop disabled
+#else
       g_application.StopTimeServer();
       g_application.StopWebServer();
       g_application.StopFtpServer();

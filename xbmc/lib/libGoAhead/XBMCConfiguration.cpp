@@ -615,71 +615,9 @@ return -1;
  */
 int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t *name, *value = NULL;
-
   if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
     else response="<li>Error:Functino is deprecated";
   return -1;
-/*
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
-	if (Load() == -1)
-	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")) : 
-              response="<li>Error:Could not load XboxMediaCenter.xml";
-		return -1;
-	}
-
-	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s %s"), &name, &value) < 2)
-	{
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")) :
-              response="<li>Error:Insufficient args";
-		return -1;
-	}
-
-	// get first option from xml file
-	// we have to check if there arent any other childs in this element
-	TiXmlElement *pRootElement = xbmcCfg.RootElement();
-	TiXmlElement *pElement = NULL;
-	pElement = pRootElement->FirstChildElement(name);
-
-	if (pElement)
-	{
-		// if we have another child, this isn't an option like
-		// <xboxmediacenter>
-		//	<home>c:\</home>
-		// <xboxmediacenter>
-		if (pElement->FirstChild() && pElement->FirstChild()->FirstChild() == NULL)
-		{
-			pElement->FirstChild()->SetValue(value);
-		}
-		
-		else
-		{
-			// option exist, but no child exists.  set value or "-" is value = NULL
-			pElement->InsertEndChild(TiXmlText(value ? value : "-"));
-		}
-	}
-	else if (IsValidOption(name))
-	{
-		// option not found in xml file
-		// create new element and set value or "-" is value = NULL
-
-		// create a new Element
-		TiXmlElement xmlOption(name);
-		xmlOption.InsertEndChild(TiXmlText(value ? value : "-"));
-
-		// add element to configuration
-		pRootElement->InsertEndChild(xmlOption);
-	}
-  else
-  {
-    eid!=-1 ? websError(wp, 500, T("Not valid option\n")):
-              response="<li>Error:Not valid option";
-    return -1;
-  }
-	return 0;
-*/
 }
 
 /*

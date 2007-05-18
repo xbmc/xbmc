@@ -3,6 +3,12 @@
 
 #include "DllLoader.h"
 
+#ifndef _LINUX
+#ifndef _WINDEF_
+typedef unsigned long HMODULE;
+#endif // _WINDEF_
+#endif
+
 class DllLoaderContainer
 {
 public:  

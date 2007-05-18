@@ -4,6 +4,7 @@
 #include "settings/VideoSettings.h"
 #include <set>
 
+#ifndef my_offsetof
 #ifndef _LINUX
 #define my_offsetof(TYPE, MEMBER) offsetof(TYPE, MEMBER)
 #else
@@ -19,7 +20,7 @@
 #define my_offsetof(TYPE, MEMBER) \
                ((size_t)((char *)&(((TYPE *)0x10)->MEMBER) - (char*)0x10))
 #endif
-
+#endif
 
 typedef vector<CStdString> VECMOVIEYEARS;
 typedef vector<CStdString> VECMOVIEACTORS;

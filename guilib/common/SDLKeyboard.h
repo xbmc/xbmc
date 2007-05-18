@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include "system.h"
+#include "../system.h"
 
 class CKeyboard
 {

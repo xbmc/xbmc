@@ -23,7 +23,9 @@ namespace PYXBMC
       // this will probably not really work since the python DLL assumes that
       // that wchar_t is 2 bytes and linux is actually 4 bytes. That's why
       // so building a CStdStringW will not work
+#ifdef __GNUC__
 #warning Linux fixme
+#endif
       CStdString utf8String;
       CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
       g_charsetConverter.utf16toUTF8(utf16String, utf8String);

@@ -35,7 +35,7 @@ public:
 struct Visualisation
 {
 public:
-#ifndef _LINUX
+#ifndef HAS_SDL
   void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
 #else // TODO LINUX this obviously doesn't work but it will have to do for now
   void (__cdecl* Create)(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
