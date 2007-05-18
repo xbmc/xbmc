@@ -34,14 +34,108 @@
 
 #undef HAS_XBOX_D3D
 
-#ifdef WIN32
+#ifndef HAS_SDL
  #include "D3D8.h"
  #include "D3DX8.h"
- #define D3DPRESENTFLAG_INTERLACED 0
- #define D3DPRESENTFLAG_WIDESCREEN 0
- #define D3DPRESENTFLAG_PROGRESSIVE 0
+#elif !defined(_LINUX)  // TODO - this stuff is in PlatformDefs.h otherwise, but should be merged to some local file
+  // Basic D3D stuff
+  typedef DWORD D3DCOLOR;
+
+  typedef enum _D3DFORMAT
+  {
+	  D3DFMT_A8R8G8B8					= 0x00000006,
+	  D3DFMT_DXT1					= 0x0000000C,
+	  D3DFMT_DXT2					= 0x0000000E,					
+	  D3DFMT_DXT4					= 0x0000000F,
+	  D3DFMT_UNKNOWN					= 0xFFFFFFFF
+  } D3DFORMAT;
+
+  typedef enum D3DRESOURCETYPE
+  {
+      D3DRTYPE_SURFACE = 1,
+      D3DRTYPE_VOLUME = 2,
+      D3DRTYPE_TEXTURE = 3,
+      D3DRTYPE_VOLUMETEXTURE = 4,
+      D3DRTYPE_CubeTexture = 5,
+      D3DRTYPE_VERTEXBUFFER = 6,
+      D3DRTYPE_INDEXBUFFER = 7,
+      D3DRTYPE_FORCE_DWORD = 0x7fffffff,
+  } D3DRESOURCETYPE, *LPD3DRESOURCETYPE;
+
+  typedef enum D3DXIMAGE_FILEFORMAT
+  {
+      D3DXIFF_BMP = 0,
+      D3DXIFF_JPG = 1,
+      D3DXIFF_TGA = 2,
+      D3DXIFF_PNG = 3,
+      D3DXIFF_DDS = 4,
+      D3DXIFF_PPM = 5,
+      D3DXIFF_DIB = 6,
+      D3DXIFF_HDR = 7,
+      D3DXIFF_PFM = 8,
+      D3DXIFF_FORCE_DWORD = 0x7fffffff,
+  } D3DXIMAGE_FILEFORMAT, *LPD3DXIMAGE_FILEFORMAT;
+
+  typedef struct D3DXIMAGE_INFO {
+      UINT Width;
+      UINT Height;
+      UINT Depth;
+      UINT MipLevels;
+      D3DFORMAT Format;
+      D3DRESOURCETYPE ResourceType;
+      D3DXIMAGE_FILEFORMAT ImageFileFormat;
+  } D3DXIMAGE_INFO, *LPD3DXIMAGE_INFO;
+
+  typedef struct _D3DPRESENT_PARAMETERS_
+  {
+      UINT                BackBufferWidth;
+      UINT                BackBufferHeight;
+      D3DFORMAT           BackBufferFormat;
+      UINT                BackBufferCount;
+      //D3DMULTISAMPLE_TYPE MultiSampleType;
+      //D3DSWAPEFFECT       SwapEffect;
+      //HWND                hDeviceWindow;
+      BOOL                Windowed;
+      BOOL                EnableAutoDepthStencil;
+      D3DFORMAT           AutoDepthStencilFormat;
+      DWORD               Flags;
+      UINT                FullScreen_RefreshRateInHz; 
+      UINT                FullScreen_PresentationInterval;
+      //D3DSurface         *BufferSurfaces[3];
+      //D3DSurface         *DepthStencilSurface;
+  } D3DPRESENT_PARAMETERS;
+
+  typedef enum D3DPRIMITIVETYPE
+  {
+      D3DPT_POINTLIST = 1,
+      D3DPT_LINELIST = 2,
+      D3DPT_LINESTRIP = 3,
+      D3DPT_TRIANGLELIST = 4,
+      D3DPT_TRIANGLESTRIP = 5,
+      D3DPT_TRIANGLEFAN = 6,
+      D3DPT_FORCE_DWORD = 0x7fffffff,
+  } D3DPRIMITIVETYPE, *LPD3DPRIMITIVETYPE;
+
+  typedef struct _D3DMATRIX {
+      union {
+          struct {
+              float        _11, _12, _13, _14;
+              float        _21, _22, _23, _24;
+              float        _31, _32, _33, _34;
+              float        _41, _42, _43, _44;
+
+          };
+          float m[4][4];
+      };
+  } D3DMATRIX;
+
+  typedef void DIRECT3DTEXTURE8;
+  typedef void* LPDIRECT3DTEXTURE8;
 #endif
 
+#define D3DPRESENTFLAG_INTERLACED 1
+#define D3DPRESENTFLAG_WIDESCREEN 2
+#define D3DPRESENTFLAG_PROGRESSIVE 4
 
 #define D3DFMT_LIN_A8R8G8B8 D3DFMT_A8R8G8B8
 #define D3DFMT_LIN_X8R8G8B8 D3DFMT_X8R8G8B8
@@ -77,16 +171,21 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 #endif
 
 
+#ifdef HAS_SDL
 #ifdef _LINUX
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#ifdef HAS_SDL_OPENGL
-#include <SDL/SDL_opengl.h>
+#else
+#include <SDL.h>
+#include <SDL_image.h>
 #endif
-#define D3DPRESENTFLAG_INTERLACED 1
-#define D3DPRESENTFLAG_WIDESCREEN 2
-#define D3DPRESENTFLAG_PROGRESSIVE 4
-
+#ifdef HAS_SDL_OPENGL
+#ifdef _LINUX
+#include <SDL/SDL_opengl.h>
+#else
+#include <SDL_opengl.h>
+#endif
+#endif
 #endif
 
 #endif

@@ -49,6 +49,7 @@ void CKeyboard::Initialize(HWND hWnd)
 void CKeyboard::Update()
 {
   ZeroMemory(m_keystate, sizeof(BYTE)* 256);
+  if (!m_keyboard) return;
   if (S_OK == m_keyboard->GetDeviceState(sizeof(unsigned char[256]), (LPVOID)m_keystate))
   {
     m_cAscii = 0;
