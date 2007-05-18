@@ -105,13 +105,15 @@ void tracker_dll_data_track(DllLoader* pDll, unsigned long addr);
 
 #ifdef _LINUX
 #define _ReturnAddress() __builtin_return_address(0)
-#else
-void * _ReturnAddress(void);
-#pragma intrinsic(_ReturnAddress)
 #endif
 
 #ifdef _cplusplus
 }
+#endif
+
+#ifndef _LINUX
+extern "C" void * _ReturnAddress(void);
+#pragma intrinsic(_ReturnAddress)
 #endif
 
 #endif // _DLL_TRACKER_H_

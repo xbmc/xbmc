@@ -1,5 +1,6 @@
-
+#if defined(_XBOX) || defined(_LINUX)
 #include "stdafx.h"
+#endif
 #ifdef _LINUX
 #include "../DllLoaderContainer.h"
 #include "../DllLoader.h"
@@ -9,7 +10,9 @@
 
 #include "..\DllLoaderContainer.h"
 #include "..\DllLoader.h"
+#ifdef _XBOX
 #include <string.h>
+#endif
 #endif
 
 #pragma warning (disable:4391)
@@ -219,7 +222,7 @@ extern "C" void* _CIfmod();
 extern "C" void* atan2();
 extern "C" void* fmod();
 extern "C" void* _endthread();
-extern "C" void* _beginthread();
+extern "C" void* dll_beginthread();
 extern "C" void* clock();
 extern "C" void* _hypot();
 extern "C" void* asctime();

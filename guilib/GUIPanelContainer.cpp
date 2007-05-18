@@ -297,7 +297,7 @@ bool CGUIPanelContainer::MoveUp(DWORD nextControl)
     m_cursor += (m_itemsPerPage - 1) * m_itemsPerRow;
     int offset = max((int)GetRows() - m_itemsPerPage, 0);
     // should check here whether cursor is actually allowed here, and reduce accordingly
-    if (offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
+    if ((offset * m_itemsPerRow + m_cursor) >= (int)m_items.size())
       m_cursor = (int)m_items.size() - offset * m_itemsPerRow - 1;
     ScrollToOffset(offset);
   }
@@ -314,7 +314,7 @@ bool CGUIPanelContainer::MoveLeft(DWORD nextControl)
   else if (!nextControl || nextControl == GetID())
   { // wrap around
     m_cursor += (m_itemsPerRow - 1);
-    if (m_offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
+    if ((m_offset * m_itemsPerRow + m_cursor) >= (int)m_items.size())
       m_cursor = (int)m_items.size() - m_offset * m_itemsPerRow;
   }
   else

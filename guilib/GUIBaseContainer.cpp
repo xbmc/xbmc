@@ -334,11 +334,11 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   float size = m_layout.Size(m_orientation);
   int range = m_itemsPerPage / 4;
   if (range <= 0) range = 1;
-  if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
+  if ((m_scrollOffset - offset * size) > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
     m_scrollOffset = (offset + range) * size;
   }
-  if (offset * size > m_scrollOffset && offset * size - m_scrollOffset > size * range)
+  if ((offset * size - m_scrollOffset) > size * range)
   { // scrolling down, and we're jumping more than 0.5 of a screen
     m_scrollOffset = (offset - range) * size;
   }

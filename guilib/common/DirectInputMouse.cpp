@@ -53,6 +53,7 @@ void CMouse::Update()
   bool bMouseMoved(false);
   DIMOUSESTATE mouseState;
   memset(&mouseState, 0, sizeof(mouseState));
+  if (!m_mouse) return;
   if (S_OK == m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState))
   {
     cMickeyX = (char)mouseState.lX;

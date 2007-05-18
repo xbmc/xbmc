@@ -16,6 +16,7 @@ EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
+		Debug (SDL) = Debug (SDL)
 		Debug Win32 = Debug Win32
 		Debug Xbox = Debug Xbox
 		Profile Win32 = Profile Win32
@@ -31,6 +32,8 @@ Global
 	GlobalSection(ProjectConfiguration) = postSolution
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug.ActiveCfg = Debug|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug.Build.0 = Debug|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (SDL).ActiveCfg = Debug (SDL)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (SDL).Build.0 = Debug (SDL)|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Win32.ActiveCfg = Debug|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Win32.Build.0 = Debug|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Xbox.ActiveCfg = Debug|Win32
@@ -55,6 +58,8 @@ Global
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release_LTCG Xbox.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug.ActiveCfg = Debug|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug.Build.0 = Debug|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug (SDL).ActiveCfg = Debug (SDL)|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug (SDL).Build.0 = Debug (SDL)|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug Win32.ActiveCfg = Debug|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug Win32.Build.0 = Debug|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug Xbox.ActiveCfg = Debug|Win32
@@ -79,6 +84,8 @@ Global
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release_LTCG Xbox.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug.ActiveCfg = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug.Build.0 = Debug|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug (SDL).ActiveCfg = Debug (SDL)|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug (SDL).Build.0 = Debug (SDL)|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Win32.ActiveCfg = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Win32.Build.0 = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Xbox.ActiveCfg = Debug|Win32

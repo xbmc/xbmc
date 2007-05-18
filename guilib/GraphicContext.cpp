@@ -252,10 +252,10 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
       Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
 #else
       SDL_Rect r;
-      r.x = m_videoRect.left;
-      r.y = m_videoRect.top;
-      r.w = m_videoRect.right - m_videoRect.left + 1;
-      r.h = m_videoRect.bottom - m_videoRect.top +1;
+      r.x = (Sint16)m_videoRect.left;
+      r.y = (Sint16)m_videoRect.top;
+      r.w = (Sint16)(m_videoRect.right - m_videoRect.left + 1);
+      r.h = (Sint16)(m_videoRect.bottom - m_videoRect.top +1);
       SDL_FillRect(m_screenSurface, &r, 0x00010001);    
 #endif		  
     }
@@ -278,7 +278,9 @@ void CGraphicContext::ClipToViewWindow()
   m_pd3dDevice->SetScissors(1, FALSE, &clip);
 #endif
 #else
+#ifdef  __GNUC__
 #warning CGraphicContext::ClipToViewWindow not implemented
+#endif
 #endif
 }
 
@@ -463,7 +465,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 }
 
 #else
+#ifdef __GNUC__
 #warning Need to implement GraphicContext::SetVideoResolution
+#endif
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   if (res == AUTORES)

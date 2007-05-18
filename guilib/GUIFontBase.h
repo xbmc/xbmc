@@ -3,13 +3,11 @@
 \brief 
 */
 
-#ifdef _LINUX
-#include <math.h>
-#endif
-
 #ifndef CGUILIB_GUIFONTBASE_H
 #define CGUILIB_GUIFONTBASE_H
 #pragma once
+
+#include <math.h>
 
 // flags for alignment
 #define XBFONT_LEFT       0x00000000

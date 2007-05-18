@@ -83,7 +83,7 @@ bool IsSwizzledFormat(XB_D3DFORMAT format)
   }
 }
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
 {
   D3DLOCKED_RECT lr;
@@ -448,7 +448,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture
   }
 }
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 CXBPackedResource::CXBPackedResource()
 {
   m_buffer = NULL;

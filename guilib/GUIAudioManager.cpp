@@ -8,7 +8,11 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "Util.h"
 #ifdef HAS_SDL
+#ifdef _LINUX
 #include <SDL/SDL_mixer.h>
+#else
+#include <SDL_mixer.h>
+#endif
 #endif
 
 CGUIAudioManager g_audioManager;

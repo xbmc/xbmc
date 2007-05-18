@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="guilib"
 	ProjectGUID="{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
+	RootNamespace="guilib"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -78,6 +79,53 @@
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/guilib.lib"
 				IgnoreDefaultLibraryNames=""/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug (SDL)|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
+				Optimization="0"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;HAS_SDL_2D"
+				StringPooling="FALSE"
+				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="SDL.lib SDL_image.lib SDL_mixer.lib"
+				OutputFile="$(OutDir)/guilib.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool

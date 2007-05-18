@@ -76,9 +76,6 @@ protected:
   bool m_bPacked;
   D3DFORMAT m_format;
   DWORD m_memUsage;
-#ifdef HAS_SDL_OPENGL
-  GLuint m_textureId;
-#endif  
 };
 
 /*!

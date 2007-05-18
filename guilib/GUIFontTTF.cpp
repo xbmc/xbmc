@@ -9,7 +9,11 @@
 #include <ft2build.h>
 #endif
 #ifdef HAS_SDL
+#ifdef _LINUX
 #include <SDL/SDL_rotozoom.h>
+#else
+//#include <SDL_rotozoom.h>
+#endif
 #endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -327,7 +331,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
         FLOAT w, h;
         GetTextExtentInternal( strText, &w, &h, TRUE );
 
-        if ( dwFlags & XBFONT_TRUNCATED && w > fMaxPixelWidth )
+        if ( (dwFlags & XBFONT_TRUNCATED) && w > fMaxPixelWidth )
           w = fMaxPixelWidth;
           
         if ( dwFlags & XBFONT_CENTER_X)
@@ -874,9 +878,9 @@ struct CUSTOMVERTEX {
   if (angle.theta != 0)
   {
     // This angular stuff somewhat works but it is not really aligned. This will have to do for now 
-    SDL_Surface* angledSurface = rotozoomSurface(tempSurface, 360 - angle.theta, 1.0, 0);
-    SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
-    SDL_BlitSurface(angledSurface, NULL, g_graphicsContext.getScreenSurface(), &dstRect2);
+//    SDL_Surface* angledSurface = rotozoomSurface(tempSurface, 360 - angle.theta, 1.0, 0);
+//    SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
+//    SDL_BlitSurface(angledSurface, NULL, g_graphicsContext.getScreenSurface(), &dstRect2);
   }
   else
   {
@@ -893,7 +897,7 @@ struct CUSTOMVERTEX {
   float tt = ch->top / m_textureHeight;
   float tb = ch->bottom / m_textureHeight;
   
-  GLubyte colors[4] = {(dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24 };
+  GLubyte colors[4] = { (GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24) };
   
   // Top-left vertex (corner)
   glColor4ubv(colors); 
