@@ -35,6 +35,10 @@
 #define ControlImage_Check(op) PyObject_TypeCheck(op, &ControlImage_Type)
 #define ControlImage_CheckExact(op) ((op)->ob_type == &ControlImage_Type)
 
+#define ControlGroup_Check(op) PyObject_TypeCheck(op, &ControlGroup_Type)
+#define ControlGroup_CheckExact(op) ((op)->ob_type == &ControlGroup_Type)
+
+
 // -----------------
 
 // hardcoded offsets for button controls (and controls that use button controls)
@@ -172,6 +176,10 @@ namespace PYXBMC
     DWORD dwAlignmentY;
   } ControlList;
 
+  typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
+  } ControlGroup;
+
   extern void Control_Dealloc(Control* self);
 
   extern PyMethodDef Control_methods[];
@@ -182,6 +190,7 @@ namespace PYXBMC
   extern PyTypeObject ControlFadeLabel_Type;
   extern PyTypeObject ControlTextBox_Type;
   extern PyTypeObject ControlImage_Type;
+  extern PyTypeObject ControlGroup_Type;
   extern PyTypeObject ControlButton_Type;
   extern PyTypeObject ControlCheckMark_Type;
   extern PyTypeObject ControlList_Type;
@@ -193,6 +202,7 @@ namespace PYXBMC
   CGUIControl* ControlButton_Create(ControlButton* pControl);
   CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl);
   CGUIControl* ControlImage_Create(ControlImage* pControl);
+  CGUIControl* ControlGroup_Create(ControlGroup* pControl);
   CGUIControl* ControlList_Create(ControlList* pControl);
   CGUIControl* ControlProgress_Create(ControlProgress* pControl);
 
@@ -205,6 +215,7 @@ namespace PYXBMC
   void initControlCheckMark_Type();
   void initControlList_Type();
   void initControlImage_Type();
+  void initControlGroup_Type();
   void initControlProgress_Type();
 }
 
