@@ -40,12 +40,12 @@ namespace VIDEO
     void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item);
     long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CIMDBUrl *pUrl=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CIMDBUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
 
   protected:
     virtual void Process();
-    bool DoScan(const CStdString& strDirectory, const SScanSettings& settings);
+    bool DoScan(const CStdString& strDirectory, SScanSettings settings);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
@@ -60,7 +60,6 @@ namespace VIDEO
     bool m_bCanInterrupt;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
-    SScanSettings m_settings;
     SScraperInfo m_info;
     map<CStdString,SScanSettings> m_pathsToScan;
     set<CStdString> m_pathsToCount;
