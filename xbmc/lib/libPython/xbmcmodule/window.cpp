@@ -175,7 +175,7 @@ namespace PYXBMC
     case CGUIControl::GUICONTAINER_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
       break;
-	case CGUIControl::GUICONTAINER_GROUP:
+    case CGUIControl::GUICONTROL_GROUP:
       pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
       break;
     }
