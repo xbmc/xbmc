@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\python\python.h"
-#include "GuiLabelControl.h"
+#include "GUIControlGroup.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
@@ -51,7 +51,7 @@ extern "C"
     CGUIControl *
     ControlGroup_Create (ControlGroup *pCtrl)
     {
-      pCtrl->pGUIControl = new CGUILabelControl(pCtrl->iParentId,
+      pCtrl->pGUIControl = new CGUIControlGroup(pCtrl->iParentId,
                                                 pCtrl->iControlId,
                                                 (float) pCtrl->dwPosX,
                                                 (float) pCtrl->dwPosY,
