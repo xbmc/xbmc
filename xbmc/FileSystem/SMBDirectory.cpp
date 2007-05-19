@@ -91,9 +91,10 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         if( smbc_stat(strFullName.c_str(), &info) == 0 )
         {
+#ifndef _LINUX
           if((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("smb.showhidden"))
             continue;
-
+#endif
           bIsDir = (info.st_mode & S_IFDIR) ? true : false;
           lTimeDate = info.st_mtime;
           if(lTimeDate == 0) /* if modification date is missing, use create date */
