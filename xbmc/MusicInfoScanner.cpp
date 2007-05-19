@@ -28,7 +28,6 @@
 #include "utils/md5.h"
 #include "xbox/xkgeneral.h"
 
-
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
