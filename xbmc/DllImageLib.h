@@ -87,7 +87,7 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
 #ifdef _XBOX
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib.dll)
 #elif defined(HAS_SDL)
-  DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib_raw.dll)
+  DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib-i486-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib_win32.dll)
 #endif
