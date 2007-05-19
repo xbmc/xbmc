@@ -408,19 +408,9 @@ namespace VIDEO
         }
         else
         {
-          if (iFound != 1 && !bDirNames) // we need this when we scan a non-root tvshow folder
-          {
-            CUtil::GetParentPath(pItem->m_strPath,strMovieName);
-            CUtil::RemoveSlashAtEnd(strMovieName);
-            strMovieName = CUtil::GetFileName(strMovieName);
-            *pItem = items;
-          }
-          else
-          {
-            CUtil::RemoveSlashAtEnd(pItem->m_strPath);
-            strMovieName = CUtil::GetFileName(pItem->m_strPath);
-            CUtil::AddSlashAtEnd(pItem->m_strPath);
-          }
+          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
+          strMovieName = CUtil::GetFileName(pItem->m_strPath);
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
         }
       }
 
