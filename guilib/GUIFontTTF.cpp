@@ -9,11 +9,7 @@
 #include <ft2build.h>
 #endif
 #ifdef HAS_SDL
-#ifdef _LINUX
 #include <SDL/SDL_rotozoom.h>
-#else
-//#include <SDL_rotozoom.h>
-#endif
 #endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H

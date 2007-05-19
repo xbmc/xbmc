@@ -3,6 +3,8 @@
 #include "DirectInput.h"
 #include "../key.h"
 
+#ifndef HAS_SDL
+
 #include "../../Tools/Win32/XBMC_PC.h"
 extern CXBMC_PC *g_xbmcPC;
 
@@ -184,3 +186,5 @@ void CMouse::Acquire()
   if (m_mouse)
     m_mouse->Acquire();
 }
+
+#endif

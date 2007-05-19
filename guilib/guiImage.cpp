@@ -5,11 +5,7 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "Util.h"
 #ifdef HAS_SDL
-#ifdef _LINUX
 #include <SDL/SDL_rotozoom.h>
-#else
-//#include <SDL_rotozoom.h>
-#endif
 #endif
 
 #ifdef HAS_XBOX_D3D
