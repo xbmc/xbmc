@@ -115,7 +115,7 @@ bool XBVideoConfig::Has1080i() const
 #endif
 }
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
 {
   bHasPAL = false;
@@ -237,7 +237,7 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
   return false;
 }
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 //pre: XBVideoConfig::GetModes has been called before this function
 RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
 {

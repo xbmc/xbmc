@@ -1,7 +1,9 @@
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#ifndef SDL_KEYBOARD_H
+#define SDL_KEYBOARD_H
 
 #include "../system.h"
+
+#ifdef HAS_SDL
 
 class CKeyboard
 {
@@ -29,3 +31,4 @@ extern CKeyboard g_Keyboard;
 
 #endif
 
+#endif

@@ -109,7 +109,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;HAS_SDL_2D"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
@@ -124,7 +124,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib SDL_mixer.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib SDL_mixer.lib opengl32.lib"
 				OutputFile="$(OutDir)/guilib.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -632,6 +632,18 @@
 			</File>
 			<File
 				RelativePath=".\common\DirectInputMouse.h">
+			</File>
+			<File
+				RelativePath=".\common\SDLKeyboard.cpp">
+			</File>
+			<File
+				RelativePath=".\common\SDLKeyboard.h">
+			</File>
+			<File
+				RelativePath=".\common\SDLMouse.cpp">
+			</File>
+			<File
+				RelativePath=".\common\SDLMouse.h">
 			</File>
 		</Filter>
 		<File

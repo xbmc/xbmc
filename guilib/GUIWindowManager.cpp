@@ -443,7 +443,7 @@ void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 	    m_pCallback->FrameMove();
     }
     m_pCallback->Render();
-#if !defined(_XBOX) && !defined(_LINUX)
+#if defined(WIN32) && !defined(HAS_SDL)
     extern CXBMC_PC *g_xbmcPC;
     g_xbmcPC->ProcessMessage(NULL);
     Sleep(20);

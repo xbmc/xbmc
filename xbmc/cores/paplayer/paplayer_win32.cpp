@@ -9,6 +9,8 @@
 #include "../../CdgParser.h"
 #endif
 
+#ifdef HAS_AUDIO
+
 #ifndef HAS_XBOX_AUDIO
 #include "mmreg.h"
 #endif
@@ -1204,3 +1206,5 @@ void PAPlayer::WaitForStream()
 #endif
   }
 }
+
+#endif

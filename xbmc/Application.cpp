@@ -732,7 +732,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_hWnd = hWnd;
 
-  HRESULT hr;
+  HRESULT hr = S_OK;
   
   //grab a handle to our thread to be used later in identifying the render thread
   m_threadID = GetCurrentThreadId();
@@ -1141,7 +1141,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
   
   // TODO LINUX SDL - Check that the resolution is ok
-#ifndef HAS_SDL    
+#ifndef HAS_SDL
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )

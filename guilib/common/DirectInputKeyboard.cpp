@@ -2,6 +2,8 @@
 #include "DirectInputKeyboard.h"
 #include "DirectInput.h"
 
+#ifndef HAS_SDL
+
 #define FRAME_DELAY 5
 
 CKeyboard g_Keyboard; // global
@@ -204,3 +206,5 @@ void CKeyboard::Acquire()
   if (m_keyboard)
     m_keyboard->Acquire();
 }
+
+#endif

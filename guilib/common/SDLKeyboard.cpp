@@ -2,6 +2,8 @@
 #include "../Key.h"
 #include "SDLKeyboard.h"
 
+#ifdef HAS_SDL
+
 #define FRAME_DELAY 5
 
 CKeyboard g_Keyboard; // global
@@ -33,13 +35,13 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
     m_cAscii = 0;
     m_VKey = 0;
 
-    m_bCtrl = m_keyEvent.key.keysym.mod & KMOD_CTRL;
-    m_bShift = m_keyEvent.key.keysym.mod & KMOD_SHIFT;
-    m_bAlt = m_keyEvent.key.keysym.mod & KMOD_ALT;
+    m_bCtrl = (m_keyEvent.key.keysym.mod & KMOD_CTRL) == KMOD_CTRL;
+    m_bShift = (m_keyEvent.key.keysym.mod & KMOD_SHIFT) == KMOD_SHIFT;
+    m_bAlt = (m_keyEvent.key.keysym.mod & KMOD_ALT) == KMOD_ALT;
 
 		if (m_keyEvent.key.keysym.unicode < 0x80 && m_keyEvent.key.keysym.unicode > 0x20)
 		{
-			m_cAscii = m_keyEvent.key.keysym.unicode;
+			m_cAscii = (char)m_keyEvent.key.keysym.unicode;
 			m_VKey = m_cAscii | KEY_ASCII;
 		}
 		else
@@ -102,3 +104,5 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
     Reset();
   }
 }
+
+#endif

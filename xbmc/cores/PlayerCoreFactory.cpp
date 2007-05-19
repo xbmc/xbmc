@@ -57,7 +57,9 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
     case EPC_MODPLAYER: return new ModPlayer(callback);
 #endif
 //    case EPC_SIDPLAYER: return new SidPlayer(callback);
+#ifdef HAS_AUDIO
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
+#endif
   }
   return NULL;
 }
@@ -145,6 +147,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
+#ifdef HAS_AUDIO
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
     bool bAdd = true;
@@ -175,6 +178,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       }
     }
   }
+#endif
 #ifdef HAS_MODPLAYER
   if( ModPlayer::IsSupportedFormat(url.GetFileType()) || (url.GetFileType() == "xm") || (url.GetFileType() == "mod") || (url.GetFileType() == "s3m") || (url.GetFileType() == "it") )
   {
