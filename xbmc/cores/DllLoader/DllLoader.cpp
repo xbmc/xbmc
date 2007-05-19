@@ -167,9 +167,10 @@ static void __attribute__((noinline)) extend_stack_for_dll_alloca(void)
 #endif
 
 
-DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps)
+DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps) : LibraryLoader(sDll)
 {
   ImportDirTable = 0;
+/*  
   m_sFileName = strdup(sDll);
 
   char* sPath = strrchr(m_sFileName, '\\');
@@ -184,6 +185,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
     m_sPath=NULL;
 
   m_iRefCount = 1;
+*/  
   m_pExportHead = NULL;
   m_pStaticExports = exps;
   m_bTrack = bTrack;
@@ -246,7 +248,7 @@ DllLoader::~DllLoader()
   {
     LoadedList* entry = m_pDlls;
     m_pDlls = entry->pNext;
-    if (entry->pDll) DllLoaderContainer::ReleaseModule(entry->pDll);
+    if (entry->pDll) DllLoaderContainer::ReleaseModule((LibraryLoader*&) entry->pDll);
     delete entry;
   }
   
@@ -262,9 +264,10 @@ DllLoader::~DllLoader()
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
+/*  
   free(m_sFileName);
   if (m_sPath) free(m_sPath);
-
+*/
   // hModule points to DllLoader in this case
   if (m_bSystemDll)
     hModule = NULL;
@@ -274,8 +277,11 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
+/*
   CStdString strFileName= _P(m_sFileName);
-  FILE* fp = fopen(strFileName, "rb");
+*/
+
+  FILE* fp = fopen(GetFileName(), "rb");
 
   if (fp)
   {
@@ -474,7 +480,7 @@ int DllLoader::ResolveImports(void)
 
 char* DllLoader::ResolveReferencedDll(char* dll)
 {
-  DllLoader* pDll = DllLoaderContainer::LoadModule(dll, GetPath(), m_bLoadSymbols);
+  DllLoader* pDll = (DllLoader*) DllLoaderContainer::LoadModule(dll, GetPath(), m_bLoadSymbols);
 
   if (!pDll)
   {
@@ -533,9 +539,9 @@ int DllLoader::ResolveExport(const char *sName, void **pAddr)
     return 1;
   }
   
-  char* sDllName = strrchr(m_sFileName, '\\');
+  char* sDllName = strrchr(GetFileName(), '\\');
   if (sDllName) sDllName += 1;
-  else sDllName = m_sFileName;
+  else sDllName = GetFileName();
   
   CLog::Log(LOGWARNING, "Unable to resolve: %s %s", sDllName, sName);
   return 0;
@@ -555,9 +561,9 @@ int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
     return 1;
   }
   
-  char* sDllName = strrchr(m_sFileName, '\\');
+  char* sDllName = strrchr(GetFileName(), '\\');
   if (sDllName) sDllName += 1;
-  else sDllName = m_sFileName;
+  else sDllName = GetFileName();
   
   CLog::Log(LOGWARNING, "Unable to resolve: %s %d", sDllName, ordinal);
   return 0;
@@ -619,7 +625,7 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   
 int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 {
-  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
+  DllLoader* pDll = (DllLoader*) DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -640,7 +646,7 @@ int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 
 int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 {
-  DllLoader* pDll = DllLoaderContainer::GetModule(sName);
+  DllLoader* pDll = (DllLoader*) DllLoaderContainer::GetModule(sName);
 
   if (pDll)
   {
@@ -657,7 +663,7 @@ int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 
   return 0;
 }
-
+/*
 char* DllLoader::GetName()
 {
   if (m_sFileName)
@@ -692,7 +698,7 @@ int DllLoader::DecrRef()
   m_iRefCount--;
   return m_iRefCount;
 }
-
+*/
 void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
   ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));

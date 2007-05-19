@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DllLoaderContainer.h"
-
+#include "SoLoader.h"
 #include "dll_tracker.h" // for python unload hack
 
 #define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
@@ -12,7 +12,7 @@
 
 using namespace XFILE;
 
-DllLoader* DllLoaderContainer::m_dlls[64] = {};
+LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int        DllLoaderContainer::m_iNrOfDlls = 0;
 bool       DllLoaderContainer::m_bTrack = false;
 
@@ -84,7 +84,7 @@ HMODULE DllLoaderContainer::GetModuleAddress(const char* sName)
   return (HMODULE)GetModule(sName);
 }
 
-DllLoader* DllLoaderContainer::GetModule(const char* sName)
+LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 {
   for (int i = 0; m_dlls[i] != NULL && i < m_iNrOfDlls; i++)
   {
@@ -95,18 +95,18 @@ DllLoader* DllLoaderContainer::GetModule(const char* sName)
   return NULL;
 }
 
-DllLoader* DllLoaderContainer::GetModule(HMODULE hModule)
+LibraryLoader* DllLoaderContainer::GetModule(HMODULE hModule)
 {
   for (int i = 0; m_dlls[i] != NULL && i < m_iNrOfDlls; i++)
   {
-    if (m_dlls[i]->hModule == hModule) return m_dlls[i];    
+    if (m_dlls[i]->GetHModule() == hModule) return m_dlls[i];    
   }
   return NULL;
 }
 
-DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/, bool bLoadSymbols/*=false*/)
+LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/, bool bLoadSymbols/*=false*/)
 {
-  DllLoader* pDll=NULL;
+  LibraryLoader* pDll=NULL;
 
   if (IsSystemDll(sName))
   {
@@ -141,7 +141,7 @@ DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurren
   return pDll;
 }
 
-DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
+LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
 {
   if (strlen(sName) > 1 && sName[1] == ':')
   { //  Has a path, just try to load
@@ -171,7 +171,7 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
     strPath+=sName;
 
     // Have we already loaded this dll
-    DllLoader* pDll = GetModule(strPath.c_str());
+    LibraryLoader* pDll = GetModule(strPath.c_str());
     if (pDll)
       return pDll;
 
@@ -184,7 +184,7 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
   return NULL;
 }
 
-void DllLoaderContainer::ReleaseModule(DllLoader*& pDll)
+void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
 {
   if (pDll->IsSystemDll())
   {
@@ -217,14 +217,19 @@ void DllLoaderContainer::ReleaseModule(DllLoader*& pDll)
 #endif
 }
 
-DllLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
+LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 {
 
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "Loading dll %s", sName);
 #endif
 
-  DllLoader* pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
+  LibraryLoader* pLoader;
+  if (strstr(sName, ".so") != NULL)
+    pLoader = new SoLoader(sName);
+  else
+    pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
+    
   if (!pLoader)
   {
     CLog::Log(LOGERROR, "Unable to create dll %s", sName);
@@ -255,13 +260,13 @@ int DllLoaderContainer::GetNrOfModules()
   return m_iNrOfDlls;
 }
 
-DllLoader* DllLoaderContainer::GetModule(int iPos)
+LibraryLoader* DllLoaderContainer::GetModule(int iPos)
 {
   if (iPos < m_iNrOfDlls) return m_dlls[iPos];
   return NULL;
 }
 
-void DllLoaderContainer::RegisterDll(DllLoader* pDll)
+void DllLoaderContainer::RegisterDll(LibraryLoader* pDll)
 {
   for (int i = 0; i < 64; i++)
   {
@@ -274,7 +279,7 @@ void DllLoaderContainer::RegisterDll(DllLoader* pDll)
   }
 }
 
-void DllLoaderContainer::UnRegisterDll(DllLoader* pDll)
+void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
 {
   if (pDll)
   {
@@ -311,8 +316,7 @@ void DllLoaderContainer::UnloadPythonDlls()
     char* name = m_dlls[i]->GetName();
     if (strstr(name, ".pyd") != NULL)
     {
-      DllLoader* pDll = m_dlls[i];
-      ReleaseModule(pDll);
+      ReleaseModule(m_dlls[i]);
       i = 0;
     }
   }
@@ -323,12 +327,12 @@ void DllLoaderContainer::UnloadPythonDlls()
     char* name = m_dlls[i]->GetName();
     if (strstr(name, "python24.dll") != NULL)
     {
-      DllLoader* pDll = m_dlls[i];
+      LibraryLoader* pDll = m_dlls[i];
       pDll->IncrRef();
       while (pDll->DecrRef() > 1) pDll->DecrRef();
       
       // since we freed all python extension dlls first, we have to remove any associations with them first
-      DllTrackInfo* info = tracker_get_dlltrackinfo_byobject(pDll);
+      DllTrackInfo* info = tracker_get_dlltrackinfo_byobject((DllLoader*) pDll);
       if (info != NULL)
       {
         info->dllList.clear();

@@ -49,7 +49,7 @@ extern "C"
   extern DATA_OBJECT(PyExc_RuntimeError);
   extern DATA_OBJECT(PyExc_ReferenceError);
 
-  bool python_load_dll(DllLoader& dll);
+  bool python_load_dll(LibraryLoader& dll);
 
 #ifdef __cplusplus
 }
