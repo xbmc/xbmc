@@ -341,7 +341,12 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       return false;
   }
 
-  // load xml file...
+  // clear sources, then load xml file...
+  m_vecMyFilesShares.clear();
+  m_vecMyMusicShares.clear();
+  m_vecMyPictureShares.clear();
+  m_vecMyProgramsShares.clear();
+  m_vecMyVideoShares.clear();
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
   TiXmlDocument xmlDoc;
@@ -1281,7 +1286,7 @@ void CSettings::LoadAdvancedSettings()
   {
     const char* szAppend = pVideoStacking->Attribute("append");
     if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
-        g_advancedSettings.m_videoStackRegExps.clear();
+      g_advancedSettings.m_videoStackRegExps.clear();
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
     while (pStackRegExp)
     {
@@ -1887,7 +1892,7 @@ bool CSettings::DeleteProfile(int index)
       }
 
       CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
-      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
+      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory+"\\";
       item.m_bIsFolder = true;
       item.Select(true);
       CGUIWindowFileManager::DeleteItem(&item);
