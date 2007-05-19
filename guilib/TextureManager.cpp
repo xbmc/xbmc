@@ -1125,8 +1125,9 @@ void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePat
 
 
 #ifdef HAS_SDL_OPENGL
-CGLTexture::CGLTexture(SDL_Surface* surface)
+CGLTexture::CGLTexture(SDL_Surface* surface, bool load)
 {
+  m_loadedToGPU = false;
   id = 0;
   imageWidth = surface->w;
   imageHeight = surface->h;
@@ -1135,15 +1136,24 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   
   // Resize texture to POT
   unsigned char* src = (unsigned char*) surface->pixels;
-  unsigned char* pixels = new unsigned char[textureWidth * textureHeight * 4];
-  unsigned char* resized = pixels;
+  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* resized = m_pixels;
   for (int y = 0; y < surface->h; y++)
   {
     memcpy(resized, src, surface->pitch);
     src += surface->pitch;
     resized += (textureWidth * 4);
   }
-      
+  
+  if (load)
+    LoadToGPU();
+}
+
+void CGLTexture::LoadToGPU()
+{
+  if (m_loadedToGPU)
+    return;
+          
   // Have OpenGL generate a texture object handle for us
   glGenTextures(1, &id);
  
@@ -1157,9 +1167,12 @@ CGLTexture::CGLTexture(SDL_Surface* surface)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
  
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
-               GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+               GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
                
-  delete [] pixels;              
+  delete [] m_pixels;
+  m_pixels = NULL;
+  
+  m_loadedToGPU = true;           
 }
 
 CGLTexture::~CGLTexture()
