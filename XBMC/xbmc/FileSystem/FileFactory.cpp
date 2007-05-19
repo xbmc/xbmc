@@ -6,9 +6,11 @@
 #include "FileShoutcast.h"
 #include "FileLastFM.h"
 #include "FileFileReader.h"
+#ifdef HAS_FILESYSTEM_SMB
+#include "FileSmb.h"
+#endif
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
-#include "FileSmb.h"
 #include "FileXBMSP.h"
 #include "FileRTV.h"
 #include "FileSndtrk.h"
@@ -64,8 +66,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
     else if (strProtocol == "hdhomerun") return new CFileHomeRun();
-#ifdef HAS_FILESYSTEM
+#ifdef HAS_FILESYSTEM_SMB
     else if (strProtocol == "smb") return new CFileSMB();
+#endif
+#ifdef HAS_FILESYSTEM
     else if (strProtocol == "xbms") return new CFileXBMSP();
     else if (strProtocol == "rtv") return new CFileRTV();
     else if (strProtocol == "daap") return new CFileDAAP();
