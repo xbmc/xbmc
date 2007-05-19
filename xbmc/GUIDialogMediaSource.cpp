@@ -154,7 +154,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
           if (dialog->m_info.strContent.Equals("tvshows"))
             settings.parent_name_root = true;
           else
-          settings.parent_name_root = false;
+            settings.parent_name_root = false;
           
           settings.parent_name = true;
         }
