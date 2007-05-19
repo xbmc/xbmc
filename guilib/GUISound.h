@@ -1,11 +1,7 @@
 #pragma once
 
 #ifdef HAS_SDL
-#ifdef _LINUX
 #include <SDL/SDL_mixer.h>
-#else
-#include <SDL_mixer.h>
-#endif
 #endif
 
 class CGUISound

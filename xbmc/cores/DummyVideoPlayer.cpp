@@ -252,7 +252,7 @@ void CDummyVideoPlayer::Render()
   newviewport.Height = vw.bottom - vw.top;
   g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 #else
-  g_graphicsContext.SetViewPort(vw.left, vw.top, vw.right - vw.left, vw.bottom - vw.top);
+  g_graphicsContext.SetViewPort((float)vw.left, (float)vw.top, (float)vw.right - vw.left, (float)vw.bottom - vw.top);
 #endif 
   CGUIFont *font = g_fontManager.GetFont("font13");
   if (font)

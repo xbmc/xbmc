@@ -727,22 +727,22 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
     v2 = (float)pTexture->imageHeight / pTexture->textureHeight;
   }
   
-  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
   glTexCoord2f(u1, v1);
   glVertex3f(x[0], y[0], 0);
   
   // Bottom-left vertex (corner)
-  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
   glTexCoord2f(u2, v1);
   glVertex3f(x[1], y[1], 0);
   
   // Bottom-right vertex (corner)
-  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
   glTexCoord2f(u2, v2);
   glVertex3f(x[2], y[2], 0);
   
   // Top-right vertex (corner)
-  glColor4ub((dwColor >> 16) & 0xff, (dwColor >> 8) & 0xff, dwColor & 0xff, dwColor >> 24); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
   glTexCoord2f(u1, v2);
   glVertex3f(x[3], y[3], 0);
     

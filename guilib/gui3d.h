@@ -172,19 +172,10 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 
 
 #ifdef HAS_SDL
-#ifdef _LINUX
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#else
-#include <SDL.h>
-#include <SDL_image.h>
-#endif
 #ifdef HAS_SDL_OPENGL
-#ifdef _LINUX
 #include <SDL/SDL_opengl.h>
-#else
-#include <SDL_opengl.h>
-#endif
 #endif
 #endif
 

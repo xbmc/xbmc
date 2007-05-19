@@ -2,6 +2,8 @@
 #include "../include.h"
 #include "../Key.h"
 
+#ifdef HAS_SDL
+
 CMouse g_Mouse; // global
 
 CMouse::CMouse()
@@ -39,8 +41,8 @@ void CMouse::Update()
   if (bMouseMoved)
   {
     mouseState = SDL_GetMouseState(&x, &y);  
-    posX = x; if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = (float)m_iMaxX;
-    posY = y; if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = (float)m_iMaxY;
+    posX = (float)x; if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = (float)m_iMaxX;
+    posY = (float)y; if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = (float)m_iMaxY;
     m_bActive = true;
     dwLastActiveTime = timeGetTime();
   }
@@ -53,11 +55,11 @@ void CMouse::Update()
     if (timeGetTime() - dwLastActiveTime > MOUSE_ACTIVE_LENGTH) m_bActive = false;
   }
   // Fill in the public members
-  bDown[MOUSE_LEFT_BUTTON] = mouseState & SDL_BUTTON(1);
-  bDown[MOUSE_RIGHT_BUTTON] = mouseState & SDL_BUTTON(3);
-  bDown[MOUSE_MIDDLE_BUTTON] = mouseState & SDL_BUTTON(2);
-  bDown[MOUSE_EXTRA_BUTTON1] = mouseState & SDL_BUTTON(4);
-  bDown[MOUSE_EXTRA_BUTTON2] = mouseState & SDL_BUTTON(5);
+  bDown[MOUSE_LEFT_BUTTON] = (mouseState & SDL_BUTTON(1)) == SDL_BUTTON(1);
+  bDown[MOUSE_RIGHT_BUTTON] = (mouseState & SDL_BUTTON(3)) == SDL_BUTTON(3);
+  bDown[MOUSE_MIDDLE_BUTTON] = (mouseState & SDL_BUTTON(2)) == SDL_BUTTON(2);
+  bDown[MOUSE_EXTRA_BUTTON1] = (mouseState & SDL_BUTTON(4)) == SDL_BUTTON(4);
+  bDown[MOUSE_EXTRA_BUTTON2] = (mouseState & SDL_BUTTON(5)) == SDL_BUTTON(5);
   // Perform the click mapping (for single + double click detection)
   bool bNothingDown = true;
   for (int i = 0; i < 5; i++)
@@ -147,3 +149,5 @@ void CMouse::EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
 void CMouse::Acquire()
 {
 }
+
+#endif

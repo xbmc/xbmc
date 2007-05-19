@@ -31,6 +31,7 @@ CXBMC_PC *g_xbmcPC;
 
 CXBMC_PC::CXBMC_PC()
 {
+#ifndef HAS_SDL
   m_hWnd = NULL;
   m_hAccel = NULL;
   m_dwWindowStyle = 0;
@@ -43,6 +44,7 @@ CXBMC_PC::CXBMC_PC()
   m_mouseEnabled = true;
   m_inDialog = false;
   m_fullscreen = false;
+#endif
 }
 
 CXBMC_PC::~CXBMC_PC()
@@ -50,6 +52,7 @@ CXBMC_PC::~CXBMC_PC()
   // todo: deinitialization code
 }
 
+#ifndef HAS_SDL
 LRESULT WINAPI WinProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
   return g_xbmcPC->MsgProc(hWnd, msg, wParam, lParam);
@@ -96,7 +99,9 @@ LRESULT CXBMC_PC::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
       {
         m_focused = !(WA_INACTIVE==wParam);
         // we have focus - grab the keyboard and mouse
+#ifndef HAS_SDL
         g_Keyboard.Acquire();
+#endif
       }
       break;
     case WM_SETCURSOR:
@@ -283,25 +288,14 @@ void CXBMC_PC::LoadSettings()
     SetWindowPlacement(m_hWnd, &WndStatus);
   }
 }
+#endif
 
 HRESULT CXBMC_PC::Create( HINSTANCE hInstance )
 {
   m_hInstance = hInstance;
   HRESULT hr = S_OK;
 
-  // Create the Direct3D object
-//  if( m_pD3D == NULL )
-//    return DisplayErrorMsg( D3DAPPERR_NODIRECT3D, MSGERR_APPMUSTEXIT );
-
-  // Build a list of Direct3D adapters, modes and devices. The
-  // ConfirmDevice() callback is used to confirm that only devices that
-  // meet the app's requirements are considered.
-//  if( FAILED( hr = BuildDeviceList() ) )
-//  {
-//   SAFE_RELEASE( m_pD3D );
-//  return DisplayErrorMsg( hr, MSGERR_APPMUSTEXIT );
-//  }
-
+#ifndef HAS_SDL
   // Unless a substitute hWnd has been specified, create a window to
   // render into
   if( m_hWnd == NULL)
@@ -366,12 +360,21 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance )
   m_active = TRUE;
 //  m_bReady = TRUE;
 
+#endif
   return S_OK;
 }
 
 
 INT CXBMC_PC::Run()
 {
+#ifdef HAS_SDL
+  g_application.Create(NULL);
+  while (1)
+  {
+    g_application.Run();
+  }
+  return 0;
+#else
   // Load keyboard accelerators
   m_hAccel = LoadAccelerators( NULL, MAKEINTRESOURCE(IDR_MAIN_ACCEL) );
 
@@ -396,8 +399,10 @@ INT CXBMC_PC::Run()
   }
 
   return (INT)msg.wParam;
+#endif
 }
 
+#ifndef HAS_SDL
 BOOL CXBMC_PC::ProcessMessage(MSG *msg)
 {
   MSG backup;
@@ -505,6 +510,8 @@ void CXBMC_PC::OnResizeToPixel()
   }
 }
 
+#endif
+
 //-----------------------------------------------------------------------------
 // Name: WinMain()
 // Desc: The application's entry point
@@ -532,6 +539,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR, INT )
   return myApp.Run();
 }
 
+#ifndef HAS_SDL
 //-----------------------------------------------------------------------------
 // Name: SelectDeviceProc()
 // Desc: Windows message handling function for the device select dialog
@@ -691,4 +699,4 @@ INT_PTR CALLBACK CXBMC_PC::ActivateWindowProc( HWND hDlg, UINT msg,
     return FALSE;
 }
 
-
+#endif

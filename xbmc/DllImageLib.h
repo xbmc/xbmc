@@ -61,7 +61,7 @@ struct ImageInfo
   unsigned int originalwidth;
   unsigned int originalheight;
   EXIFINFO exifInfo;
-#ifndef _LINUX
+#ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 texture;
 #else
   RGBQUAD* rawImage;
@@ -86,12 +86,12 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
 {
 #ifdef _XBOX
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib.dll)
-#elif defined(_LINUX)
+#elif defined(HAS_SDL)
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib_raw.dll)
 #else
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib_win32.dll)
 #endif
-#ifdef _LINUX
+#ifdef HAS_SDL
   DEFINE_METHOD1(bool, ReleaseImage, (RGBQUAD *p1))
 #endif
   DEFINE_METHOD4(bool, LoadImage, (const char * p1, unsigned int p2, unsigned int p3, ImageInfo * p4))

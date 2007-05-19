@@ -143,13 +143,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="d3dxof.lib dxguid.lib d3dx8dt.lib d3d8.lib d3dx8.lib dinput8.lib dsound.lib winmm.lib ws2_32.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib"
 				OutputFile="$(OutDir)/XBMC_PC.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc;msvcrt"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/XBMC_PC.pdb"
 				SubSystem="2"
+				EntryPointSymbol=""
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>

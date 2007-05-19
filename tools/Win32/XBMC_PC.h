@@ -7,6 +7,7 @@ public:
 
   HRESULT Create( HINSTANCE hInstance );
   INT Run();
+#ifndef HAS_SDL
   HRESULT Render();
   HRESULT Cleanup();
   LRESULT MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
@@ -30,7 +31,6 @@ protected:
   bool m_inDialog;
   bool m_fullscreen;
   HWND m_hWnd;
-  HINSTANCE m_hInstance;
   HACCEL m_hAccel;
   DWORD m_dwWindowStyle;
   DWORD m_dwCreationWidth;
@@ -38,4 +38,6 @@ protected:
   CStdString m_strWindowTitle;
   RECT m_rcWindowBounds;
   RECT m_rcWindowClient;
+#endif
+  HINSTANCE m_hInstance;
 };
