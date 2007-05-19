@@ -38,14 +38,14 @@ class DllLoader : public CoffLoader
 {
 public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
-  ~DllLoader();
+  virtual ~DllLoader();
 
-  bool Load();
-  void Unload();
+  virtual bool Load();
+  virtual void Unload();
   
   int Parse();
   int ResolveImports();
-  int ResolveExport(const char*, void**);
+  virtual int ResolveExport(const char*, void**);
   int ResolveExport(unsigned long ordinal, void**);
 
   char* GetName(); // eg "mplayer.dll"
@@ -64,7 +64,7 @@ public:
   void AddExport(char* sFunctionName, unsigned long function, void* track_function = NULL);
   void SetExports(Export* exports) { m_pStaticExports = exports; }
 
-private:
+protected:
   // Just pointers; dont' delete...
   ImportDirTable_t *ImportDirTable;
   ExportDirTable_t *ExportDirTable;
