@@ -170,22 +170,7 @@ static void __attribute__((noinline)) extend_stack_for_dll_alloca(void)
 DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps) : LibraryLoader(sDll)
 {
   ImportDirTable = 0;
-/*  
-  m_sFileName = strdup(sDll);
-
-  char* sPath = strrchr(m_sFileName, '\\');
-  if (sPath)
-  {
-    sPath++;
-    m_sPath=(char*)malloc(sPath - m_sFileName+1);
-    strncpy(m_sPath, m_sFileName, sPath - m_sFileName);
-    m_sPath[sPath - m_sFileName] = 0;
-  }
-  else 
-    m_sPath=NULL;
-
-  m_iRefCount = 1;
-*/  
+  
   m_pExportHead = NULL;
   m_pStaticExports = exps;
   m_bTrack = bTrack;
@@ -264,10 +249,7 @@ DllLoader::~DllLoader()
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
-/*  
-  free(m_sFileName);
-  if (m_sPath) free(m_sPath);
-*/
+  
   // hModule points to DllLoader in this case
   if (m_bSystemDll)
     hModule = NULL;
@@ -277,11 +259,8 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
-/*
-  CStdString strFileName= _P(m_sFileName);
-*/
-
-  FILE* fp = fopen(GetFileName(), "rb");
+  CStdString strFileName= _P(GetFileName());
+  FILE* fp = fopen(strFileName.c_str(), "rb");
 
   if (fp)
   {
@@ -663,42 +642,7 @@ int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 
   return 0;
 }
-/*
-char* DllLoader::GetName()
-{
-  if (m_sFileName)
-  {
-    char* sName = strrchr(m_sFileName, '\\');
-    if (sName) return sName + 1;
-    else return m_sFileName;
-  }
-  return "";
-}
 
-char* DllLoader::GetFileName()
-{
-  if (m_sFileName) return m_sFileName;
-  return "";
-}
-
-char* DllLoader::GetPath()
-{
-  if (m_sPath) return m_sPath;
-  return "";
-}
-  
-int DllLoader::IncrRef()
-{
-  m_iRefCount++;
-  return m_iRefCount;
-}
-
-int DllLoader::DecrRef()
-{
-  m_iRefCount--;
-  return m_iRefCount;
-}
-*/
 void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
   ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));
