@@ -54,12 +54,6 @@ protected:
   int Parse();
   int ResolveImports();
 
-  //char* GetName(); // eg "mplayer.dll"
-  //char* GetFileName(); // "Q:\system\mplayer\players\mplayer.dll"
-  //char* GetPath(); // "Q:\system\mplayer\players\"
-  //int IncrRef();
-  //int DecrRef();
-  
   Export* GetExportByOrdinal(unsigned long ordinal);
   Export* GetExportByFunctionName(const char* sFunctionName);
   
@@ -72,9 +66,6 @@ protected:
   // Just pointers; dont' delete...
   ImportDirTable_t *ImportDirTable;
   ExportDirTable_t *ExportDirTable;
-  //char* m_sFileName;
-  //char* m_sPath;
-  //int m_iRefCount;
   bool m_bTrack;
   bool m_bSystemDll; // true if this dll should not be removed
   bool m_bLoadSymbols; // when true this dll should not be removed
