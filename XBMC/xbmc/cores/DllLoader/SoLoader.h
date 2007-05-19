@@ -6,7 +6,7 @@
 #include "PlatformDefs.h"
 #include "DllLoader.h"
 
-class SoLoader : public DllLoader
+class SoLoader : public LibraryLoader
 {
 public:
   SoLoader(const char *so);
@@ -15,7 +15,10 @@ public:
   virtual bool Load();
   virtual void Unload();
   
-  virtual int ResolveExport(const char* symbol, void** f);
+  virtual int ResolveExport(const char* symbol, void** ptr);
+  virtual bool IsSystemDll();
+  virtual HMODULE GetHModule();
+  virtual bool HasSymbols();  
   
 private:
   void* m_soHandle;  

@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "LibraryLoader.h"
 #include "DllLoader.h"
 
 #ifndef _LINUX
@@ -15,22 +16,22 @@ public:
   static void       Clear();
   static HMODULE    GetModuleAddress(const char* sName);
   static int        GetNrOfModules();
-  static DllLoader* GetModule(int iPos);
-  static DllLoader* GetModule(const char* sName);
-  static DllLoader* GetModule(HMODULE hModule);  
-  static DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
-  static void       ReleaseModule(DllLoader*& pDll);
+  static LibraryLoader* GetModule(int iPos);
+  static LibraryLoader* GetModule(const char* sName);
+  static LibraryLoader* GetModule(HMODULE hModule);  
+  static LibraryLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
+  static void       ReleaseModule(LibraryLoader*& pDll);
 
-  static void RegisterDll(DllLoader* pDll);
-  static void UnRegisterDll(DllLoader* pDll);
+  static void RegisterDll(LibraryLoader* pDll);
+  static void UnRegisterDll(LibraryLoader* pDll);
   static void UnloadPythonDlls();
 
 private:
-  static DllLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
-  static DllLoader* LoadDll(const char* sName, bool bLoadSymbols);
+  static LibraryLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
+  static LibraryLoader* LoadDll(const char* sName, bool bLoadSymbols);
   static bool       IsSystemDll(const char* sName);
 
-  static DllLoader* m_dlls[64];
+  static LibraryLoader* m_dlls[64];
   static int m_iNrOfDlls;
   static bool m_bTrack;
 };
