@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "DynamicDll.h"
-#include "cores/DllLoader/SoLoader.h"
 
 using namespace XFILE;
 
@@ -48,13 +47,7 @@ bool DllDynamic::Load()
   if (m_dll)
     return true;
 
-  if (m_strDllName.Find(".so") != -1)
-  {
-    m_dll = new SoLoader(m_strDllName);
-    if (!m_dll)
-       return false;
-  }
-  else if (!(m_dll=CSectionLoader::LoadDLL(m_strDllName, m_DelayUnload, LoadSymbols())))
+  if (!(m_dll=CSectionLoader::LoadDLL(m_strDllName, m_DelayUnload, LoadSymbols())))
     return false;
 
   if (!ResolveExports())

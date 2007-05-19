@@ -238,7 +238,7 @@ extern "C"
   DATA_OBJECT(PyUnicode_Type);
   DATA_OBJECT(PyTuple_Type);
 
-  bool python_load_dll(DllLoader& dll)
+  bool python_load_dll(LibraryLoader& dll)
   {
     bool bResult;
 

@@ -39,7 +39,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     CLog::Log(LOGDEBUG,"%s: Detected %d unloaded dll's", pInfo->pDll->GetFileName(), pInfo->dllList.size());
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
-      DllLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
+      LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
       if( !pDll)
       {
         CLog::Log(LOGERROR, "%s - Invalid module in tracker", __FUNCTION__);
@@ -55,7 +55,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     // now unload the dlls
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
-      DllLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
+      LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
       if( !pDll)
       {
         CLog::Log(LOGERROR, "%s - Invalid module in tracker", __FUNCTION__);
@@ -64,7 +64,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
 
       if (!pDll->IsSystemDll())
       {
-        dllFreeLibrary((HMODULE)pDll->hModule);
+        dllFreeLibrary((HMODULE)pDll->GetHModule());
       }
     }
   }

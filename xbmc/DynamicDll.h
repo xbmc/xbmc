@@ -1,5 +1,6 @@
 #pragma once
 #include "cores/DllLoader/DllLoader.h"
+#include "cores/DllLoader/LibraryLoader.h"
 
 ///////////////////////////////////////////////////////////
 //
@@ -496,6 +497,6 @@ protected:
   virtual bool ResolveExports()=0;
   virtual bool LoadSymbols() { return false; }
   bool  m_DelayUnload;
-  DllLoader* m_dll;
+  LibraryLoader* m_dll;
   CStdString m_strDllName;
 };

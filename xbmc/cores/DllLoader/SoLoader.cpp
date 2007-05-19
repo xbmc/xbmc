@@ -4,7 +4,7 @@
 #include "Util.h"
 #include "utils/log.h"
 
-SoLoader::SoLoader(const char *so) : DllLoader(so)
+SoLoader::SoLoader(const char *so) : LibraryLoader(so)
 {
   m_soHandle = NULL;
 }
@@ -19,7 +19,7 @@ bool SoLoader::Load()
   if (m_soHandle != NULL)
     return true;
     
-  CStdString strFileName= _P(m_sFileName);
+  CStdString strFileName= _P(GetFileName());
   printf("Load: %s\n", strFileName.c_str());
   m_soHandle = dlopen(strFileName.c_str(), RTLD_LAZY);
   if (!m_soHandle)
@@ -61,3 +61,18 @@ int SoLoader::ResolveExport(const char* symbol, void** f)
   *f = s;
   return 1;
 }
+
+bool SoLoader::IsSystemDll()
+{
+  return false;
+}
+
+HMODULE SoLoader::GetHModule()
+{
+  return m_soHandle;
+}
+
+bool SoLoader::HasSymbols()
+{
+  return false;
+}  
