@@ -101,7 +101,7 @@ using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 static D3DGAMMARAMP oldramp, flashramp;
 #else
 static Uint16 oldrampRed[256];
@@ -1617,7 +1617,7 @@ void CUtil::URLEncode(CStdString& strURLData)
 bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon)
 {
   bool success(false);
-#ifndef _LINUX  
+#ifndef HAS_SDL
   // extract icon from .xbe
   CStdString localFile;
   g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
@@ -2867,7 +2867,9 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
       FlashScreen(true, false);
     }
 #else
+#ifdef __GNUC__
 #warning CUtil::TakeScreenshot not implemented
+#endif
 #endif    
 }
 

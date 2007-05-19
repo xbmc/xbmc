@@ -50,7 +50,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-#ifndef _LINUX
+#ifndef HAS_SDL
   // loaded successfully
   return m_info.texture;
 #else
@@ -64,7 +64,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
       for (int y=m_info.height-1; y>=0; y--)
       {
         char *pDest = (char *)pTexture->pixels + y*pTexture->pitch;
-        for (int x=0; x<m_info.width; x++) {
+        for (unsigned int x=0; x<m_info.width; x++) {
             Uint32 color = SDL_MapRGB(pTexture->format, pPixel->rgbRed, pPixel->rgbGreen, pPixel->rgbBlue); 
           
             memcpy(pDest, &color, pTexture->format->BytesPerPixel);
@@ -177,7 +177,9 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
     SDL_Palette* palette;
     SDL_Surface* texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
 #elif defined(HAS_SDL_OPENGL)
+#ifdef __GNUC__
 #warning fix this code to support OpenGL
+#endif
     SDL_Palette* palette;
     SDL_Surface* texture = NULL;
 #endif
@@ -234,7 +236,9 @@ bool CPicture::CreateThumbnailFromSwizzledTexture(SDL_Surface* &texture, int wid
     return success;
   }
 #else
+#ifdef __GNUC__
 #warning FIXME CPicture::CreateThumbnailFromSwizzledTexture not implemented
+#endif
 #endif
   return false;
 }

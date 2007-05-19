@@ -128,6 +128,12 @@
 #define HAS_SDL_OPENGL
 #define HAS_GL_EXTENSIONS
 #endif
+#ifdef _WIN32
+// dsound audio doesn't work with sdl yet
+#undef HAS_AUDIO
+// gl extensions aren't working yet either
+#undef HAS_GL_EXTENSIONS
+#endif
 #endif
 
 #endif

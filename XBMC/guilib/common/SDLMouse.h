@@ -1,7 +1,9 @@
-#ifndef MOUSE_H
-#define MOUSE_H
+#ifndef SDL_MOUSE_H
+#define SDL_MOUSE_H
 
 #include "../system.h"
+
+#ifdef HAS_SDL
 
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
 #define MOUSE_ACTIVE_LENGTH   5000L
@@ -75,3 +77,4 @@ extern CMouse g_Mouse;
 
 #endif
 
+#endif

@@ -1,5 +1,7 @@
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#ifndef DINPUT_KEYBOARD_H
+#define DINPUT_KEYBOARD_H
+
+#ifndef HAS_SDL
 
 class CKeyboard
 {
@@ -36,3 +38,4 @@ extern CKeyboard g_Keyboard;
 
 #endif
 
+#endif

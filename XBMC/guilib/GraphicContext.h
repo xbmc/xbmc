@@ -13,11 +13,7 @@
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
 #ifdef HAS_SDL_OPENGL
-#ifdef _LINUX
 #include <SDL/SDL_opengl.h>
-#else
-#include <SDL_opengl.h>
-#endif
 #endif
 
 // forward definitions
@@ -26,10 +22,10 @@ class CGUIMessage;
 
 #ifdef _XBOX
 #include "common/XBoxMouse.h"
-#elif WIN32
-#include "common/DirectInputMouse.h"
-#else
+#elif defined(HAS_SDL)
 #include "common/SDLMouse.h"
+#else
+#include "common/DirectInputMouse.h"
 #endif
 
 /*!

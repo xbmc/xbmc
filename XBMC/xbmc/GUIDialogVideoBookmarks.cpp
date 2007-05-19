@@ -225,7 +225,9 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     texture->Release();
   }
 #else
+#ifdef __GNUC__
 #warning FIXME: CGUIDialogVideoBookmarks::AddBookmark() not implemented
+#endif
 #endif
   lock.Leave();
   videoDatabase.Open();
