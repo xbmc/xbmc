@@ -15,7 +15,11 @@
 #include "DirectoryCache.h"
 #include "LocalizeStrings.h"
 #include "../GUIPassword.h"
+#ifndef _LINUX
 #include "../lib/libsmb/xbLibSmb.h"
+#else
+#include <libsmbclient.h>
+#endif
 
 using namespace DIRECTORY;
 
@@ -75,8 +79,12 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       {
         // set this here to if the stat should fail
         bIsDir = (dirEnt->smbc_type == SMBC_DIR);
-        
+       
+#ifndef _LINUX 
         struct __stat64 info = {0};
+#else
+	struct stat info = {0};
+#endif
 
         // make sure we use the authenticated path wich contains any default username
         CStdString strFullName = strAuth + smb.URLEncode(strFile);
@@ -93,12 +101,12 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           iSize = info.st_size;          
         }
         else
-          CLog::Log(LOGERROR, __FUNCTION__" - Failed to stat file %s", strFullName.c_str());
+          CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
 
       }
 
       FILETIME fileTime, localTime;
-      LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000;
+      LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
       fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
       FileTimeToLocalFileTime(&fileTime, &localTime);
@@ -160,7 +168,9 @@ int CSMBDirectory::Open(const CURL &url)
 int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 {
   int fd = -1;
+#ifndef _LINUX
   int nt_error;
+#endif
   
   /* make a writeable copy */
   CURL urlIn(url);
@@ -204,13 +214,14 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
       s.erase(len - 1, 1);
     }
     
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Using authentication url %s", s.c_str());
+    CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, s.c_str());
     { CSingleLock lock(smb);      
       fd = smbc_opendir(s.c_str());
     }
     
     if (fd < 0)
     {
+#ifndef _LINUX
       nt_error = smb.ConvertUnixToNT(errno);
 
       // if we have an 'invalid handle' error we don't display the error
@@ -218,10 +229,15 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
       // cdrom drive.
       if (nt_error == NT_STATUS_INVALID_HANDLE)
         break;
+#endif
 
       // NOTE: be sure to warn in XML file about Windows account lock outs when too many attempts
       // if the error is access denied, prompt for a valid user name and password
+#ifndef _LINUX
       if (nt_error == NT_STATUS_ACCESS_DENIED)
+#else
+      if (errno == EACCES)
+#endif
       {
         if (m_allowPrompting)
         {
@@ -242,10 +258,17 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
       else
       {
         CStdString cError;
+#ifndef _LINUX
         if (nt_error == NT_STATUS_OBJECT_NAME_NOT_FOUND)
           cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
         else
           cError = get_friendly_nt_error_msg(nt_error);
+#else
+        if (errno == ENODEV || errno == ENOENT)
+          cError.Format(g_localizeStrings.Get(770).c_str(),errno);
+        else
+          cError = strerror(errno);
+#endif
         
         if (m_allowPrompting)
         {
@@ -266,8 +289,11 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
   if (fd < 0)
   {
     // write error to logfile
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
-              strPath.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+#ifndef _LINUX
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strPath.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+#else
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", strPath.c_str(), errno, strerror(errno));
+#endif
   }
   else if (strPath != strAuth && !strShare.IsEmpty()) // we succeeded so, if path was changed, return the correct one and cache it
   {
@@ -290,7 +316,11 @@ bool CSMBDirectory::Create(const char* strPath)
   int result = smbc_mkdir(strFileName.c_str(), 0);
 
   if(result != 0)
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#ifndef _LINUX
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#else
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+#endif
 
   return (result == 0 || EEXIST == result);
 }
@@ -307,7 +337,11 @@ bool CSMBDirectory::Remove(const char* strPath)
   int result = smbc_rmdir(strFileName.c_str());
 
   if(result != 0)
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#ifndef _LINUX
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#else
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+#endif
 
   return (result == 0);
 }
@@ -321,7 +355,11 @@ bool CSMBDirectory::Exists(const char* strPath)
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
+#ifndef _LINUX
   SMB_STRUCT_STAT info;
+#else
+  struct stat info;
+#endif
   if (smbc_stat(strFileName.c_str(), &info) != 0)
     return false;
 
