@@ -290,7 +290,7 @@ void CXBMC_PC::LoadSettings()
 }
 #endif
 
-HRESULT CXBMC_PC::Create( HINSTANCE hInstance )
+HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 {
   m_hInstance = hInstance;
   HRESULT hr = S_OK;
@@ -360,6 +360,9 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance )
   m_active = TRUE;
 //  m_bReady = TRUE;
 
+#else
+  if (strnicmp(commandLine, "-fs", 3) == 0)
+    g_advancedSettings.m_fullScreen = true;
 #endif
   return S_OK;
 }
@@ -516,7 +519,7 @@ void CXBMC_PC::OnResizeToPixel()
 // Name: WinMain()
 // Desc: The application's entry point
 //-----------------------------------------------------------------------------
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR, INT )
+INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
   CXBMC_PC myApp;
 
@@ -533,7 +536,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR, INT )
     return 0;
   }
 
-  if (FAILED(myApp.Create(hInst)))
+  if (FAILED(myApp.Create(hInst, commandLine)))
     return 1;
 
   return myApp.Run();

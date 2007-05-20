@@ -5,7 +5,7 @@ public:
   CXBMC_PC();
   ~CXBMC_PC();
 
-  HRESULT Create( HINSTANCE hInstance );
+  HRESULT Create( HINSTANCE hInstance, LPSTR commandLine );
   INT Run();
 #ifndef HAS_SDL
   HRESULT Render();
