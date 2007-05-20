@@ -47,7 +47,7 @@ public:
   virtual int ResolveExport(const char*, void**);
   virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   virtual bool IsSystemDll() { return m_bSystemDll; }
-  virtual HMODULE GetHModule() { return hModule; }
+  virtual HMODULE GetHModule() { return (HMODULE)hModule; }
   int ResolveExport(unsigned long ordinal, void**);
   
 protected:  
