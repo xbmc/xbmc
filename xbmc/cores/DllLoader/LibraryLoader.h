@@ -5,6 +5,8 @@
 #ifndef _WINDEF_
 typedef unsigned long HMODULE;
 #endif // _WINDEF_
+#else
+#include "PlatformDefs.h"
 #endif
 
 class LibraryLoader
