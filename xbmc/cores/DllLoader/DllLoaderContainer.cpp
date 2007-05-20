@@ -1,7 +1,9 @@
 
 #include "stdafx.h"
 #include "DllLoaderContainer.h"
+#ifdef _LINUX
 #include "SoLoader.h"
+#endif
 #include "dll_tracker.h" // for python unload hack
 
 #define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
@@ -225,9 +227,11 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 #endif
 
   LibraryLoader* pLoader;
+#ifdef _LINUX
   if (strstr(sName, ".so") != NULL)
     pLoader = new SoLoader(sName);
   else
+#endif
     pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
     
   if (!pLoader)

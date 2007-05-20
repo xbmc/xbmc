@@ -71,7 +71,7 @@ struct ImageInfo
 class DllImageLibInterface
 {
 public:
-#ifdef _LINUX
+#ifdef HAS_SDL
     virtual bool ReleaseImage(RGBQUAD *)=0;
 #endif
     virtual bool LoadImage(const char *, unsigned int, unsigned int, ImageInfo *)=0;
@@ -87,7 +87,11 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
 #ifdef _XBOX
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib.dll)
 #elif defined(HAS_SDL)
+#ifdef _LINUX
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib-i486-linux.so)
+#else
+  DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib_raw.dll)
+#endif
 #else
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib_win32.dll)
 #endif
@@ -101,7 +105,7 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
   DEFINE_METHOD5(bool, CreateThumbnailFromSurface, (BYTE * p1, unsigned int p2, unsigned int p3, unsigned int p4, const char * p5))
   DEFINE_METHOD6(int, ConvertFile, (const char * p1, const char * p2, float p3, int p4, int p5, unsigned int p6))
   BEGIN_METHOD_RESOLVE()
-#ifdef _LINUX
+#ifdef HAS_SDL
     RESOLVE_METHOD(ReleaseImage)
 #endif
     RESOLVE_METHOD(LoadImage)
