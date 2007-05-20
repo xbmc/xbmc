@@ -46,8 +46,34 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, 
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-  // loaded successfully
-  return m_info.texture;
+  LPDIRECT3DTEXTURE8 pTexture = NULL;
+  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
+  if (pTexture)
+  {
+    CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
+    D3DLOCKED_RECT lr;
+    if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+    {
+      DWORD pitch = lr.Pitch;
+      BYTE *pixels = (BYTE *)lr.pBits;
+      BYTE *src = m_info.texture;
+      for (int y = m_info.height - 1; y >= 0; y--)
+      {
+        BYTE *dst = pixels + y * pitch;
+        for (unsigned int x = 0; x < m_info.width; x++)
+        {
+          *dst++ = *src++;
+          *dst++ = *src++;
+          *dst++ = *src++;
+          *dst++ = 0xff;  // alpha
+        }
+      }
+      pTexture->UnlockRect( 0 );
+    }
+  }
+  m_dll.ReleaseImage(&m_info);
+  return pTexture;
+
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
