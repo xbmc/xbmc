@@ -190,7 +190,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 
 void CGUIWindowLoginScreen::Render()
 {
-  if (GetFocusedControlID() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostDialogID() == WINDOW_INVALID)
+  if (GetFocusedControlID() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   CStdString strLabel;

@@ -19,6 +19,7 @@ CFileZip::~CFileZip()
 {
   if (m_szStringBuffer)
     delete[] m_szStringBuffer;
+  Close();
 }
 
 bool CFileZip::Open(const CURL&url, bool bBinary)

@@ -41,6 +41,7 @@ protected:
   bool SetFTPServerUserPass();
 
   void FillInSkinThemes(CSetting *pSetting);
+  void FillInSkinColors(CSetting *pSetting);
 
   virtual void SetupControls();
   void CreateSettings();
@@ -76,6 +77,7 @@ protected:
   CStdString m_strNewSkin;
   CStdString m_strNewLanguage;
   CStdString m_strNewSkinTheme;
+  CStdString m_strNewSkinColors;
 
   CStdString m_strErrorMessage;
 

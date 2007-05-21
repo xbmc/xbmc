@@ -101,6 +101,14 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_DECREASE_RATING:
+  case ACTION_INCREASE_RATING:
+    {
+      // actual action is taken care of in CApplication::OnAction()
+      m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
+      g_infoManager.SetShowInfo(true);
+    }
+    break;
     // TODO: These should be mapped to it's own function - at the moment it's overriding
     // the global action of fastforward/rewind and OSD.
 /*  case KEY_BUTTON_Y:

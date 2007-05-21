@@ -50,7 +50,7 @@ __int64 CPTSQueue::Current()
 }  
 
 
-CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
+CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread(), m_dvdAudio(m_bStop)
 {
   m_pClock = pClock;
   m_pAudioCodec = NULL;

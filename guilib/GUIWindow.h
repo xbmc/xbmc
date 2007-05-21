@@ -73,7 +73,7 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  void OnMouseAction();
+  virtual void OnMouseAction();
   virtual bool OnMouse(const CPoint &point);
   bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
@@ -92,6 +92,7 @@ public:
   DWORD GetPreviousWindow() { return m_previousWindow; };
   float GetPosX() { return m_posX; };
   float GetPosY() { return m_posY; };
+  FRECT GetScaledBounds() const;
   const CGUIControl* GetControl(int iControl) const;
   void ClearAll();
   int GetFocusedControlID() const;
@@ -108,10 +109,12 @@ public:
   virtual bool IsMediaWindow() const { return false; };
   virtual CFileItem *GetCurrentListItem() { return NULL; };
   virtual bool IsActive() const;
+  bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
+  const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };

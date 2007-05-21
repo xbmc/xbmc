@@ -4,6 +4,7 @@
 #ifdef _LINUX
 #include <sys/ioctl.h>
 #endif
+#include "../xbox/Network.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
@@ -19,6 +20,10 @@ bool CUdpClient::Create(void)
   m_bStop = false;
 
   InitializeCriticalSection(&critical_section);
+
+  // make sure we have our network up
+  if (!g_network.IsAvailable())
+    return false;
 
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Creating UDP socket...");
 

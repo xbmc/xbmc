@@ -53,6 +53,7 @@
 #include "utils/GUIInfoManager.h"
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
+#include "GUIColorManager.h"
 #include "SkinInfo.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -70,6 +71,7 @@
 #include "FileSystem/DllLibCurl.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
+#include "ApplicationRenderer.h"
 
 #ifdef HAS_FILESYSTEM
 #include "FileSystem/FileDAAP.h"
@@ -133,7 +135,7 @@
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideShow.h"
 #include "GUIWindowBuddies.h"
-
+#include "GUIWindowStartup.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowMusicOverlay.h"
@@ -156,6 +158,7 @@
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogBusy.h"
 
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -1384,6 +1387,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
+  m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -1416,9 +1420,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
   m_gWindowManager.Add(new CGUIWindowVideoOverlay);       // window id = 2904
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
-  m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
-  m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
-  m_gWindowManager.Add(new CGUIWindow(WINDOW_STARTUP, "Startup.xml"));  // startup window (id 2999)
+  m_gWindowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
+  m_gWindowManager.Add(new CGUIWindowBuddies);            // window id = 2700 BUDDIES
+  m_gWindowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
 
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
@@ -1988,6 +1992,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     else
       CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
   }
+  g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
+
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
   LARGE_INTEGER start;
@@ -2023,6 +2029,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogMuteBug.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
+  m_gWindowManager.AddMsgTarget(&g_infoManager);
   m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
@@ -2040,6 +2047,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // leave the graphics lock
   lock.Leave();
+  g_ApplicationRenderer.Start();
 
   // restore windows
   if (currentWindow != WINDOW_INVALID)
@@ -2063,6 +2071,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
+  g_ApplicationRenderer.Stop();
   g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
 
   m_gWindowManager.DeInitialize();
@@ -2081,6 +2090,8 @@ void CApplication::UnloadSkin()
   g_TextureManager.Cleanup();
 
   g_fontManager.Clear();
+
+  g_colorManager.Clear();
 
   g_charsetConverter.reset();
 }
@@ -2255,6 +2266,11 @@ void CApplication::RenderNoPresent()
     return;
   }
 
+  g_ApplicationRenderer.Render();
+}
+
+void CApplication::DoRender()
+{
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
   {
@@ -2287,6 +2303,7 @@ void CApplication::RenderNoPresent()
   m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
 #endif
   m_gWindowManager.Render();
+
 
   // if we're recording an audio stream then show blinking REC
   if (IsPlayingAudio())
@@ -2459,7 +2476,7 @@ bool CApplication::OnKey(CKey& key)
   // change this if we have a dialog up
   if (m_gWindowManager.HasModalDialog())
   {
-    iWin = m_gWindowManager.GetTopMostDialogID() & WINDOW_ID_MASK;
+    iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
   }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
@@ -2598,6 +2615,40 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
+  if (action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING && IsPlayingAudio())
+  {
+    const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
+    if (tag)
+    {
+      *m_itemCurrentFile.GetMusicInfoTag() = *tag;
+      char rating = tag->GetRating();
+      bool needsUpdate(false);
+      if (rating > '0' && action.wID == ACTION_DECREASE_RATING)
+      {
+        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating - 1);
+        needsUpdate = true;
+      }
+      else if (rating < '5' && action.wID == ACTION_INCREASE_RATING)
+      {
+        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating + 1);
+        needsUpdate = true;
+      }
+      if (needsUpdate)
+      {
+        CMusicDatabase db;
+        if (db.Open())      // OpenForWrite() ?
+        {
+          db.SetSongRating(m_itemCurrentFile.m_strPath, m_itemCurrentFile.GetMusicInfoTag()->GetRating());
+          db.Close();
+        }
+        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_itemCurrentFile);
+        g_graphicsContext.SendMessage(msg);
+      }
+    }
+    return true;
+  }
+
   // stop : stops playing current audio song
   if (action.wID == ACTION_STOP)
   {
@@ -2614,14 +2665,7 @@ bool CApplication::OnAction(const CAction &action)
       SeekTime(0);
     else
     {
-      if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-      {
-        // save video settings
-        CVideoDatabase dbs;
-        dbs.Open();
-        dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-        dbs.Close();
-      }
+      SaveCurrentFileSettings();
       g_playlistPlayer.PlayPrevious();
     }
     return true;
@@ -2633,15 +2677,7 @@ bool CApplication::OnAction(const CAction &action)
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
 
-    if (IsPlayingVideo() && g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-    {
-      // save video settings
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-
+    SaveCurrentFileSettings();
     g_playlistPlayer.PlayNext();
 
     return true;
@@ -3353,6 +3389,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_SONG_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3580,6 +3617,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
   if (!bRestart)
   {
+    SaveCurrentFileSettings();
+
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
@@ -3960,7 +3999,12 @@ bool CApplication::NeedRenderFullScreen()
 
 void CApplication::RenderFullScreen()
 {
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+  g_ApplicationRenderer.Render(true);
+}
+
+void CApplication::DoRenderFullScreen()
+{
+  if (g_graphicsContext.IsFullScreenVideo())
   {
     // make sure our overlays are closed
     CGUIDialog *overlay = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
@@ -4558,20 +4602,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_bNetworkSpinDown = false;
       m_bSpinDown = false;
 
-      // Save our settings for the current movie for next time
-      if (m_itemCurrentFile.IsVideo())
+      // Save our settings for the current file for next time
+      SaveCurrentFileSettings();
+      if (m_itemCurrentFile.IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         CVideoDatabase dbs;
         dbs.Open();
-        if(g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-          dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
-
-        if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-        {
-          dbs.MarkAsWatched(m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
-        }
+        dbs.MarkAsWatched(m_itemCurrentFile);
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         dbs.Close();
       }
 
@@ -5135,7 +5174,7 @@ void CApplication::SeekPercentage(float percent)
 bool CApplication::SwitchToFullScreen()
 {
   // if playing from the video info window, close it first!
-  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostDialogID() == WINDOW_VIDEO_INFO)
+  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostModalDialogID() == WINDOW_VIDEO_INFO)
   {
     CGUIWindowVideoInfo* pDialog = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);
@@ -5345,5 +5384,19 @@ void CApplication::StartFtpEmergencyRecoveryMode()
   }
   pUser->CommitChanges();
 #endif
+}
+
+void CApplication::SaveCurrentFileSettings()
+{
+  if (IsPlayingVideo())
+  { // save video settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+  }
 }
 

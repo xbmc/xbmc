@@ -188,6 +188,7 @@ CSettings::CSettings(void)
 
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
+  g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
@@ -352,7 +353,12 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       return false;
   }
 
-  // load xml file...
+  // clear sources, then load xml file...
+  m_vecMyFilesShares.clear();
+  m_vecMyMusicShares.clear();
+  m_vecMyPictureShares.clear();
+  m_vecMyProgramsShares.clear();
+  m_vecMyVideoShares.clear();
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
   TiXmlDocument xmlDoc;
@@ -1181,6 +1187,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
+  XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
 
@@ -1291,7 +1298,7 @@ void CSettings::LoadAdvancedSettings()
   {
     const char* szAppend = pVideoStacking->Attribute("append");
     if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
-        g_advancedSettings.m_videoStackRegExps.clear();
+      g_advancedSettings.m_videoStackRegExps.clear();
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
     while (pStackRegExp)
     {
@@ -1762,6 +1769,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+  CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
   int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
@@ -1794,7 +1802,9 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) ||
+        iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")) ||
+        !strOldColors.Equals(g_guiSettings.GetString("lookandfeel.skincolors")))
     {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     }
@@ -1897,7 +1907,7 @@ bool CSettings::DeleteProfile(int index)
       }
 
       CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
-      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
+      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory+"\\";
       item.m_bIsFolder = true;
       item.Select(true);
       CGUIWindowFileManager::DeleteItem(&item);

@@ -25,6 +25,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"
 #include "GUIWindowVideoFiles.h"
+#include "VideoInfoScanner.h"
 #include "Util.h"
 
 using namespace DIRECTORY;
@@ -147,8 +148,25 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     {
       if (dialog->m_bRunScan)
       {
-        CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-        pWindow->OnScan(share.strPath,dialog->m_info,dialog->m_bUseDirNames?1:0,dialog->m_bScanRecursively?1:0);
+        VIDEO::SScanSettings settings;
+        if (dialog->m_bUseDirNames)
+        {
+          if (dialog->m_info.strContent.Equals("tvshows"))
+            settings.parent_name_root = true;
+          else
+            settings.parent_name_root = false;
+          
+          settings.parent_name = true;
+        }
+        else
+        {
+          settings.parent_name = settings.parent_name_root = false;
+        }
+        if (dialog->m_bScanRecursively)
+          settings.recurse = INT_MAX;
+        else
+          settings.recurse = 1;
+        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,settings);
       }
     }
   }

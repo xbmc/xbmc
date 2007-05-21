@@ -21,7 +21,6 @@ public:
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
-  virtual bool CanSeek();
   virtual int  GetChunkSize() { return 1024; }
   virtual bool SkipNext();
 protected:

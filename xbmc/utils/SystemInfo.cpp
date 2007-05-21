@@ -34,15 +34,6 @@
 #include "../xbox/XKflash.h"
 #include "../xbox/XKRC4.h"
 
-// The X2 series of modchips cause an error on XBE launching if GetModChipInfo()
-// is called on them before an XBE is launched.  This same bug also affects
-// unleashx, where the code for this possibly came from.
-// defining X2_MODCHIP_LOOKUP_BUG disables the modchip identification on bootup
-// which means the bug only shows up if the user looks up modchip information
-// directly
-#define X2_MODCHIP_LOOKUP_BUG
-
-
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #endif
 CSysInfo g_sysinfo;
@@ -54,9 +45,11 @@ void CBackgroundSystemInfoLoader::GetInformation()
   //Request only one time!
   if(!callback->m_bRequestDone)
   {
-#ifndef X2_MODCHIP_LOOKUP_BUG
-    callback->m_XboxModChip     = callback->GetModChipInfo();
-#endif
+    // The X2 series of modchips cause an error on XBE launching if GetModChipInfo()
+    if(!g_advancedSettings.m_DisableModChipDetection)
+    {
+      callback->m_XboxModChip     = callback->GetModChipInfo();
+    }
     callback->m_XboxBios        = callback->GetBIOSInfo();
     callback->m_mplayerversion  = callback->GetMPlayerVersion();
     callback->m_kernelversion   = callback->GetKernelVersion();
@@ -170,15 +163,16 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_MODCHIP:
-#ifdef X2_MODCHIP_LOOKUP_BUG
-    return "Modchip lookup disabled due to Xecuter 2 modchip issue";
-#else
-    if (m_bRequestDone) return m_XboxModChip;
-    else return CInfoLoader::BusyInfo(dwInfo);
-#endif
+    if (g_advancedSettings.m_DisableModChipDetection)
+        return "Modchip lookup is disabled";
+    else
+    {
+        if (m_bRequestDone) 
+          return m_XboxModChip;
+        else 
+          return CInfoLoader::BusyInfo(dwInfo);
+    }
     break;
-
-
   // HDD request
   case SYSTEM_HDD_MODEL:
     m_temp.Format("%s %s",g_localizeStrings.Get(13154), m_HDDModel);
