@@ -1,11 +1,10 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="CommonViewTypes.xml" />
-	<include file="TextColor.xml" />
 
 	<include name="controldefaults">
-		<include>textcolorwhite</include>
-		<colordiffuse>ffffffff</colordiffuse>
+		<textcolor>white</textcolor>
+		<colordiffuse>white</colordiffuse>
 	</include>
 	<include name="homebuttonanimation">
 		<animation effect="fade" time="500" delay="400">VisibleChange</animation>

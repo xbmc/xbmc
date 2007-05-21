@@ -279,9 +279,9 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   XMLUtils::GetFloat(child, "width", width);
   XMLUtils::GetFloat(child, "height", height);
   XMLUtils::GetString(child, "info", infoString);
-  XMLUtils::GetHex(child, "textcolor", label.textColor);
-  XMLUtils::GetHex(child, "selectedcolor", label.selectedColor);
-  XMLUtils::GetHex(child, "shadowcolor", label.shadowColor);
+  CGUIControlFactory::GetColor(child, "textcolor", label.textColor);
+  CGUIControlFactory::GetColor(child, "selectedcolor", label.selectedColor);
+  CGUIControlFactory::GetColor(child, "shadowcolor", label.shadowColor);
   CStdString fontName;
   XMLUtils::GetString(child, "font", fontName);
   label.font = g_fontManager.GetFont(fontName);
@@ -297,7 +297,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   vector<CAnimation> animations;
   factory.GetAnimations(child, rect, animations);
   D3DCOLOR colorDiffuse(0xffffffff);
-  XMLUtils::GetHex(child, "colordiffuse", colorDiffuse);
+  CGUIControlFactory::GetColor(child, "colordiffuse", colorDiffuse);
   DWORD alignY = 0;
   if (factory.GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;

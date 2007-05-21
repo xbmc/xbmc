@@ -136,6 +136,9 @@
 				RelativePath=".\GUICheckMarkControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIColorManager.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIConsoleControl.cpp">
 			</File>
 			<File
@@ -346,6 +349,9 @@
 			</File>
 			<File
 				RelativePath=".\GUICheckMarkControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIColorManager.h">
 			</File>
 			<File
 				RelativePath=".\GUIConsoleControl.h">

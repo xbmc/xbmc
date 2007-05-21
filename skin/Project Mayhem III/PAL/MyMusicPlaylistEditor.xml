@@ -164,7 +164,7 @@
 						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
-						<include>listselectedcolor</include>
+						<selectedcolor>green</selectedcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -174,8 +174,8 @@
 						<width>120</width>
 						<height>22</height>
 						<font>font13</font>
-						<include>listselectedcolor</include>
-						<include>textcolorgrey</include>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>
@@ -202,7 +202,7 @@
 						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
-						<include>listselectedcolor</include>
+						<selectedcolor>green</selectedcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -212,8 +212,8 @@
 						<width>120</width>
 						<height>22</height>	
 						<font>font13</font>
-						<include>listselectedcolor</include>
-						<include>textcolorgrey</include>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>
@@ -270,7 +270,7 @@
 						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
-						<include>listselectedcolor</include>
+						<selectedcolor>green</selectedcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -280,8 +280,8 @@
 						<width>120</width>
 						<height>22</height>
 						<font>font13</font>
-						<include>listselectedcolor</include>
-						<include>textcolorgrey</include>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>
@@ -308,7 +308,7 @@
 						<width>230</width>
 						<height>22</height>
 						<font>font13</font>
-						<include>listselectedcolor</include>
+						<selectedcolor>green</selectedcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -318,8 +318,8 @@
 						<width>120</width>
 						<height>22</height>	
 						<font>font13</font>
-						<include>listselectedcolor</include>
-						<include>textcolorgrey</include>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
 						<align>right</align>
 						<info>ListItem.Label2</info>
 					</control>

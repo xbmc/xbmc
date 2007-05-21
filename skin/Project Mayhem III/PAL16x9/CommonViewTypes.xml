@@ -28,7 +28,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -40,8 +40,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -53,7 +53,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 					<visible>Container.Sort(SongRating)</visible>
@@ -93,7 +93,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -105,8 +105,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -118,7 +118,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 					<visible>Container.Sort(SongRating)</visible>
@@ -166,7 +166,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -177,8 +177,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -221,7 +221,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -232,7 +232,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Album</info>
 				</control>
@@ -243,7 +243,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<label>$INFO[ListItem.Year,, - ]$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -254,7 +254,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 				</control>
 			</focusedlayout>
@@ -303,7 +303,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -314,7 +314,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -326,7 +326,7 @@
 					<font>font13</font>
 					<scroll>true</scroll>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
 				</control>
 				<control type="label">
@@ -337,7 +337,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
 				</control>
@@ -391,7 +391,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -402,7 +402,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -414,7 +414,7 @@
 					<font>font13</font>
 					<scroll>true</scroll>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
 				</control>
 				<control type="label">
@@ -425,7 +425,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
 				</control>
@@ -472,7 +472,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -483,8 +483,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -527,7 +527,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -538,7 +538,7 @@
 					<height>16</height>
 					<font>font12</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -549,7 +549,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -560,7 +560,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 				</control>
 			</focusedlayout>
@@ -595,7 +595,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -606,8 +606,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -635,7 +635,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -646,8 +646,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
@@ -838,7 +838,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -849,7 +849,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -861,7 +861,7 @@
 					<font>font13</font>
 					<scroll>true</scroll>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -872,7 +872,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
 				</control>
 			</itemlayout>
@@ -914,7 +914,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -925,7 +925,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -937,7 +937,7 @@
 					<font>font13</font>
 					<scroll>true</scroll>
 					<aligny>center</aligny>
-					<include>listselectedcolor2</include>
+					<selectedcolor>white</selectedcolor>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -948,7 +948,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
 				</control>
 			</focusedlayout>
@@ -983,7 +983,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -995,8 +995,8 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
-					<include>textcolorgrey</include>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
@@ -1008,7 +1008,7 @@
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 					<visible>Container.Sort(SongRating)</visible>
@@ -1063,7 +1063,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -1075,7 +1075,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 					<visible>!Container.Sort(SongRating)</visible>
 				</control>
@@ -1128,7 +1128,7 @@
 					<width>90</width>
 					<height>22</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -1164,7 +1164,7 @@
 					<width>90</width>
 					<height>22</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -1206,7 +1206,7 @@
 					<width>150</width>
 					<height>22</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -1242,7 +1242,7 @@
 					<width>150</width>
 					<height>22</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -1334,7 +1334,7 @@
 			<font>special13</font>
 			<scroll>true</scroll>
 			<info>ListItem.Label</info>
-			<include>textcolorgreen</include>
+			<textcolor>green</textcolor>
 			<aligny>center</aligny>
 			<visible>Control.IsVisible(54) + ListItem.IsPlaying</visible>
 			<include>contentpanelslide</include>
@@ -1567,7 +1567,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Size ,$LOCALIZE[553]: ]</label>
 			<visible>Control.IsVisible(56) + !Window.IsVisible(25)</visible>
@@ -1579,7 +1579,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Date ,$LOCALIZE[552]: ]</label>
 			<visible>Control.IsVisible(56) + !Window.IsVisible(25)</visible>
@@ -1591,7 +1591,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Director ,$LOCALIZE[199] ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
@@ -1603,8 +1603,8 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
-			<include>listselectedcolor2</include>
+			<textcolor>lightgrey</textcolor>
+			<selectedcolor>white</selectedcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
@@ -1616,7 +1616,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
@@ -1628,7 +1628,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<align>right</align>
 			<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
@@ -1641,7 +1641,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.PlotOutline ,$LOCALIZE[203] ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
@@ -1737,7 +1737,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Album ,$LOCALIZE[170] ]</label>
 			<visible>Control.IsVisible(56)</visible>
@@ -1749,7 +1749,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
 			<visible>Control.IsVisible(56)</visible>
@@ -1761,7 +1761,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<info>ListItem.Label2</info>
 			<visible>!Container.Sort(SongRating) + Control.IsVisible(56)</visible>
@@ -1815,7 +1815,7 @@
 					<width>228</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 					<aligny>center</aligny>
@@ -1837,7 +1837,7 @@
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Title</info>
 					<aligny>center</aligny>
@@ -1849,7 +1849,7 @@
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 					<aligny>center</aligny>
@@ -1861,7 +1861,7 @@
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
 					<aligny>center</aligny>
@@ -1874,7 +1874,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
 					<aligny>center</aligny>
@@ -1920,7 +1920,7 @@
 					<width>228</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 					<aligny>center</aligny>
@@ -1942,7 +1942,7 @@
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Title</info>
 					<aligny>center</aligny>
@@ -1954,7 +1954,7 @@
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 					<aligny>center</aligny>
@@ -1966,7 +1966,7 @@
 					<width>155</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
 					<aligny>center</aligny>
@@ -1979,7 +1979,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<align>right</align>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
 					<aligny>center</aligny>
@@ -2084,7 +2084,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -2128,7 +2128,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -2186,7 +2186,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -2198,7 +2198,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 				</control>
 			</itemlayout>
@@ -2241,7 +2241,7 @@
 					<height>16</height>
 					<font>special13</font>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
 				</control>
@@ -2253,7 +2253,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label2</info>
 				</control>
 			</focusedlayout>
@@ -2348,7 +2348,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<info>ListItem.Date</info>
 			<visible>Control.IsVisible(56)</visible>
@@ -2360,7 +2360,7 @@
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<info>ListItem.Label2</info>
 			<visible>Control.IsVisible(56)</visible>
