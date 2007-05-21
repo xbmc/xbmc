@@ -3,7 +3,7 @@
 #include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
-#ifdef _LINUX
+#ifdef HAS_ALSA
 #include <alsa/asoundlib.h>
 #endif
 
@@ -134,7 +134,7 @@ private:
   IDirectSoundStream *m_pStream[2];
 #elif !defined(_LINUX)
   LPDIRECTSOUNDBUFFER m_pStream[2];
-#else
+#elif defined(HAS_ALSA)
   snd_pcm_t* m_pStream[2];   
 #endif
   AudioPacket         m_packet[2][PACKET_COUNT];
