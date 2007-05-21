@@ -9,6 +9,9 @@
 #include "../../CdgParser.h"
 #endif
 
+#ifndef HAS_ALSA
+#include <SDL/SDL_mixer.h>
+#endif
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
@@ -37,8 +40,10 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_IsFFwdRewding = false;
   m_timeOffset = 0;
 
+#ifdef HAS_ALSA
   m_pStream[0] = NULL;
   m_pStream[1] = NULL;
+#endif  
   m_currentStream = 0;
   m_packet[0][0].packet = NULL;
   m_packet[1][0].packet = NULL;
@@ -138,8 +143,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_decoder[m_currentDecoder].Start();  // start playback
 
+#ifdef HAS_ALSA
   snd_pcm_reset(m_pStream[m_currentStream]);
   snd_pcm_pause(m_pStream[m_currentStream], 0);
+#else
+  Mix_HaltChannel(m_currentStream);
+#endif
+
   return true;
 }
 
@@ -248,12 +258,16 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
 
 void PAPlayer::FreeStream(int stream)
 {
+#ifdef HAS_ALSA
   if (m_pStream[stream])
   {
     snd_pcm_drain(m_pStream[stream]);
     snd_pcm_close(m_pStream[stream]);
   }
   m_pStream[stream] = NULL;
+#else
+  Mix_HaltChannel(stream);
+#endif    
 
   if (m_packet[stream][0].packet)
     free(m_packet[stream][0].packet);
@@ -285,7 +299,9 @@ void PAPlayer::SetupDirectSound(int channels)
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
+#ifdef HAS_ALSA
 	snd_pcm_hw_params_t *hw_params=NULL;
+#endif
 
   FreeStream(num);
 
@@ -299,6 +315,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_BitsPerSampleOutput = 16;
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
+#ifdef HAS_ALSA
 	/* Open the device */
 	char* device = getenv("XBMC_AUDIODEV");
 	if (device == NULL)
@@ -328,6 +345,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	snd_pcm_hw_params_free(hw_params);
 
 	snd_pcm_prepare (m_pStream[num]);
+#else
+  if (num == 0)
+    Mix_OpenAudio(m_SampleRateOutput, bitspersample == 16 ? AUDIO_S16LSB : AUDIO_S8, channels, 4096);
+#endif
 
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
@@ -341,23 +362,38 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
 void PAPlayer::Pause()
 {
+#ifdef HAS_ALSA
   if (!m_bIsPlaying || !m_pStream) return ;
+#else
+  if (!m_bIsPlaying) return ;
+#endif  
 
   m_bPaused = !m_bPaused;
 
   if (m_bPaused)
   { // pause both streams if we're crossfading
+#ifdef HAS_ALSA  
     if (m_pStream[m_currentStream]) snd_pcm_pause(m_pStream[m_currentStream], 1);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       snd_pcm_pause(m_pStream[1 - m_currentStream], 1);
-
+#else
+    Mix_Pause(m_currentStream);
+    if (m_currentlyCrossFading)
+      Mix_Pause(1 - m_currentStream);
+#endif
     CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
   }
   else
   {
+#ifdef HAS_ALSA  
     if (m_pStream[m_currentStream]) snd_pcm_pause(m_pStream[m_currentStream], 0);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       snd_pcm_pause(m_pStream[1 - m_currentStream], 0);
+#else
+    Mix_Resume(m_currentStream);
+    if (m_currentlyCrossFading)
+      Mix_Resume(1 - m_currentStream);
+#endif
 
     CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
   }
@@ -473,7 +509,11 @@ bool PAPlayer::ProcessPAP()
     {
       if (((GetTotalTime64() - GetTime() < m_crossFading * 1000L) || (m_forceFadeToNext)) && !m_currentlyCrossFading)
       { // request the next file from our application
+#ifdef HAS_ALSA      
         if (m_decoder[1 - m_currentDecoder].GetStatus() == STATUS_QUEUED && m_pStream[1 - m_currentStream])
+#else
+        if (m_decoder[1 - m_currentDecoder].GetStatus() == STATUS_QUEUED)
+#endif        
         {
           m_currentlyCrossFading = true;
           if (m_forceFadeToNext)
@@ -490,8 +530,10 @@ bool PAPlayer::ProcessPAP()
           m_currentStream = 1 - m_currentStream;
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
 
-#ifdef HAS_XBOX_AUDIO
-          m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+#ifdef HAS_ALSA
+          snd_pcm_pause(m_pStream[m_currentStream], 0);
+#else
+          Mix_Resume(m_currentStream);
 #endif
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
@@ -535,7 +577,11 @@ bool PAPlayer::ProcessPAP()
                 CLog::Log(LOGERROR, "PAPlayer: Error creating stream!");
                 return false;
               }
+#ifdef HAS_ALSA              
               snd_pcm_pause(m_pStream[m_currentStream], 0);
+#else
+              Mix_Resume(m_currentStream);
+#endif              
             }
             else if (samplerate != samplerate2 || bitspersample != bitspersample2)
             {
@@ -770,6 +816,7 @@ void PAPlayer::HandleSeeking()
 
 void PAPlayer::FlushStreams()
 {
+#ifdef HAS_ALSA  
   for (int stream = 0; stream < 2; stream++)
   {  
     if (m_pStream[stream] && m_packet[stream])
@@ -777,6 +824,7 @@ void PAPlayer::FlushStreams()
       snd_pcm_drain(m_pStream[stream]);
     }
   }
+#endif    
 }
 
 bool PAPlayer::HandleFFwdRewd()
@@ -843,8 +891,13 @@ void PAPlayer::SetStreamVolume(int stream, long nVolume)
 
 bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 {
+#ifdef HAS_ALSA
   if (!m_pStream[stream] || dec.GetStatus() == STATUS_NO_FILE)
     return false;
+#else
+  if (dec.GetStatus() == STATUS_NO_FILE)
+    return false;
+#endif    
 
   bool ret = false;
   // find a free packet and fill it with the decoded data
@@ -856,6 +909,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       m_packet[stream][0].stream = stream;
 
 //      CLog::Log(LOGINFO, "Adding packet %i to stream %i", dwPacket, stream);
+#ifdef HAS_ALSA
       int frames = m_packet[stream][0].length / m_Channels / m_BitsPerSample * 8;
       int writeResult = snd_pcm_writei(m_pStream[stream], m_packet[stream][0].packet, frames);
       if (writeResult != frames)
@@ -864,6 +918,14 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
         snd_pcm_prepare(m_pStream[stream]);
         return false;
       }
+#else
+      Mix_Chunk* chunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk));
+      chunk->allocated = 1;
+      chunk->abuf = m_packet[stream][0].packet;
+      chunk->alen = m_packet[stream][0].length;
+      chunk->volume = 128;
+      Mix_PlayChannel(stream, chunk, 0);
+#endif      
       // something done
       ret = true;
     }
@@ -988,10 +1050,12 @@ bool PAPlayer::Record(bool bOnOff)
 
 void PAPlayer::WaitForStream()
 {
+#ifdef HAS_ALSA
   // should we wait for our other stream as well?
   // currently we don't.
   if (!m_pStream[m_currentStream])
   {
     snd_pcm_wait(m_pStream[m_currentStream], -1);
   }
+#endif  
 }
