@@ -1103,7 +1103,7 @@ extern "C"
 #ifndef _LINUX
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
 #else
-      if (fsetpos(stream, pos) >= 0)
+      if (dll_lseeki64(fd, (long long int)pos->__pos, SEEK_SET) >= 0)
 #endif
       {
         return 0;
