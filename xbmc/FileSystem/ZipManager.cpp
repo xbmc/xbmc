@@ -18,7 +18,7 @@ CZipManager::~CZipManager()
 bool CZipManager::HasMultipleEntries(const CStdString& strPath)
 {
   // no comments ;D
-
+  CFile mFile;
   if (mFile.Open(strPath.c_str()))
   {
     char buffer[23];
@@ -44,6 +44,7 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
 bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items)
 {
   CURL url(strPath);
+  __stat64 m_StatData;
 
   CStdString strFile = url.GetHostName();
  
@@ -51,7 +52,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
     std::map<CStdString,__int64>::iterator it2=mZipDate.find(strFile);
-    if (mFile.Stat(strFile,&m_StatData))
+    if (CFile::Stat(strFile,&m_StatData))
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
       if (m_StatData.st_mtime == it2->second)
       {
@@ -62,7 +63,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
       mZipDate.erase(it2);
   }
 
-  mFile.Close();
+  CFile mFile;
   if (!mFile.Open(strFile))
   {
     CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",strFile.c_str());
@@ -70,7 +71,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
 
   SZipEntry ze;
-  readHeader(ze);
+  readHeader(mFile, ze);
   if( ze.header != ZIP_LOCAL_HEADER ) 
   {      
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
@@ -78,8 +79,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
     return false;
   }
   // push date for update detection
-  CFile fileStat;
-  fileStat.Stat(strFile,&m_StatData);
+  CFile::Stat(strFile,&m_StatData);
   mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData.st_mtime));
   
   // now list'em
@@ -88,7 +88,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
 
   while (mFile.GetPosition() != mFile.GetLength())
   {
-    readHeader(ze);
+    readHeader(mFile, ze);
     if (ze.header != ZIP_LOCAL_HEADER)
       if (ze.header != ZIP_CENTRAL_HEADER)
       {
@@ -194,7 +194,7 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
   }
 }
 
-void CZipManager::readHeader(SZipEntry& info)
+void CZipManager::readHeader(CFile& mFile, SZipEntry& info)
 {
   mFile.Read(&info.header,4);
   mFile.Read(&info.version,2);
