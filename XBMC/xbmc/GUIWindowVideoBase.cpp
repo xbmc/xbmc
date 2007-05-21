@@ -863,10 +863,13 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (!item->IsParentFolder())
     {
-      if (item->IsStack())
+      CStdString path(item->m_strPath);
+      if (item->IsVideoDb() && item->HasVideoInfoTag())
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (CUtil::IsStack(path))
       {
         vector<long> times;
-        if (m_database.GetStackTimes(item->m_strPath,times))
+        if (m_database.GetStackTimes(path,times))
           buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
       }
 
@@ -913,7 +916,11 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_PART:
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item->m_strPath,items);
+      CStdString path(item->m_strPath);
+      if (item->IsVideoDb())
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+
+      CDirectory::GetDirectory(path,items);
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (!dlg) return true;
       dlg->SetNumberOfFiles(items.Size());
@@ -924,7 +931,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (btn2 > 1)
         {
           vector<long> times;
-          if (m_database.GetStackTimes(item->m_strPath,times))
+          if (m_database.GetStackTimes(path,times))
             item->m_lStartOffset = times[btn2-2]*75; // wtf?
         }
         else
