@@ -27,7 +27,7 @@ bool CFavourites::Load(CFileItemList &items)
 {
   items.Clear();
   CStdString favourites;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "favourites.xml", favourites);
+  CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
   TiXmlDocument doc;
   if (!doc.LoadFile(favourites))
   {
@@ -82,7 +82,7 @@ bool CFavourites::Save(const CFileItemList &items)
     rootNode->InsertEndChild(favNode);
   }
 
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "favourites.xml", favourites);
+  CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
   return doc.SaveFile(favourites);
 }
 

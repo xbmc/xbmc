@@ -169,6 +169,7 @@ public:
   virtual bool IsDisabled() const;
   bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(float posX, float posY);
+  virtual void SetHitRect(const CRect &rect);
   virtual void SetColorDiffuse(D3DCOLOR color);
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
@@ -268,6 +269,7 @@ protected:
   float m_posY;
   float m_height;
   float m_width;
+  CRect m_hitRect;
   D3DCOLOR m_diffuseColor;
   DWORD m_dwControlID;
   DWORD m_dwParentID;

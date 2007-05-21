@@ -39,30 +39,24 @@ extern void UnRegisterAudioCallback();
 class CAc97DirectSound : public IDirectSoundRenderer
 {
 public:
-  CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS = true, bool bResample = false, int iNumBuffers = 0);
+  CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS = true);
   virtual ~CAc97DirectSound();
 
   virtual void UnRegisterAudioCallback();
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
-
-  virtual DWORD AddPacketsResample(unsigned char* data, DWORD len);
-  virtual bool IsResampling() { return m_bResampleAudio; }
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
   virtual DWORD GetSpace();
   virtual HRESULT Deinitialize();
   virtual HRESULT Pause();
   virtual HRESULT Stop();
   virtual HRESULT Resume();
-  virtual DWORD GetBytesInBuffer();
-  virtual void ResetBytesInBuffer();
   virtual LONG GetMinimumVolume() const;
   virtual LONG GetMaximumVolume() const;
   virtual LONG GetCurrentVolume() const;
   virtual void Mute(bool bMute);
   virtual HRESULT SetCurrentVolume(LONG nVolume);
-  virtual bool SupportsSurroundSound() const;
   static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
   void StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
   virtual int SetPlaySpeed(int iSpeed);
@@ -74,8 +68,7 @@ private:
   LONG m_lFadeVolume;
   bool FindFreePacket( DWORD& pdwIndex );
 
-  LPAC97MEDIAOBJECT m_pDigitalOutput;
-  WAVEFORMATEX m_wfx;
+  LPAC97MEDIAOBJECT m_pDigitalOutput;  
   DWORD m_dwPacketSize;
   DWORD m_dwNumPackets;
   PBYTE m_pbSampleData[64];
@@ -83,14 +76,11 @@ private:
   DWORD m_dwTotalBytesAdded;
   bool m_bPause;
   bool m_bMute;
-  bool m_bIsAllocated;
-  WAVEFORMATEXTENSIBLE m_wfxex;
+  bool m_bIsAllocated;  
   LPDIRECTSOUND8 m_pDSound;
 
   //add for 44.1KHz 2 Channel audio Passthrough after software resample
   bool m_bAc3DTS; //input stream property
-  bool m_bResampleAudio;
-  Cssrc m_Resampler;
 };
 
 #endif // !defined(AFX_AC97AUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

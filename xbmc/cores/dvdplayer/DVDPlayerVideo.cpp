@@ -147,8 +147,9 @@ void CDVDPlayerVideo::OnStartup()
   m_DetectedStill = false;
   
   memset(&m_output, 0, sizeof(m_output));
-
+#ifdef HAS_VIDEO_PLAYBACK
   g_renderManager.PreInit();
+#endif
   g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
 }
 
@@ -460,7 +461,9 @@ void CDVDPlayerVideo::OnExit()
   g_dvdPerformanceCounter.DisableVideoDecodePerformance();
   
   CLog::Log(LOGNOTICE, "uninitting video device");
+#ifdef HAS_VIDEO_PLAYBACK
   g_renderManager.UnInit();
+#endif
 
   if (m_pOverlayCodecCC)
   {
@@ -517,7 +520,11 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, __i
 
 bool CDVDPlayerVideo::InitializedOutputDevice()
 {
+#ifdef HAS_VIDEO_PLAYBACK
   return g_renderManager.IsStarted();
+#else
+  return false;
+#endif
 }
 
 void CDVDPlayerVideo::SetSpeed(int speed)
@@ -634,11 +641,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
+#ifdef HAS_VIDEO_PLAYBACK
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - failed to configure renderer");
       return EOS_ABORT;
     }
+#endif
 
     m_output.width = pPicture->iWidth;
     m_output.height = pPicture->iHeight;
@@ -649,6 +658,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
     m_output.color_range = pPicture->color_range;
   }
   
+#ifdef HAS_VIDEO_PLAYBACK
   if (!g_renderManager.IsStarted())
     return EOS_ABORT;
 
@@ -666,6 +676,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
     // post processing before FlipPage() is called.)
     g_renderManager.ReleaseImage(index);
   }
+#else
+  // no video renderer, let's mark it as dropped
+  pPicture->iFlags |= DVP_FLAG_DROPPED;
+#endif
   int result = 0;
 
   //User set delay
@@ -742,10 +756,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 
   // present this image after the given delay
   __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
+
+#ifdef HAS_VIDEO_PLAYBACK
   if(delay<0)
     g_renderManager.FlipPage( 0, -1, mDisplayField);
   else
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
+#endif
 
   return result;
 }

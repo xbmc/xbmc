@@ -32,7 +32,7 @@
 			<align>left</align>
 			<label>-</label>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="0">
 			<description>path label</description>

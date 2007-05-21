@@ -24,7 +24,7 @@
 			<align>left</align>
 			<label>1007</label>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="spincontrolex" id="10">
 			<description>Protocol SpinControl</description>
@@ -39,8 +39,8 @@
 			<textureupfocus>scroll-up-focus.png</textureupfocus>
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font12</font>
-			<include>textcolorwhite</include>
-			<disabledcolor>60d0d0d0</disabledcolor>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>

@@ -21,7 +21,12 @@ public:
 };
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
-#define READ_TRUNCATED 0x1  
+#define READ_TRUNCATED 0x1
+
+/* use buffered io during reading, ( hint to make all protocols buffered, some might be internal anyway ) */
+#define READ_BUFFERED 0x2
+
+class CFileStreamBuffer;
 
 class CFile
 {
@@ -29,14 +34,12 @@ public:
   CFile();
   virtual ~CFile();
 
-  bool Open(const CStdString& strFileName, bool bBinary = true);
+  bool Open(const CStdString& strFileName, bool bBinary = true, unsigned int flags = 0);
   bool OpenForWrite(const CStdString& strFileName, bool bBinary = true, bool bOverWrite = false);  
-  unsigned int Read(void* lpBuf, unsigned int uiBufSize, unsigned int flags);
   unsigned int Read(void* lpBuf, __int64 uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
   int Write(const void* lpBuf, __int64 uiBufSize);
   void Flush();
-  bool CanSeek() {if (m_pFile) return m_pFile->CanSeek(); return false;}
   __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   __int64 GetPosition();
   __int64 GetLength();
@@ -53,7 +56,9 @@ public:
   static bool Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
 
 private:
+  unsigned int m_flags;
   IFile* m_pFile;
+  CFileStreamBuffer* m_pBuffer;
 };
 
 // streambuf for file io, only supports buffered input currently
@@ -69,6 +74,7 @@ public:
 
 private:
   virtual int_type underflow();
+  virtual streamsize showmanyc();
 	virtual pos_type seekoff(off_type, ios_base::seekdir,	ios_base::openmode = ios_base::in | ios_base::out);
 	virtual pos_type seekpos(pos_type, ios_base::openmode = ios_base::in | ios_base::out);
 

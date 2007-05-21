@@ -1,4 +1,4 @@
-﻿<window id="122">
+<window id="122">
 	<defaultcontrol>2</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
@@ -23,7 +23,7 @@
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="4">
 			<description>No Presets Label</description>
@@ -42,7 +42,6 @@
 			<height>340</height>
 			<spinposx>371</spinposx>
 			<spinposy>-30</spinposy>
-			<selectedcolor>FFD2FF00</selectedcolor>
 			<font>font12</font>
 			<textoffsetx>-15</textoffsetx>
 			<textureheight>29</textureheight>

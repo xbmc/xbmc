@@ -50,9 +50,35 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
+
 #ifndef HAS_SDL
-  // loaded successfully
-  return m_info.texture;
+  LPDIRECT3DTEXTURE8 pTexture = NULL;
+  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
+  if (pTexture)
+  {
+    CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
+    D3DLOCKED_RECT lr;
+    if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+    {
+      DWORD pitch = lr.Pitch;
+      BYTE *pixels = (BYTE *)lr.pBits;
+      BYTE *src = m_info.texture;
+      for (int y = m_info.height - 1; y >= 0; y--)
+      {
+        BYTE *dst = pixels + y * pitch;
+        for (unsigned int x = 0; x < m_info.width; x++)
+        {
+          *dst++ = *src++;
+          *dst++ = *src++;
+          *dst++ = *src++;
+          *dst++ = 0xff;  // alpha
+        }
+      }
+      pTexture->UnlockRect( 0 );
+    }
+  }
+  m_dll.ReleaseImage(&m_info);
+  return pTexture;
 #else
   SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
   if (pTexture)
@@ -60,6 +86,8 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
     if (SDL_LockSurface(pTexture) == 0)
     {
+#warning Fix this to work
+#ifdef THIS_IS_BROKEN 
       RGBQUAD *pPixel = m_info.rawImage;
       for (int y=m_info.height-1; y>=0; y--)
       {
@@ -73,6 +101,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
             pPixel++;	
         }
       }
+#endif
   
       SDL_UnlockSurface(pTexture);
     }
@@ -83,7 +112,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
       pTexture = NULL;
     }
   }
-  m_dll.ReleaseImage(m_info.rawImage);
+  m_dll.ReleaseImage(&m_info);
   return pTexture;
 #endif
 }

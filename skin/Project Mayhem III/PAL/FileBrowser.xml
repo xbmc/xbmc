@@ -23,7 +23,7 @@
 			<align>left</align>
 			<font>special13</font>
 			<label>1023</label>
-			<textcolor>DDced8da</textcolor>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="412">
 			<description>path label control</description>

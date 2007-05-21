@@ -494,14 +494,15 @@ CGUISettings::CGUISettings(void)
   AddCategory(7,"lookandfeel", 14037);
   AddString(1, "lookandfeel.skin",166,"Project Mayhem III", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddString(3, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
-  AddInt(4, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
-  AddInt(5, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
-  AddSeparator(6, "lookandfeel.sep1");
-  AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(8,"lookandfeel.soundsduringplayback",21370,false);
-  AddSeparator(9, "lookandfeel.sep2");
-  AddBool(10, "lookandfeel.enablerssfeeds",13305,  true);
+  AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
+  AddInt(5, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+  AddSeparator(7, "lookandfeel.sep1");
+  AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
+  AddSeparator(10, "lookandfeel.sep2");
+  AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);

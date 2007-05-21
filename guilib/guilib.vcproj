@@ -25,7 +25,7 @@
 				AdditionalIncludeDirectories="xbmc;freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
 				StringPooling="FALSE"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
@@ -254,6 +254,9 @@
 				RelativePath=".\GUICheckMarkControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIColorManager.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIConsoleControl.cpp">
 			</File>
 			<File
@@ -461,6 +464,9 @@
 			</File>
 			<File
 				RelativePath=".\GUICheckMarkControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIColorManager.h">
 			</File>
 			<File
 				RelativePath=".\GUIConsoleControl.h">

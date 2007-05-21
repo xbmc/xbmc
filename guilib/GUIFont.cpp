@@ -1,6 +1,7 @@
 #include "include.h"
 #include "GUIFont.h"
 #include "GraphicContext.h"
+#include "../xbmc/utils/SingleLock.h"
 
 #define ROUND(x) floorf(x + 0.5f)
 
@@ -119,6 +120,7 @@ float CGUIFont::GetTextHeight(const WCHAR *strText)
 void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *pHeight, BOOL bFirstLineOnly /* = 0 */)
 {
   if (!m_font) return;
+  CSingleLock lock(g_graphicsContext);
   m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
   *pWidth /= g_graphicsContext.ScaleFinalX();
   *pHeight /= g_graphicsContext.ScaleFinalY();
