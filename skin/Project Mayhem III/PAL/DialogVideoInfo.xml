@@ -286,19 +286,19 @@
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="image" id="3">
-				<description>Cover image</description>
+				<description>TV Show Banner image</description>
 				<posx>200</posx>
 				<posy>100</posy>
 				<width>500</width>
-				<height>120</height>
+				<height>115</height>
 				<texture>-</texture>
 				<aspectratio>keep</aspectratio>
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="fadelabel" id="20">
-				<description>Movie Title value</description>
+				<description>TV Show Title value</description>
 				<posx>200</posx>
-				<posy>240</posy>
+				<posy>225</posy>
 				<width>290</width>
 				<label>-</label>
 				<font>special13</font>
@@ -307,7 +307,7 @@
 			<control type="label" id="1">
 				<description>Episodes txt</description>
 				<posx>200</posx>
-				<posy>270</posy>
+				<posy>255</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20360] :</label>
 				<font>font13</font>
@@ -316,16 +316,34 @@
 			<control type="label" id="1">
 				<description>Episodes Value</description>
 				<posx>300</posx>
-				<posy>270</posy>
+				<posy>255</posy>
 				<width>400</width>
 				<label>$INFO[listitem.episode]</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="label" id="1">
+				<description>First Aired txt</description>
+				<posx>200</posx>
+				<posy>280</posy>
+				<width>90</width>
+				<label>$LOCALIZE[20376] :</label>
+				<font>font13</font>
+				<visible>container.content(tvshows)</visible>
+			</control>
+			<control type="label" id="24">
+				<description>First Aired Value</description>
+				<posx>300</posx>
+				<posy>280</posy>
+				<width>400</width>
+				<label>-</label>
+				<font>font13</font>
+				<visible>container.content(tvshows)</visible>
+			</control>
+			<control type="label" id="1">
 				<description>Genre txt</description>
 				<posx>200</posx>
-				<posy>295</posy>
+				<posy>305</posy>
 				<width>90</width>
 				<label>174</label>
 				<font>font13</font>
@@ -334,7 +352,7 @@
 			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>300</posx>
-				<posy>295</posy>
+				<posy>305</posy>
 				<width>400</width>
 				<label></label>
 				<font>font13</font>
@@ -343,7 +361,7 @@
 			<control type="textbox" id="4">
 				<description>textarea</description>
 				<posx>200</posx>
-				<posy>330</posy>
+				<posy>335</posy>
 				<width>480</width>
 				<height>210</height>
 				<onleft>5</onleft>
@@ -351,7 +369,7 @@
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
-				<spinposy>215</spinposy>
+				<spinposy>210</spinposy>
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="listcontrol" id="50">
