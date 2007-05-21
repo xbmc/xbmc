@@ -11,11 +11,13 @@ public:
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
+  virtual bool OnAction(const CAction &action);
 
   void PlayMovie(const CFileItem *item);
   int  GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
+  static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -29,7 +31,6 @@ protected:
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnInfo(int iItem, const SScraperInfo& info);
-  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) {};
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
@@ -58,7 +59,7 @@ protected:
   void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
-  int GetScraperForItem(CFileItem *item, SScraperInfo &info);
+  int GetScraperForItem(CFileItem *item, SScraperInfo &info, VIDEO::SScanSettings& settings);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

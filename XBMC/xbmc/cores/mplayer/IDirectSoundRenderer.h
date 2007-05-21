@@ -31,8 +31,6 @@
 
 #ifdef _XBOX
 #include <xtl.h>
-#else
-#include <windows.h>
 #endif
 
 #include "IAudioCallback.h"
@@ -57,15 +55,12 @@ public:
   virtual HRESULT Resume() = 0;
   virtual DWORD GetChunkLen() = 0;
 
-  virtual DWORD GetBytesInBuffer() = 0;
-  virtual void ResetBytesInBuffer() = 0;
   virtual LONG GetMinimumVolume() const = 0;
   virtual LONG GetMaximumVolume() const = 0;
   virtual LONG GetCurrentVolume() const = 0;
   virtual void Mute(bool bMute) = 0;
   virtual HRESULT SetCurrentVolume(LONG nVolume) = 0;
   virtual void SetDynamicRangeCompression(long drc) {};
-  virtual bool SupportsSurroundSound() const = 0;
   virtual int SetPlaySpeed(int iSpeed) = 0;
   virtual void WaitCompletion() = 0;
   virtual void DoWork() {}

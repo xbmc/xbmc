@@ -58,7 +58,7 @@
 				<label>|</label>
 				<align>left</align>
 				<font>special12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label" id="0">
 				<description>Time label</description>
@@ -68,7 +68,7 @@
 				<info>System.Time</info>
 				<align>left</align>
 				<font>special12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="fixedlist" id="52">

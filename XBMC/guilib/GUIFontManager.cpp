@@ -6,6 +6,7 @@
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
+#include "GuiControlFactory.h"
 #include "Util.h"
 
 GUIFontManager g_fontManager;
@@ -285,8 +286,8 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         CStdString strFontName = pNode->FirstChild()->Value();
         DWORD shadowColor = 0;
         DWORD textColor = 0;
-        XMLUtils::GetHex(fontNode, "shadow", shadowColor);
-        XMLUtils::GetHex(fontNode, "color", textColor);
+        CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
+        CGUIControlFactory::GetColor(fontNode, "color", textColor);
         const TiXmlNode *pNode = fontNode->FirstChild("filename");
         if (pNode)
         {

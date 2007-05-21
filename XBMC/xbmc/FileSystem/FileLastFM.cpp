@@ -4,6 +4,7 @@
 #include "../utils/GUIInfoManager.h"
 #include "../utils/md5.h"
 #include "../Application.h"
+#include "../BusyIndicator.h"
 
 namespace XFILE
 {
@@ -45,11 +46,6 @@ CFileLastFM::~CFileLastFM()
   CloseHandle(m_hWorkerEvent);
   delete[] m_pSyncBuffer;
   m_pSyncBuffer = NULL;
-}
-
-bool CFileLastFM::CanSeek()
-{
-  return false;
 }
 
 __int64 CFileLastFM::GetPosition()
@@ -215,7 +211,7 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
     while (!m_fileState.bError && !m_fileState.bActionDone && !dlgProgress->IsCanceled())
     {
       dlgProgress->Progress();
-      Sleep(100);
+      Sleep(1);
     }
     if (dlgProgress->IsCanceled() || m_fileState.bError)
     {
@@ -231,7 +227,7 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
   while (!m_fileState.bError && !m_fileState.bActionDone && !dlgProgress->IsCanceled())
   {
     dlgProgress->Progress();
-    Sleep(100);
+    Sleep(1);
   }
   if (dlgProgress->IsCanceled() || m_fileState.bError)
   {
@@ -370,12 +366,13 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
 
 __int64 CFileLastFM::Seek(__int64 iFilePosition, int iWhence)
 {
-  return 0;
+  return -1;
 }
 
 
 bool CFileLastFM::DoSkipNext()
 {
+  CBusyIndicator busy;
   m_bDirectSkip = true;
   CHTTP http;
   CStdString url;

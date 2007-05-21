@@ -583,7 +583,7 @@
   <string id="734">No Pass</string>
   <string id="735">- Charset</string>
   <string id="736">- Style</string>
-  <string id="737">- Color</string>
+  <string id="737">- Colour</string>
   <string id="738">Normal</string>
   <string id="739">Bold</string>
   <string id="740">Italics</string>
@@ -1133,6 +1133,7 @@
   <string id="14075">Use Daylight Saving Time</string>
   <string id="14076">Add to Favourites</string>
   <string id="14077">Remove from Favourites</string>
+  <string id="14078">Skin Colours</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">The service is not connected.</string>
@@ -1215,7 +1216,7 @@
   <string id="15203">Last.FM Password</string>
   <string id="15204">Unable to handshake: sleeping...</string>
   <string id="15205">Please Update XBMC</string>
-  <string id="15206">Bad authorization: Check username and password</string>
+  <string id="15206">Bad authorisation: Check username and password</string>
   <string id="15207">Connected</string>
   <string id="15208">Not Connected</string>
   <string id="15209">Submit Interval %i</string>
@@ -1223,7 +1224,7 @@
   <string id="15211">Submitting...</string>
   <string id="15212">Submitting in %i secs</string>
   <string id="15213">Play Using...</string>
-  <string id="15214">Use Smoothed A/V Synchronization</string>
+  <string id="15214">Use Smoothed A/V Synchronisation</string>
   <string id="15215">Hide File Names in Thumbs View</string>
 
   <string id="15250">Submit Last.FM Radio to Last.FM</string>
@@ -1545,7 +1546,7 @@
   <string id="20329"></string>
   <string id="20330">Use Folder Names For Lookups</string>
   <string id="20331">File</string>
-  <string id="20332">Use folder or file names in lookups?</string>
+  <string id="20332">Use file or folder names in lookups?</string>
   <string id="20333">Set Content</string>
   <string id="20334">Folder</string>
   <string id="20335">Look for content recursively?</string>
@@ -1592,6 +1593,8 @@
   <string id="20376">First Aired:</string>
   <string id="20377">Refresh TV Show Information</string>
   <string id="20378">Refresh info for all episodes?</string>
+  <string id="20379">Folder contains a single TV Show</string>
+  <string id="20380">Exclude folder from scans</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

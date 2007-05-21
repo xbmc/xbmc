@@ -41,7 +41,7 @@
 			<width>280</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>FFFFFFFF</textcolor>
+			<textcolor>white</textcolor>
 			<label>$LOCALIZE[ 20344 ]</label>
 			<include>homemisc</include>
 		</control>
@@ -60,7 +60,7 @@
 			<ondown>4</ondown>
 			<onleft>3</onleft>
 			<onright>3</onright>
-			<disabledcolor>ffffffff</disabledcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>0</textoffsetx>
 			<textoffsety>0</textoffsety>
 			<aligny>center</aligny>
@@ -100,7 +100,7 @@
 					<width>200</width>
 					<height>23</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -135,7 +135,7 @@
 					<width>200</width>
 					<height>23</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>

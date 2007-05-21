@@ -88,6 +88,7 @@ public:
   void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
+  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 #else
   inline void setScreenSurface(SDL_Surface* surface) { m_screenSurface = surface; }  
   inline SDL_Surface* getScreenSurface() { return m_screenSurface; }  
@@ -185,6 +186,7 @@ protected:
 
   int m_iScreenHeight;
   int m_iScreenWidth;
+  int m_iBackBufferCount;
   DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;

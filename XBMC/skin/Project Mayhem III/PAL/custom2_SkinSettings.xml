@@ -383,7 +383,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(ProgramsBookmark1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="51">
 					<description>enable Programs Bookmark 1</description>
@@ -421,7 +421,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(ProgramsBookmark2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="52">
 					<description>enable Programs Bookmark 2</description>
@@ -459,7 +459,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(ProgramsBookmark3)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="53">
 					<description>enable Programs Bookmark 3</description>
@@ -518,7 +518,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(VideoBookmark1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="55">
 					<description>enable Video Bookmark 1</description>
@@ -556,7 +556,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(VideoBookmark2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="56">
 					<description>enable Video Bookmark 2</description>
@@ -594,7 +594,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(VideoBookmark3)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="57">
 					<description>enable Video Bookmark 3</description>
@@ -653,7 +653,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="71">
 					<description>enable Music Bookmark 1</description>
@@ -691,7 +691,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="72">
 					<description>enable Music Bookmark 2</description>
@@ -729,7 +729,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark3)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="73">
 					<description>enable Music Bookmark 3</description>
@@ -767,7 +767,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark4)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="74">
 					<description>enable Music Bookmark 4</description>
@@ -826,7 +826,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(PicturesBookmark1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="75">
 					<description>enable Pictures Bookmark 1</description>
@@ -864,7 +864,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(PicturesBookmark2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="radiobutton" id="76">
 					<description>enable Pictures Bookmark 2</description>

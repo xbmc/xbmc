@@ -33,7 +33,7 @@ namespace PYXBMC
     // parse user input
     if (!PyArg_ParseTupleAndKeywords(
       args, kwds,
-      "|OOss",  keywords,
+      "|OOss", keywords,
       &label, &label2,
       &cIconImage, &cThumbnailImage))
     {
@@ -65,7 +65,6 @@ namespace PYXBMC
     {
       self->item->SetThumbnailImage( cThumbnailImage );
     }
-
     return (PyObject*)self;
   }
 
@@ -95,7 +94,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the listitem label."
+    "getLabel() -- Returns the listitem label.\n"
     "\n"
     "example:\n"
     "  - label = self.list.getSelectedItem().getLabel()\n");
@@ -112,7 +111,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getLabel2__doc__,
-    "getLabel2() -- Returns the listitem's second label."
+    "getLabel2() -- Returns the listitem's second label.\n"
     "\n"
     "example:\n"
     "  - label2 = self.list.getSelectedItem().getLabel2()\n");
@@ -122,14 +121,14 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyGUILock();
-    const char *cLabel =  self->item->GetLabel2().c_str();
+    const char *cLabel = self->item->GetLabel2().c_str();
     PyGUIUnlock();
 
     return Py_BuildValue("s", cLabel);
   }
 
   PyDoc_STRVAR(setLabel__doc__,
-    "setLabel(label) -- Sets the listitem's label."
+    "setLabel(label) -- Sets the listitem's label.\n"
     "\n"
     "label          : string or unicode - text string.\n"
     "\n"
@@ -141,7 +140,7 @@ namespace PYXBMC
     PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &unicodeLine))	return NULL;
+    if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
 
     string utf8Line;
     if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
@@ -156,7 +155,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setLabel2__doc__,
-    "setLabel2(label2) -- Sets the listitem's second label."
+    "setLabel2(label2) -- Sets the listitem's second label.\n"
     "\n"
     "label2         : string or unicode - text string.\n"
     "\n"
@@ -168,7 +167,7 @@ namespace PYXBMC
     PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &unicodeLine))	return NULL;
+    if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
 
     string utf8Line;
     if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
@@ -183,9 +182,9 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setIconImage__doc__,
-    "setIconImage(icon) -- Sets the listitem's icon image."
+    "setIconImage(icon) -- Sets the listitem's icon image.\n"
     "\n"
-    "thumb           : string - image filename.\n"
+    "icon            : string - image filename.\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setIconImage('emailread.png')\n");
@@ -195,7 +194,7 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     // set label
     PyGUILock();
@@ -207,7 +206,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setThumbnailImage__doc__,
-    "setThumbnailImage(thumb) -- Sets the listitem's thumbnail image."
+    "setThumbnailImage(thumb) -- Sets the listitem's thumbnail image.\n"
     "\n"
     "thumb           : string - image filename.\n"
     "\n"
@@ -219,7 +218,7 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     // set label
     PyGUILock();
@@ -242,11 +241,11 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    char bSelected = 0;
-    if (!PyArg_ParseTuple(args, "b", &bSelected))	return NULL;
+    bool bOnOff = false;
+    if (!PyArg_ParseTuple(args, "b", &bOnOff)) return NULL;
 
     PyGUILock();
-    self->item->Select(bSelected != 0);
+    self->item->Select(bOnOff);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -264,10 +263,10 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyGUILock();
-    bool bSelected = self->item->IsSelected();
+    bool bOnOff = self->item->IsSelected();
     PyGUIUnlock();
 
-    return Py_BuildValue("b", bSelected);
+    return Py_BuildValue("b", bOnOff);
   }
   
   PyMethodDef ListItem_methods[] = {
@@ -285,7 +284,15 @@ namespace PYXBMC
   PyDoc_STRVAR(listItem__doc__,
     "ListItem class.\n"
     "\n"
-    "ListItem([string label, string label2, string iconImage, string thumbnailImage]) -- Creates a new ListItem.");
+    "ListItem([label, label2, iconImage, thumbnailImage]) -- Creates a new ListItem.\n"
+    "\n"
+    "label          : [opt] string or unicode - label1 text.\n"
+    "label2         : [opt] string or unicode - label2 text.\n"
+    "iconImage      : [opt] string - icon filename.\n"
+    "thumbnailImage : [opt] string - thumbnail filename.\n"
+    "\n"
+    "example:\n"
+    "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn')\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()

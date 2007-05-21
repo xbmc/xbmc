@@ -14,28 +14,30 @@ CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
   m_post = false;
   ParseString(strUrl);
-
 }
+
 CScraperUrl::CScraperUrl(const TiXmlElement* element)
 {
   m_post = false;
   ParseElement(element);
-
 }
+
 CScraperUrl::CScraperUrl()
 {
    m_post = false;
 }
+
 CScraperUrl::~CScraperUrl()
 {
-
 }
+
 void CScraperUrl::Clear()
 {
   m_url.clear();
   m_spoof.clear();
   m_post = false;
 }
+
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
   if (!element || !element->FirstChild()) return false;
@@ -46,6 +48,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
     m_post = true;
   return true;
 }
+
 bool CScraperUrl::ParseString(CStdString strUrl)
 {
   if (strUrl.IsEmpty())
@@ -69,6 +72,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     m_url = strUrl;
   return true;
 }
+
 CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;

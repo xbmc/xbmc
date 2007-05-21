@@ -78,7 +78,7 @@ void CASyncDirectSound::DoWork()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec, bool bIsMusic)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, char* strAudioCodec, bool bIsMusic)
 {
   buffered_bytes = 0;
   m_pCallback = pCallback;
@@ -87,10 +87,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_drcAmount = 0;
   // TODO DRC
   if (!bIsMusic && uiBitsPerSample == 16) SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
-
-  m_bResampleAudio = false;
-  if (bResample && uiSamplesPerSec != 48000)
-    m_bResampleAudio = true;
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers,bIsMusic);
@@ -108,16 +104,8 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_adwStatus = NULL;
   m_pStream = NULL;
   m_iCurrentAudioStream = 0;
-  if (m_bResampleAudio)
-  {
-    m_uiSamplesPerSec = 48000;
-    m_uiBitsPerSample = 16;
-  }
-  else
-  {
-    m_uiSamplesPerSec = uiSamplesPerSec;
-    m_uiBitsPerSample = uiBitsPerSample;
-  }
+  m_uiSamplesPerSec = uiSamplesPerSec;
+  m_uiBitsPerSample = uiBitsPerSample;
   m_uiChannels = iChannels;
   QueryPerformanceCounter(&m_LastPacketCompletedAt);
 
@@ -127,30 +115,22 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_delay = 1;
   ZeroMemory(&m_wfx, sizeof(m_wfx));
   m_wfx.cbSize = sizeof(m_wfx);
+
+  // we want 1/4th of second worth of data
+#if 0 //mplayer is broken on some packets sizes
+  m_dwPacketSize = 512; // samples
+  m_dwPacketSize *= m_uiChannels * (m_uiBitsPerSample>>3);
+#else
+  m_dwPacketSize = 768;
+#endif
+  m_dwNumPackets = m_uiSamplesPerSec * m_uiChannels * (m_uiBitsPerSample>>3);
+  m_dwNumPackets /= m_dwPacketSize * 4;
+
   XAudioCreatePcmFormat( iChannels,
                          m_uiSamplesPerSec,
                          m_uiBitsPerSample,
                          &m_wfx
                        );
-
-  // Create enough samples to hold approx 2 sec worth of audio.
-  // date    m_dwPacketSize           m_dwNumPackets   description
-  // 1  feb   1024                    16               THE avsync fix
-  // 6  feb   1152                    8*iChannels      fix: digital / ac3 passtru didnt work
-  // 10 feb   1152(*iChannels/2)      8*iChannels      fix: choppy playback for WMV
-  // 10 feb   1152*iChannels          8*iChannels      fix: mono audio didnt work
-  // 10 feb   1152*iChannels*2        8*iChannels      fix: wmv plays choppy
-
-  //m_dwPacketSize     = 1152 * (uiBitsPerSample/8) * iChannels;
-  //m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPa2cketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
-
-  // if iNumBuffers is set, use this many buffers instead of the usual number (used for CDDAPlayer)
-  if (iNumBuffers)
-    m_dwNumPackets = (DWORD)iNumBuffers;
-  else if (!mplayer_HasVideo())
-    m_dwNumPackets = 64 * iChannels;
-  else
-    m_dwNumPackets = 12 * iChannels;
 
   m_adwStatus = new DWORD[ m_dwNumPackets ];
   m_pbSampleData = new PBYTE[ m_dwNumPackets ];
@@ -216,12 +196,11 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
     CLog::Log(LOGERROR, "*WARNING* Unable to create sound stream!");
   }
 
+  // align m_dwPacketSize to dwInputSize
   XMEDIAINFO info;
-  m_pStream->GetInfo(&info);
-  //align m_dwPacketSize to dwInputSize
-  int fSize = 768 / info.dwInputSize;
-  fSize *= info.dwInputSize;
-  m_dwPacketSize = (int)fSize;
+  m_pStream->GetInfo(&info);    
+  m_dwPacketSize /= info.dwInputSize;
+  m_dwPacketSize *= info.dwInputSize;
 
   // XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
   m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
@@ -241,24 +220,12 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_bIsAllocated = true;
   if (m_pCallback)
   {
-    if (m_bResampleAudio)
-    {
-      m_pCallback->OnInitialize(iChannels, 48000, 16);
-      m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * 96000 / 20);
-    }
-    else
-    {
-      m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
-      m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
-    }
+    m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
+    m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
   }
   else
     m_VisBuffer = 0;
   m_VisBytes = 0;
-  if (m_bResampleAudio)
-  {
-    m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
-  }
 }
 
 //***********************************************************************************************
@@ -414,12 +381,6 @@ bool CASyncDirectSound::FindFreePacket( DWORD &dwIndex )
 }
 
 //***********************************************************************************************
-bool CASyncDirectSound::SupportsSurroundSound() const
-{
-  return false;
-}
-
-//***********************************************************************************************
 DWORD CASyncDirectSound::GetSpace()
 {
   DWORD iFreePackets(0);
@@ -433,107 +394,26 @@ DWORD CASyncDirectSound::GetSpace()
       iFreePackets++;
     }
   }
-  DWORD dwSize = iFreePackets * m_dwPacketSize;
-  if (m_bResampleAudio)
-  { // calculate the actual amount of data that we can handle
-    float fBytesPerSecOutput = 48000.0f * 16 * m_wfx.nChannels; //use correct channel, do not assume 2 channel
-    dwSize = (DWORD)((float)dwSize * (float)m_Resampler.GetInputBitrate() / fBytesPerSecOutput);
-  }
-
-  return dwSize;
-}
-
-// 48kHz resampled data method
-DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
-{
-  DWORD dwIndex = 0;
-  DWORD iBytesCopied = 0;
-  while (true)
-  {
-    // Get the next free packet to fill with our output audio
-    if ( FindFreePacket(dwIndex) )
-    {
-      XMEDIAPACKET xmpAudio = {0};
-
-      // loop around, grabbing data from the input buffer and resampling
-      // until we fill up this packet
-      while (true)
-      {
-        // check if we have resampled data to send
-        if (m_Resampler.GetData(m_pbSampleData[dwIndex]))
-        {
-          if (m_drcAmount)
-            ApplyDynamicRangeCompression(m_pbSampleData[dwIndex], m_pbSampleData[dwIndex], m_dwPacketSize);
-          // Set up audio packet
-          m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
-          xmpAudio.dwMaxSize = m_dwPacketSize;
-          xmpAudio.pvBuffer = m_pbSampleData[dwIndex];
-          xmpAudio.pdwStatus = &m_adwStatus[ dwIndex ];
-          xmpAudio.pdwCompletedSize = NULL;
-          xmpAudio.prtTimestamp = NULL;
-          xmpAudio.pContext = m_pbSampleData[dwIndex];
-          // Process the audio
-          if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
-          {
-            return iBytesCopied;
-          }
-          // Okay - we've done this bit, update our data info
-          buffered_bytes += m_dwPacketSize;
-          // break to get another packet and restart the loop
-          break;
-        }
-        else
-        { // put more data into the resampler
-          int iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
-          if (iSize == -1)
-          { // Failed - we don't have enough data
-            return iBytesCopied;
-          }
-          else
-          { // Success - update the amount that we have processed
-            iBytesCopied += (DWORD)iSize;
-            iLeft -= iSize;
-          }
-          // Now loop back around and output data, or read more in
-        }
-      }
-    }
-    else
-    { // no packets free - send data back to sender
-      return iBytesCopied;
-    }
-  }
-  return iBytesCopied;
+  return iFreePackets * m_dwPacketSize;
 }
 
 //***********************************************************************************************
 DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-  // Check if we are resampling using SSRC
-  if (m_bResampleAudio)
-    return AddPacketsResample(data, len);
-
   DWORD dwIndex = 0;
   DWORD iBytesCopied = 0;
 
-  while (len)
+  while (len >= m_dwPacketSize)
   {
     if ( FindFreePacket(dwIndex) )
     {
       XMEDIAPACKET xmpAudio = {0};
 
-      DWORD iSize = m_dwPacketSize;
-      if (len < m_dwPacketSize)
-      {
-        // we don't accept half full packets...
-        iSize = len;
-        return iBytesCopied;
-      }
       m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
 
       // Set up audio packet
 
-      xmpAudio.dwMaxSize = iSize / m_iAudioSkip;
+      xmpAudio.dwMaxSize = m_dwPacketSize / m_iAudioSkip;
       xmpAudio.pvBuffer = m_pbSampleData[dwIndex];
       xmpAudio.pdwStatus = &m_adwStatus[ dwIndex ];
       xmpAudio.pdwCompletedSize = NULL;
@@ -541,20 +421,16 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
       xmpAudio.pContext = m_pbSampleData[dwIndex];
 
       if (m_drcAmount)
-        ApplyDynamicRangeCompression(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
+        ApplyDynamicRangeCompression(xmpAudio.pvBuffer, &data[iBytesCopied], m_dwPacketSize / m_iAudioSkip);
       else
-        memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
-      //   if (m_pCallback)
-      //   {
-      //    m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
-      //   }
+        memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], m_dwPacketSize / m_iAudioSkip);
+
       if (DS_OK != m_pStream->Process( &xmpAudio, NULL ))
-      {
         return iBytesCopied;
-      }
-      buffered_bytes += (iSize / m_iAudioSkip);
-      iBytesCopied += iSize;
-      len -= iSize;
+
+      buffered_bytes += (m_dwPacketSize / m_iAudioSkip);
+      iBytesCopied += m_dwPacketSize;
+      len -= m_dwPacketSize;
     }
     else
     {
@@ -581,40 +457,34 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 }
 
 //***********************************************************************************************
-DWORD CASyncDirectSound::GetBytesInBuffer()
-{
-  //Calculate how much of current packet that has been played, so we can adjust with that
-  LARGE_INTEGER llPerfCount;
-  QueryPerformanceCounter(&llPerfCount);
-
-  LONGLONG adjustbytes = (llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) * m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / m_TicksPerSec;
-  if( adjustbytes < m_dwPacketSize && adjustbytes <= buffered_bytes)
-    return buffered_bytes - (DWORD)adjustbytes;
-
-  return buffered_bytes;
-}
-
-void CASyncDirectSound::ResetBytesInBuffer()
-{
-  buffered_bytes = 0;
-}
-
-//***********************************************************************************************
 FLOAT CASyncDirectSound::GetDelay()
 {
+  FLOAT delay = 0.0f;
+
+  // calculate delay in buffer
+  delay += (FLOAT)buffered_bytes / (m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample>>3));
+
+  // correct this delay by how long since we completed last packet
+  LARGE_INTEGER llPerfCount;
+  QueryPerformanceCounter(&llPerfCount);
+  delay -= (FLOAT)(llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) / m_TicksPerSec;
+
+  if(delay < 0.0)
+    delay = 0.0;
+
+  // add the static delay in the output
   if (g_audioContext.IsAC3EncoderActive()) //2 channel materials will not be encoded as ac3 stream
-    return 0.049f;      //(Ac3 encoder 29ms)+(receiver 20ms)
+    delay += 0.049f;      //(Ac3 encoder 29ms)+(receiver 20ms)
   else
-    return 0.008f;      //PCM output 8ms
+    delay += 0.008f;      //PCM output 8ms
+
+  return delay;
 }
 
 //***********************************************************************************************
 DWORD CASyncDirectSound::GetChunkLen()
 {
-  if (m_bResampleAudio)
-    return m_Resampler.GetMaxInputSize();
-  else
-    return m_dwPacketSize;
+  return m_dwPacketSize;
 }
 //***********************************************************************************************
 int CASyncDirectSound::SetPlaySpeed(int iSpeed)
@@ -655,18 +525,9 @@ void CASyncDirectSound::RegisterAudioCallback(IAudioCallback *pCallback)
 {
   if (!m_pCallback)
   {
-    if (m_bResampleAudio)
-    {
-      pCallback->OnInitialize(m_wfx.nChannels, 48000, 16);
-      m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfx.nChannels * 96000 / 20);
-      m_VisBytes = 0;
-    }
-    else
-    {
-      pCallback->OnInitialize(m_wfx.nChannels, m_wfx.nSamplesPerSec, m_wfx.wBitsPerSample );
-      m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfx.nChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
-      m_VisBytes = 0;
-    }
+    pCallback->OnInitialize(m_wfx.nChannels, m_wfx.nSamplesPerSec, m_wfx.wBitsPerSample );
+    m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfx.nChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
+    m_VisBytes = 0;
   }
   m_pCallback = pCallback;
 }

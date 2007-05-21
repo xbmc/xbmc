@@ -73,7 +73,6 @@ public:
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
-  virtual char GetDirectorySeperator() { return '/'; }
 
 protected:
   CURL m_url;

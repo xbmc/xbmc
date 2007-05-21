@@ -32,6 +32,11 @@ typedef vector<CStdString> VECMOVIESFILES;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
+namespace VIDEO
+{
+  struct SScanSettings;
+}
+
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 21 // leave room for the fileid
@@ -219,7 +224,7 @@ public:
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(set<CStdString> &paths);
+  bool GetPaths(map<CStdString,VIDEO::SScanSettings> &paths);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
@@ -272,7 +277,7 @@ public:
 
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
-  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
+  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent, bool bUseFolderNames=false, bool bScanRecursive=false);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
@@ -294,6 +299,7 @@ public:
 
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, bool& bUseFolderNames, bool& bScanRecursive, int& iFound);
 
   void CleanDatabase();
   

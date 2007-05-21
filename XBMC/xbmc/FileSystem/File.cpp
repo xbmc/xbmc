@@ -93,13 +93,17 @@ private:
 CFile::CFile()
 {
   m_pFile = NULL;
+  m_pBuffer = NULL;
+  m_flags = 0;
 }
 
 //*********************************************************************************************
 CFile::~CFile()
 {
-  if (m_pFile) delete m_pFile;
-  m_pFile = NULL;
+  if (m_pFile)
+    SAFE_DELETE(m_pFile);
+  if (m_pBuffer)
+    SAFE_DELETE(m_pBuffer);  
 }
 
 //*********************************************************************************************
@@ -118,7 +122,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
   CFile file;
   CAsyncFileCallback* helper = NULL;
 
-  if (file.Open(strFileName, true))
+  if (file.Open(strFileName, true, READ_TRUNCATED))
   {
     if (file.GetLength() <= 0)
     {
@@ -180,7 +184,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       /* make sure we don't try to read more than filesize*/
       if (iBytesToRead > llFileSize) iBytesToRead = llFileSize;
 
-      iRead = file.Read(buffer.get(), iBytesToRead, READ_TRUNCATED);
+      iRead = file.Read(buffer.get(), iBytesToRead);
       if (iRead == 0) break;
       else if (iRead < 0) 
       {
@@ -251,9 +255,10 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, bool bBinary)
+bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags)
 {
-  try 
+  m_flags = flags;
+  try
   {
     bool bPathInCache;
     if (!g_directoryCache.FileExists(strFileName, bPathInCache) )
@@ -264,8 +269,24 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary)
     CURL url(strFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
-    if (m_pFile)
-      return m_pFile->Open(url, bBinary);
+    if (!m_pFile)
+      return false;
+
+    if (!m_pFile->Open(url, bBinary))
+    {
+      SAFE_DELETE(m_pFile);
+      return false;
+    }
+
+    if (m_flags & READ_BUFFERED)
+    {
+      if (m_pFile->GetChunkSize())
+      {
+        m_pBuffer = new CFileStreamBuffer(0);
+        m_pBuffer->Attach(m_pFile);
+      }
+    }
+    return true;
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -363,35 +384,36 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   return -1;
 }
 
-//*********************************************************************************************
 unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
 {
-  return Read(lpBuf, (unsigned int)uiBufSize, 0);
-}
+  if (!m_pFile) 
+    return 0;
 
-unsigned int CFile::Read(void *lpBuf, unsigned int uiBufSize, unsigned flags)
-{
+  if(m_pBuffer)
+  {
+    if(m_flags & READ_TRUNCATED)
+      return m_pBuffer->sgetn((char*)lpBuf, min((int)uiBufSize, m_pBuffer->in_avail()));
+    else
+      return m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
+  }
+
   try
   {
-    if (m_pFile) 
-    {
-      if(flags & READ_TRUNCATED)
-        return m_pFile->Read(lpBuf, uiBufSize);
-      else
-      {        
-        unsigned int done = 0;
-        while((uiBufSize-done) > 0)
-        {
-          unsigned int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
-          if(curr==0)
-            break;
+    if(m_flags & READ_TRUNCATED)
+      return m_pFile->Read(lpBuf, uiBufSize);
+    else
+    {        
+      unsigned int done = 0;
+      while((uiBufSize-done) > 0)
+      {
+        unsigned int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
+        if(curr==0)
+          break;
 
-          done+=curr;
-        }
-        return done;
-      }        
+        done+=curr;
+      }
+      return done;
     }
-    return 0;
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -411,12 +433,11 @@ void CFile::Close()
 {
   try
   {
+    if (m_pBuffer)
+      SAFE_DELETE(m_pBuffer);
+
     if (m_pFile)
-    {
-      m_pFile->Close();
-      delete m_pFile;
-      m_pFile = NULL;
-    }
+      SAFE_DELETE(m_pFile);
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -453,10 +474,22 @@ void CFile::Flush()
 //*********************************************************************************************
 __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 {
+  if (!m_pFile)
+    return -1;
+
+  if (m_pBuffer)
+  {
+    if(iWhence == SEEK_CUR)
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::cur);
+    else if(iWhence == SEEK_END)
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::end);
+    else if(iWhence == SEEK_SET)
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::beg);
+  }
+
   try
   {
-    if (m_pFile) return m_pFile->Seek(iFilePosition, iWhence);
-    return 0;
+    return m_pFile->Seek(iFilePosition, iWhence);
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -468,7 +501,7 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
   }
-  return 0;
+  return -1;
 }
 
 //*********************************************************************************************
@@ -495,10 +528,15 @@ __int64 CFile::GetLength()
 //*********************************************************************************************
 __int64 CFile::GetPosition()
 {
+  if (!m_pFile)
+    return -1;
+
+  if (m_pBuffer)
+    return m_pBuffer->pubseekoff(0, ios_base::cur);
+
   try
   {
-    if (m_pFile) return m_pFile->GetPosition();
-    return -1;
+    return m_pFile->GetPosition();    
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -517,6 +555,52 @@ __int64 CFile::GetPosition()
 //*********************************************************************************************
 bool CFile::ReadString(char *szLine, int iLineLength)
 {
+  if (!m_pFile)
+    return false;
+
+  if (m_pBuffer)
+  {
+    typedef CFileStreamBuffer::traits_type traits;
+    CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
+    
+    if(aByte == traits::eof())
+      return false;
+
+    while(iLineLength>0)
+    {
+      aByte = m_pBuffer->sbumpc();
+
+      if(aByte == traits::eof())
+        break;
+
+      if(aByte == traits::to_int_type('\n'))
+      {
+        if(m_pBuffer->sgetc() == traits::to_int_type('\r'))
+          m_pBuffer->sbumpc();
+        break;
+      }
+
+      if(aByte == traits::to_int_type('\r'))
+      {
+        if(m_pBuffer->sgetc() == traits::to_int_type('\n'))
+          m_pBuffer->sbumpc();
+        break;
+      }
+
+      *szLine = traits::to_char_type(aByte);
+      szLine++;
+      iLineLength--;
+    }
+
+    // if we have no space for terminating character we failed
+    if(iLineLength==0)
+      return false;
+    
+    *szLine = 0;
+
+    return true;
+  }
+
   try
   {
     return m_pFile->ReadString(szLine, iLineLength);
@@ -720,12 +804,12 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
-    return (streampos(-1));
+    return streampos(-1);
   }
 #endif
 
   if(position<0)
-    return (streampos(-1));
+    return streampos(-1);
 
   return position;
 }
@@ -748,16 +832,20 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
-    return (streampos(-1));
+    return streampos(-1);
   }  
 #endif
 
   if(pos<0)
-    return (streampos(-1));
+    return streampos(-1);
 
   return pos;
 }
-
+streamsize CFileStreamBuffer::showmanyc()
+{
+  underflow();
+  return egptr() - gptr();
+}
 
 CFileStream::CFileStream(int backsize /*= 0*/)
     : m_buffer(backsize)

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
 #include "xbox/xbeheader.h"
@@ -60,6 +61,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/Trainer.h"
@@ -3207,7 +3209,8 @@ const BUILT_IN commands[] = {
   "System.PWMControl","Control PWM RGB LEDs",
   "Resolution", "Change XBMC's Resolution",
   "SetFocus", "Change current focus to a different control id", 
-  "BackupSystemInfo", "Backup System Informations to local hdd"
+  "BackupSystemInfo", "Backup System Informations to local hdd",
+  "UpdateLibrary", "Update the selected library (music or video)"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3364,7 +3367,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
 
           strPath  = strFTPPath;
-        }else{
+        }
+        else
+        {
           CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
           return -7;
         }
@@ -4019,6 +4024,33 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_sysinfo.CreateBiosBackup();
     g_sysinfo.CreateEEPROMBackup();
 #endif
+  }
+  else if (execute.Equals("updatelibrary"))
+  {
+    if (parameter.Equals("music"))
+    {
+      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (scanner)
+      {
+        if (scanner->IsScanning())
+          scanner->StopScanning();
+        else
+          scanner->StartScanning("");
+      }
+    }
+    if (parameter.Equals("video"))
+    {
+      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      SScraperInfo info;
+      VIDEO::SScanSettings settings;
+      if (scanner)
+      {
+        if (scanner->IsScanning())
+          scanner->StopScanning();
+        else
+          CGUIWindowVideoBase::OnScan("",info,settings);
+      }
+    }
   }
   else
     return -1;

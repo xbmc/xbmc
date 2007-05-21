@@ -4,6 +4,7 @@
 #include "IDirectSoundRenderer.h"
 #include "ASyncDirectSound.h"
 #include "Ac97DirectSound.h"
+#include "ResampleDirectSound.h"
 #include "IAudioCallback.h"
 #include "mplayer.h"
 #include "../VideoRenderers/RenderManager.h"
@@ -165,23 +166,22 @@ static int audio_init(int rate, int channels, int format, int flags)
   {
     channels = 2;
     // ac3 passthru
-    m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bAC3PassThru, false);
+    m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bAC3PassThru);
   }
   else
   { // check if we should resample this audio
-    // currently we don't do this for videos for fear of CPU issues
-    bool bResample(false);
-    if( !mplayer_HasVideo() && channels <= 2 )
-    {
+    // currently we don't do this for videos for fear of CPU issues    
+    bool bResample = false;
+    if( !mplayer_HasVideo() && channels <= 2 && rate != 48000 )
       bResample = true;
-    }
+
     if ( channels == 3 || channels == 5 || channels > 6 )
       return 1;  // this is an ugly hack due to our code use mplayer_open_file for both playing file, and format detecttion
 
-    /*if ( channels == 2 && !mplayer_HasVideo() && (lSampleRate == 48000 || bResample) && (g_guiSettings.GetInt("MusicAudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioOutput.PCMPassThrough")) // need add menu options here
-      m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bAC3PassThru, bResample);
-    else*/
-      m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, bResample, 0, strAudioCodec, !mplayer_HasVideo());
+    if(bResample)
+      m_pAudioDecoder = new CResampleDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, strAudioCodec, !mplayer_HasVideo());
+    else
+      m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback, channels, rate, ao_format_bits, strAudioCodec, !mplayer_HasVideo());
   }
   pao_data->channels = channels;
   pao_data->samplerate = rate;
@@ -285,17 +285,10 @@ static int audio_play(void* data, int len, int flags)
 static float audio_get_delay()
 {
   CSingleLock lock(m_critAudio);
-  if (!m_pAudioDecoder) return 0;
-  FLOAT fDelay = m_pAudioDecoder->GetDelay();
-  // check our output rate...
-  if (m_pAudioDecoder->IsResampling())
-    fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)(48000 * pao_data->channels * 2);
-  else
-    fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)pao_data->bps;
-  return fDelay;
+  if (!m_pAudioDecoder) 
+    return 0.0f;
 
-  //mplayer:
-  //return (float)(buffered_bytes + ao_data.buffersize)/(float)ao_data.bps;
+  return m_pAudioDecoder->GetDelay();
 }
 
 // to set/get/query special features/parameters
