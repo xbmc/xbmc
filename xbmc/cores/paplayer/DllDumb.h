@@ -21,7 +21,11 @@ public:
 
 class DllDumb : public DllDynamic, DllDumbInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllDumb, Q:\\system\\players\\PAPlayer\\dumb.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllDumb, Q:\\system\\players\\paplayer\\dumb-i486-linux.so)
+#endif
   DEFINE_METHOD1(int, LoadModule, (const char* p1))
   DEFINE_METHOD1(void, FreeModule, (int p1))
   DEFINE_METHOD1(int, GetModuleLength, (int p1))

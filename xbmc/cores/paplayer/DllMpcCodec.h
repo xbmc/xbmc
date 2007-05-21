@@ -21,7 +21,11 @@ public:
 
 class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\PAPlayer\\libmpcdec.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-i486-linux.so)
+#endif
   DEFINE_METHOD4(bool, Open, (mpc_decoder **p1, mpc_reader *p2, mpc_streaminfo *p3, double *p4))
   DEFINE_METHOD1(void, Close, (mpc_decoder *p1))
   DEFINE_METHOD3(int, Read, (mpc_decoder *p1, float *p2, int p3))
