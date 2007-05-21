@@ -15,7 +15,11 @@ public:
 
 class DllAACCodec : public DllDynamic, DllAACCodecInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\aaccodec.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-i486-linux.so)
+#endif
   DEFINE_METHOD2(AACHandle, AACOpen, (const char *p1, AACIOCallbacks p2))
   DEFINE_METHOD3(int, AACRead, (AACHandle p1, BYTE* p2, int p3))
   DEFINE_METHOD2(int, AACSeek, (AACHandle p1, int p2))
