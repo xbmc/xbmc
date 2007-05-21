@@ -42,7 +42,7 @@
 					<font>font101</font>
 					<aligny>center</aligny>
 					<align>left</align>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="image">
@@ -70,7 +70,7 @@
 					<font>font101</font>
 					<aligny>center</aligny>
 					<align>left</align>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="image">

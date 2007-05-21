@@ -114,7 +114,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark1) + Skin.HasSetting(MusicBM1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="32">
 					<description>Bookmark button 2</description>
@@ -136,7 +136,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark2) + Skin.HasSetting(MusicBM2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="33">
 					<description>Bookmark button 3</description>
@@ -158,7 +158,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark3) + Skin.HasSetting(MusicBM3)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="34">
 					<description>Bookmark button 4</description>
@@ -180,7 +180,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(MusicBookmark4) + Skin.HasSetting(MusicBM4)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 			</control>
 		</control>

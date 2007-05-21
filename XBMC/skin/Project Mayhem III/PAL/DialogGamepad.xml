@@ -23,7 +23,7 @@
 			<posy>218</posy>
 			<label>12325</label>
 			<font>special13</font>
-			<include>textcolor_dialogheader</include>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="2">
 			<description>dialog line 1</description>
