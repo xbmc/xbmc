@@ -3,6 +3,10 @@
 
 #ifndef _WIN32
 
+#include "StdString.h"
+#include <SDL/SDL_mutex.h>
+#include <SDL/SDL_thread.h>
+
 #include "PlatformDefs.h"
 #include "StringUtils.h"
 
