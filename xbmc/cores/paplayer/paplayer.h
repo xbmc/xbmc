@@ -3,8 +3,15 @@
 #include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
+#ifdef _LINUX
+#include <alsa/asoundlib.h>
+#endif
 
+#ifndef _LINUX
 #define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
+#else
+#define PACKET_COUNT 1
+#endif
 
 #define STATUS_NO_FILE  0
 #define STATUS_QUEUING  1
@@ -123,12 +130,12 @@ private:
   void UpdateCacheLevel();
 
   int m_currentStream;
-#ifdef HAS_AUDIO
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
-#else !defined(_LINUX)
+#elif !defined(_LINUX)
   LPDIRECTSOUNDBUFFER m_pStream[2];
-#endif
+#else
+  snd_pcm_t* m_pStream[2];   
 #endif
   AudioPacket         m_packet[2][PACKET_COUNT];
 
