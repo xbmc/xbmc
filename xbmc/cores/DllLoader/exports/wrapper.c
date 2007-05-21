@@ -146,7 +146,7 @@ int __wrap_fflush(FILE *stream)
   return dll_fflush(stream);
 }
 
-int __wrap__IO_fputc(int c, FILE *stream)
+int __wrap_fputc(int c, FILE *stream)
 {
   return dll_fputc(c, stream);
 }
@@ -156,7 +156,7 @@ int __wrap_fputs(const char *s, FILE *stream)
   return dll_fputs(s, stream);
 }
 
-int __wrap_putc(int c, FILE *stream)
+int __wrap__IO_putc(int c, FILE *stream)
 {
   return dll_putc(c, stream);
 }
