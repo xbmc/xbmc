@@ -3,7 +3,7 @@
 
 #ifndef _WIN32
 
-#include "StdString.h"
+#include "../../guilib/StdString.h"
 #include <SDL/SDL_mutex.h>
 #include <SDL/SDL_thread.h>
 
