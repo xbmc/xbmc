@@ -52,6 +52,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
+using namespace VIDEO;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -77,6 +78,18 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
 {
+}
+
+bool CGUIWindowVideoBase::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_SHOW_PLAYLIST)
+  {
+    OutputDebugString("activate guiwindowvideoplaylist!\n");
+    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    return true;
+  }
+
+  return CGUIMediaWindow::OnAction(action);
 }
 
 bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
@@ -169,7 +182,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
 
           int iFound;
-          m_database.GetScraperForPath(strDir,info.strPath,info.strContent,iFound);
+          bool bUseDirNames, bScanRecursive;
+          m_database.GetScraperForPath(strDir,info.strPath,info.strContent,bUseDirNames,bScanRecursive,iFound);
           CScraperParser parser;
           if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
             info.strTitle = parser.GetName();
@@ -184,7 +198,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return true;
           }
 
-          if (info.strContent.Equals("tvshows") && iFound == 1) // dont lookup on root tvshow folder
+          if (info.strContent.Equals("tvshows") && iFound == 1 && !bUseDirNames) // dont lookup on root tvshow folder
             return true;
 
           OnInfo(iItem,info);
@@ -849,10 +863,13 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (!item->IsParentFolder())
     {
-      if (item->IsStack())
+      CStdString path(item->m_strPath);
+      if (item->IsVideoDb() && item->HasVideoInfoTag())
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (CUtil::IsStack(path))
       {
         vector<long> times;
-        if (m_database.GetStackTimes(item->m_strPath,times))
+        if (m_database.GetStackTimes(path,times))
           buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
       }
 
@@ -899,7 +916,11 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_PART:
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item->m_strPath,items);
+      CStdString path(item->m_strPath);
+      if (item->IsVideoDb())
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+
+      CDirectory::GetDirectory(path,items);
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (!dlg) return true;
       dlg->SetNumberOfFiles(items.Size());
@@ -910,7 +931,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (btn2 > 1)
         {
           vector<long> times;
-          if (m_database.GetStackTimes(item->m_strPath,times))
+          if (m_database.GetStackTimes(path,times))
             item->m_lStartOffset = times[btn2-2]*75; // wtf?
         }
         else
@@ -960,7 +981,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      int iFound = GetScraperForItem(item, info);
+      VIDEO::SScanSettings settings;
+      int iFound = GetScraperForItem(item, info, settings);
       OnInfo(itemNumber,info);
       return true;
     }
@@ -975,11 +997,12 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_UPDATE_TVSHOW:
     {
       SScraperInfo info;
-      GetScraperForItem(item, info);
+      SScanSettings settings;
+      GetScraperForItem(item, info, settings);
       if (item->IsVideoDb())
-        OnScan(item->GetVideoInfoTag()->m_strPath,info);
+        OnScan(item->GetVideoInfoTag()->m_strPath,info,settings);
       else
-        OnScan(item->m_strPath,info);
+        OnScan(item->m_strPath,info,settings);
       return true;
     }
   case CONTEXT_BUTTON_DELETE:
@@ -1514,17 +1537,36 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
   m_viewControl.SetFocused();
 }
 
-int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info)
+int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, SScanSettings& settings)
 {
   if (!item) return 0;
   int found = 0;
   if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,found);
+    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,settings.parent_name_root,settings.parent_name,found);
   else
-    m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,found);
+    m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,settings.parent_name_root,settings.parent_name,found);
   CScraperParser parser;
   if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
     info.strTitle = parser.GetName();
+  if (settings.parent_name) // really recurse
+    settings.recurse = INT_MAX;
+  else
+    settings.recurse = 1;
+  settings.parent_name = false;
+  if (info.strContent.Equals("movies") && settings.parent_name_root)
+  {
+    settings.parent_name = true;
+    settings.parent_name_root = false;
+  }
+  if (info.strContent.Equals("tvshows"))
+    settings.parent_name = true;
   return found;
+}
+
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, const SScanSettings& settings)
+{
+  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialog)
+    pDialog->StartScanning(strPath,info,settings,false);
 }
 

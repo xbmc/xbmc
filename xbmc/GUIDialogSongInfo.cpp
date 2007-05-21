@@ -111,13 +111,23 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
   if (action.wID == ACTION_INCREASE_RATING)
   {
     if (rating < '5')
+    {
       m_song.GetMusicInfoTag()->SetRating(rating + 1);
+      // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_song);
+      g_graphicsContext.SendMessage(msg);
+    }
     return true;
   }
   else if (action.wID == ACTION_DECREASE_RATING)
   {
     if (rating > '0')
+    {
       m_song.GetMusicInfoTag()->SetRating(rating - 1);
+      // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_song);
+      g_graphicsContext.SendMessage(msg);
+    }
     return true;
   }
   else if (action.wID == ACTION_PREVIOUS_MENU)

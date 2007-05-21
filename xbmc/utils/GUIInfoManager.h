@@ -16,6 +16,7 @@
 #ifdef _LINUX
 #include "CPUInfo.h"
 #endif
+#include "IMsgTargetCallback.h"
 
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
@@ -215,6 +216,7 @@
 #define LISTITEM_PREMIERED          335
 #define LISTITEM_COMMENT            336
 #define LISTITEM_END                340
+#define LISTITEM_ACTUAL_ICON        341
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -321,8 +323,7 @@
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
-#define WINDOW_ACTIVE_START         WINDOW_HOME
-#define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
+#define WINDOW_IS_ACTIVE            9999
 
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
@@ -367,13 +368,14 @@ public:
  \ingroup strings
  \brief 
  */
-class CGUIInfoManager
+class CGUIInfoManager : public IMsgTargetCallback
 {
 public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
 
   void Clear();
+  virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
@@ -403,7 +405,7 @@ public:
     m_currentFile.m_lStartOffset = 0;
   };
 
-  const CMusicInfoTag *GetCurrentSongTag() const 
+  const CMusicInfoTag *GetCurrentSongTag() const
   { 
     if (m_currentFile.HasMusicInfoTag())
       return m_currentFile.GetMusicInfoTag(); 

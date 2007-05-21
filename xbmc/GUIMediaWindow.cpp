@@ -236,6 +236,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         Update(m_vecItems.m_strPath);
         m_viewControl.SetSelectedItem(iItem);        
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+      {
+        CFileItem *newItem = (CFileItem *)message.GetLPVOID();
+        if (IsActive())
+          m_vecItems.UpdateItem(newItem);
+        else  
+        { // need to remove the disc cache
+          CFileItemList items;
+          CUtil::GetDirectory(newItem->m_strPath, items.m_strPath);
+          items.RemoveDiscCache();
+        }
+      }
       else
         return CGUIWindow::OnMessage(message);
 

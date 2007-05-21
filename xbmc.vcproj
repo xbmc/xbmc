@@ -407,6 +407,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ApplicationRenderer.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\ApplicationRenderer.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ArenaItem.cpp">
 			</File>
 			<File
@@ -1077,6 +1083,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogBoxBase.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogBusy.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogBusy.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogButtonMenu.cpp">
 				</File>
 				<File
@@ -1283,6 +1295,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowStartup.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowStartup.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
@@ -2342,6 +2360,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\BuddyItem.h">
 			</File>
 			<File
+				RelativePath=".\BusyIndicator.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ButtonTranslator.h">
 			</File>
 			<File
@@ -3016,6 +3037,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\MPlayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\ResampleDirectSound.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\ResampleDirectSound.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
@@ -3975,6 +4002,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlfadelabel.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlgroup.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">

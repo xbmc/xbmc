@@ -37,7 +37,6 @@
 #ifdef WIN32
 
 /* pthread_mutex_* wrapper for win32 */
-#include <xtl.h>
 #include <process.h>
 typedef CRITICAL_SECTION pthread_mutex_t;
 #define pthread_mutex_init(a, b) InitializeCriticalSection(a)

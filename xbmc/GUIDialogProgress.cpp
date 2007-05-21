@@ -42,7 +42,9 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 void CGUIDialogProgress::StartModal()
 {
-  CLog::Log(LOGDEBUG,"DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
+  CSingleLock lock(g_graphicsContext);
+
+  CLog::DebugLog("DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
   m_bCanceled = false;
 
   // set running before it's routed, else the auto-show code
@@ -58,6 +60,8 @@ void CGUIDialogProgress::StartModal()
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
   OnMessage(msg);
   ShowProgressBar(false);
+
+  lock.Leave();
 
   while (m_bRunning && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
   {

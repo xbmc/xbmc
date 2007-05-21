@@ -38,6 +38,7 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
+#include "GUIColorManager.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -304,6 +305,32 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const FRECT &re
   return ret;
 }
 
+bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
+{
+  const TiXmlElement* node = control->FirstChildElement("hitrect");
+  if (node)
+  {
+    double val;
+    if (node->Attribute("x", &val)) rect.x = (float)val;
+    if (node->Attribute("y", &val)) rect.y = (float)val;
+    if (node->Attribute("w", &val)) rect.w = (float)val;
+    if (node->Attribute("h", &val)) rect.h = (float)val;
+    return true;
+  }
+  return false;
+}
+
+bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, DWORD &value)
+{
+  const TiXmlElement* node = control->FirstChildElement(strTag);
+  if (node && node->FirstChild())
+  {
+    value = g_colorManager.GetColor(node->FirstChild()->Value());
+    return true;
+  }
+  return false;
+}
+
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
   CStdString type;
@@ -458,6 +485,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int focusPosition = 0;
   int scrollTime = 200;
   bool useControlCoords = false;
+
+  CRect hitRect;
+
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
   //
@@ -504,6 +534,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       height = max(rect.bottom - posY, 0.0f);
   }
 
+  hitRect.SetRect(posX, posY, width, height);
+  GetHitRect(pControlNode, hitRect);
+
   XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
   XMLUtils::GetFloat(pControlNode, "controloffsety", controlOffsetY);
 
@@ -527,7 +560,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
-  XMLUtils::GetHex(pControlNode, "colordiffuse", colorDiffuse);
+  GetColor(pControlNode, "colordiffuse", colorDiffuse);
 
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
   GetCondition(pControlNode, "enable", enableCondition);
@@ -536,11 +569,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   FRECT animRect = { posX + rect.left, posY + rect.top, width, height };
   GetAnimations(pControlNode, animRect, animations);
 
-  XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
-  XMLUtils::GetHex(pControlNode, "focusedcolor", labelInfo.focusedColor);
-  XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.disabledColor);
-  XMLUtils::GetHex(pControlNode, "shadowcolor", labelInfo.shadowColor);
-  XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.selectedColor);
+  GetColor(pControlNode, "textcolor", labelInfo.textColor);
+  GetColor(pControlNode, "focusedcolor", labelInfo.focusedColor);
+  GetColor(pControlNode, "disabledcolor", labelInfo.disabledColor);
+  GetColor(pControlNode, "shadowcolor", labelInfo.shadowColor);
+  GetColor(pControlNode, "selectedcolor", labelInfo.selectedColor);
   XMLUtils::GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
   XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
   XMLUtils::GetFloat(pControlNode, "textxoff", labelInfo.offsetX);
@@ -559,9 +592,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
   labelInfo2.selectedColor = labelInfo.selectedColor;
-  XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
-  XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
-  XMLUtils::GetHex(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
+  GetColor(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
+  GetColor(pControlNode, "textcolor2", labelInfo2.textColor);
+  GetColor(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
   labelInfo2.font = labelInfo.font;
   if (XMLUtils::GetString(pControlNode, "font2", strFont))
     labelInfo2.font = g_fontManager.GetFont(strFont);
@@ -615,7 +648,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
   GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
-  XMLUtils::GetHex(pControlNode, "spincolor", spinInfo.textColor);
+  GetColor(pControlNode, "spincolor", spinInfo.textColor);
   if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;
@@ -643,8 +676,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-  XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
-  XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
+  GetColor(pControlNode, "headlinecolor", labelInfo2.textColor);
+  GetColor(pControlNode, "titlecolor", dwTextColor3);
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
@@ -686,7 +719,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "texture", texture);
   XMLUtils::GetFloat(pControlNode, "rangemin", rMin);
   XMLUtils::GetFloat(pControlNode, "rangemax", rMax);
-  XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
+  GetColor(pControlNode, "colorkey", dwColorKey);
 
   XMLUtils::GetString(pControlNode, "suffix", strSuffix);
 
@@ -1238,6 +1271,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // things that apply to all controls
   if (control)
   {
+    control->SetHitRect(hitRect);
     control->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);

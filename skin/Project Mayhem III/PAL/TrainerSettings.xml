@@ -40,7 +40,7 @@
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="3">
 			<description>No Settings Label</description>
@@ -115,8 +115,8 @@
 			<textureupfocus>scroll-up-focus.png</textureupfocus>
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font12</font>
-			<include>textcolorwhite</include>
-			<disabledcolor>60d0d0d0</disabledcolor>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
@@ -135,8 +135,8 @@
 			<textureslidernib>osd_slider_nibNF.png</textureslidernib>
 			<textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
 			<font>font12</font>
-			<include>textcolorwhite</include>
-			<disabledcolor>60d0d0d0</disabledcolor>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
 		</control>
 		<control type="image" id="11">

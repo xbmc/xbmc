@@ -28,7 +28,6 @@
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
 
-
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
@@ -181,7 +180,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   // load subfolder
   CFileItemList items;
-  CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions);
+  CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn");
   // filter items in the sub dir (for .cue sheet support)
   items.FilterCueItems();
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -268,7 +267,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       return 0;
 
     // dont try reading id3tags for folders, playlists or shoutcast streams
-    if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() )
+    if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture())
     {
       m_currentItem++;
 //      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->m_strPath.c_str());

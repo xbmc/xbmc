@@ -15,7 +15,7 @@
 			<posy>218</posy>
 			<label>-</label>
 			<font>special13</font>
-			<textcolor>DDced8da</textcolor>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="2">
 			<description>dialog line 1</description>

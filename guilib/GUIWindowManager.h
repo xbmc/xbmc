@@ -49,7 +49,7 @@ public:
 
   void Render();
   void RenderDialogs();
-  CGUIWindow* GetWindow(DWORD dwID);
+  CGUIWindow* GetWindow(DWORD dwID) const;
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
@@ -57,7 +57,7 @@ public:
   void RouteToWindow(CGUIWindow* dialog);
   void AddModeless(CGUIWindow* dialog);
   void RemoveDialog(DWORD dwID);
-  int GetTopMostDialogID() const;
+  int GetTopMostModalDialogID() const;
 
   void SendThreadMessage(CGUIMessage& message);
   void DispatchThreadMessages();
@@ -69,6 +69,9 @@ public:
   bool IsWindowActive(DWORD dwID, bool ignoreClosing = true) const;
   bool IsWindowVisible(DWORD id) const;
   bool IsWindowTopMost(DWORD id) const;
+  bool IsWindowActive(const CStdString &xmlFile, bool ignoreClosing = true) const;
+  bool IsWindowVisible(const CStdString &xmlFile) const;
+  bool IsWindowTopMost(const CStdString &xmlFile) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(vector<DWORD> &ids);
@@ -79,6 +82,7 @@ private:
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(DWORD newWindowID);
   void ClearWindowHistory();
+  CGUIWindow *GetTopMostDialog() const;
   map<DWORD, CGUIWindow *> m_mapWindows;
   vector <CGUIWindow*> m_vecCustomWindows;
   vector <CGUIWindow*> m_activeDialogs;

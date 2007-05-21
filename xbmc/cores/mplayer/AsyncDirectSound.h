@@ -43,11 +43,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
-  CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0, char* strAudioCodec = "", bool bIsMusic=false);
+  CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, char* strAudioCodec = "", bool bIsMusic = false);
   virtual ~CASyncDirectSound();
-
-  virtual DWORD AddPacketsResample(unsigned char* data, DWORD len);
-  virtual bool IsResampling() { return m_bResampleAudio;}
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
   virtual DWORD GetSpace();
@@ -55,14 +52,11 @@ public:
   virtual HRESULT Pause();
   virtual HRESULT Stop();
   virtual HRESULT Resume();
-  virtual DWORD GetBytesInBuffer();
-  virtual void ResetBytesInBuffer();
   virtual LONG GetMinimumVolume() const;
   virtual LONG GetMaximumVolume() const;
   virtual LONG GetCurrentVolume() const;
   virtual void Mute(bool bMute);
   virtual HRESULT SetCurrentVolume(LONG nVolume);
-  virtual bool SupportsSurroundSound() const;
   static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
   void StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
   virtual int SetPlaySpeed(int iSpeed);
@@ -110,9 +104,6 @@ private:
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
 
-  // 48kHz Resampler stuff
-  bool m_bResampleAudio;  // Are we resampling?
-  Cssrc m_Resampler;   // The Resampler class that does all the work
   int m_iCurrentAudioStream;   //The Variable tracking LEFT/RIGHT/STEREO
 
   // Dynamic range compensation stuff

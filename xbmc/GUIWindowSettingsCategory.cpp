@@ -219,6 +219,19 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (!m_strNewSkinTheme.IsEmpty())
       {
         g_guiSettings.SetString("lookandfeel.skintheme", m_strNewSkinTheme);
+        // also set the default color theme
+        CStdString colorTheme(m_strNewSkinTheme);
+        CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
+        if (colorTheme.Equals("Textures.xml"))
+          colorTheme = "default.xml";
+        g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
+        g_settings.Save();
+      }
+
+      // Reload a skin color
+      if (!m_strNewSkinColors.IsEmpty())
+      {
+        g_guiSettings.SetString("lookandfeel.skincolors", m_strNewSkinColors);
         g_settings.Save();
       }
 
@@ -610,6 +623,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
       FillInSkinThemes(pSetting);
+    }
+    else if (strSetting.Equals("lookandfeel.skincolors"))
+    {
+      FillInSkinColors(pSetting);
     }
     else if (strSetting.Equals("screensaver.mode"))
     {
@@ -1593,6 +1610,29 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
     { // Do not reload the skin theme we are using
       m_strNewSkinTheme.Empty();
+      g_application.CancelDelayLoadSkin();
+    }
+  }
+  else if (strSetting.Equals("lookandfeel.skincolors"))
+  { //a new color was chosen
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+    CStdString strSkinColor;
+
+    if (pControl->GetValue() == 0) // Use default colors
+      strSkinColor = "SKINDEFAULT";
+    else
+      strSkinColor = pControl->GetCurrentLabel() + ".xml";
+
+    if (strSkinColor != pSettingString->GetData())
+    {
+      m_strNewSkinColors = strSkinColor;
+      g_application.DelayLoadSkin();
+    }
+    else
+    { // Do not reload the skin colors we are using
+      m_strNewSkinColors.Empty();
       g_application.CancelDelayLoadSkin();
     }
   }
@@ -2817,6 +2857,61 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   }
   // Set the Choosen Theme
   pControl->SetValue(iCurrentTheme);
+}
+
+void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
+{
+  // There is a default theme (just default.xml)
+  // any other *.xml files are additional color themes on top of this one.
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
+
+  m_strNewSkinColors.Empty();
+
+  // Clear and add. the Default Label
+  pControl->Clear();
+  pControl->SetShowRange(true);
+  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard default.xml will be used!
+
+  // Search for colors in the Current skin!
+  vector<CStdString> vecColors;
+
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
+
+  CHDDirectory directory;
+
+  CFileItemList items;
+  directory.SetMask(".xml");
+  directory.GetDirectory(strPath, items);
+  // Search for Themes in the Current skin!
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem* pItem = items[i];
+    if (!pItem->m_bIsFolder && pItem->GetLabel().CompareNoCase("defaults.xml") != 0)
+    { // not the default one
+      CStdString strLabel = pItem->GetLabel();
+      vecColors.push_back(strLabel.Mid(0, strLabel.size() - 4));
+    }
+  }
+  sort(vecColors.begin(), vecColors.end(), sortstringbyname());
+
+  // Remove the .xml extension from the Themes
+  if (CUtil::GetExtension(strSettingString) == ".xml")
+    CUtil::RemoveExtension(strSettingString);
+
+  int iCurrentColor = 0;
+  for (int i = 0; i < (int) vecColors.size(); ++i)
+  {
+    CStdString strColor = vecColors[i];
+    // Is the Current Theme our Used Theme! If yes set the ID!
+    if (strColor.CompareNoCase(strSettingString) == 0 )
+      iCurrentColor = i + 1; // 1: #of Predefined Theme [Label]
+    pControl->AddLabel(strColor, i + 1);
+  }
+  // Set the Choosen Theme
+  pControl->SetValue(iCurrentColor);
 }
 
 void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)

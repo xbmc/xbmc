@@ -10,7 +10,7 @@ enum CodecID;
 class CDVDAudio
 {
 public:
-  CDVDAudio();
+  CDVDAudio(bool& bStop);
   ~CDVDAudio();
 
   void RegisterAudioCallback(IAudioCallback* pCallback);
@@ -26,7 +26,6 @@ public:
   void DoWork();
   __int64 GetDelay(); // returns the time it takes to play a packet if we add one at this time
   void Flush();
-  int GetBytesInBuffer();
 
   void SetSpeed(int iSpeed);
 
@@ -42,10 +41,9 @@ protected:
   int m_iChannels;
   int m_iBitrate;
   int m_iBitsPerSample;
-  int m_iPackets;
-
   int m_iSpeed;
 
+  volatile bool& m_bStop;
   //counter that will go from 0 to m_iSpeed-1 and reset, data will only be output when speedstep is 0
   //int m_iSpeedStep; 
 };

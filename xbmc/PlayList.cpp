@@ -516,3 +516,19 @@ bool CPlayList::Expand(int position)
   Insert(*playlist, position);
   return true;
 }
+
+void CPlayList::UpdateItem(const CFileItem *item)
+{
+  if (!item) return;
+
+  for (ivecItems it = m_vecItems.begin(); it != m_vecItems.end(); ++it)
+  {
+    CPlayListItem& playlistItem = *it;
+    if (playlistItem.GetFileName() == item->m_strPath)
+    {
+      CUtil::ConvertFileItemToPlayListItem(item, playlistItem);
+      break;
+    }
+  }
+}
+

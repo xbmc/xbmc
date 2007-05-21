@@ -1,25 +1,10 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="CommonViewTypes.xml" />
-	
-	<include name="textcolorwhite">
-		<textcolor>ffffffff</textcolor>
-	</include>
-	<include name="textcolorgrey">
-		<textcolor>60ffffff</textcolor>
-	</include>
-	<include name="textcolorlightgrey">
-		<textcolor>d0ffffff</textcolor>
-	</include>
+
 	<include name="controldefaults">
-		<include>textcolorwhite</include>
-		<colordiffuse>ffffffff</colordiffuse>
-	</include>
-	<include name="listselectedcolor">
-		<selectedcolor>FFe2ff43</selectedcolor>
-	</include>
-	<include name="listselectedcolor2">
-		<selectedcolor>ffffffff</selectedcolor>
+		<textcolor>white</textcolor>
+		<colordiffuse>white</colordiffuse>
 	</include>
 	<include name="homebuttonanimation">
 		<animation effect="fade" time="500" delay="400">VisibleChange</animation>
@@ -72,7 +57,7 @@
 	</include>
 	<include name="homestatsinfo">
 		<animation effect="fade" time="200">VisibleChange</animation>
-		<animation effect="slide" time="0" start="0,0" end="0,-250"condition="[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)]">Conditional</animation>
+		<animation effect="slide" time="0" start="0,0" end="0,-250" condition="[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)]">Conditional</animation>
 		<animation effect="slide" time="500" start="600,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 		<animation effect="slide" time="500" start="0,0" end="600,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 	</include>
