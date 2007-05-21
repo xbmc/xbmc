@@ -31,7 +31,7 @@
 			<align>left</align>
 			<font>special13</font>
 			<label>1023</label>
-			<include>textcolor_dialogheader</include>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="listcontrol" id="3">
 			<description>listcontrol</description>

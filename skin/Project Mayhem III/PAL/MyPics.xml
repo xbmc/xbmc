@@ -133,7 +133,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(PicturesBookmark1) + Skin.HasSetting(PicturesBM1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="32">
 					<description>Bookmark button 2</description>
@@ -155,7 +155,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(PicturesBookmark2) + Skin.HasSetting(PicturesBM2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 			</control>
 		</control>
