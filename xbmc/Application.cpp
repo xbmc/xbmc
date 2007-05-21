@@ -54,6 +54,7 @@
 #include "utils/GUIInfoManager.h"
 #include "PlaylistFactory.h"
 #include "GUIFontManager.h"
+#include "GUIColorManager.h"
 #include "SkinInfo.h"
 #include "lib/libPython/XBPython.h"
 #include "ButtonTranslator.h"
@@ -1866,6 +1867,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     else
       CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
   }
+  g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
+
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
   LARGE_INTEGER start;
@@ -1962,6 +1965,8 @@ void CApplication::UnloadSkin()
   g_TextureManager.Cleanup();
 
   g_fontManager.Clear();
+
+  g_colorManager.Clear();
 
   g_charsetConverter.reset();
 }

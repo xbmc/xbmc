@@ -218,7 +218,7 @@
 			<width>390</width>
 			<height>265</height>
 			<font>font12</font>
-			<include>textcolorlightgrey</include>
+			<textcolor>lightgrey</textcolor>
 			<!-- normal  (pen0) -->
 			<textcolor2>FFF2B466</textcolor2>
 			<!-- action  (pen1) -->

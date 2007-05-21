@@ -25,7 +25,7 @@
 			<align>right</align>
 			<label>xbox media center</label>
 			<font>special12</font>
-			<include>textcolorwhite</include>
+			<textcolor>white</textcolor>
 		</control>
 		<control type="label" id="1">
 			<description>description label</description>
@@ -34,7 +34,7 @@
 			<align>left</align>
 			<label>10007</label>
 			<font>special13</font>
-			<include>textcolorwhite</include>
+			<textcolor>white</textcolor>
 		</control>
 		<include>contentpanel</include>
 		<control type="grouplist" id="9000">
@@ -117,7 +117,7 @@
 				<posy>130</posy>
 				<label>$INFO[system.cpuusage]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="progress">
 				<description>bar diagram cpu usage</description>
@@ -139,7 +139,7 @@
 				<posy>173</posy>
 				<label>$LOCALIZE[139] $INFO[system.cputemperature]  -  $INFO[system.gputemperature]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -147,7 +147,7 @@
 				<posy>201</posy>
 				<label>$INFO[system.fanspeed]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -155,7 +155,7 @@
 				<posy>229</posy>
 				<label>$LOCALIZE[158] : $INFO[system.freememory]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -164,7 +164,7 @@
 				<align>right</align>
 				<label>$LOCALIZE[20161] : $INFO[system.memory(total)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="progress">
 				<description>bar diagram free memory</description>
@@ -186,7 +186,7 @@
 				<posy>272</posy>
 				<label>$INFO[Network.IPAddress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 7</description>
@@ -194,7 +194,7 @@
 				<posy>300</posy>
 				<label>$INFO[system.screenresolution]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 8</description>
@@ -202,7 +202,7 @@
 				<posy>328</posy>
 				<label>$INFO[system.kernelversion]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 9</description>
@@ -210,7 +210,7 @@
 				<posy>356</posy>
 				<label>$INFO[system.uptime]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 10</description>
@@ -218,7 +218,7 @@
 				<posy>384</posy>
 				<label>$INFO[system.totaluptime]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -238,7 +238,7 @@
 				<posy>130</posy>
 				<label>$INFO[system.dvdtraystate]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -246,7 +246,7 @@
 				<posy>158</posy>
 				<label>$INFO[system.freespace(c)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -255,7 +255,7 @@
 				<align>right</align>
 				<label>$INFO[system.totalspace(c)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="progress">
 				<description>bar Free Space c:</description>
@@ -277,7 +277,7 @@
 				<posy>196</posy>
 				<label>$INFO[system.freespace(e)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -286,7 +286,7 @@
 				<align>right</align>
 				<label>$INFO[system.totalspace(e)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="progress">
 				<description>bar Free Space e:</description>
@@ -310,7 +310,7 @@
 					<posy>234</posy>
 					<label>$INFO[system.freespace(f)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="label">
 					<description>Label 5</description>
@@ -319,7 +319,7 @@
 					<align>right</align>
 					<label>$INFO[system.totalspace(f)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="progress">
 					<description>bar Free Space f:</description>
@@ -344,7 +344,7 @@
 					<posy>272</posy>
 					<label>$INFO[system.freespace(g)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="label">
 					<description>Label 10</description>
@@ -353,7 +353,7 @@
 					<align>right</align>
 					<label>$INFO[system.totalspace(g)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="progress">
 					<description>bar Free Space g:</description>
@@ -379,7 +379,7 @@
 					<posy>310</posy>
 					<label>$INFO[system.freespace(x)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="label">
 					<description>Label 8</description>
@@ -387,7 +387,7 @@
 					<posy>338</posy>
 					<label>$INFO[system.freespace(y)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="label">
 					<description>Label 9</description>
@@ -395,7 +395,7 @@
 					<posy>366</posy>
 					<label>$INFO[system.freespace(z)]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="label">
 					<description>Label 10</description>
@@ -403,7 +403,7 @@
 					<posy>394</posy>
 					<label>$INFO[system.freespace]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="label">
 					<description>Label 10</description>
@@ -412,7 +412,7 @@
 					<align>right</align>
 					<label>$INFO[system.totalspace]</label>
 					<font>font13</font>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="progress">
 					<description>bar Free Space Total</description>
@@ -447,7 +447,7 @@
 				<posy>130</posy>
 				<label>$INFO[system.hddinfomodel]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -455,7 +455,7 @@
 				<posy>158</posy>
 				<label>$INFO[system.hddinfoserial]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -463,7 +463,7 @@
 				<posy>186</posy>
 				<label>$INFO[system.hddinfofirmware]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -471,7 +471,7 @@
 				<posy>214</posy>
 				<label>$INFO[system.hddinfopw]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 6</description>
@@ -479,7 +479,7 @@
 				<posy>242</posy>
 				<label>$INFO[system.hddinfolockstate]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 7</description>
@@ -487,7 +487,7 @@
 				<posy>270</posy>
 				<label>$INFO[system.hddlockkey]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 8</description>
@@ -495,7 +495,7 @@
 				<posy>298</posy>
 				<label>$INFO[system.hddbootdate]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 9</description>
@@ -503,7 +503,7 @@
 				<posy>326</posy>
 				<label>$INFO[system.hddcyclecount]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 10</description>
@@ -511,7 +511,7 @@
 				<posy>354</posy>
 				<label>$INFO[system.hddtemperature]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -531,7 +531,7 @@
 				<posy>130</posy>
 				<label>$INFO[system.dvdinfomodel]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -539,7 +539,7 @@
 				<posy>158</posy>
 				<label>$INFO[system.dvdinfofirmware]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -547,7 +547,7 @@
 				<posy>186</posy>
 				<label>$INFO[system.dvdzone]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -555,7 +555,7 @@
 				<posy>214</posy>
 				<label>$INFO[system.dvdtraystate]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -575,7 +575,7 @@
 				<posy>130</posy>
 				<label>$INFO[network.isdhcp]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -583,7 +583,7 @@
 				<posy>158</posy>
 				<label>$INFO[network.linkstate]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -591,7 +591,7 @@
 				<posy>186</posy>
 				<label>$INFO[network.macadress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -599,7 +599,7 @@
 				<posy>214</posy>
 				<label>$INFO[network.ipaddress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 6</description>
@@ -607,7 +607,7 @@
 				<posy>242</posy>
 				<label>$INFO[network.subetadress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 7</description>
@@ -615,7 +615,7 @@
 				<posy>270</posy>
 				<label>$INFO[network.gatewayadress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 8</description>
@@ -623,7 +623,7 @@
 				<posy>298</posy>
 				<label>$INFO[network.dns1adress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 9</description>
@@ -631,7 +631,7 @@
 				<posy>326</posy>
 				<label>$INFO[network.dns2adress]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 10</description>
@@ -639,7 +639,7 @@
 				<posy>354</posy>
 				<label>$INFO[system.internetstate]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -659,7 +659,7 @@
 				<posy>130</posy>
 				<label>$INFO[system.videoencoderinfo]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -667,7 +667,7 @@
 				<posy>158</posy>
 				<label>$INFO[system.screenresolution]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -675,7 +675,7 @@
 				<posy>186</posy>
 				<label>$INFO[system.avpackinfo]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -683,7 +683,7 @@
 				<posy>214</posy>
 				<label>$INFO[system.xberegion]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -703,7 +703,7 @@
 				<posy>130</posy>
 				<label>$INFO[system.xboxversion]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 3</description>
@@ -711,7 +711,7 @@
 				<posy>158</posy>
 				<label>$INFO[system.xboxserial]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 4</description>
@@ -719,7 +719,7 @@
 				<posy>186</posy>
 				<label>$INFO[system.cpufrequency]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 5</description>
@@ -727,7 +727,7 @@
 				<posy>214</posy>
 				<label>$INFO[system.modchip]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 6</description>
@@ -735,7 +735,7 @@
 				<posy>242</posy>
 				<label>$INFO[system.bios]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 7</description>
@@ -743,7 +743,7 @@
 				<posy>270</posy>
 				<label>$INFO[system.xboxproduceinfo]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 8</description>
@@ -751,7 +751,7 @@
 				<posy>298</posy>
 				<label>$INFO[system.controllerport(1)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 9</description>
@@ -759,7 +759,7 @@
 				<posy>326</posy>
 				<label>$INFO[system.controllerport(2)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 10</description>
@@ -767,7 +767,7 @@
 				<posy>354</posy>
 				<label>$INFO[system.controllerport(3)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>Label 11</description>
@@ -775,7 +775,7 @@
 				<posy>382</posy>
 				<label>$INFO[system.controllerport(4)]</label>
 				<font>font13</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -787,7 +787,7 @@
 				<posy>445</posy>
 				<label>143</label>
 				<font>font12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label" id="52">
 				<description>XBMC XBE BUILD Version</description>
@@ -795,7 +795,7 @@
 				<posy>470</posy>
 				<label>144</label>
 				<font>font12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label" id="53">
 				<description>Mplayer DLL Version</description>
@@ -803,7 +803,7 @@
 				<posy>495</posy>
 				<label>144</label>
 				<font>font12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 	</controls>

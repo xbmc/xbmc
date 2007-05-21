@@ -23,7 +23,7 @@
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
-			<include>textcolor_dialogheader</include>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="4">
 			<description>No Presets Label</description>
