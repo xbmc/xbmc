@@ -134,7 +134,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(VideoBookmark1) + Skin.HasSetting(VideoBM1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="32">
 					<description>Bookmark button 2</description>
@@ -156,7 +156,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(VideoBookmark2) + Skin.HasSetting(VideoBM2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="33">
 					<description>Bookmark button 3</description>
@@ -178,7 +178,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(VideoBookmark3) + Skin.HasSetting(VideoBM3)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 			</control>
 		</control>

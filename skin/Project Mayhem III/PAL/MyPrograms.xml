@@ -139,7 +139,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(ProgramsBookmark1) + Skin.HasSetting(ProgramsBM1)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="32">
 					<description>Bookmark button 2</description>
@@ -161,7 +161,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(ProgramsBookmark2) + Skin.HasSetting(ProgramsBM2)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 				<control type="button" id="33">
 					<description>Bookmark button 3</description>
@@ -183,7 +183,7 @@
 					<aligny>center</aligny>
 					<label>20078</label>
 					<visible>!Skin.String(ProgramsBookmark3) + Skin.HasSetting(ProgramsBM3)</visible>
-					<include>textcolorgrey</include>
+					<textcolor>grey</textcolor>
 				</control>
 			</control>
 		</control>

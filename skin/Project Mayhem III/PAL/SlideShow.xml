@@ -82,7 +82,7 @@
 				<posy>5</posy>
 				<info>System.Time</info>
 				<align>right</align>
-				<include>textcolorgreen</include>
+				<textcolor>green</textcolor>
 				<font>special13</font>
 			</control>
 			<control type="label" id="1">
