@@ -184,7 +184,7 @@ CSettings::CSettings(void)
 
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
-  g_advancedSettings.m_DisableModChipDetection = false;
+  g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
