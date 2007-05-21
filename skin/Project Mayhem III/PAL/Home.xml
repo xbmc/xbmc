@@ -745,7 +745,7 @@
 				<label>|</label>
 				<align>left</align>
 				<font>special12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>time label</description>
@@ -755,7 +755,7 @@
 				<info>System.Time</info>
 				<align>left</align>
 				<font>special12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="rss" id="1">
@@ -765,9 +765,9 @@
 			<width>720</width>
 			<font>font13</font>
 			<urlset>1</urlset>
-			<include>rsstitlecolor</include>
-			<include>rssheadlinecolor</include>
-			<include>textcolorgreen</include>
+			<titlecolor>green</titlecolor>
+			<headlinecolor>dialogheader</headlinecolor>
+			<textcolor>green</textcolor>
 			<visible>!Player.HasVideo</visible>
 			<visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
 			<include>homemisc</include>
