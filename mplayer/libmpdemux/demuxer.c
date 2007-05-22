@@ -351,7 +351,7 @@ int demux_mov_fill_buffer(demuxer_t *demux,demux_stream_t* ds);
 int demux_vivo_fill_buffer(demuxer_t *demux);
 int demux_real_fill_buffer(demuxer_t *demuxer);
 int demux_nsv_fill_buffer(demuxer_t *demux);
-int demux_nuv_fill_buffer(demuxer_t *demux);
+int demux_nuv_fill_buffer(demuxer_t *demux, demux_stream_t* ds);
 int demux_rtp_fill_buffer(demuxer_t *demux, demux_stream_t* ds);
 int demux_rawdv_fill_buffer(demuxer_t *demuxer);
 int demux_y4m_fill_buffer(demuxer_t *demux);
@@ -398,7 +398,7 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
 #endif
     case DEMUXER_TYPE_REAL: return demux_real_fill_buffer(demux);
     case DEMUXER_TYPE_NSV: return demux_nsv_fill_buffer(demux);
-    case DEMUXER_TYPE_NUV: return demux_nuv_fill_buffer(demux);
+    case DEMUXER_TYPE_NUV: return demux_nuv_fill_buffer(demux, ds);
 #ifdef USE_TV
     case DEMUXER_TYPE_TV: return demux_tv_fill_buffer(demux, ds);
 #endif
@@ -637,6 +637,7 @@ int demux_open_fli(demuxer_t* demuxer);
 int demux_open_mf(demuxer_t* demuxer);
 int demux_open_film(demuxer_t* demuxer);
 int demux_open_roq(demuxer_t* demuxer);
+int demux_open_ty(demuxer_t* demuxer);
 #ifdef HAVE_LIBDV095
 int demux_open_rawdv(demuxer_t* demuxer);
 extern int rawdv_check_file(demuxer_t *demuxer);
@@ -653,6 +654,7 @@ extern int real_check_file(demuxer_t *demuxer);
 extern void demux_open_real(demuxer_t *demuxer);
 extern int nsv_check_file(demuxer_t *demuxer);
 extern int nuv_check_file(demuxer_t *demuxer);
+extern int ty_check_file(demuxer_t *demuxer);
 extern void demux_open_nsv(demuxer_t *demuxer);
 extern void demux_open_nuv(demuxer_t *demuxer);
 extern int demux_audio_open(demuxer_t* demuxer);
@@ -1064,7 +1066,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AAC)
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
 {
   demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_TY,audio_id,video_id,dvdsub_id);
-  if(ds_fill_buffer(demuxer->video)){
+  if(ty_check_file(demuxer)){
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"TiVo");
       file_format=DEMUXER_TYPE_MPEG_TY;
   } else {
