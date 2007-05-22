@@ -19,7 +19,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &it
 {
   CSingleLock lock (m_cs);
 
-  CStdString strPath = strPath1;
+  CStdString strPath = _P(strPath1);
   if (CUtil::HasSlashAtEnd(strPath))
     strPath.Delete(strPath.size() - 1);
 
@@ -48,7 +48,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath1, const CFileItemLi
 {
   CSingleLock lock (m_cs);
 
-  CStdString strPath = strPath1;
+  CStdString strPath = _P(strPath1);
   if (CUtil::HasSlashAtEnd(strPath))
     strPath.Delete(strPath.size() - 1);
 
@@ -64,7 +64,7 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath1)
 {
   CSingleLock lock (m_cs);
 
-  CStdString strPath = strPath1;
+  CStdString strPath = _P(strPath1);
   if (CUtil::HasSlashAtEnd(strPath))
     strPath.Delete(strPath.size() - 1);
 
@@ -86,7 +86,7 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath1)
 bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
   CSingleLock lock (m_cs);
-  CStdString strPath, strFixedFile(strFile);
+  CStdString strPath, strFixedFile(_P(strFile));
   bInCache = false;
   if ( strFixedFile.Mid(1, 1) == ":" )  strFixedFile.Replace('/', '\\');
   CUtil::GetDirectory(strFixedFile, strPath);
@@ -136,7 +136,7 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
   {
     const CStdString& strDir = *it;
     CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, "", false);
+    CDirectory::GetDirectory(_P(strDir), items, "", false);
     items.Clear();
   }
 }
@@ -158,11 +158,12 @@ void CDirectoryCache::ClearCache(set<CStdString>& dirs)
   }
 }
 
-bool CDirectoryCache::IsCacheDir(CStdString strPath)
+bool CDirectoryCache::IsCacheDir(const CStdString &strPath)
 {
-  if (g_directoryCache.m_thumbDirs.find(strPath) == g_directoryCache.m_thumbDirs.end())
+  CStdString strPath1(_P(strPath));
+  if (g_directoryCache.m_thumbDirs.find(strPath1) == g_directoryCache.m_thumbDirs.end())
     return false;
-  if (g_directoryCache.m_musicThumbDirs.find(strPath) == g_directoryCache.m_musicThumbDirs.end())
+  if (g_directoryCache.m_musicThumbDirs.find(strPath1) == g_directoryCache.m_musicThumbDirs.end())
     return false;
 
   return true;
