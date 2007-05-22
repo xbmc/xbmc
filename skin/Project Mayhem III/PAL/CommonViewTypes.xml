@@ -670,7 +670,7 @@
 			<aspectratio>keep</aspectratio>
 			<info>ListItem.Icon</info>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + !container.content(episodes)</visible>
 		</control>
 		<control type="image">
 			<posx>545</posx>
@@ -680,7 +680,7 @@
 			<aspectratio aligny="bottom">keep</aspectratio>
 			<info>ListItem.Icon</info>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
 		<control type="image">
 			<posx>545</posx>
@@ -691,7 +691,7 @@
 			<info>ListItem.Icon</info>
 			<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !container.content(movies)</visible>
+			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
 		<control type="image">
 			<posx>660</posx>
