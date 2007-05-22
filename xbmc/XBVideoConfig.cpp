@@ -115,6 +115,15 @@ bool XBVideoConfig::Has1080i() const
 #endif
 }
 
+bool XBVideoConfig::HasHDPack() const
+{
+#ifdef HAS_XBOX_D3D
+  return XGetAVPack() == XC_AV_PACK_HDTV;
+#else
+  return true;
+#endif
+}
+
 void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
 {
   bHasPAL = false;
@@ -269,19 +278,32 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
   }
 }
 
+CStdString XBVideoConfig::GetAVPack() const
+{
+#ifdef HAS_XBOX_HARDWARE
+  switch (XGetAVPack())
+  {
+    case XC_AV_PACK_STANDARD :
+      return "Standard";
+    case XC_AV_PACK_SVIDEO :
+      return "S-Video";
+    case XC_AV_PACK_SCART :
+      return "Scart";
+    case XC_AV_PACK_HDTV :
+      return "HDTV";
+    case XC_AV_PACK_VGA :
+      return "VGA";
+    case XC_AV_PACK_RFU :
+      return "RF";
+  }
+#endif
+  return "Unknown";
+}
+
 void XBVideoConfig::PrintInfo() const
 {
 #ifdef HAS_XBOX_D3D
-  DWORD dwAVPack = XGetAVPack();
-  CStdString strAVPack;
-  if (dwAVPack == XC_AV_PACK_SCART) strAVPack = "Scart";
-  else if (dwAVPack == XC_AV_PACK_HDTV) strAVPack = "HDTV";
-  else if (dwAVPack == XC_AV_PACK_VGA) strAVPack = "VGA";
-  else if (dwAVPack == XC_AV_PACK_RFU) strAVPack = "RF Unit";
-  else if (dwAVPack == XC_AV_PACK_SVIDEO) strAVPack = "S-Video";
-  else if (dwAVPack == XC_AV_PACK_STANDARD) strAVPack = "Standard";
-  else strAVPack.Format("Unknown: %x", dwAVPack);
-  CLog::Log(LOGINFO, "AV Pack: %s", strAVPack.c_str());
+  CLog::Log(LOGINFO, "AV Pack: %s", GetAVPack().c_str());
   CStdString strAVFlags;
   if (HasWidescreen()) strAVFlags += "Widescreen,";
   if (HasPAL60()) strAVFlags += "Pal60,";
