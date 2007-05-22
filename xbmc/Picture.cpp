@@ -50,18 +50,27 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-
 #ifndef HAS_SDL
   LPDIRECT3DTEXTURE8 pTexture = NULL;
   g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
+#else
+  SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+#endif
   if (pTexture)
   {
     CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
+#ifndef HAS_SDL
     D3DLOCKED_RECT lr;
     if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
     {
       DWORD pitch = lr.Pitch;
       BYTE *pixels = (BYTE *)lr.pBits;
+#else
+    if (SDL_LockSurface(pTexture) == 0)
+    {
+      DWORD pitch = pTexture->pitch;
+      BYTE *pixels = (BYTE *)pTexture->pixels;
+#endif
       BYTE *src = m_info.texture;
       for (int y = m_info.height - 1; y >= 0; y--)
       {
@@ -74,47 +83,16 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
           *dst++ = 0xff;  // alpha
         }
       }
-      pTexture->UnlockRect( 0 );
-    }
-  }
-  m_dll.ReleaseImage(&m_info);
-  return pTexture;
-#else
-  SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-  if (pTexture)
-  {
-    CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
-    if (SDL_LockSurface(pTexture) == 0)
-    {
-#warning Fix this to work
-#ifdef THIS_IS_BROKEN 
-      RGBQUAD *pPixel = m_info.rawImage;
-      for (int y=m_info.height-1; y>=0; y--)
-      {
-        char *pDest = (char *)pTexture->pixels + y*pTexture->pitch;
-        for (unsigned int x=0; x<m_info.width; x++) {
-            Uint32 color = SDL_MapRGB(pTexture->format, pPixel->rgbRed, pPixel->rgbGreen, pPixel->rgbBlue); 
-          
-            memcpy(pDest, &color, pTexture->format->BytesPerPixel);
-            
-            pDest += pTexture->format->BytesPerPixel;
-            pPixel++;	
-        }
-      }
-#endif
   
+#ifndef HAS_SDL
+      pTexture->UnlockRect( 0 );
+#else
       SDL_UnlockSurface(pTexture);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "PICTURE: failed to lock surface!");
-      SDL_FreeSurface(pTexture);
-      pTexture = NULL;
+#endif
     }
   }
   m_dll.ReleaseImage(&m_info);
   return pTexture;
-#endif
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
