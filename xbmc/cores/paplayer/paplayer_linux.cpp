@@ -309,11 +309,8 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   for (int i = 1; i < PACKET_COUNT ; i++)
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
-  // create our resampler
-  // upsample to 48000, only do this for sources with 1 or 2 channels
   m_SampleRateOutput = channels>2?samplerate:48000;
   m_BitsPerSampleOutput = 16;
-  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
 #ifdef HAS_ALSA
 	/* Open the device */
@@ -331,13 +328,18 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	snd_pcm_hw_params_set_format(m_pStream[num], hw_params, SND_PCM_FORMAT_S16_LE);
 	snd_pcm_hw_params_set_rate_near(m_pStream[num], hw_params, &m_SampleRateOutput, NULL);
 	snd_pcm_hw_params_set_channels(m_pStream[num], hw_params, channels);
+	
+	snd_pcm_uframes_t period_size = (m_BitsPerSampleOutput / 8) * channels;
+	
+   snd_pcm_hw_params_set_period_size_near(m_pStream[num], hw_params, &period_size, 0);
+   snd_pcm_hw_params_set_periods(m_pStream[num], hw_params, 2, 0);
 
-        snd_pcm_hw_params_set_periods(m_pStream[num], hw_params, 2, 0);
-/*
-        if (snd_pcm_hw_params_set_buffer_size(m_pStream[num], hw_params, 8192/2) < 0) {
-           CLog::Log(LOGERROR, "error setting buffer size");
-        }
-*/
+	snd_pcm_uframes_t buffer_size = period_size * 2;
+   snd_pcm_hw_params_set_buffer_size_near(m_pStream[num], hw_params, &buffer_size);
+
+   CLog::Log(LOGDEBUG,"PAPlayer::CreateStream - initialized. sample rate: %d, period size: %d, buffer size: %d",
+   m_SampleRateOutput, period_size, buffer_size); 
+
 	/* Assign them to the playback handle and free the parameters structure */
 	snd_pcm_hw_params(m_pStream[num], hw_params);
 	snd_pcm_hw_params_free(hw_params);
@@ -346,9 +348,11 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 #else
   // always use 16 bit samples
   if (num == 0)
-    Mix_OpenAudio(m_SampleRateOutput, AUDIO_S16LSB, channels, 4096);
+    Mix_OpenAudio(m_SampleRateOutput, AUDIO_S16LSB, channels, 8192);
 #endif
 
+  // create our resampler  // upsample to 48000, only do this for sources with 1 or 2 channels  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
+  
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
 
@@ -913,7 +917,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       int writeResult = snd_pcm_writei(m_pStream[stream], m_packet[stream][0].packet, frames);
       if (writeResult != frames)
       { // bad news :(
-        CLog::Log(LOGERROR, "Error adding packet %i to stream %i. result: %i, frames: %i. Channels: %i, bits-per-ch: %i, Error: %s", 0, stream, writeResult, frames, m_Channels, m_BitsPerSample, snd_strerror(writeResult));
+        CLog::Log(LOGERROR, "Error adding packet %i to stream %i. result: %i, frames: %i. Channels: %i, bits-per-ch: %i, Error: %s", 0, stream, writeResult, frames, m_Channels, m_BitsPerSampleOutput, snd_strerror(writeResult));
         snd_pcm_prepare(m_pStream[stream]);
         return false;
       }
