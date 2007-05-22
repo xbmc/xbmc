@@ -207,9 +207,8 @@ bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
-    return CGUIControl::OnMouseOver(point);
-  return false;
+  SelectItemFromPoint(point - CPoint(m_posX, m_posY));
+  return CGUIControl::OnMouseOver(point);
 }
 
 bool CGUIBaseContainer::OnMouseClick(DWORD dwButton, const CPoint &point)
