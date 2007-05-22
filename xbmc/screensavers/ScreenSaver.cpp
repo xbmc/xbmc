@@ -32,7 +32,8 @@ void CScreenSaver::Create()
   sprintf(szTmp, "scr create:%ix%i %s\n", iWidth, iHeight, m_strScreenSaverName.c_str());
   OutputDebugString(szTmp);
 
-  m_pScr->Create(g_graphicsContext.Get3DDevice(), iWidth, iHeight, m_strScreenSaverName.c_str());
+  float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+  m_pScr->Create(g_graphicsContext.Get3DDevice(), iWidth, iHeight, m_strScreenSaverName.c_str(), pixelRatio);
 }
 
 void CScreenSaver::Start()
