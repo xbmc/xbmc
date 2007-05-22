@@ -317,7 +317,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	char* device = getenv("XBMC_AUDIODEV");
 	if (device == NULL)
 	  device = "default";
-	snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+	snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, 0/*SND_PCM_NONBLOCK*/);
 
 	/* Allocate Hardware Parameters structures and fills it with config space for PCM */
 	snd_pcm_hw_params_malloc(&hw_params);
