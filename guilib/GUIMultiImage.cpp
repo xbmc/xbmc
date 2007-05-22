@@ -176,10 +176,11 @@ void CGUIMultiImage::LoadImage(int image)
   // Scale image so that it will fill our render area
   if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)
   {
-    // image is scaled so that the aspect ratio is maintained (taking into account the TV pixel ratio)
-    // and so that it fills the allocated space (so is zoomed then cropped)
+    // to get the pixel ratio, we must use the SCALED output sizes
+    float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
+
     float sourceAspectRatio = (float)m_images[image]->GetTextureWidth() / m_images[image]->GetTextureHeight();
-    float aspectRatio = sourceAspectRatio / g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
+    float aspectRatio = sourceAspectRatio / pixelRatio;
 
     float newWidth = m_width;
     float newHeight = newWidth / aspectRatio;
