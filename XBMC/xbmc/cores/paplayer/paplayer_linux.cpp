@@ -909,11 +909,11 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
 //      CLog::Log(LOGINFO, "Adding packet %i to stream %i", dwPacket, stream);
 #ifdef HAS_ALSA
-      int frames = m_packet[stream][0].length / m_Channels / m_BitsPerSample * 8;
+      int frames = m_packet[stream][0].length / (m_Channels * (m_BitsPerSampleOutput / 8) );
       int writeResult = snd_pcm_writei(m_pStream[stream], m_packet[stream][0].packet, frames);
       if (writeResult != frames)
       { // bad news :(
-        CLog::Log(LOGERROR, "Error adding packet %i to stream %i. Error: %s", 0, stream, snd_strerror(writeResult));
+        CLog::Log(LOGERROR, "Error adding packet %i to stream %i. result: %i, frames: %i. Channels: %i, bits-per-ch: %i, Error: %s", 0, stream, writeResult, frames, m_Channels, m_BitsPerSample, snd_strerror(writeResult));
         snd_pcm_prepare(m_pStream[stream]);
         return false;
       }
