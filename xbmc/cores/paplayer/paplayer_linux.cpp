@@ -325,29 +325,28 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	/* Allocate Hardware Parameters structures and fills it with config space for PCM */
 	snd_pcm_hw_params_malloc(&hw_params);
 	snd_pcm_hw_params_any(m_pStream[num], hw_params);
-
-	/* Set parameters : interleaved channels, 16 bits little endian, 44100Hz, 2 channels */
 	snd_pcm_hw_params_set_access(m_pStream[num], hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
 	
-	// currently only 8 and 16 bit signed are supported 
-	snd_pcm_hw_params_set_format(m_pStream[num], hw_params, (bitspersample==8)?SND_PCM_FORMAT_S8:SND_PCM_FORMAT_S16_LE);
+	// always use 16 bit samples
+	snd_pcm_hw_params_set_format(m_pStream[num], hw_params, SND_PCM_FORMAT_S16_LE);
 	snd_pcm_hw_params_set_rate_near(m_pStream[num], hw_params, &m_SampleRateOutput, NULL);
 	snd_pcm_hw_params_set_channels(m_pStream[num], hw_params, channels);
 
         snd_pcm_hw_params_set_periods(m_pStream[num], hw_params, 2, 0);
-
+/*
         if (snd_pcm_hw_params_set_buffer_size(m_pStream[num], hw_params, 8192/2) < 0) {
            CLog::Log(LOGERROR, "error setting buffer size");
         }
-
+*/
 	/* Assign them to the playback handle and free the parameters structure */
 	snd_pcm_hw_params(m_pStream[num], hw_params);
 	snd_pcm_hw_params_free(hw_params);
 
 	snd_pcm_prepare (m_pStream[num]);
 #else
+  // always use 16 bit samples
   if (num == 0)
-    Mix_OpenAudio(m_SampleRateOutput, bitspersample == 16 ? AUDIO_S16LSB : AUDIO_S8, channels, 4096);
+    Mix_OpenAudio(m_SampleRateOutput, AUDIO_S16LSB, channels, 4096);
 #endif
 
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
