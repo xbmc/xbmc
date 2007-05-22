@@ -332,7 +332,7 @@ CURL& CURL::operator= (const CURL& source)
 
 void CURL::SetFileName(const CStdString& strFileName)
 {
-  m_strFileName = strFileName;
+  m_strFileName = _P(strFileName);
 
   int slash = m_strFileName.find_last_of(GetDirectorySeparator());
   int period = m_strFileName.find_last_of('.');
