@@ -829,9 +829,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // disable if we do not have the HDTV pack
+      // disable if we do not have the HDTV pack and are not NTSC
 #ifdef HAS_XBOX_HARDWARE
-      if (pControl) pControl->SetEnabled(XGetAVPack() == XC_AV_PACK_HDTV);
+      if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
 #endif
     }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
