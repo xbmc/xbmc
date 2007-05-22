@@ -1510,15 +1510,19 @@
   <string id="20376">1re Diffusion:</string>
   <string id="20377">Rafraîchir Info Séries TV</string>
   <string id="20378">Rafraîchir info pour tous les épisodes?</string>
+  <string id="20379">Dossier contenant une seule Série TV</string>
+  <string id="20380">Exclure le dossier du scans</string>
 
-  <string id="21330">Montrer les dossiers et les fichiers cachés</string>
+  <string id="21330">Afficher les dossiers et les fichiers cachés</string>
+  
   <string id="21331">Client TuxBox</string>
   <string id="21332">AVERTISSEMENT: Le dispositif TuxBox est en mode d'enregistrement!</string>
   <string id="21333">Le flux sera arrêté !</string>
   <string id="21334">Le zap du canal: %s a échoué!</string>
-  <string id="21335">Êtes-vous sûr de commencer le flux ?</string>
+  <string id="21335">Êtes-vous sûr de débuter le flux ?</string>
   <string id="21336">Connection à: %s</string>
   <string id="21337">Dispositif TuxBox</string>
+  
   <string id="21356">Musique UPnP</string>
   <string id="21357">Vidéos UPnP</string>
   <string id="21358">Images UPnP</string>
