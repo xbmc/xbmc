@@ -1381,11 +1381,8 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size() == 0) return false;
   char kar = strFile.c_str()[strFile.size() - 1];
-#ifndef _LINUX
+
   if (kar == '/' || kar == '\\')
-#else
-  if (kar == '/')
-#endif
     return true;
 
   return false;
