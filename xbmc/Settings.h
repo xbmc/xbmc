@@ -477,7 +477,6 @@ protected:
 
   void LoadRSSFeeds();
 
-  CStdString  GetPluggedAvpack() const;
   bool SaveAvpackXML() const;
   bool SaveNewAvpackXML() const;
   bool SaveAvpackSettings(TiXmlNode *io_pRoot) const;

@@ -16,6 +16,9 @@ public:
   bool Has480p() const;
   bool Has720p() const;
   bool Has1080i() const;
+  bool HasHDPack() const;
+
+  CStdString GetAVPack() const;
   void GetModes(LPDIRECT3D8 pD3D);
   RESOLUTION GetSafeMode() const;
   RESOLUTION GetBestMode() const;
