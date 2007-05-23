@@ -921,7 +921,6 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
 
       m_pDS->close(); // cleanup recordset data
 
-      VECSONGS songs;
       GetAlbumInfoSongs(idAlbumInfo, songs);
       return true;
     }
