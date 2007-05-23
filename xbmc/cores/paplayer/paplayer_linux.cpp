@@ -9,13 +9,15 @@
 #include "../../CdgParser.h"
 #endif
 
+#define XBMC_SAMPLE_RATE 48000
+
 #ifndef HAS_ALSA
 #include <SDL/SDL_mixer.h>
 #endif
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
-#define FADE_TIME 2 * 2048.0f / 48000.0f      // 2 packets
+#define FADE_TIME 2 * 2048.0f / XBMC_SAMPLE_RATE.0f      // 2 packets
 
 #define TIME_TO_CACHE_NEXT_FILE 5000L         // 5 seconds
 #define TIME_TO_CROSS_FADE      10000L        // 10 seconds
@@ -309,8 +311,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   for (int i = 1; i < PACKET_COUNT ; i++)
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
-  m_SampleRateOutput = channels>2?samplerate:48000;
+  m_SampleRateOutput = channels>2?samplerate:XBMC_SAMPLE_RATE;
   m_BitsPerSampleOutput = 16;
+
+  m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
 #ifdef HAS_ALSA
 	/* Open the device */
@@ -348,10 +352,11 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 #else
   // always use 16 bit samples
   if (num == 0)
-    Mix_OpenAudio(m_SampleRateOutput, AUDIO_S16LSB, channels, 8192);
+    Mix_OpenAudio(m_SampleRateOutput, AUDIO_S16LSB, channels, 4096);
 #endif
 
-  // create our resampler  // upsample to 48000, only do this for sources with 1 or 2 channels  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
+  // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
+    m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
   
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
@@ -590,7 +595,7 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
-              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, 48000, 16, PACKET_SIZE))
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, PACKET_SIZE))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
@@ -915,7 +920,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 #ifdef HAS_ALSA
       int frames = m_packet[stream][0].length / (m_Channels * (m_BitsPerSampleOutput / 8) );
       int writeResult = snd_pcm_writei(m_pStream[stream], m_packet[stream][0].packet, frames);
-      if (writeResult != frames)
+      if (  writeResult != frames  )
       { // bad news :(
         CLog::Log(LOGERROR, "Error adding packet %i to stream %i. result: %i, frames: %i. Channels: %i, bits-per-ch: %i, Error: %s", 0, stream, writeResult, frames, m_Channels, m_BitsPerSampleOutput, snd_strerror(writeResult));
         snd_pcm_prepare(m_pStream[stream]);
