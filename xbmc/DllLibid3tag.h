@@ -94,7 +94,12 @@ public:
 
 class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-xbmc.so)
+#endif
+
   DEFINE_METHOD2(struct id3_file*, id3_file_open, (char const* p1, enum id3_file_mode p2))
   DEFINE_METHOD2(struct id3_file*, id3_file_fdopen, (int p1, enum id3_file_mode p2))
   DEFINE_METHOD1(int, id3_file_close, (struct id3_file* p1))
