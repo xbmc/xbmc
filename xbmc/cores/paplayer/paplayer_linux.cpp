@@ -347,6 +347,8 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
 	snd_pcm_uframes_t buffer_size = m_periods[num] * (2 * channels) * 2; // buffer big enough for 2 periods 
+	if (buffer_size < PACKET_SIZE)
+		buffer_size = PACKET_SIZE*2; // not really necessary - allocate bigger buffer than needed.
         nErr = snd_pcm_hw_params_set_buffer_size_near(m_pStream[num], hw_params, &buffer_size);
         CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
@@ -355,9 +357,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         CHECK_ALSA(LOGERROR,"hw_params_get_period_time",nErr);
 
         CLog::Log(LOGDEBUG,"PAPlayer::CreateStream - initialized. "
-			   "sample rate: %d, period size: %d, buffer size: %d "
+			   "sample rate: %d, channels: %d, period size: %d, buffer size: %d "
 			   "period duration: %d", 
                            m_SampleRateOutput, 
+ 			   channels,
 			   m_periods[num], 
 			   buffer_size,
 			   periodDuration); 
@@ -850,7 +853,12 @@ void PAPlayer::FlushStreams()
   {  
     if (m_pStream[stream] && m_packet[stream])
     {
-      snd_pcm_drain(m_pStream[stream]);
+      int nErr = snd_pcm_drain(m_pStream[stream]);
+      CHECK_ALSA(LOGERROR,"flush-drain",nErr); 
+      nErr = snd_pcm_prepare(m_pStream[stream]);
+      CHECK_ALSA(LOGERROR,"flush-prepare",nErr); 
+      nErr = snd_pcm_start(m_pStream[stream]);
+      CHECK_ALSA(LOGERROR,"flush-start",nErr); 
     }
   }
 #endif    
