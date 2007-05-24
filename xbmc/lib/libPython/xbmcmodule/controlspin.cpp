@@ -51,6 +51,10 @@ namespace PYXBMC
     //ControlSpin* self = (ControlSpin*)_PyObject_New(&ControlSpin_Type);
     ControlSpin*self = (ControlSpin*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
     if (!self) return NULL;
+    new(&self->strTextureUp) string();    
+    new(&self->strTextureDown) string();    
+    new(&self->strTextureUpFocus) string();    
+    new(&self->strTextureDownFocus) string();      
 
     // default values for spin control
     self->dwColor = 0xffffffff;
@@ -70,6 +74,10 @@ namespace PYXBMC
 
   void ControlSpin_Dealloc(ControlSpin* self)
   {
+    self->strTextureUp.~string();
+    self->strTextureDown.~string();
+    self->strTextureUpFocus.~string();
+    self->strTextureDownFocus.~string();  
     self->ob_type->tp_free((PyObject*)self);
   }
 
