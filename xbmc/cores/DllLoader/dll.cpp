@@ -32,7 +32,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
 {    
   char libname[MAX_PATH + 1] = {};
   char libpath[MAX_PATH + 1] = {};
-  DllLoader* dll = NULL; 
+  LibraryLoader* dll = NULL; 
 
   /* extract name */  
   char* p = strrchr(lib_file, '\\');
@@ -79,7 +79,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   if (dll)
   {
     CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, dll);
-    return (HMODULE)dll->hModule;
+    return (HMODULE)dll->GetHModule();
   }
 
   CLog::Log(LOGERROR, "LoadLibrary('%s') failed", libname);
@@ -118,7 +118,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
-  DllLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
+  LibraryLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
   
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
@@ -135,7 +135,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   unsigned loc = (unsigned)_ReturnAddress();
   
   void* address = NULL;
-  DllLoader* dll = DllLoaderContainer::GetModule(hModule);
+  LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
 
   if( !dll )
   {
@@ -147,7 +147,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   /* where you never know if the given pointer is a pointer or a value */
   if( HIGH_WORD(function) == 0 && LOW_WORD(function) < 1000)
   {
-    if( dll->ResolveExport(LOW_WORD(function), &address) )
+    if( ((DllLoader*) dll)->ResolveExport(LOW_WORD(function), &address) )
     {
       CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), %d) => 0x%x", hModule, dll->GetName(), LOW_WORD(function), address);
     }
@@ -219,13 +219,13 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
 
   //CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
 
-  DllLoader *p = DllLoaderContainer::GetModule(strModuleName);
+  LibraryLoader *p = DllLoaderContainer::GetModule(strModuleName);
   delete []strModuleName;
 
   if (p)
   {
     //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
-    return (HMODULE)p->hModule;
+    return (HMODULE)p->GetHModule();
   }
    
   CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
@@ -242,7 +242,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
     return 8;
   }
   
-  DllLoader* dll = DllLoaderContainer::GetModule(hModule);
+  LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
   if( !dll )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
