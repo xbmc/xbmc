@@ -4,13 +4,14 @@
 #include "AudioDecoder.h"
 #include "../ssrc.h"
 #ifdef HAS_ALSA
+#define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 #endif
 
 #ifndef _LINUX
 #define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
 #else
-#define PACKET_COUNT 1
+#define PACKET_COUNT  1
 #endif
 
 #define STATUS_NO_FILE  0
@@ -81,7 +82,9 @@ public:
 
   static bool HandlesType(const CStdString &type);
   virtual void DoAudioWork();
+
 protected:
+
   virtual void OnStartup() {}
   virtual void Process();
   virtual void OnExit();
@@ -113,7 +116,9 @@ private:
   int m_currentDecoder;
   CAudioDecoder m_decoder[2]; // our 2 audiodecoders (for crossfading + precaching)
 
+#ifndef _LINUX
   void SetupDirectSound(int channels);
+#endif
 
   // Our directsoundstream
   friend void CALLBACK StaticStreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus );
@@ -130,16 +135,21 @@ private:
   void UpdateCacheLevel();
 
   int m_currentStream;
+
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
 #elif !defined(_LINUX)
   LPDIRECTSOUNDBUFFER m_pStream[2];
 #elif defined(HAS_ALSA)
-  snd_pcm_t* m_pStream[2];   
+  snd_pcm_t*  		m_pStream[2];
+  snd_pcm_uframes_t	m_periods[2];
 #endif
-  AudioPacket         m_packet[2][PACKET_COUNT];
 
-  __int64                 m_bytesSentOut;
+  AudioPacket      m_packet[2][PACKET_COUNT];
+
+  IAudioCallback*  m_pCallback;
+
+  __int64          m_bytesSentOut;
 
   // format (this should be stored/retrieved from the audio device object probably)
   unsigned int     m_SampleRate;
@@ -164,5 +174,6 @@ private:
   // stuff for visualisation
   BYTE             m_visBuffer[PACKET_SIZE];
   unsigned int     m_visBufferLength;
-  IAudioCallback*  m_pCallback;
+
 };
+
