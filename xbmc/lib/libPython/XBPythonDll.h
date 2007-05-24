@@ -27,8 +27,7 @@ extern "C"
 {
 #endif
 
-
-#include "../../cores/DllLoader/DllLoader.h"
+class LibraryLoader;
 
   extern DATA_OBJECT(_Py_NoneStruct);
   extern DATA_OBJECT(_Py_NotImplementedStruct);
@@ -49,7 +48,7 @@ extern "C"
   extern DATA_OBJECT(PyExc_RuntimeError);
   extern DATA_OBJECT(PyExc_ReferenceError);
 
-  bool python_load_dll(DllLoader& dll);
+  bool python_load_dll(LibraryLoader& dll);
 
 #ifdef __cplusplus
 }
