@@ -3798,6 +3798,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\cores\DllLoader\DllLoaderContainer.cpp">
 				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\LibraryLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\DllLoader\LibraryLoader.h">
+				</File>
 				<Filter
 					Name="exports"
 					Filter="">

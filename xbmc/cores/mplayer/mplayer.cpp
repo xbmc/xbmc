@@ -687,25 +687,13 @@ bool CMPlayer::load()
   Unload();
   if (!m_pDLL)
   {
-    //  if(!g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
-    //    {
     m_pDLL = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll", true);
-    /*    }
-        else
-        {
-          m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll",true);
-        }*/
 
-    if ( !m_pDLL->Parse() )
+    if (!m_pDLL->Load())
     {
-      CLog::Log(LOGERROR, "cmplayer::load() parse failed");
-      delete m_pDLL;
-      m_pDLL = NULL;
+      CLog::Log(LOGERROR, "cmplayer::load() load failed");
+      SAFE_DELETE(m_pDLL)
       return false;
-    }
-    if ( !m_pDLL->ResolveImports() )
-    {
-      CLog::Log(LOGERROR, "cmplayer::load() resolve imports failed");
     }
     mplayer_load_dll(*m_pDLL);
   }

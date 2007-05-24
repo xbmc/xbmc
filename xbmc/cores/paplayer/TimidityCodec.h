@@ -18,7 +18,7 @@ public:
   static bool IsSupportedFormat(const CStdString& strExt);
 
 private:
-  DllLoader* m_loader;
+  LibraryLoader* m_loader;
   typedef void  (__cdecl *InitMethod) (void);
   typedef int (__cdecl *LoadMethod) ( const char* p1);
   typedef int (__cdecl *FillMethod) ( int p1, char* p2, int p3);
