@@ -29,6 +29,7 @@ CProfile::CProfile(void)
   _bCanWrite = true;
   _bSources = true;
   _bCanWriteSources = true;
+  _bUseAvpackSettings = false;
 }
 
 CProfile::~CProfile(void)
