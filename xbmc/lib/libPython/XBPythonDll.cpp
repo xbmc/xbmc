@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "XBPythonDll.h"
+#include "../../cores/DllLoader/DllLoader.h"
 
 template<byte count>
 struct SVaPassNext{
@@ -238,7 +239,7 @@ extern "C"
   DATA_OBJECT(PyUnicode_Type);
   DATA_OBJECT(PyTuple_Type);
 
-  bool python_load_dll(DllLoader& dll)
+  bool python_load_dll(LibraryLoader& dll)
   {
     bool bResult;
 

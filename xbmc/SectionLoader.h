@@ -1,7 +1,7 @@
 #pragma once
 
 //  forward
-class DllLoader;
+class LibraryLoader;
 
 class CSectionLoader
 {
@@ -18,7 +18,7 @@ public:
   public:
     CStdString m_strDllName;
     long m_lReferenceCount;
-    DllLoader *m_pDll;
+    LibraryLoader *m_pDll;
     DWORD m_lUnloadDelayStartTick;
     bool m_bDelayUnload;
   };
@@ -28,7 +28,7 @@ public:
   static bool IsLoaded(const CStdString& strSection);
   static bool Load(const CStdString& strSection);
   static void Unload(const CStdString& strSection);
-  static DllLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
+  static LibraryLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
   static void UnloadDLL(const CStdString& strSection);
   static void UnloadDelayed();
   static void UnloadAll();

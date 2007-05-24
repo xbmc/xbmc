@@ -2,10 +2,7 @@
 #pragma once
 
 #include "coffldr.h"
-
-#ifndef NULL
-#define NULL 0
-#endif
+#include "LibraryLoader.h"
 
 class DllLoader;
 
@@ -30,30 +27,27 @@ typedef struct _LoadedList
   _LoadedList* pNext;
 } LoadedList;
   
-class DllLoader : public CoffLoader
+class DllLoader : public CoffLoader, public LibraryLoader
 {
 public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
   ~DllLoader();
 
-  bool Load();
-  void Unload();
+  virtual bool Load();
+  virtual void Unload();
+
+  virtual int ResolveExport(const char*, void** ptr);
+  virtual int ResolveExport(unsigned long ordinal, void** ptr);
+  virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
+  virtual bool IsSystemDll() { return m_bSystemDll; }
+  virtual HMODULE GetHModule() { return (HMODULE)hModule; }  
   
+protected:  
   int Parse();
   int ResolveImports();
-  int ResolveExport(const char*, void**);
-  int ResolveExport(unsigned long ordinal, void**);
 
-  char* GetName(); // eg "mplayer.dll"
-  char* GetFileName(); // "Q:\system\mplayer\players\mplayer.dll"
-  char* GetPath(); // "Q:\system\mplayer\players\"
-  int IncrRef();
-  int DecrRef();
-  
   Export* GetExportByOrdinal(unsigned long ordinal);
   Export* GetExportByFunctionName(const char* sFunctionName);
-  bool IsSystemDll() { return m_bSystemDll; }
-  bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   
   void AddExport(unsigned long ordinal, unsigned long function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function = NULL);
@@ -64,9 +58,6 @@ private:
   // Just pointers; dont' delete...
   ImportDirTable_t *ImportDirTable;
   ExportDirTable_t *ExportDirTable;
-  char* m_sFileName;
-  char* m_sPath;
-  int m_iRefCount;
   bool m_bTrack;
   bool m_bSystemDll; // true if this dll should not be removed
   bool m_bLoadSymbols; // when true this dll should not be removed
