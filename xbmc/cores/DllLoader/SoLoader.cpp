@@ -12,7 +12,8 @@ SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)
 
 SoLoader::~SoLoader()
 {
-  Unload();
+  if (m_soHandle)
+    Unload();
 }
 
 bool SoLoader::Load()
@@ -21,7 +22,7 @@ bool SoLoader::Load()
     return true;
     
   CStdString strFileName= _P(GetFileName());
-  printf("Load: %s\n", strFileName.c_str());
+  CLog::Log(LOGDEBUG, "Loading: %s\n", strFileName.c_str());  
   int flags = RTLD_LAZY;
   if (m_bGlobal) flags |= RTLD_GLOBAL;
   m_soHandle = dlopen(strFileName.c_str(), flags);
@@ -36,7 +37,7 @@ bool SoLoader::Load()
 
 void SoLoader::Unload()
 {
-  printf("Unload: %s\n", GetName());
+  CLog::Log(LOGDEBUG, "Unloading DLL: %s\n", GetName());
 
   if (m_soHandle)
     dlclose(m_soHandle);
@@ -46,8 +47,6 @@ void SoLoader::Unload()
   
 int SoLoader::ResolveExport(const char* symbol, void** f)
 {
-  printf("Resolve: %s %s\n", GetName(), symbol);
-
   if (!m_soHandle && !Load())
   {
     CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: so not loaded", GetName(), symbol);
