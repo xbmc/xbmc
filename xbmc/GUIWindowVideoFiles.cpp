@@ -539,7 +539,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
-      if (!item->IsDVD())
+      if (!item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
