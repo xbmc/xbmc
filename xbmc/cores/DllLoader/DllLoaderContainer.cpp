@@ -145,7 +145,11 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
 
 LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
 {
+#ifndef _LINUX
   if (strlen(sName) > 1 && sName[1] == ':')
+#else
+  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/'))
+#endif
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }
@@ -229,7 +233,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   LibraryLoader* pLoader;
 #ifdef _LINUX
   if (strstr(sName, ".so") != NULL)
-    pLoader = new SoLoader(sName);
+    pLoader = new SoLoader(sName, bLoadSymbols);
   else
 #endif
     pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
