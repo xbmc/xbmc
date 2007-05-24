@@ -9,10 +9,17 @@
 #include "../../CdgParser.h"
 #endif
 
+#ifdef _LINUX
+#define XBMC_SAMPLE_RATE 44100
+#else
 #define XBMC_SAMPLE_RATE 48000
+#endif
 
 #ifndef HAS_ALSA
 #include <SDL/SDL_mixer.h>
+#else
+#define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %s",__FUNCTION__,s,snd_strerror(e));
+#define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;
 #endif
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
@@ -45,7 +52,15 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 #ifdef HAS_ALSA
   m_pStream[0] = NULL;
   m_pStream[1] = NULL;
+
+  // periods will contain the amount of data that can be played with each call to alsa.
+  // the unit is "Frames". for 2 channels 16 bit its 4.
+  // we initialize with packet_size which is probably too big. later the alsa calls will set these
+  // values correctly.
+  m_periods[0] = PACKET_SIZE / 4;
+  m_periods[1] = PACKET_SIZE / 4;
 #endif  
+
   m_currentStream = 0;
   m_packet[0][0].packet = NULL;
   m_packet[1][0].packet = NULL;
@@ -123,8 +138,6 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
 
-  SetupDirectSound(m_Channels);
-
   if (!CreateStream(m_currentStream, m_Channels, m_SampleRate, m_BitsPerSample))
   {
     m_decoder[m_currentDecoder].Destroy();
@@ -195,11 +208,13 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
     m_nextFile = file;
     return true;
   }
+  
   // check if we can handle this file at all
   int decoder = 1 - m_currentDecoder;
   __int64 seekOffset = (file.m_lStartOffset * 1000) / 75;
   if (!m_decoder[decoder].Create(file, seekOffset, m_crossFading))
     return false;
+
   // ok, we're good to go on queuing this one up
   CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
 
@@ -282,27 +297,10 @@ void PAPlayer::FreeStream(int stream)
   m_resampler[stream].DeInitialize();
 }
 
-void PAPlayer::SetupDirectSound(int channels)
-{
-/*
-  bool bAudioOnAllSpeakers(false);  
-  g_audioContext.SetupSpeakerConfig(channels, bAudioOnAllSpeakers,true);
-  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-  LPDIRECTSOUND pDSound=g_audioContext.GetDirectSoundDevice();
-  if (!pDSound)
-    return;
-  // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
-#ifdef HAS_XBOX_AUDIO
-  for (DWORD i = 0; i < 8;i++)
-    pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
-#endif
-*/
-}
-
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
 #ifdef HAS_ALSA
-	snd_pcm_hw_params_t *hw_params=NULL;
+   snd_pcm_hw_params_t *hw_params=NULL;
 #endif
 
   FreeStream(num);
@@ -321,42 +319,66 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	char* device = getenv("XBMC_AUDIODEV");
 	if (device == NULL)
 	  device = "default";
-	snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, 0/*SND_PCM_NONBLOCK*/);
+	
+	int nErr = snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, 0/*SND_PCM_NONBLOCK*/);
+        CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
 
 	/* Allocate Hardware Parameters structures and fills it with config space for PCM */
-	snd_pcm_hw_params_malloc(&hw_params);
-	snd_pcm_hw_params_any(m_pStream[num], hw_params);
-	snd_pcm_hw_params_set_access(m_pStream[num], hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
+	snd_pcm_hw_params_alloca(&hw_params);
+
+	nErr = snd_pcm_hw_params_any(m_pStream[num], hw_params);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_any",nErr);
+
+	nErr = snd_pcm_hw_params_set_access(m_pStream[num], hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
 	
 	// always use 16 bit samples
-	snd_pcm_hw_params_set_format(m_pStream[num], hw_params, SND_PCM_FORMAT_S16_LE);
-	snd_pcm_hw_params_set_rate_near(m_pStream[num], hw_params, &m_SampleRateOutput, NULL);
-	snd_pcm_hw_params_set_channels(m_pStream[num], hw_params, channels);
+	nErr = snd_pcm_hw_params_set_format(m_pStream[num], hw_params, SND_PCM_FORMAT_S16_LE);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_format",nErr);
+
+	nErr = snd_pcm_hw_params_set_rate_near(m_pStream[num], hw_params, &m_SampleRateOutput, NULL);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_rate",nErr);
+
+	nErr = snd_pcm_hw_params_set_channels(m_pStream[num], hw_params, channels);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_channels",nErr);
 	
-	snd_pcm_uframes_t period_size = (m_BitsPerSampleOutput / 8) * channels;
+        m_periods[num] = PACKET_SIZE / 4;
+        nErr = snd_pcm_hw_params_set_period_size_near(m_pStream[num], hw_params, &m_periods[num], 0);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
+
+	snd_pcm_uframes_t buffer_size = m_periods[num] * (2 * channels) * 2; // buffer big enough for 2 periods 
+        nErr = snd_pcm_hw_params_set_buffer_size_near(m_pStream[num], hw_params, &buffer_size);
+        CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
+
+	unsigned int periodDuration = 0;
+	nErr = snd_pcm_hw_params_get_period_time(hw_params,&periodDuration, 0);
+        CHECK_ALSA(LOGERROR,"hw_params_get_period_time",nErr);
+
+        CLog::Log(LOGDEBUG,"PAPlayer::CreateStream - initialized. "
+			   "sample rate: %d, period size: %d, buffer size: %d "
+			   "period duration: %d", 
+                           m_SampleRateOutput, 
+			   m_periods[num], 
+			   buffer_size,
+			   periodDuration); 
+
 	
-   snd_pcm_hw_params_set_period_size_near(m_pStream[num], hw_params, &period_size, 0);
-   snd_pcm_hw_params_set_periods(m_pStream[num], hw_params, 2, 0);
+  	/* Assign them to the playback handle and free the parameters structure */
+	nErr = snd_pcm_hw_params(m_pStream[num], hw_params);
+        CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
 
-	snd_pcm_uframes_t buffer_size = period_size * 2;
-   snd_pcm_hw_params_set_buffer_size_near(m_pStream[num], hw_params, &buffer_size);
+	nErr = snd_pcm_prepare (m_pStream[num]);
+        CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
-   CLog::Log(LOGDEBUG,"PAPlayer::CreateStream - initialized. sample rate: %d, period size: %d, buffer size: %d",
-   m_SampleRateOutput, period_size, buffer_size); 
-
-	/* Assign them to the playback handle and free the parameters structure */
-	snd_pcm_hw_params(m_pStream[num], hw_params);
-	snd_pcm_hw_params_free(hw_params);
-
-	snd_pcm_prepare (m_pStream[num]);
 #else
   // always use 16 bit samples
   if (num == 0)
     Mix_OpenAudio(m_SampleRateOutput, AUDIO_S16LSB, channels, 4096);
+		
 #endif
 
-  // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
-    m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
+  // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
+    m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
   
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
@@ -579,7 +601,6 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - restarting direct sound");
               FreeStream(m_currentStream);
-              SetupDirectSound(channels2);
               if (!CreateStream(m_currentStream, channels2, samplerate2, bitspersample2))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error creating stream!");
@@ -907,32 +928,52 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     return false;
 #endif    
 
-  bool ret = false;
-  // find a free packet and fill it with the decoded data
+    bool ret = false;
 
     if (m_resampler[stream].GetData(m_packet[stream][0].packet))
     {
-      // got some data from our resampler - construct audio packet
-      m_packet[stream][0].length = PACKET_SIZE;
-      m_packet[stream][0].stream = stream;
+      	// got some data from our resampler - construct audio packet
+      	m_packet[stream][0].length = PACKET_SIZE;
+      	m_packet[stream][0].stream = stream;
 
-//      CLog::Log(LOGINFO, "Adding packet %i to stream %i", dwPacket, stream);
 #ifdef HAS_ALSA
-      int frames = m_packet[stream][0].length / (m_Channels * (m_BitsPerSampleOutput / 8) );
-      int writeResult = snd_pcm_writei(m_pStream[stream], m_packet[stream][0].packet, frames);
-      if (  writeResult != frames  )
-      { // bad news :(
-        CLog::Log(LOGERROR, "Error adding packet %i to stream %i. result: %i, frames: %i. Channels: %i, bits-per-ch: %i, Error: %s", 0, stream, writeResult, frames, m_Channels, m_BitsPerSampleOutput, snd_strerror(writeResult));
-        snd_pcm_prepare(m_pStream[stream]);
-        return false;
-      }
+	unsigned char *pcmPtr = m_packet[stream][0].packet;
+	while ( pcmPtr < m_packet[stream][0].packet + m_packet[stream][0].length) {
+		int nPeriodSize = (m_periods[stream] * 2 * m_Channels); // write a frame. 
+		if ( pcmPtr + nPeriodSize >  m_packet[stream][0].packet + m_packet[stream][0].length) {
+			nPeriodSize = m_packet[stream][0].packet + m_packet[stream][0].length - pcmPtr; 
+		}
+			
+         	int framesToWrite = nPeriodSize / (2 * m_Channels);   
+      		int writeResult = snd_pcm_writei(m_pStream[stream], pcmPtr, framesToWrite);
+      		if (  writeResult == -EPIPE  ) {
+        		CLog::Log(LOGDEBUG, "PAPlayer::AddPacketsToStream - buffer underun (tried to write %d frames)", 
+				framesToWrite);
+        		int err = snd_pcm_prepare(m_pStream[stream]);
+             		CHECK_ALSA(LOGERROR,"prepare after EPIPE", err); 
+      		}
+      		else if (writeResult != framesToWrite) { 
+        		CLog::Log(LOGERROR, "PAPlayer::AddPacketsToStream - failed to write %d frames. "
+				"bad write (err: %d) - %s", 
+        			framesToWrite, writeResult, snd_strerror(writeResult));				
+        		break;
+      		}
+		else
+      			m_bytesSentOut += nPeriodSize; 
+
+		pcmPtr += nPeriodSize;  	
+	}
+		
 #else
       Mix_Chunk* chunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk));
       chunk->allocated = 1;
       chunk->abuf = m_packet[stream][0].packet;
       chunk->alen = m_packet[stream][0].length;
       chunk->volume = 128;
+
       Mix_PlayChannel(stream, chunk, 0);
+		      
+      m_bytesSentOut += chunk->alen; 
 #endif      
       // something done
       ret = true;
@@ -1065,5 +1106,8 @@ void PAPlayer::WaitForStream()
   {
     snd_pcm_wait(m_pStream[m_currentStream], -1);
   }
+#else
+
 #endif  
 }
+
