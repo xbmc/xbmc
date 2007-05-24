@@ -26,6 +26,7 @@ namespace PYXBMC
 
     self = (ControlImage*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strFileName) string();    
 
     //if (!PyArg_ParseTuple(args, "lllls|sl", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
     //	&cImage, &cColorKey, &self->aspectRatio)) return NULL;
@@ -58,6 +59,7 @@ namespace PYXBMC
 
   void ControlImage_Dealloc(ControlImage* self)
   {
+    self->strFileName.~string();  
     self->ob_type->tp_free((PyObject*)self);
   }
 
