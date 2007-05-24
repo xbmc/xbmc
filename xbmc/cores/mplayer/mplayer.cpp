@@ -973,11 +973,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         CLog::Log(LOGINFO, "Trying to play a large avi file. Setting -noidx");
       }
     }
-    else if (strExtension.Equals(".mkv", false))
-    {
-      // mkv files only have utf8 encoded subtitles
-      options.SetSubtitleCharset("utf8");
-    }
 
     if (file.IsRAR())
     {
