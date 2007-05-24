@@ -20,6 +20,8 @@ namespace PYXBMC
 
     self = (Keyboard*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strDefault) string();
+    new(&self->strHeading) string();
 
     PyObject *line = NULL;
     PyObject *heading = NULL;
@@ -40,6 +42,8 @@ namespace PYXBMC
 
   void Keyboard_Dealloc(Keyboard* self)
   {
+    self->strDefault.~string();
+    self->strHeading.~string();  
     self->ob_type->tp_free((PyObject*)self);
   }
 

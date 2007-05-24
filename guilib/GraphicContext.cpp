@@ -59,7 +59,7 @@ CGraphicContext::~CGraphicContext(void)
     GLint* viewport = m_viewStack.top();
 #endif
     m_viewStack.pop();
-    if (viewport) delete viewport;
+    if (viewport) delete [] viewport;
   }
 }
 
@@ -153,7 +153,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #endif    
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
-      delete oldviewport;
+      delete [] oldviewport;
       return false;
     }
     // ok, they intersect, do the intersection
@@ -167,7 +167,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
       newLeft >= newRight || newTop >= newBottom)
   { // no intersection with the screen
-    delete oldviewport;
+    delete [] oldviewport;
     return false;
   }
   // intersection with the screen
@@ -222,7 +222,7 @@ void CGraphicContext::RestoreViewPort()
 
   m_viewStack.pop();
 
-  if (oldviewport) delete oldviewport;
+  if (oldviewport) delete [] oldviewport;
 }
 
 const RECT& CGraphicContext::GetViewWindow() const

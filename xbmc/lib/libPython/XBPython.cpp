@@ -16,9 +16,13 @@
 
 XBPython g_pythonParser;
 
+#ifndef _LINUX
 #define PYTHON_DLL "Q:\\system\\python\\python24.dll"
 #define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
 #define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
+#else
+#define PYTHON_DLL "Q:\\system\\python\\python24-i486-linux.so"
+#endif
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -131,11 +135,15 @@ void XBPython::Initialize()
   {
     if (dThreadId == GetCurrentThreadId())
     {
-      //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
+#ifndef _LINUX
+      DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
       CStdString dllStr = _P(PYTHON_DLL);
       m_hModule = dllLoadLibraryA(dllStr.c_str());
-      LibraryLoader* pDll = DllLoaderContainer::GetModule(m_hModule);
-      if (!pDll || !python_load_dll(*pDll))
+      m_pDll = DllLoaderContainer::GetModule(m_hModule);
+#else
+      m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
+#endif
+      if (!m_pDll || !python_load_dll(*m_pDll))
       {
         CLog::Log(LOGFATAL, "Python: error loading python24.dll");
         Finalize();
@@ -158,6 +166,11 @@ void XBPython::Initialize()
         return;
       }
 #endif        
+
+#ifdef _LINUX
+      // Required for python to find optimized code (pyo) files
+      setenv("PYTHONOPTIMIZE", "1", 1);
+#endif
 
       Py_Initialize();
       PyEval_InitThreads();
@@ -226,7 +239,11 @@ void XBPython::Finalize()
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     //dllFreeLibrary(m_hModule);
+#ifndef _LINUX    
     DllLoaderContainer::UnloadPythonDlls();
+#else
+    DllLoaderContainer::ReleaseModule(m_pDll);
+#endif    
     m_hModule = NULL;
 
     m_bInitialized = false;
