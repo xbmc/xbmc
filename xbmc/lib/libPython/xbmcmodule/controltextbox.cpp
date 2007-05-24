@@ -30,6 +30,7 @@ namespace PYXBMC
 
     self->pControlSpin = (ControlSpin*)ControlSpin_New();
     if (!self->pControlSpin) return NULL;
+    new(&self->strFont) string();        
 
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
@@ -64,6 +65,7 @@ namespace PYXBMC
   void ControlTextBox_Dealloc(ControlTextBox* self)
   {
     //Py_DECREF(self->pControlSpin);
+    self->strFont.~string();       
     self->ob_type->tp_free((PyObject*)self);
   }
 

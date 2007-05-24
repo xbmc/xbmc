@@ -29,8 +29,12 @@ namespace PYXBMC
     char *cColorDiffuse = NULL;//"0xFFFFFFFF";
 
     self = (ControlProgress*)type->tp_alloc(type, 0);
-
     if (!self) return NULL;
+    new(&self->strTextureLeft) string();    
+    new(&self->strTextureMid) string();    
+    new(&self->strTextureRight) string();    
+    new(&self->strTextureBg) string();     
+    new(&self->strTextureOverlay) string();     
 
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(args, kwds,
@@ -65,6 +69,11 @@ namespace PYXBMC
 
   void ControlProgress_Dealloc(ControlProgress* self)
   {
+    self->strTextureLeft.~string();
+    self->strTextureMid.~string();
+    self->strTextureRight.~string();
+    self->strTextureBg.~string();    
+    self->strTextureOverlay.~string();    
     self->ob_type->tp_free((PyObject*)self);
   }
 
