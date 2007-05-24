@@ -4,9 +4,10 @@
 #include "Util.h"
 #include "utils/log.h"
 
-SoLoader::SoLoader(const char *so) : LibraryLoader(so)
+SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)
 {
   m_soHandle = NULL;
+  m_bGlobal = bGlobal;
 }
 
 SoLoader::~SoLoader()
@@ -21,7 +22,9 @@ bool SoLoader::Load()
     
   CStdString strFileName= _P(GetFileName());
   printf("Load: %s\n", strFileName.c_str());
-  m_soHandle = dlopen(strFileName.c_str(), RTLD_LAZY);
+  int flags = RTLD_LAZY;
+  if (m_bGlobal) flags |= RTLD_GLOBAL;
+  m_soHandle = dlopen(strFileName.c_str(), flags);
   if (!m_soHandle)
   {
     CLog::Log(LOGERROR, "Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
