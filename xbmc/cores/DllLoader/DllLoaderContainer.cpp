@@ -14,7 +14,7 @@ using namespace XFILE;
 
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int        DllLoaderContainer::m_iNrOfDlls = 0;
-bool       DllLoaderContainer::m_bTrack = false;
+bool       DllLoaderContainer::m_bTrack = true;
 
 
 Export export_advapi32[];
