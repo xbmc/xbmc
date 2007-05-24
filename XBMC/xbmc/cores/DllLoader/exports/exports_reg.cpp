@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "..\DllLoaderContainer.h"
+#include "../DllLoader.h"
 #include "emu_registry.h"
 
 Export export_advapi32[] =

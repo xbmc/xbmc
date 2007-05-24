@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "..\DllLoaderContainer.h"
+#include "../DllLoader.h"
 #include "emu_ole32.h"
 
 Export export_ole32[] =

@@ -922,6 +922,12 @@
 				<File
 					RelativePath="..\..\xbmc\cores\DllLoader\DllLoaderContainer.h">
 				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DllLoader\LibraryLoader.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DllLoader\LibraryLoader.h">
+				</File>
 				<Filter
 					Name="exports"
 					Filter="">

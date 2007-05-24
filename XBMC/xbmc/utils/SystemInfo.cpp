@@ -1200,7 +1200,7 @@ CStdString CSysInfo::GetMPlayerVersion()
 
   mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
 
-  if( mplayerDll->Parse() )
+  if( mplayerDll->Load() )
   {
     if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
       version = pMplayerGetVersion();
