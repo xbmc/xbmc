@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 3/05/2007-->
+<!--Date of translation: 23/05/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 8718 -->
+<!--Based on english strings version 9046 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -443,7 +443,7 @@
   <string id="524">Valitse soittolista</string>
   <string id="525">Uusi soittolista</string>
   <string id="526">Lisää soittolistaan</string>
-  <string id="527">Lisää tietokantaan</string>
+  <string id="527">Lisää kirjastoon</string>
   <string id="528">Anna nimi</string>
   <string id="529">Virhe: Nimi on jo olemassa</string>
   <string id="530">Valitse näytettävä Tyyli</string>
@@ -479,7 +479,7 @@
   <string id="564">Tyyppi</string>
   <string id="565">Käyttö</string>
   <string id="566">Albumin esittäjä</string>
-  <string id="567">Soitto laskuri</string>
+  <string id="567">Toisto määrä</string>
   <string id="568">Viimeksi toistettu</string>
   <string id="569">Kommentti</string>
   
@@ -999,7 +999,7 @@
   <string id="13327">Karaoke</string>
   <string id="13328">%s ei löytynyt</string>
   <string id="13329">Virhe avattaessa: %s</string>
-  <string id="13330">%sa ei voitu ladata</string>
+  <string id="13330">%saa ei voitu ladata</string>
   <string id="13331">Virhe: muisti ei riitä</string>
   <string id="13332">Siirrä ylöspäin</string>
   <string id="13333">Siirrä alaspäin</string>
@@ -1020,7 +1020,7 @@
   <string id="13349">Hae uusien sisältö</string>
   <string id="13350">Nykyinen soittolista...</string>
   <string id="13351">Albumin tiedot</string>
-  <string id="13352">Lue kaikki tietokantaan</string>
+  <string id="13352">Lue kaikki kirjastoon</string>
   <string id="13353">Keskeytä lukeminen</string>
   <string id="13354">Renderöintitapa</string>
   <string id="13355">Pixel Shader (matalalaatu)</string>
@@ -1137,6 +1137,8 @@
   <string id="14075">Kesäaika käytössä</string>
   <string id="14076">Lisää suosikkeihin</string>
   <string id="14077">Poista suosikeista</string> 
+  <string id="14078">Skinin värit</string>
+  
   <string id="15000">XLink KAI</string>
   <string id="15001">Ei saatu yhteyttä palveluun, haluatko</string>
   <string id="15002">yrittää yhdistää uudelleen?</string>
@@ -1301,7 +1303,7 @@
   <string id="16027">Liian monta peräkkäistä lukuvirhettä</string>
   
   <string id="16030">Jukeboksi keskeytettiin.</string>
-  <string id="16031">Kappaleita ei löytynyt tietokannasta.</string>
+  <string id="16031">Kappaleita ei löytynyt kirjastosta.</string>
   <string id="16032">Tietokantaa ei voida valmistella.</string>
   <string id="16033">Tietokantaa ei voida avata.</string>
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
@@ -1365,7 +1367,7 @@
   <string id="20047">Luo profiili '%s' ?</string>
   <string id="20048">Aloita tyhjillä asetuksilla</string>
   <string id="20049">Paras käytettävissä oleva</string>
-  <string id="20050">Vaihda automaattisesti 16x9:n ja 4x3:n välillä</string>
+  <string id="20050">Vaihda automaattisesti 16/9:n ja 4/3:n välillä</string>
   <string id="20051">Käsittele moniosaiset tiedostot yhtenä tiedostona</string>
   <string id="20052">Huomautus</string>
   <string id="20053">Poistuit pääkäyttäjän tilasta</string>
@@ -1556,7 +1558,7 @@
   <string id="20337">Näyttelijä</string>
   <string id="20338">Elokuva</string>
   <string id="20339">Ohjaaja</string>
-  <string id="20340">Halutko poistaa tietokannasta kaikki kohteet</string>
+  <string id="20340">Halutko poistaa kirjastosta kaikki kohteet</string>
   <string id="20341">jotka on tässä polussa?</string>
   <string id="20342">Elokuvat</string>
   <string id="20343">TV-ohjelmat</string>
@@ -1595,6 +1597,8 @@
   <string id="20376">Ensimmäisenä tehty:</string>
   <string id="20377">Päivitä TV-ohjelmatiedot</string>
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
+  <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
+  <string id="20380">Sisällytä kansio hakuun</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1666,6 +1670,7 @@
   <string id="21409">aiemmin</string>
   <string id="21410">viimeisenä</string>
   <string id="21411">ei viimeisenä</string>
+  
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Valikoivan soittolistan ehdot</string>
   <string id="21422">Sopivat kappaleet</string>
