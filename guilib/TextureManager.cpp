@@ -46,7 +46,7 @@ CTexture::CTexture(SDL_Surface* pTexture, int iWidth, int iHeight, bool bPacked,
 #ifndef HAS_SDL_OPENGL
   m_pTexture = pTexture;
 #else
-  m_pTexture = new CGLTexture(pTexture);
+  m_pTexture = new CGLTexture(pTexture, false);
 #endif
   m_iDelay = 2 * iDelay;
   m_iWidth = iWidth;
@@ -1153,7 +1153,7 @@ void CGLTexture::LoadToGPU()
 {
   if (m_loadedToGPU)
     return;
-          
+            
   // Have OpenGL generate a texture object handle for us
   glGenTextures(1, &id);
  
@@ -1168,7 +1168,7 @@ void CGLTexture::LoadToGPU()
  
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
                GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
-               
+
   delete [] m_pixels;
   m_pixels = NULL;
   

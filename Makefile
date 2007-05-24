@@ -48,6 +48,7 @@ unrarxlib:
 libpython: 
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
+	$(MAKE) -C xbmc/lib/libPython/linux
 libgoahead: 
 	$(MAKE) -C xbmc/lib/libGoAhead
 
