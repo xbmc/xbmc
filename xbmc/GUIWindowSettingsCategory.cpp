@@ -768,8 +768,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("filelists.allowfiledeletion"))
     {
-       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+    }
+    else if (strSetting.Equals("filelists.disableaddsourcebuttons"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("myprograms.ntscmode"))
     { // set visibility based on our other setting...
