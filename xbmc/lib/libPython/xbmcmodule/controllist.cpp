@@ -37,6 +37,10 @@ namespace PYXBMC
     //char* cShadowColor = NULL;
     self = (ControlList*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strFont) string();    
+    new(&self->strTextureButton) string();    
+    new(&self->strTextureButtonFocus) string();
+    new(&self->vecItems) std::vector<PYXBMC::ListItem*>();
 
     // create a python spin control
     self->pControlSpin = (ControlSpin*)ControlSpin_New();
@@ -124,7 +128,12 @@ namespace PYXBMC
       ++it;
     }
     self->vecItems.clear();
-
+    self->vecItems.~vector();
+    
+    self->strFont.~string();
+    self->strTextureButton.~string();
+    self->strTextureButtonFocus.~string();
+    
     self->ob_type->tp_free((PyObject*)self);
   }
 
