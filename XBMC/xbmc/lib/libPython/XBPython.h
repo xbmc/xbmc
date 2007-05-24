@@ -73,6 +73,7 @@ private:
   PyList vecPyList;
   PlayerCallbackList vecPlayerCallbackList;
   CRITICAL_SECTION	m_critSection;
+  LibraryLoader*    m_pDll;
 };
 
 extern XBPython g_pythonParser;

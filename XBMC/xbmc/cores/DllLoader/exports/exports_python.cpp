@@ -6,11 +6,13 @@
 #else
 #include <sys/types.h>
 #include <utime.h>
+#include <dirent.h>
 #endif
 #include <sys/stat.h>
 #include <stdio.h>
 
 #include "../DllLoaderContainer.h"
+#include "../../../Util.h"
 
 // file io functions
 #ifndef _LINUX
@@ -22,8 +24,10 @@
     int iSize_##str = wcslen(str); \
     for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
 #else
+
 #define CORRECT_SEP_STR(str)
-#define CORRECT_SEP_WSTR(str) 
+#define CORRECT_SEP_WSTR(str)
+
 #endif
 
 #include "../dll_tracker_file.h"
@@ -169,6 +173,15 @@ FILE* xbp_fopen(const char *filename, const char *mode)
   return fopen(cName, mode);
 }
 
+#ifdef _LINUX
+FILE* xbp_fopen64(const char *filename, const char *mode)
+{
+  CStdString strName = _P(filename);
+  // don't use emulated files, they do not work in python yet
+  return fopen64(strName.c_str(), mode);
+}
+#endif
+
 int xbp_fclose(FILE* stream)
 {
   return dll_fclose(stream);
@@ -238,6 +251,14 @@ int xbp_dup2(int fd1, int fd2)
 {
   return dup2(fd1, fd2);
 }
+
+#ifdef _LINUX
+DIR *xbp_opendir(const char *name)
+{
+  CStdString strName = _P(name);
+  return opendir(strName.c_str());
+}
+#endif
 
 } // extern "C"
 

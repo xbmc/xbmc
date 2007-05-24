@@ -102,10 +102,19 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
+#ifndef _LINUX
   strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ";");
+#else
+  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ":");
+#endif
 
   strcpy(path, sourcedir);
+
+#ifndef _LINUX
   strcat(path, dll_getenv("PYTHONPATH"));
+#else
+  strcat(path, getenv("PYTHONPATH"));
+#endif
 
   // set current directory and python's path.
   if (argv != NULL)
@@ -113,6 +122,11 @@ void XBPyThread::Process()
     PySys_SetArgv(argc, argv);
   }
   PySys_SetPath(path);
+
+#ifdef _LINUX
+  // Replace the : at the end with ; so it will be EXACTLY like the xbox version
+  strcpy(strrchr(sourcedir, ':'), ";");
+#endif  
   xbp_chdir(sourcedir); // XXX, there is a ';' at the end
 
   if (type == 'F')

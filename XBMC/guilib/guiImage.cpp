@@ -174,6 +174,7 @@ void CGUIImage::Render()
 #ifdef HAS_GL_EXTENSIONS
     glActiveTextureARB(GL_TEXTURE0_ARB);
 #endif
+    texture->LoadToGPU();
     glBindTexture(GL_TEXTURE_2D, texture->id);
     glEnable(GL_TEXTURE_2D);
     
