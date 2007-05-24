@@ -32,6 +32,10 @@ namespace PYXBMC
 
     self = (ControlCheckMark*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strFont) string();    
+    new(&self->strText) string();    
+    new(&self->strTextureFocus) string();    
+    new(&self->strTextureNoFocus) string();    
 
     // set up default values in case they are not supplied
     self->dwCheckWidth = 30;
@@ -88,6 +92,10 @@ namespace PYXBMC
 
   void ControlCheckMark_Dealloc(ControlCheckMark* self)
   {
+    self->strFont.~string();
+    self->strText.~string();
+    self->strTextureFocus.~string();
+    self->strTextureNoFocus.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
