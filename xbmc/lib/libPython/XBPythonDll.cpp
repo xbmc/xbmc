@@ -270,7 +270,9 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
+#ifndef _LINUX
       dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
+#endif
       dll.ResolveExport(DLL_FUNCTION(Py_MakePendingCalls)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_SaveThread)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_RestoreThread)) &&
