@@ -2513,10 +2513,6 @@ demux_mkv_open (demuxer_t *demuxer)
   int i, version, cont = 0;
   char *str;
 
-#ifdef USE_ICONV
-  subcp_open(NULL);
-#endif
-
   stream_seek(s, s->start_pos);
   str = ebml_read_header (s, &version);
   if (str == NULL || strcmp (str, "matroska") || version > 2)
@@ -2786,9 +2782,6 @@ demux_close_mkv (demuxer_t *demuxer)
   if (mkv_d)
     {
       int i;
-#ifdef USE_ICONV
-      subcp_close();
-#endif
       free_cached_dps (demuxer);
       if (mkv_d->tracks)
         {
@@ -3976,7 +3969,7 @@ demux_mkv_get_sub_lang(demuxer_t *demuxer, int track_num, char *lang,
 {
   mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
   mkv_track_t *track = demux_mkv_find_track_by_num (mkv_d, track_num, MATROSKA_TRACK_SUBTITLE);
-  if (track->language && strcmp(track->language, "und"))
+  if (track && track->language && strcmp(track->language, "und"))
     strlcpy(lang, track->language, maxlen);
 }
 
@@ -3996,7 +3989,7 @@ demux_mkv_get_audio_lang(demuxer_t *demuxer, int track_num, char *lang,
 {
   mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
   mkv_track_t *track = demux_mkv_find_track_by_num (mkv_d, track_num, MATROSKA_TRACK_AUDIO);
-  if (track->language && strcmp(track->language, "und"))
+  if (track && track->language && strcmp(track->language, "und"))
     strlcpy(lang, track->language, maxlen);
 }
 
