@@ -19,7 +19,8 @@ namespace PYXBMC
 
     self = (Action*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-
+    new(&self->strAction) string(); 
+    
     //if (!PyArg_ParseTuple(args, "l", &self->action)) return NULL;
     //self->action = -1;
 
@@ -36,7 +37,8 @@ namespace PYXBMC
   PyObject* Action_FromAction(const CAction& action)
   {
     Action* pyAction = (Action*)Action_Type.tp_alloc(&Action_Type, 0);
-
+    new(&pyAction->strAction) string(); 
+    
     if (pyAction)
     {
       pyAction->id = action.wID;
@@ -52,6 +54,7 @@ namespace PYXBMC
 
   void Action_Dealloc(Action* self)
   {
+    self->strAction.~string();  
     self->ob_type->tp_free((PyObject*)self);
   }
 
