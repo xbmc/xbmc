@@ -1,7 +1,5 @@
 #include "config.h"
 
-#ifdef USE_STREAM_CACHE
-
 // Initial draft of my new cache system...
 // Note it runs in 2 processes (using fork()), but doesn't requires locking!!
 // TODO: seeking, data consistency checking
@@ -27,14 +25,13 @@ static DWORD WINAPI ThreadProc(void* s);
 #endif
 
 #include "mp_msg.h"
+#include "help_mp.h"
 
 #include "stream.h"
-extern int xbmc_cancel;
+#include "input/input.h"
 
 int stream_fill_buffer(stream_t *s);
 int stream_seek_long(stream_t *s,off_t pos);
-
-extern int mp_input_check_interrupt(int time);
 
 typedef struct {
   // constats:
@@ -56,8 +53,9 @@ typedef struct {
 //  int fifo_flag;  // 1 if we should use FIFO to notice cache about buffer reads.
   // callback
   stream_t* stream;
-	int m_bRunning;
-	int m_bStopped;
+#ifdef _XBOX
+  int running;
+#endif
 } cache_vars_t;
 
 static int min_fill=0;
@@ -76,8 +74,8 @@ void mplayer_setcache_backbuffer(int iSize)
 
 void cache_stats(cache_vars_t* s){
   int newb=s->max_filepos-s->read_filepos; // new bytes in the buffer
-  printf("0x%06X  [0x%06X]  0x%06X   ",(int)s->min_filepos,(int)s->read_filepos,(int)s->max_filepos);
-  printf("%3d %%  (%3d%%)\n",100*newb/s->buffer_size,100*min_fill/s->buffer_size);
+  mp_msg(MSGT_CACHE,MSGL_INFO,"0x%06X  [0x%06X]  0x%06X   ",(int)s->min_filepos,(int)s->read_filepos,(int)s->max_filepos);
+  mp_msg(MSGT_CACHE,MSGL_INFO,"%3d %%  (%3d%%)\n",100*newb/s->buffer_size,100*min_fill/s->buffer_size);
 }
 
 int cache_read(cache_vars_t* s,unsigned char* buf,int size){
@@ -90,10 +88,13 @@ int cache_read(cache_vars_t* s,unsigned char* buf,int size){
     if(s->read_filepos>=s->max_filepos || s->read_filepos<s->min_filepos){
 	// eof?
 	if(s->eof) break;
-	// waiting for buffer fill...
-	    Sleep(20);//READ_USLEEP_TIME); // 10ms
 #ifdef _XBOX
-      cache_fill_status=0; //Force fill status to 0
+        cache_fill_status=0; //Force fill status to 0
+	if(mp_input_check_interrupt(READ_USLEEP_TIME))
+		return 0;
+#else
+	// waiting for buffer fill...
+	usec_sleep(READ_USLEEP_TIME); // 10ms
 #endif
 	continue; // try again...
     }
@@ -137,7 +138,7 @@ int cache_fill(cache_vars_t* s){
   
   if(read<s->min_filepos || read>s->max_filepos){
       // seek...
-      mp_msg(MSGT_CACHE,MSGL_DBG2,"Out of boundaries... seeking to 0x%X  \n",read);
+      mp_msg(MSGT_CACHE,MSGL_DBG2,"Out of boundaries... seeking to 0x%"PRIX64"  \n",(int64_t)read);
       // streaming: drop cache contents only if seeking backward or too much fwd:
       if(s->stream->type!=STREAMTYPE_STREAM ||
           read<s->min_filepos || read>=s->max_filepos+s->buffer_size)
@@ -146,7 +147,7 @@ int cache_fill(cache_vars_t* s){
         s->min_filepos=s->max_filepos=read; // drop cache content :(
         if(s->stream->eof) stream_reset(s->stream);
         stream_seek(s->stream,read);
-        mp_msg(MSGT_CACHE,MSGL_DBG2,"Seek done. new pos: 0x%X  \n",(int)stream_tell(s->stream));
+        mp_msg(MSGT_CACHE,MSGL_DBG2,"Seek done. new pos: 0x%"PRIX64"  \n",(int64_t)stream_tell(s->stream));
       }
   }
   
@@ -207,12 +208,10 @@ int cache_fill(cache_vars_t* s){
   }
 #ifdef _XBOX
   int fill = 100*(s->max_filepos-s->read_filepos)/s->buffer_size;
-  if(s->eof)
-    cache_fill_status=100*(s->buffer_size-s->back_size)/s->buffer_size; //Report full buffer all the time
-  else if(cache_fill_status == 0)
-    cache_fill_status= fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
+  if(s->eof || cache_fill_status >= 0)
+    cache_fill_status=fill; //Report full buffer all the time
   else
-    cache_fill_status= fill;
+    cache_fill_status=fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
 #endif
   return len;
   
@@ -251,7 +250,7 @@ cache_vars_t* cache_init(int size,int sector){
 
   s->fill_limit=8*sector;
 #ifdef _XBOX
-  s->back_size = (size / 100) * cache_back_buffer;
+  s->back_size = cache_back_buffer * s->buffer_size / 100;
 #else
   s->back_size=size/2;
 #endif
@@ -266,10 +265,12 @@ void cache_uninit(stream_t *s) {
   kill(s->cache_pid,SIGKILL);
   waitpid(s->cache_pid,NULL,0);
 #else
-	// stop thread
-	
-	c->m_bRunning=0;
-	while (!c->m_bStopped) Sleep(20);
+#ifdef _XBOX
+  c->running=0;
+  WaitForSingleObject((HANDLE)s->cache_pid, INFINITE);
+#else
+  TerminateThread((HANDLE)s->cache_pid,0);  
+#endif
   free(c->stream);
 #endif
   if(!c) return;
@@ -321,38 +322,27 @@ int stream_enable_cache(stream_t *stream,int size,int min,int prefill){
     stream_t* stream2=malloc(sizeof(stream_t));
     memcpy(stream2,s->stream,sizeof(stream_t));
     s->stream=stream2;
-	s->m_bRunning=1;
-	s->m_bStopped=0;
+#ifdef _XBOX
+    s->running=1;
+#endif
     stream->cache_pid = CreateThread(NULL,0,ThreadProc,s,0,&threadId);
+#ifdef _XBOX
+    SetThreadPriority((HANDLE)stream->cache_pid,THREAD_PRIORITY_ABOVE_NORMAL);
+#endif
 #endif
     // wait until cache is filled at least prefill_init %
-    mp_msg(MSGT_CACHE,MSGL_V,"CACHE_PRE_INIT: %d [%d] %d  pre:%d  eof:%d  \n",
-	s->min_filepos,s->read_filepos,s->max_filepos,min,s->eof);
+    mp_msg(MSGT_CACHE,MSGL_V,"CACHE_PRE_INIT: %"PRId64" [%"PRId64"] %"PRId64"  pre:%d  eof:%d  \n",
+	(int64_t)s->min_filepos,(int64_t)s->read_filepos,(int64_t)s->max_filepos,min,s->eof);
     while(s->read_filepos<s->min_filepos || s->max_filepos-s->read_filepos<min){
-      	mp_msg(MSGT_CACHE,MSGL_STATUS,"\rCache fill: %5.2f%% (%d bytes)    ",
+	mp_msg(MSGT_CACHE,MSGL_STATUS,MSGTR_CacheFill,
 	    100.0*(float)(s->max_filepos-s->read_filepos)/(float)(s->buffer_size),
-	    s->max_filepos-s->read_filepos
+	    (int64_t)s->max_filepos-s->read_filepos
 	    );
-			if(s->eof) 
-			{
-				printf("stream_enable_cache() eof detected\n");
-				break; // file is smaller than prefill size
-			}
-			if(!s->m_bRunning) 
-			{
-				printf("stream_enable_cache() Thread stop detected\n");
-				break;
-			}
-			Sleep(20);
-    }
-#ifdef _XBOX
-	if(xbmc_cancel) // make sure we exit it with a failure if something canceled.
-	{
-		printf("Cache: User canceled"); 
+	    if(s->eof) break; // file is smaller than prefill size
+	    if(mp_input_check_interrupt(PREFILL_SLEEP_TIME))
 		return 0;
 	}
-#endif
-
+        mp_msg(MSGT_CACHE,MSGL_STATUS,"\n");
 	return 1; // parent exits
   }
   
@@ -363,24 +353,13 @@ static DWORD WINAPI ThreadProc(void*s){
   
 // cache thread mainloop:
   signal(SIGTERM,exit_sighandler); // kill
-  cache_vars_t* pCacheVars=(cache_vars_t*)s;
-  SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_ABOVE_NORMAL);
-#ifdef _XBOX
-  while( pCacheVars->m_bRunning && !xbmc_cancel)
-#else
-  while( pCacheVars->m_bRunning)
-#endif
-	{
-    if(!cache_fill((cache_vars_t*)s))
-		{
-			Sleep(10);//usec_sleep(FILL_USLEEP_TIME); // idle
+  cache_vars_t* vars=(cache_vars_t*)s;  
+  while(vars->running){
+    if(!cache_fill((cache_vars_t*)s)){
+      usec_sleep(FILL_USLEEP_TIME); // idle
     }
-	 //cache_stats( pCacheVars->cache_data);
+//	 cache_stats(s->cache_data);
   }
-#ifdef _XBOX
-	pCacheVars->m_bRunning=0;
-#endif
-	pCacheVars->m_bStopped=1;
 }
 
 int cache_stream_fill_buffer(stream_t *s){
@@ -412,15 +391,12 @@ int cache_stream_seek_long(stream_t *stream,off_t pos){
   s=stream->cache_data;
 //  s->seek_lock=1;
   
-  mp_msg(MSGT_CACHE,MSGL_DBG2,"CACHE2_SEEK: 0x%X <= 0x%X (0x%X) <= 0x%X  \n",s->min_filepos,(int)pos,s->read_filepos,s->max_filepos);
+  mp_msg(MSGT_CACHE,MSGL_DBG2,"CACHE2_SEEK: 0x%"PRIX64" <= 0x%"PRIX64" (0x%"PRIX64") <= 0x%"PRIX64"  \n",s->min_filepos,pos,s->read_filepos,s->max_filepos);
 
   newpos=pos/s->sector_size; newpos*=s->sector_size; // align
   stream->pos=s->read_filepos=newpos;
   s->eof=0; // !!!!!!!
-#ifdef _XBOX
-    while((s->read_filepos>=s->max_filepos || s->read_filepos<s->min_filepos) && s->eof==0)
-      Sleep(20); //Make sure we sleep here instead of in reader as that might cause cachesize to bereported as 0
-#endif
+
   cache_stream_fill_buffer(stream);
 
   pos-=newpos;
@@ -432,12 +408,7 @@ int cache_stream_seek_long(stream_t *stream,off_t pos){
 //  stream->buf_pos=stream->buf_len=0;
 //  return 1;
 
-#ifdef _LARGEFILE_SOURCE
-  mp_msg(MSGT_CACHE,MSGL_V,"cache_stream_seek: WARNING! Can't seek to 0x%llX !\n",(long long)(pos+newpos));
-#else
-  mp_msg(MSGT_CACHE,MSGL_V,"cache_stream_seek: WARNING! Can't seek to 0x%X !\n",(pos+newpos));
-#endif
+  mp_msg(MSGT_CACHE,MSGL_V,"cache_stream_seek: WARNING! Can't seek to 0x%"PRIX64" !\n",(int64_t)(pos+newpos));
   return 0;
 }
 
-#endif
