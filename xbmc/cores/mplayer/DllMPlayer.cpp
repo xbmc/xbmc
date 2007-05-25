@@ -21,21 +21,9 @@ ao_data_t* (__cdecl* pGetAOData)(void);
 void (__cdecl* pSetVideoFunctions)(vo_functions_t*);
 void (__cdecl* pMplayerPutKey)(int);
 void (__cdecl* pVODrawText)(int dxs, int dys, void (*draw_alpha)(int x0, int y0, int w, int h, unsigned char* src, unsigned char *srca, int stride));
-void (__cdecl* pAspectSaveScreenres)(int scrw, int scrh);
-void (__cdecl* pAspectSavePrescale)(int scrw, int scrh);
-void (__cdecl* pAspectSaveOrig)(int scrw, int scrh);
-void (__cdecl* pAspect)(unsigned int*, unsigned int*, int);
-void (__cdecl* pVODrawAlphayv12)(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
-void (__cdecl* pVODrawAlphayuy2)(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
-void (__cdecl* pVODrawAlphargb24)(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
-void (__cdecl* pVODrawAlphargb32)(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
-void (__cdecl* pVODrawAlphargb15)(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
-void (__cdecl* pVODrawAlphargb16)(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
 __int64 (__cdecl* pGetPTS)();
 BOOL (__cdecl* pHasVideo)();
 BOOL (__cdecl* pHasAudio)();
-//int (__cdecl* pImageOutput)(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced);
-void (__cdecl* pInitColorConversions)();
 void (__cdecl* pSetCacheSize)(int);
 void (__cdecl* pSetCacheBackBuffer)(int);
 void (__cdecl* pGetAudioInfo)(char* strFourCC, char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR);
@@ -67,7 +55,6 @@ int (__cdecl* pgetSubtitleStreamInfo)(int iStream, stream_language_t* stream_inf
 char* (__cdecl* pgetSubtitleInfo)(int iStream, xbmc_subtitle* sub);
 int (__cdecl* pgetTime)();
 __int64 (__cdecl* pgetCurrentTime)();
-void (__cdecl* pShowOSD)(int);
 void (__cdecl* pGetCurrentModule)(char* s, int n);
 void (__cdecl* pExitPlayer)(char* how);
 subtitle* (__cdecl* pGetCurrentSubtitle)();
@@ -78,10 +65,6 @@ IUnknown* (__cdecl* pMemAllocatorCreate)() = NULL;
 
 extern "C"
 {
-  void mplayer_showosd(int bonoff)
-  {
-    return pShowOSD(bonoff);
-  }
   __int64 mplayer_getCurrentTime()
   {
     return pgetCurrentTime();
@@ -253,16 +236,6 @@ extern "C"
       pSetCacheBackBuffer(iCacheBackBuffer);
   }
 
-  void init_color_conversions()
-  {
-    pInitColorConversions();
-  }
-  //int image_output(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced)
-  //{
-  //  return pImageOutput(image, width, height, edged_width, dst, dst_stride, csp, interlaced);
-  //}
-
-
   BOOL mplayer_HasVideo()
   {
     return pHasVideo();
@@ -343,50 +316,6 @@ extern "C"
   int audio_out_format_bits(int format)
   {
     return pAudioOutFormatBits(format);
-  }
-
-  void vo_draw_alpha_yv12(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride)
-  {
-    pVODrawAlphayv12(w, h, src, srca, srcstride, dstbase, dststride);
-  }
-  void vo_draw_alpha_yuy2(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride)
-  {
-    pVODrawAlphayuy2(w, h, src, srca, srcstride, dstbase, dststride);
-  }
-  void vo_draw_alpha_rgb24(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride)
-  {
-    pVODrawAlphargb24(w, h, src, srca, srcstride, dstbase, dststride);
-  }
-  void vo_draw_alpha_rgb32(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride)
-  {
-    pVODrawAlphargb32(w, h, src, srca, srcstride, dstbase, dststride);
-  }
-  void vo_draw_alpha_rgb15(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride)
-  {
-    pVODrawAlphargb15(w, h, src, srca, srcstride, dstbase, dststride);
-  }
-  void vo_draw_alpha_rgb16(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride)
-  {
-    pVODrawAlphargb16(w, h, src, srca, srcstride, dstbase, dststride);
-  }
-
-
-
-  void aspect_save_orig(int orgw, int orgh)
-  {
-    pAspectSaveOrig(orgw, orgh);
-  }
-  void aspect(unsigned int *srcw, unsigned int *srch, int zoom)
-  {
-    pAspect(srcw, srch, zoom);
-  }
-  void aspect_save_prescale(int prew, int preh)
-  {
-    pAspectSavePrescale(prew, preh);
-  }
-  void aspect_save_screenres(int scrw, int scrh)
-  {
-    pAspectSaveScreenres(scrw, scrh);
   }
 
   void vo_draw_text(int dxs, int dys, void (*mydrawalpha)(int x0, int y0, int w, int h, unsigned char* src, unsigned char *srca, int stride))
@@ -477,21 +406,9 @@ extern "C"
     dll.ResolveExport("mplayer_close_file", (void**)&pCloseFile);
     dll.ResolveExport("mplayer_put_key", (void**)&pMplayerPutKey);
     dll.ResolveExport("vo_draw_text", (void**)&pVODrawText);
-    dll.ResolveExport("aspect_save_screenres", (void**)&pAspectSaveScreenres);
-    dll.ResolveExport("aspect_save_prescale", (void**)&pAspectSavePrescale);
-    dll.ResolveExport("aspect_save_orig", (void**)&pAspectSaveOrig);
-    dll.ResolveExport("aspect", (void**)&pAspect);
-    dll.ResolveExport("vo_draw_alpha_yv12", (void**)&pVODrawAlphayv12);
-    dll.ResolveExport("vo_draw_alpha_yuy2", (void**)&pVODrawAlphayuy2);
-    dll.ResolveExport("vo_draw_alpha_rgb24", (void**)&pVODrawAlphargb24);
-    dll.ResolveExport("vo_draw_alpha_rgb32", (void**)&pVODrawAlphargb32);
-    dll.ResolveExport("vo_draw_alpha_rgb15", (void**)&pVODrawAlphargb15);
-    dll.ResolveExport("vo_draw_alpha_rgb16", (void**)&pVODrawAlphargb16);
     dll.ResolveExport("mplayer_get_pts", (void**)&pGetPTS);
     dll.ResolveExport("mplayer_HasVideo", (void**)&pHasVideo);
     dll.ResolveExport("mplayer_HasAudio", (void**)&pHasAudio);
-    //dll.ResolveExport("image_output", (void**)&pImageOutput);
-    dll.ResolveExport("init_color_conversions", (void**)&pInitColorConversions);
     dll.ResolveExport("mplayer_setcache_size", (void**)&pSetCacheSize);
     dll.ResolveExport("mplayer_setcache_backbuffer", (void**)&pSetCacheBackBuffer);
     dll.ResolveExport("mplayer_GetAudioInfo", (void**)&pGetAudioInfo);
@@ -523,7 +440,6 @@ extern "C"
     dll.ResolveExport("mplayer_getTime", (void**)&pgetTime);
     dll.ResolveExport("mplayer_ToFFRW", (void**)&pToFFRW);
     dll.ResolveExport("mplayer_getCurrentTime", (void**)&pgetCurrentTime);
-    dll.ResolveExport("mplayer_showosd", (void**)&pShowOSD);
     dll.ResolveExport("mplayer_get_current_module", (void**)&pGetCurrentModule);
     dll.ResolveExport("exit_player", (void**)&pExitPlayer);
     dll.ResolveExport("mplayer_getCurrentSubtitle", (void**) &pGetCurrentSubtitle);
@@ -534,6 +450,5 @@ extern "C"
 
     pSetVideoFunctions(&video_functions);
     pSetAudioFunctions(&audio_functions);
-    init_color_conversions();
   }
 };
