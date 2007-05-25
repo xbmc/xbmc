@@ -1,6 +1,6 @@
 python24-i486-linux.so : wrapper_python.o /usr/lib/python2.4/config/libpython2.4-pic.a wrapper_python.def
-	mkdir tmp
-	(cd tmp; ar x /usr/lib/python2.4/config/libpython2.4-pic.a)
+	if [ \! -d tmp ]; then mkdir tmp; fi
+	(cd ./tmp; ar x /usr/lib/python2.4/config/libpython2.4-pic.a)
 	gcc -shared -o $@ tmp/*.o `cat wrapper_python.def` wrapper_python.o
 	rm -rf tmp
 	cp -f $@ ../../../../system/python/
