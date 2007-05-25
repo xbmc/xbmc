@@ -113,7 +113,7 @@ void XBPyThread::Process()
 #ifndef _LINUX
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
-  strcat(path, getenv("PYTHONPATH"));
+  strcat(path, Py_GetPath());
 #endif
 
   // set current directory and python's path.

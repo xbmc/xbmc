@@ -45,37 +45,31 @@ int xbp_chdir(const char* dirname);
 
 FILE *__wrap_fopen64(const char *path, const char *mode)
 {
-  printf("called fopen: %s\n", path);
   return xbp_fopen64(path, mode);
 }
 
 DIR* __wrap_opendir(const char *name)
 {
-  printf("opendir called: %s\n",name);
   return xbp_opendir(name);
 }
 
 int __wrap_access(const char* path, int mode)
 {
-  printf("called access: %s\n", path);
   return xbp_access(path, mode);
 }
 
 char* __wrap_getcwd(char *buf, int size)
 {
-  printf("called getwd\n");
   return xbp_getcwd(buf, size);
 }
 
 int __wrap_chdir(const char *dirname)
 {
-  printf("called chdir\n");
   return xbp_chdir(dirname);
 }
 
 int __wrap_open(const char *file, int oflag, ...)
 {
-  printf("called open: %s\n", file);
 	return dll_open(file, oflag);
 }
 
