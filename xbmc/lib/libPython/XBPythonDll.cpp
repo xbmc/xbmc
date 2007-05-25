@@ -113,6 +113,9 @@ extern "C"
   FUNCTION(PyErr_Occurred)
   FUNCTION8(PyRun_SimpleFile)
   FUNCTION4(PySys_SetPath)
+#ifdef _LINUX
+  FUNCTION(Py_GetPath)
+#endif
   FUNCTION4(PyThreadState_Delete)
   FUNCTION4(PyThreadState_Clear)
 
@@ -257,6 +260,9 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyErr_Occurred)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFile)) &&
       dll.ResolveExport(DLL_FUNCTION(PySys_SetPath)) &&
+#ifdef _LINUX
+      dll.ResolveExport(DLL_FUNCTION(Py_GetPath)) &&
+#endif
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Delete)) &&
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Clear)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(Py_BuildValue)) &&
