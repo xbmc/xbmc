@@ -1,76 +1,61 @@
 #!/bin/sh
 #
 # $Header$
-#unix shell script to create a ready-to-install xbmc build
-#from a cvs source tree containing compiled binaries
+#unix shell script to fetch latest svn, make, then run the fresh compilation
+#script should work if you followed README.linux and have extracted a T3CH builds XBMC folder to $HOME/Desktop
+#in all honesty, it should be considered more of a template than anything, since most users will probably want to modify it.
+#script has only been tested on Ubuntu 7.04 / pike 20070525
 
-source="/xbox/XBMC"
-rbase="/xbox/xr"
-name="xbmc-`date +%Y-%m-%d`"
-dest="$rbase/$name"
-mkdir -vp $dest
+#userconfig begins
+ home_folder=$HOME
+ target_folder=/Desktop/XBMC #where under $HOME the extracted T3CH XBMC folder is located
+#userconfig ends
 
-echo "---> making a XBMC release ..."
-echo "compiled directory : [$source]"
-echo "output directory   : [$dest]"
+#checking if all necessary packages are installed, this is something that changes often but I'll try and keep it updated.
+ dpkg -l g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4
+ if [ $? -ne 0 ]
+  then
+  echo "$0 : ***ERROR*** You're missing one (or more) of the required packages that are listed in README.linux"
+  exit 1
+ fi
 
-echo "---> copying system components ..."
-cd $source
-cp -v Release/default.xbe $dest
+ clear
+ echo "---> Doing a SVN Checkout"
+ svn update
+ clear
 
-# to make the xbe work with very old modchips
-# xbepatch default.xbe retail.xbe
-# mv retail.xbe default.xbe
+ echo "---> cleaning old compile ..."
+ make clean
+ clear
 
-cp -v *.xml *.txt $dest
-cp -rv skin $dest
-cp -rv credits $dest
-cp -rv language $dest
-cp -rv screensavers $dest
-cp -rv visualisations $dest
-cp -rv system $dest
-cp -rv media $dest
-cp -rv sounds $dest
-cp -rv python $dest
-mkdir -vp $dest/web/
-rar x web/web.rar $dest/web/
+ echo "---> ... and making a new compile"
+ make
+ if [ $? -ne 0 ]
+  then
+  echo "$0 : ***ERROR*** Build failed, aborting..."
+  exit 1
+ fi
+ clear
 
-if [ ! -f $dest/system/players/paplayer/in_mp3.dll ]; then
-  echo "missing in_mp3.dll" 
-  echo "see system/players/paplayer/Place in_mp3.dll here.txt"
-else
-  rm -fv $dest/system/players/paplayer/Place\ in_mp3.dll\ here.txt
-fi
+ echo "---> Copying file "
+ cd $home_folder
+ cp -v XBMC/XboxMediaCenter $home_folder$target_folder
+ if [ $? -ne 0 ]
+  then
+  echo "XBMC is already running from the target folder, press 'k' to Kill all running XBMC, or any other key to abort"
+  read question
+  if [ $question = k ]
+   then
+   killall -1 XboxMediaCenter
+   cp -v XBMC/XboxMediaCenter $home_folder$target_folder
+   echo "---> XBMC Killed & Replaced"
+    else
+    echo "Aborting"
+    exit 1
+  fi
+ fi
+ clear
 
-# win32 DLLs for wmv8/9, realmedia and quicktime support 
-# (see XBMC/system/players/mplayer/codecs/readme.txt)
-cp -v /xbox/win_dlls/*dll $dest/system/players/mplayer/codecs/
-cp -v /xbox/win_dlls/QuickTime* $dest/system/players/mplayer/codecs/
-
-echo "---> making release leaner ..."
-# make pm3 leaner
-cd $dest/skin/Project\ Mayhem\ III/
-rm -rfv media/*.png media/*.jpg media/*.gif
-
-# make credit leaner
-rm -rfv $dest/credits/src
-rm -v $dest/media/dsstdfx.bin
-
-cd $dest
-# make leaner
-find . \( -name CVS -a -type d \) -exec rm -rf {} \; 
-find . \( \( -name .cvsignore -o -name Thumbs.db -o -name .DS_Store \) \
--a -type f \) -exec rm -fv "{}" \;
-
-# remove anything else e.g. extra languages etc
-
-
-# make bundle
-cd $rbase
-rar a -r -m5 $name.rar $name
-ls -l $name.rar
-#tar cvfz $name.tar.gz $name
-#ls -l $name.tar.gz
-
-echo "---> XBMC release is ready!"
-
+ echo "---> Running XBMC"
+ $home_folder$target_folder/XboxMediaCenter
+ echo "Thanks for testing Linux XBMC!!"
