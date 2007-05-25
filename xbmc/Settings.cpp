@@ -268,8 +268,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_detectAsUdf = false;
   g_settings.bUseLoginScreen = false;
 
-  g_advancedSettings.m_musicThumbs = "folder.jpg";
-  g_advancedSettings.m_dvdThumbs = "folder.jpg";
+  g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg";
+  g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
