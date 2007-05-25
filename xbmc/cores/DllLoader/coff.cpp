@@ -183,7 +183,9 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
     return 0;
 
   // alloc aligned memory
-  hModule = VirtualAlloc(0, tempWindowsHeader.SizeOfImage, MEM_COMMIT, PAGE_READWRITE);
+  hModule = VirtualAllocEx(0, (PVOID)tempWindowsHeader.ImageBase, tempWindowsHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+  if (hModule == NULL)
+    hModule = VirtualAlloc(0, tempWindowsHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
   if (hModule == NULL)
     return 0;   //memory allocation fails
 
@@ -906,6 +908,9 @@ void CoffLoader::PerformFixups(void)
   char *EndData;
 
   EntryAddress = (unsigned long)RVA2Data(EntryAddress);
+
+  if( (PVOID)WindowsHeader->ImageBase == hModule )
+    return;
 
   if ( !Directory )
     return ;
