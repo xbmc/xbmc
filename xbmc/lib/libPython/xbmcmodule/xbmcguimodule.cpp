@@ -1,6 +1,12 @@
 #include "stdafx.h"
+#ifndef _LINUX
 #include "../python/Python.h"
 #include "../python/structmember.h"
+#else
+#include <python2.4/Python.h>
+#include <python2.4/structmember.h>
+#include "../XBPythonDll.h"
+#endif
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
