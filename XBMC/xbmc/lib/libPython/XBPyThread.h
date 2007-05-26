@@ -1,7 +1,11 @@
 #ifndef XBPYTHREAD_H_
 #define XBPYTHREAD_H_
 
+#ifndef _LINUX
 #include "python/Python.h"
+#else
+#include <python2.4/Python.h>
+#endif
 #include "../../utils/Thread.h"
 
 class XBPyThread : public CThread

@@ -1,5 +1,10 @@
 #include "stdafx.h"
+#ifndef _LINUX
 #include "../python/Python.h"
+#else
+#include <python2.4/Python.h>
+#include "../XBPythonDll.h"
+#endif
 #include "listitem.h"
 #include "pyutil.h"
 
