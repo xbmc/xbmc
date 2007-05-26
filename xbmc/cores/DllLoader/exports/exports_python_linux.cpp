@@ -68,12 +68,12 @@ int xbp_rename(const char *oldname, const char *newname)
 int xbp_mkdir(const char *dirname)
 {
   CStdString strName = _P(dirname);
-
+/*
   // If the dir already exists, don't try to recreate it
   struct stat buf;
   if (stat(strName.c_str(), &buf) == 0 && S_ISDIR(buf.st_mode))
     return 0;
-    
+*/    
   return mkdir(strName.c_str(), 0755);
 }
 
@@ -105,6 +105,18 @@ DIR *xbp_opendir(const char *name)
 {
   CStdString strName = _P(name);
   return opendir(strName.c_str());
+}
+
+int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf)
+{
+  CStdString strName = _P(filename);
+  return __xstat64(ver, strName.c_str(), stat_buf);
+}
+
+int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
+{
+  CStdString strName = _P(filename);
+  return __lxstat64(ver, strName.c_str(), stat_buf);
 }
 
 } // extern "C"
