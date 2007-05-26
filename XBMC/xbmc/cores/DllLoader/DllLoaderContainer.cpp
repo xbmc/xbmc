@@ -300,7 +300,8 @@ void DllLoaderContainer::UnloadPythonDlls()
     char* name = m_dlls[i]->GetName();
     if (strstr(name, ".pyd") != NULL)
     {
-      ReleaseModule(m_dlls[i]);
+      LibraryLoader* pDll = m_dlls[i];
+      ReleaseModule(pDll);
       i = 0;
     }
   }
