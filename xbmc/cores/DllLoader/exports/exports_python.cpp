@@ -177,6 +177,7 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 FILE* xbp_fopen64(const char *filename, const char *mode)
 {
   CStdString strName = _P(filename);
+  printf("....%s\n", strName.c_str());
   // don't use emulated files, they do not work in python yet
   return fopen64(strName.c_str(), mode);
 }

@@ -68,13 +68,11 @@ extern Export export_kernel32[];
 extern Export export_msvcrt[];
 extern Export export_msvcr71[];
 extern Export export_pncrt[];
-extern Export export_xbp[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
 DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
-DllLoader xbp("xbp.dll",                  false, true, false, export_xbp);
 #endif
 
 void DllLoaderContainer::Clear()
