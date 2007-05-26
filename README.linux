@@ -5,18 +5,23 @@ I have tested this to work with Ubuntu.
 
 Getting the source code
 -----------------------
-sudo apt-get install subversion
-cd $HOME
-svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+# sudo apt-get install subversion
+# cd $HOME
+# svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
 Installing the required ubuntu packages
 ---------------------------------------
-sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4
+# sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4
 
 How to compile
 --------------
-cd $HOME/XBMC
-make
+OpenGL 3D version (requires gfx-adapter that has supported OpenGL hw acceleration, set bitdepth to 24bpp or 32bpp)
+# cd $HOME/XBMC
+# make
+
+SDL 2D version (much much slower GUI rendering but works on all adapters and bitdepths)
+# cd $HOME/XBMC
+# make sdl_2d
 
 How to run
 ----------
