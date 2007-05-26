@@ -2,7 +2,12 @@
 #include "../../../PlayListPlayer.h"
 #include "../../../Util.h"
 #include "pyplaylist.h"
+#ifndef _LINUX
 #include "../python/structmember.h"
+#else
+#include <python2.4/structmember.h>
+#include "../XBPythonDll.h"
+#endif
 #include "../../../PlayListFactory.h"
 #include "pyutil.h"
 

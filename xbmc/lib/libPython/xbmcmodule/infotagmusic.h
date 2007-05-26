@@ -1,4 +1,8 @@
+#ifndef _LINUX
 #include "../python/Python.h"
+#else
+#include <python2.4/Python.h>
+#endif
 
 #pragma once
 

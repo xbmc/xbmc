@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "dialog.h"
+#ifndef _LINUX
 #include "../python/Python.h"
+#else
+#include <python2.4/Python.h>
+#include "../XBPythonDll.h"
+#endif
 #include "pyutil.h"
 #include "../../../Application.h"
 #include "../xbmc/GUIDialogFileBrowser.h"

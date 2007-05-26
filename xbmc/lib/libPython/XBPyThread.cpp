@@ -1,7 +1,12 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
+#ifndef _LINUX
 #include "python/Python.h"
+#else
+#include <python2.4/Python.h>
+#include "XBPythonDll.h"
+#endif
 #include "Util.h"
 
 #include "XBPyThread.h"
