@@ -24,7 +24,8 @@ FILE* xbp_fopen(const char *filename, const char *mode);
 FILE* xbp_freopen(const char *path, const char *mode, FILE *stream);
 FILE* xbp_fopen64(const char *filename, const char *mode);
 DIR *xbp_opendir(const char *name);
-
+int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf);
+int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf);
 
 FILE *__wrap_fopen64(const char *path, const char *mode)
 {
@@ -104,4 +105,14 @@ int __wrap_rename(const char *oldname, const char *newname)
 int __wrap_mkdir(const char *dirname)
 {
   return xbp_mkdir(dirname);
+}
+
+int __wrap___xstat64(int ver, const char *filename, struct stat64 *stat_buf)
+{
+  return xbp__xstat64(ver, filename, stat_buf);
+}
+
+int __wrap___lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
+{
+  return xbp__lxstat64(ver, filename, stat_buf);
 }
