@@ -1,6 +1,12 @@
 #ifndef XBOX_RENDERER
 #define XBOX_RENDERER
 
+#ifndef _LINUX
+#include <SDL/SDL.h>
+#include "GraphicContext.h"
+#include "PlatformDefs.h"
+#endif
+
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -67,14 +73,17 @@ struct DRAWRECT
   float bottom;
 };
 
+#ifndef _LINUX
 static enum EFIELDSYNC
+#else
+enum EFIELDSYNC
+#endif
 {
   FS_NONE,
   FS_ODD,
   FS_EVEN,
   FS_BOTH,
 };
-
 
 struct YUVRANGE
 {
@@ -97,13 +106,19 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
+#ifndef _LINUX
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
+#endif
 
 class CXBoxRenderer
 {
 public:
+#ifndef _LINUX
   CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice);
+#else
+  CXBoxRenderer();
+#endif
   ~CXBoxRenderer();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
@@ -111,7 +126,12 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
+
+#ifndef _LINUX
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
+#else
+  void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
+#endif
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
@@ -147,7 +167,11 @@ protected:
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
+
+#ifndef _LINUX
   static const DWORD FVF_YV12VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX3;
+#endif
+
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
@@ -162,8 +186,14 @@ protected:
   bool m_bConfigured;
 
   // OSD stuff
+#ifndef _LINUX
   LPDIRECT3DTEXTURE8 m_pOSDYTexture[NUM_BUFFERS];
   LPDIRECT3DTEXTURE8 m_pOSDATexture[NUM_BUFFERS];
+#else
+  SDL_Surface * m_pOSDYTexture[NUM_BUFFERS];
+  SDL_Surface * m_pOSDATexture[NUM_BUFFERS];
+#endif
+
   float m_OSDWidth;
   float m_OSDHeight;
   DRAWRECT m_OSDRect;
@@ -176,7 +206,11 @@ protected:
   // Raw data used by renderer
   YV12Image m_image[NUM_BUFFERS];
 
+#ifndef _LINUX
   typedef LPDIRECT3DTEXTURE8 YUVPLANES[MAX_PLANES];
+#else
+  typedef SDL_Surface * YUVPLANES[MAX_PLANES];
+#endif
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
   typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
 
@@ -192,8 +226,10 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
+#ifndef _LINUX
   // render device
   LPDIRECT3DDEVICE8 m_pD3DDevice;
+#endif
 
   // pixel shader (low memory shader used in all renderers while in GUI)
   DWORD m_hLowMemShader;
@@ -209,3 +245,4 @@ protected:
 };
 
 #endif
+
