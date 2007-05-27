@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDDemux.h"
-#include "..\DVDCodecs\DVDCodecs.h"
-#include "..\..\..\LangCodeExpander.h"
+#include "../DVDCodecs/DVDCodecs.h"
+#include "../../../LangCodeExpander.h"
 
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {

@@ -2,7 +2,12 @@
 #pragma once
 
 class CDVDInputStream;
+
+#ifndef _LINUX
 enum CodecID;
+#else
+#include <ffmpeg/avcodec.h>
+#endif
 
 enum StreamType
 {
@@ -30,7 +35,7 @@ public:
     iDuration = 0;
     pPrivate = NULL;
     ExtraData = NULL;
-    ExtraSize = NULL;
+    ExtraSize = 0;
     language[0] = 0;
     disabled = false;
   }

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "..\DVDCodecs\Overlay\DVDOverlay.h"
+#include "../DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDSubtitleStream.h"
 
 class CDVDSubtitleParser
@@ -29,3 +29,4 @@ protected:
   CDVDSubtitleStream* m_pStream;
   char* m_strFileName;
 };
+

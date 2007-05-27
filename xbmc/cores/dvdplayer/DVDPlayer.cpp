@@ -2,18 +2,18 @@
 #include "stdafx.h"
 #include "DVDPlayer.h"
 
-#include "DVDInputStreams\DVDInputStream.h"
-#include "DVDInputStreams\DVDFactoryInputStream.h"
-#include "DVDInputStreams\DVDInputStreamNavigator.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDFactoryInputStream.h"
+#include "DVDInputStreams/DVDInputStreamNavigator.h"
 
-#include "DVDDemuxers\DVDDemux.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
-#include "DVDDemuxers\DVDFactoryDemuxer.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDDemuxers/DVDFactoryDemuxer.h"
 
-#include "DVDCodecs\DVDCodecs.h"
+#include "DVDCodecs/DVDCodecs.h"
 
-#include "..\..\util.h"
-#include "..\..\utils\GUIInfoManager.h"
+#include "../../Util.h"
+#include "../../utils/GUIInfoManager.h"
 #include "DVDPerformanceCounter.h"
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
@@ -133,7 +133,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown on open");
+    CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
     return false;
   }
 }
@@ -204,19 +204,19 @@ void CDVDPlayer::Process()
     m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
     if(!m_pDemuxer)
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Error creating demuxer");
+      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
       return;
     }
 
     if (!m_pDemuxer->Open(m_pInputStream))
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Error opening demuxer");
+      CLog::Log(LOGERROR, "%s - Error opening demuxer", __FUNCTION__);
       return;
     }
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when opeing demuxer");
+    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
     return;
   }
 
@@ -392,7 +392,7 @@ void CDVDPlayer::Process()
 
       if (!pStream) 
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Error demux packet doesn't belong to any stream");
+        CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
         continue;
       }
 
@@ -452,7 +452,7 @@ void CDVDPlayer::Process()
       }
       catch (...)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when attempting to open stream");
+        CLog::Log(LOGERROR, "%s - Exception thrown when attempting to open stream", __FUNCTION__);
         break;
       }
 
@@ -477,7 +477,7 @@ void CDVDPlayer::Process()
       }
       catch(...)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when processing demux packet");
+        CLog::Log(LOGERROR, "%s - Exception thrown when processing demux packet", __FUNCTION__);
         break;
       }
 
@@ -741,7 +741,7 @@ void CDVDPlayer::OnExit()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when trying to close down player, memory leak will follow");
+    CLog::Log(LOGERROR, "%s - Exception thrown when trying to close down player, memory leak will follow", __FUNCTION__);
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
   }
@@ -863,7 +863,8 @@ void CDVDPlayer::HandleMessages()
 
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
-          ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMsgPlayerSetState->GetState());
+          std:string s = pMsgPlayerSetState->GetState();
+          ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(s);
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
@@ -873,7 +874,7 @@ void CDVDPlayer::HandleMessages()
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when handling message");
+      CLog::Log(LOGERROR, "%s - Exception thrown when handling message", __FUNCTION__);
     }
     
     UnlockStreams();
@@ -1311,14 +1312,14 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 {
   if (!m_pDemuxer)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": No Demuxer");
+    CLog::Log(LOGERROR, "%s: No Demuxer", __FUNCTION__);
     return false;
   }
   
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
   if (!pStream)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Stream %d doesn't exist", iStream);
+    CLog::Log(LOGERROR, "%s: Stream %d doesn't exist", __FUNCTION__, iStream);
     return false;
   }
 
@@ -1327,7 +1328,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 
   if (pStream->type != STREAM_AUDIO)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Streamtype is not STREAM_AUDIO");
+    CLog::Log(LOGERROR, "%s: Streamtype is not STREAM_AUDIO", __FUNCTION__);
     return false;
   }
 
@@ -1362,14 +1363,14 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown in player");
+    CLog::Log(LOGERROR, "%s - Exception thrown in player", __FUNCTION__);
     success = false;
   }
 
   if (!success)
   {
     /* mark stream as disabled, to disallaw further attempts*/
-    CLog::Log(LOGWARNING, __FUNCTION__" - Unsupported stream %d. Stream disabled.", iStream);
+    CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
     pStream->disabled = true;
 
     return false;
@@ -1390,14 +1391,14 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 {
   if (!m_pDemuxer)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": No Demuxer avilable");
+    CLog::Log(LOGERROR, "%s: No Demuxer avilable", __FUNCTION__);
     return false;
   }
   
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
   if( !pStream )
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Stream %d doesn't exist", iStream);
+    CLog::Log(LOGERROR, "%s: Stream %d doesn't exist", __FUNCTION__, iStream);
     return false;
   }
 
@@ -1406,7 +1407,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
   if (pStream->type != STREAM_VIDEO)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Streamtype is not STREAM_VIDEO");
+    CLog::Log(LOGERROR, "%s: Streamtype is not STREAM_VIDEO", __FUNCTION__);
     return false;
   }
 
@@ -1423,14 +1424,14 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown in player");
+    CLog::Log(LOGERROR, "%s - Exception thrown in player", __FUNCTION__);
     success = false;
   }
 
   if (!success)
   {
     // mark stream as disabled, to disallaw further attempts
-    CLog::Log(LOGWARNING, __FUNCTION__" - Unsupported stream %d. Stream disabled.", iStream);
+    CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
     pStream->disabled = true;
     return false;
   }
@@ -1455,14 +1456,14 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream)
 {
   if (!m_pDemuxer)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": No Demuxer avilable");
+    CLog::Log(LOGERROR, "%s: No Demuxer avilable", __FUNCTION__);
     return false;
   }
 
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
   if( !pStream )
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Stream %d doesn't exist", iStream);
+    CLog::Log(LOGERROR, "%s: Stream %d doesn't exist", __FUNCTION__, iStream);
     return false;
   }
 
@@ -1736,7 +1737,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         case ACTION_SELECT_ITEM:
           {
             /* this will force us out of the stillframe */
-            CLog::Log(LOGDEBUG, __FUNCTION__ " - User asked to exit stillframe");
+            CLog::Log(LOGDEBUG, "%s - User asked to exit stillframe", __FUNCTION__);
             m_dvd.iDVDStillStartTime = 0;
             m_dvd.iDVDStillTime = 0;
             return true;

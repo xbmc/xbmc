@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "../../utils/thread.h"
+#include "../../utils/Thread.h"
 #include "DVDMessageQueue.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
-#include "DVDCodecs\Video\DVDVideoCodec.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
 #include "../VideoRenderers/RenderManager.h"
