@@ -1,5 +1,5 @@
 #pragma once
-#include "cores/DllLoader/DllLoader.h"
+#include "cores/DllLoader/LibraryLoader.h"
 #include "cores/DllLoader/LibraryLoader.h"
 
 ///////////////////////////////////////////////////////////

@@ -170,7 +170,6 @@ static void __attribute__((noinline)) extend_stack_for_dll_alloca(void)
 DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols, Export* exps) : LibraryLoader(sDll)
 {
   ImportDirTable = 0;
-  
   m_pExportHead = NULL;
   m_pStaticExports = exps;
   m_bTrack = bTrack;

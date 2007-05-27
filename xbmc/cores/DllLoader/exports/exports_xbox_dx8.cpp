@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "..\DllLoaderContainer.h"
+#include "../DllLoader.h"
 #ifdef HAS_XFONT
 #include <xfont.h>
 #endif

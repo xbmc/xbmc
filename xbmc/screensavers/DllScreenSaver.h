@@ -9,7 +9,7 @@ struct SCR_INFO
 struct ScreenSaver
 {
 public:
-    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver);
+    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
     void (__cdecl* Start) ();
     void (__cdecl* Render) ();
     void (__cdecl* Stop) ();

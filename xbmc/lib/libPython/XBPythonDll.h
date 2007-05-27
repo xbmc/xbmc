@@ -27,8 +27,7 @@ extern "C"
 {
 #endif
 
-
-#include "../../cores/DllLoader/DllLoader.h"
+class LibraryLoader;
 
   extern DATA_OBJECT(_Py_NoneStruct);
   extern DATA_OBJECT(_Py_NotImplementedStruct);

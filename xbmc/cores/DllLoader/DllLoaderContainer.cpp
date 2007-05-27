@@ -4,6 +4,7 @@
 #ifdef _LINUX
 #include "SoLoader.h"
 #endif
+#include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
 
 #define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
@@ -16,7 +17,7 @@ using namespace XFILE;
 
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int        DllLoaderContainer::m_iNrOfDlls = 0;
-bool       DllLoaderContainer::m_bTrack = false;
+bool       DllLoaderContainer::m_bTrack = true;
 
 #ifndef _LINUX
 Export export_advapi32[];
@@ -322,7 +323,8 @@ void DllLoaderContainer::UnloadPythonDlls()
     char* name = m_dlls[i]->GetName();
     if (strstr(name, ".pyd") != NULL)
     {
-      ReleaseModule(m_dlls[i]);
+      LibraryLoader* pDll = m_dlls[i];
+      ReleaseModule(pDll);
       i = 0;
     }
   }
