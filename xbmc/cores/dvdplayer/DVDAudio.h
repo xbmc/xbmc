@@ -1,11 +1,15 @@
 
 #pragma once
 
-#include "..\mplayer\IDirectSoundRenderer.h"
-#include "..\mplayer\IAudioCallback.h"
-#include "..\..\utils\CriticalSection.h"
+#include "../mplayer/IDirectSoundRenderer.h"
+#include "../mplayer/IAudioCallback.h"
+#include "../../utils/CriticalSection.h"
 
+#ifndef _LINUX
 enum CodecID;
+#else
+#include <ffmpeg/avcodec.h>
+#endif
 
 class CDVDAudio
 {

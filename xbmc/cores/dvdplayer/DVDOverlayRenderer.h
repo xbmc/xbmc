@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "DVDCodecs\Video\DVDVideoCodec.h"
-#include "..\VideoRenderers\XBoxRenderer.h" // YV12Image definition
-#include "DVDCodecs\Overlay\DVDOverlay.h"
+#include "DVDCodecs/Video/DVDVideoCodec.h"
+#include "../VideoRenderers/XBoxRenderer.h" // YV12Image definition
+#include "DVDCodecs/Overlay/DVDOverlay.h"
 
 typedef struct stDVDPictureRenderer
 {

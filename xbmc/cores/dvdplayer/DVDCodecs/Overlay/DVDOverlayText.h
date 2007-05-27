@@ -1,6 +1,9 @@
 
 #pragma once
 #include "DVDOverlay.h"
+#ifdef _LINUX
+#include "../../utils/CharsetConverter.h"
+#endif
 
 class CDVDOverlayText : public CDVDOverlay
 {
@@ -41,11 +44,17 @@ public:
 
     CElementText(const char* strText) : CElement(ELEMENT_TYPE_TEXT)
     {
+#ifndef _LINUX
       // ansi to unicode
       int iNeeded = MultiByteToWideChar(CP_ACP, 0, strText, -1, NULL, 0) + 2;
 
       m_wszText = (WCHAR*)malloc(sizeof(WCHAR) * iNeeded);
       MultiByteToWideChar(CP_ACP, 0, strText, -1, m_wszText, iNeeded);
+#else
+      CStdStringW strTextW;
+      g_charsetConverter.utf8ToUTF16(strText, strTextW, false); 
+      m_wszText = wcsdup(strTextW.c_str());
+#endif
     }
     
     virtual ~CElementText()
@@ -105,3 +114,4 @@ public:
   CElement* m_pHead;
   CElement* m_pEnd;
 };
+

@@ -171,3 +171,4 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
   
   return result;
 }
+

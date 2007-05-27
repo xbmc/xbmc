@@ -1,8 +1,12 @@
 #pragma once
 
-#include "../../utils/sharedsection.h"
+#include "../../utils/SharedSection.h"
 #define DVD_TIME_BASE 1000000
+#ifndef _LINUX
 #define DVD_NOPTS_VALUE (0x8000000000000000 ## i64)
+#else
+#define DVD_NOPTS_VALUE (0x8000000000000000LL)
+#endif
 
 #define DVD_SEC_TO_TIME(x) ((x) * DVD_TIME_BASE)
 #define DVD_MSEC_TO_TIME(x) ((x) * (DVD_TIME_BASE / 1000))
@@ -31,7 +35,7 @@ public:
   void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL, __int64 delay = 0LL);
   
   /* will return how close we are to a discontinuity */
-  __int64 CDVDClock::DistanceToDisc();
+  __int64 DistanceToDisc();
 
   void Pause();
   void Resume();

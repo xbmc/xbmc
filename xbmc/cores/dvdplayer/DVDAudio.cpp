@@ -1,13 +1,15 @@
 
 #include "stdafx.h"
-#include "dvdaudio.h"
+#include "DVDAudio.h"
 #ifdef _XBOX
-#include "..\mplayer\ASyncDirectSound.h"
-#include "..\mplayer\ac97directsound.h"
+#include "../mplayer/ASyncDirectSound.h"
+#include "../mplayer/ac97directsound.h"
+#elif _LINUX
+#include "ALSADirectSound.h"
 #else
-#include "..\mplayer\Win32DirectSound.h"
+#include "../mplayer/Win32DirectSound.h"
 #endif
-#include "..\..\util.h"
+#include "../../Util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 
@@ -64,6 +66,10 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
     m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true); // true = resample, 128 buffers
   else
     m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, codecstring);
+#elif _LINUX
+
+  m_pAudioDecoder = new CALSADirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, codecstring);
+
 #else
 
   if( bPasstrough )

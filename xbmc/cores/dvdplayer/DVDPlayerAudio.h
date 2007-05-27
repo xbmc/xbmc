@@ -1,10 +1,10 @@
 #pragma once
-#include "../../utils/thread.h"
+#include "../../utils/Thread.h"
 
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 
 class CDVDPlayer;

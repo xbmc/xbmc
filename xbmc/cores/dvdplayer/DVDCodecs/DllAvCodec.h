@@ -1,13 +1,21 @@
 
 #pragma once
-#include "..\..\..\DynamicDll.h"
+#include "../../../DynamicDll.h"
 
 extern "C" {
 #define HAVE_MMX
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
+#ifndef _LINUX
 #pragma warning(disable:4244)
 #include "..\ffmpeg\avcodec.h"
+#else
+#include <ffmpeg/avcodec.h>
+#endif
 }
 
 class DllAvCodecInterface
@@ -42,27 +50,39 @@ public:
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
   DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
+#ifndef _LINUX
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open, AVCodecContext*, AVCodec *)
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_audio, AVCodecContext*, int16_t*, int*, uint8_t*, int)
+  DEFINE_FUNC_ALIGNED6(int, __cdecl, img_convert, AVPicture*, int, const AVPicture*, int, int, int)
+  DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
+  DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
+  DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t)
+  DEFINE_FUNC_ALIGNED3(void, __cdecl, img_resample, ImgReSampleContext*, AVPicture*, const AVPicture*)
+#else
+  DEFINE_METHOD1(void, avcodec_flush_buffers, (AVCodecContext* p1))
+  DEFINE_METHOD2(int, avcodec_open, (AVCodecContext* p1, AVCodec *p2))
+  DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))
+  DEFINE_METHOD5(int, avcodec_decode_audio, (AVCodecContext* p1, int16_t *p2, int *p3, uint8_t *p4, int p5))
+  DEFINE_METHOD6(int, img_convert, (AVPicture* p1, int p2, const AVPicture* p3, int p4, int p5, int p6))
+  DEFINE_METHOD0(AVCodecContext*, avcodec_alloc_context)
+  DEFINE_METHOD1(AVCodecParserContext*, av_parser_init, (int p1))
+  DEFINE_METHOD8(int, av_parser_parse, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8))
+  DEFINE_METHOD3(void, img_resample, (ImgReSampleContext* p1, AVPicture* p2, const AVPicture* p3))
+#endif
+
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
   DEFINE_METHOD5(int, avpicture_fill, (AVPicture *p1, uint8_t *p2, int p3, int p4, int p5))
-  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
-  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_audio, AVCodecContext*, int16_t*, int*, uint8_t*, int)
-  DEFINE_FUNC_ALIGNED6(int, __cdecl, img_convert, AVPicture*, int, const AVPicture*, int, int, int)
   DEFINE_METHOD3(int, avpicture_get_size, (int p1, int p2, int p3))
-  DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
   DEFINE_METHOD4(void, avcodec_string, (char *p1, int p2, AVCodecContext *p3, int p4))
   DEFINE_METHOD1(void, avcodec_get_context_defaults, (AVCodecContext *p1))
-  DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
-  DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, 
-                       const uint8_t*, int, int64_t, int64_t)
   DEFINE_METHOD1(void, av_parser_close, (AVCodecParserContext *p1))
   DEFINE_METHOD1(void, avpicture_free, (AVPicture *p1))
   DEFINE_METHOD4(int, avpicture_alloc, (AVPicture *p1, int p2, int p3, int p4))
   DEFINE_METHOD4(ImgReSampleContext*, img_resample_init, (int p1, int p2, int p3, int p4))
-  DEFINE_FUNC_ALIGNED3(void, __cdecl, img_resample, ImgReSampleContext*, AVPicture*, const AVPicture*)
   DEFINE_METHOD1(void, img_resample_close, (ImgReSampleContext *p1))
   DEFINE_METHOD3(AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
   BEGIN_METHOD_RESOLVE()
