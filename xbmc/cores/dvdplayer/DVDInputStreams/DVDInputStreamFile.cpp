@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "DVDInputStreamFile.h"
 
-#include "..\..\..\util.h"
+#include "../../../Util.h"
 
 using namespace XFILE;
 

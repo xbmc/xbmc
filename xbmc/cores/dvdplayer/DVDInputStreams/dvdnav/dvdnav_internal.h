@@ -37,12 +37,14 @@
 #ifdef WIN32
 
 /* pthread_mutex_* wrapper for win32 */
+#ifndef _LINUX
 #include <process.h>
 typedef CRITICAL_SECTION pthread_mutex_t;
 #define pthread_mutex_init(a, b) InitializeCriticalSection(a)
 #define pthread_mutex_lock(a)    EnterCriticalSection(a)
 #define pthread_mutex_unlock(a)  LeaveCriticalSection(a)
 #define pthread_mutex_destroy(a)
+#endif
 
 /* replacement gettimeofday implementation */
 #include <sys/timeb.h>
@@ -55,7 +57,9 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
   return 0;
 }
 #define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
+#ifndef _LINUX
 #include <io.h> /* read() */
+#endif
 #define lseek64 _lseeki64
 
 #else

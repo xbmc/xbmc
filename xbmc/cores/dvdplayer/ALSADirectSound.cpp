@@ -21,8 +21,6 @@
 #include "stdafx.h"
 #include "ALSADirectSound.h"
 #include "AudioContext.h"
-#include "KS.h"
-#include "Ksmedia.h"
 
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %s",__FUNCTION__,s,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return ;
@@ -43,11 +41,9 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-  m_pDSound=g_audioContext.GetDirectSoundDevice();
 
   m_bPause = false;
   m_bIsAllocated = false;
-  m_pBuffer = NULL;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
@@ -269,8 +265,6 @@ void CALSADirectSound::UnRegisterAudioCallback()
 
 void CALSADirectSound::WaitCompletion()
 {
-  if (!m_pBuffer)
-    return ;
 
 }
 

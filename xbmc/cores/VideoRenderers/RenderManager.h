@@ -2,7 +2,7 @@
 #define XBOX_VIDEO_RENDERER
 
 #include "XBoxRenderer.h"
-#include "..\..\utils\SharedSection.h"
+#include "../../utils/SharedSection.h"
 
 class CXBoxRenderManager : private CThread
 {
@@ -19,7 +19,9 @@ public:
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
+#ifndef _LINUX
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
+#endif
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer

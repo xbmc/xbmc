@@ -1,12 +1,16 @@
 #pragma once
-#include "..\..\..\DynamicDll.h"
+#include "../../../DynamicDll.h"
 
 extern "C" {
 #define HAVE_MMX
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
+#ifndef _LINUX
 #pragma warning(disable:4244)
 #include "..\ffmpeg\avformat.h"
+#else
+#include <ffmpeg/avformat.h>
+#endif
 }
 
 
@@ -47,27 +51,38 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(int, url_feof, (ByteIOContext *p1))
   DEFINE_METHOD1(void, av_close_input_file, (AVFormatContext *p1))
-  DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
+#ifndef _LINUX
+  DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info, AVFormatContext*)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
+  DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
+  DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
+  DEFINE_FUNC_ALIGNED1(void, __cdecl, av_read_frame_flush, AVFormatContext*)
+  DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
+#else
+  DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
+  DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
+  DEFINE_METHOD1(int, av_find_stream_info, (AVFormatContext *p1))
+  DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
+  DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
+  DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
+  DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext* p1))
+  DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
+#endif
   DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
-  DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_METHOD8(int, init_put_byte, (ByteIOContext *p1, unsigned char *p2, int p3, int p4, void *p5, 
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
                   int (*p7)(void *opaque, uint8_t *buf, int buf_size),
                   offset_t (*p8)(void *opaque, offset_t offset, int whence)))
-  DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_METHOD4(void, dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
   DEFINE_METHOD1(void, av_destruct_packet_nofree, (AVPacket *p1))
   DEFINE_METHOD2(int, url_fdopen, (ByteIOContext *p1, URLContext *p2))
   DEFINE_METHOD3(int, url_fopen, (ByteIOContext *p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (ByteIOContext *p1))
   DEFINE_METHOD3(offset_t, url_fseek, (ByteIOContext *p1, offset_t p2, int p3))
-  DEFINE_FUNC_ALIGNED1(void, __cdecl, av_read_frame_flush, AVFormatContext*)
-  DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(av_register_all)
     RESOLVE_METHOD(av_find_input_format)

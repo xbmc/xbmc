@@ -2,17 +2,18 @@
 #include "stdafx.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerVideo.h"
-#include "DVDCodecs\DVDFactoryCodec.h"
-#include "DVDCodecs\DVDCodecUtils.h"
-#include "DVDCodecs\Video\DVDVideoPPFFmpeg.h"
-#include "DVDDemuxers\DVDDemux.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
-#include "..\..\util.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
+#include "DVDCodecs/DVDCodecUtils.h"
+#include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "../../Util.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDPerformanceCounter.h"
-#include "DVDCodecs\DVDCodecs.h"
-#include "DVDCodecs\Overlay\DVDOverlayCodecCC.h"
+#include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
 
+#ifndef _LINUX
 static __forceinline __int64 abs(__int64 value)
 {
   if( value < 0 )
@@ -20,6 +21,8 @@ static __forceinline __int64 abs(__int64 value)
   else
     return value;
 }
+#endif
+
 #define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
@@ -378,7 +381,7 @@ void CDVDPlayerVideo::Process()
               }
               catch (...)
               {
-                CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when outputing picture");
+                CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
                 iResult = EOS_ABORT;
               }
 
@@ -395,7 +398,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+              iDecoderState = m_pVideoCodec->Decode(NULL, 0);
               break;
             }
             
@@ -436,11 +439,11 @@ void CDVDPlayerVideo::Process()
         try
         {
           // the decoder didn't need more data, flush the remaning buffer
-          iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+          iDecoderState = m_pVideoCodec->Decode(NULL, 0);
         }
         catch(...)
         {
-          CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when decoding data");
+          CLog::Log(LOGERROR, "%s - Exception caught when decoding data", __FUNCTION__);
           iDecoderState = VC_ERROR;
         }
       }
@@ -644,7 +647,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 #ifdef HAS_VIDEO_PLAYBACK
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - failed to configure renderer");
+      CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
     }
 #endif

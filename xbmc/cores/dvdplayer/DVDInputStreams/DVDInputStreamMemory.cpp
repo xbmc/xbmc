@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "DVDInputStreamMemory.h"
 
-#include "..\..\..\util.h"
+#include "../../../Util.h"
 
 
 CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream(DVDSTREAM_TYPE_MEMORY)
@@ -87,3 +87,4 @@ __int64 CDVDInputStreamMemory::GetLength()
 {
   return m_iDataSize;
 }
+

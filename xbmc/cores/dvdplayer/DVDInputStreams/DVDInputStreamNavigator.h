@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDInputStream.h"
-#include "..\IDVDPlayer.h"
-#include "..\DVDCodecs\Overlay\DVDOverlaySpu.h"
+#include "../IDVDPlayer.h"
+#include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include <string>
 
 #include "DllDvdNav.h"
@@ -145,3 +145,4 @@ protected:
   BYTE m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int  m_lastevent;
 };
+

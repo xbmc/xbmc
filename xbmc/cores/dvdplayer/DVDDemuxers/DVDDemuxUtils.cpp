@@ -4,6 +4,11 @@
 
 #define INPUT_BUFFER_PADDING_SIZE 8
 
+#ifdef _LINUX
+#define _aligned_free free
+#define _aligned_malloc(a,b) malloc(a)
+#endif
+
 void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
 {
   if (pPacket)
@@ -13,7 +18,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
       delete pPacket;
     }
     catch(...) {
-      CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown while freeing packet");
+      CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
     }
   }
 }
@@ -51,7 +56,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown");
+    CLog::Log(LOGERROR, "%s - Exception thrown", __FUNCTION__);
     FreeDemuxPacket(pPacket);
     pPacket = NULL;
   }  

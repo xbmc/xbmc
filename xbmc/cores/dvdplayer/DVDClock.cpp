@@ -12,7 +12,11 @@ CDVDClock::CDVDClock()
   m_systemUsed = m_systemFrequency;
   m_pauseClock.QuadPart = 0;
   m_bReset = true;
+#ifndef _LINUX
   m_iDisc = 0I64;
+#else
+  m_iDisc = 0LL;
+#endif
 }
 
 CDVDClock::~CDVDClock()
@@ -41,7 +45,11 @@ __int64 CDVDClock::GetClock()
     QueryPerformanceCounter(&m_startClock);
     m_systemUsed = m_systemFrequency;
     m_pauseClock.QuadPart = 0;
-    m_iDisc = 0I64;
+#ifndef _LINUX
+  m_iDisc = 0I64;
+#else
+  m_iDisc = 0LL;
+#endif
     m_bReset = false;
   }
 

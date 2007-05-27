@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
 #include "DVDPlayerSubtitle.h"
-#include "DVDCodecs\Overlay\DVDOverlay.h"
-#include "DVDCodecs\Overlay\DVDOverlaySpu.h"
-#include "DVDCodecs\Overlay\DVDOverlayText.h"
+#include "DVDCodecs/Overlay/DVDOverlay.h"
+#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"

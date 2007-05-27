@@ -1,7 +1,13 @@
 #pragma once
 
+#ifndef _LINUX
 enum StreamType;
 enum CodecID;
+#else
+#include "DVDDemuxers/DVDDemux.h"
+#include <ffmpeg/avcodec.h>
+#endif
+
 class CDemuxStream;
 
 class CDVDStreamInfo
