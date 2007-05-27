@@ -31,6 +31,10 @@ BOOL WINAPI GetThreadTimes (
   LPFILETIME lpUserTime
 );
 
+int GetThreadPriority(
+  HANDLE hThread
+);
+
 BOOL WINAPI SetThreadPriority(
   HANDLE hThread,
   int nPriority
