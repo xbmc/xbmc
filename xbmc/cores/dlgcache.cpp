@@ -62,6 +62,7 @@ void CDlgCache::Update()
     m_pDlg->Progress();
     if( !bSentCancel && m_pDlg->IsCanceled())
     {
+      bSentCancel = true;
       try 
       {
         mplayer_exit_player(); 

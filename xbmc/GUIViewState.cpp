@@ -26,6 +26,7 @@
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
+#include "GUIPassword.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
@@ -237,7 +238,10 @@ bool CGUIViewState::HideParentDirItems()
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
-  return g_guiSettings.GetBool("filelists.disableaddsourcebuttons");
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
+    return g_guiSettings.GetBool("filelists.disableaddsourcebuttons");
+
+  return true;
 }
 
 int CGUIViewState::GetPlaylist()

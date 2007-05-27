@@ -63,18 +63,22 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     D3DLOCKED_RECT lr;
     if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
     {
-      DWORD pitch = lr.Pitch;
+      DWORD destPitch = lr.Pitch;
+      // CxImage aligns rows to 4 byte boundaries
+      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4; 
       BYTE *pixels = (BYTE *)lr.pBits;
 #else
     if (SDL_LockSurface(pTexture) == 0)
     {
-      DWORD pitch = pTexture->pitch;
+      DWORD destPitch = pTexture->pitch;
+      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4; 
       BYTE *pixels = (BYTE *)pTexture->pixels;
 #endif
       BYTE *src = m_info.texture;
-      for (int y = m_info.height - 1; y >= 0; y--)
+      for (unsigned int y = 0; y < m_info.height; y++)
       {
-        BYTE *dst = pixels + y * pitch;
+        BYTE *dst = pixels + y * destPitch;
+        BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
         for (unsigned int x = 0; x < m_info.width; x++)
         {
           *dst++ = *src++;

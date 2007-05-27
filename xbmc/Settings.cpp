@@ -38,6 +38,7 @@
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "utils/FanController.h"
 #include "MediaManager.h"
+#include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -1470,7 +1471,7 @@ bool CSettings::LoadAvpackXML()
   }
 
   CLog::Log(LOGNOTICE, "%s found : loading %s",
-    GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
+    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
 
   if (!avpackXML.LoadFile(avpackSettingsXML.c_str()))
   {
@@ -1486,11 +1487,11 @@ bool CSettings::LoadAvpackXML()
     return false;
   }
 
-  TiXmlElement *pRoot = pMainElement->FirstChildElement(GetPluggedAvpack());
+  TiXmlElement *pRoot = pMainElement->FirstChildElement(g_videoConfig.GetAVPack());
   if (!pRoot)
   {
     CLog::Log(LOGERROR, "Error loading %s, no <%s> node",
-      avpackSettingsXML.c_str(), GetPluggedAvpack().c_str());
+      avpackSettingsXML.c_str(), g_videoConfig.GetAVPack().c_str());
     return false;
   }
 
@@ -1508,7 +1509,7 @@ bool CSettings::SaveAvpackXML() const
   avpackSettingsXML  = GetAvpackSettingsFile();
 
   CLog::Log(LOGNOTICE, "Saving %s settings in %s",
-    GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
+    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
 
   // The file does not exist : Save defaults
   if (!CFile::Exists(avpackSettingsXML))
@@ -1538,11 +1539,11 @@ bool CSettings::SaveAvpackXML() const
   // Delete the plugged avpack root if it exists, then recreate it
   // TODO : to support custom avpack settings, the two XMLs should
   // be synchronized, not just overwrite the old one
-  TiXmlNode *pRoot = pMainElement->FirstChild(GetPluggedAvpack());
+  TiXmlNode *pRoot = pMainElement->FirstChild(g_videoConfig.GetAVPack());
   if (pRoot)
     pMainElement->RemoveChild(pRoot);
 
-  TiXmlElement pluggedNode(GetPluggedAvpack());
+  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
   pRoot = pMainElement->InsertEndChild(pluggedNode);
   if (!pRoot) return false;
 
@@ -1560,7 +1561,7 @@ bool CSettings::SaveNewAvpackXML() const
   TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
   if (!pMain) return false;
 
-  TiXmlElement pluggedNode(GetPluggedAvpack());
+  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
   TiXmlNode *pRoot = pMain->InsertEndChild(pluggedNode);
   if (!pRoot) return false;
 
@@ -2855,26 +2856,4 @@ CStdString CSettings::GetAvpackSettingsFile() const
   else
     strAvpackSettingsFile = "P:\\avpacksettings.xml";
   return _P(strAvpackSettingsFile);
-}
-
-CStdString  CSettings::GetPluggedAvpack() const
-{
-#ifdef HAS_XBOX_HARDWARE
-  switch (XGetAVPack())
-  {
-    case XC_AV_PACK_STANDARD :
-      return "Standard";
-    case XC_AV_PACK_SVIDEO :
-      return "S-Video";
-    case XC_AV_PACK_SCART :
-      return "Scart";
-    case XC_AV_PACK_HDTV :
-      return "HDTV";
-    case XC_AV_PACK_VGA :
-      return "VGA";
-    case XC_AV_PACK_RFU :
-      return "RF";
-  }
-#endif
-  return "Unknown";
 }
