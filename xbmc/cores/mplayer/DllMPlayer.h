@@ -72,7 +72,6 @@ extern "C"
   float mplayer_getSubtitleDelay();
   void mplayer_setPercentage(int iPercent);
   int mplayer_getPercentage();
-  void mplayer_showosd(int bonoff);
   int mplayer_getSubtitle();
   int mplayer_getSubtitleCount();
   void mplayer_setSubtitle(int iSubtitle);

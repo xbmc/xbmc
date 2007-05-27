@@ -252,7 +252,10 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   // correct episode numbers
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
   {
-    std::pair<int,int> key(iter->first.first,(iter->first.second - min[iter->first.first] + 1));
+    int episode=iter->first.second - min[iter->first.first];
+    if (min[iter->first.first] > 0)
+      episode++;
+    std::pair<int,int> key(iter->first.first,episode);
     details.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,iter->second));
   }
 

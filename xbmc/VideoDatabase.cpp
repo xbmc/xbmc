@@ -1827,11 +1827,11 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->query(strSQL.c_str());
 
     long idShow = m_pDS->fv(0).get_asLong();
-    strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idShow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow, idShow);
-    m_pDS->exec(strSQL);
-
     strSQL=FormatSQL("delete from tvshowlinkepisode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
+
+    strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idShow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow, idShow);
+    m_pDS->exec(strSQL);
 
     strSQL=FormatSQL("delete from episode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
@@ -4433,6 +4433,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 {
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -4445,7 +4446,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     TiXmlElement *root = xmlDoc.RootElement();
     if (!root) return;
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(648);
@@ -4457,7 +4457,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       progress->ShowProgressBar(true);
     }
 
-    BeginTransaction();
     TiXmlElement *movie = root->FirstChildElement();
     int current = 0;
     int total = 0;
@@ -4469,6 +4468,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         total++;
       movie = movie->NextSiblingElement();
     }
+
+    BeginTransaction();
     movie = root->FirstChildElement();
     while (movie)
     {
@@ -4500,7 +4501,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         }
       }
       movie = movie->NextSiblingElement();
-      if (progress)
+      if (progress && total)
       {
         progress->SetPercentage(current * 100 / total);
         progress->SetLine(2, info.m_strTitle);
@@ -4514,14 +4515,13 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       }
     }
     CommitTransaction();
-
-    if (progress)
-      progress->Close();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+  if (progress)
+    progress->Close();
 }
 
 bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,

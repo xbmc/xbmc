@@ -138,7 +138,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE* easy_handle, CURLM* multi_handl
   VEC_CURLSESSIONS::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
-    if( it->m_easy == easy_handle && it->m_multi == multi_handle)
+    if( it->m_easy == easy_handle && (multi_handle == NULL || it->m_multi == multi_handle) )
     {
       /* reset session so next caller doesn't reuse options, only connections */
       /* will reset verbose too so it won't print that it closed connections on cleanup*/

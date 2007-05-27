@@ -16,6 +16,10 @@ public:
   bool Has480p() const;
   bool Has720p() const;
   bool Has1080i() const;
+
+  bool HasHDPack() const;
+  CStdString GetAVPack() const;
+
 #ifndef HAS_SDL
   void GetModes(LPDIRECT3D8 pD3D);
   RESOLUTION GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams);

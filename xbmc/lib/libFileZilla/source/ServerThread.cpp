@@ -277,21 +277,23 @@ int CServerThread::OnThreadMessage(UINT Msg, WPARAM wParam, LPARAM lParam)
 		if (wParam == FTM_NEWSOCKET) //Add a new socket to this thread
 			AddNewSocket((SOCKET)lParam);
 		else if (wParam==FTM_DELSOCKET) //Remove a socket from this thread
-		{
-			CControlSocket *socket=GetControlSocket(lParam);
+		{			
 			m_threadsync.Lock();
 			if (m_LocalUserIDs.find(lParam)!=m_LocalUserIDs.end())
 				m_LocalUserIDs.erase(m_LocalUserIDs.find(lParam));
 			m_threadsync.Unlock();
+
+      EGCS;
+      CControlSocket *socket=GetControlSocket(lParam);
 			if (socket)
 			{
 				socket->Close();
-				EGCS;
-				if (m_userids.find(lParam)!=m_userids.end())
-					m_userids.erase(m_userids.find(lParam));
-				LGCS;
 				delete socket;
 			}
+      if (m_userids.find(lParam)!=m_userids.end())
+				m_userids.erase(m_userids.find(lParam));
+			LGCS;
+
 			m_threadsync.Lock();
 			if (m_bQuit)
 			{

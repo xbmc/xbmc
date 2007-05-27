@@ -44,11 +44,11 @@ public:
   virtual bool Load();
   virtual void Unload();
 
-  virtual int ResolveExport(const char*, void**);
+  virtual int ResolveExport(const char*, void** ptr);
+  virtual int ResolveExport(unsigned long ordinal, void** ptr);
   virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   virtual bool IsSystemDll() { return m_bSystemDll; }
-  virtual HMODULE GetHModule() { return (HMODULE)hModule; }
-  int ResolveExport(unsigned long ordinal, void**);
+  virtual HMODULE GetHModule() { return (HMODULE)hModule; }  
   
 protected:  
   int Parse();

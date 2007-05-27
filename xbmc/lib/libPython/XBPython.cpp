@@ -140,9 +140,8 @@ void XBPython::Initialize()
     if (dThreadId == GetCurrentThreadId())
     {
 #ifndef _LINUX
-      DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
-      CStdString dllStr = _P(PYTHON_DLL);
-      m_hModule = dllLoadLibraryA(dllStr.c_str());
+      //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
+      m_hModule = dllLoadLibraryA(PYTHON_DLL);
       m_pDll = DllLoaderContainer::GetModule(m_hModule);
 #else
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
