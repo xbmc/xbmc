@@ -19,8 +19,8 @@
 */
 #include "stdafx.h"
 #include "XBoxRenderer.h"
-#include "../../application.h"
-#include "../../util.h"
+#include "../../Application.h"
+#include "../../Util.h"
 #include "../../XBVideoConfig.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
@@ -53,9 +53,15 @@ YUVCOEF yuv_coef_smtp240m = {
 };
 
 
+#ifndef _LINUX
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
+#else
+CXBoxRenderer::CXBoxRenderer()
+#endif
 {
+#ifndef _LINUX
   m_pD3DDevice = pDevice;
+#endif
   m_fSourceFrameRatio = 1.0f;
   m_iResolution = PAL_4x3;
   for (int i = 0; i < NUM_BUFFERS; i++)
@@ -90,12 +96,20 @@ void CXBoxRenderer::DeleteOSDTextures(int index)
   CSingleLock lock(g_graphicsContext);
   if (m_pOSDYTexture[index])
   {
+#ifndef _LINUX
     m_pOSDYTexture[index]->Release();
+#else
+    SDL_FreeSurface(m_pOSDYTexture[index]);
+#endif
     m_pOSDYTexture[index] = NULL;
   }
   if (m_pOSDATexture[index])
   {
+#ifndef _LINUX
     m_pOSDATexture[index]->Release();
+#else
+    SDL_FreeSurface(m_pOSDATexture[index]);
+#endif
     m_pOSDATexture[index] = NULL;
     CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
   }
@@ -104,6 +118,7 @@ void CXBoxRenderer::DeleteOSDTextures(int index)
 
 void CXBoxRenderer::Setup_Y8A8Render()
 {
+#ifndef _LINUX
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
@@ -134,6 +149,7 @@ void CXBoxRenderer::Setup_Y8A8Render()
   m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
   m_pD3DDevice->SetVertexShader( FVF_Y8A8VERTEX );
+#endif
 }
 
 //***************************************************************************************
@@ -299,10 +315,15 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
     DeleteOSDTextures(iOSDBuffer);
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
+#ifndef _LINUX
     if (
       D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[iOSDBuffer]) ||
       D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[iOSDBuffer])
     )
+#else
+    if ( 1 )
+#warning need to create textures
+#endif
     {
       CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
       DeleteOSDTextures(iOSDBuffer);
@@ -325,6 +346,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
 
   //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
   //reset these so the gpu doesn't try to block on these
+#ifndef _LINUX
   m_pOSDYTexture[iOSDBuffer]->Lock = 0;
   m_pOSDATexture[iOSDBuffer]->Lock = 0;
 
@@ -343,6 +365,20 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   }
   m_pOSDYTexture[iOSDBuffer]->UnlockRect(0);
   m_pOSDATexture[iOSDBuffer]->UnlockRect(0);
+#else
+  if (SDL_LockSurface(m_pOSDYTexture[iOSDBuffer]) == 0 &&
+      SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0) 
+  {
+    //clear the textures
+    memset(m_pOSDYTexture[iOSDBuffer]->pixels, 0, m_pOSDYTexture[iOSDBuffer]->pitch*m_iOSDTextureHeight[iOSDBuffer]);
+    memset(m_pOSDATexture[iOSDBuffer]->pixels, 0, m_pOSDATexture[iOSDBuffer]->pitch*m_iOSDTextureHeight[iOSDBuffer]);
+
+    //draw the osd/subs
+    CopyAlpha(w, h, src, srca, stride, (BYTE*)m_pOSDYTexture[iOSDBuffer]->pixels, (BYTE*)m_pOSDATexture[iOSDBuffer]->pixels, m_pOSDYTexture[iOSDBuffer]->pitch);
+  }
+  SDL_UnlockSurface(m_pOSDYTexture[iOSDBuffer]);
+  SDL_UnlockSurface(m_pOSDATexture[iOSDBuffer]);
+#endif
 
   //set module variables to calculated values
   m_OSDRect = osdRect;
@@ -373,8 +409,11 @@ void CXBoxRenderer::RenderOSD()
   //    return;
 
   // Set state to render the image
+#ifndef _LINUX
   m_pD3DDevice->SetTexture(0, m_pOSDYTexture[iRenderBuffer]);
   m_pD3DDevice->SetTexture(1, m_pOSDATexture[iRenderBuffer]);
+#endif
+
   Setup_Y8A8Render();
 
   /* In mplayer's alpha planes, 0 is transparent, then 1 is nearly
@@ -413,6 +452,7 @@ void CXBoxRenderer::RenderOSD()
   }
 
   // Render the image
+#ifndef _LINUX
   m_pD3DDevice->Begin(D3DPT_QUADLIST);
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
@@ -438,6 +478,7 @@ void CXBoxRenderer::RenderOSD()
   //this is very weird.. D3DCALLBACK_READ is not enough.. if that is used, we start flushing
   //the texutures to early.. I have no idea why really
   m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventOSDDone[iRenderBuffer]);
+#endif
 
 }
 
@@ -597,8 +638,13 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
     // yes dashboard PAL60 settings is enabled
     // Calculate the framerate difference from a divisor of 120fps and 100fps
     // (twice 60fps and 50fps to allow for 2:3 IVTC pulldown)
+#ifndef _LINUX
     float fFrameDifference60 = abs(120.0f / fps - floor(120.0f / fps + 0.5f));
     float fFrameDifference50 = abs(100.0f / fps - floor(100.0f / fps + 0.5f));
+#else
+    float fFrameDifference60 = fabs(120.0f / fps - floor(120.0f / fps + 0.5f));
+    float fFrameDifference50 = fabs(100.0f / fps - floor(100.0f / fps + 0.5f));
+#endif
     // Make a decision based on the framerate difference
     if (fFrameDifference60 < fFrameDifference50)
       bPal60 = true;
@@ -774,7 +820,7 @@ int CXBoxRenderer::GetImage(YV12Image *image, int source, bool readonly)
     else
     {
       if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", source);
+        CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", source);
 
       m_image[source].flags |= IMAGE_FLAG_WRITING;
     }
@@ -824,6 +870,8 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   CSingleLock lock(g_graphicsContext);
   ManageDisplay();
   ManageTextures();
+
+#ifndef _LINUX
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
@@ -841,6 +889,8 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   //Kick commands out to the GPU, or we won't get the callback for textures being done
   m_pD3DDevice->KickPushBuffer();
+#endif
+
 }
 
 void CXBoxRenderer::FlipPage(int source)
@@ -879,7 +929,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
     return -1;
 
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   YV12Image &im = m_image[index];
   // copy Y
@@ -945,6 +995,7 @@ unsigned int CXBoxRenderer::PreInit()
   // low memory pixel shader
   if (!m_hLowMemShader)
   {
+#ifndef _LINUX
     // lowmem shader (not as accurate, but no need for interleaving of YUV)
     const char *lowmem =
       "xps.1.1\n"
@@ -973,6 +1024,7 @@ unsigned int CXBoxRenderer::PreInit()
     XGAssembleShader("LowMemShader", lowmem, strlen(lowmem), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hLowMemShader);
     pShader->Release();
+#endif
   }
 
   return 0;
@@ -991,7 +1043,9 @@ void CXBoxRenderer::UnInit()
   
   if (m_hLowMemShader)
   {
+#ifndef _LINUX
     m_pD3DDevice->DeletePixelShader(m_hLowMemShader);
+#endif
     m_hLowMemShader = 0;
   }
 }
@@ -1133,18 +1187,27 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
     // runs down the image.
     int min_detect = 8;                                // reasonable amount (what mplayer uses)
     int detect = (min_detect + 16)*m_iSourceWidth;     // luminance should have minimum 16
+#ifndef _LINUX
     D3DLOCKED_RECT lr;
     m_YUVTexture[0][FIELD_FULL][PLANE_Y]->LockRect(0, &lr, NULL, 0);
-    int total;
     // Crop top
     BYTE *s = (BYTE *)lr.pBits;
+#else
+    SDL_LockSurface(m_YUVTexture[0][FIELD_FULL][PLANE_Y]);
+    BYTE *s = (BYTE *)m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pixels;
+#endif
+    int total;
     g_stSettings.m_currentVideoSettings.m_CropTop = m_iSourceHeight/2;
     for (unsigned int y = 0; y < m_iSourceHeight/2; y++)
     {
       total = 0;
       for (unsigned int x = 0; x < m_iSourceWidth; x++)
         total += s[x];
+#ifndef _LINUX
       s += lr.Pitch;
+#else
+      s += m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pitch;
+#endif
       if (total > detect)
       {
         g_stSettings.m_currentVideoSettings.m_CropTop = y;
@@ -1152,14 +1215,22 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
       }
     }
     // Crop bottom
+#ifndef _LINUX
     s = (BYTE *)lr.pBits + (m_iSourceHeight-1)*lr.Pitch;
+#else
+    s = (BYTE *)m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pixels + (m_iSourceHeight-1)*m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pitch;
+#endif
     g_stSettings.m_currentVideoSettings.m_CropBottom = m_iSourceHeight/2;
     for (unsigned int y = (int)m_iSourceHeight; y > m_iSourceHeight/2; y--)
     {
       total = 0;
       for (unsigned int x = 0; x < m_iSourceWidth; x++)
         total += s[x];
+#ifndef _LINUX
       s -= lr.Pitch;
+#else
+      s -= m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pitch;
+#endif
       if (total > detect)
       {
         g_stSettings.m_currentVideoSettings.m_CropBottom = m_iSourceHeight - y;
@@ -1167,13 +1238,21 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
       }
     }
     // Crop left
+#ifndef _LINUX
     s = (BYTE *)lr.pBits;
+#else
+    s = (BYTE *)m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pixels;
+#endif
     g_stSettings.m_currentVideoSettings.m_CropLeft = m_iSourceWidth/2;
     for (unsigned int x = 0; x < m_iSourceWidth/2; x++)
     {
       total = 0;
       for (unsigned int y = 0; y < m_iSourceHeight; y++)
+#ifndef _LINUX
         total += s[y * lr.Pitch];
+#else
+        total += s[y * m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pitch];
+#endif
       s++;
       if (total > detect)
       {
@@ -1182,13 +1261,21 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
       }
     }
     // Crop right
+#ifndef _LINUX
     s = (BYTE *)lr.pBits + (m_iSourceWidth-1);
+#else
+    s = (BYTE *)m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pixels + (m_iSourceWidth-1);
+#endif
     g_stSettings.m_currentVideoSettings.m_CropRight= m_iSourceWidth/2;
     for (unsigned int x = (int)m_iSourceWidth-1; x > m_iSourceWidth/2; x--)
     {
       total = 0;
       for (unsigned int y = 0; y < m_iSourceHeight; y++)
+#ifndef _LINUX
         total += s[y * lr.Pitch];
+#else
+        total += s[y * m_YUVTexture[0][FIELD_FULL][PLANE_Y]->pitch];
+#endif
       s--;
       if (total > detect)
       {
@@ -1196,7 +1283,11 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
         break;
       }
     }
+#ifndef _LINUX
     m_YUVTexture[0][FIELD_FULL][PLANE_Y]->UnlockRect(0);
+#else
+    SDL_UnlockSurface(m_YUVTexture[0][FIELD_FULL][PLANE_Y]);
+#endif
   }
   else
   { // reset to defaults
@@ -1219,17 +1310,20 @@ void CXBoxRenderer::RenderLowMem(DWORD flags)
   }
 
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   for (int i = 0; i < 3; ++i)
   {
+#ifndef _LINUX
     m_pD3DDevice->SetTexture(i, m_YUVTexture[index][FIELD_FULL][i]);
     m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
     m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
     m_pD3DDevice->SetTextureStageState( i, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
     m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+#endif
   }
 
+#ifndef _LINUX
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
@@ -1237,10 +1331,12 @@ void CXBoxRenderer::RenderLowMem(DWORD flags)
   m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
   m_pD3DDevice->SetVertexShader( FVF_YV12VERTEX );
   m_pD3DDevice->SetPixelShader( m_hLowMemShader );
+#endif
 
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
 
+#ifndef _LINUX
   // Render the image
   m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f); // fix texel align
   m_pD3DDevice->Begin(D3DPT_QUADLIST);
@@ -1275,12 +1371,18 @@ void CXBoxRenderer::RenderLowMem(DWORD flags)
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
   m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
+#endif
 
 }
 
+#ifndef _LINUX
 void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
+#else
+void CXBoxRenderer::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
+#endif
 {
   CSingleLock lock(g_graphicsContext);
+#ifndef _LINUX
   LPDIRECT3DSURFACE8 oldRT;
   RECT saveSize = rd;
   rd.left = rd.top = 0;
@@ -1293,6 +1395,7 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
   rd = saveSize;
   m_pD3DDevice->SetRenderTarget(oldRT, NULL);
   oldRT->Release();
+#endif
 }
 
 //********************************************************************************************************
@@ -1310,18 +1413,22 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
     for(int p = 0;p<MAX_PLANES;p++) {
       if( fields[f][p] )
       {
+#ifndef _LINUX
         fields[f][p]->BlockUntilNotBusy();
         SAFE_DELETE(fields[f][p]);
+#endif
       }
     }
   }
 
+#ifndef _LINUX
   /* data is allocated in one go */
   if (im.plane[0])
     XPhysicalFree(im.plane[0]);
 
   for(int p = 0;p<MAX_PLANES;p++)
     im.plane[p] = NULL;
+#endif
 
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
 }
@@ -1329,7 +1436,7 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
 void CXBoxRenderer::ClearYV12Texture(int index)
 {
   if( WaitForSingleObject(m_eventTexturesDone[index], 1000) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   YV12Image &im = m_image[index];
 
@@ -1347,10 +1454,12 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   /* since we also want the field textures, pitch must be texture aligned */
   DWORD dwTextureSize;
   unsigned stride, p;
+#ifndef _LINUX
 #ifdef MP_DIRECTRENDERING
   unsigned memflags = PAGE_READWRITE;
 #else
   unsigned memflags = PAGE_READWRITE | PAGE_WRITECOMBINE;
+#endif
 #endif
 
   YV12Image &im = m_image[index];
@@ -1359,13 +1468,16 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   im.height = m_iSourceHeight;
   im.width = m_iSourceWidth;
 
+#ifndef _LINUX
   im.stride[0] = ALIGN(m_iSourceWidth,D3DTEXTURE_ALIGNMENT);
   im.stride[1] = ALIGN(m_iSourceWidth>>1,D3DTEXTURE_ALIGNMENT);
   im.stride[2] = ALIGN(m_iSourceWidth>>1,D3DTEXTURE_ALIGNMENT);
+#endif
 
   im.cshift_x = 1;
   im.cshift_y = 1;
 
+#ifndef _LINUX
   for(int f = 0;f<MAX_FIELDS;f++) {
     for(p = 0;p<MAX_PLANES;p++) {
       fields[f][p] = new D3DTexture();
@@ -1420,6 +1532,7 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
       fields[f][p]->Register(data);
     }
   }
+#endif
 
   SetEvent(m_eventTexturesDone[index]);
 
@@ -1433,3 +1546,4 @@ void CXBoxRenderer::TextureCallback(DWORD dwContext)
 {
   SetEvent((HANDLE)dwContext);
 }
+
