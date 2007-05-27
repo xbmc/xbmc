@@ -13,3 +13,4 @@ public:
   static bool GetSubtitles(VecSubtitleFiles& vecSubtitles, const char* strFile);
   static CDVDSubtitleParser* CreateParser(CDVDSubtitleStream* pStream, const char* strFile);
 };
+
