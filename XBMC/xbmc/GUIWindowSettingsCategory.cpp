@@ -771,8 +771,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("filelists.allowfiledeletion"))
     {
-       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+    }
+    else if (strSetting.Equals("filelists.disableaddsourcebuttons"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("myprograms.ntscmode"))
     { // set visibility based on our other setting...
@@ -832,9 +837,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // disable if we do not have the HDTV pack
+      // disable if we do not have the HDTV pack and are not NTSC
 #ifdef HAS_XBOX_HARDWARE
-      if (pControl) pControl->SetEnabled(XGetAVPack() == XC_AV_PACK_HDTV);
+      if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
 #endif
     }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))

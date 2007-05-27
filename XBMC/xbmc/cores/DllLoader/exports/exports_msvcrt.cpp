@@ -8,8 +8,7 @@
 
 #else
 
-#include "..\DllLoaderContainer.h"
-#include "..\DllLoader.h"
+#include "../DllLoader.h"
 #ifdef _XBOX
 #include <string.h>
 #endif

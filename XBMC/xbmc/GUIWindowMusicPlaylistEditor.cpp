@@ -333,7 +333,7 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
   if (m_playlist.Size())
   {
     buttons.Add(CONTEXT_BUTTON_SAVE, 190);
-    buttons.Add(CONTEXT_BUTTON_CLEAR, 386);
+    buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
   }
   buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
 }
