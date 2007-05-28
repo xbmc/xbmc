@@ -562,7 +562,7 @@ int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
         }
         sh_video->i_bps = asf->bps;
 
-        if( mp_msg_test(MSGT_DEMUX,MSGL_V) ) print_video_header(sh_video->bih,);
+        if( mp_msg_test(MSGT_DEMUX,MSGL_V) ) print_video_header(sh_video->bih);
         //asf_video_id=streamh.stream_no & 0x7F;
 	//if(demuxer->video->id==-1) demuxer->video->id=streamh.stream_no & 0x7F;
         break;
