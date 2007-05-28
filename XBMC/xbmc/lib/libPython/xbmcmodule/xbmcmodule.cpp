@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "..\python\python.h"
+#include "../python/python.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
-#include "..\..\..\xbox\iosupport.h"
+#include "../../../xbox/iosupport.h"
 #include <ConIo.h>
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#include "..\..\libgoahead\xbmchttp.h"
-#include "..\..\..\utils\GUIInfoManager.h"
-#include "..\..\..\..\guilib\GUIAudioManager.h"
-#include "..\..\..\Application.h"
-#include "..\..\..\crc32.h"
+#include "../../libgoahead/xbmchttp.h"
+#include "../../../utils/GUIInfoManager.h"
+#include "../../../../guilib/GUIAudioManager.h"
+#include "../../../Application.h"
+#include "../../../crc32.h"
 
 // include for constants
 #include "pyutil.h"
-#include "..\..\..\playlistplayer.h"
+#include "../../../playlistplayer.h"
 
 using namespace XFILE;
 
@@ -509,16 +509,17 @@ namespace PYXBMC
 
   PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
   {
-    char *cPath = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cPath))  return NULL;
-    {
-      Crc32 crc;
-      CStdString strPath;
-      crc.ComputeFromLowerCase(cPath);
-      strPath.Format("%08x.tbn", (unsigned __int32)crc);
-      return Py_BuildValue("s", strPath.c_str());
-    }
+    PyObject *pObjectText;
+    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
+ 
+    string strText;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
+    Crc32 crc;
+    CStdString strPath;
+    crc.ComputeFromLowerCase(strText);
+    strPath.Format("%08x.tbn", (unsigned __int32)crc);
+    return Py_BuildValue("s", strPath.c_str());
   }
 
   // define c functions to be used in python here
