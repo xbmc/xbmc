@@ -87,6 +87,8 @@
 typedef struct demux_packet_st {
   int len;
   double pts;
+  double endpts;
+  double stream_pts;
   off_t pos;  // position in index (AVI) or file (MPG)
   unsigned char* buffer;
   int flags; // keyframe, etc
@@ -178,6 +180,7 @@ typedef struct demuxer_st {
   off_t movi_start;
   off_t movi_end;
   stream_t *stream;
+  double stream_pts;       // current stream pts, if applicable (e.g. dvd)
   char *filename; ///< Needed by avs_check_file
   int synced;  // stream synced (used by mpeg)
   int type;    // demuxer type: mpeg PS, mpeg ES, avi, avi-ni, avi-nini, asf
@@ -195,7 +198,7 @@ typedef struct demuxer_st {
 
   demux_chapter_t* chapters;
   int num_chapters;
-
+  
   void* priv;  // fileformat-dependent data
   char** info;
 } demuxer_t;
@@ -212,6 +215,8 @@ inline static demux_packet_t* new_demux_packet(int len){
   // still using 0 by default in case there is some code that uses 0 for both
   // unknown and a valid pts value
   dp->pts=correct_pts ? MP_NOPTS_VALUE : 0;
+  dp->endpts=MP_NOPTS_VALUE;
+  dp->stream_pts = MP_NOPTS_VALUE;
   dp->pos=0;
   dp->flags=0;
   dp->refcount=1;
@@ -285,7 +290,7 @@ void free_demuxer_stream(demux_stream_t *ds);
 void free_demuxer(demuxer_t *demuxer);
 
 void ds_add_packet(demux_stream_t *ds,demux_packet_t* dp);
-void ds_read_packet(demux_stream_t *ds,stream_t *stream,int len,float pts,off_t pos,int flags);
+void ds_read_packet(demux_stream_t *ds, stream_t *stream, int len, double pts, off_t pos, int flags);
 
 int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
 int ds_fill_buffer(demux_stream_t *ds);
@@ -323,8 +328,9 @@ inline static int demux_getc(demux_stream_t *ds){
 
 void ds_free_packs(demux_stream_t *ds);
 int ds_get_packet(demux_stream_t *ds,unsigned char **start);
+int ds_get_packet_pts(demux_stream_t *ds, unsigned char **start, double *pts);
 int ds_get_packet_sub(demux_stream_t *ds,unsigned char **start);
-float ds_get_next_pts(demux_stream_t *ds);
+double ds_get_next_pts(demux_stream_t *ds);
 
 // This is defined here because demux_stream_t ins't defined in stream.h
 stream_t* new_ds_stream(demux_stream_t *ds);

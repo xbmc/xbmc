@@ -195,14 +195,15 @@ static int find_backwards_asf_guid(char *buf, const char *guid, int cur_pos)
 
 static int get_ext_stream_properties(char *buf, int buf_len, int stream_num, struct asf_priv* asf, int is_video)
 {
-  // this function currently only gets the average frame time if available
-
   int pos=0;
   uint8_t *buffer = &buf[0];
   uint64_t avg_ft;
+  unsigned bitrate;
 
   while ((pos = find_asf_guid(buf, asf_ext_stream_header, pos, buf_len)) >= 0) {
-    int this_stream_num, stnamect, payct, i, objlen;
+    int this_stream_num, stnamect, payct, i;
+    int buf_max_index=pos+50;
+    if (buf_max_index > buf_len) return 0;
     buffer = &buf[pos];
 
     // the following info is available
@@ -213,27 +214,36 @@ static int get_ext_stream_properties(char *buf, int buf_len, int stream_num, str
     // max-object-size(4),
     // flags(4) (reliable,seekable,no_cleanpoints?,resend-live-cleanpoints, rest of bits reserved)
 
-    buffer +=8+8+4+4+4+4+4+4+4+4;
+    buffer += 8+8;
+    bitrate = AV_RL32(buffer);
+    buffer += 8*4;
     this_stream_num=AV_RL16(buffer);buffer+=2;
 
     if (this_stream_num == stream_num) {
+      buf_max_index+=14;
+      if (buf_max_index > buf_len) return 0;
       buffer+=2; //skip stream-language-id-index
-      avg_ft = AV_RL32(buffer) | (uint64_t)AV_RL32(buffer + 4) << 32; // provided in 100ns units
+      avg_ft = AV_RL64(buffer); // provided in 100ns units
       buffer+=8;
+      asf->bps = bitrate / 8;
 
       // after this are values for stream-name-count and
       // payload-extension-system-count
       // followed by associated info for each
       stnamect = AV_RL16(buffer);buffer+=2;
-      payct = (int) AV_RL16(buffer);buffer+=2;
+      payct = AV_RL16(buffer);buffer+=2;
 
       // need to read stream names if present in order 
       // to get lengths - values are ignored for now
       for (i=0; i<stnamect; i++) {
-          int stream_name_len;
-          buffer+=2; //language_id_index
-          stream_name_len = AV_RL16(buffer);buffer+=2;
-          buffer+=stream_name_len; //stream_name
+        int stream_name_len;
+        buf_max_index+=4;
+        if (buf_max_index > buf_len) return 0;
+        buffer+=2; //language_id_index
+        stream_name_len = AV_RL16(buffer);buffer+=2;
+        buffer+=stream_name_len; //stream_name
+        buf_max_index+=stream_name_len;
+        if (buf_max_index > buf_len) return 0;
       }
 
       if (is_video) {
@@ -245,6 +255,9 @@ static int get_ext_stream_properties(char *buf, int buf_len, int stream_num, str
       }
 
       for (i=0; i<payct; i++) {
+        int payload_len;
+        buf_max_index+=22;
+        if (buf_max_index > buf_len) return 0;
         // Each payload extension definition starts with a GUID.
         // In dvr-ms files one of these indicates the presence an
         // extension that contains pts values and this is always present
@@ -255,21 +268,20 @@ static int get_ext_stream_properties(char *buf, int buf_len, int stream_num, str
         // these GUIDs and that this header section defines the order the data
         // will appear in.
         if (memcmp(buffer, asf_dvr_ms_timing_rep_data, 16) == 0) {
-          if (is_video) {
+          if (is_video)
             asf->vid_ext_timing_index = i;
-          } else {
+          else
             asf->aud_ext_timing_index = i;
-          }
-        } else if (is_video && memcmp(buffer, asf_dvr_ms_vid_frame_rep_data, 16) == 0) {
+        } else if (is_video && memcmp(buffer, asf_dvr_ms_vid_frame_rep_data, 16) == 0)
           asf->vid_ext_frame_index = i;
-        }
         buffer+=16;
 
-        if (is_video) {
-          asf->vid_repdata_sizes[i] = AV_RL16(buffer);buffer+=2;
-        } else {
-          asf->aud_repdata_sizes[i] = AV_RL16(buffer);buffer+=2;
-        }
+        payload_len = AV_RL16(buffer);buffer+=2;
+
+        if (is_video)
+          asf->vid_repdata_sizes[i] = payload_len;
+        else
+          asf->aud_repdata_sizes[i] = payload_len;
         buffer+=4;//sys_len
       }
 
@@ -411,7 +423,6 @@ static int asf_init_audio_stream(demuxer_t *demuxer,struct asf_priv* asf, sh_aud
   return 1;
 }
 
-  
 int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
   int hdr_len = asf->header.objh.size - sizeof(asf->header);
   int hdr_skip = 0;
@@ -474,33 +485,15 @@ int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
       audio_pos = pos - 16 - 8;
       streamh = (ASF_stream_header_t *)&hdr[sh_pos];
       le2me_ASF_stream_header_t(streamh);
-      sh_pos += sizeof(ASF_stream_header_t);
-      audio_pos = sh_pos;
-
-      buffer = &hdr[audio_pos];
-
-      // dvr-ms audio stream header contains more
-      // than just a wave header which starts at the 
-      // 64th byte. What comes before is unknown but
-      // potentially useful.
-
-      buffer = &hdr[audio_pos+60];
       audio_pos += 64; //16+16+4+4+4+16+4;
       buffer = &hdr[audio_pos];
       sh_audio=new_sh_audio(demuxer,streamh->stream_no & 0x7F);
+      mp_msg(MSGT_DEMUX, MSGL_INFO, MSGTR_AudioID, "asfheader", streamh->stream_no & 0x7F);
       ++audio_streams;
       if (!asf_init_audio_stream(demuxer, asf, sh_audio, streamh, &audio_pos, &buffer, hdr, hdr_len))
         goto len_err_out;
-
-      // Sometimes the wFormatTag tag in dvr-ms files doesnt quite
-      // conform to the specification.
-      // Based on available samples the following change generally works.
-      // Probing the audio would be a better solution because 
-      // it is only ever MP2 or AC3.
-      if (sh_audio->wf->wFormatTag == 1) sh_audio->wf->wFormatTag = 0x50; //AUDIO_MP2
-      if (sh_audio->wf->wFormatTag == 0) sh_audio->wf->wFormatTag = 0x2000; //AUDIO_A52
-
-      get_ext_stream_properties(hdr, hdr_len, streamh->stream_no, asf, 0);
+      if (!get_ext_stream_properties(hdr, hdr_len, streamh->stream_no, asf, 0))
+        goto len_err_out;
     }
   }
   // find stream headers
@@ -532,6 +525,7 @@ int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
     switch(ASF_LOAD_GUID_PREFIX(streamh->type)){
       case ASF_GUID_PREFIX_audio_stream: {
         sh_audio_t* sh_audio=new_sh_audio(demuxer,streamh->stream_no & 0x7F);
+        mp_msg(MSGT_DEMUX, MSGL_INFO, MSGTR_AudioID, "asfheader", streamh->stream_no & 0x7F);
         ++audio_streams;
         if (!asf_init_audio_stream(demuxer, asf, sh_audio, streamh, &pos, &buffer, hdr, hdr_len))
           goto len_err_out;
@@ -539,9 +533,11 @@ int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
         break;
         }
       case ASF_GUID_PREFIX_video_stream: {
-        sh_video_t* sh_video=new_sh_video(demuxer,streamh->stream_no & 0x7F);
-        unsigned int len=streamh->type_size-(4+4+1+2);
+        unsigned int len;
         float asp_ratio;
+        sh_video_t* sh_video=new_sh_video(demuxer,streamh->stream_no & 0x7F);
+        mp_msg(MSGT_DEMUX, MSGL_INFO, MSGTR_VideoID, "asfheader", streamh->stream_no & 0x7F);
+        len=streamh->type_size-(4+4+1+2);
 	++video_streams;
 //        sh_video->bih=malloc(chunksize); memset(sh_video->bih,0,chunksize);
         sh_video->bih=calloc((len<sizeof(BITMAPINFOHEADER))?sizeof(BITMAPINFOHEADER):len,1);
@@ -553,17 +549,20 @@ int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
           //mp_msg(MSGT_DEMUXER, MSGL_WARN, MSGTR_MPDEMUX_ASFHDR_DVRWantsLibavformat);
           //sh_video->fps=(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
           //sh_video->frametime=(float)sh_video->video.dwScale/(float)sh_video->video.dwRate;
-          asf->is_dvr_ms=1;
-        }
-
-        get_ext_stream_properties(hdr, hdr_len, streamh->stream_no, asf, 1);
-
+          asf->asf_frame_state=-1;
+          asf->asf_frame_start_found=0;
+          asf->asf_is_dvr_ms=1;
+          asf->dvr_last_vid_pts=0.0;
+        } else asf->asf_is_dvr_ms=0;
+        if (!get_ext_stream_properties(hdr, hdr_len, streamh->stream_no, asf, 1))
+            goto len_err_out;
         if (get_meta(hdr, hdr_len, streamh->stream_no, &asp_ratio)) {
           sh_video->aspect = asp_ratio * sh_video->bih->biWidth /
             sh_video->bih->biHeight;
         }
+        sh_video->i_bps = asf->bps;
 
-        if( mp_msg_test(MSGT_DEMUX,MSGL_V) ) print_video_header(sh_video->bih);
+        if( mp_msg_test(MSGT_DEMUX,MSGL_V) ) print_video_header(sh_video->bih,);
         //asf_video_id=streamh.stream_no & 0x7F;
 	//if(demuxer->video->id==-1) demuxer->video->id=streamh.stream_no & 0x7F;
         break;
@@ -590,8 +589,6 @@ int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf){
       asf->packet=malloc(asf->packetsize); // !!!
       asf->packetrate=fileh->max_bitrate/8.0/(double)asf->packetsize;
       asf->movielength=fileh->send_duration/10000000LL;
-      asf->play_duration = fileh->play_duration/10000000.0f; // in secs
-      asf->num_packets = fileh->num_packets;
   }
 
   // find content header

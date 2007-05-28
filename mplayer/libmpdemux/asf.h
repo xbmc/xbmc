@@ -219,12 +219,14 @@ struct asf_priv {
     unsigned packetsize;
     double   packetrate;
     unsigned movielength;
+    int asf_is_dvr_ms;
+    uint32_t asf_frame_state;
+    int asf_frame_start_found;
+    double dvr_last_vid_pts;
     uint64_t vid_frame_ct;
-    int is_dvr_ms;
     uint64_t play_duration;
     uint64_t num_packets;
     int new_vid_frame_seg;
-    int key_frame;
     int *vid_repdata_sizes;
     int *aud_repdata_sizes;
     int vid_repdata_count;
@@ -238,6 +240,8 @@ struct asf_priv {
     int vid_ext_timing_index;
     int aud_ext_timing_index;
     int vid_ext_frame_index;
+    int know_frame_time;
+    unsigned bps;
 };
 
 #endif
