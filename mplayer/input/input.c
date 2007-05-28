@@ -865,11 +865,15 @@ mp_input_read_key_code(int time) {
   fd_set fds;
   struct timeval tv,*time_val;
 #endif
-  int i,n=0,max_fd = 0;
+  int i,n=0,max_fd = 0, did_sleep = 0;
   static int last_loop = 0;
 
   if(num_key_fd == 0)
+  {
+    if (time)
+      usec_sleep(time * 1000);
     return MP_INPUT_NOTHING;
+  }
 
 #ifndef HAVE_NO_POSIX_SELECT
   FD_ZERO(&fds);
@@ -913,6 +917,7 @@ if(n>0){
     }
     break;
   }
+  did_sleep = 1;
 
 }
 #endif
@@ -935,6 +940,7 @@ if(n>0){
       code = getch2(time);
       if(code < 0)
 	code = MP_INPUT_NOTHING;
+      did_sleep = 1;
     }
     else
       code = ((mp_key_func_t)key_fds[i].read_func)(key_fds[i].fd);
@@ -949,6 +955,8 @@ if(n>0){
       key_fds[i].flags |= MP_FD_DEAD;
     }
   }
+  if (time && !did_sleep)
+    usec_sleep(time * 1000);
   return MP_INPUT_NOTHING;
 }
     
