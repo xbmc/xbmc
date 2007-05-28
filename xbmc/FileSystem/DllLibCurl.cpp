@@ -112,9 +112,8 @@ void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, C
     }
   }
 
-  SSession session;
+  SSession session = {};
   session.m_busy = true;
-  session.m_idletimestamp = 0;
   session.m_protocol = protocol;
   session.m_hostname = hostname;
 
