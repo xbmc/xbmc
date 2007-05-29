@@ -305,8 +305,8 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
-    m_hitRect.x += m_posX - posX;
-    m_hitRect.y += m_posY - posY;
+    m_hitRect.x += posX - m_posX;
+    m_hitRect.y += posY - m_posY;
     m_posX = posX;
     m_posY = posY;
     Update();
