@@ -2966,12 +2966,6 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
-void CGUIWindowSettingsCategory::RestoreControlStates()
-{ // we just restore the focused control - nothing else
-  int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
-  SET_CONTROL_FOCUS(focusControl, 0);
-}
-
 void CGUIWindowSettingsCategory::FillInViewModes(CSetting *pSetting, int windowID)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;

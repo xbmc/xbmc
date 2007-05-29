@@ -18,7 +18,6 @@ public:
   static void FillInVisualisations(CSetting *pSetting, int iControlID);
 protected:
   virtual void OnInitWindow();
-  virtual void RestoreControlStates();
 
   void CheckNetworkSettings();
   void FillInSubtitleHeights(CSetting *pSetting);
