@@ -65,6 +65,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
      __int64 iSize = 0;
       bool bIsDir = true;
       __int64 lTimeDate = 0;
+      bool hidden = false;
 
       if(strFile.Right(1).Equals("$") && dirEnt->smbc_type == SMBC_FILE_SHARE )
         continue;
@@ -84,7 +85,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if( smbc_stat(strFullName.c_str(), &info) == 0 )
         {
           if((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("smb.showhidden"))
-            continue;
+            hidden = true;
 
           bIsDir = (info.st_mode & S_IFDIR) ? true : false;
           lTimeDate = info.st_mtime;
@@ -123,7 +124,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
         vecCacheItems.Add(pItem);
-        items.Add(new CFileItem(*pItem));
+        if (!hidden) items.Add(new CFileItem(*pItem));
       }
       else
       {
@@ -134,7 +135,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_dateTime=localTime;
 
         vecCacheItems.Add(pItem);
-        if (IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
+        if (!hidden && IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
       }
     }
   }
