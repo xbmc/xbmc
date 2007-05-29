@@ -14,9 +14,13 @@
 class CGLTexture
 {
 public:
-  CGLTexture(SDL_Surface* surface, bool loadToGPU = true);  
+  CGLTexture(SDL_Surface* surface, bool loadToGPU = true, bool freeSurface = false);  
   ~CGLTexture();
+
   void LoadToGPU();
+  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
+  void Update(SDL_Surface *surface, bool loadToGPU, bool freeSurface);
+
   int imageWidth;
   int imageHeight;
   int textureWidth;
