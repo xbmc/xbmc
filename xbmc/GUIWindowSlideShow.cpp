@@ -318,7 +318,11 @@ void CGUIWindowSlideShow::Render()
     m_bWaitForNextPic = false;
     m_bLoadNextPic = false;
     // load using the background loader
-    m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight);
+    int maxWidth, maxHeight;
+    GetCheckedSize((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1], 
+                    (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1],
+                    maxWidth, maxHeight);
+    m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], maxWidth, maxHeight);
   }
 
   // check if we should discard an already loaded next slide
@@ -337,24 +341,18 @@ void CGUIWindowSlideShow::Render()
     if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // reload the image if we need to
       CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_vecSlides[m_iCurrentSlide].c_str(), m_iZoomFactor);
-      // first, our 1:1 pixel mapping size:
+      // first, our maximal size for this zoom level
       int maxWidth = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1]);
-      int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1]);
-      // now determine how big the image will be:
-      float fWidth = (float)m_Image[m_iCurrentPic].GetOriginalWidth();
-      float fHeight = (float)m_Image[m_iCurrentPic].GetOriginalHeight();
-      float fAR = fWidth / fHeight;
-      if (fWidth*fHeight > MAX_PICTURE_SIZE)
-      { // have to scale it down - it's bigger than 16Mb
-        float fScale = sqrt((float)MAX_PICTURE_SIZE / (fWidth * fHeight));
-        fWidth = (float)fWidth * fScale;
-        fHeight = (float)fHeight * fScale;
-      }
-      if (fWidth < maxWidth) maxWidth = (int)fWidth;
-      if (fHeight < maxHeight) maxHeight = (int)fHeight;
-      // can't have images larger than MAX_PICTURE_WIDTH (hardware constraint)
-      if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
-      if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
+      int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1]);
+
+      // the actual maximal size of the image to optimize the sizing based on the known sizing (aspect ratio)
+      int width, height;
+      GetCheckedSize((float)m_Image[m_iCurrentPic].GetOriginalWidth(), (float)m_Image[m_iCurrentPic].GetOriginalHeight(), width, height);
+
+      // use the smaller of the two (no point zooming in more than we have to)
+      if (maxWidth < width) width = maxWidth;
+      if (maxHeight < height) height = maxHeight;
+
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_vecSlides[m_iCurrentSlide], maxWidth, maxHeight);
     }
   }
@@ -363,8 +361,10 @@ void CGUIWindowSlideShow::Render()
     if ((bSlideShow || m_bLoadNextPic) && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // load the next image
       CLog::Log(LOGDEBUG, "Loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
-      int maxWidth = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1]);
-      int maxHeight = (int)((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1]);
+      int maxWidth, maxHeight;
+      GetCheckedSize((float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth * zoomamount[m_iZoomFactor - 1], 
+                     (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight * zoomamount[m_iZoomFactor - 1],
+                     maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_vecSlides[m_iNextSlide], maxWidth, maxHeight);
     }
   }
@@ -760,4 +760,18 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
       Add(items[i]->m_strPath);
     }
   }
+}
+
+void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight)
+{
+  if (width * height > MAX_PICTURE_SIZE)
+  {
+    float fScale = sqrt((float)MAX_PICTURE_SIZE / (width * height));
+    width = fScale * width;
+    height = fScale * height;
+  }
+  maxWidth = (int)width;
+  maxHeight = (int)height;
+  if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
+  if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
 }
