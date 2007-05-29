@@ -1181,7 +1181,7 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   unsigned char* resized = m_pixels;
   for (int y = 0; y < h; y++)
   {
-    memcpy(resized, src, min(pitch,textureWidth)); // make sure pitch is not bigger than our width
+    memcpy(resized, src, min(pitch,textureWidth*4)); // make sure pitch is not bigger than our width
     src += pitch;
     resized += (textureWidth * 4);
   }
