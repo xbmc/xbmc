@@ -1125,37 +1125,28 @@ void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePat
 
 
 #ifdef HAS_SDL_OPENGL
-CGLTexture::CGLTexture(SDL_Surface* surface, bool load)
+CGLTexture::CGLTexture(SDL_Surface* surface, bool load, bool freeSurface)
 {
   m_loadedToGPU = false;
   id = 0;
-  imageWidth = surface->w;
-  imageHeight = surface->h;
-  textureWidth = PadPow2(imageWidth);
-  textureHeight = PadPow2(imageHeight);
-  
-  // Resize texture to POT
-  unsigned char* src = (unsigned char*) surface->pixels;
-  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
-  unsigned char* resized = m_pixels;
-  for (int y = 0; y < surface->h; y++)
-  {
-    memcpy(resized, src, surface->pitch);
-    src += surface->pitch;
-    resized += (textureWidth * 4);
-  }
-  
-  if (load)
-    LoadToGPU();
+  m_pixels = NULL;
+
+  Update(surface, load, freeSurface);
+
 }
 
 void CGLTexture::LoadToGPU()
 {
-  if (m_loadedToGPU)
+  if (!m_pixels) {
+    // nothing to load - probably same image (no change)
     return;
-            
-  // Have OpenGL generate a texture object handle for us
-  glGenTextures(1, &id);
+  }
+
+  if (!m_loadedToGPU) {
+     // Have OpenGL generate a texture object handle for us
+     // this happens only one time - the first time the texture is loaded
+     glGenTextures(1, &id);
+  }
  
   // Bind the texture object
   glBindTexture(GL_TEXTURE_2D, id);
@@ -1175,9 +1166,48 @@ void CGLTexture::LoadToGPU()
   m_loadedToGPU = true;           
 }
 
+void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) {
+   if (m_pixels)
+      delete [] m_pixels;
+
+  imageWidth = w;
+  imageHeight = h;
+  textureWidth = PadPow2(imageWidth);
+  textureHeight = PadPow2(imageHeight);
+  
+  // Resize texture to POT
+  const unsigned char *src = pixels;
+  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* resized = m_pixels;
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(resized, src, min(pitch,textureWidth)); // make sure pitch is not bigger than our width
+    src += pitch;
+    resized += (textureWidth * 4);
+  }
+
+  if (loadToGPU)
+     LoadToGPU();
+}
+
+void CGLTexture::Update(SDL_Surface *surface, bool loadToGPU, bool freeSurface) {
+
+  SDL_LockSurface(surface);
+  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
+  SDL_UnlockSurface(surface);
+
+  if (freeSurface)
+    SDL_FreeSurface(surface);
+}
+
 CGLTexture::~CGLTexture()
 {
   glDeleteTextures(1, &id);
+
+  if (m_pixels)
+     delete [] m_pixels;
+
+  m_pixels=NULL;
   id = 0;
 }
 #endif
