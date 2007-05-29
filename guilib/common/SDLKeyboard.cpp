@@ -45,20 +45,31 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
 			m_cAscii = (char)m_keyEvent.key.keysym.unicode;
       m_VKey = toupper(m_cAscii);
     }
-		else
+		else if (m_keyEvent.key.keysym.unicode >= '0' && m_keyEvent.key.keysym.unicode <= '9')
+    {
+      m_cAscii = (char)m_keyEvent.key.keysym.unicode;
+      m_VKey = 0x60 + m_cAscii - '0'; // xbox keyboard routine appears to return 0x60->69 (unverified). Ideally this "fixing"
+                                      // should be done in xbox routine, not in the sdl/directinput routines.
+                                      // we should just be using the unicode/ascii value in all routines (perhaps with some
+                                      // headroom for modifier keys?)
+    }
+    else
 		{
-      if (m_keyEvent.key.keysym.sym == SDLK_0) { m_VKey = 0x60; m_cAscii = m_bShift ? ')' : '0'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_1) { m_VKey = 0x61; m_cAscii = m_bShift ? '!' : '1'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_2) { m_VKey = 0x62; m_cAscii = m_bShift ? '@' : '2'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_3) { m_VKey = 0x63; m_cAscii = m_bShift ? '#' : '3'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_4) { m_VKey = 0x64; m_cAscii = m_bShift ? '$' : '4'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_5) { m_VKey = 0x65; m_cAscii = m_bShift ? '%' : '5'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_6) { m_VKey = 0x66; m_cAscii = m_bShift ? '^' : '6'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_7) { m_VKey = 0x67; m_cAscii = m_bShift ? '&' : '7'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_8) { m_VKey = 0x68; m_cAscii = m_bShift ? '*' : '8'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_9) { m_VKey = 0x69; m_cAscii = m_bShift ? '(' : '9'; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_EQUALS) { m_VKey = 0xbb; m_cAscii = m_bShift ? '+' : '='; }
-      else if (m_keyEvent.key.keysym.sym == SDLK_MINUS) { m_VKey = 0xbd; m_cAscii = m_bShift ? '_' : '-'; }
+      // see comment above about the weird use of m_VKey here...
+      if (m_keyEvent.key.keysym.unicode == ')') { m_VKey = 0x60; m_cAscii = ')'; }
+      else if (m_keyEvent.key.keysym.unicode == '!') { m_VKey = 0x61; m_cAscii = '!'; }
+      else if (m_keyEvent.key.keysym.unicode == '@') { m_VKey = 0x62; m_cAscii = '@'; }
+      else if (m_keyEvent.key.keysym.unicode == '#') { m_VKey = 0x63; m_cAscii = '#'; }
+      else if (m_keyEvent.key.keysym.unicode == '$') { m_VKey = 0x64; m_cAscii = '$'; }
+      else if (m_keyEvent.key.keysym.unicode == '%') { m_VKey = 0x65; m_cAscii = '%'; }
+      else if (m_keyEvent.key.keysym.unicode == '^') { m_VKey = 0x66; m_cAscii = '^'; }
+      else if (m_keyEvent.key.keysym.unicode == '&') { m_VKey = 0x67; m_cAscii = '&'; }
+      else if (m_keyEvent.key.keysym.unicode == '*') { m_VKey = 0x68; m_cAscii = '*'; }
+      else if (m_keyEvent.key.keysym.unicode == '(') { m_VKey = 0x69; m_cAscii = '('; }
+      else if (m_keyEvent.key.keysym.unicode == '=') { m_VKey = 0xbb; m_cAscii = '='; }
+      else if (m_keyEvent.key.keysym.unicode == '+') { m_VKey = 0xbb; m_cAscii = '+'; }
+      else if (m_keyEvent.key.keysym.unicode == '-') { m_VKey = 0xbd; m_cAscii = '-'; }
+      else if (m_keyEvent.key.keysym.unicode == '_') { m_VKey = 0xbd; m_cAscii = '_'; }
       else if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) m_VKey = 0x08;
 			else if (m_keyEvent.key.keysym.sym == SDLK_TAB) m_VKey = 0x09;
 			else if (m_keyEvent.key.keysym.sym == SDLK_RETURN) m_VKey = 0x0d;
@@ -110,6 +121,8 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
 			else if (m_keyEvent.key.keysym.mod & KMOD_RALT) m_VKey = 0xa5;
 			else if (m_keyEvent.key.keysym.mod & KMOD_LCTRL) m_VKey = 0xa2;
 			else if (m_keyEvent.key.keysym.mod & KMOD_RCTRL) m_VKey = 0xa3;		
+      else if (m_keyEvent.key.keysym.unicode > 32 && m_keyEvent.key.keysym.unicode < 128)
+        m_cAscii = m_keyEvent.key.keysym.unicode;      // try and catch everything
     }
   }
   else
