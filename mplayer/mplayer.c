@@ -1158,11 +1158,9 @@ void mplayer_get_current_module(char* s, int n)
 	}
 }
 
-void mplayer_showosd(int bonoff);
 int mplayer_init(int argc, char* argv[])
 {
     printf("mplayer_init()\n");
-    mplayer_showosd(1);
     InitTimer();
     fFPS=0.0f;
     stream_cache_size=1024;
@@ -2498,6 +2496,7 @@ current_module="init_vo";
 main:
 current_module="main";
 
+#ifndef _XBOX // we check for sh_video where we check osd_level instead
 // If there is no video OSD has to be disabled.
 // In case of playing a playtree we have to restore the
 // old OSD level after playing one or more audio-only files.
@@ -2508,6 +2507,7 @@ if(!sh_video && osd_level >= 0) { // save OSD level only once
     osd_level = osd_level_saved;
     osd_level_saved = -1;
 }
+#endif
 
 fflush(stdout);
 
@@ -3236,7 +3236,7 @@ if(auto_quality>0){
     {
       ffrw_sstepnum++;
     }
-    if (osd_level)
+    if (osd_level && sh_video)
     {
       osd_function = OSD_REW;
       osd_visible=sh_video->fps; // 1 sec
@@ -3262,7 +3262,7 @@ if(auto_quality>0){
       ffrw_sstepnum++;
     }
 
-    if (osd_level)
+    if (osd_level && sh_video)
     {
       osd_function = OSD_FFW;
       osd_visible=sh_video->fps; // 1 sec
@@ -3319,7 +3319,7 @@ if(auto_quality>0){
     if(vo_vobsub) vobsub_reset(vo_vobsub);
 #endif
 
-    if (osd_level)
+    if (osd_level && sh_video)
     {
       //Show progbar for 1 second.
       osd_visible=sh_video->fps; // 1 sec
@@ -3647,7 +3647,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         vo_gamma_gamma = -100;
       set_video_colors(sh_video, "gamma", vo_gamma_gamma);
 #ifdef USE_OSD
-       if(osd_level){
+       if(osd_level && sh_video){
 	 osd_visible=sh_video->fps; // 1 sec
 	 vo_osd_progbar_type=OSD_BRIGHTNESS;
 	 vo_osd_progbar_value=(vo_gamma_gamma<<7)/100 + 128;
@@ -3678,7 +3678,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         vo_gamma_brightness = -100;
       if(set_video_colors(sh_video, "brightness", vo_gamma_brightness)){
 #ifdef USE_OSD
-       if(osd_level){
+       if(osd_level && sh_video){
 	 osd_visible=sh_video->fps; // 1 sec
 	 vo_osd_progbar_type=OSD_BRIGHTNESS;
 	 vo_osd_progbar_value=(vo_gamma_brightness<<7)/100 + 128;
@@ -3710,7 +3710,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         vo_gamma_contrast = -100;
       if(set_video_colors(sh_video, "contrast", vo_gamma_contrast)){
 #ifdef USE_OSD
-       if(osd_level){
+       if(osd_level && sh_video){
 	 osd_visible=sh_video->fps; // 1 sec
 	 vo_osd_progbar_type=OSD_CONTRAST;
 	 vo_osd_progbar_value=(vo_gamma_contrast<<7)/100 + 128;
@@ -3742,7 +3742,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         vo_gamma_saturation = -100;
       if(set_video_colors(sh_video, "saturation", vo_gamma_saturation)){
 #ifdef USE_OSD
-       if(osd_level){
+       if(osd_level && sh_video){
 	 osd_visible=sh_video->fps; // 1 sec
 	 vo_osd_progbar_type=OSD_SATURATION;
 	 vo_osd_progbar_value=(vo_gamma_saturation<<7)/100 + 128;
@@ -3774,7 +3774,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         vo_gamma_hue = -100;
       if(set_video_colors(sh_video, "hue", vo_gamma_hue)){
 #ifdef USE_OSD
-       if(osd_level){
+       if(osd_level && sh_video){
 	 osd_visible=sh_video->fps; // 1 sec
 	 vo_osd_progbar_type=OSD_HUE;
 	 vo_osd_progbar_value=(vo_gamma_hue<<7)/100 + 128;

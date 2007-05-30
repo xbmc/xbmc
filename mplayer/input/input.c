@@ -1657,7 +1657,9 @@ mp_input_check_interrupt(int time) {
   extern int xbmc_cancel;
   if(xbmc_cancel)
     return 1;
-#endif
+  // the below can consume slave commands, when looking
+  // for user aborts, we don't use this, so skip it
+#else
   if((cmd = mp_input_get_cmd(time,0,1)) == NULL)
     return 0;
   switch(cmd->id) {
@@ -1671,5 +1673,6 @@ mp_input_check_interrupt(int time) {
   // remove the cmd from the queue
   cmd = mp_input_get_cmd(time,0,0);
   mp_cmd_free(cmd);
+#endif
   return 0;
 }

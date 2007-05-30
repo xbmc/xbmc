@@ -15,10 +15,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../osdep/timer.h"
+#include "osdep/timer.h"
 #ifndef WIN32
 #include <sys/wait.h>
-#include "../osdep/shmem.h"
+#include "osdep/shmem.h"
 #else
 #include <windows.h>
 static DWORD WINAPI ThreadProc(void* s);
@@ -90,7 +90,7 @@ int cache_read(cache_vars_t* s,unsigned char* buf,int size){
 	if(s->eof) break;
 #ifdef _XBOX
         cache_fill_status=0; //Force fill status to 0
-	if(mp_input_check_interrupt(READ_USLEEP_TIME))
+	if(mp_input_check_interrupt(READ_USLEEP_TIME/1000))
 		return 0;
 #else
 	// waiting for buffer fill...
@@ -337,13 +337,13 @@ int stream_enable_cache(stream_t *stream,int size,int min,int prefill){
 	mp_msg(MSGT_CACHE,MSGL_STATUS,MSGTR_CacheFill,
 	    100.0*(float)(s->max_filepos-s->read_filepos)/(float)(s->buffer_size),
 	    (int64_t)s->max_filepos-s->read_filepos
-	    );
-	    if(s->eof) break; // file is smaller than prefill size
-	    if(mp_input_check_interrupt(PREFILL_SLEEP_TIME))
-		return 0;
-	}
-        mp_msg(MSGT_CACHE,MSGL_STATUS,"\n");
-	return 1; // parent exits
+	);
+	if(s->eof) break; // file is smaller than prefill size
+	if(mp_input_check_interrupt(PREFILL_SLEEP_TIME))
+	  return 0;
+    }
+    mp_msg(MSGT_CACHE,MSGL_STATUS,"\n");
+    return 1; // parent exits
   }
   
 #ifdef WIN32
