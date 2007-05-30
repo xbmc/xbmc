@@ -44,7 +44,7 @@
 
 #ifdef _XBOX
 #include <xtl.h>
-#elif defined(__linux__)
+#elif defined(_LINUX)
 #include <sys/socket.h>
 #include <inttypes.h>
 #include <netdb.h>
@@ -58,7 +58,7 @@ extern int errno;
 #define PATH_MAX 1024
 #endif /* ! PATH_MAX */
 
-#ifdef __linux__
+#ifdef _LINUX
 #define CC_UINT_64_TYPE_NAME      uint64_t
 #else
 #define CC_UINT_64_TYPE_NAME	  UINT64
