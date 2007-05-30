@@ -87,12 +87,14 @@ BOOL WINAPI GetThreadTimes (
 	return true;
 }
 
-BOOL WINAPI SetThreadPriority(
-  HANDLE hThread,
-  int nPriority
-) {
-  XXLog(ERROR, "Unimplemented SetThreadPriority called");
+BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority) 
+{
   return true;
+}
+
+int GetThreadPriority(HANDLE hThread)
+{
+  return 0;
 }
 
 // thread local storage -

@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib
 
-SRCS=XBoxRenderer.cpp
+SRCS=XBoxRenderer.cpp RenderManager.cpp
 
 LIB=paplayer.a
 
