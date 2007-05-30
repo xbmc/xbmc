@@ -2,15 +2,17 @@
 #include "../../../DynamicDll.h"
 
 extern "C" {
+#ifndef HAVE_MMX
 #define HAVE_MMX
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#ifndef _LINUX
-#pragma warning(disable:4244)
-#include "..\ffmpeg\avformat.h"
-#else
-#include <ffmpeg/avformat.h>
 #endif
+#ifndef __STDC_CONSTANT_MACROS
+#define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
+#pragma warning(disable:4244)
+#include "../ffmpeg/avformat.h"
 }
 
 

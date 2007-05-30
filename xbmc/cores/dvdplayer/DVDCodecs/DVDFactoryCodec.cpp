@@ -2,19 +2,19 @@
 #include "stdafx.h"
 
 #include "DVDFactoryCodec.h"
-#include "Video\DVDVideoCodec.h"
-#include "Audio\DVDAudioCodec.h"
+#include "Video/DVDVideoCodec.h"
+#include "Audio/DVDAudioCodec.h"
 
-#include "Video\DVDVideoCodecFFmpeg.h"
-#include "Video\DVDVideoCodecLibMpeg2.h"
-#include "Audio\DVDAudioCodecFFmpeg.h"
-#include "Audio\DVDAudioCodecLiba52.h"
-#include "Audio\DVDAudioCodecLibDts.h"
-#include "Audio\DVDAudioCodecLibMad.h"
-#include "Audio\DVDAudioCodecLibFaad.h"
-#include "Audio\DVDAudioCodecPcm.h"
-#include "Audio\DVDAudioCodecLPcm.h"
-#include "Audio\DVDAudioCodecPassthrough.h"
+#include "Video/DVDVideoCodecFFmpeg.h"
+#include "Video/DVDVideoCodecLibMpeg2.h"
+#include "Audio/DVDAudioCodecFFmpeg.h"
+#include "Audio/DVDAudioCodecLiba52.h"
+#include "Audio/DVDAudioCodecLibDts.h"
+#include "Audio/DVDAudioCodecLibMad.h"
+#include "Audio/DVDAudioCodecLibFaad.h"
+#include "Audio/DVDAudioCodecPcm.h"
+#include "Audio/DVDAudioCodecLPcm.h"
+#include "Audio/DVDAudioCodecPassthrough.h"
 
 #include "../DVDStreamInfo.h"
 
@@ -79,11 +79,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   { // non halfres mode, we can use other decoders
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
-      if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, CDVDCodecOptions()) ) return pCodec;
+      CDVDCodecOptions dvdOptions;
+      if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, dvdOptions) ) return pCodec;
     }
   }
 
-  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, CDVDCodecOptions()) ) return pCodec;
+  CDVDCodecOptions dvdOptions;
+  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions) ) return pCodec;
 
   return NULL;
 }
