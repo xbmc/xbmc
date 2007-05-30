@@ -522,16 +522,17 @@ namespace PYXBMC
 
   PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
   {
-    char *cPath = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cPath))  return NULL;
-    {
-      Crc32 crc;
-      CStdString strPath;
-      crc.ComputeFromLowerCase(cPath);
-      strPath.Format("%08x.tbn", (unsigned __int32)crc);
-      return Py_BuildValue("s", strPath.c_str());
-    }
+    PyObject *pObjectText;
+    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
+ 
+    string strText;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
+    Crc32 crc;
+    CStdString strPath;
+    crc.ComputeFromLowerCase(strText);
+    strPath.Format("%08x.tbn", (unsigned __int32)crc);
+    return Py_BuildValue("s", strPath.c_str());
   }
 
   // define c functions to be used in python here

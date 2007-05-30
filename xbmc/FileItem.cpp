@@ -1138,7 +1138,7 @@ const CStdString& CFileItem::GetContentType() const
 {
   if( m_contenttype.IsEmpty() )
   {
-    /* discard const qualifyier*/
+    // discard const qualifyier
     CStdString& m_ref = (CStdString&)m_contenttype;
 
     if( m_bIsFolder )
@@ -1154,12 +1154,21 @@ const CStdString& CFileItem::GetContentType() const
     else if( m_strPath.Left(8).Equals("https://") )
     {
       CURL url(m_strPath);
-      CFileCurl::GetContent(url, m_ref);
+      CFileCurl::GetContent(url, m_ref);    
     }
 
-    /* if it's still empty set to an unknown type*/
+    // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )
       m_ref = "application/octet-stream";
+    else
+    {
+      // make sure there are no options set in content type
+      // content type can look like "video/x-ms-asf ; charset=utf8"
+      int i = m_ref.Find(';');
+      if(i>=0)
+        m_ref.Delete(i,m_ref.length()-i);
+      m_ref.Trim();
+    }
 
   }
 
