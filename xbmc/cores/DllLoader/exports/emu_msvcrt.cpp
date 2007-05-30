@@ -252,7 +252,7 @@ extern "C"
     _vsnprintf(tmp, 2048, format, va);
     va_end(va);
     tmp[2048 - 1] = 0;
-#ifdef HAS_VIDEO_PLAYBACK
+#ifdef HAS_MPLAYER
     update_cache_dialog(tmp);
 #endif
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);

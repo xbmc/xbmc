@@ -20,10 +20,12 @@
 #include "stdafx.h"
 #include "RenderManager.h"
 
+#ifndef HAS_SDL
 #include "PixelShaderRenderer.h"
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
 #include "RGBRendererV2.h"
+#endif
 
 CXBoxRenderManager g_renderManager;
 
@@ -35,12 +37,14 @@ CXBoxRenderManager g_renderManager;
 /* these two functions allow us to step out from that lock */
 /* and reaquire it after having the exclusive lock */
 
+#ifndef HAS_SDL
 //VBlank information
 HANDLE g_eventVBlank=NULL;
 void VBlankCallback(D3DVBLANKDATA *pData)
 {
   PulseEvent(g_eventVBlank);
 }
+#endif
 
 
 CXBoxRenderManager::CXBoxRenderManager()
@@ -57,9 +61,11 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
+#endif
 
   if (m_pRenderer)
     delete m_pRenderer;
@@ -68,6 +74,7 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);      
 
@@ -76,29 +83,38 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
     RestoreCriticalSection(g_graphicsContext, locks);
     return false;
   }
+#endif
 
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
+#ifndef _LINUX
       lock.Leave();
+#endif
       g_applicationMessenger.SwitchToFullscreen();
+#ifndef _LINUX
       lock.Enter();
+#endif
     }
     m_pRenderer->Update(false);
     m_bIsStarted = true;
   }
   
+#ifndef _LINUX
   RestoreCriticalSection(g_graphicsContext, locks);
+#endif
   return result;
 }
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
+#endif
 
   m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
@@ -109,9 +125,11 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 
 void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CSharedLock lock(m_sharedSection); 
   RestoreCriticalSection(g_graphicsContext, locks);
+#endif
 
   if (m_pRenderer)
     m_pRenderer->RenderUpdate(clear, flags, alpha);
@@ -119,6 +137,7 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 unsigned int CXBoxRenderManager::PreInit()
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
@@ -129,6 +148,7 @@ unsigned int CXBoxRenderManager::PreInit()
     g_eventVBlank = CreateEvent(NULL,FALSE,FALSE,NULL);
     D3DDevice::SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
   }
+#endif
 
   /* no pedning present */
   m_eventPresented.Set();
@@ -137,7 +157,9 @@ unsigned int CXBoxRenderManager::PreInit()
   m_bPauseDrawing = false;
   m_presentdelay = 5;
   if (!m_pRenderer)
-  { // no renderer
+  { 
+#ifndef HAS_SDL
+    // no renderer
     m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
     if (m_rendermethod == RENDER_OVERLAYS)
     {
@@ -159,6 +181,7 @@ unsigned int CXBoxRenderManager::PreInit()
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected LQShader-Renderer");
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
+#endif
   }
 
   return m_pRenderer->PreInit();
@@ -166,14 +189,18 @@ unsigned int CXBoxRenderManager::PreInit()
 
 void CXBoxRenderManager::UnInit()
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
+#endif
 
   m_bStop = true;
   m_eventFrame.Set();
   StopThread();
 
+#ifndef _LINUX
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
+#endif
 
   m_bIsStarted = false;
   if (m_pRenderer)
@@ -191,6 +218,7 @@ void CXBoxRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
+#ifndef HAS_SDL
 void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
@@ -200,6 +228,7 @@ void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned in
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
+#endif
 
 
 void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
@@ -300,7 +329,9 @@ void CXBoxRenderManager::PresentSingle()
 
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
+#ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
+#endif
 }
 
 /* new simpler method of handling interlaced material, *
@@ -314,6 +345,7 @@ void CXBoxRenderManager::PresentBob()
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOUNLOCK, 255);
 
+#ifndef HAS_SDL
   if( m_presenttime )
   {
     /* wait for timestamp */
@@ -330,6 +362,7 @@ void CXBoxRenderManager::PresentBob()
     D3DDevice::Present( NULL, NULL, NULL, NULL );
     D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
+#endif
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
@@ -337,7 +370,9 @@ void CXBoxRenderManager::PresentBob()
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
 
+#ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
+#endif
 }
 
 void CXBoxRenderManager::PresentBlend()
@@ -359,7 +394,9 @@ void CXBoxRenderManager::PresentBlend()
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
+#ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
+#endif
 }
 
 /* renders the two fields as one, but doing fieldbased *
@@ -373,6 +410,7 @@ void CXBoxRenderManager::PresentWeave()
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
+#ifndef HAS_SDL
   //If we have interlaced video, we have to sync to only render on even fields
   D3DFIELD_STATUS mStatus;
   D3DDevice::GetDisplayFieldStatus(&mStatus);
@@ -389,6 +427,7 @@ void CXBoxRenderManager::PresentWeave()
       CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
   }
   D3DDevice::Present( NULL, NULL, NULL, NULL );
+#endif
 }
 
 void CXBoxRenderManager::Process()
