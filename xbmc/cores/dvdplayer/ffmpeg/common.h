@@ -26,7 +26,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#ifndef _LINUX
 #include "inttypes.h"
+#else
+#include <inttypes.h>
+#endif
 
 #ifdef HAVE_AV_CONFIG_H
 /* only include the following when compiling package */

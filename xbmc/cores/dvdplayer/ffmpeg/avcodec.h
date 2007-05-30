@@ -43,7 +43,11 @@ extern "C" {
 
 #define LIBAVCODEC_IDENT        "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
 
+#ifndef _LINUX
 #define AV_NOPTS_VALUE          INT64_C(0x8000000000000000)
+#else
+#define AV_NOPTS_VALUE          (0x8000000000000000LL)
+#endif
 #define AV_TIME_BASE            1000000
 #define AV_TIME_BASE_Q          (AVRational){1, AV_TIME_BASE}
 

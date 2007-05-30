@@ -4,19 +4,17 @@
 // enum CodecID
 
 extern "C" {
+#ifndef HAVE_MMX
 #define HAVE_MMX
+#endif
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#ifndef _LINUX
 #pragma warning(disable:4244)
-#include "..\ffmpeg\avcodec.h"
-#else
-#include <ffmpeg/avcodec.h>
-#endif
+#include "../ffmpeg/avcodec.h"
 }
 
 // 0x100000 is the video starting range
