@@ -39,7 +39,8 @@ protected:
   bool DoScan(const CStdString& strDirectory);
 
   virtual void Run();
-  int CountFiles(const CStdString& strPath);
+  int CountFiles(const CFileItemList& items, bool recursive);
+  int CountFilesRecursively(const CStdString& strPath);
 
 protected:
   IMusicInfoScannerObserver* m_pObserver;

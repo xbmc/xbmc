@@ -91,19 +91,28 @@ void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, C
       {
         it->m_busy = true;
         if(easy_handle)
+        {
+          if(!it->m_easy)
+            it->m_easy = easy_init();
+
           *easy_handle = it->m_easy;
+        }
 
         if(multi_handle)
+        {
+          if(!it->m_multi)
+            it->m_multi = multi_init();
+
           *multi_handle = it->m_multi;
+        }
 
         return;
       }
     }
   }
 
-  SSession session;
+  SSession session = {};
   session.m_busy = true;
-  session.m_idletimestamp = 0;
   session.m_protocol = protocol;
   session.m_hostname = hostname;
 

@@ -181,21 +181,29 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn");
-  // filter items in the sub dir (for .cue sheet support)
-  items.FilterCueItems();
+
+  // sort and get the path hash.  Note that we don't filter .cue sheet items here as we want
+  // to detect changes in the .cue sheet as well.  The .cue sheet items only need filtering
+  // if we have a changed hash.
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-  // get the folder's thumb (this will cache the album thumb)
+  CStdString hash;
+  GetPathHash(items, hash);
+
+  // get the folder's thumb (this will cache the album thumb).
   items.SetMusicThumb(true); // true forces it to get a remote thumb
 
   // check whether we need to rescan or not
-  CStdString hash, dbHash;
-  int numFilesInFolder = GetPathHash(items, hash);
+  CStdString dbHash;
   if (!m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
     if (dbHash.IsEmpty())
       CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
     else
       CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
+
+    // filter items in the sub dir (for .cue sheet support)
+    items.FilterCueItems();
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     // and then scan in the new information
     if (RetrieveMusicInfo(items, strDirectory) > 0)
@@ -210,7 +218,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   else
   { // path is the same - no need to rescan
     CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
-    m_currentItem += numFilesInFolder;
+    m_currentItem += CountFiles(items, false);  // false for non-recursive
 
     // notify our observer of our progress
     if (m_pObserver)
@@ -480,31 +488,23 @@ void CMusicInfoScanner::Run()
 {
   int count = 0;
   while (!m_bStop && m_pathsToCount.size())
-    count+=CountFiles(*m_pathsToCount.begin());
+    count+=CountFilesRecursively(*m_pathsToCount.begin());
   m_itemCount = count;
 }
 
 // Recurse through all folders we scan and count files
-int CMusicInfoScanner::CountFiles(const CStdString& strPath)
+int CMusicInfoScanner::CountFilesRecursively(const CStdString& strPath)
 {
-  int count=0;
   // load subfolder
   CFileItemList items;
 //  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
   CDirectory::GetDirectory(strPath, items, g_stSettings.m_musicExtensions, false);
 
-  for (int i=0; i<items.Size(); ++i)
-  {
-    CFileItem* pItem=items[i];
+  if (m_bStop)
+    return 0;
 
-    if (m_bStop)
-      return 0;
-
-    if (pItem->m_bIsFolder)
-      count+=CountFiles(pItem->m_strPath);
-    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
-      count++;
-  }
+  // true for recursive counting
+  int count = CountFiles(items, true);
 
   // remove this path from the list we're processing
   set<CStdString>::iterator it = m_pathsToCount.find(strPath);
@@ -512,6 +512,21 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
     m_pathsToCount.erase(it);
 
 //  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
+  return count;
+}
+
+int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
+{
+  int count = 0;
+  for (int i=0; i<items.Size(); ++i)
+  {
+    const CFileItem* pItem=items[i];
+
+    if (recursive && pItem->m_bIsFolder)
+      count+=CountFilesRecursively(pItem->m_strPath);
+    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+      count++;
+  }
   return count;
 }
 
