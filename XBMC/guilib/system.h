@@ -48,6 +48,7 @@
 #define HAS_AUDIO
 #define HAS_SHOUTCAST
 #define HAS_RAR
+#define HAS_CCXSTREAM
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL
@@ -105,6 +106,7 @@
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
+#undef HAS_CCXSTREAM
 #endif
 
 #ifdef _LINUX
@@ -120,6 +122,7 @@
 #define HAS_VIDEO_PLAYBACK
 #undef HAS_MPLAYER
 #define HAS_DVDPLAYER
+#define HAS_CCXSTREAM
 
 #include <unistd.h>
 #include <time.h>
