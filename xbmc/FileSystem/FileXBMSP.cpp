@@ -390,3 +390,4 @@ __int64 CFileXBMSP::GetPosition()
 }
 
 }
+

@@ -9,9 +9,11 @@
 #ifdef HAS_FILESYSTEM_SMB
 #include "FileSmb.h"
 #endif
+#ifdef HAS_CCXSTREAM
+#include "FileXBMSP.h"
+#endif
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
-#include "FileXBMSP.h"
 #include "FileRTV.h"
 #include "FileSndtrk.h"
 #include "FileCDDA.h"
@@ -69,8 +71,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_SMB
     else if (strProtocol == "smb") return new CFileSMB();
 #endif
-#ifdef HAS_FILESYSTEM
+#ifdef HAS_CCXSTREAM
     else if (strProtocol == "xbms") return new CFileXBMSP();
+#endif
+#ifdef HAS_FILESYSTEM
     else if (strProtocol == "rtv") return new CFileRTV();
     else if (strProtocol == "daap") return new CFileDAAP();
 #endif
