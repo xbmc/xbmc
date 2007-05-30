@@ -321,7 +321,7 @@ void ds_add_packet(demux_stream_t *ds,demux_packet_t* dp){
         dp->len,dp->pts,(unsigned int)dp->pos,ds->demuxer->audio->packs,ds->demuxer->video->packs);
 }
 
-void ds_read_packet(demux_stream_t *ds,stream_t *stream,int len,float pts,off_t pos,int flags){
+void ds_read_packet(demux_stream_t *ds, stream_t *stream, int len, double pts, off_t pos, int flags) {
     demux_packet_t* dp=new_demux_packet(len);
     len = stream_read(stream,dp->buffer,len);
     resize_demux_packet(dp, len);
@@ -441,7 +441,7 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
 int ds_fill_buffer(demux_stream_t *ds){
   demuxer_t *demux=ds->demuxer;
   if(ds->current) free_demux_packet(ds->current);
-  if(verbose>2){
+  if( mp_msg_test(MSGT_DEMUXER,MSGL_DBG3) ){
     if(ds==demux->audio) mp_dbg(MSGT_DEMUXER,MSGL_DBG3,"ds_fill_buffer(d_audio) called\n");else
     if(ds==demux->video) mp_dbg(MSGT_DEMUXER,MSGL_DBG3,"ds_fill_buffer(d_video) called\n");else
     if(ds==demux->sub)   mp_dbg(MSGT_DEMUXER,MSGL_DBG3,"ds_fill_buffer(d_sub) called\n");else
@@ -457,11 +457,12 @@ int ds_fill_buffer(demux_stream_t *ds){
       ds->pos=p->pos;
       ds->dpos+=p->len; // !!!
       ++ds->pack_no;
-      if(p->pts){
+      if (p->pts != (correct_pts ? MP_NOPTS_VALUE : 0)) {
         ds->pts=p->pts;
         ds->pts_bytes=0;
       }
       ds->pts_bytes+=p->len; // !!!
+      if(p->stream_pts != MP_NOPTS_VALUE) demux->stream_pts=p->stream_pts;
       ds->flags=p->flags;
       // unlink packet:
       ds->bytes-=p->len;
@@ -568,6 +569,27 @@ int ds_get_packet(demux_stream_t *ds,unsigned char **start){
     }
 }
 
+int ds_get_packet_pts(demux_stream_t *ds,unsigned char **start, double *pts)
+{
+    int len;
+    *pts = MP_NOPTS_VALUE;
+    if(ds->buffer_pos>=ds->buffer_size){
+	if (!ds_fill_buffer(ds)) {
+            // EOF
+            *start = NULL;
+            return -1;
+	}
+    }
+    // Should use MP_NOPTS_VALUE for "unknown pts" in the packets too
+    // Return pts unless this read starts from the middle of a packet
+    if (!ds->buffer_pos && (correct_pts || ds->current->pts))
+	*pts = ds->current->pts;
+    len=ds->buffer_size-ds->buffer_pos;
+    *start = &ds->buffer[ds->buffer_pos];
+    ds->buffer_pos+=len;
+    return len;
+}
+
 int ds_get_packet_sub(demux_stream_t *ds,unsigned char **start){
     while(1){
         int len;
@@ -583,21 +605,22 @@ int ds_get_packet_sub(demux_stream_t *ds,unsigned char **start){
     }
 }
 
-float ds_get_next_pts(demux_stream_t *ds) {
+double ds_get_next_pts(demux_stream_t *ds)
+{
   demuxer_t* demux = ds->demuxer;
   while(!ds->first) {
     if(demux->audio->packs>=MAX_PACKS || demux->audio->bytes>=MAX_PACK_BYTES){
       mp_msg(MSGT_DEMUXER,MSGL_ERR,MSGTR_TooManyAudioInBuffer,demux->audio->packs,demux->audio->bytes);
       mp_msg(MSGT_DEMUXER,MSGL_HINT,MSGTR_MaybeNI);
-      return -1;
+      return MP_NOPTS_VALUE;
     }
     if(demux->video->packs>=MAX_PACKS || demux->video->bytes>=MAX_PACK_BYTES){
       mp_msg(MSGT_DEMUXER,MSGL_ERR,MSGTR_TooManyVideoInBuffer,demux->video->packs,demux->video->bytes);
       mp_msg(MSGT_DEMUXER,MSGL_HINT,MSGTR_MaybeNI);
-      return -1;
+      return MP_NOPTS_VALUE;
     }
     if(!demux_fill_buffer(demux,ds))
-      return -1;
+      return MP_NOPTS_VALUE;
   }
   return ds->first->pts;
 }

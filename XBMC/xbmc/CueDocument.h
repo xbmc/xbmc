@@ -54,8 +54,8 @@ private:
   std::vector<CCueTrack> m_Track;
 
   bool ReadNextLine(CStdString &strLine);
-  bool ExtractQuoteInfo(CStdString &szData, const char *szLine);
-  int ExtractTimeFromString(const char *szData);
-  int ExtractNumericInfo(const char *szData);
+  bool ExtractQuoteInfo(const CStdString &line, CStdString &quote);
+  int ExtractTimeFromIndex(const CStdString &index);
+  int ExtractNumericInfo(const CStdString &info);
   bool ResolvePath(CStdString &strPath, const CStdString &strBase);
 };
