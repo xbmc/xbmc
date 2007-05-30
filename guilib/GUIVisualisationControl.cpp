@@ -72,6 +72,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
   m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
+  m_bInitialized = false;
 }
 
 CGUIVisualisationControl::~CGUIVisualisationControl(void)
