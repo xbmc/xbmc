@@ -2,10 +2,10 @@
 #include "stdafx.h"
 #include "DVDOverlayCodecCC.h"
 #include "DVDOverlayText.h"
-#include "..\..\DVDClock.h"
+#include "../../DVDClock.h"
 
 extern "C" {
-#include "libspucc\cc_decoder.h"
+#include "libspucc/cc_decoder.h"
 }
 CDVDOverlayCodecCC::CDVDOverlayCodecCC() : CDVDOverlayCodec("Closed Caption")
 {

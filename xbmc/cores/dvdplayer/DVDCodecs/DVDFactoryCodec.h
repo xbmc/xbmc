@@ -1,7 +1,12 @@
 
 #pragma once
 
+#ifndef _LINUX
 enum CodecID;
+#else
+#include "../ffmpeg/avcodec.h"
+#endif
+
 class CDVDVideoCodec;
 class CDVDAudioCodec;
 

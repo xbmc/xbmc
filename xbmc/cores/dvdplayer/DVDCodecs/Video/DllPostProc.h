@@ -7,14 +7,9 @@ extern "C" {
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#ifndef _LINUX
 #pragma warning(disable:4244)
-#include "..\..\ffmpeg\avutil.h"
-#include "..\..\ffmpeg\postprocess.h"
-#else
-#include <ffmpeg/avutil.h>
-#include <postproc/postprocess.h>
-#endif
+#include "../../ffmpeg/avutil.h"
+#include "../../ffmpeg/postprocess.h"
 }
 
 class DllAvCodecInterface

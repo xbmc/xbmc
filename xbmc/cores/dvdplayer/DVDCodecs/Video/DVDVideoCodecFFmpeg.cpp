@@ -1,10 +1,10 @@
 
 #include "stdafx.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "..\..\DVDDemuxers\DVDDemux.h"
-#include "..\..\DVDStreamInfo.h"
-#include "..\DVDCodecs.h"
-#include "..\..\..\..\utils\Win32Exception.h"
+#include "../../DVDDemuxers/DVDDemux.h"
+#include "../../DVDStreamInfo.h"
+#include "../DVDCodecs.h"
+#include "../../../../utils/Win32Exception.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
@@ -142,18 +142,18 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
   }
   catch (win32_exception e)
   {
-    e.writelog(__FUNCTION__"::avcodec_decode_video");
+    CLog::Log(LOGERROR, "%s::avcodec_decode_video", __FUNCTION__);
     return VC_ERROR;
   }
 
   if (len < 0)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - avcodec_decode_video returned failure");
+    CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
     return VC_ERROR;
   }
 
   if (len != iSize)
-    CLog::Log(LOGWARNING, __FUNCTION__" - avcodec_decode_video didn't consume the full packet");
+    CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet", __FUNCTION__);
 
   if (!iGotPicture)
     return VC_BUFFER;

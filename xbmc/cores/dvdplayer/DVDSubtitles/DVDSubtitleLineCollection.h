@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "..\DVDCodecs\Overlay\DVDOverlay.h"
+#include "../DVDCodecs/Overlay/DVDOverlay.h"
 
 typedef struct stListElement
 {
@@ -36,3 +36,4 @@ private:
   int m_iSize;
   //CRITICAL_SECTION m_critSection;
 };
+
