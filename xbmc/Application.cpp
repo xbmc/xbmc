@@ -82,7 +82,7 @@
 #endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/videorenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"

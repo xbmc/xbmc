@@ -4,7 +4,7 @@ SRCS=DVDOverlayCodecCC.cpp
 
 LIB=dvdcodecs_overlay.a
 
-dvdcodecs_overlay.a : libspucc/cc_decoder.o
+dvdcodecs_overlay.a : libspucc/cc_decoder.o DVDOverlayCodecCC.o
 
 include ../../../../../Makefile.include
 -include Makefile.depend

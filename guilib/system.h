@@ -16,6 +16,8 @@
 #define HAS_XBOX_HARDWARE
 #define HAS_XBOX_NETWORK
 #define HAS_VIDEO_PLAYBACK
+#define HAS_MPLAYER
+#define HAS_DVDPLAYER
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_AC3_CDDA_CODEC
@@ -59,6 +61,8 @@
 #undef HAS_XBOX_HARDWARE
 #undef HAS_XBOX_NETWORK
 #undef HAS_VIDEO_PLAYBACK
+#undef HAS_MPLAYER
+#undef HAS_DVDPLAYER
 #undef HAS_AC3_CODEC
 #undef HAS_DTS_CODEC
 #undef HAS_AC3_CDDA_CODEC
@@ -113,6 +117,9 @@
 #define HAS_SDL
 #define HAS_RAR
 #define HAS_FILESYSTEM_SMB
+#define HAS_VIDEO_PLAYBACK
+#undef HAS_MPLAYER
+#define HAS_DVDPLAYER
 
 #include <unistd.h>
 #include <time.h>
