@@ -16,6 +16,9 @@
 #ifdef HAS_FILESYSTEM_SMB
 #include "SMBDirectory.h"
 #endif
+#ifdef HAS_CCXSTREAM
+#include "XBMSDirectory.h"
+#endif
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "XBMSDirectory.h"
@@ -83,9 +86,11 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM_SMB
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
+#ifdef HAS_CCXSTREAM
+    if (strProtocol == "xbms") return new CXBMSDirectory();
+#endif
 #ifdef HAS_FILESYSTEM
     if (strProtocol == "daap") return new CDAAPDirectory();
-    if (strProtocol == "xbms") return new CXBMSDirectory();
     if (strProtocol == "rtv") return new CRTVDirectory();
 #endif
 #ifdef HAS_UPNP
