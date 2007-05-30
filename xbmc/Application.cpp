@@ -5388,7 +5388,7 @@ void CApplication::StartFtpEmergencyRecoveryMode()
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (IsPlayingVideo())
+  if (m_itemCurrentFile.IsVideo())
   { // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {

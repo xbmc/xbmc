@@ -37,7 +37,6 @@ bool CDirectoryNodeAlbumRecentlyAdded::GetContent(CFileItemList& items)
     CStdString strDir;
     strDir.Format("%s%ld/", BuildPath().c_str(), album.idAlbum);
     CFileItem* pItem=new CFileItem(strDir, album);
-    pItem->m_strPath+=strDir;
     items.Add(pItem);
   }
 

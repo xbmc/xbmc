@@ -520,13 +520,8 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   //CStdString strPath = item.m_strPath;
   CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
   item->m_strPath=strPath;
-  if (item->IsInternetStream())
-  {
-    //we got an url, create a dummy .strm playlist,
-    //pPlayList->Load will handle loading it from url instead of from a file
-    strPath = "temp.strm";
-  }
-  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
+
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*item));
   if ( NULL == pPlayList.get())
     return false;
   if (!pPlayList->Load(item->m_strPath))
