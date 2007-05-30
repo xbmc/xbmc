@@ -3415,7 +3415,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         argv[i] = (char*)params[i].c_str();
 
       g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
-      delete argv;
+      delete [] argv;
     }
     else
       g_pythonParser.evalFile(parameter.c_str());
