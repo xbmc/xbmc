@@ -136,8 +136,20 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
+        // view as control could be a select button
+        int viewMode = 0;
+        const CGUIControl *control = GetControl(CONTROL_BTNVIEWASICONS);
+        if (control && control->GetControlType() != CGUIControl::GUICONTROL_BUTTON)
+        {
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTNVIEWASICONS);
+          OnMessage(msg);
+          viewMode = m_viewControl.GetViewModeNumber(msg.GetParam1());
+        }
+        else
+          viewMode = m_viewControl.GetNextViewMode();
+
         if (m_guiState.get())
-          m_guiState->SaveViewAsControl(m_viewControl.GetNextViewMode());
+          m_guiState->SaveViewAsControl(viewMode);
 
         UpdateButtons();
         return true;
