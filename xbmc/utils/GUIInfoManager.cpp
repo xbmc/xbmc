@@ -404,7 +404,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
-    else if (strTest.Left(21).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(22,strTest.size()-23)), 0));
+    else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
   }
   else if (strCategory.Equals("playlist"))
   {
