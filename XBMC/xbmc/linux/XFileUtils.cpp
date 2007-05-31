@@ -347,8 +347,14 @@ BOOL GetDiskFreeSpaceEx(
 }
 
 DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation ) {
-#warning need to complete function GetTimeZoneInformation
-	return 0;
+  if (lpTimeZoneInformation == NULL)
+    return TIME_ZONE_ID_UNKNOWN;
+
+  lpTimeZoneInformation->Bias = timezone / 60;
+  swprintf(lpTimeZoneInformation->StandardName, 31, L"%s", tzname[0]);
+  swprintf(lpTimeZoneInformation->DaylightName, 31, L"%s", tzname[1]);
+
+  return 1;
 }
 
 BOOL SetEndOfFile(HANDLE hFile) {
@@ -358,7 +364,7 @@ BOOL SetEndOfFile(HANDLE hFile) {
 	// get the current offset
 	off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
 	ftruncate(hFile->fd, currOff);
-	return 0;
+	return true;
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
