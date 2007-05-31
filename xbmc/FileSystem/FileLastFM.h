@@ -43,6 +43,7 @@ protected:
 
   bool m_bOpened;
   bool m_bDirectSkip;
+  bool m_bSkippingTrack;
 
   CStdString m_Url;
   CStdString m_Session;
