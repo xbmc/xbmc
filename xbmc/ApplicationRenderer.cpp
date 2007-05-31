@@ -24,8 +24,6 @@
 #include "Utils/GuiInfoManager.h"
 #include "../guilib/guiImage.h"
 
-#define BUSY_DELAY 2000 //milliseconds
-
 CApplicationRenderer g_ApplicationRenderer;
 
 CApplicationRenderer::CApplicationRenderer(void)
@@ -102,7 +100,7 @@ void CApplicationRenderer::Process()
     {
       try
       {
-        if (timeGetTime() >= (m_time + BUSY_DELAY))
+        if (timeGetTime() >= (m_time + g_advancedSettings.m_busyDialogDelay))
         {
           CSingleLock lockg (g_graphicsContext);
           if (m_prevbusycount != m_busycount)
