@@ -1657,6 +1657,7 @@ mp_input_check_interrupt(int time) {
   extern int xbmc_cancel;
   if(xbmc_cancel)
     return 1;
+  usec_sleep(time*1000);
   // the below can consume slave commands, when looking
   // for user aborts, we don't use this, so skip it
 #else
