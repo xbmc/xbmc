@@ -221,7 +221,7 @@
   <string id="290">Dynamic Range Compression</string>
   <string id="291">Video</string>
   <string id="292">Audio</string>
-  <string id="293">Sottotitoli</string>
+  <string id="293">Mostra per Sottotitoli</string>
   <string id="294">Crea segnalibro</string>
   <string id="296">Cancella segnalibri</string>
   <string id="297">Ritardo Audio</string>
@@ -438,7 +438,7 @@
   <string id="524">Seleziona Playlist</string>
   <string id="525">Nuova Playlist...</string>
   <string id="526">Aggiungi alla Playlist</string>
-  <string id="527">Aggiungi manualmente al Database</string>
+  <string id="527">Aggiungi manualmente all'Archivio</string>
   <string id="528">Inserire Titolo</string>
   <string id="529">Errore: Titolo esistente</string>
   <string id="530">Seleziona Genere</string>
@@ -473,6 +473,10 @@
   <string id="563">Voto</string>
   <string id="564">Tipo</string>
   <string id="565">Utilizzo</string>
+  <string id="566">Artista Album</string>
+  <string id="567">Conteggio Riproduzione</string>
+  <string id="568">Ultimo Riprodotto</string>
+  <string id="569">Commento</string>
 
   <string id="580">Direzione Ordinamento</string>
   <string id="581">Metodo Ordinamento</string>
@@ -533,7 +537,15 @@
   <string id="648">Importa Archivio Video</string>
   <string id="649">Importazione</string>
   <string id="650">Esportazione</string>
-  <string id="651">Archivio Video</string>
+  <string id="651">Mostra per Archivio</string>
+  <string id="652">Anni</string>
+  <string id="653">Aggiorna Archivio</string>
+  <string id="654">Mostra Informazioni Debug</string>
+  <string id="655">Mostra per Eseguibile</string>
+  <string id="656">Mostra per Playlist</string>
+  <string id="657">Mostra per Cartella</string>
+  <string id="658">Informazioni Canzone</string>
+  <string id="659">Commento:</string>
 
   <string id="700">Riorganizza l'archivio</string>
   <string id="701">Eliminazione vecchie canzoni dall' archivio</string>
@@ -591,7 +603,7 @@
   <string id="755">Modifica Percorso</string>
   <string id="756">Modifica Nome Programma</string>
   <string id="757">Modifica Profondità Percorso</string>
-  <string id="758">Rimuovo Collegamento</string>
+  <string id="758"></string>
   <string id="759">Lista Grande</string>
   <string id="760">Giallo</string>
   <string id="761">Bianco</string>
@@ -626,7 +638,7 @@
   <string id="1012">Cartella Condivisa</string>
   <string id="1013">Porta</string>
   <string id="1014">Nome Utente</string>
-  <string id="1015">server di rete</string>
+  <string id="1015">Mostra per Server di Rete</string>
   <string id="1016">Inserire l'indirizzo di rete del server</string>
   <string id="1017">Inserire il percorso sul server</string>
   <string id="1018">Inserire il numero della porta</string>
@@ -641,9 +653,13 @@
   <string id="1027">Modifica Sorgente</string>
   <string id="1028">Modifica Sorgente %s</string>
   <string id="1029">Inserire nuova etichetta</string>
-  <string id="1030">un immagine</string>
-  <string id="1031">una cartella immagini</string>
+  <string id="1030">Mostra per Immagine</string>
+  <string id="1031">Mostra per Cartella Immagini</string>
   <string id="1032">Aggiungi Locazione di Rete...</string>
+  <string id="1033">Mostra per File</string>
+  <string id="1034">Submenu</string>
+  <string id="1035">Attiva Pulsanti Submenu</string>
+  <string id="1036">Preferiti</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -851,7 +867,7 @@
   <string id="12384">Orario in 24 Ore</string>
   <string id="12385">Giorno/Mese</string>
   <string id="12386">Mese/Giorno</string>
-  <string id="12387">Riscansiona il database</string>
+  <string id="12387"></string>
   <string id="12390">Tempo di Vita del Sistema</string>
   <string id="12391">Minuti</string>
   <string id="12392">Ore</string>
@@ -1000,7 +1016,7 @@
   <string id="13349">Cerca Info Per Tutti i File</string>
   <string id="13350">In Riproduzione...</string>
   <string id="13351">Informazioni Album</string>
-  <string id="13352">Scans.Tutto nel DB</string>
+  <string id="13352">Scans.Elemento nell'Archivio</string>
   <string id="13353">Ferma Scansione</string>
   <string id="13354">Metodo di Render</string>
   <string id="13355">Pixel Shader Bassa Qualità</string>
@@ -1115,6 +1131,9 @@
   <string id="14073">XLink Kai non è abilitato.</string>
   <string id="14074">Imposta il Fuso Orario</string>
   <string id="14075">Passa all'ora legale</string>
+  <string id="14076">Aggiungi ai Preferiti</string>
+  <string id="14077">Rimuovi dai Preferiti</string>
+  <string id="14078">Colori della Skin</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">Il servizio non è connesso.</string>
@@ -1280,7 +1299,7 @@
   <string id="16027">Troppi elementi consecutivi falliti</string>
 
   <string id="16030">Modalità Party Mode annullata.</string>
-  <string id="16031">Nessuna canzone corrispondente nel database.</string>
+  <string id="16031">Nessuna canzone corrispondente nell'archivio.</string>
   <string id="16032">Impossibile inizializzare il database.</string>
   <string id="16033">Impossibile aprire il database.</string>
   <string id="16034">Impossibile ricavare canzoni dal database.</string>
@@ -1315,7 +1334,7 @@
   <string id="20007">Registrazioni</string>
   <string id="20008">Screenshots</string>
   <string id="20009">Usa XBMC</string>
-  <string id="20010">Immagine Artista</string>
+  <string id="20010"></string>
   <string id="20011">Playlists Musica</string>
   <string id="20012">Playlists Video</string>
   <string id="20013">Vuoi lanciare il gioco?</string>
@@ -1350,7 +1369,7 @@
   <string id="20053">Uscito da Master Mode</string>
   <string id="20054">Entrato in Master Mode</string>
   <string id="20055">Icona Allmusic.com</string>
-  <string id="20056">Icona Sorgente</string>
+  <string id="20056"></string>
   <string id="20057">Rimuovi Icona</string>
   <string id="20058">Aggiungi Profilo...</string>
   <string id="20059">Cerca Info Per tutti gli Albums</string>
@@ -1483,23 +1502,23 @@
   <string id="20187">Lettura valori dalla EEPROM</string>
   <string id="20188">Lettura dalla EEPROM Terminata</string>
 
-  <string id="20189">Rilevamento Terminato</string>
-  <string id="20190">Rilevamento Informazioni Harddisk</string>
-  <string id="20191">Rilevamento Valori HDD</string>
-  <string id="20192">Rilevamento Chiave HDD </string>
-  <string id="20193">Rilevamento Temperatura HDD</string>
-  <string id="20194">Rilevamento Informazioni DVD-ROM</string>
-  <string id="20195">Rilevamento Modello/Firmware</string>
-  <string id="20196">Rilevamento Impostazioni Rete</string>
-  <string id="20197">Rilevamento MAC Address</string>
-  <string id="20198">Rilevamento Stato Online</string>
-  <string id="20199">Rilevamento Versione Xbox, Seriale e CPU</string>
-  <string id="20300">Rilevamento Hardware Xbox</string>
-  <string id="20301">Rilevamento ModChip</string>
-  <string id="20302">Rilevamento BIOS</string>
-  <string id="20303">Rilevamento Velocità  CPU</string>
-  <string id="20304">Rilevamento Data di Produzione</string>
-  <string id="20305">Rilevamento Unità Collegate</string>
+  <string id="20189"></string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
 
   <string id="20306">Sconosciuto. Prego aggiungere MD5 da xbmc.log a BiosIDs.ini.</string>
   <string id="20307">DNS Secondario</string>
@@ -1523,8 +1542,8 @@
   <string id="20325">Reset Calibrazione</string>
   <string id="20326">Questo resetterà il valore di calibrazione per %s</string>
   <string id="20327">al suo valore originale.</string>
-  <string id="20328">una locazione per copiare il salvataggio in</string>
-  <string id="20329">una locazione per spostare il salvataggio in</string>
+  <string id="20328">Mostra per destinazione</string>
+  <string id="20329"></string>
   <string id="20330">Usa Nomi Cartella per le Ricerche</string>
   <string id="20331">File</string>
   <string id="20332">Uso i nomi dei files o delle cartelle per le ricerche?</string>
@@ -1536,7 +1555,7 @@
   <string id="20338">Film</string>
   <string id="20339">Regista</string>
   <string id="20340">Vuoi rimouvere tutti gli elementi in</string>
-  <string id="20341">questo percorso dal database?</string>
+  <string id="20341">questo percorso dall'archivio?</string>
   <string id="20342">Film</string>
   <string id="20343">Serie TV</string>
   <string id="20344">Questa directory contiene</string>
@@ -1569,6 +1588,14 @@
   <string id="20371">Imposta Icona STagione</string>
   <string id="20372">Immagine Stagione</string>
   <string id="20373">Stagione</string>
+  <string id="20374">Scarico Informazioni Video</string>
+  <string id="20375">Contenuto non Assegnato</string>
+  <string id="20376">Prima Uscita:</string>
+  <string id="20377">Aggiorna Informazioni Serie TV</string>
+  <string id="20378">Aggiorna info per tutti gli episodi?</string>
+  <string id="20379">La cartella  contiene una sola serie TV</string>
+  <string id="20380">Escludi cartella dallo scan</string>
+
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Mostra i files e le directory nascoste</string>
@@ -1621,6 +1648,45 @@
   <string id="21392">Potenza Bassa</string>
   <string id="21393">Standby Alto</string>
   <string id="21394">Standby Basso</string>
+  <string id="21395">Impossibile memorizzare files più grandi di 4 gb</string>
+  <string id="21396">Capitolo</string>
 
-  <string id="29999">Patch Flicker Filter Automatica</string>
+  <string id="21397">Pixel Shader Alta Qualità V2</string>	
+  
+  <string id="21398">Attiva Playlist all'Avvio</string>
+
+  <string id="21400">contiene</string>
+  <string id="21401">non contiene</string>
+  <string id="21402">è</string>
+  <string id="21403">non è</string>
+  <string id="21404">comincia con</string>
+  <string id="21405">finisce con</string>
+  <string id="21406">più grande di</string>
+  <string id="21407">minore di</string>
+  <string id="21408">dopo</string>
+  <string id="21409">prima</string>
+  <string id="21410">alla fine</string>
+  <string id="21411">non alla fine</string>
+
+  <string id="21420">Valore da raggiungere</string>
+  <string id="21421">Regola Smart Playlist</string>
+  <string id="21422">Fai combaciare canzoni dove</string>
+  <string id="21423">Nuova regola...</string>
+  <string id="21424">Canzoni devono combaciare</string>
+  <string id="21425">tutte le regole</string>
+  <string id="21426">ona o più delle regole</string>
+  <string id="21427">Limita a</string>
+  <string id="21428">Noessun Limite</string>
+  <string id="21429">Ordina per</string>
+  <string id="21430">ascendente</string>
+  <string id="21431">discendente</string>
+  <string id="21432">Modifica Smart Playlist</string>
+  <string id="21433">Nome della playlist</string>
+  <string id="21434">Trova canzoni che combaciano</string>
+  <string id="21435">Modifica</string>
+  <string id="21436">%i canzoni</string>
+  <string id="21437">Nuova Smart Playlist...</string>
+
+
+  <string id="29999">Applica Impostazioni Flicker Filter ai Giochi</string>
 </strings>
