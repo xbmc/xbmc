@@ -429,7 +429,14 @@ const CStdString& CURL::GetOptions() const
 
 const CStdString CURL::GetFileNameWithoutPath() const
 {
-  return CUtil::GetFileName(m_strFileName);
+  // *.zip and *.rar store the actual zip/rar path in the hostname of the url
+  if ((m_strProtocol == "rar" || m_strProtocol == "zip") && m_strFileName.IsEmpty())
+    return CUtil::GetFileName(m_strHostName);
+
+  // otherwise, we've already got the filepath, so just grab the filename portion
+  CStdString file(m_strFileName);
+  CUtil::RemoveSlashAtEnd(file);
+  return CUtil::GetFileName(file);
 }
 
 const char CURL::GetDirectorySeparator() const
