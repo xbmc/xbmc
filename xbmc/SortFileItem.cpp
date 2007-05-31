@@ -44,9 +44,8 @@ bool SSortFileItem::FileAscending(CFileItem *left, CFileItem *right)
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  CStdString l(left->m_strPath);  CUtil::RemoveSlashAtEnd(l);
-  CStdString r(right->m_strPath); CUtil::RemoveSlashAtEnd(r);
-  int result = StringUtils::AlphaNumericCompare(CUtil::GetFileName(l).c_str(), CUtil::GetFileName(r).c_str());
+  CURL lurl(left->m_strPath); CURL rurl(right->m_strPath);
+  int result = StringUtils::AlphaNumericCompare(lurl.GetFileNameWithoutPath().c_str(), rurl.GetFileNameWithoutPath().c_str());
   if (result < 0) return true;
   if (result > 0) return false;
   return left->m_lStartOffset <= right->m_lStartOffset; // useful for .cue's in my music
@@ -57,9 +56,8 @@ bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  CStdString l(left->m_strPath);  CUtil::RemoveSlashAtEnd(l);
-  CStdString r(right->m_strPath); CUtil::RemoveSlashAtEnd(r);
-  int result = StringUtils::AlphaNumericCompare(CUtil::GetFileName(l).c_str(), CUtil::GetFileName(r).c_str());
+  CURL lurl(left->m_strPath); CURL rurl(right->m_strPath);
+  int result = StringUtils::AlphaNumericCompare(lurl.GetFileNameWithoutPath().c_str(), rurl.GetFileNameWithoutPath().c_str());
   if (result < 0) return false;
   if (result > 0) return true;
   return left->m_lStartOffset >= right->m_lStartOffset;
