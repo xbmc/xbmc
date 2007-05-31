@@ -151,7 +151,8 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1(m_iCurrentItem);
-      message.SetLabel(m_vecItems[m_iCurrentItem]);
+      if (m_iCurrentItem >= 0 && m_iCurrentItem < (int)m_vecItems.size())
+        message.SetLabel(m_vecItems[m_iCurrentItem]);
       return true;
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
