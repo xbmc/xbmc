@@ -101,13 +101,13 @@ bool File::Open(const char *Name,const wchar *NameW,bool OpenShared,bool Update)
   NewFile=false;
   HandleType=FILE_HANDLENORMAL;
   SkipClose=false;
-  bool Success=hNewFile!=BAD_HANDLE;*/
-  bool Success;
+  bool success=hNewFile!=BAD_HANDLE;*/
+  bool success;
   if (Update)
-    Success = m_File.OpenForWrite(Name);
+    success = m_File.OpenForWrite(Name);
   else
-    Success = m_File.Open(Name);
-  if (Success)
+    success = m_File.Open(Name);
+  if (success)
   {
 //    hFile=hNewFile;
     if (NameW!=NULL)
@@ -121,7 +121,7 @@ bool File::Open(const char *Name,const wchar *NameW,bool OpenShared,bool Update)
     //AddFileToList(hFile);
     AddFileToList();
   }
-  return(Success);
+  return(success);
 }
 
 
@@ -214,7 +214,7 @@ bool File::WCreate(const char *Name,const wchar *NameW)
 
 bool File::Close()
 {
-  bool Success=true;
+  bool success=true;
   /*if (HandleType!=FILE_HANDLENORMAL)
     HandleType=FILE_HANDLENORMAL;
   else
@@ -223,12 +223,12 @@ bool File::Close()
       if (!SkipClose)
       {
 #if defined(_WIN_32) || defined(_LINUX)
-        //Success=CloseHandle(hFile) != FALSE;
+        //success=CloseHandle(hFile) != FALSE;
         m_File.Close();
 #else
-        Success=fclose(hFile)!=EOF;
+        success=fclose(hFile)!=EOF;
 #endif
-/*        if (Success || !RemoveCreatedActive)
+/*        if (success || !RemoveCreatedActive)
           //for (int I=0;I<sizeof(CreatedFiles)/sizeof(CreatedFiles[0]);I++)
           for (int I=0;I<32;I++)
             if (CreatedFiles[I]==this)
@@ -238,11 +238,11 @@ bool File::Close()
             }*/
       }
       //hFile=BAD_HANDLE;
-      if (!Success && AllowExceptions)
+      if (!success && AllowExceptions)
         ErrHandler.CloseError(FileName);
     //}
   CloseCount++;
-  return(Success);
+  return(success);
   //return(true);
 }
   
@@ -271,15 +271,15 @@ bool File::Delete()
 
 bool File::Rename(const char *NewName)
 {
-  bool Success=strcmp(FileName,NewName)==0;
-  if (!Success)
-    Success=rename(FileName,NewName)==0;
-  if (Success)
+  bool success=strcmp(FileName,NewName)==0;
+  if (!success)
+    success=rename(FileName,NewName)==0;
+  if (success)
   {
     strcpy(FileName,NewName);
     *FileNameW=0;
   }
-  return(Success);
+  return(success);
 }
 
 
@@ -310,26 +310,26 @@ void File::Write(const void *Data,int Size)
 #endif*/
   while (1)
   {
-    bool Success = true;
+    bool success = true;
 #if defined(_WIN_32) || defined(_LINUX)
     DWORD Written=0;
     if (HandleType!=FILE_HANDLENORMAL)
     {
       const int MaxSize=0x4000;
       for (int I=0;I<Size;I+=MaxSize)
-        //if (!(Success=WriteFile(hFile,(byte *)Data+I,Min(Size-I,MaxSize),&Written,NULL) != FALSE))
+        //if (!(success=WriteFile(hFile,(byte *)Data+I,Min(Size-I,MaxSize),&Written,NULL) != FALSE))
         m_File.Write((byte*)Data+I,Min(Size-I,MaxSize));
         //  break;
     }
     else
     {
-      //Success=WriteFile(hFile,Data,Size,&Written,NULL) != FALSE;
+      //success=WriteFile(hFile,Data,Size,&Written,NULL) != FALSE;
       m_File.Write(Data,Size);
     }
 #else
-    Success=fwrite(Data,1,Size,hFile)==Size && !ferror(hFile);
+    success=fwrite(Data,1,Size,hFile)==Size && !ferror(hFile);
 #endif
-    if (!Success && AllowExceptions && HandleType==FILE_HANDLENORMAL)
+    if (!success && AllowExceptions && HandleType==FILE_HANDLENORMAL)
     {
 #if defined(_WIN_32) && !defined(SFX_MODULE) && !defined(RARDLL)
       int ErrCode=GetLastError();
@@ -707,12 +707,12 @@ bool File::RemoveCreated()
     if (CreatedFiles[I]!=NULL)
     {
       CreatedFiles[I]->SetExceptions(false);
-      bool Success;
+      bool success;
       if (CreatedFiles[I]->NewFile)
-        Success=CreatedFiles[I]->Delete();
+        success=CreatedFiles[I]->Delete();
       else
-        Success=CreatedFiles[I]->Close();
-      if (Success)
+        success=CreatedFiles[I]->Close();
+      if (success)
         CreatedFiles[I]=NULL;
       else
         RetCode=false;
