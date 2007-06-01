@@ -6,7 +6,6 @@
 #include "include.h"
 #include "Surface.h"
 using namespace Surface;
-
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_syswm.h>
 #endif
@@ -31,6 +30,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iBlueSize = 8;
   m_iAlphaSize = 8;
   m_bFullscreen = fullscreen;
+  m_glWindow = 0;
+  m_glContext = 0;
 
 #ifdef HAS_GLX
   GLXFBConfig *fbConfigs=0;
@@ -58,15 +59,19 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   
   if (window) {
     m_glWindow = window->GetWindow();
+    CLog::Log(LOGINFO, "GLX Info: Using destination window");
   } else {
     m_glWindow = 0;
+    CLog::Log(LOGINFO, "GLX Info: NOT Using destination window");
   }
 
   if (!s_dpy) {
     // try to open root display
     s_dpy = XOpenDisplay(0);
-    if (!s_dpy)
+    if (!s_dpy) {
+      CLog::Log(LOGERROR, "GLX Error: Not Display found");
       return;
+    }
   }
   
   if (doublebuffer) {
@@ -74,8 +79,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   } else {
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
-  if (fbConfigs==NULL)
+  if (fbConfigs==NULL) {
+    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
     return;
+  }
 
   // if no window is specified, create a window
   if (!m_glWindow) {
@@ -92,6 +99,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       SDL_VERSION(&info.version);      
       SDL_GetWMInfo(&info);
       p = info.info.x11.window;
+      CLog::Log(LOGINFO, "GLX Info: Using parent window");
     } else {
       p = RootWindow(s_dpy, vInfo->screen);
       swaMask = CWBorderPixel;
@@ -106,14 +114,17 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     mapWindow = true;
     if (!m_glWindow) {
       XFree(fbConfigs);
+      CLog::Log(LOGERROR, "GLX Error: Could not create window");
       return;
     }
   }
 
   // still no window? then we got a problem  
   if (shared) {
+    CLog::Log(LOGINFO, "GLX Info: Creating shared context");
     m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, shared->GetContext(), True);
   } else {
+    CLog::Log(LOGINFO, "GLX Info: Creating unshared context");
     m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
   }
   XFree(fbConfigs);
@@ -125,6 +136,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (m_glContext) {
     glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
     m_bOK = true;
+  } else {
+    CLog::Log(LOGERROR, "GLX Error: Could not create context");
   }
 #elif defined(HAS_SDL_OPENGL)
   int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);

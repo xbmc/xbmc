@@ -1142,6 +1142,7 @@ void CGLTexture::LoadToGPU()
     return;
   }
 
+  g_graphicsContext.BeginPaint();
   if (!m_loadedToGPU) {
      // Have OpenGL generate a texture object handle for us
      // this happens only one time - the first time the texture is loaded
@@ -1160,6 +1161,7 @@ void CGLTexture::LoadToGPU()
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
                GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
 
+  g_graphicsContext.EndPaint();
   delete [] m_pixels;
   m_pixels = NULL;
   
@@ -1202,7 +1204,11 @@ void CGLTexture::Update(SDL_Surface *surface, bool loadToGPU, bool freeSurface) 
 
 CGLTexture::~CGLTexture()
 {
-  glDeleteTextures(1, &id);
+  g_graphicsContext.BeginPaint();
+  if (glIsTexture(id)) {
+      glDeleteTextures(1, &id);
+  }
+  g_graphicsContext.EndPaint();
 
   if (m_pixels)
      delete [] m_pixels;
