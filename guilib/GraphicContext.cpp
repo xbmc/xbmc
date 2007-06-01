@@ -16,6 +16,8 @@
 #include "Surface.h"
 #include "SkinInfo.h"
 
+using namespace Surface;
+
 CGraphicContext g_graphicsContext;
 extern bool g_fullScreen;
 
