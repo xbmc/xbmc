@@ -848,19 +848,16 @@ void CGraphicContext::ValidateSurface()
 {
   // FIXME: routine cleanup of unused surfaces
   map<Uint32, CSurface*>::iterator iter;
-  register Uint32 tid = SDL_ThreadID();
+  Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
     CSurface* surface = InitializeSurface();
     if (surface) {
       m_surfaces[tid] = surface;
-      //m_screenSurface = surface;
     } else {
       CLog::Log(LOGERROR, "Did not get surface for thread %ul", tid);
     }
-  } else {
-    //m_screenSurface = iter->second;
   }
 }
 
