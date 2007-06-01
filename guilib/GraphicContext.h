@@ -10,8 +10,10 @@
 
 #include <vector>
 #include <stack>
+#include <map>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
+#include "Surface.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
@@ -90,12 +92,23 @@ public:
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 #else
-  inline void setScreenSurface(SDL_Surface* surface) { m_screenSurface = surface; }  
-  inline SDL_Surface* getScreenSurface() { return m_screenSurface; }  
+  inline void setScreenSurface(CSurface* surface) { m_screenSurface = surface; }  
+  inline CSurface* getScreenSurface() { return m_screenSurface; }  
 #endif
 #ifdef HAS_SDL_2D
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
 #endif  
+#ifdef HAS_SDL_OPENGL
+  void SetThreadSurface(CSurface*);
+  void ValidateSurface();
+  CSurface* InitializeSurface();
+  void ReleaseThreadSurface();
+#endif
+  // the following two functions should wrap any
+  // GL calls to maintain thread safety
+  void BeginPaint();
+  void EndPaint();
+
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   int GetFPS() const;
@@ -122,7 +135,7 @@ public:
   void SetScreenFilters(bool useFullScreenFilters);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(*this); }
+  void Lock() { EnterCriticalSection(*this);  }
   void Unlock() { LeaveCriticalSection(*this); }
   void EnablePreviewWindow(bool bEnable);
   float GetPixelRatio(RESOLUTION iRes) const;
@@ -133,7 +146,7 @@ public:
   // output scaling
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
-
+  void Flip() {m_screenSurface->Flip();}
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y); }
   inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y); }
@@ -175,13 +188,14 @@ protected:
   stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
 #else
-  SDL_Surface* m_screenSurface;  
+  CSurface* m_screenSurface;  
 #endif
 #ifdef HAS_SDL_2D
   stack<SDL_Rect*> m_viewStack;
 #endif
 #ifdef HAS_SDL_OPENGL
   stack<GLint*> m_viewStack;
+  map<Uint32, CSurface*> m_surfaces;
 #endif
 
   int m_iScreenHeight;
@@ -205,6 +219,22 @@ private:
   TransformMatrix m_finalTransform;
   stack<TransformMatrix> m_groupTransform;
 };
+
+
+class CLockMe
+{
+  public:
+  CLockMe(CCriticalSection* section) {
+    sec = section;
+    EnterCriticalSection(*sec);
+  }
+  ~CLockMe() {
+    LeaveCriticalSection(*sec);
+  }
+ private:
+  CCriticalSection* sec;
+};
+
 
 /*!
  \ingroup graphics
