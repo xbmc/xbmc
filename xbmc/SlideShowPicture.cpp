@@ -58,7 +58,11 @@ void CSlideShowPic::Close()
 #ifndef HAS_SDL
     m_pImage->Release();
 #elif defined(HAS_SDL_OPENGL)
-    glDeleteTextures(1, &m_pImage->id);
+    g_graphicsContext.BeginPaint();
+    if (glIsTexture(m_pImage->id)) {
+      glDeleteTextures(1, &m_pImage->id);
+    }
+    g_graphicsContext.EndPaint();
 #else
     SDL_FreeSurface(m_pImage);
 #endif
@@ -699,6 +703,7 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
 
 #elif defined(HAS_SDL_OPENGL)
+  g_graphicsContext.BeginPaint();
   if (pTexture)
   {
     pTexture->LoadToGPU();
@@ -748,6 +753,7 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   glVertex3f(x[3], y[3], 0);
     
   glEnd();
+  g_graphicsContext.EndPaint();
 #else
 // SDL render
   g_graphicsContext.BlitToScreen(m_pImage, NULL, NULL);
