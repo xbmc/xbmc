@@ -16,6 +16,7 @@
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
+
 #include "Surface.h"
 
 // forward definitions
@@ -92,16 +93,16 @@ public:
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 #else
-  inline void setScreenSurface(CSurface* surface) { m_screenSurface = surface; }  
-  inline CSurface* getScreenSurface() { return m_screenSurface; }  
+  inline void setScreenSurface(Surface::CSurface* surface) { m_screenSurface = surface; }  
+  inline Surface::CSurface* getScreenSurface() { return m_screenSurface; }  
 #endif
 #ifdef HAS_SDL_2D
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
 #endif  
 #ifdef HAS_SDL_OPENGL
-  void SetThreadSurface(CSurface*);
+  void SetThreadSurface(Surface::CSurface*);
   void ValidateSurface();
-  CSurface* InitializeSurface();
+  Surface::CSurface* InitializeSurface();
   void ReleaseThreadSurface();
 #endif
   // the following two functions should wrap any
@@ -188,14 +189,14 @@ protected:
   stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
 #else
-  CSurface* m_screenSurface;  
+  Surface::CSurface* m_screenSurface;  
 #endif
 #ifdef HAS_SDL_2D
   stack<SDL_Rect*> m_viewStack;
 #endif
 #ifdef HAS_SDL_OPENGL
   stack<GLint*> m_viewStack;
-  map<Uint32, CSurface*> m_surfaces;
+  map<Uint32, Surface::CSurface*> m_surfaces;
 #endif
 
   int m_iScreenHeight;

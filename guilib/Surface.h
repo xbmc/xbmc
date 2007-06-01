@@ -8,6 +8,8 @@
 
 #pragma once
 
+namespace Surface {
+
 #ifdef HAS_GLX
 #include <GL/gl.h>
 #include <GL/glx.h>
@@ -59,5 +61,7 @@ public:
   SDL_Surface* m_SDLSurface;
 #endif
 };
+
+}
 
 #endif // GUILIB_SURFACE_H
