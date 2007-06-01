@@ -10,6 +10,10 @@
 #else
  #define D3D_CLEAR_STENCIL 0x0l
 #endif
+#ifdef HAS_SDL_OPENGL
+#define GLVALIDATE CLockMe locker(this);ValidateSurface()
+#endif
+#include "Surface.h"
 #include "SkinInfo.h"
 
 CGraphicContext g_graphicsContext;
@@ -103,6 +107,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   SDL_Rect *oldviewport = new SDL_Rect;
   SDL_GetClipRect(m_screenSurface, oldviewport);
 #elif defined(HAS_SDL_OPENGL)
+  GLVALIDATE;
   GLint newviewport[4];
   GLint* oldviewport = new GLint[4];
   glGetIntegerv(GL_SCISSOR_BOX, oldviewport);	
@@ -216,6 +221,7 @@ void CGraphicContext::RestoreViewPort()
   SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
   SDL_SetClipRect(m_screenSurface, oldviewport);
 #elif defined(HAS_SDL_OPENGL)
+  GLVALIDATE;
   GLint* oldviewport = (GLint*)m_viewStack.top();
   glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
 #endif  
@@ -250,7 +256,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
       d3dRC.y1 = m_videoRect.top;
       d3dRC.y2 = m_videoRect.bottom;
       Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
-#else
+#elif defined(HAS_SDL_2D)
       SDL_Rect r;
       r.x = (Sint16)m_videoRect.left;
       r.y = (Sint16)m_videoRect.top;
@@ -489,19 +495,36 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #ifdef HAS_SDL_2D
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
+    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
+    m_surfaces[SDL_ThreadID()] = m_screenSurface;
+    //m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
 
+    /*
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    int options = SDL_OPENGL;
-    if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
+  
     m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+    */
+
+    int options = 0;
+    if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
+
+    // Create a bare root window so that SDL Input handling works
+#ifdef HAS_GLX
+    SDL_Surface* rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+
+    // attach a GLX surface to the root window
+    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow);
+#else
+    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
+#endif
+    m_surfaces[SDL_ThreadID()] = m_screenSurface;
+
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
@@ -690,6 +713,7 @@ void CGraphicContext::Clear()
 #elif defined(HAS_SDL_2D)
   SDL_FillRect(m_screenSurface, NULL, 0x00010001);
 #elif defined(HAS_SDL_OPENGL)
+  GLVALIDATE;
   glClear(GL_COLOR_BUFFER_BIT); 
 #endif    
 }
@@ -810,4 +834,94 @@ int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect 
 {
   return SDL_BlitSurface(src, srcrect, m_screenSurface, dstrect);
 }
+#endif
+
+#ifdef HAS_SDL_OPENGL
+void CGraphicContext::SetThreadSurface(CSurface* surface)
+{
+  m_surfaces[SDL_ThreadID()] = surface;
+}
+
+void CGraphicContext::ValidateSurface()
+{
+  // FIXME: routine cleanup of unused surfaces
+  map<Uint32, CSurface*>::iterator iter;
+  register Uint32 tid = SDL_ThreadID();
+  iter = m_surfaces.find(tid);
+  if (iter==m_surfaces.end()) {
+    CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
+    CSurface* surface = InitializeSurface();
+    if (surface) {
+      m_surfaces[tid] = surface;
+      //m_screenSurface = surface;
+    } else {
+      CLog::Log(LOGERROR, "Did not get surface for thread %ul", tid);
+    }
+  } else {
+    //m_screenSurface = iter->second;
+  }
+}
+
+CSurface* CGraphicContext::InitializeSurface()
+{
+  CSurface* screenSurface = NULL;
+  Lock();
+  /*
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
+  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);  
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  
+  int options = SDL_OPENGL;
+  screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+  */
+  screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
+  if (!screenSurface || !screenSurface->IsValid()) {
+    CLog::Log(LOGERROR, "Surface creation error");
+    if (screenSurface) {
+      delete screenSurface;
+    }
+    Unlock();
+    return NULL;
+  }
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  
+  glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+  glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+  glEnable(GL_TEXTURE_2D); 
+  glEnable(GL_SCISSOR_TEST); 
+  
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+ 
+  glOrtho(0.0f, m_iScreenWidth, m_iScreenHeight, 0.0f, -1.0f, 1.0f);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity(); 
+  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);          // Turn Blending On
+  glDisable(GL_DEPTH_TEST);    
+  Unlock();
+  return screenSurface;
+}
+
+
+void CGraphicContext::BeginPaint()
+{
+#ifdef HAS_SDL_OPENGL
+  Lock();
+  ValidateSurface();
+#endif
+}
+
+void CGraphicContext::EndPaint()
+{
+#ifdef HAS_SDL_OPENGL
+  Unlock();
+#endif
+}
+
+
 #endif
