@@ -13,10 +13,10 @@
 #include <map>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
-#include "Surface.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
+#include "Surface.h"
 
 // forward definitions
 class IMsgSenderCallback;
