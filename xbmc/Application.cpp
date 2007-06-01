@@ -2406,9 +2406,11 @@ void CApplication::Render()
 #ifndef HAS_SDL
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #elif defined(HAS_SDL_2D) 
-  SDL_Flip(g_graphicsContext.getScreenSurface());
+  g_graphicsContext.Flip();
+  /* SDL_Flip(g_graphicsContext.getScreenSurface()); */
 #elif defined(HAS_SDL_OPENGL)
-  SDL_GL_SwapBuffers();
+  g_graphicsContext.Flip();
+  /*SDL_GL_SwapBuffers();*/
 #endif
   g_graphicsContext.Unlock();
 }

@@ -123,6 +123,7 @@
 #undef HAS_MPLAYER
 #define HAS_DVDPLAYER
 #define HAS_CCXSTREAM
+#define HAS_GLX
 
 #include <unistd.h>
 #include <time.h>
