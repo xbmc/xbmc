@@ -29,7 +29,9 @@
  clear
 
  echo "---> ... and making a new compile"
- make
+ make #default which will for OpenGL
+#make sdl_2d #will build for SDL/2D
+#make -j 2 #will use 2 cpus for compile, obviously quicker
  if [ $? -ne 0 ]
   then
   echo "$0 : ***ERROR*** Build failed, aborting..."
