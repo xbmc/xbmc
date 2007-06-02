@@ -39,7 +39,7 @@ public:
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
 #else
-  operator SDL_Surface *() {return m_SDLSurface;}
+  SDL_Surface* SDL() {return m_SDLSurface;}
 #endif
 
  protected:
