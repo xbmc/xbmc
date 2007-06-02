@@ -34,6 +34,8 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
 #ifndef HAS_SDL  
   // TODO LINUX this is obviously not good, but until we have visualization sorted out, this will have to do
   m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio);
+#else
+  m_pVisz->Create (0, posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio);
 #endif
 }
 
@@ -57,8 +59,10 @@ void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, fl
 void CVisualisation::Render()
 {
   // ask visz. to render itself
+  g_graphicsContext.BeginPaint();
   m_pVisz->Render();
-  // CLog::Log(LOGERROR, "Test");
+  g_graphicsContext.EndPaint();
+
 }
 
 void CVisualisation::Stop()

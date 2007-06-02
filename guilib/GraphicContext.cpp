@@ -502,17 +502,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     //m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
 
-    /*
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  
-    m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
-    */
-
     int options = 0;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
 
@@ -544,7 +533,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glEnable(GL_BLEND);          // Turn Blending On
-    glDisable(GL_DEPTH_TEST);    
+    glDisable(GL_DEPTH_TEST);
 #endif
 
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
@@ -853,7 +842,8 @@ void CGraphicContext::ValidateSurface()
   if (iter==m_surfaces.end()) {
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
     CSurface* surface = InitializeSurface();
-    if (surface) {
+    if (surface) 
+    {
       m_surfaces[tid] = surface;
     } else {
       CLog::Log(LOGERROR, "Did not get surface for thread %ul", tid);
@@ -865,20 +855,13 @@ CSurface* CGraphicContext::InitializeSurface()
 {
   CSurface* screenSurface = NULL;
   Lock();
-  /*
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);  
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  
-  int options = SDL_OPENGL;
-  screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
-  */
+
   screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
-  if (!screenSurface || !screenSurface->IsValid()) {
+  if (!screenSurface || !screenSurface->IsValid()) 
+  {
     CLog::Log(LOGERROR, "Surface creation error");
-    if (screenSurface) {
+    if (screenSurface) 
+    {
       delete screenSurface;
     }
     Unlock();
@@ -901,17 +884,22 @@ CSurface* CGraphicContext::InitializeSurface()
   
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);    
+  glDisable(GL_DEPTH_TEST);
+
   Unlock();
   return screenSurface;
 }
-
 
 void CGraphicContext::BeginPaint()
 {
 #ifdef HAS_SDL_OPENGL
   Lock();
   ValidateSurface();
+  GLenum errcode;
+  if ((errcode=glGetError())!=GL_NO_ERROR) 
+  {
+    //OutputDebugString("OpenGL Error during BeginPaint()");      
+  }
 #endif
 }
 
@@ -919,6 +907,11 @@ void CGraphicContext::EndPaint()
 {
 #ifdef HAS_SDL_OPENGL
   Unlock();
+  GLenum errcode;
+  if ((errcode=glGetError())!=GL_NO_ERROR) 
+  {
+    //OutputDebugString("OpenGL Error during EndPaint()");      
+  }
 #endif
 }
 
