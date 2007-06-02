@@ -31,10 +31,12 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iBlueSize = 8;
   m_iAlphaSize = 8;
   m_bFullscreen = fullscreen;
+
+#ifdef HAS_GLX
   m_glWindow = 0;
   m_glContext = 0;
 
-#ifdef HAS_GLX
+
   GLXFBConfig *fbConfigs=0;
   bool mapWindow = false;
   int num = 0;
@@ -75,7 +77,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     s_dpy = XOpenDisplay(0);
     if (!s_dpy) 
     {
-      CLog::Log(LOGERROR, "GLX Error: Not Display found");
+      CLog::Log(LOGERROR, "GLX Error: No Display found");
       return;
     }
   }
@@ -106,7 +108,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     {
       SDL_SysWMinfo info;
 
-      SDL_VERSION(&info.version);      
+      SDL_VERSION(&info.version);
       SDL_GetWMInfo(&info);
       p = info.info.x11.window;
       CLog::Log(LOGINFO, "GLX Info: Using parent window");

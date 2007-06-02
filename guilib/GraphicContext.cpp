@@ -107,7 +107,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #elif defined(HAS_SDL_2D)
   SDL_Rect newviewport;
   SDL_Rect *oldviewport = new SDL_Rect;
-  SDL_GetClipRect(m_screenSurface, oldviewport);
+  SDL_GetClipRect(m_screenSurface->SDL(), oldviewport);
 #elif defined(HAS_SDL_OPENGL)
   GLVALIDATE;
   GLint newviewport[4];
@@ -199,7 +199,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport.y = newTop;
   newviewport.w = newRight - newLeft;
   newviewport.h = newBottom - newTop;
-  SDL_SetClipRect(m_screenSurface, &newviewport);
+  SDL_SetClipRect(m_screenSurface->SDL(), &newviewport);
 #elif defined(HAS_SDL_OPENGL)
   newviewport[0] = newLeft;
   newviewport[1] = m_iScreenHeight - newBottom; // opengl uses bottomleft as origin
@@ -221,7 +221,7 @@ void CGraphicContext::RestoreViewPort()
   Get3DDevice()->SetViewport(oldviewport);
 #elif defined(HAS_SDL_2D)
   SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
-  SDL_SetClipRect(m_screenSurface, oldviewport);
+  SDL_SetClipRect(m_screenSurface->SDL(), oldviewport);
 #elif defined(HAS_SDL_OPENGL)
   GLVALIDATE;
   GLint* oldviewport = (GLint*)m_viewStack.top();
@@ -264,7 +264,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
       r.y = (Sint16)m_videoRect.top;
       r.w = (Sint16)(m_videoRect.right - m_videoRect.left + 1);
       r.h = (Sint16)(m_videoRect.bottom - m_videoRect.top +1);
-      SDL_FillRect(m_screenSurface, &r, 0x00010001);    
+      SDL_FillRect(m_screenSurface->SDL(), &r, 0x00010001);    
 #endif		  
     }
   }
@@ -498,10 +498,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
-    m_surfaces[SDL_ThreadID()] = m_screenSurface;
     //m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
-
+    m_surfaces[SDL_ThreadID()] = m_screenSurface;
     int options = 0;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
 
@@ -702,7 +701,7 @@ void CGraphicContext::Clear()
   else
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
 #elif defined(HAS_SDL_2D)
-  SDL_FillRect(m_screenSurface, NULL, 0x00010001);
+  SDL_FillRect(m_screenSurface->SDL(), NULL, 0x00010001);
 #elif defined(HAS_SDL_OPENGL)
   GLVALIDATE;
   glClear(GL_COLOR_BUFFER_BIT); 
@@ -823,7 +822,7 @@ int CGraphicContext::GetFPS() const
 #ifdef HAS_SDL_2D
 int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect)
 {
-  return SDL_BlitSurface(src, srcrect, m_screenSurface, dstrect);
+  return SDL_BlitSurface(src, srcrect, m_screenSurface->SDL(), dstrect);
 }
 #endif
 
@@ -890,6 +889,8 @@ CSurface* CGraphicContext::InitializeSurface()
   return screenSurface;
 }
 
+#endif
+
 void CGraphicContext::BeginPaint()
 {
 #ifdef HAS_SDL_OPENGL
@@ -916,4 +917,3 @@ void CGraphicContext::EndPaint()
 }
 
 
-#endif
