@@ -24,6 +24,10 @@
 #include "common/DirectInputMouse.h"
 #include "common/DirectInputKeyboard.h"
 #endif
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Global access to common members
 //-----------------------------------------------------------------------------

@@ -49,6 +49,7 @@
 #define HAS_SHOUTCAST
 #define HAS_RAR
 #define HAS_CCXSTREAM
+#undef  HAS_LIRC
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL
@@ -93,6 +94,7 @@
 #define HAS_AUDIO
 #define HAS_SHOUTCAST
 #define HAS_RAR
+#undef  HAS_LIRC
 
 #ifndef _LINUX
 // additional includes and defines
@@ -111,19 +113,20 @@
 
 #ifdef _LINUX
 #define HAS_PYTHON
-#undef HAS_TRAINER
+#undef  HAS_TRAINER
 #define HAS_WEB_SERVER
-#undef HAS_UPNP
-#undef HAS_AUDIO
-#undef HAS_SHOUTCAST
+#undef  HAS_UPNP
+#undef  HAS_AUDIO
+#undef  HAS_SHOUTCAST
 #define HAS_SDL
 #define HAS_RAR
 #define HAS_FILESYSTEM_SMB
 #define HAS_VIDEO_PLAYBACK
-#undef HAS_MPLAYER
+#undef  HAS_MPLAYER
 #define HAS_DVDPLAYER
 #define HAS_CCXSTREAM
 #define HAS_GLX
+#define HAS_LIRC
 
 #include <unistd.h>
 #include <time.h>
