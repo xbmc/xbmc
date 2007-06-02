@@ -23,8 +23,9 @@ public:
                         SONG_LASTPLAYED,
                         SONG_RATING,
                         SONG_COMMENT,
+                        SONG_DATEADDED,
                         FIELD_PLAYLIST,
-                        FIELD_RANDOM
+                        FIELD_RANDOM,
                       };
 
   enum SEARCH_OPERATOR { OPERATOR_START = 0,

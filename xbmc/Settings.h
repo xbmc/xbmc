@@ -257,6 +257,7 @@ public:
     float m_playCountMinimumPercent;
 
     int m_songInfoDuration;
+    int m_busyDialogDelay;
     int m_logLevel;
     CStdString m_cddbAddress;
     bool m_usePCDVDROM;
