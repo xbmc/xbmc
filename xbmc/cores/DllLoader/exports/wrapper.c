@@ -71,6 +71,11 @@ int __wrap_open(const char *file, int oflag, ...)
 	return dll_open(file, oflag);
 }
 
+int __wrap_open64(const char *file, int oflag, ...)
+{
+	return dll_open(file, oflag);
+}
+
 int __wrap_close(int fd)
 {
    return dll_close(fd);
