@@ -39,6 +39,12 @@ const short* CAudioBuffer::Get() const
 
 void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
 {
+  // FIXME: iSize should never be less than 0
+  //if (iSize<0) {
+  //CLog::Log(LOGERROR, "Got Invalid psBuffer size: iSize");
+  //return;
+  //}
+
   if (iBitsPerSample == 16)
   {
     iSize /= 2;
