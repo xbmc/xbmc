@@ -236,6 +236,37 @@ class CLockMe
   CCriticalSection* sec;
 };
 
+/*
+void printMatrix(GLfloat *matrix)
+{
+  for (int i = 0 ; i<4 ; i++) 
+  {
+    for (int j = 0 ; j<4 ; j++) 
+    {
+      printf("% 3.3f  ", matrix[i*4+j]);
+    }
+    printf("\n");
+  }
+}
+
+void dumpGLState()
+{
+  GLboolean bools[16];
+  GLfloat matrix[16];
+  glGetFloatv(GL_SCISSOR_BOX, matrix);
+  printf("Scissor box: %f, %f, %f, %f\n", matrix[0], matrix[1], matrix[2], matrix[3]);
+  glGetBooleanv(GL_SCISSOR_TEST, bools);
+  printf("Scissor test enabled: %d\n", (int)bools[0]);
+  glGetFloatv(GL_VIEWPORT, matrix);
+  printf("Viewport: %f, %f, %f, %f\n", matrix[0], matrix[1], matrix[2], matrix[3]);
+  glGetFloatv(GL_PROJECTION_MATRIX, matrix);
+  printf("Projection Matrix:\n");
+  printMatrix(matrix);
+  glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+  printf("Modelview Matrix:\n");
+  printMatrix(matrix);
+}
+*/
 
 /*!
  \ingroup graphics
