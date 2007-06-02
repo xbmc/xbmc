@@ -236,6 +236,8 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   // add the fields to the field spincontrol
   for (int field = CSmartPlaylistRule::FIELD_NONE + 1; field < CSmartPlaylistRule::FIELD_RANDOM; field++)
   {
+    if (field == CSmartPlaylistRule::SONG_DATEADDED)
+      continue;   // TODO: We don't have dateadded field in the database, so can't filter on this yet
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, field);
     msg.SetLabel(CSmartPlaylistRule::GetLocalizedField((CSmartPlaylistRule::DATABASE_FIELD)field));
     OnMessage(msg);

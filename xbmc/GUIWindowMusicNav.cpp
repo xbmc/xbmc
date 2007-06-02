@@ -307,17 +307,15 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
 
-  CFileItem directory(strDirectory, true);
-
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
-    if (directory.IsPlayList())
+    if (items.IsPlayList())
       OnRetrieveMusicInfo(items);
-    else if (!items.IsMusicDb())  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
+    if (!items.IsMusicDb())
     {
       items.SetCachedMusicThumbs();
       m_thumbLoader.Load(m_vecItems);

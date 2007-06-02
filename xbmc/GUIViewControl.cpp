@@ -239,6 +239,20 @@ int CGUIViewControl::GetCurrentControl() const
   return m_vecViews[m_currentView]->GetID();
 }
 
+// returns the number-th view's viewmode (type and id)
+int CGUIViewControl::GetViewModeNumber(int number) const
+{
+  CGUIBaseContainer *nextView = NULL;
+  if (number >= 0 || number < (int)m_vecViews.size())
+    nextView = (CGUIBaseContainer *)m_vecViews[number];
+  else if (m_vecViews.size())
+    nextView = (CGUIBaseContainer *)m_vecViews[0];
+  if (nextView)
+    return (nextView->GetType() << 16) | nextView->GetID();
+  return 0;  // no view modes :(
+}
+
+// returns the next viewmode in the cycle
 int CGUIViewControl::GetNextViewMode() const
 {
   CGUIBaseContainer *nextView = NULL;
@@ -275,10 +289,26 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
 
 void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
 {
+  // the view as control could be a select/spin/dropdown button
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_viewAsControl);
+  g_graphicsContext.SendMessage(msg);
+  for (unsigned int i = 0; i < m_vecViews.size(); i++)
+  {
+    CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, m_viewAsControl, i);
+    CStdString label;
+    label.Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
+    msg.SetLabel(label);
+    g_graphicsContext.SendMessage(msg);
+  }
+  CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_parentWindow, m_viewAsControl, m_currentView);
+  g_graphicsContext.SendMessage(msgSelect);
+
+  // otherwise it's just a normal button
   CStdString label;
   label.Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
-  CGUIMessage msg(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
-  msg.SetLabel(label);
-  g_graphicsContext.SendMessage(msg);
+  CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
+  msgSet.SetLabel(label);
+  g_graphicsContext.SendMessage(msgSet);
 }
 
