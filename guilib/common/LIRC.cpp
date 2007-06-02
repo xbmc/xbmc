@@ -54,19 +54,19 @@ void CRemoteControl::Initialize()
   };
   
   // Set the socket to non-blocking
-	int opts = fcntl(m_fd,F_GETFL);
-	if (opts == -1) 
-	{
+  int opts = fcntl(m_fd,F_GETFL);
+  if (opts == -1) 
+  {
     CLog::Log(LOGERROR, "%s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
-		return;
-	}
+    return;
+  }
 	
-	opts = (opts | O_NONBLOCK);
-	if (fcntl(m_fd,F_SETFL,opts) == -1) 
-	{
+  opts = (opts | O_NONBLOCK);
+  if (fcntl(m_fd,F_SETFL,opts) == -1) 
+  {
     CLog::Log(LOGERROR, "%s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
-	}
+  }
 	  
   m_file = fdopen(m_fd, "r");
   if (m_file == NULL)
