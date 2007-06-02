@@ -26,6 +26,7 @@ public:
 
   bool HasControl(int controlID) const;
   int GetNextViewMode() const;
+  int GetViewModeNumber(int number) const;
 
   int GetCurrentControl() const;
 

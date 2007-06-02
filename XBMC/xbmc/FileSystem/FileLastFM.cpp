@@ -11,7 +11,6 @@ namespace XFILE
 
 enum ACTION
 {
-  ACTION_Idle,
   ACTION_Handshaking,
   ACTION_ChangingStation,
   ACTION_RetreivingMetaData,
@@ -19,7 +18,7 @@ enum ACTION
 };
 typedef struct FileStateSt
 {
-  ACTION Action;
+  queue<ACTION> ActionQueue;
   bool bActionDone;
   bool bHandshakeDone;
   bool bError;
@@ -33,11 +32,12 @@ CFileLastFM::CFileLastFM() : CThread()
   m_fileState.bActionDone    = false;
   m_fileState.bError         = false;
   
-  m_pFile        = NULL;
-  m_pSyncBuffer  = new char[6];
-  m_bOpened      = false;
-  m_bDirectSkip  = false;
-  m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
+  m_pFile          = NULL;
+  m_pSyncBuffer    = new char[6];
+  m_bOpened        = false;
+  m_bDirectSkip    = false;
+  m_bSkippingTrack = false;
+  m_hWorkerEvent   = CreateEvent(NULL, false, false, NULL);
 }
 
 CFileLastFM::~CFileLastFM()
@@ -204,7 +204,7 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
   
   if (!m_fileState.bHandshakeDone)
   {
-    m_fileState.Action      = ACTION_Handshaking;
+    m_fileState.ActionQueue.push(ACTION_Handshaking);
     m_fileState.bActionDone = false;
     SetEvent(m_hWorkerEvent);
     dlgProgress->SetLine(2, 15251);//Connecting to Last.fm...
@@ -220,7 +220,7 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
       return false;
     }
   }
-  m_fileState.Action      = ACTION_ChangingStation;
+  m_fileState.ActionQueue.push(ACTION_ChangingStation);
   m_fileState.bActionDone = false;
   SetEvent(m_hWorkerEvent);
   dlgProgress->SetLine(2, 15252); // Selecting station...
@@ -334,7 +334,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
     m_bDirectSkip = false;
     memmove(data, data + iSyncPos + 1, read - (iSyncPos + 1));
     read -= (iSyncPos + 1);
-    m_fileState.Action = ACTION_RetreivingMetaData;
+    m_fileState.ActionQueue.push(ACTION_RetreivingMetaData);
     SetEvent(m_hWorkerEvent);
   }
   else if ((iSyncPos = SyncReceived(data, read)) != -1)
@@ -356,7 +356,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
       memmove(data + iSyncPos, data + iSyncPos + 4, read - (iSyncPos + 4));
       read -= 4;
     }
-    m_fileState.Action = ACTION_RetreivingMetaData;
+    m_fileState.ActionQueue.push(ACTION_RetreivingMetaData);
     SetEvent(m_hWorkerEvent);
   }
   //copy last 3 chars of data to first three chars of syncbuffer, might be "SYN"
@@ -372,8 +372,9 @@ __int64 CFileLastFM::Seek(__int64 iFilePosition, int iWhence)
 
 bool CFileLastFM::DoSkipNext()
 {
-  CBusyIndicator busy;
   m_bDirectSkip = true;
+  g_ApplicationRenderer.SetBusy(true);
+  m_bSkippingTrack = true;
   CHTTP http;
   CStdString url;
   CStdString html;
@@ -386,16 +387,18 @@ bool CFileLastFM::DoSkipNext()
   {
     return true;
   }
+  g_ApplicationRenderer.SetBusy(false);
   m_bDirectSkip = false;
+  m_bSkippingTrack = false;
   return false;
 }
 
 bool CFileLastFM::SkipNext()
 {
   if (m_bDirectSkip) return true; //already skipping
-  if (m_fileState.Action == ACTION_Idle)
+  if (m_fileState.ActionQueue.size() == 0)
   {
-    m_fileState.Action = ACTION_SkipNext;
+    m_fileState.ActionQueue.push(ACTION_SkipNext);
     SetEvent(m_hWorkerEvent);
   }
   return true; //only to indicate we handle the skipnext
@@ -419,6 +422,11 @@ void CFileLastFM::Close()
   }
   m_bOpened = false;
 
+  if (m_bSkippingTrack)
+  {
+    m_bSkippingTrack = false;
+    g_ApplicationRenderer.SetBusy(false);
+  }
   CLog::Log(LOGDEBUG,"LastFM closed");
 }
 
@@ -468,9 +476,11 @@ bool CFileLastFM::RetreiveMetaData()
         http.Download(coverUrl, cachedFile);
       }
     }
+    CSingleLock lock(g_graphicsContext);
     g_infoManager.SetCurrentAlbumThumb(cachedFile);
     tag.SetLoaded();
     g_infoManager.SetCurrentSongTag(tag);
+    lock.Leave();
 
     //inform app a new track has started, and reset our playtime
     CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
@@ -494,35 +504,39 @@ void CFileLastFM::Process()
     WaitForSingleObject(m_hWorkerEvent, INFINITE);
     if (m_bStop)
       break;
-    switch (m_fileState.Action)
+    
+    ACTION action = m_fileState.ActionQueue.front();
+    m_fileState.ActionQueue.pop();
+    switch (action)
     {
     case ACTION_Handshaking:
       if (!HandShake())
         m_fileState.bError = true;
       else
         m_fileState.bActionDone = true;
-      m_fileState.Action = ACTION_Idle;
       break;
     case ACTION_ChangingStation:
       if (!ChangeStation(m_Url))
         m_fileState.bError = true;
       else
         m_fileState.bActionDone = true;
-      m_fileState.Action = ACTION_Idle;
       break;
     case ACTION_RetreivingMetaData:
       if (!RetreiveMetaData())
         m_fileState.bError = true;
       else
         m_fileState.bActionDone = true;
-      m_fileState.Action = ACTION_Idle;
+      if (m_bSkippingTrack)
+      {
+        m_bSkippingTrack = false;
+        g_ApplicationRenderer.SetBusy(false);
+      }
       break;
     case ACTION_SkipNext:
       if (!DoSkipNext())
         m_fileState.bError = true;
       else
         m_fileState.bActionDone = true;
-      m_fileState.Action = ACTION_Idle;
       break;
     }
   }

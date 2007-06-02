@@ -404,6 +404,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
+    else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1575,6 +1576,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
+      break;
+    case VIDEOPLAYER_CONTENT:
+      {
+        CStdString strContent="movies";
+        if (!m_currentFile.HasVideoInfoTag())
+          strContent = "files";
+        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > 0) // episode
+          strContent = "episodes";
+        bReturn = m_stringParameters[info.m_data1].Equals(strContent);
+      }
       break;
     case CONTAINER_SORT_METHOD:
     {

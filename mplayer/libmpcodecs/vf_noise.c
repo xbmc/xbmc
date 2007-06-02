@@ -320,10 +320,9 @@ static void get_image(struct vf_instance_s* vf, mp_image_t *mpi){
     if(mpi->imgfmt!=vf->priv->outfmt) return; // colorspace differ
     // ok, we can do pp in-place (or pp disabled):
     vf->dmpi=vf_get_image(vf->next,mpi->imgfmt,
-        mpi->type, mpi->flags, mpi->w, mpi->h);
+        mpi->type, mpi->flags, mpi->width, mpi->height);
     mpi->planes[0]=vf->dmpi->planes[0];
     mpi->stride[0]=vf->dmpi->stride[0];
-    mpi->width=vf->dmpi->width;
     if(mpi->flags&MP_IMGFLAG_PLANAR){
         mpi->planes[1]=vf->dmpi->planes[1];
         mpi->planes[2]=vf->dmpi->planes[2];
@@ -340,7 +339,7 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
 		// no DR, so get a new image! hope we'll get DR buffer:
 		vf->dmpi=vf_get_image(vf->next,vf->priv->outfmt,
 		MP_IMGTYPE_TEMP, MP_IMGFLAG_ACCEPT_STRIDE,
-		mpi->w,mpi->h);
+		mpi->width,mpi->height);
 //printf("nodr\n");
 	}
 //else printf("dr\n");
@@ -351,7 +350,8 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
 	noise(dmpi->planes[2], mpi->planes[2], dmpi->stride[2], mpi->stride[2], mpi->w/2, mpi->h/2, &vf->priv->chromaParam);
 
         vf_clone_mpi_attributes(dmpi, mpi);
-
+  dmpi->w = mpi->w;
+  dmpi->h = mpi->h;
 #ifdef HAVE_MMX
 	if(gCpuCaps.hasMMX) asm volatile ("emms\n\t");
 #endif
