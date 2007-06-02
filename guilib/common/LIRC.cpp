@@ -44,14 +44,14 @@ void CRemoteControl::Initialize()
   {
     CLog::Log(LOGERROR, "%s: socket failed: %s", __FUNCTION__, strerror(errno));
     return;
-  };
+  }
   
   // Connect to the socket
   if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)  
   {
     CLog::Log(LOGERROR, "%s: connect failed: %s", __FUNCTION__, strerror(errno));
     return;
-  };
+  }
   
   // Set the socket to non-blocking
   int opts = fcntl(m_fd,F_GETFL);
