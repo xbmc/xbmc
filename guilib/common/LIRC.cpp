@@ -8,6 +8,7 @@
 #include "log.h"
 
 #define LIRC_DEVICE "/dev/lircd"
+#define LIRC_REPEAT_IGNORE 2
 
 CRemoteControl g_RemoteControl;
 
@@ -94,11 +95,15 @@ void CRemoteControl::Update()
   // 000000037ff07bdd 00 OK mceusb
   char scanCode[128];  
   char buttonName[128];
-  char repeat[4];
+  char repeatStr[4];
   char deviceName[128];
-  int num = sscanf(m_buf, "%s %s %s %s", &scanCode, &repeat, &buttonName, &deviceName);
+  int num = sscanf(m_buf, "%s %s %s %s", &scanCode, &repeatStr, &buttonName, &deviceName);
 
-  m_isHolding = (strcmp(repeat, "00") != 0);
+  int repeat = strtol(repeatStr, NULL, 16);
+  if (repeat % LIRC_REPEAT_IGNORE != 0)
+    return;
+     
+  m_isHolding = (strcmp(repeatStr, "00") != 0);
   m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, buttonName);
 }
 
