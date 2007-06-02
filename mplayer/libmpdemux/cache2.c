@@ -208,10 +208,12 @@ int cache_fill(cache_vars_t* s){
   }
 #ifdef _XBOX
   int fill = 100*(s->max_filepos-s->read_filepos)/s->buffer_size;
-  if(s->eof || cache_fill_status >= 0)
-    cache_fill_status=fill; //Report full buffer all the time
+  if(s->eof)
+    cache_fill_status=100*(s->buffer_size-s->back_size)/s->buffer_size; //Report full buffer all the time
+  else if(cache_fill_status == 0)
+    cache_fill_status= fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
   else
-    cache_fill_status=fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
+    cache_fill_status= fill;
 #endif
   return len;
   

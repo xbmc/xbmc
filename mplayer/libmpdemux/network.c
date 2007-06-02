@@ -215,6 +215,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	
 #ifdef HAVE_WINSOCK2
 	u_long val;
+  int to;
 #endif
 	
 	socket_server_fd = socket(af, SOCK_STREAM, 0);
@@ -224,6 +225,18 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 //		mp_msg(MSGT_NETWORK,MSGL_ERR,"Failed to create %s socket:\n", af2String(af));
 		return -2;
 	}
+
+#if defined(SO_RCVTIMEO) && defined(SO_SNDTIMEO)
+#ifdef HAVE_WINSOCK2
+	/* timeout in milliseconds */
+	to = 10 * 1000;
+#else
+	to.tv_sec = 10;
+	to.tv_usec = 0;
+#endif
+	setsockopt(socket_server_fd, SOL_SOCKET, SO_RCVTIMEO, &to, sizeof(to));
+	setsockopt(socket_server_fd, SOL_SOCKET, SO_SNDTIMEO, &to, sizeof(to));
+#endif
 
 	switch (af) {
 		case AF_INET:  our_s_addr = (void *) &server_address.four.sin_addr; break;
@@ -330,7 +343,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	while((ret = select(socket_server_fd+1, NULL, &set, NULL, &tv)) == 0) {
 	      if( ret<0 ) mp_msg(MSGT_NETWORK,MSGL_ERR,"select failed\n");
 	      else if(ret > 0) break;
-	      else if(count > 30 || mp_input_check_interrupt(500)) {
+	      else if(count > 30 || mp_input_check_interrupt(0)) {
 		      if(count > 30)
 		  mp_msg(MSGT_NETWORK,MSGL_ERR,"Connection timeout\n");
 		      else
@@ -352,7 +365,6 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
 #endif
 
-#ifndef _XBOX //XBOX doesnt support SO_ERROR option for getsockopt
   // Check if there were any error
 	err_len = sizeof(int);
 	ret =  getsockopt(socket_server_fd,SOL_SOCKET,SO_ERROR,&err,&err_len);
@@ -364,7 +376,6 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 		mp_msg(MSGT_NETWORK,MSGL_ERR,"Connect error : %s\n",strerror(err));
 		return -1;
 	}
-#endif
 	
 	return socket_server_fd;
 }
