@@ -225,6 +225,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_songInfoDuration = 2;
+  g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
   g_advancedSettings.m_usePCDVDROM = false;
@@ -1191,6 +1192,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
+  GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

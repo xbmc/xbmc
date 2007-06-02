@@ -24,8 +24,6 @@
 #include "utils/GUIInfoManager.h"
 #include "../guilib/guiImage.h"
 
-#define MAX_MISSEDFRAMES 40
-
 CApplicationRenderer g_ApplicationRenderer;
 
 CApplicationRenderer::CApplicationRenderer(void)
@@ -75,6 +73,31 @@ void CApplicationRenderer::Process()
       continue;
     }
 
+    if (!m_pWindow || iWidth == 0 || iHeight == 0)
+    {
+      m_pWindow = (CGUIDialogBusy*)m_gWindowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (m_pWindow)
+      {
+        m_pWindow->Initialize();//need to load the window to determine size.
+        if (m_pWindow->GetID() == WINDOW_INVALID)
+        {
+          //busywindow couldn't be loaded so stop this thread.
+          m_pWindow = NULL;
+          m_bStop = true;
+          break;
+        }
+
+        SAFE_RELEASE(m_lpSurface);
+        FRECT rect = m_pWindow->GetScaledBounds();
+        m_pWindow->ClearAll(); //unload
+
+        iLeft = (int)floor(rect.left);
+        iTop =  (int)floor(rect.top);
+        iWidth = (int)ceil(rect.right - rect.left);
+        iHeight = (int)ceil(rect.bottom - rect.top);
+      }
+    }
+
     float t0 = (1000.0f/(float)g_graphicsContext.GetFPS());
     float t1 = m_time + t0; //time when we expect a new render
     float t2 = (float)timeGetTime();
@@ -82,7 +105,7 @@ void CApplicationRenderer::Process()
     {
       try
       {
-        if (m_busycount > MAX_MISSEDFRAMES)
+        if (timeGetTime() >= (m_time + g_advancedSettings.m_busyDialogDelay))
         {
           CSingleLock lockg (g_graphicsContext);
           if (m_prevbusycount != m_busycount)
@@ -92,34 +115,12 @@ void CApplicationRenderer::Process()
           }
           m_busycount--;
           //no busy indicator if a progress dialog is showing
-          if (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS)
+          if (m_gWindowManager.HasModalDialog() || (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
           {
             //TODO: render progress dialog here instead of in dialog::Progress
+            m_time = timeGetTime();
             Sleep(1);
             continue;
-          }
-          if (!m_pWindow || iWidth == 0 || iHeight == 0)
-          {
-            m_pWindow = (CGUIDialogBusy*)m_gWindowManager.GetWindow(WINDOW_DIALOG_BUSY);
-            if (m_pWindow)
-            {
-              m_pWindow->Initialize();//need to load the window to determine size.
-              if (m_pWindow->GetID() == WINDOW_INVALID)
-              {
-                //busywindow couldn't be loaded so stop this thread.
-                m_pWindow = NULL;
-                m_bStop = true;
-                break;
-              }
-
-              SAFE_RELEASE(m_lpSurface);
-              FRECT rect = m_pWindow->GetScaledBounds();
-
-              iLeft = (int)floor(rect.left);
-              iTop =  (int)floor(rect.top);
-              iWidth = (int)ceil(rect.right - rect.left);
-              iHeight = (int)ceil(rect.bottom - rect.top);
-            }
           }
           if (!m_pWindow || iWidth == 0 || iHeight == 0)
           {
@@ -232,7 +233,6 @@ void CApplicationRenderer::Process()
         g_graphicsContext.Unlock();
         CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when  busy rendering");
       }
-      m_time = timeGetTime();
     }
     Sleep(1);
   }
@@ -251,8 +251,8 @@ void CApplicationRenderer::UpdateBusyCount()
     m_prevbusycount = m_busycount;
     if (m_pWindow && m_busyShown)
     {
-      m_pWindow->Close();
       m_busyShown = false;
+      m_pWindow->Close();
     }
   }
 }
@@ -300,7 +300,7 @@ void CApplicationRenderer::Stop()
 
 bool CApplicationRenderer::IsBusy() const
 {
-  return (m_explicitbusy > 0) || m_prevbusycount > MAX_MISSEDFRAMES;
+  return ((m_explicitbusy > 0) || m_busyShown);
 }
 
 void CApplicationRenderer::SetBusy(bool bBusy)
