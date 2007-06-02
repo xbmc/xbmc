@@ -65,7 +65,7 @@ void CSplash::Show()
 #endif
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #elif defined(HAS_SDL_2D) 
-  SDL_Flip(g_graphicsContext.getScreenSurface());
+  SDL_Flip(g_graphicsContext.getScreenSurface()->SDL());
 #elif defined(HAS_SDL_OPENGL)
   SDL_GL_SwapBuffers();
 #endif
