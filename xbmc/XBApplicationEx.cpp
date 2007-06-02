@@ -323,7 +323,6 @@ void CXBApplicationEx::ReadInput()
         break;
      }     
   }
-
 #else
   // Read the input from the keyboard
   g_Keyboard.Update();
@@ -331,6 +330,10 @@ void CXBApplicationEx::ReadInput()
 
   // Read the input from the mouse
   g_Mouse.Update();
+
+#ifdef HAS_LIRC
+  g_RemoteControl.Update();
+#endif
 
 #ifdef HAS_GAMEPAD
   // Read the input for all connected gampads

@@ -75,9 +75,88 @@ bool CButtonTranslator::Load()
     MapWindowActions(pWindow, wWindowID);
     pWindow = pWindow->NextSibling();
   }
+  
+#ifdef HAS_LIRC
+  if (!LoadLircMap())
+    return false;
+#endif
+  
   // Done!
   return true;
 }
+
+#ifdef HAS_LIRC
+bool CButtonTranslator::LoadLircMap()
+{
+  // load our xml file, and fill up our mapping tables
+  TiXmlDocument xmlDoc;
+
+  // Load the config file
+  CStdString lircmapPath = g_settings.GetUserDataItem("Lircmap.xml");
+  CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
+  if (!xmlDoc.LoadFile(lircmapPath))
+  {
+    g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return true; // This is so people who don't have the file won't fail, just warn
+  }
+
+  lircRemotesMap.clear();
+  TiXmlElement* pRoot = xmlDoc.RootElement();
+  CStdString strValue = pRoot->Value();
+  if (strValue != "lircmap")
+  {
+    g_LoadErrorStr.Format("%sl Doesn't contain <lircmap>", lircmapPath.c_str());
+    return false;
+  }
+
+  // run through our window groups
+  TiXmlNode* pRemote = pRoot->FirstChild();
+  while (pRemote)
+  {
+    const char *szRemote = pRemote->Value();
+    if (szRemote)
+    {
+      TiXmlAttribute* pAttr = pRemote->ToElement()->FirstAttribute();
+      const char* szDeviceName = pAttr->Value();
+      MapRemote(pRemote, szDeviceName);
+    }
+    pRemote = pRemote->NextSibling();
+  }
+  
+  return true;
+}
+
+void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
+{
+  lircButtonMap buttons;
+  
+  TiXmlElement *pButton = pRemote->FirstChildElement();
+  while (pButton)
+  {
+    if (pButton->FirstChild() && pButton->FirstChild()->Value())
+      buttons[pButton->FirstChild()->Value()] = pButton->Value();
+    pButton = pButton->NextSiblingElement();
+  }
+  
+  lircRemotesMap[szDevice] = buttons;
+} 
+
+WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
+{
+  // Find the device
+  map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
+  if (it == lircRemotesMap.end())
+    return 0;
+
+  // Find the button
+  lircButtonMap::iterator it2 = (*it).second.find(szButton);
+  if (it2 == (*it).second.end())
+    return 0;  
+
+  // Convert the button to code  
+  return TranslateRemoteString((*it2).second.c_str());
+}
+#endif
 
 void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action)
 {
