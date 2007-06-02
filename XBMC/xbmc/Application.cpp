@@ -892,6 +892,9 @@ HRESULT CApplication::Create(HWND hWnd)
   // Create the Mouse and Keyboard devices
   g_Mouse.Initialize(hWnd);
   g_Keyboard.Initialize(hWnd);
+#ifdef HAS_LIRC
+  g_RemoteControl.Initialize();
+#endif
 
 #ifdef HAS_XBOX_HARDWARE
   // Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
@@ -3140,6 +3143,18 @@ bool CApplication::ProcessRemote(float frameTime)
     // If it isn't, we use 20 to get repeatable jumps.
     float time = (m_DefaultIR_Remote.bHeldDown) ? frameTime : 0.020f;
     CKey key(m_DefaultIR_Remote.wButtons, 0, 0, 0, 0, 0, 0, time);
+    return OnKey(key);
+  }
+#endif
+#ifdef HAS_LIRC
+  if (g_RemoteControl.GetButton())
+  {
+    // time depends on whether the movement is repeated (held down) or not.
+    // If it is, we use the FPS timer to get a repeatable speed.
+    // If it isn't, we use 20 to get repeatable jumps.
+    float time = (g_RemoteControl.IsHolding()) ? frameTime : 0.020f;
+    CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
+    g_RemoteControl.Reset();
     return OnKey(key);
   }
 #endif
