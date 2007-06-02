@@ -320,7 +320,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	if (device == NULL)
 	  device = "default";
 	
-	int nErr = snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, 0/*SND_PCM_NONBLOCK*/);
+	int nErr = snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
         CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
 
 	/* Allocate Hardware Parameters structures and fills it with config space for PCM */
@@ -346,9 +346,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         nErr = snd_pcm_hw_params_set_period_size_near(m_pStream[num], hw_params, &m_periods[num], 0);
         CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
-	snd_pcm_uframes_t buffer_size = m_periods[num] * (2 * channels) * 2; // buffer big enough for 2 periods 
-	if (buffer_size < PACKET_SIZE)
-		buffer_size = PACKET_SIZE*2; // not really necessary - allocate bigger buffer than needed.
+	snd_pcm_uframes_t buffer_size = PACKET_SIZE*20; // big enough buffer
         nErr = snd_pcm_hw_params_set_buffer_size_near(m_pStream[num], hw_params, &buffer_size);
         CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
@@ -938,6 +936,13 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
     bool ret = false;
 
+#ifdef HAS_ALSA
+    int nAvail = snd_pcm_avail_update(m_pStream[stream]);
+    if (nAvail < PACKET_SIZE) {
+        return false;
+    }
+#endif
+
     if (m_resampler[stream].GetData(m_packet[stream][0].packet))
     {
       	// got some data from our resampler - construct audio packet
@@ -966,11 +971,13 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
         			framesToWrite, writeResult, snd_strerror(writeResult));				
         		break;
       		}
-		else
-      			m_bytesSentOut += nPeriodSize; 
+		//else
+      		//	m_bytesSentOut += nPeriodSize; 
 
 		pcmPtr += nPeriodSize;  	
 	}
+
+        StreamCallback(&m_packet[stream][0]);
 		
 #else
       Mix_Chunk* chunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk));
