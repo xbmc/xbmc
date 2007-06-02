@@ -126,7 +126,6 @@
 #define HAS_VISUALISATION
 #define HAS_DVDPLAYER
 #define HAS_CCXSTREAM
-#define HAS_GLX
 #define HAS_LIRC
 
 #include <unistd.h>
@@ -144,6 +143,9 @@
 #ifdef HAS_SDL
 #ifndef HAS_SDL_2D
 #define HAS_SDL_OPENGL
+#ifdef _LINUX
+#define HAS_GLX
+#endif
 #define HAS_GL_EXTENSIONS
 #endif
 #ifdef _WIN32
