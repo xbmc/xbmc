@@ -20,7 +20,6 @@ public:
   void              UpdateFileList();
   void              AddItem(CFileItem * fileItem,int itemPosition);
   void              RemoveItem(int itemPosition);
-  void              RefreshList();
   void              ClearList();
   CFileItem*        GetListItem(int position);
   int               GetCurrentListPosition();
