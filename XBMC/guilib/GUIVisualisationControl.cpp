@@ -42,7 +42,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   // FIXME: iSize should never be less than 0
   if (iSize<0) 
   {
-    CLog::Log(LOGERROR, "Got Invalid psBuffer size: iSize");
+    //CLog::Log(LOGERROR, "Got Invalid psBuffer size: iSize");
     return;
   }
 
