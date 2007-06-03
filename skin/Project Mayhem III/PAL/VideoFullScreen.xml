@@ -78,32 +78,65 @@
 				<textcolor>green</textcolor>
 				<font>special13</font>
 			</control>
-			<control type="label" id="1">
-				<description>current_event_name</description>
-				<width>420</width>
-				<posx>160</posx>
-				<posy>5</posy>
-				<info>VideoPlayer.Title</info>
-				<align>left</align>
-				<font>special13</font>
+			<control type="group" id="1">
+				<visible>!videoplayer.content(episodes)</visible>
+				<control type="label" id="1">
+					<description>current_event_name</description>
+					<width>420</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="label" id="1">
+					<description>NonTV current_event_description</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Genre</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label" id="1">
+					<description>NonTV current_event_details</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<info>VideoPlayer.Director</info>
+					<align>left</align>
+					<font>font10</font>
+				</control>
 			</control>
-			<control type="label" id="1">
-				<description>current_event_description</description>
-				<width>520</width>
-				<posx>160</posx>
-				<posy>30</posy>
-				<info>VideoPlayer.Genre</info>
-				<align>left</align>
-				<font>special12</font>
-			</control>
-			<control type="label" id="1">
-				<description>current_event_details</description>
-				<width>520</width>
-				<posx>160</posx>
-				<posy>60</posy>
-				<info>VideoPlayer.Director</info>
-				<align>left</align>
-				<font>font10</font>
+			<control type="group" id="1">
+				<visible>videoplayer.content(episodes)</visible>
+				<control type="label" id="1">
+					<description>current_event_name</description>
+					<width>420</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.tvshowtitle</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label" id="1">
+					<description>TV current_event_description</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="label" id="1">
+					<description>TV current_event_details</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
+					<align>left</align>
+					<font>font10</font>
+				</control>
 			</control>
 			<control type="label" id="1">
 				<description>time label</description>
