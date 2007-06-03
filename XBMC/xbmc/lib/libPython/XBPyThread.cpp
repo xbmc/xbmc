@@ -55,8 +55,8 @@ XBPyThread::~XBPyThread()
   if (argv)
   {
     for (unsigned int i = 0; i < argc; i++)
-      delete argv[i];
-    delete argv;
+      delete [] argv[i];
+    delete [] argv;
   }
 
 }
