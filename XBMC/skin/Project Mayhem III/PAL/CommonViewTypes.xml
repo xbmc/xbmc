@@ -2367,11 +2367,71 @@
 			<include>contentpanelslide</include>
 		</control>
 	</include>
+	<include name="FileBrowser_ThumbView">
+		<control type="panel" id="451">
+			<posx>10</posx>
+			<posy>70</posy>
+			<width>400</width>
+			<height>280</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>451</onup>
+			<ondown>451</ondown>
+			<scrolltime>200</scrolltime>
+			<viewtype label="536">icon</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<itemlayout height="140" width="120">
+				<control type="image">
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>110</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>60</posx>
+					<posy>115</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="140" width="120">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>120</width>
+					<height>110</height>
+					<texture>folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>110</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>60</posx>
+					<posy>115</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
 	<include name="AllViewCommonPageControls">
 		<control type="scrollbar" id="60">
 			<posx>680</posx>
 			<posy>100</posy>
-			<width>17</width>
+			<include>scrollbar_width</include>
 			<height>425</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
@@ -2401,5 +2461,8 @@
 			<visible>Skin.HasSetting(UseScrollbars) + !Control.IsVisible(56)</visible>
 			<visible>![Window.IsActive(myvideolibrary) + Control.IsVisible(51)]</visible>
 		</control>
+	</include>
+	<include name="scrollbar_width">
+		<width>17</width>
 	</include>
 </includes>
