@@ -630,7 +630,7 @@
 			</control>
 		</control>
 		<control type="group">
-		<visible>Player.HasAudio</visible>
+			<visible>Player.HasAudio</visible>
 			<control type="image" id="0">
 				<description>music rectangle</description>
 				<posx>30</posx>
@@ -648,6 +648,7 @@
 				<height>109</height>
 				<texture>defaultAlbumCover.png</texture>
 				<info>MusicPlayer.Cover</info>
+				<aspectratio align="left">keep</aspectratio>
 				<include>mediaoverlay</include>
 			</control>
 			<control type="label" id="0">
@@ -671,7 +672,7 @@
 			</control>
 		</control>
 		<control type="group">
-		<visible>Player.HasVideo</visible>
+			<visible>Player.HasVideo</visible>
 			<control type="image" id="0">
 				<description>video rectangle</description>
 				<posx>30</posx>
