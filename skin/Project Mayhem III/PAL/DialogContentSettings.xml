@@ -157,7 +157,7 @@
 		<control type="scrollbar" id="60">
 			<posx>390</posx>
 			<posy>45</posy>
-			<width>17</width>
+			<include>scrollbar_width</include>
 			<height>125</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
