@@ -100,8 +100,7 @@ public:
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
 #endif  
 #ifdef HAS_SDL_OPENGL
-  void SetThreadSurface(Surface::CSurface*);
-  void ValidateSurface();
+  bool ValidateSurface();
   Surface::CSurface* InitializeSurface();
   void ReleaseThreadSurface();
 #endif

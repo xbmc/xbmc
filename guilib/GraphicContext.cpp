@@ -827,27 +827,35 @@ int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect 
 #endif
 
 #ifdef HAS_SDL_OPENGL
-void CGraphicContext::SetThreadSurface(CSurface* surface)
-{
-  m_surfaces[SDL_ThreadID()] = surface;
-}
-
-void CGraphicContext::ValidateSurface()
+#ifdef  __GNUC__
+#warning TODO CGraphicContext needs to cleanup unused surfaces
+#endif
+bool CGraphicContext::ValidateSurface()
 {
   // FIXME: routine cleanup of unused surfaces
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
+#ifdef HAS_GLX
+    CSurface* surface = new CSurface();
+    surface->MakeCurrent(m_screenSurface);
+    m_surfaces[tid] = surface;
+    return true;
+#else
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
     CSurface* surface = InitializeSurface();
     if (surface) 
     {
       m_surfaces[tid] = surface;
+      return true;
     } else {
       CLog::Log(LOGERROR, "Did not get surface for thread %ul", tid);
+      return false;
     }
+#endif
   }
+  return true;
 }
 
 CSurface* CGraphicContext::InitializeSurface()
