@@ -215,11 +215,6 @@ CFileItem *CGUIPythonWindowXML::GetCurrentListItem()
   return m_vecItems[iItem];
 }
 
-void CGUIPythonWindowXML::RefreshList()
-{
-  m_viewControl.SetItems(m_vecItems);
-  UpdateButtons();
-}
 
 void CGUIPythonWindowXML::ClearList()
 {
