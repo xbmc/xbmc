@@ -21,6 +21,12 @@ static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
 class CSurface
 {
 public:
+  CSurface() {
+#ifdef HAS_GLX
+    m_glContext = 0;
+    m_glWindow = 0;
+#endif
+  }
 #ifdef HAS_SDL
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	   CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false);
@@ -35,6 +41,7 @@ public:
   bool IsDoublebuffered() const { return m_bDoublebuffer; }
   bool IsValid() { return m_bOK; }
   void Flip();
+  void MakeCurrent(CSurface *src);
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}

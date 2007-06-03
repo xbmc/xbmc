@@ -207,3 +207,10 @@ void CSurface::Flip()
 #endif
   }
 }
+
+void CSurface::MakeCurrent(CSurface* src)
+{
+#ifdef HAS_GLX
+  glXMakeContextCurrent(s_dpy, src->GetWindow(), src->GetWindow(), src->GetContext());
+#endif
+}
