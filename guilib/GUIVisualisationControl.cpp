@@ -39,10 +39,8 @@ const short* CAudioBuffer::Get() const
 
 void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
 {
-  // FIXME: iSize should never be less than 0
   if (iSize<0) 
   {
-    //CLog::Log(LOGERROR, "Got Invalid psBuffer size: iSize");
     return;
   }
 
@@ -277,6 +275,10 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
   if (!m_pVisualisation)
     return ;
   if (!m_bInitialized) return ;
+
+  // FIXME: iAudioDataLength should never be less than 0
+  if (iAudioDataLength<0)
+    return;
 
   // Save our audio data in the buffers
   auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
