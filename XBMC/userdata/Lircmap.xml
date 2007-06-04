@@ -72,4 +72,41 @@
       <nine>9</nine>
       <zero>0</zero>    
     </remote>    
+    
+    <remote device="PinnacleSysPCTVRemote">
+	    <play>Play</play>
+	    <pause>pause</pause>
+	    <stop>Stop</stop>
+	    <forward>FForward</forward>
+	    <reverse>Rewind</reverse>
+	    <left>Vol-Rew</left>
+	    <right>Vol+FF</right>
+	    <up>Chan+Play</up>
+	    <down>Chan-Stop</down>
+	    <pageplus>channel+</pageplus>
+	    <pageminus>channel-</pageminus>
+	    <select>middle</select>
+	    <back>undo</back>
+	    <menu>Menu</menu>
+	    <title>L</title>
+	    <info>Info</info>
+	    <skipplus>next</skipplus>
+	    <display>Fullscreen</display>
+	    <record>Record</record>
+	    <volumeplus>vol+</volumeplus>
+	    <volumeminus>vol-</volumeminus>
+	    <mute>Mute</mute>
+	    <power>Power</power>
+	    <one>1</one>
+	    <two>2</two>
+	    <three>3</three>
+	    <four>4</four>
+	    <five>5</five>
+	    <six>6</six>
+	    <seven>7</seven>
+	    <eight>8</eight>
+	    <nine>9</nine>
+	    <zero>0</zero>
+    </remote>
+
 </lircmap>
