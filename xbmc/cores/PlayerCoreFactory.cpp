@@ -47,6 +47,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
   switch( eCore )
   {
 #ifdef HAS_DVDPLAYER
+    case EPC_MPLAYER: 
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
 #else
     case EPC_DVDPLAYER: return new CDummyVideoPlayer(callback);
@@ -54,7 +55,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 #ifdef HAS_MPLAYER
     case EPC_MPLAYER: return new CMPlayer(callback);
 #else
-    case EPC_MPLAYER: return new CDummyVideoPlayer(callback);
+//    case EPC_MPLAYER: return new CDummyVideoPlayer(callback);
 #endif
 #ifdef HAS_MODPLAYER
     case EPC_MODPLAYER: return new ModPlayer(callback);
