@@ -11,6 +11,9 @@ using namespace PYXBMC;
 CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
 : CGUIWindow(dwId, "")
 {
+#ifdef _LINUX
+  Py_InitCriticalSection();
+#endif
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
@@ -127,11 +130,25 @@ void CGUIPythonWindow::PulseActionEvent()
 
 
 #ifdef _LINUX
+
 vector<PyXBMCAction*> g_actionQueue;
+CRITICAL_SECTION g_critSection;
+
+void Py_InitCriticalSection()
+{
+  static bool first_call = true;
+  if (first_call) 
+  {
+    InitializeCriticalSection(&g_critSection);
+    first_call = false;
+  }
+}
+
 void Py_AddPendingActionCall(PyXBMCAction* inf)
 {
-  CSingleLock locker(g_graphicsContext);
+  EnterCriticalSection(&g_critSection);
   g_actionQueue.push_back(inf);
+  LeaveCriticalSection(&g_critSection);
 }
 
 void Py_MakePendingActionCalls()
@@ -141,20 +158,20 @@ void Py_MakePendingActionCalls()
   while (iter!=g_actionQueue.end())
   {    
     PyXBMCAction* arg = (*iter);
-    {
-      CSingleLock locker(g_graphicsContext);
-      g_actionQueue.erase(iter);
-    }
+    EnterCriticalSection(&g_critSection);
+    g_actionQueue.erase(iter);
+    LeaveCriticalSection(&g_critSection);
+
     if (arg->type==0) 
     {
       Py_XBMC_Event_OnAction(arg);
     } else if (arg->type==1) {
       Py_XBMC_Event_OnControl(arg);
-    }
-    {
-      CSingleLock locker(g_graphicsContext);
-      iter=g_actionQueue.begin();
-    }
+    }   
+
+    EnterCriticalSection(&g_critSection);
+    iter=g_actionQueue.begin();
+    LeaveCriticalSection(&g_critSection);
   }
 }
 #endif
