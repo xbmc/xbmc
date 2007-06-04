@@ -139,16 +139,20 @@ void Py_MakePendingActionCalls()
   vector<PyXBMCAction*>::iterator iter;
   iter = g_actionQueue.begin();
   while (iter!=g_actionQueue.end())
-  {
-    if ((*iter)->type==0) 
-    {
-      Py_XBMC_Event_OnAction((void*)(*iter));
-    } else if ((*iter)->type==1) {
-      Py_XBMC_Event_OnControl((void*)(*iter));
-    }
+  {    
+    PyXBMCAction* arg = (*iter);
     {
       CSingleLock locker(g_graphicsContext);
       g_actionQueue.erase(iter);
+    }
+    if (arg->type==0) 
+    {
+      Py_XBMC_Event_OnAction(arg);
+    } else if (arg->type==1) {
+      Py_XBMC_Event_OnControl(arg);
+    }
+    {
+      CSingleLock locker(g_graphicsContext);
       iter=g_actionQueue.begin();
     }
   }
