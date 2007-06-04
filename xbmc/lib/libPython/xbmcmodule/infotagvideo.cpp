@@ -21,7 +21,7 @@ namespace PYXBMC
   {
     InfoTagVideo* self = (InfoTagVideo*)InfoTagVideo_Type.tp_alloc(&InfoTagVideo_Type, 0);
     if (!self) return NULL;
-
+    new(&self->infoTag) CVideoInfoTag();
     self->infoTag = infoTag;
 
     return self;
@@ -29,6 +29,7 @@ namespace PYXBMC
 
   void InfoTagVideo_Dealloc(InfoTagVideo* self)
   {
+    self->infoTag.~CVideoInfoTag();
     self->ob_type->tp_free((PyObject*)self);
   }
 

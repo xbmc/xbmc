@@ -31,6 +31,9 @@ namespace PYXBMC
 
     self = (WindowXMLDialog*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->sXMLFileName) string();
+    new(&self->sFallBackPath) string();
+    new(&self->vecControls) std::vector<Control*>();    
     self->iWindowId = -1;
     PyObject* pyOXMLname, * pyOname;
     PyObject * pyDName = NULL;
