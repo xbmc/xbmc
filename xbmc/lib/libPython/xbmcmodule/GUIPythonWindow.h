@@ -19,6 +19,7 @@ public:
 };
 
 #ifdef _LINUX
+void Py_InitCriticalSection();
 void Py_AddPendingActionCall(PyXBMCAction* inf);
 void Py_MakePendingActionCalls();
 #endif
