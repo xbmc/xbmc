@@ -32,7 +32,12 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     inf->pCallbackWindow = pCallbackWindow;
 
     // aquire lock?
+#ifndef _LINUX
     Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+#else
+    inf->type = 0;
+    Py_AddPendingActionCall(inf);
+#endif
     PulseActionEvent();
   }
   return ret;
@@ -87,7 +92,12 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
             inf->pCallbackWindow = pCallbackWindow;
 
             // aquire lock?
+#ifndef _LINUX
             Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
+#else
+	    inf->type = 1;
+	    Py_AddPendingActionCall(inf);
+#endif
             PulseActionEvent();
           }
         }
@@ -114,6 +124,36 @@ void CGUIPythonWindow::PulseActionEvent()
 {
   SetEvent(m_actionEvent);
 }
+
+
+#ifdef _LINUX
+vector<PyXBMCAction*> g_actionQueue;
+void Py_AddPendingActionCall(PyXBMCAction* inf)
+{
+  CSingleLock locker(g_graphicsContext);
+  g_actionQueue.push_back(inf);
+}
+
+void Py_MakePendingActionCalls()
+{
+  vector<PyXBMCAction*>::iterator iter;
+  iter = g_actionQueue.begin();
+  while (iter!=g_actionQueue.end())
+  {
+    if ((*iter)->type==0) 
+    {
+      Py_XBMC_Event_OnAction((void*)(*iter));
+    } else if ((*iter)->type==1) {
+      Py_XBMC_Event_OnControl((void*)(*iter));
+    }
+    {
+      CSingleLock locker(g_graphicsContext);
+      g_actionQueue.erase(iter);
+      iter=g_actionQueue.begin();
+    }
+  }
+}
+#endif
 
 /*
  * called from python library!
