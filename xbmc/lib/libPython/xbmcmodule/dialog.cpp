@@ -31,6 +31,9 @@ namespace PYXBMC
 
     self = (WindowDialog*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->sXMLFileName) string();
+    new(&self->sFallBackPath) string();
+    new(&self->vecControls) std::vector<Control*>();    
 
     self->iWindowId = -1;
 
@@ -40,6 +43,10 @@ namespace PYXBMC
     if (!Window_CreateNewWindow((Window*)self, true))
     {
       // error is already set by Window_CreateNewWindow, just release the memory
+      self->vecControls.clear();
+      self->vecControls.~vector();
+      self->sFallBackPath.~string();          
+      self->sXMLFileName.~string();         
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }
