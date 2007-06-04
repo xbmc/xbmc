@@ -17,7 +17,11 @@ public:
 
 class DllLibFaad : public DllDynamic, DllLibFaadInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad-i486-linux.so)
+#endif
   DEFINE_METHOD0(faacDecHandle, faacDecOpen)
   DEFINE_METHOD1(faacDecConfigurationPtr, faacDecGetCurrentConfiguration, (faacDecHandle p1))
   DEFINE_METHOD2(unsigned char, faacDecSetConfiguration, (faacDecHandle p1, faacDecConfigurationPtr p2))

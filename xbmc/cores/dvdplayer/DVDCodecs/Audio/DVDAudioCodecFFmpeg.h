@@ -29,4 +29,5 @@ protected:
   
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
+
 };

@@ -26,7 +26,12 @@ public:
 
 class DllPostProc : public DllDynamic, DllAvCodecInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllPostProc, Q:\\system\\players\\dvdplayer\\postproc-51.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllPostProc, Q:\\system\\players\\dvdplayer\\postproc-51-i486-linux.so)
+#endif
+
   DEFINE_METHOD11(void, pp_postprocess, (uint8_t* p1[3], int p2[3], uint8_t * p3[3], int p4[3],
                       int p5, int p6, QP_STORE_T *p7,  int p8,
                       pp_mode_t *p9, pp_context_t *p10, int p11))

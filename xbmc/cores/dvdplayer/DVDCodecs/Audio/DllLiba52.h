@@ -23,7 +23,11 @@ public:
 
 class DllLiba52 : public DllDynamic, DllLiba52Interface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllLiba52, Q:\\system\\players\\dvdplayer\\liba52.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllLiba52, Q:\\system\\players\\dvdplayer\\liba52-i486-linux.so)
+#endif
   DEFINE_METHOD1(a52_state_t *, a52_init, (uint32_t p1))
   DEFINE_METHOD1(sample_t *, a52_samples, (a52_state_t *p1))
   DEFINE_METHOD4(int, a52_syncinfo, (uint8_t * p1, int * p2, int * p3, int * p4))
