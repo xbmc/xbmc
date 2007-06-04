@@ -662,14 +662,17 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   }
   
 #ifdef HAS_VIDEO_PLAYBACK
-  if (!g_renderManager.IsStarted())
+  if (!g_renderManager.IsStarted()) {
+    CLog::Log(LOGERROR, "CDVDPlayerVideo::OutputPicture - renderer not started");
     return EOS_ABORT;
+  }
 
   if( !(pPicture->iFlags & DVP_FLAG_DROPPED) )
   {
     // copy picture to overlay
     YV12Image image;
-    unsigned int index = g_renderManager.GetImage(&image);
+
+    int index = g_renderManager.GetImage(&image);
     if (index < 0) 
       return EOS_DROPPED;
 
@@ -679,6 +682,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
     // post processing before FlipPage() is called.)
     g_renderManager.ReleaseImage(index);
   }
+  else { 
+     CLog::Log(LOGDEBUG, "CDVDPlayerVideo::OutputPicture - picture dropped");
+  }
+
 #else
   // no video renderer, let's mark it as dropped
   pPicture->iFlags |= DVP_FLAG_DROPPED;

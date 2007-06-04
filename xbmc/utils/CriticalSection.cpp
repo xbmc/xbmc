@@ -45,11 +45,12 @@ CCriticalSection::operator LPCRITICAL_SECTION()
 }
 
 
-#ifndef _LINUX
 BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
 {
 #ifdef _XBOX
   return (PKTHREAD)section->OwningThread == GetCurrentKPCR()->PrcbData.CurrentThread;
+#elif defined(_LINUX)
+  return section->OwningThread == GetCurrentThreadId();
 #else
   return false;
 #endif
@@ -73,4 +74,4 @@ VOID NTAPI RestoreCriticalSection(LPCRITICAL_SECTION section, DWORD count)
   for(DWORD i=0;i<count;i++)
     EnterCriticalSection(section);  
 }
-#endif
+
