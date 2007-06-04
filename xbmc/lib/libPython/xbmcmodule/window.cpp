@@ -219,7 +219,9 @@ namespace PYXBMC
 
     self = (Window*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-
+    new(&self->sXMLFileName) string();
+    new(&self->sFallBackPath) string();
+    new(&self->vecControls) std::vector<Control*>();
     self->iWindowId = -1;
 
     if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
@@ -228,6 +230,10 @@ namespace PYXBMC
     if (!Window_CreateNewWindow(self, false))
     {
       // error is already set by Window_CreateNewWindow, just release the memory
+      self->vecControls.clear();
+      self->vecControls.~vector();
+      self->sFallBackPath.~string();          
+      self->sXMLFileName.~string();        
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }
@@ -276,6 +282,11 @@ namespace PYXBMC
       m_gWindowManager.Remove(self->pWindow->GetID());
       delete self->pWindow;
     }
+    
+    self->vecControls.clear();
+    self->vecControls.~vector();
+    self->sFallBackPath.~string();          
+    self->sXMLFileName.~string();            
     self->ob_type->tp_free((PyObject*)self);
   }
 
