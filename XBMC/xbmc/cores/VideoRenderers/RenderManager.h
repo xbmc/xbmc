@@ -1,7 +1,12 @@
 #ifndef XBOX_VIDEO_RENDERER
 #define XBOX_VIDEO_RENDERER
 
+#ifndef _LINUX
 #include "XBoxRenderer.h"
+#else
+#include "LinuxRenderer.h"
+#endif
+
 #include "../../utils/SharedSection.h"
 
 class CXBoxRenderManager : private CThread
@@ -19,9 +24,13 @@ public:
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
+
 #ifndef _LINUX
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
+#else
+  void CreateThumbnail(SDL_Surface *surface, unsigned int width, unsigned int height);
 #endif
+
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer
@@ -79,7 +88,11 @@ public:
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
 
+#ifndef _LINUX
   CXBoxRenderer *m_pRenderer;
+#else
+  CLinuxRenderer *m_pRenderer;
+#endif
 protected:
   inline void Present();
   void PresentSingle();
@@ -109,3 +122,4 @@ protected:
 extern CXBoxRenderManager g_renderManager;
 
 #endif
+

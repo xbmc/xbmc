@@ -103,6 +103,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     Window p;
 
     vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
+
+    m_SDLSurface = parent;
+
     // check if a parent was passed
     if (parent) 
     {

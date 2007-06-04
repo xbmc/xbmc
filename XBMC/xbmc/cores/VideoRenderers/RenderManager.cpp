@@ -27,6 +27,10 @@
 #include "RGBRendererV2.h"
 #endif
 
+#ifdef _LINUX
+#include "PlatformInclude.h"
+#endif
+
 CXBoxRenderManager g_renderManager;
 
 
@@ -61,11 +65,9 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
-#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
-#endif
 
   if (m_pRenderer)
     delete m_pRenderer;
@@ -74,7 +76,6 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);      
 
@@ -83,38 +84,29 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
     RestoreCriticalSection(g_graphicsContext, locks);
     return false;
   }
-#endif
 
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
-#ifndef _LINUX
       lock.Leave();
-#endif
       g_applicationMessenger.SwitchToFullscreen();
-#ifndef _LINUX
       lock.Enter();
-#endif
     }
     m_pRenderer->Update(false);
     m_bIsStarted = true;
   }
   
-#ifndef _LINUX
   RestoreCriticalSection(g_graphicsContext, locks);
-#endif
   return result;
 }
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
-#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
-#endif
 
   m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
@@ -125,11 +117,9 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 
 void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CSharedLock lock(m_sharedSection); 
   RestoreCriticalSection(g_graphicsContext, locks);
-#endif
 
   if (m_pRenderer)
     m_pRenderer->RenderUpdate(clear, flags, alpha);
@@ -137,11 +127,11 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 unsigned int CXBoxRenderManager::PreInit()
 {
-#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
 
+#ifndef _LINUX
   if(!g_eventVBlank)
   {
     //Only do this on first run
@@ -181,6 +171,8 @@ unsigned int CXBoxRenderManager::PreInit()
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected LQShader-Renderer");
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
+#else
+     m_pRenderer = new CLinuxRenderer();
 #endif
   }
 
@@ -189,18 +181,14 @@ unsigned int CXBoxRenderManager::PreInit()
 
 void CXBoxRenderManager::UnInit()
 {
-#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
-#endif
 
   m_bStop = true;
   m_eventFrame.Set();
   StopThread();
 
-#ifndef _LINUX
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
-#endif
 
   m_bIsStarted = false;
   if (m_pRenderer)
@@ -220,6 +208,9 @@ void CXBoxRenderManager::SetupScreenshot()
 
 #ifndef HAS_SDL
 void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
+#else
+void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
+#endif
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
@@ -228,7 +219,6 @@ void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned in
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
-#endif
 
 
 void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
@@ -461,3 +451,4 @@ void CXBoxRenderManager::Process()
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }
 }
+

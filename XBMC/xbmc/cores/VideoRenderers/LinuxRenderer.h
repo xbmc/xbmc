@@ -1,21 +1,20 @@
-#ifndef XBOX_RENDERER
-#define XBOX_RENDERER
+#ifndef LINUX_RENDERER
+#define LINUX_RENDERER
 
-#ifdef _LINUX
-#include "LinuxRenderer.h"
+#include <SDL/SDL.h>
+#include "GraphicContext.h"
+#include "PlatformDefs.h"
+#include "TextureManager.h"
 
-#else
-
-//#define MP_DIRECTRENDERING
-
-#ifdef MP_DIRECTRENDERING
-#define NUM_BUFFERS 3
-#else
-#define NUM_BUFFERS 2
-#endif
+// temorary - for tests. remove this!
+#warning TODO: remove use of SDL overlay
+#define USE_SDL_OVERLAY
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
+
+// this is how xdk defines it - not sure about other platforms though
+#define D3DTEXTURE_ALIGNMENT 128
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -72,11 +71,7 @@ struct DRAWRECT
   float bottom;
 };
 
-#ifndef _LINUX
-static enum EFIELDSYNC
-#else
-enum EFIELDSYNC
-#endif
+enum EFIELDSYNC  
 {
   FS_NONE,
   FS_ODD,
@@ -105,20 +100,11 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-#ifndef _LINUX
-static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
-#endif
-
-class CXBoxRenderer
+class CLinuxRenderer
 {
 public:
-#ifndef _LINUX
-  CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice);
-#else
-  CXBoxRenderer();
-#endif
-  ~CXBoxRenderer();
+  CLinuxRenderer();
+  ~CLinuxRenderer();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();
@@ -126,14 +112,12 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
 
-#ifndef _LINUX
-  void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
-#else
   void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
-#endif
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool 	       Configure(unsigned int width, 
+				unsigned int height, unsigned int d_width, unsigned int d_height, 
+			 	float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
@@ -156,27 +140,14 @@ protected:
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void DeleteOSDTextures(int index);
-  void Setup_Y8A8Render();
   void RenderOSD();
-  void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  bool CreateYV12Texture(int index);
-  void CopyYV12Texture(int dest);
-  int  NextYV12Texture();
 
-  // low memory renderer (default PixelShaderRenderer)
+  // not really low memory. name is misleading... simply a renderer 
   void RenderLowMem(DWORD flags);
-
-#ifndef _LINUX
-  static const DWORD FVF_YV12VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX3;
-#endif
-
-  int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
 
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
   RESOLUTION m_iResolution;    // the resolution we're running in
-  float m_fps;        // fps of movie
+  float m_fps;      // fps of movie
   RECT rd;          // destination rect
   RECT rs;          // source rect
   unsigned int m_iSourceWidth;    // width
@@ -185,9 +156,10 @@ protected:
   bool m_bConfigured;
 
   // OSD stuff
-#ifndef _LINUX
-  LPDIRECT3DTEXTURE8 m_pOSDYTexture[NUM_BUFFERS];
-  LPDIRECT3DTEXTURE8 m_pOSDATexture[NUM_BUFFERS];
+#define NUM_BUFFERS 2
+#ifdef HAS_SDL_OPENGL
+  CGLTexture * m_pOSDYTexture[NUM_BUFFERS];
+  CGLTexture * m_pOSDATexture[NUM_BUFFERS];
 #else
   SDL_Surface * m_pOSDYTexture[NUM_BUFFERS];
   SDL_Surface * m_pOSDATexture[NUM_BUFFERS];
@@ -202,48 +174,27 @@ protected:
   int m_NumOSDBuffers;
   bool m_OSDRendered;
 
-  // Raw data used by renderer
-  YV12Image m_image[NUM_BUFFERS];
+  // Raw data used by renderer - we now use single image - when released, it will be copied to
+  // the back buffer. will not cut it for all cases.
+  YV12Image m_image;
 
-#ifndef _LINUX
-  typedef LPDIRECT3DTEXTURE8 YUVPLANES[MAX_PLANES];
+// USE_SDL_OVERLAY - is temporary - just to get the framework going. temporary hack.
+#ifdef USE_SDL_OVERLAY
+  SDL_Overlay *m_overlay;
+  SDL_Surface *m_screen;  
 #else
-  typedef SDL_Surface * YUVPLANES[MAX_PLANES];
+  SDL_Surface *m_backbuffer; 
+  SDL_Surface *m_screenbuffer; 
+
+#ifdef HAS_SDL_OPENGL
+  CGLTexture  *m_texture;
 #endif
-  typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
-  typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
-
-  #define PLANE_Y 0
-  #define PLANE_U 1
-  #define PLANE_V 2
-
-  #define FIELD_FULL 0
-  #define FIELD_ODD 1
-  #define FIELD_EVEN 2
-
-  // YV12 decoder textures
-  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_YUVTexture;
-
-#ifndef _LINUX
-  // render device
-  LPDIRECT3DDEVICE8 m_pD3DDevice;
 #endif
-
-  // pixel shader (low memory shader used in all renderers while in GUI)
-  DWORD m_hLowMemShader;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
 
-  static void TextureCallback(DWORD dwContext);
-
-  HANDLE m_eventTexturesDone[NUM_BUFFERS];
-  HANDLE m_eventOSDDone[NUM_BUFFERS];
-
 };
-
-#endif // _LINUX
 
 #endif
 

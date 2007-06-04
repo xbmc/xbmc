@@ -45,9 +45,10 @@ public:
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
-#else
-  SDL_Surface* SDL() {return m_SDLSurface;}
 #endif
+
+  // SDL_Surface always there - just sometimes not in use (HAS_GLX)
+  SDL_Surface* SDL() {return m_SDLSurface;}
 
  protected:
   bool m_bShared;
@@ -66,9 +67,9 @@ public:
   GLXPixmap  m_glPixmap;
   GLXPbuffer  m_glPbuffer;
   static Display* s_dpy;
-#else
-  SDL_Surface* m_SDLSurface;
 #endif
+
+  SDL_Surface* m_SDLSurface;
 };
 
 }
