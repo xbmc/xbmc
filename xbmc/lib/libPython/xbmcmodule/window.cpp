@@ -4,6 +4,7 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "GUIPythonWindow.h"
 #include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
 
@@ -367,11 +368,15 @@ namespace PYXBMC
       while(self->bModal)
       {
         Py_BEGIN_ALLOW_THREADS
-        ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
+	  ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
         Py_END_ALLOW_THREADS
 
         // only call Py_MakePendingCalls from a python thread
-        Py_MakePendingCalls();
+#ifndef _LINUX
+	Py_MakePendingCalls();
+#else
+        Py_MakePendingActionCalls(); // custom implementation, not part of C API
+#endif
       }
     }
     Py_INCREF(Py_None);
