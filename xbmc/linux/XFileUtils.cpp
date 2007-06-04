@@ -142,7 +142,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
   
   int flags;
-  if (dwDesiredAccess & (FILE_READ_DATA | FILE_WRITE_DATA) == (FILE_READ_DATA | FILE_WRITE_DATA)) 
+  if (dwDesiredAccess & FILE_WRITE_DATA)  
     flags = O_RDWR;
   else if (dwDesiredAccess & FILE_READ_DATA == FILE_READ_DATA) 
     flags = O_RDONLY;
@@ -172,7 +172,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
       break;
   }
   
-  int fd = open(lpFileName, flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  int fd = open(lpFileName, flags, S_IRUSR);
   
   if (fd == -1)
     return INVALID_HANDLE_VALUE;
