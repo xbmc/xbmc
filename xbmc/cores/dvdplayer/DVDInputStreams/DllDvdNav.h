@@ -78,7 +78,12 @@ public:
 
 class DllDvdNav : public DllDynamic, DllDvdNavInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav-i486-linux.so)
+#endif
+
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_open, (dvdnav_t **p1, const char *p2))
   DEFINE_METHOD1(dvdnav_status_t, dvdnav_close, (dvdnav_t *p1))
   DEFINE_METHOD1(dvdnav_status_t, dvdnav_reset, (dvdnav_t *p1))

@@ -436,7 +436,11 @@ void CDVDPlayerAudio::Process()
     if( result & DECODE_FLAG_RESYNC )
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
+#ifndef _LINUX
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Resync - clock:%I64d, delay:%I64d", audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
+#else
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Resync - clock:%lld, delay:%lld", audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
+#endif
     }
     
     // don't try to fix a desynced clock, until we played out the full audio buffer
@@ -452,7 +456,11 @@ void CDVDPlayerAudio::Process()
     if( abs(error) > DVD_MSEC_TO_TIME(5) )
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);      
+#ifndef _LINUX
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%I64d, should be:%I64d, error:%I64d", clock, clock+error, error);
+#else
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%lld, should be:%lld, error:%lld", clock, clock+error, error);
+#endif
     }
   }
 }

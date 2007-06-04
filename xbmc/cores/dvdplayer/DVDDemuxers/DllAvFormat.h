@@ -48,7 +48,12 @@ public:
 
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51-i486-linux.so)
+#endif
+
   DEFINE_METHOD0(void, av_register_all)
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(int, url_feof, (ByteIOContext *p1))

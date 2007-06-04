@@ -19,6 +19,7 @@ extern "C" {
 class DllAvCodecInterface
 {
 public:
+  virtual void avcodec_register_all(void)=0;
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
@@ -47,8 +48,8 @@ public:
 
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
-  DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
 #ifndef _LINUX
+  DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open, AVCodecContext*, AVCodec *)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
@@ -59,6 +60,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t)
   DEFINE_FUNC_ALIGNED3(void, __cdecl, img_resample, ImgReSampleContext*, AVPicture*, const AVPicture*)
 #else
+
+  DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-i486-linux.so)
   DEFINE_METHOD1(void, avcodec_flush_buffers, (AVCodecContext* p1))
   DEFINE_METHOD2(int, avcodec_open, (AVCodecContext* p1, AVCodec *p2))
   DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))
@@ -70,6 +73,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD3(void, img_resample, (ImgReSampleContext* p1, AVPicture* p2, const AVPicture* p3))
 #endif
 
+  DEFINE_METHOD0(void, avcodec_register_all)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
@@ -89,6 +93,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_find_decoder)
     RESOLVE_METHOD(avcodec_close)
     RESOLVE_METHOD(avcodec_alloc_frame)
+    RESOLVE_METHOD(avcodec_register_all)
     RESOLVE_METHOD(avpicture_fill)
     RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_audio)
@@ -107,6 +112,16 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(img_resample_close)
     RESOLVE_METHOD(av_set_string)
   END_METHOD_RESOLVE()
+
+public:
+  virtual bool Load() { 
+	bool bLoaded = DllDynamic::Load(); 
+	if (bLoaded) {
+		avcodec_register_all(); 
+		CLog::Log(LOGDEBUG,"DllAvCodec loaded"); 
+	}
+	return bLoaded;
+  }
 };
 
 // calback used for logging
@@ -128,7 +143,12 @@ public:
 
 class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-49.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-51-i486-linux.so)
+#endif
+
 #if LIBAVUTIL_VERSION_INT < (50<<16)
   DEFINE_METHOD1(void, av_log_set_callback, (void (*p1)(void*, int, const char*, va_list)))
 #else
