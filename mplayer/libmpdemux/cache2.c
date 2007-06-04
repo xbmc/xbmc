@@ -396,6 +396,14 @@ int cache_stream_seek_long(stream_t *stream,off_t pos){
   mp_msg(MSGT_CACHE,MSGL_DBG2,"CACHE2_SEEK: 0x%"PRIX64" <= 0x%"PRIX64" (0x%"PRIX64") <= 0x%"PRIX64"  \n",s->min_filepos,pos,s->read_filepos,s->max_filepos);
 
   newpos=pos/s->sector_size; newpos*=s->sector_size; // align
+#ifdef _XBOX
+  if(newpos < s->min_filepos || newpos > s->max_filepos){
+    // this will most likely require a seek, fail here, instead of during fill if underlying
+    // stream can seek.
+    if(!(s->stream->flags & STREAM_SEEK))
+      return 0;
+  }
+#endif
   stream->pos=s->read_filepos=newpos;
   s->eof=0; // !!!!!!!
 

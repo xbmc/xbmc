@@ -1574,7 +1574,11 @@ quit_vorbis_block:
 
 	pos+=len+8;
 	if(pos>=endpos) break;
+#ifdef _XBOX
+	if(!stream_skip(demuxer->stream,pos - stream_tell(demuxer->stream))) break;    
+#else
 	if(!stream_seek(demuxer->stream,pos)) break;
+#endif
     }
 }
 
@@ -1715,8 +1719,13 @@ static int lschunks_intrak(demuxer_t* demuxer, int level, unsigned int id,
           trak->stdata = malloc(trak->stdata_len);
           stream_read(demuxer->stream, trak->stdata, trak->stdata_len);
         }
+#ifdef _XBOX
+        if(!stream_skip(demuxer->stream, pos + len - stream_tell(demuxer->stream)))
+          break;
+#else
         if (!stream_seek(demuxer->stream, pos + len))
           break;
+#endif
       }
       break;
     }
@@ -2077,7 +2086,12 @@ int demux_mov_fill_buffer(demuxer_t *demuxer,demux_stream_t* ds){
 if(trak->samplesize){
     // read chunk:
     if(trak->pos>=trak->chunks_size) return 0; // EOF
+#ifdef _XBOX
+    if(!stream_skip(demuxer->stream,trak->chunks[trak->pos].pos - stream_tell(demuxer->stream)))
+      return 0;
+#else
     stream_seek(demuxer->stream,trak->chunks[trak->pos].pos);
+#endif
     pts=(float)(trak->chunks[trak->pos].sample*trak->duration)/(float)trak->timescale;
     if(trak->samplesize!=1)
     {
@@ -2134,7 +2148,12 @@ if(trak->samplesize){
 	pts=(float)trak->samples[frame].pts/(float)trak->timescale;
     }
     // read sample:
+#ifdef _XBOX
+    if(!stream_skip(demuxer->stream,trak->samples[frame].pos - stream_tell(demuxer->stream)))
+      return 0;
+#else
     stream_seek(demuxer->stream,trak->samples[frame].pos);
+#endif
     x=trak->samples[frame].size;
     pos=trak->samples[frame].pos;
 }
@@ -2171,7 +2190,12 @@ if(trak->pos==0 && trak->stream_header_len>0){
         off_t pos = trak->samples[samplenr].pos;
         int len = trak->samples[samplenr].size;
         double subpts = (double)trak->samples[samplenr].pts / (double)trak->timescale;
+#ifdef _XBOX
+        if(!stream_skip(demuxer->stream,pos - stream_tell(demuxer->stream)))
+          return 0;
+#else
         stream_seek(demuxer->stream, pos);
+#endif
         if (sh->type == 'v')
           ds_read_packet(demuxer->sub, demuxer->stream, len, subpts, pos, 0);
         else {
