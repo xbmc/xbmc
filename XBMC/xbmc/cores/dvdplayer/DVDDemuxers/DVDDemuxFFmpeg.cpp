@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "stdint.h"
 #include "DVDDemuxFFmpeg.h"
 #include "../DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxUtils.h"
@@ -137,7 +138,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (!pInput) return false;
 
-  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load() || !m_dllAvUtil.Load() ) return false;
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load()) return false;
 
   // register codecs
   m_dllAvFormat.av_register_all();

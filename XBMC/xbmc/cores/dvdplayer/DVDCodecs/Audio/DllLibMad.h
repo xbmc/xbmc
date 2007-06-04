@@ -17,7 +17,11 @@ public:
 
 class DllLibMad : public DllDynamic, DllLibMadInterface
 {
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad.dll)
+#else
+  DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-i486-linux.so)
+#endif
   DEFINE_METHOD1(void, mad_synth_init, (struct mad_synth * p1))
   DEFINE_METHOD1(void, mad_stream_init, (struct mad_stream * p1))
   DEFINE_METHOD1(void, mad_frame_init, (struct mad_frame * p1))

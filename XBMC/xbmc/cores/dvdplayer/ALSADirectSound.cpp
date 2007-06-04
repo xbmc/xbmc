@@ -86,7 +86,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params_set_period_size_near(m_pPlayHandle, hw_params, &m_maxFrames, 0);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
-  snd_pcm_uframes_t buffer_size = m_maxFrames * (2 * iChannels) * 2; // buffer big enough for 2 periods
+  snd_pcm_uframes_t buffer_size = m_dwPacketSize * 20; // buffer big enough
   nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &buffer_size);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
@@ -212,20 +212,29 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
   if (!m_pPlayHandle || snd_pcm_avail_update(m_pPlayHandle) < ( len / (2*m_uiChannels)) )
        return 0;
 
-  int framesToWrite = len / (2*m_uiChannels); 
-  int writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
+  unsigned char *pcmPtr = data;
+  while ( pcmPtr < data + len) {
+       int nPeriodSize = (m_maxFrames * 2 * m_uiChannels); // write a frame.
+       if ( pcmPtr + nPeriodSize >  data + len) {
+               nPeriodSize = data + len - pcmPtr;
+       }
 
-  if (  writeResult == -EPIPE  ) {
-       CLog::Log(LOGDEBUG, "PAPlayer::AddPacketsToStream - buffer underun (tried to write %d frames)",
-                  framesToWrite);
-       int err = snd_pcm_prepare(m_pPlayHandle);
-       CHECK_ALSA(LOGERROR,"prepare after EPIPE", err);
-  }
-  else if (writeResult != framesToWrite) {
-       CLog::Log(LOGERROR, "PAPlayer::AddPacketsToStream - failed to write %d frames. "
+       int framesToWrite = nPeriodSize / (2 * m_uiChannels);
+       int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
+       if (  writeResult == -EPIPE  ) {
+               CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
+                       framesToWrite);
+               int err = snd_pcm_prepare(m_pPlayHandle);
+               CHECK_ALSA(LOGERROR,"prepare after EPIPE", err);
+       }
+       else if (writeResult != framesToWrite) {
+               CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
                        "bad write (err: %d) - %s",
                        framesToWrite, writeResult, snd_strerror(writeResult));
-       return 0;
+               break;
+       }
+
+       pcmPtr += nPeriodSize;
   }
 
   return len;
