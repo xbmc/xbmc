@@ -393,6 +393,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
 void PAPlayer::Pause()
 {
+  CLog::Log(LOGDEBUG,"PAPlayer: pause m_bplaying: %d", m_bIsPlaying);
 #ifdef HAS_ALSA
   if (!m_bIsPlaying || !m_pStream) return ;
 #else
@@ -720,12 +721,18 @@ bool PAPlayer::ProcessPAP()
           retVal2 = RET_SUCCESS;
       }
     }
-    // add packets as necessary
-    if (AddPacketsToStream(m_currentStream, m_decoder[m_currentDecoder]))
-      retVal = RET_SUCCESS;
 
-    if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
-      Sleep(1);
+    if (!m_bPaused) {
+       // add packets as necessary
+       if (AddPacketsToStream(m_currentStream, m_decoder[m_currentDecoder]))
+         retVal = RET_SUCCESS;
+
+       if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
+         Sleep(1);
+    }
+    else
+        Sleep(1);
+
     DWORD time3 = timeGetTime();
 //   CLog::Log(LOGINFO, "Time Decoding: %i, Time Resampling: %i, bytes processed %i, buffer 1 state %i, buffer 2 state %i", time2-time, time3-time2, dataToRead, m_decoder[m_currentDecoder].GetDataSize(), m_decoder[1 - m_currentDecoder].GetDataSize());
   }
