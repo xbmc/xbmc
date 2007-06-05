@@ -22,6 +22,7 @@ public:
   void              RemoveItem(int itemPosition);
   void              ClearList();
   CFileItem*        GetListItem(int position);
+  int               GetListSize();
   int               GetCurrentListPosition();
   void              SetCurrentListPosition(int item);
   virtual bool      IsMediaWindow() const { return true; };
