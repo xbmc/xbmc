@@ -24,6 +24,8 @@
 #include "musicdatabase.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "Filesystem/DirectoryCache.h"
+#include "FileSystem/MusicDatabaseDirectory.h"
+#include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "Util.h"
 
 using namespace XFILE;
@@ -100,6 +102,17 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   {  // Have we loaded this item from database before
     pItem->GetMusicInfoTag()->SetSong(*song);
     pItem->SetThumbnailImage(song->strThumb);
+  }
+  else if (pItem->IsMusicDb())
+  { // a music db item that doesn't have tag loaded - grab details from the database
+    DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams param;
+    DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
+    CSong song;
+    if (m_musicDatabase.GetSongById(param.GetSongId(), song))
+    {
+      pItem->GetMusicInfoTag()->SetSong(song);
+      pItem->SetThumbnailImage(song.strThumb);
+    }
   }
   else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())
   { // Nothing found, load tag from file,
