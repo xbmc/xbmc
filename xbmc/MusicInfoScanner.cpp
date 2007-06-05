@@ -333,7 +333,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
 static bool SortSongsByTrack(CSong *song, CSong *song2)
 {
-  return song->iTrack < song->iTrack;
+  return song->iTrack < song2->iTrack;
 }
 
 void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
