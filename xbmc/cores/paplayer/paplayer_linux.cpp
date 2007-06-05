@@ -59,6 +59,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   // values correctly.
   m_periods[0] = PACKET_SIZE / 4;
   m_periods[1] = PACKET_SIZE / 4;
+
 #endif  
 
   m_currentStream = 0;
@@ -380,6 +381,9 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
     m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
+
+  // set initial volume
+  SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
   
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
@@ -433,12 +437,17 @@ void PAPlayer::Pause()
 
 void PAPlayer::SetVolume(long nVolume)
 {
+  CLog::Log(LOGDEBUG,"PAPlayer::SetVolume - volume: %d", nVolume);
    // Todo: Grrrr.... no volume level in alsa. We'll need to do the math ourselves.
+
+  m_amp[m_currentStream].SetVolume(nVolume);
+
 }
 
 void PAPlayer::SetDynamicRangeCompression(long drc)
 {
   // TODO: Add volume amplification
+  CLog::Log(LOGDEBUG,"PAPlayer::SetDynamicRangeCompression - drc: %d", drc);
 }
 
 void PAPlayer::Process()
@@ -922,13 +931,8 @@ bool PAPlayer::HandleFFwdRewd()
 
 void PAPlayer::SetStreamVolume(int stream, long nVolume)
 {
-  // TODO: implement volume
-/*
-  if (nVolume > DSBVOLUME_MAX) nVolume = DSBVOLUME_MAX;
-  if (nVolume < DSBVOLUME_MIN) nVolume = DSBVOLUME_MIN;
-  if (m_pStream[stream])
-    m_pStream[stream]->SetVolume(nVolume);
-*/    
+  CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %d", stream, nVolume);
+  m_amp[stream].SetVolume(nVolume);
 }
 
 bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
@@ -958,6 +962,10 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
 #ifdef HAS_ALSA
 	unsigned char *pcmPtr = m_packet[stream][0].packet;
+	
+	// handle volume amp 
+	m_amp[stream].Amplify((short *)pcmPtr, m_packet[stream][0].length / 2);
+	
 	while ( pcmPtr < m_packet[stream][0].packet + m_packet[stream][0].length) {
 		int nPeriodSize = (m_periods[stream] * 2 * m_Channels); // write a frame. 
 		if ( pcmPtr + nPeriodSize >  m_packet[stream][0].packet + m_packet[stream][0].length) {
