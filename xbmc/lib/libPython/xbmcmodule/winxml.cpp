@@ -272,6 +272,27 @@ namespace PYXBMC
     return (PyObject *)sListItem;
   }
 
+  // getListSize() method
+  PyDoc_STRVAR(getListSize__doc__,
+    "getListSize() -- Returns the number of items in this Window List.\n"
+    "\n"
+    "example:\n"
+    "  - listSize = self.getListSize()\n");
+
+  PyObject* WindowXML_GetListSize(WindowXML *self, PyObject *args)
+  {
+    if (!self->pWindow) return NULL;
+
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+
+    PyGUILock();
+    int listSize = pwx->GetListSize();
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_BuildValue("l", listSize);
+  }
+
   PyDoc_STRVAR(windowXML__doc__,
     "WindowXML class.\n"
     "\n"
@@ -289,6 +310,7 @@ namespace PYXBMC
     {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS, getCurrentListPosition__doc__},
     {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS, setCurrentListPosition__doc__},
     {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS, getListItem__doc__},
+    {"getListSize", (PyCFunction)WindowXML_GetListSize, METH_VARARGS, getListSize__doc__},
     {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, clearList__doc__},
     {NULL, NULL, 0, NULL}
   };
