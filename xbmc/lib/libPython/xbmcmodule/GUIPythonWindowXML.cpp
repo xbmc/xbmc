@@ -192,6 +192,11 @@ void CGUIPythonWindowXML::RemoveItem(int itemPosition)
   UpdateButtons();
 }
 
+int CGUIPythonWindowXML::GetListSize()
+{
+  return m_vecItems.Size();
+}
+
 int CGUIPythonWindowXML::GetCurrentListPosition()
 {
   return m_viewControl.GetSelectedItem();
