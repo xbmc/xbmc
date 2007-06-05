@@ -6,6 +6,7 @@
 #ifdef HAS_ALSA
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
+#include "../../utils/PCMAmplifier.h"
 #endif
 
 #ifndef _LINUX
@@ -143,6 +144,7 @@ private:
 #elif defined(HAS_ALSA)
   snd_pcm_t*  		m_pStream[2];
   snd_pcm_uframes_t	m_periods[2];
+  CPCMAmplifier 	m_amp[2];
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];
