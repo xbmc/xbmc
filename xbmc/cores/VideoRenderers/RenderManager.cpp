@@ -29,6 +29,7 @@
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
+#include "LinuxRendererGL.h"
 #endif
 
 CXBoxRenderManager g_renderManager;
@@ -172,7 +173,8 @@ unsigned int CXBoxRenderManager::PreInit()
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
 #else
-     m_pRenderer = new CLinuxRenderer();
+    //m_pRenderer = new CLinuxRenderer();
+    m_pRenderer = new CLinuxRendererGL();
 #endif
   }
 
