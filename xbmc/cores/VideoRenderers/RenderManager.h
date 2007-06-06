@@ -4,7 +4,7 @@
 #ifndef _LINUX
 #include "XBoxRenderer.h"
 #else
-#include "LinuxRenderer.h"
+#include "LinuxRendererGL.h"
 #endif
 
 #include "../../utils/SharedSection.h"
@@ -88,11 +88,11 @@ public:
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
 
-#ifndef _LINUX
+  #ifndef _LINUX
   CXBoxRenderer *m_pRenderer;
-#else
-  CLinuxRenderer *m_pRenderer;
-#endif
+  #else
+  CLinuxRendererGL *m_pRenderer;
+  #endif
 protected:
   inline void Present();
   void PresentSingle();

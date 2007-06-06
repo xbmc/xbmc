@@ -21,37 +21,46 @@ static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
 class CSurface
 {
 public:
-  CSurface() {
+  CSurface(CSurface* src) {
 #ifdef HAS_GLX
-    m_glContext = 0;
-    m_glWindow = 0;
+    memcpy(this, src, sizeof(CSurface));
+    /*
+    m_glContext = src->GetContext();
+    m_glWindow = src->GetWindow();
+    m_glPBuffer = src->GetPBuffer();
+    m_glPixmap = src->GetPixmap();
+    */
 #endif
   }
 #ifdef HAS_SDL
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-	   CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false);
+	   CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false,
+	   bool offscreen=false, bool pbuffer=false);
 #endif
   
   virtual ~CSurface(void);
 
   int GetWidth() const { return m_iWidth; }
   int GetHeight() const { return m_iHeight; }
-  bool IsShared() const { return m_bShared; }
+  bool IsShared() const { return m_pShared?true:false; }
   bool IsFullscreen() const { return m_bFullscreen; }
   bool IsDoublebuffered() const { return m_bDoublebuffer; }
   bool IsValid() { return m_bOK; }
   void Flip();
-  void MakeCurrent(CSurface *src);
+  bool MakeCurrent();
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
+  GLXPbuffer GetPBuffer() {return m_glPBuffer;}
+  GLXPixmap GetPixmap() {return m_glPixmap;}
+  bool MakePBuffer();
 #endif
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}
 
  protected:
-  bool m_bShared;
+  CSurface* m_pShared;
   int m_iWidth;
   int m_iHeight;
   bool m_bFullscreen;
@@ -65,7 +74,7 @@ public:
   GLXContext m_glContext;
   GLXWindow  m_glWindow;
   GLXPixmap  m_glPixmap;
-  GLXPbuffer  m_glPbuffer;
+  GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
 #endif
 

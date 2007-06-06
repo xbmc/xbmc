@@ -428,6 +428,7 @@ typedef struct _D3DMATRIX {
 
 typedef void DIRECT3DTEXTURE8;
 typedef void* LPDIRECT3DTEXTURE8;
+typedef void* LPDIRECT3DDEVICE8;
 
 // Misc stuff found in the code, not really important
 #define PAGE_READONLY 	  0x02

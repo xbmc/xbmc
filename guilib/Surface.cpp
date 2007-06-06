@@ -19,7 +19,8 @@ Display* CSurface::s_dpy = 0;
 
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-		   CSurface* window, SDL_Surface* parent, bool fullscreen) 
+		   CSurface* window, SDL_Surface* parent, bool fullscreen,
+		   bool offscreen, bool pbuffer) 
 {
   CLog::Log(LOGDEBUG, "Constructing surface");
   m_bOK = false;
@@ -30,12 +31,14 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iGreenSize = 8;
   m_iBlueSize = 8;
   m_iAlphaSize = 8;
-  m_bFullscreen = fullscreen;
+  m_bFullscreen = fullscreen;  
+  m_pShared = shared;
 
 #ifdef HAS_GLX
   m_glWindow = 0;
   m_glContext = 0;
-
+  m_glPBuffer = 0;
+  m_glPixmap = 0;
 
   GLXFBConfig *fbConfigs=0;
   bool mapWindow = false;
@@ -81,6 +84,13 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       return;
     }
   }
+
+  if (pbuffer) 
+  {
+    MakePBuffer();
+    return;
+  }
+
   
   if (doublebuffer) 
   {
@@ -184,11 +194,86 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 }
 #endif
 
+#ifdef HAS_GLX
+bool CSurface::MakePBuffer()
+{
+  int num=0;
+  GLXFBConfig *fbConfigs=0;
+  bool status = false;
+  int singleVisAttributes[] = 
+      {
+	  GLX_RENDER_TYPE, GLX_RGBA_BIT,
+	  GLX_RED_SIZE, m_iRedSize,
+	  GLX_GREEN_SIZE, m_iGreenSize,
+	  GLX_BLUE_SIZE, m_iBlueSize,
+	  GLX_ALPHA_SIZE, m_iAlphaSize,
+	  None
+      };
+
+  int doubleVisAttributes[] = 
+      {
+	  GLX_RENDER_TYPE, GLX_RGBA_BIT,
+	  GLX_RED_SIZE, m_iRedSize,
+	  GLX_GREEN_SIZE, m_iGreenSize,
+	  GLX_BLUE_SIZE, m_iBlueSize,
+	  GLX_ALPHA_SIZE, m_iAlphaSize,
+	  GLX_DOUBLEBUFFER, True,
+	  None
+      };
+
+  int pbufferAttributes[] = {GLX_PBUFFER_WIDTH, m_iWidth, GLX_PBUFFER_HEIGHT, m_iHeight};
+
+  if (m_bDoublebuffer) 
+  {
+    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
+  } else {
+    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
+  }
+  if (fbConfigs==NULL) 
+  {
+    CLog::Log(LOGERROR, "MakePBuffer: GLX Error: No compatible framebuffers found");
+    XFree(fbConfigs);
+    return status;
+  }
+  m_glPBuffer = glXCreatePbuffer(s_dpy, fbConfigs[0], pbufferAttributes);
+
+  if (m_glPBuffer)
+  {
+    if (m_pShared) 
+    {
+      CLog::Log(LOGINFO, "GLX Info: Creating shared context");
+      m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, m_pShared->GetContext(), True);
+    } else {
+      CLog::Log(LOGINFO, "GLX Info: Creating unshared context");
+      m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+    }
+    if (glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext))
+    {
+      m_bOK = status = true;      
+    } else {
+      CLog::Log(LOGINFO, "GLX Error: Could not make PBuffer current");
+      status = false;
+    }
+  } else {
+    CLog::Log(LOGINFO, "GLX Error: Could not create PBuffer");
+    status = false;
+  }
+  XFree(fbConfigs);
+  return status;
+}
+#endif
+
 CSurface::~CSurface() 
 {
 #ifdef HAS_GLX
-  if (m_glContext) {    
+  if (m_glContext) {
     glXDestroyContext(s_dpy, m_glContext);
+  }
+  if (m_glPBuffer) {
+    glXDestroyPbuffer(s_dpy, m_glPBuffer);
+  }
+  if (m_glWindow) {
+    glXDestroyWindow(s_dpy, m_glWindow);
   }
 #else
   if (IsValid() && m_SDLSurface) {
@@ -208,12 +293,17 @@ void CSurface::Flip()
 #else
     SDL_Flip(m_SDLSurface);
 #endif
+  } else {
+    OutputDebugString("Surface Error: Could not flip surface.");
   }
 }
 
-void CSurface::MakeCurrent(CSurface* src)
+bool CSurface::MakeCurrent()
 {
 #ifdef HAS_GLX
-  glXMakeContextCurrent(s_dpy, src->GetWindow(), src->GetWindow(), src->GetContext());
+  if (m_glWindow)
+    return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+  if (m_glPBuffer)
+    return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
 #endif
 }
