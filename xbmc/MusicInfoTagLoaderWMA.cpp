@@ -233,7 +233,12 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         iOffset += 2;
 
         // Get frame name
-        CStdString strFrameName((LPWSTR)(pData.get() + iOffset));
+        CStdString utf16String((char*)(pData.get() + iOffset));
+        CStdString strFrameName = "";
+        CStdStringW wString = "";
+        g_charsetConverter.utf16LEtoW(utf16String, wString);
+        g_charsetConverter.wToUTF8(wString, strFrameName);
+        //CStdString strFrameName((LPWSTR)(pData.get() + iOffset));
         iOffset += iFrameNameSize;
 
         // Get datatype of frame
