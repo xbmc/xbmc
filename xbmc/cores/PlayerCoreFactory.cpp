@@ -157,12 +157,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     bool bAdd = true;
     if (item.IsType(".wma"))
     {
-#ifdef HAS_WMA_CODEC
       WMACodec codec;
       if (!codec.Init(item.m_strPath,2048))
         bAdd = false;
       codec.DeInit();        
-#endif
     }
 
     if (bAdd)
