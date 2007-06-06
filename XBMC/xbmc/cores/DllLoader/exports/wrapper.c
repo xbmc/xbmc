@@ -91,9 +91,14 @@ ssize_t __wrap_read(int fd, void *buf, size_t count)
   return dll_read(fd, buf, count);
 }
 
-off_t __wrap_lseek(int fildes, off_t offset, int whence)
+__off_t __wrap_lseek(int fildes, __off_t offset, int whence)
 {
   return dll_lseek(fildes, offset, whence);
+}
+
+__off64_t __wrap_lseek64(int fildes, __off64_t offset, int whence)
+{
+  return dll_lseeki64(fildes, offset, whence);
 }
 
 int __wrap_fclose(FILE *fp)

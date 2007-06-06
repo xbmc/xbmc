@@ -9,8 +9,11 @@ LIB=exports.a
 include ../../../../Makefile.include
 -include Makefile.depend
 
+wrapper.o : wrapper.c
+	gcc-4.1 -c -g -D_LINUX -D__USE_FILE_OFFSET64 -I. -I../../../ -I../../../linux -I../../../../guilib $< -o $@
+
 exports_python_linux.o : exports_python_linux.cpp
-	g++-4.1 -c -g -D_LINUX -D__USE_FILE_OFFSET64 -I. -I../../../ -I../../../linux -I../../../../guilib exports_python_linux.cpp -o exports_python_linux.o
+	g++-4.1 -c -g -D_LINUX -D__USE_FILE_OFFSET64 -I. -I../../../ -I../../../linux -I../../../../guilib $< -o $@
 
 wrapper.def : wrapper.c
 	(echo -n "-Wl"; grep __wrap wrapper.c | grep -v bash | sed "s/.*__wrap_//g" | sed "s/(.*//g" | awk '{printf(",-wrap,%s",$$0);}') > wrapper.def
