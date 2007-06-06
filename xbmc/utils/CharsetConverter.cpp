@@ -84,11 +84,12 @@ CCharsetConverter::CCharsetConverter()
   ICONV_PREPARE(m_iconvUtf8ToStringCharset);
   ICONV_PREPARE(m_iconvStringCharsetToUtf8);
   ICONV_PREPARE(m_iconvUcs2CharsetToStringCharset);
-  ICONV_PREPARE(m_iconvSubtitleCharsetToUtf16);
-  ICONV_PREPARE(m_iconvUtf16toUtf8);
+  ICONV_PREPARE(m_iconvSubtitleCharsetToW);
+  ICONV_PREPARE(m_iconvWtoUtf8);
   ICONV_PREPARE(m_iconvUtf16BEtoUtf8);
+  ICONV_PREPARE(m_iconvUtf16LEtoW);
   ICONV_PREPARE(m_iconvUtf32ToStringCharset);
-  ICONV_PREPARE(m_iconvUtf8toUtf16);
+  ICONV_PREPARE(m_iconvUtf8toW);
 }
 
 void CCharsetConverter::clear()
@@ -149,11 +150,11 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToStringCharset);
-  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToUtf16);
-  ICONV_SAFE_CLOSE(m_iconvUtf16toUtf8);
+  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToW);
+  ICONV_SAFE_CLOSE(m_iconvWtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
-  ICONV_SAFE_CLOSE(m_iconvUtf8toUtf16);
+  ICONV_SAFE_CLOSE(m_iconvUtf8toW);
 
 #ifndef _LINUX
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
@@ -174,7 +175,7 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip/*=true*/)
+void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/)
 {
   CStdStringA strFlipped;
   const char* src;
@@ -197,33 +198,33 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &utf1
     inBytes = utf8String.length() + 1;
   }
 
-  if (m_iconvUtf8toUtf16 == (iconv_t) - 1)
+  if (m_iconvUtf8toW == (iconv_t) - 1)
   {
 #ifndef _LINUX
-    m_iconvUtf8toUtf16 = iconv_open("UTF-16LE", "UTF-8");
+    m_iconvUtf8toW = iconv_open("UTF-16LE", "UTF-8");
 #else
-    m_iconvUtf8toUtf16 = iconv_open("WCHAR_T", "UTF-8");
+    m_iconvUtf8toW = iconv_open("WCHAR_T", "UTF-8");
 #endif    
   }
 
-  if (m_iconvUtf8toUtf16 != (iconv_t) - 1)
+  if (m_iconvUtf8toW != (iconv_t) - 1)
   {
     char *dst = new char[inBytes * sizeof(wchar_t)];
     size_t outBytes = inBytes * sizeof(wchar_t);
     char *outdst = dst;
 #ifdef _LINUX
-    if (iconv(m_iconvUtf8toUtf16, (char**)&src, &inBytes, &outdst, &outBytes))
+    if (iconv(m_iconvUtf8toW, (char**)&src, &inBytes, &outdst, &outBytes))
 #else
-    if (iconv(m_iconvUtf8toUtf16, &src, &inBytes, &outdst, &outBytes))
+    if (iconv(m_iconvUtf8toW, &src, &inBytes, &outdst, &outBytes))
 #endif
     {
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
-      utf16String = utf8String;
+      wString = utf8String;
     }
     else
     {
-      utf16String = (WCHAR *)dst;
+      wString = (WCHAR *)dst;
     }
     delete[] dst;
   }
@@ -235,17 +236,17 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
 
   // No need to flip hebrew/arabic as mplayer does the flipping
 
-  if (m_iconvSubtitleCharsetToUtf16 == (iconv_t) - 1)
+  if (m_iconvSubtitleCharsetToW == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
 #ifndef _LINUX
-    m_iconvSubtitleCharsetToUtf16 = iconv_open("UTF-16LE", strCharset.c_str());
+    m_iconvSubtitleCharsetToW = iconv_open("UTF-16LE", strCharset.c_str());
 #else
-    m_iconvSubtitleCharsetToUtf16 = iconv_open("WCHAR_T", strCharset.c_str());
+    m_iconvSubtitleCharsetToW = iconv_open("WCHAR_T", strCharset.c_str());
 #endif    
   }
 
-  if (m_iconvSubtitleCharsetToUtf16 != (iconv_t) - 1)
+  if (m_iconvSubtitleCharsetToW != (iconv_t) - 1)
   {
     const char* src = strSource.c_str();
     size_t inBytes = strSource.length() + 1;
@@ -253,9 +254,9 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
     size_t outBytes = inBytes * sizeof(wchar_t);
 
 #ifdef _LINUX
-    if (iconv(m_iconvSubtitleCharsetToUtf16, (char**)&src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvSubtitleCharsetToW, (char**)&src, &inBytes, &dst, &outBytes))
 #else
-    if (iconv(m_iconvSubtitleCharsetToUtf16, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes))
 #endif
     {
       strDest.ReleaseBuffer();
@@ -421,23 +422,23 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
-  if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
+  if (m_iconvWtoUtf8 == (iconv_t) - 1)
 #ifndef _LINUX
-    m_iconvUtf16toUtf8 = iconv_open("UTF-8", "UTF-16LE");
+    m_iconvWtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
 #else    
-    m_iconvUtf16toUtf8 = iconv_open("UTF-8", "WCHAR_T");
+    m_iconvWtoUtf8 = iconv_open("UTF-8", "WCHAR_T");
 #endif
     
-  if (m_iconvUtf16toUtf8 != (iconv_t) - 1)
+  if (m_iconvWtoUtf8 != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
     size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
 #ifdef _LINUX
-    if (iconv(m_iconvUtf16toUtf8, (char**)&src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvWtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
 #else
-    if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
 #endif
     { // failed :(
       strDest.ReleaseBuffer();
@@ -467,6 +468,35 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
     if (iconv(m_iconvUtf16BEtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
+#endif
+    { // failed :(
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+    strDest.ReleaseBuffer();
+  }
+}
+
+void CCharsetConverter::utf16LEtoW(const CStdStringA& strSource, CStdStringW &strDest)
+{
+  if (m_iconvUtf16LEtoW == (iconv_t) - 1)
+#ifndef _LINUX
+    m_iconvUtf16LEtoW = iconv_open("UTF-16LE", "UTF-16LE");
+#else    
+    m_iconvUtf16LEtoW = iconv_open("WCHAR_T", "UTF16LE");
+#endif
+
+  if (m_iconvUtf16LEtoW != (iconv_t) - 1)
+  {
+    const char* src = (const char*) strSource.c_str();
+    size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
+    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
+    char *dst = (char*) strDest.GetBuffer(outBytes);
+#ifdef _LINUX
+    if (iconv(m_iconvUtf16LEtoW, (char**)&src, &inBytes, &dst, &outBytes))
+#else
+    if (iconv(m_iconvUtf16LEtoW, &src, &inBytes, &dst, &outBytes))
 #endif
     { // failed :(
       strDest.ReleaseBuffer();
