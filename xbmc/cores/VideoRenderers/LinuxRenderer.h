@@ -1,6 +1,10 @@
 #ifndef LINUX_RENDERER
 #define LINUX_RENDERER
 
+#include "LinuxRendererGL.h"
+
+#if 0
+
 #include <SDL/SDL.h>
 #include "GraphicContext.h"
 #include "PlatformDefs.h"
@@ -197,4 +201,4 @@ protected:
 };
 
 #endif
-
+#endif
