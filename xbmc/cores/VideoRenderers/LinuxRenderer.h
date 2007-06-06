@@ -1,9 +1,9 @@
 #ifndef LINUX_RENDERER
 #define LINUX_RENDERER
 
+#ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
-
-#if 0
+#else
 
 #include <SDL/SDL.h>
 #include "GraphicContext.h"
