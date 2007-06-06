@@ -29,7 +29,12 @@
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
+#endif
+
+#ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
+#else 
+#include "LinuxRenderer.h"
 #endif
 
 CXBoxRenderManager g_renderManager;
@@ -172,9 +177,10 @@ unsigned int CXBoxRenderManager::PreInit()
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected LQShader-Renderer");
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
-#else
-    //m_pRenderer = new CLinuxRenderer();
+#elif defined(HAS_SDL_OPENGL)
     m_pRenderer = new CLinuxRendererGL();
+#else
+    m_pRenderer = new CLinuxRenderer();
 #endif
   }
 

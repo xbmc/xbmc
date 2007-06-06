@@ -1,7 +1,7 @@
 #ifndef XBOX_RENDERER
 #define XBOX_RENDERER
 
-#ifdef _LINUX
+#ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
 
 #else
