@@ -2,7 +2,7 @@
 #define XBOX_RENDERER
 
 #ifdef _LINUX
-#include "LinuxRenderer.h"
+#include "LinuxRendererGL.h"
 
 #else
 
