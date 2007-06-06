@@ -1,20 +1,13 @@
-#ifndef LINUX_RENDERER
-#define LINUX_RENDERER
+#ifndef LINUXRENDERERGL_RENDERER
+#define LINUXRENDERERGL_RENDERER
 
-#include <SDL/SDL.h>
-#include "GraphicContext.h"
-#include "PlatformDefs.h"
-#include "TextureManager.h"
+#include "../../../guilib/Surface.h"
+using namespace Surface;
 
-// temorary - for tests. remove this!
-#warning TODO: remove use of SDL overlay
-//#define USE_SDL_OVERLAY
+#define NUM_BUFFERS 3
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
-
-// this is how xdk defines it - not sure about other platforms though
-#define D3DTEXTURE_ALIGNMENT 128
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -71,7 +64,7 @@ struct DRAWRECT
   float bottom;
 };
 
-enum EFIELDSYNC  
+enum EFIELDSYNC
 {
   FS_NONE,
   FS_ODD,
@@ -100,11 +93,11 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRenderer
+class CLinuxRendererGL
 {
 public:
-  CLinuxRenderer();
-  ~CLinuxRenderer();
+  CLinuxRendererGL();  
+  ~CLinuxRendererGL();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();
@@ -115,9 +108,7 @@ public:
   void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
 
   // Player functions
-  virtual bool 	       Configure(unsigned int width, 
-				unsigned int height, unsigned int d_width, unsigned int d_height, 
-			 	float fps, unsigned flags);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
@@ -140,14 +131,25 @@ protected:
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void DeleteOSDTextures(int index);
+  void Setup_Y8A8Render();
   void RenderOSD();
+  void DeleteYV12Texture(int index);
+  void ClearYV12Texture(int index);
+  bool CreateYV12Texture(int index);
+  void CopyYV12Texture(int dest);
+  int  NextYV12Texture();
 
-  // not really low memory. name is misleading... simply a renderer 
+  // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
+
+  CSurface *m_pBuffer;;
+
+  int m_iYV12RenderBuffer;
+  int m_NumYV12Buffers;
 
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
   RESOLUTION m_iResolution;    // the resolution we're running in
-  float m_fps;      // fps of movie
+  float m_fps;        // fps of movie
   RECT rd;          // destination rect
   RECT rs;          // source rect
   unsigned int m_iSourceWidth;    // width
@@ -156,14 +158,8 @@ protected:
   bool m_bConfigured;
 
   // OSD stuff
-#define NUM_BUFFERS 2
-#ifdef HAS_SDL_OPENGL
-  CGLTexture * m_pOSDYTexture[NUM_BUFFERS];
-  CGLTexture * m_pOSDATexture[NUM_BUFFERS];
-#else
-  SDL_Surface * m_pOSDYTexture[NUM_BUFFERS];
-  SDL_Surface * m_pOSDATexture[NUM_BUFFERS];
-#endif
+  GLuint m_pOSDYTexture[NUM_BUFFERS];
+  GLuint m_pOSDATexture[NUM_BUFFERS];
 
   float m_OSDWidth;
   float m_OSDHeight;
@@ -174,25 +170,40 @@ protected:
   int m_NumOSDBuffers;
   bool m_OSDRendered;
 
-  // Raw data used by renderer - we now use single image - when released, it will be copied to
-  // the back buffer. will not cut it for all cases.
-  YV12Image m_image;
+  // Raw data used by renderer
+  YV12Image m_image[NUM_BUFFERS];
 
-// USE_SDL_OVERLAY - is temporary - just to get the framework going. temporary hack.
-#ifdef USE_SDL_OVERLAY
-  SDL_Overlay *m_overlay;
-  SDL_Surface *m_screen;  
-#else
-  SDL_Surface *m_backbuffer; 
-  SDL_Surface *m_screenbuffer; 
+  typedef GLuint YUVPLANES[MAX_PLANES];
+  typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
+  typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
 
-#ifdef HAS_SDL_OPENGL
-  CGLTexture  *m_texture;
-#endif
-#endif
+  #define PLANE_Y 0
+  #define PLANE_U 1
+  #define PLANE_V 2
+
+  #define FIELD_FULL 0
+  #define FIELD_ODD 1
+  #define FIELD_EVEN 2
+
+  // YV12 decoder textures
+  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
+  YUVBUFFERS m_YUVTexture;
+
+  // pixel shader (low memory shader used in all renderers while in GUI)
+  GLuint m_shaderProgram;
+  GLuint m_fragmentShader;
+  GLuint m_vertexShader;
+  GLint m_yTex;
+  GLint m_uTex;
+  GLint m_vTex;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
+
+  static void TextureCallback(DWORD dwContext);
+
+  HANDLE m_eventTexturesDone[NUM_BUFFERS];
+  HANDLE m_eventOSDDone[NUM_BUFFERS];
 
 };
 

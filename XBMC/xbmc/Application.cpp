@@ -2263,7 +2263,8 @@ void CApplication::RenderNoPresent()
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-    Sleep(50);
+    g_ApplicationRenderer.Render();
+    //Sleep(50);
     ResetScreenSaver();
     g_infoManager.ResetCache();
     return;

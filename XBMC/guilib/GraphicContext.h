@@ -100,14 +100,14 @@ public:
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
 #endif  
 #ifdef HAS_SDL_OPENGL
-  bool ValidateSurface();
+  bool ValidateSurface(Surface::CSurface* dest=NULL);
   Surface::CSurface* InitializeSurface();
   void ReleaseThreadSurface();
 #endif
   // the following two functions should wrap any
   // GL calls to maintain thread safety
-  void BeginPaint();
-  void EndPaint();
+  void BeginPaint(Surface::CSurface* dest=NULL);
+  void EndPaint(Surface::CSurface* dest=NULL);
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }

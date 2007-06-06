@@ -830,7 +830,7 @@ int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect 
 #ifdef  __GNUC__
 #warning TODO CGraphicContext needs to cleanup unused surfaces
 #endif
-bool CGraphicContext::ValidateSurface()
+bool CGraphicContext::ValidateSurface(CSurface* dest)
 {
   // FIXME: routine cleanup of unused surfaces
   map<Uint32, CSurface*>::iterator iter;
@@ -838,10 +838,17 @@ bool CGraphicContext::ValidateSurface()
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
 #ifdef HAS_GLX
-    CSurface* surface = new CSurface();
-    surface->MakeCurrent(m_screenSurface);
-    m_surfaces[tid] = surface;
-    return true;
+    if (!dest)
+      {
+	CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
+	CSurface* surface = new CSurface(m_screenSurface);
+	surface->MakeCurrent();
+	m_surfaces[tid] = surface;
+	return true;
+      } else {
+	m_surfaces[tid] = dest;
+	dest->MakeCurrent();
+      }
 #else
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
     CSurface* surface = InitializeSurface();
@@ -854,6 +861,8 @@ bool CGraphicContext::ValidateSurface()
       return false;
     }
 #endif
+  } else {
+    (iter->second)->MakeCurrent();
   }
   return true;
 }
@@ -899,27 +908,35 @@ CSurface* CGraphicContext::InitializeSurface()
 
 #endif
 
-void CGraphicContext::BeginPaint()
+void CGraphicContext::BeginPaint(CSurface *dest)
 {
 #ifdef HAS_SDL_OPENGL
   Lock();
-  ValidateSurface();
+  ValidateSurface(dest);
   GLenum errcode;
   if ((errcode=glGetError())!=GL_NO_ERROR) 
   {
-    //OutputDebugString("OpenGL Error during BeginPaint()");      
+    /*
+    OutputDebugString("OpenGL Error during BeginPaint()");      
+    OutputDebugString((const char*)gluErrorString(errcode));
+    OutputDebugString("\n");
+    */
   }
 #endif
 }
 
-void CGraphicContext::EndPaint()
+void CGraphicContext::EndPaint(CSurface *dest)
 {
 #ifdef HAS_SDL_OPENGL
   Unlock();
   GLenum errcode;
   if ((errcode=glGetError())!=GL_NO_ERROR) 
   {
-    //OutputDebugString("OpenGL Error during EndPaint()");      
+    /*
+    OutputDebugString("OpenGL Error during EndPaint()");      
+    OutputDebugString((const char*)gluErrorString(errcode));
+    OutputDebugString("\n");
+    */
   }
 #endif
 }
