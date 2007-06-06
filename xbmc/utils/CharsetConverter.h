@@ -25,6 +25,8 @@ public:
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
 
+  void utf16LEtoW(const CStdStringA& utf8String, CStdStringW &utf16String);
+
   void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
@@ -63,14 +65,15 @@ private:
   std::vector<FriBidiCharSet> m_vecBidiCharsets;
 
   iconv_t m_iconvStringCharsetToFontCharset;
-  iconv_t m_iconvSubtitleCharsetToUtf16;
+  iconv_t m_iconvSubtitleCharsetToW;
   iconv_t m_iconvUtf8ToStringCharset;
   iconv_t m_iconvStringCharsetToUtf8;
   iconv_t m_iconvUcs2CharsetToStringCharset;
   iconv_t m_iconvUtf32ToStringCharset;
-  iconv_t m_iconvUtf16toUtf8;
+  iconv_t m_iconvWtoUtf8;
+  iconv_t m_iconvUtf16LEtoW;
   iconv_t m_iconvUtf16BEtoUtf8;
-  iconv_t m_iconvUtf8toUtf16;
+  iconv_t m_iconvUtf8toW;
 
   FriBidiCharSet m_stringFribidiCharset;
 
