@@ -963,8 +963,8 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 #ifdef HAS_ALSA
 	unsigned char *pcmPtr = m_packet[stream][0].packet;
 	
-	// handle volume amp 
-	m_amp[stream].Amplify((short *)pcmPtr, m_packet[stream][0].length / 2);
+	// handle volume de-amp 
+	m_amp[stream].DeAmplify((short *)pcmPtr, m_packet[stream][0].length / 2);
 	
 	while ( pcmPtr < m_packet[stream][0].packet + m_packet[stream][0].length) {
 		int nPeriodSize = (m_periods[stream] * 2 * m_Channels); // write a frame. 
