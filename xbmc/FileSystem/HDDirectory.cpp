@@ -19,7 +19,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   WIN32_FIND_DATA wfd;
 
   CStdString strPath=strPath1;
+#ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strPath);
+#endif
 
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath1);
@@ -72,11 +74,15 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           if (strDir != "." && strDir != "..")
           {
             CStdString strLabel=wfd.cFileName;
+#ifndef _LINUX
             g_charsetConverter.stringCharsetToUtf8(strLabel);
+#endif
             CFileItem *pItem = new CFileItem(strLabel);
             pItem->m_strPath = strRoot;
             pItem->m_strPath += wfd.cFileName;
+#ifndef _LINUX
             g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+#endif
             pItem->m_bIsFolder = true;
             CUtil::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
@@ -89,11 +95,15 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
         else
         {
           CStdString strLabel=wfd.cFileName;
+#ifndef _LINUX
           g_charsetConverter.stringCharsetToUtf8(strLabel);
+#endif
           CFileItem *pItem = new CFileItem(strLabel);
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
+#ifndef _LINUX
           g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+#endif
 
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
@@ -123,7 +133,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 bool CHDDirectory::Create(const char* strPath)
 {
   CStdString strPath1 = strPath;
+#ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strPath1);
+#endif
   if (!CUtil::HasSlashAtEnd(strPath1))
 #ifndef _LINUX  
     strPath1 += '\\';
@@ -152,7 +164,9 @@ bool CHDDirectory::Create(const char* strPath)
 bool CHDDirectory::Remove(const char* strPath)
 {
   CStdString strPath1 = strPath;
+#ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strPath1);
+#endif
   return ::RemoveDirectory(strPath1) ? true : false;
 }
 
