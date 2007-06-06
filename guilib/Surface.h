@@ -11,7 +11,7 @@
 namespace Surface {
 
 #ifdef HAS_GLX
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <GL/glx.h>
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);

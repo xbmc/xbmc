@@ -14,7 +14,8 @@
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
 #ifdef HAS_SDL_OPENGL
-#include <SDL/SDL_opengl.h>
+#include <GL/glew.h>
+//#include <SDL/SDL_opengl.h>
 #endif
 
 #include "Surface.h"

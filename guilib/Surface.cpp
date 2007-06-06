@@ -164,6 +164,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (m_glContext) 
   {
     glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+    glewInit();
     m_bOK = true;
   } else {
     CLog::Log(LOGERROR, "GLX Error: Could not create context");
