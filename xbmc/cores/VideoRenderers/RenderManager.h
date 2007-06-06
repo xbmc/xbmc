@@ -1,10 +1,12 @@
 #ifndef XBOX_VIDEO_RENDERER
 #define XBOX_VIDEO_RENDERER
 
-#ifndef _LINUX
-#include "XBoxRenderer.h"
-#else
+#ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
+#elif defined(HAS_SDL)
+#include "LinuxRenderer.h"
+#else
+#include "XBoxRenderer.h"
 #endif
 
 #include "../../utils/SharedSection.h"
@@ -88,10 +90,12 @@ public:
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
 
-  #ifndef _LINUX
-  CXBoxRenderer *m_pRenderer;
-  #else
+  #ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
+  #elif defined(HAS_SDL)
+  CLinuxRenderer *m_pRenderer;
+  #else
+  CXBoxRenderer *m_pRenderer;
   #endif
 protected:
   inline void Present();
