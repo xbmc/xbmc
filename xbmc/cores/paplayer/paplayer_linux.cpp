@@ -76,7 +76,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_resampleAudio = true;
 
   m_visBufferLength = 0;
-  m_pCallback = NULL;
+  m_pCallback = NULL; 
 
   m_forceFadeToNext = false;
   m_CacheLevel = 0;
@@ -256,6 +256,7 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   m_bStopPlaying = true;
   m_bStop = true;
 
+  m_visBufferLength = 0;
   StopThread();
 
   // kill both our streams if we need to
@@ -480,6 +481,7 @@ void PAPlayer::Process()
       m_callback.OnPlayBackEnded();
     }
   }
+  CLog::Log(LOGDEBUG, "PAPlayer: Thread end");
 }
 
 void PAPlayer::ToFFRW(int iSpeed)
@@ -937,6 +939,7 @@ void PAPlayer::SetStreamVolume(int stream, long nVolume)
 
 bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 {
+
 #ifdef HAS_ALSA
   if (!m_pStream[stream] || dec.GetStatus() == STATUS_NO_FILE)
     return false;
@@ -966,6 +969,8 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 	// handle volume de-amp 
 	m_amp[stream].DeAmplify((short *)pcmPtr, m_packet[stream][0].length / 2);
 	
+   StreamCallback(&m_packet[stream][0]);
+   
 	while ( pcmPtr < m_packet[stream][0].packet + m_packet[stream][0].length) {
 		int nPeriodSize = (m_periods[stream] * 2 * m_Channels); // write a frame. 
 		if ( pcmPtr + nPeriodSize >  m_packet[stream][0].packet + m_packet[stream][0].length) {
@@ -987,12 +992,10 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
         		break;
       		}
 		//else
-      		//	m_bytesSentOut += nPeriodSize; 
+      	//		m_bytesSentOut += nPeriodSize; 
 
 		pcmPtr += nPeriodSize;  	
 	}
-
-        StreamCallback(&m_packet[stream][0]);
 		
 #else
       Mix_Chunk* chunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk));
@@ -1043,7 +1046,7 @@ void PAPlayer::DoAudioWork()
 {
   if (m_pCallback && m_visBufferLength)
   {
-    m_pCallback->OnAudioData(m_visBuffer, m_visBufferLength);
+    m_pCallback->OnAudioData((BYTE*)m_visBuffer, m_visBufferLength);
     m_visBufferLength = 0;
   }
 }
@@ -1051,6 +1054,7 @@ void PAPlayer::DoAudioWork()
 void PAPlayer::StreamCallback( LPVOID pPacketContext )
 {
   AudioPacket *pkt = (AudioPacket *)pPacketContext;
+
 
   // only process from the current stream (if we're crossfading for instance)
   if (pkt->stream != m_currentStream)
@@ -1061,7 +1065,7 @@ void PAPlayer::StreamCallback( LPVOID pPacketContext )
   if (m_pCallback)
   { // copy into our visualisation buffer.
     // can't use a memcpy() here due to the context (will crash otherwise)
-    memcpy(m_visBuffer, pkt->packet, pkt->length);
+    memcpy((short*)m_visBuffer, pkt->packet, pkt->length);
     m_visBufferLength = pkt->length;
   }
 }
