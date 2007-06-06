@@ -195,9 +195,9 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFil
     CListLabel *label = (CListLabel *)control;
     CStdStringW oldText = label->m_text;
     if (label->m_info)
-      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel(item, label->m_info), label->m_text);
+      g_charsetConverter.utf8ToW(g_infoManager.GetItemLabel(item, label->m_info), label->m_text);
     else
-      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo), label->m_text);
+      g_charsetConverter.utf8ToW(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo), label->m_text);
     if (oldText != label->m_text)
     { // changed label - reset scrolling
       label->m_scrollInfo.Reset();

@@ -52,7 +52,7 @@ public:
       MultiByteToWideChar(CP_ACP, 0, strText, -1, m_wszText, iNeeded);
 #else
       CStdStringW strTextW;
-      g_charsetConverter.utf8ToUTF16(strText, strTextW, false); 
+      g_charsetConverter.utf8ToW(strText, strTextW, false); 
       m_wszText = wcsdup(strTextW.c_str());
 #endif
     }

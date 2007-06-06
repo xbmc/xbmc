@@ -60,7 +60,7 @@ void CGUILabelControl::Render()
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(m_renderLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToW(m_renderLabel, strLabelUnicode);
 
     if (m_wrapMultiLine && m_width > 0)
       WrapText(strLabelUnicode, m_label.font, m_width);
@@ -191,9 +191,9 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
 void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth)
 {
   CStdStringW utf16Text;
-  g_charsetConverter.utf8ToUTF16(text, utf16Text);
+  g_charsetConverter.utf8ToW(text, utf16Text);
   WrapText(utf16Text, font, maxWidth);
-  g_charsetConverter.utf16toUTF8(utf16Text, text);
+  g_charsetConverter.wToUTF8(utf16Text, text);
 }
 
 void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth)
@@ -278,7 +278,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
 
   // convert to utf16 for text extent measures
   CStdStringW utf16Path;
-  g_charsetConverter.utf8ToUTF16(path, utf16Path);
+  g_charsetConverter.utf8ToW(path, utf16Path);
 
   float fTextHeight, fTextWidth;
   WCHAR cDelim = L'\0';
@@ -326,7 +326,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
   }
   // convert back to utf8
   CStdString utf8Path;
-  g_charsetConverter.utf16toUTF8(utf16Path, utf8Path);
+  g_charsetConverter.wToUTF8(utf16Path, utf8Path);
   return utf8Path;
 }
 

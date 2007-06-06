@@ -94,7 +94,7 @@ void CGUISelectButtonControl::Render()
       if (m_vecItems[m_iCurrentItem].size())
       {
         CStdStringW itemStrUnicode;
-        g_charsetConverter.utf8ToUTF16(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
+        g_charsetConverter.utf8ToW(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
 
         DWORD dwAlign = m_label.align | XBFONT_CENTER_X;
         float fPosY = m_posY + m_label.offsetY;

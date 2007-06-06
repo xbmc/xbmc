@@ -86,7 +86,7 @@ void CGUIConsoleControl::Render()
     INT nIndex = (m_dwLineCounter + nLine) % m_nMaxLines;
 
     Line& line = m_lines[nIndex];
-    g_charsetConverter.utf8ToUTF16(line.text, strText);
+    g_charsetConverter.utf8ToW(line.text, strText);
 
     if (m_label.font)
       m_label.font->DrawText(fTextX, fTextY, line.colour, m_label.shadowColor, (LPWSTR) strText.c_str());
@@ -171,7 +171,7 @@ void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
       strLine += letter;
 
       // Calculate the accumulated text dimensions.
-      g_charsetConverter.utf8ToUTF16(strLine, strLineW);
+      g_charsetConverter.utf8ToW(strLine, strLineW);
       FLOAT fWidth, fHeight;
       m_label.font->GetTextExtent(strLineW.c_str(), &fWidth, &fHeight);
 

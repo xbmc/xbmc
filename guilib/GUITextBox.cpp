@@ -64,7 +64,7 @@ void CGUITextBox::Render()
 
     // we have all the sizing correct so do any wordwrapping
     CStdStringW utf16Text;
-    g_charsetConverter.utf8ToUTF16(m_renderLabel, utf16Text);
+    g_charsetConverter.utf8ToW(m_renderLabel, utf16Text);
     CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, m_lines);
 
     // disable all second label information
@@ -156,9 +156,9 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
         {
           CStdStringW utf16Label;
           CGUIListItem &item = items->at(i);
-          g_charsetConverter.utf8ToUTF16(item.GetLabel(), utf16Label);
+          g_charsetConverter.utf8ToW(item.GetLabel(), utf16Label);
           m_lines.push_back(utf16Label);
-          g_charsetConverter.utf8ToUTF16(item.GetLabel2(), utf16Label);
+          g_charsetConverter.utf8ToW(item.GetLabel2(), utf16Label);
           m_lines2.push_back(utf16Label);
         }
         UpdatePageControl();
