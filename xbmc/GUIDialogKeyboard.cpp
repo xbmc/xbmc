@@ -233,7 +233,7 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 
 void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 {
-  g_charsetConverter.utf8ToUTF16(aTextString, m_strEdit);
+  g_charsetConverter.utf8ToW(aTextString, m_strEdit);
   UpdateLabel();
   MoveCursor(m_strEdit.size());
 }
@@ -241,7 +241,7 @@ void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 CStdString CGUIDialogKeyboard::GetText() const
 {
   CStdString utf8String;
-  g_charsetConverter.utf16toUTF8(m_strEdit, utf8String);
+  g_charsetConverter.wToUTF8(m_strEdit, utf8String);
   return utf8String;
 }
 
@@ -287,7 +287,7 @@ void CGUIDialogKeyboard::UpdateLabel()
     }
     // convert back to utf8
     CStdString utf8Edit;
-    g_charsetConverter.utf16toUTF8(edit, utf8Edit);
+    g_charsetConverter.wToUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
     // Send off a search message if it's been SEARCH_DELAY since last search.
     DWORD now = timeGetTime();
@@ -690,7 +690,7 @@ void CGUIDialogKeyboard::OnIPAddress()
   // find any IP address in the current string if there is any
   // We match to #.#.#.#
   CStdString utf8String;
-  g_charsetConverter.utf16toUTF8(m_strEdit, utf8String);
+  g_charsetConverter.wToUTF8(m_strEdit, utf8String);
   CStdString ip;
   CRegExp reg;
   reg.RegComp("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+");
@@ -706,7 +706,7 @@ void CGUIDialogKeyboard::OnIPAddress()
   if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, m_strHeading))
   {
     utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
-    g_charsetConverter.utf8ToUTF16(utf8String, m_strEdit);
+    g_charsetConverter.utf8ToW(utf8String, m_strEdit);
     UpdateLabel();
   }
 }

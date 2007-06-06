@@ -134,7 +134,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 
         /* convert to utf8 */
         if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
-          g_charsetConverter.utf16toUTF8(pIterator->item.NameW, strName);
+          g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
         else
           g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
 
@@ -227,7 +227,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     
     /* convert to utf8 */
     if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
-      g_charsetConverter.utf16toUTF8(pIterator->item.NameW, strName);
+      g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
     else
       g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
 
