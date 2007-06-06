@@ -37,10 +37,13 @@ bool SoLoader::Load()
 
 void SoLoader::Unload()
 {
-  CLog::Log(LOGDEBUG, "Unloading DLL: %s\n", GetName());
+  CLog::Log(LOGDEBUG, "Unloading: %s\n", GetName());
 
   if (m_soHandle)
-    dlclose(m_soHandle);
+  {
+    if (dlclose(m_soHandle) != 0)
+       CLog::Log(LOGERROR, "Unable to unload %s, reason: %s", GetName(), dlerror());
+  }
     
   m_soHandle = NULL;
 }
