@@ -88,7 +88,7 @@ void CGUIButtonControl::Render()
       fPosY = m_posY + m_height / 2;
 
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(renderLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToW(renderLabel, strLabelUnicode);
 
     m_label.font->Begin();
     if (IsDisabled())
@@ -106,7 +106,7 @@ void CGUIButtonControl::Render()
       fPosX = m_posX + m_width - m_label.offsetX;
       DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y);
 
-      g_charsetConverter.utf8ToUTF16(m_strLabel2, strLabelUnicode);
+      g_charsetConverter.utf8ToW(m_strLabel2, strLabelUnicode);
 
       if (IsDisabled() )
         m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);

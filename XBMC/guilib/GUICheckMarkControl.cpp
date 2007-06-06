@@ -28,7 +28,7 @@ void CGUICheckMarkControl::Render()
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToW(m_strLabel, strLabelUnicode);
 
     float fTextHeight, fTextWidth;
     m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);

@@ -174,7 +174,7 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip/*=true*/)
+void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip/*=true*/)
 {
   CStdStringA strFlipped;
   const char* src;
@@ -229,7 +229,7 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
   }
 }
 
-void CCharsetConverter::subtitleCharsetToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
+void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
 {
   CStdStringA strFlipped;
 
@@ -419,7 +419,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
   }
 }
 
-void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
 #ifndef _LINUX

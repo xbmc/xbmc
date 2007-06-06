@@ -619,7 +619,7 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       label = m_vecButtons[iOffset]->strLabel;
 
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(label, strLabelUnicode);
+    g_charsetConverter.utf8ToW(label, strLabelUnicode);
 
     float fAlpha = 255.0f;
     if (m_bHorizontal)
