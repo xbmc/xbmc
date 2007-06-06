@@ -770,7 +770,7 @@ unsigned int CLinuxRendererGL::PreInit()
   {
     m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
   }
-  if (!m_shaderProgram)
+  if (!m_shaderProgram && glCreateProgram)
   {
 
     const char* shaderv = 
@@ -854,7 +854,9 @@ unsigned int CLinuxRendererGL::PreInit()
     m_yTex = glGetUniformLocation(m_shaderProgram, "ytex");
     dumpGLState();
     m_uTex = glGetUniformLocation(m_shaderProgram, "utex");
+    dumpGLState();
     m_vTex = glGetUniformLocation(m_shaderProgram, "vtex");
+    dumpGLState();
     g_graphicsContext.EndPaint(m_pBuffer);
   }
 
@@ -1066,36 +1068,53 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][2]);
   glActiveTexture(GL_TEXTURE0);
 
-  glUseProgram(m_shaderProgram);
-  glUniform1i(m_yTex, 0);
-  glUniform1i(m_uTex, 1);
-  glUniform1i(m_vTex, 2);
+  if (m_shaderProgram)
+  {
+      glUseProgram(m_shaderProgram);
+      glUniform1i(m_yTex, 0);
+      glUniform1i(m_uTex, 1);
+      glUniform1i(m_vTex, 2);
+  }
 
   glBegin(GL_QUADS);
   
   glMultiTexCoord2f(GL_TEXTURE0, 0, 0); //(float)rs.left, (float)rs.top );
-  glMultiTexCoord2f(GL_TEXTURE1, 0, 0); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
-  glMultiTexCoord2f(GL_TEXTURE2, 0, 0); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+  if (m_shaderProgram)
+  {
+      glMultiTexCoord2f(GL_TEXTURE1, 0, 0); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
+      glMultiTexCoord2f(GL_TEXTURE2, 0, 0); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+  }
   glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
 
   glMultiTexCoord2f(GL_TEXTURE0, 1, 0); //(float)rs.right, (float)rs.top );
-  glMultiTexCoord2f(GL_TEXTURE1, 1, 0); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-  glMultiTexCoord2f(GL_TEXTURE2, 1, 0); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+  if (m_shaderProgram)
+  {
+      glMultiTexCoord2f(GL_TEXTURE1, 1, 0); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+      glMultiTexCoord2f(GL_TEXTURE2, 1, 0); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+  }
   glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
   
   glMultiTexCoord2f(GL_TEXTURE0, 1, 1); //(float)rs.right, (float)rs.bottom );
-  glMultiTexCoord2f(GL_TEXTURE1, 1, 1); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  glMultiTexCoord2f(GL_TEXTURE2, 1, 1); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+  if (m_shaderProgram)
+  {
+      glMultiTexCoord2f(GL_TEXTURE1, 1, 1); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+      glMultiTexCoord2f(GL_TEXTURE2, 1, 1); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+  }
   glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
 
   glMultiTexCoord2f(GL_TEXTURE0, 0, 1); //(float)rs.left, (float)rs.bottom );
-  glMultiTexCoord2f(GL_TEXTURE1, 0, 1); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  glMultiTexCoord2f(GL_TEXTURE2, 0, 1); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+  if (m_shaderProgram)
+  {
+      glMultiTexCoord2f(GL_TEXTURE1, 0, 1); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+      glMultiTexCoord2f(GL_TEXTURE2, 0, 1); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+  }
   glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
   glEnd();
 
-  glUseProgram(0);
+  if (m_shaderProgram)
+      glUseProgram(0);
+
   dumpGLState();
 
   g_graphicsContext.EndPaint();
