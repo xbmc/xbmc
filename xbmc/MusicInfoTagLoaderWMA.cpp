@@ -146,12 +146,17 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
       iOffset += 10;
 
       // TODO: UTF-8 Do we need to "fixString" these strings at all?
+      CStdString utf16String((char*) (pData.get() + iOffset));
       CStdString utf8String = "";
-      g_charsetConverter.utf16toUTF8((LPWSTR)(pData.get() + iOffset), utf8String);
+      CStdStringW wString = "";
+      g_charsetConverter.utf16LEtoW(utf16String, wString);
+      g_charsetConverter.wToUTF8(wString, utf8String);
       tag.SetTitle(utf8String);
 
       utf8String = "";
-      g_charsetConverter.utf16toUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
+      utf16String = (char*) (pData.get() + iOffset + nTitleSize);
+      g_charsetConverter.utf16LEtoW(utf16String, wString);
+      g_charsetConverter.wToUTF8(wString, utf8String);
       tag.SetArtist(utf8String);
 
       //General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
@@ -243,10 +248,14 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // tag with extended metadata
         if (iFrameType == WMT_TYPE_STRING && iValueSize > 0)
         {
-          LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
+          //LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
-          CStdString utf8String;
-          g_charsetConverter.utf16toUTF8(pwszValue, utf8String);
+          CStdString utf16String((char*)(pData.get() + iOffset));
+          CStdString utf8String = "";
+          CStdStringW wString = "";
+          g_charsetConverter.utf16LEtoW(utf16String, wString);
+          g_charsetConverter.wToUTF8(wString, utf8String);
+                
           SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
@@ -315,10 +324,13 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // tag with extended metadata
         if (iFrameType == WMT_TYPE_STRING && iValueSize > 0)
         {
-          LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
+          //LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
-          CStdString utf8String;
-          g_charsetConverter.utf16toUTF8(pwszValue, utf8String);
+          CStdString utf16String((char*)(pData.get() + iOffset));
+          CStdString utf8String = "";
+          CStdStringW wString = "";
+          g_charsetConverter.utf16LEtoW(utf16String, wString);
+          g_charsetConverter.wToUTF8(wString, utf8String);
           SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
