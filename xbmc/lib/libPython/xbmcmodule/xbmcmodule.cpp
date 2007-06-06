@@ -270,7 +270,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "i", &iString))  return NULL;
 
     CStdStringW unicodeLabel;
-    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
+    g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
     return Py_BuildValue("u", unicodeLabel.c_str());
   }
 

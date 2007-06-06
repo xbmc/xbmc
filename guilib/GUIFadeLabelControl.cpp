@@ -73,7 +73,7 @@ void CGUIFadeLabelControl::Render()
 	}
 
   CStdStringW strLabelUnicode;
-  g_charsetConverter.utf8ToUTF16(strRenderLabel, strLabelUnicode);
+  g_charsetConverter.utf8ToW(strRenderLabel, strLabelUnicode);
 
   if (iLabelCount == 1)
   {
