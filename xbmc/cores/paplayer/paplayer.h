@@ -174,8 +174,8 @@ private:
   CFileItem        m_nextFile;
 
   // stuff for visualisation
-  BYTE             m_visBuffer[PACKET_SIZE];
   unsigned int     m_visBufferLength;
+  short            m_visBuffer[PACKET_SIZE+2];
 
 };
 
