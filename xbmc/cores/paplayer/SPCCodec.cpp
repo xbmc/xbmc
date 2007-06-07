@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SPCCodec.h"
 #include "../DllLoader/DllLoader.h"
+#include "../DllLoader/SoLoader.h"
 #include "../../MusicInfoTagLoaderSPC.h"
 
 using namespace XFILE;
@@ -15,6 +16,8 @@ SPCCodec::SPCCodec()
   m_dll.EmuAPU = NULL;
   m_dll.LoadSPCFile = NULL;
   m_dll.SeekAPU = NULL;
+  m_dll.ResetAPU = NULL;
+  m_dll.InitAPU = NULL;
 }
 
 SPCCodec::~SPCCodec()
@@ -24,7 +27,11 @@ SPCCodec::~SPCCodec()
 
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+#ifdef _LINUX
+  m_loader = new SoLoader("Q:\\system\\players\\paplayer\\SNESAPU-i486-linux.so");
+#else
   m_loader = new DllLoader("Q:\\system\\players\\paplayer\\snesapu.dll");
+#endif
   if (!m_loader)
     return false;
   if (!m_loader->Load())
@@ -37,7 +44,11 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_loader->ResolveExport("LoadSPCFile",(void**)&m_dll.LoadSPCFile);
   m_loader->ResolveExport("EmuAPU",(void**)&m_dll.EmuAPU);
   m_loader->ResolveExport("SeekAPU",(void**)&m_dll.SeekAPU);
-  
+#ifdef _LINUX
+  m_loader->ResolveExport("InitAPU",(void**)&m_dll.InitAPU);
+  m_loader->ResolveExport("ResetAPU",(void**)&m_dll.ResetAPU);
+#endif
+
   CFile file;
   if (!file.Open(strFile))
   {
@@ -56,6 +67,10 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   file.Close();
 
   m_pApuRAM = new u8[65536];
+#ifdef _LINUX
+  m_dll.InitAPU();
+  m_dll.ResetAPU();
+#endif
 
   m_dll.LoadSPCFile(m_szBuffer);
  
