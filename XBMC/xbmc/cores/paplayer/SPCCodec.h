@@ -3,7 +3,7 @@
 
 #include "ICodec.h"
 #include "spc/Types.h"
-#include "../DllLoader/DllLoader.h"
+#include "../DllLoader/LibraryLoader.h"
 
 class SPCCodec : public ICodec
 {
@@ -17,17 +17,29 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
 private:
+#ifdef _LINUX
+  typedef void  (__cdecl *LoadMethod) ( const void* p1);
+  typedef void* (__cdecl *EmuMethod) ( void *p1, u32 p2, u32 p3);
+  typedef void  (__cdecl *SeekMethod) ( u32 p1, b8 p2 );
+  typedef u32 (__cdecl *InitMethod)(void);
+  typedef void (__cdecl *DeInitMethod)(void);
+#else
   typedef void  (__stdcall* LoadMethod) ( const void* p1);
   typedef void* (__stdcall * EmuMethod) ( void *p1, u32 p2, u32 p3);
   typedef void  (__stdcall * SeekMethod) ( u32 p1, b8 p2 );
+#endif
   struct   
   {
     LoadMethod LoadSPCFile;
     EmuMethod EmuAPU;
     SeekMethod SeekAPU;
+#ifdef _LINUX
+    InitMethod InitAPU;
+    DeInitMethod ResetAPU;
+#endif
   } m_dll;
 
-  DllLoader* m_loader;
+  LibraryLoader* m_loader;
   char* m_szBuffer;
   u8* m_pApuRAM;
   __int64 m_iDataPos;
