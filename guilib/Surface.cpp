@@ -20,7 +20,7 @@ Display* CSurface::s_dpy = 0;
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 		   CSurface* window, SDL_Surface* parent, bool fullscreen,
-		   bool offscreen, bool pbuffer) 
+		   bool pixmap, bool pbuffer) 
 {
   CLog::Log(LOGDEBUG, "Constructing surface");
   m_bOK = false;
@@ -91,6 +91,11 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     return;
   }
 
+  if (pixmap)
+  {
+    MakePixmap();
+    return;
+  }
   
   if (doublebuffer) 
   {
@@ -262,6 +267,12 @@ bool CSurface::MakePBuffer()
   XFree(fbConfigs);
   return status;
 }
+
+bool CSurface::MakePixmap()
+{
+// FIXME: this needs to be implemented
+  return false;
+}
 #endif
 
 CSurface::~CSurface() 
@@ -306,5 +317,15 @@ bool CSurface::MakeCurrent()
     return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
   if (m_glPBuffer)
     return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
+#endif
+}
+
+void CSurface::ReleaseContext()
+{
+#ifdef HAS_GLX
+  if (m_glWindow)
+    glXMakeContextCurrent(s_dpy, None, None, NULL);
+  if (m_glPBuffer)
+    glXMakeContextCurrent(s_dpy, None, None, NULL);
 #endif
 }
