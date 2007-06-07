@@ -48,12 +48,14 @@ public:
   bool IsValid() { return m_bOK; }
   void Flip();
   bool MakeCurrent();
+  void ReleaseContext();
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
   GLXPbuffer GetPBuffer() {return m_glPBuffer;}
   GLXPixmap GetPixmap() {return m_glPixmap;}
   bool MakePBuffer();
+  bool MakePixmap();
 #endif
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)

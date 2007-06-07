@@ -648,14 +648,15 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (clear) 
   {
-    /*
     glClearColor(m_clearColour&0xff000000,
 		 m_clearColour&0x00ff0000,
 		 m_clearColour&0x0000ff00,
 		 0);
-    */
-    //glClear(GL_COLOR_BUFFER_BIT);
+    dumpGLState();
+    glClear(GL_COLOR_BUFFER_BIT);
+    dumpGLState();
     glClearColor(0,0,0,0);
+    dumpGLState();
     if (alpha<255) 
     {
 #warning Alpha blending current disabled
@@ -665,11 +666,14 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     }
   }
   Render(flags);
+  dumpGLState();
+  glEnable(GL_BLEND);
   g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::FlipPage(int source)
 {  
+  CLog::Log(LOGNOTICE, "Calling RenderUpdate");
   //if( source >= 0 && source < m_NumYV12Buffers )
   m_iYV12RenderBuffer = source;
   //else
@@ -888,6 +892,8 @@ void CLinuxRendererGL::Render(DWORD flags)
 
   RenderLowMem(flags);
 
+  glEnable(GL_BLEND);
+
   if( flags & RENDER_FLAG_NOOSD ) return;
 
   // FIXME: OSD disabled for now
@@ -1046,7 +1052,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     dumpGLState();
   }
 
@@ -1057,7 +1063,6 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   //See RGB renderer for comment on this
 #define CHROMAOFFSET_HORIZ 0.25f
 
-  glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][0]);
   glActiveTexture(GL_TEXTURE1);
@@ -1114,6 +1119,12 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 
   if (m_shaderProgram)
       glUseProgram(0);
+
+  glActiveTexture(GL_TEXTURE1);
+  glDisable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE2);
+  glDisable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
 
   dumpGLState();
 
