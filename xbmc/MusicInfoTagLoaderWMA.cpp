@@ -65,9 +65,9 @@ typedef enum WMT_ATTR_DATATYPE
 // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wmform/htm/wm_picture.asp
 typedef struct _WMPicture
 {
-  LPWSTR pwszMIMEType;
+  CStdString pwszMIMEType;
   BYTE bPictureType;
-  LPWSTR pwszDescription;
+  CStdStringW pwszDescription;
   DWORD dwDataLen;
   BYTE* pbData;
 }
@@ -477,12 +477,16 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
     picture.dwDataLen = (DWORD)pValue[iPicOffset] + (pValue[iPicOffset + 1] * 0x100);
     iPicOffset += 4;
 
-    picture.pwszMIMEType = (LPWSTR)(pValue + iPicOffset);
-    iPicOffset += (wcslen(picture.pwszMIMEType) * 2);
+    CStdStringW wString;
+    CStdString utf16String((char*) (pValue + iPicOffset));
+    g_charsetConverter.utf16LEtoW(utf16String, wString);
+    g_charsetConverter.wToUTF8(wString, picture.pwszMIMEType);
+    iPicOffset += (wString.length() * 2);
     iPicOffset += 2;
 
-    picture.pwszDescription = (LPWSTR)(pValue + iPicOffset);
-    iPicOffset += (wcslen(picture.pwszDescription) * 2);
+    utf16String = ((char*) (pValue + iPicOffset));
+    g_charsetConverter.utf16LEtoW(utf16String, picture.pwszDescription);
+    iPicOffset += (picture.pwszDescription.length() * 2);
     iPicOffset += 2;
 
     picture.pbData = (pValue + iPicOffset);
