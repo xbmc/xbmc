@@ -43,7 +43,7 @@
  cp system/*.so $home_folder$target_folder/system/
  cp system/python/*.so $home_folder$target_folder/system/python/
  cp system/players/paplayer/*.so $home_folder$target_folder/system/players/paplayer/
-#cp system/players/dvdplayer/*.so $home_folder$target_folder/system/players/dvdplayer/
+ cp system/players/dvdplayer/*.so $home_folder$target_folder/system/players/dvdplayer/
 
  echo "---> Copying executable "
  cd $home_folder
