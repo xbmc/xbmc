@@ -23,6 +23,11 @@ SDL 2D version (much much slower GUI rendering but works on all adapters and bit
 # cd $HOME/XBMC
 # make sdl_2d
 
+Quicker compilation; by adding -j<number> to the make command, you describe how many cores will be used. So for dualcore the commands are:
+# make -j2
+or
+# make -j2 sdl_2d
+
 How to run
 ----------
 1. Take the T3CH Xbox distribution and extract it to your home directory. 
