@@ -253,18 +253,19 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     lock2.Leave();
 
     m_pRenderer->FlipPage(source);
-
+    g_graphicsContext.ReleaseCurrentContext();
     if( CThread::ThreadHandle() == NULL ) CThread::Create();
     m_eventFrame.Set();
   }
   else
   {
+    g_graphicsContext.ReleaseCurrentContext();
     lock2.Leave();
 
     /* if we are not in fullscreen, we don't control when we render */
     /* so we must await the time and flip then */
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
-    m_pRenderer->FlipPage(source);
+    //m_pRenderer->FlipPage(source);
     m_eventPresented.Set();
   }
 }
@@ -430,6 +431,7 @@ void CXBoxRenderManager::PresentWeave()
 
 void CXBoxRenderManager::Process()
 {
+  CLog::Log(LOGINFO, "Starting async renderer thread");
   float actualdelay = (float)m_presentdelay;
 
   SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
@@ -437,8 +439,12 @@ void CXBoxRenderManager::Process()
   while( !m_bStop )
   {
     //Wait for new frame or an stop event
+    g_graphicsContext.ReleaseCurrentContext();
     m_eventFrame.Wait();
-    if( m_bStop ) return;
+    if( m_bStop )
+    { 
+      return;
+    }
 
     DWORD dwTimeStamp = GetTickCount();
     try
@@ -447,16 +453,21 @@ void CXBoxRenderManager::Process()
       CSingleLock lock2(g_graphicsContext);
 
       if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
+      {
+	// if we need to render acquire the context
+	g_graphicsContext.AcquireCurrentContext();
         Present();
+      }
     }
     catch(...)
     {
-      CLog::Log(LOGERROR, "CXBoxRenderer::Process() - Exception thrown in flippage");
+      CLog::Log(LOGERROR, "CLinuxRendererGL::Process() - Exception thrown in flippage");
     }
     m_eventPresented.Set();
 
     const int TC = 100; /* time (frame) constant for convergence */
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }
+  g_graphicsContext.ReleaseCurrentContext();
 }
 
