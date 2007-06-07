@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "TimidityCodec.h"
-#include "cores/DllLoader/DllLoader.h"
+#include "../DllLoader/LibraryLoader.h"
+#include "../DllLoader/SoLoader.h"
+#include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
 
 TimidityCodec::TimidityCodec()
@@ -19,7 +21,11 @@ TimidityCodec::~TimidityCodec()
 
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+#ifdef _LINUX
+  m_loader = new SoLoader("Q:\\system\\players\\paplayer\\timidity-i486-linux.so");
+#else
   m_loader = new DllLoader("Q:\\system\\players\\paplayer\\timidity.dll");
+#endif
   if (!m_loader)
     return false;
   if (!m_loader->Load())
