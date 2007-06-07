@@ -47,9 +47,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   if (iBitsPerSample == 16)
   {
     iSize /= 2;
-    m_iLen = iSize;
-
-    for (int i = 0; i < min(m_iLen,iSize), i < m_iLen; i++)
+    for (int i = 0; i < iSize, i < m_iLen; i++) // 
     { // 16 bit -> convert to short directly
       m_pBuffer[i] = ((short *)psBuffer)[i];
     }
@@ -282,7 +280,8 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
   if (iAudioDataLength<0)
     return;
 
-  auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(iAudioDataLength) );
+  // Save our audio data in the buffers
+  auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
   pBuffer->Set(pAudioData, iAudioDataLength, m_iBitsPerSample);
   m_vecBuffers.push_back( pBuffer.release() );
 
