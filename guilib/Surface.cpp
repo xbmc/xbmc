@@ -227,7 +227,7 @@ bool CSurface::MakePBuffer()
 	  None
       };
 
-  int pbufferAttributes[] = {GLX_PBUFFER_WIDTH, m_iWidth, GLX_PBUFFER_HEIGHT, m_iHeight};
+  int pbufferAttributes[] = {GLX_PBUFFER_WIDTH, m_iWidth, GLX_PBUFFER_HEIGHT, m_iHeight, GLX_LARGEST_PBUFFER};
 
   if (m_bDoublebuffer) 
   {
