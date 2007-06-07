@@ -181,9 +181,14 @@ void CDVDPlayerVideo::Process()
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut);
    
-    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) break;
+    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) 
+    {
+      CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
+      break;
+    }
     else if (ret == MSGQ_TIMEOUT)
     {
+      CLog::Log(LOGINFO, "Got MSGQ_TIMEOUT");
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !m_DetectedStill )
       {
@@ -752,7 +757,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   m_iFlipTimeStamp += pPicture->iDuration;
 
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
+  {
+    CLog::Log(LOGNOTICE, "Frame has been dropped");
     return result | EOS_DROPPED;
+  }
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC mDisplayField = FS_NONE;
@@ -768,10 +776,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if(delay<0)
+  if(delay<0) 
+  {
+    CLog::Log(LOGNOTICE, "Calling flip page");
     g_renderManager.FlipPage( 0, -1, mDisplayField);
-  else
+  } else {
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
+  }
 #endif
 
   return result;

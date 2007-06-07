@@ -838,7 +838,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
 #ifdef HAS_GLX
-    if (!dest)
+    if (dest==NULL)
       {
 	CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
 	CSurface* surface = new CSurface(m_screenSurface);
@@ -865,6 +865,64 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
     (iter->second)->MakeCurrent();
   }
   return true;
+}
+
+void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
+{
+#ifdef HAS_SDL_OPENGL
+  if (ctx)
+  {
+    Lock();
+    CLog::Log(LOGNOTICE, "Releasing context for thread", SDL_ThreadID());
+    ctx->ReleaseContext();
+    Unlock();
+    return;
+  }
+  Lock();
+  map<Uint32, CSurface*>::iterator iter;
+  Uint32 tid = SDL_ThreadID();
+  iter = m_surfaces.find(tid);
+  if (iter==m_surfaces.end()) 
+  {
+    CLog::Log(LOGNOTICE, "Releasing context for thread", tid);
+    m_screenSurface->ReleaseContext();
+    Unlock();
+    return;
+  }
+  CLog::Log(LOGNOTICE, "Releasing context for thread", tid);
+  (iter->second)->ReleaseContext();
+  Unlock();
+#endif
+}
+
+void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
+{
+#ifdef HAS_SDL_OPENGL
+  if (ctx)
+  {
+    Lock();
+    if (!ctx->MakeCurrent())
+      {
+	CLog::Log(LOGERROR, "Error making context current");
+      }
+    Unlock();
+    return;
+  }
+  Lock();
+  map<Uint32, CSurface*>::iterator iter;
+  Uint32 tid = SDL_ThreadID();
+  iter = m_surfaces.find(tid);
+  if (iter==m_surfaces.end()) 
+  {
+    Unlock();
+    return;
+  }
+  if (!(iter->second)->MakeCurrent())
+    {
+	CLog::Log(LOGERROR, "Error making context current");
+    }
+  Unlock();
+#endif
 }
 
 CSurface* CGraphicContext::InitializeSurface()
@@ -916,11 +974,9 @@ void CGraphicContext::BeginPaint(CSurface *dest)
   GLenum errcode;
   if ((errcode=glGetError())!=GL_NO_ERROR) 
   {
-    /*
-    OutputDebugString("OpenGL Error during BeginPaint()");      
-    OutputDebugString((const char*)gluErrorString(errcode));
-    OutputDebugString("\n");
-    */
+    //OutputDebugString("OpenGL Error during BeginPaint()");      
+    //OutputDebugString((const char*)gluErrorString(errcode));
+    //OutputDebugString("\n");
   }
 #endif
 }
