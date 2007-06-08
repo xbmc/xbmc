@@ -181,3 +181,38 @@ void CLog::MemDump(BYTE *pData, int length)
   }
 }
 
+
+void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
+#if defined(HAS_SDL_OPENGL) && defined(_XBMC_DEBUG)
+#define printMatrix(matrix)                                             \
+  {                                                                     \
+    for (int ixx = 0 ; ixx<4 ; ixx++)                                   \
+      {                                                                 \
+        CLog::Log(LOGDEBUG, "% 3.3f % 3.3f % 3.3f % 3.3f ",             \
+                  matrix[ixx*4], matrix[ixx*4+1], matrix[ixx*4+2],      \
+                  matrix[ixx*4+3]);                                     \
+      }                                                                 \
+  } 
+  
+  GLenum err = glGetError();
+  if (err==GL_NO_ERROR)
+    return;
+  CLog::Log(LOGERROR, "GL ERROR: %s\n", gluErrorString(err));
+  if (szfile && szfunction)
+      CLog::Log(LOGERROR, "In file:%s function:%s line:%d", szfile, szfunction, lineno);
+  GLboolean bools[16];
+  GLfloat matrix[16];
+  glGetFloatv(GL_SCISSOR_BOX, matrix);
+  CLog::Log(LOGDEBUG, "Scissor box: %f, %f, %f, %f", matrix[0], matrix[1], matrix[2], matrix[3]);
+  glGetBooleanv(GL_SCISSOR_TEST, bools);
+  CLog::Log(LOGDEBUG, "Scissor test enabled: %d", (int)bools[0]);
+  glGetFloatv(GL_VIEWPORT, matrix);
+  CLog::Log(LOGDEBUG, "Viewport: %f, %f, %f, %f", matrix[0], matrix[1], matrix[2], matrix[3]);
+  glGetFloatv(GL_PROJECTION_MATRIX, matrix);
+  CLog::Log(LOGDEBUG, "Projection Matrix:");
+  printMatrix(matrix);
+  glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+  CLog::Log(LOGDEBUG, "Modelview Matrix:");
+  printMatrix(matrix);
+#endif
+}
