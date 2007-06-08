@@ -752,25 +752,30 @@ void CGUIFontTTF::Begin()
       glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
                    GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
     
+      VerifyGLState();
       m_glTextureLoaded = true;                
     }
   
     // Turn Blending On
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-    glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_ALPHA, GL_MODULATE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_SRC_COLOR);
-    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+    glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+    //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_COLOR); //FIXME
+    //VerifyGLState();    
+    //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_SRC_COLOR); //FIXME
+    //VerifyGLState();    
+    //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR); //FIXME
+    //VerifyGLState();    
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    
     glBindTexture(GL_TEXTURE_2D, m_glTexture);
     glEnable(GL_TEXTURE_2D);
+    VerifyGLState();    
+
     glBegin(GL_QUADS);
 #endif
   }

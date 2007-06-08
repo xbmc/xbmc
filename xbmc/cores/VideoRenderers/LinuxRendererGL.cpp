@@ -54,44 +54,6 @@ YUVCOEF yuv_coef_smtp240m = {
   1.8270f,     0.0f,  
 };
 
-void printMatrix(GLfloat *matrix)
-{
-  for (int i = 0 ; i<4 ; i++) 
-  {
-    for (int j = 0 ; j<4 ; j++) 
-    {
-      fprintf(stderr, "% 3.3f  ", matrix[i*4+j]);
-    }
-    fprintf(stderr, "\n");
-  }
-}
-
-#if 0
-void dumpGLState()
-{
-  GLenum err = glGetError();
-  if (err==GL_NO_ERROR)
-    return;
-  fprintf(stderr, "GL ERROR: %s\n", gluErrorString(err));
-  GLboolean bools[16];
-  GLfloat matrix[16];
-  glGetFloatv(GL_SCISSOR_BOX, matrix);
-  fprintf(stderr, "Scissor box: %f, %f, %f, %f\n", matrix[0], matrix[1], matrix[2], matrix[3]);
-  glGetBooleanv(GL_SCISSOR_TEST, bools);
-  fprintf(stderr, "Scissor test enabled: %d\n", (int)bools[0]);
-  glGetFloatv(GL_VIEWPORT, matrix);
-  fprintf(stderr, "Viewport: %f, %f, %f, %f\n", matrix[0], matrix[1], matrix[2], matrix[3]);
-  glGetFloatv(GL_PROJECTION_MATRIX, matrix);
-  fprintf(stderr, "Projection Matrix:\n");
-  printMatrix(matrix);
-  glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
-  fprintf(stderr, "Modelview Matrix:\n");
-  printMatrix(matrix);
-}
-#else
-void dumpGLState() {}
-#endif
-
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
@@ -245,7 +207,6 @@ void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *sr
 //********************************************************************************************************
 void CLinuxRendererGL::RenderOSD()
 {
-
 
 }
 
@@ -537,7 +498,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ManageDisplay();
   if (!m_pBuffer)
   {
-    m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
+    m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
   }
   CreateYV12Texture(0);
   return true;
@@ -546,7 +507,6 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 int CLinuxRendererGL::NextYV12Texture()
 {
   return 0; //(m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
-
 }
 
 int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
@@ -600,19 +560,19 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   
   g_graphicsContext.BeginPaint(m_pBuffer);
   glEnable(GL_TEXTURE_2D);
-  dumpGLState();
+  VerifyGLState();
   glBindTexture(GL_TEXTURE_2D, fields[0][0]);
-  dumpGLState();
+  VerifyGLState();
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
-  dumpGLState();
+  VerifyGLState();
   glBindTexture(GL_TEXTURE_2D, fields[0][1]);
-  dumpGLState();
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width>>1, im.height>>1, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
-  dumpGLState();
+  VerifyGLState();
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+  VerifyGLState();
   glBindTexture(GL_TEXTURE_2D, fields[0][2]);
-  dumpGLState();
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width>>1, im.height>>1, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
-  dumpGLState();
+  VerifyGLState();
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+  VerifyGLState();
   g_graphicsContext.EndPaint(m_pBuffer);
 }
 
@@ -652,21 +612,18 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 		 m_clearColour&0x00ff0000,
 		 m_clearColour&0x0000ff00,
 		 0);
-    dumpGLState();
     glClear(GL_COLOR_BUFFER_BIT);
-    dumpGLState();
     glClearColor(0,0,0,0);
-    dumpGLState();
     if (alpha<255) 
     {
-#warning Alpha blending current disabled
+#warning Alpha blending currently disabled
       glDisable(GL_BLEND);
     } else {
       glDisable(GL_BLEND);
     }
   }
   Render(flags);
-  dumpGLState();
+  VerifyGLState();
   glEnable(GL_BLEND);
   g_graphicsContext.EndPaint();
 }
@@ -834,7 +791,7 @@ unsigned int CLinuxRendererGL::PreInit()
     }
     glAttachShader(m_shaderProgram, m_fragmentShader);
     glAttachShader(m_shaderProgram, m_vertexShader);
-    dumpGLState();
+    VerifyGLState();
     glLinkProgram(m_shaderProgram);
     glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, params);
     if (params[0]!=GL_TRUE) 
@@ -856,11 +813,11 @@ unsigned int CLinuxRendererGL::PreInit()
       OutputDebugString("\n");
     }
     m_yTex = glGetUniformLocation(m_shaderProgram, "ytex");
-    dumpGLState();
+    VerifyGLState();
     m_uTex = glGetUniformLocation(m_shaderProgram, "utex");
-    dumpGLState();
+    VerifyGLState();
     m_vTex = glGetUniformLocation(m_shaderProgram, "vtex");
-    dumpGLState();
+    VerifyGLState();
     g_graphicsContext.EndPaint(m_pBuffer);
   }
 
@@ -891,7 +848,6 @@ void CLinuxRendererGL::Render(DWORD flags)
 {
 
   RenderLowMem(flags);
-
   glEnable(GL_BLEND);
 
   if( flags & RENDER_FLAG_NOOSD ) return;
@@ -905,9 +861,11 @@ void CLinuxRendererGL::Render(DWORD flags)
     if (g_application.NeedRenderFullScreen())
     { // render our subtitles and osd
       g_application.RenderFullScreen();
+      VerifyGLState();
     }
 
     g_application.RenderMemoryStatus();
+    VerifyGLState();
   }
 }
 
@@ -1052,8 +1010,8 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    dumpGLState();
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    VerifyGLState();
   }
 
   // FIXME: set pixel shader here
@@ -1072,6 +1030,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][2]);
   glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
 
   if (m_shaderProgram)
   {
@@ -1079,6 +1038,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
       glUniform1i(m_yTex, 0);
       glUniform1i(m_uTex, 1);
       glUniform1i(m_vTex, 2);
+      VerifyGLState();
   }
 
   glBegin(GL_QUADS);
@@ -1116,17 +1076,20 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
   glEnd();
+  VerifyGLState();
 
   if (m_shaderProgram)
-      glUseProgram(0);
+  {
+    glUseProgram(0);
+    VerifyGLState();
+  }
 
   glActiveTexture(GL_TEXTURE1);
   glDisable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE2);
   glDisable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0);
-
-  dumpGLState();
+  VerifyGLState();
 
   g_graphicsContext.EndPaint();
 }
@@ -1213,47 +1176,40 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       if (!glIsTexture(fields[f][p])) 
       {
 	glGenTextures(1, &fields[f][p]);
-	dumpGLState();
+	VerifyGLState();
       }
-      dumpGLState();
     }
   }
 
   // Y 
   p = 0;
-  stride = im.stride[p];  
-  //im.plane[p] = (BYTE*)dwTextureSize;
   glBindTexture(GL_TEXTURE_2D, fields[0][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(GL_TEXTURE_2D, fields[1][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(GL_TEXTURE_2D, fields[2][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
-  dumpGLState();
+  VerifyGLState();
 
   // U 
   p = 1;
-  stride = im.stride[p];
-  //im.plane[p] = (BYTE*)dwTextureSize;
   glBindTexture(GL_TEXTURE_2D, fields[0][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(GL_TEXTURE_2D, fields[1][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(GL_TEXTURE_2D, fields[2][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  dumpGLState();
+  VerifyGLState();
 
   // V
   p = 2;
-  stride = im.stride[p];
-  //im.plane[p] = (BYTE*)dwTextureSize;
   glBindTexture(GL_TEXTURE_2D, fields[0][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(GL_TEXTURE_2D, fields[1][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(GL_TEXTURE_2D, fields[2][p]);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  dumpGLState();
+  VerifyGLState();
 
   g_graphicsContext.EndPaint(m_pBuffer);
   return true;
