@@ -51,6 +51,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	  GLX_GREEN_SIZE, m_iGreenSize,
 	  GLX_BLUE_SIZE, m_iBlueSize,
 	  GLX_ALPHA_SIZE, m_iAlphaSize,
+	  GLX_DEPTH_SIZE, 8,
+	  GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
 	  None
       };
 
@@ -61,6 +63,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	  GLX_GREEN_SIZE, m_iGreenSize,
 	  GLX_BLUE_SIZE, m_iBlueSize,
 	  GLX_ALPHA_SIZE, m_iAlphaSize,
+	  GLX_DEPTH_SIZE, 8,
+	  GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
 	  GLX_DOUBLEBUFFER, True,
 	  None
       };
@@ -213,6 +217,8 @@ bool CSurface::MakePBuffer()
 	  GLX_GREEN_SIZE, m_iGreenSize,
 	  GLX_BLUE_SIZE, m_iBlueSize,
 	  GLX_ALPHA_SIZE, m_iAlphaSize,
+	  GLX_DEPTH_SIZE, 8,
+	  GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT,
 	  None
       };
 
@@ -223,6 +229,8 @@ bool CSurface::MakePBuffer()
 	  GLX_GREEN_SIZE, m_iGreenSize,
 	  GLX_BLUE_SIZE, m_iBlueSize,
 	  GLX_ALPHA_SIZE, m_iAlphaSize,
+	  GLX_DEPTH_SIZE, 8,
+	  GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT,
 	  GLX_DOUBLEBUFFER, True,
 	  None
       };
