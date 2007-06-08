@@ -19,6 +19,7 @@ class CCueDocument
     }
     CStdString strArtist;
     CStdString strTitle;
+    CStdString strFile;
     int iTrackNumber;
     int iStartTime;
     int iEndTime;
@@ -34,6 +35,7 @@ public:
   void GetSongs(VECSONGS &songs);
   CStdString GetMediaPath();
   CStdString GetMediaTitle();
+  void GetMediaFiles(vector<CStdString>& mediaFiles);
 
 private:
 
@@ -44,7 +46,6 @@ private:
   // Member variables
   CStdString m_strArtist;  // album artist
   CStdString m_strAlbum;  // album title
-  CStdString m_strFilePath; // path of underlying media
   int m_iTrack;   // current track
   int m_iTotalTracks;  // total tracks
   float m_replayGainAlbumGain;
