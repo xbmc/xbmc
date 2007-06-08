@@ -20,7 +20,7 @@ public:
 
 private:
   void MergeItems(CFileItemList &items);
-  void AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath);
+  static void AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath);
   CStdString ConstructMultiPath(const CFileItemList& items, const vector<int> &stack);
 };
 }
