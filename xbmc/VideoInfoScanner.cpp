@@ -688,11 +688,6 @@ namespace VIDEO
         return lResult;
       strThumb = pItem->GetCachedVideoThumb();
 
-      CStdString strExtension;
-      CUtil::GetExtension(strImage, strExtension);
-      CStdString strTemp = "Z:\\temp";
-      strTemp += strExtension;
-      ::DeleteFile(strTemp.c_str());
       CHTTP http;
       if (pDialog)
       {
@@ -700,41 +695,42 @@ namespace VIDEO
         pDialog->Progress();
       }
 
-      http.Download(strImage, strTemp);
-
-      try
+      string image;
+      if (http.Get(strImage, image))
       {
-        CPicture picture;
-        picture.DoCreateThumbnail(strTemp, strThumb);
-        if (bApplyToDir)
+        try
         {
-          CStdString strCheck=pItem->m_strPath;
-          CStdString strDirectory;
-          if (pItem->IsStack())
-            strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+          CPicture picture;
+          picture.CreateThumbnailFromMemory((const BYTE *)image.c_str(), image.size(), CUtil::GetExtension(strThumb), strThumb);
+          if (bApplyToDir)
+          {
+            CStdString strCheck=pItem->m_strPath;
+            CStdString strDirectory;
+            if (pItem->IsStack())
+              strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
 
-          CUtil::GetDirectory(strCheck,strDirectory);
-          if (CUtil::IsInRAR(strCheck))
-          {
-            CStdString strPath=strDirectory;
-            CUtil::GetParentPath(strPath,strDirectory);
+            CUtil::GetDirectory(strCheck,strDirectory);
+            if (CUtil::IsInRAR(strCheck))
+            {
+              CStdString strPath=strDirectory;
+              CUtil::GetParentPath(strPath,strDirectory);
+            }
+            if (pItem->IsStack())
+            {
+              strCheck = strDirectory;
+              CUtil::RemoveSlashAtEnd(strCheck);
+              if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+                CUtil::GetDirectory(strCheck,strDirectory);
+            }
+            ApplyIMDBThumbToFolder(strDirectory,strThumb);
           }
-          if (pItem->IsStack())
-          {
-            strCheck = strDirectory;
-            CUtil::RemoveSlashAtEnd(strCheck);
-            if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
-              CUtil::GetDirectory(strCheck,strDirectory);
-          }
-          ApplyIMDBThumbToFolder(strDirectory,strThumb);
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
+          ::DeleteFile(strThumb.c_str());
         }
       }
-      catch (...)
-      {
-        CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
-        ::DeleteFile(strThumb.c_str());
-      }
-      ::DeleteFile(strTemp.c_str());
     }
 
     return lResult;
