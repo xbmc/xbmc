@@ -498,7 +498,8 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ManageDisplay();
   if (!m_pBuffer)
   {
-    m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
+    m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
+    //m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
   }
   CreateYV12Texture(0);
   return true;
@@ -729,7 +730,8 @@ unsigned int CLinuxRendererGL::PreInit()
 
   if (!m_pBuffer)
   {
-    m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
+      m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
+      //m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
   }
   if (!m_shaderProgram && glCreateProgram)
   {
