@@ -39,7 +39,6 @@
 
 CCueDocument::CCueDocument(void)
 {
-  m_strFilePath = "";
   m_strArtist = "";
   m_strAlbum = "";
   m_replayGainAlbumPeak = 0.0f;
@@ -60,7 +59,8 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
   CStdString strLine;
   m_iTotalTracks = -1;
-  int iTrackNumber = 0;
+  CStdString strCurrentFile = "";
+  bool bCurrentFileChanged = false;
   int time;
 
   // Run through the .CUE file and extract the tracks...
@@ -79,16 +79,6 @@ bool CCueDocument::Parse(const CStdString &strFile)
       }
       if (m_iTotalTracks > 0)  // Set the end time of the last track
         m_Track[m_iTotalTracks - 1].iEndTime = time;
-      // we have had a TRACK marker since the last INDEX marker, so note it down.
-      if (iTrackNumber > 0)
-      {
-        m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
-        iTrackNumber = 0;
-      }
-      else
-      {
-        m_Track[m_iTotalTracks].iTrackNumber = m_iTotalTracks + 1;
-      }
 
       m_Track[m_iTotalTracks].iStartTime = time; // start time of the next track
     }
@@ -96,8 +86,14 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (m_iTotalTracks == -1) // No tracks yet
         ExtractQuoteInfo(strLine, m_strAlbum);
-      else // New Artist for this track
-        ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strTitle);
+      else if (!ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strTitle))
+      {
+        // lets manage tracks titles without quotes
+        CStdString titleNoQuote = strLine.Mid(5);
+        titleNoQuote.TrimLeft();
+        if (!titleNoQuote.IsEmpty())
+          m_Track[m_iTotalTracks].strTitle = titleNoQuote;
+      }
     }
     else if (strLine.Left(9) == "PERFORMER")
     {
@@ -108,20 +104,32 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (strLine.Left(5) == "TRACK")
     {
-      iTrackNumber = ExtractNumericInfo(strLine.Mid(5));
+      int iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
+ 
       m_iTotalTracks++;
 
       CCueTrack track;
       m_Track.push_back(track);
-      m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
+      m_Track[m_iTotalTracks].strFile = strCurrentFile;
+
+      if (iTrackNumber > 0)
+        m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
+      else
+        m_Track[m_iTotalTracks].iTrackNumber = m_iTotalTracks + 1;
+
+      bCurrentFileChanged = false;
     }
     else if (strLine.Left(4) == "FILE")
     {
-      if (m_iTotalTracks == -1)
-        ExtractQuoteInfo(strLine, m_strFilePath);
-      else if (m_strFilePath.size())
-        return false;                 // means we have more than 1 media file in the .cue
-                                      // we don't currently handle these type of cue sheets.
+      // already a file name? then the time computation will be changed
+      if(strCurrentFile.size() > 0)
+        bCurrentFileChanged = true;
+
+      ExtractQuoteInfo(strLine, strCurrentFile);
+
+      // Resolve absolute paths (if needed).
+      if (strCurrentFile.length() > 0)
+        ResolvePath(strCurrentFile, strFile);
     }
     else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_GAIN")
       m_replayGainAlbumGain = (float)atof(strLine.Mid(26));
@@ -132,9 +140,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     else if (strLine.Left(25) == "REM REPLAYGAIN_TRACK_PEAK" && m_iTotalTracks >= 0)
       m_Track[m_iTotalTracks].replayGainTrackPeak = (float)atof(strLine.Mid(26));
   }
-  // Resolve absolute paths (if needed).
-  if (m_strFilePath.length() > 0)
-    ResolvePath(m_strFilePath, strFile);
+
   // reset track counter to 0, and fill in the last tracks end time
   m_iTrack = 0;
   if (m_iTotalTracks > 0)
@@ -168,7 +174,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       song.strTitle.Format("Track %2d", i + 1);
     else
       song.strTitle = m_Track[i].strTitle;
-    song.strFileName = m_strFilePath;
+    song.strFileName =  m_Track[i].strFile;
     song.iStartOffset = m_Track[i].iStartTime;
     song.iEndOffset = m_Track[i].iEndTime;
     if (song.iEndOffset)
@@ -180,9 +186,14 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   }
 }
 
-CStdString CCueDocument::GetMediaPath()
+void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
 {
-  return m_strFilePath;
+  std::set<CStdString> uniqueFiles;
+  for (int i = 0; i < m_iTotalTracks; i++)
+    uniqueFiles.insert(m_Track[i].strFile);
+
+  for (std::set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+    mediaFiles.push_back(*it);
 }
 
 CStdString CCueDocument::GetMediaTitle()
@@ -205,7 +216,7 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
   {
     // Remove the white space at the beginning of the line.
     pos = m_szBuffer;
-    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\n' || *pos == '\n')) pos++;
+    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')) pos++;
     if (pos)
     {
       szLine = pos;
