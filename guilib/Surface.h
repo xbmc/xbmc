@@ -57,6 +57,9 @@ public:
   bool MakePBuffer();
   bool MakePixmap();
 #endif
+#ifdef HAS_SDL_OPENGL
+  void GetGLVersion(int& maj, int&min);
+#endif
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}

@@ -58,7 +58,7 @@ YUVCOEF yuv_coef_smtp240m = {
 CLinuxRendererGL::CLinuxRendererGL()
 {
   m_pBuffer = NULL;
-
+  m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
   m_iResolution = PAL_4x3;
   for (int i = 0; i < NUM_BUFFERS; i++)
@@ -484,6 +484,44 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
   CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 
+bool CLinuxRendererGL::ValidateRenderTarget()
+{
+  if (!m_pBuffer)
+  {
+    // try pbuffer first
+    m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
+    if (m_pBuffer && !m_pBuffer->IsValid())
+    {
+      delete m_pBuffer;
+      m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
+    }
+  }
+  if (m_pBuffer && m_pBuffer->IsValid())
+  {
+    int maj, min;
+    m_pBuffer->GetGLVersion(maj, min);
+    if (maj<2)
+    {
+      if (!glewIsSupported("GL_ARB_texture_rectangle"))
+      {
+        CLog::Log(LOGERROR, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
+        CLog::Log(LOGERROR, "GL: Currently, rectangle (NPOT) texture support is necessary for video playback");
+        delete m_pBuffer;
+        m_pBuffer = NULL;
+        return false;
+      }
+      CLog::Log(LOGINFO, "GL: Enabling NPOT texture support through GL_ARB_texture_rectangle extension");
+      m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
+      glEnable(GL_TEXTURE_RECTANGLE_ARB);                 
+    } else {
+      CLog::Log(LOGINFO, "GL: OpenGL version 2.x+ detected");
+    }
+  }
+  else {
+    return false;
+  }
+  return true;
+}
 bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
@@ -494,13 +532,12 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(m_fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-
   ManageDisplay();
-  if (!m_pBuffer)
-  {
-    m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
-    //m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
-  }
+
+  // make sure we have a valid context that supports rendering
+  if (!ValidateRenderTarget())
+    return false;
+
   CreateYV12Texture(0);
   return true;
 }
@@ -562,17 +599,17 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   g_graphicsContext.BeginPaint(m_pBuffer);
   glEnable(GL_TEXTURE_2D);
   VerifyGLState();
-  glBindTexture(GL_TEXTURE_2D, fields[0][0]);
+  glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
-  glBindTexture(GL_TEXTURE_2D, fields[0][1]);
+  glBindTexture(m_textureTarget, fields[0][1]);
   VerifyGLState();
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
   VerifyGLState();
-  glBindTexture(GL_TEXTURE_2D, fields[0][2]);
+  glBindTexture(m_textureTarget, fields[0][2]);
   VerifyGLState();
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
   VerifyGLState();
   g_graphicsContext.EndPaint(m_pBuffer);
 }
@@ -726,13 +763,11 @@ unsigned int CLinuxRendererGL::PreInit()
 
   // setup the background colour
   m_clearColour = 0 ;;// (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-  // low memory pixel shader
 
-  if (!m_pBuffer)
-  {
-      m_pBuffer = new CSurface(512, 512, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
-      //m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
-  }
+  // make sure we have a valid context that supports rendering
+  if (!ValidateRenderTarget())
+    return false;
+
   if (!m_shaderProgram && glCreateProgram)
   {
 
@@ -1004,14 +1039,14 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 
   g_graphicsContext.BeginPaint();
 
-  glEnable(GL_TEXTURE_2D);
+  glEnable(m_textureTarget);
   for (int i = 0; i < 3; ++i)
   {
-    glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][i]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][i]);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     VerifyGLState();
   }
@@ -1024,13 +1059,13 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 #define CHROMAOFFSET_HORIZ 0.25f
 
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][0]);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
   glActiveTexture(GL_TEXTURE1);
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][1]);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
   glActiveTexture(GL_TEXTURE2);
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, m_YUVTexture[index][FIELD_FULL][2]);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
@@ -1045,39 +1080,81 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 
   glBegin(GL_QUADS);
   
-  glMultiTexCoord2f(GL_TEXTURE0, 0, 0); //(float)rs.left, (float)rs.top );
-  if (m_shaderProgram)
+  if (m_textureTarget==GL_TEXTURE_2D)
   {
-      glMultiTexCoord2f(GL_TEXTURE1, 0, 0); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
-      glMultiTexCoord2f(GL_TEXTURE2, 0, 0); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-  }
-  glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    // Use OpenGL 2.0 supported NPOT textures (regulard normalized texture coordinates)
 
-  glMultiTexCoord2f(GL_TEXTURE0, 1, 0); //(float)rs.right, (float)rs.top );
-  if (m_shaderProgram)
-  {
-      glMultiTexCoord2f(GL_TEXTURE1, 1, 0); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-      glMultiTexCoord2f(GL_TEXTURE2, 1, 0); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-  }
-  glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
-  
-  glMultiTexCoord2f(GL_TEXTURE0, 1, 1); //(float)rs.right, (float)rs.bottom );
-  if (m_shaderProgram)
-  {
-      glMultiTexCoord2f(GL_TEXTURE1, 1, 1); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-      glMultiTexCoord2f(GL_TEXTURE2, 1, 1); //(float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  }
-  glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
+        glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
+      }
+    glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    
+    glMultiTexCoord2f(GL_TEXTURE0, 1, 0);
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, 1, 0);
+        glMultiTexCoord2f(GL_TEXTURE2, 1, 0);
+      }
+    glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, 1, 1);
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, 1, 1);
+        glMultiTexCoord2f(GL_TEXTURE2, 1, 1);
+      }
+    glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, 0, 1);
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, 0, 1);
+        glMultiTexCoord2f(GL_TEXTURE2, 0, 1);
+      }
+    glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 0, 1); //(float)rs.left, (float)rs.bottom );
-  if (m_shaderProgram)
-  {
-      glMultiTexCoord2f(GL_TEXTURE1, 0, 1); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-      glMultiTexCoord2f(GL_TEXTURE2, 0, 1); //(float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  }
-  glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+  }  else {
 
+    // Use supported rectangle texture extension (texture coordinates)
+    // are not normalized
+
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.top );
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
+        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+      }
+    glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.top );
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+      }
+    glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+      }
+    glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
+    if (m_shaderProgram)
+      {
+        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+      }
+    glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+  }
   glEnd();
+
   VerifyGLState();
 
   if (m_shaderProgram)
@@ -1087,9 +1164,9 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   }
 
   glActiveTexture(GL_TEXTURE1);
-  glDisable(GL_TEXTURE_2D);
+  glDisable(m_textureTarget);
   glActiveTexture(GL_TEXTURE2);
-  glDisable(GL_TEXTURE_2D);
+  glDisable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
@@ -1172,7 +1249,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 
   g_graphicsContext.BeginPaint(m_pBuffer);
 
-  glEnable(GL_TEXTURE_2D);
+  glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++) {
     for(p = 0;p<MAX_PLANES;p++) {
       if (!glIsTexture(fields[f][p])) 
@@ -1185,32 +1262,32 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 
   // Y 
   p = 0;
-  glBindTexture(GL_TEXTURE_2D, fields[0][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, fields[1][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, fields[2][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
+  glBindTexture(m_textureTarget, fields[0][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[1][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[2][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
   VerifyGLState();
 
   // U 
   p = 1;
-  glBindTexture(GL_TEXTURE_2D, fields[0][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, fields[1][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, fields[2][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[0][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[1][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[2][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   VerifyGLState();
 
   // V
   p = 2;
-  glBindTexture(GL_TEXTURE_2D, fields[0][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, fields[1][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, fields[2][p]);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[0][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[1][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, fields[2][p]);
+  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   VerifyGLState();
 
   g_graphicsContext.EndPaint(m_pBuffer);

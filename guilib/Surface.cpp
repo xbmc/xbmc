@@ -263,6 +263,7 @@ bool CSurface::MakePBuffer()
     }
     if (glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext))
     {
+      glewInit();
       m_bOK = status = true;      
     } else {
       CLog::Log(LOGINFO, "GLX Error: Could not make PBuffer current");
@@ -292,7 +293,7 @@ CSurface::~CSurface()
   if (m_glPBuffer) {
     glXDestroyPbuffer(s_dpy, m_glPBuffer);
   }
-  if (m_glWindow) {
+  if (m_glWindow && !IsShared()) {
     glXDestroyWindow(s_dpy, m_glWindow);
   }
 #else
@@ -323,7 +324,7 @@ bool CSurface::MakeCurrent()
 #ifdef HAS_GLX
   if (m_glWindow)
     return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
-  if (m_glPBuffer)
+  else if (m_glPBuffer)
     return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
 #endif
 }
@@ -333,7 +334,15 @@ void CSurface::ReleaseContext()
 #ifdef HAS_GLX
   if (m_glWindow)
     glXMakeContextCurrent(s_dpy, None, None, NULL);
-  if (m_glPBuffer)
+  else if (m_glPBuffer)
     glXMakeContextCurrent(s_dpy, None, None, NULL);
 #endif
 }
+
+#ifdef HAS_SDL_OPENGL
+void CSurface::GetGLVersion(int& maj, int& min)
+{
+  const char* ver = (const char*)glGetString(GL_VERSION);
+  sscanf(ver, "%d.%d", &maj, &min);
+}
+#endif
