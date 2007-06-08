@@ -873,7 +873,6 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
   if (ctx)
   {
     Lock();
-    CLog::Log(LOGNOTICE, "Releasing context for thread", SDL_ThreadID());
     ctx->ReleaseContext();
     Unlock();
     return;
@@ -884,12 +883,10 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) 
   {
-    CLog::Log(LOGNOTICE, "Releasing context for thread", tid);
     m_screenSurface->ReleaseContext();
     Unlock();
     return;
   }
-  CLog::Log(LOGNOTICE, "Releasing context for thread", tid);
   (iter->second)->ReleaseContext();
   Unlock();
 #endif

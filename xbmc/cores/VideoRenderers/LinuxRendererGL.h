@@ -138,6 +138,7 @@ protected:
   bool CreateYV12Texture(int index);
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
+  bool ValidateRenderTarget();
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
@@ -156,6 +157,7 @@ protected:
   unsigned int m_iSourceHeight;   // height
 
   bool m_bConfigured;
+  GLenum m_textureTarget;
 
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
