@@ -573,7 +573,7 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   CHTTP http;
   http.SetReferer(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_spoof);
   string thumbData;
-  if (http.Get(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, thumbData));
+  if (http.Get(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, thumbData))
   {
     try
     {
