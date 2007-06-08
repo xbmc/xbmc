@@ -571,22 +571,19 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
     return false;
 
   CHTTP http;
-  // replace m.jpg with f.jpg for the full image
-  CStdString url = m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url;
   http.SetReferer(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_spoof);
   string thumbData;
-  if (!http.Get(url, thumbData))  // why 2 attempts here for the same download??
-    http.Get(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, thumbData);
-
-  try
+  if (http.Get(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, thumbData));
   {
-    CPicture picture;
-    picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url), thumb);
-  }
-  catch (...)
-  {
-    OutputDebugString("...\n");
-    ::DeleteFile(thumb.c_str());
+    try
+    {
+      CPicture picture;
+      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url), thumb);
+    }
+    catch (...)
+    {
+      ::DeleteFile(thumb.c_str());
+    }
   }
   return true;
 }
