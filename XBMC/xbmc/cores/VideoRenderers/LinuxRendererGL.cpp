@@ -635,6 +635,7 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  CLog::Log(LOGNOTICE, "Calling RenderUpdate");
   //if (!m_YUVTexture[m_iYV12RenderBuffer][FIELD_FULL][0]) return ;
   if (!m_YUVTexture[0][FIELD_FULL][0]) return ;
 
@@ -668,7 +669,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGL::FlipPage(int source)
 {  
-  CLog::Log(LOGNOTICE, "Calling RenderUpdate");
+  CLog::Log(LOGNOTICE, "Calling FlipPage");
   //if( source >= 0 && source < m_NumYV12Buffers )
   m_iYV12RenderBuffer = source;
   //else
@@ -1073,33 +1074,26 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 
   g_graphicsContext.BeginPaint();
 
-  glEnable(m_textureTarget);
-  for (int i = 0; i < 3; ++i)
-  {
-    glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][i]);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    VerifyGLState();
-  }
-
-  // FIXME: set pixel shader here
   glDisable(GL_DEPTH_TEST);
-
 
   //See RGB renderer for comment on this
 #define CHROMAOFFSET_HORIZ 0.25f
 
+  // Y
+  glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+
+  // U
   glActiveTexture(GL_TEXTURE1);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+
+  // V
   glActiveTexture(GL_TEXTURE2);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
@@ -1301,10 +1295,29 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   p = 0;
   glBindTexture(m_textureTarget, fields[0][0]);
   glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  VerifyGLState();
+
   glBindTexture(m_textureTarget, fields[0][1]);
   glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  VerifyGLState();
+
   glBindTexture(m_textureTarget, fields[0][2]);
   glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   VerifyGLState();
 
   g_graphicsContext.EndPaint(m_pBuffer);
