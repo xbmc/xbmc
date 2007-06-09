@@ -1160,6 +1160,7 @@ void CGLTexture::LoadToGPU()
  
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
                GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
+  VerifyGLState();
 
   g_graphicsContext.EndPaint();
   delete [] m_pixels;

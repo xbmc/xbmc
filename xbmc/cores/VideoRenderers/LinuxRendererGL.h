@@ -7,7 +7,7 @@ using namespace Surface;
 #define NUM_BUFFERS 3
 
 #define MAX_PLANES 3
-#define MAX_FIELDS 3
+#define MAX_FIELDS 1 // ONLY FULL FIELD FOR NOW
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))

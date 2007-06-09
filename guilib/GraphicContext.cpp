@@ -206,6 +206,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport[2] = newRight - newLeft;
   newviewport[3] = newBottom - newTop;
   glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
+  VerifyGLState();
 #endif
 
   m_viewStack.push(oldviewport);
@@ -226,6 +227,7 @@ void CGraphicContext::RestoreViewPort()
   GLVALIDATE;
   GLint* oldviewport = (GLint*)m_viewStack.top();
   glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
+  VerifyGLState();
 #endif  
 
   m_viewStack.pop();
@@ -533,6 +535,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glEnable(GL_BLEND);          // Turn Blending On
     glDisable(GL_DEPTH_TEST);
+    VerifyGLState();
 #endif
 
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
@@ -969,6 +972,7 @@ void CGraphicContext::BeginPaint(CSurface *dest)
   Lock();
   ValidateSurface(dest);
   GLenum errcode;
+  VerifyGLState();
   if ((errcode=glGetError())!=GL_NO_ERROR) 
   {
     //OutputDebugString("OpenGL Error during BeginPaint()");      
@@ -983,6 +987,7 @@ void CGraphicContext::EndPaint(CSurface *dest)
 #ifdef HAS_SDL_OPENGL
   Unlock();
   GLenum errcode;
+  VerifyGLState();
   if ((errcode=glGetError())!=GL_NO_ERROR) 
   {
     /*
