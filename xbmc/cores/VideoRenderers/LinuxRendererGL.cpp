@@ -768,6 +768,7 @@ unsigned int CLinuxRendererGL::PreInit()
   if (!ValidateRenderTarget())
     return false;
 
+
   if (!m_shaderProgram && glCreateProgram)
   {
 
@@ -798,13 +799,36 @@ unsigned int CLinuxRendererGL::PreInit()
       "gl_FragColor = vec4(r, g, b, 1.0);"
       "}";
 
+    const char* shaderfrect = 
+      "uniform sampler2DRect ytex;"
+      "uniform sampler2DRect utex;"
+      "uniform sampler2DRect vtex;"
+      "void main()"
+      "{"
+      "float y = texture2DRect(ytex, gl_TexCoord[0].xy).r ;"
+      "float u = texture2DRect(utex, gl_TexCoord[1].xy).r ;"
+      "float v = texture2DRect(vtex, gl_TexCoord[2].xy).r ;"
+      "y = 1.1643*(y-0.0625);"
+      "u = u - 0.5;"
+      "v = v - 0.5;"
+      "float r = clamp(y+1.5958*v, 0.0, 1.0);"
+      "float g = clamp(y-0.39173*u-0.81290*v, 0.0, 1.0);"
+      "float b = clamp(y+2.017*u, 0.0, 1.0);"
+      "gl_FragColor = vec4(r, g, b, 1.0);"
+      "}";
+
     GLint params[4]; 
 
     g_graphicsContext.BeginPaint(m_pBuffer);
     m_shaderProgram = glCreateProgram();
     m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(m_fragmentShader, 1, &shaderf, 0);
+    if (m_textureTarget==GL_TEXTURE_2D)
+    {
+      glShaderSource(m_fragmentShader, 1, &shaderf, 0);
+    } else {
+      glShaderSource(m_fragmentShader, 1, &shaderfrect, 0);
+    }
     glShaderSource(m_vertexShader, 1, &shaderv, 0);
     glCompileShader(m_fragmentShader);
     glCompileShader(m_vertexShader);
@@ -874,11 +898,21 @@ void CLinuxRendererGL::UnInit()
   
   if (m_shaderProgram)
   {
+    glDeleteShader(m_vertexShader);
     glDeleteShader(m_fragmentShader);
     glDeleteProgram(m_shaderProgram);
     m_fragmentShader = 0;
+    m_vertexShader = 0;
     m_shaderProgram = 0;
+    m_yTex = 0;
+    m_uTex = 0;
+    m_vTex = 0;
   }
+  if (m_pBuffer)
+  {
+    delete m_pBuffer;
+    m_pBuffer = 0;
+  } 
 }
 
 void CLinuxRendererGL::Render(DWORD flags)
@@ -1072,8 +1106,11 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   if (m_shaderProgram)
   {
       glUseProgram(m_shaderProgram);
+      VerifyGLState();
       glUniform1i(m_yTex, 0);
+      VerifyGLState();
       glUniform1i(m_uTex, 1);
+      VerifyGLState();
       glUniform1i(m_vTex, 2);
       VerifyGLState();
   }
@@ -1260,34 +1297,14 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
     }
   }
 
-  // Y 
+  // YUV 
   p = 0;
-  glBindTexture(m_textureTarget, fields[0][p]);
+  glBindTexture(m_textureTarget, fields[0][0]);
   glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(m_textureTarget, fields[1][p]);
+  glBindTexture(m_textureTarget, fields[0][1]);
   glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(m_textureTarget, fields[2][p]);
+  glBindTexture(m_textureTarget, fields[0][2]);
   glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
-  VerifyGLState();
-
-  // U 
-  p = 1;
-  glBindTexture(m_textureTarget, fields[0][p]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(m_textureTarget, fields[1][p]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(m_textureTarget, fields[2][p]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  VerifyGLState();
-
-  // V
-  p = 2;
-  glBindTexture(m_textureTarget, fields[0][p]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(m_textureTarget, fields[1][p]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(m_textureTarget, fields[2][p]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/4, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
   VerifyGLState();
 
   g_graphicsContext.EndPaint(m_pBuffer);
