@@ -1,5 +1,4 @@
 <scraper name="allocine.fr" content="movies" thumb="allocine.jpg">
-
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://www.allocine.fr/film/fichefilm_gen_cfilm=\1.html"  dest="3">
 			<expression noclean="1">allocine\.fr/film/fichefilm_gen_cfilm=([0-9]*)\.html</expression>
@@ -43,6 +42,10 @@
      		<RegExp input="$$1" output="&lt;url function=&quot;Thumbnail&quot;&gt;http://www.allocine.fr/film/galerie_gen_cfilm=\1&amp;amp;filtre=&amp;amp;page=1.html&lt;/url&gt;" dest="5+">
         		<expression noclean="1">galerievignette_gen_cfilm=([0-9]*)</expression>
       		</RegExp>
+			<!--Thumbnail Film-->
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression>&quot;([^&quot;]*)&quot; border=&quot;0&quot; alt=&quot;&quot; class=&quot;affichette</expression>
+			</RegExp>
 			<!--Year Film-->
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
 				<expression>&gt;Année de production : ([^&lt;]*)&lt;</expression>
@@ -63,10 +66,6 @@
 			<RegExp input="$$1" output="&lt;runtime&gt;Format : \1&lt;/runtime&gt;" dest="5+">
 				<expression>Format : ([^.]*)</expression>
 			</RegExp>
-			<!--Thumbnail Film-->
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
-				<expression>&quot;([^&quot;]*)&quot; border=&quot;0&quot; alt=&quot;&quot; class=&quot;affichette</expression>
-            </RegExp>
 			<!--Thumbnail Serie-->
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
 				<expression>&lt;img src=&quot;([^&quot;]*)&quot; style=&quot;border: solid 1 black;&quot; width=&quot;250&quot; /&gt;</expression>
@@ -80,7 +79,7 @@
 			</RegExp>
 			<!--Genre Film-->
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression noclean="1">Genre :([^(]*)Durée :</expression>
+				<expression noclean="1">Genre :([^:]*):</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<RegExp input="$$7" output=" / \1" dest="6">
@@ -105,14 +104,8 @@
 				<expression>Saisons : ([0-9]*)[^-]*- Episodes : ([0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-            <!--EpisodeGuide-->
-			<RegExp input="$$1" output="&lt;episodeguide&gt;http://www.allocine.fr/series/episodes_gen_cserie=\1.html&lt;/episodeguide&gt;" dest="5+">
-				<expression>episodes_gen_cserie=([0-9]*).html</expression>
-			</RegExp>
 		</RegExp>
 	</GetDetails>
-
-
 
 	<FILM dest="5">
 		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
@@ -146,12 +139,9 @@
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;/actor&gt;" dest="3+">
 				<expression repeat="yes" noclean="1,2">&lt;h5&gt;&lt;img[^&gt;]*&gt;([^&lt;]*)&lt;/h5*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp> 
-
-
       			<expression noclean="1"></expression>
     		</RegExp>
   	</SERIE>
-
 
 	<Tagline dest="5">
 		<RegExp input="$$3" output="&lt;details&gt;&lt;tagline&gt;\1&lt;/tagline&gt;&lt;/details&gt;" dest="5">
@@ -173,68 +163,4 @@
 			<expression></expression>
 		</RegExp>
   	</Thumbnail>
-
-
-	<!-- 	input: $1=html  !-->
-	<!--    input: $2=series url !-->
-	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->
-	<GetEpisodeList dest="3">
- 	  <RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
- 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://tvdb.zsori.com/interfaces/EpisodeUpdates.php?idlist=\1&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
- 			<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeasonNumber&gt;([0-9]*)&lt;/SeasonNumber&gt;[^&lt;]*&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;[^&lt;]*&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
- 		</RegExp>
- 	    <expression noclean="1"></expression>
- 	  </RegExp>
-	</GetEpisodeList>
-
-	<!-- 	input: $1=html -->
-	<!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
-	<GetEpisodeDetails dest="3">
-		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
-				<expression>&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">&lt;Writer&gt;([^&lt;]*)&lt;/Writer&gt;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
-				<expression repeat="yes">\|?([^\|]*)\|</expression>
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">&lt;Director&gt;([^&lt;]*)&lt;/Director&gt;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
-				<expression repeat="yes">\|?([^\|]*)\|</expression>
-			</RegExp>
-			<RegExp input="$$5" output="\1" dest="6">
-				<expression noclean="1">&lt;GuestStars&gt;([^&lt;]*)&lt;/GuestStars&gt;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
-				<expression repeat="yes">\|?([^\|]*)\|?</expression>
-			</RegExp>
-                        <RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
- 				<expression>&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
-			</RegExp>
-                        <RegExp input="$$1" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
- 				<expression>&lt;SeasonNumber&gt;([^&lt;]*)&lt;/SeasonNumber&gt;</expression>
-			</RegExp>
-                        <RegExp input="$$1" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
- 				<expression>&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetEpisodeDetails>
-
-
-
-
-
-
-
-
-
-
-
-
-
 </scraper>
