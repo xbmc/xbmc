@@ -91,6 +91,10 @@ CLinuxRendererGL::~CLinuxRendererGL()
     //CloseHandle(m_eventTexturesDone[i]);
     //CloseHandle(m_eventOSDDone[i]);
   }
+  if (m_pBuffer)
+  {
+    delete m_pBuffer;
+  }
 }
 
 //********************************************************************************************************
@@ -881,6 +885,8 @@ unsigned int CLinuxRendererGL::PreInit()
     m_vTex = glGetUniformLocation(m_shaderProgram, "vtex");
     VerifyGLState();
     g_graphicsContext.EndPaint(m_pBuffer);
+  } else {
+    CLog::Log(LOGNOTICE, "GL: Could not create shader since glCreateProgram not present");
   }
 
   return 0;
@@ -1083,30 +1089,31 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // U
-  glActiveTexture(GL_TEXTURE1);
-  glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
-
-  // V
-  glActiveTexture(GL_TEXTURE2);
-  glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
-
-  glActiveTexture(GL_TEXTURE0);
-  VerifyGLState();
-
   if (m_shaderProgram)
   {
-      glUseProgram(m_shaderProgram);
-      VerifyGLState();
-      glUniform1i(m_yTex, 0);
-      VerifyGLState();
-      glUniform1i(m_uTex, 1);
-      VerifyGLState();
-      glUniform1i(m_vTex, 2);
-      VerifyGLState();
+    glActiveTexture(GL_TEXTURE1);
+    glEnable(m_textureTarget);
+    glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+    
+    // V
+    glActiveTexture(GL_TEXTURE2);
+    glEnable(m_textureTarget);
+    glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+    
+    glActiveTexture(GL_TEXTURE0);
+    VerifyGLState();
+    
+    glUseProgram(m_shaderProgram);
+    VerifyGLState();
+    glUniform1i(m_yTex, 0);
+    VerifyGLState();
+    glUniform1i(m_uTex, 1);
+    VerifyGLState();
+    glUniform1i(m_vTex, 2);
+    VerifyGLState();
   }
 
   glBegin(GL_QUADS);
@@ -1192,12 +1199,11 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   {
     glUseProgram(0);
     VerifyGLState();
+    glActiveTexture(GL_TEXTURE1);
+    glDisable(m_textureTarget);
+    glActiveTexture(GL_TEXTURE2);
+    glDisable(m_textureTarget);
   }
-
-  glActiveTexture(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE2);
-  glDisable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
@@ -1299,7 +1305,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   VerifyGLState();
 
   glBindTexture(m_textureTarget, fields[0][1]);
