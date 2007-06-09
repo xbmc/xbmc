@@ -36,6 +36,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
 #ifdef HAS_GLX
   m_glWindow = 0;
+  m_parentWindow = 0;
   m_glContext = 0;
   m_glPBuffer = 0;
   m_glPixmap = 0;
@@ -132,7 +133,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
       SDL_VERSION(&info.version);
       SDL_GetWMInfo(&info);
-      p = info.info.x11.window;
+      m_parentWindow = p = info.info.x11.window;
       CLog::Log(LOGINFO, "GLX Info: Using parent window");
     } else  {
       p = RootWindow(s_dpy, vInfo->screen);
@@ -336,6 +337,30 @@ void CSurface::ReleaseContext()
     glXMakeContextCurrent(s_dpy, None, None, NULL);
   else if (m_glPBuffer)
     glXMakeContextCurrent(s_dpy, None, None, NULL);
+#endif
+}
+
+bool CSurface::ResizeSurface(int newWidth, int newHeight)
+{
+#ifdef HAS_GLX
+  if (m_parentWindow)
+  {
+    XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
+    glXWaitX();
+    /*
+    XSizeHints *hints = NULL;
+    hints = XAllocSizeHints();
+    if (hints)
+    {
+      hints->min_width = hints->width = hints->max_width = hints->base_width = newWidth;
+      hints->min_height = hints->height = hints->max_height = hints->base_height = newHeight;
+      hints->flags = PMaxSize | USSize | PMinSize;
+      XSetWMNormalHints(s_dpy, m_parentWindow, hints);
+      XFree(hints);
+      glXWaitX();
+    }
+    */
+  }
 #endif
 }
 

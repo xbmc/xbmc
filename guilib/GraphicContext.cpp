@@ -502,16 +502,25 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
     //m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
-    m_surfaces[SDL_ThreadID()] = m_screenSurface;
     int options = 0;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
 
     // Create a bare root window so that SDL Input handling works
 #ifdef HAS_GLX
-    SDL_Surface* rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+    static SDL_Surface* rootWindow = NULL;
+    if (!rootWindow) 
+    {
+      rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+      // attach a GLX surface to the root window
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow);
+    } else {
+      // FIXME: this doesn't work :(
+      m_screenSurface->ReleaseContext();
+      rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+      m_screenSurface->MakeCurrent();
+    }
 
-    // attach a GLX surface to the root window
-    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow);
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
 #endif

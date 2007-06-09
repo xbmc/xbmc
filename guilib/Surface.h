@@ -49,6 +49,7 @@ public:
   void Flip();
   bool MakeCurrent();
   void ReleaseContext();
+  bool ResizeSurface(int newWidth, int newHeight);
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
@@ -78,6 +79,7 @@ public:
 #ifdef HAS_GLX
   GLXContext m_glContext;
   GLXWindow  m_glWindow;
+  Window  m_parentWindow;
   GLXPixmap  m_glPixmap;
   GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
