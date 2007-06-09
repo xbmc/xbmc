@@ -288,6 +288,7 @@ public:
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     CStdString m_strMusicLibraryAlbumFormat;
     CStdString m_strMusicLibraryAlbumFormatRight;
+    bool m_prioritiseAPEv2tags;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;

@@ -89,7 +89,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     // Check for an APEv2 tag
     CAPEv2Tag apeTag;
-    if (apeTag.ReadTag(strFileName.c_str()))
+    if (g_advancedSettings.m_prioritiseAPEv2tags && apeTag.ReadTag(strFileName.c_str()))
     { // found - let's copy over the additional info (if any)
       if (apeTag.GetArtist().size())
       {
