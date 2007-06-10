@@ -478,7 +478,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
   }
 }
 
-void CCharsetConverter::utf16LEtoW(const CStdStringA& strSource, CStdStringW &strDest)
+void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
 {
   if (m_iconvUtf16LEtoW == (iconv_t) - 1)
 #ifndef _LINUX
@@ -489,14 +489,19 @@ void CCharsetConverter::utf16LEtoW(const CStdStringA& strSource, CStdStringW &st
 
   if (m_iconvUtf16LEtoW != (iconv_t) - 1)
   {
-    const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
+    size_t inBytes = 2;
+    short* s = (short*) strSource;
+    while (*s != 0)
+    {
+      s++;
+      inBytes += 2;
+    }
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = (char*) strDest.GetBuffer(outBytes);
 #ifdef _LINUX
-    if (iconv(m_iconvUtf16LEtoW, (char**)&src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvUtf16LEtoW, (char**)&strSource, &inBytes, &dst, &outBytes))
 #else
-    if (iconv(m_iconvUtf16LEtoW, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes))
 #endif
     { // failed :(
       strDest.ReleaseBuffer();
