@@ -125,7 +125,8 @@ void CGUIFontTTF::ClearCharacterCache()
 
   if (m_glTextureLoaded)
   {
-    glDeleteTextures(1, &m_glTexture);
+    if (glIsTexture(m_glTexture))
+      glDeleteTextures(1, &m_glTexture);
     m_glTextureLoaded = false;
   }
 #endif
@@ -672,7 +673,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     // the Begin(); End(); stuff is handled by whoever called us
     if (m_glTextureLoaded)
     {
-      glDeleteTextures(1, &m_glTexture);
+      if (glIsTexture(m_glTexture))
+	glDeleteTextures(1, &m_glTexture);
       m_glTextureLoaded = false;
     }        
 #else
