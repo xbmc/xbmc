@@ -208,10 +208,12 @@ int cache_fill(cache_vars_t* s){
   }
 #ifdef _XBOX
   int fill = 100*(s->max_filepos-s->read_filepos)/s->buffer_size;
-  if(s->eof || cache_fill_status >= 0)
-    cache_fill_status=fill; //Report full buffer all the time
+  if(s->eof)
+    cache_fill_status=100*(s->buffer_size-s->back_size)/s->buffer_size; //Report full buffer all the time
+  else if(cache_fill_status == 0)
+    cache_fill_status= fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
   else
-    cache_fill_status=fill > 5 ? fill : 0; //Only begin with atleast 5 percent in cache
+    cache_fill_status= fill;
 #endif
   return len;
   
@@ -394,6 +396,14 @@ int cache_stream_seek_long(stream_t *stream,off_t pos){
   mp_msg(MSGT_CACHE,MSGL_DBG2,"CACHE2_SEEK: 0x%"PRIX64" <= 0x%"PRIX64" (0x%"PRIX64") <= 0x%"PRIX64"  \n",s->min_filepos,pos,s->read_filepos,s->max_filepos);
 
   newpos=pos/s->sector_size; newpos*=s->sector_size; // align
+#ifdef _XBOX
+  if(newpos < s->min_filepos || newpos > s->max_filepos){
+    // this will most likely require a seek, fail here, instead of during fill if underlying
+    // stream can seek.
+    if(!(s->stream->flags & STREAM_SEEK))
+      return 0;
+  }
+#endif
   stream->pos=s->read_filepos=newpos;
   s->eof=0; // !!!!!!!
 

@@ -243,38 +243,36 @@ inline static off_t stream_tell(stream_t *s){
   return s->pos+s->buf_pos-s->buf_len;
 }
 
-inline static int stream_seek(stream_t *s,off_t pos){
+inline static int stream_skip(stream_t *s,off_t len){
 
-  mp_dbg(MSGT_DEMUX, MSGL_DBG3, "seek to 0x%qX\n",(long long)pos);
-
-  if(pos<s->pos){
-    off_t x=pos-(s->pos-s->buf_len);
+  if(s->buf_pos+len < s->buf_len) { //internal buffer skip
+    off_t x=s->buf_pos+len;
     if(x>=0){
       s->buf_pos=x;
-//      putchar('*');fflush(stdout);
       return 1;
     }
   }
   
-  return cache_stream_seek_long(s,pos);
+  if(len>0 && len<2*STREAM_BUFFER_SIZE){ //read linearly
+    while(len>0){
+      int x=s->buf_len-s->buf_pos;
+      if(x==0){
+        if(!cache_stream_fill_buffer(s)) return 0; // EOF
+        x=s->buf_len-s->buf_pos;
+      }
+      if(x>len) x=len;
+      s->buf_pos+=x; len-=x;
+    }
+    return 1;
+  }
+
+  return cache_stream_seek_long(s,len+stream_tell(s));
 }
 
-inline static int stream_skip(stream_t *s,off_t len){
-  if( (len<0 && (s->flags & STREAM_SEEK_BW)) || (len>2*STREAM_BUFFER_SIZE && (s->flags & STREAM_SEEK_FW)) ) {
-    // negative or big skip!
-    return stream_seek(s,stream_tell(s)+len);
-  }
-  while(len>0){
-    int x=s->buf_len-s->buf_pos;
-    if(x==0){
-      if(!cache_stream_fill_buffer(s)) return 0; // EOF
-      x=s->buf_len-s->buf_pos;
-    }
-    if(x>len) x=len;
-    //memcpy(mem,&s->buf[s->buf_pos],x);
-    s->buf_pos+=x; len-=x;
-  }
-  return 1;
+inline static int stream_seek(stream_t *s,off_t pos){
+
+  mp_dbg(MSGT_DEMUX, MSGL_DBG3, "seek to 0x%qX\n",(long long)pos);  
+  return stream_skip(s, pos-stream_tell(s));
 }
 
 void stream_reset(stream_t *s);
