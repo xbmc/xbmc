@@ -1255,7 +1255,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   }
 
   glActiveTexture(GL_TEXTURE0);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glDisable(m_textureTarget);
   VerifyGLState();
   g_graphicsContext.EndPaint();
 }
