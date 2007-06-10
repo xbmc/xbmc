@@ -146,16 +146,14 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
       iOffset += 10;
 
       // TODO: UTF-8 Do we need to "fixString" these strings at all?
-      CStdString utf16String((char*) (pData.get() + iOffset));
       CStdString utf8String = "";
       CStdStringW wString = "";
-      g_charsetConverter.utf16LEtoW(utf16String, wString);
+      g_charsetConverter.utf16LEtoW((const char*) (pData.get() + iOffset), wString);
       g_charsetConverter.wToUTF8(wString, utf8String);
       tag.SetTitle(utf8String);
 
       utf8String = "";
-      utf16String = (char*) (pData.get() + iOffset + nTitleSize);
-      g_charsetConverter.utf16LEtoW(utf16String, wString);
+      g_charsetConverter.utf16LEtoW((char*) (pData.get() + iOffset + nTitleSize), wString);
       g_charsetConverter.wToUTF8(wString, utf8String);
       tag.SetArtist(utf8String);
 
@@ -233,10 +231,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         iOffset += 2;
 
         // Get frame name
-        CStdString utf16String((char*)(pData.get() + iOffset));
         CStdString strFrameName = "";
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoW(utf16String, wString);
+        g_charsetConverter.utf16LEtoW((char*)(pData.get() + iOffset), wString);
         g_charsetConverter.wToUTF8(wString, strFrameName);
         //CStdString strFrameName((LPWSTR)(pData.get() + iOffset));
         iOffset += iFrameNameSize;
@@ -255,10 +252,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         {
           //LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
-          CStdString utf16String((char*)(pData.get() + iOffset));
           CStdString utf8String = "";
           CStdStringW wString = "";
-          g_charsetConverter.utf16LEtoW(utf16String, wString);
+          g_charsetConverter.utf16LEtoW((char*)(pData.get() + iOffset), wString);
           g_charsetConverter.wToUTF8(wString, utf8String);
                 
           SetTagValueString(strFrameName, utf8String, tag);
@@ -322,10 +318,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         iOffset += 4;
 
         // Get frame name
-        CStdString utf16String((char*)(pData.get() + iOffset));
         CStdString strFrameName = "";
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoW(utf16String, wString);
+        g_charsetConverter.utf16LEtoW((char*)(pData.get() + iOffset), wString);
         g_charsetConverter.wToUTF8(wString, strFrameName);
         // CStdString strFrameName((LPWSTR)(pData.get() + iOffset));
         iOffset += iFrameNameSize;
@@ -336,10 +331,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         {
           //LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
-          CStdString utf16String((char*)(pData.get() + iOffset));
           CStdString utf8String = "";
           CStdStringW wString = "";
-          g_charsetConverter.utf16LEtoW(utf16String, wString);
+          g_charsetConverter.utf16LEtoW((char*)(pData.get() + iOffset), wString);
           g_charsetConverter.wToUTF8(wString, utf8String);
           SetTagValueString(strFrameName, utf8String, tag);
         }
@@ -478,14 +472,12 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
     iPicOffset += 4;
 
     CStdStringW wString;
-    CStdString utf16String((char*) (pValue + iPicOffset));
-    g_charsetConverter.utf16LEtoW(utf16String, wString);
+    g_charsetConverter.utf16LEtoW((char*) (pValue + iPicOffset), wString);
     g_charsetConverter.wToUTF8(wString, picture.pwszMIMEType);
     iPicOffset += (wString.length() * 2);
     iPicOffset += 2;
 
-    utf16String = ((char*) (pValue + iPicOffset));
-    g_charsetConverter.utf16LEtoW(utf16String, picture.pwszDescription);
+    g_charsetConverter.utf16LEtoW((char*) (pValue + iPicOffset), picture.pwszDescription);
     iPicOffset += (picture.pwszDescription.length() * 2);
     iPicOffset += 2;
 
