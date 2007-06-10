@@ -514,11 +514,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       // attach a GLX surface to the root window
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow);
     } else {
-      // FIXME: this doesn't work :(
-      m_screenSurface->ReleaseContext();
+      // FIXME: this doesn't work :(      
+      //m_screenSurface->ReleaseContext();
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-      m_screenSurface->MakeCurrent();
+      //m_screenSurface->MakeCurrent();
+      
     }
 
 #else
