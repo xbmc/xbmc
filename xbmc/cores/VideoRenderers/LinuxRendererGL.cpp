@@ -21,6 +21,7 @@
 #include "LinuxRendererGL.h"
 #include "../../Application.h"
 #include "../../Util.h"
+#include "../../Settings.h"
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
 using namespace Surface;
@@ -810,18 +811,25 @@ unsigned int CLinuxRendererGL::PreInit()
       "uniform sampler2D ytex;"
       "uniform sampler2D utex;"
       "uniform sampler2D vtex;"
+      "uniform float brightness;"
+      "uniform float contrast;"
       "void main()"
       "{"
-      "float y = texture2D(ytex, gl_TexCoord[0].xy).r ;"
-      "float u = texture2D(utex, gl_TexCoord[1].xy).r ;"
-      "float v = texture2D(vtex, gl_TexCoord[2].xy).r ;"
-      "y = 1.1643*(y-0.0625);"
-      "u = u - 0.5;"
-      "v = v - 0.5;"
-      "float r = clamp(y+1.5958*v, 0.0, 1.0);"
-      "float g = clamp(y-0.39173*u-0.81290*v, 0.0, 1.0);"
-      "float b = clamp(y+2.017*u, 0.0, 1.0);"
-      "gl_FragColor = vec4(r, g, b, 1.0);"
+      "vec4 yuv, rgb;"
+      "yuv.r = texture2D(ytex, gl_TexCoord[0].xy).r ;"
+      "yuv.g = texture2D(utex, gl_TexCoord[1].xy).r ;"
+      "yuv.b = texture2D(vtex, gl_TexCoord[2].xy).r ;"
+      "yuv.r = clamp((((float)yuv.r-0.5)*contrast)+0.5, 0, 1.0);"
+      "yuv.r = yuv.r+brightness;"
+      "yuv.r = 1.1643*(yuv.r-0.0625);"
+      "yuv.g = yuv.g - 0.5;"
+      "yuv.b = yuv.b - 0.5;"
+      "rgb.r = clamp(yuv.r+1.5958*yuv.b, 0.0, 1.0);"
+      "rgb.g = clamp(yuv.r-0.39173*yuv.g-0.81290*yuv.b, 0.0, 1.0);"
+      "rgb.b = clamp(yuv.r+2.017*yuv.g, 0.0, 1.0);"
+      "rgb = rgb + vec4(brightness);"
+      "rgb.a = 1.0;"
+      "gl_FragColor = rgb;"
       "}";
 
     const char* shaderfrect = 
@@ -904,9 +912,16 @@ unsigned int CLinuxRendererGL::PreInit()
     VerifyGLState();
     m_vTex = glGetUniformLocation(m_shaderProgram, "vtex");
     VerifyGLState();
+    m_brightness = glGetUniformLocation(m_shaderProgram, "brightness");
+    VerifyGLState();
+    m_contrast = glGetUniformLocation(m_shaderProgram, "contrast");
+    VerifyGLState();
     g_graphicsContext.EndPaint(m_pBuffer);
+  } else if (glewIsSupported("GL_ARB_fragment_shader")) {    
+    CLog::Log(LOGNOTICE, "GL: Could not create GLSL shader since glCreateProgram not present");
+    
   } else {
-    CLog::Log(LOGNOTICE, "GL: Could not create shader since glCreateProgram not present");
+    CLog::Log(LOGNOTICE, "GL: Could not create ARB shader since GL_ARB_fragment_shader not present, falling back to SW colorspace conversion");
   }
 
   return 0;
@@ -1119,9 +1134,12 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-  // U
   if (m_shaderProgram)
   {
+    static GLfloat brightness = 0;
+    static GLfloat contrast   = 0;
+
+    // U
     glActiveTexture(GL_TEXTURE1);
     glEnable(m_textureTarget);
     glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
@@ -1142,6 +1160,10 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     VerifyGLState();
     glUniform1i(m_vTex, 2);
     VerifyGLState();
+    brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
+    contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+    glUniform1f(m_brightness, brightness);
+    glUniform1f(m_contrast, contrast);
   }
 
   glBegin(GL_QUADS);
