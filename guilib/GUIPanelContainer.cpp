@@ -88,8 +88,8 @@ void CGUIPanelContainer::Render()
       }
       else
       {
-        posY += m_layout.Size(HORIZONTAL);
-        posX -= m_layout.Size(VERTICAL) * (m_itemsPerRow - 1);
+        posX += m_layout.Size(HORIZONTAL);
+        posY -= m_layout.Size(VERTICAL) * (m_itemsPerRow - 1);
       }
       row = 1;
     }

@@ -209,12 +209,12 @@
 			</control>
 		</control>
 		<control type="group">
-		<visible>Player.HasAudio</visible>
+			<visible>Player.HasAudio</visible>
 			<control type="image" id="0">
 				<description>music rectangle</description>
 				<posx>30</posx>
 				<posy>381</posy>
-				<width>110</width>
+				<width>90</width>
 				<height>120</height>
 				<texture>blue_rectangle_music.png</texture>
 				<include>mediaoverlay</include>
@@ -223,10 +223,11 @@
 				<description>music logo</description>
 				<posx>35</posx>
 				<posy>387</posy>
-				<width>100</width>
+				<width>80</width>
 				<height>109</height>
 				<texture>defaultAlbumCover.png</texture>
 				<info>MusicPlayer.Cover</info>
+				<aspectratio align="left">keep</aspectratio>
 				<include>mediaoverlay</include>
 			</control>
 			<control type="label" id="0">
