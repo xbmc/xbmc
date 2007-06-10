@@ -526,6 +526,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   }
   return true;
 }
+
 bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
@@ -599,6 +600,22 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
   m_image[source].flags = 0;
+
+  // if we don't have a shader, fallback to SW YUV2RGB for now
+  /*
+  if (!m_shaderProgram)
+  {
+    struct SwsContext *context = sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGBA, SWS_BICUBIC, NULL, NULL, NULL);
+    uint8_t *src[] = { m_image.plane[0], m_image.plane[1], m_image.plane[2] };
+    int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2] };
+    uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0 };
+    int     dstStride[] = { m_backbuffer->pitch, 0, 0 };
+    int ret = sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
+    
+    CLog::Log(LOGDEBUG, "CLinuxRenderer::ReleaseImage - scale returned %d",ret);
+    sws_freeContext(context);
+  }
+  */
   
   g_graphicsContext.BeginPaint(m_pBuffer);
   glEnable(GL_TEXTURE_2D);
@@ -607,14 +624,17 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   VerifyGLState();
   glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
-  glBindTexture(m_textureTarget, fields[0][1]);
-  VerifyGLState();
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
-  VerifyGLState();
-  glBindTexture(m_textureTarget, fields[0][2]);
-  VerifyGLState();
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
-  VerifyGLState();
+  if (m_shaderProgram)
+  {    
+    glBindTexture(m_textureTarget, fields[0][1]);
+    VerifyGLState();
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+    VerifyGLState();
+    glBindTexture(m_textureTarget, fields[0][2]);
+    VerifyGLState();
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+    VerifyGLState();
+  }
   g_graphicsContext.EndPaint(m_pBuffer);
 }
 
@@ -1204,9 +1224,10 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     glActiveTexture(GL_TEXTURE2);
     glDisable(m_textureTarget);
   }
-  glActiveTexture(GL_TEXTURE0);
-  VerifyGLState();
 
+  glActiveTexture(GL_TEXTURE0);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  VerifyGLState();
   g_graphicsContext.EndPaint();
 }
 
@@ -1307,23 +1328,24 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
   VerifyGLState();
 
-  glBindTexture(m_textureTarget, fields[0][1]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-  VerifyGLState();
-
-  glBindTexture(m_textureTarget, fields[0][2]);
-  glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-  VerifyGLState();
+  if (m_shaderProgram)
+  {
+    glBindTexture(m_textureTarget, fields[0][1]);
+    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    VerifyGLState();
+    
+    glBindTexture(m_textureTarget, fields[0][2]);
+    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    VerifyGLState();
+  }
 
   g_graphicsContext.EndPaint(m_pBuffer);
   return true;
