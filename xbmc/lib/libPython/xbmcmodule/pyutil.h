@@ -25,6 +25,20 @@ namespace PYXBMC
   void  PyInitializeTypeObject(PyTypeObject* type_object);
 }
 
+#ifdef _LINUX
+
+// Python under Linux for some reason doesn't play nice with Py_AddPendingCall
+// and Py_MakePendingCalls, so we have our own versions.
+
+#define Py_AddPendingCall _Py_AddPendingCall
+#define Py_MakePendingCalls _Py_MakePendingCalls
+  
+void _Py_AddPendingCall(int(*func)(void*), void *arg);
+void _Py_MakePendingCalls();
+void PyInitPendingCalls();
+
+#endif //_LINUX
+
 #ifdef __cplusplus
 }
 #endif

@@ -383,11 +383,7 @@ namespace PYXBMC
         Py_END_ALLOW_THREADS
 
         // only call Py_MakePendingCalls from a python thread
-#ifndef _LINUX
 	Py_MakePendingCalls();
-#else
-        Py_MakePendingActionCalls(); // custom implementation, not part of C API
-#endif
       }
     }
     Py_INCREF(Py_None);

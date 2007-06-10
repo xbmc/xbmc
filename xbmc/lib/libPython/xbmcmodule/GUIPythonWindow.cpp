@@ -12,7 +12,7 @@ CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
 : CGUIWindow(dwId, "")
 {
 #ifdef _LINUX
-  Py_InitCriticalSection();
+  PyInitPendingCalls();
 #endif
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
@@ -35,12 +35,7 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     inf->pCallbackWindow = pCallbackWindow;
 
     // aquire lock?
-#ifndef _LINUX
     Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
-#else
-    inf->type = 0;
-    Py_AddPendingActionCall(inf);
-#endif
     PulseActionEvent();
   }
   return ret;
@@ -95,12 +90,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
             inf->pCallbackWindow = pCallbackWindow;
 
             // aquire lock?
-#ifndef _LINUX
             Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
-#else
-	    inf->type = 1;
-	    Py_AddPendingActionCall(inf);
-#endif
             PulseActionEvent();
           }
         }
@@ -131,6 +121,7 @@ void CGUIPythonWindow::PulseActionEvent()
 
 #ifdef _LINUX
 
+/*
 vector<PyXBMCAction*> g_actionQueue;
 CRITICAL_SECTION g_critSection;
 
@@ -174,6 +165,9 @@ void Py_MakePendingActionCalls()
     LeaveCriticalSection(&g_critSection);
   }
 }
+
+*/
+
 #endif
 
 /*
