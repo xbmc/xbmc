@@ -456,8 +456,10 @@ void CXBoxRenderManager::Process()
       if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
       {
 	// if we need to render acquire the context
+	// here we are sharing the main thread's rendering context
 	g_graphicsContext.AcquireCurrentContext();
         Present();
+	g_graphicsContext.ReleaseCurrentContext();
       }
     }
     catch(...)
@@ -469,6 +471,6 @@ void CXBoxRenderManager::Process()
     const int TC = 100; /* time (frame) constant for convergence */
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }
-  g_graphicsContext.ReleaseCurrentContext();
+  //g_graphicsContext.ReleaseCurrentContext();
 }
 
