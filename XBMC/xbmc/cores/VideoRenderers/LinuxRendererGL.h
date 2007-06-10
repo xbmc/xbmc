@@ -198,6 +198,8 @@ protected:
   GLint m_yTex;
   GLint m_uTex;
   GLint m_vTex;
+  GLint m_brightness;
+  GLint m_contrast;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
