@@ -252,6 +252,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   {
     lock2.Leave();
 
+    g_graphicsContext.AcquireCurrentContext();
     m_pRenderer->FlipPage(source);
     g_graphicsContext.ReleaseCurrentContext();
     if( CThread::ThreadHandle() == NULL ) CThread::Create();
