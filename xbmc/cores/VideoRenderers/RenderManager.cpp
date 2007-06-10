@@ -256,6 +256,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     g_graphicsContext.ReleaseCurrentContext();
     if( CThread::ThreadHandle() == NULL ) CThread::Create();
     m_eventFrame.Set();
+    Sleep(1); // allow thread to yield FIXME: ideally not needed
   }
   else
   {
@@ -464,7 +465,7 @@ void CXBoxRenderManager::Process()
       CLog::Log(LOGERROR, "CLinuxRendererGL::Process() - Exception thrown in flippage");
     }
     m_eventPresented.Set();
-
+    Sleep(1);  // allow thread to yield FIXME: ideally not needed
     const int TC = 100; /* time (frame) constant for convergence */
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }

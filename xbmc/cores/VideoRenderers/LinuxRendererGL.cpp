@@ -516,9 +516,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       }
       CLog::Log(LOGINFO, "GL: Enabling NPOT texture support through GL_ARB_texture_rectangle extension");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
-      glEnable(GL_TEXTURE_RECTANGLE_ARB);                 
+      glEnable(GL_TEXTURE_RECTANGLE_ARB);
     } else {
-      CLog::Log(LOGINFO, "GL: OpenGL version 2.x+ detected");
+      CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
     }
   }
   else {
@@ -787,7 +787,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_iOSDTextureHeight[1] = 0;
 
   // setup the background colour
-  m_clearColour = 0 ;;// (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+  m_clearColour = 0 ; //(g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
   // make sure we have a valid context that supports rendering
   if (!ValidateRenderTarget())
@@ -926,8 +926,11 @@ void CLinuxRendererGL::UnInit()
   if (m_shaderProgram)
   {
     glDeleteShader(m_vertexShader);
+    VerifyGLState();
     glDeleteShader(m_fragmentShader);
+    VerifyGLState();
     glDeleteProgram(m_shaderProgram);
+    VerifyGLState();
     m_fragmentShader = 0;
     m_vertexShader = 0;
     m_shaderProgram = 0;
@@ -944,11 +947,16 @@ void CLinuxRendererGL::UnInit()
 
 void CLinuxRendererGL::Render(DWORD flags)
 {
-
+  g_graphicsContext.BeginPaint();
   RenderLowMem(flags);
   glEnable(GL_BLEND);
+  VerifyGLState();
 
-  if( flags & RENDER_FLAG_NOOSD ) return;
+  if( flags & RENDER_FLAG_NOOSD ) 
+  {
+    g_graphicsContext.EndPaint();
+    return;
+  }
 
   // FIXME: OSD disabled for now
   /* general stuff */
@@ -961,10 +969,10 @@ void CLinuxRendererGL::Render(DWORD flags)
       g_application.RenderFullScreen();
       VerifyGLState();
     }
-
     g_application.RenderMemoryStatus();
     VerifyGLState();
   }
+  g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::SetViewMode(int iViewMode)

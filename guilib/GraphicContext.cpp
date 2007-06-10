@@ -912,9 +912,9 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
   {
     Lock();
     if (!ctx->MakeCurrent())
-      {
-	CLog::Log(LOGERROR, "Error making context current");
-      }
+    {
+      CLog::Log(LOGERROR, "Error making context current");
+    }
     Unlock();
     return;
   }
@@ -928,9 +928,9 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
     return;
   }
   if (!(iter->second)->MakeCurrent())
-    {
-	CLog::Log(LOGERROR, "Error making context current");
-    }
+  {
+    CLog::Log(LOGERROR, "Error making context current");
+  }
   Unlock();
 #endif
 }
