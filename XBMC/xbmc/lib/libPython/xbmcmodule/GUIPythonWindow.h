@@ -18,11 +18,6 @@ public:
 #endif
 };
 
-#ifdef _LINUX
-void Py_InitCriticalSection();
-void Py_AddPendingActionCall(PyXBMCAction* inf);
-void Py_MakePendingActionCalls();
-#endif
 int Py_XBMC_Event_OnAction(void* arg);
 int Py_XBMC_Event_OnControl(void* arg);
 
