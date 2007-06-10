@@ -756,11 +756,35 @@ void CGUIFontTTF::Begin()
     
       VerifyGLState();
       m_glTextureLoaded = true;                
+    } else {
+      if (!glIsTexture(m_glTexture))
+      {
+	CLog::Log(LOGERROR, "We lost our font texture!! Trying to reload it");
+	// Have OpenGL generate a texture object handle for us
+	glGenTextures(1, &m_glTexture);
+	
+	// Bind the texture object
+	glBindTexture(GL_TEXTURE_2D, m_glTexture);
+	glEnable(GL_TEXTURE_2D);
+ 
+	// Set the texture's stretching properties
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	// Set the texture image
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
+		     GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
+    
+	VerifyGLState();
+      }
     }
   
     // Turn Blending On
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, m_glTexture);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
     glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
@@ -774,9 +798,9 @@ void CGUIFontTTF::Begin()
     //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_COLOR); //FIXME
     //VerifyGLState();    
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glBindTexture(GL_TEXTURE_2D, m_glTexture);
-    glEnable(GL_TEXTURE_2D);
-    VerifyGLState();    
+    //glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    //glEnable(GL_TEXTURE_2D);
+    VerifyGLState();
 
     glBegin(GL_QUADS);
 #endif
