@@ -278,6 +278,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
+  g_advancedSettings.m_prioritiseAPEv2tags = false;
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
@@ -1135,6 +1136,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "prioritiseapetags", g_advancedSettings.m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);

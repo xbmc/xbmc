@@ -571,29 +571,21 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   if (m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.IsEmpty())
     return false;
 
-  CStdString strExtension;
-  CUtil::GetExtension(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, strExtension);
-  CStdString strTemp = "Z:\\temp";
-  strTemp += strExtension;
-  ::DeleteFile(strTemp.c_str());
   CHTTP http;
-  // replace m.jpg with f.jpg for the full image
-  CStdString url = m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url;
   http.SetReferer(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_spoof);
-  if (!http.Download(url, strTemp))
-    http.Download(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, strTemp);
-
-  try
+  string thumbData;
+  if (http.Get(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, thumbData))
   {
-    CPicture picture;
-    picture.DoCreateThumbnail(strTemp, thumb);
+    try
+    {
+      CPicture picture;
+      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url), thumb);
+    }
+    catch (...)
+    {
+      ::DeleteFile(thumb.c_str());
+    }
   }
-  catch (...)
-  {
-    OutputDebugString("...\n");
-    ::DeleteFile(thumb.c_str());
-  }
-  ::DeleteFile(strTemp.c_str());
   return true;
 }
 
