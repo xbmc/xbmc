@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "pyutil.h"
 #include <wchar.h>
+#include <vector>
 #include "SkinInfo.h"
 
 static int iPyGUILockRef = 0;
@@ -110,3 +111,51 @@ namespace PYXBMC
   }
 
 }
+
+#ifdef _LINUX
+
+typedef std::pair<int(*)(void*), void*> Func;
+typedef std::vector<Func> CallQueue;
+CallQueue g_callQueue;
+CRITICAL_SECTION g_critSectionPyCall;
+
+void PyInitPendingCalls()
+{
+  static bool first_call = true;
+  if (first_call) 
+  {
+    InitializeCriticalSection(&g_critSectionPyCall);
+    first_call = false;
+  }
+}
+
+void _Py_AddPendingCall(int(*func)(void*), void *arg)
+{
+  PyInitPendingCalls();
+  EnterCriticalSection(&g_critSectionPyCall);
+  g_callQueue.push_back(Func(func, arg));
+  LeaveCriticalSection(&g_critSectionPyCall);
+}
+
+void _Py_MakePendingCalls()
+{
+  PyInitPendingCalls();
+  EnterCriticalSection(&g_critSectionPyCall);
+
+  CallQueue::iterator iter = g_callQueue.begin();
+  while (iter != g_callQueue.end())
+  {
+    int(*f)(void*) = (*iter).first;
+    void* arg = (*iter).second;
+    g_callQueue.erase(iter);
+    LeaveCriticalSection(&g_critSectionPyCall);
+    if (f)
+      f(arg);
+    //(*((*iter).first))((*iter).second);
+    EnterCriticalSection(&g_critSectionPyCall);
+    iter = g_callQueue.begin();
+  }  
+  LeaveCriticalSection(&g_critSectionPyCall);
+}
+
+#endif
