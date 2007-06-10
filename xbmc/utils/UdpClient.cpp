@@ -21,10 +21,6 @@ bool CUdpClient::Create(void)
 
   InitializeCriticalSection(&critical_section);
 
-  // make sure we have our network up
-  if (!g_network.IsAvailable())
-    return false;
-
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Creating UDP socket...");
 
   // Create a UDP socket

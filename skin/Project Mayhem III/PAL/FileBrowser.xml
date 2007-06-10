@@ -1,6 +1,7 @@
 <window id="126">
 	<defaultcontrol always="true">450</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
 		<posx>110</posx>
@@ -34,34 +35,101 @@
 			<font>font12</font>
 			<haspath>true</haspath>
 		</control>
-		<control type="listcontrol" id="450">
-			<description>listcontrol</description>
+		<control type="scrollbar" id="60">
+			<posx>380</posx>
+			<posy>70</posy>
+			<include>scrollbar_width</include>
+			<height>270</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>scrollbar_nib.png</textureslidernib>
+			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<onleft>450</onleft>
+			<onright>9000</onright>
+			<onup>60</onup>
+			<ondown>60</ondown>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="list" id="450">
 			<posx>10</posx>
 			<posy>70</posy>
-			<width>387</width>
-			<height>323</height>
-			<texturefocus>input-focus.png</texturefocus>
-			<texturenofocus>input-nofocus.png</texturenofocus>
-			<spinposx>350</spinposx>
-			<spinposy>285</spinposy>
+			<width>368</width>
+			<height>271</height>
 			<onleft>9000</onleft>
-			<onright>9000</onright>
+			<onright>60</onright>
 			<onup>450</onup>
 			<ondown>450</ondown>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="30">
+				<control type="image">
+					<width>368</width>
+					<height>28</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>0</posy>
+					<width>335</width>
+					<height>28</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+			</itemlayout>
+			<focusedlayout height="31">
+				<control type="image">
+					<width>368</width>
+					<height>28</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>!Control.HasFocus(450)</visible>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<width>368</width>
+					<height>28</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(450)</visible>
+					<texture>input-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>0</posy>
+					<width>335</width>
+					<height>28</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+			</focusedlayout>
 		</control>
-		<control type="thumbnailpanel" id="451">
-			<description>thumbnailpanel</description>
-			<posx>30</posx>
-			<posy>70</posy>
-			<width>400</width>
-			<height>323</height>
-			<spinposx>330</spinposx>
-			<spinposy>285</spinposy>
-			<onleft>9000</onleft>
-			<onright>9000</onright>
-			<onup>451</onup>
-			<ondown>451</ondown>
-		</control>
+		<include>FileBrowser_ThumbView</include>
 		<control type="group" id="9000">
 			<control type="button" id="413">
 				<description>OK button</description>

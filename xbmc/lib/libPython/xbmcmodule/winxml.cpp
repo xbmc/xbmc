@@ -183,20 +183,6 @@ namespace PYXBMC
     "example:\n"
     "  - self.refrestList()\n");
 
-  PyObject* WindowXML_RefreshList(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    pwx->RefreshList();
-    PyGUIUnlock();
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
   // clearList() method
   PyDoc_STRVAR(clearList__doc__,
     "clearList() -- Clear the Window List.\n"
@@ -294,288 +280,32 @@ namespace PYXBMC
     }
 
     ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
-    sListItem->item = new CGUIListItem();
-    sListItem->item->SetLabel(fi->GetLabel());
-    sListItem->item->SetLabel2(fi->GetLabel2());
-    sListItem->item->SetIconImage(fi->GetIconImage());
-    sListItem->item->SetThumbnailImage(fi->GetThumbnailImage());
+    sListItem->item = fi;
     PyGUIUnlock();
 
     Py_INCREF(sListItem);
     return (PyObject *)sListItem;
   }
 
-  // getCurrentListItem() method
-  PyDoc_STRVAR(getCurrentListItem__doc__,
-    "getCurrentListItem() -- Returns the current ListItem in this Window List.\n"
+  // getListSize() method
+  PyDoc_STRVAR(getListSize__doc__,
+    "getListSize() -- Returns the number of items in this Window List.\n"
     "\n"
     "example:\n"
-    "  - listitem = self.getCurrentListItem()\n");
+    "  - listSize = self.getListSize()\n");
 
-  PyObject* WindowXML_GetCurrentListItem(WindowXML *self, PyObject *args)
+  PyObject* WindowXML_GetListSize(WindowXML *self, PyObject *args)
   {
     if (!self->pWindow) return NULL;
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
     PyGUILock();
-    CFileItem * fi = pwx->GetCurrentListItem();
-
-    if (fi == NULL)
-    {
-      PyGUIUnlock();
-      PyErr_SetString(PyExc_TypeError, "Index out of range");
-      return NULL;
-    }
-
-    ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
-    sListItem->item = new CGUIListItem();
-    sListItem->item->SetLabel(fi->GetLabel());
-    sListItem->item->SetLabel2(fi->GetLabel2());
-    sListItem->item->SetIconImage(fi->GetIconImage());
-    sListItem->item->SetThumbnailImage(fi->GetThumbnailImage());
-    PyGUIUnlock();
-
-    Py_INCREF(sListItem);
-    return (PyObject *)sListItem;
-  }
-
-  // setLabel() method
-  PyDoc_STRVAR(setLabel__doc__,
-    "setLabel(label) -- Sets the ListItem's label.\n"
-    "\n"
-    "label           : string or unicode - text string.\n"
-    "\n"
-    "example:\n"
-    "  - self.setLabel('Casino Royale')\n");
-
-  PyObject* WindowXML_SetLabel(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    PyObject* uLine = NULL;
-    if (!PyArg_ParseTuple(args, "O", &uLine)) return NULL;
-
-    string utf8Line;
-    if (uLine && !PyGetUnicodeString(utf8Line, uLine, 1))
-      return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    pwx->GetCurrentListItem()->SetLabel(utf8Line);
+    int listSize = pwx->GetListSize();
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // getLabel() method
-  PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the ListItem's label.\n"
-    "\n"
-    "example:\n"
-    "  - label = self.getLabel()\n");
-
-  PyObject* WindowXML_GetLabel(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    CStdString strLabel = pwx->GetCurrentListItem()->GetLabel();
-    PyGUIUnlock();
-
-    return Py_BuildValue("s", strLabel.c_str());
-  }
-
-  // setLabel2() method
-  PyDoc_STRVAR(setLabel2__doc__,
-    "setLabel2(label) -- Sets the media listitem's label2.\n"
-    "\n"
-    "label           : string or unicode - text string.\n"
-    "\n"
-    "example:\n"
-    "  - self.setLabel2('[PG-13]')\n");
-
-  PyObject* WindowXML_SetLabel2(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    PyObject* uLine = NULL;
-    if (!PyArg_ParseTuple(args, "O", &uLine)) return NULL;
-
-    string utf8Line;
-    if (uLine && !PyGetUnicodeString(utf8Line, uLine, 1))
-      return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    pwx->GetCurrentListItem()->SetLabel2(utf8Line);
-    PyGUIUnlock();
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // getLabel2() method
-  PyDoc_STRVAR(getLabel2__doc__,
-    "getLabel2() -- Returns the ListItem's label2.\n"
-    "\n"
-    "example:\n"
-    "  - label = self.getLabel2()\n");
-
-  PyObject* WindowXML_GetLabel2(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    CStdString strLabel2 = pwx->GetCurrentListItem()->GetLabel2();
-    PyGUIUnlock();
-
-    return Py_BuildValue("s", strLabel2.c_str());
-  }
-
-  // setThumbnailImage() method
-  PyDoc_STRVAR(setThumbnailImage__doc__,
-    "setThumbnailImage(thumb) -- Sets the ListItem's thumbnail image.\n"
-    "\n"
-    "thumb           : string - image filename.\n"
-    "\n"
-    "example:\n"
-    "  - self.setThumbnailImage('emailread.png')\n");
-
-  PyObject* WindowXML_SetThumbnailImage(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    pwx->GetCurrentListItem()->SetThumbnailImage(cLine ? cLine : "");
-    PyGUIUnlock();
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // getThumbnailImage() method
-  PyDoc_STRVAR(getThumbnailImage__doc__,
-    "getThumbnailImage() -- Returns the ListItem's thumbnail.\n"
-    "\n"
-    "example:\n"
-    "  - thumb = self.getThumbnailImage()\n");
-
-  PyObject* WindowXML_GetThumbnailImage(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    CStdString strThumb = pwx->GetCurrentListItem()->GetThumbnailImage();
-    PyGUIUnlock();
-
-    return Py_BuildValue("s", strThumb.c_str());
-  }
-
-  // setIconImage() method
-  PyDoc_STRVAR(setIconImage__doc__,
-    "setIconImage(icon) -- Sets the ListItem's icon image.\n"
-    "\n"
-    "icon            : string - image filename.\n"
-    "\n"
-    "example:\n"
-    "  - self.setIconImage('emailread.png')\n");
-
-  PyObject* WindowXML_SetIconImage(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    pwx->GetCurrentListItem()->SetIconImage(cLine ? cLine : "");
-    PyGUIUnlock();
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // getIconImage() method
-  PyDoc_STRVAR(getIconImage__doc__,
-    "getIconImage() -- Returns the ListItem's icon.\n"
-    "\n"
-    "example:\n"
-    "  - thumb = self.getIconImage()\n");
-
-  PyObject* WindowXML_GetIconImage(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    CStdString strIcon = pwx->GetCurrentListItem()->GetIconImage();
-    PyGUIUnlock();
-
-    return Py_BuildValue("s", strIcon.c_str());
-  }
-
-  // select() method
-  PyDoc_STRVAR(select__doc__,
-    "select(selected) -- Sets the ListItem's selected status.\n"
-    "\n"
-    "selected        : bool - True=selected/False=not selected\n"
-    "\n"
-    "example:\n"
-    "  - self.select(True)\n");
-
-  PyObject* WindowXML_Select(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    bool bOnOff = false;
-    if (!PyArg_ParseTuple(args, "b", &bOnOff)) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    pwx->GetCurrentListItem()->Select(bOnOff);
-    PyGUIUnlock();
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // isSelected() method
-  PyDoc_STRVAR(isSelected__doc__,
-    "isSelected() -- Returns the ListItem's selected status.\n"
-    "\n"
-    "example:\n"
-    "  - is = self.isSelected()\n");
-
-  PyObject* WindowXML_IsSelected(WindowXML *self, PyObject *args)
-  {
-    if (!self->pWindow) return NULL;
-
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-
-    PyGUILock();
-    bool bOnOff = pwx->GetCurrentListItem()->IsSelected();
-    PyGUIUnlock();
-
-    return Py_BuildValue("b", bOnOff);
+    return Py_BuildValue("l", listSize);
   }
 
   PyDoc_STRVAR(windowXML__doc__,
@@ -592,22 +322,11 @@ namespace PYXBMC
   PyMethodDef WindowXML_methods[] = {
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
     {"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
-    {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, refreshList__doc__},
     {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS, getCurrentListPosition__doc__},
     {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS, setCurrentListPosition__doc__},
     {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS, getListItem__doc__},
-    {"getCurrentListItem", (PyCFunction)WindowXML_GetCurrentListItem, METH_VARARGS, getCurrentListItem__doc__},
+    {"getListSize", (PyCFunction)WindowXML_GetListSize, METH_VARARGS, getListSize__doc__},
     {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, clearList__doc__},
-    {"setLabel", (PyCFunction)WindowXML_SetLabel, METH_VARARGS, setLabel__doc__},
-    {"getLabel", (PyCFunction)WindowXML_GetLabel, METH_VARARGS, getLabel__doc__},
-    {"setLabel2", (PyCFunction)WindowXML_SetLabel2, METH_VARARGS, setLabel2__doc__},
-    {"getLabel2", (PyCFunction)WindowXML_GetLabel2, METH_VARARGS, getLabel2__doc__},
-    {"setThumbnailImage", (PyCFunction)WindowXML_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
-    {"getThumbnailImage", (PyCFunction)WindowXML_GetThumbnailImage, METH_VARARGS, getThumbnailImage__doc__},
-    {"setIconImage", (PyCFunction)WindowXML_SetIconImage, METH_VARARGS, setIconImage__doc__},
-    {"getIconImage", (PyCFunction)WindowXML_GetIconImage, METH_VARARGS, getIconImage__doc__},
-    {"select", (PyCFunction)WindowXML_Select, METH_VARARGS, select__doc__},
-    {"isSelected", (PyCFunction)WindowXML_IsSelected, METH_VARARGS, isSelected__doc__},
     {NULL, NULL, 0, NULL}
   };
 // Restore code and data sections to normal.

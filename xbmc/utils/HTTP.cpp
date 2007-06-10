@@ -256,7 +256,7 @@ bool CHTTP::GetHeader(CStdString strName, CStdString& strValue) const
 
 //------------------------------------------------------------------------------------------------------------------
 
-bool CHTTP::Get(string& strURL, string& strHTML)
+bool CHTTP::Get(const string& strURL, string& strHTML)
 {
   CLog::Log(LOGINFO, "Get URL: %s", strURL.c_str());
 
@@ -333,19 +333,9 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
 {
   CLog::Log(LOGINFO, "Download: %s->%s", strURL.c_str(), strFileName.c_str());
 
-  int status = Open(strURL, "GET", NULL);
-
-  if (status != 200)
-  {
-    Close();
-    return false;
-  }
-
   string strData;
-  if (!ReadData(strData))
+  if (!Get(strURL, strData))
     return false;
-
-  Close();
 
   HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   if (hFile == INVALID_HANDLE_VALUE)
