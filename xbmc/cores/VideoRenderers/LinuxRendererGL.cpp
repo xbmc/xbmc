@@ -964,7 +964,6 @@ void CLinuxRendererGL::Render(DWORD flags)
 {
   g_graphicsContext.BeginPaint();
   RenderLowMem(flags);
-  glEnable(GL_BLEND);
   VerifyGLState();
 
   if( flags & RENDER_FLAG_NOOSD ) 
