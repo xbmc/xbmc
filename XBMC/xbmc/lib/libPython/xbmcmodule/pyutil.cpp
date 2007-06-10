@@ -109,7 +109,6 @@ namespace PYXBMC
     memset(type_object, 0, sizeof(PyTypeObject));
     memcpy(type_object, &py_type_object_header, size);
   }
-
 }
 
 #ifdef _LINUX
