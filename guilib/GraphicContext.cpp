@@ -880,6 +880,47 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
   return true;
 }
 
+CSurface* CGraphicContext::InitializeSurface()
+{
+  CSurface* screenSurface = NULL;
+  Lock();
+
+  screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
+  if (!screenSurface || !screenSurface->IsValid()) 
+  {
+    CLog::Log(LOGERROR, "Surface creation error");
+    if (screenSurface) 
+    {
+      delete screenSurface;
+    }
+    Unlock();
+    return NULL;
+  }
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  
+  glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+  glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+  glEnable(GL_TEXTURE_2D); 
+  glEnable(GL_SCISSOR_TEST); 
+  
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+ 
+  glOrtho(0.0f, m_iScreenWidth, m_iScreenHeight, 0.0f, -1.0f, 1.0f);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity(); 
+  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);          // Turn Blending On
+  glDisable(GL_DEPTH_TEST);
+
+  Unlock();
+  return screenSurface;
+}
+
+#endif
+
 void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 {
 #ifdef HAS_SDL_OPENGL
@@ -935,46 +976,6 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
 #endif
 }
 
-CSurface* CGraphicContext::InitializeSurface()
-{
-  CSurface* screenSurface = NULL;
-  Lock();
-
-  screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
-  if (!screenSurface || !screenSurface->IsValid()) 
-  {
-    CLog::Log(LOGERROR, "Surface creation error");
-    if (screenSurface) 
-    {
-      delete screenSurface;
-    }
-    Unlock();
-    return NULL;
-  }
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-  
-  glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-  glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
-  glEnable(GL_TEXTURE_2D); 
-  glEnable(GL_SCISSOR_TEST); 
-  
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
- 
-  glOrtho(0.0f, m_iScreenWidth, m_iScreenHeight, 0.0f, -1.0f, 1.0f);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity(); 
-  
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
-
-  Unlock();
-  return screenSurface;
-}
-
-#endif
 
 void CGraphicContext::BeginPaint(CSurface *dest)
 {
