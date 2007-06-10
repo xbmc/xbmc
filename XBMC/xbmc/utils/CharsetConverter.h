@@ -25,7 +25,7 @@ public:
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
 
-  void utf16LEtoW(const CStdStringA& utf8String, CStdStringW &utf16String);
+  void utf16LEtoW(const char* utf16String, CStdStringW &wString);
 
   void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
 
