@@ -2266,12 +2266,15 @@ void CApplication::RenderNoPresent()
     //g_ApplicationRenderer.Render();
 
     // release the context so the async renderer can draw to it
+    g_renderManager.RenderUpdate(true, 0, 0);
+    /*
     g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
     Sleep(25);
     g_graphicsContext.Lock();
     ResetScreenSaver();
     g_infoManager.ResetCache();
+    */
     return;
   }
 
