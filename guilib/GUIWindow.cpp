@@ -859,19 +859,27 @@ void CGUIWindow::Insert(CGUIControl *control, const CGUIControl *insertPoint)
   m_vecControls.insert(i, control);
 }
 
-void CGUIWindow::Remove(DWORD dwId)
+// Note: This routine doesn't delete the control.  It just removes it from the control list
+bool CGUIWindow::Remove(DWORD dwId)
 {
   ivecControls i = m_vecControls.begin();
   while (i != m_vecControls.end())
   {
     CGUIControl* pControl = *i;
+    if (pControl->IsGroup())
+    {
+      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+      if (group->RemoveControl(dwId))
+        return true;
+    }
     if (pControl->GetID() == dwId)
     {
       m_vecControls.erase(i);
-      return ;
+      return true;
     }
     ++i;
   }
+  return false;
 }
 
 void CGUIWindow::ClearAll()
