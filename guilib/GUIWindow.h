@@ -80,7 +80,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);
   void Insert(CGUIControl *control, const CGUIControl *insertPoint);
-  void Remove(DWORD dwId);
+  bool Remove(DWORD dwId);
   bool ControlGroupHasFocus(int groupID, int controlID);
   void SetID(DWORD dwID);
   virtual DWORD GetID(void) const;
