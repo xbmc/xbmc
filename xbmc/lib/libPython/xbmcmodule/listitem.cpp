@@ -41,8 +41,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    // create CGUIListItem
-    self->item = new CGUIListItem();
+    // create CFileItem
+    self->item = new CFileItem();
     if (!self->item)
     {
       Py_DECREF( self );
@@ -77,7 +77,7 @@ namespace PYXBMC
     ListItem* self = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
     if (!self) return NULL;
 
-    self->item = new CGUIListItem(strLabel);
+    self->item = new CFileItem(strLabel);
     if (!self->item)
     {
       Py_DECREF( self );
