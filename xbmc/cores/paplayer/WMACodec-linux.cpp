@@ -24,7 +24,10 @@ bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
   m_hnd = m_dll.LoadFile(strFile.c_str(), &m_TotalTime, &m_SampleRate, &m_BitsPerSample, &m_Channels);
   if (m_hnd == 0)
     return false;
-    
+ 
+  // We always ask ffmpeg to return s16le 
+  m_BitsPerSample = 16;
+ 
   return true;
 }
 
