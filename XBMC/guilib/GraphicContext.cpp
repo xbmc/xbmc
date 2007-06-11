@@ -556,6 +556,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
     }
    
+    SetFullScreenViewWindow(res);
+
     m_Resolution = res;
     Unlock();  
   }
@@ -982,14 +984,7 @@ void CGraphicContext::BeginPaint(CSurface *dest)
 #ifdef HAS_SDL_OPENGL
   Lock();
   ValidateSurface(dest);
-  GLenum errcode;
   VerifyGLState();
-  if ((errcode=glGetError())!=GL_NO_ERROR) 
-  {
-    //OutputDebugString("OpenGL Error during BeginPaint()");      
-    //OutputDebugString((const char*)gluErrorString(errcode));
-    //OutputDebugString("\n");
-  }
 #endif
 }
 
@@ -997,16 +992,7 @@ void CGraphicContext::EndPaint(CSurface *dest)
 {
 #ifdef HAS_SDL_OPENGL
   Unlock();
-  GLenum errcode;
   VerifyGLState();
-  if ((errcode=glGetError())!=GL_NO_ERROR) 
-  {
-    /*
-    OutputDebugString("OpenGL Error during EndPaint()");      
-    OutputDebugString((const char*)gluErrorString(errcode));
-    OutputDebugString("\n");
-    */
-  }
 #endif
 }
 

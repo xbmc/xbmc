@@ -345,6 +345,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
 #ifdef HAS_GLX
   if (m_parentWindow)
   {
+    XResizeWindow(s_dpy, m_parentWindow, newWidth, newHeight);
     XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
     glXWaitX();
     /*

@@ -456,8 +456,8 @@ void CXBoxRenderManager::Process()
 
       if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
       {
-	// if we need to render acquire the context
-	// here we are sharing the main thread's rendering context
+	// If we need to render acquire the context.
+	// Here, we are sharing the main thread's rendering context
 	g_graphicsContext.AcquireCurrentContext();
         Present();
 	g_graphicsContext.ReleaseCurrentContext();
