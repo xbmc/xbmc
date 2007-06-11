@@ -778,7 +778,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 #ifdef HAS_VIDEO_PLAYBACK
   if(delay<0) 
   {
-    CLog::Log(LOGNOTICE, "Calling flip page");
     g_renderManager.FlipPage( 0, -1, mDisplayField);
   } else {
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
