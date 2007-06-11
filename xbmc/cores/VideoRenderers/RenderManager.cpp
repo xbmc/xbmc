@@ -248,7 +248,11 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   m_presentfield = sync;
 
   CSingleLock lock2(g_graphicsContext);
-  if( g_graphicsContext.IsFullScreenVideo() )
+#ifdef HAS_SDL_OPENGL
+  if( 0 /*disable async renderer*/)
+#else
+  if( g_graphicsContext.IsFullScreenVideo() && 0 /*disable async renderer*/)
+#endif
   {
     lock2.Leave();
 
