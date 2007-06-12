@@ -433,20 +433,14 @@ void CDVDPlayerVideo::Process()
         // and try to get more data from the videoQueue
         if (iDecoderState & VC_BUFFER) 
           break;
-        try
-        {
-          // the decoder didn't need more data, flush the remaning buffer
-          iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
-        }
-        catch(...)
-        {
-          CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when decoding data");
-          iDecoderState = VC_ERROR;
-        }
+
+        // the decoder didn't need more data, flush the remaning buffer
+        iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
       }
 
       // if decoder had an error, tell it to reset to avoid more problems
-      if( iDecoderState & VC_ERROR ) m_pVideoCodec->Reset();
+      if( iDecoderState & VC_ERROR ) 
+        m_pVideoCodec->Reset();
 
       LeaveCriticalSection(&m_critCodecSection);
     }    
