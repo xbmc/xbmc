@@ -46,12 +46,17 @@ CStdString CFileHD::GetLocal(const CURL &url)
 
   if( url.GetProtocol().Equals("file", false) )
   {
-    /* should we handle direct device paths here too? */
-    /* i'm not even sure if that is supported by the functions used */
-    if( path[1] == '/' )
-      path[1] = ':';
-    else
-      CLog::Log(LOGERROR, __FUNCTION__" - Unsupported url %s", path.c_str());
+    // file://drive[:]/path
+    // file:///drive:/path
+    CStdString host( url.GetHostName() );
+
+    if(host.size() > 0)
+    {
+      if(host.Right(1) == ":")
+        path = host + "/" + path;
+      else
+        path = host + ":/" + path;
+    }
   }
 
   path.Replace('/', '\\');
