@@ -869,12 +869,16 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
   SDL_LockSurface(m_backbuffer);
 
   // transform from YUV to RGB
-  struct SwsContext *context = m_dllSwScale.sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+  struct SwsContext *context = m_dllSwScale.sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
   uint8_t *src[] = { m_image.plane[0], m_image.plane[1], m_image.plane[2] };
   int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2] };
   uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0 };
   int     dstStride[] = { m_backbuffer->pitch, 0, 0 };
   int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
+
+for (int n=0; n<720*90;n++) {
+   *(((uint8_t*)m_backbuffer->pixels) + (720*10) + n) = 70;
+}
 
   m_dllSwScale.sws_freeContext(context);
 
