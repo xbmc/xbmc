@@ -10,9 +10,8 @@
 #include "PlatformDefs.h"
 #include "TextureManager.h"
 
-// temorary - for tests. remove this!
-#warning TODO: remove use of SDL overlay
-//#define USE_SDL_OVERLAY
+#include "ffmpeg/DllSwScale.h"
+#include "ffmpeg/DllAvCodec.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
@@ -198,6 +197,9 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
 
+  DllSwScale	m_dllSwScale;
+  DllAvCodec	m_dllAvCodec;
+  DllAvUtil	m_dllAvUtil;
 };
 
 #endif
