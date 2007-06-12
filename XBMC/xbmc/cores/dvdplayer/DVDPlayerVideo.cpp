@@ -775,14 +775,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   // present this image after the given delay
   __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
 
-#ifdef HAS_VIDEO_PLAYBACK
   if(delay<0) 
   {
     g_renderManager.FlipPage( 0, -1, mDisplayField);
   } else {
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
   }
-#endif
 
   return result;
 }

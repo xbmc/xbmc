@@ -619,14 +619,13 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   if (!m_shaderProgram)
   {
     CLog::Log(LOGDEBUG, "CLinuxRenderer::ReleaseImage - before swscale");
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGBA, SWS_BICUBIC, NULL, NULL, NULL);
+    struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
     uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
     int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
     int     dstStride[] = { im.width * im.height * 8, 0, 0 };
     int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
-    CLog::Log(LOGDEBUG, "CLinuxRenderer::ReleaseImage - scale returned %d",ret);
     m_dllSwScale.sws_freeContext(context);
   
     bUseSoftwareScale = true;
