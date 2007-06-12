@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 05/18/2007-->
+<!--Date of translation: 06/12/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9007-->
+<!--Based on english strings version 9182-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -218,7 +218,7 @@
   <string id="286">Post-Processing Filter</string>
   <string id="287">Untertitel</string>
   <string id="288">Schriftart</string>
-  <string id="289">- Schriftgröße</string>
+  <string id="289">Schriftgröße</string>
   <string id="290">Lautstärkeumfang</string>
   <string id="291">Videos</string>
   <string id="292">Audio</string>
@@ -472,6 +472,7 @@
   <string id="567">Spielzähler</string>
   <string id="568">Zuletzt gespielt</string>
   <string id="569">Kommentar</string>
+  <string id="570">Datum (Hinzugefügt)</string>
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
   <string id="582">Ansicht</string>
@@ -600,7 +601,7 @@
   <string id="762">Blau</string>
   <string id="763">Hellgrün</string>
   <string id="764">Gelbgrün</string>
-  <string id="765">Cyan</string>
+  <string id="765">Blaugrün</string>
   <string id="766">Reserviert</string>
   <string id="767">Reserviert</string>
   <string id="768">Reserviert</string>
@@ -1082,6 +1083,7 @@
   <string id="14075">Sommerzeit verwenden</string>
   <string id="14076">Zu Favoriten hinzufügen</string>
   <string id="14077">Von Favoriten entfernen</string>
+  <string id="14078">Skin Farben</string>
   <string id="15000">XLink-Kai</string>
   <string id="15001">Es besteht keine Verbindung zu XLink-Kai. Möchten</string>
   <string id="15002">Sie jetzt versuchen eine Verbindung aufzubauen?</string>
