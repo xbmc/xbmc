@@ -119,8 +119,8 @@ namespace PYXBMC
     "addItem(item[, position]) -- Add a new item to this Window List.\n"
     "\n"
     "item            : string, unicode or ListItem - item to add.\n"
-    "position        : [opt] integer - position of item to add. (0 adds to top, -1 adds to end[default])\n"
-    "\n"
+    "position        : [opt] integer - position of item to add. (NO Int = Adds to bottom,0 adds to top, 1 adds to one below from top,-1 adds to one above from bottom etc etc )\n"
+    "                                - If integer positions are greater than list size, negative positions will add to top of list, positive positions will add to bottom of list\n"
     "example:\n"
     "  - self.addItem('Reboot XBMC', 0)\n");
 
@@ -129,7 +129,7 @@ namespace PYXBMC
     if (!self->pWindow) return NULL;
 
     PyObject *pObject;
-    int itemPosition = -1;
+    int itemPosition = INT_MAX;
     if (!PyArg_ParseTuple(args, "O|i", &pObject, &itemPosition)) return NULL;
 
     string strText;
@@ -303,7 +303,7 @@ namespace PYXBMC
     "defaultskinname : [opt] string - name of the folder in the fallback path to look in for the xml. 'Default' is used if this is not set.\n"
     "forceFallback   : [opt] boolean - if true then it will look only in the defaultskinname folder.\n"
     );
-  
+
   PyMethodDef WindowXML_methods[] = {
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
     {"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
