@@ -438,9 +438,7 @@ void PAPlayer::Pause()
 
 void PAPlayer::SetVolume(long nVolume)
 {
-  CLog::Log(LOGDEBUG,"PAPlayer::SetVolume - volume: %d", nVolume);
    // Todo: Grrrr.... no volume level in alsa. We'll need to do the math ourselves.
-
   m_amp[m_currentStream].SetVolume(nVolume);
 
 }

@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
-#include "../DllAvCodec.h"
-#include "../../DVDDemuxers/DllAvFormat.h"
+#include "DllAvCodec.h"
+#include "DllSwScale.h"
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
@@ -33,5 +33,6 @@ protected:
   int m_iScreenHeight;
   
   DllAvCodec m_dllAvCodec;
-  DllAvUtil m_dllAvUtil;
+  DllAvUtil  m_dllAvUtil;
+  DllSwScale m_dllSwScale;
 };

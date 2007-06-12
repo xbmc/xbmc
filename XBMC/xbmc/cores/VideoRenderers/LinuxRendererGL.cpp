@@ -82,6 +82,8 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
+
+  m_rgbBuffer = NULL;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -545,6 +547,14 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
     return false;
 
   CreateYV12Texture(0);
+
+  if (m_rgbBuffer != NULL) {
+     delete [] m_rgbBuffer;
+     m_rgbBuffer = NULL;
+  }
+ 
+  m_rgbBuffer = new BYTE[width*height*4];
+
   return true;
 }
 
@@ -603,27 +613,35 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   m_image[source].flags = 0;
 
   // if we don't have a shader, fallback to SW YUV2RGB for now
-  /*
+  
+  bool bUseSoftwareScale = false;
+
   if (!m_shaderProgram)
   {
-    struct SwsContext *context = sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGBA, SWS_BICUBIC, NULL, NULL, NULL);
-    uint8_t *src[] = { m_image.plane[0], m_image.plane[1], m_image.plane[2] };
-    int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2] };
-    uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0 };
-    int     dstStride[] = { m_backbuffer->pitch, 0, 0 };
-    int ret = sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
+    CLog::Log(LOGDEBUG, "CLinuxRenderer::ReleaseImage - before swscale");
+    struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGBA, SWS_BICUBIC, NULL, NULL, NULL);
+    uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
+    int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
+    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
+    int     dstStride[] = { im.width * im.height * 8, 0, 0 };
+    int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
     CLog::Log(LOGDEBUG, "CLinuxRenderer::ReleaseImage - scale returned %d",ret);
-    sws_freeContext(context);
+    m_dllSwScale.sws_freeContext(context);
+  
+    bUseSoftwareScale = true;
   }
-  */
+  
   
   g_graphicsContext.BeginPaint(m_pBuffer);
   glEnable(GL_TEXTURE_2D);
   VerifyGLState();
   glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+  if (bUseSoftwareScale)
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_rgbBuffer);
+  else
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
   if (m_shaderProgram)
   {    
@@ -794,6 +812,10 @@ unsigned int CLinuxRendererGL::PreInit()
   if (!ValidateRenderTarget())
     return false;
 
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) 
+	CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
+
+  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
   if (!m_shaderProgram && glCreateProgram)
   {
@@ -958,6 +980,12 @@ void CLinuxRendererGL::UnInit()
     delete m_pBuffer;
     m_pBuffer = 0;
   } 
+
+  if (m_rgbBuffer != NULL) { 
+     delete [] m_rgbBuffer;
+     m_rgbBuffer = NULL;
+  }
+
 }
 
 void CLinuxRendererGL::Render(DWORD flags)
