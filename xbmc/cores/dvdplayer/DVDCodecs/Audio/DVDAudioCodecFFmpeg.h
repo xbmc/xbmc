@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-#include "../DllAvCodec.h"
-#include "../../DVDDemuxers/DllAvFormat.h"
+#include "DllAvCodec.h"
+#include "DllAvFormat.h"
 
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {

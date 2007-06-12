@@ -3,7 +3,7 @@
 
 #include "DVDDemux.h"
 #include "DllAvFormat.h"
-#include "../DVDCodecs/DllAvCodec.h"
+#include "DllAvCodec.h"
 
 class CDemuxStreamVideoFFmpeg : public CDemuxStreamVideo
 {

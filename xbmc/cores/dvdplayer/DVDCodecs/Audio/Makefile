@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../../ -I../../../../ -I../../../../linux -I../../../../../guilib
+INCLUDES=-I. -I../../ -I../../.. -I../../../ffmpeg -I../../../../ -I../../../../linux -I../../../../../guilib
 
 SRCS=DVDAudioCodecFFmpeg.cpp DVDAudioCodecLiba52.cpp DVDAudioCodecLibDts.cpp DVDAudioCodecLibFaad.cpp DVDAudioCodecLibMad.cpp DVDAudioCodecLPcm.cpp DVDAudioCodecPassthrough.cpp DVDAudioCodecPcm.cpp
 

@@ -2,6 +2,9 @@
 #define LINUXRENDERERGL_RENDERER
 
 #include "../../../guilib/Surface.h"
+#include "ffmpeg/DllSwScale.h"
+#include "ffmpeg/DllAvCodec.h"
+
 using namespace Surface;
 
 #define NUM_BUFFERS 3
@@ -203,6 +206,12 @@ protected:
 
   // clear colour for "black" bars
   DWORD m_clearColour;
+
+  // software scale libraries (fallback if required gl version is not available)
+  DllAvUtil   m_dllAvUtil;
+  DllAvCodec  m_dllAvCodec;
+  DllSwScale  m_dllSwScale;
+  BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
 
   static void TextureCallback(DWORD dwContext);
 

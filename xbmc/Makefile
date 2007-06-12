@@ -1,4 +1,4 @@
-INCLUDES=-I. -Ilinux -I../guilib
+INCLUDES=-I. -Ilinux -Icores -I../guilib
 
 PCH=stdafx.h
 
