@@ -291,7 +291,7 @@ public:
   void Clear();
   void ClearKeepPointer();
   void Add(CFileItem* pItem);
-  void AddFront(CFileItem* pItem);
+  void AddFront(CFileItem* pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
   CFileItem* Get(int iItem);
