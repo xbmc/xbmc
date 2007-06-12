@@ -194,6 +194,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
 
 void CDVDVideoCodecFFmpeg::Reset()
 {
+  try {
+
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
 
   if (m_pConvertFrame)
@@ -201,6 +203,10 @@ void CDVDVideoCodecFFmpeg::Reset()
     delete[] m_pConvertFrame->data[0];
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
+  }
+
+  } catch (win32_exception e) {
+    e.writelog(__FUNCTION__);
   }
 }
 
