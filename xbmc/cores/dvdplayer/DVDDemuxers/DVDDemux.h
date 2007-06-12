@@ -6,7 +6,7 @@ class CDVDInputStream;
 #ifndef _LINUX
 enum CodecID;
 #else
-#include "../ffmpeg/avcodec.h"
+#include "avcodec.h"
 #endif
 
 enum StreamType
