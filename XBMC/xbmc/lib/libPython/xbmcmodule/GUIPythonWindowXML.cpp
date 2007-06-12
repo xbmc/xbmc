@@ -176,11 +176,18 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 
 void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
 {
-  if (itemPosition == 0)
-    m_vecItems.AddFront(fileItem);
-  else
+  if (itemPosition == INT_MAX || itemPosition > m_vecItems.Size())
+  {
     m_vecItems.Add(fileItem);
-
+  }
+  else if (itemPosition <  -1 &&  !(itemPosition*-1 < m_vecItems.Size()))
+  {
+    m_vecItems.AddFront(fileItem,0);
+  } 
+  else
+  {
+    m_vecItems.AddFront(fileItem,itemPosition);
+  }
   m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
 }
