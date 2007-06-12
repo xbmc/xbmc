@@ -364,7 +364,7 @@ while(stream_fill_buffer(s) > 0 && pos >= 0) {
 
 void stream_reset(stream_t *s){
   if(s->eof){
-    s->pos=0; //ftell(f);
+//    s->pos=0; //ftell(f);
 //    s->buf_pos=s->buf_len=0;
     s->eof=0;
   }
