@@ -17,25 +17,15 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#ifndef HAS_SDL_OPENGL
+
 #include "stdafx.h"
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
 #include "../../XBVideoConfig.h"
 #include "TextureManager.h"
-
-#ifndef USE_SDL_OVERLAY
-#ifdef HAS_SWSCALE
-#undef HAVE_AV_CONFIG_H
-extern "C" {
-#include "swscale.h"
-#include "rgb2rgb.h"
-}
-#endif
-#else
-#include <SDL/SDL.h>
-#endif
-
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -95,9 +85,6 @@ CLinuxRenderer::CLinuxRenderer()
   m_texture = NULL; 
 #endif
 
-#ifdef HAS_SWSCALE
-  sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-#endif
 
 #endif
 
@@ -881,69 +868,19 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
 
   SDL_LockSurface(m_backbuffer);
 
-#ifdef HAS_SWSCALE
   // transform from YUV to RGB
-  struct SwsContext *context = sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGBA, SWS_BICUBIC, NULL, NULL, NULL);
+  struct SwsContext *context = m_dllSwScale.sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
   uint8_t *src[] = { m_image.plane[0], m_image.plane[1], m_image.plane[2] };
   int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2] };
   uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0 };
   int     dstStride[] = { m_backbuffer->pitch, 0, 0 };
-  int ret = sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
+  int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
 
-  CLog::Log(LOGDEBUG, "CLinuxRenderer::ReleaseImage - scale returned %d",ret);
-
-  sws_freeContext(context);
-#endif
-
-// convert YUV to RGB. straight forward conversion - this is only good for tests 
-#if 0
-  float nByPerPixY = (float)m_image.stride[0] / m_image.width;
-  float nByPerPixU = (float)m_image.stride[1] / m_image.width;
-  float nByPerPixV = (float)m_image.stride[1] / m_image.width;
-  
-  unsigned char *byLineStartY = m_image.plane[0];
-  unsigned char *byLineStartU = m_image.plane[0];
-  unsigned char *byLineStartV = m_image.plane[0];
-
-  unsigned char *result = (unsigned char *)m_backbuffer->pixels;
-
-  for (int nLine=0; nLine < m_image.height; nLine++) {
-     int nYIndex = 0;
-     int nUIndex = 0;
-     int nVIndex = 0;
-     
-     for (int nPixel=0; nPixel<m_image.width; nPixel++ ) {
-        nYIndex = (int)((float)nPixel * nByPerPixY); 
-        nUIndex = (int)((float)nPixel * nByPerPixU); 
-        nVIndex = (int)((float)nPixel * nByPerPixV); 
-
-        unsigned char y = *(byLineStartY + nYIndex);
-        unsigned char u = *(byLineStartU + nUIndex);
-        unsigned char v = *(byLineStartV + nVIndex);
-
-        unsigned char b = 1.164*((float)y - 16.0) + 2.018*((float)u - 128.0);
-        unsigned char g = 1.164*((float)y - 16.0) + 0.813*((float)v - 128.0) + 0.391*((float)u - 128.0);
-        unsigned char r = 1.164*((float)y - 16.0) + 1.596*((float)v - 128.0);
-
-	*result = r;
-	result++;       
-	*result = g;
-	result++;       
-	*result = b;
-	result++;       
-	*result = 0;
-	result++;       
-     } 
-
-     byLineStartY += m_image.stride[0];
-     byLineStartU += m_image.stride[1];
-     byLineStartV += m_image.stride[2];
-     
-  }
-#endif
+  m_dllSwScale.sws_freeContext(context);
 
   SDL_UnlockSurface(m_backbuffer);
 
+  FlipPage(0);
 #endif
 
 
@@ -993,7 +930,6 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 void CLinuxRenderer::FlipPage(int source)
 {  
 #warning TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV). 
-
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
@@ -1078,6 +1014,11 @@ unsigned int CLinuxRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
+        CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
+
+  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
   return 0;
 }
@@ -1400,4 +1341,4 @@ void CLinuxRenderer::CreateThumbnail(SDL_Surface * surface, unsigned int width, 
 #endif
 }
 
-
+#endif // HAS_SDL_OPENGL
