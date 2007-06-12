@@ -4,7 +4,7 @@
 #ifndef _LINUX
 enum CodecID;
 #else
-#include "../../ffmpeg/avcodec.h"
+#include "ffmpeg/avcodec.h"
 #endif
 
 struct AVStream;
