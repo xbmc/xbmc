@@ -506,6 +506,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     {
       delete m_pBuffer;
       m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
+      if (m_pBuffer->IsValid())
+        CLog::Log(LOGNOTICE, "GL: Created non-pbuffer OpenGL context");
     }
   }
   if (m_pBuffer && m_pBuffer->IsValid())
@@ -514,6 +516,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     m_pBuffer->GetGLVersion(maj, min);
     if (maj<2)
     {
+      CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
       if (!glewIsSupported("GL_ARB_texture_rectangle"))
       {
         CLog::Log(LOGERROR, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
@@ -527,9 +530,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       glEnable(GL_TEXTURE_RECTANGLE_ARB);
     } else {
       CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
+      m_renderMethod |= RENDER_POT;
     }
   }
   else {
+    CLog::Log(LOGERROR, "GL: Could not create OpenGL context that is required for video playback");
     return false;
   }
   return true;
@@ -599,6 +604,8 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   image->flags = m_image[source].flags;
   image->cshift_x = m_image[source].cshift_x;
   image->cshift_y = m_image[source].cshift_y;
+  image->texcoord_x = m_image[source].texcoord_x;
+  image->texcoord_y = m_image[source].texcoord_y;
 
   return 0;
 }
@@ -620,7 +627,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   // if we don't have a shader, fallback to SW YUV2RGB for now
   
-  if (m_renderMethod==RENDER_SW)
+  if (m_renderMethod & RENDER_SW)
   {
     struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
     uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
@@ -638,12 +645,12 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   VerifyGLState();
   glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
-  if (m_renderMethod==RENDER_SW)
+  if (m_renderMethod & RENDER_SW)
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
   else
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
-  if (m_renderMethod==RENDER_GLSL)
+  if (m_renderMethod & RENDER_GLSL)
   {    
     glBindTexture(m_textureTarget, fields[0][1]);
     VerifyGLState();
@@ -941,10 +948,11 @@ unsigned int CLinuxRendererGL::PreInit()
     CLog::Log(LOGNOTICE, "GL: Successfully loaded GLSL shader");
     m_renderMethod = RENDER_GLSL;
   } else if (glewIsSupported("GL_ARB_fragment_shader")) {    
+    // TODO
     CLog::Log(LOGNOTICE, "GL: Could not create GLSL shader since glCreateProgram not present");
-    m_renderMethod = RENDER_SW;
+    m_renderMethod = RENDER_SW | RENDER_POT;
   } else {
-    m_renderMethod = RENDER_SW;
+    m_renderMethod = RENDER_SW | RENDER_POT;
     CLog::Log(LOGNOTICE, "GL: Could not create ARB shader since GL_ARB_fragment_shader not present, falling back to SW colorspace conversion");
   }
 
@@ -1144,6 +1152,8 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 {
   //CSingleLock lock(g_graphicsContext);
   int index = 0; //m_iYV12RenderBuffer;
+  YV12Image &im = m_image[index];
+
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
@@ -1163,7 +1173,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-  if (m_renderMethod==RENDER_GLSL)
+  if (m_renderMethod & RENDER_GLSL)
   {
     static GLfloat brightness = 0;
     static GLfloat contrast   = 0;
@@ -1199,82 +1209,82 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   
   if (m_textureTarget==GL_TEXTURE_2D)
   {
-    // Use OpenGL 2.0 supported NPOT textures (regulard normalized texture coordinates)
+    // Use regular normalized texture coordinates
 
     glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
-        glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
-      }
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
+      glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
+    }
     glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
     
-    glMultiTexCoord2f(GL_TEXTURE0, 1, 0);
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, 1, 0);
-        glMultiTexCoord2f(GL_TEXTURE2, 1, 0);
-      }
+    glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, 0);
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, im.texcoord_x, 0);
+      glMultiTexCoord2f(GL_TEXTURE2, im.texcoord_x, 0);
+    }
     glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
     
-    glMultiTexCoord2f(GL_TEXTURE0, 1, 1);
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, 1, 1);
-        glMultiTexCoord2f(GL_TEXTURE2, 1, 1);
-      }
+    glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, im.texcoord_x, im.texcoord_y);
+      glMultiTexCoord2f(GL_TEXTURE2, im.texcoord_x, im.texcoord_y);
+    }
     glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
     
-    glMultiTexCoord2f(GL_TEXTURE0, 0, 1);
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, 0, 1);
-        glMultiTexCoord2f(GL_TEXTURE2, 0, 1);
-      }
+    glMultiTexCoord2f(GL_TEXTURE0, 0, im.texcoord_y);
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, 0, im.texcoord_y);
+      glMultiTexCoord2f(GL_TEXTURE2, 0, im.texcoord_y);
+    }
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
   }  else {
 
-    // Use supported rectangle texture extension (texture coordinates)
-    // are not normalized
+    // Use supported rectangle texture extension (texture coordinates
+    // are not normalized)
 
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.top );
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
-        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-      }
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
+      glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    }
     glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
     
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.top );
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-      }
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+      glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    }
     glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
     
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-      }
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+      glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    }
     glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
     
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
-    if (m_renderMethod==RENDER_GLSL)
-      {
-        glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-        glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-      }
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+      glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    }
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
   }
   glEnd();
 
   VerifyGLState();
 
-  if (m_renderMethod==RENDER_GLSL)
+  if (m_renderMethod & RENDER_GLSL)
   {
     glUseProgram(0);
     VerifyGLState();
@@ -1307,8 +1317,10 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
   /* finish up all textures, and delete them */
   g_graphicsContext.BeginPaint(m_pBuffer);
-  for(int f = 0;f<MAX_FIELDS;f++) {
-    for(int p = 0;p<MAX_PLANES;p++) {
+  for(int f = 0;f<MAX_FIELDS;f++) 
+  {
+    for(int p = 0;p<MAX_PLANES;p++) 
+    {
       if( fields[f][p] )
       {
 	if (glIsTexture(fields[f][p]))
@@ -1363,12 +1375,16 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 
   im.cshift_x = 1;
   im.cshift_y = 1;
+  im.texcoord_x = 1.0;
+  im.texcoord_y = 1.0;
 
   g_graphicsContext.BeginPaint(m_pBuffer);
 
   glEnable(m_textureTarget);
-  for(int f = 0;f<MAX_FIELDS;f++) {
-    for(p = 0;p<MAX_PLANES;p++) {
+  for(int f = 0;f<MAX_FIELDS;f++) 
+  {
+    for(p = 0;p<MAX_PLANES;p++) 
+    {
       if (!glIsTexture(fields[f][p])) 
       {
 	glGenTextures(1, &fields[f][p]);
@@ -1380,17 +1396,34 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   // YUV 
   p = 0;
   glBindTexture(m_textureTarget, fields[0][0]);
-  if (m_renderMethod==RENDER_SW)
-    glTexImage2D(m_textureTarget, 0, GL_RGBA, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  if (m_renderMethod & RENDER_SW)
+  {
+    // require Power Of Two textures?
+    if (m_renderMethod & RENDER_POT)
+    {
+      static unsigned long np2x = 0, np2y = 0;
+      np2x = NP2(im.width);
+      np2y = NP2(im.height);
+      CLog::Log(LOGNOTICE, "GL: Creating power of two texture of size %d x %d", np2x, np2y);
+      glTexImage2D(m_textureTarget, 0, GL_RGBA, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      im.texcoord_x = ((float)im.width / (float)np2x);
+      im.texcoord_y = ((float)im.height / (float)np2y);
+    }
+    else
+    {
+      glTexImage2D(m_textureTarget, 0, GL_RGBA, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+    }
+  }
   else
     glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
   VerifyGLState();
 
-  if (m_renderMethod==RENDER_GLSL)
+  if (m_renderMethod & RENDER_GLSL)
   {
     glBindTexture(m_textureTarget, fields[0][1]);
     glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
