@@ -89,6 +89,13 @@ struct YUVCOEF
   float b_up, b_vp;
 };
 
+enum RenderMethod
+{
+  RENDER_GLSL,
+  RENDER_ARB,
+  RENDER_SW
+};
+
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
 extern YUVCOEF yuv_coef_bt601;
@@ -161,6 +168,7 @@ protected:
 
   bool m_bConfigured;
   GLenum m_textureTarget;
+  RenderMethod m_renderMethod;
 
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];

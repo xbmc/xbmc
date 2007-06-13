@@ -249,9 +249,9 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 
   CSingleLock lock2(g_graphicsContext);
 #ifdef HAS_SDL_OPENGL
-  if( 0 /*disable async renderer*/)
+  if( 0 ) /*disable async renderer*/
 #else
-  if( g_graphicsContext.IsFullScreenVideo() && 0 /*disable async renderer*/)
+  if( g_graphicsContext.IsFullScreenVideo() )
 #endif
   {
     lock2.Leave();
@@ -261,11 +261,10 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     g_graphicsContext.ReleaseCurrentContext();
     if( CThread::ThreadHandle() == NULL ) CThread::Create();
     m_eventFrame.Set();
-    Sleep(1); // allow thread to yield FIXME: ideally not needed
   }
   else
   {
-    g_graphicsContext.ReleaseCurrentContext();
+    //g_graphicsContext.ReleaseCurrentContext();
     lock2.Leave();
 
     /* if we are not in fullscreen, we don't control when we render */
@@ -472,7 +471,6 @@ void CXBoxRenderManager::Process()
       CLog::Log(LOGERROR, "CLinuxRendererGL::Process() - Exception thrown in flippage");
     }
     m_eventPresented.Set();
-    Sleep(1);  // allow thread to yield FIXME: ideally not needed
     const int TC = 100; /* time (frame) constant for convergence */
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }
