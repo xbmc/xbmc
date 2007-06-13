@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Date of translation: 06/03/2007-->
 <!--$Revision$-->
-<!--Based on English rev. 7486-->
+<!--Based on english strings version 9182-->
 <strings>
   <string id="0">Mine Programmer</string>
   <string id="1">Mine Bilder</string>
@@ -48,8 +50,6 @@
   <string id="110">Lag miniatyrbilder</string>
   <string id="111">Snarveier</string>
   <string id="112">PAUSE</string>
-  <string id="113">Mine Filer : Kilde</string>
-  <string id="114">Mine Filer : Destinasjon</string>
   <string id="115">Kopiér</string>
   <string id="116">Flytt</string>
   <string id="117">Slett</string>
@@ -223,7 +223,7 @@
   <string id="290">Dynamisk volumutjevning</string>
   <string id="291">Bilde</string>
   <string id="292">Lyd</string>
-  <string id="293">Tekster</string>
+  <string id="293">Bla etter Tekster</string>
   <string id="294">Lag bokmerke</string>
   <string id="296">Slett bokmerker</string>
   <string id="297">Lydforsinkelse</string>
@@ -329,7 +329,6 @@
   <string id="406">Fuktighet</string>
   <string id="407">Fra</string>
   <string id="408">med</string>
-
   <string id="410">Kobler til Weather.com</string>
   <string id="411">Henter værdata for:</string>
   <string id="412">Kunne ikke hente værdata</string>
@@ -338,10 +337,6 @@
   <string id="415">Laster ned miniatyrbilde...</string>
   <string id="416">Ikke tilgengelig</string>
   <string id="417">Viser: St. ikoner</string>
-  <string id="418">Filmer/Sjangre</string>
-  <string id="419">Filmer/Skuespillere</string>
-  <string id="420">Filmer/Årstall</string>
-  <string id="421">Filmer/Tittel</string>
   <string id="422">Slett albuminformasjon</string>
   <string id="423">Slett CDDB info</string>
   <string id="424">Velg</string>
@@ -353,8 +348,7 @@
   <string id="430">Sortering: DVD#</string>
   <string id="431">Ingen hurtigbufring</string>
   <string id="432">Slett film fra database</string>
-  <string id="433">Er du sikker på at du vil slette</string>
-  <string id="434">filmen?</string>
+  <string id="433">Er du sikker på at du vil slette '%s'?</string>
   <string id="435">Spor</string>
   <string id="436">År:</string>
   <string id="437">Lengde:</string>
@@ -454,7 +448,10 @@
   <string id="538">Store ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
-
+  <string id="541">Album Ikoner</string>
+  <string id="542">DVD Ikoner</string>
+  <string id="543">DVD</string>
+  <string id="544">Media Info</string>
   <string id="550">Sorter etter: %s</string>
   <string id="551">Navn</string>
   <string id="552">Dato</string>
@@ -471,13 +468,19 @@
   <string id="563">Karakter</string>
   <string id="564">Type</string>
   <string id="565">Bruk</string>
-
+  <string id="566">Album Artist</string>
+  <string id="567">Avspillings Teller</string>
+  <string id="568">Siste Avspillt</string>
+  <string id="569">Kommentar</string>
+  <string id="570">Dato Opprettet</string>
   <string id="580">Sorteringsrettning</string>
   <string id="581">Sorteringsmetode</string>
   <string id="582">Visningsmodus</string>
   <string id="583">Husk visninger for forskjellige mapper</string>
   <string id="584">Stigende</string>
   <string id="585">Synkende</string>
+  <string id="586">Rediger Spilleliste</string>
+  <string id="587">Filter</string>
   <string id="588">Avbryt partymodus</string>
 
   <string id="589">Partymodus</string>
@@ -526,7 +529,19 @@
   <string id="644">Fjern sorte felt</string>
   <string id="645">Må pakke opp en stor fil. Fortsette?</string>
   <string id="646">Fjern fra database</string>
-
+  <string id="647">Eksporter Video Database</string>
+  <string id="648">Importer Video Database</string>
+  <string id="649">Importerer</string>
+  <string id="650">Eksporterer</string>
+  <string id="651">Bla etter Databasen</string>
+  <string id="652">År</string>
+  <string id="653">Oppdater Database</string>
+  <string id="654">Vis Debug Informasjon</string>
+  <string id="655">Bla etter Kjørbar Fil</string>
+  <string id="656">Bla etter Spilleliste</string>
+  <string id="657">Bla etter Mappe</string>
+  <string id="658">Sang Informasjon</string>
+  <string id="659">Kommentar:</string>
   <string id="700">Rydder opp i databasen</string>
   <string id="701">Fjerner gamle sanger fra databasen</string>
   <string id="702">Denne katalogen har blitt skannet før.</string>
@@ -583,7 +598,6 @@
   <string id="755">Rediger programbane</string>
   <string id="756">Rediger programnavn</string>
   <string id="757">Rediger banedybde</string>
-  <string id="758">Fjerner programlink</string>
   <string id="759">Vis: Stor liste</string>
   <string id="760">Gul</string>
   <string id="761">Hvit</string>
@@ -600,7 +614,6 @@
   <string id="772">Lyd-maskinvare</string>
   <string id="773">Søker</string>
   <string id="774">Mappe for bildevisning</string>
-
   <string id="998">XLink Kai</string>
   <string id="999">Spill på nettet</string>
   <string id="1000">Forhåndsvisning av skjermbeskytter</string>
@@ -618,7 +631,7 @@
   <string id="1012">Delt mappe</string>
   <string id="1013">Port</string>
   <string id="1014">Brukernavn</string>
-  <string id="1015">nettverksserver</string>
+  <string id="1015">Bla etter Netverks Server</string>
   <string id="1016">Skriv inn adressen til serveren</string>
   <string id="1017">Skriv inn banen på serveren</string>
   <string id="1018">Skriv inn pornummeret</string>
@@ -633,17 +646,18 @@
   <string id="1027">Rediger kilde</string>
   <string id="1028">Rediger %s Kilde</string>
   <string id="1029">Skriv inn et nytt navn</string>
-  <string id="1030">et bilde</string>
-  <string id="1031">en bildemappe</string>
+  <string id="1030">Bla etter Bilde</string>
+  <string id="1031">Bla etter Bilde Mappe</string>
   <string id="1032">Legg til nettverkssted...</string>
-
+  <string id="1033">Bla etter Fil</string>
+  <string id="1034">UndeMeny</string>
+  <string id="1035">Aktiver UnderMeny Knapper</string>
+  <string id="1036">Favortitter</string>
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
   <string id="1203">Standard brukernavn</string>
   <string id="1204">Standard passord</string>
-
   <string id="1207">WINS-server</string>
-
   <string id="1210">Fjern</string>
   <string id="1211">Musikk</string>
   <string id="1212">Video</string>
@@ -668,20 +682,16 @@
   <string id="1233">Programmer &amp; Video &amp; Musikk</string>
   <string id="1234">Programmer &amp; Bilder &amp; Musikk</string>
   <string id="1235">Programmer &amp; Bilder &amp; Video</string>
-
   <string id="1245">FTP brukernavn</string>
   <string id="1246">FTP passord</string>
   <string id="1247">Brukerpassord ble endret</string>
-
   <string id="1250">Autooppdagelse</string>
   <string id="1251">Xbox autooppdagelse</string>
   <string id="1252">Kallenavn</string>
-  <string id="1253">Lag FTP link i Mine filer</string>
   <string id="1254">Spør om det skal kobles til</string>
   <string id="1255">Send FTP brukernavn og passord</string>
   <string id="1256">Ping-intervall</string>
   <string id="1257">Ønsker du å koble til den oppdagede XBOX'en?</string>
-
   <string id="1396">Forbigående</string>
   <string id="1397">og</string>
   <string id="1398">Kjølig</string>
@@ -692,7 +702,8 @@
   <string id="1403">Sol</string>
   <string id="1404">Tunge</string>
   <string id="1405">i</string>
-  <string id="1406"></string>
+  <string id="1406">
+  </string>
   <string id="1407">nærheten</string>
   <string id="1408">Is</string>
   <string id="1409">krystaller</string>
@@ -701,9 +712,7 @@
   <string id="1412">vind</string>
   <string id="1413">yr</string>
   <string id="2050">Spilletid:</string>
-
   <string id="4501">LCD-type</string>
-
   <string id="10000">Forside</string>
   <string id="10001">Mine programmer</string>
   <string id="10002">Mine bilder</string>
@@ -725,16 +734,10 @@
   <string id="10018">Settings-&gt;Nettverk</string>
   <string id="10019">Settings-&gt;Utseende</string>
   <string id="10020">Skript</string>
-  <string id="10021">Mine filmer/sjanger</string>
-  <string id="10022">Mine filmer/skuespiller</string>
-  <string id="10023">Mine filmer/år</string>
-  <string id="10025">Mine filmer/tittel</string>
   <string id="10028">Mine filmer/spilleliste</string>
   <string id="10034">Innstillinger-&gt;Profiler</string>
-
   <string id="10100">Ja/nei-dialog</string>
   <string id="10101">Progresjonsdialog</string>
-
   <string id="10500">Min musikk/spilleliste</string>
   <string id="10501">Min musikk/filer</string>
   <string id="10502">Min musikk/bibliotek</string>
@@ -747,20 +750,11 @@
   <string id="10509">Spilling over nettverk</string>
   <string id="10510">Tillegg</string>
   <string id="10511">Systeminformasjon</string>
-  <string id="10512">Min musikk - Album</string>
-  <string id="10513">Min musikk - Artist</string>
-  <string id="10514">Min musikk - Sjanger</string>
-  <string id="10515">Min musikk - Topp 100</string>
   <string id="10516">Min musikk - Bibliotek</string>
   <string id="10517">Min musikk - Spiller nå</string>
-  <string id="10518">Min video - Skuespiller</string>
-  <string id="10519">Min video - Sjanger</string>
-  <string id="10520">Min video - Tittel</string>
-  <string id="10521">Min video - År</string>
   <string id="10522">Min video - Spiller nå</string>
   <string id="10523">Albuminfo</string>
   <string id="10524">Filminfo</string>
-
   <string id="12000">Velgedialog</string>
   <string id="12001">Min musikk/info</string>
   <string id="12002">Dialog OK</string>
@@ -768,7 +762,6 @@
   <string id="12004">Mine skript/info</string>
   <string id="12005">Fullskjermsvideo</string>
   <string id="12006">Lydvisualisering</string>
-  <string id="12007">Mine bilder/fremvisning</string>
   <string id="12008">Filstablingsdialog</string>
   <string id="12009">Gjenoppbygg index...</string>
   <string id="12010">Returner til Min musikk</string>
@@ -842,18 +835,14 @@
   <string id="12384">24-timers klokke</string>
   <string id="12385">Dag/Måned</string>
   <string id="12386">Måned/Dag</string>
-  <string id="12387">Skann database på nytt</string>
   <string id="12390">Systemets oppetid</string>
   <string id="12391">Minutter</string>
   <string id="12392">Timer</string>
   <string id="12393">Dager</string>
   <string id="12394">Total oppetid</string>
-
   <string id="12600">Været</string>
-
   <string id="12900">Skjermbeskytter</string>
   <string id="12901">Fullskjerm OSD</string>
-
   <string id="13000">System</string>
   <string id="13001">Skru av harddisk umiddelbart</string>
   <string id="13002">Kun video</string>
@@ -861,9 +850,8 @@
   <string id="13004">- Minimum filvarighet</string>
   <string id="13005">Slå av</string>
   <string id="13006">Dashbord</string>
-
+  <string id="13007">Bruk Egen sti til Dashbord</string>
   <string id="13100">Flimmerfilter</string>
-
   <string id="13150">HDD-nøkkel:</string>
   <string id="13151">HDD-temperatur:</string>
   <string id="13152">DVD-modell:</string>
@@ -883,10 +871,12 @@
   <string id="13166">Headset/mikrofon på port:</string>
   <string id="13167">Minnepinne på port:</string>
   <string id="13168">Fjernkontroll på port:</string>
+  <string id="13169">Kontroller Port</string>
   <string id="13170">Aldri</string>
   <string id="13171">Umiddelbart</string>
   <string id="13172">Etter %i sek</string>
-
+  <string id="13173">HardDisk Installert Dato:</string>
+  <string id="13174">HardDisk Startet:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Vil du slette profilen '%s'?</string>
   <string id="13204">Sist lastede profil:</string>
@@ -1097,7 +1087,11 @@
   <string id="14071">Tillat sletting av filer og endring av filnavn</string>
   <string id="14072">Skru på XLink Kai</string>
   <string id="14073">XLink Kai er ikke skrudd på.</string>
-
+  <string id="14074">Sett Tidsone</string>
+  <string id="14075">Bruk Sommertid</string>
+  <string id="14076">Legg til Favoritter</string>
+  <string id="14077">Fjern fra Favoritter</string>
+  <string id="14078">Skin Farger</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Tjenesten er ikke tilkoblet</string>
   <string id="15002">Forsøke å koble til?</string>
@@ -1172,14 +1166,13 @@
   <string id="15109">Standard for skinnet</string>
   <string id="15111">Skinets tema</string>
   <string id="15112">Standard tema</string>
-
   <string id="15200">Last.FM</string>
   <string id="15201">Send sanger til Last.FM</string>
   <string id="15202">Last.FM brukernavn</string>
   <string id="15203">Last.FM passord</string>
   <string id="15204">Kunne ikke koble til: i dvale...</string>
   <string id="15205">Vennligst oppdater XBMC</string>
-  <string id="15206">Feil ved autorisasjon: sjekk brukernavn og passord</string>
+  <string id="15206">Feil ved autorisasjon: Sjekk brukernavn og passord</string>
   <string id="15207">Koblet til</string>
   <string id="15208">Ikke tilkoblet</string>
   <string id="15209">Send interval %i</string>
@@ -1189,7 +1182,6 @@
   <string id="15213">Spill med...</string>
   <string id="15214">Bruk utjevnet A/V-synkronisering</string>
   <string id="15215">Skjul finavn i miniatyrvisning</string>
-
   <string id="15250">Send inn Last.fm Radio til Last.FM</string>
   <string id="15251">Kobler til Last.FM...</string>
   <string id="15252">Velger stasjon...</string>
@@ -1225,7 +1217,6 @@
   <string id="15282">Skriv inn ent tag-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
   <string id="15284">Hør på %name%'s anbefalinger på Last.FM radio</string>
-
   <string id="15300">Bane ikke funnet eller ugyldig</string>
   <string id="15301">Kunne ikke koble til nettverksserver</string>
   <string id="15302">Ingen servere funnet</string>
@@ -1239,7 +1230,7 @@
   <string id="16002">CDDB-søk</string>
   <string id="16003">Spiller</string>
   <string id="16004">Spill media fra plate</string>
-
+  <string id="16008">Skriv Inn Ny Tittel</string>
   <string id="16009">Skriv inn filmens navn</string>
   <string id="16010">Skriv inn profilnavnet</string>
   <string id="16011">Skriv inn albumets navn</string>
@@ -1282,7 +1273,7 @@
   <string id="16201">Kopiering feilet</string>
   <string id="16202">Feilet ved kopiering av minst én fil</string>
   <string id="16203">Flytting feilet</string>
-  <string id="16204">Feilet ved flytting av minst én fil</string>  
+  <string id="16204">Feilet ved flytting av minst én fil</string>
   <string id="16205">Sletting feilet</string>
   <string id="16206">Feilet ved sletting av minst én fil</string>
 
@@ -1296,7 +1287,6 @@
   <string id="20007">Opptak</string>
   <string id="20008">Skjermbilder</string>
   <string id="20009">Bruk XBMC</string>
-  <string id="20010">Artistbilde</string>
   <string id="20011">Musikk-spillelister</string>
   <string id="20012">Video-spillelister</string>
   <string id="20013">Ønsker du å starte spillet?</string>
@@ -1308,7 +1298,8 @@
   <string id="20019">Velg bilde</string>
   <string id="20020">Kan ikke bruke både KAI og trainer</string>
   <string id="20021">Velg hvilken du vil bruke</string>
-  <string id="20022"></string>
+  <string id="20022">
+  </string>
   <string id="20023">Konflikt</string>
   <string id="20024">Skann nye</string>
   <string id="20025">Skann alle</string>
@@ -1331,7 +1322,6 @@
   <string id="20053">Forlot mastermodus</string>
   <string id="20054">Gikk i mastermodus</string>
   <string id="20055">Allmusic.com bilde</string>
-  <string id="20056">Kildebilde</string>
   <string id="20057">Fjern bilde</string>
   <string id="20058">Legg til profil...</string>
   <string id="20059">Hent info for alle albumer</string>
@@ -1375,7 +1365,7 @@
   <string id="20097">Henter albuminfo</string>
   <string id="20098">Henter info for albumer</string>
   <string id="20099">Kan ikke rippe CD eller spor ved avspilling av CD</string>
-  <string id="20100">Masterkode og låser</string> 
+  <string id="20100">Masterkode og låser</string>
   <string id="20101">Angivelse av masterkode aktiverer alltid mastermodus</string>
   <string id="20102">eller kopier fra standard?</string>
   <string id="20103">Lagre innstillinger i profil?</string>
@@ -1459,27 +1449,9 @@
   <string id="20182">Mellomrom</string>
   <string id="20183">Last skin om igjen</string>
   <string id="20184">Roter ihht EXIF-informasjon</string>
-  <string id="20185">Finner informasjon om maskinvaren</string>
   <string id="20186">Vennligst vent</string>
   <string id="20187">Leser verdier fra EEPROM</string>
   <string id="20188">Lesing fra EEPROM ferdig</string>
-  <string id="20189">Informasjon funnet</string>
-  <string id="20190">Finner informasjon om harddisken</string>
-  <string id="20191">Finner harddiskverdier</string>
-  <string id="20192">Finner harddiskens serienøkkel</string>
-  <string id="20193">Finner harddiskens temperatur</string>
-  <string id="20194">Finner informasjon DVD-spilleren</string>
-  <string id="20195">Finner modell/fastvare</string>
-  <string id="20196">Finner nettverksinnstillinger</string>
-  <string id="20197">Finner mac-adresse</string>
-  <string id="20198">Sjekker om Xbox'en er online</string>
-  <string id="20199">Finner Xbox'ens versjon, serienøkkel og prosessor</string>
-  <string id="20300">Finner Xbox'ens maskinvare</string>
-  <string id="20301">Finner modifiserignsbrikke</string>
-  <string id="20302">Finner BIOS</string>
-  <string id="20303">Finner prosessorens hastighet</string>
-  <string id="20304">Finner produksjonsdato</string>
-  <string id="20305">Finner tilkoblede enheter</string>
   <string id="20306">Ukjent. Vennligst legg til MD5 fra xbmc.log til BiosIDs.ini.</string>
   <string id="20307">Sekundær DNS</string>
   <string id="20308">DHCP-server:</string>
@@ -1502,10 +1474,135 @@
   <string id="20325">Nullstill kalibrering</string>
   <string id="20326">Dette vil sette kalibreringen for %s</string>
   <string id="20327">til dets standardverdier.</string>
-  <string id="20328">en bane å kopiere det lagrede spillet til</string>
-  <string id="20329">en bane å flytte det lagrede spillet til</string>
-
+  <string id="20328">Bla etter Destinasjon</string>
+  <string id="20330">Bruk Mappenavn for Søking</string>
+  <string id="20331">Fil</string>
+  <string id="20332">Bruk Fil eller Mappe navn for søking?</string>
+  <string id="20333">Sett Innhold</string>
+  <string id="20334">Mappe</string>
+  <string id="20335">Søk etter innhold i Rekkefølge?</string>
+  <string id="20336">Lås Opp Kilder</string>
+  <string id="20337">Skuespiller</string>
+  <string id="20338">Film</string>
+  <string id="20339">Instruktør</string>
+  <string id="20340">Vil du slette alt innhold i</string>
+  <string id="20341">denne stien fra databasen?</string>
+  <string id="20342">Filmer</string>
+  <string id="20343">TV Serier</string>
+  <string id="20344">Denne Mappen inneholder</string>
+  <string id="20345">Kjør Automatis Skanning</string>
+  <string id="20346">Skann I Rekkefølge</string>
+  <string id="20347">som</string>
+  <string id="20348">Instruktører</string>
+  <string id="20349">Ingen Video filer funnet i denne stien!</string>
+  <string id="20350">stemmer</string>
+  <string id="20351">TV Serier Informasjon</string>
+  <string id="20352">Episode Informasjon</string>
+  <string id="20353">Laster TV Serie detaljer</string>
+  <string id="20354">Henter Episode Guide</string>
+  <string id="20355">Laster Info For Episoder i Mappen</string>
+  <string id="20356">Velg TV Serie:</string>
+  <string id="20357">Skriv Inn TV Serie Navnet</string>
+  <string id="20358">Sesong %i</string>
+  <string id="20359">Episode</string>
+  <string id="20360">Episoder</string>
+  <string id="20361">Laster Episode Detaljer</string>
+  <string id="20362">Fjern Episode Fra Databasen</string>
+  <string id="20363">Fjern TV Serie fra Databasen</string>
+  <string id="20364">TV Serie</string>
+  <string id="20365">Episode Handling</string>
+  <string id="20366">* Alle Sesonger</string>
+  <string id="20367">Skjul Sette</string>
+  <string id="20368">Prod Kode</string>
+  <string id="20369">Skjul handling for usette episoder</string>
+  <string id="20370">* Skjult for ikke røpe handling *</string>
+  <string id="20371">Sett Sesong Miniatyrbilde</string>
+  <string id="20372">Sesong Bilde</string>
+  <string id="20373">Sesong</string>
+  <string id="20374">Laster Ned Video Informasjon</string>
+  <string id="20375">Fjern Innhold</string>
+  <string id="20376">Førstegang Sendt:</string>
+  <string id="20377">Oppdater TV Serie Informasjonen</string>
+  <string id="20378">Oppdater informasjon for alle episoder?</string>
+  <string id="20379">Mappen inneholder en TV Serie</string>
+  <string id="20380">Ekskluder scanning på mappenavn</string>
+  <string id="21330">Vis skjulte Filer og Mapper</string>
+  <string id="21331">TuxBox Klient</string>
+  <string id="21332">ADVCARSEL: TuxBoxen er i Opptaks Modus!</string>
+  <string id="21333">Streamingen vil bli Stoppet!</string>
+  <string id="21334">Zapp til Kanal: %s Feilet!</string>
+  <string id="21335">Vil du starte Streamingen?</string>
+  <string id="21336">Kobler opp til: %s</string>
+  <string id="21337">TuxBox Enhet</string>
+  <string id="21356">UPnP Musikk</string>
+  <string id="21357">UpnP Filmer</string>
+  <string id="21358">UPnP Bilder</string>
+  <string id="21359">Legg til Media Deling....</string>
+  <string id="21360">Aktiver UPnP Server</string>
+  <string id="21361">Administrer UPnP Musikk Delinger</string>
+  <string id="21362">Administrer UPnP Film Delinger</string>
+  <string id="21363">Administrer UPnP Bilder Delinger</string>
+  <string id="21364">Rediger Delt Media</string>
+  <string id="21365">Fjern Delt Media</string>
+  <string id="21366">Egen Tekst Mappe</string>
+  <string id="21367">Film &amp; Egen Tekst Mappe</string>
+  <string id="21370">Avspill Navigasjons Lyder Under Avspilling</string>
+  <string id="21371">MiniatyrBilde</string>
+  <string id="21372">Tving DVD Spiller Region</string>
+  <string id="21373">Video MaskinVare</string>
+  <string id="21374">Video Format</string>
+  <string id="21375">Normal</string>
+  <string id="21376">LetterBox</string>
+  <string id="21377">WideScreen</string>
+  <string id="21378">Aktiver 480p</string>
+  <string id="21379">Aktiver 720p</string>
+  <string id="21380">Aktiver 1080i</string>
+  <string id="21381">Skriv Inn Navn på Ny Spilleliste</string>
+  <string id="21382">Fjern Legg til ny Kilde knapp i Menyen</string>
+  <string id="21383">Aktiver Rullefelt</string>
+  <string id="21384">Aktiver "Sette" som mulig Filter</string>
+  <string id="21385">Åpne</string>
+  <string id="21386">Akustisk Instillings Nivå</string>
+  <string id="21387">Rask</string>
+  <string id="21388">Stille</string>
+  <string id="21390">StrømInstillings Nivå</string>
+  <string id="21391">Høyt Nivå</string>
+  <string id="21392">Lavt Nivå</string>
+  <string id="21393">Ventemodus Høy</string>
+  <string id="21394">Ventemodus Lavt</string>
+  <string id="21395">Ikke mulig å cache filer større en 4 GB</string>
+  <string id="21396">Kapittel</string>
+  <string id="21397">Høy Kvalitets Pixel Shader V2</string>
+  <string id="21398">Aktiver Spilleliste ved Oppstart</string>
+  <string id="21400">inneholder</string>
+  <string id="21401">inneholder ikke</string>
+  <string id="21402">er</string>
+  <string id="21403">er ikke</string>
+  <string id="21404">starter med</string>
+  <string id="21405">ender med</string>
+  <string id="21406">større en</string>
+  <string id="21407">mindre en</string>
+  <string id="21408">etter</string>
+  <string id="21409">før</string>
+  <string id="21410">etter siste</string>
+  <string id="21411">ikke etter siste</string>
+  <string id="21420">Verdi som er lik</string>
+  <string id="21421">Smart Spilleliste Oppsett</string>
+  <string id="21422">Sanger som er </string>
+  <string id="21423">Ny Søkeregel</string>
+  <string id="21424">Sanger må være lik</string>
+  <string id="21425">alle søkekriteriene</string>
+  <string id="21426">en av søkekriteriene</string>
+  <string id="21427">Begrenset til</string>
+  <string id="21428">Ingen begrensninger</string>
+  <string id="21429">Sorter etter</string>
+  <string id="21430">oppstigende</string>
+  <string id="21431">nedstigende</string>
+  <string id="21432">Rediger Smart Spilleliste</string>
+  <string id="21433">Navn på spilleliste</string>
+  <string id="21434">Finn sanger som er lik</string>
+  <string id="21435">Rediger</string>
+  <string id="21436">%i sanger</string>
+  <string id="21437">Ny Smart Spilleliste</string>
   <string id="29999">Automatisk flimmerfilter-patch</string>
 </strings>
-
- 	  	 
