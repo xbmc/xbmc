@@ -639,7 +639,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
   if (bUseSoftwareScale)
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_rgbBuffer);
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_RGB, GL_UNSIGNED_BYTE, m_rgbBuffer);
   else
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
