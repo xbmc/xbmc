@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 23/05/2007-->
+<!--Date of translation: 11/06/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 9046 -->
+<!--Based on english strings version 9182 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -81,7 +81,7 @@
   <string id="140">Suoritin:</string>
   <string id="141">Grafiikkapiiri:</string>
   <string id="142">Aika:</string>
-  <string id="143">Nykyinen:</string>
+  <string id="143">Tällä hetkellä:</string>
   <string id="144">Ohjelmaversio:</string>
   <string id="145">Verkko:</string>
   <string id="146">Tyyppi:</string>
@@ -293,30 +293,30 @@
   <string id="367">Järjestä: Arvostus</string>
   <string id="368">IMDb</string>
   <string id="369">Nimi</string>
-  <string id="370">ukkosta</string>
-  <string id="371">osittain</string>
-  <string id="372">enimmäkseen</string>
-  <string id="373">aurinkoista</string>
-  <string id="374">pilvistä</string>
+  <string id="370">ukkosia</string>
+  <string id="371">Osittain</string>
+  <string id="372">Enimmäkseen</string>
+  <string id="373">Aurinkoista</string>
+  <string id="374">Pilvistä</string>
   <string id="375">lunta</string>
   <string id="376">sadetta</string>
-  <string id="377">kevyttä</string>
-  <string id="378">aamupäivällä</string>
-  <string id="379">iltapäivällä</string>
-  <string id="380">kuuroja</string>
-  <string id="381">joitakin</string>
-  <string id="382">hajanaisia</string>
+  <string id="377">Heikkoa</string>
+  <string id="378">Aamupäivällä</string>
+  <string id="379">Iltapäivällä</string>
+  <string id="380">Sadekuuroja</string>
+  <string id="381">Joitakin</string>
+  <string id="382">Hajanaisia</string>
   <string id="383">tuulta</string>
   <string id="384">voimakasta</string>
-  <string id="385">poutaa</string>
+  <string id="385">Poutaa</string>
   <string id="386">selkeää</string>
   <string id="387">pilvistä</string>
-  <string id="388">varhaista</string>
-  <string id="389">kuuroja</string>
+  <string id="388">aamulla</string>
+  <string id="389">sadekuuroja</string>
   <string id="390">lumikuuroja</string>
-  <string id="391">heikkoa</string>
+  <string id="391">Alin</string>
   <string id="392">kohtalaista</string>
-  <string id="393">voimakasta</string>
+  <string id="393">Ylin</string>
   <string id="394">sumua</string>
   <string id="395">usvaa</string>
   <string id="396">Valitse sijainti</string>
@@ -330,8 +330,8 @@
   <string id="404">Tuuli</string>
   <string id="405">Kastepiste</string>
   <string id="406">Kosteus</string>
-  <string id="407">suunta:</string>
-  <string id="408">nopeus:</string>
+  <string id="407">Suunta:</string>
+  <string id="408">Nopeus:</string>
   
   <string id="410">Yhdistetään palvelimeen Weather.com</string>
   <string id="411">Haetaan säätiedot:</string>
@@ -482,6 +482,7 @@
   <string id="567">Toisto määrä</string>
   <string id="568">Viimeksi toistettu</string>
   <string id="569">Kommentti</string>
+  <string id="570">Lisäyspäivä</string>
   
   <string id="580">Järjestelyn suunta</string>
   <string id="581">Järjestelyn peruste</string>
@@ -714,16 +715,16 @@
   <string id="1396">Kasaantuvaa</string>
   <string id="1397">ja</string>
   <string id="1398">Jäätävää</string>
-  <string id="1399">Myöhään</string>
+  <string id="1399">illalla</string>
   <string id="1400">Yksittäisiä</string>
   <string id="1401">Ukkoskuuroja</string>
   <string id="1402">Ukkosta</string>
-  <string id="1403">Aurinkoista</string>
+  <string id="1403">aurinkoista</string>
   <string id="1404">Kovaa</string>
-  <string id="1405"> </string>
-  <string id="1406"> </string>
-  <string id="1407">läheisyydessä</string>
-  <string id="1408">Jää</string>
+  <string id="1405"></string>
+  <string id="1406"></string>
+  <string id="1407">lähiaikoina</string>
+  <string id="1408">jäätä</string>
   <string id="1409">jääkiteitä</string>
   <string id="1410">tyyntä</string>
   <string id="1411">sekä</string>
@@ -943,7 +944,7 @@
   <string id="13270">Laitteisto:</string>
   <string id="13271">Suorittimen käyttö:</string>
   
-  <string id="13274">Xbox on yhdistetty, mutta DNS ei ole saatavilla.</string>
+  <string id="13274">Yhdistetty, mutta DNS tietoja ei ole käytettävissä.</string>
   <string id="13275">Kiintolevy</string>
   <string id="13276">DVD-asema</string>
   <string id="13277">Tallennus</string>
@@ -965,8 +966,8 @@
   <string id="13293">Video- ja XBE-alue:</string>
   <string id="13294">DVD-aluekoodi:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">Xbox on yhdistetty</string>
-  <string id="13297">Xboxia ei ole yhdistetty. Tarkista verkkoasetukset.</string>
+  <string id="13296">Yhdistetty</string>
+  <string id="13297">Ei ole yhdistetty. Tarkista verkkoasetukset.</string>
   <string id="13298">XBLive-avain:</string>
   <string id="13299">Tavoitelämpötila</string>
   <string id="13300">Tuulettimen pyörintänopeus</string>
@@ -985,9 +986,9 @@
   <string id="13313">Käynnistä uudelleen</string>
   <string id="13314">Ristiinhäivytys</string>
   <string id="13315">Luo pienoiskuvakkeet</string>
-  <string id="13316">Toistuvat pikkukuvat</string>
+  <string id="13316">Kaikki pienoiskuvakkeet</string>
   <string id="13317">Kuvaesitys</string>
-  <string id="13318">Jatkuva kuvaesitys</string>
+  <string id="13318">Kaikkien kuvaesitys</string>
   <string id="13319">Satunnainen</string>
   <string id="13320">Stereo</string>
   <string id="13321">Ainoastaan vasen</string>
@@ -1063,7 +1064,7 @@
   <string id="13405">Valitse kuvake</string>
   
   <string id="14000">Yhdistä osat</string>
-  <string id="14001">Erota osat</string>
+  <string id="14001">Ei yhdistetä</string>
   <string id="14003">Ladataan soittolistatiedostoa...</string>
   <string id="14004">Ladataan ohjelmaluetteloa..</string>
   <string id="14005">Tulkitaan ohjelmaluetteloa...</string>
