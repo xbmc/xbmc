@@ -624,7 +624,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
     int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
-    int     dstStride[] = { im.width, 0, 0 };
+    int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
     int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
     m_dllSwScale.sws_freeContext(context);
