@@ -212,6 +212,7 @@ protected:
   DllAvCodec  m_dllAvCodec;
   DllSwScale  m_dllSwScale;
   BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  int	      m_rgbBufferSize;
 
   static void TextureCallback(DWORD dwContext);
 
