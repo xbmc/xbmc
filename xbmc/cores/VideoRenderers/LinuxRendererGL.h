@@ -22,6 +22,8 @@ typedef struct YV12Image
   unsigned width;
   unsigned height;
   unsigned flags;
+  float texcoord_x;
+  float texcoord_y;
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
@@ -91,9 +93,10 @@ struct YUVCOEF
 
 enum RenderMethod
 {
-  RENDER_GLSL,
-  RENDER_ARB,
-  RENDER_SW
+  RENDER_GLSL=0x1,
+  RENDER_ARB=0x2,
+  RENDER_SW=0x4,
+  RENDER_POT=0x8
 };
 
 extern YUVRANGE yuv_range_lim;
@@ -168,7 +171,7 @@ protected:
 
   bool m_bConfigured;
   GLenum m_textureTarget;
-  RenderMethod m_renderMethod;
+  unsigned short m_renderMethod;
 
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
@@ -229,5 +232,33 @@ protected:
 
 };
 
-#endif
 
+inline int NP2( unsigned x ) {
+#if defined(_LINUX) 
+  // If there are any issues compiling this, just append a ' && 0'
+  // to the above to make it '#if defined(_LINUX) && 0'
+
+  // Linux assembly is AT&T Unix style, not Intel style
+  unsigned y;
+  __asm__("dec %%ecx \n"
+          "movl $1, %%eax \n"
+          "bsr %%ecx,%%ecx \n"
+          "inc %%ecx \n"
+          "shl %%cl, %%eax \n"
+          "movl %%eax, %0 \n"
+          :"=r"(y)
+          :"c"(x)
+          :"%eax");
+  return y;
+#else
+    --x;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return ++x;
+#endif
+}
+
+#endif
