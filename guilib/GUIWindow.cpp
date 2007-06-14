@@ -139,6 +139,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
       return Load(m_xmlFile);
     }
 #endif
+    m_dwWindowId = WINDOW_INVALID;
     return false;
   }
   TiXmlElement* pRootElement = xmlDoc.RootElement();
