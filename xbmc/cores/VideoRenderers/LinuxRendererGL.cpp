@@ -950,9 +950,9 @@ unsigned int CLinuxRendererGL::PreInit()
   } else if (glewIsSupported("GL_ARB_fragment_shader")) {    
     // TODO
     CLog::Log(LOGNOTICE, "GL: Could not create GLSL shader since glCreateProgram not present");
-    m_renderMethod = RENDER_SW | RENDER_POT;
+    m_renderMethod = RENDER_SW ;
   } else {
-    m_renderMethod = RENDER_SW | RENDER_POT;
+    m_renderMethod = RENDER_SW ;
     CLog::Log(LOGNOTICE, "GL: Could not create ARB shader since GL_ARB_fragment_shader not present, falling back to SW colorspace conversion");
   }
 
