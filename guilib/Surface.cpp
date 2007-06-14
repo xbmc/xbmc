@@ -246,7 +246,7 @@ bool CSurface::MakePBuffer()
   }
   if (fbConfigs==NULL) 
   {
-    CLog::Log(LOGERROR, "MakePBuffer: GLX Error: No compatible framebuffers found");
+    CLog::Log(LOGERROR, "GLX Error: MakePBuffer: No compatible framebuffers found");
     XFree(fbConfigs);
     return status;
   }
@@ -323,20 +323,21 @@ void CSurface::Flip()
 bool CSurface::MakeCurrent()
 {
 #ifdef HAS_GLX
-  if (m_glWindow)
-    return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
-  else if (m_glPBuffer)
-    return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
+  if (m_glWindow && !glXGetCurrentContext())
+    return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    //return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+  else if (m_glPBuffer && !glXGetCurrentContext())
+    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
+    //return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
 #endif
 }
 
 void CSurface::ReleaseContext()
 {
 #ifdef HAS_GLX
-  if (m_glWindow)
-    glXMakeContextCurrent(s_dpy, None, None, NULL);
-  else if (m_glPBuffer)
-    glXMakeContextCurrent(s_dpy, None, None, NULL);
+  if (glXGetCurrentContext())
+    glXMakeCurrent(s_dpy, None, NULL);
+    //glXMakeContextCurrent(s_dpy, None, None, NULL);
 #endif
 }
 
