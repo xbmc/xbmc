@@ -520,17 +520,16 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       if (!glewIsSupported("GL_ARB_texture_rectangle"))
       {
         CLog::Log(LOGERROR, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
-        CLog::Log(LOGERROR, "GL: Currently, rectangle (NPOT) texture support is necessary for video playback");
-        delete m_pBuffer;
-        m_pBuffer = NULL;
-        return false;
+        CLog::Log(LOGERROR, "GL: Reverting to POT textures");
+	m_renderMethod |= RENDER_POT;
+        return true;
       }
-      CLog::Log(LOGINFO, "GL: Enabling NPOT texture support through GL_ARB_texture_rectangle extension");
+      CLog::Log(LOGINFO, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
       glEnable(GL_TEXTURE_RECTANGLE_ARB);
     } else {
       CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
-      m_renderMethod |= RENDER_POT;
+      CLog::Log(LOGINFO, "GL: NPOT textures are supported natively");
     }
   }
   else {
@@ -705,11 +704,12 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (alpha<255) 
     {
 #warning Alpha blending currently disabled
-      glDisable(GL_BLEND);
+      //glDisable(GL_BLEND);
     } else {
-      glDisable(GL_BLEND);
+      //glDisable(GL_BLEND);
     }
   }
+  glDisable(GL_BLEND);
   Render(flags);
   VerifyGLState();
   glEnable(GL_BLEND);
@@ -823,7 +823,7 @@ unsigned int CLinuxRendererGL::PreInit()
 
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
-  if (!m_shaderProgram && glCreateProgram)
+  if (!m_shaderProgram && glCreateProgram && 0)
   {
 
     const char* shaderv = 
