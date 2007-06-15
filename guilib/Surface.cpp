@@ -324,11 +324,15 @@ bool CSurface::MakeCurrent()
 {
 #ifdef HAS_GLX
   if (m_glWindow && !glXGetCurrentContext())
-    return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
-    //return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+  {
+    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+  }
   else if (m_glPBuffer && !glXGetCurrentContext())
-    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-    //return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
+  {
+    //return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
+    return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
+  }
 #endif
 }
 
@@ -336,8 +340,10 @@ void CSurface::ReleaseContext()
 {
 #ifdef HAS_GLX
   if (glXGetCurrentContext())
-    glXMakeCurrent(s_dpy, None, NULL);
-    //glXMakeContextCurrent(s_dpy, None, None, NULL);
+  {
+    //glXMakeCurrent(s_dpy, None, NULL);
+    glXMakeContextCurrent(s_dpy, None, None, NULL);
+  }
 #endif
 }
 
