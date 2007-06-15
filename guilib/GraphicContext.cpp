@@ -931,7 +931,6 @@ CSurface* CGraphicContext::InitializeSurface()
 void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 {
 #ifdef HAS_SDL_OPENGL
-  return;
   if (ctx)
   {
     Lock();
@@ -957,7 +956,6 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
 {
 #ifdef HAS_SDL_OPENGL
-  return;
   if (ctx)
   {
     Lock();

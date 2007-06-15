@@ -823,7 +823,7 @@ unsigned int CLinuxRendererGL::PreInit()
 
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
-  if (!m_shaderProgram && glCreateProgram && 0)
+  if (!m_shaderProgram && glCreateProgram)
   {
 
     const char* shaderv = 
