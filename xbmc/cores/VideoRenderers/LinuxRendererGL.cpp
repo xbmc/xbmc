@@ -991,9 +991,10 @@ void CLinuxRendererGL::UnInit()
     m_pBuffer = 0;
   } 
 
-  if (m_rgbBuffer != NULL) { 
-     delete [] m_rgbBuffer;
-     m_rgbBuffer = NULL;
+  if (m_rgbBuffer != NULL) 
+  { 
+    delete [] m_rgbBuffer;
+    m_rgbBuffer = NULL;
   }
 
 }
