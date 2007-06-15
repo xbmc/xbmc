@@ -288,7 +288,7 @@ bool CSurface::MakePixmap()
 CSurface::~CSurface() 
 {
 #ifdef HAS_GLX
-  if (m_glContext) {
+  if (m_glContext && !IsShared()) {
     glXDestroyContext(s_dpy, m_glContext);
   }
   if (m_glPBuffer) {
@@ -323,12 +323,12 @@ void CSurface::Flip()
 bool CSurface::MakeCurrent()
 {
 #ifdef HAS_GLX
-  if (m_glWindow && !glXGetCurrentContext())
+  if (m_glWindow /*&& !glXGetCurrentContext()*/)
   {
     //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
     return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
   }
-  else if (m_glPBuffer && !glXGetCurrentContext())
+  else if (m_glPBuffer /*&& !glXGetCurrentContext()*/)
   {
     //return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
     return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
