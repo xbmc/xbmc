@@ -857,7 +857,12 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
       {
 	CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
 	CSurface* surface = new CSurface(m_screenSurface);
-	surface->MakeCurrent();
+	if (!surface->MakeCurrent())
+        {
+          CLog(LOGERROR, "GL: Error making context current");
+          delete surface;
+          return false;
+        }
 	m_surfaces[tid] = surface;
 	return true;
       } else {
