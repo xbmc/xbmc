@@ -6,7 +6,9 @@
 CCPUInfo::CCPUInfo(void)
 {
   m_fProcStat = fopen("/proc/stat", "r");
-  m_fProcTemperature = NULL; // until we implement it
+  m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
+  if (m_fProcTemperature == NULL)
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR1/temperature", "r");
   m_lastUsedPercentage = 0;
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);  
 }
@@ -54,8 +56,31 @@ int CCPUInfo::getUsedPercentage()
   return result;
 }
 
-int CCPUInfo::getTemperatureC()
+CTemperature CCPUInfo::getTemperature()
 {
+  int value;
+  char scale;
+ 
+  if (m_fProcTemperature == NULL)
+    return CTemperature();
+
+  rewind(m_fProcTemperature);
+  fflush(m_fProcTemperature);
+  
+  char buf[256];
+  if (!fgets(buf, sizeof(buf), m_fProcTemperature))
+    return CTemperature();
+
+  int num = sscanf(buf, "temperature: %d %c", &value, &scale);
+  if (num != 2)
+    return CTemperature();
+
+  if (scale == 'C' || scale == 'c')
+    return CTemperature::CreateFromCelsius(value);
+  if (scale == 'F' || scale == 'f')
+    return CTemperature::CreateFromFahrenheit(value);
+  else
+    return CTemperature();
 }
 
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice, 

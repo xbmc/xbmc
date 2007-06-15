@@ -5,6 +5,8 @@
 
 #include <stdio.h>
 #include <time.h>
+#include "Archive.h"
+#include "Temperature.h"
 
 class CCPUInfo
 {
@@ -13,7 +15,7 @@ public:
   ~CCPUInfo();
   
   int getUsedPercentage();
-  int getTemperatureC();  
+  CTemperature getTemperature();  
   
 private:
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,
