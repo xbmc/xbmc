@@ -323,15 +323,15 @@ void CSurface::Flip()
 bool CSurface::MakeCurrent()
 {
 #ifdef HAS_GLX
-  if (m_glWindow /*&& !glXGetCurrentContext()*/)
+  if (m_glWindow)
   {
-    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
-    return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+    return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    //return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
   }
-  else if (m_glPBuffer /*&& !glXGetCurrentContext()*/)
+  else if (m_glPBuffer)
   {
-    //return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-    return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
+    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
+    //return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
   }
 #endif
 }
@@ -339,10 +339,9 @@ bool CSurface::MakeCurrent()
 void CSurface::ReleaseContext()
 {
 #ifdef HAS_GLX
-  if (glXGetCurrentContext())
   {
-    //glXMakeCurrent(s_dpy, None, NULL);
-    glXMakeContextCurrent(s_dpy, None, None, NULL);
+    glXMakeCurrent(s_dpy, None, NULL);
+    //glXMakeContextCurrent(s_dpy, None, None, NULL);
   }
 #endif
 }
@@ -355,19 +354,6 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
     XResizeWindow(s_dpy, m_parentWindow, newWidth, newHeight);
     XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
     glXWaitX();
-    /*
-    XSizeHints *hints = NULL;
-    hints = XAllocSizeHints();
-    if (hints)
-    {
-      hints->min_width = hints->width = hints->max_width = hints->base_width = newWidth;
-      hints->min_height = hints->height = hints->max_height = hints->base_height = newHeight;
-      hints->flags = PMaxSize | USSize | PMinSize;
-      XSetWMNormalHints(s_dpy, m_parentWindow, hints);
-      XFree(hints);
-      glXWaitX();
-    }
-    */
   }
 #endif
 }
