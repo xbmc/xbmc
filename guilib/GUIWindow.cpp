@@ -284,19 +284,16 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   CGUIControl* pGUIControl = factory.Create(m_dwWindowId, rect, pControl);
   if (pGUIControl)
   {
-    if (m_bRelativeCoords)
+    float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
+    if (maxX > m_width)
     {
-      float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
-      if (maxX > m_width)
-      {
-        m_width = maxX;
-      }
+      m_width = maxX;
+    }
 
-      float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
-      if (maxY > m_height)
-      {
-        m_height = maxY;
-      }
+    float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
+    if (maxY > m_height)
+    {
+      m_height = maxY;
     }
     // if we are in a group, add to the group, else add to our window
     pGUIControl->SetParentControl(pGroup);
