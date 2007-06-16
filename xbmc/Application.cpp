@@ -2142,8 +2142,6 @@ void CApplication::DoRender()
   {
     g_graphicsContext.EnablePreviewWindow(false);
   }
-  // update our FPS
-  g_infoManager.UpdateFPS();
 
   if(!m_pd3dDevice)
     return;
@@ -2265,6 +2263,7 @@ void CApplication::Render()
 
 void CApplication::RenderMemoryStatus()
 {
+  g_infoManager.UpdateFPS();
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
@@ -3841,8 +3840,6 @@ void CApplication::DoRenderFullScreen()
       // Render the mouse pointer, if visible...
       if (g_Mouse.IsActive())
         g_application.m_guiPointer.Render();
-
-      g_infoManager.UpdateFPS();
     }
   }
 }
