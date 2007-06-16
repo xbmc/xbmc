@@ -1791,8 +1791,12 @@ void CApplication::ReloadSkin()
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
   unsigned iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-  CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
-  pWindow->OnMessage(msg3);
+  pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  if (pWindow)
+  {
+    CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+    pWindow->OnMessage(msg3);
+  }
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)
@@ -1815,6 +1819,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     }
 #endif
   }
+  //stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
+  g_ApplicationRenderer.Stop();
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
 
