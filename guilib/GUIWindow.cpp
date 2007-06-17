@@ -144,6 +144,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
       return Load(m_xmlFile);
     }
 #endif
+    m_dwWindowId = WINDOW_INVALID;
     return false;
   }
   TiXmlElement* pRootElement = xmlDoc.RootElement();
@@ -298,19 +299,16 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   CGUIControl* pGUIControl = factory.Create(m_dwWindowId, rect, pControl);
   if (pGUIControl)
   {
-    if (m_bRelativeCoords)
+    float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
+    if (maxX > m_width)
     {
-      float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
-      if (maxX > m_width)
-      {
-        m_width = maxX;
-      }
+      m_width = maxX;
+    }
 
-      float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
-      if (maxY > m_height)
-      {
-        m_height = maxY;
-      }
+    float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
+    if (maxY > m_height)
+    {
+      m_height = maxY;
     }
     // if we are in a group, add to the group, else add to our window
     pGUIControl->SetParentControl(pGroup);
@@ -894,19 +892,27 @@ void CGUIWindow::Insert(CGUIControl *control, const CGUIControl *insertPoint)
   m_vecControls.insert(i, control);
 }
 
-void CGUIWindow::Remove(DWORD dwId)
+// Note: This routine doesn't delete the control.  It just removes it from the control list
+bool CGUIWindow::Remove(DWORD dwId)
 {
   ivecControls i = m_vecControls.begin();
   while (i != m_vecControls.end())
   {
     CGUIControl* pControl = *i;
+    if (pControl->IsGroup())
+    {
+      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+      if (group->RemoveControl(dwId))
+        return true;
+    }
     if (pControl->GetID() == dwId)
     {
       m_vecControls.erase(i);
-      return ;
+      return true;
     }
     ++i;
   }
+  return false;
 }
 
 void CGUIWindow::ClearAll()

@@ -1919,8 +1919,12 @@ void CApplication::ReloadSkin()
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
   unsigned iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-  CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
-  pWindow->OnMessage(msg3);
+  pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  if (pWindow)
+  {
+    CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+    pWindow->OnMessage(msg3);
+  }
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)
@@ -1943,6 +1947,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     }
 #endif
   }
+  //stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
+  g_ApplicationRenderer.Stop();
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
 
@@ -2297,8 +2303,6 @@ void CApplication::DoRender()
   {
     g_graphicsContext.EnablePreviewWindow(false);
   }
-  // update our FPS
-  g_infoManager.UpdateFPS();
 
 #ifndef HAS_SDL
   if(!m_pd3dDevice)
@@ -2435,6 +2439,7 @@ void CApplication::Render()
 
 void CApplication::RenderMemoryStatus()
 {
+  g_infoManager.UpdateFPS();
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
@@ -2532,7 +2537,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-      g_buttonTranslator.GetAction(iWin, key, action);
+	{
+	  if (key.GetFromHttpApi())
+      {
+        if (key.GetButtonCode() != KEY_INVALID)
+		{
+          action.wID = (WORD) key.GetButtonCode();
+		  g_buttonTranslator.GetAction(iWin, key, action);
+		}
+      }
+	  else
+        g_buttonTranslator.GetAction(iWin, key, action);
+	}
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, key.GetButtonCode(), action.wID);
@@ -4057,8 +4073,6 @@ void CApplication::DoRenderFullScreen()
       // Render the mouse pointer, if visible...
       if (g_Mouse.IsActive())
         g_application.m_guiPointer.Render();
-
-      g_infoManager.UpdateFPS();
     }
   }
 }
