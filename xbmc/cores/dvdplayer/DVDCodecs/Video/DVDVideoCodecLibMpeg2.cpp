@@ -151,7 +151,9 @@ bool CDVDVideoCodecLibMpeg2::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
 
 void CDVDVideoCodecLibMpeg2::Dispose()
 {
-  if (m_pHandle) m_dll.mpeg2_close(m_pHandle);
+  if (m_pHandle) 
+    m_dll.mpeg2_close(m_pHandle);
+
   m_pHandle = NULL;
   m_pInfo = NULL;
 
@@ -173,27 +175,21 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
   bool bGotPicture = false;
   if (!m_pHandle) return VC_ERROR;
 
-  if (pData != NULL || iSize != 0)
+  if (pData && iSize)
   {
     //buffer more data
     iState = m_dll.mpeg2_parse(m_pHandle);
-    if (iState == STATE_BUFFER)
-    {
-      if (!pData || iSize < 1) return VC_ERROR;
-      // libmpeg2 needs more data. Give it and parse the data again
-      m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
-      iState = m_dll.mpeg2_parse(m_pHandle);
-    }
-    else
+    if (iState != STATE_BUFFER)
     {
       CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::Decode error, we didn't ask for more data");
       return VC_ERROR;
     }
+
+    // libmpeg2 needs more data. Give it and parse the data again
+    m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
   }
-  else
-  {
-    iState = m_dll.mpeg2_parse(m_pHandle);
-  }
+
+  iState = m_dll.mpeg2_parse(m_pHandle);
 
   DVDVideoPicture* pBuffer;
   // loop until we have another STATE_BUFFER or picture
@@ -401,9 +397,11 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
     iState = m_dll.mpeg2_parse(m_pHandle);
   }
 
-  if (iState == STATE_BUFFER) return VC_BUFFER;
+  if (iState == STATE_BUFFER) 
+    return VC_BUFFER;
 
   CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::Decode error");
+
   return VC_ERROR;
 }
 
@@ -412,10 +410,12 @@ void CDVDVideoCodecLibMpeg2::Reset()
   CLog::Log(LOGDEBUG, "(%s)", __FUNCTION__);
 
   if (m_pHandle) 
+  {
     if(m_bmpeg1) /* sadly, libmpeg2 doesn't resync after a reset if we are playing mpeg1 files if we do a full reset */
       m_dll.mpeg2_reset(m_pHandle, 0);
     else
       m_dll.mpeg2_reset(m_pHandle, 1);
+  }
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;

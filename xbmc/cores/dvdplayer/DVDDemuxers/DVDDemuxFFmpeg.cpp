@@ -152,17 +152,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 
-  bool streaminfo; /* set to true if we want to look for streams before playback*/
-  if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
-  {
-    /* if we can't seek in the stream there is no need for stream info */
-    if( m_pInput->Seek(0, SEEK_CUR) < 0 )
-      streaminfo = false;
-    else
-      streaminfo = true;
-  }
-  else
-    streaminfo = false;
+  bool streaminfo = true; /* set to true if we want to look for streams before playback*/
 
   if( m_pInput->GetContent().length() > 0 )
   {
@@ -191,10 +181,23 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // initialize url context to be used as filedevice
   URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strlen(strFile) + 1);
   context->prot = &dvd_file_protocol;
-  context->is_streamed = m_pInput->GetLength() > 0 ? 0 : 1;      // default = not streamed
   context->priv_data = (void*)m_pInput;
+  context->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
     context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
+    context->is_streamed = 1;
+  }
+  else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
+  {
+    if(m_pInput->Seek(0, SEEK_CUR) < 0)
+      context->is_streamed = 1;
+  }
+  
+  // skip finding stream info for any streamed content
+  if(context->is_streamed)
+    streaminfo = false;  
 
   strcpy(context->filename, strFile);  
 

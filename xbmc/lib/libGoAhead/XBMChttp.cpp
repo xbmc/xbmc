@@ -52,6 +52,7 @@ CXbmcHttp* pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 CUdpBroadcast* pUdpBroadcast;
 
+
 //Response format
 CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
 bool incWebHeader, incWebFooter, closeFinalTag;
@@ -2567,6 +2568,19 @@ int CXbmcHttp::xbmcAutoGetPictureThumbs(int numParas, CStdString paras[])
   }
 }
 
+int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
+{
+  if (numParas!=1)
+	  return SetResponse(openTag+"Error:There must be one and only one parameter");
+  else
+  {
+	CAction action;
+    action.wID = atoi(paras[0]);
+    g_application.OnAction(action);
+    return SetResponse(openTag+"OK");
+  }
+}
+
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -2720,6 +2734,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
 	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
+	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);

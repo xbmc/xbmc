@@ -3,7 +3,7 @@
 #else
 #include <python2.4/Python.h>
 #endif
-#include "GUIListItem.h"
+
 #pragma once
 
 #define ListItem_Check(op) PyObject_TypeCheck(op, &ListItem_Type)
@@ -19,7 +19,7 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD
-    CGUIListItem* item;
+    CFileItem* item;
   } ListItem;
 
   extern ListItem* ListItem_FromString(string strLabel);

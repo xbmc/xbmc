@@ -1334,9 +1334,16 @@ void CFileItemList::Add(CFileItem* pItem)
   }
 }
 
-void CFileItemList::AddFront(CFileItem* pItem)
+void CFileItemList::AddFront(CFileItem* pItem, int itemPosition)
 {
-  m_items.insert(m_items.begin(), pItem);
+  if (itemPosition >= 0)
+  {
+    m_items.insert(m_items.begin()+itemPosition, pItem);
+  }
+  else
+  {
+    m_items.insert(m_items.begin()+(m_items.size()+itemPosition), pItem);
+  }
   if (m_fastLookup)
   {
     CStdString path(pItem->m_strPath); path.ToLower();
