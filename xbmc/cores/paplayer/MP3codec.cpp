@@ -214,7 +214,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
       m_eof = true;
   }
   // Decode data if we have some to decode
-  if ( m_InputBufferPos || m_CallAgainWithSameBuffer || m_eof )
+  if ( m_InputBufferPos || m_CallAgainWithSameBuffer || (m_eof && m_Decoding) )
   {
     int result;
       
@@ -305,7 +305,8 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     memmove(m_OutputBuffer, m_OutputBuffer + amounttomove, m_OutputBufferPos);
     *actualsize = amounttomove;
   }
-  if (m_eof && !m_Decoding)
+  // only return READ_EOF when we've reached the end of the mp3 file, we've finished decoding, and our output buffer is depleated.
+  if (m_eof && !m_Decoding && !m_OutputBufferPos)
     return READ_EOF;
   return READ_SUCCESS;
 }
