@@ -364,7 +364,9 @@ while(stream_fill_buffer(s) > 0 && pos >= 0) {
 
 void stream_reset(stream_t *s){
   if(s->eof){
+#ifndef _XBOX // This change can easily break caching thread as position is changed behind it's back
     s->pos=0; //ftell(f);
+#endif
 //    s->buf_pos=s->buf_len=0;
     s->eof=0;
   }

@@ -37,12 +37,14 @@ CDVDAudio::~CDVDAudio()
 
 void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
 {
+  CSingleLock lock (m_critSection);
   m_pCallback = pCallback;
   if (m_pCallback && m_pAudioDecoder) m_pAudioDecoder->RegisterAudioCallback(pCallback);
 }
 
 void CDVDAudio::UnRegisterAudioCallback()
 {
+  CSingleLock lock (m_critSection);
   m_pCallback = NULL;
   if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
 }
@@ -133,20 +135,12 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len)
     
 }
 
-// we have a little bug here.
-// if resampling is enabled and sscc.cpp is upsampling, m_pAudioDecoder->GetChunkLen() will return the incorrect
-// chunklenght. In combination with the code below thiswill result in dropped data.
 DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 {
   if (!m_pAudioDecoder)
-  {
-    m_iBufferSize = 0;
     return -1;
-  }
-  int iTotalSize = len;
 
-  while (m_pAudioDecoder->GetSpace() < m_dwPacketSize && !m_bStop)
-    Sleep(1);
+  int iTotalSize = len;
 
   if (m_iBufferSize > 0)
   {
@@ -225,8 +219,18 @@ void CDVDAudio::Resume()
 }
 
 __int64 CDVDAudio::GetDelay()
-{  
-  return (__int64)(m_pAudioDecoder->GetDelay() * DVD_TIME_BASE);
+{
+  CSingleLock lock (m_critSection);
+
+  double delay = 0.0;
+  if(m_pAudioDecoder)
+    delay = m_pAudioDecoder->GetDelay();
+
+  DWORD bps = m_iChannels * m_iBitrate * m_iBitsPerSample>>3;
+  if(m_iBufferSize && bps)
+    delay += (double)m_iBufferSize / bps;
+
+  return (__int64)(delay * DVD_TIME_BASE);
 }
 
 void CDVDAudio::Flush()

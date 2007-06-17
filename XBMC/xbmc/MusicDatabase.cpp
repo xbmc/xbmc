@@ -1340,9 +1340,9 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
 
     CStdString strSQL;
     if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
-      strSQL=FormatSQL("select * from songview where strTitle like '%s%%' or strTitle like '%% %s%%'", search.c_str(), search.c_str());
+      strSQL=FormatSQL("select * from songview where strTitle like '%s%%' or strTitle like '%% %s%%' limit 1000", search.c_str(), search.c_str());
     else
-      strSQL=FormatSQL("select * from songview where strTitle like '%s%%'", search.c_str());
+      strSQL=FormatSQL("select * from songview where strTitle like '%s%%' limit 1000", search.c_str());
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0) return false;
