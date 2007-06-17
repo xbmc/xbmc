@@ -59,20 +59,22 @@ void CGUIControlGroupList::Render()
     for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     {
       CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      if (control->IsVisible() && render)
-      {
-        if (pos + Size(control) > m_offset && pos < m_offset + Size())
-        { // we can render
-          if (m_orientation == VERTICAL)
-            g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY + pos - m_offset));
-          else
-            g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX + pos - m_offset, m_posY));
+      if (pos + Size(control) > m_offset && pos < m_offset + Size() && render)
+      { // we can render this contorl - set the offset transform, then the control's anim, then render
+        if (m_orientation == VERTICAL)
+          g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY + pos - m_offset));
+        else
+          g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX + pos - m_offset, m_posY));
+        control->UpdateEffectState(m_renderTime);
+        if (control->IsVisible())
+        {
           control->Render();
-          g_graphicsContext.RemoveGroupTransform();
+          pos += Size(control) + m_itemGap;
         }
-        pos += Size(control) + m_itemGap;
+        g_graphicsContext.RemoveGroupTransform();
       }
+      else  // we can't render the control (offscreen) but update it's state anyway
+        control->UpdateEffectState(m_renderTime);
     }
     if (render) g_graphicsContext.RestoreViewPort();
     CGUIControl::Render();
