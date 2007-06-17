@@ -2363,7 +2363,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-      g_buttonTranslator.GetAction(iWin, key, action);
+	{
+	  if (key.GetFromHttpApi())
+      {
+        if (key.GetButtonCode() != KEY_INVALID)
+		{
+          action.wID = (WORD) key.GetButtonCode();
+		  g_buttonTranslator.GetAction(iWin, key, action);
+		}
+      }
+	  else
+        g_buttonTranslator.GetAction(iWin, key, action);
+	}
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
