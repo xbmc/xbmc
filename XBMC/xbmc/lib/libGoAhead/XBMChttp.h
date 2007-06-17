@@ -108,6 +108,7 @@ public:
   bool xbmcBroadcast(CStdString message, int level=0);
   int xbmcSetBroadcast(int numParas, CStdString paras[]);
   int xbmcGetBroadcast();
+  int xbmcOnAction(int numParas, CStdString paras[]);
 
   int xbmcGetSkinSetting(int numParas, CStdString paras[]);
   CKey GetKey();
