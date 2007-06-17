@@ -433,9 +433,25 @@ void CGUIControlGroup::SaveStates(vector<CControlState> &states)
     (*it)->SaveStates(states);
 }
 
-void CGUIControlGroup::RemoveControl(int id)
+// Note: This routine doesn't delete the control.  It just removes it from the control list
+bool CGUIControlGroup::RemoveControl(int id)
 {
-  // TODO: Implement this
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *control = *it;
+    if (control->IsGroup())
+    {
+      CGUIControlGroup *group = (CGUIControlGroup *)control;
+      if (group->RemoveControl(id))
+        return true;
+    }
+    if (control->GetID() == id)
+    {
+      m_children.erase(it);
+      return true;
+    }
+  }
+  return false;
 }
 
 void CGUIControlGroup::ClearAll()

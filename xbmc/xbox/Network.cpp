@@ -435,10 +435,10 @@ void CNetwork::LogState()
 
 }
 
-bool CNetwork::IsAvailable()
+bool CNetwork::IsAvailable(bool wait)
 {
   /* if network isn't up, wait for it to setup */
-  if( !m_networkup )
+  if( !m_networkup && wait )
     WaitForSetup(5000);
 
 #ifdef HAS_XBOX_NETWORK

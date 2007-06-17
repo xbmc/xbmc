@@ -566,7 +566,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetCondition(pControlNode, "enable", enableCondition);
 
   // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
-  FRECT animRect = { posX + rect.left, posY + rect.top, width, height };
+  FRECT animRect = { posX, posY, width, height };
   GetAnimations(pControlNode, animRect, animations);
 
   GetColor(pControlNode, "textcolor", labelInfo.textColor);

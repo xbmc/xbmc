@@ -1250,9 +1250,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
   else if (condition == SYSTEM_KAI_CONNECTED)
-    bReturn = g_network.IsAvailable() && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
+    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_KAI_ENABLED)
-    bReturn = g_network.IsAvailable() && g_guiSettings.GetBool("xlinkkai.enabled");
+    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // we must: 1.  Check tray state.

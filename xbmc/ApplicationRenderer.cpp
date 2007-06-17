@@ -39,6 +39,7 @@ void CApplicationRenderer::OnStartup()
 {
   m_time = timeGetTime();
   m_enabled = true;
+  m_busyShown = false;
   m_explicitbusy = 0;
   m_busycount = 0;
   m_prevbusycount = 0;
@@ -50,6 +51,9 @@ void CApplicationRenderer::OnStartup()
 
 void CApplicationRenderer::OnExit()
 {
+  m_busycount = m_prevbusycount = m_explicitbusy = 0;
+  m_busyShown = false;
+  if (m_pWindow) m_pWindow->Close(true);
   m_pWindow = NULL;
 #ifndef HAS_SDL
   SAFE_RELEASE(m_lpSurface);
@@ -113,18 +117,18 @@ void CApplicationRenderer::Process()
             Sleep(1);
             continue;
           }
-          m_busycount--;
+          if (!m_pWindow || iWidth == 0 || iHeight == 0)
+          {
+            Sleep(1000);
+            continue;
+          }
+          if (m_busycount > 0) m_busycount--;
           //no busy indicator if a progress dialog is showing
           if (m_gWindowManager.HasModalDialog() || (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
           {
             //TODO: render progress dialog here instead of in dialog::Progress
             m_time = timeGetTime();
             Sleep(1);
-            continue;
-          }
-          if (!m_pWindow || iWidth == 0 || iHeight == 0)
-          {
-            Sleep(1000);
             continue;
           }
           if (m_lpSurface == NULL)

@@ -104,7 +104,6 @@ bool CDatabase::Open()
   {
     CLog::Log(LOGERROR, "Unable to open %s (old version?)", m_strDatabaseFile.c_str());
     Close();
-    ::DeleteFile(strDatabase.c_str());
     return false;
   }
 
@@ -114,7 +113,6 @@ bool CDatabase::Open()
     {
       CLog::Log(LOGERROR, "Unable to create %s", m_strDatabaseFile.c_str());
       Close();
-      ::DeleteFile(strDatabase.c_str());
       return false;
     }
   }

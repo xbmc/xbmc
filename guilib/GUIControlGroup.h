@@ -46,7 +46,7 @@ public:
   CGUIControl *GetFirstFocusableControl(int id);
 
   virtual void AddControl(CGUIControl *control);
-  virtual void RemoveControl(int id);
+  virtual bool RemoveControl(int id);
   virtual void ClearAll();
   void SetDefaultControl(DWORD id) { m_defaultControl = id; };
 
