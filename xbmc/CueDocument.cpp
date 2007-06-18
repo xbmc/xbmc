@@ -92,7 +92,10 @@ bool CCueDocument::Parse(const CStdString &strFile)
         CStdString titleNoQuote = strLine.Mid(5);
         titleNoQuote.TrimLeft();
         if (!titleNoQuote.IsEmpty())
+        {
+          g_charsetConverter.stringCharsetToUtf8(titleNoQuote);
           m_Track[m_iTotalTracks].strTitle = titleNoQuote;
+        }
       }
     }
     else if (strLine.Left(9) == "PERFORMER")
@@ -239,6 +242,7 @@ bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
   int right = line.Find('\"', left + 1);
   if (right < 0) return false;
   quote = line.Mid(left + 1, right - left - 1);
+  g_charsetConverter.stringCharsetToUtf8(quote);
   return true;
 }
 
