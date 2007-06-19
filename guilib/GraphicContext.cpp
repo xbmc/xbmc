@@ -854,21 +854,21 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
   if (iter==m_surfaces.end()) {
 #ifdef HAS_GLX
     if (dest==NULL)
+    {
+      CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %ul", tid);
+      CSurface* surface = new CSurface(m_screenSurface);
+      if (!surface->MakeCurrent())
       {
-	CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
-	CSurface* surface = new CSurface(m_screenSurface);
-	if (!surface->MakeCurrent())
-        {
-          CLog::Log(LOGERROR, "GL: Error making context current");
-          delete surface;
-          return false;
-        }
-	m_surfaces[tid] = surface;
-	return true;
-      } else {
-	m_surfaces[tid] = dest;
-	dest->MakeCurrent();
+	CLog::Log(LOGERROR, "GL: Error making context current");
+	delete surface;
+	return false;
       }
+      m_surfaces[tid] = surface;
+      return true;
+    } else {
+      m_surfaces[tid] = dest;
+      dest->MakeCurrent();
+    }
 #else
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
     CSurface* surface = InitializeSurface();
