@@ -15,6 +15,7 @@ using namespace Surface;
 
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
+bool CSurface::b_glewInit = 0;
 #endif
 
 #ifdef HAS_SDL
@@ -46,29 +47,29 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   int num = 0;
 
   int singleVisAttributes[] = 
-      {
-	  GLX_RENDER_TYPE, GLX_RGBA_BIT,
-	  GLX_RED_SIZE, m_iRedSize,
-	  GLX_GREEN_SIZE, m_iGreenSize,
-	  GLX_BLUE_SIZE, m_iBlueSize,
-	  GLX_ALPHA_SIZE, m_iAlphaSize,
-	  GLX_DEPTH_SIZE, 8,
-	  GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-	  None
-      };
-
+    {
+      GLX_RENDER_TYPE, GLX_RGBA_BIT,
+      GLX_RED_SIZE, m_iRedSize,
+      GLX_GREEN_SIZE, m_iGreenSize,
+      GLX_BLUE_SIZE, m_iBlueSize,
+      GLX_ALPHA_SIZE, m_iAlphaSize,
+      GLX_DEPTH_SIZE, 8,
+      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+      None
+    };
+  
   int doubleVisAttributes[] = 
-      {
-	  GLX_RENDER_TYPE, GLX_RGBA_BIT,
-	  GLX_RED_SIZE, m_iRedSize,
-	  GLX_GREEN_SIZE, m_iGreenSize,
-	  GLX_BLUE_SIZE, m_iBlueSize,
-	  GLX_ALPHA_SIZE, m_iAlphaSize,
-	  GLX_DEPTH_SIZE, 8,
-	  GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-	  GLX_DOUBLEBUFFER, True,
+    {
+      GLX_RENDER_TYPE, GLX_RGBA_BIT,
+      GLX_RED_SIZE, m_iRedSize,
+      GLX_GREEN_SIZE, m_iGreenSize,
+      GLX_BLUE_SIZE, m_iBlueSize,
+      GLX_ALPHA_SIZE, m_iAlphaSize,
+      GLX_DEPTH_SIZE, 8,
+      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+      GLX_DOUBLEBUFFER, True,
 	  None
-      };
+    };
   
   if (window) 
   {
@@ -174,7 +175,15 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (m_glContext) 
   {
     glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
-    glewInit();
+    if (!b_glewInit)
+    {
+      if (glewInit()!=GLEW_OK)
+      {
+	CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+      } else {
+	b_glewInit = true;
+      }
+    }
     m_bOK = true;
   } else {
     CLog::Log(LOGERROR, "GLX Error: Could not create context");
@@ -264,7 +273,15 @@ bool CSurface::MakePBuffer()
     }
     if (glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext))
     {
-      glewInit();
+      if (!b_glewInit)
+      {
+	if (glewInit()!=GLEW_OK)
+	{
+	  CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+	} else {
+	  b_glewInit = true;
+	}
+      }
       m_bOK = status = true;      
     } else {
       CLog::Log(LOGINFO, "GLX Error: Could not make PBuffer current");
@@ -288,17 +305,25 @@ bool CSurface::MakePixmap()
 CSurface::~CSurface() 
 {
 #ifdef HAS_GLX
-  if (m_glContext && !IsShared()) {
+  if (m_glContext && !IsShared()) 
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying OpenGL Context");
     glXDestroyContext(s_dpy, m_glContext);
   }
-  if (m_glPBuffer) {
+  if (m_glPBuffer) 
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying PBuffer");
     glXDestroyPbuffer(s_dpy, m_glPBuffer);
   }
-  if (m_glWindow && !IsShared()) {
+  if (m_glWindow && !IsShared()) 
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying Window");
     glXDestroyWindow(s_dpy, m_glWindow);
   }
 #else
-  if (IsValid() && m_SDLSurface) {
+  if (IsValid() && m_SDLSurface) 
+  {
+    CLog::Log(LOGINFO, "Freeing surface");
     SDL_FreeSurface(m_SDLSurface);
   }
 #endif
