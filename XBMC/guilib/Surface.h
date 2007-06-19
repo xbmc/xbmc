@@ -83,6 +83,7 @@ public:
   GLXPixmap  m_glPixmap;
   GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
+  static bool b_glewInit;
 #endif
 
   SDL_Surface* m_SDLSurface;
