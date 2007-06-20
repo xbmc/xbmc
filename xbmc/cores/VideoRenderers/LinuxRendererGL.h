@@ -109,7 +109,7 @@ extern YUVCOEF yuv_coef_smtp240m;
 class CLinuxRendererGL
 {
 public:
-  CLinuxRendererGL();  
+  CLinuxRendererGL(bool atimode=false);  
   ~CLinuxRendererGL();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
@@ -127,7 +127,7 @@ public:
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
-  virtual unsigned int PreInit();
+  virtual unsigned int PreInit(bool atimode=false);
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
@@ -148,10 +148,11 @@ protected:
   void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
-  bool CreateYV12Texture(int index);
+  bool CreateYV12Texture(int index, bool clear=true);
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   bool ValidateRenderTarget();
+  void LoadShaders();
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
@@ -170,6 +171,7 @@ protected:
   unsigned int m_iSourceHeight;   // height
 
   bool m_bConfigured;
+  bool m_bAtiMode;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
 
