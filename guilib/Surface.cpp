@@ -178,7 +178,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   }
   if (m_glContext) 
   {
-    glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    //glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
     if (!b_glewInit)
     {
       if (glewInit()!=GLEW_OK)
@@ -280,6 +281,7 @@ bool CSurface::MakePBuffer()
 
   if (m_glPBuffer)
   {
+    CLog::Log(LOGINFO, "GLX: Created PBuffer context");
     visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
     if (!visInfo)
     {
@@ -295,7 +297,8 @@ bool CSurface::MakePBuffer()
       m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True); 
     }
     XFree(visInfo);
-    if (glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext))
+    //if (glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext))
+    if (glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext))
     {
       CLog::Log(LOGINFO, "GL: Initialised PBuffer");
       if (!b_glewInit)
@@ -380,11 +383,13 @@ bool CSurface::MakeCurrent()
 #ifdef HAS_GLX
   if (m_glWindow)
   {
-    return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
   }
   else if (m_glPBuffer)
   {
-    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
+    //return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
+    return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
   }
 #endif
 }
@@ -394,7 +399,8 @@ void CSurface::ReleaseContext()
 #ifdef HAS_GLX
   {
     CLog::Log(LOGINFO, "GL: ReleaseContext");
-    glXMakeCurrent(s_dpy, None, NULL);
+    //glXMakeCurrent(s_dpy, None, NULL);
+    glXMakeContextCurrent(s_dpy, None, None, NULL);
   }
 #endif
 }
