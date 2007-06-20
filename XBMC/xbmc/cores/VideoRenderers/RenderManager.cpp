@@ -33,6 +33,7 @@
 
 #ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
+#include "LinuxRendererATI.h"
 #else 
 #include "LinuxRenderer.h"
 #endif
@@ -179,7 +180,7 @@ unsigned int CXBoxRenderManager::PreInit()
     }
 #elif defined(HAS_SDL_OPENGL)
     if (g_graphicsContext.getScreenSurface()->GetGLVendor().find("ATI Technologies Inc.") != std::string::npos)
-      m_pRenderer = new CLinuxRendererGL(true); // ATI mode for now - Testing only!!
+      m_pRenderer = new CLinuxRendererATI(); // We need a special ATI renderer since ATI drivers can't seem to handle multi-threaded rendering
     else
       m_pRenderer = new CLinuxRendererGL();
 #else
