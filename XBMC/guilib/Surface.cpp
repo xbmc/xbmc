@@ -5,6 +5,8 @@
 
 #include "include.h"
 #include "Surface.h"
+#include <string>
+
 using namespace Surface;
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_syswm.h>
@@ -16,6 +18,7 @@ using namespace Surface;
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
 bool CSurface::b_glewInit = 0;
+std::string CSurface::s_glVendor = "";
 #endif
 
 #ifdef HAS_SDL
@@ -42,8 +45,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glPBuffer = 0;
   m_glPixmap = 0;
 
-  GLXFBConfig *fbConfigs=0;
+  GLXFBConfig *fbConfigs = 0;
   bool mapWindow = false;
+  XVisualInfo *vInfo = NULL;
   int num = 0;
 
   int singleVisAttributes[] = 
@@ -68,7 +72,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       GLX_DEPTH_SIZE, 8,
       GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
       GLX_DOUBLEBUFFER, True,
-	  None
+      None
     };
   
   if (window) 
@@ -115,15 +119,14 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     return;
   }
 
+  vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
+
   // if no window is specified, create a window
   if (!m_glWindow) 
   {
-    XVisualInfo *vInfo;
     XSetWindowAttributes  swa;
     int swaMask;
     Window p;
-
-    vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
 
     m_SDLSurface = parent;
 
@@ -160,12 +163,15 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (shared) 
   {
     CLog::Log(LOGINFO, "GLX Info: Creating shared context");
-    m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, shared->GetContext(), True);
+    //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, shared->GetContext(), True);
+    m_glContext = glXCreateContext(s_dpy, vInfo, shared->GetContext(), True); 
   } else {
     CLog::Log(LOGINFO, "GLX Info: Creating unshared context");
-    m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+    //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+    m_glContext = glXCreateContext(s_dpy, vInfo, NULL, True); 
   }
   XFree(fbConfigs);
+  XFree(vInfo);
   if (mapWindow) 
   {
     XEvent event;
@@ -174,7 +180,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   }
   if (m_glContext) 
   {
-    glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+    //glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
+    glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
     if (!b_glewInit)
     {
       if (glewInit()!=GLEW_OK)
@@ -182,6 +189,11 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
       } else {
 	b_glewInit = true;
+	if (s_glVendor.length()==0)
+	{
+	  s_glVendor = (const char*)glGetString(GL_VENDOR);
+	  CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+	}
       }
     }
     m_bOK = true;
@@ -218,34 +230,42 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 bool CSurface::MakePBuffer()
 {
   int num=0;
-  GLXFBConfig *fbConfigs=0;
+  GLXFBConfig *fbConfigs=NULL;
+  XVisualInfo *visInfo=NULL;
+
   bool status = false;
   int singleVisAttributes[] = 
-      {
-	  GLX_RENDER_TYPE, GLX_RGBA_BIT,
-	  GLX_RED_SIZE, m_iRedSize,
-	  GLX_GREEN_SIZE, m_iGreenSize,
-	  GLX_BLUE_SIZE, m_iBlueSize,
-	  GLX_ALPHA_SIZE, m_iAlphaSize,
-	  GLX_DEPTH_SIZE, 8,
-	  GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT,
-	  None
-      };
+    {
+      GLX_RENDER_TYPE, GLX_RGBA_BIT,
+      GLX_RED_SIZE, m_iRedSize,
+      GLX_GREEN_SIZE, m_iGreenSize,
+      GLX_BLUE_SIZE, m_iBlueSize,
+      GLX_ALPHA_SIZE, m_iAlphaSize,
+      GLX_DEPTH_SIZE, 8,
+      GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT | GLX_WINDOW_BIT,
+      None
+    };
 
   int doubleVisAttributes[] = 
-      {
-	  GLX_RENDER_TYPE, GLX_RGBA_BIT,
-	  GLX_RED_SIZE, m_iRedSize,
-	  GLX_GREEN_SIZE, m_iGreenSize,
-	  GLX_BLUE_SIZE, m_iBlueSize,
-	  GLX_ALPHA_SIZE, m_iAlphaSize,
-	  GLX_DEPTH_SIZE, 8,
-	  GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT,
-	  GLX_DOUBLEBUFFER, True,
-	  None
-      };
-
-  int pbufferAttributes[] = {GLX_PBUFFER_WIDTH, m_iWidth, GLX_PBUFFER_HEIGHT, m_iHeight, GLX_LARGEST_PBUFFER};
+    {
+      GLX_RENDER_TYPE, GLX_RGBA_BIT,
+      GLX_RED_SIZE, m_iRedSize,
+      GLX_GREEN_SIZE, m_iGreenSize,
+      GLX_BLUE_SIZE, m_iBlueSize,
+      GLX_ALPHA_SIZE, m_iAlphaSize,
+      GLX_DEPTH_SIZE, 8,
+      GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT | GLX_WINDOW_BIT,
+      GLX_DOUBLEBUFFER, True,
+      None
+    };
+  
+  int pbufferAttributes[] = 
+    {
+      GLX_PBUFFER_WIDTH, m_iWidth, 
+      GLX_PBUFFER_HEIGHT, m_iHeight, 
+      GLX_LARGEST_PBUFFER, True,
+      None
+    };
 
   if (m_bDoublebuffer) 
   {
@@ -263,16 +283,26 @@ bool CSurface::MakePBuffer()
 
   if (m_glPBuffer)
   {
+    visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
+    if (!visInfo)
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info");
+      return false;
+    }
     if (m_pShared) 
     {
-      CLog::Log(LOGINFO, "GLX Info: Creating shared context");
-      m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, m_pShared->GetContext(), True);
+      CLog::Log(LOGINFO, "GLX: Creating shared context");
+      //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, m_pShared->GetContext(), True);
+      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True); 
     } else {
-      CLog::Log(LOGINFO, "GLX Info: Creating unshared context");
-      m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+      CLog::Log(LOGINFO, "GLX: Creating unshared context");
+      //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True); 
     }
-    if (glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext))
+    XFree(visInfo);
+    if (glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext))
     {
+      CLog::Log(LOGINFO, "GL: Initialised PBuffer");
       if (!b_glewInit)
       {
 	if (glewInit()!=GLEW_OK)
@@ -280,6 +310,11 @@ bool CSurface::MakePBuffer()
 	  CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
 	} else {
 	  b_glewInit = true;
+	  if (s_glVendor.length()==0)
+	  {
+	    s_glVendor = (const char*)glGetString(GL_VENDOR);
+	    CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+	  }
 	}
       }
       m_bOK = status = true;      
@@ -365,6 +400,7 @@ void CSurface::ReleaseContext()
 {
 #ifdef HAS_GLX
   {
+    CLog::Log(LOGINFO, "GL: ReleaseContext");
     glXMakeCurrent(s_dpy, None, NULL);
     //glXMakeContextCurrent(s_dpy, None, None, NULL);
   }

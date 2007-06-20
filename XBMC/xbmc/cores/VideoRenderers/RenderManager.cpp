@@ -178,7 +178,10 @@ unsigned int CXBoxRenderManager::PreInit()
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
 #elif defined(HAS_SDL_OPENGL)
-    m_pRenderer = new CLinuxRendererGL();
+    if (g_graphicsContext.getScreenSurface()->GetGLVendor().find("ATI Technologies Inc.") != std::string::npos)
+      m_pRenderer = new CLinuxRendererGL(true); // ATI mode for now - Testing only!!
+    else
+      m_pRenderer = new CLinuxRendererGL();
 #else
     m_pRenderer = new CLinuxRenderer();
 #endif
