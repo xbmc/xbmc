@@ -8,6 +8,10 @@ class TransformMatrix
 public:
   TransformMatrix()
   {
+    Reset();
+  };
+  void Reset()
+  {
     m[0][0] = 1.0f; m[0][1] = m[0][2] = 0;
     m[1][0] = m[1][2] = 0; m[1][1] = 1.0f;
     alpha = 1.0f;
