@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string>
+
 namespace Surface {
 
 #ifdef HAS_GLX
@@ -17,20 +19,13 @@ static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
 }
 #endif
-
+  
 class CSurface
 {
 public:
   CSurface(CSurface* src) {
-#ifdef HAS_GLX
     memcpy(this, src, sizeof(CSurface));
-    /*
-    m_glContext = src->GetContext();
-    m_glWindow = src->GetWindow();
-    m_glPBuffer = src->GetPBuffer();
-    m_glPixmap = src->GetPixmap();
-    */
-#endif
+    m_pShared = src;
   }
 #ifdef HAS_SDL
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
@@ -60,6 +55,7 @@ public:
 #endif
 #ifdef HAS_SDL_OPENGL
   void GetGLVersion(int& maj, int&min);
+  std::string& GetGLVendor() { return s_glVendor; }
 #endif
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
@@ -84,6 +80,7 @@ public:
   GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
   static bool b_glewInit;
+  static std::string s_glVendor;
 #endif
 
   SDL_Surface* m_SDLSurface;

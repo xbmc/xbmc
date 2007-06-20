@@ -24,6 +24,7 @@
 #include "../../Settings.h"
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
+
 using namespace Surface;
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
@@ -56,8 +57,9 @@ YUVCOEF yuv_coef_smtp240m = {
 };
 
 
-CLinuxRendererGL::CLinuxRendererGL()
+CLinuxRendererGL::CLinuxRendererGL(bool atimode)
 {
+  m_bAtiMode= atimode;
   m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
@@ -501,6 +503,12 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   if (!m_pBuffer)
   {
     // try pbuffer first
+    if (m_bAtiMode)
+    {
+      CLog::Log(LOGNOTICE, "GL: Selected ATI Mode");
+      m_pBuffer = new CSurface(g_graphicsContext.getScreenSurface());
+      return true;
+    }
     m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
     if (m_pBuffer && !m_pBuffer->IsValid())
     {
@@ -555,6 +563,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   if (!ValidateRenderTarget())
     return false;
 
+  //if (!m_bAtiMode)
   CreateYV12Texture(0);
 
   if (m_rgbBuffer != NULL) {
@@ -637,30 +646,32 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     
     m_dllSwScale.sws_freeContext(context);
   }
-  
-  
-  g_graphicsContext.BeginPaint(m_pBuffer);
-  glEnable(GL_TEXTURE_2D);
-  VerifyGLState();
-  glBindTexture(m_textureTarget, fields[0][0]);
-  VerifyGLState();
-  if (m_renderMethod & RENDER_SW)
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
-  else
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
-  VerifyGLState();
-  if (m_renderMethod & RENDER_GLSL)
-  {    
-    glBindTexture(m_textureTarget, fields[0][1]);
+
+  if (!m_bAtiMode)
+  {
+    g_graphicsContext.BeginPaint(m_pBuffer);
+    glEnable(GL_TEXTURE_2D);
     VerifyGLState();
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+    glBindTexture(m_textureTarget, fields[0][0]);
     VerifyGLState();
-    glBindTexture(m_textureTarget, fields[0][2]);
+    if (m_renderMethod & RENDER_SW)
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+    else
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
     VerifyGLState();
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
-    VerifyGLState();
+    if (m_renderMethod & RENDER_GLSL)
+    {    
+      glBindTexture(m_textureTarget, fields[0][1]);
+      VerifyGLState();
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      VerifyGLState();
+      glBindTexture(m_textureTarget, fields[0][2]);
+      VerifyGLState();
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      VerifyGLState();
+    }
+    g_graphicsContext.EndPaint(m_pBuffer);
   }
-  g_graphicsContext.EndPaint(m_pBuffer);
 }
 
 void CLinuxRendererGL::Reset()
@@ -685,13 +696,54 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   //if (!m_YUVTexture[m_iYV12RenderBuffer][FIELD_FULL][0]) return ;
-  if (!m_YUVTexture[0][FIELD_FULL][0]) return ;
+  if (!m_YUVTexture[0][FIELD_FULL][0] && !m_bAtiMode) return ;
 
   //CSingleLock lock(g_graphicsContext);
   ManageDisplay();
   ManageTextures();
 
   g_graphicsContext.BeginPaint();
+
+  if (m_bAtiMode)
+  {
+    static bool first_time = true;
+    const int source = 0;
+    if (first_time)
+    {
+      first_time = false;
+      LoadShaders();
+      CreateYV12Texture(0, false);
+    }
+
+    m_image[source].flags = 0;
+    
+    YV12Image &im = m_image[source];
+    YUVFIELDS &fields = m_YUVTexture[source];
+    
+    m_image[source].flags &= ~IMAGE_FLAG_INUSE;
+    m_image[source].flags = 0;
+
+    glEnable(m_textureTarget);
+    VerifyGLState();
+    glBindTexture(m_textureTarget, fields[0][0]);
+    VerifyGLState();
+    if (m_renderMethod & RENDER_SW)
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+    else
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+    VerifyGLState();
+    if (m_renderMethod & RENDER_GLSL)
+    {    
+      glBindTexture(m_textureTarget, fields[0][1]);
+      VerifyGLState();
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      VerifyGLState();
+      glBindTexture(m_textureTarget, fields[0][2]);
+      VerifyGLState();
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      VerifyGLState();
+    }
+  }
 
   if (clear) 
   {
@@ -735,9 +787,12 @@ void CLinuxRendererGL::FlipPage(int source)
   
   m_OSDRendered = false;
   
-  g_graphicsContext.BeginPaint();
-  g_graphicsContext.Flip();
-  g_graphicsContext.EndPaint();
+  if (!m_bAtiMode)
+  {
+    g_graphicsContext.BeginPaint();
+    g_graphicsContext.Flip();
+    g_graphicsContext.EndPaint();
+  }
 
   return;
 }
@@ -793,7 +848,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
   return 0;
 }
 
-unsigned int CLinuxRendererGL::PreInit()
+unsigned int CLinuxRendererGL::PreInit(bool atimode)
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
@@ -823,6 +878,12 @@ unsigned int CLinuxRendererGL::PreInit()
 
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
+  if (!m_bAtiMode)
+    LoadShaders();
+}
+
+void CLinuxRendererGL::LoadShaders()
+{
   if (!m_shaderProgram && glCreateProgram)
   {
 
@@ -955,8 +1016,6 @@ unsigned int CLinuxRendererGL::PreInit()
     m_renderMethod = RENDER_SW ;
     CLog::Log(LOGNOTICE, "GL: Could not create ARB shader since GL_ARB_fragment_shader not present, falling back to SW colorspace conversion");
   }
-
-  return 0;
 }
 
 void CLinuxRendererGL::UnInit()
@@ -1353,31 +1412,37 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 }
 
-bool CLinuxRendererGL::CreateYV12Texture(int index)
+bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
-  DeleteYV12Texture(index);
-
   /* since we also want the field textures, pitch must be texture aligned */
   DWORD dwTextureSize;
   unsigned stride, p;
-
+  
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];
 
-  im.height = m_iSourceHeight;
-  im.width = m_iSourceWidth;
+  if (clear)
+  {
+    DeleteYV12Texture(index);
 
-  im.stride[0] = m_iSourceWidth;
-  im.stride[1] = m_iSourceWidth/2;
-  im.stride[2] = m_iSourceWidth/2;
-  im.plane[0] = new BYTE[m_iSourceWidth * m_iSourceHeight];
-  im.plane[1] = new BYTE[(m_iSourceWidth/2) * (m_iSourceHeight/2)];
-  im.plane[2] = new BYTE[(m_iSourceWidth/2) * (m_iSourceHeight/2)];
+    im.height = m_iSourceHeight;
+    im.width = m_iSourceWidth;
 
-  im.cshift_x = 1;
-  im.cshift_y = 1;
-  im.texcoord_x = 1.0;
-  im.texcoord_y = 1.0;
+    im.stride[0] = m_iSourceWidth;
+    im.stride[1] = m_iSourceWidth/2;
+    im.stride[2] = m_iSourceWidth/2;
+    im.plane[0] = new BYTE[m_iSourceWidth * m_iSourceHeight];
+    im.plane[1] = new BYTE[(m_iSourceWidth/2) * (m_iSourceHeight/2)];
+    im.plane[2] = new BYTE[(m_iSourceWidth/2) * (m_iSourceHeight/2)];
+
+    im.cshift_x = 1;
+    im.cshift_y = 1;
+    im.texcoord_x = 1.0;
+    im.texcoord_y = 1.0;
+  }
+
+  if (m_bAtiMode && clear)
+    return true;
 
   g_graphicsContext.BeginPaint(m_pBuffer);
 
