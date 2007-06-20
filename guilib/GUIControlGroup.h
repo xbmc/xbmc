@@ -69,6 +69,8 @@ protected:
   int m_defaultControl;
   int m_focusedControl;
 
+  // render time and transform
   DWORD m_renderTime;
+  TransformMatrix m_transform;
 };
 
