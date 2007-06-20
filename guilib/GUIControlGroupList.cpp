@@ -25,6 +25,7 @@ void CGUIControlGroupList::Render()
 {
   if (IsVisible())
   {
+    g_graphicsContext.AddGroupTransform(m_transform);
     if (m_scrollSpeed < 0)
     {
       m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
@@ -81,8 +82,8 @@ void CGUIControlGroupList::Render()
     }
     if (render) g_graphicsContext.RestoreViewPort();
     CGUIControl::Render();
+    g_graphicsContext.RemoveGroupTransform();
   }
-  g_graphicsContext.RemoveGroupTransform();
 }
 
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
