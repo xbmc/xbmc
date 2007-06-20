@@ -475,7 +475,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   if (!m_pBuffer)
   {
     // try pbuffer first
-    m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
+    //m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
+    m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
     if (m_pBuffer && !m_pBuffer->IsValid())
     {
       delete m_pBuffer;
