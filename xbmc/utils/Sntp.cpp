@@ -727,7 +727,9 @@ bool CSNTPClient::UpdateNeeded()
 
 
 CSNTPClient::~CSNTPClient()
-{}
+{
+  StopThread();
+}
 
 void CSNTPClient::Process()
 {
