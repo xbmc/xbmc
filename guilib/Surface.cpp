@@ -163,11 +163,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (shared) 
   {
     CLog::Log(LOGINFO, "GLX Info: Creating shared context");
-    //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, shared->GetContext(), True);
     m_glContext = glXCreateContext(s_dpy, vInfo, shared->GetContext(), True); 
   } else {
     CLog::Log(LOGINFO, "GLX Info: Creating unshared context");
-    //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
     m_glContext = glXCreateContext(s_dpy, vInfo, NULL, True); 
   }
   XFree(fbConfigs);
@@ -180,7 +178,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   }
   if (m_glContext) 
   {
-    //glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
     glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
     if (!b_glewInit)
     {
@@ -292,11 +289,9 @@ bool CSurface::MakePBuffer()
     if (m_pShared) 
     {
       CLog::Log(LOGINFO, "GLX: Creating shared context");
-      //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, m_pShared->GetContext(), True);
       m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True); 
     } else {
       CLog::Log(LOGINFO, "GLX: Creating unshared context");
-      //m_glContext = glXCreateNewContext(s_dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
       m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True); 
     }
     XFree(visInfo);
@@ -386,12 +381,10 @@ bool CSurface::MakeCurrent()
   if (m_glWindow)
   {
     return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
-    //return (bool)glXMakeContextCurrent(s_dpy, m_glWindow, m_glWindow, m_glContext);
   }
   else if (m_glPBuffer)
   {
     return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-    //return (bool)glXMakeContextCurrent(s_dpy, m_glPBuffer, m_glPBuffer, m_glContext);
   }
 #endif
 }
@@ -402,7 +395,6 @@ void CSurface::ReleaseContext()
   {
     CLog::Log(LOGINFO, "GL: ReleaseContext");
     glXMakeCurrent(s_dpy, None, NULL);
-    //glXMakeContextCurrent(s_dpy, None, None, NULL);
   }
 #endif
 }
