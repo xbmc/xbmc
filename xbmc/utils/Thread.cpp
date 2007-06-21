@@ -175,6 +175,8 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread = NULL;
   }
 
+  CLog::Log(LOGDEBUG,"Thread %lu terminating",GetCurrentThreadId());
+
 #ifndef _LINUX
   _endthreadex(123);
 #endif

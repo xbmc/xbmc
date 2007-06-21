@@ -64,8 +64,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     GlobalMemoryStatus(&stat);
 
     CStdString strPrefix, strData;
-    
-    strPrefix.Format("%02.2d:%02.2d:%02.2d M:%9u %7s: ", time.wHour, time.wMinute, time.wSecond, stat.dwAvailPhys, levelNames[loglevel]);
+   
+    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9u %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
 
     strData.reserve(16384);
     va_list va;
