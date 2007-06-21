@@ -51,6 +51,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
+  m_BufferSize = m_dwPacketSize * 6; // buffer big enough - but not too big...
   m_dwNumPackets = 16;
 
   snd_pcm_hw_params_t *hw_params=NULL;
@@ -86,8 +87,8 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params_set_period_size_near(m_pPlayHandle, hw_params, &m_maxFrames, 0);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
-  snd_pcm_uframes_t buffer_size = m_dwPacketSize * 20; // buffer big enough
-  nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &buffer_size);
+  m_BufferSize = m_dwPacketSize * 6; // buffer big enough - but not too big...
+  nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &m_BufferSize);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
   unsigned int periodDuration = 0;
@@ -136,7 +137,7 @@ HRESULT CALSADirectSound::Pause()
 {
   if (m_bPause) return S_OK;
   m_bPause = true;
-  snd_pcm_pause(m_pPlayHandle,1);
+  snd_pcm_pause(m_pPlayHandle,1); // this is not supported on all devices. 
   return S_OK;
 }
 
@@ -209,7 +210,7 @@ DWORD CALSADirectSound::GetSpace()
 DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 {
 
-  if (!m_pPlayHandle || snd_pcm_avail_update(m_pPlayHandle) < ( len / (2*m_uiChannels)) )
+  if (!m_pPlayHandle || snd_pcm_avail_update(m_pPlayHandle) < ( len / (2*m_uiChannels)) || m_bPause)
        return 0;
 
   unsigned char *pcmPtr = data;
@@ -243,10 +244,13 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 //***********************************************************************************************
 FLOAT CALSADirectSound::GetDelay()
 {
-  FLOAT delay = 0.008f;
-  DWORD bytes = m_dwPacketSize * m_dwNumPackets - GetSpace();
+  long bytes = m_BufferSize - GetSpace();
+  double delay = (double)bytes / ( m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) );
 
-  delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
+  if (g_audioContext.IsAC3EncoderActive())
+    delay += 0.049;
+  else
+    delay += 0.008;
 
   return delay;
 }

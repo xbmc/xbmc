@@ -634,7 +634,8 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
      && (pPacket->dts < m_CurrentAudio.dts + DVD_MSEC_TO_TIME(50)) )
     {
       CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Potential long duration frame");
-      SyncronizePlayers(SYNCSOURCE_VIDEO);
+      // this creates short video freezes on h264 decoding so its currently commented out.
+      //SyncronizePlayers(SYNCSOURCE_VIDEO);
       return;
     }
 
