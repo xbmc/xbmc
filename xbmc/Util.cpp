@@ -3083,7 +3083,9 @@ const BUILT_IN commands[] = {
   "Resolution", "Change XBMC's Resolution",
   "SetFocus", "Change current focus to a different control id", 
   "BackupSystemInfo", "Backup System Informations to local hdd",
-  "UpdateLibrary", "Update the selected library (music or video)"
+  "UpdateLibrary", "Update the selected library (music or video)",
+  "PageDown","Send a page down event to the pagecontrol with given id",
+  "PageUp","Send a page up event to the pagecontrol with given id"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3895,6 +3897,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_sysinfo.CreateBiosBackup();
     g_sysinfo.CreateEEPROMBackup();
 #endif
+  }
+  else if (execute.Equals("pagedown"))
+  {
+    int id = atoi(parameter.c_str());
+    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetActiveWindow(), id);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("pageup"))
+  {
+    int id = atoi(parameter.c_str());
+    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetActiveWindow(), id);
+    g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("updatelibrary"))
   {
