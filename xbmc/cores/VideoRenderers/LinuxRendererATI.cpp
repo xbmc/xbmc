@@ -41,8 +41,8 @@ bool CLinuxRendererATI::ValidateRenderTarget()
   {
     CLog::Log(LOGNOTICE, "GL: Selected ATI Mode");
     m_pBuffer = new CSurface(g_graphicsContext.getScreenSurface());
-    return true;
   }
+  return true;
 }
 
 
