@@ -273,7 +273,13 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 
     /* if we are not in fullscreen, we don't control when we render */
     /* so we must await the time and flip then */
+#ifdef HAS_SDL_OPENGL
+    // In OpenGL, we shouldn't be waiting for CThread::m_bStop since rendering is
+    // happening from the main thread.
+    while( timestamp > GetTickCount() ) Sleep(1);
+#else
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
+#endif
     //m_pRenderer->FlipPage(source);
     m_eventPresented.Set();
   }
