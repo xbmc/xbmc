@@ -513,6 +513,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow);
+      SDL_WM_SetCaption("XBox Media Center", NULL);
     } else {
       // FIXME: this doesn't work :(      
       //m_screenSurface->ReleaseContext();
