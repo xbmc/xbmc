@@ -226,7 +226,7 @@ __int64 CDVDAudio::GetDelay()
   if(m_pAudioDecoder)
     delay = m_pAudioDecoder->GetDelay();
 
-  DWORD bps = m_iChannels * m_iBitrate * m_iBitsPerSample>>3;
+  DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
   if(m_iBufferSize && bps)
     delay += (double)m_iBufferSize / bps;
 
