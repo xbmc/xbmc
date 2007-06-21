@@ -58,6 +58,12 @@ bool CGUIScrollBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_LABEL_RESET:
     SetRange(message.GetParam1(), message.GetParam2());
     return true;
+  case GUI_MSG_PAGE_UP:
+    Move(-1);
+    return true;
+  case GUI_MSG_PAGE_DOWN:
+    Move(1);
+    return true;
   }
   return CGUIControl::OnMessage(message);
 }
