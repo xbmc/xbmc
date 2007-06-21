@@ -790,12 +790,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
-#ifndef _LINUX
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
-#else
-  DWORD start = timeGetTime();
-#endif
 
   // load skin xml file
   bool bHasPath=false; 
@@ -804,12 +800,8 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
     Load(m_xmlFile,bHasPath);
 
-#ifndef _LINUX
   LARGE_INTEGER slend;
   QueryPerformanceCounter(&slend);
-#else
-  DWORD slend = timeGetTime();
-#endif
 
   // and now allocate resources
   g_TextureManager.StartPreLoad();
@@ -822,12 +814,8 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   }
   g_TextureManager.EndPreLoad();
 
-#ifndef _LINUX
   LARGE_INTEGER plend;
   QueryPerformanceCounter(&plend);
-#else
-  DWORD plend = timeGetTime();
-#endif
 
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
@@ -837,15 +825,10 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   }
   g_TextureManager.FlushPreLoad();
 
-#ifndef _LINUX
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
   CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
-#else
-  DWORD end = timeGetTime();
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", end - start, slend - start, plend - start);
-#endif
 
   m_WindowAllocated = true;
 }
