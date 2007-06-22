@@ -77,7 +77,15 @@ void CSMB::Init()
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
+#ifndef _LINUX
     m_context->options.one_share_per_server = true;
+#else
+    // the one_share_per_server behavior causes problems when using more than one smb shares 
+    // concurently. for example - listening to music from one smb share and viewing slide show from the
+    // other.
+    // we dont have a problem under linux to support many concurrent connections so we turn this off.
+    m_context->options.one_share_per_server = false;
+#endif
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
@@ -298,6 +306,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   CStdString strFileName;
   m_fd = OpenFile(url, strFileName);
 
+  CLog::Log(LOGDEBUG,"CFileSMB::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_fd);
   if (m_fd == -1)
   {
     // write error to logfile
@@ -508,6 +517,7 @@ void CFileSMB::Close()
 {
   if (m_fd != -1)
   {
+    CLog::Log(LOGDEBUG,"CFileSMB::Close closing fd %d", m_fd);
     CSingleLock lock(smb);
     smbc_close(m_fd);
   }
