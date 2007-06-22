@@ -3846,16 +3846,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
 #ifdef HAS_XBOX_HARDWARE
-    if (g_guiSettings.GetBool("system.autotemperature"))
-    {
-      CLog::Log(LOGNOTICE, "stop fancontroller");
-      CFanController::Instance()->Stop();
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "set fanspeed to default");
-      CFanController::Instance()->RestoreStartupSpeed();
-    }
+    CLog::Log(LOGNOTICE, "stop fancontroller");
+    CFanController::Instance()->Stop();
 #endif
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
