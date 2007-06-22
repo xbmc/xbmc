@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
-#include "FileItem.h"
+#include "../xbmc/FileItem.h"
 
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
