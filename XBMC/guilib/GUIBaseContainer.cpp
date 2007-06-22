@@ -1,6 +1,7 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
-#include "GUIListItem.h"
+#include "GUIControlFactory.h"
+#include "FileItem.h"
 
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -17,6 +18,7 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_orientation = orientation;
   m_analogScrollCount = 0;
   m_lastItem = NULL;
+  m_staticContent = false;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -82,7 +84,20 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
 
   default:
     if (action.wID)
-    { // Don't know what to do, so send to our parent window.
+    { 
+      if (m_staticContent && (action.wID == ACTION_SELECT_ITEM || action.wID == ACTION_MOUSE_LEFT_CLICK))
+      { // "select" action
+        int selected = GetSelectedItem();
+        if (selected >= 0 && selected < (int)m_items.size())
+        {
+          CFileItem *item = (CFileItem *)m_items[selected];
+          CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+          message.SetStringParam(item->m_strPath);
+          g_graphicsContext.SendMessage(message);
+        }
+        return true;
+      }
+      // Don't know what to do, so send to our parent window.
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
       return SendWindowMessage(msg);
     }
@@ -303,6 +318,20 @@ void CGUIBaseContainer::AllocResources()
   CalculateLayout();
 }
 
+void CGUIBaseContainer::FreeResources()
+{
+  CGUIControl::FreeResources();
+  if (m_staticContent)
+  { // free any static content
+    for (iItems it = m_items.begin(); it != m_items.end(); it++)
+    {
+      CGUIListItem *item = *it;
+      delete item;
+    }
+    m_items.clear();
+  }
+}
+
 void CGUIBaseContainer::UpdateLayout()
 {
   CalculateLayout();
@@ -362,6 +391,36 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   { // we have a new item layout
     m_focusedLayout.LoadLayout(itemElement, true);
   }
+}
+
+void CGUIBaseContainer::LoadContent(TiXmlElement *content)
+{
+  TiXmlElement *root = content->FirstChildElement("content");
+  if (!root)
+    return;
+
+  m_staticContent = true;
+  TiXmlElement *item = root->FirstChildElement("item");
+  while (item)
+  {
+    // format:
+    // <item label="Cool Video" label2="" thumb="q:\userdata\thumbnails\video\04385918.tbn">PlayMedia(c:\videos\cool_video.avi)</item>
+    // <item label="My Album" label2="" thumb="q:\userdata\thumbnails\music\0\04385918.tbn">ActivateWindow(MyMusic,c:\music\my album)</item>
+    // <item label="Apple Movie Trailers" label2="Bob" thumb="q:\userdata\thumbnails\programs\04385918.tbn">RunScript(q:\scripts\apple movie trailers\default.py)</item>
+    const char *label = item->Attribute("label");
+    const char *label2 = item->Attribute("label2");
+    const char *thumb = item->Attribute("thumb");
+    if (item->FirstChild())
+    {
+      CFileItem *newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
+      newItem->m_strPath = item->FirstChild()->Value();
+      if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+      if (thumb) newItem->SetThumbnailImage(thumb);
+      m_items.push_back(newItem);
+    }
+    item = item->NextSiblingElement("item");
+  }
+  return;
 }
 
 void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
