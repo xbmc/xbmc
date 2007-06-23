@@ -42,6 +42,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
+  virtual void FreeResources();
   virtual unsigned int GetRows() const;
 
   void SetPageControl(DWORD id);
@@ -53,6 +54,7 @@ public:
   virtual void Animate(DWORD currentTime);
   virtual void UpdateEffectState(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
+  void LoadContent(TiXmlElement *content);
 
   VIEW_TYPE GetType() const { return m_type; };
   const CStdString &GetLabel() const { return m_label; };
@@ -103,5 +105,7 @@ protected:
 
   VIEW_TYPE m_type;
   CStdString m_label;
+
+  bool m_staticContent;
 };
 

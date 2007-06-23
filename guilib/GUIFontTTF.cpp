@@ -513,7 +513,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
   FT_Glyph glyph = NULL;
   if (FT_Load_Glyph( m_face, glyph_index, FT_LOAD_TARGET_LIGHT ))
+  {
+    CLog::Log(LOGDEBUG, "%s Failed to load glyph %x", __FUNCTION__, letter);
     return false;
+  }
   // make bold if applicable
   if (m_iStyle == FONT_STYLE_BOLD || m_iStyle == FONT_STYLE_BOLD_ITALICS)
     FT_GlyphSlot_Embolden(m_face->glyph);
@@ -522,10 +525,16 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     FT_GlyphSlot_Oblique(m_face->glyph);
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
+  {
+    CLog::Log(LOGDEBUG, "%s Failed to get glyph %x", __FUNCTION__, letter);
     return false;
+  }
   // render the glyph
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
+  {
+    CLog::Log(LOGDEBUG, "%s Failed to render glyph %x to a bitmap", __FUNCTION__, letter);
     return false;
+  }
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
   if (bitGlyph->left < 0)
