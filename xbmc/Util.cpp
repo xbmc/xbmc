@@ -2011,7 +2011,7 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßÅåÄäÖöÜüøéèçàùêÂñáïëìíâãæîðòôóõ÷ú ";
+  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ";
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
     *cursor = '_';
@@ -3611,7 +3611,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if( g_application.IsPlaying() && g_application.m_pPlayer )
       {
         CAction action;
-        memset(&action, 0, sizeof(CAction));
+	action.fAmount1 = action.fAmount2 = action.fRepeat = 0.0;
+	action.m_dwButtonCode = 0;
         action.wID = ACTION_SHOW_VIDEOMENU;
         g_application.m_pPlayer->OnAction(action);
       }
