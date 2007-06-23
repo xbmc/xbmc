@@ -148,7 +148,7 @@ protected:
   void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
-  bool CreateYV12Texture(int index, bool clear=true);
+  virtual bool CreateYV12Texture(int index, bool clear=true);
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
