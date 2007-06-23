@@ -234,7 +234,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(strFileName))
+  if (!sound->Load(_P(strFileName)))
   {
     delete sound;
     return;
