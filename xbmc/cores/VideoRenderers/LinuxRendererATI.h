@@ -11,7 +11,7 @@ using namespace Surface;
 class CLinuxRendererATI:public CLinuxRendererGL
 {
 public:
-  CLinuxRendererATI();  
+  CLinuxRendererATI(bool enableshaders=false);  
   virtual ~CLinuxRendererATI();
 
   // Player functions

@@ -27,8 +27,12 @@
 
 using namespace Surface;
 
-CLinuxRendererATI::CLinuxRendererATI()
+CLinuxRendererATI::CLinuxRendererATI(bool enableshaders):CLinuxRendererGL()
 {
+  if (enableshaders)
+    m_renderMethod = RENDER_GLSL;
+  else
+    m_renderMethod = RENDER_SW;
 }
 
 CLinuxRendererATI::~CLinuxRendererATI()
@@ -77,15 +81,19 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
 
 void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  static bool firsttime = true;
+
   ManageDisplay();
   ManageTextures();
 
   g_graphicsContext.BeginPaint();
 
   const int source = 0;
-  if (!m_YUVTexture[0][FIELD_FULL][0])
+  if (firsttime)
   {
-    LoadShaders();
+    firsttime = false;
+    if (m_renderMethod & RENDER_GLSL)
+      LoadShaders();
     CreateYV12Texture(0, false);
   }
 
