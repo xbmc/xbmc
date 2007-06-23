@@ -17,7 +17,7 @@ public:
   // Player functions
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         FlipPage(int source);
-  virtual unsigned int PreInit(bool atimode=false);
+  virtual unsigned int PreInit();
   virtual void         UnInit();
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
