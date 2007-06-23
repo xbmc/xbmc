@@ -260,54 +260,6 @@ void CLinuxRendererGL::ManageTextures()
   m_NumYV12Buffers = 1;
   m_iYV12RenderBuffer = 0;
   return;
-
-  //use 1 buffer in fullscreen mode and 2 buffers in windowed mode
-  if (g_graphicsContext.IsFullScreenVideo())
-  {
-    if (m_NumOSDBuffers != 1)
-    {
-      m_iOSDRenderBuffer = 0;
-      m_NumOSDBuffers = 1;
-      m_OSDWidth = m_OSDHeight = 0;
-      //delete second osd textures
-      DeleteOSDTextures(1);
-    }
-    neededbuffers = 1;
-  }
-  else
-  {
-    if (m_NumOSDBuffers != 2)
-    {
-      m_NumOSDBuffers = 2;
-      m_iOSDRenderBuffer = 0;
-      m_OSDWidth = m_OSDHeight = 0;
-      // buffers will be created on demand in DrawAlpha()
-    }
-    neededbuffers = 2;
-  }
-
-  if( m_NumYV12Buffers < neededbuffers )
-  {
-    for(int i = m_NumYV12Buffers; i<neededbuffers;i++)
-      CreateYV12Texture(i);
-
-    m_NumYV12Buffers = neededbuffers;
-  }
-  else if( m_NumYV12Buffers > neededbuffers )
-  {
-    // delete from the end
-    int i = m_NumYV12Buffers-1;
-    for(; i>=neededbuffers;i--)
-    {
-      // don't delete any frame that is in use
-      if(m_image[i].flags & IMAGE_FLAG_DYNAMIC)
-        break;
-      DeleteYV12Texture(i);
-    }
-    if(m_iYV12RenderBuffer > i)
-        m_iYV12RenderBuffer = i;
-    m_NumYV12Buffers = i+1;
-  }
 }
 
 void CLinuxRendererGL::ManageDisplay()
