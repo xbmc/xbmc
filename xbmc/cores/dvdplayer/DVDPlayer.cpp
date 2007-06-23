@@ -611,6 +611,9 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
     mindts = min(m_CurrentAudio.dts, m_CurrentVideo.dts);
   }
 
+#ifndef _LINUX
+  // the checks below causes "hickups" in the video playback of h264 and mpeg2ts (hd). 
+  // it may cause problems with THX discs... 
   if (source == DVDPLAYER_VIDEO)
   {
     /* check for looping stillframes on non dvd's, dvd's will be detected by long duration check later */
@@ -634,12 +637,12 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
      && (pPacket->dts < m_CurrentAudio.dts + DVD_MSEC_TO_TIME(50)) )
     {
       CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Potential long duration frame");
-      // this creates short video freezes on h264 decoding so its currently commented out.
-      //SyncronizePlayers(SYNCSOURCE_VIDEO);
+      SyncronizePlayers(SYNCSOURCE_VIDEO);
       return;
     }
 
   }
+#endif
 
   /* if we don't have max and min, we can't do anything more */
   if( mindts == DVD_NOPTS_VALUE || maxdts == DVD_NOPTS_VALUE )
