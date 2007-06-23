@@ -218,7 +218,6 @@ void CGUISpinControl::Clear()
 
 bool CGUISpinControl::OnMessage(CGUIMessage& message)
 {
-
   if (CGUIControl::OnMessage(message) )
     return true;
   if (message.GetControlId() == GetID() )
@@ -283,6 +282,17 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+
+    case GUI_MSG_PAGE_UP:
+      if (CanMoveUp())
+        MoveUp();
+      return true;
+
+    case GUI_MSG_PAGE_DOWN:
+      if (CanMoveDown())
+        MoveDown();
+      return true;
+
     }
   }
   return false;

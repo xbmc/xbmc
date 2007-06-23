@@ -331,6 +331,22 @@ bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, 
   return false;
 }
 
+// Convert a string to a GUI label, by translating/parsing the label for localisable strings
+CStdString CGUIControlFactory::GetLabel(const char *label)
+{
+  CStdString viewLabel = label;
+  if (StringUtils::IsNaturalNumber(viewLabel))
+    viewLabel = g_localizeStrings.Get(atoi(label));
+  else
+  { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+    g_charsetConverter.stringCharsetToUtf8(viewLabel);
+  }
+  // translate the label
+  vector<CInfoPortion> info;
+  g_infoManager.ParseLabel(viewLabel, info);
+  return g_infoManager.GetMultiLabel(info);
+}
+
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
   CStdString type;
@@ -877,19 +893,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       viewType = VIEW_TYPE_BIG_WRAP;
     const char *label = itemElement->Attribute("label");
     if (label)
-    {
-      viewLabel = label;
-      if (StringUtils::IsNaturalNumber(viewLabel))
-        viewLabel = g_localizeStrings.Get(atoi(label));
-      else
-      { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-        g_charsetConverter.stringCharsetToUtf8(viewLabel);
-      }
-      // translate the label
-      vector<CInfoPortion> info;
-      g_infoManager.ParseLabel(viewLabel, info);
-      viewLabel = g_infoManager.GetMultiLabel(info);
-    }
+      viewLabel = GetLabel(label);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1083,6 +1087,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIListContainer *)control)->SetPageControl(pageControl);
   }
@@ -1090,6 +1095,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
   }
@@ -1097,6 +1103,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
   }
@@ -1104,6 +1111,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
   }

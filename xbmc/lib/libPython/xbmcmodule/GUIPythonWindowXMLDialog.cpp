@@ -22,6 +22,17 @@ void CGUIPythonWindowXMLDialog::Activate(DWORD dwParentId)
   m_bRunning = true;
 }
 
+bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow)
+      m_gWindowManager.ShowOverlay(pWindow->GetOverlayState());
+    return CGUIWindow::OnMessage(message);
+  }
+  return CGUIPythonWindowXML::OnMessage(message);
+}
 
 void CGUIPythonWindowXMLDialog::Close()
 {
