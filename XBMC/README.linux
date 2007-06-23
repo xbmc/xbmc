@@ -43,4 +43,17 @@ How to run
    # XBMC_HOME=/home/whatever/XBMC
    # export XBMC_HOME
 
+
+Fullscreen
+----------
+To launch XBMC in fullscreen mode append the '-fs' option to the command line while launching.
+
+
+Multi-monitor Fullscreen
+------------------------
+If you have a multi-monitor setup and you want to use '-fs', make sure to set the env variable 
+SDL_VIDEO_FULLSCREEN_HEAD to the display no. which you want SDL to use for the fullscreen mode.
+
+For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./XboxMediaCenter -fs" to tell SDL to use display no.1
+
 Don't expect too much, yet.
