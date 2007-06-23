@@ -156,7 +156,7 @@ void CLinuxRendererATI::FlipPage(int source)
 
 
 
-unsigned int CLinuxRendererATI::PreInit(bool atimode)
+unsigned int CLinuxRendererATI::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
