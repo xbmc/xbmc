@@ -58,18 +58,20 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIControlGroup::Render()
 {
-  if (IsVisible())
+  if (!IsVisible())
+    return;
+
+  // We have both our animation transform, and the translation (position) transform
+  g_graphicsContext.AddGroupTransform(m_transform);
+  g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY));
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
-    g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY));
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-    {
-      CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      control->Render();
-    }
-    CGUIControl::Render();
-    g_graphicsContext.RemoveGroupTransform();
+    CGUIControl *control = *it;
+    control->UpdateEffectState(m_renderTime);
+    control->Render();
   }
+  CGUIControl::Render();
+  g_graphicsContext.RemoveGroupTransform();
   g_graphicsContext.RemoveGroupTransform();
 }
 
@@ -276,7 +278,7 @@ bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
 void CGUIControlGroup::Animate(DWORD currentTime)
 {
   GUIVISIBLE visible = m_visible;
-  TransformMatrix transform;
+  m_transform.Reset();
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -284,9 +286,8 @@ void CGUIControlGroup::Animate(DWORD currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
-    anim.RenderAnimation(transform);
+    anim.RenderAnimation(m_transform);
   }
-  g_graphicsContext.AddGroupTransform(transform);
 }
 
 bool CGUIControlGroup::HitTest(const CPoint &point) const

@@ -88,6 +88,8 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
         OnOrder();
       else if (iControl == CONTROL_ORDER_DIRECTION)
         OnOrderDirection();
+      else
+        return CGUIDialog::OnMessage(message);
       return true;
     }
     break;
