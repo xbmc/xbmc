@@ -82,20 +82,12 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
 void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   static bool firsttime = true;
+  const int source = 0;
 
   ManageDisplay();
   ManageTextures();
 
   g_graphicsContext.BeginPaint();
-
-  const int source = 0;
-  if (firsttime)
-  {
-    firsttime = false;
-    if (m_renderMethod & RENDER_GLSL)
-      LoadShaders();
-    CreateYV12Texture(0, false);
-  }
 
   m_image[source].flags = 0;
     
@@ -104,8 +96,17 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
   m_image[source].flags = 0;
-  
+
   glEnable(m_textureTarget);
+
+  if (!glIsTexture(fields[0][0])) //(firsttime)
+  {
+    firsttime = false;
+    if (m_renderMethod & RENDER_GLSL)
+      LoadShaders();
+    CreateYV12Texture(0, false);
+  }
+  
   VerifyGLState();
   glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
