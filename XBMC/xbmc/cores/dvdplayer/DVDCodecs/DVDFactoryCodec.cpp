@@ -70,12 +70,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 
   // try to decide if we want to try halfres decoding
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
+#ifndef _LINUX
   if( pixelrate > 1400.0f*720.0f*30.0f )
   {
     CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);    
     options.push_back(CDVDCodecOption("lowres","1"));    
   }
   else 
+#endif
   { // non halfres mode, we can use other decoders
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
