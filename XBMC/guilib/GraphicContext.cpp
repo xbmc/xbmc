@@ -467,10 +467,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   SetFullScreenViewWindow(res);
   SetScreenFilters(m_bFullScreenVideo);
   
+  m_Resolution = res;
   if(NeedReset)
     CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
 
-  m_Resolution = res;
   Unlock();  
 }
 

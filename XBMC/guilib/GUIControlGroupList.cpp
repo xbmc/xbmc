@@ -25,6 +25,7 @@ void CGUIControlGroupList::Render()
 {
   if (IsVisible())
   {
+    g_graphicsContext.AddGroupTransform(m_transform);
     if (m_scrollSpeed < 0)
     {
       m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
@@ -60,7 +61,7 @@ void CGUIControlGroupList::Render()
     {
       CGUIControl *control = *it;
       if (pos + Size(control) > m_offset && pos < m_offset + Size() && render)
-      { // we can render this contorl - set the offset transform, then the control's anim, then render
+      { // we can render this control - set the offset transform, then the control's anim, then render
         if (m_orientation == VERTICAL)
           g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY + pos - m_offset));
         else
@@ -74,12 +75,15 @@ void CGUIControlGroupList::Render()
         g_graphicsContext.RemoveGroupTransform();
       }
       else  // we can't render the control (offscreen) but update it's state anyway
+      {
         control->UpdateEffectState(m_renderTime);
+        pos += Size(control) + m_itemGap;
+      }
     }
     if (render) g_graphicsContext.RestoreViewPort();
     CGUIControl::Render();
+    g_graphicsContext.RemoveGroupTransform();
   }
-  g_graphicsContext.RemoveGroupTransform();
 }
 
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
