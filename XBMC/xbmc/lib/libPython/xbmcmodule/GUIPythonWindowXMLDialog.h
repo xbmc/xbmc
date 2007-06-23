@@ -6,7 +6,8 @@ class CGUIPythonWindowXMLDialog : public CGUIPythonWindowXML
   public:
     CGUIPythonWindowXMLDialog(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
     virtual ~CGUIPythonWindowXMLDialog(void);
-    void             Activate(DWORD dwParentId);
+    void            Activate(DWORD dwParentId);
+    virtual bool    OnMessage(CGUIMessage &message);
     virtual void    Close();
     virtual bool    IsDialogRunning() const { return m_bRunning; }
     virtual bool    IsDialog() const { return true;};
