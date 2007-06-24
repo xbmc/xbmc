@@ -232,6 +232,8 @@ void XBPython::Initialize()
 void XBPython::Finalize()
 {
   m_iDllScriptCounter--;
+  // for linux - we never release the library. its loaded and stays in memory.
+#ifndef _LINUX
   EnterCriticalSection(&m_critSection);
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
@@ -242,16 +244,17 @@ void XBPython::Finalize()
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     //dllFreeLibrary(m_hModule);
-#ifndef _LINUX    
+//#ifndef _LINUX    
     DllLoaderContainer::UnloadPythonDlls();
-#else
+//#else
     DllLoaderContainer::ReleaseModule(m_pDll);
-#endif    
+//#endif    
     m_hModule = NULL;
 
     m_bInitialized = false;
   }
   LeaveCriticalSection(&m_critSection);
+#endif
 }
 
 void XBPython::FreeResources()
