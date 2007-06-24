@@ -365,19 +365,16 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
       m_iCurrentPts = 0LL;
     }
     else
-    {
-      // pkt.pts is not the real pts, but a frame number.
-      // to get our pts we need to multiply the frame delay with that number
-      int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
-      int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
-        
+    {        
       // XXX, in some cases ffmpeg returns a negative packet size
-      if (pkt.size <= 0 || num == 0 || den == 0 || pkt.stream_index >= MAX_STREAMS)
+      if (pkt.size <= 0 || pkt.stream_index >= MAX_STREAMS)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
       }
       else
       {
+        AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
+
         pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
         if (pPacket)
         {
@@ -389,14 +386,19 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(pkt.pts == 0)
             pkt.pts = AV_NOPTS_VALUE;
 
+          // lavf lies about delayed frames in h264 since parser doesn't set it properly
+          // dts values are then invalid
+          if(stream->codec && stream->codec->codec_id == CODEC_ID_H264 && !stream->codec->has_b_frames)
+            pkt.dts = AV_NOPTS_VALUE;
+
           // copy contents into our own packet
           pPacket->iSize = pkt.size;
           
           // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
           memcpy(pPacket->pData, pkt.data, pPacket->iSize);
           
-          pPacket->pts = ConvertTimestamp(pkt.pts, den, num);
-          pPacket->dts = ConvertTimestamp(pkt.dts, den, num);
+          pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
+          pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
 
           // used to guess streamlength
           if (pPacket->dts != DVD_NOPTS_VALUE && pPacket->dts > m_iCurrentPts)

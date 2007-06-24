@@ -302,7 +302,7 @@ void CDVDPlayerVideo::Process()
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
 
-      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
+      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
 
       // assume decoder dropped a picture if it didn't give us any
       // picture from a demux packet, this should be reasonable
@@ -351,13 +351,12 @@ void CDVDPlayerVideo::Process()
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
               picture.iFlags |= DVP_FLAG_NOAUTOSYNC;
             }
-            
 
-            if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
-                pPacket->dts != DVD_NOPTS_VALUE) //Only use pts when we have an I frame, or unknown
-            {
+            /* try to figure out a pts for this frame */
+            if(picture.pts != DVD_NOPTS_VALUE)
+              pts = picture.pts;
+            else if(pPacket->dts != DVD_NOPTS_VALUE)
               pts = pPacket->dts;
-            }
             
             //Check if dvd has forced an aspect ratio
             if( m_fForcedAspectRatio != 0.0f )
@@ -391,7 +390,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+              iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
               break;
             }
             
@@ -431,7 +430,7 @@ void CDVDPlayerVideo::Process()
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+        iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
       }
 
       // if decoder had an error, tell it to reset to avoid more problems
