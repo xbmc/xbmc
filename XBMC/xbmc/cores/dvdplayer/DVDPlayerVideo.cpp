@@ -43,6 +43,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
+  m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
 }
@@ -302,7 +303,7 @@ void CDVDPlayerVideo::Process()
       }
 
       // if we have pictures that can't be skipped, never request drop
-      if( m_iNrOfPicturesNotToSkip > 0 ) 
+      if( m_iNrOfPicturesNotToSkip > 0 || !m_bDropFrames )
         bRequestDrop = false;
 
 #ifdef PROFILE
