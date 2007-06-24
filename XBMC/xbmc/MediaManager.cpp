@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"
+#include "Util.h"
 
 const char MEDIA_SOURCES_XML[] = { "Q:\\system\\mediasources.xml" };
 
@@ -33,18 +34,20 @@ CMediaManager::CMediaManager()
 
 bool CMediaManager::LoadSources()
 {
+  CStdString xmlFile = _P(MEDIA_SOURCES_XML);
+
   // clear our location list
   m_locations.clear();
 
   // load xml file...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( MEDIA_SOURCES_XML ) )
+  if ( !xmlDoc.LoadFile( xmlFile.c_str() ) )
     return false;
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if ( !pRootElement || strcmpi(pRootElement->Value(), "mediasources") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", MEDIA_SOURCES_XML, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", xmlFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
@@ -70,6 +73,8 @@ bool CMediaManager::LoadSources()
 
 bool CMediaManager::SaveSources()
 {
+  CStdString xmlFile = _P(MEDIA_SOURCES_XML);
+
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("mediasources");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
@@ -88,7 +93,7 @@ bool CMediaManager::SaveSources()
       pNetworkNode->InsertEndChild(locationNode);
     }
   }
-  return xmlDoc.SaveFile(MEDIA_SOURCES_XML);
+  return xmlDoc.SaveFile(xmlFile.c_str());
 }
 
 void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
