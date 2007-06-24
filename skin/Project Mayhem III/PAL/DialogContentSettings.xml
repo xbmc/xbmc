@@ -189,12 +189,10 @@
 			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
 			<textureslidernib>-</textureslidernib>
 			<textureslidernibfocus>-</textureslidernibfocus>
-			<onleft>50</onleft>
-			<onright>9000</onright>
+			<onleft>4</onleft>
+			<onright>5</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
-			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsVisible(56)</visible>
-			<visible>![Window.IsActive(myvideolibrary) + Control.IsVisible(51)]</visible>
 			<include>homemisc</include>
 		</control>
 		<control type="button" id="7">
