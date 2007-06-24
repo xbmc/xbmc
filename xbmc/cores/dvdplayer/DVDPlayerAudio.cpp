@@ -329,24 +329,16 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       pMsg->Release();
       continue;
     } 
-    else if (pMsg->IsType(CDVDMsg::GENERAL_SET_CLOCK))
-    { //player asked us to set dvdclock on this
-      CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
-      result |= DECODE_FLAG_RESYNC;
-      
-      if( pMsgGeneralSetClock->GetDts() != DVD_NOPTS_VALUE )
-        m_audioClock = pMsgGeneralSetClock->GetDts();
-
-      pMsg->Release();
-      continue;
-    } 
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;                  
 
-      if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
-        m_audioClock = pMsgGeneralResync->GetDts();
+      if( pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE )
+        m_audioClock = pMsgGeneralResync->m_timestamp;
       
+      if(pMsgGeneralResync->m_clock)
+        result |= DECODE_FLAG_RESYNC;
+
       pMsg->Release();
       continue;
     }
