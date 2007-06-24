@@ -21,6 +21,8 @@ extern "C" {
 
 namespace PYXBMC
 {
+  extern PyObject* ControlSpin_New(void);
+
   // used by Dialog to to create a new dialogWindow
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog)
   {
@@ -131,6 +133,10 @@ namespace PYXBMC
     {
     case CGUIControl::GUICONTROL_BUTTON:
       pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
+      new(&((ControlButton*)pControl)->strFont) string();    
+      new(&((ControlButton*)pControl)->strText) string();    
+      new(&((ControlButton*)pControl)->strTextureFocus) string();    
+      new(&((ControlButton*)pControl)->strTextureNoFocus) string(); 
 
       li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
 
@@ -143,6 +149,10 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_CHECKMARK:
       pControl = (Control*)ControlCheckMark_Type.tp_alloc(&ControlCheckMark_Type, 0);
+      new(&((ControlCheckMark*)pControl)->strFont) string();    
+      new(&((ControlCheckMark*)pControl)->strText) string();    
+      new(&((ControlCheckMark*)pControl)->strTextureFocus) string();    
+      new(&((ControlCheckMark*)pControl)->strTextureNoFocus) string();    
 
       li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
 
@@ -154,27 +164,56 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_LABEL:
       pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
+      new(&((ControlLabel*)pControl)->strText) string();
+      new(&((ControlLabel*)pControl)->strFont) string();
       break;
     case CGUIControl::GUICONTROL_SPIN:
       pControl = (Control*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
+      new(&((ControlSpin*)pControl)->strTextureUp) string();    
+      new(&((ControlSpin*)pControl)->strTextureDown) string();    
+      new(&((ControlSpin*)pControl)->strTextureUpFocus) string();    
+      new(&((ControlSpin*)pControl)->strTextureDownFocus) string();      
       break;
     case CGUIControl::GUICONTROL_FADELABEL:
       pControl = (Control*)ControlFadeLabel_Type.tp_alloc(&ControlFadeLabel_Type, 0);
+      new(&((ControlFadeLabel*)pControl)->strFont) string();
+      new(&((ControlFadeLabel*)pControl)->vecLabels) std::vector<string>();    
       break;
     case CGUIControl::GUICONTROL_TEXTBOX:
       pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
+      ((ControlTextBox*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
+      if (((ControlTextBox*)pControl)->pControlSpin) 
+         new(&((ControlTextBox*)pControl)->strFont) string();        
       break;
     case CGUIControl::GUICONTROL_IMAGE:
       pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
+      new(&((ControlImage*)pControl)->strFileName) string();    
       break;
     case CGUIControl::GUICONTROL_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
+      new(&((ControlList*)pControl)->strFont) string();    
+      new(&((ControlList*)pControl)->strTextureButton) string();    
+      new(&((ControlList*)pControl)->strTextureButtonFocus) string();
+      new(&((ControlList*)pControl)->vecItems) std::vector<PYXBMC::ListItem*>();
+      // create a python spin control
+      ((ControlList*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
       break;
     case CGUIControl::GUICONTROL_PROGRESS:
       pControl = (Control*)ControlProgress_Type.tp_alloc(&ControlProgress_Type, 0);
+      new(&((ControlProgress*)pControl)->strTextureLeft) string();    
+      new(&((ControlProgress*)pControl)->strTextureMid) string();    
+      new(&((ControlProgress*)pControl)->strTextureRight) string();    
+      new(&((ControlProgress*)pControl)->strTextureBg) string();     
+      new(&((ControlProgress*)pControl)->strTextureOverlay) string();     
       break;
     case CGUIControl::GUICONTAINER_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
+      new(&((ControlList*)pControl)->strFont) string();    
+      new(&((ControlList*)pControl)->strTextureButton) string();    
+      new(&((ControlList*)pControl)->strTextureButtonFocus) string();
+      new(&((ControlList*)pControl)->vecItems) std::vector<PYXBMC::ListItem*>();
+      // create a python spin control
+      ((ControlList*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
       break;
     case CGUIControl::GUICONTROL_GROUP:
       pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
