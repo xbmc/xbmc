@@ -189,6 +189,7 @@ void CGUIImage::Render()
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    VerifyGLState();
 
 #ifdef HAS_GL_EXTENSIONS
     if (m_diffuseTexture)
@@ -203,6 +204,7 @@ void CGUIImage::Render()
       glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
       glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
       glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+      VerifyGLState();
     }
 #endif
     glBegin(GL_QUADS);

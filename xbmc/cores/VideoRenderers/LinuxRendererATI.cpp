@@ -83,6 +83,13 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   static bool firsttime = true;
   const int source = 0;
+  static int imaging = -1;
+  static GLfloat brightness = 0;
+  static GLfloat contrast   = 0;
+
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+
 
   ManageDisplay();
   ManageTextures();
@@ -108,6 +115,29 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   }
   
   VerifyGLState();
+  
+  if (m_renderMethod & RENDER_SW) {
+    if (imaging==-1)
+    {
+      imaging = 0;
+      if (glewIsSupported("GL_ARB_imaging"))
+      {
+	CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+	imaging = 1;
+      }
+    }
+    if (imaging)
+    {
+      glPixelTransferf(GL_RED_SCALE, contrast);
+      glPixelTransferf(GL_GREEN_SCALE, contrast);
+      glPixelTransferf(GL_BLUE_SCALE, contrast);
+      glPixelTransferf(GL_RED_BIAS, brightness);
+      glPixelTransferf(GL_GREEN_BIAS, brightness);
+      glPixelTransferf(GL_BLUE_BIAS, brightness);
+      VerifyGLState();
+    }
+  }
+
   glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
   if (m_renderMethod & RENDER_SW)
@@ -124,6 +154,17 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glBindTexture(m_textureTarget, fields[0][2]);
     VerifyGLState();
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+    VerifyGLState();
+  }
+
+  if (imaging)
+  {
+    glPixelTransferf(GL_RED_SCALE, 1.0);
+    glPixelTransferf(GL_GREEN_SCALE, 1.0);
+    glPixelTransferf(GL_BLUE_SCALE, 1.0);
+    glPixelTransferf(GL_RED_BIAS, 0.0);
+    glPixelTransferf(GL_GREEN_BIAS, 0.0);
+    glPixelTransferf(GL_BLUE_BIAS, 0.0);
     VerifyGLState();
   }
   
