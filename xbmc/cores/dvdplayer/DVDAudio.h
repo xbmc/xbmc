@@ -34,7 +34,7 @@ protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len);
   IAudioCallback* m_pCallback;
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
-  int m_iBufferSize;
+  DWORD m_iBufferSize;
   DWORD m_dwPacketSize;
   CCriticalSection m_critSection;
 
