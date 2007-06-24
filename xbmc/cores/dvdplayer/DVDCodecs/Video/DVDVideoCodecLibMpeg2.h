@@ -11,7 +11,7 @@ public:
   virtual ~CDVDVideoCodecLibMpeg2();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize);
+  virtual int Decode(BYTE* pData, int iSize, __int64 pts);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData);
