@@ -306,6 +306,7 @@ namespace PYXBMC
       // initialize control to zero
       self->pWindow->Remove(pControl->iControlId);
       pControl->pGUIControl->FreeResources();
+      // TODO LINUX: Call destructors per freed control or else we will have a small memory leak
       delete pControl->pGUIControl;
       pControl->pGUIControl = NULL;
       pControl->iControlId = 0;
