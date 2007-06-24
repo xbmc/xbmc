@@ -19,7 +19,6 @@ public:
     GENERAL_FLUSH,                  // 
     GENERAL_STREAMCHANGE,           // 
     GENERAL_SYNCHRONIZE,            // 
-    GENERAL_SET_CLOCK,              // 
     
     
     // player core related messages (cdvdplayer.cpp)
@@ -124,29 +123,15 @@ private:
 class CDVDMsgGeneralResync : public CDVDMsg
 {
 public:
-  CDVDMsgGeneralResync(__int64 pts, __int64 dts) : CDVDMsg(GENERAL_RESYNC)  { m_pts = pts; m_dts = dts; }
-  __int64 GetPts()                      { return m_pts; }
-  __int64 GetDts()                      { return m_dts; }
-private:
-  __int64 m_pts;
-  __int64 m_dts;
+  CDVDMsgGeneralResync(__int64 timestamp, bool clock) : CDVDMsg(GENERAL_RESYNC)  { m_timestamp = timestamp; m_clock = clock; }
+  __int64 m_timestamp;
+  bool m_clock;
 };
 
 class CDVDMsgGeneralFlush : public CDVDMsg
 {
 public:
   CDVDMsgGeneralFlush() : CDVDMsg(GENERAL_FLUSH)  {}
-};
-
-class CDVDMsgGeneralSetClock : public CDVDMsg
-{
-public:
-  CDVDMsgGeneralSetClock(__int64 pts, __int64 dts) : CDVDMsg(GENERAL_SET_CLOCK)  { m_pts = pts; m_dts = dts; }
-  __int64 GetPts()                      { return m_pts; }
-  __int64 GetDts()                      { return m_dts; }
-private:
-  __int64 m_pts;
-  __int64 m_dts;
 };
 
 class CDVDStreamInfo;
