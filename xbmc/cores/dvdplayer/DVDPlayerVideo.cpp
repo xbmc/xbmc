@@ -318,6 +318,16 @@ void CDVDPlayerVideo::Process()
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
 
+      // assume decoder dropped a picture if it didn't give us any
+      // picture from a demux packet, this should be reasonable
+      // for libavformat as a demuxer as it normally packetizes
+      // pictures when they come from demuxer
+      if(bRequestDrop && iDecoderState & VC_BUFFER)
+      {
+        m_iDroppedFrames++;
+        iDropped++;
+      }
+
       // loop while no error
       while (!(iDecoderState & VC_ERROR))
       {
