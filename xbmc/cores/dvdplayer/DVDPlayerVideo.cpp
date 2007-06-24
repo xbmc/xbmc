@@ -218,40 +218,25 @@ void CDVDPlayerVideo::Process()
       m_iNrOfPicturesNotToSkip = 5;
       continue;
     }
-    else if (pMsg->IsType(CDVDMsg::GENERAL_SET_CLOCK))
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo::Process - Resync recieved.");
-      
-      CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
-
-      //DVDPlayer asked us to sync playback clock
-      if( pMsgGeneralSetClock->GetPts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralSetClock->GetPts();      
-      else if( pMsgGeneralSetClock->GetDts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralSetClock->GetDts();
-
-      __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
-      
-      if( delay > iFrameTime ) delay = iFrameTime;
-      else if( delay < 0 ) delay = 0;
-
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);      
-
-      pMsgGeneralSetClock->Release();
-      continue;
-    } 
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC"); 
       
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-      
-      //DVDPlayer asked us to sync playback clock
-      if( pMsgGeneralResync->GetPts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralResync->GetPts();      
-      else if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralResync->GetDts();
+
+      if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
+        pts = pMsgGeneralResync->m_timestamp;
+            
+      if(pMsgGeneralResync->m_clock)
+      {
+        __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
+        
+        if( delay > iFrameTime ) delay = iFrameTime;
+        else if( delay < 0 ) delay = 0;
+
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);
+      }
 
       pMsgGeneralResync->Release();
       continue;
