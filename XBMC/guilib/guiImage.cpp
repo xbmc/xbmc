@@ -193,6 +193,7 @@ void CGUIImage::Render()
 #ifdef HAS_GL_EXTENSIONS
     if (m_diffuseTexture)
     {
+      m_diffuseTexture->LoadToGPU();
       glActiveTextureARB(GL_TEXTURE1_ARB);
       glBindTexture(GL_TEXTURE_2D, m_diffuseTexture->id);
       glEnable(GL_TEXTURE_2D);
