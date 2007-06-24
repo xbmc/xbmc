@@ -27,15 +27,11 @@
  */
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 
-#define LIBAVUTIL_VERSION_INT   ((49<<16)+(3<<8)+0)
-#define LIBAVUTIL_VERSION       49.3.0
+#define LIBAVUTIL_VERSION_INT   ((49<<16)+(4<<8)+1)
+#define LIBAVUTIL_VERSION       49.4.1
 #define LIBAVUTIL_BUILD         LIBAVUTIL_VERSION_INT
 
 #define LIBAVUTIL_IDENT         "Lavu" AV_STRINGIFY(LIBAVUTIL_VERSION)
@@ -80,8 +76,8 @@ enum PixelFormat {
     PIX_FMT_RGB565,    ///< Packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), in cpu endianness
     PIX_FMT_RGB555,    ///< Packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), in cpu endianness most significant bit to 0
     PIX_FMT_GRAY8,     ///<        Y        ,  8bpp
-    PIX_FMT_MONOWHITE, ///<        Y        ,  1bpp, 1 is white
-    PIX_FMT_MONOBLACK, ///<        Y        ,  1bpp, 0 is black
+    PIX_FMT_MONOWHITE, ///<        Y        ,  1bpp, 0 is white, 1 is black
+    PIX_FMT_MONOBLACK, ///<        Y        ,  1bpp, 0 is black, 1 is white
     PIX_FMT_PAL8,      ///< 8 bit with PIX_FMT_RGB32 palette
     PIX_FMT_YUVJ420P,  ///< Planar YUV 4:2:0, 12bpp, full scale (jpeg)
     PIX_FMT_YUVJ422P,  ///< Planar YUV 4:2:2, 16bpp, full scale (jpeg)
@@ -128,10 +124,6 @@ enum PixelFormat {
 #define PIX_FMT_UYVY411 PIX_FMT_UYYVYY411
 #define PIX_FMT_RGBA32  PIX_FMT_RGB32
 #define PIX_FMT_YUV422  PIX_FMT_YUYV422
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif /* AVUTIL_H */
