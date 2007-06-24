@@ -971,6 +971,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
 void CDVDPlayer::ToggleFrameDrop()
 {
+  m_dvdPlayerVideo.EnableFrameDrop( !m_dvdPlayerVideo.IsFrameDropEnabled() );
 }
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
