@@ -150,6 +150,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     m_glWindow = XCreateWindow(s_dpy, p, 0, 0, m_iWidth, m_iHeight,
 			       0, vInfo->depth, InputOutput, vInfo->visual,
 			       swaMask, &swa );
+    XSync(s_dpy, False);
     mapWindow = true;
     if (!m_glWindow) 
     {
