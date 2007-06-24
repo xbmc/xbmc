@@ -479,6 +479,7 @@
   <string id="568">Last Played</string>
   <string id="569">Comment</string>
   <string id="570">Date Added</string>
+  <string id="571">Default</string>
 
   <string id="580">Sort Direction</string>
   <string id="581">Sort Method</string>
@@ -1263,6 +1264,8 @@
   <string id="15282">Enter a tag name to find similar ones</string>
   <string id="15283">Tracks recently listened by %name%</string>
   <string id="15284">Listen to %name%'s recommendations Last.FM radio</string>
+  <string id="15285">Top tags for user %name%</string>
+  <string id="15286">Listen to %name%'s playlist Last.FM radio</string>
 
   <string id="15300">Path not found or invalid</string>
   <string id="15301">Could not connect to network server</string>
