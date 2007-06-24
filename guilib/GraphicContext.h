@@ -171,11 +171,17 @@ public:
   }
   inline void SetControlTransform(const TransformMatrix &matrix)
   {
-    m_finalTransform = m_groupTransform.top() * matrix;
+    if (!m_groupTransform.empty())
+      m_finalTransform = m_groupTransform.top() * matrix;
+    else
+      m_finalTransform = TransformMatrix() * matrix;
   };
   inline void AddGroupTransform(const TransformMatrix &matrix)
   { // add to the stack
-    m_groupTransform.push(m_groupTransform.top() * matrix);
+    if (!m_groupTransform.empty())
+      m_groupTransform.push(m_groupTransform.top() * matrix);
+    else
+      m_groupTransform.push(TransformMatrix() * matrix);
     m_finalTransform = m_groupTransform.top();
   };
   inline void RemoveGroupTransform()
