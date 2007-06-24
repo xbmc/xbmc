@@ -11,7 +11,7 @@
 		</control>
 		<!-- codec & viz infos -->
 		<control type="group" id="0">
-			<visible>Player.ShowCodec</visible>
+			<visible>Player.ShowCodec + !Window.IsVisible(script-XBMC_Lyrics-main.xml)</visible>
 			<animation effect="fade" time="500">VisibleChange</animation>
 			<control type="image" id="0">
 				<description>preset background image</description>
@@ -64,7 +64,7 @@
 		<control type="group" id="1">
 			<posx>-10</posx>
 			<posy>410</posy>
-			<visible>Player.ShowInfo</visible>
+			<visible>Player.ShowInfo + !Window.IsVisible(script-XBMC_Lyrics-main.xml)</visible>
 			<animation effect="fade" time="500">VisibleChange</animation>
 			<control type="image" id="1">
 				<description>media info background image</description>
