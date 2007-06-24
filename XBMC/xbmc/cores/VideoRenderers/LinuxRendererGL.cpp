@@ -567,6 +567,36 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   
   
   g_graphicsContext.BeginPaint(m_pBuffer);
+
+  static int imaging = -1;
+  static GLfloat brightness = 0;
+  static GLfloat contrast   = 0;
+
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+
+  if (m_renderMethod & RENDER_SW) {
+    if (imaging==-1)
+    {
+      imaging = 0;
+      if (glewIsSupported("GL_ARB_imaging"))
+      {
+	CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+	imaging = 1;
+      }
+    }
+    if (imaging)
+    {
+      glPixelTransferf(GL_RED_SCALE, contrast);
+      glPixelTransferf(GL_GREEN_SCALE, contrast);
+      glPixelTransferf(GL_BLUE_SCALE, contrast);
+      glPixelTransferf(GL_RED_BIAS, brightness);
+      glPixelTransferf(GL_GREEN_BIAS, brightness);
+      glPixelTransferf(GL_BLUE_BIAS, brightness);
+      VerifyGLState();
+    }
+  }
+
   glEnable(GL_TEXTURE_2D);
   VerifyGLState();
   glBindTexture(m_textureTarget, fields[0][0]);
@@ -585,6 +615,17 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     glBindTexture(m_textureTarget, fields[0][2]);
     VerifyGLState();
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+    VerifyGLState();
+  }
+  
+  if (imaging)
+  {
+    glPixelTransferf(GL_RED_SCALE, 1.0);
+    glPixelTransferf(GL_GREEN_SCALE, 1.0);
+    glPixelTransferf(GL_BLUE_SCALE, 1.0);
+    glPixelTransferf(GL_RED_BIAS, 0.0);
+    glPixelTransferf(GL_GREEN_BIAS, 0.0);
+    glPixelTransferf(GL_BLUE_BIAS, 0.0);
     VerifyGLState();
   }
   g_graphicsContext.EndPaint(m_pBuffer);
@@ -779,15 +820,13 @@ void CLinuxRendererGL::LoadShaders()
       "yuv.r = texture2D(ytex, gl_TexCoord[0].xy).r ;"
       "yuv.g = texture2D(utex, gl_TexCoord[1].xy).r ;"
       "yuv.b = texture2D(vtex, gl_TexCoord[2].xy).r ;"
-      "yuv.r = ((yuv.r-0.5)*contrast)+0.5;"
-      "yuv.r = clamp(yuv.r+brightness, 0.0, 1.0);"
       "yuv.r = 1.1643*(yuv.r-0.0625);"
       "yuv.g = yuv.g - 0.5;"
       "yuv.b = yuv.b - 0.5;"
       "rgb.r = clamp(yuv.r+1.5958*yuv.b, 0.0, 1.0);"
       "rgb.g = clamp(yuv.r-0.39173*yuv.g-0.81290*yuv.b, 0.0, 1.0);"
       "rgb.b = clamp(yuv.r+2.017*yuv.g, 0.0, 1.0);"
-      "rgb = rgb + vec4(brightness);"
+      "rgb = (rgb-vec4(0.5))*vec4(contrast) + vec4(0.5) + vec4(brightness);"
       "rgb.a = 1.0;"
       "gl_FragColor = rgb;"
       "}";
@@ -881,11 +920,11 @@ void CLinuxRendererGL::LoadShaders()
     m_renderMethod = RENDER_GLSL;
   } else if (glewIsSupported("GL_ARB_fragment_shader")) {    
     // TODO
-    CLog::Log(LOGNOTICE, "GL: Could not create GLSL shader since glCreateProgram not present");
+    CLog::Log(LOGNOTICE, "GL: ARB shaders are supported but unimplementated at this time");
     m_renderMethod = RENDER_SW ;
   } else {
     m_renderMethod = RENDER_SW ;
-    CLog::Log(LOGNOTICE, "GL: Could not create ARB shader since GL_ARB_fragment_shader not present, falling back to SW colorspace conversion");
+    CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
   }
 }
 
@@ -1104,11 +1143,14 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
+  static GLfloat brightness = 0;
+  static GLfloat contrast   = 0;
+
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+
   if (m_renderMethod & RENDER_GLSL)
   {
-    static GLfloat brightness = 0;
-    static GLfloat contrast   = 0;
-
     // U
     glActiveTexture(GL_TEXTURE1);
     glEnable(m_textureTarget);
@@ -1130,8 +1172,6 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     VerifyGLState();
     glUniform1i(m_vTex, 2);
     VerifyGLState();
-    brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-    contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
     glUniform1f(m_brightness, brightness);
     glUniform1f(m_contrast, contrast);
   }
