@@ -56,7 +56,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
       sound->Stop();
 
     delete sound;
-    it=m_windowSounds.erase(it);
+    m_windowSounds.erase(it++);
   }
 
   pythonSoundsMap::iterator it1=m_pythonSounds.begin();
@@ -67,7 +67,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
       sound->Stop();
 
     delete sound;
-    it1=m_pythonSounds.erase(it1);
+    m_pythonSounds.erase(it1++);
   }
 }
 
@@ -91,7 +91,7 @@ void CGUIAudioManager::FreeUnused()
     if (!sound->IsPlaying())
     {
       delete sound;
-      it=m_windowSounds.erase(it);
+      m_windowSounds.erase(it++);
     }
     else ++it;
   }
@@ -104,7 +104,7 @@ void CGUIAudioManager::FreeUnused()
     if (!sound->IsPlaying())
     {
       delete sound;
-      it1=m_pythonSounds.erase(it1);
+      m_pythonSounds.erase(it1++);
     }
     else ++it1;
   }
@@ -178,7 +178,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
     if (sound->IsPlaying())
       sound->Stop();
     delete sound;
-    m_windowSounds.erase(itsb);
+    m_windowSounds.erase(itsb++);
   }
 
   CGUISound* sound=new CGUISound();
