@@ -1820,6 +1820,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
           pStream->OnDown();
         }
         break;
+      case ACTION_SHOW_OSD:
       case ACTION_SELECT_ITEM:
         {
           CLog::Log(LOGDEBUG, " - button select");

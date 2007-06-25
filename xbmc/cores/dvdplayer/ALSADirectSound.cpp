@@ -83,11 +83,11 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params_set_channels(m_pPlayHandle, hw_params, iChannels);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_channels",nErr);
 
-  m_maxFrames = m_dwPacketSize / 4;
+  m_maxFrames = m_dwPacketSize ;
   nErr = snd_pcm_hw_params_set_period_size_near(m_pPlayHandle, hw_params, &m_maxFrames, 0);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
-  m_BufferSize = m_dwPacketSize * 6; // buffer big enough - but not too big...
+  m_BufferSize = m_dwPacketSize * 20; // buffer big enough - but not too big...
   nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &m_BufferSize);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
