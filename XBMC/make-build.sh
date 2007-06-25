@@ -12,7 +12,7 @@
 #userconfig ends
 
 #checking if all necessary packages are installed, this is something that changes often but I'll try and keep it updated.
- dpkg -l g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1 libglew-dev
+ dpkg -l g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1 libglew-dev libcurl3-dev
  if [ $? -ne 0 ]
   then
   echo "$0 : ***ERROR*** You're missing one (or more) of the required packages that are listed in README.linux"
