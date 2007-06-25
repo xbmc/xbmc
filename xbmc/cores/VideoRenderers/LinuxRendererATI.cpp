@@ -125,6 +125,16 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 	CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
 	imaging = 1;
       }
+      else {
+	int maj=0, min=0;
+	g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
+	if (maj>=2)
+	{
+	  imaging = 1;
+	} else if (min>=2) {
+	  imaging = 1;
+	}
+      }
     }
     if (imaging)
     {
