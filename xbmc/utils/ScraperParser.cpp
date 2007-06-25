@@ -9,6 +9,7 @@
 #include "HTMLUtil.h"
 //#include "stdafx.h"
 #include "CharsetConverter.h"
+#include "Util.h"
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
@@ -95,7 +96,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   if (m_document)
     return true;
 
-  m_document = new TiXmlDocument(strXMLFile.c_str());
+  m_document = new TiXmlDocument(_P(strXMLFile).c_str());
 
   if (!m_document)
     return false;
