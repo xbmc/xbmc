@@ -61,6 +61,7 @@
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 
+#define SYSTEM_LAUNCHING_XBE        109
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112
@@ -465,6 +466,9 @@ public:
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
   CStdString m_content;
+
+  void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
+
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
@@ -512,6 +516,7 @@ protected:
 
   // Xbox Autodetect stuff
   bool m_hasAutoDetectedXbox;
+  CStdString m_launchingXBE;
 
   int m_nextWindowID;
   int m_prevWindowID;
