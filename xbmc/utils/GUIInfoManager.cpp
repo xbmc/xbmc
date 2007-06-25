@@ -325,6 +325,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb"))
       ret = SYSTEM_PROFILETHUMB;
+    else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -621,6 +622,9 @@ string CGUIInfoManager::GetLabel(int info)
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
+    break;
+  case SYSTEM_LAUNCHING_XBE:
+    strLabel = m_launchingXBE;
     break;
   case LCD_DATE:
     strLabel = GetDate(true);
