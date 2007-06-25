@@ -169,6 +169,10 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
     { // navigation mode
       LoadMode(mode, LCD_MODE_NAVIGATION);
     }
+    else if (strcmpi(mode->Value(), "xbelaunch") == 0)
+    { // xbe launch mode
+      LoadMode(mode, LCD_MODE_XBE_LAUNCH);
+    }
     mode = mode->NextSiblingElement();
   }
 done:
