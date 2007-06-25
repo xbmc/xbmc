@@ -3431,7 +3431,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             m_pDS->next();
           }
           CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", movieTime, castTime);
+    	  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
