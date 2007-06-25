@@ -102,11 +102,7 @@ void CGUIAudioManager::FreeUnused()
     if (!sound->IsPlaying())
     {
       delete sound;
-#ifndef _LINUX
-      it=m_windowSounds.erase(it);
-#else
-      m_windowSounds.erase(it);
-#endif
+      m_windowSounds.erase(it++);
     }
     else ++it;
   }
@@ -119,11 +115,7 @@ void CGUIAudioManager::FreeUnused()
     if (!sound->IsPlaying())
     {
       delete sound;
-#ifndef _LINUX
-      it1=m_pythonSounds.erase(it1);
-#else
-      m_pythonSounds.erase(it1);
-#endif
+      m_pythonSounds.erase(it1++);
     }
     else ++it1;
   }
@@ -197,7 +189,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
     if (sound->IsPlaying())
       sound->Stop();
     delete sound;
-    m_windowSounds.erase(itsb);
+    m_windowSounds.erase(itsb++);
   }
 
   CGUISound* sound=new CGUISound();
