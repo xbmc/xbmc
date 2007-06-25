@@ -77,7 +77,7 @@ DVDVideoPicture* CDVDVideoCodecLibMpeg2::GetBuffer(unsigned int width, unsigned 
         memset( m_pVideoBuffer[i].data[1], 0, iPixels/4 );
         memset( m_pVideoBuffer[i].data[2], 0, iPixels/4 );
       }
-
+      m_pVideoBuffer[i].pts = DVD_NOPTS_VALUE;
       m_pVideoBuffer[i].iFlags = DVP_FLAG_LIBMPEG2_INUSE | DVP_FLAG_ALLOCATED; //Mark as inuse
       return m_pVideoBuffer+i;
     }
@@ -169,7 +169,7 @@ void CDVDVideoCodecLibMpeg2::SetDropState(bool bDrop)
   m_hurry = bDrop ? 1 : 0;
 }
 
-int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
+int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, __int64 pts)
 {
   int iState = 0;
   bool bGotPicture = false;
@@ -223,11 +223,17 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
     case STATE_PICTURE:
       {
         m_dll.mpeg2_skip(m_pHandle, 0);
-        if(m_hurry)
+        if(m_hurry>1 && m_pInfo->current_picture)
         {
-          if(m_hurry>1 || (m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
+          if((m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
             m_dll.mpeg2_skip(m_pHandle, 1);
         }
+        // attach pts to current buffer
+        if(m_pInfo->current_fbuf && m_pInfo->current_fbuf->id)
+        {
+          pBuffer = (DVDVideoPicture*)m_pInfo->current_fbuf->id;
+          pBuffer->pts = pts;
+        }       
         //Not too interesting really
         //we can do everything when we get a full picture instead. simplifies things. 
         
@@ -277,7 +283,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
             else
               pBuffer->iFlags &= ~DVP_FLAG_DROPPED;
 
-            pBuffer->iDuration = m_pInfo->sequence->frame_period;
+            pBuffer->iDuration = m_pInfo->sequence->frame_period;            
 
             if( ((m_irffpattern & 0xff) == 0xaa || (m_irffpattern & 0xff) == 0x55) )  /* special case for ntsc 3:2 pulldown */
               pBuffer->iDuration += pBuffer->iDuration / 4;

@@ -21,6 +21,7 @@ public:
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName()  { return "libmad"; }
+  virtual int GetBufferSize()    { return m_iInputBufferSize; }
 
 private:
 

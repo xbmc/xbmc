@@ -514,28 +514,58 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
 {
   int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
+  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
 
-  /* disable stream if an invalid was selected */
-  if (m_dvdnav /*&& streamId > 0*/)
-    return (DVDNAV_STATUS_OK == m_dll.dvdnav_audio_change(m_dvdnav, streamId));
+  if (!m_dvdnav)
+    return false;
 
-  return false; 
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if (!vm)
+    return false;
+  if (!vm->state.pgc)
+    return false;
+
+  /* make sure stream is valid, if not don't allow it */
+  if (streamId < 0 || streamId >= 8)
+    return false;
+  else if ( !(vm->state.pgc->audio_control[streamId] & (1<<15)) )
+    return false;
+
+  if (vm->state.domain != VTS_DOMAIN && streamId != 0)
+    return false;
+
+  vm->state.AST_REG = streamId;
+  return true;
 }
 
 bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
 {
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
+  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
 
-  /* disable stream if an invalid was selected */
-  if (m_dvdnav /*&& streamId > 0*/)
-  {
-    if (!bDisplay) streamId |= 0x80;
-    
-    CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
+  if (!m_dvdnav)
+    return false;
 
-    return (DVDNAV_STATUS_OK == m_dll.dvdnav_subpicture_change(m_dvdnav, streamId));
-  }
-  return false; 
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if (!vm)
+    return false;
+  if (!vm->state.pgc)
+    return false;
+
+  /* make sure stream is valid, if not don't allow it */
+  if (streamId < 0 || streamId >= 32)
+    return false;
+  else if ( !(vm->state.pgc->subp_control[streamId] & (1<<31)) )
+    return false;
+
+  if (vm->state.domain != VTS_DOMAIN && streamId != 0)
+    return false;
+
+  vm->state.SPST_REG = streamId;
+  if(bDisplay)
+    vm->state.SPST_REG |= 0x40;
+
+  return true;
 }
 
 void CDVDInputStreamNavigator::ActivateButton()

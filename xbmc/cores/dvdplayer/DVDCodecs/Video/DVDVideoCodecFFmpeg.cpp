@@ -5,6 +5,7 @@
 #include "../../DVDStreamInfo.h"
 #include "../DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
+#include "../../DVDClock.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
@@ -131,7 +132,7 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
   }
 }
 
-int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
+int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, __int64 pts)
 {
   int iGotPicture = 0, len = 0;
 
@@ -159,6 +160,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
 
   if (!iGotPicture)
     return VC_BUFFER;
+
+  // store this timestamp for last coded frame
+  if (m_pCodecContext->coded_frame && m_pCodecContext->coded_frame->coded_picture_number > 0)
+    m_timestamps[m_pCodecContext->coded_frame->coded_picture_number] = pts;
 
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
   {
@@ -189,6 +194,11 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
 
     m_dllSwScale.sws_freeContext(context); 
 
+
+    m_pConvertFrame->coded_picture_number = m_pFrame->coded_picture_number;
+    m_pConvertFrame->interlaced_frame = m_pFrame->interlaced_frame;
+    m_pConvertFrame->repeat_pict = m_pFrame->repeat_pict;
+    m_pConvertFrame->top_field_first = m_pFrame->top_field_first;
   }
   else
   {
@@ -216,6 +226,7 @@ void CDVDVideoCodecFFmpeg::Reset()
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
+  m_timestamps.clear();
 
   } catch (win32_exception e) {
     e.writelog(__FUNCTION__);
@@ -228,31 +239,33 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->iWidth = m_pCodecContext->width;
   pDvdVideoPicture->iHeight = m_pCodecContext->height;
+  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
-  if (m_pConvertFrame)
-  {
-    // we have a converted frame, use this one
-    for (int i = 0; i < 4; i++) pDvdVideoPicture->data[i] = m_pConvertFrame->data[i];
-    for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = m_pConvertFrame->linesize[i];
-    pDvdVideoPicture->iRepeatPicture = m_pConvertFrame->repeat_pict;
-    pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
-    pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-    pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
-    return true;
-  }
-  else if (m_pFrame && m_pFrame->data[0])
-  {
-    // m_pFrame is already the correct format, just copy
-    for (int i = 0; i < 4; i++)pDvdVideoPicture->data[i] = m_pFrame->data[i];
-    for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = m_pFrame->linesize[i];
-    pDvdVideoPicture->iRepeatPicture = m_pFrame->repeat_pict;
-    pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
-    pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-    pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
-    return true;
-  }
+  // if we have a converted frame, use that
+  AVFrame *frame = m_pConvertFrame ? m_pConvertFrame : m_pFrame;
 
-  return false;
+  if (!frame)
+    return false;
+  
+  for (int i = 0; i < 4; i++) pDvdVideoPicture->data[i] = frame->data[i];
+  for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
+  pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
+  pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
+  pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+  pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
+
+  // see if we can find a timestamp for this frame
+  std::map<int, __int64>::iterator it = m_timestamps.find(frame->coded_picture_number);
+  if(it != m_timestamps.end())
+  {
+    pDvdVideoPicture->pts = (*it).second;
+    m_timestamps.erase(it);
+  }
+  else
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  return true;
 }
 
 /*
