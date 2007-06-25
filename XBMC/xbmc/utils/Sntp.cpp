@@ -750,5 +750,6 @@ void CSNTPClient::Process()
       // only set time once
       return ;
     }
+    nTries++;
   }
 }
