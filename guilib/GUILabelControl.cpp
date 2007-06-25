@@ -316,7 +316,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
     else
       break;
 
-    if ( nPos < 0 )
+    if ( nPos <= 0 )
       break;
 
     if ( nGreaterDelim > nPos )
