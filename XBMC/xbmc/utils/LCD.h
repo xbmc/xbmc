@@ -7,7 +7,7 @@
 class ILCD : public CThread
 {
 public:
-  enum LCD_MODE { LCD_MODE_GENERAL = 0, LCD_MODE_MUSIC, LCD_MODE_VIDEO, LCD_MODE_NAVIGATION, LCD_MODE_MAX };
+  enum LCD_MODE { LCD_MODE_GENERAL = 0, LCD_MODE_MUSIC, LCD_MODE_VIDEO, LCD_MODE_NAVIGATION, LCD_MODE_XBE_LAUNCH, LCD_MODE_MAX };
   virtual void Initialize();
   virtual void Stop() = 0;
   virtual void SetBackLight(int iLight) = 0;
