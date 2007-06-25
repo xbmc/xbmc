@@ -140,8 +140,9 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   vecPaths.empty();
   CStdString strPath1 = strPath;
 
-  // remove multipath:// from path
+  // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
   strPath1 = strPath1.Mid(12);
+  CUtil::RemoveSlashAtEnd(strPath1);
 
   // split on ","
   vector<CStdString> vecTemp;
@@ -154,8 +155,6 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   {
     CStdString tempPath = vecTemp[i];
     CUtil::UrlDecode(tempPath);
-    if (i == vecTemp.size()-1) // remove additional slash at end
-      tempPath.erase(tempPath.size()-1);
     vecPaths.push_back(tempPath);
   }
   return true;
