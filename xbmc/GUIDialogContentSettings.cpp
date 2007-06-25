@@ -99,7 +99,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   CGUIDialogSettings::OnWindowLoaded();
   
   CFileItemList items;
-  CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
+  CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -266,7 +266,7 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItem* item = new CFileItem(iter->strTitle);
     item->m_strPath = iter->strPath;
-    item->SetThumbnailImage("Q:\\system\\scrapers\\video\\"+iter->strThumb);
+    item->SetThumbnailImage(_P("Q:\\system\\scrapers\\video\\"+iter->strThumb));
     if (iter->strPath.Equals(m_info.strPath))
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
