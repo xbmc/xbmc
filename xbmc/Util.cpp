@@ -3095,7 +3095,7 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
   SplitExecFunction(execString, function, param);
   for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0 && (commands[i].needsParameters || !param.IsEmpty()))
+    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || !param.IsEmpty()))
       return true;
   }
   return false;
