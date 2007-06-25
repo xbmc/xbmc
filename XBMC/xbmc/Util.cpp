@@ -3034,58 +3034,59 @@ bool CUtil::IsUsingTTFSubtitles()
 typedef struct
 {
   char command[20];
+  bool needsParameters;
   char description[128];
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
-  "Help", "This help message",
-  "Reboot", "Reboot the xbox (power cycle)",
-  "Restart", "Restart the xbox (power cycle)",
-  "ShutDown", "Shutdown the xbox",
-  "Dashboard", "Run your dashboard",
-  "RestartApp", "Restart XBMC",
-  "Credits", "Run XBMCs Credits",
-  "Reset", "Reset the xbox (warm reboot)",
-  "Mastermode","Control master mode",
-  "ActivateWindow", "Activate the specified window",
-  "ReplaceWindow", "Replaces the current window with the new one",
-  "TakeScreenshot", "Takes a Screenshot",
-  "RunScript", "Run the specified script",
-  "RunXBE", "Run the specified executeable",
-  "Extract", "Extracts the specified archive",
-  "PlayMedia", "Play the specified media file (or playlist)",
-  "SlideShow", "Run a slideshow from the specified directory",
-  "RecursiveSlideShow", "Run a slideshow from the specified directory, including all subdirs",
-  "ReloadSkin", "Reload XBMC's skin",
-  "PlayerControl", "Control the music or video player",
-  "EjectTray", "Close or open the DVD tray",
-  "AlarmClock", "Prompt for a length of time and start an alarm clock",
-  "CancelAlarm","Cancels an alarm",
-  "KaiConnection","Change kai connection status (connect/disconnect)",
-  "Action", "Executes an action for the active window (same as in keymap)",
-  "Notification", "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
-  "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
-  "Skin.ToggleSetting"," Toggles a skin setting on or off",
-  "Skin.SetString"," Prompts and sets skin string",
-  "Skin.SetNumeric"," Prompts and sets numeric input",
-  "Skin.SetPath"," Prompts and sets a skin path",
-  "Skin.Theme"," Control skin theme",
-  "Skin.SetImage"," Prompts and sets a skin image",
-  "Skin.SetFile"," Prompts and sets a file",
-  "Skin.SetBool"," Sets a skin setting on",
-  "Skin.Reset"," Resets a skin setting to default",
-  "Skin.ResetSettings"," Resets all skin settings",
-  "Mute","Mute the player",
-  "SetVolume","Set the current volume",
-  "Dialog.Close","Close a dialog",
-  "System.LogOff","Log off current user",
-  "System.PWMControl","Control PWM RGB LEDs",
-  "Resolution", "Change XBMC's Resolution",
-  "SetFocus", "Change current focus to a different control id", 
-  "BackupSystemInfo", "Backup System Informations to local hdd",
-  "UpdateLibrary", "Update the selected library (music or video)",
-  "PageDown","Send a page down event to the pagecontrol with given id",
-  "PageUp","Send a page up event to the pagecontrol with given id"
+  "Help",               false,  "This help message",
+  "Reboot",             false,  "Reboot the xbox (power cycle)",
+  "Restart",            false,  "Restart the xbox (power cycle)",
+  "ShutDown",           false,  "Shutdown the xbox",
+  "Dashboard",          false,  "Run your dashboard",
+  "RestartApp",         false,  "Restart XBMC",
+  "Credits",            false,  "Run XBMCs Credits",
+  "Reset",              false,  "Reset the xbox (warm reboot)",
+  "Mastermode",         false,  "Control master mode",
+  "ActivateWindow",     true,   "Activate the specified window",
+  "ReplaceWindow",      true,   "Replaces the current window with the new one",
+  "TakeScreenshot",     false,  "Takes a Screenshot",
+  "RunScript",          true,   "Run the specified script",
+  "RunXBE",             true,   "Run the specified executeable",
+  "Extract",            true,   "Extracts the specified archive",
+  "PlayMedia",          true,   "Play the specified media file (or playlist)",
+  "SlideShow",          true,   "Run a slideshow from the specified directory",
+  "RecursiveSlideShow", true,   "Run a slideshow from the specified directory, including all subdirs",
+  "ReloadSkin",         false,  "Reload XBMC's skin",
+  "PlayerControl",      true,   "Control the music or video player",
+  "EjectTray",          false,  "Close or open the DVD tray",
+  "AlarmClock",         true,   "Prompt for a length of time and start an alarm clock",
+  "CancelAlarm",        true,   "Cancels an alarm",
+  "KaiConnection",      false,  "Change kai connection status (connect/disconnect)",
+  "Action",             true,   "Executes an action for the active window (same as in keymap)",
+  "Notification",       true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
+  "PlayDVD",            false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!",
+  "Skin.ToggleSetting", true,   "Toggles a skin setting on or off",
+  "Skin.SetString",     true,   "Prompts and sets skin string",
+  "Skin.SetNumeric",    true,   "Prompts and sets numeric input",
+  "Skin.SetPath",       true,   "Prompts and sets a skin path",
+  "Skin.Theme",         true,   "Control skin theme",
+  "Skin.SetImage",      true,   "Prompts and sets a skin image",
+  "Skin.SetFile",       true,   "Prompts and sets a file",
+  "Skin.SetBool",       true,   "Sets a skin setting on",
+  "Skin.Reset",         true,   "Resets a skin setting to default",
+  "Skin.ResetSettings", false,  "Resets all skin settings",
+  "Mute",               false,  "Mute the player",
+  "SetVolume",          true,   "Set the current volume",
+  "Dialog.Close",       true,   "Close a dialog",
+  "System.LogOff",      false,  "Log off current user",
+  "System.PWMControl",  true,   "Control PWM RGB LEDs",
+  "Resolution",         true,   "Change XBMC's Resolution",
+  "SetFocus",           true,   "Change current focus to a different control id", 
+  "BackupSystemInfo",   false,  "Backup System Informations to local hdd",
+  "UpdateLibrary",      true,   "Update the selected library (music or video)",
+  "PageDown",           true,   "Send a page down event to the pagecontrol with given id",
+  "PageUp",             true,   "Send a page up event to the pagecontrol with given id"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3094,7 +3095,7 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
   SplitExecFunction(execString, function, param);
   for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0)
+    if (function.CompareNoCase(commands[i].command) == 0 && (commands[i].needsParameters || !param.IsEmpty()))
       return true;
   }
   return false;
@@ -3127,8 +3128,6 @@ void CUtil::GetBuiltInHelp(CStdString &help)
   {
     help += commands[i].command;
     help += "\t";
-//    for (int i = 0; i < 20 - strlen(commands[i].command); i++)
-//      help += " ";
     help += commands[i].description;
     help += "\n";
   }
