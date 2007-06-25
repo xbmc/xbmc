@@ -378,11 +378,7 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
     }
     if (overlappingTrackNumbers)
     { // remove this album
-#ifndef _LINUX
-      it = albumsToAdd.erase(it);
-#else
-      albumsToAdd.erase(it);
-#endif
+      albumsToAdd.erase(it++);
     }
     else
       it++;

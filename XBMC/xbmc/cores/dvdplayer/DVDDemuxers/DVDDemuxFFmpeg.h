@@ -79,4 +79,5 @@ protected:
   DllAvUtil   m_dllAvUtil;
   
   unsigned __int64 m_iCurrentPts; // used for stream length estimation
+  bool m_bDiscardDts;
 };

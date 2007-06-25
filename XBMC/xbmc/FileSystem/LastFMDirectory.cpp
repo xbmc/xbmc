@@ -118,7 +118,6 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
     const char *dot;
     if (dot = (const char *)strstr(count, "."))
       pItem->m_dwSize += _atoi64(dot + 1);
-
   }
 
   pItem->SetLabel(strName);
@@ -420,6 +419,8 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptags")
     return ParseTagList(BuildURLFromInfo(), items);
+  else if (m_objrequest == "tags")
+    return ParseTagList(BuildURLFromInfo(), items);
   else if (m_objrequest == "friends")
     return ParseUserList(BuildURLFromInfo(), items);
   else if (m_objrequest == "neighbours")
@@ -437,6 +438,7 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     AddEntry(15268, "lastfm://xbmc/user/%name%/topartists/", "", true, items);
     AddEntry(15269, "lastfm://xbmc/user/%name%/topalbums/", "", true, items);
     AddEntry(15270, "lastfm://xbmc/user/%name%/toptracks/", "", true, items);
+    AddEntry(15285, "lastfm://xbmc/user/%name%/tags/", "", true, items);
     AddEntry(15271, "lastfm://xbmc/user/%name%/friends/", "", true, items);
     AddEntry(15272, "lastfm://xbmc/user/%name%/neighbours/", "", true, items);
     AddEntry(15273, "lastfm://xbmc/user/%name%/weeklyartistchart/", "", true, items);
@@ -447,6 +449,7 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     AddEntry(15277, "lastfm://user/%name%/personal", "", false, items);
     AddEntry(15278, "lastfm://user/%name%/loved", "", false, items);
     AddEntry(15284, "lastfm://user/%name%/recommended/100", "", false, items);
+    AddEntry(15286, "lastfm://user/%name%/playlist", "", false, items);
   }
   else
     return false;

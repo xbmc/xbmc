@@ -70,7 +70,7 @@
 		<control type="list" id="4">
 			<posx>150</posx>
 			<posy>45</posy>
-			<width>235</width>
+			<width>230</width>
 			<height>128</height>
 			<onup>3</onup>
 			<ondown>30</ondown>
@@ -83,7 +83,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>235</width>
+					<width>230</width>
 					<height>29</height>
 					<texture border="3">input-nofocus.png</texture>
 				</control>
@@ -97,7 +97,7 @@
 				<control type="label">
 					<posx>32</posx>
 					<posy>5</posy>
-					<width>200</width>
+					<width>195</width>
 					<height>23</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
@@ -109,7 +109,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>235</width>
+					<width>230</width>
 					<height>29</height>
 					<visible>Control.HasFocus(4)</visible>
 					<texture border="3">input-focus.png</texture>
@@ -117,7 +117,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>235</width>
+					<width>230</width>
 					<height>29</height>
 					<visible>!Control.HasFocus(4)</visible>
 					<texture border="3">input-nofocus.png</texture>
@@ -132,7 +132,7 @@
 				<control type="label">
 					<posx>32</posx>
 					<posy>5</posy>
-					<width>200</width>
+					<width>195</width>
 					<height>23</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
@@ -154,20 +154,43 @@
 			<onright>5</onright>
 			<include>homemisc</include>
 		</control>
-		<control type="scrollbar" id="60">
-			<posx>390</posx>
+		<control type="button">
+			<posx>385</posx>
 			<posy>45</posy>
 			<include>scrollbar_width</include>
-			<height>125</height>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageUp(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+			<include>homemisc</include>
+		</control>
+		<control type="button">
+			<posx>385</posx>
+			<posy>150</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageDown(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+			<include>homemisc</include>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>385</posx>
+			<posy>65</posy>
+			<include>scrollbar_width</include>
+			<height>85</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>scrollbar_nib.png</textureslidernib>
-			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>4</onleft>
-			<onright>30</onright>
-			<onup>60</onup>
-			<ondown>60</ondown>
+			<onright>5</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<include>homemisc</include>
