@@ -154,6 +154,8 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   {
     CStdString tempPath = vecTemp[i];
     CUtil::UrlDecode(tempPath);
+    if (i == vecTemp.size()-1) // remove additional slash at end
+      tempPath.erase(tempPath.size()-1);
     vecPaths.push_back(tempPath);
   }
   return true;
