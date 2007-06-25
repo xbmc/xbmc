@@ -46,6 +46,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
+  m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
 }
@@ -225,40 +226,25 @@ void CDVDPlayerVideo::Process()
       m_iNrOfPicturesNotToSkip = 5;
       continue;
     }
-    else if (pMsg->IsType(CDVDMsg::GENERAL_SET_CLOCK))
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo::Process - Resync recieved.");
-      
-      CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
-
-      //DVDPlayer asked us to sync playback clock
-      if( pMsgGeneralSetClock->GetPts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralSetClock->GetPts();      
-      else if( pMsgGeneralSetClock->GetDts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralSetClock->GetDts();
-
-      __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
-      
-      if( delay > iFrameTime ) delay = iFrameTime;
-      else if( delay < 0 ) delay = 0;
-
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);      
-
-      pMsgGeneralSetClock->Release();
-      continue;
-    } 
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC"); 
       
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-      
-      //DVDPlayer asked us to sync playback clock
-      if( pMsgGeneralResync->GetPts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralResync->GetPts();      
-      else if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
-        pts = pMsgGeneralResync->GetDts();
+
+      if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
+        pts = pMsgGeneralResync->m_timestamp;
+            
+      if(pMsgGeneralResync->m_clock)
+      {
+        __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
+        
+        if( delay > iFrameTime ) delay = iFrameTime;
+        else if( delay < 0 ) delay = 0;
+
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);
+      }
 
       pMsgGeneralResync->Release();
       continue;
@@ -310,7 +296,7 @@ void CDVDPlayerVideo::Process()
       }
 
       // if we have pictures that can't be skipped, never request drop
-      if( m_iNrOfPicturesNotToSkip > 0 ) 
+      if( m_iNrOfPicturesNotToSkip > 0 || !m_bDropFrames )
         bRequestDrop = false;
 
 #ifdef PROFILE
@@ -324,7 +310,17 @@ void CDVDPlayerVideo::Process()
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
 
-      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
+      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+
+      // assume decoder dropped a picture if it didn't give us any
+      // picture from a demux packet, this should be reasonable
+      // for libavformat as a demuxer as it normally packetizes
+      // pictures when they come from demuxer
+      if(bRequestDrop && iDecoderState & VC_BUFFER)
+      {
+        m_iDroppedFrames++;
+        iDropped++;
+      }
 
       // loop while no error
       while (!(iDecoderState & VC_ERROR))
@@ -363,13 +359,12 @@ void CDVDPlayerVideo::Process()
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
               picture.iFlags |= DVP_FLAG_NOAUTOSYNC;
             }
-            
 
-            if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
-                pPacket->dts != DVD_NOPTS_VALUE) //Only use pts when we have an I frame, or unknown
-            {
+            /* try to figure out a pts for this frame */
+            if(picture.pts != DVD_NOPTS_VALUE)
+              pts = picture.pts;
+            else if(pPacket->dts != DVD_NOPTS_VALUE)
               pts = pPacket->dts;
-            }
             
             //Check if dvd has forced an aspect ratio
             if( m_fForcedAspectRatio != 0.0f )
@@ -403,7 +398,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, 0);
+              iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
               break;
             }
             
@@ -443,7 +438,7 @@ void CDVDPlayerVideo::Process()
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+        iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
       }
 
       // if decoder had an error, tell it to reset to avoid more problems

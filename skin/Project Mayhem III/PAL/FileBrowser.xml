@@ -35,20 +35,41 @@
 			<font>font12</font>
 			<haspath>true</haspath>
 		</control>
-		<control type="scrollbar" id="60">
+		<control type="button">
 			<posx>380</posx>
 			<posy>70</posy>
 			<include>scrollbar_width</include>
-			<height>270</height>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageUp(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="button">
+			<posx>380</posx>
+			<posy>320</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageDown(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>380</posx>
+			<posy>90</posy>
+			<include>scrollbar_width</include>
+			<height>230</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>scrollbar_nib.png</textureslidernib>
-			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>450</onleft>
 			<onright>9000</onright>
-			<onup>60</onup>
-			<ondown>60</ondown>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 		</control>
@@ -133,7 +154,7 @@
 		<control type="group" id="9000">
 			<control type="button" id="413">
 				<description>OK button</description>
-				<posx>400</posx>
+				<posx>403</posx>
 				<posy>70</posy>
 				<width>90</width>
 				<height>32</height>
@@ -149,7 +170,7 @@
 			</control>
 			<control type="button" id="414">
 				<description>Cancel button</description>
-				<posx>400</posx>
+				<posx>403</posx>
 				<posy>105</posy>
 				<width>90</width>
 				<height>32</height>
@@ -165,7 +186,7 @@
 			</control>
 			<control type="button" id="415">
 				<description>Create folder button</description>
-				<posx>400</posx>
+				<posx>403</posx>
 				<posy>140</posy>
 				<width>90</width>
 				<height>32</height>

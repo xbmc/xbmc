@@ -410,12 +410,14 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     const char *label = item->Attribute("label");
     const char *label2 = item->Attribute("label2");
     const char *thumb = item->Attribute("thumb");
+    const char *icon = item->Attribute("icon");
     if (item->FirstChild())
     {
       CFileItem *newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
       newItem->m_strPath = item->FirstChild()->Value();
       if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
       if (thumb) newItem->SetThumbnailImage(thumb);
+      if (icon) newItem->SetIconImage(icon);
       m_items.push_back(newItem);
     }
     item = item->NextSiblingElement("item");

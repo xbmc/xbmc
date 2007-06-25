@@ -513,7 +513,10 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   if (!(m_dvd.iFlagSentStart & DVDPLAYER_AUDIO))
   {
     m_dvd.iFlagSentStart |= DVDPLAYER_AUDIO;
-    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
+    if(pPacket->dts != DVD_NOPTS_VALUE)
+      m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralResync(pPacket->dts, true));
+    else
+      m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, true));
   }
 
   if (m_CurrentAudio.id >= 0)
@@ -557,10 +560,12 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   {
     m_dvd.iFlagSentStart |= DVDPLAYER_VIDEO;
     
-    if (m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL )
-      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
+    bool setclock = m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL;
+
+    if(pPacket->dts != DVD_NOPTS_VALUE)
+      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->dts, setclock));
     else
-      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, pPacket->dts));
+      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, setclock));
   }
 
   if (m_CurrentVideo.id >= 0)
@@ -976,6 +981,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
 void CDVDPlayer::ToggleFrameDrop()
 {
+  m_dvdPlayerVideo.EnableFrameDrop( !m_dvdPlayerVideo.IsFrameDropEnabled() );
 }
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)

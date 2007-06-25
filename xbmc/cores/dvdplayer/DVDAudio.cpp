@@ -129,63 +129,70 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len)
   //if( m_iSpeedStep )
   //  return m_dwPacketSize;
   //else
+  CSingleLock lock(m_critSection);
 
-    CSingleLock lock (m_critSection);
-    return m_pAudioDecoder->AddPackets(data, len);
-    
+  if(!m_pAudioDecoder)
+    return 0;
+
+  DWORD total = len;
+  DWORD copied;
+  do
+  {    
+    copied = m_pAudioDecoder->AddPackets(data, len);
+    data += copied;
+    len -= copied;
+    if (len < m_dwPacketSize)
+      break;
+
+    lock.Leave();
+    Sleep(1);
+    lock.Enter();
+  } while (!m_bStop);
+
+  return total - len;
 }
 
 DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 {
-  if (!m_pAudioDecoder)
-    return -1;
-
-  int iTotalSize = len;
+  DWORD total = len;
+  DWORD copied;
 
   if (m_iBufferSize > 0)
   {
-    unsigned int iBytesToCopy = m_dwPacketSize - m_iBufferSize;
-    if (iBytesToCopy > len) iBytesToCopy = len;
-    
-    memcpy(m_pBuffer + m_iBufferSize, data, iBytesToCopy);
-    data += iBytesToCopy;
-    len -= iBytesToCopy;
-    m_iBufferSize += iBytesToCopy;
-    
-    if (AddPacketsRenderer(m_pBuffer, m_iBufferSize) != m_dwPacketSize)
-      return iBytesToCopy;
+    copied = min(m_dwPacketSize - m_iBufferSize, len);
+
+    memcpy(m_pBuffer + m_iBufferSize, data, copied);
+    data += copied;
+    len -= copied;
+    m_iBufferSize += copied;
+
+    if(m_iBufferSize < m_dwPacketSize)
+      return copied;
+
+    if(AddPacketsRenderer(m_pBuffer, m_iBufferSize) != m_iBufferSize)
+    {
+      m_iBufferSize = 0;
+      CLog::Log(LOGERROR, "%s - failed to add leftover bytes to render", __FUNCTION__);
+      return copied;
+    }
 
     m_iBufferSize = 0;
   }
+  
+  copied = AddPacketsRenderer(data, len);
+  data += copied;
+  len -= copied;
 
-  DWORD copied = 0;
-  do
-  {
-    copied = AddPacketsRenderer(data, len);
-    if (copied < 0)
-    {
-      m_iBufferSize = 0;
-      return -1;
-    }
-    else if (copied == 0) Sleep(1);
-    else
-    {
-      data += copied;
-      len -= copied;
-      if (len >= m_dwPacketSize) Sleep(10);
-    }
-  }
-  while (len >= m_dwPacketSize && !m_bStop); // if we send to much data at once, we have to send more again
-
-  // if copied is not len then the decoder didn't accept the last few bytes
-  // we save it for the next call to this funtion
+  // if we have more data left, save it for the next call to this funtion
   if (len > 0)
   {
+    if(len > m_dwPacketSize)
+      CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
+
     m_iBufferSize = min(len, m_dwPacketSize);
     memcpy(m_pBuffer, data, m_iBufferSize);
-    len -= m_iBufferSize;
   }
-  return iTotalSize - len;
+  return total - len;
 }
 
 void CDVDAudio::DoWork()

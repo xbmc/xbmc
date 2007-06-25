@@ -777,16 +777,38 @@
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51)</visible>
 		</control>
-		<control type="scrollbar" id="61">
+		<control type="button">
 			<posx>535</posx>
 			<posy>100</posy>
-			<width>14</width>
-			<height>232</height>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="button">
+			<posx>535</posx>
+			<posy>312</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>535</posx>
+			<posy>120</posy>
+			<include>scrollbar_width</include>
+			<height>192</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>scrollbar_nib.png</textureslidernib>
-			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
 			<onright>9000</onright>
 			<showonepage>false</showonepage>
@@ -2428,16 +2450,38 @@
 		</control>
 	</include>
 	<include name="AllViewCommonPageControls">
-		<control type="scrollbar" id="60">
+		<control type="button">
 			<posx>680</posx>
 			<posy>100</posy>
 			<include>scrollbar_width</include>
-			<height>425</height>
+			<height>20</height>
+			<onclick>PageUp(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="button">
+			<posx>680</posx>
+			<posy>500</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>680</posx>
+			<posy>120</posy>
+			<include>scrollbar_width</include>
+			<height>380</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>scrollbar_nib.png</textureslidernib>
-			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
 			<onright>9000</onright>
 			<showonepage>false</showonepage>
@@ -2463,6 +2507,6 @@
 		</control>
 	</include>
 	<include name="scrollbar_width">
-		<width>14</width>
+		<width>16</width>
 	</include>
 </includes>
