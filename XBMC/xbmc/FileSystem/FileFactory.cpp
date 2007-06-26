@@ -12,13 +12,17 @@
 #ifdef HAS_CCXSTREAM
 #include "FileXBMSP.h"
 #endif
+#ifdef HAS_FILESYSTEM_CDDA
+#include "FileCDDA.h"
+#endif
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
 #include "FileRTV.h"
 #include "FileSndtrk.h"
-#include "FileCDDA.h"
-#include "FileMemUnit.h"
 #include "FileDAAP.h"
+#endif
+#ifdef HAS_XBOX_HARDWARE
+#include "FileMemUnit.h"
 #endif
 #include "FileZip.h"
 #include "FileRar.h"
@@ -53,10 +57,14 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
   else if (strProtocol == "filereader") return new CFileFileReader();
+#ifdef HAS_FILESYSTEM_CDDA
+  else if (strProtocol == "cdda") return new CFileCDDA();
+#endif
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
-  else if (strProtocol == "cdda") return new CFileCDDA();
+#endif
+#ifdef HAS_XBOX_HARDWARE
   else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
 #endif
   if( g_network.IsAvailable() )
