@@ -268,8 +268,8 @@
 			<height>423</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>54</onup>
-			<ondown>54</ondown>
+			<onup>59</onup>
+			<ondown>59</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="537">biglist</viewtype>
 			<pagecontrol>60</pagecontrol>
