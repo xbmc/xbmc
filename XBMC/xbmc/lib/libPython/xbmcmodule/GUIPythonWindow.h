@@ -16,6 +16,9 @@ public:
 #ifdef _LINUX
   int type; // 0=Action, 1=Control;
 #endif
+
+  PyXBMCAction() { }
+  virtual ~PyXBMCAction() ;
 };
 
 int Py_XBMC_Event_OnAction(void* arg);

@@ -8,6 +8,14 @@
 
 using namespace PYXBMC;
 
+PyXBMCAction::~PyXBMCAction() {
+     if (pObject) {
+	Py_DECREF(pObject);
+     }
+
+     pObject = NULL;
+}
+
 CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
 : CGUIWindow(dwId, "")
 {
@@ -28,6 +36,13 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
 {
   // do the base class window first, and the call to python after this
   bool ret = CGUIWindow::OnAction(action);
+
+  // workaround - for scripts which try to access the active control (focused) when there is none.
+  // for example - the case when the mouse enters the screen.
+  CGUIControl *pControl = GetFocusedControl();
+  if (action.wID == ACTION_MOUSE && !pControl)
+     return ret;
+
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction;
@@ -178,9 +193,9 @@ int Py_XBMC_Event_OnControl(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-
-    PyObject_CallMethod(action->pCallbackWindow, "onControl", "O", action->pObject);
-
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onControl", "(O)", action->pObject);
+    if (ret)
+       Py_DECREF(ret);
     delete action;
   }
   return 0;
@@ -194,9 +209,16 @@ int Py_XBMC_Event_OnAction(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
+    Action *pAction= (Action *)action->pObject;
 
-    PyObject_CallMethod(action->pCallbackWindow, "onAction", "O", action->pObject);
-
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onAction", "(O)", pAction);
+    if (ret) {
+      Py_DECREF(ret);
+    }
+    else {
+	CLog::Log(LOGERROR,"Exception in python script's onAction");
+	PyErr_Print();
+    }
     delete action;
   }
   return 0;
