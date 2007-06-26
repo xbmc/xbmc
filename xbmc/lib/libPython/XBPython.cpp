@@ -133,6 +133,7 @@ bool XBPython::FileExist(const char* strFile)
 */
 void XBPython::Initialize()
 {
+  CLog::Log(LOGINFO, "initializing python engine. ");
   m_iDllScriptCounter++;
   EnterCriticalSection(&m_critSection);
   if (!m_bInitialized)
@@ -239,7 +240,6 @@ void XBPython::Finalize()
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll cause no scripts are running anymore");
     PyEval_AcquireLock();
-    PyThreadState_Swap(mainThreadState);
     Py_Finalize();
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
