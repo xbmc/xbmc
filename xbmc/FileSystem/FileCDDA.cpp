@@ -2,7 +2,11 @@
 #include "FileCDDA.h"
 #include <sys/stat.h>
 #include "../Util.h"
+#ifndef _LINUX
 #include "../lib/libcdio/Util.h"
+#else
+#include <cdio/util.h>
+#endif
 #include "../DetectDVDType.h"
 
 
