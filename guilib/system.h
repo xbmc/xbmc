@@ -115,7 +115,7 @@
 #define HAS_PYTHON
 #undef  HAS_TRAINER
 #define HAS_WEB_SERVER
-#undef  HAS_UPNP
+#define HAS_UPNP
 #undef  HAS_AUDIO
 #undef  HAS_SHOUTCAST
 #define HAS_SDL
