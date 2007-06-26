@@ -293,7 +293,7 @@ CUPnPServer::Build(CFileItem*        item,
                    const char*       parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
-    NPT_String       path = item->m_strPath;
+    NPT_String       path = item->m_strPath.c_str();
     NPT_String       share_name;
     NPT_String       file_path;
 
