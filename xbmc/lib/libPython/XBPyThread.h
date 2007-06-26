@@ -21,8 +21,9 @@ public:
   void stop();
 
 protected:
-  PyThreadState*	threadState;
-  LPVOID					pExecuter;
+  PyThreadState*	m_threadState;
+  PyThreadState*	m_mainThreadState;
+  LPVOID		m_pExecuter;
 
   char type;
   char *source;
@@ -30,7 +31,7 @@ protected:
   unsigned int  argc;
   bool done;
   bool stopping;
-  int id;
+  int  m_id;
 
   virtual void OnStartup();
   virtual void Process();

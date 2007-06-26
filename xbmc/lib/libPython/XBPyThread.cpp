@@ -31,26 +31,22 @@ int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
 
 XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
 {
-  this->pExecuter = pExecuter;
-  this->id = id;
-  // get the global lock
-  PyEval_AcquireLock();
-  // get a reference to the PyInterpreterState
-  PyInterpreterState *mainInterpreterState = mainThreadState->interp;
-  // create a thread state object for this thread
-  threadState = PyThreadState_New(mainInterpreterState);
-
-  // clear the thread state and free the lock
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
+  CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
+  m_pExecuter = pExecuter;
+  m_id = id;
+  m_threadState = NULL;
+  m_mainThreadState = mainThreadState;
 
   done = false;
   stopping = false;
   argv = NULL;
+  source = NULL;
+  argc = 0;
 }
 
 XBPyThread::~XBPyThread()
 {
+  CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
   if (source) delete []source;
   if (argv)
   {
@@ -97,13 +93,29 @@ void XBPyThread::OnStartup(){}
 
 void XBPyThread::Process()
 {
+  CLog::Log(LOGDEBUG,"Python thread: start processing");
+
   char path[1024];
   char sourcedir[1024];
 
+  // get the global lock
   PyEval_AcquireLock();
+
+  // get a reference to the PyInterpreterState
+  PyInterpreterState *mainInterpreterState = m_mainThreadState->interp;
+
+  // create a thread state object for this thread
+  m_threadState = PyThreadState_New(mainInterpreterState);
+
+  if (!m_threadState) {
+	CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
+	PyEval_ReleaseLock();
+	return;
+  }
+
   // swap in my thread state
-  PyThreadState_Swap(threadState);
-  //threadState-> >frame->
+  PyThreadState_Swap(m_threadState);
+
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
@@ -163,25 +175,16 @@ void XBPyThread::Process()
 
   // clear the thread state and release our hold on the global interpreter
   PyThreadState_Swap(NULL);
+  PyThreadState_Clear(m_threadState);
+  PyThreadState_Delete(m_threadState);
+  m_threadState = NULL;
   PyEval_ReleaseLock();
 }
 
 void XBPyThread::OnExit()
 {
-  // grab the lock
-  PyEval_AcquireLock();
-  // swap my thread state out of the interpreter
-  PyThreadState_Swap(NULL);
-
-  // clear out any cruft from thread state object
-  PyThreadState_Clear(threadState);
-  // delete my thread state object
-  PyThreadState_Delete(threadState);
-  // release the lock
-  PyEval_ReleaseLock();
-
   done = true;
-  ((XBPython*)pExecuter)->setDone(id);
+  ((XBPython*)m_pExecuter)->setDone(m_id);
 }
 
 bool XBPyThread::isDone() {
@@ -200,9 +203,9 @@ void XBPyThread::stop()
   // enable tracing. xbTrace will generate an error and the sript will be stopped
   //PyEval_SetTrace(xbTrace, NULL);
 
-  threadState->c_tracefunc = xbTrace;
+  m_threadState->c_tracefunc = xbTrace;
   //arg threadState->c_traceobj
-  threadState->use_tracing = 1;
+  m_threadState->use_tracing = 1;
 
   PyEval_ReleaseLock();
 
