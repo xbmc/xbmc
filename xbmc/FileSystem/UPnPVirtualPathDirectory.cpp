@@ -226,7 +226,8 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     if (!vecShares) return false;
 
     // look for share
-    for (int i = 0; i < (int)vecShares->size(); ++i) {
+    int i;
+    for (i = 0; i < (int)vecShares->size(); ++i) {
         CShare share = vecShares->at(i);
         CStdString strName = share.strName;
         if (strBookmark.Equals(strName))
@@ -238,9 +239,9 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     share = (*vecShares)[i];
 
     // filter out non local shares
-    for (unsigned int i = 0; i < share.vecPaths.size(); i++) {
-        if (!CUtil::IsRemote(share.vecPaths[i])) {
-            paths.push_back(share.vecPaths[i]);
+    for (unsigned int j = 0; j < share.vecPaths.size(); j++) {
+        if (!CUtil::IsRemote(share.vecPaths[j])) {
+            paths.push_back(share.vecPaths[j]);
         }
     }
     return true;
