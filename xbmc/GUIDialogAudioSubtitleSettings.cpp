@@ -317,6 +317,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
           else
           {
             CUtil::ReplaceExtension(strPath,".idx",strPath2);
+            if (!CFile::Exists(strPath2) && (CUtil::IsInRAR(strPath2) || CUtil::IsInZIP(strPath2)))
+            {
+              CStdString strFileName = CUtil::GetFileName(strPath);
+              CUtil::GetDirectory(strPath,strPath3);
+              CUtil::GetParentPath(strPath3,strPath2);
+              CUtil::AddFileToFolder(strPath2,strFileName,strPath2);
+              CUtil::ReplaceExtension(strPath2,".idx",strPath2);
+            }
             strPath3 = "z:\\subtitle.idx.keep";
           }
           if (CFile::Exists(strPath2))
