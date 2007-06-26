@@ -19,13 +19,17 @@
 #ifdef HAS_CCXSTREAM
 #include "XBMSDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_CDDA
+#include "CDDADirectory.h"
+#endif
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "XBMSDirectory.h"
-#include "CDDADirectory.h"
 #include "RTVDirectory.h"
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
+#endif
+#ifdef HAS_XBOX_HARDWARE
 #include "MemUnitDirectory.h"
 #endif
 #ifdef HAS_UPNP
@@ -56,9 +60,11 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   CStdString strProtocol = url.GetProtocol();
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+#ifdef HAS_FILESYSTEM_CDDA
+  if (strProtocol == "cdda") return new CCDDADirectory();
+#endif
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
-  if (strProtocol == "cdda") return new CCDDADirectory();
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
 #endif
   if (strProtocol == "zip") return new CZipDirectory();
