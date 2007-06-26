@@ -214,8 +214,8 @@
 #define LISTITEM_TVSHOW             334
 #define LISTITEM_PREMIERED          335
 #define LISTITEM_COMMENT            336
+#define LISTITEM_ACTUAL_ICON        337
 #define LISTITEM_END                340
-#define LISTITEM_ACTUAL_ICON        341
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
