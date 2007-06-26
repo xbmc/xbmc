@@ -1204,9 +1204,10 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
 
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
+/*
   if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || (!g_guiSettings.GetBool("musicfiles.usetags") && !items.IsCDDA()))
     return;
-
+*/
   // Start the music info loader thread
   m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
   m_musicInfoLoader.Load(items);
@@ -1216,6 +1217,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
   DWORD dwTick=timeGetTime();
 
+printf("Scanning\n");
   while (m_musicInfoLoader.IsLoading())
   {
     if (bShowProgress)
@@ -1243,6 +1245,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
     } // if (bShowProgress)
     Sleep(1);
   } // while (m_musicInfoLoader.IsLoading())
+printf("Scanning done\n");
 
   if (bProgressVisible && m_dlgProgress)
     m_dlgProgress->Close();
