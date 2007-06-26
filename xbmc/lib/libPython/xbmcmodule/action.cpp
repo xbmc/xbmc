@@ -58,7 +58,7 @@ namespace PYXBMC
     self->ob_type->tp_free((PyObject*)self);
   }
 
-  /* For backwards compatability whe have to check the action code
+  /* For backwards compatability we have to check the action code
    * against an integer
    * The first argument is always an Action object
    */
