@@ -872,7 +872,7 @@ void CDVDPlayer::HandleMessages()
 
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
-          std:string s = pMsgPlayerSetState->GetState();
+          std::string s = pMsgPlayerSetState->GetState();
           ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(s);
         }
       }

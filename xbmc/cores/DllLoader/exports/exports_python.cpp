@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
-#include "../DllLoaderContainer.h"
+#include "../DllLoader.h"
 #include "../../../Util.h"
 
 // file io functions

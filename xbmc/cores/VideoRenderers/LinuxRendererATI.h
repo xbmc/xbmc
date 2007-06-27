@@ -2,8 +2,8 @@
 #define LINUXRENDERERATI_RENDERER
 
 #include "../../../guilib/Surface.h"
-#include "ffmpeg/DllSwScale.h"
-#include "ffmpeg/DllAvCodec.h"
+#include "../ffmpeg/DllSwScale.h"
+#include "../ffmpeg/DllAvCodec.h"
 #include "LinuxRendererGL.h"
 
 using namespace Surface;

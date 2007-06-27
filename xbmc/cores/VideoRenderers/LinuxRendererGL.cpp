@@ -681,7 +681,9 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClearColor(0,0,0,0);
     if (alpha<255) 
     {
+#ifdef _LINUX
 #warning Alpha blending currently disabled
+#endif
       //glDisable(GL_BLEND);
     } else {
       //glDisable(GL_BLEND);
@@ -1336,8 +1338,7 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
   /* since we also want the field textures, pitch must be texture aligned */
-  DWORD dwTextureSize;
-  unsigned stride, p;
+  unsigned p;
 
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];

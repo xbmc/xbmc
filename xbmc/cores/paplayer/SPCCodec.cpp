@@ -16,8 +16,10 @@ SPCCodec::SPCCodec()
   m_dll.EmuAPU = NULL;
   m_dll.LoadSPCFile = NULL;
   m_dll.SeekAPU = NULL;
+#ifdef _LINUX
   m_dll.ResetAPU = NULL;
   m_dll.InitAPU = NULL;
+#endif
 }
 
 SPCCodec::~SPCCodec()

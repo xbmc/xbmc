@@ -1,6 +1,8 @@
 #ifndef WMA_CODEC_H_
 #define WMA_CODEC_H_
 
+#ifdef HAS_WMA_CODEC
+
 #include "ICodec.h"
 #include "FileReader.h"
 
@@ -43,5 +45,6 @@ private:
   DWORD m_iDataInBuffer;
 };
 
+#endif
 #endif
 
