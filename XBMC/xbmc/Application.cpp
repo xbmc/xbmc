@@ -3391,7 +3391,7 @@ void CApplication::Stop()
       videoScan->StopScanning();
 
     CLog::Log(LOGNOTICE, "stop daap clients");
-#if defined(HAS_FILESSYTEM) && !defined(_LINUX)
+#if HAS_FILESYTEM_DAAP
     g_DaapClient.Release();
 #endif
     //g_lcd->StopThread();

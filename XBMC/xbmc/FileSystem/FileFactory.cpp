@@ -17,9 +17,13 @@
 #endif
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
-#ifndef _LINUX
+#ifdef HAS_FILESYSTEM_RTV
 #include "FileRTV.h"
+#endif
+#ifdef HAS_XBOX_HARDWARE
 #include "FileSndtrk.h"
+#endif
+#ifdef HAS_FILESYSTEM_DAAP
 #include "FileDAAP.h"
 #endif
 #endif
@@ -87,8 +91,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "xbms") return new CFileXBMSP();
 #endif
 #ifdef HAS_FILESYSTEM
-#ifndef _LINUX
+#ifdef HAS_FILESYSTEM_RTV
     else if (strProtocol == "rtv") return new CFileRTV();
+#endif
+#ifdef HAS_FILESYSTEM_DAAP
     else if (strProtocol == "daap") return new CFileDAAP();
 #endif
 #endif

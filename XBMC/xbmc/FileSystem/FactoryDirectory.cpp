@@ -25,9 +25,13 @@
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "XBMSDirectory.h"
-#ifndef _LINUX
+#ifdef HAS_FILESYSTEM_RTV
 #include "RTVDirectory.h"
+#endif
+#ifdef HAS_XBOX_HARDWARE
 #include "SndtrkDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_DAAP
 #include "DAAPDirectory.h"
 #endif
 #endif
@@ -68,7 +72,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
 #endif
 #endif
@@ -101,8 +105,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM
-#ifndef _LINUX
+#ifdef HAS_FILESYSTEM_DAAP
     if (strProtocol == "daap") return new CDAAPDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_RTV
     if (strProtocol == "rtv") return new CRTVDirectory();
 #endif
 #endif
