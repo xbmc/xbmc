@@ -300,6 +300,10 @@ HANDLE CIoSupport::OpenCDROM()
   {
     return NULL;
   }
+#elif defined(_LINUX)
+  hDevice = CreateFile("/dev/cdrom", GENERIC_READ, FILE_SHARE_READ,
+                       NULL, OPEN_EXISTING,
+                       FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
 
   hDevice = CreateFile("\\\\.\\Cdrom0", GENERIC_READ, FILE_SHARE_READ,
@@ -352,6 +356,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
+#ifndef _LINUX
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead = {0};
 
@@ -381,12 +386,14 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     }
   }
 #endif
+#endif
   return -1;
 }
 
 INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
+#ifndef _LINUX
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead;
 
@@ -410,6 +417,7 @@ INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
       return RAW_SECTOR_SIZE;
     }
   }
+#endif
 #endif
   return -1;
 }

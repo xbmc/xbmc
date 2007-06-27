@@ -26,6 +26,15 @@
 #ifdef HAS_UNDOCUMENTED
 #include "xbox/Undocumented.h"
 #endif
+#ifdef HAS_SDL
+#include <cdio/mmc.h>
+#endif
+#ifdef _LINUX
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <linux/cdrom.h>
+#endif
 #include "Application.h"
 #include "Util.h"
 #include "Picture.h"
@@ -307,6 +316,81 @@ DWORD CDetectDVDMedia::GetTrayState()
 {
 #ifdef HAS_UNDOCUMENTED
   HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
+#endif
+#ifdef _LINUX
+  
+  int fd = 0;
+  int drivestatus,discstatus;
+  fd = open("/dev/cdrom", O_RDONLY | O_NONBLOCK);
+  if (fd<0)
+  {
+    CLog::Log(LOGERROR, "Unable to open CD-ROM device /dev/cdrom for polling.");
+    return DRIVE_NOT_READY;
+  }
+
+  drivestatus = ioctl(fd, CDROM_DRIVE_STATUS, 0);
+
+  switch(drivestatus)
+  {
+  case CDS_NO_INFO:
+    m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
+    break;
+
+  case CDS_NO_DISC:
+    m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
+    break;
+
+  case CDS_TRAY_OPEN:
+    m_dwTrayState = TRAY_OPEN;
+    break;
+
+  case CDS_DISC_OK:
+    m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
+    break;
+
+  case CDS_DRIVE_NOT_READY:
+    close(fd);
+    return DRIVE_NOT_READY;
+
+  default:
+    m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
+  }
+
+  close(fd);
+
+  // The following code should work with a newer version of libcdio than
+  // what comes with Ubuntu currently. So for now, it is commented out.
+  // In the future it can be used to maintain platform independence.
+  // -d4rk 06/27/07
+
+  /*
+  m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT;
+  CdIo_t* cdio = cdio_open("/dev/cdrom", DRIVER_UNKNOWN);
+  if (cdio)
+  {
+    discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
+    int status = mmc_get_tray_status(cdio);
+    if (status)
+      discmode = mmc_get_discmode(cdio);
+    if (discmode==CDIO_DISC_MODE_NO_INFO || discmode==CDIO_DISC_MODE_ERROR)
+      discmode = 0;
+    switch(status)
+    {
+    case 0: //closed
+      if (discmode==0)
+	m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
+      else
+	m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
+      break;
+
+    case 1: //open
+      m_dwTrayState = TRAY_OPEN;
+      break;
+    }
+    cdio_destroy(cdio);
+  }
+  */
+  
 #endif
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
   {

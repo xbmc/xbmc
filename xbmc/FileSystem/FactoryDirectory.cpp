@@ -25,9 +25,11 @@
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "XBMSDirectory.h"
+#ifndef _LINUX
 #include "RTVDirectory.h"
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
+#endif
 #endif
 #ifdef HAS_XBOX_HARDWARE
 #include "MemUnitDirectory.h"
@@ -59,13 +61,16 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     return pDir;
 
   CStdString strProtocol = url.GetProtocol();
+
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
 #ifdef HAS_FILESYSTEM_CDDA
   if (strProtocol == "cdda") return new CCDDADirectory();
 #endif
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
+#ifndef _LINUX
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
+#endif
 #endif
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
@@ -96,8 +101,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM
+#ifndef _LINUX
     if (strProtocol == "daap") return new CDAAPDirectory();
     if (strProtocol == "rtv") return new CRTVDirectory();
+#endif
 #endif
 #ifdef HAS_UPNP
     if (strProtocol == "upnp") return new CUPnPDirectory();
