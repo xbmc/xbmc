@@ -74,8 +74,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new CubeCodec();
   else if (strFileType.Equals("ym"))
     return new YMCodec();
+#ifdef HAS_WMA_CODEC
   else if (strFileType.Equals("wma"))
     return new WMACodec();
+#endif
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new AIFFCodec();
   else if (strFileType.Equals("xwav"))

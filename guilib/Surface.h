@@ -9,11 +9,17 @@
 #pragma once
 
 #include <string>
+#ifdef HAS_SDL
+#include <SDL/SDL.h>
+#endif
+
+#ifdef HAS_SDL_OPENGL
+#include <GL/glew.h>
+#endif
 
 namespace Surface {
 
 #ifdef HAS_GLX
-#include <GL/glew.h>
 #include <GL/glx.h>
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
@@ -54,8 +60,8 @@ public:
   bool MakePixmap();
 #endif
 #ifdef HAS_SDL_OPENGL
-  void GetGLVersion(int& maj, int&min);
   std::string& GetGLVendor() { return s_glVendor; }
+  void GetGLVersion(int& maj, int&min);
 #endif
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
@@ -79,9 +85,9 @@ public:
   GLXPixmap  m_glPixmap;
   GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
+#endif
   static bool b_glewInit;
   static std::string s_glVendor;
-#endif
 
   SDL_Surface* m_SDLSurface;
 };

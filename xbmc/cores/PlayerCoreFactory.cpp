@@ -155,6 +155,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
     bool bAdd = true;
+#ifdef HAS_WMA_CODEC
     if (item.IsType(".wma"))
     {
       WMACodec codec;
@@ -162,6 +163,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
         bAdd = false;
       codec.DeInit();        
     }
+#endif
 
     if (bAdd)
     {

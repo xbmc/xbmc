@@ -18,14 +18,14 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef HAS_SDL_OPENGL
-
 #include "stdafx.h"
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
 #include "../../XBVideoConfig.h"
 #include "TextureManager.h"
+
+#ifndef HAS_SDL_OPENGL
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -923,7 +923,9 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   else
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 #else 
+#ifdef  __GNUC__
 #warning TODO: prepare for render in RenderUpdate
+#endif
 #endif
 
   Render(flags);

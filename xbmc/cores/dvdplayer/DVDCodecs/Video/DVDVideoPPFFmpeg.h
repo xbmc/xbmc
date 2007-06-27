@@ -2,7 +2,7 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
-#include "DllPostProc.h"
+#include "../../../ffmpeg/DllPostProc.h"
 
 class CDVDVideoPPFFmpeg
 {

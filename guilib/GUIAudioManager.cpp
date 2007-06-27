@@ -31,7 +31,7 @@ void CGUIAudioManager::Initialize(int iDevice)
 
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);

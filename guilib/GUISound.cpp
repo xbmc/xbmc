@@ -2,11 +2,11 @@
 #include "GUISound.h"
 #include "AudioContext.h"
 #include "../xbmc/Settings.h"
-#ifdef HAS_SDL
+#ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
 
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
 typedef struct
 {
   char chunk_id[4];
@@ -30,7 +30,7 @@ CGUISound::CGUISound()
 
 CGUISound::~CGUISound()
 {
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
   FreeBuffer();  
 #endif
 }
@@ -38,7 +38,7 @@ CGUISound::~CGUISound()
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
   int size=0;
@@ -68,7 +68,7 @@ void CGUISound::Play()
   if (m_soundBuffer)
 #ifdef HAS_XBOX_AUDIO
     m_soundBuffer->Play(0, 0, DSBPLAY_FROMSTART);
-#elif !defined(HAS_SDL)
+#elif !defined(HAS_SDL_AUDIO)
     m_soundBuffer->Play(0, 0, 0);
 #else
     Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);    
@@ -78,7 +78,7 @@ void CGUISound::Play()
 // \brief returns true if the sound is playing
 bool CGUISound::IsPlaying()
 {
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
   if (m_soundBuffer)
   {
     DWORD dwStatus;
@@ -99,7 +99,7 @@ void CGUISound::Stop()
   {
 #ifdef HAS_XBOX_AUDIO
     m_soundBuffer->StopEx( 0, DSBSTOPEX_IMMEDIATE );
-#elif !defined(HAS_SDL)
+#elif !defined(HAS_SDL_AUDIO)
     m_soundBuffer->Stop();
 #else
     Mix_HaltChannel(GUI_SOUND_CHANNEL);    
@@ -113,14 +113,14 @@ void CGUISound::Stop()
 void CGUISound::SetVolume(int level)
 {
   if (m_soundBuffer)
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
     m_soundBuffer->SetVolume(level);
 #else
     Mix_Volume(GUI_SOUND_CHANNEL, level);
 #endif    
 }
 
-#ifndef HAS_SDL
+#ifndef HAS_SDL_AUDIO
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
 #ifdef HAS_XBOX_AUDIO
