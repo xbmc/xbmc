@@ -8,6 +8,7 @@
 #include <cdio/cdio.h>
 #include <cdio/logging.h>
 #include <cdio/util.h>
+#include <cdio/cd_types.h>
 #endif
 
 using namespace MEDIA_DETECT;
@@ -104,7 +105,11 @@ HRESULT CCdIoSupport::CloseTray()
 
 HANDLE CCdIoSupport::OpenCDROM()
 {
+#ifdef _LINUX
+  char* source_name = "/dev/cdrom";
+#else
   char* source_name = "\\\\.\\D:";
+#endif
   CdIo* cdio = cdio_open (source_name, DRIVER_UNKNOWN);
 
   return (HANDLE) cdio;
@@ -378,6 +383,7 @@ int CCdIoSupport::GetJolietLevel( void )
 #define is_it_dbg(sig) /*\
     if (is_it(sig)) printf("%s, ", sigs[sig].description)*/
 
+#ifndef _LINUX
 int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 {
   int ret = FS_UNKNOWN;
@@ -512,6 +518,79 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
   return ret;
 }
+#else
+int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
+{
+  int ret = FS_UNKNOWN;
+  cdio_iso_analysis_t anal;
+  cdio_fs_anal_t fs;
+  bool udf = false;  
+
+  memset(&anal, 0, sizeof(anal));
+  fs = cdio_guess_cd_type(cdio, start_session, track_num, &anal);
+
+  switch(CDIO_FSTYPE(fs))
+    {
+    case CDIO_FS_AUDIO:
+      ret = FS_NO_DATA;
+      break;
+
+    case CDIO_FS_HIGH_SIERRA:
+      ret = FS_HIGH_SIERRA;
+      break;
+
+    case CDIO_FS_ISO_9660:
+      ret = FS_ISO_9660;
+      break;
+
+    case CDIO_FS_INTERACTIVE:
+      ret = FS_ISO_9660_INTERACTIVE;
+      break;
+
+    case CDIO_FS_HFS:
+      ret = FS_HFS;
+      break;
+
+    case CDIO_FS_UFS:
+      ret = FS_UFS;
+      break;
+
+    case CDIO_FS_EXT2:
+      ret = FS_EXT2;
+      break;
+
+    case CDIO_FS_UDFX:
+      ret = FS_UDFX;
+      udf = true;
+      break;
+
+    case CDIO_FS_UDF:
+      ret = FS_UDF;
+      udf = true;
+      break;
+
+    case CDIO_FS_ISO_UDF:
+      ret = FS_ISO_UDF;
+      udf = true;
+      break;
+
+    default:
+      break;
+    }
+
+  if (udf)
+  {
+    m_nUDFVerMinor = anal.UDFVerMinor;
+    m_nUDFVerMajor = anal.UDFVerMajor;
+  }
+
+  m_strDiscLabel = anal.iso_label;
+  m_nIsofsSize = anal.isofs_size;
+  m_nJolietLevel = anal.joliet_level;
+
+  return ret;
+}
+#endif
 
 void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 {
@@ -532,7 +611,11 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
+#ifdef _LINUX
+  char* source_name = "/dev/cdrom";
+#else
   char* source_name = "\\\\.\\D:";
+#endif
   cdio = cdio_open (source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {

@@ -4,8 +4,10 @@
 #include "FactoryFileDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "OGGFileDirectory.h"
+#ifndef _LINUX
 #include "NSFFileDirectory.h"
 #include "SIDFileDirectory.h"
+#endif
 #endif
 #include "RarDirectory.h"
 #include "ZipDirectory.h"
@@ -33,6 +35,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   strExtension.MakeLower();
 
 #ifdef HAS_FILESYSTEM
+#ifdef _LINUX
   if (strExtension.Equals(".ogg") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
@@ -45,6 +48,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#else
   if (strExtension.Equals(".nsf") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CNSFFileDirectory;
@@ -65,6 +69,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#endif
 #endif
   if (strExtension.Equals(".zip"))
   {
