@@ -51,6 +51,7 @@
 #define HAS_RAR
 #define HAS_CCXSTREAM
 #undef  HAS_LIRC
+#define HAS_KAI
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL
@@ -102,6 +103,7 @@
 #define HAS_SHOUTCAST
 #define HAS_RAR
 #undef  HAS_LIRC
+#define HAS_KAI
 
 #ifndef _LINUX
 // additional includes and defines
@@ -138,6 +140,7 @@
 #define HAS_WMA_CODEC
 #define HAS_CCXSTREAM
 #define HAS_LIRC
+#undef HAS_KAI
 
 #include <unistd.h>
 #include <time.h>
