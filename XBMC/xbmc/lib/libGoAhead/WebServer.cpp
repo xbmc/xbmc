@@ -105,6 +105,7 @@ DWORD CWebServer::ResumeThread()
 bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, bool wait)
 {
   m_bFinished = false;
+  m_bStarted = false;
   ResetEvent(m_hEvent);
 
   strcpy(m_szLocalAddress, szLocalAddress);
@@ -154,6 +155,8 @@ void CWebServer::OnStartup()
     SetEvent(m_hEvent);
     return;
   }
+
+  m_bStarted = true;
 
   #ifdef WEBS_SSL_SUPPORT
     websSSLOpen();
@@ -268,8 +271,11 @@ void CWebServer::OnExit()
 	#endif
 
   // Close the socket module
-	websCloseServer();
-	socketClose();
+        if (m_bStarted)
+        {
+	  websCloseServer();
+	  socketClose();
+        }
 
 	// Free up resources
 	websDefaultClose();
