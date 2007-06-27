@@ -67,6 +67,7 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
   // if we don't have a shader, fallback to SW YUV2RGB for now 
   if (m_renderMethod & RENDER_SW)
   {
+#ifdef HAS_DVD_SWSCALE
     struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
     uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
     int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
@@ -75,6 +76,7 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
     int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
     m_dllSwScale.sws_freeContext(context);
+#endif
   }
 }
 
@@ -150,9 +152,11 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   glBindTexture(m_textureTarget, fields[0][0]);
   VerifyGLState();
+#ifdef HAS_DVD_SWSCALE
   if (m_renderMethod & RENDER_SW)
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
   else
+#endif
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
   if (m_renderMethod & RENDER_GLSL)
@@ -188,7 +192,9 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClearColor(0,0,0,0);
     if (alpha<255) 
     {
+#ifdef  __GNUC__
 #warning Alpha blending currently disabled
+#endif
       //glDisable(GL_BLEND);
     } else {
       //glDisable(GL_BLEND);
@@ -241,10 +247,16 @@ unsigned int CLinuxRendererATI::PreInit()
   if (!ValidateRenderTarget())
     return false;
 
+#ifdef HAS_DVD_SWSCALE
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) 
-	CLog::Log(LOGERROR,"CLinuxRendererATI::PreInit - failed to load rescale libraries!");
+#else
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) 
+#endif
+    CLog::Log(LOGERROR,"CLinuxRendererATI::PreInit - failed to load rescale libraries!");
 
+#ifdef HAS_DVD_SWSCALE
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+#endif
   return true;
 }
 
@@ -291,8 +303,7 @@ void CLinuxRendererATI::UnInit()
 bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
 {
   /* since we also want the field textures, pitch must be texture aligned */
-  DWORD dwTextureSize;
-  unsigned stride, p;
+  unsigned p;
   
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];

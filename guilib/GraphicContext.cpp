@@ -872,7 +872,11 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
     }
 #else
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
-    CSurface* surface = InitializeSurface();
+#ifdef _WIN32
+    CSurface* surface = NULL;
+#else
+	CSurface* surface = InitializeSurface();
+#endif
     if (surface) 
     {
       m_surfaces[tid] = surface;
@@ -978,7 +982,9 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
   }
   if (!(iter->second)->MakeCurrent())
   {
+#ifndef _WIN32
     CLog::Log(LOGERROR, "Error making context current");
+#endif
   }
   Unlock();
 #endif

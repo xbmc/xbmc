@@ -151,17 +151,16 @@
 
 #ifdef HAS_SDL
 #define HAS_SDL_AUDIO
+#define HAS_DVD_SWSCALE
 #ifndef HAS_SDL_2D
 #define HAS_SDL_OPENGL
 #ifdef _LINUX
 #define HAS_GLX
 #endif
-#define HAS_GL_EXTENSIONS
 #endif
 #ifdef _WIN32
-#undef HAS_SDL_AUDIO  // use dsound for audio on win32
-// gl extensions aren't working yet either
-#undef HAS_GL_EXTENSIONS
+#undef HAS_SDL_AUDIO   // use dsound for audio on win32
+#undef HAS_DVD_SWSCALE // no win32 build of swscale yet
 #endif
 #endif
 

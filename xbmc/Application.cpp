@@ -180,6 +180,9 @@
 
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
+#ifdef _WIN32
+#include <SDL/SDL_syswm.h>
+#endif
 #endif
 
 using namespace XFILE;
@@ -846,8 +849,12 @@ HRESULT CApplication::Create(HWND hWnd)
 
   /* Clean up on exit, exit on window close and interrupt */
   atexit(SDL_Quit);
-    
+
+#ifdef HAS_SDL_AUDIO
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
+#else
+  if (SDL_Init(SDL_INIT_VIDEO) != 0)
+#endif
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
         return E_FAIL;
@@ -887,6 +894,14 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGERROR, "XBAppEx: Call to CreateIRRemotes() failed!" );
     return hr;
   }
+#endif
+
+  
+#if defined(HAS_SDL) && defined(_WIN32)
+  SDL_SysWMinfo wmInfo;
+  SDL_VERSION(&wmInfo.version)
+  int te = SDL_GetWMInfo( &wmInfo );
+  g_hWnd = wmInfo.window;
 #endif
 
   // Create the Mouse and Keyboard devices
