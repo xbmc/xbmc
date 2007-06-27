@@ -163,10 +163,10 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
     if (!m_linearTexture)
     {
-      uLeft = m_image.border.left / m_iTextureWidth;
-      uRight = m_fU - m_image.border.right / m_iTextureWidth;
-      vTop = m_image.border.top / m_iTextureHeight;
-      vBottom = m_fV - m_image.border.bottom / m_iTextureHeight;
+      uLeft = m_image.border.left / m_iImageWidth;
+      uRight = m_fU - m_image.border.right / m_iImageWidth;
+      vTop = m_image.border.top / m_iImageHeight;
+      vBottom = m_fV - m_image.border.bottom / m_iImageHeight;
     }
     else
     {
