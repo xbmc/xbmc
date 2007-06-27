@@ -47,7 +47,7 @@ public:
   virtual ~CWin32DirectSound();
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
-  virtual DWORD GetSpace() { return 0; };   // this shouldn't really be in IDirectSoundRenderer unless mplayer uses it?
+  virtual DWORD GetSpace();
   virtual HRESULT Deinitialize();
   virtual HRESULT Pause();
   virtual HRESULT Stop();
