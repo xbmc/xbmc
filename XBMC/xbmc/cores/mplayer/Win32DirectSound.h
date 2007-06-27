@@ -47,7 +47,7 @@ public:
   virtual ~CWin32DirectSound();
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
-  virtual DWORD GetSpace();
+  virtual DWORD GetSpace() { return 0; };   // this shouldn't really be in IDirectSoundRenderer unless mplayer uses it?
   virtual HRESULT Deinitialize();
   virtual HRESULT Pause();
   virtual HRESULT Stop();
@@ -78,6 +78,8 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
+
+  unsigned int m_nextPacket;
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
