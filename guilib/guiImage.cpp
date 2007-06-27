@@ -171,9 +171,7 @@ void CGUIImage::Render()
 
 #ifdef HAS_SDL_OPENGL
     CGLTexture* texture = m_vecTextures[m_iCurrentImage];
-#ifdef HAS_GL_EXTENSIONS
     glActiveTextureARB(GL_TEXTURE0_ARB);
-#endif
     texture->LoadToGPU();
     glBindTexture(GL_TEXTURE_2D, texture->id);
     glEnable(GL_TEXTURE_2D);
@@ -191,7 +189,6 @@ void CGUIImage::Render()
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
     VerifyGLState();
 
-#ifdef HAS_GL_EXTENSIONS
     if (m_diffuseTexture)
     {
       m_diffuseTexture->LoadToGPU();
@@ -206,7 +203,6 @@ void CGUIImage::Render()
       glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
       VerifyGLState();
     }
-#endif
     glBegin(GL_QUADS);
 #endif
     
@@ -215,10 +211,10 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
     if (!m_linearTexture)
     {
-      uLeft = m_image.border.left / m_iTextureWidth;
-      uRight = m_fU - m_image.border.right / m_iTextureWidth;
-      vTop = m_image.border.top / m_iTextureHeight;
-      vBottom = m_fV - m_image.border.bottom / m_iTextureHeight;
+      uLeft = m_image.border.left / m_iImageWidth;
+      uRight = m_fU - m_image.border.right / m_iImageWidth;
+      vTop = m_image.border.top / m_iImageHeight;
+      vBottom = m_fV - m_image.border.bottom / m_iImageHeight;
     }
     else
     {
@@ -271,13 +267,11 @@ void CGUIImage::Render()
 
 #ifdef HAS_SDL_OPENGL      
     glEnd();
-#ifdef HAS_GL_EXTENSIONS
     if (m_diffuseTexture)
     {
       glDisable(GL_TEXTURE_2D);
       glActiveTextureARB(GL_TEXTURE0_ARB);
     }
-#endif
 #endif
 
 #ifndef HAS_SDL
@@ -442,49 +436,33 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   // Top-left vertex (corner)
   DWORD color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-#ifdef HAS_GL_EXTENSIONS
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u1, v1);
   if (m_diffuseTexture)
   glMultiTexCoord2f(GL_TEXTURE1_ARB, u1*m_diffuseScaleU, v1*m_diffuseScaleV);
-#else
-  glTexCoord2f(u1, v1);
-#endif
   glVertex3f(x1, y1, 0);
   
   // Bottom-left vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor));  
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-#ifdef HAS_GL_EXTENSIONS
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u2, v1);
   if (m_diffuseTexture)
     glMultiTexCoord2f(GL_TEXTURE1_ARB, u2*m_diffuseScaleU, v1*m_diffuseScaleV);
-#else
-  glTexCoord2f(u2, v1);
-#endif
   glVertex3f(x2, y2, 0);
   
   // Bottom-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor));  
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-#ifdef HAS_GL_EXTENSIONS
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u2, v2);
   if (m_diffuseTexture)
     glMultiTexCoord2f(GL_TEXTURE1_ARB, u2*m_diffuseScaleU, v2*m_diffuseScaleV);
-#else
-  glTexCoord2f(u2, v2);
-#endif
   glVertex3f(x3, y3, 0);
   
   // Top-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor));  
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-#ifdef HAS_GL_EXTENSIONS
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u1, v2);
   if (m_diffuseTexture)
     glMultiTexCoord2f(GL_TEXTURE1_ARB, u1*m_diffuseScaleU, v2*m_diffuseScaleV);
-#else
-  glTexCoord2f(u1, v2);
-#endif
   glVertex3f(x4, y4, 0);
 #endif
 }
