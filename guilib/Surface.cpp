@@ -17,9 +17,9 @@ using namespace Surface;
 
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
+#endif
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
-#endif
 
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
@@ -184,18 +184,22 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     {
       if (glewInit()!=GLEW_OK)
       {
-	CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
-      } else {
-	b_glewInit = true;
-	if (s_glVendor.length()==0)
-	{
-	  s_glVendor = (const char*)glGetString(GL_VENDOR);
-	  CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-	}
+	      CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+      }
+      else
+      {
+	      b_glewInit = true;
+	      if (s_glVendor.length()==0)
+	      {
+	        s_glVendor = (const char*)glGetString(GL_VENDOR);
+	        CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+	      }
       }
     }
     m_bOK = true;
-  } else {
+  }
+  else
+  {
     CLog::Log(LOGERROR, "GLX Error: Could not create context");
   }
 #elif defined(HAS_SDL_OPENGL)
@@ -208,6 +212,23 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
   if (m_SDLSurface) {
     m_bOK = true;
+  }
+
+  if (!b_glewInit)
+  {
+    if (glewInit()!=GLEW_OK)
+    {
+	    CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+    }
+    else
+    {
+	    b_glewInit = true;
+	    if (s_glVendor.length()==0)
+	    {
+	      s_glVendor = (const char*)glGetString(GL_VENDOR);
+	      CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+	    }
+    }
   }
 #else
   int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
@@ -367,7 +388,7 @@ void CSurface::Flip()
   {
 #ifdef HAS_GLX
     glXSwapBuffers(s_dpy, m_glWindow);
-#elif HAS_SDL_OPENGL
+#elif defined(HAS_SDL_OPENGL)
     SDL_GL_SwapBuffers();
 #else
     SDL_Flip(m_SDLSurface);
@@ -389,6 +410,7 @@ bool CSurface::MakeCurrent()
     return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
   }
 #endif
+  return false;
 }
 
 void CSurface::ReleaseContext()
@@ -411,6 +433,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
     glXWaitX();
   }
 #endif
+  return false;
 }
 
 #ifdef HAS_SDL_OPENGL

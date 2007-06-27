@@ -64,9 +64,14 @@
 #undef HAS_DVD_DRIVE
 #undef HAS_XBOX_HARDWARE
 #undef HAS_XBOX_NETWORK
+#ifdef HAS_SDL
+#define HAS_VIDEO_PLAYBACK
+#define HAS_DVDPLAYER
+#else
 #undef HAS_VIDEO_PLAYBACK
-#undef HAS_MPLAYER
 #undef HAS_DVDPLAYER
+#endif
+#undef HAS_MPLAYER
 #undef HAS_AC3_CODEC
 #undef HAS_DTS_CODEC
 #undef HAS_AC3_CDDA_CODEC
@@ -128,6 +133,7 @@
 #undef  HAS_MPLAYER
 #define HAS_VISUALISATION
 #define HAS_DVDPLAYER
+#define HAS_WMA_CODEC
 #define HAS_CCXSTREAM
 #define HAS_LIRC
 
@@ -144,6 +150,7 @@
 #endif
 
 #ifdef HAS_SDL
+#define HAS_SDL_AUDIO
 #ifndef HAS_SDL_2D
 #define HAS_SDL_OPENGL
 #ifdef _LINUX
@@ -152,8 +159,7 @@
 #define HAS_GL_EXTENSIONS
 #endif
 #ifdef _WIN32
-// dsound audio doesn't work with sdl yet
-#undef HAS_AUDIO
+#undef HAS_SDL_AUDIO  // use dsound for audio on win32
 // gl extensions aren't working yet either
 #undef HAS_GL_EXTENSIONS
 #endif

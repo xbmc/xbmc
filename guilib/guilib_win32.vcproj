@@ -124,7 +124,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib"
 				OutputFile="$(OutDir)/guilib.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -344,6 +344,9 @@
 			</File>
 			<File
 				RelativePath=".\SkinInfo.cpp">
+			</File>
+			<File
+				RelativePath=".\Surface.cpp">
 			</File>
 			<File
 				RelativePath=".\TextureBundle.cpp">
@@ -571,6 +574,9 @@
 			</File>
 			<File
 				RelativePath=".\StdString.h">
+			</File>
+			<File
+				RelativePath=".\Surface.h">
 			</File>
 			<File
 				RelativePath=".\system.h">

@@ -3,7 +3,11 @@
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
+#ifdef _LINUX
 #include "stdint.h"
+#else
+#define INT64_C __int64
+#endif
 #include "DVDDemuxFFmpeg.h"
 #include "../DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxUtils.h"

@@ -240,15 +240,17 @@ void XBPython::Finalize()
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll cause no scripts are running anymore");
     PyEval_AcquireLock();
+#ifndef _LINUX
+    PyThreadState_Swap(mainThreadState);
+#endif
     Py_Finalize();
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     //dllFreeLibrary(m_hModule);
-//#ifndef _LINUX    
     DllLoaderContainer::UnloadPythonDlls();
-//#else
+#ifdef _LINUX
     DllLoaderContainer::ReleaseModule(m_pDll);
-//#endif    
+#endif    
     m_hModule = NULL;
 
     m_bInitialized = false;

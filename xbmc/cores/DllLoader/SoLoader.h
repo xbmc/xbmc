@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include "system.h"
+#ifdef _LINUX
 #include "PlatformDefs.h"
+#endif
 #include "DllLoader.h"
 
 class SoLoader : public LibraryLoader
