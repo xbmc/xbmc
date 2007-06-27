@@ -3,11 +3,11 @@
 #include "AnimatedGif.h"
 #include "PackedTexture.h"
 #include "GraphicContext.h"
-#include "Picture.h"
+#include "../xbmc/Picture.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "Util.h"
+#include "../xbmc/Util.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #endif

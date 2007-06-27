@@ -6,7 +6,7 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "../xbmc/utils/SingleLock.h"
-#include "Util.h"
+#include "../xbmc/Util.h"
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
 #endif
