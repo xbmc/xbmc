@@ -24,6 +24,7 @@ Global
 		Profile_FastCap Win32 = Profile_FastCap Win32
 		Profile_FastCap Xbox = Profile_FastCap Xbox
 		Release = Release
+		Release (SDL) = Release (SDL)
 		Release Win32 = Release Win32
 		Release Xbox = Release Xbox
 		Release_LTCG Win32 = Release_LTCG Win32
@@ -48,6 +49,8 @@ Global
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile_FastCap Xbox.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release.Build.0 = Release|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (SDL).ActiveCfg = Release (SDL)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (SDL).Build.0 = Release (SDL)|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release Win32.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release Win32.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release Xbox.ActiveCfg = Release|Win32
@@ -74,6 +77,8 @@ Global
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile_FastCap Xbox.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release.Build.0 = Release|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release (SDL).ActiveCfg = Release (SDL)|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release (SDL).Build.0 = Release (SDL)|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release Win32.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release Win32.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release Xbox.ActiveCfg = Release|Win32
@@ -100,6 +105,8 @@ Global
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile_FastCap Xbox.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release.Build.0 = Release|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release (SDL).ActiveCfg = Release (SDL)|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release (SDL).Build.0 = Release (SDL)|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release Win32.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release Win32.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release Xbox.ActiveCfg = Release|Win32
