@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#include "Util.h"
+#include "../xbmc/Util.h"
 #ifdef HAS_SDL
 #include <SDL/SDL_rotozoom.h>
 #endif
