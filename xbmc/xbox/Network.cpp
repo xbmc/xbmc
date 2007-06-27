@@ -455,33 +455,45 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     case SERVICES_UP:
     {
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-#ifdef _LINUX
-#warning services startup disabled
-#else
+#ifdef HAS_TIME_SERVER
       g_application.StartTimeServer();
+#endif
+#ifdef HAS_WEB_SERVER
       g_application.StartWebServer();
+#endif
+#ifdef HAS_FTP_SERVER
       g_application.StartFtpServer();
+#endif
+#ifdef HAS_KAI
       if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
         g_application.StartKai();
-      g_application.StartUPnP();
-      CScrobbler::GetInstance()->Init();
 #endif
+#ifndef HAS_UPNP
+      g_application.StartUPnP();
+#endif
+      CScrobbler::GetInstance()->Init();
     }
     break;
     case SERVICES_DOWN:
     {
       CLog::Log(LOGDEBUG, "%s - Stopping network services",__FUNCTION__);
-#ifdef _LINUX
-#warning services stop disabled
-#else
+#ifdef HAS_TIME_SERVER
       g_application.StopTimeServer();
+#endif
+#ifdef HAS_WEB_SERVER
       g_application.StopWebServer();
+#endif
+#ifdef HAS_FTP_SERVER
       g_application.StopFtpServer();
+#endif
+#ifdef HAS_KAI
       g_application.StopKai();   
+#endif
+#ifndef HAS_UPNP
       g_application.StopUPnP();
+#endif
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
-#endif
     }
     break;
   }
