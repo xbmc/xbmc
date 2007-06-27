@@ -140,7 +140,7 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
       else if (m_keyEvent.key.keysym.mod & KMOD_LCTRL) m_VKey = 0xa2;
       else if (m_keyEvent.key.keysym.mod & KMOD_RCTRL) m_VKey = 0xa3;		
       else if (m_keyEvent.key.keysym.unicode > 32 && m_keyEvent.key.keysym.unicode < 128)
-        m_cAscii = m_keyEvent.key.keysym.unicode;      // try and catch everything
+        m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);      // try and catch everything
     }
   }
   else
