@@ -914,11 +914,16 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 			res						= conv.out(st,
 										pSrcW, pSrcW + nSrc, pNextSrcW,
 										pDstA, pDstA + nDst, pNextDstA);
-
-			ASSERT(SSCodeCvt::error != res);
-			ASSERT(SSCodeCvt::ok == res);	// strict, comment out for sanity
-			ASSERT(pNextDstA >= pDstA);
-			ASSERT(pNextSrcW >= pSrcW);
+#ifdef _LINUX
+#define ASSERT2(a) if (a) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __FILE__, __LINE__);} 
+#else
+#define ASSERT2 ASSERT
+#endif
+			ASSERT2(SSCodeCvt::error != res);
+			ASSERT2(SSCodeCvt::ok == res);	// strict, comment out for sanity
+			ASSERT2(pNextDstA >= pDstA);
+			ASSERT2(pNextSrcW >= pSrcW);
+#undef ASSERT2
 
 			// Null terminate the converted string
 

@@ -25,9 +25,8 @@ ISO9660
 #include "../DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
 //#define _DEBUG_OUTPUT 1
 
-class iso9660 m_isoReader;
-
 static CRITICAL_SECTION m_critSection;
+class iso9660 m_isoReader;
 #define BUFFER_SIZE MODE2_DATA_SIZE
 #define RET_ERR -1
 
