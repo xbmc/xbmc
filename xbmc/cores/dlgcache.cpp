@@ -73,7 +73,7 @@ void CDlgCache::Update()
       }
     }
   }
-  else if( GetTickCount() > m_dwTimeStamp )
+  else if( GetTickCount() > m_dwTimeStamp && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO))
     OpenDialog();
 }
 
