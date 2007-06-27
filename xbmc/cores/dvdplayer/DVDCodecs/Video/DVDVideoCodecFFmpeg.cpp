@@ -31,9 +31,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec;
 
+#ifdef HAS_DVD_SWSCALE
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) return false;
   
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+#else
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
+#endif
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
@@ -181,10 +185,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, __int64 pts)
     }
 
     // convert the picture
+#ifdef HAS_DVD_SWSCALE
     struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height, 
 			m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
 			PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
-
 
     uint8_t *src[] = { m_pFrame->data[0], m_pFrame->data[1], m_pFrame->data[2] };
     int     srcStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2] };
@@ -193,6 +197,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, __int64 pts)
     int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, m_pCodecContext->height, dst, dstStride);
 
     m_dllSwScale.sws_freeContext(context); 
+#endif
 
 
     m_pConvertFrame->coded_picture_number = m_pFrame->coded_picture_number;
