@@ -17,9 +17,11 @@
 #endif
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
+#ifndef _LINUX
 #include "FileRTV.h"
 #include "FileSndtrk.h"
 #include "FileDAAP.h"
+#endif
 #endif
 #ifdef HAS_XBOX_HARDWARE
 #include "FileMemUnit.h"
@@ -62,7 +64,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
+#ifndef _LINUX
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
+#endif
 #endif
 #ifdef HAS_XBOX_HARDWARE
   else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
@@ -83,8 +87,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "xbms") return new CFileXBMSP();
 #endif
 #ifdef HAS_FILESYSTEM
+#ifndef _LINUX
     else if (strProtocol == "rtv") return new CFileRTV();
     else if (strProtocol == "daap") return new CFileDAAP();
+#endif
 #endif
   }
 

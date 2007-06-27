@@ -30,7 +30,7 @@
 #include "../xbox/Network.h"
 
 // stuff for current song
-#ifdef HAS_FILESYSTEM
+#if defined(HAS_FILESYSTEM) && !defined(_LINUX)
 #include "../FileSystem/SndtrkDirectory.h"
 #endif
 #include "../musicInfoTagLoaderFactory.h"
@@ -2139,7 +2139,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     if (!tag.GetTitle().size())
     {
       // No title in tag, show filename only
-#ifdef HAS_FILESYSTEM      
+#if defined(HAS_FILESYSTEM) && !defined(_LINUX)
       CSndtrkDirectory dir;
       char NameOfSong[64];
       if (dir.FindTrackName(m_currentFile.m_strPath, NameOfSong))

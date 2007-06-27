@@ -23,7 +23,7 @@
 #include "GUIWindowMusicBase.h"
 #include "GUIWindowMusicInfo.h"
 #include "FileSystem/ZipManager.h"
-#ifdef HAS_FILESYSTEM
+#if defined(HAS_FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/DAAPDirectory.h"
 #endif
 #include "PlayListFactory.h"
@@ -984,7 +984,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
   // special case for DAAP playlist folders
   bool bIsDAAPplaylist = false;
-#ifdef HAS_FILESYSTEM
+#if defined(HAS_FILESYSTEM) && !defined(_LINUX)
   if (pItem->IsDAAP() && pItem->m_bIsFolder)
   {
     CDAAPDirectory dirDAAP;

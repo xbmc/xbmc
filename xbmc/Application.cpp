@@ -73,7 +73,7 @@
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
 
-#ifdef HAS_FILESYSTEM
+#if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
 #endif
 #ifdef HAS_UPNP
@@ -3391,7 +3391,7 @@ void CApplication::Stop()
       videoScan->StopScanning();
 
     CLog::Log(LOGNOTICE, "stop daap clients");
-#ifdef HAS_FILESSYTEM
+#if defined(HAS_FILESSYTEM) && !defined(_LINUX)
     g_DaapClient.Release();
 #endif
     //g_lcd->StopThread();

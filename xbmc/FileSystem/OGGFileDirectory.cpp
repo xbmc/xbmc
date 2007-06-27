@@ -62,3 +62,4 @@ bool COGGFileDirectory::ContainsFiles(const CStdString& strPath)
   int iStreams=tag.GetStreamCount(strPath);
   return (iStreams>1);
 }
+
