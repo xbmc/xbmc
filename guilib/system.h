@@ -124,7 +124,7 @@
 #define HAS_WEB_SERVER
 #define HAS_UPNP
 #undef  HAS_AUDIO
-#undef  HAS_SHOUTCAST
+#define  HAS_SHOUTCAST
 #define HAS_SDL
 #define HAS_RAR
 #define HAS_FILESYSTEM_CDDA
