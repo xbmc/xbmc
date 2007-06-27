@@ -105,8 +105,7 @@ typedef struct ERROR_INFOst
 #ifndef _LINUX
 	error_code	error_code;
 #else
-	error_code	_error_code;
-#warning LibShout changed error_code to _error_code...need to fix the library
+	error_code	an_error_code;
 #endif
 } ERROR_INFO;
 
