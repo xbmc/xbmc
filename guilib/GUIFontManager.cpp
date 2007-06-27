@@ -7,7 +7,7 @@
 #include "GUIFont.h"
 #include "XMLUtils.h"
 #include "GuiControlFactory.h"
-#include "Util.h"
+#include "../xbmc/Util.h"
 
 GUIFontManager g_fontManager;
 
