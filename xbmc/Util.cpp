@@ -3219,7 +3219,7 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
   SplitExecFunction(execString, function, param);
   for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0 && (commands[i].needsParameters || !param.IsEmpty()))
+    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || !param.IsEmpty()))
       return true;
   }
   return false;
@@ -3337,14 +3337,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // no path parameter
       // XBMC.ActivateWindow(5001)
-      strWindow = parameter;
+      strWindow = strParameterCaseIntact;
     }
     else
     {
       // path parameter included
       // XBMC.ActivateWindow(5001,F:\Music\)
-      strWindow = parameter.Left(iPos);
-      strPath = parameter.Mid(iPos + 1);
+      strWindow = strParameterCaseIntact.Left(iPos);
+      strPath = strParameterCaseIntact.Mid(iPos + 1);
     }
     if (strPath.Equals("autodetection"))
     {
@@ -3419,7 +3419,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       delete [] argv;
     }
     else
-      g_pythonParser.evalFile(parameter.c_str());
+      g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
   else if (execute.Equals("resolution"))
@@ -3467,19 +3467,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("runxbe"))
   {
     // only usefull if there is actualy a xbe to execute
-    if (parameter.size() > 0)
+    if (!strParameterCaseIntact.IsEmpty())
     {
-      CFileItem item(parameter);
-      item.m_strPath = parameter;
+      CFileItem item(strParameterCaseIntact);
+      item.m_strPath = strParameterCaseIntact;
       if (item.IsShortCut())
-        CUtil::RunShortcut(parameter);
+        CUtil::RunShortcut(strParameterCaseIntact);
       else if (item.IsXBE())
       {
         int iRegion;
         if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         {
           CXBE xbe;
-          iRegion = xbe.ExtractGameRegion(parameter);
+          iRegion = xbe.ExtractGameRegion(strParameterCaseIntact);
           if (iRegion < 1 || iRegion > 7)
             iRegion = 0;
           iRegion = xbe.FilterRegion(iRegion);
@@ -3487,7 +3487,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         else
           iRegion = 0;
 
-        CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
+        CUtil::RunXBE(strParameterCaseIntact.c_str(),NULL,F_VIDEO(iRegion));
       }
     }
     else
@@ -3497,27 +3497,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("playmedia"))
   {
-    if (parameter.IsEmpty())
+    if (strParameterCaseIntact.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
       return -3;
     }
-    CFileItem item(parameter, false);
+    CFileItem item(strParameterCaseIntact, false);
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
-      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
+      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
       return false;
     }
   }
   else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
   {
-    if (parameter.IsEmpty())
+    if (strParameterCaseIntact.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
     CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
-    msg.SetStringParam(parameter);
+    msg.SetStringParam(strParameterCaseIntact);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
