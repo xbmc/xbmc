@@ -19,6 +19,7 @@
 */
 #include "stdafx.h"
 #include "RenderManager.h"
+#include "utils/CriticalSection.h"
 
 #ifndef HAS_SDL
 #include "PixelShaderRenderer.h"
@@ -138,7 +139,7 @@ unsigned int CXBoxRenderManager::PreInit()
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
 
-#ifndef _LINUX
+#ifndef HAS_SDL
   if(!g_eventVBlank)
   {
     //Only do this on first run
@@ -179,10 +180,14 @@ unsigned int CXBoxRenderManager::PreInit()
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
 #elif defined(HAS_SDL_OPENGL)
+#ifdef _WIN32
+      m_pRenderer = new CLinuxRendererATI(true); // Win32 likes this renderer better (no context support yet)
+#else
     if (g_graphicsContext.getScreenSurface()->GetGLVendor().find("ATI Technologies Inc.") != std::string::npos)
       m_pRenderer = new CLinuxRendererATI(); // We need a special ATI renderer since ATI drivers can't seem to handle multi-threaded rendering
     else
       m_pRenderer = new CLinuxRendererGL();
+#endif
 #else
     m_pRenderer = new CLinuxRenderer();
 #endif
