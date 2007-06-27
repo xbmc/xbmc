@@ -80,5 +80,6 @@ protected:
 	char            m_szPassword[128];	/* password */
 	int							m_port;							/* Server port */
 	bool						m_bFinished;				/* Finished flag */
+	bool						m_bStarted;				/* Started flag */
 	HANDLE					m_hEvent;
 };
