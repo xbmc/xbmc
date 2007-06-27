@@ -53,7 +53,7 @@ YUVCOEF yuv_coef_smtp240m = {
 };
 
 
-#ifndef _LINUX
+#ifndef HAS_SDL
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 #else
 CXBoxRenderer::CXBoxRenderer()

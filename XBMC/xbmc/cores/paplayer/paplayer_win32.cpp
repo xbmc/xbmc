@@ -1104,7 +1104,7 @@ void PAPlayer::DoAudioWork()
 {
   if (m_pCallback && m_visBufferLength)
   {
-    m_pCallback->OnAudioData(m_visBuffer, m_visBufferLength);
+    m_pCallback->OnAudioData((const unsigned char *)m_visBuffer, m_visBufferLength);
     m_visBufferLength = 0;
   }
 }
