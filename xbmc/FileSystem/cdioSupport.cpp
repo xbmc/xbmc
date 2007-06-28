@@ -528,7 +528,7 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
   memset(&anal, 0, sizeof(anal));
   fs = cdio_guess_cd_type(cdio, start_session, track_num, &anal);
-
+  
   switch(CDIO_FSTYPE(fs))
     {
     case CDIO_FS_AUDIO:

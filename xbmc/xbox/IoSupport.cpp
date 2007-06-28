@@ -32,6 +32,12 @@
 #include "ntddcdrm.h"
 #endif
 #endif
+#ifdef _LINUX
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <linux/cdrom.h>
+#endif
 
 #define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
 #define NT_STATUS_VOLUME_DISMOUNTED     long(0xC0000000 | 0x026E)
@@ -337,6 +343,40 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
   Displacement.QuadPart = ((INT64)dwSector) * dwSectorSize;
 
+#ifdef _LINUX
+  if (hDevice->m_bCDROM)
+  {    
+    int fd = hDevice->fd;
+    int lba = dwSector * dwSectorSize; // + CD_MSF_OFFSET;
+    int m,s,f;
+    union 
+    {
+      struct cdrom_msf msf;
+      char buffer[2352];
+    } arg;
+
+    f = lba % CD_FRAMES;
+    lba /= CD_FRAMES;
+    s = lba % CD_SECS;
+    lba /= CD_SECS;
+    m = lba;
+
+    arg.msf.cdmsf_min0 = m;
+    arg.msf.cdmsf_sec0 = s;
+    arg.msf.cdmsf_frame0 = f;
+    
+    int ret = ioctl(fd, CDROMREADRAW, &arg);
+    if (ret==0)
+    {
+      memcpy(lpczBuffer, arg.buffer, 2048);
+      return 2048;
+    }
+    fprintf(stderr, "readraw error: %s\n", strerror(errno));
+    OutputDebugString("CD IOCTL error\n");
+    return -1;    
+  }
+#endif
+
   for (int i = 0; i < 5; i++)
   {
     SetFilePointer(hDevice, Displacement.LowPart, &Displacement.HighPart, FILE_BEGIN);
@@ -356,7 +396,41 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
-#ifndef _LINUX
+#ifdef _LINUX
+  DWORD dwBytesReturned;
+
+  if (hDevice->m_bCDROM)
+  {    
+    int fd = hDevice->fd;
+    int lba = dwSector * 2048;
+    int m,s,f;
+    union 
+    {
+      struct cdrom_msf msf;
+      char buffer[2352];
+    } arg;
+
+    f = lba % CD_FRAMES;
+    lba /= CD_FRAMES;
+    s = lba % CD_SECS;
+    lba /= CD_SECS;
+    m = lba;
+    
+    arg.msf.cdmsf_min0 = m;
+    arg.msf.cdmsf_sec0 = s;
+    arg.msf.cdmsf_frame0 = f;
+    
+    int ret = ioctl(fd, CDROMREADMODE2, &arg);
+    if (ret==0)
+    {
+      memcpy(lpczBuffer, arg.buffer, 2048);
+      return 2048;
+    }
+    fprintf(stderr, "readraw error: %d\n", errno);
+    OutputDebugString("CD IOCTL error\n");
+    return -1;    
+  }
+#else
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead = {0};
 
@@ -364,6 +438,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
   rawRead.DiskOffset.QuadPart = 2048 * dwSector;
   rawRead.SectorCount = 1;
   rawRead.TrackMode = XAForm2;
+
 
   for (int i = 0; i < 5; i++)
   {
@@ -622,8 +697,8 @@ LARGE_INTEGER CIoSupport::GetDriveSize()
   return drive_size;
 }
 
-bool CIoSupport::ReadPartitionTable()
-{
+bool CIoSupport::ReadPartitionTable(){
+
 #ifdef _XBOX
   unsigned int retval;
 

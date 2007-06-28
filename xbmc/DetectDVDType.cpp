@@ -26,9 +26,6 @@
 #ifdef HAS_UNDOCUMENTED
 #include "xbox/Undocumented.h"
 #endif
-#ifdef HAS_SDL
-#include <cdio/mmc.h>
-#endif
 #ifdef _LINUX
 #include <sys/types.h>
 #include <sys/ioctl.h>
