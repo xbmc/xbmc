@@ -144,6 +144,8 @@
 #define HAS_WMA_CODEC
 #define HAS_CCXSTREAM
 #define HAS_LIRC
+#define HAS_AC3_CODEC
+#define HAS_DTS_CODEC
 #undef HAS_KAI
 
 #include <unistd.h>
