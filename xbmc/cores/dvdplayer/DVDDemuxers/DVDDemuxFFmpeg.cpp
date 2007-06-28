@@ -101,6 +101,18 @@ static int dvd_file_close(URLContext *h)
   return 0;
 }
 
+static DWORD g_urltimeout = 0;
+static int interrupt_cb(void)
+{
+  if(!g_urltimeout)
+    return 0;
+  
+  if(GetTickCount() > g_urltimeout)
+    return 1;
+
+  return 0;
+}
+
 URLProtocol dvd_file_protocol = {
                                   "CDVDInputStream",
                                   NULL,
@@ -142,6 +154,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // register codecs
   m_dllAvFormat.av_register_all();
+  m_dllAvFormat.url_set_interrupt_cb(interrupt_cb);
 
   // could be used for interupting ffmpeg while opening a file (eg internet streams)
   // url_set_interrupt_cb(NULL);
@@ -177,6 +190,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
+    g_urltimeout = GetTickCount() + 10000;
+
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
     if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile, iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
@@ -185,9 +200,13 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       Dispose();
       return false;
     }
+
+    g_urltimeout = 0;
   }
   else
   {
+    g_urltimeout = 0;
+
     // initialize url context to be used as filedevice
     URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strlen(strFile) + 1);
     context->prot = &dvd_file_protocol;
