@@ -118,6 +118,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
   m_pInput = NULL;
+  memset(&m_ioContext, 0, sizeof(ByteIOContext));
   InitializeCriticalSection(&m_critSection);
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_iCurrentPts = 0LL;
@@ -174,73 +175,87 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       streaminfo = false;
   }
 
-  // initialize url context to be used as filedevice
-  URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strlen(strFile) + 1);
-  context->prot = &dvd_file_protocol;
-  context->priv_data = (void*)m_pInput;
-  context->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
-
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
-    context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
-    context->is_streamed = 1;
+    // special stream type that makes avformat handle file opening
+    // allows internal ffmpeg protocols to be used
+    if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile, iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
+    {
+      CLog::DebugLog("Error, could not open file %s", strFile);
+      Dispose();
+      return false;
+    }
   }
-  else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
+  else
   {
-    if(m_pInput->Seek(0, SEEK_CUR) < 0)
+    // initialize url context to be used as filedevice
+    URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strlen(strFile) + 1);
+    context->prot = &dvd_file_protocol;
+    context->priv_data = (void*)m_pInput;
+    context->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
-  }
-  
-  // skip finding stream info for any streamed content
-  if(context->is_streamed)
-    streaminfo = false;  
-
-  strcpy(context->filename, strFile);  
-
-  // open our virtual file device
-  if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unable to init io context");
-    m_dllAvUtil.av_free(context);
-    Dispose();
-    return false;
-  }
-
-  if( iformat == NULL )
-  {
-    // let ffmpeg decide which demuxer we have to open
-    AVProbeData pd;
-    BYTE probe_buffer[2048];
-
-    // init probe data
-    pd.buf = probe_buffer;
-    pd.filename = strFile;
-
-    // read data using avformat's buffers
-    pd.buf_size = m_dllAvFormat.get_buffer(&m_ioContext, pd.buf, sizeof(probe_buffer));
-    m_dllAvFormat.url_fseek(&m_ioContext , 0, SEEK_SET);
-    
-    if (pd.buf_size == 0)
+    }
+    else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - error reading from input stream, %s", strFile);
-      return false;
+      if(m_pInput->Seek(0, SEEK_CUR) < 0)
+        context->is_streamed = 1;
     }
     
-    iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
-    if (!iformat)
+    // skip finding stream info for any streamed content
+    if(context->is_streamed)
+      streaminfo = false;  
+
+    strcpy(context->filename, strFile);  
+
+    // open our virtual file device
+    if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - error probing input format, %s", strFile);
+      CLog::Log(LOGERROR, __FUNCTION__" - Unable to init io context");
+      m_dllAvUtil.av_free(context);
+      Dispose();
       return false;
     }
-  }
+
+    if( iformat == NULL )
+    {
+      // let ffmpeg decide which demuxer we have to open
+      AVProbeData pd;
+      BYTE probe_buffer[2048];
+
+      // init probe data
+      pd.buf = probe_buffer;
+      pd.filename = strFile;
+
+      // read data using avformat's buffers
+      pd.buf_size = m_dllAvFormat.get_buffer(&m_ioContext, pd.buf, sizeof(probe_buffer));
+      m_dllAvFormat.url_fseek(&m_ioContext , 0, SEEK_SET);
+      
+      if (pd.buf_size == 0)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - error reading from input stream, %s", strFile);
+        return false;
+      }
+      
+      iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+      if (!iformat)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - error probing input format, %s", strFile);
+        return false;
+      }
+    }
 
 
-  // open the demuxer
-  if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
-  {
-    CLog::DebugLog("Error, could not open file", strFile);
-    Dispose();
-    return false;
+    // open the demuxer
+    if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
+    {
+      CLog::DebugLog("Error, could not open file", strFile);
+      Dispose();
+      return false;
+    }
   }
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
