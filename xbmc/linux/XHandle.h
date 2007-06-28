@@ -33,7 +33,8 @@ public:
 	CStdStringArray	m_FindFileResults;
 	int 		m_nFindFileIterator;	
         CStdString      m_FindFileDir;
-
+        off64_t         m_iOffset;
+        bool            m_bCDROM;
 	CXHandle() :	fd(0), 
 					m_type(HND_NULL), 
 					m_hSem(NULL), 
@@ -42,6 +43,8 @@ public:
 					RecursionCount(0),
 					OwningThread(0),
 					m_bManualEvent(FALSE),
+                                        m_iOffset(0),
+                                        m_bCDROM(false),
 					m_nFindFileIterator(0) { 
 		m_tmCreation = time(NULL);
 	};
