@@ -172,12 +172,36 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
       break;
   }
   
-  int fd = open(lpFileName, flags, S_IRUSR);
+  int fd = 0;
+  bool cd = false;
+
+  // special case for opening the cdrom device
+  if (strcmp(lpFileName, "/dev/cdrom")==0)
+  {
+    fd = open(lpFileName, O_RDONLY | O_NONBLOCK);
+    cd = true;
+
+  }
+  else
+  {
+    fd = open(lpFileName, flags, S_IRUSR);
+  }
   
   if (fd == -1)
+  {
     return INVALID_HANDLE_VALUE;
-    
+  }
+
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
+  if (cd)
+  {
+    result->m_bCDROM = true;
+  }
+  else
+  {
+    result->m_bCDROM = false;
+  }
+    
   result->fd = fd;
   
   return result;
@@ -312,7 +336,16 @@ DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
 	else if (dwMoveMethod == FILE_END)
 		nMode = SEEK_END;
 
-	off64_t currOff = lseek64(hFile->fd, offset, nMode);
+	off64_t currOff;
+	if (hFile->m_bCDROM)
+	{
+	  currOff = lseek64(hFile->fd, offset, nMode);	  
+	  currOff = offset;
+	}
+	else
+	{
+	  currOff = lseek64(hFile->fd, offset, nMode);	  
+	}
 	
 	if (lpDistanceToMoveHigh) {
 		*lpDistanceToMoveHigh = (LONG)(currOff >> 32);
