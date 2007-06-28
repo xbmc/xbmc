@@ -2,14 +2,15 @@
 #include "../../DynamicDll.h"
 
 #ifdef HAS_DTS_CODEC
+#ifndef _LINUX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int8  uint8_t;
 typedef __int32          int32_t;
 typedef __int16          int16_t;
+#endif
 
-
-#include "..\dvdplayer\dvdcodecs\audio\libdts\dts.h"
+#include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
 
 #ifdef LIBDTS_DOUBLE
 typedef float convert_t;
@@ -33,7 +34,11 @@ public:
 
 class DllDCACodec : public DllDynamic, DllDCACodecInterface
 {
+#ifdef _LINUX
+  DECLARE_DLL_WRAPPER(DllDCACodec, Q:\\system\\players\\paplayer\\dcacodec-i486-linux.so)
+#else
   DECLARE_DLL_WRAPPER(DllDCACodec, Q:\\system\\players\\paplayer\\DCACodec.dll)
+#endif
   DEFINE_METHOD1(dts_state_t *, dts_init, (uint32_t p1))
   DEFINE_METHOD6(int, dts_syncinfo, (dts_state_t *p1, uint8_t * p2, int * p3, int * p4, int * p5, int *p6))
   DEFINE_METHOD5(int, dts_frame, (dts_state_t * p1, uint8_t * p2, int * p3, level_t * p4, sample_t p5))
