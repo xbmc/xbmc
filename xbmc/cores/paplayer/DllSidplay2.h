@@ -15,7 +15,11 @@ public:
 
 class DllSidplay2 : public DllDynamic, DllSidplay2Interface
 {
+#ifdef _LINUX
+  DECLARE_DLL_WRAPPER(DllSidplay2, q:\\system\\players\\paplayer\\libsidplay2-i486-linux.so)
+#else
   DECLARE_DLL_WRAPPER(DllSidplay2, q:\\system\\players\\paplayer\\libsidplay2.dll)
+#endif
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD1(int, LoadSID, (const char* p1))
   DEFINE_METHOD1(void, FreeSID, (int p1))
