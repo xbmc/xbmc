@@ -2,12 +2,14 @@
 #include "../../DynamicDll.h"
 
 #ifdef HAS_AC3_CODEC
+#ifndef _LINUX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
 typedef __int32 int32_t;
+#endif
 
-#include "..\dvdplayer\dvdcodecs\audio\liba52\a52.h"
+#include "../dvdplayer/DVDCodecs/Audio/liba52/a52.h"
 
 #ifdef LIBA52_DOUBLE
 typedef float convert_t;
@@ -29,7 +31,11 @@ public:
 
 class DllAc3Codec : public DllDynamic, DllAc3CodecInterface
 {
+#ifdef _LINUX
+  DECLARE_DLL_WRAPPER(DllAc3Codec, Q:\\system\\players\\paplayer\\ac3codec-i486-linux.so)
+#else
   DECLARE_DLL_WRAPPER(DllAc3Codec, Q:\\system\\players\\paplayer\\AC3Codec.dll)
+#endif
   DEFINE_METHOD1(a52_state_t *, a52_init, (uint32_t p1))
   DEFINE_METHOD1(sample_t *, a52_samples, (a52_state_t *p1))
   DEFINE_METHOD5(int, a52_syncinfo, (a52_state_t * p1, uint8_t * p2, int * p3, int * p4, int * p5))
