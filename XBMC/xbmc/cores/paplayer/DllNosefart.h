@@ -17,7 +17,11 @@ public:
 
 class DllNosefart : public DllDynamic, DllNosefartInterface
 {
+#ifdef _LINUX
+  DECLARE_DLL_WRAPPER(DllNosefart, q:\\system\\players\\paplayer\\nosefart-i486-linux.so)
+#else
   DECLARE_DLL_WRAPPER(DllNosefart, q:\\system\\players\\paplayer\\nosefart.dll)
+#endif
   DEFINE_METHOD1(int, LoadNSF, (const char* p1))
   DEFINE_METHOD1(void, FreeNSF, (int p1))
   DEFINE_METHOD2(int, StartPlayback, (int p1, int p2))
