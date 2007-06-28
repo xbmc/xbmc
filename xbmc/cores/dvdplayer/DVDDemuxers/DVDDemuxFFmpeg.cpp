@@ -200,8 +200,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       Dispose();
       return false;
     }
-
-    g_urltimeout = 0;
   }
   else
   {
@@ -296,6 +294,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       }
     }
   }
+  // reset any timeout
+  g_urltimeout = 0;
 
   // print some extra information
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile, 0);
