@@ -339,20 +339,17 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
   DWORD dwRead;
   DWORD dwSectorSize = 2048;
-  LARGE_INTEGER Displacement;
-
-  Displacement.QuadPart = ((INT64)dwSector) * dwSectorSize;
 
 #ifdef _LINUX
   if (hDevice->m_bCDROM)
   {    
     int fd = hDevice->fd;
-    int lba = dwSector * dwSectorSize; // + CD_MSF_OFFSET;
+    int lba = (dwSector + CD_MSF_OFFSET) ;
     int m,s,f;
     union 
     {
       struct cdrom_msf msf;
-      char buffer[2352];
+      char buffer[2356];
     } arg;
 
     f = lba % CD_FRAMES;
@@ -361,21 +358,26 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
     lba /= CD_SECS;
     m = lba;
 
+    //CLog::Log(LOGDEBUG, "READRAW: Request to read sector %d\n", (int)dwSector);
+    //CLog::Log(LOGDEBUG, "READRAW: Reading minute %d, second %d, frame %d\n", m, s, f);
+
     arg.msf.cdmsf_min0 = m;
     arg.msf.cdmsf_sec0 = s;
     arg.msf.cdmsf_frame0 = f;
     
-    int ret = ioctl(fd, CDROMREADRAW, &arg);
+    int ret = ioctl(fd, CDROMREADMODE1, &arg);
     if (ret==0)
     {
       memcpy(lpczBuffer, arg.buffer, 2048);
       return 2048;
     }
-    fprintf(stderr, "readraw error: %s\n", strerror(errno));
-    OutputDebugString("CD IOCTL error\n");
+    CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
+    OutputDebugString("CD Read error\n");
     return -1;    
   }
 #endif
+  LARGE_INTEGER Displacement;
+  Displacement.QuadPart = ((INT64)dwSector) * dwSectorSize;
 
   for (int i = 0; i < 5; i++)
   {
@@ -398,16 +400,15 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 #ifdef HAS_DVD_DRIVE
 #ifdef _LINUX
   DWORD dwBytesReturned;
-
   if (hDevice->m_bCDROM)
   {    
     int fd = hDevice->fd;
-    int lba = dwSector * 2048;
+    int lba = (dwSector + CD_MSF_OFFSET) ;
     int m,s,f;
     union 
     {
       struct cdrom_msf msf;
-      char buffer[2352];
+      char buffer[2356];
     } arg;
 
     f = lba % CD_FRAMES;
@@ -415,7 +416,10 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     s = lba % CD_SECS;
     lba /= CD_SECS;
     m = lba;
-    
+
+    //CLog::Log(LOGDEBUG, "READMODE2: Request to read sector %d\n", (int)dwSector);
+    //CLog::Log(LOGDEBUG, "READMODE2: Reading minute %d, second %d, frame %d\n", m, s, f);
+
     arg.msf.cdmsf_min0 = m;
     arg.msf.cdmsf_sec0 = s;
     arg.msf.cdmsf_frame0 = f;
@@ -423,11 +427,11 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     int ret = ioctl(fd, CDROMREADMODE2, &arg);
     if (ret==0)
     {
-      memcpy(lpczBuffer, arg.buffer, 2048);
-      return 2048;
+      memcpy(lpczBuffer, arg.buffer, MODE2_DATA_SIZE); // don't think offset is needed here
+      return MODE2_DATA_SIZE;
     }
-    fprintf(stderr, "readraw error: %d\n", errno);
-    OutputDebugString("CD IOCTL error\n");
+    CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s\n", strerror(errno));
+    OutputDebugString("CD Read error\n");
     return -1;    
   }
 #else
