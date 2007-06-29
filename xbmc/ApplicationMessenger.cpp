@@ -329,13 +329,33 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_HTTPAPI:
+	{
       if (!pXbmcHttp)
       {
+	    CSectionLoader::Load("LIBHTTP");
         pXbmcHttp = new CXbmcHttp();
       }
-      pXbmcHttp->xbmcCommand(pMsg->strParam);
+	  int ret=pXbmcHttp->xbmcCommand(pMsg->strParam);
+      switch(ret)
+      {
+      case 1:
+        g_applicationMessenger.Restart();
+        break;
+      case 2:
+        g_applicationMessenger.Shutdown();
+        break;
+      case 3:
+        g_applicationMessenger.RebootToDashBoard();
+        break;
+      case 4:
+        g_applicationMessenger.Reset();
+        break;
+      case 5:
+        g_applicationMessenger.RestartApp();
+        break;
+      }
       break;
-
+	}
     case TMSG_EXECUTE_SCRIPT:
       g_pythonParser.evalFile(pMsg->strParam.c_str());
       break;
