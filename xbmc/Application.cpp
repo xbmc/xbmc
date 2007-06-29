@@ -277,7 +277,6 @@ CApplication::CApplication(void)
   m_pWebServer = NULL;
   pXbmcHttp = NULL;
   m_pFileZilla = NULL;
-  pXbmcHttp = NULL;
   m_pPlayer = NULL;
 #ifdef HAS_XBOX_HARDWARE
   XSetProcessQuantumLength(5); //default=20msec
