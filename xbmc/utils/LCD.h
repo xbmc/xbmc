@@ -22,6 +22,6 @@ protected:
   void StringToLCDCharSet(CStdString& strText);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
 private:
-  vector< vector<CInfoPortion> > m_lcdMode[4];
+  vector< vector<CInfoPortion> > m_lcdMode[LCD_MODE_MAX];
 };
 extern ILCD* g_lcd;
