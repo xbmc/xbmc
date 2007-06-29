@@ -32,7 +32,11 @@ bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
     return false;
 
   // Open the dvd drive
+#ifdef _LINUX
+  m_pCdIo = cdio_open("/dev/cdrom", DRIVER_UNKNOWN);
+#else
   m_pCdIo = cdio_open_win32("D:");
+#endif
   if (!m_pCdIo)
   {
     CLog::Log(LOGERROR, "file cdda: Opening the dvd drive failed");
