@@ -144,7 +144,6 @@
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>
-				<include>contentpanelslide</include>
 			</control>
 			<control type="radiobutton" id="24">
 				<description>Enable Playlist Toggle</description>
@@ -195,7 +194,6 @@
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>
-				<include>contentpanelslide</include>
 			</control>
 		</control>
 		<!-- Homescreen Options -->
