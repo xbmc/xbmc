@@ -14,9 +14,7 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-//#ifdef HAS_WEB_SERVER
 #include "../../libGoAhead/XBMChttp.h"
-//#endif
 #include "../../../utils/GUIInfoManager.h"
 #include "../../../../guilib/GUIAudioManager.h"
 #include "../../../Application.h"
@@ -557,6 +555,7 @@ namespace PYXBMC
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalFileName(cFilename,bIsFatX);
+
     return Py_BuildValue("s", strFilename.c_str());
   }
 
