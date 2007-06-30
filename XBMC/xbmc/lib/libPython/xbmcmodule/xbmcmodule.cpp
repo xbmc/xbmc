@@ -14,13 +14,14 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#ifdef HAS_WEB_SERVER
+//#ifdef HAS_WEB_SERVER
 #include "../../libGoAhead/XBMChttp.h"
-#endif
+//#endif
 #include "../../../utils/GUIInfoManager.h"
 #include "../../../../guilib/GUIAudioManager.h"
 #include "../../../Application.h"
 #include "../../../Crc32.h"
+#include "../../../Util.h"
 
 // include for constants
 #include "pyutil.h"
@@ -58,7 +59,7 @@ namespace PYXBMC
   PyObject* XBMC_Output(PyObject *self, PyObject *args)
   {
     char *s_line = NULL;
-    if (!PyArg_ParseTuple(args, "s:xb_output", &s_line))  return NULL;
+    if (!PyArg_ParseTuple(args, "s:xb_output", &s_line)) return NULL;
 
     CLog::Log(LOGINFO, s_line);
 
@@ -82,7 +83,7 @@ namespace PYXBMC
   PyObject* XBMC_Log(PyObject *self, PyObject *args)
   {
     char *s_line = NULL;
-    if (!PyArg_ParseTuple(args, "s", &s_line))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &s_line)) return NULL;
 
     CLog::Log(LOGFATAL, s_line);
 
@@ -150,7 +151,7 @@ namespace PYXBMC
   PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
     tMsg.strParam = cLine;
@@ -174,7 +175,7 @@ namespace PYXBMC
   PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     g_applicationMessenger.ExecBuiltIn(cLine);
 
@@ -195,10 +196,9 @@ namespace PYXBMC
 
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
-#ifdef HAS_WEB_SERVER
     char *cLine = NULL;
     CStdString ret;
-    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
     if (!pXbmcHttpShim)
     {
       pXbmcHttpShim = new CXbmcHttpShim();
@@ -208,9 +208,6 @@ namespace PYXBMC
     ret=pXbmcHttpShim->xbmcExternalCall(cLine);
 
     return PyString_FromString(ret.c_str());
-#else
-    return NULL;
-#endif
   }
 
   // sleep() method
@@ -230,7 +227,7 @@ namespace PYXBMC
   PyObject* XBMC_Sleep(PyObject *self, PyObject *args)
   {
     PyObject *pObject;
-    if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pObject)) return NULL;
     if (!PyInt_Check(pObject))
     {
       PyErr_Format(PyExc_TypeError, "argument must be a bool(integer) value");
@@ -267,10 +264,14 @@ namespace PYXBMC
   PyObject* XBMC_GetLocalizedString(PyObject *self, PyObject *args)
   {
     int iString;
-    if (!PyArg_ParseTuple(args, "i", &iString))  return NULL;
+    if (!PyArg_ParseTuple(args, "i", &iString)) return NULL;
 
     CStdStringW unicodeLabel;
+#ifdef _LINUX
     g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
+#else
+    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
+#endif
     return Py_BuildValue("u", unicodeLabel.c_str());
   }
 
@@ -380,7 +381,7 @@ namespace PYXBMC
     cpudec = _inpw(0xc006);
 
     if (cpudec<10) cpudec = cpudec * 100;
-    if (cpudec<100)  cpudec = cpudec *10;
+    if (cpudec<100) cpudec = cpudec *10;
 
     return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
   }*/
@@ -399,7 +400,7 @@ namespace PYXBMC
   PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
   {
     char *cLine;
-    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
     return Py_BuildValue("s", g_infoManager.GetLabel(ret).c_str());
@@ -420,7 +421,7 @@ namespace PYXBMC
   PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
     return Py_BuildValue("s", g_infoManager.GetImage(ret, WINDOW_INVALID).c_str());
@@ -439,7 +440,7 @@ namespace PYXBMC
   {
     const char *cFile = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cFile))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cFile)) return NULL;
 
     if (CFile::Exists(cFile))
     {
@@ -463,7 +464,7 @@ namespace PYXBMC
   {
     int yesNo = 1;
 
-    if (!PyArg_ParseTuple(args, "i", &yesNo))  return NULL;
+    if (!PyArg_ParseTuple(args, "i", &yesNo)) return NULL;
 
     g_audioManager.Enable(yesNo==1);
 
@@ -488,7 +489,7 @@ namespace PYXBMC
   PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine))  return NULL;
+    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     PyGUILock();
     DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
@@ -515,7 +516,7 @@ namespace PYXBMC
   PyDoc_STRVAR(getCacheThumbName__doc__,
     "getCacheThumbName(path) -- Returns a thumb cache filename.\n"
     "\n"
-    "path           : string - path to file\n"
+    "path           : string or unicode - path to file\n"
     "\n"
     "example:\n"
     "  - thumb = xbmc.getCacheThumbName('f:\\\\videos\\\\movie.avi')\n");
@@ -523,7 +524,7 @@ namespace PYXBMC
   PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
   {
     PyObject *pObjectText;
-    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pObjectText)) return NULL;
  
     string strText;
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
@@ -532,6 +533,61 @@ namespace PYXBMC
     CStdString strPath;
     crc.ComputeFromLowerCase(strText);
     strPath.Format("%08x.tbn", (unsigned __int32)crc);
+    return Py_BuildValue("s", strPath.c_str());
+  }
+
+  // makeLegalFilename function
+  PyDoc_STRVAR(makeLegalFilename__doc__,
+    "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.\n"
+    "\n"
+    "filename       : string - filename/path to make legal\n"
+    "fatX           : [opt] bool - True=Xbox file system(Default)\n"
+    "\n"
+    "*Note, If fatX is true you should pass a full path. If fatX is false only pass\n"
+    "       the basename of the path.\n"
+    "\n"
+    "example:\n"
+    "  - filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')\n");
+
+  PyObject* XBMC_MakeLegalFilename(PyObject *self, PyObject *args)
+  {
+    char *cFilename = NULL;
+    bool bIsFatX = true;
+    if (!PyArg_ParseTuple(args, "s|b", &cFilename, &bIsFatX)) return NULL;
+
+    CStdString strFilename;
+    strFilename = CUtil::MakeLegalFileName(cFilename,bIsFatX);
+    return Py_BuildValue("s", strFilename.c_str());
+  }
+
+  // translatePath function
+  PyDoc_STRVAR(translatePath__doc__,
+    "translatePath(path) -- Returns the translated path.\n"
+    "\n"
+    "path           : string or unicode - Path to format\n"
+    "\n"
+    "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
+    "       e.g. Converts 'T:\\script_data' -> '/home/user/XBMC/UserData/script_data'\n"
+    "       on Linux. Would return 'T:\\script_data' on the Xbox.\n"
+    "\n"
+    "example:\n"
+    "  - fpath = xbmc.translatePath('T:\\script_data')\n");
+
+  PyObject* XBMC_TranslatePath(PyObject *self, PyObject *args)
+  {
+    PyObject *pObjectText;
+    if (!PyArg_ParseTuple(args, "O", &pObjectText)) return NULL;
+
+    CStdString strText;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+
+    CStdString strPath;
+#ifdef _LINUX
+    strPath = CUtil::TranslatePath(strText);
+#else
+    strPath = strText;
+#endif
+
     return Py_BuildValue("s", strPath.c_str());
   }
 
@@ -563,9 +619,11 @@ namespace PYXBMC
 
     {"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
     {"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
-    
+
     {"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
+    {"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS, makeLegalFilename__doc__},
+    {"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -612,11 +670,11 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, "InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
 
     // constants
-    PyModule_AddStringConstant(pXbmcModule, "__author__",      PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcModule, "__date__",        "15 November 2005");
-    PyModule_AddStringConstant(pXbmcModule, "__version__",    "1.3");
-    PyModule_AddStringConstant(pXbmcModule, "__credits__",    PY_XBMC_CREDITS);
-    PyModule_AddStringConstant(pXbmcModule, "__platform__",    PY_XBMC_PLATFORM);
+    PyModule_AddStringConstant(pXbmcModule, "__author__", PY_XBMC_AUTHOR);
+    PyModule_AddStringConstant(pXbmcModule, "__date__", "15 November 2005");
+    PyModule_AddStringConstant(pXbmcModule, "__version__", "1.3");
+    PyModule_AddStringConstant(pXbmcModule, "__credits__", PY_XBMC_CREDITS);
+    PyModule_AddStringConstant(pXbmcModule, "__platform__", PY_XBMC_PLATFORM);
 
     // playlist constants
     PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC", PLAYLIST_MUSIC);
