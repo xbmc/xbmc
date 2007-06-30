@@ -27,6 +27,6 @@
    <xbelaunch>
       <line></line>
       <line>Playing</line>
-      <line>$INFO[System.XBELaunch]</line>
+      <line>$INFO[System.LaunchXBE]</line>
    </xbelaunch>
 </lcd>
