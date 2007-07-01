@@ -55,8 +55,8 @@ public:
   virtual ~CExclusiveLock();
 
   bool IsOwner() const;
-  inline bool Enter();
-  inline void Leave();
+  bool Enter();
+  void Leave();
 
 protected:
   CExclusiveLock(const CExclusiveLock& src);
