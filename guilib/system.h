@@ -125,6 +125,7 @@
 #endif
 
 #ifdef _LINUX
+#include "../config.h"
 #define HAS_PYTHON
 #undef  HAS_TRAINER
 #define HAS_WEB_SERVER
