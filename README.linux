@@ -16,12 +16,20 @@ Installing the required ubuntu packages
 How to compile
 --------------
 OpenGL 3D version (requires gfx-adapter that has supported OpenGL hw acceleration, set bitdepth to 24bpp or 32bpp)
-# cd $HOME/XBMC
+# ./configure
 # make
 
 SDL 2D version (much much slower GUI rendering but works on all adapters and bitdepths)
-# cd $HOME/XBMC
-# make sdl_2d
+# ./configure --disable-gl
+# make
+
+No debug information (smaller executable, no FreeMem text in screens):
+# ./configure --disable-debug
+# make
+
+No dbeug information and 2D:
+# ./configure --disable-debug --disable-gl
+# make
 
 Quicker compilation; by adding -j<number> to the make command, you describe how many cores will be used. So for dualcore the commands are:
 # make -j2
