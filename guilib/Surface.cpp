@@ -138,6 +138,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       SDL_VERSION(&info.version);
       SDL_GetWMInfo(&info);
       m_parentWindow = p = info.info.x11.window;
+      swaMask = 0;
       CLog::Log(LOGINFO, "GLX Info: Using parent window");
     } else  {
       p = RootWindow(s_dpy, vInfo->screen);
