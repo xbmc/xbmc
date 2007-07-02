@@ -485,6 +485,34 @@ PyDoc_STRVAR(addItem__doc__,
     return Py_BuildValue("l", self->vecItems.size());
   }
 
+  // getListItem() method
+  PyDoc_STRVAR(getListItem__doc__,
+    "getListItem(index) -- Returns a given ListItem in this List.\n"
+    "\n"
+    "index           : integer - index number of item to return.\n"
+    "\n"
+    "*Note, throws a ValueError if index is out of range.\n"
+    "\n"
+    "example:\n"
+    "  - listitem = cList.getListItem(6)\n");
+
+  PyObject* ControlList_GetListItem(ControlList *self, PyObject *args)
+  {
+    int iPos = -1;
+    if (!PyArg_ParseTuple(args, "i", &iPos)) return NULL;
+
+    if (iPos < 0 || iPos >= self->vecItems.size())
+    {
+      PyErr_SetString(PyExc_ValueError, "Index out of range");
+      return NULL;
+    }
+
+    PyObject* pListItem = (PyObject*)self->vecItems[iPos];
+
+    Py_INCREF(pListItem);
+    return pListItem;
+  }
+
   // getItemHeight() Method
 	PyDoc_STRVAR(getItemHeight__doc__,
 		"getItemHeight() -- Returns the control's current item height as an integer.\n"
@@ -523,6 +551,7 @@ PyDoc_STRVAR(addItem__doc__,
     {"size", (PyCFunction)ControlList_Size, METH_VARARGS, size__doc__},
     {"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
     {"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
+    {"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
     {NULL, NULL, 0, NULL}
   };
 
