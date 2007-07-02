@@ -19,7 +19,7 @@ public:
   bool RefreshAll() const;
 
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
-  virtual CFileItem* GetCurrentListItem() { return &m_movieItem; }
+  virtual CFileItem* GetCurrentListItem(int offset = 0) { return &m_movieItem; }
 
 protected:
   virtual void OnInitWindow();

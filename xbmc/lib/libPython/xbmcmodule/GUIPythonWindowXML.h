@@ -26,7 +26,8 @@ public:
   int               GetCurrentListPosition();
   void              SetCurrentListPosition(int item);
   virtual bool      IsMediaWindow() const { return true; };
-  virtual CFileItem *GetCurrentListItem();
+  virtual CFileItem *GetCurrentListItem(int offset = 0);
+  int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:
   CGUIControl      *GetFirstFocusableControl(int id);
