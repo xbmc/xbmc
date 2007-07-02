@@ -301,9 +301,9 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   return (btnid > 0);
 }
 
-CFileItem* CGUIWindowLoginScreen::GetCurrentListItem()
+CFileItem* CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 {
   int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
-  return m_vecItems[iItem];
+  if (iItem < 0 || !m_vecItems.Size()) return NULL;
+  return m_vecItems[(iItem + offset) % m_vecItems.Size()];
 }
