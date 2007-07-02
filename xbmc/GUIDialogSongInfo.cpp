@@ -143,7 +143,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_needsUpdate = false;
 }
 
-CFileItem* CGUIDialogSongInfo::GetCurrentListItem()
+CFileItem* CGUIDialogSongInfo::GetCurrentListItem(int offset)
 {
   return &m_song;
 }
