@@ -370,6 +370,25 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 	nErr = snd_pcm_hw_params(m_pStream[num], hw_params);
         CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
 
+	/* disable underrun reporting and play silence */
+	snd_pcm_uframes_t boundary;
+	snd_pcm_sw_params_t *swparams = NULL;
+	snd_pcm_sw_params_alloca(&swparams);
+	nErr = snd_pcm_sw_params_current(m_pStream[num], swparams);
+        CHECK_ALSA(LOGERROR,"sw_params_get_current",nErr);
+
+	nErr = snd_pcm_sw_params_get_boundary(swparams, &boundary);
+	CHECK_ALSA(LOGERROR,"get_boundary",nErr);
+
+	nErr = snd_pcm_sw_params_set_stop_threshold(m_pStream[num], swparams, boundary);
+	CHECK_ALSA(LOGERROR,"set_stop_threshold",nErr);
+
+	nErr = snd_pcm_sw_params_set_silence_size(m_pStream[num], swparams, boundary);
+	CHECK_ALSA(LOGERROR,"set_silence_size",nErr);
+
+	nErr = snd_pcm_sw_params(m_pStream[num], swparams);
+        CHECK_ALSA(LOGERROR,"sw_params",nErr);
+
 	nErr = snd_pcm_prepare (m_pStream[num]);
         CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
