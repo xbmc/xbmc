@@ -460,7 +460,7 @@ public:
 
   CStdString GetItemLabel(const CFileItem *item, int info);
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
-  CStdString GetItemImage(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info) const;
   bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
 
   // Called from tuxbox service thread to update current status
@@ -470,9 +470,10 @@ public:
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
 
 protected:
-  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
-  const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
+  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
+  CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
+  int TranslateListItem(const CStdString &info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
