@@ -303,7 +303,10 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 
 CFileItem* CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 {
-  int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0 || !m_vecItems.Size()) return NULL;
-  return m_vecItems[(iItem + offset) % m_vecItems.Size()];
+  int item = m_viewControl.GetSelectedItem();
+  if (item < 0 || !m_vecItems.Size()) return NULL;
+
+  item = (item + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }
