@@ -47,6 +47,7 @@ protected:
   unsigned int GetRows() const;
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual bool SelectItemFromPoint(const CPoint &point);
+  void SetCursor(int cursor);
 
   int m_itemsPerRow;
 };
