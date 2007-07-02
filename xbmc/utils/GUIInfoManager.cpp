@@ -435,21 +435,34 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   }
-  else if (strCategory.Equals("container"))
+  else if (strCategory.Left(9).Equals("container"))
   {
-    if (strTest.Equals("container.folderthumb")) ret = CONTAINER_FOLDERTHUMB;
-    else if (strTest.Equals("container.folderpath")) ret = CONTAINER_FOLDERPATH;
-    else if (strTest.Left(18).Equals("container.content("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
-    else if (strTest.Equals("container.hasthumb")) ret = CONTAINER_HAS_THUMB;
-    else if (strTest.Left(15).Equals("container.sort("))
+    int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
+    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+    if (info.Left(8).Equals("listitem"))
+    {
+      int offset = atoi(info.Mid(9, info.GetLength() - 10));
+      ret = TranslateListItem(info.Mid(info.Find(".")+1));
+      if (offset || id)
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
+    }
+    else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+    else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
+    else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Left(8).Equals("content("))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,strTest.size()-9)), 0));
+    else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
-      CStdString method(strTest.Mid(15, strTest.GetLength() - 16));
+      CStdString method(info.Mid(5, info.GetLength() - 6));
       if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
       if (sort != SORT_METHOD_NONE)
         return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
     }
+    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
   else if (strCategory.Left(8).Equals("listitem"))
   {
@@ -1330,6 +1343,18 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     if (pWindow && pWindow->IsMediaWindow())
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
+  else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
+  {
+    // no parameters, so we assume it's just requested for a media window.  It therefore
+    // can only happen if the list has focus.
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow && pWindow->IsMediaWindow())
+    {
+      map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
+      if (it != m_containerMoves.end())
+        bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+    }
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -1578,15 +1603,35 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
+    case CONTAINER_ON_NEXT:
+    case CONTAINER_ON_PREVIOUS:
+      {
+        map<int,int>::const_iterator it = m_containerMoves.find(info.m_data1);
+        if (it != m_containerMoves.end())
+          bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      }
+      break;
     case LISTITEM_ISSELECTED:
     case LISTITEM_ISPLAYING:
       {
-        CFileItem *item = NULL;
         CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-        if (window && window->IsMediaWindow())
-          item = window->GetCurrentListItem(info.m_data2);
-        if (item)
-          bReturn = GetItemBool(item, info.m_info, dwContextWindow);
+        if (window)
+        {
+          CFileItem *item;
+          if (!info.m_data1)
+          { // assumes a media window
+            if (window->IsMediaWindow())
+              item = window->GetCurrentListItem(info.m_data2);
+          }
+          else
+          {
+            const CGUIControl *control = window->GetControl(info.m_data1);
+            if (control && control->IsContainer())
+              item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2);
+          }
+          if (item)
+            bReturn = GetItemBool(item, info.m_info, dwContextWindow);
+        }
       }
       break;
     case VIDEOPLAYER_CONTENT:
@@ -1634,8 +1679,20 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     if (!window)
       window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     CFileItem *item = NULL;
-    if (window && window->IsMediaWindow())
-      item = window->GetCurrentListItem(info.m_data2);
+    if (window)
+    {
+      if (!info.m_data1)
+      { // no id given, must be a media window
+        if (window->IsMediaWindow())
+          item = window->GetCurrentListItem(info.m_data2);
+      }
+      else
+      {
+        const CGUIControl *control = window->GetControl(info.m_data1);
+        if (control && control->IsContainer())
+          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2);
+      }
+    }
     if (item)
       return GetItemImage(item, info.m_info);
   }
@@ -2825,6 +2882,8 @@ void CGUIInfoManager::ResetCache()
 {
   CSingleLock lock(m_critInfo);
   m_boolCache.clear();
+  // reset any animation triggers as well
+  m_containerMoves.clear();
 }
 
 inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool result)
