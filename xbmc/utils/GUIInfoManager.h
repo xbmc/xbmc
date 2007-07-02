@@ -230,6 +230,8 @@
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
 #define CONTAINER_SORT_METHOD       364
+#define CONTAINER_ON_NEXT           365
+#define CONTAINER_ON_PREVIOUS       366
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -468,6 +470,7 @@ public:
   CStdString m_content;
 
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
+  void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
 
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
@@ -519,6 +522,7 @@ protected:
   bool m_hasAutoDetectedXbox;
   CStdString m_launchingXBE;
 
+  map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
   int m_prevWindowID;
 
