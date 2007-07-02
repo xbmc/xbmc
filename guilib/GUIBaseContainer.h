@@ -60,6 +60,9 @@ public:
   const CStdString &GetLabel() const { return m_label; };
   void SetType(VIEW_TYPE type, const CStdString &label);
 
+  virtual bool IsContainer() const { return true; };
+  CGUIListItem *GetListItem(int offset) const;
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif

@@ -207,6 +207,8 @@ public:
   CAnimation *GetAnimation(ANIMATION_TYPE type, bool checkConditions = true);
 
   virtual bool IsGroup() const { return false; };
+  virtual bool IsContainer() const { return false; };
+
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
   virtual void SaveStates(vector<CControlState> &states);
 
