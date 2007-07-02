@@ -30,6 +30,7 @@ public:
 
 protected:
   virtual void Scroll(int amount);
+  void SetCursor(int cursor);
   virtual bool MoveDown(DWORD nextControl);
   virtual bool MoveUp(DWORD nextControl);
   virtual void ValidateOffset();

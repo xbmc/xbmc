@@ -65,7 +65,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
       sound->Stop();
 
     delete sound;
-    ++it;
+    m_windowSounds.erase(it++);
   }
   m_windowSounds.clear();
 
@@ -77,7 +77,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
       sound->Stop();
 
     delete sound;
-    ++it1;
+    m_pythonSounds.erase(it1++);
   }
   m_pythonSounds.clear();
 }

@@ -252,6 +252,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     }
     break;
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
+  case NODE_TYPE_ALBUM_TOP100_SONGS:
   case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_SONG:
     {

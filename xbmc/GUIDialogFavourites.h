@@ -10,7 +10,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual void OnInitWindow();
 
-  virtual CFileItem *GetCurrentListItem();
+  virtual CFileItem *GetCurrentListItem(int offset = 0);
 
   virtual bool IsMediaWindow() const { return true; };
 

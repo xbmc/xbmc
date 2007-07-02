@@ -87,7 +87,6 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
   m_pVecItems = &items;
   StopThread();
-  m_bRunning = true;
   Create();
 }
 

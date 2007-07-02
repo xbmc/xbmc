@@ -268,8 +268,8 @@
 			<height>423</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>54</onup>
-			<ondown>54</ondown>
+			<onup>59</onup>
+			<ondown>59</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="537">biglist</viewtype>
 			<pagecontrol>60</pagecontrol>
@@ -2459,7 +2459,7 @@
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(60)</visible>
+			<visible>Control.IsVisible(60) + !Skin.HasSetting(UseScrollbars)</visible>
 		</control>
 		<control type="button">
 			<posx>680</posx>
@@ -2470,7 +2470,7 @@
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(60)</visible>
+			<visible>Control.IsVisible(60) + !Skin.HasSetting(UseScrollbars)</visible>
 		</control>
 		<control type="scrollbar" id="60">
 			<posx>680</posx>
