@@ -81,11 +81,14 @@ void CGUIMediaWindow::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-CFileItem *CGUIMediaWindow::GetCurrentListItem()
+CFileItem *CGUIMediaWindow::GetCurrentListItem(int offset)
 {
-  int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
-  return m_vecItems[iItem];
+  int item = m_viewControl.GetSelectedItem();
+  if (!m_vecItems.Size() || item < 0)
+    return NULL;
+  item = (item + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }
 
 bool CGUIMediaWindow::OnAction(const CAction &action)

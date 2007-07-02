@@ -280,15 +280,21 @@ void CGUIDialogContentSettings::FillListControl()
   }
 }
 
-CFileItem* CGUIDialogContentSettings::GetCurrentListItem()
+CFileItem* CGUIDialogContentSettings::GetCurrentListItem(int offset)
 {
+  int currentItem = -1;
   for (int i=0;i<m_vecItems.Size();++i )
   {
     if (m_vecItems[i]->IsSelected())
-      return m_vecItems[i];
+    {
+      currentItem = i;
+      break;
+    }
   }
-
-  return NULL;
+  if (currentItem == -1) return NULL;
+  int item = (currentItem + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }
 
 bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool &bUseDirNames)
