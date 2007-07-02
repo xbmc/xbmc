@@ -2,7 +2,6 @@
 #pragma once
 
 #include "DVDInputStream.h"
-#include "../DVDDemuxers/DllAvFormat.h"
 
 class CDVDInputStreamFFmpeg : public CDVDInputStream
 {

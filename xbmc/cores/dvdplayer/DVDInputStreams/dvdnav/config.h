@@ -21,11 +21,21 @@
 #define HAVE_SYS_TYPES_H 1
 /* #undef HAVE_UNISTD_H */
 #define PACKAGE "libdvdread"
+#ifndef PACKAGE_BUGREPORT
 #define PACKAGE_BUGREPORT ""
+#endif
+#ifndef PACKAGE_NAME
 #define PACKAGE_NAME ""
+#endif
+#ifndef PACKAGE_STRING
 #define PACKAGE_STRING ""
+#endif
+#ifndef PACKAGE_TARNAME
 #define PACKAGE_TARNAME ""
+#endif
+#ifndef PACKAGE_VERSION
 #define PACKAGE_VERSION ""
+#endif
 #define STDC_HEADERS 1
 #define VERSION "1.2.6"
 /* #undef WORDS_BIGENDIAN */
