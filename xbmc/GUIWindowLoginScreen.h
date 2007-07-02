@@ -12,7 +12,8 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual bool IsMediaWindow() const { return true; };
-  virtual CFileItem* GetCurrentListItem();
+  virtual CFileItem* GetCurrentListItem(int offset = 0);
+  int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:
   virtual void OnInitWindow();

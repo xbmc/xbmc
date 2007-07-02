@@ -11,14 +11,15 @@ class CGUIMediaWindow : public CGUIWindow
 public:
   CGUIMediaWindow(DWORD id, const char *xmlFile);
   virtual ~CGUIMediaWindow(void);
-  virtual bool IsMediaWindow() const { return true; };
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
-  virtual CFileItem *GetCurrentListItem();
+  virtual bool IsMediaWindow() const { return true; };
+  virtual CFileItem *GetCurrentListItem(int offset = 0);
   const CFileItemList &CurrentDirectory() const { return m_vecItems;};
+  int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:
   CGUIControl *GetFirstFocusableControl(int id);
