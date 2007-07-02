@@ -1913,34 +1913,13 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
 
 int CXbmcHttp::xbmcExit(int theAction)
 {
-  g_application.ResetScreenSaver();
-  g_application.ResetScreenSaverWindow();
-  Sleep(1000);
-  switch(theAction)
+  if (theAction>0 && theAction<6)
   {
-  case 1:
-    g_applicationMessenger.Restart();
-    return SetResponse(openTag+"OK");
-    break;
-  case 2:
-    g_applicationMessenger.Shutdown();
-    return SetResponse(openTag+"OK");
-    break;
-  case 3:
-    g_applicationMessenger.RebootToDashBoard();
-    return SetResponse(openTag+"OK");
-    break;
-  case 4:
-    g_applicationMessenger.Reset();
-    return SetResponse(openTag+"OK");
-    break;
-  case 5:
-    g_applicationMessenger.RestartApp();
-    return SetResponse(openTag+"OK");
-    break;
-  default:
-    return SetResponse(openTag+"Error");
+    SetResponse(openTag+"OK");
+	return theAction;
   }
+  else
+    return SetResponse(openTag+"Error");
 }
 
 int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
@@ -2649,7 +2628,7 @@ int CXbmcHttp::xbmcHelp()
 
 int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 {
-  int numParas, retVal;
+  int numParas, retVal=false;
   CStdString command, paras[MAX_PARAS];
   numParas = splitParameter(parameter, command, paras, ";");
   if (parameter.length()<300)
@@ -2751,6 +2730,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  retVal = SetResponse(openTag+"Error:Too many parameters");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
+  return retVal;
 //relinquish the remainder of time slice
 #ifndef _DEBUG 
   Sleep(0);

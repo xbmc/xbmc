@@ -479,6 +479,8 @@
   <string id="567">播放次數</string>
   <string id="568">最近播放</string>
   <string id="569">評論</string>
+  <string id="570">加入日期</string>
+  <string id="571">預設</string>
 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -1263,6 +1265,8 @@
   <string id="15282">輸入標籤名稱尋找相關資訊</string>
   <string id="15283">%name% 最近聽過的歌曲</string>
   <string id="15284">收聽 %name% 在 Last.FM 的推薦</string>
+  <string id="15285">%name% 的排行</string>
+  <string id="15286">收聽 %name% 在 Last.FM 的播放列表</string>
 
   <string id="15300">路徑錯誤或無效！</string>
   <string id="15301">無法連線到網路伺服器！</string>

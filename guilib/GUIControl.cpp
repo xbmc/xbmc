@@ -76,9 +76,15 @@ void CGUIControl::FreeResources()
 {
   if (m_bAllocated)
   {
-    // Reset our animation states
+    // Reset our animation states - not conditional anims though.
+    // I'm not sure if this is needed for most cases anyway.  I believe it's only here
+    // because some windows aren't loaded on demand
     for (unsigned int i = 0; i < m_animations.size(); i++)
-      m_animations[i].ResetAnimation();
+    {
+      CAnimation &anim = m_animations[i];
+      if (anim.GetType() != ANIM_TYPE_CONDITIONAL)
+        anim.ResetAnimation();
+    }
     m_bAllocated=false;
   }
   m_hasRendered = false;

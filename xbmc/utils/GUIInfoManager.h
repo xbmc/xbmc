@@ -64,6 +64,7 @@
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 
+#define SYSTEM_LAUNCHING_XBE        109
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112
@@ -216,8 +217,8 @@
 #define LISTITEM_TVSHOW             334
 #define LISTITEM_PREMIERED          335
 #define LISTITEM_COMMENT            336
+#define LISTITEM_ACTUAL_ICON        337
 #define LISTITEM_END                340
-#define LISTITEM_ACTUAL_ICON        341
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -232,6 +233,8 @@
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
 #define CONTAINER_SORT_METHOD       364
+#define CONTAINER_ON_NEXT           365
+#define CONTAINER_ON_PREVIOUS       366
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -462,16 +465,21 @@ public:
 
   CStdString GetItemLabel(const CFileItem *item, int info);
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
-  CStdString GetItemImage(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info) const;
   bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
   CStdString m_content;
+
+  void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
+  void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
+
 protected:
-  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
-  const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
+  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
+  CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
+  int TranslateListItem(const CStdString &info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -515,7 +523,9 @@ protected:
 
   // Xbox Autodetect stuff
   bool m_hasAutoDetectedXbox;
+  CStdString m_launchingXBE;
 
+  map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
   int m_prevWindowID;
 

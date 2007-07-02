@@ -1547,10 +1547,8 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
     strXBEName = strXBEName.Left(g_advancedSettings.m_lcdColumns);
   if (g_lcd)
   {
-    g_lcd->SetLine(pLine++, "");
-    g_lcd->SetLine(pLine++, "Playing");
-    g_lcd->SetLine(pLine++, strXBEName);
-    g_lcd->SetLine(pLine++, "");
+    g_infoManager.SetLaunchingXBEName(strXBEName);
+    g_lcd->Render(ILCD::LCD_MODE_XBE_LAUNCH);
   }
 #endif
 }

@@ -297,22 +297,19 @@ namespace PYXBMC
       }
     }
 
-    // free all recources in use by controls
+    // free the window's resources and unload it (free all guicontrols)
+    self->pWindow->FreeResources(true);
+
+    // and free our list of controls
     std::vector<Control*>::iterator it = self->vecControls.begin();
     while (it != self->vecControls.end())
     {
       Control* pControl = *it;
-
       // initialize control to zero
-      self->pWindow->Remove(pControl->iControlId);
-      pControl->pGUIControl->FreeResources();
-      // TODO LINUX: Call destructors per freed control or else we will have a small memory leak
-      delete pControl->pGUIControl;
       pControl->pGUIControl = NULL;
       pControl->iControlId = 0;
       pControl->iParentId = 0;
       Py_DECREF(pControl);
-
       ++it;
     }
 

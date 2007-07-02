@@ -104,16 +104,16 @@ void CKeyboard::Update()
     else if (KeyDown(DIK_X)) m_cAscii = 'X';
     else if (KeyDown(DIK_Y)) m_cAscii = 'Y';
     else if (KeyDown(DIK_Z)) m_cAscii = 'Z';
-    else if (KeyDown(DIK_1)) { m_VKey = '1'; m_cAscii = m_bShift ? '!' : '1'; }
-    else if (KeyDown(DIK_2)) { m_VKey = '2'; m_cAscii = m_bShift ? '@' : '2'; }
-    else if (KeyDown(DIK_3)) { m_VKey = '3'; m_cAscii = m_bShift ? '#' : '3'; }
-    else if (KeyDown(DIK_4)) { m_VKey = '4'; m_cAscii = m_bShift ? '$' : '4'; }
-    else if (KeyDown(DIK_5)) { m_VKey = '5'; m_cAscii = m_bShift ? '%' : '5'; }
-    else if (KeyDown(DIK_6)) { m_VKey = '6'; m_cAscii = m_bShift ? '^' : '6'; }
-    else if (KeyDown(DIK_7)) { m_VKey = '7'; m_cAscii = m_bShift ? '&' : '7'; }
-    else if (KeyDown(DIK_8)) { m_VKey = '8'; m_cAscii = m_bShift ? '*' : '8'; }
-    else if (KeyDown(DIK_9)) { m_VKey = '9'; m_cAscii = m_bShift ? '(' : '9'; }
-    else if (KeyDown(DIK_0)) { m_VKey = '0'; m_cAscii = m_bShift ? ')' : '0'; }
+    else if (KeyDown(DIK_1)) { m_VKey = 0x60; m_cAscii = m_bShift ? '!' : '1'; }
+    else if (KeyDown(DIK_2)) { m_VKey = 0x61; m_cAscii = m_bShift ? '@' : '2'; }
+    else if (KeyDown(DIK_3)) { m_VKey = 0x62; m_cAscii = m_bShift ? '#' : '3'; }
+    else if (KeyDown(DIK_4)) { m_VKey = 0x63; m_cAscii = m_bShift ? '$' : '4'; }
+    else if (KeyDown(DIK_5)) { m_VKey = 0x64; m_cAscii = m_bShift ? '%' : '5'; }
+    else if (KeyDown(DIK_6)) { m_VKey = 0x65; m_cAscii = m_bShift ? '^' : '6'; }
+    else if (KeyDown(DIK_7)) { m_VKey = 0x66; m_cAscii = m_bShift ? '&' : '7'; }
+    else if (KeyDown(DIK_8)) { m_VKey = 0x67; m_cAscii = m_bShift ? '*' : '8'; }
+    else if (KeyDown(DIK_9)) { m_VKey = 0x68; m_cAscii = m_bShift ? '(' : '9'; }
+    else if (KeyDown(DIK_0)) { m_VKey = 0x69; m_cAscii = m_bShift ? ')' : '0'; }
     else if (KeyDown(DIK_RETURN)) m_VKey = 0x0D;
     else if (KeyDown(DIK_NUMPADENTER)) m_VKey = 0x6C;
     else if (KeyDown(DIK_ESCAPE)) m_VKey = 0x1B;
