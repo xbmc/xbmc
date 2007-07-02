@@ -811,7 +811,7 @@ int CDVDInputStreamNavigator::GetSubTitleStreamCount()
   if (vm->state.domain == VTS_DOMAIN)
   {
     int streamN = 0;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 32; i++)
     {
       if (vm->state.pgc->subp_control[i] & (1<<31)) 
         streamN++;

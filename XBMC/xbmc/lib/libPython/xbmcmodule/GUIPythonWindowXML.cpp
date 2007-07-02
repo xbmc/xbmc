@@ -220,11 +220,14 @@ CFileItem * CGUIPythonWindowXML::GetListItem(int position)
   return m_vecItems[position];
 }
 
-CFileItem *CGUIPythonWindowXML::GetCurrentListItem()
+CFileItem *CGUIPythonWindowXML::GetCurrentListItem(int offset)
 {
-  int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
-  return m_vecItems[iItem];
+  int item = m_viewControl.GetSelectedItem();
+  if (item < 0 || !m_vecItems.Size()) return NULL;
+
+  item = (item + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }
 
 

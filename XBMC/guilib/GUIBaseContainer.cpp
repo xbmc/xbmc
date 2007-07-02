@@ -2,6 +2,7 @@
 #include "GUIBaseContainer.h"
 #include "GuiControlFactory.h"
 #include "../xbmc/FileItem.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -137,8 +138,8 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
     {
-      if (message.GetSenderId() == m_pageControl)
-      { // update our page
+      if (message.GetSenderId() == m_pageControl && IsVisible())
+      { // update our page if we're visible - not much point otherwise
         ScrollToOffset(message.GetParam1());
         return true;
       }
@@ -199,6 +200,13 @@ void CGUIBaseContainer::Scroll(int amount)
 int CGUIBaseContainer::GetSelectedItem() const
 {
   return CorrectOffset(m_cursor, m_offset);
+}
+
+CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
+{
+  if (!m_items.size())
+    return NULL;
+  return m_items[(GetSelectedItem() + offset) % m_items.size()];
 }
 
 bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
@@ -330,6 +338,7 @@ void CGUIBaseContainer::FreeResources()
     }
     m_items.clear();
   }
+  m_scrollSpeed = 0;
 }
 
 void CGUIBaseContainer::UpdateLayout()
@@ -371,6 +380,7 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     m_scrollOffset = (offset - range) * size;
   }
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
+  g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
   m_offset = offset;
 }
 
@@ -433,6 +443,7 @@ void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
 
 void CGUIBaseContainer::MoveToItem(int item)
 {
+  g_infoManager.SetContainerMoving(GetID(), item - m_cursor);
   m_cursor = item;
 }
 

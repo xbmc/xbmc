@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 06/12/2007-->
+<!--Date of translation: 06/27/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9182-->
+<!--Based on english strings version 9391-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -473,6 +473,7 @@
   <string id="568">Zuletzt gespielt</string>
   <string id="569">Kommentar</string>
   <string id="570">Datum (Hinzugefügt)</string>
+  <string id="571">Standard</string>
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
   <string id="582">Ansicht</string>
@@ -1209,6 +1210,8 @@
   <string id="15282">Bitte geben Sie einen zu suchenden Tagnamen ein</string>
   <string id="15283">Kürzlich gehörte Titel von %name%</string>
   <string id="15284">Last.fm Radio Empfehlungen für %name% anhören</string>
+  <string id="15285">Die besten Tags von %name%</string>
+  <string id="15286">Die Playlist von %name% im Last.fm Radio anhören</string>
   <string id="15300">Der Pfad wurde nicht gefunden oder ist ungültig.</string>
   <string id="15301">Keine Verbindung zum Netzwerkserver.</string>
   <string id="15302">Es wurden keine Server gefunden.</string>

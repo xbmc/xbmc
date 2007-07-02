@@ -270,6 +270,7 @@ namespace PYXBMC
 #else
     g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
 #endif
+    
     return Py_BuildValue("u", unicodeLabel.c_str());
   }
 
@@ -555,7 +556,6 @@ namespace PYXBMC
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalFileName(cFilename,bIsFatX);
-
     return Py_BuildValue("s", strFilename.c_str());
   }
 

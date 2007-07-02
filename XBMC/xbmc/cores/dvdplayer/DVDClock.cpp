@@ -77,14 +77,15 @@ void CDVDClock::SetSpeed(int iSpeed)
   LARGE_INTEGER current;
   __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
   
+  QueryPerformanceCounter(&current);
   if( m_pauseClock.QuadPart )
-    current = m_pauseClock;
-  else
-    QueryPerformanceCounter(&current);
+  {
+    m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
+    m_pauseClock.QuadPart = 0;
+  }
 
   m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
   m_systemUsed.QuadPart = newfreq;    
-  m_pauseClock.QuadPart = 0;
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, __int64 delay)

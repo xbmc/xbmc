@@ -1912,7 +1912,7 @@ void CFileItemList::Stack()
       CFileItem *item = Get(i);
 
       // ignore parent directories, playlists and the virtual root
-      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot())
+      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot() || item->IsDVDImage())
         continue;
 
       if( item->m_bIsFolder)

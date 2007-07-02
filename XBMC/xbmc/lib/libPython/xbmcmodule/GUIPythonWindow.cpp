@@ -107,6 +107,9 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
             // aquire lock?
             Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
             PulseActionEvent();
+
+            // return true here as we are handling the event
+            return true;
           }
         }
       }
