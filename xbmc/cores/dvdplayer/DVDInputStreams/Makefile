@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../../../ -I../../../linux -I../../../../guilib
 
-SRCS=DVDFactoryInputStream.cpp DVDInputStream.cpp DVDInputStreamFile.cpp DVDInputStreamHttp.cpp DVDInputStreamMemory.cpp DVDInputStreamNavigator.cpp DVDStateSerializer.cpp
+SRCS=DVDFactoryInputStream.cpp DVDInputStream.cpp DVDInputStreamFile.cpp DVDInputStreamHttp.cpp DVDInputStreamMemory.cpp DVDInputStreamNavigator.cpp DVDStateSerializer.cpp DVDInputStreamFFmpeg.cpp
 
 LIB=dvdinputstream.a
 
