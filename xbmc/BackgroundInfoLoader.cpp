@@ -36,7 +36,6 @@ CBackgroundInfoLoader::~CBackgroundInfoLoader()
 void CBackgroundInfoLoader::OnStartup()
 {
   SetPriority( THREAD_PRIORITY_LOWEST );
-  m_bRunning = true;
 }
 
 void CBackgroundInfoLoader::Process()
@@ -88,8 +87,8 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
   m_pVecItems = &items;
   StopThread();
-  Create();
   m_bRunning = true;
+  Create();
 }
 
 bool CBackgroundInfoLoader::IsLoading()
