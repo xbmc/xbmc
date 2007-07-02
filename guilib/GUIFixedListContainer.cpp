@@ -217,13 +217,13 @@ bool CGUIFixedListContainer::MoveDown(DWORD control)
 void CGUIFixedListContainer::Scroll(int amount)
 {
   // increase or decrease the offset
-  m_offset += amount;
-  if (m_offset >= (int)m_items.size() - m_cursor)
+  int offset = m_offset + amount;
+  if (offset >= (int)m_items.size() - m_cursor)
   {
-    m_offset = m_items.size() - m_cursor - 1;
+    offset = m_items.size() - m_cursor - 1;
   }
-  if (m_offset < -m_cursor) m_offset = -m_cursor;
-  ScrollToOffset(m_offset);
+  if (offset < -m_cursor) offset = -m_cursor;
+  ScrollToOffset(offset);
 }
 
 void CGUIFixedListContainer::ValidateOffset()
