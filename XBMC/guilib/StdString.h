@@ -915,7 +915,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 										pSrcW, pSrcW + nSrc, pNextSrcW,
 										pDstA, pDstA + nDst, pNextDstA);
 #ifdef _LINUX
-#define ASSERT2(a) if (a) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __FILE__, __LINE__);} 
+#define ASSERT2(a) if (a) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);} 
 #else
 #define ASSERT2 ASSERT
 #endif
