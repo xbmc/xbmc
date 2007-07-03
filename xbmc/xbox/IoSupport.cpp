@@ -352,14 +352,13 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
       char buffer[2356];
     } arg;
 
+    // convert sector offset to minute, second, frame format
+    // since that is what the 'ioctl' requires as input
     f = lba % CD_FRAMES;
     lba /= CD_FRAMES;
     s = lba % CD_SECS;
     lba /= CD_SECS;
     m = lba;
-
-    //CLog::Log(LOGDEBUG, "READRAW: Request to read sector %d\n", (int)dwSector);
-    //CLog::Log(LOGDEBUG, "READRAW: Reading minute %d, second %d, frame %d\n", m, s, f);
 
     arg.msf.cdmsf_min0 = m;
     arg.msf.cdmsf_sec0 = s;
@@ -371,7 +370,9 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
       memcpy(lpczBuffer, arg.buffer, 2048);
       return 2048;
     }
+    CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
     CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
+    CLog::Log(LOGERROR, "CD: ReadSector minute %d, second %d, frame %d\n", m, s, f);
     OutputDebugString("CD Read error\n");
     return -1;    
   }
@@ -411,14 +412,13 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
       char buffer[2356];
     } arg;
 
+    // convert sector offset to minute, second, frame format
+    // since that is what the 'ioctl' requires as input
     f = lba % CD_FRAMES;
     lba /= CD_FRAMES;
     s = lba % CD_SECS;
     lba /= CD_SECS;
     m = lba;
-
-    //CLog::Log(LOGDEBUG, "READMODE2: Request to read sector %d\n", (int)dwSector);
-    //CLog::Log(LOGDEBUG, "READMODE2: Reading minute %d, second %d, frame %d\n", m, s, f);
 
     arg.msf.cdmsf_min0 = m;
     arg.msf.cdmsf_sec0 = s;
@@ -430,7 +430,9 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
       memcpy(lpczBuffer, arg.buffer, MODE2_DATA_SIZE); // don't think offset is needed here
       return MODE2_DATA_SIZE;
     }
+    CLog::Log(LOGERROR, "CD: ReadSectorMode2 Request to read sector %d\n", (int)dwSector);
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s\n", strerror(errno));
+    CLog::Log(LOGERROR, "CD: ReadSectorMode2 minute %d, second %d, frame %d\n", m, s, f);
     OutputDebugString("CD Read error\n");
     return -1;    
   }
