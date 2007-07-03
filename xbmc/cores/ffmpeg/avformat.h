@@ -329,7 +329,11 @@ typedef struct AVStream {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
-#define MAX_STREAMS 20
+// ffmpeg seems to be compiled with MAX_STREAMS defined as 42, not 20.
+// Inconsistency here results in an invalid offset being used in the demuxer
+// for reporting stream length, etc
+
+#define MAX_STREAMS 42
 
 /* format I/O context */
 typedef struct AVFormatContext {
