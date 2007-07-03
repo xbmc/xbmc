@@ -2649,6 +2649,12 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       CUtil::GetExtension(pItem->m_strPath, strExtension);
       if (strExtension == ".xbs")
       {
+#ifdef _LINUX
+	void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+	if (!handle)
+	  continue;
+	dlclose(handle);
+#endif
         CStdString strLabel = pItem->GetLabel();
         vecScr.push_back(strLabel.Mid(0, strLabel.size() - 4));
       }
