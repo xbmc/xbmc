@@ -37,6 +37,9 @@
 #include "utils/FanController.h"
 #include "xbox/XKHDD.h"
 #endif
+#ifdef _LINUX
+#include <dlfcn.h>
+#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -2364,6 +2367,12 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       CUtil::GetExtension(pItem->m_strPath, strExtension);
       if (strExtension == ".vis")
       {
+#ifdef _LINUX
+	void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+	if (!handle)
+	  continue;
+	dlclose(handle);
+#endif
         CStdString strLabel = pItem->GetLabel();
         vecVis.push_back(strLabel.Mid(0, strLabel.size() - 4));
       }
