@@ -441,6 +441,14 @@ namespace PYXBMC
     return Py_None;
   }
 
+  static void Dialog_ProgressDealloc(PyObject *self)
+  {
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (PyWindowIsNull(pDialog)) return;
+    pDialog->Close();
+    self->ob_type->tp_free((PyObject*)self);
+  }
+
   PyMethodDef WindowDialog_methods[] = {
     {NULL, NULL, 0, NULL}
   };
@@ -503,7 +511,7 @@ namespace PYXBMC
 
     DialogProgress_Type.tp_name = "xbmcgui.DialogProgress";
     DialogProgress_Type.tp_basicsize = sizeof(DialogProgress);
-    DialogProgress_Type.tp_dealloc = 0;
+    DialogProgress_Type.tp_dealloc = (destructor)Dialog_ProgressDealloc;
     DialogProgress_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     DialogProgress_Type.tp_doc = dialogProgress__doc__;
     DialogProgress_Type.tp_methods = DialogProgress_methods;
