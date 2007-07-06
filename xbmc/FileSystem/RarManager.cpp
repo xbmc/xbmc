@@ -142,7 +142,11 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         }
       }
     }
-    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL,&iOffset);
+    bool bShowProgress=false;
+    if (iSize > 1024*1024 || iSize == -2) // 1MB
+      bShowProgress=true;
+
+    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL,&iOffset,bShowProgress);
   }
   if (iRes == 0)
   {
