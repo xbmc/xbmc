@@ -2759,18 +2759,22 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
   int open, close;
   CStdString parameter="", cmd=command, execute;
   open = cmd.Find("(");
-  close = cmd.Find(")", open);
-  if (open > 0 && close > 0)
+  if (open>0)
   {
-    parameter = cmd.Mid(open + 1, close - open - 1);
-    parameter.Replace(",",";");
-    execute = cmd.Left(open);
+	close=cmd.length();
+	while (close>open && cmd.Mid(close,1)!=")")
+	  close--;
+	if (close>open)
+	{
+	  parameter = cmd.Mid(open + 1, close - open - 1);
+      parameter.Replace(",",";");
+      execute = cmd.Left(open);
+	}
+	else //open bracket but no close
+	  return "";
   }
-  else if (open>0) //open bracket but no close
-    return "";
   else //no parameters
-    execute=cmd;
-
+    execute = cmd;
   return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
 }
 
