@@ -52,8 +52,8 @@ void CGUIRSSControl::Render()
 {
   if (!IsVisible()) return;
 
-  // only render the control if they are enabled and the network is available
-  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_guiSettings.GetBool("network.enableinternet"))
+  // only render the control if they are enabled
+  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds"))
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
