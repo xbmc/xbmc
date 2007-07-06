@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 11/06/2007-->
+<!--Date of translation: 30/06/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 9182 -->
+<!--Based on english strings version 9391 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -133,9 +133,9 @@
   <string id="192">Tyhjennä</string>
   <string id="193">Hae tiedot</string>
   <string id="194">Etsitään...</string>
-  <string id="195">IMDb-tietoja ei löytynyt!</string>
+  <string id="195">Tietoja ei löytynyt!</string>
   <string id="196">Valitse elokuva:</string>
-  <string id="197">Etsitään elokuvaa IMDb-kannasta</string>
+  <string id="197">Etsitään %sin tietoja</string>
   <string id="198">Haetaan elokuvan tiedot</string>
   <string id="199">Ohjaaja:</string>
   <string id="200">Kirjoittanut:</string>
@@ -143,7 +143,7 @@
   <string id="202">Iskulause:</string>
   <string id="203">Juonilyhenne:</string>
   <string id="204">Arvostus:</string>
-  <string id="205">Arvosanoja:</string>
+  <string id="205">Äänestysmäärä:</string>
   <string id="206">Näyttelijät</string>
   <string id="207">Juoni</string>
   <string id="208">Toista</string>
@@ -166,7 +166,7 @@
   <string id="229">Kiintolevyn pysäytysaika</string>
   <string id="230">Kuvasuodattimet</string>
   <string id="231">Ei käytössä</string>
-  <string id="232">Piste</string>
+  <string id="232">Pistemmäinen</string>
   <string id="233">Lineaarinen</string>
   <string id="234">Anisotrooppinen</string>
   <string id="235">Quincunx</string>
@@ -174,13 +174,13 @@
   <string id="237">Pienennys</string>
   <string id="238">Suurennus</string>
   <string id="239">Tyhjennä soittolista lopuksi</string>
-  <string id="240">Käynnistä DVD-levyt automaattisesti</string>
-  <string id="241">Käynnistä VCD-/SVCD-levyt automaattisesti</string>
-  <string id="242">Käynnistä CD-levyt automaattisesti</string>
-  <string id="243">Käynnistä Xbox-pelit automaattisesti</string>
-  <string id="244">Käynnistä Videot automaattisesti</string>
-  <string id="245">Käynnistä Musiikki automaattisesti</string>
-  <string id="246">Käynnistä Kuvat automaattisesti</string>
+  <string id="240">DVD-levyjen automaattinen käynnistys</string>
+  <string id="241">VCD-/SVCD-levyjen automaattinen käynnistys</string>
+  <string id="242">CD-levyjen automaattinen käynnistys</string>
+  <string id="243">Xbox-levyjen automaattinen käynnistys</string>
+  <string id="244">Toista Videot automaattisesti</string>
+  <string id="245">Toista Musiikki automaattisesti</string>
+  <string id="246">Toista Kuvat automaattisesti</string>
   <string id="247">Skriptit</string>
   <string id="248">Kieli</string>
   <string id="249">Musiikki</string>
@@ -257,8 +257,8 @@
   <string id="327">Virhe albumien päivityksessä</string>
   <string id="328">Tallennetaan muutokset...</string>
   <string id="329">Virhe muutoksien tallennuksessa</string>
-  <string id="330">Tämä saattaa kestää jonkin aikaa...</string>
-  <string id="331">Tiivistetään tietokanta...</string>
+  <string id="330">Odota, tämä kestää jonkin aikaa</string>
+  <string id="331">Tiivistetään tietokantaa...</string>
   <string id="332">Virhe tietokannan tiivistyksessä</string>
   <string id="333">Haluatko järjestää tietokannan?</string>
   <string id="334">Järjestä tietokanta...</string>
@@ -294,21 +294,21 @@
   <string id="368">IMDb</string>
   <string id="369">Nimi</string>
   <string id="370">ukkosia</string>
-  <string id="371">Osittain</string>
-  <string id="372">Enimmäkseen</string>
-  <string id="373">Aurinkoista</string>
-  <string id="374">Pilvistä</string>
+  <string id="371">osittain</string>
+  <string id="372">enimmäkseen</string>
+  <string id="373">aurinkoista</string>
+  <string id="374">pilvistä</string>
   <string id="375">lunta</string>
   <string id="376">sadetta</string>
-  <string id="377">Heikkoa</string>
-  <string id="378">Aamupäivällä</string>
-  <string id="379">Iltapäivällä</string>
-  <string id="380">Sadekuuroja</string>
-  <string id="381">Joitakin</string>
-  <string id="382">Hajanaisia</string>
+  <string id="377">heikkoa</string>
+  <string id="378">aamupäivällä</string>
+  <string id="379">iltapäivällä</string>
+  <string id="380">sadekuuroja</string>
+  <string id="381">joitakin</string>
+  <string id="382">hajanaisia</string>
   <string id="383">tuulta</string>
   <string id="384">voimakasta</string>
-  <string id="385">Poutaa</string>
+  <string id="385">poutaa</string>
   <string id="386">selkeää</string>
   <string id="387">pilvistä</string>
   <string id="388">aamulla</string>
@@ -356,7 +356,7 @@
   <string id="430">Järjestä: DVD nro</string>
   <string id="431">Ei välimuistia</string>
   <string id="432">Poista elokuva tietokannasta</string>
-  <string id="433">Haluatko varmasti poistaa '%s'?</string>
+  <string id="433">Haluatko varmasti poistaa '%sin'?</string>
   <string id="434"></string>
   <string id="435">Raita</string>
   <string id="436">Valmistusvuosi:</string>
@@ -479,10 +479,11 @@
   <string id="564">Tyyppi</string>
   <string id="565">Käyttö</string>
   <string id="566">Albumin esittäjä</string>
-  <string id="567">Toisto määrä</string>
+  <string id="567">Toistomäärä</string>
   <string id="568">Viimeksi toistettu</string>
   <string id="569">Kommentti</string>
   <string id="570">Lisäyspäivä</string>
+  <string id="571">Oletus</string>
   
   <string id="580">Järjestelyn suunta</string>
   <string id="581">Järjestelyn peruste</string>
@@ -546,7 +547,7 @@
   <string id="651">Valitse videokirjasto</string>
   <string id="652">Vuodet</string>
   <string id="653">Päivitä tietokanta</string>
-  <string id="654">Näytä Debuggaus tiedot</string>
+  <string id="654">Näytä suoritustiedot</string>
   <string id="655">Valitse ohjelma</string>
   <string id="656">Valitse soittolista</string>
   <string id="657">Valitse kansio</string>
@@ -712,15 +713,15 @@
   <string id="1256">Pingauksen väli</string>
   <string id="1257">Yhdistetäänkö havaittuun Xboxiin?</string>
   
-  <string id="1396">Kasaantuvaa</string>
+  <string id="1396">kasaantuvaa</string>
   <string id="1397">ja</string>
-  <string id="1398">Jäätävää</string>
+  <string id="1398">jäätävää</string>
   <string id="1399">illalla</string>
-  <string id="1400">Yksittäisiä</string>
-  <string id="1401">Ukkoskuuroja</string>
-  <string id="1402">Ukkosta</string>
+  <string id="1400">yksittäisiä</string>
+  <string id="1401">ukkoskuuroja</string>
+  <string id="1402">ukkosta</string>
   <string id="1403">aurinkoista</string>
-  <string id="1404">Kovaa</string>
+  <string id="1404">kovaa</string>
   <string id="1405"></string>
   <string id="1406"></string>
   <string id="1407">lähiaikoina</string>
@@ -931,9 +932,9 @@
   <string id="13206">Korvaa</string>
   <string id="13208">Herätyskello</string>
   <string id="13209">Hälytysväli (minuuttia)</string>
-  <string id="13210">Käynnistetty, hälytys %im kuluttua</string>
+  <string id="13210">Käynnistetty, hälytys %imin kuluttua</string>
   <string id="13211">Hälytys!</string>
-  <string id="13212">Peruutettu, %im%is jäljellä</string>
+  <string id="13212">peruutettu, %im%is jäljellä</string>
   
   <string id="13249">Etsi tekstitykset Rar-paketeista</string>
   <string id="13250">Valitse tekstitys...</string>
@@ -998,7 +999,7 @@
   <string id="13325">Edustan läpinäkyvyys</string>
   <string id="13326">Äänen viive</string>
   <string id="13327">Karaoke</string>
-  <string id="13328">%s ei löytynyt</string>
+  <string id="13328">%sia ei löytynyt</string>
   <string id="13329">Virhe avattaessa: %s</string>
   <string id="13330">%saa ei voitu ladata</string>
   <string id="13331">Virhe: muisti ei riitä</string>
@@ -1148,7 +1149,7 @@
   <string id="15005">Päiväys: %s</string>
   <string id="15006">Lähettäjä: %s</string>
   <string id="15007">Pelikutsu</string>
-  <string id="15008">Sinut on kutsuttu areenalle %s.</string>
+  <string id="15008">Sinut on kutsuttu %s-areenalle.</string>
   <string id="15009">Ei yhteyttä</string>
   <string id="15010">Kaverit</string>
   <string id="15011">Näytä: Kaverit</string>
@@ -1201,7 +1202,7 @@
   <string id="15058">Isännöi</string>
   <string id="15059">Kutsu hyväksytty!</string>
   <string id="15060">Viesti tänne</string>
-  <string id="15061">Sinut on kutsuttu pelaamaan %s peliä.</string>
+  <string id="15061">Sinut on kutsuttu pelaamaan %s-peliä.</string>
   <string id="15100">Kirjasto</string>
   <string id="15101">Tietokanta</string>
   <string id="15102">* Kaikki albumit</string>
@@ -1255,19 +1256,21 @@
   <string id="15270">Käyttäjän %name% parhaat raidat</string>
   <string id="15271">Käyttäjän %name% kaverit</string>
   <string id="15272">Käyttäjän %name% naapurit</string>
-  <string id="15273">%name%:n viikottainen esittäjä lista</string>
-  <string id="15274">%name%:n viikottainen albumi lista</string>
-  <string id="15275">%name%:n viikottainen kappale lista</string>
-  <string id="15276">Kuuntele %name%:n naapurien Last.FM radiota</string>
-  <string id="15277">Kuuntele %name%:n henkilökohtaista Last.FM radiota</string>
-  <string id="15278">Kuuntele %name%:n parhaiden raitojen Last.FM radiota</string>
+  <string id="15273">%name%n viikottainen esittäjä lista</string>
+  <string id="15274">%name%n viikottainen albumi lista</string>
+  <string id="15275">%name%n viikottainen kappale lista</string>
+  <string id="15276">Kuuntele %name%n naapurien Last.FM radiota</string>
+  <string id="15277">Kuuntele %name%n henkilökohtaista Last.FM radiota</string>
+  <string id="15278">Kuuntele %name%n parhaiden raitojen Last.FM radiota</string>
   <string id="15279">Haetaan listaa Last.FM:stä...</string>
   <string id="15280">Ei voida hakea listaa Last.FM:stä...</string>
   <string id="15281">Anna esittäjän nimi löytääksesi vastaavia esittäjiä</string>
   <string id="15282">Anna tunniste löytääksesi samankaltaisia kappaleita</string>
   <string id="15283">%name%n aiemmin kuuntelemat kappaleet</string>
   <string id="15284">Kuuntele %name%n suositukset Last.FM radiosta</string>
-  
+  <string id="15285">Käyttäjän %name% parhaat tunnisteet</string>
+  <string id="15286">Kuuntele %name%n soittolista Last.FM radiosta</string>
+
   <string id="15300">Määriteltyä polkua ei löydy</string>
   <string id="15301">Palvelimeen ei saada yhteyttä</string>
   <string id="15302">Palvelimia ei löytynyt</string>
@@ -1426,7 +1429,7 @@
   <string id="20105">Haluatko käyttää niitä?</string>
   <string id="20106">Vanha median sijainti löytyi.</string>
   <string id="20107">Omat(lukittu)</string>
-  <string id="20108">Juuri</string>
+  <string id="20108">Päähakemisto</string>
   <string id="20109">Skinin zoomaus</string>
   <string id="20110">UPnP-asiakas</string>
   <string id="20111">Automaattinen käynnistys</string>
@@ -1445,7 +1448,7 @@
   <string id="20124">Valmiina nauttimaan musiikista</string>
   <string id="20125">Kirjautuneena :</string>
   <string id="20126">Kirjaudu ulos :</string>
-  <string id="20128">Siirry juureen</string>
+  <string id="20128">Siirry päähakemistoon</string>
   <string id="20129">Liitä</string>
   <string id="20130">Liitä (käänteisesti)</string>
   <string id="20131">Sekoita</string>
@@ -1462,12 +1465,12 @@
   <string id="20142">Käyttäjänimi</string>
   <string id="20143">Anna salasana</string>
   <string id="20144">Sammutusajastin</string>
-  <string id="20145">Sammutuksen kesto(minuutteina)</string>
-  <string id="20146">Käynnistetty, sammutetaan %im min kuluttua</string>
+  <string id="20145">Sammutusajastus(minuutteina)</string>
+  <string id="20146">Käynnistetty, sammutetaan %imin kuluttua</string>
   <string id="20147">Sammuta 30 minuutin kuluttua</string>
   <string id="20148">Sammuta 60 minuutin kuluttua</string>
   <string id="20149">Sammuta 120 minuutin kuluttua</string>
-  <string id="20150">Määritä aika sammutukseen</string>
+  <string id="20150">Aseta aika sammutukseen</string>
   <string id="20151">Keskeytä sammutusajastus</string>
   <string id="20152">Lukitse %s asetukset</string>
   <string id="20153">Valitse...</string>
@@ -1673,7 +1676,7 @@
   <string id="21411">ei viimeisenä</string>
   
   <string id="21420">Ehtoihin sopiva</string>
-  <string id="21421">Valikoivan soittolistan ehdot</string>
+  <string id="21421">Älykkään soittolistan ehdot</string>
   <string id="21422">Sopivat kappaleet</string>
   <string id="21423">Uudet ehdot...</string>
   <string id="21424">Kappaleen täytyy sopia</string>
@@ -1684,12 +1687,12 @@
   <string id="21429">Järjestys</string>
   <string id="21430">nouseva</string>
   <string id="21431">laskeva</string>
-  <string id="21432">Muokkaa valikoivaa soittolistaa</string>
+  <string id="21432">Muokkaa älykästä soittolistaa</string>
   <string id="21433">Soittolistan nimi</string>
   <string id="21434">Etsi sopivat kappaleet</string>
   <string id="21435">Muokkaa</string>
   <string id="21436">%i kappaletta</string>
-  <string id="21437">Uusi valikoiva soittolista...</string>
+  <string id="21437">Uusi älykäs soittolista...</string>
 
   <string id="29999">Näytön välkynnän poisto</string>
 </strings>
