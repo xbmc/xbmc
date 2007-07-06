@@ -3,6 +3,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC_PC", "XBMC_PC.vcproj",
 	ProjectSection(ProjectDependencies) = postProject
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50} = {B2975495-FBE4-4F94-AAC5-B21A9842BF50}
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452} = {FE0A91C0-E30A-47CD-8A92-A508C9292452}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "guilib", "..\..\guilib\guilib_win32.vcproj", "{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
@@ -13,18 +14,25 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPlatinum_PC", "..\..\xbm
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "..\..\xbmc\lib\UnrarXLib\UnrarXLib.vcproj", "{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Debug Win32 = Debug Win32
 		Debug Xbox = Debug Xbox
+		Profile = Profile
 		Profile Win32 = Profile Win32
 		Profile Xbox = Profile Xbox
+		Profile_FastCap = Profile_FastCap
 		Profile_FastCap Win32 = Profile_FastCap Win32
 		Profile_FastCap Xbox = Profile_FastCap Xbox
 		Release = Release
 		Release Win32 = Release Win32
 		Release Xbox = Release Xbox
+		Release_LTCG = Release_LTCG
 		Release_LTCG Win32 = Release_LTCG Win32
 		Release_LTCG Xbox = Release_LTCG Xbox
 	EndGlobalSection
@@ -35,10 +43,14 @@ Global
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Win32.Build.0 = Debug|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Xbox.ActiveCfg = Debug|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Xbox.Build.0 = Debug|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile.ActiveCfg = Release|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile Win32.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile Win32.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile Xbox.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile Xbox.Build.0 = Release|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile_FastCap.ActiveCfg = Release|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile_FastCap.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile_FastCap Win32.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile_FastCap Win32.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Profile_FastCap Xbox.ActiveCfg = Release|Win32
@@ -49,6 +61,8 @@ Global
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release Win32.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release Xbox.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release Xbox.Build.0 = Release|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release_LTCG.ActiveCfg = Release|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release_LTCG.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release_LTCG Win32.ActiveCfg = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release_LTCG Win32.Build.0 = Release|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release_LTCG Xbox.ActiveCfg = Release|Win32
@@ -59,10 +73,14 @@ Global
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug Win32.Build.0 = Debug|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug Xbox.ActiveCfg = Debug|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug Xbox.Build.0 = Debug|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile.ActiveCfg = Release|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile Win32.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile Win32.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile Xbox.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile Xbox.Build.0 = Release|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile_FastCap.ActiveCfg = Release|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile_FastCap.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile_FastCap Win32.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile_FastCap Win32.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Profile_FastCap Xbox.ActiveCfg = Release|Win32
@@ -73,6 +91,8 @@ Global
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release Win32.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release Xbox.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release Xbox.Build.0 = Release|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release_LTCG.ActiveCfg = Release|Win32
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release_LTCG.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release_LTCG Win32.ActiveCfg = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release_LTCG Win32.Build.0 = Release|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Release_LTCG Xbox.ActiveCfg = Release|Win32
@@ -83,10 +103,14 @@ Global
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Win32.Build.0 = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Xbox.ActiveCfg = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Xbox.Build.0 = Debug|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile.ActiveCfg = Release|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile Win32.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile Win32.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile Xbox.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile Xbox.Build.0 = Release|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile_FastCap.ActiveCfg = Release|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile_FastCap.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile_FastCap Win32.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile_FastCap Win32.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Profile_FastCap Xbox.ActiveCfg = Release|Win32
@@ -97,10 +121,42 @@ Global
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release Win32.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release Xbox.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release Xbox.Build.0 = Release|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release_LTCG.ActiveCfg = Release|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release_LTCG.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release_LTCG Win32.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release_LTCG Win32.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release_LTCG Xbox.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release_LTCG Xbox.Build.0 = Release|Win32
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug.ActiveCfg = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug.Build.0 = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug Win32.ActiveCfg = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug Win32.Build.0 = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug Xbox.ActiveCfg = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug Xbox.Build.0 = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile.ActiveCfg = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile.Build.0 = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile Win32.ActiveCfg = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile Win32.Build.0 = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile Xbox.ActiveCfg = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile Xbox.Build.0 = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap Win32.ActiveCfg = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap Win32.Build.0 = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap Xbox.ActiveCfg = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap Xbox.Build.0 = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release.ActiveCfg = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release.Build.0 = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release Win32.ActiveCfg = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release Win32.Build.0 = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release Xbox.ActiveCfg = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release Xbox.Build.0 = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG Win32.ActiveCfg = Release_LTCG|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG Win32.Build.0 = Release_LTCG|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG Xbox.ActiveCfg = Release_LTCG|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG Xbox.Build.0 = Release_LTCG|Xbox
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
