@@ -104,33 +104,37 @@ void CRssReader::Process()
     CStdString strUrl = m_vecUrls[iFeed];
 
     int nRetries = 3;
+    CURL url(strUrl);
 
-    while ( (!m_bStop) && (nRetries > 0) )
+    if (url.GetProtocol() == "http" && !g_guiSettings.GetBool("network.enableinternet"))
+      strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
+    else
     {
-      nRetries--;
+      while ( (!m_bStop) && (nRetries > 0) )
+      {
+        nRetries--;
 
-      CURL url(strUrl);
-      if (url.GetProtocol() != "http")
-      {
-        CFile file;
-        if (file.Open(strUrl))
+        if (url.GetProtocol() != "http")
         {
-          char *yo = new char[(int)file.GetLength()+1];
-          file.Read(yo,file.GetLength());
-          yo[file.GetLength()] = '\0';
-          strXML = yo;
-          delete[] yo;
-          break;
+          CFile file;
+          if (file.Open(strUrl))
+          {
+            char *yo = new char[(int)file.GetLength()+1];
+            file.Read(yo,file.GetLength());
+            yo[file.GetLength()] = '\0';
+            strXML = yo;
+            delete[] yo;
+            break;
+          }
         }
-      }
-      else
-      if (http.Get(strUrl, strXML))
-      {
-        CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
-        break;
+        else
+          if (http.Get(strUrl, strXML))
+          {
+            CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
+            break;
+          }
       }
     }
-
     if ((!strXML.IsEmpty()) && m_pObserver)
     {
       // erase any <content:encoded> tags (also unsupported by tinyxml)
