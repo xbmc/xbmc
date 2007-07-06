@@ -674,7 +674,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         CUtil::GetDirectory(strDestFile,strDestPath);
         g_advancedSettings.m_cachePath = strDestPath;
         CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
-        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
+        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,-2);
         g_advancedSettings.m_cachePath = strOriginalCachePath;
         g_RarManager.SetWipeAtWill(true);
         return bResult;

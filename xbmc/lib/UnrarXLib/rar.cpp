@@ -1,5 +1,6 @@
 #include "rar.hpp"
 #include "unrarx.hpp"
+#include "../../../guilib/guiwindowmanager.h"
 
 #include "smallfn.cpp"
 
@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
 					or NULL for all files.
 	libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset)
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset, bool bShowProgress)
 {
 	InitCRC();
 	int bRes = 1;
@@ -233,6 +234,13 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
           pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
 
+          if (bShowProgress)
+          {
+            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+          }
+          else
+            pExtract->GetDataIO().m_pDlgProgress = NULL;
+
           __int64 iOff=0;
           bool bSeeked = false;
           while (1)
@@ -282,7 +290,9 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           }
 
           pExtract->GetDataIO().ProcessedArcSize+=FD.Size;         
-				}
+          if (pExtract->GetDataIO().m_pDlgProgress)
+            pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(false);
+        }
 			}
 		}
 	}
