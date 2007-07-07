@@ -392,7 +392,7 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
   if(m_pBuffer)
   {
     if(m_flags & READ_TRUNCATED)
-      return m_pBuffer->sgetn((char*)lpBuf, min((int)uiBufSize, m_pBuffer->in_avail()));
+      return m_pBuffer->sgetn((char*)lpBuf, min((std::streamsize)uiBufSize, m_pBuffer->in_avail()));
     else
       return m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
   }
@@ -743,7 +743,7 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
   int backsize = 0;
   if(m_backsize)
   {
-    backsize = min(m_backsize, egptr()-eback());
+    backsize = min((ptrdiff_t)m_backsize, egptr()-eback());
     memmove(m_buffer, egptr()-backsize, backsize);
   }
 

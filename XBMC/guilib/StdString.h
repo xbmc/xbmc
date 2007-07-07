@@ -3732,6 +3732,16 @@ public:
 		return static_cast<const MYBASE*>(this)->operator[](static_cast<MYSIZE>(nIdx));
 	}
 
+	CT& operator[](unsigned long nIdx)
+	{
+		return static_cast<MYBASE*>(this)->operator[](static_cast<MYSIZE>(nIdx));
+	}
+
+	const CT& operator[](unsigned long nIdx) const
+	{
+		return static_cast<const MYBASE*>(this)->operator[](static_cast<MYSIZE>(nIdx));
+	}
+
 #ifndef SS_NO_IMPLICIT_CAST
 	operator const CT*() const
 	{
