@@ -636,8 +636,11 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
   const float height = ch->bottom - ch->top;
 
   // posX and posY are relative to our origin, and the textcell is offset
-  // from our (posX, posY).
-  CRect vertex(m_originX + posX + ch->offsetX, m_originY + posY + ch->offsetY, width, height);
+  // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
+  CRect vertex(m_originX + (posX + ch->offsetX)/g_graphicsContext.GetGUIScaleX(),
+               m_originY + (posY + ch->offsetY)/g_graphicsContext.GetGUIScaleY(),
+               width / g_graphicsContext.GetGUIScaleX(),
+               height / g_graphicsContext.GetGUIScaleY());
   CRect texture(ch->left, ch->top, width, height);
   g_graphicsContext.ClipRect(vertex, texture);
 
@@ -649,6 +652,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
 
   // untransformed offset from the origin
   vertex -= CPoint(m_originX, m_originY);
+
   // transform our positions - note, no scaling occurs
   float x1 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + vertex.y * angle.up_x);
   float y1 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + vertex.y * angle.up_y);
