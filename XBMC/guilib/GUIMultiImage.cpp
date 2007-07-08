@@ -69,7 +69,7 @@ void CGUIMultiImage::Render()
   if (!m_images.empty())
   {
     // Set a viewport so that we don't render outside the defined area
-    g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
     m_images[m_currentImage]->Render();
 
     unsigned int nextImage = m_currentImage + 1;
@@ -111,7 +111,7 @@ void CGUIMultiImage::Render()
         m_images[nextImage]->Render();
       }
     }
-    g_graphicsContext.RestoreViewPort();
+    g_graphicsContext.RestoreClipRegion();
   }
   CGUIControl::Render();
 }

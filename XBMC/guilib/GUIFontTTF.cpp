@@ -81,8 +81,6 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_char = NULL;
   m_maxChars = 0;
   m_dwNestedBeginCount = 0;
-  m_pixelShader = NULL;
-  m_vertexShader = NULL;
   m_face = NULL;
   m_library = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -117,8 +115,6 @@ void CGUIFontTTF::Clear()
   if (m_char)
     delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
-  m_vertexShader = NULL;
-  m_pixelShader = NULL;
   m_char = NULL;
   m_maxChars = 0;
   m_numChars = 0;
@@ -140,7 +136,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
 {
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
-  CreateShader();
 
   m_library = g_freeTypeLibrary.Get();
   if (!m_library)
@@ -266,13 +261,16 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
 
+  m_originX = sx;
+  m_originY = sy;
+
   while ( cchText-- )
   {
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      lineX = sx - angle.sine * m_lineHeight * numLines;
-      lineY = sy + angle.cosine * m_lineHeight * numLines;
+      lineX = 0;
+      lineY = (float)m_lineHeight * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -285,13 +283,9 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
         if ( dwFlags & XBFONT_CENTER_X)
           w *= 0.5f;
         // Offset this line's starting position
-        lineX -= angle.cosine * w;
-        lineY -= angle.sine * w;
+        lineX -= w;
       }
       bStartingNewLine = FALSE;
-      // align to an integer so that aliasing doesn't occur
-      lineX = ROUND_TO_PIXEL(lineX);
-      lineY = ROUND_TO_PIXEL(lineY);
       cursorX = 0; // current position along the line
     }
 
@@ -332,17 +326,13 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 
         for (int i = 0; i < 3; i++)
         {
-          float posX = lineX + cursorX*angle.cosine;
-          float posY = lineY + cursorX*angle.sine;
-          RenderCharacter(posX, posY, angle, period, dwColor);
+          RenderCharacter(lineX + cursorX, lineY, angle, period, dwColor);
           cursorX += period->advance;
         }
         break;
       }
     }
-    float posX = lineX + cursorX*angle.cosine;
-    float posY = lineY + cursorX*angle.sine;
-    RenderCharacter(posX, posY, angle, ch, dwColor);
+    RenderCharacter(lineX + cursorX, lineY, angle, ch, dwColor);
     cursorX += ch->advance;
   }
 
@@ -491,12 +481,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   if (bitGlyph->left < 0)
     m_posX += -bitGlyph->left;
 
-  D3DFORMAT format;
-  if(m_pixelShader)
-    format = D3DFMT_LIN_L8;
-  else
-    format = D3DFMT_LIN_A8;
-
   // check we have enough room for the character
   if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
@@ -517,7 +501,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
         FT_Done_Glyph(glyph);
         return false;
       }
-      if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, format, D3DPOOL_MANAGED, &newTexture))
+      if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
       {
         CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
         FT_Done_Glyph(glyph);
@@ -576,7 +560,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     targetrect.right = targetrect.left + bitmap.width;
 
     D3DXLoadSurfaceFromMemory( target, NULL, &targetrect, 
-      bitmap.buffer, format, bitmap.pitch, NULL, &sourcerect, 
+      bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect, 
       D3DX_FILTER_NONE, 0x00000000);
 
     SAFE_RELEASE(target);
@@ -607,14 +591,13 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
-    m_pD3DDevice->SetVertexShader(m_vertexShader);
-    m_pD3DDevice->SetPixelShader(m_pixelShader);
+    m_pD3DDevice->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 #ifdef HAS_XBOX_D3D
     // Render the image
@@ -638,7 +621,6 @@ void CGUIFontTTF::End()
   m_pD3DDevice->End();
   m_pD3DDevice->SetScreenSpaceOffset(0, 0);
 #endif
-  m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 }
@@ -650,101 +632,69 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
   const float width = ch->right - ch->left;
   const float height = ch->bottom - ch->top;
 
-  /* top left of our texture isn't the topleft of the textcell */
-  /* celltop could be higher than m_iHeight over baseline */
-  posX += ch->offsetX * angle.cosine - ch->offsetY * angle.sine;
-  posY += ch->offsetX * angle.sine + ch->offsetY * angle.cosine;
+  // posX and posY are relative to our origin, and the textcell is offset
+  // from our (posX, posY).
+  CRect vertex(m_originX + posX + ch->offsetX, m_originY + posY + ch->offsetY, width, height);
+  CRect texture(ch->left, ch->top, width, height);
+  g_graphicsContext.ClipRect(vertex, texture);
+
+  // now transform the origin, and calculate our offsets
+  float x = m_originX;
+  float y = m_originY;
+  float z = 0;
+  g_graphicsContext.ScaleFinalCoords(x, y, z);
+
+  // untransformed offset from the origin
+  vertex -= CPoint(m_originX, m_originY);
+  // transform our positions - note, no scaling occurs
+  float x1 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + vertex.y * angle.up_x);
+  float y1 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + vertex.y * angle.up_y);
+  float z1 = ROUND_TO_PIXEL(z + vertex.x * angle.base_z + vertex.y * angle.up_z);
+
+  float x2 = ROUND_TO_PIXEL(x + (vertex.x + vertex.w) * angle.base_x + vertex.y * angle.up_x);
+  float y2 = ROUND_TO_PIXEL(y + (vertex.x + vertex.w) * angle.base_y + vertex.y * angle.up_y);
+  float z2 = ROUND_TO_PIXEL(z + (vertex.x + vertex.w) * angle.base_z + vertex.y * angle.up_z);
+
+  float x3 = ROUND_TO_PIXEL(x + (vertex.x + vertex.w) * angle.base_x + (vertex.y + vertex.h) * angle.up_x);
+  float y3 = ROUND_TO_PIXEL(y + (vertex.x + vertex.w) * angle.base_y + (vertex.y + vertex.h) * angle.up_y);
+  float z3 = ROUND_TO_PIXEL(z + (vertex.x + vertex.w) * angle.base_z + (vertex.y + vertex.h) * angle.up_z);
+
+  float x4 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + (vertex.y + vertex.h) * angle.up_x);
+  float y4 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + (vertex.y + vertex.h) * angle.up_y);
+  float z4 = ROUND_TO_PIXEL(z + vertex.x * angle.base_z + (vertex.y + vertex.h) * angle.up_z);
 
 #ifdef HAS_XBOX_D3D
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
-  m_pD3DDevice->SetVertexData4f( 0, posX, posY, ch->left, ch->top );
-  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width, posY + angle.sine * width, ch->right, ch->top );
-  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, ch->right, ch->bottom );
-  m_pD3DDevice->SetVertexData4f( 0, posX - angle.sine * height, posY + angle.cosine * height, ch->left, ch->bottom );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x, texture.y);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x + texture.w, texture.y);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x + texture.w, texture.y + texture.h);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x, texture.y + texture.h);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
+
 #else
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
-      FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
   };
 
   // tex coords converted to 0..1 range
-  float tl = ch->left / m_textureWidth;
-  float tr = ch->right / m_textureWidth;
-  float tt = ch->top / m_textureHeight;
-  float tb = ch->bottom / m_textureHeight;
+  float tl = texture.x / m_textureWidth;
+  float tr = (texture.x + texture.w) / m_textureWidth;
+  float tt = texture.y / m_textureHeight;
+  float tb = (texture.y + texture.h) / m_textureHeight;
 
   CUSTOMVERTEX verts[4] =  {
-    { posX                                         , posY                                         , 0.0f, 1.0f, dwColor, tl, tt},
-    { posX + angle.cosine*width                    , posY + angle.sine*width                      , 0.0f, 1.0f, dwColor, tr, tt},
-    { posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0.0f, 1.0f, dwColor, tr, tb},
-    { posX - angle.sine*height                     , posY + angle.cosine*height                   , 0.0f, 1.0f, dwColor, tl, tb} 
+    { x1, y1, z1, dwColor, tl, tt},
+    { x2, y2, z2, dwColor, tr, tt},
+    { x3, y3, z3, dwColor, tr, tb},
+    { x4, y4, z4, dwColor, tl, tb}
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 #endif
-}
-
-void CGUIFontTTF::CreateShader()
-{
-  if (!m_pixelShader)
-  {
-    // shader from the alpha texture to the full 32bit font.  Basically, anything with
-    // alpha > 0 is filled in fully in the colour channels
-
-    const char *fonts =
-      "ps.1.1\n"
-      "tex t0\n"
-      "mov r0.rgb, v0\n"
-      "+ mul r0.a, v0.a, t0.b\n";
-
-    LPD3DXBUFFER pShader = NULL;
-    if( D3D_OK != D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL) )
-      CLog::Log(LOGINFO, __FUNCTION__" - Failed to assemble pixel shader");
-    else
-    {
-      if (D3D_OK != m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader))
-      {
-        CLog::Log(LOGINFO, __FUNCTION__" - Failed to create pixel shader");
-        m_pixelShader = 0;
-      }
-      pShader->Release();
-    }
-  }
-
-#ifdef HAS_XBOX_D3D
-  // since this vertex declaration is different from
-  // the standard, it can't be used when drawprimitive
-  // is to be used.
-
-  // Create the vertex shader
-  if (m_pixelShader && !m_vertexShader)
-  {
-    // our vertex declaration
-    DWORD vertexDecl[] =
-      {
-        D3DVSD_STREAM(0),
-        D3DVSD_REG( 0, D3DVSDT_FLOAT4 ),         // xy vertex, zw texture coord
-        D3DVSD_REG( 3, D3DVSDT_D3DCOLOR ),       // diffuse color
-        D3DVSD_END()
-      };
-
-        // shader for the vertex format we use
-    static DWORD vertexShader[] =
-      {
-        0x00032078,
-        0x00000000, 0x00200015, 0x0836106c, 0x2070c800,  // mov oPos.xy, v0.xy
-        0x00000000, 0x002000bf, 0x0836106c, 0x2070c848,  // mov oT0.xy, v0.zw
-        0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
-      };
-
-    if (D3D_OK != m_pD3DDevice->CreateVertexShader(vertexDecl,vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE))
-      CLog::Log(LOGERROR, __FUNCTION__" - Failed to create vertex shader");
-  }
-#endif
-
-  if(!m_vertexShader)
-    m_vertexShader = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 }

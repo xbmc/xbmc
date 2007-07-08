@@ -245,7 +245,7 @@ void CDummyVideoPlayer::Render()
   newviewport.Y = vw.top;
   newviewport.Width = vw.right - vw.left;
   newviewport.Height = vw.bottom - vw.top;
-  g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+  g_graphicsContext.SetClipRegion((float)vw.left, (float)vw.top, (float)vw.right - vw.left, (float)vw.bottom - vw.top);
   CGUIFont *font = g_fontManager.GetFont("font13");
   if (font)
   {
@@ -260,5 +260,5 @@ void CDummyVideoPlayer::Render()
     currentTime.Format(L"Video goes here %02i:%02i:%03i", mins, secs, ms);
     font->DrawText(posX, posY, 0xffffffff, 0xff000000, currentTime.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
-  g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+  g_graphicsContext.RestoreClipRegion();
 }
