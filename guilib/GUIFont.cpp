@@ -30,8 +30,7 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
                              const WCHAR* strText, float fMaxWidth)
 {
   if (!m_font) return;
-  g_graphicsContext.ScaleFinalCoords(fOriginX, fOriginY);
-  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.ScaleFinalX());
+  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.GetGUIScaleX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (dwShadowColor)
@@ -71,7 +70,7 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle 
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
 
-  g_graphicsContext.ScaleFinalCoords(fOriginX, fOriginY);
+  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.GetGUIScaleX());
   DWORD *alphaColor = new DWORD[numColors];
   for (int i = 0; i < numColors; i++)
   {
@@ -79,7 +78,6 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle 
       pdw256ColorPalette[i] = m_textColor;
     alphaColor[i] = g_graphicsContext.MergeAlpha(pdw256ColorPalette[i]);
   }
-  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.ScaleFinalX());
   m_font->DrawColourTextWidth(fOriginX, fOriginY, Transform(angle), alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
   delete[] alphaColor;
 }
@@ -88,8 +86,7 @@ void CGUIFont::DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
 {
   if (!m_font) return;
   float nw = 0.0f, nh = 0.0f;
-  g_graphicsContext.ScaleFinalCoords(sx, sy);
-  fMaxPixelWidth = ROUND(fMaxPixelWidth * g_graphicsContext.ScaleFinalX());
+  fMaxPixelWidth = ROUND(fMaxPixelWidth * g_graphicsContext.GetGUIScaleX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (dwShadowColor)
@@ -122,8 +119,8 @@ inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *
   if (!m_font) return;
   CSingleLock lock(g_graphicsContext);
   m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
-  *pWidth /= g_graphicsContext.ScaleFinalX();
-  *pHeight /= g_graphicsContext.ScaleFinalY();
+  *pWidth /= g_graphicsContext.GetGUIScaleX();
+  *pHeight /= g_graphicsContext.GetGUIScaleY();
 }
 
 void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)
@@ -135,10 +132,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   GetTextExtent(L" ", &sw, &unneeded);
   unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
-  if (text.IsEmpty() || !g_graphicsContext.SetViewPort(x, y, w, h, true))
+  w = ROUND(w * g_graphicsContext.GetGUIScaleX());
+  if (text.IsEmpty() || !g_graphicsContext.SetClipRegion(x, y, w, h))
     return; // nothing to render
-  g_graphicsContext.ScaleFinalCoords(x,y);
-  w = ROUND(w * g_graphicsContext.ScaleFinalX());
   // draw at our scroll position
   // we handle the scrolling as follows:
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
@@ -228,7 +224,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   delete[] pOutput;
   if (pPalette)
     delete[] pOutPalette;
-  g_graphicsContext.RestoreViewPort();
+  g_graphicsContext.RestoreClipRegion();
 }
 
 // transform our "angle" vector by the appropriate amount.
@@ -238,12 +234,20 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
 CAngle CGUIFont::Transform(const CAngle &angle)
 {
   CAngle result;
-  result.cosine = g_graphicsContext.ScaleFinalXCoord(angle.cosine, angle.sine) - g_graphicsContext.ScaleFinalXCoord(0, 0);
-  result.sine = g_graphicsContext.ScaleFinalYCoord(angle.cosine, angle.sine) - g_graphicsContext.ScaleFinalYCoord(0, 0);
-  // Normalize the result
-  float norm = sqrt(result.cosine * result.cosine + result.sine * result.sine);
-  result.cosine /= norm;
-  result.sine /= norm;
+  result.base_x = g_graphicsContext.ScaleFinalXCoord(angle.base_x, angle.base_y) - g_graphicsContext.ScaleFinalXCoord(0, 0);
+  result.base_y = g_graphicsContext.ScaleFinalYCoord(angle.base_x, angle.base_y) - g_graphicsContext.ScaleFinalYCoord(0, 0);
+  result.base_z = g_graphicsContext.ScaleFinalZCoord(angle.base_x, angle.base_y) - g_graphicsContext.ScaleFinalZCoord(0, 0);
+
+  result.up_x = g_graphicsContext.ScaleFinalXCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalXCoord(0, 0);
+  result.up_y = g_graphicsContext.ScaleFinalYCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalYCoord(0, 0);
+  result.up_z = g_graphicsContext.ScaleFinalZCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalZCoord(0, 0);
+
+  // remove the gui scaling from these values
+  const float guiScaleX = 1/g_graphicsContext.GetGUIScaleX();
+  const float guiScaleY = 1/g_graphicsContext.GetGUIScaleY();
+  result.base_x *= guiScaleX; result.up_x *= guiScaleX;
+  result.base_y *= guiScaleY; result.up_y *= guiScaleY;
+  result.base_z *= guiScaleY; result.up_z *= guiScaleY;
   return result;
 }
 

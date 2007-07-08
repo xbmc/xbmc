@@ -12,6 +12,7 @@
 #include <stack>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
+#include "Geometry.h"                       // for CRect/CPoint
 
 // forward definitions
 class IMsgSenderCallback;
@@ -121,13 +122,21 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
 
+  void SetCameraPosition(float camX, float camY);
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const;
   inline float ScaleFinalYCoord(float x, float y) const;
-  inline void ScaleFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalX() const { return m_windowScaleX; };
-  inline float ScaleFinalY() const { return m_windowScaleY; };
+  inline float ScaleFinalZCoord(float x, float y) const;  
+  inline void  ScaleFinalCoords(float &x, float &y, float &z) const;
+
+  inline float GetGUIScaleX() const { return m_guiScaleX; };
+  inline float GetGUIScaleY() const { return m_guiScaleY; };
   inline DWORD MergeAlpha(DWORD color) const;
+  void SetOrigin(float x, float y);
+  void RestoreOrigin();
+  bool SetClipRegion(float x, float y, float w, float h);
+  void RestoreClipRegion();
+  void ClipRect(CRect &vertex, CRect &texture);
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
     while (m_groupTransform.size())
@@ -169,8 +178,12 @@ protected:
 
 private:
   RESOLUTION m_windowResolution;
-  float m_windowScaleX;
-  float m_windowScaleY;
+  float m_guiScaleX;
+  float m_guiScaleY;
+  float m_cameraX;
+  float m_cameraY;
+  stack<CPoint> m_origins;
+  stack<CRect>  m_clipRegions;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;

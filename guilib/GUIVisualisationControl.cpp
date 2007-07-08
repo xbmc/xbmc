@@ -218,7 +218,9 @@ void CGUIVisualisationControl::Render()
   {
     if (m_bInitialized)
     {
-      // set the viewport
+      // set the viewport - note: We currently don't have any control over how
+      // the visualisation renders, so the best we can do is attempt to define
+      // a viewport??
       g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {
