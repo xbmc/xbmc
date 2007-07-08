@@ -236,9 +236,15 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 {
   Begin();
 
+  // save the origin, which is scaled separately
+  m_originX = sx;
+  m_originY = sy;
+
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
-    sy -= (m_cellHeight-2)*0.5f;
+    sy = -0.5f*(m_cellHeight-2);
+  else
+    sy = 0;
 
   // Check if we will really need to truncate the CStdString
   if ( dwFlags & XBFONT_TRUNCATED )
@@ -261,16 +267,13 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
 
-  m_originX = sx;
-  m_originY = sy;
-
   while ( cchText-- )
   {
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
       lineX = 0;
-      lineY = (float)m_lineHeight * numLines;
+      lineY = sy + (float)m_lineHeight * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
