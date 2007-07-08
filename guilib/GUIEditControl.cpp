@@ -124,10 +124,10 @@ void CGUIEditControl::Render()
   // we can only perform view port operations if we have an area to display
   if (m_height > 0 && m_width > 0)
   {
-    if (g_graphicsContext.SetViewPort(m_originalPosX, m_posY, m_width, m_height))
+    if (g_graphicsContext.SetClipRegion(m_originalPosX, m_posY, m_width, m_height))
     {
       CGUILabelControl::Render();
-      g_graphicsContext.RestoreViewPort();
+      g_graphicsContext.RestoreClipRegion();
     }
   }
   else

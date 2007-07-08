@@ -63,7 +63,7 @@ void CGUIControlGroup::Render()
 
   // We have both our animation transform, and the translation (position) transform
   g_graphicsContext.AddGroupTransform(m_transform);
-  g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY));
+  g_graphicsContext.SetOrigin(m_posX, m_posY);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
@@ -71,7 +71,7 @@ void CGUIControlGroup::Render()
     control->Render();
   }
   CGUIControl::Render();
-  g_graphicsContext.RemoveGroupTransform();
+  g_graphicsContext.RestoreOrigin();
   g_graphicsContext.RemoveGroupTransform();
 }
 

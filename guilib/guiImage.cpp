@@ -95,7 +95,7 @@ void CGUIImage::Render()
     // scale to screen output position
     if (m_fNW > m_width || m_fNH > m_height)
     {
-      if (!g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height, true))
+      if (!g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
       {
         CGUIControl::Render();
         return;
@@ -145,13 +145,15 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+
 #ifdef HAS_XBOX_D3D
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
 #endif
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
-    p3DDevice->SetVertexShader( FVF_VERTEX2 );
+    p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
 #ifdef HAS_XBOX_D3D
     p3DDevice->Begin(D3DPT_QUADLIST);
 #else
@@ -187,7 +189,7 @@ void CGUIImage::Render()
     if (m_image.border.left)
     {
       if (m_image.border.top)
-       Render(m_fX, m_fY, m_fX + m_image.border.left, m_fY + m_image.border.top, 0, 0, uLeft, vTop);
+        Render(m_fX, m_fY, m_fX + m_image.border.left, m_fY + m_image.border.top, 0, 0, uLeft, vTop);
       Render(m_fX, m_fY + m_image.border.top, m_fX + m_image.border.left, m_fY + m_fNH - m_image.border.bottom, 0, vTop, uLeft, vBottom);
       if (m_image.border.bottom)
         Render(m_fX, m_fY + m_fNH - m_image.border.bottom, m_fX + m_image.border.left, m_fY + m_fNH, 0, vBottom, uLeft, m_fV); 
@@ -221,7 +223,7 @@ void CGUIImage::Render()
     if (m_diffuseTexture)
       p3DDevice->SetTexture( 1, NULL );
     if (m_fNW > m_width || m_fNH > m_height)
-      g_graphicsContext.RestoreViewPort();
+      g_graphicsContext.RestoreClipRegion();
   }
   CGUIControl::Render();
 }
@@ -230,19 +232,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 {
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(left, top) + 0.5f) - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(left, top) + 0.5f) - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(right, top) + 0.5f) - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(right, top) + 0.5f) - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(right, bottom) + 0.5f) - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(right, bottom) + 0.5f) - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(left, bottom) + 0.5f) - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(left, bottom) + 0.5f) - 0.5f;
-
-  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
-  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
-
-  // Render the image
+  // flip the texture as necessary
   if (m_image.flipX)
   {
     u1 = m_fU - u1;
@@ -254,64 +244,87 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     v2 = m_fV - v2;
   }
 
+  // clip our rects
+  CRect vertex(left, top, right - left, bottom - top);
+  CRect texture(u1, v1, u2 - u1, v2 - v1);
+  g_graphicsContext.ClipRect(vertex, texture);
+
+  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x, vertex.y) + 0.5f) - 0.5f;
+  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x, vertex.y) + 0.5f) - 0.5f;
+  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x + vertex.w, vertex.y) + 0.5f) - 0.5f;
+  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x + vertex.w, vertex.y) + 0.5f) - 0.5f;
+  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x + vertex.w, vertex.y + vertex.h) + 0.5f) - 0.5f;
+  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x + vertex.w, vertex.y + vertex.h) + 0.5f) - 0.5f;
+  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x, vertex.y + vertex.h) + 0.5f) - 0.5f;
+  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x, vertex.y + vertex.h) + 0.5f) - 0.5f;
+  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x, vertex.y);
+  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x + vertex.w, vertex.y);
+  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x + vertex.w, vertex.y + vertex.h);
+  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x, vertex.y + vertex.h);
+
+  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
+  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
+
+  u1 = texture.x; u2 = texture.x + texture.w;
+  v1 = texture.y; v2 = texture.y + texture.h;
+
 #ifdef HAS_XBOX_D3D
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
   D3DCOLOR color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   color =  m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   color =  m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
 
 #else
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
-      FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
       FLOAT tu2, tv2;
   };
 
   CUSTOMVERTEX verts[4];
-  verts[0].x = x1; verts[0].y = y1; verts[0].z = 0.0f; verts[0].rhw = 1.0f;
+  verts[0].x = x1; verts[0].y = y1; verts[0].z = z1;
   verts[0].tu = u1;   verts[0].tv = v1; verts[0].tu2 = u1*m_diffuseScaleU; verts[0].tv2 = v1*m_diffuseScaleV;
   DWORD color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[1].x = x2; verts[1].y = y2; verts[1].z = 0.0f;verts[1].rhw = 1.0f;
+  verts[1].x = x2; verts[1].y = y2; verts[1].z = z2;
   verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[2].x = x3; verts[2].y = y3; verts[2].z = 0.0f; verts[2].rhw = 1.0f;
+  verts[2].x = x3; verts[2].y = y3; verts[2].z = z3;
   verts[2].tu = u2;   verts[2].tv = v2; verts[2].tu2 = u2*m_diffuseScaleU; verts[2].tv2 = v2*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2],m_diffuseColor);
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[3].x = x4; verts[3].y = y4; verts[3].z = 0.0f; verts[3].rhw = 1.0f;
+  verts[3].x = x4; verts[3].y = y4; verts[3].z = z4;
   verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3],m_diffuseColor);

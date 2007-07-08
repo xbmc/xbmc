@@ -36,7 +36,7 @@ void CGUIBaseContainer::Render()
 void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
   // set the origin
-  g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(posX, posY));
+  g_graphicsContext.SetOrigin(posX, posY);
 
   if (m_bInvalidated)
     item->SetInvalid();
@@ -67,7 +67,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     if (item->GetLayout())
       item->GetLayout()->Render(item, m_dwParentID);
   }
-  g_graphicsContext.RemoveGroupTransform();
+  g_graphicsContext.RestoreOrigin();
 }
 
 bool CGUIBaseContainer::OnAction(const CAction &action)

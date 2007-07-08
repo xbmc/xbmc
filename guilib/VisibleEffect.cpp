@@ -66,7 +66,11 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   else if (strcmpi(effect, "slide") == 0)
     m_effect = EFFECT_TYPE_SLIDE;
   else if (strcmpi(effect, "rotate") == 0)
-    m_effect = EFFECT_TYPE_ROTATE;
+    m_effect = EFFECT_TYPE_ROTATE_Z;
+  else if (strcmpi(effect, "rotatey") == 0)
+    m_effect = EFFECT_TYPE_ROTATE_Y;
+  else if (strcmpi(effect, "rotatex") == 0)
+    m_effect = EFFECT_TYPE_ROTATE_X;
   else if (strcmpi(effect, "zoom") == 0)
     m_effect = EFFECT_TYPE_ZOOM;
   // time and delay
@@ -130,20 +134,20 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     if (m_startAlpha < 0) m_startAlpha = 0;
     if (m_endAlpha < 0) m_endAlpha = 0;
   }
-  else if (m_effect == EFFECT_TYPE_ROTATE)
+  else if (m_effect >= EFFECT_TYPE_ROTATE_X && m_effect <= EFFECT_TYPE_ROTATE_Z)
   {
     double temp;
     if (node->Attribute("start", &temp)) m_startX = (float)temp;
     if (node->Attribute("end", &temp)) m_endX = (float)temp;
 
-    // convert to a negative to account for our reversed vertical axis
+    // convert to a negative to account for our reversed Y axis (Needed for X and Z ???)
     m_startX *= -1;
     m_endX *= -1;
 
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      m_centerX = (float)atof(centerPos);
+      m_centerX = (float)atof(centerPos); 
       const char *comma = strstr(centerPos, ",");
       if (comma)
         m_centerY = (float)atof(comma + 1);
@@ -350,21 +354,33 @@ void CAnimation::Calculate()
     m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * m_amount + m_startAlpha) * 0.01f);
   else if (m_effect == EFFECT_TYPE_SLIDE)
   {
-    m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY);
+    m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
   }
-  else if (m_effect == EFFECT_TYPE_ROTATE)
+  else if (m_effect == EFFECT_TYPE_ROTATE_X)
   {
-    m_matrix.SetTranslation(m_centerX, m_centerY);
-    m_matrix *= TransformMatrix::CreateRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY);
+    m_matrix.SetTranslation(0, m_centerX, m_centerY);
+    m_matrix *= TransformMatrix::CreateXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
+    m_matrix *= TransformMatrix::CreateTranslation(0, -m_centerX, -m_centerY);
+  }
+  else if (m_effect == EFFECT_TYPE_ROTATE_Y)
+  {
+    m_matrix.SetTranslation(m_centerX, 0, m_centerY);
+    m_matrix *= TransformMatrix::CreateYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
+    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, 0, -m_centerY);
+  }
+  else if (m_effect == EFFECT_TYPE_ROTATE_Z)
+  {
+    m_matrix.SetTranslation(m_centerX, m_centerY, 0);
+    m_matrix *= TransformMatrix::CreateZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
+    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY, 0);
   }
   else if (m_effect == EFFECT_TYPE_ZOOM)
   {
     float scaleX = ((m_endX - m_startX)*offset + m_startX) * 0.01f;
     float scaleY = ((m_endY - m_startY)*offset + m_startY) * 0.01f;
-    m_matrix.SetTranslation(m_centerX, m_centerY);
+    m_matrix.SetTranslation(m_centerX, m_centerY, 0);
     m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY);
+    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY, 0);
   }
 }
 void CAnimation::ResetAnimation()
