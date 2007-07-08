@@ -51,8 +51,8 @@ public:
     TransformMatrix rotation;
     rotation.m[1][1] = cos(angle);
     rotation.m[2][1] = sin(angle);
-    rotation.m[1][2] = -rotation.m[1][0];
-    rotation.m[2][2] = rotation.m[0][0];
+    rotation.m[1][2] = -rotation.m[2][1];
+    rotation.m[2][2] = rotation.m[1][1];
     return rotation;
   }
   static TransformMatrix CreateYRotation(float angle)
@@ -60,7 +60,7 @@ public:
     TransformMatrix rotation;
     rotation.m[0][0] = cos(angle);
     rotation.m[2][0] = sin(angle);
-    rotation.m[0][2] = -rotation.m[1][0];
+    rotation.m[0][2] = -rotation.m[2][0];
     rotation.m[2][2] = rotation.m[0][0];
     return rotation;
   }
