@@ -26,16 +26,20 @@ class CAngle
 public:
   CAngle()
   {
-    sine = 0;
-    cosine = 1;
+    base_x = 1; base_y = base_z = 0;
+    up_x = up_z = 0; up_y = 1;
   }
   CAngle(int theta)
   {
-    sine = sin(theta * DEGREE_TO_RADIAN);
-    cosine = cos(theta * DEGREE_TO_RADIAN);
+    base_x = cos(theta * DEGREE_TO_RADIAN);
+    base_y = sin(theta * DEGREE_TO_RADIAN);
+    base_z = 0;
+    up_x = -base_y;
+    up_y = base_x;
+    up_z = 0;
   }
-  float sine;
-  float cosine;
+  float base_x, base_y, base_z;
+  float up_x, up_y, up_z;
 };
 
 /*!
