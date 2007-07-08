@@ -132,9 +132,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   GetTextExtent(L" ", &sw, &unneeded);
   unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
-  w = ROUND(w * g_graphicsContext.GetGUIScaleX());
   if (text.IsEmpty() || !g_graphicsContext.SetClipRegion(x, y, w, h))
     return; // nothing to render
+  w = ROUND(w * g_graphicsContext.GetGUIScaleX());
   // draw at our scroll position
   // we handle the scrolling as follows:
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
@@ -154,8 +154,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
     else
       sz[0] = text[0];
     sz[1] = 0;
-    float charWidth;
-    m_font->GetTextExtentInternal(sz, &charWidth, &unneeded);
+    float charWidth = GetTextWidth(sz);
     if (scrollInfo.pixelPos < charWidth - scrollInfo.pixelSpeed)
       scrollInfo.pixelPos += scrollInfo.pixelSpeed;
     else
@@ -242,12 +241,6 @@ CAngle CGUIFont::Transform(const CAngle &angle)
   result.up_y = g_graphicsContext.ScaleFinalYCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalYCoord(0, 0);
   result.up_z = g_graphicsContext.ScaleFinalZCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalZCoord(0, 0);
 
-  // remove the gui scaling from these values
-  const float guiScaleX = 1/g_graphicsContext.GetGUIScaleX();
-  const float guiScaleY = 1/g_graphicsContext.GetGUIScaleY();
-  result.base_x *= guiScaleX; result.up_x *= guiScaleX;
-  result.base_y *= guiScaleY; result.up_y *= guiScaleY;
-  result.base_z *= guiScaleY; result.up_z *= guiScaleY;
   return result;
 }
 
