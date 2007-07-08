@@ -796,7 +796,10 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
 void CXBFont::RenderGlyph(float posX, float posY, float width, float height, const CAngle &angle, GLYPH_ATTR *pGlyph)
 {
   // transform to world coordinates
-  CRect vertex(m_originX + posX, m_originY + posY, width, height);
+  CRect vertex(m_originX + posX / g_graphicsContext.GetGUIScaleX(),
+               m_originY + posY / g_graphicsContext.GetGUIScaleY(),
+               width / g_graphicsContext.GetGUIScaleX(),
+               height / g_graphicsContext.GetGUIScaleY());
   CRect texture(pGlyph->tu1, pGlyph->tv1, pGlyph->tu2 - pGlyph->tu1, pGlyph->tv2 - pGlyph->tv1);
   g_graphicsContext.ClipRect(vertex, texture);
 
