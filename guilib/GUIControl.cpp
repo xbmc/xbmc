@@ -457,6 +457,7 @@ void CGUIControl::UpdateEffectState(DWORD currentTime)
 {
   UpdateVisibility();
   Animate(currentTime);
+  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
 }
 
 void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus)

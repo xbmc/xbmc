@@ -442,6 +442,9 @@
 				RelativePath=".\AudioContext.h">
 			</File>
 			<File
+				RelativePath=".\Geometry.h">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.h">
 			</File>
 			<File
