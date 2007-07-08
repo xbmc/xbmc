@@ -542,6 +542,10 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
 
   FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
 
+  // save the origin location
+  m_originX = fOriginX;
+  m_originY = fOriginY;
+
   if ( dwFlags & XBFONT_TRUNCATED )
   {
     // Check if we will really need to truncate the CStdString
@@ -565,11 +569,10 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
   {
     FLOAT w, h;
     GetTextExtent( strText, &w, &h );
-    fOriginY -= h * 0.5f;
+    fOriginY = -h * 0.5f;
   }
-
-  m_originX = fOriginX;
-  m_originY = fOriginY;
+  else
+    fOriginY = 0;
 
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
@@ -582,7 +585,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
     if ( bStartingNewLine )
     {
       m_fCursorX = 0;
-      m_fCursorY = m_fFontYAdvance * numLines;
+      m_fCursorY = fOriginY + m_fFontYAdvance * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -679,6 +682,10 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
 
   FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
 
+  // save our origin for later
+  m_originX = fOriginX;
+  m_originY = fOriginY;
+
   if ( dwFlags & XBFONT_TRUNCATED )
   {
     // Check if we will really need to truncate the CStdString
@@ -702,12 +709,10 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
   {
     FLOAT w, h;
     GetTextExtent( strText, &w, &h );
-    fOriginY -= h * 0.5f;
+    fOriginY = -h * 0.5f;
   }
-
-  // save our origin for later
-  m_originX = fOriginX;
-  m_originY = fOriginY;
+  else
+    fOriginY = 0;
 
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
@@ -719,7 +724,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
     if ( bStartingNewLine )
     {
       m_fCursorX = 0;
-      m_fCursorY = m_fFontYAdvance * numLines;
+      m_fCursorY = fOriginY + m_fFontYAdvance * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
