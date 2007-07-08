@@ -137,7 +137,7 @@ void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD
   float fTextHeight, fTextWidth;
   label.font->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
 
-  g_graphicsContext.SetViewPort(fPosX, fPosY, fMaxWidth - 5.0f, 60.0f);
+  g_graphicsContext.SetClipRegion(fPosX, fPosY, fMaxWidth - 5.0f, 60.0f);
   label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, label.shadowColor, wszText, fMaxWidth);
-  g_graphicsContext.RestoreViewPort();
+  g_graphicsContext.RestoreClipRegion();
 }

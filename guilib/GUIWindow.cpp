@@ -1204,8 +1204,9 @@ FRECT CGUIWindow::GetScaledBounds() const
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
   FRECT rect = {0, 0, m_width, m_height};
-  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top);
-  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom);
+  float z = 0;
+  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
+  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
   return rect;
 }
 
