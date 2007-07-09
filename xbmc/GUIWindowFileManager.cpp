@@ -189,8 +189,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
         }
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
-      { // State of the bookmarks changed, so update our view
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      { // State of the sources changed, so update our view
         for (int i = 0; i < 2; i++)
         {
           if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
@@ -485,7 +485,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 
   if (pItem->m_bIsFolder)
   {
-    // save path + drive type as HaveBookmarkPermissions does a Refresh()
+    // save path + drive type because of the possible refresh
     CStdString strPath = pItem->m_strPath;
     int iDriveType = pItem->m_iDriveType;
     if ( pItem->m_bIsShareOrDrive )
@@ -1244,7 +1244,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item], posX, posY))
+    if (CGUIDialogContextMenu::SourcesMenu("files", m_vecItems[list][item], posX, posY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
       if (m_Directory[1 - list].IsVirtualDirectoryRoot())
@@ -1579,14 +1579,14 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
       // default parameters if the jump fails
       m_Directory[0].m_strPath = "";
 
-      bool bIsBookmarkName = false;
+      bool bIsSourceName = false;
       VECSHARES shares;
       m_rootDir.GetShares(shares);
-      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
       if (iIndex > -1)
       {
         // set current directory to matching share
-        if (bIsBookmarkName)
+        if (bIsSourceName)
           m_Directory[0].m_strPath = shares[iIndex].strPath;
         else
           m_Directory[0].m_strPath = strDestination;

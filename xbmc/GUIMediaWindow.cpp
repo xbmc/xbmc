@@ -235,8 +235,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
-      { // State of the bookmarks changed, so update our view
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      { // State of the sources changed, so update our view
         if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
@@ -476,7 +476,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     return false;
   }
 
-  // if we're getting the root bookmark listing
+  // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
@@ -754,7 +754,7 @@ void CGUIMediaWindow::GoParentFolder()
   }
 
   // if vector is not empty, pop parent
-  // if vector is empty, parent is bookmark listing
+  // if vector is empty, parent is root source listing
   CStdString strOldPath(m_vecItems.m_strPath);
   strParent = m_history.RemoveParentPath();
   Update(strParent);
