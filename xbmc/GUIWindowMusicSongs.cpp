@@ -106,12 +106,12 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           // default parameters if the jump fails
           m_vecItems.m_strPath.Empty();
 
-          bool bIsBookmarkName = false;
+          bool bIsSourceName = false;
 
           SetupShares();
           VECSHARES shares;
           m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool unlocked = true;
@@ -128,7 +128,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
             // set current directory to matching share
             if (unlocked)
             {
-              if (bIsBookmarkName)
+              if (bIsSourceName)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
@@ -137,7 +137,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
           }
         }
 
@@ -368,7 +368,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
-      // get the usual bookmark shares, and anything for all media windows
+      // get the usual music shares, and anything for all media windows
       CShare *share = CGUIDialogContextMenu::GetShare("music", item);
       CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
       // enable Rip CD an audio disc
@@ -525,7 +525,7 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
   // before calling it since the current playlist will be stopped
   // and cleared!
 
-  // we're at the root bookmark listing
+  // we're at the root source listing
   if (m_vecItems.IsVirtualDirectoryRoot() && !m_vecItems[iItem]->IsDVD())
     return;
 

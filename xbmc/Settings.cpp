@@ -417,7 +417,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   if (pRootElement)
   {
-    // parse my programs bookmarks...
+    // parse my programs sources...
     CStdString strDefault;
     GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
     strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
@@ -449,7 +449,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 void CSettings::ConvertHomeVar(CStdString& strText)
 {
   // Replaces first occurence of $HOME with the home directory.
-  // "$HOME\bookmarks" becomes for instance "e:\apps\xbmp\bookmarks"
+  // "$HOME\foo" becomes for instance "e:\apps\xbmc\foo"
 
   char szText[1024];
   char szTemp[1024];
@@ -537,7 +537,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
     while (pChild > 0)
     {
       CStdString strValue = pChild->Value();
-      if (strValue == "bookmark")
+      if (strValue == "source" || strValue == "bookmark") // "bookmark" left in for backwards compatibility
       {
         CShare share;
         if (GetShare(strTagName, pChild, share))
@@ -546,7 +546,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         }
         else
         {
-          CLog::Log(LOGERROR, "    Missing or invalid <name> and/or <path> in bookmark");
+          CLog::Log(LOGERROR, "    Missing or invalid <name> and/or <path> in source");
         }
       }
 
@@ -558,7 +558,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           const char* pszText = pChild->FirstChild()->Value();
           if (strlen(pszText) > 0)
             strDefault = pszText;
-          CLog::Log(LOGDEBUG, "    Setting <default> share to : %s", strDefault.c_str());
+          CLog::Log(LOGDEBUG, "    Setting <default> source to : %s", strDefault.c_str());
         }
       }
       pChild = pChild->NextSibling();
@@ -570,10 +570,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   }
 }
 
-bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share)
+bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CShare &share)
 {
-  CLog::Log(LOGDEBUG,"    ---- BOOKMARK START ----");
-  const TiXmlNode *pNodeName = bookmark->FirstChild("name");
+  CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
+  const TiXmlNode *pNodeName = source->FirstChild("name");
   CStdString strName;
   if (pNodeName && pNodeName->FirstChild())
   {
@@ -582,7 +582,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
   }
   // get multiple paths
   vector<CStdString> vecPaths;
-  const TiXmlNode *pPathName = bookmark->FirstChild("path");
+  const TiXmlNode *pPathName = source->FirstChild("path");
   while (pPathName)
   {
     if (pPathName->FirstChild())
@@ -610,15 +610,15 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
         vecPaths.push_back(strPath);
       }
       else
-        CLog::Log(LOGERROR,"    Invalid path type (%s) in bookmark", strPath.c_str());
+        CLog::Log(LOGERROR,"    Invalid path type (%s) in source", strPath.c_str());
     }
     pPathName = pPathName->NextSibling("path");
   }
 
-  const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
-  const TiXmlNode *pLockCode = bookmark->FirstChild("lockcode");
-  const TiXmlNode *pBadPwdCount = bookmark->FirstChild("badpwdcount");
-  const TiXmlNode *pThumbnailNode = bookmark->FirstChild("thumbnail");
+  const TiXmlNode *pLockMode = source->FirstChild("lockmode");
+  const TiXmlNode *pLockCode = source->FirstChild("lockcode");
+  const TiXmlNode *pBadPwdCount = source->FirstChild("badpwdcount");
+  const TiXmlNode *pThumbnailNode = source->FirstChild("thumbnail");
 
   if (!strName.IsEmpty() && vecPaths.size() > 0)
   {
@@ -660,20 +660,20 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
 
         // error message
         if (bIsInvalid)
-          CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
+          CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath source", vecPaths[j].c_str());
       }
 
-      // no valid paths? skip to next bookmark
+      // no valid paths? skip to next source
       if (verifiedPaths.size() == 0)
       {
-        CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in bookmark");
+        CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in source");
         return false;
       }
     }
 
     share.FromNameAndPaths(category, strName, verifiedPaths);
 
-    CLog::Log(LOGDEBUG,"      Adding bookmark:");
+    CLog::Log(LOGDEBUG,"      Adding source:");
     CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
     if (CUtil::IsVirtualPath(share.strPath) || CUtil::IsMultiPath(share.strPath))
     {
@@ -2161,19 +2161,19 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
       TiXmlElement eName("name");
       eName.InsertEndChild(xmlName);
 
-      TiXmlElement bookmark("bookmark");
-      bookmark.InsertEndChild(eName);
+      TiXmlElement source("source");
+      source.InsertEndChild(eName);
 
       for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
       {
         TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
         TiXmlElement ePath("path");
         ePath.InsertEndChild(xmlPath);
-        bookmark.InsertEndChild(ePath);
+        source.InsertEndChild(ePath);
       }
 
       if (pNode)
-        pNode->ToElement()->InsertEndChild(bookmark);
+        pNode->ToElement()->InsertEndChild(source);
     }
   }
   // save the file
@@ -2208,7 +2208,7 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, co
 }
 
 // NOTE: This function does NOT save the sources.xml file - you need to call SaveSources() separately.
-bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
+bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
   VECSHARES *pShares = GetSharesFromType(strType);
 
@@ -2246,7 +2246,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
   return false;
 }
 
-bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
+bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
   VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
@@ -2284,10 +2284,10 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
   {
     shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
     if (!share.strPath.IsEmpty())
-      CLog::Log(LOGDEBUG,"AddBookmark: Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
+      CLog::Log(LOGDEBUG, __FUNCTION__ " Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
     else
     {
-      CLog::Log(LOGDEBUG,"AddBookmark: Skipping invalid special directory token: %s",strPath1.c_str());
+      CLog::Log(LOGDEBUG, __FUNCTION__ " Skipping invalid special directory token: %s",strPath1.c_str());
       return false;
     }
   }
@@ -2328,23 +2328,23 @@ bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES 
     for (unsigned int i = 0; i < shares.size(); i++)
     {
       const CShare &share = shares[i];
-      TiXmlElement bookmark("bookmark");
+      TiXmlElement source("source");
 
-      SetString(&bookmark, "name", share.strName);
+      SetString(&source, "name", share.strName);
 
       for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-        SetString(&bookmark, "path", share.vecPaths[i]);
+        SetString(&source, "path", share.vecPaths[i]);
 
       if (share.m_iHasLock)
       {
-        SetInteger(&bookmark, "lockmode", share.m_iLockMode);
-        SetString(&bookmark, "lockcode", share.m_strLockCode);
-        SetInteger(&bookmark, "badpwdcount", share.m_iBadPwdCount);
+        SetInteger(&source, "lockmode", share.m_iLockMode);
+        SetString(&source, "lockcode", share.m_strLockCode);
+        SetInteger(&source, "badpwdcount", share.m_iBadPwdCount);
       }
       if (!share.m_strThumbnailImage.IsEmpty())
-        SetString(&bookmark, "thumbnail", share.m_strThumbnailImage);
+        SetString(&source, "thumbnail", share.m_strThumbnailImage);
 
-      sectionNode->InsertEndChild(bookmark);
+      sectionNode->InsertEndChild(source);
     } 
   }
   return true;

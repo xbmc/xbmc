@@ -102,12 +102,12 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       {
         bIsDir = true;
         bool bFool;
-        int iBookmark = CUtil::GetMatchingShare(m_selectedPath,m_shares,bFool);
+        int iSource = CUtil::GetMatchingShare(m_selectedPath,m_shares,bFool);
         bFool = true;
-        if (iBookmark > -1)
+        if (iSource > -1)
         {
           CUtil::RemoveSlashAtEnd(m_selectedPath);
-          if (m_shares[iBookmark].strPath.Equals(m_selectedPath))
+          if (m_shares[iSource].strPath.Equals(m_selectedPath))
             bFool = false;
         }
       
@@ -228,8 +228,8 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         }
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
-      { // State of the bookmarks changed, so update our view
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      { // State of the sources changed, so update our view
         if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
@@ -860,7 +860,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     }
     else
     {
-      g_settings.DeleteBookmark(m_addSourceType,m_vecItems[iItem]->GetLabel(),m_vecItems[iItem]->m_strPath);
+      g_settings.DeleteSource(m_addSourceType,m_vecItems[iItem]->GetLabel(),m_vecItems[iItem]->m_strPath);
       SetShares(*g_settings.GetSharesFromType(m_addSourceType));
       Update("");
     }

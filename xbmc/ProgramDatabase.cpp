@@ -523,7 +523,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     unsigned __int64 lastAccessed = ((ULARGE_INTEGER*)&time)->QuadPart;
     CStdString strPath, strParent;
     CUtil::GetDirectory(item->m_strPath,strPath);
-    // special case - programs in root of bookmarks
+    // special case - programs in root of sources
     bool bIsShare=false;
     CUtil::GetMatchingShare(strPath,g_settings.m_vecMyProgramsShares,bIsShare);
     __int64 iSize=0;

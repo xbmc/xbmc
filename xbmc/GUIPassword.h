@@ -29,10 +29,9 @@ public:
   bool CheckMenuLock(int iWindowID);
   bool SetMasterLockMode(bool bDetails=true);
   CStdString GetSMBAuthFilename(const CStdString& strAuth);
-  bool LockBookmark(const CStdString& strType, const CStdString& strName, bool bState);
-  void LockBookmarks();
-  void UnlockBookmarks();
-  void RemoveBookmarkLocks();
+  bool LockSource(const CStdString& strType, const CStdString& strName, bool bState);
+  void LockSources(bool lock);
+  void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares);
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache

@@ -3616,26 +3616,26 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
     if (iFound == 0)
     {
       CStdString strParent;
-      bool bIsBookMark=false;
-      int iBookMark=-2;
+      bool bIsSource=false;
+      int iSource=-2;
       while (iFound == 0 && CUtil::GetParentPath(strPath1, strParent))
       {
         CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
         if (m_pDS->eof())
         {
-          if (iBookMark == -2)
+          if (iSource == -2)
           {
-            iBookMark = CUtil::GetMatchingShare(strParent,g_settings.m_vecMyVideoShares,bIsBookMark);
-            bIsBookMark = g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size() > 1;
+            iSource = CUtil::GetMatchingShare(strParent,g_settings.m_vecMyVideoShares,bIsSource);
+            bIsSource = g_settings.m_vecMyVideoShares[iSource].vecPaths.size() > 1;
           }
-          if (iBookMark > -1 && bIsBookMark)
+          if (iSource > -1 && bIsSource)
           {
-            for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size();++i)
+            for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iSource].vecPaths.size();++i)
             {
-              if (g_settings.m_vecMyVideoShares[iBookMark].vecPaths[i].Equals(strParent))
+              if (g_settings.m_vecMyVideoShares[iSource].vecPaths[i].Equals(strParent))
               {
-                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iBookMark].strPath.c_str());
+                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iSource].strPath.c_str());
                 m_pDS->query(strSQL.c_str());
                 break;
               }
