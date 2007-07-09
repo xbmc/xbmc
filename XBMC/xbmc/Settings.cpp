@@ -1863,6 +1863,9 @@ bool CSettings::LoadProfile(int index)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     m_gWindowManager.SendMessage(msg);
 
+    CUtil::DeleteMusicDatabaseDirectoryCache();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+
     return true;
   }
 
