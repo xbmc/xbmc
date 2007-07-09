@@ -310,13 +310,13 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
       scraper.strContent = "None";
 
     bool bName;
-    int iBookmark = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
-    if (iBookmark > -1)
+    int iSource = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
+    if (iSource > -1)
     {
-      if (g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size() > 1 && bName)
+      if (g_settings.m_vecMyVideoShares[iSource].vecPaths.size() > 1 && bName)
       {
-        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size();++i)
-          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iBookmark].vecPaths[i],scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
+        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iSource].vecPaths.size();++i)
+          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iSource].vecPaths[i],scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
       }
     }
     database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);

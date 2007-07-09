@@ -3166,12 +3166,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (g_passwordManager.bMasterUser)
     {
       g_passwordManager.bMasterUser = false;
-      g_passwordManager.LockBookmarks();
+      g_passwordManager.LockSources(true);
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
-      g_passwordManager.UnlockBookmarks();
+      g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
     }
@@ -3788,8 +3788,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
-        bool bIsBookMark;
-        if (GetMatchingShare(value,shares,bIsBookMark) < 0) // path is outside shares - add it as a separate one
+        bool bIsSource;
+        if (GetMatchingShare(value,shares,bIsSource) < 0) // path is outside shares - add it as a separate one
         {
           CShare share;
           share.strName = g_localizeStrings.Get(13278);
@@ -3932,7 +3932,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     return -1;
   return 0;
 }
-int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsBookmarkName)
+int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsSourceName)
 {
   if (strPath1.IsEmpty())
     return -1;
@@ -3958,10 +3958,10 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
   //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
-  bIsBookmarkName = false;
+  bIsSourceName = false;
   int iIndex = -1;
   int iLength = -1;
-  // we first test the NAME of a bookmark
+  // we first test the NAME of a source
   for (int i = 0; i < (int)vecShares.size(); ++i)
   {
     CShare share = vecShares.at(i);
@@ -3973,8 +3973,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (IsOnDVD(strPath))
         return i;
 
-      // not a path, so we need to modify the bookmark name
-      // since we add the drive status and disc name to the bookmark
+      // not a path, so we need to modify the source name
+      // since we add the drive status and disc name to the source
       // "Name (Drive Status/Disc Name)"
       int iPos = strName.ReverseFind('(');
       if (iPos > 1)
@@ -3983,7 +3983,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
     if (strPath.Equals(strName))
     {
-      bIsBookmarkName = true;
+      bIsSourceName = true;
       return i;
     }
   }
@@ -4006,7 +4006,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   {
     CShare share = vecShares.at(i);
 
-    // does it match a bookmark name?
+    // does it match a source name?
     if (share.strPath.substr(0,8) == "shout://")
     {
       CURL url(share.strPath);
@@ -4014,7 +4014,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
         return i;
     }
 
-    // doesnt match a name, so try the bookmark path
+    // doesnt match a name, so try the source path
     vector<CStdString> vecPaths;
 
     // add any concatenated paths if they exist
@@ -4040,16 +4040,16 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
-        //CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+        //CLog::Log(LOGDEBUG,"Found matching source at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
 
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
         {
           // if the path EXACTLY matches an item in a concatentated path
-          // set bookmark name to true to load the full virtualpath
-          bIsBookmarkName = false;
+          // set source name to true to load the full virtualpath
+          bIsSourceName = false;
           if (vecPaths.size() > 1)
-            bIsBookmarkName = true;
+            bIsSourceName = true;
           return i;
         }
         iIndex = i;
@@ -4069,12 +4069,12 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
 
-      bIsBookmarkName = false;
+      bIsSourceName = false;
       bool bDummy;
       return GetMatchingShare(strPath, vecShares, bDummy);
     }
 
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strPath1.c_str());
+    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
