@@ -451,7 +451,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
     else if (info.Left(8).Equals("content("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,strTest.size()-9)), 0));
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
     else if (info.Left(5).Equals("sort("))
     {
