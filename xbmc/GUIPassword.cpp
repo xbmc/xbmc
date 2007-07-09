@@ -45,7 +45,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
 {
   // \brief Tests if the user is allowed to access the share folder
   // \param pItem The share folder item to access
-  // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateBookmark
+  // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
   // \return If access is granted, returns \e true
   if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
     return true;
@@ -109,8 +109,8 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
         // password entry succeeded
         pItem->m_iBadPwdCount = 0;
         pItem->m_iHasLock = 1;
-        g_passwordManager.LockBookmark(strType,strLabel,false);
-        g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
+        g_passwordManager.LockSource(strType,strLabel,false);
+        g_settings.UpdateSource(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
         g_settings.SaveSources();
         break;
       }
@@ -119,7 +119,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
         // password entry failed
         if (0 != g_guiSettings.GetInt("masterlock.maxretries"))
           pItem->m_iBadPwdCount++;
-        g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
+        g_settings.UpdateSource(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
         g_settings.SaveSources();
         break;
       }
@@ -318,7 +318,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   UpdateMasterLockRetryCount(true);
   if (g_guiSettings.GetBool("masterlock.automastermode") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
   {
-      UnlockBookmarks();
+      LockSources(false);
       bMasterUser = true;
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
   }
@@ -504,7 +504,7 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
   return strPath;
 }
 
-bool CGUIPassword::LockBookmark(const CStdString& strType, const CStdString& strName, bool bState)
+bool CGUIPassword::LockSource(const CStdString& strType, const CStdString& strName, bool bState)
 {
   VECSHARES* pShares = g_settings.GetSharesFromType(strType);
   bool bResult = false;
@@ -520,15 +520,15 @@ bool CGUIPassword::LockBookmark(const CStdString& strType, const CStdString& str
       break;
     }
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage(msg);
 
   return bResult;
 }
 
-void CGUIPassword::LockBookmarks()
+void CGUIPassword::LockSources(bool lock)
 {
-  // lock all bookmarks (those with locks)
+  // lock or unlock all sources (those with locks)
   const char* strType[5] = {"myprograms","music","video","pictures","files"};
   VECSHARES* pShares[5];
   pShares[0] = g_settings.GetSharesFromType("myprograms");
@@ -540,35 +540,15 @@ void CGUIPassword::LockBookmarks()
   {
     for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
-        it->m_iHasLock = 2;
+        it->m_iHasLock = lock ? 2 : 1;
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
-void CGUIPassword::UnlockBookmarks()
+void CGUIPassword::RemoveSourceLocks()
 {
-   // open lock for all bookmarks
-  const char* strType[5] = {"myprograms","music","video","pictures","files"};
-  VECSHARES* pShares[5];
-  pShares[0] = g_settings.GetSharesFromType("myprograms");
-  pShares[1] = g_settings.GetSharesFromType("music");
-  pShares[2] = g_settings.GetSharesFromType("video");
-  pShares[3] = g_settings.GetSharesFromType("pictures");
-  pShares[4] = g_settings.GetSharesFromType("files");
-  for (int i=0;i<5;++i)
-  {
-    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
-      if (it->m_iLockMode != LOCK_MODE_EVERYONE)
-        it->m_iHasLock = 1;
-  }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-  m_gWindowManager.SendThreadMessage(msg);
-}
-
-void CGUIPassword::RemoveBookmarkLocks()
-{
-  // remove lock from all bookmarks
+  // remove lock from all sources
   const char* strType[5] = {"myprograms","music","video","pictures","files"};
   VECSHARES* pShares[5];
   pShares[0] = g_settings.GetSharesFromType("myprograms");
@@ -583,11 +563,11 @@ void CGUIPassword::RemoveBookmarkLocks()
       {
         it->m_iHasLock = 0;
         it->m_iLockMode = LOCK_MODE_EVERYONE;
-        g_settings.UpdateBookmark(strType[i],it->strName,"lockmode","0"); // removes locks from xml
+        g_settings.UpdateSource(strType[i],it->strName,"lockmode","0"); // removes locks from xml
       }
   }
   g_settings.SaveSources();
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_BOOKMARKS);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
@@ -596,7 +576,7 @@ bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecSha
   if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
-  // try to find the best matching bookmark
+  // try to find the best matching source
   bool bName = false;
   int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bName);
 

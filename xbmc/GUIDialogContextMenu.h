@@ -95,7 +95,7 @@ public:
   float GetWidth();
   float GetHeight();
 
-  static bool BookmarksMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
+  static bool SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
 
   static void GetContextButtons(const CStdString &type, CShare *share, CContextButtons &buttons);
