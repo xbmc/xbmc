@@ -242,9 +242,11 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *sh
   {
     if (share)
     {
-      buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
+      if (!share->m_ignore)
+        buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
       buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
-      buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
+      if (!share->m_ignore)
+        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
       if (share->m_strThumbnailImage != "")
