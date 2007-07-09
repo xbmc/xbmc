@@ -687,7 +687,8 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
       browser->SetHeading(g_localizeStrings.Get(21362));
     if (strType.Equals("upnppictures"))
       browser->SetHeading(g_localizeStrings.Get(21363));
-    shares = *additionalShare;
+    if (additionalShare)
+      shares = *additionalShare;
     browser->m_addSourceType = strType;
   }
   else
@@ -699,8 +700,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
     // Now the additional share if appropriate
     if (additionalShare)
     {
-      for (unsigned int i=0;i<additionalShare->size();++i)
-      shares.push_back((*additionalShare)[i]);
+      shares.insert(shares.end(),additionalShare->begin(),additionalShare->end());
     }
 
     // Now add the network shares...
@@ -729,7 +729,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
 void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
 {
   m_shares = shares;
-  if (!m_shares.size())
+  if (!m_shares.size() && m_addSourceType.IsEmpty())
     g_mediaManager.GetLocalDrives(m_shares);
   m_rootDir.SetShares(m_shares);
 }
