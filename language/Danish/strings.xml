@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 06/26/2007-->
+<!--Date of translation: 07/09/2007-->
 <!--$Revision$-->
 <!--Based on english strings version 9391-->
 <strings>
@@ -166,14 +166,14 @@
   <string id="234">Anisotropisk</string>
   <string id="235">Quincunx</string>
   <string id="236">Gaussisk kubisk</string>
-  <string id="237">Formindskning:</string>
-  <string id="238">Forstørrelse:</string>
+  <string id="237">Formindskning</string>
+  <string id="238">Forstørrelse</string>
   <string id="239">Tøm afspillingslisten ved afslutning</string>
-  <string id="240">Autoafspil DVD-Film</string>
+  <string id="240">Autoafspil DVD-film</string>
   <string id="241">Autoafspil VCD/SVCD</string>
   <string id="242">Autoafspil lyd-CD</string>
   <string id="243">Autoafspil XBOX-spil</string>
-  <string id="244">Autoafspil film</string>
+  <string id="244">Autoafspil videoer</string>
   <string id="245">Autoafspil musik</string>
   <string id="246">Autoafspil billeder</string>
   <string id="247">Skript</string>
@@ -210,10 +210,10 @@
   <string id="278">Juster firkanten så den bliver perfekt kvadratisk</string>
   <string id="279">Kan ikke indlæse indstillinger</string>
   <string id="280">Bruger standardindstillinger</string>
-  <string id="281">Check venligst .xml filerne</string>
+  <string id="281">Kontroller venligst .xml filerne</string>
   <string id="282">%i elementer fundet</string>
   <string id="283">Søgeresultat</string>
-  <string id="284">Intet resultat fundet</string>
+  <string id="284">Ingen resultater fundet</string>
   <string id="286">Efterbehandlingsfilter</string>
   <string id="287">Undertekster</string>
   <string id="288">Skrifttype</string>
@@ -239,16 +239,16 @@
   <string id="314">Forbereder...</string>
   <string id="315">Databasefejl</string>
   <string id="316">Søger numre...</string>
-  <string id="317">Rydning gennemført</string>
-  <string id="318">Markerer slettede numre</string>
+  <string id="317">Oprydning gennemført</string>
+  <string id="318">Behandler sange...</string>
   <string id="319">Fejl ved rydning af sange</string>
-  <string id="320">Søger efter kunstnere...</string>
+  <string id="320">Behandler kunstnere...</string>
   <string id="321">Fejl ved rydning af kunstnere</string>
-  <string id="322">Søger genrer...</string>
+  <string id="322">Behandler genrer...</string>
   <string id="323">Fejl ved rydning af genrer</string>
-  <string id="324">Gennemsøger stier...</string>
+  <string id="324">Behandler stier...</string>
   <string id="325">Fejl ved rydning af stier</string>
-  <string id="326">Søger efter album...</string>
+  <string id="326">Behandler album...</string>
   <string id="327">Fejl ved rydning af album</string>
   <string id="328">Skriver ændringer...</string>
   <string id="329">Fejl under skrivning</string>
@@ -279,7 +279,7 @@
   <string id="358">Alle album</string>
   <string id="359">Seneste album</string>
   <string id="360">Pauseskærm</string>
-  <string id="361">Vis billedserie</string>
+  <string id="361">R. billedserie</string>
   <string id="362">Dæmpning i procent</string>
   <string id="363">Sortering: Fil</string>
   <string id="364">- Dolby Digital-forstærker (AC3)</string>
@@ -368,12 +368,12 @@
   <string id="448">LCD</string>
   <string id="449">Aktiveret</string>
   <string id="450">Kolonner</string>
-  <string id="451">Række 1 adresse:</string>
-  <string id="452">Række 2 adresse:</string>
-  <string id="453">Række 3 adresse:</string>
-  <string id="454">Række 4 adresse:</string>
-  <string id="455">Rækker:</string>
-  <string id="456">Tilstand:</string>
+  <string id="451">Adresse på række 1</string>
+  <string id="452">Adresse på række 2</string>
+  <string id="453">Adresse på række 3</string>
+  <string id="454">Adresse på række 4</string>
+  <string id="455">Rækker</string>
+  <string id="456">Tilstand</string>
   <string id="457">Skift visning</string>
   <string id="459">Undertekster</string>
   <string id="460">Lydkanal</string>
@@ -384,14 +384,14 @@
   <string id="465">Kontrast</string>
   <string id="466">Gamma</string>
   <string id="467">Type</string>
-  <string id="468">Flyt bjælken for at ændre OSD-placering</string>
-  <string id="469">OSD-placering</string>
+  <string id="468">Flyt bjælken for at ændre placering af OSD</string>
+  <string id="469">Placering af OSD</string>
   <string id="470">Tak til</string>
   <string id="471">Modchip</string>
   <string id="474">Fra</string>
   <string id="475">Kun musik</string>
   <string id="476">Musik og Film</string>
-  <string id="477">Kan ikke indlæse afspillingsliste</string>
+  <string id="477">Kan ikke indlæse afspilningsliste</string>
   <string id="478">OSD</string>
   <string id="479">Skin og sprog</string>
   <string id="480">Brugerflade</string>
@@ -430,7 +430,7 @@
   <string id="517">Fornyligt afspillede album</string>
   <string id="518">Start</string>
   <string id="519">Start i..</string>
-  <string id="520">Rediger XBE-titel</string>
+  <string id="520">Rediger titel på XBE</string>
   <string id="521">Samlinger</string>
   <string id="522">Fjern kilde</string>
   <string id="523">Skift medie</string>
@@ -499,7 +499,7 @@
   <string id="601">Medium</string>
   <string id="602">Standard</string>
   <string id="603">Ekstrem</string>
-  <string id="604">Konstant Bitrate (CBR)</string>
+  <string id="604">Konstant bitrate (CBR)</string>
   <string id="605">Ripper...</string>
   <string id="606">Spornummer:</string>
   <string id="607">Til:</string>
@@ -526,7 +526,7 @@
   <string id="640">Brug albummets lydstyrke</string>
   <string id="641">PreAmp-styrke - Replay Gained filer</string>
   <string id="642">PreAmp-styrke - Non Replay Gained filer</string>
-  <string id="643">Undgå klipning ved Replay Gained filer</string>
+  <string id="643">Undgå hak ved Replay Gained filer</string>
   <string id="644">Fjern sorte kanter</string>
   <string id="645">Behov for at gemme en stor fil midlertidigt. Fortsæt?</string>
   <string id="646">Fjern fra database</string>
@@ -551,7 +551,7 @@
   <string id="707">HTTP-proxy port</string>
   <string id="708">Aktiver HTTP-proxy</string>
   <string id="709">XLink Kai XTag</string>
-  <string id="710">XLink Kai Adgangskode</string>
+  <string id="710">Adgangskode til XLink Kai</string>
   <string id="711">Internet Protokol (IP)</string>
   <string id="712">Ugyldig port angivet. Porten skal ligge imellem 1 og 65535.</string>
   <string id="713">HTTP-proxy</string>
@@ -562,8 +562,8 @@
   <string id="718">Standard (Dashboard)</string>
   <string id="719">- IP-adresse</string>
   <string id="720">- Netmaske</string>
-  <string id="721">- Standard Gateway</string>
-  <string id="722">- DNS Server</string>
+  <string id="721">- Standard gateway</string>
+  <string id="722">- DNS-server</string>
   <string id="723">Gem og genstart</string>
   <string id="724">Ugyldig adresse. Værdien skal have formatet AAA.BBB.CCC.DDD</string>
   <string id="725">med numre mellem 0 og 255.</string>
@@ -926,12 +926,12 @@
   <string id="13289">Xbox Serienummer:</string>
   <string id="13290">Xbox Producent:</string>
   <string id="13291">Modchip:</string>
-  <string id="13292">A/V Kabel:</string>
+  <string id="13292">A/V-kabel:</string>
   <string id="13293">Video og XBE Region:</string>
   <string id="13294">DVD Region:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Xbox'en er forbundet</string>
-  <string id="13297">Xbox'en er ikke forbundet. Check Netværksindstillinger.</string>
+  <string id="13297">Xbox'en er ikke forbundet. Check netværksindstillinger.</string>
   <string id="13298">Nøgle til XBLIVE:</string>
   <string id="13299">Måltemperatur</string>
   <string id="13300">Blæserhastighed</string>
@@ -949,7 +949,7 @@
   <string id="13312">Reducer sorte bjælker</string>
   <string id="13313">Genstart</string>
   <string id="13314">Blandingsfunktion</string>
-  <string id="13315">Lav ikoner</string>
+  <string id="13315">Gendan ikoner</string>
   <string id="13316">Rekursive ikoner</string>
   <string id="13317">Vis billedserie</string>
   <string id="13318">Rekursiv billedserie</string>
@@ -966,11 +966,11 @@
   <string id="13329">Kunne ikke åbne %s</string>
   <string id="13330">Kunne ikke hente %s</string>
   <string id="13331">Fejl: ikke nok hukommelse.</string>
-  <string id="13332">Flyt Op</string>
-  <string id="13333">Flyt Ned</string>
+  <string id="13332">Flyt op</string>
+  <string id="13333">Flyt ned</string>
   <string id="13334">Rediger tekst</string>
   <string id="13335">Vælg som standard</string>
-  <string id="13336">Fjern Knap</string>
+  <string id="13336">Fjern knap</string>
   <string id="13338">Front-LED</string>
   <string id="13339">Farve på front-LED</string>
   <string id="13340">Uændret</string>
@@ -1009,8 +1009,10 @@
   <string id="13386">Brug tidsbaseret søgning</string>
   <string id="13387">Spornavngivningsmønster højre</string>
   <string id="13388">Presets</string>
-  <string id="13389">Der er ingen presets tilgængeligeog#10;for denne visualisering</string>
-  <string id="13390">Der er ingen Indstillinger tilgængeligeog#10;for denne visualisering</string>
+  <string id="13389">Der er ingen presets tilgængelige
+til denne visualisering</string>
+  <string id="13390">Der er ingen indstillinger tilgængelige
+til denne visualisering</string>
   <string id="13391">Åben/Start</string>
   <string id="13392">Brug visualisering ved musikafspilning</string>
   <string id="13393">Beregn størrelse</string>
@@ -1303,7 +1305,7 @@
   <string id="20018">Intet ikon</string>
   <string id="20019">Vælg ikon</string>
   <string id="20020">Kan ikke bruge både KAI</string>
-  <string id="20021">og et træningsprogram</string>
+  <string id="20021">og et trænerprogram</string>
   <string id="20023">Konflikt</string>
   <string id="20024">Skan nye</string>
   <string id="20025">Skan alle</string>
