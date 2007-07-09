@@ -3,9 +3,9 @@
 #pragma once
 #include "guimessage.h"
 
-//  Bookmark related messages
+//  Source related messages
 #define GUI_MSG_REMOVED_MEDIA           GUI_MSG_USER + 1
-#define GUI_MSG_UPDATE_BOOKMARKS        GUI_MSG_USER + 2
+#define GUI_MSG_UPDATE_SOURCES          GUI_MSG_USER + 2
 
 //  General playlist items changed
 #define GUI_MSG_PLAYLIST_CHANGED        GUI_MSG_USER + 3

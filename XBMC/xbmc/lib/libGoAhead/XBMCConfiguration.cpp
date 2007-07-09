@@ -365,8 +365,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
   if (nr > 0 && nr <= (int)pShares->size()) // update share
   {
     const CShare& share = (*pShares)[nr-1];
-    g_settings.UpdateBookmark(type, share.strName, "path", path);
-    g_settings.UpdateBookmark(type, share.strName, "name", name);
+    g_settings.UpdateSource(type, share.strName, "path", path);
+    g_settings.UpdateSource(type, share.strName, "name", name);
     g_settings.SaveSources();
     return 0;
   }
@@ -444,7 +444,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
   const CShare& share = (*pShares)[nr-1];
-  if (g_settings.DeleteBookmark(type,share.strName,share.strPath))
+  if (g_settings.DeleteSource(type,share.strName,share.strPath))
     return 0;
 
   eid!=-1 ? websError(wp, 500, T("Position not found\n")):

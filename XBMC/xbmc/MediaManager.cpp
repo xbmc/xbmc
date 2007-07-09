@@ -164,7 +164,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
   {
     if (m_locations[i].path == path)
     {
-      // prompt for bookmarks, remove, cancel, 
+      // prompt for sources, remove, cancel, 
       m_locations.erase(m_locations.begin()+i);
       return SaveSources();
     }

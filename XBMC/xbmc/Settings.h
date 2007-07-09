@@ -200,8 +200,8 @@ public:
   VECSHARES *GetSharesFromType(const CStdString &type);
   CStdString GetDefaultShareFromType(const CStdString &type);
 
-  bool UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
+  bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
+  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share);
   bool AddShare(const CStdString &type, const CShare &share);
 
@@ -448,7 +448,7 @@ protected:
   void GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   void GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   void GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
-  bool GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share);
+  bool GetShare(const CStdString &category, const TiXmlNode *source, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
   bool SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);

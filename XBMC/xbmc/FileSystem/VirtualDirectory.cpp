@@ -86,8 +86,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   GetShares(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
   {
-    bool bIsBookmarkName = false;
-    int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsBookmarkName);
+    bool bIsSourceName = false;
+    int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsSourceName);
     // added exception for various local hd items
     // function doesn't work for http/shout streams with options..
     if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
@@ -108,8 +108,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
     // what do with an invalid path?
     // return false so the calling window can deal with the error accordingly
-    // otherwise the root bookmark listing is returned which seems incorrect but was the previous behaviour
-    CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid bookmark, getting root bookmark list instead", strPath.c_str());
+    // otherwise the root listing is returned which seems incorrect but was the previous behaviour
+    CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid source, getting root source list instead", strPath.c_str());
     return false;
   }
 
@@ -117,7 +117,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   if (strPath.IsEmpty())
     items.Clear();
 
-  // return the root bookmark listing
+  // return the root listing
   items.m_strPath=strPath;
 
   // grab our shares
@@ -207,10 +207,10 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
  */
 bool CVirtualDirectory::IsInShare(const CStdString &path) const
 {
-  bool isBookmarkName;
+  bool isSourceName;
   VECSHARES shares;
   GetShares(shares);
-  int iShare = CUtil::GetMatchingShare(path, shares, isBookmarkName);
+  int iShare = CUtil::GetMatchingShare(path, shares, isSourceName);
   // TODO: May need to handle other special cases that GetMatchingShare() fails on
   return (iShare > -1);
 }

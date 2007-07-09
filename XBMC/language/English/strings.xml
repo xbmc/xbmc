@@ -1272,7 +1272,7 @@
   <string id="15302">No servers found</string>
   <string id="15303">Workgroup not found</string>
 
-  <string id="15310">Opening multi-path bookmark</string>
+  <string id="15310">Opening multi-path source</string>
   <string id="15311">Path:</string>
 
   <string id="16000">General</string>
@@ -1398,7 +1398,7 @@
   <string id="20078">- no link set -</string>
   <string id="20079">Enable Animations</string>
   <string id="20080">Disable RSS during Music</string>
-  <string id="20081">Enable Bookmark Buttons</string>
+  <string id="20081">Enable Shortcut Buttons</string>
   <string id="20082">Show XLink Kai Info</string>
   <string id="20083">Show Music info</string>
   <string id="20084">Show Weather info</string>
