@@ -97,6 +97,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   CShare share;
   share.strPath = "C:\\";
   share.strName = "C Drive";
+  share.m_ignore = true;
   localDrives.push_back(share);
   share.strPath = "D:\\";
   share.strName = "DVD Drive";
@@ -111,6 +112,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
       CShare share;
       share.strPath.Format("%c:\\", driveletter);
       share.strName.Format("%c Drive", driveletter);
+      share.m_ignore = true;
       localDrives.push_back(share);
     }
   }
@@ -119,6 +121,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
     CShare share;
     share.strPath = "Q:\\";
     share.strName = "Q Drive";
+    share.m_ignore = true;
     localDrives.push_back(share);
   }
 }
