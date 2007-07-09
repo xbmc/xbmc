@@ -88,7 +88,7 @@ public:
 class CShare
 {
 public:
-  CShare() { m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; };
+  CShare() { m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
   virtual ~CShare() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
@@ -141,6 +141,7 @@ public:
   CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 
   vector<CStdString> vecPaths;
+  bool m_ignore; /// <Do not store in xml
 };
 
 class CSkinString
