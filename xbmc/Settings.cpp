@@ -435,8 +435,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
     strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
   }
-  if (!m_vecMyFilesShares.size())
-    g_mediaManager.GetLocalDrives(m_vecMyFilesShares, true);  // true to include Q
+  VECSHARES shares;
+  g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
+  m_vecMyFilesShares.insert(m_vecMyFilesShares.end(),shares.begin(),shares.end());
 
   bXboxMediacenter = true;
 
@@ -2331,6 +2332,8 @@ bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES 
     for (unsigned int i = 0; i < shares.size(); i++)
     {
       const CShare &share = shares[i];
+      if (share.m_ignore)
+        continue;
       TiXmlElement source("source");
 
       SetString(&source, "name", share.strName);
