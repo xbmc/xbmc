@@ -40,7 +40,7 @@ private:
   faacDecHandle m_pHandle;
   faacDecFrameInfo m_frameInfo;
 
-  BYTE* m_DecodedData;
+  short* m_DecodedData;
   int   m_DecodedDataSize;
   
   BYTE m_InputBuffer[LIBFAAD_INPUT_SIZE];

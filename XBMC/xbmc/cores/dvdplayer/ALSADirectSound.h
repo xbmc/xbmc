@@ -36,6 +36,8 @@
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 
+#include "../../utils/PCMAmplifier.h"
+
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
@@ -66,12 +68,15 @@ public:
   virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
+  virtual void Flush();
+
 private:
   snd_pcm_t 		*m_pPlayHandle;
   snd_pcm_uframes_t 	m_maxFrames;
 
   IAudioCallback* m_pCallback;
 
+  CPCMAmplifier 	m_amp;
   LONG m_nCurrentVolume;
   DWORD m_dwPacketSize;
   DWORD m_dwNumPackets;
