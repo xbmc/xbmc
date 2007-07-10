@@ -77,7 +77,7 @@ int _tmain(int argc, _TCHAR* argv[])
       command += argv[3]; // the limit as a string
       command += " ";
     }
-    command += "--xml https://svn.sourceforge.net/svnroot/xbmc/trunk/XBMC > svn_log.xml";
+    command += "--xml https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk/XBMC > svn_log.xml";
     printf("Downloading changelog from SVN - this will take some time (around 1MB to download with no limit)\n");
     system(command.c_str());
     input = "svn_log.xml";
