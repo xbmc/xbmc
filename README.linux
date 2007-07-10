@@ -62,4 +62,13 @@ SDL_VIDEO_FULLSCREEN_HEAD to the display no. which you want SDL to use for the f
 
 For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./XboxMediaCenter -fs" to tell SDL to use display no.1
 
+Channels downmix
+----------------
+if your machine only has 2 speakers and you would like to watch movies with more channels (e.g. 5.1) then you need to configure your .asoundrc file.
+the .asoundrc file is a configuration file located in the users home directory.
+a demo file can be found here "demo-asoundrc", so:
+1. backup your .asoundrc if it exists (e.g. $cp ~/.asoundrc ~/.asoundrc.backup)
+2. copy the demo asoundrc - $cp demo-asoundrc ~/.asoundrc
+3. you can edit the file and change the downmix setup by changing the "ttable" values. the values range from 0.0 to 1.0 and are actaully the volume pct from the original channels volume. 
+
 Don't expect too much, yet.
