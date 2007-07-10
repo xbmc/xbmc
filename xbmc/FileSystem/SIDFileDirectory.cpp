@@ -62,3 +62,4 @@ bool CSIDFileDirectory::ContainsFiles(const CStdString& strPath)
 
   return false;
 }
+
