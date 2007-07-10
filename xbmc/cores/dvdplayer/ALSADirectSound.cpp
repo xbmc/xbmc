@@ -49,6 +49,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_uiBitsPerSample = uiBitsPerSample;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
+  m_amp.SetVolume(m_nCurrentVolume);
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_BufferSize = m_dwPacketSize * 6; // buffer big enough - but not too big...
@@ -59,7 +60,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   /* Open the device */
   char* device = getenv("XBMC_AUDIODEV");
   if (device == NULL)
-  device = "default";
+    device = "default";
 
   int nErr = snd_pcm_open(&m_pPlayHandle, device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
   CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
@@ -99,6 +100,25 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params(m_pPlayHandle, hw_params);
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
 
+  /* disable underrun reporting and play silence */
+  snd_pcm_uframes_t boundary;
+  snd_pcm_sw_params_t *swparams = NULL;
+  snd_pcm_sw_params_alloca(&swparams);
+  nErr = snd_pcm_sw_params_current(m_pPlayHandle, swparams);
+  CHECK_ALSA(LOGERROR,"sw_params_get_current",nErr);
+
+  nErr = snd_pcm_sw_params_get_boundary(swparams, &boundary);
+  CHECK_ALSA(LOGERROR,"get_boundary",nErr);
+
+  nErr = snd_pcm_sw_params_set_stop_threshold(m_pPlayHandle, swparams, boundary);
+  CHECK_ALSA(LOGERROR,"set_stop_threshold",nErr);
+
+  nErr = snd_pcm_sw_params_set_silence_size(m_pPlayHandle, swparams, boundary);
+  CHECK_ALSA(LOGERROR,"set_silence_size",nErr);
+
+  nErr = snd_pcm_sw_params(m_pPlayHandle, swparams);
+  CHECK_ALSA(LOGERROR,"sw_params",nErr);
+
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
@@ -131,6 +151,14 @@ HRESULT CALSADirectSound::Deinitialize()
   return S_OK;
 }
 
+void CALSADirectSound::Flush() {
+  int nErr = snd_pcm_drain(m_pPlayHandle);
+  CHECK_ALSA(LOGERROR,"flush-drain",nErr); 
+  nErr = snd_pcm_prepare(m_pPlayHandle);
+  CHECK_ALSA(LOGERROR,"flush-prepare",nErr);  
+  nErr = snd_pcm_start(m_pPlayHandle);
+  CHECK_ALSA(LOGERROR,"flush-start",nErr); 
+}
 
 //***********************************************************************************************
 HRESULT CALSADirectSound::Pause()
@@ -144,9 +172,12 @@ HRESULT CALSADirectSound::Pause()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Resume()
 {
-  if (!m_bPause) return S_OK;
+  // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.
   m_bPause = false;
   snd_pcm_pause(m_pPlayHandle,0);
+
+  Flush();
+
   return S_OK;
 }
 
@@ -180,14 +211,12 @@ LONG CALSADirectSound::GetCurrentVolume() const
 void CALSADirectSound::Mute(bool bMute)
 {
   if (!m_bIsAllocated) return;
-/*
-  if (bMute)
-    m_pBuffer->SetVolume(GetMinimumVolume());
-  else
-    m_pBuffer->SetVolume(m_nCurrentVolume);
-*/
 
-#warning volume control not yet implemented for ALSA
+  if (bMute)
+    SetCurrentVolume(GetMinimumVolume());
+  else
+    SetCurrentVolume(m_nCurrentVolume);
+
 }
 
 //***********************************************************************************************
@@ -195,7 +224,7 @@ HRESULT CALSADirectSound::SetCurrentVolume(LONG nVolume)
 {
   if (!m_bIsAllocated) return -1;
   m_nCurrentVolume = nVolume;
-#warning volume control not yet implemented for ALSA
+  m_amp.SetVolume(nVolume);
   return S_OK;
 }
 
@@ -203,39 +232,56 @@ HRESULT CALSADirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CALSADirectSound::GetSpace()
 {
-  return snd_pcm_avail_update(m_pPlayHandle);
+  int nSpace = snd_pcm_avail_update(m_pPlayHandle);
+  if (nSpace < 0) {
+     CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
+     nSpace = 0;
+  }
+  return nSpace;
 }
 
 //***********************************************************************************************
 DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 {
+  if (!m_pPlayHandle) {
+	CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no play handle!");
+	return len; 
+  }
 
-  if (!m_pPlayHandle || snd_pcm_avail_update(m_pPlayHandle) < ( len / (2*m_uiChannels)) || m_bPause)
+  // if there is no room in the buffer - even for one frame, return 
+  if ( GetSpace() < ( len / (2*m_uiChannels)) )
        return 0;
 
   unsigned char *pcmPtr = data;
-  while ( pcmPtr < data + len) {
-       int nPeriodSize = (m_maxFrames * 2 * m_uiChannels); // write a frame.
-       if ( pcmPtr + nPeriodSize >  data + len) {
-               nPeriodSize = data + len - pcmPtr;
-       }
 
-       int framesToWrite = nPeriodSize / (2 * m_uiChannels);
-       int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
-       if (  writeResult == -EPIPE  ) {
-               CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
-                       framesToWrite);
-               int err = snd_pcm_prepare(m_pPlayHandle);
-               CHECK_ALSA(LOGERROR,"prepare after EPIPE", err);
-       }
-       else if (writeResult != framesToWrite) {
-               CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
-                       "bad write (err: %d) - %s",
-                       framesToWrite, writeResult, snd_strerror(writeResult));
-               break;
-       }
+  while (pcmPtr < data + (int)len){  
+	int nPeriodSize = (m_maxFrames * 2 * m_uiChannels); // write max frames.
+	if ( pcmPtr + nPeriodSize >  data + (int)len) {
+		nPeriodSize = data + (int)len - pcmPtr;
+	}
+	
+	int framesToWrite = nPeriodSize / (2 * m_uiChannels);
+	
+	// handle volume de-amp 
+	m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+	
+	int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
+	if (  writeResult == -EPIPE  ) {
+		CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
+						framesToWrite);
+		int err = snd_pcm_prepare(m_pPlayHandle);
+		CHECK_ALSA(LOGERROR,"prepare after EPIPE", err);
+	}
+	else if (writeResult != framesToWrite) {
+		CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
+						"bad write (err: %d) - %s",
+						framesToWrite, writeResult, snd_strerror(writeResult));
+	}
 
-       pcmPtr += nPeriodSize;
+    if (writeResult>0)
+		pcmPtr += writeResult * 2 * m_uiChannels;
+	else
+		pcmPtr += framesToWrite * 2 * m_uiChannels;
   }
 
   return len;
@@ -245,7 +291,7 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 FLOAT CALSADirectSound::GetDelay()
 {
   long bytes = m_BufferSize - GetSpace();
-  double delay = (double)bytes / ( m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) );
+  double delay = (double)bytes / (double)( m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) );
 
   if (g_audioContext.IsAC3EncoderActive())
     delay += 0.049;

@@ -56,10 +56,12 @@ CDVDMsgDemuxerPacket::CDVDMsgDemuxerPacket(CDVDDemux::DemuxPacket* pPacket, unsi
 {
   m_pPacket = pPacket;
   m_packetSize = packetSize;
+  m_bPacketFreed = false;
 }
 
 CDVDMsgDemuxerPacket::~CDVDMsgDemuxerPacket()
 {
+  m_bPacketFreed = true;
   if (m_pPacket)
   {
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);

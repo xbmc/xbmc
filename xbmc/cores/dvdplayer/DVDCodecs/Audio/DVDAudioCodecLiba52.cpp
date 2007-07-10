@@ -74,7 +74,7 @@ bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   // output will be decided on when
   // we have decoded something
-  m_iOutputChannels = 0;
+  m_iOutputChannels = iChannels;
 
   return true;
 }
@@ -124,10 +124,11 @@ void CDVDAudioCodecLiba52::SetupChannels()
   if(channels == 5 || channels == 3)
     channels = 6;
 
-  if(!m_iOutputChannels)
-    m_iOutputChannels = channels;
-  else if(m_iOutputChannels != channels)
-    CLog::Log(LOGWARNING, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
+  if(m_iOutputChannels > 0 && m_iOutputChannels != channels) {
+    CLog::Log(LOGINFO, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
+  }
+
+  m_iOutputChannels = channels;
 
   // make sure map contains enough channels
   for(int i=0;i<m_iOutputChannels;i++)
@@ -228,8 +229,8 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
           m_decodedDataSize = 0;
           return -1;
         }
-
-        m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize), m_iOutputMapping);
+ 
+        m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize/2), m_iOutputMapping);
       }
 
       m_pInputBuffer = m_inputBuffer;
@@ -243,7 +244,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
 
 int CDVDAudioCodecLiba52::GetData(BYTE** dst)
 {
-  *dst = m_decodedData;
+  *dst = (BYTE*)m_decodedData;
   return m_decodedDataSize;
 }
 
@@ -263,7 +264,7 @@ void CDVDAudioCodecLiba52::Reset()
 
   SetDefault();
 
-  m_pState = m_dll.a52_init(0);
+  m_pState = m_dll.a52_init(MM_ACCEL_X86_MMX |MM_ACCEL_X86_MMXEXT); // MMX accel is not really important since liba52 doesnt yet implement this... but whatever...
   m_fSamples = m_dll.a52_samples(m_pState);
 }
 

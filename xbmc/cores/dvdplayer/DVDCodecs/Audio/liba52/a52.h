@@ -53,6 +53,11 @@ typedef struct a52_state_s a52_state_t;
 #define A52_LFE 16
 #define A52_ADJUST_LEVEL 32
 
+/* x86 accelerations */
+#define MM_ACCEL_X86_MMX        0x80000000
+#define MM_ACCEL_X86_3DNOW      0x40000000
+#define MM_ACCEL_X86_MMXEXT     0x20000000
+
 a52_state_t * a52_init (uint32_t mm_accel);
 sample_t * a52_samples (a52_state_t * state);
 int a52_syncinfo (uint8_t * buf, int * flags,
