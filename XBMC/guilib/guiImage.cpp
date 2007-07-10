@@ -249,6 +249,9 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   CRect texture(u1, v1, u2 - u1, v2 - v1);
   g_graphicsContext.ClipRect(vertex, texture);
 
+  if (0 == vertex.w || 0 == vertex.h)
+    return; // nothing to render
+
   float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x, vertex.y) + 0.5f) - 0.5f;
   float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x, vertex.y) + 0.5f) - 0.5f;
   float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x + vertex.w, vertex.y) + 0.5f) - 0.5f;
