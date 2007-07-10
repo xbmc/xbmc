@@ -147,7 +147,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #endif
   catch(...)
   {
-    //CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__); 
   }
 
   try
@@ -166,7 +166,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #endif
   catch(...)
   {
-    //CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
   }
 
   if ( pThread->IsAutoDelete() )
