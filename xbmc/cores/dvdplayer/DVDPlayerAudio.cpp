@@ -173,7 +173,7 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
 int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 {
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
-  int n=48000*2*16/8, len;
+  int n=m_streaminfo.samplerate*m_streaminfo.channels*16/8, len;
 
   unsigned int bytesconsumed = 0;
   if(m_pAudioCodec)
@@ -210,7 +210,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (len < 0)
       {
         /* if error, we skip the packet */
-        CLog::Log(LOGERROR, "CDVDPlayerAudio::Process - Decode Error. Skipping audio packet");
+        CLog::Log(LOGERROR, "CDVDPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet");
         audio_pkt_size=0;
         m_pAudioCodec->Reset();
         return DECODE_FLAG_ERROR;
@@ -223,6 +223,24 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         audio_pkt_size=0;
         m_pAudioCodec->Reset();
         assert(0);
+      }
+
+      // check to see if number of channels changed
+      if (m_bInitializedOutputDevice && m_pAudioCodec->GetChannels() != m_streaminfo.channels) {
+        CLog::Log(LOGINFO,"number of channels changed from %d to %d. re-creating output device", m_streaminfo.channels, m_pAudioCodec->GetChannels());
+  		
+		EnterCriticalSection(&m_critCodecSection);
+
+        m_dvdAudio.Destroy();
+        m_bInitializedOutputDevice = false;
+
+        m_streaminfo.channels = m_pAudioCodec->GetChannels();
+        m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
+  		
+		InitializeOutputDevice();
+
+		LeaveCriticalSection(&m_critCodecSection);
+
       }
 
       // get decoded data and the size of it

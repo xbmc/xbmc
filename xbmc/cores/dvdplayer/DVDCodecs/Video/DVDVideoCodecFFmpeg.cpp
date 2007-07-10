@@ -160,7 +160,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, __int64 pts)
   }
 
   if (len != iSize)
-    CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, iSize, len);
 
   if (!iGotPicture)
     return VC_BUFFER;
