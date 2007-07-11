@@ -287,17 +287,29 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
-    if (g_settings.m_iLastLoadedProfileIndex == 0 && !g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
     else if (!g_passwordManager.IsProfileLockUnlocked())
       return false;
-    return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
 
+    return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
+    
   case CONTEXT_BUTTON_REMOVE_SOURCE:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-      return false;
-    else if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
+    else 
+    {
+      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsMasterLockUnlocked(false))
+        return false;
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+        return false;
+    }
     // prompt user if they want to really delete the source
     if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
@@ -315,10 +327,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
     break;
 
   case CONTEXT_BUTTON_ADD_SOURCE:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
+    else if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
-    else if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
+
     return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
 
   case CONTEXT_BUTTON_SET_DEFAULT:
