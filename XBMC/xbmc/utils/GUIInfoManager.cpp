@@ -1639,7 +1639,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         CStdString strContent="movies";
         if (!m_currentFile.HasVideoInfoTag())
           strContent = "files";
-        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > 0) // episode
+        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > -1) // episode
           strContent = "episodes";
         bReturn = m_stringParameters[info.m_data1].Equals(strContent);
       }
@@ -2050,15 +2050,21 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     if (m_currentFile.GetVideoInfoTag()->m_iEpisode > 0)
     {
       CStdString strYear;
-      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+      if (m_currentFile.GetVideoInfoTag()->m_iDisplayEpisode > 0)
+        strYear.Format("S%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+      else
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
       return strYear;
     }
     break;
   case VIDEOPLAYER_SEASON:
-    if (m_currentFile.GetVideoInfoTag()->m_iSeason > 0)
+    if (m_currentFile.GetVideoInfoTag()->m_iSeason > -1)
     {
       CStdString strYear;
-      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
+      if (m_currentFile.GetVideoInfoTag()->m_iDisplaySeason > 0)
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iDisplaySeason);
+      else
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
       return strYear;
     }
     break;
@@ -2747,7 +2753,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
+      if (item->GetVideoInfoTag()->m_iDisplayEpisode > 0)
+        strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
+      else
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
     break;
@@ -2755,8 +2764,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
-        return strResult;
+      if (item->GetVideoInfoTag()->m_iDisplaySeason > 0)
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iDisplaySeason);
+      else
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
+      return strResult;
     }
     break;
   case LISTITEM_TVSHOW:
