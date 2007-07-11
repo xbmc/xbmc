@@ -435,9 +435,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
     strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
   }
-  VECSHARES shares;
-  g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
-  m_vecMyFilesShares.insert(m_vecMyFilesShares.end(),shares.begin(),shares.end());
 
   bXboxMediacenter = true;
 
@@ -492,7 +489,27 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
   if (type == "myprograms")
     return &g_settings.m_vecMyProgramsShares;
   else if (type == "files")
+  {
+    // this nasty block of code is needed as we have to
+    // call getlocaldrives after localize strings has been loaded
+    bool bAdded=false;
+    for (unsigned int i=0;i<g_settings.m_vecMyFilesShares.size();++i) 
+    {
+      if (g_settings.m_vecMyFilesShares[i].m_ignore)
+      {
+        bAdded = true;
+        break;
+      }
+    }
+    if (!bAdded)
+    {
+      VECSHARES shares;
+      g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
+      m_vecMyFilesShares.insert(m_vecMyFilesShares.end(),shares.begin(),shares.end());
+    }
+
     return &g_settings.m_vecMyFilesShares;
+  }
   else if (type == "music")
     return &g_settings.m_vecMyMusicShares;
   else if (type == "video")
