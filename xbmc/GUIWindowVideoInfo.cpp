@@ -509,7 +509,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1) // episode
     iType = 1;
 
   CVideoInfoTag movieDetails;
