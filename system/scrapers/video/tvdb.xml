@@ -136,6 +136,12 @@
 			<RegExp input="$$1" output="&lt;aired&gt;\1&lt;/aired&gt;" dest="4+">
 				<expression>&lt;FirstAired&gt;([^&lt;]+)&lt;/FirstAired&gt;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;displayseason&gt;\1&lt;/displayseason&gt;" dest="4+">
+				<expression>&lt;airsbefore_season&gt;([^&lt;]+)&lt;/airsbefore_season&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;displayepisode&gt;\1&lt;/displayepisode&gt;" dest="4+">
+				<expression>&lt;airsbefore_episode&gt;([^&lt;]+)&lt;/airsbefore_episode&gt;</expression>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetEpisodeDetails>
