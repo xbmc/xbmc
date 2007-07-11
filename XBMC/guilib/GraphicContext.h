@@ -111,6 +111,7 @@ public:
   void EndPaint(Surface::CSurface* dest=NULL);
   void ReleaseCurrentContext(Surface::CSurface* dest=NULL);
   void AcquireCurrentContext(Surface::CSurface* dest=NULL);
+  void DeleteThreadContext();
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
