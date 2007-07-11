@@ -392,10 +392,25 @@ void CAnimation::ResetAnimation()
 
 void CAnimation::ApplyAnimation()
 {
-  m_currentProcess = ANIM_PROCESS_NONE;
   m_queuedProcess = ANIM_PROCESS_NONE;
-  m_currentState = ANIM_STATE_APPLIED;
-  m_amount = 1.0f;
+  if (m_repeatAnim == ANIM_REPEAT_PULSE)
+  { // pulsed anims auto-reverse
+    m_amount = 1.0f;
+    m_currentProcess = ANIM_PROCESS_REVERSE;
+    m_currentState = ANIM_STATE_IN_PROCESS;
+  }
+  else if (m_repeatAnim == ANIM_REPEAT_LOOP)
+  { // looped anims start over
+    m_amount = 0.0f;
+    m_currentProcess = ANIM_PROCESS_NORMAL;
+    m_currentState = ANIM_STATE_IN_PROCESS;
+  }
+  else
+  {
+    m_currentProcess = ANIM_PROCESS_NONE;
+    m_currentState = ANIM_STATE_APPLIED;
+    m_amount = 1.0f;
+  }
   Calculate();
 }
 
