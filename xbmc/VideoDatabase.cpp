@@ -3014,7 +3014,10 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       {
         long lSeason = it->first;
         CStdString strLabel;
-        strLabel.Format(g_localizeStrings.Get(20358),lSeason);
+        if (lSeason == 0)
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel.Format(g_localizeStrings.Get(20358),lSeason);
         CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
@@ -3031,7 +3034,10 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       {
         long lSeason = m_pDS->fv(0).get_asLong();
         CStdString strLabel;
-        strLabel.Format(g_localizeStrings.Get(20358),lSeason);
+        if (lSeason == 0)
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel.Format(g_localizeStrings.Get(20358),lSeason);
         CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
         strDir.Format("%ld/", lSeason);
@@ -3377,7 +3383,12 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
     }
 
     if (idSeason != -1)
-      strSQL += FormatSQL(" and episode.c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
+    {
+      if (idSeason != 0)
+        strSQL += FormatSQL(" and (episode.c%02d=%u or episode.c%02d=0)",VIDEODB_ID_EPISODE_SEASON,idSeason,VIDEODB_ID_EPISODE_SEASON);
+      else
+        strSQL += FormatSQL(" and episode.c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
+    }
 
     // get all songs out of the database in fixed size chunks
     // dont reserve the items ahead of time just in case it fails part way though
@@ -3416,6 +3427,11 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
           {
             long lEpisodeId = m_pDS->fv("episode.idepisode").get_asLong();
             CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
+            if (idSeason > 0 && movie.m_iDisplaySeason > 0 && movie.m_iDisplaySeason != idSeason)
+            {
+              m_pDS->next();
+              continue;
+            }
 
             CFileItem* pItem=new CFileItem(movie);
             CStdString strDir;
@@ -3471,6 +3487,11 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
 
       CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
+      if (idSeason > 0 && movie.m_iDisplaySeason > 0 && movie.m_iDisplaySeason != idSeason)
+      {
+        m_pDS->next();
+        continue;
+      }
 
       CFileItem* pItem=new CFileItem(movie);
       CStdString strDir;
