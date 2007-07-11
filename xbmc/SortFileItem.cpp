@@ -232,7 +232,19 @@ bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetVideoInfoTag()->m_iSeason*1000+left->GetVideoInfoTag()->m_iEpisode <= right->GetVideoInfoTag()->m_iSeason*1000+right->GetVideoInfoTag()->m_iEpisode;
+  {
+    int il;
+    int ir;
+    if (left->GetVideoInfoTag()->m_iDisplayEpisode > 0)
+      il = left->GetVideoInfoTag()->m_iDisplaySeason*100000+left->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-left->GetVideoInfoTag()->m_iEpisode);
+    else
+      il = left->GetVideoInfoTag()->m_iSeason*100000+left->GetVideoInfoTag()->m_iEpisode*100;
+    if (right->GetVideoInfoTag()->m_iDisplayEpisode > 0)
+      ir = right->GetVideoInfoTag()->m_iDisplaySeason*100000+right->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-right->GetVideoInfoTag()->m_iEpisode);
+    else
+      ir = right->GetVideoInfoTag()->m_iSeason*100000+right->GetVideoInfoTag()->m_iEpisode*100;
+    return il <= ir;
+  }
   return left->m_bIsFolder;
 }
 
@@ -243,7 +255,19 @@ bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetVideoInfoTag()->m_iSeason*1000+left->GetVideoInfoTag()->m_iEpisode >= right->GetVideoInfoTag()->m_iSeason*1000+right->GetVideoInfoTag()->m_iEpisode;
+  {
+    int il;
+    int ir;
+    if (left->GetVideoInfoTag()->m_iDisplayEpisode > 0)
+      il = left->GetVideoInfoTag()->m_iDisplaySeason*100000+left->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-left->GetVideoInfoTag()->m_iEpisode);
+    else
+      il = left->GetVideoInfoTag()->m_iSeason*100000+left->GetVideoInfoTag()->m_iEpisode*100;
+    if (right->GetVideoInfoTag()->m_iDisplayEpisode > 0)
+      ir = right->GetVideoInfoTag()->m_iDisplaySeason*100000+right->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-right->GetVideoInfoTag()->m_iEpisode);
+    else
+      ir = right->GetVideoInfoTag()->m_iSeason*100000+right->GetVideoInfoTag()->m_iEpisode*100;
+    return il >= ir;
+  }
   return left->m_bIsFolder;
 }
 
