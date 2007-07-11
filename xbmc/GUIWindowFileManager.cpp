@@ -1078,7 +1078,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 {
   if (pItem->m_bIsShareOrDrive)
   {
-    // We are in the virual directory
+    // We are in the virtual directory
 
     // History string of the DVD drive
     // must be handel separately
@@ -1100,7 +1100,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
     }
     else
     {
-      // Other items in virual directory
+      // Other items in virtual directory
       strHistoryString = pItem->GetLabel() + pItem->m_strPath;
       CUtil::RemoveSlashAtEnd(strHistoryString);
     }
@@ -1554,7 +1554,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
 {
   // check for a passed destination path
   CStdString strDestination = path;
-  m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
+  m_rootDir.SetShares(*g_settings.GetSharesFromType("files"));
   if (!strDestination.IsEmpty())
   {
     CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
