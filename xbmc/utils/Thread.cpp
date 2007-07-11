@@ -32,6 +32,7 @@ typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #endif
 
 #include "log.h"
+#include "GraphicContext.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -174,6 +175,8 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     delete pThread;
     pThread = NULL;
   }
+
+  g_graphicsContext.DeleteThreadContext();
 
   CLog::Log(LOGDEBUG,"Thread %lu terminating",GetCurrentThreadId());
 
