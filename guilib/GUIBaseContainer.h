@@ -29,7 +29,6 @@ public:
   CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime);
   virtual ~CGUIBaseContainer(void);
 
-  virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnDown();
   virtual void OnUp();
@@ -52,7 +51,7 @@ public:
   int GetSelectedItem() const;
 
   virtual void Animate(DWORD currentTime);
-  virtual void UpdateEffectState(DWORD currentTime);
+  virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
 

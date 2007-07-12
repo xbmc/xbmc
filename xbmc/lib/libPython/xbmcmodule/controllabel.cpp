@@ -91,7 +91,7 @@ namespace PYXBMC
     label.textColor = label.focusedColor = pControl->dwTextColor;
     label.disabledColor = pControl->dwDisabledColor;
     label.align = pControl->dwAlign;
-    label.angle = CAngle(-pControl->iAngle);
+    label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUILabelControl(
       pControl->iParentId,
       pControl->iControlId,

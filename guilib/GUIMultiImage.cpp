@@ -30,15 +30,19 @@ CGUIMultiImage::~CGUIMultiImage(void)
 {
 }
 
-void CGUIMultiImage::Render()
+void CGUIMultiImage::UpdateVisibility()
 {
-  // check if we're hidden, and deallocate + return
+  CGUIControl::UpdateVisibility();
+
+  // check if we're hidden, and deallocate if so
   if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
     return;
   }
+
+  // we are either delayed or visible, so we can allocate our resources
 
   // check for conditional information before we
   // alloc as this can free our resources
@@ -59,13 +63,13 @@ void CGUIMultiImage::Render()
     }
   }
 
+  // and allocate our resources
   if (!IsAllocated())
     AllocResources();
+}
 
-  // if we're delayed, we allocate (above) but there's no need to render.
-  if (m_visible == DELAYED)
-    return CGUIControl::Render();
-
+void CGUIMultiImage::Render()
+{
   if (!m_images.empty())
   {
     // Set a viewport so that we don't render outside the defined area
