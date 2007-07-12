@@ -276,8 +276,5 @@ void CGUIFont::DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor
 void CGUIFont::SetRotation(float x, float y, float angle)
 {
   static const float degrees_to_radians = 0.01745329252f;
-  TransformMatrix transform = TransformMatrix::CreateTranslation(x, y);
-  transform *= TransformMatrix::CreateZRotation(angle * degrees_to_radians);
-  transform *= TransformMatrix::CreateTranslation(-x, -y);
-  g_graphicsContext.AddTransform(transform);
+  g_graphicsContext.AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, g_graphicsContext.GetScalingPixelRatio()));
 }
