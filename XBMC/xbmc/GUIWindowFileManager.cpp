@@ -431,6 +431,17 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   m_vecItems[iList].m_strPath = items.m_strPath;
   items.ClearKeepPointer();
 
+  if (strDirectory.IsEmpty() && (m_vecItems[iList].Size() == 0 || !g_guiSettings.GetBool("filelists.disableaddsourcebuttons")))
+  { // add 'add source button'
+    CStdString strLabel = g_localizeStrings.Get(1026);
+    CFileItem *pItem = new CFileItem(strLabel);
+    pItem->m_strPath = "add";
+    pItem->SetThumbnailImage("DefaultAddSource.png");
+    pItem->SetLabel(strLabel);
+    pItem->SetLabelPreformated(true);
+    m_vecItems[iList].Add(pItem);
+  }
+
   // if we have a .tbn file, use itself as the thumb
   for (int i = 0; i < (int)m_vecItems[iList].Size(); i++)
   {
