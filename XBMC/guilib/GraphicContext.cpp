@@ -525,6 +525,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
+    SDL_WM_SetCaption("XBox Media Center", NULL);
 #endif
     m_surfaces[SDL_ThreadID()] = m_screenSurface;
 
