@@ -506,7 +506,7 @@ PyDoc_STRVAR(addItem__doc__,
     int iPos = -1;
     if (!PyArg_ParseTuple(args, "i", &iPos)) return NULL;
 
-    if (iPos < 0 || iPos >= self->vecItems.size())
+    if (iPos < 0 || iPos >= (int)self->vecItems.size())
     {
       PyErr_SetString(PyExc_ValueError, "Index out of range");
       return NULL;
