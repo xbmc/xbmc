@@ -1003,14 +1003,14 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'E' && movie && movie->m_iEpisode > 0)
     { // episode number
-      if (movie->m_iDisplayEpisode > 0)
+      if (movie->m_iSpecialSortEpisode > 0)
         str.Format("S%02.2i", movie->m_iEpisode);
       else
         str.Format("%02.2i", movie->m_iEpisode);
     }
     else if (strMask[iPos2 + 1] == 'H' && movie && movie->m_iEpisode > 0)
     { // season*100+episode number
-      if (movie->m_iDisplaySeason > 0)
+      if (movie->m_iSpecialSortSeason > 0)
         str.Format("Sx%02.2i", movie->m_iEpisode);
       else
         str.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
