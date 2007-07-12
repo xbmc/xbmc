@@ -28,8 +28,8 @@ void CVideoInfoTag::Reset()
   m_iYear = 0;
   m_iSeason = -1;
   m_iEpisode = 0;
-  m_iDisplaySeason = -1;
-  m_iDisplayEpisode = -1;
+  m_iSpecialSortSeason = -1;
+  m_iSpecialSortEpisode = -1;
   m_fRating = 0.0f;
   m_iDbId = -1;
 
@@ -54,8 +54,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   XMLUtils::SetInt(movie, "season", m_iSeason);
   XMLUtils::SetInt(movie, "episode", m_iEpisode);
-  XMLUtils::SetInt(movie, "displayseason",m_iDisplaySeason);
-  XMLUtils::SetInt(movie, "displayepisode",m_iDisplayEpisode);
+  XMLUtils::SetInt(movie, "displayseason",m_iSpecialSortSeason);
+  XMLUtils::SetInt(movie, "displayepisode",m_iSpecialSortEpisode);
   XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
@@ -108,8 +108,8 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
   XMLUtils::GetInt(movie, "episode", m_iEpisode);
-  XMLUtils::GetInt(movie, "displayseason", m_iDisplaySeason);
-  XMLUtils::GetInt(movie, "displayepisode", m_iDisplayEpisode);
+  XMLUtils::GetInt(movie, "displayseason", m_iSpecialSortSeason);
+  XMLUtils::GetInt(movie, "displayepisode", m_iSpecialSortEpisode);
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);
@@ -240,8 +240,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iEpisode;
     ar << m_fRating;
     ar << m_iDbId;
-    ar << m_iDisplaySeason;
-    ar << m_iDisplayEpisode;
+    ar << m_iSpecialSortSeason;
+    ar << m_iSpecialSortEpisode;
   }
   else
   {
@@ -285,7 +285,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iEpisode;
     ar >> m_fRating;
     ar >> m_iDbId;
-    ar >> m_iDisplaySeason;
-    ar >> m_iDisplayEpisode;
+    ar >> m_iSpecialSortSeason;
+    ar >> m_iSpecialSortEpisode;
   }
 }
