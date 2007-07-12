@@ -1797,7 +1797,7 @@ void CFileItemList::FilterCueItems()
                     if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
                     SYSTEMTIME dateTime;
                     tag.GetReleaseDate(dateTime);
-                    if (dateTime.wYear > 1900) song.iYear = dateTime.wYear;
+                    if (dateTime.wYear) song.iYear = dateTime.wYear;
                   }
                   if (!song.iDuration && tag.GetDuration() > 0)
                   { // must be the last song
