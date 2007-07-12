@@ -17,11 +17,6 @@ const int CODEC_ID_MPEG1VIDEO = 1;
 
 #define ALIGN(value, alignment) (((value)+(alignment-1))&~(alignment-1))
 
-#ifdef _LINUX
-#define _aligned_malloc(a, b) malloc(a)
-#define _aligned_free(a) free(a)
-#endif
-
 CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
 {
   m_pHandle = NULL;
