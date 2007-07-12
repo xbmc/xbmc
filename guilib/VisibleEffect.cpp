@@ -357,30 +357,22 @@ void CAnimation::Calculate()
     m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_X)
-  {
-    m_matrix.SetTranslation(0, m_centerX, m_centerY);
-    m_matrix *= TransformMatrix::CreateXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
-    m_matrix *= TransformMatrix::CreateTranslation(0, -m_centerX, -m_centerY);
+  { // note coordinate aspect ratio is 1:1 in the Y:Z plane.  We treat only X on the different scale
+    m_matrix.SetXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Y)
   {
-    m_matrix.SetTranslation(m_centerX, 0, m_centerY);
-    m_matrix *= TransformMatrix::CreateYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, 0, -m_centerY);
+    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Z)
   {
-    m_matrix.SetTranslation(m_centerX, m_centerY, 0);
-    m_matrix *= TransformMatrix::CreateZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY, 0);
+    m_matrix.SetZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
   }
   else if (m_effect == EFFECT_TYPE_ZOOM)
   {
     float scaleX = ((m_endX - m_startX)*offset + m_startX) * 0.01f;
     float scaleY = ((m_endY - m_startY)*offset + m_startY) * 0.01f;
-    m_matrix.SetTranslation(m_centerX, m_centerY, 0);
-    m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY, 0);
+    m_matrix.SetScaler(scaleX, scaleY, m_centerX, m_centerY);
   }
 }
 void CAnimation::ResetAnimation()
