@@ -86,69 +86,72 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 {
   int item;
   int list = GetFocusedList();
-  // the non-contextual menu can be called at any time
-  if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list].Size() == 0)
+  if (list >= 0 && list <= 1)
   {
-    OnPopupMenu(list,-1, false);
-    return true;
-  }
-  if (action.wID == ACTION_DELETE_ITEM)
-  {
-    if (CanDelete(list))
+    // the non-contextual menu can be called at any time
+    if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list].Size() == 0)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnDelete(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      OnPopupMenu(list,-1, false);
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_COPY_ITEM)
-  {
-    if (CanCopy(list))
+    if (action.wID == ACTION_DELETE_ITEM)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnCopy(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      if (CanDelete(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnDelete(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_MOVE_ITEM)
-  {
-    if (CanMove(list))
+    if (action.wID == ACTION_COPY_ITEM)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnMove(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      if (CanCopy(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnCopy(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_RENAME_ITEM)
-  {
-    if (CanRename(list))
+    if (action.wID == ACTION_MOVE_ITEM)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnRename(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      if (CanMove(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnMove(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    if (m_vecItems[list].IsVirtualDirectoryRoot())
-      m_gWindowManager.PreviousWindow();
-    else
-      GoParentFolder(list);
-    return true;
+    if (action.wID == ACTION_RENAME_ITEM)
+    {
+      if (CanRename(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnRename(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
+    }
+    if (action.wID == ACTION_PARENT_DIR)
+    {
+      if (m_vecItems[list].IsVirtualDirectoryRoot())
+        m_gWindowManager.PreviousWindow();
+      else
+        GoParentFolder(list);
+      return true;
+    }
+    if (action.wID == ACTION_PLAYER_PLAY)
+    {
+      if (m_vecItems[list][GetSelectedItem(list)]->IsDVD())
+        return CAutorun::PlayDisc();
+    }
   }
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
-  }
-  if (action.wID == ACTION_PLAYER_PLAY)
-  {
-    if (m_vecItems[list][GetSelectedItem(list)]->IsDVD())
-      return CAutorun::PlayDisc();
   }
   return CGUIWindow::OnAction(action);
 }
@@ -1029,6 +1032,7 @@ void CGUIWindowFileManager::Refresh()
 
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
+  if (iControl < 0 || iControl > 1) return -1;
   CGUIListContainer *pControl = (CGUIListContainer *)GetControl(iControl + CONTROL_LEFT_LIST);
   if (!pControl || !m_vecItems[iControl].Size()) return -1;
   return pControl->GetSelectedItem();
