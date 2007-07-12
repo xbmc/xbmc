@@ -22,6 +22,7 @@ public:
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
+  virtual void UpdateVisibility();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void PreAllocResources();

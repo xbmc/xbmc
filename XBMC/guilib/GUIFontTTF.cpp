@@ -216,23 +216,23 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   return true;
 }
 
-void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
+void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                           const WCHAR* strText, DWORD cchText, DWORD dwFlags,
                           FLOAT fMaxPixelWidth)
 {
   // Draw text as a single colour
-  DrawTextInternal(fOriginX, fOriginY, angle, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+  DrawTextInternal(fOriginX, fOriginY, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
+void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
                                      const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                      FLOAT fMaxPixelWidth)
 {
   // Draws text as multi-coloured polygons
-    DrawTextInternal(fOriginX, fOriginY, angle, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+    DrawTextInternal(fOriginX, fOriginY, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
+void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
   Begin();
 
@@ -329,13 +329,13 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(lineX + cursorX, lineY, angle, period, dwColor);
+          RenderCharacter(lineX + cursorX, lineY, period, dwColor);
           cursorX += period->advance;
         }
         break;
       }
     }
-    RenderCharacter(lineX + cursorX, lineY, angle, ch, dwColor);
+    RenderCharacter(lineX + cursorX, lineY, ch, dwColor);
     cursorX += ch->advance;
   }
 
@@ -628,7 +628,7 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 }
 
-void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -637,49 +637,41 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
-  CRect vertex(m_originX + (posX + ch->offsetX)/g_graphicsContext.GetGUIScaleX(),
-               m_originY + (posY + ch->offsetY)/g_graphicsContext.GetGUIScaleY(),
-               width / g_graphicsContext.GetGUIScaleX(),
-               height / g_graphicsContext.GetGUIScaleY());
-  CRect texture(ch->left, ch->top, width, height);
+  CRect vertex((posX + ch->offsetX) * g_graphicsContext.GetGUIScaleX(),
+               (posY + ch->offsetY) * g_graphicsContext.GetGUIScaleY(),
+               (posX + ch->offsetX + width) * g_graphicsContext.GetGUIScaleX(),
+               (posY + ch->offsetY + height) * g_graphicsContext.GetGUIScaleY());
+  vertex += CPoint(m_originX, m_originY);
+  CRect texture(ch->left, ch->top, ch->right, ch->bottom);
   g_graphicsContext.ClipRect(vertex, texture);
 
-  // now transform the origin, and calculate our offsets
-  float x = m_originX;
-  float y = m_originY;
-  float z = 0;
-  g_graphicsContext.ScaleFinalCoords(x, y, z);
+  // transform our positions - note, no scaling due to GUI calibration/resolution occurs
+  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
 
-  // untransformed offset from the origin
-  vertex -= CPoint(m_originX, m_originY);
+  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
 
-  // transform our positions - note, no scaling occurs
-  float x1 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + vertex.y * angle.up_x);
-  float y1 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + vertex.y * angle.up_y);
-  float z1 = ROUND_TO_PIXEL(z + vertex.x * angle.base_z + vertex.y * angle.up_z);
+  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
 
-  float x2 = ROUND_TO_PIXEL(x + (vertex.x + vertex.w) * angle.base_x + vertex.y * angle.up_x);
-  float y2 = ROUND_TO_PIXEL(y + (vertex.x + vertex.w) * angle.base_y + vertex.y * angle.up_y);
-  float z2 = ROUND_TO_PIXEL(z + (vertex.x + vertex.w) * angle.base_z + vertex.y * angle.up_z);
-
-  float x3 = ROUND_TO_PIXEL(x + (vertex.x + vertex.w) * angle.base_x + (vertex.y + vertex.h) * angle.up_x);
-  float y3 = ROUND_TO_PIXEL(y + (vertex.x + vertex.w) * angle.base_y + (vertex.y + vertex.h) * angle.up_y);
-  float z3 = ROUND_TO_PIXEL(z + (vertex.x + vertex.w) * angle.base_z + (vertex.y + vertex.h) * angle.up_z);
-
-  float x4 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + (vertex.y + vertex.h) * angle.up_x);
-  float y4 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + (vertex.y + vertex.h) * angle.up_y);
-  float z4 = ROUND_TO_PIXEL(z + vertex.x * angle.base_z + (vertex.y + vertex.h) * angle.up_z);
+  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
 #ifdef HAS_XBOX_D3D
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x, texture.y);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x + texture.w, texture.y);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x + texture.w, texture.y + texture.h);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x, texture.y + texture.h);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
 
 #else
@@ -690,10 +682,10 @@ struct CUSTOMVERTEX {
   };
 
   // tex coords converted to 0..1 range
-  float tl = texture.x / m_textureWidth;
-  float tr = (texture.x + texture.w) / m_textureWidth;
-  float tt = texture.y / m_textureHeight;
-  float tb = (texture.y + texture.h) / m_textureHeight;
+  float tl = texture.x1 / m_textureWidth;
+  float tr = texture.x2 / m_textureWidth;
+  float tt = texture.y1 / m_textureHeight;
+  float tb = texture.y2 / m_textureHeight;
 
   CUSTOMVERTEX verts[4] =  {
     { x1, y1, z1, dwColor, tl, tt},
