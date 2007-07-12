@@ -3427,7 +3427,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
           {
             long lEpisodeId = m_pDS->fv("episode.idepisode").get_asLong();
             CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
-            if (idSeason > 0 && movie.m_iDisplaySeason > 0 && movie.m_iDisplaySeason != idSeason)
+            if (idSeason > 0 && movie.m_iSpecialSortSeason > 0 && movie.m_iSpecialSortSeason != idSeason)
             {
               m_pDS->next();
               continue;
@@ -3487,7 +3487,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
 
       CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
-      if (idSeason > 0 && movie.m_iDisplaySeason > 0 && movie.m_iDisplaySeason != idSeason)
+      if (idSeason > 0 && movie.m_iSpecialSortSeason > 0 && movie.m_iSpecialSortSeason != idSeason)
       {
         m_pDS->next();
         continue;
