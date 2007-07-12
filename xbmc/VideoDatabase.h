@@ -138,8 +138,8 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_SEASON = 12,
   VIDEODB_ID_EPISODE_EPISODE = 13,
   VIDEODB_ID_EPISODE_ORIGINALTITLE = 14,
-  VIDEODB_ID_EPISODE_DISPLAYSEASON = 15,
-  VIDEODB_ID_EPISODE_DISPLAYEPISODE = 16,
+  VIDEODB_ID_EPISODE_SORTSEASON = 15,
+  VIDEODB_ID_EPISODE_SORTEPISODE = 16,
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
 
@@ -160,8 +160,8 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSeason) },
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iEpisode) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iDisplaySeason) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iDisplayEpisode) },
+  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortSeason) },
+  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
 };
 
 class CBookmark
