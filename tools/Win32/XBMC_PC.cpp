@@ -372,10 +372,7 @@ INT CXBMC_PC::Run()
 {
 #ifdef HAS_SDL
   g_application.Create(NULL);
-  while (1)
-  {
-    g_application.Run();
-  }
+  g_application.Run();
   return 0;
 #else
   // Load keyboard accelerators
