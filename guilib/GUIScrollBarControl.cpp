@@ -31,8 +31,6 @@ void CGUIScrollBar::Render()
   if (m_bInvalidated)
     UpdateBarSize();
 
-  if (!IsVisible()) return;
-
   m_guiBackground.Render();
   if (m_bHasFocus)
   {

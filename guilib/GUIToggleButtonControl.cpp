@@ -20,8 +20,6 @@ CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
 
 void CGUIToggleButtonControl::Render()
 {
-  if (!IsVisible()) return;
-
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
     m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);

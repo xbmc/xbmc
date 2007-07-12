@@ -50,8 +50,6 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if (!IsVisible()) return;
-
   // only render the control if they are enabled
   if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds"))
   {

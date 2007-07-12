@@ -35,8 +35,6 @@ CGUITextBox::~CGUITextBox(void)
 
 void CGUITextBox::Render()
 {
-  if (!IsVisible()) return;
-
   CStdString renderLabel;
 	if (m_singleInfo)
 		renderLabel = g_infoManager.GetLabel(m_singleInfo);
