@@ -2050,7 +2050,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     if (m_currentFile.GetVideoInfoTag()->m_iEpisode > 0)
     {
       CStdString strYear;
-      if (m_currentFile.GetVideoInfoTag()->m_iDisplayEpisode > 0)
+      if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
         strYear.Format("S%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
       else
         strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
@@ -2061,8 +2061,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     if (m_currentFile.GetVideoInfoTag()->m_iSeason > -1)
     {
       CStdString strYear;
-      if (m_currentFile.GetVideoInfoTag()->m_iDisplaySeason > 0)
-        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iDisplaySeason);
+      if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason);
       else
         strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
       return strYear;
@@ -2753,7 +2753,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      if (item->GetVideoInfoTag()->m_iDisplayEpisode > 0)
+      if (item->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
         strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
       else
         strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
@@ -2764,8 +2764,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      if (item->GetVideoInfoTag()->m_iDisplaySeason > 0)
-        strResult.Format("%d",item->GetVideoInfoTag()->m_iDisplaySeason);
+      if (item->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iSpecialSortSeason);
       else
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
       return strResult;

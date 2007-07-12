@@ -233,16 +233,24 @@ bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    int il;
-    int ir;
-    if (left->GetVideoInfoTag()->m_iDisplayEpisode > 0)
-      il = left->GetVideoInfoTag()->m_iDisplaySeason*100000+left->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-left->GetVideoInfoTag()->m_iEpisode);
+    // we calculate an offset number based on the episode's
+    // sort season and episode values. in addition
+    // we include specials 'episode' numbers to get proper
+    // sorting of multiple specials in a row. each
+    // of these are given their particular ranges to semi-ensure uniqueness.
+    // theoretical problem: if a show has > 128 specials and two of these are placed
+    // after each other they will sort backwards. if a show has > 2^8-1 seasons
+    // or if a season has > 2^16-1 episodes strange things will happen (overflow)
+    unsigned int il;
+    unsigned int ir;
+    if (left->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+      il = (left->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(left->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-left->GetVideoInfoTag()->m_iEpisode);
     else
-      il = left->GetVideoInfoTag()->m_iSeason*100000+left->GetVideoInfoTag()->m_iEpisode*100;
-    if (right->GetVideoInfoTag()->m_iDisplayEpisode > 0)
-      ir = right->GetVideoInfoTag()->m_iDisplaySeason*100000+right->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-right->GetVideoInfoTag()->m_iEpisode);
+      il = (left->GetVideoInfoTag()->m_iSeason<<24)+(left->GetVideoInfoTag()->m_iEpisode<<8);
+    if (right->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+      ir = (right->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(right->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-right->GetVideoInfoTag()->m_iEpisode);
     else
-      ir = right->GetVideoInfoTag()->m_iSeason*100000+right->GetVideoInfoTag()->m_iEpisode*100;
+      ir = (right->GetVideoInfoTag()->m_iSeason<<24)+(right->GetVideoInfoTag()->m_iEpisode<<8);
     return il <= ir;
   }
   return left->m_bIsFolder;
@@ -256,16 +264,16 @@ bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    int il;
-    int ir;
-    if (left->GetVideoInfoTag()->m_iDisplayEpisode > 0)
-      il = left->GetVideoInfoTag()->m_iDisplaySeason*100000+left->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-left->GetVideoInfoTag()->m_iEpisode);
+    unsigned int il;
+    unsigned int ir;
+    if (left->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+      il = (left->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(left->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-left->GetVideoInfoTag()->m_iEpisode);
     else
-      il = left->GetVideoInfoTag()->m_iSeason*100000+left->GetVideoInfoTag()->m_iEpisode*100;
-    if (right->GetVideoInfoTag()->m_iDisplayEpisode > 0)
-      ir = right->GetVideoInfoTag()->m_iDisplaySeason*100000+right->GetVideoInfoTag()->m_iDisplayEpisode*100-(50-right->GetVideoInfoTag()->m_iEpisode);
+      il = (left->GetVideoInfoTag()->m_iSeason<<24)+(left->GetVideoInfoTag()->m_iEpisode<<8);
+    if (right->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+      ir = (right->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(right->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-right->GetVideoInfoTag()->m_iEpisode);
     else
-      ir = right->GetVideoInfoTag()->m_iSeason*100000+right->GetVideoInfoTag()->m_iEpisode*100;
+      ir = (right->GetVideoInfoTag()->m_iSeason<<24)+(right->GetVideoInfoTag()->m_iEpisode<<8);
     return il >= ir;
   }
   return left->m_bIsFolder;
