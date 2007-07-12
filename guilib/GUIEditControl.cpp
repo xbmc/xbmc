@@ -119,8 +119,6 @@ void CGUIEditControl::RecalcLabelPosition()
 
 void CGUIEditControl::Render()
 {
-  if (!IsVisible()) return;
-
   // we can only perform view port operations if we have an area to display
   if (m_height > 0 && m_width > 0)
   {

@@ -251,8 +251,6 @@ void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIButtonScroller::Render()
 {
-  if (!IsVisible()) return;
-
   float posX = m_posX;
   float posY = m_posY;
   // set our viewport

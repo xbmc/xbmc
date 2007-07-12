@@ -20,8 +20,6 @@ CGUIFixedListContainer::~CGUIFixedListContainer(void)
 
 void CGUIFixedListContainer::Render()
 {
-  if (!IsVisible()) return CGUIBaseContainer::Render();
-
   ValidateOffset();
 
   if (m_bInvalidated)
