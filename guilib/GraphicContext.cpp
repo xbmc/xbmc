@@ -960,6 +960,7 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 }
 
 void CGraphicContext::DeleteThreadContext() {
+#ifdef HAS_SDL_OPENGL
   Lock();
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
@@ -967,6 +968,7 @@ void CGraphicContext::DeleteThreadContext() {
   if (iter!=m_surfaces.end()) 
     m_surfaces.erase(iter);
   Unlock();
+#endif
 }
 
 void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
