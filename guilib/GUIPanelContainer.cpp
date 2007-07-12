@@ -21,8 +21,6 @@ CGUIPanelContainer::~CGUIPanelContainer(void)
 
 void CGUIPanelContainer::Render()
 {
-  if (!IsVisible()) return CGUIBaseContainer::Render();
-
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -107,6 +105,7 @@ void CGUIPanelContainer::Render()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
     SendWindowMessage(msg);
   }
+
   CGUIBaseContainer::Render();
 }
 
