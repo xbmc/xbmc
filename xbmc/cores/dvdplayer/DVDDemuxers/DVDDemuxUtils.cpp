@@ -4,11 +4,6 @@
 
 #define INPUT_BUFFER_PADDING_SIZE 8
 
-#ifdef _LINUX
-#define _aligned_free free
-#define _aligned_malloc(a,b) malloc(a)
-#endif
-
 void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
 {
   if (pPacket)
