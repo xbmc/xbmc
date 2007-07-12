@@ -142,7 +142,7 @@ void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, in
   float unneeded, h;
   float sw = 0;
   GetTextExtent(L" ", &sw, &unneeded);
-  unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
+  unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), (unsigned int)((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
   if (text.IsEmpty() || !g_graphicsContext.SetClipRegion(x, y, w, h))
     return; // nothing to render
