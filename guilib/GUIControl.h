@@ -29,6 +29,7 @@ public:
     align = XBFONT_LEFT;
     offsetX = offsetY = 0;
     width = 0;
+    angle = 0;
   };
   DWORD textColor;
   DWORD shadowColor;
@@ -39,7 +40,7 @@ public:
   float offsetX;
   float offsetY;
   float width;
-  CAngle angle;
+  float angle;
   CGUIFont *font;
 };
 
@@ -65,7 +66,10 @@ public:
   CGUIControl();
   CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);
+
+  virtual void DoRender(DWORD currentTime);
   virtual void Render();
+  bool HasRendered() const { return m_hasRendered; };
 
   // OnAction() is called by our window when we are the focused control.
   // We should process any control-specific actions in the derived classes,
@@ -116,7 +120,6 @@ public:
   virtual bool CanFocus() const;
   virtual bool IsVisible() const;
   virtual bool IsDisabled() const;
-  bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetColorDiffuse(D3DCOLOR color);
@@ -140,9 +143,8 @@ public:
   void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
-  void UpdateVisibility();
+  virtual void UpdateVisibility();
   virtual void SetInitialVisibility();
-  virtual void UpdateEffectState(DWORD currentTime);
   virtual void SetEnabled(bool bEnable);
   virtual void Update() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };

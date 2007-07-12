@@ -168,15 +168,15 @@ void CGUIVisualisationControl::LoadVisualisation()
   g_graphicsContext.SendMessage(msg);
 }
 
+void CGUIVisualisationControl::UpdateVisibility()
+{
+  CGUIControl::UpdateVisibility();
+  if (!IsVisible() && m_bInitialized)
+    FreeVisualisation();
+}
+
 void CGUIVisualisationControl::Render()
 {
-  if (!IsVisible())
-  {
-    if (m_bInitialized)
-      FreeVisualisation();
-    return;
-  }
-  
   if (m_pVisualisation == NULL)
   { // check if we need to load
     if (g_application.IsPlayingAudio())
