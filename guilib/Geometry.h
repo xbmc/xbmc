@@ -36,39 +36,69 @@ public:
 class CRect
 {
 public:
-  CRect() { x = y = w = h = 0;};
-  CRect(float left, float top, float width, float height) { x = left; y = top; w = width; h = height; };
+  CRect() { x1 = y1 = x2 = y2 = 0;};
+  CRect(float left, float top, float right, float bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
 
-  void SetRect(float left, float top, float width, float height) { x = left; y = top; w = width; h = height; };
+  void SetRect(float left, float top, float right, float bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
 
   bool PtInRect(const CPoint &point) const
   {
-    if (x <= point.x && point.x <= x + w && y <= point.y && point.y <= y + h)
+    if (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2)
       return true;
     return false;
   };
 
   const CRect &operator -=(const CPoint &point)
   {
-    x -= point.x;
-    y -= point.y;
+    x1 -= point.x;
+    y1 -= point.y;
+    x2 -= point.x;
+    y2 -= point.y;
+    return *this;
+  };
+
+  const CRect &operator +=(const CPoint &point)
+  {
+    x1 += point.x;
+    y1 += point.y;
+    x2 += point.x;
+    y2 += point.y;
     return *this;
   };
 
   void Intersect(const CRect &rect)
   { 
-    float x2 = min(x + w, rect.x + rect.w);
-    float y2 = min(y + h, rect.y + rect.h);
-    if (rect.x > x) x = rect.x;
-    if (rect.y > y) y = rect.y;
-    w = max(x2 - x, 0);
-    h = max(y2 - y, 0);
+    if (rect.x2 < x2) x2 = rect.x2;
+    if (rect.y2 < y2) y2 = rect.y2;
+    if (rect.x1 > x1) x1 = rect.x1;
+    if (rect.y1 > y1) y1 = rect.y1;
+    if (x1 > x2) x1 = x2;
+    if (y1 > y2) y1 = y2;
   };
 
   bool IsEmpty() const
   {
-    return w * h == 0;
+    return (x2 - x1) * (y2 - y1) == 0;
   };
 
-  float x, y, w, h;
+  inline float Width() const
+  {
+    return x2 - x1;
+  };
+
+  inline float Height() const
+  {
+    return y2 - y1;
+  };
+
+  bool operator !=(const CRect &rect) const
+  {
+    if (x1 != rect.x1) return true;
+    if (x2 != rect.x2) return true;
+    if (y1 != rect.y1) return true;
+    if (y2 != rect.y2) return true;
+    return false;
+  };
+
+  float x1, y1, x2, y2;
 };

@@ -504,7 +504,7 @@ HRESULT CXBFont::Begin()
 HRESULT CXBFont::DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags,
                            FLOAT fMaxPixelWidth )
 {
-  return CXBFont::DrawText( m_fCursorX, m_fCursorY, CAngle(0), dwColor, strText,
+  return CXBFont::DrawText( m_fCursorX, m_fCursorY, dwColor, strText,
                             dwFlags, fMaxPixelWidth );
 }
 
@@ -515,11 +515,11 @@ HRESULT CXBFont::DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags,
 // Name: DrawText()
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
-HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle,
+HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY,
                             DWORD dwColor, const WCHAR* strText,
                              DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
-  return CXBFont::DrawTextEx( fOriginX, fOriginY, angle, dwColor, strText, wcslen( strText ),
+  return CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ),
                               dwFlags, fMaxPixelWidth );
 }
 
@@ -530,7 +530,7 @@ HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle,
 // Name: DrawTextEx()
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
-HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
+HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                              const WCHAR* strText, DWORD cchText,
                              DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
@@ -633,7 +633,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
       if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then go to the next line
-        DrawText( m_originX + m_fCursorX, m_originY + m_fCursorY, angle, dwColor, L"..." );
+        DrawText( m_originX + m_fCursorX, m_originY + m_fCursorY, dwColor, L"..." );
         while (cchText > 0)
         {
           cchText--;
@@ -656,7 +656,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
     // Setup the screen coordinates
     m_fCursorX += fOffset;
 
-    RenderGlyph(m_fCursorX, m_fCursorY, fWidth, fHeight, angle, pGlyph);
+    RenderGlyph(m_fCursorX, m_fCursorY, fWidth, fHeight, pGlyph);
 
     m_fCursorX += fAdvance;
   }
@@ -673,7 +673,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
 // Name: DrawColourText()
 // Desc: Draws text as textured multi-colored polygons
 //-----------------------------------------------------------------------------
-HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
+HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
                                  const WCHAR* strText, BYTE* pbColours, DWORD cchText,
                                  DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
@@ -773,7 +773,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
       if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
-        DrawText( m_originX + m_fCursorX, m_originY + m_fCursorY, angle, dwColor, L"..." );
+        DrawText( m_originX + m_fCursorX, m_originY + m_fCursorY, dwColor, L"..." );
         End();
         return S_OK;
       }
@@ -782,7 +782,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
     // Setup the screen coordinates
     m_fCursorX += fOffset;
 
-    RenderGlyph(m_fCursorX, m_fCursorY, fWidth, fHeight, angle, pGlyph);
+    RenderGlyph(m_fCursorX, m_fCursorY, fWidth, fHeight, pGlyph);
 
     m_fCursorX += fAdvance;
   }
@@ -793,51 +793,43 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
   return S_OK;
 }
 
-void CXBFont::RenderGlyph(float posX, float posY, float width, float height, const CAngle &angle, GLYPH_ATTR *pGlyph)
+void CXBFont::RenderGlyph(float posX, float posY, float width, float height, GLYPH_ATTR *pGlyph)
 {
   // transform to world coordinates
-  CRect vertex(m_originX + posX / g_graphicsContext.GetGUIScaleX(),
-               m_originY + posY / g_graphicsContext.GetGUIScaleY(),
-               width / g_graphicsContext.GetGUIScaleX(),
-               height / g_graphicsContext.GetGUIScaleY());
-  CRect texture(pGlyph->tu1, pGlyph->tv1, pGlyph->tu2 - pGlyph->tu1, pGlyph->tv2 - pGlyph->tv1);
+  CRect vertex(posX * g_graphicsContext.GetGUIScaleX(),
+               posY * g_graphicsContext.GetGUIScaleY(),
+               (posX + width) * g_graphicsContext.GetGUIScaleX(),
+               (posY + height) * g_graphicsContext.GetGUIScaleY());
+  vertex += CPoint(m_originX, m_originY);
+  CRect texture(pGlyph->tu1, pGlyph->tv1, pGlyph->tu2, pGlyph->tv2);
   g_graphicsContext.ClipRect(vertex, texture);
 
-  // now transform the origin, and calculate our offsets
-  float x = m_originX;
-  float y = m_originY;
-  float z = 0;
-  g_graphicsContext.ScaleFinalCoords(x, y, z);
-
-  // untransformed offset from the origin
-  vertex -= CPoint(m_originX, m_originY);
-
-  // transform our positions - note, no scaling occurs
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
 
-  float x1 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + vertex.y * angle.up_x);
-  float y1 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + vertex.y * angle.up_y);
-  float z1 = ROUND_TO_PIXEL(z + vertex.x * angle.base_z + vertex.y * angle.up_z);
+  // transform our positions - note, no scaling due to GUI calibration/resolution occurs
+  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
 
-  float x2 = ROUND_TO_PIXEL(x + (vertex.x + vertex.w) * angle.base_x + vertex.y * angle.up_x);
-  float y2 = ROUND_TO_PIXEL(y + (vertex.x + vertex.w) * angle.base_y + vertex.y * angle.up_y);
-  float z2 = ROUND_TO_PIXEL(z + (vertex.x + vertex.w) * angle.base_z + vertex.y * angle.up_z);
+  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
 
-  float x3 = ROUND_TO_PIXEL(x + (vertex.x + vertex.w) * angle.base_x + (vertex.y + vertex.h) * angle.up_x);
-  float y3 = ROUND_TO_PIXEL(y + (vertex.x + vertex.w) * angle.base_y + (vertex.y + vertex.h) * angle.up_y);
-  float z3 = ROUND_TO_PIXEL(z + (vertex.x + vertex.w) * angle.base_z + (vertex.y + vertex.h) * angle.up_z);
+  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
 
-  float x4 = ROUND_TO_PIXEL(x + vertex.x * angle.base_x + (vertex.y + vertex.h) * angle.up_x);
-  float y4 = ROUND_TO_PIXEL(y + vertex.x * angle.base_y + (vertex.y + vertex.h) * angle.up_y);
-  float z4 = ROUND_TO_PIXEL(z + vertex.x * angle.base_z + (vertex.y + vertex.h) * angle.up_z);
+  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x, texture.y);
+  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
   D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1);
-  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x + texture.w, texture.y);
+  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
   D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1);
-  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x + texture.w, texture.y + texture.h);
+  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
   D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1);
-  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x, texture.y + texture.h);
+  D3DDevice::SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
   D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
 }
 
@@ -952,7 +944,7 @@ LPDIRECT3DTEXTURE8 CXBFont::CreateTexture( const WCHAR* strText,
   D3DDevice::Clear( 0L, NULL, D3DCLEAR_TARGET, dwBackgroundColor, 1.0f, 0L );
 
   // Render the text
-  CXBFont::DrawText( 0, 0, CAngle(), dwTextColor, strText, 0L );
+  CXBFont::DrawText( 0, 0, dwTextColor, strText, 0L );
 
   // Restore the render target
   D3DVIEWPORT8 vpBackBuffer = { 0, 0, 640, 480, 0.0f, 1.0f };
@@ -1014,7 +1006,7 @@ STDMETHODIMP CXBFont::DrawText(
   D3DDevice::GetDepthStencilSurface( &pZBuffer );
 
   D3DDevice::SetRenderTarget( pSurface, NULL );
-  HRESULT hr = DrawTextEx( (FLOAT) X, (FLOAT) Y, CAngle(), m_dwCurrentColor,
+  HRESULT hr = DrawTextEx( (FLOAT) X, (FLOAT) Y, m_dwCurrentColor,
                            pText, CharCount, 0, 0.0 );
   // Restore render target and zbuffer
   D3DDevice::SetRenderTarget( pRenderTarget, pZBuffer );

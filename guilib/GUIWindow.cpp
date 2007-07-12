@@ -414,6 +414,8 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
+
   DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
@@ -424,8 +426,8 @@ void CGUIWindow::Render()
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      pControl->UpdateEffectState(currentTime);
-      pControl->Render();
+      pControl->UpdateVisibility();
+      pControl->DoRender(currentTime);
     }
   }
   m_hasRendered = true;
