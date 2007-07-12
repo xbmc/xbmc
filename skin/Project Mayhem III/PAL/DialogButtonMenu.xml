@@ -32,11 +32,11 @@
 				<posy>5</posy>
 				<width>60</width>
 				<height>65</height>
-				<label>20045</label>
-				<altlabel>20046</altlabel>
+				<label>20046</label>
+				<altlabel>20045</altlabel>
 				<texturefocus>sub-master-focus.gif</texturefocus>
 				<texturenofocus>sub-master-nofocus.png</texturenofocus>
-				<usealttexture>System.IsMaster</usealttexture>
+				<usealttexture>!System.IsMaster</usealttexture>
 				<alttexturefocus>sub-nomaster-focus.gif</alttexturefocus>
 				<alttexturenofocus>sub-nomaster-nofocus.png</alttexturenofocus>
 				<onclick>xbmc.mastermode</onclick>
@@ -721,7 +721,7 @@
 				<altlabel>20045</altlabel>
 				<texturefocus>sub-master-focus.gif</texturefocus>
 				<texturenofocus>sub-master-nofocus.png</texturenofocus>
-				<usealttexture>System.IsMaster</usealttexture>
+				<usealttexture>!System.IsMaster</usealttexture>
 				<alttexturefocus>sub-nomaster-focus.gif</alttexturefocus>
 				<alttexturenofocus>sub-nomaster-nofocus.png</alttexturenofocus>
 				<onclick>xbmc.mastermode</onclick>
