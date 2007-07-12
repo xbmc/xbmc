@@ -74,6 +74,7 @@ public:
   virtual ~CGUIImage(void);
 
   virtual void Render();
+  virtual void UpdateVisibility();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
@@ -100,6 +101,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  void AllocateOnDemand();
   void FreeTextures();
   void Process();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
