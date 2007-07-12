@@ -88,13 +88,13 @@ void CGraphicContext::SetOrigin(float x, float y)
     m_origins.push(CPoint(x,y) + m_origins.top());
   else
     m_origins.push(CPoint(x,y));
-  AddGroupTransform(TransformMatrix::CreateTranslation(x, y));
+  AddTransform(TransformMatrix::CreateTranslation(x, y));
 }
 
 void CGraphicContext::RestoreOrigin()
 {
   m_origins.pop();
-  RemoveGroupTransform();
+  RemoveTransform();
 }
 
 // add a new clip region, intersecting with the previous clip region.
@@ -104,7 +104,8 @@ bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
   if (m_origins.size())
     origin = m_origins.top();
   // ok, now intersect with our old clip region
-  CRect rect(origin.x + x, origin.y + y, w, h);
+  CRect rect(x, y, x + w, y + h);
+  rect += origin;
   if (m_clipRegions.size())
   { // intersect with original clip region
     rect.Intersect(m_clipRegions.top());
@@ -139,12 +140,14 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture)
     CRect original(vertex);
     vertex.Intersect(clipRegion);
     // and use the original to compute the texture coordinates
-    if (original.w != vertex.w || original.h != vertex.h)
+    if (original != vertex)
     {
-      texture.x += (vertex.x - original.x) * texture.w/original.w;
-      texture.y += (vertex.y - original.y) * texture.h/original.h;
-      texture.w *= vertex.w / original.w;
-      texture.h *= vertex.h / original.h;
+      const float scaleX = texture.Width() / original.Width();
+      const float scaleY = texture.Height() / original.Height();
+      texture.x1 += (vertex.x1 - original.x1) * scaleX;
+      texture.y1 += (vertex.y1 - original.y1) * scaleY;
+      texture.x2 += (vertex.x2 - original.x2) * scaleX;
+      texture.y2 += (vertex.y2 - original.y2) * scaleY;
     }
   }
 }
@@ -664,10 +667,10 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     fToPosY -= fToHeight * fZoom * 0.5f;
     fToHeight *= fZoom + 1.0f;
     
-    m_guiScaleX = fToWidth / fFromWidth;
-    m_guiScaleY = fToHeight / fFromHeight;
+    m_guiScaleX = fFromWidth / fToWidth;
+    m_guiScaleY = fFromHeight / fToHeight;
     TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
-    TransformMatrix guiScaler = TransformMatrix::CreateScaler(m_guiScaleX, m_guiScaleY);
+    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
     m_guiTransform = guiOffset * guiScaler * windowOffset;
   }

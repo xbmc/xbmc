@@ -32,14 +32,14 @@ CStdString& CGUIFontBase::GetFileName()
   return m_strFileName;
 }
 
-void CGUIFontBase::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
+void CGUIFontBase::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                              const WCHAR* strText, float fMaxWidth)
 {
   float fTextHeight, fTextWidth;
   GetTextExtentInternal( strText, &fTextWidth, &fTextHeight);
   if (fTextWidth <= fMaxWidth)
   {
-    DrawTextImpl( fOriginX, fOriginY, angle, dwColor, strText, wcslen( strText ), 0, 0.0f);
+    DrawTextImpl( fOriginX, fOriginY, dwColor, strText, wcslen( strText ), 0, 0.0f);
     return ;
   }
   
@@ -65,11 +65,11 @@ void CGUIFontBase::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, const C
     }
   }
 
-  DrawTextImpl( fOriginX, fOriginY, angle, dwColor, wszText, wcslen( wszText ), 0, 0.0f);
+  DrawTextImpl( fOriginX, fOriginY, dwColor, wszText, wcslen( wszText ), 0, 0.0f);
   delete[] wszText;
 }
 
-void CGUIFontBase::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+void CGUIFontBase::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                                    const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
 {
   float nh = 0.0f;
@@ -83,8 +83,8 @@ void CGUIFontBase::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAn
   if (fTextWidth <= fMaxWidth)
   {
     if (dwShadowColor)
-      DrawTextImpl(fOriginX + 1, fOriginY + 1, angle, dwShadowColor, pszBuffer, nStringLength, 0, 0.0f);
-    DrawColourTextImpl( fOriginX, fOriginY, angle, pdw256ColorPalette, pszBuffer, pbColours, nStringLength, 0, 0.0f);
+      DrawTextImpl(fOriginX + 1, fOriginY + 1, dwShadowColor, pszBuffer, nStringLength, 0, 0.0f);
+    DrawColourTextImpl( fOriginX, fOriginY, pdw256ColorPalette, pszBuffer, pbColours, nStringLength, 0, 0.0f);
     delete[] pszBuffer;
     return ;
   }
@@ -111,7 +111,7 @@ void CGUIFontBase::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAn
     }
   }
   if (dwShadowColor)
-    DrawTextImpl(fOriginX + 1, fOriginY + 1, angle, dwShadowColor, pszBuffer, wcslen( pszBuffer ), 0, 0.0f);
-  DrawColourTextImpl( fOriginX, fOriginY, angle, pdw256ColorPalette, pszBuffer, pbColours, wcslen( pszBuffer ), 0, 0.0f);
+    DrawTextImpl(fOriginX + 1, fOriginY + 1, dwShadowColor, pszBuffer, wcslen( pszBuffer ), 0, 0.0f);
+  DrawColourTextImpl( fOriginX, fOriginY, pdw256ColorPalette, pszBuffer, pbColours, wcslen( pszBuffer ), 0, 0.0f);
   delete[] pszBuffer;
 }

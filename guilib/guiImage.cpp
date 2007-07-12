@@ -61,9 +61,9 @@ CGUIImage::~CGUIImage(void)
 
 }
 
-void CGUIImage::Render()
+void CGUIImage::UpdateVisibility()
 {
-  GUIVISIBLE visible = m_forceHidden ? HIDDEN : m_visible;
+  CGUIControl::UpdateVisibility();
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
@@ -72,8 +72,13 @@ void CGUIImage::Render()
     SetFileName(g_infoManager.GetImage(m_Info, m_dwParentID));
   }
 
+  AllocateOnDemand();
+}
+
+void CGUIImage::AllocateOnDemand()
+{
   // if we're hidden, we can free our resources and return
-  if (visible == HIDDEN)
+  if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
@@ -81,12 +86,18 @@ void CGUIImage::Render()
     return;
   }
 
+  // either visible or delayed - we need the resources allocated in either case
   if (!m_texturesAllocated)
     AllocResources();
+}
 
-  // if we're delayed, there's no requirement to actually render
-  if (m_visible == DELAYED)
-    return CGUIControl::Render();
+void CGUIImage::Render()
+{
+  // we need the checks for visibility and resource allocation here as
+  // most controls use CGUIImage's to do their rendering (where UpdateVisibility doesn't apply)
+  AllocateOnDemand();
+
+  if (!IsVisible()) return;
 
   if (m_vecTextures.size())
   {
@@ -245,31 +256,31 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   }
 
   // clip our rects
-  CRect vertex(left, top, right - left, bottom - top);
-  CRect texture(u1, v1, u2 - u1, v2 - v1);
+  CRect vertex(left, top, right, bottom);
+  CRect texture(u1, v1, u2, v2);
   g_graphicsContext.ClipRect(vertex, texture);
 
-  if (0 == vertex.w || 0 == vertex.h)
+  if (vertex.IsEmpty())
     return; // nothing to render
 
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x, vertex.y) + 0.5f) - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x, vertex.y) + 0.5f) - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x + vertex.w, vertex.y) + 0.5f) - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x + vertex.w, vertex.y) + 0.5f) - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x + vertex.w, vertex.y + vertex.h) + 0.5f) - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x + vertex.w, vertex.y + vertex.h) + 0.5f) - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x, vertex.y + vertex.h) + 0.5f) - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x, vertex.y + vertex.h) + 0.5f) - 0.5f;
-  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x, vertex.y);
-  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x + vertex.w, vertex.y);
-  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x + vertex.w, vertex.y + vertex.h);
-  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x, vertex.y + vertex.h);
+  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
+  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
+  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
+  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
+  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
+  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
+  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1);
+  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1);
+  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2);
+  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2);
 
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
 
-  u1 = texture.x; u2 = texture.x + texture.w;
-  v1 = texture.y; v2 = texture.y + texture.h;
+  u1 = texture.x1; u2 = texture.x2;
+  v1 = texture.y1; v2 = texture.y2;
 
 #ifdef HAS_XBOX_D3D
   D3DCOLOR color = m_diffuseColor;

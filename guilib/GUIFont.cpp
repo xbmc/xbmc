@@ -26,51 +26,55 @@ CStdString& CGUIFont::GetFontName()
   return m_strFontName;
 }
 
-void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
+void CGUIFont::DrawTextWidth(float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor,
                              const WCHAR* strText, float fMaxWidth)
 {
   if (!m_font) return;
-  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.GetGUIScaleX());
+  fMaxWidth = ROUND(fMaxWidth / g_graphicsContext.GetGUIScaleX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
+  if (angle)
+    SetRotation(x, y, angle);
   if (dwShadowColor)
-    m_font->DrawTextWidthInternal(fOriginX + 1, fOriginY + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), strText, fMaxWidth);
-  m_font->DrawTextWidthInternal(fOriginX, fOriginY, Transform(angle), g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
+    m_font->DrawTextWidthInternal(x + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), strText, fMaxWidth);
+  m_font->DrawTextWidthInternal(x, y, g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
+  if (angle)
+    g_graphicsContext.RemoveTransform();
 }
 
 
 // START backward compatibility
-void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor, DWORD dwShadowColor,
+void CGUIFont::DrawTextWidth(FLOAT x, FLOAT y, DWORD dwColor, DWORD dwShadowColor,
                              const WCHAR* strText, float fMaxWidth)
 {
-  DrawTextWidth(fOriginX, fOriginY, CAngle(), dwColor, dwShadowColor, strText, fMaxWidth);
+  DrawTextWidth(x, y, 0, dwColor, dwShadowColor, strText, fMaxWidth);
 }
 
-void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+void CGUIFont::DrawColourTextWidth(float x, float y, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                                    const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
 {
-  DrawColourTextWidth(fOriginX, fOriginY, CAngle(), pdw256ColorPalette, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
+  DrawColourTextWidth(x, y, 0, pdw256ColorPalette, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
 }
 
-void CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
+void CGUIFont::DrawText( float x, float y, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
 {
-  DrawText( sx, sy, CAngle(), dwColor, dwShadowColor, strText, dwFlags, fMaxPixelWidth);
+  DrawText( x, y, 0, dwColor, dwShadowColor, strText, dwFlags, fMaxPixelWidth);
 }
 
 void CGUIFont::DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette)
 {
-  DrawScrollingText(x, y, CAngle(), color, numColors, dwShadowColor, text, w, scrollInfo, pPalette);
+  DrawScrollingText(x, y, 0, color, numColors, dwShadowColor, text, w, scrollInfo, pPalette);
 }
 // END backward compatibility
 
-void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+void CGUIFont::DrawColourTextWidth(float x, float y, float angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                                    const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
 {
   if (!m_font) return;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
 
-  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.GetGUIScaleX());
+  fMaxWidth = ROUND(fMaxWidth / g_graphicsContext.GetGUIScaleX());
   DWORD *alphaColor = new DWORD[numColors];
   for (int i = 0; i < numColors; i++)
   {
@@ -78,20 +82,28 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle 
       pdw256ColorPalette[i] = m_textColor;
     alphaColor[i] = g_graphicsContext.MergeAlpha(pdw256ColorPalette[i]);
   }
-  m_font->DrawColourTextWidth(fOriginX, fOriginY, Transform(angle), alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
+  if (angle)
+    SetRotation(x, y, angle);
+  m_font->DrawColourTextWidth(x, y, alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
   delete[] alphaColor;
+  if (angle)
+    g_graphicsContext.RemoveTransform();
 }
 
-void CGUIFont::DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
+void CGUIFont::DrawText( float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
 {
   if (!m_font) return;
   float nw = 0.0f, nh = 0.0f;
-  fMaxPixelWidth = ROUND(fMaxPixelWidth * g_graphicsContext.GetGUIScaleX());
+  fMaxPixelWidth = ROUND(fMaxPixelWidth / g_graphicsContext.GetGUIScaleX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
+  if (angle)
+    SetRotation(x, y, angle);
   if (dwShadowColor)
-    m_font->DrawTextImpl(sx + 1, sy + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth);
-  m_font->DrawTextImpl( sx, sy, Transform(angle), g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
+    m_font->DrawTextImpl(x + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth);
+  m_font->DrawTextImpl( x, y, g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
+  if (angle)
+    g_graphicsContext.RemoveTransform();
 }
 
 float CGUIFont::GetTextWidth(const WCHAR* strText)
@@ -119,11 +131,11 @@ inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *
   if (!m_font) return;
   CSingleLock lock(g_graphicsContext);
   m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
-  *pWidth /= g_graphicsContext.GetGUIScaleX();
-  *pHeight /= g_graphicsContext.GetGUIScaleY();
+  *pWidth *= g_graphicsContext.GetGUIScaleX();
+  *pHeight *= g_graphicsContext.GetGUIScaleY();
 }
 
-void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)
+void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)
 {
   if (!m_font) return;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
@@ -134,7 +146,11 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   GetTextExtent(L"W", &unneeded, &h);
   if (text.IsEmpty() || !g_graphicsContext.SetClipRegion(x, y, w, h))
     return; // nothing to render
-  w = ROUND(w * g_graphicsContext.GetGUIScaleX());
+  w = ROUND(w / g_graphicsContext.GetGUIScaleX());
+
+  if (angle)
+    SetRotation(x, y, angle);
+
   // draw at our scroll position
   // we handle the scrolling as follows:
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
@@ -155,11 +171,12 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
       sz[0] = text[0];
     sz[1] = 0;
     float charWidth = GetTextWidth(sz);
-    if (scrollInfo.pixelPos < charWidth - scrollInfo.pixelSpeed)
-      scrollInfo.pixelPos += scrollInfo.pixelSpeed;
+    float scrollAmount = scrollInfo.pixelSpeed * g_graphicsContext.GetGUIScaleX();
+    if (scrollInfo.pixelPos < charWidth - scrollAmount)
+      scrollInfo.pixelPos += scrollAmount;
     else
     {
-      scrollInfo.pixelPos -= (charWidth - scrollInfo.pixelSpeed);
+      scrollInfo.pixelPos -= (charWidth - scrollAmount);
       scrollInfo.characterPos++;
       if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
         scrollInfo.Reset();
@@ -209,39 +226,25 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
       alphaColor[i] = g_graphicsContext.MergeAlpha(color[i]);
     }
     if (dwShadowColor)
-      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, Transform(angle), alphaColor, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, alphaColor, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
     delete[] alphaColor;
   }
   else
   {
     if (!*color) *color = m_textColor;
     if (dwShadowColor)
-      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawTextWidthInternal(x - scrollInfo.pixelPos, y, Transform(angle), g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
+      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawTextWidthInternal(x - scrollInfo.pixelPos, y, g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
   }
   delete[] pOutput;
   if (pPalette)
     delete[] pOutPalette;
+
+  if (angle)
+    g_graphicsContext.RemoveTransform();
+
   g_graphicsContext.RestoreClipRegion();
-}
-
-// transform our "angle" vector by the appropriate amount.
-// note that our transform is non-linear, so we must subtract off the transform
-// of the origin.  Plus, our transform is scaling, and we don't wish to scale fonts
-// as this screws up the aliasing.
-CAngle CGUIFont::Transform(const CAngle &angle)
-{
-  CAngle result;
-  result.base_x = g_graphicsContext.ScaleFinalXCoord(angle.base_x, angle.base_y) - g_graphicsContext.ScaleFinalXCoord(0, 0);
-  result.base_y = g_graphicsContext.ScaleFinalYCoord(angle.base_x, angle.base_y) - g_graphicsContext.ScaleFinalYCoord(0, 0);
-  result.base_z = g_graphicsContext.ScaleFinalZCoord(angle.base_x, angle.base_y) - g_graphicsContext.ScaleFinalZCoord(0, 0);
-
-  result.up_x = g_graphicsContext.ScaleFinalXCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalXCoord(0, 0);
-  result.up_y = g_graphicsContext.ScaleFinalYCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalYCoord(0, 0);
-  result.up_z = g_graphicsContext.ScaleFinalZCoord(angle.up_x, angle.up_y) - g_graphicsContext.ScaleFinalZCoord(0, 0);
-
-  return result;
 }
 
 // remaps unsupported font glpyhs to other suitable ones
@@ -268,4 +271,13 @@ void CGUIFont::DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor
   }
   DrawText(x, y, color, 0, text, flags, maxWidth);
   End();
+}
+
+void CGUIFont::SetRotation(float x, float y, float angle)
+{
+  static const float degrees_to_radians = 0.01745329252f;
+  TransformMatrix transform = TransformMatrix::CreateTranslation(x, y);
+  transform *= TransformMatrix::CreateZRotation(angle * degrees_to_radians);
+  transform *= TransformMatrix::CreateTranslation(-x, -y);
+  g_graphicsContext.AddTransform(transform);
 }

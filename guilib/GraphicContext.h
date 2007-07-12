@@ -144,18 +144,18 @@ public:
     m_groupTransform.push(m_guiTransform * matrix);
     m_finalTransform = m_groupTransform.top();
   }
-  inline void SetControlTransform(const TransformMatrix &matrix)
+  inline void AddTransform(const TransformMatrix &matrix)
   {
-    m_finalTransform = m_groupTransform.top() * matrix;
-  };
-  inline void AddGroupTransform(const TransformMatrix &matrix)
-  { // add to the stack
+    ASSERT(m_groupTransform.size());
     m_groupTransform.push(m_groupTransform.top() * matrix);
     m_finalTransform = m_groupTransform.top();
   };
-  inline void RemoveGroupTransform()
-  { // remove from stack
-    if (m_groupTransform.size()) m_groupTransform.pop();
+  inline void RemoveTransform()
+  {
+    ASSERT(m_groupTransform.size() > 1);
+    if (m_groupTransform.size())
+      m_groupTransform.pop();
+    m_finalTransform = m_groupTransform.top();
   };
 
 protected:

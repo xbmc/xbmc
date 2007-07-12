@@ -32,7 +32,7 @@ CGUIControl::CGUIControl()
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-: m_hitRect(posX, posY, width, height)
+: m_hitRect(posX, posY, posX + width, posY + height)
 {
   m_posX = posX;
   m_posY = posY;
@@ -98,6 +98,19 @@ bool CGUIControl::IsAllocated() const
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
 
+}
+
+// the main render routine.
+// 1. animate and set the animation transform
+// 2. if visible, paint
+// 3. reset the animation transform
+void CGUIControl::DoRender(DWORD currentTime)
+{
+  Animate(currentTime);
+  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
+  if (IsVisible())
+    Render();
+  g_graphicsContext.RemoveTransform();
 }
 
 void CGUIControl::Render()
@@ -311,8 +324,7 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
-    m_hitRect.x += posX - m_posX;
-    m_hitRect.y += posY - m_posY;
+    m_hitRect += CPoint(posX - m_posX, posY - m_posY);
     m_posX = posX;
     m_posY = posY;
     Update();
@@ -357,7 +369,7 @@ void CGUIControl::SetWidth(float width)
   if (m_width != width)
   {
     m_width = width;
-    m_hitRect.w = width;
+    m_hitRect.x2 = m_hitRect.x1 + width;
     Update();
   }
 }
@@ -367,7 +379,7 @@ void CGUIControl::SetHeight(float height)
   if (m_height != height)
   {
     m_height = height;
-    m_hitRect.h = height;
+    m_hitRect.y2 = m_hitRect.y1 + height;
     Update();
   }
 }
@@ -451,13 +463,6 @@ void CGUIControl::SetInitialVisibility()
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
       anim.SetInitialCondition();
   }
-}
-
-void CGUIControl::UpdateEffectState(DWORD currentTime)
-{
-  UpdateVisibility();
-  Animate(currentTime);
-  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
 }
 
 void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus)
@@ -610,7 +615,7 @@ void CGUIControl::Animate(DWORD currentTime)
       }
     }*/
   }
-  g_graphicsContext.SetControlTransform(transform);
+  g_graphicsContext.AddTransform(transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
