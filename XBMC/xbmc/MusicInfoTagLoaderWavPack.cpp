@@ -41,3 +41,9 @@ int CMusicInfoTagLoaderWAVPack::ReadDuration(const CStdString& strFileName)
   }
   return 0;
 }
+
+bool CMusicInfoTagLoaderWAVPack::PrioritiseAPETags() const
+{
+  // WAVPack files always prioritize APEv2 tags over ID3 tags.
+  return true;
+}
