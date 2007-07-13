@@ -116,7 +116,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       g_weatherManager.Reset();
       return true;
     }
-    else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED)
+    else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED && IsActive())
     {
       UpdateLocations();
     }
