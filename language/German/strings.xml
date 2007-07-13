@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 06/27/2007-->
+<!--Date of translation: 07/13/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9391-->
+<!--Based on english strings version 9565-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -708,6 +708,7 @@
   <string id="1411">mit</string>
   <string id="1412">windig</string>
   <string id="1413">Niesel</string>
+  <string id="1414">Gewitter</string>
   <string id="2050">Spieldauer:</string>
   <string id="4501">LCD-Typ</string>
   <string id="10000">Hauptmenü</string>
@@ -1532,6 +1533,7 @@
   <string id="20378">Möchten Sie Informationen für alle Episoden aktualisieren?</string>
   <string id="20379">Ordner beinhaltet eine einzige TV-Serie</string>
   <string id="20380">Ordner vom Scan ausschließen</string>
+  <string id="20381">Besondere</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1610,5 +1612,6 @@
   <string id="21435">Bearbeiten</string>
   <string id="21436">%i Titel</string>
   <string id="21437">Neue Smart Playlist...</string>
+  <string id="21438">%c Laufwerk</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
