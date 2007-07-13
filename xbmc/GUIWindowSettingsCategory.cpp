@@ -2199,7 +2199,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   else
   {
     // Since no fontset is defined, there is no selection of a fontset, so disable the component
-    pControl->AddLabel("Default", 1);
+    pControl->AddLabel(g_localizeStrings.Get(13278), 1);
     pControl->SetValue(1);
     pControl->SetEnabled(false);
   }
