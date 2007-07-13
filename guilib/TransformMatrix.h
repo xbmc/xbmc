@@ -42,42 +42,48 @@ public:
   };
   void SetScaler(float scaleX, float scaleY, float centerX, float centerY)
   {
-    SetTranslation(centerX, centerY, 0);
-    *this *= TransformMatrix::CreateScaler(scaleX, scaleY, 1.0f);
-    *this *= TransformMatrix::CreateTranslation(-centerX, -centerY, 0);
+    // Trans(centerX,centerY,centerZ)*Scale(scaleX,scaleY,scaleZ)*Trans(-centerX,-centerY,-centerZ)
+    float centerZ = 0, scaleZ = 1;
+    m[0][0] = scaleX; m[0][1] = 0;      m[0][2] = 0;      m[0][3] = centerX*(1-scaleX);
+    m[1][0] = 0;      m[1][1] = scaleY; m[1][2] = 0;      m[1][3] = centerY*(1-scaleY);
+    m[2][0] = 0;      m[2][1] = 0;      m[2][2] = scaleZ; m[2][3] = centerZ*(1-scaleZ);
+    alpha = 1.0f;
   };
   void SetXRotation(float angle, float y, float z, float ar = 1.0f)
   { // angle about the X axis, centered at y,z where our coordinate system has aspect ratio ar.
-    SetTranslation(0, y, z);
-    *this *= CreateScaler(1.0f, 1.0f/ar, 1.0f);
-    *this *= CreateXRotation(angle);
-    *this *= CreateScaler(ar, 1.0f, 1.0f);
-    *this *= CreateTranslation(0, -y, -z);
+    // Trans(0,y,z)*Scale(1,1/ar,1)*RotateX(angle)*Scale(ar,1,1)*Trans(0,-y,-z);
+    float c = cos(angle); float s = sin(angle);
+    m[0][0] = ar; m[0][1] = 0;    m[0][2] = 0;     m[0][3] = 0;
+    m[1][0] = 0;  m[1][1] = c/ar; m[1][2] = -s/ar; m[1][3] = (-y*c+s*z)/ar + y;
+    m[2][0] = 0;  m[2][1] = s;    m[2][2] = c;     m[2][3] = (-y*s-c*z) + z;
+    angle = 1.0f;
   }
   void SetYRotation(float angle, float x, float z, float ar = 1.0f)
   { // angle about the Y axis, centered at x,z where our coordinate system has aspect ratio ar.
-    SetTranslation(x, 0, z);
-    *this *= CreateScaler(1.0f/ar, 1.0f, 1.0f);
-    *this *= CreateYRotation(angle);
-    *this *= CreateScaler(ar, 1.0f, 1.0f);
-    *this *= CreateTranslation(-x, 0, -z);
+    // Trans(x,0,z)*Scale(1/ar,1,1)*RotateY(angle)*Scale(ar,1,1)*Trans(-x,0,-z);
+    float c = cos(angle); float s = sin(angle);
+    m[0][0] = c;    m[0][1] = 0; m[0][2] = -s/ar; m[0][3] = -x*c + s*z/ar + x;
+    m[1][0] = 0;    m[1][1] = 1; m[1][2] = 0;     m[1][3] = 0;
+    m[2][0] = ar*s; m[2][1] = 0; m[2][2] = c;     m[2][3] = -ar*x*s - c*z + z;
+    angle = 1.0f;
   }
   static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
-    TransformMatrix rotation = CreateTranslation(x, y, 0);
-    rotation *= CreateScaler(1.0f/ar, 1.0f, 1.0f);
-    rotation *= CreateZRotation(angle);
-    rotation *= CreateScaler(ar, 1.0f, 1.0f);
-    rotation *= CreateTranslation(-x, -y);
-    return rotation;
+    // Trans(x,y,0)*Scale(1/ar,1,1)*RotateZ(angle)*Scale(ar,1,1)*Trans(-x,-y,0)
+    float c = cos(angle); float s = sin(angle);
+    TransformMatrix rot;
+    rot.m[0][0] = c;    rot.m[0][1] = -s/ar; rot.m[0][3] = -x*c + s*y/ar + x;
+    rot.m[1][0] = s*ar; rot.m[1][1] = c;     rot.m[1][3] = -ar*x*s - c*y + y;
+    return rot;
   }
   void SetZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
-    SetTranslation(x, y, 0);
-    *this *= CreateScaler(1.0f/ar, 1.0f, 1.0f);
-    *this *= CreateZRotation(angle);
-    *this *= CreateScaler(ar, 1.0f, 1.0f);
-    *this *= CreateTranslation(-x, -y);
+    // Trans(x,y,0)*Scale(1/ar,1,1)*RotateZ(angle)*Scale(ar,1,1)*Trans(-x,-y,0)
+    float c = cos(angle); float s = sin(angle);
+    m[0][0] = c;    m[0][1] = -s/ar; m[0][2] = 0; m[0][3] = -x*c + s*y/ar + x;
+    m[1][0] = s*ar; m[1][1] = c;     m[1][2] = 0; m[1][3] = -ar*x*s - c*y + y;
+    m[2][0] = 0;    m[2][1] = 0;     m[2][2] = 1; m[2][3] = 0;
+    angle = 1.0f;
   }
   static TransformMatrix CreateFader(float a)
   {
@@ -198,34 +204,6 @@ public:
   }
 
 private:
-  static TransformMatrix CreateXRotation(float angle)
-  { // angle about the X axis
-    TransformMatrix rotation;
-    rotation.m[1][1] = cos(angle);
-    rotation.m[2][1] = sin(angle);
-    rotation.m[1][2] = -rotation.m[2][1];
-    rotation.m[2][2] = rotation.m[1][1];
-    return rotation;
-  }
-  static TransformMatrix CreateYRotation(float angle)
-  { // angle about the Y axis
-    TransformMatrix rotation;
-    rotation.m[0][0] = cos(angle);
-    rotation.m[2][0] = sin(angle);
-    rotation.m[0][2] = -rotation.m[2][0];
-    rotation.m[2][2] = rotation.m[0][0];
-    return rotation;
-  }
-  static TransformMatrix CreateZRotation(float angle)
-  { // angle about the Z axis
-    TransformMatrix rotation;
-    rotation.m[0][0] = cos(angle);
-    rotation.m[1][0] = sin(angle);
-    rotation.m[0][1] = -rotation.m[1][0];
-    rotation.m[1][1] = rotation.m[0][0];
-    return rotation;
-  }
-
   float m[3][4];
   float alpha;
 };
