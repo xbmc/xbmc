@@ -158,10 +158,7 @@ bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetMessage() == GUI_MSG_LABEL_RESET)
-    {
-    }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
+    if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
       // Check that m_offset is valid
       ValidateOffset();
