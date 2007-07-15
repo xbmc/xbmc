@@ -1044,7 +1044,7 @@
   <string id="13385">Voice Mask - Port 4</string>
   <string id="13386">Use Time Based Seeking</string>
   <string id="13387">Track Naming Template Right</string>
-  <string id="13388">Presets</string>
+  <string id="13388">%s Presets</string>
   <string id="13389">There are no presets available&#10;for this visualisation</string>
   <string id="13390">There are no settings available&#10;for this visualisation</string>
   <string id="13391">Eject/Load</string>
