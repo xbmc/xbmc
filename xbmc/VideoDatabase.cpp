@@ -3027,6 +3027,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
+        pItem->GetVideoInfoTag()->m_iSeason = lSeason;
+        pItem->GetVideoInfoTag()->m_iDbId = idShow;
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
       }
@@ -3047,6 +3049,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
+        pItem->GetVideoInfoTag()->m_iSeason = lSeason;
+        pItem->GetVideoInfoTag()->m_iDbId = idShow;
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
         m_pDS->next();
