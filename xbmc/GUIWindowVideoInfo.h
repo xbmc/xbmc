@@ -5,6 +5,7 @@
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
+#include "utils/ScraperParser.h"
 
 class CGUIWindowVideoInfo :
       public CGUIDialog
@@ -33,7 +34,7 @@ protected:
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
-  bool DownloadThumbnail(const CStdString &thumb);
+  bool DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry* pEntry=NULL);
   void OnGetThumb();
   CFileItem m_movieItem;
   bool m_bViewReview;

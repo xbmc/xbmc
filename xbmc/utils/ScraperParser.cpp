@@ -2,25 +2,23 @@
 
 #include "RegExp.h"
 #include "htmlutil.h"
-//#include "stdafx.h"
  #include "charsetconverter.h"
 #include <cstring>
 
+#include <sstream>
+
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
-  m_post = false;
   ParseString(strUrl);
 }
 
 CScraperUrl::CScraperUrl(const TiXmlElement* element)
 {
-  m_post = false;
   ParseElement(element);
 }
 
 CScraperUrl::CScraperUrl()
 {
-   m_post = false;
 }
 
 CScraperUrl::~CScraperUrl()
@@ -31,17 +29,53 @@ void CScraperUrl::Clear()
 {
   m_url.clear();
   m_spoof.clear();
-  m_post = false;
+  m_xml.clear();
+}
+
+bool CScraperUrl::Parse()
+{
+  return ParseString(m_xml);
 }
 
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
   if (!element || !element->FirstChild()) return false;
 
-  m_url = element->FirstChild()->Value();
-  m_spoof = element->Attribute("spoof");
-  if(element->Attribute("post")) 
-    m_post = true;
+  m_url.clear();
+  std::stringstream stream;
+  stream << *element;
+  m_xml = stream.str();
+  if (element->FirstChildElement("thumb"))
+    element = element->FirstChildElement("thumb");
+  while (element)
+  {
+    SUrlEntry url;
+    url.m_url = element->FirstChild()->Value();
+    const char* pSpoof = element->Attribute("spoof");
+    if (pSpoof)
+      url.m_spoof = pSpoof;
+    const char* szPost=element->Attribute("post");
+    if (szPost && stricmp(szPost,"yes") == 0) 
+      url.m_post = true;
+    else
+      url.m_post = false;
+    const char* szType = element->Attribute("type");
+    url.m_type = URL_TYPE_GENERAL;
+    if (szType && stricmp(szType,"season") == 0)
+    {
+      url.m_type = URL_TYPE_SEASON;
+      const char* szSeason = element->Attribute("season");
+      if (szSeason)
+        url.m_season = atoi(szSeason);
+      else
+        url.m_season = -1;
+    }
+    else
+      url.m_season = -1;
+
+    m_url.push_back(url);
+    element = element->NextSiblingElement("thumb");
+  }
   return true;
 }
 
@@ -56,17 +90,33 @@ bool CScraperUrl::ParseString(CStdString strUrl)
   
   TiXmlDocument doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
+  m_xml = strUrl;
 
-  if (doc.RootElement())
-  {
-    m_url = doc.RootElement()->FirstChild()->Value();
-    m_spoof = doc.RootElement()->Attribute("spoof");
-    if(doc.RootElement()->Attribute("post")) 
-      m_post = true;
-  } 
+  TiXmlElement* pElement = doc.RootElement();
+  if (pElement)
+    ParseElement(pElement);
   else
-    m_url = strUrl;
+  {
+    SUrlEntry url;
+    url.m_url = strUrl;
+    url.m_type = URL_TYPE_GENERAL;
+    url.m_season = -1;
+    url.m_post = false;
+    m_url.push_back(url);
+  }
   return true;
+}
+
+const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb() const
+{
+  for (std::vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  {
+    if (iter->m_type == URL_TYPE_GENERAL)
+      return *iter;
+  }
+  SUrlEntry result;
+  result.m_season = -1;
+  return result;
 }
 
 CScraperParser::CScraperParser()

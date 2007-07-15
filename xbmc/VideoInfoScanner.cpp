@@ -486,7 +486,7 @@ namespace VIDEO
                     CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
                     url.m_scrURL.push_back(scrUrl);
                     CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
-                    CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+                    CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url[0].m_url.c_str());
                     url.m_strID  = nfoReader.m_strImDbNr;
                     SScraperInfo info2(info);
                     info2.strPath = nfoReader.m_strScraper;
@@ -679,7 +679,7 @@ namespace VIDEO
     }
     // get & save thumbnail
     CStdString strThumb = "";
-    CStdString strImage = movieDetails.m_strPictureURL.m_url;
+    CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
     if (strImage.size() > 0)
     {
       // check for a cached thumb or user thumb
@@ -776,7 +776,7 @@ namespace VIDEO
         }
 
         CVideoInfoTag episodeDetails;
-        if (m_database.GetEpisodeInfo(iter->second.m_scrURL[0].m_url,iter2->first.second) > -1)
+        if (m_database.GetEpisodeInfo(iter->second.m_scrURL[0].m_url[0].m_url,iter2->first.second) > -1)
           continue;
 
         if (!IMDB.GetEpisodeDetails(iter2->second,episodeDetails,pDlgProgress))
@@ -784,7 +784,7 @@ namespace VIDEO
         episodeDetails.m_iSeason = iter2->first.first;
         episodeDetails.m_iEpisode = iter2->first.second;
         CFileItem item;
-        item.m_strPath = iter->second.m_scrURL[0].m_url;
+        item.m_strPath = iter->second.m_scrURL[0].m_url[0].m_url;
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
       }
     }
