@@ -82,6 +82,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   m_iChannels = audioframe.channels;
   m_iBitrate = audioframe.sample_rate;
   m_iBitsPerSample = audioframe.bits_per_sample;
+  m_bPassthrough = audioframe.passthrough;
 
   m_dwPacketSize = m_pAudioDecoder->GetChunkLen();
   if (m_pBuffer) delete[] m_pBuffer;
@@ -110,6 +111,7 @@ void CDVDAudio::Destroy()
   m_iChannels = 0;
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
+  m_bPassthrough = false;
   m_iSpeed = 1;
 }
 
@@ -255,6 +257,9 @@ void CDVDAudio::Flush()
 bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
 {
   if(!m_pAudioDecoder)
+    return false;
+
+  if(audioframe.passthrough != m_bPassthrough)
     return false;
 
   if(audioframe.channels != m_iChannels 

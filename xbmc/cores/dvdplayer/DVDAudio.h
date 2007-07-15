@@ -43,6 +43,7 @@ protected:
   int m_iChannels;
   int m_iBitrate;
   int m_iBitsPerSample;
+  bool m_bPassthrough;
   int m_iSpeed;
 
   volatile bool& m_bStop;
