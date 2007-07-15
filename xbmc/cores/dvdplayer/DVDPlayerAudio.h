@@ -25,6 +25,11 @@ typedef struct stDVDAudioFrame
   __int64 pts;
   unsigned int duration;  
   unsigned int size;
+
+  int channels;
+  int bits_per_sample;
+  int sample_rate;
+  bool passthrough;
 } DVDAudioFrame;
 
 class CPTSQueue
@@ -81,7 +86,6 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  bool InitializeOutputDevice();
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
   // tries to open a decoder for the given data. 

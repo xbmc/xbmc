@@ -10,6 +10,7 @@
 #include "..\..\util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "DVDPlayerAudio.h"
 
 
 CDVDAudio::CDVDAudio(bool &bStop)
@@ -47,8 +48,10 @@ void CDVDAudio::UnRegisterAudioCallback()
   if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
 }
 
-bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough, CodecID codec)
+bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
+  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
+
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
 
@@ -62,23 +65,23 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
 
 #ifdef _XBOX
   // we don't allow resampling now, there is a bug in sscc that causes it to return the wrong chunklen.
-  if( bPasstrough )
-    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, true); // true = resample, 128 buffers
+  if( audioframe.passthrough )
+    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, true); // true = resample, 128 buffers
   else
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, codecstring);
+    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
 #else
 
-  if( bPasstrough )
+  if( audioframe.passthrough )
     return false;
 
-  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, codecstring);
+  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring);
 #endif
 
   if (!m_pAudioDecoder) return false;
 
-  m_iChannels = iChannels;
-  m_iBitrate = iBitrate;
-  m_iBitsPerSample = iBitsPerSample;
+  m_iChannels = audioframe.channels;
+  m_iBitrate = audioframe.sample_rate;
+  m_iBitsPerSample = audioframe.bits_per_sample;
 
   m_dwPacketSize = m_pAudioDecoder->GetChunkLen();
   if (m_pBuffer) delete[] m_pBuffer;
@@ -146,8 +149,11 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len)
   return total - len;
 }
 
-DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
+DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 {
+  unsigned char* data = audioframe.data;
+  DWORD len = audioframe.size;
+
   DWORD total = len;
   DWORD copied;
 
@@ -244,4 +250,17 @@ void CDVDAudio::Flush()
     m_pAudioDecoder->Resume();
   }
   m_iBufferSize = 0;
+}
+
+bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
+{
+  if(!m_pAudioDecoder)
+    return false;
+
+  if(audioframe.channels != m_iChannels 
+  || audioframe.sample_rate != m_iBitrate 
+  || audioframe.bits_per_sample != m_iBitsPerSample)
+    return false;
+
+  return true;
 }
