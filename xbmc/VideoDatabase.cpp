@@ -3381,7 +3381,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
     if (idYear !=-1)
     {
-      strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath join tvshow on tvshowlinkepisode.idshow=tvshow.idshow where tvshowlinkepisode.idShow=%u and tvshow.c%02d like '%%%u'",VIDEODB_ID_TV_TITLE,idShow,VIDEODB_ID_TV_PREMIERED,idYear);
+      strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath join tvshow on tvshowlinkepisode.idshow=tvshow.idshow where tvshowlinkepisode.idShow=%u and tvshow.c%02d like '%%%u%%'",VIDEODB_ID_TV_TITLE,idShow,VIDEODB_ID_TV_PREMIERED,idYear);
     }
 
     if (idActor != -1)
