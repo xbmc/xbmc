@@ -119,6 +119,18 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb() const
   return result;
 }
 
+const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
+{
+  for (std::vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  {
+    if (iter->m_type == URL_TYPE_SEASON && iter->m_season == season)
+      return *iter;
+  }
+  SUrlEntry result;
+  result.m_season = -1;
+  return result;
+}
+
 CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
