@@ -1603,6 +1603,7 @@
   <string id="20379">Folder contains a single TV Show</string>
   <string id="20380">Exclude folder from scans</string>
   <string id="20381">Specials</string>
+  <string id="20382">Automatically grab season thumbs</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
