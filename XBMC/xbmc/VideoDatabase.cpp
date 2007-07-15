@@ -1889,6 +1889,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
     }
     castTime += timeGetTime() - time; time = timeGetTime();
   }
+  details.m_strPictureURL.Parse();
   return details;
 }
 
@@ -1937,6 +1938,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
     }
     castTime += timeGetTime() - time; time = timeGetTime();
   }
+  details.m_strPictureURL.Parse();
   return details;
 }
 
@@ -1987,6 +1989,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
     castTime += timeGetTime() - time; time = timeGetTime();
     m_pDS2->close();
   }
+  details.m_strPictureURL.Parse();
   return details;
 }
 

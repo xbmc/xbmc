@@ -4638,7 +4638,6 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
       CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
     }
   }
-  CLog::Log(LOGDEBUG,"done listing!");
 }
 
 void CUtil::ForceForwardSlashes(CStdString& strPath)
