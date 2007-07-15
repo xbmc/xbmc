@@ -159,7 +159,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        if (m_movieItem.GetVideoInfoTag()->m_iSeason == 0 && !m_movieItem.GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tv show
+        if (m_movieItem.GetVideoInfoTag()->m_iSeason < 0 && !m_movieItem.GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tv show
         {
           bool bCanceled=false;
           if (CGUIDialogYesNo::ShowAndGetInput(20377,20378,-1,-1,bCanceled))
@@ -376,7 +376,7 @@ void CGUIWindowVideoInfo::Refresh()
   {
     OutputDebugString("Refresh\n");
 
-    CStdString strImage = m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url;
+    CStdString strImage = m_movieItem.GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
 
     CStdString thumbImage = m_movieItem.GetThumbnailImage();
     if (!m_movieItem.HasThumbnail())
@@ -560,25 +560,28 @@ void CGUIWindowVideoInfo::OnInitWindow()
 //  CONTROL_DISABLE(10);
 }
 
-bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
+bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry* pEntry)
 {
   // TODO: This routine should be generalised to allow more than one
   // thumb to be downloaded (possibly from amazon.com or other sources)
   // and then a thumb chooser should be presented, with the current thumb
   // and the downloaded thumbs available (possibly also with a generic
   // file browse option?)
-  if (m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.IsEmpty())
+  CScraperUrl::SUrlEntry entry=m_movieItem.GetVideoInfoTag()->m_strPictureURL.GetFirstThumb();
+  if (!pEntry)
+    pEntry = &entry;
+  if (pEntry->m_url.IsEmpty())
     return false;
 
   CHTTP http;
-  http.SetReferer(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_spoof);
+  http.SetReferer(pEntry->m_spoof);
   string thumbData;
-  if (http.Get(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url, thumbData))
+  if (http.Get(pEntry->m_url, thumbData))
   {
     try
     {
       CPicture picture;
-      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url), thumb);
+      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(pEntry->m_url), thumb);
     }
     catch (...)
     {
@@ -598,18 +601,31 @@ void CGUIWindowVideoInfo::OnGetThumb()
 {
   CFileItemList items;
 
-  // Grab the thumbnail from the web
-  CStdString thumbFromWeb;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "imdbthumb.jpg", thumbFromWeb);
-  CFile::Delete(thumbFromWeb);
-  if (DownloadThumbnail(thumbFromWeb))
+  // Grab the thumbnails from the web
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
+  CUtil::WipeDir(strPath);
+  DIRECTORY::CDirectory::Create(strPath);
+  int i=1;
+  for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
   {
-    CFileItem *item = new CFileItem("thumb://IMDb", false);
-    item->SetThumbnailImage(thumbFromWeb);
-    item->SetLabel(g_localizeStrings.Get(20015));
-    items.Add(item);
+    if (iter->m_type == CScraperUrl::URL_TYPE_SEASON)
+      continue;
+    CStdString thumbFromWeb;
+    CStdString strLabel;
+    strLabel.Format("imdbthumb%i.jpg",i);
+    CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
+    if (DownloadThumbnail(thumbFromWeb,&(*iter)))
+    {
+      CStdString strItemPath;
+      strItemPath.Format("thumb://IMDb%i",i++);
+      CFileItem *item = new CFileItem(strItemPath, false);
+      item->SetThumbnailImage(thumbFromWeb);
+      CStdString strLabel;
+      item->SetLabel(g_localizeStrings.Get(20015));
+      items.Add(item);
+    }
   }
-
   if (CFile::Exists(m_movieItem.GetThumbnailImage()))
   {
     CFileItem *item = new CFileItem("thumb://Current", false);
@@ -652,10 +668,12 @@ void CGUIWindowVideoInfo::OnGetThumb()
   CFileItem item(*m_movieItem.GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedVideoThumb());
 
-  if (result == "thumb://IMDb")
+  if (result.Mid(0,12) == "thumb://IMDb")
   {
-    if (CFile::Exists(thumbFromWeb))
-      CFile::Cache(thumbFromWeb, cachedThumb);
+    CStdString strFile;
+    CUtil::AddFileToFolder(strPath,"imdbthumb"+result.Mid(12)+".jpg",strFile);
+    if (CFile::Exists(strFile))
+      CFile::Cache(strFile, cachedThumb);
     else
       result = "thumb://None";
   }
