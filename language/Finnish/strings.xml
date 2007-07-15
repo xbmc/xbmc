@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 30/06/2007-->
+<!--Date of translation: 14/07/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 9391 -->
+<!--Based on english strings version 9565 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -722,15 +722,18 @@
   <string id="1402">ukkosta</string>
   <string id="1403">aurinkoista</string>
   <string id="1404">kovaa</string>
-  <string id="1405"></string>
-  <string id="1406"></string>
-  <string id="1407">lähiaikoina</string>
+  <string id="1405">on</string>
+  <string id="1406"> </string>
+  <string id="1407">lähiaikana</string>
   <string id="1408">jäätä</string>
   <string id="1409">jääkiteitä</string>
   <string id="1410">tyyntä</string>
   <string id="1411">sekä</string>
   <string id="1412">tuulista</string>
   <string id="1413">tihkusadetta</string>
+  <string id="1414">ukkosmyrskyä</string>
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">Kesto:</string>
  
   <string id="4501">LCD:n tyyppi</string>
@@ -1276,7 +1279,7 @@
   <string id="15302">Palvelimia ei löytynyt</string>
   <string id="15303">Työryhmää ei löytynyt</string>
   
-  <string id="15310">Avataan useapolkuista kirjanmerkkiä</string>
+  <string id="15310">Avataan useapolkuista sijaintia</string>
   <string id="15311">Polku:</string>
   
   <string id="16000">Yleiset</string>
@@ -1402,7 +1405,7 @@
   <string id="20078">- Linkkiä ei ole -</string>
   <string id="20079">Animoinnit käytössä</string>
   <string id="20080">Älä näytä RSS-tietoja musiikin aikana</string>
-  <string id="20081">Kirjanmerkki painikkeet käytössä</string>
+  <string id="20081">Pikakäynnistys painikkeet käytössä</string>
   <string id="20082">Näytä XLink Kai-tiedot</string>
   <string id="20083">Näytä Musiikki-tiedot</string>
   <string id="20084">Näytä Säätila-tiedot</string>
@@ -1603,6 +1606,7 @@
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
   <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
   <string id="20380">Sisällytä kansio hakuun</string>
+  <string id="20381">Erikoiset</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1693,6 +1697,7 @@
   <string id="21435">Muokkaa</string>
   <string id="21436">%i kappaletta</string>
   <string id="21437">Uusi älykäs soittolista...</string>
-
+  <string id="21438">%c Asema</string>
+  
   <string id="29999">Näytön välkynnän poisto</string>
 </strings>
