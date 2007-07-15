@@ -123,10 +123,10 @@ void CDVDAudioCodecLiba52::SetupChannels()
   if(channels == 5 || channels == 3)
     channels = 6;
 
-  if(!m_iOutputChannels)
-    m_iOutputChannels = channels;
-  else if(m_iOutputChannels != channels)
-    CLog::Log(LOGWARNING, __FUNCTION__" - Number of channels changed in stream from %d to %d, data might be truncated", m_iOutputChannels, channels);
+  if(m_iOutputChannels > 0 && m_iOutputChannels != channels) 
+    CLog::Log(LOGINFO, __FUNCTION__" - Number of channels changed in stream from %d to %d", m_iOutputChannels, channels);
+
+  m_iOutputChannels = channels;
 
   // make sure map contains enough channels
   for(int i=0;i<m_iOutputChannels;i++)
