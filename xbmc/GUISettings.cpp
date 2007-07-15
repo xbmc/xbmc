@@ -314,7 +314,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(6, "system.sep3");
   AddBool(7, "system.fanspeedcontrol", 13302, false);
 #ifdef HAS_XBOX_HARDWARE
-  AddInt(8, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(8, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(9, "system.sep4");
   AddBool(10, "system.autotemperature", 13301, false);
