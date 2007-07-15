@@ -31,6 +31,7 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
 #include "Utils/GUIInfoManager.h"
+#include "VideoInfoScanner.h"
 
 using namespace XFILE;
 
@@ -383,7 +384,7 @@ void CGUIWindowVideoInfo::Refresh()
       thumbImage = m_movieItem.GetCachedVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
-      DownloadThumbnail(thumbImage);
+      VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbImage,m_movieItem.GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
       CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
     }
 
@@ -509,7 +510,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
 
   CVideoInfoTag movieDetails;
@@ -560,37 +561,6 @@ void CGUIWindowVideoInfo::OnInitWindow()
 //  CONTROL_DISABLE(10);
 }
 
-bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry* pEntry)
-{
-  // TODO: This routine should be generalised to allow more than one
-  // thumb to be downloaded (possibly from amazon.com or other sources)
-  // and then a thumb chooser should be presented, with the current thumb
-  // and the downloaded thumbs available (possibly also with a generic
-  // file browse option?)
-  CScraperUrl::SUrlEntry entry=m_movieItem.GetVideoInfoTag()->m_strPictureURL.GetFirstThumb();
-  if (!pEntry)
-    pEntry = &entry;
-  if (pEntry->m_url.IsEmpty())
-    return false;
-
-  CHTTP http;
-  http.SetReferer(pEntry->m_spoof);
-  string thumbData;
-  if (http.Get(pEntry->m_url, thumbData))
-  {
-    try
-    {
-      CPicture picture;
-      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(pEntry->m_url), thumb);
-    }
-    catch (...)
-    {
-      ::DeleteFile(thumb.c_str());
-    }
-  }
-  return true;
-}
-
 // Get Thumb from user choice.
 // Options are:
 // 1.  Current thumb
@@ -615,7 +585,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     CStdString strLabel;
     strLabel.Format("imdbthumb%i.jpg",i);
     CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-    if (DownloadThumbnail(thumbFromWeb,&(*iter)))
+    if (VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbFromWeb,*iter))
     {
       CStdString strItemPath;
       strItemPath.Format("thumb://IMDb%i",i++);
@@ -657,7 +627,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(1030), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")

@@ -42,6 +42,7 @@ namespace VIDEO
     long GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CIMDBUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
+    static bool DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry);
 
   protected:
     virtual void Process();
@@ -49,6 +50,7 @@ namespace VIDEO
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
+    void FetchSeasonThumbs(long lTvShowId);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
   protected:

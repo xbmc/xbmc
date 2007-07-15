@@ -33,6 +33,7 @@ public:
   bool ParseString(CStdString);
   bool ParseElement(const TiXmlElement*);
   const SUrlEntry GetFirstThumb() const;
+  const SUrlEntry GetSeasonThumb(int) const;
   void Clear();
   CStdString m_xml;
   CStdString m_spoof; // for backwards compatibility only!
