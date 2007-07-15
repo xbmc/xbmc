@@ -521,20 +521,26 @@ namespace VIDEO
             {
               CUtil::ClearCache();
               long lResult=GetIMDBDetails(pItem, url, info,bDirNames&&info.strContent.Equals("movies"));
-              if (info.strContent.Equals("tvshows") && !bRefresh)
+              if (info.strContent.Equals("tvshows"))
               {
-                // fetch episode guide
-                CVideoInfoTag details;
-                m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
-                CIMDBUrl url;
-                url.Parse(details.m_strEpisodeGuide);
-                IMDB_EPISODELIST episodes;
-                IMDB_EPISODELIST files;
-                EnumerateSeriesFolder(pItem,files);
-                if (IMDB.GetEpisodeList(url,episodes))
+                if (!bRefresh)
                 {
-                  OnProcessSeriesFolder(episodes,files,lResult,IMDB,m_dlgProgress);
+                  // fetch episode guide
+                  CVideoInfoTag details;
+                  m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
+                  CIMDBUrl url;
+                  url.Parse(details.m_strEpisodeGuide);
+                  IMDB_EPISODELIST episodes;
+                  IMDB_EPISODELIST files;
+                  EnumerateSeriesFolder(pItem,files);
+                  if (IMDB.GetEpisodeList(url,episodes))
+                  {
+                    OnProcessSeriesFolder(episodes,files,lResult,IMDB,m_dlgProgress);
+                  }
                 }
+                else
+                  if (g_guiSettings.GetBool("myvideos.seasonthumbs"))
+                    FetchSeasonThumbs(lResult);
               }
             }
           }
@@ -788,6 +794,8 @@ namespace VIDEO
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
       }
     }
+    if (g_guiSettings.GetBool("myvideos.seasonthumbs"))
+      FetchSeasonThumbs(lShowId);
     m_database.Close();
   }
 
@@ -926,5 +934,44 @@ namespace VIDEO
     XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
     hash = md5HexString;
     return count;
+  }
+
+  void CVideoInfoScanner::FetchSeasonThumbs(long lTvShowId)
+  {
+    CVideoInfoTag movie;
+    m_database.GetTvShowInfo("",movie,lTvShowId);
+    CFileItemList items;
+    CStdString strPath;
+    strPath.Format("videodb://2/2/%i/",lTvShowId);
+    m_database.GetSeasonsNav(strPath,items,-1,-1,-1,-1,lTvShowId);
+    for (int i=0;i<items.Size();++i)
+    {
+      items[i]->SetVideoThumb();
+      if (!items[i]->HasThumbnail())
+        DownloadThumbnail(items[i]->GetCachedSeasonThumb(),movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason));
+    }
+  }
+
+  bool CVideoInfoScanner::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry)
+  {
+    if (entry.m_url.IsEmpty())
+      return false;
+
+    CHTTP http;
+    http.SetReferer(entry.m_spoof);
+    string thumbData;
+    if (http.Get(entry.m_url, thumbData))
+    {
+      try
+      {
+        CPicture picture;
+        picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
+      }
+      catch (...)
+      {
+        ::DeleteFile(thumb.c_str());
+      }
+    }
+    return true;
   }
 }
