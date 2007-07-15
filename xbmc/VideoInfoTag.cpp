@@ -61,7 +61,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetString(movie, "runtime", m_strRuntime);
-  XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_url);
+  XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_xml);
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
   XMLUtils::SetString(movie, "file", m_strFile);
@@ -126,7 +126,9 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "code", m_strProductionCode);
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
 
-  m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+  m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
+  if (m_strPictureURL.m_url.size() == 0)
+    m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
 
   CStdString strTemp;
   const TiXmlNode *node = movie->FirstChild("genre");
@@ -209,9 +211,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strTagLine;
     ar << m_strPlotOutline;
     ar << m_strPlot;
-    ar << m_strPictureURL.m_post;
     ar << m_strPictureURL.m_spoof;
-    ar << m_strPictureURL.m_url;
+    ar << m_strPictureURL.m_xml;
     ar << m_strTitle;
     ar << m_strVotes;
     ar << (int)m_cast.size();
@@ -251,9 +252,9 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strTagLine;
     ar >> m_strPlotOutline;
     ar >> m_strPlot;
-    ar >> m_strPictureURL.m_post;
     ar >> m_strPictureURL.m_spoof;
-    ar >> m_strPictureURL.m_url;
+    ar >> m_strPictureURL.m_xml;
+    m_strPictureURL.Parse();
     ar >> m_strTitle;
     ar >> m_strVotes;
     int iCastSize;
