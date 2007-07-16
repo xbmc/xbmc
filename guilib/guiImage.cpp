@@ -72,9 +72,9 @@ CGUIImage::~CGUIImage(void)
 
 }
 
-void CGUIImage::Render()
+void CGUIImage::UpdateVisibility()
 {
-  GUIVISIBLE visible = m_forceHidden ? HIDDEN : m_visible;
+  CGUIControl::UpdateVisibility();
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
@@ -83,8 +83,13 @@ void CGUIImage::Render()
     SetFileName(g_infoManager.GetImage(m_Info, m_dwParentID));
   }
 
+  AllocateOnDemand();
+}
+
+void CGUIImage::AllocateOnDemand()
+{
   // if we're hidden, we can free our resources and return
-  if (visible == HIDDEN)
+  if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
@@ -92,12 +97,18 @@ void CGUIImage::Render()
     return;
   }
 
+  // either visible or delayed - we need the resources allocated in either case
   if (!m_texturesAllocated)
     AllocResources();
+}
 
-  // if we're delayed, there's no requirement to actually render
-  if (m_visible == DELAYED)
-    return CGUIControl::Render();
+void CGUIImage::Render()
+{
+  // we need the checks for visibility and resource allocation here as
+  // most controls use CGUIImage's to do their rendering (where UpdateVisibility doesn't apply)
+  AllocateOnDemand();
+
+  if (!IsVisible()) return;
 
   if (m_vecTextures.size())
   {
@@ -106,7 +117,7 @@ void CGUIImage::Render()
     // scale to screen output position
     if (m_fNW > m_width || m_fNH > m_height)
     {
-      if (!g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height, true))
+      if (!g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
       {
         CGUIControl::Render();
         return;
@@ -157,6 +168,8 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+
 #ifdef HAS_XBOX_D3D
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
 #endif
@@ -282,7 +295,7 @@ void CGUIImage::Render()
 #endif
       
     if (m_fNW > m_width || m_fNH > m_height)
-      g_graphicsContext.RestoreViewPort();
+      g_graphicsContext.RestoreClipRegion();
   }
   CGUIControl::Render();
 }
@@ -293,19 +306,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 #endif  
 
-  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(left, top));
-  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(left, top));
-  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(right, top));
-  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(right, top));
-  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(right, bottom));
-  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(right, bottom));
-  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(left, bottom));
-  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(left, bottom));
-
-  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
-  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
-
-  // Render the image
+  // flip the texture as necessary
   if (m_image.flipX)
   {
     u1 = m_fU - u1;
@@ -317,66 +318,90 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     v2 = m_fV - v2;
   }
 
-  //printf("render image: x1=%d y1=%d x3=%d y3=%d | u1=%f v1=%f u2=%f v2=%f\n", (int) x1, (int) y1, (int) x3, (int) y3, u1, v1, u2, v2);
-  
+  // clip our rects
+  CRect vertex(left, top, right, bottom);
+  CRect texture(u1, v1, u2, v2);
+  g_graphicsContext.ClipRect(vertex, texture);
+
+  if (vertex.IsEmpty())
+    return; // nothing to render
+
+  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
+  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
+  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
+  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
+  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
+  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
+  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1);
+  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1);
+  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2);
+  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2);
+
+  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
+  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
+
+  u1 = texture.x1; u2 = texture.x2;
+  v1 = texture.y1; v2 = texture.y2;
+
 #ifdef HAS_XBOX_D3D
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
   D3DCOLOR color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   color =  m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   color =  m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
 
 #elif !defined(HAS_SDL)
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
-      FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
       FLOAT tu2, tv2;
   };
 
   CUSTOMVERTEX verts[4];
-  verts[0].x = x1; verts[0].y = y1; verts[0].z = 0.0f; verts[0].rhw = 1.0f;
+  verts[0].x = x1; verts[0].y = y1; verts[0].z = z1;
   verts[0].tu = u1;   verts[0].tv = v1; verts[0].tu2 = u1*m_diffuseScaleU; verts[0].tv2 = v1*m_diffuseScaleV;
   DWORD color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[1].x = x2; verts[1].y = y2; verts[1].z = 0.0f;verts[1].rhw = 1.0f;
+  verts[1].x = x2; verts[1].y = y2; verts[1].z = z2;
   verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[2].x = x3; verts[2].y = y3; verts[2].z = 0.0f; verts[2].rhw = 1.0f;
+  verts[2].x = x3; verts[2].y = y3; verts[2].z = z3;
   verts[2].tu = u2;   verts[2].tv = v2; verts[2].tu2 = u2*m_diffuseScaleU; verts[2].tv2 = v2*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2],m_diffuseColor);
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[3].x = x4; verts[3].y = y4; verts[3].z = 0.0f; verts[3].rhw = 1.0f;
+  verts[3].x = x4; verts[3].y = y4; verts[3].z = z4;
   verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3],m_diffuseColor);
@@ -806,16 +831,14 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
 
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
-  CStdString strTransFileName = _P(strFileName);
-
-  if (strTransFileName.IsEmpty() && !m_image.file.IsEmpty())
+  if (strFileName.IsEmpty() && !m_image.file.IsEmpty())
     return SetFileName(m_image.file);
 
-  if (m_strFileName.Equals(strTransFileName)) return;
+  if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeTextures();
-  m_strFileName = strTransFileName;
+  m_strFileName = strFileName;
   // Don't allocate resources here as this is done at render time
 }
 

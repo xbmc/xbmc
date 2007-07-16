@@ -13,6 +13,7 @@
 #include <map>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
+#include "Geometry.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 //#include <SDL/SDL_opengl.h>
@@ -151,18 +152,25 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
   void Flip() {m_screenSurface->Flip();}
+  void SetCameraPosition(float camX, float camY);
   void InvertFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y); }
-  inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y); }
-  inline void ScaleFinalCoords(float &x, float &y) const { m_finalTransform.TransformPosition(x, y); }
-  inline float ScaleFinalX() const { return m_windowScaleX; };
-  inline float ScaleFinalY() const { return m_windowScaleY; };
+  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y, 0); }
+  inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y, 0); }
+  inline float ScaleFinalZCoord(float x, float y) const { return m_finalTransform.TransformZCoord(x, y, 0); }
+  inline void ScaleFinalCoords(float &x, float &y, float &z) const { m_finalTransform.TransformPosition(x, y, z); }
+
+  inline float GetGUIScaleX() const { return m_guiScaleX; };
+  inline float GetGUIScaleY() const { return m_guiScaleY; };
   inline DWORD MergeAlpha(DWORD color) const
   {
     DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
     return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
   }
-
+  void SetOrigin(float x, float y);
+  void RestoreOrigin();
+  bool SetClipRegion(float x, float y, float w, float h);
+  void RestoreClipRegion();
+  void ClipRect(CRect &vertex, CRect &texture);
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
     while (m_groupTransform.size())
@@ -170,24 +178,18 @@ public:
     m_groupTransform.push(m_guiTransform * matrix);
     m_finalTransform = m_groupTransform.top();
   }
-  inline void SetControlTransform(const TransformMatrix &matrix)
+  inline void AddTransform(const TransformMatrix &matrix)
   {
-    if (!m_groupTransform.empty())
-      m_finalTransform = m_groupTransform.top() * matrix;
-    else
-      m_finalTransform = TransformMatrix() * matrix;
-  };
-  inline void AddGroupTransform(const TransformMatrix &matrix)
-  { // add to the stack
-    if (!m_groupTransform.empty())
-      m_groupTransform.push(m_groupTransform.top() * matrix);
-    else
-      m_groupTransform.push(TransformMatrix() * matrix);
+    ASSERT(m_groupTransform.size());
+    m_groupTransform.push(m_groupTransform.top() * matrix);
     m_finalTransform = m_groupTransform.top();
-  };
-  inline void RemoveGroupTransform()
-  { // remove from stack
-    if (m_groupTransform.size()) m_groupTransform.pop();
+  }
+  inline void RemoveTransform()
+  {
+    ASSERT(m_groupTransform.size() > 1);
+    if (m_groupTransform.size())
+      m_groupTransform.pop();
+    m_finalTransform = m_groupTransform.top();
   };
 
 protected:
@@ -222,8 +224,12 @@ protected:
 
 private:
   RESOLUTION m_windowResolution;
-  float m_windowScaleX;
-  float m_windowScaleY;
+  float m_guiScaleX;
+  float m_guiScaleY;
+  float m_cameraX;
+  float m_cameraY;
+  stack<CPoint> m_origins;
+  stack<CRect>  m_clipRegions;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
@@ -245,37 +251,6 @@ class CLockMe
   CCriticalSection* sec;
 };
 
-/*
-void printMatrix(GLfloat *matrix)
-{
-  for (int i = 0 ; i<4 ; i++) 
-  {
-    for (int j = 0 ; j<4 ; j++) 
-    {
-      printf("% 3.3f  ", matrix[i*4+j]);
-    }
-    printf("\n");
-  }
-}
-
-void dumpGLState()
-{
-  GLboolean bools[16];
-  GLfloat matrix[16];
-  glGetFloatv(GL_SCISSOR_BOX, matrix);
-  printf("Scissor box: %f, %f, %f, %f\n", matrix[0], matrix[1], matrix[2], matrix[3]);
-  glGetBooleanv(GL_SCISSOR_TEST, bools);
-  printf("Scissor test enabled: %d\n", (int)bools[0]);
-  glGetFloatv(GL_VIEWPORT, matrix);
-  printf("Viewport: %f, %f, %f, %f\n", matrix[0], matrix[1], matrix[2], matrix[3]);
-  glGetFloatv(GL_PROJECTION_MATRIX, matrix);
-  printf("Projection Matrix:\n");
-  printMatrix(matrix);
-  glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
-  printf("Modelview Matrix:\n");
-  printMatrix(matrix);
-}
-*/
 
 /*!
  \ingroup graphics

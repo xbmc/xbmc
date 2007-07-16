@@ -32,7 +32,7 @@ CGUIControl::CGUIControl()
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-: m_hitRect(posX, posY, width, height)
+: m_hitRect(posX, posY, posX + width, posY + height)
 {
   m_posX = posX;
   m_posY = posY;
@@ -98,6 +98,19 @@ bool CGUIControl::IsAllocated() const
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
 
+}
+
+// the main render routine.
+// 1. animate and set the animation transform
+// 2. if visible, paint
+// 3. reset the animation transform
+void CGUIControl::DoRender(DWORD currentTime)
+{
+  Animate(currentTime);
+  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
+  if (IsVisible())
+    Render();
+  g_graphicsContext.RemoveTransform();
 }
 
 void CGUIControl::Render()
@@ -260,7 +273,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       // reset any visible animations that are in process
       if (IsAnimating(ANIM_TYPE_VISIBLE))
       {
-//        CLog::Log(LOGDEBUG,"Resetting visible animation on control %i (we are %s)", m_dwControlID, m_visible ? "visible" : "hidden");
+//        CLog::DebugLog("Resetting visible animation on control %i (we are %s)", m_dwControlID, m_visible ? "visible" : "hidden");
         CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
         if (visibleAnim) visibleAnim->ResetAnimation();
       }
@@ -311,8 +324,7 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
-    m_hitRect.x += posX - m_posX;
-    m_hitRect.y += posY - m_posY;
+    m_hitRect += CPoint(posX - m_posX, posY - m_posY);
     m_posX = posX;
     m_posY = posY;
     Update();
@@ -357,7 +369,7 @@ void CGUIControl::SetWidth(float width)
   if (m_width != width)
   {
     m_width = width;
-    m_hitRect.w = width;
+    m_hitRect.x2 = m_hitRect.x1 + width;
     Update();
   }
 }
@@ -367,7 +379,7 @@ void CGUIControl::SetHeight(float height)
   if (m_height != height)
   {
     m_height = height;
-    m_hitRect.h = height;
+    m_hitRect.y2 = m_hitRect.y1 + height;
     Update();
   }
 }
@@ -411,12 +423,12 @@ void CGUIControl::UpdateVisibility()
     m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
-  //    CLog::Log(LOGDEBUG,"Visibility changed to visible for control id %i", m_dwControlID);
+  //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
       QueueAnimation(ANIM_TYPE_VISIBLE);
     }
     else if (bWasVisible && !m_visibleFromSkinCondition)
     { // automatic change of visibility - do the out effect
-  //    CLog::Log(LOGDEBUG,"Visibility changed to hidden for control id %i", m_dwControlID);
+  //    CLog::DebugLog("Visibility changed to hidden for control id %i", m_dwControlID);
       QueueAnimation(ANIM_TYPE_HIDDEN);
     }
   }
@@ -439,7 +451,7 @@ void CGUIControl::SetInitialVisibility()
   {
     m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
     m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
-  //  CLog::Log(LOGDEBUG,"Set initial visibility for control %i: %s", m_dwControlID, m_visible == VISIBLE ? "visible" : "hidden");
+  //  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_visible == VISIBLE ? "visible" : "hidden");
     // no need to enquire every frame if we are always visible or always hidden
     if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
       m_visibleCondition = 0;
@@ -451,12 +463,6 @@ void CGUIControl::SetInitialVisibility()
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
       anim.SetInitialCondition();
   }
-}
-
-void CGUIControl::UpdateEffectState(DWORD currentTime)
-{
-  UpdateVisibility();
-  Animate(currentTime);
 }
 
 void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus)
@@ -577,7 +583,7 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
       OnFocus();
   }
 //  if (visible != m_visible)
-//    CLog::Log(LOGDEBUG,"UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible == VISIBLE ? "visible" : (m_visible == DELAYED ? "delayed" : "hidden"), type, currentProcess, currentState);
+//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible == VISIBLE ? "visible" : (m_visible == DELAYED ? "delayed" : "hidden"), type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate(DWORD currentTime)
@@ -600,16 +606,16 @@ void CGUIControl::Animate(DWORD currentTime)
       if (anim.effect == EFFECT_TYPE_ZOOM)
       {
         if (IsVisible())
-          CLog::Log(LOGDEBUG,"Animating control %d with a %s zoom effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+          CLog::DebugLog("Animating control %d with a %s zoom effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
       else if (anim.effect == EFFECT_TYPE_FADE)
       {
         if (IsVisible())
-          CLog::Log(LOGDEBUG,"Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+          CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
     }*/
   }
-  g_graphicsContext.SetControlTransform(transform);
+  g_graphicsContext.AddTransform(transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
@@ -648,7 +654,7 @@ DWORD CGUIControl::GetNextControl(int direction) const
   case ACTION_MOVE_RIGHT:
     return m_dwControlRight;
   default:
-    return (DWORD) -1;
+    return -1;
   }
 }
 
