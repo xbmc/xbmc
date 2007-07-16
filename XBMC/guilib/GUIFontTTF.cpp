@@ -31,7 +31,10 @@
   #pragma comment (lib,"../../guilib/freetype2/freetype221.lib")
 #endif
 #endif
-
+#ifdef _LINUX
+#define max(a,b) ((a)>(b)?(a):(b))
+#define min(a,b) ((a)<(b)?(a):(b))
+#endif
 
 class CFreeTypeLibrary
 {
@@ -226,8 +229,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   m_cellBaseLine++;
   m_lineHeight++;
 
-  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%i): width = %i, height = %i",
-    __FUNCTION__, strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
+  CLog::Log(LOGDEBUG, " Scaled size of font %s (%i): width = %i, height = %i",
+    strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
   m_iHeight = iHeight;
   m_iStyle = iStyle;
 
@@ -270,29 +273,35 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   return true;
 }
 
-void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
+void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                           const WCHAR* strText, DWORD cchText, DWORD dwFlags,
                           FLOAT fMaxPixelWidth)
 {
   // Draw text as a single colour
-  DrawTextInternal(fOriginX, fOriginY, angle, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+  DrawTextInternal(fOriginX, fOriginY, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
+void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
                                      const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                      FLOAT fMaxPixelWidth)
 {
   // Draws text as multi-coloured polygons
-    DrawTextInternal(fOriginX, fOriginY, angle, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+    DrawTextInternal(fOriginX, fOriginY, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
+void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
   Begin();
 
+  // save the origin, which is scaled separately
+  m_originX = sx;
+  m_originY = sy;
+
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
-    sy -= (m_cellHeight-2)*0.5f;
+    sy = -0.5f*(m_cellHeight-2);
+  else
+    sy = 0;
 
   // Check if we will really need to truncate the CStdString
   if ( dwFlags & XBFONT_TRUNCATED )
@@ -320,27 +329,23 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      lineX = sx - angle.sine * m_lineHeight * numLines;
-      lineY = sy + angle.cosine * m_lineHeight * numLines;
+      lineX = 0;
+      lineY = sy + (float)m_lineHeight * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
         FLOAT w, h;
         GetTextExtentInternal( strText, &w, &h, TRUE );
 
-        if ( (dwFlags & XBFONT_TRUNCATED) && w > fMaxPixelWidth )
+        if ( dwFlags & XBFONT_TRUNCATED && w > fMaxPixelWidth )
           w = fMaxPixelWidth;
           
         if ( dwFlags & XBFONT_CENTER_X)
           w *= 0.5f;
         // Offset this line's starting position
-        lineX -= angle.cosine * w;
-        lineY -= angle.sine * w;
+        lineX -= w;
       }
       bStartingNewLine = FALSE;
-      // align to an integer so that aliasing doesn't occur
-      lineX = ROUND_TO_PIXEL(lineX);
-      lineY = ROUND_TO_PIXEL(lineY);
       cursorX = 0; // current position along the line
     }
 
@@ -381,17 +386,13 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 
         for (int i = 0; i < 3; i++)
         {
-          float posX = lineX + cursorX*angle.cosine;
-          float posY = lineY + cursorX*angle.sine;
-          RenderCharacter(posX, posY, angle, period, dwColor);
+          RenderCharacter(lineX + cursorX, lineY, period, dwColor);
           cursorX += period->advance;
         }
         break;
       }
     }
-    float posX = lineX + cursorX*angle.cosine;
-    float posY = lineY + cursorX*angle.sine;
-    RenderCharacter(posX, posY, angle, ch, dwColor);
+    RenderCharacter(lineX + cursorX, lineY, ch, dwColor);
     cursorX += ch->advance;
   }
 
@@ -440,7 +441,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
 {
   // quick access to ascii chars
-  if(letter < 255 && letter > 0)
+  if(letter < 255)
     if(m_charquick[letter])
       return m_charquick[letter];
 
@@ -560,6 +561,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     {
       // create the new larger texture
       unsigned newHeight = m_posY + m_cellHeight;
+#ifdef HAS_XBOX
+      LPDIRECT3DTEXTURE8 newTexture;
+#endif
       // check for max height (can't be more than 4096 texels)
       if (newHeight > 4096)
       {
@@ -639,7 +643,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // set the character in our table
   ch->letter = letter;
   ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, (unsigned int) 0);
+  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, 0);
   ch->left = (float)m_posX + ch->offsetX;
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
@@ -662,7 +666,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     targetrect.right = targetrect.left + bitmap.width;
 
     D3DXLoadSurfaceFromMemory( target, NULL, &targetrect, 
-      bitmap.buffer, format, bitmap.pitch, NULL, &sourcerect, 
+      bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect, 
       D3DX_FILTER_NONE, 0x00000000);
 
     SAFE_RELEASE(target);
@@ -731,14 +735,13 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
-    m_pD3DDevice->SetVertexShader(m_vertexShader);
-    m_pD3DDevice->SetPixelShader(m_pixelShader);
+    m_pD3DDevice->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 #ifdef HAS_XBOX_D3D
     // Render the image
@@ -804,7 +807,6 @@ void CGUIFontTTF::End()
   m_pD3DDevice->End();
   m_pD3DDevice->SetScreenSpaceOffset(0, 0);
 #endif
-  m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 #elif defined(HAS_SDL_OPENGL)
@@ -812,44 +814,69 @@ void CGUIFontTTF::End()
 #endif
 }
 
-void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
   const float width = ch->right - ch->left;
   const float height = ch->bottom - ch->top;
 
-  /* top left of our texture isn't the topleft of the textcell */
-  /* celltop could be higher than m_iHeight over baseline */
-  posX += ch->offsetX * angle.cosine - ch->offsetY * angle.sine;
-  posY += ch->offsetX * angle.sine + ch->offsetY * angle.cosine;
+  // posX and posY are relative to our origin, and the textcell is offset
+  // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
+  CRect vertex((posX + ch->offsetX) * g_graphicsContext.GetGUIScaleX(),
+               (posY + ch->offsetY) * g_graphicsContext.GetGUIScaleY(),
+               (posX + ch->offsetX + width) * g_graphicsContext.GetGUIScaleX(),
+               (posY + ch->offsetY + height) * g_graphicsContext.GetGUIScaleY());
+  vertex += CPoint(m_originX, m_originY);
+  CRect texture(ch->left, ch->top, ch->right, ch->bottom);
+  g_graphicsContext.ClipRect(vertex, texture);
+
+  // transform our positions - note, no scaling due to GUI calibration/resolution occurs
+  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+
+  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+
+  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+
+  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
 #ifdef HAS_XBOX_D3D
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
-  m_pD3DDevice->SetVertexData4f( 0, posX, posY, ch->left, ch->top );
-  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width, posY + angle.sine * width, ch->right, ch->top );
-  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, ch->right, ch->bottom );
-  m_pD3DDevice->SetVertexData4f( 0, posX - angle.sine * height, posY + angle.cosine * height, ch->left, ch->bottom );
-#elif !defined(HAS_SDL)
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
+
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
-      FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
   };
 
   // tex coords converted to 0..1 range
-  float tl = ch->left / m_textureWidth;
-  float tr = ch->right / m_textureWidth;
-  float tt = ch->top / m_textureHeight;
-  float tb = ch->bottom / m_textureHeight;
+  float tl = texture.x1 / m_textureWidth;
+  float tr = texture.x2 / m_textureWidth;
+  float tt = texture.y1 / m_textureHeight;
+  float tb = texture.y2 / m_textureHeight;
 
   CUSTOMVERTEX verts[4] =  {
-    { posX                                         , posY                                         , 0.0f, 1.0f, dwColor, tl, tt},
-    { posX + angle.cosine*width                    , posY + angle.sine*width                      , 0.0f, 1.0f, dwColor, tr, tt},
-    { posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0.0f, 1.0f, dwColor, tr, tb},
-    { posX - angle.sine*height                     , posY + angle.cosine*height                   , 0.0f, 1.0f, dwColor, tl, tb} 
+    { x1, y1, z1, dwColor, tl, tt},
+    { x2, y2, z2, dwColor, tr, tt},
+    { x3, y3, z3, dwColor, tr, tb},
+    { x4, y4, z4, dwColor, tl, tb}
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
@@ -911,22 +938,22 @@ struct CUSTOMVERTEX {
   // Top-left vertex (corner)
   glColor4ubv(colors); 
   glTexCoord2f(tl, tt);
-  glVertex3f(posX, posY, 0);
+  glVertex3f(x1, y1, z1);
    
   // Bottom-left vertex (corner)
   glColor4ubv(colors); 
   glTexCoord2f(tr, tt);
-  glVertex3f(posX + angle.cosine*width, posY + angle.sine*width, 0);
+  glVertex3f(x2, y2, z2);
     
   // Bottom-right vertex (corner)
   glColor4ubv(colors); 
   glTexCoord2f(tr, tb);
-  glVertex3f(posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0);
+  glVertex3f(x3, y3, z3);
     
   // Top-right vertex (corner)
   glColor4ubv(colors); 
   glTexCoord2f(tl, tb);
-  glVertex3f(posX - angle.sine*height, posY + angle.cosine*height, 0);
+  glVertex3f(x4, y4, z4);
 #endif
 }
 

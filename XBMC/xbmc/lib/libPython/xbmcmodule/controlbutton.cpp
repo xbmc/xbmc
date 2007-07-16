@@ -129,7 +129,7 @@ namespace PYXBMC
     label.align = pControl->dwAlign;
     label.offsetX = (float)pControl->dwTextXOffset;
     label.offsetY = (float)pControl->dwTextYOffset;
-    label.angle = CAngle(-pControl->iAngle);
+    label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUIButtonControl(
       pControl->iParentId,
       pControl->iControlId,

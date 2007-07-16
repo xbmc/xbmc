@@ -29,6 +29,7 @@ public:
     align = XBFONT_LEFT;
     offsetX = offsetY = 0;
     width = 0;
+    angle = 0;
   };
   DWORD textColor;
   DWORD shadowColor;
@@ -39,7 +40,7 @@ public:
   float offsetX;
   float offsetY;
   float width;
-  CAngle angle;
+  float angle;
   CGUIFont *font;
 };
 
@@ -55,57 +56,6 @@ public:
   int m_data;
 };
 
-class CPoint
-{
-public:
-  CPoint()
-  {
-    x = 0; y = 0;
-  };
-
-  CPoint(float a, float b)
-  {
-    x = a;
-    y = b;
-  };
-
-  CPoint operator+(const CPoint &point) const
-  {
-    CPoint ans;
-    ans.x = x + point.x;
-    ans.y = y + point.y;
-    return ans;
-  };
-
-  CPoint operator-(const CPoint &point) const
-  {
-    CPoint ans;
-    ans.x = x - point.x;
-    ans.y = y - point.y;
-    return ans;
-  };
-
-  float x, y;
-};
-
-class CRect
-{
-public:
-  CRect() { x = y = w = h = 0;};
-  CRect(float left, float top, float width, float height) { x = left; y = top; w = width; h = height; };
-
-  void SetRect(float left, float top, float width, float height) { x = left; y = top; w = width; h = height; };
-
-  bool PtInRect(const CPoint &point) const
-  {
-    if (x <= point.x && point.x <= x + w && y <= point.y && point.y <= y + h)
-      return true;
-    return false;
-  };
-
-  float x, y, w, h;
-};
-
 /*!
  \ingroup controls
  \brief Base class for controls
@@ -116,7 +66,10 @@ public:
   CGUIControl();
   CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);
+
+  virtual void DoRender(DWORD currentTime);
   virtual void Render();
+  bool HasRendered() const { return m_hasRendered; };
 
   // OnAction() is called by our window when we are the focused control.
   // We should process any control-specific actions in the derived classes,
@@ -167,7 +120,6 @@ public:
   virtual bool CanFocus() const;
   virtual bool IsVisible() const;
   virtual bool IsDisabled() const;
-  bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetColorDiffuse(D3DCOLOR color);
@@ -191,9 +143,8 @@ public:
   void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
-  void UpdateVisibility();
+  virtual void UpdateVisibility();
   virtual void SetInitialVisibility();
-  virtual void UpdateEffectState(DWORD currentTime);
   virtual void SetEnabled(bool bEnable);
   virtual void Update() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };

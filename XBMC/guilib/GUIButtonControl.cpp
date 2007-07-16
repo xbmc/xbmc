@@ -30,8 +30,6 @@ CGUIButtonControl::~CGUIButtonControl(void)
 
 void CGUIButtonControl::Render()
 {
-  if (!IsVisible()) return;
-
   m_dwFrameCounter++;
 
   if (m_bTabButton)
