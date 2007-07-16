@@ -464,7 +464,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u1, v1);
   if (m_diffuseTexture)
   glMultiTexCoord2f(GL_TEXTURE1_ARB, u1*m_diffuseScaleU, v1*m_diffuseScaleV);
-  glVertex3f(x1, y1, 0);
+  glVertex3f(x1, y1, z1);
   
   // Bottom-left vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor));  
@@ -472,7 +472,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u2, v1);
   if (m_diffuseTexture)
     glMultiTexCoord2f(GL_TEXTURE1_ARB, u2*m_diffuseScaleU, v1*m_diffuseScaleV);
-  glVertex3f(x2, y2, 0);
+  glVertex3f(x2, y2, z2);
   
   // Bottom-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor));  
@@ -480,7 +480,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u2, v2);
   if (m_diffuseTexture)
     glMultiTexCoord2f(GL_TEXTURE1_ARB, u2*m_diffuseScaleU, v2*m_diffuseScaleV);
-  glVertex3f(x3, y3, 0);
+  glVertex3f(x3, y3, z3);
   
   // Top-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor));  
@@ -488,7 +488,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   glMultiTexCoord2f(GL_TEXTURE0_ARB, u1, v2);
   if (m_diffuseTexture)
     glMultiTexCoord2f(GL_TEXTURE1_ARB, u1*m_diffuseScaleU, v2*m_diffuseScaleV);
-  glVertex3f(x4, y4, 0);
+  glVertex3f(x4, y4, z4);
 #endif
 }
 
