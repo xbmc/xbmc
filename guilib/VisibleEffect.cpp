@@ -66,7 +66,11 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   else if (strcmpi(effect, "slide") == 0)
     m_effect = EFFECT_TYPE_SLIDE;
   else if (strcmpi(effect, "rotate") == 0)
-    m_effect = EFFECT_TYPE_ROTATE;
+    m_effect = EFFECT_TYPE_ROTATE_Z;
+  else if (strcmpi(effect, "rotatey") == 0)
+    m_effect = EFFECT_TYPE_ROTATE_Y;
+  else if (strcmpi(effect, "rotatex") == 0)
+    m_effect = EFFECT_TYPE_ROTATE_X;
   else if (strcmpi(effect, "zoom") == 0)
     m_effect = EFFECT_TYPE_ZOOM;
   // time and delay
@@ -130,20 +134,20 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     if (m_startAlpha < 0) m_startAlpha = 0;
     if (m_endAlpha < 0) m_endAlpha = 0;
   }
-  else if (m_effect == EFFECT_TYPE_ROTATE)
+  else if (m_effect >= EFFECT_TYPE_ROTATE_X && m_effect <= EFFECT_TYPE_ROTATE_Z)
   {
     double temp;
     if (node->Attribute("start", &temp)) m_startX = (float)temp;
     if (node->Attribute("end", &temp)) m_endX = (float)temp;
 
-    // convert to a negative to account for our reversed vertical axis
+    // convert to a negative to account for our reversed Y axis (Needed for X and Z ???)
     m_startX *= -1;
     m_endX *= -1;
 
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      m_centerX = (float)atof(centerPos);
+      m_centerX = (float)atof(centerPos); 
       const char *comma = strstr(centerPos, ",");
       if (comma)
         m_centerY = (float)atof(comma + 1);
@@ -350,21 +354,25 @@ void CAnimation::Calculate()
     m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * m_amount + m_startAlpha) * 0.01f);
   else if (m_effect == EFFECT_TYPE_SLIDE)
   {
-    m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY);
+    m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
   }
-  else if (m_effect == EFFECT_TYPE_ROTATE)
+  else if (m_effect == EFFECT_TYPE_ROTATE_X)
+  { // note coordinate aspect ratio is 1:1 in the Y:Z plane.  We treat only X on the different scale
+    m_matrix.SetXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
+  }
+  else if (m_effect == EFFECT_TYPE_ROTATE_Y)
   {
-    m_matrix.SetTranslation(m_centerX, m_centerY);
-    m_matrix *= TransformMatrix::CreateRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY);
+    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
+  }
+  else if (m_effect == EFFECT_TYPE_ROTATE_Z)
+  {
+    m_matrix.SetZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
   }
   else if (m_effect == EFFECT_TYPE_ZOOM)
   {
     float scaleX = ((m_endX - m_startX)*offset + m_startX) * 0.01f;
     float scaleY = ((m_endY - m_startY)*offset + m_startY) * 0.01f;
-    m_matrix.SetTranslation(m_centerX, m_centerY);
-    m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
-    m_matrix *= TransformMatrix::CreateTranslation(-m_centerX, -m_centerY);
+    m_matrix.SetScaler(scaleX, scaleY, m_centerX, m_centerY);
   }
 }
 void CAnimation::ResetAnimation()
@@ -376,10 +384,25 @@ void CAnimation::ResetAnimation()
 
 void CAnimation::ApplyAnimation()
 {
-  m_currentProcess = ANIM_PROCESS_NONE;
   m_queuedProcess = ANIM_PROCESS_NONE;
-  m_currentState = ANIM_STATE_APPLIED;
-  m_amount = 1.0f;
+  if (m_repeatAnim == ANIM_REPEAT_PULSE)
+  { // pulsed anims auto-reverse
+    m_amount = 1.0f;
+    m_currentProcess = ANIM_PROCESS_REVERSE;
+    m_currentState = ANIM_STATE_IN_PROCESS;
+  }
+  else if (m_repeatAnim == ANIM_REPEAT_LOOP)
+  { // looped anims start over
+    m_amount = 0.0f;
+    m_currentProcess = ANIM_PROCESS_NORMAL;
+    m_currentState = ANIM_STATE_IN_PROCESS;
+  }
+  else
+  {
+    m_currentProcess = ANIM_PROCESS_NONE;
+    m_currentState = ANIM_STATE_APPLIED;
+    m_amount = 1.0f;
+  }
   Calculate();
 }
 
@@ -411,4 +434,3 @@ void CAnimation::QueueAnimation(ANIMATION_PROCESS process)
 {
   m_queuedProcess = process;
 }
-
