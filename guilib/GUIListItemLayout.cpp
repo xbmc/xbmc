@@ -166,15 +166,12 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
     {
       if (layoutItem->m_type == CListBase::LIST_LABEL)
       {
-        if (time)
-          g_graphicsContext.SetControlTransform(TransformMatrix());
         RenderLabel((CListLabel *)layoutItem, item->IsSelected() || m_isPlaying, m_focused);
       }
       else
       {
-        if (time)
-          ((CListTexture *)layoutItem)->m_image.UpdateEffectState(time);
-        ((CListTexture *)layoutItem)->m_image.Render();
+        ((CListTexture *)layoutItem)->m_image.UpdateVisibility();
+        ((CListTexture *)layoutItem)->m_image.DoRender(time);
       }
     }
   }
@@ -288,7 +285,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   int info = g_infoManager.TranslateString(infoString);
   if (info && (info < LISTITEM_START || info > LISTITEM_END))
   {
-    CLog::Log(LOGERROR, "%s Invalid item info %s", __FUNCTION__, infoString.c_str());
+    CLog::Log(LOGERROR, " Invalid item info %s", infoString.c_str());
     return NULL;
   }
   factory.GetTexture(child, "texture", image);

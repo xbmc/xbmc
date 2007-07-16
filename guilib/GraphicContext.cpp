@@ -39,11 +39,14 @@ CGraphicContext::CGraphicContext(void)
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
-  m_windowScaleX = m_windowScaleY = 1.0f;
+  m_guiScaleX = m_guiScaleY = 1.0f;
+  m_cameraX = m_iScreenWidth * 0.5f;
+  m_cameraY = m_iScreenHeight * 0.5f;
   m_windowResolution = INVALID;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
-  float x=0,y=0;
-  ScaleFinalCoords(x, y);
+  float x=0,y=0,z=0;
+  ScaleFinalCoords(x, y, z);
+  ScaleFinalZCoord(x, y);
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -98,6 +101,76 @@ DWORD CGraphicContext::GetNewID()
   return m_dwID;
 }
 
+void CGraphicContext::SetOrigin(float x, float y)
+{
+  if (m_origins.size())
+    m_origins.push(CPoint(x,y) + m_origins.top());
+  else
+    m_origins.push(CPoint(x,y));
+  AddTransform(TransformMatrix::CreateTranslation(x, y));
+}
+
+void CGraphicContext::RestoreOrigin()
+{
+  m_origins.pop();
+  RemoveTransform();
+}
+
+// add a new clip region, intersecting with the previous clip region.
+bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
+{ // transform from our origin
+  CPoint origin;
+  if (m_origins.size())
+    origin = m_origins.top();
+  // ok, now intersect with our old clip region
+  CRect rect(x, y, x + w, y + h);
+  rect += origin;
+  if (m_clipRegions.size())
+  { // intersect with original clip region
+    rect.Intersect(m_clipRegions.top());
+  }
+  if (rect.IsEmpty())
+    return false;
+  m_clipRegions.push(rect);
+
+  // here we could set the hardware clipping, if applicable
+  return true;
+}
+
+void CGraphicContext::RestoreClipRegion()
+{
+  if (m_clipRegions.size())
+    m_clipRegions.pop();
+
+  // here we could reset the hardware clipping, if applicable
+}
+
+void CGraphicContext::ClipRect(CRect &vertex, CRect &texture)
+{
+  // this is the software clipping routine.  If the graphics hardware is set to do the clipping
+  // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
+  if (m_clipRegions.size())
+  {
+    // take a copy of the vertex rectangle and intersect
+    // it with our clip region (moved to the same coordinate system)
+    CRect clipRegion(m_clipRegions.top());
+    if (m_origins.size())
+      clipRegion -= m_origins.top();
+    CRect original(vertex);
+    vertex.Intersect(clipRegion);
+    // and use the original to compute the texture coordinates
+    if (original != vertex)
+    {
+      const float scaleX = texture.Width() / original.Width();
+      const float scaleY = texture.Height() / original.Height();
+      texture.x1 += (vertex.x1 - original.x1) * scaleX;
+      texture.y1 += (vertex.y1 - original.y1) * scaleY;
+      texture.x2 += (vertex.x2 - original.x2) * scaleX;
+      texture.y2 += (vertex.y2 - original.y2) * scaleY;
+    }
+  }
+}
+
 bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
 #ifndef HAS_SDL
@@ -128,7 +201,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   float maxY = 0;
   for (int i = 0; i < 4; i++)
   {
-    ScaleFinalCoords(x[i], y[i]);
+    float z = 0;
+    ScaleFinalCoords(x[i], y[i], z);
     if (x[i] < minX) minX = x[i];
     if (x[i] > maxX) maxX = x[i];
     if (y[i] < minY) minY = y[i];
@@ -210,7 +284,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #endif
 
   m_viewStack.push(oldviewport);
-
+  SetCameraPosition(m_cameraX, m_cameraY);
   return true;
 }
 
@@ -783,8 +857,8 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     fToPosY -= fToHeight * fZoom * 0.5f;
     fToHeight *= fZoom + 1.0f;
     
-    m_windowScaleX = fToWidth / fFromWidth;
-    m_windowScaleY = fToHeight / fFromHeight;
+    m_guiScaleX = fFromWidth / fToWidth;
+    m_guiScaleY = fFromHeight / fToHeight;
     TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
     TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
@@ -793,9 +867,14 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   else
   {
     m_guiTransform = TransformMatrix::CreateTranslation(posX, posY);
-    m_windowScaleX = 1.0f;
-    m_windowScaleY = 1.0f;
+    m_guiScaleX = 1.0f;
+    m_guiScaleY = 1.0f;
   }
+  // reset our origin
+  while (m_origins.size())
+    m_origins.pop();
+  m_origins.push(CPoint(posX, posY));
+
   // reset the final transform and window/group transforms
   while (m_groupTransform.size())
     m_groupTransform.pop();
@@ -825,6 +904,60 @@ float CGraphicContext::GetScalingPixelRatio() const
   float outPR = GetPixelRatio(m_Resolution);
 
   return outPR * (outWidth / outHeight) / (winWidth / winHeight);
+}
+
+void CGraphicContext::SetCameraPosition(float camX, float camY)
+{
+  m_cameraX = camX;
+  m_cameraY = camY;
+
+  // find camera offset from center
+  camX -= m_iScreenWidth * 0.5f;
+  camY = m_iScreenHeight * 0.5f - camY; // reversed Y
+
+#ifdef HAS_XBOX_D3D
+  // grab the viewport dimensions and location
+  D3DVIEWPORT8 viewport;
+  m_pd3dDevice->GetViewport(&viewport);
+  float w = viewport.Width*0.5f;
+  float h = viewport.Height*0.5f;
+
+  // world transform, fixes for viewport offset + sizing + Y inversion
+  D3DXMATRIX mtxWorld;
+  D3DXMatrixTranslation(&mtxWorld, -(viewport.X + w + camX), +(viewport.Y + h - camY), 0);
+  mtxWorld._22 = -1; // flip Y
+  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+
+  // camera view
+  D3DXVECTOR3 camLocation(0.0f, 0.0f, -2*h);
+  D3DXVECTOR3 camFocus(0.0f, 0.0f, 0.0f);
+  D3DXVECTOR3 camUp(0.0f, 1.0f, 0.0f);
+
+  D3DXMATRIX mtxView;
+  D3DXMatrixLookAtLH(&mtxView, &camLocation, &camFocus, &camUp);
+  m_pd3dDevice->SetTransform(D3DTS_VIEW, &mtxView);
+
+  // projection onto screen space
+  D3DXMATRIX mtxProjection;
+  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - camX)*0.5f, (w - camX)*0.5f, (-h - camY)*0.5f, (h - camY)*0.5f, h, 100*h);
+  m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
+#elif defined(HAS_SDL_OPENGL)
+  // grab the viewport dimensions and location
+  GLint viewport[4];
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  float w = (float)viewport[2]*0.5f;
+  float h = (float)viewport[3]*0.5f;
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslatef(-(viewport[0] + w + camX), +(viewport[1] + h - camY), 0);  
+  gluLookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glFrustum( (-w - camX)*0.5f, (w - camX)*0.5f, (-h - camY)*0.5f, (h - camY)*0.5f, h, 100*h);
+  glMatrixMode(GL_MODELVIEW);
+#endif
 }
 
 int CGraphicContext::GetFPS() const

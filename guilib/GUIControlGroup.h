@@ -33,7 +33,7 @@ public:
 
   virtual void SetInitialVisibility();
 
-  virtual void UpdateEffectState(DWORD currentTime);
+  virtual void DoRender(DWORD currentTime);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual void QueueAnimation(ANIMATION_TYPE anim);
 
@@ -69,8 +69,7 @@ protected:
   int m_defaultControl;
   int m_focusedControl;
 
-  // render time and transform
+  // render time
   DWORD m_renderTime;
-  TransformMatrix m_transform;
 };
 

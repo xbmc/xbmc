@@ -429,6 +429,8 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
+
   DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
@@ -439,11 +441,9 @@ void CGUIWindow::Render()
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      pControl->UpdateEffectState(currentTime);
-      pControl->Render();
-//      SDL_Flip(g_graphicsContext.getScreenSurface());
-      
-    }   
+      pControl->UpdateVisibility();
+      pControl->DoRender(currentTime);
+    }
   }
   m_hasRendered = true;
 }
@@ -1222,8 +1222,9 @@ FRECT CGUIWindow::GetScaledBounds() const
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
   FRECT rect = {0, 0, m_width, m_height};
-  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top);
-  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom);
+  float z = 0;
+  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
+  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
   return rect;
 }
 

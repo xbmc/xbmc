@@ -3,6 +3,8 @@
 #include "GuiControlFactory.h"
 #include "../xbmc/FileItem.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "XMLUtils.h"
+#include "SkinInfo.h"
 
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -26,17 +28,10 @@ CGUIBaseContainer::~CGUIBaseContainer(void)
 {
 }
 
-void CGUIBaseContainer::Render()
-{
-  g_graphicsContext.RemoveGroupTransform();
-  if (IsVisible())
-    CGUIControl::Render();
-}
-
 void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
   // set the origin
-  g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(posX, posY));
+  g_graphicsContext.SetOrigin(posX, posY);
 
   if (m_bInvalidated)
     item->SetInvalid();
@@ -67,7 +62,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     if (item->GetLayout())
       item->GetLayout()->Render(item, m_dwParentID);
   }
-  g_graphicsContext.RemoveGroupTransform();
+  g_graphicsContext.RestoreOrigin();
 }
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
@@ -299,10 +294,10 @@ void CGUIBaseContainer::ValidateOffset()
 {
 }
 
-void CGUIBaseContainer::UpdateEffectState(DWORD currentTime)
+void CGUIBaseContainer::DoRender(DWORD currentTime)
 {
-  CGUIControl::UpdateEffectState(currentTime);
   m_renderTime = currentTime;
+  CGUIControl::DoRender(currentTime);
 }
 
 void CGUIBaseContainer::Animate(DWORD currentTime)
@@ -318,7 +313,7 @@ void CGUIBaseContainer::Animate(DWORD currentTime)
     // and render the animation effect
     anim.RenderAnimation(transform);
   }
-  g_graphicsContext.AddGroupTransform(transform);
+  g_graphicsContext.AddTransform(transform);
 }
 
 void CGUIBaseContainer::AllocResources()
@@ -371,11 +366,11 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   float size = m_layout.Size(m_orientation);
   int range = m_itemsPerPage / 4;
   if (range <= 0) range = 1;
-  if ((m_scrollOffset - offset * size) > size * range)
+  if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
     m_scrollOffset = (offset + range) * size;
   }
-  if ((offset * size - m_scrollOffset) > size * range)
+  if (offset * size > m_scrollOffset && offset * size - m_scrollOffset > size * range)
   { // scrolling down, and we're jumping more than 0.5 of a screen
     m_scrollOffset = (offset - range) * size;
   }
@@ -409,6 +404,8 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
   if (!root)
     return;
 
+  g_SkinInfo.ResolveIncludes(root);
+
   m_staticContent = true;
   TiXmlElement *item = root->FirstChildElement("item");
   while (item)
@@ -417,17 +414,46 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     // <item label="Cool Video" label2="" thumb="q:\userdata\thumbnails\video\04385918.tbn">PlayMedia(c:\videos\cool_video.avi)</item>
     // <item label="My Album" label2="" thumb="q:\userdata\thumbnails\music\0\04385918.tbn">ActivateWindow(MyMusic,c:\music\my album)</item>
     // <item label="Apple Movie Trailers" label2="Bob" thumb="q:\userdata\thumbnails\programs\04385918.tbn">RunScript(q:\scripts\apple movie trailers\default.py)</item>
-    const char *label = item->Attribute("label");
-    const char *label2 = item->Attribute("label2");
-    const char *thumb = item->Attribute("thumb");
-    const char *icon = item->Attribute("icon");
+
+    // OR the more verbose, but includes-friendly:
+    // <item>
+    //   <label>blah</label>
+    //   <label2>foo</label2>
+    //   <thumb>bar.png</thumb>
+    //   <icon>foo.jpg</icon>
+    //   <onclick>ActivateWindow(Home)</onclick>
+    // </item>
+    g_SkinInfo.ResolveIncludes(item);
     if (item->FirstChild())
     {
-      CFileItem *newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
-      newItem->m_strPath = item->FirstChild()->Value();
-      if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
-      if (thumb) newItem->SetThumbnailImage(thumb);
-      if (icon) newItem->SetIconImage(icon);
+      CFileItem *newItem = NULL;
+      // check whether we're using the more verbose method...
+      TiXmlNode *click = item->FirstChild("onclick");
+      if (click && click->FirstChild())
+      {
+        CStdString label, label2, thumb, icon;
+        XMLUtils::GetString(item, "label", label);
+        XMLUtils::GetString(item, "label2", label2);
+        XMLUtils::GetString(item, "thumb", thumb);
+        XMLUtils::GetString(item, "icon", icon);
+        newItem = new CFileItem(CGUIControlFactory::GetLabel(label));
+        newItem->m_strPath = click->FirstChild()->Value();
+        newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        newItem->SetThumbnailImage(thumb);
+        newItem->SetIconImage(icon);
+      }
+      else
+      {
+        const char *label = item->Attribute("label");
+        const char *label2 = item->Attribute("label2");
+        const char *thumb = item->Attribute("thumb");
+        const char *icon = item->Attribute("icon");
+        newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
+        newItem->m_strPath = item->FirstChild()->Value();
+        if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        if (thumb) newItem->SetThumbnailImage(thumb);
+        if (icon) newItem->SetIconImage(icon);
+      }
       m_items.push_back(newItem);
     }
     item = item->NextSiblingElement("item");

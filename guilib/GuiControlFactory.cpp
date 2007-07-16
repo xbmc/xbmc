@@ -311,10 +311,10 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   if (node)
   {
     double val;
-    if (node->Attribute("x", &val)) rect.x = (float)val;
-    if (node->Attribute("y", &val)) rect.y = (float)val;
-    if (node->Attribute("w", &val)) rect.w = (float)val;
-    if (node->Attribute("h", &val)) rect.h = (float)val;
+    if (node->Attribute("x", &val)) rect.x1 = (float)val;
+    if (node->Attribute("y", &val)) rect.y1 = (float)val;
+    if (node->Attribute("w", &val)) rect.x2 = rect.x1 + (float)val;
+    if (node->Attribute("h", &val)) rect.y2 = rect.y1 + (float)val;
     return true;
   }
   return false;
@@ -332,7 +332,7 @@ bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, 
 }
 
 // Convert a string to a GUI label, by translating/parsing the label for localisable strings
-CStdString CGUIControlFactory::GetLabel(const char *label)
+CStdString CGUIControlFactory::GetLabel(const CStdString &label)
 {
   CStdString viewLabel = label;
   if (StringUtils::IsNaturalNumber(viewLabel))
@@ -550,7 +550,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       height = max(rect.bottom - posY, 0.0f);
   }
 
-  hitRect.SetRect(posX, posY, width, height);
+  hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
   XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
@@ -597,7 +597,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetFloat(pControlNode, "textxoff2", labelInfo2.offsetX);
   XMLUtils::GetFloat(pControlNode, "textyoff2", labelInfo2.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
-  if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(-angle);
+  if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = (float)-angle;
   CStdString strFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
