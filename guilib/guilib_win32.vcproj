@@ -166,7 +166,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/guilib.lib"
-				AdditionalLibraryDirectories="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib"
+				AdditionalLibraryDirectories="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				IgnoreDefaultLibraryNames=""/>
 			<Tool
 				Name="VCMIDLTool"/>
