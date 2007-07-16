@@ -715,7 +715,7 @@
   <string id="1398">冰點</string>
   <string id="1399">睌間</string>
   <string id="1400">局部</string>
-  <string id="1401">雷雨</string>
+  <string id="1401">雷陣雨</string>
   <string id="1402">雷</string>
   <string id="1403">陽光</string>
   <string id="1404">暴</string>
@@ -728,6 +728,10 @@
   <string id="1411">有</string>
   <string id="1412">風</string>
   <string id="1413">細雨</string>
+  <string id="1414">雷雨</string>
+
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">運行時間：</string>
 
   <string id="4501">液晶螢幕類型</string>
@@ -1042,7 +1046,7 @@
   <string id="13385">語音特效 - 第 4 埠</string>
   <string id="13386">使用時間搜尋</string>
   <string id="13387">音軌命名格式</string>
-  <string id="13388">預設</string>
+  <string id="13388">%s 預設</string>
   <string id="13389">沒有預設&#10;該視覺效果</string>
   <string id="13390">沒有設定&#10;該視覺效果</string>
   <string id="13391">托盤開/關</string>
@@ -1052,7 +1056,7 @@
   <string id="13395">影片設定</string>
   <string id="13396">聲音和字幕設定</string>
   <string id="13397">啟用字幕</string>
-  <string id="13398">書籤</string>
+  <string id="13398">捷徑</string>
   <string id="13399">排序時忽略符號</string>
   <string id="13400">專輯音軌淡入淡出</string>
   <string id="13401">瀏覽%s</string>
@@ -1273,7 +1277,7 @@
   <string id="15302">找不到伺服器！</string>
   <string id="15303">找不到工作群組！</string>
 
-  <string id="15310">打開多個書籤路徑</string>
+  <string id="15310">打開多個來源路徑</string>
   <string id="15311">路徑：</string>
 
   <string id="16000">一般設定</string>
@@ -1399,7 +1403,7 @@
   <string id="20078">- 無連結設定 -</string>
   <string id="20079">啟用 桌面動畫效果</string>
   <string id="20080">播放音樂時關閉 RSS 新聞顯示</string>
-  <string id="20081">啟用書籤</string>
+  <string id="20081">啟用捷徑</string>
   <string id="20082">顯示 XLink Kai 資訊</string>
   <string id="20083">顯示音樂資訊</string>
   <string id="20084">顯示氣象資訊</string>
@@ -1418,7 +1422,7 @@
   <string id="20097">取得專輯資訊</string>
   <string id="20098">正在取得專輯資訊</string>
   <string id="20099">當 CD 播放時不能擷取該 CD</string>
-  <string id="20100">管理員密碼與鎖定</string> 
+  <string id="20100">管理員密碼與鎖定</string>
   <string id="20101">輸入管理員密碼後，永遠啟用管理員模式</string>
   <string id="20102">或是從預設值中複製？</string>
   <string id="20103">儲存預設檔變更？</string>
@@ -1600,6 +1604,8 @@
   <string id="20378">重新整理所有影集資訊？</string>
   <string id="20379">資料夾包含一個電視節目</string>
   <string id="20380">將資料夾排除搜尋</string>
+  <string id="20381">特別</string>
+  <string id="20382">自動擷取影集的縮圖</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1690,6 +1696,7 @@
   <string id="21435">編輯</string>
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智慧播放列表…</string>
+  <string id="21438">%c裝置</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
