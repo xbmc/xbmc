@@ -22,6 +22,7 @@
 */
 #ifndef HAS_SDL_2D
 #include "stdafx.h"
+#include <locale.h>
 #include "LinuxRendererGL.h"
 #include "../../Application.h"
 #include "../../Util.h"
@@ -863,6 +864,13 @@ void CLinuxRendererGL::LoadShaders()
       "}";
 
     GLint params[4]; 
+    
+    /* 
+       Workaround for locale bug in nVidia's shader compiler.
+       Save the current locale, set to a neutral while compiling and switch back afterwards.
+    */
+    char * currentLocale = setlocale(LC_NUMERIC, NULL);
+    setlocale(LC_NUMERIC, "C");
 
     g_graphicsContext.BeginPaint(m_pBuffer);
     m_shaderProgram = glCreateProgram();
@@ -930,7 +938,13 @@ void CLinuxRendererGL::LoadShaders()
     VerifyGLState();
     g_graphicsContext.EndPaint(m_pBuffer);
     CLog::Log(LOGNOTICE, "GL: Successfully loaded GLSL shader");
-    m_renderMethod = RENDER_GLSL;
+    m_renderMethod = RENDER_GLSL;    
+
+    /* 
+       Workaround for locale bug in nVidia's shader compiler.
+       Revert to original locale
+    */
+    setlocale(LC_NUMERIC, currentLocale);
   } else if (glewIsSupported("GL_ARB_fragment_shader")) {    
     // TODO
     CLog::Log(LOGNOTICE, "GL: ARB shaders are supported but unimplementated at this time");
