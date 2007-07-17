@@ -11,6 +11,20 @@ CAnimation::CAnimation()
   Reset();
 }
 
+CAnimation::CAnimation(const CAnimation& src)
+{
+  memcpy(this, &src, sizeof(CAnimation));
+  if (src.m_pTweener)
+    this->m_pTweener->IncRef();
+}
+
+CAnimation::~CAnimation()
+{
+  if (m_pTweener) 
+    m_pTweener->Free();
+  m_pTweener = NULL;
+}
+
 void CAnimation::Reset()
 {
   m_type = ANIM_TYPE_NONE;
@@ -29,7 +43,7 @@ void CAnimation::Reset()
   m_lastCondition = false;
   m_repeatAnim = ANIM_REPEAT_NONE;
   if (m_pTweener)
-    delete m_pTweener;
+    m_pTweener->Free();
   m_pTweener = NULL;
 }
 
@@ -85,7 +99,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   m_delay = (unsigned int)(m_delay * g_SkinInfo.GetEffectsSlowdown()) ;
   if (m_pTweener)
   {
-    delete m_pTweener;
+    m_pTweener->Free();
     m_pTweener = NULL;
   }
   const char *tween = node->Attribute("tween");
@@ -353,7 +367,14 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
   {
     if (time - m_start < m_length)
     {
-      m_amount = 1.0f - (float)(time - m_start) / m_length;
+      if (m_pTweener)
+      {
+	m_amount = 1.0f - m_pTweener->Tween(time - m_start, 0.0, 1.0, (float)m_length);
+      }
+      else
+      {
+	m_amount = (float)(time - m_start) / m_length;
+      }
       m_currentState = ANIM_STATE_IN_PROCESS;
     }
     else
@@ -400,7 +421,12 @@ void CAnimation::Calculate()
     offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
 
   if (m_effect == EFFECT_TYPE_FADE)
-    m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * m_amount + m_startAlpha) * 0.01f);
+  {
+    offset = ((float)(m_endAlpha - m_startAlpha) * m_amount + m_startAlpha) * 0.01f;
+    if (offset>1) // set upper bound to 1 for alpha, since 1+ doesn't make sense
+      offset = 1;
+    m_matrix.SetFader(offset);
+  }
   else if (m_effect == EFFECT_TYPE_SLIDE)
   {
     m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
@@ -424,6 +450,7 @@ void CAnimation::Calculate()
     m_matrix.SetScaler(scaleX, scaleY, m_centerX, m_centerY);
   }
 }
+
 void CAnimation::ResetAnimation()
 {
   m_currentProcess = ANIM_PROCESS_NONE;

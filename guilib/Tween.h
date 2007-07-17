@@ -39,11 +39,16 @@ enum TweenerType
 class Tweener
 {
 public:
-  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; }
+  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; _ref=0; }
+  virtual ~Tweener() {};
+  
   void SetEasing(TweenerType type) { m_tweenerType = type; }
   virtual float Tween(float time, float start, float change, float duration)=0;
+  void Free() { _ref--; if (_ref==0) delete this; }
+  void IncRef() { _ref++; }
   
 protected:
+  int _ref;
   TweenerType m_tweenerType;
 };
 
@@ -143,7 +148,7 @@ public:
 class BounceTweener : public Tweener
 {
 public:
-virtual float Tween(float time, float start, float change, float duration)
+  virtual float Tween(float time, float start, float change, float duration)
   {
     switch (m_tweenerType)
       {
@@ -166,7 +171,7 @@ virtual float Tween(float time, float start, float change, float duration)
     return easeOut(time, start, change, duration);
   }
 
-private:
+protected:
   float easeOut(float time, float start, float change, float duration)
   {
     time /= duration;
@@ -204,14 +209,13 @@ public:
 	break;
 
       case EASE_INOUT:
-	//return easeInOut(time, start, change, duration);	
+	return easeInOut(time, start, change, duration);	
 	break;
       }
     return easeIn(time, start, change, duration);
   }
 
-
-private:
+protected:
   float _a;
   float _p;
 
@@ -225,7 +229,7 @@ private:
 	return start + change;  
     if (!_p) 
       _p=duration*.3;
-    if (!_a || _a < fabs(change)) 
+    if (!_a || _a < (double)fabs(change)) 
     { 
       _a = change; 
       s = _p / 4.0; 
@@ -235,7 +239,7 @@ private:
       s = _p / (2 * M_PI) * asin (change / _a);
     }
     time--;
-    return -(_a * pow(2,10*time) * sin((time * duration - s) * (2 * M_PI) / _p )) + start;
+    return -(_a * (double)pow(2,10*time) * sin((time * duration - s) * (2 * M_PI) / _p )) + start;
   }
 
   float easeOut(float time, float start, float change, float duration)
@@ -248,7 +252,7 @@ private:
 	return start + change;  
     if (!_p) 
       _p=duration*.3;
-    if (!_a || _a < fabs(change)) 
+    if (!_a || _a < (double)fabs(change)) 
     { 
       _a = change; 
       s = _p / 4.0; 
@@ -257,7 +261,7 @@ private:
     {
       s = _p / (2 * M_PI) * asin (change / _a);
     }
-    return -(_a * pow(2,-10*time) * sin((time * duration - s) * (2 * M_PI) / _p )) + change + start;
+    return -(_a * (double)pow(2,-10*time) * sin((time * duration - s) * (2 * M_PI) / _p )) + change + start;
   }
 
   float easeInOut(float time, float start, float change, float duration)
@@ -270,7 +274,7 @@ private:
 	return start + change;  
     if (!_p) 
       _p=duration*.3*1.5;
-    if (!_a || _a < fabs(change)) 
+    if (!_a || _a < (double)fabs(change)) 
     { 
       _a = change; 
       s = _p / 4.0; 
@@ -283,9 +287,9 @@ private:
     time--;
     if (time < 1) 
     {
-      return -.5 * (_a * pow(2,10 * (time)) * sin((time * duration - s) * (2 * M_PI) / _p )) + start;
+      return -.5 * (_a * (double)pow(2,10 * (time)) * sin((time * duration - s) * (2 * M_PI) / _p )) + start;
     }
-    return _a * pow(2,-10 * (time)) * sin((time * duration-s) * (2 * M_PI)/_p ) * .5 + change + start;
+    return _a * (double)pow(2,-10 * (time)) * sin((time * duration-s) * (2 * M_PI)/_p ) * .5 + change + start;
   }
 };
 

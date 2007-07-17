@@ -68,7 +68,7 @@ public:
 
   void DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
-  inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE)
+  void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE)
   {
     if (!m_font) return;
     CSingleLock lock(g_graphicsContext);
@@ -80,8 +80,8 @@ public:
   float GetTextWidth( const WCHAR* strText );
   float GetTextHeight( const WCHAR* strText );
 
-  inline void Begin() { if (m_font) m_font->Begin(); };
-  inline void End() { if (m_font) m_font->End(); };
+  void Begin() { if (m_font) m_font->Begin(); };
+  void End() { if (m_font) m_font->End(); };
 
   static SHORT RemapGlyph(SHORT letter);
 protected:
