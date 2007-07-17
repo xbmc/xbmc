@@ -10,6 +10,7 @@ class TiXmlElement;
 struct FRECT;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
+#include "Tween.h"
 
 enum ANIMATION_TYPE
 {
@@ -27,6 +28,7 @@ class CAnimation
 {
 public:
   CAnimation();
+  ~CAnimation() { if (m_pTweener) delete m_pTweener; }
   void Reset();
   void Create(const TiXmlElement *node, const FRECT &rect);
   void CreateReverse(const CAnimation &anim);
@@ -82,4 +84,5 @@ private:
 
   void Calculate();
   TransformMatrix m_matrix;
+  Tweener *m_pTweener;
 };
