@@ -28,7 +28,8 @@ class CAnimation
 {
 public:
   CAnimation();
-  ~CAnimation() { if (m_pTweener) delete m_pTweener; }
+  CAnimation(const CAnimation&);
+  ~CAnimation();
   void Reset();
   void Create(const TiXmlElement *node, const FRECT &rect);
   void CreateReverse(const CAnimation &anim);
