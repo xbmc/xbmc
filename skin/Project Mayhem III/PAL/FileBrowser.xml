@@ -77,7 +77,7 @@
 			<posx>10</posx>
 			<posy>70</posy>
 			<width>368</width>
-			<height>271</height>
+			<height>270</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
 			<onup>450</onup>
@@ -103,7 +103,7 @@
 					<posx>30</posx>
 					<posy>0</posy>
 					<width>335</width>
-					<height>28</height>
+					<height>30</height>
 					<font>font13</font>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
@@ -112,7 +112,7 @@
 					<visible>!Container.Sort(SongRating)</visible>
 				</control>
 			</itemlayout>
-			<focusedlayout height="31">
+			<focusedlayout height="30">
 				<control type="image">
 					<width>368</width>
 					<height>28</height>
@@ -140,7 +140,7 @@
 					<posx>30</posx>
 					<posy>0</posy>
 					<width>335</width>
-					<height>28</height>
+					<height>30</height>
 					<font>font13</font>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
