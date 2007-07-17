@@ -176,7 +176,7 @@ public:
 
   inline void InverseTransformPosition(float &x, float &y) const
   { // used for mouse - no way to find z
-    x -= m[0][2]; y -= m[1][2];
+    x -= m[0][3]; y -= m[1][3];
     float detM = m[0][0]*m[1][1] - m[0][1]*m[1][0];
     float newX = (m[1][1] * x - m[0][1] * y)/detM;
     y = (-m[1][0] * x + m[0][0] * y)/detM;
