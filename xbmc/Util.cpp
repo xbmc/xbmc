@@ -2435,17 +2435,6 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
     strFolder.Delete(strFolder.size() - 1);
 }
 
-void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
-{
-  int iPos1 = strFileName.Find("/");
-  int iPos2 = strFileName.Find("\\");
-  int iPos3 = strFileName.Find(":");
-  if (iPos2 > iPos1) iPos1 = iPos2;
-  if (iPos3 > iPos1) iPos1 = iPos3;
-
-  strPath = strFileName.Left(iPos1 - 1);
-}
-
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
   // Will from a full filename return the directory the file resides in.
