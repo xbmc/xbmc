@@ -49,7 +49,7 @@ CPlayListB4S::~CPlayListB4S(void)
 {}
 
 
-bool CPlayListB4S::LoadData(std::istream stream)
+bool CPlayListB4S::LoadData(std::istream& stream)
 {
   TiXmlDocument xmlDoc;
 
