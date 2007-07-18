@@ -17,6 +17,8 @@
 // QuadTweener
 // CubicTweener
 // SineTweener
+// CircleTweener
+// BackTweener
 // BounceTweener
 // ElasticTweener
 //
@@ -117,6 +119,72 @@ public:
       }
     return change * (time /= duration) * time + start;
   }
+};
+
+class CircleTweener : public Tweener
+{
+public:
+  virtual float Tween(float time, float start, float change, float duration)
+  {
+    time /= duration;
+    switch (m_tweenerType)
+      {
+      case EASE_IN:
+	return -change * ((double)sqrt(1 - time * time) - 1) + start;
+	break;
+
+      case EASE_OUT:
+	time--;
+	return change * (double)sqrt(1 - time * time) + start;
+	break;
+
+      case EASE_INOUT:
+	if ((time / 2) < 1)
+	  return -change/2 * ((double)sqrt(1 - time * time) - 1) + start;
+	time-=2;
+	return change/2 * ((double)sqrt(1 - time * time) + 1) + start;
+	break;
+      }
+    return change * (double)sqrt(1 - time * time) + start;
+  }
+};
+
+class BackTweener : public Tweener
+{
+public:
+  BackTweener(float s=1.70158) { _s=s; }
+
+  virtual float Tween(float time, float start, float change, float duration)
+  {
+    float s = _s;
+    time /= duration;
+    switch (m_tweenerType)
+      {
+      case EASE_IN:
+	return change * time * time * ((s + 1) * time - s) + start;
+	break;
+
+      case EASE_OUT:
+	time--;
+	return change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
+	break;
+
+      case EASE_INOUT:
+	s*=(1.525);
+	if ((time / 2) < 1)
+	{
+	  return change / 2 * (time * time * ((s + 1) * time - s)) + start;
+	}
+	time-=2;
+	return change / 2 * (time * time * ((s + 1) * time + s) + 2) + start;
+	break;
+      }
+    return change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
+  }
+
+private:
+  float _s;
+  
 };
 
 
@@ -220,76 +288,85 @@ protected:
   float _p;
 
   float easeIn(float time, float start, float change, float duration)
-  {
+  {    
     float s=0;
+    float a=_a;
+    float p=_p;
+
     if (time==0) 
       return start;  
     time /= duration;
     if (time==1) 
 	return start + change;  
-    if (!_p) 
-      _p=duration*.3;
-    if (!_a || _a < (double)fabs(change)) 
+    if (!p) 
+      p=duration*.3;
+    if (!a || a < (double)fabs(change)) 
     { 
-      _a = change; 
-      s = _p / 4.0; 
+      a = change; 
+      s = p / 4.0; 
     }
     else
     {
-      s = _p / (2 * M_PI) * asin (change / _a);
+      s = p / (2 * M_PI) * asin (change / a);
     }
     time--;
-    return -(_a * (double)pow(2,10*time) * sin((time * duration - s) * (2 * M_PI) / _p )) + start;
+    return -(a * (double)pow(2, 10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + start;
   }
 
   float easeOut(float time, float start, float change, float duration)
   {
     float s=0;
+    float a=_a;
+    float p=_p;
+
     if (time==0) 
       return start;  
     time /= duration;
     if (time==1) 
 	return start + change;  
-    if (!_p) 
-      _p=duration*.3;
-    if (!_a || _a < (double)fabs(change)) 
+    if (!p) 
+      p=duration*.3;
+    if (!a || a < (double)fabs(change)) 
     { 
-      _a = change; 
-      s = _p / 4.0; 
+      a = change; 
+      s = p / 4.0; 
     }
     else
     {
-      s = _p / (2 * M_PI) * asin (change / _a);
+      s = p / (2 * M_PI) * asin (change / a);
     }
-    return -(_a * (double)pow(2,-10*time) * sin((time * duration - s) * (2 * M_PI) / _p )) + change + start;
+    return -(a * (double)pow(2, -10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + change + start;
   }
 
   float easeInOut(float time, float start, float change, float duration)
   {
     float s=0;
+    float a=_a;
+    float p=_p;
+
     if (time==0) 
       return start;  
     time /= duration;
     if (time/2==2) 
 	return start + change;  
-    if (!_p) 
-      _p=duration*.3*1.5;
-    if (!_a || _a < (double)fabs(change)) 
+    if (!p) 
+      p=duration*.3*1.5;
+    if (!a || a < (double)fabs(change)) 
     { 
-      _a = change; 
-      s = _p / 4.0; 
+      a = change; 
+      s = p / 4.0; 
     }
     else
     {
-      s = _p / (2 * M_PI) * asin (change / _a);
+      s = p / (2 * M_PI) * asin (change / a);
     }
 
     time--;
     if (time < 1) 
     {
-      return -.5 * (_a * (double)pow(2,10 * (time)) * sin((time * duration - s) * (2 * M_PI) / _p )) + start;
+      return -.5 * (a * (double)pow(2, 10 * (time)) * sin((time * duration - s) * (2 * M_PI) / p )) + start;
     }
-    return _a * (double)pow(2,-10 * (time)) * sin((time * duration-s) * (2 * M_PI)/_p ) * .5 + change + start;
+    return a * (double)pow(2, -10 * (time)) * sin((time * duration-s) * (2 * M_PI) / p ) * .5 + change + start;
   }
 };
 
