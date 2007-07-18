@@ -13,9 +13,44 @@ CAnimation::CAnimation()
 
 CAnimation::CAnimation(const CAnimation& src)
 {
-  memcpy(this, &src, sizeof(CAnimation));
+	*this=src;
+}
+
+CAnimation &CAnimation::operator=(const CAnimation &src) {
+  m_amount = src.m_amount;
+  m_type = src.m_type;
+  m_effect = src.m_effect;
+  m_currentState = src.m_currentState;
+  m_currentProcess = src.m_currentProcess;
+  m_queuedProcess = src.m_queuedProcess;
+  m_acceleration = src.m_acceleration;
+ 
+  m_startX = src.m_startX;
+  m_startY = src.m_startY;
+  m_endX   = src.m_endX;
+  m_endY = src.m_endY;
+  m_centerX = src.m_centerX;
+  m_centerY = src.m_centerY;
+  m_startAlpha = src.m_startAlpha;
+  m_endAlpha=src.m_endAlpha;
+
+  // timing variables
+  m_start = src.m_start;
+  m_length = src.m_length;
+  m_delay = src.m_delay;
+  m_repeatAnim = src.m_repeatAnim;
+  m_reversible = src.m_reversible;    
+
+  m_condition = src.m_condition;
+  m_lastCondition = src.m_lastCondition; 
+
+  m_matrix = src.m_matrix; //has operator=
+  m_pTweener = src.m_pTweener;
+
   if (src.m_pTweener)
     this->m_pTweener->IncRef();
+
+  return *this;
 }
 
 CAnimation::~CAnimation()
@@ -314,6 +349,10 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       }
     }
   }
+
+  if (m_pTweener)
+	m_pTweener->IncRef();
+
 }
 
 // creates the reverse animation
