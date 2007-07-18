@@ -357,15 +357,15 @@ void CAnimation::Calculate()
     m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_X)
-  { // note coordinate aspect ratio is 1:1 in the Y:Z plane.  We treat only X on the different scale
+  { 
     m_matrix.SetXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Y)
   {
-    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
+    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Z)
-  {
+  { // note coordinate aspect ratio is not generally square in the XY plane, so correct for it.
     m_matrix.SetZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
   }
   else if (m_effect == EFFECT_TYPE_ZOOM)

@@ -122,6 +122,7 @@ public:
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
+  virtual void SetCamera(const CPoint &camera);
   virtual void SetColorDiffuse(D3DCOLOR color);
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
@@ -247,6 +248,8 @@ protected:
 
   // animation effects
   vector<CAnimation> m_animations;
+  CPoint m_camera;
+  bool m_hasCamera;
 };
 
 #endif
