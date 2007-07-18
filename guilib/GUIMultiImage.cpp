@@ -74,7 +74,6 @@ void CGUIMultiImage::Render()
   {
     // Set a viewport so that we don't render outside the defined area
     g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-    m_images[m_currentImage]->Render();
 
     unsigned int nextImage = m_currentImage + 1;
     if (nextImage >= m_images.size())
@@ -97,7 +96,7 @@ void CGUIMultiImage::Render()
       {
         // check if the fade timer has run out
         float timeFading = m_fadeTimer.GetElapsedMilliseconds();
-        if (timeFading > m_fadeTime)
+        if (timeFading >= m_fadeTime)
         {
           m_fadeTimer.Stop();
           // swap images
@@ -108,11 +107,34 @@ void CGUIMultiImage::Render()
           m_imageTimer.StartZero();
         }
         else
-        { // perform the fade
+        { // perform the fade in of next image
           float fadeAmount = timeFading / m_fadeTime;
-          m_images[nextImage]->SetAlpha((unsigned char)(255 * fadeAmount));
+          float alpha = (float)(m_diffuseColor >> 24) / 255.0f;
+          if (alpha < 1 && alpha > 0)
+          { // we have a semi-transparent image, so we need to use a more complicated
+            // fade technique.  Assuming a black background (not generally true, but still...)
+            // we have
+            // b(t) = [a - b(1-t)*a] / a*(1-b(1-t)*a),
+            // where a = alpha, and b(t):[0,1] -> [0,1] is the blend function.
+            // solving, we get
+            // b(t) = [1 - (1-a)^t] / a
+            float blendIn = (1 - pow(1-alpha, fadeAmount)) / alpha;
+            m_images[nextImage]->SetAlpha((unsigned char)(255 * blendIn));
+            float blendOut = (1 - blendIn) / (1 - blendIn*alpha); // no need to use pow() again here
+            m_images[m_currentImage]->SetAlpha((unsigned char)(255 * blendOut));
+          }
+          else
+          { // simple case, just fade in the second image
+            m_images[m_currentImage]->SetAlpha(255);
+            m_images[nextImage]->SetAlpha((unsigned char)(255*fadeAmount));
+          }
+          m_images[m_currentImage]->Render();
         }
         m_images[nextImage]->Render();
+      }
+      else
+      { // only one image - render it.
+        m_images[m_currentImage]->Render();
       }
     }
     g_graphicsContext.RestoreClipRegion();
