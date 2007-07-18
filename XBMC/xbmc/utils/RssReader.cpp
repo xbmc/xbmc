@@ -73,13 +73,6 @@ void CRssReader::OnExit()
 
 void CRssReader::Process()
 {
-  /* make sure we have network before attempting anything */
-  if( !g_network.IsAvailable() )
-  {
-    m_vecQueue.clear();
-    return;
-  }
-
   int tempLeading = m_iLeadingSpaces;
   while (m_vecQueue.size())
   {
@@ -106,7 +99,7 @@ void CRssReader::Process()
     int nRetries = 3;
     CURL url(strUrl);
 
-    if (url.GetProtocol() == "http" && !g_guiSettings.GetBool("network.enableinternet"))
+    if (url.GetProtocol() == "http" && (!g_guiSettings.GetBool("network.enableinternet") || !g_network.IsAvailable()))
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
