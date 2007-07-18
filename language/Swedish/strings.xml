@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 05/10/2007-->
+<!--Date of translation: 07/19/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 8851-->
+<!--Based on english strings version 9576-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -470,6 +470,8 @@
   <string id="567">Spelad räknare</string>
   <string id="568">Senast spelad</string>
   <string id="569">Kommentar</string>
+  <string id="570">Datum tillagt</string>
+  <string id="571">Standard</string>
   <string id="580">Sorteringsriktning</string>
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
@@ -703,6 +705,7 @@
   <string id="1411">med</string>
   <string id="1412">blåsigt</string>
   <string id="1413">duggregn</string>
+  <string id="1414">Åskstorm</string>
   <string id="2050">Körtid:</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>
@@ -985,7 +988,7 @@
   <string id="13385">Röst förvr. - Port 3</string>
   <string id="13386">Använd tidsbaserad sökning</string>
   <string id="13387">Mall för spårnamn</string>
-  <string id="13388">Förinställning</string>
+  <string id="13388">%s förinställningar</string>
   <string id="13389">Det finns inga förinställningar för
 den här visualiseringen</string>
   <string id="13390">Det finns inga inställningar för
@@ -997,7 +1000,7 @@ den här visualiseringen</string>
   <string id="13395">Grafik-inställningar</string>
   <string id="13396">Ljud- och text-inställningar</string>
   <string id="13397">Aktivera undertexter</string>
-  <string id="13398">Bokmärken</string>
+  <string id="13398">Genvägar</string>
   <string id="13399">Ignorera "tokens" vid sortering</string>
   <string id="13400">Använd crossfade på albumspår</string>
   <string id="13401">Bläddra efter %s</string>
@@ -1080,6 +1083,7 @@ den här visualiseringen</string>
   <string id="14075">Använd sommartid</string>
   <string id="14076">Lägg till i Favoriter</string>
   <string id="14077">Ta bort från favoriter</string>
+  <string id="14078">Skalfärger</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Tjänsten är inte upprättad, vill du försöka</string>
   <string id="15002">återupprätta anslutningen?</string>
@@ -1205,11 +1209,12 @@ den här visualiseringen</string>
   <string id="15282">Skriv ett tagnamn för att hitta liknande</string>
   <string id="15283">Nyligen spelade låtar av %name%</string>
   <string id="15284">Lyssna till %name%'s rekommenderade Last.FM radio</string>
+  <string id="15286">Lyssna till %name%'s spellista på Last.FM radio</string>
   <string id="15300">Sökväg hittades inte eller ogiltig</string>
   <string id="15301">Uppkoppling misslyckades</string>
   <string id="15302">Inga servrar hittade</string>
   <string id="15303">Arbetsgrupp hittades inte</string>
-  <string id="15310">Öppnar multi-sökvägsbokmärke</string>
+  <string id="15310">Öppnar multi-sökvägskälla</string>
   <string id="15311">Sökväg:</string>
   <string id="16000">Allmänt</string>
   <string id="16001">Inställningar för ljudhårdvara</string>
@@ -1326,7 +1331,7 @@ den här visualiseringen</string>
   <string id="20078">- ingen länk -</string>
   <string id="20079">Aktivera animationer</string>
   <string id="20080">Inaktivera RSS under musik</string>
-  <string id="20081">Aktivera bokmärkesknappar</string>
+  <string id="20081">Aktivera genvägsknappar</string>
   <string id="20082">Visa XLink Kai info</string>
   <string id="20083">Visa musikinfo</string>
   <string id="20084">Visa väderinfo</string>
@@ -1504,6 +1509,10 @@ den här visualiseringen</string>
   <string id="20376">Först sänt:</string>
   <string id="20377">Uppdatera TV serieinformation</string>
   <string id="20378">Uppdatera alla avsnitt?</string>
+  <string id="20379">Mappen innehåller en TV-serie</string>
+  <string id="20380">ignorera mapp vid skanning</string>
+  <string id="20381">Specialer</string>
+  <string id="20382">Hämta säsongsminiatyrer automatiskt</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1576,5 +1585,6 @@ den här visualiseringen</string>
   <string id="21435">Redigera</string>
   <string id="21436">%i låtar</string>
   <string id="21437">Ny smart spellista...</string>
+  <string id="21438">%c disk</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
