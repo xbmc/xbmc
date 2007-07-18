@@ -132,7 +132,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
               CListLabel *right = label1->m_renderX < label2->m_renderX ? label2 : label1;
               if ((left->m_label.align & 3) == 0 && right->m_label.align & XBFONT_RIGHT)
               { // left is aligned left, right is aligned right, and they overlap vertically
-                if (left->m_renderX + left->m_renderW + 10 > right->m_renderX && left->m_renderX + left->m_renderW < right->m_renderX + right->m_renderW)
+                if (left->m_renderX + left->m_renderW + 10 > right->m_renderX && left->m_renderX + left->m_renderW <= right->m_renderX + right->m_renderW)
                 { // overlap, so chop accordingly
                   float chopPoint = (left->m_posX + left->m_width + right->m_posX - right->m_width) * 0.5f;
 // [1       [2...[2  1].|..........1]         2]
