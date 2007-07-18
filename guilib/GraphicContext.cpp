@@ -31,8 +31,6 @@ CGraphicContext::CGraphicContext(void)
   m_pCallback = NULL;
   m_stateBlock = 0xffffffff;
   m_guiScaleX = m_guiScaleY = 1.0f;
-  m_cameraX = m_iScreenWidth * 0.5f;
-  m_cameraY = m_iScreenHeight * 0.5f;
   m_windowResolution = INVALID;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
   float x=0,y=0,z=0;
@@ -226,8 +224,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   m_pd3dDevice->SetViewport(&newviewport);
   m_viewStack.push(oldviewport);
  
-  // update the camera position
-  SetCameraPosition(m_cameraX, m_cameraY);
+  UpdateCameraPosition(m_cameras.top());
   return true;
 }
 
@@ -239,6 +236,8 @@ void CGraphicContext::RestoreViewPort()
   Get3DDevice()->SetViewport(oldviewport);
 
   if (oldviewport) delete oldviewport;
+
+  UpdateCameraPosition(m_cameras.top());
 }
 
 const RECT& CGraphicContext::GetViewWindow() const
@@ -670,7 +669,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     m_guiScaleX = fFromWidth / fToWidth;
     m_guiScaleY = fFromHeight / fToHeight;
     TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
-    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight);
+    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
     m_guiTransform = guiOffset * guiScaler * windowOffset;
   }
@@ -680,16 +679,27 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     m_guiScaleX = 1.0f;
     m_guiScaleY = 1.0f;
   }
-  // reset our origin
+  // reset our origin and camera
   while (m_origins.size())
     m_origins.pop();
   m_origins.push(CPoint(posX, posY));
+  while (m_cameras.size())
+    m_cameras.pop();
+  m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
 
   // and reset the final transform and window/group transforms
   while (m_groupTransform.size())
     m_groupTransform.pop();
   m_groupTransform.push(m_guiTransform);
-  m_finalTransform = m_guiTransform;
+  UpdateFinalTransform(m_guiTransform);
+}
+
+void CGraphicContext::UpdateFinalTransform(const TransformMatrix &matrix)
+{
+  m_finalTransform = matrix;
+  // We could set the world transform here to GPU-ize the animation system.
+  // trouble is that we require the resulting x,y coords to be rounded to
+  // the nearest pixel (vertex shader perhaps?)
 }
 
 void CGraphicContext::InvertFinalCoords(float &x, float &y) const
@@ -716,14 +726,41 @@ float CGraphicContext::GetScalingPixelRatio() const
   return outPR * (outWidth / outHeight) / (winWidth / winHeight);
 }
 
-void CGraphicContext::SetCameraPosition(float camX, float camY)
+void CGraphicContext::SetCameraPosition(const CPoint &camera)
 {
-  m_cameraX = camX;
-  m_cameraY = camY;
+  // offset the camera from our current location (this is in XML coordinates) and scale it up to
+  // the screen resolution
+  CPoint cam(camera);
+  if (m_origins.size())
+    cam += m_origins.top();
 
-  // find camera offset from center
-  camX -= m_iScreenWidth * 0.5f;
-  camY = m_iScreenHeight * 0.5f - camY; // reversed Y
+  RESOLUTION windowRes = (m_windowResolution == INVALID) ? m_Resolution : m_windowResolution;
+  cam.x *= (float)m_iScreenWidth / g_settings.m_ResInfo[windowRes].iWidth;
+  cam.y *= (float)m_iScreenHeight / g_settings.m_ResInfo[windowRes].iHeight;
+
+  m_cameras.push(cam);
+  UpdateCameraPosition(m_cameras.top());
+}
+
+void CGraphicContext::RestoreCameraPosition()
+{ // remove the top camera from the stack
+  ASSERT(m_cameras.size());
+  m_cameras.pop();
+  UpdateCameraPosition(m_cameras.top());
+}
+
+void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
+{
+  // NOTE: This routine is currently called (twice) every time there is a <camera>
+  //       tag in the skin.  It actually only has to be called before we render
+  //       something, so another option is to just save the camera coordinates
+  //       and then have a routine called before every draw that checks whether
+  //       the camera has changed, and if so, changes it.  Similarly, it could set
+  //       the world transform at that point as well (or even combine world + view
+  //       to cut down on one setting)
+ 
+  // and calculate the offset from the screen center
+  CPoint offset = camera - CPoint(m_iScreenWidth*0.5f, m_iScreenHeight*0.5f);
 
   // grab the viewport dimensions and location
   D3DVIEWPORT8 viewport;
@@ -731,24 +768,17 @@ void CGraphicContext::SetCameraPosition(float camX, float camY)
   float w = viewport.Width*0.5f;
   float h = viewport.Height*0.5f;
 
-  // world transform, fixes for viewport offset + sizing + Y inversion
-  D3DXMATRIX mtxWorld;
-  D3DXMatrixTranslation(&mtxWorld, -(viewport.X + w + camX), +(viewport.Y + h - camY), 0);
-  mtxWorld._22 = -1; // flip Y
-  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-
-  // camera view
-  D3DXVECTOR3 camLocation(0.0f, 0.0f, -2*h);
-  D3DXVECTOR3 camFocus(0.0f, 0.0f, 0.0f);
-  D3DXVECTOR3 camUp(0.0f, 1.0f, 0.0f);
-
-  D3DXMATRIX mtxView;
-  D3DXMatrixLookAtLH(&mtxView, &camLocation, &camFocus, &camUp);
+  // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
+  // position.
+  D3DXMATRIX flipY, translate, mtxView;
+  D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
+  D3DXMatrixTranslation(&translate, -(viewport.X + w + offset.x), -(viewport.Y + h + offset.y), 2*h);
+  D3DXMatrixMultiply(&mtxView, &translate, &flipY);
   m_pd3dDevice->SetTransform(D3DTS_VIEW, &mtxView);
 
   // projection onto screen space
   D3DXMATRIX mtxProjection;
-  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - camX)*0.5f, (w - camX)*0.5f, (-h - camY)*0.5f, (h - camY)*0.5f, h, 100*h);
+  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
 }
 

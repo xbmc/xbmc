@@ -29,6 +29,7 @@ CGUIControl::CGUIControl()
   m_bInvalidated = true;
   m_bAllocated=false;
   m_parentControl = NULL;
+  m_hasCamera = false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
@@ -57,6 +58,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_bAllocated=false;
   m_hasRendered = false;
   m_parentControl = NULL;
+  m_hasCamera = false;
 }
 
 
@@ -88,7 +90,7 @@ void CGUIControl::FreeResources()
     m_bAllocated=false;
   }
   m_hasRendered = false;
-}
+} 
 
 bool CGUIControl::IsAllocated() const
 {
@@ -107,9 +109,12 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIControl::DoRender(DWORD currentTime)
 {
   Animate(currentTime);
-  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
     Render();
+  if (m_hasCamera)
+    g_graphicsContext.RestoreCameraPosition();
   g_graphicsContext.RemoveTransform();
 }
 
@@ -696,4 +701,10 @@ void CGUIControl::SaveStates(vector<CControlState> &states)
 void CGUIControl::SetHitRect(const CRect &rect)
 {
   m_hitRect = rect;
+}
+
+void CGUIControl::SetCamera(const CPoint &camera)
+{
+  m_camera = camera;
+  m_hasCamera = true;
 }
