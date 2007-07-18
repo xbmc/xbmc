@@ -181,14 +181,16 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     m_reversible = false;
 
 
-  // if no tweener is specified and acceleration is, use the quadratic tweener
+  // if no tweener is specified and acceleration is, use the linear tweener
   if (m_acceleration && !m_pTweener)
   {
-    m_pTweener = new QuadTweener();
-    if (m_acceleration>0)
-      m_pTweener->SetEasing(EASE_IN);
-    else
-      m_pTweener->SetEasing(EASE_OUT);
+    m_pTweener = new LinearTweener();
+  }
+  else if (m_acceleration)
+  {
+    // we can use the acceleration parameter to scale other effects too, disabled for now
+    //m_pTweener->SetScale((double)fabs(m_acceleration));
+    m_acceleration = 0;
   }
   else
   {
@@ -468,7 +470,7 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
 void CAnimation::Calculate()
 {
-  float offset = m_amount; 
+  float offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
 
   if (m_effect == EFFECT_TYPE_FADE)
   {
