@@ -186,7 +186,9 @@ protected:
   bool m_dynamicResourceAlloc;
   int m_visibleCondition;
 
-  CAnimation m_showAnimation;   // for dialogs
+  bool   m_hasCamera;
+  CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
+  CAnimation m_showAnimation;
   CAnimation m_closeAnimation;
 
   int m_renderOrder;      // for render order of dialogs
