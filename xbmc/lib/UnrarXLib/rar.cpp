@@ -238,8 +238,6 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           {
             pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
           }
-          else
-            pExtract->GetDataIO().m_pDlgProgress = NULL;
 
           __int64 iOff=0;
           bool bSeeked = false;
