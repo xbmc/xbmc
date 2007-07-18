@@ -98,11 +98,14 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   share.strPath = "C:\\";
   share.strName.Format(g_localizeStrings.Get(21438),'C');
   share.m_ignore = true;
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
   localDrives.push_back(share);
   share.strPath = "D:\\";
   share.strName = g_localizeStrings.Get(218);
+  share.m_iDriveType = SHARE_TYPE_DVD;
   localDrives.push_back(share);
   share.strPath = "E:\\";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
   share.strName.Format(g_localizeStrings.Get(21438),'E');
   localDrives.push_back(share);
   for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
