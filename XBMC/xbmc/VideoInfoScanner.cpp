@@ -690,8 +690,6 @@ namespace VIDEO
     {
       // check for a cached thumb or user thumb
       pItem->SetVideoThumb();
-      if (pItem->HasThumbnail())
-        return lResult;
       strThumb = pItem->GetCachedVideoThumb();
 
       CHTTP http;
@@ -702,34 +700,12 @@ namespace VIDEO
       }
 
       string image;
-      if (http.Get(strImage, image))
+      if (!pItem->HasThumbnail() && http.Get(strImage, image))
       {
         try
         {
           CPicture picture;
           picture.CreateThumbnailFromMemory((const BYTE *)image.c_str(), image.size(), CUtil::GetExtension(strThumb), strThumb);
-          if (bApplyToDir)
-          {
-            CStdString strCheck=pItem->m_strPath;
-            CStdString strDirectory;
-            if (pItem->IsStack())
-              strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
-
-            CUtil::GetDirectory(strCheck,strDirectory);
-            if (CUtil::IsInRAR(strCheck))
-            {
-              CStdString strPath=strDirectory;
-              CUtil::GetParentPath(strPath,strDirectory);
-            }
-            if (pItem->IsStack())
-            {
-              strCheck = strDirectory;
-              CUtil::RemoveSlashAtEnd(strCheck);
-              if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
-                CUtil::GetDirectory(strCheck,strDirectory);
-            }
-            ApplyIMDBThumbToFolder(strDirectory,strThumb);
-          }
         }
         catch (...)
         {
@@ -737,6 +713,29 @@ namespace VIDEO
           ::DeleteFile(strThumb.c_str());
         }
       }
+    }
+
+    if (bApplyToDir)
+    {
+      CStdString strCheck=pItem->m_strPath;
+      CStdString strDirectory;
+      if (pItem->IsStack())
+        strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+
+      CUtil::GetDirectory(strCheck,strDirectory);
+      if (CUtil::IsInRAR(strCheck))
+      {
+        CStdString strPath=strDirectory;
+        CUtil::GetParentPath(strPath,strDirectory);
+      }
+      if (pItem->IsStack())
+      {
+        strCheck = strDirectory;
+        CUtil::RemoveSlashAtEnd(strCheck);
+        if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+          CUtil::GetDirectory(strCheck,strDirectory);
+      }
+      ApplyIMDBThumbToFolder(strDirectory,strThumb);
     }
 
     return lResult;
