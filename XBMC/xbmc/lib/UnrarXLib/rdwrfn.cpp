@@ -33,6 +33,7 @@ void ComprDataIO::Init()
   CurrentCommand=0;
   ProcessedArcSize=TotalArcSize=0;
   bQuit = false;
+  m_pDlgProgress = NULL;
  }
 
 int ComprDataIO::UnpRead(byte *Addr,uint Count)
