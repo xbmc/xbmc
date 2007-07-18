@@ -349,10 +349,6 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       }
     }
   }
-
-  if (m_pTweener)
-	m_pTweener->IncRef();
-
 }
 
 // creates the reverse animation
