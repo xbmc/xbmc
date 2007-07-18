@@ -92,6 +92,12 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     m_effect = EFFECT_TYPE_ROTATE_X;
   else if (strcmpi(effect, "zoom") == 0)
     m_effect = EFFECT_TYPE_ZOOM;
+
+  // acceleration of effect
+  double accel;
+  if (node->Attribute("acceleration", &accel)) 
+    m_acceleration = (float)accel;
+
   // time and delay
   node->Attribute("time", (int *)&m_length);
   node->Attribute("delay", (int *)&m_delay);
@@ -113,6 +119,10 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       m_pTweener = new CubicTweener();
     else if (strcmpi(tween, "sine")==0)
       m_pTweener = new SineTweener();
+    else if (strcmpi(tween, "back")==0)
+      m_pTweener = new BackTweener();
+    else if (strcmpi(tween, "circle")==0)
+      m_pTweener = new CircleTweener();
     else if (strcmpi(tween, "bounce")==0)
       m_pTweener = new BounceTweener();
     else if (strcmpi(tween, "elastic")==0)
@@ -129,13 +139,34 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
 	m_pTweener->SetEasing(EASE_INOUT);
     }
   }
+
   // reversible (defaults to true)
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
     m_reversible = false;
-  // acceleration of effect
-  double accel;
-  if (node->Attribute("acceleration", &accel)) m_acceleration = (float)accel;
+
+
+  // if no tweener is specified and acceleration is, use the quadratic tweener
+  if (m_acceleration && !m_pTweener)
+  {
+    m_pTweener = new QuadTweener();
+    if (m_acceleration>0)
+      m_pTweener->SetEasing(EASE_IN);
+    else
+      m_pTweener->SetEasing(EASE_OUT);
+  }
+  else
+  {
+    // if both a tweener and acceleration are specified, reset acceleration to zero
+    m_acceleration = 0;
+  }
+
+  // if no tweener is in use, use the linear tweener (default)
+  if (!m_pTweener)
+  {
+    m_pTweener = new LinearTweener();
+  }
+
   // pulsed animation?
   if (m_type == ANIM_TYPE_CONDITIONAL)
   {
@@ -337,13 +368,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
     else if (time - m_start < m_length + m_delay)
     {
       if (m_pTweener)
-      {
 	m_amount = m_pTweener->Tween(time - m_start - m_delay, 0.0, 1.0, (float)m_length);
-      }
-      else
-      {
-	m_amount = (float)(time - m_start - m_delay) / m_length;
-      }
       m_currentState = ANIM_STATE_IN_PROCESS;
     }
     else
@@ -368,13 +393,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
     if (time - m_start < m_length)
     {
       if (m_pTweener)
-      {
 	m_amount = 1.0f - m_pTweener->Tween(time - m_start, 0.0, 1.0, (float)m_length);
-      }
-      else
-      {
-	m_amount = (float)(time - m_start) / m_length;
-      }
       m_currentState = ANIM_STATE_IN_PROCESS;
     }
     else
@@ -414,11 +433,7 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
 void CAnimation::Calculate()
 {
-  float offset;
-  if (m_pTweener)
-    offset = m_amount;
-  else
-    offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
+  float offset = m_amount; 
 
   if (m_effect == EFFECT_TYPE_FADE)
   {
