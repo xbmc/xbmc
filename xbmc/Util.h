@@ -293,8 +293,7 @@ public:
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static void AddSlashAtEnd(CStdString& strFolder);
-  static void RemoveSlashAtEnd(CStdString& strFolder);
-  static void GetPath(const CStdString& strFileName, CStdString& strPath);
+  static void RemoveSlashAtEnd(CStdString& strFolder);  
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
