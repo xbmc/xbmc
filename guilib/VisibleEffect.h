@@ -29,7 +29,9 @@ class CAnimation
 public:
   CAnimation();
   CAnimation(const CAnimation&);
-  ~CAnimation();
+  virtual ~CAnimation();
+  CAnimation &operator=(const CAnimation &src);
+
   void Reset();
   void Create(const TiXmlElement *node, const FRECT &rect);
   void CreateReverse(const CAnimation &anim);
