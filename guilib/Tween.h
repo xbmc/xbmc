@@ -41,7 +41,7 @@ enum TweenerType
 class Tweener
 {
 public:
-  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; _ref=0; }
+  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; _ref=1; }
   virtual ~Tweener() {};
   
   void SetEasing(TweenerType type) { m_tweenerType = type; }
