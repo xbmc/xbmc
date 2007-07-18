@@ -41,6 +41,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_hasRendered = false;
+  m_hasCamera = false;
   m_previousWindow = WINDOW_INVALID;
 }
 
@@ -162,6 +163,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::Load(TiXmlElement* pRootElement)
 {
+  // set the scaling resolution so that any control creation or initialisation can
+  // be done with respect to the correct aspect ratio
+  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
+
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
@@ -232,6 +237,12 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
         m_origins.push_back(origin);
         originElement = originElement->NextSiblingElement("origin");
       }
+    }
+    else if (strValue == "camera")
+    { // z is fixed
+      pChild->Attribute("x", &m_camera.x);
+      pChild->Attribute("y", &m_camera.y);
+      m_hasCamera = true;
     }
     else if (strValue == "controls")
     {
@@ -414,7 +425,8 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
-  g_graphicsContext.SetCameraPosition(g_graphicsContext.GetWidth() * 0.5f,g_graphicsContext.GetHeight() * 0.5f);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
 
   DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
@@ -1199,6 +1211,7 @@ void CGUIWindow::SetDefaults()
   m_showAnimation.Reset();
   m_closeAnimation.Reset();
   m_origins.clear();
+  m_hasCamera = false;
 }
 
 FRECT CGUIWindow::GetScaledBounds() const

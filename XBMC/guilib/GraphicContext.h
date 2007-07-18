@@ -122,7 +122,6 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
 
-  void SetCameraPosition(float camX, float camY);
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const;
   inline float ScaleFinalYCoord(float x, float y) const;
@@ -134,6 +133,8 @@ public:
   inline DWORD MergeAlpha(DWORD color) const;
   void SetOrigin(float x, float y);
   void RestoreOrigin();
+  void SetCameraPosition(const CPoint &camera);
+  void RestoreCameraPosition();
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
   void ClipRect(CRect &vertex, CRect &texture);
@@ -142,20 +143,20 @@ public:
     while (m_groupTransform.size())
       m_groupTransform.pop();
     m_groupTransform.push(m_guiTransform * matrix);
-    m_finalTransform = m_groupTransform.top();
+    UpdateFinalTransform(m_groupTransform.top());
   }
   inline void AddTransform(const TransformMatrix &matrix)
   {
     ASSERT(m_groupTransform.size());
     m_groupTransform.push(m_groupTransform.top() * matrix);
-    m_finalTransform = m_groupTransform.top();
+    UpdateFinalTransform(m_groupTransform.top());
   };
   inline void RemoveTransform()
   {
     ASSERT(m_groupTransform.size() > 1);
     if (m_groupTransform.size())
       m_groupTransform.pop();
-    m_finalTransform = m_groupTransform.top();
+    UpdateFinalTransform(m_groupTransform.top());
   };
 
 protected:
@@ -177,11 +178,12 @@ protected:
   DWORD m_stateBlock;
 
 private:
+  void UpdateCameraPosition(const CPoint &camera);
+  void UpdateFinalTransform(const TransformMatrix &matrix);
   RESOLUTION m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
-  float m_cameraX;
-  float m_cameraY;
+  stack<CPoint> m_cameras;
   stack<CPoint> m_origins;
   stack<CRect>  m_clipRegions;
 
