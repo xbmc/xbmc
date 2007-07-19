@@ -804,6 +804,14 @@ inline float CGraphicContext::ScaleFinalZCoord(float x, float y) const
   return m_finalTransform.TransformZCoord(x, y, 0);
 }
 
+bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
+{ // need only test 3 points, as they must be co-planer
+  if (m_finalTransform.TransformZCoord(x1, y1, 0)) return true;
+  if (m_finalTransform.TransformZCoord(x2, y2, 0)) return true;
+  if (m_finalTransform.TransformZCoord(x1, y2, 0)) return true;
+  return false;
+}
+
 inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
 {
   DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);

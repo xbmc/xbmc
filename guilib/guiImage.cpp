@@ -165,11 +165,6 @@ void CGUIImage::Render()
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
     p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
-#ifdef HAS_XBOX_D3D
-    p3DDevice->Begin(D3DPT_QUADLIST);
-#else
-    p3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-#endif
 
     float uLeft, uRight, vTop, vBottom;
 
@@ -190,6 +185,10 @@ void CGUIImage::Render()
       vBottom = m_fV - m_image.border.bottom;
 #ifdef ALLOW_TEXTURE_COMPRESSION
     }
+#endif
+
+#ifdef HAS_XBOX_D3D
+    p3DDevice->Begin(D3DPT_QUADLIST);
 #endif
 
     // TODO: The diffuse coloring applies to all vertices, which will
@@ -223,6 +222,18 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
 #ifdef HAS_XBOX_D3D
     p3DDevice->End();
+    if (g_graphicsContext.RectIsAngled(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH))
+    {
+      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
+      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+      p3DDevice->Begin(D3DPT_QUADLIST);
+      Render(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH, 0, 0, m_fU, m_fV);
+      p3DDevice->End();
+      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
+      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
+      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+    }
     if (!m_linearTexture)
       p3DDevice->SetPalette( 0, NULL);
     if (m_diffusePalette)
@@ -310,7 +321,6 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
-
 #else
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
