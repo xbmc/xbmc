@@ -90,7 +90,7 @@ public:
 	return _scale * (-change/2) * (time * (time - 2) - 1) + start;
 	break;
       }
-    return _scale * change * (time /= duration) * time + start;
+    return _scale * change * time * time + start;
   }
 };
 
