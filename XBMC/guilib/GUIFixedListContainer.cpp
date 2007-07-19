@@ -1,10 +1,7 @@
 #include "include.h"
 #include "GUIFixedListContainer.h"
 #include "GUIListItem.h"
-
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "../xbmc/utils/GUIInfoManager.h"
-//#endif
 
 CGUIFixedListContainer::CGUIFixedListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
@@ -186,6 +183,7 @@ bool CGUIFixedListContainer::MoveUp(DWORD control)
       int offset = m_items.size() - m_cursor - 1;
       if (offset < -m_cursor) offset = -m_cursor;
       ScrollToOffset(offset);
+      g_infoManager.SetContainerMoving(GetID(), -1);
     }
   }
   else
@@ -202,6 +200,7 @@ bool CGUIFixedListContainer::MoveDown(DWORD control)
   else if( control == 0 || control == GetID() )
   { // move first item in list
     ScrollToOffset(-m_cursor);
+    g_infoManager.SetContainerMoving(GetID(), 1);
   }
   else
     return false;

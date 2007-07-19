@@ -217,11 +217,12 @@ bool CGUIListContainer::MoveUp(DWORD control)
   else if ( control == 0 || control == GetID() )
   {
     if (m_items.size() > 0)
-    { // move 2 last item in list
+    { // move 2 last item in list, and set our container moving up
       int offset = m_items.size() - m_itemsPerPage;
       if (offset < 0) offset = 0;
       SetCursor(m_items.size() - offset - 1);
       ScrollToOffset(offset);
+      g_infoManager.SetContainerMoving(GetID(), -1);
     }
   }
   else
@@ -243,9 +244,10 @@ bool CGUIListContainer::MoveDown(DWORD control)
     }
   }
   else if( control == 0 || control == GetID() )
-  { // move first item in list
+  { // move first item in list, and set our container moving in the "down" direction
     SetCursor(0);
     ScrollToOffset(0);
+    g_infoManager.SetContainerMoving(GetID(), 1);
   }
   else
     return false;
