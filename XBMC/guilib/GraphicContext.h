@@ -127,6 +127,7 @@ public:
   inline float ScaleFinalYCoord(float x, float y) const;
   inline float ScaleFinalZCoord(float x, float y) const;  
   inline void  ScaleFinalCoords(float &x, float &y, float &z) const;
+  bool RectIsAngled(float x1, float y1, float x2, float y2) const;
 
   inline float GetGUIScaleX() const { return m_guiScaleX; };
   inline float GetGUIScaleY() const { return m_guiScaleY; };
