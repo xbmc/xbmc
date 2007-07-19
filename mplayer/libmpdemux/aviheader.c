@@ -359,10 +359,26 @@ while(1){
 	demuxer->movi_end=stream_tell(demuxer->stream); // fixup movi-end
     if(index_mode && !priv->isodml){
       int i;
+#ifdef _XBOX
+      // might make atleast some more indexes readable
+      if(size2 > (demuxer->stream->end_pos - demuxer->movi_end))
+        priv->idx_size=(demuxer->stream->end_pos - demuxer->movi_end)>>4;
+      else
+        priv->idx_size=size2>>4;
+#else
       priv->idx_size=size2>>4;
+#endif
       mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_ReadingIndexBlockChunksForFrames,
         priv->idx_size,avih.dwTotalFrames, (int64_t)stream_tell(demuxer->stream));
       priv->idx=malloc(priv->idx_size<<4);
+#ifdef _XBOX
+      // avoid crashing on invalid indexes
+      if(!priv->idx){
+        mp_msg(MSGT_HEADER,MSGL_V, "Invalid index size");
+        priv->idx_size = 0;
+        break;
+      }
+#endif
 //      printf("\nindex to %p !!!!! (priv=%p)\n",priv->idx,priv);
       stream_read(demuxer->stream,(char*)priv->idx,priv->idx_size<<4);
       for (i = 0; i < priv->idx_size; i++) {	// swap index to machine endian
