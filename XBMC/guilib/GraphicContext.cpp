@@ -686,6 +686,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   while (m_cameras.size())
     m_cameras.pop();
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  UpdateCameraPosition(m_cameras.top());
 
   // and reset the final transform and window/group transforms
   while (m_groupTransform.size())
