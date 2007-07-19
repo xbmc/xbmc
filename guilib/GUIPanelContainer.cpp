@@ -261,23 +261,27 @@ void CGUIPanelContainer::OnDown()
 
 bool CGUIPanelContainer::MoveDown(DWORD nextControl)
 {
-  if (m_cursor + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (m_offset + 1) * m_itemsPerRow < (int)m_items.size())
+  if (m_cursor + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (m_offset + 1 + m_cursor / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
   { // move to last item if necessary
     if ((m_offset + 1)*m_itemsPerRow + m_cursor >= (int)m_items.size())
       SetCursor((int)m_items.size() - 1 - m_offset*m_itemsPerRow);
     else
       SetCursor(m_cursor + m_itemsPerRow);
+    CLog::Log(LOGDEBUG, __FUNCTION__" case 1");
   }
   else if ((m_offset + 1 + m_cursor / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
-  { // move to last item if necessary
+  { // we scroll to the next row, and move to last item if necessary
     if ((m_offset + 1)*m_itemsPerRow + m_cursor >= (int)m_items.size())
       SetCursor((int)m_items.size() - 1 - (m_offset + 1)*m_itemsPerRow);
     ScrollToOffset(m_offset + 1);
+    CLog::Log(LOGDEBUG, __FUNCTION__" case 2");
   }
   else if (!nextControl || nextControl == GetID())
   { // move first item in list
     SetCursor(m_cursor % m_itemsPerRow);
     ScrollToOffset(0);
+    g_infoManager.SetContainerMoving(GetID(), 1);
+    CLog::Log(LOGDEBUG, __FUNCTION__" case 3");
   }
   else
     return false;
@@ -298,6 +302,7 @@ bool CGUIPanelContainer::MoveUp(DWORD nextControl)
     if (offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
       SetCursor((int)m_items.size() - offset * m_itemsPerRow - 1);
     ScrollToOffset(offset);
+    g_infoManager.SetContainerMoving(GetID(), -1);
   }
   else
     return false;
