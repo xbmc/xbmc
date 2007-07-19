@@ -2489,6 +2489,9 @@
 			<include>contentpanelslide</include>
 			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsVisible(56)</visible>
 			<visible>![Window.IsActive(myvideolibrary) + Control.IsVisible(51)]</visible>
+			<visible>![Window.IsActive(mymusicfiles) + Control.IsVisible(57)]</visible>
+			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(57)]</visible>
+			<visible>![Window.IsActive(mymusicplaylist) + Control.IsVisible(57)]</visible>
 		</control>
 		<control type="spincontrol" id="60">
 			<description>Next page button</description>
@@ -2504,6 +2507,9 @@
 			<include>contentpanelslide</include>
 			<visible>Skin.HasSetting(UseScrollbars) + !Control.IsVisible(56)</visible>
 			<visible>![Window.IsActive(myvideolibrary) + Control.IsVisible(51)]</visible>
+			<visible>![Window.IsActive(mymusicfiles) + Control.IsVisible(57)]</visible>
+			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(57)]</visible>
+			<visible>![Window.IsActive(mymusicplaylist) + Control.IsVisible(57)]</visible>
 		</control>
 	</include>
 	<include name="scrollbar_width">
