@@ -107,6 +107,7 @@
 		<include>AllViewCommonThumbLarge</include>
 		<include>MusicCoverThumbView</include>
 		<include>MusicCoverWrapView</include>
+		<include>3D_Cover_View</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>
