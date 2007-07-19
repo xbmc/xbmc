@@ -68,10 +68,16 @@ CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
 
   va_list args;
   va_start(args, strStmt);
-  auto_aptr<char> szStmt(sqlite3_vmprintf(strStmt.c_str(), args));
+  char *szSql = sqlite3_vmprintf(strStmt.c_str(), args);
   va_end(args);
 
-  return szStmt.get();
+  CStdString strResult;
+  if (szSql) {
+    strResult = szSql;
+    free(szSql);
+  }
+
+  return strResult;
 }
 
 bool CDatabase::Open()

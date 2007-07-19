@@ -7,10 +7,10 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float po
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_bHasPath = bHasPath;
+  m_iCursorPos = 0; 
   SetLabel(strLabel);
   m_label = labelInfo;
   m_bShowCursor = false;
-  m_iCursorPos = 0;
   m_dwCounter = 0;
   ControlType = GUICONTROL_LABEL;
   m_ScrollInsteadOfTruncate = false;
