@@ -126,11 +126,11 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
+		<include>3D_Cover_View</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
 		<include>MusicCoverThumbView</include>
 		<include>MusicCoverWrapView</include>
-		<include>3D_Cover_View</include>
 		<include>MusicViewCommons_BigList</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
