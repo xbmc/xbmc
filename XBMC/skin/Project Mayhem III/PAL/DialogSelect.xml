@@ -33,21 +33,49 @@
 			<label>1023</label>
 			<textcolor>dialogheader</textcolor>
 		</control>
-		<control type="listcontrol" id="3">
-			<description>listcontrol</description>
+		<control type="list" id="3">
 			<posx>12</posx>
 			<posy>25</posy>
 			<width>480</width>
-			<height>340</height>
-			<texturefocus>input-focus.png</texturefocus>
-			<texturenofocus>input-nofocus.png</texturenofocus>
-			<spinposx>420</spinposx>
-			<spinposy>315</spinposy>
-			<textxoff>-5</textxoff>
+			<height>290</height>
 			<onleft>5</onleft>
 			<onright>5</onright>
 			<onup>3</onup>
 			<ondown>3</ondown>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="29">
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>470</width>
+					<height>29</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>480</width>
+					<height>29</height>
+					<texture>input-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>470</width>
+					<height>29</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
 		</control>
 		<control type="label" id="2">
 			<description>number of files text label</description>
