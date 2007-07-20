@@ -173,14 +173,12 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     }
   }
 
-  // acceleration of effect (quadratic only at this point)
   double accel;
   node->Attribute("acceleration", &accel);
 
   if (!m_pTweener)
-  { // no tweener is specified - use the linear tweener
-    m_pTweener = new LinearTweener();
-
+  { // no tweener is specified - use a linear tweener
+    // or quadratic if we have acceleration
     if (accel)
     {
       m_pTweener = new QuadTweener((float)accel);
