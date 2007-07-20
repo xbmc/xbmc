@@ -61,9 +61,13 @@ void CGUIPythonWindowXML::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  for (int i = CONTROL_VIEW_START; i <= CONTROL_VIEW_END; i++)
+  vector<CGUIControl *> controls;
+  GetContainers(controls);
+  for (ciControls it = controls.begin(); it != controls.end(); it++)
   {
-    m_viewControl.AddView(GetControl(i));
+    CGUIControl *control = *it;
+    if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
+      m_viewControl.AddView(control);
   }
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
   UpdateButtons();
