@@ -109,6 +109,7 @@ public:
   virtual bool IsMediaWindow() const { return false; };
   virtual CFileItem *GetCurrentListItem(int offset = 0) { return NULL; };
   virtual int GetViewContainerID() const { return 0; };
+  void GetContainers(vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
   bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
@@ -167,6 +168,7 @@ protected:
 
   vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
+  typedef std::vector<CGUIControl*>::const_iterator ciControls;
   DWORD m_dwWindowId;
   DWORD m_dwIDRange;
   DWORD m_dwDefaultFocusControlID;
