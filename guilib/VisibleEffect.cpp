@@ -441,7 +441,6 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
 void CAnimation::Calculate()
 {
-//  float offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
   float offset = m_amount;
   if (m_pTweener)
     offset = m_pTweener->Tween(m_amount, 0.0f, 1.0f, 1.0f);
@@ -472,6 +471,7 @@ void CAnimation::Calculate()
     m_matrix.SetScaler(scaleX, scaleY, m_centerX, m_centerY);
   }
 }
+
 void CAnimation::ResetAnimation()
 {
   m_currentProcess = ANIM_PROCESS_NONE;
