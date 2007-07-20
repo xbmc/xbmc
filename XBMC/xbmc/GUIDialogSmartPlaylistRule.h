@@ -22,6 +22,7 @@ protected:
   void OnCancel();
   void UpdateButtons();
   void AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op);
+  void OnBrowse();
 
   enum FIELD { TEXT_FIELD, NUMERIC_FIELD, DATE_FIELD, PLAYLIST_FIELD };
   FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSmartPlaylistRule::DATABASE_FIELD field);
