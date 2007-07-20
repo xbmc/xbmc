@@ -57,7 +57,7 @@ void CDummyVideoPlayer::Process()
     if (!m_paused)
       m_clock += (timeGetTime() - m_lastTime)*m_speed;
     m_lastTime = timeGetTime();
-    Sleep(40);
+    Sleep(0);
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())
     {
