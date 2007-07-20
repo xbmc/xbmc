@@ -161,9 +161,9 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
-		<include>AllViewCommonPageControls</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
+		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>
