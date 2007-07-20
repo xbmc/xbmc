@@ -142,6 +142,13 @@ void CGUIDialogSelect::Add(const CStdString& strLabel)
   m_vecList.push_back(pItem);
 }
 
+void CGUIDialogSelect::Add(const CFileItemList& items)
+{
+  for (int i=0;i<items.Size();++i)
+    Add(new CFileItem(*items[i]));
+}
+
+// TODO: this doesnt new items, yet it deletes them in reset. intentional??
 void CGUIDialogSelect::Add(CFileItem* pItem)
 {
   m_vecList.push_back(pItem);
