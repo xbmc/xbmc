@@ -44,6 +44,7 @@ public:
   CGUIControl *GetFocusedControl() const;
   const CGUIControl *GetControl(int id) const;
   CGUIControl *GetFirstFocusableControl(int id);
+  void GetContainers(vector<CGUIControl *> &containers) const;
 
   virtual void AddControl(CGUIControl *control);
   virtual bool RemoveControl(int id);
