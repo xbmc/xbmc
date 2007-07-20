@@ -180,13 +180,13 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>VideoLibraryList2View</include>
-		<include>VideoViewCommons_BigList</include>
+		<include>VideoLibraryWideIcon_Small</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
 		<include>VideoDVDThumbLarge</include>
 		<include>VideoDVDWrapView</include>
-		<include>VideoLibraryWideIcon_Small</include>
 		<include>WideIcon_Big</include>
+		<include>VideoViewCommons_BigList</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>
