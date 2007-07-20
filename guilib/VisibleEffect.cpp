@@ -13,17 +13,18 @@ CAnimation::CAnimation()
 
 CAnimation::CAnimation(const CAnimation& src)
 {
-	*this=src;
+  m_pTweener = NULL;
+  *this=src;
 }
 
-CAnimation &CAnimation::operator=(const CAnimation &src) {
+CAnimation &CAnimation::operator=(const CAnimation &src)
+{
   m_amount = src.m_amount;
   m_type = src.m_type;
   m_effect = src.m_effect;
   m_currentState = src.m_currentState;
   m_currentProcess = src.m_currentProcess;
   m_queuedProcess = src.m_queuedProcess;
-  m_acceleration = src.m_acceleration;
  
   m_startX = src.m_startX;
   m_startY = src.m_startY;
@@ -45,10 +46,13 @@ CAnimation &CAnimation::operator=(const CAnimation &src) {
   m_lastCondition = src.m_lastCondition; 
 
   m_matrix = src.m_matrix; //has operator=
-  m_pTweener = src.m_pTweener;
 
-  if (src.m_pTweener)
-    this->m_pTweener->IncRef();
+  if (m_pTweener)
+    m_pTweener->Free();
+
+  m_pTweener = src.m_pTweener;
+  if (m_pTweener)
+    m_pTweener->IncRef();
 
   return *this;
 }
@@ -72,7 +76,6 @@ void CAnimation::Reset()
   m_centerX = m_centerY = 0;
   m_startAlpha = 0;
   m_endAlpha = 100;
-  m_acceleration = 0;
   m_condition = 0;
   m_reversible = true;
   m_lastCondition = false;
@@ -127,17 +130,12 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     m_effect = EFFECT_TYPE_ROTATE_X;
   else if (strcmpi(effect, "zoom") == 0)
     m_effect = EFFECT_TYPE_ZOOM;
-
-  // acceleration of effect
-  double accel;
-  if (node->Attribute("acceleration", &accel)) 
-    m_acceleration = (float)accel;
-
   // time and delay
   node->Attribute("time", (int *)&m_length);
   node->Attribute("delay", (int *)&m_delay);
   m_length = (unsigned int)(m_length * g_SkinInfo.GetEffectsSlowdown()) ;
   m_delay = (unsigned int)(m_delay * g_SkinInfo.GetEffectsSlowdown()) ;
+  
   if (m_pTweener)
   {
     m_pTweener->Free();
@@ -167,42 +165,35 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     if (m_pTweener && easing)
     {
       if (strcmpi(easing, "in")==0)
-	m_pTweener->SetEasing(EASE_IN);
+        m_pTweener->SetEasing(EASE_IN);
       else if (strcmpi(easing, "out")==0)
-	m_pTweener->SetEasing(EASE_OUT);
+        m_pTweener->SetEasing(EASE_OUT);
       else if (strcmpi(easing, "inout")==0)
-	m_pTweener->SetEasing(EASE_INOUT);
+        m_pTweener->SetEasing(EASE_INOUT);
     }
+  }
+
+  // acceleration of effect (quadratic only at this point)
+  double accel;
+  node->Attribute("acceleration", &accel);
+
+  if (!m_pTweener)
+  { // no tweener is specified - use the linear tweener
+    m_pTweener = new LinearTweener();
+
+    if (accel)
+    {
+      m_pTweener = new QuadTweener((float)accel);
+      m_pTweener->SetEasing(EASE_IN);
+    }
+    else
+      m_pTweener = new LinearTweener();
   }
 
   // reversible (defaults to true)
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
     m_reversible = false;
-
-
-  // if no tweener is specified and acceleration is, use the linear tweener
-  if (m_acceleration && !m_pTweener)
-  {
-    m_pTweener = new LinearTweener();
-  }
-  else if (m_acceleration)
-  {
-    // we can use the acceleration parameter to scale other effects too, disabled for now
-    //m_pTweener->SetScale((double)fabs(m_acceleration));
-    m_acceleration = 0;
-  }
-  else
-  {
-    // if both a tweener and acceleration are specified, reset acceleration to zero
-    m_acceleration = 0;
-  }
-
-  // if no tweener is in use, use the linear tweener (default)
-  if (!m_pTweener)
-  {
-    m_pTweener = new LinearTweener();
-  }
 
   // pulsed animation?
   if (m_type == ANIM_TYPE_CONDITIONAL)
@@ -353,24 +344,6 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   }
 }
 
-// creates the reverse animation
-void CAnimation::CreateReverse(const CAnimation &anim)
-{
-  m_acceleration = -anim.m_acceleration;
-  m_startX = anim.m_endX;
-  m_startY = anim.m_endY;
-  m_endX = anim.m_startX;
-  m_endY = anim.m_startY;
-  m_endAlpha = anim.m_startAlpha;
-  m_startAlpha = anim.m_endAlpha;
-  m_centerX = anim.m_centerX;
-  m_centerY = anim.m_centerY;
-  m_type = (ANIMATION_TYPE)-anim.m_type;
-  m_effect = anim.m_effect;
-  m_length = anim.m_length;
-  m_reversible = anim.m_reversible;
-}
-
 void CAnimation::Animate(unsigned int time, bool startAnim)
 {
   // First start any queued animations
@@ -404,8 +377,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
     }
     else if (time - m_start < m_length + m_delay)
     {
-      if (m_pTweener)
-	m_amount = m_pTweener->Tween(time - m_start - m_delay, 0.0, 1.0, (float)m_length);
+      m_amount = (float)(time - m_start - m_delay) / m_length;
       m_currentState = ANIM_STATE_IN_PROCESS;
     }
     else
@@ -429,8 +401,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
   {
     if (time - m_start < m_length)
     {
-      if (m_pTweener)
-	m_amount = 1.0f - m_pTweener->Tween(time - m_start, 0.0, 1.0, (float)m_length);
+      m_amount = 1.0f - (float)(time - m_start) / m_length;
       m_currentState = ANIM_STATE_IN_PROCESS;
     }
     else
@@ -470,29 +441,27 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
 void CAnimation::Calculate()
 {
-  float offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
-
+  float offset = m_amount;
+  if (m_pTweener)
+    offset = m_pTweener->Tween(m_amount, 0.0f, 1.0f, 1.0f);
   if (m_effect == EFFECT_TYPE_FADE)
   {
-    offset = ((float)(m_endAlpha - m_startAlpha) * m_amount + m_startAlpha) * 0.01f;
-    if (offset>1) // set upper bound to 1 for alpha, since 1+ doesn't make sense
-      offset = 1;
-    m_matrix.SetFader(offset);
+    m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
   }
   else if (m_effect == EFFECT_TYPE_SLIDE)
   {
     m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_X)
-  { // note coordinate aspect ratio is 1:1 in the Y:Z plane.  We treat only X on the different scale
+  { 
     m_matrix.SetXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Y)
   {
-    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
+    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Z)
-  {
+  { // note coordinate aspect ratio is not generally square in the XY plane, so correct for it.
     m_matrix.SetZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
   }
   else if (m_effect == EFFECT_TYPE_ZOOM)

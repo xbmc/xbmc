@@ -295,8 +295,22 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const FRECT &re
       animations.push_back(anim);
       if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
+        TiXmlElement hidden(*node);
+        hidden.FirstChild()->SetValue("hidden");
+        const char *start = hidden.Attribute("start");
+        const char *end = hidden.Attribute("end");
+        if (start && end)
+        {
+          CStdString temp = end;
+          hidden.SetAttribute("end", start);
+          hidden.SetAttribute("start", temp.c_str());
+        }
+        else if (start)
+          hidden.SetAttribute("end", start);
+        else if (end)
+          hidden.SetAttribute("start", end);
         CAnimation anim2;
-        anim2.CreateReverse(anim);
+        anim2.Create(&hidden, rect);
         animations.push_back(anim2);
       }
     }
