@@ -1626,11 +1626,11 @@
   <string id="21362">Manage UPnP Video Shares</string>
   <string id="21363">Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
-  <string id="21365">Remove Media Share</string>  
+  <string id="21365">Remove Media Share</string>
   <string id="21366">Custom Subtitle Directory</string>
   <string id="21367">Movie &amp; Alternate Subtitle Directory</string>
   
-  <string id="21370">Play Navigation Sounds During Media Playback</string>  
+  <string id="21370">Play Navigation Sounds During Media Playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD Player Region</string>
   <string id="21373">Video Hardware</string>
@@ -1646,7 +1646,6 @@
   <string id="21383">Enable Scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Open</string>
-  
   <string id="21386">Acoustic Management Level</string>
   <string id="21387">Fast</string>
   <string id="21388">Quiet</string>
@@ -1658,12 +1657,9 @@
   <string id="21394">Low Standby</string>
   <string id="21395">Unable to cache files bigger than 4 gb</string>
   <string id="21396">Chapter</string>
-
-  <string id="21397">High Quality Pixel Shader V2</string>	
-  
+  <string id="21397">High Quality Pixel Shader V2</string>
   <string id="21398">Enable Playlist at Startup</string>
   <string id="21399">Use Tween Animations</string>
-
   <string id="21400">contains</string>
   <string id="21401">does not contain</string>
   <string id="21402">is</string>
@@ -1696,6 +1692,7 @@
   <string id="21436">%i songs</string>
   <string id="21437">New Smart Playlist...</string>
   <string id="21438">%c Drive</string>
+  <string id="21439">Edit Party Mode Rules</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>
