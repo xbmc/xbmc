@@ -1225,6 +1225,17 @@ FRECT CGUIWindow::GetScaledBounds() const
   return rect;
 }
 
+void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
+{
+  for (ciControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
+  {
+    if ((*it)->IsContainer())
+      containers.push_back(*it);
+    else if ((*it)->IsGroup())
+      ((CGUIControlGroup *)(*it))->GetContainers(containers);
+  }
+}
+
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
