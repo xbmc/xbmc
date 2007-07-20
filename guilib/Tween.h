@@ -27,7 +27,7 @@
 #include <math.h>
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846f
 #endif
 
 enum TweenerType
@@ -41,18 +41,16 @@ enum TweenerType
 class Tweener
 {
 public:
-  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; _ref=1; _scale=1.0; }
+  Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; _ref=1; }
   virtual ~Tweener() {};
   
   void SetEasing(TweenerType type) { m_tweenerType = type; }
-  void SetScale(float scale) { _scale = scale; }
   virtual float Tween(float time, float start, float change, float duration)=0;
   void Free() { _ref--; if (_ref==0) delete this; }
   void IncRef() { _ref++; }
   
 protected:
   int _ref;
-  float _scale;
   TweenerType m_tweenerType;
 };
 
@@ -70,28 +68,31 @@ public:
 class QuadTweener : public Tweener
 {
 public:
+  QuadTweener(float a = 1.0f) { _a=a; }
   virtual float Tween(float time, float start, float change, float duration)
   {
     time /= duration;
     switch (m_tweenerType)
       {
       case EASE_IN:
-        return _scale * change * time * time + start;
+        return change * time * (_a * time + 1 - _a) + start;
         break;
 
       case EASE_OUT:
-        return _scale * (-change) * (time) * (time - 2) + start;
+        return -change * time * (_a * time - 1 - _a) + start;
         break;
 
       case EASE_INOUT:
         if (time/2 < 1)
-          return _scale * (change/2) * time * time + start;
+          return (change/2) * time * (_a * time + 1 - _a) + start;
         time--;
-        return _scale * (-change/2) * (time * (time - 2) - 1) + start;
+        return (-change/2) * time * (_a * time - 1 - _a) + start;
         break;
       }
-    return _scale * change * time * time + start;
+    return change * time * time + start;
   }
+private:
+  float _a;
 };
 
 
@@ -104,22 +105,22 @@ public:
     switch (m_tweenerType)
       {
       case EASE_IN:
-        return _scale * change * time * time * time + start;
+        return change * time * time * time + start;
         break;
 
       case EASE_OUT:
         time--;
-        return _scale * change * (time * time * time + 1) + start;
+        return change * (time * time * time + 1) + start;
         break;
 
       case EASE_INOUT:
         if (time/2 < 1)
-          return _scale * (change/2) * time * time * time + start;
+          return (change/2) * time * time * time + start;
         time-=2;
-        return _scale * (change/2) * (time * time * time + 2) + start;
+        return (change/2) * (time * time * time + 2) + start;
         break;
       }
-    return _scale * change * time * time + start;
+    return change * time * time + start;
   }
 };
 
@@ -132,22 +133,22 @@ public:
     switch (m_tweenerType)
       {
       case EASE_IN:
-        return _scale * (-change) * ((double)sqrt(1 - time * time) - 1) + start;
+        return (-change) * (sqrt(1 - time * time) - 1) + start;
         break;
 
       case EASE_OUT:
         time--;
-        return _scale * change * (double)sqrt(1 - time * time) + start;
+        return change * sqrt(1 - time * time) + start;
         break;
 
       case EASE_INOUT:
         if ((time / 2) < 1)
-          return _scale * (-change/2) * ((double)sqrt(1 - time * time) - 1) + start;
+          return (-change/2) * (sqrt(1 - time * time) - 1) + start;
         time-=2;
-        return _scale * change/2 * ((double)sqrt(1 - time * time) + 1) + start;
+        return change/2 * (sqrt(1 - time * time) + 1) + start;
         break;
       }
-    return _scale * change * (double)sqrt(1 - time * time) + start;
+    return change * sqrt(1 - time * time) + start;
   }
 };
 
@@ -163,25 +164,25 @@ public:
     switch (m_tweenerType)
       {
       case EASE_IN:
-        return _scale * change * time * time * ((s + 1) * time - s) + start;
+        return change * time * time * ((s + 1) * time - s) + start;
         break;
 
       case EASE_OUT:
         time--;
-        return _scale * change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
+        return change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
         break;
 
       case EASE_INOUT:
-        s*=(1.525);
+        s*=(1.525f);
         if ((time / 2) < 1)
         {
-          return _scale *  (change/2) * (time * time * ((s + 1) * time - s)) + start;
+          return (change/2) * (time * time * ((s + 1) * time - s)) + start;
         }
         time-=2;
-        return _scale * (change/2) * (time * time * ((s + 1) * time + s) + 2) + start;
+        return (change/2) * (time * time * ((s + 1) * time + s) + 2) + start;
         break;
       }
-    return _scale * change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
+    return change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
   }
 
 private:
@@ -199,18 +200,18 @@ public:
     switch (m_tweenerType)
       {
       case EASE_IN:
-        return _scale * change * (1 - cos(time * M_PI / 2.0)) + start;
+        return change * (1 - cos(time * M_PI / 2.0f)) + start;
         break;
 
       case EASE_OUT:
-        return _scale * change * sin(time * M_PI / 2.0) + start;
+        return change * sin(time * M_PI / 2.0f) + start;
         break;
 
       case EASE_INOUT:
-        return _scale * change/2 * (1 - cos(M_PI * time)) + start;
+        return change/2 * (1 - cos(M_PI * time)) + start;
         break;
       }
-    return _scale * (change/2) * (1 - cos(M_PI * time)) + start;
+    return (change/2) * (1 - cos(M_PI * time)) + start;
   }
 };
 
@@ -223,22 +224,22 @@ public:
     switch (m_tweenerType)
       {
       case EASE_IN:
-        return _scale * (change - easeOut(duration - time, 0, change, duration)) + start;
+        return (change - easeOut(duration - time, 0, change, duration)) + start;
         break;
 
       case EASE_OUT:
-        return _scale * easeOut(time, start, change, duration);
+        return easeOut(time, start, change, duration);
         break;
 
       case EASE_INOUT:
         if (time < duration/2) 
-          return _scale * (change - easeOut (duration - (time * 2), 0, change, duration) + start) * .5 + start;
+          return (change - easeOut (duration - (time * 2), 0, change, duration) + start) * .5f + start;
         else 
-          return _scale * (easeOut (time * 2 - duration, 0, change, duration) * .5 + change * .5) + start;
+          return (easeOut (time * 2 - duration, 0, change, duration) * .5f + change * .5f) + start;
         break;
       }
 
-    return _scale * easeOut(time, start, change, duration);
+    return easeOut(time, start, change, duration);
   }
 
 protected:
@@ -246,16 +247,16 @@ protected:
   {
     time /= duration;
     if (time < (1/2.75)) {
-      return  _scale * change * (7.5625 * time * time) + start;
+      return  change * (7.5625f * time * time) + start;
     } else if (time < (2/2.75)) {
-      time -= (1.5/2.75);
-      return _scale * change * (7.5625 * time * time + .75) + start;
+      time -= (1.5f/2.75f);
+      return change * (7.5625f * time * time + .75f) + start;
     } else if (time < (2.5/2.75)) {
-      time -= (2.25/2.75);
-      return _scale * change * (7.5625 * time * time + .9375) + start;
+      time -= (2.25f/2.75f);
+      return change * (7.5625f * time * time + .9375f) + start;
     } else {
-      time -= (2.625/2.75);
-      return _scale * change * (7.5625 * time * time + .984375) + start;
+      time -= (2.625f/2.75f);
+      return change * (7.5625f * time * time + .984375f) + start;
     }
   }
 };
@@ -299,20 +300,20 @@ protected:
       return start;  
     time /= duration;
     if (time==1) 
-        return start + _scale *change;  
+        return start + change;  
     if (!p) 
-      p=duration*.3;
-    if (!a || a < (double)fabs(change)) 
+      p=duration*.3f;
+    if (!a || a < fabs(change)) 
     { 
       a = change; 
-      s = p / 4.0; 
+      s = p / 4.0f; 
     }
     else
     {
       s = p / (2 * M_PI) * asin (change / a);
     }
     time--;
-    return _scale * (-(a * (double)pow(2, 10*time) * sin((time * duration - s) * (2 * M_PI) / p ))) + start;
+    return -(a * pow(2.0f, 10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + start;
   }
 
   float easeOut(float time, float start, float change, float duration)
@@ -325,19 +326,19 @@ protected:
       return start;  
     time /= duration;
     if (time==1) 
-        return start + _scale * change;  
+        return start + change;  
     if (!p) 
-      p=duration*.3;
-    if (!a || a < (double)fabs(change)) 
+      p=duration*.3f;
+    if (!a || a < fabs(change)) 
     { 
       a = change; 
-      s = p / 4.0; 
+      s = p / 4.0f; 
     }
     else
     {
       s = p / (2 * M_PI) * asin (change / a);
     }
-    return _scale * (-(a * (double)pow(2, -10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + change) + start;
+    return -(a * pow(2.0f, -10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + change + start;
   }
 
   float easeInOut(float time, float start, float change, float duration)
@@ -352,11 +353,11 @@ protected:
     if (time/2==2) 
         return start + change;  
     if (!p) 
-      p=duration*.3*1.5;
-    if (!a || a < (double)fabs(change)) 
+      p=duration*.3f*1.5f;
+    if (!a || a < fabs(change)) 
     { 
       a = change; 
-      s = p / 4.0; 
+      s = p / 4.0f; 
     }
     else
     {
@@ -366,9 +367,9 @@ protected:
     time--;
     if (time < 1) 
     {
-      return _scale * (-.5 * (a * (double)pow(2, 10 * (time)) * sin((time * duration - s) * (2 * M_PI) / p ))) + start;
+      return -.5f * (a * pow(2.0f, 10 * (time)) * sin((time * duration - s) * (2 * M_PI) / p )) + start;
     }
-    return _scale * (a * (double)pow(2, -10 * (time)) * sin((time * duration-s) * (2 * M_PI) / p ) * .5 + change) + start;
+    return a * pow(2.0f, -10 * (time)) * sin((time * duration-s) * (2 * M_PI) / p ) * .5f + change + start;
   }
 };
 
