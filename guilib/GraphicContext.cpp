@@ -815,6 +815,7 @@ bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
 inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
 {
   DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+  if (alpha > 255) alpha = 255;
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
 
