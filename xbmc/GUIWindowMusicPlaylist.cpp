@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicPlayList.h"
+#include "GUIDialogSmartPlaylistEditor.h"
 #include "util.h"
 #include "PlayListM3U.h"
 #include "application.h"
@@ -586,7 +587,10 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
   }
 
   if (g_partyModeManager.IsEnabled())
+  {
+    buttons.Add(CONTEXT_BUTTON_EDIT_PARTYMODE, 21439);
     buttons.Add(CONTEXT_BUTTON_CANCEL_PARTYMODE, 588);      // cancel party mode
+  }
 }
 
 bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -621,9 +625,19 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_CANCEL_PARTYMODE:
     g_partyModeManager.Disable();
     return true;
+  case CONTEXT_BUTTON_EDIT_PARTYMODE:
+    CStdString playlist = "P:\\PartyMode.xml";
+    if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+    {
+      // apply new rules
+      g_partyModeManager.Disable();
+      g_partyModeManager.Enable();
+    }
+    return true;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
+
 
 void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
 {
