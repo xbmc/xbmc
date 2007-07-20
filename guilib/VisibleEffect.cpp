@@ -2,11 +2,66 @@
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
-#include "GUIImage.h" // for FRECT
+#include "guiImage.h" // for FRECT
+#include "Tween.h"
 
 CAnimation::CAnimation()
 {
+  m_pTweener = NULL;
   Reset();
+}
+
+CAnimation::CAnimation(const CAnimation& src)
+{
+  m_pTweener = NULL;
+  *this=src;
+}
+
+CAnimation &CAnimation::operator=(const CAnimation &src)
+{
+  m_amount = src.m_amount;
+  m_type = src.m_type;
+  m_effect = src.m_effect;
+  m_currentState = src.m_currentState;
+  m_currentProcess = src.m_currentProcess;
+  m_queuedProcess = src.m_queuedProcess;
+ 
+  m_startX = src.m_startX;
+  m_startY = src.m_startY;
+  m_endX   = src.m_endX;
+  m_endY = src.m_endY;
+  m_centerX = src.m_centerX;
+  m_centerY = src.m_centerY;
+  m_startAlpha = src.m_startAlpha;
+  m_endAlpha=src.m_endAlpha;
+
+  // timing variables
+  m_start = src.m_start;
+  m_length = src.m_length;
+  m_delay = src.m_delay;
+  m_repeatAnim = src.m_repeatAnim;
+  m_reversible = src.m_reversible;    
+
+  m_condition = src.m_condition;
+  m_lastCondition = src.m_lastCondition; 
+
+  m_matrix = src.m_matrix; //has operator=
+
+  if (m_pTweener)
+    m_pTweener->Free();
+
+  m_pTweener = src.m_pTweener;
+  if (m_pTweener)
+    m_pTweener->IncRef();
+
+  return *this;
+}
+
+CAnimation::~CAnimation()
+{
+  if (m_pTweener) 
+    m_pTweener->Free();
+  m_pTweener = NULL;
 }
 
 void CAnimation::Reset()
@@ -21,11 +76,13 @@ void CAnimation::Reset()
   m_centerX = m_centerY = 0;
   m_startAlpha = 0;
   m_endAlpha = 100;
-  m_acceleration = 0;
   m_condition = 0;
   m_reversible = true;
   m_lastCondition = false;
   m_repeatAnim = ANIM_REPEAT_NONE;
+  if (m_pTweener)
+    m_pTweener->Free();
+  m_pTweener = NULL;
 }
 
 void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
@@ -78,13 +135,66 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   node->Attribute("delay", (int *)&m_delay);
   m_length = (unsigned int)(m_length * g_SkinInfo.GetEffectsSlowdown());
   m_delay = (unsigned int)(m_delay * g_SkinInfo.GetEffectsSlowdown());
+
+  if (m_pTweener)
+  {
+    m_pTweener->Free();
+    m_pTweener = NULL;
+  }
+  const char *tween = node->Attribute("tween");
+  if (tween)
+  {
+    if (strcmpi(tween, "linear")==0)
+      m_pTweener = new LinearTweener();
+    else if (strcmpi(tween, "quadratic")==0)
+      m_pTweener = new QuadTweener();
+    else if (strcmpi(tween, "cubic")==0)
+      m_pTweener = new CubicTweener();
+    else if (strcmpi(tween, "sine")==0)
+      m_pTweener = new SineTweener();
+    else if (strcmpi(tween, "back")==0)
+      m_pTweener = new BackTweener();
+    else if (strcmpi(tween, "circle")==0)
+      m_pTweener = new CircleTweener();
+    else if (strcmpi(tween, "bounce")==0)
+      m_pTweener = new BounceTweener();
+    else if (strcmpi(tween, "elastic")==0)
+      m_pTweener = new ElasticTweener();
+    
+    const char *easing = node->Attribute("easing");
+    if (m_pTweener && easing)
+    {
+      if (strcmpi(easing, "in")==0)
+        m_pTweener->SetEasing(EASE_IN);
+      else if (strcmpi(easing, "out")==0)
+        m_pTweener->SetEasing(EASE_OUT);
+      else if (strcmpi(easing, "inout")==0)
+        m_pTweener->SetEasing(EASE_INOUT);
+    }
+  }
+
+  // acceleration of effect (quadratic only at this point)
+  double accel;
+  node->Attribute("acceleration", &accel);
+
+  if (!m_pTweener)
+  { // no tweener is specified - use the linear tweener
+    m_pTweener = new LinearTweener();
+
+    if (accel)
+    {
+      m_pTweener = new QuadTweener((float)accel);
+      m_pTweener->SetEasing(EASE_IN);
+    }
+    else
+      m_pTweener = new LinearTweener();
+  }
+
   // reversible (defaults to true)
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
     m_reversible = false;
-  // acceleration of effect
-  double accel;
-  if (node->Attribute("acceleration", &accel)) m_acceleration = (float)accel;
+
   // pulsed animation?
   if (m_type == ANIM_TYPE_CONDITIONAL)
   {
@@ -234,24 +344,6 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   }
 }
 
-// creates the reverse animation
-void CAnimation::CreateReverse(const CAnimation &anim)
-{
-  m_acceleration = -anim.m_acceleration;
-  m_startX = anim.m_endX;
-  m_startY = anim.m_endY;
-  m_endX = anim.m_startX;
-  m_endY = anim.m_startY;
-  m_endAlpha = anim.m_startAlpha;
-  m_startAlpha = anim.m_endAlpha;
-  m_centerX = anim.m_centerX;
-  m_centerY = anim.m_centerY;
-  m_type = (ANIMATION_TYPE)-anim.m_type;
-  m_effect = anim.m_effect;
-  m_length = anim.m_length;
-  m_reversible = anim.m_reversible;
-}
-
 void CAnimation::Animate(unsigned int time, bool startAnim)
 {
   // First start any queued animations
@@ -349,9 +441,14 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
 void CAnimation::Calculate()
 {
-  float offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
+//  float offset = m_amount * (m_acceleration * m_amount + 1.0f - m_acceleration);
+  float offset = m_amount;
+  if (m_pTweener)
+    offset = m_pTweener->Tween(m_amount, 0.0f, 1.0f, 1.0f);
   if (m_effect == EFFECT_TYPE_FADE)
-    m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * m_amount + m_startAlpha) * 0.01f);
+  {
+    m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
+  }
   else if (m_effect == EFFECT_TYPE_SLIDE)
   {
     m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
