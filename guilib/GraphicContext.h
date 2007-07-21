@@ -15,7 +15,6 @@
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
-//#include <SDL/SDL_opengl.h>
 #endif
 #include "Geometry.h"                       // for CRect/CPoint
 
@@ -51,6 +50,13 @@ enum RESOLUTION {
   PAL60_16x9 = 9,
   AUTORES = 10
 };
+
+enum VSYNC {
+  VSYNC_DISABLED = 0,
+  VSYNC_VIDEO = 1,
+  VSYNC_ALWAYS = 2
+};
+
 
 /*!
  \ingroup graphics

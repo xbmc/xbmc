@@ -36,7 +36,7 @@ public:
 #ifdef HAS_SDL
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	   CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false,
-	   bool offscreen=false, bool pbuffer=false);
+	   bool offscreen=false, bool pbuffer=false, int antialias=0);
 #endif
   
   virtual ~CSurface(void);
@@ -50,6 +50,7 @@ public:
   void Flip();
   bool MakeCurrent();
   void ReleaseContext();
+  void EnableVSync(bool enable=true);
   bool ResizeSurface(int newWidth, int newHeight);
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
@@ -74,6 +75,8 @@ public:
   bool m_bFullscreen;
   bool m_bDoublebuffer;
   bool m_bOK;
+  bool m_bVSync;
+  int m_iVSyncMode;
   short int m_iRedSize;
   short int m_iGreenSize;
   short int m_iBlueSize;

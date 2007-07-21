@@ -523,6 +523,7 @@ CGUISettings::CGUISettings(void)
   AddString(2, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(4, "videoscreen.soften", 215, false);
+  AddInt(5, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
@@ -877,10 +878,12 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   SetBool("videooutput.hd720p", g_videoConfig.Has720p());
   SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
 
+
   SetInt("locale.timezone", g_timezone.GetTimeZoneIndex());
   SetBool("locale.usedst", g_timezone.GetDST());
 
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
+  g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
   g_videoConfig.PrintInfo();
   if (

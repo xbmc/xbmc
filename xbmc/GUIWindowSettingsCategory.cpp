@@ -623,6 +623,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInResolutions(pSetting, false);
     }
+    else if (strSetting.Equals("videoscreen.vsync"))
+    {
+      FillInVSyncs(pSetting);
+    }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
       FillInSkinThemes(pSetting);
@@ -1567,6 +1571,14 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       m_NewResolution = INVALID;
       g_application.CancelDelayLoadSkin();
     }
+  }
+  else if (strSetting.Equals("videoscreen.vsync"))
+  {
+    CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
+    int iControlID = pSettingControl->GetID();
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    g_graphicsContext.SendMessage(msg);
+    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
   else if (strSetting.Equals("system.ledcolour"))
   { 
@@ -2577,6 +2589,19 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
       pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);
     }
   }
+  pControl->SetValue(pSettingInt->GetData());
+}
+
+void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
+  pControl->AddLabel(g_localizeStrings.Get(13107) , VSYNC_VIDEO);
+  pControl->AddLabel(g_localizeStrings.Get(13108) , VSYNC_ALWAYS);
+
   pControl->SetValue(pSettingInt->GetData());
 }
 

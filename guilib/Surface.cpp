@@ -11,9 +11,6 @@ using namespace Surface;
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_syswm.h>
 #endif
-#ifdef HAS_GLX
-#include <GL/glx.h>
-#endif
 
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
@@ -21,10 +18,14 @@ Display* CSurface::s_dpy = 0;
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 
+void (*_glXSwapIntervalMESA)(GLint) = 0;
+void (*_glXSwapIntervalSGI)(GLint) = 0;
+void (*_wglSwapIntervalEXT)(GLint) = 0;
+
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-		   CSurface* window, SDL_Surface* parent, bool fullscreen,
-		   bool pixmap, bool pbuffer) 
+                   CSurface* window, SDL_Surface* parent, bool fullscreen,
+                   bool pixmap, bool pbuffer, int antialias) 
 {
   CLog::Log(LOGDEBUG, "Constructing surface");
   m_bOK = false;
@@ -37,6 +38,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iAlphaSize = 8;
   m_bFullscreen = fullscreen;  
   m_pShared = shared;
+  m_bVSync = false;
+  m_iVSyncMode = 0;
 
 #ifdef HAS_GLX
   m_glWindow = 0;
@@ -74,6 +77,20 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       GLX_DOUBLEBUFFER, True,
       None
     };
+
+  int doubleVisAttributesAA[] = 
+    {
+      GLX_RENDER_TYPE, GLX_RGBA_BIT,
+      GLX_RED_SIZE, m_iRedSize,
+      GLX_GREEN_SIZE, m_iGreenSize,
+      GLX_BLUE_SIZE, m_iBlueSize,
+      GLX_ALPHA_SIZE, m_iAlphaSize,
+      GLX_DEPTH_SIZE, 8,
+      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+      GLX_DOUBLEBUFFER, True,
+      GLX_SAMPLE_BUFFERS, 1,
+      None
+    };
   
   if (window) 
   {
@@ -109,7 +126,19 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   
   if (doublebuffer) 
   {
-    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
+    if (antialias)
+    {
+      fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributesAA, &num);
+      if (!fbConfigs)
+      {
+        CLog::Log(LOGERROR, "GLX Error: No Multisample buffers available, FSAA disabled");
+        glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
+      }
+    }
+    else
+    {    
+      fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
+    }
   } else {
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
@@ -149,8 +178,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     swa.colormap = XCreateColormap(s_dpy, p, vInfo->visual, AllocNone);
     swaMask |= (CWColormap | CWEventMask);
     m_glWindow = XCreateWindow(s_dpy, p, 0, 0, m_iWidth, m_iHeight,
-			       0, vInfo->depth, InputOutput, vInfo->visual,
-			       swaMask, &swa );
+                               0, vInfo->depth, InputOutput, vInfo->visual,
+                               swaMask, &swa );
     XSync(s_dpy, False);
     mapWindow = true;
     if (!m_glWindow) 
@@ -185,16 +214,16 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     {
       if (glewInit()!=GLEW_OK)
       {
-	      CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+              CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
       }
       else
       {
-	      b_glewInit = true;
-	      if (s_glVendor.length()==0)
-	      {
-	        s_glVendor = (const char*)glGetString(GL_VENDOR);
-	        CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-	      }
+              b_glewInit = true;
+              if (s_glVendor.length()==0)
+              {
+                s_glVendor = (const char*)glGetString(GL_VENDOR);
+                CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+              }
       }
     }
     m_bOK = true;
@@ -211,7 +240,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_iAlphaSize);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, m_bDoublebuffer?1:0);
   m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
-  if (m_SDLSurface) {
+  if (m_SDLSurface) 
+  {
     m_bOK = true;
   }
 
@@ -219,16 +249,16 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   {
     if (glewInit()!=GLEW_OK)
     {
-	    CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+            CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
     }
     else
     {
-	    b_glewInit = true;
-	    if (s_glVendor.length()==0)
-	    {
-	      s_glVendor = (const char*)glGetString(GL_VENDOR);
-	      CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-	    }
+            b_glewInit = true;
+            if (s_glVendor.length()==0)
+            {
+              s_glVendor = (const char*)glGetString(GL_VENDOR);
+              CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+            }
     }
   }
 #else
@@ -324,17 +354,17 @@ bool CSurface::MakePBuffer()
       CLog::Log(LOGINFO, "GL: Initialised PBuffer");
       if (!b_glewInit)
       {
-	if (glewInit()!=GLEW_OK)
-	{
-	  CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
-	} else {
-	  b_glewInit = true;
-	  if (s_glVendor.length()==0)
-	  {
-	    s_glVendor = (const char*)glGetString(GL_VENDOR);
-	    CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-	  }
-	}
+        if (glewInit()!=GLEW_OK)
+        {
+          CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+        } else {
+          b_glewInit = true;
+          if (s_glVendor.length()==0)
+          {
+            s_glVendor = (const char*)glGetString(GL_VENDOR);
+            CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+          }
+        }
       }
       m_bOK = status = true;      
     } else {
@@ -381,6 +411,93 @@ CSurface::~CSurface()
     SDL_FreeSurface(m_SDLSurface);
   }
 #endif
+}
+
+void CSurface::EnableVSync(bool enable)
+{
+  if (m_bVSync==enable)
+    return;
+
+  if (enable)
+  {
+    OutputDebugString("Enabling VSYNC");
+  }
+  else
+  {
+    OutputDebugString("Disabling VSYNC");
+  }
+
+  // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
+  if (enable) 
+    putenv("__GL_SYNC_TO_VBLANK=1"); 
+  else 
+  {
+    putenv("__GL_SYNC_TO_VBLANK");
+      switch(m_iVSyncMode)
+      {
+      case 1:
+        if (_glXSwapIntervalSGI)
+          _glXSwapIntervalSGI(0);
+        break;
+
+      case 2:
+        if (_glXSwapIntervalMESA)
+          _glXSwapIntervalMESA(0);
+        break;
+
+      case 3:
+        if (_wglSwapIntervalEXT)
+          _wglSwapIntervalEXT(0);
+        break;
+      }
+    m_iVSyncMode = 0;
+  }
+  if (IsValid())
+  {
+    // we only need to handle non-nvidia cards
+    if (1 /*strstr("NVIDIA", GetGLVendor().c_str())==0*/)
+    {
+#ifdef HAS_GLX
+      if (!_glXSwapIntervalSGI)
+      {
+        _glXSwapIntervalSGI = (void (*)(GLint))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
+      }
+      else if (!_glXSwapIntervalMESA)
+      {
+        _glXSwapIntervalMESA = (void (*)(GLint))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
+      }
+#elif defined (_WIN32)
+      if (!_wglSwapIntervalEXT)
+      {
+        _wglSwapIntervalEXT = (void (*)(GLint))wglGetProcAddress((const GLubyte*)"wglSwapIntervalEXT");
+      }
+#endif
+      if (_glXSwapIntervalSGI)
+      {
+        m_iVSyncMode = 1;       
+        m_bVSync = enable;
+        _glXSwapIntervalSGI(1);
+      }
+      else if (_glXSwapIntervalMESA)
+      { 
+        m_iVSyncMode = 2;
+        m_bVSync = enable; 
+        _glXSwapIntervalMESA(1);
+      }
+      else if (_wglSwapIntervalEXT)
+      {
+        m_iVSyncMode = 3;
+        m_bVSync = enable; 
+        _wglSwapIntervalEXT(1);
+      }
+      else
+      {
+        m_iVSyncMode = 0;
+        m_bVSync = false;
+        CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
+      }
+    }
+  }
 }
 
 void CSurface::Flip() 
