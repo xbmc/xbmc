@@ -217,7 +217,7 @@ HRESULT CXBMC_PC::Render()
   if (!g_application.m_bStop) g_application.Process();
   if (!g_application.m_bStop) g_application.FrameMove();
   if (!g_application.m_bStop) g_application.Render();
-  Sleep(20);
+  Sleep(0);
   return S_OK;
 }
 

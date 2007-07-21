@@ -517,6 +517,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   bool useControlCoords = false;
 
   CRect hitRect;
+  CPoint camera;
+  bool   hasCamera = false;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -910,6 +912,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       viewLabel = GetLabel(label);
   }
 
+  TiXmlElement *cam = pControlNode->FirstChildElement("camera");
+  if (cam)
+  {
+    hasCamera = true;
+    cam->Attribute("x", &camera.x);
+    cam->Attribute("y", &camera.y);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1300,6 +1310,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control->SetColorDiffuse(colorDiffuse);
     control->SetNavigation(up, down, left, right);
     control->SetPulseOnSelect(bPulse);
+    if (hasCamera)
+      control->SetCamera(camera);
   }
   return control;
 }

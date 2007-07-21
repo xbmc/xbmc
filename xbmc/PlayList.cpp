@@ -461,7 +461,7 @@ void CPlayList::SetUnPlayable(int iItem)
 bool CPlayList::Load(const CStdString& strFileName)
 {
   Clear();
-  CUtil::GetPath(strFileName, m_strBasePath);
+  CUtil::GetDirectory(strFileName, m_strBasePath);
 
   CFileStream file;
   if (!file.Open(strFileName))

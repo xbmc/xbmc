@@ -1889,6 +1889,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
     }
     castTime += timeGetTime() - time; time = timeGetTime();
   }
+  details.m_strPictureURL.Parse();
   return details;
 }
 
@@ -1937,6 +1938,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
     }
     castTime += timeGetTime() - time; time = timeGetTime();
   }
+  details.m_strPictureURL.Parse();
   return details;
 }
 
@@ -1987,6 +1989,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
     castTime += timeGetTime() - time; time = timeGetTime();
     m_pDS2->close();
   }
+  details.m_strPictureURL.Parse();
   return details;
 }
 
@@ -3014,13 +3017,18 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       {
         long lSeason = it->first;
         CStdString strLabel;
-        strLabel.Format(g_localizeStrings.Get(20358),lSeason);
+        if (lSeason == 0)
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel.Format(g_localizeStrings.Get(20358),lSeason);
         CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
+        pItem->GetVideoInfoTag()->m_iSeason = lSeason;
+        pItem->GetVideoInfoTag()->m_iDbId = idShow;
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
       }
@@ -3031,13 +3039,18 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       {
         long lSeason = m_pDS->fv(0).get_asLong();
         CStdString strLabel;
-        strLabel.Format(g_localizeStrings.Get(20358),lSeason);
+        if (lSeason == 0)
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel.Format(g_localizeStrings.Get(20358),lSeason);
         CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
         strDir.Format("%ld/", lSeason);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
+        pItem->GetVideoInfoTag()->m_iSeason = lSeason;
+        pItem->GetVideoInfoTag()->m_iDbId = idShow;
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
         m_pDS->next();
@@ -3368,7 +3381,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
     if (idYear !=-1)
     {
-      strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath join tvshow on tvshowlinkepisode.idshow=tvshow.idshow where tvshowlinkepisode.idShow=%u and tvshow.c%02d like '%%%u'",VIDEODB_ID_TV_TITLE,idShow,VIDEODB_ID_TV_PREMIERED,idYear);
+      strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join path on files.idPath=path.idPath join tvshow on tvshowlinkepisode.idshow=tvshow.idshow where tvshowlinkepisode.idShow=%u and tvshow.c%02d like '%%%u%%'",VIDEODB_ID_TV_TITLE,idShow,VIDEODB_ID_TV_PREMIERED,idYear);
     }
 
     if (idActor != -1)
@@ -3377,7 +3390,12 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
     }
 
     if (idSeason != -1)
-      strSQL += FormatSQL(" and episode.c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
+    {
+      if (idSeason != 0)
+        strSQL += FormatSQL(" and (episode.c%02d=%u or episode.c%02d=0)",VIDEODB_ID_EPISODE_SEASON,idSeason,VIDEODB_ID_EPISODE_SEASON);
+      else
+        strSQL += FormatSQL(" and episode.c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
+    }
 
     // get all songs out of the database in fixed size chunks
     // dont reserve the items ahead of time just in case it fails part way though
@@ -3416,6 +3434,11 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
           {
             long lEpisodeId = m_pDS->fv("episode.idepisode").get_asLong();
             CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
+            if (idSeason > 0 && movie.m_iSpecialSortSeason > 0 && movie.m_iSpecialSortSeason != idSeason)
+            {
+              m_pDS->next();
+              continue;
+            }
 
             CFileItem* pItem=new CFileItem(movie);
             CStdString strDir;
@@ -3471,6 +3494,11 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
 
       CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
+      if (idSeason > 0 && movie.m_iSpecialSortSeason > 0 && movie.m_iSpecialSortSeason != idSeason)
+      {
+        m_pDS->next();
+        continue;
+      }
 
       CFileItem* pItem=new CFileItem(movie);
       CStdString strDir;
@@ -3616,26 +3644,26 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
     if (iFound == 0)
     {
       CStdString strParent;
-      bool bIsBookMark=false;
-      int iBookMark=-2;
+      bool bIsSource=false;
+      int iSource=-2;
       while (iFound == 0 && CUtil::GetParentPath(strPath1, strParent))
       {
         CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
         if (m_pDS->eof())
         {
-          if (iBookMark == -2)
+          if (iSource == -2)
           {
-            iBookMark = CUtil::GetMatchingShare(strParent,g_settings.m_vecMyVideoShares,bIsBookMark);
-            bIsBookMark = g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size() > 1;
+            iSource = CUtil::GetMatchingShare(strParent,g_settings.m_vecMyVideoShares,bIsSource);
+            bIsSource = g_settings.m_vecMyVideoShares[iSource].vecPaths.size() > 1;
           }
-          if (iBookMark > -1 && bIsBookMark)
+          if (iSource > -1 && bIsSource)
           {
-            for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size();++i)
+            for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iSource].vecPaths.size();++i)
             {
-              if (g_settings.m_vecMyVideoShares[iBookMark].vecPaths[i].Equals(strParent))
+              if (g_settings.m_vecMyVideoShares[iSource].vecPaths[i].Equals(strParent))
               {
-                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iBookMark].strPath.c_str());
+                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iSource].strPath.c_str());
                 m_pDS->query(strSQL.c_str());
                 break;
               }

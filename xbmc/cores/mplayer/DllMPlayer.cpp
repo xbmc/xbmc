@@ -267,7 +267,23 @@ extern "C"
 
   int mplayer_init(int argc, char* argv[])
   {
-    return pInitPlayer(argc, argv);
+    int result;
+    __asm 
+    { /* gcc compiled dll's expect stack to be aligned */
+      mov esi,esp;
+      sub esp,8;   /* make room for parameters */
+      and esp,~15; /* align stack */
+      add esp,8;   /* re-add what we need to push */
+
+      mov eax,dword ptr [argv];
+      push eax;
+      mov eax,dword ptr [argc];
+      push eax;
+      call dword ptr [pInitPlayer];
+      mov result, eax;
+      mov esp,esi; /* restore stack */
+    }
+    return result;    
   }
 
   int mplayer_open_file(const char* szFile)
@@ -276,7 +292,7 @@ extern "C"
     __asm 
     { /* gcc compiled dll's expect stack to be aligned */
       mov esi,esp;
-      sub esp,4;   /* make room for paramteres */
+      sub esp,4;   /* make room for parameters */
       and esp,~15; /* align stack */
       add esp,4;   /* re-add what we need to push */
 

@@ -22,8 +22,6 @@ CGUIListContainer::~CGUIListContainer(void)
 
 void CGUIListContainer::Render()
 {
-  if (!IsVisible()) return CGUIBaseContainer::Render();
-
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -42,7 +40,7 @@ void CGUIListContainer::Render()
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
-  g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
   float posY = m_posY;
   if (m_orientation == VERTICAL)
@@ -82,13 +80,14 @@ void CGUIListContainer::Render()
   if (focusedItem)
     RenderItem(focusedPosX, focusedPosY, focusedItem, true);
 
-  g_graphicsContext.RestoreViewPort();
+  g_graphicsContext.RestoreClipRegion();
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
     SendWindowMessage(msg);
   }
+
   CGUIBaseContainer::Render();
 }
 
@@ -218,11 +217,12 @@ bool CGUIListContainer::MoveUp(DWORD control)
   else if ( control == 0 || control == GetID() )
   {
     if (m_items.size() > 0)
-    { // move 2 last item in list
+    { // move 2 last item in list, and set our container moving up
       int offset = m_items.size() - m_itemsPerPage;
       if (offset < 0) offset = 0;
       SetCursor(m_items.size() - offset - 1);
       ScrollToOffset(offset);
+      g_infoManager.SetContainerMoving(GetID(), -1);
     }
   }
   else
@@ -244,9 +244,10 @@ bool CGUIListContainer::MoveDown(DWORD control)
     }
   }
   else if( control == 0 || control == GetID() )
-  { // move first item in list
+  { // move first item in list, and set our container moving in the "down" direction
     SetCursor(0);
     ScrollToOffset(0);
+    g_infoManager.SetContainerMoving(GetID(), 1);
   }
   else
     return false;

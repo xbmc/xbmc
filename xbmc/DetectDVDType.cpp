@@ -127,7 +127,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
             m_pCdInfo = NULL;
           }
           waitLock.Leave();
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES, 0, NULL);
           m_gWindowManager.SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
           // Sleep(6000);
@@ -147,7 +147,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
           // Send Message to GUI that disc has changed
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES, 0, NULL);
           waitLock.Leave();
           m_gWindowManager.SendThreadMessage( msg );
           return ;
@@ -162,7 +162,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           CIoSupport::RemapDriveLetter('D', "Cdrom0");
           // Detect ISO9660(mode1/mode2) or CDDA filesystem
           DetectMediaType();
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES, 0, NULL);
           waitLock.Leave();
           m_gWindowManager.SendThreadMessage( msg );
           // Tell the application object that a new Cd is inserted

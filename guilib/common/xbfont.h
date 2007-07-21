@@ -91,6 +91,9 @@ public:
   FLOAT m_fCursorX;
   FLOAT m_fCursorY;
 
+  FLOAT m_originX;
+  FLOAT m_originY;
+
   // Translator table for supporting unicode ranges
   WCHAR m_cMaxGlyph;
   WCHAR* m_TranslatorTable;
@@ -107,7 +110,6 @@ public:
   // D3D rendering objects
   CXBPackedResource m_xprResource;
   D3DTexture* m_pFontTexture;
-  static DWORD m_dwFontVertexShader;
   static DWORD m_dwFontPixelShader;
   DWORD m_dwNestedBeginCount;
 
@@ -123,6 +125,7 @@ public:
 
 private:
   inline WCHAR GetGlyphToUse(WCHAR letter) const;
+  void RenderGlyph(float posX, float posY, float width, float height, GLYPH_ATTR *pGlyph);
 
 public:
   // Constructor/destructor
@@ -157,13 +160,13 @@ public:
   HRESULT Begin();
   virtual HRESULT DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags = 0L,
                             FLOAT fMaxPixelWidth = 0.0f );
-  virtual HRESULT DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
+  virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor,
                             const WCHAR* strText, DWORD dwFlags = 0L,
                             FLOAT fMaxPixelWidth = 0.0f );
-  virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
+  virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor,
                               const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0L,
                               FLOAT fMaxPixelWidth = 0.0f );
-  virtual HRESULT DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
+  virtual HRESULT DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags = 0L,
                                   FLOAT fMaxPixelWidth = 0.0f );
 

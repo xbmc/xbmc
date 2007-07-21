@@ -660,7 +660,7 @@ bool File::IsDevice()
 {
   /*if (hFile==BAD_HANDLE)
     return(false);*/
-#if defined(_XBOX) || defined(_LINUX)
+#if defined(_XBOX) || defined(_LINUX) || defined(XBMC)
   return false;
 //#ifdef _WIN_32
 #elif defined(_WIN_32)

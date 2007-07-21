@@ -28,8 +28,6 @@ CGUIMoverControl::~CGUIMoverControl(void)
 
 void CGUIMoverControl::Render()
 {
-  if (!IsVisible()) return;
-
   if (HasFocus())
   {
     DWORD dwAlphaCounter = m_dwFrameCounter + 2;

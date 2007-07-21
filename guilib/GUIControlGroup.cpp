@@ -460,6 +460,17 @@ void CGUIControlGroup::ClearAll()
   m_children.clear();
 }
 
+void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
+{
+  for (ciControls it = m_children.begin();it != m_children.end(); ++it)
+  {
+    if ((*it)->IsContainer())
+      containers.push_back(*it);
+    else if ((*it)->IsGroup())
+      ((CGUIControlGroup *)(*it))->GetContainers(containers);
+  }
+}
+
 #ifdef _DEBUG
 void CGUIControlGroup::DumpTextureUse()
 {

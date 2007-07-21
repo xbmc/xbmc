@@ -13,11 +13,11 @@
 #include <map>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
-#include "Geometry.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 //#include <SDL/SDL_opengl.h>
 #endif
+#include "Geometry.h"                       // for CRect/CPoint
 
 #include "Surface.h"
 
@@ -152,22 +152,26 @@ public:
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   float GetScalingPixelRatio() const;
   void Flip() {m_screenSurface->Flip();}
-  void SetCameraPosition(float camX, float camY);
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y, 0); }
   inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y, 0); }
   inline float ScaleFinalZCoord(float x, float y) const { return m_finalTransform.TransformZCoord(x, y, 0); }
   inline void ScaleFinalCoords(float &x, float &y, float &z) const { m_finalTransform.TransformPosition(x, y, z); }
+  bool RectIsAngled(float x1, float y1, float x2, float y2) const;
 
   inline float GetGUIScaleX() const { return m_guiScaleX; };
   inline float GetGUIScaleY() const { return m_guiScaleY; };
   inline DWORD MergeAlpha(DWORD color) const
   {
     DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+    if (alpha > 255) alpha = 255;
     return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
   }
+
   void SetOrigin(float x, float y);
   void RestoreOrigin();
+  void SetCameraPosition(const CPoint &camera);
+  void RestoreCameraPosition();
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
   void ClipRect(CRect &vertex, CRect &texture);
@@ -176,21 +180,21 @@ public:
     while (m_groupTransform.size())
       m_groupTransform.pop();
     m_groupTransform.push(m_guiTransform * matrix);
-    m_finalTransform = m_groupTransform.top();
+    UpdateFinalTransform(m_groupTransform.top());
   }
   inline void AddTransform(const TransformMatrix &matrix)
   {
     ASSERT(m_groupTransform.size());
     m_groupTransform.push(m_groupTransform.top() * matrix);
-    m_finalTransform = m_groupTransform.top();
+    UpdateFinalTransform(m_groupTransform.top());
   }
   inline void RemoveTransform()
   {
     ASSERT(m_groupTransform.size() > 1);
     if (m_groupTransform.size())
       m_groupTransform.pop();
-    m_finalTransform = m_groupTransform.top();
-  };
+    UpdateFinalTransform(m_groupTransform.top());
+  }
 
 protected:
   IMsgSenderCallback* m_pCallback;
@@ -223,11 +227,12 @@ protected:
   RESOLUTION m_Resolution;
 
 private:
+  void UpdateCameraPosition(const CPoint &camera);
+  void UpdateFinalTransform(const TransformMatrix &matrix);
   RESOLUTION m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
-  float m_cameraX;
-  float m_cameraY;
+  stack<CPoint> m_cameras;
   stack<CPoint> m_origins;
   stack<CRect>  m_clipRegions;
 

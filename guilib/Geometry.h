@@ -22,12 +22,26 @@ public:
     return ans;
   };
 
+  const CPoint &operator+=(const CPoint &point)
+  {
+    x += point.x;
+    y += point.y;
+    return *this;
+  };
+
   CPoint operator-(const CPoint &point) const
   {
     CPoint ans;
     ans.x = x - point.x;
     ans.y = y - point.y;
     return ans;
+  };
+
+  const CPoint &operator-=(const CPoint &point)
+  {
+    x -= point.x;
+    y -= point.y;
+    return *this;
   };
 
   float x, y;

@@ -71,126 +71,116 @@
 			</control>
 		</control>
 		<!-- Global Options -->
-		<control type="group" id="9002">
+		<control type="grouplist" id="9002">
+			<posx>190</posx>
+			<posy>100</posy>
+			<onleft>9001</onleft>
+			<onright>9001</onright>
+			<onup>9002</onup>
+			<ondown>9002</ondown>
 			<visible>Control.HasFocus(11) | ControlGroup(9002).HasFocus()</visible>
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="20">
 				<description>enable animations</description>
-				<posx>190</posx>
-				<posy>100</posy>
 				<width>485</width>
 				<label>20079</label>
 				<onclick>Skin.ToggleSetting(animated)</onclick>
 				<selected>!Skin.HasSetting(animated)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>25</onup>
-				<ondown>21</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
 			<control type="radiobutton" id="21">
-				<description>enable scrollbars</description>
-				<posx>190</posx>
-				<posy>137</posy>
+				<description>enable tween animations</description>
 				<width>485</width>
-				<label>21383</label>
-				<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
-				<selected>!Skin.HasSetting(UseScrollbars)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>20</onup>
-				<ondown>22</ondown>
+				<label>21399</label>
+				<onclick>Skin.ToggleSetting(tween_animated)</onclick>
+				<selected>Skin.HasSetting(tween_animated)</selected>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
+				<enable>!Skin.HasSetting(animated)</enable>
 			</control>
-			<control type="radiobutton" id="22">
-				<description>QWERTY Keyboard Button</description>
-				<posx>190</posx>
-				<posy>174</posy>
-				<width>485</width>
-				<label>QWERTY $LOCALIZE[15028]</label>
-				<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
-				<selected>Skin.HasSetting(QWERTYKeys)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>21</onup>
-				<ondown>23</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="23">
-				<description>make watched filtering a toggle in video library Button</description>
-				<posx>190</posx>
-				<posy>211</posy>
-				<width>485</width>
-				<label>21384</label>
-				<onclick>Skin.ToggleSetting(watched_filtering_toggle)</onclick>
-				<selected>Skin.HasSetting(watched_filtering_toggle)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>22</onup>
-				<ondown>24</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="image">
-				<posx>190</posx>
-				<posy>248</posy>
+			<control type="image" id="22">
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>
 			</control>
+			<control type="radiobutton" id="23">
+				<description>enable scrollbars</description>
+				<width>485</width>
+				<label>21383</label>
+				<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
+				<selected>!Skin.HasSetting(UseScrollbars)</selected>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
 			<control type="radiobutton" id="24">
+				<description>QWERTY Keyboard Button</description>
+				<width>485</width>
+				<label>QWERTY $LOCALIZE[15028]</label>
+				<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
+				<selected>Skin.HasSetting(QWERTYKeys)</selected>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="radiobutton" id="25">
+				<description>make watched filtering a toggle in video library Button</description>
+				<width>485</width>
+				<label>21384</label>
+				<onclick>Skin.ToggleSetting(watched_filtering_toggle)</onclick>
+				<selected>Skin.HasSetting(watched_filtering_toggle)</selected>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="image" id="26">
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="radiobutton" id="27">
 				<description>Enable Playlist Toggle</description>
-				<posx>190</posx>
-				<posy>258</posy>
 				<width>485</width>
 				<label>21398</label>
 				<onclick>Skin.ToggleSetting(Use_Startup_Playlist)</onclick>
 				<selected>Skin.HasSetting(Use_Startup_Playlist)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>22</onup>
-				<ondown>25</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
-			<control type="button" id="25">
-				<description>Starup Playlist Path</description>
-				<posx>190</posx>
-				<posy>295</posy>
-				<width>485</width>
-				<label>15311</label>
-				<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>24</onup>
-				<ondown>20</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+			<control type="group" id="241">
+				<height>37</height>
+				<control type="button" id="28">
+					<posx>0</posx>
+					<posy>0</posy>
+					<description>Starup Playlist Path</description>
+					<width>485</width>
+					<label>15311</label>
+					<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+					<onup>27</onup>
+					<ondown>20</ondown>
+				</control>
+				<control type="label">
+					<posx>480</posx>
+					<posy>0</posy>
+					<height>33</height>
+					<description>Starup Playlist Path label</description>
+					<width>380</width>
+					<align>right</align>
+					<aligny>center</aligny>
+					<scroll>true</scroll>
+					<info>Skin.String(Startup_Playlist_Path)</info>
+					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+				</control>
 			</control>
-			<control type="label">
-				<description>Starup Playlist Path label</description>
-				<posx>660</posx>
-				<posy>310</posy>
-				<width>380</width>
-				<align>right</align>
-				<aligny>center</aligny>
-				<scroll>true</scroll>
-				<info>Skin.String(Startup_Playlist_Path)</info>
-				<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
-			</control>
-			<control type="image">
-				<posx>190</posx>
-				<posy>332</posy>
+			<control type="image" id="29">
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>

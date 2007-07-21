@@ -447,7 +447,7 @@ void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 #if defined(WIN32) && !defined(HAS_SDL)
     extern CXBMC_PC *g_xbmcPC;
     g_xbmcPC->ProcessMessage(NULL);
-    Sleep(20);
+    Sleep(0);
 #endif
   }
 }

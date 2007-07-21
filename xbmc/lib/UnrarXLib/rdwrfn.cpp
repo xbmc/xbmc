@@ -33,6 +33,7 @@ void ComprDataIO::Init()
   CurrentCommand=0;
   ProcessedArcSize=TotalArcSize=0;
   bQuit = false;
+  m_pDlgProgress = NULL;
  }
 
 int ComprDataIO::UnpRead(byte *Addr,uint Count)
@@ -140,11 +141,14 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         return(-1);
       }
       CurUnpStart = CurUnpRead;
-      /*if (WaitForSingleObject(hProgressBar,1) == WAIT_OBJECT_0)
+      if (m_pDlgProgress)
       {
-        m_pDlgProgress->SetLine(2,SrcArc->FileName); // update currently extracted rar file
+        CURL url(SrcArc->FileName);
+        CStdString strDisplay;
+        url.GetURLWithoutUserDetails(strDisplay);
+        m_pDlgProgress->SetLine(2,strDisplay); // update currently extracted rar file
         m_pDlgProgress->Progress();
-      }*/
+      }
     }
     else
       break;
@@ -234,13 +238,14 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
       UnpFileCRC=CRC(UnpFileCRC,Addr,Count);
   ShowUnpWrite();
   Wait();
-/*  if (WaitForSingleObject(hProgressBar,1) == WAIT_OBJECT_0)
+  if (m_pDlgProgress)
   {
+    m_pDlgProgress->ShowProgressBar(true);
     m_pDlgProgress->SetPercentage(int(float(CurUnpWrite)/float(((Archive*)SrcFile)->NewLhd.FullUnpSize)*100));
     m_pDlgProgress->Progress();
     if (m_pDlgProgress->IsCanceled()) 
       bQuit = true;
-  }*/
+  }
 }
 
 
