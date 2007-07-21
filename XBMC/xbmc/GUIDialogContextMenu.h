@@ -65,7 +65,8 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_MARK_UNWATCHED,
                       CONTEXT_BUTTON_SET_CONTENT,
                       CONTEXT_BUTTON_ADD_TO_LIBRARY,
-                      CONTEXT_BUTTON_SONG_INFO
+                      CONTEXT_BUTTON_SONG_INFO,
+                      CONTEXT_BUTTON_EDIT_PARTYMODE
                     };
 
 class CContextButtons : public vector< pair<CONTEXT_BUTTON, CStdString> >
@@ -95,7 +96,7 @@ public:
   float GetWidth();
   float GetHeight();
 
-  static bool BookmarksMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
+  static bool SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
 
   static void GetContextButtons(const CStdString &type, CShare *share, CContextButtons &buttons);

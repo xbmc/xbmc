@@ -6,9 +6,7 @@
 #include "ICodec.h"
 #include "FileReader.h"
 
-#ifdef _LINUX
 #include "DllWMA.h"
-#endif
 
 struct WMAInfo
 {
@@ -33,16 +31,8 @@ public:
 private:
   __int64 m_iDataPos;
   
-#ifndef _LINUX
-  XWmaFileMediaObject* m_pWMA;                         
-  WMAInfo m_info;
-#else
   DllWMA m_dll;
   void*  m_hnd;
-#endif
-  char m_buffer[2048*2*6]; // max 5.1
-  char* m_startOfBuffer; // not allocated
-  DWORD m_iDataInBuffer;
 };
 
 #endif

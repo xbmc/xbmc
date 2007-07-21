@@ -34,7 +34,7 @@ typedef struct archivelist
 					or NULL for all files.
 	libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL, __int64* iOffset=NULL);
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL, __int64* iOffset=NULL, bool bShowProgress=false);
 
 /*-------------------------------------------------------------------------*\
 	List the files in a RAR file

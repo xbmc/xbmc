@@ -117,10 +117,6 @@ protected:
   void AllocateOnDemand();
   void FreeTextures();
   void Process();
-#ifndef HAS_SDL
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  static const DWORD FVF_VERTEX2 = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2;
-#endif
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   DWORD m_dwColorKey;

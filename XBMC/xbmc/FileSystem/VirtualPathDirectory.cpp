@@ -7,7 +7,7 @@
 
 using namespace DIRECTORY;
 
-// virtualpath://type/bookmarkname
+// virtualpath://type/sourcename
 
 CVirtualPathDirectory::CVirtualPathDirectory()
 {}
@@ -114,9 +114,9 @@ bool CVirtualPathDirectory::GetPathes(const CStdString& strPath, vector<CStdStri
   return true;
 }
 
-bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdString& strType, CStdString& strBookmark)
+bool CVirtualPathDirectory::GetTypeAndSource(const CStdString& strPath, CStdString& strType, CStdString& strSource)
 {
-  // format: virtualpath://type/bookmarkname
+  // format: virtualpath://type/sourcename
   CStdString strTemp = strPath;
   CUtil::RemoveSlashAtEnd(strTemp);
   CStdString strTest = "virtualpath://";
@@ -126,9 +126,8 @@ bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdSt
     int iPos = strTemp.Find('/');
     if (iPos < 1)
       return false;
-    strType = strTemp.Mid(0, iPos);
-    strBookmark = strTemp.Mid(iPos + 1);
-    //CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetTypeAndBookmark(%s) = [%s],[%s]", strPath.c_str(), strType.c_str(), strBookmark.c_str());
+    strSource = strTemp.Mid(iPos + 1);
+    //CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetTypeAndSource(%s) = [%s],[%s]", strPath.c_str(), strType.c_str(), strSource.c_str());
     return true;
   }
   return false;
@@ -136,8 +135,8 @@ bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdSt
 
 bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share)
 {
-  CStdString strType, strBookmark;
-  if (!GetTypeAndBookmark(strPath, strType, strBookmark))
+  CStdString strType, strSource;
+  if (!GetTypeAndSource(strPath, strType, strSource))
     return false;
 
   // no support for "files" operation
@@ -147,9 +146,9 @@ bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& 
   if (!vecShares)
     return false;
 
-  bool bIsBookmarkName = false;
-  int iIndex = CUtil::GetMatchingShare(strBookmark, *vecShares, bIsBookmarkName);
-  if (!bIsBookmarkName)
+  bool bIsSourceName = false;
+  int iIndex = CUtil::GetMatchingShare(strSource, *vecShares, bIsSourceName);
+  if (!bIsSourceName)
     return false;
   if (iIndex < 0)
     return false;

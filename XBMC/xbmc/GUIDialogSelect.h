@@ -14,6 +14,7 @@ public:
   void Reset();
   void Add(const CStdString& strLabel);
   void Add(CFileItem* pItem);
+  void Add(const CFileItemList& items);
   int GetSelectedLabel() const;
   const CStdString& GetSelectedLabelText();
   const CFileItem& GetSelectedItem();

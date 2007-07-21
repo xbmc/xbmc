@@ -25,7 +25,6 @@ CGUIRadioButtonControl::~CGUIRadioButtonControl(void)
 
 void CGUIRadioButtonControl::Render()
 {
-  if (!IsVisible()) return;
   CGUIButtonControl::Render();
 
   // ask our infoManager whether we are selected or not...

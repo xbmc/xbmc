@@ -101,12 +101,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           // default parameters if the jump fails
           m_vecItems.m_strPath = "";
 
-          bool bIsBookmarkName = false;
+          bool bIsSourceName = false;
 
           SetupShares();
           VECSHARES shares;
           m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
@@ -123,7 +123,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
             // set current directory to matching share
             if (bDoStuff)
             {
-              if (bIsBookmarkName)
+              if (bIsSourceName)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
@@ -451,7 +451,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if ( m_vecItems.IsVirtualDirectoryRoot() && item)
   {
-    // get the usual bookmark shares
+    // get the usual shares
     CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
     CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
   }

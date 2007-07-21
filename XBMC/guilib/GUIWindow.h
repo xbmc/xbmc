@@ -109,6 +109,7 @@ public:
   virtual bool IsMediaWindow() const { return false; };
   virtual CFileItem *GetCurrentListItem(int offset = 0) { return NULL; };
   virtual int GetViewContainerID() const { return 0; };
+  void GetContainers(vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
   bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
@@ -167,6 +168,7 @@ protected:
 
   vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
+  typedef std::vector<CGUIControl*>::const_iterator ciControls;
   DWORD m_dwWindowId;
   DWORD m_dwIDRange;
   DWORD m_dwDefaultFocusControlID;
@@ -186,7 +188,9 @@ protected:
   bool m_dynamicResourceAlloc;
   int m_visibleCondition;
 
-  CAnimation m_showAnimation;   // for dialogs
+  bool   m_hasCamera;
+  CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
+  CAnimation m_showAnimation;
   CAnimation m_closeAnimation;
 
   int m_renderOrder;      // for render order of dialogs

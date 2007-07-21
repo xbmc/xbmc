@@ -421,7 +421,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         info2.strPath = nfoReader.m_strScraper;
         IMDB.SetScraperInfo(info2);
         CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].GetFirstThumb().m_url.c_str());
       }
     }
     else
@@ -1166,7 +1166,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
   m_database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1180,7 +1180,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
   m_database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1198,7 +1198,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() || pItem->GetVideoInfoTag()->m_iEpisode > 0)) // tvshow
     iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
 
   if (iType == 0) // movies

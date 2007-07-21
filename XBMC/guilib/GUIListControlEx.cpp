@@ -41,8 +41,6 @@ CGUIListControlEx::~CGUIListControlEx(void)
 
 void CGUIListControlEx::Render()
 {
-  if (!IsVisible()) return;
-
   if ( m_pList && m_label.font )
   {
     float posY = m_posY;
