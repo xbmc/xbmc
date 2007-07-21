@@ -583,7 +583,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     {
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow);
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, 1);
+      if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
+	m_screenSurface->EnableVSync();
+      glEnable(GL_MULTISAMPLE);
       SDL_WM_SetCaption("XBox Media Center", NULL);
     } else {
       // FIXME: this doesn't work :(      
