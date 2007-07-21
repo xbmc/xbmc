@@ -110,7 +110,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
-  pDialog->Add(items);
+  pDialog->SetItems(&items);
   CStdString strHeading;
   strHeading.Format(g_localizeStrings.Get(13401),g_localizeStrings.Get(iLabel));
   pDialog->SetHeading(strHeading);
@@ -120,6 +120,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     m_rule.m_parameter = pDialog->GetSelectedLabelText();
     UpdateButtons();
   }
+  pDialog->Reset();
 }
 
 void CGUIDialogSmartPlaylistRule::OnCancel()
