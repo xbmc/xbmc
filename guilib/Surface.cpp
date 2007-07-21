@@ -20,7 +20,7 @@ std::string CSurface::s_glVendor = "";
 
 void (*_glXSwapIntervalMESA)(GLint) = 0;
 void (*_glXSwapIntervalSGI)(GLint) = 0;
-void (*_wglSwapIntervalEXT)(GLint) = 0;
+bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
@@ -469,7 +469,7 @@ void CSurface::EnableVSync(bool enable)
 #elif defined (_WIN32)
       if (!_wglSwapIntervalEXT)
       {
-        _wglSwapIntervalEXT = (void (*)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
+        _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
       }
 #endif
       if (_glXSwapIntervalSGI)
