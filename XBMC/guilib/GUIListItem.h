@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "stdstring.h"
+#include "StdString.h"
 
 //  Forward
 class CGUIListItemLayout;

@@ -23,19 +23,15 @@ CGraphicContext::CGraphicContext(void)
   m_iScreenHeight = 576;
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
+  m_stateBlock = 0xffffffff;
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bShowPreviewWindow = false;
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
-  m_stateBlock = 0xffffffff;
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
-  MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
-  float x=0,y=0,z=0;
-  ScaleFinalCoords(x, y, z);
-  ScaleFinalZCoord(x, y);
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -783,40 +779,12 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
 }
 
-inline void CGraphicContext::ScaleFinalCoords(float &x, float &y, float &z) const
-{
-  m_finalTransform.TransformPosition(x, y, z);
-}
-
-
-inline float CGraphicContext::ScaleFinalXCoord(float x, float y) const
-{
-  return m_finalTransform.TransformXCoord(x, y, 0);
-}
-
-inline float CGraphicContext::ScaleFinalYCoord(float x, float y) const
-{
-  return m_finalTransform.TransformYCoord(x, y, 0);
-}
-
-inline float CGraphicContext::ScaleFinalZCoord(float x, float y) const
-{
-  return m_finalTransform.TransformZCoord(x, y, 0);
-}
-
 bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
 { // need only test 3 points, as they must be co-planer
   if (m_finalTransform.TransformZCoord(x1, y1, 0)) return true;
   if (m_finalTransform.TransformZCoord(x2, y2, 0)) return true;
   if (m_finalTransform.TransformZCoord(x1, y2, 0)) return true;
   return false;
-}
-
-inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
-{
-  DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
-  if (alpha > 255) alpha = 255;
-  return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
 
 int CGraphicContext::GetFPS() const

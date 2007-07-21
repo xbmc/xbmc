@@ -1,7 +1,7 @@
 #include "include.h"
-#include "guifont.h"
-#include "graphiccontext.h"
-#include "../xbmc/Utils/SingleLock.h"
+#include "GUIFont.h"
+#include "GraphicContext.h"
+#include "../xbmc/utils/SingleLock.h"
 
 #define ROUND(x) floorf(x + 0.5f)
 
@@ -124,15 +124,6 @@ float CGUIFont::GetTextHeight(const WCHAR *strText)
   GetTextExtent( strText, &fTextWidth, &fTextHeight );
 
   return fTextHeight;
-}
-
-inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *pHeight, BOOL bFirstLineOnly /* = 0 */)
-{
-  if (!m_font) return;
-  CSingleLock lock(g_graphicsContext);
-  m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
-  *pWidth *= g_graphicsContext.GetGUIScaleX();
-  *pHeight *= g_graphicsContext.GetGUIScaleY();
 }
 
 void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)

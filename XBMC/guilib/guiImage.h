@@ -121,8 +121,8 @@ protected:
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
-  float m_diffuseScaleU, m_diffuseScaleV;
   LPDIRECT3DPALETTE8 m_pPalette;
+  float m_diffuseScaleU, m_diffuseScaleV;
   bool m_bWasVisible;
   bool m_bDynamicResourceAlloc;
 

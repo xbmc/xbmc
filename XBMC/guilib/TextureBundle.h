@@ -12,13 +12,13 @@ class CTextureBundle
   };
 
   HANDLE m_hFile;
+  FILETIME m_TimeStamp;
+  OVERLAPPED m_Ovl[2];
   std::map<CStdString, FileHeader_t> m_FileHeaders;
   std::map<CStdString, FileHeader_t>::iterator m_CurFileHeader[2];
   BYTE* m_PreLoadBuffer[2];
-  OVERLAPPED m_Ovl[2];
   int m_PreloadIdx;
   int m_LoadIdx;
-  FILETIME m_TimeStamp;
   bool m_themeBundle;
 
   bool OpenBundle();

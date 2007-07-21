@@ -1,11 +1,11 @@
 #include "include.h"
-#include ".\TextureBundle.h"
+#include "./TextureBundle.h"
+#include "GraphicContext.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #else
 #include "DirectXGraphics.h"
 #endif
-#include "GraphicContext.h"
 #include "../xbmc/lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "../xbmc/GUISettings.h"
@@ -76,12 +76,12 @@ void Release() { p = 0; }
 CTextureBundle::CTextureBundle(void)
 {
   m_hFile = INVALID_HANDLE_VALUE;
+  m_Ovl[0].hEvent = CreateEvent(0, TRUE, TRUE, 0);
+  m_Ovl[1].hEvent = CreateEvent(0, TRUE, TRUE, 0);
   m_CurFileHeader[0] = m_FileHeaders.end();
   m_CurFileHeader[1] = m_FileHeaders.end();
   m_PreLoadBuffer[0] = 0;
   m_PreLoadBuffer[1] = 0;
-  m_Ovl[0].hEvent = CreateEvent(0, TRUE, TRUE, 0);
-  m_Ovl[1].hEvent = CreateEvent(0, TRUE, TRUE, 0);
   m_themeBundle = false;
 }
 
@@ -151,6 +151,10 @@ bool CTextureBundle::OpenBundle()
     strPath = "Z:\\Textures.xpr";
   }
 #endif
+
+  CAutoBuffer HeaderBuf(ALIGN);
+  DWORD n;
+
   m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING | FILE_FLAG_OVERLAPPED, 0);
   if (m_hFile == INVALID_HANDLE_VALUE)
   {
@@ -160,9 +164,6 @@ bool CTextureBundle::OpenBundle()
 
   if (m_TimeStamp.dwLowDateTime || m_TimeStamp.dwHighDateTime)
     SetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
-
-  CAutoBuffer HeaderBuf(ALIGN);
-  DWORD n;
 
   m_Ovl[0].Offset = 0;
   m_Ovl[0].OffsetHigh = 0;

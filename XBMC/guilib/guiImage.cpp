@@ -1,9 +1,10 @@
 #include "include.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "TextureManager.h"
-#include "../xbmc/settings.h"
+#include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -14,7 +15,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_iTextureHeight = 0;
   m_dwColorKey = dwColorKey;
   m_iCurrentImage = 0;
-  m_dwFrameCounter = -1;
+  m_dwFrameCounter = (DWORD) -1;
   m_aspectRatio = ASPECT_RATIO_STRETCH;
   m_aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   m_iCurrentLoop = 0;
@@ -39,7 +40,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_aspectAlign = left.m_aspectAlign;
   // defaults
   m_iCurrentImage = 0;
-  m_dwFrameCounter = -1;
+  m_dwFrameCounter = (DWORD) -1;
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
@@ -161,8 +162,6 @@ void CGUIImage::Render()
 #ifdef HAS_XBOX_D3D
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
 #endif
-
-#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
     p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
 
