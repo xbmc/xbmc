@@ -7,6 +7,7 @@ class Unpack;
 #ifndef _LINUX
 #include <process.h>
 #endif
+#include "../../GUIDialogProgress.h"
 
 class ComprDataIO
 {
@@ -89,6 +90,7 @@ class ComprDataIO
     HANDLE hSeek;
     HANDLE hSeekDone;
     HANDLE hQuit;
+    CGUIDialogProgress* m_pDlgProgress;
     bool bQuit;
     Int64 m_iSeekTo;
     Int64 m_iStartOfBuffer;

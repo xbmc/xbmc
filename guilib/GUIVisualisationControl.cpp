@@ -47,7 +47,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   if (iBitsPerSample == 16)
   {
     iSize /= 2;
-    for (int i = 0; i < iSize, i < m_iLen; i++) // 
+    for (int i = 0; i < iSize, i < m_iLen; i++)
     { // 16 bit -> convert to short directly
       m_pBuffer[i] = ((short *)psBuffer)[i];
     }
@@ -78,7 +78,6 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
   m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
-  m_bInitialized = false;
 }
 
 CGUIVisualisationControl::~CGUIVisualisationControl(void)
@@ -174,15 +173,15 @@ void CGUIVisualisationControl::LoadVisualisation()
   g_graphicsContext.SendMessage(msg);
 }
 
+void CGUIVisualisationControl::UpdateVisibility()
+{
+  CGUIControl::UpdateVisibility();
+  if (!IsVisible() && m_bInitialized)
+    FreeVisualisation();
+}
+
 void CGUIVisualisationControl::Render()
 {
-  if (!IsVisible())
-  {
-    if (m_bInitialized)
-      FreeVisualisation();
-    return;
-  }
-  
   if (m_pVisualisation == NULL)
   { // check if we need to load
     if (g_application.IsPlayingAudio())
@@ -224,7 +223,9 @@ void CGUIVisualisationControl::Render()
   {
     if (m_bInitialized)
     {
-      // set the viewport
+      // set the viewport - note: We currently don't have any control over how
+      // the visualisation renders, so the best we can do is attempt to define
+      // a viewport??
       g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {

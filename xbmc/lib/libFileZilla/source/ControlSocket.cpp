@@ -2176,9 +2176,9 @@ void CControlSocket::ParseCommand()
 	    if (nCommandID==-1)
 	    {
         // check for a built-in function
-        CStdString strBuiltIn = sitecommand;
-        if (!CUtil::IsBuiltIn(sitecommand))
-          strBuiltIn = "XBMC." + sitecommand;
+        CStdString strBuiltIn = fullcommand;
+        if (!CUtil::IsBuiltIn(fullcommand))
+          strBuiltIn = "XBMC." + fullcommand;
         if (!CUtil::IsBuiltIn(strBuiltIn))
         { // invalid - send error
           Send(_T("500 Invalid built-in function.  Use SITE HELP for a list of valid SITE commands"));

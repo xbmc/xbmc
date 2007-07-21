@@ -26,8 +26,6 @@ CGUIResizeControl::~CGUIResizeControl(void)
 
 void CGUIResizeControl::Render()
 {
-  if (!IsVisible()) return;
-
   if (HasFocus())
   {
     DWORD dwAlphaCounter = m_dwFrameCounter + 2;

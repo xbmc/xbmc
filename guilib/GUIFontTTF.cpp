@@ -93,10 +93,6 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_char = NULL;
   m_maxChars = 0;
   m_dwNestedBeginCount = 0;
-#ifndef HAS_SDL  
-  m_pixelShader = NULL;
-  m_vertexShader = NULL;
-#endif  
 #ifdef HAS_SDL_OPENGL
   m_glTextureLoaded = false;
 #endif
@@ -158,10 +154,6 @@ void CGUIFontTTF::Clear()
   if (m_char)
     delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
-#ifndef HAS_SDL  
-  m_vertexShader = NULL;
-  m_pixelShader = NULL;
-#endif  
   m_char = NULL;
   m_maxChars = 0;
   m_numChars = 0;
@@ -184,7 +176,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
 #ifndef HAS_SDL
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
-  CreateShader();
 #endif
 
   m_library = g_freeTypeLibrary.Get();
@@ -541,14 +532,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   if (bitGlyph->left < 0)
     m_posX += -bitGlyph->left;
 
-#ifndef HAS_SDL
-  D3DFORMAT format;
-  if(m_pixelShader)
-    format = D3DFMT_LIN_L8;
-  else
-    format = D3DFMT_LIN_A8;
-#endif
-
   // check we have enough room for the character
   if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
@@ -574,7 +557,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
             
 #ifndef HAS_SDL      
       LPDIRECT3DTEXTURE8 newTexture;
-      if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, format, D3DPOOL_MANAGED, &newTexture))
+      if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
       {
         CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
         FT_Done_Glyph(glyph);
@@ -860,6 +843,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
 
+#elif !defined(HAS_SDL)
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
       DWORD color;
@@ -956,68 +940,3 @@ struct CUSTOMVERTEX {
   glVertex3f(x4, y4, z4);
 #endif
 }
-
-#ifndef HAS_SDL
-void CGUIFontTTF::CreateShader()
-{
-  if (!m_pixelShader)
-  {
-    // shader from the alpha texture to the full 32bit font.  Basically, anything with
-    // alpha > 0 is filled in fully in the colour channels
-
-    const char *fonts =
-      "ps.1.1\n"
-      "tex t0\n"
-      "mov r0.rgb, v0\n"
-      "+ mul r0.a, v0.a, t0.b\n";
-
-    LPD3DXBUFFER pShader = NULL;
-    if( D3D_OK != D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL) )
-      CLog::Log(LOGINFO, "%s - Failed to assemble pixel shader", __FUNCTION__);
-    else
-    {
-
-      if (D3D_OK != m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader))
-      {
-        CLog::Log(LOGINFO, "%s - Failed to create pixel shader",  __FUNCTION__);
-        m_pixelShader = 0;
-      }
-      pShader->Release();
-    }
-  }
-
-#ifdef HAS_XBOX_D3D
-  // since this vertex declaration is different from
-  // the standard, it can't be used when drawprimitive
-  // is to be used.
-
-  // Create the vertex shader
-  if (m_pixelShader && !m_vertexShader)
-  {
-    // our vertex declaration
-    DWORD vertexDecl[] =
-      {
-        D3DVSD_STREAM(0),
-        D3DVSD_REG( 0, D3DVSDT_FLOAT4 ),         // xy vertex, zw texture coord
-        D3DVSD_REG( 3, D3DVSDT_D3DCOLOR ),       // diffuse color
-        D3DVSD_END()
-      };
-
-        // shader for the vertex format we use
-    static DWORD vertexShader[] =
-      {
-        0x00032078,
-        0x00000000, 0x00200015, 0x0836106c, 0x2070c800,  // mov oPos.xy, v0.xy
-        0x00000000, 0x002000bf, 0x0836106c, 0x2070c848,  // mov oT0.xy, v0.zw
-        0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
-      };
-
-    if (D3D_OK != m_pD3DDevice->CreateVertexShader(vertexDecl,vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE))
-      CLog::Log(LOGERROR, __FUNCTION__" - Failed to create vertex shader");
-  }
-#endif
-
-  if(!m_vertexShader)
-    m_vertexShader = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-}
-#endif

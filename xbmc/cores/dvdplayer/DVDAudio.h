@@ -10,6 +10,7 @@ enum CodecID;
 #else
 #include "ffmpeg/avcodec.h"
 #endif
+typedef struct stDVDAudioFrame DVDAudioFrame;
 
 class CDVDAudio
 {
@@ -24,9 +25,10 @@ public:
   void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();
-  bool Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough, CodecID codec);
+  bool Create(const DVDAudioFrame &audioframe, CodecID codec);
+  bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
-  DWORD AddPackets(unsigned char* data, DWORD len);
+  DWORD AddPackets(const DVDAudioFrame &audioframe);
   void DoWork();
   __int64 GetDelay(); // returns the time it takes to play a packet if we add one at this time
   void Flush();
@@ -45,6 +47,7 @@ protected:
   int m_iChannels;
   int m_iBitrate;
   int m_iBitsPerSample;
+  bool m_bPassthrough;
   int m_iSpeed;
 
   volatile bool& m_bStop;

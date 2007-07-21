@@ -20,8 +20,6 @@ CGUICheckMarkControl::~CGUICheckMarkControl(void)
 
 void CGUICheckMarkControl::Render()
 {
-  if (!IsVisible()) return;
-
   float textPosX = m_posX;
   float textPosY = m_posY;
   float checkMarkPosX = m_posX;

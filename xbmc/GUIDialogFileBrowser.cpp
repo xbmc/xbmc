@@ -102,12 +102,12 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       {
         bIsDir = true;
         bool bFool;
-        int iBookmark = CUtil::GetMatchingShare(m_selectedPath,m_shares,bFool);
+        int iSource = CUtil::GetMatchingShare(m_selectedPath,m_shares,bFool);
         bFool = true;
-        if (iBookmark > -1)
+        if (iSource > -1)
         {
           CUtil::RemoveSlashAtEnd(m_selectedPath);
-          if (m_shares[iBookmark].strPath.Equals(m_selectedPath))
+          if (m_shares[iSource].strPath.Equals(m_selectedPath))
             bFool = false;
         }
       
@@ -228,8 +228,8 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         }
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
-      { // State of the bookmarks changed, so update our view
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      { // State of the sources changed, so update our view
         if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
@@ -687,7 +687,8 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
       browser->SetHeading(g_localizeStrings.Get(21362));
     if (strType.Equals("upnppictures"))
       browser->SetHeading(g_localizeStrings.Get(21363));
-    shares = *additionalShare;
+    if (additionalShare)
+      shares = *additionalShare;
     browser->m_addSourceType = strType;
   }
   else
@@ -699,8 +700,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
     // Now the additional share if appropriate
     if (additionalShare)
     {
-      for (unsigned int i=0;i<additionalShare->size();++i)
-      shares.push_back((*additionalShare)[i]);
+      shares.insert(shares.end(),additionalShare->begin(),additionalShare->end());
     }
 
     // Now add the network shares...
@@ -729,7 +729,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
 void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
 {
   m_shares = shares;
-  if (!m_shares.size())
+  if (!m_shares.size() && m_addSourceType.IsEmpty())
     g_mediaManager.GetLocalDrives(m_shares);
   m_rootDir.SetShares(m_shares);
 }
@@ -860,7 +860,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     }
     else
     {
-      g_settings.DeleteBookmark(m_addSourceType,m_vecItems[iItem]->GetLabel(),m_vecItems[iItem]->m_strPath);
+      g_settings.DeleteSource(m_addSourceType,m_vecItems[iItem]->GetLabel(),m_vecItems[iItem]->m_strPath);
       SetShares(*g_settings.GetSharesFromType(m_addSourceType));
       Update("");
     }

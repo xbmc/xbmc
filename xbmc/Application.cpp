@@ -208,7 +208,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
  #endif
  #ifdef _XBOX
-  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib")
   #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
   #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
@@ -216,7 +215,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
  #else
-  #pragma comment (lib,"../../xbmc/lib/unrarXlib/unrarxlibd.lib")
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32d.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
@@ -235,7 +233,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
  #endif
  #ifdef _XBOX
-  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
   #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
   #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
   #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
@@ -243,7 +240,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
  #else
-  #pragma comment (lib,"../../xbmc/lib/unrarXlib/unrarxlib.lib")
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )

@@ -104,6 +104,7 @@ protected:
   virtual int ReadDuration(const CStdString& strFileName);
   bool ReadLAMETagInfo(BYTE *p);
   int IsMp3FrameHeader(unsigned long head);
+  virtual bool PrioritiseAPETags() const;
 
 private:
   CVBRMP3SeekHelper m_seekInfo;

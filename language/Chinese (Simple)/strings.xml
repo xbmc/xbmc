@@ -715,7 +715,7 @@
   <string id="1398">结冰</string>
   <string id="1399">晚间</string>
   <string id="1400">局部</string>
-  <string id="1401">雷雨</string>
+  <string id="1401">雷阵雨</string>
   <string id="1402">雷</string>
   <string id="1403">阴沉</string>
   <string id="1404">暴</string>
@@ -728,6 +728,10 @@
   <string id="1411">和</string>
   <string id="1412">风</string>
   <string id="1413">小雨</string>
+  <string id="1414">雷雨</string>
+
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">运行时间：</string>
 
   <string id="4501">LCD 类型</string>
@@ -1042,7 +1046,7 @@
   <string id="13385">语音特效 - 端口 4</string>
   <string id="13386">使用时间搜寻</string>
   <string id="13387">音轨命名模板</string>
-  <string id="13388">预设</string>
+  <string id="13388">%s 预设</string>
   <string id="13389">没有预设&#10;该视觉效果</string>
   <string id="13390">没有设定&#10;该视觉效果</string>
   <string id="13391">弹出/载入</string>
@@ -1052,7 +1056,7 @@
   <string id="13395">视频设定</string>
   <string id="13396">声音和字幕设定</string>
   <string id="13397">启用字幕</string>
-  <string id="13398">书签</string>
+  <string id="13398">快捷方式</string>
   <string id="13399">排序时忽略符号</string>
   <string id="13400">专辑音轨淡入淡出</string>
   <string id="13401">浏览%s</string>
@@ -1273,7 +1277,7 @@
   <string id="15302">没有服务器找到！</string>
   <string id="15303">没有找到工作组！</string>
 
-  <string id="15310">打开多个书签路径</string>
+  <string id="15310">打开多个源路径</string>
   <string id="15311">路径：</string>
 
   <string id="16000">通用</string>
@@ -1399,7 +1403,7 @@
   <string id="20078">- 无连结设定 -</string>
   <string id="20079">启用桌面动画效果</string>
   <string id="20080">播放音乐时关闭 RSS</string>
-  <string id="20081">启用书签</string>
+  <string id="20081">启用快捷方式</string>
   <string id="20082">显示 XLink Kai 信息</string>
   <string id="20083">显示音乐讯息</string>
   <string id="20084">显示天气预报</string>
@@ -1600,6 +1604,8 @@
   <string id="20378">重新整理所有影集信息？</string>
   <string id="20379">文件夹包含一个电视节目</string>
   <string id="20380">将文件夹排除搜寻</string>
+  <string id="20381">特别</string>
+  <string id="20382">自动撷取影集的缩略图</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏档案和目录</string>
@@ -1690,6 +1696,7 @@
   <string id="21435">编辑</string>
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智能播放列表…</string>
+  <string id="21438">%c磁碟</string>
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 </strings>

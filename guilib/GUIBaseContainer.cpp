@@ -105,28 +105,31 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetMessage() == GUI_MSG_LABEL_ADD)
+    if (!m_staticContent)
     {
-      CGUIListItem* item = (CGUIListItem*)message.GetLPVOID();
-      m_items.push_back(item);
-      if (m_pageControl)
+      if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
       {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-        SendWindowMessage(msg);
+        CGUIListItem* item = (CGUIListItem*)message.GetLPVOID();
+        m_items.push_back(item);
+        if (m_pageControl)
+        {
+          CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
+          SendWindowMessage(msg);
+        }
+        return true;
       }
-      return true;
-    }
-    else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
-    {
-      m_items.clear();
-      if (m_pageControl)
+      else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-        SendWindowMessage(msg);
+        m_items.clear();
+        if (m_pageControl)
+        {
+          CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
+          SendWindowMessage(msg);
+        }
+        return true;
       }
-      return true;
     }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
+    if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1(CorrectOffset(m_offset, m_cursor));
       return true;

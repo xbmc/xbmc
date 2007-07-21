@@ -442,6 +442,9 @@
 				RelativePath=".\AudioContext.h">
 			</File>
 			<File
+				RelativePath=".\Geometry.h">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.h">
 			</File>
 			<File
@@ -650,6 +653,9 @@
 			</File>
 			<File
 				RelativePath=".\TransformMatrix.h">
+			</File>
+			<File
+				RelativePath=".\Tween.h">
 			</File>
 			<File
 				RelativePath=".\VisibleEffect.h">

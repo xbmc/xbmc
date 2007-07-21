@@ -58,12 +58,12 @@ void CGUIWindowGameSaves::GoParentFolder()
   CStdString strOldPath(m_vecItems.m_strPath);
   CStdString strPath(m_strParentPath);
   VECSHARES shares;
-  bool bIsBookmarkName = false;
+  bool bIsSourceName = false;
 
   SetupShares();
   m_rootDir.GetShares(shares);
 
-  int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsBookmarkName);
+  int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsSourceName);
 
   if (iIndex > -1)
   {
@@ -121,17 +121,17 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
 
       m_rootDir.SetMask("/");
       VECSHARES shares;
-      bool bIsBookmarkName = false;
+      bool bIsSourceName = false;
       SetupShares();
       m_rootDir.GetShares(shares);
-      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
-      // if bIsBookmarkName == True,   chances are its "Local GameSaves" or something else :D)
+      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+      // if bIsSourceName == True,   chances are its "Local GameSaves" or something else :D)
       if (iIndex > -1)
       {
         bool bDoStuff = true;
         if (shares[iIndex].m_iHasLock == 2)
         {
-        CFileItem item(shares[iIndex]);
+          CFileItem item(shares[iIndex]);
           if (!g_passwordManager.IsItemUnlocked(&item,"myprograms"))
           {
             m_vecItems.m_strPath = ""; // no u don't
@@ -139,7 +139,7 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
             CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
           }
         }
-        if (bIsBookmarkName)
+        if (bIsSourceName)
         {
           m_vecItems.m_strPath=shares[iIndex].strPath;
         }

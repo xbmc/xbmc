@@ -42,8 +42,6 @@ void CGUILabelControl::SetInfo(int singleInfo)
 
 void CGUILabelControl::Render()
 {
-  if (!IsVisible()) return;
-
   CStdString lastLabel(m_renderLabel);
 	if (m_singleInfo)
 	{ 

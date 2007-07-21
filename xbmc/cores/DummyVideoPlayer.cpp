@@ -57,7 +57,7 @@ void CDummyVideoPlayer::Process()
     if (!m_paused)
       m_clock += (timeGetTime() - m_lastTime)*m_speed;
     m_lastTime = timeGetTime();
-    Sleep(40);
+    Sleep(0);
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())
     {
@@ -250,7 +250,7 @@ void CDummyVideoPlayer::Render()
   newviewport.Y = vw.top;
   newviewport.Width = vw.right - vw.left;
   newviewport.Height = vw.bottom - vw.top;
-  g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+  g_graphicsContext.SetClipRegion((float)vw.left, (float)vw.top, (float)vw.right - vw.left, (float)vw.bottom - vw.top);
 #else
   g_graphicsContext.SetViewPort((float)vw.left, (float)vw.top, (float)vw.right - vw.left, (float)vw.bottom - vw.top);
 #endif 
@@ -269,7 +269,7 @@ void CDummyVideoPlayer::Render()
     font->DrawText(posX, posY, 0xffffffff, 0xff000000, currentTime.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+  g_graphicsContext.RestoreClipRegion();
 #else
   g_graphicsContext.RestoreViewPort();
 #endif

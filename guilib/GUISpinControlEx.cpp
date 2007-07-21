@@ -48,8 +48,6 @@ void CGUISpinControlEx::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControlEx::Render()
 {
-  if (!IsVisible()) return;
-
   // make sure the button has focus if it should have...
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.Render();
