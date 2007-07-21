@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "GUIImage.h"
-#include "../xbmc/utils/stopwatch.h"
+#include "guiImage.h"
+#include "../xbmc/utils/Stopwatch.h"
 
 /*!
  \ingroup controls

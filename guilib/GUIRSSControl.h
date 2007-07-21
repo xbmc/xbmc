@@ -9,7 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
-#include "..\XBMC\Utils\RssReader.h"
+#include "../xbmc/utils/RssReader.h"
 
 /*!
 \ingroup controls

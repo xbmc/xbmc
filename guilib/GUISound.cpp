@@ -1,7 +1,8 @@
 #include "include.h"
 #include "GUISound.h"
-#include "audiocontext.h"
-#include "../xbmc/settings.h"
+#include "AudioContext.h"
+#include "../xbmc/Settings.h"
+
 
 typedef struct
 {

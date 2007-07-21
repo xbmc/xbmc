@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIListItemLayout.h"
 #include "GUIListItem.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
 #include "GUIFontManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"

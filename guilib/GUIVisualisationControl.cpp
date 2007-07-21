@@ -1,14 +1,14 @@
 #include "include.h"
 #include "GUIVisualisationControl.h"
 #include "../xbmc/GUIUserMessages.h"
-#include "../xbmc/application.h"
+#include "../xbmc/Application.h"
 #include "../xbmc/visualizations/Visualisation.h"
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
 #ifdef HAS_KARAOKE
 #include "../xbmc/CdgParser.h"
 #endif
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/utils/CriticalSection.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/utils/GUIInfoManager.h"

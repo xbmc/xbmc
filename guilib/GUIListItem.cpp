@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIListItem.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUIListItemLayout.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)

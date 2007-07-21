@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "GUIImage.h"
+#include "guiImage.h"
 
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2

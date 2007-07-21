@@ -367,24 +367,24 @@ uint GetFileAttr(const char *Name,const wchar *NameW)
 
 bool SetFileAttr(const char *Name,const wchar *NameW,uint Attr)
 {
-  bool Success;
+  bool success;
 #ifdef _WIN_32
 #ifndef _XBOX
     if (WinNT() && NameW!=NULL && *NameW!=0)
-      Success=SetFileAttributesW(NameW,Attr)!=0;
+      success=SetFileAttributesW(NameW,Attr)!=0;
     else
 #endif
-      Success=SetFileAttributes(Name,Attr)!=0;
+      success=SetFileAttributes(Name,Attr)!=0;
 #elif defined(_DJGPP)
-  Success=_chmod(Name,1,Attr)!=-1;
+  success=_chmod(Name,1,Attr)!=-1;
 #elif defined(_EMX)
-  Success=__chmod(Name,1,Attr)!=-1;
+  success=__chmod(Name,1,Attr)!=-1;
 #elif defined(_UNIX)
-  Success=chmod(Name,(mode_t)Attr)==0;
+  success=chmod(Name,(mode_t)Attr)==0;
 #else
-  Success=false;
+  success=false;
 #endif
-  return(Success);
+  return(success);
 }
 
 
