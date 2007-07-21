@@ -4,7 +4,7 @@
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h"
 

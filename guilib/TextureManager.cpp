@@ -5,7 +5,8 @@
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
-#include "../xbmc/utils/charsetconverter.h"
+#include "../xbmc/utils/CharsetConverter.h"
+
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #endif
@@ -326,9 +327,8 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
     CTextureMap *pMap = m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-      LPDIRECT3DTEXTURE8 texture = pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
       //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
-      return texture;
+      return pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
     }
   }
   return NULL;
@@ -436,7 +436,7 @@ void CGUITextureManager::FlushPreLoad()
 int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 {
   if (strTextureName == "-")
-    return NULL;
+    return 0;
 
   // first check of texture exists...
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -529,7 +529,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         if (!nImages)
         {
           CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
-          return NULL;
+          return 0;
         }
       }
       else // packed
@@ -541,7 +541,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         {
           if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
             CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
-          return NULL;
+          return 0;
         }
       }
 
@@ -568,7 +568,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return NULL;
+        return 0;
       }
       int iWidth = AnimatedGifSet.FrameWidth;
       int iHeight = AnimatedGifSet.FrameHeight;
@@ -598,13 +598,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #endif
         {
-          D3DLOCKED_RECT lr;
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
+          D3DLOCKED_RECT lr;
           RECT rc = { 0, 0, pImage->Width, pImage->Height };
           if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
           {
-            POINT pt = { 0, 0 };
 #ifdef HAS_XBOX_D3D
+            POINT pt = { 0, 0 };
             XGSwizzleRect(pImage->Raster, pImage->BytesPerRow, &rc, lr.pBits, w, h, &pt, 1);
 #else
             COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
@@ -663,7 +663,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     if (FAILED(m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTexture, &pPal)))
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
-      return NULL;
+      return 0;
     }
   }
   else if (bPacked)
@@ -674,7 +674,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     {
       if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
         CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
-      return NULL;
+      return 0;
     }
   }
   else
@@ -687,7 +687,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return NULL;
+        return 0;
       }
     }
     else
@@ -703,7 +703,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return NULL;
+        return 0;
+
       }
     }
   }

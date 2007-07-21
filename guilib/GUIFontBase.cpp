@@ -1,5 +1,5 @@
 #include "include.h"
-#include "guifontbase.h"
+#include "GUIFontBase.h"
 #include "GUIFontManager.h"
 
 CGUIFontBase::CGUIFontBase(const CStdString& strFileName)
