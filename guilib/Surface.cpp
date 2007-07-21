@@ -469,7 +469,7 @@ void CSurface::EnableVSync(bool enable)
 #elif defined (_WIN32)
       if (!_wglSwapIntervalEXT)
       {
-        _wglSwapIntervalEXT = (void (*)(GLint))wglGetProcAddress((const GLubyte*)"wglSwapIntervalEXT");
+        _wglSwapIntervalEXT = (void (*)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
       }
 #endif
       if (_glXSwapIntervalSGI)
