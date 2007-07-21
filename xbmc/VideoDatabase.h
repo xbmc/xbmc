@@ -92,7 +92,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_FLOAT, my_offsetof(CVideoInfoTag,m_fRating) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strWritingCredits) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iYear) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strIMDBNumber) },
   { VIDEODB_TYPE_BOOL, my_offsetof(CVideoInfoTag,m_bWatched) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
