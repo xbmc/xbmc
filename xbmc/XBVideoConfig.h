@@ -26,9 +26,10 @@ public:
 #else
   void GetModes();
   RESOLUTION GetInitialMode();
-#endif
+#endif  
   RESOLUTION GetSafeMode() const;
   RESOLUTION GetBestMode() const;
+  VSYNC GetVSyncMode() const { return m_VSyncMode; }
   bool IsValidResolution(RESOLUTION res) const;
   void PrintInfo() const;
 
@@ -40,6 +41,8 @@ public:
   void SetLetterbox(bool bEnable);
   void SetWidescreen(bool bEnable);
 
+  void SetVSyncMode(VSYNC mode) { m_VSyncMode = mode; }
+
   bool NeedsSave();
   void Save();
 
@@ -47,6 +50,7 @@ private:
   bool bHasPAL;
   bool bHasNTSC;
   DWORD m_dwVideoFlags;
+  VSYNC m_VSyncMode;
 };
 
 extern XBVideoConfig g_videoConfig;
