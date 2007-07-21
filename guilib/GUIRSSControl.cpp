@@ -50,10 +50,8 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if (!IsVisible()) return;
-
-  // only render the control if they are enabled and the network is available
-  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_guiSettings.GetBool("network.enableinternet"))
+  // only render the control if they are enabled
+  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds"))
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
@@ -120,12 +118,7 @@ void CGUIRSSControl::RenderText()
 
   if (m_scrollInfo.initialWait == -1)
   {
-    // speed is 1 pixel/frame in PAL, which translates to
-    // one screen per 14.4 seconds.
     m_scrollInfo.initialWait = 0;
-    m_scrollInfo.pixelSpeed = (float)g_graphicsContext.GetWidth() / (14.4f * g_graphicsContext.GetFPS());
-    // round to a multiple of 0.5 for smoothness of scrolling
-    m_scrollInfo.pixelSpeed = 0.5f*floorf(2*m_scrollInfo.pixelSpeed + 0.5f);
     m_scrollInfo.Reset();
   }
   

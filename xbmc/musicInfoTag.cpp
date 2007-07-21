@@ -135,7 +135,7 @@ CStdString CMusicInfoTag::GetYear() const
 {
   CStdString strReturn;
   strReturn.Format("%i", m_dwReleaseDate.wYear);
-  return m_dwReleaseDate.wYear > 1900 ? strReturn : "";
+  return m_dwReleaseDate.wYear ? strReturn : "";
 }
 
 const CStdString &CMusicInfoTag::GetComment() const

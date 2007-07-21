@@ -88,69 +88,72 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 {
   int item;
   int list = GetFocusedList();
-  // the non-contextual menu can be called at any time
-  if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list].Size() == 0)
+  if (list >= 0 && list <= 1)
   {
-    OnPopupMenu(list,-1, false);
-    return true;
-  }
-  if (action.wID == ACTION_DELETE_ITEM)
-  {
-    if (CanDelete(list))
+    // the non-contextual menu can be called at any time
+    if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list].Size() == 0)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnDelete(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      OnPopupMenu(list,-1, false);
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_COPY_ITEM)
-  {
-    if (CanCopy(list))
+    if (action.wID == ACTION_DELETE_ITEM)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnCopy(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      if (CanDelete(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnDelete(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_MOVE_ITEM)
-  {
-    if (CanMove(list))
+    if (action.wID == ACTION_COPY_ITEM)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnMove(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      if (CanCopy(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnCopy(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_RENAME_ITEM)
-  {
-    if (CanRename(list))
+    if (action.wID == ACTION_MOVE_ITEM)
     {
-      bool bDeselect = SelectItem(list, item);
-      OnRename(list);
-      if (bDeselect) m_vecItems[list][item]->Select(false);
+      if (CanMove(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnMove(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
     }
-    return true;
-  }
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    if (m_vecItems[list].IsVirtualDirectoryRoot())
-      m_gWindowManager.PreviousWindow();
-    else
-      GoParentFolder(list);
-    return true;
+    if (action.wID == ACTION_RENAME_ITEM)
+    {
+      if (CanRename(list))
+      {
+        bool bDeselect = SelectItem(list, item);
+        OnRename(list);
+        if (bDeselect) m_vecItems[list][item]->Select(false);
+      }
+      return true;
+    }
+    if (action.wID == ACTION_PARENT_DIR)
+    {
+      if (m_vecItems[list].IsVirtualDirectoryRoot())
+        m_gWindowManager.PreviousWindow();
+      else
+        GoParentFolder(list);
+      return true;
+    }
+    if (action.wID == ACTION_PLAYER_PLAY)
+    {
+      if (m_vecItems[list][GetSelectedItem(list)]->IsDVD())
+        return CAutorun::PlayDisc();
+    }
   }
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
-  }
-  if (action.wID == ACTION_PLAYER_PLAY)
-  {
-    if (m_vecItems[list][GetSelectedItem(list)]->IsDVD())
-      return CAutorun::PlayDisc();
   }
   return CGUIWindow::OnAction(action);
 }
@@ -191,8 +194,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
         }
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
-      { // State of the bookmarks changed, so update our view
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      { // State of the sources changed, so update our view
         for (int i = 0; i < 2; i++)
         {
           if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
@@ -430,6 +433,17 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   m_vecItems[iList].m_strPath = items.m_strPath;
   items.ClearKeepPointer();
 
+  if (strDirectory.IsEmpty() && (m_vecItems[iList].Size() == 0 || !g_guiSettings.GetBool("filelists.disableaddsourcebuttons")))
+  { // add 'add source button'
+    CStdString strLabel = g_localizeStrings.Get(1026);
+    CFileItem *pItem = new CFileItem(strLabel);
+    pItem->m_strPath = "add";
+    pItem->SetThumbnailImage("DefaultAddSource.png");
+    pItem->SetLabel(strLabel);
+    pItem->SetLabelPreformated(true);
+    m_vecItems[iList].Add(pItem);
+  }
+
   // if we have a .tbn file, use itself as the thumb
   for (int i = 0; i < (int)m_vecItems[iList].Size(); i++)
   {
@@ -487,7 +501,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 
   if (pItem->m_bIsFolder)
   {
-    // save path + drive type as HaveBookmarkPermissions does a Refresh()
+    // save path + drive type because of the possible refresh
     CStdString strPath = pItem->m_strPath;
     int iDriveType = pItem->m_iDriveType;
     if ( pItem->m_bIsShareOrDrive )
@@ -678,7 +692,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         CUtil::GetDirectory(strDestFile,strDestPath);
         g_advancedSettings.m_cachePath = strDestPath;
         CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
-        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
+        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,-2);
         g_advancedSettings.m_cachePath = strOriginalCachePath;
         g_RarManager.SetWipeAtWill(true);
         return bResult;
@@ -1033,6 +1047,7 @@ void CGUIWindowFileManager::Refresh()
 
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
+  if (iControl < 0 || iControl > 1) return -1;
   CGUIListContainer *pControl = (CGUIListContainer *)GetControl(iControl + CONTROL_LEFT_LIST);
   if (!pControl || !m_vecItems[iControl].Size()) return -1;
   return pControl->GetSelectedItem();
@@ -1082,7 +1097,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 {
   if (pItem->m_bIsShareOrDrive)
   {
-    // We are in the virual directory
+    // We are in the virtual directory
 
     // History string of the DVD drive
     // must be handel separately
@@ -1104,7 +1119,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
     }
     else
     {
-      // Other items in virual directory
+      // Other items in virtual directory
       strHistoryString = pItem->GetLabel() + pItem->m_strPath;
       CUtil::RemoveSlashAtEnd(strHistoryString);
     }
@@ -1248,7 +1263,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item], posX, posY))
+    if (CGUIDialogContextMenu::SourcesMenu("files", m_vecItems[list][item], posX, posY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
       if (m_Directory[1 - list].IsVirtualDirectoryRoot())
@@ -1558,7 +1573,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
 {
   // check for a passed destination path
   CStdString strDestination = path;
-  m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
+  m_rootDir.SetShares(*g_settings.GetSharesFromType("files"));
   if (!strDestination.IsEmpty())
   {
     CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
@@ -1583,14 +1598,14 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
       // default parameters if the jump fails
       m_Directory[0].m_strPath = "";
 
-      bool bIsBookmarkName = false;
+      bool bIsSourceName = false;
       VECSHARES shares;
       m_rootDir.GetShares(shares);
-      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
       if (iIndex > -1)
       {
         // set current directory to matching share
-        if (bIsBookmarkName)
+        if (bIsSourceName)
           m_Directory[0].m_strPath = shares[iIndex].strPath;
         else
           m_Directory[0].m_strPath = strDestination;

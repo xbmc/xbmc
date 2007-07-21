@@ -343,8 +343,6 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
-  if (!IsVisible()) return;
-
   if (!HasFocus())
   {
     m_iTypedPos = 0;
@@ -465,9 +463,9 @@ void CGUISpinControl::Render()
     }
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
-      m_hitRect.SetRect(fPosX, fPosY, fTextWidth, fTextHeight);
+      m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
     else
-      m_hitRect.SetRect(fPosX - fTextWidth, fPosY, fTextWidth, fTextHeight);
+      m_hitRect.SetRect(fPosX - fTextWidth, fPosY, fPosX, fPosY + fTextHeight);
   }
   CGUIControl::Render();
 }

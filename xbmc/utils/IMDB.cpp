@@ -59,23 +59,22 @@ CIMDB::~CIMDB()
 }
 bool CIMDB::Get(CScraperUrl& scrURL, string& strHTML)
 {
-  CURL url(scrURL.m_url);
-  m_http.SetReferer(scrURL.m_spoof);
+  CURL url(scrURL.m_url[0].m_url);
+  m_http.SetReferer(scrURL.m_url[0].m_spoof);
 
-  if(scrURL.m_post)
+  if(scrURL.m_url[0].m_post)
   {
     CStdString strOptions = url.GetOptions();
     strOptions = strOptions.substr(1);
     url.SetOptions("");
     CStdString strUrl;
     url.GetURL(strUrl);
-    //CUtil::URLEncode(strOptions);
 
     if (!m_http.Post(strUrl, strOptions, strHTML))
       return false;
   }
   else 
-    if (!m_http.Get(scrURL.m_url, strHTML))
+    if (!m_http.Get(scrURL.m_url[0].m_url, strHTML))
       return false;
   
   return true;
@@ -89,10 +88,10 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   CIMDBUrl url;
   movielist.clear();
 
-	CStdString strHTML, strYear;
+  CStdString strHTML, strYear;
   CScraperUrl scrURL;
   
-	GetURL(strMovie, scrURL, strYear);
+  GetURL(strMovie, scrURL, strYear);
 
   if (!Get(scrURL, strHTML) || strHTML.size() == 0)
   {
@@ -101,7 +100,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   }
   
   m_parser.m_param[0] = strHTML;
-  m_parser.m_param[1] = scrURL.m_url;
+  m_parser.m_param[1] = scrURL.m_url[0].m_url;
   CStdString strXML = m_parser.Parse("GetSearchResults");
   if (strXML.IsEmpty())
   {
@@ -192,7 +191,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
       return false;
     }
     m_parser.m_param[0] = strHTML;
-    m_parser.m_param[1] = scrUrl.m_url;
+    m_parser.m_param[1] = scrUrl.m_url[0].m_url;
 
     CStdString strXML = m_parser.Parse("GetEpisodeList");
     if (strXML.IsEmpty())
@@ -447,17 +446,17 @@ void CIMDB::Process()
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url.c_str());
+      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
     if (!GetEpisodeDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url.c_str());
+      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_LIST)
   {
     if (!GetEpisodeList(m_url, m_episode))
-      CLog::Log(LOGERROR, "IMDb::Error getting episode details from %s", m_url.m_scrURL[0].m_url.c_str());
+      CLog::Log(LOGERROR, "IMDb::Error getting episode details from %s", m_url.m_scrURL[0].m_url[0].m_url.c_str());
   }
   m_found = true;
 }

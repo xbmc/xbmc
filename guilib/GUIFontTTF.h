@@ -69,10 +69,6 @@ protected:
   void ClearCharacterCache();
 
 #ifndef HAS_SDL
-  void CreateShader();
-
-  DWORD m_pixelShader;               // pixel shader for rendering chars from the 8bit alpha texture
-  DWORD m_vertexShader;              // vertex shader (speedup?)
   LPDIRECT3DDEVICE8 m_pD3DDevice;
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
 #else
@@ -106,7 +102,7 @@ protected:
 #ifdef HAS_SDL_OPENGL
   bool m_glTextureLoaded;
   GLuint m_glTexture;
-#endif  
+#endif
 };
 
 #endif

@@ -104,11 +104,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           // default parameters if the jump fails
           m_vecItems.m_strPath = "";
 
-          bool bIsBookmarkName = false;
+          bool bIsSourceName = false;
           SetupShares();
           VECSHARES shares;
           m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
@@ -125,7 +125,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             // set current directory to matching share
             if (bDoStuff)
             {
-              if (bIsBookmarkName)
+              if (bIsSourceName)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
@@ -134,7 +134,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
           }
         }
         SetHistoryForPath(m_vecItems.m_strPath);
@@ -188,7 +188,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItem *item = m_vecItems[itemNumber];
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
-    // get the usual bookmark shares
+    // get the usual shares
     CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
     CGUIDialogContextMenu::GetContextButtons("myprograms", share, buttons);
   }

@@ -186,7 +186,7 @@ void CGUIDialogContentSettings::SetupPage()
   }
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
   // now add them scrapers to the list control
-  if (m_info.strContent.IsEmpty())
+  if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
   {
     CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
     OnMessage(msgReset); 
@@ -209,8 +209,6 @@ void CGUIDialogContentSettings::CreateSettings()
   if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
   {
     AddBool(1,20380,&m_bRunScan);
-    if (m_info.strContent.Equals("None"))
-      m_bRunScan = true;
   }
 
   if (m_info.strContent.Equals("movies"))
@@ -310,13 +308,13 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
       scraper.strContent = "None";
 
     bool bName;
-    int iBookmark = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
-    if (iBookmark > -1)
+    int iSource = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
+    if (iSource > -1)
     {
-      if (g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size() > 1 && bName)
+      if (g_settings.m_vecMyVideoShares[iSource].vecPaths.size() > 1 && bName)
       {
-        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size();++i)
-          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iBookmark].vecPaths[i],scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
+        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iSource].vecPaths.size();++i)
+          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iSource].vecPaths[i],scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
       }
     }
     database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
@@ -332,6 +330,9 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, bool
 
   dialog->m_info = scraper;
   dialog->m_bRunScan = bRunScan;
+  if (scraper.strContent.Equals("None"))
+    dialog->m_bRunScan = true;
+
   dialog->m_bScanRecursive = bScanRecursive;
   dialog->m_bUseDirNames = bUseDirNames;
   dialog->m_bNeedSave = false;
@@ -341,6 +342,10 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, bool
     scraper = dialog->m_info;
     bScanRecursive = dialog->m_bScanRecursive;
     bUseDirNames = dialog->m_bUseDirNames;
+    if (scraper.strContent.Equals("None") && !dialog->m_bRunScan)
+    {
+      scraper.strContent = "";
+    }
     if (scraper.strContent.IsEmpty() && dialog->m_bRunScan)
     {
       scraper.strContent = "None";

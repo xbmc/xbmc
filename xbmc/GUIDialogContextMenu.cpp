@@ -190,7 +190,7 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
   if (pControl) pControl->SetEnabled(bEnable);
 }
 
-bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFileItem *item, float posX, float posY)
+bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY)
 {
   // TODO: This should be callable even if we don't have any valid items
   if (!item)
@@ -242,9 +242,11 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *sh
   {
     if (share)
     {
-      buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
+      if (!share->m_ignore)
+        buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
       buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
-      buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
+      if (!share->m_ignore)
+        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
       if (share->m_strThumbnailImage != "")
@@ -285,18 +287,30 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
-    if (g_settings.m_iLastLoadedProfileIndex == 0 && !g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
     else if (!g_passwordManager.IsProfileLockUnlocked())
       return false;
-    return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
 
+    return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
+    
   case CONTEXT_BUTTON_REMOVE_SOURCE:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-      return false;
-    else if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
-    // prompt user if they want to really delete the bookmark
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
+    else 
+    {
+      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsMasterLockUnlocked(false))
+        return false;
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+        return false;
+    }
+    // prompt user if they want to really delete the source
     if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
       CStdString defaultSource(GetDefaultShareNameByType(type));
@@ -307,16 +321,20 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       }
 
       // delete this share
-      g_settings.DeleteBookmark(type, share->strName, share->strPath);
+      g_settings.DeleteSource(type, share->strName, share->strPath);
       return true;
     }
     break;
 
   case CONTEXT_BUTTON_ADD_SOURCE:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
+    else if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
-    else if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
+
     return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
 
   case CONTEXT_BUTTON_SET_DEFAULT:
@@ -351,10 +369,10 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
 
       if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
       {
-        g_settings.UpdateBookmark(type,share->strName,"thumbnail",strThumb);
+        g_settings.UpdateSource(type,share->strName,"thumbnail",strThumb);
         g_settings.SaveSources();
 
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
         m_gWindowManager.SendThreadMessage(msg);
         return true;
       }
@@ -368,9 +386,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       else if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      g_settings.UpdateBookmark(type,share->strName,"thumbnail","");
+      g_settings.UpdateSource(type,share->strName,"thumbnail","");
       g_settings.SaveSources();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
@@ -396,13 +414,13 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
         return false;
       // password entry and re-entry succeeded, write out the lock data
       share->m_iHasLock = 2;
-      g_settings.UpdateBookmark(type, share->strName, "lockcode", strNewPassword);
+      g_settings.UpdateSource(type, share->strName, "lockcode", strNewPassword);
       strNewPassword.Format("%i",share->m_iLockMode);
-      g_settings.UpdateBookmark(type, share->strName, "lockmode", strNewPassword);
-      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.UpdateSource(type, share->strName, "lockmode", strNewPassword);
+      g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
 
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
@@ -412,9 +430,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
@@ -427,11 +445,11 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
         return false;
 
       share->m_iHasLock = 0;
-      g_settings.UpdateBookmark(type, share->strName, "lockmode", "0");
-      g_settings.UpdateBookmark(type, share->strName, "lockcode", "0");
-      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.UpdateSource(type, share->strName, "lockmode", "0");
+      g_settings.UpdateSource(type, share->strName, "lockcode", "0");
+      g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
@@ -443,7 +461,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       if (!maxRetryExceeded)
       {
         // don't prompt user for mastercode when reactivating a lock
-        g_passwordManager.LockBookmark(type, share->strName, true);
+        g_passwordManager.LockSource(type, share->strName, true);
         return true;
       }
       return false;
@@ -460,9 +478,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       else
         return false;
       // password ReSet and re-entry succeeded, write out the lock data
-      g_settings.UpdateBookmark(type, share->strName, "lockcode", strNewPW);
-      g_settings.UpdateBookmark(type, share->strName, "lockmode", strNewLockMode);
-      g_settings.UpdateBookmark(type, share->strName, "badpwdcount", "0");
+      g_settings.UpdateSource(type, share->strName, "lockcode", strNewPW);
+      g_settings.UpdateSource(type, share->strName, "lockmode", strNewLockMode);
+      g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
       return true;
     }
@@ -515,8 +533,8 @@ CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &st
 
   if (!pShares) return "";
 
-  bool bIsBookmarkName(false);
-  int iIndex = CUtil::GetMatchingShare(strDefault, *pShares, bIsBookmarkName);
+  bool bIsSourceName(false);
+  int iIndex = CUtil::GetMatchingShare(strDefault, *pShares, bIsSourceName);
   if (iIndex < 0)
     return "";
 

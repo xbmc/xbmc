@@ -32,8 +32,6 @@ void CGUIProgressControl::SetPosition(float posX, float posY)
 
 void CGUIProgressControl::Render()
 {
-  if (!IsVisible()) 
-    return;
   if (!IsDisabled())
   {
     if (m_iInfoCode )

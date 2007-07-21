@@ -527,7 +527,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strPercentMask = g_localizeStrings.Get(14047);
-      for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i += 5)
+      for (int i = 5; i <= pSettingInt->m_iMax; i += 5)
       {
         CStdString strLabel;
         strLabel.Format(strPercentMask.c_str(), i*2);
@@ -2207,7 +2207,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   else
   {
     // Since no fontset is defined, there is no selection of a fontset, so disable the component
-    pControl->AddLabel("Default", 1);
+    pControl->AddLabel(g_localizeStrings.Get(13278), 1);
     pControl->SetValue(1);
     pControl->SetEnabled(false);
   }

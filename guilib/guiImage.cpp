@@ -174,12 +174,7 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
 #endif
 
-    p3DDevice->SetVertexShader( FVF_VERTEX2 );
-#ifdef HAS_XBOX_D3D
-    p3DDevice->Begin(D3DPT_QUADLIST);
-#else
-    p3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-#endif
+    p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
 #endif
 
 #ifdef HAS_SDL_OPENGL
@@ -240,6 +235,10 @@ void CGUIImage::Render()
     }
 #endif
 
+#ifdef HAS_XBOX_D3D
+    p3DDevice->Begin(D3DPT_QUADLIST);
+#endif
+
     // TODO: The diffuse coloring applies to all vertices, which will
     //       look weird for stuff with borders, as will the -ve height/width
     //       for flipping
@@ -271,6 +270,18 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
 #ifdef HAS_XBOX_D3D
     p3DDevice->End();
+    if (g_graphicsContext.RectIsAngled(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH))
+    {
+      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
+      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+      p3DDevice->Begin(D3DPT_QUADLIST);
+      Render(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH, 0, 0, m_fU, m_fV);
+      p3DDevice->End();
+      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
+      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
+      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+    }
     if (!m_linearTexture)
       p3DDevice->SetPalette( 0, NULL);
     if (m_diffusePalette)

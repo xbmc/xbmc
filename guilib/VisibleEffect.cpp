@@ -135,7 +135,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   node->Attribute("delay", (int *)&m_delay);
   m_length = (unsigned int)(m_length * g_SkinInfo.GetEffectsSlowdown()) ;
   m_delay = (unsigned int)(m_delay * g_SkinInfo.GetEffectsSlowdown()) ;
-  
+
   if (m_pTweener)
   {
     m_pTweener->Free();
@@ -173,14 +173,12 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     }
   }
 
-  // acceleration of effect (quadratic only at this point)
   double accel;
   node->Attribute("acceleration", &accel);
 
   if (!m_pTweener)
-  { // no tweener is specified - use the linear tweener
-    m_pTweener = new LinearTweener();
-
+  { // no tweener is specified - use a linear tweener
+    // or quadratic if we have acceleration
     if (accel)
     {
       m_pTweener = new QuadTweener((float)accel);

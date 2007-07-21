@@ -727,6 +727,9 @@
   <string id="1411">with</string>
   <string id="1412">windy</string>
   <string id="1413">drizzle</string>
+  <string id="1414">T-Storm</string>
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">Runtime:</string>
 
   <string id="4501">LCD Type</string>
@@ -1041,7 +1044,7 @@
   <string id="13385">Voice Mask - Port 4</string>
   <string id="13386">Use Time Based Seeking</string>
   <string id="13387">Track Naming Template Right</string>
-  <string id="13388">Presets</string>
+  <string id="13388">%s Presets</string>
   <string id="13389">There are no presets available&#10;for this visualisation</string>
   <string id="13390">There are no settings available&#10;for this visualisation</string>
   <string id="13391">Eject/Load</string>
@@ -1051,7 +1054,7 @@
   <string id="13395">Video Settings</string>
   <string id="13396">Audio and Subtitle Settings</string>
   <string id="13397">Enable Subtitles</string>
-  <string id="13398">Bookmarks</string>
+  <string id="13398">Shortcuts</string>
   <string id="13399">Ignore tokens when sorting</string>
   <string id="13400">Crossfade albumtracks</string>
   <string id="13401">Browse for %s</string>
@@ -1272,7 +1275,7 @@
   <string id="15302">No servers found</string>
   <string id="15303">Workgroup not found</string>
 
-  <string id="15310">Opening multi-path bookmark</string>
+  <string id="15310">Opening multi-path source</string>
   <string id="15311">Path:</string>
 
   <string id="16000">General</string>
@@ -1398,7 +1401,7 @@
   <string id="20078">- no link set -</string>
   <string id="20079">Enable Animations</string>
   <string id="20080">Disable RSS during Music</string>
-  <string id="20081">Enable Bookmark Buttons</string>
+  <string id="20081">Enable Shortcut Buttons</string>
   <string id="20082">Show XLink Kai Info</string>
   <string id="20083">Show Music info</string>
   <string id="20084">Show Weather info</string>
@@ -1599,6 +1602,8 @@
   <string id="20378">Refresh info for all episodes?</string>
   <string id="20379">Folder contains a single TV Show</string>
   <string id="20380">Exclude folder from scans</string>
+  <string id="20381">Specials</string>
+  <string id="20382">Automatically grab season thumbs</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1621,11 +1626,11 @@
   <string id="21362">Manage UPnP Video Shares</string>
   <string id="21363">Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
-  <string id="21365">Remove Media Share</string>  
+  <string id="21365">Remove Media Share</string>
   <string id="21366">Custom Subtitle Directory</string>
   <string id="21367">Movie &amp; Alternate Subtitle Directory</string>
   
-  <string id="21370">Play Navigation Sounds During Media Playback</string>  
+  <string id="21370">Play Navigation Sounds During Media Playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD Player Region</string>
   <string id="21373">Video Hardware</string>
@@ -1641,7 +1646,6 @@
   <string id="21383">Enable Scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Open</string>
-  
   <string id="21386">Acoustic Management Level</string>
   <string id="21387">Fast</string>
   <string id="21388">Quiet</string>
@@ -1653,11 +1657,9 @@
   <string id="21394">Low Standby</string>
   <string id="21395">Unable to cache files bigger than 4 gb</string>
   <string id="21396">Chapter</string>
-
-  <string id="21397">High Quality Pixel Shader V2</string>	
-  
+  <string id="21397">High Quality Pixel Shader V2</string>
   <string id="21398">Enable Playlist at Startup</string>
-
+  <string id="21399">Use Tween Animations</string>
   <string id="21400">contains</string>
   <string id="21401">does not contain</string>
   <string id="21402">is</string>
@@ -1689,6 +1691,8 @@
   <string id="21435">Edit</string>
   <string id="21436">%i songs</string>
   <string id="21437">New Smart Playlist...</string>
+  <string id="21438">%c Drive</string>
+  <string id="21439">Edit Party Mode Rules</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>
