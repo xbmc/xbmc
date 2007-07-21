@@ -569,5 +569,6 @@
 				<font>font12</font>
 			</control>
 		</control>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>
