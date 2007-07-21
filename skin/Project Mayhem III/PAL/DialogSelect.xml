@@ -36,7 +36,7 @@
 		<control type="list" id="3">
 			<posx>12</posx>
 			<posy>45</posy>
-			<width>480</width>
+			<width>453</width>
 			<height>279</height>
 			<onleft>5</onleft>
 			<onright>60</onright>
