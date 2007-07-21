@@ -36,6 +36,7 @@ XBVideoConfig::XBVideoConfig()
 #else
   m_dwVideoFlags = 0;
 #endif
+  m_VSyncMode = VSYNC_DISABLED;
 }
 
 XBVideoConfig::~XBVideoConfig()

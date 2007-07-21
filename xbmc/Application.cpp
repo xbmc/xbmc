@@ -2280,6 +2280,10 @@ void CApplication::RenderNoPresent()
   {
     //g_ApplicationRenderer.Render();
 
+#ifdef HAS_SDL
+    if (g_videoConfig.GetVSyncMode()==VSYNC_VIDEO)
+      g_graphicsContext.getScreenSurface()->EnableVSync(true);
+#endif
     // release the context so the async renderer can draw to it
 #ifdef HAS_SDL_OPENGL
     // Video rendering occuring from main thread for OpenGL
@@ -2298,6 +2302,14 @@ void CApplication::RenderNoPresent()
   }
 
   g_graphicsContext.AcquireCurrentContext();
+
+#ifdef HAS_SDL
+  if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
+    g_graphicsContext.getScreenSurface()->EnableVSync(true);
+  else
+    g_graphicsContext.getScreenSurface()->EnableVSync(false);
+#endif
+
   g_ApplicationRenderer.Render();
 }
 

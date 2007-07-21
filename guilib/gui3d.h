@@ -179,7 +179,6 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 #define GL_GLEXT_PROTOTYPES
 #endif
 #include <GL/glew.h>
-//#include <SDL/SDL_opengl.h>
 #endif
 #endif
 
