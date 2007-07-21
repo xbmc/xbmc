@@ -2,11 +2,12 @@
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "SkinInfo.h"
-#include "GUIFontXPR.h"
+#include "GuiFontXPR.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
+
 
 GUIFontManager g_fontManager;
 
@@ -30,7 +31,7 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
   if (strFilename[1] != ':')
   {
     strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
+    strPath += "\\Fonts\\";
     strPath += strFilename;
   }
   else
@@ -89,7 +90,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (strFilename[1] != ':')
   {
     strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
+    strPath += "\\Fonts\\";
     strPath += strFilename;
   }
   else

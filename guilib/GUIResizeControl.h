@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "GUIImage.h"
+#include "guiImage.h"
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1

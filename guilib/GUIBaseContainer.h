@@ -66,6 +66,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  bool OnClick(DWORD actionID);
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);

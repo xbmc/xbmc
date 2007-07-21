@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
 #include "../xbmc/FileItem.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "XMLUtils.h"
@@ -81,21 +81,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   default:
     if (action.wID)
     { 
-      if (m_staticContent && (action.wID == ACTION_SELECT_ITEM || action.wID == ACTION_MOUSE_LEFT_CLICK))
-      { // "select" action
-        int selected = GetSelectedItem();
-        if (selected >= 0 && selected < (int)m_items.size())
-        {
-          CFileItem *item = (CFileItem *)m_items[selected];
-          CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-          message.SetStringParam(item->m_strPath);
-          g_graphicsContext.SendMessage(message);
-        }
-        return true;
-      }
-      // Don't know what to do, so send to our parent window.
-      CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-      return SendWindowMessage(msg);
+      return OnClick(action.wID);
     }
   }
   return false;
@@ -236,7 +222,7 @@ bool CGUIBaseContainer::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send click message to window
-    SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_CLICK + dwButton);
+    OnClick(ACTION_MOUSE_CLICK + dwButton);
     return true;
   }
   return false;
@@ -246,10 +232,29 @@ bool CGUIBaseContainer::OnMouseDoubleClick(DWORD dwButton, const CPoint &point)
 {
   if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send double click message to window
-    SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_DOUBLE_CLICK + dwButton);
+    OnClick(ACTION_MOUSE_DOUBLE_CLICK + dwButton);
     return true;
   }
   return false;
+}
+
+bool CGUIBaseContainer::OnClick(DWORD actionID)
+{
+  if (m_staticContent && (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK))
+  { // "select" action
+    int selected = GetSelectedItem();
+    if (selected >= 0 && selected < (int)m_items.size())
+    {
+      CFileItem *item = (CFileItem *)m_items[selected];
+      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+      message.SetStringParam(item->m_strPath);
+      g_graphicsContext.SendMessage(message);
+    }
+    return true;
+  }
+  // Don't know what to do, so send to our parent window.
+  CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID);
+  return SendWindowMessage(msg);
 }
 
 bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
