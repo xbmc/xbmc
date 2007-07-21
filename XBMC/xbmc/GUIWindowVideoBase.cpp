@@ -1354,8 +1354,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CFileItemList items;
     if (!CDirectory::GetDirectory("videodb://1/", items))
       return;
-    for (int i = 0; i < items.Size(); ++i)
-      pSelect->Add(items[i]->GetLabel());
+    pSelect->SetItems(&items);
     pSelect->EnableButton(true);
     pSelect->SetButtonLabel(531); // New Genre
     pSelect->DoModal();
