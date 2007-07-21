@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIEditControl.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,

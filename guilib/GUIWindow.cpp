@@ -3,8 +3,8 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
-#include "../xbmc/util.h"
-#include "GUIControlFactory.h"
+#include "../xbmc/Util.h"
+#include "GuiControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
@@ -13,7 +13,7 @@
 
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/Utils/SingleLock.h"
+#include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 

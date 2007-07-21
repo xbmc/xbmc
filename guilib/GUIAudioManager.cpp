@@ -1,11 +1,12 @@
 #include "include.h"
 #include "GUIAudioManager.h"
-#include "key.h"
-#include "audiocontext.h"
+#include "Key.h"
+#include "AudioContext.h"
 #include "GUISound.h"
-#include "../xbmc/settings.h"
-#include "../xbmc/buttontranslator.h"
-#include "../xbmc/utils/singlelock.h"
+#include "../xbmc/Settings.h"
+#include "../xbmc/ButtonTranslator.h"
+#include "../xbmc/utils/SingleLock.h"
+
 
 CGUIAudioManager g_audioManager;
 

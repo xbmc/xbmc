@@ -32,9 +32,12 @@
 #define _WIN32_WINNT 0x0300
 #endif
 
+#ifndef XBMC
 #define WIN32_LEAN_AND_MEAN
+#endif
 
 #ifndef _XBOX
+#include "include.h"
 #include <windows.h>                        /* WIN32 definitions            */
 #include <prsht.h>
 #else
