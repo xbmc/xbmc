@@ -8,7 +8,7 @@
 #pragma once
 
 #include "GraphicContext.h" // needed by any rendering operation (all controls)
-#include "key.h"            // needed by practically all controls (CAction + defines)
+#include "Key.h"            // needed by practically all controls (CAction + defines)
 #include "GUIMessage.h"     // needed by practically all controls
 #include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
 #include "VisibleEffect.h"  // needed for the CAnimation members

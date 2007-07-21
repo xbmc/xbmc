@@ -1,6 +1,6 @@
 #include "include.h"
 #ifdef HAS_XPR_FONTS
-#include "GUIFontXPR.h"
+#include "GuiFontXPR.h"
 
 
 CGUIFontXPR::CGUIFontXPR(const CStdString& strFileName)
