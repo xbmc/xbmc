@@ -13,6 +13,7 @@ public:
   virtual void FreeResources(bool forceUnLoad = false);
 
 protected:
+  virtual void OnMouseAction();
   void NextControl();
   void ResetControls();
   void EnableControl(int iControl);
