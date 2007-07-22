@@ -732,37 +732,41 @@
 			<control type="label">
 				<description>date label</description>
 				<posx>582</posx>
-				<posy>55</posy>
+				<posy>56</posy>
 				<label>date</label>
 				<info>System.Date</info>
 				<align>right</align>
+				<aligy>center</aligy>
 				<font>special12</font>
 			</control>
 			<control type="label">
 				<description>suffix label</description>
 				<posx>592</posx>
-				<posy>53</posy>
+				<posy>56</posy>
 				<label>|</label>
 				<align>left</align>
+				<aligy>center</aligy>
 				<font>special12</font>
 				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>time label</description>
 				<posx>602</posx>
-				<posy>55</posy>
+				<posy>56</posy>
 				<label>time</label>
 				<info>System.Time</info>
 				<align>left</align>
 				<font>special12</font>
+				<aligy>center</aligy>
 				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="rss" id="1">
 			<description>rss feed</description>
 			<posx>0</posx>
-			<posy>490</posy>
+			<posy>493</posy>
 			<width>720</width>
+			<aligy>center</aligy>
 			<font>font13</font>
 			<urlset>1</urlset>
 			<titlecolor>green</titlecolor>
