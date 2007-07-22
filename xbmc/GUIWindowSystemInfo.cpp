@@ -166,7 +166,7 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(11, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_4));
 #endif
   }
-  SET_CONTROL_LABEL(50, g_infoManager.GetTime(true) + " | " + g_infoManager.GetDate());
+  SET_CONTROL_LABEL(50, g_infoManager.GetTime(TIME_FORMAT_HH_MM_SS) + " | " + g_infoManager.GetDate());
   SET_CONTROL_LABEL(51, g_localizeStrings.Get(144)+" "+g_infoManager.GetVersion());
   SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
   SET_CONTROL_LABEL(53, g_infoManager.GetLabel(SYSTEM_MPLAYER_VERSION));
