@@ -50,7 +50,6 @@ public:
   virtual void SaveStates(vector<CControlState> &states);
   int GetSelectedItem() const;
 
-  virtual void Animate(DWORD currentTime);
   virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
