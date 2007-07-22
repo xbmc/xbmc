@@ -56,6 +56,7 @@
 #define PLAYER_CHAPTER               35
 #define PLAYER_CHAPTERCOUNT          36
 #define PLAYER_TIME_SPEED            37
+#define PLAYER_FINISH_TIME           38
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -378,7 +379,7 @@ public:
 
   CStdString GetImage(int info, int contextWindow);
 
-  CStdString GetTime(bool bSeconds = false);
+  CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetDate(bool bNumbersOnly = false);
   CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
@@ -472,6 +473,7 @@ protected:
   int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
+  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
