@@ -155,7 +155,10 @@ public:
   inline void AddTransform(const TransformMatrix &matrix)
   {
     ASSERT(m_groupTransform.size());
-    m_groupTransform.push(m_groupTransform.top() * matrix);
+    if (m_groupTransform.size())
+      m_groupTransform.push(m_groupTransform.top() * matrix);
+    else
+      m_groupTransform.push(matrix);
     UpdateFinalTransform(m_groupTransform.top());
   }
   inline void RemoveTransform()
@@ -163,7 +166,10 @@ public:
     ASSERT(m_groupTransform.size() > 1);
     if (m_groupTransform.size())
       m_groupTransform.pop();
-    UpdateFinalTransform(m_groupTransform.top());
+    if (m_groupTransform.size())
+      UpdateFinalTransform(m_groupTransform.top());
+    else
+      UpdateFinalTransform(TransformMatrix());
   }
 
 protected:
