@@ -976,6 +976,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
 #elif defined(HAS_SDL_OPENGL)
   // grab the viewport dimensions and location
   GLint viewport[4];
+  BeginPaint();
   glGetIntegerv(GL_VIEWPORT, viewport);
 
   float w = (float)viewport[2]*0.5f;
@@ -989,6 +990,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   glLoadIdentity();
   glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixMode(GL_MODELVIEW);
+  EndPaint();
 #endif
 }
 
@@ -1030,7 +1032,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
 #ifdef HAS_GLX
     if (dest==NULL)
     {
-      CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %ul", tid);
+      CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
       CSurface* surface = new CSurface(m_screenSurface);
       if (!surface->MakeCurrent())
       {
