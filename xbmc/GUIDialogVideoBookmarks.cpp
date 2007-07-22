@@ -139,7 +139,7 @@ void CGUIDialogVideoBookmarks::Update()
       m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
 
     CStdString bookmarkTime;
-    StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, true);
+    StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, TIME_FORMAT_HH_MM_SS);
 
     CFileItem *item = new CFileItem(bookmarkTime);
     item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
