@@ -131,7 +131,7 @@ public:
 
   CStdString GetAsDBDate() const;
   CStdString GetAsLocalizedDate(bool longDate=false) const;
-  CStdString GetAsLocalizedTime(bool withSeconds=true) const;
+  CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
   CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
 
   void SetValid(bool yesNo);

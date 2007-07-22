@@ -1021,7 +1021,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       GetLocalTime(&curTime);
       CStdString time;
       if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime(false);  // false for no seconds
+        time = g_infoManager.GetTime();
       else
         time = g_infoManager.GetDate();
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
@@ -1106,9 +1106,9 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
       GetLocalTime(&curTime);
       CStdString time;
       if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime(false);  // false for no seconds
+        time = g_infoManager.GetTime();
       else
-        time = g_infoManager.GetDate();  // false as we want numbers
+        time = g_infoManager.GetDate();
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
       pSettingString->SetData(time);
       pSettingControl->Update();

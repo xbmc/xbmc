@@ -159,8 +159,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
     else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
-    else if (strTest.Left(16).Equals("player.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(16).Equals("player.timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
     else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
+    else if (strTest.Left(17).Equals("player.finishtime")) return AddMultiInfo(GUIInfo(PLAYER_FINISH_TIME, TranslateTimeFormat(strTest.Mid(17))));
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
@@ -203,7 +204,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
-    else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
+    else if (strTest.Left(11).Equals("system.time")) return AddMultiInfo(GUIInfo(SYSTEM_TIME, TranslateTimeFormat(strTest.Mid(11))));
     else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
     else if (strTest.Equals("system.cpuusage")) ret = SYSTEM_CPU_USAGE;
     else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
@@ -651,9 +652,6 @@ string CGUIInfoManager::GetLabel(int info)
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
-    break;
-  case SYSTEM_TIME:
-    strLabel = GetTime();
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
@@ -1690,6 +1688,12 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   {
     return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.m_data1);
   }
+  else if (info.m_info == PLAYER_FINISH_TIME)
+  {
+    CDateTime time = CDateTime::GetCurrentDateTime();
+    time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+    return LocalizeTime(time, (TIME_FORMAT)info.m_data1);
+  }
   else if (info.m_info == PLAYER_TIME_SPEED)
   {
     CStdString strTime;
@@ -1708,6 +1712,10 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
     if (seekBar)
       return seekBar->GetSeekTimeLabel((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == SYSTEM_TIME)
+  {
+    return GetTime((TIME_FORMAT)info.m_data1);
   }
   return StringUtils::EmptyString;
 }
@@ -1772,10 +1780,32 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
   return time.GetAsLocalizedDate(!bNumbersOnly);
 }
 
-CStdString CGUIInfoManager::GetTime(bool bSeconds)
+CStdString CGUIInfoManager::GetTime(TIME_FORMAT format) const
 {
   CDateTime time=CDateTime::GetCurrentDateTime();
-  return time.GetAsLocalizedTime(bSeconds);
+  return LocalizeTime(time, format);
+}
+
+CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
+{
+  switch (format)
+  {
+  case TIME_FORMAT_GUESS:
+    return time.GetAsLocalizedTime("", false);
+  case TIME_FORMAT_SS:
+    return time.GetAsLocalizedTime("ss", true);
+  case TIME_FORMAT_MM:
+    return time.GetAsLocalizedTime("mm", true);
+  case TIME_FORMAT_MM_SS:
+    return time.GetAsLocalizedTime("mm:ss", true);
+  case TIME_FORMAT_HH:
+    return time.GetAsLocalizedTime("hh", false);
+  case TIME_FORMAT_HH_MM:
+    return time.GetAsLocalizedTime("hh:mm", false);
+  case TIME_FORMAT_HH_MM_SS:
+    return time.GetAsLocalizedTime("", true);
+  }
+  return time.GetAsLocalizedTime("", false);
 }
 
 CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
