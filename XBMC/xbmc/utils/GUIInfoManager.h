@@ -55,6 +55,7 @@
 #define PLAYER_HASDURATION           34
 #define PLAYER_CHAPTER               35
 #define PLAYER_CHAPTERCOUNT          36
+#define PLAYER_TIME_SPEED            37
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -138,11 +139,7 @@
 #define MUSICPLAYER_ARTIST          202
 #define MUSICPLAYER_GENRE           203
 #define MUSICPLAYER_YEAR            204
-#define MUSICPLAYER_TIME            205
-#define MUSICPLAYER_TIME_REMAINING  206
-#define MUSICPLAYER_TIME_SPEED      207
 #define MUSICPLAYER_TRACK_NUMBER    208
-#define MUSICPLAYER_DURATION        209
 #define MUSICPLAYER_COVER           210
 #define MUSICPLAYER_BITRATE         211
 #define MUSICPLAYER_PLAYLISTLEN     212
@@ -159,10 +156,6 @@
 #define VIDEOPLAYER_GENRE           251
 #define VIDEOPLAYER_DIRECTOR        252
 #define VIDEOPLAYER_YEAR            253
-#define VIDEOPLAYER_TIME            254
-#define VIDEOPLAYER_TIME_REMAINING  255
-#define VIDEOPLAYER_TIME_SPEED      256
-#define VIDEOPLAYER_DURATION        257
 #define VIDEOPLAYER_COVER           258
 #define VIDEOPLAYER_USING_OVERLAYS  259
 #define VIDEOPLAYER_ISFULLSCREEN    260
@@ -387,6 +380,7 @@ public:
 
   CStdString GetTime(bool bSeconds = false);
   CStdString GetDate(bool bNumbersOnly = false);
+  CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
   void SetCurrentItem(CFileItem &item);
   void ResetCurrentItem();
@@ -426,11 +420,11 @@ public:
   CStdString GetPlaylistLabel(int item);
   CStdString GetMusicPartyModeLabel(int item);
   
-  __int64 GetPlayTime();  // in ms
-  CStdString GetCurrentPlayTime();
-  int GetPlayTimeRemaining();
-  int GetTotalPlayTime();
-  CStdString GetCurrentPlayTimeRemaining();
+  __int64 GetPlayTime() const;  // in ms
+  CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  int GetPlayTimeRemaining() const;
+  int GetTotalPlayTime() const;
+  CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
   CStdString GetVersion();
   CStdString GetBuild();
   
@@ -477,6 +471,7 @@ protected:
   CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);
+  TIME_FORMAT TranslateTimeFormat(const CStdString &format);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
