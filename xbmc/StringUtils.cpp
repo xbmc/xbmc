@@ -163,17 +163,22 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   return timeInSecs;
 }
 
-void StringUtils::SecondsToTimeString(long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS)
+void StringUtils::SecondsToTimeString(long lSeconds, CStdString& strHMS, TIME_FORMAT format)
 {
   int hh = lSeconds / 3600;
   lSeconds = lSeconds % 3600;
   int mm = lSeconds / 60;
   int ss = lSeconds % 60;
 
-  if (hh >= 1 || bMustUseHHMMSS)
-    strHMS.Format("%2.2i:%02.2i:%02.2i", hh, mm, ss);
-  else
-    strHMS.Format("%i:%02.2i", mm, ss);
+  if (format == TIME_FORMAT_GUESS)
+    format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
+  strHMS.Empty();
+  if (format & TIME_FORMAT_HH)
+    strHMS.AppendFormat("%02.2i", hh);
+  if (format & TIME_FORMAT_MM)
+    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
+  if (format & TIME_FORMAT_SS)
+    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
 }
 
 bool StringUtils::IsNaturalNumber(const CStdString& str)
