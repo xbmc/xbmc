@@ -151,15 +151,16 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
     else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
     else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
-    else if (strTest.Equals("player.seektime")) ret = PLAYER_SEEKTIME;
     else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
     else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
     else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
     else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
     else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
-    else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
-    else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
-    else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
+    else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
+    else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
+    else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
+    else if (strTest.Left(16).Equals("player.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
@@ -364,11 +365,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
     else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
     else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
-    else if (strTest.Equals("musicplayer.time")) ret = MUSICPLAYER_TIME;
-    else if (strTest.Equals("musicplayer.timeremaining")) ret = MUSICPLAYER_TIME_REMAINING;
-    else if (strTest.Equals("musicplayer.timespeed")) ret = MUSICPLAYER_TIME_SPEED;
+    else if (strTest.Left(16).Equals("musicplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(25).Equals("musicplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
+    else if (strTest.Left(21).Equals("musicplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+    else if (strTest.Left(20).Equals("musicplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
-    else if (strTest.Equals("musicplayer.duration")) ret = MUSICPLAYER_DURATION;
     else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
     else if (strTest.Equals("musicplayer.bitrate")) ret = MUSICPLAYER_BITRATE;
     else if (strTest.Equals("musicplayer.playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
@@ -388,10 +389,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
     else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
     else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
-    else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
-    else if (strTest.Equals("videoplayer.timeremaining")) ret = VIDEOPLAYER_TIME_REMAINING;
-    else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
-    else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
+    else if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(25).Equals("videoplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
+    else if (strTest.Left(21).Equals("videoplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+    else if (strTest.Left(20).Equals("videoplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
     else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
     else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
@@ -621,6 +622,18 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   return 0;
 }
 
+TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
+{
+  if (format.IsEmpty()) return TIME_FORMAT_GUESS;
+  else if (format.Equals("(hh)")) return TIME_FORMAT_HH;
+  else if (format.Equals("(mm)")) return TIME_FORMAT_MM;
+  else if (format.Equals("(ss)")) return TIME_FORMAT_SS;
+  else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
+  else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
+  else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
+  return TIME_FORMAT_GUESS;
+}
+
 string CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
@@ -657,18 +670,6 @@ string CGUIInfoManager::GetLabel(int info)
   case PLAYER_VOLUME:
     strLabel.Format("%2.1f dB", (float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel) * 0.01f);
     break;
-  case PLAYER_TIME:
-    strLabel = GetCurrentPlayTime();
-    break;
-  case PLAYER_TIME_REMAINING:
-    strLabel = GetCurrentPlayTimeRemaining();
-    break;
-  case PLAYER_DURATION:
-    if (g_application.IsPlayingAudio())
-      strLabel = GetMusicLabel(info);
-    else
-      strLabel = GetVideoLabel(info);
-    break;
   case PLAYER_CHAPTER:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel.Format("%02d", g_application.m_pPlayer->GetChapter());
@@ -682,11 +683,7 @@ string CGUIInfoManager::GetLabel(int info)
   case MUSICPLAYER_ARTIST:
   case MUSICPLAYER_GENRE:
   case MUSICPLAYER_YEAR:
-  case MUSICPLAYER_TIME:
-  case MUSICPLAYER_TIME_SPEED:
-  case MUSICPLAYER_TIME_REMAINING:
   case MUSICPLAYER_TRACK_NUMBER:
-  case MUSICPLAYER_DURATION:
   case MUSICPLAYER_BITRATE:
   case MUSICPLAYER_PLAYLISTLEN:
   case MUSICPLAYER_PLAYLISTPOS:
@@ -704,10 +701,6 @@ string CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_GENRE:
   case VIDEOPLAYER_DIRECTOR:
   case VIDEOPLAYER_YEAR:
-  case VIDEOPLAYER_TIME:
-  case VIDEOPLAYER_TIME_REMAINING:
-  case VIDEOPLAYER_TIME_SPEED:
-  case VIDEOPLAYER_DURATION:
   case VIDEOPLAYER_PLAYLISTLEN:
   case VIDEOPLAYER_PLAYLISTPOS:
   case VIDEOPLAYER_PLOT:
@@ -1066,13 +1059,6 @@ string CGUIInfoManager::GetLabel(int info)
         strLabel = strLabel.Left(strLabel.size() - 4);
         strLabel[0] = toupper(strLabel[0]);
       }
-    }
-    break;
-  case PLAYER_SEEKTIME:
-    {
-      CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-      if (seekBar)
-        strLabel = seekBar->GetSeekTimeLabel();
     }
     break;
   case LISTITEM_LABEL:
@@ -1696,6 +1682,33 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     if (item)
       return GetItemImage(item, info.m_info);
   }
+  else if (info.m_info == PLAYER_TIME)
+  {
+    return GetCurrentPlayTime((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_TIME_REMAINING)
+  {
+    return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_TIME_SPEED)
+  {
+    CStdString strTime;
+    if (g_application.GetPlaySpeed() != 1)
+      strTime.Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.m_data1).c_str(), g_application.GetPlaySpeed());
+    else
+      strTime = GetCurrentPlayTime();
+    return strTime;
+  }
+  else if (info.m_info == PLAYER_DURATION)
+  {
+    return GetDuration((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_SEEKTIME)
+  {
+    CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+    if (seekBar)
+      return seekBar->GetSeekTimeLabel((TIME_FORMAT)info.m_data1);
+  }
   return StringUtils::EmptyString;
 }
 
@@ -1763,6 +1776,26 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 {
   CDateTime time=CDateTime::GetCurrentDateTime();
   return time.GetAsLocalizedTime(bSeconds);
+}
+
+CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
+{
+  CStdString strDuration;
+  if (g_application.IsPlayingAudio() && m_currentFile.HasMusicInfoTag())
+  {
+    const CMusicInfoTag& tag = *m_currentFile.GetMusicInfoTag();
+    if (tag.GetDuration() > 0)
+      StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration, format);
+  }
+  if (g_application.IsPlayingVideo() && !m_currentMovieDuration.IsEmpty())
+    return m_currentMovieDuration;  // for tuxbox
+  if (strDuration.IsEmpty())
+  {
+    unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
+    if (iTotal > 0)
+      StringUtils::SecondsToTimeString(iTotal, strDuration, format);
+  }
+  return strDuration;
 }
 
 CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
@@ -1874,20 +1907,6 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_GENRE: 
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
-  case MUSICPLAYER_TIME:
-    return GetCurrentPlayTime();
-  case MUSICPLAYER_TIME_REMAINING:
-    return GetCurrentPlayTimeRemaining();
-  case MUSICPLAYER_TIME_SPEED:
-    {
-      CStdString strTime;
-      if (g_application.GetPlaySpeed() != 1)
-        strTime.Format("%s (%ix)", GetCurrentPlayTime().c_str(), g_application.GetPlaySpeed());
-      else
-        strTime = GetCurrentPlayTime();
-      return strTime;
-    }
-    break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
@@ -1896,22 +1915,6 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
         strTrack.Format("%02i", tag.GetTrackNumber());
         return strTrack;
       }
-    }
-    break;
-  case MUSICPLAYER_DURATION:
-  case PLAYER_DURATION:
-    {
-      CStdString strDuration;
-      if (tag.GetDuration() > 0)
-        StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration);
-      else
-      {
-        unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
-        if (iTotal > 0)
-          StringUtils::SecondsToTimeString(iTotal, strDuration);
-
-      }
-      return strDuration;
     }
     break;
   case MUSICPLAYER_PLAYLISTLEN:
@@ -2002,10 +2005,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   
   switch (item)
   {
-  case VIDEOPLAYER_DURATION:
-    if (m_currentMovieDuration.IsEmpty())
-      return GetVideoLabel(PLAYER_DURATION);
-    return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
     return m_currentFile.GetVideoInfoTag()->m_strTitle;
     break;
@@ -2070,29 +2069,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     break;
   case VIDEOPLAYER_TVSHOW:
     return m_currentFile.GetVideoInfoTag()->m_strShowTitle;
-  case VIDEOPLAYER_TIME:
-    return GetCurrentPlayTime();
-  case VIDEOPLAYER_TIME_REMAINING:
-    return GetCurrentPlayTimeRemaining();
-  case VIDEOPLAYER_TIME_SPEED:
-    {
-      CStdString strTime;
-      if (g_application.GetPlaySpeed() != 1)
-        strTime.Format("%s (%ix)", GetCurrentPlayTime().c_str(), g_application.GetPlaySpeed());
-      else
-        strTime = GetCurrentPlayTime();
-      return strTime;
-    }
-    break;
-  case PLAYER_DURATION:
-    {
-      CStdString strDuration = "00:00:00";
-      unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
-      if (iTotal > 0)
-        StringUtils::SecondsToTimeString(iTotal, strDuration, true);
-      return strDuration;
-    }
-    break;
+
   case VIDEOPLAYER_PLAYLISTLEN:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
@@ -2109,7 +2086,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   return "";
 }
 
-__int64 CGUIInfoManager::GetPlayTime()
+__int64 CGUIInfoManager::GetPlayTime() const
 {
   if (g_application.IsPlaying())
   {
@@ -2120,38 +2097,38 @@ __int64 CGUIInfoManager::GetPlayTime()
   return 0;
 }
 
-CStdString CGUIInfoManager::GetCurrentPlayTime()
+CStdString CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
 {
   CStdString strTime;
   if (g_application.IsPlayingAudio())
-    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime);
+    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
   else if (g_application.IsPlayingVideo())
-    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, true);
+    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
   return strTime;
 }
 
-int CGUIInfoManager::GetTotalPlayTime()
+int CGUIInfoManager::GetTotalPlayTime() const
 {
   int iTotalTime = (int)g_application.GetTotalTime();
   return iTotalTime > 0 ? iTotalTime : 0;
 }
 
-int CGUIInfoManager::GetPlayTimeRemaining()
+int CGUIInfoManager::GetPlayTimeRemaining() const
 {
   int iReverse = GetTotalPlayTime() - (int)g_application.GetTime();
   return iReverse > 0 ? iReverse : 0;
 }
 
-CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
+CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) const
 {
   CStdString strTime;
   int timeRemaining = GetPlayTimeRemaining();
   if (timeRemaining)
   {
     if (g_application.IsPlayingAudio())
-      StringUtils::SecondsToTimeString(timeRemaining, strTime);
+      StringUtils::SecondsToTimeString(timeRemaining, strTime, format);
     else if (g_application.IsPlayingVideo())
-      StringUtils::SecondsToTimeString(timeRemaining, strTime, true);
+      StringUtils::SecondsToTimeString(timeRemaining, strTime, format);
   }
   return strTime;
 }
