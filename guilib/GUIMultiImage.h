@@ -18,7 +18,7 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
@@ -45,6 +45,7 @@ protected:
   CStopWatch m_fadeTimer;
   DWORD m_timePerImage;
   DWORD m_fadeTime;
+  DWORD m_timeToPauseAtEnd;
   bool m_randomized;
   bool m_loop;
   CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
