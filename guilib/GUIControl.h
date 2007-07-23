@@ -250,6 +250,7 @@ protected:
   vector<CAnimation> m_animations;
   CPoint m_camera;
   bool m_hasCamera;
+  TransformMatrix m_transform;
 };
 
 #endif
