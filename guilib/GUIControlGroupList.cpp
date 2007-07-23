@@ -239,6 +239,8 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
 {
   if (!CGUIControl::CanFocus()) return false;
   float pos = 0;
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     const CGUIControl *child = *it;
@@ -248,7 +250,7 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
       { // we're on screen
         float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
         float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
-        if (child->CanFocusFromPoint(point - CPoint(offsetX, offsetY), control, controlPoint))
+        if (child->CanFocusFromPoint(controlCoords - CPoint(offsetX, offsetY), control, controlPoint))
           return true;
       }
       pos += Size(child) + m_itemGap;
@@ -261,6 +263,8 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
 void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
 {
   float pos = 0;
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
@@ -268,8 +272,8 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
-        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posX + pos - m_offset) : CPoint(m_posY + pos - m_offset, m_posY);
-        child->UnfocusFromPoint(point - offset);
+        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + pos - m_offset) : CPoint(m_posX + pos - m_offset, m_posY);
+        child->UnfocusFromPoint(controlCoords - offset);
       }
       pos += Size(child) + m_itemGap;
     }
