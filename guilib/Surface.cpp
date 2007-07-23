@@ -18,8 +18,8 @@ Display* CSurface::s_dpy = 0;
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 
-void (*_glXSwapIntervalMESA)(GLint) = 0;
-void (*_glXSwapIntervalSGI)(GLint) = 0;
+int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
+int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 
 #ifdef HAS_SDL
@@ -139,7 +139,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     {    
       fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
     }
-  } else {
+  } 
+  else 
+  {
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
   if (fbConfigs==NULL) 
@@ -420,11 +422,11 @@ void CSurface::EnableVSync(bool enable)
 
   if (enable)
   {
-    OutputDebugString("Enabling VSYNC");
+    OutputDebugString("Enabling VSYNC\n");
   }
   else
   {
-    OutputDebugString("Disabling VSYNC");
+    OutputDebugString("Disabling VSYNC\n");
   }
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
@@ -435,16 +437,6 @@ void CSurface::EnableVSync(bool enable)
     putenv("__GL_SYNC_TO_VBLANK");
       switch(m_iVSyncMode)
       {
-      case 1:
-        if (_glXSwapIntervalSGI)
-          _glXSwapIntervalSGI(0);
-        break;
-
-      case 2:
-        if (_glXSwapIntervalMESA)
-          _glXSwapIntervalMESA(0);
-        break;
-
       case 3:
         if (_wglSwapIntervalEXT)
           _wglSwapIntervalEXT(0);
@@ -458,13 +450,13 @@ void CSurface::EnableVSync(bool enable)
     if (1 /*strstr("NVIDIA", GetGLVendor().c_str())==0*/)
     {
 #ifdef HAS_GLX
-      if (!_glXSwapIntervalSGI)
+      if (!_glXWaitVideoSyncSGI)
       {
-        _glXSwapIntervalSGI = (void (*)(GLint))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
+        _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
       }
-      else if (!_glXSwapIntervalMESA)
+      if (!_glXGetVideoSyncSGI)
       {
-        _glXSwapIntervalMESA = (void (*)(GLint))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
+        _glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
       }
 #elif defined (_WIN32)
       if (!_wglSwapIntervalEXT)
@@ -472,17 +464,10 @@ void CSurface::EnableVSync(bool enable)
         _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
       }
 #endif
-      if (_glXSwapIntervalSGI)
+      if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI)
       {
         m_iVSyncMode = 1;       
         m_bVSync = enable;
-        _glXSwapIntervalSGI(1);
-      }
-      else if (_glXSwapIntervalMESA)
-      { 
-        m_iVSyncMode = 2;
-        m_bVSync = enable; 
-        _glXSwapIntervalMESA(1);
       }
       else if (_wglSwapIntervalEXT)
       {
@@ -504,8 +489,17 @@ void CSurface::Flip()
 {
   if (m_bOK && m_bDoublebuffer) 
   {
+    int ret;
 #ifdef HAS_GLX
+    if (m_iVSyncMode == 1)
+    {
+      glFinish();
+      unsigned int vCount;
+      ret = _glXGetVideoSyncSGI(&vCount);
+      ret = _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
+    }
     glXSwapBuffers(s_dpy, m_glWindow);
+    glFinish();
 #elif defined(HAS_SDL_OPENGL)
     SDL_GL_SwapBuffers();
 #else
