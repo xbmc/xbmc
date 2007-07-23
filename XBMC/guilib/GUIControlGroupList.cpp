@@ -237,6 +237,7 @@ void CGUIControlGroupList::ScrollTo(float offset)
 
 bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
+  if (!CGUIControl::CanFocus()) return false;
   float pos = 0;
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
