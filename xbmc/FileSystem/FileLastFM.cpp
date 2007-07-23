@@ -470,7 +470,7 @@ bool CFileLastFM::RetreiveMetaData()
     {
       Crc32 crc;
       crc.ComputeFromLowerCase(coverUrl);
-      cachedFile.Format("%s\\%08x.tbn", g_settings.GetLastFMThumbFolder().c_str(), (unsigned __int32) crc);
+      cachedFile.Format(_P("%s\\%08x.tbn"), g_settings.GetLastFMThumbFolder().c_str(), (unsigned __int32) crc);
       if (!CFile::Exists(cachedFile))
       {
         http.Download(coverUrl, cachedFile);
