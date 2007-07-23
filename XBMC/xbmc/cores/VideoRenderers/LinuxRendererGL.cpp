@@ -555,6 +555,8 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   // if we don't have a shader, fallback to SW YUV2RGB for now
   
+  g_graphicsContext.BeginPaint(m_pBuffer);
+
   if (m_renderMethod & RENDER_SW)
   {
     struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
@@ -565,10 +567,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
     m_dllSwScale.sws_freeContext(context);
-  }
-  
-  
-  g_graphicsContext.BeginPaint(m_pBuffer);
+  }   
 
   static int imaging = -1;
   static GLfloat brightness = 0;
