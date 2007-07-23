@@ -8,7 +8,7 @@
 
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_currentPath = m_texturePath = strTexturePath;
@@ -16,6 +16,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
   CUtil::AddSlashAtEnd(m_texturePath);
   m_currentImage = 0;
   m_timePerImage = timePerImage;
+  m_timeToPauseAtEnd = timeToPauseAtEnd;
   m_fadeTime = fadeTime;
   m_randomized = randomized;
   m_loop = loop;
@@ -82,7 +83,10 @@ void CGUIMultiImage::Render()
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
-      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > m_timePerImage)
+      DWORD timeToShow = m_timePerImage;
+      if (0 == nextImage) // last image should be paused for a bit longer if that's what the skinner wishes.
+        timeToShow += m_timeToPauseAtEnd;
+      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow)
       {
         m_imageTimer.Stop();
         // grab a new image
