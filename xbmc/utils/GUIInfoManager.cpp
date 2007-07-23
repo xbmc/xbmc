@@ -489,7 +489,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int pos = strTest.Find(",");
       if (pos >= 0)
       {
-        int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 13));
+        int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 12));
         int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
         return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset, compareString));
       }
