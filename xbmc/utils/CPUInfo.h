@@ -19,7 +19,7 @@ public:
   int getCPUCount() { return m_cpuCount; }
   float getCPUFrequency() { return m_cpuFreq; }
   CTemperature getTemperature();  
-  std::string getCPUModel() { return m_cpuModel; }
+  std::string& getCPUModel() { return m_cpuModel; }
   
 private:
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,
