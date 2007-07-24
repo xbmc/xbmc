@@ -48,6 +48,7 @@ CCPUInfo::CCPUInfo(void)
         }
       }
     }
+    fclose(cpuinfo);
   }
   else
   {
