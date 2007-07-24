@@ -450,7 +450,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       {
         CLog::Log(LOGERROR, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
         CLog::Log(LOGERROR, "GL: Reverting to POT textures");
-	m_renderMethod |= RENDER_POT;
+        m_renderMethod |= RENDER_POT;
         return true;
       }
       CLog::Log(LOGINFO, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
@@ -576,24 +576,26 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
   contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
 
-  if (m_renderMethod & RENDER_SW) {
+  if (m_renderMethod & RENDER_SW) 
+  {
     if (imaging==-1)
     {
       imaging = 0;
       if (glewIsSupported("GL_ARB_imaging"))
       {
-	CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
-	imaging = 1;
+        CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+        imaging = 1;
       }
-      else {
-	int maj=0, min=0;
-	g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
-	if (maj>=2)
-	{
-	  imaging = 1;
-	} else if (min>=2) {
-	  imaging = 1;
-	}
+      else 
+      {
+        int maj=0, min=0;
+        g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
+        if (maj>=2)
+        {
+          imaging = 1;
+        } else if (min>=2) {
+          imaging = 1;
+        }
       }
     }
     if (imaging)
@@ -675,9 +677,9 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (clear) 
   {
     glClearColor(m_clearColour&0xff000000,
-		 m_clearColour&0x00ff0000,
-		 m_clearColour&0x0000ff00,
-		 0);
+                 m_clearColour&0x00ff0000,
+                 m_clearColour&0x0000ff00,
+                 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,0);
     if (alpha<255) 
@@ -800,7 +802,7 @@ unsigned int CLinuxRendererGL::PreInit()
     return false;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) 
-	CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
+        CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   LoadShaders();
@@ -1320,9 +1322,9 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
     {
       if( fields[f][p] )
       {
-	if (glIsTexture(fields[f][p]))
-	  glDeleteTextures(1, &fields[f][p]);
-	fields[f][p] = 0;
+        if (glIsTexture(fields[f][p]))
+          glDeleteTextures(1, &fields[f][p]);
+        fields[f][p] = 0;
       }
     }
   }
@@ -1386,8 +1388,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     {
       if (!glIsTexture(fields[f][p])) 
       {
-	glGenTextures(1, &fields[f][p]);
-	VerifyGLState();
+        glGenTextures(1, &fields[f][p]);
+        VerifyGLState();
       }
     }
   }

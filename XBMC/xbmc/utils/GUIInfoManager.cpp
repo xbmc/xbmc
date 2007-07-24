@@ -805,7 +805,6 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_DVD_FIRMWARE:
   case SYSTEM_HDD_TEMPERATURE:
   case SYSTEM_XBOX_MODCHIP:
-  case SYSTEM_CPUFREQUENCY:
   case SYSTEM_XBOX_VERSION:
   case SYSTEM_AV_PACK_INFO:
   case SYSTEM_VIDEO_ENCODER_INFO:
@@ -821,6 +820,7 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_MPLAYER_VERSION:
   case SYSTEM_KERNEL_VERSION:
 #endif
+  case SYSTEM_CPUFREQUENCY:
   case SYSTEM_INTERNET_STATE:
   case SYSTEM_UPTIME:
   case SYSTEM_TOTALUPTIME:
@@ -2360,10 +2360,18 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   switch(info)
   {
     case SYSTEM_CPU_TEMPERATURE:
+#ifdef _LINUX
+      text.Format("%s %s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"", g_cpuInfo.getCPUModel().c_str());
+#else
       text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.ToString());
+#endif
       break;
     case SYSTEM_GPU_TEMPERATURE:
+#ifdef HAS_SDL_OPENGL
+      text.Format("%s %s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"", g_graphicsContext.getScreenSurface()->GetGLRenderer().c_str());
+#else
       text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.ToString());
+#endif
       break;
     case SYSTEM_FAN_SPEED:
       text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
