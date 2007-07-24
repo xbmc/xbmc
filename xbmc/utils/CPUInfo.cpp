@@ -1,4 +1,8 @@
 #include "CPUInfo.h"
+#include <string>
+#include <string.h>
+
+using namespace std;
 
 // In seconds
 #define MINIMUM_TIME_BETWEEN_READS 3
@@ -11,6 +15,45 @@ CCPUInfo::CCPUInfo(void)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR1/temperature", "r");
   m_lastUsedPercentage = 0;
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);  
+
+  FILE* cpuinfo = fopen("/proc/cpuinfo", "r");
+  m_cpuCount = 0;
+  m_cpuFreq = 0;
+  if (cpuinfo)
+  {
+    char buffer[512];
+
+    while (fgets(buffer, sizeof(buffer), cpuinfo))
+    {
+      if (strncmp(buffer, "processor", strlen("processor"))==0)
+      {
+        m_cpuCount++;
+      }
+      else if (strncmp(buffer, "cpu MHz", strlen("cpu MHz"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          sscanf(needle, "%f", &m_cpuFreq);
+        }
+      }
+      else if (strncmp(buffer, "model name", strlen("model name"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuModel = needle;
+        }
+      }
+    }
+  }
+  else
+  {
+    m_cpuCount = 1;
+    m_cpuModel = "Unknown";
+  }
 }
 
 CCPUInfo::~CCPUInfo()
