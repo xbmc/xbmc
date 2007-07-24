@@ -416,7 +416,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fMin = 0.0f;
   float fMax = 1.0f;
   float fInterval = 0.1f;
-  bool bReverse = false;
+  bool bReverse = true;
   CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   float rMin = 0.0f;
   float rMax = 100.0f;
