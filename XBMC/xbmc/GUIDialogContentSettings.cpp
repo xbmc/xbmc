@@ -301,6 +301,8 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   database.Open();
   int iFound;
   database.GetScraperForPath(strDirectory,scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive,iFound);
+  if (iFound == 2 && scraper.strContent.Equals("tvshows"))
+    bUseDirNames = true;
   bool bResult = Show(scraper,bRunScan,bScanRecursive,bUseDirNames);
   if (bResult)
   {
