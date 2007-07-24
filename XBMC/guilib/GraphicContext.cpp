@@ -762,6 +762,12 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   float w = viewport.Width*0.5f;
   float h = viewport.Height*0.5f;
 
+  // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
+  // here.
+  D3DXMATRIX mtxWorld;
+  D3DXMatrixIdentity(&mtxWorld);
+  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+
   // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
   // position.
   D3DXMATRIX flipY, translate, mtxView;
