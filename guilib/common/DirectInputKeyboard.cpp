@@ -2,7 +2,7 @@
 #include "DirectInputKeyboard.h"
 #include "DirectInput.h"
 
-#define FRAME_DELAY 5
+#define FRAME_DELAY 8
 
 CKeyboard g_Keyboard; // global
 
@@ -57,7 +57,7 @@ void CKeyboard::Update()
     m_bAlt = false;
     m_VKey = 0;
 
-    // only a press every 2nd frame please
+    // only a press every 3rd frame please
     if (m_keyDownLastFrame > 0)
     {
       m_keyDownLastFrame--;
