@@ -7,6 +7,14 @@
 #include "../Application.h"
 #include "../FileSystem/FileSmb.h"
 #include "../lib/libscrobbler/scrobbler.h"
+#ifdef _LINUX
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <netinet/in.h>
+#include <arpa/nameser.h>
+#include <resolv.h>
+#endif
+#include <string>
 
 // global network variable
 CNetwork g_network;
@@ -287,6 +295,72 @@ void CNetwork::NetworkUp()
   m_networkinfo.DHCP = !(status.dhcp == 0);
 #endif
 
+#ifdef _LINUX
+  char buf[1024];
+  struct ifconf ifc;
+  struct ifreq *ifr;
+  int sock;
+  int nInterfaces;
+  int i;
+
+  // get a socket handle
+  sock = socket(AF_INET, SOCK_DGRAM, 0);
+  if(sock)
+  {
+    // get list of interfaces
+    ifc.ifc_len = sizeof(buf);
+    ifc.ifc_buf = buf;
+    if(ioctl(sock, SIOCGIFCONF, &ifc) >= 0)
+    {  
+      ifr = ifc.ifc_req;
+      nInterfaces = ifc.ifc_len / sizeof(struct ifreq);
+      for(i = 0; i < nInterfaces; i++)
+      {
+        struct ifreq *iface = &ifr[i];
+        
+        strncpy(m_networkinfo.ip, inet_ntoa(((struct sockaddr_in *)&iface->ifr_addr)->sin_addr), sizeof(m_networkinfo.ip));
+        strncpy(m_networkinfo.subnet, inet_ntoa(((struct sockaddr_in *)&iface->ifr_netmask)->sin_addr), sizeof(m_networkinfo.subnet));
+        if (ioctl(sock, SIOCGIFNETMASK, iface) >= 0)
+        {
+          strncpy(m_networkinfo.subnet, inet_ntoa(((struct sockaddr_in *)&iface->ifr_netmask)->sin_addr), sizeof(m_networkinfo.subnet));
+        }
+
+        if(ioctl(sock, SIOCGIFFLAGS, iface) >= 0)
+        {
+          if ((iface->ifr_flags & IFF_UP) && (!(iface->ifr_flags & IFF_LOOPBACK)))
+          {
+            if (strlen(m_networkinfo.ip)>0 && strlen(m_networkinfo.subnet)>0 && strcmp(m_networkinfo.ip, "127.0.0.1")!=0)
+            {
+              std::string cmd = "ip route list | grep default | grep " + string(iface->ifr_name) + string(" | sed -e 's/default via //g' | sed -e 's/ .*//g'");
+              FILE* pipe = popen(cmd.c_str(), "r");
+              if (pipe)
+              {
+                char buffer[512];
+                memset(buffer, 0, sizeof(buffer)*sizeof(char));
+                fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+                pclose(pipe);
+                if (strlen(buffer)>0)                  
+                {
+                  char gateway[512];
+                  sscanf(buffer, "%s", gateway);
+                  strncpy(m_networkinfo.gateway, gateway, sizeof(m_networkinfo.gateway));
+                }
+              }
+              res_init();
+              if (MAXNS>0)
+                strncpy(m_networkinfo.DNS1, inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[0])->sin_addr), sizeof(m_networkinfo.DNS1));
+              if (MAXNS>1)
+              strncpy(m_networkinfo.DNS2, inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[1])->sin_addr), sizeof(m_networkinfo.DNS2));
+              break; 
+            }
+          }
+        }
+      }
+    }
+    close(sock);
+  }
+#endif
+  
   m_networkup = true;
   
   g_applicationMessenger.NetworkMessage(SERVICES_UP, 0);
