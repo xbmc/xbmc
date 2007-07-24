@@ -1788,6 +1788,8 @@ CStdString CGUIInfoManager::GetTime(TIME_FORMAT format) const
 
 CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
 {
+  const CStdString timeFormat = g_langInfo.GetTimeFormat();
+  bool use12hourclock = timeFormat.Find('h') != -1;
   switch (format)
   {
   case TIME_FORMAT_GUESS:
@@ -1798,10 +1800,10 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime("mm", true);
   case TIME_FORMAT_MM_SS:
     return time.GetAsLocalizedTime("mm:ss", true);
-  case TIME_FORMAT_HH:
-    return time.GetAsLocalizedTime("hh", false);
+  case TIME_FORMAT_HH:  // this forces it to a 12 hour clock
+    return time.GetAsLocalizedTime(use12hourclock ? "h" : "H", false);
   case TIME_FORMAT_HH_MM:
-    return time.GetAsLocalizedTime("hh:mm", false);
+    return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "H:mm", false);
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
   }
