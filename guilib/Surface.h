@@ -62,6 +62,7 @@ public:
 #endif
 #ifdef HAS_SDL_OPENGL
   std::string& GetGLVendor() { return s_glVendor; }
+  std::string& GetGLRenderer() { return s_glRenderer; }
   void GetGLVersion(int& maj, int&min);
 #endif
 
@@ -91,6 +92,7 @@ public:
 #endif
   static bool b_glewInit;
   static std::string s_glVendor;
+  static std::string s_glRenderer;
 
   SDL_Surface* m_SDLSurface;
 };
