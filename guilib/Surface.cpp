@@ -443,7 +443,7 @@ void CSurface::EnableVSync(bool enable)
       {
       case 1:
         if (_glXSwapIntervalSGI)
-          _glXSwapIntervalSGI(0);
+          _glXSwapIntervalSGI(1);
         break;
         
       case 2:
