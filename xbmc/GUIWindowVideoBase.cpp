@@ -999,10 +999,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       SScraperInfo info;
       SScanSettings settings;
       GetScraperForItem(item, info, settings);
+      CStdString strPath = item->m_strPath;
       if (item->IsVideoDb())
-        OnScan(item->GetVideoInfoTag()->m_strPath,info,settings);
-      else
-        OnScan(item->m_strPath,info,settings);
+        strPath = item->GetVideoInfoTag()->m_strPath;
+      
+      m_database.SetPathHash(strPath,""); // to force scan
+      OnScan(strPath,info,settings);
+
       return true;
     }
   case CONTEXT_BUTTON_DELETE:
