@@ -457,7 +457,9 @@ void CSurface::EnableVSync(bool enable)
         break;
       }
     m_iVSyncMode = 0;
+    m_bVSync=enable;
   }
+
   if (IsValid() && enable)
   {
 #ifdef HAS_GLX
