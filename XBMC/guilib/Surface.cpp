@@ -458,7 +458,7 @@ void CSurface::EnableVSync(bool enable)
       }
     m_iVSyncMode = 0;
   }
-  if (IsValid())
+  if (IsValid() && enable)
   {
 #ifdef HAS_GLX
     // Obtain function pointers
@@ -489,13 +489,13 @@ void CSurface::EnableVSync(bool enable)
     {
       m_iVSyncMode = 1;
       m_bVSync = enable;
-      _glXSwapIntervalSGI(1);
+      _glXSwapIntervalSGI(2);
     }
     else if (_glXSwapIntervalMESA)
     {
       m_iVSyncMode = 2;
       m_bVSync = enable;
-      _glXSwapIntervalMESA(1);
+      _glXSwapIntervalMESA(2);
     }
     else if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI)
     {
@@ -506,7 +506,7 @@ void CSurface::EnableVSync(bool enable)
     {
       m_iVSyncMode = 3;
       m_bVSync = enable; 
-      _wglSwapIntervalEXT(1);
+      _wglSwapIntervalEXT(2);
     }
     else
     {
