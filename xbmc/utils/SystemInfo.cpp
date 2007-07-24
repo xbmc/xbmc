@@ -22,6 +22,8 @@
 #include "SystemInfo.h"
 #ifndef _LINUX
 #include <conio.h>
+#else
+#include <sys/utsname.h>
 #endif
 #include "../Settings.h"
 #include "../utils/log.h"
@@ -78,6 +80,11 @@ void CBackgroundSystemInfoLoader::GetInformation()
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
+#ifdef _LINUX
+  callback->m_cpufrequency    = callback->GetCPUFreqInfo();
+  callback->m_kernelversion   = callback->GetKernelVersion();
+  callback->m_bRequestDone = true;
+#endif
 #ifdef HAS_XBOX_HARDWARE
   if (!callback->m_hddRequest)
     callback->GetHDDInfo(callback->m_HDDModel, 
@@ -104,14 +111,6 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
 #ifdef HAS_XBOX_HARDWARE
   case SYSTEM_MPLAYER_VERSION:
     if (m_bRequestDone) return m_mplayerversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case SYSTEM_KERNEL_VERSION:
-    if (m_bRequestDone) return m_kernelversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case SYSTEM_CPUFREQUENCY:
-    if (m_bRequestDone) return m_cpufrequency;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_VERSION:
@@ -223,6 +222,14 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     return m_temp;
   }
 #endif
+  case SYSTEM_KERNEL_VERSION:
+    if (m_bRequestDone) return m_kernelversion;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  case SYSTEM_CPUFREQUENCY:
+    if (m_bRequestDone) return m_cpufrequency;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
   case SYSTEM_UPTIME:
     if (!m_systemuptime.IsEmpty()) return m_systemuptime;
     else return CInfoLoader::BusyInfo(dwInfo);
@@ -883,9 +890,10 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   }
   return false;
 }
-#ifdef HAS_XBOX_HARDWARE
+
 double CSysInfo::GetCPUFrequency()
 {
+#ifdef HAS_XBOX_HARDWARE
   DWORD Twin_fsb, Twin_result;
   double Tcpu_fsb, Tcpu_result, Fcpu, CPUSpeed;
 
@@ -904,8 +912,12 @@ double CSysInfo::GetCPUFrequency()
 
   CLog::Log(LOGDEBUG, "- CPU Speed: %4.6fMHz",CPUSpeed);
   return CPUSpeed;
+#elif defined (_LINUX)
+  return double (g_cpuInfo.getCPUFrequency());
+#endif
 }
 
+#ifdef HAS_XBOX_HARDWARE
 double CSysInfo::RDTSC(void)
 {
   unsigned long a, b;
@@ -921,6 +933,7 @@ double CSysInfo::RDTSC(void)
   x+=a;
   return x;
 }
+
 CStdString CSysInfo::GetModCHIPDetected()
 {
   CXBoxFlash *mbFlash=new CXBoxFlash(); //Max description Leng= 40
@@ -1131,6 +1144,7 @@ CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
   strReturn.Format("%s", md5sumstring);
   return strReturn;
 }
+
 CStdString CSysInfo::GetAVPackInfo()
 {  
   //AV-Pack Detection PICReg(0x04)
@@ -1147,6 +1161,7 @@ CStdString CSysInfo::GetAVPackInfo()
   else if (cAVPack == XKUtils::AV_PACK_Missing) return g_localizeStrings.Get(13292)+" "+"Missing or Unknown";
   else return g_localizeStrings.Get(13292)+" "+"Unknown";
 }
+
 CStdString CSysInfo::GetVideoEncoder()
 {
   int iTemp;
@@ -1171,6 +1186,7 @@ CStdString CSysInfo::GetVideoEncoder()
     return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
   }
 }
+
 CStdString CSysInfo::SmartXXModCHIP()
 {
   // SmartXX ModChip Detection
@@ -1223,22 +1239,7 @@ CStdString CSysInfo::GetMPlayerVersion()
   mplayerDll=NULL;
   return strVersion;
 }
-CStdString CSysInfo::GetKernelVersion()
-{
-  int ikrnl = XboxKrnlVersion->Qfe & 67;
-  CLog::Log(LOGDEBUG, "- XBOX Kernel Qfe= %i", XboxKrnlVersion->Qfe);
-  CLog::Log(LOGDEBUG, "- XBOX Kernel Drive FG result= %i", ikrnl);
-  CStdString strKernel;
-  strKernel.Format("%s %u.%u.%u.%u",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
-  return strKernel;
-}
-CStdString CSysInfo::GetCPUFreqInfo()
-{
-  CStdString strCPUFreq;
-  double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
-  return strCPUFreq;
-}
+
 CStdString CSysInfo::GetXBVerInfo()
 {
   CStdString strXBoxVer;
@@ -1249,6 +1250,7 @@ CStdString CSysInfo::GetXBVerInfo()
     strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
   return strXBoxVer;
 }
+
 CStdString CSysInfo::GetUnits(int iFrontPort)
 {
   // Get the Connected Units on the Front USB Ports!
@@ -1319,6 +1321,7 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
 
   return strReturn;
 }
+
 CStdString CSysInfo::GetMACAddress()
 {
   char macaddress[20] = "";
@@ -1329,6 +1332,7 @@ CStdString CSysInfo::GetMACAddress()
   strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
   return strMacAddress;
 }
+
 CStdString CSysInfo::GetXBOXSerial(bool bLabel)
 {
   CHAR serial[SERIALNUMBER_SIZE + 1] = "";
@@ -1341,6 +1345,7 @@ CStdString CSysInfo::GetXBOXSerial(bool bLabel)
     strXBOXSerial.Format("%s %s",g_localizeStrings.Get(13289), serial);
   return strXBOXSerial;
 }
+
 CStdString CSysInfo::GetXBProduceInfo()
 {
   CStdString serial = GetXBOXSerial(false);
@@ -1380,6 +1385,7 @@ CStdString CSysInfo::GetXBProduceInfo()
     info[0x00]);
   return strXBProDate;
 }
+
 CStdString CSysInfo::GetVideoXBERegion()
 {
   //Print Video Standard & XBE Region...
@@ -1421,6 +1427,7 @@ CStdString CSysInfo::GetVideoXBERegion()
   strVideoXBERegion.Format("%s %s, %s", g_localizeStrings.Get(13293), VideoStdString, XBEString);
   return strVideoXBERegion;
 }
+
 CStdString CSysInfo::GetDVDZone()
 {
   //Print DVD [Region] Zone ..
@@ -1441,6 +1448,7 @@ CStdString CSysInfo::GetXBLiveKey()
   strXBLiveKey.Format("%s %s",g_localizeStrings.Get(13298), livekey);
   return strXBLiveKey;
 }
+
 CStdString CSysInfo::GetHDDKey()
 {
   //Print HDD Key...
@@ -1516,11 +1524,42 @@ CStdString CSysInfo::GetTrayState()
   return trayState;
 }
 #endif
+
+CStdString CSysInfo::GetKernelVersion()
+{
+#ifdef HAS_XBOX_HARDWARE
+  int ikrnl = XboxKrnlVersion->Qfe & 67;
+  CLog::Log(LOGDEBUG, "- XBOX Kernel Qfe= %i", XboxKrnlVersion->Qfe);
+  CLog::Log(LOGDEBUG, "- XBOX Kernel Drive FG result= %i", ikrnl);
+  CStdString strKernel;
+  strKernel.Format("%s %u.%u.%u.%u",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
+  return strKernel;
+#elif defined (_LINUX)
+  struct utsname un;
+  if (uname(&un)==0)
+  {
+    CStdString strKernel;
+    strKernel.Format("%s %s %s %s %s",g_localizeStrings.Get(13283), un.sysname, un.release, un.version, un.machine);
+    return strKernel;
+  }
+  return "";
+#endif
+}
+
+CStdString CSysInfo::GetCPUFreqInfo()
+{
+  CStdString strCPUFreq;
+  double CPUFreq = GetCPUFrequency();
+  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
+  return strCPUFreq;
+}
+
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 {
  int percent;
  return GetHddSpaceInfo( percent, drive, shortText);
 }
+
 CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 {
   int total, totalFree, totalUsed, percentFree, percentused;
@@ -1745,6 +1784,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   }
   return strSystemUptime;
 }
+
 CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!

@@ -17,6 +17,7 @@ Display* CSurface::s_dpy = 0;
 #endif
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
+std::string CSurface::s_glRenderer = "";
 
 int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
@@ -226,6 +227,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
               if (s_glVendor.length()==0)
               {
                 s_glVendor = (const char*)glGetString(GL_VENDOR);
+                s_glRenderer = (const char*)glGetString(GL_RENDERER);
                 CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
               }
       }
@@ -261,6 +263,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
             if (s_glVendor.length()==0)
             {
               s_glVendor = (const char*)glGetString(GL_VENDOR);
+              s_glRenderer = (const char*)glGetString(GL_RENDERER);
               CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
             }
     }
