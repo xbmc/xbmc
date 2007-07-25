@@ -71,22 +71,24 @@ public:
   QuadTweener(float a = 1.0f) { _a=a; }
   virtual float Tween(float time, float start, float change, float duration)
   {
-    time /= duration;
     switch (m_tweenerType)
       {
       case EASE_IN:
+        time /= duration;
         return change * time * (_a * time + 1 - _a) + start;
         break;
 
       case EASE_OUT:
+        time /= duration;
         return -change * time * (_a * time - 1 - _a) + start;
         break;
 
       case EASE_INOUT:
-        if (time/2 < 1)
-          return (change/2) * time * (_a * time + 1 - _a) + start;
+        time /= duration/2;
+        if (time < 1)
+          return (change) * time * (_a * time + 1 - _a) + start;
         time--;
-        return (-change/2) * time * (_a * time - 1 - _a) + start;
+        return (-change) * time * (_a * time - 1 - _a) + start;
         break;
       }
     return change * time * time + start;
@@ -101,20 +103,22 @@ class CubicTweener : public Tweener
 public:
   virtual float Tween(float time, float start, float change, float duration)
   {
-    time /= duration;
     switch (m_tweenerType)
       {
       case EASE_IN:
+        time /= duration;
         return change * time * time * time + start;
         break;
 
       case EASE_OUT:
+        time /= duration;
         time--;
         return change * (time * time * time + 1) + start;
         break;
 
       case EASE_INOUT:
-        if (time/2 < 1)
+        time /= duration/2;
+        if (time < 1)
           return (change/2) * time * time * time + start;
         time-=2;
         return (change/2) * (time * time * time + 2) + start;
@@ -129,20 +133,22 @@ class CircleTweener : public Tweener
 public:
   virtual float Tween(float time, float start, float change, float duration)
   {
-    time /= duration;
     switch (m_tweenerType)
       {
       case EASE_IN:
+        time /= duration;
         return (-change) * (sqrt(1 - time * time) - 1) + start;
         break;
 
       case EASE_OUT:
+        time /= duration;
         time--;
         return change * sqrt(1 - time * time) + start;
         break;
 
       case EASE_INOUT:
-        if ((time / 2) < 1)
+        time /= duration/2;
+        if (time  < 1)
           return (-change/2) * (sqrt(1 - time * time) - 1) + start;
         time-=2;
         return change/2 * (sqrt(1 - time * time) + 1) + start;
@@ -160,21 +166,23 @@ public:
   virtual float Tween(float time, float start, float change, float duration)
   {
     float s = _s;
-    time /= duration;
     switch (m_tweenerType)
       {
       case EASE_IN:
+        time /= duration;
         return change * time * time * ((s + 1) * time - s) + start;
         break;
 
       case EASE_OUT:
+        time /= duration;
         time--;
-        return change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
+        return change * (time * time * ((s + 1) * time + s) + 1) + start;
         break;
 
       case EASE_INOUT:
+        time /= duration/2;
         s*=(1.525f);
-        if ((time / 2) < 1)
+        if ((time ) < 1)
         {
           return (change/2) * (time * time * ((s + 1) * time - s)) + start;
         }
@@ -338,7 +346,7 @@ protected:
     {
       s = p / (2 * M_PI) * asin (change / a);
     }
-    return -(a * pow(2.0f, -10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + change + start;
+    return (a * pow(2.0f, -10*time) * sin((time * duration - s) * (2 * M_PI) / p )) + change + start;
   }
 
   float easeInOut(float time, float start, float change, float duration)
@@ -349,8 +357,8 @@ protected:
 
     if (time==0) 
       return start;  
-    time /= duration;
-    if (time/2==2) 
+    time /= duration/2;
+    if (time==2) 
         return start + change;  
     if (!p) 
       p=duration*.3f*1.5f;
@@ -364,11 +372,12 @@ protected:
       s = p / (2 * M_PI) * asin (change / a);
     }
 
-    time--;
     if (time < 1) 
     {
+      time--;
       return -.5f * (a * pow(2.0f, 10 * (time)) * sin((time * duration - s) * (2 * M_PI) / p )) + start;
     }
+    time--;
     return a * pow(2.0f, -10 * (time)) * sin((time * duration-s) * (2 * M_PI) / p ) * .5f + change + start;
   }
 };
