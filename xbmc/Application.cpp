@@ -1801,7 +1801,7 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
   StartIdleThread();
 #endif
 
