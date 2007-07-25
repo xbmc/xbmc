@@ -7,7 +7,6 @@
 #define HAS_XBOX_D3D
 #define HAS_RAM_CONTROL
 #define HAS_XFONT
-#define HAS_XPR_FONTS
 #define HAS_FILESYSTEM
 #define HAS_GAMEPAD
 #define HAS_IR_REMOTE
@@ -43,7 +42,6 @@
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL
 #undef HAS_XFONT
-#undef HAS_XPR_FONTS
 #undef HAS_FILESYSTEM
 #undef HAS_GAMEPAD
 #undef HAS_IR_REMOTE
