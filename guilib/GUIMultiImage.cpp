@@ -136,10 +136,10 @@ void CGUIMultiImage::Render()
         }
         m_images[nextImage]->Render();
       }
-      else
-      { // only one image - render it.
-        m_images[m_currentImage]->Render();
-      }
+    }
+    else
+    { // only one image - render it.
+      m_images[m_currentImage]->Render();
     }
     g_graphicsContext.RestoreClipRegion();
   }
