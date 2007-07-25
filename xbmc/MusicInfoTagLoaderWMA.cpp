@@ -379,7 +379,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
     if (tag.GetArtist().IsEmpty())
       tag.SetArtist(strValue);
     else
-      tag.SetArtist(tag.GetArtist() + " / " + strValue);
+      tag.SetArtist(tag.GetArtist() + g_advancedSettings.m_musicItemSeparator + strValue);
   }
   else if (strFrameName == "WM/TrackNumber")
   {
@@ -403,7 +403,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
     if (tag.GetGenre().IsEmpty())
       tag.SetGenre(strValue);
     else
-      tag.SetGenre(tag.GetGenre() + " / " + strValue);
+      tag.SetGenre(tag.GetGenre() + g_advancedSettings.m_musicItemSeparator + strValue);
   }
   //else if (strFrameName=="WM/DRM")
   //{
