@@ -527,13 +527,12 @@ void CSurface::Flip()
 {
   if (m_bOK && m_bDoublebuffer) 
   {
-    int ret;
 #ifdef HAS_GLX
     if (m_iVSyncMode == 4)
     {
       glFlush();
       unsigned int vCount;
-      ret = _glXGetVideoSyncSGI(&vCount);
+      int ret = _glXGetVideoSyncSGI(&vCount);
       ret = _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
     }
     glXSwapBuffers(s_dpy, m_glWindow);

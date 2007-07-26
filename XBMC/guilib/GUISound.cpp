@@ -7,6 +7,7 @@
 #endif
 
 #ifndef HAS_SDL_AUDIO
+
 typedef struct
 {
   char chunk_id[4];

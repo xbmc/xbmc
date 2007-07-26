@@ -159,7 +159,7 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
     {
       // When a genre number is specified, we need to translate to a string for display..
       // Note that AAC/iTunes genre numbers are the same as ID3 numbers, but are offset by 1.
-      const char* pGenre = ID3_V1GENRE2DESCRIPTION( pMetaData[ 1 ] - 1 );
+      const char* pGenre = ID3_V1GENRE2DESCRIPTION( (unsigned char)pMetaData[ 1 ] - 1 );
       if ( pGenre )
       {
         tag.SetGenre( pGenre );
