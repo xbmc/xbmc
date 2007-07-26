@@ -22,15 +22,7 @@ void CIdleThread::Process()
   while (!m_bStop)
   {
 #ifndef _LINUX	  
-    __asm
-    {
-      hlt
-      hlt
-      hlt
-      hlt
-      hlt
-      hlt
-    }
+   Sleep(0);
 #else
     __asm__("hlt\n\t"
             "hlt\n\t"
