@@ -97,8 +97,8 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     return( false );
   }
 
-  char* szStart = NULL;
-  char* szEnd = NULL;
+  const char* szStart = NULL;
+  const char* szEnd = NULL;
   char temp2[8191];
   char* temp3 = temp2;
   while( !f.eof() && !szEnd )
@@ -248,4 +248,5 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
   tag.SetLoaded(false);
   return( false );
 }
+
 

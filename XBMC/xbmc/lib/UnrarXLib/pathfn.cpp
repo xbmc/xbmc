@@ -196,14 +196,14 @@ char *GetExt(const char *Name)
 {
   CStdString strExtension;
   CUtil::GetExtension(Name,strExtension);
-  return(strstr(Name,strExtension.c_str()));
+  return(strstr((char *)Name,strExtension.c_str()));
 }
 
 wchar *GetExt(const wchar *Name)
 {
   CStdString strExtension;
   CUtil::GetExtension(Name,strExtension);
-  return(wcsstr(Name,CStdStringW(strExtension).c_str()));
+  return(wcsstr((wchar_t *)Name,CStdStringW(strExtension).c_str()));
 }
 
 
@@ -697,6 +697,7 @@ wchar* GetWideName(const char *Name,const wchar *NameW,wchar *DestW)
     CharToWide(Name,DestW);
   return(DestW);
 }
+
 
 
 
