@@ -89,7 +89,7 @@ bool CFileCache::Attach(IFile *pFile) {
 
 void CFileCache::Process() {	
 	char   buf[READ_CACHE_CHUNK_SIZE];
-	DWORD  iRead=0;
+	int    iRead=0;
 
 	if (!m_pCache) {
 		CLog::Log(LOGERROR,"CFileCache::Process - sanity failed. no cache strategy");
@@ -114,6 +114,8 @@ void CFileCache::Process() {
 			CLog::Log(LOGINFO, "CFileCache::Process - Hit eof, exiting");
 			break;
 		}
+		else if (iRead < 0)
+			bError = TRUE;
 
 		int iTotalWrite=0;
 		while (!m_bStop && iTotalWrite < iRead) {
@@ -132,8 +134,6 @@ void CFileCache::Process() {
 
 	m_pCache->EndOfInput();
 	
-	// it should be ok to close the source file, all reads will be done from cache.
-	m_source.Close();
 }
 
 bool CFileCache::Exists(const CURL& url)
