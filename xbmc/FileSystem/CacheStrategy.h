@@ -12,9 +12,11 @@
 #ifndef XFILECACHESTRATEGY_H
 #define XFILECACHESTRATEGY_H
 
+#ifdef _LINUX
 #include "PlatformDefs.h"
 #include "XHandle.h"
 #include "XFileUtils.h"
+#endif
 #include "../utils/CriticalSection.h"
 
 namespace XFILE {
