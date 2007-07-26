@@ -9,8 +9,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include "stdafx.h"
 #include "CacheStrategy.h"
+#ifdef _LINUX
 #include "PlatformInclude.h"
+#endif
 #include "Util.h"
 #include "../utils/log.h"
 #include "../utils/SingleLock.h"
@@ -210,7 +213,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 		// wait up to a few seconds for enough data to buffer. if not - return error
 		// we dont wait if the seek is too far ahead (over 500k) - may be the case in some file formats (big jump ahead) but there is no point
 		// in waiting...
-		DWORD dwDiff = pos.QuadPart - posWrite.QuadPart;
+		DWORD dwDiff = (DWORD)(pos.QuadPart - posWrite.QuadPart);
 		if (dwDiff > 500000 || WaitForData(dwDiff, 2000) < dwDiff) {
 			CLog::Log(LOGWARNING,"CSimpleFileCache::Seek - attempt to seek pass read data (seek to %lld. max: %lld. reset read pointer. (%lld:%lld)", pos.QuadPart, posWrite.QuadPart, iFilePosition, iWhence);
 			SetFilePointerEx(m_hCacheFileRead, posRead, NULL, FILE_BEGIN);
