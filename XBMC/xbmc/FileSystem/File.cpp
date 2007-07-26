@@ -24,6 +24,8 @@
 #include "../Application.h"
 #include "../Util.h"
 #include "DirectoryCache.h"
+#include "FileCache.h"
+
 #ifndef _LINUX
 #include "../utils/Win32Exception.h"
 #endif
@@ -266,7 +268,14 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
       if (bPathInCache)
         return false;
     }
+
     CURL url(strFileName);
+
+    if (m_flags & READ_CACHED)
+    {
+		m_pFile = new CFileCache();
+		return m_pFile->Open(url, bBinary);
+	}
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (!m_pFile)
@@ -300,6 +309,19 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
   }
   CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());    
   return false;
+}
+
+void CFile::Attach(IFile *pFile, unsigned int flags) {
+	m_pFile = pFile;
+	m_flags = flags;
+    if (m_flags & READ_BUFFERED)
+    {
+      if (m_pFile->GetChunkSize())
+      {
+        m_pBuffer = new CFileStreamBuffer(0);
+        m_pBuffer->Attach(m_pFile);
+      }
+    }
 }
 
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOverWrite)
