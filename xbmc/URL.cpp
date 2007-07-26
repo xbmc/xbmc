@@ -567,7 +567,7 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
 
   if (m_strHostName != "")
   {
-    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
+    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
       strURL += URLEncodeInline(m_strHostName);
     else
       strURL += m_strHostName;
