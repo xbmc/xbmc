@@ -1696,11 +1696,11 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
 	// Microsofties can use
 #elif defined(_MSC_VER) && !defined(SS_ANSI)
 
-	inline int	ssnprintf(PSTR pA, size_t nCount, PCSTR pFmtA, va_list vl)
+	inline int	ssvsprintf(PSTR pA, size_t nCount, PCSTR pFmtA, va_list vl)
 	{ 
 		return _vsnprintf(pA, nCount, pFmtA, vl);
 	}
-	inline int	ssnprintf(PWSTR pW, size_t nCount, PCWSTR pFmtW, va_list vl)
+	inline int	ssvsprintf(PWSTR pW, size_t nCount, PCWSTR pFmtW, va_list vl)
 	{
 		return _vsnwprintf(pW, nCount, pFmtW, vl);
 	}
@@ -1756,7 +1756,7 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
 
 	}
 
-#else 
+#endif
 
 	// GOT COMPILER PROBLEMS HERE?
 	// ---------------------------
@@ -1791,8 +1791,6 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
 			return vsnwprintf(pW, nCount, pFmtW, vl);
 	#endif
 	}
-
-#endif
 
 
 
