@@ -403,11 +403,11 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
   strcpy(szYear,"");
 
   CRegExp reYear;
-  reYear.RegComp("(.+)\\+\\(?(19[0-9][0-9]|200[0-9])\\)?(\\+.*)?");
+  reYear.RegComp("(.+)(\\+\\(?|\\[)(19[0-9][0-9]|200[0-9])(\\)?|\\])(\\+.*)?");
   if (reYear.RegFind(szMovie) >= 0)
   {
     char *pMovie = reYear.GetReplaceString("\\1");
-    char *pYear = reYear.GetReplaceString("\\2");
+    char *pYear = reYear.GetReplaceString("\\3");
     strcpy(szMovie,pMovie);
     strcpy(szYear,pYear);
 
