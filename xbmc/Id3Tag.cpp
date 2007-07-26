@@ -495,7 +495,7 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
   {
     CStdString strTemp = *it;
     if (!strGenre.IsEmpty())
-      strGenre += " / ";
+      strGenre += g_advancedSettings.m_musicItemSeparator;
     strGenre += strTemp;
   }
   return strGenre;

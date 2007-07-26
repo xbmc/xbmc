@@ -279,6 +279,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
   g_advancedSettings.m_prioritiseAPEv2tags = false;
+  g_advancedSettings.m_musicItemSeparator = " / ";
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
@@ -1160,6 +1161,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
     GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
     GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
+    GetString(pElement, "itemseparator", g_advancedSettings.m_musicItemSeparator, " / ");
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");

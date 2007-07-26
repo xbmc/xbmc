@@ -738,7 +738,7 @@ void CIoSupport::MapExtendedPartitions()
   char driveletter;
   // we start at 5 - the first 5 partitions are the mandatory standard Xbox partitions
   // we don't deal with those here.
-  for (int i = 5; i < MAX_PARTITIONS; i++)
+  for (int i = 5; i < 7; i++) // ONLY deal with F and G
   {
     if (m_partitionTable.pt_entries[i].pe_flags & PE_PARTFLAGS_IN_USE)
     {

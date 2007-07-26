@@ -23,7 +23,7 @@
 			<posx>200</posx>
 			<posy>43</posy>
 			<align>right</align>
-			<label>xbox media center</label>
+			<label>9</label>
 			<font>special12</font>
 		</control>
 		<control type="label" id="1">
@@ -44,6 +44,7 @@
 				<posx>0</posx>
 				<posy>120</posy>
 				<label>128</label>
+				<onfocus>Skin.SetString(SkinSettings,1)</onfocus>
 				<onleft>9002</onleft>
 				<onright>9002</onright>
 				<onup>13</onup>
@@ -54,6 +55,7 @@
 				<posx>0</posx>
 				<posy>157</posy>
 				<label>513</label>
+				<onfocus>Skin.SetString(SkinSettings,2)</onfocus>
 				<onleft>9003</onleft>
 				<onright>9003</onright>
 				<onup>11</onup>
@@ -64,6 +66,7 @@
 				<posx>0</posx>
 				<posy>194</posy>
 				<label>13398</label>
+				<onfocus>Skin.SetString(SkinSettings,3)</onfocus>
 				<onleft>9004</onleft>
 				<onright>9004</onright>
 				<onup>12</onup>
@@ -78,7 +81,7 @@
 			<onright>9001</onright>
 			<onup>9002</onup>
 			<ondown>9002</ondown>
-			<visible>Control.HasFocus(11) | ControlGroup(9002).HasFocus()</visible>
+			<visible>Skin.String(SkinSettings,1)</visible>
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="20">
 				<description>enable animations</description>
@@ -188,7 +191,7 @@
 		</control>
 		<!-- Homescreen Options -->
 		<control type="group" id="9003">
-			<visible>Control.HasFocus(12) | ControlGroup(9003).HasFocus()</visible>
+			<visible>Skin.String(SkinSettings,2)</visible>
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="30">
 				<description>enable RSS</description>
@@ -309,7 +312,7 @@
 		</control>
 		<!-- Bookmark button Options -->
 		<control type="group" id="9004">
-			<visible>Control.HasFocus(13) | ControlGroup(9004).HasFocus()</visible>
+			<visible>Skin.String(SkinSettings,3)</visible>
 			<include>contentpanelslide</include>
 			<control type="radiobutton" id="40">
 				<description>enable bookmarks button</description>

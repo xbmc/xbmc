@@ -879,10 +879,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
   UpdateCameraPosition(m_cameras.top());
 
-  // and reset the final transform and window/group transforms
-  while (m_groupTransform.size())
-    m_groupTransform.pop();
-  m_groupTransform.push(m_guiTransform);
+  // and reset the final transform
   UpdateFinalTransform(m_guiTransform);
 }
 
@@ -960,6 +957,12 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   m_pd3dDevice->GetViewport(&viewport);
   float w = viewport.Width*0.5f;
   float h = viewport.Height*0.5f;
+
+  // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
+  // here.
+  D3DXMATRIX mtxWorld;
+  D3DXMatrixIdentity(&mtxWorld);
+  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
   // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
   // position.
