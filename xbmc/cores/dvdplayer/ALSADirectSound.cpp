@@ -37,6 +37,7 @@ void CALSADirectSound::DoWork()
 //***********************************************************************************************
 CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, char* strAudioCodec, bool bIsMusic)
 {
+  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - opening alsa device");
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -66,7 +67,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
 
   /* Allocate Hardware Parameters structures and fills it with config space for PCM */
-  snd_pcm_hw_params_alloca(&hw_params);
+  snd_pcm_hw_params_malloc(&hw_params);
 
   nErr = snd_pcm_hw_params_any(m_pPlayHandle, hw_params);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_any",nErr);
@@ -100,10 +101,13 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params(m_pPlayHandle, hw_params);
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
 
+  snd_pcm_hw_params_free (hw_params);
+  CHECK_ALSA(LOGERROR,"snd_pcm_hw_params_free",nErr);
+
   /* disable underrun reporting and play silence */
   snd_pcm_uframes_t boundary;
   snd_pcm_sw_params_t *swparams = NULL;
-  snd_pcm_sw_params_alloca(&swparams);
+  snd_pcm_sw_params_malloc(&swparams);
   nErr = snd_pcm_sw_params_current(m_pPlayHandle, swparams);
   CHECK_ALSA(LOGERROR,"sw_params_get_current",nErr);
 
@@ -119,6 +123,9 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_sw_params(m_pPlayHandle, swparams);
   CHECK_ALSA(LOGERROR,"sw_params",nErr);
 
+  snd_pcm_sw_params_free(swparams);
+  CHECK_ALSA(LOGERROR,"snd_pcm_sw_params_free",nErr);
+
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
@@ -128,7 +135,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 //***********************************************************************************************
 CALSADirectSound::~CALSADirectSound()
 {
-  OutputDebugString("CALSADirectSound() dtor\n");
+  CLog::Log(LOGDEBUG,"CALSADirectSound() dtor\n");
   Deinitialize();
 }
 
@@ -136,7 +143,7 @@ CALSADirectSound::~CALSADirectSound()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Deinitialize()
 {
-  OutputDebugString("CALSADirectSound::Deinitialize\n");
+  CLog::Log(LOGDEBUG,"CALSADirectSound::Deinitialize\n");
 
   m_bIsAllocated = false;
   if (m_pPlayHandle)
@@ -147,11 +154,14 @@ HRESULT CALSADirectSound::Deinitialize()
 
   m_pPlayHandle=NULL;
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-
+	
   return S_OK;
 }
 
 void CALSADirectSound::Flush() {
+  if (m_pPlayHandle == NULL)
+     return;
+
   int nErr = snd_pcm_drain(m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"flush-drain",nErr); 
   nErr = snd_pcm_prepare(m_pPlayHandle);
@@ -184,8 +194,12 @@ HRESULT CALSADirectSound::Resume()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Stop()
 {
-  if (m_bPause) return S_OK;
-  snd_pcm_drain(m_pPlayHandle);
+  if (m_bPause) 
+     return S_OK;
+  
+  if (m_pPlayHandle)
+     snd_pcm_drain(m_pPlayHandle);
+
   return S_OK;
 }
 
@@ -256,12 +270,12 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 
   while (pcmPtr < data + (int)len){  
 	int nPeriodSize = (m_maxFrames * 2 * m_uiChannels); // write max frames.
-	if ( pcmPtr + nPeriodSize >  data + (int)len) {
+	if ( pcmPtr + nPeriodSize > data + (int)len) {
 		nPeriodSize = data + (int)len - pcmPtr;
 	}
 	
 	int framesToWrite = nPeriodSize / (2 * m_uiChannels);
-	
+
 	// handle volume de-amp 
 	m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
 	
