@@ -26,7 +26,7 @@
 		<control type="label" id="1">
 			<description>heading label</description>
 			<posx>20</posx>
-			<posy>-2</posy>
+			<posy>10</posy>
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
@@ -35,19 +35,27 @@
 		</control>
 		<control type="list" id="3">
 			<posx>12</posx>
-			<posy>25</posy>
-			<width>480</width>
-			<height>290</height>
+			<posy>45</posy>
+			<width>453</width>
+			<height>279</height>
 			<onleft>5</onleft>
-			<onright>5</onright>
+			<onright>60</onright>
 			<onup>3</onup>
 			<ondown>3</ondown>
+			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout height="29">
+			<itemlayout height="31">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>453</width>
+					<height>29</height>
+					<texture>input-nofocus.png</texture>
+				</control>
 				<control type="label">
 					<posx>5</posx>
 					<posy>0</posy>
-					<width>470</width>
+					<width>443</width>
 					<height>29</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -56,18 +64,27 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="29">
+			<focusedlayout height="31">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>480</width>
+					<width>453</width>
+					<height>29</height>
+					<texture>input-nofocus.png</texture>
+					<visible>!Control.hasfocus(3)</visible>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>453</width>
 					<height>29</height>
 					<texture>input-focus.png</texture>
+					<visible>Control.hasfocus(3)</visible>
 				</control>
 				<control type="label">
 					<posx>5</posx>
 					<posy>0</posy>
-					<width>470</width>
+					<width>443</width>
 					<height>29</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -77,20 +94,58 @@
 				</control>
 			</focusedlayout>
 		</control>
+		<control type="button">
+			<posx>470</posx>
+			<posy>45</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageUp(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="button">
+			<posx>470</posx>
+			<posy>303</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageDown(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>470</posx>
+			<posy>65</posy>
+			<include>scrollbar_width</include>
+			<height>238</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>3</onleft>
+			<onright>5</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
 		<control type="label" id="2">
 			<description>number of files text label</description>
-			<posx>270</posx>
+			<posx>480</posx>
 			<posy>340</posy>
 			<width>100</width>
 			<label>-</label>
+			<align>right</align>
 			<font>font10</font>
 		</control>
 		<control type="button" id="5">
 			<description>manual button</description>
 			<posx>12</posx>
-			<posy>335</posy>
+			<posy>330</posy>
 			<width>90</width>
-			<height>26</height>
 			<align>center</align>
 			<label>368</label>
 			<font>font10</font>

@@ -138,15 +138,6 @@
 				<font>font10</font>
 			</control>
 			<control type="label" id="1">
-				<description>time label</description>
-				<width>520</width>
-				<posx>160</posx>
-				<posy>80</posy>
-				<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
-				<align>left</align>
-				<font>font10</font>
-			</control>
-			<control type="label" id="1">
 				<description>Playlist Pos No</description>
 				<width>200</width>
 				<posx>680</posx>

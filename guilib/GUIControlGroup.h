@@ -59,8 +59,6 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  virtual void Animate(DWORD currentTime);
-
   // sub controls
   vector<CGUIControl *> m_children;
   typedef vector<CGUIControl *>::iterator iControls;

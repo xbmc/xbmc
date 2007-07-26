@@ -3261,9 +3261,9 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
 
 void CMusicDatabase::SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings)
 {
-  int numStrings = StringUtils::SplitString(multiString, " / ", vecStrings);
+  int numStrings = StringUtils::SplitString(multiString, g_advancedSettings.m_musicItemSeparator, vecStrings);
   for (int i = 1; i < numStrings; i++)
-    extraStrings += " / " + vecStrings[i];
+    extraStrings += g_advancedSettings.m_musicItemSeparator + vecStrings[i];
 }
 
 bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)

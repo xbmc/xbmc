@@ -1279,9 +1279,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
     output+=closeTag+openTag+"Duration:";
     if (g_application.IsPlayingVideo())
-      output += g_infoManager.GetVideoLabel(PLAYER_DURATION);
+      output += g_infoManager.GetDuration();
     else
-      output += g_infoManager.GetMusicLabel(PLAYER_DURATION);
+      output += g_infoManager.GetDuration();
     tmp.Format("%i",(int)g_application.GetPercentage());
     output+=closeTag+openTag+"Percentage:"+tmp;
     // file size
