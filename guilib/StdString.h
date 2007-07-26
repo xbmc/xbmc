@@ -1788,7 +1788,7 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
 	#ifdef _MSC_VER
 			return _vsnwprintf(pW, nCount, pFmtW, vl);
 	#else
-			return vsnwprintf(pW, nCount, pFmtW, vl);
+			return vswprintf(pW, nCount, pFmtW, vl);
 	#endif
 	}
 
