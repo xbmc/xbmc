@@ -312,8 +312,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       DIRECTORY::CVideoDatabaseDirectory dir;
       CQueryParams params;
-      dir.GetQueryParams(strDirectory,params);
-      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+      dir.GetQueryParams(items.m_strPath,params);
+      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
@@ -322,7 +322,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (node == NODE_TYPE_EPISODES)
         {
           g_infoManager.m_content = "episodes";
-          item.m_strPath = strDirectory;
+          item.m_strPath = items.m_strPath;
           item.SetCachedSeasonThumb();
         }
         else
