@@ -914,6 +914,8 @@ double CSysInfo::GetCPUFrequency()
   return CPUSpeed;
 #elif defined (_LINUX)
   return double (g_cpuInfo.getCPUFrequency());
+#else
+  return 0;
 #endif
 }
 
@@ -1542,6 +1544,7 @@ CStdString CSysInfo::GetKernelVersion()
     strKernel.Format("%s %s %s %s %s",g_localizeStrings.Get(13283), un.sysname, un.release, un.version, un.machine);
     return strKernel;
   }
+#else
   return "";
 #endif
 }

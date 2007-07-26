@@ -296,9 +296,6 @@
 				RelativePath=".\GUIFontTTF.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIFontXPR.cpp">
-			</File>
-			<File
 				RelativePath=".\guiImage.cpp">
 			</File>
 			<File
@@ -511,9 +508,6 @@
 				RelativePath=".\GUIFontTTF.h">
 			</File>
 			<File
-				RelativePath=".\GuiFontXPR.h">
-			</File>
-			<File
 				RelativePath=".\guiImage.h">
 			</File>
 			<File
@@ -667,12 +661,6 @@
 		<Filter
 			Name="common"
 			Filter="">
-			<File
-				RelativePath=".\common\xbfont.cpp">
-			</File>
-			<File
-				RelativePath=".\common\xbfont.h">
-			</File>
 			<File
 				RelativePath=".\common\XBoxKeyboard.cpp">
 			</File>

@@ -416,7 +416,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fMin = 0.0f;
   float fMax = 1.0f;
   float fInterval = 0.1f;
-  bool bReverse = false;
+  bool bReverse = true;
   CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   float rMin = 0.0f;
   float rMax = 100.0f;
@@ -490,6 +490,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CStdString texturePath;
   DWORD timePerImage = 0;
   DWORD fadeTime = 0;
+  DWORD timeToPauseAtEnd = 0;
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
@@ -855,6 +856,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetPath(pControlNode,"imagepath", texturePath);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
+  XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
 
@@ -1103,7 +1105,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
-      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop);
+      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
     ((CGUIMultiImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspectRatio);
   }

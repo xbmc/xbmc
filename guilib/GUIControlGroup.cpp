@@ -269,22 +269,6 @@ bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
-void CGUIControlGroup::Animate(DWORD currentTime)
-{
-  GUIVISIBLE visible = m_visible;
-  TransformMatrix transform;
-  for (unsigned int i = 0; i < m_animations.size(); i++)
-  {
-    CAnimation &anim = m_animations[i];
-    anim.Animate(currentTime, HasRendered() || visible == DELAYED);
-    // Update the control states (such as visibility)
-    UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
-    // and render the animation effect
-    anim.RenderAnimation(transform);
-  }
-  g_graphicsContext.AddTransform(transform);
-}
-
 bool CGUIControlGroup::HitTest(const CPoint &point) const
 {
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -298,10 +282,13 @@ bool CGUIControlGroup::HitTest(const CPoint &point) const
 
 bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
+  if (!CGUIControl::CanFocus()) return false;
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(point - CPoint(m_posX, m_posY), control, controlPoint))
+    if (child->CanFocusFromPoint(controlCoords - CPoint(m_posX, m_posY), control, controlPoint))
       return true;
   }
   *control = NULL;
@@ -310,10 +297,12 @@ bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **cont
 
 void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
 {
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    child->UnfocusFromPoint(point - CPoint(m_posX, m_posY));
+    child->UnfocusFromPoint(controlCoords - CPoint(m_posX, m_posY));
   }
   CGUIControl::UnfocusFromPoint(point);
 }

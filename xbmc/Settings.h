@@ -290,6 +290,7 @@ public:
     CStdString m_strMusicLibraryAlbumFormat;
     CStdString m_strMusicLibraryAlbumFormatRight;
     bool m_prioritiseAPEv2tags;
+    CStdString m_musicItemSeparator;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;

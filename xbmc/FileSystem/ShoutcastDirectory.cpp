@@ -177,7 +177,8 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   url.SetProtocol(protocol);
 
   CStdString content = http.GetContent();
-  if( !(content.Equals("text/html") || content.Equals("text/xml")) )
+  if( !(content.Equals("text/html") || content.Equals("text/xml") 
+	  || content.Equals("text/html;charset=utf-8") || content.Equals("text/xml;charset=utf-8") ))
   {
     CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
     if (dlgProgress) dlgProgress->Close();

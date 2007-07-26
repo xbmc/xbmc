@@ -453,6 +453,8 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,bUseDirNames,bScanRecursive,iFound);
   }
   SScraperInfo info2 = info;
+  if (info.strContent.Equals("tvshows") && iFound == 2) // 'folder contains a single tvshow'
+    bUseDirNames = true;
   
   if (CGUIDialogContentSettings::Show(info2,bScan,bScanRecursive,bUseDirNames))
   {

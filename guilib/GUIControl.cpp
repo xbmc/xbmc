@@ -595,7 +595,7 @@ void CGUIControl::Animate(DWORD currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
-  TransformMatrix transform;
+  m_transform.Reset();
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -603,7 +603,7 @@ void CGUIControl::Animate(DWORD currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
-    anim.RenderAnimation(transform);
+    anim.RenderAnimation(m_transform);
 
 /*    // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
@@ -620,7 +620,7 @@ void CGUIControl::Animate(DWORD currentTime)
       }
     }*/
   }
-  g_graphicsContext.AddTransform(transform);
+  g_graphicsContext.AddTransform(m_transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
@@ -667,10 +667,11 @@ DWORD CGUIControl::GetNextControl(int direction) const
 // the control and the point with respect to his control if we have a hit
 bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
-  if (CanFocus() && HitTest(point))
+  controlPoint = point;
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (CanFocus() && HitTest(controlPoint))
   {
     *control = (CGUIControl *)this;
-    controlPoint = point;
     return true;
   }
   *control = NULL;
@@ -679,7 +680,9 @@ bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, 
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)
 {
-  if (!HitTest(point))
+  CPoint controlPoint(point);
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (!HitTest(controlPoint))
     SetFocus(false);
 }
 

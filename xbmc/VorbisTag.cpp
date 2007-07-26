@@ -51,7 +51,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
   {
     if (tag.GetArtist().GetLength())
     {
-      CStdString strArtist=tag.GetArtist() + " / " + strTagValue;
+      CStdString strArtist=tag.GetArtist() + g_advancedSettings.m_musicItemSeparator + strTagValue;
       tag.SetArtist(strArtist);
     }
     else
@@ -63,7 +63,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
   {
     if (tag.GetAlbumArtist().GetLength())
     {
-      CStdString strArtist=tag.GetAlbumArtist() + " / " + strTagValue;
+      CStdString strArtist=tag.GetAlbumArtist() + g_advancedSettings.m_musicItemSeparator + strTagValue;
       tag.SetAlbumArtist(strArtist);
     }
     else
@@ -104,7 +104,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
   {
     if (tag.GetGenre().GetLength())
     {
-      CStdString strGenre=tag.GetGenre() + " / " + strTagValue;
+      CStdString strGenre=tag.GetGenre() + g_advancedSettings.m_musicItemSeparator + strTagValue;
       tag.SetGenre(strGenre);
     }
     else

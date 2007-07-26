@@ -121,12 +121,8 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     }
     pMenu->Initialize();
 
-    int btn_MoveUp = 0;
-    int btn_MoveDown = 0;
-    if (item > 0)
-      btn_MoveUp = pMenu->AddButton(13332);
-    if (item + 1 < m_favourites.Size())
-      btn_MoveDown = pMenu->AddButton(13333);
+    int btn_MoveUp = m_favourites.Size() > 1 ? pMenu->AddButton(13332) : 0;
+    int btn_MoveDown = m_favourites.Size() > 1 ? pMenu->AddButton(13333) : 0;
     int btn_Remove = pMenu->AddButton(15015);
     int btn_Rename = pMenu->AddButton(118);
 
@@ -150,17 +146,15 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)
 {
-  if (item < 0 || item >= m_favourites.Size() ||
-      item + amount < 0 || item + amount >= m_favourites.Size())
-    return;
+  if (item < 0 || item >= m_favourites.Size() || m_favourites.Size() <= 1 || 0 == amount) return;
 
-  if (amount > 0 && item + amount < m_favourites.Size())
-    m_favourites.Swap(item, item + amount);
-  if (amount < 0 && item + amount >= 0)
-    m_favourites.Swap(item, item + amount);
+  int nextItem = (item + amount) % m_favourites.Size();
+  if (nextItem < 0) nextItem += m_favourites.Size();
+
+  m_favourites.Swap(item, nextItem);
   CFavourites::Save(m_favourites);
 
-  CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, item + amount);
+  CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, nextItem);
   OnMessage(message);
 
   UpdateList();

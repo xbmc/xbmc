@@ -816,10 +816,10 @@ void CDateTime::SetFromDBDate(const CStdString &date)
   SetDate(year, month, day);
 }
 
-CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
+CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
 {
   CStdString strOut;
-  const CStdString& strFormat=g_langInfo.GetTimeFormat();
+  const CStdString& strFormat = format.IsEmpty() ? g_langInfo.GetTimeFormat() : format;
 
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);
@@ -1131,5 +1131,5 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 
 CStdString CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool withSeconds/*=true*/) const
 {
-  return GetAsLocalizedDate(longDate)+" "+GetAsLocalizedTime(withSeconds);
+  return GetAsLocalizedDate(longDate)+" "+GetAsLocalizedTime("", withSeconds);
 }
