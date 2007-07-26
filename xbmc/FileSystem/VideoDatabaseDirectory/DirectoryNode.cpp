@@ -223,7 +223,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   if (items.Size() == 0 || items.Size() == 1 || items.Size() == 2 && items[0]->IsParentFolder())
     return;
 
-  switch (GetChildType())
+  // hack - as the season node might return episodes
+  auto_ptr<CDirectoryNode> pNode(ParseURL(items.m_strPath));
+
+  switch (pNode->GetChildType())
   {
     case NODE_TYPE_SEASONS:
       pItem = new CFileItem(g_localizeStrings.Get(20366));  // "All Seasons"
