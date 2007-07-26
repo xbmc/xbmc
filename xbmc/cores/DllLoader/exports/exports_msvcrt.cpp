@@ -225,7 +225,7 @@ extern "C" void* dll_beginthread();
 extern "C" void* clock();
 extern "C" void* _hypot();
 extern "C" void* asctime();
-extern "C" void* __security_error_handler();
+// extern "C" void* __security_error_handler();
 extern "C" void* __CppXcptFilter();
 extern "C" void* _tzset();
 extern "C" void* _tzname();
@@ -695,7 +695,7 @@ Export export_msvcr71[] =
   { "_endthread",                 -1, (void*)_endthread,                    NULL },
   { "_hypot",                     -1, (void*)_hypot,                        NULL },
   { "_except_handler3",           -1, (void*)_except_handler3,              NULL },
-  { "__security_error_handler",   -1, (void*)__security_error_handler,      NULL },
+  //{ "__security_error_handler",   -1, (void*)__security_error_handler,      NULL },
   { "__CppXcptFilter",            -1, (void*)__CppXcptFilter,               NULL },
   { "_tzset",                     -1, (void*)_tzset,                        NULL },
   { "_tzname",                    -1, (void*)&_tzname,                      NULL },

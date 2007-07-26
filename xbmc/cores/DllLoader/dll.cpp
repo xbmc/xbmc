@@ -15,7 +15,7 @@
 
 char* getpath(char *buf, const char *full)
 {
-  char* pos;
+  const char* pos;
   if (pos = strrchr(full, PATH_SEPARATOR_CHAR))
   {
     strncpy(buf, full, pos - full + 1 );
@@ -36,7 +36,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   LibraryLoader* dll = NULL; 
 
   /* extract name */  
-  char* p = strrchr(lib_file, PATH_SEPARATOR_CHAR);
+  const char* p = strrchr(lib_file, PATH_SEPARATOR_CHAR);
   if (p) 
     strcpy(libname, p+1);
   else 
