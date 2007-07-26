@@ -26,6 +26,9 @@ public:
 /* use buffered io during reading, ( hint to make all protocols buffered, some might be internal anyway ) */
 #define READ_BUFFERED 0x2
 
+/* use cache to access this file */
+#define READ_CACHED	0x4
+
 class CFileStreamBuffer;
 
 class CFile
@@ -48,6 +51,8 @@ public:
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
   void SetObject(void* obj){if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
 
+  IFile *GetImplemenation() { return m_pFile; }
+  void Attach(IFile *pFile, unsigned int flags = 0);
 
   static bool Exists(const CStdString& strFileName);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);

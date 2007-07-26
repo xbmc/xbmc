@@ -410,12 +410,15 @@ void CRssReader::UpdateObserver()
   CStdStringW strFeed;
   LPBYTE pbColors = NULL;
   getFeed(strFeed,pbColors);
+  
+  // lock so make sure m_pObserver does not get deleted
+  g_graphicsContext.Lock();
   if (strFeed.size() > 0 && m_pObserver)
   {
-    g_graphicsContext.Lock();
     m_pObserver->OnFeedUpdate(strFeed, pbColors);
-    g_graphicsContext.Unlock();
   }
+  g_graphicsContext.Unlock();
+
 }
 
 void CRssReader::CheckForUpdates()

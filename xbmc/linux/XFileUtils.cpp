@@ -51,24 +51,30 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 		return(INVALID_HANDLE_VALUE);      
 	}
 
-	CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
-        pHandle->m_FindFileDir = strDir;
-
 	struct dirent **namelist = NULL;
 	int n = scandir(strDir, &namelist, 0, alphasort);
+
+	CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
+		pHandle->m_FindFileDir = strDir;
+
 	while (n-- > 0) {
-          	status = regexec(&re, namelist[n]->d_name, (size_t) 0, NULL, 0);
+			status = regexec(&re, namelist[n]->d_name, (size_t) 0, NULL, 0);
 		if (status == 0) {
 			//pHandle->m_FindFileResults.push_back(strDir + CStdString("/") + namelist[n]->d_name);
 			pHandle->m_FindFileResults.push_back(namelist[n]->d_name);
 		}
 		free(namelist[n]);
 	}
-	
+
 	if (namelist)
 		free(namelist);
 
 	regfree(&re);
+
+	if (pHandle->m_FindFileResults.size() == 0) {
+		delete pHandle;
+		return INVALID_HANDLE_VALUE;
+	}
 
 	FindNextFile(pHandle, lpFindData);
 
@@ -175,6 +181,9 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   int fd = 0;
   bool cd = false;
 
+  if (dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)
+    flags |= O_SYNC;
+
   // special case for opening the cdrom device
   if (strcmp(lpFileName, "/dev/cdrom")==0)
   {
@@ -203,7 +212,12 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
     
   result->fd = fd;
-  
+
+  // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
+  // the file will be deleted when the last open descriptor is closed.  
+  if (dwFlagsAndAttributes & FILE_FLAG_DELETE_ON_CLOSE)
+	unlink(lpFileName);
+
   return result;
 }
 
@@ -284,7 +298,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
   return 1;
 }
 
-BOOL WriteFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite,
+BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped)
 {
   if (lpOverlapped)
@@ -294,6 +308,7 @@ BOOL WriteFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite,
  }
   
   size_t bytesWritten = write(hFile->fd, lpBuffer, nNumberOfBytesToWrite);
+
   if (bytesWritten == -1)
     return 0;
     
