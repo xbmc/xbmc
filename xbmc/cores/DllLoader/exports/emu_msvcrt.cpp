@@ -1413,7 +1413,7 @@ extern "C"
     
     if (envstring != NULL)
     {
-      char *value_start = strchr(envstring, '=');
+      const char *value_start = strchr(envstring, '=');
       
       if (value_start != NULL)
       {
