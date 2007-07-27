@@ -84,7 +84,6 @@
 #define SYSTEM_MEDIA_DVD            127
 #define SYSTEM_DVDREADY             128
 #define SYSTEM_HAS_ALARM            129
-#define SYSTEM_AUTODETECTION        130
 #define SYSTEM_SCREEN_MODE          132
 #define SYSTEM_SCREEN_WIDTH         133
 #define SYSTEM_SCREEN_HEIGHT        134
@@ -444,9 +443,6 @@ public:
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
 
-  void SetAutodetectedXbox(bool set) { m_hasAutoDetectedXbox = set; };
-  bool HasAutodetectedXbox() const { return m_hasAutoDetectedXbox; };
-
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
@@ -515,8 +511,6 @@ protected:
   unsigned int m_frameCounter;
   unsigned int m_lastFPSTime;
 
-  // Xbox Autodetect stuff
-  bool m_hasAutoDetectedXbox;
   CStdString m_launchingXBE;
 
   map<int, int> m_containerMoves;  // direction of list moving
