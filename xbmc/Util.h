@@ -9,7 +9,6 @@
 
 class CTrainer;
 
-
 // for 'cherry' patching
 typedef enum
 {
@@ -220,6 +219,14 @@ struct sortstringbyname
   }
 };
 
+struct XBOXDETECTION
+{
+  std::vector<CStdString> client_ip;
+  std::vector<CStdString> client_info;
+  std::vector<unsigned int> client_lookup_count;
+  std::vector<bool> client_informed;
+};
+
 class CUtil
 {
 public:
@@ -345,9 +352,9 @@ public:
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
-  static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
-  static bool XboxAutoDetection();
-  static bool XboxAutoDetectionGetShare(CShare& share);
+  static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
+  static bool AutoDetection();
+  static void AutoDetectionGetShare(VECSHARES &share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
@@ -369,6 +376,7 @@ public:
 
   static void BootToDash();
 private:
+  
   static HANDLE m_hCurrentCpuUsage;
 };
 
