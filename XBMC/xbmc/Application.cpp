@@ -4621,7 +4621,7 @@ void CApplication::ProcessSlow()
 
   // Xbox Autodetection - Send in X sec PingTime Interval
   if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
-    CUtil::XboxAutoDetection();
+    CUtil::AutoDetection();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
