@@ -21,15 +21,16 @@ void CIdleThread::Process()
 {
   while (!m_bStop)
   {
-#ifndef _LINUX	  
-   Sleep(0);
-#else
-    __asm__("hlt\n\t"
-            "hlt\n\t"
-            "hlt\n\t"
-            "hlt\n\t"
-            "hlt\n\t"
-            "hlt\n\t");
+#ifdef _XBOX
+    __asm
+    {
+      hlt
+      hlt
+      hlt
+      hlt
+      hlt
+      hlt
+    }
 #endif
   }
 }
