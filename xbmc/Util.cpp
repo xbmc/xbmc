@@ -95,13 +95,13 @@ static const __int64 SECS_TO_100NS = 10000000;
 
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
-CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo;
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 static D3DGAMMARAMP oldramp, flashramp;
 
+XBOXDETECTION v_xboxclients;
 #ifdef HAS_XBOX_HARDWARE
 extern "C"
 {
@@ -3211,34 +3211,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strWindow = strParameterCaseIntact.Left(iPos);
       strPath = strParameterCaseIntact.Mid(iPos + 1);
     }
-    if (strPath.Equals("autodetection"))
-    {
-      //Open the AutoDetect XBOX FTP in filemanager
-      if (g_guiSettings.GetBool("autodetect.onoff"))
-      {
-        //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-        CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-        CStdStringArray arSplit;
-        StringUtils::SplitString(strNewClientInfo,";", arSplit);
-        if ((int)arSplit.size() > 1)
-        {
-          strNickName     = arSplit[0].c_str();
-          strFtpUserName  = arSplit[1].c_str();
-          strFtpPassword  = arSplit[2].c_str();
-          strFtpPort      = arSplit[3].c_str();
-          strBoosMode     = arSplit[4].c_str();
-          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
-
-          strPath  = strFTPPath;
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
-          return -7;
-        }
-      }
-    }
-
     // confirm the window destination is actually a number
     // before switching
     int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
@@ -4297,93 +4269,312 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   }
   return iHourUTC;
 }
-bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
+bool CUtil::AutoDetection()
 {
-  bool bState= false;
-#ifdef HAS_XBOX_HARDWARE
-  CStdString strWorkTemp;
+bool bReturn=false;
+if (g_guiSettings.GetBool("autodetect.onoff"))
+{
+  static DWORD pingTimer = 0;
+  if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+    return false;
+  pingTimer = timeGetTime();
+
+  // send ping and request new client info
+  if ( CUtil::AutoDetectionPing(
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
+    g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
+  {
+    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+    CStdStringArray arSplit;
+    // do we have clients in our list ?
+    for(unsigned int i=0; i < v_xboxclients.client_ip.size(); i++)
+    {
+      // extract client informations
+      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
+      if ((int)arSplit.size() > 1 && !v_xboxclients.client_informed[i])
+      {
+        //extract client info and build the ftp link!
+        strNickName     = arSplit[0].c_str();
+        strFtpUserName  = arSplit[1].c_str();
+        strFtpPassword  = arSplit[2].c_str();
+        strFtpPort      = arSplit[3].c_str();
+        strBoosMode     = arSplit[4].c_str();
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
+
+        //Do Notification for this Client
+        CStdString strtemplbl;
+        strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
+        
+        //Debug Log
+        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
+
+        //set the client_informed to TRUE, to prevent loop Notification
+        v_xboxclients.client_informed[i]=true;
+
+        //YES NO PopUP: ask for connecting to the detected client via Filemanger!
+        if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+        {
+          m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+        }
+        bReturn = true;
+      }
+    }
+  }
+}
+return bReturn;
+}
+bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
+{
+  bool bFoundNewClient= false;
+  CStdString strTmp;
   CStdString strSendMessage = "ping\0";
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
-  char  sztmp[512], szTemp[512];
-	static int	udp_server_socket, inited=0;
-	int  cliLen, t1,t2,t3,t4, init_counter=0, life=0;
+  char sztmp[512];
+	static int udp_server_socket, inited=0;
+	int cliLen, t1,t2,t3,t4, init_counter=0, life=0;
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
   struct timeval timeout={0,500};
-  XNADDR xna;
-	DWORD dwState;
   fd_set readfds;
-	if( ( !inited )  || ( bRefresh ) )
-	{
-		dwState = XNetGetTitleXnAddr(&xna);
-		XNetInAddrToString(xna.ina,(char *)strWorkTemp.c_str(),64);
-
-		// Get IP address
-		sscanf( (char *)strWorkTemp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
-    if( !t1 ) return false;
-    cliLen = sizeof( cliAddr);
-    if( !inited )
+#ifdef HAS_XBOX_HARDWARE
+    XNADDR xna;
+    DWORD dwState = XNetGetTitleXnAddr(&xna);
+    XNetInAddrToString(xna.ina,(char *)strTmp.c_str(),64);
+#else
+    char hostname[255];
+    WORD wVer;
+    WSADATA wData;
+    PHOSTENT hostinfo;
+    wVer = MAKEWORD( 2, 0 );
+    if (WSAStartup(wVer,&wData) == 0)
     {
-      int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	    char value      = 1;
-	    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
-	    struct sockaddr_in addr;
-	    memset(&(addr),0,sizeof(addr));
-	    addr.sin_family       = AF_INET;
-	    addr.sin_addr.s_addr  = INADDR_ANY;
-	    addr.sin_port         = htons(iUDPPort);
-	    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
-      udp_server_socket = tUDPsocket;
-      inited = 1;
+      if(gethostname(hostname,sizeof(hostname)) == 0)
+      {
+        if((hostinfo = gethostbyname(hostname)) != NULL)
+        {
+          strTmp = inet_ntoa (*(struct in_addr *)*hostinfo->h_addr_list);
+          strNickName.Format("%s",hostname);
+        }
+      }
+      WSACleanup();
     }
-    FD_ZERO(&readfds);
-		FD_SET(udp_server_socket, &readfds);
-		life = select( 0,&readfds, NULL, NULL, &timeout );
-		if (life == -1 )  return false;
-    memset(&(server),0,sizeof(server));
-		server.sin_family           = AF_INET;
-		server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
-		server.sin_port             = htons(iUDPPort);
-    sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
-	}
+#endif
+  // get IP address
+  sscanf( (char *)strTmp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
+  if( !t1 ) return false;
+  cliLen = sizeof( cliAddr);
+  // setup UDP socket
+  if( !inited )
+  {
+    int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	  char value      = 1;
+	  setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
+	  struct sockaddr_in addr;
+	  memset(&(addr),0,sizeof(addr));
+	  addr.sin_family       = AF_INET;
+	  addr.sin_addr.s_addr  = INADDR_ANY;
+	  addr.sin_port         = htons(iUDPPort);
+	  bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
+    udp_server_socket = tUDPsocket;
+    inited = 1;
+  }
+  FD_ZERO(&readfds);
+  FD_SET(udp_server_socket, &readfds);
+  life = select( 0,&readfds, NULL, NULL, &timeout );
+  if (life == SOCKET_ERROR )
+    return false;
+  memset(&(server),0,sizeof(server));
+  server.sin_family = AF_INET;
+  server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
+  server.sin_port = htons(iUDPPort);
+  sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
 	FD_ZERO(&readfds);
 	FD_SET(udp_server_socket, &readfds);
 	life = select( 0,&readfds, NULL, NULL, &timeout );
-  if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
+  
+  unsigned int iLookUpCountMax = 2;
+  unsigned int i=0;
+  bool bUpdateShares=false;
+
+  // Ping able clients? 0:false
+  if (life == 0 )
   {
-    strNewClientIP ="";
-    strNewClientInfo ="";
-    g_infoManager.SetAutodetectedXbox(false);
+    if(v_xboxclients.client_ip.size() > 0)
+    {
+      // clients in list without life signal!
+      // calculate iLookUpCountMax value counter dependence on clients size!
+      if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+        iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
+
+      for (i=0; i<v_xboxclients.client_ip.size(); i++)
+      {
+        bUpdateShares=false;
+        //only 1 client, clear our list
+        if(v_xboxclients.client_lookup_count[i] >= iLookUpCountMax && v_xboxclients.client_ip.size() == 1 )
+        {
+          v_xboxclients.client_ip.clear();
+          v_xboxclients.client_info.clear();
+          v_xboxclients.client_lookup_count.clear();
+          v_xboxclients.client_informed.clear();
+          
+          // debug log, clients removed from our list 
+          CLog::Log(LOGDEBUG,"Autodetection: all Clients Removed! (mode LIFE 0)");
+          bUpdateShares = true;
+        }
+        else 
+        {
+          // check client lookup counter! Not reached the CountMax, Add +1!
+          if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax ) 
+            v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+          else
+          {
+            // client lookup counter REACHED CountMax, remove this client
+            v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+            v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+            v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+            v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+            
+            // debug log, clients removed from our list 
+            CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 0)",i );
+            bUpdateShares = true;
+          }
+        }
+        if(bUpdateShares)
+        {
+          // a client is removed from our list, update our shares
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage(msg);
+        }
+      }
+    }
   }
+  // life !=0 we are online and ready to receive and send
   while( life )
 	{
-    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
-    strWorkTemp.Format("%s",sztmp);
-    if( strWorkTemp == strReceiveMessage )
-		{
-      strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
-      sendto(udp_server_socket,(char *)strWorkTemp.c_str(),strlen((char *)strWorkTemp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-      strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
-
-			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping // todo: a code to check the list of other clients
-			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-		}
-		else
-		{
-      sprintf( szTemp, "%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
-      if (strHasClientIP != szTemp && strHasClientInfo != strWorkTemp)
-      {
-        strHasClientIP = szTemp, strHasClientInfo  = strWorkTemp;
-        if (!strHasClientIP.IsEmpty()&& !strHasClientInfo.IsEmpty())
-        {
-          strNewClientIP = szTemp;        //This is the Client IP Adress!
-          strNewClientInfo = strWorkTemp; // This is the Client Informations!
-          bState = true;
-        } //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc.
+    bFoundNewClient = false;
+    bUpdateShares = false;
+    // Receive ping request or Info
+    int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
+    if (iSockRet != SOCKET_ERROR)
+    {
+      // do we received a new Client info or just a "ping" request
+      if(strReceiveMessage.Equals(sztmp))
+	    {
+        // we received a "ping" request, sending our informations
+        strTmp.Format("%s;%s;%s;%d;%d\r\n\0",
+          strNickName.c_str(),  // Our Nick-, Device Name!
+          strFTPUserName.c_str(), // User Name for our FTP Server 
+          strFTPPass.c_str(), // Password for our FTP Server 
+          iFTPPort, // FTP PORT Adress for our FTP Server 
+          0 ); // BOOSMODE, for our FTP Server!
+        sendto(udp_server_socket,(char *)strTmp.c_str(),strlen((char *)strTmp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
       }
       else
-        g_infoManager.SetAutodetectedXbox(true);
+      {
+        //We received new client information, extracting information
+        CStdString strInfo, strIP;
+        strInfo.Format("%s",sztmp); //this is the client info
+        strIP.Format("%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,
+          cliAddr.sin_addr.S_un.S_un_b.s_b2,
+          cliAddr.sin_addr.S_un.S_un_b.s_b3,
+          cliAddr.sin_addr.S_un.S_un_b.s_b4 ); //this is the client IP
+        
+        //is our list empty?
+        if(v_xboxclients.client_ip.size() <= 0 )
+        {
+          // the list is empty, add. this client to the list!
+          v_xboxclients.client_ip.push_back(strIP);
+          v_xboxclients.client_info.push_back(strInfo);
+          v_xboxclients.client_lookup_count.push_back(0);
+          v_xboxclients.client_informed.push_back(false);
+          bFoundNewClient = true;
+          bUpdateShares = true;
+        }
+        // our list is not empty, check if we allready have this client in our list!
+        else 
+        {
+          // this should be a new client or?
+          // check list
+          bFoundNewClient = true;
+          for (i=0; i<v_xboxclients.client_ip.size(); i++)
+          {
+            if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+              bFoundNewClient=false;
+          }
+          if(bFoundNewClient)
+          {
+            // bFoundNewClient is still true, the client is not in our list!
+            // add. this client to our list!
+            v_xboxclients.client_ip.push_back(strIP);
+            v_xboxclients.client_info.push_back(strInfo);
+            v_xboxclients.client_lookup_count.push_back(0);
+            v_xboxclients.client_informed.push_back(false);
+            bUpdateShares = true;
+          }
+          else // this is a existing client! check for LIFE & lookup counter
+          {
+            // calculate iLookUpCountMax value counter dependence on clients size!
+            if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+              iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
+
+            for (i=0; i<v_xboxclients.client_ip.size(); i++)
+            {
+              if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+              {
+                // found client in list, reset looup_Count and the client_info
+                v_xboxclients.client_info[i]=strInfo;
+                v_xboxclients.client_lookup_count[i] = 0;
+              }
+              else 
+              {
+                // check client lookup counter! Not reached the CountMax, Add +1!
+                if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
+                  v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+                else
+                {
+                  // client lookup counter REACHED CountMax, remove this client
+                  v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+                  v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+                  v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+                  v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+                  
+                  // debug log, clients removed from our list 
+                  CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+
+                  // client is removed from our list, update our shares
+                  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+                  m_gWindowManager.SendThreadMessage(msg);
+                }
+              }
+            }
+            // here comes our list for debug log
+            for (i=0; i<v_xboxclients.client_ip.size(); i++)
+            {
+              CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] (mode LIFE=1)",i );
+              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+              CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
+                v_xboxclients.client_ip[i].c_str(),
+                v_xboxclients.client_info[i].c_str(), 
+                v_xboxclients.client_lookup_count[i],
+                v_xboxclients.client_informed[i] ? "true":"false");
+              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+            }
+          }
+        }
+        if(bUpdateShares)
+        {
+          // a client is add or removed from our list, update our shares
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage(msg);
+        }
+      }
+    }
+    else
+    {
+       CLog::Log(LOGDEBUG, "Autodetection: Socket error %u", WSAGetLastError());
     }
     timeout.tv_sec=0;
     timeout.tv_usec = 5000;
@@ -4391,36 +4582,21 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
     FD_SET(udp_server_socket, &readfds);
     life = select( 0,&readfds, NULL, NULL, &timeout );
   }
-#endif
-  return bState;
+  return bFoundNewClient;
 }
 
-bool CUtil::XboxAutoDetection()
+void CUtil::AutoDetectionGetShare(VECSHARES &shares)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if (g_guiSettings.GetBool("autodetect.onoff"))
+  if(v_xboxclients.client_ip.size() > 0)
   {
-    static DWORD pingTimer = 0;
-    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
-      return false;
-    pingTimer = timeGetTime();
-
-    CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
-    CStdString strNickName   = g_guiSettings.GetString("autodetect.nickname");
-    CStdString strSysFtpName = g_guiSettings.GetString("servers.ftpserveruser");
-    CStdString strSysFtpPw   = g_guiSettings.GetString("servers.ftpserverpassword");
-
-    if(!g_guiSettings.GetBool("Autodetect.senduserpw")) //Send anon login names!
+    // client list is not empty, add to shares
+    CShare share;
+    for (unsigned int i=0; i< v_xboxclients.client_ip.size(); i++)
     {
-      strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
-    }
-    int iSysFtpPort = 21;
-    if ( CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo ) )
-    {
-      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+      //extract client info string: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
       CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
       CStdStringArray arSplit;
-      StringUtils::SplitString(strNewClientInfo,";", arSplit);
+      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
       if ((int)arSplit.size() > 1)
       {
         strNickName     = arSplit[0].c_str();
@@ -4428,63 +4604,19 @@ bool CUtil::XboxAutoDetection()
         strFtpPassword  = arSplit[2].c_str();
         strFtpPort      = arSplit[3].c_str();
         strBoosMode     = arSplit[4].c_str();
-        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i].c_str(),strFtpPort.c_str());
 
-        //PopUp Notification (notify anytime if a box is found! no switch needed)
-        CStdString strtemplbl;
-        strtemplbl.Format("%s %s",strNickName, strNewClientIP);
-        g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
-        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
-
-        if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
-        {
-          if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
-          {
-            g_infoManager.SetAutodetectedXbox(true);
-            CStdString strTemp;
-            strNickName.TrimRight(' ');
-            strTemp.Format("FTP XBOX (%s)", strNickName.c_str());
-            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
-          }
-        }
+        strNickName.TrimRight(' ');
+#ifdef HAS_XBOX_HARDWARE
+        share.strName.Format("FTP XBMC (%s)", strNickName.c_str());
+#else
+        share.strName.Format("FTP XBMC_PC (%s)", strNickName.c_str());
+#endif
+        share.strPath.Format("%s",strFTPPath.c_str());
+        shares.push_back(share);
       }
     }
-    strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
   }
-  else
-  {
-    strHasClientIP ="", strHasClientInfo = "";
-    g_infoManager.SetAutodetectedXbox(false);
-  }
-#endif
-  return true;
-}
-bool CUtil::XboxAutoDetectionGetShare(CShare& share)
-{
-#ifdef HAS_XBOX_HARDWARE
-  if( !strNewClientIP.IsEmpty() && !strNewClientInfo.IsEmpty())
-  {
-    //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-    CStdStringArray arSplit;
-    StringUtils::SplitString(strNewClientInfo,";", arSplit);
-    if ((int)arSplit.size() > 1)
-    {
-      strNickName     = arSplit[0].c_str();
-      strFtpUserName  = arSplit[1].c_str();
-      strFtpPassword  = arSplit[2].c_str();
-      strFtpPort      = arSplit[3].c_str();
-      strBoosMode     = arSplit[4].c_str();
-      strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strNewClientIP.c_str(),strFtpPort.c_str());
-
-      strNickName.TrimRight(' ');
-      share.strName.Format("FTP XBOX (%s)", strNickName.c_str());
-      share.strPath.Format("%s",strFTPPath.c_str());
-    }
-    return true;
-  }
-#endif
-  return false;
 }
 bool CUtil::IsFTP(const CStdString& strFile)
 {
