@@ -253,7 +253,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
-    else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
     
     else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
@@ -1248,8 +1247,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
-  else if (condition == SYSTEM_AUTODETECTION)
-    bReturn = HasAutodetectedXbox();
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
   else if (condition == SYSTEM_KAI_CONNECTED)
