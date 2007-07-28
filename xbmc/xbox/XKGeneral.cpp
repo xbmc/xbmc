@@ -239,9 +239,9 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
     while (sTempSection != NULL);
 
     if (foundSection)
-      for (LPCSTR finditem = sTempSection + strlen(INISection) + 2; finditem < sNextSection - 1; finditem = min(strchr(finditem, '\n') + 1, sNextSection))
+      for (LPCSTR finditem = sTempSection + strlen(INISection) + 2; finditem < sNextSection - 1; finditem = min((LPCSTR)strchr(finditem, '\n') + 1, sNextSection))
       {
-        LPCSTR snextitem = min(strchr(finditem, '\n') + 1, sNextSection);
+        LPCSTR snextitem = min((LPCSTR)strchr(finditem, '\n') + 1, sNextSection);
         LPCSTR spossible = strchr(finditem, *INIItem);
         LPCSTR scomment = strchr(finditem, '#');
 
@@ -257,7 +257,7 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
           foundItem = TRUE;
 
           sTempItem = strchr(finditem + strlen(INIItem), '=') + 1;
-          LPCSTR sEnd = min(strchr(sTempItem, '\n') - 1, sNextSection);
+          LPCSTR sEnd = min((LPCSTR)strchr(sTempItem, '\n') - 1, sNextSection);
           LONG sLen = (LONG)(sEnd - sTempItem);
           LONG sLen2 = (LONG)min((LONG)strlen(sTempItem), sLen);
 
