@@ -102,7 +102,7 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime])
 
 if test "$use_debug" = "yes"; then
-  DEBUG_FLAGS="-g -D_XBMC_DEBUG"
+  DEBUG_FLAGS="-g -D_DEBUG"
 else
   DEBUG_FLAGS="-O2"
 fi
