@@ -1033,10 +1033,6 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
-#ifdef _LINUX
-  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-#endif
-
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 

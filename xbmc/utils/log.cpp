@@ -119,7 +119,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
 void CLog::DebugLog(const char *format, ... )
 {
-#ifdef _XBMC_DEBUG
+#ifdef _DEBUG
   CSingleLock waitLock(critSec);
 
   CStdString strData;
@@ -183,7 +183,7 @@ void CLog::MemDump(BYTE *pData, int length)
 
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
-#if defined(HAS_SDL_OPENGL) && defined(_XBMC_DEBUG)
+#if defined(HAS_SDL_OPENGL) && defined(_DEBUG)
 #define printMatrix(matrix)                                             \
   {                                                                     \
     for (int ixx = 0 ; ixx<4 ; ixx++)                                   \
