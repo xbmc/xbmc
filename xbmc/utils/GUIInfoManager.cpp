@@ -349,14 +349,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("network"))
   {
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
-    if (strTest.Equals("network.macadress")) ret = NETWORK_MAC_ADDRESS;
+    if (strTest.Equals("network.macadress") || strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
     if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
-    if (strTest.Equals("network.subetadress")) ret = NETWORK_SUBNET_ADDRESS;
-    if (strTest.Equals("network.gatewayadress")) ret = NETWORK_GATEWAY_ADDRESS;
-    if (strTest.Equals("network.dns1adress")) ret = NETWORK_DNS1_ADDRESS;
-    if (strTest.Equals("network.dns2adress")) ret = NETWORK_DNS2_ADDRESS;
-    if (strTest.Equals("network.dhcpadress")) ret = NETWORK_DHCP_ADDRESS;
+    if (strTest.Equals("network.subetadress") || strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
+    if (strTest.Equals("network.gatewayadress") || strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
+    if (strTest.Equals("network.dns1adress") || strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
+    if (strTest.Equals("network.dns2adress") || strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
+    if (strTest.Equals("network.dhcpadress") || strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
   }
   else if (strCategory.Equals("musicplayer"))
   {
