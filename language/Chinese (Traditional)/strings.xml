@@ -11,6 +11,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">檔案總管</string>
   <string id="8">氣象</string>
+  <string id="9">xbox 媒體中心</string>
 
   <string id="11">星期一</string>
   <string id="12">星期二</string>
@@ -685,7 +686,7 @@
   <string id="1220">圖片和檔案</string>
   <string id="1221">音樂和影片和圖片</string>
   <string id="1222">音樂和影片和圖片和檔案</string>
-  <string id="1223">禁用</string>
+  <string id="1223">停用</string>
   <string id="1226">檔案和音樂和影片</string>
   <string id="1227">檔案和圖片和音樂</string>
   <string id="1228">檔案和圖片和影片</string>
@@ -896,6 +897,10 @@
   <string id="13007">使用自訂原廠系統路徑</string>
 
   <string id="13100">閃爍過濾</string>
+  <string id="13105">垂直空白同步</string>
+  <string id="13106">停用</string>
+  <string id="13107">啟用 在影片播放時</string>
+  <string id="13108">強制啟用</string>
 
   <string id="13150">硬碟金鑰：</string>
   <string id="13151">硬碟溫度：</string>
@@ -1422,7 +1427,7 @@
   <string id="20097">取得專輯資訊</string>
   <string id="20098">正在取得專輯資訊</string>
   <string id="20099">當 CD 播放時不能擷取該 CD</string>
-  <string id="20100">管理員密碼與鎖定</string>
+  <string id="20100">管理員密碼與鎖定</string> 
   <string id="20101">輸入管理員密碼後，永遠啟用管理員模式</string>
   <string id="20102">或是從預設值中複製？</string>
   <string id="20103">儲存預設檔變更？</string>
@@ -1648,7 +1653,6 @@
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
   <string id="21385">打開</string>
-
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安靜</string>
@@ -1660,11 +1664,9 @@
   <string id="21394">低待機</string>
   <string id="21395">暫存檔不能超過4GB</string>
   <string id="21396">章節</string>
-
   <string id="21397">高品質像素著色器 V2</string>
-
   <string id="21398">啟用 啟動時播放列表</string>
-
+  <string id="21399">使用 Tween 動畫效果</string>
   <string id="21400">包含</string>
   <string id="21401">未包含</string>
   <string id="21402">是</string>
@@ -1697,6 +1699,7 @@
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智慧播放列表…</string>
   <string id="21438">%c裝置</string>
+  <string id="21439">編輯派對模式規則</string>
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
