@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 14/07/2007-->
+<!--Date of translation: 24/07/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 9565 -->
+<!--Based on english strings version 9672 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -14,6 +14,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">Tiedostonhallinta</string>
   <string id="8">Säätila</string>
+  <string id="9">xbox media center</string>
   
   <string id="11">Maanantai</string>
   <string id="12">Tiistai</string>
@@ -312,7 +313,7 @@
   <string id="386">selkeää</string>
   <string id="387">pilvistä</string>
   <string id="388">aamulla</string>
-  <string id="389">sadekuuroja</string>
+  <string id="389">kuuroja</string>
   <string id="390">lumikuuroja</string>
   <string id="391">Alin</string>
   <string id="392">kohtalaista</string>
@@ -665,7 +666,7 @@
   <string id="1032">Lisää verkko-osoite...</string>
   <string id="1033">Valitse tiedosto</string>
   <string id="1034">Alivalikko</string>
-  <string id="1035">Alivalikon painikkeet käyssä</string>
+  <string id="1035">Alivalikon painikkeet käytössä</string>
   <string id="1036">Suosikit</string>
   
   <string id="1200">SMB-asiakas</string>
@@ -723,7 +724,7 @@
   <string id="1403">aurinkoista</string>
   <string id="1404">kovaa</string>
   <string id="1405">on</string>
-  <string id="1406"> </string>
+  <string id="1406">tulossa</string>
   <string id="1407">lähiaikana</string>
   <string id="1408">jäätä</string>
   <string id="1409">jääkiteitä</string>
@@ -732,6 +733,9 @@
   <string id="1412">tuulista</string>
   <string id="1413">tihkusadetta</string>
   <string id="1414">ukkosmyrskyä</string>
+  
+  
+  
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="2050">Kesto:</string>
@@ -898,7 +902,11 @@
   <string id="13007">Vaihtoehtoinen dashboardin käynnistyspolku</string>
   
   <string id="13100">Näytön välkynnän poisto</string>
- 
+  <string id="13105">Pystysuunnan sammutuksen tahdistus</string>
+  <string id="13106">Ei käytössä</string>
+  <string id="13107">Käytössä videoita toistettaessa</string>
+  <string id="13108">Aina käytössä</string>
+
   <string id="13150">Lukituskoodi:</string>
   <string id="13151">Lämpötila:</string>
   <string id="13152">Malli:</string>
@@ -1048,7 +1056,7 @@
   <string id="13385">Äänimaski - Portti 4</string>
   <string id="13386">Käytä aikapohjaista hakua</string>
   <string id="13387">Kappaleen nimeämistapa, oikeanpuoleinen</string>
-  <string id="13388">esiasetukset</string>
+  <string id="13388">%s esiasetukset</string>
   <string id="13389">Tälle visualisoinnille ei&#10;löytynyt esiasetuksia</string>
   <string id="13390">Tälle visualisoinnille ei&#10;ole määriteltäviä asetuksia</string>
   <string id="13391">Poista-/Lataa levy</string>
@@ -1058,7 +1066,7 @@
   <string id="13395">Videoasetukset</string>
   <string id="13396">Äänen- ja tekstityksen asetukset</string>
   <string id="13397">Tekstitys käytössä</string>
-  <string id="13398">Kirjanmerkit</string>
+  <string id="13398">Pikakäynnistys</string>
   <string id="13399">Järjesteltäessä ohita "The"-sana</string>
   <string id="13400">Häivytä albumin kappaleet toisiinsa</string>
   <string id="13401">Valitse %s</string>
@@ -1533,7 +1541,7 @@
   
   <string id="20306">Ei voida tunnistaa</string>
   <string id="20307">Toissijainen DNS</string>
-  <string id="20308">DHCP Palvelin:</string>
+  <string id="20308">DHCP-Palvelin:</string>
   <string id="20309">Luo uusi kansio</string>
   <string id="20310">Himmennä LCD toistettaessa</string>
   <string id="20311">Tuntematon tai suojattu</string>
@@ -1607,6 +1615,7 @@
   <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
   <string id="20380">Sisällytä kansio hakuun</string>
   <string id="20381">Erikoiset</string>
+  <string id="20382">Automaattisesti luodut jakson kuvakkeet</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1624,7 +1633,7 @@
   <string id="21357">UPnP video</string>
   <string id="21358">UPnP kuvat</string>
   <string id="21359">Lisää sijainti</string>
-  <string id="21360">UPnP palvelin käytössä</string>
+  <string id="21360">UPnP-palvelin käytössä</string>
   <string id="21361">Muokkaa UPnP musiikki-sijaintia</string>
   <string id="21362">Muokkaa UPnP video-sijaintia</string>
   <string id="21363">Muokkaa UPnP kuva-sijaintia</string>
@@ -1648,24 +1657,21 @@
   <string id="21382">'Lisää sijainti'-painike ei käytössä</string>
   <string id="21383">Vierityspalkit käytössä</string>
   <string id="21384">Videokirjastossa piilota katsotut</string> 
-  <string id="21385">Avaa</string>
- 
+  <string id="21385">Avaa</string> 
   <string id="21386">Äänekkyyden asetukset</string>
   <string id="21387">Nopea</string>
   <string id="21388">Hiljainen</string>
   
   <string id="21390">Sähkönkulutuksen asetukset</string>
-  <string id="21391">Normaali tila</string>
-  <string id="21392">Tehonsäästö tila</string>
+  <string id="21391">Normaalitila</string>
+  <string id="21392">Tehonsäästötila</string>
   <string id="21393">Normaali valmiustila</string>
   <string id="21394">Tehonsäästö valmiustila</string>
   <string id="21395">Yli 4 gb tiedostoja ei voida välimuistittaa</string>
-  <string id="21396">Luku</string>
- 
+  <string id="21396">Luku</string> 
   <string id="21397">Pixel Shader V2 (korkealaatu)</string>
-
-  <string id="21398">Käynnistyessä soittolista käytössä</string>
-  
+  <string id="21398">Käynnistyessä soittolista käytössä</string>  
+  <string id="21399">Tween animimointi käytössä</string>
   <string id="21400">sisältyy</string>
   <string id="21401">ei sisälly</string>
   <string id="21402">on</string>
@@ -1698,6 +1704,7 @@
   <string id="21436">%i kappaletta</string>
   <string id="21437">Uusi älykäs soittolista...</string>
   <string id="21438">%c Asema</string>
+  <string id="21439">Muokkaa jukeboksin asetuksia</string>
   
   <string id="29999">Näytön välkynnän poisto</string>
 </strings>
