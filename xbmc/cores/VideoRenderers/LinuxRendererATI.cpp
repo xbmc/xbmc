@@ -26,6 +26,8 @@
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
 
+#ifdef HAS_SDL_OPENGL
+
 using namespace Surface;
 
 CLinuxRendererATI::CLinuxRendererATI(bool enableshaders):CLinuxRendererGL()
@@ -397,5 +399,7 @@ bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
   g_graphicsContext.EndPaint(m_pBuffer);
   return true;
 }
+
+#endif
 
 #endif

@@ -421,7 +421,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 #elif defined(HAS_SDL_2D)
 #define USE_NEW_SDL_SCALING
-  SDL_Surface* texture = m_vecTextures[m_iCurrentImage]; 
+  SDL_Surface* surface = m_vecTextures[m_iCurrentImage]; 
 #ifdef USE_NEW_SDL_SCALING
   float x[4] = { x1, x2, x3, x4 };
   float y[4] = { y1, y2, y3, y4 };
@@ -439,7 +439,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   CCachedTexture &cached = m_vecCachedTextures[m_iCurrentImage];
   if (!cached.surface || cached.width != b[2] || cached.height != b[3] || c[0]  != cached.diffuseColor)
   { // need to re-render the surface
-    RenderWithEffects(texture, x, y, u, v, c, m_diffuseTexture, m_diffuseScaleU, m_diffuseScaleV, cached);
+    RenderWithEffects(surface, x, y, u, v, c, m_diffuseTexture, m_diffuseScaleU, m_diffuseScaleV, cached);
   }
   if (cached.surface)
   {
