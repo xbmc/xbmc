@@ -1,6 +1,8 @@
 #ifndef LINUXRENDERERGL_RENDERER
 #define LINUXRENDERERGL_RENDERER
 
+#ifdef HAS_SDL_OPENGL
+
 #include "../../../guilib/Surface.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
@@ -261,5 +263,6 @@ inline int NP2( unsigned x ) {
     return ++x;
 #endif
 }
+#endif
 
 #endif

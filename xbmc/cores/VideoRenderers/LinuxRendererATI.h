@@ -6,6 +6,8 @@
 #include "../ffmpeg/DllAvCodec.h"
 #include "LinuxRendererGL.h"
 
+#ifdef HAS_SDL_OPENGL
+
 using namespace Surface;
 
 class CLinuxRendererATI:public CLinuxRendererGL
@@ -26,5 +28,7 @@ protected:
   virtual bool CreateYV12Texture(int index, bool clear=true);
   virtual bool ValidateRenderTarget();
 };
+
+#endif
 
 #endif
