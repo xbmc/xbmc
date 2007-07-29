@@ -935,7 +935,9 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRenderer::FlipPage(int source)
 {  
+#ifdef __GNUC__
 #warning TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV). 
+#endif
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
@@ -1202,7 +1204,9 @@ void CLinuxRenderer::SetViewMode(int iViewMode)
 
 void CLinuxRenderer::AutoCrop(bool bCrop)
 {
+#ifdef __GNUC__
 #warning AutoCrop not implemented
+#endif
 }
 
 void CLinuxRenderer::RenderLowMem(DWORD flags)

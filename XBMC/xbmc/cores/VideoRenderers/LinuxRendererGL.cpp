@@ -30,6 +30,8 @@
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
 
+#ifdef HAS_SDL_OPENGL
+
 using namespace Surface;
 
 CLinuxRendererGL::CLinuxRendererGL()
@@ -1453,3 +1455,4 @@ void CLinuxRendererGL::TextureCallback(DWORD dwContext)
 }
 #endif
 
+#endif

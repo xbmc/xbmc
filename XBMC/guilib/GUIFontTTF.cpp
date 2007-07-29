@@ -902,19 +902,9 @@ struct CUSTOMVERTEX {
   SDL_UnlockSurface(tempSurface);
   SDL_UnlockSurface(m_texture);
 
-  if (angle.theta != 0)
-  {
-    // This angular stuff somewhat works but it is not really aligned. This will have to do for now 
-//    SDL_Surface* angledSurface = rotozoomSurface(tempSurface, 360 - angle.theta, 1.0, 0);
-//    SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
-//    SDL_BlitSurface(angledSurface, NULL, g_graphicsContext.getScreenSurface(), &dstRect2);
-  }
-  else
-  {
-    // Copy the surface to the screen (without angle). 
-    SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
-    g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
-  }
+  // Copy the surface to the screen (without angle). 
+  SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
+  g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
   
   SDL_FreeSurface(tempSurface);  
 #elif defined(HAS_SDL_OPENGL)

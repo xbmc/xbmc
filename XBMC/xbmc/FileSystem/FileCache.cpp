@@ -11,7 +11,7 @@ using namespace XFILE;
 
 // when buffering we will wait for BUFFER_BYTES amount of bytes. need to experiment about the size and
 // in general implement better buffering mechanism. 
-#define BUFFER_BYTES (0.5 * 1048576)
+#define BUFFER_BYTES (1048576/2)
 
 CFileCache::CFileCache() : m_bDeleteCache(false)
 {
@@ -117,7 +117,7 @@ void CFileCache::Process() {
 		else if (iRead < 0)
 			bError = TRUE;
 
-		int iTotalWrite=0;
+		DWORD iTotalWrite=0;
 		while (!m_bStop && iTotalWrite < iRead) {
 			int iWrite = m_pCache->WriteToCache(buf+iTotalWrite, iRead - iTotalWrite);
 			// write should always work. all handling of buffering and errors should be
