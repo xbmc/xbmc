@@ -19,11 +19,13 @@ bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
 
+#ifdef HAS_SDL_OPENGL
 int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 void (*_glXSwapIntervalSGI)(int) = 0;
 void (*_glXSwapIntervalMESA)(int) = 0;
 bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
+#endif
 
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
@@ -422,6 +424,7 @@ CSurface::~CSurface()
 
 void CSurface::EnableVSync(bool enable)
 {
+#ifdef HAS_SDL_OPENGL
   if (m_bVSync==enable)
     return;
 
@@ -521,6 +524,7 @@ void CSurface::EnableVSync(bool enable)
       CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
     }
   }
+#endif
 }
 
 void CSurface::Flip() 

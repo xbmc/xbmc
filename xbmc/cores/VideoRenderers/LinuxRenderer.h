@@ -7,11 +7,13 @@
 
 #include <SDL/SDL.h>
 #include "GraphicContext.h"
+#ifdef _LINUX
 #include "PlatformDefs.h"
+#endif
 #include "TextureManager.h"
 
-#include "ffmpeg/DllSwScale.h"
-#include "ffmpeg/DllAvCodec.h"
+#include "../ffmpeg/DllSwScale.h"
+#include "../ffmpeg/DllAvCodec.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
