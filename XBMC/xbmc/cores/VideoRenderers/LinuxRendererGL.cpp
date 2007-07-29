@@ -443,7 +443,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   {
     int maj, min;
     m_pBuffer->GetGLVersion(maj, min);
-    if (maj<2)
+    if (maj<2 || !glewIsSupported("GL_ARB_texture_non_power_of_two"))
     {
       CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
       if (!glewIsSupported("GL_ARB_texture_rectangle"))
