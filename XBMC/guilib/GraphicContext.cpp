@@ -15,8 +15,11 @@
 #endif
 #include "Surface.h"
 #include "SkinInfo.h"
-
 using namespace Surface;
+#ifdef HAS_GLX
+#include <X11/extensions/Xinerama.h>
+#endif
+
 
 CGraphicContext g_graphicsContext;
 extern bool g_fullScreen;
@@ -41,6 +44,7 @@ CGraphicContext::CGraphicContext(void)
   m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
+  m_bFullScreenRoot = false;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -179,7 +183,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   GLVALIDATE;
   GLint newviewport[4];
   GLint* oldviewport = new GLint[4];
-  glGetIntegerv(GL_SCISSOR_BOX, oldviewport);	
+  glGetIntegerv(GL_SCISSOR_BOX, oldviewport);   
 #endif
   
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -338,7 +342,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
       r.w = (Sint16)(m_videoRect.right - m_videoRect.left + 1);
       r.h = (Sint16)(m_videoRect.bottom - m_videoRect.top +1);
       SDL_FillRect(m_screenSurface->SDL(), &r, 0x00010001);    
-#endif		  
+#endif            
     }
   }
 }
@@ -367,10 +371,20 @@ void CGraphicContext::ClipToViewWindow()
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
-  m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
-  m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
-  m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
-  m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
+  if (m_bFullScreenRoot)
+  {
+    m_videoRect.left = 0;
+    m_videoRect.top = 0;
+    m_videoRect.right = m_iFullScreenWidth;
+    m_videoRect.bottom = m_iFullScreenHeight; 
+  }
+  else
+  {
+    m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
+    m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
+    m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
+    m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
+  }
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
@@ -579,22 +593,27 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     // Create a bare root window so that SDL Input handling works
 #ifdef HAS_GLX
     static SDL_Surface* rootWindow = NULL;
+    options = (options & (~SDL_FULLSCREEN));
     if (!rootWindow) 
     {
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, 1);
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
-	m_screenSurface->EnableVSync();
+        m_screenSurface->EnableVSync();
       glEnable(GL_MULTISAMPLE);
       SDL_WM_SetCaption("XBox Media Center", NULL);
+      if (g_advancedSettings.m_fullScreen)
+      {
+        SetFullScreenRoot(true);
+      }
     } else {
-      // FIXME: this doesn't work :(      
-      //m_screenSurface->ReleaseContext();
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-      //m_screenSurface->MakeCurrent();
-      
+      if (g_advancedSettings.m_fullScreen)
+      {
+        SetFullScreenRoot(true);
+      }
     }
 
 #else
@@ -605,8 +624,16 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
-    glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-    glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+    if (m_bFullScreenRoot)
+    {
+      glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
+      glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
+    }
+    else
+    {
+      glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+      glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+    }
     glEnable(GL_TEXTURE_2D); 
     glEnable(GL_SCISSOR_TEST); 
 
@@ -625,10 +652,15 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #endif
 
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
-                  	res == PAL_16x9 || res == NTSC_16x9);
+                        res == PAL_16x9 || res == NTSC_16x9);
   
-    if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
-    { // set the mouse resolution
+    // set the mouse resolution
+    if (m_bFullScreenRoot)
+    {
+      g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
+    }
+    else if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
+    {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
     }
    
@@ -830,13 +862,32 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   m_windowResolution = res;
   if (needsScaling)
   {
-    // calculate necessary scalings
-    float fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
-    float fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
-    float fToPosX = (float)g_settings.m_ResInfo[m_Resolution].Overscan.left;
-    float fToPosY = (float)g_settings.m_ResInfo[m_Resolution].Overscan.top;
-    float fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right - fToPosX;
-    float fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY;
+    // calculate necessary scalings    
+    float fFromWidth;
+    float fFromHeight;
+    float fToPosX;
+    float fToPosY;
+    float fToWidth;
+    float fToHeight;
+
+    if (m_bFullScreenRoot)
+    {
+      fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
+      fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
+      fToPosX = (float)0;
+      fToPosY = (float)0;
+      fToWidth = (float)m_iFullScreenWidth;
+      fToHeight = (float)m_iFullScreenHeight;
+    }
+    else
+    {
+      fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
+      fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
+      fToPosX = (float)g_settings.m_ResInfo[m_Resolution].Overscan.left;
+      fToPosY = (float)g_settings.m_ResInfo[m_Resolution].Overscan.top;
+      fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right - fToPosX;
+      fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY;      
+    }
 
     // add additional zoom to compensate for any overskan built in skin
     float fZoom = g_SkinInfo.GetSkinZoom();
@@ -876,7 +927,10 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   m_origins.push(CPoint(posX, posY));
   while (m_cameras.size())
     m_cameras.pop();
-  m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  if (m_bFullScreenRoot)
+    m_cameras.push(CPoint(0.5f*m_iFullScreenWidth, 0.5f*m_iFullScreenHeight));
+  else
+    m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
   UpdateCameraPosition(m_cameras.top());
 
   // and reset the final transform
@@ -1039,9 +1093,9 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
       CSurface* surface = new CSurface(m_screenSurface);
       if (!surface->MakeCurrent())
       {
-	CLog::Log(LOGERROR, "GL: Error making context current");
-	delete surface;
-	return false;
+        CLog::Log(LOGERROR, "GL: Error making context current");
+        delete surface;
+        return false;
       }
       m_surfaces[tid] = surface;
       return true;
@@ -1054,7 +1108,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
 #ifdef _WIN32
     CSurface* surface = NULL;
 #else
-	CSurface* surface = InitializeSurface();
+        CSurface* surface = InitializeSurface();
 #endif
     if (surface) 
     {
@@ -1199,4 +1253,125 @@ void CGraphicContext::EndPaint(CSurface *dest)
 #endif
 }
 
+bool CGraphicContext::ToggleFullScreenRoot ()
+{
+  SetFullScreenRoot(!m_bFullScreenRoot);
+  return  m_bFullScreenRoot;
+}
 
+void CGraphicContext::SetFullScreenRoot(bool fs)
+{
+#ifdef HAS_GLX
+  Display * pRootDisplay = XOpenDisplay(NULL);
+  int screen = DefaultScreen(pRootDisplay); 
+  int width = DisplayWidth(pRootDisplay, screen);
+  int height = DisplayHeight(pRootDisplay, screen);
+  if (fs)
+  {
+    XineramaScreenInfo *info;
+    int num;
+    info = XineramaQueryScreens(pRootDisplay, &num);
+    if (info)
+    {
+      int desired = 0;
+      width = info[0].width;
+      height = info[0].height;
+      const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
+      if (variable) 
+      {
+        desired = SDL_atoi(variable);
+        for (int i = 0 ; i<num ; i++)
+        {
+          if (info[i].screen_number==desired)
+          {
+            width = info[i].width;
+            height = info[i].height;
+            break;
+          }
+        }
+      }
+      XFree(info);
+    }
+
+    // Code from this point on should be platform independent. The Win32 version could
+    // probably use GetSystemMetrics/EnumDisplayDevices/GetDeviceCaps to query current 
+    // resolution on the requested display no. and set 'width' and 'height'
+
+    m_iFullScreenWidth = width;
+    m_iFullScreenHeight = height;
+    SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
+    m_screenSurface->ResizeSurface(width, height);
+    glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
+    glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
+    g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
+  }
+  else
+  {
+    SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
+    m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+    glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+    glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+    g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
+  }
+  m_bFullScreenRoot = fs;
+#endif
+
+// The _correct_ way to switch to fullscreen in X. Doesn't work now because of the way
+// SDL creates windows. Should be fixed in SDL 1.3 therefore currently disabled.
+#if 0
+  enum
+  {
+    _NET_WM_STATE_REMOVE = 0,
+    _NET_WM_STATE_ADD = 1,
+    _NET_WM_STATE_TOGGLE = 2    
+  };
+ 
+  SDL_SysWMinfo info;
+  SDL_VERSION(&info.version);
+  SDL_GetWMInfo(&info);
+  glXWaitX();
+
+  XEvent xev;
+  Atom stateAtom, fullScreenAtom;
+  Display * pRootDisplay = XOpenDisplay(NULL);
+  int screen = DefaultScreen(pRootDisplay); 
+  Window tempwindow, parent, glparent = info.info.x11.window;
+  Window *children = NULL;
+  unsigned int numchildren;
+
+  // get the real parent window
+  Window previousparent;
+  do 
+  {
+    XQueryTree(pRootDisplay, glparent, &tempwindow, &parent, &children, &numchildren);
+    if (parent==tempwindow)
+      break;
+    previousparent = glparent;
+    glparent = parent;
+  } while (1);
+  
+  glparent = previousparent;
+  stateAtom = XInternAtom(pRootDisplay, "_NET_WM_STATE", False);
+  fullScreenAtom = XInternAtom(pRootDisplay, "_NET_WM_STATE_FULLSCREEN", False);
+  
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = glparent;
+  xev.xclient.message_type = stateAtom;
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = (fs ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE);
+  xev.xclient.data.l[1] = fullScreenAtom;
+  xev.xclient.data.l[2] = 0;
+
+  XChangeProperty(pRootDisplay, glparent, stateAtom, XA_ATOM, 32, PropModeReplace,
+                  (unsigned char *)&fullScreenAtom, 1);
+  if (XSendEvent(pRootDisplay, DefaultRootWindow(pRootDisplay), False, 
+                 SubstructureRedirectMask | SubstructureNotifyMask, 
+                 &xev))
+  {
+    m_bFullScreenRoot = fs;
+  }
+  glXWaitX();
+#endif
+}

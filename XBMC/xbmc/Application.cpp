@@ -2602,6 +2602,12 @@ bool CApplication::OnAction(const CAction &action)
     }
   }
 
+  if (action.wID == ACTION_TOGGLE_FULLSCREEN)
+  {
+    g_graphicsContext.ToggleFullScreenRoot();
+    return true;
+  }
+
   // in normal case
   // just pass the action to the current window and let it handle it
   if (m_gWindowManager.OnAction(action))

@@ -435,6 +435,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
   else if (strAction.Equals("increaserating")) wAction = ACTION_INCREASE_RATING;
   else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
+  else if (strAction.Equals("togglefullscreen")) wAction = ACTION_TOGGLE_FULLSCREEN;
 
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
