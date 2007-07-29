@@ -134,6 +134,8 @@ public:
   const RECT& GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   void SetFullScreenViewWindow(RESOLUTION &res);
+  bool ToggleFullScreenRoot();
+  void SetFullScreenRoot(bool fs = true);
   void ClipToViewWindow();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
@@ -228,11 +230,14 @@ protected:
 
   int m_iScreenHeight;
   int m_iScreenWidth;
+  int m_iFullScreenHeight;
+  int m_iFullScreenWidth;
   int m_iBackBufferCount;
   DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
   RECT m_videoRect;
+  bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;
   bool m_bShowPreviewWindow;
   bool m_bCalibrating;
