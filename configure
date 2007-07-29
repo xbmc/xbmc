@@ -3159,7 +3159,7 @@ if test $ac_cv_lib_GL_main = yes; then
 #define HAVE_LIBGL 1
 _ACEOF
 
-  LIBS="-lGL $LIBS"
+  LIBS="-lXinerama -lGL $LIBS"
 
 fi
 

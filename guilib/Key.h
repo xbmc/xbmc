@@ -211,6 +211,8 @@
 #define ACTION_INCREASE_RATING        136
 #define ACTION_DECREASE_RATING        137
 
+#define ACTION_TOGGLE_FULLSCREEN      138 // switch 2 desktop resolution
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
