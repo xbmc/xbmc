@@ -31,14 +31,7 @@
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "util.h"
-
-#define USE_TTF_FONTS
-
-#ifdef USE_TTF_FONTS
 #include "guifont.h"
-#else
-#include "guifontxpr.h"
-#endif
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -537,12 +530,8 @@ static char* ResourceHeader;
 static void* ResourceData;
 static int SkinOffset;
 
-#ifdef USE_TTF_FONTS
 LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text);
 static map<int, CGUIFont*> Fonts;
-#else
-static map<int, CGUIFontXPR*> Fonts;
-#endif
 
 static HRESULT InitLogo()
 {
@@ -1089,7 +1078,6 @@ void RunCredits()
   for (int i = 0; i < NUM_CREDITS; ++i)
   {
     // map fonts
-#ifdef USE_TTF_FONTS
     if (Fonts.find(Credits[i].Font) == Fonts.end())
     {
       // first try loading it
@@ -1098,21 +1086,6 @@ void RunCredits()
       strFont.Fmt("__credits%d__", Credits[i].Font);
       CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFdadada, 0, Credits[i].Font, FONT_STYLE_BOLD);
       Fonts.insert(std::pair<int, CGUIFont*>(Credits[i].Font, font));
-#else
-    if (Credits[i].Font < 30)
-      Credits[i].Font = 20;
-    if (Credits[i].Font >= 30 && Credits[i].Font < 48)
-      Credits[i].Font = 36;
-    if (Credits[i].Font >= 48)
-      Credits[i].Font = 78;
-    if (Fonts.find(Credits[i].Font) == Fonts.end())
-    {
-      CStdString strFilename;
-      strFilename.Fmt("q:\\credits\\credits-font%d.xpr", Credits[i].Font);
-      CGUIFontXPR* pFont = new CGUIFontXPR(strFilename);
-      pFont->Load(strFilename);
-      Fonts.insert(std::pair<int, CGUIFontXPR*>(Credits[i].Font, pFont));
-#endif
     }
 
     // validate credits
@@ -1148,10 +1121,8 @@ void RunCredits()
       // can be quite long)
       if (Credits[i].Text)
       {
-#ifdef USE_TTF_FONTS
         CGUIFont* pFont = Fonts.find(Credits[i].Font)->second;
         pFont->GetTextExtent(Credits[i].Text, &Credits[i].TextWidth, &Credits[i].TextHeight);
-#endif
       }
     }
   }
@@ -1216,20 +1187,17 @@ void RunCredits()
       if (NextCredit == NUM_CREDITS && ActiveList.size() == 1)
         s_bFadeMusic = true;
 
+      // reset the world and view transforms etc.
+      g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+
       // Activate new credits
       while (NextCredit < NUM_CREDITS && Credits[NextCredit].Time <= Time)
       {
         if (Credits[NextCredit].Text)
         {
-#ifdef USE_TTF_FONTS
           CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
           Credits[NextCredit].pTex = CreateCreditsTexture(pFont, Credits[NextCredit].Text);
           pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
-#else
-          CGUIFontXPR* pFont = Fonts.find(Credits[NextCredit].Font)->second;
-          Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
-          pFont->CreditsGetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
-#endif
         }
         ActiveList.push_back(&Credits[NextCredit]);
         LastCreditTime = Credits[NextCredit].Time;
@@ -1343,19 +1311,11 @@ void RunCredits()
         CloseHandle(hMusicThread);
 
         // Unload fonts
-#ifdef USE_TTF_FONTS
         for (map<int, CGUIFont*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
-#else
-        for (map<int, CGUIFontXPR*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
-#endif
         {
-#ifdef USE_TTF_FONTS
           CGUIFont *font = iFont->second;
           CStdString fontName = font->GetFontName();
           g_fontManager.Unload(fontName);
-#else
-          delete iFont->second;
-#endif
         }
         Fonts.clear();
 
