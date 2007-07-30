@@ -11,4 +11,7 @@ pls make a donation to organizations like Doctors Without Borders.
 
 These fonts can NOT be included in any compilation CDs, disks or products, 
 either commercial or shareware unless prior permission granted."
+
+2007.07.28 by smuto
+-add 1250 Latin2: Eastern Europe (not all - only my polish glyph)
  
