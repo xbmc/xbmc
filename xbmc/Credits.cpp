@@ -1187,9 +1187,6 @@ void RunCredits()
       if (NextCredit == NUM_CREDITS && ActiveList.size() == 1)
         s_bFadeMusic = true;
 
-      // reset the world and view transforms etc.
-      g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-
       // Activate new credits
       while (NextCredit < NUM_CREDITS && Credits[NextCredit].Time <= Time)
       {
@@ -1481,6 +1478,16 @@ LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
     texture->GetSurfaceLevel(0, &newSurface);
     D3DDevice::GetRenderTarget(&oldSurface);
     D3DDevice::SetRenderTarget(newSurface, NULL);
+    D3DXMATRIX mtxWorld, mtxView, mtxProjection, flipY, translate;
+    D3DXMatrixIdentity(&mtxWorld);
+    D3DDevice::SetTransform(D3DTS_WORLD, &mtxWorld);
+    D3DXMatrixIdentity(&mtxView);
+    D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
+    D3DXMatrixTranslation(&translate, -0.5f*width, -0.5f*height, 2.0f);
+    D3DXMatrixMultiply(&mtxView, &translate, &flipY);
+    D3DDevice::SetTransform(D3DTS_VIEW, &mtxView);
+    D3DXMatrixPerspectiveLH(&mtxProjection, width*0.5f, height*0.5f, 1.0f, 100.0f);
+    D3DDevice::SetTransform(D3DTS_PROJECTION, &mtxProjection);
     // render text into it
     D3DDevice::Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
     font->DrawText(0, 0, 0xffdadada, 0, text);
