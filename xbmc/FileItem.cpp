@@ -526,7 +526,8 @@ bool CFileItem::IsFileFolder() const
     IsRAR() ||
     IsType("ogg") ||
     IsType("nsf") ||
-    IsType("sid")
+    IsType("sid") ||
+    IsShoutCast()
     )
     );
 }
