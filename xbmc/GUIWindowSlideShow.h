@@ -85,4 +85,5 @@ private:
   bool m_bLoadNextPic;
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
+  RESOLUTION m_Resolution;
 };
