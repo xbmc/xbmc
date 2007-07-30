@@ -629,7 +629,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInScreenSavers(pSetting);
     }
-    else if (strSetting.Equals("videoplayer.displayresolution"))
+    else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
       FillInResolutions(pSetting, true);
     }
