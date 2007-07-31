@@ -484,7 +484,7 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
 #ifdef _DEBUG
 void CGUIBaseContainer::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" for container %i", GetID());
+  CLog::Log(LOGDEBUG, "%s for container %i", __FUNCTION__, GetID());
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     CGUIListItem *item = m_items[i];
