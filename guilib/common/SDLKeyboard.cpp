@@ -131,6 +131,7 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
       else if (m_keyEvent.key.keysym.sym == SDLK_KP_DIVIDE) m_VKey = 0x6f;
       else if (m_keyEvent.key.keysym.sym == SDLK_PAGEUP) m_VKey = 0x21;
       else if (m_keyEvent.key.keysym.sym == SDLK_PAGEDOWN) m_VKey = 0x22;
+      else if ((m_keyEvent.key.keysym.sym == SDLK_PRINT) || (m_keyEvent.key.keysym.scancode==111) ) m_VKey = 0x2a;
       else if (m_keyEvent.key.keysym.sym == SDLK_LSUPER) m_VKey = 0x5b;
       else if (m_keyEvent.key.keysym.sym == SDLK_RSUPER) m_VKey = 0x5c;
       else if (m_keyEvent.key.keysym.mod & KMOD_LSHIFT) m_VKey = 0xa0;

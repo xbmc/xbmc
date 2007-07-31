@@ -85,12 +85,17 @@ bool IsSwizzledFormat(XB_D3DFORMAT format)
 
 #ifndef HAS_SDL
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
+#else
+HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName)
+#endif
 {
+#ifndef HAS_SDL
   D3DLOCKED_RECT lr;
   D3DSURFACE_DESC desc;
   pSurface->GetDesc(&desc);
   if (S_OK == pSurface->LockRect(&lr, NULL, 0))
   {
+#endif
     FILE *file = fopen(fileName, "wb");
     if (file)
     {
@@ -100,8 +105,13 @@ HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
       memcpy(bh.id,"BM",2);
       bh.headersize = 54L;
       bh.infoSize = 0x28L;
+#ifndef HAS_SDL
       bh.width = desc.Width;
       bh.height = desc.Height;
+#else
+      bh.width = width;
+      bh.height = height;
+#endif
       bh.biPlanes = 1;
       bh.bits = 24;
       bh.biCompression = 0L;
@@ -121,11 +131,20 @@ HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
       BYTE *lineBuf = new BYTE[bytesPerLine];
       memset(lineBuf, 0, bytesPerLine);
       // lines are stored in BMPs upside down
-      for (UINT y = desc.Height; y; --y)
+#ifndef HAS_SDL
+      for (UINT y = bh.height; y; --y)
+#else
+      for (UINT y = 1 ; y<=bh.height ; ++y) //compensate for gl's inverted Y axis
+#endif
       {
+#ifndef HAS_SDL
         BYTE *s = (BYTE *)lr.pBits + (y - 1) * lr.Pitch;
         BYTE *d = lineBuf;
-        for (UINT x = 0; x < desc.Width; x++)
+#else
+        BYTE *s = (BYTE *)pixels + (y - 1) * 4 * width;
+        BYTE *d = lineBuf;
+#endif
+        for (UINT x = 0; x < bh.width; x++)
         {
           *d++ = *(s + x * 4);
           *d++ = *(s + x * 4 + 1);
@@ -136,11 +155,12 @@ HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
       delete[] lineBuf;
       fclose(file);
     }
+#ifndef HAS_SDL
     pSurface->UnlockRect();
   }
+#endif
   return S_OK;
 }
-#endif
 
 // Unswizzle.
 // Format is:
