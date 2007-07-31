@@ -56,7 +56,7 @@ void CGUIFadeLabelControl::Render()
 	int iLabelCount = (int)m_infoLabels.size();
 	if (iLabelCount > 0)
 	{
-		strRenderLabel = g_infoManager.GetMultiLabel(m_infoLabels[m_iCurrentLabel]);
+		strRenderLabel = g_infoManager.GetMultiInfo(m_infoLabels[m_iCurrentLabel], m_dwParentID);
 	}
 
 	if (m_vecInfo.size())
