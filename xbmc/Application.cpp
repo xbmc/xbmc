@@ -829,6 +829,8 @@ HRESULT CApplication::Create(HWND hWnd)
     CIoSupport::RemapDriveLetter('T',szDevicePath);
 #else
     CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
+    CIoSupport::RemapDriveLetter('C',(char*) strMnt.c_str());
+    CIoSupport::RemapDriveLetter('E',(char*) strMnt.c_str());
 #endif    
   }
 
@@ -972,8 +974,13 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
+#ifdef _LINUX
+  // CIoSupport::RemapDriveLetter('C', "/"); // disabled for now since '/' doesn't work. 'C' is remapped later near line 833.
+  // CIoSupport::RemapDriveLetter('E', "/mnt");
+#else
   CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
   CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
+#endif
 
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
