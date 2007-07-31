@@ -124,7 +124,7 @@ CreditLine_t Credits[] =
     { 50, 60, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Cocoliso (IRC)" },
     { 50, 70, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Jezz_X (IRC)" },
 
-    { 50, 40, 3840, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MattAaron (IRC)" },
+    { 50, 40, 3840, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MattAAron (IRC)" },
     { 50, 50, 0, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"No1CaNTeL (IRC)" },
     { 50, 60, 0, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xLoial (IRC)" },
 
