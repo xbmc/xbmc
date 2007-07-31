@@ -358,7 +358,7 @@ CStdString CGUIControlFactory::GetLabel(const CStdString &label)
   // translate the label
   vector<CInfoPortion> info;
   g_infoManager.ParseLabel(viewLabel, info);
-  return g_infoManager.GetMultiLabel(info);
+  return g_infoManager.GetMultiInfo(info, 0);
 }
 
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
