@@ -69,7 +69,7 @@ void CGUIButtonControl::Render()
   bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
   m_dwFlickerCounter = (m_dwFlickerCounter > 0) ? (m_dwFlickerCounter - 1) : 0;
 
-  CStdString renderLabel(g_infoManager.GetMultiLabel(m_multiInfo));
+  CStdString renderLabel(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
 
   if (renderLabel.size() > 0 && bRenderText && m_label.font)
   {
@@ -247,7 +247,7 @@ void CGUIButtonControl::Flicker(bool bFlicker)
 
 CStdString CGUIButtonControl::GetDescription() const
 {
-  CStdString strLabel(g_infoManager.GetMultiLabel(m_multiInfo));
+  CStdString strLabel(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
   return strLabel;
 }
 
