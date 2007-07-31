@@ -1255,7 +1255,7 @@ void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" for window %i", GetID());
+  CLog::Log(LOGDEBUG, "%s for window %i", __FUNCTION__, GetID());
   for (ivecControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
   {
     (*it)->DumpTextureUse();
