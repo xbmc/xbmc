@@ -375,9 +375,9 @@ public:
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
   int GetInt(int info) const;
-  string GetLabel(int info);
+  CStdString GetLabel(int info);
 
-  CStdString GetImage(int info, int contextWindow);
+  CStdString GetImage(int info, DWORD contextWindow);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetDate(bool bNumbersOnly = false);
@@ -448,7 +448,7 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
-  CStdString GetMultiLabel(const vector<CInfoPortion> &multiInfo);
+  CStdString GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage = false);
 
   void ResetCache();
 

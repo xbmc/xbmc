@@ -644,7 +644,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   return TIME_FORMAT_GUESS;
 }
 
-string CGUIInfoManager::GetLabel(int info)
+CStdString CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
@@ -1731,7 +1731,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
+CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -1781,7 +1781,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
         return GetItemImage(item, info);
     }
   }
-  return "";
+  return GetLabel(info);
 }
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
@@ -2843,7 +2843,7 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
   return (info < 0) ? !ret : ret;
 }
 
-CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
+CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage)
 {
   CStdString label;
   for (unsigned int i = 0; i < multiInfo.size(); i++)
@@ -2851,7 +2851,11 @@ CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
     const CInfoPortion &portion = multiInfo[i];
     if (portion.m_info)
     {
-      CStdString infoLabel = g_infoManager.GetLabel(portion.m_info);
+      CStdString infoLabel;
+      if (preferImage)
+        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
+      if (infoLabel.IsEmpty())
+        infoLabel = g_infoManager.GetLabel(portion.m_info);
       if (!infoLabel.IsEmpty())
       {
         label += portion.m_prefix;

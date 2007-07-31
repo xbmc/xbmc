@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+#include "GUILabelControl.h"  // for CInfoPortion
 
 struct FRECT
 {
@@ -90,7 +91,7 @@ public:
   void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
-  void SetInfo(int info) { m_Info = info; };
+  void SetInfo(int info);
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;
@@ -139,7 +140,8 @@ protected:
   bool m_linearTexture; // true if it's a linear 32bit texture
 
   // conditional info
-  int m_Info;
+  vector<CInfoPortion> m_multiInfo;
+  int m_singleInfo;
 
   // border
   CImage m_image;

@@ -4495,7 +4495,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CLog::Log(LOGDEBUG,__FUNCTION__" : Translating %s", message.GetStringParam().c_str());
       vector<CInfoPortion> info;
       g_infoManager.ParseLabel(message.GetStringParam(), info);
-      message.SetStringParam(g_infoManager.GetMultiLabel(info));
+      message.SetStringParam(g_infoManager.GetMultiInfo(info, 0));
       CLog::Log(LOGDEBUG,__FUNCTION__" : To %s", message.GetStringParam().c_str());
 
       // user has asked for something to be executed
