@@ -2855,10 +2855,35 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
       FlashScreen(true, false);
     }
 #else
-#ifdef __GNUC__
-#warning CUtil::TakeScreenshot not implemented
-#endif
+
 #endif    
+
+#ifdef HAS_SDL_OPENGL
+    
+    g_graphicsContext.BeginPaint();
+    if (g_application.IsPlayingVideo())
+    {
+#ifdef HAS_VIDEO_PLAYBACK
+      g_renderManager.SetupScreenshot();
+#endif
+    }
+    g_application.RenderNoPresent();
+
+    GLint viewport[4];
+    void *pixels = NULL;
+    glReadBuffer(GL_BACK);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    pixels = malloc(viewport[2] * viewport[3] * 4);
+    if (pixels)
+    {
+      glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], fn);
+      free(pixels);
+    }
+    g_graphicsContext.EndPaint();
+    
+#endif
+
 }
 
 void CUtil::TakeScreenshot()
@@ -2884,7 +2909,11 @@ void CUtil::TakeScreenshot()
 
   if (!strDir.IsEmpty())
   {
+#ifdef _LINUX
+    sprintf(fn, "%s/screenshot%%03d.bmp", strDir.c_str());
+#else
     sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
+#endif
     strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
 
     if (strlen(fn))

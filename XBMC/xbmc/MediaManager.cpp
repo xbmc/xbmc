@@ -100,16 +100,16 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 {
   // Local shares
   CShare share;
-  share.strPath = "C:\\";
+  share.strPath = _P("C:\\");
   share.strName.Format(g_localizeStrings.Get(21438),'C');
   share.m_ignore = true;
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   localDrives.push_back(share);
-  share.strPath = "D:\\";
+  share.strPath = _P("D:\\");
   share.strName = g_localizeStrings.Get(218);
   share.m_iDriveType = SHARE_TYPE_DVD;
   localDrives.push_back(share);
-  share.strPath = "E:\\";
+  share.strPath = _P("E:\\");
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   share.strName.Format(g_localizeStrings.Get(21438),'E');
   localDrives.push_back(share);
@@ -127,10 +127,10 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   if (includeQ)
   {
     CShare share;
-    share.strPath = "Q:\\";
+    share.strPath = _P("Q:\\");
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
-    localDrives.push_back(share);
+    localDrives.push_back(share) ;
   }
 }
 
