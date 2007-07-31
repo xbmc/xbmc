@@ -607,9 +607,14 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       {
         SetFullScreenRoot(true);
       }
-    } else {
-      rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
-      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+    } 
+    else 
+    {
+      if (!g_advancedSettings.m_fullScreen)
+      {
+        rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
+        m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+      }
       if (g_advancedSettings.m_fullScreen)
       {
         SetFullScreenRoot(true);
@@ -1314,6 +1319,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
   }
   m_bFullScreenRoot = fs;
+  g_advancedSettings.m_fullScreen = fs;
+  SetFullScreenViewWindow(m_Resolution);
 #endif
 
 // The _correct_ way to switch to fullscreen in X. Doesn't work now because of the way
