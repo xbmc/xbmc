@@ -1688,7 +1688,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       }
     }
     if (item)
-      return GetItemImage(item, info.m_info);
+      return GetItemImage(item, info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else if (info.m_info == PLAYER_TIME)
   {
@@ -2652,7 +2652,7 @@ const CStdString &CorrectAllItemsSortHack(const CStdString &item)
   return item;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
 {
   if (!item) return "";
   switch (info)
@@ -2800,6 +2800,25 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
     break;
+  case LISTITEM_ACTUAL_ICON:
+    return item->GetIconImage();
+    break;
+  case LISTITEM_ICON:
+    if (!item->HasThumbnail() && item->HasIcon())
+    {
+      CStdString strThumb = item->GetIconImage();
+      if (info == LISTITEM_ICON)
+        strThumb.Insert(strThumb.Find("."), "Big");
+      return strThumb;
+    }
+    return item->GetThumbnailImage();
+    break;
+  case LISTITEM_OVERLAY:
+    return item->GetOverlayImage();
+    break;
+  case LISTITEM_THUMB:
+    return item->GetThumbnailImage();
+    break;
   }
   return "";
 }
@@ -2943,20 +2962,8 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   return false;
 }
 
-
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
 {
-  if (!item) return "";
-  if ((info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon()) ||
-      info == LISTITEM_ACTUAL_ICON)
-  {
-    CStdString strThumb = item->GetIconImage();
-    if (info == LISTITEM_ICON)
-      strThumb.Insert(strThumb.Find("."), "Big");
-    return strThumb;
-  }
-  if (info == LISTITEM_OVERLAY)
-    return item->GetOverlayImage();
   if (info == LISTITEM_RATING)
   {
     if (item->HasMusicInfoTag())
@@ -2967,7 +2974,8 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     }
     return "";
   }
-  return item->GetThumbnailImage();
+  else
+    return GetItemLabel(item, info);
 }
 
 // Called from tuxbox service thread to update current status
