@@ -250,7 +250,7 @@ void CApplicationRenderer::Process()
   }
 }
 
-bool CApplicationRenderer::CopySurface(D3DSurface* pSurfaceSource, const RECT* rcSource, D3DSurface* pSurfaceDest, const RECT* rcDest)
+bool CApplicationRenderer::CopySurface(LPDIRECT3DSURFACE8 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE8 pSurfaceDest, const RECT* rcDest)
 {
   if (m_Resolution == HDTV_1080i)
   {
