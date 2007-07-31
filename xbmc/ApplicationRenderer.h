@@ -23,7 +23,7 @@ private:
   virtual void OnExit();
   virtual void Process();
   void UpdateBusyCount();
-  bool CopySurface(D3DSurface* pSurfaceSource, const RECT* rcSource, D3DSurface* pSurfaceDest, const RECT* rcDest);
+  bool CopySurface(LPDIRECT3DSURFACE8 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE8 pSurfaceDest, const RECT* rcDest);
 
   DWORD m_time;
   bool m_enabled;
