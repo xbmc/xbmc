@@ -113,7 +113,7 @@ unsigned int __stdcall dllThreadWrapper(LPVOID lpThreadParameter)
   SThreadWrapper *param = (SThreadWrapper*)lpThreadParameter;
   DWORD result;
 
-#ifdef _DEBUG  
+#if defined(_DEBUG) && !defined(_LINUX)  
   THREADNAME_INFO info; 
   info.dwType = 0x1000; 
   info.szName = "DLL"; 

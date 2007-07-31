@@ -31,6 +31,8 @@ if test "$use_gl" = "yes"; then
   AC_CHECK_LIB([GLU], [main])
 fi
 
+AC_CHECK_LIB([Xinerama], [main])
+
 AC_CHECK_LIB([SDL], [main])
 if test "$use_gl" = "no"; then
   AC_CHECK_LIB([SDL_gfx], [main])
@@ -85,7 +87,6 @@ AC_FUNC_FSEEKO
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_LSTAT
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
-AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_MKTIME
 AC_FUNC_MMAP
