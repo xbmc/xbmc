@@ -22,8 +22,6 @@ CGUIListContainer::~CGUIListContainer(void)
 
 void CGUIListContainer::Render()
 {
-  if (!IsVisible()) return CGUIBaseContainer::Render();
-
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -42,7 +40,7 @@ void CGUIListContainer::Render()
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
-  g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
   float posY = m_posY;
   if (m_orientation == VERTICAL)
@@ -82,13 +80,14 @@ void CGUIListContainer::Render()
   if (focusedItem)
     RenderItem(focusedPosX, focusedPosY, focusedItem, true);
 
-  g_graphicsContext.RestoreViewPort();
+  g_graphicsContext.RestoreClipRegion();
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
     SendWindowMessage(msg);
   }
+
   CGUIBaseContainer::Render();
 }
 
@@ -100,7 +99,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
     {
       if (m_offset == 0)
       { // already on the first page, so move to the first item
-        m_cursor = 0;
+        SetCursor(0);
       }
       else
       { // scroll up to the previous page
@@ -113,8 +112,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
     {
       if (m_offset == (int)m_items.size() - m_itemsPerPage || (int)m_items.size() < m_itemsPerPage)
       { // already at the last page, so move to the last item.
-        m_cursor = m_items.size() - m_offset - 1;
-        if (m_cursor < 0) m_cursor = 0;
+        SetCursor(m_items.size() - m_offset - 1);
       }
       else
       { // scroll down to the next page
@@ -138,7 +136,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
         }
         else if (m_cursor > 0)
         {
-          m_cursor--;
+          SetCursor(m_cursor - 1);
         }
       }
       return handled;
@@ -158,7 +156,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
         }
         else if (m_cursor < m_itemsPerPage - 1 && m_offset + m_cursor < (int)m_items.size() - 1)
         {
-          m_cursor++;
+          SetCursor(m_cursor + 1);
         }
       }
       return handled;
@@ -174,7 +172,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
-      m_cursor = 0;
+      SetCursor(0);
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
@@ -187,16 +185,16 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
         int item = message.GetParam1();
         if (item >= m_offset && item < m_offset + m_itemsPerPage)
         { // the item is on the current page, so don't change it.
-          m_cursor = item - m_offset;
+          SetCursor(item - m_offset);
         }
         else if (item < m_offset)
         { // item is on a previous page - make it the first item on the page
-          m_cursor = 0;
+          SetCursor(0);
           ScrollToOffset(item);
         }
         else // (item >= m_offset+m_itemsPerPage)
         { // item is on a later page - make it the last item on the page
-          m_cursor = m_itemsPerPage - 1;
+          SetCursor(m_itemsPerPage - 1);
           ScrollToOffset(item - m_cursor);
         }
       }
@@ -209,7 +207,9 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
 bool CGUIListContainer::MoveUp(DWORD control)
 {
   if (m_cursor > 0)
-    m_cursor--;
+  {
+    SetCursor(m_cursor - 1);
+  }
   else if (m_cursor == 0 && m_offset)
   {
     ScrollToOffset(m_offset - 1);
@@ -217,11 +217,12 @@ bool CGUIListContainer::MoveUp(DWORD control)
   else if ( control == 0 || control == GetID() )
   {
     if (m_items.size() > 0)
-    { // move 2 last item in list
+    { // move 2 last item in list, and set our container moving up
       int offset = m_items.size() - m_itemsPerPage;
       if (offset < 0) offset = 0;
-      m_cursor = m_items.size() - offset - 1;
+      SetCursor(m_items.size() - offset - 1);
       ScrollToOffset(offset);
+      g_infoManager.SetContainerMoving(GetID(), -1);
     }
   }
   else
@@ -234,16 +235,19 @@ bool CGUIListContainer::MoveDown(DWORD control)
   if (m_offset + m_cursor + 1 < (int)m_items.size())
   {
     if (m_cursor + 1 < m_itemsPerPage)
-      m_cursor++;
+    {
+      SetCursor(m_cursor + 1);
+    }
     else
     {
       ScrollToOffset(m_offset + 1);
     }
   }
   else if( control == 0 || control == GetID() )
-  { // move first item in list
-    m_cursor = 0;
+  { // move first item in list, and set our container moving in the "down" direction
+    SetCursor(0);
     ScrollToOffset(0);
+    g_infoManager.SetContainerMoving(GetID(), 1);
   }
   else
     return false;
@@ -254,13 +258,13 @@ bool CGUIListContainer::MoveDown(DWORD control)
 void CGUIListContainer::Scroll(int amount)
 {
   // increase or decrease the offset
-  m_offset += amount;
-  if (m_offset > (int)m_items.size() - m_itemsPerPage)
+  int offset = m_offset + amount;
+  if (offset > (int)m_items.size() - m_itemsPerPage)
   {
-    m_offset = m_items.size() - m_itemsPerPage;
+    offset = m_items.size() - m_itemsPerPage;
   }
-  if (m_offset < 0) m_offset = 0;
-  ScrollToOffset(m_offset);
+  if (offset < 0) offset = 0;
+  ScrollToOffset(offset);
 }
 
 void CGUIListContainer::ValidateOffset()
@@ -275,6 +279,14 @@ void CGUIListContainer::ValidateOffset()
     m_offset = 0;
     m_scrollOffset = 0;
   }
+}
+
+void CGUIListContainer::SetCursor(int cursor)
+{
+  if (cursor > m_itemsPerPage - 1) cursor = m_itemsPerPage - 1;
+  if (cursor < 0) cursor = 0;
+  g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
+  m_cursor = cursor;
 }
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY

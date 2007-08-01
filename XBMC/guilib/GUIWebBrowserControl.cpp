@@ -4,11 +4,13 @@
 #include "../xbmc/LinksBoksManager.h"
 #include "../xbmc/GUIDialogKeyboard.h"
 #include "GUIWindowManager.h"
+#include "..\xbmc\settings.h"
 
 #ifdef WITH_LINKS_BROWSER
 
 #define SCROLL_THRESHOLD1   0.3
 #define SCROLL_THRESHOLD2   0.9
+#define EDGESCROLL_DEADZONE 0.7
 
 CGUIWebBrowserControl::CGUIWebBrowserControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -61,7 +63,11 @@ bool CGUIWebBrowserControl::OnAction(const CAction &action)
       {
         char currentText[256];
         if (g_Mouse.IsActive())
-          OnMouseClick(MOUSE_LEFT_BUTTON);
+        {
+          CPoint mousePoint(g_Mouse.posX, g_Mouse.posY);
+          g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
+          OnMouseClick(MOUSE_LEFT_BUTTON, mousePoint);
+        }
         
         // execute following code even after the mouse click succeeded
         // to bring up the keyboard even with the mouse pointer
@@ -82,33 +88,61 @@ bool CGUIWebBrowserControl::OnAction(const CAction &action)
       }
       return true;
     case ACTION_ANALOG_MOVE:
-
-      if(abs(action.fAmount1) > SCROLL_THRESHOLD1)
       {
         float posX = g_Mouse.posX - m_realPosX;
         float posY = g_Mouse.posY - m_realPosY;
+        if (posX < 0) posX = 0;
+        if (posX >= pLB->GetViewPortWidth()) posX = (float)(pLB->GetViewPortWidth() - 1);
+        if (posY < 0) posY = 0;
+        if (posY >= pLB->GetViewPortHeight()) posY = (float)(pLB->GetViewPortHeight() - 1);
+        float thresX = (2*posX)/(float)m_realWidth - 1;
+        float thresY = 1 - (2*posY)/(float)m_realHeight;
+        bool bLeftRightEdge = (abs(thresX) > EDGESCROLL_DEADZONE && thresX/action.fAmount1 > 0);
+        bool bTopBottomEdge = (abs(thresY) > EDGESCROLL_DEADZONE && thresY/action.fAmount2 > 0);
 
-        if(abs(action.fAmount1) > SCROLL_THRESHOLD2)
-          pLB->MouseAction((int)posX, (int)posY, ((action.fAmount1 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELRIGHT
-                                                            : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELLEFT));
-        else
-          pLB->MouseAction((int)posX, (int)posY, ((action.fAmount1 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELRIGHT1
-                                                            : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELLEFT1));
+        /*CLog::Log(LOGWARNING, "posX=%f, posY=%f, viewport=%dx%d, thresX=%f, thresY=%f, leftright=%d, topbottom=%d\n",
+            posX, posY, pLB->GetViewPortWidth(), pLB->GetViewPortHeight(), thresX, thresY,
+            bLeftRightEdge, bTopBottomEdge);*/
+
+        if (m_bDirty)
+        {
+          m_bDirty = false;
+          //return true;
+        }
+
+        if (abs(action.fAmount1) > SCROLL_THRESHOLD1 &&
+            (!g_guiSettings.GetBool("webbrowser.edgescroll") ^ (g_Mouse.IsActive() && bLeftRightEdge)))
+        {
+          /*CLog::Log(LOGWARNING, "scrolling horiz! fAmount1=%f, leftright=%d, edgescroll=%d, mouseactive=%d\n",
+              action.fAmount1, bLeftRightEdge, g_guiSettings.GetBool("webbrowser.edgescroll"), g_Mouse.IsActive());*/
+
+          if(abs(action.fAmount1) > SCROLL_THRESHOLD2)
+            pLB->MouseAction((int)posX, (int)posY, ((action.fAmount1 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELRIGHT
+                                                              : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELLEFT));
+          else
+            pLB->MouseAction((int)posX, (int)posY, ((action.fAmount1 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELRIGHT1
+                                                              : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELLEFT1));
+
+          m_bDirty = true;
+        }
+
+        if (abs(action.fAmount2) > SCROLL_THRESHOLD1 &&
+            (!g_guiSettings.GetBool("webbrowser.edgescroll") ^ (g_Mouse.IsActive() && bTopBottomEdge)))
+        {
+          /*CLog::Log(LOGWARNING, "scrolling vert! fAmount2=%f, topbottom=%d, edgescroll=%d, mouseactive=%d\n",
+              action.fAmount2, bTopBottomEdge, g_guiSettings.GetBool("webbrowser.edgescroll"), g_Mouse.IsActive());*/
+
+          if(abs(action.fAmount2) > SCROLL_THRESHOLD2)
+            pLB->MouseAction((int)posX, (int)posY, ((action.fAmount2 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELUP
+                                                              : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELDOWN));
+          else
+            pLB->MouseAction((int)posX, (int)posY, ((action.fAmount2 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELUP1
+                                                              : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELDOWN1));
+          m_bDirty = true;
+        }
+
+        return true;
       }
-
-      if(abs(action.fAmount2) > SCROLL_THRESHOLD1)
-      {
-        float posX = g_Mouse.posX - m_realPosX;
-        float posY = g_Mouse.posY - m_realPosY;
-
-        if(abs(action.fAmount2) > SCROLL_THRESHOLD2)
-          pLB->MouseAction((int)posX, (int)posY, ((action.fAmount2 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELUP
-                                                            : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELDOWN));
-        else
-          pLB->MouseAction((int)posX, (int)posY, ((action.fAmount2 > 0) ? LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELUP1
-                                                            : LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELDOWN1));
-      }
-      return true;
     case ACTION_WEBBROWSER_BACK:
       pLB->GoBack();
       return true;
@@ -122,7 +156,7 @@ bool CGUIWebBrowserControl::OnAction(const CAction &action)
   return CGUIControl::OnAction(action);
 }
 
-bool CGUIWebBrowserControl::OnMouseOver()
+bool CGUIWebBrowserControl::OnMouseOver(const CPoint &point)
 {
   float posX = g_Mouse.posX - m_realPosX;
   float posY = g_Mouse.posY - m_realPosY;
@@ -130,12 +164,16 @@ bool CGUIWebBrowserControl::OnMouseOver()
   ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (!pLB) return false;
   
-  pLB->MouseAction((int)posX, (int)posY, LINKSBOKS_MOUSE_MOVE);
+  if (m_bDirty)
+    m_bDirty = false;
+  else
+    pLB->MouseAction((int)posX, (int)posY, LINKSBOKS_MOUSE_MOVE);
 
+  m_bDirty = true;
   return true;
 }
 
-bool CGUIWebBrowserControl::OnMouseWheel()
+bool CGUIWebBrowserControl::OnMouseWheel(char wheel, const CPoint &point)
 {
   ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
   if (!pLB) return false;
@@ -143,7 +181,7 @@ bool CGUIWebBrowserControl::OnMouseWheel()
   float posX = g_Mouse.posX - m_realPosX;
   float posY = g_Mouse.posY - m_realPosY;
 
-  if(g_Mouse.cWheel > 0)
+  if(wheel > 0)
 	pLB->MouseAction((int)posX, (int)posY, LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELUP);
   else
 	pLB->MouseAction((int)posX, (int)posY, LINKSBOKS_MOUSE_MOVE | LINKSBOKS_MOUSE_WHEELDOWN);
@@ -151,7 +189,7 @@ bool CGUIWebBrowserControl::OnMouseWheel()
   return true;
 }
 
-bool CGUIWebBrowserControl::OnMouseClick(DWORD dwButton)
+bool CGUIWebBrowserControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 {
   float posX = g_Mouse.posX - m_realPosX;
   float posY = g_Mouse.posY - m_realPosY;

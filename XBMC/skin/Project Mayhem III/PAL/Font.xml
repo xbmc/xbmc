@@ -1,28 +1,39 @@
 <fonts>
-	<fontset id="Default" unicode="false">
+	<fontset id="Default" unicode="true">
 		<font>
 			<name>font101</name>
-			<filename>common-font10.xpr</filename>
+			<filename>FrancophilSans.ttf</filename>
+			<size>14</size>
 		</font>
 		<font>
 			<name>font10</name>
-			<filename>common-font10.xpr</filename>
+			<filename>FrancophilSans.ttf</filename>
+			<size>14</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font12</name>
-			<filename>common-font12.xpr</filename>
+			<filename>FrancophilSans.ttf</filename>
+			<size>16</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font13</name>
-			<filename>common-font13.xpr</filename>
+			<filename>FrancophilSans.ttf</filename>
+			<size>17</size>
 		</font>
 		<font>
 			<name>special12</name>
-			<filename>special-normal-pal.xpr</filename>
+			<filename>FrancophilSans.ttf</filename>
+			<size>19</size>
+			<aspect>0.85</aspect>
 		</font>
 		<font>
 			<name>special13</name>
-			<filename>special-bold-pal.xpr</filename>
+			<filename>FrancophilSans.ttf</filename>
+			<size>19</size>
+			<style>bold</style>
+			<aspect>0.80</aspect>
 		</font>
 		<font>
 			<name>websans</name>

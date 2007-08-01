@@ -3,16 +3,16 @@
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
-		<posx>232</posx>
-		<posy>140</posy>
+		<posx>220</posx>
+		<posy>110</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="1">
 			<description>background image</description>
 			<posx>-25</posx>
 			<posy>-11</posy>
-			<width>446</width>
-			<height>405</height>
+			<width>480</width>
+			<height>410</height>
 			<texture>dialog-panel2.png</texture>
 			<colordiffuse>AAFFFFFF</colordiffuse>
 		</control>
@@ -23,7 +23,7 @@
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
-			<include>textcolor_dialogheader</include>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="label" id="3">
 			<description>No Settings Label</description>
@@ -36,7 +36,7 @@
 		</control>
 		<control type="spincontrol" id="60">
 			<description>Next page button</description>
-			<posx>371</posx>
+			<posx>400</posx>
 			<posy>8</posy>
 			<subtype>page</subtype>
 			<font>font12</font>
@@ -51,7 +51,7 @@
 			<description>control area</description>
 			<posx>-1</posx>
 			<posy>40</posy>
-			<width>408</width>
+			<width>438</width>
 			<height>310</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>60</pagecontrol>
@@ -98,8 +98,8 @@
 			<textureupfocus>scroll-up-focus.png</textureupfocus>
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font12</font>
-			<include>textcolorwhite</include>
-			<include>disabledcolor</include>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>

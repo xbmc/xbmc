@@ -39,7 +39,11 @@ namespace PYXBMC
 
     self = (ControlButton*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-
+    new(&self->strFont) string();    
+    new(&self->strText) string();    
+    new(&self->strTextureFocus) string();    
+    new(&self->strTextureNoFocus) string(); 
+    
     // set up default values in case they are not supplied
     self->dwTextXOffset = CONTROL_TEXT_OFFSET_X;
     self->dwTextYOffset = CONTROL_TEXT_OFFSET_Y;
@@ -102,6 +106,10 @@ namespace PYXBMC
 
   void ControlButton_Dealloc(ControlButton* self)
   {
+    self->strFont.~string();
+    self->strText.~string();
+    self->strTextureFocus.~string();
+    self->strTextureNoFocus.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -116,7 +124,7 @@ namespace PYXBMC
     label.align = pControl->dwAlign;
     label.offsetX = (float)pControl->dwTextXOffset;
     label.offsetY = (float)pControl->dwTextYOffset;
-    label.angle = CAngle(-pControl->iAngle);
+    label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUIButtonControl(
       pControl->iParentId,
       pControl->iControlId,

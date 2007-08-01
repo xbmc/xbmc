@@ -101,16 +101,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_network.Deinitialize();
               #ifdef HAS_XBOX_HARDWARE
-              if (g_guiSettings.GetBool("system.autotemperature"))
-              {
-                CLog::Log(LOGNOTICE, "stop fancontroller");
-                CFanController::Instance()->Stop();
-              }
-              else
-              {
-                CLog::Log(LOGNOTICE, "set fanspeed to default");
-                CFanController::Instance()->RestoreStartupSpeed();
-              }
+              CLog::Log(LOGNOTICE, "stop fancontroller");
+              CFanController::Instance()->Stop();
               #endif
               
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
@@ -186,7 +178,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 
 void CGUIWindowLoginScreen::Render()
 {
-  if (GetFocusedControlID() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostDialogID() == WINDOW_INVALID)
+  if (GetFocusedControlID() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   CStdString strLabel;
@@ -309,9 +301,12 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   return (btnid > 0);
 }
 
-CFileItem* CGUIWindowLoginScreen::GetCurrentListItem()
+CFileItem* CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 {
-  int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
-  return m_vecItems[iItem];
+  int item = m_viewControl.GetSelectedItem();
+  if (item < 0 || !m_vecItems.Size()) return NULL;
+
+  item = (item + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }

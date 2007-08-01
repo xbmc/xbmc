@@ -222,6 +222,19 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (!m_strNewSkinTheme.IsEmpty())
       {
         g_guiSettings.SetString("lookandfeel.skintheme", m_strNewSkinTheme);
+        // also set the default color theme
+        CStdString colorTheme(m_strNewSkinTheme);
+        CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
+        if (colorTheme.Equals("Textures.xml"))
+          colorTheme = "default.xml";
+        g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
+        g_settings.Save();
+      }
+
+      // Reload a skin color
+      if (!m_strNewSkinColors.IsEmpty())
+      {
+        g_guiSettings.SetString("lookandfeel.skincolors", m_strNewSkinColors);
         g_settings.Save();
       }
 
@@ -514,7 +527,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strPercentMask = g_localizeStrings.Get(14047);
-      for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i += 5)
+      for (int i = 5; i <= pSettingInt->m_iMax; i += 5)
       {
         CStdString strLabel;
         strLabel.Format(strPercentMask.c_str(), i*2);
@@ -611,11 +624,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSkinThemes(pSetting);
     }
+    else if (strSetting.Equals("lookandfeel.skincolors"))
+    {
+      FillInSkinColors(pSetting);
+    }
     else if (strSetting.Equals("screensaver.mode"))
     {
       FillInScreenSavers(pSetting);
     }
-    else if (strSetting.Equals("videoplayer.displayresolution"))
+    else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
       FillInResolutions(pSetting, true);
     }
@@ -754,8 +771,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("filelists.allowfiledeletion"))
     {
-       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+    }
+    else if (strSetting.Equals("filelists.disableaddsourcebuttons"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("myprograms.ntscmode"))
     { // set visibility based on our other setting...
@@ -815,9 +837,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // disable if we do not have the HDTV pack
+      // disable if we do not have the HDTV pack and are not NTSC
 #ifdef HAS_XBOX_HARDWARE
-      if (pControl) pControl->SetEnabled(XGetAVPack() == XC_AV_PACK_HDTV);
+      if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
 #endif
     }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
@@ -1002,7 +1024,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       GetLocalTime(&curTime);
       CStdString time;
       if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime(false);  // false for no seconds
+        time = g_infoManager.GetTime();
       else
         time = g_infoManager.GetDate();
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
@@ -1093,9 +1115,9 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
       GetLocalTime(&curTime);
       CStdString time;
       if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime(false);  // false for no seconds
+        time = g_infoManager.GetTime();
       else
-        time = g_infoManager.GetDate();  // false as we want numbers
+        time = g_infoManager.GetDate();
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
       pSettingString->SetData(time);
       pSettingControl->Update();
@@ -1603,6 +1625,29 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
     { // Do not reload the skin theme we are using
       m_strNewSkinTheme.Empty();
+      g_application.CancelDelayLoadSkin();
+    }
+  }
+  else if (strSetting.Equals("lookandfeel.skincolors"))
+  { //a new color was chosen
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+    CStdString strSkinColor;
+
+    if (pControl->GetValue() == 0) // Use default colors
+      strSkinColor = "SKINDEFAULT";
+    else
+      strSkinColor = pControl->GetCurrentLabel() + ".xml";
+
+    if (strSkinColor != pSettingString->GetData())
+    {
+      m_strNewSkinColors = strSkinColor;
+      g_application.DelayLoadSkin();
+    }
+    else
+    { // Do not reload the skin colors we are using
+      m_strNewSkinColors.Empty();
       g_application.CancelDelayLoadSkin();
     }
   }
@@ -2169,7 +2214,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   else
   {
     // Since no fontset is defined, there is no selection of a fontset, so disable the component
-    pControl->AddLabel("Default", 1);
+    pControl->AddLabel(g_localizeStrings.Get(13278), 1);
     pControl->SetValue(1);
     pControl->SetEnabled(false);
   }
@@ -2827,6 +2872,61 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   pControl->SetValue(iCurrentTheme);
 }
 
+void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
+{
+  // There is a default theme (just default.xml)
+  // any other *.xml files are additional color themes on top of this one.
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
+
+  m_strNewSkinColors.Empty();
+
+  // Clear and add. the Default Label
+  pControl->Clear();
+  pControl->SetShowRange(true);
+  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard default.xml will be used!
+
+  // Search for colors in the Current skin!
+  vector<CStdString> vecColors;
+
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
+
+  CHDDirectory directory;
+
+  CFileItemList items;
+  directory.SetMask(".xml");
+  directory.GetDirectory(strPath, items);
+  // Search for Themes in the Current skin!
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem* pItem = items[i];
+    if (!pItem->m_bIsFolder && pItem->GetLabel().CompareNoCase("defaults.xml") != 0)
+    { // not the default one
+      CStdString strLabel = pItem->GetLabel();
+      vecColors.push_back(strLabel.Mid(0, strLabel.size() - 4));
+    }
+  }
+  sort(vecColors.begin(), vecColors.end(), sortstringbyname());
+
+  // Remove the .xml extension from the Themes
+  if (CUtil::GetExtension(strSettingString) == ".xml")
+    CUtil::RemoveExtension(strSettingString);
+
+  int iCurrentColor = 0;
+  for (int i = 0; i < (int) vecColors.size(); ++i)
+  {
+    CStdString strColor = vecColors[i];
+    // Is the Current Theme our Used Theme! If yes set the ID!
+    if (strColor.CompareNoCase(strSettingString) == 0 )
+      iCurrentColor = i + 1; // 1: #of Predefined Theme [Label]
+    pControl->AddLabel(strColor, i + 1);
+  }
+  // Set the Choosen Theme
+  pControl->SetValue(iCurrentColor);
+}
+
 void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -2879,12 +2979,6 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   m_NewResolution = INVALID;
   SetupControls();
   CGUIWindow::OnInitWindow();
-}
-
-void CGUIWindowSettingsCategory::RestoreControlStates()
-{ // we just restore the focused control - nothing else
-  int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
-  SET_CONTROL_FOCUS(focusControl, 0);
 }
 
 void CGUIWindowSettingsCategory::FillInViewModes(CSetting *pSetting, int windowID)

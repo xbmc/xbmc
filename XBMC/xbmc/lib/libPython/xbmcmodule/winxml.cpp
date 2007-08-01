@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "winxml.h"
-#include "..\python\python.h"
+#include "../python/python.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
-#include "..\..\..\application.h"
+#include "../../../application.h"
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
 
-#define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
+#define ACTIVE_WINDOW m_gWindowManager.GetActiveWindow()
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -37,15 +37,15 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
     PyGetUnicodeString(strXMLname, pyOXMLname);
     PyGetUnicodeString(strFallbackPath, pyOname);
-    if (pyDName)  PyGetUnicodeString(strDefault, pyDName);
+    if (pyDName) PyGetUnicodeString(strDefault, pyDName);
     // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
     RESOLUTION res;
-    
-    CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res);
+
+    CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res);
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       // Check for the matching folder for the skin in the fallback skins folder
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
@@ -53,16 +53,16 @@ namespace PYXBMC
       }
       strXMLname = strSkinPath;
     }
-    
+
     if (bForceDefaultSkin)
     {
       bForceDefaultSkin = true;
       PyGetUnicodeString(strXMLname, pyOXMLname);
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + strDefault);
-      
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, strFallbackPath + "\\skins\\" + strDefault);
+
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        strSkinPath = strFallbackPath + "\\skins\\"+ strDefault + "\\pal\\" + strXMLname;
+        strSkinPath = strFallbackPath + "\\skins\\" + strDefault + "\\pal\\" + strXMLname;
         res = PAL_4x3;
         if (!XFILE::CFile::Exists(strSkinPath))
         {
@@ -72,8 +72,8 @@ namespace PYXBMC
       }
       strXMLname = strSkinPath;
     }
-    
-    self->sFallBackPath  = strFallbackPath;
+
+    self->sFallBackPath = strFallbackPath;
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
     // create new GUIWindow
@@ -87,48 +87,55 @@ namespace PYXBMC
     return (PyObject*)self;
   }
 
+  // removeItem() method
   PyDoc_STRVAR(removeItem__doc__,
-    "removeItem(itemPosition) -- Removes a specified item based on position in the list from the window list.\n"
+    "removeItem(position) -- Removes a specified item based on position, from the Window List.\n"
     "\n"
-    "itemPosition		: interger - position of the item to remove from the window list\n"
+    "position        : integer - position of item to remove.\n"
     "\n"
     "example:\n"
-    "  - self.removeitem(5)\n");
+    "  - self.removeItem(5)\n");
 
   PyObject* WindowXML_RemoveItem(WindowXML *self, PyObject *args)
   {
+    if (!self->pWindow) return NULL;
+
     int itemPosition;
-    if (!PyArg_ParseTuple(args, "i", &itemPosition))  return NULL;
+    if (!PyArg_ParseTuple(args, "i", &itemPosition)) return NULL;
+
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+
     // Tells the window to remove the item at the specified position from the FileItem vector
-    pwx->RemoveItem(itemPosition);
-
-    // send message
     PyGUILock();
-
+    pwx->RemoveItem(itemPosition);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
+  // addItem() method
   PyDoc_STRVAR(addItem__doc__,
-    "addItem(item[,itemPosition]) -- Add a new item to this window list.\n"
+    "addItem(item[, position]) -- Add a new item to this Window List.\n"
     "\n"
-    "item               : string, unicode or ListItem - item to add.\n"
-    "itemPosition       : integer - item position of item to add. (0 adds to top, -1 adds to end).\n"
-    "\n"
+    "item            : string, unicode or ListItem - item to add.\n"
+    "position        : [opt] integer - position of item to add. (NO Int = Adds to bottom,0 adds to top, 1 adds to one below from top,-1 adds to one above from bottom etc etc )\n"
+    "                                - If integer positions are greater than list size, negative positions will add to top of list, positive positions will add to bottom of list\n"
     "example:\n"
-    "  - self.addItem('Reboot XBMC')\n");
+    "  - self.addItem('Reboot XBMC', 0)\n");
 
   PyObject* WindowXML_AddItem(WindowXML *self, PyObject *args)
   {
-    int itemPosition = -1;
+    if (!self->pWindow) return NULL;
+
     PyObject *pObject;
+    int itemPosition = INT_MAX;
+    if (!PyArg_ParseTuple(args, "O|i", &pObject, &itemPosition)) return NULL;
+
     string strText;
     ListItem* pListItem = NULL;
     bool bRefresh = true;
-    if (!PyArg_ParseTuple(args, "O|i", &pObject,&itemPosition))  return NULL;
+
     if (ListItem_CheckExact(pObject))
     {
       // object is a listitem
@@ -140,129 +147,171 @@ namespace PYXBMC
       // object is probably a text item
       if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
-
       pListItem = ListItem_FromString(strText);
     }
-    
-    PyGUILock();
+
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-    
+
     // Tells the window to add the item to FileItem vector
-    pwx->AddItem((CFileItem *)pListItem->item,itemPosition);
-
-    // create message
-    //CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iWindowId, self->iWindowId);
-    //msg.SetLPVOID(pListItem->item);
-
-    // send message
-    
-    //if (self->pWindow) self->pWindow->OnMessage(msg);
+    PyGUILock();
+    pwx->AddItem((CFileItem *)pListItem->item, itemPosition);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
   }
-  PyDoc_STRVAR(RefreshList__doc__,
-    "refreshList() -- Updates the Windows Lists (any new items will be shown once this command is ran.\n"
+
+  // refreshList() method
+  PyDoc_STRVAR(refreshList__doc__,
+    "refreshList() -- Updates this Window List. (any new items will be shown once this command is ran.\n"
     "\n"
     "example:\n"
     "  - self.refrestList()\n");
 
-  PyObject* WindowXML_RefreshList(WindowXML *self, PyObject *args)
-  {
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-    // Tells the window to add the item to FileItem vector
-    pwx->RefreshList();
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-  PyDoc_STRVAR(ClearList__doc__,
-    "clearList() -- Clear the Window List\n"
+  // clearList() method
+  PyDoc_STRVAR(clearList__doc__,
+    "clearList() -- Clear the Window List.\n"
     "\n"
     "example:\n"
     "  - self.clearList()\n");
 
   PyObject* WindowXML_ClearList(WindowXML *self, PyObject *args)
   {
+    if (!self->pWindow) return NULL;
+
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+
+    PyGUILock();
     pwx->ClearList();
+    PyGUIUnlock();
+
     Py_INCREF(Py_None);
     return Py_None;
   }
+
+  // setCurrentListPosition() method
   PyDoc_STRVAR(setCurrentListPosition__doc__,
-    "setCurrentListPosition() -- Set the current position of the Window List\n"
+    "setCurrentListPosition(position) -- Set the current position in the Window List.\n"
+    "\n"
+    "position        : integer - position of item to set.\n"
     "\n"
     "example:\n"
     "  - self.setCurrentListPosition(5)\n");
 
   PyObject* WindowXML_SetCurrentListPosition(WindowXML *self, PyObject *args)
   {
-    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    if (!self->pWindow) return NULL;
+
     int listPos = -1;
-    if (!PyArg_ParseTuple(args, "i",&listPos))  return NULL;
+    if (!PyArg_ParseTuple(args, "i", &listPos)) return NULL;
+
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+
+    PyGUILock();
     pwx->SetCurrentListPosition(listPos);
+    PyGUIUnlock();
+
     Py_INCREF(Py_None);
     return Py_None;
   }
 
+  // getCurrentListPosition() method
   PyDoc_STRVAR(getCurrentListPosition__doc__,
-    "getCurrentListPosition() -- Gets the current position in the Window List\n"
+    "getCurrentListPosition() -- Gets the current position in the Window List.\n"
     "\n"
     "example:\n"
-    "  - self.getCurrentListPosition()\n");
-  
- PyObject* WindowXML_GetCurrentListPosition(WindowXML *self, PyObject *args)
+    "  - pos = self.getCurrentListPosition()\n");
+
+  PyObject* WindowXML_GetCurrentListPosition(WindowXML *self, PyObject *args)
   {
-    int listPos = -1;
+    if (!self->pWindow) return NULL;
+
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
-    listPos = pwx->GetCurrentListPosition();
+
+    PyGUILock();
+    int listPos = pwx->GetCurrentListPosition();
+    PyGUIUnlock();
+
     Py_INCREF(Py_None);
     return Py_BuildValue("l", listPos);
   }
+
+  // getListItem() method
   PyDoc_STRVAR(getListItem__doc__,
-    "getListItem(int) -- Returns a given ListItem in the WindowList\n"
+    "getListItem(position) -- Returns a given ListItem in this Window List.\n"
+    "\n"
+    "position        : integer - position of item to return.\n"
     "\n"
     "example:\n"
-    "  - self.getListItem(6)\n");
-  
- PyObject* WindowXML_GetListItem(WindowXML *self, PyObject *args)
+    "  - listitem = self.getListItem(6)\n");
+
+  PyObject* WindowXML_GetListItem(WindowXML *self, PyObject *args)
   {
+    if (!self->pWindow) return NULL;
+
     int listPos = -1;
-    if (!PyArg_ParseTuple(args, "i",&listPos))  return NULL;
-    
-    PyGUILock();
+    if (!PyArg_ParseTuple(args, "i", &listPos)) return NULL;
+
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+
+    PyGUILock();
     CFileItem * fi = pwx->GetListItem(listPos);
-    
+
+    if (fi == NULL)
+    {
+      PyGUIUnlock();
+      PyErr_SetString(PyExc_TypeError, "Index out of range");
+      return NULL;
+    }
+
     ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
-    sListItem->item = new CGUIListItem();
-    sListItem->item->SetLabel(fi->GetLabel());
-    sListItem->item->SetLabel2(fi->GetLabel2());
-    sListItem->item->SetIconImage(fi->GetIconImage());
-    sListItem->item->SetThumbnailImage(fi->GetThumbnailImage());
+    sListItem->item = fi;
     PyGUIUnlock();
+
     Py_INCREF(sListItem);
     return (PyObject *)sListItem;
   }
-  
+
+  // getListSize() method
+  PyDoc_STRVAR(getListSize__doc__,
+    "getListSize() -- Returns the number of items in this Window List.\n"
+    "\n"
+    "example:\n"
+    "  - listSize = self.getListSize()\n");
+
+  PyObject* WindowXML_GetListSize(WindowXML *self, PyObject *args)
+  {
+    if (!self->pWindow) return NULL;
+
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+
+    PyGUILock();
+    int listSize = pwx->GetListSize();
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_BuildValue("l", listSize);
+  }
+
   PyDoc_STRVAR(windowXML__doc__,
     "WindowXML class.\n"
     "\n"
     "WindowXML(self, XMLname, fallbackPath[, defaultskinname, forceFallback) -- Create a new WindowXML to rendered a xml onto it.\n"
     "\n"
-    "XMLname        : string - the name of the xml file to look for.\n"
-    "fallbackPath   : string - the directory to fallback to if the xml doesn't exist in the current skin.\n"
-    "defaultskinname: [opt] string - name of the folder in the fallback path to look in for the xml. 'Default' is used if this is not set.\n"
-    "forceFallback  : [opt] boolean - if true then it will look only in the defaultskinname folder.\n"
+    "XMLname         : string - the name of the xml file to look for.\n"
+    "fallbackPath    : string - the directory to fallback to if the xml doesn't exist in the current skin.\n"
+    "defaultskinname : [opt] string - name of the folder in the fallback path to look in for the xml. 'Default' is used if this is not set.\n"
+    "forceFallback   : [opt] boolean - if true then it will look only in the defaultskinname folder.\n"
     );
+
   PyMethodDef WindowXML_methods[] = {
     {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
-	{"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
-    {"refreshList", (PyCFunction)WindowXML_RefreshList, METH_VARARGS, RefreshList__doc__},
-    {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS,getCurrentListPosition__doc__},
-    {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS,setCurrentListPosition__doc__},
-    {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS,getListItem__doc__},
-    {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, ClearList__doc__},
+    {"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
+    {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS, getCurrentListPosition__doc__},
+    {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS, setCurrentListPosition__doc__},
+    {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS, getListItem__doc__},
+    {"getListSize", (PyCFunction)WindowXML_GetListSize, METH_VARARGS, getListSize__doc__},
+    {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, clearList__doc__},
     {NULL, NULL, 0, NULL}
   };
 // Restore code and data sections to normal.

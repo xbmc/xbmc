@@ -63,6 +63,7 @@ private:
   void Rotate();
   void Zoom(int iZoom);
   void Move(float fX, float fY);
+  void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
 
   int m_iCurrentSlide;
   int m_iNextSlide;
@@ -84,4 +85,5 @@ private:
   bool m_bLoadNextPic;
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
+  RESOLUTION m_Resolution;
 };

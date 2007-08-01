@@ -62,6 +62,7 @@ void CDlgCache::Update()
     m_pDlg->Progress();
     if( !bSentCancel && m_pDlg->IsCanceled())
     {
+      bSentCancel = true;
       try 
       {
         mplayer_exit_player(); 
@@ -72,7 +73,7 @@ void CDlgCache::Update()
       }
     }
   }
-  else if( GetTickCount() > m_dwTimeStamp )
+  else if( GetTickCount() > m_dwTimeStamp && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO))
     OpenDialog();
 }
 

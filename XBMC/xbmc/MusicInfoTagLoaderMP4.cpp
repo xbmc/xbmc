@@ -49,7 +49,7 @@ static const unsigned int	g_TrackNumberAtomName	=	MAKE_ATOM_NAME(  't', 'r', 'k'
 static const unsigned int	g_DiscNumberAtomName	=	MAKE_ATOM_NAME(  'd', 'i', 's', 'k' );	// 'disk'
 static const unsigned int	g_CoverArtAtomName		=	MAKE_ATOM_NAME(  'c', 'o', 'v', 'r' );	// 'covr'
 static const unsigned int	g_CompilationAtomName	=	MAKE_ATOM_NAME(  'c', 'p', 'i', 'l' );	// 'cpil'
-static const unsigned int	g_CommentAtomName	=	MAKE_ATOM_NAME(  '©', 'c', 'm', 't' );	// 'cpil'
+static const unsigned int	g_CommentAtomName	=	MAKE_ATOM_NAME(  0xa9, 'c', 'm', 't' );	// 'cpil'
 
 // These atoms contain other atoms.. so when we find them, we have to recurse..
 
@@ -159,7 +159,7 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
     {
       // When a genre number is specified, we need to translate to a string for display..
       // Note that AAC/iTunes genre numbers are the same as ID3 numbers, but are offset by 1.
-      const char* pGenre = ID3_V1GENRE2DESCRIPTION( pMetaData[ 1 ] - 1 );
+      const char* pGenre = ID3_V1GENRE2DESCRIPTION( (unsigned char)pMetaData[ 1 ] - 1 );
       if ( pGenre )
       {
         tag.SetGenre( pGenre );
@@ -181,6 +181,7 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
       dataWorkspace[ metaSize ] = '\0';
 
       tag.SetComment( dataWorkspace.get() );
+      break;
     }
   case	g_CustomGenreAtomName:
     {

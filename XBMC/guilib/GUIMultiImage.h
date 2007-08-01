@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "GUIImage.h"
-#include "../xbmc/utils/stopwatch.h"
+#include "guiImage.h"
+#include "../xbmc/utils/Stopwatch.h"
 
 /*!
  \ingroup controls
@@ -18,10 +18,11 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
+  virtual void UpdateVisibility();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void PreAllocResources();
@@ -44,6 +45,7 @@ protected:
   CStopWatch m_fadeTimer;
   DWORD m_timePerImage;
   DWORD m_fadeTime;
+  DWORD m_timeToPauseAtEnd;
   bool m_randomized;
   bool m_loop;
   CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;

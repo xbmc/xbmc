@@ -33,6 +33,7 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
+  m_vecList = &m_vecListInternal;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
@@ -58,15 +59,15 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
       g_graphicsContext.SendMessage(msg);
 
-      for (int i = 0; i < (int)m_vecList.size(); i++)
+      for (int i = 0; i < (int)m_vecList->Size(); i++)
       {
         //CGUIListItem* pItem = m_vecList[i];
-        CFileItem* pItem = m_vecList[i];
+        CFileItem* pItem = (*m_vecList)[i];
         CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
         g_graphicsContext.SendMessage(msg);
       }
       CStdString items;
-      items.Format("%i %s", m_vecList.size(), g_localizeStrings.Get(127).c_str());
+      items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
       SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
 
       if (m_bButtonEnabled)
@@ -86,7 +87,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_CLICKED:
     {
-
       int iControl = message.GetSenderId();
       if (CONTROL_LIST == iControl)
       {
@@ -96,9 +96,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
           g_graphicsContext.SendMessage(msg);            
           m_iSelected = msg.GetParam1();
-          if(m_iSelected >= 0 && m_iSelected < (int)m_vecList.size())
+          if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {
-            m_selectedItem = *m_vecList[m_iSelected];
+            m_selectedItem = *((*m_vecList)[m_iSelected]);
             Close();
           }
           else
@@ -126,25 +126,31 @@ void CGUIDialogSelect::Close(bool forceClose)
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
-  for (int i = 0; i < (int)m_vecList.size(); ++i)
-  {
-    //CGUIListItem* pItem = m_vecList[i];
-    CFileItem* pItem = m_vecList[i];
-    delete pItem;
-  }
-  m_vecList.erase(m_vecList.begin(), m_vecList.end());
+  m_vecListInternal.Clear();
+  m_vecList = &m_vecListInternal;
 }
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
 {
   //CGUIListItem* pItem = new CGUIListItem(strLabel);
   CFileItem* pItem = new CFileItem(strLabel);
-  m_vecList.push_back(pItem);
+  m_vecListInternal.Add(pItem);
 }
 
-void CGUIDialogSelect::Add(CFileItem* pItem)
+void CGUIDialogSelect::Add(const CFileItemList& items)
 {
-  m_vecList.push_back(pItem);
+  for (int i=0;i<items.Size();++i)
+    Add(items[i]);
+}
+
+void CGUIDialogSelect::Add(const CFileItem* pItem)
+{
+  m_vecListInternal.Add(new CFileItem(*pItem));
+}
+
+void CGUIDialogSelect::SetItems(CFileItemList* pList)
+{
+  m_vecList = pList;
 }
 
 int CGUIDialogSelect::GetSelectedLabel() const
@@ -181,11 +187,11 @@ bool CGUIDialogSelect::IsButtonPressed()
 
 void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 {
-  sort(m_vecList.begin(), m_vecList.end(), bSortOrder ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
+  m_vecList->Sort(SORT_METHOD_LABEL,bSortOrder?SORT_ORDER_ASC:SORT_ORDER_DESC);
 }
 
 void CGUIDialogSelect::SetSelected(int iSelected)
 {
-  if (iSelected < 0 || iSelected >= (int)m_vecList.size()) return;
+  if (iSelected < 0 || iSelected >= (int)m_vecList->Size()) return;
   m_iSelected = iSelected;
 }

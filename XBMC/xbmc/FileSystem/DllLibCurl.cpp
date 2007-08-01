@@ -92,19 +92,28 @@ void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, C
       {
         it->m_busy = true;
         if(easy_handle)
+        {
+          if(!it->m_easy)
+            it->m_easy = easy_init();
+
           *easy_handle = it->m_easy;
+        }
 
         if(multi_handle)
+        {
+          if(!it->m_multi)
+            it->m_multi = multi_init();
+
           *multi_handle = it->m_multi;
+        }
 
         return;
       }
     }
   }
 
-  SSession session;
+  SSession session = {};
   session.m_busy = true;
-  session.m_idletimestamp = 0;
   session.m_protocol = protocol;
   session.m_hostname = hostname;
 
@@ -139,7 +148,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE* easy_handle, CURLM* multi_handl
   VEC_CURLSESSIONS::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
-    if( it->m_easy == easy_handle && it->m_multi == multi_handle)
+    if( it->m_easy == easy_handle && (multi_handle == NULL || it->m_multi == multi_handle) )
     {
       /* reset session so next caller doesn't reuse options, only connections */
       /* will reset verbose too so it won't print that it closed connections on cleanup*/

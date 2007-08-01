@@ -1,14 +1,14 @@
 #include "include.h"
 #include "GUIVisualisationControl.h"
 #include "../xbmc/GUIUserMessages.h"
-#include "../xbmc/application.h"
+#include "../xbmc/Application.h"
 #include "../xbmc/visualizations/Visualisation.h"
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
 #ifdef HAS_KARAOKE
 #include "../xbmc/CdgParser.h"
 #endif
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/utils/CriticalSection.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/utils/GUIInfoManager.h"
@@ -69,6 +69,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_pVisualisation = NULL;
+  m_bInitialized = false;
   m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
@@ -167,15 +168,15 @@ void CGUIVisualisationControl::LoadVisualisation()
   g_graphicsContext.SendMessage(msg);
 }
 
+void CGUIVisualisationControl::UpdateVisibility()
+{
+  CGUIControl::UpdateVisibility();
+  if (!IsVisible() && m_bInitialized)
+    FreeVisualisation();
+}
+
 void CGUIVisualisationControl::Render()
 {
-  if (!IsVisible())
-  {
-    if (m_bInitialized)
-      FreeVisualisation();
-    return;
-  }
-  
   if (m_pVisualisation == NULL)
   { // check if we need to load
     if (g_application.IsPlayingAudio())
@@ -217,7 +218,9 @@ void CGUIVisualisationControl::Render()
   {
     if (m_bInitialized)
     {
-      // set the viewport
+      // set the viewport - note: We currently don't have any control over how
+      // the visualisation renders, so the best we can do is attempt to define
+      // a viewport??
       g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {
@@ -437,10 +440,11 @@ bool CGUIVisualisationControl::CanFocus() const
 
 bool CGUIVisualisationControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
-  if (HitTest(point))
+  controlPoint = point;
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (HitTest(controlPoint))
   {
     *control = (CGUIControl *)this;
-    controlPoint = point;
     return true;
   }
   *control = NULL;

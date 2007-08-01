@@ -23,61 +23,54 @@ CGUIControlGroupList::~CGUIControlGroupList(void)
 
 void CGUIControlGroupList::Render()
 {
-  if (IsVisible())
+  if (m_scrollSpeed < 0)
   {
-    if (m_scrollSpeed < 0)
+    m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
+    if (m_offset < m_scrollOffset)
     {
-      m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
-      if (m_offset < m_scrollOffset)
-      {
-        m_offset = m_scrollOffset;
-        m_scrollSpeed = 0;
-      }
+      m_offset = m_scrollOffset;
+      m_scrollSpeed = 0;
     }
-    if (m_scrollSpeed > 0)
-    {
-      m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
-      if (m_offset > m_scrollOffset)
-      {
-        m_offset = m_scrollOffset;
-        m_scrollSpeed = 0;
-      }
-    }
-    m_scrollTime = m_renderTime;
-
-    ValidateOffset();
-    if (m_pageControl)
-    {
-      CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (DWORD)m_height, (DWORD)m_totalSize);
-      SendWindowMessage(message);
-      CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (DWORD)m_offset);
-      SendWindowMessage(message2);
-    }
-    // we run through the controls, rendering as we go
-    bool render(g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height));
-    float pos = 0;
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-    {
-      CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      if (control->IsVisible() && render)
-      {
-        if (pos + Size(control) > m_offset && pos < m_offset + Size())
-        { // we can render
-          if (m_orientation == VERTICAL)
-            g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY + pos - m_offset));
-          else
-            g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX + pos - m_offset, m_posY));
-          control->Render();
-          g_graphicsContext.RemoveGroupTransform();
-        }
-        pos += Size(control) + m_itemGap;
-      }
-    }
-    if (render) g_graphicsContext.RestoreViewPort();
-    CGUIControl::Render();
   }
-  g_graphicsContext.RemoveGroupTransform();
+  if (m_scrollSpeed > 0)
+  {
+    m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
+    if (m_offset > m_scrollOffset)
+    {
+      m_offset = m_scrollOffset;
+      m_scrollSpeed = 0;
+    }
+  }
+  m_scrollTime = m_renderTime;
+
+  ValidateOffset();
+  if (m_pageControl)
+  {
+    CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (DWORD)m_height, (DWORD)m_totalSize);
+    SendWindowMessage(message);
+    CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (DWORD)m_offset);
+    SendWindowMessage(message2);
+  }
+  // we run through the controls, rendering as we go
+  bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
+  float pos = 0;
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    // note we render all controls, even if they're offscreen, as then they'll be updated
+    // with respect to animations
+    CGUIControl *control = *it;
+    control->UpdateVisibility();
+    if (m_orientation == VERTICAL)
+      g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
+    else
+      g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
+    control->DoRender(m_renderTime);
+    if (control->IsVisible())
+      pos += Size(control) + m_itemGap;
+    g_graphicsContext.RestoreOrigin();
+  }
+  if (render) g_graphicsContext.RestoreClipRegion();
+  CGUIControl::Render();
 }
 
 bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
@@ -244,7 +237,10 @@ void CGUIControlGroupList::ScrollTo(float offset)
 
 bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
+  if (!CGUIControl::CanFocus()) return false;
   float pos = 0;
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     const CGUIControl *child = *it;
@@ -254,7 +250,7 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
       { // we're on screen
         float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
         float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
-        if (child->CanFocusFromPoint(point - CPoint(offsetX, offsetY), control, controlPoint))
+        if (child->CanFocusFromPoint(controlCoords - CPoint(offsetX, offsetY), control, controlPoint))
           return true;
       }
       pos += Size(child) + m_itemGap;
@@ -267,6 +263,8 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
 void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
 {
   float pos = 0;
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
@@ -274,8 +272,8 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
-        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posX + pos - m_offset) : CPoint(m_posY + pos - m_offset, m_posY);
-        child->UnfocusFromPoint(point - offset);
+        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + pos - m_offset) : CPoint(m_posX + pos - m_offset, m_posY);
+        child->UnfocusFromPoint(controlCoords - offset);
       }
       pos += Size(child) + m_itemGap;
     }

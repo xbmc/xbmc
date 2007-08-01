@@ -526,7 +526,8 @@ bool CFileItem::IsFileFolder() const
     IsRAR() ||
     IsType("ogg") ||
     IsType("nsf") ||
-    IsType("sid")
+    IsType("sid") ||
+    IsShoutCast()
     )
     );
 }
@@ -1003,11 +1004,17 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'E' && movie && movie->m_iEpisode > 0)
     { // episode number
-      str.Format("%02.2i", movie->m_iEpisode);
+      if (movie->m_iSpecialSortEpisode > 0)
+        str.Format("S%02.2i", movie->m_iEpisode);
+      else
+        str.Format("%02.2i", movie->m_iEpisode);
     }
     else if (strMask[iPos2 + 1] == 'H' && movie && movie->m_iEpisode > 0)
     { // season*100+episode number
-      str.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
+      if (movie->m_iSpecialSortSeason > 0)
+        str.Format("Sx%02.2i", movie->m_iEpisode);
+      else
+        str.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
     }
     else if (strMask[iPos2 + 1] == 'P' && movie)
     { // tvshow production code
@@ -1138,7 +1145,7 @@ const CStdString& CFileItem::GetContentType() const
 {
   if( m_contenttype.IsEmpty() )
   {
-    /* discard const qualifyier*/
+    // discard const qualifyier
     CStdString& m_ref = (CStdString&)m_contenttype;
 
     if( m_bIsFolder )
@@ -1154,12 +1161,21 @@ const CStdString& CFileItem::GetContentType() const
     else if( m_strPath.Left(8).Equals("https://") )
     {
       CURL url(m_strPath);
-      CFileCurl::GetContent(url, m_ref);
+      CFileCurl::GetContent(url, m_ref);    
     }
 
-    /* if it's still empty set to an unknown type*/
+    // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )
       m_ref = "application/octet-stream";
+    else
+    {
+      // make sure there are no options set in content type
+      // content type can look like "video/x-ms-asf ; charset=utf8"
+      int i = m_ref.Find(';');
+      if(i>=0)
+        m_ref.Delete(i,m_ref.length()-i);
+      m_ref.Trim();
+    }
 
   }
 
@@ -1325,9 +1341,16 @@ void CFileItemList::Add(CFileItem* pItem)
   }
 }
 
-void CFileItemList::AddFront(CFileItem* pItem)
+void CFileItemList::AddFront(CFileItem* pItem, int itemPosition)
 {
-  m_items.insert(m_items.begin(), pItem);
+  if (itemPosition >= 0)
+  {
+    m_items.insert(m_items.begin()+itemPosition, pItem);
+  }
+  else
+  {
+    m_items.insert(m_items.begin()+(m_items.size()+itemPosition), pItem);
+  }
   if (m_fastLookup)
   {
     CStdString path(pItem->m_strPath); path.ToLower();
@@ -1705,80 +1728,91 @@ void CFileItemList::FilterCueItems()
         {
           VECSONGS newitems;
           cuesheet.GetSongs(newitems);
+
+          std::vector<CStdString> MediaFileVec;
+          cuesheet.GetMediaFiles(MediaFileVec);
+
           // queue the cue sheet and the underlying media file for deletion
-          CStdString strMediaFile = cuesheet.GetMediaPath();
-          bool bFoundMediaFile = CFile::Exists(strMediaFile);
-          if (!bFoundMediaFile)
+          for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
           {
-            // try file in same dir, not matching case...
-            if (Contains(strMediaFile))
+            CStdString strMediaFile = *itMedia;
+            bool bFoundMediaFile = CFile::Exists(strMediaFile);
+            // queue the cue sheet and the underlying media file for deletion
+            if (!bFoundMediaFile)
             {
-              bFoundMediaFile = true;
-            }
-            else
-            {
-              // try removing the .cue extension...
-              strMediaFile = pItem->m_strPath;
-              CUtil::RemoveExtension(strMediaFile);
-              CFileItem item(strMediaFile, false);
-              if (item.IsAudio() && Contains(strMediaFile))
+              // try file in same dir, not matching case...
+              if (Contains(strMediaFile))
               {
                 bFoundMediaFile = true;
               }
               else
-              { // try replacing the extension with one of our allowed ones.
-                CStdStringArray extensions;
-                StringUtils::SplitString(g_stSettings.m_musicExtensions, "|", extensions);
-                for (unsigned int i = 0; i < extensions.size(); i++)
+              {
+                // try removing the .cue extension...
+                strMediaFile = pItem->m_strPath;
+                CUtil::RemoveExtension(strMediaFile);
+                CFileItem item(strMediaFile, false);
+                if (item.IsAudio() && Contains(strMediaFile))
                 {
-                  CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
-                  CFileItem item(strMediaFile, false);
-                  if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
+                  bFoundMediaFile = true;
+                }
+                else
+                { // try replacing the extension with one of our allowed ones.
+                  CStdStringArray extensions;
+                  StringUtils::SplitString(g_stSettings.m_musicExtensions, "|", extensions);
+                  for (unsigned int i = 0; i < extensions.size(); i++)
                   {
-                    bFoundMediaFile = true;
-                    break;
+                    CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
+                    CFileItem item(strMediaFile, false);
+                    if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
+                    {
+                      bFoundMediaFile = true;
+                      break;
+                    }
                   }
                 }
               }
             }
-          }
-          if (bFoundMediaFile)
-          {
-            itemstodelete.push_back(pItem->m_strPath);
-            itemstodelete.push_back(strMediaFile);
-            // get the additional stuff (year, genre etc.) from the underlying media files tag.
-            CMusicInfoTag tag;
-            auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(cuesheet.GetMediaPath()));
-            if (NULL != pLoader.get())
+            if (bFoundMediaFile)
             {
-              // get id3tag
-              pLoader->Load(strMediaFile, tag);
-            }
-            // fill in any missing entries from underlying media file
-            for (int j = 0; j < (int)newitems.size(); j++)
-            {
-              CSong song = newitems[j];
-              song.strFileName = strMediaFile;
-              if (tag.Loaded())
+              itemstodelete.push_back(pItem->m_strPath);
+              itemstodelete.push_back(strMediaFile);
+              // get the additional stuff (year, genre etc.) from the underlying media files tag.
+              CMusicInfoTag tag;
+              auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
+              if (NULL != pLoader.get())
               {
-                if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
-                if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
-                if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
-                SYSTEMTIME dateTime;
-                tag.GetReleaseDate(dateTime);
-                if (dateTime.wYear > 1900) song.iYear = dateTime.wYear;
+                // get id3tag
+                pLoader->Load(strMediaFile, tag);
               }
-              if (!song.iDuration && tag.GetDuration() > 0)
-              { // must be the last song
-                song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
+              // fill in any missing entries from underlying media file
+              for (int j = 0; j < (int)newitems.size(); j++)
+              {
+                CSong song = newitems[j];
+                // only for songs that actually match the current media file
+                if (song.strFileName == strMediaFile)
+                {
+                  if (tag.Loaded())
+                  {
+                    if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
+                    if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
+                    if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
+                    SYSTEMTIME dateTime;
+                    tag.GetReleaseDate(dateTime);
+                    if (dateTime.wYear) song.iYear = dateTime.wYear;
+                  }
+                  if (!song.iDuration && tag.GetDuration() > 0)
+                  { // must be the last song
+                    song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
+                  }
+                  // add this item to the list
+                  itemstoadd.push_back(song);
+                }
               }
-              // add this item to the list
-              itemstoadd.push_back(song);
             }
-          }
-          else
-          { // remove the .cue sheet from the directory
-            itemstodelete.push_back(pItem->m_strPath);
+            else
+            { // remove the .cue sheet from the directory
+              itemstodelete.push_back(pItem->m_strPath);
+            }
           }
         }
         else
@@ -1885,7 +1919,7 @@ void CFileItemList::Stack()
       CFileItem *item = Get(i);
 
       // ignore parent directories, playlists and the virtual root
-      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot())
+      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot() || item->IsDVDImage())
         continue;
 
       if( item->m_bIsFolder)

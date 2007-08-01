@@ -7,10 +7,10 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float po
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_bHasPath = bHasPath;
+  m_iCursorPos = 0; 
   SetLabel(strLabel);
   m_label = labelInfo;
   m_bShowCursor = false;
-  m_iCursorPos = 0;
   m_dwCounter = 0;
   ControlType = GUICONTROL_LABEL;
   m_ScrollInsteadOfTruncate = false;
@@ -42,8 +42,6 @@ void CGUILabelControl::SetInfo(int singleInfo)
 
 void CGUILabelControl::Render()
 {
-  if (!IsVisible()) return;
-
   CStdString lastLabel(m_renderLabel);
 	if (m_singleInfo)
 	{ 
@@ -51,7 +49,7 @@ void CGUILabelControl::Render()
 	}
 	else
 	{
-    m_renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
+    m_renderLabel = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
 	}
   // reset scrolling if we have a new label
   if (m_renderLabel != lastLabel)

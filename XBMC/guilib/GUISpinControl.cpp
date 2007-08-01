@@ -218,7 +218,6 @@ void CGUISpinControl::Clear()
 
 bool CGUISpinControl::OnMessage(CGUIMessage& message)
 {
-
   if (CGUIControl::OnMessage(message) )
     return true;
   if (message.GetControlId() == GetID() )
@@ -283,6 +282,17 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+
+    case GUI_MSG_PAGE_UP:
+      if (CanMoveUp())
+        MoveUp();
+      return true;
+
+    case GUI_MSG_PAGE_DOWN:
+      if (CanMoveDown())
+        MoveDown();
+      return true;
+
     }
   }
   return false;
@@ -333,8 +343,6 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
-  if (!IsVisible()) return;
-
   if (!HasFocus())
   {
     m_iTypedPos = 0;
@@ -455,9 +463,9 @@ void CGUISpinControl::Render()
     }
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
-      m_rectHit.SetRect(fPosX, fPosY, fTextWidth, fTextHeight);
+      m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
     else
-      m_rectHit.SetRect(fPosX - fTextWidth, fPosY, fTextWidth, fTextHeight);
+      m_hitRect.SetRect(fPosX - fTextWidth, fPosY, fPosX, fPosY + fTextHeight);
   }
   CGUIControl::Render();
 }
@@ -857,20 +865,19 @@ bool CGUISpinControl::HitTest(const CPoint &point) const
 {
   if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
     return true;
-  // check if we have the text bit selected...
-  return m_rectHit.PtInRect(point);
+  return CGUIControl::HitTest(point);
 }
 
 bool CGUISpinControl::OnMouseOver(const CPoint &point)
 {
   if (m_imgspinUpFocus.HitTest(point))
   {
-    if (CanMoveUp()) CGUIControl::OnMouseOver(point);
+    CGUIControl::OnMouseOver(point);
     m_iSelect = SPIN_BUTTON_UP;
   }
   else if (m_imgspinDownFocus.HitTest(point))
   {
-    if (CanMoveDown()) CGUIControl::OnMouseOver(point);
+    CGUIControl::OnMouseOver(point);
     m_iSelect = SPIN_BUTTON_DOWN;
   }
   else

@@ -23,18 +23,15 @@ CGraphicContext::CGraphicContext(void)
   m_iScreenHeight = 576;
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
+  m_stateBlock = 0xffffffff;
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bShowPreviewWindow = false;
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
-  m_stateBlock = 0xffffffff;
-  m_windowScaleX = m_windowScaleY = 1.0f;
+  m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
-  MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
-  float x=0,y=0;
-  ScaleFinalCoords(x, y);
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -79,6 +76,76 @@ DWORD CGraphicContext::GetNewID()
   return m_dwID;
 }
 
+void CGraphicContext::SetOrigin(float x, float y)
+{
+  if (m_origins.size())
+    m_origins.push(CPoint(x,y) + m_origins.top());
+  else
+    m_origins.push(CPoint(x,y));
+  AddTransform(TransformMatrix::CreateTranslation(x, y));
+}
+
+void CGraphicContext::RestoreOrigin()
+{
+  m_origins.pop();
+  RemoveTransform();
+}
+
+// add a new clip region, intersecting with the previous clip region.
+bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
+{ // transform from our origin
+  CPoint origin;
+  if (m_origins.size())
+    origin = m_origins.top();
+  // ok, now intersect with our old clip region
+  CRect rect(x, y, x + w, y + h);
+  rect += origin;
+  if (m_clipRegions.size())
+  { // intersect with original clip region
+    rect.Intersect(m_clipRegions.top());
+  }
+  if (rect.IsEmpty())
+    return false;
+  m_clipRegions.push(rect);
+
+  // here we could set the hardware clipping, if applicable
+  return true;
+}
+
+void CGraphicContext::RestoreClipRegion()
+{
+  if (m_clipRegions.size())
+    m_clipRegions.pop();
+
+  // here we could reset the hardware clipping, if applicable
+}
+
+void CGraphicContext::ClipRect(CRect &vertex, CRect &texture)
+{
+  // this is the software clipping routine.  If the graphics hardware is set to do the clipping
+  // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
+  if (m_clipRegions.size())
+  {
+    // take a copy of the vertex rectangle and intersect
+    // it with our clip region (moved to the same coordinate system)
+    CRect clipRegion(m_clipRegions.top());
+    if (m_origins.size())
+      clipRegion -= m_origins.top();
+    CRect original(vertex);
+    vertex.Intersect(clipRegion);
+    // and use the original to compute the texture coordinates
+    if (original != vertex)
+    {
+      const float scaleX = texture.Width() / original.Width();
+      const float scaleY = texture.Height() / original.Height();
+      texture.x1 += (vertex.x1 - original.x1) * scaleX;
+      texture.y1 += (vertex.y1 - original.y1) * scaleY;
+      texture.x2 += (vertex.x2 - original.x2) * scaleX;
+      texture.y2 += (vertex.y2 - original.y2) * scaleY;
+    }
+  }
+}
+
 bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
   D3DVIEWPORT8 newviewport;
@@ -97,7 +164,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   float maxY = 0;
   for (int i = 0; i < 4; i++)
   {
-    ScaleFinalCoords(x[i], y[i]);
+    float z = 0;
+    ScaleFinalCoords(x[i], y[i], z);
     if (x[i] < minX) minX = x[i];
     if (x[i] > maxX) maxX = x[i];
     if (y[i] < minY) minY = y[i];
@@ -151,7 +219,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport.Height = newBottom - newTop;
   m_pd3dDevice->SetViewport(&newviewport);
   m_viewStack.push(oldviewport);
-
+ 
+  UpdateCameraPosition(m_cameras.top());
   return true;
 }
 
@@ -163,6 +232,8 @@ void CGraphicContext::RestoreViewPort()
   Get3DDevice()->SetViewport(oldviewport);
 
   if (oldviewport) delete oldviewport;
+
+  UpdateCameraPosition(m_cameras.top());
 }
 
 const RECT& CGraphicContext::GetViewWindow() const
@@ -380,10 +451,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   SetFullScreenViewWindow(res);
   SetScreenFilters(m_bFullScreenVideo);
   
+  m_Resolution = res;
   if(NeedReset)
     CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
 
-  m_Resolution = res;
   Unlock();  
 }
 
@@ -591,24 +662,38 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     fToPosY -= fToHeight * fZoom * 0.5f;
     fToHeight *= fZoom + 1.0f;
     
-    m_windowScaleX = fToWidth / fFromWidth;
-    m_windowScaleY = fToHeight / fFromHeight;
+    m_guiScaleX = fFromWidth / fToWidth;
+    m_guiScaleY = fFromHeight / fToHeight;
     TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
-    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight);
+    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
     m_guiTransform = guiOffset * guiScaler * windowOffset;
   }
   else
   {
     m_guiTransform = TransformMatrix::CreateTranslation(posX, posY);
-    m_windowScaleX = 1.0f;
-    m_windowScaleY = 1.0f;
+    m_guiScaleX = 1.0f;
+    m_guiScaleY = 1.0f;
   }
-  // reset the final transform and window/group transforms
-  while (m_groupTransform.size())
-    m_groupTransform.pop();
-  m_groupTransform.push(m_guiTransform);
-  m_finalTransform = m_guiTransform;
+  // reset our origin and camera
+  while (m_origins.size())
+    m_origins.pop();
+  m_origins.push(CPoint(posX, posY));
+  while (m_cameras.size())
+    m_cameras.pop();
+  m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  UpdateCameraPosition(m_cameras.top());
+
+  // and reset the final transform
+  UpdateFinalTransform(m_guiTransform);
+}
+
+void CGraphicContext::UpdateFinalTransform(const TransformMatrix &matrix)
+{
+  m_finalTransform = matrix;
+  // We could set the world transform here to GPU-ize the animation system.
+  // trouble is that we require the resulting x,y coords to be rounded to
+  // the nearest pixel (vertex shader perhaps?)
 }
 
 void CGraphicContext::InvertFinalCoords(float &x, float &y) const
@@ -635,25 +720,74 @@ float CGraphicContext::GetScalingPixelRatio() const
   return outPR * (outWidth / outHeight) / (winWidth / winHeight);
 }
 
-inline void CGraphicContext::ScaleFinalCoords(float &x, float &y) const
+void CGraphicContext::SetCameraPosition(const CPoint &camera)
 {
-  m_finalTransform.TransformPosition(x, y);
+  // offset the camera from our current location (this is in XML coordinates) and scale it up to
+  // the screen resolution
+  CPoint cam(camera);
+  if (m_origins.size())
+    cam += m_origins.top();
+
+  RESOLUTION windowRes = (m_windowResolution == INVALID) ? m_Resolution : m_windowResolution;
+  cam.x *= (float)m_iScreenWidth / g_settings.m_ResInfo[windowRes].iWidth;
+  cam.y *= (float)m_iScreenHeight / g_settings.m_ResInfo[windowRes].iHeight;
+
+  m_cameras.push(cam);
+  UpdateCameraPosition(m_cameras.top());
 }
 
-inline float CGraphicContext::ScaleFinalXCoord(float x, float y) const
-{
-  return m_finalTransform.TransformXCoord(x, y);
+void CGraphicContext::RestoreCameraPosition()
+{ // remove the top camera from the stack
+  ASSERT(m_cameras.size());
+  m_cameras.pop();
+  UpdateCameraPosition(m_cameras.top());
 }
 
-inline float CGraphicContext::ScaleFinalYCoord(float x, float y) const
+void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
 {
-  return m_finalTransform.TransformYCoord(x, y);
+  // NOTE: This routine is currently called (twice) every time there is a <camera>
+  //       tag in the skin.  It actually only has to be called before we render
+  //       something, so another option is to just save the camera coordinates
+  //       and then have a routine called before every draw that checks whether
+  //       the camera has changed, and if so, changes it.  Similarly, it could set
+  //       the world transform at that point as well (or even combine world + view
+  //       to cut down on one setting)
+ 
+  // and calculate the offset from the screen center
+  CPoint offset = camera - CPoint(m_iScreenWidth*0.5f, m_iScreenHeight*0.5f);
+
+  // grab the viewport dimensions and location
+  D3DVIEWPORT8 viewport;
+  m_pd3dDevice->GetViewport(&viewport);
+  float w = viewport.Width*0.5f;
+  float h = viewport.Height*0.5f;
+
+  // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
+  // here.
+  D3DXMATRIX mtxWorld;
+  D3DXMatrixIdentity(&mtxWorld);
+  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+
+  // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
+  // position.
+  D3DXMATRIX flipY, translate, mtxView;
+  D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
+  D3DXMatrixTranslation(&translate, -(viewport.X + w + offset.x), -(viewport.Y + h + offset.y), 2*h);
+  D3DXMatrixMultiply(&mtxView, &translate, &flipY);
+  m_pd3dDevice->SetTransform(D3DTS_VIEW, &mtxView);
+
+  // projection onto screen space
+  D3DXMATRIX mtxProjection;
+  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
 }
 
-inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
-{
-  DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
-  return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
+bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
+{ // need only test 3 points, as they must be co-planer
+  if (m_finalTransform.TransformZCoord(x1, y1, 0)) return true;
+  if (m_finalTransform.TransformZCoord(x2, y2, 0)) return true;
+  if (m_finalTransform.TransformZCoord(x1, y2, 0)) return true;
+  return false;
 }
 
 int CGraphicContext::GetFPS() const

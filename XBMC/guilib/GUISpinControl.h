@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "GUIImage.h"
+#include "guiImage.h"
 
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2
@@ -95,7 +95,6 @@ protected:
   char m_szTyped[10];
   int m_iTypedPos;
   float m_maxTextWidth;
-  CRect m_rectHit;   // rect for hit test on the Text
 
   int m_itemsPerPage;
   int m_numItems;

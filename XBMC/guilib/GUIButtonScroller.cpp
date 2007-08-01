@@ -4,7 +4,7 @@
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h"
 
@@ -251,14 +251,12 @@ void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIButtonScroller::Render()
 {
-  if (!IsVisible()) return;
-
   float posX = m_posX;
   float posY = m_posY;
   // set our viewport
   float posX2 = posX;
   float posY2 = posY;
-  g_graphicsContext.SetViewPort(posX, posY, m_width, m_height);
+  g_graphicsContext.SetClipRegion(posX, posY, m_width, m_height);
   // if we're scrolling, update our scroll offset
   if (m_bScrollUp || m_bScrollDown)
   {
@@ -399,7 +397,7 @@ void CGUIButtonScroller::Render()
     RenderItem(posX, posY, iOffset, true);
 
   // reset the viewport
-  g_graphicsContext.RestoreViewPort();
+  g_graphicsContext.RestoreClipRegion();
   CGUIControl::Render();
 }
 

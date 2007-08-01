@@ -84,12 +84,12 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           // default parameters if the jump fails
           m_vecItems.m_strPath = "";
 
-          bool bIsBookmarkName = false;
+          bool bIsSourceName = false;
 
           SetupShares();
           VECSHARES shares;
           m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
@@ -106,7 +106,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
             // set current directory to matching share
             if (bDoStuff)
             {
-              if (bIsBookmarkName)
+              if (bIsSourceName)
                 m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
@@ -116,7 +116,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
           }
         }
 
@@ -447,28 +447,33 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& info)
 {
-  bool bScan=false, bScanRecursive=true, bUseDirNames=false;
+  bool bScan=false, bScanRecursive, bUseDirNames;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent);
+    m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,bUseDirNames,bScanRecursive,iFound);
   }
   SScraperInfo info2 = info;
+  if (info.strContent.Equals("tvshows") && iFound == 2) // 'folder contains a single tvshow'
+    bUseDirNames = true;
   
   if (CGUIDialogContentSettings::Show(info2,bScan,bScanRecursive,bUseDirNames))
   {
-    if (info2.strContent.IsEmpty())
+    if (info2.strContent.IsEmpty() || info2.strContent.Equals("None"))
     {
-      if (!info.strContent.IsEmpty())
+      if (!info.strContent.IsEmpty() && !info.strContent.Equals("None"))
         OnUnAssignContent(iItem);
-      return;
     }
 
     m_database.Open();
-    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2.strPath,info2.strContent);
+    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2.strPath,info2.strContent,bUseDirNames,bScanRecursive);
     m_database.Close();
     
     if (bScan)
-      OnScan(m_vecItems[iItem]->m_strPath,info2,bUseDirNames?1:0,bScanRecursive?1:0);
+    {
+      VIDEO::SScanSettings settings;
+      GetScraperForItem(m_vecItems[iItem],info2,settings);
+      OnScan(m_vecItems[iItem]->m_strPath,info2,settings);
+    }
   }
 }
 
@@ -531,12 +536,12 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
-      // get the usual bookmark shares, and anything for all media windows
+      // get the usual shares, and anything for all media windows
       CShare *share = CGUIDialogContextMenu::GetShare("video", item);
       CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
-      if (!item->IsDVD())
+      if (!item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -561,7 +566,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
       {
         SScraperInfo info;
-        int iFound = GetScraperForItem(item, info);
+        VIDEO::SScanSettings settings;
+        int iFound = GetScraperForItem(item, info, settings);
 
         int infoString = 13346;
         if (info.strContent.Equals("tvshows"))
@@ -661,7 +667,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
       CScraperParser parser;
       if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
         info.strTitle = parser.GetName();
-      OnAssignContent(itemNumber,iFound,info);
+      OnAssignContent(itemNumber,0,info);
       return true;
     }
 

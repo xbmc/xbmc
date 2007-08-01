@@ -54,6 +54,7 @@
 #include "utils/GUIInfoManager.h"
 #include "PlaylistFactory.h"
 #include "GUIFontManager.h"
+#include "GUIColorManager.h"
 #include "SkinInfo.h"
 #include "lib/libPython/XBPython.h"
 #include "ButtonTranslator.h"
@@ -205,7 +206,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
  #endif
  #ifdef _XBOX
-  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib")
   #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
   #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
@@ -213,7 +213,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
  #else
-  #pragma comment (lib,"../../xbmc/lib/unrarXlib/unrarxlibd.lib")
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32d.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
@@ -232,7 +231,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
  #endif
  #ifdef _XBOX
-  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
   #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
   #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
   #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
@@ -240,7 +238,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
  #else
-  #pragma comment (lib,"../../xbmc/lib/unrarXlib/unrarxlib.lib")
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
@@ -287,7 +284,6 @@ CApplication::CApplication(void)
   m_pWebServer = NULL;
   pXbmcHttp = NULL;
   m_pFileZilla = NULL;
-  pXbmcHttp = NULL;
   m_pPlayer = NULL;
 #ifdef HAS_XBOX_HARDWARE
   XSetProcessQuantumLength(5); //default=20msec
@@ -1367,7 +1363,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.GetString("network.dns").c_str());
 
   g_pythonParser.bStartup = true;
-  g_sysinfo.Refresh();
+  //g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
@@ -1427,10 +1423,8 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
     strXBEName = strXBEName.Left(g_advancedSettings.m_lcdColumns);
   if (g_lcd)
   {
-    g_lcd->SetLine(pLine++, "");
-    g_lcd->SetLine(pLine++, "Playing");
-    g_lcd->SetLine(pLine++, strXBEName);
-    g_lcd->SetLine(pLine++, "");
+    g_infoManager.SetLaunchingXBEName(strXBEName);
+    g_lcd->Render(ILCD::LCD_MODE_XBE_LAUNCH);
   }
 #endif
 }
@@ -1808,8 +1802,12 @@ void CApplication::ReloadSkin()
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
   unsigned iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-  CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
-  pWindow->OnMessage(msg3);
+  pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  if (pWindow)
+  {
+    CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+    pWindow->OnMessage(msg3);
+  }
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)
@@ -1832,6 +1830,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     }
 #endif
   }
+  //stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
+  g_ApplicationRenderer.Stop();
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
 
@@ -1884,6 +1884,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     else
       CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
   }
+  g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
+
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
   LARGE_INTEGER start;
@@ -1980,6 +1982,8 @@ void CApplication::UnloadSkin()
   g_TextureManager.Cleanup();
 
   g_fontManager.Clear();
+
+  g_colorManager.Clear();
 
   g_charsetConverter.reset();
 }
@@ -2155,8 +2159,6 @@ void CApplication::DoRender()
   {
     g_graphicsContext.EnablePreviewWindow(false);
   }
-  // update our FPS
-  g_infoManager.UpdateFPS();
 
   if(!m_pd3dDevice)
     return;
@@ -2293,6 +2295,7 @@ void CApplication::Render()
 
 void CApplication::RenderMemoryStatus()
 {
+  g_infoManager.UpdateFPS();
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
@@ -2304,7 +2307,7 @@ void CApplication::RenderMemoryStatus()
     CStdStringW wszText;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
-    wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
+    wszText.Format(L"FreeMem %d/%d KB, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
     if(g_Mouse.IsActive())
       wszText.AppendFormat(L"\nMouse X=%2.2f Y=%2.2f", g_Mouse.posX, g_Mouse.posY);
 
@@ -2353,7 +2356,7 @@ bool CApplication::OnKey(CKey& key)
   // change this if we have a dialog up
   if (m_gWindowManager.HasModalDialog())
   {
-    iWin = m_gWindowManager.GetTopMostDialogID() & WINDOW_ID_MASK;
+    iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
   }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
@@ -2390,7 +2393,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-      g_buttonTranslator.GetAction(iWin, key, action);
+	{
+	  if (key.GetFromHttpApi())
+      {
+        if (key.GetButtonCode() != KEY_INVALID)
+		{
+          action.wID = (WORD) key.GetButtonCode();
+		  g_buttonTranslator.GetAction(iWin, key, action);
+		}
+      }
+	  else
+        g_buttonTranslator.GetAction(iWin, key, action);
+	}
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
@@ -3873,8 +3887,6 @@ void CApplication::DoRenderFullScreen()
       // Render the mouse pointer, if visible...
       if (g_Mouse.IsActive())
         g_application.m_guiPointer.Render();
-
-      g_infoManager.UpdateFPS();
     }
   }
 }
@@ -4520,7 +4532,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CLog::Log(LOGDEBUG,__FUNCTION__" : Translating %s", message.GetStringParam().c_str());
       vector<CInfoPortion> info;
       g_infoManager.ParseLabel(message.GetStringParam(), info);
-      message.SetStringParam(g_infoManager.GetMultiLabel(info));
+      message.SetStringParam(g_infoManager.GetMultiInfo(info, 0));
       CLog::Log(LOGDEBUG,__FUNCTION__" : To %s", message.GetStringParam().c_str());
 
       // user has asked for something to be executed
@@ -4646,7 +4658,7 @@ void CApplication::ProcessSlow()
 
   // Xbox Autodetection - Send in X sec PingTime Interval
   if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
-    CUtil::XboxAutoDetection();
+    CUtil::AutoDetection();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
@@ -4976,7 +4988,7 @@ void CApplication::SeekPercentage(float percent)
 bool CApplication::SwitchToFullScreen()
 {
   // if playing from the video info window, close it first!
-  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostDialogID() == WINDOW_VIDEO_INFO)
+  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostModalDialogID() == WINDOW_VIDEO_INFO)
   {
     CGUIWindowVideoInfo* pDialog = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);
@@ -5190,7 +5202,7 @@ void CApplication::StartFtpEmergencyRecoveryMode()
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (IsPlayingVideo())
+  if (m_itemCurrentFile.IsVideo())
   { // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {

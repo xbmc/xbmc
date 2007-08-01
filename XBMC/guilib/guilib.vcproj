@@ -254,6 +254,9 @@
 				RelativePath=".\GUICheckMarkControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIColorManager.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIConsoleControl.cpp">
 			</File>
 			<File
@@ -291,9 +294,6 @@
 			</File>
 			<File
 				RelativePath=".\GUIFontTTF.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIFontXPR.cpp">
 			</File>
 			<File
 				RelativePath=".\guiImage.cpp">
@@ -442,6 +442,9 @@
 				RelativePath=".\AudioContext.h">
 			</File>
 			<File
+				RelativePath=".\Geometry.h">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.h">
 			</File>
 			<File
@@ -464,6 +467,9 @@
 			</File>
 			<File
 				RelativePath=".\GUICheckMarkControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIColorManager.h">
 			</File>
 			<File
 				RelativePath=".\GUIConsoleControl.h">
@@ -503,9 +509,6 @@
 			</File>
 			<File
 				RelativePath=".\GUIFontTTF.h">
-			</File>
-			<File
-				RelativePath=".\GuiFontXPR.h">
 			</File>
 			<File
 				RelativePath=".\guiImage.h">
@@ -652,6 +655,9 @@
 				RelativePath=".\TransformMatrix.h">
 			</File>
 			<File
+				RelativePath=".\Tween.h">
+			</File>
+			<File
 				RelativePath=".\VisibleEffect.h">
 			</File>
 			<File
@@ -661,12 +667,6 @@
 		<Filter
 			Name="common"
 			Filter="">
-			<File
-				RelativePath=".\common\xbfont.cpp">
-			</File>
-			<File
-				RelativePath=".\common\xbfont.h">
-			</File>
 			<File
 				RelativePath=".\common\XBoxKeyboard.cpp">
 			</File>

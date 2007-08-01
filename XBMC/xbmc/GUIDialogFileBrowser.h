@@ -28,9 +28,11 @@ public:
   void SetShares(VECSHARES &shares);
 
   virtual void OnItemLoaded(CFileItem *item) {};
-  virtual CFileItem *GetCurrentListItem();
 
   virtual bool IsMediaWindow() const { return true; };
+  virtual CFileItem *GetCurrentListItem(int offset = 0);
+  int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
+
 protected:
   void GoParentFolder();
   void OnClick(int iItem);

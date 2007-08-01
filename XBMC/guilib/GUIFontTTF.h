@@ -52,15 +52,15 @@ protected:
   virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
                              FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
-  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
+  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);
 
-  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
+  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                   FLOAT fMaxPixelWidth);
 
-  void DrawTextInternal(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD *pdw256ColorPalette, BYTE *pbColours,
+  void DrawTextInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD *pdw256ColorPalette, BYTE *pbColours,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);
 
@@ -81,12 +81,9 @@ protected:
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(WCHAR letter);
   bool CacheCharacter(WCHAR letter, Character *ch);
-  inline void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
-  void CreateShader();
+  inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor);
   void ClearCharacterCache();
 
-  DWORD m_pixelShader;               // pixel shader for rendering chars from the 8bit alpha texture
-  DWORD m_vertexShader;              // vertex shader (speedup?)
   LPDIRECT3DDEVICE8 m_pD3DDevice;
 
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
@@ -112,6 +109,9 @@ protected:
   // freetype stuff
   FT_Face    m_face;
   FT_Library m_library;
+
+  float m_originX;
+  float m_originY;
 };
 
 #endif

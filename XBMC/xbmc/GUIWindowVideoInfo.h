@@ -5,6 +5,7 @@
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
+#include "utils/ScraperParser.h"
 
 class CGUIWindowVideoInfo :
       public CGUIDialog
@@ -19,7 +20,7 @@ public:
   bool RefreshAll() const;
 
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
-  virtual CFileItem* GetCurrentListItem() { return &m_movieItem; }
+  virtual CFileItem* GetCurrentListItem(int offset = 0) { return &m_movieItem; }
 
 protected:
   virtual void OnInitWindow();
@@ -33,7 +34,6 @@ protected:
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
-  bool DownloadThumbnail(const CStdString &thumb);
   void OnGetThumb();
   CFileItem m_movieItem;
   bool m_bViewReview;

@@ -28,8 +28,6 @@ CGUIMoverControl::~CGUIMoverControl(void)
 
 void CGUIMoverControl::Render()
 {
-  if (!IsVisible()) return;
-
   if (HasFocus())
   {
     DWORD dwAlphaCounter = m_dwFrameCounter + 2;
@@ -156,8 +154,10 @@ void CGUIMoverControl::AllocResources()
   m_dwFrameCounter = 0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
-  m_width = m_imgFocus.GetWidth();
-  m_height = m_imgFocus.GetHeight();
+  float width = m_width ? m_width : m_imgFocus.GetWidth();
+  float height = m_height ? m_height : m_imgFocus.GetHeight();
+  SetWidth(width);
+  SetHeight(height);
 }
 
 void CGUIMoverControl::FreeResources()

@@ -30,6 +30,8 @@ namespace PYXBMC
 
     self = (ControlLabel*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strText) string();
+    new(&self->strFont) string();
 
     // set up default values in case they are not supplied
     self->strFont = "font13";
@@ -77,6 +79,8 @@ namespace PYXBMC
 
   void ControlLabel_Dealloc(ControlLabel* self)
   {
+    self->strText.~string();
+    self->strFont.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -87,7 +91,7 @@ namespace PYXBMC
     label.textColor = label.focusedColor = pControl->dwTextColor;
     label.disabledColor = pControl->dwDisabledColor;
     label.align = pControl->dwAlign;
-    label.angle = CAngle(-pControl->iAngle);
+    label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUILabelControl(
       pControl->iParentId,
       pControl->iControlId,

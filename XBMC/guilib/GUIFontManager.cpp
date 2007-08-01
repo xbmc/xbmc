@@ -2,10 +2,11 @@
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "SkinInfo.h"
-#include "GUIFontXPR.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
+#include "GuiControlFactory.h"
+
 
 GUIFontManager g_fontManager;
 
@@ -16,60 +17,6 @@ GUIFontManager::GUIFontManager(void)
 
 GUIFontManager::~GUIFontManager(void)
 {}
-
-#ifdef HAS_XPR_FONTS
-CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor)
-{
-  //check if font already exists
-  CGUIFont* pFont = GetFont(strFontName, false);
-  if (pFont)
-    return pFont;
-
-  CStdString strPath;
-  if (strFilename[1] != ':')
-  {
-    strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
-    strPath += strFilename;
-  }
-  else
-    strPath = strFilename;
-
-  // check if we already have this font file loaded...
-  CGUIFontBase* pFontFile = GetFontFile(strFilename);
-  if (!pFontFile)
-  {
-    pFontFile = new CGUIFontXPR(strFilename);
-    // First try to load it from the skin directory
-    boolean bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(strPath);
-    if (!bFontLoaded)
-    {
-      // Now try to load it from media\fonts
-      if (strFilename[1] != ':')
-      {
-        strPath = "Q:\\media\\Fonts\\";
-        strPath += strFilename;
-      }
-
-      bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(strPath);
-    }
-
-    if (!bFontLoaded)
-    {
-      delete pFontFile;
-      // font could not b loaded
-      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
-      return NULL;
-    }
-    m_vecFontFiles.push_back(pFontFile);
-  }
-
-  // font file is loaded, create our CGUIFont
-  CGUIFont *pNewFont = new CGUIFont(strFontName, textColor, shadowColor, pFontFile);
-  m_vecFonts.push_back(pNewFont);
-  return pNewFont;
-}
-#endif
 
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float aspect)
 {
@@ -88,7 +35,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (strFilename[1] != ':')
   {
     strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
+    strPath += "\\Fonts\\";
     strPath += strFilename;
   }
   else
@@ -210,9 +157,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   CStdString strValue = pChild->Value();
   if (strValue == "fontset")
   {
-#ifndef HAS_XPR_FONTS
     CStdString foundTTF;
-#endif
     while (pChild)
     {
       strValue = pChild->Value();
@@ -222,10 +167,9 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 
         const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
 
-#ifndef HAS_XPR_FONTS
         if (foundTTF.IsEmpty() && idAttr != NULL && unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
           foundTTF = idAttr;
-#endif
+
         // Check if this is the fontset that we want
         if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
         {
@@ -234,17 +178,11 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
           if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
             m_fontsetUnicode=true;
 
-#ifndef HAS_XPR_FONTS
           if (m_fontsetUnicode)
           {
             LoadFonts(pChild->FirstChild());
             break;
           }
-#else
-          LoadFonts(pChild->FirstChild());
-
-          break;
-#endif
         }
 
       }
@@ -256,12 +194,8 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
     if (pChild == NULL)
     {
       CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", strFontSet.c_str());
-#ifndef HAS_XPR_FONTS
       if (!foundTTF.IsEmpty())
         LoadFonts(foundTTF);
-#else
-      LoadFonts(pRootElement->FirstChild()->FirstChild());
-#endif
     }
   }
   else
@@ -284,20 +218,13 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         CStdString strFontName = pNode->FirstChild()->Value();
         DWORD shadowColor = 0;
         DWORD textColor = 0;
-        XMLUtils::GetHex(fontNode, "shadow", shadowColor);
-        XMLUtils::GetHex(fontNode, "color", textColor);
+        CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
+        CGUIControlFactory::GetColor(fontNode, "color", textColor);
         const TiXmlNode *pNode = fontNode->FirstChild("filename");
         if (pNode)
         {
           CStdString strFontFileName = pNode->FirstChild()->Value();
-
-          if (strstr(strFontFileName, ".xpr") != NULL)
-          {
-#ifdef HAS_XPR_FONTS
-            LoadXPR(strFontName, strFontFileName, textColor, shadowColor);
-#endif
-          }
-          else if (strstr(strFontFileName, ".ttf") != NULL)
+          if (strFontFileName.Find(".ttf") >= 0)
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;

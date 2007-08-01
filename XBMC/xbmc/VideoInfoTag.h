@@ -53,6 +53,8 @@ public:
   int m_iSeason;
   int m_iEpisode;
   int m_iDbId;
+  int m_iSpecialSortSeason;
+  int m_iSpecialSortEpisode;
   float m_fRating;
 };
 

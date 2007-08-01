@@ -1,12 +1,13 @@
 #pragma once
 
-enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE, EFFECT_TYPE_ROTATE, EFFECT_TYPE_ZOOM };
+enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE, EFFECT_TYPE_ROTATE_X, EFFECT_TYPE_ROTATE_Y, EFFECT_TYPE_ROTATE_Z, EFFECT_TYPE_ZOOM };
 enum ANIMATION_PROCESS { ANIM_PROCESS_NONE = 0, ANIM_PROCESS_NORMAL, ANIM_PROCESS_REVERSE };
 enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PROCESS, ANIM_STATE_APPLIED };
 
 // forward definitions
 
 class TiXmlElement;
+class Tweener;
 struct FRECT;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
@@ -27,9 +28,12 @@ class CAnimation
 {
 public:
   CAnimation();
+  CAnimation(const CAnimation&);
+  virtual ~CAnimation();
+  CAnimation &operator=(const CAnimation &src);
+
   void Reset();
   void Create(const TiXmlElement *node, const FRECT &rect);
-  void CreateReverse(const CAnimation &anim);
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
   void ApplyAnimation();
@@ -59,7 +63,6 @@ private:
   ANIMATION_PROCESS m_queuedProcess;
 
   // animation variables
-  float m_acceleration;
   float m_startX;
   float m_startY;
   float m_endX;
@@ -82,4 +85,5 @@ private:
 
   void Calculate();
   TransformMatrix m_matrix;
+  Tweener *m_pTweener;
 };

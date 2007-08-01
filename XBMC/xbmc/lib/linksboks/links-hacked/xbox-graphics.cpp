@@ -329,8 +329,8 @@ extern "C" struct graphics_driver xbox_driver = {
 	xb_fill_area,
 	xb_draw_hline,
 	xb_draw_vline,
-	xb_hscroll,
-	xb_vscroll,
+	NULL, /* xb_hscroll */
+	NULL, /* xb_vscroll */
 	xb_set_clip_area,
 	dummy_block,
 	dummy_unblock,
@@ -340,7 +340,7 @@ extern "C" struct graphics_driver xbox_driver = {
     xb_get_from_clipboard,
     0xc4,				/* depth: 32 bits per pixel, 24 significant, normal order */
 	0, 0,				/* size */
-	0,  //GD_DONT_USE_SCROLL,				/* flags */
+	GD_DONT_USE_SCROLL,				/* flags */
 };
 
 #endif

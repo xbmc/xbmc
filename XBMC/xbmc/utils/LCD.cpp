@@ -169,6 +169,10 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
     { // navigation mode
       LoadMode(mode, LCD_MODE_NAVIGATION);
     }
+    else if (strcmpi(mode->Value(), "xbelaunch") == 0)
+    { // xbe launch mode
+      LoadMode(mode, LCD_MODE_XBE_LAUNCH);
+    }
     mode = mode->NextSiblingElement();
   }
 done:
@@ -203,7 +207,7 @@ void ILCD::Render(LCD_MODE mode)
   unsigned int inLine = 0;
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
-    CStdString utf8Line = g_infoManager.GetMultiLabel(m_lcdMode[mode][inLine++]);
+    CStdString utf8Line = g_infoManager.GetMultiInfo(m_lcdMode[mode][inLine++], 0);
     if (!utf8Line.IsEmpty())
     {
       // convert to the user char set

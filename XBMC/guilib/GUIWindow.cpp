@@ -3,8 +3,8 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
-#include "../xbmc/util.h"
-#include "GUIControlFactory.h"
+#include "../xbmc/Util.h"
+#include "GuiControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
@@ -13,7 +13,7 @@
 
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/Utils/SingleLock.h"
+#include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 
@@ -26,9 +26,6 @@ CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
 {
   m_dwWindowId = dwID;
-  //backup the windowid, if the xmlfile does not exist for one skin the windowid is set to invalid,
-  //if we load another skin the windowid should be restored.
-  m_dwWindowIdBackup = m_dwWindowId;
   m_xmlFile = xmlFile;
   m_dwIDRange = 1;
   m_saveLastControl = false;
@@ -48,6 +45,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_hasRendered = false;
+  m_hasCamera = false;
   m_previousWindow = WINDOW_INVALID;
 }
 
@@ -126,10 +124,6 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
-  if (m_dwWindowIdBackup != m_dwWindowId && m_dwWindowIdBackup > WINDOW_INVALID)
-  {
-    m_dwWindowId = m_dwWindowIdBackup;
-  }
   RESOLUTION resToUse = INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   TiXmlDocument xmlDoc;
@@ -150,7 +144,6 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
       return Load(m_xmlFile);
     }
 #endif
-    m_dwWindowId = WINDOW_INVALID;
     return false;
   }
   TiXmlElement* pRootElement = xmlDoc.RootElement();
@@ -173,6 +166,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::Load(TiXmlElement* pRootElement)
 {
+  // set the scaling resolution so that any control creation or initialisation can
+  // be done with respect to the correct aspect ratio
+  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
+
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
@@ -244,6 +241,12 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
         originElement = originElement->NextSiblingElement("origin");
       }
     }
+    else if (strValue == "camera")
+    { // z is fixed
+      pChild->Attribute("x", &m_camera.x);
+      pChild->Attribute("y", &m_camera.y);
+      m_hasCamera = true;
+    }
     else if (strValue == "controls")
     {
       // resolve any includes within controls tag (such as whole <control> includes)
@@ -295,19 +298,16 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   CGUIControl* pGUIControl = factory.Create(m_dwWindowId, rect, pControl);
   if (pGUIControl)
   {
-    if (m_bRelativeCoords)
+    float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
+    if (maxX > m_width)
     {
-      float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
-      if (maxX > m_width)
-      {
-        m_width = maxX;
-      }
+      m_width = maxX;
+    }
 
-      float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
-      if (maxY > m_height)
-      {
-        m_height = maxY;
-      }
+    float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
+    if (maxY > m_height)
+    {
+      m_height = maxY;
     }
     // if we are in a group, add to the group, else add to our window
     pGUIControl->SetParentControl(pGroup);
@@ -428,6 +428,9 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
+
   DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
@@ -438,8 +441,8 @@ void CGUIWindow::Render()
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      pControl->UpdateEffectState(currentTime);
-      pControl->Render();
+      pControl->UpdateVisibility();
+      pControl->DoRender(currentTime);
     }
   }
   m_hasRendered = true;
@@ -877,19 +880,27 @@ void CGUIWindow::Insert(CGUIControl *control, const CGUIControl *insertPoint)
   m_vecControls.insert(i, control);
 }
 
-void CGUIWindow::Remove(DWORD dwId)
+// Note: This routine doesn't delete the control.  It just removes it from the control list
+bool CGUIWindow::Remove(DWORD dwId)
 {
   ivecControls i = m_vecControls.begin();
   while (i != m_vecControls.end())
   {
     CGUIControl* pControl = *i;
+    if (pControl->IsGroup())
+    {
+      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+      if (group->RemoveControl(dwId))
+        return true;
+    }
     if (pControl->GetID() == dwId)
     {
       m_vecControls.erase(i);
-      return ;
+      return true;
     }
     ++i;
   }
+  return false;
 }
 
 void CGUIWindow::ClearAll()
@@ -1209,6 +1220,7 @@ void CGUIWindow::SetDefaults()
   m_showAnimation.Reset();
   m_closeAnimation.Reset();
   m_origins.clear();
+  m_hasCamera = false;
 }
 
 FRECT CGUIWindow::GetScaledBounds() const
@@ -1216,9 +1228,21 @@ FRECT CGUIWindow::GetScaledBounds() const
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
   FRECT rect = {0, 0, m_width, m_height};
-  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top);
-  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom);
+  float z = 0;
+  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
+  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
   return rect;
+}
+
+void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
+{
+  for (ciControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
+  {
+    if ((*it)->IsContainer())
+      containers.push_back(*it);
+    else if ((*it)->IsGroup())
+      ((CGUIControlGroup *)(*it))->GetContainers(containers);
+  }
 }
 
 #ifdef _DEBUG

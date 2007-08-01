@@ -38,6 +38,7 @@
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "utils/fancontroller.h"
 #include "MediaManager.h"
+#include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -184,7 +185,7 @@ CSettings::CSettings(void)
 
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
-  g_advancedSettings.m_DisableModChipDetection = false;
+  g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
@@ -220,6 +221,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_songInfoDuration = 2;
+  g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
   g_advancedSettings.m_usePCDVDROM = false;
@@ -245,7 +247,7 @@ CSettings::CSettings(void)
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)[^\\\\/]*"); 
   // foo.1x09*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)x([0-9]+)[^\\\\/]*");
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -\\[]([0-9]+)x([0-9]+)[^\\\\/]*");
   // foo.s01.e01, foo.s01_e01
   g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -][Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)[^\\\\/]*"); 
   // foo.103*
@@ -272,6 +274,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
+  g_advancedSettings.m_prioritiseAPEv2tags = false;
+  g_advancedSettings.m_musicItemSeparator = " / ";
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
@@ -341,7 +345,12 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       return false;
   }
 
-  // load xml file...
+  // clear sources, then load xml file...
+  m_vecMyFilesShares.clear();
+  m_vecMyMusicShares.clear();
+  m_vecMyPictureShares.clear();
+  m_vecMyProgramsShares.clear();
+  m_vecMyVideoShares.clear();
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
   TiXmlDocument xmlDoc;
@@ -409,7 +418,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   if (pRootElement)
   {
-    // parse my programs bookmarks...
+    // parse my programs sources...
     CStdString strDefault;
     GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
     strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
@@ -427,8 +436,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
     strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
   }
-  if (!m_vecMyFilesShares.size())
-    g_mediaManager.GetLocalDrives(m_vecMyFilesShares, true);  // true to include Q
 
   bXboxMediacenter = true;
 
@@ -441,7 +448,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 void CSettings::ConvertHomeVar(CStdString& strText)
 {
   // Replaces first occurence of $HOME with the home directory.
-  // "$HOME\bookmarks" becomes for instance "e:\apps\xbmp\bookmarks"
+  // "$HOME\foo" becomes for instance "e:\apps\xbmc\foo"
 
   char szText[1024];
   char szTemp[1024];
@@ -483,7 +490,27 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
   if (type == "myprograms")
     return &g_settings.m_vecMyProgramsShares;
   else if (type == "files")
+  {
+    // this nasty block of code is needed as we have to
+    // call getlocaldrives after localize strings has been loaded
+    bool bAdded=false;
+    for (unsigned int i=0;i<g_settings.m_vecMyFilesShares.size();++i) 
+    {
+      if (g_settings.m_vecMyFilesShares[i].m_ignore)
+      {
+        bAdded = true;
+        break;
+      }
+    }
+    if (!bAdded)
+    {
+      VECSHARES shares;
+      g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
+      m_vecMyFilesShares.insert(m_vecMyFilesShares.end(),shares.begin(),shares.end());
+    }
+
     return &g_settings.m_vecMyFilesShares;
+  }
   else if (type == "music")
     return &g_settings.m_vecMyMusicShares;
   else if (type == "video")
@@ -529,7 +556,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
     while (pChild > 0)
     {
       CStdString strValue = pChild->Value();
-      if (strValue == "bookmark")
+      if (strValue == "source" || strValue == "bookmark") // "bookmark" left in for backwards compatibility
       {
         CShare share;
         if (GetShare(strTagName, pChild, share))
@@ -538,7 +565,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         }
         else
         {
-          CLog::Log(LOGERROR, "    Missing or invalid <name> and/or <path> in bookmark");
+          CLog::Log(LOGERROR, "    Missing or invalid <name> and/or <path> in source");
         }
       }
 
@@ -550,7 +577,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           const char* pszText = pChild->FirstChild()->Value();
           if (strlen(pszText) > 0)
             strDefault = pszText;
-          CLog::Log(LOGDEBUG, "    Setting <default> share to : %s", strDefault.c_str());
+          CLog::Log(LOGDEBUG, "    Setting <default> source to : %s", strDefault.c_str());
         }
       }
       pChild = pChild->NextSibling();
@@ -562,10 +589,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   }
 }
 
-bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share)
+bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CShare &share)
 {
-  CLog::Log(LOGDEBUG,"    ---- BOOKMARK START ----");
-  const TiXmlNode *pNodeName = bookmark->FirstChild("name");
+  CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
+  const TiXmlNode *pNodeName = source->FirstChild("name");
   CStdString strName;
   if (pNodeName && pNodeName->FirstChild())
   {
@@ -574,7 +601,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
   }
   // get multiple paths
   vector<CStdString> vecPaths;
-  const TiXmlNode *pPathName = bookmark->FirstChild("path");
+  const TiXmlNode *pPathName = source->FirstChild("path");
   while (pPathName)
   {
     if (pPathName->FirstChild())
@@ -602,15 +629,15 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
         vecPaths.push_back(strPath);
       }
       else
-        CLog::Log(LOGERROR,"    Invalid path type (%s) in bookmark", strPath.c_str());
+        CLog::Log(LOGERROR,"    Invalid path type (%s) in source", strPath.c_str());
     }
     pPathName = pPathName->NextSibling("path");
   }
 
-  const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
-  const TiXmlNode *pLockCode = bookmark->FirstChild("lockcode");
-  const TiXmlNode *pBadPwdCount = bookmark->FirstChild("badpwdcount");
-  const TiXmlNode *pThumbnailNode = bookmark->FirstChild("thumbnail");
+  const TiXmlNode *pLockMode = source->FirstChild("lockmode");
+  const TiXmlNode *pLockCode = source->FirstChild("lockcode");
+  const TiXmlNode *pBadPwdCount = source->FirstChild("badpwdcount");
+  const TiXmlNode *pThumbnailNode = source->FirstChild("thumbnail");
 
   if (!strName.IsEmpty() && vecPaths.size() > 0)
   {
@@ -652,20 +679,20 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
 
         // error message
         if (bIsInvalid)
-          CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
+          CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath source", vecPaths[j].c_str());
       }
 
-      // no valid paths? skip to next bookmark
+      // no valid paths? skip to next source
       if (verifiedPaths.size() == 0)
       {
-        CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in bookmark");
+        CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in source");
         return false;
       }
     }
 
     share.FromNameAndPaths(category, strName, verifiedPaths);
 
-    CLog::Log(LOGDEBUG,"      Adding bookmark:");
+    CLog::Log(LOGDEBUG,"      Adding source:");
     CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
     if (CUtil::IsVirtualPath(share.strPath) || CUtil::IsMultiPath(share.strPath))
     {
@@ -1116,11 +1143,13 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "prioritiseapetags", g_advancedSettings.m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
     GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
     GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
+    GetString(pElement, "itemseparator", g_advancedSettings.m_musicItemSeparator, " / ");
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");
@@ -1173,6 +1202,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
+  GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -1281,7 +1311,7 @@ void CSettings::LoadAdvancedSettings()
   {
     const char* szAppend = pVideoStacking->Attribute("append");
     if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
-        g_advancedSettings.m_videoStackRegExps.clear();
+      g_advancedSettings.m_videoStackRegExps.clear();
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
     while (pStackRegExp)
     {
@@ -1453,7 +1483,7 @@ bool CSettings::LoadAvpackXML()
   }
 
   CLog::Log(LOGNOTICE, "%s found : loading %s",
-    GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
+    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
 
   if (!avpackXML.LoadFile(avpackSettingsXML.c_str()))
   {
@@ -1469,11 +1499,11 @@ bool CSettings::LoadAvpackXML()
     return false;
   }
 
-  TiXmlElement *pRoot = pMainElement->FirstChildElement(GetPluggedAvpack());
+  TiXmlElement *pRoot = pMainElement->FirstChildElement(g_videoConfig.GetAVPack());
   if (!pRoot)
   {
     CLog::Log(LOGERROR, "Error loading %s, no <%s> node",
-      avpackSettingsXML.c_str(), GetPluggedAvpack().c_str());
+      avpackSettingsXML.c_str(), g_videoConfig.GetAVPack().c_str());
     return false;
   }
 
@@ -1491,7 +1521,7 @@ bool CSettings::SaveAvpackXML() const
   avpackSettingsXML  = GetAvpackSettingsFile();
 
   CLog::Log(LOGNOTICE, "Saving %s settings in %s",
-    GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
+    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
 
   // The file does not exist : Save defaults
   if (!CFile::Exists(avpackSettingsXML))
@@ -1521,11 +1551,11 @@ bool CSettings::SaveAvpackXML() const
   // Delete the plugged avpack root if it exists, then recreate it
   // TODO : to support custom avpack settings, the two XMLs should
   // be synchronized, not just overwrite the old one
-  TiXmlNode *pRoot = pMainElement->FirstChild(GetPluggedAvpack());
+  TiXmlNode *pRoot = pMainElement->FirstChild(g_videoConfig.GetAVPack());
   if (pRoot)
     pMainElement->RemoveChild(pRoot);
 
-  TiXmlElement pluggedNode(GetPluggedAvpack());
+  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
   pRoot = pMainElement->InsertEndChild(pluggedNode);
   if (!pRoot) return false;
 
@@ -1543,7 +1573,7 @@ bool CSettings::SaveNewAvpackXML() const
   TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
   if (!pMain) return false;
 
-  TiXmlElement pluggedNode(GetPluggedAvpack());
+  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
   TiXmlNode *pRoot = pMain->InsertEndChild(pluggedNode);
   if (!pRoot) return false;
 
@@ -1752,6 +1782,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+  CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
   int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
@@ -1784,7 +1815,9 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) ||
+        iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")) ||
+        !strOldColors.Equals(g_guiSettings.GetString("lookandfeel.skincolors")))
     {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     }
@@ -1850,6 +1883,9 @@ bool CSettings::LoadProfile(int index)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     m_gWindowManager.SendMessage(msg);
 
+    CUtil::DeleteMusicDatabaseDirectoryCache();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+
     return true;
   }
 
@@ -1887,7 +1923,7 @@ bool CSettings::DeleteProfile(int index)
       }
 
       CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
-      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
+      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory+"\\";
       item.m_bIsFolder = true;
       item.Select(true);
       CGUIWindowFileManager::DeleteItem(&item);
@@ -2148,19 +2184,19 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
       TiXmlElement eName("name");
       eName.InsertEndChild(xmlName);
 
-      TiXmlElement bookmark("bookmark");
-      bookmark.InsertEndChild(eName);
+      TiXmlElement source("source");
+      source.InsertEndChild(eName);
 
       for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
       {
         TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
         TiXmlElement ePath("path");
         ePath.InsertEndChild(xmlPath);
-        bookmark.InsertEndChild(ePath);
+        source.InsertEndChild(ePath);
       }
 
       if (pNode)
-        pNode->ToElement()->InsertEndChild(bookmark);
+        pNode->ToElement()->InsertEndChild(source);
     }
   }
   // save the file
@@ -2195,7 +2231,7 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, co
 }
 
 // NOTE: This function does NOT save the sources.xml file - you need to call SaveSources() separately.
-bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
+bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
   VECSHARES *pShares = GetSharesFromType(strType);
 
@@ -2233,7 +2269,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
   return false;
 }
 
-bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
+bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
   VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
@@ -2271,10 +2307,10 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
   {
     shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
     if (!share.strPath.IsEmpty())
-      CLog::Log(LOGDEBUG,"AddBookmark: Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
+      CLog::Log(LOGDEBUG, __FUNCTION__ " Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
     else
     {
-      CLog::Log(LOGDEBUG,"AddBookmark: Skipping invalid special directory token: %s",strPath1.c_str());
+      CLog::Log(LOGDEBUG, __FUNCTION__ " Skipping invalid special directory token: %s",strPath1.c_str());
       return false;
     }
   }
@@ -2315,23 +2351,25 @@ bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES 
     for (unsigned int i = 0; i < shares.size(); i++)
     {
       const CShare &share = shares[i];
-      TiXmlElement bookmark("bookmark");
+      if (share.m_ignore)
+        continue;
+      TiXmlElement source("source");
 
-      SetString(&bookmark, "name", share.strName);
+      SetString(&source, "name", share.strName);
 
       for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-        SetString(&bookmark, "path", share.vecPaths[i]);
+        SetString(&source, "path", share.vecPaths[i]);
 
       if (share.m_iHasLock)
       {
-        SetInteger(&bookmark, "lockmode", share.m_iLockMode);
-        SetString(&bookmark, "lockcode", share.m_strLockCode);
-        SetInteger(&bookmark, "badpwdcount", share.m_iBadPwdCount);
+        SetInteger(&source, "lockmode", share.m_iLockMode);
+        SetString(&source, "lockcode", share.m_strLockCode);
+        SetInteger(&source, "badpwdcount", share.m_iBadPwdCount);
       }
       if (!share.m_strThumbnailImage.IsEmpty())
-        SetString(&bookmark, "thumbnail", share.m_strThumbnailImage);
+        SetString(&source, "thumbnail", share.m_strThumbnailImage);
 
-      sectionNode->InsertEndChild(bookmark);
+      sectionNode->InsertEndChild(source);
     } 
   }
   return true;
@@ -2835,26 +2873,4 @@ CStdString CSettings::GetAvpackSettingsFile() const
   else
     strAvpackSettingsFile = "P:\\avpacksettings.xml";
   return strAvpackSettingsFile;
-}
-
-CStdString  CSettings::GetPluggedAvpack() const
-{
-#ifdef HAS_XBOX_HARDWARE
-  switch (XGetAVPack())
-  {
-    case XC_AV_PACK_STANDARD :
-      return "Standard";
-    case XC_AV_PACK_SVIDEO :
-      return "S-Video";
-    case XC_AV_PACK_SCART :
-      return "Scart";
-    case XC_AV_PACK_HDTV :
-      return "HDTV";
-    case XC_AV_PACK_VGA :
-      return "VGA";
-    case XC_AV_PACK_RFU :
-      return "RF";
-  }
-#endif
-  return "Unknown";
 }

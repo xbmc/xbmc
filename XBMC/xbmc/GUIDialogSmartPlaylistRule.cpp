@@ -25,12 +25,14 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
+#include "MusicDatabase.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
 #define CONTROL_VALUE           17
 #define CONTROL_OK              18
 #define CONTROL_CANCEL          19
+#define CONTROL_BROWSE          20
 
 using namespace PLAYLIST;
 
@@ -69,6 +71,8 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
         OnOperator();
       else if (iControl == CONTROL_FIELD)
         OnField();
+      else if (iControl == CONTROL_BROWSE)
+        OnBrowse();
       return true;
     }
     break;
@@ -80,6 +84,43 @@ void CGUIDialogSmartPlaylistRule::OnOK()
 {
   m_cancelled = false;
   Close();
+}
+
+void CGUIDialogSmartPlaylistRule::OnBrowse()
+{
+  CFileItemList items;
+  CMusicDatabase database;
+  database.Open();
+  int iLabel;
+  if (m_rule.m_field == CSmartPlaylistRule::SONG_GENRE)
+  {
+    database.GetGenresNav("musicdb://4/",items);
+    iLabel = 515;
+  }
+  if (m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST)
+  {
+    database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST);
+    iLabel = 484;
+  }
+  if (m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM)
+  {
+    database.GetAlbumsNav("musicdb://6/",items,-1,-1);
+    iLabel = 483;
+  }
+
+  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  pDialog->Reset();
+  pDialog->SetItems(&items);
+  CStdString strHeading;
+  strHeading.Format(g_localizeStrings.Get(13401),g_localizeStrings.Get(iLabel));
+  pDialog->SetHeading(strHeading);
+  pDialog->DoModal();
+  if (!pDialog->IsConfirmed())
+  {
+    m_rule.m_parameter = pDialog->GetSelectedLabelText();
+    UpdateButtons();
+  }
+  pDialog->Reset();
 }
 
 void CGUIDialogSmartPlaylistRule::OnCancel()
@@ -219,6 +260,14 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
   OnMessage(selected);
   m_rule.m_operator = (CSmartPlaylistRule::SEARCH_OPERATOR)selected.GetParam1();
+  if ((m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM || m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_GENRE || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST) && (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_EQUALS || m_rule.m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL))
+  {
+    CONTROL_ENABLE(CONTROL_BROWSE)
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_BROWSE)
+  }
 
   SET_CONTROL_LABEL(CONTROL_VALUE, m_rule.m_parameter);
 }
@@ -236,6 +285,8 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   // add the fields to the field spincontrol
   for (int field = CSmartPlaylistRule::FIELD_NONE + 1; field < CSmartPlaylistRule::FIELD_RANDOM; field++)
   {
+    if (field == CSmartPlaylistRule::SONG_DATEADDED)
+      continue;   // TODO: We don't have dateadded field in the database, so can't filter on this yet
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, field);
     msg.SetLabel(CSmartPlaylistRule::GetLocalizedField((CSmartPlaylistRule::DATABASE_FIELD)field));
     OnMessage(msg);

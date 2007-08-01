@@ -58,19 +58,15 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIControlGroup::Render()
 {
-  if (IsVisible())
+  g_graphicsContext.SetOrigin(m_posX, m_posY);
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
-    g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(m_posX, m_posY));
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-    {
-      CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      control->Render();
-    }
-    CGUIControl::Render();
-    g_graphicsContext.RemoveGroupTransform();
+    CGUIControl *control = *it;
+    control->UpdateVisibility();
+    control->DoRender(m_renderTime);
   }
-  g_graphicsContext.RemoveGroupTransform();
+  CGUIControl::Render();
+  g_graphicsContext.RestoreOrigin();
 }
 
 bool CGUIControlGroup::OnAction(const CAction &action)
@@ -233,10 +229,10 @@ bool CGUIControlGroup::CanFocus() const
   return false;
 }
 
-void CGUIControlGroup::UpdateEffectState(DWORD currentTime)
+void CGUIControlGroup::DoRender(DWORD currentTime)
 {
-  CGUIControl::UpdateEffectState(currentTime);
   m_renderTime = currentTime;
+  CGUIControl::DoRender(currentTime);
 }
 
 void CGUIControlGroup::SetInitialVisibility()
@@ -273,22 +269,6 @@ bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
-void CGUIControlGroup::Animate(DWORD currentTime)
-{
-  GUIVISIBLE visible = m_visible;
-  TransformMatrix transform;
-  for (unsigned int i = 0; i < m_animations.size(); i++)
-  {
-    CAnimation &anim = m_animations[i];
-    anim.Animate(currentTime, HasRendered() || visible == DELAYED);
-    // Update the control states (such as visibility)
-    UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
-    // and render the animation effect
-    anim.RenderAnimation(transform);
-  }
-  g_graphicsContext.AddGroupTransform(transform);
-}
-
 bool CGUIControlGroup::HitTest(const CPoint &point) const
 {
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -302,10 +282,13 @@ bool CGUIControlGroup::HitTest(const CPoint &point) const
 
 bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
+  if (!CGUIControl::CanFocus()) return false;
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(point - CPoint(m_posX, m_posY), control, controlPoint))
+    if (child->CanFocusFromPoint(controlCoords - CPoint(m_posX, m_posY), control, controlPoint))
       return true;
   }
   *control = NULL;
@@ -314,10 +297,12 @@ bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **cont
 
 void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
 {
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    child->UnfocusFromPoint(point - CPoint(m_posX, m_posY));
+    child->UnfocusFromPoint(controlCoords - CPoint(m_posX, m_posY));
   }
   CGUIControl::UnfocusFromPoint(point);
 }
@@ -433,9 +418,25 @@ void CGUIControlGroup::SaveStates(vector<CControlState> &states)
     (*it)->SaveStates(states);
 }
 
-void CGUIControlGroup::RemoveControl(int id)
+// Note: This routine doesn't delete the control.  It just removes it from the control list
+bool CGUIControlGroup::RemoveControl(int id)
 {
-  // TODO: Implement this
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *control = *it;
+    if (control->IsGroup())
+    {
+      CGUIControlGroup *group = (CGUIControlGroup *)control;
+      if (group->RemoveControl(id))
+        return true;
+    }
+    if (control->GetID() == id)
+    {
+      m_children.erase(it);
+      return true;
+    }
+  }
+  return false;
 }
 
 void CGUIControlGroup::ClearAll()
@@ -446,6 +447,17 @@ void CGUIControlGroup::ClearAll()
     delete control;
   }
   m_children.clear();
+}
+
+void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
+{
+  for (ciControls it = m_children.begin();it != m_children.end(); ++it)
+  {
+    if ((*it)->IsContainer())
+      containers.push_back(*it);
+    else if ((*it)->IsGroup())
+      ((CGUIControlGroup *)(*it))->GetContainers(containers);
+  }
 }
 
 #ifdef _DEBUG

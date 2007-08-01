@@ -92,7 +92,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetPictureURL(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strPictureURL.m_url.c_str());
+    return Py_BuildValue("s", self->infoTag.m_strPictureURL.GetFirstThumb().m_url.c_str());
   }
 
   // InfoTagVideo_GetTitle

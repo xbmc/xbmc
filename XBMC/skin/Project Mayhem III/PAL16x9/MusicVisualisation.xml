@@ -11,7 +11,7 @@
 		</control>
 		<!-- codec & viz infos -->
 		<control type="group" id="0">
-			<visible>Player.ShowCodec</visible>
+			<visible>Player.ShowCodec + !Window.IsVisible(script-XBMC_Lyrics-main.xml)</visible>
 			<animation effect="fade" time="500">VisibleChange</animation>
 			<control type="image" id="0">
 				<description>preset background image</description>
@@ -64,7 +64,7 @@
 		<control type="group" id="1">
 			<posx>-10</posx>
 			<posy>410</posy>
-			<visible>Player.ShowInfo</visible>
+			<visible>Player.ShowInfo + !Window.IsVisible(script-XBMC_Lyrics-main.xml)</visible>
 			<animation effect="fade" time="500">VisibleChange</animation>
 			<control type="image" id="1">
 				<description>media info background image</description>
@@ -90,7 +90,7 @@
 				<posy>5</posy>
 				<info>System.Time</info>
 				<align>right</align>
-				<include>textcolorgreen</include>
+				<textcolor>green</textcolor>
 				<font>special13</font>
 			</control>
 			<control type="label" id="1">
@@ -127,15 +127,6 @@
 				<posx>585</posx>
 				<posy>55</posy>
 				<info>musicplayer.rating</info>
-			</control>
-			<control type="label" id="1">
-				<description>time label</description>
-				<width>520</width>
-				<posx>160</posx>
-				<posy>80</posy>
-				<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
-				<align>left</align>
-				<font>font10</font>
 			</control>
 			<control type="label" id="1">
 				<description>time label</description>

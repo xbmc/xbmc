@@ -67,7 +67,7 @@
 			</control>
 			<control type="listcontrol" id="20">
 				<description>Left File list</description>
-				<include>listselectedcolor</include>
+				<selectedcolor>green</selectedcolor>
 				<posx>76</posx>
 				<posy>82</posy>
 				<width>280</width>
@@ -91,7 +91,7 @@
 			</control>
 			<control type="listcontrol" id="21">
 				<description>Right File list</description>
-				<include>listselectedcolor</include>
+				<selectedcolor>green</selectedcolor>
 				<posx>365</posx>
 				<posy>82</posy>
 				<width>280</width>
@@ -114,7 +114,7 @@
 				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(C)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -124,7 +124,7 @@
 				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(E)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -134,7 +134,7 @@
 				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(F)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -144,7 +144,7 @@
 				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(G)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -158,7 +158,7 @@
 				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(C)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -168,7 +168,7 @@
 				<posy>525</posy>
 				<align>center</align>
 				<label>$INFO[System.Freespace(E)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -179,7 +179,7 @@
 				<width>142</width>
 				<align>right</align>
 				<label>$INFO[System.Freespace(F)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>left</align>
 			</control>
@@ -193,7 +193,7 @@
 				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(C)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>center</align>
 			</control>
@@ -204,7 +204,7 @@
 				<width>142</width>
 				<align>right</align>
 				<label>$INFO[System.Freespace(E)]</label>
-				<include>textcolorlightgrey</include>
+				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
 				<align>center</align>
 			</control>

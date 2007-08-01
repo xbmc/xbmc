@@ -191,8 +191,9 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "pictures.savefolderviews", 583, true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
-  AddSeparator(7,"pictures.sep2");
-  AddString(8,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddInt(7, "pictures.displayresolution", 169, (int)INVALID, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddSeparator(8,"pictures.sep2");
+  AddString(9,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -227,7 +228,7 @@ CGUISettings::CGUISettings(void)
   AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 
 #ifdef WITH_LINKS_BROWSER
-  AddGroup(2, 9); // rename the top level settings group to "Internet"...
+  AddGroup(2, 10); // rename the top level settings group to "Internet"...
   // Web browser settings
   AddCategory(2, "webbrowser", 12800); // ...and put the browser settings before the weather! :)
   AddString(1, "webbrowser.homepage", 20420, "http://www.google.com/", BUTTON_CONTROL_INPUT, false, 20420);
@@ -243,7 +244,9 @@ CGUISettings::CGUISettings(void)
   AddString(6, "webbrowser.downloaddir", 20429, "X:\\", BUTTON_CONTROL_PATH_INPUT, false, 20429);
   AddString(7, "webbrowser.bookmarks", 20430, "Q:\\userdata\\LinksBrowser\\bookmarks.html", BUTTON_CONTROL_INPUT, false, 20430);
   AddSeparator(8, "webbrowser.sep3");
-  AddString(9, "webbrowser.jumptonetwork", 20432, "", BUTTON_CONTROL_STANDARD);
+  AddBool(9, "webbrowser.edgescroll", 20433, false);
+  AddSeparator(10, "webbrowser.sep4");
+  AddString(11, "webbrowser.jumptonetwork", 20432, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(2, "weather", 12600); // Label should be "Weather" instead of "General"
 #else
@@ -338,7 +341,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(6, "system.sep3");
   AddBool(7, "system.fanspeedcontrol", 13302, false);
 #ifdef HAS_XBOX_HARDWARE
-  AddInt(8, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(8, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(9, "system.sep4");
   AddBool(10, "system.autotemperature", 13301, false);
@@ -420,9 +423,10 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "myvideos.savefolderviews", 583, true);
   AddSeparator(8, "myvideos.sep2");
   AddBool(9,"myvideos.hideplots",20369,false);
-  AddString(10, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(11, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(12, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
+  AddBool(10,"myvideos.seasonthumbs",20382,false);
+  AddString(11, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(13, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
@@ -518,14 +522,15 @@ CGUISettings::CGUISettings(void)
   AddCategory(7,"lookandfeel", 14037);
   AddString(1, "lookandfeel.skin",166,"Project Mayhem III", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddString(3, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
-  AddInt(4, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
-  AddInt(5, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
-  AddSeparator(6, "lookandfeel.sep1");
-  AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(8,"lookandfeel.soundsduringplayback",21370,false);
-  AddSeparator(9, "lookandfeel.sep2");
-  AddBool(10, "lookandfeel.enablerssfeeds",13305,  true);
+  AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
+  AddInt(5, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+  AddSeparator(7, "lookandfeel.sep1");
+  AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
+  AddSeparator(10, "lookandfeel.sep2");
+  AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
@@ -927,6 +932,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
       SetInt("videoscreen.resolution", newRes);
     }
   }
+  
+  //default pictureres to guires
+  if ((RESOLUTION)GetInt("pictures.displayresolution") == INVALID)
+  {
+    SetInt("pictures.displayresolution", g_guiSettings.m_LookAndFeelResolution);
+  }
+  
   // Move replaygain settings into our struct
   m_replayGain.iPreAmp = GetInt("musicplayer.replaygainpreamp");
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");

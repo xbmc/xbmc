@@ -55,12 +55,16 @@
 #define PLAYER_HASDURATION           34
 #define PLAYER_CHAPTER               35
 #define PLAYER_CHAPTERCOUNT          36
+#define PLAYER_TIME_SPEED            37
+#define PLAYER_FINISH_TIME           38
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 
+#define SYSTEM_LANGUAGE             108
+#define SYSTEM_LAUNCHING_XBE        109
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112
@@ -81,7 +85,6 @@
 #define SYSTEM_MEDIA_DVD            127
 #define SYSTEM_DVDREADY             128
 #define SYSTEM_HAS_ALARM            129
-#define SYSTEM_AUTODETECTION        130
 #define SYSTEM_SCREEN_MODE          132
 #define SYSTEM_SCREEN_WIDTH         133
 #define SYSTEM_SCREEN_HEIGHT        134
@@ -137,11 +140,7 @@
 #define MUSICPLAYER_ARTIST          202
 #define MUSICPLAYER_GENRE           203
 #define MUSICPLAYER_YEAR            204
-#define MUSICPLAYER_TIME            205
-#define MUSICPLAYER_TIME_REMAINING  206
-#define MUSICPLAYER_TIME_SPEED      207
 #define MUSICPLAYER_TRACK_NUMBER    208
-#define MUSICPLAYER_DURATION        209
 #define MUSICPLAYER_COVER           210
 #define MUSICPLAYER_BITRATE         211
 #define MUSICPLAYER_PLAYLISTLEN     212
@@ -158,10 +157,6 @@
 #define VIDEOPLAYER_GENRE           251
 #define VIDEOPLAYER_DIRECTOR        252
 #define VIDEOPLAYER_YEAR            253
-#define VIDEOPLAYER_TIME            254
-#define VIDEOPLAYER_TIME_REMAINING  255
-#define VIDEOPLAYER_TIME_SPEED      256
-#define VIDEOPLAYER_DURATION        257
 #define VIDEOPLAYER_COVER           258
 #define VIDEOPLAYER_USING_OVERLAYS  259
 #define VIDEOPLAYER_ISFULLSCREEN    260
@@ -177,6 +172,7 @@
 #define VIDEOPLAYER_RATING          270
 #define VIDEOPLAYER_TVSHOW          271
 #define VIDEOPLAYER_PREMIERED       272
+#define VIDEOPLAYER_CONTENT         273
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -212,6 +208,7 @@
 #define LISTITEM_TVSHOW             334
 #define LISTITEM_PREMIERED          335
 #define LISTITEM_COMMENT            336
+#define LISTITEM_ACTUAL_ICON        337
 #define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350
@@ -227,6 +224,8 @@
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
 #define CONTAINER_SORT_METHOD       364
+#define CONTAINER_ON_NEXT           365
+#define CONTAINER_ON_PREVIOUS       366
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -330,8 +329,7 @@
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
-#define WINDOW_ACTIVE_START         WINDOW_HOME
-#define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
+#define WINDOW_IS_ACTIVE            9999
 
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
@@ -388,12 +386,13 @@ public:
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
   int GetInt(int info) const;
-  string GetLabel(int info);
+  CStdString GetLabel(int info);
 
-  CStdString GetImage(int info, int contextWindow);
+  CStdString GetImage(int info, DWORD contextWindow);
 
-  CStdString GetTime(bool bSeconds = false);
+  CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetDate(bool bNumbersOnly = false);
+  CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
   void SetCurrentItem(CFileItem &item);
   void ResetCurrentItem();
@@ -433,11 +432,11 @@ public:
   CStdString GetPlaylistLabel(int item);
   CStdString GetMusicPartyModeLabel(int item);
   
-  __int64 GetPlayTime();  // in ms
-  CStdString GetCurrentPlayTime();
-  int GetPlayTimeRemaining();
-  int GetTotalPlayTime();
-  CStdString GetCurrentPlayTimeRemaining();
+  __int64 GetPlayTime() const;  // in ms
+  CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  int GetPlayTimeRemaining() const;
+  int GetTotalPlayTime() const;
+  CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
   CStdString GetVersion();
   CStdString GetBuild();
   
@@ -459,29 +458,33 @@ public:
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
 
-  void SetAutodetectedXbox(bool set) { m_hasAutoDetectedXbox = set; };
-  bool HasAutodetectedXbox() const { return m_hasAutoDetectedXbox; };
-
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
-  CStdString GetMultiLabel(const vector<CInfoPortion> &multiInfo);
+  CStdString GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage = false);
 
   void ResetCache();
 
-  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
-  CStdString GetItemImage(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info) const;
   bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
   CStdString m_content;
+
+  void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
+  void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
+
 protected:
-  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
-  const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
+  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
+  CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
+  int TranslateListItem(const CStdString &info);
+  TIME_FORMAT TranslateTimeFormat(const CStdString &format);
+  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -526,9 +529,9 @@ protected:
   unsigned int m_frameCounter;
   unsigned int m_lastFPSTime;
 
-  // Xbox Autodetect stuff
-  bool m_hasAutoDetectedXbox;
+  CStdString m_launchingXBE;
 
+  map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
   int m_prevWindowID;
 

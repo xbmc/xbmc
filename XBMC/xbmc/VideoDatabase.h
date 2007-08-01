@@ -74,7 +74,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_FLOAT, offsetof(CVideoInfoTag,m_fRating) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strWritingCredits) },
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iYear) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strIMDBNumber) },
   { VIDEODB_TYPE_BOOL, offsetof(CVideoInfoTag,m_bWatched) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
@@ -112,7 +112,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strVotes) },
   { VIDEODB_TYPE_FLOAT, offsetof(CVideoInfoTag,m_fRating) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPremiered) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
@@ -138,6 +138,8 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_SEASON = 12,
   VIDEODB_ID_EPISODE_EPISODE = 13,
   VIDEODB_ID_EPISODE_ORIGINALTITLE = 14,
+  VIDEODB_ID_EPISODE_SORTSEASON = 15,
+  VIDEODB_ID_EPISODE_SORTEPISODE = 16,
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
 
@@ -149,7 +151,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_FLOAT, offsetof(CVideoInfoTag,m_fRating) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strWritingCredits) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strFirstAired) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_BOOL, offsetof(CVideoInfoTag,m_bWatched) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
@@ -158,6 +160,8 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSeason) },
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iEpisode) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
+  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortSeason) },
+  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
 };
 
 class CBookmark
@@ -259,7 +263,7 @@ public:
 
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
-  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
+  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent, bool bUseFolderNames=false, bool bScanRecursive=false);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
@@ -281,6 +285,7 @@ public:
 
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
   bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, bool& bUseFolderNames, bool& bScanRecursive, int& iFound);
 
   void CleanDatabase();
   

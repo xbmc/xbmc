@@ -5,6 +5,7 @@
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
+#include "DVDInputStreamFFmpeg.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
@@ -13,7 +14,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
       file.compare("\\Device\\Cdrom0") == 0)
   {
     return (new CDVDInputStreamNavigator(pPlayer));
-  }  
+  }
+  else if(file.substr(0, 6) == "rtp://"
+       || file.substr(0, 7) == "rtsp://"
+       || file.substr(0, 6) == "sdp://"
+       || file.substr(0, 6) == "udp://"
+       || file.substr(0, 6) == "tcp://")
+    return new CDVDInputStreamFFmpeg();
+
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
   //  /* currently ffmpeg isn't able to detect that */

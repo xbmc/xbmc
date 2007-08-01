@@ -98,13 +98,13 @@ static const __int64 SECS_TO_100NS = 10000000;
 
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
-CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo;
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 static D3DGAMMARAMP oldramp, flashramp;
 
+XBOXDETECTION v_xboxclients;
 #ifdef HAS_XBOX_HARDWARE
 extern "C"
 {
@@ -2438,17 +2438,6 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
     strFolder.Delete(strFolder.size() - 1);
 }
 
-void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
-{
-  int iPos1 = strFileName.Find("/");
-  int iPos2 = strFileName.Find("\\");
-  int iPos3 = strFileName.Find(":");
-  if (iPos2 > iPos1) iPos1 = iPos2;
-  if (iPos3 > iPos1) iPos1 = iPos3;
-
-  strPath = strFileName.Left(iPos1 - 1);
-}
-
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
   // Will from a full filename return the directory the file resides in.
@@ -3037,60 +3026,63 @@ bool CUtil::IsUsingTTFSubtitles()
 typedef struct
 {
   char command[20];
+  bool needsParameters;
   char description[128];
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
-  "Help", "This help message",
-  "Reboot", "Reboot the xbox (power cycle)",
-  "Restart", "Restart the xbox (power cycle)",
-  "ShutDown", "Shutdown the xbox",
-  "Dashboard", "Run your dashboard",
-  "RestartApp", "Restart XBMC",
-  "Credits", "Run XBMCs Credits",
-  "Reset", "Reset the xbox (warm reboot)",
+  "Help",               false,  "This help message",
+  "Reboot",             false,  "Reboot the xbox (power cycle)",
+  "Restart",            false,  "Restart the xbox (power cycle)",
+  "ShutDown",           false,  "Shutdown the xbox",
+  "Dashboard",          false,  "Run your dashboard",
+  "RestartApp",         false,  "Restart XBMC",
+  "Credits",            false,  "Run XBMCs Credits",
+  "Reset",              false,  "Reset the xbox (warm reboot)",
+  "Mastermode",         false,  "Control master mode",
+  "ActivateWindow",     true,   "Activate the specified window",
+  "ReplaceWindow",      true,   "Replaces the current window with the new one",
+  "TakeScreenshot",     false,  "Takes a Screenshot",
+  "RunScript",          true,   "Run the specified script",
+  "RunXBE",             true,   "Run the specified executeable",
+  "Extract",            true,   "Extracts the specified archive",
+  "PlayMedia",          true,   "Play the specified media file (or playlist)",
+  "SlideShow",          true,   "Run a slideshow from the specified directory",
+  "RecursiveSlideShow", true,   "Run a slideshow from the specified directory, including all subdirs",
+  "ReloadSkin",         false,  "Reload XBMC's skin",
+  "PlayerControl",      true,   "Control the music or video player",
+  "EjectTray",          false,  "Close or open the DVD tray",
+  "AlarmClock",         true,   "Prompt for a length of time and start an alarm clock",
+  "CancelAlarm",        true,   "Cancels an alarm",
+  "KaiConnection",      false,  "Change kai connection status (connect/disconnect)",
+  "Action",             true,   "Executes an action for the active window (same as in keymap)",
+  "Notification",       true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
+  "PlayDVD",            false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!",
+  "Skin.ToggleSetting", true,   "Toggles a skin setting on or off",
+  "Skin.SetString",     true,   "Prompts and sets skin string",
+  "Skin.SetNumeric",    true,   "Prompts and sets numeric input",
+  "Skin.SetPath",       true,   "Prompts and sets a skin path",
+  "Skin.Theme",         true,   "Control skin theme",
+  "Skin.SetImage",      true,   "Prompts and sets a skin image",
+  "Skin.SetFile",       true,   "Prompts and sets a file",
+  "Skin.SetBool",       true,   "Sets a skin setting on",
+  "Skin.Reset",         true,   "Resets a skin setting to default",
+  "Skin.ResetSettings", false,  "Resets all skin settings",
 #ifdef WITH_LINKS_BROWSER
-  "BrowseURL", "Open WebBrowser and go to specified URL",
-  "WebBrowserControl", "Control the web browser",
+  "BrowseURL",          true,  "Open WebBrowser and go to specified URL",
+  "WebBrowserControl",  true,  "Control the web browser",
 #endif
-  "Mastermode","Control master mode",
-  "ActivateWindow", "Activate the specified window",
-  "ReplaceWindow", "Replaces the current window with the new one",
-  "TakeScreenshot", "Takes a Screenshot",
-  "RunScript", "Run the specified script",
-  "RunXBE", "Run the specified executeable",
-  "Extract", "Extracts the specified archive",
-  "PlayMedia", "Play the specified media file (or playlist)",
-  "SlideShow", "Run a slideshow from the specified directory",
-  "RecursiveSlideShow", "Run a slideshow from the specified directory, including all subdirs",
-  "ReloadSkin", "Reload XBMC's skin",
-  "PlayerControl", "Control the music or video player",
-  "EjectTray", "Close or open the DVD tray",
-  "AlarmClock", "Prompt for a length of time and start an alarm clock",
-  "CancelAlarm","Cancels an alarm",
-  "KaiConnection","Change kai connection status (connect/disconnect)",
-  "Action", "Executes an action for the active window (same as in keymap)",
-  "Notification", "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
-  "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
-  "Skin.ToggleSetting"," Toggles a skin setting on or off",
-  "Skin.SetString"," Prompts and sets skin string",
-  "Skin.SetNumeric"," Prompts and sets numeric input",
-  "Skin.SetPath"," Prompts and sets a skin path",
-  "Skin.Theme"," Control skin theme",
-  "Skin.SetImage"," Prompts and sets a skin image",
-  "Skin.SetFile"," Prompts and sets a file",
-  "Skin.SetBool"," Sets a skin setting on",
-  "Skin.Reset"," Resets a skin setting to default",
-  "Skin.ResetSettings"," Resets all skin settings",
-  "Mute","Mute the player",
-  "SetVolume","Set the current volume",
-  "Dialog.Close","Close a dialog",
-  "System.LogOff","Log off current user",
-  "System.PWMControl","Control PWM RGB LEDs",
-  "Resolution", "Change XBMC's Resolution",
-  "SetFocus", "Change current focus to a different control id", 
-  "BackupSystemInfo", "Backup System Informations to local hdd",
-  "UpdateLibrary", "Update the selected library (music or video)"
+  "Mute",               false,  "Mute the player",
+  "SetVolume",          true,   "Set the current volume",
+  "Dialog.Close",       true,   "Close a dialog",
+  "System.LogOff",      false,  "Log off current user",
+  "System.PWMControl",  true,   "Control PWM RGB LEDs",
+  "Resolution",         true,   "Change XBMC's Resolution",
+  "SetFocus",           true,   "Change current focus to a different control id", 
+  "BackupSystemInfo",   false,  "Backup System Informations to local hdd",
+  "UpdateLibrary",      true,   "Update the selected library (music or video)",
+  "PageDown",           true,   "Send a page down event to the pagecontrol with given id",
+  "PageUp",             true,   "Send a page up event to the pagecontrol with given id"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3099,7 +3091,7 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
   SplitExecFunction(execString, function, param);
   for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0)
+    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || !param.IsEmpty()))
       return true;
   }
   return false;
@@ -3132,8 +3124,6 @@ void CUtil::GetBuiltInHelp(CStdString &help)
   {
     help += commands[i].command;
     help += "\t";
-//    for (int i = 0; i < 20 - strlen(commands[i].command); i++)
-//      help += " ";
     help += commands[i].description;
     help += "\n";
   }
@@ -3172,12 +3162,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (g_passwordManager.bMasterUser)
     {
       g_passwordManager.bMasterUser = false;
-      g_passwordManager.LockBookmarks();
+      g_passwordManager.LockSources(true);
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
-      g_passwordManager.UnlockBookmarks();
+      g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
     }
@@ -3262,43 +3252,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // no path parameter
       // XBMC.ActivateWindow(5001)
-      strWindow = parameter;
+      strWindow = strParameterCaseIntact;
     }
     else
     {
       // path parameter included
       // XBMC.ActivateWindow(5001,F:\Music\)
-      strWindow = parameter.Left(iPos);
-      strPath = parameter.Mid(iPos + 1);
+      strWindow = strParameterCaseIntact.Left(iPos);
+      strPath = strParameterCaseIntact.Mid(iPos + 1);
     }
-    if (strPath.Equals("autodetection"))
-    {
-      //Open the AutoDetect XBOX FTP in filemanager
-      if (g_guiSettings.GetBool("autodetect.onoff"))
-      {
-        //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-        CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-        CStdStringArray arSplit;
-        StringUtils::SplitString(strNewClientInfo,";", arSplit);
-        if ((int)arSplit.size() > 1)
-        {
-          strNickName     = arSplit[0].c_str();
-          strFtpUserName  = arSplit[1].c_str();
-          strFtpPassword  = arSplit[2].c_str();
-          strFtpPort      = arSplit[3].c_str();
-          strBoosMode     = arSplit[4].c_str();
-          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
-
-          strPath  = strFTPPath;
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
-          return -7;
-        }
-      }
-    }
-
     // confirm the window destination is actually a number
     // before switching
     int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
@@ -3343,7 +3305,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       delete argv;
     }
     else
-      g_pythonParser.evalFile(parameter.c_str());
+      g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
   else if (execute.Equals("resolution"))
   {
@@ -3390,19 +3352,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("runxbe"))
   {
     // only usefull if there is actualy a xbe to execute
-    if (parameter.size() > 0)
+    if (!strParameterCaseIntact.IsEmpty())
     {
-      CFileItem item(parameter);
-      item.m_strPath = parameter;
+      CFileItem item(strParameterCaseIntact);
+      item.m_strPath = strParameterCaseIntact;
       if (item.IsShortCut())
-        CUtil::RunShortcut(parameter);
+        CUtil::RunShortcut(strParameterCaseIntact);
       else if (item.IsXBE())
       {
         int iRegion;
         if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         {
           CXBE xbe;
-          iRegion = xbe.ExtractGameRegion(parameter);
+          iRegion = xbe.ExtractGameRegion(strParameterCaseIntact);
           if (iRegion < 1 || iRegion > 7)
             iRegion = 0;
           iRegion = xbe.FilterRegion(iRegion);
@@ -3410,7 +3372,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         else
           iRegion = 0;
 
-        CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
+        CUtil::RunXBE(strParameterCaseIntact.c_str(),NULL,F_VIDEO(iRegion));
       }
     }
     else
@@ -3420,27 +3382,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("playmedia"))
   {
-    if (parameter.IsEmpty())
+    if (strParameterCaseIntact.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
       return -3;
     }
-    CFileItem item(parameter, false);
+    CFileItem item(strParameterCaseIntact, false);
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
-      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
+      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
       return false;
     }
   }
   else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
   {
-    if (parameter.IsEmpty())
+    if (strParameterCaseIntact.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
     CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
-    msg.SetStringParam(parameter);
+    msg.SetStringParam(strParameterCaseIntact);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
@@ -3837,8 +3799,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
-        bool bIsBookMark;
-        if (GetMatchingShare(value,shares,bIsBookMark) < 0) // path is outside shares - add it as a separate one
+        bool bIsSource;
+        if (GetMatchingShare(value,shares,bIsSource) < 0) // path is outside shares - add it as a separate one
         {
           CShare share;
           share.strName = g_localizeStrings.Get(13278);
@@ -3894,16 +3856,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
 #ifdef HAS_XBOX_HARDWARE
-    if (g_guiSettings.GetBool("system.autotemperature"))
-    {
-      CLog::Log(LOGNOTICE, "stop fancontroller");
-      CFanController::Instance()->Stop();
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "set fanspeed to default");
-      CFanController::Instance()->RestoreStartupSpeed();
-    }
+    CLog::Log(LOGNOTICE, "stop fancontroller");
+    CFanController::Instance()->Stop();
 #endif
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
@@ -3946,6 +3900,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_sysinfo.CreateEEPROMBackup();
 #endif
   }
+  else if (execute.Equals("pagedown"))
+  {
+    int id = atoi(parameter.c_str());
+    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetActiveWindow(), id);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("pageup"))
+  {
+    int id = atoi(parameter.c_str());
+    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetActiveWindow(), id);
+    g_graphicsContext.SendMessage(message);
+  }
   else if (execute.Equals("updatelibrary"))
   {
     if (parameter.Equals("music"))
@@ -3963,12 +3929,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
+      VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan("",info,-1,-1);
+          CGUIWindowVideoBase::OnScan("",info,settings);
       }
     }
   }
@@ -3976,7 +3943,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     return -1;
   return 0;
 }
-int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsBookmarkName)
+int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsSourceName)
 {
   if (strPath1.IsEmpty())
     return -1;
@@ -4002,10 +3969,10 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
   //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
-  bIsBookmarkName = false;
+  bIsSourceName = false;
   int iIndex = -1;
   int iLength = -1;
-  // we first test the NAME of a bookmark
+  // we first test the NAME of a source
   for (int i = 0; i < (int)vecShares.size(); ++i)
   {
     CShare share = vecShares.at(i);
@@ -4017,8 +3984,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (IsOnDVD(strPath))
         return i;
 
-      // not a path, so we need to modify the bookmark name
-      // since we add the drive status and disc name to the bookmark
+      // not a path, so we need to modify the source name
+      // since we add the drive status and disc name to the source
       // "Name (Drive Status/Disc Name)"
       int iPos = strName.ReverseFind('(');
       if (iPos > 1)
@@ -4027,7 +3994,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
     if (strPath.Equals(strName))
     {
-      bIsBookmarkName = true;
+      bIsSourceName = true;
       return i;
     }
   }
@@ -4050,7 +4017,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   {
     CShare share = vecShares.at(i);
 
-    // does it match a bookmark name?
+    // does it match a source name?
     if (share.strPath.substr(0,8) == "shout://")
     {
       CURL url(share.strPath);
@@ -4058,7 +4025,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
         return i;
     }
 
-    // doesnt match a name, so try the bookmark path
+    // doesnt match a name, so try the source path
     vector<CStdString> vecPaths;
 
     // add any concatenated paths if they exist
@@ -4084,16 +4051,16 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
-        //CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+        //CLog::Log(LOGDEBUG,"Found matching source at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
 
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
         {
           // if the path EXACTLY matches an item in a concatentated path
-          // set bookmark name to true to load the full virtualpath
-          bIsBookmarkName = false;
+          // set source name to true to load the full virtualpath
+          bIsSourceName = false;
           if (vecPaths.size() > 1)
-            bIsBookmarkName = true;
+            bIsSourceName = true;
           return i;
         }
         iIndex = i;
@@ -4113,12 +4080,12 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
 
-      bIsBookmarkName = false;
+      bIsSourceName = false;
       bool bDummy;
       return GetMatchingShare(strPath, vecShares, bDummy);
     }
 
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strPath1.c_str());
+    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
@@ -4352,93 +4319,312 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   }
   return iHourUTC;
 }
-bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
+bool CUtil::AutoDetection()
 {
-  bool bState= false;
-#ifdef HAS_XBOX_HARDWARE
-  CStdString strWorkTemp;
+bool bReturn=false;
+if (g_guiSettings.GetBool("autodetect.onoff"))
+{
+  static DWORD pingTimer = 0;
+  if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+    return false;
+  pingTimer = timeGetTime();
+
+  // send ping and request new client info
+  if ( CUtil::AutoDetectionPing(
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
+    g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
+  {
+    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+    CStdStringArray arSplit;
+    // do we have clients in our list ?
+    for(unsigned int i=0; i < v_xboxclients.client_ip.size(); i++)
+    {
+      // extract client informations
+      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
+      if ((int)arSplit.size() > 1 && !v_xboxclients.client_informed[i])
+      {
+        //extract client info and build the ftp link!
+        strNickName     = arSplit[0].c_str();
+        strFtpUserName  = arSplit[1].c_str();
+        strFtpPassword  = arSplit[2].c_str();
+        strFtpPort      = arSplit[3].c_str();
+        strBoosMode     = arSplit[4].c_str();
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
+
+        //Do Notification for this Client
+        CStdString strtemplbl;
+        strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
+        
+        //Debug Log
+        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
+
+        //set the client_informed to TRUE, to prevent loop Notification
+        v_xboxclients.client_informed[i]=true;
+
+        //YES NO PopUP: ask for connecting to the detected client via Filemanger!
+        if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+        {
+          m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+        }
+        bReturn = true;
+      }
+    }
+  }
+}
+return bReturn;
+}
+bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
+{
+  bool bFoundNewClient= false;
+  CStdString strTmp;
   CStdString strSendMessage = "ping\0";
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
-  char  sztmp[512], szTemp[512];
-	static int	udp_server_socket, inited=0;
-	int  cliLen, t1,t2,t3,t4, init_counter=0, life=0;
+  char sztmp[512];
+	static int udp_server_socket, inited=0;
+	int cliLen, t1,t2,t3,t4, init_counter=0, life=0;
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
   struct timeval timeout={0,500};
-  XNADDR xna;
-	DWORD dwState;
   fd_set readfds;
-	if( ( !inited )  || ( bRefresh ) )
-	{
-		dwState = XNetGetTitleXnAddr(&xna);
-		XNetInAddrToString(xna.ina,(char *)strWorkTemp.c_str(),64);
-
-		// Get IP address
-		sscanf( (char *)strWorkTemp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
-    if( !t1 ) return false;
-    cliLen = sizeof( cliAddr);
-    if( !inited )
+#ifdef HAS_XBOX_HARDWARE
+    XNADDR xna;
+    DWORD dwState = XNetGetTitleXnAddr(&xna);
+    XNetInAddrToString(xna.ina,(char *)strTmp.c_str(),64);
+#else
+    char hostname[255];
+    WORD wVer;
+    WSADATA wData;
+    PHOSTENT hostinfo;
+    wVer = MAKEWORD( 2, 0 );
+    if (WSAStartup(wVer,&wData) == 0)
     {
-      int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	    char value      = 1;
-	    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
-	    struct sockaddr_in addr;
-	    memset(&(addr),0,sizeof(addr));
-	    addr.sin_family       = AF_INET;
-	    addr.sin_addr.s_addr  = INADDR_ANY;
-	    addr.sin_port         = htons(iUDPPort);
-	    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
-      udp_server_socket = tUDPsocket;
-      inited = 1;
+      if(gethostname(hostname,sizeof(hostname)) == 0)
+      {
+        if((hostinfo = gethostbyname(hostname)) != NULL)
+        {
+          strTmp = inet_ntoa (*(struct in_addr *)*hostinfo->h_addr_list);
+          strNickName.Format("%s",hostname);
+        }
+      }
+      WSACleanup();
     }
-    FD_ZERO(&readfds);
-		FD_SET(udp_server_socket, &readfds);
-		life = select( 0,&readfds, NULL, NULL, &timeout );
-		if (life == -1 )  return false;
-    memset(&(server),0,sizeof(server));
-		server.sin_family           = AF_INET;
-		server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
-		server.sin_port             = htons(iUDPPort);
-    sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
-	}
+#endif
+  // get IP address
+  sscanf( (char *)strTmp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
+  if( !t1 ) return false;
+  cliLen = sizeof( cliAddr);
+  // setup UDP socket
+  if( !inited )
+  {
+    int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	  char value      = 1;
+	  setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
+	  struct sockaddr_in addr;
+	  memset(&(addr),0,sizeof(addr));
+	  addr.sin_family       = AF_INET;
+	  addr.sin_addr.s_addr  = INADDR_ANY;
+	  addr.sin_port         = htons(iUDPPort);
+	  bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
+    udp_server_socket = tUDPsocket;
+    inited = 1;
+  }
+  FD_ZERO(&readfds);
+  FD_SET(udp_server_socket, &readfds);
+  life = select( 0,&readfds, NULL, NULL, &timeout );
+  if (life == SOCKET_ERROR )
+    return false;
+  memset(&(server),0,sizeof(server));
+  server.sin_family = AF_INET;
+  server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
+  server.sin_port = htons(iUDPPort);
+  sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
 	FD_ZERO(&readfds);
 	FD_SET(udp_server_socket, &readfds);
 	life = select( 0,&readfds, NULL, NULL, &timeout );
-  if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
+  
+  unsigned int iLookUpCountMax = 2;
+  unsigned int i=0;
+  bool bUpdateShares=false;
+
+  // Ping able clients? 0:false
+  if (life == 0 )
   {
-    strNewClientIP ="";
-    strNewClientInfo ="";
-    g_infoManager.SetAutodetectedXbox(false);
+    if(v_xboxclients.client_ip.size() > 0)
+    {
+      // clients in list without life signal!
+      // calculate iLookUpCountMax value counter dependence on clients size!
+      if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+        iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
+
+      for (i=0; i<v_xboxclients.client_ip.size(); i++)
+      {
+        bUpdateShares=false;
+        //only 1 client, clear our list
+        if(v_xboxclients.client_lookup_count[i] >= iLookUpCountMax && v_xboxclients.client_ip.size() == 1 )
+        {
+          v_xboxclients.client_ip.clear();
+          v_xboxclients.client_info.clear();
+          v_xboxclients.client_lookup_count.clear();
+          v_xboxclients.client_informed.clear();
+          
+          // debug log, clients removed from our list 
+          CLog::Log(LOGDEBUG,"Autodetection: all Clients Removed! (mode LIFE 0)");
+          bUpdateShares = true;
+        }
+        else 
+        {
+          // check client lookup counter! Not reached the CountMax, Add +1!
+          if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax ) 
+            v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+          else
+          {
+            // client lookup counter REACHED CountMax, remove this client
+            v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+            v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+            v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+            v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+            
+            // debug log, clients removed from our list 
+            CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 0)",i );
+            bUpdateShares = true;
+          }
+        }
+        if(bUpdateShares)
+        {
+          // a client is removed from our list, update our shares
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage(msg);
+        }
+      }
+    }
   }
+  // life !=0 we are online and ready to receive and send
   while( life )
 	{
-    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
-    strWorkTemp.Format("%s",sztmp);
-    if( strWorkTemp == strReceiveMessage )
-		{
-      strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
-      sendto(udp_server_socket,(char *)strWorkTemp.c_str(),strlen((char *)strWorkTemp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-      strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
-
-			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping // todo: a code to check the list of other clients
-			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-		}
-		else
-		{
-      sprintf( szTemp, "%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
-      if (strHasClientIP != szTemp && strHasClientInfo != strWorkTemp)
-      {
-        strHasClientIP = szTemp, strHasClientInfo  = strWorkTemp;
-        if (!strHasClientIP.IsEmpty()&& !strHasClientInfo.IsEmpty())
-        {
-          strNewClientIP = szTemp;        //This is the Client IP Adress!
-          strNewClientInfo = strWorkTemp; // This is the Client Informations!
-          bState = true;
-        } //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc.
+    bFoundNewClient = false;
+    bUpdateShares = false;
+    // Receive ping request or Info
+    int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
+    if (iSockRet != SOCKET_ERROR)
+    {
+      // do we received a new Client info or just a "ping" request
+      if(strReceiveMessage.Equals(sztmp))
+	    {
+        // we received a "ping" request, sending our informations
+        strTmp.Format("%s;%s;%s;%d;%d\r\n\0",
+          strNickName.c_str(),  // Our Nick-, Device Name!
+          strFTPUserName.c_str(), // User Name for our FTP Server 
+          strFTPPass.c_str(), // Password for our FTP Server 
+          iFTPPort, // FTP PORT Adress for our FTP Server 
+          0 ); // BOOSMODE, for our FTP Server!
+        sendto(udp_server_socket,(char *)strTmp.c_str(),strlen((char *)strTmp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
       }
       else
-        g_infoManager.SetAutodetectedXbox(true);
+      {
+        //We received new client information, extracting information
+        CStdString strInfo, strIP;
+        strInfo.Format("%s",sztmp); //this is the client info
+        strIP.Format("%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,
+          cliAddr.sin_addr.S_un.S_un_b.s_b2,
+          cliAddr.sin_addr.S_un.S_un_b.s_b3,
+          cliAddr.sin_addr.S_un.S_un_b.s_b4 ); //this is the client IP
+        
+        //is our list empty?
+        if(v_xboxclients.client_ip.size() <= 0 )
+        {
+          // the list is empty, add. this client to the list!
+          v_xboxclients.client_ip.push_back(strIP);
+          v_xboxclients.client_info.push_back(strInfo);
+          v_xboxclients.client_lookup_count.push_back(0);
+          v_xboxclients.client_informed.push_back(false);
+          bFoundNewClient = true;
+          bUpdateShares = true;
+        }
+        // our list is not empty, check if we allready have this client in our list!
+        else 
+        {
+          // this should be a new client or?
+          // check list
+          bFoundNewClient = true;
+          for (i=0; i<v_xboxclients.client_ip.size(); i++)
+          {
+            if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+              bFoundNewClient=false;
+          }
+          if(bFoundNewClient)
+          {
+            // bFoundNewClient is still true, the client is not in our list!
+            // add. this client to our list!
+            v_xboxclients.client_ip.push_back(strIP);
+            v_xboxclients.client_info.push_back(strInfo);
+            v_xboxclients.client_lookup_count.push_back(0);
+            v_xboxclients.client_informed.push_back(false);
+            bUpdateShares = true;
+          }
+          else // this is a existing client! check for LIFE & lookup counter
+          {
+            // calculate iLookUpCountMax value counter dependence on clients size!
+            if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+              iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
+
+            for (i=0; i<v_xboxclients.client_ip.size(); i++)
+            {
+              if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+              {
+                // found client in list, reset looup_Count and the client_info
+                v_xboxclients.client_info[i]=strInfo;
+                v_xboxclients.client_lookup_count[i] = 0;
+              }
+              else 
+              {
+                // check client lookup counter! Not reached the CountMax, Add +1!
+                if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
+                  v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+                else
+                {
+                  // client lookup counter REACHED CountMax, remove this client
+                  v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+                  v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+                  v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+                  v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+                  
+                  // debug log, clients removed from our list 
+                  CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+
+                  // client is removed from our list, update our shares
+                  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+                  m_gWindowManager.SendThreadMessage(msg);
+                }
+              }
+            }
+            // here comes our list for debug log
+            for (i=0; i<v_xboxclients.client_ip.size(); i++)
+            {
+              CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] (mode LIFE=1)",i );
+              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+              CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
+                v_xboxclients.client_ip[i].c_str(),
+                v_xboxclients.client_info[i].c_str(), 
+                v_xboxclients.client_lookup_count[i],
+                v_xboxclients.client_informed[i] ? "true":"false");
+              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+            }
+          }
+        }
+        if(bUpdateShares)
+        {
+          // a client is add or removed from our list, update our shares
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage(msg);
+        }
+      }
+    }
+    else
+    {
+       CLog::Log(LOGDEBUG, "Autodetection: Socket error %u", WSAGetLastError());
     }
     timeout.tv_sec=0;
     timeout.tv_usec = 5000;
@@ -4446,36 +4632,21 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
     FD_SET(udp_server_socket, &readfds);
     life = select( 0,&readfds, NULL, NULL, &timeout );
   }
-#endif
-  return bState;
+  return bFoundNewClient;
 }
 
-bool CUtil::XboxAutoDetection()
+void CUtil::AutoDetectionGetShare(VECSHARES &shares)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if (g_guiSettings.GetBool("autodetect.onoff"))
+  if(v_xboxclients.client_ip.size() > 0)
   {
-    static DWORD pingTimer = 0;
-    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
-      return false;
-    pingTimer = timeGetTime();
-
-    CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
-    CStdString strNickName   = g_guiSettings.GetString("autodetect.nickname");
-    CStdString strSysFtpName = g_guiSettings.GetString("servers.ftpserveruser");
-    CStdString strSysFtpPw   = g_guiSettings.GetString("servers.ftpserverpassword");
-
-    if(!g_guiSettings.GetBool("Autodetect.senduserpw")) //Send anon login names!
+    // client list is not empty, add to shares
+    CShare share;
+    for (unsigned int i=0; i< v_xboxclients.client_ip.size(); i++)
     {
-      strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
-    }
-    int iSysFtpPort = 21;
-    if ( CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo ) )
-    {
-      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+      //extract client info string: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
       CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
       CStdStringArray arSplit;
-      StringUtils::SplitString(strNewClientInfo,";", arSplit);
+      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
       if ((int)arSplit.size() > 1)
       {
         strNickName     = arSplit[0].c_str();
@@ -4483,63 +4654,19 @@ bool CUtil::XboxAutoDetection()
         strFtpPassword  = arSplit[2].c_str();
         strFtpPort      = arSplit[3].c_str();
         strBoosMode     = arSplit[4].c_str();
-        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i].c_str(),strFtpPort.c_str());
 
-        //PopUp Notification (notify anytime if a box is found! no switch needed)
-        CStdString strtemplbl;
-        strtemplbl.Format("%s %s",strNickName, strNewClientIP);
-        g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
-        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
-
-        if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
-        {
-          if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
-          {
-            g_infoManager.SetAutodetectedXbox(true);
-            CStdString strTemp;
-            strNickName.TrimRight(' ');
-            strTemp.Format("FTP XBOX (%s)", strNickName.c_str());
-            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
-          }
-        }
+        strNickName.TrimRight(' ');
+#ifdef HAS_XBOX_HARDWARE
+        share.strName.Format("FTP XBMC (%s)", strNickName.c_str());
+#else
+        share.strName.Format("FTP XBMC_PC (%s)", strNickName.c_str());
+#endif
+        share.strPath.Format("%s",strFTPPath.c_str());
+        shares.push_back(share);
       }
     }
-    strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
   }
-  else
-  {
-    strHasClientIP ="", strHasClientInfo = "";
-    g_infoManager.SetAutodetectedXbox(false);
-  }
-#endif
-  return true;
-}
-bool CUtil::XboxAutoDetectionGetShare(CShare& share)
-{
-#ifdef HAS_XBOX_HARDWARE
-  if( !strNewClientIP.IsEmpty() && !strNewClientInfo.IsEmpty())
-  {
-    //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-    CStdStringArray arSplit;
-    StringUtils::SplitString(strNewClientInfo,";", arSplit);
-    if ((int)arSplit.size() > 1)
-    {
-      strNickName     = arSplit[0].c_str();
-      strFtpUserName  = arSplit[1].c_str();
-      strFtpPassword  = arSplit[2].c_str();
-      strFtpPort      = arSplit[3].c_str();
-      strBoosMode     = arSplit[4].c_str();
-      strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strNewClientIP.c_str(),strFtpPort.c_str());
-
-      strNickName.TrimRight(' ');
-      share.strName.Format("FTP XBOX (%s)", strNickName.c_str());
-      share.strPath.Format("%s",strFTPPath.c_str());
-    }
-    return true;
-  }
-#endif
-  return false;
 }
 bool CUtil::IsFTP(const CStdString& strFile)
 {
@@ -4682,7 +4809,6 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
       CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
     }
   }
-  CLog::Log(LOGDEBUG,"done listing!");
 }
 
 void CUtil::ForceForwardSlashes(CStdString& strPath)

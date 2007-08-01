@@ -35,13 +35,11 @@ CGUITextBox::~CGUITextBox(void)
 
 void CGUITextBox::Render()
 {
-  if (!IsVisible()) return;
-
   CStdString renderLabel;
 	if (m_singleInfo)
 		renderLabel = g_infoManager.GetLabel(m_singleInfo);
 	else
-    renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
+    renderLabel = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
 
   // need to check the last one
   if (m_renderLabel != renderLabel)

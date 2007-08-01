@@ -1,10 +1,7 @@
 #include "include.h"
 #include "GUIFixedListContainer.h"
 #include "GUIListItem.h"
-
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "../xbmc/utils/GUIInfoManager.h"
-//#endif
 
 CGUIFixedListContainer::CGUIFixedListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
@@ -20,8 +17,6 @@ CGUIFixedListContainer::~CGUIFixedListContainer(void)
 
 void CGUIFixedListContainer::Render()
 {
-  if (!IsVisible()) return CGUIBaseContainer::Render();
-
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -40,7 +35,7 @@ void CGUIFixedListContainer::Render()
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
-  g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
   float posY = m_posY;
   if (m_orientation == VERTICAL)
@@ -83,7 +78,7 @@ void CGUIFixedListContainer::Render()
   if (focusedItem)
     RenderItem(focusedPosX, focusedPosY, focusedItem, true);
 
-  g_graphicsContext.RestoreViewPort();
+  g_graphicsContext.RestoreClipRegion();
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
@@ -160,10 +155,7 @@ bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetMessage() == GUI_MSG_LABEL_RESET)
-    {
-    }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
+    if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
       // Check that m_offset is valid
       ValidateOffset();
@@ -191,6 +183,7 @@ bool CGUIFixedListContainer::MoveUp(DWORD control)
       int offset = m_items.size() - m_cursor - 1;
       if (offset < -m_cursor) offset = -m_cursor;
       ScrollToOffset(offset);
+      g_infoManager.SetContainerMoving(GetID(), -1);
     }
   }
   else
@@ -207,6 +200,7 @@ bool CGUIFixedListContainer::MoveDown(DWORD control)
   else if( control == 0 || control == GetID() )
   { // move first item in list
     ScrollToOffset(-m_cursor);
+    g_infoManager.SetContainerMoving(GetID(), 1);
   }
   else
     return false;
@@ -217,13 +211,13 @@ bool CGUIFixedListContainer::MoveDown(DWORD control)
 void CGUIFixedListContainer::Scroll(int amount)
 {
   // increase or decrease the offset
-  m_offset += amount;
-  if (m_offset >= (int)m_items.size() - m_cursor)
+  int offset = m_offset + amount;
+  if (offset >= (int)m_items.size() - m_cursor)
   {
-    m_offset = m_items.size() - m_cursor - 1;
+    offset = m_items.size() - m_cursor - 1;
   }
-  if (m_offset < -m_cursor) m_offset = -m_cursor;
-  ScrollToOffset(m_offset);
+  if (offset < -m_cursor) offset = -m_cursor;
+  ScrollToOffset(offset);
 }
 
 void CGUIFixedListContainer::ValidateOffset()

@@ -175,6 +175,9 @@ namespace PYXBMC
     case CGUIControl::GUICONTAINER_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
       break;
+    case CGUIControl::GUICONTROL_GROUP:
+      pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
+      break;
     }
 
     if (!pControl)
@@ -248,21 +251,19 @@ namespace PYXBMC
       }
     }
 
-    // free all recources in use by controls
+    // free the window's resources and unload it (free all guicontrols)
+    self->pWindow->FreeResources(true);
+
+    // and free our list of controls
     std::vector<Control*>::iterator it = self->vecControls.begin();
     while (it != self->vecControls.end())
     {
       Control* pControl = *it;
-
       // initialize control to zero
-      self->pWindow->Remove(pControl->iControlId);
-      pControl->pGUIControl->FreeResources();
-      delete pControl->pGUIControl;
       pControl->pGUIControl = NULL;
       pControl->iControlId = 0;
       pControl->iParentId = 0;
       Py_DECREF(pControl);
-
       ++it;
     }
 
@@ -390,6 +391,7 @@ namespace PYXBMC
     "  -ControlButton\n"
     "  -ControlCheckMark\n"
     "  -ControlList\n"
+    "  -ControlGroup\n"
     "  -ControlImage\n");
 
   PyObject* Window_AddControl(Window *self, PyObject *args)
@@ -459,6 +461,10 @@ namespace PYXBMC
     // Control Progress
     else if (ControlProgress_Check(pControl))
       ControlProgress_Create((ControlProgress*)pControl);
+
+    // Control Group
+    else if (ControlGroup_Check(pControl))
+      ControlGroup_Create((ControlGroup*)pControl);
 
     //unknown control type to add, should not happen
     else

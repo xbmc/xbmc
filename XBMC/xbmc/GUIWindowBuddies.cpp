@@ -1587,7 +1587,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 
     if (!foundPath)
     {
-      // else try searching through our bookmarks
+      // else try searching through our sources
       foundPath = GetGamePathFromTitleId(dwTitleId, strGamePath);
     }
 
@@ -1649,7 +1649,7 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  // Run through our bookmarks and construct a multi folder path to search
+  // Run through our sources and construct a multi folder path to search
   CStdStringArray gamesDirs;
   for (unsigned int i = 0; i < g_settings.m_vecMyProgramsShares.size(); i++)
   {

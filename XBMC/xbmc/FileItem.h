@@ -36,6 +36,7 @@ typedef enum {
   SORT_METHOD_VIDEO_TITLE,
   SORT_METHOD_PRODUCTIONCODE,
   SORT_METHOD_SONG_RATING,
+  SORT_METHOD_UNSORTED,
   SORT_METHOD_MAX
 } SORT_METHOD;
 
@@ -291,7 +292,7 @@ public:
   void Clear();
   void ClearKeepPointer();
   void Add(CFileItem* pItem);
-  void AddFront(CFileItem* pItem);
+  void AddFront(CFileItem* pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
   CFileItem* Get(int iItem);

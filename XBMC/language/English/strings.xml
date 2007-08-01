@@ -10,6 +10,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">Filemanager</string>
   <string id="8">Weather</string>
+  <string id="9">xbox media center</string>
 
   <string id="11">Monday</string>
   <string id="12">Tuesday</string>
@@ -478,6 +479,8 @@
   <string id="567">Play Count</string>
   <string id="568">Last Played</string>
   <string id="569">Comment</string>
+  <string id="570">Date Added</string>
+  <string id="571">Default</string>
 
   <string id="580">Sort Direction</string>
   <string id="581">Sort Method</string>
@@ -583,7 +586,7 @@
   <string id="734">No Pass</string>
   <string id="735">- Charset</string>
   <string id="736">- Style</string>
-  <string id="737">- Color</string>
+  <string id="737">- Colour</string>
   <string id="738">Normal</string>
   <string id="739">Bold</string>
   <string id="740">Italics</string>
@@ -725,6 +728,9 @@
   <string id="1411">with</string>
   <string id="1412">windy</string>
   <string id="1413">drizzle</string>
+  <string id="1414">T-Storm</string>
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">Runtime:</string>
 
   <string id="4501">LCD Type</string>
@@ -889,6 +895,10 @@
   <string id="13007">Use Custom Dashboard Path</string>
 
   <string id="13100">Flicker Filter</string>
+  <string id="13105">Vertical Blank Sync</string>
+  <string id="13106">Disabled</string>
+  <string id="13107">Enabled During Video Playback</string>
+  <string id="13108">Always Enabled</string>
 
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
@@ -1039,7 +1049,7 @@
   <string id="13385">Voice Mask - Port 4</string>
   <string id="13386">Use Time Based Seeking</string>
   <string id="13387">Track Naming Template Right</string>
-  <string id="13388">Presets</string>
+  <string id="13388">%s Presets</string>
   <string id="13389">There are no presets available&#10;for this visualisation</string>
   <string id="13390">There are no settings available&#10;for this visualisation</string>
   <string id="13391">Eject/Load</string>
@@ -1049,7 +1059,7 @@
   <string id="13395">Video Settings</string>
   <string id="13396">Audio and Subtitle Settings</string>
   <string id="13397">Enable Subtitles</string>
-  <string id="13398">Bookmarks</string>
+  <string id="13398">Shortcuts</string>
   <string id="13399">Ignore tokens when sorting</string>
   <string id="13400">Crossfade albumtracks</string>
   <string id="13401">Browse for %s</string>
@@ -1133,6 +1143,7 @@
   <string id="14075">Use Daylight Saving Time</string>
   <string id="14076">Add to Favourites</string>
   <string id="14077">Remove from Favourites</string>
+  <string id="14078">Skin Colours</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">The service is not connected.</string>
@@ -1215,7 +1226,7 @@
   <string id="15203">Last.FM Password</string>
   <string id="15204">Unable to handshake: sleeping...</string>
   <string id="15205">Please Update XBMC</string>
-  <string id="15206">Bad authorization: Check username and password</string>
+  <string id="15206">Bad authorisation: Check username and password</string>
   <string id="15207">Connected</string>
   <string id="15208">Not Connected</string>
   <string id="15209">Submit Interval %i</string>
@@ -1223,7 +1234,7 @@
   <string id="15211">Submitting...</string>
   <string id="15212">Submitting in %i secs</string>
   <string id="15213">Play Using...</string>
-  <string id="15214">Use Smoothed A/V Synchronization</string>
+  <string id="15214">Use Smoothed A/V Synchronisation</string>
   <string id="15215">Hide File Names in Thumbs View</string>
 
   <string id="15250">Submit Last.FM Radio to Last.FM</string>
@@ -1261,13 +1272,15 @@
   <string id="15282">Enter a tag name to find similar ones</string>
   <string id="15283">Tracks recently listened by %name%</string>
   <string id="15284">Listen to %name%'s recommendations Last.FM radio</string>
+  <string id="15285">Top tags for user %name%</string>
+  <string id="15286">Listen to %name%'s playlist Last.FM radio</string>
 
   <string id="15300">Path not found or invalid</string>
   <string id="15301">Could not connect to network server</string>
   <string id="15302">No servers found</string>
   <string id="15303">Workgroup not found</string>
 
-  <string id="15310">Opening multi-path bookmark</string>
+  <string id="15310">Opening multi-path source</string>
   <string id="15311">Path:</string>
 
   <string id="16000">General</string>
@@ -1393,7 +1406,7 @@
   <string id="20078">- no link set -</string>
   <string id="20079">Enable Animations</string>
   <string id="20080">Disable RSS during Music</string>
-  <string id="20081">Enable Bookmark Buttons</string>
+  <string id="20081">Enable Shortcut Buttons</string>
   <string id="20082">Show XLink Kai Info</string>
   <string id="20083">Show Music info</string>
   <string id="20084">Show Weather info</string>
@@ -1592,6 +1605,10 @@
   <string id="20376">First Aired:</string>
   <string id="20377">Refresh TV Show Information</string>
   <string id="20378">Refresh info for all episodes?</string>
+  <string id="20379">Folder contains a single TV Show</string>
+  <string id="20380">Exclude folder from scans</string>
+  <string id="20381">Specials</string>
+  <string id="20382">Automatically grab season thumbs</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1614,11 +1631,11 @@
   <string id="21362">Manage UPnP Video Shares</string>
   <string id="21363">Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
-  <string id="21365">Remove Media Share</string>  
+  <string id="21365">Remove Media Share</string>
   <string id="21366">Custom Subtitle Directory</string>
   <string id="21367">Movie &amp; Alternate Subtitle Directory</string>
   
-  <string id="21370">Play Navigation Sounds During Media Playback</string>  
+  <string id="21370">Play Navigation Sounds During Media Playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD Player Region</string>
   <string id="21373">Video Hardware</string>
@@ -1634,7 +1651,6 @@
   <string id="21383">Enable Scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Open</string>
-  
   <string id="21386">Acoustic Management Level</string>
   <string id="21387">Fast</string>
   <string id="21388">Quiet</string>
@@ -1646,11 +1662,9 @@
   <string id="21394">Low Standby</string>
   <string id="21395">Unable to cache files bigger than 4 gb</string>
   <string id="21396">Chapter</string>
-
-  <string id="21397">High Quality Pixel Shader V2</string>	
-  
+  <string id="21397">High Quality Pixel Shader V2</string>
   <string id="21398">Enable Playlist at Startup</string>
-
+  <string id="21399">Use Tween Animations</string>
   <string id="21400">contains</string>
   <string id="21401">does not contain</string>
   <string id="21402">is</string>
@@ -1682,12 +1696,14 @@
   <string id="21435">Edit</string>
   <string id="21436">%i songs</string>
   <string id="21437">New Smart Playlist...</string>
+  <string id="21438">%c Drive</string>
+  <string id="21439">Edit Party Mode Rules</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 
 
   <!-- Web browser strings -->
-  <string id="9">Internet</string>
+  <string id="10">Internet</string>
   <string id="12800">Web Browser</string>
   <string id="12801">Web Browser OSD</string>
   <string id="12802">Web Browser Settings</string>
@@ -1726,6 +1742,7 @@
   <string id="20430">Bookmarks file</string>
   <string id="20431">Advanced settings...</string>
   <string id="20432">Network/proxy settings...</string>
+  <string id="20433">Scroll when pointer reaches border</string>
   <!-- End of Web browser strings -->
 
 </strings>

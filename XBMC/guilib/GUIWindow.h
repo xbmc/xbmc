@@ -73,14 +73,13 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  virtual void OnMouseAction();
   virtual bool OnMouse(const CPoint &point);
   bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);
   void Insert(CGUIControl *control, const CGUIControl *insertPoint);
-  void Remove(DWORD dwId);
+  bool Remove(DWORD dwId);
   bool ControlGroupHasFocus(int groupID, int controlID);
   void SetID(DWORD dwID);
   virtual DWORD GetID(void) const;
@@ -107,13 +106,16 @@ public:
   virtual bool IsDialogRunning() const { return false; };
   virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
-  virtual CFileItem *GetCurrentListItem() { return NULL; };
+  virtual CFileItem *GetCurrentListItem(int offset = 0) { return NULL; };
+  virtual int GetViewContainerID() const { return 0; };
+  void GetContainers(vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
   bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
+  const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
@@ -138,6 +140,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  virtual void OnMouseAction();
   virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool HasAnimation(ANIMATION_TYPE animType);
@@ -165,8 +168,8 @@ protected:
 
   vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
+  typedef std::vector<CGUIControl*>::const_iterator ciControls;
   DWORD m_dwWindowId;
-  DWORD m_dwWindowIdBackup;
   DWORD m_dwIDRange;
   DWORD m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
@@ -185,7 +188,9 @@ protected:
   bool m_dynamicResourceAlloc;
   int m_visibleCondition;
 
-  CAnimation m_showAnimation;   // for dialogs
+  bool   m_hasCamera;
+  CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
+  CAnimation m_showAnimation;
   CAnimation m_closeAnimation;
 
   int m_renderOrder;      // for render order of dialogs

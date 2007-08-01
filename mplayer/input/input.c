@@ -865,11 +865,15 @@ mp_input_read_key_code(int time) {
   fd_set fds;
   struct timeval tv,*time_val;
 #endif
-  int i,n=0,max_fd = 0;
+  int i,n=0,max_fd = 0, did_sleep = 0;
   static int last_loop = 0;
 
   if(num_key_fd == 0)
+  {
+    if (time)
+      usec_sleep(time * 1000);
     return MP_INPUT_NOTHING;
+  }
 
 #ifndef HAVE_NO_POSIX_SELECT
   FD_ZERO(&fds);
@@ -913,6 +917,7 @@ if(n>0){
     }
     break;
   }
+  did_sleep = 1;
 
 }
 #endif
@@ -935,6 +940,7 @@ if(n>0){
       code = getch2(time);
       if(code < 0)
 	code = MP_INPUT_NOTHING;
+      did_sleep = 1;
     }
     else
       code = ((mp_key_func_t)key_fds[i].read_func)(key_fds[i].fd);
@@ -949,6 +955,8 @@ if(n>0){
       key_fds[i].flags |= MP_FD_DEAD;
     }
   }
+  if (time && !did_sleep)
+    usec_sleep(time * 1000);
   return MP_INPUT_NOTHING;
 }
     
@@ -1649,7 +1657,10 @@ mp_input_check_interrupt(int time) {
   extern int xbmc_cancel;
   if(xbmc_cancel)
     return 1;
-#endif
+  usec_sleep(time*1000);
+  // the below can consume slave commands, when looking
+  // for user aborts, we don't use this, so skip it
+#else
   if((cmd = mp_input_get_cmd(time,0,1)) == NULL)
     return 0;
   switch(cmd->id) {
@@ -1663,5 +1674,6 @@ mp_input_check_interrupt(int time) {
   // remove the cmd from the queue
   cmd = mp_input_get_cmd(time,0,0);
   mp_cmd_free(cmd);
+#endif
   return 0;
 }

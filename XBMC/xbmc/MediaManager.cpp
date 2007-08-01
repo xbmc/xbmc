@@ -96,13 +96,17 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   // Local shares
   CShare share;
   share.strPath = "C:\\";
-  share.strName = "C Drive";
+  share.strName.Format(g_localizeStrings.Get(21438),'C');
+  share.m_ignore = true;
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
   localDrives.push_back(share);
   share.strPath = "D:\\";
-  share.strName = "DVD Drive";
+  share.strName = g_localizeStrings.Get(218);
+  share.m_iDriveType = SHARE_TYPE_DVD;
   localDrives.push_back(share);
   share.strPath = "E:\\";
-  share.strName = "E Drive";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  share.strName.Format(g_localizeStrings.Get(21438),'E');
   localDrives.push_back(share);
   for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
   {
@@ -110,7 +114,8 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
     {
       CShare share;
       share.strPath.Format("%c:\\", driveletter);
-      share.strName.Format("%c Drive", driveletter);
+      share.strName.Format(g_localizeStrings.Get(21438),driveletter);
+      share.m_ignore = true;
       localDrives.push_back(share);
     }
   }
@@ -118,7 +123,8 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   {
     CShare share;
     share.strPath = "Q:\\";
-    share.strName = "Q Drive";
+    share.strName.Format(g_localizeStrings.Get(21438),'Q');
+    share.m_ignore = true;
     localDrives.push_back(share);
   }
 }
@@ -164,7 +170,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
   {
     if (m_locations[i].path == path)
     {
-      // prompt for bookmarks, remove, cancel, 
+      // prompt for sources, remove, cancel, 
       m_locations.erase(m_locations.begin()+i);
       return SaveSources();
     }

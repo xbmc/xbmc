@@ -312,8 +312,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       DIRECTORY::CVideoDatabaseDirectory dir;
       CQueryParams params;
-      dir.GetQueryParams(strDirectory,params);
-      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+      dir.GetQueryParams(items.m_strPath,params);
+      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
@@ -322,7 +322,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (node == NODE_TYPE_EPISODES)
         {
           g_infoManager.m_content = "episodes";
-          item.m_strPath = strDirectory;
+          item.m_strPath = items.m_strPath;
           item.SetCachedSeasonThumb();
         }
         else
@@ -591,7 +591,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -634,7 +634,6 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
     CUtil::GetDirectory(path,strDirectory);
     m_database.SetPathHash(strDirectory,"");
   }
-
 
   // delete the cached thumb for this item (it will regenerate if it is a user thumb)
   CStdString thumb(pItem->GetCachedVideoThumb());
@@ -753,7 +752,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (item)
   {
     SScraperInfo info;
-    int iFound = GetScraperForItem(item, info);
+    VIDEO::SScanSettings settings;
+    int iFound = GetScraperForItem(item, info, settings);
     
     if (info.strContent.Equals("tvshows"))
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
@@ -845,30 +845,82 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
     {
+      // Grab the thumbnails from the web
+      CStdString strPath;
+      CFileItemList items;
+      CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
+      CUtil::WipeDir(strPath);
+      DIRECTORY::CDirectory::Create(strPath);
+      int i=1;
       CVideoInfoTag tag;
-      CVideoDatabaseDirectory dir;
-      CQueryParams params;
-      dir.GetQueryParams(m_vecItems[itemNumber]->m_strPath,params);
-      m_database.GetTvShowInfo("",tag,params.GetTvShowId());
-      if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyVideoShares, g_localizeStrings.Get(1030), tag.m_strPath))
+      m_database.GetTvShowInfo("",tag,m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId);
+      for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
       {
-        CStdString thumb(m_vecItems[itemNumber]->GetCachedSeasonThumb());
-        CPicture picture;
-        if (picture.DoCreateThumbnail(tag.m_strPath, thumb))
+        if (iter->m_type != CScraperUrl::URL_TYPE_SEASON || iter->m_season != m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason)
+          continue;
+        CStdString thumbFromWeb;
+        CStdString strLabel;
+        strLabel.Format("imdbthumb%i.jpg",i);
+        CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
+        if (VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbFromWeb,*iter))
         {
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          Update(m_vecItems.m_strPath);
+          CStdString strItemPath;
+          strItemPath.Format("thumb://IMDb%i",i++);
+          CFileItem *item = new CFileItem(strItemPath, false);
+          item->SetThumbnailImage(thumbFromWeb);
+          CStdString strLabel;
+          item->SetLabel(g_localizeStrings.Get(20015));
+          items.Add(item);
         }
-        else
-          CLog::Log(LOGERROR,"  Could not cache season thumb: %s",tag.m_strPath.c_str());
       }
+      if (CFile::Exists(m_vecItems[itemNumber]->GetCachedSeasonThumb()))
+      {
+        CFileItem *item = new CFileItem("thumb://Current", false);
+        item->SetThumbnailImage(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+        item->SetLabel(g_localizeStrings.Get(20016));
+        items.Add(item);
+      }
+
+      CFileItem *item = new CFileItem("thumb://None", false);
+      item->SetThumbnailImage("defaultFolderBig.png");
+      item->SetLabel(g_localizeStrings.Get(20018));
+      items.Add(item);
+
+      CStdString result;
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
+        return false;   // user cancelled
+
+      if (result == "thumb://Current")
+        return false;   // user chose the one they have
+
+      // delete the thumbnail if that's what the user wants, else overwrite with the
+      // new thumbnail
+      CStdString cachedThumb(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+
+      if (result.Mid(0,12) == "thumb://IMDb")
+      {
+        CStdString strFile;
+        CUtil::AddFileToFolder(strPath,"imdbthumb"+result.Mid(12)+".jpg",strFile);
+        if (CFile::Exists(strFile))
+          CFile::Cache(strFile, cachedThumb);
+        else
+          result = "thumb://None";
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+      }
+
+      if (result == "thumb://None")
+        CFile::Delete(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems.m_strPath);
+
       return true;
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
       SScraperInfo info;
-      GetScraperForItem(m_vecItems[itemNumber], info);
-      OnScan("",info,-1,-1);
+      VIDEO::SScanSettings settings;
+      OnScan("",info,settings);
       return true;
     }
   }

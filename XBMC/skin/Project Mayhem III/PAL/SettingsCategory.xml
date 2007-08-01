@@ -1,6 +1,6 @@
 <window id="12">
 	<defaultcontrol>2</defaultcontrol>
-	<allowoverlay>yes</allowoverlay>
+	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="image">
 			<description>background image</description>
@@ -23,7 +23,7 @@
 			<posx>200</posx>
 			<posy>43</posy>
 			<align>right</align>
-			<label>xbox media center</label>
+			<label>9</label>
 			<font>special12</font>
 		</control>
 		<control type="label" id="1">
@@ -103,8 +103,8 @@
 			<textureupfocus>scroll-up-focus.png</textureupfocus>
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font13</font>
-			<include>textcolorwhite</include>
-			<include>disabledcolor</include>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>7</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>

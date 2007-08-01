@@ -15,7 +15,7 @@ public:
   bool GetPathes(const CStdString& strPath, vector<CStdString>& vecPaths);
 
 protected:
-  bool GetTypeAndBookmark(const CStdString& strPath, CStdString& strType, CStdString& strBookmark);
+  bool GetTypeAndSource(const CStdString& strPath, CStdString& strType, CStdString& strSource);
   bool GetMatchingShare(const CStdString &strPath, CShare& share);
 };
 }

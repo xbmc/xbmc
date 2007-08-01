@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+#include "GUILabelControl.h"  // for CInfoPortion
 
 struct FRECT
 {
@@ -74,6 +75,7 @@ public:
   virtual ~CGUIImage(void);
 
   virtual void Render();
+  virtual void UpdateVisibility();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
@@ -89,7 +91,7 @@ public:
   void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
-  void SetInfo(int info) { m_Info = info; };
+  void SetInfo(int info);
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;
@@ -100,10 +102,9 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  void AllocateOnDemand();
   void FreeTextures();
   void Process();
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  static const DWORD FVF_VERTEX2 = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2;
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   DWORD m_dwColorKey;
@@ -121,8 +122,8 @@ protected:
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
-  float m_diffuseScaleU, m_diffuseScaleV;
   LPDIRECT3DPALETTE8 m_pPalette;
+  float m_diffuseScaleU, m_diffuseScaleV;
   bool m_bWasVisible;
   bool m_bDynamicResourceAlloc;
 
@@ -139,7 +140,8 @@ protected:
   bool m_linearTexture; // true if it's a linear 32bit texture
 
   // conditional info
-  int m_Info;
+  vector<CInfoPortion> m_multiInfo;
+  int m_singleInfo;
 
   // border
   CImage m_image;

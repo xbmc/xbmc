@@ -8,6 +8,8 @@
 #pragma once
 
 #include "GUIFontBase.h"
+#include "GraphicContext.h"
+#include "../xbmc/utils/SingleLock.h"
 
 class CScrollInfo
 {
@@ -41,38 +43,45 @@ public:
 
   void DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor, int outlineWidth, const WCHAR *text, DWORD flags = 0L, float maxWidth = 0.0f);
 
-  void DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
+  void DrawText( float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor,
                  const WCHAR* strText, DWORD dwFlags = 0L,
                  FLOAT fMaxPixelWidth = 0.0f);
 
-  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
+  void DrawTextWidth(float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor,
                      const WCHAR* strText, float fMaxWidth);
 
-  void DrawScrollingText(float x, float y, const CAngle &angle, DWORD* color, int numColors,
+  void DrawScrollingText(float x, float y, float angle, DWORD* color, int numColors,
                          DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
-  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+  void DrawColourTextWidth(float x, float y, float angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                            const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
-  void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, DWORD dwShadowColor,
+  void DrawText( float x, float y, DWORD dwColor, DWORD dwShadowColor,
                  const WCHAR* strText, DWORD dwFlags = 0L,
                  FLOAT fMaxPixelWidth = 0.0f );
 
-  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor, DWORD dwShadowColor,
+  void DrawTextWidth(float x, float y, DWORD dwColor, DWORD dwShadowColor,
                      const WCHAR* strText, float fMaxWidth);
 
-  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+  void DrawColourTextWidth(float x, float y, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                            const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
   void DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
-  inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
+  void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE)
+  {
+    if (!m_font) return;
+    CSingleLock lock(g_graphicsContext);
+    m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
+    *pWidth *= g_graphicsContext.GetGUIScaleX();
+    *pHeight *= g_graphicsContext.GetGUIScaleY();
+  }
 
   float GetTextWidth( const WCHAR* strText );
   float GetTextHeight( const WCHAR* strText );
 
-  inline void Begin() { if (m_font) m_font->Begin(); };
-  inline void End() { if (m_font) m_font->End(); };
+  void Begin() { if (m_font) m_font->Begin(); };
+  void End() { if (m_font) m_font->End(); };
 
   static SHORT RemapGlyph(SHORT letter);
 protected:
@@ -82,7 +91,7 @@ protected:
   DWORD m_textColor;
   CGUIFontBase *m_font;
 private:
-  CAngle Transform(const CAngle &angle);
+  void SetRotation(float sx, float sy, float angle);
 };
 
 #endif

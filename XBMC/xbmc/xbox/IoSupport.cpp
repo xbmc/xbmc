@@ -340,7 +340,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
                           &dwBytesReturned,
                           NULL ) != 0 )
     {
-      memcpy(lpczBuffer, m_rawXferBuffer, MODE2_DATA_SIZE);
+      memcpy(lpczBuffer, (char*)m_rawXferBuffer+MODE2_DATA_START, MODE2_DATA_SIZE);
       return MODE2_DATA_SIZE;
     }
     else
@@ -604,7 +604,7 @@ void CIoSupport::MapExtendedPartitions()
   char driveletter;
   // we start at 5 - the first 5 partitions are the mandatory standard Xbox partitions
   // we don't deal with those here.
-  for (int i = 5; i < MAX_PARTITIONS; i++)
+  for (int i = 5; i < 7; i++) // ONLY deal with F and G
   {
     if (m_partitionTable.pt_entries[i].pe_flags & PE_PARTFLAGS_IN_USE)
     {

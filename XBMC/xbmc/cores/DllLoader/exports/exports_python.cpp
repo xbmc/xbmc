@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <sys/utime.h>
 
-#include "..\DllLoaderContainer.h"
+#include "../DllLoader.h"
 
 // file io functions
 #define CORRECT_SEP_STR(str) \

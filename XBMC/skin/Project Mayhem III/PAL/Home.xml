@@ -82,15 +82,6 @@
 				<visible>ControlGroup(9001).HasFocus(9) | ControlGroup(9001).HasFocus(10)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 			</control>
-                        <control type="image">
-				<posx>182</posx>
-				<posy>105</posy>
-				<width>538</width>
-				<height>362</height>
-				<texture>16x9home-internet.png</texture>
-				<visible>ControlGroup(9001).HasFocus(17)</visible>
-				<animation effect="fade" time="200">VisibleChange</animation>
-			</control>
 		</control>
 		<control type="visualisation">
 			<posx>180</posx>
@@ -516,139 +507,6 @@
 		</control>
 		<!-- main buttons -->
 		<control type="group" id="9001">
-			<control type="group">
-				<posx>40</posx>
-				<posy>175</posy>
-				<include>homebuttonanimation</include>
-				<control type="image">
-					<description>background image</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>320</width>
-					<height>270</height>
-					<texture>home_buttons.png</texture>
-				</control>
-				<control type="image">
-					<posx>50</posx>
-					<posy>26</posy>
-					<width>22</width>
-					<height>22</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="button" id="2">
-					<description>My Programs normal push button</description>
-					<posx>54</posx>
-					<posy>28</posy>
-					<width>14</width>
-					<height>13</height>
-					<label>0</label>
-					<font>special13</font>
-					<onclick>ActivateWindow(MyPrograms)</onclick>
-					<onleft>98</onleft>
-					<onright>96</onright>
-					<onup>10</onup>
-					<ondown>4</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>30</textoffsetx>
-				</control>
-				<control type="image">
-					<posx>50</posx>
-					<posy>72</posy>
-					<width>22</width>
-					<height>22</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="button" id="4">
-					<description>My Pictures normal push button</description>
-					<posx>54</posx>
-					<posy>74</posy>
-					<width>14</width>
-					<height>13</height>
-					<label>1</label>
-					<onclick>ActivateWindow(MyPictures)</onclick>
-					<font>special13</font>
-					<onleft>98</onleft>
-					<onright>96</onright>
-					<onup>2</onup>
-					<ondown>5</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>30</textoffsetx>
-				</control>
-				<control type="image">
-					<posx>50</posx>
-					<posy>117</posy>
-					<width>22</width>
-					<height>22</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="button" id="5">
-					<description>My Videos normal push button</description>
-					<posx>54</posx>
-					<posy>119</posy>
-					<width>14</width>
-					<height>13</height>
-					<label>3</label>
-					<font>special13</font>
-					<onclick>ActivateWindow(MyVideos)</onclick>
-					<onleft>98</onleft>
-					<onright>96</onright>
-					<onup>4</onup>
-					<ondown>3</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>30</textoffsetx>
-				</control>
-				<control type="image">
-					<posx>50</posx>
-					<posy>161</posy>
-					<width>22</width>
-					<height>22</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="button" id="3">
-					<description>My Music normal push button</description>
-					<posx>54</posx>
-					<posy>163</posy>
-					<width>14</width>
-					<height>13</height>
-					<label>2</label>
-					<onclick>ActivateWindow(MyMusic)</onclick>
-					<font>special13</font>
-					<onleft>98</onleft>
-					<onright>96</onright>
-					<onup>5</onup>
-					<ondown>7</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>30</textoffsetx>
-				</control>
-				<control type="image">
-					<posx>50</posx>
-					<posy>204</posy>
-					<width>22</width>
-					<height>22</height>
-					<texture>homebutton-small.png</texture>
-				</control>
-				<control type="button" id="7">
-					<description>My Weather normal push button</description>
-					<posx>54</posx>
-					<posy>206</posy>
-					<width>14</width>
-					<height>13</height>
-					<label>8</label>
-					<font>special13</font>
-					<onclick>ActivateWindow(Weather)</onclick>
-					<onleft>98</onleft>
-					<onright>96</onright>
-					<onup>3</onup>
-					<ondown>9</ondown>
-					<texturefocus>home-focus.gif</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textoffsetx>30</textoffsetx>
-				</control>
-			</control>
 			<control type="group" id="9002">
 				<posx>65</posx>
 				<posy>425</posy>
@@ -688,6 +546,7 @@
 					<posy>3</posy>
 					<width>12</width>
 					<height>12</height>
+					<hitrect x="4" y="0" w="100" h="18" />
 					<label>5</label>
 					<font>font10</font>
 					<onclick>ActivateWindow(4)</onclick>
@@ -705,9 +564,10 @@
 					<posy>33</posy>
 					<width>12</width>
 					<height>12</height>
+					<hitrect x="4" y="30" w="100" h="18" />
 					<label>247</label>
-					<font>font10</font>
 					<onclick>ActivateWindow(Scripts)</onclick>
+					<font>font10</font>
 					<onleft>98</onleft>
 					<onright>17</onright>
 					<onup>9</onup>
@@ -722,6 +582,7 @@
 					<posy>3</posy>
 					<width>12</width>
 					<height>12</height>
+					<hitrect x="119" y="0" w="100" h="18" />
 					<label>7</label>
 					<onclick>ActivateWindow(MyFiles)</onclick>
 					<font>font10</font>
@@ -740,6 +601,7 @@
 					<width>12</width>
 					<height>12</height>
 					<label>20400</label>
+					<hitrect x="119" y="30" w="100" h="18" />
 					<visible>webbrowser.included</visible>
 					<onclick>ActivateWindow(webbrowser)</onclick>
 					<font>font10</font>
@@ -752,6 +614,144 @@
 					<textoffsetx>20</textoffsetx>
 				</control>
 			</control>
+			<control type="group">
+				<posx>40</posx>
+				<posy>180</posy>
+				<include>homebuttonanimation</include>
+				<control type="image">
+					<description>background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>270</height>
+					<texture>home_buttons.png</texture>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>26</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="2">
+					<description>My Programs normal push button</description>
+					<posx>54</posx>
+					<posy>28</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="15" w="220" h="40" />
+					<label>0</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyPrograms)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>4</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>72</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="4">
+					<description>My Pictures normal push button</description>
+					<posx>54</posx>
+					<posy>74</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="60" w="220" h="40" />
+					<label>1</label>
+					<onclick>ActivateWindow(MyPictures)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>2</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>117</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="5">
+					<description>My Videos normal push button</description>
+					<posx>54</posx>
+					<posy>119</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="105" w="200" h="40" />
+					<label>3</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyVideos)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>4</onup>
+					<ondown>3</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>161</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="3">
+					<description>My Music normal push button</description>
+					<posx>54</posx>
+					<posy>163</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="150" w="170" h="40" />
+					<label>2</label>
+					<onclick>ActivateWindow(MyMusic)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>5</onup>
+					<ondown>7</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>204</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="7">
+					<description>My Weather normal push button</description>
+					<posx>54</posx>
+					<posy>206</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="195" w="125" h="40" />
+					<label>8</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(Weather)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>3</onup>
+					<ondown>9</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+			</control>
 		</control>
 		<!-- labels -->
 		<control type="group">
@@ -759,42 +759,46 @@
 			<control type="label">
 				<description>date label</description>
 				<posx>582</posx>
-				<posy>55</posy>
+				<posy>56</posy>
 				<label>date</label>
 				<info>System.Date</info>
 				<align>right</align>
+				<aligy>center</aligy>
 				<font>special12</font>
 			</control>
 			<control type="label">
 				<description>suffix label</description>
 				<posx>592</posx>
-				<posy>53</posy>
+				<posy>56</posy>
 				<label>|</label>
 				<align>left</align>
+				<aligy>center</aligy>
 				<font>special12</font>
-				<include>textcolorgrey</include>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<description>time label</description>
 				<posx>602</posx>
-				<posy>55</posy>
+				<posy>56</posy>
 				<label>time</label>
 				<info>System.Time</info>
 				<align>left</align>
 				<font>special12</font>
-				<include>textcolorgrey</include>
+				<aligy>center</aligy>
+				<textcolor>grey</textcolor>
 			</control>
 		</control>
 		<control type="rss" id="1">
 			<description>rss feed</description>
 			<posx>0</posx>
-			<posy>490</posy>
+			<posy>493</posy>
 			<width>720</width>
+			<aligy>center</aligy>
 			<font>font13</font>
 			<urlset>1</urlset>
-			<include>rsstitlecolor</include>
-			<include>rssheadlinecolor</include>
-			<include>textcolorgreen</include>
+			<titlecolor>green</titlecolor>
+			<headlinecolor>dialogheader</headlinecolor>
+			<textcolor>green</textcolor>
 			<visible>!Player.HasVideo</visible>
 			<visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
 			<include>homemisc</include>

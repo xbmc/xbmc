@@ -92,27 +92,27 @@ void CDVDAudioCodecLiba52::SetupChannels()
   {
     switch (m_iSourceFlags&~A52_LFE) {
       case A52_MONO   : m_iOutputMapping = 0x12ffff; break;
-	  case A52_CHANNEL:
-	  case A52_STEREO :
-	  case A52_DOLBY  : m_iOutputMapping = 0x1fff32; break;
+      case A52_CHANNEL:
+      case A52_STEREO :
+      case A52_DOLBY  : m_iOutputMapping = 0x1fff32; break;
       case A52_2F1R   : m_iOutputMapping = 0x1f5542; break;
-	  case A52_2F2R   : m_iOutputMapping = 0x1f5432; break;
-	  case A52_3F     : m_iOutputMapping = 0x13ff42; break;
+      case A52_2F2R   : m_iOutputMapping = 0x1f5432; break;
+      case A52_3F     : m_iOutputMapping = 0x13ff42; break;
       case A52_3F2R   : m_iOutputMapping = 0x136542; break;
-	}
+    }
   }
   else
   {
     switch (m_iSourceFlags) {
-	  case A52_MONO   : m_iOutputMapping =     0x1; break;
-	  case A52_CHANNEL:
-	  case A52_STEREO :
-	  case A52_DOLBY  : m_iOutputMapping =    0x21; break;
+      case A52_MONO   : m_iOutputMapping =     0x1; break;
+      case A52_CHANNEL:
+      case A52_STEREO :
+      case A52_DOLBY  : m_iOutputMapping =    0x21; break;
       case A52_2F1R   : m_iOutputMapping =  0x2231; break;
-	  case A52_2F2R   : m_iOutputMapping =  0x4321; break;
-	  case A52_3F     : m_iOutputMapping = 0x2ff31; break;
+      case A52_2F2R   : m_iOutputMapping =  0x4321; break;
+      case A52_3F     : m_iOutputMapping = 0x2ff31; break;
       case A52_3F2R   : m_iOutputMapping = 0x25431; break;
-	}
+    }
   }
 
   int channels = 0;
@@ -123,10 +123,10 @@ void CDVDAudioCodecLiba52::SetupChannels()
   if(channels == 5 || channels == 3)
     channels = 6;
 
-  if(!m_iOutputChannels)
-    m_iOutputChannels = channels;
-  else if(m_iOutputChannels != channels)
-    CLog::Log(LOGWARNING, __FUNCTION__" - Number of channels changed in stream from %d to %d, data might be truncated", m_iOutputChannels, channels);
+  if(m_iOutputChannels > 0 && m_iOutputChannels != channels) 
+    CLog::Log(LOGINFO, __FUNCTION__" - Number of channels changed in stream from %d to %d", m_iOutputChannels, channels);
+
+  m_iOutputChannels = channels;
 
   // make sure map contains enough channels
   for(int i=0;i<m_iOutputChannels;i++)

@@ -7,7 +7,7 @@
 class ILCD : public CThread
 {
 public:
-  enum LCD_MODE { LCD_MODE_GENERAL = 0, LCD_MODE_MUSIC, LCD_MODE_VIDEO, LCD_MODE_NAVIGATION, LCD_MODE_MAX };
+  enum LCD_MODE { LCD_MODE_GENERAL = 0, LCD_MODE_MUSIC, LCD_MODE_VIDEO, LCD_MODE_NAVIGATION, LCD_MODE_XBE_LAUNCH, LCD_MODE_MAX };
   virtual void Initialize();
   virtual void Stop() = 0;
   virtual void SetBackLight(int iLight) = 0;
@@ -22,6 +22,6 @@ protected:
   void StringToLCDCharSet(CStdString& strText);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
 private:
-  vector< vector<CInfoPortion> > m_lcdMode[4];
+  vector< vector<CInfoPortion> > m_lcdMode[LCD_MODE_MAX];
 };
 extern ILCD* g_lcd;

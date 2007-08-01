@@ -33,7 +33,7 @@ public:
 
   virtual void SetInitialVisibility();
 
-  virtual void UpdateEffectState(DWORD currentTime);
+  virtual void DoRender(DWORD currentTime);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual void QueueAnimation(ANIMATION_TYPE anim);
 
@@ -44,9 +44,10 @@ public:
   CGUIControl *GetFocusedControl() const;
   const CGUIControl *GetControl(int id) const;
   CGUIControl *GetFirstFocusableControl(int id);
+  void GetContainers(vector<CGUIControl *> &containers) const;
 
   virtual void AddControl(CGUIControl *control);
-  virtual void RemoveControl(int id);
+  virtual bool RemoveControl(int id);
   virtual void ClearAll();
   void SetDefaultControl(DWORD id) { m_defaultControl = id; };
 
@@ -58,8 +59,6 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  virtual void Animate(DWORD currentTime);
-
   // sub controls
   vector<CGUIControl *> m_children;
   typedef vector<CGUIControl *>::iterator iControls;
@@ -69,6 +68,7 @@ protected:
   int m_defaultControl;
   int m_focusedControl;
 
+  // render time
   DWORD m_renderTime;
 };
 

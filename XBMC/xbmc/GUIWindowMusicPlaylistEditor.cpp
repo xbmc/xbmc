@@ -215,7 +215,7 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   // before calling it since the current playlist will be stopped
   // and cleared!
 
-  // we're at the root bookmark listing
+  // we're at the root source listing
   if (m_vecItems.IsVirtualDirectoryRoot() && !m_vecItems[iItem]->IsDVD())
     return;
 
@@ -333,7 +333,7 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
   if (m_playlist.Size())
   {
     buttons.Add(CONTEXT_BUTTON_SAVE, 190);
-    buttons.Add(CONTEXT_BUTTON_CLEAR, 386);
+    buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
   }
   buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
 }

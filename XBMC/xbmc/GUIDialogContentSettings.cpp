@@ -186,7 +186,7 @@ void CGUIDialogContentSettings::SetupPage()
   }
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
   // now add them scrapers to the list control
-  if (m_info.strContent.IsEmpty())
+  if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
   {
     CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
     OnMessage(msgReset); 
@@ -206,12 +206,21 @@ void CGUIDialogContentSettings::CreateSettings()
   // clear out any old settings
   m_settings.clear();
 
-  AddBool(1,20345,&m_bRunScan);  
+  if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
+  {
+    AddBool(1,20380,&m_bRunScan);
+  }
 
   if (m_info.strContent.Equals("movies"))
   {
-    AddBool(2,20346,&m_bScanRecursive,m_bRunScan);
-    AddBool(3,20330,&m_bUseDirNames,m_bRunScan);
+    AddBool(1,20345,&m_bRunScan);
+    AddBool(2,20346,&m_bScanRecursive);
+    AddBool(3,20330,&m_bUseDirNames);
+  }
+  if (m_info.strContent.Equals("tvshows"))
+  {
+    AddBool(1,20345,&m_bRunScan);
+    AddBool(2,20379,&m_bUseDirNames);
   }
 }
 
@@ -220,29 +229,13 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
   // setting has changed - update anything that needs it
   if (num >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(num);
-  // check and update anything that needs it
+  // check and update anything that needs it  
   if (setting.id == 1)
   {
-    if (m_info.strContent.IsEmpty())
-    {
-      m_settings[0].enabled = false;
-      if (m_settings.size() > 1)
-        m_settings[1].enabled = false;
-      if (m_settings.size() > 2)
-        m_settings[2].enabled = false;
-      
-      m_vecItems.Clear();
-      UpdateSetting(1);
-      UpdateSetting(2);
-      UpdateSetting(3);
-    }
-    if (m_info.strContent.Equals("movies"))
-    {
-      m_settings[1].enabled = *((bool*)setting.data);
-      m_settings[2].enabled = *((bool*)setting.data);
-      UpdateSetting(2);
-      UpdateSetting(3);
-    }
+    CreateSettings();
+    UpdateSetting(1);
+    UpdateSetting(2);
+    UpdateSetting(3);
   }
 
   m_bNeedSave = true;
@@ -285,36 +278,48 @@ void CGUIDialogContentSettings::FillListControl()
   }
 }
 
-CFileItem* CGUIDialogContentSettings::GetCurrentListItem()
+CFileItem* CGUIDialogContentSettings::GetCurrentListItem(int offset)
 {
+  int currentItem = -1;
   for (int i=0;i<m_vecItems.Size();++i )
   {
     if (m_vecItems[i]->IsSelected())
-      return m_vecItems[i];
+    {
+      currentItem = i;
+      break;
+    }
   }
-
-  return NULL;
+  if (currentItem == -1) return NULL;
+  int item = (currentItem + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }
 
 bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool &bUseDirNames)
 {
   CVideoDatabase database;
   database.Open();
-  database.GetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
+  int iFound;
+  database.GetScraperForPath(strDirectory,scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive,iFound);
+  if (iFound == 2 && scraper.strContent.Equals("tvshows"))
+    bUseDirNames = true;
   bool bResult = Show(scraper,bRunScan,bScanRecursive,bUseDirNames);
   if (bResult)
   {
+    if (scraper.strContent.IsEmpty() && bRunScan)
+      scraper.strContent = "None";
+
     bool bName;
-    int iBookmark = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
-    if (iBookmark > -1)
+    int iSource = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
+    if (iSource > -1)
     {
-      if (g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size() > 1 && bName)
+      if (g_settings.m_vecMyVideoShares[iSource].vecPaths.size() > 1 && bName)
       {
-        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size();++i)
-          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iBookmark].vecPaths[i],scraper.strPath,scraper.strContent);
+        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iSource].vecPaths.size();++i)
+          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iSource].vecPaths[i],scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
       }
     }
-    database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
+    database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent,bUseDirNames,bScanRecursive);
   }
 
   return bResult;
@@ -327,6 +332,9 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, bool
 
   dialog->m_info = scraper;
   dialog->m_bRunScan = bRunScan;
+  if (scraper.strContent.Equals("None"))
+    dialog->m_bRunScan = true;
+
   dialog->m_bScanRecursive = bScanRecursive;
   dialog->m_bUseDirNames = bUseDirNames;
   dialog->m_bNeedSave = false;
@@ -334,9 +342,18 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, bool
   if (dialog->m_bNeedSave)
   {
     scraper = dialog->m_info;
-    bRunScan = dialog->m_bRunScan;
     bScanRecursive = dialog->m_bScanRecursive;
     bUseDirNames = dialog->m_bUseDirNames;
+    if (scraper.strContent.Equals("None") && !dialog->m_bRunScan)
+    {
+      scraper.strContent = "";
+    }
+    if (scraper.strContent.IsEmpty() && dialog->m_bRunScan)
+    {
+      scraper.strContent = "None";
+      dialog->m_bRunScan = false;
+    }
+    bRunScan = dialog->m_bRunScan;
     return true;
   }
 

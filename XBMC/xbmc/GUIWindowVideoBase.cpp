@@ -182,7 +182,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
 
           int iFound;
-          m_database.GetScraperForPath(strDir,info.strPath,info.strContent,iFound);
+          bool bUseDirNames, bScanRecursive;
+          m_database.GetScraperForPath(strDir,info.strPath,info.strContent,bUseDirNames,bScanRecursive,iFound);
           CScraperParser parser;
           if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
             info.strTitle = parser.GetName();
@@ -197,7 +198,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return true;
           }
 
-          if (info.strContent.Equals("tvshows") && iFound == 1) // dont lookup on root tvshow folder
+          if (info.strContent.Equals("tvshows") && iFound == 1 && !bUseDirNames) // dont lookup on root tvshow folder
             return true;
 
           OnInfo(iItem,info);
@@ -420,7 +421,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         info2.strPath = nfoReader.m_strScraper;
         IMDB.SetScraperInfo(info2);
         CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].GetFirstThumb().m_url.c_str());
       }
     }
     else
@@ -862,10 +863,13 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (!item->IsParentFolder())
     {
-      if (item->IsStack())
+      CStdString path(item->m_strPath);
+      if (item->IsVideoDb() && item->HasVideoInfoTag())
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (CUtil::IsStack(path))
       {
         vector<long> times;
-        if (m_database.GetStackTimes(item->m_strPath,times))
+        if (m_database.GetStackTimes(path,times))
           buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
       }
 
@@ -912,7 +916,11 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_PART:
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item->m_strPath,items);
+      CStdString path(item->m_strPath);
+      if (item->IsVideoDb())
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+
+      CDirectory::GetDirectory(path,items);
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (!dlg) return true;
       dlg->SetNumberOfFiles(items.Size());
@@ -923,7 +931,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (btn2 > 1)
         {
           vector<long> times;
-          if (m_database.GetStackTimes(item->m_strPath,times))
+          if (m_database.GetStackTimes(path,times))
             item->m_lStartOffset = times[btn2-2]*75; // wtf?
         }
         else
@@ -973,7 +981,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      int iFound = GetScraperForItem(item, info);
+      VIDEO::SScanSettings settings;
+      int iFound = GetScraperForItem(item, info, settings);
       OnInfo(itemNumber,info);
       return true;
     }
@@ -988,11 +997,15 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_UPDATE_TVSHOW:
     {
       SScraperInfo info;
-      GetScraperForItem(item, info);
+      SScanSettings settings;
+      GetScraperForItem(item, info, settings);
+      CStdString strPath = item->m_strPath;
       if (item->IsVideoDb())
-        OnScan(item->GetVideoInfoTag()->m_strPath,info,-1,-1);
-      else
-        OnScan(item->m_strPath,info,-1,-1);
+        strPath = item->GetVideoInfoTag()->m_strPath;
+      
+      m_database.SetPathHash(strPath,""); // to force scan
+      OnScan(strPath,info,settings);
+
       return true;
     }
   case CONTEXT_BUTTON_DELETE:
@@ -1156,7 +1169,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
   m_database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1170,7 +1183,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
   m_database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1188,7 +1201,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() || pItem->GetVideoInfoTag()->m_iEpisode > 0)) // tvshow
     iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > 0) // episode
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
 
   if (iType == 0) // movies
@@ -1344,8 +1357,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CFileItemList items;
     if (!CDirectory::GetDirectory("videodb://1/", items))
       return;
-    for (int i = 0; i < items.Size(); ++i)
-      pSelect->Add(items[i]->GetLabel());
+    pSelect->SetItems(&items);
     pSelect->EnableButton(true);
     pSelect->SetButtonLabel(531); // New Genre
     pSelect->DoModal();
@@ -1527,64 +1539,34 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
   m_viewControl.SetFocused();
 }
 
-int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info)
+int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, SScanSettings& settings)
 {
   if (!item) return 0;
   int found = 0;
   if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,found);
+    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,settings.parent_name_root,settings.parent_name,found);
   else
-    m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,found);
+    m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,settings.parent_name_root,settings.parent_name,found);
   CScraperParser parser;
   if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
     info.strTitle = parser.GetName();
+  if (settings.parent_name) // really recurse
+    settings.recurse = INT_MAX;
+  else
+    settings.recurse = 1;
+  settings.parent_name = false;
+  if (info.strContent.Equals("movies") && settings.parent_name_root)
+  {
+    settings.parent_name = true;
+    settings.parent_name_root = false;
+  }
+  if (info.strContent.Equals("tvshows"))
+    settings.parent_name = true;
   return found;
 }
 
-void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, const SScanSettings& settings)
 {
-  // GetStackedDirectory() now sets and restores the stack state!
-  SScanSettings settings = {};
-
-  if(iDirNames>0)
-  {
-    settings.parent_name = true;
-    settings.recurse = 1; /* atleast one, otherwise this makes no sence */
-  }
-  else if ((info.strContent.Equals("movies") || strPath.IsEmpty()) && iDirNames == -1)
-  {
-    bool bCanceled;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
-    {
-      settings.parent_name = true;
-      settings.recurse = 1; /* atleast one, otherwise this makes no sence */
-    }
-
-    if (bCanceled)
-      return;
-  }
-
-  if(iScanRecursively > 0)
-    settings.recurse = INT_MAX;
-  else if (iScanRecursively == -1 && info.strContent.Equals("movies"))
-  {
-    bool bCanceled;
-    if( CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled) )
-      settings.recurse = INT_MAX;
-
-    if (bCanceled)
-      return;
-  }
-  if (strPath.IsEmpty())
-    settings.recurse = 1;
-
-  if (info.strContent.Equals("tvshows"))
-  {
-    settings.recurse = 1;
-    settings.parent_name = true;
-    settings.parent_name_root = true;
-  }
-
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);

@@ -1,13 +1,13 @@
 #include "include.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
 #include "LocalizeStrings.h"
-#include "GUIButtoncontrol.h"
-#include "GUIRadiobuttoncontrol.h"
+#include "GUIButtonControl.h"
+#include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
 #include "GUIConsoleControl.h"
 #include "GUIListControlEx.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
@@ -34,10 +34,12 @@
 #include "GUIPanelContainer.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
+#include "GUIColorManager.h"
+
 #ifdef WITH_LINKS_BROWSER
 #include "GUIWebBrowserControl.h"
 #endif
@@ -162,7 +164,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
     else if (align.CompareNoCase("bottom") == 0) aspectAlign = ASPECT_ALIGNY_BOTTOM | (aspectAlign & ASPECT_ALIGN_MASK);
     else if (align.CompareNoCase("top") == 0) aspectAlign = ASPECT_ALIGNY_TOP | (aspectAlign & ASPECT_ALIGN_MASK);
   }
-  return false;
+  return true;
 }
 
 bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image)
@@ -297,14 +299,70 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const FRECT &re
       animations.push_back(anim);
       if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
+        TiXmlElement hidden(*node);
+        hidden.FirstChild()->SetValue("hidden");
+        const char *start = hidden.Attribute("start");
+        const char *end = hidden.Attribute("end");
+        if (start && end)
+        {
+          CStdString temp = end;
+          hidden.SetAttribute("end", start);
+          hidden.SetAttribute("start", temp.c_str());
+        }
+        else if (start)
+          hidden.SetAttribute("end", start);
+        else if (end)
+          hidden.SetAttribute("start", end);
         CAnimation anim2;
-        anim2.CreateReverse(anim);
+        anim2.Create(&hidden, rect);
         animations.push_back(anim2);
       }
     }
     node = node->NextSiblingElement("animation");
   }
   return ret;
+}
+
+bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
+{
+  const TiXmlElement* node = control->FirstChildElement("hitrect");
+  if (node)
+  {
+    double val;
+    if (node->Attribute("x", &val)) rect.x1 = (float)val;
+    if (node->Attribute("y", &val)) rect.y1 = (float)val;
+    if (node->Attribute("w", &val)) rect.x2 = rect.x1 + (float)val;
+    if (node->Attribute("h", &val)) rect.y2 = rect.y1 + (float)val;
+    return true;
+  }
+  return false;
+}
+
+bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, DWORD &value)
+{
+  const TiXmlElement* node = control->FirstChildElement(strTag);
+  if (node && node->FirstChild())
+  {
+    value = g_colorManager.GetColor(node->FirstChild()->Value());
+    return true;
+  }
+  return false;
+}
+
+// Convert a string to a GUI label, by translating/parsing the label for localisable strings
+CStdString CGUIControlFactory::GetLabel(const CStdString &label)
+{
+  CStdString viewLabel = label;
+  if (StringUtils::IsNaturalNumber(viewLabel))
+    viewLabel = g_localizeStrings.Get(atoi(label));
+  else
+  { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+    g_charsetConverter.stringCharsetToUtf8(viewLabel);
+  }
+  // translate the label
+  vector<CInfoPortion> info;
+  g_infoManager.ParseLabel(viewLabel, info);
+  return g_infoManager.GetMultiInfo(info, 0);
 }
 
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
@@ -362,7 +420,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fMin = 0.0f;
   float fMax = 1.0f;
   float fInterval = 0.1f;
-  bool bReverse = false;
+  bool bReverse = true;
   CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   float rMin = 0.0f;
   float rMax = 100.0f;
@@ -436,6 +494,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CStdString texturePath;
   DWORD timePerImage = 0;
   DWORD fadeTime = 0;
+  DWORD timeToPauseAtEnd = 0;
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
@@ -461,6 +520,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int focusPosition = 0;
   int scrollTime = 200;
   bool useControlCoords = false;
+
+  CRect hitRect;
+  CPoint camera;
+  bool   hasCamera = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
   //
@@ -502,10 +566,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (strType == "group" || strType == "grouplist")
   {
     if (!width)
-      width = max(rect.right - posX, 0);
+      width = max(rect.right - posX, 0.0f);
     if (!height)
-      height = max(rect.bottom - posY, 0);
+      height = max(rect.bottom - posY, 0.0f);
   }
+
+  hitRect.SetRect(posX, posY, posX + width, posY + height);
+  GetHitRect(pControlNode, hitRect);
 
   XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
   XMLUtils::GetFloat(pControlNode, "controloffsety", controlOffsetY);
@@ -530,20 +597,20 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
-  XMLUtils::GetHex(pControlNode, "colordiffuse", colorDiffuse);
+  GetColor(pControlNode, "colordiffuse", colorDiffuse);
 
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
   GetCondition(pControlNode, "enable", enableCondition);
 
   // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
-  FRECT animRect = { posX + rect.left, posY + rect.top, width, height };
+  FRECT animRect = { posX, posY, width, height };
   GetAnimations(pControlNode, animRect, animations);
 
-  XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
-  XMLUtils::GetHex(pControlNode, "focusedcolor", labelInfo.focusedColor);
-  XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.disabledColor);
-  XMLUtils::GetHex(pControlNode, "shadowcolor", labelInfo.shadowColor);
-  XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.selectedColor);
+  GetColor(pControlNode, "textcolor", labelInfo.textColor);
+  GetColor(pControlNode, "focusedcolor", labelInfo.focusedColor);
+  GetColor(pControlNode, "disabledcolor", labelInfo.disabledColor);
+  GetColor(pControlNode, "shadowcolor", labelInfo.shadowColor);
+  GetColor(pControlNode, "selectedcolor", labelInfo.selectedColor);
   XMLUtils::GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
   XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
   XMLUtils::GetFloat(pControlNode, "textxoff", labelInfo.offsetX);
@@ -551,7 +618,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetFloat(pControlNode, "textxoff2", labelInfo2.offsetX);
   XMLUtils::GetFloat(pControlNode, "textyoff2", labelInfo2.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
-  if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(-angle);
+  if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = (float)-angle;
   CStdString strFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
@@ -562,9 +629,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
   labelInfo2.selectedColor = labelInfo.selectedColor;
-  XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
-  XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
-  XMLUtils::GetHex(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
+  GetColor(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
+  GetColor(pControlNode, "textcolor2", labelInfo2.textColor);
+  GetColor(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
   labelInfo2.font = labelInfo.font;
   if (XMLUtils::GetString(pControlNode, "font2", strFont))
     labelInfo2.font = g_fontManager.GetFont(strFont);
@@ -618,7 +685,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
   GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
-  XMLUtils::GetHex(pControlNode, "spincolor", spinInfo.textColor);
+  GetColor(pControlNode, "spincolor", spinInfo.textColor);
   if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;
@@ -646,8 +713,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-  XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
-  XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
+  GetColor(pControlNode, "headlinecolor", labelInfo2.textColor);
+  GetColor(pControlNode, "titlecolor", dwTextColor3);
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
@@ -689,7 +756,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "texture", texture);
   XMLUtils::GetFloat(pControlNode, "rangemin", rMin);
   XMLUtils::GetFloat(pControlNode, "rangemax", rMax);
-  XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
+  GetColor(pControlNode, "colorkey", dwColorKey);
 
   XMLUtils::GetString(pControlNode, "suffix", strSuffix);
 
@@ -793,6 +860,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetPath(pControlNode,"imagepath", texturePath);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
+  XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
 
@@ -847,19 +915,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       viewType = VIEW_TYPE_BIG_WRAP;
     const char *label = itemElement->Attribute("label");
     if (label)
-    {
-      viewLabel = label;
-      if (StringUtils::IsNaturalNumber(viewLabel))
-        viewLabel = g_localizeStrings.Get(atoi(label));
-      else
-      { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-        g_charsetConverter.stringCharsetToUtf8(viewLabel);
-      }
-      // translate the label
-      vector<CInfoPortion> info;
-      g_infoManager.ParseLabel(viewLabel, info);
-      viewLabel = g_infoManager.GetMultiLabel(info);
-    }
+      viewLabel = GetLabel(label);
+  }
+
+  TiXmlElement *cam = pControlNode->FirstChildElement("camera");
+  if (cam)
+  {
+    hasCamera = true;
+    cam->Attribute("x", &camera.x);
+    cam->Attribute("y", &camera.y);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1045,7 +1109,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
-      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop);
+      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
     ((CGUIMultiImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspectRatio);
   }
@@ -1053,6 +1117,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIListContainer *)control)->SetPageControl(pageControl);
   }
@@ -1060,6 +1125,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
   }
@@ -1067,6 +1133,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
   }
@@ -1074,6 +1141,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
   }
@@ -1250,12 +1318,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // things that apply to all controls
   if (control)
   {
+    control->SetHitRect(hitRect);
     control->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
     control->SetNavigation(up, down, left, right);
     control->SetPulseOnSelect(bPulse);
+    if (hasCamera)
+      control->SetCamera(camera);
   }
   return control;
 }

@@ -13,7 +13,9 @@ public:
   virtual void Close(bool forceClose = false);
   void Reset();
   void Add(const CStdString& strLabel);
-  void Add(CFileItem* pItem);
+  void Add(const CFileItem* pItem);
+  void Add(const CFileItemList& items);
+  void SetItems(CFileItemList* items);
   int GetSelectedLabel() const;
   const CStdString& GetSelectedLabelText();
   const CFileItem& GetSelectedItem();
@@ -28,5 +30,6 @@ protected:
   int m_iSelected;
 
   CFileItem m_selectedItem;
-  vector<CFileItem*> m_vecList;
+  CFileItemList m_vecListInternal;
+  CFileItemList* m_vecList;
 };

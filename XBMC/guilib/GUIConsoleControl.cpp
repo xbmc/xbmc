@@ -60,8 +60,6 @@ void CGUIConsoleControl::FreeResources()
 
 void CGUIConsoleControl::Render()
 {
-  if (!IsVisible()) return;
-
   m_dwFrameCounter++;
 
   /* Debugging

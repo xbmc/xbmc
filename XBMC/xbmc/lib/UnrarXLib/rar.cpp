@@ -1,5 +1,6 @@
 #include "rar.hpp"
-#include "unrarx.hpp"
+#include "UnrarX.hpp"
+#include "../../../guilib/GUIWindowManager.h"
 
 #include "smallfn.cpp"
 
@@ -45,7 +46,7 @@ void main(int argc, char *argv[])
 }
 #else
 
-#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX)
+#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX) && !defined(XBMC)
 int main(int argc, char *argv[])
 {
 #ifdef _UNIX
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
 
 #endif /* __XBOX__TEST__ */
 
-#ifdef _XBOX
+#if defined(_XBOX) || defined(XBMC)
 /*-------------------------------------------------------------------------*\
                                XBOX interface
 \*-------------------------------------------------------------------------*/
@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
 					or NULL for all files.
 	libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset)
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset, bool bShowProgress)
 {
 	InitCRC();
 	int bRes = 1;
@@ -233,6 +234,11 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
           pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
 
+          if (bShowProgress)
+          {
+            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+          }
+
           __int64 iOff=0;
           bool bSeeked = false;
           while (1)
@@ -282,7 +288,9 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           }
 
           pExtract->GetDataIO().ProcessedArcSize+=FD.Size;         
-				}
+          if (pExtract->GetDataIO().m_pDlgProgress)
+            pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(false);
+        }
 			}
 		}
 	}

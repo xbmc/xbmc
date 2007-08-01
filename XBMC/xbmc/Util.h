@@ -9,7 +9,6 @@
 
 class CTrainer;
 
-
 // for 'cherry' patching
 typedef enum
 {
@@ -220,6 +219,14 @@ struct sortstringbyname
   }
 };
 
+struct XBOXDETECTION
+{
+  std::vector<CStdString> client_ip;
+  std::vector<CStdString> client_info;
+  std::vector<unsigned int> client_lookup_count;
+  std::vector<bool> client_informed;
+};
+
 class CUtil
 {
 public:
@@ -293,8 +300,7 @@ public:
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static void AddSlashAtEnd(CStdString& strFolder);
-  static void RemoveSlashAtEnd(CStdString& strFolder);
-  static void GetPath(const CStdString& strFileName, CStdString& strPath);
+  static void RemoveSlashAtEnd(CStdString& strFolder);  
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
@@ -329,7 +335,7 @@ public:
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
-  static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
+  static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsSourceName);
   static CStdString TranslateSpecialPath(const CStdString &strSpecial);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString strType = "");
@@ -346,9 +352,9 @@ public:
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
-  static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
-  static bool XboxAutoDetection();
-  static bool XboxAutoDetectionGetShare(CShare& share);
+  static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
+  static bool AutoDetection();
+  static void AutoDetectionGetShare(VECSHARES &share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
@@ -370,6 +376,7 @@ public:
 
   static void BootToDash();
 private:
+  
   static HANDLE m_hCurrentCpuUsage;
 };
 

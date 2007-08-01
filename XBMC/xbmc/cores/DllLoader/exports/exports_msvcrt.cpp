@@ -1,8 +1,7 @@
 
 //#include "stdafx.h"
 
-#include "..\DllLoaderContainer.h"
-#include "..\DllLoader.h"
+#include "../DllLoader.h"
 //#include "emu_msvcrt.h"
 
 #pragma warning (disable:4391)

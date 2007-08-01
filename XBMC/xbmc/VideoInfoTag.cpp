@@ -24,11 +24,12 @@ void CVideoInfoTag::Reset()
   m_strStatus= "";
   m_strProductionCode= "";
   m_strFirstAired= "";
-//m_strEpisodeGuide = "";
   m_iTop250 = 0;
   m_iYear = 0;
-  m_iSeason = 0;
+  m_iSeason = -1;
   m_iEpisode = 0;
+  m_iSpecialSortSeason = -1;
+  m_iSpecialSortEpisode = -1;
   m_fRating = 0.0f;
   m_iDbId = -1;
 
@@ -53,12 +54,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   XMLUtils::SetInt(movie, "season", m_iSeason);
   XMLUtils::SetInt(movie, "episode", m_iEpisode);
+  XMLUtils::SetInt(movie, "displayseason",m_iSpecialSortSeason);
+  XMLUtils::SetInt(movie, "displayepisode",m_iSpecialSortEpisode);
   XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetString(movie, "runtime", m_strRuntime);
-  XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_url);
+  XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_xml);
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
   XMLUtils::SetString(movie, "file", m_strFile);
@@ -105,6 +108,8 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
   XMLUtils::GetInt(movie, "episode", m_iEpisode);
+  XMLUtils::GetInt(movie, "displayseason", m_iSpecialSortSeason);
+  XMLUtils::GetInt(movie, "displayepisode", m_iSpecialSortEpisode);
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);
@@ -121,7 +126,9 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "code", m_strProductionCode);
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
 
-  m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+  m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
+  if (m_strPictureURL.m_url.size() == 0)
+    m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
 
   CStdString strTemp;
   const TiXmlNode *node = movie->FirstChild("genre");
@@ -204,9 +211,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strTagLine;
     ar << m_strPlotOutline;
     ar << m_strPlot;
-    ar << m_strPictureURL.m_post;
     ar << m_strPictureURL.m_spoof;
-    ar << m_strPictureURL.m_url;
+    ar << m_strPictureURL.m_xml;
     ar << m_strTitle;
     ar << m_strVotes;
     ar << (int)m_cast.size();
@@ -235,6 +241,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iEpisode;
     ar << m_fRating;
     ar << m_iDbId;
+    ar << m_iSpecialSortSeason;
+    ar << m_iSpecialSortEpisode;
   }
   else
   {
@@ -244,9 +252,9 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strTagLine;
     ar >> m_strPlotOutline;
     ar >> m_strPlot;
-    ar >> m_strPictureURL.m_post;
     ar >> m_strPictureURL.m_spoof;
-    ar >> m_strPictureURL.m_url;
+    ar >> m_strPictureURL.m_xml;
+    m_strPictureURL.Parse();
     ar >> m_strTitle;
     ar >> m_strVotes;
     int iCastSize;
@@ -278,5 +286,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iEpisode;
     ar >> m_fRating;
     ar >> m_iDbId;
+    ar >> m_iSpecialSortSeason;
+    ar >> m_iSpecialSortEpisode;
   }
 }

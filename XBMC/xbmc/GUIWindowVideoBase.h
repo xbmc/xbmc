@@ -17,7 +17,7 @@ public:
   int  GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
-  static void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively);
+  static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -59,7 +59,7 @@ protected:
   void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
-  int GetScraperForItem(CFileItem *item, SScraperInfo &info);
+  int GetScraperForItem(CFileItem *item, SScraperInfo &info, VIDEO::SScanSettings& settings);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

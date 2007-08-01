@@ -52,6 +52,7 @@ CXbmcHttp* pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 CUdpBroadcast* pUdpBroadcast;
 
+
 //Response format
 CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
 bool incWebHeader, incWebFooter, closeFinalTag;
@@ -520,13 +521,8 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   //CStdString strPath = item.m_strPath;
   CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
   item->m_strPath=strPath;
-  if (item->IsInternetStream())
-  {
-    //we got an url, create a dummy .strm playlist,
-    //pPlayList->Load will handle loading it from url instead of from a file
-    strPath = "temp.strm";
-  }
-  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
+
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*item));
   if ( NULL == pPlayList.get())
     return false;
   if (!pPlayList->Load(item->m_strPath))
@@ -1283,9 +1279,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
     output+=closeTag+openTag+"Duration:";
     if (g_application.IsPlayingVideo())
-      output += g_infoManager.GetVideoLabel(PLAYER_DURATION);
+      output += g_infoManager.GetDuration();
     else
-      output += g_infoManager.GetMusicLabel(PLAYER_DURATION);
+      output += g_infoManager.GetDuration();
     tmp.Format("%i",(int)g_application.GetPercentage());
     output+=closeTag+openTag+"Percentage:"+tmp;
     // file size
@@ -1917,34 +1913,13 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
 
 int CXbmcHttp::xbmcExit(int theAction)
 {
-  g_application.ResetScreenSaver();
-  g_application.ResetScreenSaverWindow();
-  Sleep(1000);
-  switch(theAction)
+  if (theAction>0 && theAction<6)
   {
-  case 1:
-    g_applicationMessenger.Restart();
-    return SetResponse(openTag+"OK");
-    break;
-  case 2:
-    g_applicationMessenger.Shutdown();
-    return SetResponse(openTag+"OK");
-    break;
-  case 3:
-    g_applicationMessenger.RebootToDashBoard();
-    return SetResponse(openTag+"OK");
-    break;
-  case 4:
-    g_applicationMessenger.Reset();
-    return SetResponse(openTag+"OK");
-    break;
-  case 5:
-    g_applicationMessenger.RestartApp();
-    return SetResponse(openTag+"OK");
-    break;
-  default:
-    return SetResponse(openTag+"Error");
+    SetResponse(openTag+"OK");
+	return theAction;
   }
+  else
+    return SetResponse(openTag+"Error");
 }
 
 int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
@@ -2572,6 +2547,19 @@ int CXbmcHttp::xbmcAutoGetPictureThumbs(int numParas, CStdString paras[])
   }
 }
 
+int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
+{
+  if (numParas!=1)
+	  return SetResponse(openTag+"Error:There must be one and only one parameter");
+  else
+  {
+	CAction action;
+    action.wID = atoi(paras[0]);
+    g_application.OnAction(action);
+    return SetResponse(openTag+"OK");
+  }
+}
+
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -2640,7 +2628,7 @@ int CXbmcHttp::xbmcHelp()
 
 int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 {
-  int numParas, retVal;
+  int numParas, retVal=false;
   CStdString command, paras[MAX_PARAS];
   numParas = splitParameter(parameter, command, paras, ";");
   if (parameter.length()<300)
@@ -2725,6 +2713,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
 	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
+	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
@@ -2741,6 +2730,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  retVal = SetResponse(openTag+"Error:Too many parameters");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
+  return retVal;
 //relinquish the remainder of time slice
 #ifndef _DEBUG 
   Sleep(0);
@@ -2769,18 +2759,22 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
   int open, close;
   CStdString parameter="", cmd=command, execute;
   open = cmd.Find("(");
-  close = cmd.Find(")", open);
-  if (open > 0 && close > 0)
+  if (open>0)
   {
-    parameter = cmd.Mid(open + 1, close - open - 1);
-    parameter.Replace(",",";");
-    execute = cmd.Left(open);
+	close=cmd.length();
+	while (close>open && cmd.Mid(close,1)!=")")
+	  close--;
+	if (close>open)
+	{
+	  parameter = cmd.Mid(open + 1, close - open - 1);
+      parameter.Replace(",",";");
+      execute = cmd.Left(open);
+	}
+	else //open bracket but no close
+	  return "";
   }
-  else if (open>0) //open bracket but no close
-    return "";
   else //no parameters
-    execute=cmd;
-
+    execute = cmd;
   return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
 }
 

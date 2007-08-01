@@ -39,7 +39,6 @@
 
 CCueDocument::CCueDocument(void)
 {
-  m_strFilePath = "";
   m_strArtist = "";
   m_strAlbum = "";
   m_replayGainAlbumPeak = 0.0f;
@@ -60,7 +59,8 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
   CStdString strLine;
   m_iTotalTracks = -1;
-  int iTrackNumber = 0;
+  CStdString strCurrentFile = "";
+  bool bCurrentFileChanged = false;
   int time;
 
   // Run through the .CUE file and extract the tracks...
@@ -68,59 +68,71 @@ bool CCueDocument::Parse(const CStdString &strFile)
   {
     if (!ReadNextLine(strLine))
       break;
-    if (strLine.Left(8) == "INDEX 01")
+    if (strLine.Left(7) == "INDEX 0")
     {
-      time = ExtractTimeFromString(strLine.c_str() + 8);
+      // find the end of the number section
+      time = ExtractTimeFromIndex(strLine);
       if (time == -1)
       { // Error!
-        OutputDebugString("Mangled Time in INDEX 01 tag in CUE file!\n");
+        OutputDebugString("Mangled Time in INDEX 0x tag in CUE file!\n");
         return false;
       }
       if (m_iTotalTracks > 0)  // Set the end time of the last track
         m_Track[m_iTotalTracks - 1].iEndTime = time;
-      // we have had a TRACK marker since the last INDEX marker, so note it down.
-      if (iTrackNumber > 0)
-      {
-        m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
-        iTrackNumber = 0;
-      }
-      else
-      {
-        m_Track[m_iTotalTracks].iTrackNumber = m_iTotalTracks + 1;
-      }
 
       m_Track[m_iTotalTracks].iStartTime = time; // start time of the next track
     }
     else if (strLine.Left(5) == "TITLE")
     {
       if (m_iTotalTracks == -1) // No tracks yet
-        ExtractQuoteInfo(m_strAlbum, strLine.c_str() + 5);
-      else // New Artist for this track
-        ExtractQuoteInfo(m_Track[m_iTotalTracks].strTitle, strLine.c_str() + 5);
+        ExtractQuoteInfo(strLine, m_strAlbum);
+      else if (!ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strTitle))
+      {
+        // lets manage tracks titles without quotes
+        CStdString titleNoQuote = strLine.Mid(5);
+        titleNoQuote.TrimLeft();
+        if (!titleNoQuote.IsEmpty())
+        {
+          g_charsetConverter.stringCharsetToUtf8(titleNoQuote);
+          m_Track[m_iTotalTracks].strTitle = titleNoQuote;
+        }
+      }
     }
     else if (strLine.Left(9) == "PERFORMER")
     {
       if (m_iTotalTracks == -1) // No tracks yet
-        ExtractQuoteInfo(m_strArtist, strLine.c_str() + 9);
+        ExtractQuoteInfo(strLine, m_strArtist);
       else // New Artist for this track
-        ExtractQuoteInfo(m_Track[m_iTotalTracks].strArtist, strLine.c_str() + 9);
+        ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strArtist);
     }
     else if (strLine.Left(5) == "TRACK")
     {
-      iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
+      int iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
+ 
       m_iTotalTracks++;
 
       CCueTrack track;
       m_Track.push_back(track);
-      m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
+      m_Track[m_iTotalTracks].strFile = strCurrentFile;
+
+      if (iTrackNumber > 0)
+        m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
+      else
+        m_Track[m_iTotalTracks].iTrackNumber = m_iTotalTracks + 1;
+
+      bCurrentFileChanged = false;
     }
     else if (strLine.Left(4) == "FILE")
     {
-      if (m_iTotalTracks == -1)
-        ExtractQuoteInfo(m_strFilePath, strLine.c_str() + 4);
-      else if (m_strFilePath.size())
-        return false;                 // means we have more than 1 media file in the .cue
-                                      // we don't currently handle these type of cue sheets.
+      // already a file name? then the time computation will be changed
+      if(strCurrentFile.size() > 0)
+        bCurrentFileChanged = true;
+
+      ExtractQuoteInfo(strLine, strCurrentFile);
+
+      // Resolve absolute paths (if needed).
+      if (strCurrentFile.length() > 0)
+        ResolvePath(strCurrentFile, strFile);
     }
     else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_GAIN")
       m_replayGainAlbumGain = (float)atof(strLine.Mid(26));
@@ -131,9 +143,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     else if (strLine.Left(25) == "REM REPLAYGAIN_TRACK_PEAK" && m_iTotalTracks >= 0)
       m_Track[m_iTotalTracks].replayGainTrackPeak = (float)atof(strLine.Mid(26));
   }
-  // Resolve absolute paths (if needed).
-  if (m_strFilePath.length() > 0)
-    ResolvePath(m_strFilePath, strFile);
+
   // reset track counter to 0, and fill in the last tracks end time
   m_iTrack = 0;
   if (m_iTotalTracks > 0)
@@ -167,7 +177,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       song.strTitle.Format("Track %2d", i + 1);
     else
       song.strTitle = m_Track[i].strTitle;
-    song.strFileName = m_strFilePath;
+    song.strFileName =  m_Track[i].strFile;
     song.iStartOffset = m_Track[i].iStartTime;
     song.iEndOffset = m_Track[i].iEndTime;
     if (song.iEndOffset)
@@ -179,9 +189,14 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   }
 }
 
-CStdString CCueDocument::GetMediaPath()
+void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
 {
-  return m_strFilePath;
+  std::set<CStdString> uniqueFiles;
+  for (int i = 0; i < m_iTotalTracks; i++)
+    uniqueFiles.insert(m_Track[i].strFile);
+
+  for (std::set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+    mediaFiles.push_back(*it);
 }
 
 CStdString CCueDocument::GetMediaTitle()
@@ -204,7 +219,7 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
   {
     // Remove the white space at the beginning of the line.
     pos = m_szBuffer;
-    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\n' || *pos == '\n')) pos++;
+    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')) pos++;
     if (pos)
     {
       szLine = pos;
@@ -217,90 +232,63 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Function: ExtractQuoteInfo()
-// Extracts the information in quotes from the string szLine, returning it in szData
-// szLine is destroyed in the process
+// Extracts the information in quotes from the string line, returning it in quote
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ExtractQuoteInfo(CStdString &strData, const char *strLine)
+bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
 {
-  char szLine[1024];
-  strcpy(szLine, strLine);
-  char *pos = strchr(szLine, '"');
-  if (pos)
-  {
-    char *pos2 = strrchr(szLine, '"');
-    if (pos2)
-    {
-      *pos2 = 0x00;
-      strData = &pos[1];
-      g_charsetConverter.stringCharsetToUtf8(strData);
-      return true;
-    }
-  }
-  strData = "";
-  return false;
+  quote.Empty();
+  int left = line.Find('\"');
+  if (left < 0) return false;
+  int right = line.Find('\"', left + 1);
+  if (right < 0) return false;
+  quote = line.Mid(left + 1, right - left - 1);
+  g_charsetConverter.stringCharsetToUtf8(quote);
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-// Function: ExtractTimeFromString()
-// Extracts the time information from the string szData, returning it as a value in
+// Function: ExtractTimeFromIndex()
+// Extracts the time information from the index string index, returning it as a value in
 // milliseconds.
 // Assumed format is:
 // MM:SS:FF where MM is minutes, SS seconds, and FF frames (75 frames in a second)
 ////////////////////////////////////////////////////////////////////////////////////
-int CCueDocument::ExtractTimeFromString(const char *szData)
+int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
 {
-  char szTemp[1024];
-  char *pos, *pos2;
-  double time;
-  strcpy(szTemp, szData);
-  // Get rid of any whitespace
-  pos = szTemp;
-  while (pos && *pos == ' ') pos++;
-  pos2 = pos;
-  while (pos2 && *pos2 >= '0' && *pos2 <= '9') pos2++;
-  if (pos2)
+  // Get rid of the index number and any whitespace
+  CStdString numberTime = index.Mid(5);
+  numberTime.TrimLeft();
+  while (!numberTime.IsEmpty())
   {
-    *pos2 = 0x00;
-    time = atoi(pos);
-    pos = ++pos2;
-    while (pos2 && *pos2 >= '0' && *pos2 <= '9') pos2++;
-    if (pos2)
-    {
-      *pos2 = 0x00;
-      time = time * 60 + atoi(pos);
-      pos = ++pos2;
-      while (pos2 && *pos2 >= '0' && *pos2 <= '9') pos2++;
-      if (pos2)
-      {
-        *pos2 = 0x00;
-        time = time * 75 + atoi(pos);
-        return (int)time;
-      }
-    }
+    if (!isdigit(numberTime[0]))
+      break;
+    numberTime.erase(0, 1);
   }
-  return -1;
+  numberTime.TrimLeft();
+  // split the resulting string 
+  CStdStringArray time;
+  StringUtils::SplitString(numberTime, ":", time);
+  if (time.size() != 3)
+    return -1;
+
+  int mins = atoi(time[0].c_str());
+  int secs = atoi(time[1].c_str());
+  int frames = atoi(time[2].c_str());
+
+  return (mins*60 + secs)*75 + frames;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Function: ExtractNumericInfo()
-// Extracts the numeric info from the string szData, returning it as an integer value
+// Extracts the numeric info from the string info, returning it as an integer value
 ////////////////////////////////////////////////////////////////////////////////////
-int CCueDocument::ExtractNumericInfo(const char *szData)
+int CCueDocument::ExtractNumericInfo(const CStdString &info)
 {
-  char szTemp[1024];
-  char *pos, *pos2;
-  strcpy(szTemp, szData);
-  // Get rid of any whitespace
-  pos = szTemp;
-  while (pos && *pos == ' ') pos++;
-  pos2 = pos;
-  while (pos2 && *pos2 >= '0' && *pos2 <= '9') pos2++;
-  if (pos2)
-  {
-    *pos2 = 0x00;
-    return atoi(pos);
-  }
-  return -1;
+  CStdString number(info);
+  number.TrimLeft();
+  if (number.IsEmpty() || !isdigit(number[0]))
+    return -1;
+  return atoi(number.c_str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

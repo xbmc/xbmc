@@ -12,6 +12,7 @@
 #include <stack>
 #include "../xbmc/utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"                // for the members m_guiTransform etc.
+#include "Geometry.h"                       // for CRect/CPoint
 
 // forward definitions
 class IMsgSenderCallback;
@@ -82,9 +83,9 @@ public:
   void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
+  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
-  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
   int GetFPS() const;
   bool SendMessage(CGUIMessage& message);
   void setMessageSender(IMsgSenderCallback* pCallback);
@@ -122,55 +123,82 @@ public:
   float GetScalingPixelRatio() const;
 
   void InvertFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalXCoord(float x, float y) const;
-  inline float ScaleFinalYCoord(float x, float y) const;
-  inline void ScaleFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalX() const { return m_windowScaleX; };
-  inline float ScaleFinalY() const { return m_windowScaleY; };
-  inline DWORD MergeAlpha(DWORD color) const;
+  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y, 0); }
+  inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y, 0); }
+  inline float ScaleFinalZCoord(float x, float y) const { return m_finalTransform.TransformZCoord(x, y, 0); }
+  inline void ScaleFinalCoords(float &x, float &y, float &z) const { m_finalTransform.TransformPosition(x, y, z); }
+  bool RectIsAngled(float x1, float y1, float x2, float y2) const;
+
+  inline float GetGUIScaleX() const { return m_guiScaleX; };
+  inline float GetGUIScaleY() const { return m_guiScaleY; };
+  inline DWORD MergeAlpha(DWORD color) const
+  {
+    DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+    if (alpha > 255) alpha = 255;
+    return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
+  }
+
+  void SetOrigin(float x, float y);
+  void RestoreOrigin();
+  void SetCameraPosition(const CPoint &camera);
+  void RestoreCameraPosition();
+  bool SetClipRegion(float x, float y, float w, float h);
+  void RestoreClipRegion();
+  void ClipRect(CRect &vertex, CRect &texture);
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
     while (m_groupTransform.size())
       m_groupTransform.pop();
     m_groupTransform.push(m_guiTransform * matrix);
-    m_finalTransform = m_groupTransform.top();
+    UpdateFinalTransform(m_groupTransform.top());
   }
-  inline void SetControlTransform(const TransformMatrix &matrix)
+  inline void AddTransform(const TransformMatrix &matrix)
   {
-    m_finalTransform = m_groupTransform.top() * matrix;
-  };
-  inline void AddGroupTransform(const TransformMatrix &matrix)
-  { // add to the stack
-    m_groupTransform.push(m_groupTransform.top() * matrix);
-    m_finalTransform = m_groupTransform.top();
-  };
-  inline void RemoveGroupTransform()
-  { // remove from stack
-    if (m_groupTransform.size()) m_groupTransform.pop();
-  };
+    ASSERT(m_groupTransform.size());
+    if (m_groupTransform.size())
+      m_groupTransform.push(m_groupTransform.top() * matrix);
+    else
+      m_groupTransform.push(matrix);
+    UpdateFinalTransform(m_groupTransform.top());
+  }
+  inline void RemoveTransform()
+  {
+    ASSERT(m_groupTransform.size() > 1);
+    if (m_groupTransform.size())
+      m_groupTransform.pop();
+    if (m_groupTransform.size())
+      UpdateFinalTransform(m_groupTransform.top());
+    else
+      UpdateFinalTransform(TransformMatrix());
+  }
 
 protected:
   IMsgSenderCallback* m_pCallback;
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
+  stack<D3DVIEWPORT8*> m_viewStack;
+  DWORD m_stateBlock;
   int m_iScreenHeight;
   int m_iScreenWidth;
   int m_iBackBufferCount;
   DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
-  stack<D3DVIEWPORT8*> m_viewStack;
   RECT m_videoRect;
   bool m_bFullScreenVideo;
   bool m_bShowPreviewWindow;
   bool m_bCalibrating;
   RESOLUTION m_Resolution;
-  DWORD m_stateBlock;
-
+  
 private:
+  void UpdateCameraPosition(const CPoint &camera);
+  void UpdateFinalTransform(const TransformMatrix &matrix);
   RESOLUTION m_windowResolution;
-  float m_windowScaleX;
-  float m_windowScaleY;
+  float m_guiScaleX;
+  float m_guiScaleY;
+  stack<CPoint> m_cameras;
+  stack<CPoint> m_origins;
+  stack<CRect>  m_clipRegions;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;

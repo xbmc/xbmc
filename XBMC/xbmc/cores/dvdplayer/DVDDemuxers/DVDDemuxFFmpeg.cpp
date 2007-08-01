@@ -101,6 +101,18 @@ static int dvd_file_close(URLContext *h)
   return 0;
 }
 
+static DWORD g_urltimeout = 0;
+static int interrupt_cb(void)
+{
+  if(!g_urltimeout)
+    return 0;
+  
+  if(GetTickCount() > g_urltimeout)
+    return 1;
+
+  return 0;
+}
+
 URLProtocol dvd_file_protocol = {
                                   "CDVDInputStream",
                                   NULL,
@@ -118,6 +130,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
   m_pInput = NULL;
+  memset(&m_ioContext, 0, sizeof(ByteIOContext));
   InitializeCriticalSection(&m_critSection);
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_iCurrentPts = 0LL;
@@ -141,6 +154,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // register codecs
   m_dllAvFormat.av_register_all();
+  m_dllAvFormat.url_set_interrupt_cb(interrupt_cb);
 
   // could be used for interupting ffmpeg while opening a file (eg internet streams)
   // url_set_interrupt_cb(NULL);
@@ -148,17 +162,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 
-  bool streaminfo; /* set to true if we want to look for streams before playback*/
-  if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
-  {
-    /* if we can't seek in the stream there is no need for stream info */
-    if( m_pInput->Seek(0, SEEK_CUR) < 0 )
-      streaminfo = false;
-    else
-      streaminfo = true;
-  }
-  else
-    streaminfo = false;
+  bool streaminfo = true; /* set to true if we want to look for streams before playback*/
 
   if( m_pInput->GetContent().length() > 0 )
   {
@@ -184,60 +188,91 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       streaminfo = false;
   }
 
-  // initialize url context to be used as filedevice
-  URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strlen(strFile) + 1);
-  context->prot = &dvd_file_protocol;
-  context->is_streamed = m_pInput->GetLength() > 0 ? 0 : 1;      // default = not streamed
-  context->priv_data = (void*)m_pInput;
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
-
-  strcpy(context->filename, strFile);  
-
-  // open our virtual file device
-  if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
+  if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unable to init io context");
-    m_dllAvUtil.av_free(context);
-    Dispose();
-    return false;
-  }
+    g_urltimeout = GetTickCount() + 10000;
 
-  if( iformat == NULL )
-  {
-    // let ffmpeg decide which demuxer we have to open
-    AVProbeData pd;
-    BYTE probe_buffer[2048];
-
-    // init probe data
-    pd.buf = probe_buffer;
-    pd.filename = strFile;
-
-    // read data using avformat's buffers
-    pd.buf_size = m_dllAvFormat.get_buffer(&m_ioContext, pd.buf, sizeof(probe_buffer));
-    m_dllAvFormat.url_fseek(&m_ioContext , 0, SEEK_SET);
-    
-    if (pd.buf_size == 0)
+    // special stream type that makes avformat handle file opening
+    // allows internal ffmpeg protocols to be used
+    if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile, iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - error reading from input stream, %s", strFile);
-      return false;
-    }
-    
-    iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
-    if (!iformat)
-    {
-      CLog::Log(LOGERROR, __FUNCTION__" - error probing input format, %s", strFile);
+      CLog::DebugLog("Error, could not open file %s", strFile);
+      Dispose();
       return false;
     }
   }
-
-
-  // open the demuxer
-  if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
+  else
   {
-    CLog::DebugLog("Error, could not open file", strFile);
-    Dispose();
-    return false;
+    g_urltimeout = 0;
+
+    // initialize url context to be used as filedevice
+    URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strlen(strFile) + 1);
+    context->prot = &dvd_file_protocol;
+    context->priv_data = (void*)m_pInput;
+    context->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
+      context->is_streamed = 1;
+    }
+    else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
+    {
+      if(m_pInput->Seek(0, SEEK_CUR) < 0)
+        context->is_streamed = 1;
+    }
+    
+    // skip finding stream info for any streamed content
+    if(context->is_streamed)
+      streaminfo = false;  
+
+    strcpy(context->filename, strFile);  
+
+    // open our virtual file device
+    if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - Unable to init io context");
+      m_dllAvUtil.av_free(context);
+      Dispose();
+      return false;
+    }
+
+    if( iformat == NULL )
+    {
+      // let ffmpeg decide which demuxer we have to open
+      AVProbeData pd;
+      BYTE probe_buffer[2048];
+
+      // init probe data
+      pd.buf = probe_buffer;
+      pd.filename = strFile;
+
+      // read data using avformat's buffers
+      pd.buf_size = m_dllAvFormat.get_buffer(&m_ioContext, pd.buf, sizeof(probe_buffer));
+      m_dllAvFormat.url_fseek(&m_ioContext , 0, SEEK_SET);
+      
+      if (pd.buf_size == 0)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - error reading from input stream, %s", strFile);
+        return false;
+      }
+      
+      iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+      if (!iformat)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - error probing input format, %s", strFile);
+        return false;
+      }
+    }
+
+
+    // open the demuxer
+    if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
+    {
+      CLog::DebugLog("Error, could not open file", strFile);
+      Dispose();
+      return false;
+    }
   }
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
@@ -259,6 +294,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       }
     }
   }
+  // reset any timeout
+  g_urltimeout = 0;
 
   // print some extra information
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile, 0);
@@ -362,19 +399,16 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
       m_iCurrentPts = 0LL;
     }
     else
-    {
-      // pkt.pts is not the real pts, but a frame number.
-      // to get our pts we need to multiply the frame delay with that number
-      int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
-      int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
-        
+    {        
       // XXX, in some cases ffmpeg returns a negative packet size
-      if (pkt.size <= 0 || num == 0 || den == 0 || pkt.stream_index >= MAX_STREAMS)
+      if (pkt.size <= 0 || pkt.stream_index >= MAX_STREAMS)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
       }
       else
       {
+        AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
+
         pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
         if (pPacket)
         {
@@ -386,14 +420,19 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(pkt.pts == 0)
             pkt.pts = AV_NOPTS_VALUE;
 
+          // lavf lies about delayed frames in h264 since parser doesn't set it properly
+          // dts values are then invalid
+          if(stream->codec && stream->codec->codec_id == CODEC_ID_H264 && !stream->codec->has_b_frames)
+            pkt.dts = AV_NOPTS_VALUE;
+
           // copy contents into our own packet
           pPacket->iSize = pkt.size;
           
           // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
           memcpy(pPacket->pData, pkt.data, pPacket->iSize);
           
-          pPacket->pts = ConvertTimestamp(pkt.pts, den, num);
-          pPacket->dts = ConvertTimestamp(pkt.dts, den, num);
+          pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
+          pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
 
           // used to guess streamlength
           if (pPacket->dts != DVD_NOPTS_VALUE && pPacket->dts > m_iCurrentPts)

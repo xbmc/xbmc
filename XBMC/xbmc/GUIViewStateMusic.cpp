@@ -252,6 +252,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     }
     break;
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
+  case NODE_TYPE_ALBUM_TOP100_SONGS:
   case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_SONG:
     {
@@ -604,6 +605,7 @@ CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) :
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
   CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
 
+  AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
   AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
   AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
 

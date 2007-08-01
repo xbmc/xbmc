@@ -33,7 +33,7 @@
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
-			<include>textcolor_dialogheader</include>
+			<textcolor>dialogheader</textcolor>
 			<include>homemisc</include>
 		</control>
 		<control type="label" id="3">
@@ -112,8 +112,8 @@
 			<textureupfocus>scroll-up-focus.png</textureupfocus>
 			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 			<font>font12</font>
-			<include>textcolorwhite</include>
-			<include>disabledcolor</include>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
@@ -133,8 +133,8 @@
 			<textureslidernib>osd_slider_nibNF.png</textureslidernib>
 			<textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
 			<font>font12</font>
-			<include>textcolorwhite</include>
-			<include>disabledcolor</include>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
 			<include>homemisc</include>
 		</control>

@@ -471,6 +471,12 @@
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStream.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFFmpeg.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFFmpeg.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.cpp">
 					</File>
 					<File
@@ -724,6 +730,9 @@
 					RelativePath="..\..\xbmc\cores\paplayer\DllWAVPack.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DllWMA.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DTSCDDACodec.cpp">
 				</File>
 				<File
@@ -921,6 +930,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\DllLoader\DllLoaderContainer.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DllLoader\LibraryLoader.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DllLoader\LibraryLoader.h">
 				</File>
 				<Filter
 					Name="exports"
@@ -3105,6 +3120,9 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlfadelabel.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlgroup.cpp">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">

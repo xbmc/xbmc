@@ -4,11 +4,11 @@
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/util.h"
+#include "../xbmc/Util.h"
 
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_currentPath = m_texturePath = strTexturePath;
@@ -16,6 +16,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
   CUtil::AddSlashAtEnd(m_texturePath);
   m_currentImage = 0;
   m_timePerImage = timePerImage;
+  m_timeToPauseAtEnd = timeToPauseAtEnd;
   m_fadeTime = fadeTime;
   m_randomized = randomized;
   m_loop = loop;
@@ -30,15 +31,19 @@ CGUIMultiImage::~CGUIMultiImage(void)
 {
 }
 
-void CGUIMultiImage::Render()
+void CGUIMultiImage::UpdateVisibility()
 {
-  // check if we're hidden, and deallocate + return
+  CGUIControl::UpdateVisibility();
+
+  // check if we're hidden, and deallocate if so
   if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
     return;
   }
+
+  // we are either delayed or visible, so we can allocate our resources
 
   // check for conditional information before we
   // alloc as this can free our resources
@@ -59,18 +64,17 @@ void CGUIMultiImage::Render()
     }
   }
 
+  // and allocate our resources
   if (!IsAllocated())
     AllocResources();
+}
 
-  // if we're delayed, we allocate (above) but there's no need to render.
-  if (m_visible == DELAYED)
-    return CGUIControl::Render();
-
+void CGUIMultiImage::Render()
+{
   if (!m_images.empty())
   {
     // Set a viewport so that we don't render outside the defined area
-    g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
-    m_images[m_currentImage]->Render();
+    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
 
     unsigned int nextImage = m_currentImage + 1;
     if (nextImage >= m_images.size())
@@ -79,7 +83,10 @@ void CGUIMultiImage::Render()
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
-      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > m_timePerImage)
+      DWORD timeToShow = m_timePerImage;
+      if (0 == nextImage) // last image should be paused for a bit longer if that's what the skinner wishes.
+        timeToShow += m_timeToPauseAtEnd;
+      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow)
       {
         m_imageTimer.Stop();
         // grab a new image
@@ -93,7 +100,7 @@ void CGUIMultiImage::Render()
       {
         // check if the fade timer has run out
         float timeFading = m_fadeTimer.GetElapsedMilliseconds();
-        if (timeFading > m_fadeTime)
+        if (timeFading >= m_fadeTime)
         {
           m_fadeTimer.Stop();
           // swap images
@@ -104,14 +111,41 @@ void CGUIMultiImage::Render()
           m_imageTimer.StartZero();
         }
         else
-        { // perform the fade
+        { // perform the fade in of next image
           float fadeAmount = timeFading / m_fadeTime;
-          m_images[nextImage]->SetAlpha((unsigned char)(255 * fadeAmount));
+          float alpha = (float)(m_diffuseColor >> 24) / 255.0f;
+          if (alpha < 1 && alpha > 0)
+          { // we have a semi-transparent image, so we need to use a more complicated
+            // fade technique.  Assuming a black background (not generally true, but still...)
+            // we have
+            // b(t) = [a - b(1-t)*a] / a*(1-b(1-t)*a),
+            // where a = alpha, and b(t):[0,1] -> [0,1] is the blend function.
+            // solving, we get
+            // b(t) = [1 - (1-a)^t] / a
+            float blendIn = (1 - pow(1-alpha, fadeAmount)) / alpha;
+            m_images[nextImage]->SetAlpha((unsigned char)(255 * blendIn));
+            float blendOut = (1 - blendIn) / (1 - blendIn*alpha); // no need to use pow() again here
+            m_images[m_currentImage]->SetAlpha((unsigned char)(255 * blendOut));
+          }
+          else
+          { // simple case, just fade in the second image
+            m_images[m_currentImage]->SetAlpha(255);
+            m_images[nextImage]->SetAlpha((unsigned char)(255*fadeAmount));
+          }
+          m_images[m_currentImage]->Render();
         }
         m_images[nextImage]->Render();
       }
+      else
+      { // only one image - render it.
+        m_images[m_currentImage]->Render();
+      }
     }
-    g_graphicsContext.RestoreViewPort();
+    else
+    { // only one image - render it.
+      m_images[m_currentImage]->Render();
+    }
+    g_graphicsContext.RestoreClipRegion();
   }
   CGUIControl::Render();
 }
@@ -176,10 +210,11 @@ void CGUIMultiImage::LoadImage(int image)
   // Scale image so that it will fill our render area
   if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)
   {
-    // image is scaled so that the aspect ratio is maintained (taking into account the TV pixel ratio)
-    // and so that it fills the allocated space (so is zoomed then cropped)
+    // to get the pixel ratio, we must use the SCALED output sizes
+    float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
+
     float sourceAspectRatio = (float)m_images[image]->GetTextureWidth() / m_images[image]->GetTextureHeight();
-    float aspectRatio = sourceAspectRatio / g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
+    float aspectRatio = sourceAspectRatio / pixelRatio;
 
     float newWidth = m_width;
     float newHeight = newWidth / aspectRatio;

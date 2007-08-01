@@ -18,8 +18,6 @@ CGUIVideoControl::~CGUIVideoControl(void)
 
 void CGUIVideoControl::Render()
 {
-  if (!IsVisible()) return;
-
 #ifdef HAS_VIDEO_PLAYBACK
   // don't render if we aren't playing video, or if the renderer isn't started
   // (otherwise the lock we have from CApplication::Render() may clash with the startup
@@ -81,10 +79,11 @@ bool CGUIVideoControl::CanFocus() const
 
 bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
-  if (HitTest(point))
+  controlPoint = point;
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (HitTest(controlPoint))
   {
     *control = (CGUIControl *)this;
-    controlPoint = point;
     return true;
   }
   *control = NULL;

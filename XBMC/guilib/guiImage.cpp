@@ -1,20 +1,27 @@
 #include "include.h"
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "TextureManager.h"
-#include "../xbmc/settings.h"
+#include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   memset(m_alpha, 0xff, 4);
-  m_strFileName = texture.file;
+  m_image = texture;
+  g_infoManager.ParseLabel(m_image.file, m_multiInfo);
+  if (m_multiInfo.size() == 1 && !m_multiInfo[0].m_info)
+    m_multiInfo.clear();  // no info here at all - just a standard texture
+  if (m_multiInfo.size())
+    m_image.file.Empty(); // have multiinfo, so no fallback texture
+  m_strFileName = m_image.file;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
   m_dwColorKey = dwColorKey;
   m_iCurrentImage = 0;
-  m_dwFrameCounter = -1;
+  m_dwFrameCounter = (DWORD) -1;
   m_aspectRatio = ASPECT_RATIO_STRETCH;
   m_aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   m_iCurrentLoop = 0;
@@ -24,8 +31,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
-  m_Info = 0;
-  m_image = texture;
+  m_singleInfo = 0;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
 }
@@ -39,7 +45,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_aspectAlign = left.m_aspectAlign;
   // defaults
   m_iCurrentImage = 0;
-  m_dwFrameCounter = -1;
+  m_dwFrameCounter = (DWORD) -1;
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
@@ -50,7 +56,8 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
-  m_Info = left.m_Info;
+  m_multiInfo = left.m_multiInfo;
+  m_singleInfo = left.m_singleInfo;
   m_image = left.m_image;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
@@ -61,19 +68,28 @@ CGUIImage::~CGUIImage(void)
 
 }
 
-void CGUIImage::Render()
+void CGUIImage::UpdateVisibility()
 {
-  GUIVISIBLE visible = m_forceHidden ? HIDDEN : m_visible;
+  CGUIControl::UpdateVisibility();
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
-  if (m_Info)
+  if (m_multiInfo.size())
   {
-    SetFileName(g_infoManager.GetImage(m_Info, m_dwParentID));
+    SetFileName(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID, true));
+  }
+  if (m_singleInfo)
+  {
+    SetFileName(g_infoManager.GetImage(m_singleInfo, m_dwParentID));
   }
 
+  AllocateOnDemand();
+}
+
+void CGUIImage::AllocateOnDemand()
+{
   // if we're hidden, we can free our resources and return
-  if (visible == HIDDEN)
+  if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
@@ -81,12 +97,18 @@ void CGUIImage::Render()
     return;
   }
 
+  // either visible or delayed - we need the resources allocated in either case
   if (!m_texturesAllocated)
     AllocResources();
+}
 
-  // if we're delayed, there's no requirement to actually render
-  if (m_visible == DELAYED)
-    return CGUIControl::Render();
+void CGUIImage::Render()
+{
+  // we need the checks for visibility and resource allocation here as
+  // most controls use CGUIImage's to do their rendering (where UpdateVisibility doesn't apply)
+  AllocateOnDemand();
+
+  if (!IsVisible()) return;
 
   if (m_vecTextures.size())
   {
@@ -95,7 +117,7 @@ void CGUIImage::Render()
     // scale to screen output position
     if (m_fNW > m_width || m_fNH > m_height)
     {
-      if (!g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height, true))
+      if (!g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
       {
         CGUIControl::Render();
         return;
@@ -145,28 +167,23 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+
 #ifdef HAS_XBOX_D3D
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
 #endif
 
-#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
-
-    p3DDevice->SetVertexShader( FVF_VERTEX2 );
-#ifdef HAS_XBOX_D3D
-    p3DDevice->Begin(D3DPT_QUADLIST);
-#else
-    p3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-#endif
+    p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
 
     float uLeft, uRight, vTop, vBottom;
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
     if (!m_linearTexture)
     {
-      uLeft = m_image.border.left / m_iTextureWidth;
-      uRight = m_fU - m_image.border.right / m_iTextureWidth;
-      vTop = m_image.border.top / m_iTextureHeight;
-      vBottom = m_fV - m_image.border.bottom / m_iTextureHeight;
+      uLeft = m_image.border.left / m_iImageWidth;
+      uRight = m_fU - m_image.border.right / m_iImageWidth;
+      vTop = m_image.border.top / m_iImageHeight;
+      vBottom = m_fV - m_image.border.bottom / m_iImageHeight;
     }
     else
     {
@@ -179,6 +196,10 @@ void CGUIImage::Render()
     }
 #endif
 
+#ifdef HAS_XBOX_D3D
+    p3DDevice->Begin(D3DPT_QUADLIST);
+#endif
+
     // TODO: The diffuse coloring applies to all vertices, which will
     //       look weird for stuff with borders, as will the -ve height/width
     //       for flipping
@@ -187,7 +208,7 @@ void CGUIImage::Render()
     if (m_image.border.left)
     {
       if (m_image.border.top)
-       Render(m_fX, m_fY, m_fX + m_image.border.left, m_fY + m_image.border.top, 0, 0, uLeft, vTop);
+        Render(m_fX, m_fY, m_fX + m_image.border.left, m_fY + m_image.border.top, 0, 0, uLeft, vTop);
       Render(m_fX, m_fY + m_image.border.top, m_fX + m_image.border.left, m_fY + m_fNH - m_image.border.bottom, 0, vTop, uLeft, vBottom);
       if (m_image.border.bottom)
         Render(m_fX, m_fY + m_fNH - m_image.border.bottom, m_fX + m_image.border.left, m_fY + m_fNH, 0, vBottom, uLeft, m_fV); 
@@ -210,6 +231,18 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
 #ifdef HAS_XBOX_D3D
     p3DDevice->End();
+    if (g_graphicsContext.RectIsAngled(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH))
+    {
+      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
+      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+      p3DDevice->Begin(D3DPT_QUADLIST);
+      Render(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH, 0, 0, m_fU, m_fV);
+      p3DDevice->End();
+      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
+      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
+      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+    }
     if (!m_linearTexture)
       p3DDevice->SetPalette( 0, NULL);
     if (m_diffusePalette)
@@ -221,7 +254,7 @@ void CGUIImage::Render()
     if (m_diffuseTexture)
       p3DDevice->SetTexture( 1, NULL );
     if (m_fNW > m_width || m_fNH > m_height)
-      g_graphicsContext.RestoreViewPort();
+      g_graphicsContext.RestoreClipRegion();
   }
   CGUIControl::Render();
 }
@@ -230,19 +263,7 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 {
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(left, top) + 0.5f) - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(left, top) + 0.5f) - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(right, top) + 0.5f) - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(right, top) + 0.5f) - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(right, bottom) + 0.5f) - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(right, bottom) + 0.5f) - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(left, bottom) + 0.5f) - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(left, bottom) + 0.5f) - 0.5f;
-
-  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
-  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
-
-  // Render the image
+  // flip the texture as necessary
   if (m_image.flipX)
   {
     u1 = m_fU - u1;
@@ -254,64 +275,89 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     v2 = m_fV - v2;
   }
 
+  // clip our rects
+  CRect vertex(left, top, right, bottom);
+  CRect texture(u1, v1, u2, v2);
+  g_graphicsContext.ClipRect(vertex, texture);
+
+  if (vertex.IsEmpty())
+    return; // nothing to render
+
+  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
+  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
+  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
+  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
+  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
+  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
+  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1);
+  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1);
+  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2);
+  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2);
+
+  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
+  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
+
+  u1 = texture.x1; u2 = texture.x2;
+  v1 = texture.y1; v2 = texture.y2;
+
 #ifdef HAS_XBOX_D3D
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
   D3DCOLOR color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   color =  m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1 );
 
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
   color =  m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
-
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
 #else
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
-      FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
       FLOAT tu2, tv2;
   };
 
   CUSTOMVERTEX verts[4];
-  verts[0].x = x1; verts[0].y = y1; verts[0].z = 0.0f; verts[0].rhw = 1.0f;
+  verts[0].x = x1; verts[0].y = y1; verts[0].z = z1;
   verts[0].tu = u1;   verts[0].tv = v1; verts[0].tu2 = u1*m_diffuseScaleU; verts[0].tv2 = v1*m_diffuseScaleV;
   DWORD color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[1].x = x2; verts[1].y = y2; verts[1].z = 0.0f;verts[1].rhw = 1.0f;
+  verts[1].x = x2; verts[1].y = y2; verts[1].z = z2;
   verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[2].x = x3; verts[2].y = y3; verts[2].z = 0.0f; verts[2].rhw = 1.0f;
+  verts[2].x = x3; verts[2].y = y3; verts[2].z = z3;
   verts[2].tu = u2;   verts[2].tv = v2; verts[2].tu2 = u2*m_diffuseScaleU; verts[2].tv2 = v2*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2],m_diffuseColor);
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
-  verts[3].x = x4; verts[3].y = y4; verts[3].z = 0.0f; verts[3].rhw = 1.0f;
+  verts[3].x = x4; verts[3].y = y4; verts[3].z = z4;
   verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
   color = m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3],m_diffuseColor);
@@ -330,7 +376,7 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
-    if (m_Info)
+    if (m_singleInfo || m_multiInfo.size())
       FreeResources();
     return true;
   }
@@ -639,6 +685,11 @@ void CGUIImage::SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, u
   m_alpha[1] = a1;
   m_alpha[2] = a2;
   m_alpha[3] = a3;
+}
+
+void CGUIImage::SetInfo(int info)
+{
+  m_singleInfo = info;
 }
 
 bool CGUIImage::IsAllocated() const

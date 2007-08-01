@@ -513,7 +513,10 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   if (!(m_dvd.iFlagSentStart & DVDPLAYER_AUDIO))
   {
     m_dvd.iFlagSentStart |= DVDPLAYER_AUDIO;
-    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
+    if(pPacket->dts != DVD_NOPTS_VALUE)
+      m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralResync(pPacket->dts, true));
+    else
+      m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, true));
   }
 
   if (m_CurrentAudio.id >= 0)
@@ -557,10 +560,12 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   {
     m_dvd.iFlagSentStart |= DVDPLAYER_VIDEO;
     
-    if (m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL )
-      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
+    bool setclock = m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL;
+
+    if(pPacket->dts != DVD_NOPTS_VALUE)
+      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->dts, setclock));
     else
-      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, pPacket->dts));
+      m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, setclock));
   }
 
   if (m_CurrentVideo.id >= 0)
@@ -971,6 +976,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
 void CDVDPlayer::ToggleFrameDrop()
 {
+  m_dvdPlayerVideo.EnableFrameDrop( !m_dvdPlayerVideo.IsFrameDropEnabled() );
 }
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
@@ -1036,23 +1042,22 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
 void CDVDPlayer::SeekPercentage(float iPercent)
 {
+  __int64 iTotalTime = GetTotalTimeInMsec();
 
-  __int64 iTotalMsec = GetTotalTimeInMsec();
-  __int64 iTime = (__int64)(iTotalMsec * iPercent / 100);
+  if (!iTotalTime)
+    return;
 
-  SeekTime(iTime);
+  SeekTime((__int64)(iTotalTime * iPercent / 100));
 }
 
 float CDVDPlayer::GetPercentage()
 {
   __int64 iTotalTime = GetTotalTimeInMsec();
 
-  if (iTotalTime != 0)
-  {
-    return GetTime() * 100 / (float)iTotalTime;
-  }
+  if (!iTotalTime)
+    return 0.0f;
 
-  return 0.0f;
+  return GetTime() * 100 / (float)iTotalTime;
 }
 
 //This is how much audio is delayed to video, we count the oposite in the dvdplayer

@@ -727,7 +727,9 @@ bool CSNTPClient::UpdateNeeded()
 
 
 CSNTPClient::~CSNTPClient()
-{}
+{
+  StopThread();
+}
 
 void CSNTPClient::Process()
 {
@@ -748,5 +750,6 @@ void CSNTPClient::Process()
       // only set time once
       return ;
     }
+    nTries++;
   }
 }

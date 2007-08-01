@@ -33,6 +33,7 @@ xcopy "NTSC16x9" "BUILD\Project Mayhem III\NTSC16x9" /E /Q /I /Y /EXCLUDE:exclud
 xcopy "PAL" "BUILD\Project Mayhem III\PAL" /E /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "PAL16x9" "BUILD\Project Mayhem III\PAL16x9" /E /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "sounds\*.*" "BUILD\Project Mayhem III\sounds\" /Q /I /Y /EXCLUDE:exclude.txt
+xcopy "colors\*.*" "BUILD\Project Mayhem III\colors\" /Q /I /Y /EXCLUDE:exclude.txt
 
 del exclude.txt
 

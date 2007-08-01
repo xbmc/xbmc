@@ -2,5 +2,5 @@
 # currently playing song
 
 import xbmc
-xbmc.executebuiltin('XBMC.BrowseURL(http://lyrc.com.ar/en/tema1en.php?artist='+xbmc.Player().getMusicInfoTag().getArtist()+'&songname='+xbmc.Player().getMusicInfoTag().getTitle()+')'))
+xbmc.executebuiltin('XBMC.BrowseURL(http://lyrc.com.ar/en/tema1en.php?artist='+xbmc.Player().getMusicInfoTag().getArtist()+'&songname='+xbmc.Player().getMusicInfoTag().getTitle()+')')
 

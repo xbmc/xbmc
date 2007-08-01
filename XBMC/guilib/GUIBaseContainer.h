@@ -29,7 +29,6 @@ public:
   CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime);
   virtual ~CGUIBaseContainer(void);
 
-  virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnDown();
   virtual void OnUp();
@@ -42,6 +41,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
+  virtual void FreeResources();
   virtual unsigned int GetRows() const;
 
   void SetPageControl(DWORD id);
@@ -50,18 +50,22 @@ public:
   virtual void SaveStates(vector<CControlState> &states);
   int GetSelectedItem() const;
 
-  virtual void Animate(DWORD currentTime);
-  virtual void UpdateEffectState(DWORD currentTime);
+  virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
+  void LoadContent(TiXmlElement *content);
 
   VIEW_TYPE GetType() const { return m_type; };
   const CStdString &GetLabel() const { return m_label; };
   void SetType(VIEW_TYPE type, const CStdString &label);
 
+  virtual bool IsContainer() const { return true; };
+  CGUIListItem *GetListItem(int offset) const;
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
 protected:
+  bool OnClick(DWORD actionID);
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
@@ -103,5 +107,7 @@ protected:
 
   VIEW_TYPE m_type;
   CStdString m_label;
+
+  bool m_staticContent;
 };
 

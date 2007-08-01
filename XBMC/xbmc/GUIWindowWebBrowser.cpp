@@ -51,6 +51,16 @@ bool CGUIWindowWebBrowser::OnAction(const CAction &action)
   CGUIWebBrowserControl *pControl = (CGUIWebBrowserControl *)GetControl(CONTROL_WEBBROWSER);
   ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
 
+  if (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_INVALID && g_guiSettings.GetBool("webbrowser.edgescroll"))
+  {
+      m_gWindowManager.m_bPointerNav = true;
+  }
+  else
+  {
+    m_gWindowManager.m_bPointerNav = false;
+    g_Mouse.SetInactive();
+  }
+
   switch(action.wID)
   {
   case ACTION_PREVIOUS_MENU:
@@ -60,6 +70,9 @@ bool CGUIWindowWebBrowser::OnAction(const CAction &action)
       // The session is lost and all memory will be freed upon termination
 
       // Prompts user for confirmation first
+      m_gWindowManager.m_bPointerNav = false;
+      g_Mouse.SetInactive();
+
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (pDialog)
       {
@@ -93,11 +106,6 @@ bool CGUIWindowWebBrowser::OnAction(const CAction &action)
     break;
     /* Those are "hooks" to be able to scroll and go back/forward even if the
     webcontrol is not focused... */
-  case ACTION_ANALOG_MOVE:
-    {
-      if (pControl) return pControl->OnAction(action);
-    }
-    break;
   }
   return CGUIWindow::OnAction(action);
 }
@@ -110,11 +118,17 @@ bool CGUIWindowWebBrowser::OnMessage(CGUIMessage& message)
     m_strInitialURL = message.GetStringParam();
     m_bShowPlayerInfo = true;
     g_infoManager.SetShowInfo(true);
+    if (g_guiSettings.GetBool("webbrowser.edgescroll"))
+    {
+      m_gWindowManager.m_bPointerNav = true;
+      g_Mouse.SetExclusiveAccess(CONTROL_WEBBROWSER, m_dwWindowId);
+    }
   }
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
     m_gWindowManager.m_bPointerNav = false;
     g_Mouse.SetInactive();
+    g_Mouse.EndExclusiveAccess(CONTROL_WEBBROWSER, m_dwWindowId);
   }
 
   return CGUIWindow::OnMessage(message);

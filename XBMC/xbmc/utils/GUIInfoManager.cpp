@@ -157,15 +157,17 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
     else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
     else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
-    else if (strTest.Equals("player.seektime")) ret = PLAYER_SEEKTIME;
     else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
     else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
     else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
     else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
     else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
-    else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
-    else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
-    else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
+    else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
+    else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
+    else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
+    else if (strTest.Left(16).Equals("player.timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
+    else if (strTest.Left(17).Equals("player.finishtime")) return AddMultiInfo(GUIInfo(PLAYER_FINISH_TIME, TranslateTimeFormat(strTest.Mid(17))));
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
@@ -208,7 +210,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
-    else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
+    else if (strTest.Left(11).Equals("system.time")) return AddMultiInfo(GUIInfo(SYSTEM_TIME, TranslateTimeFormat(strTest.Mid(11))));
     else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
     else if (strTest.Equals("system.cpuusage")) ret = SYSTEM_CPU_USAGE;
     else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
@@ -257,7 +259,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
-    else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
     
     else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
@@ -265,6 +266,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
     else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
 
+    else if (strTest.Equals("system.language")) ret = SYSTEM_LANGUAGE;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
@@ -331,6 +333,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb"))
       ret = SYSTEM_PROFILETHUMB;
+    else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -353,14 +356,23 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("network"))
   {
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
-    if (strTest.Equals("network.macadress")) ret = NETWORK_MAC_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
     if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
-    if (strTest.Equals("network.subetadress")) ret = NETWORK_SUBNET_ADDRESS;
-    if (strTest.Equals("network.gatewayadress")) ret = NETWORK_GATEWAY_ADDRESS;
-    if (strTest.Equals("network.dns1adress")) ret = NETWORK_DNS1_ADDRESS;
-    if (strTest.Equals("network.dns2adress")) ret = NETWORK_DNS2_ADDRESS;
-    if (strTest.Equals("network.dhcpadress")) ret = NETWORK_DHCP_ADDRESS;
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+    if (strTest.Equals("network.macadress") || strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
+    if (strTest.Equals("network.subetadress") || strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
+    if (strTest.Equals("network.gatewayadress") || strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
+    if (strTest.Equals("network.dns1adress") || strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
+    if (strTest.Equals("network.dns2adress") || strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
+    if (strTest.Equals("network.dhcpadress") || strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
+#else
+    if (strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
+    if (strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
+    if (strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
+    if (strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
+    if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
+    if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
+#endif
   }
   else if (strCategory.Equals("musicplayer"))
   {
@@ -369,11 +381,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
     else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
     else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
-    else if (strTest.Equals("musicplayer.time")) ret = MUSICPLAYER_TIME;
-    else if (strTest.Equals("musicplayer.timeremaining")) ret = MUSICPLAYER_TIME_REMAINING;
-    else if (strTest.Equals("musicplayer.timespeed")) ret = MUSICPLAYER_TIME_SPEED;
+    else if (strTest.Left(16).Equals("musicplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(25).Equals("musicplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
+    else if (strTest.Left(21).Equals("musicplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+    else if (strTest.Left(20).Equals("musicplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
-    else if (strTest.Equals("musicplayer.duration")) ret = MUSICPLAYER_DURATION;
     else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
     else if (strTest.Equals("musicplayer.bitrate")) ret = MUSICPLAYER_BITRATE;
     else if (strTest.Equals("musicplayer.playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
@@ -393,10 +405,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
     else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
     else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
-    else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
-    else if (strTest.Equals("videoplayer.timeremaining")) ret = VIDEOPLAYER_TIME_REMAINING;
-    else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
-    else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
+    else if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(25).Equals("videoplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
+    else if (strTest.Left(21).Equals("videoplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+    else if (strTest.Left(20).Equals("videoplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
     else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
     else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
@@ -410,6 +422,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
+    else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -439,51 +452,41 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   }
-  else if (strCategory.Equals("container"))
+  else if (strCategory.Left(9).Equals("container"))
   {
-    if (strTest.Equals("container.folderthumb")) ret = CONTAINER_FOLDERTHUMB;
-    else if (strTest.Equals("container.folderpath")) ret = CONTAINER_FOLDERPATH;
-    else if (strTest.Left(18).Equals("container.content("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
-    else if (strTest.Equals("container.hasthumb")) ret = CONTAINER_HAS_THUMB;
-    else if (strTest.Left(15).Equals("container.sort("))
+    int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
+    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+    if (info.Left(8).Equals("listitem"))
+    {
+      int offset = atoi(info.Mid(9, info.GetLength() - 10));
+      ret = TranslateListItem(info.Mid(info.Find(".")+1));
+      if (offset || id)
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
+    }
+    else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+    else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
+    else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Left(8).Equals("content("))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
+    else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
-      CStdString method(strTest.Mid(15, strTest.GetLength() - 16));
+      CStdString method(info.Mid(5, info.GetLength() - 6));
       if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
       if (sort != SORT_METHOD_NONE)
         return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
     }
+    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
-  else if (strCategory.Equals("listitem"))
+  else if (strCategory.Left(8).Equals("listitem"))
   {
-    if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
-    else if (strTest.Equals("listitem.icon")) ret = LISTITEM_ICON;
-    else if (strTest.Equals("listitem.overlay")) ret = LISTITEM_OVERLAY;
-    else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
-    else if (strTest.Equals("listitem.label2")) ret = LISTITEM_LABEL2;
-    else if (strTest.Equals("listitem.title")) ret = LISTITEM_TITLE;
-    else if (strTest.Equals("listitem.tracknumber")) ret = LISTITEM_TRACKNUMBER;
-    else if (strTest.Equals("listitem.artist")) ret = LISTITEM_ARTIST;
-    else if (strTest.Equals("listitem.album")) ret = LISTITEM_ALBUM;
-    else if (strTest.Equals("listitem.year")) ret = LISTITEM_YEAR;
-    else if (strTest.Equals("listitem.genre")) ret = LISTITEM_GENRE;
-    else if (strTest.Equals("listitem.director")) ret = LISTITEM_DIRECTOR;
-    else if (strTest.Equals("listitem.filename")) ret = LISTITEM_FILENAME;
-    else if (strTest.Equals("listitem.date")) ret = LISTITEM_DATE;
-    else if (strTest.Equals("listitem.size")) ret = LISTITEM_SIZE;
-    else if (strTest.Equals("listitem.rating")) ret = LISTITEM_RATING;
-    else if (strTest.Equals("listitem.programcount")) ret = LISTITEM_PROGRAM_COUNT;
-    else if (strTest.Equals("listitem.duration")) ret = LISTITEM_DURATION;
-    else if (strTest.Equals("listitem.isselected")) ret = LISTITEM_ISSELECTED;
-    else if (strTest.Equals("listitem.isplaying")) ret = LISTITEM_ISPLAYING;
-    else if (strTest.Equals("listitem.plot")) ret = LISTITEM_PLOT;
-    else if (strTest.Equals("listitem.plotoutline")) ret = LISTITEM_PLOT_OUTLINE;
-    else if (strTest.Equals("listitem.episode")) ret = LISTITEM_EPISODE;
-    else if (strTest.Equals("listitem.season")) ret = LISTITEM_SEASON;
-    else if (strTest.Equals("listitem.tvshowtitle")) ret = LISTITEM_TVSHOW;
-    else if (strTest.Equals("listitem.premiered")) ret = LISTITEM_PREMIERED;
-    else if (strTest.Equals("listitem.comment")) ret = LISTITEM_COMMENT;
+    int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
+    ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset));
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -501,7 +504,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int pos = strTest.Find(",");
       if (pos >= 0)
       {
-        int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 13));
+        int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 12));
         int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
         return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset, compareString));
       }
@@ -530,32 +533,47 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strTest.Left(16).Equals("window.isactive("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
-      ret = winID;
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
   }
   else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
   else if (strTest.Left(17).Equals("window.istopmost("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
   }
   else if (strTest.Left(17).Equals("window.isvisible("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
   }
   else if (strTest.Left(16).Equals("window.previous("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
   }
   else if (strTest.Left(12).Equals("window.next("))
   {
-    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(12, strTest.GetLength() - 13).c_str());
+    CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
+    if (window.Find("xml") >= 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
+    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
     if (winID != WINDOW_INVALID)
       return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
   }
@@ -599,7 +617,52 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   return bNegate ? -ret : ret;
 }
 
-string CGUIInfoManager::GetLabel(int info)
+int CGUIInfoManager::TranslateListItem(const CStdString &info)
+{
+  if (info.Equals("thumb")) return LISTITEM_THUMB;
+  else if (info.Equals("icon")) return LISTITEM_ICON;
+  else if (info.Equals("actualicon")) return LISTITEM_ACTUAL_ICON;
+  else if (info.Equals("overlay")) return LISTITEM_OVERLAY;
+  else if (info.Equals("label")) return LISTITEM_LABEL;
+  else if (info.Equals("label2")) return LISTITEM_LABEL2;
+  else if (info.Equals("title")) return LISTITEM_TITLE;
+  else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
+  else if (info.Equals("artist")) return LISTITEM_ARTIST;
+  else if (info.Equals("album")) return LISTITEM_ALBUM;
+  else if (info.Equals("year")) return LISTITEM_YEAR;
+  else if (info.Equals("genre")) return LISTITEM_GENRE;
+  else if (info.Equals("director")) return LISTITEM_DIRECTOR;
+  else if (info.Equals("filename")) return LISTITEM_FILENAME;
+  else if (info.Equals("date")) return LISTITEM_DATE;
+  else if (info.Equals("size")) return LISTITEM_SIZE;
+  else if (info.Equals("rating")) return LISTITEM_RATING;
+  else if (info.Equals("programcount")) return LISTITEM_PROGRAM_COUNT;
+  else if (info.Equals("duration")) return LISTITEM_DURATION;
+  else if (info.Equals("isselected")) return LISTITEM_ISSELECTED;
+  else if (info.Equals("isplaying")) return LISTITEM_ISPLAYING;
+  else if (info.Equals("plot")) return LISTITEM_PLOT;
+  else if (info.Equals("plotoutline")) return LISTITEM_PLOT_OUTLINE;
+  else if (info.Equals("episode")) return LISTITEM_EPISODE;
+  else if (info.Equals("season")) return LISTITEM_SEASON;
+  else if (info.Equals("tvshowtitle")) return LISTITEM_TVSHOW;
+  else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
+  else if (info.Equals("comment")) return LISTITEM_COMMENT;
+  return 0;
+}
+
+TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
+{
+  if (format.IsEmpty()) return TIME_FORMAT_GUESS;
+  else if (format.Equals("(hh)")) return TIME_FORMAT_HH;
+  else if (format.Equals("(mm)")) return TIME_FORMAT_MM;
+  else if (format.Equals("(ss)")) return TIME_FORMAT_SS;
+  else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
+  else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
+  else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
+  return TIME_FORMAT_GUESS;
+}
+
+CStdString CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
@@ -617,11 +680,11 @@ string CGUIInfoManager::GetLabel(int info)
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
     break;
-  case SYSTEM_TIME:
-    strLabel = GetTime();
-    break;
   case SYSTEM_DATE:
     strLabel = GetDate();
+    break;
+  case SYSTEM_LAUNCHING_XBE:
+    strLabel = m_launchingXBE;
     break;
   case LCD_DATE:
     strLabel = GetDate(true);
@@ -631,18 +694,6 @@ string CGUIInfoManager::GetLabel(int info)
     break;
   case PLAYER_VOLUME:
     strLabel.Format("%2.1f dB", (float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel) * 0.01f);
-    break;
-  case PLAYER_TIME:
-    strLabel = GetCurrentPlayTime();
-    break;
-  case PLAYER_TIME_REMAINING:
-    strLabel = GetCurrentPlayTimeRemaining();
-    break;
-  case PLAYER_DURATION:
-    if (g_application.IsPlayingAudio())
-      strLabel = GetMusicLabel(info);
-    else
-      strLabel = GetVideoLabel(info);
     break;
   case PLAYER_CHAPTER:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -657,11 +708,7 @@ string CGUIInfoManager::GetLabel(int info)
   case MUSICPLAYER_ARTIST:
   case MUSICPLAYER_GENRE:
   case MUSICPLAYER_YEAR:
-  case MUSICPLAYER_TIME:
-  case MUSICPLAYER_TIME_SPEED:
-  case MUSICPLAYER_TIME_REMAINING:
   case MUSICPLAYER_TRACK_NUMBER:
-  case MUSICPLAYER_DURATION:
   case MUSICPLAYER_BITRATE:
   case MUSICPLAYER_PLAYLISTLEN:
   case MUSICPLAYER_PLAYLISTPOS:
@@ -679,10 +726,6 @@ string CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_GENRE:
   case VIDEOPLAYER_DIRECTOR:
   case VIDEOPLAYER_YEAR:
-  case VIDEOPLAYER_TIME:
-  case VIDEOPLAYER_TIME_REMAINING:
-  case VIDEOPLAYER_TIME_SPEED:
-  case VIDEOPLAYER_DURATION:
   case VIDEOPLAYER_PLAYLISTLEN:
   case VIDEOPLAYER_PLAYLISTPOS:
   case VIDEOPLAYER_PLOT:
@@ -909,6 +952,9 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_PROFILENAME:
     strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
     break;
+  case SYSTEM_LANGUAGE:
+    strLabel = g_guiSettings.GetString("locale.language");
+    break;
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
@@ -1043,13 +1089,6 @@ string CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
-  case PLAYER_SEEKTIME:
-    {
-      CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-      if (seekBar)
-        strLabel = seekBar->GetSeekTimeLabel();
-    }
-    break;
   case LISTITEM_LABEL:
   case LISTITEM_LABEL2:
   case LISTITEM_TITLE:
@@ -1074,15 +1113,12 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_COMMENT:
     {
       CGUIWindow *pWindow;
-      int iDialog = m_gWindowManager.GetTopMostDialogID();
+      int iDialog = m_gWindowManager.GetTopMostModalDialogID();
       if (iDialog == WINDOW_VIDEO_INFO)
         pWindow = m_gWindowManager.GetWindow(iDialog);
       else
-      {
         pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-        iDialog = -1;
-      }
-      if ((iDialog == WINDOW_VIDEO_INFO && pWindow) || (pWindow && pWindow->IsMediaWindow()))
+      if (pWindow && (iDialog == WINDOW_VIDEO_INFO || pWindow->IsMediaWindow()))
       {
         strLabel = GetItemLabel(pWindow->GetCurrentListItem(), info);
       }
@@ -1255,21 +1291,17 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
 #endif
   else if (condition > SYSTEM_IDLE_TIME_START && condition <= SYSTEM_IDLE_TIME_FINISH)
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
-  else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
-    bReturn = m_gWindowManager.IsWindowActive(condition);
   else if (condition == WINDOW_IS_MEDIA)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
-  else if (condition == SYSTEM_AUTODETECTION)
-    bReturn = HasAutodetectedXbox();
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
   else if (condition == SYSTEM_KAI_CONNECTED)
-    bReturn = g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
+    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_KAI_ENABLED)
-    bReturn = g_guiSettings.GetBool("xlinkkai.enabled");
+    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // we must: 1.  Check tray state.
@@ -1287,9 +1319,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition == SYSTEM_HAS_DRIVE_G)
     bReturn = CIoSupport::DriveExists('G');
   else if (condition == SYSTEM_DVDREADY)
-	  bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
+    bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
-  	bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
+    bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (condition == WEBBROWSER_INCLUDED)
@@ -1349,15 +1381,22 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
   }
-  else if (condition == LISTITEM_ISSELECTED || condition == LISTITEM_ISPLAYING || condition == CONTAINER_HAS_THUMB)
+  else if (condition == CONTAINER_HAS_THUMB)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow && pWindow->IsMediaWindow())
+      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
+  }
+  else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
+  {
+    // no parameters, so we assume it's just requested for a media window.  It therefore
+    // can only happen if the list has focus.
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow && pWindow->IsMediaWindow())
     {
-      if (condition == CONTAINER_HAS_THUMB)
-        bReturn = !((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetThumbnailImage().IsEmpty();
-      else
-        bReturn = GetItemBool(pWindow->GetCurrentListItem(), condition, dwContextWindow);
+      map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
+      if (it != m_containerMoves.end())
+        bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
     }
   }
   else if (g_application.IsPlaying())
@@ -1491,7 +1530,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
 }
 
 /// \brief Examines the multi information sent and returns true or false accordingly.
-bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow) const
+bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow)
 {
   bool bReturn = false;
   int condition = abs(info.m_info);
@@ -1565,22 +1604,89 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     case WINDOW_NEXT:
-      bReturn = (info.m_data1 == m_nextWindowID);
+      if (info.m_data1)
+        bReturn = (info.m_data1 == m_nextWindowID);
+      else
+      {
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_nextWindowID);
+        if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.m_data2]))
+          bReturn = true;
+      }
       break;
     case WINDOW_PREVIOUS:
-      bReturn = (info.m_data1 == m_prevWindowID);
+      if (info.m_data1)
+        bReturn = (info.m_data1 == m_prevWindowID);
+      else
+      {
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_prevWindowID);
+        if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.m_data2]))
+          bReturn = true;
+      }
       break;
     case WINDOW_IS_VISIBLE:
-      bReturn = m_gWindowManager.IsWindowVisible(info.m_data1);
+      if (info.m_data1)
+        bReturn = m_gWindowManager.IsWindowVisible(info.m_data1);
+      else
+        bReturn = m_gWindowManager.IsWindowVisible(m_stringParameters[info.m_data2]);
       break;
     case WINDOW_IS_TOPMOST:
-      bReturn = m_gWindowManager.IsWindowTopMost(info.m_data1);
+      if (info.m_data1)
+        bReturn = m_gWindowManager.IsWindowTopMost(info.m_data1);
+      else
+        bReturn = m_gWindowManager.IsWindowTopMost(m_stringParameters[info.m_data2]);
+      break;
+    case WINDOW_IS_ACTIVE:
+      if (info.m_data1)
+        bReturn = m_gWindowManager.IsWindowActive(info.m_data1);
+      else
+        bReturn = m_gWindowManager.IsWindowActive(m_stringParameters[info.m_data2]);
       break;
     case SYSTEM_HAS_ALARM:
       bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
       break;
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
+      break;
+    case CONTAINER_ON_NEXT:
+    case CONTAINER_ON_PREVIOUS:
+      {
+        map<int,int>::const_iterator it = m_containerMoves.find(info.m_data1);
+        if (it != m_containerMoves.end())
+          bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      }
+      break;
+    case LISTITEM_ISSELECTED:
+    case LISTITEM_ISPLAYING:
+      {
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (window)
+        {
+          CFileItem *item;
+          if (!info.m_data1)
+          { // assumes a media window
+            if (window->IsMediaWindow())
+              item = window->GetCurrentListItem(info.m_data2);
+          }
+          else
+          {
+            const CGUIControl *control = window->GetControl(info.m_data1);
+            if (control && control->IsContainer())
+              item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2);
+          }
+          if (item)
+            bReturn = GetItemBool(item, info.m_info, dwContextWindow);
+        }
+      }
+      break;
+    case VIDEOPLAYER_CONTENT:
+      {
+        CStdString strContent="movies";
+        if (!m_currentFile.HasVideoInfoTag())
+          strContent = "files";
+        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > -1) // episode
+          strContent = "episodes";
+        bReturn = m_stringParameters[info.m_data1].Equals(strContent);
+      }
       break;
     case CONTAINER_SORT_METHOD:
     {
@@ -1599,7 +1705,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-const CStdString &CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info) const
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD contextWindow) const
 {
   if (info.m_info == SKIN_STRING)
   {
@@ -1611,11 +1717,71 @@ const CStdString &CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info) const
     if (bInfo)
       return g_localizeStrings.Get(20122);
   }
+  if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
+  {
+    CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+    if (!window)
+      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    CFileItem *item = NULL;
+    if (window)
+    {
+      if (!info.m_data1)
+      { // no id given, must be a media window
+        if (window->IsMediaWindow())
+          item = window->GetCurrentListItem(info.m_data2);
+      }
+      else
+      {
+        const CGUIControl *control = window->GetControl(info.m_data1);
+        if (control && control->IsContainer())
+          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2);
+      }
+    }
+    if (item)
+      return GetItemImage(item, info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
+  }
+  else if (info.m_info == PLAYER_TIME)
+  {
+    return GetCurrentPlayTime((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_TIME_REMAINING)
+  {
+    return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_FINISH_TIME)
+  {
+    CDateTime time = CDateTime::GetCurrentDateTime();
+    time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+    return LocalizeTime(time, (TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_TIME_SPEED)
+  {
+    CStdString strTime;
+    if (g_application.GetPlaySpeed() != 1)
+      strTime.Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.m_data1).c_str(), g_application.GetPlaySpeed());
+    else
+      strTime = GetCurrentPlayTime();
+    return strTime;
+  }
+  else if (info.m_info == PLAYER_DURATION)
+  {
+    return GetDuration((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == PLAYER_SEEKTIME)
+  {
+    CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+    if (seekBar)
+      return seekBar->GetSeekTimeLabel((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == SYSTEM_TIME)
+  {
+    return GetTime((TIME_FORMAT)info.m_data1);
+  }
   return StringUtils::EmptyString;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
+CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -1647,8 +1813,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
     else return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY ||
-           info == CONTAINER_FOLDERTHUMB || info == LISTITEM_RATING)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
+          info == LISTITEM_OVERLAY || info == CONTAINER_FOLDERTHUMB || info == LISTITEM_RATING)
   {
     CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
     if (!window || !window->IsMediaWindow())
@@ -1665,7 +1831,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
         return GetItemImage(item, info);
     }
   }
-  return "";
+  return GetLabel(info);
 }
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
@@ -1674,10 +1840,54 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
   return time.GetAsLocalizedDate(!bNumbersOnly);
 }
 
-CStdString CGUIInfoManager::GetTime(bool bSeconds)
+CStdString CGUIInfoManager::GetTime(TIME_FORMAT format) const
 {
   CDateTime time=CDateTime::GetCurrentDateTime();
-  return time.GetAsLocalizedTime(bSeconds);
+  return LocalizeTime(time, format);
+}
+
+CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
+{
+  const CStdString timeFormat = g_langInfo.GetTimeFormat();
+  bool use12hourclock = timeFormat.Find('h') != -1;
+  switch (format)
+  {
+  case TIME_FORMAT_GUESS:
+    return time.GetAsLocalizedTime("", false);
+  case TIME_FORMAT_SS:
+    return time.GetAsLocalizedTime("ss", true);
+  case TIME_FORMAT_MM:
+    return time.GetAsLocalizedTime("mm", true);
+  case TIME_FORMAT_MM_SS:
+    return time.GetAsLocalizedTime("mm:ss", true);
+  case TIME_FORMAT_HH:  // this forces it to a 12 hour clock
+    return time.GetAsLocalizedTime(use12hourclock ? "h" : "H", false);
+  case TIME_FORMAT_HH_MM:
+    return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "H:mm", false);
+  case TIME_FORMAT_HH_MM_SS:
+    return time.GetAsLocalizedTime("", true);
+  }
+  return time.GetAsLocalizedTime("", false);
+}
+
+CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
+{
+  CStdString strDuration;
+  if (g_application.IsPlayingAudio() && m_currentFile.HasMusicInfoTag())
+  {
+    const CMusicInfoTag& tag = *m_currentFile.GetMusicInfoTag();
+    if (tag.GetDuration() > 0)
+      StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration, format);
+  }
+  if (g_application.IsPlayingVideo() && !m_currentMovieDuration.IsEmpty())
+    return m_currentMovieDuration;  // for tuxbox
+  if (strDuration.IsEmpty())
+  {
+    unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
+    if (iTotal > 0)
+      StringUtils::SecondsToTimeString(iTotal, strDuration, format);
+  }
+  return strDuration;
 }
 
 CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
@@ -1737,7 +1947,7 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
   case PLAYLIST_LENGTH:
     {
       CStdString strLength = "";
-  		strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
+      strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
       return strLength;
     }
   case PLAYLIST_POSITION:
@@ -1789,20 +1999,6 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_GENRE: 
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
-  case MUSICPLAYER_TIME:
-    return GetCurrentPlayTime();
-  case MUSICPLAYER_TIME_REMAINING:
-    return GetCurrentPlayTimeRemaining();
-  case MUSICPLAYER_TIME_SPEED:
-    {
-      CStdString strTime;
-      if (g_application.GetPlaySpeed() != 1)
-        strTime.Format("%s (%ix)", GetCurrentPlayTime().c_str(), g_application.GetPlaySpeed());
-      else
-        strTime = GetCurrentPlayTime();
-      return strTime;
-    }
-    break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
@@ -1813,34 +2009,18 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       }
     }
     break;
-  case MUSICPLAYER_DURATION:
-  case PLAYER_DURATION:
-    {
-      CStdString strDuration;
-      if (tag.GetDuration() > 0)
-        StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration);
-      else
-      {
-        unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
-        if (iTotal > 0)
-          StringUtils::SecondsToTimeString(iTotal, strDuration);
-
-      }
-      return strDuration;
-    }
-    break;
   case MUSICPLAYER_PLAYLISTLEN:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
         return GetPlaylistLabel(PLAYLIST_LENGTH);
-  	}
-	  break;
+    }
+    break;
   case MUSICPLAYER_PLAYLISTPOS:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
         return GetPlaylistLabel(PLAYLIST_POSITION);
-  	}
-  	break;
+    }
+    break;
   case MUSICPLAYER_BITRATE:
     {
       float fTimeSpan = (float)(timeGetTime() - m_lastMusicBitrateTime);
@@ -1858,30 +2038,30 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CHANNELS:
     {
       CStdString strChannels = "";
-	    if (g_application.m_pPlayer->GetChannels() > 0)
-	    {
-	      strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
-	    }
+      if (g_application.m_pPlayer->GetChannels() > 0)
+      {
+        strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
+      }
       return strChannels;
     }
     break;
   case MUSICPLAYER_BITSPERSAMPLE:
     {
       CStdString strBitsPerSample = "";
-	    if (g_application.m_pPlayer->GetBitsPerSample() > 0)
-	    {
-	      strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
-	    }
+      if (g_application.m_pPlayer->GetBitsPerSample() > 0)
+      {
+        strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
+      }
       return strBitsPerSample;
     }
     break;
   case MUSICPLAYER_SAMPLERATE:
     {
       CStdString strSampleRate = "";
-	    if (g_application.m_pPlayer->GetSampleRate() > 0)
-	    {
-	      strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate());
-	    }
+      if (g_application.m_pPlayer->GetSampleRate() > 0)
+      {
+        strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate());
+      }
       return strSampleRate;
     }
     break;
@@ -1917,10 +2097,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   
   switch (item)
   {
-  case VIDEOPLAYER_DURATION:
-    if (m_currentMovieDuration.IsEmpty())
-      return GetVideoLabel(PLAYER_DURATION);
-    return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
     return m_currentFile.GetVideoInfoTag()->m_strTitle;
     break;
@@ -1965,60 +2141,44 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     if (m_currentFile.GetVideoInfoTag()->m_iEpisode > 0)
     {
       CStdString strYear;
-      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+      if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+        strYear.Format("S%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+      else
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
       return strYear;
     }
     break;
   case VIDEOPLAYER_SEASON:
-    if (m_currentFile.GetVideoInfoTag()->m_iSeason > 0)
+    if (m_currentFile.GetVideoInfoTag()->m_iSeason > -1)
     {
       CStdString strYear;
-      strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
+      if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason);
+      else
+        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
       return strYear;
     }
     break;
   case VIDEOPLAYER_TVSHOW:
     return m_currentFile.GetVideoInfoTag()->m_strShowTitle;
-  case VIDEOPLAYER_TIME:
-    return GetCurrentPlayTime();
-  case VIDEOPLAYER_TIME_REMAINING:
-    return GetCurrentPlayTimeRemaining();
-  case VIDEOPLAYER_TIME_SPEED:
-    {
-      CStdString strTime;
-      if (g_application.GetPlaySpeed() != 1)
-        strTime.Format("%s (%ix)", GetCurrentPlayTime().c_str(), g_application.GetPlaySpeed());
-      else
-        strTime = GetCurrentPlayTime();
-      return strTime;
-    }
-    break;
-  case PLAYER_DURATION:
-    {
-      CStdString strDuration = "00:00:00";
-      unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
-      if (iTotal > 0)
-        StringUtils::SecondsToTimeString(iTotal, strDuration, true);
-      return strDuration;
-    }
-    break;
+
   case VIDEOPLAYER_PLAYLISTLEN:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         return GetPlaylistLabel(PLAYLIST_LENGTH);
-  	}
-	  break;
+    }
+    break;
   case VIDEOPLAYER_PLAYLISTPOS:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         return GetPlaylistLabel(PLAYLIST_POSITION);
-  	}
-  	break;
+    }
+    break;
   }
   return "";
 }
 
-__int64 CGUIInfoManager::GetPlayTime()
+__int64 CGUIInfoManager::GetPlayTime() const
 {
   if (g_application.IsPlaying())
   {
@@ -2029,38 +2189,38 @@ __int64 CGUIInfoManager::GetPlayTime()
   return 0;
 }
 
-CStdString CGUIInfoManager::GetCurrentPlayTime()
+CStdString CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
 {
   CStdString strTime;
   if (g_application.IsPlayingAudio())
-    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime);
+    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
   else if (g_application.IsPlayingVideo())
-    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, true);
+    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
   return strTime;
 }
 
-int CGUIInfoManager::GetTotalPlayTime()
+int CGUIInfoManager::GetTotalPlayTime() const
 {
   int iTotalTime = (int)g_application.GetTotalTime();
   return iTotalTime > 0 ? iTotalTime : 0;
 }
 
-int CGUIInfoManager::GetPlayTimeRemaining()
+int CGUIInfoManager::GetPlayTimeRemaining() const
 {
   int iReverse = GetTotalPlayTime() - (int)g_application.GetTime();
   return iReverse > 0 ? iReverse : 0;
 }
 
-CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
+CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) const
 {
   CStdString strTime;
   int timeRemaining = GetPlayTimeRemaining();
   if (timeRemaining)
   {
     if (g_application.IsPlayingAudio())
-      StringUtils::SecondsToTimeString(timeRemaining, strTime);
+      StringUtils::SecondsToTimeString(timeRemaining, strTime, format);
     else if (g_application.IsPlayingVideo())
-      StringUtils::SecondsToTimeString(timeRemaining, strTime, true);
+      StringUtils::SecondsToTimeString(timeRemaining, strTime, format);
   }
   return strTime;
 }
@@ -2542,7 +2702,7 @@ const CStdString &CorrectAllItemsSortHack(const CStdString &item)
   return item;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
 {
   if (!item) return "";
   switch (info)
@@ -2662,7 +2822,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
+      if (item->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+        strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
+      else
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
     break;
@@ -2670,8 +2833,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
-      strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
-        return strResult;
+      if (item->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iSpecialSortSeason);
+      else
+        strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
+      return strResult;
     }
     break;
   case LISTITEM_TVSHOW:
@@ -2683,6 +2849,25 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_COMMENT:
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
+    break;
+  case LISTITEM_ACTUAL_ICON:
+    return item->GetIconImage();
+    break;
+  case LISTITEM_ICON:
+    if (!item->HasThumbnail() && item->HasIcon())
+    {
+      CStdString strThumb = item->GetIconImage();
+      if (info == LISTITEM_ICON)
+        strThumb.Insert(strThumb.Find("."), "Big");
+      return strThumb;
+    }
+    return item->GetThumbnailImage();
+    break;
+  case LISTITEM_OVERLAY:
+    return item->GetOverlayImage();
+    break;
+  case LISTITEM_THUMB:
+    return item->GetThumbnailImage();
     break;
   }
   return "";
@@ -2708,7 +2893,7 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
   return (info < 0) ? !ret : ret;
 }
 
-CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
+CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage)
 {
   CStdString label;
   for (unsigned int i = 0; i < multiInfo.size(); i++)
@@ -2716,7 +2901,11 @@ CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
     const CInfoPortion &portion = multiInfo[i];
     if (portion.m_info)
     {
-      CStdString infoLabel = g_infoManager.GetLabel(portion.m_info);
+      CStdString infoLabel;
+      if (preferImage)
+        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
+      if (infoLabel.IsEmpty())
+        infoLabel = g_infoManager.GetLabel(portion.m_info);
       if (!infoLabel.IsEmpty())
       {
         label += portion.m_prefix;
@@ -2797,6 +2986,8 @@ void CGUIInfoManager::ResetCache()
 {
   CSingleLock lock(m_critInfo);
   m_boolCache.clear();
+  // reset any animation triggers as well
+  m_containerMoves.clear();
 }
 
 inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool result)
@@ -2825,18 +3016,8 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   return false;
 }
 
-
-CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
 {
-  if (!item) return "";
-  if (info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon())
-  {
-    CStdString strThumb = item->GetIconImage();
-    strThumb.Insert(strThumb.Find("."), "Big");
-    return strThumb;
-  }
-  if (info == LISTITEM_OVERLAY)
-    return item->GetOverlayImage();
   if (info == LISTITEM_RATING)
   {
     if (item->HasMusicInfoTag())
@@ -2847,7 +3028,8 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
     }
     return "";
   }
-  return item->GetThumbnailImage();
+  else
+    return GetItemLabel(item, info);
 }
 
 // Called from tuxbox service thread to update current status

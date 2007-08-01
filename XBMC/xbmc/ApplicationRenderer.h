@@ -23,6 +23,7 @@ private:
   virtual void OnExit();
   virtual void Process();
   void UpdateBusyCount();
+  bool CopySurface(LPDIRECT3DSURFACE8 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE8 pSurfaceDest, const RECT* rcDest);
 
   DWORD m_time;
   bool m_enabled;
@@ -33,5 +34,6 @@ private:
   CCriticalSection m_criticalSection;
   LPDIRECT3DSURFACE8 m_lpSurface;
   CGUIDialogBusy* m_pWindow;
+  RESOLUTION m_Resolution;
 };
 extern CApplicationRenderer g_ApplicationRenderer;

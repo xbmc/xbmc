@@ -52,7 +52,7 @@ CPlayListWPL::~CPlayListWPL(void)
 {}
 
 
-bool CPlayListWPL::LoadData(std::istream stream)
+bool CPlayListWPL::LoadData(std::istream& stream)
 {
   TiXmlDocument xmlDoc;
 

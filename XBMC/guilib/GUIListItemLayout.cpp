@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIListItemLayout.h"
 #include "GUIListItem.h"
-#include "GUIControlFactory.h"
+#include "GuiControlFactory.h"
 #include "GUIFontManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
@@ -132,7 +132,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
               CListLabel *right = label1->m_renderX < label2->m_renderX ? label2 : label1;
               if ((left->m_label.align & 3) == 0 && right->m_label.align & XBFONT_RIGHT)
               { // left is aligned left, right is aligned right, and they overlap vertically
-                if (left->m_renderX + left->m_renderW + 10 > right->m_renderX && left->m_renderX + left->m_renderW < right->m_renderX + right->m_renderW)
+                if (left->m_renderX + left->m_renderW + 10 > right->m_renderX && left->m_renderX + left->m_renderW <= right->m_renderX + right->m_renderW)
                 { // overlap, so chop accordingly
                   float chopPoint = (left->m_posX + left->m_width + right->m_posX - right->m_width) * 0.5f;
 // [1       [2...[2  1].|..........1]         2]
@@ -166,15 +166,12 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
     {
       if (layoutItem->m_type == CListBase::LIST_LABEL)
       {
-        if (time)
-          g_graphicsContext.SetControlTransform(TransformMatrix());
         RenderLabel((CListLabel *)layoutItem, item->IsSelected() || m_isPlaying, m_focused);
       }
       else
       {
-        if (time)
-          ((CListTexture *)layoutItem)->m_image.UpdateEffectState(time);
-        ((CListTexture *)layoutItem)->m_image.Render();
+        ((CListTexture *)layoutItem)->m_image.UpdateVisibility();
+        ((CListTexture *)layoutItem)->m_image.DoRender(time);
       }
     }
   }
@@ -279,9 +276,9 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   XMLUtils::GetFloat(child, "width", width);
   XMLUtils::GetFloat(child, "height", height);
   XMLUtils::GetString(child, "info", infoString);
-  XMLUtils::GetHex(child, "textcolor", label.textColor);
-  XMLUtils::GetHex(child, "selectedcolor", label.selectedColor);
-  XMLUtils::GetHex(child, "shadowcolor", label.shadowColor);
+  CGUIControlFactory::GetColor(child, "textcolor", label.textColor);
+  CGUIControlFactory::GetColor(child, "selectedcolor", label.selectedColor);
+  CGUIControlFactory::GetColor(child, "shadowcolor", label.shadowColor);
   CStdString fontName;
   XMLUtils::GetString(child, "font", fontName);
   label.font = g_fontManager.GetFont(fontName);
@@ -297,7 +294,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   vector<CAnimation> animations;
   factory.GetAnimations(child, rect, animations);
   D3DCOLOR colorDiffuse(0xffffffff);
-  XMLUtils::GetHex(child, "colordiffuse", colorDiffuse);
+  CGUIControlFactory::GetColor(child, "colordiffuse", colorDiffuse);
   DWORD alignY = 0;
   if (factory.GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;

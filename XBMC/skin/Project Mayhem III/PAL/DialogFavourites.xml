@@ -1,5 +1,4 @@
 <window type="dialog" id="134">
-	<include>contentpanelslide</include>
 	<defaultcontrol always="true">450</defaultcontrol>
 	<coordinates>
 		<system>1</system>
@@ -15,6 +14,7 @@
 			<height>355</height>
 			<texture>dialog-panel2.png</texture>
 			<colordiffuse>CCFFFFFF</colordiffuse>
+			<include>contentpanelslide</include>
 		</control>
 		<control type="list" id="450">
 			<posx>-50</posx>
@@ -26,6 +26,7 @@
 			<onright>450</onright>
 			<onup>450</onup>
 			<ondown>450</ondown>
+			<include>contentpanelslide</include>
 			<itemlayout height="30">
 				<control type="image">
 					<posx>70</posx>
@@ -42,7 +43,7 @@
 					<font>font101</font>
 					<aligny>center</aligny>
 					<align>left</align>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="image">
@@ -70,7 +71,7 @@
 					<font>font101</font>
 					<aligny>center</aligny>
 					<align>left</align>
-					<include>listselectedcolor</include>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="image">

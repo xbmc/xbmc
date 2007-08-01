@@ -69,8 +69,14 @@ void CGUIMediaWindow::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  for (int i = CONTROL_VIEW_START; i <= CONTROL_VIEW_END; i++)
-    m_viewControl.AddView(GetControl(i));
+  vector<CGUIControl *> controls;
+  GetContainers(controls);
+  for (ciControls it = controls.begin(); it != controls.end(); it++)
+  {
+    CGUIControl *control = *it;
+    if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
+      m_viewControl.AddView(control);
+  }
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
   SetupShares();
 }
@@ -81,11 +87,14 @@ void CGUIMediaWindow::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-CFileItem *CGUIMediaWindow::GetCurrentListItem()
+CFileItem *CGUIMediaWindow::GetCurrentListItem(int offset)
 {
-  int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
-  return m_vecItems[iItem];
+  int item = m_viewControl.GetSelectedItem();
+  if (!m_vecItems.Size() || item < 0)
+    return NULL;
+  item = (item + offset) % m_vecItems.Size();
+  if (item < 0) item += m_vecItems.Size();
+  return m_vecItems[item];
 }
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
@@ -136,8 +145,20 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
+        // view as control could be a select button
+        int viewMode = 0;
+        const CGUIControl *control = GetControl(CONTROL_BTNVIEWASICONS);
+        if (control && control->GetControlType() != CGUIControl::GUICONTROL_BUTTON)
+        {
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTNVIEWASICONS);
+          OnMessage(msg);
+          viewMode = m_viewControl.GetViewModeNumber(msg.GetParam1());
+        }
+        else
+          viewMode = m_viewControl.GetNextViewMode();
+
         if (m_guiState.get())
-          m_guiState->SaveViewAsControl(m_viewControl.GetNextViewMode());
+          m_guiState->SaveViewAsControl(viewMode);
 
         UpdateButtons();
         return true;
@@ -220,8 +241,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
-      { // State of the bookmarks changed, so update our view
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      { // State of the sources changed, so update our view
         if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
@@ -461,7 +482,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     return false;
   }
 
-  // if we're getting the root bookmark listing
+  // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
@@ -523,7 +544,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  m_history.AddPath(strDirectory);
+  m_history.AddPath(m_vecItems.m_strPath);
 
   //m_history.DumpPathHistory();
 
@@ -739,7 +760,7 @@ void CGUIMediaWindow::GoParentFolder()
   }
 
   // if vector is not empty, pop parent
-  // if vector is empty, parent is bookmark listing
+  // if vector is empty, parent is root source listing
   CStdString strOldPath(m_vecItems.m_strPath);
   strParent = m_history.RemoveParentPath();
   Update(strParent);

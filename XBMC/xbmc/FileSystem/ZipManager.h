@@ -67,11 +67,9 @@ public:
   void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
   void release(const CStdString& strPath); // release resources used by list zip
 private:
-  void readHeader(SZipEntry& info);
+  void readHeader(XFILE::CFile& mFile, SZipEntry& info);
   std::map<CStdString,std::vector<SZipEntry> > mZipMap;
   std::map<CStdString,__int64> mZipDate;
-  XFILE::CFile mFile;
-  __stat64 m_StatData;
 };
 
 extern CZipManager g_ZipManager;

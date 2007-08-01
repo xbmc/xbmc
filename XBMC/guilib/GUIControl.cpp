@@ -29,9 +29,11 @@ CGUIControl::CGUIControl()
   m_bInvalidated = true;
   m_bAllocated=false;
   m_parentControl = NULL;
+  m_hasCamera = false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+: m_hitRect(posX, posY, posX + width, posY + height)
 {
   m_posX = posX;
   m_posY = posY;
@@ -56,6 +58,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_bAllocated=false;
   m_hasRendered = false;
   m_parentControl = NULL;
+  m_hasCamera = false;
 }
 
 
@@ -75,13 +78,19 @@ void CGUIControl::FreeResources()
 {
   if (m_bAllocated)
   {
-    // Reset our animation states
+    // Reset our animation states - not conditional anims though.
+    // I'm not sure if this is needed for most cases anyway.  I believe it's only here
+    // because some windows aren't loaded on demand
     for (unsigned int i = 0; i < m_animations.size(); i++)
-      m_animations[i].ResetAnimation();
+    {
+      CAnimation &anim = m_animations[i];
+      if (anim.GetType() != ANIM_TYPE_CONDITIONAL)
+        anim.ResetAnimation();
+    }
     m_bAllocated=false;
   }
   m_hasRendered = false;
-}
+} 
 
 bool CGUIControl::IsAllocated() const
 {
@@ -91,6 +100,22 @@ bool CGUIControl::IsAllocated() const
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
 
+}
+
+// the main render routine.
+// 1. animate and set the animation transform
+// 2. if visible, paint
+// 3. reset the animation transform
+void CGUIControl::DoRender(DWORD currentTime)
+{
+  Animate(currentTime);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
+  if (IsVisible())
+    Render();
+  if (m_hasCamera)
+    g_graphicsContext.RestoreCameraPosition();
+  g_graphicsContext.RemoveTransform();
 }
 
 void CGUIControl::Render()
@@ -304,6 +329,7 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
+    m_hitRect += CPoint(posX - m_posX, posY - m_posY);
     m_posX = posX;
     m_posY = posY;
     Update();
@@ -348,6 +374,7 @@ void CGUIControl::SetWidth(float width)
   if (m_width != width)
   {
     m_width = width;
+    m_hitRect.x2 = m_hitRect.x1 + width;
     Update();
   }
 }
@@ -357,6 +384,7 @@ void CGUIControl::SetHeight(float height)
   if (m_height != height)
   {
     m_height = height;
+    m_hitRect.y2 = m_hitRect.y1 + height;
     Update();
   }
 }
@@ -378,8 +406,7 @@ void CGUIControl::SetVisible(bool bVisible)
 
 bool CGUIControl::HitTest(const CPoint &point) const
 {
-  CRect rect(m_posX, m_posY, m_width, m_height);
-  return rect.PtInRect(point);
+  return m_hitRect.PtInRect(point);
 }
 
 // override this function to implement custom mouse behaviour
@@ -441,12 +468,6 @@ void CGUIControl::SetInitialVisibility()
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
       anim.SetInitialCondition();
   }
-}
-
-void CGUIControl::UpdateEffectState(DWORD currentTime)
-{
-  UpdateVisibility();
-  Animate(currentTime);
 }
 
 void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus)
@@ -574,7 +595,7 @@ void CGUIControl::Animate(DWORD currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
-  TransformMatrix transform;
+  m_transform.Reset();
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -582,7 +603,7 @@ void CGUIControl::Animate(DWORD currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
-    anim.RenderAnimation(transform);
+    anim.RenderAnimation(m_transform);
 
 /*    // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
@@ -599,7 +620,7 @@ void CGUIControl::Animate(DWORD currentTime)
       }
     }*/
   }
-  g_graphicsContext.SetControlTransform(transform);
+  g_graphicsContext.AddTransform(m_transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
@@ -646,10 +667,11 @@ DWORD CGUIControl::GetNextControl(int direction) const
 // the control and the point with respect to his control if we have a hit
 bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
-  if (CanFocus() && HitTest(point))
+  controlPoint = point;
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (CanFocus() && HitTest(controlPoint))
   {
     *control = (CGUIControl *)this;
-    controlPoint = point;
     return true;
   }
   *control = NULL;
@@ -658,7 +680,9 @@ bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, 
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)
 {
-  if (!HitTest(point))
+  CPoint controlPoint(point);
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (!HitTest(controlPoint))
     SetFocus(false);
 }
 
@@ -675,4 +699,15 @@ bool CGUIControl::HasVisibleID(DWORD dwID) const
 void CGUIControl::SaveStates(vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
+}
+
+void CGUIControl::SetHitRect(const CRect &rect)
+{
+  m_hitRect = rect;
+}
+
+void CGUIControl::SetCamera(const CPoint &camera)
+{
+  m_camera = camera;
+  m_hasCamera = true;
 }
