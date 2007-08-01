@@ -29,7 +29,12 @@
 
 // Note: Jhead supports TAG_MAKER_NOTE exif field,
 //       but that is ommited for now - to make porting easier and addition smaller
+#ifndef _LINUX
 #include <windows.h>
+#else
+#include <memory.h>
+#define min(a,b) a>b?b:a
+#endif
 #include <math.h>
 #include <stdio.h>
 #include "ExifParse.h"

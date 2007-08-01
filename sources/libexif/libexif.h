@@ -6,7 +6,11 @@ extern "C" {
 #endif
 
 #ifdef _DLL
+#ifdef WIN32
 #define EXIF_EXPORT __declspec(dllexport)
+#else
+#define EXIF_EXPORT
+#endif
 #else
 #define EXIF_EXPORT
 #endif
@@ -89,3 +93,4 @@ EXIF_EXPORT bool process_jpeg(const char *filename, ExifInfo_t *exifInfo, IPTCIn
 #endif
 
 #endif
+

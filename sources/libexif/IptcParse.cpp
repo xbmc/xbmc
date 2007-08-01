@@ -26,7 +26,12 @@
 //--------------------------------------------------------------------------
 //  Process IPTC data.
 //--------------------------------------------------------------------------
+#ifndef _LINUX
 #include <windows.h>
+#else
+#include <string.h>
+#define min(a,b) a>b?b:a
+#endif
 #include <stdio.h>
 #include "IptcParse.h"
 #include "ExifParse.h"

@@ -30,7 +30,13 @@
 // pairs (where both description and value fields are of CStdString types).
 //--------------------------------------------------------------------------
 
+#ifndef _LINUX
 #include <windows.h>
+#else
+#include <memory.h>
+#define min(a,b) a>b?a:b
+typedef char BYTE;
+#endif
 #include "JpegParse.h"
 
 
