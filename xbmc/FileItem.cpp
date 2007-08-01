@@ -832,8 +832,10 @@ CStdString CFileItem::GetCachedSeasonThumb()
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("season" + m_strPath);
+  CStdString hex;
+  hex.Format("%08x", crc);
   CStdString cachedThumb;
-  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
+  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
   return cachedThumb;
 }
 
@@ -2280,8 +2282,11 @@ CStdString CFileItem::GetCachedVideoThumb()
   }
   else
     crc.ComputeFromLowerCase(m_strPath);
+
+  CStdString hex;
+  hex.Format("%08x", crc);
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
   return thumb;
 }
 
@@ -2665,3 +2670,4 @@ void CFileItemList::UpdateItem(const CFileItem *item)
   if (oldItem)
     *oldItem = *item;
 }
+

@@ -1811,6 +1811,9 @@ bool CSettings::LoadProfile(int index)
       strThumbLoc = g_settings.GetMusicThumbFolder();
       strThumbLoc += "\\" + strHex;
       CreateDirectory(strThumbLoc.c_str(),NULL);
+      strThumbLoc = g_settings.GetVideoThumbFolder();
+      strThumbLoc += "\\" + strHex;
+      CreateDirectory(strThumbLoc.c_str(),NULL);
     }
 
     g_infoManager.ResetCache();
