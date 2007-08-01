@@ -34,7 +34,7 @@
 #include <windows.h>
 #else
 #include <memory.h>
-#define min(a,b) a>b?a:b
+#define min(a,b) (a)>(b)?(b):(a)
 typedef char BYTE;
 #endif
 #include "JpegParse.h"

@@ -30,7 +30,7 @@
 #include <windows.h>
 #else
 #include <string.h>
-#define min(a,b) a>b?b:a
+#define min(a,b) (a)>(b)?(b):(a)
 #endif
 #include <stdio.h>
 #include "IptcParse.h"

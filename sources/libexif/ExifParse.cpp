@@ -33,7 +33,7 @@
 #include <windows.h>
 #else
 #include <memory.h>
-#define min(a,b) a>b?b:a
+#define min(a,b) (a)>(b)?(b):(a)
 #endif
 #include <math.h>
 #include <stdio.h>
