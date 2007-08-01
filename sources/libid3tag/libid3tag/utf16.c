@@ -293,3 +293,4 @@ void id3_utf16_free(id3_utf16_t* utf16)
 {
   free(utf16);
 }
+
