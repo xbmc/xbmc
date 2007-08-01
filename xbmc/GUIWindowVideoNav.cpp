@@ -905,11 +905,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           CFile::Cache(strFile, cachedThumb);
         else
           result = "thumb://None";
-        CUtil::DeleteVideoDatabaseDirectoryCache();
       }
-
-      if (result == "thumb://None")
+      else if (result == "thumb://None")
         CFile::Delete(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+      else
+        CFile::Cache(result,cachedThumb);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
       Update(m_vecItems.m_strPath);
