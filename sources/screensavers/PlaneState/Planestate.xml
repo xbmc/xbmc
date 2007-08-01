@@ -1,0 +1,8 @@
+<!-- The planestate screensaver by Joakim Eriksson -->
+<screensaver>
+	<!-- The probability that a specific configuration should be picked. The total value should sum up to 1.0 -->
+	<CfgProbability1>0.35</CfgProbability1>
+	<CfgProbability2>0.35</CfgProbability2>
+	<CfgProbability3>0.15</CfgProbability3>
+	<CfgProbability4>0.15</CfgProbability4>
+</screensaver>
