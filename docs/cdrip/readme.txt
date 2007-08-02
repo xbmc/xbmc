@@ -16,4 +16,5 @@ Both can be get from http://www.rarewares.org/ogg.html (you need the 'ogg vorbis
 lame.
 --------------
 you need one dll for this which has to be compiled by mingw.
-just use the two build scripts that reside in the xbox dir (compile.sh and configure.sh) and it should all work
+just use the two build scripts that reside in the xbox dir (compile.sh and configure.sh) and it should all work.
+for the linux build follow the usuals (configure, make) then run make-xbmc-lib.sh

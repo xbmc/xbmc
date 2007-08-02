@@ -8,6 +8,9 @@
 #include "../utils/Thread.h"
 #include "../lib/libcdio/cdio.h"
 
+#include "FileItem.h"
+#include "FileSystem/File.h"
+
 struct RipBuffer
 {
   int iRipError;

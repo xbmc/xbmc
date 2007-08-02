@@ -15,7 +15,11 @@ public:
 
 class DllOgg : public DllDynamic, DllOggInterface
 {
+#ifdef _LINUX
+  DECLARE_DLL_WRAPPER(DllOgg, Q:\\system\\cdrip\\ogg-i486-linux.so)
+#else
   DECLARE_DLL_WRAPPER(DllOgg, Q:\\system\\cdrip\\ogg.dll)
+#endif
   DEFINE_METHOD1(int, ogg_page_eos, (ogg_page *p1))
   DEFINE_METHOD2(int, ogg_stream_init, (ogg_stream_state *p1, int p2))
   DEFINE_METHOD1(int, ogg_stream_clear, (ogg_stream_state *p1))

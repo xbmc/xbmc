@@ -187,7 +187,7 @@ int CFileCDDA::GetTrackNum(const CURL& url)
   return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 }
 
-#define SECTOR_COUNT 55 // max. sectors that can be read at once
+#define SECTOR_COUNT 52 // max. sectors that can be read at once
 int CFileCDDA::GetChunkSize()
 {
   return SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW;
