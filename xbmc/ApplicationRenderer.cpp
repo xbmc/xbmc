@@ -180,26 +180,29 @@ void CApplicationRenderer::Process()
             }
 
             //copy front buffer to backbuffer(s) to avoid jumping
+            bool bBufferCopied = true;
             for (int i = 0; i < g_graphicsContext.GetBackbufferCount(); i++)
             {
               if (!SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( i, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceBack)))
               {
-                  SAFE_RELEASE(lpSurfaceFront);
-                  SAFE_RELEASE(m_lpSurface);
-                  lockg.Leave();
-                  Sleep(1000);
-                  continue;
+                bBufferCopied = false;
+                break;
               }
               if (!CopySurface(lpSurfaceFront, NULL, lpSurfaceBack, NULL))
               {
-                  SAFE_RELEASE(lpSurfaceFront);
-                  SAFE_RELEASE(lpSurfaceBack);
-                  SAFE_RELEASE(m_lpSurface);
-                  lockg.Leave();
-                  Sleep(1000);
-                  continue;
+                bBufferCopied = false;
+                break;
               }
               SAFE_RELEASE(lpSurfaceBack);
+            }
+            if (!bBufferCopied)
+            {
+              SAFE_RELEASE(lpSurfaceFront);
+              SAFE_RELEASE(lpSurfaceBack);
+              SAFE_RELEASE(m_lpSurface);
+              lockg.Leave();
+              Sleep(1000);
+              continue;
             }
             SAFE_RELEASE(lpSurfaceFront);
           }
@@ -262,12 +265,12 @@ bool CApplicationRenderer::CopySurface(LPDIRECT3DSURFACE8 pSurfaceSource, const 
     if (rcDest)
     {
       const POINT ptDest = { rcDest->left, rcDest->top };
-      return SUCCEEDED(g_graphicsContext.Get3DDevice()->CopyRects(pSurfaceSource, rcSource, 1, pSurfaceDest, &ptDest));
+      return SUCCEEDED(g_graphicsContext.Get3DDevice()->CopyRects(pSurfaceSource, rcSource, rcSource?1:0, pSurfaceDest, &ptDest));
     }
     else
     {
       const POINT ptDest = { 0, 0 };
-      return SUCCEEDED(g_graphicsContext.Get3DDevice()->CopyRects(pSurfaceSource, rcSource, 1, pSurfaceDest, &ptDest));
+      return SUCCEEDED(g_graphicsContext.Get3DDevice()->CopyRects(pSurfaceSource, rcSource, rcSource?1:0, pSurfaceDest, &ptDest));
     }
   }
 }
