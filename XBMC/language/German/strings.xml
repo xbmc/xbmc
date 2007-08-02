@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 07/13/2007-->
+<!--Date of translation: 08/02/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9565-->
+<!--Based on english strings version 9672-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -15,6 +15,7 @@
   <string id="6">XBOX Media Center SVN</string>
   <string id="7">Dateimanager</string>
   <string id="8">Wetter</string>
+  <string id="9">xbox media center</string>
   <string id="11">Montag</string>
   <string id="12">Dienstag</string>
   <string id="13">Mittwoch</string>
@@ -850,6 +851,10 @@
   <string id="13006">Dashboard</string>
   <string id="13007">Individuellen Dashboard-Pfad verwenden</string>
   <string id="13100">Videofilter</string>
+  <string id="13105">Vertikaler Blank Sync</string>
+  <string id="13106">Deaktiviert</string>
+  <string id="13107">Aktiviert während der Video-Wiedergabe</string>
+  <string id="13108">Immer aktiviert</string>
   <string id="13150">Schlüssel:</string>
   <string id="13151">Temperatur:</string>
   <string id="13152">Modell:</string>
@@ -992,7 +997,7 @@
   <string id="13385">Stimmen-Maske - Port 4</string>
   <string id="13386">Zeitbasiertes Vor-/Zurückspulen</string>
   <string id="13387">Formatvorlage für Musiktitel-Dateinamen rechts</string>
-  <string id="13388">Presets</string>
+  <string id="13388">%s Presets</string>
   <string id="13389">Es sind keine Presets für diese Visualisierung verfügbar</string>
   <string id="13390">Es sind keine Einstellungen für diese Visualisierung verfügbar</string>
   <string id="13391">Laufwerk öffnen/schließen</string>
@@ -1534,6 +1539,7 @@
   <string id="20379">Ordner beinhaltet eine einzige TV-Serie</string>
   <string id="20380">Ordner vom Scan ausschließen</string>
   <string id="20381">Besondere</string>
+  <string id="20382">Staffel-Covers von TV-Serien automatisch downloaden</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1582,6 +1588,7 @@
   <string id="21396">Kapitel</string>
   <string id="21397">Pixel Shader V2 (Hohe Qualität)</string>
   <string id="21398">Playlist beim einschalten abspielen</string>
+  <string id="21399">Zwischenanimationen aktivieren</string>
   <string id="21400">beinhaltet</string>
   <string id="21401">beinhaltet nicht</string>
   <string id="21402">ist</string>
@@ -1613,5 +1620,6 @@
   <string id="21436">%i Titel</string>
   <string id="21437">Neue Smart Playlist...</string>
   <string id="21438">%c Laufwerk</string>
+  <string id="21439">Party-Modus Regeln editieren</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>

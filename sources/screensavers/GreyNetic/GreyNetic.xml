@@ -1,0 +1,50 @@
+<screensaver>
+	<!--  Notes: Max must always be greater than min (cannot be equal or less than) -->
+
+
+	<!-- Must be smaller than 10000 -->
+	<NumberOfBoxes>400</NumberOfBoxes>
+
+
+
+	<!-- Min and max width of boxes -->
+	<MaxSizeX>300</MaxSizeX>
+	<MinSizeX>100</MinSizeX>
+
+
+	<!-- Min and max Height of boxes -->
+	<MaxSizeY>300</MaxSizeY>
+	<MinSizeY>100</MinSizeY>
+
+
+	<!-- Make squares rather than retangles -->
+	<MakeSquares>false</MakeSquares>
+	<MinSquareSize>100</MinSquareSize>
+	<MaxSquareSize>300</MaxSquareSize>
+
+
+
+	<!-- Min and max color values for the boxes (don't go over 255)-->
+	<MaxAlpha>200</MaxAlpha>
+	<MinAlpha>40</MinAlpha>
+	<MaxRed>255</MaxRed>
+	<MinRed>0</MinRed>
+	<MaxGreen>255</MaxGreen>
+	<MinGreen>0</MinGreen>
+	<MaxBlue>255</MaxBlue>
+	<MinBlue>0</MinBlue>
+
+
+	<!-- Min and max values for joined joined fields (don't go over 255) -->
+	<MaxJoined>255</MaxJoined>
+	<MinJoined>0</MinJoined>
+
+
+	<!-- Joined Fields (this will cause the color/size fields to have the same random value -->
+	<JoinedsizeY>false</JoinedsizeY>
+	<JoinedsizeX>false</JoinedsizeX>	
+	<JoinedAlpha>false</JoinedAlpha>
+	<JoinedRed>false</JoinedRed>
+	<JoinedGreen>false</JoinedGreen>
+	<JoinedBlue>false</JoinedBlue>
+</screensaver>

@@ -1202,6 +1202,9 @@ HRESULT CApplication::Initialize()
     strThumbLoc = g_settings.GetMusicThumbFolder();
     strThumbLoc += "\\" + strHex;
     CreateDirectory(strThumbLoc.c_str(),NULL);
+    strThumbLoc = g_settings.GetVideoThumbFolder();
+    strThumbLoc += "\\" + strHex;
+    CreateDirectory(strThumbLoc.c_str(),NULL);
   }
 
   CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA

@@ -9,6 +9,7 @@
 
 #include "../MusicInfoTag.h"
 #include "../FileItem.h"
+#include "../PictureInfoTag.h"
 #include "../videodatabase.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
@@ -313,14 +314,17 @@
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
 
-#define WEBBROWSER_INCLUDED	        900
+#define SLIDE_INFO_START            900
+#define SLIDE_INFO_END              980
+
+#define WEBBROWSER_INCLUDED         2800
 #ifdef WITH_LINKS_BROWSER
-#define WEBBROWSER_CURRENT_TITLE	  901
-#define WEBBROWSER_CURRENT_URL		  902
-#define WEBBROWSER_CURRENT_STATUS	  903
-#define WEBBROWSER_IN_EXPERT_MODE	  904
-#define WEBBROWSER_SHOW_PAGE_INFO	  905
-#define WEBBROWSER_IS_BUSY          906
+#define WEBBROWSER_CURRENT_TITLE    2801
+#define WEBBROWSER_CURRENT_URL      2802
+#define WEBBROWSER_CURRENT_STATUS   2803
+#define WEBBROWSER_IN_EXPERT_MODE   2804
+#define WEBBROWSER_SHOW_PAGE_INFO   2805
+#define WEBBROWSER_IS_BUSY          2806
 #endif
 
 
@@ -401,6 +405,7 @@ public:
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
   void SetCurrentMovie(CFileItem &item);
+  void SetCurrentSlide(const CStdString &slide);
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
   {     
     *m_currentFile.GetMusicInfoTag() = tag; 
@@ -506,6 +511,8 @@ protected:
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
+  CPictureInfoTag m_currentSlideInfo;
+  CStdString      m_currentSlideFile;
   int i_SmartRequest;
  
   // fan stuff

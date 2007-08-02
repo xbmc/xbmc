@@ -1,0 +1,43 @@
+INSTALLATION:
+-------------
+
+Simply compile by running 'make'
+
+USAGE:
+------
+
+Then run the program, it will give you usage instructions.
+
+It's really quite trivial to use.
+
+For example, to decode input.m4a to output.wav:
+./alac -f output.wav input.m4a
+
+Or, as another example, say if you wanted to stream play
+http://www.mplayerhq.hu/MPlayer/samples/A-codecs/lossless/luckynight.m4a
+and you're system uses the ALSA sound system:
+wget -O - http://www.mplayerhq.hu/MPlayer/samples/A-codecs/lossless/luckynight.m4a | ./alac - | aplay
+
+By default the output file is in WAV format. To output as raw PCM, provide the
+-r option on the command line.
+
+MORE INFORMATION:
+-----------------
+
+Please visit http://crazney.net/programs/itunes/alac.html for more information.
+
+HELP NEEDED:
+------------
+I need help to allow myself to continue hacking on various Apple Audio things, please visit
+http://crazney.net/programs/itunes/help.html
+
+AUTHOR:
+-------
+
+David Hammerton
+
+CONTRIBUTORS:
+-------------
+
+Cody Brocious
+

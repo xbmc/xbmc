@@ -1,0 +1,132 @@
+LZHLIB.TXT
+
+Copyright(c) 1996 Kerwin F. Medina
+Kerwin F. Medina
+kerwin@infoserve.net
+kerwin@digi.co.jp
+
+I took the source of Haruhiko Okumura's "ar" and extracted only the
+necessary codes to create a compression library so an application can
+make use of compression through a function call and without having to
+spawn an external compression program.
+
+The library has only two API functions: "lzh_freeze" (to compress) and
+"lzh_melt" (to decompress). In both cases, the caller only has to
+provide the I/O functions and memory allocation functions. The
+following is an example of a minimal compressor and decompressor.
+
+    Sample Compressor:
+
+        #ifdef __TURBOC__
+            #include <io.h>
+            #include <fcntl.h>
+        #else
+            #include <stdio.h>
+        #endif
+        #include <stdlib.h>
+
+        /* My I/O functions */
+        int read0 (void far *p, int n) {return read (0, p, n);}
+        int write1 (void far *p, int n) {return write (1, p, n);}
+
+        /* My Memory functions */
+        void *mymalloc (unsigned n) {return malloc (n);}
+        void myfree (void far *p) {free (p);}
+
+        void main (void)
+        {
+            long n;
+          #ifdef __TURBOC__
+            setmode (0, O_BINARY); setmode (1, O_BINARY);
+          #endif
+            /* Get the length of the input file */
+            n = lseek (0, 0, 2);
+            lseek (0, 0, 0);
+
+            /* Write this length to the output file */
+            write (1, &n, sizeof (n));
+
+            /* Now, Call the compression function */
+            lzh_freeze (read0, write1, mymalloc, myfree);
+        }
+
+    Sample Decompressor:
+
+        #ifdef __TURBOC__
+            #include <io.h>
+            #include <fcntl.h>
+        #else
+            #include <stdio.h>
+        #endif
+        #include <stdlib.h>
+
+        /* My I/O functions */
+        int read0 (void far *p, int n) {return read (0, p, n);}
+        int write1 (void far *p, int n) {return write (1, p, n);}
+
+        /* My Memory functions */
+        void *mymalloc (unsigned n) {return malloc (n);}
+        void myfree (void far *p) {free (p);}
+
+        void main (void)
+        {
+            long n;
+          #ifdef __TURBOC__
+            setmode (0, O_BINARY); setmode (1, O_BINARY);
+          #endif
+            /* Get the original file length */
+            read (0, &n, sizeof (n));
+
+            /* Now, Call the decompression function */
+            lzh_melt (read0, write1, malloc, free, n);
+        }
+
+The description of the library API is given in more detail below:
+
+    Prototypes:
+
+        int lzh_freeze (type_fnc_read pfnc_read,
+                        type_fnc_write pfnc_write,
+                        type_fnc_malloc pfnc_malloc,
+                        type_fnc_free pfnc_free);
+
+        int lzh_melt (type_fnc_read pfnc_read,
+                      type_fnc_write pfnc_write,
+                      type_fnc_malloc pfnc_malloc,
+                      type_fnc_free pfnc_free,
+                      unsigned long origsize);
+
+    Remarks: "lzh_freeze" will perform an LZH compression on input
+                data that the caller provides through the
+                "fnc_read" callback function, and will output the
+                compressed result through a call to "fnc_write".
+
+             "lzh_melt" will perform decompression of input
+                data that the caller provides through the
+                "fnc_read" callback function, and will output the
+                decompressed result through a call to "fnc_write".
+
+    Argumets    What it does
+    --------    ------------
+
+    fnc_read    a callback function that library will call when
+                    needing input data. "fnc_read" must return the
+                    number of input bytes or -1 if there is an error.
+
+    fnc_write   a callback function that library will call when
+                    needing to output data. "fnc_write" must return
+                    the number of outputed bytes (or -1 if there is an
+                    error).
+
+    fnc_malloc  a callback function that library will call when
+                    needing to allocate memory. "fnc_malloc" must
+                    return the address of the allocated memory or NULL
+                    if there is an error.
+
+    fnc_free    a callback function that library will call when
+                    needing to free a memory that was allocated using
+                    "fnc_malloc".
+
+    origsize    the original number of bytes of the uncompressed
+                     data.
+
