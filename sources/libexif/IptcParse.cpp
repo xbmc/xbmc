@@ -122,30 +122,30 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
     unsigned short length  = (*pos << 8) + (*(pos+1));
     pos += sizeof(short);                   // Skip tag length
     // Process tag here
-    char **tag = NULL;
+    char *tag = NULL;
     switch (type)
     {
-      case IPTC_SUPLEMENTAL_CATEGORIES:   tag = (char**)&info->SupplementalCategories;  break;
-      case IPTC_KEYWORDS:                 tag = (char**)&info->Keywords;                break;
-      case IPTC_CAPTION:                  tag = (char**)&info->Caption;                 break;
-      case IPTC_AUTHOR:                   tag = (char**)&info->Author;                  break;
-      case IPTC_HEADLINE:                 tag = (char**)&info->Headline;                break;
-      case IPTC_SPECIAL_INSTRUCTIONS:     tag = (char**)&info->SpecialInstructions;     break;
-      case IPTC_CATEGORY:                 tag = (char**)&info->Category;                break;
-      case IPTC_BYLINE:                   tag = (char**)&info->Byline;                  break;
-      case IPTC_BYLINE_TITLE:             tag = (char**)&info->BylineTitle;             break;
-      case IPTC_CREDIT:                   tag = (char**)&info->Credit;                  break;
-      case IPTC_SOURCE:                   tag = (char**)&info->Source;                  break;
-      case IPTC_COPYRIGHT_NOTICE:         tag = (char**)&info->CopyrightNotice;         break;
-      case IPTC_OBJECT_NAME:              tag = (char**)&info->ObjectName;              break;
-      case IPTC_CITY:                     tag = (char**)&info->City;                    break;
-      case IPTC_STATE:                    tag = (char**)&info->State;                   break;
-      case IPTC_COUNTRY:                  tag = (char**)&info->Country;                 break;
-      case IPTC_TRANSMISSION_REFERENCE:   tag = (char**)&info->TransmissionReference;   break;
-      case IPTC_DATE:                     tag = (char**)&info->Date;                    break;
-      case IPTC_COPYRIGHT:                tag = (char**)&info->Copyright;               break;
-      case IPTC_REFERENCE_SERVICE:        tag = (char**)&info->ReferenceService;        break;
-      case IPTC_COUNTRY_CODE:             tag = (char**)&info->CountryCode;             break;
+      case IPTC_SUPLEMENTAL_CATEGORIES:   tag = info->SupplementalCategories;  break;
+      case IPTC_KEYWORDS:                 tag = info->Keywords;                break;
+      case IPTC_CAPTION:                  tag = info->Caption;                 break;
+      case IPTC_AUTHOR:                   tag = info->Author;                  break;
+      case IPTC_HEADLINE:                 tag = info->Headline;                break;
+      case IPTC_SPECIAL_INSTRUCTIONS:     tag = info->SpecialInstructions;     break;
+      case IPTC_CATEGORY:                 tag = info->Category;                break;
+      case IPTC_BYLINE:                   tag = info->Byline;                  break;
+      case IPTC_BYLINE_TITLE:             tag = info->BylineTitle;             break;
+      case IPTC_CREDIT:                   tag = info->Credit;                  break;
+      case IPTC_SOURCE:                   tag = info->Source;                  break;
+      case IPTC_COPYRIGHT_NOTICE:         tag = info->CopyrightNotice;         break;
+      case IPTC_OBJECT_NAME:              tag = info->ObjectName;              break;
+      case IPTC_CITY:                     tag = info->City;                    break;
+      case IPTC_STATE:                    tag = info->State;                   break;
+      case IPTC_COUNTRY:                  tag = info->Country;                 break;
+      case IPTC_TRANSMISSION_REFERENCE:   tag = info->TransmissionReference;   break;
+      case IPTC_DATE:                     tag = info->Date;                    break;
+      case IPTC_COPYRIGHT:                tag = info->Copyright;               break;
+      case IPTC_REFERENCE_SERVICE:        tag = info->ReferenceService;        break;
+      case IPTC_COUNTRY_CODE:             tag = info->CountryCode;             break;
       default:
         printf("IptcParse: Unrecognised IPTC tag: 0x%02x", type);
       break;
@@ -153,18 +153,18 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
 
     if (tag)
     {
-      if (type != IPTC_KEYWORDS || *tag == NULL)
+      if (type != IPTC_KEYWORDS || *tag == 0)
       {
-        strncpy(*tag, pos, min(length, MAX_IPTC_STRING - 1));
-        (*tag)[min(length, MAX_IPTC_STRING - 1)] = 0;
+        strncpy(tag, pos, min(length, MAX_IPTC_STRING - 1));
+        tag[min(length, MAX_IPTC_STRING - 1)] = 0;
       }
       else if (type == IPTC_KEYWORDS)
       {
         // there may be multiple keywords - lets join them
-        size_t maxLen = MAX_IPTC_STRING - strlen(*tag);
+        size_t maxLen = MAX_IPTC_STRING - strlen(tag);
         if (maxLen > 2)
-          strcat(*tag, ", ");
-        strncat(*tag, pos, min(length, MAX_IPTC_STRING - maxLen - 3));
+          strcat(tag, ", ");
+        strncat(tag, pos, min(length, MAX_IPTC_STRING - maxLen - 3));
       }
 /*      if (id == SLIDE_IPTC_CAPTION)
       {
