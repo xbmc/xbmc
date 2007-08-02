@@ -5309,7 +5309,7 @@ if test "$_faad_internal" = auto ; then
   fi
   # internal faad: check if our dear gcc is able to compile it...
   cp "`pwd`/libfaad2/cfft.c" $TMPC
-  if ( cc_check -c -O4 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer $_inc_faad ); then
+  if ( cc_check -c -O2 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer $_inc_faad ); then
     _faad_internal=yes
   else
     _faad_internal="no (broken gcc)"
@@ -6616,13 +6616,13 @@ fi
 # Checking for CFLAGS
 _stripbinaries=yes
 if test "$_profile" != "" || test "$_debug" != "" ; then
-  CFLAGS="-W -Wall -O2 $_march $_mcpu $_debug $_profile"
+  CFLAGS="-W -Wall -O3 $_march $_mcpu $_debug $_profile"
   if test "$_cc_major" -ge "3" ; then
     CFLAGS=`echo "$CFLAGS" | sed -e 's/\(-Wall\)/\1 -Wno-unused-parameter/'`
   fi
   _stripbinaries=no
 elif test -z "$CFLAGS" ; then
-    CFLAGS="-O4 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer"
+    CFLAGS="-O3 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer -fno-rename-registers"
   # always compile with '-g' if .developer:
   if test -f ".developer" ; then
     CFLAGS="-g $CFLAGS"
@@ -6841,7 +6841,6 @@ HOST_CC = $_host_cc
 AWK = $_awk
 RANLIB = $_ranlib
 INSTALL = $_install
-# OPTFLAGS = -O4 $_profile $_debug $_march $_mcpu $_pipe -fomit-frame-pointer -ffast-math
 EXTRA_INC = $_inc_extra $_inc_gtk
 OPTFLAGS = -I../libvo -I../../libvo $_inc_x11 $CFLAGS \$(EXTRA_INC)
 STRIPBINARIES = $_stripbinaries
