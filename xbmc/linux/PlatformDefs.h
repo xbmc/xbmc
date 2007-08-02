@@ -485,6 +485,8 @@ WORD    wBitsPerSample;
 WORD    cbSize;
 } WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
 
+#define WAVE_FORMAT_PCM 0x0001
+
 #endif 
 
 #endif //__PLATFORM_DEFS_H__

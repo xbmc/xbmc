@@ -2,7 +2,7 @@
 #include "CDDAReader.h"
 
 
-#define SECTOR_COUNT 55
+#define SECTOR_COUNT 52
 
 CCDDAReader::CCDDAReader()
 {
