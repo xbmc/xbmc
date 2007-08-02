@@ -9,6 +9,7 @@
 
 #include "../MusicInfoTag.h"
 #include "../FileItem.h"
+#include "../PictureInfoTag.h"
 #include "../videodatabase.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
@@ -313,6 +314,9 @@
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
 
+#define SLIDE_INFO_START            900
+#define SLIDE_INFO_END              980
+
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
@@ -390,6 +394,7 @@ public:
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
   void SetCurrentMovie(CFileItem &item);
+  void SetCurrentSlide(const CStdString &slide);
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
   {     
     *m_currentFile.GetMusicInfoTag() = tag; 
@@ -492,6 +497,8 @@ protected:
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
+  CPictureInfoTag m_currentSlideInfo;
+  CStdString      m_currentSlideFile;
   int i_SmartRequest;
  
   // fan stuff
