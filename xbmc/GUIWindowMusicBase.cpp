@@ -33,7 +33,7 @@
 #include "PlayListPlayer.h"
 #include "FileSystem/DirectoryCache.h"
 #ifdef HAS_CDDA_RIPPER
-#include "CDRip/CDDARipper.h"
+#include "cdrip/CDDARipper.h"
 #endif
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
