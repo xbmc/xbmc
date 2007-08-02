@@ -541,7 +541,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // set the character in our table
   ch->letter = letter;
   ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, 0);
+  ch->offsetY = (short)max((short)m_cellBaseLine - bitGlyph->top, 0);
   ch->left = (float)m_posX + ch->offsetX;
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
