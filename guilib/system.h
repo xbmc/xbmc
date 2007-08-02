@@ -146,6 +146,7 @@
 #define HAS_LIRC
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
+#define HAS_CDDA_RIPPER
 #undef HAS_KAI
 
 #include <unistd.h>
