@@ -446,6 +446,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   }
+  else if (strCategory.Equals("slideshow"))
+    ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
   else if (strCategory.Left(9).Equals("container"))
   {
     int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
@@ -648,9 +650,11 @@ CStdString CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
-  {
-    strLabel = GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
-  }
+    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
+
+  if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
+    return m_currentSlideInfo.GetInfo(info);
+
   switch (info)
   {
   case WEATHER_CONDITIONS:
@@ -3023,6 +3027,12 @@ void CGUIInfoManager::UpdateFromTuxBox()
     !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
   {
     m_currentFile.GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
-  }  
-  return;
+  }
+}
+
+void CGUIInfoManager::SetCurrentSlide(const CStdString &slide)
+{
+  if (m_currentSlideFile != slide)
+    m_currentSlideInfo.Load(slide);
+  m_currentSlideFile = slide;
 }
