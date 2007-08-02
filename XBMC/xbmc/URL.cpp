@@ -452,9 +452,11 @@ const CStdString CURL::GetFileNameWithoutPath() const
 
 const char CURL::GetDirectorySeparator() const
 {
+#ifndef _LINUX
   if ( IsLocal() )
     return '\\';
   else
+#endif
     return '/';
 }
 
