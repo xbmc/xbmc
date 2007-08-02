@@ -130,7 +130,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strVotes) },
   { VIDEODB_TYPE_FLOAT, my_offsetof(CVideoInfoTag,m_fRating) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPremiered) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_url) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strGenre) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
