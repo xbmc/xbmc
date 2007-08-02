@@ -1585,7 +1585,7 @@ static int collect_section(ts_section_t *section, int is_start, unsigned char *b
 	uint16_t tlen;
 	int skip, tid;
 	
-	mp_msg(MSGT_DEMUX, MSGL_V, "COLLECT_SECTION, start: %d, size: %d, collected: %d\n", is_start, size, section->buffer_len);
+  mp_msg(MSGT_DEMUX, MSGL_DBG2, "COLLECT_SECTION, start: %d, size: %d, collected: %d\n", is_start, size, section->buffer_len);
 	if(! is_start && !section->buffer_len)
 		return 0;
 	
@@ -1619,7 +1619,7 @@ static int collect_section(ts_section_t *section, int is_start, unsigned char *b
 	ptr = &(section->buffer[skip + 1]);
 	tid = ptr[0];
 	tlen = ((ptr[1] & 0x0f) << 8) | ptr[2];
-	mp_msg(MSGT_DEMUX, MSGL_V, "SKIP: %d+1, TID: %d, TLEN: %d, COLLECTED: %d\n", skip, tid, tlen, section->buffer_len);
+	mp_msg(MSGT_DEMUX, MSGL_DBG2, "SKIP: %d+1, TID: %d, TLEN: %d, COLLECTED: %d\n", skip, tid, tlen, section->buffer_len);
 	if(section->buffer_len < (skip+1+3+tlen))
 	{
 		mp_msg(MSGT_DEMUX, MSGL_DBG2, "DATA IS NOT ENOUGH, NEXT TIME\n");
@@ -1658,7 +1658,7 @@ static int parse_pat(ts_priv_t * priv, int is_start, unsigned char *buff, int si
 	priv->pat.last_section_number = ptr[7];
 
 	//check_crc32(0xFFFFFFFFL, ptr, priv->pat.buffer_len - 4, &ptr[priv->pat.buffer_len - 4]);
-	mp_msg(MSGT_DEMUX, MSGL_V, "PARSE_PAT: section_len: %d, section %d/%d\n", priv->pat.section_length, priv->pat.section_number, priv->pat.last_section_number);
+	mp_msg(MSGT_DEMUX, MSGL_DBG2, "PARSE_PAT: section_len: %d, section %d/%d\n", priv->pat.section_length, priv->pat.section_number, priv->pat.last_section_number);
 
 	entries = (int) (priv->pat.section_length - 9) / 4;	//entries per section
 
@@ -1684,7 +1684,7 @@ static int parse_pat(ts_priv_t * priv, int is_start, unsigned char *buff, int si
 
 		priv->pat.progs[idx].id = progid;
 		priv->pat.progs[idx].pmt_pid = ((base[2]  & 0x1F) << 8) | base[3];
-		mp_msg(MSGT_DEMUX, MSGL_V, "PROG: %d (%d-th of %d), PMT: %d\n", priv->pat.progs[idx].id, i+1, entries, priv->pat.progs[idx].pmt_pid);
+		mp_msg(MSGT_DEMUX, MSGL_DBG2, "PROG: %d (%d-th of %d), PMT: %d\n", priv->pat.progs[idx].id, i+1, entries, priv->pat.progs[idx].pmt_pid);
 	}
 
 	return 1;
@@ -2141,7 +2141,7 @@ static int parse_descriptors(struct pmt_es_t *es, uint8_t *ptr)
 	while(len > 2)
 	{
 		descr_len = ptr[j+1];
-		mp_msg(MSGT_DEMUX, MSGL_V, "...descr id: 0x%x, len=%d\n", ptr[j], descr_len);
+		mp_msg(MSGT_DEMUX, MSGL_DBG2, "...descr id: 0x%x, len=%d\n", ptr[j], descr_len);
 		if(descr_len > len)
 		{
 			mp_msg(MSGT_DEMUX, MSGL_ERR, "INVALID DESCR LEN for tag %02x: %d vs %d max, EXIT LOOP\n", ptr[j], descr_len, len);
@@ -2193,7 +2193,7 @@ static int parse_descriptors(struct pmt_es_t *es, uint8_t *ptr)
 		{
 			memcpy(es->lang, &ptr[j+2], 3);
 			es->lang[3] = 0;
-			mp_msg(MSGT_DEMUX, MSGL_V, "Language Descriptor: %s\n", es->lang);
+			mp_msg(MSGT_DEMUX, MSGL_DBG2, "Language Descriptor: %s\n", es->lang);
 		}
 		else if(ptr[j] == 0x5)	//Registration Descriptor (looks like e fourCC :) )
 		{
@@ -2307,7 +2307,7 @@ static int parse_pmt(ts_priv_t * priv, uint16_t progid, uint16_t pid, int is_sta
 		
 	base = &(section->buffer[skip]);
 
-	mp_msg(MSGT_DEMUX, MSGL_V, "FILL_PMT(prog=%d), PMT_len: %d, IS_START: %d, TS_PID: %d, SIZE=%d, M=%d, ES_CNT=%d, IDX=%d, PMT_PTR=%p\n",
+	mp_msg(MSGT_DEMUX, MSGL_DBG2, "FILL_PMT(prog=%d), PMT_len: %d, IS_START: %d, TS_PID: %d, SIZE=%d, M=%d, ES_CNT=%d, IDX=%d, PMT_PTR=%p\n",
 		progid, pmt->section.buffer_len, is_start, pid, size, m, pmt->es_cnt, idx, pmt);
 
 	pmt->table_id = base[0];
@@ -2432,7 +2432,7 @@ static int parse_pmt(ts_priv_t * priv, uint16_t progid, uint16_t pid, int is_sta
 		}
 
 		section_bytes -= 5 + pmt->es[idx].descr_length;
-		mp_msg(MSGT_DEMUX, MSGL_V, "PARSE_PMT(%d INDEX %d), STREAM: %d, FOUND pid=0x%x (%d), type=0x%x, ES_DESCR_LENGTH: %d, bytes left: %d\n",
+		mp_msg(MSGT_DEMUX, MSGL_DBG2, "PARSE_PMT(%d INDEX %d), STREAM: %d, FOUND pid=0x%x (%d), type=0x%x, ES_DESCR_LENGTH: %d, bytes left: %d\n",
 			progid, idx, es_count, pmt->es[idx].pid, pmt->es[idx].pid, pmt->es[idx].type, pmt->es[idx].descr_length, section_bytes);
 
 
@@ -2441,7 +2441,7 @@ static int parse_pmt(ts_priv_t * priv, uint16_t progid, uint16_t pid, int is_sta
 		es_count++;
 	}
 
-	mp_msg(MSGT_DEMUX, MSGL_V, "----------------------------\n");
+	mp_msg(MSGT_DEMUX, MSGL_DBG2, "----------------------------\n");
 	return 1;
 }
 
