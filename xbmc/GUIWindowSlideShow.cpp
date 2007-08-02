@@ -169,6 +169,7 @@ void CGUIWindowSlideShow::FreeResources()
   // and close the images.
   m_Image[0].Close();
   m_Image[1].Close();
+  g_infoManager.SetCurrentSlide("");
 }
 
 void CGUIWindowSlideShow::Add(const CStdString& strPicture)
@@ -427,17 +428,12 @@ void CGUIWindowSlideShow::Render()
 
   RenderPause();
 
-  CStdString strSlideInfo;
   if (m_Image[m_iCurrentPic].IsLoaded())
-  {
-    CStdString strFileInfo;
-    CStdString strFile;
-    strFile = CUtil::GetFileName(m_vecSlides[m_iCurrentSlide]);
-    strFileInfo.Format("%ix%i %s", m_Image[m_iCurrentPic].GetOriginalWidth(), m_Image[m_iCurrentPic].GetOriginalHeight(), strFile.c_str());
-    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-    msg.SetLabel(strFileInfo);
-    OnMessage(msg);
-  }
+    g_infoManager.SetCurrentSlide(m_vecSlides[m_iCurrentSlide]);
+
+  // TODO: Add these to the info manager as well?  We could
+  //       pass them in to SetCurrentSlide easy enough I guess
+  CStdString strSlideInfo;
   strSlideInfo.Format("%i/%i", m_iCurrentSlide + 1 , m_vecSlides.size());
   {
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
