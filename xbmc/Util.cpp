@@ -2004,6 +2004,10 @@ bool CUtil::IsHD(const CStdString& strFileName)
   {
     if (strFileName.GetAt(1) == ':') return true;
   }
+#ifdef _LINUX
+  CURL url(strFileName);
+  return url.GetProtocol().IsEmpty();
+#endif
   return false;
 }
 
@@ -3073,9 +3077,9 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   if (CDirectory::Exists(strPath)) return true;
 
   // split strPath up into an array
-  // music\\album\\ will result in
+  // music\album\ will result in
   // music
-  // music\\album
+  // music\album
   //
 
   int i;
@@ -3087,6 +3091,10 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   else if (item.IsHD())
   {
     i = 2; // remove the "E:" from the filename
+#ifdef _LINUX
+    if (item.m_strPath[1] != ':')
+      i = 0;
+#endif
   }
   else
   {
@@ -3106,8 +3114,8 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   url.GetURLWithoutFilename(strTemp);
   for (unsigned int i = 0; i < strArray.size(); i++)
   {
-    CStdString strTemp1 = strTemp;
-    strTemp += strArray[i];
+    CStdString strTemp1;
+    CUtil::AddFileToFolder(strTemp,strArray[i],strTemp1);
     CDirectory::Create(strTemp1);
   }
   strArray.clear();
