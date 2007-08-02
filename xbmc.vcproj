@@ -928,6 +928,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Picture.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\PictureInfoTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PictureInfoTag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\Profile.cpp">
 				</File>
 				<File
