@@ -13,7 +13,7 @@
 
 extern "C"
 {
-#include "../lib/librtv/interface.h"
+#include "../lib/libRTV/interface.h"
 }
 
 namespace XFILE
