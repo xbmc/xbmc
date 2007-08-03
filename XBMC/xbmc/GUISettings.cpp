@@ -265,7 +265,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
-  AddString(2, "musicfiles.trackformat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(3, "musicfiles.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
   // advanced per-view trackformats.
   AddString(0, "musicfiles.nowplayingtrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
@@ -289,7 +289,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddString(2, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", BUTTON_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
