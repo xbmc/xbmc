@@ -27,6 +27,7 @@
 #include "application.h"
 #include "playlistplayer.h"
 #include "PartyModeManager.h"
+#include "utils/LabelFormatter.h"
 
 using namespace PLAYLIST;
 
@@ -470,8 +471,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     CStdString strTrackRight=g_guiSettings.GetString("musicfiles.nowplayingtrackformatright");
     if (strTrackRight.IsEmpty())
       strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
-    pItem->FormatLabel(strTrackLeft);
-    pItem->FormatLabel2(strTrackRight);
+    CLabelFormatter formatter(strTrackLeft, strTrackRight);
+    formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())
   else
   {
