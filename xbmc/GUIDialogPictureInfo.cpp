@@ -44,9 +44,26 @@ void CGUIDialogPictureInfo::SetPicture(const CStdString &picture)
 void CGUIDialogPictureInfo::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
+  UpdatePictureInfo();
+}
+
+void CGUIDialogPictureInfo::Render()
+{
+  CStdString currentPicture = g_infoManager.GetLabel(SLIDE_FILE_NAME) + g_infoManager.GetLabel(SLIDE_FILE_PATH);
+  if (currentPicture != m_currentPicture)
+  {
+    UpdatePictureInfo();
+    m_currentPicture = currentPicture;
+  }
+  CGUIDialog::Render();
+}
+
+void CGUIDialogPictureInfo::UpdatePictureInfo()
+{
   // add stuff from the current slide to the list
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PICTURE_INFO);
   OnMessage(msgReset);
+  m_pictureInfo.Clear();
   for (int info = SLIDE_INFO_START; info <= SLIDE_INFO_END; ++info)
   {
     CStdString picInfo = g_infoManager.GetLabel(info);
@@ -67,4 +84,5 @@ void CGUIDialogPictureInfo::OnDeinitWindow(int nextWindowID)
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PICTURE_INFO);
   OnMessage(msgReset);
   m_pictureInfo.Clear();
+  m_currentPicture.Empty();
 }
