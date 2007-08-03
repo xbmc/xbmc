@@ -42,6 +42,8 @@ char *safe_sprintf(const char *format, ...);
 /* Client */
 typedef struct DAAP_ClientHost_FakeTAG DAAP_ClientHost_Fake;
 
+struct CP_SThreadPool;
+
 struct DAAP_SClientTAG
 {
     unsigned int uiRef;
@@ -55,13 +57,13 @@ struct DAAP_SClientTAG
     DAAP_ClientHost_Fake *fakehosts;
 
 #if defined(SYSTEM_POSIX)
-    CP_SThreadPool *tp;
+    struct CP_SThreadPool *tp;
 #endif
 
     HTTP_ConnectionWatch *update_watch;
 
-#ifndef _XBOX
-    SDiscover *discover;
+#if !defined(_XBOX) && !defined(_LINUX) 
+	SDiscover *discover;
 #endif
 };
 
@@ -130,26 +132,31 @@ struct SDiscoverTAG
                                      and tests it for death */
     ts_mutex mtWorkerLock;
 
-
+#ifndef _LINUX
     fnDiscUpdated pfnUpdateCallback;
+#endif
     void *pvCallbackArg;
 
-    CP_SThreadPool *tp;
+    struct CP_SThreadPool *tp;
 
+#ifndef _LINUX
     mdnsd mdnsd_info;
+#endif
     int socket;
 
     int newquery_pipe[2];
     // answers
     /* answers */
     int pending_hosts;
+#ifndef _LINUX
     SDiscover_HostList *prenamed;
     SDiscover_HostList *pending;
     SDiscover_HostList *have;
+#endif
 };
 
-/* ThreadPool */
 typedef struct CP_STPJobQueueTAG CP_STPJobQueue;
+/* ThreadPool */
 struct CP_STPJobQueueTAG
 {
     CP_STPJobQueue *prev;
