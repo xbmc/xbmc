@@ -11,6 +11,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">文件管理</string>
   <string id="8">天气</string>
+  <string id="9">xbox 媒体中心</string>
 
   <string id="11">星期一</string>
   <string id="12">星期二</string>
@@ -685,7 +686,7 @@
   <string id="1220">图片和文件</string>
   <string id="1221">音乐和视频和图片</string>
   <string id="1222">音乐和视频和图片和文件</string>
-  <string id="1223">禁用</string>
+  <string id="1223">停用</string>
   <string id="1226">文件和音乐和视频</string>
   <string id="1227">文件和图片和音乐</string>
   <string id="1228">文件和图片和视频</string>
@@ -896,6 +897,10 @@
   <string id="13007">使用定制 Dashboard 路径</string>
 
   <string id="13100">闪烁过滤</string>
+  <string id="13105">垂直空白同步</string>
+  <string id="13106">停用</string>
+  <string id="13107">开启在视频播放时</string>
+  <string id="13108">强制开启</string>
 
   <string id="13150">硬盘密匙：</string>
   <string id="13151">硬盘温度：</string>
@@ -1648,11 +1653,10 @@
   <string id="21383">启用页面卷轴</string>
   <string id="21384">影片资料库使用浏览过滤按钮</string>
   <string id="21385">打开</string>
-
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安静</string>
-
+  <string id="21389">启用 自订背景</string>
   <string id="21390">电源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
@@ -1660,11 +1664,9 @@
   <string id="21394">低待机</string>
   <string id="21395">缓存档不能超过4GB</string>
   <string id="21396">章</string>
-
   <string id="21397">高品质像素着色器 V2</string>
-
   <string id="21398">启用启动时自动播放播放列表</string>
-
+  <string id="21399">使用 Tween 动画效果</string>
   <string id="21400">包含</string>
   <string id="21401">未包含</string>
   <string id="21402">是</string>
@@ -1697,6 +1699,7 @@
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智能播放列表…</string>
   <string id="21438">%c磁碟</string>
+  <string id="21439">编辑舞会模式规则</string>
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 </strings>
