@@ -127,8 +127,6 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
-  void FormatLabel(const CStdString& strMask);
-  void FormatLabel2(const CStdString& strMask);
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
 
@@ -208,8 +206,6 @@ public:
 
   bool IsSamePath(const CFileItem *item);
 private:
-  CStdString ParseFormat(const CStdString& strMask);
-
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile();
   // Gets the previously cached thumb file (with existence checks)
