@@ -379,16 +379,25 @@ bool CxImage::Load(const char * filename, DWORD imagetype)
 #ifdef XBMC
 		int iWidthSave = iWidth;
 		int iHeightSave = iHeight;
-		bOK = Decode(hFile,imagetype,iWidth,iHeight);
-		if (imagetype != CXIMAGE_FORMAT_JPG)
-		{
-			iWidth = GetWidth();
-			iHeight = GetHeight();
-		}
-#else
-		bOK = Decode(hFile,imagetype);
 #endif
-		fclose(hFile);
+    try
+    {
+#ifdef XBMC
+      bOK = Decode(hFile,imagetype,iWidth,iHeight);
+		  if (imagetype != CXIMAGE_FORMAT_JPG)
+		  {
+			  iWidth = GetWidth();
+			  iHeight = GetHeight();
+		  }
+#else
+		  bOK = Decode(hFile,imagetype);
+#endif
+    }
+    catch (...)
+    {
+      printf("failed to open image - possibly the wrong extension?");
+		}
+    fclose(hFile);
 		if (bOK) return bOK;
 #ifdef XBMC
 		iWidth = iWidthSave;
@@ -402,12 +411,21 @@ bool CxImage::Load(const char * filename, DWORD imagetype)
 	// if failed, try automatic recognition of the file...
 	FILE* hFile;
 	if ((hFile=fopen(filename,"rb"))==NULL)  return false;
+  try
+  { // Silently catch exceptions, because Decode of some image formats
+    // could throw and we need to perform cleanup so that we can close 
+    // our open file.
 #ifdef XBMC
-	bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN,iWidth,iHeight);
+	  bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN,iWidth,iHeight);
 #else
-	bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN);
+	  bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN);
 #endif
-	fclose(hFile);
+  }
+  catch (...)
+  {
+    printf("failed to decode file using auto recognition");
+  }
+  fclose(hFile);
 #ifdef XBMC
 	if (imagetype != CXIMAGE_FORMAT_JPG)
 	{
@@ -482,50 +500,50 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 	if (imagetype==CXIMAGE_FORMAT_UNKNOWN){
 		DWORD pos = hFile->Tell();
 #if CXIMAGE_SUPPORT_BMP
-		{ CxImageBMP newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageBMP newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_JPG
 #ifdef XBMC
-		{ CxImageJPG newima; newima.CopyInfo(*this); if (newima.Decode(hFile, iWidth, iHeight)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageJPG newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile, iWidth, iHeight)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #else
-		{ CxImageJPG newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageJPG newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #endif
 #if CXIMAGE_SUPPORT_ICO
-		{ CxImageICO newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageICO newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_GIF
-		{ CxImageGIF newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageGIF newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_PNG
-		{ CxImagePNG newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImagePNG newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_TIF
-		{ CxImageTIF newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageTIF newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_MNG
-		{ CxImageMNG newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageMNG newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_TGA
-		{ CxImageTGA newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageTGA newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_PCX
-		{ CxImagePCX newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImagePCX newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_WBMP
-		{ CxImageWBMP newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageWBMP newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_WMF && CXIMAGE_SUPPORT_WINDOWS
-		{ CxImageWMF newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageWMF newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_J2K
-		{ CxImageJ2K newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageJ2K newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_JBG
-		{ CxImageJBG newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageJBG newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 #if CXIMAGE_SUPPORT_JASPER
-		{ CxImageJAS newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageJAS newima; try { newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); } catch (...) { hFile->Seek(pos,SEEK_SET); } }
 #endif
 	}
 
