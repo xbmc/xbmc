@@ -134,6 +134,7 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
       else if ((m_keyEvent.key.keysym.sym == SDLK_PRINT) || (m_keyEvent.key.keysym.scancode==111) ) m_VKey = 0x2a;
       else if (m_keyEvent.key.keysym.sym == SDLK_LSUPER) m_VKey = 0x5b;
       else if (m_keyEvent.key.keysym.sym == SDLK_RSUPER) m_VKey = 0x5c;
+      else if (m_keyEvent.key.keysym.scancode==117) m_VKey = 0x5d; // right click
       else if (m_keyEvent.key.keysym.mod & KMOD_LSHIFT) m_VKey = 0xa0;
       else if (m_keyEvent.key.keysym.mod & KMOD_RSHIFT) m_VKey = 0xa1;
       else if (m_keyEvent.key.keysym.mod & KMOD_LALT) m_VKey = 0xa4;
