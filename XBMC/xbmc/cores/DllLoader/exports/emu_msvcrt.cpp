@@ -70,18 +70,29 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("DVDCSS_CACHE=T:\\cache");
   
   // python
+#ifdef _XBOX
+  dll_putenv("OS=xbox");
+#elif defined(_WIN32)
+  dll_putenv("OS=win32");
+#elif defined(_LINUX)
+  dll_putenv("OS=linux");
+#elif defined(_APPLE)
+  dll_putenv("OS=osx");
+#else
+  dll_putenv("OS=unknown");
+#endif
   dll_putenv("PYTHONPATH=Q:\\system\\python\\python24.zlib;Q:\\system\\python\\DLLs;Q:\\system\\python\\Lib;Q:\\system\\python\\spyce");
-	dll_putenv("PYTHONHOME=Q:\\system\\python");
-	dll_putenv("PATH=.;Q:\\;Q:\\system\\python");
-	//dll_putenv("PYTHONCASEOK=1");
-	//dll_putenv("PYTHONDEBUG=1");
-	//dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
-	dll_putenv("PYTHONOPTIMIZE=1");
-	//dll_putenv("PYTHONDUMPREFS=1");
-	//dll_putenv("THREADDEBUG=1");
-	//dll_putenv("PYTHONMALLOCSTATS=1");
-	//dll_putenv("PYTHONY2K=1");
-	dll_putenv("TEMP=Z:\\temp"); // for python tempdir
+  dll_putenv("PYTHONHOME=Q:\\system\\python");
+  dll_putenv("PATH=.;Q:\\;Q:\\system\\python");
+  //dll_putenv("PYTHONCASEOK=1");
+  //dll_putenv("PYTHONDEBUG=1");
+  //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
+  dll_putenv("PYTHONOPTIMIZE=1");
+  //dll_putenv("PYTHONDUMPREFS=1");
+  //dll_putenv("THREADDEBUG=1");
+  //dll_putenv("PYTHONMALLOCSTATS=1");
+  //dll_putenv("PYTHONY2K=1");
+  dll_putenv("TEMP=Z:\\temp"); // for python tempdir
 }
 
 #ifndef _LINUX
@@ -89,20 +100,19 @@ bool emu_is_hd(const char* path)
 {
   if (path[0] != 0 && path[1] == ':')
   {
-		if (path[0] == 'C' ||
-		    path[0] == 'E' ||
-		    path[0] == 'F' ||
-		    path[0] == 'F' ||
-		    path[0] == 'Q' ||
-		    path[0] == 'S' ||
-		  	path[0] == 'T' ||
-		  	path[0] == 'U' ||
-		  	path[0] == 'V' ||
-		  	path[0] == 'Y' ||
-		  	path[0] == 'Z')
-		{
-		  return true;
-		}
+    if (path[0] == 'C' ||
+        path[0] == 'E' ||
+        path[0] == 'F' ||
+        path[0] == 'Q' ||
+        path[0] == 'S' ||
+        path[0] == 'T' ||
+        path[0] == 'U' ||
+        path[0] == 'V' ||
+        path[0] == 'Y' ||
+        path[0] == 'Z')
+    {
+      return true;
+    }
   }
   return false;
 }
@@ -1217,18 +1227,18 @@ extern "C"
     //stating a root, for example C:\\, failes on the xbox
     if (emu_is_root_drive(path))
     {
-			  buffer->st_dev = 4294967280;
-			  buffer->st_ino = 0;
-			  buffer->st_mode = 16895;
-			  buffer->st_nlink = 1;
-			  buffer->st_uid = 0;
-			  buffer->st_gid = 0;
-			  buffer->st_rdev = 4294967280;
-			  buffer->st_size = 0;
-			  buffer->st_atime = 1000000000;
-			  buffer->st_mtime = 1000000000;
-			  buffer->st_ctime = 1000000000;
-			  return 0;
+        buffer->st_dev = 4294967280;
+        buffer->st_ino = 0;
+        buffer->st_mode = 16895;
+        buffer->st_nlink = 1;
+        buffer->st_uid = 0;
+        buffer->st_gid = 0;
+        buffer->st_rdev = 4294967280;
+        buffer->st_size = 0;
+        buffer->st_atime = 1000000000;
+        buffer->st_mtime = 1000000000;
+        buffer->st_ctime = 1000000000;
+        return 0;
     }
  #endif
  
@@ -1265,18 +1275,18 @@ extern "C"
     //stating a root, for example C:\\, failes on the xbox
     if (emu_is_root_drive(path))
     {
-			  buffer->st_dev = 4294967280;
-			  buffer->st_ino = 0;
-			  buffer->st_mode = 16895;
-			  buffer->st_nlink = 1;
-			  buffer->st_uid = 0;
-			  buffer->st_gid = 0;
-			  buffer->st_rdev = 4294967280;
-			  buffer->st_size = 0;
-			  buffer->st_atime = 1000000000;
-			  buffer->st_mtime = 1000000000;
-			  buffer->st_ctime = 1000000000;
-			  return 0;
+        buffer->st_dev = 4294967280;
+        buffer->st_ino = 0;
+        buffer->st_mode = 16895;
+        buffer->st_nlink = 1;
+        buffer->st_uid = 0;
+        buffer->st_gid = 0;
+        buffer->st_rdev = 4294967280;
+        buffer->st_size = 0;
+        buffer->st_atime = 1000000000;
+        buffer->st_mtime = 1000000000;
+        buffer->st_ctime = 1000000000;
+        return 0;
     }
  #endif 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
@@ -1481,8 +1491,8 @@ extern "C"
   {
     static char* envstring = NULL;
     char* value = NULL;
-	  if (stricmp(szKey, "HTTP_PROXY") == 0) // needed by libmpdemux
-	  {
+    if (stricmp(szKey, "HTTP_PROXY") == 0) // needed by libmpdemux
+    {
       // Use a proxy, if the GUI was configured as such
       if (g_guiSettings.GetBool("network.usehttpproxy"))
       {
@@ -1495,7 +1505,7 @@ extern "C"
 
         return strcpy(envstring, proxy.c_str());
       }
-	  }
+    }
 
     EnterCriticalSection(&dll_cs_environ);
     
