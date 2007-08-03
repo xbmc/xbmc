@@ -653,7 +653,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
 
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
-    return m_currentSlideInfo.GetInfo(info);
+    return GetPictureLabel(info);
 
   switch (info)
   {
@@ -3028,6 +3028,27 @@ void CGUIInfoManager::UpdateFromTuxBox()
   {
     m_currentFile.GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
   }
+}
+
+CStdString CGUIInfoManager::GetPictureLabel(int info) const
+{
+  if (info == SLIDE_FILE_NAME)
+    return CUtil::GetFileName(m_currentSlideFile);
+  else if (info == SLIDE_FILE_PATH)
+  {
+    CStdString path, displayPath;
+    CUtil::GetDirectory(m_currentSlideFile, path);
+    CURL(path).GetURLWithoutUserDetails(displayPath);
+    return displayPath;
+  }
+/* TODO: Implement these
+  else if (info == SLIDE_FILE_SIZE)
+  {
+  }
+  else if (info == SLIDE_FILE_DATE)
+  {
+  }*/
+  return m_currentSlideInfo.GetInfo(info);
 }
 
 void CGUIInfoManager::SetCurrentSlide(const CStdString &slide)

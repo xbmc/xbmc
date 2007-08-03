@@ -425,7 +425,8 @@ public:
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item);
   CStdString GetMusicPartyModeLabel(int item);
-  
+  CStdString GetPictureLabel(int item) const;
+
   __int64 GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   int GetPlayTimeRemaining() const;
