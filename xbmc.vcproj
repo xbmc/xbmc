@@ -886,6 +886,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\KaiVector.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\LabelFormatter.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\LabelFormatter.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\LangCodeExpander.cpp">
 				</File>
 				<File
