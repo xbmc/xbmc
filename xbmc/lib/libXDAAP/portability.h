@@ -34,7 +34,6 @@
 #define SYSTEM_POSIX
 
 #include <sys/types.h>
-#include "config.h"
 
 #if !defined(HAVE_U_INT64_T) && defined(HAVE_UINT64_T)
  typedef uint64_t u_int64_t;
