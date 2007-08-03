@@ -83,7 +83,7 @@
 			<ondown>9002</ondown>
 			<visible>Skin.String(SkinSettings,1)</visible>
 			<include>contentpanelslide</include>
-			<control type="radiobutton" id="20">
+			<control type="radiobutton" id="120">
 				<description>enable animations</description>
 				<width>485</width>
 				<label>20079</label>
@@ -93,7 +93,7 @@
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
-			<control type="radiobutton" id="21">
+			<control type="radiobutton" id="121">
 				<description>enable tween animations</description>
 				<width>485</width>
 				<label>21399</label>
@@ -104,12 +104,12 @@
 				<texturenofocus>-</texturenofocus>
 				<enable>!Skin.HasSetting(animated)</enable>
 			</control>
-			<control type="image" id="22">
+			<control type="image" id="122">
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>
 			</control>
-			<control type="radiobutton" id="23">
+			<control type="radiobutton" id="123">
 				<description>enable scrollbars</description>
 				<width>485</width>
 				<label>21383</label>
@@ -119,7 +119,7 @@
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
-			<control type="radiobutton" id="24">
+			<control type="radiobutton" id="124">
 				<description>QWERTY Keyboard Button</description>
 				<width>485</width>
 				<label>QWERTY $LOCALIZE[15028]</label>
@@ -129,7 +129,7 @@
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
-			<control type="radiobutton" id="25">
+			<control type="radiobutton" id="125">
 				<description>make watched filtering a toggle in video library Button</description>
 				<width>485</width>
 				<label>21384</label>
@@ -139,12 +139,12 @@
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
-			<control type="image" id="26">
+			<control type="image" id="126">
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>
 			</control>
-			<control type="radiobutton" id="27">
+			<control type="radiobutton" id="127">
 				<description>Enable Playlist Toggle</description>
 				<width>485</width>
 				<label>21398</label>
@@ -156,10 +156,10 @@
 			</control>
 			<control type="group" id="241">
 				<height>37</height>
-				<control type="button" id="28">
+				<control type="button" id="128">
 					<posx>0</posx>
 					<posy>0</posy>
-					<description>Starup Playlist Path</description>
+					<description>Startup Playlist Path</description>
 					<width>485</width>
 					<label>15311</label>
 					<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
@@ -167,14 +167,14 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
-					<onup>27</onup>
-					<ondown>20</ondown>
+					<onup>127</onup>
+					<ondown>130</ondown>
 				</control>
 				<control type="label">
 					<posx>480</posx>
 					<posy>0</posy>
 					<height>33</height>
-					<description>Starup Playlist Path label</description>
+					<description>Startup Playlist Path label</description>
 					<width>380</width>
 					<align>right</align>
 					<aligny>center</aligny>
@@ -183,7 +183,51 @@
 					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
 				</control>
 			</control>
-			<control type="image" id="29">
+			<control type="image" id="129">
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="radiobutton" id="130">
+				<description>Enable Custom Background Toggle</description>
+				<width>485</width>
+				<label>21389</label>
+				<onclick>Skin.ToggleSetting(Use_Custom_Background)</onclick>
+				<selected>Skin.HasSetting(Use_Custom_Background)</selected>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="group" id="242">
+				<height>37</height>
+				<control type="button" id="131">
+					<posx>0</posx>
+					<posy>0</posy>
+					<description>Custom_Background Path</description>
+					<width>485</width>
+					<label>15311</label>
+					<onclick>Skin.SetImage(Custom_Background)</onclick>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>Skin.HasSetting(Use_Custom_Background)</enable>
+					<onup>130</onup>
+					<ondown>120</ondown>
+				</control>
+				<control type="label">
+					<posx>480</posx>
+					<posy>0</posy>
+					<height>33</height>
+					<description>Custom_Background label</description>
+					<width>380</width>
+					<align>right</align>
+					<aligny>center</aligny>
+					<scroll>true</scroll>
+					<info>Skin.String(Custom_Background)</info>
+					<enable>Skin.HasSetting(Use_Custom_Background)</enable>
+				</control>
+			</control>
+			<control type="image" id="132">
 				<width>510</width>
 				<height>10</height>
 				<texture>separator.png</texture>
