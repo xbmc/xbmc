@@ -51,8 +51,9 @@ bool CGUIWindowWebBrowser::OnAction(const CAction &action)
   CGUIWebBrowserControl *pControl = (CGUIWebBrowserControl *)GetControl(CONTROL_WEBBROWSER);
   ILinksBoksWindow *pLB = g_browserManager.GetBrowserWindow();
 
-  if (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_INVALID && g_guiSettings.GetBool("webbrowser.edgescroll"))
+  if (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
   {
+    if (g_guiSettings.GetBool("webbrowser.edgescroll"))
       m_gWindowManager.m_bPointerNav = true;
   }
   else
