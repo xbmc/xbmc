@@ -5309,7 +5309,7 @@ if test "$_faad_internal" = auto ; then
   fi
   # internal faad: check if our dear gcc is able to compile it...
   cp "`pwd`/libfaad2/cfft.c" $TMPC
-  if ( cc_check -c -O2 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer $_inc_faad ); then
+  if ( cc_check -c -O4 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer $_inc_faad ); then
     _faad_internal=yes
   else
     _faad_internal="no (broken gcc)"
@@ -6622,7 +6622,7 @@ if test "$_profile" != "" || test "$_debug" != "" ; then
   fi
   _stripbinaries=no
 elif test -z "$CFLAGS" ; then
-    CFLAGS="-O3 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer -fno-rename-registers"
+    CFLAGS="-Os $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer"
   # always compile with '-g' if .developer:
   if test -f ".developer" ; then
     CFLAGS="-g $CFLAGS"
