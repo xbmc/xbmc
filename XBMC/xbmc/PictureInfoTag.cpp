@@ -41,7 +41,7 @@ void CPictureInfoTag::Serialize(CArchive& ar)
   }*/
 }
 
-CStdString CPictureInfoTag::GetInfo(int info)
+CStdString CPictureInfoTag::GetInfo(int info) const
 {
   if (!m_isLoaded)
     return "";
@@ -49,21 +49,6 @@ CStdString CPictureInfoTag::GetInfo(int info)
   CStdString value;
   switch (info)
   {
-  case SLIDE_FILE_NAME:
-    value = CUtil::GetFileName(m_filePath);
-    break;
-  case SLIDE_FILE_PATH:
-    {
-      CStdString path;
-      CUtil::GetDirectory(m_filePath, path);
-      CURL(path).GetURLWithoutUserDetails(value);
-      return value;
-    }
-    break;
-  case SLIDE_FILE_SIZE:
-  case SLIDE_FILE_DATE:
-    // TODO: Implement these
-    break;
   case SLIDE_RESOLUTION:
     value.Format("%d x %d", m_exifInfo.Width, m_exifInfo.Height);
     break;
@@ -119,6 +104,7 @@ CStdString CPictureInfoTag::GetInfo(int info)
     break;
   case SLIDE_EXIF_CAMERA_MODEL:
     value = m_exifInfo.CameraModel;
+    break;
 //  case SLIDE_EXIF_SOFTWARE:
 //    value = m_exifInfo.Software;
   case SLIDE_EXIF_APERTURE:

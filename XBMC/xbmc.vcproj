@@ -1176,6 +1176,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogOK.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogPictureInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogPictureInfo.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogPlayerControls.cpp">
 				</File>
 				<File

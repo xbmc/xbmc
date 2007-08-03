@@ -28,6 +28,7 @@
 #include "GUILabelControl.h"
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/FactoryDirectory.h"
+#include "GUIDialogPictureInfo.h"
 
 using namespace DIRECTORY;
 
@@ -455,6 +456,16 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
+  case ACTION_SHOW_CODEC:
+    {
+      CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+      if (pictureInfo)
+      {
+        // no need to set the picture here, it's done in Render()
+        pictureInfo->DoModal();
+      }
+    }
+    break;
   case ACTION_PREVIOUS_MENU:
   case ACTION_STOP:
     m_gWindowManager.PreviousWindow();

@@ -1067,6 +1067,7 @@
   <string id="13403">Clear Default</string>
   <string id="13404">Resume</string>
   <string id="13405">Get Thumb</string>
+  <string id="13406">Picture Information</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1698,6 +1699,111 @@
   <string id="21437">New Smart Playlist...</string>
   <string id="21438">%c Drive</string>
   <string id="21439">Edit Party Mode Rules</string>
+
+  <string id="21800">File Name</string>
+
+  <string id="21801">File Path</string>
+
+  <string id="21802">File Size</string>
+
+  <string id="21803">File Date/Time</string>
+
+  <string id="21804">Slide Index</string>
+
+  <string id="21805">Resolution</string>
+
+  <string id="21806">Comment</string>
+
+  <string id="21807">Colour/bw</string>
+
+  <string id="21808">Jpeg Process</string>
+
+
+
+  <string id="21820">Date/Time</string>
+
+  <string id="21821">Description</string>
+
+  <string id="21822">Camera Make</string>
+
+  <string id="21823">Camera Model</string>
+
+  <string id="21824">Exif Comment</string>
+
+  <string id="21825">Firmware</string>
+
+  <string id="21826">Aperture</string>
+
+  <string id="21827">Focal Length</string>
+
+  <string id="21828">Focus Distance</string>
+
+  <string id="21829">Exposure</string>
+
+  <string id="21830">Exposure Time</string>
+
+  <string id="21831">Exposure Bias</string>
+  <string id="21832">Exposure Mode</string>
+
+  <string id="21833">Flash Used</string>
+
+  <string id="21834">Whitebalance</string>
+
+  <string id="21835">Light Source</string>
+
+  <string id="21836">Metering Mode</string>
+
+  <string id="21837">ISO</string>
+
+  <string id="21838">Digital Zoom</string>
+
+  <string id="21839">CCD Width</string>
+
+
+
+  <string id="21860">Suplemental Categories</string>
+  <string id="21861">Keywords</string>
+
+  <string id="21862">Caption</string>
+
+  <string id="21863">Author</string>
+
+  <string id="21864">Headline</string>
+
+  <string id="21865">Special Instructions</string>
+
+  <string id="21866">Category</string>
+
+  <string id="21867">Byline</string>
+
+  <string id="21868">Byline Title</string>
+
+  <string id="21869">Credit</string>
+
+  <string id="21870">Source</string>
+
+  <string id="21871">Copyright Notice</string>
+
+  <string id="21872">Object Name</string>
+
+  <string id="21873">City</string>
+
+  <string id="21874">State</string>
+
+  <string id="21875">Country</string>
+
+  <string id="21876">Original Tx Reference</string>
+
+  <string id="21877">Date Created</string>
+
+  <string id="21878">Copyright Flag</string>
+
+  <string id="21879">Country Code</string>
+
+  <string id="21880">Reference Service</string>
+
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>
