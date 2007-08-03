@@ -104,5 +104,16 @@
 			<texture>contentpanel.png</texture>
 			<include>contentpanelslide</include>
 		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice Custom background</description>
+			<posx>140</posx>
+			<posy>88</posy>
+			<width>580</width>
+			<height>510</height>
+			<texture diffuse="Content_Panel_Diffuse.png" />
+			<info>Skin.String(Custom_Background)</info>
+			<include>contentpanelslide</include>
+			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
+		</control>
 	</include>
 </includes>

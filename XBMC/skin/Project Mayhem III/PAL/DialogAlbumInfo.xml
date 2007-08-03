@@ -36,6 +36,16 @@
 			<height>510</height>
 			<texture>contentpanel.png</texture>
 		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice Custom background</description>
+			<posx>140</posx>
+			<posy>88</posy>
+			<width>580</width>
+			<height>510</height>
+			<texture diffuse="Content_Panel_Diffuse.png" />
+			<info>Skin.String(Custom_Background)</info>
+			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
+		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>
 			<posx>200</posx>
