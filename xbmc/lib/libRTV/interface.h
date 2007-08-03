@@ -34,3 +34,4 @@ extern void rtv_close_file(RTVD rtvd);
 extern int rtv_discovery(struct RTV ** result, unsigned long msTimeout);
 
 #endif
+
