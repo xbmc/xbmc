@@ -6616,14 +6616,14 @@ fi
 # Checking for CFLAGS
 _stripbinaries=yes
 if test "$_profile" != "" || test "$_debug" != "" ; then
-  CFLAGS="-W -Wall -O3 $_march $_mcpu $_debug $_profile"
+  CFLAGS="-W -Wall -O2 $_march $_mcpu $_debug $_profile"
   if test "$_cc_major" -ge "3" ; then
     CFLAGS=`echo "$CFLAGS" | sed -e 's/\(-Wall\)/\1 -Wno-unused-parameter/'`
   fi
   _stripbinaries=no
 elif test -z "$CFLAGS" ; then
-    CFLAGS="-Os $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer"
-  # always compile with '-g' if .developer:
+    CFLAGS="-O2 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer"
+  # always compile with '-g' if .developer
   if test -f ".developer" ; then
     CFLAGS="-g $CFLAGS"
     if (test "$_crash_debug" = auto) && (not mingw32) ; then
