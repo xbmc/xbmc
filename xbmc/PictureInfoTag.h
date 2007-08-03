@@ -68,7 +68,7 @@ public:
 
   bool Load(const CStdString &path);
   static int TranslateString(const CStdString &info);
-  CStdString GetInfo(int info);
+  CStdString GetInfo(int info) const;
 
 private:
   ExifInfo_t m_exifInfo;

@@ -26,6 +26,7 @@
 #include "application.h"
 #include "GUIPassword.h"
 #include "GUIDialogMediaSource.h"
+#include "GUIDialogPictureInfo.h"
 #include "PlayListFactory.h"
 #include "FileSystem/MultiPathDirectory.h"
 
@@ -187,6 +188,11 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_PLAYER_PLAY)
         {
           OnPlayMedia(iItem);
+          return true;
+        }
+        else if (iAction == ACTION_SHOW_INFO)
+        {
+          OnInfo(iItem);
           return true;
         }
       }
@@ -463,6 +469,8 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
 
       buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+      if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+        buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
 
       if (!m_thumbLoader.IsLoading())
         buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
@@ -498,6 +506,9 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
     OnSlideShowRecursive(item->m_strPath);
+    return true;
+  case CONTEXT_BUTTON_INFO:
+    OnInfo(itemNumber);
     return true;
   case CONTEXT_BUTTON_REFRESH_THUMBS:
     OnRegenerateThumbs();
@@ -659,5 +670,18 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
     pSlideShow->StartSlideShow();
     if (pSlideShow->NumSlides())
       m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+  }
+}
+
+void CGUIWindowPictures::OnInfo(int itemNumber)
+{
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR())
+    return;
+  CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+  if (pictureInfo)
+  {
+    pictureInfo->SetPicture(item->m_strPath);
+    pictureInfo->DoModal();
   }
 }
