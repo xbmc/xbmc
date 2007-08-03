@@ -33,7 +33,6 @@ chmod +x configure && ./configure \
 --disable-inet6 \
 --disable-termcap \
 --disable-freetype \
---disable-edl \
 --disable-x264 \
 --disable-libdv \
 --disable-win32waveout \
@@ -42,6 +41,7 @@ chmod +x configure && ./configure \
 --disable-sdl \
 --disable-xvmc \
 --disable-x11 \
+--enable-edl \
 --enable-iconv \
 --enable-enca \
 --enable-libdts \
