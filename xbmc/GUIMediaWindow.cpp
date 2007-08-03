@@ -32,6 +32,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
 #include "Favourites.h"
+#include "utils/LabelFormatter.h"
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
@@ -370,6 +371,8 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 // \brief Formats item labels based on the formatting provided by guiViewState
 void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks)
 {
+  CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
+  CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItem* pItem=items[i];
@@ -377,8 +380,10 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const CGUIViewState
     if (pItem->IsLabelPreformated())
       continue;
 
-    pItem->FormatLabel(pItem->m_bIsFolder ? labelMasks.m_strLabelFolder : labelMasks.m_strLabelFile);
-    pItem->FormatLabel2(pItem->m_bIsFolder ? labelMasks.m_strLabel2Folder : labelMasks.m_strLabel2File);
+    if (pItem->m_bIsFolder)
+      folderFormatter.FormatLabels(pItem);
+    else
+      fileFormatter.FormatLabels(pItem);
   }
 }
 
