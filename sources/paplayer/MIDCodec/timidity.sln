@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "timidity", "timidity.vcproj", "{C4A5DFE0-BFB1-47E3-9C6E-14692E0D0653}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{C4A5DFE0-BFB1-47E3-9C6E-14692E0D0653}.Debug.ActiveCfg = Debug|Win32
+		{C4A5DFE0-BFB1-47E3-9C6E-14692E0D0653}.Debug.Build.0 = Debug|Win32
+		{C4A5DFE0-BFB1-47E3-9C6E-14692E0D0653}.Release.ActiveCfg = Release|Win32
+		{C4A5DFE0-BFB1-47E3-9C6E-14692E0D0653}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

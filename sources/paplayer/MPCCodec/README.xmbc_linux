@@ -1,0 +1,5 @@
+To compile for XBMC linux:
+
+1. configure
+2. make
+3. make -f  Makefile.xmbc_linux

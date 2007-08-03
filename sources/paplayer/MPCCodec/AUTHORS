@@ -1,0 +1,10 @@
+libmpcdec is the result of the work of many people:
+
+* Andree Buschmann and Frank Klemm
+  Original implementation and core development.
+
+* Peter Pawlowski and Benoit Amiaux
+  Portability and further optimizations.
+
+* Miles Egan
+  Port to pure C, documentation, and api refinements.
