@@ -8,6 +8,7 @@ SRC_DIR = "$(VPATH)"
 CFLAGS += -DHAVE_AV_CONFIG_H -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE \
           -D_ISOC9X_SOURCE -I$(BUILD_ROOT) -I$(SRC_PATH) \
           -I$(SRC_PATH)/libavutil $(OPTFLAGS)
+CFLAGS += -Os -falign-functions -falign-jumps -mpreferred-stack-boundary=4
 SRCS := $(OBJS:.o=.c) $(ASM_OBJS:.o=.S) $(CPPOBJS:.o=.cpp)
 OBJS := $(OBJS) $(ASM_OBJS) $(CPPOBJS)
 STATIC_OBJS := $(OBJS) $(STATIC_OBJS)
