@@ -16,7 +16,7 @@
    still OK to assume that all instances of the class has the same offsets
    for the same members).
  */
-#define my_offset(TYPE, MEMBER) __builtin_offsetof (TYPE, MEMBER)
+#define my_offsetof(TYPE, MEMBER) __builtin_offsetof (TYPE, MEMBER)
 #endif
 #endif
 
