@@ -3161,6 +3161,10 @@ _ACEOF
 
   LIBS="-lGL $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: libGL is required. Please see README.linux" >&5
+echo "$as_me: error: libGL is required. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3226,6 +3230,10 @@ _ACEOF
 
   LIBS="-lGLEW $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: libGLEW is required. Please see README.linux" >&5
+echo "$as_me: error: libGLEW is required. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3291,6 +3299,10 @@ _ACEOF
 
   LIBS="-lGLU $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: libGLU is required. Please see README.linux" >&5
+echo "$as_me: error: libGLU is required. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 fi
@@ -3358,6 +3370,10 @@ _ACEOF
 
   LIBS="-lXinerama $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: libXinerama is required. Please see README.linux" >&5
+echo "$as_me: error: libXinerama is required. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3557,6 +3573,10 @@ _ACEOF
 
   LIBS="-lSDL_image $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3622,6 +3642,10 @@ _ACEOF
 
   LIBS="-lSDL_mixer $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3687,6 +3711,10 @@ _ACEOF
 
   LIBS="-lcdio $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3752,6 +3780,10 @@ _ACEOF
 
   LIBS="-ldl $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3817,6 +3849,10 @@ _ACEOF
 
   LIBS="-lfreetype $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3882,6 +3918,10 @@ _ACEOF
 
   LIBS="-lfribidi $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -3947,6 +3987,10 @@ _ACEOF
 
   LIBS="-llzo $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -4012,6 +4056,10 @@ _ACEOF
 
   LIBS="-lsmbclient $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -4077,6 +4125,10 @@ _ACEOF
 
   LIBS="-lsqlite3 $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
