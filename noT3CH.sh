@@ -99,8 +99,8 @@ then
   mv ${BUILDDIR}/userdata ${BUILDDIR}/UserData
 fi
 
-echo "  Copying FranfofilSans from skin fonts dir to system fonts dir"
-cp ${BUILDDIR}/skin/Project\ Mayhem\ III/fonts/FrancophilSans.ttf ${BUILDDIR}/media/Fonts/
+echo "  Renaming fonts to Fonts"
+mv "${BUILDDIR}/skin/Project Mayhem III/fonts" "${BUILDDIR}/skin/Project Mayhem III/Fonts"
 
 echo "  Renaming arial.ttf to Arial.ttf"
 mv ${BUILDDIR}/media/Fonts/arial.ttf ${BUILDDIR}/media/Fonts/Arial.ttf
