@@ -16,7 +16,8 @@
    still OK to assume that all instances of the class has the same offsets
    for the same members).
  */
-#define my_offsetof(TYPE, MEMBER) __builtin_offsetof (TYPE, MEMBER)
+#define my_offsetof(TYPE, MEMBER) \
+               ((size_t)((char *)&(((TYPE *)0x10)->MEMBER) - (char*)0x10))
 #endif
 #endif
 
