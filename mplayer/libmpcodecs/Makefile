@@ -9,7 +9,7 @@ AUDIO_SRCS_NAT=ad_alaw.c ad_dk3adpcm.c ad_pcm.c ad_dvdpcm.c ad_imaadpcm.c ad_msa
 AUDIO_SRCS_OPT=ad_acm.c ad_dshow.c ad_dmo.c ad_qtaudio.c ad_ffmpeg.c ad_faad.c ad_libvorbis.c ad_libmad.c ad_realaud.c ad_libdv.c
 AUDIO_SRCS=dec_audio.c ad.c $(AUDIO_SRCS_LIB) $(AUDIO_SRCS_NAT) $(AUDIO_SRCS_OPT)
 
-VIDEO_SRCS_LIB=vd_libmpeg2.c vd_nuv.c vd_lzo.c
+VIDEO_SRCS_LIB=vd_libmpeg2.c vd_lzo.c
 VIDEO_SRCS_NAT=vd_null.c vd_raw.c vd_hmblck.c vd_mpegpes.c vd_mtga.c vd_sgi.c
 VIDEO_SRCS_OPT=vd_realvid.c vd_ffmpeg.c vd_dshow.c vd_dmo.c vd_vfw.c vd_vfwex.c vd_odivx.c vd_divx4.c vd_zrmjpeg.c vd_xanim.c vd_xvid.c vd_xvid4.c vd_libdv.c vd_qtvideo.c vd_theora.c
 VIDEO_SRCS=dec_video.c vd.c $(VIDEO_SRCS_NAT) $(VIDEO_SRCS_LIB) $(VIDEO_SRCS_OPT)
@@ -19,9 +19,9 @@ ifeq ($(CONFIG_LIBPOSTPROC),yes)
 VFILTER_SRCS += vf_pp.c
 endif
 
-ENCODER_SRCS=ve.c ve_divx4.c ve_lavc.c ve_vfw.c ve_raw.c ve_libdv.c ve_xvid.c ve_xvid4.c ve_qtvideo.c ve_nuv.c ve_x264.c
+ENCODER_SRCS=ve.c ve_divx4.c ve_lavc.c ve_vfw.c ve_raw.c ve_libdv.c ve_xvid.c ve_xvid4.c ve_qtvideo.c ve_x264.c
 
-NATIVE_SRCS=native/RTjpegN.c native/minilzo.c native/nuppelvideo.c native/xa_gsm.c
+NATIVE_SRCS=native/minilzo.c native/xa_gsm.c
 
 ifeq ($(FAME),yes)
 VFILTER_SRCS += vf_fame.c
