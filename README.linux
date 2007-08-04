@@ -1,5 +1,5 @@
 This is a very early port of XBMC to Linux. It's target is developers and not end-users. We don't offer end-user support yet, and we're not really interrested to hear about bugs unless you can help track it down and possibly help with fixing it.
-The developers recommends Ubuntu 7.04 (Feisty Fawn) as a development platform.
+We recommend Ubuntu 7.04 (Feisty Fawn) as a development platform.
 
 Getting the source code
 -----------------------
@@ -39,8 +39,7 @@ How to run
 A new script made by Althekiller handles things neatly now, this is the first basic version which does the following:
 -Copies needed files & folders to a BUILD folder incl main executable
 -Backs up UserData & scripts folder
--Fixes case sensitivity issues by renaming some files
--Circumvents a bug with skin fonts by copying it to media/Fonts
+-Fixes case sensitivity issues by renaming some files & folders
 Usage:
 # ./noT3CH.sh
 cd BUILD
