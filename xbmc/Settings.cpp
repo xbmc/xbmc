@@ -52,7 +52,7 @@ class CSettings g_settings;
 
 extern CStdString g_LoadErrorStr;
 
-bool CShare::isWritable()
+bool CShare::isWritable() const
 {
   if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
     return true; // local disk
