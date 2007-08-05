@@ -513,12 +513,12 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       break;
 
       case TAG_ORIENTATION:
-//        orientation = (int)ConvertAnyFormat(ValuePtr, Format);
-//          if (orientation < 0 || orientation > 8)
-//          {
-//            ErrNonfatal("Undefined rotation value %d", orientation, 0);
-//            orientation = 0;
-//          }
+        m_ExifInfo->Orientation = (int)ConvertAnyFormat(ValuePtr, Format);
+        if (m_ExifInfo->Orientation < 0 || m_ExifInfo->Orientation > 8)
+        {
+          ErrNonfatal("Undefined rotation value %d", m_ExifInfo->Orientation, 0);
+          m_ExifInfo->Orientation = 0;
+        }
       break;
 
       case TAG_EXIF_IMAGELENGTH:
