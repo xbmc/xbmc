@@ -424,7 +424,7 @@
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>120</posy>
-				<width>570</width>
+				<width>330</width>
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
