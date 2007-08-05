@@ -308,6 +308,9 @@
 				RelativePath=".\GUILabelControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUILargeImage.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIList.cpp">
 			</File>
 			<File
@@ -518,6 +521,9 @@
 			</File>
 			<File
 				RelativePath=".\GUILabelControl.h">
+			</File>
+			<File
+				RelativePath=".\GUILargeImage.h">
 			</File>
 			<File
 				RelativePath=".\GUIList.h">
