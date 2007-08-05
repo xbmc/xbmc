@@ -111,6 +111,19 @@ CStdString CPictureInfoTag::GetInfo(int info) const
     if (m_exifInfo.ApertureFNumber)
       value.Format("%3.1f", m_exifInfo.ApertureFNumber);
     break;
+  case SLIDE_EXIF_ORIENTATION:
+    switch (m_exifInfo.Orientation)
+    {
+      case 1:   value = "Top Left";     break;
+      case 2:   value = "Top Right";    break;
+      case 3:   value = "Bottom Right"; break;
+      case 4:   value = "Bottom Left";  break;
+      case 5:   value = "Left Top";     break;
+      case 6:   value = "Right Top";    break;
+      case 7:   value = "Right Bottom"; break;
+      case 8:   value = "Left Bottom";  break;
+    }
+    break;
   case SLIDE_EXIF_FOCAL_LENGTH:
     if (m_exifInfo.FocalLength)
     {
@@ -293,6 +306,7 @@ int CPictureInfoTag::TranslateString(const CStdString &info)
   else if (info.Equals("isoequivalence")) return SLIDE_EXIF_ISO_EQUIV;
   else if (info.Equals("digitalzoom")) return SLIDE_EXIF_DIGITAL_ZOOM;
   else if (info.Equals("ccdwidth")) return SLIDE_EXIF_CCD_WIDTH;
+  else if (info.Equals("orientation")) return SLIDE_EXIF_ORIENTATION;
   else if (info.Equals("supplementalcategories")) return SLIDE_IPTC_SUP_CATEGORIES;
   else if (info.Equals("keywords")) return SLIDE_IPTC_KEYWORDS;
   else if (info.Equals("caption")) return SLIDE_IPTC_CAPTION;
