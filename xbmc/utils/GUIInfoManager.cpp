@@ -631,6 +631,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tvshowtitle")) return LISTITEM_TVSHOW;
   else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
+  else if (info.Equals("path")) return LISTITEM_PATH;
   return 0;
 }
 
@@ -1097,6 +1098,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case LISTITEM_SEASON:
   case LISTITEM_TVSHOW:
   case LISTITEM_COMMENT:
+  case LISTITEM_PATH:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostModalDialogID();
@@ -2823,6 +2825,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
     break;
+  case LISTITEM_PATH:
+    return item->m_strPath;
   }
   return "";
 }
