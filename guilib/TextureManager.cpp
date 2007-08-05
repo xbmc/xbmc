@@ -433,7 +433,7 @@ void CGUITextureManager::FlushPreLoad()
   }
 }
 
-int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
+int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey, bool checkBundleOnly /*= false */)
 {
   if (strTextureName == "-")
     return 0;
@@ -489,6 +489,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   }
 
   CStdString strPath;
+
+  if (checkBundleOnly && bundle == -1)
+    return 0;
 
   if (bundle == -1)
     strPath = GetTexturePath(strTextureName);
