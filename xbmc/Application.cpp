@@ -71,6 +71,7 @@
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
+#include "GUILargeTextureManager.h"
 
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
@@ -4647,6 +4648,8 @@ void CApplication::ProcessSlow()
       DimLCDOnPlayback(m_bIsPaused);
     m_bIsPaused = IsPaused();
   }
+
+  g_largeTextureManager.CleanupUnusedImages();
 }
 
 // Global Idle Time in Seconds

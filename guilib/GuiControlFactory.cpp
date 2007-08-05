@@ -32,6 +32,7 @@
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
+#include "GUILargeImage.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
@@ -1101,6 +1102,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       dwParentId, id, posX, posY, width, height, texture, dwColorKey);
     ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
+  }
+  else if (strType == "largeimage")
+  {
+    control = new CGUILargeImage(
+      dwParentId, id, posX, posY, width, height, texture);
+    ((CGUILargeImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUILargeImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
   else if (strType == "multiimage")
   {
