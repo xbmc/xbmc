@@ -191,7 +191,7 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "pictures.savefolderviews", 583, true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
-  AddInt(7, "pictures.displayresolution", 169, (int)INVALID, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(7, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(8,"pictures.sep2");
   AddString(9,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -905,12 +905,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
       CLog::Log(LOGNOTICE, "Setting safe mode %i", newRes);
       SetInt("videoscreen.resolution", newRes);
     }
-  }
-  
-  //default pictureres to guires
-  if ((RESOLUTION)GetInt("pictures.displayresolution") == INVALID)
-  {
-    SetInt("pictures.displayresolution", g_guiSettings.m_LookAndFeelResolution);
   }
   
   // Move replaygain settings into our struct
