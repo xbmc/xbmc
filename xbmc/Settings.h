@@ -92,7 +92,7 @@ public:
   virtual ~CShare() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
-  bool isWritable();
+  bool isWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:

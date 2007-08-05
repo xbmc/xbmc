@@ -204,7 +204,7 @@ bool CMemoryUnitManager::UnMountDevice(unsigned long port, unsigned long slot)
   return false;
 }
 
-IDevice *CMemoryUnitManager::GetDevice(unsigned char unit)
+IDevice *CMemoryUnitManager::GetDevice(unsigned char unit) const
 {
   if (unit >= m_memUnits.size())
   {
@@ -214,7 +214,7 @@ IDevice *CMemoryUnitManager::GetDevice(unsigned char unit)
   return m_memUnits[unit];
 }
 
-bool CMemoryUnitManager::IsDriveWriteable(const CStdString &path)
+bool CMemoryUnitManager::IsDriveWriteable(const CStdString &path) const
 {
   CURL url(path);
   IDevice *device = GetDevice(url.GetProtocol()[3] - '0');
