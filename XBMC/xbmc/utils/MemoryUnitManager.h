@@ -17,10 +17,10 @@ public:
   bool IsDriveValid(char Drive);    // for backward compatibility
                                     // with fatx drives in filezilla
 
-  IDevice *GetDevice(unsigned char unit);
+  IDevice *GetDevice(unsigned char unit) const;
   IFileSystem *GetFileSystem(unsigned char unit);
 
-  bool IsDriveWriteable(const CStdString &path);
+  bool IsDriveWriteable(const CStdString &path) const;
 
   void GetMemoryUnitShares(VECSHARES &shares);
 
