@@ -211,6 +211,7 @@
 #define LISTITEM_COMMENT            336
 #define LISTITEM_ACTUAL_ICON        337
 #define LISTITEM_PATH               338
+#define LISTITEM_PICTURE_PATH       339
 #define LISTITEM_END                340
 
 #define MUSICPM_ENABLED             350
