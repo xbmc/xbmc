@@ -1730,6 +1730,10 @@
   <string id="21837">ISO</string>
   <string id="21838">Digital Zoom</string>
   <string id="21839">CCD Width</string>
+  <string id="21840">GPS Latitude</string>
+  <string id="21841">GPS Longitude</string>
+  <string id="21842">GPS Altitude</string>
+  <string id="21843">Orientation</string>
 
   <string id="21860">Suplemental Categories</string>
   <string id="21861">Keywords</string>
