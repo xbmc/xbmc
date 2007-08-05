@@ -7,6 +7,7 @@ CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, 
     : CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0)
 {
   ControlType = GUICONTROL_LARGE_IMAGE;
+  m_usingBundledTexture = false;
 }
 
 CGUILargeImage::~CGUILargeImage(void)
@@ -47,14 +48,29 @@ void CGUILargeImage::AllocResources()
   m_bInvalidated = true;
   m_bAllocated = true;
 
-  // Calculate the final screen size for optimal quality
-  LPDIRECT3DTEXTURE8 texture = g_largeTextureManager.GetImage(m_strFileName, m_iTextureWidth, m_iTextureHeight, !m_texturesAllocated);
-  m_texturesAllocated = true;
+  // first check our textureManager for bundled files
+  int iImages = g_TextureManager.Load(m_strFileName, m_dwColorKey, true);
+  if (iImages)
+  {
+    m_texturesAllocated = true;
+    for (int i = 0; i < iImages; i++)
+    {
+      LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(m_strFileName, i, m_iTextureWidth, m_iTextureHeight, m_pPalette, m_linearTexture);
+      m_vecTextures.push_back(texture);
+    }
+    m_usingBundledTexture = true;
+  }
+  else
+  { // use our large image background loader
+    LPDIRECT3DTEXTURE8 texture = g_largeTextureManager.GetImage(m_strFileName, m_iTextureWidth, m_iTextureHeight, !m_texturesAllocated);
+    m_texturesAllocated = true;
+    m_usingBundledTexture = false;
 
-  if (!texture)
-    return;
+    if (!texture)
+      return;
 
-  m_vecTextures.push_back(texture);
+    m_vecTextures.push_back(texture);
+  }
 
 #ifdef HAS_XBOX_D3D
   m_linearTexture = true;
@@ -70,7 +86,12 @@ void CGUILargeImage::AllocResources()
 void CGUILargeImage::FreeTextures()
 {
   if (m_texturesAllocated)
-    g_largeTextureManager.ReleaseImage(m_strFileName);
+  {
+    if (m_usingBundledTexture)
+      g_TextureManager.ReleaseTexture(m_strFileName);
+    else
+      g_largeTextureManager.ReleaseImage(m_strFileName);
+  }
 
   if (m_diffuseTexture)
     g_TextureManager.ReleaseTexture(m_image.diffuse);

@@ -24,4 +24,6 @@ public:
 protected:
   virtual void AllocateOnDemand();
   virtual void FreeTextures();
+
+  bool m_usingBundledTexture;
 };
