@@ -3061,6 +3061,7 @@ const BUILT_IN commands[] = {
   "Skin.SetPath",       true,   "Prompts and sets a skin path",
   "Skin.Theme",         true,   "Control skin theme",
   "Skin.SetImage",      true,   "Prompts and sets a skin image",
+  "Skin.SetLargeImage", true,   "Prompts and sets a large skin images",
   "Skin.SetFile",       true,   "Prompts and sets a file",
   "Skin.SetBool",       true,   "Sets a skin setting on",
   "Skin.Reset",         true,   "Resets a skin setting to default",
@@ -3702,7 +3703,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_application.DelayLoadSkin();
   }
-  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
+  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
+           execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
   {
     // break the parameter up if necessary
     // only search for the first "," and use that to break the string up
@@ -3721,8 +3723,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       string = g_settings.TranslateSkinString(strParameterCaseIntact);
     CStdString value = g_settings.GetSkinString(string);
-    VECSHARES shares;
-    g_mediaManager.GetLocalDrives(shares);
+    VECSHARES localShares;
+    g_mediaManager.GetLocalDrives(localShares);
     if (execute.Equals("skin.setstring"))
     {
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
@@ -3735,7 +3737,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (execute.Equals("skin.setimage"))
     {
-      if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
+        g_settings.SetSkinString(string, value);
+    }
+    else if (execute.Equals("skin.setlargeimage"))
+    {
+      VECSHARES *shares = g_settings.GetSharesFromType("pictures");
+      if (!shares) shares = &localShares;
+      if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
         g_settings.SetSkinString(string, value);
     }
     else if (execute.Equals("skin.setfile"))
@@ -3750,24 +3759,24 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
-        if (GetMatchingShare(value,shares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        if (GetMatchingShare(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
         {
           CShare share;
           share.strName = g_localizeStrings.Get(13278);
           share.strPath = value;
-          shares.push_back(share);
+          localShares.push_back(share);
         }
         CStdString strTemp = strMask;
         strMask = strTemp.Left(iEnd);
       }
       else
         iEnd = strMask.size();
-      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(1033), value))
+      if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
     {
-      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1031), value))
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
         g_settings.SetSkinString(string, value);
     }
     g_settings.Save();

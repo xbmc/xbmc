@@ -419,6 +419,11 @@ void CGUIImage::AllocResources()
 
   CalculateSize();
 
+  LoadDiffuseImage();
+}
+
+void CGUIImage::LoadDiffuseImage()
+{
   m_diffuseScaleU = m_diffuseScaleV = 1.0f;
   // load the diffuse texture (if necessary)
   if (!m_image.diffuse.IsEmpty())
