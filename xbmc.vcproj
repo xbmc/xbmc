@@ -1255,6 +1255,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Other"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUILargeTextureManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUILargeTextureManager.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIMediaWindow.cpp">
 				</File>
 				<File
