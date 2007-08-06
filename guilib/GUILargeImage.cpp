@@ -119,7 +119,16 @@ void CGUILargeImage::FreeTextures()
 int CGUILargeImage::GetOrientation() const
 {
   if (m_usingBundledTexture) return m_image.orientation;
-  return m_orientation;
+  // otherwise multiply our orientations
+  static char orient_table[] = { 0, 1, 2, 3, 4, 5, 6, 7,
+                                 1, 0, 3, 2, 5, 4, 7, 6,
+                                 2, 3, 0, 1, 6, 7, 4, 5,
+                                 3, 2, 1, 0, 7, 6, 5, 4,
+                                 4, 7, 6, 5, 0, 3, 2, 1,
+                                 5, 6, 7, 4, 1, 2, 3, 0,
+                                 6, 5, 4, 7, 2, 1, 0, 3,
+                                 7, 4, 5, 6, 3, 0, 1, 2 };
+  return (int)orient_table[8 * m_image.orientation + m_orientation];
 }
 
 void CGUILargeImage::SetFileName(const CStdString& strFileName)
