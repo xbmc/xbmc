@@ -7,8 +7,9 @@
 //       actually have a new image in AllocResources().
 
 CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture)
-    : CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0)
+: CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0), m_fallbackImage(dwParentID, dwControlId, posX, posY, width, height, texture)
 {
+  m_fallbackImage.SetFileName(m_image.file);
   ControlType = GUICONTROL_LARGE_IMAGE;
   m_usingBundledTexture = false;
 }
@@ -67,11 +68,11 @@ void CGUILargeImage::AllocResources()
   { // use our large image background loader
     LPDIRECT3DTEXTURE8 texture = g_largeTextureManager.GetImage(m_strFileName, m_iTextureWidth, m_iTextureHeight, m_orientation, !m_texturesAllocated);
     m_texturesAllocated = true;
-    m_usingBundledTexture = false;
 
     if (!texture)
       return;
 
+    m_usingBundledTexture = false;
     m_vecTextures.push_back(texture);
   }
 
@@ -84,6 +85,12 @@ void CGUILargeImage::AllocResources()
   CalculateSize();
 
   LoadDiffuseImage();
+}
+
+void CGUILargeImage::FreeResources()
+{
+  m_fallbackImage.FreeResources();
+  CGUIImage::FreeResources();
 }
 
 void CGUILargeImage::FreeTextures()
@@ -114,4 +121,32 @@ int CGUILargeImage::GetOrientation() const
   if (m_usingBundledTexture) return m_image.orientation;
   return m_orientation;
 }
+
+void CGUILargeImage::SetFileName(const CStdString& strFileName)
+{
+  // no fallback is required - it's handled at rendertime
+  if (m_strFileName.Equals(strFileName)) return;
+  // Don't completely free resources here - we may be just changing
+  // filenames mid-animation
+  FreeTextures();  // TODO: perhaps freetextures might be done better after a fade or something?
+  m_strFileName = strFileName;
+  // Don't allocate resources here as this is done at render time
+}
+
+void CGUILargeImage::Render()
+{
+  if (!m_vecTextures.size())
+    m_fallbackImage.Render();
+  else
+    m_fallbackImage.FreeResources();
+  CGUIImage::Render();
+}
+
+// ideally we have just one texture file so that we know what it is.  Having the ability to load from either folder
+// is IMO a beneficial thing to keep around.
+
+// perhaps we could separate out the fallback texture from the <info> texture, allocate both in AllocResources(), and
+// render the one that applies?  That then allows some nifty blending as needed as well.
+
+// I seem to be liking this solution...
 
