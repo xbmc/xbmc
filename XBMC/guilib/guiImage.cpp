@@ -263,16 +263,35 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 {
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
-  // flip the texture as necessary
-  if (m_image.flipX)
+  // flip the texture as necessary.  TODO: Should the orientation be applied to the diffuse texture?
+  int orientation = GetOrientation();
+  switch (orientation & 3)
   {
+  case 0:
+    // default
+    break;
+  case 1:
+    // flip in X direction
     u1 = m_fU - u1;
     u2 = m_fU - u2;
-  }
-  if (m_image.flipY)
-  {
+    break;
+  case 2:
+    // rotate 180 degrees
+    u1 = m_fU - u1;
+    u2 = m_fU - u2;
     v1 = m_fV - v1;
     v2 = m_fV - v2;
+    break;
+  case 3:
+    // flip in Y direction
+    v1 = m_fV - v1;
+    v2 = m_fV - v2;
+    break;
+  }
+  if (orientation & 4)
+  {
+    swap(u1, v1);
+    swap(u2, v2);
   }
 
   // clip our rects
@@ -313,8 +332,16 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  if (orientation & 4)
+  {
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  }
+  else
+  {
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  }
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1 );
 
   color =  m_diffuseColor;
@@ -327,8 +354,16 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   color =  m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  if (orientation & 4)
+  {
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  }
+  else
+  {
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  }
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
 #else
   struct CUSTOMVERTEX {
@@ -346,7 +381,14 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
   verts[1].x = x2; verts[1].y = y2; verts[1].z = z2;
-  verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
+  if (orientation & 4)
+  {
+    verts[1].tu = u1;   verts[1].tv = v2; verts[1].tu2 = u1*m_diffuseScaleU; verts[1].tv2 = v2*m_diffuseScaleV;
+  }
+  else
+  {
+    verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
+  }
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
@@ -358,7 +400,14 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
   verts[3].x = x4; verts[3].y = y4; verts[3].z = z4;
-  verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
+  if (orientation & 4)
+  {
+    verts[3].tu = u2;   verts[3].tv = v1; verts[3].tu2 = u2*m_diffuseScaleU; verts[3].tv2 = v1*m_diffuseScaleV;
+  }
+  else
+  {
+    verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
+  }
   color = m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3],m_diffuseColor);
   verts[3].color = g_graphicsContext.MergeAlpha(color);
