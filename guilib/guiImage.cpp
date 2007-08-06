@@ -263,41 +263,16 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 {
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
-  // flip the texture as necessary.  TODO: Should the orientation be applied to the diffuse texture?
-  int orientation = GetOrientation();
-  switch (orientation & 3)
-  {
-  case 0:
-    // default
-    break;
-  case 1:
-    // flip in X direction
-    u1 = m_fU - u1;
-    u2 = m_fU - u2;
-    break;
-  case 2:
-    // rotate 180 degrees
-    u1 = m_fU - u1;
-    u2 = m_fU - u2;
-    v1 = m_fV - v1;
-    v2 = m_fV - v2;
-    break;
-  case 3:
-    // flip in Y direction
-    v1 = m_fV - v1;
-    v2 = m_fV - v2;
-    break;
-  }
-  if (orientation & 4)
-  {
-    swap(u1, v1);
-    swap(u2, v2);
-  }
-
-  // clip our rects
-  CRect vertex(left, top, right, bottom);
+  // flip the texture as necessary.  Diffuse just gets flipped according to m_image.orientation.
+  // Main texture gets flipped according to GetOrientation().
+  CRect diffuse(u1, v1, u2, v2);
+  OrientateTexture(diffuse, m_image.orientation);
   CRect texture(u1, v1, u2, v2);
-  g_graphicsContext.ClipRect(vertex, texture);
+  int textureOrientation = GetOrientation();
+  OrientateTexture(texture, textureOrientation);
+
+  CRect vertex(left, top, right, bottom);
+  g_graphicsContext.ClipRect(vertex, texture, m_diffuseTexture ? &diffuse : NULL);
 
   if (vertex.IsEmpty())
     return; // nothing to render
@@ -318,52 +293,48 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
 
-  u1 = texture.x1; u2 = texture.x2;
-  v1 = texture.y1; v2 = texture.y2;
+  diffuse.x1 *= m_diffuseScaleU; diffuse.x2 *= m_diffuseScaleU;
+  diffuse.y1 *= m_diffuseScaleV; diffuse.y2 *= m_diffuseScaleV;
 
 #ifdef HAS_XBOX_D3D
   D3DCOLOR color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x1, diffuse.y1);
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1 );
 
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  if (orientation & 4)
-  {
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
-  }
+  if (textureOrientation & 4)
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
   else
-  {
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
-  }
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
+  if (m_image.orientation & 4)
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x1, diffuse.y2);
+  else
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x2, diffuse.y1);
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1 );
 
   color =  m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x2, diffuse.y2);
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1 );
 
   color =  m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  if (orientation & 4)
-  {
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
-  }
+  if (textureOrientation & 4)
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
   else
-  {
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
-  }
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
+  if (m_image.orientation & 4)
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x2, diffuse.y1);
+  else
+    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x1, diffuse.y2);
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
 #else
   struct CUSTOMVERTEX {
@@ -375,38 +346,65 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
   CUSTOMVERTEX verts[4];
   verts[0].x = x1; verts[0].y = y1; verts[0].z = z1;
-  verts[0].tu = u1;   verts[0].tv = v1; verts[0].tu2 = u1*m_diffuseScaleU; verts[0].tv2 = v1*m_diffuseScaleV;
+  verts[0].tu = texture.x1;   verts[0].tv = texture.y1;
+  verts[0].tu2 = diffuse.x1;  verts[0].tv2 = diffuse.y1;
   DWORD color = m_diffuseColor;
   if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
   verts[1].x = x2; verts[1].y = y2; verts[1].z = z2;
-  if (orientation & 4)
+  if (textureOrientation & 4)
   {
-    verts[1].tu = u1;   verts[1].tv = v2; verts[1].tu2 = u1*m_diffuseScaleU; verts[1].tv2 = v2*m_diffuseScaleV;
+    verts[1].tu = texture.x1;
+    verts[1].tv = texture.y2;
   }
   else
   {
-    verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
+    verts[1].tu = texture.x2;
+    verts[1].tv = texture.y1;
   }
+  if (m_image.orientation & 4)
+  {
+    verts[1].tu2 = diffuse.x1;
+    verts[1].tv2 = diffuse.y2;
+  }
+  else
+  {
+    verts[1].tu2 = diffuse.x2;
+    verts[1].tv2 = diffuse.y1;
+  }
+
   color = m_diffuseColor;
   if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
 
   verts[2].x = x3; verts[2].y = y3; verts[2].z = z3;
-  verts[2].tu = u2;   verts[2].tv = v2; verts[2].tu2 = u2*m_diffuseScaleU; verts[2].tv2 = v2*m_diffuseScaleV;
+  verts[2].tu = texture.x2;   verts[2].tv = texture.y2;
+  verts[2].tu2 = diffuse.x2;  verts[2].tv2 = diffuse.y2;
   color = m_diffuseColor;
   if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2],m_diffuseColor);
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
   verts[3].x = x4; verts[3].y = y4; verts[3].z = z4;
-  if (orientation & 4)
+  if (textureOrientation & 4)
   {
-    verts[3].tu = u2;   verts[3].tv = v1; verts[3].tu2 = u2*m_diffuseScaleU; verts[3].tv2 = v1*m_diffuseScaleV;
+    verts[3].tu = texture.x2;
+    verts[3].tv = texture.y1;
   }
   else
   {
-    verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
+    verts[3].tu = texture.x1;
+    verts[3].tv = texture.y2;
+  }
+  if (m_image.orientation & 4)
+  {
+    verts[3].tu2 = diffuse.x2;
+    verts[3].tv2 = diffuse.y1;
+  }
+  else
+  {
+    verts[3].tu2 = diffuse.x1;
+    verts[3].tv2 = diffuse.y2;
   }
   color = m_diffuseColor;
   if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3],m_diffuseColor);
@@ -764,3 +762,35 @@ void CGUIImage::DumpTextureUse()
   }
 }
 #endif
+
+void CGUIImage::OrientateTexture(CRect &rect, int orientation)
+{
+  switch (orientation & 3)
+  {
+  case 0:
+    // default
+    break;
+  case 1:
+    // flip in X direction
+    rect.x1 = m_fU - rect.x1;
+    rect.x2 = m_fU - rect.x2;
+    break;
+  case 2:
+    // rotate 180 degrees
+    rect.x1 = m_fU - rect.x1;
+    rect.x2 = m_fU - rect.x2;
+    rect.y1 = m_fV - rect.y1;
+    rect.y2 = m_fV - rect.y2;
+    break;
+  case 3:
+    // flip in Y direction
+    rect.y1 = m_fV - rect.y1;
+    rect.y2 = m_fV - rect.y2;
+    break;
+  }
+  if (orientation & 4)
+  {
+    swap(rect.x1, rect.y1);
+    swap(rect.x2, rect.y2);
+  }
+}
