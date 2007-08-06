@@ -85,7 +85,7 @@ public:
   virtual bool IsAllocated() const;
 
   void PythonSetColorKey(DWORD dwColorKey);
-  void SetFileName(const CStdString& strFileName);
+  virtual void SetFileName(const CStdString& strFileName);
   void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
