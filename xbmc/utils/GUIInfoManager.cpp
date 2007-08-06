@@ -1782,7 +1782,10 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
       CFileItem* item;
 
       if (info == CONTAINER_FOLDERTHUMB)
+      {
         item = &const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory());
+        info = LISTITEM_THUMB;
+      }
       else
         item = window->GetCurrentListItem();
       if (item)
