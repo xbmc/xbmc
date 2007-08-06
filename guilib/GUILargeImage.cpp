@@ -142,11 +142,4 @@ void CGUILargeImage::Render()
   CGUIImage::Render();
 }
 
-// ideally we have just one texture file so that we know what it is.  Having the ability to load from either folder
-// is IMO a beneficial thing to keep around.
-
-// perhaps we could separate out the fallback texture from the <info> texture, allocate both in AllocResources(), and
-// render the one that applies?  That then allows some nifty blending as needed as well.
-
-// I seem to be liking this solution...
 
