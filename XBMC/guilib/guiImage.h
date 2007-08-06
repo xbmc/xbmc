@@ -106,6 +106,7 @@ protected:
   void Process();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
   virtual int GetOrientation() const { return m_image.orientation; };
+  void OrientateTexture(CRect &rect, int orientation);
 
   DWORD m_dwColorKey;
   unsigned char m_alpha[4];

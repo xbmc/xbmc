@@ -45,7 +45,7 @@ void CGUILargeTextureManager::Process()
       // still have the same image in the queue, so move it across to the
       // allocated list, even if it doesn't exist
       CLargeTexture *image = m_queued[0];
-      image->SetTexture(texture, pic.GetWidth(), pic.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation") && pic.GetExifInfo()->Orientation ? pic.GetExifInfo()->Orientation : 0);
+      image->SetTexture(texture, pic.GetWidth(), pic.GetHeight(), (g_guiSettings.GetBool("pictures.useexifrotation") && pic.GetExifInfo()->Orientation) ? pic.GetExifInfo()->Orientation - 1: 0);
       m_allocated.push_back(image);
       m_queued.erase(m_queued.begin());
     }
