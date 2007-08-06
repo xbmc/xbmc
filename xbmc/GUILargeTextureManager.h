@@ -11,7 +11,7 @@ public:
 
   virtual void Process();
 
-  LPDIRECT3DTEXTURE8 GetImage(const CStdString &path, int &width, int &height, bool firstRequest);
+  LPDIRECT3DTEXTURE8 GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path);
 
   void CleanupUnusedImages();
@@ -25,6 +25,7 @@ protected:
       m_path = path;
       m_width = 0;
       m_height = 0;
+      m_orientation = 0;
       m_texture = NULL;
       m_refCount = 1;
       m_timeToDelete = 0;
@@ -62,17 +63,19 @@ protected:
       return false;
     };
 
-    void SetTexture(LPDIRECT3DTEXTURE8 texture, int width, int height)
+    void SetTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, int orientation)
     {
       assert(m_texture == NULL);
       m_texture = texture;
       m_width = width;
       m_height = height;
+      m_orientation = orientation;
     };
 
     LPDIRECT3DTEXTURE8 GetTexture() const { return m_texture; };
     int GetWidth() const { return m_width; };
     int GetHeight() const { return m_height; };
+    int GetOrientation() const { return m_orientation; };
     const CStdString &GetPath() const { return m_path; };
 
   private:
@@ -83,6 +86,7 @@ protected:
     LPDIRECT3DTEXTURE8 m_texture;
     int m_width;
     int m_height;
+    int m_orientation;
     unsigned int m_timeToDelete;
   };
 

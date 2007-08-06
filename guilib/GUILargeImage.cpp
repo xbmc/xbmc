@@ -3,6 +3,9 @@
 #include "TextureManager.h"
 #include "../xbmc/GUILargeTextureManager.h"
 
+// TODO: Override SetFileName() to not FreeResources() immediately.  Instead, keep the current image around until we
+//       actually have a new image in AllocResources().
+
 CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture)
     : CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0)
 {
@@ -62,7 +65,7 @@ void CGUILargeImage::AllocResources()
   }
   else
   { // use our large image background loader
-    LPDIRECT3DTEXTURE8 texture = g_largeTextureManager.GetImage(m_strFileName, m_iTextureWidth, m_iTextureHeight, !m_texturesAllocated);
+    LPDIRECT3DTEXTURE8 texture = g_largeTextureManager.GetImage(m_strFileName, m_iTextureWidth, m_iTextureHeight, m_orientation, !m_texturesAllocated);
     m_texturesAllocated = true;
     m_usingBundledTexture = false;
 
@@ -104,5 +107,11 @@ void CGUILargeImage::FreeTextures()
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_texturesAllocated = false;
+}
+
+int CGUILargeImage::GetOrientation() const
+{
+  if (m_usingBundledTexture) return m_image.orientation;
+  return m_orientation;
 }
 
