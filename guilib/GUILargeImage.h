@@ -24,6 +24,8 @@ public:
 protected:
   virtual void AllocateOnDemand();
   virtual void FreeTextures();
+  virtual int GetOrientation() const;
 
   bool m_usingBundledTexture;
+  int m_orientation;
 };

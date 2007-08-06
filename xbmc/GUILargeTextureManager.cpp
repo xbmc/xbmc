@@ -45,7 +45,7 @@ void CGUILargeTextureManager::Process()
       // still have the same image in the queue, so move it across to the
       // allocated list, even if it doesn't exist
       CLargeTexture *image = m_queued[0];
-      image->SetTexture(texture, pic.GetWidth(), pic.GetHeight());
+      image->SetTexture(texture, pic.GetWidth(), pic.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation") && pic.GetExifInfo()->Orientation ? pic.GetExifInfo()->Orientation : 0);
       m_allocated.push_back(image);
       m_queued.erase(m_queued.begin());
     }
@@ -77,7 +77,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, bool firstRequest)
+LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -90,6 +90,7 @@ LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int
         image->AddRef();
       width = image->GetWidth();
       height = image->GetHeight();
+      orientation = image->GetOrientation();
       return image->GetTexture();
     }
   }

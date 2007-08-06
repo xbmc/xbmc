@@ -36,27 +36,25 @@ public:
   {
     file = fileName;
     memset(&border, 0, sizeof(FRECT));
-    flipX = flipY = false;
+    orientation = 0;
   };
 
   CImage()
   {
     memset(&border, 0, sizeof(FRECT));
-    flipX = flipY = false;
+    orientation = 0;
   };
 
   void operator=(const CImage &left)
   {
     file = left.file;
     memcpy(&border, &left.border, sizeof(FRECT));
-    flipX = left.flipX;
-    flipY = left.flipY;
+    orientation = left.orientation;
     diffuse = left.diffuse;
   };
   CStdString file;
   FRECT      border;  // scaled  - unneeded if we get rid of scale on load
-  bool       flipX;   // flip horizontally
-  bool       flipY;   // flip vertically
+  int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse; // diffuse overlay texture (unimplemented)
 };
 
@@ -107,6 +105,7 @@ protected:
   virtual void FreeTextures();
   void Process();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
+  virtual int GetOrientation() const { return m_image.orientation; };
 
   DWORD m_dwColorKey;
   unsigned char m_alpha[4];
