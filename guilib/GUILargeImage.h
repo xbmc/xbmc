@@ -20,12 +20,16 @@ public:
 
   virtual void PreAllocResources();
   virtual void AllocResources();
+  virtual void FreeResources();
+  virtual void Render();
 
 protected:
+  virtual void SetFileName(const CStdString &strFileName);
   virtual void AllocateOnDemand();
   virtual void FreeTextures();
   virtual int GetOrientation() const;
 
   bool m_usingBundledTexture;
   int m_orientation;
+  CGUIImage m_fallbackImage;
 };
