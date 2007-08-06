@@ -718,7 +718,11 @@ void demux_audio_seek(demuxer_t *demuxer,float rel_seek_secs,int flags){
     pos = demuxer->movi_start;
 
   priv->last_pts = (pos-demuxer->movi_start)/(float)sh_audio->i_bps;
-  
+#ifdef _XBOX
+  // we need this as we use this for audio time for audio only files
+  sh_audio->delay = priv->last_pts - (ds_tell_pts(demuxer->audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+#endif
+
   switch(priv->frmt) {
   case WAV:
     pos -= (pos - demuxer->movi_start) %
