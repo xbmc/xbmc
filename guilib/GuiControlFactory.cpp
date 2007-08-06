@@ -190,10 +190,11 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
       image.border.bottom = (float)atof(borders[3].c_str());
     }
   }
+  image.orientation = 0;
   const char *flipX = pNode->Attribute("flipx");
-  if (flipX && strcmpi(flipX, "true") == 0) image.flipX = true;
+  if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
   const char *flipY = pNode->Attribute("flipy");
-  if (flipY && strcmpi(flipY, "true") == 0) image.flipY = true;
+  if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   const char *diffuse = pNode->Attribute("diffuse");
   if (diffuse) image.diffuse = diffuse;
   image.file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
