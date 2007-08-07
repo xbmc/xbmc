@@ -3,7 +3,10 @@
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 
-#define ROUND(x) floorf(x + 0.5f)
+namespace MathUtils {
+  inline int round_int (double x);
+}
+#define ROUND(x) (float)(MathUtils::round_int(x))
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font)
 {
