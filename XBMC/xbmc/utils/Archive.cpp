@@ -75,6 +75,18 @@ CArchive& CArchive::operator<<(int i)
   return *this;
 }
 
+CArchive& CArchive::operator<<(unsigned int i)
+{
+  int size = sizeof(unsigned int);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &i, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
 CArchive& CArchive::operator<<(__int64 i64)
 {
   int size = sizeof(__int64);
@@ -207,6 +219,13 @@ CArchive& CArchive::operator>>(double& d)
 CArchive& CArchive::operator>>(int& i)
 {
   m_pFile->Read((void*)&i, sizeof(int));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(unsigned int& i)
+{
+  m_pFile->Read((void*)&i, sizeof(unsigned int));
 
   return *this;
 }

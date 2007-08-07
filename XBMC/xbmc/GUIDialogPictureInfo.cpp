@@ -36,9 +36,9 @@ CGUIDialogPictureInfo::~CGUIDialogPictureInfo(void)
 {
 }
 
-void CGUIDialogPictureInfo::SetPicture(const CStdString &picture)
+void CGUIDialogPictureInfo::SetPicture(CFileItem *item)
 {
-  g_infoManager.SetCurrentSlide(picture);
+  g_infoManager.SetCurrentSlide(*item);
 }
 
 void CGUIDialogPictureInfo::OnInitWindow()
@@ -49,11 +49,10 @@ void CGUIDialogPictureInfo::OnInitWindow()
 
 void CGUIDialogPictureInfo::Render()
 {
-  CStdString currentPicture = g_infoManager.GetLabel(SLIDE_FILE_NAME) + g_infoManager.GetLabel(SLIDE_FILE_PATH);
-  if (currentPicture != m_currentPicture)
+  if (g_infoManager.GetCurrentSlide().m_strPath != m_currentPicture)
   {
     UpdatePictureInfo();
-    m_currentPicture = currentPicture;
+    m_currentPicture = g_infoManager.GetCurrentSlide().m_strPath;
   }
   CGUIDialog::Render();
 }

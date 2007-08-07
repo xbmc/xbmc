@@ -8,13 +8,20 @@ void CPictureInfoTag::Reset()
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
   memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
   m_isLoaded = false;
-  m_filePath.Empty();
+}
+
+const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
+{
+  if (this == &right) return * this;
+  memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
+  memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
+  m_isLoaded = right.m_isLoaded;
+  return *this;
 }
 
 bool CPictureInfoTag::Load(const CStdString &path)
 {
   m_isLoaded = false;
-  m_filePath = path;
 
   DllLibExif exifDll;
   if (path.IsEmpty() || !exifDll.Load())
@@ -28,18 +35,139 @@ bool CPictureInfoTag::Load(const CStdString &path)
 
 void CPictureInfoTag::Serialize(CArchive& ar)
 {
-  /*
   if (ar.IsStoring())
   {
-    ar << m_exifInfo;
-    ar << m_iptcInfo;
+    ar << m_exifInfo.ApertureFNumber;
+    ar << CStdString(m_exifInfo.CameraMake);
+    ar << CStdString(m_exifInfo.CameraModel);
+    ar << m_exifInfo.CCDWidth;
+    ar << CStdString(m_exifInfo.Comments);
+    ar << CStdString(m_exifInfo.DateTime);
+    for (int i = 0; i < 10; i++)
+      ar << m_exifInfo.DateTimeOffsets[i];
+    ar << m_exifInfo.DigitalZoomRatio;
+    ar << m_exifInfo.Distance;
+    ar << m_exifInfo.ExposureBias;
+    ar << m_exifInfo.ExposureMode;
+    ar << m_exifInfo.ExposureProgram;
+    ar << m_exifInfo.ExposureTime;
+    ar << m_exifInfo.FlashUsed;
+    ar << m_exifInfo.FocalLength;
+    ar << m_exifInfo.FocalLength35mmEquiv;
+    ar << m_exifInfo.GpsInfoPresent;
+    ar << CStdString(m_exifInfo.GpsAlt);
+    ar << CStdString(m_exifInfo.GpsLat);
+    ar << CStdString(m_exifInfo.GpsLong);
+    ar << m_exifInfo.Height;
+    ar << m_exifInfo.IsColor;
+    ar << m_exifInfo.ISOequivalent;
+    ar << m_exifInfo.LargestExifOffset;
+    ar << m_exifInfo.LightSource;
+    ar << m_exifInfo.MeteringMode;
+    ar << m_exifInfo.numDateTimeTags;
+    ar << m_exifInfo.Orientation;
+    ar << m_exifInfo.Process;
+    ar << m_exifInfo.ThumbnailAtEnd;
+    ar << m_exifInfo.ThumbnailOffset;
+    ar << m_exifInfo.ThumbnailSize;
+    ar << m_exifInfo.ThumbnailSizeOffset;
+    ar << m_exifInfo.Whitebalance;
+    ar << m_exifInfo.Width;
+
+    ar << CStdString(m_iptcInfo.Author);
+    ar << CStdString(m_iptcInfo.Byline);
+    ar << CStdString(m_iptcInfo.BylineTitle);
+    ar << CStdString(m_iptcInfo.Caption);
+    ar << CStdString(m_iptcInfo.Category);
+    ar << CStdString(m_iptcInfo.City);
+    ar << CStdString(m_iptcInfo.Copyright);
+    ar << CStdString(m_iptcInfo.CopyrightNotice);
+    ar << CStdString(m_iptcInfo.Country);
+    ar << CStdString(m_iptcInfo.CountryCode);
+    ar << CStdString(m_iptcInfo.Credit);
+    ar << CStdString(m_iptcInfo.Date);
+    ar << CStdString(m_iptcInfo.Headline);
+    ar << CStdString(m_iptcInfo.Keywords);
+    ar << CStdString(m_iptcInfo.ObjectName);
+    ar << CStdString(m_iptcInfo.ReferenceService);
+    ar << CStdString(m_iptcInfo.Source);
+    ar << CStdString(m_iptcInfo.SpecialInstructions);
+    ar << CStdString(m_iptcInfo.State);
+    ar << CStdString(m_iptcInfo.SupplementalCategories);
+    ar << CStdString(m_iptcInfo.TransmissionReference);
   }
   else
   {
-    ar >> m_exifInfo;
-    ar >> m_iptcInfo;
-  }*/
+    ar >> m_exifInfo.ApertureFNumber;
+    GetStringFromArchive(ar, m_exifInfo.CameraMake, sizeof(m_exifInfo.CameraMake));
+    GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
+    ar >> m_exifInfo.CCDWidth;
+    GetStringFromArchive(ar, m_exifInfo.Comments, sizeof(m_exifInfo.Comments));
+    GetStringFromArchive(ar, m_exifInfo.DateTime, sizeof(m_exifInfo.DateTime));
+    for (int i = 0; i < 10; i++)
+      ar >> m_exifInfo.DateTimeOffsets[i];
+    ar >> m_exifInfo.DigitalZoomRatio;
+    ar >> m_exifInfo.Distance;
+    ar >> m_exifInfo.ExposureBias;
+    ar >> m_exifInfo.ExposureMode;
+    ar >> m_exifInfo.ExposureProgram;
+    ar >> m_exifInfo.ExposureTime;
+    ar >> m_exifInfo.FlashUsed;
+    ar >> m_exifInfo.FocalLength;
+    ar >> m_exifInfo.FocalLength35mmEquiv;
+    ar >> m_exifInfo.GpsInfoPresent;
+    GetStringFromArchive(ar, m_exifInfo.GpsAlt, sizeof(m_exifInfo.GpsAlt));
+    GetStringFromArchive(ar, m_exifInfo.GpsLat, sizeof(m_exifInfo.GpsLat));
+    GetStringFromArchive(ar, m_exifInfo.GpsLong, sizeof(m_exifInfo.GpsLong));
+    ar >> m_exifInfo.Height;
+    ar >> m_exifInfo.IsColor;
+    ar >> m_exifInfo.ISOequivalent;
+    ar >> m_exifInfo.LargestExifOffset;
+    ar >> m_exifInfo.LightSource;
+    ar >> m_exifInfo.MeteringMode;
+    ar >> m_exifInfo.numDateTimeTags;
+    ar >> m_exifInfo.Orientation;
+    ar >> m_exifInfo.Process;
+    ar >> m_exifInfo.ThumbnailAtEnd;
+    ar >> m_exifInfo.ThumbnailOffset;
+    ar >> m_exifInfo.ThumbnailSize;
+    ar >> m_exifInfo.ThumbnailSizeOffset;
+    ar >> m_exifInfo.Whitebalance;
+    ar >> m_exifInfo.Width;
+
+    GetStringFromArchive(ar, m_iptcInfo.Author, sizeof(m_iptcInfo.Author));
+    GetStringFromArchive(ar, m_iptcInfo.Byline, sizeof(m_iptcInfo.Byline));
+    GetStringFromArchive(ar, m_iptcInfo.BylineTitle, sizeof(m_iptcInfo.BylineTitle));
+    GetStringFromArchive(ar, m_iptcInfo.Caption, sizeof(m_iptcInfo.Caption));
+    GetStringFromArchive(ar, m_iptcInfo.Category, sizeof(m_iptcInfo.Category));
+    GetStringFromArchive(ar, m_iptcInfo.City, sizeof(m_iptcInfo.City));
+    GetStringFromArchive(ar, m_iptcInfo.Copyright, sizeof(m_iptcInfo.Copyright));
+    GetStringFromArchive(ar, m_iptcInfo.CopyrightNotice, sizeof(m_iptcInfo.CopyrightNotice));
+    GetStringFromArchive(ar, m_iptcInfo.Country, sizeof(m_iptcInfo.Country));
+    GetStringFromArchive(ar, m_iptcInfo.CountryCode, sizeof(m_iptcInfo.CountryCode));
+    GetStringFromArchive(ar, m_iptcInfo.Credit, sizeof(m_iptcInfo.Credit));
+    GetStringFromArchive(ar, m_iptcInfo.Date, sizeof(m_iptcInfo.Date));
+    GetStringFromArchive(ar, m_iptcInfo.Headline, sizeof(m_iptcInfo.Headline));
+    GetStringFromArchive(ar, m_iptcInfo.Keywords, sizeof(m_iptcInfo.Keywords));
+    GetStringFromArchive(ar, m_iptcInfo.ObjectName, sizeof(m_iptcInfo.ObjectName));
+    GetStringFromArchive(ar, m_iptcInfo.ReferenceService, sizeof(m_iptcInfo.ReferenceService));
+    GetStringFromArchive(ar, m_iptcInfo.Source, sizeof(m_iptcInfo.Source));
+    GetStringFromArchive(ar, m_iptcInfo.SpecialInstructions, sizeof(m_iptcInfo.SpecialInstructions));
+    GetStringFromArchive(ar, m_iptcInfo.State, sizeof(m_iptcInfo.State));
+    GetStringFromArchive(ar, m_iptcInfo.SupplementalCategories, sizeof(m_iptcInfo.SupplementalCategories));
+    GetStringFromArchive(ar, m_iptcInfo.TransmissionReference, sizeof(m_iptcInfo.TransmissionReference));
+  }
 }
+
+void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t length)
+{
+  CStdString temp;
+  ar >> temp;
+  length = min((size_t)temp.GetLength(), length - 1);
+  if (!temp.IsEmpty())
+    memcpy(string, temp.c_str(), length);
+  string[length] = 0;
+};
 
 CStdString CPictureInfoTag::GetInfo(int info) const
 {
