@@ -1173,6 +1173,41 @@ typedef struct _DISK_GEOMETRY {
     IN PVOID BaseAddress
   );
 
+  NTSYSAPI
+  LONG
+  NTAPI
+  MmQueryAddressProtect(
+    IN PVOID Address
+  );
+
+  NTSYSAPI
+  VOID
+  NTAPI
+  MmSetAddressProtect(
+    IN PVOID Address,
+    IN LONG Size,
+    IN LONG Type
+  );
+
+  NTSYSAPI
+  PVOID 
+  NTAPI
+  MmAllocateContiguousMemoryEx(
+    IN SIZE_T NumberOfBytes,
+    IN ULONG_PTR LowestAcceptableAddress,
+    IN ULONG_PTR HighestAcceptableAddress,
+    IN ULONG_PTR Alignment,
+    IN ULONG Protect
+  );
+
+  NTSYSAPI
+  DWORD
+  WINAPI
+  MmPersistContiguousMemory(
+    IN PVOID BaseAddress,
+    IN SIZE_T NumberOfBytes,
+    IN BOOLEAN Persist
+  );
 
   // DbgPrint
   // Displays a message on the debugger.
@@ -1639,6 +1674,9 @@ extern "C"
 
   extern PANSI_STRING XeImageFileName;
   extern XBOX_KRNL_VERSION * XboxKrnlVersion;
+
+  NTSYSAPI NTSTATUS NTAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+
 }
 
 #endif // __XBOX_INTERNAL_H__
