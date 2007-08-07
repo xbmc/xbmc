@@ -28,6 +28,7 @@
 #include "GUIInfoManager.h"
 #include <stack>
 #include "../xbox/network.h"
+#include "GUIWindowSlideShow.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM
@@ -3045,27 +3046,44 @@ void CGUIInfoManager::UpdateFromTuxBox()
 CStdString CGUIInfoManager::GetPictureLabel(int info) const
 {
   if (info == SLIDE_FILE_NAME)
-    return CUtil::GetFileName(m_currentSlideFile);
+    return GetItemLabel(&m_currentSlide, LISTITEM_FILENAME);
   else if (info == SLIDE_FILE_PATH)
   {
     CStdString path, displayPath;
-    CUtil::GetDirectory(m_currentSlideFile, path);
+    CUtil::GetDirectory(m_currentSlide.m_strPath, path);
     CURL(path).GetURLWithoutUserDetails(displayPath);
     return displayPath;
   }
-/* TODO: Implement these
   else if (info == SLIDE_FILE_SIZE)
-  {
-  }
+    return GetItemLabel(&m_currentSlide, LISTITEM_SIZE);
   else if (info == SLIDE_FILE_DATE)
+    return GetItemLabel(&m_currentSlide, LISTITEM_DATE);
+  else if (info == SLIDE_INDEX)
   {
-  }*/
-  return m_currentSlideInfo.GetInfo(info);
+    CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (slideshow && slideshow->NumSlides())
+    {
+      CStdString index;
+      index.Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
+      return index;
+    }
+  }
+  if (m_currentSlide.HasPictureInfoTag())
+    return m_currentSlide.GetPictureInfoTag()->GetInfo(info);
+  return "";
 }
 
-void CGUIInfoManager::SetCurrentSlide(const CStdString &slide)
+void CGUIInfoManager::SetCurrentSlide(CFileItem &item)
 {
-  if (m_currentSlideFile != slide)
-    m_currentSlideInfo.Load(slide);
-  m_currentSlideFile = slide;
+  if (m_currentSlide.m_strPath != item.m_strPath)
+  {
+    if (!item.HasPictureInfoTag() && !item.GetPictureInfoTag()->Loaded())
+      item.GetPictureInfoTag()->Load(item.m_strPath);
+    m_currentSlide = item;
+  }
+}
+
+void CGUIInfoManager::ResetCurrentSlide()
+{
+  m_currentSlide.Reset();
 }

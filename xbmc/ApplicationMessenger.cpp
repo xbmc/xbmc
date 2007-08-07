@@ -258,13 +258,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           if (items.Size() > 0)
           {
             for (int i=0;i<items.Size();++i)
-              pSlideShow->Add(items[i]->m_strPath);
+              pSlideShow->Add(items[i]);
             pSlideShow->Select(items[0]->m_strPath);
           }
         }
         else
         {
-          pSlideShow->Add(pMsg->strParam);
+          CFileItem item(pMsg->strParam, false);
+          pSlideShow->Add(&item);
           pSlideShow->Select(pMsg->strParam);
         }
         g_graphicsContext.Unlock();
@@ -286,7 +287,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (items.Size() > 0)
         {
           for (int i=0;i<items.Size();++i)
-            pSlideShow->Add(items[i]->m_strPath);
+            pSlideShow->Add(items[i]);
           pSlideShow->StartSlideShow(); //Start the slideshow!
         }
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))

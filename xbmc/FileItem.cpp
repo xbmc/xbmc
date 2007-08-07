@@ -48,6 +48,7 @@ CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = song.strTitle;
   m_strPath = song.strFileName;
@@ -61,6 +62,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = album.strAlbum;
   m_strPath = path;
@@ -75,6 +77,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = movie.m_strTitle;
   if (movie.m_strFileNameAndPath.IsEmpty())
@@ -99,6 +102,7 @@ CFileItem::CFileItem(const CArtist& artist)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = artist.strArtist;
   m_strPath = artist.strArtist;
@@ -111,6 +115,7 @@ CFileItem::CFileItem(const CGenre& genre)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = genre.strGenre;
   m_strPath = genre.strGenre;
@@ -123,6 +128,7 @@ CFileItem::CFileItem(const CFileItem& item)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   *this = item;
 }
 
@@ -130,6 +136,7 @@ CFileItem::CFileItem(const CGUIListItem& item)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
   // parameters in the CGUIListItem base class.
@@ -140,6 +147,7 @@ CFileItem::CFileItem(void)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
 }
 
@@ -148,6 +156,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
 }
@@ -156,6 +165,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
@@ -172,6 +182,7 @@ CFileItem::CFileItem(const CShare& share)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
@@ -195,9 +206,12 @@ CFileItem::~CFileItem(void)
     delete m_musicInfoTag;
   if (m_videoInfoTag)
     delete m_videoInfoTag;
+  if (m_pictureInfoTag)
+    delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -250,6 +264,20 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_videoInfoTag = NULL;
   }
 
+  if (item.HasPictureInfoTag())
+  {
+    m_pictureInfoTag = GetPictureInfoTag();
+    if (m_pictureInfoTag)
+      *m_pictureInfoTag = *item.m_pictureInfoTag;
+  }
+  else
+  {
+    if (m_pictureInfoTag)
+      delete m_pictureInfoTag;
+
+    m_pictureInfoTag = NULL;
+  }
+
   m_lStartOffset = item.m_lStartOffset;
   m_lEndOffset = item.m_lEndOffset;
   m_fRating = item.m_fRating;
@@ -300,6 +328,9 @@ void CFileItem::Reset()
   if (m_videoInfoTag)
     delete m_videoInfoTag;
   m_videoInfoTag=NULL;
+  if (m_pictureInfoTag)
+    delete m_pictureInfoTag;
+  m_pictureInfoTag=NULL;
   SetInvalid();
 }
 
@@ -349,6 +380,13 @@ void CFileItem::Serialize(CArchive& ar)
     }
     else 
       ar << 0;
+    if (m_pictureInfoTag)
+    {
+      ar << 1;
+      ar << *m_pictureInfoTag;
+    }
+    else 
+      ar << 0;
   }
   else
   {
@@ -387,6 +425,9 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> iType;
     if (iType == 1)
       ar >> *GetVideoInfoTag();
+    ar >> iType;
+    if (iType == 1)
+      ar >> *GetPictureInfoTag();
     SetInvalid();
   }
 }

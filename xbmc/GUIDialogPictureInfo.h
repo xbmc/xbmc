@@ -8,7 +8,7 @@ class CGUIDialogPictureInfo :
 public:
   CGUIDialogPictureInfo(void);
   virtual ~CGUIDialogPictureInfo(void);
-  void SetPicture(const CStdString &picture);
+  void SetPicture(CFileItem *item);
   virtual void Render();
 
 protected:

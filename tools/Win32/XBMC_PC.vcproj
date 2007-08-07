@@ -1436,6 +1436,22 @@
 				<File
 					RelativePath="..\..\xbmc\VorbisTag.h">
 				</File>
+				<Filter
+					Name="Pictures"
+					Filter="">
+					<File
+						RelativePath="..\..\xbmc\PictureInfoLoader.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\PictureInfoLoader.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\PictureInfoTag.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\PictureInfoTag.h">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Utils"
@@ -1580,12 +1596,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Picture.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureInfoTag.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureInfoTag.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Profile.cpp">
