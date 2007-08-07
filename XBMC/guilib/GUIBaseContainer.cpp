@@ -331,8 +331,11 @@ void CGUIBaseContainer::FreeResources()
 void CGUIBaseContainer::UpdateLayout()
 {
   CalculateLayout();
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-  SendWindowMessage(msg);
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
+    SendWindowMessage(msg);
+  }
 }
 
 void CGUIBaseContainer::CalculateLayout()
