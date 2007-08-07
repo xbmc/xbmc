@@ -66,15 +66,18 @@ public:
   CPictureInfoTag() { Reset(); };
   void Reset();
   virtual void Serialize(CArchive& ar);
-
-  bool Load(const CStdString &path);
-  static int TranslateString(const CStdString &info);
+  const CPictureInfoTag& operator=(const CPictureInfoTag& item);
   CStdString GetInfo(int info) const;
 
+  bool Loaded() const { return m_isLoaded; };
+  bool Load(const CStdString &path);
+
+  static int TranslateString(const CStdString &info);
+
 private:
+  void GetStringFromArchive(CArchive &ar, char *string, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
-  bool m_isLoaded;
-  CStdString m_filePath;
+  bool       m_isLoaded;
 };
 

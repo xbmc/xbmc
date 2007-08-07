@@ -8,6 +8,7 @@
 #include "utils/archive.h"
 #include "DateTime.h"
 #include "VideoInfoTag.h"
+#include "PictureInfoTag.h"
 
 using namespace MUSIC_INFO;
 
@@ -166,6 +167,24 @@ public:
     return m_videoInfoTag;
   }
 
+  bool HasPictureInfoTag() const
+  {
+    return m_pictureInfoTag != NULL;
+  }
+
+  inline CPictureInfoTag* GetPictureInfoTag()
+  {
+    if (!m_pictureInfoTag)
+      m_pictureInfoTag = new CPictureInfoTag;
+
+    return m_pictureInfoTag;
+  }
+
+  inline const CPictureInfoTag* GetPictureInfoTag() const
+  {
+    return m_pictureInfoTag;
+  }
+
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();
   CStdString GetCachedPictureThumb();
@@ -237,6 +256,7 @@ private:
   CStdString m_contenttype;
   CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
+  CPictureInfoTag* m_pictureInfoTag;
 };
 
 /*!

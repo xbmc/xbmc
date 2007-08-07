@@ -29,6 +29,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "PlayListFactory.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "PictureInfoLoader.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -245,6 +246,50 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   for (int i=0;i<items.Size();++i )
     if (items[i]->GetLabel().Equals("folder.jpg"))
       items.Remove(i);
+
+  if (items.GetFolderCount()==items.Size() || !g_guiSettings.GetBool("pictures.usetags"))
+    return;
+
+  // Start the music info loader thread
+  CPictureInfoLoader loader;
+  loader.SetProgressCallback(m_dlgProgress);
+  loader.Load(items);
+
+  bool bShowProgress=!m_gWindowManager.HasModalDialog();
+  bool bProgressVisible=false;
+
+  DWORD dwTick=timeGetTime();
+
+  while (loader.IsLoading())
+  {
+    if (bShowProgress)
+    { // Do we have to init a progress dialog?
+      DWORD dwElapsed=timeGetTime()-dwTick;
+
+      if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
+      { // tag loading takes more then 1.5 secs, show a progress dialog
+        CURL url(items.m_strPath);
+        CStdString strStrippedPath;
+        url.GetURLWithoutUserDetails(strStrippedPath);
+        m_dlgProgress->SetHeading(189);
+        m_dlgProgress->SetLine(0, 505);
+        m_dlgProgress->SetLine(1, "");
+        m_dlgProgress->SetLine(2, strStrippedPath );
+        m_dlgProgress->StartModal();
+        m_dlgProgress->ShowProgressBar(true);
+        bProgressVisible = true;
+      }
+
+      if (bProgressVisible && m_dlgProgress)
+      { // keep GUI alive
+        m_dlgProgress->Progress();
+      }
+    } // if (bShowProgress)
+    Sleep(1);
+  } // while (loader.IsLoading())
+
+  if (bProgressVisible && m_dlgProgress)
+    m_dlgProgress->Close();
 }
 
 bool CGUIWindowPictures::Update(const CStdString &strDirectory)
@@ -330,7 +375,7 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
     CFileItem* pItem = m_vecItems[i];
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
-      pSlideShow->Add(pItem->m_strPath);
+      pSlideShow->Add(pItem);
     }
   }
   pSlideShow->Select(strPicture);
@@ -359,7 +404,7 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
     else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)) && !CUtil::GetFileName(pItem->m_strPath).Equals("folder.jpg"))
-      pSlideShow->Add(pItem->m_strPath);
+      pSlideShow->Add(pItem);
   }
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
@@ -380,7 +425,7 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow, const CStdStrin
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
     else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
-      pSlideShow->Add(pItem->m_strPath);
+      pSlideShow->Add(pItem);
   }
 }
 
@@ -430,7 +475,7 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
     CFileItem* pItem = m_vecItems[i];
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
-      pSlideShow->Add(pItem->m_strPath);
+      pSlideShow->Add(pItem);
     }
   }
   if (g_guiSettings.GetBool("slideshow.shuffle"))
@@ -663,7 +708,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
       CFileItem *pItem = new CFileItem(playlist[i].m_strPath, false);
       //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->m_strPath.c_str());
       if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBZ() || pItem->IsCBR()))
-        pSlideShow->Add(pItem->m_strPath);
+        pSlideShow->Add(pItem);
     }
 
     // start slideshow if there are items
@@ -681,7 +726,7 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)
   {
-    pictureInfo->SetPicture(item->m_strPath);
+    pictureInfo->SetPicture(item);
     pictureInfo->DoModal();
   }
 }
