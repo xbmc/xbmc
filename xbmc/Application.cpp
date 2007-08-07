@@ -4555,9 +4555,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 void CApplication::Process()
 {
-  // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  m_Autorun.HandleAutorun();
-
   // check if we need to load a new skin
   if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
   {
@@ -4650,6 +4647,9 @@ void CApplication::ProcessSlow()
   }
 
   g_largeTextureManager.CleanupUnusedImages();
+
+  // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
+  m_Autorun.HandleAutorun();
 }
 
 // Global Idle Time in Seconds
