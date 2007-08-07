@@ -9,7 +9,6 @@
 
 #include "../MusicInfoTag.h"
 #include "../FileItem.h"
-#include "../PictureInfoTag.h"
 #include "../videodatabase.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
@@ -396,7 +395,9 @@ public:
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
   void SetCurrentMovie(CFileItem &item);
-  void SetCurrentSlide(const CStdString &slide);
+  void SetCurrentSlide(CFileItem &item);
+  const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
+  void ResetCurrentSlide();
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
   {     
     *m_currentFile.GetMusicInfoTag() = tag; 
@@ -500,8 +501,7 @@ protected:
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
-  CPictureInfoTag m_currentSlideInfo;
-  CStdString      m_currentSlideFile;
+  CFileItem m_currentSlide;
   int i_SmartRequest;
  
   // fan stuff

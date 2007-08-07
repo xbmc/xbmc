@@ -38,14 +38,13 @@ public:
   virtual ~CGUIWindowSlideShow(void);
 
   void Reset();
-  void Add(const CStdString& strPicture);
+  void Add(const CFileItem *picture);
   bool IsPlaying() const;
   void ShowNext();
   void ShowPrevious();
   void Select(const CStdString& strPicture);
-  vector<CStdString> GetSlideShowContents();
-  CStdString GetCurrentSlide();
-  bool GetCurrentSlideInfo(int &width, int &height);
+  const CFileItemList &GetSlideShowContents();
+  const CFileItem *GetCurrentSlide();
   void RunSlideShow(const CStdString& strPath, bool bRecursive = false);
   void StartSlideShow();
   bool InSlideShow() const;
@@ -54,7 +53,8 @@ public:
   virtual void Render();
   virtual void FreeResources();
   void OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
-  int NumSlides();
+  int NumSlides() const;
+  int CurrentSlide() const;
   void Shuffle();
 private:
   void AddItems(const CStdString &strPath, bool bRecursive);
@@ -74,8 +74,7 @@ private:
   bool m_bPause;
   bool m_bErrorMessage;
 
-  vector<CStdString> m_vecSlides;
-  typedef vector<CStdString>::iterator ivecSlides;
+  CFileItemList m_slides;
 
   CSlideShowPic m_Image[2];
   int m_iCurrentPic;
