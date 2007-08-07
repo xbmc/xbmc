@@ -245,13 +245,6 @@ using namespace PLAYLIST;
 
 CStdString g_LoadErrorStr;
 
-#ifdef HAS_XBOX_HARDWARE
-extern "C"
-{
-  extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
-};
-#endif
-
 #ifdef HAS_XBOX_D3D
 static void WaitCallback(DWORD flags)
 {

@@ -1705,8 +1705,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
       pSettingString->SetData(path);
-      if (strSetting.Equals("subtitles.custompath"))
-        iAdditionalChecked = -1; // force recheck
 
       if (strSetting.Equals("myprograms.trainerpath"))
       {
