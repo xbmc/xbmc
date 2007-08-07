@@ -486,7 +486,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (!pSlideShow)
         return ;
-      pSlideShow->Add(pItem->m_strPath);
+      pSlideShow->Add(pItem);
     }
     else
       g_playlistPlayer.Add(playList, (CFileItem*)pItem);
@@ -1195,21 +1195,19 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
-    output=openTag+"Filename:"+pSlideShow->GetCurrentSlide();
+    const CFileItem *slide = pSlideShow->GetCurrentSlide();
+    output=openTag+"Filename:"+slide->m_strPath;
     output+=closeTag+openTag+"Type:Picture" ;
-    int width=0, height=0;
-    pSlideShow->GetCurrentSlideInfo(width, height);
-    tmp.Format("%i",width);
-    output+=closeTag+openTag+"Width:" + tmp ;
-    tmp.Format("%i",height);
-    output+=closeTag+openTag+"Height:" + tmp ;
-    CStdString picFn = pSlideShow->GetCurrentSlide();
-    CFileItem item(picFn, false);
+    CStdString resolution = "0x0";
+    if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
+      resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
+    output+=closeTag+openTag+"Resolution:" + resolution;
+    CFileItem item(*slide);
     item.SetCachedPictureThumb();
     if (autoGetPictureThumbs && !item.HasThumbnail())
     {
       CPicture pic;
-      pic.DoCreateThumbnail(picFn, item.GetCachedPictureThumb());
+      pic.DoCreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
       item.SetCachedPictureThumb();
     }
     CStdString thumb = item.GetCachedPictureThumb();
@@ -1670,12 +1668,12 @@ int CXbmcHttp::xbmcGetSlideshowContents()
     return SetResponse(openTag+"Error");
   else
   {
-    vector<CStdString> slideshowContents = pSlideShow->GetSlideShowContents();
-    if ((int)slideshowContents.size()==0)
+    const CFileItemList &slideshowContents = pSlideShow->GetSlideShowContents();
+    if (slideshowContents.Size()==0)
       list=openTag+"[Empty]" ;
     else
-    for (int i = 0; i < (int)slideshowContents.size(); ++i)
-      list += closeTag+openTag + slideshowContents[i];
+    for (int i = 0; i < slideshowContents.Size(); ++i)
+      list += closeTag+openTag + slideshowContents[i]->m_strPath;
     return SetResponse(list) ;
   }
 }
@@ -2164,11 +2162,10 @@ int CXbmcHttp::xbmcGetCurrentSlide()
     return SetResponse(openTag+"Error:Could not access slideshown");
   else
   {
-    CStdString slide=pSlideShow->GetCurrentSlide();
-    if (slide=="")
-	  return SetResponse(openTag + "[None]");
-	else
-      return SetResponse(openTag + slide);
+    const CFileItem *slide=pSlideShow->GetCurrentSlide();
+    if (!slide)
+	    return SetResponse(openTag + "[None]");
+    return SetResponse(openTag + slide->m_strPath);
   }
 }
 
