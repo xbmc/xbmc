@@ -2252,6 +2252,14 @@ void CApplication::DoRender()
 void CApplication::Render()
 {
   g_graphicsContext.Lock();
+  { // frame rate limiter (really bad, but it does the trick :p)
+    const static unsigned int singleFrameTime = 10;
+    static unsigned int lastFrameTime = 0;
+    unsigned int currentTime = timeGetTime();
+    if (lastFrameTime + singleFrameTime > currentTime)
+      Sleep(lastFrameTime + singleFrameTime - currentTime);
+    lastFrameTime = timeGetTime();
+  }
   RenderNoPresent();
   // Present the backbuffer contents to the display
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
