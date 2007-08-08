@@ -50,7 +50,7 @@ BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
 #ifdef _XBOX
   return (PKTHREAD)section->OwningThread == GetCurrentKPCR()->PrcbData.CurrentThread;
 #else
-  return false;
+  return section->OwningThread == (HANDLE)GetCurrentThreadId();
 #endif
 }
 
