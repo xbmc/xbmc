@@ -340,27 +340,6 @@ void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *sr
   //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
   //reset these so the gpu doesn't try to block on these
   
-
-#ifndef _LINUX
-  m_pOSDYTexture[iOSDBuffer]->Lock = 0;
-  m_pOSDATexture[iOSDBuffer]->Lock = 0;
-
-  // draw textures
-  D3DLOCKED_RECT lr, lra;
-  if (
-    (D3D_OK == m_pOSDYTexture[iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
-    (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
-  )
-  {
-    //clear the textures
-    memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
-    memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
-    //draw the osd/subs
-    CopyAlpha(w, h, src, srca, stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
-  }
-  m_pOSDYTexture[iOSDBuffer]->UnlockRect(0);
-  m_pOSDATexture[iOSDBuffer]->UnlockRect(0);
-#else
   memset(m_pOSDYBuffer, 0, m_iOSDTextureWidth * m_iOSDTextureHeight[iOSDBuffer]);
   memset(m_pOSDABuffer, 0, m_iOSDTextureWidth * m_iOSDTextureHeight[iOSDBuffer]);
   CopyAlpha(w, h, src, srca, stride, m_pOSDYBuffer, m_pOSDABuffer, m_iOSDTextureWidth);
@@ -368,7 +347,6 @@ void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *sr
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pOSDYBuffer);
   glBindTexture(GL_TEXTURE_2D, m_pOSDATexture[iOSDBuffer]);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pOSDABuffer);
-#endif
 
   //set module variables to calculated values
   m_OSDRect = osdRect;
@@ -387,7 +365,6 @@ void CLinuxRendererGL::RenderOSD()
   if (!m_OSDWidth || !m_OSDHeight)
     return ;
 
-  fprintf(stderr, "Reached HERE!!!!!!\n");
   ResetEvent(m_eventOSDDone[iRenderBuffer]);
   
   CSingleLock lock(g_graphicsContext);
@@ -400,10 +377,6 @@ void CLinuxRendererGL::RenderOSD()
   //    return;
 
   // Set state to render the image
-#ifndef _LINUX
-  m_pD3DDevice->SetTexture(0, m_pOSDYTexture[iRenderBuffer]);
-  m_pD3DDevice->SetTexture(1, m_pOSDATexture[iRenderBuffer]);
-#endif
 
   Setup_Y8A8Render();
 
@@ -414,33 +387,6 @@ void CLinuxRendererGL::RenderOSD()
   }
 
   // Render the image
-#ifndef _LINUX
-  m_pD3DDevice->Begin(D3DPT_QUADLIST);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.left, osdRect.top, 0, 1.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, osdWidth, 0 );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, osdWidth, 0 );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.right, osdRect.top, 0, 1.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, osdWidth, osdHeight );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, osdWidth, osdHeight );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.right, osdRect.bottom, 0, 1.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, osdHeight );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, osdHeight );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.left, osdRect.bottom, 0, 1.0f );
-  m_pD3DDevice->End();
-
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetTexture(1, NULL);
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
-
-  m_pD3DDevice->SetScissors(0, FALSE, NULL);
-
-  //Okey, when the gpu is done with the textures here, they are free to be modified again
-  //this is very weird.. D3DCALLBACK_READ is not enough.. if that is used, we start flushing
-  //the texutures to early.. I have no idea why really
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventOSDDone[iRenderBuffer]);
-#else
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_pOSDYTexture[m_iOSDRenderBuffer]);
   glBegin(GL_QUADS);
@@ -454,7 +400,6 @@ void CLinuxRendererGL::RenderOSD()
   glTexCoord2f(0.0, 1.0);
   glVertex2f(osdRect.left, osdRect.bottom);
   glEnd();  
-#endif
 
 }
 
