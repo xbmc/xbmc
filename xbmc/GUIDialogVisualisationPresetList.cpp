@@ -147,7 +147,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     strVis[0] = toupper(strVis[0]);
   }
   CStdString strSettings;
-  strSettings.Format(g_localizeStrings.Get(13388).c_str(), strVis.c_str());
+  strSettings.Format(g_localizeStrings.Get(13407).c_str(), strVis.c_str());
   SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strSettings);
   // if there is no presets, add a label saying so
   if (m_vecPresets.Size() == 0)
