@@ -11,12 +11,15 @@ CDVDInputStream::CDVDInputStream(DVDStreamType streamType)
 
 CDVDInputStream::~CDVDInputStream()
 {
-  if (m_strFileName) delete m_strFileName;
+  if (m_strFileName) 
+    free(m_strFileName);
 }
 
 bool CDVDInputStream::Open(const char* strFile, const std::string &content)
 {
-  if (m_strFileName) delete m_strFileName;
+  if (m_strFileName)
+    free(m_strFileName);
+
   m_strFileName = strdup(strFile);
   m_content = content;
   return true;
@@ -24,7 +27,8 @@ bool CDVDInputStream::Open(const char* strFile, const std::string &content)
 
 void CDVDInputStream::Close()
 {
-  if (m_strFileName) delete m_strFileName;
+  if (m_strFileName) 
+     free(m_strFileName);
   m_strFileName = NULL;
 }
 

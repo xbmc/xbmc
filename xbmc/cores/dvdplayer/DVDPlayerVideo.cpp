@@ -4,7 +4,7 @@
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
-#include "DVDCodecs/Video\DVDVideoPPFFmpeg.h"
+#include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "Util.h"
@@ -179,9 +179,14 @@ void CDVDPlayerVideo::Process()
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut);
    
-    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) break;
+    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) 
+    {
+      CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
+      break;
+    }
     else if (ret == MSGQ_TIMEOUT)
     {
+      CLog::Log(LOGINFO, "Got MSGQ_TIMEOUT");
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !m_DetectedStill )
       {
@@ -655,7 +660,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   {
     // copy picture to overlay
     YV12Image image;
-    unsigned int index = g_renderManager.GetImage(&image);
+
+    int index = g_renderManager.GetImage(&image);
     if (index < 0) 
       return EOS_DROPPED;
 

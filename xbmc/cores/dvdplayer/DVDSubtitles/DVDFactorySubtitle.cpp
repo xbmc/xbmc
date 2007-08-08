@@ -150,3 +150,4 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStrea
   
   return pParser;
 }
+
