@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../utils/sharedsection.h"
+#include "utils/sharedsection.h"
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE (0x8000000000000000 ## i64)
 
