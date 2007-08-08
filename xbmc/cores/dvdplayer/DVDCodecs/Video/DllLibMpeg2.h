@@ -14,8 +14,8 @@ typedef unsigned __int64 uint64_t;
 extern "C"
 {
 #endif
- #include "libmpeg2\mpeg2.h"
- #include "libmpeg2\mpeg2convert.h"
+ #include "libmpeg2/mpeg2.h"
+ #include "libmpeg2/mpeg2convert.h"
 #ifdef __cplusplus
 }
 #endif

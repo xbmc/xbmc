@@ -11,8 +11,6 @@ static inline __int64 abs(__int64 x)
   return x > 0 ? x : -x;
 }
 
-#include "Util.h"
-
 CPTSQueue::CPTSQueue()
 {
   Flush();
@@ -200,7 +198,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (len < 0)
       {
         /* if error, we skip the packet */
-        CLog::Log(LOGERROR, "CDVDPlayerAudio::Process - Decode Error. Skipping audio packet");
+        CLog::Log(LOGERROR, "CDVDPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet");
         audio_pkt_size=0;
         m_pAudioCodec->Reset();
         return DECODE_FLAG_ERROR;
