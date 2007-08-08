@@ -1658,7 +1658,9 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+#ifdef HAS_XBOX_HARDWARE
   StartIdleThread();
+#endif
 
   CheckDate();
   StartLEDControl(false);
@@ -1759,9 +1761,8 @@ void CApplication::StopServices()
   CLog::Log(LOGNOTICE, "stop fancontroller");
   CFanController::Instance()->Stop();
   CFanController::RemoveInstance();
-#endif
-
   StopIdleThread();
+#endif  
 }
 
 void CApplication::DelayLoadSkin()
