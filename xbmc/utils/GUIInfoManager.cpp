@@ -634,6 +634,8 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
   else if (info.Equals("path")) return LISTITEM_PATH;
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
+  else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
+  else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
   return 0;
 }
 
@@ -1102,6 +1104,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case LISTITEM_COMMENT:
   case LISTITEM_PATH:
   case LISTITEM_PICTURE_PATH:
+  case LISTITEM_PICTURE_DATETIME:
+  case LISTITEM_PICTURE_RESOLUTION:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostModalDialogID();
@@ -2836,6 +2840,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->m_strPath;
+    break;
+  case LISTITEM_PICTURE_DATETIME:
+    if (item->HasPictureInfoTag())
+      return item->GetPictureInfoTag()->GetInfo(SLIDE_EXIF_DATE_TIME);
+    break;
+  case LISTITEM_PICTURE_RESOLUTION:
+    if (item->HasPictureInfoTag())
+      return item->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
+    break;
   }
   return "";
 }
