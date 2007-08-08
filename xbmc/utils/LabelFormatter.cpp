@@ -276,16 +276,18 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   m_staticContent[label].clear();
   m_dynamicContent[label].clear();
 
-  // here's some magic that even spiff would be proud of :)
+  // we want to match [<prefix>%A<postfix]
+  // but allow %%, %[, %] to be in the prefix and postfix.  Anything before the first [
+  // could be a mask that's not surrounded with [], so pass to SplitMask.
   CRegExp reg;
-  reg.RegComp("(^|[^%])\\[(.*)%([" MASK_CHARS "])(.*[^%])\\]");
+  reg.RegComp("(^|[^%])\\[(([^%]|%%|%\\]|%\\[)*)%([" MASK_CHARS "])(([^%]|%%|%\\]|%\\[)*)\\]");
   CStdString work(mask);
   int findStart = -1;
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match for a pre/postfixed string
     // send anything 
-    SplitMask(label, reg.GetReplaceString("\\1"));
-    m_dynamicContent[label].push_back(CMaskString(reg.GetReplaceString("\\2"), *reg.GetReplaceString("\\3"), reg.GetReplaceString("\\4")));
+    SplitMask(label, work.Left(findStart) + reg.GetReplaceString("\\1"));
+    m_dynamicContent[label].push_back(CMaskString(reg.GetReplaceString("\\2"), *reg.GetReplaceString("\\4"), reg.GetReplaceString("\\5")));
     work = work.Mid(findStart + reg.GetFindLen());
   }
   SplitMask(label, work);
