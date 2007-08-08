@@ -1,13 +1,13 @@
 
 #pragma once
-#include "..\..\..\DynamicDll.h"
+#include "../../../DynamicDll.h"
 
 extern "C" {
 #define HAVE_MMX
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
 #pragma warning(disable:4244)
-#include "..\ffmpeg\avcodec.h"
+#include "../ffmpeg/avcodec.h"
 }
 
 class DllAvCodecInterface
