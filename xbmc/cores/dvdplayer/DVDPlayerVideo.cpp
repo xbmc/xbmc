@@ -186,7 +186,6 @@ void CDVDPlayerVideo::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      CLog::Log(LOGINFO, "Got MSGQ_TIMEOUT");
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !m_DetectedStill )
       {
