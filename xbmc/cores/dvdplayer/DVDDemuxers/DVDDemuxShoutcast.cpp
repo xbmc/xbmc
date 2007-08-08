@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "../DVDCodecs\DVDCodecs.h"
-#include "../DVDInputStreams\DVDInputStreamHttp.h"
+#include "../DVDCodecs/DVDCodecs.h"
+#include "../DVDInputStreams/DVDInputStreamHttp.h"
 #include "DVDDemuxShoutcast.h"
-#include "DVDdemuxUtils.h"
+#include "DVDDemuxUtils.h"
 #include "../DVDClock.h" // for DVD_TIME_BASE
 #include "utils/HttpHeader.h"
 

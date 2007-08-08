@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "DVDDemuxFFmpeg.h"
 #include "../DVDInputStreams/DVDInputStream.h"
-#include "DVDdemuxUtils.h"
+#include "DVDDemuxUtils.h"
 #include "../DVDClock.h" // for DVD_TIME_BASE
 
 // class CDemuxStreamVideoFFmpeg
@@ -150,7 +150,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (!pInput) return false;
 
-  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load() || !m_dllAvUtil.Load() ) return false;
+  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load() || !m_dllAvUtil.Load() )
+  {
+    CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
+    return false;
+  }
+
 
   // register codecs
   m_dllAvFormat.av_register_all();
@@ -282,7 +287,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     if (iErr < 0)
     {
-      CLog::DebugLog("could not find codec parameters for %s", strFile);
+      CLog::Log(LOGDEBUG,"could not find codec parameters for %s", strFile);
       if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
       {
         // special case, our codecs can still handle it.
@@ -633,3 +638,4 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->pPrivate = pStream;
   }
 }
+

@@ -1,13 +1,12 @@
 
 #include "stdafx.h"
-#include "dvdaudio.h"
+#include "DVDAudio.h"
 #ifdef _XBOX
 #include "../mplayer/ASyncDirectSound.h"
 #include "../mplayer/ac97directsound.h"
 #else
 #include "../mplayer/Win32DirectSound.h"
 #endif
-#include "Util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
@@ -235,7 +234,7 @@ __int64 CDVDAudio::GetDelay()
   if(m_pAudioDecoder)
     delay = m_pAudioDecoder->GetDelay();
 
-  DWORD bps = m_iChannels * m_iBitrate * m_iBitsPerSample>>3;
+  DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
   if(m_iBufferSize && bps)
     delay += (double)m_iBufferSize / bps;
 

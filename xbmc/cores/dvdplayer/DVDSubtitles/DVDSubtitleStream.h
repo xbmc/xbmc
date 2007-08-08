@@ -28,3 +28,4 @@ protected:
   
   __int64 m_iStreamPos;
 };
+

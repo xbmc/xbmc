@@ -1,7 +1,6 @@
 
 #include "stdafx.h"
 #include "DVDDemuxSPU.h"
-#include "Util.h"
 #include "DVDClock.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
@@ -18,7 +17,7 @@ void DebugLog(const char *format, ...)
   _vsnprintf(temp_spubuffer, 1024, format, va);
   va_end(va);
 
-  CLog::DebugLog(temp_spubuffer);
+  CLog::Log(LOGDEBUG,temp_spubuffer);
 #endif
 }
 

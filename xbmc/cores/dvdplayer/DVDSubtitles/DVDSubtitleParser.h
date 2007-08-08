@@ -29,3 +29,4 @@ protected:
   CDVDSubtitleStream* m_pStream;
   char* m_strFileName;
 };
+

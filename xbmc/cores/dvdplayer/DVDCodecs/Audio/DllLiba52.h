@@ -5,7 +5,7 @@ typedef unsigned __int32 uint32_t;
 typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
 
-#include "liba52\a52.h"
+#include "liba52/a52.h"
 
 class DllLiba52Interface
 {
