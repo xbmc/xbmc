@@ -116,6 +116,15 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   return handled;
 }
 
+bool CGUIWindowManager::SendMessage(CGUIMessage& message, DWORD dwWindow)
+{
+  CGUIWindow* pWindow = GetWindow(dwWindow);
+  if(pWindow)
+    return pWindow->OnMessage(message);
+  else
+    return false;
+}
+
 void CGUIWindowManager::AddUniqueInstance(CGUIWindow *window)
 {
   // increment our instance (upper word of windowID)
@@ -548,7 +557,17 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
   ::EnterCriticalSection(&m_critSection );
 
   CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( msg );
+  m_vecThreadMessages.push_back( pair<CGUIMessage*,DWORD>(msg,0) );
+
+  ::LeaveCriticalSection(&m_critSection );
+}
+
+void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, DWORD dwWindow)
+{
+  ::EnterCriticalSection(&m_critSection );
+
+  CGUIMessage* msg = new CGUIMessage(message);
+  m_vecThreadMessages.push_back( pair<CGUIMessage*,DWORD>(msg,dwWindow) );
 
   ::LeaveCriticalSection(&m_critSection );
 }
@@ -558,15 +577,19 @@ void CGUIWindowManager::DispatchThreadMessages()
   ::EnterCriticalSection(&m_critSection );
   while ( m_vecThreadMessages.size() > 0 )
   {
-    vector<CGUIMessage*>::iterator it = m_vecThreadMessages.begin();
-    CGUIMessage* pMsg = *it;
+    vector< pair<CGUIMessage*,DWORD> >::iterator it = m_vecThreadMessages.begin();
+    CGUIMessage* pMsg = it->first;
+    DWORD dwWindow = it->second;
     // first remove the message from the queue,
     // else the message could be processed more then once
     it = m_vecThreadMessages.erase(it);
     
     //Leave critical section here since this can cause some thread to come back here into dispatch
     ::LeaveCriticalSection(&m_critSection );
-    SendMessage( *pMsg );
+    if(dwWindow)
+      SendMessage( *pMsg, dwWindow );
+    else
+      SendMessage( *pMsg );
     delete pMsg;
     ::EnterCriticalSection(&m_critSection );
   }

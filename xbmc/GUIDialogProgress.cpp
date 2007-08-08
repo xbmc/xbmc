@@ -162,14 +162,11 @@ bool CGUIDialogProgress::Abort()
 
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
-  if (bOnOff)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_PROGRESS_BAR);
-  }
+  CGUIMessage msg(bOnOff ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), CONTROL_PROGRESS_BAR);
+  if(OwningCriticalSection(g_graphicsContext))
+    OnMessage(msg);
   else
-  {
-    SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
-  }
+    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
 }
 
 void CGUIDialogProgress::SetHeading(const string& strLine)
