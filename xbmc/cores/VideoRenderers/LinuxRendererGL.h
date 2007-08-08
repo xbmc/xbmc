@@ -179,6 +179,8 @@ protected:
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
   GLuint m_pOSDATexture[NUM_BUFFERS];
+  GLubyte* m_pOSDYBuffer;
+  GLubyte* m_pOSDABuffer;
 
   float m_OSDWidth;
   float m_OSDHeight;

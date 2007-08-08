@@ -231,8 +231,8 @@ void CDVDPlayer::Process()
     }
   }
 
-  //m_dvdPlayerSubtitle.Init();
-  //m_dvdPlayerSubtitle.FindSubtitles(m_filename);
+  m_dvdPlayerSubtitle.Init();
+  m_dvdPlayerSubtitle.FindSubtitles(m_filename.c_str());
 
   // open the streams
   if (audio_index >= 0) OpenAudioStream(audio_index);
@@ -1096,7 +1096,8 @@ int CDVDPlayer::GetSubtitleCount()
   }
 
   // for external subtitle files
-  // if (m_subtitle.vecSubtitleFiles.size() > 0) return m_subtitle.vecSubtitleFiles.size();
+  int count = 0;
+  if (count=m_dvdPlayerSubtitle.GetSubtitleCount() > 0) return count;
 
   // last one is the demuxer
   if (m_pDemuxer) return m_pDemuxer->GetNrOfSubtitleStreams();
@@ -1542,7 +1543,7 @@ void CDVDPlayer::FlushBuffers()
   m_pDemuxer->Flush();
   m_dvdPlayerAudio.Flush();
   m_dvdPlayerVideo.Flush();
-  //m_dvdPlayerSubtitle.Flush();
+  m_dvdPlayerSubtitle.Flush();
 
   // clear subtitle and menu overlays
   m_overlayContainer.Clear();
@@ -1915,7 +1916,8 @@ bool CDVDPlayer::HasMenu()
 bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
   __int64 pts = m_clock.GetClock();
-  bool bGotSubtitle = false;//m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
+  bool bGotSubtitle = m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
+  //bool bGotSubtitle = false;//m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
   return bGotSubtitle;
 }
 

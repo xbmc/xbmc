@@ -30,7 +30,7 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const cha
     iStart = iEnd + 1;
     
     std::string subtitleFile = subtitlePrefix + strExtension;;
-    vecSubtitles.push_back(subtitleFile);
+    vecSubtitles.push_back(_P(subtitleFile));
   }
   
   CLog::Log(LOGINFO, "CDVDFactorySubtitle::GetSubtitles, searching subtitles done");

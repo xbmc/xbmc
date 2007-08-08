@@ -139,17 +139,19 @@ void CDVDPlayerSubtitle::Process(__int64 pts)
   }
 }
 
-bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdStringW& strSubtitle, __int64 pts)
+bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, __int64 pts)
 {
-  strSubtitle = L"";
+  strSubtitle = "";
   bool bGotSubtitle = false;
   
+  Process(pts); // TODO: move to separate thread?
+
   m_pOverlayContainer->Lock();
   VecOverlays* pOverlays = m_pOverlayContainer->GetOverlays();
   if (pOverlays && pOverlays->size() > 0)
   {
-    VecOverlaysIter it = pOverlays->end();
-    while (!bGotSubtitle && it != pOverlays->begin())
+    vector<CDVDOverlay*>::reverse_iterator it = pOverlays->rbegin();
+    while (!bGotSubtitle && it != pOverlays->rend())
     {
       CDVDOverlay* pOverlay = *it;
 
@@ -164,18 +166,23 @@ bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdStringW& strSubtitle, __int64 pt
           if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
           {
             CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-            strSubtitle += t->m_wszText;
-            if (e->pNext) strSubtitle += L"\n";
+            strSubtitle += t->m_wszText; // FIXME: currently cast to char * instead of wchar* since StdString is spewing ASSERTs
+            if (e->pNext) strSubtitle += "\n";
           }
           e = e->pNext;
         }
         
         bGotSubtitle = true;
       }
-      it--;
+      it++;
     }
   }
   m_pOverlayContainer->Unlock();
   
   return bGotSubtitle;
+}
+
+int CDVDPlayerSubtitle::GetSubtitleCount()
+{
+  return m_vecSubtitleFiles.size();
 }
