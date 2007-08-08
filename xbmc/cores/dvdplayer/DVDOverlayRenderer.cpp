@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDOverlayRenderer.h"
-#include "DVDCodecs\Overlay\DVDOverlaySpu.h"
-#include "DVDCodecs\Overlay\DVDOverlayText.h"
+#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "DVDCodecs/Overlay/DVDOverlayText.h"
 
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay)
 {

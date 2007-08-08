@@ -2,18 +2,18 @@
 #include "stdafx.h"
 #include "DVDPlayer.h"
 
-#include "DVDInputStreams\DVDInputStream.h"
-#include "DVDInputStreams\DVDFactoryInputStream.h"
-#include "DVDInputStreams\DVDInputStreamNavigator.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDFactoryInputStream.h"
+#include "DVDInputStreams/DVDInputStreamNavigator.h"
 
-#include "DVDDemuxers\DVDDemux.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
-#include "DVDDemuxers\DVDFactoryDemuxer.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDDemuxers/DVDFactoryDemuxer.h"
 
-#include "DVDCodecs\DVDCodecs.h"
+#include "DVDCodecs/DVDCodecs.h"
 
-#include "..\..\util.h"
-#include "..\..\utils\GUIInfoManager.h"
+#include "Util.h"
+#include "utils/GUIInfoManager.h"
 #include "DVDPerformanceCounter.h"
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)

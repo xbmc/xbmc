@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
 #include "DVDDemuxFFmpeg.h"
-#include "..\DVDInputStreams\DVDInputStream.h"
+#include "../DVDInputStreams/DVDInputStream.h"
 #include "DVDdemuxUtils.h"
-#include "..\DVDClock.h" // for DVD_TIME_BASE
+#include "../DVDClock.h" // for DVD_TIME_BASE
 
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)

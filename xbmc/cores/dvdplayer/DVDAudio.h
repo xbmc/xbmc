@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "..\mplayer\IDirectSoundRenderer.h"
-#include "..\mplayer\IAudioCallback.h"
-#include "..\..\utils\CriticalSection.h"
+#include "../mplayer/IDirectSoundRenderer.h"
+#include "../mplayer/IAudioCallback.h"
+#include "utils/CriticalSection.h"
 
 enum CodecID;
 typedef struct stDVDAudioFrame DVDAudioFrame;

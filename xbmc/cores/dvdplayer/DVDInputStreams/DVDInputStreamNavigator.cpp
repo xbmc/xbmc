@@ -1,9 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDInputStreamNavigator.h"
-#include "..\..\..\util.h"
-#include "..\..\..\LangCodeExpander.h"
-#include "..\DVDDemuxSPU.h"
+#include "LangCodeExpander.h"
+#include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
 
 #define HOLDMODE_NONE 0
