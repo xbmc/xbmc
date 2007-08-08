@@ -1,6 +1,6 @@
 #pragma once
-#include "..\iplayer.h"
-#include "..\..\utils\thread.h"
+#include "../iplayer.h"
+#include "utils/thread.h"
 
 #include "IDVDPlayer.h"
 
@@ -12,7 +12,7 @@
 #include "DVDPlayerSubtitle.h"
 
 //#include "DVDChapterReader.h"
-#include "DVDSubtitles\DVDFactorySubtitle.h"
+#include "DVDSubtitles/DVDFactorySubtitle.h"
 
 
 class CDVDInputStream;

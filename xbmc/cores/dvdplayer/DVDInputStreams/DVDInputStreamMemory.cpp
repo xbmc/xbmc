@@ -2,9 +2,6 @@
 #include "stdafx.h"
 #include "DVDInputStreamMemory.h"
 
-#include "..\..\..\util.h"
-
-
 CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream(DVDSTREAM_TYPE_MEMORY)
 {
   m_pData = NULL;

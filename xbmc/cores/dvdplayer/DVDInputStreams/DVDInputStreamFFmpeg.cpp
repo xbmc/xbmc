@@ -2,8 +2,6 @@
 #include "stdafx.h"
 #include "DVDInputStreamFFmpeg.h"
 
-#include "..\..\..\util.h"
-
 using namespace XFILE;
 
 CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg() 

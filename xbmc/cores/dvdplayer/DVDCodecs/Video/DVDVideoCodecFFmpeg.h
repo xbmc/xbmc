@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
-#include "..\DllAvCodec.h"
-#include "..\..\DVDDemuxers\DllAvFormat.h"
+#include "../DllAvCodec.h"
+#include "../../DVDDemuxers/DllAvFormat.h"
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
