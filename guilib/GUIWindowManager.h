@@ -26,7 +26,8 @@ class CGUIWindowManager: public IMsgSenderCallback
 public:
   CGUIWindowManager(void);
   virtual ~CGUIWindowManager(void);
-  virtual bool SendMessage(CGUIMessage& message);
+  bool SendMessage(CGUIMessage& message);
+  bool SendMessage(CGUIMessage& message, DWORD dwWindow);
   void Initialize();
   void Add(CGUIWindow* pWindow);
   void AddUniqueInstance(CGUIWindow *window);
@@ -60,6 +61,7 @@ public:
   int GetTopMostModalDialogID() const;
 
   void SendThreadMessage(CGUIMessage& message);
+  void SendThreadMessage(CGUIMessage& message, DWORD dwWindow);
   void DispatchThreadMessages();
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
@@ -94,7 +96,7 @@ private:
   stack<DWORD> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  vector <CGUIMessage*> m_vecThreadMessages;
+  vector < pair<CGUIMessage*,DWORD> > m_vecThreadMessages;
   CRITICAL_SECTION m_critSection;
   vector <IMsgTargetCallback*> m_vecMsgTargets;
 
