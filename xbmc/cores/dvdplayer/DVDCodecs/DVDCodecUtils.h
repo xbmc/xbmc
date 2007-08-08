@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Video\DVDVideoCodec.h"
+#include "Video/DVDVideoCodec.h"
 
 struct YV12Image;
 
