@@ -145,3 +145,4 @@ void CDVDPerformanceCounter::DeInitialize()
   
   Unlock();
 }
+

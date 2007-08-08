@@ -7,7 +7,7 @@ typedef unsigned __int8  uint8_t;
 typedef __int32          int32_t;
 typedef __int16          int16_t;
 
-#include "libdts\dts.h"
+#include "libdts/dts.h"
 
 #ifdef LIBDTS_DOUBLE
 typedef float convert_t;
