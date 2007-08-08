@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDDemuxSPU.h"
-#include "..\..\util.h"
+#include "Util.h"
 #include "DVDClock.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))

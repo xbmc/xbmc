@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
 #include "DVDPlayerAudio.h"
-#include "DVDCodecs\Audio\DVDAudioCodec.h"
-#include "DVDCodecs\DVDCodecs.h"
-#include "DVDCodecs\DVDFactoryCodec.h"
+#include "DVDCodecs/Audio/DVDAudioCodec.h"
+#include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
 
 static inline __int64 abs(__int64 x)
@@ -11,7 +11,7 @@ static inline __int64 abs(__int64 x)
   return x > 0 ? x : -x;
 }
 
-#include "..\..\util.h"
+#include "Util.h"
 
 CPTSQueue::CPTSQueue()
 {

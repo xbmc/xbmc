@@ -1,7 +1,7 @@
 
 #pragma once
-#include "DVDCodecs\Video\DVDVideoCodec.h"
-#include "DVDCodecs\Overlay\DVDOverlaySpu.h"
+#include "DVDCodecs/Video/DVDVideoCodec.h"
+#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 struct AVPicture;
 
 typedef struct SPUData
