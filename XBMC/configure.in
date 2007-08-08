@@ -17,6 +17,12 @@ AC_ARG_ENABLE([gl],
             [use_gl=$enableval],
             [use_gl=yes])
 
+AC_ARG_ENABLE([profiling],
+            [AS_HELP_STRING([--enable-profiling],
+               [enable gprof profiling (default is no)])],
+            [use_profiling=$enableval],
+            [use_profiling=no])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CXX
@@ -103,9 +109,17 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime])
 
 if test "$use_debug" = "yes"; then
-  DEBUG_FLAGS="-g -D_DEBUG"
+  if test "$use_profiling" = "yes"; then
+    DEBUG_FLAGS="-g -pg -D_DEBUG"
+  else
+    DEBUG_FLAGS="-g -D_DEBUG"
+  fi
 else
-  DEBUG_FLAGS="-O2"
+  if test "$use_profiling" = "yes"; then
+    DEBUG_FLAGS="-pg -O2"
+  else
+    DEBUG_FLAGS="-O2"
+  fi
 fi
 
 if test "$use_gl" = "yes"; then
