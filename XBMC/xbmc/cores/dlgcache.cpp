@@ -75,7 +75,7 @@ void CDlgCache::Process()
       if( CThread::m_bStop ) break;
 
       try 
-      {        
+      {
         CSingleLock lock(g_graphicsContext);
         m_pDlg->Progress();
         if( !bSentCancel && m_pDlg->IsCanceled())
@@ -106,6 +106,9 @@ void CDlgCache::SetPercentage(int iPercentage)
   m_pDlg->SetPercentage(iPercentage); 
 }
 bool CDlgCache::IsCanceled() const
-{ 
-  return m_pDlg->IsCanceled();
+{
+  if (m_pDlg->IsDialogRunning())
+    return m_pDlg->IsCanceled();
+  else
+    return false;
 }
