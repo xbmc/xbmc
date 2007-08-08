@@ -15,7 +15,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
   {
     CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
     
-    //CLog::DebugLog(" - s: %i, e: %i", (int)(pOverlayText->iPTSStartTime / 1000), (int)(pOverlayText->iPTSStopTime / 1000));
+    //CLog::Log(LOGDEBUG, " - s: %i, e: %i", (int)(pOverlayText->iPTSStartTime / 1000), (int)(pOverlayText->iPTSStopTime / 1000));
     
     CDVDOverlayText::CElement* e = pOverlayText->m_pHead;
     while (e)
@@ -23,11 +23,10 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
       if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
       {
         CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-        CLog::DebugLog(" - %s", t->m_text);
+        CLog::Log(LOGDEBUG, " - %s", t->m_text);
       }
       e = e->pNext;
     }
-    CLog::DebugLog("");
   }
 }
 

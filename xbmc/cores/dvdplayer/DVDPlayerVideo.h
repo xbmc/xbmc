@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../../utils/thread.h"
+#include "utils/Thread.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"

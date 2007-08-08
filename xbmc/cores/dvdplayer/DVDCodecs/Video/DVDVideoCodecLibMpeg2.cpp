@@ -177,7 +177,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, __int64 pts)
     iState = m_dll.mpeg2_parse(m_pHandle);
     if (iState != STATE_BUFFER)
     {
-      CLog::DebugLog("CDVDVideoCodecLibMpeg2::Decode error, we didn't ask for more data");
+      CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::Decode error, we didn't ask for more data");
       return VC_ERROR;
     }
 
@@ -307,7 +307,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, __int64 pts)
                   //to generate the full ntsc format. 
                   //This also means the frames we get are usually progressive
 
-                  CLog::DebugLog("CDVDVideoCodecLibMpeg2::m_bFilm = true\n");
+                  CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::m_bFilm = true\n");
 							    m_bFilm = true;
 						    }
 						    else if(m_bFilm
@@ -317,7 +317,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, __int64 pts)
                   //doesn't have hte repeat flag set. No idea what format the
                   //material is in
 
-							    CLog::DebugLog("CDVDVideoCodecLibMpeg2::m_bFilm = false\n");
+							    CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::m_bFilm = false\n");
 							    m_bFilm = false;
 						    }              
               }
@@ -391,7 +391,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, __int64 pts)
       }
     case STATE_INVALID:
       {
-        CLog::DebugLog("CDVDVideoCodecLibMpeg2::Decode error, invalid state");
+        CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::Decode error, invalid state");
         // return VC_ERROR;
       }
     default: break;

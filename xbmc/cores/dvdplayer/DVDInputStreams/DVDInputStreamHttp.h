@@ -2,7 +2,7 @@
 #pragma once
 
 #include "DVDInputStream.h"
-#include "filesystem/FileCurl.h"
+#include "FileSystem/FileCurl.h"
 #include "utils/HttpHeader.h"
 
 class CDVDInputStreamHttp : public CDVDInputStream, IHttpHeaderCallback

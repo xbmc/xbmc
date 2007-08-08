@@ -145,3 +145,4 @@ protected:
   BYTE m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int  m_lastevent;
 };
+
