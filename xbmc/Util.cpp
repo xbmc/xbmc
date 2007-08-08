@@ -5135,24 +5135,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 float CUtil::CurrentCpuUsage()
 {
-  return 0.0f;
-
-//  float fCpuUsage = -1.0;
-//
-//  if (!m_hCurrentCpuUsage)
-//  {
-//    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
-//  }
-//
-//  if (m_hCurrentCpuUsage)
-//  {
-//    DM_COUNTDATA data;
-//
-//    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
-//    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
-//  }
-//
-//  return fCpuUsage;
+  return (1.0f - g_application.m_idleThread.GetRelativeUsage())*100;
 }
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
