@@ -1,5 +1,5 @@
 #pragma once
-#include "dvdaudiocodec.h"
+#include "DVDAudioCodec.h"
 #include "DllLibDts.h"
 #include "DllLiba52.h"
 

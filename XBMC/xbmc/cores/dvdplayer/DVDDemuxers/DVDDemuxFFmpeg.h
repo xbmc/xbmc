@@ -69,7 +69,7 @@ protected:
   unsigned __int64 ConvertTimestamp(__int64 pts, int den, int num);
 
   CRITICAL_SECTION m_critSection;
-  // #define MAX_STREAMS 20 // from avformat.h
+  // #define MAX_STREAMS 42 // from avformat.h
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
   ByteIOContext m_ioContext;

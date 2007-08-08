@@ -1,7 +1,6 @@
 
 #pragma once
 
-//#include "..\DVDDemuxers\DVDDemux.h"
 #include "DVDMessage.h"
 
 typedef struct stDVDMessageListItem

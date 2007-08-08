@@ -4,9 +4,15 @@
 // enum CodecID
 
 extern "C" {
+#ifndef HAVE_MMX
 #define HAVE_MMX
+#endif
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
 #pragma warning(disable:4244)
 #include "../ffmpeg/avcodec.h"
 }

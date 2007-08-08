@@ -179,7 +179,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
       LeaveCriticalSection(&m_critSection);
       
       // wait for a new message
-      if (WaitForSingleObjectEx(m_hEvent, iTimeoutInMilliSeconds, false) == WAIT_TIMEOUT)
+      if (WaitForSingleObject(m_hEvent, iTimeoutInMilliSeconds) == WAIT_TIMEOUT)
       {
         // just return here directly, we have already left critical section
         return MSGQ_TIMEOUT;
