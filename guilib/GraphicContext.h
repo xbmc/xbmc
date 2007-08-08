@@ -210,6 +210,12 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
+  // RTT functions
+  int CreateRenderTarget(int width, int height);
+  bool MakeCurrentRenderTarget(int rendertarget);
+  int DeleteRenderTarget(int rendertarget=0);
+  int ResetCurentRenderTarget() { MakeCurrentRenderTarget(0); }
+
 protected:
   IMsgSenderCallback* m_pCallback;
 #ifndef HAS_SDL    
