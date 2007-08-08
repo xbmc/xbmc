@@ -57,6 +57,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_vTex = 0;
 
   m_iYV12RenderBuffer = 0;
+  m_pOSDYBuffer = NULL;
+  m_pOSDABuffer = NULL;
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -81,6 +83,16 @@ CLinuxRendererGL::~CLinuxRendererGL()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
+  if (m_pOSDYBuffer)
+  {
+    free(m_pOSDYBuffer);
+    m_pOSDYBuffer = NULL;
+  }
+  if (m_pOSDABuffer)
+  {
+    free(m_pOSDABuffer);
+    m_pOSDABuffer = NULL;
+  }
 }
 
 //********************************************************************************************************
@@ -103,6 +115,16 @@ void CLinuxRendererGL::DeleteOSDTextures(int index)
     g_graphicsContext.EndPaint();
     m_pOSDATexture[index] = 0;
     CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
+  }
+  if (m_pOSDYBuffer)
+  {
+    free(m_pOSDYBuffer);
+    m_pOSDYBuffer = NULL;
+  }
+  if (m_pOSDABuffer)
+  {
+    free(m_pOSDABuffer);
+    m_pOSDABuffer = NULL;
   }
   m_iOSDTextureHeight[index] = 0;
 }
@@ -191,12 +213,248 @@ void CLinuxRendererGL::CopyAlpha(int w, int h, unsigned char* src, unsigned char
 
 void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
 {
+  // OSD is drawn after draw_slice / put_image
+  // this means that the buffer has already been handed off to the RGB converter
+  // solution: have separate OSD textures
+  
+  // if it's down the bottom, use sub alpha blending
+  //  m_SubsOnOSD = (y0 > (int)(rs.bottom - rs.top) * 4 / 5);
 
+  //Sometimes happens when switching between fullscreen and small window
+  if( w == 0 || h == 0 )
+  {
+    CLog::Log(LOGINFO, "Zero dimensions specified to DrawAlpha, skipping");
+    return;
+  }
+
+  //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
+  DRAWRECT osdRect;
+  RESOLUTION res = GetResolution();
+
+  if (w > m_iOSDTextureWidth)
+  {
+    //delete osdtextures so they will be recreated with the correct width
+    for (int i = 0; i < 2; ++i)
+    {
+      DeleteOSDTextures(i);
+    }
+    m_iOSDTextureWidth = w;
+  }
+  else
+  {
+    // clip to buffer
+    if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
+    if (h > g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top)
+    {
+      h = g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top;
+    }
+  }
+
+  // scale to fit screen
+  const RECT& rv = g_graphicsContext.GetViewWindow();
+
+  // Vobsubs are defined to be 720 wide.
+  // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
+  //       as it'll want to render within the pixel width it is outputting.
+
+  float xscale;
+  float yscale;
+
+  if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
+  { // vobsubs are given to us unscaled
+    // scale them up to the full output, assuming vobsubs have same 
+    // pixel aspect ratio as the movie, and are 720 pixels wide
+
+    float pixelaspect = m_fSourceFrameRatio * m_iSourceHeight / m_iSourceWidth;
+    xscale = (rv.right - rv.left) / 720.0f;
+    yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
+  }
+  else
+  { // text subs/osd assume square pixels, but will render to full size of view window
+    // if mplayer could be fixed to use monitorpixelaspect when rendering it's osd
+    // this would give perfect output, however monitorpixelaspect currently doesn't work
+    // that way
+    xscale = 1.0f;
+    yscale = 1.0f;
+  }
+  
+  // horizontal centering, and align to bottom of subtitles line
+  osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
+  osdRect.right = osdRect.left + (float)w * xscale;
+  float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
+  osdRect.bottom = (float)rv.top + (float)(rv.bottom - rv.top) * relbottom;
+  osdRect.top = osdRect.bottom - (float)h * yscale;
+
+  RECT rc = { 0, 0, w, h };
+
+  int iOSDBuffer = (m_iOSDRenderBuffer + 1) % m_NumOSDBuffers;
+
+  //if new height is heigher than current osd-texture height, recreate the textures with new height.
+  if (h > m_iOSDTextureHeight[iOSDBuffer])
+  {
+    CSingleLock lock(g_graphicsContext);
+
+    DeleteOSDTextures(iOSDBuffer);
+    m_iOSDTextureHeight[iOSDBuffer] = h;
+    // Create osd textures for this buffer with new size
+    glGenTextures(1, &m_pOSDYTexture[iOSDBuffer]);
+    glGenTextures(1, &m_pOSDATexture[iOSDBuffer]);  
+    VerifyGLState();
+
+    if (!m_pOSDYBuffer)
+    {
+      m_pOSDYBuffer = (GLubyte*)malloc(m_iOSDTextureWidth * m_iOSDTextureHeight[iOSDBuffer]);
+    }
+    if (!m_pOSDABuffer)
+    {
+      m_pOSDABuffer = (GLubyte*)malloc(m_iOSDTextureWidth * m_iOSDTextureHeight[iOSDBuffer]);
+    }
+    
+    if (!(m_pOSDYTexture[iOSDBuffer] && m_pOSDATexture[iOSDBuffer] && m_pOSDYBuffer && m_pOSDABuffer)) 
+      /*      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[iOSDBuffer]) ||
+              D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[iOSDBuffer])*/
+    {
+      CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
+      DeleteOSDTextures(iOSDBuffer);
+      return;
+    }
+    else
+    {
+      glBindTexture(GL_TEXTURE_2D, m_pOSDYTexture[iOSDBuffer]);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, NP2(m_iOSDTextureWidth), m_iOSDTextureHeight[iOSDBuffer], 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
+      glBindTexture(GL_TEXTURE_2D, m_pOSDATexture[iOSDBuffer]);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, NP2(m_iOSDTextureWidth), m_iOSDTextureHeight[iOSDBuffer], 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+      CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
+    }
+    SetEvent(m_eventOSDDone[iOSDBuffer]);
+  }
+
+  //Don't do anything here that would require locking of grapichcontext
+  //it shouldn't be needed, and locking here will slow down prepared rendering
+  if( WaitForSingleObject(m_eventOSDDone[iOSDBuffer], 500) == WAIT_TIMEOUT )
+  {
+    //This should only happen if flippage wasn't called
+    SetEvent(m_eventOSDDone[iOSDBuffer]);
+  }
+
+  //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
+  //reset these so the gpu doesn't try to block on these
+  
+
+#ifndef _LINUX
+  m_pOSDYTexture[iOSDBuffer]->Lock = 0;
+  m_pOSDATexture[iOSDBuffer]->Lock = 0;
+
+  // draw textures
+  D3DLOCKED_RECT lr, lra;
+  if (
+    (D3D_OK == m_pOSDYTexture[iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
+    (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
+  )
+  {
+    //clear the textures
+    memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
+    memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
+    //draw the osd/subs
+    CopyAlpha(w, h, src, srca, stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
+  }
+  m_pOSDYTexture[iOSDBuffer]->UnlockRect(0);
+  m_pOSDATexture[iOSDBuffer]->UnlockRect(0);
+#else
+  memset(m_pOSDYBuffer, 0, m_iOSDTextureWidth * m_iOSDTextureHeight[iOSDBuffer]);
+  memset(m_pOSDABuffer, 0, m_iOSDTextureWidth * m_iOSDTextureHeight[iOSDBuffer]);
+  CopyAlpha(w, h, src, srca, stride, m_pOSDYBuffer, m_pOSDABuffer, m_iOSDTextureWidth);
+  glBindTexture(GL_TEXTURE_2D, m_pOSDYTexture[iOSDBuffer]);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pOSDYBuffer);
+  glBindTexture(GL_TEXTURE_2D, m_pOSDATexture[iOSDBuffer]);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pOSDABuffer);
+#endif
+
+  //set module variables to calculated values
+  m_OSDRect = osdRect;
+  m_OSDWidth = (float)w;
+  m_OSDHeight = (float)h;
+  m_OSDRendered = true;
 }
 
 //********************************************************************************************************
 void CLinuxRendererGL::RenderOSD()
 {
+  int iRenderBuffer = m_iOSDRenderBuffer;
+  
+  if (!m_pOSDYTexture[iRenderBuffer] || !m_pOSDATexture[iRenderBuffer])
+    return ;
+  if (!m_OSDWidth || !m_OSDHeight)
+    return ;
+
+  fprintf(stderr, "Reached HERE!!!!!!\n");
+  ResetEvent(m_eventOSDDone[iRenderBuffer]);
+  
+  CSingleLock lock(g_graphicsContext);
+
+  //copy alle static vars to local vars because they might change during this function by mplayer callbacks
+  float osdWidth = m_OSDWidth;
+  float osdHeight = m_OSDHeight;
+  DRAWRECT osdRect = m_OSDRect;
+  //  if (!viewportRect.bottom && !viewportRect.right)
+  //    return;
+
+  // Set state to render the image
+#ifndef _LINUX
+  m_pD3DDevice->SetTexture(0, m_pOSDYTexture[iRenderBuffer]);
+  m_pD3DDevice->SetTexture(1, m_pOSDATexture[iRenderBuffer]);
+#endif
+
+  Setup_Y8A8Render();
+
+  // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+  {
+    g_graphicsContext.ClipToViewWindow();
+  }
+
+  // Render the image
+#ifndef _LINUX
+  m_pD3DDevice->Begin(D3DPT_QUADLIST);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.left, osdRect.top, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, osdWidth, 0 );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, osdWidth, 0 );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.right, osdRect.top, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, osdWidth, osdHeight );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, osdWidth, osdHeight );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.right, osdRect.bottom, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, osdHeight );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, osdHeight );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, osdRect.left, osdRect.bottom, 0, 1.0f );
+  m_pD3DDevice->End();
+
+  m_pD3DDevice->SetTexture(0, NULL);
+  m_pD3DDevice->SetTexture(1, NULL);
+  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
+
+  m_pD3DDevice->SetScissors(0, FALSE, NULL);
+
+  //Okey, when the gpu is done with the textures here, they are free to be modified again
+  //this is very weird.. D3DCALLBACK_READ is not enough.. if that is used, we start flushing
+  //the texutures to early.. I have no idea why really
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventOSDDone[iRenderBuffer]);
+#else
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, m_pOSDYTexture[m_iOSDRenderBuffer]);
+  glBegin(GL_QUADS);
+  glColor3f(1.0, 1.0, 1.0);
+  glTexCoord2f(0.0, 0.0);
+  glVertex2f(osdRect.left, osdRect.top);
+  glTexCoord2f(1.0, 0.0);
+  glVertex2f(osdRect.right, osdRect.top);
+  glTexCoord2f(1.0, 1.0);
+  glVertex2f(osdRect.right, osdRect.bottom);
+  glTexCoord2f(0.0, 1.0);
+  glVertex2f(osdRect.left, osdRect.bottom);
+  glEnd();  
+#endif
 
 }
 
@@ -262,7 +520,9 @@ void CLinuxRendererGL::ManageTextures()
 {
   int neededbuffers = 0;
   m_NumYV12Buffers = 1;
+  m_NumOSDBuffers = 1;
   m_iYV12RenderBuffer = 0;
+  m_iOSDRenderBuffer = 0;
   return;
 }
 
@@ -787,7 +1047,7 @@ unsigned int CLinuxRendererGL::PreInit()
 
   m_iOSDRenderBuffer = 0;
   m_iYV12RenderBuffer = 0;
-  m_NumOSDBuffers = 0;
+  m_NumOSDBuffers = 1;
   m_NumYV12Buffers = 1;
   m_OSDHeight = m_OSDWidth = 0;
   m_OSDRendered = false;
@@ -1001,18 +1261,20 @@ void CLinuxRendererGL::UnInit()
 void CLinuxRendererGL::Render(DWORD flags)
 {
   g_graphicsContext.BeginPaint();
-  RenderLowMem(flags);
-  VerifyGLState();
-
+  
   if( flags & RENDER_FLAG_NOOSD ) 
   {
     g_graphicsContext.EndPaint();
     return;
   }
 
+  RenderLowMem(flags);
+  VerifyGLState();
+
+
   // FIXME: OSD disabled for now
   /* general stuff */
-  //RenderOSD();
+  RenderOSD();
 
   if (g_graphicsContext.IsFullScreenVideo())
   {

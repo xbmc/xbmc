@@ -20,7 +20,8 @@ public:
   void Process(__int64 pts);
   void Flush();
   void FindSubtitles(const char* strFilename);
-  bool GetCurrentSubtitle(CStdStringW& strSubtitle, __int64 pts);
+  bool GetCurrentSubtitle(CStdString& strSubtitle, __int64 pts);
+  int GetSubtitleCount();
   
 private:
   CDVDOverlayContainer* m_pOverlayContainer;

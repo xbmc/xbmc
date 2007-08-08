@@ -1260,6 +1260,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-debug          enable debugging information (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
+  --enable-profiling      enable gprof profiling (default is no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1724,6 +1725,14 @@ if test "${enable_gl+set}" = set; then
   enableval=$enable_gl; use_gl=$enableval
 else
   use_gl=yes
+fi
+
+
+# Check whether --enable-profiling was given.
+if test "${enable_profiling+set}" = set; then
+  enableval=$enable_profiling; use_profiling=$enableval
+else
+  use_profiling=no
 fi
 
 
@@ -10940,9 +10949,17 @@ done
 
 
 if test "$use_debug" = "yes"; then
-  DEBUG_FLAGS="-g -D_DEBUG"
+  if test "$use_profiling" = "yes"; then
+    DEBUG_FLAGS="-g -pg -D_DEBUG"
+  else
+    DEBUG_FLAGS="-g -D_DEBUG"
+  fi
 else
-  DEBUG_FLAGS="-O2"
+  if test "$use_profiling" = "yes"; then
+    DEBUG_FLAGS="-pg -O2"
+  else
+    DEBUG_FLAGS="-O2"
+  fi
 fi
 
 if test "$use_gl" = "yes"; then
