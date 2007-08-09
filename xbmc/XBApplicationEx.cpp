@@ -318,6 +318,13 @@ void CXBApplicationEx::ReadInput()
       case SDL_QUIT:
         g_applicationMessenger.Shutdown();
         break;
+#ifdef HAS_SDL_JOYSTICK
+      case SDL_JOYBUTTONUP:
+      case SDL_JOYBUTTONDOWN:
+      case SDL_JOYAXISMOTION:
+      case SDL_JOYBALLMOTION:
+      case SDL_JOYHATMOTION:
+#endif
       case SDL_KEYDOWN:
         g_Keyboard.Update(event);
         break;

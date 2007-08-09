@@ -11,12 +11,26 @@ CKeyboard g_Keyboard; // global
 CKeyboard::CKeyboard()
 {
   Reset();
+#ifdef HAS_SDL_JOYSTICK
+  m_pJoy = NULL;
+#endif
 }
 
 void CKeyboard::Initialize(HWND hWnd)
 {
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+#ifdef HAS_SDL_JOYSTICK
+  if (SDL_NumJoysticks()>0)
+  {
+    SDL_JoystickEventState(SDL_ENABLE);
+    m_pJoy = SDL_JoystickOpen(0);
+    if (m_pJoy)
+    {
+      CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(0));
+    }
+  }
+#endif
 }
 
 void CKeyboard::Reset()
@@ -145,6 +159,64 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
         m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);      // try and catch everything
     }
   }
+#ifdef HAS_SDL_JOYSTICK
+/*
+  Initial support for the
+  PS3 Controller using the SDL Joystick API
+
+  /\ - 12
+  O  - 13
+  X  - 14
+  [] - 15
+  
+  top - 4
+  right - 5
+  bottom - 6
+  left - 7
+  
+  select - 0
+  start - 3
+
+  left analog click - 1
+  right analog click - 2
+
+  left shoulder - 10
+  right shoulder - 11
+
+  left analog shoulder - 8
+  right analog shoulder - 9
+
+  Controller reports 28 axes, one for each pressure sensitive button with values ranging 
+  from [-32k, 32k].
+
+--
+
+  TODO: 1. Move this code to a Gamepad class so that custom gamepads can be configured using Keymap.xml
+        2. Map each button and axis of the joystick to the Xbox gamepad instead of vkeys.
+	3. Analog controls.
+*/
+
+  else if (m_keyEvent.type == SDL_JOYBUTTONDOWN)
+  {
+    CLog::Log(LOGNOTICE, "Joystick button pressed: %d\n", m_keyEvent.jbutton.button);
+    if (m_keyEvent.jbutton.button==0) ;
+    else if (m_keyEvent.jbutton.button==1) m_VKey = 0x2a;
+    else if (m_keyEvent.jbutton.button==2) { m_cAscii = (char)'s'; m_VKey = toupper(m_cAscii); }
+    else if (m_keyEvent.jbutton.button==3) { m_cAscii = (char)'m'; m_VKey = toupper(m_cAscii); }
+    else if (m_keyEvent.jbutton.button==4) m_VKey = 0x26;
+    else if (m_keyEvent.jbutton.button==5) m_VKey = 0x27;
+    else if (m_keyEvent.jbutton.button==6) m_VKey = 0x28;
+    else if (m_keyEvent.jbutton.button==7) m_VKey = 0x25;
+    else if (m_keyEvent.jbutton.button==8) ;
+    else if (m_keyEvent.jbutton.button==9) ;
+    else if (m_keyEvent.jbutton.button==10) m_VKey = 0x1b;
+    else if (m_keyEvent.jbutton.button==11) ;
+    else if (m_keyEvent.jbutton.button==12) { m_cAscii = (char)'q'; m_VKey = toupper(m_cAscii); }
+    else if (m_keyEvent.jbutton.button==13) m_VKey = 0x08;
+    else if (m_keyEvent.jbutton.button==14) m_VKey = 0x0d;
+    else if (m_keyEvent.jbutton.button==15) m_VKey = 0x09;
+  }
+#endif
   else
   {
     Reset();

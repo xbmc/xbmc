@@ -25,6 +25,9 @@ private:
   bool m_bAlt;
   char m_cAscii;
   BYTE m_VKey;
+#ifdef HAS_SDL_JOYSTICK
+  SDL_Joystick* m_pJoy;
+#endif
 };
 
 extern CKeyboard g_Keyboard;

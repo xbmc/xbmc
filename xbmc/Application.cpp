@@ -848,15 +848,22 @@ HRESULT CApplication::Create(HWND hWnd)
   /* Clean up on exit, exit on window close and interrupt */
   atexit(SDL_Quit);
 
+  Uint32 sdlFlags = SDL_INIT_VIDEO;
+
 #ifdef HAS_SDL_AUDIO
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
-#else
-  if (SDL_Init(SDL_INIT_VIDEO) != 0)
+  sdlFlags |= SDL_INIT_AUDIO;
 #endif
+
+#ifdef HAS_SDL_JOYSTICK
+  sdlFlags |= SDL_INIT_JOYSTICK;
+#endif
+
+  if (SDL_Init(sdlFlags) != 0)
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
         return E_FAIL;
   }
+
 #endif
 
   //list available videomodes
