@@ -232,7 +232,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
       {
         WCHAR *yo = new WCHAR[(int)newfile.GetLength()+1];
         newfile.Read(yo,newfile.GetLength());
-
+        yo[newfile.GetLength()] = L'\0';
         CStdString strDescription;
         g_charsetConverter.utf16toUTF8(yo, strDescription);
         int poss = strDescription.find("Name=");
