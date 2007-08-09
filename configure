@@ -1261,6 +1261,7 @@ Optional Features:
   --enable-debug          enable debugging information (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
+  --enable-joystick       enable SDL joystick support (default is yes)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1733,6 +1734,14 @@ if test "${enable_profiling+set}" = set; then
   enableval=$enable_profiling; use_profiling=$enableval
 else
   use_profiling=no
+fi
+
+
+# Check whether --enable-joystick was given.
+if test "${enable_joystick+set}" = set; then
+  enableval=$enable_joystick; use_joystick=$enableval
+else
+  use_joystick=yes
 fi
 
 
@@ -10966,6 +10975,10 @@ if test "$use_gl" = "yes"; then
   SDL_DEFINES=""
 else
   SDL_DEFINES="-DHAS_SDL_2D"
+fi
+
+if test "$use_joystick" = "yes"; then
+  SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_JOYSTICK"
 fi
 
 
