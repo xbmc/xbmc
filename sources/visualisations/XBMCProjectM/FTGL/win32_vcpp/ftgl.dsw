@@ -1,0 +1,92 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ftgl_demo"=".\ftgl_demo\ftgl_demo.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ftgl_dll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ftgl_static_lib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ftgl_demo_2"=".\ftgl_demo\ftgl_demo_2.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ftgl_dll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ftgl_static_lib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ftgl_dll"=".\ftgl_dll\ftgl_dll.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ftgl_static_lib"=".\ftgl_static_lib\ftgl_static_lib.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "unit_tests"=".\unit_tests\unit_tests.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ftgl_static_lib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

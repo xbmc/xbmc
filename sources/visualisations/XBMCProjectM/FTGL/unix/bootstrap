@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+cat m4/*.m4 > acinclude.m4
+aclocal
+libtoolize --copy --force
+cp /usr/share/automake/install-sh .
+autoconf

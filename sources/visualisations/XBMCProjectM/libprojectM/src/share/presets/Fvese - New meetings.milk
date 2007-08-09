@@ -1,0 +1,88 @@
+[preset00]
+fRating=2.500000
+fGammaAdj=1.000000
+fDecay=0.985000
+fVideoEchoZoom=0.998100
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=1
+nWaveMode=3
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=1
+bTexWrap=0
+bDarkenCenter=1
+bRedBlueStereo=0
+bBrighten=1
+bDarken=0
+bSolarize=1
+bInvert=0
+fWaveAlpha=4.050169
+fWaveScale=0.597149
+fWaveSmoothing=0.000000
+fWaveParam=0.000000
+fModWaveAlphaStart=1.489999
+fModWaveAlphaEnd=0.750000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999500
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000005
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.000000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.200000
+ob_a=1.000000
+ib_size=0.000000
+ib_r=1.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=1.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=43.200001
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=1.500001
+mv_r=0.759900
+mv_g=0.480000
+mv_b=0.390000
+mv_a=0.000000
+per_frame_1=wave_r = wave_r + 0.350*( 0.60*sin(0.825*time) + 0.40*sin(0.915*time) );
+per_frame_2=wave_g = wave_g + 0.350*( 0.60*sin(0.900*time) + 0.40*sin(1.025*time) );
+per_frame_3=wave_b = wave_b + 0.350*( 0.60*sin(0.810*time) + 0.40*sin(0.950*time) );
+per_frame_4=wave_y = wave_y + 0.2*sin(1.85*time);
+per_frame_5=time = time/100;
+per_frame_6=cx = cx + 0.225*( 0.60*sin(0.350*time) + 0.40*sin(0.350*time) );
+per_frame_7=cy = cy + 0.225*( 0.60*sin(0.350*time) + 0.40*sin(0.350*time) );
+per_frame_8=dx = 0.05 + 0.009*( 0.60*sin(0.234*time) + 0.40*sin(0.277*time) );
+per_frame_9=dy = 0.0005 + 0.009*( 0.60*sin(0.234*time) + 0.40*sin(0.277*time) );
+per_frame_10=xwave_x = wave_x + 0.250*( 0.60*sin(2.112*time) + 0.40*sin(1.589*time) );
+per_frame_11=xwave_y = wave_y + 0.250*( 0.60*sin(1.752*time) + 0.40*sin(2.298*time) );
+per_frame_12=bass_eff = max(max(bass,bass_att)-1,0);
+per_frame_13=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.3)*0.96+1.3);
+per_frame_14=decay = decay - 0.05*equal(frame%16,0);
+per_frame_15=zoom = decay;
+per_frame_16=rot = bass_eff/bass_thresh;
+per_frame_17=ob_size = rot-bass;
+per_frame_18=ib_a = 1-bass_eff;
+per_frame_19=ib_r = 1-wave_r;
+per_frame_20=ib_b = 1-wave_g;
+per_frame_21=ib_g = 1-wave_b;
+per_pixel_1=sx=sx+0.07*sin(rad*18 + time*9);
+per_pixel_2=sy=sy+0.07*sin(rad*18 + time*9);
+per_pixel_3=zoom=zoom + 0.005*tan(ang-ang);
+per_pixel_4=ray = pow(rad,1.85)+.037;

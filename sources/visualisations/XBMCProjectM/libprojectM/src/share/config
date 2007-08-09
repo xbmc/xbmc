@@ -1,0 +1,22 @@
+projectM Config file (ONLY CHANGE THE NUMBERS!!!!!!)
+------------------------------------------------------
+Texture Size (Must be power of 2) [256,512,1024,2048, etc]
+512
+Grid X Dimension (Higher is Better but much slower) 12-60
+32
+Grid Y Dimension (Higher is Better but much slower) 8-45
+24
+Windowed Width (Initial window width)
+512
+Windowed Height (Initial window width)
+512
+Fullscreen Width (set to your native screen resolution)
+1024
+Fullscreen Height (set to your native screen resolution)
+768
+FPS (Higher the Better) 30-90 is realisitc
+35
+Fullscreen on Startup (1=yes, 0=no)
+0
+X Server to Display projectM default is ":0.0"
+:0.0

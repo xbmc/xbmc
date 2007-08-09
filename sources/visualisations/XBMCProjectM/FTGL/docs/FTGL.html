@@ -1,0 +1,332 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>FTGL User Guide</title>
+</head>
+<body>
+
+<TABLE BORDER="0" WIDTH="70%" CELLSPACING="0" CELLPADDING="0" ALIGN="center">
+	<TR>
+		<TD>
+
+<h1>FTGL User Guide
+</h1>
+<h2>(work in progress)
+</h2>
+<P ALIGN="center">
+<IMG SRC="images/ftgldemo.jpg" ALT="FTGL Demo screen shot" WIDTH="480" HEIGHT="383" BORDER="0">
+</P>
+
+<H2>Contents</H2>
+<UL>
+	<LI><H3><a href="#INT">Introduction</a></H3></LI>
+	<LI><H3><a href="#CFT">Choosing a font type</a></H3></LI>
+	<LI><H3><a href="#CAT">Creating a font</a></H3></LI>
+	<LI><H3><a href="#MFC">More font commands</a></H3></LI>
+	<LI><H3><a href="#FAQ">FAQ</a></H3></LI>
+	<LI><H3><a href="#GLS">Glossary</a></H3></LI>
+</UL>
+<HR ALIGN="center" SIZE="2" WIDTH="80%">
+<A NAME="INT">
+<h2>Introduction
+</h2>
+<P>
+OpenGL doesn't provide direct font support, so the application must use any of OpenGL's other features for font rendering, such as drawing bitmaps or pixmaps, creating texture maps containing an entire character set, drawing character outlines, or creating 3D geometry for each character.
+</P>
+
+
+<P>http://www.opengl.org/developers/faqs/technical/fonts.htm</P>
+<P>http://www.opengl.org/developers/code/features/fontsurvey/index.html</P>
+<P>
+?????One thing all of these systems have in comman is they require a pre-processing stage to take the native fonts and convert them into proprietry format.
+</P>
+
+<P>
+FTGL was borne out of the need to treat fonts in OpenGL applications just like any other application. For example when using Adobe Photoshop or Microsoft Word you don't need an intermediate pre-processing step to use high quality scalable fonts. 
+</P>
+
+<HR ALIGN="center" SIZE="2" WIDTH="80%">
+<A NAME="CFT">
+<H2>Choosing a font type</H2>
+<P>
+FTGL supports 6 font output types in 3 groups, raster fonts, vector fonts and texure fonts which are a mixture of both. Each font type has it's advantages and disadvantages
+</P>
+The two raster types are
+<UL>
+	<LI>Bitmapped</LI>
+	<LI>Antialiased pixmapped</LI>
+</UL>
+
+
+
+The vector types are
+<UL>
+	<LI>Outline</LI>
+	<LI>Polygonal</LI>
+	<LI>Extruded polygon</LI>
+</UL>
+
+
+
+
+<UL>
+	<LI>Texture mapped</LI>
+</UL>
+<P>
+This is probably the most versatile type. It is fast, antialised and can be transformed just like any openGL primitive.
+</P>
+
+<HR ALIGN="center" SIZE="2" WIDTH="80%">
+
+<A NAME="CAF">
+<H2>Creating a font
+</H2>
+<font color="blue"><PRE>
+    FTGLPixmapFont font;
+    
+    font.Open( "Fonts:Arial");
+    font.FaceSize( 72);
+    
+    font.render( "Hello World!");
+
+    FTFont::Open( string, cache);
+    const char* string;    
+    bool cache;            
+</PRE></font>
+<P>
+<font color="blue"><PRE>
+		bool Open( fontname, preCache = true);
+        const char* fontname:   
+        bool preCache:          
+
+</PRE></font>
+
+
+<P>
+A side effect of this is you can specify a sub set of glyphs to be pre-loaded. This will let you use larger higher quality glyphs without consuming huge amounts of ram as you would if you loaded the entire font. For example if your application only needs numbers, eg for scores, you can use the following code to preload them.
+</P>
+
+<font color="blue"><PRE>
+    // Open the font with pre-cache set to false
+    font.Open( "Fonts:Arial", false);
+    
+    // Set the size
+    font.FaceSize( 72);
+    
+    // Cause the font to preload the number chars without rendering them.
+    font.Advance( "0123456789");
+</PRE></font>
+
+
+
+<HR ALIGN="center" SIZE="2" WIDTH="80%">
+
+<A NAME="MFC">
+<H2>More font commands</H2>
+<H3>Font Metrics</H3>
+<P ALIGN="center">
+<IMG SRC="images/metrics.png" ALT="glyph metrics" WIDTH="388" HEIGHT="253" BORDER="0">
+</P>
+
+<P>
+If you ask a font to render at 0.0, 0.0 the bottom left most pixel or polygon may not be aligned to 0.0, 0.0.
+</P>
+
+<font color="blue"><PRE>
+        int    FTFont::Ascender() const;
+        int    FTFont::Descender() const;
+
+        float FTFont::Advance( string);
+</PRE></font>
+
+
+<P>
+With these three functions an approximate bounding box can be calculated. For an exact bounding box use the FTFont::BBox function.
+</P>
+
+<font color="blue"><PRE>
+        void FTFont::BBox( string, llx, lly, llz, urx, ury, urz);
+        const char* string:    String of text to be tested
+        float& llx:            The bottom left near most ?? in the x axis
+        float& lly:            The bottom left near most ?? in the y axis
+        float& llz:            The bottom left near most ?? in the z axis
+        float& urx:            The top right far most ?? in the x axis
+        float& ury:            The top right far most ?? in the y axis
+        float& urz:            The top right far most ?? in the z axis
+</PRE></font>
+
+<P>
+This function returns the extent of the volume containing 'string'. 0.0 on the y axis will be aligned with the font baseline.
+</P>
+
+<H3>Specifying a character map encoding.
+</H3>
+From the freetype docs...<br>
+"By default, when a new face object is created, (freetype) lists all the charmaps contained in the font face and selects the one that supports Unicode character codes if it finds one. Otherwise, it tries to find support for Latin-1, then ASCII."
+<BR>
+It then gives up. In this case FTGL will set the charmap to the first it finds in the fonts charmap list.
+
+You can expilcitly set the char encoding with Charmap:
+<font color="blue"><PRE>
+    bool FTFont::CharMap( encoding);
+    FT_Encoding encoding;    Freetype code
+</PRE></font>
+    
+Valid encodings as at Freetype 2.0.4
+<font color="blue"><PRE>
+    ft_encoding_none
+    ft_encoding_symbol
+    ft_encoding_unicode
+    ft_encoding_latin_2
+    ft_encoding_sjis
+    ft_encoding_gb2312
+    ft_encoding_big5
+    ft_encoding_wansung
+    ft_encoding_johab
+    ft_encoding_adobe_standard
+    ft_encoding_adobe_expert
+    ft_encoding_adobe_custom
+    ft_encoding_apple_roman
+</PRE></font>
+
+for example...
+<font color="blue"><PRE>
+font.CharMap( ft_encoding_apple_roman);
+</PRE></font>
+
+This will return an error if the requested encoding can't be found in the font.
+
+
+
+<HR ALIGN="center" SIZE="2" WIDTH="80%">
+
+<A NAME="FAQ">
+<H2>FAQ</H2>
+
+WhenI try to compile FTGL it complains about a missing file from the include:
+
+#include <ft2build.h>
+
+FTGL relies on freetype 2 for opening and decoding font files. This include is the main include for freetype. You will need to download Freetype 2 and install it. Then make sure that the FTGL project that you are using points to your freetype installation.
+
+
+2) Is it possible to map a font to a "unit" size? My application relies on
+the fonts being a certain "physical" height (in OpenGL coordinate space)
+rather than a point size in display space. Any thoughts/suggestions?
+
+
+We can do anything:) It would be easy to allow you to set the size in pixels, though I'm not sure this is what you want. Setting the size to 'opengl units' may be a bit harder. What does 1.0 in opengl space mean and how does that relate to point size? For one person it might mean scaling the font up, for someone else it may mean scaling down. Plus bitmaps and pixmaps have a pixel to pixel relationship that you can't change.
+
+Here's some guidelines for vector and texture fonts. Take note that I say 'should' a lot:)
+One point in pixel space maps to 1 unit in opengl space, so a glyph that is 18 points high should be 18.0 units high.
+If you set an ortho projection to the window size and draw a glyph it's screen size should be the correct physical size ie a 72 point glyph on a 72dpi screen will be 1 inch high. Also if you set a perspective projection that maps 0.0 in the z axis to screen size you will get the same eg...
+	gluPerspective( 90, window_height / 2 , small_number, large_number);
+So basically it all depends on your projection matrix. Obviously you can use glScale but I understand if you don't want to.
+Couple of extra things to note. The quality of vector glyphs will not change when you change the size. ie a really small polygon glyph up close will look exactly the same as a big one from far away. They both contain the same amount of data. This doesn't apply to texture fonts. Secondly there is a bug in the advance/ kerning code that will cause ugliness at really small point sizes. This is because the advance and kerning use ints so an advance of 0.4 will become zero. If this is going to be a probelm, I can fix this.
+
+Early on I did a lot of head scratching over the opengl unit to font size thing because when I was first integrating FTGL into my engine the fonts weren't the size I was expecting. I was tempted to build in some scaling but I decided doing nothing was the best approach because you can't please everyone. Plus it's 'correct' as it is.
+
+
+
+<H3>Sample font manager class.</H3>
+
+
+<font color="blue"><pre>
+FTGLTextureFont* myFont = FTGLFontManager::Instance().GetFont( "arial.ttf", 72);
+
+#include    &lt;map&gt;
+#include    &lt;string&gt;
+#include    "FTGLTextureFont.h"
+
+using namespace std;
+
+typedef map< string, FTFont*> FontList;
+typedef FontList::const_iterator FontIter;
+
+class FTGLFontManager
+{
+    public:
+        // NOTE
+        // This is shown here for brevity. The implementation should be in the source
+        // file otherwise your compiler may inline the function resulting in 
+        // multiple instances of FTGLFontManager
+        static FTGLFontManager& Instance()
+        {
+            static FTGLFontManager tm;
+            return tm;
+        }
+        
+        ~FTGLFontManager()
+        {
+            FontIter font;
+            for( font = fonts.begin(); font != fonts.end(); font++)
+            {
+                delete (*font).second;;
+            }
+    
+            fonts.clear();
+        }
+
+        
+        FTFont* GetFont( const char *filename, int size)
+        {
+            char buf[256];
+            sprintf(buf, "%s%i", filename, size);
+            string fontKey = string(buf);
+            
+            FontIter result = fonts.find( fontKey);
+            if( result != fonts.end())
+            {
+                LOGMSG( "Found font %s in list", filename);
+                return result->second;
+            }
+        
+            FTFont* font = new FTGLTextureFont;
+            
+            string fullname = path + string( filename);
+            
+            if( !font->Open( fullname.c_str()))
+            {
+                LOGERROR( "Font %s failed to open", fullname.c_str());
+                delete font;
+                return NULL;
+            }
+            
+            if( !font->FaceSize( size))
+            {
+                LOGERROR( "Font %s failed to set size %i", filename, size);
+                delete font;
+                return NULL;
+            }
+        
+            fonts[fontKey] = font;
+            
+            return font;
+        
+        }
+    
+        
+    private:
+        // Hide these 'cause this is a singleton.
+        FTGLFontManager(){}
+        FTGLFontManager( const FTGLFontManager&){};
+        FTGLFontManager& operator = ( const FTGLFontManager&){ return *this;};
+        
+        // container for fonts
+        FontList fonts;
+    
+};
+</PRE></font>
+
+
+<HR ALIGN="center" SIZE="2" WIDTH="80%">
+
+<A NAME="GLS">
+<H2>Glossary</H2>
+
+
+		</TD>
+	</TR>
+</TABLE>
+</body>
+</html>

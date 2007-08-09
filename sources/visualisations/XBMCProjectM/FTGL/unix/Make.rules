@@ -1,0 +1,33 @@
+%-recursive:
+ifneq ($(SUBDIRS),)
+	for d in $(SUBDIRS) ; do $(MAKE) -C $$d $* ; done
+else
+	@:
+endif
+
+GARBAGE = *~ \#*\#
+
+clean: clean-recursive
+clean: clean-garbage
+clean: clean-local
+clean-garbage:
+	$(RM) $(GARBAGE)
+clean-local:
+
+distclean: distclean-recursive
+distclean: distclean-local
+distclean-local: clean-garbage clean-local
+
+maint-clean: distclean
+maint-clean: maint-clean-local
+maint-clean-local:
+
+install: install-recursive
+install: install-local
+install-local:
+
+%.lo: %.cpp
+	$(LIBTOOL) --mode=compile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $^
+
+%.la:
+	$(LIBTOOL) --mode=link $(CXX) -o $@ -rpath $(libdir) $^ $(LDFLAGS) $(LIBS)

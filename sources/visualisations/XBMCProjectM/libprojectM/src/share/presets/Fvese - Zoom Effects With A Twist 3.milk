@@ -1,0 +1,99 @@
+[preset00]
+fRating=5.000000
+fGammaAdj=1.000000
+fDecay=0.995000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=1
+nWaveMode=3
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=1
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.000000
+fWaveScale=0.499227
+fWaveSmoothing=0.900000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.500000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=0.880200
+fShader=0.000000
+zoom=0.999800
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=0.999900
+sy=0.999899
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.000000
+ib_r=0.000000
+ib_g=0.300000
+ib_b=0.000000
+ib_a=1.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=19.200027
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=5.000000
+mv_r=1.000000
+mv_g=0.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_r = wave_r + 0.45*(0.5*sin(time*0.701)+ 0.3*cos(time*0.438));
+per_frame_2=wave_b = wave_b - 0.4*(0.5*sin(time*4.782)+0.5*cos(time*0.722));
+per_frame_3=wave_g = wave_g + 0.4*sin(time*1.931);
+per_frame_4=vol=0.15*(bass_att+bass+mid+mid_att);
+per_frame_5=bass_eff = max(max(bass,bass_att)-1,0);
+per_frame_6=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.3)*0.96+1.3);
+per_frame_7=dx = 0.005 + 0.002*( 0.60*sin(0.234*time) + 0.40*sin(0.277*time) );
+per_frame_8=dy = 0.005 + 0.002*( 0.60*sin(0.234*time) + 0.40*sin(0.277*time) );
+per_frame_9=dx_r=if(equal(q3,0),if(above(x,xpos),dx*q1-xpos,dx+q2-xpos),dx);
+per_frame_10=dy_r=if(equal(q3,0),if(above(y,ypos),dy*q1-ypos,dy+q2-ypos),dy);
+per_frame_11=rot = rot+0.05*( 0.60*sin(0.381*time) + 0.40*sin(0.479*time) );
+per_frame_12=mytime=.9;
+per_frame_13=xpos=.5/vol;
+per_frame_14=ypos=.5/vol;
+per_frame_15=q1=bass_eff+sin(time*mytime*4);
+per_frame_16=q2=bas_eff+cos(time*mytime*2);
+per_frame_17=q3=bass_eff+abs(rad+.5)+(q2*q5);
+per_frame_18=q4=bass_thresh+abs(.9*5)*(dx_r*dy_r)*(dx*dy);
+per_frame_19=q5=bass_tresh+cos(.2*2)*(dx_r*dy_r);
+per_frame_20=q6=bass_thresh+0.1*(atan(abs(-rad+.5)))*q1;
+per_frame_21=q7=if(above(bass+bass_att,2),-1.5+bass+bass_att,0);
+per_frame_22=q8=below(rad- 0.1*x,0.18);
+per_frame_23=q9=if(below(rad,.5),.9+rad,.5+bass*3%1000*.1);
+per_frame_24=wave_y = wave_y + 0.2*sin(1.85*time);
+per_frame_25=wave_x = wave_x + 0.5*sin(1.85*time);
+per_frame_26=cx = cx - (cx+0.07*sin(rad*18 + time*9))+(zoom + 0.005*tan(ang-ang));
+per_frame_27=cy = cy - (cy+0.07*sin(rad*18 + time*9))+(zoom + 0.005*tan(ang-ang));
+per_frame_28=ib_r=q3+q2;
+per_frame_29=ib_b=q2+q1;
+per_frame_30=ib_g=q1+q3;
+per_frame_31=ib_size=0.000;
+per_frame_32=monitor=bass;
+per_pixel_1=zoom= if(below(q1,q6),0.3*x,if(equal(q2,q5),0.2*(1-x),if(above(q3,q4),0.3*y,0.2*(1-y)+if(equal(q4,q3),0.3* xpos, if(above(q5,q2),0.25*(1-xpos),if(below(q6,q1),0.3*ypos,0.25*(1-ypos)+if(equal(q7,q9),0.3*x, if(below(q8,q7),0.2*(1-x),if(equal(q9,q6),0.3*y,0.2*(1-y)))))))))) + .8 - 0.02*(min(q6+q1,.5));
+per_pixel_2=dx = .01*atan((rad)/.1*sin((dx_r*dy_r)*20+time*5));
+per_pixel_3=sx=zoom;
+per_pixel_4=rot=zoom/20
