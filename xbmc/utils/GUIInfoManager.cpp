@@ -475,6 +475,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (sort != SORT_METHOD_NONE)
         return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
     }
+    else if (id && info.Left(9).Equals("hasfocus("))
+    {
+      int itemID = atoi(info.Mid(9, info.GetLength() - 10));
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
+    }
     if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
@@ -1618,6 +1623,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
       }
       break;
+    case CONTAINER_HAS_FOCUS:
+      { // grab our container
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (window)
+        {
+          const CGUIControl *control = window->GetControl(info.m_data1);
+          if (control && control->IsContainer())
+          {
+            CFileItem *item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(0);
+            if (item && item->m_iprogramCount == info.m_data2)  // programcount used to store item id
+              return true;
+          }
+        }
+        break;
+      }
     case LISTITEM_ISSELECTED:
     case LISTITEM_ISPLAYING:
       {
