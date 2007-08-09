@@ -37,6 +37,7 @@ void CPictureInfoTag::Serialize(CArchive& ar)
 {
   if (ar.IsStoring())
   {
+    ar << m_isLoaded;
     ar << m_exifInfo.ApertureFNumber;
     ar << CStdString(m_exifInfo.CameraMake);
     ar << CStdString(m_exifInfo.CameraModel);
@@ -98,6 +99,7 @@ void CPictureInfoTag::Serialize(CArchive& ar)
   }
   else
   {
+    ar >> m_isLoaded;
     ar >> m_exifInfo.ApertureFNumber;
     GetStringFromArchive(ar, m_exifInfo.CameraMake, sizeof(m_exifInfo.CameraMake));
     GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
