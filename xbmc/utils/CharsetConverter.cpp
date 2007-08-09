@@ -383,6 +383,7 @@ void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &s
     char *dst = strDest.GetBuffer(outBytes);
     if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
+      ASSERT(0);
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
