@@ -222,6 +222,7 @@
 #define CONTAINER_SORT_METHOD       364
 #define CONTAINER_ON_NEXT           365
 #define CONTAINER_ON_PREVIOUS       366
+#define CONTAINER_HAS_FOCUS         367
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381

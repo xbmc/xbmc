@@ -42,6 +42,8 @@ public:
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void UpdateVisibility();
+
   virtual unsigned int GetRows() const;
 
   void SetPageControl(DWORD id);
@@ -109,5 +111,6 @@ protected:
   CStdString m_label;
 
   bool m_staticContent;
+  vector<CGUIListItem*> m_staticItems;
 };
 
