@@ -197,8 +197,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      CGUIControlFactory factory;
-      factory.GetConditionalVisibility(pRootElement, m_visibleCondition);
+      CGUIControlFactory::GetConditionalVisibility(pRootElement, m_visibleCondition);
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
