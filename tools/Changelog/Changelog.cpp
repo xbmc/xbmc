@@ -75,7 +75,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(argc > 3)
       limit = atoi(argv[3]);
     // download our input file
-    std::string command = "svn log ";
+    std::string command = "svn log -r 'HEAD':8638 ";
     if (limit > 0)
     {
       command += "--limit ";
