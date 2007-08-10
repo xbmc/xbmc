@@ -1571,6 +1571,12 @@
 					RelativePath="..\..\xbmc\LangInfo.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\LastFmManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\LastFmManager.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\log.cpp">
 				</File>
 				<File

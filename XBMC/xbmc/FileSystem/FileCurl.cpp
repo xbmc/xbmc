@@ -310,7 +310,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("tuxbox"))
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("tuxbox") || url2.GetProtocol().Equals("lastfm"))
     url2.SetProtocol("http");    
 
   if( url2.GetProtocol().Equals("ftp") )
@@ -345,7 +345,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
     url2.SetFileName(filename);
   }
-  else if( url2.GetProtocol().Equals("http") )
+  else if( url2.GetProtocol().Equals("http"))
   {
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {
@@ -547,7 +547,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("lastfm"))
     url2.SetProtocol("http");
   
   /* ditch options as it's not supported on ftp */

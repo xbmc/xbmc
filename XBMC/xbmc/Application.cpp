@@ -72,6 +72,7 @@
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
+#include "LastFmManager.h"
 
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
@@ -3300,6 +3301,7 @@ void CApplication::Stop()
     g_buttonTranslator.Clear();
     CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
+    CLastFmManager::RemoveInstance();
     g_infoManager.Clear();
 #ifdef HAS_LCD
     if (g_lcd)
@@ -3327,6 +3329,10 @@ void CApplication::Stop()
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
+  if (item.IsLastFM())
+  {
+    return CLastFmManager::GetInstance()->ChangeStation(item.GetAsUrl());
+  }
   if (item.IsPlayList() || item.IsInternetStream())
   {
     //is or could be a playlist
@@ -4322,6 +4328,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
+      CLastFmManager::GetInstance()->OnSongChange(m_itemCurrentFile.IsLastFM());
       g_partyModeManager.OnSongChange(true);
 
       if (IsPlayingAudio())
@@ -4347,7 +4354,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
 #endif
         //  Activate audio scrobbler
-        if (!m_itemCurrentFile.IsInternetStream())
+        if (CLastFmManager::GetInstance()->CanScrobble(m_itemCurrentFile))
         {
           CScrobbler::GetInstance()->SetSongStartTime();
           CScrobbler::GetInstance()->SetSubmitSong(true);
@@ -4366,7 +4373,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       int iNext = g_playlistPlayer.GetNextSong();
       CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
       if (iNext < 0 || iNext >= playlist.size())
+      {
+        if (m_pPlayer) m_pPlayer->OnNothingToQueueNotify();
         return true; // nothing to do
+      }
       // ok, grab the next song
       CFileItem item = playlist[iNext];
       // ok - send the file to the player if it wants it
@@ -4482,6 +4492,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_itemCurrentFile.Reset();
       g_infoManager.ResetCurrentItem();
       m_currentStack.Clear();
+      CLastFmManager::GetInstance()->StopRadio();
 
 #ifdef HAS_KARAOKE
       if(m_pCdgParser)
@@ -5043,7 +5054,7 @@ void CApplication::CheckPlayingProgress()
 
 void CApplication::CheckAudioScrobblerStatus()
 {
-  if (IsPlayingAudio() && !m_itemCurrentFile.IsInternetStream() &&
+  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(m_itemCurrentFile) &&
       !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
   {
     //  We seeked to the beginning of the file
