@@ -1049,4 +1049,22 @@
       <back>PreviousMenu</back>
     </remote>
   </TrainerSettings>
+
+  <PictureInfo>
+    <gamepad>
+      <dpadleft>PreviousPicture</dpadleft>
+      <dpadright>NextPicture</dpadright>
+    </gamepad>
+
+    <remote>
+      <skipplus>NextPicture</skipplus>
+      <skipminus>PreviousPicture</skipminus>
+    </remote>
+
+    <keyboard>
+      <period>NextPicture</period>
+      <comma>PreviousPicture</comma>
+    </keyboard>
+  </PictureInfo>
+
 </keymap>
