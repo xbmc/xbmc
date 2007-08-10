@@ -8,13 +8,11 @@
 using namespace DIRECTORY;
 
 //
-// multipath://{path1} , {path2} , {path3} , ... , {path-N}
+// multipath://{path1}/{path2}/{path3}/.../{path-N}
 //
 // unlike the older virtualpath:// protocol, sub-folders are combined together into a new
 // multipath:// style url.
 //
-
-#define MULTIPATH_SEPARATOR " / "
 
 CMultiPathDirectory::CMultiPathDirectory()
 {}
@@ -125,7 +123,7 @@ bool CMultiPathDirectory::Remove(const char* strPath)
 
 CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
 {
-  int pos = strPath.Find(MULTIPATH_SEPARATOR, 12);
+  int pos = strPath.Find("/", 12);
   if (pos >= 0)
   {
     CStdString firstPath = strPath.Mid(12, pos - 12);
@@ -144,9 +142,9 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   strPath1 = strPath1.Mid(12);
   CUtil::RemoveSlashAtEnd(strPath1);
 
-  // split on ","
+  // split on "/"
   vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, MULTIPATH_SEPARATOR, vecTemp);
+  StringUtils::SplitString(strPath1, "/", vecTemp);
   if (vecTemp.size() == 0)
     return false;
 
@@ -166,11 +164,8 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, c
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
   CStdString newPath = "multipath://";
-  CStdString strPath = items[stack[0]]->m_strPath;
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  CUtil::URLEncode(strPath);
-  newPath += strPath;
-  for (unsigned int i = 1; i < stack.size(); ++i)
+  for (unsigned int i = 0; i < stack.size(); ++i)
     AddToMultiPath(newPath, items[stack[i]]->m_strPath);
 
   //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
@@ -180,10 +175,11 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, c
 void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath)
 {
   CStdString strPath1 = strPath;
+  CUtil::AddSlashAtEnd(strMultiPath);
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  CUtil::URLEncode(strPath1);
-  strMultiPath += MULTIPATH_SEPARATOR;
+  CUtil::URLEncode(strPath1);  
   strMultiPath += strPath1;
+  strMultiPath += "/";
 }
 
 CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
@@ -192,11 +188,8 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
   CStdString newPath = "multipath://";
-  CStdString strPath = vecPaths[0];
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  CUtil::URLEncode(strPath);
-  newPath += strPath;
-  for (unsigned int i = 1; i < vecPaths.size(); ++i)
+  for (unsigned int i = 0; i < vecPaths.size(); ++i)
     AddToMultiPath(newPath, vecPaths[i]);
   //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
