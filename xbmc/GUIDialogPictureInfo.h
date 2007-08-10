@@ -14,6 +14,7 @@ public:
 protected:
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  virtual bool OnAction(const CAction& action);
   void UpdatePictureInfo();
 
   CFileItemList m_pictureInfo;
