@@ -27,6 +27,7 @@
 #include "application.h"
 #include "playlistplayer.h"
 #include "PartyModeManager.h"
+#include "LastFmManager.h"
 #include "utils/LabelFormatter.h"
 
 using namespace PLAYLIST;
@@ -370,7 +371,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update playlist buttons
-  if (m_vecItems.Size() && !g_partyModeManager.IsEnabled())
+  if (m_vecItems.Size() && !g_partyModeManager.IsEnabled() && !CLastFmManager::GetInstance()->IsRadioEnabled())
   {
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
     CONTROL_ENABLE(CONTROL_BTNSAVE);

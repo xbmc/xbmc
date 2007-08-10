@@ -914,6 +914,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\LangInfo.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\LastFmManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\LastFmManager.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\LED.cpp">
 				</File>
 				<File
