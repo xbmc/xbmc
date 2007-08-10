@@ -170,6 +170,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SHOW_INFO)
         {
           SScraperInfo info;
+          SScanSettings settings;          
           CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems.Size())
             return false;
@@ -182,8 +183,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
 
           int iFound;
-          bool bUseDirNames, bScanRecursive;
-          m_database.GetScraperForPath(strDir,info.strPath,info.strContent,bUseDirNames,bScanRecursive,iFound);
+          m_database.GetScraperForPath(strDir, info, settings, iFound);
           CScraperParser parser;
           if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
             info.strTitle = parser.GetName();
@@ -193,12 +193,12 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             // hack
             CStdString strOldPath = m_vecItems[iItem]->m_strPath;
             m_vecItems[iItem]->m_strPath = strDir;
-            OnAssignContent(iItem,1,info);
+            OnAssignContent(iItem,1, info, settings);
             m_vecItems[iItem]->m_strPath = strOldPath;
             return true;
           }
 
-          if (info.strContent.Equals("tvshows") && iFound == 1 && !bUseDirNames) // dont lookup on root tvshow folder
+          if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
             return true;
 
           OnInfo(iItem,info);
@@ -1544,24 +1544,12 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
   if (!item) return 0;
   int found = 0;
   if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,settings.parent_name_root,settings.parent_name,found);
+    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info,settings,found);
   else
-    m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,settings.parent_name_root,settings.parent_name,found);
+    m_database.GetScraperForPath(item->m_strPath,info,settings,found);
   CScraperParser parser;
   if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
     info.strTitle = parser.GetName();
-  if (settings.parent_name) // really recurse
-    settings.recurse = INT_MAX;
-  else
-    settings.recurse = 1;
-  settings.parent_name = false;
-  if (info.strContent.Equals("movies") && settings.parent_name_root)
-  {
-    settings.parent_name = true;
-    settings.parent_name_root = false;
-  }
-  if (info.strContent.Equals("tvshows"))
-    settings.parent_name = true;
   return found;
 }
 
