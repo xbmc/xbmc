@@ -572,12 +572,12 @@ void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
   CStdString strPath,strFile;
   if (m_vecItems[iItem]->IsVideoDb())
   {
-    m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info2.strPath,info2.strContent);
+    m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info2);
   }
   else
   {
     CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
-    m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent);
+    m_database.GetScraperForPath(strPath,info2);
   }
   CGUIWindowVideoBase::OnInfo(iItem,info2);
 }
