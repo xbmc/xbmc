@@ -382,8 +382,8 @@ char *CRegExp::regatom(int *flagp)
 			regc((char)c);
 			regparse++;
 		}
-		while ((c = *regparse++) != '\0' && c != ']') {
-			if (c != '-')
+		while ((c = *regparse++) != '\0' && ( c != ']' || *(regparse-2) == '\\') ) {
+			if (c != '-' || *(regparse-2) == '\\')
 				regc((char)c);
 			else if ((c = *regparse) == ']' || c == '\0')
 				regc('-');
