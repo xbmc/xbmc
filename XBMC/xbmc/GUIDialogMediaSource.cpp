@@ -83,14 +83,16 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         CShare share;
         share.FromNameAndPaths("video", m_name, GetPaths());
         
-        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_bRunScan,m_bScanRecursively,m_bUseDirNames);
+        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
       }
       return true;
     }
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_bRunScan = m_bScanRecursively = m_bUseDirNames = false;
+      m_bRunScan = false;
+      m_settings.parent_name = false;
+      m_settings.recurse = 0;
       UpdateButtons();
     }
     break;
@@ -147,27 +149,8 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     if (type == "video")
     {
       if (dialog->m_bRunScan)
-      {
-        VIDEO::SScanSettings settings;
-        if (dialog->m_bUseDirNames)
-        {
-          if (dialog->m_info.strContent.Equals("tvshows"))
-            settings.parent_name_root = true;
-          else
-            settings.parent_name_root = false;
-          
-          settings.parent_name = true;
-        }
-        else
-        {
-          settings.parent_name = settings.parent_name_root = false;
-        }
-        if (dialog->m_bScanRecursively)
-          settings.recurse = INT_MAX;
-        else
-          settings.recurse = 1;
-        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,settings);
-      }
+        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,dialog->m_settings);
+
     }
   }
   dialog->m_paths.Clear();
