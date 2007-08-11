@@ -61,6 +61,8 @@ public:
 
     void SetAutoSync(int iAutoSync);
 
+    void SetEdl(const string& strEdl);
+
     void SetAudioOutput(const string& output) { m_videooutput = output; }
     void SetVideoOutput(const string& output) { m_audiooutput = output; }
     void SetAudioCodec(const string& codec) { m_videocodec = codec; }
@@ -94,6 +96,7 @@ public:
     string m_demuxer;
     bool m_bDisableAO;
     string m_subcp;
+    string m_strEdl;
     string m_strChannelMapping;
     string m_strDvdDevice;
     string m_strFlipBiDiCharset;
