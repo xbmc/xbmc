@@ -222,6 +222,10 @@ namespace VIDEO
       if (iFound == 1 && !settings.parent_name_root)
       {
         CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+        GetPathHash(items, hash);
+        bSkip = true;
+        if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+          bSkip = false;
       }
       else
       {
@@ -238,7 +242,7 @@ namespace VIDEO
         m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
 
       RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (m_info.strContent.Equals("movies"))
+      if (m_info.strContent.Equals("movies") || m_info.strContent.Equals("tvshows"))
         m_database.SetPathHash(strDirectory, hash);
     }
     if (m_pObserver)
