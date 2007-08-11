@@ -58,9 +58,9 @@ To create the XBMC executable manually perform these two steps:
 These configure options exist:
   --disable-debug          disable debug mode (default is enabled)
   --disable-gl             disable OpenGL rendering and instead use 2D SDL (default is enabled). This is not recommended.
-  --enable-profiling       enable gprof profiling (default is no)
+  --enable-profiling       enable gprof profiling (default is disabled)
   --disable-joystick       disable SDL joystick support (default is enabled)
-  --help                   shows all options, useful fallback if this Readme becomes outdated
+  --help                   shows all options, useful fallback if this README becomes outdated
 
 .2  # make
 Tip: by adding -j<number> to the make command, you describe how many concurrent jobs will be used. So for dualcore the command is: 
