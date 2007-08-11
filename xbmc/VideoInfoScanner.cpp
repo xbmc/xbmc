@@ -225,7 +225,10 @@ namespace VIDEO
         GetPathHash(items, hash);
         bSkip = true;
         if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+        {
+          m_database.SetPathHash(strDirectory, hash);
           bSkip = false;
+        }
         else
           items.Clear();
       }
@@ -244,7 +247,7 @@ namespace VIDEO
         m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
 
       RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (m_info.strContent.Equals("movies") || m_info.strContent.Equals("tvshows"))
+      if (m_info.strContent.Equals("movies"))
         m_database.SetPathHash(strDirectory, hash);
     }
     if (m_pObserver)
