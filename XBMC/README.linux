@@ -63,7 +63,7 @@ These configure options exist:
   --help                   shows all options, useful fallback if this Readme becomes outdated
 
 .2  # make
-Tip: by adding -j<number> to the make command, you describe how many cores will be used. So for dualcore the command is: 
+Tip: by adding -j<number> to the make command, you describe how many concurrent jobs will be used. So for dualcore the command is: 
     # make -j2
 
 ====================
