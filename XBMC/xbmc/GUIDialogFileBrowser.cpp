@@ -106,7 +106,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         bFool = true;
         if (iSource > -1)
         {
-          CUtil::RemoveSlashAtEnd(m_selectedPath);
           if (m_shares[iSource].strPath.Equals(m_selectedPath))
             bFool = false;
         }
