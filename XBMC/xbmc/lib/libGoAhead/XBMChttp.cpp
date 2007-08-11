@@ -1921,8 +1921,13 @@ int CXbmcHttp::xbmcExit(int theAction)
 }
 
 int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
+// paras: album
+//        album, artist
+//        album, artist, 1
 {
-  CStdString albums="";
+  CStdString albums="", album, artist="", tmp;
+  double relevance;
+  bool rel = false;
   CMusicInfoScraper scraper;
 
   if (numParas<1)
@@ -1932,7 +1937,16 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
     try
     {
 	  int cnt=0;
-      scraper.FindAlbuminfo(paras[0]);
+	  album=paras[0];
+	  if (numParas>1)
+	  {
+	    artist = paras[1];
+        scraper.FindAlbuminfo(album, artist);
+		if (numParas>2)
+		  rel = (paras[2]=="1");
+	  }
+	  else
+        scraper.FindAlbuminfo(album);
 	  //wait a max of 20s
       while (!scraper.Completed() && cnt++<200)
 	    Sleep(100);
@@ -1946,6 +1960,12 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
           {
             CMusicAlbumInfo& info = scraper.GetAlbum(i);
             albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL();
+			if (rel)
+			{
+			  relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
+              tmp.Format("%f",relevance);
+			  albums += "<@@@>"+tmp;
+			}
           }
           return SetResponse(albums) ;
         }
