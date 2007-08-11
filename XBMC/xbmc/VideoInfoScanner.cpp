@@ -226,6 +226,8 @@ namespace VIDEO
         bSkip = true;
         if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
           bSkip = false;
+        else
+          items.Clear();
       }
       else
       {
