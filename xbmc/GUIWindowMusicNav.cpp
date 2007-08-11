@@ -273,6 +273,8 @@ CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
     return "RecentlyPlayedAlbums";
   else if (strPath.Equals("musicdb://8/"))
     return "Compilations";
+  else if (strPath.Equals("musicdb://9/"))
+    return "Years";
   else if (strPath.Equals("special://musicplaylists/"))
     return "Playlists";
   else
