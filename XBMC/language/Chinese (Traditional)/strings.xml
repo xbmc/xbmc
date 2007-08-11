@@ -1051,7 +1051,7 @@
   <string id="13385">語音特效 - 第 4 埠</string>
   <string id="13386">使用時間搜尋</string>
   <string id="13387">音軌命名格式</string>
-  <string id="13388">%s 預設</string>
+  <string id="13388">預設</string>
   <string id="13389">沒有預設&#10;該視覺效果</string>
   <string id="13390">沒有設定&#10;該視覺效果</string>
   <string id="13391">托盤開/關</string>
@@ -1069,6 +1069,8 @@
   <string id="13403">清除預設值</string>
   <string id="13404">恢復</string>
   <string id="13405">取得縮圖</string>
+  <string id="13406">圖片資訊</string>
+  <string id="13407">%s 預設</string>
 
   <string id="14000">堆疊開啟</string>
   <string id="14001">堆疊關閉</string>
@@ -1510,7 +1512,7 @@
   <string id="20181">退格</string>
   <string id="20182">空格</string>
   <string id="20183">重新載入桌面</string>
-  <string id="20184">使用 EXIF 資訊旋轉圖片</string>
+  <string id="20184">根據 EXIF 資訊旋轉圖片</string>
   <string id="20185">檢測硬體數據</string>
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
@@ -1656,7 +1658,7 @@
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安靜</string>
-
+  <string id="21389">啟用 自訂背景</string>
   <string id="21390">電源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
@@ -1700,6 +1702,65 @@
   <string id="21437">新的智慧播放列表…</string>
   <string id="21438">%c裝置</string>
   <string id="21439">編輯派對模式規則</string>
+
+  <string id="21800">檔案名稱</string>
+  <string id="21801">檔案路徑</string>
+  <string id="21802">檔案大小</string>
+  <string id="21803">檔案日期/時間</string>
+  <string id="21804">幻燈片索引</string>
+  <string id="21805">解析度</string>
+  <string id="21806">評論</string>
+  <string id="21807">彩色/黑白</string>
+  <string id="21808">JPEG 影像處理</string>
+
+  <string id="21820">拍攝時間</string>
+  <string id="21821">描述</string>
+  <string id="21822">製造廠商</string>
+  <string id="21823">相機型號</string>
+  <string id="21824">註解</string>
+  <string id="21825">韌體</string>
+  <string id="21826">光圈值</string>
+  <string id="21827">鏡頭焦長</string>
+  <string id="21828">焦點距離</string>
+  <string id="21829">曝光</string>
+  <string id="21830">曝光時間</string>
+  <string id="21831">曝光傾向</string>
+  <string id="21832">曝光模式</string>
+  <string id="21833">閃光燈</string>
+  <string id="21834">白平衡</string>
+  <string id="21835">光源</string>
+  <string id="21836">測光模式</string>
+  <string id="21837">ISO 感光值</string>
+  <string id="21838">數位變焦</string>
+  <string id="21839">CCD 寬度</string>
+  <string id="21840">GPS 緯度</string>
+  <string id="21841">GPS 經度</string>
+  <string id="21842">GPS 高度</string>
+  <string id="21843">方位</string>
+
+  <string id="21860">補充類別</string>
+  <string id="21861">關鍵字</string>
+  <string id="21862">說明</string>
+  <string id="21863">作者</string>
+  <string id="21864">標題</string>
+  <string id="21865">特別指令</string>
+  <string id="21866">類別</string>
+  <string id="21867">署名報導</string>
+  <string id="21868">署名報導標題</string>
+  <string id="21869">信用</string>
+  <string id="21870">來源</string>
+  <string id="21871">版權條款</string>
+  <string id="21872">物件名稱</string>
+  <string id="21873">城市</string>
+  <string id="21874">州</string>
+  <string id="21875">國家</string>
+  <string id="21876">原始的 Tx 引用</string>
+  <string id="21877">日期建立</string>
+  <string id="21878">版權標誌</string>
+  <string id="21879">國家代碼</string>
+  <string id="21880">參考服務</string>
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
