@@ -464,13 +464,11 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     {
       OnUnAssignContent(iItem);
     }
-    else
-    {
-      m_database.Open();
-      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2,settings2);
-      m_database.Close();
-    }
-    
+
+    m_database.Open();
+    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2,settings2);
+    m_database.Close();
+
     if (bScan)
     {
       GetScraperForItem(m_vecItems[iItem],info2,settings2);
