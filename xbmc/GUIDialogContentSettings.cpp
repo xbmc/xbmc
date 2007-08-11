@@ -321,7 +321,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   dialog->m_bScanRecursive = settings.recurse > 0;
   dialog->m_bUseDirNames   = settings.parent_name;
   dialog->m_bExclude       = scraper.strContent.Equals("None");
-  dialog->m_bSingleItem    = settings.recurse == 0;
+  dialog->m_bSingleItem    = settings.parent_name_root;
   dialog->m_bNeedSave = false;
   dialog->DoModal();
   if (dialog->m_bNeedSave)
