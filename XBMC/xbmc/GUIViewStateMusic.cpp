@@ -439,6 +439,19 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
   SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
 }
 
+bool CGUIViewStateWindowMusicNav::IsMusicShare(const CStdString& strShareName)
+{
+  for (int i = 0; i < (int)g_settings.m_vecMyMusicShares.size(); ++i)
+  {
+    CShare share = g_settings.m_vecMyMusicShares.at(i);
+    if (share.strPath.Find(strShareName) == 0)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
 {
   //  Setup shares we want to have
@@ -464,6 +477,31 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
+
+  if (g_guiSettings.GetBool("network.enableinternet"))
+  {
+    //  Shoutcast share
+    if (IsMusicShare("shout://www.shoutcast.com/sbin/newxml.phtml"))
+    {
+      CShare share;
+      share.strName=g_localizeStrings.Get(260); // Shoutcast
+      share.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
+      share.m_strThumbnailImage="defaultFolderBig.png";
+      share.m_iDriveType = SHARE_TYPE_REMOTE;
+      m_shares.push_back(share);
+    }
+
+    //  Lastfm share
+    if (IsMusicShare("lastfm://"))
+    {
+      CShare share;
+      share.strName=g_localizeStrings.Get(15200); // Last.FM
+      share.strPath = "lastfm://";
+      share.m_strThumbnailImage="defaultFolderBig.png";
+      share.m_iDriveType = SHARE_TYPE_REMOTE;
+      m_shares.push_back(share);
+    }
+  }
 
   // Search share
   share.strName=g_localizeStrings.Get(137); // Search
