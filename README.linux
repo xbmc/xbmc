@@ -1,69 +1,118 @@
-This is a very early port of XBMC to Linux. It's target is developers and not end-users. We don't offer end-user support yet, and we're not really interrested to hear about bugs unless you can help track it down and possibly help with fixing it.
-We recommend Ubuntu 7.04 (Feisty Fawn) as a development platform.
+TOC
+1. Introduction
+2. Getting the source code
+3. Installing the required Ubuntu packages
+4. How to compile
+	4.1 Using build.sh
+	4.2 Manual build
+5. How to run
+6. Tips n' Tricks section
+7. Endword
 
-Getting the source code
------------------------
-# sudo apt-get install subversion
-# cd $HOME
-# svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+====================
+1. Introduction
 
-Installing the required ubuntu packages
----------------------------------------
-# sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1 libglew-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev
+This is a very early port of XBMC to Linux. It's target is developers and not end-users. 
+We don't offer end-user support yet, and we're not really interrested to hear about bugs unless you can help track it down and possibly help with fixing it.
+We currently recommend Ubuntu 7.04 (Feisty Fawn) as a development platform. 
+A gfx-adapter with OpenGL acceleration is highly recommended and 24/32 bitdepth is required with OpenGL. 
 
-How to compile
---------------
-OpenGL 3D version (requires gfx-adapter that has supported OpenGL hw acceleration, set bitdepth to 24bpp or 32bpp)
-# ./configure
-# make
+====================
+2. Getting the source code
 
-SDL 2D version (much much slower GUI rendering but works on all adapters and bitdepths)
-# ./configure --disable-gl
-# make
+   # sudo apt-get install subversion
+   # cd $HOME
+   # svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
-No debug information (smaller executable, no FreeMem text in screens):
-# ./configure --disable-debug
-# make
+====================
+3. Installing the required Ubuntu packages
 
-No debug information and 2D:
-# ./configure --disable-debug --disable-gl
-# make
+   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1 libglew-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev
 
-Quicker compilation; by adding -j<number> to the make command, you describe how many cores will be used. So for dualcore the commands are:
-# make -j2
-or
-# make -j2 sdl_2d
+====================
+4. How to compile
 
-How to run
-----------
-A new script made by Althekiller handles things neatly now, this is the first basic version which does the following:
--Copies needed files & folders to a BUILD folder incl main executable
--Backs up UserData & scripts folder
--Fixes case sensitivity issues by renaming some files & folders
+==========
+4.1 Using build.sh
+
+AlTheKiller has made a fantastic script that makes it a breeze to build a working (depending on state of SVN naturally) XBMC solution. 
+It handles the SVN update, build process and the copying of all needed files to the folder of your choice. 
+./BUILD is the default target location. The script also creates a backup of your UserData, scripts and 3rd party skin/s folders.
+Do './build.sh --help' to get all options. 
+Usage (examples):
+
+.1 Make a 3D version with debug (requires OpenGL hardware acceleration support on gfx-adapter) 
+   # ./build.sh
+
+.2 Make a SDL 2D version (very slow) + no debug (more CONFIGOPT's are listed below in section 4.2)
+   # ./build.sh CONFIGOPT=--disable-gl CONFIGOPT=--disable-debug
+
+build.sh supports reading options from an external file: '~/.xbmc-build-settings'. 
+The options are delimited with space, here's an example line which disables debug and never ask for confirmation unless an error occur:
+'CONFIGOPT=--disable-debug CONFIRM'(remove the ''). Do build.sh --help for more options
+==========
+4.2 Manual build
+
+To create the XBMC executable manually perform these two steps:
+.1  # ./configure <option1> <option2> <etc>
+These configure options exist:
+  --disable-debug          disable debug mode (default is enabled)
+  --disable-gl             disable OpenGL rendering and instead use 2D SDL (default is enabled). This is not recommended.
+  --enable-profiling       enable gprof profiling (default is no)
+  --disable-joystick       disable SDL joystick support (default is enabled)
+  --help                   shows all options, useful fallback if this Readme becomes outdated
+
+.2  # make
+Tip: by adding -j<number> to the make command, you describe how many cores will be used. So for dualcore the command is: 
+    # make -j2
+
+====================
+5. How to run
+
+==========
+5.1 If using build.sh with default options, simply:
+   # cd BUILD
+   # ./XboxMediaCenter
+
+==========
+5.2 If compiling manually you can use build.sh to prepare the BUILD
+What it does:
+* Copies needed files & folders to a BUILD folder incl. main executable
+* Backs up UserData, scripts and 3rd party skin/s folders
+* Fixes case sensitivity issues by renaming some files & folders
 Usage:
-# ./noT3CH.sh
-cd BUILD
-./XboxMediaCenter
+   # ./build.sh NOUPDATE NOCOMPILE
+   # cd BUILD
+   # ./XboxMediaCenter
 
-Fullscreen
-----------
+====================
+6. Tips n' Tricks section
+
+==========
+6.1 Fullscreen
+
 Toggle FS with \ key while XBMC is running
 
+==========
+6.2 Multi-monitor Fullscreen
 
-Multi-monitor Fullscreen
-------------------------
-If you have a multi-monitor setup and you want to use '-fs', make sure to set the env variable 
-SDL_VIDEO_FULLSCREEN_HEAD to the display no. which you want SDL to use for the fullscreen mode.
+Method 1: If you have a multi-monitor setup and you want to use fullscreen, make sure to set the 
+env variable SDL_VIDEO_FULLSCREEN_HEAD to the display no. which you want SDL to use for the fullscreen mode.
 
-For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./XboxMediaCenter -fs" to tell SDL to use display no.1
+Method 2: For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./XboxMediaCenter -fs" to tell SDL to use display no.1
 
-Channels downmix
-----------------
-if your machine only has 2 speakers and you would like to watch movies with more channels (e.g. 5.1) then you need to configure your .asoundrc file.
+==========
+6.3 Channel downmixing
+
+If your machine only has 2 speakers and you would like to watch movies with more channels (e.g. 5.1) then you need to configure your .asoundrc file.
 the .asoundrc file is a configuration file located in the users home directory.
-a demo file can be found here "demo-asoundrc", so:
-1. backup your .asoundrc if it exists (e.g. $cp ~/.asoundrc ~/.asoundrc.backup)
-2. copy the demo asoundrc - $cp demo-asoundrc ~/.asoundrc
-3. you can edit the file and change the downmix setup by changing the "ttable" values. the values range from 0.0 to 1.0 and are actaully the volume pct from the original channels volume. 
+a demo file named "demo-asoundrc" can be found in same folder as this README, so:
+.1 backup your .asoundrc if it exists (e.g. # cp ~/.asoundrc ~/.asoundrc.backup)
+.2 copy the demo asoundrc - # cp demo-asoundrc ~/.asoundrc
+.3 you can edit the file and change the downmix setup by changing the "ttable" values. 
+   the values range from 0.0 to 1.0 and are actaully the volume pct from the original channels volume. 
+
+====================
+7. Endword
 
 Don't expect too much, yet.
