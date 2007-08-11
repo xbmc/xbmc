@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scraper content="movies" name="FilmAffinity.es" thumb="filmaffinity.gif">
+  <NfoUrl dest="3">
+    <RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/film\1.html/&lt;/url&gt;">
+      <expression noclean="1">filmaffinity.com/es/film([0-9]*)</expression>
+    </RegExp>
+  </NfoUrl>
+  <CreateSearchUrl dest="3">
+      <RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/search.php?stext=\1&amp;amp;stype=title&lt;/url&gt;">
+        <expression noclean="1"></expression>
+      </RegExp>
+  </CreateSearchUrl>
+  <GetSearchResults dest="8">
+    <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+      <RegExp input="$$1" output="\1" dest="7">
+        <expression>&lt;img src="http://www.filmaffinity.com/imgs/movies/full/[0-9]*/([0-9]*).jpg"&gt;</expression>
+      </RegExp>
+      <RegExp dest="5" input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://www.filmaffinity.com/es/film$$7.html&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;">
+        <expression noclean="1">&lt;title&gt;([^&lt;]*)\(([0-9]*)\) - FilmAffinity</expression>
+      </RegExp>
+      <RegExp input="$$1" output="\1" dest="4">
+        <expression noclean="1">(&lt;b&gt;&lt;a href="/es/film.*)</expression>
+      </RegExp>
+      <RegExp dest="5+" input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://www.filmaffinity.com/es/film\1.html&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;">
+        <expression repeat="yes" noclean="1,2">&lt;a href="/es/film([0-9]*).html[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;[^\(]*\(([0-9]*)</expression>
+      </RegExp>
+      <expression noclean="1"></expression>
+    </RegExp>
+  </GetSearchResults>
+  <GetDetails dest="3">
+    <RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+      <RegExp dest="5" input="$$1" output="&lt;title&gt;\1&lt;/title&gt;">
+        <expression trim="1" noclean="1">&lt;img src="http://www.filmaffinity.com/images/movie.gif" border="0"&gt; ([^&lt;]*)</expression>
+      </RegExp>
+
+      <!--<RegExp input="$$1" output="br /&gt;&lt;br /&gt;\1&lt;" dest="7">
+        <expression>SINOPSIS LARGA: ([^=]*) \(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$6" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <RegExp input="$$7" output="\1" dest="6">
+          <expression noclean="1">br /&gt;&lt;br /&gt;([^&lt;]*)</expression>
+        </RegExp>
+        <expression noclean="1"/>
+      </RegExp>-->
+
+      <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <expression>/ SINOPSIS: ([^=]*) \(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <expression>SINOPSIS LARGA: ([^=]*) \(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
+        <expression>SINOPSIS CORTA: ([^=]*)\(FILMAFFINITY\)([^=]*)\(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <expression>/ [^=]* / ([^=]*) \(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <expression>/ ([^=]*) \(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+        <RegExp input="$$1" output="\1" dest="9">
+          <expression noclean="1">&lt;b&gt;A.O&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;DURACI.N&lt;/b&gt;</expression>
+        </RegExp>
+        <expression repeat="yes">&lt;td &gt;([0-9]*)</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+        <RegExp input="$$1" output="\1" dest="9">
+          <expression noclean="1">&lt;b&gt;DIRECTOR&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;GUI.N&lt;/b&gt;</expression>
+        </RegExp>
+        <expression repeat="yes">stext=[^&gt;]*&gt;([^&lt;]+)</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;tagline&gt;\1 - " dest="5+">
+        <RegExp input="$$1" output="\1" dest="9">
+          <expression noclean="1">&lt;b&gt;PA.S&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;DIRECTOR&lt;/b&gt;</expression>
+        </RegExp>
+        <expression repeat="yes">alt="([^"]+)</expression>
+      </RegExp>
+      <RegExp input="$$9" output="\1&lt;/tagline&gt;" dest="5+">
+        <RegExp input="$$1" output="\1" dest="9">
+          <expression noclean="1">&lt;b&gt;T.TULO ORIGINAL&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;A.O&lt;/b&gt;</expression>
+        </RegExp>
+        <expression repeat="yes">&lt;td &gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;&lt;/td&gt;</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
+        <RegExp input="$$1" output="\1" dest="9">
+          <expression noclean="1">&lt;b&gt;GUI.N&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;M.SICA&lt;/b&gt;</expression>
+        </RegExp>
+        <expression repeat="yes">&lt;td &gt;([^&lt;]+)</expression>
+      </RegExp>
+      <!--<RegExp input="$$1" output="\1." dest="7">
+        <expression>&lt;td valign="top"&gt;([^/]*) / SINOPSIS</expression>
+      </RegExp>
+      <RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+        <RegExp input="$$7" output=" / \1" dest="6">
+          <expression repeat="yes">([^\.]*)\.</expression>
+        </RegExp>
+        <expression>/ (.*)</expression>
+      </RegExp>-->
+      <RegExp input="$$1" output="\1." dest="8">
+        <expression>&lt;td valign="top"&gt;[^/]*/([^/]*) / [^=]*\(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+        <RegExp input="$$8" output=" / \1" dest="9">
+          <expression repeat="yes">([^\.]*)\.</expression>
+        </RegExp>
+        <expression>/ (.*)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="\1." dest="7">
+        <expression>&lt;td valign="top"&gt;([^/]*) / [^=|^/]*\(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+        <RegExp input="$$7" output=" / \1" dest="6">
+          <expression repeat="yes">([^\.]*)\.</expression>
+        </RegExp>
+        <expression>/ (.*)</expression>
+      </RegExp>
+      <!--<RegExp input="$$1" output="\1." dest="8">
+        <expression>&lt;td valign="top"&gt;[^/]*/([^/]*) / SINOPSIS</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+        <RegExp input="$$8" output=" / \1" dest="9">
+          <expression repeat="yes">([^\.]*)\.</expression>
+        </RegExp>
+        <expression>/ (.*)</expression>
+      </RegExp>-->
+      <!--<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+        <expression>&lt;td valign="top"&gt;([^/]*)/[^/]* / SINOPSIS</expression>
+      </RegExp>-->
+      <RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+        <expression>&lt;td valign="top"&gt;([^/]*)/[^/]* /  [^=]*\(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;rating&gt;\1.\2&lt;/rating&gt;" dest="5+">
+        <expression>font-size:22px; font-weight: bold;"&gt;([0-9]+),([0-9]+)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;votes&gt;\1\2&lt;/votes&gt;" dest="5+">
+        <expression>&lt;tr&gt;&lt;td align="center"&gt;\(([0-9\.]+) votos\)</expression>
+      </RegExp>
+      <RegExp input="$$9" output="&lt;runtime&gt;\1 minutos&lt;/runtime&gt;" dest="5+">
+        <RegExp input="$$1" output="\1" dest="9">
+          <expression noclean="1">&lt;b&gt;DURACI.N&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;PA.S&lt;/b&gt;</expression>
+        </RegExp>
+        <expression repeat="yes">&lt;td&gt;([0-9]*) min\.</expression>
+      </RegExp>
+      <!--<RegExp input="$$6" output="&lt;actor&gt;\1&lt;/actor&gt;" dest="5+">
+        <RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="6">
+          <expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
+        </RegExp>
+        <expression noclean="1"></expression>
+      </RegExp>-->
+      <!--<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+        <expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
+        <RegExp input="$$2" output="&lt;url function=&quot;GetPlot&quot;&gt;http://akas.imdb.com/title/\1/plotsummary&lt;/url&gt;" dest="5+">
+          <expression></expression>
+        </RegExp>
+      </RegExp>-->
+      <RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+        <expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;thumb&gt;http://www.filmaffinity.com/imgs/movies/full/\1/\2.jpg&lt;/thumb&gt;" dest="5+">
+        <expression noclean="1">&lt;img src="http://www.filmaffinity.com/imgs/movies/full/([0-9]*)/([0-9]*).jpg"</expression>
+      </RegExp>
+      <expression noclean="1"></expression>
+    </RegExp>
+  </GetDetails>
+</scraper>
