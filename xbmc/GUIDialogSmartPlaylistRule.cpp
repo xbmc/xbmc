@@ -115,7 +115,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   strHeading.Format(g_localizeStrings.Get(13401),g_localizeStrings.Get(iLabel));
   pDialog->SetHeading(strHeading);
   pDialog->DoModal();
-  if (!pDialog->IsConfirmed())
+  if (pDialog->GetSelectedLabel() > -1)
   {
     m_rule.m_parameter = pDialog->GetSelectedLabelText();
     UpdateButtons();
