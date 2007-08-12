@@ -775,7 +775,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
         }
-        else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES)
+        else if (item->HasVideoInfoTag() && !item->m_bIsFolder)
         {
           if (item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
@@ -783,11 +783,18 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
+        if (item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode > -1) // movie entry
+        {
+          if (m_database.IsLinkedToTvshow(item->GetVideoInfoTag()->m_iDbId))
+            buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);
+          else
+            buttons.Add(CONTEXT_BUTTON_LINK_MOVIE,20384);
+        }
 
-        if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath))
+        if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
         
-        if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
+        if (item->HasVideoInfoTag() && (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
 
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
@@ -923,6 +930,34 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnScan("",info,settings);
       return true;
     }
+  case CONTEXT_BUTTON_UNLINK_MOVIE:
+    {
+      m_database.LinkMovieToTvshow(m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId,-1);
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      return true;
+    }
+  case CONTEXT_BUTTON_LINK_MOVIE:
+    {
+      OnLinkMovieToTvShow(itemNumber);
+      return true;
+    }
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
+}
+
+void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
+{
+  CFileItemList list;
+  m_database.GetTvShowsNav("videodb://2/2",list);
+  list.Sort(SORT_METHOD_LABEL,SORT_ORDER_ASC);
+  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  pDialog->Reset();
+  pDialog->SetItems(&list);
+  pDialog->SetHeading(20386);
+  pDialog->DoModal();
+  if (pDialog->GetSelectedLabel() > -1)
+  {
+    m_database.LinkMovieToTvshow(m_vecItems[itemnumber]->GetVideoInfoTag()->m_iDbId,pDialog->GetSelectedItem().GetVideoInfoTag()->m_iDbId);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
 }
