@@ -280,6 +280,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
 
+  g_advancedSettings.m_bUseEvilB = true;
+
   g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
   g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
   g_advancedSettings.m_bTuxBoxPictureIcon= true;
@@ -1203,6 +1205,8 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
+
+  XMLUtils::GetBoolean(pRootElement,"useevilb",g_advancedSettings.m_bUseEvilB);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

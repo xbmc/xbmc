@@ -295,6 +295,7 @@ public:
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
 
+    bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     bool m_bTuxBoxSubMenuSelection;
