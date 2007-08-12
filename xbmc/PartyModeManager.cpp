@@ -56,6 +56,8 @@ bool CPartyModeManager::Enable()
   CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   pDialog->SetHeading(20121);
   pDialog->SetLine(0,20123);
+  pDialog->SetLine(1, "");
+  pDialog->SetLine(2, "");
   pDialog->StartModal();
   partyModePath = g_settings.GetUserDataItem("partymode.xml");
   if (playlist.Load(partyModePath))
