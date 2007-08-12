@@ -265,6 +265,8 @@ public:
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
+  bool LinkMovieToTvshow(long idMovie, long idShow);
+  bool IsLinkedToTvshow(long idMovie);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);

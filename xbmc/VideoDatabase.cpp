@@ -34,7 +34,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 8
+#define VIDEO_DATABASE_VERSION 9
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -194,6 +194,11 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE genrelinkepisode ( idGenre integer, idEpisode integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkepisode_1 ON genrelinkepisode ( idGenre, idEpisode)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkepisode_2 ON genrelinkepisode ( idEpisode, idGenre)\n");
+
+    CLog::Log(LOGINFO, "create movielinktvshow table");
+    m_pDS->exec("CREATE TABLE movielinktvshow ( idMovie integer, IdShow integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_1 ON movielinktvshow ( idShow, idMovie)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_2 ON movielinktvshow ( idMovie, idShow)\n");
   }
   catch (...)
   {
@@ -448,6 +453,60 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
 
   return false;
 }
+
+bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow)
+{
+   try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (idShow == -1) // delete link
+    {
+      CStdString strSQL=FormatSQL("delete from movielinktvshow where idMovie=%u", idMovie);
+      m_pDS->exec(strSQL.c_str());
+      return true;
+    }
+
+    CStdString strSQL=FormatSQL("insert into movielinktvshow (idShow,idMovie) values (%u,%u)", idShow,idMovie);
+    m_pDS->exec(strSQL.c_str());
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%u, %u) failed", idMovie, idShow);
+  }
+
+  return false;
+}
+
+bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
+{
+   try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from movielinktvshow where idMovie=%u", idMovie);
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->eof())
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%u) failed", idMovie);
+  }
+
+  return false;
+}
+
 
 //********************************************************************************************************************************
 long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
@@ -2442,6 +2501,13 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec(FormatSQL("INSERT INTO path SELECT idPath,strPath,strContent,strScraper,strHash,CASE scanRecursive WHEN 0 THEN 0 ELSE %i END AS scanRecursive,useFolderNames FROM temppath\n", INT_MAX));
       m_pDS->exec("DROP TABLE temppath\n");
     }
+    if (iVersion < 9)
+    {
+      CLog::Log(LOGINFO, "create movielinktvshow table");
+      m_pDS->exec("CREATE TABLE movielinktvshow ( idMovie integer, IdShow integer)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_1 ON movielinktvshow ( idShow, idMovie)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_2 ON movielinktvshow ( idMovie, idShow)\n");
+    }
   }
   catch (...)
   {
@@ -3043,9 +3109,12 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       if (idGenre != -1)
         strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
     }
+    CStdString strSQL2 = FormatSQL("select idMovie from movielinktvshow where idShow=%u",idShow);
+
     // run query
     CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
+    if (!m_pDS2->query(strSQL2.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -3096,7 +3165,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_iDbId = idShow;
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
-      }
+      }      
     }
     else
     {
@@ -3121,6 +3190,27 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         m_pDS->next();
       }
       m_pDS->close();
+      // now add the linked movies if appropriate
+      while (!m_pDS2->eof())
+      {
+        long lMovieId = m_pDS2->fv("idMovie").get_asLong();
+        strSQL = FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath where idMovie=%u",lMovieId);
+        m_pDS->query(strSQL);
+        if (m_pDS->eof())
+        {
+          m_pDS2->next();
+          continue;
+        }
+        CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
+        m_pDS->close();
+        CFileItem* pItem=new CFileItem(movie);
+        CStdString strDir;
+        pItem->m_strPath.Format("videodb://1/2/%u", lMovieId);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+        items.Add(pItem);
+        m_pDS2->next();
+      }
+      m_pDS2->close();
     }
 
     return true;
