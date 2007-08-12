@@ -915,6 +915,9 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_LIRC
   g_RemoteControl.Initialize();
 #endif
+#ifdef HAS_SDL_JOYSTICK
+  g_Joystick.Initialize(hWnd);
+#endif
 
 #ifdef HAS_XBOX_HARDWARE
   // Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
@@ -1578,7 +1581,7 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
-	if (pXbmcHttp)
+        if (pXbmcHttp)
       pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
 #endif
@@ -1882,21 +1885,21 @@ void CApplication::CheckDate()
   GetLocalTime(&CurTime);
   GetLocalTime(&NewTime);
   CLog::Log(LOGINFO, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
-  if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )	// XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
+  if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
-    NewTime.wYear		= 2004;	// 2004
-    NewTime.wMonth		= 1;	// January
-    NewTime.wDayOfWeek	= 1;	// Monday
-    NewTime.wDay		= 5;	// Monday 05.01.2004!!
-    NewTime.wHour		= 12;
-    NewTime.wMinute		= 0;
+    NewTime.wYear               = 2004; // 2004
+    NewTime.wMonth              = 1;    // January
+    NewTime.wDayOfWeek  = 1;    // Monday
+    NewTime.wDay                = 5;    // Monday 05.01.2004!!
+    NewTime.wHour               = 12;
+    NewTime.wMinute             = 0;
 
     FILETIME stNewTime, stCurTime;
     SystemTimeToFileTime(&NewTime, &stNewTime);
     SystemTimeToFileTime(&CurTime, &stCurTime);
 #ifdef HAS_XBOX_HARDWARE
-    NtSetSystemTime(&stNewTime, &stCurTime);	// Set a Default Year 2004!
+    NtSetSystemTime(&stNewTime, &stCurTime);    // Set a Default Year 2004!
 #endif
     CLog::Log(LOGNOTICE, "- New Date is now: %i-%i-%i",NewTime.wDay, NewTime.wMonth, NewTime.wYear);
   }
@@ -2568,18 +2571,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-	{
-	  if (key.GetFromHttpApi())
+        {
+          if (key.GetFromHttpApi())
       {
         if (key.GetButtonCode() != KEY_INVALID)
-		{
+                {
           action.wID = (WORD) key.GetButtonCode();
-		  g_buttonTranslator.GetAction(iWin, key, action);
-		}
+                  g_buttonTranslator.GetAction(iWin, key, action);
+                }
       }
-	  else
+          else
         g_buttonTranslator.GetAction(iWin, key, action);
-	}
+        }
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, key.GetButtonCode(), action.wID);
@@ -3195,6 +3198,25 @@ bool CApplication::ProcessGamepad(float frameTime)
   {
     CKey key(KEY_BUTTON_WHITE, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
     if (OnKey(key)) return true;
+  }
+#endif
+#ifdef HAS_SDL_JOYSTICK
+  if (g_Joystick.GetButton())
+  {
+    CAction action;
+    action.wID = g_Joystick.GetButton();
+    if (action.wID == ACTION_BUILT_IN_FUNCTION)
+    {
+      action.strAction = g_Joystick.GetAction();
+    }
+    action.fAmount1 = 1.0f;
+    g_Joystick.Reset();
+    g_audioManager.PlayActionSound(action);
+    return OnAction(action);
+  }
+  else if (g_Joystick.GetAxis())
+  {
+    // TODO: analog actions
   }
 #endif
   return false;
@@ -4819,7 +4841,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else 
 #endif
-	if (item.IsXBE())
+        if (item.IsXBE())
         { // an XBE
           int iRegion;
           if (g_guiSettings.GetBool("myprograms.gameautoregion"))

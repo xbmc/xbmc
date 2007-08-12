@@ -20,6 +20,9 @@
 #elif defined(HAS_SDL)
 #include "common/SDLMouse.h"
 #include "common/SDLKeyboard.h"
+#ifdef HAS_SDL_JOYSTICK
+#include "common/SDLJoystick.h"
+#endif
 #else
 #include "common/DirectInputMouse.h"
 #include "common/DirectInputKeyboard.h"

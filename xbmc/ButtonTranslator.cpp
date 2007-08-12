@@ -65,22 +65,24 @@ bool CButtonTranslator::Load()
   {
     WORD wWindowID = WINDOW_INVALID;
     const char *szWindow = pWindow->Value();
-    if (szWindow)
     {
-      if (strcmpi(szWindow, "global") == 0)
-        wWindowID = (WORD) -1;
-      else
-        wWindowID = TranslateWindowString(szWindow);
+      if (szWindow)
+      {
+        if (strcmpi(szWindow, "global") == 0)
+          wWindowID = (WORD) -1;
+        else
+          wWindowID = TranslateWindowString(szWindow);
+      }
+      MapWindowActions(pWindow, wWindowID);
+      pWindow = pWindow->NextSibling();
     }
-    MapWindowActions(pWindow, wWindowID);
-    pWindow = pWindow->NextSibling();
   }
   
 #ifdef HAS_LIRC
   if (!LoadLircMap())
     return false;
 #endif
-  
+
   // Done!
   return true;
 }
@@ -155,6 +157,114 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 
   // Convert the button to code  
   return TranslateRemoteString((*it2).second.c_str());
+}
+#endif
+
+#ifdef HAS_SDL_JOYSTICK
+void CButtonTranslator::MapJoystickActions(TiXmlNode *pJoystick)
+{
+  string joyname = "_xbmc_"; // default global map name
+  JoystickButtonMap buttonMap;
+  JoystickAxisMap axisMap;
+
+  TiXmlElement *pJoy = pJoystick->ToElement();
+  if (pJoy && pJoy->Attribute("name"))
+  {
+    joyname = pJoy->Attribute("name");
+    CLog::Log(LOGNOTICE, "Found Joystick map for %s", joyname.c_str());
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
+  }
+  if (m_joystickButtonMap.find(joyname) != m_joystickButtonMap.end())
+  {
+    CLog::Log(LOGERROR, "Duplicate Joystick, Ignoring: %s", joyname.c_str());
+    return;
+  }
+
+  // parse map
+  TiXmlElement *pButton = pJoystick->FirstChildElement();
+  int id = 0;
+  char* szId;
+  char* szType;
+  char *szAction;
+  while (pButton)
+  {
+    szType = (char*)pButton->Value();
+    szAction = (char*)pButton->GetText();
+    if (szType && szAction && pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
+    {
+      if (id>=0 && id<=256)
+      {
+        if (strcasecmp(szType, "button")==0) 
+        {
+          buttonMap[id] = string(szAction);
+        }
+        else if (strcasecmp(szType, "axis")==0)
+        {
+          axisMap[id] = CStdString(szAction);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", szType);
+        }
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Error reading joystick map element, skipping");
+    }
+    pButton = pButton->NextSiblingElement();
+  }
+  m_joystickButtonMap[joyname] = buttonMap;
+  m_joystickAxisMap[joyname] = axisMap;  
+  return;
+}
+
+WORD CButtonTranslator::TranslateJoystickString(const char* szDevice, int id, string& strAction, bool axis)
+{
+  WORD code = 0;
+  // Axis?
+  if (axis)
+  {
+    // find the joystick
+    map<string, JoystickAxisMap>::iterator it = m_joystickAxisMap.find(szDevice);
+    if (it == m_joystickAxisMap.end())
+      return 0;
+
+    // find the associated axis action
+    JoystickAxisMap axisMap = it->second;
+    map<int, string>::iterator it2 = axisMap.find(id);
+    if (it2 == axisMap.end())
+      return 0;
+
+    // return the code
+    strAction = (it2->second).c_str();
+    TranslateActionString((it2->second).c_str(), code);
+  }
+  else // button
+  {
+    // find the joystick
+    map<string, JoystickButtonMap>::iterator it = m_joystickButtonMap.find(szDevice);
+    if (it == m_joystickButtonMap.end())
+      return 0;
+
+    // find the associated button action
+    JoystickButtonMap buttonMap = it->second;
+    map<int, string>::iterator it2 = buttonMap.find(id);
+    if (it2 == buttonMap.end())
+      return 0;
+
+    // return the code
+    strAction = (it2->second).c_str();
+    TranslateActionString((it2->second).c_str(), code);
+  }
+  return code;
 }
 #endif
 
@@ -296,6 +406,17 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
       pButton = pButton->NextSiblingElement();
     }
   }
+#ifdef HAS_SDL_JOYSTICK
+  if ((pDevice = pWindow->FirstChild("joystick")) != NULL)
+  { 
+    // map joystick actions
+    while (pDevice)
+    {
+      MapJoystickActions(pDevice);
+      pDevice = pDevice->NextSibling("joystick");
+    }
+  }
+#endif
   // add our map to our table
   if (map.size() > 0)
     translatorMap.insert(pair<WORD, buttonMap>( wWindowID, map));

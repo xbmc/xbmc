@@ -27,6 +27,10 @@ public:
 #ifdef HAS_LIRC
   WORD TranslateLircRemoteString(const char* szDevice, const char *szButton);
 #endif
+#ifdef HAS_SDL_JOYSTICK
+  WORD TranslateJoystickString(const char* szDevice, int id, string& strAction, bool axis);
+#endif
+
 
 private:
   typedef multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
@@ -44,6 +48,15 @@ private:
   void MapRemote(TiXmlNode *pRemote, const char* szDevice); 
   typedef map<CStdString, CStdString> lircButtonMap;
   map<CStdString, lircButtonMap> lircRemotesMap;
+#endif
+
+#ifdef HAS_SDL_JOYSTICK
+  void MapJoystickActions(TiXmlNode *pJoystick); 
+
+  typedef map<int, string> JoystickButtonMap;
+  typedef map<int, string> JoystickAxisMap;
+  map<string, JoystickButtonMap> m_joystickButtonMap;
+  map<string, JoystickAxisMap> m_joystickAxisMap;
 #endif
 
 };
