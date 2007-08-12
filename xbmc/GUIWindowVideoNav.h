@@ -38,8 +38,6 @@ protected:
 
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 
-  CVideoThumbLoader m_thumbLoader;      ///< used for the loading of thumbs in the special://videoplaylist folder
-
   // filtered item views
   CFileItemList m_unfilteredItems;
   CStdString m_filter;
