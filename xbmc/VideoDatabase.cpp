@@ -302,11 +302,11 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     if (!m_pDS->query("select strPath from path" 
                        " where idPath in (select idPath from files join movie on movie.idFile=files.idFile)"
                        " and idPath NOT in (select idpath from tvshowlinkpath)"
+                       " and idPath NOT in (select idpath from files where strFileName like 'video_ts.ifo')" // dvdfolders get stacked to a single item in parent folder
                        " and strPath NOT like 'stack://%%'"
                        " and strPath NOT like 'multipath://%%'"
                        " and strPath NOT like 'rar://%%'"
                        " and strPath NOT like 'zip://%%'"
-                       " and strFilename NOT like 'video_ts.ifo'" // dvdfolders get stacked, to a single item in parent folder
                        " and strContent NOT in ('movies', 'tvshows', 'None')" // these have been added above
                        " order by strPath"))
 
