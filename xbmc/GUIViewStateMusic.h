@@ -60,7 +60,7 @@ protected:
   virtual VECSHARES& GetShares();
 
 private:
-  bool IsMusicShare(const CStdString& strShareName);
+  void AddOnlineShares();
 };
 
 class CGUIViewStateWindowMusicSongs : public CGUIViewStateWindowMusic
