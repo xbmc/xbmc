@@ -439,17 +439,23 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
   SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
 }
 
-bool CGUIViewStateWindowMusicNav::IsMusicShare(const CStdString& strShareName)
+void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
+  if (!g_guiSettings.GetBool("network.enableinternet")) return;
   for (int i = 0; i < (int)g_settings.m_vecMyMusicShares.size(); ++i)
   {
     CShare share = g_settings.m_vecMyMusicShares.at(i);
-    if (share.strPath.Find(strShareName) == 0)
+    if (share.strPath.Find("shout://www.shoutcast.com/sbin/newxml.phtml") == 0)//shoutcast shares
     {
-      return true;
+      share.m_strThumbnailImage="defaultFolderBig.png";
+      m_shares.push_back(share);
+    }
+    else if (share.strPath.Find("lastfm://") == 0)//lastfm share
+    {
+      share.m_strThumbnailImage="defaultFolderBig.png";
+      m_shares.push_back(share);
     }
   }
-  return false;
 }
 
 VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
@@ -478,30 +484,7 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
 
-  if (g_guiSettings.GetBool("network.enableinternet"))
-  {
-    //  Shoutcast share
-    if (IsMusicShare("shout://www.shoutcast.com/sbin/newxml.phtml"))
-    {
-      CShare share;
-      share.strName=g_localizeStrings.Get(260); // Shoutcast
-      share.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
-      share.m_strThumbnailImage="defaultFolderBig.png";
-      share.m_iDriveType = SHARE_TYPE_REMOTE;
-      m_shares.push_back(share);
-    }
-
-    //  Lastfm share
-    if (IsMusicShare("lastfm://"))
-    {
-      CShare share;
-      share.strName=g_localizeStrings.Get(15200); // Last.FM
-      share.strPath = "lastfm://";
-      share.m_strThumbnailImage="defaultFolderBig.png";
-      share.m_iDriveType = SHARE_TYPE_REMOTE;
-      m_shares.push_back(share);
-    }
-  }
+  AddOnlineShares();
 
   // Search share
   share.strName=g_localizeStrings.Get(137); // Search
