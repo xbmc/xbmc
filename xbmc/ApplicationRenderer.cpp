@@ -340,6 +340,7 @@ bool CApplicationRenderer::IsBusy() const
 
 void CApplicationRenderer::SetBusy(bool bBusy)
 {
+  if (g_advancedSettings.m_busyDialogDelay <= 0) return; //never show it if disabled.
   bBusy?m_explicitbusy++:m_explicitbusy--;
   if (m_explicitbusy < 0) m_explicitbusy = 0;
   if (m_pWindow) 
