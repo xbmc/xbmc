@@ -1835,6 +1835,9 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
 
     strSQL=FormatSQL("delete from movie where idmovie=%i", lMovieId);
     m_pDS->exec(strSQL.c_str());
+
+    strSQL=FormatSQL("delete from movielinktvshow where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
@@ -1879,6 +1882,9 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from tvshow where idshow=%i", lTvShowId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL=FormatSQL("delete from movielinktvshow where idshow=%i", lTvShowId);
     m_pDS->exec(strSQL.c_str());
 
     CommitTransaction();
@@ -4445,6 +4451,12 @@ void CVideoDatabase::CleanDatabase()
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinktvshow table");
     sql = "delete from genrelinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning movielinktvshow table");
+    sql = "delete from movielinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    m_pDS->exec(sql.c_str());
+    sql = "delete from movielinktvshow where idMovie not in (select distinct idMovie from movie)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
