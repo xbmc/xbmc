@@ -953,7 +953,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetItems(&list);
-  pDialog->SetHeading(20386);
+  pDialog->SetHeading(20356);
   pDialog->DoModal();
   if (pDialog->GetSelectedLabel() > -1)
   {
