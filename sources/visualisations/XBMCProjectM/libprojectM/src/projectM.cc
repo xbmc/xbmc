@@ -2734,7 +2734,7 @@ void projectM_resetengine( projectM_t *pm ) {
     glEnable( GL_LINE_SMOOTH );
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);		
     
-    glEnable(GL_POINT_SMOOTH);
+//    glEnable(GL_POINT_SMOOTH); // disabled since it craps out on intel gpus
   
     // glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGB,0,0,renderTarget->texsize,renderTarget->texsize,0);
     //glCopyTexSubImage2D(GL_TEXTURE_2D,0,0,0,0,0,renderTarget->texsize,renderTarget->texsize);
