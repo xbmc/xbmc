@@ -611,6 +611,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
         iWindow = WINDOW_FILES;
 
       //m_gWindowManager.ActivateWindow(iWindow, strPath);
+      CUtil::ClearFileItemCache();
       m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
       return;
     }
