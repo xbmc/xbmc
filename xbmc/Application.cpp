@@ -3331,6 +3331,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
   if (item.IsLastFM())
   {
+    g_partyModeManager.Disable();
     return CLastFmManager::GetInstance()->ChangeStation(item.GetAsUrl());
   }
   if (item.IsPlayList() || item.IsInternetStream())
