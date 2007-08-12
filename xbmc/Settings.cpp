@@ -1206,7 +1206,7 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
 
-  XMLUtils::GetBoolean(pRootElement,"useevilb",g_advancedSettings.m_bUseEvilB);
+  XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
