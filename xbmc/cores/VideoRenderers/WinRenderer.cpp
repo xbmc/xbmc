@@ -449,30 +449,14 @@ void CWinRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float
 void CWinRenderer::ManageTextures()
 {
   int neededbuffers = 0;
-  //use 1 buffer in fullscreen mode and 2 buffers in windowed mode
-  if (g_graphicsContext.IsFullScreenVideo())
+  if (m_NumOSDBuffers != 2)
   {
-    if (m_NumOSDBuffers != 1)
-    {
-      m_iOSDRenderBuffer = 0;
-      m_NumOSDBuffers = 1;
-      m_OSDWidth = m_OSDHeight = 0;
-      //delete second osd textures
-      DeleteOSDTextures(1);
-    }
-    neededbuffers = 1;
+    m_NumOSDBuffers = 2;
+    m_iOSDRenderBuffer = 0;
+    m_OSDWidth = m_OSDHeight = 0;
+    // buffers will be created on demand in DrawAlpha()
   }
-  else
-  {
-    if (m_NumOSDBuffers != 2)
-    {
-      m_NumOSDBuffers = 2;
-      m_iOSDRenderBuffer = 0;
-      m_OSDWidth = m_OSDHeight = 0;
-      // buffers will be created on demand in DrawAlpha()
-    }
-    neededbuffers = 2;
-  }
+  neededbuffers = 2;
 
   if( m_NumYV12Buffers < neededbuffers )
   {
@@ -483,15 +467,11 @@ void CWinRenderer::ManageTextures()
   }
   else if( m_NumYV12Buffers > neededbuffers )
   {
-    // delete from the end
-    int i = m_NumYV12Buffers-1;
-    for(; i>=neededbuffers;i--)
-    {
+    m_NumYV12Buffers = neededbuffers;
+    m_iYV12RenderBuffer = m_iYV12RenderBuffer % m_NumYV12Buffers;    
+
+    for(int i = m_NumYV12Buffers-1; i>=neededbuffers;i--)
       DeleteYV12Texture(i);
-    }
-    if(m_iYV12RenderBuffer > i)
-        m_iYV12RenderBuffer = i;
-    m_NumYV12Buffers = i+1;
   }
 }
 
@@ -700,7 +680,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
     image->plane[i] = (BYTE*)rect.pBits;
   }
 
-  return 0;
+  return source;
 }
 
 void CWinRenderer::ReleaseImage(int source, bool preserve)
@@ -1229,14 +1209,15 @@ void CWinRenderer::DeleteYV12Texture(int index)
   CSingleLock lock(g_graphicsContext);
   YUVPLANES &planes = m_YUVTexture[index];
 
+  if (planes[0] || planes[1] || planes[2])
+    CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
+
   if (planes[0])
     SAFE_RELEASE(planes[0]);
   if (planes[1])
     SAFE_RELEASE(planes[1]);
   if (planes[2])
-    SAFE_RELEASE(planes[2]);
-
-  CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
+    SAFE_RELEASE(planes[2]);  
 }
 
 void CWinRenderer::ClearYV12Texture(int index)
