@@ -14,18 +14,22 @@
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float speed = 1.0f, const CStdStringW &scrollSuffix = " | ") { initialWait = wait; pixelSpeed = speed; suffix = scrollSuffix; Reset(); };
+  CScrollInfo(unsigned int wait = 50, float pos = 0, float speed = 1.0f, const CStdStringW &scrollSuffix = " | ") { initialWait = wait; initialPos = pos; pixelSpeed = speed; suffix = scrollSuffix; Reset(); };
   void Reset()
   {
     waitTime = initialWait;
     characterPos = 0;
-    pixelPos = 0.0f;
+    // pixelPos is where we start the current letter, so is measured
+    // to the left of the text rendering's left edge.  Thus, a negative
+    // value will mean the text starts to the right
+    pixelPos = -initialPos;
   }
   float pixelPos;
   float pixelSpeed;
   unsigned int waitTime;
   unsigned int characterPos;
   unsigned int initialWait;
+  float initialPos;
   CStdStringW suffix;
 };
 
