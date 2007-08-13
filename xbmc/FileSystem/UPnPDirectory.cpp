@@ -29,6 +29,7 @@
 #include "PltSyncMediaBrowser.h"
 
 using namespace DIRECTORY;
+using namespace XFILE;
 
 namespace DIRECTORY
 {
@@ -232,14 +233,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         }
                     }
 
-                    //TODO, current thumbnail and icon of CFileItem is expected to be a local
-                    //      image file in the normal thumbnail directories, we have no way to
-                    //      specify an external filename on the filelayer
-                    //if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
-                    //  pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
-                    //else
-                    //  pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
-
                     // look for date?
                     if((*entry)->m_Description.date.GetLength()) {
                       SYSTEMTIME time = {};
@@ -247,7 +240,25 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                                           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
                       pItem->m_dateTime = time;
                     }
-                    
+
+                    // check if we have already cached a thumb for this
+                    CStdString thumbnail;
+                    if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 )
+                      thumbnail = pItem->GetCachedVideoThumb();
+                    else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 )
+                      thumbnail = pItem->GetCachedArtistThumb();
+                    else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 )
+                      thumbnail = pItem->GetCachedPictureThumb();
+
+                    // if not, let's grab the remote one
+                    if(!CFile::Exists(thumbnail))
+                    {
+                      if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
+                        pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
+                      else if((*entry)->m_Description.icon_uri.GetLength())
+                        pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
+                    }
+
                 }
             }
 
