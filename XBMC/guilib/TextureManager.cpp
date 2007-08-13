@@ -437,6 +437,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 {
   if (strTextureName == "-")
     return 0;
+  if (strTextureName.Find("://") >= 0)
+    return 0;
 
   // first check of texture exists...
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
