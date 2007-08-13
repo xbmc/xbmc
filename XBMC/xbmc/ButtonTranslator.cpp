@@ -161,11 +161,11 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
-void CButtonTranslator::MapJoystickActions(TiXmlNode *pJoystick)
+void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
-  JoystickButtonMap buttonMap;
-  JoystickAxisMap axisMap;
+  JoystickMap buttonMap;
+  JoystickMap axisMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
   if (pJoy && pJoy->Attribute("name"))
@@ -176,11 +176,6 @@ void CButtonTranslator::MapJoystickActions(TiXmlNode *pJoystick)
   else
   {
     CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
-  }
-  if (m_joystickButtonMap.find(joyname) != m_joystickButtonMap.end())
-  {
-    CLog::Log(LOGERROR, "Duplicate Joystick, Ignoring: %s", joyname.c_str());
-    return;
   }
 
   // parse map
@@ -199,11 +194,11 @@ void CButtonTranslator::MapJoystickActions(TiXmlNode *pJoystick)
       {
         if (strcasecmp(szType, "button")==0) 
         {
-          buttonMap[id] = string(szAction);
+          buttonMap[wWindowID][id] = string(szAction);
         }
         else if (strcasecmp(szType, "axis")==0)
         {
-          axisMap[id] = CStdString(szAction);
+          axisMap[wWindowID][id] = string(szAction);
         }
         else
         {
@@ -226,45 +221,68 @@ void CButtonTranslator::MapJoystickActions(TiXmlNode *pJoystick)
   return;
 }
 
-WORD CButtonTranslator::TranslateJoystickString(const char* szDevice, int id, string& strAction, bool axis)
+bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevice, int id, bool axis, WORD& action, CStdString& strAction)
 {
-  WORD code = 0;
-  // Axis?
+  bool found = false;
+  map<string, JoystickMap>::iterator it;
+  map<string, JoystickMap> *jmap;
+  
   if (axis)
   {
-    // find the joystick
-    map<string, JoystickAxisMap>::iterator it = m_joystickAxisMap.find(szDevice);
-    if (it == m_joystickAxisMap.end())
-      return 0;
-
-    // find the associated axis action
-    JoystickAxisMap axisMap = it->second;
-    map<int, string>::iterator it2 = axisMap.find(id);
-    if (it2 == axisMap.end())
-      return 0;
-
-    // return the code
-    strAction = (it2->second).c_str();
-    TranslateActionString((it2->second).c_str(), code);
+    jmap = &m_joystickAxisMap;
   }
-  else // button
+  else
   {
-    // find the joystick
-    map<string, JoystickButtonMap>::iterator it = m_joystickButtonMap.find(szDevice);
-    if (it == m_joystickButtonMap.end())
-      return 0;
-
-    // find the associated button action
-    JoystickButtonMap buttonMap = it->second;
-    map<int, string>::iterator it2 = buttonMap.find(id);
-    if (it2 == buttonMap.end())
-      return 0;
-
-    // return the code
-    strAction = (it2->second).c_str();
-    TranslateActionString((it2->second).c_str(), code);
+    jmap = &m_joystickButtonMap;
   }
-  return code;
+
+  it = jmap->find(szDevice);
+  if (it==jmap->end())
+    return false;
+
+  JoystickMap wmap = it->second;
+  JoystickMap::iterator it2;
+  map<int, string> windowbmap;
+  map<int, string> globalbmap;
+  map<int, string>::iterator it3;
+
+  it2 = wmap.find(wWindow);
+
+  // first try local window map
+  if (it2!=wmap.end())
+  {
+    windowbmap = it2->second;
+    it3 = windowbmap.find(id);
+    if (it3 != windowbmap.end())
+    {
+      strAction = (it3->second).c_str();
+      found = true;
+    }
+  }
+
+  // if not found, try global map
+  if (!found)
+  {
+    it2 = wmap.find((WORD)-1);
+    if (it2 != wmap.end())
+    {
+      globalbmap = it2->second;
+      it3 = globalbmap.find(id);
+      if (it3 != globalbmap.end())
+      {
+        strAction = (it3->second).c_str();
+        found = true;
+      }
+    }
+  }
+
+  // translated found action
+  if (found)
+  {
+    return TranslateActionString(strAction.c_str(), action);
+  }
+
+  return false;
 }
 #endif
 
@@ -412,7 +430,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     // map joystick actions
     while (pDevice)
     {
-      MapJoystickActions(pDevice);
+      MapJoystickActions(wWindowID, pDevice);
       pDevice = pDevice->NextSibling("joystick");
     }
   }

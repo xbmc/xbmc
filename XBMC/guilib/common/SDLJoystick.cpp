@@ -2,6 +2,7 @@
 #include "../Key.h"
 #include "SDLJoystick.h"
 #include "ButtonTranslator.h"
+#include <math.h>
 
 #ifdef HAS_SDL_JOYSTICK
 
@@ -10,6 +11,11 @@ CJoystick g_Joystick; // global
 CJoystick::CJoystick()
 {
   Reset();
+  m_JoyId = -1;
+  for (int i = 0 ; i<MAX_AXES ; i++)
+  {
+    m_Amount[i] = 0.0f;
+  }
 }
 
 void CJoystick::Initialize(HWND hWnd)
@@ -32,10 +38,6 @@ void CJoystick::Initialize(HWND hWnd)
   // any joysticks connected?
   if (SDL_NumJoysticks()>0)
   {
-
-    // enable joystick event capture
-    SDL_JoystickEventState(SDL_ENABLE);
-
     // load joystick names and open all connected joysticks
     for (int i = 0 ; i<SDL_NumJoysticks() ; i++)
     {
@@ -51,6 +53,8 @@ void CJoystick::Initialize(HWND hWnd)
         m_JoystickNames.push_back(string(""));
       }
     }
+    // enable joystick event capture
+    SDL_JoystickEventState(SDL_ENABLE);    
   }
   else
   {
@@ -59,11 +63,17 @@ void CJoystick::Initialize(HWND hWnd)
   }
 }
 
-void CJoystick::Reset()
+void CJoystick::Reset(bool axis)
 {
-  m_Amount = 0.0f;
-  m_Button = 0;
-  m_Axis = 0;
+  m_ButtonId = 0;
+  if (axis)
+  {
+    m_AxisId = 0;
+    for (int i = 0 ; i<MAX_AXES ; i++)
+    {
+      m_Amount[i] = 0.0f;
+    }
+  }
 }
 
 void CJoystick::Update(SDL_Event& joyEvent)
@@ -75,28 +85,46 @@ void CJoystick::Update(SDL_Event& joyEvent)
   bool ignore = false;
   bool axis = false;
 
-  m_Amount = 0.0f;
-  
   switch(joyEvent.type)
   {
   case SDL_JOYBUTTONDOWN:  
-    joyId = joyEvent.jbutton.which;
-    buttonId = joyEvent.jbutton.button;
-    CLog::Log(LOGNOTICE, "Joystick %d button %d", joyId, buttonId);
+    m_JoyId = joyId = joyEvent.jbutton.which;
+    m_ButtonId = buttonId = joyEvent.jbutton.button;
+    CLog::Log(LOGDEBUG, "Joystick %d button %d", joyId, buttonId);
     break;
 
   case SDL_JOYAXISMOTION:
     joyId = joyEvent.jaxis.which;
     axisId = joyEvent.jaxis.axis;
+    m_NumAxes = SDL_JoystickNumAxes(m_Joysticks[joyId]);
+    if (axisId<0 || axis>=MAX_AXES)
+    {
+      CLog::Log(LOGERROR, "Axis Id out of range. Maximum supported axis: %d", MAX_AXES);
+      ignore = true;
+      break;
+    }
     axis = true;
-    m_Amount = (float)joyEvent.jaxis.value; //[-32768 to 32767]
-    ignore = true; // FIXME!!
-    //CLog::Log(LOGNOTICE, "Joystick %d axis %d amount %d", joyId, axisId, (int)m_Amount);
+    m_JoyId = joyId;
+    if (joyEvent.jaxis.value==0)
+    {
+      ignore = true;
+      m_Amount[axisId] = 0.0f;
+    }
+    else
+    {
+      m_Amount[axisId] = ((float)joyEvent.jaxis.value / 32768.0f); //[-32768 to 32767]
+    }
+    m_AxisId = GetAxisWithMaxAmount();
+    CLog::Log(LOGDEBUG, "Joystick %d axis %d amount %f", joyId, axisId, m_Amount[axisId]);
     break;
 
   case SDL_JOYBALLMOTION:
   case SDL_JOYHATMOTION:
+    ignore = true;
+    break;
+
   case SDL_JOYBUTTONUP:
+    m_ButtonId = 0;
   default:
     ignore = true;
     break;
@@ -107,20 +135,29 @@ void CJoystick::Update(SDL_Event& joyEvent)
 
   if (axis)
   {
-    if (m_Axis = g_buttonTranslator.TranslateJoystickString(m_JoystickNames[joyId].c_str(), 
-                                                            axisId, m_Action, true))
-    {
-      m_Button = 0;
-    }
+    m_ButtonId = 0;
   }
   else
   {
-    if (m_Button = g_buttonTranslator.TranslateJoystickString(m_JoystickNames[joyId].c_str(), 
-                                                              buttonId, m_Action, false))
+    m_AxisId = 0;
+  }
+}
+
+int CJoystick::GetAxisWithMaxAmount()
+{
+  static float maxAmount;
+  static int axis;
+  axis = 0;
+  maxAmount = 0;
+  for (int i = 0 ; i<m_NumAxes ; i++)
+  {
+    if ((float)fabs(m_Amount[i])>maxAmount)
     {
-      m_Axis = 0;
+      maxAmount = (float)fabs(m_Amount[i]);
+      axis = i;
     }
   }
+  return axis;
 }
 
 #endif

@@ -111,6 +111,8 @@
       <button id="3">XBMC.ActivateWindow(PlayerControls)</button>
       <button id="8">ScrollUp</button>
       <button id="9">ScrollDown</button>
+      <axis id="3">VolumeDown</axis>
+      <axis id="2">AnalogSeekBack</axis>
     </joystick>
 
     <keyboard>
