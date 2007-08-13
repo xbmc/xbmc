@@ -25,7 +25,7 @@
 #include "util.h"
 #include "application.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#ifdef _XBOX
+#ifdef HAS_XBOX_HARDWARE
 #include "cores/VideoRenderers/RenderManager.h"
 #else
 #include "cores/VideoRenderers/WinRenderManager.h"
