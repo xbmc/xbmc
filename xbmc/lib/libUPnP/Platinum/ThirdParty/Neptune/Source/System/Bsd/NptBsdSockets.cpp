@@ -981,6 +981,13 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
                    SO_REUSEADDR, 
                    (SocketOption)&option, 
                    sizeof(option));
+
+        setsockopt(m_SocketFdReference->GetSocketFd(), 
+                   IPPROTO_IP, 
+                   IP_MULTICAST_LOOP,
+                   (SocketOption)&option, 
+                   sizeof(option));
+
     }
     
     // convert the address
