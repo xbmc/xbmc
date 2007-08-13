@@ -4,9 +4,9 @@
 #include "../xbmc/Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #ifdef HAS_XBOX_HARDWARE
-#include "cores/VideoRenderers/RenderManager.h"
+#include "../xbmc/cores/VideoRenderers/RenderManager.h"
 #else
-#include "cores/VideoRenderers/WinRenderManager.h"
+#include "../xbmc/cores/VideoRenderers/WinRenderManager.h"
 #endif
 #else
 #include "../xbmc/cores/DummyVideoPlayer.h"
