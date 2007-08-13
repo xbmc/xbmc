@@ -193,8 +193,12 @@ extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handl
             hSourceProcessHandle, hSourceHandle, hTargetProcessHandle,
             lpTargetHandle, dwDesiredAccess, bInheritHandle, dwOptions);
 #endif
+#ifdef _XBOX
   *lpTargetHandle = hSourceHandle;
   return 1;
+#else
+  return DuplicateHandle(hSourceProcessHandle, hSourceHandle, hTargetProcessHandle, lpTargetHandle, dwDesiredAccess, bInheritHandle, dwOptions);
+#endif
 }
 
 extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HANDLE h)
