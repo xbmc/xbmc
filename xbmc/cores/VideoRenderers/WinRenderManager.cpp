@@ -38,6 +38,10 @@ CWinRenderManager::CWinRenderManager()
 
 CWinRenderManager::~CWinRenderManager()
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
     delete m_pRenderer;
   m_pRenderer = NULL;
@@ -45,24 +49,38 @@ CWinRenderManager::~CWinRenderManager()
 
 bool CWinRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);      
+
   if(!m_pRenderer) 
+  {
+    RestoreCriticalSection(g_graphicsContext, locks);
     return false;
+  }
  
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
+    {
+      lock.Leave();
       g_applicationMessenger.SwitchToFullscreen();
- 
+      lock.Enter();
+    }
     m_pRenderer->Update(false);
     m_bIsStarted = true;
   }
   
+  RestoreCriticalSection(g_graphicsContext, locks);
   return result;
 }
 
 void CWinRenderManager::Update(bool bPauseDrawing)
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
     m_pRenderer->Update(bPauseDrawing);
@@ -70,12 +88,20 @@ void CWinRenderManager::Update(bool bPauseDrawing)
 
 void CWinRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CSharedLock lock(m_sharedSection); 
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
     m_pRenderer->RenderUpdate(clear, flags, alpha);
 }
 
 unsigned int CWinRenderManager::PreInit()
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   m_bIsStarted = false;
   m_bPauseDrawing = false;
 
@@ -89,6 +115,10 @@ unsigned int CWinRenderManager::PreInit()
 
 void CWinRenderManager::UnInit()
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   m_bIsStarted = false;
   if (m_pRenderer)
   {
@@ -100,12 +130,17 @@ void CWinRenderManager::UnInit()
 
 void CWinRenderManager::SetupScreenshot()
 {
+  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
 }
 
 void CWinRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
@@ -120,6 +155,8 @@ void CWinRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, EF
 
   while( timestamp > GetTickCount() )
     Sleep(1);
+
+  CSharedLock lock(m_sharedSection);
 
   if(!m_pRenderer)
     return;
