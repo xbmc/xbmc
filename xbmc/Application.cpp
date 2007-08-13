@@ -83,7 +83,11 @@
 #endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/videorenderers/rendermanager.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "cores/VideoRenderers/RenderManager.h"
+#else
+#include "cores/VideoRenderers/WinRenderManager.h"
+#endif
 #endif
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
@@ -2118,7 +2122,7 @@ void CApplication::RenderNoPresent()
 
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
-
+#ifdef HAS_XBOX_HARDWARE
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
@@ -2127,6 +2131,7 @@ void CApplication::RenderNoPresent()
     g_infoManager.ResetCache();
     return;
   }
+#endif
 
   g_ApplicationRenderer.Render();
 }
