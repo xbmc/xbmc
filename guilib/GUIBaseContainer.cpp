@@ -470,6 +470,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         if (thumb) newItem->SetThumbnailImage(thumb);
         if (icon) newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
+        newItem->m_idepth = 0;  // no visibility condition
       }
       m_staticItems.push_back(newItem);
     }
