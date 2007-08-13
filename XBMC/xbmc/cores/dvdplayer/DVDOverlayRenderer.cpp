@@ -4,6 +4,7 @@
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 
+
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay)
 {
   if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SPU))

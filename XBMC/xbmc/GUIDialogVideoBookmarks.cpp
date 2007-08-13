@@ -25,7 +25,11 @@
 #include "Application.h"
 #include "Util.h"
 #ifdef HAS_VIDEO_PLAYBACK
+#ifdef _XBOX
 #include "cores/VideoRenderers/RenderManager.h"
+#else
+#include "cores/VideoRenderers/WinRenderManager.h"
+#endif
 #endif
 #include "Picture.h"
 
