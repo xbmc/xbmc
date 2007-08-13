@@ -208,18 +208,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     if ((*entry)->m_Resources[0].m_Size > 0) {
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
-                    pItem->GetMusicInfoTag()->SetDuration((*entry)->m_Resources[0].m_Duration);
-                    pItem->GetMusicInfoTag()->SetGenre((const char*) (*entry)->m_Affiliation.genre);
-                    pItem->GetMusicInfoTag()->SetAlbum((const char*) (*entry)->m_Affiliation.album);
-                    
-                    // some servers (like WMC) use upnp:artist instead of dc:creator
-                    if ((*entry)->m_Creator.GetLength() == 0) {
-                        pItem->GetMusicInfoTag()->SetArtist((const char*) (*entry)->m_People.artist);
-                    } else {
-                        pItem->GetMusicInfoTag()->SetArtist((const char*) (*entry)->m_Creator);
-                    }
-                    pItem->GetMusicInfoTag()->SetTitle((const char*) (*entry)->m_Title);                    
-                    pItem->GetMusicInfoTag()->SetLoaded();
 
                     // look for content type in protocol info
                     if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
@@ -241,14 +229,42 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       pItem->m_dateTime = time;
                     }
 
-                    // check if we have already cached a thumb for this
                     CStdString thumbnail;
                     if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 )
+                    {
                       thumbnail = pItem->GetCachedVideoThumb();
+                      CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+                      tag->m_strTitle = (*entry)->m_Title;
+                      tag->m_strGenre = (*entry)->m_Affiliation.genre;
+                      tag->m_strDirector = (*entry)->m_People.director;
+                      tag->m_strTagLine = (*entry)->m_Description.description;
+                      tag->m_strPlot = (*entry)->m_Description.long_description;
+                      tag->m_strRuntime.Format("%d",(*entry)->m_Resources[0].m_Duration);
+                    }
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 )
+                    {
                       thumbnail = pItem->GetCachedArtistThumb();
+                      CMusicInfoTag* tag = pItem->GetMusicInfoTag();
+
+                      tag->SetDuration((*entry)->m_Resources[0].m_Duration);
+                      tag->SetTitle((const char*) (*entry)->m_Title);
+                      tag->SetGenre((const char*) (*entry)->m_Affiliation.genre);
+                      tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
+                      
+                      // some servers (like WMC) use upnp:artist instead of dc:creator
+                      if ((*entry)->m_Creator.GetLength() == 0)
+                        tag->SetArtist((const char*) (*entry)->m_People.artist);
+                      else
+                        tag->SetArtist((const char*) (*entry)->m_Creator);
+                      
+                      tag->SetLoaded();
+                    }
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 )
+                    {
                       thumbnail = pItem->GetCachedPictureThumb();
+                      //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
+                    }
+
 
                     // if not, let's grab the remote one
                     if(CFile::Exists(thumbnail))

@@ -118,9 +118,10 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
     }
 
     // don't respond on loopback
-    if (net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
-        return NPT_SUCCESS;
-    }
+    // windows media player on vista sends it's M-SEARCH to loopback interface if it's a local clients sometimes
+    //if (net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
+    //    return NPT_SUCCESS;
+    //}
 
     NPT_SocketAddress local_addr((*netaddr).GetPrimaryAddress(), 0); // 1900?
     NPT_UdpSocket     socket;
@@ -203,9 +204,10 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
     }
 
     // don't advertise on loopback
-    if (net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
-        return NPT_FAILURE;
-    }
+    // services on the local machine listens on the loopback interface
+    //if (net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
+    //    return NPT_FAILURE;
+    //}
 
     NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = net_if->GetAddresses().GetFirstItem();
     if (!niaddr) return NPT_FAILURE;
