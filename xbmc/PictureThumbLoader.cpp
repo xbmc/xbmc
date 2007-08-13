@@ -46,7 +46,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     // look for remote thumbs    
     if (!thumb.IsEmpty() && thumb.Find("://") >=0)
     {
-      CStdString cachedThumb(pItem->GetCachedVideoThumb());
+      CStdString cachedThumb(pItem->GetCachedPictureThumb());
       CPicture pic;
       if(pic.DoCreateThumbnail(thumb, cachedThumb))
         pItem->SetThumbnailImage(cachedThumb);
