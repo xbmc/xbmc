@@ -179,11 +179,11 @@ void CFileCurl::Close()
 	m_fileSize = 0;
   m_opened = false;
 
-
-  ASSERT(!(!m_easyHandle ^ !m_multiHandle));
   if( m_easyHandle )
   {
-    g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+    if(m_multiHandle)
+      g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+
     g_curlInterface.easy_release(m_easyHandle, m_multiHandle);
     m_multiHandle = NULL;
     m_easyHandle = NULL;
