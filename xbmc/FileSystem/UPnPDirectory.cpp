@@ -251,7 +251,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       thumbnail = pItem->GetCachedPictureThumb();
 
                     // if not, let's grab the remote one
-                    if(!CFile::Exists(thumbnail))
+                    if(CFile::Exists(thumbnail))
+                      pItem->SetThumbnailImage(thumbnail);
+                    else
                     {
                       if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
                         pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
