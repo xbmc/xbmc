@@ -76,7 +76,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     // start client if it hasn't been done yet
     upnp->StartClient();
                      
-    // We accept upnp://devuuid[/item_id]
+    // We accept upnp://devuuid/[item_id/]
     NPT_String path = strPath.c_str();
     if (path.Left(7).Compare("upnp://", true) != 0) {
         return false;
@@ -105,6 +105,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
     } else {
         // look for nextslash 
+        path.TrimRight('/');
         int next_slash = path.Find('/', 7);
 
         NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
@@ -194,7 +195,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             if (pItem->m_bIsFolder) {
                 CStdString object_id = (*entry)->m_ObjectID;
                 CUtil::URLEncode(object_id);
-                pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + object_id.c_str();
+                pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + object_id.c_str() + "/";
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
                     // if it's an item, path is the first url to the item
