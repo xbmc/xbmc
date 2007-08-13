@@ -28,7 +28,8 @@ public:
   WORD TranslateLircRemoteString(const char* szDevice, const char *szButton);
 #endif
 #ifdef HAS_SDL_JOYSTICK
-  WORD TranslateJoystickString(const char* szDevice, int id, string& strAction, bool axis);
+  bool TranslateJoystickString(WORD wWindow, const char* szDevice, int id, 
+                               bool axis, WORD& action, CStdString& strAction);
 #endif
 
 
@@ -51,12 +52,11 @@ private:
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
-  void MapJoystickActions(TiXmlNode *pJoystick); 
+  void MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick); 
 
-  typedef map<int, string> JoystickButtonMap;
-  typedef map<int, string> JoystickAxisMap;
-  map<string, JoystickButtonMap> m_joystickButtonMap;
-  map<string, JoystickAxisMap> m_joystickAxisMap;
+  typedef map<WORD, map<int, string> > JoystickMap; // <window, <button/axis, action> >
+  map<string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
+  map<string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
 #endif
 
 };
