@@ -2857,9 +2857,13 @@ bool CApplication::OnAction(const CAction &action)
       speed /= 50; //50 fps
 
     if (action.wID == ACTION_VOLUME_UP)
-      volume += (int)(action.fAmount1 * action.fAmount1 * speed);
+    {
+      volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+    }
     else
-      volume -= (int)(action.fAmount1 * action.fAmount1 * speed);
+    {
+      volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+    }
 
     SetHardwareVolume(volume);
 
@@ -3201,22 +3205,45 @@ bool CApplication::ProcessGamepad(float frameTime)
   }
 #endif
 #ifdef HAS_SDL_JOYSTICK
+  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   if (g_Joystick.GetButton())
   {
     CAction action;
-    action.wID = g_Joystick.GetButton();
-    if (action.wID == ACTION_BUILT_IN_FUNCTION)
+
+    int bid = g_Joystick.GetButton();
+    string jname = g_Joystick.GetJoystick();
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction))
     {
-      action.strAction = g_Joystick.GetAction();
+      action.fAmount1 = 1.0f;
+      action.fRepeat = 0.0f;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      return OnAction(action);
     }
-    action.fAmount1 = 1.0f;
-    g_Joystick.Reset();
-    g_audioManager.PlayActionSound(action);
-    return OnAction(action);
+    else
+    {
+      g_Joystick.Reset();
+    }
   }
   else if (g_Joystick.GetAxis())
   {
-    // TODO: analog actions
+    CAction action;
+
+    int bid = g_Joystick.GetAxis();
+    string jname = g_Joystick.GetJoystick();
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction))
+    {
+      action.fAmount1 = g_Joystick.GetAmount();
+      action.fAmount2 = 0.0;
+      action.fRepeat = 0.0;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      return OnAction(action);
+    }
+    else
+    {
+      g_Joystick.Reset();
+    }
   }
 #endif
   return false;
