@@ -125,12 +125,7 @@ public:
         NPT_IpAddress addr;
         addr.ResolveName("239.255.255.250");
 
-        NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = if_addr->GetAddresses().GetFirstItem();
-        if (!niaddr) return NPT_FAILURE;
-
-        //FIXME: Should we iterate through all addresses or at least check for disconnected ones ("0.0.0.0")?
-
-        return m_Socket->JoinGroup(addr, (*niaddr).GetPrimaryAddress());
+        return m_Socket->JoinGroup(addr, NPT_IpAddress::Any);
     }
 
 private:
