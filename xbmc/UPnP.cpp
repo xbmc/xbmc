@@ -606,6 +606,11 @@ CUPnP::CUPnP() :
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
     //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
+#ifdef HAS_XBOX_HARDWARE
+    broadcast = true;
+#else
+    broadcast = false;
+#endif
 
     // initialize upnp in broadcast listening mode for xbmc
     m_UPnP = new PLT_UPnP(1900, !broadcast);
@@ -683,7 +688,9 @@ CUPnP::StartClient()
     // since they're listening on port 1900 in multicast
     // Repeat every 6 seconds
     if (broadcast) {
-        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);       
+    } else {
+        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("239.255.255.250", 1900, "*"), "upnp:rootdevice", 1, 6000);
     }
 }
 
