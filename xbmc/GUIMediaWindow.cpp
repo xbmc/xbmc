@@ -966,6 +966,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
 
   if (!CGUIWindowFileManager::DeleteItem(&item))
     return;
+  m_vecItems.RemoveDiscCache();
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
@@ -980,6 +981,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
   if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
     return;
+  m_vecItems.RemoveDiscCache();
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
