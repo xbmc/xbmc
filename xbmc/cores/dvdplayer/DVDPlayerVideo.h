@@ -7,7 +7,11 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "../VideoRenderers/RenderManager.h"
+#else
+#include "../VideoRenderers/WinRenderManager.h"
+#endif
 
 enum CodecID;
 class CDemuxStreamVideo;

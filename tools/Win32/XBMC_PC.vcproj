@@ -1083,6 +1083,22 @@
 					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="VideoRenderers"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderManager.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
