@@ -414,7 +414,7 @@ NPT_PosixThread::EntryPoint(void* argument)
     // set random seed
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
-    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + thread->m_ThreadId));
+    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)thread->m_ThreadId));
 
     // run the thread 
     thread->Run();

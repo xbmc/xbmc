@@ -34,6 +34,9 @@
 #include "PltSyncMediaBrowser.h"
 #include "PltDidl.h"
 #include "NptNetwork.h"
+#include "NptConsole.h"
+
+NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
 /*----------------------------------------------------------------------
 |   static
@@ -127,6 +130,21 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
     return NPT_SUCCESS;
 }
 #endif
+
+
+/*----------------------------------------------------------------------
+|   NPT_Console::Output and NPT_GetEnvironment
++---------------------------------------------------------------------*/
+
+void NPT_Console::Output(const char* message)
+{
+    CLog::Log(LOGDEBUG, message);
+}
+
+NPT_Result NPT_GetEnvironment(const char* name, NPT_String& value)
+{
+    return NPT_FAILURE;
+}
 
 /*----------------------------------------------------------------------
 |   CDeviceHostReferenceHolder class
@@ -296,12 +314,13 @@ CUPnPServer::Build(CFileItem*        item,
     NPT_String       path = item->m_strPath;
     NPT_String       share_name;
     NPT_String       file_path;
+    path.TrimRight("/");
 
     //HACK: temporary disabling count as it thrashes HDD
     with_count = false;
 
     bool ret = CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path);
-    if (!ret && path != "0") goto failure;
+    if (!ret) goto failure;
 
     if (file_path.GetLength()) {
         // make sure the path starts with something that is shared given the share
@@ -359,8 +378,9 @@ CUPnPServer::Build(CFileItem*        item,
         object->m_ObjectClass.type = "object.container";
         object->m_ObjectID = path;
 
-        if (path == "0") {
+        if (path == "virtualpath://upnproot") {
             // root
+            object->m_ObjectID = "0";
             object->m_ParentID = "-1";
             // root has 3 children
             if (with_count) ((PLT_MediaContainer*)object)->m_ChildrenCount = 3;
@@ -462,23 +482,30 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
 
     CFileItem* item = NULL;
 
-    if (id == "0") {
-        item = new CFileItem("0", true);
+    id.TrimRight("/");
+    if (id == "0" || id == "virtualpath://upnproot") {
+        id = "virtualpath://upnproot/";
+        item = new CFileItem((const char*)id, true);
         item->SetLabel("Root");
         object = Build(item, true, info);
     } else if (id == "virtualpath://upnpmusic") {
+        id += "/";
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Music");
         object = Build(item, true, info);
     } else if (id == "virtualpath://upnpvideo") {
+        id += "/";
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Video");
         object = Build(item, true, info);
     } else if (id == "virtualpath://upnppictures") {
+        id += "/";
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Pictures");
         object = Build(item, true, info);
     } else if (dir.GetMatchingShare((const char*)id, share, paths)) {
+        if (!id.EndsWith("/"))
+          id += "/";
         item = new CFileItem((const char*)id, true);
         item->SetLabel(share.strName);
         object = Build(item, true, info);
@@ -535,26 +562,32 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
                                     const char*          object_id, 
                                     NPT_SocketInfo*      info /* = NULL */)
 {
+    NPT_String id = object_id;
     CUPnPVirtualPathDirectory dir;
     CFileItemList items;
-    if (!dir.GetDirectory(object_id, items)) {
+
+    if (id == "0") {
+      id = "virtualpath://upnproot/";
+    }
+
+    if (!dir.GetDirectory((const char*)id, items)) {
         /* error */
-        PLT_Log(PLT_LOG_LEVEL_1, "CUPnPServer::OnBrowseDirectChildren - ObjectID not found.");
+        NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
         action->SetError(701, "No Such Object.");
         return NPT_SUCCESS;
     }
 
     NPT_String share_name;
     NPT_String file_path;
-    CUPnPVirtualPathDirectory::SplitPath(object_id, share_name, file_path);
+    CUPnPVirtualPathDirectory::SplitPath(id, share_name, file_path);
 
     NPT_String filter;
     NPT_String startingInd;
     NPT_String reqCount;
 
-    NPT_CHECK(action->GetArgumentValue("Filter", filter));
-    NPT_CHECK(action->GetArgumentValue("StartingIndex", startingInd));
-    NPT_CHECK(action->GetArgumentValue("RequestedCount", reqCount));   
+    NPT_CHECK_SEVERE(action->GetArgumentValue("Filter", filter));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
 
     unsigned long start_index, req_count;
     if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
@@ -688,10 +721,14 @@ CUPnP::StartClient()
     // since they're listening on port 1900 in multicast
     // Repeat every 6 seconds
     if (broadcast) {
-        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);       
-    } else {
+        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    } 
+#ifdef _XBOX
+    // xbox build can not receive multicast, but it can send it. so let's send a discover from time to time
+    else {
         m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("239.255.255.250", 1900, "*"), "upnp:rootdevice", 1, 6000);
     }
+#endif
 }
 
 /*----------------------------------------------------------------------

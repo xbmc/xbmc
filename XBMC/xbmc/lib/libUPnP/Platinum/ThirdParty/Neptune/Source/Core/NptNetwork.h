@@ -35,7 +35,7 @@ const unsigned int NPT_NETWORK_MAX_MAC_ADDRESS_LENGTH  = 8;
 /*----------------------------------------------------------------------
 |   workarounds
 +---------------------------------------------------------------------*/
-#if defined(WIN32)
+#if defined(_WIN32)
 #if defined(SetPort)
 #undef SetPort
 #endif

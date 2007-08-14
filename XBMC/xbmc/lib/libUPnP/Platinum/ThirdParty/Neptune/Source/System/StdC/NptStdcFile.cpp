@@ -11,7 +11,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include <stdio.h>
-#if !defined(UNDER_CE)
+#if !defined(_WIN32_WCE)
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -33,7 +33,7 @@ static int fopen_s(FILE**      file,
                    const char* mode)
 {
     *file = fopen(filename, mode);
-#if defined(UNDER_CE)
+#if defined(_WIN32_WCE)
     if (*file == NULL) return ENOENT;
 #else
     if (*file == NULL) return errno;
@@ -362,7 +362,7 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
 
     // unbuffer the file if needed 
     if ((mode & NPT_FILE_OPEN_MODE_UNBUFFERED) && file != NULL) {
-#if !defined(UNDER_CE)
+#if !defined(_WIN32_WCE)
         setvbuf(file, NULL, _IONBF, 0);
 #endif
     }   

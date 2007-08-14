@@ -10,13 +10,13 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptHttp.h"
-#include "NptFile.h"
 #include "PltService.h"
 #include "PltSsdp.h"
 #include "PltUPnP.h"
 #include "PltDeviceData.h"
 #include "PltXmlHelper.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.core.service")
 
 /*----------------------------------------------------------------------
 |   PLT_ServiceSCPDURLFinder::operator()
@@ -116,29 +116,29 @@ PLT_Service::GetSCPDXML(NPT_String& scpd)
     if (m_StateVariables.GetItemCount() == 0) return NPT_FAILURE;
 
     NPT_XmlElementNode* top = new NPT_XmlElementNode("scpd");
-    NPT_CHECK(top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"));
+    NPT_CHECK_SEVERE(top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"));
 
     // add spec version
     NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
-    NPT_CHECK(top->AddChild(spec));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(spec, "major", "1"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
+    NPT_CHECK_SEVERE(top->AddChild(spec));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "major", "1"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
 
     // add actions
     NPT_XmlElementNode* actionList = new NPT_XmlElementNode("actionList");
-    NPT_CHECK(top->AddChild(actionList));
-    NPT_CHECK(m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
+    NPT_CHECK_SEVERE(top->AddChild(actionList));
+    NPT_CHECK_SEVERE(m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)));
 
     // add service state table
     NPT_XmlElementNode* serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
-    NPT_CHECK(top->AddChild(serviceStateTable));
-    NPT_CHECK(m_StateVariables.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
+    NPT_CHECK_SEVERE(top->AddChild(serviceStateTable));
+    NPT_CHECK_SEVERE(m_StateVariables.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)));
 
     // serialize node
     NPT_String tmp;
-    NPT_CHECK(PLT_XmlHelper::Serialize(*top, tmp));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, tmp));
     delete top;
 
     // add preprocessor
@@ -156,12 +156,12 @@ PLT_Service::GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** ser
     if (service_out) {
         *service_out = service;
     }
-    NPT_CHECK(parent->AddChild(service));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(service, "serviceType", m_ServiceType));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(service, "serviceId", m_ServiceID));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(service, "SCPDURL", GetSCPDURL()));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(service, "controlURL", GetControlURL()));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(service, "eventSubURL", GetEventSubURL()));
+    NPT_CHECK_SEVERE(parent->AddChild(service));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(service, "serviceType", m_ServiceType));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(service, "serviceId", m_ServiceID));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(service, "SCPDURL", GetSCPDURL()));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(service, "controlURL", GetControlURL()));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(service, "eventSubURL", GetEventSubURL()));
 
     return NPT_SUCCESS;
 }
@@ -291,7 +291,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
         m_ActionDescs.Add(action_desc);
 
         NPT_Array<NPT_XmlElementNode*> arguments;
-        NPT_CHECK(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"));
         bool foundRetValue = false;
         for( int j = 0 ; j < (int)arguments.GetItemCount(); j++)
         {
@@ -413,7 +413,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
                                     NPT_SocketAddress& addr, 
                                     NPT_String&        callback_urls, 
                                     int                timeout, 
-                                    NPT_HttpResponse*  response)
+                                    NPT_HttpResponse&  response)
 {
 //    // first look if we don't have a subscriber with same callbackURL
 //    PLT_EventSubscriber* subscriber = NULL;
@@ -430,7 +430,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
 //
     // reject if we have too many subscribers already
     if (m_Subscribers.GetItemCount() > 30) {
-        response->SetStatus(500, "Internal Server Error");
+        response.SetStatus(500, "Internal Server Error");
         return NPT_FAILURE;
     }
 
@@ -455,7 +455,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
     }
 
     if (reachable == false) {
-        response->SetStatus(412, "Precondition Failed");
+        response.SetStatus(412, "Precondition Failed");
         return NPT_FAILURE;
     }
 
@@ -481,8 +481,8 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
 
     m_Subscribers.Add(subscriber);
 
-    PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
-    PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
+    PLT_UPnPMessageHelper::SetSID(&response, subscriber->GetSID());
+    PLT_UPnPMessageHelper::SetTimeOut(&response, timeout);
 
     subscriber->Notify(m_StateVariables);
     return NPT_SUCCESS;
@@ -495,7 +495,7 @@ NPT_Result
 PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr, 
                                       NPT_String&        sid, 
                                       int                timeout, 
-                                      NPT_HttpResponse*  response)
+                                      NPT_HttpResponse&  response)
 {
     // first look if we don't have a subscriber with same callbackURL
     PLT_EventSubscriber* subscriber = NULL;
@@ -514,13 +514,13 @@ PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr,
             subscriber->SetExpirationTime(life);
         }
 
-        PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
-        PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
+        PLT_UPnPMessageHelper::SetSID(&response, subscriber->GetSID());
+        PLT_UPnPMessageHelper::SetTimeOut(&response, timeout);
         return NPT_SUCCESS;
     }
 
     // didn't find a valid Subscriber in our list
-    response->SetStatus(412, "Precondition Failed");
+    response.SetStatus(412, "Precondition Failed");
     return NPT_FAILURE;
 }
 
@@ -529,8 +529,8 @@ PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_Service::ProcessCancelSubscription(NPT_SocketAddress& /* addr */, 
-                                       NPT_String&  sid, 
-                                       NPT_HttpResponse*  response)
+                                       NPT_String&        sid, 
+                                       NPT_HttpResponse&  response)
 {
     // first look if we don't have a subscriber with same callbackURL
     PLT_EventSubscriber* subscriber = NULL;
@@ -543,7 +543,7 @@ PLT_Service::ProcessCancelSubscription(NPT_SocketAddress& /* addr */,
     }
 
     // didn't find a valid Subscriber in our list
-    response->SetStatus(412, "Precondition Failed");
+    response.SetStatus(412, "Precondition Failed");
     return NPT_FAILURE;
 }
 

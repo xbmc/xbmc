@@ -34,6 +34,7 @@ class NPT_String
 public:
     // factories
     static NPT_String FromInteger(long value);
+    static NPT_String FromIntegerU(unsigned long value);
 
     // constructors
     NPT_String(const NPT_String& str);

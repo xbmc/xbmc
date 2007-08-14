@@ -13,11 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptStrings.h"
-#include "NptList.h"
-#include "NptArray.h"
-#include "NptReferences.h"
-#include "NptXml.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
