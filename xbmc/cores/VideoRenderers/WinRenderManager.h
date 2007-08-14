@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WinRenderer.h"
-#include "utils/SharedSection.h"
+#include "../xbmc/utils/SharedSection.h"
 
 class CWinRenderManager
 {
