@@ -10,13 +10,13 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptTypes.h"
-#include "PltLog.h"
-#include "NptResults.h"
+#include "Neptune.h"
 #include "PltMediaController.h"
 #include "PltDidl.h"
 #include "PltDeviceData.h"
 #include "PltXmlHelper.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.media.renderer.controller")
 
 /*----------------------------------------------------------------------
 |   PLT_MediaController::PLT_MediaController
@@ -47,12 +47,12 @@ PLT_MediaController::OnDeviceAdded(PLT_DeviceDataReference& device)
     NPT_String uuid = device->GetUUID();
     // is it a new device?
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_MediaRenderers, PLT_DeviceDataFinder(uuid), data))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) is already in our list!\n", (const char*)uuid);
+        NPT_LOG_FINE_1("Device (%s) is already in our list!", (const char*)uuid);
         return NPT_FAILURE;
     }
 
-    PLT_Print(PLT_LOG_LEVEL_1, "Device Found:");
-    device->ToLog();
+    NPT_LOG_FINE("Device Found:");
+    device->ToLog(NPT_LOG_LEVEL_FINE);
 
     // verify the device implements the function we need
     PLT_Service* serviceAVT;
@@ -61,13 +61,13 @@ PLT_MediaController::OnDeviceAdded(PLT_DeviceDataReference& device)
     
     type = "urn:schemas-upnp-org:service:AVTransport:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceAVT))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Service %s not found\n", (const char*)type);
+        NPT_LOG_FINE_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }
     
     type = "urn:schemas-upnp-org:service:ConnectionManager:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCMR))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Service %s not found\n", (const char*)type);
+        NPT_LOG_FINE_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }
 
@@ -92,12 +92,13 @@ PLT_MediaController::OnDeviceRemoved(PLT_DeviceDataReference& device)
     NPT_String uuid = device->GetUUID();
     // is it a new device?
     if (NPT_FAILED(NPT_ContainerFind(m_MediaRenderers, PLT_DeviceDataFinder(uuid), data))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) not found in our list!\n", (const char*)uuid);
+        NPT_LOG_FINE_1("Device (%s) not found in our list!", (const char*)uuid);
         return NPT_FAILURE;
     }
 
-    PLT_Log(PLT_LOG_LEVEL_1, "Device Removed:");
-    device->ToLog();
+    NPT_LOG_FINE("Device Removed:");
+    device->ToLog(NPT_LOG_LEVEL_FINE);
+
     m_MediaRenderers.Remove(device);
     if (m_Listener) {
         m_Listener->OnMRAddedRemoved(device, 0);
@@ -117,13 +118,13 @@ PLT_MediaController::FindActionDesc(PLT_DeviceDataReference& device,
     // look for the service
     PLT_Service* service;
     if (NPT_FAILED(device->FindServiceByType(service_type, service))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Service %s not found\n", (const char*)service_type);
+        NPT_LOG_FINE_1("Service %s not found", (const char*)service_type);
         return NPT_FAILURE;
     }
 
     action_desc = service->FindActionDesc(action_name);
     if (action_desc == NULL) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Action %s not found in service\n", action_name);
+        NPT_LOG_FINE_1("Action %s not found in service", action_name);
         return NPT_FAILURE;
     }
 
@@ -140,7 +141,7 @@ PLT_MediaController::CreateAction(PLT_DeviceDataReference& device,
                                   PLT_ActionReference&     action)
 {
     PLT_ActionDesc* action_desc;
-    NPT_CHECK(FindActionDesc(device, service_type, action_name, action_desc));
+    NPT_CHECK_SEVERE(FindActionDesc(device, service_type, action_name, action_desc));
     action = new PLT_Action(action_desc);
     return NPT_SUCCESS;
 }
@@ -154,7 +155,8 @@ PLT_MediaController::CallAVTransportAction(PLT_ActionReference& action,
                                            void*                userdata)
 {
     // Set the object id
-    NPT_CHECK(action->SetArgumentValue("InstanceID", NPT_String::FromInteger(instance_id)));
+    NPT_CHECK_SEVERE(action->SetArgumentValue("InstanceID", 
+        NPT_String::FromInteger(instance_id)));
 
     // set the arguments on the action, this will check the argument values
     return m_CtrlPoint->InvokeAction(action, userdata);
@@ -169,7 +171,7 @@ PLT_MediaController::GetCurrentTransportActions(PLT_DeviceDataReference& device,
                                                 void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "GetCurrentTransportActions", 
         action));
@@ -185,7 +187,7 @@ PLT_MediaController::GetDeviceCapabilities(PLT_DeviceDataReference& device,
                                            void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "GetDeviceCapabilities", 
         action));
@@ -201,7 +203,7 @@ PLT_MediaController::GetMediaInfo(PLT_DeviceDataReference& device,
                                   void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "GetMediaInfo", 
         action));
@@ -217,7 +219,7 @@ PLT_MediaController::GetPositionInfo(PLT_DeviceDataReference& device,
                                      void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "GetPositionInfo", 
         action));
@@ -233,7 +235,7 @@ PLT_MediaController::GetTransportInfo(PLT_DeviceDataReference& device,
                                       void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "GetTransportInfo", 
         action));
@@ -249,7 +251,7 @@ PLT_MediaController::GetTransportSettings(PLT_DeviceDataReference&  device,
                                           void*                     userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "GetTransportSettings", 
         action));
@@ -265,7 +267,7 @@ PLT_MediaController::Next(PLT_DeviceDataReference& device,
                           void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "Next", 
         action));
@@ -281,7 +283,7 @@ PLT_MediaController::Pause(PLT_DeviceDataReference& device,
                            void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "Pause", 
         action));
@@ -298,7 +300,7 @@ PLT_MediaController::Play(PLT_DeviceDataReference& device,
                           void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "Play", 
         action));
@@ -320,7 +322,7 @@ PLT_MediaController::Previous(PLT_DeviceDataReference& device,
                               void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "Previous", 
         action));
@@ -338,7 +340,7 @@ PLT_MediaController::Seek(PLT_DeviceDataReference& device,
                           void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "Seek", 
         action));
@@ -367,7 +369,7 @@ PLT_MediaController::SetAVTransportURI(PLT_DeviceDataReference& device,
                                        void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "SetAVTransportURI", 
         action));
@@ -376,6 +378,7 @@ PLT_MediaController::SetAVTransportURI(PLT_DeviceDataReference& device,
     if (NPT_FAILED(action->SetArgumentValue("CurrentURI", uri))) {
         return NPT_ERROR_INVALID_PARAMETERS;
     }
+
     // set the uri metadata
     if (NPT_FAILED(action->SetArgumentValue("CurrentURIMetaData", metadata))) {
         return NPT_ERROR_INVALID_PARAMETERS;
@@ -394,7 +397,7 @@ PLT_MediaController::SetPlayMode(PLT_DeviceDataReference& device,
                                  void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "SetPlayMode", 
         action));
@@ -416,7 +419,7 @@ PLT_MediaController::Stop(PLT_DeviceDataReference& device,
                           void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "Stop", 
         action));
@@ -431,7 +434,7 @@ PLT_MediaController::GetCurrentConnectionIDs(PLT_DeviceDataReference& device,
                                              void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:ConnectionManager:1", 
         "GetCurrentConnectionIDs", 
         action));
@@ -453,7 +456,7 @@ PLT_MediaController::GetCurrentConnectionInfo(PLT_DeviceDataReference& device,
                                               void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:ConnectionManager:1", 
         "GetCurrentConnectionInfo", 
         action));
@@ -462,6 +465,7 @@ PLT_MediaController::GetCurrentConnectionInfo(PLT_DeviceDataReference& device,
     if (NPT_FAILED(action->SetArgumentValue("ConnectionID", NPT_String::FromInteger(connection_id)))) {
         return NPT_ERROR_INVALID_PARAMETERS;
     }
+
     // set the arguments on the action, this will check the argument values
     if (NPT_FAILED(m_CtrlPoint->InvokeAction(action, userdata))) {
         return NPT_ERROR_INVALID_PARAMETERS;
@@ -478,7 +482,7 @@ PLT_MediaController::GetProtocolInfo(PLT_DeviceDataReference& device,
                                      void*                    userdata)
 {
     PLT_ActionReference action;
-    NPT_CHECK(CreateAction(device, 
+    NPT_CHECK_SEVERE(CreateAction(device, 
         "urn:schemas-upnp-org:service:ConnectionManager:1", 
         "GetProtocolInfo", 
         action));
@@ -505,7 +509,7 @@ PLT_MediaController::OnActionResponse(NPT_Result res, PLT_ActionReference& actio
     PLT_DeviceDataReference device;
     NPT_String uuid = action->GetActionDesc()->GetService()->GetDevice()->GetUUID();
     if (NPT_FAILED(NPT_ContainerFind(m_MediaRenderers, PLT_DeviceDataFinder(uuid), device))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) not found in our list of renderers\n", (const char*)uuid);
+        NPT_LOG_FINE_1("Device (%s) not found in our list of renderers", (const char*)uuid);
         res = NPT_FAILURE;
     }
        
@@ -990,7 +994,7 @@ PLT_MediaController::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVaria
                             // if it succeeded, add it to the list of vars we'll event
                             if (NPT_SUCCEEDED(var->SetValue(*value, false))) {
                                 vars->Add(var);
-                                PLT_Log(PLT_LOG_LEVEL_1, "PLT_MediaController received var change for (%s): %s\n", (const char*)var->GetName(), (const char*)var->GetValue());
+                                NPT_LOG_FINE_2("PLT_MediaController received var change for (%s): %s", (const char*)var->GetName(), (const char*)var->GetValue());
                             }
                         }
                     }

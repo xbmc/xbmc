@@ -9,6 +9,8 @@
 
 #include "PltSyncMediaBrowser.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.media.server.syncbrowser")
+
 /*----------------------------------------------------------------------
 |   PLT_SyncMediaBrowser::PLT_SyncMediaBrowser
 +---------------------------------------------------------------------*/
@@ -60,9 +62,11 @@ PLT_SyncMediaBrowser::OnMSAddedRemoved(PLT_DeviceDataReference& device, int adde
     } else { /* removed */
         // Remove from our list of servers first if found
         m_MediaServers.Lock();
-        if (NPT_SUCCEEDED(m_MediaServers.Erase(uuid))) {
-        }
+        m_MediaServers.Erase(uuid);
         m_MediaServers.Unlock();
+
+        // clear cache for that device
+        m_Cache.Clear(device.AsPointer());
     }
 }
 
@@ -157,6 +161,17 @@ PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
 {
     NPT_Result res;
 
+
+    {
+        // make sure the device is still alive
+        NPT_AutoLock lock(m_MediaServers);
+        PLT_DeviceDataReference* data;
+        if (NPT_FAILED(m_MediaServers.Get(device->GetUUID(), data))) {
+            NPT_LOG_WARNING_1("Device (%s) not found in our list!\n", (const char*)device->GetUUID());
+            return NPT_FAILURE;
+        }
+    }
+
     browse_data->shared_var.SetValue(0);
 
     // send off the browse packet.  Note that this will
@@ -170,7 +185,7 @@ PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
         filter,
         sort,
         new PLT_BrowseDataReference(browse_data));		
-    NPT_CHECK(res);
+    NPT_CHECK_SEVERE(res);
 
     return WaitForResponse(browse_data->shared_var);
 }

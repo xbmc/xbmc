@@ -237,7 +237,9 @@ NPT_Map<K,V>::Erase(const K& key)
     ListIterator entry = m_Entries.GetFirstItem();
     while (entry) {
         if ((*entry)->GetKey() == key) {
-            delete (*entry);
+            delete *entry; // do this before removing the entry from the
+                           // list, because Erase() will invalidate the
+                           // iterator item
             m_Entries.Erase(entry);
             return NPT_SUCCESS;
         }

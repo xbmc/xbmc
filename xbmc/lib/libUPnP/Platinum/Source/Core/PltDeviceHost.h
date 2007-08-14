@@ -13,9 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDefs.h"
-#include "NptStrings.h"
-#include "NptHttp.h"
+#include "Neptune.h"
 #include "PltDeviceData.h"
 #include "PltHttpServerListener.h"
 #include "PltSsdpListener.h"
@@ -41,6 +39,7 @@ public:
         const char*  uuid = "",
         const char*  device_type = "",
         const char*  friendly_name = "",
+        bool         show_ip = false,
         unsigned int port = 0);
 
     virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
@@ -49,9 +48,10 @@ public:
     virtual NPT_Result OnAction(PLT_ActionReference& action, 
                                 NPT_SocketInfo*      info = NULL);
 
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*  request, 
-                                          NPT_SocketInfo    info, 
-                                          NPT_HttpResponse* response);
+    // NPT_HttpRequestHandler forward for control/event requests
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&  request,
+                                          NPT_HttpResponse& response,
+                                          NPT_SocketInfo&   client_info);
     
     // PLT_SsdpDeviceAnnounceTask & PLT_SsdpDeviceAnnounceUnicastTask
     virtual NPT_Result Announce(PLT_DeviceData*  device, 
@@ -66,11 +66,11 @@ public:
     }
 
     // PLT_SsdpPacketListener method
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest* request, 
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest& request, 
                                     NPT_SocketInfo   info);
 
     // PLT_SsdpDeviceSearchListenTask
-    virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest* request, 
+    virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest& request, 
                                                 NPT_SocketInfo   info);
 
     // PLT_SsdpDeviceSearchResponseTask
@@ -92,21 +92,13 @@ protected:
     virtual NPT_Result Start(PLT_TaskManager* task_manager);
     virtual NPT_Result Stop();
 
-    virtual NPT_Result ProcessHttpGetHeadRequest(NPT_HttpRequest*  request, 
-                                                 NPT_SocketInfo    info, 
-                                                 NPT_HttpResponse* response);
+    virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest&  request,
+                                              NPT_HttpResponse& response,
+                                              NPT_SocketInfo&   info);
 
-    virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest*  request, 
-                                              NPT_SocketInfo    info, 
-                                              NPT_HttpResponse* response);
-
-    virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest* request, 
-                                                   NPT_SocketInfo    info, 
-                                                   NPT_HttpResponse* response);
-
-    virtual NPT_Result ProcessHttpEventRequest(NPT_HttpRequest*  request, 
-                                               NPT_SocketInfo    info, 
-                                               NPT_HttpResponse* response);
+    virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest&  request,
+                                                    NPT_HttpResponse& response,
+                                                    NPT_SocketInfo&   info);
 
 protected:
     friend class PLT_UPnP;
@@ -116,31 +108,13 @@ protected:
     friend class NPT_Reference<PLT_DeviceHost>;
 
 private:
-    PLT_TaskManager*            m_TaskManager;
-    PLT_HttpServerHandler*      m_HttpServerHandler;
-    PLT_HttpServer*             m_HttpServer;
-    PLT_SsdpDeviceAnnounceTask* m_SsdpAnnounceTask;
-    bool                        m_Broadcast;
+    PLT_TaskManager*                  m_TaskManager;
+    PLT_HttpServer*                   m_HttpServer;
+    PLT_SsdpDeviceAnnounceTask*       m_SsdpAnnounceTask;
+    bool                              m_Broadcast;
+    NPT_List<NPT_HttpRequestHandler*> m_RequestHandlers;
 };
 
 typedef NPT_Reference<PLT_DeviceHost> PLT_DeviceHostReference;
-
-/*----------------------------------------------------------------------
-|   PLT_HttpServerHandler
-+---------------------------------------------------------------------*/
-class PLT_HttpServerHandler : public PLT_HttpServerListener
-{
-public:
-    PLT_HttpServerHandler(PLT_DeviceHost* device) : m_Device(device) {}
-    virtual ~PLT_HttpServerHandler() {}
-
-    // PLT_HttpServerListener methods
-    NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
-                                  NPT_SocketInfo     info, 
-                                  NPT_HttpResponse*& response);
-
-private:
-    PLT_DeviceHost* m_Device;
-};
 
 #endif /* _PLT_DEVICE_HOST_H_ */

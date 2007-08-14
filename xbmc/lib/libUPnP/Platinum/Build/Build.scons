@@ -198,10 +198,9 @@ env['NPT_EXTRA_LIBS'] = ''
 env['PLT_EXTRA_LIBS'] = ''
 
 if env['build_config'] == 'Debug':
-	env['PLT_GLOBAL_CPP_DEFINES'] = {'NPT_DEBUG':None, 'PLT_LOG':None}
+	env['PLT_GLOBAL_CPP_DEFINES'] = {'NPT_CONFIG_ENABLE_LOGGING':None}
 else:
 	env['PLT_GLOBAL_CPP_DEFINES'] = {}
-#env['PLT_GLOBAL_CPP_DEFINES'] = {}
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
@@ -215,10 +214,10 @@ if os.path.exists(target_config_file):
 # Neptune
 NPT_SOURCE_ROOT = 'ThirdParty/Neptune/Source'
 if env['build_config'] == 'Debug':
-    NPT_EXTRA_CPP_DEFINES = {'NPT_DEBUG':None}
+    NPT_EXTRA_CPP_DEFINES = {}
 else:
     NPT_EXTRA_CPP_DEFINES = {}
-#NPT_EXTRA_CPP_DEFINES = {}
+    
 LibraryModule   (name                  = 'Neptune',
                  build_source_dirs     = ['Core'],
                  build_source_files    = env['NPT_SYSTEM_SOURCES'],

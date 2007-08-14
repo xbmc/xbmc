@@ -13,9 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptHttp.h"
-#include "NptSockets.h"
-#include "NptXml.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   PLT_HttpHelper
@@ -24,9 +22,8 @@ class PLT_HttpHelper {
  public:
     static bool         IsConnectionKeepAlive(NPT_HttpMessage* message);
 
-    static NPT_Result   ToLog(NPT_HttpMessage* message, unsigned long level);
-    static NPT_Result   ToLog(NPT_HttpRequest* request, unsigned long level);
-    static NPT_Result   ToLog(NPT_HttpResponse* response, unsigned long level);
+    static NPT_Result   ToLog(NPT_LoggerReference logger, int level, NPT_HttpRequest* request);
+    static NPT_Result   ToLog(NPT_LoggerReference logger, int level, NPT_HttpResponse* response);
 
     static NPT_Result   GetContentType(NPT_HttpMessage* message, NPT_String& type);
     static     void     SetContentType(NPT_HttpMessage* message, const char* type);
@@ -46,9 +43,23 @@ class PLT_HttpHelper {
     static NPT_Result   SetBody(NPT_HttpMessage* message, NPT_InputStreamReference& stream, NPT_Size len = 0);
 
 
-    static NPT_Result   GetBody(NPT_HttpMessage& message, NPT_String& body);
-    static NPT_Result   ParseBody(NPT_HttpMessage& message, NPT_XmlElementNode*& xml);
+    static NPT_Result   GetBody(NPT_HttpMessage* message, NPT_String& body);
+    static NPT_Result   ParseBody(NPT_HttpMessage* message, NPT_XmlElementNode*& xml);
 };
+
+/*----------------------------------------------------------------------
+|   macros
++---------------------------------------------------------------------*/
+#if defined(NPT_CONFIG_ENABLE_LOGGING)
+#define PLT_LOG_HTTP_MESSAGE_L(_logger, _level, _msg) \
+    PLT_HttpHelper::ToLog(_logger, _level, _msg)
+#define PLT_LOG_HTTP_MESSAGE(_level, _msg) \
+    PLT_LOG_HTTP_MESSAGE_L(_NPT_LocalLogger, _level, _msg)
+
+#else /* NPT_CONFIG_ENABLE_LOGGING */
+#define PLT_LOG_HTTP_MESSAGE_L(_logger, _level, _msg)
+#define PLT_LOG_HTTP_MESSAGE(_level, _msg)
+#endif /* NPT_CONFIG_ENABLE_LOGGING */
 
 /*----------------------------------------------------------------------
 |   PLT_HttpClient
@@ -76,5 +87,27 @@ public:
 protected:
     // members
 };
+
+/*----------------------------------------------------------------------
+|   PLT_HttpRequestHandler
++---------------------------------------------------------------------*/
+template <class T>
+class PLT_HttpRequestHandler : public NPT_HttpRequestHandler
+{
+public:
+    PLT_HttpRequestHandler<T>(T* data) : m_Data(data) {}
+    virtual ~PLT_HttpRequestHandler<T>() {}
+
+    // NPT_HttpRequestHandler methods
+    NPT_Result SetupResponse(NPT_HttpRequest&  request, 
+                             NPT_HttpResponse& response, 
+                             NPT_SocketInfo&   client_info) {
+        return m_Data->ProcessHttpRequest(request, response, client_info);
+    }
+
+private:
+    T* m_Data;
+};
+
 
 #endif /* _PLT_HTTP_H_ */

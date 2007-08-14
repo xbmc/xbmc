@@ -48,6 +48,8 @@
 #include "NptUtils.h"
 #include "NptRingBuffer.h"
 #include "NptBase64.h"
+#include "NptConsole.h"
+#include "NptLogging.h"
 #include "NptVersion.h"
 
 #endif // _NEPTUNE_H_

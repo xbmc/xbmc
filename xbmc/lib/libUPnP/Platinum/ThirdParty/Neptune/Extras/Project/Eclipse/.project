@@ -6,111 +6,27 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.cdt.make.core.makeBuilder</name>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
-				<dictionary>
-					<key>org.eclipse.cdt.core.errorOutputParser</key>
-					<value>org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.VCErrorParser;</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
-					<value>clean all</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.incrementalBuildTarget</key>
-					<value>all</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value></value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
-					<value>false</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.enabledIncrementalBuild</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
-					<value>clean</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.buildCommand</key>
-					<value>make</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.stopOnError</key>
-					<value>false</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
-					<value>all</value>
-				</dictionary>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.cdt.make.core.ScannerConfigBuilder</name>
-			<arguments>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.ScannerConfigDiscoveryEnabled</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.makeBuilderParserId</key>
-					<value>org.eclipse.cdt.make.core.GCCScannerInfoConsoleParser</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.esiProviderCommandEnabled</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.siProblemGenerationEnabled</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.useDefaultESIProviderCmd</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.makeBuilderParserEnabled</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.esiProviderParserId</key>
-					<value>org.eclipse.cdt.make.core.GCCSpecsConsoleParser</value>
-				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.make.core.makeNature</nature>
-		<nature>org.eclipse.cdt.make.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>com.symbian.cdt.core.symbiannature</nature>
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Build</name>
+			<name>Core</name>
 			<type>2</type>
-			<location>NEPTUNE_HOME/Build</location>
+			<location>NEPTUNE_HOME/Source/Core</location>
 		</link>
 		<link>
-			<name>Source</name>
-			<type>2</type>
-			<location>NEPTUNE_HOME/Source</location>
+			<name>Neptune_S60_3_1_Emulator_Debug_[S60_3rd_FP1].lib</name>
+			<type>1</type>
+			<location>C:/Symbian/9.2/S60_3rd_FP1/epoc32/release/WINSCW/UDEB/Neptune.lib</location>
 		</link>
 	</linkedResources>
 </projectDescription>

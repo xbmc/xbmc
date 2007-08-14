@@ -13,9 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDefs.h"
-#include "NptStrings.h"
-#include "NptHttp.h"
+#include "Neptune.h"
 #include "PltHttpClientTask.h"
 #include "PltDatagramStream.h"
 #include "PltDeviceData.h"

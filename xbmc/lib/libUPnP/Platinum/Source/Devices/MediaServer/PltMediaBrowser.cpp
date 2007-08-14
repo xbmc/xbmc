@@ -11,10 +11,11 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
-#include "PltLog.h"
 #include "PltMediaBrowser.h"
 #include "PltDidl.h"
 #include "PltMediaBrowserListener.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.media.server.browser")
 
 /*----------------------------------------------------------------------
 |   forward references
@@ -54,13 +55,13 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
     
     type = "urn:schemas-upnp-org:service:ContentDirectory:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCDS))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Service %s not found\n", (const char*)type);
+        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }
     
     type = "urn:schemas-upnp-org:service:ConnectionManager:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCMR))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Service %s not found\n", (const char*)type);
+        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }    
     
@@ -71,12 +72,12 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
         NPT_String uuid = device->GetUUID();
         // is it a new device?
         if (NPT_SUCCEEDED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), data))) {
-            PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) is already in our list!\n", (const char*)uuid);
+            NPT_LOG_WARNING_1("Device (%s) is already in our list!", (const char*)uuid);
             return NPT_FAILURE;
         }
 
-        PLT_Log(PLT_LOG_LEVEL_1, "Device Found:");
-        device->ToLog();
+        NPT_LOG_FINE("Device Found:");
+        device->ToLog(NPT_LOG_LEVEL_FINE);
 
         m_MediaServers.Add(device);
     }
@@ -106,12 +107,12 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
         NPT_String uuid = device->GetUUID();
         // is it a new device?
         if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), data))) {
-            PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) not found in our list!\n", (const char*)uuid);
+            NPT_LOG_WARNING_1("Device (%s) not found in our list!", (const char*)uuid);
             return NPT_FAILURE;
         }
 
-        PLT_Log(PLT_LOG_LEVEL_1, "Device Removed:");
-        device->ToLog();
+        NPT_LOG_FINE("Device Removed:");
+        device->ToLog(NPT_LOG_LEVEL_FINE);
 
         m_MediaServers.Remove(device);
     }
@@ -120,23 +121,6 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
         m_Listener->OnMSAddedRemoved(device, 0);
     }
 
-    {
-        //unsubscribe
-        PLT_Service* serviceCDS = NULL;
-        PLT_Service* serviceCMR = NULL;
-
-        device->FindServiceByType("urn:schemas-upnp-org:service:ContentDirectory:1", serviceCDS);
-        device->FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", serviceCMR);
-
-        if (serviceCDS) m_CtrlPoint->Subscribe(serviceCDS, true);
-        if (serviceCMR) m_CtrlPoint->Subscribe(serviceCMR, true);
-
-        // HACK:
-        // if we unsubscribed, it will take time and we need
-        // tomake sure the service is still valid
-        // so we keep the device around
-        m_OldMediaServers.Add(device);
-    }
     return NPT_SUCCESS;
 }
 
@@ -159,13 +143,13 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device,
 
     type = "urn:schemas-upnp-org:service:ContentDirectory:1";
     if (NPT_FAILED(device->FindServiceByType(type, service))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Service %s not found\n", (const char*)type);
+        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }
 
     PLT_ActionDesc* action_desc = service->FindActionDesc("Browse");
     if (action_desc == NULL) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Action Browse not found in service\n");
+        NPT_LOG_WARNING("Action Browse not found in service");
         return NPT_FAILURE;
     }
 
@@ -226,7 +210,7 @@ PLT_MediaBrowser::OnActionResponse(NPT_Result res, PLT_ActionReference& action, 
         NPT_AutoLock lock(m_MediaServers);
         NPT_String uuid = action->GetActionDesc()->GetService()->GetDevice()->GetUUID();
         if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), device))) {
-            PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) not found in our list of servers\n", (const char*)uuid);
+            NPT_LOG_WARNING_1("Device (%s) not found in our list of servers", (const char*)uuid);
             return NPT_FAILURE;
         }
     }
@@ -303,7 +287,7 @@ PLT_MediaBrowser::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable
         NPT_AutoLock lock(m_MediaServers);
         NPT_String uuid = service->GetDevice()->GetUUID();
         if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), data))) {
-            PLT_Log(PLT_LOG_LEVEL_1, "Device (%s) not found in our list!\n", (const char*)uuid);
+            NPT_LOG_WARNING_1("Device (%s) not found in our list!", (const char*)uuid);
             return NPT_FAILURE;
         }
     }
