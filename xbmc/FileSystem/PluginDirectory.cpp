@@ -105,6 +105,11 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CUtil::AddFileToFolder(basePath, url.GetHostName(), basePath);
   CUtil::AddFileToFolder(basePath, url.GetFileName(), basePath);
 
+  // options
+  CStdString options = url.GetOptions();
+  CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
+                                    // is needed for all others, as XBMC adds slashes to "folders"
+
   // reset our wait event, and grab a new handle
   ResetEvent(m_directoryFetched);
   int handle = getNewHandle(this);
@@ -116,7 +121,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   const char *argv[3];
   argv[0] = basePath.c_str();
   argv[1] = strHandle.c_str();
-  argv[2] = url.GetOptions().c_str();
+  argv[2] = options.c_str();
 
   // run the script
   CLog::Log(LOGDEBUG, __FUNCTION__" - calling script %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
