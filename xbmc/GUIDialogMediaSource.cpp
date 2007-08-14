@@ -284,7 +284,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = g_localizeStrings.Get(20008);
     extraShares.push_back(share1);
   }
-  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
+  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares, m_type))
   {
     m_paths[item]->m_strPath = path;
     if (m_name.IsEmpty())

@@ -561,6 +561,7 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     m_bIsFolder && (
+    IsPluginFolder() ||
     IsSmartPlayList() ||
     IsPlayList() ||
     IsZIP() ||
@@ -671,6 +672,12 @@ bool CFileItem::IsStack() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("stack");
+}
+
+bool CFileItem::IsPluginFolder() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
 }
 
 bool CFileItem::IsMultiPath() const

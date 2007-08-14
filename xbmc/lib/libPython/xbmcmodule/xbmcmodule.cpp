@@ -13,6 +13,7 @@
 #include "../../../Application.h"
 #include "../../../Crc32.h"
 #include "../../../Util.h"
+#include "FileSystem/PluginDirectory.h"
 
 // include for constants
 #include "pyutil.h"
@@ -34,6 +35,80 @@ namespace PYXBMC
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
+  PyDoc_STRVAR(setDirectoryEntry__doc__,
+    "setDirectoryEntry(pointer,name,url,isDirectory [,iconpath]) -- Callback function to pass directory contents back to XBMC.\n"
+    "\n"
+    "handle:      longint, handle the virtualpythonfolder plugin was started with.\n"
+    "name:        name of the playlist entry\n"
+    "url:         url of the playlist entry. would be python:// for another virtual directory\n"
+    "isDirectory: 0 if it is no directory, <>0 if it is.\n"
+    "iconpath:    (optional) path to the icon to be displayed in xbmc\n");
+
+  PyObject* XBMC_setDirectoryEntry(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = {"handle", "name", "url", "isDirectory", "iconpath", NULL };
+    string name;
+    string url;
+    string iconpath;
+    PyObject *pName = NULL;
+    PyObject *pURL = NULL;
+    PyObject *pIconPath = NULL;
+    int isDirectory=0;
+    int handle;
+    // parse arguments
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "iOOi|O",
+      keywords,
+      &handle,
+      &pName,
+      &pURL,
+      &isDirectory,
+      &pIconPath
+      ))
+    {
+      return NULL;
+    };
+
+    if (!PyGetUnicodeString(name, pName, 1)) return NULL;
+    if (!PyGetUnicodeString(url, pURL, 1)) return NULL;
+    if (pIconPath && !PyGetUnicodeString(iconpath, pIconPath, 1)) return NULL;
+
+    // call the directory class to add our item
+    DIRECTORY::CPluginDirectory::AddItem(handle, name, url, iconpath, isDirectory != 0);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(endOfDirectory__doc__,
+      "endOfDirectory(handle) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
+      "\n"
+      "handle:  longint, handle the virtualpythonfolder plugin was started with.\n"
+    "\n");
+
+  PyObject* XBMC_endOfDirectory(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = {"handle", NULL };
+    int handle = 0;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "i",
+      keywords,
+      &handle
+      ))
+    {
+      return NULL;
+    };
+    // tell the directory class that we're done
+    DIRECTORY::CPluginDirectory::EndOfDirectory(handle);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
   // output() method
   PyDoc_STRVAR(output__doc__,
@@ -581,7 +656,8 @@ namespace PYXBMC
     {"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
     {"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
     {"executebuiltin", (PyCFunction)XBMC_ExecuteBuiltIn, METH_VARARGS, executeBuiltIn__doc__},
-
+    {"setDirectoryEntry", (PyCFunction)XBMC_setDirectoryEntry, METH_VARARGS|METH_KEYWORDS, setDirectoryEntry__doc__},
+    {"endOfDirectory", (PyCFunction)XBMC_endOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
     {"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
     {"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
     {"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
@@ -642,11 +718,10 @@ namespace PYXBMC
     Py_INCREF(&PlayListItem_Type);
     Py_INCREF(&InfoTagMusic_Type);
     Py_INCREF(&InfoTagVideo_Type);
-
     pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
     if (pXbmcModule == NULL) return;
-
-    PyModule_AddObject(pXbmcModule, "Keyboard", (PyObject*)&Keyboard_Type);
+	
+	PyModule_AddObject(pXbmcModule, "Keyboard", (PyObject*)&Keyboard_Type);
     PyModule_AddObject(pXbmcModule, "Player", (PyObject*)&Player_Type);
     PyModule_AddObject(pXbmcModule, "PlayList", (PyObject*)&PlayList_Type);
     PyModule_AddObject(pXbmcModule, "PlayListItem", (PyObject*)&PlayListItem_Type);

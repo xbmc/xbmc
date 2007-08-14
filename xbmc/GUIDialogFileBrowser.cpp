@@ -383,6 +383,10 @@ void CGUIDialogFileBrowser::Render()
     {
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, g_localizeStrings.Get(1032)); // "Add Network Location..."
     }
+    else if (m_selectedPath == "addplugin://")
+    {
+      SET_CONTROL_LABEL(CONTROL_LABEL_PATH, g_localizeStrings.Get(1037)); // "Add Plugin..."
+    }
     else
     {
       // Update the current path label
@@ -658,7 +662,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
 {
   // Technique is
   // 1.  Show Filebrowser with currently defined local, and optionally the network locations.
-  // 2.  Have the "Add Network Location" option in addition.
+  // 2.  Have the "Add Network Location", and "Plugins" options in addition (assuming a media type)
   // 3a. If the "Add Network Location" is pressed, then:
   //     a) Fire up the network location dialog to grab the new location
   //     b) Check the location by doing a GetDirectory() - if it fails, prompt the user
@@ -678,7 +682,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   m_gWindowManager.AddUniqueInstance(browser);
 
   VECSHARES shares;
-  if (!strType.IsEmpty())
+  if (strType.Left(4).Equals("upnp"))
   {
     if (strType.Equals("upnpmusic"))
       browser->SetHeading(g_localizeStrings.Get(21361));
@@ -707,12 +711,22 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
     {
       g_mediaManager.GetNetworkLocations(shares);
     }
+
+    // and finally the plugins, as appropriate
+    if (strType == "video" || strType == "music" || strType == "videos")
+    {
+      CShare share;
+      share.strPath = "plugin://" + strType + "/";
+      share.strName = g_localizeStrings.Get(1037);
+      shares.push_back(share);
+    }
   }
   
   browser->SetShares(shares);
   browser->m_rootDir.SetMask("/");
   browser->m_rootDir.AllowNonLocalShares(false);  // don't allow plug n play shares
   browser->m_browsingForFolders = true;
+  browser->m_useFileDirectories = false;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
   browser->DoModal();
