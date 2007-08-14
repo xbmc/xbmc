@@ -982,12 +982,13 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
                    (SocketOption)&option, 
                    sizeof(option));
 
+#ifndef _XBOX
         setsockopt(m_SocketFdReference->GetSocketFd(), 
                    IPPROTO_IP, 
                    IP_MULTICAST_LOOP,
                    (SocketOption)&option, 
                    sizeof(option));
-
+#endif
     }
     
     // convert the address
