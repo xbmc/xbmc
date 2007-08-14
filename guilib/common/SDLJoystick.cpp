@@ -65,10 +65,10 @@ void CJoystick::Initialize(HWND hWnd)
 
 void CJoystick::Reset(bool axis)
 {
-  m_ButtonId = 0;
+  m_ButtonId = -1;
   if (axis)
   {
-    m_AxisId = 0;
+    m_AxisId = -1;
     for (int i = 0 ; i<MAX_AXES ; i++)
     {
       m_Amount[i] = 0.0f;
@@ -124,7 +124,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
-    m_ButtonId = 0;
+    m_ButtonId = -1;
   default:
     ignore = true;
     break;
@@ -135,11 +135,11 @@ void CJoystick::Update(SDL_Event& joyEvent)
 
   if (axis)
   {
-    m_ButtonId = 0;
+    m_ButtonId = -1;
   }
   else
   {
-    m_AxisId = 0;
+    m_AxisId = -1;
   }
 }
 

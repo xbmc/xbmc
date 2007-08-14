@@ -3206,7 +3206,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 #endif
 #ifdef HAS_SDL_JOYSTICK
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
-  if (g_Joystick.GetButton())
+  if (g_Joystick.GetButton()>-1)
   {
     CAction action;
 
@@ -3225,7 +3225,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       g_Joystick.Reset();
     }
   }
-  else if (g_Joystick.GetAxis())
+  else if (g_Joystick.GetAxis()>-1)
   {
     CAction action;
 
