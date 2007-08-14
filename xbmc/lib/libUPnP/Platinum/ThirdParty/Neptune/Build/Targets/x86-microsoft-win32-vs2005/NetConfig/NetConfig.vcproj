@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="WS2_32.lib"
+				AdditionalDependencies="WS2_32.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/NetConfig.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"

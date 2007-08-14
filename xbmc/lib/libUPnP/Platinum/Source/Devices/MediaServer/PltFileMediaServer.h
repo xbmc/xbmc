@@ -13,6 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
+#include "Neptune.h"
 #include "NptDirectory.h"
 #include "PltMediaServer.h"
 
@@ -36,22 +37,25 @@ public:
                         const char*  friendly_name,
                         bool         show_ip = false,
                         const char*  uuid = NULL,
-                        unsigned int port = 0);
+                        unsigned int port = 0,
+                        unsigned int fileserver_port = 0);
 
     // PLT_DeviceHost methods
     virtual NPT_Result Start(PLT_TaskManager* task_manager);
-    virtual NPT_Result Stop();
 
     NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
 
+    // overridable
+    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest& request, NPT_HttpResponse& response, NPT_SocketInfo& client_info);
+
 protected:
     virtual ~PLT_FileMediaServer();
+
+    virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse& response);
     
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
 
-    virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse* response);
     virtual bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryInfo& info);
     virtual NPT_Result GetEntryCount(const char* path, NPT_Cardinal& count); 
     virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
@@ -70,6 +74,7 @@ protected:
     NPT_HttpUrl   m_FileBaseUri;
     NPT_HttpUrl   m_AlbumArtBaseUri;
 
+    NPT_HttpRequestHandler*        m_FileServerHandler;
     NPT_List<PLT_MetadataHandler*> m_MetadataHandlers;
 };
 

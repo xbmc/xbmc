@@ -888,7 +888,7 @@ NPT_HttpRequest::Parse(NPT_BufferedInputStream& stream,
         proxy_style_request = true;
     } else {
         // normal absolute path request
-        request = new NPT_HttpRequest("", method, protocol);
+        request = new NPT_HttpRequest("http:", method, protocol);
     }
 
     // parse headers
@@ -901,7 +901,7 @@ NPT_HttpRequest::Parse(NPT_BufferedInputStream& stream,
 
     // update the URL
     if (!proxy_style_request) {
-        request->m_Url.SetScheme("http");
+        //request->m_Url.SetScheme("http");
         request->m_Url.SetPathPlus(uri);
         request->m_Url.SetPort(NPT_HTTP_DEFAULT_PORT);
 
@@ -1319,7 +1319,6 @@ NPT_HttpServer::SetListenPort(NPT_UInt16 port)
     
     m_Config.m_ListenPort = port;
     m_Bound = true;
-
     return NPT_SUCCESS;
 }
 
@@ -1446,13 +1445,14 @@ NPT_HttpServer::RespondToClient(NPT_InputStreamReference&  input,
 
     NPT_HttpResponder responder(input, output);
     NPT_CHECK(responder.ParseRequest(request, &(client_info.local_address)));
+    bool headers_only = request->GetMethod()==NPT_HTTP_METHOD_HEAD;
 
     NPT_HttpRequestHandler* handler = FindRequestHandler(*request);
     if (handler == NULL) {
         response = new NPT_HttpResponse(404, "Not Found", NPT_HTTP_PROTOCOL_1_0);
     } else {
         // create a repsones object
-        response = new NPT_HttpResponse(200, "Ok", NPT_HTTP_PROTOCOL_1_0);
+        response = new NPT_HttpResponse(200, "OK", NPT_HTTP_PROTOCOL_1_0);
 
         // prepare the response
         response->SetEntity(new NPT_HttpEntity());
@@ -1462,8 +1462,7 @@ NPT_HttpServer::RespondToClient(NPT_InputStreamReference&  input,
     }
 
     // send the response
-    result = responder.SendResponse(*response, 
-                                    request->GetMethod()==NPT_HTTP_METHOD_HEAD);
+    result = responder.SendResponse(*response, headers_only);
 
     // cleanup
     delete response;
@@ -1582,6 +1581,9 @@ NPT_HttpResponder::SendResponse(NPT_HttpResponse& response,
         entity->GetInputStream(body_stream);
         if (!body_stream.IsNull()) return NPT_StreamToStreamCopy(*body_stream, *m_Output);
     }
+
+    // flush
+    m_Output->Flush();
 
     return NPT_SUCCESS;
 }

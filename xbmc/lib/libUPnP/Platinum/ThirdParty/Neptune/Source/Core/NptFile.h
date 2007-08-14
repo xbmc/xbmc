@@ -31,6 +31,7 @@ const unsigned int NPT_FILE_OPEN_MODE_WRITE      = 0x02;
 const unsigned int NPT_FILE_OPEN_MODE_CREATE     = 0x04;
 const unsigned int NPT_FILE_OPEN_MODE_TRUNCATE   = 0x08;
 const unsigned int NPT_FILE_OPEN_MODE_UNBUFFERED = 0x10;
+const unsigned int NPT_FILE_OPEN_MODE_APPEND     = 0x20;
 
 #define NPT_FILE_STANDARD_INPUT  "@STDIN"
 #define NPT_FILE_STANDARD_OUTPUT "@STDOUT"

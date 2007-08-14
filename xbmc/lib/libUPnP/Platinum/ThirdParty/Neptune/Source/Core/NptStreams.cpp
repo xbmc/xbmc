@@ -180,7 +180,8 @@ NPT_OutputStream::WriteLine(const char* buffer)
 /*----------------------------------------------------------------------
 |   NPT_MemoryStream::NPT_MemoryStream
 +---------------------------------------------------------------------*/
-NPT_MemoryStream::NPT_MemoryStream() : 
+NPT_MemoryStream::NPT_MemoryStream(NPT_Size initial_capacity) : 
+    m_Buffer(initial_capacity),
     m_ReadOffset(0),
     m_WriteOffset(0)
 {
@@ -343,4 +344,43 @@ NPT_StreamToStreamCopy(NPT_InputStream&  from,
     // free the buffer and return
     delete[] buffer;
     return result;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_StringOutputStream::NPT_StringOutputStream
++---------------------------------------------------------------------*/
+NPT_StringOutputStream::NPT_StringOutputStream(NPT_Size size) :
+    m_String(new NPT_String),
+    m_StringIsOwned(true)
+{
+    m_String->Reserve(size);
+}
+
+
+/*----------------------------------------------------------------------
+|   NPT_StringOutputStream::NPT_StringOutputStream
++---------------------------------------------------------------------*/
+NPT_StringOutputStream::NPT_StringOutputStream(NPT_String* storage) :
+    m_String(storage),
+    m_StringIsOwned(false)
+{
+}
+
+/*----------------------------------------------------------------------
+|   NPT_StringOutputStream::~NPT_StringOutputStream
++---------------------------------------------------------------------*/
+NPT_StringOutputStream::~NPT_StringOutputStream()
+{
+    if (m_StringIsOwned) delete m_String;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_StringOutputStream::Write
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_StringOutputStream::Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written /* = NULL */)
+{
+     m_String->Append((const char*)buffer, bytes_to_write);
+    if (bytes_written) *bytes_written = bytes_to_write;
+    return NPT_SUCCESS;
 }

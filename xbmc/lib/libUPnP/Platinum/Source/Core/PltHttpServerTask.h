@@ -13,12 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDefs.h"
-#include "NptStrings.h"
-#include "NptSockets.h"
-#include "NptSystem.h"
-#include "NptHttp.h"
-#include "NptFile.h"
+#include "Neptune.h"
 #include "PltHttp.h"
 #include "PltDatagramStream.h"
 #include "PltThreadTask.h"
@@ -45,9 +40,10 @@ protected:
 
 protected:
     // Request callback handler
-    virtual NPT_Result ProcessRequest(NPT_HttpRequest*   request, 
+    virtual NPT_Result ProcessRequest(NPT_HttpRequest&   request, 
                                       NPT_SocketInfo     info, 
-                                      NPT_HttpResponse*& response) = 0;
+                                      NPT_HttpResponse*& response,
+                                      bool&              headers_only) = 0;
 
     // overridables
     virtual NPT_Result GetInputStream(NPT_InputStreamReference& stream);
@@ -61,7 +57,9 @@ private:
     virtual NPT_Result Read(NPT_BufferedInputStreamReference& buffered_input_stream, 
                             NPT_HttpRequest*&                 request, 
                             NPT_SocketInfo&                   info);
-    virtual NPT_Result Write(NPT_HttpResponse* response, bool keep_alive);
+    virtual NPT_Result Write(NPT_HttpResponse* response, 
+                             bool              keep_alive, 
+                             bool              headers_only = false);
 
 protected:
     NPT_Socket*         m_Socket;
@@ -84,10 +82,11 @@ protected:
     virtual ~PLT_HttpServerTask<T>() {}
 
 protected:
-    NPT_Result ProcessRequest(NPT_HttpRequest*   request, 
+    NPT_Result ProcessRequest(NPT_HttpRequest&   request, 
                               NPT_SocketInfo     info, 
-                              NPT_HttpResponse*& response) {
-        return m_Data->ProcessHttpRequest(request, info, response);
+                              NPT_HttpResponse*& response,
+                              bool&              headers_only) {
+        return m_Data->ProcessHttpRequest(request, info, response, headers_only);
     }
 
 protected:
@@ -101,12 +100,12 @@ template <class T>
 class PLT_HttpListenTask : public PLT_ThreadTask
 {
 public:
-    PLT_HttpListenTask<T>(T* data, NPT_TcpServerSocket* socket) : 
-        m_Data(data), m_Socket(socket) {}
+    PLT_HttpListenTask<T>(T* data, NPT_TcpServerSocket* socket, bool clenaup_socket = true) : 
+        m_Data(data), m_Socket(socket), m_CleanupSocket(clenaup_socket) {}
 
 protected:
     virtual ~PLT_HttpListenTask<T>() { 
-        delete m_Socket;
+        if (m_CleanupSocket) delete m_Socket;
     }
 
 protected:
@@ -123,7 +122,9 @@ protected:
 
             if (NPT_SUCCEEDED(result)) {
                 PLT_ThreadTask* task = new PLT_HttpServerTask<T>(m_Data, client);
-                if (NPT_FAILED(m_TaskManager->StartTask(task))) task->Kill();
+                if (NPT_FAILED(m_TaskManager->StartTask(task))) {
+                    task->Kill();
+                }
             }
         }
     }
@@ -131,6 +132,7 @@ protected:
 protected:
     T*                   m_Data;
     NPT_TcpServerSocket* m_Socket;
+    bool                 m_CleanupSocket;
 };
 
 #endif /* _PLT_HTTP_SERVER_TASK_H_ */

@@ -14,6 +14,8 @@
 #include "PltService.h"
 #include "PltXmlHelper.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.core.action")
+
 /*----------------------------------------------------------------------
 |   PLT_ActionDesc::PLT_ActionDesc
 +---------------------------------------------------------------------*/
@@ -40,11 +42,11 @@ PLT_ActionDesc::GetSCPDXML(NPT_XmlElementNode* node)
     if (!m_ArgumentDescs.GetItemCount()) return NPT_FAILURE;
 
     NPT_XmlElementNode* action = new NPT_XmlElementNode("action");
-    NPT_CHECK(node->AddChild(action));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(action, "name", m_Name));
+    NPT_CHECK_SEVERE(node->AddChild(action));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(action, "name", m_Name));
 
     NPT_XmlElementNode* argumentList = new NPT_XmlElementNode("argumentList");
-    NPT_CHECK(action->AddChild(argumentList));
+    NPT_CHECK_SEVERE(action->AddChild(argumentList));
 
     return m_ArgumentDescs.ApplyUntil(
         PLT_GetSCPDXMLIterator<PLT_ArgumentDesc>(argumentList), 
@@ -109,9 +111,7 @@ NPT_Result
 PLT_Action::GetArgumentValue(const char* name, NPT_UInt32& value) 
 {
     NPT_String tmp_value;
-    if (NPT_FAILED(GetArgumentValue(name, tmp_value))) {
-        return NPT_FAILURE;
-    }
+    NPT_CHECK_WARNING(GetArgumentValue(name, tmp_value));
     return tmp_value.ToInteger((long&)value);
 }
 
@@ -122,9 +122,7 @@ NPT_Result
 PLT_Action::GetArgumentValue(const char* name, NPT_Int32& value) 
 {
     NPT_String tmp_value;
-    if (NPT_FAILED(GetArgumentValue(name, tmp_value))) {
-        return NPT_FAILURE;
-    }
+    NPT_CHECK_WARNING(GetArgumentValue(name, tmp_value));
     return tmp_value.ToInteger((long&)value);
 }
 
@@ -179,7 +177,7 @@ NPT_Result
 PLT_Action::VerifyArgumentValue(const char* name, const char* value)
 {
     NPT_String str;
-    NPT_CHECK(GetArgumentValue(name, str));
+    NPT_CHECK_SEVERE(GetArgumentValue(name, str));
 
     return str.Compare(value, true)?NPT_FAILURE:NPT_SUCCESS;
 }
@@ -227,7 +225,7 @@ PLT_Action::SetArgumentOutFromStateVariable(PLT_ArgumentDesc* arg_desc)
     if (!variable) return NPT_FAILURE;
 
     // assign the value to an argument
-    NPT_CHECK(SetArgumentValue(arg_desc->GetName(), variable->GetValue()));
+    NPT_CHECK_SEVERE(SetArgumentValue(arg_desc->GetName(), variable->GetValue()));
     return NPT_SUCCESS;
 }
 
@@ -239,7 +237,7 @@ PLT_Action::SetArgumentOutFromStateVariable(const char* name)
 {
     // look for this argument in the action list of arguments
     PLT_ArgumentDesc* arg_desc = NULL;
-    NPT_CHECK(NPT_ContainerFind(m_ActionDesc->GetArgumentDescs(), 
+    NPT_CHECK_SEVERE(NPT_ContainerFind(m_ActionDesc->GetArgumentDescs(), 
         PLT_ArgumentDescNameFinder(name), arg_desc));
 
     return SetArgumentOutFromStateVariable(arg_desc);
@@ -259,7 +257,7 @@ PLT_Action::SetArgumentsOutFromStateVariable()
         if (arg_desc->GetDirection().Compare("out", true))
             continue;
 
-        NPT_CHECK(SetArgumentOutFromStateVariable(arg_desc));
+        NPT_CHECK_SEVERE(SetArgumentOutFromStateVariable(arg_desc));
     }
 
     return NPT_SUCCESS;
@@ -304,20 +302,20 @@ PLT_Action::FormatSoapRequest(NPT_OutputStream& stream)
     NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
     // TODO: envelope is not deleted if NPT_CHECK fails
 
-    NPT_CHECK(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
-    NPT_CHECK(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
+    NPT_CHECK_SEVERE(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
+    NPT_CHECK_SEVERE(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
 
     NPT_XmlElementNode* body = new NPT_XmlElementNode("s", "Body");
-    NPT_CHECK(envelope->AddChild(body));
+    NPT_CHECK_SEVERE(envelope->AddChild(body));
 
     NPT_XmlElementNode* request = new NPT_XmlElementNode("u", m_ActionDesc->GetName());
-    NPT_CHECK(request->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()));
-    NPT_CHECK(body->AddChild(request));
+    NPT_CHECK_SEVERE(request->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()));
+    NPT_CHECK_SEVERE(body->AddChild(request));
 
     for(unsigned int i=0; i<m_Arguments.GetItemCount(); i++) {
         PLT_Argument* argument = m_Arguments[i];
         if (argument->GetDesc()->GetDirection().Compare("in", true) == 0) {
-            NPT_CHECK(PLT_XmlHelper::AddChildText(
+            NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(
                 request, 
                 argument->GetDesc()->GetName(), 
                 argument->GetValue()));
@@ -325,7 +323,7 @@ PLT_Action::FormatSoapRequest(NPT_OutputStream& stream)
     }
 
     NPT_String str;
-    NPT_CHECK(PLT_XmlHelper::Serialize(*envelope, str));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
     str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + str;
     delete envelope;
 
@@ -345,22 +343,22 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
     NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
     // TODO: envelope is not deleted if NPT_CHECK fails
 
-    NPT_CHECK(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
-    NPT_CHECK(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
+    NPT_CHECK_SEVERE(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
+    NPT_CHECK_SEVERE(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
 
     NPT_XmlElementNode* body = new NPT_XmlElementNode("s", "Body");
-    NPT_CHECK(envelope->AddChild(body));        
+    NPT_CHECK_SEVERE(envelope->AddChild(body));        
 
     NPT_XmlElementNode* response = new NPT_XmlElementNode("u", m_ActionDesc->GetName() + "Response");
-    NPT_CHECK(response->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()));
-    NPT_CHECK(body->AddChild(response));    
+    NPT_CHECK_SEVERE(response->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()));
+    NPT_CHECK_SEVERE(body->AddChild(response));    
 
     for(unsigned int i=0; i<m_Arguments.GetItemCount(); i++) {
         PLT_Argument* argument = m_Arguments[i];
         if (argument->GetDesc()->GetDirection().Compare("out", true) == 0) {
             NPT_XmlElementNode* node = new NPT_XmlElementNode(argument->GetDesc()->GetName());
-            NPT_CHECK(node->AddText(argument->GetValue()));
-            NPT_CHECK(response->AddChild(node));
+            NPT_CHECK_SEVERE(node->AddText(argument->GetValue()));
+            NPT_CHECK_SEVERE(response->AddChild(node));
 
             if (m_ActionDesc->GetService()->GetServiceType().StartsWith("urn:microsoft.com")) {
                 // if the service is from microsoft, we need to add
@@ -376,7 +374,7 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
 
     // this will xmlescape any values that contain xml characters
     NPT_String str;
-    NPT_CHECK(PLT_XmlHelper::Serialize(*envelope, str));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
     delete envelope;
 
     str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + str;
@@ -392,30 +390,30 @@ PLT_Action::FormatSoapError(unsigned int code, NPT_String desc, NPT_OutputStream
     NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
     // TODO: envelope is not deleted if NPT_CHECK fails
 
-    NPT_CHECK(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
-    NPT_CHECK(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
+    NPT_CHECK_SEVERE(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
+    NPT_CHECK_SEVERE(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
 
     NPT_XmlElementNode* body = new NPT_XmlElementNode("s", "Body");
-    NPT_CHECK(envelope->AddChild(body));   
+    NPT_CHECK_SEVERE(envelope->AddChild(body));   
 
     NPT_XmlElementNode* fault = new NPT_XmlElementNode("s", "Fault");
-    NPT_CHECK(body->AddChild(fault));
+    NPT_CHECK_SEVERE(body->AddChild(fault));
 
-    NPT_CHECK(PLT_XmlHelper::AddChildText(fault, "faultCode", "s:Client"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(fault, "faultString", "UPnPError"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(fault, "faultCode", "s:Client"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(fault, "faultString", "UPnPError"));
 
     NPT_XmlElementNode* detail = new NPT_XmlElementNode("detail");
-    NPT_CHECK(fault->AddChild(detail));
+    NPT_CHECK_SEVERE(fault->AddChild(detail));
 
     NPT_XmlElementNode* UPnPError = new NPT_XmlElementNode("UPnPError");
-    NPT_CHECK(UPnPError->SetNamespaceUri("", "urn:schemas-upnp-org:control-1-0"));
-    NPT_CHECK(detail->AddChild(UPnPError));
+    NPT_CHECK_SEVERE(UPnPError->SetNamespaceUri("", "urn:schemas-upnp-org:control-1-0"));
+    NPT_CHECK_SEVERE(detail->AddChild(UPnPError));
 
-    NPT_CHECK(PLT_XmlHelper::AddChildText(UPnPError, "errorCode", NPT_String::FromInteger(code)));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(UPnPError, "errorDescription", desc));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(UPnPError, "errorCode", NPT_String::FromInteger(code)));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(UPnPError, "errorDescription", desc));
 
     NPT_String str;
-    NPT_CHECK(PLT_XmlHelper::Serialize(*envelope, str));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
     delete envelope;
 
     str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + str;
