@@ -203,7 +203,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     {
-      AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
+      AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
       SetSortMethod(SORT_METHOD_NONE);
 
       SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);
@@ -213,7 +213,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     {
-      AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
+      AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
 
       SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
