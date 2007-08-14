@@ -279,6 +279,10 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "TvShowActors";
   else if (strPath.Equals("videodb://2/"))
     return "TvShows";
+    else if (strPath.Equals("videodb://3/"))
+    return "RecentlyAddedMovies";
+  else if (strPath.Equals("videodb://4/"))
+    return "RecentlyAddedEpisodes";
   else if (strPath.Equals("special://videoplaylists/"))
     return "Playlists";
   else
@@ -316,10 +320,10 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
-      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
+      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
         CFileItem item;
-        if (node == NODE_TYPE_EPISODES)
+        if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           g_infoManager.m_content = "episodes";
           item.m_strPath = items.m_strPath;
@@ -335,7 +339,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         }
         items.SetThumbnailImage(item.GetThumbnailImage());
       }
-      else if (node == NODE_TYPE_TITLE_MOVIES)
+      else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         g_infoManager.m_content = "movies";
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
         g_infoManager.m_content = "tvshows";

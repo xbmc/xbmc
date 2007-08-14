@@ -16,6 +16,10 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
     return NODE_TYPE_MOVIES_OVERVIEW;
   else if (GetName()=="2")
     return NODE_TYPE_TVSHOWS_OVERVIEW;
+  else if (GetName() == "3")
+    return NODE_TYPE_RECENTLY_ADDED_MOVIES;
+  else if (GetName() == "4")
+    return NODE_TYPE_RECENTLY_ADDED_EPISODES;
 
   return NODE_TYPE_NONE;
 }
@@ -31,6 +35,10 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
     vecRoot.push_back(g_localizeStrings.Get(342));   // Movies
   if (iTvShows > 0)
     vecRoot.push_back(g_localizeStrings.Get(20343)); // TV Shows
+  if (iMovies > 0)
+    vecRoot.push_back(g_localizeStrings.Get(20386));  // Recently Added Movies
+  if (iTvShows > 0)
+    vecRoot.push_back(g_localizeStrings.Get(20387)); // Recently Added Episodes
 
   for (int i = (iMovies==0); i-(iMovies==0) < (int)vecRoot.size(); ++i)
   {
