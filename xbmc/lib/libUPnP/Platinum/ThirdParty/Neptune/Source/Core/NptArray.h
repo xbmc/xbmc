@@ -318,8 +318,8 @@ NPT_Array<T>::Erase(Iterator first, Iterator last)
     if (first == NULL || last == NULL) return NPT_ERROR_INVALID_PARAMETERS;
 
     // check the bounds
-    NPT_Ordinal first_index = NPT_POINTER_TO_LONG(first-m_Items);
-    NPT_Ordinal last_index  = NPT_POINTER_TO_LONG(last-m_Items);
+    NPT_Ordinal first_index = (NPT_Ordinal)NPT_POINTER_TO_LONG(first-m_Items);
+    NPT_Ordinal last_index  = (NPT_Ordinal)NPT_POINTER_TO_LONG(last-m_Items);
     if (first_index >= m_ItemCount ||
         last_index  >= m_ItemCount ||
         first_index > last_index) {
@@ -352,7 +352,7 @@ NPT_Result
 NPT_Array<T>::Insert(Iterator where, const T& item, NPT_Cardinal repeat)
 {
     // check bounds
-    NPT_Ordinal where_index = where?NPT_POINTER_TO_LONG(where-m_Items):m_ItemCount;
+    NPT_Ordinal where_index = where?(NPT_Ordinal)NPT_POINTER_TO_LONG(where-m_Items):m_ItemCount;
     if (where > &m_Items[m_ItemCount] || repeat == 0) return NPT_ERROR_INVALID_PARAMETERS;
 
     NPT_Cardinal needed = m_ItemCount+repeat;

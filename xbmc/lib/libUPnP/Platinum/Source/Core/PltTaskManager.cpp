@@ -10,9 +10,10 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptSystem.h"
 #include "PltTaskManager.h"
 #include "PltThreadTask.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.core.taskmanager")
 
 /*----------------------------------------------------------------------
 |   PLT_TaskManager::PLT_TaskManager
@@ -50,7 +51,7 @@ PLT_TaskManager::StopTask(PLT_ThreadTask* task)
     {
         NPT_AutoLock lock(m_TasksLock);
         // if task is not found, then it might have been autodestroyed already
-        NPT_CHECK(m_Tasks.Remove(task));
+        NPT_CHECK_SEVERE(m_Tasks.Remove(task));
     }
 
     task->Stop();
@@ -103,7 +104,7 @@ NPT_Result
 PLT_TaskManager::AddTask(PLT_ThreadTask* task) 
 {
     if (m_Queue) {
-        NPT_CHECK(m_Queue->Push(new NPT_Integer));
+        NPT_CHECK_SEVERE(m_Queue->Push(new NPT_Integer));
     }
 
     {

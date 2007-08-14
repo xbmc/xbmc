@@ -17,6 +17,8 @@
 #include "PltDeviceData.h"
 #include "PltXmlHelper.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.core.event")
+
 /*----------------------------------------------------------------------
 |   PLT_EventSubscriber::PLT_EventSubscriber
 +---------------------------------------------------------------------*/
@@ -139,13 +141,13 @@ PLT_EventSubscriber::Notify(NPT_Array<PLT_StateVariable*>& vars)
     // verify we have eventable variables
     bool foundVars = false;
     NPT_XmlElementNode* propertyset = new NPT_XmlElementNode("e", "propertyset");
-    NPT_CHECK(propertyset->SetNamespaceUri("e", "urn:schemas-upnp-org:event-1-0"));
+    NPT_CHECK_SEVERE(propertyset->SetNamespaceUri("e", "urn:schemas-upnp-org:event-1-0"));
 
     for(unsigned int i=0; i<vars.GetItemCount(); i++) {
         if (vars[i]->IsSendingEvents()) {
             NPT_XmlElementNode* property = new NPT_XmlElementNode("e", "property");
-            NPT_CHECK(propertyset->AddChild(property));
-            NPT_CHECK(PLT_XmlHelper::AddChildText(property, vars[i]->GetName(), vars[i]->GetValue()));
+            NPT_CHECK_SEVERE(propertyset->AddChild(property));
+            NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(property, vars[i]->GetName(), vars[i]->GetValue()));
 
             foundVars = true;
         }

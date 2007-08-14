@@ -10,7 +10,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#if defined(WIN32) || defined(UNDER_CE)
+#if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(_XBOX)
 
 // Win32 includes
 #define __WIN32__
@@ -28,9 +28,8 @@
 #endif
 #include <windows.h>
 
+// XBox
 #elif defined(_XBOX)
-
-// XBox includes
 #include <xtl.h>
 #include <winsockx.h>
 
@@ -110,12 +109,11 @@ const int NPT_TCP_SERVER_SOCKET_DEFAULT_LISTEN_COUNT = 20;
 +---------------------------------------------------------------------*/
 #if defined(__WIN32__) || defined(_XBOX)
 #if defined(_XBOX)
-#define SO_ERROR    0x1007          /* unsupported */
 #include "NptXboxNetwork.h"
+#define SO_ERROR    0x1007          /* unsupported */
 #else
 #include "NptWin32Network.h"
 #endif
-
 // force a reference to the initializer so that the linker does not optimize it out
 static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer; 
 
@@ -515,11 +513,12 @@ public:
     }
 
     // methods
-    SocketFd GetSocketFd() { return m_Disconnected?NULL:m_SocketFd; }
+    SocketFd GetSocketFd() { return m_Disconnected?0:m_SocketFd; }
     NPT_Result SetBlockingMode(bool blocking);
     NPT_Result WaitUntilReadable();
     NPT_Result WaitUntilWriteable();
     NPT_Result WaitForCondition(bool readable, bool writeable, NPT_Timeout timeout);
+    
     void Disconnect() {
         if (m_Disconnected) return;
 #if !defined(WIN32) && !defined(_XBOX)
@@ -655,7 +654,8 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
 
     int io_result = select(nfds, 
                            &read_set, &write_set, &except_set, 
-                           timeout == NPT_TIMEOUT_INFINITE ? NULL : &timeout_value);
+                           timeout == NPT_TIMEOUT_INFINITE ? 
+                           NULL : &timeout_value);
 
     if (io_result == 0) {
         if (timeout == 0) {
@@ -1880,56 +1880,6 @@ NPT_BsdTcpServerSocket::WaitForNewClient(NPT_Socket*& client,
         client = new NPT_Socket(new NPT_BsdSocket(socket_fd, m_Blocking));
     }
 
-//     // wait for incoming connection
-//     NPT_Result result = NPT_SUCCESS;
-//     fd_set read_set;
-//     fd_set write_set;
-//     fd_set except_set;
-//     FD_ZERO(&read_set);
-//     FD_SET(m_SocketFdReference->GetSocketFd(), &read_set);
-//     FD_ZERO(&write_set);
-//     FD_SET(m_SocketFdReference->GetSocketFd(), &write_set);
-//     FD_ZERO(&except_set);
-//     FD_SET(m_SocketFdReference->GetSocketFd(), &except_set);
-// 
-//     struct timeval timeout_value;
-//     if (timeout != NPT_TIMEOUT_INFINITE) {
-//         timeout_value.tv_sec = timeout/1000;
-//         timeout_value.tv_usec = 1000*(timeout-1000*(timeout/1000));
-//     };
-//     
-//     int io_result = select((int)m_SocketFdReference->GetSocketFd()+1, 
-//                             &read_set, &write_set, &except_set, 
-//                             timeout == NPT_TIMEOUT_INFINITE ? 
-//                             NULL : &timeout_value);
-// 
-//     if (io_result == 0) {
-//         if (timeout == 0) {
-//             // non-blocking call
-//             result = NPT_ERROR_WOULD_BLOCK;
-//         } else {
-//             // timeout
-//             result = NPT_ERROR_TIMEOUT;
-//         }
-//     } else if (NPT_BSD_SOCKET_SELECT_FAILED(io_result)) {
-//         result = MapErrorCode(GetSocketError());
-//     } else if (FD_ISSET(m_SocketFdReference->GetSocketFd(), &read_set) || 
-//                FD_ISSET(m_SocketFdReference->GetSocketFd(), &write_set)) {
-//         struct sockaddr_in inet_address;
-//         socklen_t          namelen = sizeof(inet_address);
-//         SocketFd socket_fd = accept(m_SocketFdReference->GetSocketFd(), (struct sockaddr*)&inet_address, &namelen); 
-//         if (NPT_BSD_SOCKET_IS_INVALID(socket_fd)) {
-//             result = MapErrorCode(GetSocketError());
-//         } else {
-//             client = new NPT_Socket(new NPT_BsdSocket(socket_fd, was_blocking));
-//         }
-//     } else if (FD_ISSET(m_SocketFdReference->m_SocketFd, &except_set)) {
-//         result = MapErrorCode(GetSocketError());
-//     } else {
-//         // should not happen
-//         result = NPT_ERROR_INTERNAL;
-//     }
- 
     if (was_blocking) {
         // put the fd back in its original blocking mode
         m_SocketFdReference->SetBlockingMode(true);

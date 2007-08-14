@@ -150,6 +150,9 @@ NPT_Uri::Decode(const char* uri)
             if (NPT_SUCCEEDED(NPT_HexToByte(uri, unescaped))) {
                 decoded += unescaped;
                 uri += 2;
+            } else {
+                // not a valid escape sequence, just keep the %
+                decoded += c;
             }
         } else {
             // no unescaping required

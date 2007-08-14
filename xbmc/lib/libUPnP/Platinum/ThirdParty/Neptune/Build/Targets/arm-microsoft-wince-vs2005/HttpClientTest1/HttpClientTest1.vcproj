@@ -72,6 +72,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="2"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -155,6 +156,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="2"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -238,7 +240,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				AdditionalDependencies="ws2.lib"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="2"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -322,6 +324,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="2"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -404,6 +407,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="1"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -488,6 +492,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="1"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -572,6 +577,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="1"
 				DelayLoadDLLs="$(NOINHERIT)"
@@ -656,6 +662,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
+				AdditionalDependencies="ws2.lib iphlpapi.lib"
 				OutputFile="$(OutDir)/HttpClientTest1.exe"
 				LinkIncremental="1"
 				DelayLoadDLLs="$(NOINHERIT)"

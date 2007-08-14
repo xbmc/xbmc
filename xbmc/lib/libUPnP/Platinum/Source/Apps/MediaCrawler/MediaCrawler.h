@@ -14,7 +14,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Platinum.h"
-#include "PltMediaServer.h"
+#include "PltFileMediaServer.h"
 #include "PltSyncMediaBrowser.h"
 #include "StreamHandler.h"
 
@@ -22,7 +22,7 @@
 |   CMediaCrawler
 +---------------------------------------------------------------------*/
 class CMediaCrawler : public PLT_MediaBrowser,
-                      public PLT_MediaServer
+                      public PLT_FileMediaServer
 
 {
 public:
@@ -36,12 +36,8 @@ public:
 
     NPT_Result AddStreamHandler(CStreamHandler* handler);
 
-    // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_TaskManager* task_manager);
-    virtual NPT_Result Stop();
-
     // accessor methods
-    const NPT_String&  GetFileBaseUri() const { return m_FileBaseUri; }
+    NPT_HttpUrl GetFileBaseUri() const { return m_FileBaseUri; }
 
 protected:
     // PLT_MediaServer methods
@@ -51,7 +47,7 @@ protected:
     NPT_Result OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
     
     // File Server Listener methods
-    NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
+    NPT_Result ProcessFileRequest(NPT_HttpRequest& request, NPT_HttpResponse& response, NPT_SocketInfo& info);
 
 private:
     // methods
@@ -67,7 +63,6 @@ private:
     NPT_String UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_SocketInfo* info = NULL);
 
     // members
-    NPT_String                m_FileBaseUri;
     NPT_List<CStreamHandler*> m_StreamHandlers;
 };
 

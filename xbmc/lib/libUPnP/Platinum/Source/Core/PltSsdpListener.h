@@ -13,8 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptHttp.h"
-#include "NptSockets.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   PLT_SsdpPacketListener class
@@ -23,7 +22,7 @@ class PLT_SsdpPacketListener
 {
 public:
     virtual ~PLT_SsdpPacketListener() {}
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest* request, NPT_SocketInfo info) = 0;
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info) = 0;
 };
 
 /*----------------------------------------------------------------------

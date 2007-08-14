@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\ThirdParty\Neptune\Source\Config;..\..\..\..\ThirdParty\Neptune\Source\Core;..\..\..\..\ThirdParty\Neptune\Source\Neptune;..\..\..\..\Source\Platinum"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;PLT_LOG;NPT_DEBUG"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -147,9 +147,6 @@
 				RelativePath="..\..\..\..\Source\Core\PltLeaks.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\Source\Core\PltLog.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\..\Source\Core\PltMetadataHandler.cpp">
 			</File>
 			<File
@@ -222,9 +219,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\PltLeaks.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Core\PltLog.h">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\PltMetadataHandler.h">

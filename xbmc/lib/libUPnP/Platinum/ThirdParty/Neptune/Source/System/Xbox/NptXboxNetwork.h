@@ -1,9 +1,9 @@
 /*****************************************************************
 |
-|   Neptune - Network :: Winsock Implementation
+|   Neptune - Network :: Xbox Winsock Implementation
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+|   (c) 2001-2005 Gilles Boccon-Gibod
+|   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
 

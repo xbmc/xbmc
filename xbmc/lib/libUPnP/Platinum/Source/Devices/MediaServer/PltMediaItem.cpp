@@ -10,13 +10,14 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDirectory.h"
 #include "PltMediaItem.h"
 #include "PltMediaServer.h"
 #include "PltMetadataHandler.h"
 #include "PltDidl.h"
 #include "PltXmlHelper.h"
 #include "PltService.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.media.server.item")
 
 extern const char* didl_namespace_dc;
 extern const char* didl_namespace_upnp;
@@ -232,7 +233,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 
     // serialize the entry Didl as a we might need to pass it to a renderer
     res = PLT_XmlHelper::Serialize(*entry, xml);
-    NPT_CHECK_LABEL(res, cleanup);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
     
     m_Didl = didl_header + xml + didl_footer;    
 
@@ -242,16 +243,16 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     }
 
     res = PLT_XmlHelper::GetAttribute(entry, "id", m_ObjectID);
-    NPT_CHECK_LABEL(res, cleanup);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
     res = PLT_XmlHelper::GetAttribute(entry, "parentID", m_ParentID);
-    NPT_CHECK_LABEL(res, cleanup);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
     res = PLT_XmlHelper::GetChildText(entry, "title", m_Title, didl_namespace_dc);
-    NPT_CHECK_LABEL(res, cleanup);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
     res = PLT_XmlHelper::GetChildText(entry, "class", m_ObjectClass.type, didl_namespace_upnp);
-    NPT_CHECK_LABEL(res, cleanup);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
     // read non-required elements
     PLT_XmlHelper::GetChildText(entry, "creator", m_Creator, didl_namespace_dc);
@@ -347,7 +348,7 @@ PLT_MediaItem::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     tmp += ">";
 
-    NPT_CHECK(PLT_MediaObject::ToDidl(mask, tmp));
+    NPT_CHECK_SEVERE(PLT_MediaObject::ToDidl(mask, tmp));
 
     /* close tag */
     tmp += "</item>";
@@ -430,7 +431,7 @@ PLT_MediaContainer::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     tmp += ">";
 
-    NPT_CHECK(PLT_MediaObject::ToDidl(mask, tmp));
+    NPT_CHECK_SEVERE(PLT_MediaObject::ToDidl(mask, tmp));
 
     /* close tag */
     tmp += "</container>";
@@ -462,7 +463,7 @@ PLT_MediaContainer::FromDidl(NPT_XmlElementNode* entry)
     // look for childCount
     if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(entry, "childCount", str))) {
         long count;
-        NPT_CHECK(str.ToInteger(count));
+        NPT_CHECK_SEVERE(str.ToInteger(count));
         m_ChildrenCount = count;
     }
 
