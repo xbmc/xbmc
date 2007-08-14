@@ -13,9 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDefs.h"
-#include "NptSockets.h"
-#include "NptHttp.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   PLT_HttpServerListener Interface
@@ -25,9 +23,10 @@ class PLT_HttpServerListener
  public:
     virtual ~PLT_HttpServerListener() {}
     
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&   request, 
                                           NPT_SocketInfo     info, 
-                                          NPT_HttpResponse*& response) = 0;
+                                          NPT_HttpResponse*& response,
+                                          bool&              headers_only) = 0;
 };
 
 #endif /* _PLT_HTTP_SERVER_LISTENER_H_ */

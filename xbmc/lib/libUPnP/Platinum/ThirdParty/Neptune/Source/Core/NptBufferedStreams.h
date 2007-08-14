@@ -71,29 +71,4 @@ private:
 
 typedef NPT_Reference<NPT_BufferedInputStream> NPT_BufferedInputStreamReference;
 
-/*----------------------------------------------------------------------
-|   NPT_StringOutputStream
-+---------------------------------------------------------------------*/
-class NPT_StringOutputStream : public NPT_OutputStream
-{
-public:
-    // methods
-    NPT_StringOutputStream(NPT_Size size = 4096);
-    NPT_StringOutputStream(NPT_String* data);
-    virtual ~NPT_StringOutputStream() ;
-
-    const NPT_String* GetData() const { return m_Data; }
-
-    // NPT_OutputStream methods
-    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL);
-    NPT_Result Flush();
-
-    NPT_Result Seek(NPT_Position offset)  { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
-    NPT_Result Tell(NPT_Position& offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
-
-protected:
-    NPT_String* m_Data;
-    bool        m_Local;
-};
-
 #endif // _NPT_BUFFERED_STREAMS_H_

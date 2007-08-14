@@ -13,7 +13,7 @@
 #include "NptUtils.h"
 #include "Neptune.h"
 #include "NptDirectory.h"
-#include "PltLog.h"
+#include "NptLogging.h"
 #include "PltTaskManager.h"
 #include "PltHttpServer.h"
 #include "PltDownloader.h"
@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+NPT_SET_LOCAL_LOGGER("platinum.core.http.test")
 
 /*----------------------------------------------------------------------
 |   globals
@@ -96,7 +98,7 @@ struct Options {
 static bool
 Test1(PLT_TaskManager* task_manager, const char* url, NPT_Size& size)
 {
-    PLT_Log(PLT_LOG_LEVEL_1, "########### TEST 1 ######################\n");
+    NPT_LOG_INFO("########### TEST 1 ######################");
 
     NPT_MemoryStreamReference stream(new NPT_MemoryStream());
     PLT_Downloader downloader(task_manager, url, (NPT_OutputStreamReference&)stream);
@@ -150,7 +152,7 @@ ParseCommandLine(char** args)
     while ((arg = *tmp++)) {
         if (!strcmp(arg, "-p")) {
             long port;
-            if (NPT_FAILED(NPT_ParseInteger(*args++, port, false))) {
+            if (NPT_FAILED(NPT_ParseInteger(*tmp++, port, false))) {
                 fprintf(stderr, "ERROR: invalid port\n");
                 exit(1);
             }
@@ -178,8 +180,6 @@ main(int argc, char** argv)
 {
     NPT_COMPILER_UNUSED(argc);
 
-    PLT_SetLogLevel(PLT_LOG_LEVEL_1);
-
     /* parse command line */
     ParseCommandLine(argv);
 
@@ -192,14 +192,17 @@ main(int argc, char** argv)
     }
 
     NPT_DirectoryEntryInfo info;
-    NPT_CHECK(NPT_DirectoryEntry::GetInfo(Options.path, info));
-
-    /* create the file server http listener */
-    PLT_FileServer file_server(Options.path.Left(index1>index2?index1:index2));
+    NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, info));
 
     /* and the http server */
-    PLT_HttpServer http_server(&file_server, Options.port?Options.port:80);
-    NPT_CHECK(http_server.Start());
+    PLT_HttpServer http_server(Options.port?Options.port:80);
+    NPT_HttpFileRequestHandler* handler = new NPT_HttpFileRequestHandler(
+        Options.path.Left(index1>index2?index1:index2), 
+        "/");
+    http_server.AddRequestHandler(handler, "/", true);
+
+    /* start it */
+    NPT_CHECK_SEVERE(http_server.Start());
 
     NPT_String url = "http://127.0.0.1:" + NPT_String::FromInteger(http_server.GetPort());
     url += "/" + Options.path.SubString((index1>index2?index1:index2)+1);
@@ -211,7 +214,9 @@ main(int argc, char** argv)
     NPT_System::Sleep(NPT_TimeInterval(1, 0));
     
     NPT_Size size;
-    Test1(&task_manager, url.GetChars(), size);
+    bool result = Test1(&task_manager, url.GetChars(), size);
+    if (!result) return -1;
+
     NPT_System::Sleep(NPT_TimeInterval(1, 0));
 
     char buf[256];
@@ -221,5 +226,6 @@ main(int argc, char** argv)
     }
 
     http_server.Stop();
+    delete handler;
     return 0;
 }

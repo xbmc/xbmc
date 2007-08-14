@@ -44,8 +44,6 @@ public:
                       unsigned int         port = 0);
 
     // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_TaskManager* task_manager);
-    virtual NPT_Result Stop();
     virtual NPT_Result OnAction(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
     void ReportPlaybackStatus();
@@ -66,9 +64,6 @@ private:
     NPT_Result OnStop(PLT_ActionReference& action);
     NPT_Result OnSetAVTransportURI(PLT_ActionReference& action);
     NPT_Result OnSetPlayMode(PLT_ActionReference& action);
-
-protected:
-    bool m_ShowIP;
 };
 
 #endif /* _PLT_MEDIA_RENDERER_H_ */

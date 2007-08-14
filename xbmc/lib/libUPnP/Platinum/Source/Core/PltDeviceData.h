@@ -14,9 +14,6 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
-#include "NptXml.h"
-#include "NptArray.h"
-#include "NptReferences.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -60,7 +57,7 @@ public:
     NPT_Result FindServiceByControlURI(const char* uri, PLT_Service*& service);
     NPT_Result FindServiceByEventSubURI(const char* uri, PLT_Service*& service);
 
-    NPT_Result ToLog();
+    NPT_Result ToLog(int level = NPT_LOG_LEVEL_FINE);
 
 protected:
     NPT_TimeStamp GetLeaseTimeLastUpdate();

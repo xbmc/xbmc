@@ -14,6 +14,8 @@
 #include "PltDidl.h"
 #include "PltXmlHelper.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.apps.crawler")
+
 /*----------------------------------------------------------------------
 |   CMediaCrawler::CMediaCrawler
 +---------------------------------------------------------------------*/
@@ -24,7 +26,7 @@ CMediaCrawler::CMediaCrawler(PLT_CtrlPointReference& ctrlPoint,
                              unsigned int            port /* = 0 */,
                              unsigned int            fileserver_port /* = 0 */) :
     PLT_MediaBrowser(ctrlPoint, NULL),
-    PLT_MediaServer(friendly_name, show_ip, udn, port, fileserver_port)
+    PLT_FileMediaServer("/", friendly_name, show_ip, udn, port, fileserver_port)
 {
 }
 
@@ -33,48 +35,6 @@ CMediaCrawler::CMediaCrawler(PLT_CtrlPointReference& ctrlPoint,
 +---------------------------------------------------------------------*/
 CMediaCrawler::~CMediaCrawler()
 {
-}
-
-/*----------------------------------------------------------------------
-|   CMediaCrawler::Start
-+---------------------------------------------------------------------*/
-NPT_Result
-CMediaCrawler::Start(PLT_TaskManager* task_manager)
-{
-    NPT_CHECK(PLT_MediaServer::Start(task_manager));
-
-    NPT_String ip;
-    NPT_List<NPT_NetworkInterface*> if_list;
-    NPT_NetworkInterface::GetNetworkInterfaces(if_list);
-    NPT_List<NPT_NetworkInterface*>::Iterator iface = if_list.GetFirstItem();
-    while (iface) {
-        NPT_String tmp = (*(*iface)->GetAddresses().GetFirstItem()).GetPrimaryAddress().ToString();
-        if (tmp.Compare("0.0.0.0") && tmp.Compare("127.0.0.1")) {
-            ip = tmp;
-            PLT_Log(PLT_LOG_LEVEL_1, "IP addr: %s\n", (const char*)ip);
-            break;
-        }
-        ++iface;
-    }
-    if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
-
-    // use localhost if no ip found
-    if (ip.GetLength() == 0) {
-        ip = "127.0.0.1";
-    }
-
-    // set the file urls for content and album arts according to fileserver port
-    m_FileBaseUri = "http://" + ip + ":" + NPT_String::FromInteger(m_FileServer->GetPort()) + "/foo";
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   CMediaCrawler::Stop
-+---------------------------------------------------------------------*/
-NPT_Result
-CMediaCrawler::Stop()
-{
-    return PLT_MediaServer::Stop();
 }
 
 /*----------------------------------------------------------------------
@@ -129,18 +89,18 @@ CMediaCrawler::OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info /* = N
 
     NPT_String object_id;
     if (NPT_FAILED(action->GetArgumentValue("ObjectId", object_id))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "PLT_FileMediaServer::OnBrowse - invalid arguments.");
+        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - invalid arguments.");
         return NPT_FAILURE;
     }
 
-    PLT_Log(PLT_LOG_LEVEL_1, "PLT_FileMediaServer::OnOnBrowse - id = %s\r\n", (const char*)object_id);
+    NPT_LOG_FINE_1("PLT_FileMediaServer::OnOnBrowse - id = %s\r\n", (const char*)object_id);
 
     // extract server uuid and server object id from our object id
     NPT_String server_uuid;
     NPT_String server_object_id;
     if (NPT_FAILED(SplitObjectId(object_id, server_uuid, server_object_id))) {
         /* error */
-        PLT_Log(PLT_LOG_LEVEL_1, "CMediaCrawler::OnBrowse - ObjectID not found.");
+        NPT_LOG_WARNING("CMediaCrawler::OnBrowse - ObjectID not found.");
         action->SetError(701, "No Such Object.");
         return NPT_FAILURE;
     }
@@ -172,7 +132,7 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
 {
     NPT_String browseFlagValue;
     if (NPT_FAILED(action->GetArgumentValue("BrowseFlag", browseFlagValue))) {
-        PLT_Log(PLT_LOG_LEVEL_1, "PLT_FileMediaServer::OnBrowse - invalid arguments.");
+        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - invalid arguments.");
         return NPT_FAILURE;
     }
 
@@ -180,7 +140,7 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
     BrowseFlags browseFlag;
     if (NPT_FAILED(GetBrowseFlag(browseFlagValue, browseFlag))) {
         /* error */
-        PLT_Log(PLT_LOG_LEVEL_1, "PLT_FileMediaServer::OnBrowseRoot - BrowseFlag value not allowed.");
+        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowseRoot - BrowseFlag value not allowed.");
         action->SetError(402,"Invalid BrowseFlag arg.");
         return NPT_FAILURE;
     }
@@ -197,7 +157,7 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
         NPT_String filter;
         action->GetArgumentValue("Filter", filter);
         NPT_String tmp;
-        NPT_CHECK(PLT_Didl::ToDidl(item, filter, tmp));
+        NPT_CHECK_SEVERE(PLT_Didl::ToDidl(item, filter, tmp));
 
         /* add didl header and footer */
         NPT_String didl = didl_header + tmp + didl_footer;
@@ -214,9 +174,9 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
         NPT_String reqCount;
         NPT_String filter;
 
-        NPT_CHECK(action->GetArgumentValue("StartingIndex", startingInd));
-        NPT_CHECK(action->GetArgumentValue("RequestedCount", reqCount));   
-        NPT_CHECK(action->GetArgumentValue("Filter", filter));
+        NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
+        NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
+        NPT_CHECK_SEVERE(action->GetArgumentValue("Filter", filter));
 
         unsigned long start_index, req_count;
         if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
@@ -243,7 +203,7 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
             item.m_ObjectClass.type = "object.container";
 
             if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
-                NPT_CHECK(PLT_Didl::ToDidl(item, filter, tmp));
+                NPT_CHECK_SEVERE(PLT_Didl::ToDidl(item, filter, tmp));
 
                 didl += tmp;
                 num_returned++;
@@ -284,7 +244,7 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
 
         if (NPT_FAILED(NPT_ContainerFind(devices, PLT_DeviceDataFinder(server_uuid), device))) {
             /* error */
-            PLT_Log(PLT_LOG_LEVEL_1, "CMediaCrawler::OnBrowseDevice - device not found.");
+            NPT_LOG_WARNING("CMediaCrawler::OnBrowseDevice - device not found.");
             action->SetError(701, "No Such Object.");
             return NPT_FAILURE;
         } 
@@ -297,11 +257,11 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
     NPT_String filter;
     NPT_String sort;
 
-    NPT_CHECK(action->GetArgumentValue("BrowseFlag", browseFlagValue));
-    NPT_CHECK(action->GetArgumentValue("StartingIndex", startingInd));
-    NPT_CHECK(action->GetArgumentValue("RequestedCount", reqCount));   
-    NPT_CHECK(action->GetArgumentValue("Filter", filter));
-    NPT_CHECK(action->GetArgumentValue("SortCriteria", sort));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("BrowseFlag", browseFlagValue));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
+    NPT_CHECK_SEVERE(action->GetArgumentValue("Filter", filter));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("SortCriteria", sort));
 
     unsigned long start_index, req_count;
     if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
@@ -325,11 +285,11 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
         filter,
         sort,
         new CMediaCrawlerBrowseInfoReference(browse_info));		
-    NPT_CHECK(res);
+    NPT_CHECK_SEVERE(res);
 
     // wait 30 secs for response
     res = browse_info->shared_var.WaitUntilEquals(1, 30000);
-    NPT_CHECK(res);
+    NPT_CHECK_SEVERE(res);
 
     // did the browse fail?
     if (NPT_FAILED(browse_info->res)) {
@@ -403,7 +363,7 @@ CMediaCrawler::UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_S
     NPT_XmlWriter  writer;
     NPT_OutputStreamReference stream(new NPT_StringOutputStream(&new_didl));
 
-    PLT_Log(PLT_LOG_LEVEL_1, "Parsing Didl...\r\n");
+    NPT_LOG_FINE("Parsing Didl...");
 
     NPT_XmlElementNode* tree = NULL;
     NPT_XmlParser parser;
@@ -413,7 +373,7 @@ CMediaCrawler::UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_S
 
     tree = node->AsElementNode();
 
-    PLT_Log(PLT_LOG_LEVEL_1, "Processing Didl xml...\r\n");
+    NPT_LOG_FINE("Processing Didl xml...");
     if (tree->GetTag().Compare("DIDL-Lite", true)) {
         goto cleanup;
     }
@@ -499,38 +459,63 @@ cleanup:
 |   CMediaCrawler::ProcessFileRequest
 +---------------------------------------------------------------------*/
 NPT_Result 
-CMediaCrawler::ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response)
+CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&  request, 
+                                  NPT_HttpResponse& response,
+                                  NPT_SocketInfo&   info)
 {
     NPT_COMPILER_UNUSED(info);
 
-    PLT_Log(PLT_LOG_LEVEL_3, "CMediaCrawler::ProcessFileRequest Received Request:\r\n");
-    PLT_HttpHelper::ToLog(request, PLT_LOG_LEVEL_3);
+    NPT_LOG_FINE("CMediaCrawler::ProcessFileRequest Received Request:");
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
-    if (request->GetMethod().Compare("GET") && request->GetMethod().Compare("HEAD")) {
-        response->SetStatus(500, "Internal Server Error");
+    if (request.GetMethod().Compare("GET") && request.GetMethod().Compare("HEAD")) {
+        response.SetStatus(500, "Internal Server Error");
         return NPT_SUCCESS;
     }
 
     // add the user agent header, some stupid media servers like YME needs it
-    if (!request->GetHeaders().GetHeader(NPT_HTTP_HEADER_USER_AGENT)) {
-        request->GetHeaders().SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
+    if (!request.GetHeaders().GetHeader(NPT_HTTP_HEADER_USER_AGENT)) {
+        request.GetHeaders().SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
             "Platinum/" PLT_PLATINUM_VERSION_STRING);
     }
 
     // File requested
-    NPT_HttpUrlQuery query(request->GetUrl().GetQuery());
+    NPT_HttpResponse* out_response = NULL;
+    NPT_HttpUrlQuery query(request.GetUrl().GetQuery());
     const char* url = query.GetField("url");
     if (url) {
         // look for handler
         CStreamHandler* handler = NULL;
-        NPT_Result res = NPT_ContainerFind(m_StreamHandlers, CStreamHandlerFinder(NULL, url), handler);
-        if (NPT_SUCCEEDED(res)) {
-            return handler->ProcessFileRequest(request, response);
+        NPT_ContainerFind(m_StreamHandlers, CStreamHandlerFinder(NULL, url), handler);
+        if (handler && NPT_SUCCEEDED(handler->ProcessFileRequest(request, out_response)) && out_response) {
+            // copy response code and reason
+            response.SetStatus(out_response->GetStatusCode(), out_response->GetReasonPhrase());
+
+            // copy headesr
+            NPT_List<NPT_HttpHeader*>::Iterator headers = out_response->GetHeaders().GetHeaders().GetFirstItem();
+            while (headers) {
+                response.GetHeaders().SetHeader((*headers)->GetName(), (*headers)->GetValue());
+                ++headers;
+            }
+            response.SetEntity(new NPT_HttpEntity(response.GetHeaders()));
+            
+            // update inputstream
+            NPT_HttpEntity* out_entity;
+            if ((out_entity = out_response->GetEntity()) != NULL) {
+                NPT_InputStreamReference inputstream;
+                out_entity->GetInputStream(inputstream);
+                if (!inputstream.IsNull()) {
+                    // set the stream but do not update the content length
+                    response.GetEntity()->SetInputStream(inputstream, false);
+                }
+            }
+
+            delete out_response;
+            return NPT_SUCCESS;
         }
     }
 
-    response = new NPT_HttpResponse(404, "File Not Found");
-    response->GetHeaders().SetHeader("Server", "Platinum/" PLT_PLATINUM_VERSION_STRING);
+    response.SetStatus(404, "File Not Found");
     return NPT_SUCCESS;
 }
 

@@ -43,11 +43,11 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_DEBUG"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_DEBUG;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				BufferSecurityCheck="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -115,10 +115,10 @@
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				ExceptionHandling="0"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="true"
 				FloatingPointModel="2"
@@ -182,6 +182,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptConsole.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptDataBuffer.cpp"
 				>
 			</File>
@@ -199,6 +203,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptList.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptLogging.cpp"
 				>
 			</File>
 			<File
@@ -223,6 +231,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptSockets.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\StdC\NptStdcEnvironment.cpp"
 				>
 			</File>
 			<File
@@ -258,7 +270,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Console.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32MessageQueue.cpp"
 				>
 			</File>
 			<File
@@ -312,6 +336,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptConsole.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptConstants.h"
 				>
 			</File>
@@ -328,6 +356,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptDirectory.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.h"
 				>
 			</File>
@@ -341,6 +373,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptLogging.h"
 				>
 			</File>
 			<File
@@ -421,6 +457,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptVersion.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32MessageQueue.h"
 				>
 			</File>
 			<File

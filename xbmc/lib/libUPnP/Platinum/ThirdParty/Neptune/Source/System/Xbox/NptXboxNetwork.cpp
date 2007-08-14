@@ -1,9 +1,9 @@
 /*****************************************************************
 |
-|   Neptune - Network :: Xbox Winsock Implementation
+|  Neptune - Network :: Xbox Winsock Implementation
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+|  (c) 2001-2005 Gilles Boccon-Gibod
+|  Author: Gilles Boccon-Gibod (bok@bok.net)
 |
 ****************************************************************/
 
@@ -19,8 +19,7 @@
 /*----------------------------------------------------------------------
 |   static initializer
 +---------------------------------------------------------------------*/
-NPT_WinsockSystem::NPT_WinsockSystem() 
-{
+NPT_WinsockSystem::NPT_WinsockSystem() {
     XNetStartupParams xnsp;
     memset(&xnsp, 0, sizeof(xnsp));
     xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
@@ -40,16 +39,12 @@ NPT_WinsockSystem::NPT_WinsockSystem()
     WORD    wVersionRequested;
     WSADATA wsaData;
     wVersionRequested = MAKEWORD(2, 2);
-    /*wVersionRequested = MAKEWORD(1, 1);*/
     WSAStartup( wVersionRequested, &wsaData );
 }
-
-NPT_WinsockSystem::~NPT_WinsockSystem() 
-{
+NPT_WinsockSystem::~NPT_WinsockSystem() {
     WSACleanup();
     XNetCleanup();
 }
-
 NPT_WinsockSystem NPT_WinsockSystem::Initializer;
 
 /*----------------------------------------------------------------------
@@ -99,3 +94,4 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
 
     return NPT_SUCCESS;
 }
+

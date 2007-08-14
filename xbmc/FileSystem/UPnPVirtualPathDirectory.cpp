@@ -42,8 +42,7 @@ CUPnPVirtualPathDirectory::FindSharePath(const char* share_name, const char* pat
     for (unsigned int i = 0; i < paths.size(); i++) {
         if (begin) {
             if (NPT_StringsEqualN(path, paths[i].c_str(), NPT_StringLength(paths[i].c_str()))) {
-                if (NPT_StringLength(path) <= NPT_StringLength(paths[i].c_str()) || path[NPT_StringLength(paths[i].c_str())] == '\\')
-                    return true;
+                return true;
             }
         } else if (NPT_StringsEqual(path, paths[i].c_str())) {
             return true;
@@ -66,7 +65,9 @@ CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_na
     share_name = "";
     path = "";
 
-    if (id.StartsWith("virtualpath://upnpmusic")) {
+    if (id.StartsWith("virtualpath://upnproot")) {
+        index = 22;
+    } else if (id.StartsWith("virtualpath://upnpmusic")) {
         index = 23;
     } else if (id.StartsWith("virtualpath://upnpvideo")) {
         index = 23;
@@ -107,20 +108,21 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
     CShare     share;
     CFileItem* item;
     vector<CStdString> paths;
+    path.TrimRight("/");
 
-    if (path == "0") {
+    if (path == "virtualpath://upnproot") {
         // music
-        item = new CFileItem("virtualpath://upnpmusic", true);
+        item = new CFileItem("virtualpath://upnpmusic/", true);
         item->SetLabel("Music");
         items.Add(item);
 
         // video
-        item = new CFileItem("virtualpath://upnpvideo", true);
+        item = new CFileItem("virtualpath://upnpvideo/", true);
         item->SetLabel("Video");
         items.Add(item);
 
         // pictures
-        item = new CFileItem("virtualpath://upnppictures", true);
+        item = new CFileItem("virtualpath://upnppictures/", true);
         item->SetLabel("Pictures");
         items.Add(item);
 
@@ -144,7 +146,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
                 // reconstruct share name as it could have been replaced by
                 // a path if there was just one entry
                 NPT_String share_name = path + "/";
-                share_name += share.strName;
+                share_name += share.strName + "/";
                 if (GetMatchingShare((const char*)share_name, share, paths) && paths.size()) {
                     item = new CFileItem((const char*)share_name, true);
                     item->SetLabel(share.strName);
