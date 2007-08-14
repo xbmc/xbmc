@@ -37,6 +37,7 @@ using namespace VIDEO;
 #define VIDEO_DATABASE_VERSION 9
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
+#define RECENTLY_ADDED_LIMIT  25
 
 CBookmark::CBookmark()
 {
@@ -3660,6 +3661,125 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
         m_pDS->next();
         continue;
       }
+
+      CFileItem* pItem=new CFileItem(movie);
+      CStdString strDir;
+      strDir.Format("%ld", lEpisodeId);
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+      pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
+      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+      items.Add(pItem);
+
+      m_pDS->next();
+    }
+
+    CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetEpisodesNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    DWORD time = timeGetTime();
+    movieTime = 0;
+    castTime = 0;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath order by movie.idMovie desc limit %u",RECENTLY_ADDED_LIMIT);
+
+    // run query
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetRecentlyAddedMoviesNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+
+    while (!m_pDS->eof())
+    {
+      long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
+      CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
+      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
+      {
+        CFileItem* pItem=new CFileItem(movie);
+        CStdString strDir;
+        strDir.Format("%ld", lMovieId);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+
+        items.Add(pItem);
+      }
+
+      m_pDS->next();
+    }
+
+    CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetRecentlyAddedMoviesNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    DWORD time = timeGetTime();
+    movieTime = 0;
+    castTime = 0;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath order by episode.idEpisode desc limit %u",VIDEODB_ID_TV_TITLE,RECENTLY_ADDED_LIMIT);
+    // run query
+
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetEpisodesNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+
+    while (!m_pDS->eof())
+    {
+      long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
+
+      CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
 
       CFileItem* pItem=new CFileItem(movie);
       CStdString strDir;

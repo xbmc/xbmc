@@ -81,9 +81,10 @@
  *  %E - episode number
  *  %P - production code
  *  %H - season*100+episode
+ *  %Z - tvshow title
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPH"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZ"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -156,6 +157,9 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (movie && movie->m_strTitle.size())
       value = movie->m_strTitle;
     break;
+  case 'Z':
+    if (movie && !movie->m_strShowTitle.IsEmpty())
+      value = movie->m_strShowTitle;
   case 'B':
     if (music && music->GetAlbum().size())
       value = music->GetAlbum();
