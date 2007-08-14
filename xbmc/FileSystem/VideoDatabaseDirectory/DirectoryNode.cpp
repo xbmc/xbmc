@@ -14,6 +14,8 @@
 #include "DirectoryNodeTvShowsOverview.H"
 #include "DirectoryNodeSeasons.h"
 #include "DirectoryNodeEpisodes.h"
+#include "DirectoryNodeRecentlyAddedMovies.h"
+#include "DirectoryNodeRecentlyAddedEpisodes.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -99,6 +101,10 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeSeasons(strName, pParent);
   case NODE_TYPE_EPISODES:
     return new CDirectoryNodeEpisodes(strName, pParent);
+  case NODE_TYPE_RECENTLY_ADDED_MOVIES:
+    return new CDirectoryNodeRecentlyAddedMovies(strName,pParent);
+  case NODE_TYPE_RECENTLY_ADDED_EPISODES:
+    return new CDirectoryNodeRecentlyAddedEpisodes(strName,pParent);
   }
 
   return NULL;
