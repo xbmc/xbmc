@@ -125,9 +125,6 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
         }
         if (query.ifr_flags & IFF_BROADCAST) {
             flags |= NPT_NETWORK_INTERFACE_FLAG_BROADCAST;
-
-            // hack for cygwin
-            flags |= NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
         }
         if (query.ifr_flags & IFF_LOOPBACK) {
             flags |= NPT_NETWORK_INTERFACE_FLAG_LOOPBACK;

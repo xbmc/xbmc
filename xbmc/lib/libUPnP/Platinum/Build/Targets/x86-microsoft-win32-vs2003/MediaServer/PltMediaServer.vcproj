@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\ThirdParty\Neptune\Source\Core"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				IgnoreStandardIncludePath="FALSE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

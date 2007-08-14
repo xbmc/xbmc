@@ -23,7 +23,7 @@ int main(void)
     //PLT_SetLogLevel(3);
 
     // Create upnp engine
-    PLT_UPnP upnp;
+    PLT_UPnP upnp(1900, true);
 
     // Create control point
     PLT_CtrlPointReference ctrlPoint(new PLT_CtrlPoint());
@@ -37,8 +37,21 @@ int main(void)
         "C:\\Music", 
         "Platinum UPnP Media Server"));
 
+    NPT_String ip;
+    NPT_List<NPT_String> list;
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
+        ip = *(list.GetFirstItem());
+    }
+    server->m_PresentationURL = NPT_HttpUrl(ip, 80, "/").ToString();
+    server->m_ModelDescription = "Platinum File Media Server";
+    server->m_ModelURL = "http://www.plutinosoft.com/";
+    server->m_ModelNumber = "1.0";
+    server->m_ModelName = "Platinum File Media Server";
+    server->m_Manufacturer = "Plutinosoft";
+    server->m_ManufacturerURL = "http://www.plutinosoft.com/";
+
     // add device
-    upnp.AddDevice(server);
+    //upnp.AddDevice(server);
 
     // remove device uuid from ctrlpoint
     ctrlPoint->IgnoreUUID(server->GetUUID());
@@ -62,7 +75,7 @@ int main(void)
 
     // tell control point to perform extra broadcast discover 
     // in case our device doesn't support multicast
-    //ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
+    ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
 
     // start to process commands 
     controller.ProcessCommandLoop();

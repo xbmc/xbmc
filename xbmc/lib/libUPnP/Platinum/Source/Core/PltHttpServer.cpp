@@ -10,21 +10,19 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptHttp.h"
 #include "PltTaskManager.h"
 #include "PltHttpServer.h"
 #include "PltHttp.h"
-#include "PltLog.h"
 #include "PltVersion.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.core.http.server")
 
 /*----------------------------------------------------------------------
 |   PLT_HttpServer::PLT_HttpServer
 +---------------------------------------------------------------------*/
-PLT_HttpServer::PLT_HttpServer(PLT_HttpServerListener* listener, 
-                               unsigned int            port,
+PLT_HttpServer::PLT_HttpServer(unsigned int            port,
                                NPT_Cardinal            max_clients) :
     m_TaskManager(new PLT_TaskManager(max_clients)),
-    m_Listener(listener),
     m_Port(port),
     m_HttpListenTask(NULL)
 {
@@ -44,45 +42,34 @@ PLT_HttpServer::~PLT_HttpServer()
 NPT_Result
 PLT_HttpServer::Start()
 {
-    NPT_Result res;
-    NPT_TcpServerSocket* socket = NULL;
-
     // if we're given a port for our http server, try it
     if (m_Port) {
-        NPT_SocketAddress addr(NPT_IpAddress::Any, m_Port);
-        socket = new NPT_TcpServerSocket();
-        res = socket->Bind(addr, false);
-        if (NPT_FAILED(res)) {
-            delete socket;
-            socket = NULL;
-        }
+        NPT_CHECK_SEVERE(SetListenPort(m_Port));
     } else {
         // randomly try a port for our http server
         int retries = 100;
         do {    
             int random = NPT_System::GetRandomInteger();
             int port = (unsigned short)(50000 + (random % 15000));
-            NPT_SocketAddress addr(NPT_IpAddress::Any, port);
-            socket = new NPT_TcpServerSocket();
-            res = socket->Bind(addr, false);
-            if (NPT_SUCCEEDED(res)) {
-                m_Port = port;
+            if (NPT_SUCCEEDED(SetListenPort(port))) {
                 break;
             }
-            delete socket;
-            socket = NULL;
-        } while (--retries >= 0);
-    }
-    
-    if (!socket) return NPT_FAILURE;
+        } while (--retries > 0);
 
+        if (retries == 0) return NPT_FAILURE;
+    }
+
+    m_Port = m_Config.m_ListenPort;
+    
     // start a task to listen
-    m_HttpListenTask = new PLT_HttpServerListenTask(m_Listener, socket);
+    m_HttpListenTask = new PLT_HttpServerListenTask(this, &m_Socket, false);
     m_TaskManager->StartTask(m_HttpListenTask, NULL, false);
 
     NPT_SocketInfo info;
-    socket->GetInfo(info);
-    PLT_Log(PLT_LOG_LEVEL_1, "HttpServer listening on %s:%d\n", (const char*)info.local_address.GetIpAddress().ToString(), m_Port);
+    m_Socket.GetInfo(info);
+    NPT_LOG_INFO_2("HttpServer listening on %s:%d", 
+        (const char*)info.local_address.GetIpAddress().ToString(), 
+        m_Port);
     return NPT_SUCCESS;
 }
 
@@ -105,34 +92,36 @@ PLT_HttpServer::Stop()
 }
 
 /*----------------------------------------------------------------------
-|   PLT_FileServer::ProcessHttpRequest
+|   PLT_HttpServer::ProcessHttpRequest
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_FileServer::ProcessHttpRequest(NPT_HttpRequest*    request, 
-                                    NPT_SocketInfo     info, 
-                                    NPT_HttpResponse*& response) 
+PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&   request, 
+                                   NPT_SocketInfo     info, 
+                                   NPT_HttpResponse*& response,
+                                   bool&              headers_only) 
 {
-    NPT_COMPILER_UNUSED(info);
+    NPT_LOG_FINE("PLT_HttpServer Received Request:");
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
-    NPT_String  strMehod = request->GetMethod();
-    NPT_HttpUrl url = request->GetUrl();
-    NPT_String  strProtocol = request->GetProtocol();
+    NPT_HttpRequestHandler* handler = FindRequestHandler(request);
+    if (handler == NULL) {
+        response = new NPT_HttpResponse(404, "Not Found", NPT_HTTP_PROTOCOL_1_0);
+    } else {
+        // create a repsones object
+        response = new NPT_HttpResponse(200, "OK", NPT_HTTP_PROTOCOL_1_0);
+        response->GetHeaders().SetHeader("Server", "Platinum/" PLT_PLATINUM_VERSION_STRING);
 
-    PLT_Log(PLT_LOG_LEVEL_3, "PLT_FileHttpServer Received Request:\r\n");
-    PLT_HttpHelper::ToLog(request, PLT_LOG_LEVEL_3);
+        // prepare the response
+        response->SetEntity(new NPT_HttpEntity());
 
-    response = new NPT_HttpResponse(200, "OK");
-    response->GetHeaders().SetHeader("Server", "Platinum/" PLT_PLATINUM_VERSION_STRING);
+        // ask the handler to setup the response
+        handler->SetupResponse(request, *response, info);
 
-    if (strMehod.Compare("GET")) {
-        response->SetStatus(500, "Internal Server Error");
-        return NPT_SUCCESS;
+        // set headers_only flag
+        headers_only = (request.GetMethod()==NPT_HTTP_METHOD_HEAD);
     }
 
-    NPT_Integer start, end;
-    PLT_HttpHelper::GetRange(request, start, end);
-
-    return PLT_FileServer::ServeFile(m_LocalPath + url.GetPath(), response, start, end);
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------

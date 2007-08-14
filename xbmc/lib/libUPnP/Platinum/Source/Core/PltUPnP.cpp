@@ -10,11 +10,13 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
+#include "Neptune.h"
 #include "PltUPnP.h"
 #include "PltDeviceHost.h"
 #include "PltCtrlPoint.h"
 #include "PltSsdp.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.core.upnp")
 
 /*----------------------------------------------------------------------
 |   PLT_UPnP_CtrlPointStartIterator class
@@ -27,7 +29,7 @@ public:
     virtual ~PLT_UPnP_CtrlPointStartIterator() {}
 
     NPT_Result operator()(PLT_CtrlPointReference& ctrl_point) const {
-        NPT_CHECK(ctrl_point->Start(m_TaskManager));
+        NPT_CHECK_SEVERE(ctrl_point->Start(m_TaskManager));
         return m_ListenTask->AddListener(ctrl_point.AsPointer());
     }
 
@@ -67,7 +69,7 @@ public:
     virtual ~PLT_UPnP_DeviceStartIterator() {}
 
     NPT_Result operator()(PLT_DeviceHostReference& device_host) const {
-        NPT_CHECK(device_host->Start(m_TaskManager));
+        NPT_CHECK_SEVERE(device_host->Start(m_TaskManager));
         return m_ListenTask->AddListener(device_host.AsPointer());
     }
 
@@ -124,18 +126,18 @@ PLT_UPnP::~PLT_UPnP()
 NPT_Result
 PLT_UPnP::Start()
 {
-    PLT_Log(PLT_LOG_LEVEL_1, "Starting Devices & CtrlPoints ...\n");
+    NPT_LOG_INFO("Starting UPnP...");
 
     NPT_AutoLock lock(m_Lock);
 
     if (m_Started == true) return NPT_FAILURE;
 
     NPT_Socket* socket = m_Multicast?new NPT_UdpMulticastSocket(): new NPT_UdpSocket();
-    NPT_CHECK(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, m_Port)));
+    NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, m_Port)));
 
     /* create the ssdp listener */
     m_SsdpListenTask = new PLT_SsdpListenTask(socket, m_Multicast);
-    NPT_CHECK(StartTask(m_SsdpListenTask));
+    NPT_CHECK_SEVERE(StartTask(m_SsdpListenTask));
 
     /* start devices & ctrlpoints */
     m_CtrlPoints.Apply(PLT_UPnP_CtrlPointStartIterator(this, m_SsdpListenTask));
@@ -152,7 +154,7 @@ PLT_UPnP::Start()
 NPT_Result
 PLT_UPnP::Stop()
 {
-    PLT_Log(PLT_LOG_LEVEL_1, "Stopping Devices & CtrlPoints ...\n");
+    NPT_LOG_INFO("Stopping UPnP...");
 
     // override here to cleanup ctrlpoints and devices
     // before tasks are stopped since they might internally
@@ -183,14 +185,14 @@ PLT_UPnP::AddDevice(PLT_DeviceHostReference& device)
     NPT_AutoLock lock(m_Lock);
 
     if (m_Started) {
-        PLT_Log(PLT_LOG_LEVEL_1, "Starting Device ...\n");
+        NPT_LOG_INFO("Starting Device...");
         NPT_Result res = device->Start(this);
         if (NPT_SUCCEEDED(res)) {
             // add listener after device is started since it
             // needs to be aware of the task manager (this)
             m_SsdpListenTask->AddListener(device.AsPointer());
         } else {
-            PLT_Log(PLT_LOG_LEVEL_1, "Failed to start Device ...\n");
+            NPT_LOG_SEVERE("Failed to start Device...");
             return res;
         }
     }
@@ -221,13 +223,14 @@ PLT_UPnP::AddCtrlPoint(PLT_CtrlPointReference& ctrl_point)
     NPT_AutoLock lock(m_Lock);
 
     if (m_Started) {
+        NPT_LOG_INFO("Starting Ctrlpoint...");
         NPT_Result res = ctrl_point->Start(this);
         if (NPT_SUCCEEDED(res)) {
             // add listener after ctrl point is started since it
             // needs to be aware of the task manager (this)
             m_SsdpListenTask->AddListener(ctrl_point.AsPointer());
         } else {
-            PLT_Log(PLT_LOG_LEVEL_1, "Failed to start CtrlPoint ...\n");
+            NPT_LOG_SEVERE("Failed to start CtrlPoint ...");
             return res;
         }
     }

@@ -10,11 +10,10 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptTime.h"
-#include "NptSystem.h"
-#include "NptDebug.h"
 #include "PltThreadTask.h"
 #include "PltTaskManager.h" 
+
+NPT_SET_LOCAL_LOGGER("platinum.core.threadtask")
 
 /*----------------------------------------------------------------------
 |   PLT_ThreadTask::PLT_ThreadTask
@@ -49,7 +48,7 @@ PLT_ThreadTask::Start(PLT_TaskManager*  task_manager /* = NULL */,
 
     if (task_manager) {
         m_TaskManager = task_manager;
-        NPT_CHECK(m_TaskManager->AddTask(this));
+        NPT_CHECK_SEVERE(m_TaskManager->AddTask(this));
     }
 
     m_Thread = new NPT_Thread((NPT_Runnable&)*this, m_AutoDestroy);
