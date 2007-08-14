@@ -113,8 +113,8 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
   CFileItem file(strFile, false);
 #ifdef _LINUX
-  char tmp[11];
-  strcpy(tmp,"abcdXXXXXX");
+  char tmp[128];
+  strcpy(tmp,"/tmp/xbmc/abcdXXXXXX");
   if (mkstemp(tmp) == -1)
     return false;
   strFilename = tmp;
