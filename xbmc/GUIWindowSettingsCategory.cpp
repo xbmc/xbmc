@@ -1800,6 +1800,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.StopUPnPServer();
 #endif
   }
+  else if (strSetting.Equals("upnp.renderer"))
+  {
+#ifdef HAS_UPNP
+    if (g_guiSettings.GetBool("upnp.renderer"))
+      g_application.StartUPnPRenderer();
+    else
+      g_application.StopUPnPRenderer();
+#endif
+  }
   else if (strSetting.Equals("upnp.musicshares"))
   {
     CStdString strDummy;

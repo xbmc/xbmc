@@ -2125,18 +2125,9 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
     CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
     return false;
   }
-
-  // load UUID
-  TiXmlElement* eUUID = pRootElement->FirstChildElement("UUID");
-  if (eUUID && eUUID->FirstChild()) {
-      g_settings.m_UPnPUUID = eUUID->FirstChild()->Value();
-  }
-
-  // load FriendlyName
-  TiXmlElement* eFN = pRootElement->FirstChildElement("FriendlyName");
-  if (eFN && eFN->FirstChild()) {
-      g_settings.m_UPnPServerFriendlyName = eFN->FirstChild()->Value();
-  }
+  // load settings
+  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUID);
+  XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
 
   CStdString strDefault;
   GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
@@ -2154,16 +2145,8 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   if (!pRoot) return false;
 
   // create a new Element for UUID
-  TiXmlText xmlUUID(g_settings.m_UPnPUUID);
-  TiXmlElement eUUID("UUID");
-  eUUID.InsertEndChild(xmlUUID);
-  pRoot->ToElement()->InsertEndChild(eUUID);
-
-  // create a new Element for Server friendly name
-  TiXmlText xmlFriendlyName(g_settings.m_UPnPServerFriendlyName);
-  TiXmlElement eFN("FriendlyName");
-  eFN.InsertEndChild(xmlFriendlyName);
-  pRoot->ToElement()->InsertEndChild(eFN);
+  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
+  XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   
   VECSHARES* pShares[3];
   pShares[0] = &g_settings.m_vecUPnPMusicShares;
