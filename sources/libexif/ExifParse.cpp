@@ -450,7 +450,9 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       case TAG_USERCOMMENT:
       {
         const int EXIF_COMMENT_HDR_LENGTH = 8;        // All comment tags have 8 bytes of header info
-        strncpy(m_ExifInfo->Comments, (char *)ValuePtr+EXIF_COMMENT_HDR_LENGTH, min(2000, ByteCount-EXIF_COMMENT_HDR_LENGTH));
+        int length = max(ByteCount - EXIF_COMMENT_HDR_LENGTH, 0);
+        length = min(length, 2000);
+        strncpy(m_ExifInfo->Comments, (char *)ValuePtr+EXIF_COMMENT_HDR_LENGTH, length);
 //        FixComment(comment);                          // Ensure comment is printable
       }
       break;
