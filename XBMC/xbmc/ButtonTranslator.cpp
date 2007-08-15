@@ -164,6 +164,7 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
+  vector<string> joynames;
   JoystickMap buttonMap;
   JoystickMap axisMap;
 
@@ -171,12 +172,13 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   if (pJoy && pJoy->Attribute("name"))
   {
     joyname = pJoy->Attribute("name");
-    CLog::Log(LOGNOTICE, "Found Joystick map for %s", joyname.c_str());
   }
   else
   {
     CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
   }
+
+  joynames.push_back(joyname);
 
   // parse map
   TiXmlElement *pButton = pJoystick->FirstChildElement();
@@ -188,9 +190,9 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   {
     szType = (char*)pButton->Value();
     szAction = (char*)pButton->GetText();
-    if (szType && szAction && pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
+    if (szType && szAction)
     {
-      if (id>=0 && id<=256)
+      if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
       {
         if (strcasecmp(szType, "button")==0) 
         {
@@ -205,6 +207,10 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
           CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", szType);
         }
       }
+      else if (strcasecmp(szType, "altname")==0)
+      {
+        joynames.push_back(string(szAction));
+      }
       else
       {
         CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
@@ -216,8 +222,15 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
     }
     pButton = pButton->NextSiblingElement();
   }
-  m_joystickButtonMap[joyname] = buttonMap;
-  m_joystickAxisMap[joyname] = axisMap;  
+  vector<string>::iterator it = joynames.begin();
+  while (it!=joynames.end()) 
+  {
+    m_joystickButtonMap[*it] = buttonMap;
+    m_joystickAxisMap[*it] = axisMap;      
+    CLog::Log(LOGNOTICE, "Found Joystick map for %s", it->c_str());
+    it++;
+  }
+
   return;
 }
 
