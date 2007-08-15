@@ -210,7 +210,7 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference& action, NPT_SocketInfo* info /*
     if (name.Compare("Stop", true) == 0) {
         return OnStop(action);
     }
-    if (name.Compare("SetAVTranportURI", true) == 0) {
+    if (name.Compare("SetAVTransportURI", true) == 0) {
         return OnSetAVTransportURI(action);
     }
     if (name.Compare("SetPlayMode", true) == 0) {
