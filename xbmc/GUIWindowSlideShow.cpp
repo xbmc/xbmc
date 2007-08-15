@@ -82,7 +82,6 @@ void CBackgroundPicLoader::Process()
     {
       if (m_pCallback)
       {
-        m_isLoading = true;
         CPicture pic;
         DWORD start = timeGetTime();
         IDirect3DTexture8 *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
@@ -115,6 +114,7 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString 
   m_strFileName = strFileName;
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
+  m_isLoading = true;
   SetEvent(m_loadPic);
 }
 
