@@ -38,6 +38,8 @@ protected:
   // textures for YUV->RGB lookup
   LPDIRECT3DTEXTURE8 m_UVLookup;
   LPDIRECT3DTEXTURE8 m_UVErrorLookup;
+  YUVRANGE m_yuvrange_last;
+  YUVCOEF  m_yuvcoef_last;
 
   // Pixel shaders
   DWORD m_hInterleavingShader;
