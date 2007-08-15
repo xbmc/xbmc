@@ -404,7 +404,7 @@ public:
   VECSHARES m_vecUPnPPictureShares;
 
   CStdString m_UPnPUUID;
-  CStdString m_UPnPServerFriendlyName;
+  CStdString m_UPnPUUIDRenderer;
 
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
