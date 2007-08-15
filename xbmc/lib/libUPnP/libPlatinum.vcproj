@@ -433,6 +433,28 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="MediaRenderer"
+				Filter="">
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaController.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaControllerListener.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Neptune"
