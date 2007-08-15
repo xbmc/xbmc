@@ -12,6 +12,7 @@ CJoystick::CJoystick()
 {
   Reset();
   m_JoyId = -1;
+  m_ButtonId = -1;
   for (int i = 0 ; i<MAX_AXES ; i++)
   {
     m_Amount[i] = 0.0f;
@@ -65,7 +66,6 @@ void CJoystick::Initialize(HWND hWnd)
 
 void CJoystick::Reset(bool axis)
 {
-  m_ButtonId = -1;
   if (axis)
   {
     m_AxisId = -1;
@@ -90,7 +90,8 @@ void CJoystick::Update(SDL_Event& joyEvent)
   case SDL_JOYBUTTONDOWN:  
     m_JoyId = joyId = joyEvent.jbutton.which;
     m_ButtonId = buttonId = joyEvent.jbutton.button;
-    CLog::Log(LOGDEBUG, "Joystick %d button %d", joyId, buttonId);
+    m_pressTicks = SDL_GetTicks();
+    CLog::Log(LOGDEBUG, "Joystick %d button %d Down", joyId, buttonId);
     break;
 
   case SDL_JOYAXISMOTION:
@@ -124,7 +125,9 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
+    CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
     m_ButtonId = -1;
+    m_pressTicks = 0;
   default:
     ignore = true;
     break;
@@ -133,14 +136,41 @@ void CJoystick::Update(SDL_Event& joyEvent)
   if (ignore)
     return;
 
-  if (axis)
-  {
-    m_ButtonId = -1;
-  }
-  else
+  if (!axis)
   {
     m_AxisId = -1;
   }
+}
+
+int CJoystick::GetButton(bool consider_repeat)
+{ 
+  if (!consider_repeat)
+    return m_ButtonId;
+
+  static Uint32 lastPressTicks = 0;
+  static Uint32 lastTicks = 0;
+  static Uint32 nowTicks = 0;
+
+  if ((m_ButtonId>=0) && m_pressTicks)
+  {
+    // return the id if it's the first press
+    if (lastPressTicks!=m_pressTicks)
+    {
+      lastPressTicks = m_pressTicks;
+      return m_ButtonId;
+    }
+    nowTicks = SDL_GetTicks();
+    if ((nowTicks-m_pressTicks)<500) // 1s delay before we repeat
+    {
+      return -1;
+    }
+    if ((nowTicks-lastTicks)<100) // 200ms delay before successive repeats
+    {
+      return -1;
+    }
+    lastTicks = nowTicks;
+  }
+  return m_ButtonId; 
 }
 
 int CJoystick::GetAxisWithMaxAmount()
