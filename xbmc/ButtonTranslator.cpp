@@ -165,8 +165,8 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
   vector<string> joynames;
-  JoystickMap buttonMap;
-  JoystickMap axisMap;
+  map<int, string> buttonMap;
+  map<int, string> axisMap;
 
   TiXmlElement *pJoy = pJoystick->ToElement();
   if (pJoy && pJoy->Attribute("name"))
@@ -196,11 +196,11 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
       {
         if (strcasecmp(szType, "button")==0) 
         {
-          buttonMap[wWindowID][id] = string(szAction);
+          buttonMap[id] = string(szAction);
         }
         else if (strcasecmp(szType, "axis")==0)
         {
-          axisMap[wWindowID][id] = string(szAction);
+          axisMap[id] = string(szAction);
         }
         else
         {
@@ -225,8 +225,8 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   vector<string>::iterator it = joynames.begin();
   while (it!=joynames.end()) 
   {
-    m_joystickButtonMap[*it] = buttonMap;
-    m_joystickAxisMap[*it] = axisMap;      
+    m_joystickButtonMap[*it][wWindowID] = buttonMap;
+    m_joystickAxisMap[*it][wWindowID] = axisMap;      
     CLog::Log(LOGNOTICE, "Found Joystick map for %s", it->c_str());
     it++;
   }
