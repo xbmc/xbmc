@@ -53,6 +53,9 @@ protected:
   LPDIRECT3DTEXTURE8 m_UVLookup;
   LPDIRECT3DTEXTURE8 m_YLookup;
   LPDIRECT3DTEXTURE8 m_UVErrorLookup;
+  YUVRANGE m_yuvrange_last;
+  YUVCOEF  m_yuvcoef_last;
+
 
   // Pixel shaders
   DWORD m_hInterleavingShader;
