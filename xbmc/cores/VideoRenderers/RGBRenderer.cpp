@@ -34,6 +34,8 @@ CRGBRenderer::CRGBRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_hYUVtoRGBLookup = 0;
   m_UVLookup = NULL;
   m_UVErrorLookup = NULL;
+  memset(&m_yuvcoef_last, 0, sizeof(YUVCOEF));
+  memset(&m_yuvrange_last, 0, sizeof(YUVRANGE));
 }
 
 void CRGBRenderer::Delete444PTexture()
@@ -112,29 +114,8 @@ bool CRGBRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   if(!CXBoxRenderer::Configure(width, height, d_width, d_height, fps, flags))
     return false;
   
-  YUVRANGE *range = &yuv_range_full;
-  if(!(flags & CONF_FLAGS_YUV_FULLRANGE))
-    range = &yuv_range_lim;
-
-  YUVCOEF *coef = NULL;
-  switch(CONF_FLAGS_YUVCOEF_MASK(flags))
-  {
-    case CONF_FLAGS_YUVCOEF_240M:
-      coef = &yuv_coef_smtp240m; break;
-    case CONF_FLAGS_YUVCOEF_BT709:
-      coef = &yuv_coef_bt709; break;
-    case CONF_FLAGS_YUVCOEF_BT601:    
-      coef = &yuv_coef_bt601; break;
-    case CONF_FLAGS_YUVCOEF_EBU:
-      coef = &yuv_coef_ebu; break;
-    default:
-      coef = &yuv_coef_bt601; 
-      break;
-  }
-
-
   // create our lookup textures for yv12->rgb translation,
-  if(!CreateLookupTextures(*coef, *range) )
+  if(!CreateLookupTextures(m_yuvcoef, m_yuvrange) )
     return false;
 
   m_bConfigured = true;
@@ -677,12 +658,17 @@ void CRGBRenderer::DeleteLookupTextures()
 
 bool CRGBRenderer::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &range)
 {
+  if(memcmp(&m_yuvcoef_last, &coef, sizeof(YUVCOEF)) == 0
+  && memcmp(&m_yuvrange_last, &range, sizeof(YUVRANGE)) == 0)
+    return true;
+
   DeleteLookupTextures();
   if (
     D3D_OK != m_pD3DDevice->CreateTexture(256, 256, 1, 0, D3DFMT_A8R8G8B8, 0, &m_UVLookup) ||
     D3D_OK != m_pD3DDevice->CreateTexture(256, 256, 1, 0, D3DFMT_A8R8G8B8, 0, &m_UVErrorLookup)
   )
   {
+    DeleteLookupTextures();
     CLog::Log(LOGERROR, "Could not create RGB lookup textures");
     return false;
   }
@@ -757,12 +743,18 @@ bool CRGBRenderer::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &ran
     m_UVLookup->LockRect(0, &lr, NULL, 0);
     XGSwizzleRect(pBuff, 0, NULL, lr.pBits, 256, 256, NULL, 4);
     m_UVLookup->UnlockRect(0);
-    delete[] pBuff;
     m_UVErrorLookup->LockRect(0, &lr, NULL, 0);
     XGSwizzleRect(pErrorBuff, 0, NULL, lr.pBits, 256, 256, NULL, 4);
-    m_UVErrorLookup->UnlockRect(0);
-    delete[] pErrorBuff;
+    m_UVErrorLookup->UnlockRect(0);    
+
+    m_yuvcoef_last = coef;
+    m_yuvrange_last = range;
   }
+  if(pBuff)
+    delete[] pBuff;
+  if(pErrorBuff)
+    delete[] pErrorBuff;
+
   return true;
 }
 
