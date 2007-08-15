@@ -28,6 +28,7 @@ class PLT_UPnP;
 class PLT_SyncMediaBrowser;
 class CDeviceHostReferenceHolder;
 class CCtrlPointReferenceHolder;
+class CRendererReferenceHolder;
 
 class CUPnP
 {
@@ -43,6 +44,11 @@ public:
     void StartClient();
     void StopClient();
 
+    // renderer
+    void StartRenderer();
+    void StopRenderer();
+    void UpdateState();
+
     // class methods
     static CUPnP* GetInstance();
     static void   ReleaseInstance();
@@ -54,7 +60,9 @@ public:
 private:
     PLT_UPnP*                   m_UPnP;
     CDeviceHostReferenceHolder* m_ServerHolder;
-    CCtrlPointReferenceHolder*  m_CtrlPointHolder;
+    CRendererReferenceHolder*   m_RendererHolder;
+    CCtrlPointReferenceHolder*  m_CtrlPointHolder;    
+
 
     static CUPnP* upnp;
     static bool   broadcast;
