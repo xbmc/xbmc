@@ -22,7 +22,7 @@ public:
   void Update(SDL_Event& event);
   float GetAmount(int axis) { if (axis>=0 && axis<MAX_AXES) return m_Amount[axis]; return 0.0f; }
   float GetAmount() { return m_Amount[m_AxisId]; }
-  int GetButton () { return m_ButtonId; }
+  int GetButton (bool consider_repeat=true);
   int GetAxis () { return m_AxisId; }
   string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
@@ -33,6 +33,7 @@ private:
   int m_ButtonId;
   int m_JoyId;
   int m_NumAxes;
+  Uint32 m_pressTicks;
   vector<SDL_Joystick*> m_Joysticks;
   vector<string> m_JoystickNames;
 };
