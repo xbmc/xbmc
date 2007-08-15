@@ -23,6 +23,7 @@
 
 #include "stdafx.h"
 #include "util.h"
+#include "Application.h"
 
 #include "xbox/Network.h"
 #include "UPnP.h"
@@ -31,6 +32,7 @@
 #include "PltFileMediaServer.h"
 #include "PltMediaServer.h"
 #include "PltMediaBrowser.h"
+#include "../MediaRenderer/PltMediaRenderer.h"
 #include "PltSyncMediaBrowser.h"
 #include "PltDidl.h"
 #include "NptNetwork.h"
@@ -632,11 +634,121 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
 }
 
 /*----------------------------------------------------------------------
+|   CUPnP::CMediaRenderer
++---------------------------------------------------------------------*/
+class CUPnPRenderer : 
+    public PLT_MediaRenderer
+{
+public:
+    CUPnPRenderer(const char*          friendly_name,
+                  bool                 show_ip = false,
+                  const char*          uuid = NULL,
+                  unsigned int         port = 0) :
+        PLT_MediaRenderer(NULL, friendly_name, show_ip, uuid, port)
+    {
+    }
+
+    void UpdateState()
+    {
+        PLT_Service* avt;
+        if(NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+          return;
+
+        bool publish = true;
+        CStdString buffer;
+
+        StringUtils::SecondsToTimeString((long)g_application.GetTime(), buffer, TIME_FORMAT_HH_MM_SS);
+        avt->SetStateVariable("RelativeTimePosition", buffer.c_str(), publish);
+
+        StringUtils::SecondsToTimeString((long)g_application.GetTotalTime(), buffer, TIME_FORMAT_HH_MM_SS);
+        avt->SetStateVariable("CurrentTrackDuration", buffer.c_str(), publish);
+
+        // TODO - these states don't generate events, LastChange state needs to be fixed
+        if (g_application.IsPlaying()) {
+            avt->SetStateVariable("TransportState", "PLAYING", publish);
+            avt->SetStateVariable("TransportStatus", "OK", publish);
+            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
+            avt->SetStateVariable("NumberOfTracks", "1", publish);
+            avt->SetStateVariable("CurrentTrack", "1", publish);
+        } else {
+            avt->SetStateVariable("TransportState", "STOPPED", publish);
+            avt->SetStateVariable("TransportStatus", "OK", publish);
+            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
+            avt->SetStateVariable("NumberOfTracks", "0", publish);
+            avt->SetStateVariable("CurrentTrack", "0", publish);
+        }
+    }
+
+    // AVTransport
+    virtual NPT_Result OnNext(PLT_ActionReference& action)
+    {
+        g_applicationMessenger.PlayListPlayerNext();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnPause(PLT_ActionReference& action)
+    {
+        if(!g_application.IsPaused())
+          g_applicationMessenger.MediaPause();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnPlay(PLT_ActionReference& action)
+    {
+        if(g_application.IsPaused())
+            g_applicationMessenger.MediaPause();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnPrevious(PLT_ActionReference& action)
+    {
+        g_applicationMessenger.PlayListPlayerPrevious();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnStop(PLT_ActionReference& action)
+    {
+        g_applicationMessenger.MediaStop();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnSetAVTransportURI(PLT_ActionReference& action)
+    {
+        NPT_String uri, meta;
+        PLT_Service* service;
+
+        NPT_CHECK_SEVERE(action->GetArgumentValue("CurrentURI",uri));
+        NPT_CHECK_SEVERE(action->GetArgumentValue("CurrentURIMetaData",meta));
+
+        NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
+
+        service->SetStateVariable("TransportState", "TRANSITIONING", false);
+        service->SetStateVariable("TransportStatus", "OK", false);
+        service->SetStateVariable("TransportPlaySpeed", "1", false);
+
+        service->SetStateVariable("AVTransportURI", uri, false);
+        service->SetStateVariable("AVTransportURIMetaData", meta, false);
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+
+        g_applicationMessenger.MediaPlay((const char*)uri);
+        
+        return NPT_SUCCESS;
+    }
+
+};
+
+/*----------------------------------------------------------------------
+|   CCtrlPointReferenceHolder class
++---------------------------------------------------------------------*/
+class CRendererReferenceHolder
+{
+public:
+    PLT_DeviceHostReference m_Device;
+};
+
+
+/*----------------------------------------------------------------------
 |   CUPnP::CUPnP
 +---------------------------------------------------------------------*/
 CUPnP::CUPnP() :
     m_ServerHolder(new CDeviceHostReferenceHolder()),
-    m_CtrlPointHolder(new CCtrlPointReferenceHolder())
+    m_CtrlPointHolder(new CCtrlPointReferenceHolder()),
+    m_RendererHolder(new CRendererReferenceHolder())
 {
     //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
 #ifdef HAS_XBOX_HARDWARE
@@ -663,6 +775,7 @@ CUPnP::~CUPnP()
 
     delete m_UPnP;
     delete m_ServerHolder;
+    delete m_RendererHolder;
     delete m_CtrlPointHolder;
 }
 
@@ -757,8 +870,7 @@ CUPnP::StartServer()
     g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
 
     // create the server with the friendlyname and UUID from upnpserver.xml if found
-    m_ServerHolder->m_Device = new CUPnPServer(
-        g_settings.m_UPnPServerFriendlyName.length()?g_settings.m_UPnPServerFriendlyName.c_str():"Xbox Media Center",
+    m_ServerHolder->m_Device = new CUPnPServer("XBMC - MediaServer",
         g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL);
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
@@ -772,7 +884,7 @@ CUPnP::StartServer()
 #endif
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center";
+    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - MediaServer";
     m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
     m_ServerHolder->m_Device->m_ModelName = "XBMC";
@@ -806,4 +918,52 @@ CUPnP::StopServer()
 
     m_UPnP->RemoveDevice(m_ServerHolder->m_Device);
     m_ServerHolder->m_Device = NULL;
+}
+
+void CUPnP::StartRenderer()
+{
+    if (!m_RendererHolder->m_Device.IsNull()) return;
+
+    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+
+    NPT_String ip = g_network.m_networkinfo.ip;
+#ifndef HAS_XBOX_NETWORK
+    NPT_List<NPT_String> list;
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
+        ip = *(list.GetFirstItem());
+    }
+#endif
+
+    m_RendererHolder->m_Device = new CUPnPRenderer("XBMC - MediaRenderer", true, 
+          (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL) );
+
+    m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
+    m_RendererHolder->m_Device->m_ModelName = "Xbox Media Center";
+    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - MediaRenderer";
+    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
+    m_RendererHolder->m_Device->m_ModelNumber = "2.0";
+    m_RendererHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
+
+    m_RendererHolder->m_Device->SetBroadcast(broadcast);
+
+    m_UPnP->AddDevice(m_RendererHolder->m_Device);
+
+    // save UUID
+    g_settings.m_UPnPUUIDRenderer = m_RendererHolder->m_Device->GetUUID();
+    g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+}
+
+void CUPnP::StopRenderer()
+{
+    if (m_RendererHolder->m_Device.IsNull()) return;
+
+    m_UPnP->RemoveDevice(m_RendererHolder->m_Device);
+    m_RendererHolder->m_Device = NULL;
+}
+
+void CUPnP::UpdateState()
+{
+  if (!m_RendererHolder->m_Device.IsNull())
+      ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();  
 }
