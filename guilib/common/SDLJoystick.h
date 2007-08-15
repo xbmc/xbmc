@@ -22,8 +22,8 @@ public:
   void Update(SDL_Event& event);
   float GetAmount(int axis) { if (axis>=0 && axis<MAX_AXES) return m_Amount[axis]; return 0.0f; }
   float GetAmount() { return m_Amount[m_AxisId]; }
-  WORD GetButton () { return m_ButtonId; }
-  WORD GetAxis () { return m_AxisId; }
+  int GetButton () { return m_ButtonId; }
+  int GetAxis () { return m_AxisId; }
   string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
 
