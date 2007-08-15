@@ -96,7 +96,7 @@
       <rightthumbstickdown>VolumeDown</rightthumbstickdown>
     </gamepad>
 
-    <joystick name="Sony PLAYSTATION(R)3 Cooller">   
+    <joystick name="Sony PLAYSTATION(R)3">   
       <altname>Sony PLAYSTATION(R)3 Controller</altname>
       <button id="14">Select</button>                   
       <button id="13">ParentDir</button>                
