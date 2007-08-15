@@ -125,9 +125,10 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
-    CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
     m_ButtonId = -1;
     m_pressTicks = 0;
+    CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
+
   default:
     ignore = true;
     break;
