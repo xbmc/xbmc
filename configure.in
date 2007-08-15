@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
+AC_PREREQ(2.59)
 AC_INIT("xbmc", 2.1, bugs@xboxmediacenter.com)
 AC_CONFIG_HEADER([config.h])
 
@@ -59,12 +59,15 @@ AC_CHECK_LIB([fribidi], [main],, AC_MSG_ERROR(== Could not find a required libra
 AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([sqlite3], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
+AC_CHECK_LIB([asound], [main])      # check for asound library, fedora
+AC_CHECK_LIB([lzo2], [main])        # check for lzo2 library, fedora
 
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
+AC_CHECK_HEADERS([lzo/lzo1.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
@@ -138,7 +141,14 @@ if test "$use_joystick" = "yes"; then
   SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_JOYSTICK"
 fi
 
+if test -d "/usr/include/lzo"; then
+  LZO_INCLUDES="-I/usr/include/lzo"
+else
+  LZO_INCLUDES=""
+fi
+
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
+AC_SUBST(LZO_INCLUDES)
 AC_CONFIG_FILES([Makefile Makefile.include])
 AC_OUTPUT
