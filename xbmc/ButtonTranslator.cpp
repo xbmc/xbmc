@@ -205,12 +205,10 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
           {
             if (limit==-1)
             {
-              axisMap[id] = "";
               axisMap[-id] = string(szAction);
             }
             else if (limit==1)
             {
-              axisMap[-id] = "";
               axisMap[id] = string(szAction);
             }
             else
