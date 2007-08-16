@@ -21,6 +21,11 @@ down and possibly help with fixing it. We currently recommend Ubuntu
 OpenGL acceleration is highly recommended and 24/32 bitdepth is
 required with OpenGL.
 
+NOTE TO NEW LINUX USERS: All lines that are prefixed with the '#'
+character are commands that need to be typed into a terminal window /
+console (similar to the command prompt for Windows). Note that the '#'
+character itself should NOT be typed as part of the command.
+
 
 -----------------------------------------------------------------------------
 2. Getting the source code
