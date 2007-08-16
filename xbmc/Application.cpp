@@ -3234,7 +3234,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     if (action.fAmount1<0)
     {
       bid = -bid;
-      action.fAmount2 = -action.fAmount2;
+      action.fAmount1 = -action.fAmount1;
     }
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction))
     {
