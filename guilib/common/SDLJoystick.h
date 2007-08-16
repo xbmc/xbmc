@@ -7,8 +7,9 @@
 
 #define MAX_AXES 64
 
-#define AXIS_POSITIVE 0x00000000
-#define AXIS_NEGATIVE 0xf0000000
+#define JACTIVE_BUTTON 0x00000001
+#define JACTIVE_AXIS   0x00000002
+#define JACTIVE_NONE   0x00000000
 
 // Class to manage all connected joysticks
 
@@ -22,18 +23,24 @@ public:
   void Update(SDL_Event& event);
   float GetAmount(int axis) { if (axis>=0 && axis<MAX_AXES) return m_Amount[axis]; return 0.0f; }
   float GetAmount() { return m_Amount[m_AxisId]; }
-  int GetButton (bool consider_repeat=true);
-  int GetAxis () { return m_AxisId; }
+  bool GetButton (int& id, bool consider_repeat=true);
+  bool GetAxis (int &id) { if (!IsAxisActive()) return false; id=m_AxisId; return true; }
   string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
 
 private:
+  void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
+  void SetButtonActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_BUTTON):(m_ActiveFlags&(~JACTIVE_BUTTON)); }
+  bool IsButtonActive() { return (bool)(m_ActiveFlags&JACTIVE_BUTTON); }
+  bool IsAxisActive() { return (bool)(m_ActiveFlags&JACTIVE_AXIS); }
+
   float m_Amount[MAX_AXES];
   int m_AxisId;
   int m_ButtonId;
   int m_JoyId;
   int m_NumAxes;
   Uint32 m_pressTicks;
+  WORD m_ActiveFlags;
   vector<SDL_Joystick*> m_Joysticks;
   vector<string> m_JoystickNames;
 };

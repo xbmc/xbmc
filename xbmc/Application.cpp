@@ -3207,7 +3207,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 #ifdef HAS_SDL_JOYSTICK
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   int bid;
-  if ((bid=g_Joystick.GetButton())>-1)
+  if (g_Joystick.GetButton(bid))
   {
     CAction action;
 
@@ -3225,11 +3225,14 @@ bool CApplication::ProcessGamepad(float frameTime)
       g_Joystick.Reset();
     }
   }
-  else if ((bid=g_Joystick.GetAxis())>-1)
+  else if (g_Joystick.GetAxis(bid))
   {
     CAction action;
 
     string jname = g_Joystick.GetJoystick();
+    action.fAmount1 = g_Joystick.GetAmount();
+    if (action.fAmount1<0)
+      bid = -bid;
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction))
     {
       action.fAmount1 = g_Joystick.GetAmount();
