@@ -20,7 +20,7 @@ public:
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
 
   // callbacks from python
-  static void AddItem(int handle, const string &url, CFileItem *item, bool bIsFolder);
+  static void AddItem(int handle, const CFileItem *item);
   static void EndOfDirectory(int handle);
 private:
   static vector<CPluginDirectory*> globalHandles;

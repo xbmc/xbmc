@@ -37,7 +37,7 @@ namespace PYXBMC
  * start of xbmc methods
  *****************************************************************/
   PyDoc_STRVAR(setDirectoryEntry__doc__,
-    "setDirectoryEntry(handle, url, listitem, [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
+    "setDirectoryEntry(handle, url, listitem [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
     "\n"
     "handle      : Integer - handle the plugin was started with.\n"
     "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
@@ -72,12 +72,12 @@ namespace PYXBMC
     string url;
     if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
     
-    ListItem *pListItem = NULL;
-    pListItem = (ListItem *)pItem;
-    Py_INCREF(pListItem);
+    ListItem *pListItem = (ListItem *)pItem;
+    pListItem->item->m_strPath = url;
+    pListItem->item->m_bIsFolder = bIsFolder;
 
     // call the directory class to add our item
-    DIRECTORY::CPluginDirectory::AddItem(handle, url, (CFileItem *)pListItem->item, bIsFolder);
+    DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item);
 
     Py_INCREF(Py_None);
     return Py_None;

@@ -41,6 +41,7 @@ class CVaPassNext{
 #define PyInt_Type (*((PyTypeObject*)pointer_PyInt_Type))
 #define PyUnicode_Type (*((PyTypeObject*)pointer_PyUnicode_Type))
 #define PyTuple_Type (*((PyTypeObject*)pointer_PyTuple_Type))
+#define PyDict_Type (*((PyTypeObject*)pointer_PyDict_Type))
 
 #define DLL_ORD_FUNCTION(ord, function) "hapdbg.dll", ord, (void**)&p_##function
 
@@ -211,6 +212,8 @@ extern "C"
   FUNCTION4(PyImport_Import)
   FUNCTION4(PyInt_FromLong)
   FUNCTION8(PyDict_GetItemString)
+  FUNCTION8(PyDict_GetItem)
+  FUNCTION4(PyDict_Keys)
   FUNCTION4(PyType_Ready);
   FUNCTION12(PyType_GenericNew);
   FUNCTION8(PySys_SetArgv);
@@ -238,6 +241,7 @@ extern "C"
   DATA_OBJECT(PyInt_Type);
   DATA_OBJECT(PyUnicode_Type);
   DATA_OBJECT(PyTuple_Type);
+  DATA_OBJECT(PyDict_Type);
 
   bool python_load_dll(LibraryLoader& dll)
   {
@@ -290,6 +294,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyFloat_FromDouble)) &&
       dll.ResolveExport(DLL_FUNCTION(PyInt_FromLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_GetItemString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyDict_GetItem)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
@@ -314,7 +319,8 @@ extern "C"
       dll.ResolveExport(DLL_OBJECT_DATA(PyLong_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyInt_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
-      dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)));
+      dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)) &&
+      dll.ResolveExport(DLL_OBJECT_DATA(PyDict_Type)));
 
     return bResult;
   }

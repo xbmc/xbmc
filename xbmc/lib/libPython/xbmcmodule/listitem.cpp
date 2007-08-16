@@ -269,6 +269,140 @@ namespace PYXBMC
     return Py_BuildValue("b", bOnOff);
   }
   
+  PyDoc_STRVAR(setInfo__doc__,
+    "setInfo(type, tags) -- Sets the listitem's media tags.\n"
+    "\n"
+    "type           : string - type of media(video/music/pictures).\n"
+    "tags           : list - tuple pairs of tag,value.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setInfo('video',[('Genre', 'Comedy',)])\n");
+
+  PyObject* ListItem_SetInfo(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "type", "tags", NULL };
+    char *cType = NULL;
+    PyObject *pTagList = NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "sO",
+      keywords,
+      &cType,
+      &pTagList))
+    {
+      return NULL;
+    }
+
+    if (pTagList == NULL || !PyObject_TypeCheck(pTagList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "tags object should be of type List");
+      return NULL;
+    }
+
+    PyGUILock();
+    for (int i = 0; i < PyList_Size(pTagList); i++)
+    {
+      PyObject *pTuple = NULL;
+      char *cTag = NULL;
+      char *cValue = NULL;
+      pTuple = PyList_GetItem(pTagList, i);
+      if (pTuple == NULL || !PyObject_TypeCheck(pTuple, &PyTuple_Type))
+      {
+        //PyErr_SetString(PyExc_TypeError, "List must only contain tuples");
+        continue;//return NULL;
+      }
+      if (!PyArg_ParseTuple(pTuple, "ss", &cTag, &cValue))
+      {
+        //PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
+        continue;//return NULL;
+      }
+
+      if (strcmpi(cType, "video") == 0)
+      {
+        if (strcmpi(cTag, "genre") == 0)
+          self->item->GetVideoInfoTag()->m_strGenre = cValue;
+        else if (strcmpi(cTag, "year") == 0)
+          self->item->GetVideoInfoTag()->m_iYear = atoi(cValue);
+        else if (strcmpi(cTag, "director") == 0)
+          self->item->GetVideoInfoTag()->m_strDirector = cValue;
+        else if (strcmpi(cTag, "rating") == 0)
+          self->item->GetVideoInfoTag()->m_strMPAARating = cValue;
+        else if (strcmpi(cTag, "plot") == 0)
+          self->item->GetVideoInfoTag()->m_strPlot = cValue;
+        else if (strcmpi(cTag, "runtime") == 0)
+          self->item->GetVideoInfoTag()->m_strRuntime = cValue;
+        else if (strcmpi(cTag, "title") == 0)
+          self->item->GetVideoInfoTag()->m_strTitle = cValue;
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, cTag, cValue);
+      }
+      else if (strcmpi(cType, "music") == 0)
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, cTag, cValue);
+      }
+      else if (strcmpi(cType, "pictures") == 0)
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, cTag, cValue);
+      }
+    }
+    PyGUIUnlock();
+  
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(setInfoDict__doc__,
+    "setInfo(type, tags) -- Sets the listitem's media tags.\n"
+    "\n"
+    "type           : string - type of media(video/music/pictures).\n"
+    "tags           : list - tuple pairs of tag,value.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setInfo('video',[('Genre', 'Comedy',)])\n");
+
+  PyObject* ListItem_SetInfoDict(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "type", "tags", NULL };
+    char *cType = NULL;
+    PyObject *pTagDict = NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "sO",
+      keywords,
+      &cType,
+      &pTagDict))
+    {
+      return NULL;
+    }
+    if (pTagDict == NULL || !PyObject_TypeCheck(pTagDict, &PyDict_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "tags object should be of type Dict");
+      return NULL;
+    }
+
+    //////////////////////////////
+    // enumerate all named values
+    PyObject *pTagKeys = PyDict_Keys(pTagDict); // new
+    for(int i = 0; i < PyList_Size(pTagKeys); ++i) {
+        PyObject *pKey =
+                PyList_GetItem(pTagKeys, i); // borrowed
+        PyObject *pValue =
+                PyDict_GetItem(pTagDict, pKey); // borrowed
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, pKey, pValue);
+    }
+    Py_DECREF(pTagKeys);
+    /////////////////////////////
+  
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
   PyMethodDef ListItem_methods[] = {
     {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -278,6 +412,8 @@ namespace PYXBMC
     {"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
     {"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
     {"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
+    {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
+    {"setInfoDict", (PyCFunction)ListItem_SetInfoDict, METH_KEYWORDS, setInfoDict__doc__},
     {NULL, NULL, 0, NULL}
   };
 
