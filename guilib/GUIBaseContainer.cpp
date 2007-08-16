@@ -476,6 +476,8 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     }
     item = item->NextSiblingElement("item");
   }
+  // and make sure m_items is setup initially as well, so that initial item selection works as expected
+  UpdateVisibility();
   return;
 }
 
