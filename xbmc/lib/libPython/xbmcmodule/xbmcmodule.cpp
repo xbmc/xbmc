@@ -18,6 +18,7 @@
 // include for constants
 #include "pyutil.h"
 #include "../../../PlayListPlayer.h"
+#include "listitem.h"
 
 using namespace XFILE;
 
@@ -36,47 +37,47 @@ namespace PYXBMC
  * start of xbmc methods
  *****************************************************************/
   PyDoc_STRVAR(setDirectoryEntry__doc__,
-    "setDirectoryEntry(pointer,name,url,isDirectory [,iconpath]) -- Callback function to pass directory contents back to XBMC.\n"
+    "setDirectoryEntry(handle, url, listitem, [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
     "\n"
-    "handle:      longint, handle the virtualpythonfolder plugin was started with.\n"
-    "name:        name of the playlist entry\n"
-    "url:         url of the playlist entry. would be python:// for another virtual directory\n"
-    "isDirectory: 0 if it is no directory, <>0 if it is.\n"
-    "iconpath:    (optional) path to the icon to be displayed in xbmc\n");
+    "handle      : Integer - handle the plugin was started with.\n"
+    "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
+    "listitem    : ListItem - item to add.\n"
+    "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
+    "\n"
+    "example:\n"
+    "  - xbmc.setDirectoryEntry(handle, 'F:\\\\Trailers\\\\300.mov', listitem)\n");
 
   PyObject* XBMC_setDirectoryEntry(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {"handle", "name", "url", "isDirectory", "iconpath", NULL };
-    string name;
-    string url;
-    string iconpath;
-    PyObject *pName = NULL;
+    static char *keywords[] = {"handle", "url", "listitem", "isFolder", NULL };
+    int handle = -1;
     PyObject *pURL = NULL;
-    PyObject *pIconPath = NULL;
-    int isDirectory=0;
-    int handle;
+    PyObject *pItem = NULL;
+    bool bIsFolder = false;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "iOOi|O",
+      "iOO|b",
       keywords,
       &handle,
-      &pName,
       &pURL,
-      &isDirectory,
-      &pIconPath
+      &pItem,
+      &bIsFolder
       ))
     {
       return NULL;
     };
 
-    if (!PyGetUnicodeString(name, pName, 1)) return NULL;
-    if (!PyGetUnicodeString(url, pURL, 1)) return NULL;
-    if (pIconPath && !PyGetUnicodeString(iconpath, pIconPath, 1)) return NULL;
+    string url;
+    if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
+    
+    ListItem *pListItem = NULL;
+    pListItem = (ListItem *)pItem;
+    Py_INCREF(pListItem);
 
     // call the directory class to add our item
-    DIRECTORY::CPluginDirectory::AddItem(handle, name, url, iconpath, isDirectory != 0);
+    DIRECTORY::CPluginDirectory::AddItem(handle, url, (CFileItem *)pListItem->item, bIsFolder);
 
     Py_INCREF(Py_None);
     return Py_None;

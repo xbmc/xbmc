@@ -55,7 +55,7 @@ void CPluginDirectory::removeHandle(int handle)
 }
 
 // TODO: This should really pass in a CGUIListItem that we create directly from the ListItem sent in.
-void CPluginDirectory::AddItem(int handle, const string &name, const string &url, const string &iconPath, bool isDirectory)
+void CPluginDirectory::AddItem(int handle, const string &url, CFileItem *item, bool bIsFolder)
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
@@ -63,10 +63,13 @@ void CPluginDirectory::AddItem(int handle, const string &name, const string &url
     return;
   }
   CPluginDirectory *dir = globalHandles[handle];
-  CFileItem *pItem = new CFileItem(name);
+  CFileItem *pItem = new CFileItem(*item);
   pItem->m_strPath = url;
-  pItem->SetThumbnailImage(iconPath);
-  pItem->m_bIsFolder = isDirectory;
+  pItem->SetLabel(item->GetLabel());
+  pItem->SetLabel2(item->GetLabel2());
+  pItem->SetIconImage(item->GetIconImage());
+  pItem->SetThumbnailImage(item->GetThumbnailImage());
+  pItem->m_bIsFolder = bIsFolder;
   pItem->SetLabelPreformated(true); // TODO: This is probably better not set once we have all the CFileItem stuff available.
   dir->m_listItems.Add(pItem);
 }
