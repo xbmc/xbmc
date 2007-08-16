@@ -200,7 +200,31 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
         }
         else if (strcasecmp(szType, "axis")==0)
         {
-          axisMap[id] = string(szAction);
+          int limit = 0;
+          if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
+          {
+            if (limit==-1)
+            {
+              axisMap[id] = "";
+              axisMap[-id] = string(szAction);
+            }
+            else if (limit==1)
+            {
+              axisMap[-id] = "";
+              axisMap[id] = string(szAction);
+            }
+            else
+            {
+              axisMap[id] = string(szAction);
+              axisMap[-id] = string(szAction);
+              CLog::Log(LOGERROR, "Error in joystick map, invalid limit specified %d for axis %d", limit, id);
+            }
+          }
+          else
+          {
+            axisMap[id] = string(szAction);
+            axisMap[-id] = string(szAction);
+          }
         }
         else
         {
