@@ -11,8 +11,9 @@ CJoystick g_Joystick; // global
 CJoystick::CJoystick()
 {
   Reset();
-  m_JoyId = -1;
-  m_ButtonId = -1;
+  m_JoyId = 0;
+  m_ButtonId = 0;
+  m_ActiveFlags = JACTIVE_NONE;
   for (int i = 0 ; i<MAX_AXES ; i++)
   {
     m_Amount[i] = 0.0f;
@@ -91,6 +92,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
     m_JoyId = joyId = joyEvent.jbutton.which;
     m_ButtonId = buttonId = joyEvent.jbutton.button;
     m_pressTicks = SDL_GetTicks();
+    SetButtonActive();
     CLog::Log(LOGDEBUG, "Joystick %d button %d Down", joyId, buttonId);
     break;
 
@@ -125,8 +127,8 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
-    m_ButtonId = -1;
-    m_pressTicks = 0;
+     m_pressTicks = 0;
+    SetButtonActive(false);
     CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
 
   default:
@@ -139,14 +141,19 @@ void CJoystick::Update(SDL_Event& joyEvent)
 
   if (!axis)
   {
-    m_AxisId = -1;
+    SetAxisActive(false);
   }
 }
 
-int CJoystick::GetButton(bool consider_repeat)
+bool CJoystick::GetButton(int &id, bool consider_repeat)
 { 
+  if (!IsButtonActive())
+    return false;
   if (!consider_repeat)
-    return m_ButtonId;
+  {
+    id = m_ButtonId;
+    return true;
+  }
 
   static Uint32 lastPressTicks = 0;
   static Uint32 lastTicks = 0;
@@ -158,20 +165,22 @@ int CJoystick::GetButton(bool consider_repeat)
     if (lastPressTicks!=m_pressTicks)
     {
       lastPressTicks = m_pressTicks;
-      return m_ButtonId;
+      id = m_ButtonId;
+      return true;
     }
     nowTicks = SDL_GetTicks();
     if ((nowTicks-m_pressTicks)<500) // 1s delay before we repeat
     {
-      return -1;
+      return false;
     }
     if ((nowTicks-lastTicks)<100) // 200ms delay before successive repeats
     {
-      return -1;
+      return false;
     }
     lastTicks = nowTicks;
   }
-  return m_ButtonId; 
+  id = m_ButtonId; 
+  return true;
 }
 
 int CJoystick::GetAxisWithMaxAmount()
@@ -188,6 +197,10 @@ int CJoystick::GetAxisWithMaxAmount()
       axis = i;
     }
   }
+  if (maxAmount==0)
+    SetAxisActive(false);
+  else
+    SetAxisActive();
   return axis;
 }
 
