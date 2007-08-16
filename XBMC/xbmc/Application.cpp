@@ -3232,7 +3232,10 @@ bool CApplication::ProcessGamepad(float frameTime)
     string jname = g_Joystick.GetJoystick();
     action.fAmount1 = g_Joystick.GetAmount();
     if (action.fAmount1<0)
+    {
       bid = -bid;
+      action.fAmount2 = -action.fAmount2;
+    }
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction))
     {
       action.fAmount1 = g_Joystick.GetAmount();
