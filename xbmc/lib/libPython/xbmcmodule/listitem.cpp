@@ -352,12 +352,16 @@ namespace PYXBMC
           self->item->GetMusicInfoTag()->SetArtist(PyString_AsString(value));
         else if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
           self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "title") == 0)
+          self->item->GetMusicInfoTag()->SetTitle(PyString_AsString(value));
       }
       else if (strcmpi(cType, "pictures") == 0)
       {
         // TODO: Figure out how to set picture tags
         //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
-        //if (strcmpi(PyString_AsString(key), "picturedatetime") == 0)
+        if (strcmpi(PyString_AsString(key), "title") == 0)
+          self->item->m_strTitle = PyString_AsString(value);
+        //else if (strcmpi(PyString_AsString(key), "picturedatetime") == 0)
         //  self->item->GetPictureInfoTag()->m_exifInfo.DateTime = PyString_AsString(value);
         //else if (strcmpi(PyString_AsString(key), "pictureresolution") == 0)
         //{
@@ -366,7 +370,7 @@ namespace PYXBMC
           //self->item->GetPictureInfoTag()->m_exifInfo.Width = PyInt_AsLong(value);
           //self->item->GetPictureInfoTag()->m_exifInfo.Height = PyInt_AsLong(value);
         //}
-        if (strcmpi(PyString_AsString(key), "picturepath") == 0)
+        else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
           self->item->m_strPath = PyString_AsString(value);
       }
     }
