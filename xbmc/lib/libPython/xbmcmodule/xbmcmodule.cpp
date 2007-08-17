@@ -37,34 +37,44 @@ namespace PYXBMC
  * start of xbmc methods
  *****************************************************************/
   PyDoc_STRVAR(setDirectoryEntry__doc__,
-    "setDirectoryEntry(handle, listitem) -- Callback function to pass directory contents back to XBMC.\n"
+    "setDirectoryEntry(handle, url, listitem [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
     "\n"
     "handle      : Integer - handle the plugin was started with.\n"
+    "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
     "listitem    : ListItem - item to add.\n"
+    "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
     "\n"
     "example:\n"
-    "  - xbmc.setDirectoryEntry(handle, listitem)\n");
+    "  - xbmc.setDirectoryEntry(handle, 'F:\\\\Trailers\\\\300.mov', listitem)\n");
 
   PyObject* XBMC_setDirectoryEntry(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {"handle", "listitem", NULL };
+    static char *keywords[] = {"handle", "url", "listitem", "isFolder", NULL };
     int handle = -1;
+    PyObject *pURL = NULL;
     PyObject *pItem = NULL;
+    bool bIsFolder = false;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "iO",
+      "iOO|b",
       keywords,
       &handle,
-      &pItem))
+      &pURL,
+      &pItem,
+      &bIsFolder
+      ))
     {
       return NULL;
     };
-    
-    if (!ListItem_CheckExact(pItem)) return NULL;
 
+    string url;
+    if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
+    
     ListItem *pListItem = (ListItem *)pItem;
+    pListItem->item->m_strPath = url;
+    pListItem->item->m_bIsFolder = bIsFolder;
 
     // call the directory class to add our item
     DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item);
@@ -74,10 +84,12 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(endOfDirectory__doc__,
-      "endOfDirectory(handle) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
-      "\n"
-      "handle:  longint, handle the virtualpythonfolder plugin was started with.\n"
-    "\n");
+    "endOfDirectory(handle) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
+    "\n"
+    "handle      : Integer - handle the plugin was started with.\n"
+    "\n"
+    "example:\n"
+    "  - xbmc.enoOfDirectory(handle)\n");
 
   PyObject* XBMC_endOfDirectory(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {

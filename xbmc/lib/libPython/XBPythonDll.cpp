@@ -179,6 +179,7 @@ extern "C"
   FUNCTION12(PyModule_AddObject)
   FUNCTION20(Py_InitModule4)
   FUNCTION4(PyInt_AsLong)
+  FUNCTION4(PyFloat_AsDouble)
   FUNCTION4(PyString_FromString)
   FUNCTION12(PyModule_AddIntConstant)
 
@@ -286,6 +287,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddObject)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_InitModule4)) &&
       dll.ResolveExport(DLL_FUNCTION(PyInt_AsLong)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyFloat_AsDouble)) &&
       dll.ResolveExport(DLL_FUNCTION(PyString_FromString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddIntConstant)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallFunction)) &&
