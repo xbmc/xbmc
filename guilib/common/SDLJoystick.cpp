@@ -67,12 +67,13 @@ void CJoystick::Initialize(HWND hWnd)
 
 void CJoystick::Reset(bool axis)
 {
+  SetButtonActive(false);
   if (axis)
   {
-    m_AxisId = -1;
+    SetAxisActive(false);
     for (int i = 0 ; i<MAX_AXES ; i++)
     {
-      m_Amount[i] = 0.0f;
+      ResetAxis(i);
     }
   }
 }
@@ -83,14 +84,14 @@ void CJoystick::Update(SDL_Event& joyEvent)
   int axisId = -1;
   int joyId = -1;
   const char* joyName = NULL;
-  bool ignore = false;
+  bool ignore = false; // not used for now
   bool axis = false;
 
   switch(joyEvent.type)
   {
   case SDL_JOYBUTTONDOWN:  
     m_JoyId = joyId = joyEvent.jbutton.which;
-    m_ButtonId = buttonId = joyEvent.jbutton.button;
+    m_ButtonId = buttonId = joyEvent.jbutton.button + 1;
     m_pressTicks = SDL_GetTicks();
     SetButtonActive();
     CLog::Log(LOGDEBUG, "Joystick %d button %d Down", joyId, buttonId);
@@ -98,9 +99,9 @@ void CJoystick::Update(SDL_Event& joyEvent)
 
   case SDL_JOYAXISMOTION:
     joyId = joyEvent.jaxis.which;
-    axisId = joyEvent.jaxis.axis;
+    axisId = joyEvent.jaxis.axis + 1;
     m_NumAxes = SDL_JoystickNumAxes(m_Joysticks[joyId]);
-    if (axisId<0 || axis>=MAX_AXES)
+    if (axisId<=0 || axisId>=MAX_AXES)
     {
       CLog::Log(LOGERROR, "Axis Id out of range. Maximum supported axis: %d", MAX_AXES);
       ignore = true;
@@ -118,7 +119,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
       m_Amount[axisId] = ((float)joyEvent.jaxis.value / 32768.0f); //[-32768 to 32767]
     }
     m_AxisId = GetAxisWithMaxAmount();
-    CLog::Log(LOGDEBUG, "Joystick %d axis %d amount %f", joyId, axisId, m_Amount[axisId]);
+    CLog::Log(LOGDEBUG, "Joystick %d Axis %d Amount %f", joyId, axisId, m_Amount[axisId]);
     break;
 
   case SDL_JOYBALLMOTION:
@@ -134,14 +135,6 @@ void CJoystick::Update(SDL_Event& joyEvent)
   default:
     ignore = true;
     break;
-  }
-
-  if (ignore)
-    return;
-
-  if (!axis)
-  {
-    SetAxisActive(false);
   }
 }
 
@@ -169,11 +162,11 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
       return true;
     }
     nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicks)<500) // 1s delay before we repeat
+    if ((nowTicks-m_pressTicks)<500) // 500ms delay before we repeat
     {
       return false;
     }
-    if ((nowTicks-lastTicks)<100) // 200ms delay before successive repeats
+    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
     {
       return false;
     }
@@ -189,7 +182,7 @@ int CJoystick::GetAxisWithMaxAmount()
   static int axis;
   axis = 0;
   maxAmount = 0;
-  for (int i = 0 ; i<m_NumAxes ; i++)
+  for (int i = 1 ; i<=m_NumAxes ; i++)
   {
     if ((float)fabs(m_Amount[i])>maxAmount)
     {

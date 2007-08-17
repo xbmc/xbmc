@@ -96,24 +96,26 @@
       <rightthumbstickdown>VolumeDown</rightthumbstickdown>
     </gamepad>
 
-    <joystick name="Sony PLAYSTATION(R)3">   
-      <altname>Sony PLAYSTATION(R)3 Controller</altname>
-      <button id="14">Select</button>                   
-      <button id="13">ParentDir</button>                
-      <button id="15">FullScreen</button>
-      <button id="12">Queue</button>
-      <button id="10">PreviousMenu</button>
-      <button id="7">Left</button>
-      <button id="5">Right</button>
-      <button id="4">Up</button>
-      <button id="6">Down</button>
-      <button id="1">Screenshot</button>
-      <button id="2">XBMC.ActivateWindow(ShutdownMenu)</button>
-      <button id="3">XBMC.ActivateWindow(PlayerControls)</button>
-      <button id="8">ScrollUp</button>
-      <button id="9">ScrollDown</button>
-      <axis id="3">VolumeDown</axis>
-      <axis id="2">AnalogSeekBack</axis>
+    <joystick name="Sony PLAYSTATION(R)3 Controller">   
+      <altname>PS3 Controller</altname>
+      <button id="15">Select</button>                   
+      <button id="14">ParentDir</button>                
+      <button id="16">FullScreen</button>
+      <button id="13">Queue</button>
+      <button id="11">PreviousMenu</button>
+      <button id="8">Left</button>
+      <button id="6">Right</button>
+      <button id="5">Up</button>
+      <button id="7">Down</button>
+      <button id="2">Screenshot</button>
+      <button id="3">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="4">XBMC.ActivateWindow(PlayerControls)</button>
+      <axis id="4" limit="+1">VolumeDown</axis>
+      <axis id="4" limit="-1">VolumeUp</axis>
+      <axis id="1" limit="+1">AnalogSeekForward</axis>
+      <axis id="1" limit="-1">AnalogSeekBack</axis>
+      <axis id="13" limit="+1">ScrollUp</axis>
+      <axis id="14" limit="+1">ScrollDown</axis>
     </joystick>
 
     <keyboard>
