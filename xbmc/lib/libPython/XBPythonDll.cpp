@@ -212,8 +212,10 @@ extern "C"
   FUNCTION4(PyImport_Import)
   FUNCTION4(PyInt_FromLong)
   FUNCTION8(PyDict_GetItemString)
-  FUNCTION8(PyDict_GetItem)
-  FUNCTION4(PyDict_Keys)
+  //FUNCTION8(PyDict_GetItem)
+  //FUNCTION4(PyDict_Keys)
+  FUNCTION16(PyDict_Next);
+  FUNCTION4(PyDict_Size);
   FUNCTION4(PyType_Ready);
   FUNCTION12(PyType_GenericNew);
   FUNCTION8(PySys_SetArgv);
@@ -294,7 +296,9 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyFloat_FromDouble)) &&
       dll.ResolveExport(DLL_FUNCTION(PyInt_FromLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_GetItemString)) &&
-      dll.ResolveExport(DLL_FUNCTION(PyDict_GetItem)) &&
+      //dll.ResolveExport(DLL_FUNCTION(PyDict_GetItem)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyDict_Next)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyDict_Size)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&

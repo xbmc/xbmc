@@ -63,7 +63,7 @@ void CPluginDirectory::AddItem(int handle, const CFileItem *item)
   }
   CPluginDirectory *dir = globalHandles[handle];
   CFileItem *pItem = new CFileItem(*item);
-  pItem->SetLabelPreformated(true); // TODO: This is probably better not set once we have all the CFileItem stuff available.
+  //pItem->SetLabelPreformated(true); // TODO: This is probably better not set once we have all the CFileItem stuff available.
   dir->m_listItems.Add(pItem);
 }
 
