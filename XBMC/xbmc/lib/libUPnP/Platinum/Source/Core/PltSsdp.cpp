@@ -302,9 +302,6 @@ PLT_SsdpListenTask::DoInit()
 
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
-
-    /* socket should be bound to recieve data using recv */
-    m_Socket->Bind( NPT_SocketAddress(NPT_IpAddress::Any), 1900), true);
 done: 
     return;
 }
