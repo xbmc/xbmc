@@ -1033,10 +1033,12 @@ CUPnP::StartServer()
     if (!m_ServerHolder->m_Device.IsNull()) return;
 
     // load upnpserver.xml so that g_settings.m_vecUPnPMusicShares, etc.. are loaded
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
+    g_settings.LoadUPnPXml(filename);
 
     // create the server with the friendlyname and UUID from upnpserver.xml if found
-    m_ServerHolder->m_Device = new CUPnPServer("XBMC - MediaServer",
+    m_ServerHolder->m_Device = new CUPnPServer("XBMC - Media Server",
         g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL);
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
@@ -1050,7 +1052,7 @@ CUPnP::StartServer()
 #endif
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - MediaServer";
+    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
     m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
     m_ServerHolder->m_Device->m_ModelName = "XBMC";
@@ -1071,7 +1073,7 @@ CUPnP::StartServer()
 
     // save UUID
     g_settings.m_UPnPUUID = m_ServerHolder->m_Device->GetUUID();
-    g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+    g_settings.SaveUPnPXml(filename);
 }
 
 /*----------------------------------------------------------------------
@@ -1090,7 +1092,9 @@ void CUPnP::StartRenderer()
 {
     if (!m_RendererHolder->m_Device.IsNull()) return;
 
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
+    g_settings.LoadUPnPXml(filename);
 
     NPT_String ip = g_network.m_networkinfo.ip;
 #ifndef HAS_XBOX_NETWORK
@@ -1100,12 +1104,12 @@ void CUPnP::StartRenderer()
     }
 #endif
 
-    m_RendererHolder->m_Device = new CUPnPRenderer("XBMC - MediaRenderer", true, 
+    m_RendererHolder->m_Device = new CUPnPRenderer("XBMC - Media Renderer", true, 
           (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL) );
 
     m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_RendererHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - MediaRenderer";
+    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
     m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
     m_RendererHolder->m_Device->m_ModelNumber = "2.0";
     m_RendererHolder->m_Device->m_Manufacturer = "Xbox Team";
@@ -1117,7 +1121,7 @@ void CUPnP::StartRenderer()
 
     // save UUID
     g_settings.m_UPnPUUIDRenderer = m_RendererHolder->m_Device->GetUUID();
-    g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+    g_settings.SaveUPnPXml(filename);
 }
 
 void CUPnP::StopRenderer()
