@@ -300,9 +300,11 @@ PLT_SsdpListenTask::DoInit()
             PLT_SsdpInitMulticastIterator((NPT_UdpMulticastSocket*)m_Socket), 
             NPT_UntilResultNotEquals(NPT_SUCCESS));
 
-        if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());     
+        if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
 
+    /* socket should be bound to recieve data using recv */
+    m_Socket->Bind( NPT_SocketAddress(NPT_IpAddress::Any), 1900), true);
 done: 
     return;
 }
