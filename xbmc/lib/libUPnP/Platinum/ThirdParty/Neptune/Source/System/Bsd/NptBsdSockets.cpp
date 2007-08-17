@@ -981,20 +981,19 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
                    SO_REUSEADDR, 
                    (SocketOption)&option, 
                    sizeof(option));
-
-#ifndef _XBOX
-        setsockopt(m_SocketFdReference->GetSocketFd(), 
-                   IPPROTO_IP, 
-                   IP_MULTICAST_LOOP,
-                   (SocketOption)&option, 
-                   sizeof(option));
-#endif
     }
-    
+
     // convert the address
     struct sockaddr_in inet_address;
     SocketAddressToInetAddress(address, &inet_address);
-    
+
+#ifdef _XBOX
+    if( address.GetIpAddress().AsLong() != NPT_IpAddress::Any.AsLong() ) {
+        //Xbox can't bind to specific address, defaulting to ANY
+        SocketAddressToInetAddress(NPT_SocketAddress(NPT_IpAddress::Any, address.GetPort()), &inet_address);
+    }
+#endif
+
     // bind the socket
     if (bind(m_SocketFdReference->GetSocketFd(), 
              (struct sockaddr*)&inet_address, 
@@ -1402,6 +1401,14 @@ class NPT_BsdUdpMulticastSocket : public    NPT_UdpMulticastSocketInterface,
 +---------------------------------------------------------------------*/
 NPT_BsdUdpMulticastSocket::NPT_BsdUdpMulticastSocket()
 {
+#ifndef _XBOX
+        int option = 1;
+        setsockopt(m_SocketFdReference->GetSocketFd(), 
+                   IPPROTO_IP, 
+                   IP_MULTICAST_LOOP,
+                   (SocketOption)&option,
+                   sizeof(option));
+#endif
 }
 
 /*----------------------------------------------------------------------
