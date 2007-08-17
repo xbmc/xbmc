@@ -3218,6 +3218,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
+      g_Mouse.SetInactive();
       return OnAction(action);
     }
     else
@@ -3225,7 +3226,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       g_Joystick.Reset();
     }
   }
-  else if (g_Joystick.GetAxis(bid))
+  if (g_Joystick.GetAxis(bid))
   {
     CAction action;
 
@@ -3238,16 +3239,16 @@ bool CApplication::ProcessGamepad(float frameTime)
     }
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction))
     {
-      action.fAmount1 = g_Joystick.GetAmount();
       action.fAmount2 = 0.0;
       action.fRepeat = 0.0;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
+      g_Mouse.SetInactive();
       return OnAction(action);
     }
     else
     {
-      g_Joystick.Reset();
+      g_Joystick.ResetAxis(abs(bid));
     }
   }
 #endif
