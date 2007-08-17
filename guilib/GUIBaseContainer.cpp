@@ -190,7 +190,9 @@ CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
 {
   if (!m_items.size())
     return NULL;
-  return m_items[(GetSelectedItem() + offset) % m_items.size()];
+  int item = (GetSelectedItem() + offset) % ((int)m_items.size());
+  if (item < 0) item += m_items.size();
+  return m_items[item];
 }
 
 bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
