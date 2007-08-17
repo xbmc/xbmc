@@ -270,32 +270,42 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(setInfo__doc__,
-    "setInfo(type, tags) -- Sets the listitem's media tags.\n"
+    "setInfo(type, url, tags[, isFolder]) -- Sets the listitem's media tags.\n"
     "\n"
-    "type           : string - type of media(video/music/pictures).\n"
-    "tags           : dictionary - pairs of { tag: value }.\n"
+    "type        : string - type of media(video/music/pictures).\n"
+    "url         : string or unicode - url of the entry. would be plugin:// for another virtual directory\n"
+    "tags        : dictionary - pairs of { tag: value }.\n"
+    "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })\n");
+    "  - self.list.getSelectedItem().setInfo('video', 'F:\\\\movies\\\\300.mov', { 'Genre': 'Comedy' })\n");
 
   PyObject* ListItem_SetInfo(ListItem *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "type", "tags", NULL };
+    static char *keywords[] = { "type", "url", "tags", "isFolder", NULL };
     char *cType = NULL;
+    PyObject *pURL = NULL;
     PyObject *pTagDict = NULL;
+    bool bIsFolder = false;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "sO",
+      "sOO|b",
       keywords,
       &cType,
-      &pTagDict))
+      &pURL,
+      &pTagDict,
+      &bIsFolder))
     {
       return NULL;
     }
+
+    string url;
+    if (!PyGetUnicodeString(url, pURL, 1)) return NULL;
+
     if (!PyObject_TypeCheck(pTagDict, &PyDict_Type))
     {
       PyErr_SetString(PyExc_TypeError, "tags object should be of type Dict");
@@ -312,6 +322,8 @@ namespace PYXBMC
     int pos = 0;
 
     PyGUILock();
+    self->item->m_strPath = url;
+    self->item->m_bIsFolder = bIsFolder;
     while (PyDict_Next(pTagDict, &pos, &key, &value)) {
       //CLog::Log(LOGDEBUG, __FUNCTION__" - Tag Dictionary: pos: %i  key: %s  value: %s", pos, PyString_AsString(key), PyString_AsString(value));
       if (strcmpi(cType, "video") == 0)

@@ -37,44 +37,34 @@ namespace PYXBMC
  * start of xbmc methods
  *****************************************************************/
   PyDoc_STRVAR(setDirectoryEntry__doc__,
-    "setDirectoryEntry(handle, url, listitem [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
+    "setDirectoryEntry(handle, listitem) -- Callback function to pass directory contents back to XBMC.\n"
     "\n"
     "handle      : Integer - handle the plugin was started with.\n"
-    "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
     "listitem    : ListItem - item to add.\n"
-    "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
     "\n"
     "example:\n"
-    "  - xbmc.setDirectoryEntry(handle, 'F:\\\\Trailers\\\\300.mov', listitem)\n");
+    "  - xbmc.setDirectoryEntry(handle, listitem)\n");
 
   PyObject* XBMC_setDirectoryEntry(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {"handle", "url", "listitem", "isFolder", NULL };
+    static char *keywords[] = {"handle", "listitem", NULL };
     int handle = -1;
-    PyObject *pURL = NULL;
     PyObject *pItem = NULL;
-    bool bIsFolder = false;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "iOO|b",
+      "iO",
       keywords,
       &handle,
-      &pURL,
-      &pItem,
-      &bIsFolder
-      ))
+      &pItem))
     {
       return NULL;
     };
-
-    string url;
-    if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
     
+    if (!ListItem_CheckExact(pItem)) return NULL;
+
     ListItem *pListItem = (ListItem *)pItem;
-    pListItem->item->m_strPath = url;
-    pListItem->item->m_bIsFolder = bIsFolder;
 
     // call the directory class to add our item
     DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item);
