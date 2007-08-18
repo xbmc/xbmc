@@ -242,11 +242,20 @@ CUPnPServer::BuildObject(CFileItem*      item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
 
+    // get list of ip addresses
+    NPT_List<NPT_String> ips;
+    NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
+
+    // if we're passed an interface where we received the request from
+    // move the ip to the top
+    if (info && info->local_address.GetIpAddress().ToString() != "0.0.0.0") {
+        ips.Remove(info->local_address.GetIpAddress().ToString());
+        ips.Insert(ips.GetFirstItem(), info->local_address.GetIpAddress().ToString());
+    }
+
     if (!item->m_bIsFolder) {
         object = new PLT_MediaItem();
 
-        /* Set the title using the filename for now */
-        object->m_Title = item->GetLabel();
         object->m_ObjectID = item->m_strPath;
 
         /* Setup object type */
@@ -306,27 +315,6 @@ CUPnPServer::BuildObject(CFileItem*      item,
         /* Set the resource file size */
         resource.m_Size = (NPT_Integer)item->m_dwSize;
 
-        // get list of ip addresses
-        NPT_List<NPT_String> ips;
-        NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
-
-        // if we're passed an interface where we received the request from
-        // move the ip to the top
-        if (info && info->local_address.GetIpAddress().ToString() != "0.0.0.0") {
-            ips.Remove(info->local_address.GetIpAddress().ToString());
-            ips.Insert(ips.GetFirstItem(), info->local_address.GetIpAddress().ToString());
-        }
-        
-        // set a thumbnail if we have one
-        if( item->HasThumbnail() ) {
-            NPT_HttpUrl uri = m_FileBaseUri;
-            NPT_HttpUrlQuery query;
-            query.AddField("path", item->GetThumbnailImage() );
-            uri.SetHost(*ips.GetFirstItem());
-            uri.SetQuery(query.ToString());
-            object->m_ExtraInfo.album_art_uri = uri.ToString();
-        }
-
         // if the item is remote, add a direct link to the item
         if( CUtil::IsRemote ( (const char*)file_path ) ) {
             resource.m_Uri = file_path;
@@ -355,12 +343,6 @@ CUPnPServer::BuildObject(CFileItem*      item,
         object->m_ObjectID = item->m_strPath;
         object->m_ObjectClass.type = "object.container";
 
-        if( !item->GetLabel().IsEmpty() /* item->IsLabelPreformated() */ ) {
-            object->m_Title = item->GetLabel();
-        } else {
-            object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
-        }
-
         /* Get the number of children for this container */
         if (with_count) {
             if( object->m_ObjectID.StartsWith("virtualpath://") ) {
@@ -373,6 +355,23 @@ CUPnPServer::BuildObject(CFileItem*      item,
             }
         }
         
+    }
+    
+    // set a title for the object
+    if( !item->GetLabel().IsEmpty() /* item->IsLabelPreformated() */ ) {
+        object->m_Title = item->GetLabel();
+    } else {
+        object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
+    }
+
+    // set a thumbnail if we have one
+    if( item->HasThumbnail() ) {
+        NPT_HttpUrl uri = m_FileBaseUri;
+        NPT_HttpUrlQuery query;
+        query.AddField("path", item->GetThumbnailImage() );
+        uri.SetHost(*ips.GetFirstItem());
+        uri.SetQuery(query.ToString());
+        object->m_ExtraInfo.album_art_uri = uri.ToString();
     }
 
     return object;
