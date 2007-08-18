@@ -149,6 +149,9 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(20386); break;
     case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes
       strLabel = g_localizeStrings.Get(20387); break;
+    default:
+      CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %d", pNode->GetChildType());
+      return false;
     }
   }
 
