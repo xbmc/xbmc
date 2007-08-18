@@ -537,7 +537,7 @@ CUPnPServer::Build(CFileItem*        item,
         } else if (share_name.GetLength() == 0) {
             // no share_name means it's virtualpath://X where X=music, video or pictures
             object->m_ParentID = "0";
-            if (with_count) {
+            if (with_count || true) { // we can always count these, it's quick
                 ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
 
                 // look up number of shares
