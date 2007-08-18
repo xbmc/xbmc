@@ -189,6 +189,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 continue;
             }
 
+            // never show empty containers in media views
+            if((*entry)->IsContainer()) {
+              if( (audio || video || image) 
+              && ((PLT_MediaContainer*)(*entry))->m_ChildrenCount == 0) {
+                ++entry;
+                continue;
+              }
+            }
+
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
