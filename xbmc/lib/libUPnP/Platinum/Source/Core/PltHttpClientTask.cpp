@@ -12,6 +12,8 @@
 +---------------------------------------------------------------------*/
 #include "PltHttpClientTask.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.core.http.clienttask")
+
 /*----------------------------------------------------------------------
 |   PLT_HttpClientSocketTask::PLT_HttpClientSocketTask
 +---------------------------------------------------------------------*/
@@ -54,8 +56,8 @@ PLT_HttpClientSocketTask::DoRun()
     res = m_Socket->GetOutputStream(output_stream);
     if (NPT_FAILED(res)) goto cleanup;
 
-    PLT_Log(PLT_LOG_LEVEL_4, "PLT_HttpClientSocketTask sending:\n");
-    PLT_HttpHelper::ToLog(m_Request, PLT_LOG_LEVEL_3);
+    NPT_LOG_FINER("PLT_HttpClientSocketTask sending:");
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, m_Request);
 
     res = client.SendRequest(output_stream, *m_Request);
     if (NPT_FAILED(res)) goto cleanup;
@@ -70,9 +72,8 @@ PLT_HttpClientSocketTask::DoRun()
     res = m_Socket->GetInfo(info);
     if (NPT_FAILED(res)) goto cleanup;
 
-    PLT_Log(PLT_LOG_LEVEL_4, "PLT_HttpClientSocketTask receiving:\n");
-    PLT_HttpHelper::ToLog(response, PLT_LOG_LEVEL_3);
-
+    NPT_LOG_FINE("PLT_HttpClientSocketTask receiving:");
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);
 
 cleanup:
     // callback to process response
@@ -94,8 +95,8 @@ PLT_HttpClientSocketTask::ProcessResponse(NPT_Result        res,
     NPT_COMPILER_UNUSED(request);
     NPT_COMPILER_UNUSED(info);
 
-    PLT_Log(PLT_LOG_LEVEL_3, "PLT_HttpClientSocketTask::ProcessResponse (result=%d)\n", res);
-    NPT_CHECK(res);
+    NPT_LOG_FINE_1("PLT_HttpClientSocketTask::ProcessResponse (result=%d)", res);
+    NPT_CHECK_SEVERE(res);
 
     NPT_HttpEntity* entity;
     NPT_InputStreamReference body;
@@ -105,55 +106,25 @@ PLT_HttpClientSocketTask::ProcessResponse(NPT_Result        res,
 
     // dump body into memory (if no content-length specified, read until disconnection)
     NPT_MemoryStream output;
-    NPT_CHECK(NPT_StreamToStreamCopy(*body, output, 0, entity->GetContentLength()));
+    NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(*body, output, 0, entity->GetContentLength()));
 
     return NPT_SUCCESS;
 }
-//
-///*----------------------------------------------------------------------
-//|   PLT_HttpClientSocketTask::AddRequest
-//+---------------------------------------------------------------------*/
-//NPT_Result
-//PLT_HttpClientSocketTask::AddRequest(NPT_HttpRequest*           request, 
-//                                     bool                       buffer_response_body,
-//                                     PLT_HttpContextReference*  context_result /* = NULL */)
-//{
-//    //PLT_HttpHelper::SetHost(request, m_Host + ":" + NPT_String::FromInteger(m_RemoteAddr.GetPort()));
-//    PLT_HttpContextReference context(new PLT_HttpContext(request, buffer_response_body));
-//
-//    NPT_String protocol = context->m_Request->GetProtocol();
-//    if (m_KeepAlive) {
-//        if (protocol.Compare("HTTP/1.0") == 0) {
-//            // in HTTP 1.0, we need to explicitly tell the server to keep
-//            // the connection alive
-//            context->m_Request->GetHeaders().SetHeader("Connection", "Keep-Alive");
-//        }
-//    } else {
-//        // in HTTP 1.1, we need to explicitly tell the server to close
-//        // the connection when done
-//        // Just to be sure, do it even for HTTP 1.0
-//        context->m_Request->GetHeaders().SetHeader("Connection", "Close");
-//    }
-//
-//    // if the request was passed with a body, set the Content-Length
-//    // if not already set
-//    NPT_Size len;
-//    if (NPT_FAILED(PLT_HttpHelper::GetContentLength(context->m_Request, len))) {
-//        NPT_InputStreamReference stream;
-//        NPT_HttpEntity* entity = context->m_Request->GetEntity();
-//        if (entity) {
-//            if (NPT_SUCCEEDED(entity->GetInputStream(stream)) && !stream.IsNull()) {
-//                if (NPT_SUCCEEDED(stream->GetSize(len))) {
-//                    PLT_HttpHelper::SetContentLength(context->m_Request, len);
-//                }
-//            }
-//        }
-//    }
-//
-//    m_Contexts.Add(context);
-//    if (context_result) {
-//        *context_result = context;
-//    }
-//    return NPT_SUCCESS;
-//}
 
+/*----------------------------------------------------------------------
+|   PLT_FileHttpClientTask::ProcessResponse
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_FileHttpClientTask::ProcessResponse(NPT_Result        res, 
+                                        NPT_HttpRequest*  request, 
+                                        NPT_SocketInfo&   info, 
+                                        NPT_HttpResponse* response) 
+{
+    NPT_COMPILER_UNUSED(res);
+    NPT_COMPILER_UNUSED(request);
+    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(response);
+
+    NPT_LOG_INFO_1("PLT_FileHttpClientTask::ProcessResponse (status=%d)\n", res);
+    return NPT_SUCCESS;
+}

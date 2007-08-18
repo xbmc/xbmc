@@ -202,6 +202,16 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavEpisodes.m_sortOrder);
         break;
       }
+    case NODE_TYPE_RECENTLY_ADDED_EPISODES:
+      {
+        AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%Z - %H. %T", "%R"));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_NONE);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavEpisodes.m_viewMode);
+        SetSortOrder(SORT_ORDER_NONE);
+
+        break;
+      }
     case NODE_TYPE_TITLE_MOVIES:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -217,7 +227,17 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavTitles.m_sortOrder);
       }
       break;
-    }
+    case NODE_TYPE_RECENTLY_ADDED_MOVIES:
+      {
+        AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%R"));
+        SetSortMethod(SORT_METHOD_NONE);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);
+
+        SetSortOrder(SORT_ORDER_NONE);
+      }
+      break;
+    } 
   }
   else
   {

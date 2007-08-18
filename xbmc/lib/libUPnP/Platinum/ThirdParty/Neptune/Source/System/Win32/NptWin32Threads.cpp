@@ -14,7 +14,7 @@
 #include <xtl.h>
 #else
 #include <windows.h>
-#if !defined(UNDER_CE)
+#if !defined(_WIN32_WCE)
 #include <process.h>
 #endif
 #endif
@@ -32,7 +32,7 @@
 /*----------------------------------------------------------------------
 |   configuration macros
 +---------------------------------------------------------------------*/
-#if defined(UNDER_CE) || defined(_XBOX)
+#if defined(_WIN32_WCE) || defined(_XBOX)
 #define NPT_WIN32_USE_CREATE_THREAD
 #endif
 
@@ -514,30 +514,18 @@ NPT_Win32Thread::Start()
     NPT_Debug(":: NPT_Win32Thread::Start - creating thread\n");
 
     // create the native thread
-#if defined(UNDER_CE)
+#if defined(_WIN32_WCE)
     DWORD thread_id;
 #else
     unsigned int thread_id;
 #endif
     m_ThreadHandle = (HANDLE)
-#ifdef _XBOX
-// xbox can't grow stack space, so it allocates default size directly
-// assume we can do with 64k of stack.
-      _beginthreadex(NULL, 
-                       0x10000, 
-                       EntryPoint, 
-                       reinterpret_cast<void*>(this), 
-                       0, 
-                       &thread_id);
-#else
-      _beginthreadex(NULL, 
+        _beginthreadex(NULL, 
                        0, 
                        EntryPoint, 
                        reinterpret_cast<void*>(this), 
                        0, 
                        &thread_id);
-#endif
-
     if (m_ThreadHandle == 0) {
         // failed
         m_ThreadId = 0;

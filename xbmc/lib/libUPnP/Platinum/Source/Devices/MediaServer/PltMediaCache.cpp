@@ -12,6 +12,8 @@
 +---------------------------------------------------------------------*/
 #include "PltMediaCache.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.media.server.cache")
+
 /*----------------------------------------------------------------------
 |   PLT_MediaCache::PLT_MediaCache
 +---------------------------------------------------------------------*/
@@ -113,7 +115,7 @@ PLT_MediaCache::Get(PLT_DeviceDataReference&      device,
     if (key.GetLength() == 0) return NPT_ERROR_INVALID_PARAMETERS;
     
     PLT_MediaObjectListReference* val = NULL;
-    NPT_CHECK(m_Items.Get(key, val));
+    NPT_CHECK_SEVERE(m_Items.Get(key, val));
 
     list = *val;
     return NPT_SUCCESS;

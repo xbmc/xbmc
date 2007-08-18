@@ -15,6 +15,8 @@
 
 #include <stdlib.h>
 
+NPT_SET_LOCAL_LOGGER("platinum.media.server.file.test")
+
 //#define BROADCAST_TEST 1
 
 /*----------------------------------------------------------------------
@@ -110,7 +112,7 @@ main(int /* argc */, char** argv)
     upnp.AddDevice(device);
     NPT_String uuid = device->GetUUID();
 
-    NPT_CHECK(upnp.Start());
+    NPT_CHECK_SEVERE(upnp.Start());
 
     char buf[256];
     while (gets(buf)) {

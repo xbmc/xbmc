@@ -1616,7 +1616,9 @@
   <string id="20382">Automatically grab season thumbs</string>
   <string id="20383">Folder contains a single Video</string>
   <string id="20384">Link to TV Show</string>
-  <string id="20385">Remove Link To TV Show</string>
+  <string id="20385">Remove Link to TV Show</string>
+  <string id="20386">Recently Added Movies</string>
+  <string id="20387">Recently Added Episodes</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1763,6 +1765,7 @@
   <string id="21878">Copyright Flag</string>
   <string id="21879">Country Code</string>
   <string id="21880">Reference Service</string>
+  <string id="21881">Enable UPnP Renderer</string>
 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 

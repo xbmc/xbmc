@@ -13,9 +13,7 @@
 /*----------------------------------------------------------------------
 |    includes
 +---------------------------------------------------------------------*/
-#include "NptDefs.h"
-#include "NptHttp.h"
-#include "NptXml.h"
+#include "Neptune.h"
 #include "PltEvent.h"
 #include "PltArgument.h"
 #include "PltStateVariable.h"
@@ -85,18 +83,18 @@ private:
         NPT_SocketAddress& addr, 
         NPT_String&        strCallbackURLs, 
         int                timeout, 
-        NPT_HttpResponse*  response);
+        NPT_HttpResponse&  response);
 
     NPT_Result ProcessRenewSubscription(
         NPT_SocketAddress& addr, 
-        NPT_String& SID, 
-        int timeout,
-        NPT_HttpResponse* response);
+        NPT_String&        SID, 
+        int                timeout,
+        NPT_HttpResponse&  response);
 
     NPT_Result ProcessCancelSubscription(
         NPT_SocketAddress& addr, 
-        NPT_String& SID, 
-        NPT_HttpResponse* response);
+        NPT_String&        SID, 
+        NPT_HttpResponse&  response);
 
 
 protected:

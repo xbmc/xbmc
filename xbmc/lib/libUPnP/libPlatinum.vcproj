@@ -22,7 +22,7 @@
 				Optimization="0"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Xbox"
-				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
+				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Config;.\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\ThirdParty\Neptune\Source\Neptune;.\Platinum\ThirdParty\Neptune\Source\System\Xbox;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer"
-				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -96,7 +96,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Config;.\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\ThirdParty\Neptune\Source\Neptune;.\Platinum\ThirdParty\Neptune\Source\System\Xbox;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer"
-				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -167,7 +167,7 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Xbox"
-				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
+				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
@@ -207,7 +207,7 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Xbox"
-				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
+				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
@@ -327,12 +327,6 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\Source\Core\PltHttpServerTask.h">
 				</File>
 				<File
-					RelativePath=".\Platinum\Source\Core\PltLog.cpp">
-				</File>
-				<File
-					RelativePath=".\Platinum\Source\Core\PltLog.h">
-				</File>
-				<File
 					RelativePath=".\Platinum\Source\Core\PltMetadataHandler.cpp">
 				</File>
 				<File
@@ -439,6 +433,28 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="MediaRenderer"
+				Filter="">
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaController.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaControllerListener.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Neptune"
@@ -478,6 +494,12 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptCommon.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConsole.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConsole.h">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConstants.h">
@@ -520,6 +542,12 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptList.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptLogging.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptLogging.h">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptMap.h">

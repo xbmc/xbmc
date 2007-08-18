@@ -1,13 +1,13 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platinum", "..\..\..\..\Platinum\Targets\x86-microsoft-win32-vs2003\Platinum.vcproj", "{568611D3-AFA7-4294-99C1-E9AED0D8057E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platinum", "..\Platinum\Platinum.vcproj", "{568611D3-AFA7-4294-99C1-E9AED0D8057E}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Neptune", "..\..\..\..\..\ThirdParty\Neptune\Build\Neptune\Targets\x86-microsoft-win32-vs2003\Neptune.vcproj", "{12AFF2E5-6D95-4809-9728-9551677C078A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Neptune", "..\..\..\..\ThirdParty\Neptune\Build\Targets\x86-microsoft-win32-vs2003\Neptune\Neptune.vcproj", "{12AFF2E5-6D95-4809-9728-9551677C078A}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PltMediaServer", "..\..\..\..\Devices\MediaServer\Targets\x86-microsoft-win32-vs2003\PltMediaServer.vcproj", "{11CF7712-50A5-4EDB-A93F-E2502A459CBA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PltMediaServer", "..\MediaServer\PltMediaServer.vcproj", "{11CF7712-50A5-4EDB-A93F-E2502A459CBA}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject

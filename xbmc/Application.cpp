@@ -255,8 +255,11 @@ static void WaitCallback(DWORD flags)
 {
 #ifndef PROFILE
   /* if cpu is far ahead of gpu, sleep instead of yield */
-  if(flags & D3DWAIT_PRESENT)
+  if( flags & D3DWAIT_PRESENT )
     while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 0)
+      Sleep(1);
+  else if( flags & (D3DWAIT_OBJECTLOCK | D3DWAIT_BLOCKONFENCE | D3DWAIT_BLOCKUNTILIDLE) )
+    while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 1)
       Sleep(1);
 #endif
 }
@@ -1573,6 +1576,7 @@ void CApplication::StartUPnP()
 #ifdef HAS_UPNP
     StartUPnPClient();
     StartUPnPServer();
+    StartUPnPRenderer();
 #endif
 }
 
@@ -1583,6 +1587,28 @@ void CApplication::StopUPnP()
   {
     CLog::Log(LOGNOTICE, "stopping upnp");
     CUPnP::ReleaseInstance();
+  }
+#endif
+}
+
+void CApplication::StartUPnPRenderer()
+{
+#ifdef HAS_UPNP
+  if (g_guiSettings.GetBool("upnp.renderer"))
+  {
+    CLog::Log(LOGNOTICE, "starting upnp renderer");
+    CUPnP::GetInstance()->StartRenderer();
+  }
+#endif
+}
+
+void CApplication::StopUPnPRenderer()
+{
+#ifdef HAS_UPNP
+  if (CUPnP::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping upnp renderer");
+    CUPnP::GetInstance()->StopRenderer();
   }
 #endif
 }
@@ -4673,6 +4699,10 @@ void CApplication::ProcessSlow()
 
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
+
+  // update upnp server/renderer states
+  if(CUPnP::IsInstantiated())
+    CUPnP::GetInstance()->UpdateState();
 }
 
 // Global Idle Time in Seconds
