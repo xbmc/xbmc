@@ -5,7 +5,7 @@ class CGUIDialogNumeric :
       public CGUIDialog
 {
 public:
-  enum INPUT_MODE { INPUT_TIME = 1, INPUT_DATE, INPUT_IP_ADDRESS, INPUT_PASSWORD, INPUT_NUMBER };
+  enum INPUT_MODE { INPUT_TIME = 1, INPUT_DATE, INPUT_IP_ADDRESS, INPUT_PASSWORD, INPUT_NUMBER, INPUT_TIME_SECONDS };
   CGUIDialogNumeric(void);
   virtual ~CGUIDialogNumeric(void);
   virtual bool OnMessage(CGUIMessage& message);
@@ -27,6 +27,7 @@ public:
   static bool ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading);
   static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading);
   static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading);
+  static bool ShowAndGetSeconds(CStdString& timeString, const CStdString &heading);
 
 protected:
   void OnNumber(unsigned int num);
