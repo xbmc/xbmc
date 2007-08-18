@@ -713,7 +713,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
     }
 
     // and finally the plugins, as appropriate
-    if (strType == "video" || strType == "music" || strType == "videos")
+    if (strType == "video" || strType == "music" || strType == "pictures")
     {
       CShare share;
       share.strPath = "plugin://" + strType + "/";
