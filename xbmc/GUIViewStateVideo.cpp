@@ -23,6 +23,7 @@
 #include "GUIViewStateVideo.h"
 #include "playlistplayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
+#include "GUIBaseContainer.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;

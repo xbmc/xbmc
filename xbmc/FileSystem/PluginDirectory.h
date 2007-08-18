@@ -17,6 +17,7 @@ public:
   CPluginDirectory(void);
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+  static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
 
   // callbacks from python

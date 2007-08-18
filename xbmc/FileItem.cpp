@@ -39,6 +39,7 @@
 #include "musicdatabase.h"
 #include "SortFileItem.h"
 #include "Utils/TuxBoxUtil.h"
+#include "GUIViewState.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -1150,6 +1151,7 @@ void CFileItemList::Clear()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
+  m_sortDetails.clear();
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1163,6 +1165,7 @@ void CFileItemList::ClearKeepPointer()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
+  m_sortDetails.clear();
 }
 
 void CFileItemList::Add(CFileItem* pItem)
@@ -1241,6 +1244,14 @@ void CFileItemList::AppendPointer(const CFileItemList& itemlist)
     CFileItem* pItem = const_cast<CFileItem*>(itemlist[i]);
     Add(pItem);
   }
+}
+
+void CFileItemList::AssignPointer(const CFileItemList& itemlist)
+{
+  Clear();
+  AppendPointer(itemlist);
+  m_strPath = itemlist.m_strPath;
+  m_sortDetails = itemlist.m_sortDetails;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
@@ -2503,3 +2514,12 @@ void CFileItemList::UpdateItem(const CFileItem *item)
     *oldItem = *item;
 }
 
+void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)
+{
+  SORT_METHOD_DETAILS sort;
+  sort.m_sortMethod=sortMethod;
+  sort.m_buttonLabel=buttonLabel;
+  sort.m_labelMasks=labelMasks;
+
+  m_sortDetails.push_back(sort);
+}

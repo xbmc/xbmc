@@ -383,10 +383,6 @@ void CGUIDialogFileBrowser::Render()
     {
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, g_localizeStrings.Get(1032)); // "Add Network Location..."
     }
-    else if (m_selectedPath == "addplugin://")
-    {
-      SET_CONTROL_LABEL(CONTROL_LABEL_PATH, g_localizeStrings.Get(1037)); // "Add Plugin..."
-    }
     else
     {
       // Update the current path label
@@ -710,15 +706,6 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
     if (allowNetworkShares)
     {
       g_mediaManager.GetNetworkLocations(shares);
-    }
-
-    // and finally the plugins, as appropriate
-    if (strType == "video" || strType == "music" || strType == "pictures")
-    {
-      CShare share;
-      share.strPath = "plugin://" + strType + "/";
-      share.strName = g_localizeStrings.Get(1037);
-      shares.push_back(share);
     }
   }
   
