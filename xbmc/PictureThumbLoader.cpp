@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "PictureThumbLoader.h"
 #include "Picture.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -44,14 +45,19 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     CStdString thumb(pItem->GetThumbnailImage());
 
     // look for remote thumbs    
-    if (!thumb.IsEmpty() && thumb.Find("://") >=0)
+    if (!CUtil::IsHD(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedPictureThumb());
-      CPicture pic;
-      if(pic.DoCreateThumbnail(thumb, cachedThumb))
+      if(CFile::Exists(cachedThumb))
         pItem->SetThumbnailImage(cachedThumb);
       else
-        pItem->SetThumbnailImage("");    
+      {
+        CPicture pic;
+        if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb);
+        else
+          pItem->SetThumbnailImage("");
+      }
     }
     else if (m_regenerateThumbs)
     {
