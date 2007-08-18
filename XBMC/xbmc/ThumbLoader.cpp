@@ -24,6 +24,8 @@
 #include "Util.h"
 #include "Picture.h"
 
+using namespace XFILE;
+
 CVideoThumbLoader::CVideoThumbLoader()
 {
 }
@@ -41,14 +43,19 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!thumb.IsEmpty() && !CUtil::IsHD(thumb) && thumb.Find("://") >=0)
-    {
+    if (!CUtil::IsHD(thumb))
+    {      
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
-      CPicture pic;
-      if(pic.DoCreateThumbnail(thumb, cachedThumb))
-        pItem->SetThumbnailImage(cachedThumb);
+      if(CFile::Exists(cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb);
       else
-        pItem->SetThumbnailImage("");    
+      {
+        CPicture pic;
+        if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb);
+        else
+          pItem->SetThumbnailImage("");
+      }
     }  
   }
 
@@ -88,14 +95,19 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!thumb.IsEmpty() && !CUtil::IsHD(thumb) && thumb.Find("://") >=0)
+    if (!CUtil::IsHD(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
-      CPicture pic;
-      if(pic.DoCreateThumbnail(thumb, cachedThumb))
+      if(CFile::Exists(cachedThumb))
         pItem->SetThumbnailImage(cachedThumb);
       else
-        pItem->SetThumbnailImage("");    
+      {
+        CPicture pic;
+        if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb);
+        else
+          pItem->SetThumbnailImage("");
+      }
     }  
   }
   return true;
