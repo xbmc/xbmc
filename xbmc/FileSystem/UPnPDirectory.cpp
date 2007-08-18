@@ -229,10 +229,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       pItem->m_dateTime = time;
                     }
 
-                    CStdString thumbnail;
                     if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 )
                     {
-                      thumbnail = pItem->GetCachedVideoThumb();
                       CVideoInfoTag* tag = pItem->GetVideoInfoTag();
                       tag->m_strTitle = (*entry)->m_Title;
                       tag->m_strGenre = (*entry)->m_Affiliation.genre;
@@ -243,7 +241,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 )
                     {
-                      thumbnail = pItem->GetCachedArtistThumb();
                       CMusicInfoTag* tag = pItem->GetMusicInfoTag();
 
                       tag->SetDuration((*entry)->m_Resources[0].m_Duration);
@@ -261,24 +258,16 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 )
                     {
-                      thumbnail = pItem->GetCachedPictureThumb();
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
                     }
-
-
-                    // if not, let's grab the remote one
-                    if(CFile::Exists(thumbnail))
-                      pItem->SetThumbnailImage(thumbnail);
-                    else
-                    {
-                      if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
-                        pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
-                      else if((*entry)->m_Description.icon_uri.GetLength())
-                        pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
-                    }
-
                 }
             }
+
+            // if there is a thumbnail available set it here
+            if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
+              pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
+            else if((*entry)->m_Description.icon_uri.GetLength())
+              pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 
             pItem->SetLabelPreformated(true);
             vecCacheItems.Add(pItem);
