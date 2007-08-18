@@ -39,7 +39,6 @@
 #include "musicdatabase.h"
 #include "SortFileItem.h"
 #include "Utils/TuxBoxUtil.h"
-#include "GUIViewState.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -1441,6 +1440,18 @@ void CFileItemList::Serialize(CArchive& ar)
     ar << (int)m_sortOrder;
     ar << m_bCacheToDisc;
 
+    ar << m_sortDetails.size();
+    for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
+    {
+      const SORT_METHOD_DETAILS &details = m_sortDetails[j];
+      ar << (int)details.m_sortMethod;
+      ar << details.m_buttonLabel;
+      ar << details.m_labelMasks.m_strLabelFile;
+      ar << details.m_labelMasks.m_strLabelFolder;
+      ar << details.m_labelMasks.m_strLabel2File;
+      ar << details.m_labelMasks.m_strLabel2Folder;
+    }
+
     for (i; i < (int)m_items.size(); ++i)
     {
       CFileItem* pItem = m_items[i];
@@ -1482,6 +1493,20 @@ void CFileItemList::Serialize(CArchive& ar)
     ar >> (int&)m_sortMethod;
     ar >> (int&)m_sortOrder;
     ar >> m_bCacheToDisc;
+
+    unsigned int detailSize = 0;
+    ar >> detailSize;
+    for (unsigned int j = 0; j < detailSize; ++j)
+    {
+      SORT_METHOD_DETAILS details;
+      ar >> (int&)details.m_sortMethod;
+      ar >> details.m_buttonLabel;
+      ar >> details.m_labelMasks.m_strLabelFile;
+      ar >> details.m_labelMasks.m_strLabelFolder;
+      ar >> details.m_labelMasks.m_strLabel2File;
+      ar >> details.m_labelMasks.m_strLabel2Folder;
+      m_sortDetails.push_back(details);
+    }
 
     for (int i = 0; i < iSize; ++i)
     {

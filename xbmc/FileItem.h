@@ -10,9 +10,6 @@
 #include "VideoInfoTag.h"
 #include "PictureInfoTag.h"
 
-// forward
-class CGUIViewState;
-
 using namespace MUSIC_INFO;
 
 typedef enum {
