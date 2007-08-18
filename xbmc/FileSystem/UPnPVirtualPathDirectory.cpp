@@ -60,6 +60,7 @@ CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_na
 {
     int index = 0;
     NPT_String id = object_id;
+    id.TrimRight("/");
 
     // reset output params first
     share_name = "";
