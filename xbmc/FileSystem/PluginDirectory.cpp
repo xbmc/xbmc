@@ -79,8 +79,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success)
   CPluginDirectory *dir = globalHandles[handle];
   CLog::Log(LOGDEBUG, __FUNCTION__" setting event of dir at address: %p.", dir);
 
-  // TODO: Allow script to change this
-  dir->m_success = true;
+  dir->m_success = success;
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);
 }
@@ -96,7 +95,7 @@ void CPluginDirectory::AddSortMethod(int handle, int sortMethod)
   CPluginDirectory *dir = globalHandles[handle];
   CLog::Log(LOGDEBUG, __FUNCTION__" sortMethod: %i, address: %p.", sortMethod, dir);
 
-  // TODO: Add to this method (or another suitable method) so it's settable from the plugin
+  // TODO: Add all sort options to this method
   if (sortMethod == SORT_METHOD_LABEL_IGNORE_THE || sortMethod == SORT_METHOD_LABEL)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
