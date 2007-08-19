@@ -351,7 +351,7 @@ void CDVDDemuxFFmpeg::Flush()
   }
 }
 
-unsigned __int64 CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
+__int64 CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
 {
   if (pts == AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
@@ -369,7 +369,7 @@ unsigned __int64 CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num
   else if( timestamp + 0.1f > starttime )
     timestamp = 0;
 
-  return (unsigned __int64)(timestamp*DVD_TIME_BASE+0.5f);
+  return (__int64)(timestamp*DVD_TIME_BASE+0.5f);
 }
 
 CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
