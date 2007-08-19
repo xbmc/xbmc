@@ -1599,7 +1599,7 @@ bool CMusicDatabase::CleanupAlbums()
   {
     // This must be run AFTER songs have been cleaned up
     // delete albums with no reference to songs
-    CStdString strSQL = "select * from album where album.idAlbum not in (select distinct idAlbum from song)";
+    CStdString strSQL = "select * from album where album.idAlbum not in (select idAlbum from song)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1642,7 +1642,7 @@ bool CMusicDatabase::CleanupPaths()
     // needs to be done AFTER the songs and albums have been cleaned up.
     // we can happily delete any path that has no reference to a song
     // but we must keep all paths that have been scanned that may contain songs in subpaths
-    CStdString sql = "select strPath from path where idPath in (select distinct idPath from song)";
+    CStdString sql = "select strPath from path where idPath in (select idPath from song)";
     if (!m_pDS->query(sql.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1675,7 +1675,7 @@ bool CMusicDatabase::CleanupThumbs()
   {
     // needs to be done AFTER the songs have been cleaned up.
     // we can happily delete any thumb that has no reference to a song
-    CStdString strSQL = "select * from thumb where idThumb not in (select distinct idThumb from song) and idThumb not in (select distinct idThumb from album)";
+    CStdString strSQL = "select * from thumb where idThumb not in (select idThumb from song) and idThumb not in (select idThumb from album)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1699,7 +1699,7 @@ bool CMusicDatabase::CleanupThumbs()
     //g_directoryCache.ClearMusicThumbCache();
     // now we can delete
     m_pDS->close();
-    strSQL = "delete from thumb where idThumb not in (select distinct idThumb from song) and idThumb not in (select distinct idThumb from album)";
+    strSQL = "delete from thumb where idThumb not in (select idThumb from song) and idThumb not in (select idThumb from album)";
     m_pDS->exec(strSQL.c_str());
     return true;
   }
@@ -1719,10 +1719,10 @@ bool CMusicDatabase::CleanupArtists()
     // don't delete the "Various Artists" string
     CStdString strVariousArtists = g_localizeStrings.Get(340);
     long lVariousArtistsId = AddArtist(strVariousArtists);
-    CStdString strSQL = "delete from artist where idArtist not in (select distinct idArtist from song)";
-    strSQL += " and idArtist not in (select distinct idArtist from exartistsong)";
-    strSQL += " and idArtist not in (select distinct idArtist from album)";
-    strSQL += " and idArtist not in (select distinct idArtist from exartistalbum)";
+    CStdString strSQL = "delete from artist where idArtist not in (select idArtist from song)";
+    strSQL += " and idArtist not in (select idArtist from exartistsong)";
+    strSQL += " and idArtist not in (select idArtist from album)";
+    strSQL += " and idArtist not in (select idArtist from exartistalbum)";
     CStdString strSQL2;
     strSQL2.Format(" and idArtist<>%i", lVariousArtistsId);
     strSQL += strSQL2;
@@ -1743,10 +1743,10 @@ bool CMusicDatabase::CleanupGenres()
     // Cleanup orphaned genres (ie those that don't belong to a song or an albuminfo entry)
     // (nested queries by Bobbin007)
     // Must be executed AFTER the song, exgenresong, albuminfo and exgenrealbum tables have been cleaned.
-    CStdString strSQL = "delete from genre where idGenre not in (select distinct idGenre from song) and";
-    strSQL += " idGenre not in (select distinct idGenre from exgenresong) and";
-    strSQL += " idGenre not in (select distinct idGenre from albuminfo) and";
-    strSQL += " idGenre not in (select distinct idGenre from exgenrealbum)";
+    CStdString strSQL = "delete from genre where idGenre not in (select idGenre from song) and";
+    strSQL += " idGenre not in (select idGenre from exgenresong) and";
+    strSQL += " idGenre not in (select idGenre from albuminfo) and";
+    strSQL += " idGenre not in (select idGenre from exgenrealbum)";
     m_pDS->exec(strSQL.c_str());
     return true;
   }
@@ -2149,9 +2149,9 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     // get primary genres for songs
     CStdString strSQL="select * from genre "
                       "where (idGenre IN ("
-                        "select distinct song.idGenre from song) "
+                        "select song.idGenre from song) "
                       "or idGenre IN ("
-                        "select distinct exgenresong.idGenre from exgenresong)) ";
+                        "select exgenresong.idGenre from exgenresong)) ";
 
     // block null strings
     strSQL += " and genre.strGenre != \"\"";
@@ -2260,21 +2260,21 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     {
       if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
         strSQL +=         "("
-                          "select distinct song.idArtist from song" // All primary artists linked to a song
+                          "select song.idArtist from song" // All primary artists linked to a song
                           ") "
                         "or idArtist IN "
                           "("
-                          "select distinct exartistsong.idArtist from exartistsong" // All extra artists linked to a song
+                          "select exartistsong.idArtist from exartistsong" // All extra artists linked to a song
                           ") "
                         "or idArtist IN ";
  
       // and always show any artists linked to an album (may be different from above due to album artist tag)
       strSQL +=          "("
-                          "select distinct album.idArtist from album" // All primary artists linked to an album
+                          "select album.idArtist from album" // All primary artists linked to an album
                           ") "
                         "or idArtist IN "
                           "("
-                          "select distinct exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
+                          "select exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
       if (albumArtistsOnly) 
         strSQL +=         "join album on album.idAlbum = exartistalbum.idAlbum " // if we're hiding compilation artists,
                           "where album.strExtraArtists != ''";                      // then exclude those where that have no extra artists
@@ -2285,25 +2285,25 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     { // same statements as above, but limit to the specified genre
       // in this case we show the whole lot always - there is no limitation to just album artists
       strSQL+=FormatSQL("("
-                        "select distinct song.idArtist from song " // All primary artists linked to primary genres
+                        "select song.idArtist from song " // All primary artists linked to primary genres
                         "where song.idGenre=%ld"
                         ") "
                       "or idArtist IN "
                         "("
-                        "select distinct song.idArtist from song " // All primary artists linked to extra genres
+                        "select song.idArtist from song " // All primary artists linked to extra genres
                           "join exgenresong on song.idSong=exgenresong.idSong "
                         "where exgenresong.idGenre=%ld"
                         ")"
                       "or idArtist IN "
                         "("
-                        "select distinct exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
+                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
                           "join song on exartistsong.idSong=song.idSong "
                           "join exgenresong on song.idSong=exgenresong.idSong "
                         "where exgenresong.idGenre=%ld"
                         ") "
                       "or idArtist IN "
                         "("
-                        "select distinct exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
+                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
                           "join song on exartistsong.idSong=song.idSong "
                         "where song.idGenre=%ld"
                         ") "
@@ -2311,25 +2311,25 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
                       , idGenre, idGenre, idGenre, idGenre);
       // and add any artists linked to an album (may be different from above due to album artist tag)
       strSQL += FormatSQL("("
-                          "select distinct album.idArtist from album " // All primary album artists linked to primary genres
+                          "select album.idArtist from album " // All primary album artists linked to primary genres
                           "where album.idGenre=%ld"
                           ") "
                         "or idArtist IN "
                           "("
-                          "select distinct album.idArtist from album " // All primary album artists linked to extra genres
+                          "select album.idArtist from album " // All primary album artists linked to extra genres
                             "join exgenrealbum on album.idAlbum=exgenrealbum.idAlbum "
                           "where exgenrealbum.idGenre=%ld"
                           ")"
                         "or idArtist IN "
                           "("
-                          "select distinct exartistalbum.idArtist from exartistalbum " // All extra album artists linked to extra genres
+                          "select exartistalbum.idArtist from exartistalbum " // All extra album artists linked to extra genres
                             "join album on exartistalbum.idAlbum=album.idAlbum "
                             "join exgenrealbum on album.idAlbum=exgenrealbum.idAlbum "
                           "where exgenrealbum.idGenre=%ld"
                           ") "
                         "or idArtist IN "
                           "("
-                          "select distinct exartistalbum.idArtist from exartistalbum " // All extra album artists linked to primary genres
+                          "select exartistalbum.idArtist from exartistalbum " // All extra album artists linked to primary genres
                             "join album on exartistalbum.idAlbum=album.idAlbum "
                           "where album.idGenre=%ld"
                           ") "
@@ -2337,13 +2337,13 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     }
 
     // remove the null string
-    strSQL += "and artist.strArtist != \"\"";
+    strSQL += " and artist.strArtist != \"\"";
     // and the various artist entry if applicable
     if (!albumArtistsOnly || idGenre > -1)  
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       long lVariousArtistsId = AddArtist(strVariousArtists);
-      strSQL+=FormatSQL("and artist.idArtist<>%i", lVariousArtistsId);
+      strSQL+=FormatSQL(" and artist.idArtist<>%i", lVariousArtistsId);
     }
 
     // run query
@@ -2455,12 +2455,12 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
   {
     strWhere+=FormatSQL("where (idAlbum IN "
                           "("
-                          "select distinct song.idAlbum from song " // All albums where the primary genre fits
+                          "select song.idAlbum from song " // All albums where the primary genre fits
                           "where song.idGenre=%ld"
                           ") "
                         "or idAlbum IN "
                           "("
-                          "select distinct song.idAlbum from song " // All albums where extra genres fits
+                          "select song.idAlbum from song " // All albums where extra genres fits
                             "join exgenresong on song.idSong=exgenresong.idSong "
                           "where exgenresong.idGenre=%ld"
                           ")"
@@ -2477,18 +2477,18 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
 
     strWhere +=FormatSQL("(idAlbum IN "
                             "("
-                              "select distinct song.idAlbum from song "  // All albums where the primary artist fits
+                              "select song.idAlbum from song "  // All albums where the primary artist fits
                               "where song.idArtist=%ld"
                             ")"
                           " or idAlbum IN "
                             "("
-                              "select distinct song.idAlbum from song "  // All albums where extra artists fit
+                              "select song.idAlbum from song "  // All albums where extra artists fit
                                 "join exartistsong on song.idSong=exartistsong.idSong "
                               "where exartistsong.idArtist=%ld"
                             ")"
                           " or idAlbum IN "
                             "("
-                              "select distinct album.idAlbum from album " // All albums where primary album artist fits
+                              "select album.idAlbum from album " // All albums where primary album artist fits
                               "where album.idArtist=%ld"
                             ")"
                           " or idAlbum IN "
@@ -2629,7 +2629,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
       strWhere += FormatSQL("(idGenre=%ld " // All songs where primary genre fits
                             "or idSong IN "
                               "("
-                              "select distinct exgenresong.idSong from exgenresong " // All songs by where extra genres fit
+                              "select exgenresong.idSong from exgenresong " // All songs by where extra genres fit
                               "where exgenresong.idGenre=%ld"
                               ")"
                             ") "
@@ -2646,18 +2646,18 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
       strWhere += FormatSQL("(idArtist=%ld " // All songs where primary artist fits
                             "or idSong IN "
                               "("
-                              "select distinct exartistsong.idSong from exartistsong " // All songs where extra artists fit
+                              "select exartistsong.idSong from exartistsong " // All songs where extra artists fit
                               "where exartistsong.idArtist=%ld"
                               ")"
                             "or idSong IN "
                               "("
-                              "select distinct song.idSong from song " // All songs where the primary album artist fits
+                              "select song.idSong from song " // All songs where the primary album artist fits
                               "join album on song.idAlbum=album.idAlbum "
                               "where album.idArtist=%ld"
                               ")"
                             "or idSong IN "
                               "("
-                              "select distinct song.idSong from song " // All songs where the extra album artist fit, excluding
+                              "select song.idSong from song " // All songs where the extra album artist fit, excluding
                               "join exartistalbum on song.idAlbum=exartistalbum.idAlbum " // various artist albums
                               "join album on song.idAlbum=album.idAlbum "
                               "where exartistalbum.idArtist=%ld and album.strExtraArtists != ''"
