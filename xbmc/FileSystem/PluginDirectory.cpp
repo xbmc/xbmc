@@ -54,16 +54,19 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
-void CPluginDirectory::AddItem(int handle, const CFileItem *item)
+bool CPluginDirectory::AddItem(int handle, const CFileItem *item)
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, __FUNCTION__" called with an invalid handle.");
-    return;
+    return false;
   }
   CPluginDirectory *dir = globalHandles[handle];
   CFileItem *pItem = new CFileItem(*item);
   dir->m_listItems.Add(pItem);
+
+  // TODO: Allow script to update the progress bar?
+  return !dir->m_cancelled;
 }
 
 void CPluginDirectory::EndOfDirectory(int handle)
@@ -84,6 +87,8 @@ void CPluginDirectory::EndOfDirectory(int handle)
   dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR,345, LABEL_MASKS("%T", "%Y"));
 
+  // TODO: Allow script to change this
+  dir->m_success = true;
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);
 }
@@ -120,8 +125,12 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   // reset our wait event, and grab a new handle
   ResetEvent(m_directoryFetched);
   int handle = getNewHandle(this);
+
+  // clear out or status variables
   m_listItems.Clear();
   m_listItems.m_strPath = strPath;
+  m_cancelled = false;
+  m_success = false;
 
   // setup our parameters to send the script
   CStdString strHandle;
@@ -136,9 +145,9 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   bool success = false;
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
   { // wait for our script to finish
-    CLog::Log(LOGDEBUG, __FUNCTION__" - waiting...");
-    success = WaitForSingleObject(m_directoryFetched, 10000) == WAIT_OBJECT_0;
-    CLog::Log(LOGDEBUG, __FUNCTION__" - wait %s", success ? "ended by script" : "timed out");
+    CStdString scriptName = url.GetFileName();
+    CUtil::RemoveSlashAtEnd(scriptName);
+    success = WaitOnScriptResult(pathToScript, scriptName);
   }
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
@@ -191,4 +200,68 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
     item->m_strPath.Replace("\\", "/");
   }
   return true;
+}
+
+bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)
+{
+  const unsigned int timeBeforeProgressBar = 1500;
+  const unsigned int timeToKillScript = 1000;
+
+  DWORD startTime = timeGetTime();
+  CGUIDialogProgress *progressBar = NULL;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__" - waiting on the %s plugin...", scriptName.c_str());
+  while (true)
+  {
+    // check if the python script is finished
+    if (WaitForSingleObject(m_directoryFetched, 20) == WAIT_OBJECT_0)
+    { // python has returned
+      CLog::Log(LOGDEBUG, __FUNCTION__" script returned %s", m_success ? "successfully" : "failure");
+      break;
+    }
+
+    // check whether we should pop up the progress dialog
+    if (!progressBar && timeGetTime() - startTime > timeBeforeProgressBar)
+    { // loading takes more then 1.5 secs, show a progress dialog
+      progressBar = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (progressBar)
+      {
+        progressBar->SetHeading(scriptName);
+        progressBar->SetLine(0, 1040);
+        progressBar->SetLine(1, "");
+        progressBar->SetLine(2, "");
+        progressBar->StartModal();
+      }
+    }
+
+    if (progressBar)
+    { // update the progress bar and check for user cancel
+      CStdString label;
+      label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems.Size());
+      progressBar->SetLine(2, label);
+      progressBar->Progress();
+      if (progressBar->IsCanceled())
+      { // user has cancelled our process - cancel our process
+        if (!m_cancelled)
+        {
+          m_cancelled = true;
+          startTime = timeGetTime();
+        }
+        if (m_cancelled && timeGetTime() - startTime > timeToKillScript)
+        { // cancel our script
+          int id = g_pythonParser.getScriptId(scriptPath.c_str());
+          if (id != -1 && g_pythonParser.isRunning(id))
+          {
+            CLog::Log(LOGDEBUG, __FUNCTION__" cancelling plugin %s", scriptName.c_str());
+            g_pythonParser.stopScript(id);
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (progressBar)
+    progressBar->Close();
+
+  return !m_cancelled && m_success;
 }

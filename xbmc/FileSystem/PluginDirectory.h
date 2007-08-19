@@ -21,14 +21,19 @@ public:
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
 
   // callbacks from python
-  static void AddItem(int handle, const CFileItem *item);
+  static bool AddItem(int handle, const CFileItem *item);
   static void EndOfDirectory(int handle);
 private:
+  bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
+
   static vector<CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
   static void removeHandle(int handle);
 
   CFileItemList m_listItems;
   HANDLE        m_directoryFetched;
+
+  bool          m_cancelled;    // set to true when we are cancelled
+  bool          m_success;      // set by script in EndOfDirectory
 };
 };

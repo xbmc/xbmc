@@ -667,6 +667,8 @@
   <string id="1037">Video Plugins</string>
   <string id="1038">Music Plugins</string>
   <string id="1039">Picture Plugins</string>
+  <string id="1040">Loading directory</string>
+  <string id="1041">Retrieved %i items</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
