@@ -39,17 +39,13 @@ CPluginDirectory::~CPluginDirectory(void)
 
 int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" - getHandle called.");
   int handle = (int)globalHandles.size();
   globalHandles.push_back(cp);
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Handle #:%i",handle);
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Address:%p",&cp);
   return handle;
 }
 
 void CPluginDirectory::removeHandle(int handle)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" - RemoveHandle called with handle %i.",handle);
   if (handle > 0 && handle < (int)globalHandles.size())
     globalHandles.erase(globalHandles.begin() + handle);
 }
@@ -65,7 +61,6 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item)
   CFileItem *pItem = new CFileItem(*item);
   dir->m_listItems.Add(pItem);
 
-  // TODO: Allow script to update the progress bar?
   return !dir->m_cancelled;
 }
 
@@ -77,14 +72,13 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success)
     return;
   }
   CPluginDirectory *dir = globalHandles[handle];
-  CLog::Log(LOGDEBUG, __FUNCTION__" setting event of dir at address: %p.", dir);
-
   dir->m_success = success;
+
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);
 }
 
-void CPluginDirectory::AddSortMethod(int handle, int sortMethod)
+void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
@@ -93,7 +87,6 @@ void CPluginDirectory::AddSortMethod(int handle, int sortMethod)
   }
 
   CPluginDirectory *dir = globalHandles[handle];
-  CLog::Log(LOGDEBUG, __FUNCTION__" sortMethod: %i, address: %p.", sortMethod, dir);
 
   // TODO: Add all sort options to this method
   if (sortMethod == SORT_METHOD_LABEL_IGNORE_THE || sortMethod == SORT_METHOD_LABEL)
@@ -103,16 +96,14 @@ void CPluginDirectory::AddSortMethod(int handle, int sortMethod)
     else
       dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   }
-  else if ((SORT_METHOD)sortMethod == SORT_METHOD_VIDEO_RATING)
+  else if (sortMethod == SORT_METHOD_VIDEO_RATING)
     dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-  else if ((SORT_METHOD)sortMethod == SORT_METHOD_VIDEO_YEAR)
+  else if (sortMethod == SORT_METHOD_VIDEO_YEAR)
     dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR, 345, LABEL_MASKS("%T", "%Y"));
 }
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" - opened with %s", strPath.c_str());
-  CLog::Log(LOGDEBUG, __FUNCTION__" - doing arguments stuff...");
   CURL url(strPath);
   if (url.GetFileName().IsEmpty())
   { // called with no script - should never happen
@@ -142,7 +133,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   ResetEvent(m_directoryFetched);
   int handle = getNewHandle(this);
 
-  // clear out or status variables
+  // clear out our status variables
   m_listItems.Clear();
   m_listItems.m_strPath = strPath;
   m_cancelled = false;
@@ -157,7 +148,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   argv[2] = options.c_str();
 
   // run the script
-  CLog::Log(LOGDEBUG, __FUNCTION__" - calling script %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
+  CLog::Log(LOGDEBUG, __FUNCTION__" - calling plugin %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
   bool success = false;
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
   { // wait for our script to finish
@@ -232,7 +223,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     // check if the python script is finished
     if (WaitForSingleObject(m_directoryFetched, 20) == WAIT_OBJECT_0)
     { // python has returned
-      CLog::Log(LOGDEBUG, __FUNCTION__" script returned %s", m_success ? "successfully" : "failure");
+      CLog::Log(LOGDEBUG, __FUNCTION__" plugin returned %s", m_success ? "successfully" : "failure");
       break;
     }
 
