@@ -69,7 +69,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item)
   return !dir->m_cancelled;
 }
 
-void CPluginDirectory::EndOfDirectory(int handle)
+void CPluginDirectory::EndOfDirectory(int handle, bool success)
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
@@ -79,18 +79,35 @@ void CPluginDirectory::EndOfDirectory(int handle)
   CPluginDirectory *dir = globalHandles[handle];
   CLog::Log(LOGDEBUG, __FUNCTION__" setting event of dir at address: %p.", dir);
 
-  // TODO: Add to this method (or another suitable method) so it's settable from the plugin
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-  else
-    dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-  dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-  dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR,345, LABEL_MASKS("%T", "%Y"));
-
   // TODO: Allow script to change this
   dir->m_success = true;
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);
+}
+
+void CPluginDirectory::AddSortMethod(int handle, int sortMethod)
+{
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" called with an invalid handle.");
+    return;
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  CLog::Log(LOGDEBUG, __FUNCTION__" sortMethod: %i, address: %p.", sortMethod, dir);
+
+  // TODO: Add to this method (or another suitable method) so it's settable from the plugin
+  if (sortMethod = SORT_METHOD_LABEL_IGNORE_THE || SORT_METHOD_LABEL)
+  {
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+    else
+      dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+  }
+  else if (sortMethod = SORT_METHOD_VIDEO_RATING)
+    dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+  else if (sortMethod = SORT_METHOD_VIDEO_YEAR)
+    dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR, 345, LABEL_MASKS("%T", "%Y"));
 }
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)

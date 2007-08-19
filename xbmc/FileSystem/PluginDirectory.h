@@ -22,7 +22,9 @@ public:
 
   // callbacks from python
   static bool AddItem(int handle, const CFileItem *item);
-  static void EndOfDirectory(int handle);
+  static void EndOfDirectory(int handle, bool success);
+  static void AddSortMethod(int handle, int sortMethod);
+
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 

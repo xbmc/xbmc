@@ -299,6 +299,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyInt_FromLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_GetItemString)) &&
       //dll.ResolveExport(DLL_FUNCTION(PyDict_GetItem)) &&
+      //dll.ResolveExport(DLL_FUNCTION(PyDict_Keys)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_Next)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_Size)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&

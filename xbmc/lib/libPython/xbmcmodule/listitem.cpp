@@ -379,6 +379,7 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
+
   PyMethodDef ListItem_methods[] = {
     {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
