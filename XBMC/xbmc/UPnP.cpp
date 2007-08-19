@@ -342,6 +342,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
         /* Assign a title and id for this container */
         object->m_ObjectID = item->m_strPath;
         object->m_ObjectClass.type = "object.container";
+        ((PLT_MediaContainer*)object)->m_ChildrenCount = -1;
 
         /* Get the number of children for this container */
         if (with_count) {
@@ -409,17 +410,22 @@ CUPnPServer::Build(CFileItem*        item,
           if( path == "musicdb://" ) {              
               item->SetLabel("Music Library");
               item->SetLabelPreformated(true);
-          } else if( CMusicDatabaseDirectory::GetLabel((const char*)path, label) ) {              
-              item->SetLabel(label);
-              item->SetLabelPreformated(true);
           } else {
-              if( !item->HasMusicInfoTag() )
+
+              if( !item->HasMusicInfoTag() || !item->GetMusicInfoTag()->Loaded() )
                   item->LoadMusicTag();
+
+              if( !item->HasThumbnail() )
+                  item->SetCachedMusicThumb();
+
+              if( item->GetLabel().IsEmpty() ) {
+                  /* if no label try to grab it from node type */
+                  if( CMusicDatabaseDirectory::GetLabel((const char*)path, label) ) {
+                      item->SetLabel(label);
+                      item->SetLabelPreformated(true);
+                  }
+              }
           }
-
-          if( !item->HasThumbnail() )
-              item->SetCachedMusicThumb();
-
       } else if (file_path.StartsWith("videodb://")) {
           CStdString label;
           if( path == "videodb://" ) {
@@ -427,14 +433,15 @@ CUPnPServer::Build(CFileItem*        item,
               item->SetLabelPreformated(true);
           } else {
 
-              DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-              DIRECTORY::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
-
-              CVideoDatabase db;
-              if( !db.Open() )
-                  return NULL;
 
               if( !item->HasVideoInfoTag() ) {
+                  DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+                  DIRECTORY::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
+
+                  CVideoDatabase db;
+                  if( !db.Open() )
+                      return NULL;
+
                   if( params.GetMovieId() >= 0 )
                       db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
                   else if( params.GetEpisodeId() >= 0 )
