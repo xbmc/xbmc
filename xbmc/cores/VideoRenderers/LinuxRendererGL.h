@@ -101,6 +101,14 @@ enum RenderMethod
   RENDER_POT=0x8
 };
 
+#define PLANE_Y 0
+#define PLANE_U 1
+#define PLANE_V 2
+
+#define FIELD_FULL 0
+#define FIELD_ODD 1
+#define FIELD_EVEN 2
+
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
 extern YUVCOEF yuv_coef_bt601;
@@ -154,7 +162,8 @@ protected:
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
-  virtual void LoadShaders();
+  virtual void LoadShaders(int renderMethod=FIELD_FULL);
+  void SetTextureFilter(GLenum method);
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
@@ -193,24 +202,18 @@ protected:
 
   // Raw data used by renderer
   YV12Image m_image[NUM_BUFFERS];
+  int m_currentField;
+  int m_reloadShaders;
 
   typedef GLuint YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
   typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
 
-  #define PLANE_Y 0
-  #define PLANE_U 1
-  #define PLANE_V 2
-
-  #define FIELD_FULL 0
-  #define FIELD_ODD 1
-  #define FIELD_EVEN 2
-
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
-  // pixel shader (low memory shader used in all renderers while in GUI)
+  // pixel shader params
   GLuint m_shaderProgram;
   GLuint m_fragmentShader;
   GLuint m_vertexShader;
@@ -219,6 +222,9 @@ protected:
   GLint m_vTex;
   GLint m_brightness;
   GLint m_contrast;
+  GLint m_stepX;
+  GLint m_stepY;
+  GLint m_shaderField;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
