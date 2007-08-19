@@ -753,11 +753,19 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
             return NPT_SUCCESS;
         }
     } else {
-        if (!CDirectory::GetDirectory((const char*)id, items)) {
-            /* error */
-            NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
-            action->SetError(701, "No Such Object.");
-            return NPT_SUCCESS;
+        items.m_strPath = id;
+        if (!items.Load()) {
+            // cache anything that takes more than a second to retreive
+            DWORD time = GetTickCount() + 1000;
+
+            if (!CDirectory::GetDirectory((const char*)id, items)) {
+                /* error */
+                NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
+                action->SetError(701, "No Such Object.");
+                return NPT_SUCCESS;
+            }
+            if(items.GetCacheToDisc() || time < GetTickCount())
+              items.Save();
         }
     }
 
