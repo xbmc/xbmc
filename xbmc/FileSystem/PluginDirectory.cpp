@@ -97,16 +97,16 @@ void CPluginDirectory::AddSortMethod(int handle, int sortMethod)
   CLog::Log(LOGDEBUG, __FUNCTION__" sortMethod: %i, address: %p.", sortMethod, dir);
 
   // TODO: Add to this method (or another suitable method) so it's settable from the plugin
-  if (sortMethod = SORT_METHOD_LABEL_IGNORE_THE || SORT_METHOD_LABEL)
+  if (sortMethod == SORT_METHOD_LABEL_IGNORE_THE || sortMethod == SORT_METHOD_LABEL)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
     else
       dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   }
-  else if (sortMethod = SORT_METHOD_VIDEO_RATING)
+  else if ((SORT_METHOD)sortMethod == SORT_METHOD_VIDEO_RATING)
     dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod = SORT_METHOD_VIDEO_YEAR)
+  else if ((SORT_METHOD)sortMethod == SORT_METHOD_VIDEO_YEAR)
     dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR, 345, LABEL_MASKS("%T", "%Y"));
 }
 
