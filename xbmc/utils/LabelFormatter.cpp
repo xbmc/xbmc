@@ -82,9 +82,10 @@
  *  %P - production code
  *  %H - season*100+episode
  *  %Z - tvshow title
+ *  %O - mpaa rating
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZ"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZO"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -251,6 +252,12 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
         value.Format("Sx%02.2i", movie->m_iEpisode);
       else
         value.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
+    }
+    break;
+  case 'O':
+    if (movie && movie->m_strMPAARating)
+    {// MPAA Rating
+      value = movie->m_strMPAARating;
     }
     break;
   }

@@ -88,133 +88,101 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 
   CPluginDirectory *dir = globalHandles[handle];
 
-  string leftMask;
-  string rightMask;
-  int label = -1;
-  SORT_METHOD method = sortMethod;
-  // TODO: Add all sort methods
+  // TODO: Add all sort methods and fix which labels go on the right or left
   switch(sortMethod)
   {
     case SORT_METHOD_LABEL:
     case SORT_METHOD_LABEL_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          method = SORT_METHOD_LABEL_IGNORE_THE;
+          dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%D"));
         else
-          method = SORT_METHOD_LABEL;
-        label = 551;
-        leftMask = "%T";
-        rightMask = "%D";
+          dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%D"));
         break;
       }
     case SORT_METHOD_TITLE:
     case SORT_METHOD_TITLE_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          method = SORT_METHOD_TITLE_IGNORE_THE;
+          dir->m_listItems.AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", "%D"));
         else
-          method = SORT_METHOD_TITLE;
-        label = 556;
-        leftMask = "%T";
-        rightMask = "%D";
+          dir->m_listItems.AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", "%D"));
         break;
       }
     case SORT_METHOD_ARTIST:
     case SORT_METHOD_ARTIST_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          method = SORT_METHOD_ARTIST_IGNORE_THE;
+          dir->m_listItems.AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%T", "%A"));
         else
-          method = SORT_METHOD_ARTIST;
-        label = 557;
-        leftMask = "%T";
-        rightMask = "%A";
+          dir->m_listItems.AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%T", "%A"));
         break;
       }
     case SORT_METHOD_ALBUM:
     case SORT_METHOD_ALBUM_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          method = SORT_METHOD_ALBUM_IGNORE_THE;
+          dir->m_listItems.AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 558, LABEL_MASKS("%T", "%B"));
         else
-          method = SORT_METHOD_ALBUM;
-        label = 558;
-        leftMask = "%T";
-        rightMask = "%B";
+          dir->m_listItems.AddSortMethod(SORT_METHOD_ALBUM, 558, LABEL_MASKS("%T", "%B"));
         break;
       }
     case SORT_METHOD_DATE:
       {
-        label = 552;
-        leftMask = "%T";
-        rightMask = "%J";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%T", "%J"));
         break;
       }
     case SORT_METHOD_SIZE:
       {
-        label = 553;
-        leftMask = "%T";
-        rightMask = "%I";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%T", "%I"));
         break;
       }
     case SORT_METHOD_FILE:
       {
-        label = 561;
-        leftMask = "%T";
-        rightMask = "%F";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%T", "%D"));
         break;
       }
     case SORT_METHOD_TRACKNUM:
       {
-        label = 554;
-        leftMask = "%T";
-        rightMask = "%N";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("%T", "%N"));
         break;
       }
     case SORT_METHOD_DURATION:
       {
-        label = 555;
-        leftMask = "%T";
-        rightMask = "%D";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T", "%D"));
         break;
       }
     case SORT_METHOD_VIDEO_RATING:
       {
-        label = 563;
-        leftMask = "%T";
-        rightMask = "%R";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));
         break;
       }
     case SORT_METHOD_VIDEO_YEAR:
       {
-        label = 345;
-        leftMask = "%T";
-        rightMask = "%Y";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR, 345, LABEL_MASKS("%T", "%Y"));
         break;
       }
     case SORT_METHOD_SONG_RATING:
       {
-        label = 563;
-        leftMask = "%T";
-        rightMask = "%R";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_SONG_RATING, 563, LABEL_MASKS("%T", "%R"));
         break;
       }
     case SORT_METHOD_GENRE:
       {
-        label = 515;
-        leftMask = "%T";
-        rightMask = "%G";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_GENRE, 515, LABEL_MASKS("%T", "%G"));
         break;
       }
     case SORT_METHOD_VIDEO_TITLE:
       {
-        label = 369;
-        leftMask = "%T";
-        rightMask = "%D";
+        dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", "%D"));
+        break;
+      }
+    case SORT_METHOD_MPAA_RATING:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_MPAA_RATING, 563, LABEL_MASKS("%T", "%O"));
         break;
       }
   }
-  dir->m_listItems.AddSortMethod(method, label, LABEL_MASKS(leftMask, rightMask));
 }
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)

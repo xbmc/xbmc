@@ -787,6 +787,33 @@ bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
+bool SSortFileItem::MPAARatingAscending(CFileItem *left, CFileItem *right)
+{
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    if (left->GetVideoInfoTag()->m_strMPAARating < right->GetVideoInfoTag()->m_strMPAARating) return true;
+    if (left->GetVideoInfoTag()->m_strMPAARating > right->GetVideoInfoTag()->m_strMPAARating) return false;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::MPAARatingDescending(CFileItem *left, CFileItem *right)
+{
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    if (left->GetVideoInfoTag()->m_strMPAARating < right->GetVideoInfoTag()->m_strMPAARating) return false;
+    if (left->GetVideoInfoTag()->m_strMPAARating > right->GetVideoInfoTag()->m_strMPAARating) return true;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+  }
+  return left->m_bIsFolder;
+}
 
 bool SSortFileItem::SongRatingAscending(CFileItem *left, CFileItem *right)
 {

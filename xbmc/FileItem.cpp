@@ -1409,6 +1409,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SONG_RATING:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongRatingAscending : SSortFileItem::SongRatingDescending);
     break;
+  case SORT_METHOD_MPAA_RATING:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MPAARatingAscending : SSortFileItem::MPAARatingDescending);
+    break;
   default:
     break;
   }
