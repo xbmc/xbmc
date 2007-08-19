@@ -341,12 +341,13 @@ void CDVDPlayer::Process()
           // stills will be skipped
           if(m_dvd.state == DVDSTATE_STILL)
           {
-            if (m_dvd.iDVDStillTime >= 0)
+            if (m_dvd.iDVDStillTime > 0)
             {
               if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime))
               {
                 m_dvd.iDVDStillTime = 0;
                 m_dvd.iDVDStillStartTime = 0;
+                m_dvd.state = DVDSTATE_NORMAL;
                 pStream->SkipStill();
                 continue;
               }
@@ -1287,7 +1288,7 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    if(m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime >= 0)
+    if(m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime > 0)
       return m_dvd.iDVDStillTime;
     else
       return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
@@ -1571,16 +1572,16 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         {
           // else notify the player we have recieved a still frame
 
-          if(m_dvd.iDVDStillTime < 0xff)
+          if(still_event->length < 0xff)
             m_dvd.iDVDStillTime = still_event->length * 1000;
           else
-            m_dvd.iDVDStillTime = -1;
+            m_dvd.iDVDStillTime = 0;
 
           m_dvd.iDVDStillStartTime = GetTickCount();
 
           /* adjust for the output delay in the video queue */
           DWORD time = 0;
-          if( m_CurrentVideo.stream && m_dvd.iDVDStillTime >= 0 )
+          if( m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0 )
           {
             time = (DWORD)(m_dvdPlayerVideo.GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
             if( time < 10000 && time > 0 ) 
