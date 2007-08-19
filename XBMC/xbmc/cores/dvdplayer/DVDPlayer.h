@@ -35,8 +35,6 @@ typedef struct DVDInfo
   int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
   int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
 
-  unsigned __int64 iNAVPackStart;
-  unsigned __int64 iNAVPackFinish;
   int iFlagSentStart;
   int iNrOfExpectedDiscontinuities;
 }
@@ -45,7 +43,7 @@ DVDInfo;
 typedef struct SCurrentStream
 {
   int              id;     // demuxerid of current playing stream
-  unsigned __int64 dts;    // last dts from demuxer, used to find disncontinuities
+  __int64 dts;             // last dts from demuxer, used to find disncontinuities
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
 } SCurrentStream;
