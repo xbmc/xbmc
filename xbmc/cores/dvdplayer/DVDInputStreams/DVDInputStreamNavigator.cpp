@@ -400,6 +400,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
+        m_iTime = (int)(cell_change_event->cell_start / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
         
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
