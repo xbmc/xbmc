@@ -91,7 +91,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
   string leftMask;
   string rightMask;
   int label = -1;
-  SORT_METHOD method;
+  SORT_METHOD method = sortMethod;
   // TODO: Add all sort methods
   switch(sortMethod)
   {
@@ -145,7 +145,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_DATE:
       {
-        method = SORT_METHOD_DATE;
         label = 552;
         leftMask = "%T";
         rightMask = "%J";
@@ -153,7 +152,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_SIZE:
       {
-        method = SORT_METHOD_SIZE;
         label = 553;
         leftMask = "%T";
         rightMask = "%I";
@@ -161,7 +159,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_FILE:
       {
-        method = SORT_METHOD_FILE;
         label = 561;
         leftMask = "%T";
         rightMask = "%F";
@@ -169,7 +166,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_TRACKNUM:
       {
-        method = SORT_METHOD_TRACKNUM;
         label = 554;
         leftMask = "%T";
         rightMask = "%N";
@@ -177,7 +173,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_DURATION:
       {
-        method = SORT_METHOD_DURATION;
         label = 555;
         leftMask = "%T";
         rightMask = "%D";
@@ -185,7 +180,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_VIDEO_RATING:
       {
-        method = SORT_METHOD_VIDEO_RATING;
         label = 563;
         leftMask = "%T";
         rightMask = "%R";
@@ -193,7 +187,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_VIDEO_YEAR:
       {
-        method = SORT_METHOD_VIDEO_YEAR;
         label = 345;
         leftMask = "%T";
         rightMask = "%Y";
@@ -201,7 +194,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_SONG_RATING:
       {
-        method = SORT_METHOD_SONG_RATING;
         label = 563;
         leftMask = "%T";
         rightMask = "%R";
@@ -209,7 +201,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_GENRE:
       {
-        method = SORT_METHOD_GENRE;
         label = 515;
         leftMask = "%T";
         rightMask = "%G";
@@ -217,7 +208,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_VIDEO_TITLE:
       {
-        method = SORT_METHOD_VIDEO_TITLE;
         label = 369;
         leftMask = "%T";
         rightMask = "%D";
