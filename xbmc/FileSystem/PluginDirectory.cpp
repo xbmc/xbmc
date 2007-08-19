@@ -88,55 +88,143 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 
   CPluginDirectory *dir = globalHandles[handle];
 
+  string leftMask;
+  string rightMask;
+  int label = -1;
+  SORT_METHOD method;
   // TODO: Add all sort methods
-  if (sortMethod == SORT_METHOD_LABEL_IGNORE_THE || sortMethod == SORT_METHOD_LABEL)
+  switch(sortMethod)
   {
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%D"));  // Filename, Duration | Foldername, empty
-    else
-      dir->m_listItems.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%D"));  // Filename, Duration | Foldername, empty
+    case SORT_METHOD_LABEL:
+    case SORT_METHOD_LABEL_IGNORE_THE:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          method = SORT_METHOD_LABEL_IGNORE_THE;
+        else
+          method = SORT_METHOD_LABEL;
+        label = 551;
+        leftMask = "%T";
+        rightMask = "%D";
+        break;
+      }
+    case SORT_METHOD_TITLE:
+    case SORT_METHOD_TITLE_IGNORE_THE:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          method = SORT_METHOD_TITLE_IGNORE_THE;
+        else
+          method = SORT_METHOD_TITLE;
+        label = 556;
+        leftMask = "%T";
+        rightMask = "%D";
+        break;
+      }
+    case SORT_METHOD_ARTIST:
+    case SORT_METHOD_ARTIST_IGNORE_THE:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          method = SORT_METHOD_ARTIST_IGNORE_THE;
+        else
+          method = SORT_METHOD_ARTIST;
+        label = 557;
+        leftMask = "%T";
+        rightMask = "%A";
+        break;
+      }
+    case SORT_METHOD_ALBUM:
+    case SORT_METHOD_ALBUM_IGNORE_THE:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          method = SORT_METHOD_ALBUM_IGNORE_THE;
+        else
+          method = SORT_METHOD_ALBUM;
+        label = 558;
+        leftMask = "%T";
+        rightMask = "%B";
+        break;
+      }
+    case SORT_METHOD_DATE:
+      {
+        method = SORT_METHOD_DATE;
+        label = 552;
+        leftMask = "%T";
+        rightMask = "%J";
+        break;
+      }
+    case SORT_METHOD_SIZE:
+      {
+        method = SORT_METHOD_SIZE;
+        label = 553;
+        leftMask = "%T";
+        rightMask = "%I";
+        break;
+      }
+    case SORT_METHOD_FILE:
+      {
+        method = SORT_METHOD_FILE;
+        label = 561;
+        leftMask = "%T";
+        rightMask = "%F";
+        break;
+      }
+    case SORT_METHOD_TRACKNUM:
+      {
+        method = SORT_METHOD_TRACKNUM;
+        label = 554;
+        leftMask = "%T";
+        rightMask = "%N";
+        break;
+      }
+    case SORT_METHOD_DURATION:
+      {
+        method = SORT_METHOD_DURATION;
+        label = 555;
+        leftMask = "%T";
+        rightMask = "%D";
+        break;
+      }
+    case SORT_METHOD_VIDEO_RATING:
+      {
+        method = SORT_METHOD_VIDEO_RATING;
+        label = 563;
+        leftMask = "%T";
+        rightMask = "%R";
+        break;
+      }
+    case SORT_METHOD_VIDEO_YEAR:
+      {
+        method = SORT_METHOD_VIDEO_YEAR;
+        label = 345;
+        leftMask = "%T";
+        rightMask = "%Y";
+        break;
+      }
+    case SORT_METHOD_SONG_RATING:
+      {
+        method = SORT_METHOD_SONG_RATING;
+        label = 563;
+        leftMask = "%T";
+        rightMask = "%R";
+        break;
+      }
+    case SORT_METHOD_GENRE:
+      {
+        method = SORT_METHOD_GENRE;
+        label = 515;
+        leftMask = "%T";
+        rightMask = "%G";
+        break;
+      }
+    case SORT_METHOD_VIDEO_TITLE:
+      {
+        method = SORT_METHOD_VIDEO_TITLE;
+        label = 369;
+        leftMask = "%T";
+        rightMask = "%D";
+        break;
+      }
   }
-  else if (sortMethod == SORT_METHOD_TITLE_IGNORE_THE || sortMethod == SORT_METHOD_TITLE)
-  {
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      dir->m_listItems.AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", "%D"));  // Filename, Duration | Foldername, empty
-    else
-      dir->m_listItems.AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", "%D"));  // Filename, Duration | Foldername, empty
-  }
-  else if (sortMethod == SORT_METHOD_ARTIST_IGNORE_THE || sortMethod == SORT_METHOD_ARTIST)
-  {
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      dir->m_listItems.AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%A", "%D"));  // Filename, Duration | Foldername, empty
-    else
-      dir->m_listItems.AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%A", "%D"));  // Filename, Duration | Foldername, empty
-  }
-  else if (sortMethod == SORT_METHOD_ALBUM_IGNORE_THE || sortMethod == SORT_METHOD_ALBUM)
-  {
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      dir->m_listItems.AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 558, LABEL_MASKS("%B", "%A"));  // Filename, Duration | Foldername, empty
-    else
-      dir->m_listItems.AddSortMethod(SORT_METHOD_ALBUM, 558, LABEL_MASKS("%B", "%A"));  // Filename, Duration | Foldername, empty
-  }
-  else if (sortMethod == SORT_METHOD_DATE)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%T", "%J"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod == SORT_METHOD_SIZE)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_DATE, 553, LABEL_MASKS("%T", "%I"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod == SORT_METHOD_FILE)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%T", "%F"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod == SORT_METHOD_TRACKNUM)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("%T", "%N"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod == SORT_METHOD_DURATION)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T", "%D"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod == SORT_METHOD_VIDEO_RATING)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-  else if (sortMethod == SORT_METHOD_VIDEO_YEAR)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_YEAR, 345, LABEL_MASKS("%T", "%Y"));
-  else if (sortMethod == SORT_METHOD_SONG_RATING)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_SONG_RATING, 563, LABEL_MASKS("%T", "%R"));
-  else if (sortMethod == SORT_METHOD_GENRE)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_GENRE, 515, LABEL_MASKS("%T", "%G"));
-  else if (sortMethod == SORT_METHOD_VIDEO_TITLE)
-    dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_TITLE, 515, LABEL_MASKS("%T", "%D"));
+  dir->m_listItems.AddSortMethod(method, label, LABEL_MASKS(leftMask, rightMask));
 }
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
