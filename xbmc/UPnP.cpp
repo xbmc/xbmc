@@ -701,7 +701,8 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
             item = new CFileItem((const char*)id, false);            
         }
         CStdString parent;
-        CUtil::GetParentPath((const char*)id, parent);
+        if(!CUtil::GetParentPath((const char*)id, parent))
+          parent = "0";
 
         object = Build(item, true, info, parent.c_str());
     }
