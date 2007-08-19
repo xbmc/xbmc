@@ -97,8 +97,11 @@ public:
   #else
   CXBoxRenderer *m_pRenderer;
   #endif
-protected:
+
   inline void Present();
+
+protected:
+
   void PresentSingle();
   void PresentWeave();
   void PresentBob();

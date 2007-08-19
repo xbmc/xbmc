@@ -59,6 +59,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_iYV12RenderBuffer = 0;
   m_pOSDYBuffer = NULL;
   m_pOSDABuffer = NULL;
+  m_currentField = FIELD_FULL;
+  m_reloadShaders = 0;
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -668,7 +670,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       CLog::Log(LOGINFO, "GL: NPOT textures are supported natively");
     }
   }
-  else {
+  else 
+  {
     CLog::Log(LOGERROR, "GL: Could not create OpenGL context that is required for video playback");
     return false;
   }
@@ -746,8 +749,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 }
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
-{
-  
+{ 
   // Eventual FIXME
   if (source!=0)
     source=0;
@@ -825,6 +827,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
   else
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+
   VerifyGLState();
   if (m_renderMethod & RENDER_GLSL)
   {    
@@ -1016,8 +1019,9 @@ unsigned int CLinuxRendererGL::PreInit()
   return true;
 }
 
-void CLinuxRendererGL::LoadShaders()
+void CLinuxRendererGL::LoadShaders(int renderMethod)
 {
+  bool error = false;
   if (!m_shaderProgram && glCreateProgram)
   {
 
@@ -1030,28 +1034,87 @@ void CLinuxRendererGL::LoadShaders()
       "gl_Position = ftransform();"
       "}";
 
-    const char* shaderf = 
-      "uniform sampler2D ytex;"
-      "uniform sampler2D utex;"
-      "uniform sampler2D vtex;"
-      "uniform float brightness;"
-      "uniform float contrast;"
-      "void main()"
-      "{"
-      "vec4 yuv, rgb;"
-      "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, "
-      "                0,       -0.39465, 2.03211, 0.0, "
-      "                1.13983, -0.58060, 0.0,     0.0, "
-      "                0.0,     0.0,      0.0,     0.0 }; "
-      "yuv.rgba = vec4(texture2D(ytex, gl_TexCoord[0].xy).r,"
-      "                0.436 * (texture2D(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),"
-      "                0.615 * (texture2D(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),"
-      "                0.0);"
-      "rgb = yuvmat * yuv;"
-      "rgb = (rgb-vec4(0.5))*vec4(contrast) + vec4(0.5) + vec4(brightness);"
-      "rgb.a = 1.0;"
-      "gl_FragColor = rgb;"
-      "}";
+    string shaderf;
+
+    if (renderMethod == FIELD_FULL)
+    {
+      shaderf = 
+        "uniform sampler2D ytex;"
+        "uniform sampler2D utex;"
+        "uniform sampler2D vtex;"
+        "uniform float brightness;"
+        "uniform float contrast;"
+        "void main()"
+        "{"
+        "vec4 yuv, rgb;"
+        "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, "
+        "                0,       -0.39465, 2.03211, 0.0, "
+        "                1.13983, -0.58060, 0.0,     0.0, "
+        "                0.0,     0.0,      0.0,     0.0 }; "
+        "yuv.rgba = vec4(texture2D(ytex, gl_TexCoord[0].xy).r,"
+        "                0.436 * (texture2D(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),"
+        "                0.615 * (texture2D(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),"
+        "                0.0);"
+        "rgb = yuvmat * yuv;"
+        "rgb = (rgb-vec4(0.5))*vec4(contrast) + vec4(0.5) + vec4(brightness) ;"
+        "rgb.a = 1.0;"
+        "gl_FragColor = rgb;"
+        "}";
+    }
+    else if (m_renderMethod == FIELD_ODD || m_renderMethod == FIELD_EVEN)
+    {
+      shaderf = 
+        "uniform sampler2D ytex;"
+        "uniform sampler2D utex;"
+        "uniform sampler2D vtex;"
+        "uniform float brightness;"
+        "uniform float contrast;"
+        "uniform float stepX, stepY;"
+        "uniform int field;"
+        "void main()"
+        "{"
+        "vec4 yuv, rgb, yuv1, yuv2;"
+        "vec2 offsetY, offsetUV, offsetY1, offsetY2, offsetUV1, offsetUV2;"
+        "float temp1 = mod(gl_TexCoord[0].y, 2*stepY);"
+
+        "offsetY  = gl_TexCoord[0].xy ;"
+        "offsetUV = gl_TexCoord[1].xy ;"
+        "offsetY.y  -= (temp1 - stepY/2 + (float)field*stepY);"
+        "offsetUV.y -= (temp1 - stepY/2 + (float)field*stepY)/2;"
+
+        "offsetY1 = offsetY2 = offsetY;"
+        "offsetUV1 = offsetUV2 = offsetUV;"
+        "offsetY1.y -= stepY*2;"
+        "offsetY2.y += stepY*2;"
+        "offsetUV1.y -= stepY;"
+        "offsetUV2.y += stepY;"
+        "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, "
+        "                0,       -0.39465, 2.03211, 0.0, "
+        "                1.13983, -0.58060, 0.0,     0.0, "
+        "                0.0,     0.0,      0.0,     0.0 }; "
+        "yuv1 = vec4(texture2D(ytex, offsetY1).r,"
+        "            texture2D(utex, offsetUV1).r,"
+        "            texture2D(vtex, offsetUV1).r,"
+        "            0.0);"
+
+        "yuv2 = vec4(texture2D(ytex, offsetY2).r,"
+        "            texture2D(utex, offsetUV2).r,"
+        "            texture2D(vtex, offsetUV2).r,"
+        "            0.0);"
+
+        "yuv = vec4(texture2D(ytex, offsetY).r,"
+        "           texture2D(utex, offsetUV).r,"
+        "           texture2D(vtex, offsetUV).r,"
+        "           0.0);"
+        "yuv.rgba = mix(yuv, yuv2, temp1/(stepY*2));"
+        "yuv = vec4(yuv.r, 0.436 * (yuv.g * 2.0 - 1.0), "
+        "           0.615 * (yuv.b * 2.0 - 1.0), 0);"        
+        "rgb = yuvmat * yuv;"
+        "rgb = (rgb-vec4(0.5))*vec4(contrast) + vec4(0.5) + vec4(brightness) ;"
+        "rgb.a = 1.0;"
+        "gl_FragColor = rgb;"
+        "}";
+    }
 
     const char* shaderfrect = 
       "uniform sampler2DRect ytex;"
@@ -1086,8 +1149,11 @@ void CLinuxRendererGL::LoadShaders()
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
     if (m_textureTarget==GL_TEXTURE_2D)
     {
-      glShaderSource(m_fragmentShader, 1, &shaderf, 0);
-    } else {
+      const char *ptr = shaderf.c_str();
+      glShaderSource(m_fragmentShader, 1, &ptr, 0);
+    } 
+    else 
+    {
       glShaderSource(m_fragmentShader, 1, &shaderfrect, 0);
     }
     glShaderSource(m_vertexShader, 1, &shaderv, 0);
@@ -1096,20 +1162,20 @@ void CLinuxRendererGL::LoadShaders()
     glGetShaderiv(m_fragmentShader, GL_COMPILE_STATUS, params);
     if (params[0]!=GL_TRUE) 
     {
+      error = true;
       GLchar log[512];
-      OutputDebugString("Error compiling shader\n");
+      CLog::Log(LOGERROR, "GL: Error compiling shader");
       glGetShaderInfoLog(m_fragmentShader, 512, NULL, log);
-      OutputDebugString((const char*)log);
-      OutputDebugString("\n");
+      CLog::Log(LOGERROR, (const char*)log);
     }
     glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, params);
     if (params[0]!=GL_TRUE) 
     {
+      error = true;
       GLchar log[512];
-      OutputDebugString("Error compiling shader\n");
+      CLog::Log(LOGERROR, "Error compiling shader");
       glGetShaderInfoLog(m_vertexShader, 512, NULL, log);
-      OutputDebugString((const char*)log);
-      OutputDebugString("\n");
+      CLog::Log(LOGERROR, (const char*)log);
     }
     glAttachShader(m_shaderProgram, m_fragmentShader);
     glAttachShader(m_shaderProgram, m_vertexShader);
@@ -1118,21 +1184,21 @@ void CLinuxRendererGL::LoadShaders()
     glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, params);
     if (params[0]!=GL_TRUE) 
     {
+      error = true;
       GLchar log[512];
-      OutputDebugString("Error linking shader\n");
+      CLog::Log(LOGERROR, "Error linking shader");
       glGetProgramInfoLog(m_shaderProgram, 512, NULL, log);
-      OutputDebugString((const char*)log);
-      OutputDebugString("\n");
+      CLog::Log(LOGERROR, (const char*)log);
     }
     glValidateProgram(m_shaderProgram);
     glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, params);
     if (params[0]!=GL_TRUE) 
     {
+      error = true;
       GLchar log[512];
-      OutputDebugString("Error validating shader\n");
+      CLog::Log(LOGERROR, "Error validating shader");
       glGetProgramInfoLog(m_shaderProgram, 512, NULL, log);
-      OutputDebugString((const char*)log);
-      OutputDebugString("\n");
+      CLog::Log(LOGERROR, (const char*)log);
     }
     m_yTex = glGetUniformLocation(m_shaderProgram, "ytex");
     VerifyGLState();
@@ -1144,8 +1210,25 @@ void CLinuxRendererGL::LoadShaders()
     VerifyGLState();
     m_contrast = glGetUniformLocation(m_shaderProgram, "contrast");
     VerifyGLState();
+
+    if ((renderMethod == FIELD_ODD) || (renderMethod == FIELD_EVEN))
+    {
+      m_stepX = glGetUniformLocation(m_shaderProgram, "stepX");
+      m_stepY = glGetUniformLocation(m_shaderProgram, "stepY");
+      m_shaderField = glGetUniformLocation(m_shaderProgram, "field");
+      VerifyGLState();
+    }
+
     g_graphicsContext.EndPaint(m_pBuffer);
-    CLog::Log(LOGNOTICE, "GL: Successfully loaded GLSL shader");
+    if (error)
+    {
+      CLog::Log(LOGNOTICE, "GL: Error loading loading GLSL shader, falling back to software rendering");
+      m_renderMethod = RENDER_SW;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: Successfully loaded GLSL shader");
+    }
     m_renderMethod = RENDER_GLSL;    
 
     /* 
@@ -1153,11 +1236,15 @@ void CLinuxRendererGL::LoadShaders()
        Revert to original locale
     */
     setlocale(LC_NUMERIC, currentLocale);
-  } else if (glewIsSupported("GL_ARB_fragment_shader")) {    
+  } 
+  else if (glewIsSupported("GL_ARB_fragment_shader")) 
+  {    
     // TODO
     CLog::Log(LOGNOTICE, "GL: ARB shaders are supported but unimplementated at this time");
     m_renderMethod = RENDER_SW ;
-  } else {
+  } 
+  else 
+  {
     m_renderMethod = RENDER_SW ;
     CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
   }
@@ -1205,6 +1292,30 @@ void CLinuxRendererGL::UnInit()
 
 void CLinuxRendererGL::Render(DWORD flags)
 {
+  if( flags & RENDER_FLAG_ODD)
+  {
+    if (m_currentField == FIELD_FULL)
+    {
+      m_reloadShaders = 1;
+    }
+    m_currentField = FIELD_ODD;
+  }
+  else if (flags & RENDER_FLAG_EVEN)
+  {
+    if (m_currentField == FIELD_FULL)
+    {
+      m_reloadShaders = 1;
+    }
+    m_currentField = FIELD_EVEN;
+  }
+  else
+  {
+    if (m_currentField != FIELD_FULL)
+    {
+      m_reloadShaders = 1;
+    }
+    m_currentField = FIELD_FULL;
+  }
   g_graphicsContext.BeginPaint();
   
   if( flags & RENDER_FLAG_NOOSD ) 
@@ -1400,6 +1511,29 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     
     glActiveTexture(GL_TEXTURE0);
     VerifyGLState();
+        
+    if (m_reloadShaders)
+    {
+      m_reloadShaders = 0;
+      if (m_shaderProgram)
+      {
+        glDeleteShader(m_vertexShader);
+        glDeleteShader(m_fragmentShader);
+        glDeleteProgram(m_shaderProgram);
+        VerifyGLState();
+        m_shaderProgram = 0;
+        LoadShaders(m_currentField);
+        if (!m_shaderProgram)
+        {
+          CLog::Log(LOGERROR, "GL: Error loading during shaders during render method change");
+          return;
+        }
+      }
+      if (m_currentField==FIELD_FULL)
+        SetTextureFilter(GL_LINEAR);
+      else
+        SetTextureFilter(GL_NEAREST);
+    }
     
     glUseProgram(m_shaderProgram);
     VerifyGLState();
@@ -1411,6 +1545,25 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     VerifyGLState();
     glUniform1f(m_brightness, brightness);
     glUniform1f(m_contrast, contrast);
+
+    switch (m_currentField)
+    {
+    case FIELD_ODD:
+      glUniform1f(m_stepY, 1/(float)im.height);
+      glUniform1f(m_stepX, 1/(float)im.width);
+      glUniform1i(m_shaderField, 1);
+      break;
+
+    case FIELD_EVEN:
+      glUniform1f(m_stepY, 1/(float)im.height);
+      glUniform1f(m_stepX, 1/(float)im.width);
+      glUniform1i(m_shaderField, 0);
+      break;
+
+    default:
+      break;
+    }
+
   }
 
   glBegin(GL_QUADS);
@@ -1451,8 +1604,9 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
     }
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
-  }  else {
-
+  }  
+  else 
+  {
     // Use supported rectangle texture extension (texture coordinates
     // are not normalized)
 
@@ -1654,6 +1808,29 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
   g_graphicsContext.EndPaint(m_pBuffer);
   return true;
+}
+
+void CLinuxRendererGL::SetTextureFilter(GLenum method)
+{
+  YUVFIELDS &fields = m_YUVTexture[0];
+
+  glBindTexture(m_textureTarget, fields[0][0]);  
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+  VerifyGLState();
+
+  if (m_renderMethod & RENDER_GLSL)
+  {
+    glBindTexture(m_textureTarget, fields[0][1]);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+    VerifyGLState();
+    
+    glBindTexture(m_textureTarget, fields[0][2]);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+    VerifyGLState();
+  }
 }
 
 void CLinuxRendererGL::TextureCallback(DWORD dwContext)
