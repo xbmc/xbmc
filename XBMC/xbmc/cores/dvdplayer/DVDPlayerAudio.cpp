@@ -5,6 +5,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
+#include <sstream>
 
 static inline __int64 abs(__int64 x)
 {
@@ -504,4 +505,13 @@ void CDVDPlayerAudio::WaitForBuffers()
   {
     Sleep(5);
   }
+}
+
+string CDVDPlayerAudio::GetPlayerInfo()
+{
+  std::ostringstream s;
+  s << "vq size:" << 100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize() << "%";
+  s << ", ";
+  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  return s.str();
 }
