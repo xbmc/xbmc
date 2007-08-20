@@ -561,6 +561,7 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     m_bIsFolder && (
+    IsPluginFolder() ||
     IsSmartPlayList() ||
     IsPlayList() ||
     IsZIP() ||
@@ -671,6 +672,12 @@ bool CFileItem::IsStack() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("stack");
+}
+
+bool CFileItem::IsPluginFolder() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
 }
 
 bool CFileItem::IsMultiPath() const
@@ -1143,6 +1150,7 @@ void CFileItemList::Clear()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
+  m_sortDetails.clear();
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1156,6 +1164,7 @@ void CFileItemList::ClearKeepPointer()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
+  m_sortDetails.clear();
 }
 
 void CFileItemList::Add(CFileItem* pItem)
@@ -1234,6 +1243,14 @@ void CFileItemList::AppendPointer(const CFileItemList& itemlist)
     CFileItem* pItem = const_cast<CFileItem*>(itemlist[i]);
     Add(pItem);
   }
+}
+
+void CFileItemList::AssignPointer(const CFileItemList& itemlist)
+{
+  Clear();
+  AppendPointer(itemlist);
+  m_strPath = itemlist.m_strPath;
+  m_sortDetails = itemlist.m_sortDetails;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
@@ -1392,6 +1409,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SONG_RATING:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongRatingAscending : SSortFileItem::SongRatingDescending);
     break;
+  case SORT_METHOD_MPAA_RATING:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MPAARatingAscending : SSortFileItem::MPAARatingDescending);
+    break;
   default:
     break;
   }
@@ -1422,6 +1442,18 @@ void CFileItemList::Serialize(CArchive& ar)
     ar << (int)m_sortMethod;
     ar << (int)m_sortOrder;
     ar << m_bCacheToDisc;
+
+    ar << m_sortDetails.size();
+    for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
+    {
+      const SORT_METHOD_DETAILS &details = m_sortDetails[j];
+      ar << (int)details.m_sortMethod;
+      ar << details.m_buttonLabel;
+      ar << details.m_labelMasks.m_strLabelFile;
+      ar << details.m_labelMasks.m_strLabelFolder;
+      ar << details.m_labelMasks.m_strLabel2File;
+      ar << details.m_labelMasks.m_strLabel2Folder;
+    }
 
     for (i; i < (int)m_items.size(); ++i)
     {
@@ -1464,6 +1496,20 @@ void CFileItemList::Serialize(CArchive& ar)
     ar >> (int&)m_sortMethod;
     ar >> (int&)m_sortOrder;
     ar >> m_bCacheToDisc;
+
+    unsigned int detailSize = 0;
+    ar >> detailSize;
+    for (unsigned int j = 0; j < detailSize; ++j)
+    {
+      SORT_METHOD_DETAILS details;
+      ar >> (int&)details.m_sortMethod;
+      ar >> details.m_buttonLabel;
+      ar >> details.m_labelMasks.m_strLabelFile;
+      ar >> details.m_labelMasks.m_strLabelFolder;
+      ar >> details.m_labelMasks.m_strLabel2File;
+      ar >> details.m_labelMasks.m_strLabel2Folder;
+      m_sortDetails.push_back(details);
+    }
 
     for (int i = 0; i < iSize; ++i)
     {
@@ -2496,3 +2542,12 @@ void CFileItemList::UpdateItem(const CFileItem *item)
     *oldItem = *item;
 }
 
+void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)
+{
+  SORT_METHOD_DETAILS sort;
+  sort.m_sortMethod=sortMethod;
+  sort.m_buttonLabel=buttonLabel;
+  sort.m_labelMasks=labelMasks;
+
+  m_sortDetails.push_back(sort);
+}

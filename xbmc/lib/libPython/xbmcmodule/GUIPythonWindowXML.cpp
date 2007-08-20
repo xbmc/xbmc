@@ -327,7 +327,7 @@ void CGUIPythonWindowXML::FormatItemLabels()
   if (!m_guiState.get())
     return;
 
-  CGUIViewState::LABEL_MASKS labelMasks;
+  LABEL_MASKS labelMasks;
   m_guiState->GetSortMethodLabelMasks(labelMasks);
 }
 // \brief Sorts Fileitems based on the sort method and sort oder provided by guiViewState
