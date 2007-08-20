@@ -75,7 +75,7 @@ public:
   string GetPlayerInfo();
 
   void SetSpeed(int iSpeed);
-  
+
   // classes
   CDVDMessageQueue m_messageQueue;
   CDVDOverlayContainer* m_pOverlayContainer;
