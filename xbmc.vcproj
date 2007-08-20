@@ -4196,6 +4196,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
 					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcplugin.cpp">
+					</File>
 				</Filter>
 				<Filter
 					Name="python"

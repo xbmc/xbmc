@@ -13,12 +13,10 @@
 #include "../../../Application.h"
 #include "../../../Crc32.h"
 #include "../../../Util.h"
-#include "FileSystem/PluginDirectory.h"
 
 // include for constants
 #include "pyutil.h"
 #include "../../../PlayListPlayer.h"
-#include "listitem.h"
 
 using namespace XFILE;
 
@@ -36,121 +34,6 @@ namespace PYXBMC
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
-  PyDoc_STRVAR(addDirectoryItem__doc__,
-    "addDirectoryItem(handle, url, listitem [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
-    "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
-    "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
-    "listitem    : ListItem - item to add.\n"
-    "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
-    "\n"
-    "example:\n"
-    "  - ok = xbmc.addDirectoryItem(int(sys.argv[1]), 'F:\\\\Trailers\\\\300.mov', listitem)\n"
-    "  - if not ok: break\n");
-
-  PyObject* XBMC_AddDirectoryItem(PyTypeObject *type, PyObject *args, PyObject *kwds)
-  {
-    static char *keywords[] = { "handle", "url", "listitem", "isFolder", NULL };
-    int handle = -1;
-    PyObject *pURL = NULL;
-    PyObject *pItem = NULL;
-    bool bIsFolder = false;
-    // parse arguments
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      "iOO|b",
-      keywords,
-      &handle,
-      &pURL,
-      &pItem,
-      &bIsFolder
-      ))
-    {
-      return NULL;
-    };
-
-    string url;
-    if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
-    
-    ListItem *pListItem = (ListItem *)pItem;
-    pListItem->item->m_strPath = url;
-    pListItem->item->m_bIsFolder = bIsFolder;
-
-    // call the directory class to add our item
-    bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item);
-    return Py_BuildValue("b", bOk);
-  }
-
-  PyDoc_STRVAR(endOfDirectory__doc__,
-    "endOfDirectory(handle[, succeeded]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
-    "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
-    "succeeded   : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.endOfDirectory(int(sys.argv[1]))\n");
-
-  PyObject* XBMC_EndOfDirectory(PyTypeObject *type, PyObject *args, PyObject *kwds)
-  {
-    static char *keywords[] = { "handle", "succeeded", NULL };
-    int handle = -1;
-    bool bSucceeded = true;
-    // parse arguments to constructor
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      "i|b",
-      keywords,
-      &handle,
-      &bSucceeded
-      ))
-    {
-      return NULL;
-    };
-
-    // tell the directory class that we're done
-    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  PyDoc_STRVAR(addSortMethod__doc__,
-    "addSortMethod(handle, sortMethod) -- Adds a sorting method for the media list.\n"
-    "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
-    "sortMethod  : Integer - Number for sortmethod see FileItem.h.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.addSortMethod(int(sys.argv[1]), 17)\n");
-
-  PyObject* XBMC_AddSortMethod(PyTypeObject *type, PyObject *args, PyObject *kwds)
-  {
-    static char *keywords[] = { "handle", "sortMethod", NULL };
-    int handle = -1;
-    int sortMethod = -1;
-    // parse arguments to constructor
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      "ii",
-      keywords,
-      &handle,
-      &sortMethod
-      ))
-    {
-      return NULL;
-    };
-
-    // call the directory class to add the sort method.
-    if (sortMethod >= SORT_METHOD_NONE || sortMethod < SORT_METHOD_MAX)
-      DIRECTORY::CPluginDirectory::AddSortMethod(handle, (SORT_METHOD)sortMethod);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
   // output() method
   PyDoc_STRVAR(output__doc__,
     "output(text) -- Write a string to XBMC's log file and the debug window.\n"
@@ -697,10 +580,6 @@ namespace PYXBMC
     {"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
     {"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
     {"executebuiltin", (PyCFunction)XBMC_ExecuteBuiltIn, METH_VARARGS, executeBuiltIn__doc__},
-
-    {"addDirectoryItem", (PyCFunction)XBMC_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
-    {"endOfDirectory", (PyCFunction)XBMC_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
-    {"addSortMethod", (PyCFunction)XBMC_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
 
     {"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
     {"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
