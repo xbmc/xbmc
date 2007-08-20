@@ -87,7 +87,7 @@
   <string id="148">自動(動態分配)</string>
   <string id="149">網卡位址(MAC)</string>
   <string id="150">IP 位址</string>
-  <string id="151">連線：</string>
+  <string id="151">連接：</string>
   <string id="152">半雙工</string>
   <string id="153">全雙工</string>
   <string id="154">儲存裝置</string>
@@ -95,7 +95,7 @@
   <string id="156">可用</string>
   <string id="157">影片</string>
   <string id="158">可用記憶體</string>
-  <string id="159">未連線</string>
+  <string id="159">未連接</string>
   <string id="160">可用</string>
   <string id="161">沒有</string>
   <string id="162">托盤開啟</string>
@@ -665,6 +665,11 @@
   <string id="1034">子選單</string>
   <string id="1035">啟用 子選單按鈕</string>
   <string id="1036">我的最愛</string>
+  <string id="1037">影片插件</string>
+  <string id="1038">音樂插件</string>
+  <string id="1039">圖片插件</string>
+  <string id="1040">載入目錄</string>
+  <string id="1041">檢索 %i 項目</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -1613,6 +1618,11 @@
   <string id="20380">將資料夾排除搜尋</string>
   <string id="20381">特別</string>
   <string id="20382">自動擷取影集的縮圖</string>
+  <string id="20383">資料夾包含一個影片</string>
+  <string id="20384">電視節目連接</string>
+  <string id="20385">移除電視節目連接</string>
+  <string id="20386">最近加入的電影</string>
+  <string id="20387">最近加入的影集</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1759,6 +1769,7 @@
   <string id="21878">版權標誌</string>
   <string id="21879">國家代碼</string>
   <string id="21880">參考服務</string>
+  <string id="21881">啟用 UPnP 播放器</string>
 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 

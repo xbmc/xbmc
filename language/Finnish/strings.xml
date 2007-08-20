@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 11/08/2007-->
+<!--Date of translation: 16/08/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 9881 -->
+<!--Based on english strings version 9956 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -734,6 +734,10 @@
   <string id="1413">tihkusadetta</string>
   <string id="1414">ukkosmyrskyä</string>
   
+  
+  
+  
+  
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="2050">Kesto:</string>
@@ -904,7 +908,7 @@
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
   <string id="13108">Aina käytössä</string>
-
+  
   <string id="13150">Lukituskoodi:</string>
   <string id="13151">Lämpötila:</string>
   <string id="13152">Malli:</string>
@@ -1073,7 +1077,7 @@
   <string id="13404">Jatka</string>
   <string id="13405">Valitse kuvake</string>
   <string id="13406">Kuvan ominaisuudet</string>
-  <string id="13407">%s esiasetukset</string>
+  <string id="13407">%sn esiasetukset</string>
   
   <string id="14000">Yhdistä osat</string>
   <string id="14001">Ei yhdistetä</string>
@@ -1610,14 +1614,18 @@
   <string id="20374">Lataa videon tiedot</string>
   <string id="20375">Määrittelemätön sisältö</string>
   <string id="20376">Ensimmäisenä tehty:</string>
-  <string id="20377">Päivitä TV-ohjelmatiedot</string>
+  <string id="20377">Päivitä TV-ohjelman tiedot</string>
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
   <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
   <string id="20380">Sisällytä kansio hakuun</string>
   <string id="20381">Erikoiset</string>
   <string id="20382">Automaattisesti luodut jakson kuvakkeet</string>
   <string id="20383">Kansio sisältää yhden videon</string>
-  <!-- up to 21329 is reserved for the video db !! !-->
+  <string id="20384">Lisää pikakuvake TV-ohjelmaan</string>
+  <string id="20385">Poista TV-ohjelman pikakuvake</string>
+  <string id="20386">Viimeksi lisätyt elokuvat</string>
+  <string id="20387">Viimeksi lisätyt jaksot</string>
+ <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
   
@@ -1635,9 +1643,9 @@
   <string id="21358">UPnP kuvat</string>
   <string id="21359">Lisää sijainti</string>
   <string id="21360">UPnP-palvelin käytössä</string>
-  <string id="21361">Muokkaa UPnP musiikki-sijaintia</string>
-  <string id="21362">Muokkaa UPnP video-sijaintia</string>
-  <string id="21363">Muokkaa UPnP kuva-sijaintia</string>
+  <string id="21361">Muokkaa UPnP-musiikin sijaintia</string>
+  <string id="21362">Muokkaa UPnP-videoiden sijaintia</string>
+  <string id="21363">Muokkaa UPnP-kuvien sijaintia</string>
   <string id="21364">Muokkaa sijaintia</string>
   <string id="21365">Poista sijainti</string>
   <string id="21366">Omien tekstitysten hakemisto</string>
@@ -1716,12 +1724,12 @@
   <string id="21806">Kommentti</string>
   <string id="21807">Väri/MV</string>
   <string id="21808">Jpeg Prosessi</string>
-
+  
   <string id="21820">Päiväys</string>
   <string id="21821">Selite</string>
   <string id="21822">Kameran valmistaja</string>
   <string id="21823">Kameran malli</string>
-  <string id="21824">Exif kommentti</string>
+  <string id="21824">Exif-kommentti</string>
   <string id="21825">Ohjelmisto</string>
   <string id="21826">Aukko</string>
   <string id="21827">Polttoväli</string>
@@ -1736,24 +1744,24 @@
   <string id="21836">Mittaustapa</string>
   <string id="21837">ISO arvo</string>
   <string id="21838">Digitaalinen zoomaus</string>
-  <string id="21839">Kennon leveys</string>
-  <string id="21840">GPS Leveysaste</string>
-  <string id="21841">GPS Pituusaste</string>
-  <string id="21842">GPS Korkeus</string>
+  <string id="21839">Kuvakennon leveys</string>
+  <string id="21840">GPS-Leveysaste</string>
+  <string id="21841">GPS-Pituusaste</string>
+  <string id="21842">GPS-Korkeus</string>
   <string id="21843">Suunta</string>
-
+  
   <string id="21860">Lisäkategoriat</string>
   <string id="21861">Avainsanat</string>
-  <string id="21862">Otsikko</string>
+  <string id="21862">Kuvan sisältö</string>
   <string id="21863">Omistaja</string>
-  <string id="21864">Otsikko</string>
+  <string id="21864">Lyhyt esittely</string>
   <string id="21865">Erityisohjeet</string>
   <string id="21866">Kategoria</string>
-  <string id="21867">Byline</string>
-  <string id="21868">Byline Title</string>
+  <string id="21867">Tekijän lisätiedot</string>
+  <string id="21868">Kuvan tekijä</string>
   <string id="21869">Kuvaaja</string>
   <string id="21870">Lähde</string>
-  <string id="21871">Tekijänoikeus</string>
+  <string id="21871">Tekijänoikeus huomautus</string>
   <string id="21872">Kohteen nimi</string>
   <string id="21873">Kaupunki</string>
   <string id="21874">Osavaltio</string>
@@ -1762,9 +1770,9 @@
   <string id="21877">Luontipäivä</string>
   <string id="21878">Tekijänoikeus</string>
   <string id="21879">Maakoodi</string>
-  <string id="21880">Aihe</string>
-
-  <!-- strings 21900 thru 21999 reserved for slideshow info -->
+  <string id="21880">Kuvapalvelu</string>
+ <string id="21881">UPnP toisto käytössä</string> 
+<!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Näytön välkynnän poisto</string>
 </strings>
