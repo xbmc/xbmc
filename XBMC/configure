@@ -672,6 +672,7 @@ EGREP
 ALLOCA
 LIBOBJS
 POW_LIB
+python_lib_a
 DEBUG_FLAGS
 SDL_DEFINES
 LZO_INCLUDES
@@ -4007,9 +4008,76 @@ _ACEOF
   LIBS="-llzo $LIBS"
 
 else
-  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
-echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+
+{ echo "$as_me:$LINENO: checking for main in -llzo2" >&5
+echo $ECHO_N "checking for main in -llzo2... $ECHO_C" >&6; }
+if test "${ac_cv_lib_lzo2_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-llzo2  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_lzo2_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_lzo2_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2_main" >&5
+echo "${ECHO_T}$ac_cv_lib_lzo2_main" >&6; }
+if test $ac_cv_lib_lzo2_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBLZO2 1
+_ACEOF
+
+  LIBS="-llzo2 $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: == Could not find either liblzo or liblzo2 - one of these must be present" >&5
+echo "$as_me: error: == Could not find either liblzo or liblzo2 - one of these must be present" >&2;}
    { (exit 1); exit 1; }; }
+fi
+
+
 fi
 
 
@@ -4215,71 +4283,6 @@ _ACEOF
 
 fi
       # check for asound library, fedora
-
-{ echo "$as_me:$LINENO: checking for main in -llzo2" >&5
-echo $ECHO_N "checking for main in -llzo2... $ECHO_C" >&6; }
-if test "${ac_cv_lib_lzo2_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llzo2  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_lzo2_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_lzo2_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2_main" >&5
-echo "${ECHO_T}$ac_cv_lib_lzo2_main" >&6; }
-if test $ac_cv_lib_lzo2_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLZO2 1
-_ACEOF
-
-  LIBS="-llzo2 $LIBS"
-
-fi
-        # check for lzo2 library, fedora
 
 # Checks for header files.
 
@@ -11263,10 +11266,63 @@ else
   LZO_INCLUDES=""
 fi
 
+# check for where libpython is
+{ echo "$as_me:$LINENO: checking for /usr/lib/python2.4/config/libpython2.4-pic.a" >&5
+echo $ECHO_N "checking for /usr/lib/python2.4/config/libpython2.4-pic.a... $ECHO_C" >&6; }
+if test "${ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "/usr/lib/python2.4/config/libpython2.4-pic.a"; then
+  ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a=yes
+else
+  ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a=no
+fi
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a" >&5
+echo "${ECHO_T}$ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a" >&6; }
+if test $ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a = yes; then
+  python_lib_a=/usr/lib/python2.4/config/libpython2.4-pic.a
+
+else
+  { echo "$as_me:$LINENO: checking for /usr/lib/python2.4/config/libpython2.4.a" >&5
+echo $ECHO_N "checking for /usr/lib/python2.4/config/libpython2.4.a... $ECHO_C" >&6; }
+if test "${ac_cv_file__usr_lib_python2_4_config_libpython2_4_a+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "/usr/lib/python2.4/config/libpython2.4.a"; then
+  ac_cv_file__usr_lib_python2_4_config_libpython2_4_a=yes
+else
+  ac_cv_file__usr_lib_python2_4_config_libpython2_4_a=no
+fi
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_file__usr_lib_python2_4_config_libpython2_4_a" >&5
+echo "${ECHO_T}$ac_cv_file__usr_lib_python2_4_config_libpython2_4_a" >&6; }
+if test $ac_cv_file__usr_lib_python2_4_config_libpython2_4_a = yes; then
+  python_lib_a=/usr/lib/python2.4/config/libpython2.4.a
+
+else
+  { { echo "$as_me:$LINENO: error: ==Can not find libPython anywhere" >&5
+echo "$as_me: error: ==Can not find libPython anywhere" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include"
+
+
+
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -11823,6 +11879,7 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
+    "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -11940,13 +11997,14 @@ EGREP!$EGREP$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
+python_lib_a!$python_lib_a$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 60; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 61; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
