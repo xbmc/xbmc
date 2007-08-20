@@ -37,6 +37,7 @@ typedef enum {
   SORT_METHOD_VIDEO_TITLE,
   SORT_METHOD_PRODUCTIONCODE,
   SORT_METHOD_SONG_RATING,
+  SORT_METHOD_MPAA_RATING,
   SORT_METHOD_UNSORTED,
   SORT_METHOD_MAX
 } SORT_METHOD;
@@ -46,6 +47,28 @@ typedef enum {
   SORT_ORDER_ASC,
   SORT_ORDER_DESC
 } SORT_ORDER;
+
+typedef struct _LABEL_MASKS
+{
+  _LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
+  {
+    m_strLabelFile=strLabelFile;
+    m_strLabel2File=strLabel2File;
+    m_strLabelFolder=strLabelFolder;
+    m_strLabel2Folder=strLabel2Folder;
+  }
+  CStdString m_strLabelFile;
+  CStdString m_strLabel2File;
+  CStdString m_strLabelFolder;
+  CStdString m_strLabel2Folder;
+} LABEL_MASKS;
+
+typedef struct
+{
+  SORT_METHOD m_sortMethod;
+  int m_buttonLabel;
+  LABEL_MASKS m_labelMasks;
+} SORT_METHOD_DETAILS;
 
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1) 
@@ -89,6 +112,7 @@ public:
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
+  bool IsPluginFolder() const;
   bool IsDefaultXBE() const;
   bool IsShortCut() const;
   bool IsNFO() const;
@@ -319,6 +343,7 @@ public:
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
   void AppendPointer(const CFileItemList& itemlist);
+  void AssignPointer(const CFileItemList& itemlist);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();
@@ -353,6 +378,11 @@ public:
   void Swap(unsigned int item1, unsigned int item2);
 
   void UpdateItem(const CFileItem *item);
+
+  void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
+  bool HasSortDetails() const { return m_sortDetails.size() != 0; };
+  const vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   CStdString GetDiscCacheFile();
@@ -363,4 +393,6 @@ private:
   SORT_METHOD m_sortMethod;
   SORT_ORDER m_sortOrder;
   bool m_bCacheToDisc;
+
+  vector<SORT_METHOD_DETAILS> m_sortDetails;
 };

@@ -152,7 +152,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         // need to update shortcuts manually
         if (CGUIMediaWindow::OnMessage(message))
         {
-          CGUIViewState::LABEL_MASKS labelMasks;
+          LABEL_MASKS labelMasks;
           m_guiState->GetSortMethodLabelMasks(labelMasks);
           CLabelFormatter formatter("", labelMasks.m_strLabel2File);
           for (int i=0;i<m_vecItems.Size();++i)
@@ -727,7 +727,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         item->m_strPath = cut.m_strPath;
         item->SetThumbnailImage(cut.m_strThumb);
 
-        CGUIViewState::LABEL_MASKS labelMasks;
+        LABEL_MASKS labelMasks;
         m_guiState->GetSortMethodLabelMasks(labelMasks);
         CLabelFormatter formatter("", labelMasks.m_strLabel2File);
         if (!cut.m_strLabel.IsEmpty())

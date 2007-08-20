@@ -268,7 +268,118 @@ namespace PYXBMC
 
     return Py_BuildValue("b", bOnOff);
   }
-  
+
+  PyDoc_STRVAR(setInfo__doc__,
+    "setInfo(type, infoLabels) -- Sets the listitem's infoLabels.\n"
+    "\n"
+    "type           : string - type of media(video/music/pictures).\n"
+    "infoLabels     : dictionary - pairs of { label: value }.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })\n");
+
+  PyObject* ListItem_SetInfo(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "type", "infoLabels", NULL };
+    char *cType = NULL;
+    PyObject *pInfoLabels = NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "sO",
+      keywords,
+      &cType,
+      &pInfoLabels))
+    {
+      return NULL;
+    }
+    if (!PyObject_TypeCheck(pInfoLabels, &PyDict_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "infoLabels object should be of type Dict");
+      return NULL;
+    }
+    CLog::Log(LOGDEBUG, __FUNCTION__" - InfoLabel Dictionary has %i items", PyDict_Size(pInfoLabels));
+    if (PyDict_Size(pInfoLabels) == 0)
+    {
+      PyErr_SetString(PyExc_ValueError, "Empty InfoLabel dictionary");
+      return NULL;
+    }
+
+    PyObject *key, *value;
+    int pos = 0;
+
+    PyGUILock();
+    while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
+      //CLog::Log(LOGDEBUG, __FUNCTION__" - Tag Dictionary: pos: %i  key: %s  value: %s", pos, PyString_AsString(key), PyString_AsString(value));
+      if (strcmpi(cType, "video") == 0)
+      {
+        // TODO: add the rest of the infolabels
+        //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
+        if (strcmpi(PyString_AsString(key), "genre") == 0)
+          self->item->GetVideoInfoTag()->m_strGenre = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "year") == 0)
+          self->item->GetVideoInfoTag()->m_iYear = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "director") == 0)
+          self->item->GetVideoInfoTag()->m_strDirector = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "MPAARating") == 0)
+          self->item->GetVideoInfoTag()->m_strMPAARating = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "plot") == 0)
+          self->item->GetVideoInfoTag()->m_strPlot = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "plotoutline") == 0)
+          self->item->GetVideoInfoTag()->m_strPlotOutline = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "runtime") == 0)
+          self->item->GetVideoInfoTag()->m_strRuntime = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "title") == 0)
+          self->item->GetVideoInfoTag()->m_strTitle = PyString_AsString(value);
+        else if (strcmpi(PyString_AsString(key), "rating") == 0)
+          self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
+        // TODO: Add a python list of cast members to m_cast
+        //else if (strcmpi(PyString_AsString(key), "cast") == 0)
+        //  self->item->GetVideoInfoTag()->m_cast = PyString_AsString(value);//
+      }
+      else if (strcmpi(cType, "music") == 0)
+      {
+        // TODO: add the rest of the infolabels
+        //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
+        if (strcmpi(PyString_AsString(key), "genre") == 0)
+          self->item->GetMusicInfoTag()->SetGenre(PyString_AsString(value));
+        else if (strcmpi(PyString_AsString(key), "album") == 0)
+          self->item->GetMusicInfoTag()->SetAlbum(PyString_AsString(value));
+        else if (strcmpi(PyString_AsString(key), "artist") == 0)
+          self->item->GetMusicInfoTag()->SetArtist(PyString_AsString(value));
+        else if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
+          self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "title") == 0)
+          self->item->GetMusicInfoTag()->SetTitle(PyString_AsString(value));
+      }
+      else if (strcmpi(cType, "pictures") == 0)
+      {
+        // TODO: Figure out how to set picture tags
+        //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
+        if (strcmpi(PyString_AsString(key), "title") == 0)
+          self->item->m_strTitle = PyString_AsString(value);
+        //else if (strcmpi(PyString_AsString(key), "picturedatetime") == 0)
+        //  self->item->GetPictureInfoTag()->m_exifInfo.DateTime = PyString_AsString(value);
+        //else if (strcmpi(PyString_AsString(key), "pictureresolution") == 0)
+        //{
+          // TODO: Grab a tuple and set width/height
+          //value.Format("%d x %d", m_exifInfo.Width, m_exifInfo.Height);
+          //self->item->GetPictureInfoTag()->m_exifInfo.Width = PyInt_AsLong(value);
+          //self->item->GetPictureInfoTag()->m_exifInfo.Height = PyInt_AsLong(value);
+        //}
+        else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
+          self->item->m_strPath = PyString_AsString(value);
+      }
+    }
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef ListItem_methods[] = {
     {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -278,6 +389,7 @@ namespace PYXBMC
     {"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
     {"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
     {"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
+    {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
     {NULL, NULL, 0, NULL}
   };
 

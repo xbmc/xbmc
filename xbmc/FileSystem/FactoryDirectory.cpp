@@ -13,6 +13,7 @@
 #include "shoutcastdirectory.h"
 #include "lastfmdirectory.h"
 #include "FTPDirectory.h"
+#include "PluginDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "SMBDirectory.h"
@@ -56,6 +57,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "cdda") return new CCDDADirectory();
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
 #endif
+  if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();

@@ -6,6 +6,7 @@
 
 extern "C" {
   extern void initxbmc(void);
+  extern void initxbmcplugin(void);
   extern void initxbmcgui(void);
   //extern void free_arenas(void);
 }

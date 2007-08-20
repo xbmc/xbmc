@@ -151,6 +151,7 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
+    || m_strProtocol.Equals("plugin")
     || m_strProtocol.Equals("hdhomerun"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
