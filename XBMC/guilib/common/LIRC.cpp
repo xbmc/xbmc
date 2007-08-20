@@ -43,14 +43,14 @@ void CRemoteControl::Initialize()
   m_fd = socket(AF_UNIX, SOCK_STREAM,0);
   if (m_fd == -1)  
   {
-    CLog::Log(LOGERROR, "%s: socket failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
   
   // Connect to the socket
   if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)  
   {
-    CLog::Log(LOGERROR, "%s: connect failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
   
@@ -58,21 +58,21 @@ void CRemoteControl::Initialize()
   int opts = fcntl(m_fd,F_GETFL);
   if (opts == -1) 
   {
-    CLog::Log(LOGERROR, "%s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
 	
   opts = (opts | O_NONBLOCK);
   if (fcntl(m_fd,F_SETFL,opts) == -1) 
   {
-    CLog::Log(LOGERROR, "%s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
 	  
   m_file = fdopen(m_fd, "r");
   if (m_file == NULL)
   {
-    CLog::Log(LOGERROR, "%s: fdopen failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
   
