@@ -369,7 +369,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 }
 
 // \brief Formats item labels based on the formatting provided by guiViewState
-void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks)
+void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks)
 {
   CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
   CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
@@ -392,7 +392,7 @@ void CGUIMediaWindow::OnSort()
 {
   if (m_guiState.get())
   {
-    CGUIViewState::LABEL_MASKS labelMasks;
+    LABEL_MASKS labelMasks;
     m_guiState->GetSortMethodLabelMasks(labelMasks);
     FormatItemLabels(m_vecItems, labelMasks);
   }
@@ -428,8 +428,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.m_strPath = cachedItems.m_strPath;
-    items.AppendPointer(cachedItems);
+    items.AssignPointer(cachedItems);
     cachedItems.ClearKeepPointer();
   }
   else

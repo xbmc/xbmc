@@ -721,6 +721,28 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     // get the parent path of the first item
     return GetParentPath(CMultiPathDirectory::GetFirstPath(strPath), strParent);
   }
+  else if (url.GetProtocol() == "plugin")
+  {
+    if (!url.GetOptions().IsEmpty())
+    {
+      url.SetOptions("");
+      url.GetURL(strParent);
+      return true;
+    }
+    if (!url.GetFileName().IsEmpty())
+    {
+      url.SetFileName("");
+      url.GetURL(strParent);
+      return true;
+    }
+    if (!url.GetHostName().IsEmpty())
+    {
+      url.SetHostName("");
+      url.GetURL(strParent);
+      return true;
+    }
+    return true;  // already at root
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetHostName().size() > 0)
@@ -4160,7 +4182,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strPath = checkURL.GetHostName();
   if (checkURL.GetProtocol() == "tuxbox")
     return 1;
-
+  if (checkURL.GetProtocol() == "plugin")
+    return 1;
   if (checkURL.GetProtocol() == "multipath")
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
