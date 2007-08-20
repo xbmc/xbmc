@@ -43,7 +43,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!CUtil::IsHD(thumb))
+    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
     {      
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
       if(CFile::Exists(cachedThumb))
@@ -95,7 +95,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!CUtil::IsHD(thumb))
+    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
       if(CFile::Exists(cachedThumb))

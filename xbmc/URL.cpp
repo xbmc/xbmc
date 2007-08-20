@@ -587,3 +587,8 @@ bool CURL::IsLocal() const
 {
   return m_strProtocol.IsEmpty();
 }
+
+bool CURL::IsFileOnly(const CStdString &url)
+{
+  return url.find_first_of("/\\") == -1;
+}
