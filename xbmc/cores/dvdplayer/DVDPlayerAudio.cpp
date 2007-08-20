@@ -162,7 +162,6 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
 int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 {
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
-  int n=48000*2*16/8, len;
 
   unsigned int bytesconsumed = 0;
   if(m_pAudioCodec)
@@ -195,7 +194,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_audioClock = pPacket->dts;
       }
 
-      len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
+      int len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
       if (len < 0)
       {
         /* if error, we skip the packet */
@@ -231,7 +230,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
 
       // compute duration.
-      n = (audioframe.channels * audioframe.bits_per_sample * audioframe.sample_rate)>>3;
+      int n = (audioframe.channels * audioframe.bits_per_sample * audioframe.sample_rate)>>3;
       if (n > 0)
       {
         // safety check, if channels == 0, n will result in 0, and that will result in a nice devide exception
@@ -515,3 +514,4 @@ string CDVDPlayerAudio::GetPlayerInfo()
   s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
   return s.str();
 }
+
