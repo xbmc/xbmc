@@ -102,7 +102,7 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
       {
         if (CGUIMediaWindow::OnMessage(message))
         {
-          CGUIViewState::LABEL_MASKS labelMasks;
+          LABEL_MASKS labelMasks;
           m_guiState->GetSortMethodLabelMasks(labelMasks);
           CLabelFormatter formatter("", labelMasks.m_strLabel2File);
           for (int i=0;i<m_vecItems.Size();++i)
@@ -182,7 +182,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
   DWORD dwTick=timeGetTime();
   bool bProgressVisible = false;
   CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CGUIViewState::LABEL_MASKS labelMasks;
+  LABEL_MASKS labelMasks;
   m_guiState->GetSortMethodLabelMasks(labelMasks);
   CLabelFormatter formatter("", labelMasks.m_strLabel2File);
   for (int i = 0; i < items.Size(); i++)

@@ -29,7 +29,7 @@ protected:
   virtual bool OnPopupMenu(int iItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks);
+  virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
