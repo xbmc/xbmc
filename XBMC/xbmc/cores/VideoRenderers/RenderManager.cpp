@@ -90,6 +90,7 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   if(!m_pRenderer) 
   {
     RestoreCriticalSection(g_graphicsContext, locks);
+    CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
     return false;
   }
 
@@ -292,6 +293,14 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 
 void CXBoxRenderManager::Present()
 {
+#ifdef HAS_SDL_OPENGL
+  if (!m_pRenderer)
+  {
+    CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
+    return;
+  }
+#endif
+
   EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
   /* check for forced fields */
