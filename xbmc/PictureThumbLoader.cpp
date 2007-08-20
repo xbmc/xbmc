@@ -45,7 +45,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     CStdString thumb(pItem->GetThumbnailImage());
 
     // look for remote thumbs    
-    if (!CUtil::IsHD(thumb))
+    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedPictureThumb());
       if(CFile::Exists(cachedThumb))
