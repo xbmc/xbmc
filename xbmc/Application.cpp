@@ -1201,6 +1201,10 @@ HRESULT CApplication::Initialize()
 
   CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory("Q:\\scripts", NULL);
+  CreateDirectory("Q:\\plugins", NULL);
+  CreateDirectory("Q:\\plugins\\music", NULL);
+  CreateDirectory("Q:\\plugins\\video", NULL);
+  CreateDirectory("Q:\\plugins\\pictures", NULL);
   CreateDirectory("Q:\\language", NULL);
   CreateDirectory("Q:\\visualisations", NULL);
   CreateDirectory("Q:\\sounds", NULL);
