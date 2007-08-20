@@ -1051,7 +1051,7 @@
   <string id="13385">语音特效 - 端口 4</string>
   <string id="13386">使用时间搜寻</string>
   <string id="13387">音轨命名模板</string>
-  <string id="13388">%s 预设</string>
+  <string id="13388">预设</string>
   <string id="13389">没有预设&#10;该视觉效果</string>
   <string id="13390">没有设定&#10;该视觉效果</string>
   <string id="13391">弹出/载入</string>
@@ -1069,6 +1069,8 @@
   <string id="13403">清除为缺省值</string>
   <string id="13404">恢复</string>
   <string id="13405">取得缩略图</string>
+  <string id="13406">图片资讯</string>
+  <string id="13407">%s 预设</string>
 
   <string id="14000">影片堆叠</string>
   <string id="14001">堆叠关闭</string>
@@ -1611,6 +1613,11 @@
   <string id="20380">将文件夹排除搜寻</string>
   <string id="20381">特别</string>
   <string id="20382">自动撷取影集的缩略图</string>
+  <string id="20383">文件夹包含一个影片</string>
+  <string id="20384">电视节目连接</string>
+  <string id="20385">移除电视节目连接</string>
+  <string id="20386">最近加入的电影</string>
+  <string id="20387">最近加入的影集</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏档案和目录</string>
@@ -1700,6 +1707,66 @@
   <string id="21437">新的智能播放列表…</string>
   <string id="21438">%c磁碟</string>
   <string id="21439">编辑舞会模式规则</string>
+
+  <string id="21800">文件名称</string>
+  <string id="21801">文件路径</string>
+  <string id="21802">文件大小</string>
+  <string id="21803">文件日期/时间</string>
+  <string id="21804">幻灯片索引</string>
+  <string id="21805">解析度</string>
+  <string id="21806">评论</string>
+  <string id="21807">彩色/黑白</string>
+  <string id="21808">JPEG 影像处理</string>
+
+  <string id="21820">拍摄时间</string>
+  <string id="21821">描述</string>
+  <string id="21822">制造厂商</string>
+  <string id="21823">相机型号</string>
+  <string id="21824">注解</string>
+  <string id="21825">韧体</string>
+  <string id="21826">光圈值</string>
+  <string id="21827">镜头焦长</string>
+  <string id="21828">焦点距离</string>
+  <string id="21829">曝光</string>
+  <string id="21830">曝光时间</string>
+  <string id="21831">曝光倾向</string>
+  <string id="21832">曝光模式</string>
+  <string id="21833">闪光灯</string>
+  <string id="21834">白平衡</string>
+  <string id="21835">光源</string>
+  <string id="21836">测光模式</string>
+  <string id="21837">ISO 感光值</string>
+  <string id="21838">数位变焦</string>
+  <string id="21839">CCD 宽度</string>
+  <string id="21840">GPS 纬度</string>
+  <string id="21841">GPS 经度</string>
+  <string id="21842">GPS 高度</string>
+  <string id="21843">方位</string>
+
+  <string id="21860">补充类别</string>
+  <string id="21861">关键字</string>
+  <string id="21862">说明</string>
+  <string id="21863">作者</string>
+  <string id="21864">标题</string>
+  <string id="21865">特别指令</string>
+  <string id="21866">类别</string>
+  <string id="21867">署名报导</string>
+  <string id="21868">署名报导标题</string>
+  <string id="21869">信用</string>
+  <string id="21870">来源</string>
+  <string id="21871">版权条款</string>
+  <string id="21872">物件名称</string>
+  <string id="21873">城市</string>
+  <string id="21874">州</string>
+  <string id="21875">国家</string>
+  <string id="21876">原始的 Tx 引用</string>
+  <string id="21877">日期建立</string>
+  <string id="21878">版权标志</string>
+  <string id="21879">国家代码</string>
+  <string id="21880">参考服务</string>
+  <string id="21881">启用 UPnP 播放器</string>
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 </strings>
