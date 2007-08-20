@@ -30,7 +30,6 @@ public:
   virtual void mpeg2_buffer (mpeg2dec_t * mpeg2dec, uint8_t * start, uint8_t * end)=0;
   virtual mpeg2_state_t mpeg2_parse (mpeg2dec_t * mpeg2dec)=0;
   virtual void mpeg2_reset (mpeg2dec_t * mpeg2dec, int full_reset)=0;
-  virtual int mpeg2_guess_aspect (const mpeg2_sequence_t * sequence, unsigned int * pixel_width, unsigned int * pixel_height)=0;
   virtual void mpeg2_set_buf (mpeg2dec_t * mpeg2dec, uint8_t * buf[3], void * id)=0;
   virtual void mpeg2_custom_fbuf (mpeg2dec_t * mpeg2dec, int custom_fbuf)=0;
   virtual int mpeg2_convert (mpeg2dec_t * mpeg2dec, mpeg2_convert_t convert, void * arg)=0;
@@ -47,7 +46,6 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
   DEFINE_METHOD3(void, mpeg2_buffer, (mpeg2dec_t * p1, uint8_t * p2, uint8_t * p3))
   DEFINE_METHOD1(mpeg2_state_t, mpeg2_parse, (mpeg2dec_t * p1))
   DEFINE_METHOD2(void, mpeg2_reset, (mpeg2dec_t * p1, int p2))
-  DEFINE_METHOD3(int, mpeg2_guess_aspect, (const mpeg2_sequence_t * p1, unsigned int * p2, unsigned int * p3))
   DEFINE_METHOD3(void, mpeg2_set_buf, (mpeg2dec_t * p1, uint8_t * p2[3], void * p3))
   DEFINE_METHOD2(void, mpeg2_custom_fbuf, (mpeg2dec_t * p1, int p2))
   DEFINE_METHOD3(int, mpeg2_convert, (mpeg2dec_t * p1, mpeg2_convert_t p2, void * p3))
@@ -60,7 +58,6 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
     RESOLVE_METHOD(mpeg2_buffer)
     RESOLVE_METHOD(mpeg2_parse)
     RESOLVE_METHOD(mpeg2_reset)
-    RESOLVE_METHOD(mpeg2_guess_aspect)
     RESOLVE_METHOD(mpeg2_set_buf)
     RESOLVE_METHOD(mpeg2_custom_fbuf)
     RESOLVE_METHOD(mpeg2_convert)
