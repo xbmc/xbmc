@@ -2204,6 +2204,12 @@
 					RelativePath="..\..\xbmc\FileSystem\PlaylistFileDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\RarDirectory.cpp">
 				</File>
 				<File
@@ -3268,6 +3274,9 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\xbmcplugin.cpp">
 					</File>
 				</Filter>
 				<Filter
