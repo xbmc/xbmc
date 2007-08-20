@@ -144,7 +144,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_TRACKNUM:
       {
-        dir->m_listItems.AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("%T", "%N"));
+        dir->m_listItems.AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("[%N. ]%T", "%D"));
         break;
       }
     case SORT_METHOD_DURATION:
@@ -307,6 +307,14 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     if (WaitForSingleObject(m_directoryFetched, 20) == WAIT_OBJECT_0)
     { // python has returned
       CLog::Log(LOGDEBUG, __FUNCTION__" plugin returned %s", m_success ? "successfully" : "failure");
+      break;
+    }
+    // check our script is still running
+    int id = g_pythonParser.getScriptId(scriptPath.c_str());
+    if (id == -1)
+    { // nope - bail
+      CLog::Log(LOGDEBUG, __FUNCTION__" plugin exited prematurely - terminating");
+      m_success = false;
       break;
     }
 

@@ -131,7 +131,7 @@ namespace PYXBMC
     };
 
     // call the directory class to add the sort method.
-    if (sortMethod >= SORT_METHOD_NONE || sortMethod < SORT_METHOD_MAX)
+    if (sortMethod >= SORT_METHOD_NONE && sortMethod < SORT_METHOD_MAX)
       DIRECTORY::CPluginDirectory::AddSortMethod(handle, (SORT_METHOD)sortMethod);
 
     Py_INCREF(Py_None);
