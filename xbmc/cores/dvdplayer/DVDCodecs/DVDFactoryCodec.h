@@ -1,7 +1,6 @@
 
 #pragma once
 
-enum CodecID;
 class CDVDVideoCodec;
 class CDVDAudioCodec;
 

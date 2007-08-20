@@ -52,3 +52,4 @@ private:
 };
 
 extern CDVDPerformanceCounter g_dvdPerformanceCounter;
+

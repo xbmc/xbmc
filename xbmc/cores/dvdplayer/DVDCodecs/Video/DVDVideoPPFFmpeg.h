@@ -41,3 +41,4 @@ protected:
   
   DllPostProc m_dll;
 };
+

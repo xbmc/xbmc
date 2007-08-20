@@ -189,3 +189,4 @@ bool CDVDVideoPPFFmpeg::GetPicture(DVDVideoPicture* pPicture)
   }
   return false;
 }
+
