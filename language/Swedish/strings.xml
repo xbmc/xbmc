@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 08/19/2007-->
+<!--Date of translation: 08/20/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9956-->
+<!--Based on english strings version 10008-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -649,6 +649,11 @@
   <string id="1034">Undermeny</string>
   <string id="1035">Aktivera undermenyknappar</string>
   <string id="1036">Favoriter</string>
+  <string id="1037">Filminsticksprogram</string>
+  <string id="1038">Musikinsticksprogram</string>
+  <string id="1039">Bildinsticksprogram</string>
+  <string id="1040">Laddar mapp</string>
+  <string id="1041">Hämtade %i objekt</string>
   <string id="1200">SMB Utdelning</string>
   <string id="1202">SMB Arbetsgrupp</string>
   <string id="1203">SMB Användarnamn</string>
