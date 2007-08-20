@@ -12,6 +12,7 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
+#include <sstream>
 
 static __forceinline __int64 abs(__int64 value)
 {
@@ -30,7 +31,6 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
   m_pOverlayCodecCC = NULL;
-  m_bInitializedOutputDevice = false;
   
   SetSpeed(DVD_PLAYSPEED_NORMAL);
   m_bRenderSubs = false;
@@ -776,12 +776,11 @@ void CDVDPlayerVideo::UpdateMenuPicture()
   }
 }
 
-__int64 CDVDPlayerVideo::GetDelay()
+string CDVDPlayerVideo::GetPlayerInfo()
 {
-  return m_iVideoDelay;
-}
-
-void CDVDPlayerVideo::SetDelay(__int64 delay)
-{
-  m_iVideoDelay = delay;
+  std::ostringstream s;
+  s << "vq size:" << 100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize() << "%";
+  s << ", ";
+  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  return s.str();
 }
