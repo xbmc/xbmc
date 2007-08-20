@@ -34,9 +34,8 @@ void CMouse::Update()
   Uint8 mouseState = SDL_GetRelativeMouseState(&x, &y);
   cMickeyX = (char)x;
   cMickeyY = (char)y;
-  bMouseMoved = cMickeyX || cMickeyY;
+  bMouseMoved = cMickeyX || cMickeyY || cWheel;
   
-  //cWheel = (char)mouseState.lZ; TODO LINUX: how do we mke the scroll wheel to work?
   // Check if we have an update...
   if (bMouseMoved)
   {
