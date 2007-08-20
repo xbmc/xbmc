@@ -979,22 +979,17 @@ void CDVDPlayer::ToggleFrameDrop()
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
+  if( m_bStop ) return;
+
   string strDemuxerInfo;
-  CStdString strPlayerInfo;
   if (!m_bStop && m_CurrentAudio.id >= 0)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
     if (pStream && pStream->type == STREAM_AUDIO)
-    {
       ((CDemuxStreamAudio*)pStream)->GetStreamInfo(strDemuxerInfo);
-    }
   }
 
-  int bsize = m_dvdPlayerAudio.m_messageQueue.GetDataSize();
-  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerAudio.m_messageQueue.GetDataSize() / m_dvdPlayerAudio.m_messageQueue.GetMaxDataSize()) * 100);
-  if (bsize > 99) bsize = 99;
-  strPlayerInfo.Format("aq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerAudio.GetRelativeUsage()*100));
-  strAudioInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
+  strAudioInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
@@ -1002,21 +997,14 @@ void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
   if( m_bStop ) return;
 
   string strDemuxerInfo;
-  CStdString strPlayerInfo;
   if (m_CurrentVideo.id >= 0)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
     if (pStream && pStream->type == STREAM_VIDEO)
-    {
       ((CDemuxStreamVideo*)pStream)->GetStreamInfo(strDemuxerInfo);
-    }
   }
 
-  int bsize = m_dvdPlayerVideo.m_messageQueue.GetDataSize();
-  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize()) * 100);
-  if (bsize > 99) bsize = 99;
-  strPlayerInfo.Format("vq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
-  strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
+  strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -1448,7 +1436,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
   /* set aspect ratio as requested by navigator for dvd's */
   if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
-    m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
+    m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
