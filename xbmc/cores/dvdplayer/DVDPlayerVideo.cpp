@@ -784,3 +784,4 @@ string CDVDPlayerVideo::GetPlayerInfo()
   s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
   return s.str();
 }
+

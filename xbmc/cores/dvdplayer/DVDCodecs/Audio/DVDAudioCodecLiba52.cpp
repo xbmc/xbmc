@@ -262,7 +262,7 @@ void CDVDAudioCodecLiba52::Reset()
 
   SetDefault();
 
-  m_pState = m_dll.a52_init(0);
+  m_pState = m_dll.a52_init(MM_ACCEL_X86_MMX |MM_ACCEL_X86_MMXEXT); // MMX accel is not really important since liba52 doesnt yet implement this... but whatever...
   m_fSamples = m_dll.a52_samples(m_pState);
 }
 
