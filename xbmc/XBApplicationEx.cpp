@@ -311,6 +311,7 @@ void CXBApplicationEx::ReadInput()
   //SDL_PumpEvents();
 
   SDL_Event event;
+  g_Mouse.cWheel = 0; // Reset cWheel, necessary since mouse wheel is only handled through events in SDL
   if (SDL_PollEvent(&event))
   {
     switch(event.type)
@@ -330,6 +331,12 @@ void CXBApplicationEx::ReadInput()
 #endif
       case SDL_KEYDOWN:
         g_Keyboard.Update(event);
+        break;
+      case SDL_MOUSEBUTTONDOWN: // hack to get mouse wheel movement working, should be in CMouse::Update(), but SDL only handles mouse wheel through events
+        if (event.button.button == SDL_BUTTON_WHEELUP)
+          g_Mouse.cWheel = 1;
+        else if (event.button.button == SDL_BUTTON_WHEELDOWN)
+          g_Mouse.cWheel = -1;
         break;
      }     
   }
