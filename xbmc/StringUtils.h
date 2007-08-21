@@ -32,6 +32,7 @@ class StringUtils
 {
 
 public:
+  static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int AlphaNumericCompare(const char *left, const char *right);
