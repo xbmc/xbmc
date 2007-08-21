@@ -171,10 +171,10 @@
 			<name>A_ARG_TYPE_SortCriteria</name> 
 			<dataType>string</dataType> 
 		</stateVariable>
-	    <stateVariable sendEvents="no">
-            <name>A_ARG_TYPE_SearchCriteria</name>
-            <dataType>string</dataType>
-        </stateVariable>    
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_SearchCriteria</name>
+			<dataType>string</dataType>
+		</stateVariable>    
 		<stateVariable sendEvents="no">
 			<name>SortCapabilities</name> 
 			<dataType>string</dataType> 
