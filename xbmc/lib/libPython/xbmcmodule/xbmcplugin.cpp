@@ -24,12 +24,16 @@ namespace PYXBMC
  * start of xbmc methods
  *****************************************************************/
   PyDoc_STRVAR(addDirectoryItem__doc__,
-    "addDirectoryItem(handle, url, listitem [,isFolder]) -- Callback function to pass directory contents back to XBMC.\n"
+    "addDirectoryItem(handle, url, listitem [,isFolder, totlalItems]) -- Callback function to pass directory contents back to XBMC.\n"
     "\n"
     "handle      : Integer - handle the plugin was started with.\n"
     "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
     "listitem    : ListItem - item to add.\n"
     "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
+    "totlaItems  : [opt] Integer - Total number of items that will be passed.(used for progressbar)\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
     "  - ok = xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\\\Trailers\\\\300.mov', listitem)\n"
@@ -37,21 +41,23 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_AddDirectoryItem(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "url", "listitem", "isFolder", NULL };
+    static char *keywords[] = { "handle", "url", "listitem", "isFolder", "totalItems", NULL };
     int handle = -1;
     PyObject *pURL = NULL;
     PyObject *pItem = NULL;
     bool bIsFolder = false;
+    int iTotalItems = 0;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "iOO|b",
+      "iOO|bl",
       keywords,
       &handle,
       &pURL,
       &pItem,
-      &bIsFolder
+      &bIsFolder,
+      &iTotalItems
       ))
     {
       return NULL;
@@ -65,7 +71,7 @@ namespace PYXBMC
     pListItem->item->m_bIsFolder = bIsFolder;
 
     // call the directory class to add our item
-    bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item);
+    bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item, iTotalItems);
     return Py_BuildValue("b", bOk);
   }
 
