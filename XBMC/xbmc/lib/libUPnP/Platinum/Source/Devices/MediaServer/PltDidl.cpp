@@ -58,6 +58,8 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
             mask |= PLT_FILTER_MASK_ALBUMARTURI;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len) == 0) {
             mask |= PLT_FILTER_MASK_DESCRIPTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len) == 0) {
+            mask |= PLT_FILTER_MASK_ORIGINALTRACK;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len) == 0) {
             mask |= PLT_FILTER_MASK_SEARCHABLE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CONTAINER_SEARCHABLE, len) == 0) {
