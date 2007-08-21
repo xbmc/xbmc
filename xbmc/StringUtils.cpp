@@ -17,6 +17,16 @@
 /* empty string for use in returns by ref */
 const CStdString StringUtils::EmptyString = "";
 
+void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
+{
+  result = "";
+  for(CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); it++ )
+    result += (*it) + delimiter;
+
+  if(result != "")
+    result.Delete(result.size()-delimiter.size(), delimiter.size());
+}
+
 // Splits the string input into pieces delimited by delimiter.
 // if 2 delimiters are in a row, it will include the empty string between them.
 int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results)
@@ -25,6 +35,8 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   int newPos = -1;
   int sizeS2 = delimiter.GetLength();
   int isize = input.GetLength();
+
+  results.clear();
 
   //CArray positions;
   vector<unsigned int> positions;
