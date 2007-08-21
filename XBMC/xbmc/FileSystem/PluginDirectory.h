@@ -21,7 +21,7 @@ public:
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
 
   // callbacks from python
-  static bool AddItem(int handle, const CFileItem *item);
+  static bool AddItem(int handle, const CFileItem *item, int totalItems);
   static void EndOfDirectory(int handle, bool success);
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
 
@@ -37,5 +37,6 @@ private:
 
   bool          m_cancelled;    // set to true when we are cancelled
   bool          m_success;      // set by script in EndOfDirectory
+  int    m_totalItems;   // set by script in AddDirectoryItem
 };
 };

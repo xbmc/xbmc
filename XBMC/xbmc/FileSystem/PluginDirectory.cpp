@@ -50,16 +50,18 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
-bool CPluginDirectory::AddItem(int handle, const CFileItem *item)
+bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, __FUNCTION__" called with an invalid handle.");
     return false;
   }
+  
   CPluginDirectory *dir = globalHandles[handle];
   CFileItem *pItem = new CFileItem(*item);
   dir->m_listItems.Add(pItem);
+  dir->m_totalItems = totalItems;
 
   return !dir->m_cancelled;
 }
@@ -221,6 +223,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   m_listItems.m_strPath = strPath;
   m_cancelled = false;
   m_success = false;
+  m_totalItems = 0;
 
   // setup our parameters to send the script
   CStdString strHandle;
@@ -335,7 +338,14 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     if (progressBar)
     { // update the progress bar and check for user cancel
       CStdString label;
-      label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems.Size());
+      if (m_totalItems > 0)
+      {
+        label.Format(g_localizeStrings.Get(1042).c_str(), m_listItems.Size(), m_totalItems);
+        progressBar->SetPercentage((int)((m_listItems.Size() * 100 ) / m_totalItems));
+        progressBar->ShowProgressBar(true);
+      }
+      else
+        label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems.Size());
       progressBar->SetLine(2, label);
       progressBar->Progress();
       if (progressBar->IsCanceled())
