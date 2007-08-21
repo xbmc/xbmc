@@ -312,55 +312,86 @@ namespace PYXBMC
     int pos = 0;
 
     PyGUILock();
+
+    CStdString tmp;
     while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
-      //CLog::Log(LOGDEBUG, __FUNCTION__" - Tag Dictionary: pos: %i  key: %s  value: %s", pos, PyString_AsString(key), PyString_AsString(value));
+      CLog::Log(LOGDEBUG, __FUNCTION__" - InfoLabel Dictionary: pos: %i,  key: %s", pos, PyString_AsString(key));
       if (strcmpi(cType, "video") == 0)
       {
         // TODO: add the rest of the infolabels
-        //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
-        if (strcmpi(PyString_AsString(key), "genre") == 0)
-          self->item->GetVideoInfoTag()->m_strGenre = PyString_AsString(value);
-        else if (strcmpi(PyString_AsString(key), "year") == 0)
+        if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetVideoInfoTag()->m_iYear = PyInt_AsLong(value);
-        else if (strcmpi(PyString_AsString(key), "director") == 0)
-          self->item->GetVideoInfoTag()->m_strDirector = PyString_AsString(value);
-        else if (strcmpi(PyString_AsString(key), "MPAARating") == 0)
-          self->item->GetVideoInfoTag()->m_strMPAARating = PyString_AsString(value);
-        else if (strcmpi(PyString_AsString(key), "plot") == 0)
-          self->item->GetVideoInfoTag()->m_strPlot = PyString_AsString(value);
-        else if (strcmpi(PyString_AsString(key), "plotoutline") == 0)
-          self->item->GetVideoInfoTag()->m_strPlotOutline = PyString_AsString(value);
-        else if (strcmpi(PyString_AsString(key), "runtime") == 0)
-          self->item->GetVideoInfoTag()->m_strRuntime = PyString_AsString(value);
-        else if (strcmpi(PyString_AsString(key), "title") == 0)
-          self->item->GetVideoInfoTag()->m_strTitle = PyString_AsString(value);
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
+        else if (strcmpi(PyString_AsString(key), "size") == 0)
+          self->item->m_dwSize = PyInt_AsLong(value);
         // TODO: Add a python list of cast members to m_cast
-        //else if (strcmpi(PyString_AsString(key), "cast") == 0)
-        //  self->item->GetVideoInfoTag()->m_cast = PyString_AsString(value);//
+        else
+        {
+          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
+          if (strcmpi(PyString_AsString(key), "genre") == 0)
+            self->item->GetVideoInfoTag()->m_strGenre = tmp;
+          else if (strcmpi(PyString_AsString(key), "director") == 0)
+            self->item->GetVideoInfoTag()->m_strDirector = tmp;
+          else if (strcmpi(PyString_AsString(key), "MPAARating") == 0)
+            self->item->GetVideoInfoTag()->m_strMPAARating = tmp;
+          else if (strcmpi(PyString_AsString(key), "plot") == 0)
+            self->item->GetVideoInfoTag()->m_strPlot = tmp;
+          else if (strcmpi(PyString_AsString(key), "plotoutline") == 0)
+            self->item->GetVideoInfoTag()->m_strPlotOutline = tmp;
+          else if (strcmpi(PyString_AsString(key), "runtime") == 0)
+            self->item->GetVideoInfoTag()->m_strRuntime = tmp;
+          else if (strcmpi(PyString_AsString(key), "title") == 0)
+            self->item->GetVideoInfoTag()->m_strTitle = tmp;
+          else if (strcmpi(PyString_AsString(key), "duration") == 0)
+            self->item->GetVideoInfoTag()->m_strRuntime = tmp;
+          else if (strcmpi(PyString_AsString(key), "date") == 0)
+          {
+            if (strlen(tmp) == 10)
+              self->item->m_dateTime.SetDate(atoi(tmp.Right(4)), atoi(tmp.Mid(3,4)), atoi(tmp.Left(2)));
+          }
+        }
       }
       else if (strcmpi(cType, "music") == 0)
       {
         // TODO: add the rest of the infolabels
-        //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
-        if (strcmpi(PyString_AsString(key), "genre") == 0)
-          self->item->GetMusicInfoTag()->SetGenre(PyString_AsString(value));
-        else if (strcmpi(PyString_AsString(key), "album") == 0)
-          self->item->GetMusicInfoTag()->SetAlbum(PyString_AsString(value));
-        else if (strcmpi(PyString_AsString(key), "artist") == 0)
-          self->item->GetMusicInfoTag()->SetArtist(PyString_AsString(value));
-        else if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
+        if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
           self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
-        else if (strcmpi(PyString_AsString(key), "title") == 0)
-          self->item->GetMusicInfoTag()->SetTitle(PyString_AsString(value));
+        else if (strcmpi(PyString_AsString(key), "size") == 0)
+          self->item->m_dwSize = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "duration") == 0)
+          self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
+        else
+        {
+          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
+          if (strcmpi(PyString_AsString(key), "genre") == 0)
+            self->item->GetMusicInfoTag()->SetGenre(tmp);
+          else if (strcmpi(PyString_AsString(key), "album") == 0)
+            self->item->GetMusicInfoTag()->SetAlbum(tmp);
+          else if (strcmpi(PyString_AsString(key), "artist") == 0)
+            self->item->GetMusicInfoTag()->SetArtist(tmp);
+          else if (strcmpi(PyString_AsString(key), "title") == 0)
+            self->item->GetMusicInfoTag()->SetTitle(tmp);
+          else if (strcmpi(PyString_AsString(key), "date") == 0)
+          {
+            if (strlen(tmp) == 10)
+              self->item->m_dateTime.SetDate(atoi(tmp.Right(4)), atoi(tmp.Mid(3,4)), atoi(tmp.Left(2)));
+          }
+        }
       }
       else if (strcmpi(cType, "pictures") == 0)
       {
         // TODO: Figure out how to set picture tags
-        //CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s - Tag: %s - Value: %s ", cType, PyString_AsString(key), PyString_AsString(value));
+        if (!PyGetUnicodeString(tmp, value, 1)) continue;
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
         if (strcmpi(PyString_AsString(key), "title") == 0)
-          self->item->m_strTitle = PyString_AsString(value);
+          self->item->m_strTitle = tmp;
+        else if (strcmpi(PyString_AsString(key), "size") == 0)
+          self->item->m_dwSize = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
+          self->item->m_strPath = tmp;
         //else if (strcmpi(PyString_AsString(key), "picturedatetime") == 0)
         //  self->item->GetPictureInfoTag()->m_exifInfo.DateTime = PyString_AsString(value);
         //else if (strcmpi(PyString_AsString(key), "pictureresolution") == 0)
@@ -370,8 +401,6 @@ namespace PYXBMC
           //self->item->GetPictureInfoTag()->m_exifInfo.Width = PyInt_AsLong(value);
           //self->item->GetPictureInfoTag()->m_exifInfo.Height = PyInt_AsLong(value);
         //}
-        else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
-          self->item->m_strPath = PyString_AsString(value);
       }
     }
     PyGUIUnlock();
