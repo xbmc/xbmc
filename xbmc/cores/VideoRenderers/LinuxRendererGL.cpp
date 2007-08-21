@@ -29,6 +29,7 @@
 #include "../../Settings.h"
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
+#include "../../../guilib/FrameBufferObject.h"
 
 #ifdef HAS_SDL_OPENGL
 
@@ -1063,6 +1064,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     }
     else if (m_renderMethod == FIELD_ODD || m_renderMethod == FIELD_EVEN)
     {
+/*
       shaderf = 
         "uniform sampler2D ytex;"
         "uniform sampler2D utex;"
@@ -1111,6 +1113,42 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
         "           0.615 * (yuv.b * 2.0 - 1.0), 0);"        
         "rgb = yuvmat * yuv;"
         "rgb = (rgb-vec4(0.5))*vec4(contrast) + vec4(0.5) + vec4(brightness) ;"
+        "rgb.a = 1.0;"
+        "gl_FragColor = rgb;"
+        "}";
+*/
+
+      shaderf = 
+        "uniform sampler2D ytex;"
+        "uniform sampler2D utex;"
+        "uniform sampler2D vtex;"
+        "uniform float brightness;"
+        "uniform float contrast;"
+        "uniform float stepX, stepY;"
+        "uniform int field;"
+        "void main()"
+        "{"
+        "vec4 yuv, rgb, yuv2;"
+        "vec4 taps[4][4];"
+        "vec2 offsetY, offsetUV, offsetY2, offsetUV2;"
+        "float temp1 = mod(gl_TexCoord[0].y, 2*stepY);"
+
+        "offsetY  = gl_TexCoord[0].xy ;"
+        "offsetUV = gl_TexCoord[1].xy ;"
+        "offsetY.y  -= (temp1 - stepY/2 + float(field)*stepY);"
+        "offsetUV.y -= (temp1 - stepY/2 + float(field)*stepY)/2;"
+        "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, "
+        "                0,       -0.39465, 2.03211, 0.0, "
+        "                1.13983, -0.58060, 0.0,     0.0, "
+        "                0.0,     0.0,      0.0,     0.0 }; "
+        "yuv = vec4(texture2D(ytex, offsetY).r,"
+        "           texture2D(utex, offsetUV).r,"
+        "           texture2D(vtex, offsetUV).r,"
+        "           0.0);"
+        "yuv.gba = vec3(0.436 * (yuv.g * 2.0 - 1.0),"
+        "           0.615 * (yuv.b * 2.0 - 1.0), 0);"        
+        "rgb = yuvmat * yuv;"
+        "rgb = (rgb-vec4(0.5))*vec4(contrast) + vec4(0.5) + vec4(brightness);"
         "rgb.a = 1.0;"
         "gl_FragColor = rgb;"
         "}";
@@ -1254,6 +1292,8 @@ void CLinuxRendererGL::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
+  m_fbo.Cleanup();
+
   // YV12 textures, subtitle and osd stuff
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
@@ -1324,11 +1364,14 @@ void CLinuxRendererGL::Render(DWORD flags)
     return;
   }
 
-  RenderLowMem(flags);
+  if (m_renderMethod & RENDER_GLSL)
+    RenderLowMem(flags);
+    //RenderMultiPass(flags);
+  else
+    RenderLowMem(flags);
+
   VerifyGLState();
 
-
-  // FIXME: OSD disabled for now
   /* general stuff */
   RenderOSD();
 
@@ -1466,6 +1509,225 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 }
 
+void CLinuxRendererGL::RenderMultiPass(DWORD flags)
+{
+  int index = 0; //m_iYV12RenderBuffer;
+  YV12Image &im = m_image[index];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+  {
+    g_graphicsContext.ClipToViewWindow();
+  }
+
+  g_graphicsContext.BeginPaint();
+
+  glDisable(GL_DEPTH_TEST);
+
+  //See RGB renderer for comment on this
+#define CHROMAOFFSET_HORIZ 0.25f
+
+  static GLfloat brightness = 0;
+  static GLfloat contrast   = 0;
+
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+
+  // Y
+  glEnable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+  // U
+  glActiveTexture(GL_TEXTURE1);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+    
+  // V
+  glActiveTexture(GL_TEXTURE2);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+    
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+        
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    m_fbo.Cleanup();
+    if (m_shaderProgram)
+    {
+      glDeleteShader(m_vertexShader);
+      glDeleteShader(m_fragmentShader);
+      glDeleteProgram(m_shaderProgram);
+      VerifyGLState();
+      m_shaderProgram = 0;
+      LoadShaders(m_currentField);
+      
+      if (!m_shaderProgram)
+      {
+        CLog::Log(LOGERROR, "GL: Error loading during shaders during render method change");
+        return;
+      }
+    }
+    if (m_currentField==FIELD_FULL)
+      SetTextureFilter(GL_LINEAR);
+    else
+      SetTextureFilter(GL_LINEAR); //GL_NEAREST
+  }
+
+  if (!m_fbo.IsValid())
+  {
+    m_fbo.Initialize();
+    if (m_currentField != FIELD_FULL)
+    {
+      if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, im.width, im.height/2, GL_RGBA))
+      {
+        CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+      }
+    }
+    else
+    {
+      if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, im.width, im.height, GL_RGBA))
+      {
+        CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+      }
+    }
+  }
+  
+  m_fbo.BeginRender();
+  
+  glUseProgram(m_shaderProgram);
+  VerifyGLState();
+  glUniform1i(m_yTex, 0);
+  VerifyGLState();
+  glUniform1i(m_uTex, 1);
+  VerifyGLState();
+  glUniform1i(m_vTex, 2);
+  VerifyGLState();
+  glUniform1f(m_brightness, brightness);
+  glUniform1f(m_contrast, contrast);
+
+  glPushAttrib(GL_VIEWPORT_BIT);
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glLoadIdentity();
+
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glLoadIdentity();
+  
+  int imgheight;
+
+  switch (m_currentField)
+  {
+  case FIELD_ODD:
+    glUniform1f(m_stepY, 1/(float)im.height);
+    glUniform1f(m_stepX, 1/(float)im.width);
+    glUniform1i(m_shaderField, 1);
+    imgheight = im.height/2;
+    break;
+
+  case FIELD_EVEN:
+    glUniform1f(m_stepY, 1/(float)im.height);
+    glUniform1f(m_stepX, 1/(float)im.width);
+    glUniform1i(m_shaderField, 0);
+    imgheight = im.height/2;
+    break;
+
+  default:
+    imgheight = im.height;
+    break;
+  }
+
+  gluOrtho2D(0, im.width, 0, imgheight);
+  glViewport(0, 0, im.width, imgheight);
+
+  glMatrixMode(GL_MODELVIEW);
+
+  glBegin(GL_QUADS);
+
+  glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
+  glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
+  glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
+  glVertex2f((float)0, (float)0);
+  //glVertex2f((float)0, (float)imgheight);
+  
+  glMultiTexCoord2f(GL_TEXTURE0, 1, 0);
+  glMultiTexCoord2f(GL_TEXTURE1, 1, 0);
+  glMultiTexCoord2f(GL_TEXTURE2, 1, 0);
+  glVertex2f((float)im.width, (float)0);
+  //glVertex2f((float)im.width, (float)imgheight);
+  
+  glMultiTexCoord2f(GL_TEXTURE0, 1, 1);
+  glMultiTexCoord2f(GL_TEXTURE1, 1, 1);
+  glMultiTexCoord2f(GL_TEXTURE2, 1, 1);
+  glVertex2f((float)im.width, (float)imgheight);
+  //glVertex2f((float)im.width, (float)0);
+  
+  glMultiTexCoord2f(GL_TEXTURE0, 0, 1);
+  glMultiTexCoord2f(GL_TEXTURE1, 0, 1);
+  glMultiTexCoord2f(GL_TEXTURE2, 0, 1);
+  glVertex2f((float)0, (float)imgheight);
+  //glVertex2f((float)0, (float)0);
+
+  glEnd();
+
+  glPopMatrix(); // pop modelview
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix(); // pop projection
+  glPopAttrib(); // pop viewport
+  glMatrixMode(GL_MODELVIEW);
+
+  m_fbo.EndRender();
+
+  glUseProgram(0);
+  VerifyGLState();
+  glActiveTexture(GL_TEXTURE1);
+  glDisable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE2);
+  glDisable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_fbo.Texture());
+
+  glBegin(GL_QUADS);
+  
+  // Use regular normalized texture coordinates
+
+  glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
+  glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+  
+  glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, 0);
+  glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+  
+  glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
+  glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+  
+  glMultiTexCoord2f(GL_TEXTURE0, 0, im.texcoord_y);
+  glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+
+  glEnd();
+
+  VerifyGLState();
+
+  /*
+  glUseProgram(0);
+  VerifyGLState();
+  glActiveTexture(GL_TEXTURE1);
+  glDisable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE2);
+  glDisable(m_textureTarget);
+  
+
+  glActiveTexture(GL_TEXTURE0);
+  */
+
+  glDisable(m_textureTarget);
+  VerifyGLState();
+  g_graphicsContext.EndPaint();
+}
+
 void CLinuxRendererGL::RenderLowMem(DWORD flags)
 {
   //CSingleLock lock(g_graphicsContext);
@@ -1532,7 +1794,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
       if (m_currentField==FIELD_FULL)
         SetTextureFilter(GL_LINEAR);
       else
-        SetTextureFilter(GL_NEAREST);
+        SetTextureFilter(GL_LINEAR);
     }
     
     glUseProgram(m_shaderProgram);
