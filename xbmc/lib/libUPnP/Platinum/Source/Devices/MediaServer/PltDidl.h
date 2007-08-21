@@ -29,6 +29,7 @@
 #define PLT_FILTER_MASK_DESCRIPTION                 0x00000020
 #define PLT_FILTER_MASK_SEARCHABLE                  0x00000040
 #define PLT_FILTER_MASK_CHILDCOUNT                  0x00000080
+#define PLT_FILTER_MASK_ORIGINALTRACK               0x00000080
 
 #define PLT_FILTER_MASK_RES                         0x00010000
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
@@ -41,6 +42,7 @@
 #define PLT_FILTER_FIELD_GENRE                      "upnp:genre"
 #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
 #define PLT_FILTER_FIELD_DESCRIPTION                "upnp:longDescription"
+#define PLT_FILTER_FIELD_ORIGINALTRACK              "upnp:originalTrackNumber"
 #define PLT_FILTER_FIELD_SEARCHABLE                 "@searchable"
 #define PLT_FILTER_FIELD_CHILDCOUNT                 "@childcount"
 #define PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT       "container@childCount"
