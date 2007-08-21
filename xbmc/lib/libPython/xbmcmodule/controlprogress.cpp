@@ -110,7 +110,7 @@ namespace PYXBMC
     float *cPercent;
 
     if (!PyArg_ParseTuple(args, "f", &cPercent)) return NULL;
-    float fPercent = (float &)cPercent;
+    float fPercent = *cPercent;
     PyGUILock();
     if (self->pGUIControl)
     {
