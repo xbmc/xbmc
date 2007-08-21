@@ -1956,18 +1956,18 @@ void CGUIWindowSettingsCategory::Render()
   UpdateRealTimeSettings();
   // update alpha status of current button
   bool bAlphaFaded = false;
-  CGUIButtonControl *pButton = (CGUIButtonControl *)GetControl(CONTROL_START_BUTTONS + m_iSection);
-  if (pButton && !pButton->HasFocus())
+  CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);
+  if (control && !control->HasFocus() && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
   {
-    pButton->SetFocus(true);
-    pButton->SetAlpha(0x80);
+    control->SetFocus(true);
+    ((CGUIButtonControl *)control)->SetAlpha(0x80);
     bAlphaFaded = true;
   }
   CGUIWindow::Render();
   if (bAlphaFaded)
   {
-    pButton->SetFocus(false);
-    pButton->SetAlpha(0xFF);
+    control->SetFocus(false);
+    ((CGUIButtonControl *)control)->SetAlpha(0xFF);
   }
   // render the error message if necessary
   if (m_strErrorMessage.size())
