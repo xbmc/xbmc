@@ -4,10 +4,13 @@
 #ifdef HAS_SDL_OPENGL
 
 #include "../../../guilib/Surface.h"
+#include "../../../guilib/FrameBufferObject.h"
+#include "../../../guilib/Shader.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
 
 using namespace Surface;
+using namespace Shaders;
 
 #define NUM_BUFFERS 3
 
@@ -167,7 +170,9 @@ protected:
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
+  void RenderMultiPass(DWORD flags);
 
+  CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;;
 
   int m_iYV12RenderBuffer;
