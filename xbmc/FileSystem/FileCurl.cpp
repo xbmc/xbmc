@@ -465,9 +465,6 @@ bool CFileCurl::Exists(const CURL& url)
 
 __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 {
-  /* if we don't have a filesize this is most likely unseekable */
-  if( !m_seekable ) return -1;
-
   __int64 nextPos = m_filePos;
 	switch(iWhence) 
 	{
@@ -481,14 +478,15 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 			if (m_fileSize)
         nextPos = m_fileSize + iFilePosition;
       else
-        nextPos = 0;
+        return -1;
 			break;
 	}
 //  CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - current pos %i, new pos %i", this, (unsigned int)m_filePos, (unsigned int)nextPos);
   // see if nextPos is within our buffer
   if (!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
   {
-    // bummer - seeking outside our buffers
+    // if we can't be sure we can seek, abort here
+    if( !m_seekable ) return -1;
 
     /* halt transaction */
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
