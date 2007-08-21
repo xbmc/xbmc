@@ -403,3 +403,4 @@ bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
 #endif
 
 #endif
+
