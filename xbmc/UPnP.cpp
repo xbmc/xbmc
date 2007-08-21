@@ -208,6 +208,11 @@ public:
         PLT_ActionReference& action, 
         const char*          object_id, 
         NPT_SocketInfo*      info = NULL);
+    virtual NPT_Result OnSearch(
+        PLT_ActionReference& action, 
+        const NPT_String& object_id, 
+        const NPT_String& searchCriteria,
+        NPT_SocketInfo* info = NULL);
 
 private:
     PLT_MediaObject* BuildObject(
@@ -266,15 +271,18 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 CMusicInfoTag *tag = item->GetMusicInfoTag();
                 if( !tag->GetURL().IsEmpty() )
                   file_path = tag->GetURL();
-                
-                object->m_Title = tag->GetTitle();
-                object->m_Affiliation.genre = tag->GetGenre();
+
+                CStdStringArray genres;
+                CUtil::Tokenize(tag->GetGenre(), genres, " / ");
+                for(CStdStringArray::iterator it = genres.begin();it != genres.end();it++) {
+                    object->m_Affiliation.genre += (*it) + ",";
+                }
+                object->m_Affiliation.genre.TrimRight(",");
+
                 object->m_Affiliation.album = tag->GetAlbum();
                 object->m_People.artist = tag->GetArtist();
                 object->m_Creator = tag->GetArtist();
-                //object->m_ExtraInfo.album_art_uri = 
-                resource.m_Duration = tag->GetDuration();
-                
+                resource.m_Duration = tag->GetDuration();                
             }
 
         } else if( item->IsVideoDb() ) {
@@ -285,11 +293,25 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 if( !tag->m_strFileNameAndPath.IsEmpty() )
                   file_path = tag->m_strFileNameAndPath;
 
-                object->m_Affiliation.genre = tag->m_strGenre;
+                CStdStringArray genres;
+                CUtil::Tokenize(tag->m_strGenre, genres, " / ");
+                for(CStdStringArray::iterator it = genres.begin();it != genres.end();it++) {
+                    object->m_Affiliation.genre += (*it) + ",";
+                }
+                object->m_Affiliation.genre.TrimRight(",");
+
+                for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
+                    object->m_People.actor += it->first + "/";
+                    object->m_People.actor_role += it->second + "/";
+                }
+                object->m_People.actor.TrimRight(",");
+                object->m_People.actor_role.TrimRight(",");
+
                 object->m_People.director = tag->m_strDirector;
                 object->m_Description.description = tag->m_strTagLine;
                 object->m_Description.long_description = tag->m_strPlot;
-                resource.m_Duration = atoi(tag->m_strRuntime.c_str());
+                //TODO - this is wrong, imdb gives it as minute string ie, "116 min"
+                //resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
             }
 
         } else if( item->IsAudio() ) {
@@ -337,19 +359,24 @@ CUPnPServer::BuildObject(CFileItem*      item,
             }
         }        
     } else {
-        object = new PLT_MediaContainer;
+        PLT_MediaContainer* container = new PLT_MediaContainer;
+        object = container;
 
         /* Assign a title and id for this container */
-        object->m_ObjectID = item->m_strPath;
-        object->m_ObjectClass.type = "object.container";
-        ((PLT_MediaContainer*)object)->m_ChildrenCount = -1;
+        container->m_ObjectID = item->m_strPath;
+        container->m_ObjectClass.type = "object.container";
+        container->m_ChildrenCount = -1;
+
+        if(item->IsMusicDb()) {
+        } else if(item->IsVideoDb()) {
+        }
 
         /* Get the number of children for this container */
         if (with_count) {
             if( object->m_ObjectID.StartsWith("virtualpath://") ) {
                 NPT_Cardinal count = 0;
                 NPT_CHECK_LABEL(GetEntryCount(file_path, count), failure);
-                ((PLT_MediaContainer*)object)->m_ChildrenCount = count;
+                container->m_ChildrenCount = count;
             } else {
                 /* this should be a standard path */
                 // TODO - get file count of this directory
@@ -818,6 +845,22 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(total_matches)));
     NPT_CHECK(action->SetArgumentValue("UpdateId", "1"));
     return NPT_SUCCESS;
+}
+
+NPT_Result
+CUPnPServer::OnSearch(PLT_ActionReference& action, 
+                      const NPT_String& object_id, 
+                      const NPT_String& searchCriteria,
+                      NPT_SocketInfo* info /*= NULL*/)
+
+{
+  // uggly hack to get windows media player to show stuff
+  if(searchCriteria.Find("""object.item.audioItem""") >= 0)
+      return OnBrowseDirectChildren(action, "musicdb://4", info);
+  else if(searchCriteria.Find("""object.item.videoItem""") >= 0)
+      return OnBrowseDirectChildren(action, "videodb://1/2", info);
+
+  return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------

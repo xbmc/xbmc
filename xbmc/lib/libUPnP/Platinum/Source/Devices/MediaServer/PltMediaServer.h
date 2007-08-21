@@ -68,9 +68,16 @@ protected:
     virtual NPT_Result OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
+    // X_MS_MediaReceiverRegistrar
+    virtual NPT_Result OnIsAuthorized(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnIsValidated(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnRegisterDevice(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+
     // overridable methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_String& object_id, const NPT_String& searchCriteria, NPT_SocketInfo* info = NULL);
+
 
     PLT_HttpServer* m_FileServer;
 };
