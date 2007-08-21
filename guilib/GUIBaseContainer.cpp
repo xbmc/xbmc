@@ -248,9 +248,17 @@ bool CGUIBaseContainer::OnClick(DWORD actionID)
     if (selected >= 0 && selected < (int)m_items.size())
     {
       CFileItem *item = (CFileItem *)m_items[selected];
-      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-      message.SetStringParam(item->m_strPath);
-      g_graphicsContext.SendMessage(message);
+      // multiple action strings are concat'd together, separated with " , "
+      vector<CStdString> actions;
+      StringUtils::SplitString(item->m_strPath, " , ", actions);
+      for (unsigned int i = 0; i < actions.size(); i++)
+      {
+        CStdString action = actions[i];
+        action.Replace(",,", ",");
+        CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+        message.SetStringParam(action);
+        g_graphicsContext.SendMessage(message);
+      }
     }
     return true;
   }
@@ -452,7 +460,16 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
         newItem = new CFileItem(CGUIControlFactory::GetLabel(label));
-        newItem->m_strPath = click->FirstChild()->Value();
+        // multiple action strings are concat'd together, separated with " , "
+        vector<CStdString> actions;
+        CGUIControlFactory::GetMultipleString(item, "onclick", actions);
+        for (unsigned int i = 0; i < actions.size(); i++)
+        {
+          CStdString action = actions[i];
+          action.Replace(",", ",,");
+          if (!newItem->m_strPath.IsEmpty()) newItem->m_strPath += " , ";
+          newItem->m_strPath += action;
+        }
         newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
