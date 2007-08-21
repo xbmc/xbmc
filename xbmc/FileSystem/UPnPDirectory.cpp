@@ -264,6 +264,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       StringUtils::JoinString(strings, " / ", buffer);
                       tag->SetGenre(buffer);
                       tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
+                      tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number);
                       
                       // some servers (like WMC) use upnp:artist instead of dc:creator
                       if ((*entry)->m_Creator.GetLength() == 0)
