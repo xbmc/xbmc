@@ -188,6 +188,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         didl += "</upnp:longDescription>";
     }
 
+    // original track number
+    if (mask & PLT_FILTER_MASK_ORIGINALTRACK && m_MiscInfo.original_track_number > 0) {
+        didl += "<upnp:originalTrackNumber>";
+        didl += NPT_String::FromInteger(m_MiscInfo.original_track_number);
+        didl += "</upnp:originalTrackNumber>";
+    }
+
     // resource
     if (mask & PLT_FILTER_MASK_RES) {
         for (unsigned int i=0; i<m_Resources.GetItemCount(); i++) {
