@@ -241,8 +241,12 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 )
                     {
                       CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+                      CStdStringArray strings, strings2;
+                      CStdString buffer;
+
                       tag->m_strTitle = (*entry)->m_Title;
-                      tag->m_strGenre = (*entry)->m_Affiliation.genre;
+                      StringUtils::SplitString((const char*) (*entry)->m_Affiliation.genre, ",", strings);
+                      StringUtils::JoinString(strings, " / ", tag->m_strGenre);
                       tag->m_strDirector = (*entry)->m_People.director;
                       tag->m_strTagLine = (*entry)->m_Description.description;
                       tag->m_strPlot = (*entry)->m_Description.long_description;
@@ -251,10 +255,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 )
                     {
                       CMusicInfoTag* tag = pItem->GetMusicInfoTag();
+                      CStdStringArray strings;
+                      CStdString buffer;
 
                       tag->SetDuration((*entry)->m_Resources[0].m_Duration);
                       tag->SetTitle((const char*) (*entry)->m_Title);
-                      tag->SetGenre((const char*) (*entry)->m_Affiliation.genre);
+                      StringUtils::SplitString((const char*) (*entry)->m_Affiliation.genre, ",", strings);
+                      StringUtils::JoinString(strings, " / ", buffer);
+                      tag->SetGenre(buffer);
                       tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
                       
                       // some servers (like WMC) use upnp:artist instead of dc:creator

@@ -247,6 +247,10 @@ CUPnPServer::BuildObject(CFileItem*      item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
 
+    // some usefull buffers
+    CStdStringArray strings;
+    CStdString buffer;
+
     // get list of ip addresses
     NPT_List<NPT_String> ips;
     NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
@@ -272,12 +276,9 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 if( !tag->GetURL().IsEmpty() )
                   file_path = tag->GetURL();
 
-                CStdStringArray genres;
-                CUtil::Tokenize(tag->GetGenre(), genres, " / ");
-                for(CStdStringArray::iterator it = genres.begin();it != genres.end();it++) {
-                    object->m_Affiliation.genre += (*it) + ",";
-                }
-                object->m_Affiliation.genre.TrimRight(",");
+                StringUtils::SplitString(tag->GetGenre(), " / ", strings);
+                StringUtils::JoinString(strings, ",", buffer);
+                object->m_Affiliation.genre = buffer;
 
                 object->m_Affiliation.album = tag->GetAlbum();
                 object->m_People.artist = tag->GetArtist();
@@ -293,16 +294,13 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 if( !tag->m_strFileNameAndPath.IsEmpty() )
                   file_path = tag->m_strFileNameAndPath;
 
-                CStdStringArray genres;
-                CUtil::Tokenize(tag->m_strGenre, genres, " / ");
-                for(CStdStringArray::iterator it = genres.begin();it != genres.end();it++) {
-                    object->m_Affiliation.genre += (*it) + ",";
-                }
-                object->m_Affiliation.genre.TrimRight(",");
+                StringUtils::SplitString(tag->m_strGenre, " / ", strings);
+                StringUtils::JoinString(strings, ",", buffer);
+                object->m_Affiliation.genre = buffer;
 
                 for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
-                    object->m_People.actor += it->first + "/";
-                    object->m_People.actor_role += it->second + "/";
+                    object->m_People.actor += it->first + ",";
+                    object->m_People.actor_role += it->second + ",";
                 }
                 object->m_People.actor.TrimRight(",");
                 object->m_People.actor_role.TrimRight(",");
