@@ -463,13 +463,9 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
-        for (unsigned int i = 0; i < actions.size(); i++)
-        {
-          CStdString action = actions[i];
-          action.Replace(",", ",,");
-          if (!newItem->m_strPath.IsEmpty()) newItem->m_strPath += " , ";
-          newItem->m_strPath += action;
-        }
+        for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
+          (*it).Replace(",", ",,");
+        StringUtils::JoinString(actions, " , ", newItem->m_strPath);
         newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
