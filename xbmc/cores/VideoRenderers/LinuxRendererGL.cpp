@@ -367,6 +367,8 @@ void CLinuxRendererGL::RenderOSD()
     return ;
   if (!m_OSDWidth || !m_OSDHeight)
     return ;
+  if (!glIsTexture(m_pOSDYTexture[m_iOSDRenderBuffer]))
+    return;
 
   ResetEvent(m_eventOSDDone[iRenderBuffer]);
   
