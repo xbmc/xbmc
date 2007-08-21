@@ -26,6 +26,8 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server")
 +---------------------------------------------------------------------*/
 extern NPT_UInt8 MS_ConnectionManagerSCPD[];
 extern NPT_UInt8 MS_ContentDirectorySCPD[];
+extern NPT_UInt8 MS_ContentDirectorywSearchSCPD[];
+extern NPT_UInt8 X_MS_MediaReceiverRegistrarSCPD[2575];
 
 const char* BrowseFlagsStr[] = {
     "BrowseMetadata",
@@ -46,11 +48,13 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
         this,
         "urn:schemas-upnp-org:service:ContentDirectory:1", 
         "urn:upnp-org:serviceId:CDS_1-0");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ContentDirectorySCPD))) {
+    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD))) {
         service->InitURLs("ContentDirectory", m_UUID);
         AddService(service);
         service->SetStateVariable("ContainerUpdateIDs", "0", false);
         service->SetStateVariable("SystemUpdateID", "0", false);
+        service->SetStateVariable("SearchCapability", "upnp:class", false);
+        service->SetStateVariable("SortCapability", "", false);
     }
 
     service = new PLT_Service(
@@ -63,6 +67,15 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
         service->SetStateVariable("CurrentConnectionIDs", "0", false);
         service->SetStateVariable("SinkProtocolInfo", "", false);
         service->SetStateVariable("SourceProtocolInfo", "http-get:*:*:*", false);
+    }
+
+    service = new PLT_Service(
+        this,
+        "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar:1", 
+        "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
+    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) X_MS_MediaReceiverRegistrarSCPD))) {
+        service->InitURLs("X_MS_MediaReceiverRegistrar", m_UUID);
+        AddService(service);
     }
 
     m_FileServer = new PLT_HttpServer(fileserver_port);
@@ -135,6 +148,17 @@ PLT_MediaServer::OnAction(PLT_ActionReference& action, NPT_SocketInfo* info /* =
     }    
     if (name.Compare("GetCurrentConnectionInfo", true) == 0) {
         return OnGetCurrentConnectionInfo(action, info);
+    }
+
+    // X_MS_MediaReceiverRegistrar
+    if (name.Compare("IsAuthorized", true) == 0) {
+        return OnIsAuthorized(action, info);
+    }
+    if (name.Compare("IsValidated", true) == 0) {
+        return OnIsValidated(action, info);
+    }    
+    if (name.Compare("GetCurrentConnectionInfo", true) == 0) {
+        return OnRegisterDevice(action, info);
     }
 
     action->SetError(401,"No Such Action.");
@@ -234,11 +258,7 @@ NPT_Result
 PLT_MediaServer::OnGetSortCapabilities(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL */)
 {
     NPT_COMPILER_UNUSED(info);
-
-    if (NPT_FAILED(action->SetArgumentValue("SortCaps", "*"))) {
-        return NPT_FAILURE;
-    }
-
+    NPT_CHECK(action->SetArgumentOutFromStateVariable("SortCaps"));
     return NPT_SUCCESS;
 }
 
@@ -249,11 +269,7 @@ NPT_Result
 PLT_MediaServer::OnGetSearchCapabilities(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL */)
 {
     NPT_COMPILER_UNUSED(info);
-
-    if (NPT_FAILED(action->SetArgumentValue("SearchCaps", "*"))) {
-        return NPT_FAILURE;
-    }
-
+    NPT_CHECK(action->SetArgumentOutFromStateVariable("SearchCaps"));
     return NPT_SUCCESS;
 }
 
@@ -339,35 +355,57 @@ PLT_MediaServer::OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info /* =
 
     NPT_Result    res;
     NPT_String    container_id;
-    //PLT_Argument* searchCritArg = action->GetArgument("SearchCriteria");
+    NPT_String    searchCriteria;
 
-    if (NPT_FAILED(action->GetArgumentValue("ContainerId", container_id))) {
-        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - invalid arguments.");
-        return NPT_FAILURE;
-    }
+    NPT_CHECK_FATAL(action->GetArgumentValue("SearchCriteria", searchCriteria));
+    NPT_CHECK_FATAL(action->GetArgumentValue("ContainerId", container_id));
 
-    /* we don't support sorting yet */
-//    PLT_Argument* sortCritArg = action->GetArgument("SortCriteria");
-//     if (sortCritArg != NULL)  {
-//         NPT_String sortCrit = sortCritArg->GetValue();
-//         if (sortCrit.GetLength() > 0) {
-//             /* error */
-//             PLT_Log(PLT_LOG_LEVEL_1, "PLT_FileMediaServer::OnBrowse - SortCriteria not allowed.");
-//             action->SetError(709, "MediaServer does not support sorting.");
-//             return NPT_FAILURE;
-//         }
-//     }
 
     NPT_LOG_FINE_1("PLT_FileMediaServer::OnSearch - id = %s", (const char*)container_id);
-
-    /* Invoke the browse function */
-    res = OnBrowseDirectChildren(action, container_id);
+    
+    if(searchCriteria == "")
+        res = OnBrowseDirectChildren(action, container_id, info);
+    else
+        res = OnSearch(action, container_id, searchCriteria, info);
 
     if (NPT_FAILED(res) && (action->GetErrorCode() == 0)) {
         action->SetError(800, "Internal error");
     }
 
     return res;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaServer::OnIsAuthorized
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaServer::OnIsAuthorized(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL*/)
+{
+    if (NPT_FAILED(action->SetArgumentValue("Result", "1"))){
+        return NPT_FAILURE;
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaServer::OnIsValidated
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaServer::OnIsValidated(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL*/)
+{
+    if (NPT_FAILED(action->SetArgumentValue("Result", "1"))){
+        return NPT_FAILURE;
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaServer::OnRegisterDevice
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaServer::OnRegisterDevice(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL*/)
+{
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -397,6 +435,17 @@ PLT_MediaServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     NPT_COMPILER_UNUSED(object_id);
     NPT_COMPILER_UNUSED(info);
 
-    return NPT_ERROR_NOT_IMPLEMENTED; 
+    return NPT_ERROR_NOT_IMPLEMENTED;
 }
 
+/*----------------------------------------------------------------------
+|   PLT_MediaServer::OnSearch
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaServer::OnSearch(PLT_ActionReference& action, 
+                      const NPT_String& object_id, 
+                      const NPT_String& searchCriteria,
+                      NPT_SocketInfo* info /*= NULL*/)
+{
+    return NPT_ERROR_NOT_IMPLEMENTED;
+}
